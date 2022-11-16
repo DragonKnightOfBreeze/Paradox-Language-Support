@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxLocalisationCommandScopeReference(
 	element: ParadoxLocalisationCommandScope,
 	rangeInElement: TextRange
-) : PsiReferenceBase<ParadoxLocalisationCommandScope>(element, rangeInElement), PsiAnnotatedReference {
+) : PsiReferenceBase<ParadoxLocalisationCommandScope>(element, rangeInElement), PsiSmartReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//尝试重命名关联的valueSetValue
 		val resolved = resolve()
@@ -36,6 +36,10 @@ class ParadoxLocalisationCommandScopeReference(
 	}
 	
 	override fun resolve(): PsiElement? {
+		return resolve(true)
+	}
+	
+	override fun resolve(exact: Boolean): PsiElement? {
 		val name = element.name
 		val project = element.project
 		val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return null
@@ -48,7 +52,7 @@ class ParadoxLocalisationCommandScopeReference(
 		if(localisationScope != null) return localisationScope
 		
 		//尝试识别为value[event_target]或value[global_event_target]
-		val selector = valueSetValueSelector().gameType(gameType).preferRootFrom(element)
+		val selector = valueSetValueSelector().gameType(gameType).preferRootFrom(element, exact)
 		val eventTarget = ParadoxValueSetValueSearch.search(name, "event_target", project, selector = selector).findFirst()
 		if(eventTarget != null) return ParadoxValueSetValueElement(element, name, "event_target", project, gameType)
 		val globalEventTarget = ParadoxValueSetValueSearch.search(name, "global_event_target", project, selector = selector).findFirst()

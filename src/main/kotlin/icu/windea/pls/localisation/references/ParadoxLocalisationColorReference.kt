@@ -15,7 +15,7 @@ import icu.windea.pls.localisation.psi.*
 class ParadoxLocalisationColorReference(
 	element: ParadoxLocalisationColorfulText,
 	rangeInElement: TextRange
-) : PsiReferenceBase<ParadoxLocalisationColorfulText>(element, rangeInElement), PsiAnnotatedReference {
+) : PsiReferenceBase<ParadoxLocalisationColorfulText>(element, rangeInElement), PsiSmartReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//尝试重命名关联的definition
 		val resolved = resolve()
@@ -29,6 +29,10 @@ class ParadoxLocalisationColorReference(
 	}
 	
 	override fun resolve(): PsiElement? {
+		return resolve(true)
+	}
+	
+	override fun resolve(exact: Boolean): PsiElement? {
 		return element.colorConfig?.pointer?.element
 	}
 	

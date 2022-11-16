@@ -218,13 +218,13 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	//region ParadoxLocalisationCommandIdentifier
 	@JvmStatic
-	fun getPrevIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxLocalisationCommandIdentifier? {
+	fun getPrevIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxLocalisationCommandScope? {
 		var separator = element.prevSibling ?: return null
 		if(separator.elementType == TokenType.WHITE_SPACE) separator = separator.prevSibling ?: return null
 		if(separator.elementType != DOT) return null
 		var prev = separator.prevSibling ?: return null
 		if(prev.elementType == TokenType.WHITE_SPACE) prev = prev.prevSibling ?: return null
-		if(prev !is ParadoxLocalisationCommandIdentifier) return null
+		if(prev !is ParadoxLocalisationCommandScope) return null
 		return prev
 	}
 	

@@ -30,9 +30,7 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
 		
-		val prevScope = parameters.position.parent?.siblings(forward = false, withSelf = false)
-			?.find { it is ParadoxLocalisationCommandScope }
-			?.text
+		val prevScope = parameters.position.parentOfType<ParadoxLocalisationCommandIdentifier>()?.prevIdentifier?.name
 		if(prevScope != null) context.put(PlsCompletionKeys.prevScopeKey, prevScope)
 		
 		//提示scope

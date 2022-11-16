@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxLocalisationCommandFieldReference(
 	element: ParadoxLocalisationCommandField,
 	rangeInElement: TextRange
-) : PsiPolyVariantReferenceBase<ParadoxLocalisationCommandField>(element, rangeInElement), PsiAnnotatedReference {
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationCommandField>(element, rangeInElement), PsiSmartReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//尝试重命名关联的definition、valueSetValue
 		val resolved = resolve()
@@ -37,6 +37,10 @@ class ParadoxLocalisationCommandFieldReference(
 	}
 	
 	override fun resolve(): PsiElement? {
+		return resolve(true)
+	}
+	
+	override fun resolve(exact: Boolean): PsiElement? {
 		val name = element.name
 		val project = element.project
 		val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return null
@@ -47,12 +51,12 @@ class ParadoxLocalisationCommandFieldReference(
 		if(localisationCommand != null) return localisationCommand
 		
 		//尝试识别为<scripted_loc>
-		val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
+		val selector = definitionSelector().gameType(gameType).preferRootFrom(element, exact)
 		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", project, selector = selector).find()
 		if(scriptedLoc != null) return scriptedLoc
 		
 		//尝试识别为value[variable]
-		val variableSelector = valueSetValueSelector().gameType(gameType).preferRootFrom(element)
+		val variableSelector = valueSetValueSelector().gameType(gameType).preferRootFrom(element, exact)
 		val variable = ParadoxValueSetValueSearch.search(name, "variable", project, selector = variableSelector).findFirst()
 		if(variable != null) return ParadoxValueSetValueElement(element, name, "variable", project, gameType)
 		

@@ -1,0 +1,43 @@
+<html>
+<body>
+  <p>
+    Reports unresolved command scope references in localisation files.
+  </p>
+  <p>
+    Localisation command scope reference "SCOPE" can be following situations currently:
+  </p>
+  <ul>
+    <li>
+      A system scope named <code>"SCOPE"</code> (ignore case).
+    </li>
+    <li>
+      A localisation scope named <code>"SCOPE"</code> (ignore case).
+    </li>
+    <li>
+      A event target named <code>"SCOPE"</code> (ignore case).
+    </li>
+    <li>
+      A global event target named <code>"SCOPE"</code> (ignore case).
+    </li>
+  </ul>
+  <!-- tooltip end -->
+  <p>
+    System scopes are predefined by Internal Config (in <code>script_config.pls.cwt#system_scopes</code>).
+  </p>
+  <p>
+    Localisation scopes are predefined by CWT Config (in <code>localisation.cwt#localisation_links</code>)
+  </p>
+  <p>
+    An event target is a script expression matching cwt expression <code>"value[event_target]"</code> or <code>"value_set[event_target]"</code>.
+  </p>
+  <p>
+    A global event target is a script expression matching cwt expression <code>"value[global_event_target]"</code> or <code>"value_set[global_event_target]"</code>.
+  </p>
+  <p>
+    Based on plugin's built-in
+    <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>
+    and
+    <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/internal">Internal Config</a>.
+  </p>
+</body>
+</html>

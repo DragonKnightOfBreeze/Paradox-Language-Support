@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface ParadoxLocalisationCommandIdentifier extends PsiElement {
 
   @Nullable
-  ParadoxLocalisationCommandIdentifier getPrevIdentifier();
+  ParadoxLocalisationCommandScope getPrevIdentifier();
 
   @Nullable
   ParadoxLocalisationCommandIdentifier getNextIdentifier();

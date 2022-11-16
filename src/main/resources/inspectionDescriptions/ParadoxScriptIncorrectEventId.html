@@ -4,13 +4,13 @@
     Reports incorrect event id declarations in related event declarations.
     Event id should be in correct format and match the event namespace.
   </p>
-  <!-- tooltip end -->
   <p>
     In detail,
     the format of an event id should be <code>"{namespace}.{no}"</code>,
     while <code>"{namespace}"</code> is the event namespace (ignore case),
     and <code>"{no}"</code> is a non-negative integer (ignore leading zero).
   </p>
+  <!-- tooltip end -->
   <p>
     In an event script file,
     the event id is declared as a property of an event definition, with name <code>"id"</code>,
@@ -19,12 +19,11 @@
   </p>
   <p>
     An event script file is a script file with extension ".txt"
-    under directory <code>events</code> or it's subdirectories relative to the game or mod root directory.
+    under directory <code>events</code> or it's subdirectories.
   </p>
   <p>
     Based on plugin's built-in
-    <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>
-    currently.
+    <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>.
   </p>
   <p>
     NOTE: Support multiple event namespaces in the same event script file.

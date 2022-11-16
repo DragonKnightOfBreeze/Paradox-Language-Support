@@ -1,0 +1,35 @@
+<html>
+<body>
+  <p>
+    Reports unresolved command field references in localisation files.
+  </p>
+  <p>
+    Localisation command field reference "FIELD" can be following situations currently:
+  </p>
+  <ul>
+    <li>
+      A localisation command named <code>"FIELD"</code> (ignore case).
+    </li>
+    <li>
+      A script loc definition named <code>"FIELD"</code> (ignore case).
+    </li>
+    <li>
+      A variable named <code>"FIELD"</code> (ignore case).
+    </li>
+  </ul>
+  <!-- tooltip end -->
+  <p>
+    Localisation commands are predefined by CWT Config (in <code>localisation.cwt#localisation_commands</code>)
+  </p>
+  <p>
+    A script loc definition is a definition with type <code>"script_loc"</code>.
+  </p>
+  <p>
+    An variable is a script expression matching cwt expression <code>"value[variable]"</code> or <code>"value_set[variable]"</code>.
+  </p>
+  <p>
+    Based on plugin's built-in
+    <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>.
+  </p>
+</body>
+</html>

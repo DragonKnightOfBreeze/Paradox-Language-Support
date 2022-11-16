@@ -1,43 +1,33 @@
 <html>
 <body>
   <p>
-    Reports unresolved icon references in a localisation file.
+    Reports unresolved icon references in localisation files.
   </p>
-  <!-- tooltip end -->
   <p>
-    Name of a localisation icon can be following situations currently:
+    Localisation icon reference <code>"icon_name"</code> can be resolved to following situations currently:
   </p>
   <ul>
     <li>
-      <code>"icon_name"</code>
-      if there exists a sprite definition named <code>"GFX_text_icon_name"</code>.
+      A text sprite definition named <code>"GFX_text_icon_name"</code>.
     </li>
     <li>
-      <code>"icon_name"</code>
-      if there exists a sprite definition named <code>"GFX_icon_name"</code>.
+      A sprite definition named <code>"GFX_icon_name"</code>.
     </li>
     <li>
-      <code>"dds_name"</code>
-      if there exists a DDS file named <code>"dds_name.dds"</code>
-      under directory <code>gfx/interface/icons</code> or it's subdirectories
-      relative to the game or mod root directory.
+      A DDS file named <code>"icon_name.dds"</code>
+      under directory <code>gfx/interface/icons</code> or it's subdirectories.
     </li>
     <li>
-      Generated localisation icon names. Code navigation and completion is NOT SUPPORTED YET.
+      A generated localisation icon. Code navigation and completion is NOT SUPPORTED YET.
     </li>
   </ul>
+  <!-- tooltip end -->
   <p>
-    A sprite script file is a script file with extension ".gfx"
-    under directory <code>common/scripted_variables</code> or it's subdirectories relative to the game or mod root directory.
+    A sprite definition is a definition with type <code>"sprite"</code> or <code>"sprite_type"</code> (base on game type) by CWT Config.
   </p>
   <p>
     Based on plugin's built-in
-    <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>
-    currently.
-  </p>
-  <p>
-    See Wiki:
-    <a href="https://stellaris.paradoxwikis.com/Localisation_modding#.C2.A3_Custom_Icons">Localisation modding - Stellaris Wiki</a>
+    <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>.
   </p>
 </body>
 </html>

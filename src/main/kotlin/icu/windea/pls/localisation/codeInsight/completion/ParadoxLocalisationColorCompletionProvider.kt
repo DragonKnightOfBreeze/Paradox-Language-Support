@@ -32,7 +32,7 @@ class ParadoxLocalisationColorCompletionProvider : CompletionProvider<Completion
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.letIf(originalColorId != null) {
 					//delete existing colorId
-					it.withInsertHandler { context, item ->
+					it.withInsertHandler { context, _ ->
 						val editor = context.editor
 						val offset = editor.caretModel.offset
 						editor.document.deleteString(offset, offset + 1)

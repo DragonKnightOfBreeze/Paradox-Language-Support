@@ -70,6 +70,8 @@
   * [X] 实现检查：参数（`$PARAM$`）被设置/引用但未被使用（例如：有`some_effecFt = { PARAM = some_value }`但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。）
   * [X] 实现检查：值集中的值（`some_flag`）被设置但未被使用（例如，有`set_flag = xxx`但没有`has_flag = xxx`。）
   * [X] 实现检查：值集中的值（`some_flag`）被使用但未被设置（例如，有`has_flag = xxx`但没有`set_flag = xxx`。） - 默认不启用
+  * [X] 实现检查：无法解析的命令作用域（unresolvedCommandScope）
+  * [X] 实现检查：无法解析的命令字段（unresolvedCommandField）
   * [X] 实现内嵌提示：本地化图标（渲染出选用的内嵌图标，如果对应图标的大小合适）
   * [X] 实现内嵌提示：预定义修饰符的本地化名字（`mod_$`）
   * [X] 实现动作：导航到（对应的）CWT规则（对于定义元素，在导航菜单/右键菜单中）（作为一个更加统一的入口，包括内联前后的CWT规则，包括所有完全匹配的规则）

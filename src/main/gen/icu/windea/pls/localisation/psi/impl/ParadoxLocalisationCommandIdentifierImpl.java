@@ -29,7 +29,7 @@ public class ParadoxLocalisationCommandIdentifierImpl extends ASTWrapperPsiEleme
 
   @Override
   @Nullable
-  public ParadoxLocalisationCommandIdentifier getPrevIdentifier() {
+  public ParadoxLocalisationCommandScope getPrevIdentifier() {
     return ParadoxLocalisationPsiImplUtil.getPrevIdentifier(this);
   }
 
