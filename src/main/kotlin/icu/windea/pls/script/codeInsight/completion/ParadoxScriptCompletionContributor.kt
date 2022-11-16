@@ -26,6 +26,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 						.withSuperParent(2, psiElement(ParadoxScriptProperty::class.java)))))
 		extend(null, eventIdPattern, ParadoxEventIdCompletionProvider())
 		
+		//当用户正在输入一个parameterName时提示
 		val parameterPattern = psiElement().withElementType(parameterTokens)
 		extend(null, parameterPattern, ParadoxParameterCompletionProvider())
 	}

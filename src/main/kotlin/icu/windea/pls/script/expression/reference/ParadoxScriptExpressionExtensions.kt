@@ -7,7 +7,7 @@ import icu.windea.pls.script.references.*
 fun PsiReference.canResolveParameter() : Boolean{
 	return when(this){
 		is ParadoxScriptExpressionReference -> this.isKey
-		is ParadoxOuterParameterReference -> true
+		is ParadoxSvParameterReference -> true
 		is ParadoxParameterReference -> true
 		else -> false
 	}

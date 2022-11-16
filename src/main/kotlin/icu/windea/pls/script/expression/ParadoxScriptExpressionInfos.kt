@@ -14,7 +14,6 @@ import icu.windea.pls.script.exp.*
 import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.references.*
 
 class ParadoxScriptScopeExpressionInfo(
 	text: String,
@@ -172,7 +171,7 @@ class ParadoxScriptSvParameterExpressionInfo(
 	}
 	
 	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): PsiReference {
-		return ParadoxOuterParameterReference(element, textRange, svName, "script_value", configGroup)
+		return ParadoxSvParameterReference(element, textRange, svName, "script_value", configGroup)
 	}
 	
 	override fun isUnresolved(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): Boolean {
