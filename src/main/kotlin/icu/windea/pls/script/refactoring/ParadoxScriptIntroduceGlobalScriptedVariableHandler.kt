@@ -22,23 +22,19 @@ object ParadoxScriptIntroduceGlobalScriptedVariableHandler : ContextAwareRefacto
 	override fun isAvailable(editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
 		if(file.virtualFile == null) return false
 		val offset = editor.caretModel.offset
-		val position = file.findElementAt(offset) ?: return false
-		val positionType = position.elementType
-		if(positionType.canBeScriptedVariableValue()) return false
-		return position.findParentDefinition()?.castOrNull<ParadoxScriptProperty>() != null
+		val element = findElement(file, offset) ?: return false
+		return element.findParentDefinition()?.castOrNull<ParadoxScriptProperty>() != null
 	}
 	
 	@Suppress("UnstableApiUsage")
 	override fun invokeAction(project: Project, editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
 		val virtualFile = file.virtualFile ?: return false
 		val offset = editor.caretModel.offset
-		val position = file.findElementAt(offset) ?: return false
-		val positionType = position.elementType
-		if(positionType.canBeScriptedVariableValue()) return false
+		val element = findElement(file, offset) ?: return false
 		
 		//将光标移到int_token或float_token的开始并选中
-		editor.caretModel.moveToOffset(position.startOffset)
-		editor.selectionModel.setSelection(position.startOffset, position.endOffset)
+		editor.caretModel.moveToOffset(element.startOffset)
+		editor.selectionModel.setSelection(element.startOffset, element.endOffset)
 		
 		//打开对话框
 		val scriptedVariablesDirectory = ParadoxFileLocator.getScriptedVariablesDirectory(virtualFile) ?: return true //不期望的结果
@@ -46,12 +42,12 @@ object ParadoxScriptIntroduceGlobalScriptedVariableHandler : ContextAwareRefacto
 		if(!dialog.showAndGet()) return true //取消
 		
 		val variableName = dialog.variableName
-		val variableValue = position.text
+		val variableValue = element.text
 		val targetFile = dialog.file.toPsiFile<ParadoxScriptFile>(project) ?: return true //不期望的结果
 		val command = Runnable {
 			//用封装属性引用（variableReference）替换当前位置的int或float
 			val createdVariableReference = ParadoxScriptElementFactory.createVariableReference(project, variableName)
-			val newVariableReference = position.parent.replace(createdVariableReference)
+			val newVariableReference = element.parent.replace(createdVariableReference)
 			
 			val document = PsiDocumentManager.getInstance(project).getDocument(file)
 			if(document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) //提交文档更改
@@ -71,7 +67,7 @@ object ParadoxScriptIntroduceGlobalScriptedVariableHandler : ContextAwareRefacto
 		return true
 	}
 	
-	private fun IElementType?.canBeScriptedVariableValue(): Boolean {
-		return this != INT_TOKEN && this != FLOAT_TOKEN
+	private fun findElement(file: PsiFile, offset: Int): PsiElement? {
+		return file.findElementAtCaret(offset) { it.takeIf { it.canBeScriptedVariableValue() } }
 	}
 }

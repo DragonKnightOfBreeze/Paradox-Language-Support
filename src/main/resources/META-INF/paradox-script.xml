@@ -53,7 +53,7 @@
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptAnnotator"/>
     <codeInsight.parameterInfo
         language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.editor.ParadoxScriptParameterInfoHandler"/>
+        implementationClass="icu.windea.pls.script.editor.ParadoxInvocationExpressionParameterInfoHandler"/>
     <codeInsight.parameterInfo
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptValueExpressionParameterInfoHandler"/>

@@ -3,6 +3,7 @@ package icu.windea.pls.script.codeInsight.navigation
 import com.intellij.codeInsight.*
 import com.intellij.codeInsight.actions.*
 import com.intellij.openapi.actionSystem.*
+import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
@@ -30,11 +31,19 @@ class GotoRelatedImageAction : BaseCodeInsightAction() {
 				presentation.isEnabled = true
 				return
 			}
-			val element = PsiUtilCore.getElementAtOffset(file, editor.caretModel.offset).getSelfOrPrevSiblingNotWhitespace()
-			val isRootKeyOrName = element.parentOfType<ParadoxScriptExpressionElement>()?.isDefinitionRootKeyOrName() == true
+			val offset = editor.caretModel.offset
+			val element = findElement(file, offset)
+			val isRootKeyOrName = element?.isDefinitionRootKeyOrName() == true
 			presentation.isEnabled = isRootKeyOrName
 		} else {
 			presentation.isEnabledAndVisible = false
+		}
+	}
+	
+	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
+		//direct parent
+		return file.findElementAtCaret(offset) {
+			it.parent as? ParadoxScriptExpressionElement
 		}
 	}
 }

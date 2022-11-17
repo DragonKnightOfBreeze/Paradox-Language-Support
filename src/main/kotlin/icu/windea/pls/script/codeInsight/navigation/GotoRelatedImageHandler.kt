@@ -23,7 +23,8 @@ class GotoRelatedImageHandler : GotoTargetHandler() {
 	
 	override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
 		val project = file.project
-		val element = PsiUtilCore.getElementAtOffset(file, editor.caretModel.offset).getSelfOrPrevSiblingNotWhitespace()
+		val offset = editor.caretModel.offset
+		val element = findElement(file, offset) ?: return null
 		val definition = element.findParentDefinition() ?: return null
 		val definitionInfo = definition.definitionInfo ?: return null
 		val imageInfos = definitionInfo.images
@@ -41,6 +42,13 @@ class GotoRelatedImageHandler : GotoTargetHandler() {
 		}, PlsBundle.message("script.goto.relatedImage.search", definitionInfo.name), true, project)
 		if(!runResult) return null
 		return GotoData(definition, targets.toTypedArray(), emptyList())
+	}
+	
+	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
+		//direct parent
+		return file.findElementAtCaret(offset) {
+			it.parent as? ParadoxScriptExpressionElement
+		}
 	}
 	
 	override fun shouldSortTargets(): Boolean {

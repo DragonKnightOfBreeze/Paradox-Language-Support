@@ -15,9 +15,9 @@ import icu.windea.pls.script.psi.*
 //com.intellij.codeInsight.hint.api.impls.XmlParameterInfoHandler
 
 /**
- * 显示定义的参数信息（如果支持）。
+ * 显示调用子句中的参数信息（如果支持）。
  */
-class ParadoxScriptParameterInfoHandler : ParameterInfoHandler<ParadoxScriptProperty, Set<String>> {
+class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<ParadoxScriptProperty, Set<String>> {
 	//向上找第一个scriptProperty，直到其作为子节点的scriptProperty可以匹配enum[scripted_effect_params]
 	
 	private fun findTargetElement(context: ParameterInfoContext): ParadoxScriptProperty? {

@@ -7,7 +7,6 @@ import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
@@ -24,18 +23,22 @@ abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
 		if(editor == null || file == null) return false
 		if(file.language != ParadoxScriptLanguage) return false
-		val originalElement = file.findElementAt(editor.caretModel.offset)?.getSelfOrPrevSiblingNotWhitespace() ?: return false
-		val element = originalElement.parentOfType<ParadoxScriptExpressionElement>() ?: return false
+		val offset = editor.caretModel.offset
+		val element = findElement(file, offset) ?: return false
 		return element.complexEnumValueInfo != null
 	}
 	
 	override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
 		if(editor == null || file == null) return
 		if(file.language != ParadoxScriptLanguage) return
-		val originalElement = file.findElementAt(editor.caretModel.offset)?.getSelfOrPrevSiblingNotWhitespace() ?: return
-		val element = originalElement.parentOfType<ParadoxScriptExpressionElement>() ?: return
+		val offset = editor.caretModel.offset
+		val element = findElement(file, offset) ?: return
 		val complexEnumValueInfo = element.complexEnumValueInfo ?: return
 		doInvoke(element, complexEnumValueInfo, editor, project)
+	}
+	
+	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
+		return file.findElementAtCaret(offset) { it.parent as? ParadoxScriptExpressionElement }
 	}
 	
 	abstract fun doInvoke(element: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project)

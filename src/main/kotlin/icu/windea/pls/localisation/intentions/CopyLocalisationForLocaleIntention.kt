@@ -33,8 +33,6 @@ import java.awt.datatransfer.*
 class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 	override fun getPriority() = PriorityAction.Priority.HIGH
 	
-	override fun startInWriteAction() = false
-	
 	override fun getText() = PlsBundle.message("localisation.intention.copyLocalisationForLocale")
 	
 	override fun getFamilyName() = text
@@ -173,4 +171,6 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
 		return IntentionPreviewInfo.EMPTY
 	}
+	
+	override fun startInWriteAction() = false
 }

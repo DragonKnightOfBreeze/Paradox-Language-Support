@@ -3,6 +3,7 @@ package icu.windea.pls.script.codeInsight.navigation
 import com.intellij.codeInsight.*
 import com.intellij.codeInsight.actions.*
 import com.intellij.openapi.actionSystem.*
+import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
@@ -26,20 +27,26 @@ class GotoRelatedCwtConfigAction : BaseCodeInsightAction() {
 		val file = PsiUtilBase.getPsiFileInEditor(editor, project)
 		if(file is ParadoxScriptFile) {
 			presentation.isVisible = true
-			val element = PsiUtilCore.getElementAtOffset(file, editor.caretModel.offset).getSelfOrPrevSiblingNotWhitespace()
-			val location = element.parentOfTypes(ParadoxScriptPropertyKey::class, ParadoxScriptValue::class)
-			if(location == null) {
+			val offset = editor.caretModel.offset
+			val element = findElement(file, offset)
+			if(element == null) {
 				presentation.isEnabled = false
 				return
 			}
-			val definition = location.findParentDefinition()
-			if(definition == null || (location is ParadoxScriptPropertyKey && location.parent == definition)) {
+			val definition = element.findParentDefinition()
+			if(definition == null || (element is ParadoxScriptPropertyKey && element.parent == definition)) {
 				presentation.isEnabled = false
 				return
 			}
 			presentation.isEnabled = true
 		} else {
 			presentation.isEnabledAndVisible = false
+		}
+	}
+	
+	private fun findElement(file: PsiFile, offset: Int): PsiElement? {
+		return file.findElementAtCaret(offset) {
+			it.parentOfTypes(ParadoxScriptPropertyKey::class, ParadoxScriptValue::class)
 		}
 	}
 }

@@ -37,6 +37,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.localisation.psi.*
 import java.io.*
 import java.util.*
 import javax.swing.*
@@ -300,6 +301,26 @@ fun ASTNode.isEndOfLine(): Boolean {
 //endregion
 
 //region PsiElement Extensions
+fun <T: PsiElement> PsiFile.findElementAtCaret(offset: Int, findLeft: Boolean = true, transform: (element: PsiElement) -> T?): T? {
+	val element = findElementAt(offset)
+	if(element != null) {
+		val result = transform(element)
+		if(result != null) {
+			return result
+		}
+	}
+	if(offset > 0) {
+		val leftElement = findElementAt(offset - 1)
+		if(leftElement != null) {
+			val leftResult = transform(leftElement)
+			if(leftResult != null) {
+				return leftResult
+			}
+		}
+	}
+	return null
+}
+
 fun PsiReference.resolveSingle(): PsiElement? {
 	return if(this is PsiPolyVariantReference) {
 		this.multiResolve(false).firstNotNullOfOrNull { it.element }
@@ -316,14 +337,6 @@ infix fun PsiElement?.isSamePosition(other: PsiElement?): Boolean{
 	if(this == other) return true
 	return textRange.startOffset == other.textRange.startOffset
 		&& containingFile.originalFile.virtualFile == other.containingFile.originalFile.virtualFile
-}
-
-fun <T : PsiElement> T.takeIf(elementType: IElementType): T? {
-	return takeIf { it.elementType == elementType }
-}
-
-fun <T : PsiElement> T.takeUnless(elementType: IElementType): T? {
-	return takeUnless { it.elementType == elementType }
 }
 
 inline fun <reified T : PsiElement> PsiElement.findOptionalChild(): T? {
@@ -495,17 +508,17 @@ fun PsiElement.isSingleLineBreak(): Boolean {
 	return this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) == 1
 }
 
-/**
- * 搭配[com.intellij.psi.util.PsiUtilCore.getElementAtOffset]使用。
- */
-fun PsiElement.getSelfOrPrevSiblingNotWhitespace(): PsiElement {
-	if(this !is PsiWhiteSpace) return this
-	var current = this.prevSibling ?: return this
-	while(current is PsiWhiteSpace){
-		current = current.prevSibling ?: return this
-	}
-	return current
-}
+///**
+// * 搭配[com.intellij.psi.util.PsiUtilCore.getElementAtOffset]使用。
+// */
+//fun PsiElement.getSelfOrPrevSiblingNotWhitespace(): PsiElement {
+//	if(this !is PsiWhiteSpace) return this
+//	var current = this.prevSibling ?: return this
+//	while(current is PsiWhiteSpace){
+//		current = current.prevSibling ?: return this
+//	}
+//	return current
+//}
 
 inline fun findAcceptableElementIncludeComment(element: PsiElement?, predicate: (PsiElement) -> Boolean): Any? {
 	var current: PsiElement? = element ?: return null

@@ -201,3 +201,8 @@ fun String.isParameterAwareExpression(): Boolean {
 fun ParadoxScriptValue.isPropertyValue(): Boolean {
 	return parent is ParadoxScriptPropertyValue
 }
+
+fun PsiElement?.canBeScriptedVariableValue(): Boolean {
+	val elementType = this.elementType
+	return elementType == INT_TOKEN || elementType == FLOAT_TOKEN
+}

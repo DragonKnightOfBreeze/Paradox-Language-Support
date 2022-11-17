@@ -21,8 +21,8 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 	}
 	
 	override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
-		val element = PsiUtilCore.getElementAtOffset(file, editor.caretModel.offset).getSelfOrPrevSiblingNotWhitespace()
-		val location = element.parentOfTypes(ParadoxScriptPropertyKey::class, ParadoxScriptValue::class) ?: return null
+		val offset = editor.caretModel.offset
+		val location = findElement(file, offset) ?: return null
 		//获取所有匹配的CWT规则，不存在匹配的CWT规则时，不选用默认的（仅匹配property的key但不匹配property的value的）CWT规则
 		//包括内联的和未被内联的（即alias或single_alias，显示时使用特殊的别名图标）规则
 		val configType = if(location is ParadoxScriptPropertyKey) CwtPropertyConfig::class.java else CwtValueConfig::class.java
@@ -35,6 +35,12 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 			}
 		}
 		return GotoData(location, targets.toTypedArray(), emptyList())
+	}
+	
+	private fun findElement(file: PsiFile, offset: Int): PsiElement? {
+		return file.findElementAtCaret(offset) {
+			it.parentOfTypes(ParadoxScriptPropertyKey::class, ParadoxScriptValue::class)
+		}
 	}
 	
 	override fun shouldSortTargets(): Boolean {
