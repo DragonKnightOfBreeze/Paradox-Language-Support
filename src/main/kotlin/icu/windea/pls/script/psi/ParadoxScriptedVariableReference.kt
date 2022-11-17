@@ -8,7 +8,7 @@ interface ParadoxScriptedVariableReference : ParadoxScriptTypedElement {
 	
 	fun setName(name: String): ParadoxScriptedVariableReference
 	
-	override fun getReference(): ParadoxScriptedVariableReferenceReference
+	override fun getReference(): ParadoxScriptedVariablePsiReference
 	
 	val referenceValue: ParadoxScriptValue? get() = reference.resolve()?.scriptedVariableValue?.value
 	

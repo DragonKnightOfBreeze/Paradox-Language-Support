@@ -1,12 +1,11 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi;
 
-import java.util.List;
+import icu.windea.pls.localisation.references.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.localisation.references.ParadoxLocalisationIconReference;
-import javax.swing.Icon;
+
+import javax.swing.*;
+import java.util.*;
 
 public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText {
 
@@ -25,6 +24,6 @@ public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText {
   int getFrame();
 
   @Nullable
-  ParadoxLocalisationIconReference getReference();
+  ParadoxLocalisationIconPsiReference getReference();
 
 }

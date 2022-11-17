@@ -18,10 +18,10 @@ import icu.windea.pls.script.psi.*
 /**
  * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationCommandFieldCompletionProvider
  */
-class ParadoxLocalisationCommandFieldReference(
+class ParadoxLocalisationCommandFieldPsiReference(
 	element: ParadoxLocalisationCommandField,
 	rangeInElement: TextRange
-) : PsiPolyVariantReferenceBase<ParadoxLocalisationCommandField>(element, rangeInElement), PsiSmartReference {
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationCommandField>(element, rangeInElement), SmartPsiReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//尝试重命名关联的definition、valueSetValue
 		val resolved = resolve()

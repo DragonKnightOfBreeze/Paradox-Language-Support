@@ -46,7 +46,7 @@ public class ParadoxScriptInlineMathScriptedVariableReferenceImpl extends Parado
 
   @Override
   @NotNull
-  public ParadoxScriptedVariableReferenceReference getReference() {
+  public ParadoxScriptedVariablePsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
 

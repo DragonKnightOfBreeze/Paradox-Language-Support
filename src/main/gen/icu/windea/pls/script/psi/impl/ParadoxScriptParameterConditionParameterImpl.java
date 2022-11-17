@@ -51,7 +51,7 @@ public class ParadoxScriptParameterConditionParameterImpl extends ASTWrapperPsiE
 
   @Override
   @NotNull
-  public ParadoxParameterReference getReference() {
+  public ParadoxParameterPsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
 

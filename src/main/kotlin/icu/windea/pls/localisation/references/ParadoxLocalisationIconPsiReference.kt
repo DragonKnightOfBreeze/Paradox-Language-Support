@@ -24,10 +24,10 @@ import kotlin.collections.mapNotNullTo
  *
  * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationIconCompletionProvider
  */
-class ParadoxLocalisationIconReference(
+class ParadoxLocalisationIconPsiReference(
 	element: ParadoxLocalisationIcon,
 	rangeInElement: TextRange
-) : PsiPolyVariantReferenceBase<ParadoxLocalisationIcon>(element, rangeInElement), PsiSmartReference {
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationIcon>(element, rangeInElement), SmartPsiReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//重命名关联的sprite或definition或ddsFile
 		val resolved = resolve()

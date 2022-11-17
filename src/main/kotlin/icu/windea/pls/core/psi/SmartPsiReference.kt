@@ -3,7 +3,7 @@ package icu.windea.pls.core.psi
 import com.intellij.openapi.editor.colors.*
 import com.intellij.psi.*
 
-interface PsiSmartReference : PsiReference {
+interface SmartPsiReference : PsiReference {
 	fun resolve(exact: Boolean): PsiElement?
 	
 	fun resolved(): Boolean {
@@ -15,4 +15,4 @@ interface PsiSmartReference : PsiReference {
 	}
 }
 
-fun PsiSmartReference?.resolved() = this == null || this.resolved()
+fun SmartPsiReference?.resolved() = this == null || this.resolved()

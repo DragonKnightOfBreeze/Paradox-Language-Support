@@ -3,15 +3,15 @@ package icu.windea.pls.script.references
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
+ * @param element [ParadoxArgument] | [ParadoxParameter]
  * @see icu.windea.pls.script.codeInsight.completion.ParadoxParameterCompletionProvider
  */
-class ParadoxParameterReference(
-	element: @UnionType(types = [ParadoxArgument::class, ParadoxParameter::class]) PsiElement,
+class ParadoxParameterPsiReference(
+	element: PsiElement,
 	rangeInElement: TextRange,
 	private val read: Boolean
 ) : PsiReferenceBase<PsiElement>(element, rangeInElement) {

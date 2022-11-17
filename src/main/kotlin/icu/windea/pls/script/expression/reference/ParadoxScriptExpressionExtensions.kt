@@ -8,7 +8,7 @@ fun PsiReference.canResolveParameter() : Boolean{
 	return when(this){
 		is ParadoxScriptExpressionReference -> this.isKey
 		is ParadoxSvParameterReference -> true
-		is ParadoxParameterReference -> true
+		is ParadoxParameterPsiReference -> true
 		else -> false
 	}
 }
@@ -19,8 +19,8 @@ fun PsiReference.canResolveValueSetValue(): Boolean{
 		is ParadoxScriptScopeFieldDataSourceReference -> true
 		is ParadoxScriptValueFieldDataSourceReference -> true
 		is ParadoxScriptValueSetValueReference -> true
-		is ParadoxLocalisationCommandScopeReference -> true //value[event_target], value[global_event_target]
-		is ParadoxLocalisationCommandFieldReference -> true //value[variable]
+		is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
+		is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
 		else -> false
 	}
 }

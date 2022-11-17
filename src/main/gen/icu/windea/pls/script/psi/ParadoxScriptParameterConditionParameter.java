@@ -20,6 +20,6 @@ public interface ParadoxScriptParameterConditionParameter extends ParadoxArgumen
   int getTextOffset();
 
   @NotNull
-  ParadoxParameterReference getReference();
+  ParadoxParameterPsiReference getReference();
 
 }

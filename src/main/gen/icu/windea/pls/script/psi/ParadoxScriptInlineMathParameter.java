@@ -23,6 +23,6 @@ public interface ParadoxScriptInlineMathParameter extends ParadoxScriptInlineMat
   String getDefaultValue();
 
   @Nullable
-  ParadoxParameterReference getReference();
+  ParadoxParameterPsiReference getReference();
 
 }

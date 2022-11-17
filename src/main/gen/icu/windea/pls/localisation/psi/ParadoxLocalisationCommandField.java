@@ -1,12 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi;
 
-import java.util.List;
+import icu.windea.pls.localisation.references.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.localisation.references.ParadoxLocalisationCommandFieldReference;
-import javax.swing.Icon;
+
+import javax.swing.*;
 
 public interface ParadoxLocalisationCommandField extends ParadoxLocalisationCommandIdentifier {
 
@@ -23,7 +21,7 @@ public interface ParadoxLocalisationCommandField extends ParadoxLocalisationComm
   ParadoxLocalisationCommandField setName(@NotNull String name);
 
   @Nullable
-  ParadoxLocalisationCommandFieldReference getReference();
+  ParadoxLocalisationCommandFieldPsiReference getReference();
 
   @Nullable
   ParadoxLocalisationCommandScope getPrevIdentifier();

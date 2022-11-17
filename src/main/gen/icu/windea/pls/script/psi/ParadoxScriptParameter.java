@@ -26,6 +26,6 @@ public interface ParadoxScriptParameter extends ParadoxParameter {
   String getDefaultValue();
 
   @Nullable
-  ParadoxParameterReference getReference();
+  ParadoxParameterPsiReference getReference();
 
 }

@@ -505,27 +505,27 @@ object CwtConfigHandler {
 		return maxCount == null || actualCount < maxCount
 	}
 	
-	fun ProcessingContext.completeKey(contextElement: PsiElement, expression: CwtKeyExpression, config: CwtPropertyConfig, result: CompletionResultSet, scope: String?) {
-		completeScriptExpression(contextElement, expression, config, result, scope)
+	fun ProcessingContext.completeKey(contextElement: PsiElement, configExpression: CwtKeyExpression, config: CwtPropertyConfig, result: CompletionResultSet, scope: String?) {
+		completeScriptExpression(contextElement, configExpression, config, result, scope)
 	}
 	
-	fun ProcessingContext.completeValue(contextElement: PsiElement, expression: CwtValueExpression, config: CwtDataConfig<*>, result: CompletionResultSet, scope: String?) {
-		completeScriptExpression(contextElement, expression, config, result, scope)
+	fun ProcessingContext.completeValue(contextElement: PsiElement, configExpression: CwtValueExpression, config: CwtDataConfig<*>, result: CompletionResultSet, scope: String?) {
+		completeScriptExpression(contextElement, configExpression, config, result, scope)
 	}
 	
-	fun ProcessingContext.completeScriptExpression(contextElement: PsiElement, expression: CwtDataExpression, config: CwtDataConfig<*>, result: CompletionResultSet, scope: String?) {
-		if(expression.isEmpty()) return
+	fun ProcessingContext.completeScriptExpression(contextElement: PsiElement, configExpression: CwtDataExpression, config: CwtDataConfig<*>, result: CompletionResultSet, scope: String?) {
+		if(configExpression.isEmpty()) return
 		if(keyword.isParameterAwareExpression()) return //排除带参数或者的情况
 		
 		val project = configGroup.project
 		val gameType = configGroup.gameType
-		when(expression.type) {
+		when(configExpression.type) {
 			CwtDataTypes.Bool -> {
 				result.addAllElements(boolLookupElements)
 			}
 			CwtDataTypes.Localisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
-				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
+				val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
 				val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
 				processLocalisationVariants(keyword, project, selector = selector) { localisation ->
 					val n = localisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -542,7 +542,7 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.SyncedLocalisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
-				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
+				val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
 				val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
 				processSyncedLocalisationVariants(keyword, project, selector = selector) { syncedLocalisation ->
 					val n = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -560,7 +560,7 @@ object CwtConfigHandler {
 			CwtDataTypes.InlineLocalisation -> {
 				if(quoted) return
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
-				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
+				val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
 				processLocalisationVariants(keyword, project) { localisation ->
 					val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val typeFile = localisation.containingFile
@@ -576,7 +576,7 @@ object CwtConfigHandler {
 			CwtDataTypes.AbsoluteFilePath -> pass() //不提示绝对路径
 			CwtDataTypes.FilePath -> {
 				val expressionType = CwtFilePathExpressionTypes.FilePath
-				val expressionValue = expression.value
+				val expressionValue = configExpression.value
 				val selector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
 				val virtualFiles = if(expressionValue == null) {
 					findAllFilesByFilePath(project, distinct = true, selector = selector)
@@ -584,7 +584,7 @@ object CwtConfigHandler {
 					findFilesByFilePath(expressionValue, project, expressionType = expressionType, distinct = true, selector = selector)
 				}
 				if(virtualFiles.isEmpty()) return
-				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
+				val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
 				for(virtualFile in virtualFiles) {
 					val file = virtualFile.toPsiFile<PsiFile>(project) ?: continue
 					val filePath = virtualFile.fileInfo?.path?.path ?: continue
@@ -598,7 +598,7 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Icon -> {
 				val expressionType = CwtFilePathExpressionTypes.Icon
-				val expressionValue = expression.value
+				val expressionValue = configExpression.value
 				val selector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
 				val virtualFiles = if(expressionValue == null) {
 					findAllFilesByFilePath(project, distinct = true, selector = selector)
@@ -606,7 +606,7 @@ object CwtConfigHandler {
 					findFilesByFilePath(expressionValue, project, expressionType = expressionType, distinct = true, selector = selector)
 				}
 				if(virtualFiles.isEmpty()) return
-				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
+				val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
 				for(virtualFile in virtualFiles) {
 					val file = virtualFile.toPsiFile<PsiFile>(project) ?: continue
 					val filePath = virtualFile.fileInfo?.path?.path ?: continue
@@ -619,8 +619,8 @@ object CwtConfigHandler {
 				}
 			}
 			CwtDataTypes.TypeExpression -> {
-				val typeExpression = expression.value ?: return
-				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
+				val typeExpression = configExpression.value ?: return
+				val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
 				val selector = definitionSelector().gameType(gameType).preferRootFrom(contextElement).distinctByName()
 				val definitionQuery = ParadoxDefinitionSearch.search(typeExpression, project, selector = selector)
 				definitionQuery.processResult { definition ->
@@ -637,9 +637,9 @@ object CwtConfigHandler {
 				}
 			}
 			CwtDataTypes.TypeExpressionString -> {
-				val typeExpression = expression.value ?: return
-				val (prefix, suffix) = expression.extraValue?.cast<TypedTuple2<String>>() ?: return
-				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
+				val typeExpression = configExpression.value ?: return
+				val (prefix, suffix) = configExpression.extraValue?.cast<TypedTuple2<String>>() ?: return
+				val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
 				val selector = definitionSelector().gameType(gameType).preferRootFrom(contextElement).distinctByName()
 				val definitionQuery = ParadoxDefinitionSearch.search(typeExpression, project, selector = selector)
 				definitionQuery.processResult { definition ->
@@ -657,7 +657,7 @@ object CwtConfigHandler {
 				}
 			}
 			CwtDataTypes.Enum -> {
-				val enumName = expression.value ?: return
+				val enumName = configExpression.value ?: return
 				//提示参数名（仅限key）
 				if(isKey && enumName == paramsEnumName && config is CwtPropertyConfig) {
 					ProgressManager.checkCanceled()
@@ -666,7 +666,7 @@ object CwtConfigHandler {
 					return
 				}
 				
-				val tailText = " by $expression in ${config.pointer.containingFile?.name ?: PlsConstants.anonymousString}"
+				val tailText = " by $configExpression in ${config.pointer.containingFile?.name ?: PlsConstants.anonymousString}"
 				//提示简单枚举
 				val enumConfig = configGroup.enums[enumName]
 				if(enumConfig != null) {
@@ -719,12 +719,12 @@ object CwtConfigHandler {
 				if(atIndex != -1 && offsetInParent > atIndex) return
 				
 				if(quoted) return
-				val valueSetName = expression.value ?: return
-				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
+				val valueSetName = configExpression.value ?: return
+				val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
 				//提示预定义的value
 				run {
 					ProgressManager.checkCanceled()
-					if(expression.type == CwtDataTypes.Value) {
+					if(configExpression.type == CwtDataTypes.Value) {
 						val valueConfig = configGroup.values[valueSetName] ?: return@run
 						val valueSetValueConfigs = valueConfig.valueConfigMap.values
 						if(valueSetValueConfigs.isEmpty()) return@run
@@ -774,12 +774,12 @@ object CwtConfigHandler {
 				completeScopeFieldExpression(result)
 			}
 			CwtDataTypes.Scope -> {
-				put(PlsCompletionKeys.scopeNameKey, expression.value)
+				put(PlsCompletionKeys.scopeNameKey, configExpression.value)
 				completeScopeFieldExpression(result)
 				put(PlsCompletionKeys.scopeNameKey, null)
 			}
 			CwtDataTypes.ScopeGroup -> {
-				put(PlsCompletionKeys.scopeGroupNameKey, expression.value)
+				put(PlsCompletionKeys.scopeGroupNameKey, configExpression.value)
 				completeScopeFieldExpression(result)
 				put(PlsCompletionKeys.scopeGroupNameKey, null)
 			}
@@ -801,17 +801,17 @@ object CwtConfigHandler {
 			CwtDataTypes.SingleAliasRight -> pass()
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
-				val aliasName = expression.value ?: return
+				val aliasName = configExpression.value ?: return
 				completeAliasName(contextElement, aliasName, config, result, scope)
 			}
 			CwtDataTypes.AliasName -> {
-				val aliasName = expression.value ?: return
+				val aliasName = configExpression.value ?: return
 				completeAliasName(contextElement, aliasName, config, result, scope)
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataTypes.AliasMatchLeft -> pass()
 			CwtDataTypes.Constant -> {
-				val n = expression.value ?: return
+				val n = configExpression.value ?: return
 				//if(!n.matchesKeyword(keyword)) return //不预先过滤结果
 				val name = n.quoteIf(quoted)
 				val element = config.resolved().pointer.element ?: return

@@ -4,7 +4,6 @@ import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -137,7 +136,10 @@ fun PsiElement.findParentDefinitionProperty(fromParentBlock: Boolean = false): P
 	return null
 }
 
-fun PsiElement.findParentScriptElement(): @UnionType(ParadoxScriptProperty::class, ParadoxScriptValue::class) PsiElement? {
+/**
+ * @return [ParadoxScriptProperty] | [ParadoxScriptValue]
+ */
+fun PsiElement.findParentScriptElement(): PsiElement? {
 	if(language != ParadoxScriptLanguage) return null
 	return parents(false).find {
 		it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isLonely())

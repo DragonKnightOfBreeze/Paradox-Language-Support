@@ -7,16 +7,17 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.model.ParadoxLocalisationCategory.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 
 /**
  * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationPropertyReferenceCompletionProvider
  */
-class ParadoxLocalisationPropertyReferenceReference(
+class ParadoxLocalisationPropertyPsiReference(
 	element: ParadoxLocalisationPropertyReference,
 	rangeInElement: TextRange
-) : PsiPolyVariantReferenceBase<ParadoxLocalisationPropertyReference>(element, rangeInElement) {
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationPropertyReference>(element, rangeInElement), SmartPsiReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//TODO 重命名关联的definition
 		return element.setName(newElementName)
@@ -24,7 +25,7 @@ class ParadoxLocalisationPropertyReferenceReference(
 	
 	//TODO may be resolved to localisation / parameter / system statistics in GUI elements 
 	
-	override fun resolve(): PsiElement? {
+	override fun resolve(exact: Boolean): PsiElement? {
 		val file = element.containingFile as? ParadoxLocalisationFile ?: return null
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return null
 		val locale = file.localeConfig

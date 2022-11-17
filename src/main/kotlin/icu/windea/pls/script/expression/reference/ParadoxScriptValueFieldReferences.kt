@@ -7,7 +7,6 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.*
@@ -65,8 +64,11 @@ class ParadoxScriptValueFieldDataSourceResolveResult(
 	val expression: CwtValueExpression
 ) : PsiElementResolveResult(element, validResult)
 
+/**
+ * @param element [ParadoxScriptExpressionElement]
+ */
 class ParadoxSvParameterReference(
-	element: @UnionType(types = [ParadoxScriptExpressionElement::class]) PsiElement,
+	element: PsiElement,
 	rangeInElement: TextRange,
 	private val definitionName: String,
 	private val definitionType: String,

@@ -57,7 +57,7 @@ public class ParadoxScriptInlineMathParameterImpl extends ParadoxScriptInlineMat
 
   @Override
   @Nullable
-  public ParadoxParameterReference getReference() {
+  public ParadoxParameterPsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
 

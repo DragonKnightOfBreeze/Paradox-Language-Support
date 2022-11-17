@@ -12,10 +12,10 @@ import icu.windea.pls.localisation.psi.*
 /**
  * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationColorCompletionProvider
  */
-class ParadoxLocalisationColorReference(
+class ParadoxLocalisationColorPsiReference(
 	element: ParadoxLocalisationColorfulText,
 	rangeInElement: TextRange
-) : PsiReferenceBase<ParadoxLocalisationColorfulText>(element, rangeInElement), PsiSmartReference {
+) : PsiReferenceBase<ParadoxLocalisationColorfulText>(element, rangeInElement), SmartPsiReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//尝试重命名关联的definition
 		val resolved = resolve()

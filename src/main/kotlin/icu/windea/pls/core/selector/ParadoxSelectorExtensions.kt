@@ -64,5 +64,6 @@ fun ParadoxValueSetValueSelector.distinctByValue() =
 fun ParadoxLocalisationSelector.locale(locale: ParadoxLocaleConfig?) =
 	apply { if(locale != null) selectors += ParadoxLocaleSelector(locale) }
 
-fun ParadoxLocalisationSelector.preferLocale(locale: ParadoxLocaleConfig?) =
-	apply { if(locale != null) selectors += ParadoxPreferLocaleSelector(locale) }
+@JvmOverloads
+fun ParadoxLocalisationSelector.preferLocale(locale: ParadoxLocaleConfig?, condition: Boolean = true) =
+	apply { if(locale != null && condition) selectors += ParadoxPreferLocaleSelector(locale) }

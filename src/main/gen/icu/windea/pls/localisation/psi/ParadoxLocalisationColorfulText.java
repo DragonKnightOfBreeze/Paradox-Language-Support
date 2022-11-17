@@ -1,10 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi;
 
-import java.util.List;
+import icu.windea.pls.localisation.references.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import icu.windea.pls.localisation.references.ParadoxLocalisationColorReference;
+
+import java.util.*;
 
 public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRichText {
 
@@ -18,6 +18,6 @@ public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRich
   ParadoxLocalisationColorfulText setName(@NotNull String name);
 
   @Nullable
-  ParadoxLocalisationColorReference getReference();
+  ParadoxLocalisationColorPsiReference getReference();
 
 }

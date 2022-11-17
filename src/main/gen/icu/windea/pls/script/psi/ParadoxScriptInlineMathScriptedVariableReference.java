@@ -18,6 +18,6 @@ public interface ParadoxScriptInlineMathScriptedVariableReference extends Parado
   ParadoxScriptInlineMathScriptedVariableReference setName(@NotNull String name);
 
   @NotNull
-  ParadoxScriptedVariableReferenceReference getReference();
+  ParadoxScriptedVariablePsiReference getReference();
 
 }

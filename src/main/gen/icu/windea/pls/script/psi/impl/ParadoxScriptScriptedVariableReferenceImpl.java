@@ -47,7 +47,7 @@ public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptVal
 
   @Override
   @NotNull
-  public ParadoxScriptedVariableReferenceReference getReference() {
+  public ParadoxScriptedVariablePsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
 

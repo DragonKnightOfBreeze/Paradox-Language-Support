@@ -63,7 +63,7 @@ public class ParadoxScriptParameterImpl extends ASTWrapperPsiElement implements 
 
   @Override
   @Nullable
-  public ParadoxParameterReference getReference() {
+  public ParadoxParameterPsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
 
