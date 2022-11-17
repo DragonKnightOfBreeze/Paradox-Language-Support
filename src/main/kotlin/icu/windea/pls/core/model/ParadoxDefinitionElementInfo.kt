@@ -9,7 +9,7 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.script.expression.*
+import icu.windea.pls.script.exp.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -52,7 +52,7 @@ class ParadoxDefinitionElementInfo(
 		}
 		if(properties.isEmpty()) return@lazy emptyMap()
 		properties.groupAndCountBy { prop ->
-			val expression = ParadoxScriptExpression.resolve(prop.propertyKey)
+			val expression = ParadoxDataExpression.resolve(prop.propertyKey)
 			getChildPropertyConfigs().find { matchesScriptExpression(expression, it.keyExpression, configGroup) }?.keyExpression
 		}
 	}
@@ -66,7 +66,7 @@ class ParadoxDefinitionElementInfo(
 		}
 		if(values.isEmpty()) return@lazy emptyMap()
 		values.groupAndCountBy { value ->
-			val expression = ParadoxScriptExpression.resolve(value)
+			val expression = ParadoxDataExpression.resolve(value)
 			getChildValueConfigs().find { matchesScriptExpression(expression, it.valueExpression, configGroup) }?.valueExpression
 		}
 	}
@@ -105,7 +105,7 @@ private fun doResolveConfigs(definitionInfo: ParadoxDefinitionInfo, definitionEl
 				
 				//如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
 				
-				val expression = ParadoxScriptExpression.resolve(key, isQuoted, true)
+				val expression = ParadoxDataExpression.resolve(key, isQuoted, true)
 				val nextResult = SmartList<CwtDataConfig<*>>()
 				for(config in result) {
 					if(index == 0) {

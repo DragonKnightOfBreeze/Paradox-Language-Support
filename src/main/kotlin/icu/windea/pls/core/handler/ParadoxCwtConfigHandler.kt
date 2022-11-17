@@ -7,6 +7,7 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.script.exp.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
 
@@ -64,7 +65,7 @@ object ParadoxCwtConfigHandler {
 							continue
 						}
 						val valueExpression = propertyConfig.valueExpression
-						val expression = ParadoxScriptExpression.resolve(valueElement)
+						val expression = ParadoxDataExpression.resolve(valueElement)
 						if(CwtConfigHandler.matchesScriptExpression(expression, valueExpression, configGroup, matchType)) {
 							add(propertyConfig)
 						}
@@ -91,7 +92,7 @@ object ParadoxCwtConfigHandler {
 						buildList {
 							for(config in configs) {
 								val propertyConfig = config as? CwtPropertyConfig ?: continue
-								val expression = ParadoxScriptExpression.resolve(valueElement)
+								val expression = ParadoxDataExpression.resolve(valueElement)
 								val valueExpression = propertyConfig.valueExpression
 								if(CwtConfigHandler.matchesScriptExpression(expression, valueExpression, configGroup, matchType)) {
 									add(propertyConfig.valueConfig)

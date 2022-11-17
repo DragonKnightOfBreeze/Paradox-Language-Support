@@ -14,20 +14,20 @@ class ParadoxDataExpression(
 	companion object Resolver
 }
 
-fun Resolver.resolve(element: ParadoxScriptPropertyKey): ParadoxScriptExpression {
+fun Resolver.resolve(element: ParadoxScriptPropertyKey): ParadoxDataExpression {
 	return ParadoxDataExpression(element.value, element.expressionType, element.isQuoted(), true)
 }
 
-fun Resolver.resolve(element: ParadoxScriptValue): ParadoxScriptExpression {
+fun Resolver.resolve(element: ParadoxScriptValue): ParadoxDataExpression {
 	return ParadoxDataExpression(element.value, element.expressionType, element.isQuoted(), false)
 }
 
-fun Resolver.resolve(value: String, isQuoted: Boolean, isKey: Boolean? = null): ParadoxScriptExpression {
+fun Resolver.resolve(value: String, isQuoted: Boolean, isKey: Boolean? = null): ParadoxDataExpression {
 	val expressionType = ParadoxDataType.resolve(value)
 	return ParadoxDataExpression(value, expressionType, isQuoted, isKey)
 }
 
-fun Resolver.resolve(text: String, isKey: Boolean? = null): ParadoxScriptExpression {
+fun Resolver.resolve(text: String, isKey: Boolean? = null): ParadoxDataExpression {
 	val value = text.unquote()
 	val expressionType = ParadoxDataType.resolve(text)
 	val quoted = text.isQuoted()

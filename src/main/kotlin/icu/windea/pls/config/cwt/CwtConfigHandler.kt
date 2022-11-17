@@ -114,7 +114,7 @@ object CwtConfigHandler {
 	//region Matches Methods
 	//TODO 基于cwt规则文件的匹配方法需要进一步匹配scope
 	//DONE 兼容variableReference inlineMath parameter
-	fun matchesScriptExpression(expression: ParadoxScriptExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
+	fun matchesScriptExpression(expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
 		//匹配block
 		if(configExpression == CwtValueExpression.EmptyExpression) {
 			return expression.type == ParadoxDataType.BlockType
@@ -351,7 +351,7 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun matchesAliasName(expression: ParadoxScriptExpression, aliasName: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
+	fun matchesAliasName(expression: ParadoxDataExpression, aliasName: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
 		//TODO 匹配scope
 		val aliasSubName = getAliasSubName(expression.value, expression.quoted, aliasName, configGroup, matchType) ?: return false
 		val configExpression = CwtKeyExpression.resolve(aliasSubName)
@@ -367,7 +367,7 @@ object CwtConfigHandler {
 		val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
 		if(constKey != null) return constKey
 		val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
-		val expression = ParadoxScriptExpression.resolve(key, quoted, true)
+		val expression = ParadoxDataExpression.resolve(key, quoted, true)
 		return keys.find {
 			matchesScriptExpression(expression, CwtKeyExpression.resolve(it), configGroup, matchType)
 		}
