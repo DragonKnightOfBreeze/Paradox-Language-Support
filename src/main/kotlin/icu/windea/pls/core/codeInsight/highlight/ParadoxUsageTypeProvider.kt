@@ -24,7 +24,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
 				ParadoxUsageType.FROM_CONFIG_EXPRESSION(configExpression)
 			}
 			element is ParadoxScriptScriptedVariableReference -> ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_1
-			element is ParadoxScriptInlineMathVariableReference -> ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_1
+			element is ParadoxScriptInlineMathScriptedVariableReference -> ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_1
 			element is ParadoxScriptParameter -> ParadoxUsageType.PARAMETER_REFERENCE_1
 			element is ParadoxScriptInlineMathParameter -> ParadoxUsageType.PARAMETER_REFERENCE_2
 			element is ParadoxScriptParameterConditionParameter -> ParadoxUsageType.PARAMETER_REFERENCE_3

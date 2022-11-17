@@ -1,9 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.PsiElement;
-import com.intellij.lang.ASTNode;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
 import icu.windea.pls.script.psi.impl.*;
 
 public interface ParadoxScriptElementTypes {
@@ -20,8 +20,8 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_NUMBER = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_NUMBER");
   IElementType INLINE_MATH_PARAMETER = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_PARAMETER");
   IElementType INLINE_MATH_PAR_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_PAR_EXPRESSION");
+  IElementType INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE");
   IElementType INLINE_MATH_UNARY_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_UNARY_EXPRESSION");
-  IElementType INLINE_MATH_VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_VARIABLE_REFERENCE");
   IElementType INT = ParadoxScriptElementTypeFactory.getElementType("INT");
   IElementType PARAMETER = ParadoxScriptElementTypeFactory.getElementType("PARAMETER");
   IElementType PARAMETER_CONDITION = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION");
@@ -51,8 +51,8 @@ public interface ParadoxScriptElementTypes {
   IElementType GE_SIGN = ParadoxScriptElementTypeFactory.getTokenType("GE_SIGN");
   IElementType GT_SIGN = ParadoxScriptElementTypeFactory.getTokenType("GT_SIGN");
   IElementType INLINE_MATH_END = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_END");
+  IElementType INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID");
   IElementType INLINE_MATH_START = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_START");
-  IElementType INLINE_MATH_VARIABLE_REFERENCE_ID = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_VARIABLE_REFERENCE_ID");
   IElementType INT_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("INT_TOKEN");
   IElementType KEY_STRING_SNIPPET = ParadoxScriptElementTypeFactory.getTokenType("KEY_STRING_SNIPPET");
   IElementType LABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LABS_SIGN");
@@ -119,11 +119,11 @@ public interface ParadoxScriptElementTypes {
       else if (type == INLINE_MATH_PAR_EXPRESSION) {
         return new ParadoxScriptInlineMathParExpressionImpl(node);
       }
+      else if (type == INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE) {
+        return new ParadoxScriptInlineMathScriptedVariableReferenceImpl(node);
+      }
       else if (type == INLINE_MATH_UNARY_EXPRESSION) {
         return new ParadoxScriptInlineMathUnaryExpressionImpl(node);
-      }
-      else if (type == INLINE_MATH_VARIABLE_REFERENCE) {
-        return new ParadoxScriptInlineMathVariableReferenceImpl(node);
       }
       else if (type == INT) {
         return new ParadoxScriptIntImpl(node);

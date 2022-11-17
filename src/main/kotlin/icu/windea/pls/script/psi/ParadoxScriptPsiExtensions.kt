@@ -19,7 +19,7 @@ val ParadoxScriptScriptedVariableReference.variableReferenceId: PsiElement get()
 
 val ParadoxScriptParameterConditionParameter.parameterId: PsiElement get() = findRequiredChild(ARGUMENT_ID)
 
-val ParadoxScriptInlineMathVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(INLINE_MATH_VARIABLE_REFERENCE_ID)
+val ParadoxScriptInlineMathScriptedVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID)
 
 val ParadoxParameter.parameterId: PsiElement? get() = findOptionalChild(PARAMETER_ID)
 

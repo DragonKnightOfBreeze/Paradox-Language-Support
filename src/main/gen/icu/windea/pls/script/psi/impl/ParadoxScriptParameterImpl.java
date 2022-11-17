@@ -1,13 +1,14 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi.impl;
 
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.extapi.psi.*;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
 import icu.windea.pls.script.psi.*;
-import icu.windea.pls.script.references.ParadoxParameterReference;
-import javax.swing.Icon;
+import icu.windea.pls.script.references.*;
+import org.jetbrains.annotations.*;
+
+import javax.swing.*;
 
 public class ParadoxScriptParameterImpl extends ASTWrapperPsiElement implements ParadoxScriptParameter {
 

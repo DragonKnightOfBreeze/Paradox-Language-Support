@@ -1020,7 +1020,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 92: break;
           case 34: 
-            { return INLINE_MATH_VARIABLE_REFERENCE_ID;
+            { return INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID;
             } 
             // fall through
           case 93: break;

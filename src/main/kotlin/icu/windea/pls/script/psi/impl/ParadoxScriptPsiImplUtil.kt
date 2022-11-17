@@ -819,17 +819,17 @@ object ParadoxScriptPsiImplUtil {
 	
 	//region ParadoxScriptInlineMathVariableReference
 	@JvmStatic
-	fun getIcon(element: ParadoxScriptInlineMathVariableReference, @Iconable.IconFlags flags: Int): Icon {
+	fun getIcon(element: ParadoxScriptInlineMathScriptedVariableReference, @Iconable.IconFlags flags: Int): Icon {
 		return PlsIcons.ScriptedVariable
 	}
 	
 	@JvmStatic
-	fun getName(element: ParadoxScriptInlineMathVariableReference): String {
+	fun getName(element: ParadoxScriptInlineMathScriptedVariableReference): String {
 		return element.variableReferenceId.text
 	}
 	
 	@JvmStatic
-	fun setName(element: ParadoxScriptInlineMathVariableReference, name: String): ParadoxScriptInlineMathVariableReference {
+	fun setName(element: ParadoxScriptInlineMathScriptedVariableReference, name: String): ParadoxScriptInlineMathScriptedVariableReference {
 		val nameElement = element.variableReferenceId
 		val newNameElement = ParadoxScriptElementFactory.createInlineMathVariableReference(element.project, name).variableReferenceId
 		nameElement.replace(newNameElement)
@@ -837,7 +837,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptInlineMathVariableReference): ParadoxScriptedVariableReferenceReference {
+	fun getReference(element: ParadoxScriptInlineMathScriptedVariableReference): ParadoxScriptedVariableReferenceReference {
 		val rangeInElement = element.variableReferenceId.textRangeInParent
 		return ParadoxScriptedVariableReferenceReference(element, rangeInElement)
 	}

@@ -1,15 +1,12 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilder.Marker;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import com.intellij.lang.*;
+import com.intellij.lang.PsiBuilder.*;
+import com.intellij.psi.tree.*;
+
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.lang.PsiParser;
-import com.intellij.lang.LightPsiParser;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class ParadoxScriptParser implements PsiParser, LightPsiParser {
@@ -36,7 +33,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(INLINE_MATH_FACTOR, INLINE_MATH_NUMBER, INLINE_MATH_PARAMETER, INLINE_MATH_VARIABLE_REFERENCE),
+    create_token_set_(INLINE_MATH_FACTOR, INLINE_MATH_NUMBER, INLINE_MATH_PARAMETER, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE),
     create_token_set_(INLINE_MATH_ABS_EXPRESSION, INLINE_MATH_BI_EXPRESSION, INLINE_MATH_EXPRESSION, INLINE_MATH_PAR_EXPRESSION,
       INLINE_MATH_UNARY_EXPRESSION),
     create_token_set_(BLOCK, BOOLEAN, COLOR, FLOAT,
@@ -241,13 +238,13 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // inline_math_number | inline_math_variable_reference | inline_math_parameter
+  // inline_math_number | inline_math_scripted_variable_reference | inline_math_parameter
   public static boolean inline_math_factor(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_factor")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, INLINE_MATH_FACTOR, "<inline math factor>");
     r = inline_math_number(b, l + 1);
-    if (!r) r = inline_math_variable_reference(b, l + 1);
+    if (!r) r = inline_math_scripted_variable_reference(b, l + 1);
     if (!r) r = inline_math_parameter(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
@@ -309,6 +306,18 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID
+  public static boolean inline_math_scripted_variable_reference(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_scripted_variable_reference")) return false;
+    if (!nextTokenIs(b, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID);
+    exit_section_(b, m, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // inline_math_abs_expression | inline_math_par_expression | inline_math_factor
   static boolean inline_math_unary_expr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_unary_expr")) return false;
@@ -341,18 +350,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     boolean r;
     r = consumeToken(b, PLUS_SIGN);
     if (!r) r = consumeToken(b, MINUS_SIGN);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // INLINE_MATH_VARIABLE_REFERENCE_ID
-  public static boolean inline_math_variable_reference(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_math_variable_reference")) return false;
-    if (!nextTokenIs(b, INLINE_MATH_VARIABLE_REFERENCE_ID)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, INLINE_MATH_VARIABLE_REFERENCE_ID);
-    exit_section_(b, m, INLINE_MATH_VARIABLE_REFERENCE, r);
     return r;
   }
 

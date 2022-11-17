@@ -60,13 +60,13 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitParadoxParameter(o);
   }
 
-  public void visitInlineMathUnaryExpression(@NotNull ParadoxScriptInlineMathUnaryExpression o) {
-    visitInlineMathExpression(o);
-  }
-
-  public void visitInlineMathVariableReference(@NotNull ParadoxScriptInlineMathVariableReference o) {
+  public void visitInlineMathScriptedVariableReference(@NotNull ParadoxScriptInlineMathScriptedVariableReference o) {
     visitInlineMathFactor(o);
     // visitedVariableReference(o);
+  }
+
+  public void visitInlineMathUnaryExpression(@NotNull ParadoxScriptInlineMathUnaryExpression o) {
+    visitInlineMathExpression(o);
   }
 
   public void visitInt(@NotNull ParadoxScriptInt o) {

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public interface ParadoxScriptInlineMathVariableReference extends ParadoxScriptInlineMathFactor, ParadoxScriptedVariableReference {
+public interface ParadoxScriptInlineMathScriptedVariableReference extends ParadoxScriptInlineMathFactor, ParadoxScriptedVariableReference {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
@@ -15,7 +15,7 @@ public interface ParadoxScriptInlineMathVariableReference extends ParadoxScriptI
   String getName();
 
   @NotNull
-  ParadoxScriptInlineMathVariableReference setName(@NotNull String name);
+  ParadoxScriptInlineMathScriptedVariableReference setName(@NotNull String name);
 
   @NotNull
   ParadoxScriptedVariableReferenceReference getReference();

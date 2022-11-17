@@ -1,9 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
+import icu.windea.pls.script.references.*;
 import org.jetbrains.annotations.*;
-import icu.windea.pls.script.references.ParadoxParameterReference;
-import javax.swing.Icon;
+
+import javax.swing.*;
 
 public interface ParadoxScriptParameter extends ParadoxParameter {
 

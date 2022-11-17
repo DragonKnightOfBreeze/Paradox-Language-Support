@@ -244,7 +244,7 @@ left inline_math_bi_expression ::= inline_math_bi_op inline_math_bi_right_factor
 }
 private inline_math_bi_op ::= PLUS_SIGN | MINUS_SIGN | TIMES_SIGN | DIV_SIGN | MOD_SIGN
 private inline_math_bi_right_factor ::= inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor
-inline_math_factor ::= inline_math_number | inline_math_variable_reference | inline_math_parameter
+inline_math_factor ::= inline_math_number | inline_math_scripted_variable_reference | inline_math_parameter
 inline_math_number ::= NUMBER_TOKEN { //int | float
   extends=inline_math_factor
   implements=[
@@ -253,7 +253,7 @@ inline_math_number ::= NUMBER_TOKEN { //int | float
   ]
   methods=[getValue getExpressionType]
 }
-inline_math_variable_reference ::= INLINE_MATH_VARIABLE_REFERENCE_ID { //without prefix "@"
+inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID { //without prefix "@"
   extends=inline_math_factor
   implements="icu.windea.pls.script.psi.ParadoxScriptedVariableReference"
   methods=[getIcon getName setName getReference]

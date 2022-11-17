@@ -10,9 +10,14 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptCompletionContributor : CompletionContributor() {
 	init {
+		val scriptedVariableTokens = TokenSet.create(SCRIPTED_VARIABLE_REFERENCE_ID, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID)
 		val stringTokens = TokenSet.create(STRING_TOKEN, QUOTED_STRING_TOKEN)
 		val propertyKeyOrStringTokens = TokenSet.create(PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, STRING_TOKEN, QUOTED_STRING_TOKEN)
 		val parameterTokens = TokenSet.create(PARAMETER_ID, ARGUMENT_ID)
+		
+		//当用户真在输入一个scriptedVariableReference的名字时提示
+		val scriptedVariableNamePattern = psiElement().withElementType(scriptedVariableTokens)
+		extend(null, scriptedVariableNamePattern, ParadoxScriptedVariableCompletionProvider())
 		
 		//当用户正在输入一个propertyKey或string时提示
 		val definitionPattern = psiElement().withElementType(propertyKeyOrStringTokens)
@@ -26,7 +31,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 						.withSuperParent(2, psiElement(ParadoxScriptProperty::class.java)))))
 		extend(null, eventIdPattern, ParadoxEventIdCompletionProvider())
 		
-		//当用户正在输入一个parameterName时提示
+		//当用户正在输入一个parameter的名字时提示
 		val parameterPattern = psiElement().withElementType(parameterTokens)
 		extend(null, parameterPattern, ParadoxParameterCompletionProvider())
 	}

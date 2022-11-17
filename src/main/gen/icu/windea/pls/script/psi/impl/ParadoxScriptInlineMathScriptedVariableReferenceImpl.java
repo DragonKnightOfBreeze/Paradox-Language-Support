@@ -9,15 +9,15 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class ParadoxScriptInlineMathVariableReferenceImpl extends ParadoxScriptInlineMathFactorImpl implements ParadoxScriptInlineMathVariableReference {
+public class ParadoxScriptInlineMathScriptedVariableReferenceImpl extends ParadoxScriptInlineMathFactorImpl implements ParadoxScriptInlineMathScriptedVariableReference {
 
-  public ParadoxScriptInlineMathVariableReferenceImpl(@NotNull ASTNode node) {
+  public ParadoxScriptInlineMathScriptedVariableReferenceImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitInlineMathVariableReference(this);
+    visitor.visitInlineMathScriptedVariableReference(this);
   }
 
   @Override
@@ -40,7 +40,7 @@ public class ParadoxScriptInlineMathVariableReferenceImpl extends ParadoxScriptI
 
   @Override
   @NotNull
-  public ParadoxScriptInlineMathVariableReference setName(@NotNull String name) {
+  public ParadoxScriptInlineMathScriptedVariableReference setName(@NotNull String name) {
     return ParadoxScriptPsiImplUtil.setName(this, name);
   }
 
