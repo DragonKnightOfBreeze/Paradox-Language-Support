@@ -43,7 +43,7 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 			override fun visitValue(element: ParadoxScriptValue) {
 				ProgressManager.checkCanceled()
 				//排除block
-				if(if(element.isLonely()) forValue else forPropertyValue) {
+				if(if(!element.isPropertyValue()) forValue else forPropertyValue) {
 					//精确解析
 					val config = ParadoxCwtConfigHandler.resolveValueConfig(element, hasDefault = false)
 					//是定义元素，非定义自身，且路径中不带参数

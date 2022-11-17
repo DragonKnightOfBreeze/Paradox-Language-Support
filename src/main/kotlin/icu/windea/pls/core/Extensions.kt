@@ -238,16 +238,6 @@ fun PsiElement.isQuoted(): Boolean {
 	return text.isQuoted()
 }
 
-fun CwtValue.isLonely(): Boolean {
-	val parent = this.parent
-	return parent is ICwtBlock && parent.parent is CwtProperty
-}
-
-fun ParadoxScriptValue.isLonely(): Boolean {
-	val parent = this.parent
-	return parent is IParadoxScriptBlock
-}
-
 val PsiElement.localeConfig: ParadoxLocaleConfig?
 	get() {
 		if(this.language == ParadoxLocalisationLanguage) {

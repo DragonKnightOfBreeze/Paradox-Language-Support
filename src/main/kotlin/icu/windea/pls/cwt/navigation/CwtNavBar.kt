@@ -21,7 +21,7 @@ class CwtNavBar : StructureAwareNavBarModelExtension() {
 	override fun getPresentableText(o: Any?): String? {
 		return when {
 			o is CwtProperty -> o.name
-			o is CwtValue && o.isLonely() -> o.value
+			o is CwtValue && !o.isPropertyValue() -> o.value
 			else -> null
 		}
 	}

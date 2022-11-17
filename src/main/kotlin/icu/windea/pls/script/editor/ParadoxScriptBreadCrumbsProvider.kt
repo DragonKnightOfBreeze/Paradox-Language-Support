@@ -3,7 +3,6 @@ package icu.windea.pls.script.editor
 import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.ui.breadcrumbs.*
-import icu.windea.pls.core.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
@@ -17,7 +16,7 @@ class ParadoxScriptBreadCrumbsProvider : BreadcrumbsProvider {
 	}
 	
 	override fun acceptElement(element: PsiElement): Boolean {
-		return element is ParadoxScriptProperty || (element is ParadoxScriptValue && element.isLonely())
+		return element is ParadoxScriptProperty || (element is ParadoxScriptValue && !element.isPropertyValue())
 			|| element is ParadoxScriptScriptedVariable
 	}
 	

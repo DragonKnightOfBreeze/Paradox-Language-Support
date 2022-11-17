@@ -92,7 +92,7 @@ object ParadoxComplexEnumValueInfoHandler {
 				val valueElement = element.propertyValue?.value ?: return false
 				if(!doMatchValue(complexEnumConfig, config, valueElement)) return false
 			} else if(config.stringValue == "enum_name") {
-				if(element !is ParadoxScriptString || element.isLonely()) return false
+				if(element !is ParadoxScriptString || !element.isPropertyValue()) return false
 				val propertyElement = element.parentOfType<ParadoxScriptProperty>() ?: return false
 				if(!doMatchKey(complexEnumConfig, config, propertyElement)) return false
 			} else {
@@ -100,7 +100,7 @@ object ParadoxComplexEnumValueInfoHandler {
 			}
 		} else if(config is CwtValueConfig) {
 			if(config.stringValue == "enum_name") {
-				if(element !is ParadoxScriptString || !element.isLonely()) return false
+				if(element !is ParadoxScriptString || !!element.isPropertyValue()) return false
 			} else {
 				return false
 			}
@@ -125,7 +125,7 @@ object ParadoxComplexEnumValueInfoHandler {
 	private fun doBeforeMatchParent(config: CwtDataConfig<*>, element: PsiElement, complexEnumConfig: CwtComplexEnumConfig): Boolean {
 		val parentConfig = config.parent ?: return false
 		val parentBlockElement = element.parentOfType<ParadoxScriptBlock>() ?: return false
-		val parentElement = if(parentBlockElement.isLonely()) parentBlockElement else parentBlockElement.parentOfType<ParadoxScriptProperty>()
+		val parentElement = if(!parentBlockElement.isPropertyValue()) parentBlockElement else parentBlockElement.parentOfType<ParadoxScriptProperty>()
 		if(parentConfig == complexEnumConfig.nameConfig) {
 			if(complexEnumConfig.startFromRoot) {
 				return parentElement == null

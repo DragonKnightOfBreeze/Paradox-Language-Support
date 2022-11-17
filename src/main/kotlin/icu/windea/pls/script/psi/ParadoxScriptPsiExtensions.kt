@@ -142,7 +142,7 @@ fun PsiElement.findParentDefinitionProperty(fromParentBlock: Boolean = false): P
 fun PsiElement.findParentScriptElement(): PsiElement? {
 	if(language != ParadoxScriptLanguage) return null
 	return parents(false).find {
-		it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isLonely())
+		it is ParadoxScriptProperty || (it is ParadoxScriptValue && !it.isPropertyValue())
 	}
 }
 
@@ -196,4 +196,8 @@ fun ASTNode.isParameterAwareExpression(): Boolean {
 
 fun String.isParameterAwareExpression(): Boolean {
 	return !this.isQuoted() && this.any { it == '$' }
+}
+
+fun ParadoxScriptValue.isPropertyValue(): Boolean {
+	return parent is ParadoxScriptPropertyValue
 }

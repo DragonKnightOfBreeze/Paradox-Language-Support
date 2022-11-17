@@ -27,7 +27,7 @@ object ParadoxElementPathHandler {
 					originalSubPaths.addFirst(current.originalPathName) //这里需要使用原始文本
 					depth++
 				}
-				current is ParadoxScriptValue && current.isLonely() -> {
+				current is ParadoxScriptValue && !current.isPropertyValue() -> {
 					originalSubPaths.addFirst("-")
 					depth++
 				}
@@ -59,7 +59,7 @@ object ParadoxElementPathHandler {
 					subPaths.addFirst(current.originalPathName) //这里需要使用原始文本
 					depth++
 				}
-				current is ParadoxScriptValue && current.isLonely() -> {
+				current is ParadoxScriptValue && !current.isPropertyValue() -> {
 					subPaths.addFirst("#" + current.text)
 					depth++
 				}

@@ -13,16 +13,16 @@
 
 root ::= root_block ?
 root_block ::= root_block_item + {
-  implements="icu.windea.pls.cwt.psi.ICwtBlock"
+  implements="com.intellij.psi.PsiListLikeElement"
   methods=[getValue isEmpty isNotEmpty getComponents]
 }
-private root_block_item ::= comment | property | value{
+private root_block_item ::= comment | property | value {
   recoverWhile="#auto"
 }
 
 private comment ::= documentation_comment | option_comment | COMMENT
 
-documentation_comment ::= DOCUMENTATION_START documentation_text ?{
+documentation_comment ::= DOCUMENTATION_START documentation_text ? {
   pin=1
   implements=["com.intellij.psi.PsiComment"]
   methods=[getTokenType]
@@ -36,14 +36,14 @@ option_comment ::= OPTION_START option_comment_item ? {
 }
 private option_comment_item ::= option | value
 
-option ::= option_key option_separator value{
+option ::= option_key option_separator value {
   pin=1
   methods=[
     optionKey="optionKey" optionValue="value"
     getIcon getName getValue getSeparatorType
   ]
 }
-option_key ::= OPTION_KEY_TOKEN{
+option_key ::= OPTION_KEY_TOKEN {
   methods=[getValue]
 }
 private option_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
@@ -58,27 +58,27 @@ property ::= property_key property_separator value {
     getIcon getName setName getNameIdentifier getValue getSeparatorType
   ]
 }
-property_key ::= PROPERTY_KEY_TOKEN{
+property_key ::= PROPERTY_KEY_TOKEN {
   methods=[getValue]
 }
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
 
-value ::= boolean | int | float | string | block{
+value ::= boolean | int | float | string | block {
   methods=[getIcon getValue]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value
   methods=[getBooleanValue]
 }
-int ::= INT_TOKEN{
+int ::= INT_TOKEN {
   extends=value
   methods=[getIntValue]
 }
-float ::= FLOAT_TOKEN{
+float ::= FLOAT_TOKEN {
   extends=value
   methods=[getFloatValue]
 }
-string ::= STRING_TOKEN{
+string ::= STRING_TOKEN {
   extends=value
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
@@ -87,7 +87,7 @@ string ::= STRING_TOKEN{
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
   extends=value
-  implements="icu.windea.pls.cwt.psi.ICwtBlock"
+  implements="com.intellij.psi.PsiListLikeElement"
   methods=[getIcon getValue isEmpty isNotEmpty getComponents]
 }
 private block_item ::= comment | property | option | value{
