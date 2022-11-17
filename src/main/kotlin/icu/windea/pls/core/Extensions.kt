@@ -235,7 +235,7 @@ fun PsiElement.useAllUseScope(): Boolean {
 }
 
 fun PsiElement.isQuoted(): Boolean {
-	return firstLeafOrSelf().text.startsWith('"') || lastLeafOrSelf().text.endsWith('"')
+	return text.isQuoted()
 }
 
 fun CwtValue.isLonely(): Boolean {
