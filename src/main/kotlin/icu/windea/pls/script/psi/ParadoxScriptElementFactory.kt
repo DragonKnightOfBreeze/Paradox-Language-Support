@@ -71,7 +71,7 @@ object ParadoxScriptElementFactory {
 	
 	@JvmStatic
 	fun createInlineMathVariableReference(project: Project, name: String): ParadoxScriptInlineMathScriptedVariableReference {
-		return createInlineMath(project, name).findRequiredChild(INLINE_MATH_VARIABLE_REFERENCE)
+		return createInlineMath(project, name).findRequiredChild(INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE)
 	}
 	
 	@JvmStatic
