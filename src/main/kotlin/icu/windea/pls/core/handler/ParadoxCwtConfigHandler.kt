@@ -112,7 +112,7 @@ object ParadoxCwtConfigHandler {
 						val configGroup = definitionElementInfo.configGroup
 						buildList {
 							for(childValueConfig in childValueConfigs) {
-								val expression = ParadoxScriptExpression.resolve(element)
+								val expression = ParadoxDataExpression.resolve(element)
 								val valueExpression = childValueConfig.valueExpression
 								if(CwtConfigHandler.matchesScriptExpression(expression, valueExpression, configGroup, matchType)) {
 									add(childValueConfig)
