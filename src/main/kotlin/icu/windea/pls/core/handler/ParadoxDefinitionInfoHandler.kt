@@ -30,9 +30,9 @@ object ParadoxDefinitionInfoHandler {
 	}
 	
 	@JvmStatic
-	fun resolve(element: ParadoxDefinitionProperty, file: PsiFile= element.containingFile): ParadoxDefinitionInfo? {
+	fun resolve(element: ParadoxDefinitionProperty, file: PsiFile = element.containingFile): ParadoxDefinitionInfo? {
 		//排除带参数的情况
-		if(element is ParadoxScriptProperty && element.findOptionalChild<ParadoxScriptPropertyKey>()?.isParameterAwareExpression() == true) return null 
+		if(element is ParadoxScriptProperty && element.findOptionalChild<ParadoxScriptPropertyKey>()?.isParameterAwareExpression() == true) return null
 		
 		val project = file.project
 		
@@ -251,7 +251,8 @@ object ParadoxDefinitionInfoHandler {
 				//匹配值
 				propertyConfig.stringValue != null -> {
 					val expression = ParadoxDataExpression.resolve(propValue)
-					return matchesScriptExpression(expression, propertyConfig.valueExpression, configGroup)
+					val matchType = CwtConfigMatchType.NO_STUB_INDEX
+					return matchesScriptExpression(expression, propertyConfig.valueExpression, configGroup, matchType)
 				}
 				//匹配single_alias
 				CwtConfigHandler.isSingleAlias(propertyConfig) -> {
@@ -290,7 +291,9 @@ object ParadoxDefinitionInfoHandler {
 			val keyElement = propertyElement.propertyKey
 			val expression = ParadoxDataExpression.resolve(keyElement)
 			val matchType = CwtConfigMatchType.NO_STUB_INDEX
-			val propConfigs = propertyConfigs.filter { matchesScriptExpression(expression, it.keyExpression, configGroup, matchType) }
+			val propConfigs = propertyConfigs.filter {
+				matchesScriptExpression(expression, it.keyExpression, configGroup, matchType)
+			}
 			//如果没有匹配的规则则忽略
 			if(propConfigs.isNotEmpty()) {
 				val matched = propConfigs.any { propConfig ->
@@ -315,8 +318,9 @@ object ParadoxDefinitionInfoHandler {
 		for(value in valueElements) {
 			//如果没有匹配的规则则认为不匹配
 			val expression = ParadoxDataExpression.resolve(value)
+			val matchType = CwtConfigMatchType.NO_STUB_INDEX
 			val matched = valueConfigs.any { valueConfig ->
-				val matched = matchesScriptExpression(expression, valueConfig.valueExpression, configGroup)
+				val matched = matchesScriptExpression(expression, valueConfig.valueExpression, configGroup, matchType)
 				if(matched) minMap.compute(valueConfig.value) { _, v -> if(v == null) 1 else v - 1 }
 				matched
 			}
@@ -347,15 +351,15 @@ object ParadoxDefinitionInfoHandler {
 		}
 	}
 	
-	fun getName(element: ParadoxDefinitionProperty): String?{
+	fun getName(element: ParadoxDefinitionProperty): String? {
 		return runCatching { element.getStub() }.getOrNull()?.name ?: element.definitionInfo?.name
 	}
 	
-	fun getType(element: ParadoxDefinitionProperty): String?{
+	fun getType(element: ParadoxDefinitionProperty): String? {
 		return runCatching { element.getStub() }.getOrNull()?.type ?: element.definitionInfo?.type
 	}
 	
-	fun getSubtypes(element: ParadoxDefinitionProperty): List<String>?{
+	fun getSubtypes(element: ParadoxDefinitionProperty): List<String>? {
 		return runCatching { element.getStub() }.getOrNull()?.subtypes ?: element.definitionInfo?.subtypes
 	}
 }
