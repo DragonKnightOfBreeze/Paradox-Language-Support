@@ -1,9 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.PsiElement;
-import com.intellij.lang.ASTNode;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
 import icu.windea.pls.cwt.psi.impl.*;
 
 public interface CwtElementTypes {
@@ -14,7 +14,6 @@ public interface CwtElementTypes {
   IElementType DOCUMENTATION_TEXT = new CwtElementType("DOCUMENTATION_TEXT");
   IElementType FLOAT = new CwtElementType("FLOAT");
   IElementType INT = new CwtElementType("INT");
-  IElementType NUMBER = new CwtElementType("NUMBER");
   IElementType OPTION = new CwtElementType("OPTION");
   IElementType OPTION_COMMENT = new CwtElementType("OPTION_COMMENT");
   IElementType OPTION_KEY = new CwtElementType("OPTION_KEY");

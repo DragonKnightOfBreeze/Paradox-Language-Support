@@ -57,22 +57,19 @@ property_key ::= PROPERTY_KEY_TOKEN{
 }
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
 
-value ::= boolean | number | string | block{
+value ::= boolean | int | float | string | block{
   methods=[getIcon getValue]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value
   methods=[getBooleanValue]
 }
-number ::= int | float {
-  extends=value
-}
 int ::= INT_TOKEN{
-  extends=number
+  extends=value
   methods=[getIntValue]
 }
 float ::= FLOAT_TOKEN{
-  extends=number
+  extends=value
   methods=[getFloatValue]
 }
 string ::= STRING_TOKEN{

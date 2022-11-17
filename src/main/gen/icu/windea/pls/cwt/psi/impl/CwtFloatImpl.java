@@ -1,16 +1,12 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
 import icu.windea.pls.cwt.psi.*;
+import org.jetbrains.annotations.*;
 
-public class CwtFloatImpl extends CwtNumberImpl implements CwtFloat {
+public class CwtFloatImpl extends CwtValueImpl implements CwtFloat {
 
   public CwtFloatImpl(@NotNull ASTNode node) {
     super(node);

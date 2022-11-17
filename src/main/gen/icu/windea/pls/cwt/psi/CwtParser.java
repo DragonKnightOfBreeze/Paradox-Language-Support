@@ -1,15 +1,12 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilder.Marker;
-import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
+import com.intellij.lang.*;
+import com.intellij.lang.PsiBuilder.*;
+import com.intellij.psi.tree.*;
+
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.lang.PsiParser;
-import com.intellij.lang.LightPsiParser;
+import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class CwtParser implements PsiParser, LightPsiParser {
@@ -37,7 +34,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(BLOCK, BOOLEAN, FLOAT, INT,
-      NUMBER, STRING, VALUE),
+      STRING, VALUE),
   };
 
   /* ********************************************************** */
@@ -157,19 +154,6 @@ public class CwtParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, INT_TOKEN);
     exit_section_(b, m, INT, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // int | float
-  public static boolean number(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "number")) return false;
-    if (!nextTokenIs(b, "<number>", FLOAT_TOKEN, INT_TOKEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _COLLAPSE_, NUMBER, "<number>");
-    r = int_$(b, l + 1);
-    if (!r) r = float_$(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -329,13 +313,14 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // boolean | number | string | block
+  // boolean | int | float | string | block
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, VALUE, "<value>");
     r = boolean_$(b, l + 1);
-    if (!r) r = number(b, l + 1);
+    if (!r) r = int_$(b, l + 1);
+    if (!r) r = float_$(b, l + 1);
     if (!r) r = string(b, l + 1);
     if (!r) r = block(b, l + 1);
     exit_section_(b, l, m, r, false, null);

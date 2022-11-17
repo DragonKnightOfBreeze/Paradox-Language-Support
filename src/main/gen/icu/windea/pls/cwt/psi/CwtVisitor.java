@@ -1,10 +1,8 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
+import com.intellij.psi.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiComment;
 
 public class CwtVisitor extends PsiElementVisitor {
 
@@ -26,14 +24,10 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitFloat(@NotNull CwtFloat o) {
-    visitNumber(o);
+    visitValue(o);
   }
 
   public void visitInt(@NotNull CwtInt o) {
-    visitNumber(o);
-  }
-
-  public void visitNumber(@NotNull CwtNumber o) {
     visitValue(o);
   }
 
