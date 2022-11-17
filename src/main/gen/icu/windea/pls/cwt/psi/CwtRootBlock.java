@@ -6,7 +6,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public interface CwtRootBlock extends PsiListLikeElement {
+public interface CwtRootBlock extends CwtBlockElement {
 
   @NotNull
   List<CwtDocumentationComment> getDocumentationCommentList();

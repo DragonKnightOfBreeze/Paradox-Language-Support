@@ -7,7 +7,7 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 import java.util.*;
 
-public interface CwtBlock extends CwtValue, PsiListLikeElement {
+public interface CwtBlock extends CwtValue, CwtBlockElement {
 
   @NotNull
   List<CwtDocumentationComment> getDocumentationCommentList();

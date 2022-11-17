@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-public interface ParadoxScriptBlock extends ParadoxScriptValue, IParadoxScriptBlock {
+public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlockElement {
 
   @NotNull
   List<ParadoxScriptParameterCondition> getParameterConditionList();

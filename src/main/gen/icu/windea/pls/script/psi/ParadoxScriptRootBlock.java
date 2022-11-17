@@ -1,11 +1,12 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import java.util.List;
+import com.intellij.psi.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
 
-public interface ParadoxScriptRootBlock extends IParadoxScriptBlock {
+import java.util.*;
+
+public interface ParadoxScriptRootBlock extends ParadoxScriptBlockElement {
 
   @NotNull
   List<ParadoxScriptProperty> getPropertyList();

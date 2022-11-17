@@ -33,7 +33,7 @@ val ParadoxScriptPropertyValue.propertyKey: ParadoxScriptPropertyKey? get() = si
  * 遍历当前代码块中的所有（直接作为子节点的）属性。
  * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  */
-inline fun IParadoxScriptBlock.processProperty(includeConditional: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+inline fun ParadoxScriptBlockElement.processProperty(includeConditional: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
 	return processChild {
 		when {
 			it is ParadoxScriptProperty -> processor(it)
@@ -47,7 +47,7 @@ inline fun IParadoxScriptBlock.processProperty(includeConditional: Boolean = fal
  * 遍历当前代码块中的所有（直接作为子节点的）值。
  * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的值。
  */
-inline fun IParadoxScriptBlock.processValue(includeConditional: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
+inline fun ParadoxScriptBlockElement.processValue(includeConditional: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
 	return processChild {
 		when {
 			it is ParadoxScriptValue -> processor(it)

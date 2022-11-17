@@ -8,7 +8,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitBlock(@NotNull ParadoxScriptBlock o) {
     visitValue(o);
-    // visitIParadoxScriptBlock(o);
+    // visitBlockElement(o);
   }
 
   public void visitBoolean(@NotNull ParadoxScriptBoolean o) {
@@ -105,7 +105,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitRootBlock(@NotNull ParadoxScriptRootBlock o) {
-    visitIParadoxScriptBlock(o);
+    visitBlockElement(o);
   }
 
   public void visitScriptedVariable(@NotNull ParadoxScriptScriptedVariable o) {
@@ -139,16 +139,16 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitIParadoxScriptBlock(@NotNull IParadoxScriptBlock o) {
-    visitElement(o);
-  }
-
   public void visitParadoxArgument(@NotNull ParadoxArgument o) {
     visitElement(o);
   }
 
   public void visitParadoxParameter(@NotNull ParadoxParameter o) {
     visitElement(o);
+  }
+
+  public void visitBlockElement(@NotNull ParadoxScriptBlockElement o) {
+    visitPsiElement(o);
   }
 
   public void visitExpressionElement(@NotNull ParadoxScriptExpressionElement o) {

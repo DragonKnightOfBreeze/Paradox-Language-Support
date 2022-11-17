@@ -15,7 +15,7 @@ interface ParadoxDefinitionProperty : ParadoxScriptNamedElement, NavigatablePsiE
 	val pathName: String
 	val originalPathName: String
 	
-	val block: IParadoxScriptBlock?
+	val block: ParadoxScriptBlockElement?
 	val variableList: List<ParadoxScriptScriptedVariable>
 		get() {
 			return block?.scriptedVariableList.orEmpty()

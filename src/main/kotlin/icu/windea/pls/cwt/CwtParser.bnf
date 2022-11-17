@@ -13,7 +13,7 @@
 
 root ::= root_block ?
 root_block ::= root_block_item + {
-  implements="com.intellij.psi.PsiListLikeElement"
+  implements="icu.windea.pls.cwt.psi.CwtBlockElement"
   methods=[getValue isEmpty isNotEmpty getComponents]
 }
 private root_block_item ::= comment | property | value {
@@ -87,7 +87,7 @@ string ::= STRING_TOKEN {
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
   extends=value
-  implements="com.intellij.psi.PsiListLikeElement"
+  implements="icu.windea.pls.cwt.psi.CwtBlockElement"
   methods=[getIcon getValue isEmpty isNotEmpty getComponents]
 }
 private block_item ::= comment | property | option | value{
