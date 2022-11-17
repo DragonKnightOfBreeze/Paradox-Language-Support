@@ -11,7 +11,7 @@ class CwtPropertyTreeElement(
 ) : PsiTreeElementBase<CwtProperty>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
 		val element = element ?: return emptyList()
-		val value = element.value ?: return emptyList()
+		val value = element.propertyValue ?: return emptyList()
 		if(value !is CwtBlock) return emptyList()
 		//允许混合value和property
 		val result: MutableList<StructureViewTreeElement> = SmartList()

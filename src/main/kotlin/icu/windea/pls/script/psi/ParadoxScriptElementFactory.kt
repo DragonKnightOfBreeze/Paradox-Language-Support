@@ -5,7 +5,6 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 object ParadoxScriptElementFactory {
 	@JvmStatic
@@ -19,33 +18,33 @@ object ParadoxScriptElementFactory {
 	}
 	
 	fun createRootBlock(project: Project, text: String): ParadoxScriptRootBlock {
-		return createDummyFile(project, text).findRequiredChild(ROOT_BLOCK)
+		return createDummyFile(project, text).findRequiredChild()
 	}
 	
 	@JvmStatic
 	fun createVariable(project: Project, name: String, value: String): ParadoxScriptScriptedVariable {
-		return createRootBlock(project, "@$name=$value").findRequiredChild(SCRIPTED_VARIABLE)
+		return createRootBlock(project, "@$name=$value").findRequiredChild()
 	}
 	
 	@JvmStatic
 	fun createVariableName(project: Project, name: String): ParadoxScriptScriptedVariableName {
-		return createVariable(project, name, "0").findRequiredChild(SCRIPTED_VARIABLE_NAME)
+		return createVariable(project, name, "0").findRequiredChild()
 	}
 	
 	@JvmStatic
 	fun createProperty(project: Project, key: String, value: String): ParadoxScriptProperty {
 		val usedKey = key.quoteIfNecessary()
-		return createRootBlock(project, "$usedKey=$value").findRequiredChild(PROPERTY)
+		return createRootBlock(project, "$usedKey=$value").findRequiredChild()
 	}
 	
 	@JvmStatic
 	fun createPropertyKey(project: Project, key: String): ParadoxScriptPropertyKey {
-		return createProperty(project, key, "0").findRequiredChild(PROPERTY_KEY)
+		return createProperty(project, key, "0").findRequiredChild()
 	}
 	
 	@JvmStatic
 	fun createPropertyValue(project: Project, value: String): ParadoxScriptPropertyValue {
-		return createProperty(project, "a", value).findRequiredChild(PROPERTY_VALUE)
+		return createProperty(project, "a", value).findRequiredChild()
 	}
 	
 	@JvmStatic
@@ -55,7 +54,7 @@ object ParadoxScriptElementFactory {
 	
 	@JvmStatic
 	fun createVariableReference(project: Project, name: String): ParadoxScriptScriptedVariableReference {
-		return createPropertyValue(project, "@$name").findRequiredChild(SCRIPTED_VARIABLE_REFERENCE)
+		return createPropertyValue(project, "@$name").findRequiredChild()
 	}
 	
 	@JvmStatic
@@ -66,12 +65,12 @@ object ParadoxScriptElementFactory {
 	
 	@JvmStatic
 	fun createInlineMath(project: Project, expression: String): ParadoxScriptInlineMath {
-		return createPropertyValue(project, "@[$expression]").findRequiredChild(INLINE_MATH)
+		return createPropertyValue(project, "@[$expression]").findRequiredChild()
 	}
 	
 	@JvmStatic
 	fun createInlineMathVariableReference(project: Project, name: String): ParadoxScriptInlineMathScriptedVariableReference {
-		return createInlineMath(project, name).findRequiredChild(INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE)
+		return createInlineMath(project, name).findRequiredChild()
 	}
 	
 	@JvmStatic
@@ -95,6 +94,6 @@ object ParadoxScriptElementFactory {
 	@JvmStatic
 	fun createInlineMathParameter(project: Project, name: String): ParadoxScriptInlineMathParameter {
 		val text = "$$name$"
-		return createInlineMath(project, text).findRequiredChild(INLINE_MATH_PARAMETER)
+		return createInlineMath(project, text).findRequiredChild()
 	}
 }

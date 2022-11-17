@@ -1,17 +1,13 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
+import icu.windea.pls.cwt.*;
 import icu.windea.pls.cwt.psi.*;
-import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.config.cwt.config.CwtSeparatorType;
-import javax.swing.Icon;
+import org.jetbrains.annotations.*;
+
+import javax.swing.*;
 
 public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty {
 
@@ -37,7 +33,7 @@ public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty 
 
   @Override
   @Nullable
-  public CwtValue getValue() {
+  public CwtValue getPropertyValue() {
     return findChildByClass(CwtValue.class);
   }
 
@@ -66,15 +62,9 @@ public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty 
   }
 
   @Override
-  @NotNull
-  public String getPropertyName() {
-    return CwtPsiImplUtil.getPropertyName(this);
-  }
-
-  @Override
-  @NotNull
-  public String getPropertyValue() {
-    return CwtPsiImplUtil.getPropertyValue(this);
+  @Nullable
+  public String getValue() {
+    return CwtPsiImplUtil.getValue(this);
   }
 
   @Override

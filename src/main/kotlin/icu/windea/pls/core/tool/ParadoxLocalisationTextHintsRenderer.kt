@@ -95,7 +95,7 @@ object ParadoxLocalisationTextHintsRenderer {
 				presentations.mergePresentation()
 			}
 			resolved is CwtProperty -> {
-				smallText(resolved.propertyValue)
+				smallText(resolved.value ?: PlsConstants.unresolvedString)
 			}
 			else -> truncatedSmallText(element.text, context.truncateRemain)
 		} ?: return true

@@ -3,6 +3,7 @@ package icu.windea.pls.config.cwt.config
 import com.intellij.psi.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 
 data class CwtPropertyConfig(
@@ -31,7 +32,7 @@ data class CwtPropertyConfig(
 	val valueConfig by lazy {
 		val resolvedPointer = resolved().pointer
 		val valuePointer = resolvedPointer.containingFile
-			?.let { f -> resolvedPointer.element?.value?.createPointer(f) } ?: return@lazy null
+			?.let { f -> resolvedPointer.element?.propertyValue?.createPointer(f) } ?: return@lazy null
 		CwtValueConfig(
 			valuePointer, info, value, booleanValue, intValue, floatValue, stringValue,
 			properties, values, documentation, options, optionValues

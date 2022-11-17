@@ -239,8 +239,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				current is CwtOptionComment -> {
 					val option = current.option ?: continue
 					when {
-						option.name == "since" -> since = option.optionValue
-						option.name == "loc_format" && option.value?.value == "html" -> html = true
+						option.name == "since" -> since = option.value
+						option.name == "loc_format" && option.value == "html" -> html = true
 					}
 				}
 				current is PsiWhiteSpace || current is PsiComment -> continue

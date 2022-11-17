@@ -1,12 +1,11 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
-import java.util.List;
+import com.intellij.psi.*;
+import icu.windea.pls.cwt.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.config.cwt.config.CwtSeparatorType;
-import javax.swing.Icon;
+
+import javax.swing.*;
 
 public interface CwtOption extends PsiElement {
 
@@ -14,7 +13,7 @@ public interface CwtOption extends PsiElement {
   CwtOptionKey getOptionKey();
 
   @Nullable
-  CwtValue getValue();
+  CwtValue getOptionValue();
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
@@ -22,11 +21,8 @@ public interface CwtOption extends PsiElement {
   @NotNull
   String getName();
 
-  @NotNull
-  String getOptionName();
-
-  @NotNull
-  String getOptionValue();
+  @Nullable
+  String getValue();
 
   @NotNull
   CwtSeparatorType getSeparatorType();

@@ -340,14 +340,12 @@ inline fun <reified T : PsiElement> PsiElement.findRequiredChild(): T {
 	return findOptionalChild()!!
 }
 
-@Suppress("UNCHECKED_CAST")
-fun <T : PsiElement> PsiElement.findOptionalChild(type: IElementType): T? {
-	return node.findChildByType(type)?.psi as T?
+fun PsiElement.findOptionalChild(type: IElementType): PsiElement? {
+	return node.findChildByType(type)?.psi
 }
 
-@Suppress("UNCHECKED_CAST")
-fun <T : PsiElement> PsiElement.findRequiredChild(type: IElementType): T {
-	return node.findChildByType(type)?.psi as T
+fun PsiElement.findRequiredChild(type: IElementType): PsiElement {
+	return node.findChildByType(type)?.psi!!
 }
 
 inline fun PsiElement.processChild(forward: Boolean = true, processor: ProcessEntry.(PsiElement) -> Boolean): Boolean {
@@ -449,20 +447,6 @@ inline fun <reified T : PsiElement> PsiElement.indexOfChild(forward: Boolean = t
 //	}
 //	return lastSeen.psi
 //}
-
-fun PsiElement.firstLeafOrSelf(): PsiElement {
-	var current = firstChild ?: return this
-	while(true){
-		current = current.firstChild ?: return current
-	}
-}
-
-fun PsiElement.lastLeafOrSelf(): PsiElement {
-	var current = lastChild ?: return this
-	while(true){
-		current = current.lastChild ?: return current
-	}
-}
 
 val PsiElement.icon
 	get() = getIcon(0)

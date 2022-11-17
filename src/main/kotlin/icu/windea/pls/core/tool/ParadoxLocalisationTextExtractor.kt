@@ -48,7 +48,7 @@ object ParadoxLocalisationTextExtractor {
 				extractTo(resolved, builder)
 				return
 			} else if(resolved is CwtProperty){
-				builder.append(resolved.propertyValue)
+				builder.append(resolved.value)
 				return
 			}
 		}

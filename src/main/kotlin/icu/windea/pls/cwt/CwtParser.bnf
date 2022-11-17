@@ -38,7 +38,10 @@ private option_comment_item ::= option | value
 
 option ::= option_key option_separator value{
   pin=1
-  methods=[getIcon getName getOptionName getOptionValue getSeparatorType]
+  methods=[
+    optionKey="optionKey" optionValue="value"
+    getIcon getName getValue getSeparatorType
+  ]
 }
 option_key ::= OPTION_KEY_TOKEN{
   methods=[getValue]
@@ -50,7 +53,10 @@ property ::= property_key property_separator value {
   recoverWhile="#auto"
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
-  methods=[getIcon getName setName getNameIdentifier getPropertyName getPropertyValue getSeparatorType]
+  methods=[
+    propertyKey="propertyKey" propertyValue="value"
+    getIcon getName setName getNameIdentifier getValue getSeparatorType
+  ]
 }
 property_key ::= PROPERTY_KEY_TOKEN{
   methods=[getValue]

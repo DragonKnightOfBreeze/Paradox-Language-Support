@@ -11,6 +11,7 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
@@ -51,17 +52,12 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: CwtOption): String {
-		return element.optionName
-	}
-	
-	@JvmStatic
-	fun getOptionName(element: CwtOption): String {
 		return element.optionKey.value
 	}
 	
 	@JvmStatic
-	fun getOptionValue(element: CwtOption): String {
-		return element.value?.value.orEmpty()
+	fun getValue(element: CwtOption): String? {
+		return element.optionValue?.value
 	}
 	
 	@JvmStatic
@@ -69,8 +65,8 @@ object CwtPsiImplUtil {
 		//这里不能遍历element.children
 		element.forEachChild { child ->
 			when(child.elementType) {
-				CwtElementTypes.EQUAL_SIGN -> return CwtSeparatorType.EQUAL
-				CwtElementTypes.NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
+				EQUAL_SIGN -> return CwtSeparatorType.EQUAL
+				NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
 			}
 		}
 		return CwtSeparatorType.EQUAL
@@ -80,7 +76,7 @@ object CwtPsiImplUtil {
 	//region CwtOptionKey
 	@JvmStatic
 	fun getValue(element: CwtOptionKey): String {
-		return element.optionKeyToken.text.unquote()
+		return element.findRequiredChild(OPTION_KEY_TOKEN).text.unquote()
 	}
 	//endregion
 	
@@ -98,7 +94,7 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: CwtProperty): String {
-		return element.propertyName
+		return element.propertyKey.value
 	}
 	
 	@JvmStatic
@@ -112,13 +108,8 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getPropertyName(element: CwtProperty): String {
-		return element.propertyKey.value
-	}
-	
-	@JvmStatic
-	fun getPropertyValue(element: CwtProperty): String {
-		return element.value?.value.orEmpty()
+	fun getValue(element: CwtProperty): String? {
+		return element.propertyValue?.value
 	}
 	
 	@JvmStatic
@@ -126,8 +117,8 @@ object CwtPsiImplUtil {
 		//这里不能遍历element.children
 		element.forEachChild { child ->
 			when(child.elementType) {
-				CwtElementTypes.EQUAL_SIGN -> return CwtSeparatorType.EQUAL
-				CwtElementTypes.NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
+				EQUAL_SIGN -> return CwtSeparatorType.EQUAL
+				NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
 			}
 		}
 		return CwtSeparatorType.EQUAL
@@ -137,7 +128,7 @@ object CwtPsiImplUtil {
 	//region CwtPropertyKey
 	@JvmStatic
 	fun getValue(element: CwtPropertyKey): String {
-		return element.propertyKeyToken.text.unquote()
+		return element.findRequiredChild(PROPERTY_KEY_TOKEN).text.unquote()
 	}
 	//endregion
 	

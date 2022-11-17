@@ -29,8 +29,8 @@ object CwtConfigResolver {
 	
 	private fun resolveProperty(property: CwtProperty, file: CwtFile, fileConfig: CwtFileConfig): CwtPropertyConfig? {
 		val pointer = property.createPointer(file)
-		val key = property.propertyName
-		val propValue = property.value ?: return null
+		val key = property.name
+		val propertyValue = property.propertyValue ?: return null
 		var booleanValue: Boolean? = null
 		var intValue: Int? = null
 		var floatValue: Float? = null
@@ -42,19 +42,19 @@ object CwtConfigResolver {
 		var optionValues: LinkedList<CwtOptionValueConfig>? = null
 		val separatorType = property.separatorType
 		when {
-			propValue is CwtBoolean -> booleanValue = propValue.booleanValue
-			propValue is CwtInt -> intValue = propValue.intValue
-			propValue is CwtFloat -> floatValue = propValue.floatValue
-			propValue is CwtString -> stringValue = propValue.stringValue
-			propValue is CwtBlock -> when {
-				propValue.isEmpty -> {
+			propertyValue is CwtBoolean -> booleanValue = propertyValue.booleanValue
+			propertyValue is CwtInt -> intValue = propertyValue.intValue
+			propertyValue is CwtFloat -> floatValue = propertyValue.floatValue
+			propertyValue is CwtString -> stringValue = propertyValue.stringValue
+			propertyValue is CwtBlock -> when {
+				propertyValue.isEmpty -> {
 					properties = emptyList()
 					values = emptyList()
 				}
 				else -> {
 					properties = SmartList()
 					values = SmartList()
-					propValue.processChild {
+					propertyValue.processChild {
 						when {
 							it is CwtProperty -> resolveProperty(it, file, fileConfig)?.addTo(properties).end()
 							it is CwtValue -> resolveValue(it, file, fileConfig).addTo(values).end()
@@ -98,7 +98,7 @@ object CwtConfigResolver {
 		val documentation = documentationLines?.joinToString("\n")
 		
 		val config = CwtPropertyConfig(
-			pointer, fileConfig.info, key, property.propertyValue,
+			pointer, fileConfig.info, key, propertyValue.value,
 			booleanValue, intValue, floatValue, stringValue, properties, values,
 			documentation, options, optionValues, separatorType
 		)
@@ -186,8 +186,8 @@ object CwtConfigResolver {
 	}
 	
 	private fun resolveOption(option: CwtOption, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionConfig? {
-		val key = option.optionName
-		val optionValue = option.value ?: return null
+		val key = option.name
+		val optionValue = option.optionValue ?: return null
 		var booleanValue: Boolean? = null
 		var intValue: Int? = null
 		var floatValue: Float? = null
