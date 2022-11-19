@@ -31,7 +31,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 	private class Visitor(private val holder: ProblemsHolder) : ParadoxScriptVisitor() {
 		override fun visitScriptedVariableReference(element: ParadoxScriptScriptedVariableReference) {
 			ProgressManager.checkCanceled()
-			if(element.reference.resolved()) return
+			if(element.reference.canResolve()) return
 			val quickFixes = buildList {
 				//要求对应的variableReference在定义声明内
 				val variableName = element.name

@@ -19,7 +19,7 @@ class UnresolvedCommandScopeInspection : LocalInspectionTool() {
 		override fun visitCommandScope(element: ParadoxLocalisationCommandScope) {
 			ProgressManager.checkCanceled()
 			val location = element
-			if(element.reference.resolved()) return
+			if(element.reference.canResolve()) return
 			val name = element.name
 			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unresolvedCommandScope.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
 				ImportGameOrModDirectoryFix(location)

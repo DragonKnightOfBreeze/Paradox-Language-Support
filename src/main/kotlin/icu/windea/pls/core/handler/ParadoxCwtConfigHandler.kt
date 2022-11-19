@@ -37,7 +37,12 @@ object ParadoxCwtConfigHandler {
 	}
 	
 	fun <T : CwtConfig<*>> resolveConfig(element: PsiElement, configType: Class<T>, allowDefinitionSelf: Boolean, hasDefault: Boolean, matchType: Int = CwtConfigMatchType.ALL): T? {
-		return resolveConfigs(element, configType, allowDefinitionSelf, hasDefault, matchType).firstOrNull()
+		val configs = resolveConfigs(element, configType, allowDefinitionSelf, hasDefault, matchType)
+		return when(configType){
+			CwtPropertyConfig::class.java -> configs.firstOrNull()
+			CwtValueConfig::class.java -> configs.singleOrNull()
+			else -> throw UnsupportedOperationException()
+		}
 	}
 	
 	@Suppress("UNCHECKED_CAST")
@@ -99,7 +104,7 @@ object ParadoxCwtConfigHandler {
 								}
 							}
 							if(hasDefault && isEmpty()) {
-								configs.findIsInstance<CwtPropertyConfig>()?.valueConfig?.let { add(it) }
+								configs.filterIsInstance<CwtPropertyConfig>().forEach { add(it.valueConfig) }
 							}
 						} as List<T>
 					}
@@ -118,7 +123,7 @@ object ParadoxCwtConfigHandler {
 									add(childValueConfig)
 								}
 								if(hasDefault && isEmpty()) {
-									childValueConfigs.singleOrNull()?.let { add(it) }
+									childValueConfigs.forEach { add(it) }
 								}
 							}
 						} as List<T>

@@ -48,17 +48,17 @@ class ParadoxScriptScopeExpressionInfo(
 	}
 }
 
-class ParadoxScriptScopeFieldPrefixExpressionInfo(
+class ParadoxScriptScopeLinkPrefixExpressionInfo(
 	text: String,
 	textRange: TextRange,
 	directlyResolvedList: List<PsiElement>?
 ) : ParadoxScriptExpressionInfo(text, textRange, null, directlyResolvedList) {
-	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): ParadoxScriptScopeFieldPrefixReference {
-		return ParadoxScriptScopeFieldPrefixReference(element, textRange, directlyResolvedList)
+	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): ParadoxScriptScopeLinkPrefixReference {
+		return ParadoxScriptScopeLinkPrefixReference(element, textRange, directlyResolvedList)
 	}
 	
 	override fun getAttributesKey(): TextAttributesKey {
-		return ParadoxScriptAttributesKeys.SCOPE_FIELD_PREFIX_KEY
+		return ParadoxScriptAttributesKeys.SCOPE_LINK_PREFIX_KEY
 	}
 }
 
@@ -92,14 +92,14 @@ class ParadoxScriptScopeFieldDataSourceExpressionInfo(
 	}
 }
 
-class ParadoxScriptValueFieldValueExpressionInfo(
+class ParadoxScriptValueLinkValueExpressionInfo(
 	text: String,
 	textRange: TextRange,
 	directlyResolved: PsiElement?,
 	private val possiblePrefixSet: Set<String>? = null
 ) : ParadoxScriptExpressionInfo(text, textRange, directlyResolved) {
-	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): ParadoxScriptValueFieldValueReference {
-		return ParadoxScriptValueFieldValueReference(element, textRange, directlyResolved)
+	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): ParadoxScriptValueLinkValueReference {
+		return ParadoxScriptValueLinkValueReference(element, textRange, directlyResolved)
 	}
 	
 	override fun getUnresolvedError(): ParadoxScriptExpressionError {
@@ -112,21 +112,21 @@ class ParadoxScriptValueFieldValueExpressionInfo(
 	}
 	
 	override fun getAttributesKey(): TextAttributesKey {
-		return  ParadoxScriptAttributesKeys.VALUE_FIELD_VALUE_KEY
+		return  ParadoxScriptAttributesKeys.VALUE_LINK_VALUE_KEY
 	}
 }
 
-class ParadoxScriptValueFieldPrefixExpressionInfo(
+class ParadoxScriptValueLinkPrefixExpressionInfo(
 	text: String,
 	textRange: TextRange,
 	directlyResolvedList: List<PsiElement>?
 ) : ParadoxScriptExpressionInfo(text, textRange, null, directlyResolvedList) {
-	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): ParadoxScriptValueFieldPrefixReference {
-		return ParadoxScriptValueFieldPrefixReference(element, textRange, directlyResolvedList)
+	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): ParadoxScriptValueLinkPrefixReference {
+		return ParadoxScriptValueLinkPrefixReference(element, textRange, directlyResolvedList)
 	}
 	
 	override fun getAttributesKey(): TextAttributesKey {
-		return ParadoxScriptAttributesKeys.VALUE_FIELD_PREFIX_KEY
+		return ParadoxScriptAttributesKeys.VALUE_LINK_PREFIX_KEY
 	}
 }
 

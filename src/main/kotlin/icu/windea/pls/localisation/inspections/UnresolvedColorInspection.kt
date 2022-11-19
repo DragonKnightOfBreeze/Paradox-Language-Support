@@ -20,7 +20,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
 		override fun visitColorfulText(element: ParadoxLocalisationColorfulText) {
 			ProgressManager.checkCanceled()
 			val location = element.colorId ?: return
-			if(element.reference.resolved()) return
+			if(element.reference.canResolve()) return
 			val name = element.name ?: return
 			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unresolvedColor.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
 				ImportGameOrModDirectoryFix(location)

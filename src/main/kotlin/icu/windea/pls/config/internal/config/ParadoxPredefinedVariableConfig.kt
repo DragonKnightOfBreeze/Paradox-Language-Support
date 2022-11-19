@@ -2,6 +2,7 @@ package icu.windea.pls.config.internal.config
 
 import com.intellij.psi.*
 import icons.*
+import icu.windea.pls.cwt.psi.*
 import javax.swing.*
 
 /**
@@ -10,7 +11,7 @@ import javax.swing.*
 class ParadoxPredefinedVariableConfig(
 	override val id: String,
 	override val description: String,
-	override val pointer: SmartPsiElementPointer<out PsiElement>
+	override val pointer: SmartPsiElementPointer<CwtProperty>
 ) : InternalConfig {
 	override val icon: Icon get() = PlsIcons.PredefinedVariable
 	

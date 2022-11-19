@@ -29,15 +29,16 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 		context.put(PlsCompletionKeys.completionTypeKey, parameters.completionType)
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
+		context.put(PlsCompletionKeys.configGroupKey, configGroup)
 		
 		val prevScope = parameters.position.parentOfType<ParadoxLocalisationCommandIdentifier>()?.prevIdentifier?.name
 		if(prevScope != null) context.put(PlsCompletionKeys.prevScopeKey, prevScope)
 		
 		//提示scope
-		context.completeLocalisationCommandScope(configGroup, result)
+		completeLocalisationCommandScope(context, result)
 		
 		//提示command
-		context.completeLocalisationCommandField(configGroup, result)
+		completeLocalisationCommandField(context, result)
 		
 		//提示<scripted_loc>
 		ProgressManager.checkCanceled()

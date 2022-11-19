@@ -34,8 +34,8 @@ settings = {
 	key = <VALUE_SET_VALUE>value_set_value</VALUE_SET_VALUE>
 	<SYSTEM_SCOPE>root</SYSTEM_SCOPE> = {
 		<SCOPE>owner</SCOPE> = {
-			some_scope_field = <SCOPE_FIELD_PREFIX>prefix:</SCOPE_FIELD_PREFIX><VALUE_SET_VALUE>value</VALUE_SET_VALUE>
-			some_value_field = <VALUE_FIELD_PREFIX>prefix:</VALUE_FIELD_PREFIX><VALUE_SET_VALUE>value</VALUE_SET_VALUE>
+			some_scope_field = <SCOPE_LINK_PREFIX>prefix:</SCOPE_LINK_PREFIX><VALUE_SET_VALUE>value</VALUE_SET_VALUE>
+			some_value_field = <VALUE_LINK_PREFIX>prefix:</VALUE_LINK_PREFIX><VALUE_SET_VALUE>value</VALUE_SET_VALUE>
 			<MODIFIER>some_modifier</MODIFIER> = 1
 		}
 	}

@@ -105,3 +105,15 @@ enum class ParadoxDataType(
 		}
 	}
 }
+
+fun ParadoxDataType.isBooleanType() = this == ParadoxDataType.BooleanType
+
+fun ParadoxDataType.isIntType() = this == ParadoxDataType.UnknownType || this == ParadoxDataType.IntType || this == ParadoxDataType.ParameterType || this == ParadoxDataType.InlineMathType
+
+fun ParadoxDataType.isFloatType() = this == ParadoxDataType.UnknownType || this == ParadoxDataType.IntType || this == ParadoxDataType.FloatType || this == ParadoxDataType.ParameterType || this == ParadoxDataType.InlineMathType
+
+fun ParadoxDataType.isStringType() = this == ParadoxDataType.UnknownType || this == ParadoxDataType.StringType || this == ParadoxDataType.ParameterType
+
+fun ParadoxDataType.isColorType() = this == ParadoxDataType.ColorType
+
+fun ParadoxDataType.canBeScriptedVariableValue() = this == ParadoxDataType.BooleanType || this == ParadoxDataType.IntType || this == ParadoxDataType.FloatType

@@ -20,7 +20,7 @@ class UnresolvedCommandFieldInspection : LocalInspectionTool() {
 		override fun visitCommandField(element: ParadoxLocalisationCommandField) {
 			ProgressManager.checkCanceled()
 			val location = element
-			if(element.reference.resolved()) return
+			if(element.reference.canResolve()) return
 			val name = element.name
 			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unresolvedCommandField.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
 				ImportGameOrModDirectoryFix(location)

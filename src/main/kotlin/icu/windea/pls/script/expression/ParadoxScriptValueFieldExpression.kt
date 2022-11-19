@@ -7,8 +7,8 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeParametersForScriptValueExpression
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeScope
-import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueFieldPrefixOrDataSource
-import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueFieldValue
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueLinkPrefixOrDataSource
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueLinkValue
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -25,7 +25,7 @@ class ParadoxScriptValueFieldExpression(
 	infos: List<ParadoxScriptExpressionInfo> = emptyList(),
 	errors: List<ParadoxScriptExpressionError> = emptyList()
 ) : ParadoxScriptComplexExpression(expressionString, configGroup, infos, errors) {
-	val prefixInfo = infos.findIsInstance<ParadoxScriptValueFieldPrefixExpressionInfo>()
+	val prefixInfo = infos.findIsInstance<ParadoxScriptValueLinkPrefixExpressionInfo>()
 	val dataSourceInfo = infos.findIsInstance<ParadoxScriptValueFieldDataSourceExpressionInfo>()
 	val scriptValueParametersStartIndex = if(dataSourceInfo == null) -1 else expressionString.indexOf('|', dataSourceInfo.textRange.endOffset)
 	
@@ -84,10 +84,10 @@ class ParadoxScriptValueFieldExpression(
 					infos.add(info)
 					if(resolved == null) isMatched = false
 				} else {
-					val resolved = CwtConfigHandler.resolveValueFieldValue(textToCheck, configGroup)
+					val resolved = CwtConfigHandler.resolveValueLinkValue(textToCheck, configGroup)
 					//可以解析，继续
 					if(resolved != null) {
-						val info = ParadoxScriptValueFieldValueExpressionInfo(textToCheck, textRange, resolved)
+						val info = ParadoxScriptValueLinkValueExpressionInfo(textToCheck, textRange, resolved)
 						infos.add(info)
 						continue
 					}
@@ -100,7 +100,7 @@ class ParadoxScriptValueFieldExpression(
 						val prefixRange = TextRange.create(textRange.startOffset, textRange.startOffset + prefix.length)
 						
 						val directlyResolvedList = matchedLinkConfigs.mapNotNull { it.pointer.element }
-						val prefixInfo = ParadoxScriptValueFieldPrefixExpressionInfo(prefix, prefixRange, directlyResolvedList)
+						val prefixInfo = ParadoxScriptValueLinkPrefixExpressionInfo(prefix, prefixRange, directlyResolvedList)
 						infos.add(prefixInfo)
 						val textWithoutPrefix = textToCheck.drop(prefix.length)
 						if(textWithoutPrefix.isEmpty()) {
@@ -173,7 +173,7 @@ class ParadoxScriptValueFieldExpression(
 					} else {
 						//这里认为如果声明了数据源，则必须要有前缀
 						//无法解析的value，或者要求有前缀
-						val info = ParadoxScriptValueFieldValueExpressionInfo(textToCheck, textRange, null, configGroup.linksAsValuePrefixes)
+						val info = ParadoxScriptValueLinkValueExpressionInfo(textToCheck, textRange, null, configGroup.linksAsValuePrefixes)
 						infos.add(info)
 						isMatched = false //不匹配
 					}
@@ -235,7 +235,7 @@ class ParadoxScriptValueFieldExpression(
 			if(paramNameKeyword != null) {
 				put(PlsCompletionKeys.keywordKey, paramNameKeyword)
 				//开始提示
-				completeParametersForScriptValueExpression(svName, paramNames, result)
+				completeParametersForScriptValueExpression(svName, paramNames, this, result)
 				put(PlsCompletionKeys.keywordKey, expressionString)
 			}
 			return
@@ -248,11 +248,11 @@ class ParadoxScriptValueFieldExpression(
 		if(prevScope != null) put(PlsCompletionKeys.prevScopeKey, prevScope)
 		
 		if(isLast) {
-			completeScope(result)
-			completeValueFieldValue(result)
-			completeValueFieldPrefixOrDataSource(result)
+			completeScope(this, result)
+			completeValueLinkValue(this, result)
+			completeValueLinkPrefixOrDataSource(this, result)
 		} else {
-			completeScope(result)
+			completeScope(this, result)
 		}
 		
 		put(PlsCompletionKeys.keywordKey, expressionString)

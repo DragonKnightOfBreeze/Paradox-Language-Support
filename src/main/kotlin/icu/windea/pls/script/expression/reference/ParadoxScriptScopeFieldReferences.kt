@@ -11,7 +11,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptScopeFieldPrefixReference(
+class ParadoxScriptScopeLinkPrefixReference(
 	element: ParadoxScriptExpressionElement,
 	rangeInElement: TextRange,
 	private val resolved: List<PsiElement>?

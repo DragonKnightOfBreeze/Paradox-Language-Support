@@ -42,7 +42,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 			//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
 			val definitionProperty = keyElement.findParentDefinitionProperty(fromParentBlock = true) ?: return
 			//进行提示
-			continueComplete = CwtConfigHandler.addKeyCompletions(keyElement, definitionProperty, resultToUse, context)
+			continueComplete = CwtConfigHandler.addKeyCompletions(keyElement, definitionProperty, context, resultToUse)
 		}
 		if(continueComplete && mayBeValue) {
 			//得到value元素
@@ -50,7 +50,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 			//得到上一级definitionProperty
 			val definitionProperty = valueElement.findParentDefinitionProperty() ?: return
 			//进行提示
-			continueComplete = CwtConfigHandler.addValueCompletions(valueElement, definitionProperty, resultToUse, context)
+			continueComplete = CwtConfigHandler.addValueCompletions(valueElement, definitionProperty, context, resultToUse)
 		}
 		if(continueComplete && mayBeValueInBlock) {
 			//得到value元素
@@ -58,7 +58,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 			//得到上一级block
 			val blockElement = blockOrPropertyValueElement as ParadoxScriptBlock
 			//进行提示
-			CwtConfigHandler.addValueCompletionsInBlock(valueElement, blockElement, resultToUse, context)
+			CwtConfigHandler.addValueCompletionsInBlock(valueElement, blockElement, context, resultToUse)
 		}
 	}
 }

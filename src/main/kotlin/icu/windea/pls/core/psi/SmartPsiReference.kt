@@ -6,7 +6,7 @@ import com.intellij.psi.*
 interface SmartPsiReference : PsiReference {
 	fun resolve(exact: Boolean): PsiElement?
 	
-	fun resolved(): Boolean {
+	fun canResolve(): Boolean {
 		return resolve(false) != null
 	}
 	
@@ -15,4 +15,4 @@ interface SmartPsiReference : PsiReference {
 	}
 }
 
-fun SmartPsiReference?.resolved() = this == null || this.resolved()
+fun SmartPsiReference?.canResolve() = this == null || this.canResolve()

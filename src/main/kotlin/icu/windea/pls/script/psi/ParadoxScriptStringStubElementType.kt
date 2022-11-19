@@ -31,7 +31,7 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
-		//skip if it may contain parameter
+		//skip if it may contain parameters
 		if(node.isParameterAwareExpression()) return false
 		return true
 	}

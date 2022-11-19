@@ -6,8 +6,8 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeScope
-import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueFieldPrefixOrDataSource
-import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueFieldValue
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueLinkPrefixOrDataSource
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueLinkValue
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -24,7 +24,7 @@ class ParadoxScriptScopeFieldExpression(
 	infos: List<ParadoxScriptExpressionInfo> = emptyList(),
 	errors: List<ParadoxScriptExpressionError> = emptyList()
 ) : ParadoxScriptComplexExpression(expressionString, configGroup, infos, errors) {
-	val prefixInfo = infos.findIsInstance<ParadoxScriptValueFieldPrefixExpressionInfo>()
+	val prefixInfo = infos.findIsInstance<ParadoxScriptValueLinkPrefixExpressionInfo>()
 	val dataSourceInfo = infos.findIsInstance<ParadoxScriptValueFieldDataSourceExpressionInfo>()
 	
 	//TODO 参考CWT规则，作用域本身的别名（如：`root`）也可以包含点号
@@ -85,7 +85,7 @@ class ParadoxScriptScopeFieldExpression(
 					val prefix = matchedLinkConfigs.first().prefix!!
 					val prefixRange = TextRange.create(textRange.startOffset, textRange.startOffset + prefix.length)
 					val directlyResolvedList = matchedLinkConfigs.mapNotNull { it.pointer.element }
-					val prefixInfo = ParadoxScriptScopeFieldPrefixExpressionInfo(prefix, prefixRange, directlyResolvedList)
+					val prefixInfo = ParadoxScriptScopeLinkPrefixExpressionInfo(prefix, prefixRange, directlyResolvedList)
 					infos.add(prefixInfo)
 					val dataSourceText = textToCheck.drop(prefix.length)
 					if(dataSourceText.isEmpty()) {
@@ -142,11 +142,11 @@ class ParadoxScriptScopeFieldExpression(
 		if(prevScope != null) put(PlsCompletionKeys.prevScopeKey, prevScope)
 		
 		if(isLast) {
-			completeScope(result)
-			completeValueFieldValue(result)
-			completeValueFieldPrefixOrDataSource(result)
+			completeScope(this, result)
+			completeValueLinkValue(this, result)
+			completeValueLinkPrefixOrDataSource(this, result)
 		} else {
-			completeScope(result)
+			completeScope(this, result)
 		}
 		
 		put(PlsCompletionKeys.keywordKey, expressionString)

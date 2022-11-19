@@ -172,12 +172,12 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun doAnnotateComplexExpression(
 		element: ParadoxScriptExpressionElement,
-		valueSetValueExpression: ParadoxScriptComplexExpression,
+		complexExpression: ParadoxScriptComplexExpression,
 		config: CwtDataConfig<*>,
 		range: TextRange,
 		holder: AnnotationHolder
 	) {
-		for(info in valueSetValueExpression.infos) {
+		for(info in complexExpression.infos) {
 			val attributesKeyExpressions = info.getAttributesKeyExpressions(element, config)
 			if(attributesKeyExpressions.isNotEmpty()) {
 				//使用第一个匹配的expression的高亮
