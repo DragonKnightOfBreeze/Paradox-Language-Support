@@ -1,10 +1,12 @@
 package icu.windea.pls.script.exp
 
+import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.exp.ParadoxScopeFieldExpression.*
 import icu.windea.pls.script.exp.errors.*
@@ -49,32 +51,44 @@ class ParadoxScopeFieldExpressionImpl(
 	override val quoted: Boolean = false
 	
 	override val scopes: List<ParadoxScopeExpressionNode> get() = nodes.filterIsInstance<ParadoxScopeExpressionNode>()
+	
+	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+		val offsetInParent = context.offsetInParent
+		for((index, node) in nodes.withIndex()) {
+			if(node is ParadoxScopeExpressionNode) {
+				val nodeRange = rangeInExpression
+				if(offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset) {
+					val keyword = context.keyword
+					context.put(PlsCompletionKeys.keywordKey, text)
+					CwtConfigHandler.completeSystemScope(context, result)
+					CwtConfigHandler.completeScope(context, result)
+					CwtConfigHandler.completeScopeLinkPrefixOrDataSource(context, result)
+					context.put(PlsCompletionKeys.keywordKey, keyword)
+				}
+			}
+		}
+	}
 }
 
 fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null, completionOffset: Int = -1): ParadoxScopeFieldExpression? {
 	val nodes = SmartList<ParadoxScriptExpressionNode>()
 	val errors = SmartList<ParadoxScriptExpressionError>()
-	var malformed = false
 	val offset = textRange.startOffset
 	var startIndex: Int
 	var endIndex: Int = -1
 	while(endIndex < text.length) {
 		startIndex = endIndex + 1
-		endIndex = text.indexOf('.', startIndex)
-		val dotNode = if(endIndex != -1) {
+		endIndex = text.indexOf('.', startIndex).let { if(it == -1) text.length else it }
+		val dotNode = if(endIndex == text.length) {
 			ParadoxScriptOperatorExpressionNode(".", TextRange.create(endIndex + offset, endIndex + 1 + offset))
 		} else {
-			endIndex = text.length
 			null
 		}
 		val nodeText = text.substring(startIndex, endIndex)
-		//empty node -> continue
-		//if(nodeText.isEmpty() && completionOffset != startIndex) {
-		//	malformed = true
-		//}
-		//unexpected token -> stop
+		//unexpected token -> malformed
 		if(!nodeText.all { it == ':' || it == '_' || it == '@' || it.isExactLetter() || it.isExactDigit() }) {
-			malformed = true
+			val error = ParadoxMalformedScopeFieldExpressionError(textRange, PlsBundle.message("script.expression.malformedScopeFieldExpression", text))
+			errors.add(error)
 			break
 		}
 		val nodeTextRange = TextRange.create(startIndex + offset, endIndex + offset)
@@ -83,12 +97,13 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 		if(startIndex == 0 && node.nodes.isEmpty() && completionOffset == -1) {
 			return null
 		}
+		//handle missing scope situation
+		if(startIndex != 0 && endIndex == text.length && nodeText.isEmpty()) {
+			val error = ParadoxMissingScopeExpressionError(textRange, PlsBundle.message("script.expression.missingScopeExpression"))
+			errors.add(error)
+		}
 		nodes.add(node)
 		if(dotNode != null) nodes.add(dotNode)
-	}
-	if(malformed) {
-		val error = ParadoxMalformedScopeFieldExpressionError(textRange, PlsBundle.message("script.expression.malformedScopeFieldExpression", text))
-		errors.add(error)
 	}
 	return ParadoxScopeFieldExpressionImpl(text, textRange, isKey, nodes, errors)
 }

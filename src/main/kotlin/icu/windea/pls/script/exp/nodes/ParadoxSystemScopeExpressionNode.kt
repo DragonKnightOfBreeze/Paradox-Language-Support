@@ -7,7 +7,6 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.script.exp.*
 import icu.windea.pls.script.highlighter.*
 
 class ParadoxSystemScopeExpressionNode(

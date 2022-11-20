@@ -1,4 +1,4 @@
-package icu.windea.pls.script.exp
+package icu.windea.pls.script.exp.nodes
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.editor.colors.*
@@ -6,6 +6,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.script.exp.errors.*
 
 interface ParadoxScriptExpressionNode {
 	val text: String
@@ -19,6 +20,4 @@ interface ParadoxScriptExpressionNode {
 	fun getReference(element: PsiElement): PsiReference? = null
 	
 	fun getUnresolvedError(element: PsiElement): ParadoxScriptExpressionError? = null
-	
-	fun applyCompletion(context: ProcessingContext, result: CompletionResultSet) = pass()
 }

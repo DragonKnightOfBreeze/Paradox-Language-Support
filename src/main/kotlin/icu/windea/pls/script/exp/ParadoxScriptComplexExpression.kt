@@ -3,15 +3,18 @@ package icu.windea.pls.script.exp
 import com.intellij.codeInsight.completion.*
 import com.intellij.lang.annotation.*
 import com.intellij.lang.annotation.HighlightSeverity.*
+import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.script.exp.nodes.*
 import icu.windea.pls.script.psi.*
 
-interface ParadoxScriptComplexExpression : ParadoxScriptExpression, ParadoxScriptExpressionNode
+interface ParadoxScriptComplexExpression : ParadoxScriptExpression, ParadoxScriptExpressionNode {
+	fun complete(context: ProcessingContext, result: CompletionResultSet) = pass()
+}
 
 fun ParadoxScriptComplexExpression.processAllNodes(processor: Processor<ParadoxScriptExpressionNode>): Boolean {
 	return doProcessAllNodes(processor)
@@ -54,15 +57,20 @@ fun ParadoxScriptComplexExpression.annotate(element: ParadoxScriptExpressionElem
 private fun ParadoxScriptExpressionNode.doAnnotate(element: ParadoxScriptExpressionElement, range: TextRange, holder: AnnotationHolder) {
 	val attributesKey = this.getAttributesKey()
 	if(attributesKey != null) {
-		holder.newSilentAnnotation(INFORMATION).range(rangeInExpression.shiftRight(range.startOffset))
-			//.enforcedTextAttributes(PlsConstants.eraseMarker) //erase original text attributes
-			.textAttributes(attributesKey)
-			.create()
+		if(this is ParadoxScriptTokenExpressionNode) {
+			//enforce text attributes when node is a token
+			holder.newSilentAnnotation(INFORMATION).range(rangeInExpression.shiftRight(range.startOffset))
+				.enforcedTextAttributes(EditorColorsManager.getInstance().schemeForCurrentUITheme.getAttributes(attributesKey))
+				.create()
+		} else {
+			holder.newSilentAnnotation(INFORMATION).range(rangeInExpression.shiftRight(range.startOffset))
+				.textAttributes(attributesKey)
+				.create()
+		}
 	} else {
 		val resolvedTextAttributesKey = this.getReference(element)?.castOrNull<SmartPsiReference>()?.resolveTextAttributesKey()
 		if(resolvedTextAttributesKey != null) {
 			holder.newSilentAnnotation(INFORMATION).range(rangeInExpression.shiftRight(range.startOffset))
-				//.enforcedTextAttributes(PlsConstants.eraseMarker) //erase original text attributes
 				.textAttributes(resolvedTextAttributesKey)
 				.create()
 		}
@@ -70,23 +78,6 @@ private fun ParadoxScriptExpressionNode.doAnnotate(element: ParadoxScriptExpress
 	if(nodes.isNotEmpty()) {
 		for(node in nodes) {
 			node.doAnnotate(element, range, holder)
-		}
-	}
-}
-
-fun ParadoxScriptComplexExpression.complete(context: ProcessingContext, result: CompletionResultSet) {
-	this.doComplete(context, result)
-}
-
-private fun ParadoxScriptExpressionNode.doComplete(context: ProcessingContext, result: CompletionResultSet) {
-	this.applyCompletion(context, result)
-	if(nodes.isNotEmpty()) {
-		val offsetInParent = context.offsetInParent
-		for(node in nodes) {
-			val nodeRange = node.rangeInExpression
-			if(offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset) {
-				node.doComplete(context, result)
-			}
 		}
 	}
 }

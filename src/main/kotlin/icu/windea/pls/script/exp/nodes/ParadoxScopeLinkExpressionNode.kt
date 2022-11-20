@@ -6,7 +6,6 @@ import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.script.exp.*
 import icu.windea.pls.script.highlighter.*
 
 class ParadoxScopeLinkExpressionNode(

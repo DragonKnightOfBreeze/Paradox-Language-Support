@@ -1,13 +1,10 @@
 package icu.windea.pls.script.exp.nodes
 
-import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.script.exp.*
 import icu.windea.pls.script.exp.errors.*
 import icu.windea.pls.script.psi.*
 
@@ -19,16 +16,8 @@ class ParadoxScopeExpressionNode(
 ) : ParadoxScriptExpressionNode {
 	override fun getUnresolvedError(element: PsiElement): ParadoxScriptExpressionError? {
 		if(canResolve) return null
-		if(text.isEmpty()) {
-			return ParadoxMissingScopeExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingScopeExpression"))
-		}
+		if(text.isEmpty()) return null
 		return ParadoxUnresolvedScopeExpressionError(rangeInExpression, PlsBundle.message("script.expression.unresolvedScopeExpression", text))
-	}
-	
-	override fun applyCompletion(context: ProcessingContext, result: CompletionResultSet) {
-		val resultToUse = result.withPrefixMatcher(text)
-		CwtConfigHandler.completeSystemScope(context, resultToUse)
-		CwtConfigHandler.completeScope(context, resultToUse)
 	}
 	
 	companion object Resolver {
