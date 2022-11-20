@@ -53,6 +53,11 @@ class ParadoxScopeFieldExpressionImpl(
 	override val scopes: List<ParadoxScopeExpressionNode> get() = nodes.filterIsInstance<ParadoxScopeExpressionNode>()
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+		val keyword = context.keyword
+		val isKey = context.isKey
+		val prevScope = context.prevScope
+		context.put(PlsCompletionKeys.isKeyKey, null)
+		
 		val offsetInParent = context.offsetInParent
 		var prevScopeToUse: String? = null
 		var start = false
@@ -61,21 +66,21 @@ class ParadoxScopeFieldExpressionImpl(
 				val nodeRange = rangeInExpression
 				if(offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset) {
 					start = true
-					val keyword = context.keyword
-					val prevScope = context.prevScope
-					context.put(PlsCompletionKeys.keywordKey, text)
-					if(prevScope != null) context.put(PlsCompletionKeys.prevScopeKey, prevScopeToUse)
+					context.put(PlsCompletionKeys.keywordKey, node.text)
+					context.put(PlsCompletionKeys.prevScopeKey, prevScopeToUse)
 					CwtConfigHandler.completeSystemScope(context, result)
 					CwtConfigHandler.completeScope(context, result)
 					CwtConfigHandler.completeScopeLinkPrefixOrDataSource(context, result)
-					context.put(PlsCompletionKeys.keywordKey, keyword)
-					context.put(PlsCompletionKeys.prevScopeKey, prevScope)
 				} else {
 					if(start) break
 				}
 				prevScopeToUse = node.text
 			}
 		}
+		
+		context.put(PlsCompletionKeys.keywordKey, keyword)
+		context.put(PlsCompletionKeys.isKeyKey, isKey)
+		context.put(PlsCompletionKeys.prevScopeKey, prevScope)
 	}
 }
 
