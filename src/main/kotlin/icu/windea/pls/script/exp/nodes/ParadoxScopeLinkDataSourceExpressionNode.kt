@@ -1,6 +1,5 @@
 package icu.windea.pls.script.exp.nodes
 
-import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
@@ -9,6 +8,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.script.exp.errors.*
@@ -19,9 +19,17 @@ class ParadoxScopeLinkDataSourceExpressionNode(
 	override val rangeInExpression: TextRange,
 	val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxScriptExpressionNode {
-	override fun getReference(element: ParadoxScriptExpressionElement): PsiReference {
-		return Reference(element, rangeInExpression, linkConfigs)
+	override fun getAttributesKeyExpression(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): CwtDataExpression? {
+		return linkConfigs.firstNotNullOfOrNull { linkConfig ->
+			val dataSource = linkConfig.dataSource
+				?: return@firstNotNullOfOrNull null
+			CwtConfigHandler.resolveScriptExpression(element, rangeInExpression, dataSource, linkConfig, exact = false)
+				?: return@firstNotNullOfOrNull null
+			dataSource
+		} ?: linkConfigs.firstOrNull()?.dataSource
 	}
+	
+	override fun getReference(element: ParadoxScriptExpressionElement) = Reference(element, rangeInExpression, linkConfigs)
 	
 	override fun getUnresolvedError(element: ParadoxScriptExpressionElement): ParadoxScriptExpressionError? {
 		if(nodes.isNotEmpty()) return null
@@ -30,6 +38,8 @@ class ParadoxScopeLinkDataSourceExpressionNode(
 		//忽略是valueSetValue的情况
 		if(linkConfigs.any { it.dataSource?.type == CwtDataTypes.Value }) return null
 		val dataSources = linkConfigs.mapNotNull { it.dataSource }.joinToString()
+		//排除可解析的情况
+		if(getReference(element).canResolve()) return null
 		return ParadoxUnresolvedScopeLinkDataSourceExpressionError(rangeInExpression, PlsBundle.message("script.expression.unresolvedScopeLinkDataSource", text, dataSources))
 	}
 	
@@ -69,7 +79,7 @@ class ParadoxScopeLinkDataSourceExpressionNode(
 			return linkConfigs.firstNotNullOfOrNull { linkConfig ->
 				val dataSource = linkConfig.dataSource
 					?: return@firstNotNullOfOrNull null
-				val resolved = CwtConfigHandler.resolveScriptExpression(element, rangeInElement, dataSource, linkConfig)
+				val resolved = CwtConfigHandler.resolveScriptExpression(element, rangeInElement, dataSource, linkConfig, exact = exact)
 					?: return@firstNotNullOfOrNull null
 				resolved
 			}
@@ -77,17 +87,12 @@ class ParadoxScopeLinkDataSourceExpressionNode(
 		
 		override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 			val element = element
-			return linkConfigs.mapNotNull { linkConfig ->
+			return linkConfigs.flatMap { linkConfig ->
 				val dataSource = linkConfig.dataSource
-					?: return@mapNotNull null
-				val resolved = CwtConfigHandler.resolveScriptExpression(element, rangeInElement, dataSource, linkConfig)
-					?: return@mapNotNull null
-				PsiElementResolveResult(resolved)
-			}.toTypedArray()
-		}
-		
-		override fun resolveTextAttributesKey(): TextAttributesKey? {
-			return super.resolveTextAttributesKey()
+					?: return@flatMap emptyList()
+				val resolved = CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, dataSource, linkConfig)
+				resolved
+			}.mapToArray { PsiElementResolveResult(it) }
 		}
 	}
 }

@@ -15,9 +15,7 @@ class ParadoxScopeLinkPrefixExpressionNode(
 ) : ParadoxScriptExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SCOPE_LINK_PREFIX_KEY
 	
-	override fun getReference(element: ParadoxScriptExpressionElement): PsiReference {
-		return Reference(element, rangeInExpression, linkConfigs)
-	}
+	override fun getReference(element: ParadoxScriptExpressionElement) = Reference(element, rangeInExpression, linkConfigs)
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxScopeLinkPrefixExpressionNode {

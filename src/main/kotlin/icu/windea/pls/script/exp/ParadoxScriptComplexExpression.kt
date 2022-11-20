@@ -1,14 +1,9 @@
 package icu.windea.pls.script.exp
 
 import com.intellij.codeInsight.completion.*
-import com.intellij.lang.annotation.*
-import com.intellij.lang.annotation.HighlightSeverity.*
-import com.intellij.openapi.editor.colors.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.exp.nodes.*
 import icu.windea.pls.script.psi.*
 
@@ -49,36 +44,3 @@ private fun ParadoxScriptExpressionNode.doGetReferences(element: ParadoxScriptEx
 		}
 	}
 }
-
-fun ParadoxScriptComplexExpression.annotate(element: ParadoxScriptExpressionElement, range: TextRange, holder: AnnotationHolder) {
-	this.doAnnotate(element, range, holder)
-}
-
-private fun ParadoxScriptExpressionNode.doAnnotate(element: ParadoxScriptExpressionElement, range: TextRange, holder: AnnotationHolder) {
-	val attributesKey = this.getAttributesKey()
-	if(attributesKey != null) {
-		if(this is ParadoxScriptTokenExpressionNode) {
-			//enforce text attributes when node is a token
-			holder.newSilentAnnotation(INFORMATION).range(rangeInExpression.shiftRight(range.startOffset))
-				.enforcedTextAttributes(EditorColorsManager.getInstance().schemeForCurrentUITheme.getAttributes(attributesKey))
-				.create()
-		} else {
-			holder.newSilentAnnotation(INFORMATION).range(rangeInExpression.shiftRight(range.startOffset))
-				.textAttributes(attributesKey)
-				.create()
-		}
-	} else {
-		val resolvedTextAttributesKey = this.getReference(element)?.castOrNull<SmartPsiReference>()?.resolveTextAttributesKey()
-		if(resolvedTextAttributesKey != null) {
-			holder.newSilentAnnotation(INFORMATION).range(rangeInExpression.shiftRight(range.startOffset))
-				.textAttributes(resolvedTextAttributesKey)
-				.create()
-		}
-	}
-	if(nodes.isNotEmpty()) {
-		for(node in nodes) {
-			node.doAnnotate(element, range, holder)
-		}
-	}
-}
-

@@ -2,6 +2,7 @@ package icu.windea.pls.script.editor
 
 import com.intellij.lang.annotation.*
 import com.intellij.lang.annotation.HighlightSeverity.*
+import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -13,6 +14,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.exp.*
+import icu.windea.pls.script.exp.nodes.*
 import icu.windea.pls.script.expression.ParadoxScriptComplexExpression
 import icu.windea.pls.script.expression.ParadoxScriptExpression
 import icu.windea.pls.script.psi.*
@@ -139,7 +141,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-				if(!element.isQuoted()){
+				if(!element.isQuoted()) {
 					val expressionString = range.shiftLeft(element.textRange.startOffset).substring(element.text).unquote()
 					val valueSetValueExpression = ParadoxScriptExpression.resolveValueSetValue(expressionString, configGroup)
 					if(valueSetValueExpression.isEmpty()) return
@@ -155,7 +157,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				val textRange = TextRange.create(0, text.length)
 				val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup, isKey)
 					?: return
-				scopeFieldExpression.annotate(element, range, holder)
+				annotateComplexExpression(element, scopeFieldExpression, config, range, holder)
 			}
 			CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
 				if(!element.isQuoted()) {
@@ -192,6 +194,37 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			if(attributesKey != null) {
 				val infoRange = info.textRange.shiftRight(range.startOffset)
 				holder.newSilentAnnotation(INFORMATION).range(infoRange).textAttributes(attributesKey).create()
+			}
+		}
+	}
+	
+	fun annotateComplexExpression(element: ParadoxScriptExpressionElement, expression: icu.windea.pls.script.exp.ParadoxScriptComplexExpression, config: CwtDataConfig<*>, range: TextRange, holder: AnnotationHolder) {
+		doAnnotateComplexExpression(element, expression, config, range, holder)
+	}
+	
+	private fun doAnnotateComplexExpression(element: ParadoxScriptExpressionElement, expressionNode: ParadoxScriptExpressionNode, config: CwtDataConfig<*>, range: TextRange, holder: AnnotationHolder) {
+		val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(range.startOffset)
+		val attributesKey = expressionNode.getAttributesKey()
+		if(attributesKey != null) {
+			if(expressionNode is ParadoxScriptTokenExpressionNode) {
+				//enforce text attributes when node is a token
+				holder.newSilentAnnotation(INFORMATION).range(rangeToAnnotate)
+					.enforcedTextAttributes(EditorColorsManager.getInstance().schemeForCurrentUITheme.getAttributes(attributesKey))
+					.create()
+			} else {
+				holder.newSilentAnnotation(INFORMATION).range(rangeToAnnotate)
+					.textAttributes(attributesKey)
+					.create()
+			}
+		} else {
+			val attributesKeyExpression = expressionNode.getAttributesKeyExpression(element, config)
+			if(attributesKeyExpression != null) {
+				doAnnotateExpressionElement(element, rangeToAnnotate, attributesKeyExpression, config, holder)
+			}
+		}
+		if(expressionNode.nodes.isNotEmpty()) {
+			for(node in expressionNode.nodes) {
+				doAnnotateComplexExpression(element, node, config, range, holder)
 			}
 		}
 	}

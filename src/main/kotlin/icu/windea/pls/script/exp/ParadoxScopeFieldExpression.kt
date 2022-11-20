@@ -55,10 +55,12 @@ class ParadoxScopeFieldExpressionImpl(
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
 		val offsetInParent = context.offsetInParent
 		var prevScopeToUse: String? = null
-		for((index, node) in nodes.withIndex()) {
+		var start = false
+		for(node in nodes) {
 			if(node is ParadoxScopeExpressionNode) {
 				val nodeRange = rangeInExpression
 				if(offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset) {
+					start = true
 					val keyword = context.keyword
 					val prevScope = context.prevScope
 					context.put(PlsCompletionKeys.keywordKey, text)
@@ -68,7 +70,8 @@ class ParadoxScopeFieldExpressionImpl(
 					CwtConfigHandler.completeScopeLinkPrefixOrDataSource(context, result)
 					context.put(PlsCompletionKeys.keywordKey, keyword)
 					context.put(PlsCompletionKeys.prevScopeKey, prevScope)
-					break
+				} else {
+					if(start) break
 				}
 				prevScopeToUse = node.text
 			}
