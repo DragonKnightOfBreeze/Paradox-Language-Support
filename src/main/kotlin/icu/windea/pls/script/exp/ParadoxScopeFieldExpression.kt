@@ -66,7 +66,7 @@ class ParadoxScopeFieldExpressionImpl(
 				val nodeRange = rangeInExpression
 				if(offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset) {
 					start = true
-					context.put(PlsCompletionKeys.keywordKey, node.text)
+					context.put(PlsCompletionKeys.keywordKey, node.text.substring(0, nodeRange.startOffset - offsetInParent))
 					context.put(PlsCompletionKeys.prevScopeKey, prevScopeToUse)
 					CwtConfigHandler.completeSystemScope(context, result)
 					CwtConfigHandler.completeScope(context, result)
