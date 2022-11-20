@@ -5,8 +5,8 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.highlighter.*
+import icu.windea.pls.script.psi.*
 
 class ParadoxScopeLinkExpressionNode(
 	override val text: String,
@@ -15,7 +15,7 @@ class ParadoxScopeLinkExpressionNode(
 ) : ParadoxScriptExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SCOPE_KEY
 	
-	override fun getReference(element: PsiElement) = Reference(element, rangeInExpression, config.pointer.element)
+	override fun getReference(element: ParadoxScriptExpressionElement) = Reference(element, rangeInExpression, config)
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScopeLinkExpressionNode? {
@@ -26,12 +26,14 @@ class ParadoxScopeLinkExpressionNode(
 	}
 	
 	class Reference(
-		element: PsiElement,
+		element: ParadoxScriptExpressionElement,
 		rangeInElement: TextRange,
-		private val resolved: CwtProperty?
-	) : PsiReferenceBase<PsiElement>(element, rangeInElement) {
-		override fun handleElementRename(newElementName: String) = throw IncorrectOperationException()
+		private val config: CwtLinkConfig
+	) : PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
+		override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
+			throw IncorrectOperationException() //不允许重命名
+		}
 		
-		override fun resolve() = resolved
+		override fun resolve() = config.pointer.element
 	}
 }

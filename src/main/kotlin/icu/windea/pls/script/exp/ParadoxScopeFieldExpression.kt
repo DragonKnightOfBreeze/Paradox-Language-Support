@@ -54,17 +54,23 @@ class ParadoxScopeFieldExpressionImpl(
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
 		val offsetInParent = context.offsetInParent
+		var prevScopeToUse: String? = null
 		for((index, node) in nodes.withIndex()) {
 			if(node is ParadoxScopeExpressionNode) {
 				val nodeRange = rangeInExpression
 				if(offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset) {
 					val keyword = context.keyword
+					val prevScope = context.prevScope
 					context.put(PlsCompletionKeys.keywordKey, text)
+					if(prevScope != null) context.put(PlsCompletionKeys.prevScopeKey, prevScopeToUse)
 					CwtConfigHandler.completeSystemScope(context, result)
 					CwtConfigHandler.completeScope(context, result)
 					CwtConfigHandler.completeScopeLinkPrefixOrDataSource(context, result)
 					context.put(PlsCompletionKeys.keywordKey, keyword)
+					context.put(PlsCompletionKeys.prevScopeKey, prevScope)
+					break
 				}
+				prevScopeToUse = node.text
 			}
 		}
 	}
@@ -79,7 +85,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 	while(endIndex < text.length) {
 		startIndex = endIndex + 1
 		endIndex = text.indexOf('.', startIndex).let { if(it == -1) text.length else it }
-		val dotNode = if(endIndex == text.length) {
+		val dotNode = if(endIndex != text.length) {
 			ParadoxScriptOperatorExpressionNode(".", TextRange.create(endIndex + offset, endIndex + 1 + offset))
 		} else {
 			null
@@ -96,11 +102,6 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 		//handle mismatch situation
 		if(startIndex == 0 && node.nodes.isEmpty() && completionOffset == -1) {
 			return null
-		}
-		//handle missing scope situation
-		if(startIndex != 0 && endIndex == text.length && nodeText.isEmpty()) {
-			val error = ParadoxMissingScopeExpressionError(textRange, PlsBundle.message("script.expression.missingScopeExpression"))
-			errors.add(error)
 		}
 		nodes.add(node)
 		if(dotNode != null) nodes.add(dotNode)

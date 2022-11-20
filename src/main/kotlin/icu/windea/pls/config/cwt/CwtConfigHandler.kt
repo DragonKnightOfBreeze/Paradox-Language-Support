@@ -1286,7 +1286,7 @@ object CwtConfigHandler {
 	 * @param element 需要解析的PSI元素。
 	 * @param rangeInElement 需要解析的文本在需要解析的PSI元素对应的整个文本中的位置。
 	 */
-	fun resolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, configExpression: CwtDataExpression, config: CwtConfig<*>, isKey: Boolean? = null): PsiElement? {
+	fun resolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, configExpression: CwtDataExpression, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
 		if(element.isParameterAwareExpression()) return null //排除带参数的情况
 		
 		val project = element.project
