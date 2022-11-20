@@ -7,7 +7,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
@@ -32,7 +32,7 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 			
 			override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
 				ProgressManager.checkCanceled()
-				val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return
+				val config = resolveConfigs(element).firstOrNull() ?: return
 				val type = config.expression.type
 				if(type == CwtDataTypes.ValueField || type == CwtDataTypes.IntValueField) {
 					if(element.isQuoted()) {

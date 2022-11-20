@@ -13,6 +13,8 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolvePropertyConfigs
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveValueConfigs
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 
@@ -54,13 +56,13 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<N
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
 		val resolved = when(element) {
 			is ParadoxScriptPropertyKey -> {
-				val config = ParadoxCwtConfigHandler.resolvePropertyConfig(element)
+				val config = resolvePropertyConfigs(element).firstOrNull()
 					?.takeIf { it.expression.type in keyExpressionTypes }
 					?: return true
 				CwtConfigHandler.resolveScriptExpression(element, null, config.expression, config, true)
 			}
 			is ParadoxScriptString -> {
-				val config = ParadoxCwtConfigHandler.resolveValueConfig(element)
+				val config = resolveValueConfigs(element).firstOrNull()
 					?.takeIf { it.expression.type in valueExpressionTypes }
 					?: return true
 				CwtConfigHandler.resolveScriptExpression(element, null, config.expression, config, false)

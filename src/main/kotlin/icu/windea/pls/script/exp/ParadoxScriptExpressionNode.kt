@@ -20,5 +20,5 @@ interface ParadoxScriptExpressionNode {
 	
 	fun getUnresolvedError(element: PsiElement): ParadoxScriptExpressionError? = null
 	
-	fun complete(context: ProcessingContext, result: CompletionResultSet) = pass()
+	fun applyCompletion(context: ProcessingContext, result: CompletionResultSet) = pass()
 }

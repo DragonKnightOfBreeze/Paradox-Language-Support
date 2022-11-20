@@ -37,7 +37,7 @@ object ParadoxComplexEnumValueInfoHandler {
 		val project = file.project
 		
 		//首先尝试直接基于stub进行解析
-		val stub = kotlin.runCatching { element.stub }.getOrNull()
+		val stub = runCatching { element.stub }.getOrNull()
 		if(stub != null) {
 			return resolveByStub(element, stub)
 		}

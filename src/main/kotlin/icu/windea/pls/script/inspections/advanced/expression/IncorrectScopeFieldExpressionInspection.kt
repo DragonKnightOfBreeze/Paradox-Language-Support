@@ -2,14 +2,16 @@ package icu.windea.pls.script.inspections.advanced.expression
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.selector.*
-import icu.windea.pls.script.expression.*
+import icu.windea.pls.script.exp.*
+import icu.windea.pls.script.exp.errors.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -37,7 +39,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 			
 			override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
 				ProgressManager.checkCanceled()
-				val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return
+				val config = resolveConfigs(element).firstOrNull() ?: return
 				val type = config.expression.type
 				if(type == CwtDataTypes.Scope || type == CwtDataTypes.ScopeField || type == CwtDataTypes.ScopeGroup) {
 					if(element.isQuoted()) {
@@ -47,28 +49,27 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 						val value = element.value
 						val gameTypeToUse = gameType ?: ParadoxSelectorUtils.selectGameType(element) ?: return
 						val configGroup = getCwtConfig(project).getValue(gameTypeToUse)
-						val expression = ParadoxScriptExpression.resolveScopeField(value, configGroup)
-						if(expression.isEmpty()) {
-							//无法解析
-							holder.registerProblem(element, PlsBundle.message("script.inspection.expression.scopeField.malformed", value), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
-						} else {
-							for(error in expression.errors) {
-								holder.registerScriptExpressionError(element, error)
+						val textRange = TextRange.create(0, value.length)
+						val isKey = element is ParadoxScriptPropertyKey
+						val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup, isKey)
+							?: return
+						scopeFieldExpression.processAllNodes { node ->
+							for(error in node.errors) {
+								handleScriptExpressionError(element, error)
 							}
-							//注册无法解析的异常
-							if(expression.infos.isNotEmpty()) {
-								for(info in expression.infos) {
-									if(reportsUnresolvedDs) {
-										if(info.isUnresolved(element, config)) {
-											val error = info.getUnresolvedError()
-											if(error != null) holder.registerScriptExpressionError(element, error)
-										}
-									}
-								}
+							val unresolvedError = node.getUnresolvedError(element)
+							if(unresolvedError != null) {
+								handleScriptExpressionError(element, unresolvedError)
 							}
+							true
 						}
 					}
 				}
+			}
+			
+			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxScriptExpressionError) {
+				if(reportsUnresolvedDs && error is ParadoxUnresolvedScopeFieldDataSourceExpressionError) return
+				holder.registerScriptExpressionError(element, error)
 			}
 		})
 		return holder.resultsArray

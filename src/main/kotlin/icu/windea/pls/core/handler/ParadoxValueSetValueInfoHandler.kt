@@ -2,7 +2,6 @@ package icu.windea.pls.core.handler
 
 import com.intellij.openapi.progress.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
@@ -19,7 +18,7 @@ object ParadoxValueSetValueInfoHandler {
 		ProgressManager.checkCanceled()
 		//cannot use stub index here
 		val matchType = CwtConfigMatchType.NO_STUB_INDEX
-		val config = ParadoxCwtConfigHandler.resolveConfigs(element, CwtValueConfig::class.java, true, true, matchType)
+		val config = ParadoxCwtConfigHandler.resolveValueConfigs(element, true, true, matchType)
 			.firstOrNull { it.expression.type in expressionTypes }
 			?: return null
 		if(config.expression.type != CwtDataTypes.Value && config.expression.type != CwtDataTypes.ValueSet) return null

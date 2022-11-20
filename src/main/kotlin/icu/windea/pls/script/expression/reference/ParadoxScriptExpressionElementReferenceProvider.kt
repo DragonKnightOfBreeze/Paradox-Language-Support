@@ -5,9 +5,10 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.selector.*
-import icu.windea.pls.script.expression.*
+import icu.windea.pls.script.exp.*
+import icu.windea.pls.script.expression.ParadoxScriptExpression
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
@@ -16,33 +17,39 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 		val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return PsiReference.EMPTY_ARRAY
 		val configGroup = getCwtConfig(element.project).getValue(gameType)
 		val text = element.text
+		val isKey = element is ParadoxScriptPropertyKey
+		
 		//排除可能包含参数的情况
 		if(text.isParameterAwareExpression()) return PsiReference.EMPTY_ARRAY
-		val config = ParadoxCwtConfigHandler.resolveConfig(element)
+		
+		val config = resolveConfigs(element).firstOrNull()
 		if(config != null) {
-			if(!text.isQuoted()) {
-				when(config.expression.type) {
-					CwtDataTypes.Scope, CwtDataTypes.ScopeField, CwtDataTypes.ScopeGroup -> {
-						val scopeFieldExpression = ParadoxScriptExpression.resolveScopeField(text, configGroup)
-						if(scopeFieldExpression.isEmpty()) return PsiReference.EMPTY_ARRAY
-						return scopeFieldExpression.infos.mapNotNull { it.getReference(element, config) }.toTypedArray()
-					}
-					CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
-						val valueFieldExpression = ParadoxScriptExpression.resolveValueField(text, configGroup)
-						if(valueFieldExpression.isEmpty()) return PsiReference.EMPTY_ARRAY
-						return valueFieldExpression.infos.mapNotNull { it.getReference(element, config) }.toTypedArray()
-					}
-					CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-						val valueSetValueExpression = ParadoxScriptExpression.resolveValueSetValue(text, configGroup)
-						if(valueSetValueExpression.isEmpty()) return PsiReference.EMPTY_ARRAY
-						return valueSetValueExpression.infos.mapNotNull { it.getReference(element, config) }.toTypedArray()
-					}
-					else -> pass() //TODO
+			val textRange = TextRange.create(0, text.length)
+			when(config.expression.type) {
+				CwtDataTypes.Scope, CwtDataTypes.ScopeField, CwtDataTypes.ScopeGroup -> {
+					if(text.isQuoted()) return PsiReference.EMPTY_ARRAY
+					val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup, isKey)
+						?: return PsiReference.EMPTY_ARRAY
+					return scopeFieldExpression.getReferences(element)
+				}
+				CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
+					if(text.isQuoted()) return PsiReference.EMPTY_ARRAY
+					val valueFieldExpression = ParadoxScriptExpression.resolveValueField(text, configGroup)
+					if(valueFieldExpression.isEmpty()) return PsiReference.EMPTY_ARRAY
+					return valueFieldExpression.infos.mapNotNull { it.getReference(element, config) }.toTypedArray()
+				}
+				CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
+					if(text.isQuoted()) return PsiReference.EMPTY_ARRAY
+					val valueSetValueExpression = ParadoxScriptExpression.resolveValueSetValue(text, configGroup)
+					if(valueSetValueExpression.isEmpty()) return PsiReference.EMPTY_ARRAY
+					return valueSetValueExpression.infos.mapNotNull { it.getReference(element, config) }.toTypedArray()
+				}
+				else -> {
+					//TODO 不能直接返回PsiReference，需要先确定rangeInElement
+					val reference = ParadoxScriptExpressionReference(element, textRange, config, isKey)
+					return arrayOf(reference)
 				}
 			}
-			//TODO 不能直接返回PsiReference，需要先确定rangeInElement
-			val textRange = TextRange.create(0, text.length)
-			return arrayOf(ParadoxScriptExpressionReference(element, textRange, config, element is ParadoxScriptPropertyKey))
 		}
 		return PsiReference.EMPTY_ARRAY
 	}

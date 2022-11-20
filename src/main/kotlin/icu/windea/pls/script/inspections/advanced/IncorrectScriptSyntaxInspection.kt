@@ -22,43 +22,44 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
  * * TODO 同一scripted_effect/scripted_trigger定义中存在多个内联数字表达式
  */
 class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
-	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-		return Visitor(holder)
-	}
-	
-	private class Visitor(private val holder: ProblemsHolder) : ParadoxScriptVisitor() {
-		override fun visitPropertyValue(e: ParadoxScriptPropertyValue) {
-			//检查：不期望的比较操作符
-			val valueElement = e.value
-			if(!mayByNumberValue(valueElement)) {
-				valueElement.siblings(forward = false, withSelf = false).forEach {
-					if(isComparisonOperator(it)) {
-						val message = PlsBundle.message("script.inspection.advanced.incorrectScriptSyntax.description.1")
-						holder.registerProblem(it, message, ProblemHighlightType.GENERIC_ERROR)
+	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
+		if(file !is ParadoxScriptFile) return null
+		val holder = ProblemsHolder(manager, file, isOnTheFly)
+		file.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
+			override fun visitPropertyValue(e: ParadoxScriptPropertyValue) {
+				//检查：不期望的比较操作符
+				val valueElement = e.value
+				if(!mayByNumberValue(valueElement)) {
+					valueElement.siblings(forward = false, withSelf = false).forEach {
+						if(isComparisonOperator(it)) {
+							val message = PlsBundle.message("script.inspection.advanced.incorrectScriptSyntax.description.1")
+							holder.registerProblem(it, message, ProblemHighlightType.GENERIC_ERROR)
+						}
 					}
 				}
 			}
-		}
-		
-		private fun mayByNumberValue(element: ParadoxScriptValue): Boolean {
-			return when {
-				element is ParadoxScriptInt -> true
-				element is ParadoxScriptFloat -> true
-				element is ParadoxScriptScriptedVariableReference -> {
-					val resolved = element.reference.resolve()
-					val resolvedValueElement = resolved?.scriptedVariableValue?.value
-					resolvedValueElement == null || mayByNumberValue(resolvedValueElement)
+			
+			private fun mayByNumberValue(element: ParadoxScriptValue): Boolean {
+				return when {
+					element is ParadoxScriptInt -> true
+					element is ParadoxScriptFloat -> true
+					element is ParadoxScriptScriptedVariableReference -> {
+						val resolved = element.reference.resolve()
+						val resolvedValueElement = resolved?.scriptedVariableValue?.value
+						resolvedValueElement == null || mayByNumberValue(resolvedValueElement)
+					}
+					element is ParadoxScriptInlineMath -> true
+					else -> false
 				}
-				element is ParadoxScriptInlineMath -> true
-				else -> false
 			}
-		}
-		
-		private fun isComparisonOperator(element: PsiElement): Boolean {
-			//LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN 
-			val elementType = element.elementType
-			return elementType == LT_SIGN || elementType == GT_SIGN || elementType == LE_SIGN || elementType == GE_SIGN
-				|| elementType == NOT_EQUAL_SIGN
-		}
+			
+			private fun isComparisonOperator(element: PsiElement): Boolean {
+				//LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN 
+				val elementType = element.elementType
+				return elementType == LT_SIGN || elementType == GT_SIGN || elementType == LE_SIGN || elementType == GE_SIGN
+					|| elementType == NOT_EQUAL_SIGN
+			}
+		})
+		return holder.resultsArray
 	}
 }

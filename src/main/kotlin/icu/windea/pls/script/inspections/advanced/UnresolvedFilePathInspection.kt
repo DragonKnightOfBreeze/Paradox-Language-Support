@@ -10,7 +10,7 @@ import com.intellij.ui.dsl.gridLayout.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveValueConfigs
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
@@ -35,7 +35,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
 		override fun visitString(valueElement: ParadoxScriptString) {
 			ProgressManager.checkCanceled()
 			//match or single
-			val valueConfig = ParadoxCwtConfigHandler.resolveValueConfig(valueElement) ?: return
+			val valueConfig = resolveValueConfigs(valueElement).firstOrNull() ?: return
 			val expression = valueConfig.valueExpression
 			val project = valueElement.project
 			val location = valueElement

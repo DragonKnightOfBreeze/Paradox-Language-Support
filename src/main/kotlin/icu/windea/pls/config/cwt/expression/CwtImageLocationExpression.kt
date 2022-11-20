@@ -8,7 +8,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveValueConfigs
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.dds.*
@@ -98,7 +98,7 @@ class CwtImageLocationExpression(
 					definition.findDefinitionProperty(propertyName)?.findValue<ParadoxScriptInt>()?.intValue ?: 0
 				} ?: 0
 			}
-			val config = ParadoxCwtConfigHandler.resolveValueConfig(value)
+			val config = resolveValueConfigs(value).firstOrNull()
 				?.takeIf { it.expression.type in validValueTypes }
 				?: return null
 			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config.expression, config, false)
@@ -148,7 +148,7 @@ class CwtImageLocationExpression(
 					definition.findDefinitionProperty(propertyName)?.findValue<ParadoxScriptInt>()?.intValue ?: 0
 				} ?: 0
 			}
-			val config = ParadoxCwtConfigHandler.resolveValueConfig(value)
+			val config = resolveValueConfigs(value).firstOrNull()
 				?.takeIf { it.expression.type in validValueTypes }
 				?: return null
 			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config.expression, config, false)

@@ -1,11 +1,13 @@
 package icu.windea.pls.script.exp
 
 import com.intellij.openapi.util.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.exp.ParadoxScopeFieldExpression.*
+import icu.windea.pls.script.exp.errors.*
 import icu.windea.pls.script.exp.nodes.*
 
 /**
@@ -50,8 +52,8 @@ class ParadoxScopeFieldExpressionImpl(
 }
 
 fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null, completionOffset: Int = -1): ParadoxScopeFieldExpression? {
-	val nodes = mutableListOf<ParadoxScriptExpressionNode>()
-	val errors = mutableListOf<ParadoxScriptExpressionError>()
+	val nodes = SmartList<ParadoxScriptExpressionNode>()
+	val errors = SmartList<ParadoxScriptExpressionError>()
 	var malformed = false
 	val offset = textRange.startOffset
 	var startIndex: Int
@@ -66,24 +68,26 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 			null
 		}
 		val nodeText = text.substring(startIndex, endIndex)
-		//empty node
-		if(nodeText.isEmpty() && completionOffset != startIndex) {
-			malformed = true
-		}
+		//empty node -> continue
+		//if(nodeText.isEmpty() && completionOffset != startIndex) {
+		//	malformed = true
+		//}
 		//unexpected token -> stop
-		if(!nodeText.all { it == ':' || it == '_' || it.isExactLetter() || it.isExactDigit() }) {
+		if(!nodeText.all { it == ':' || it == '_' || it == '@' || it.isExactLetter() || it.isExactDigit() }) {
 			malformed = true
 			break
 		}
 		val nodeTextRange = TextRange.create(startIndex + offset, endIndex + offset)
 		val node = ParadoxScopeExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
 		//handle mismatch situation
-		if(startIndex == 0 && node.nodes.isEmpty()) return null
+		if(startIndex == 0 && node.nodes.isEmpty() && completionOffset == -1) {
+			return null
+		}
 		nodes.add(node)
 		if(dotNode != null) nodes.add(dotNode)
 	}
 	if(malformed) {
-		val error = ParadoxScriptExpressionError(textRange, PlsBundle.message("script.expression.malformedScopeFieldExpression", text))
+		val error = ParadoxMalformedScopeFieldExpressionError(textRange, PlsBundle.message("script.expression.malformedScopeFieldExpression", text))
 		errors.add(error)
 	}
 	return ParadoxScopeFieldExpressionImpl(text, textRange, isKey, nodes, errors)

@@ -4,6 +4,8 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.expression.*
 
 object PlsCompletionKeys {
 	val completionTypeKey = Key.create<CompletionType>("paradoxCompletion.completionType")
@@ -12,6 +14,9 @@ object PlsCompletionKeys {
 	val offsetInParentKey = Key.create<Int>("paradoxCompletion.offsetInParent")
 	val keywordKey = Key.create<String>("paradoxCompletion.keyword")
 	val isKeyKey = Key.create<Boolean>("paradoxCompletion.isKey")
+	val configExpressionKey = Key.create<CwtDataExpression>("paradoxCompletion.configExpression")
+	val configKey = Key.create<CwtDataConfig<*>>("paradoxCompletion.config")
+	val configsKey = Key.create<List<CwtDataConfig<*>>>("paradoxCompletion.configs")
 	val configGroupKey = Key.create<CwtConfigGroup>("paradoxCompletion.configGroup")
 	val prevScopeKey = Key.create<String>("paradoxCompletion.prevScope")
 	val isExpectedScopeMatchedKey = Key.create<Boolean>("paradoxCompletion.isScopeMatched")

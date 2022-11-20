@@ -8,7 +8,7 @@
 system_scopes = {
 	This = "This"
 	Root = "Root"
-	PrevPrev = "Prev"
+	Prev = "Prev"
 	PrevPrev = "Prev Prev"
 	PrevPrevPrev = "Prev Prev Prev"
 	PrevPrevPrevPrev = "Prev Prev Prev Prev"

@@ -1,6 +1,5 @@
 package icu.windea.pls.script.exp.nodes
 
-import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
@@ -19,10 +18,6 @@ class ParadoxSystemScopeExpressionNode(
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY
 	
 	override fun getReference(element: PsiElement) = Reference(element, rangeInExpression, config.pointer.element)
-	
-	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-		CwtConfigHandler.completeSystemScope(context, result.withPrefixMatcher(text))
-	}
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxSystemScopeExpressionNode? {

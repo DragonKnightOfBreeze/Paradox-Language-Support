@@ -2,6 +2,7 @@ package icu.windea.pls.core.psi
 
 import com.intellij.navigation.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
 import com.intellij.pom.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.*
@@ -38,6 +39,10 @@ class ParadoxParameterElement(
 	
 	override fun getIcon(): Icon {
 		return PlsIcons.Parameter
+	}
+	
+	override fun getTextRange(): TextRange? {
+		return null //return null to avoid incorrect highlight at file start
 	}
 	
 	override fun getNameIdentifier(): PsiElement {

@@ -247,15 +247,16 @@ object CwtConfigHandler {
 				return true
 			}
 			CwtDataTypes.Enum -> {
-				if(!expression.type.isStringType()) return false
+				//if(!expression.type.isStringType()) return false
 				if(!isStatic && isParameterAware) return true
+				val name = expression.text
 				val enumName = configExpression.value ?: return false //invalid cwt config
 				//匹配参数名（即使对应的定义声明中不存在对应名字的参数，也总是匹配）
 				if(!isStatic && expression.isKey == true && enumName == paramsEnumName) return true
 				//匹配简单枚举
 				val enumConfig = configGroup.enums[enumName]
 				if(enumConfig != null) {
-					return expression.text in enumConfig.values
+					return name in enumConfig.values
 				}
 				if(isStatic) return false
 				//匹配复杂枚举
@@ -263,7 +264,7 @@ object CwtConfigHandler {
 				if(complexEnumConfig != null) {
 					if(BitUtil.isSet(matchType, CwtConfigMatchType.COMPLEX_ENUM_VALUE)) {
 						val selector = complexEnumValueSelector().gameType(gameType)
-						val search = ParadoxComplexEnumValueSearch.search(enumName, project, selector = selector)
+						val search = ParadoxComplexEnumValueSearch.search(name, enumName, project, selector = selector)
 						return search.findFirst() != null
 					}
 				}
@@ -286,12 +287,14 @@ object CwtConfigHandler {
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope -> {
 				if(expression.quoted) return false //不允许用引号括起
 				if(!isStatic && isParameterAware) return true
-				return ParadoxScriptExpression.resolveScopeField(expression.text, configGroup).isMatched()
+				val textRange = TextRange.create(0, expression.text.length)
+				return ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey) != null
 			}
 			CwtDataTypes.ScopeGroup -> {
 				if(expression.quoted) return false //不允许用引号括起
 				if(!isStatic && isParameterAware) return true
-				return ParadoxScriptExpression.resolveScopeField(expression.text, configGroup).isMatched()
+				val textRange = TextRange.create(0, expression.text.length)
+				return ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey) != null
 			}
 			CwtDataTypes.ValueField -> {
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
@@ -341,7 +344,11 @@ object CwtConfigHandler {
 				return false //不在这里处理
 			}
 			CwtDataTypes.Constant -> {
-				return expression.text.equals(configExpression.value, true) //忽略大小写
+				val text = expression.text
+				val value = configExpression.value
+				//常量的值也可能是yes/no
+				if((value == "yes" || value == "no") && text.isQuoted()) return false
+				return expression.text.equals(value, true) //忽略大小写
 			}
 			CwtDataTypes.Other -> {
 				if(isStatic) return false
@@ -374,8 +381,8 @@ object CwtConfigHandler {
 	
 	fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Int {
 		return when(configExpression.type) {
-			CwtDataTypes.Any -> 90
-			CwtDataTypes.Bool -> 90
+			CwtDataTypes.Any -> 100
+			CwtDataTypes.Bool -> 100
 			CwtDataTypes.Int -> 90
 			CwtDataTypes.Float -> 90
 			CwtDataTypes.Scalar -> 90
@@ -424,17 +431,23 @@ object CwtConfigHandler {
 		val scope = definitionElementInfo.scope
 		val gameType = definitionElementInfo.gameType
 		val configGroup = getCwtConfig(project).getValue(gameType)
-		val childPropertyConfigs = definitionElementInfo.getChildPropertyConfigs()
-		if(childPropertyConfigs.isEmpty()) return true
+		val configs = definitionElementInfo.getChildPropertyConfigs()
+		if(configs.isEmpty()) return true
 		
 		context.put(PlsCompletionKeys.isKeyKey, true)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
 		
-		for(propConfig in childPropertyConfigs) {
-			if(shouldComplete(propConfig, definitionElementInfo)) {
-				completeKey(keyElement, propConfig.keyExpression, propConfig, context, result, scope)
+		for(config in configs) {
+			if(shouldComplete(config, definitionElementInfo)) {
+				context.put(PlsCompletionKeys.configKey, config)
+				context.put(PlsCompletionKeys.configsKey, configs.map { it.key == config.key })
+				context.put(PlsCompletionKeys.configExpressionKey, config.keyExpression)
+				completeScriptExpression(context, result, scope)
 			}
 		}
+		context.put(PlsCompletionKeys.configKey, null)
+		context.put(PlsCompletionKeys.configsKey, null)
+		context.put(PlsCompletionKeys.configExpressionKey, null)
 		return true
 	}
 	
@@ -452,9 +465,13 @@ object CwtConfigHandler {
 		
 		for(config in configs) {
 			if(config is CwtPropertyConfig) {
-				completeValue(valueElement, config.valueExpression, config, context, result, scope)
+				context.put(PlsCompletionKeys.configKey, config)
+				context.put(PlsCompletionKeys.configExpressionKey, config.valueExpression)
+				completeScriptExpression(context, result, scope)
 			}
 		}
+		context.put(PlsCompletionKeys.configKey, null)
+		context.put(PlsCompletionKeys.configExpressionKey, null)
 		return true
 	}
 	
@@ -464,17 +481,21 @@ object CwtConfigHandler {
 		val scope = definitionElementInfo.scope
 		val gameType = definitionElementInfo.gameType
 		val configGroup = getCwtConfig(project).getValue(gameType)
-		val childValueConfigs = definitionElementInfo.getChildValueConfigs()
-		if(childValueConfigs.isEmpty()) return true
+		val configs = definitionElementInfo.getChildValueConfigs()
+		if(configs.isEmpty()) return true
 		
 		context.put(PlsCompletionKeys.isKeyKey, false)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
 		
-		for(valueConfig in childValueConfigs) {
-			if(shouldComplete(valueConfig, definitionElementInfo)) {
-				completeValue(valueElement, valueConfig.valueExpression, valueConfig, context, result, scope)
+		for(config in configs) {
+			if(shouldComplete(config, definitionElementInfo)) {
+				context.put(PlsCompletionKeys.configKey, config)
+				context.put(PlsCompletionKeys.configExpressionKey, config.valueExpression)
+				completeScriptExpression(context, result, scope)
 			}
 		}
+		context.put(PlsCompletionKeys.configKey, null)
+		context.put(PlsCompletionKeys.configExpressionKey, null)
 		return true
 	}
 	
@@ -504,23 +525,21 @@ object CwtConfigHandler {
 		return maxCount == null || actualCount < maxCount
 	}
 	
-	fun completeKey(contextElement: PsiElement, configExpression: CwtKeyExpression, config: CwtPropertyConfig, context: ProcessingContext, result: CompletionResultSet, scope: String?) {
-		completeScriptExpression(contextElement, configExpression, config, context, result, scope)
-	}
-	
-	fun completeValue(contextElement: PsiElement, configExpression: CwtValueExpression, config: CwtDataConfig<*>, context: ProcessingContext, result: CompletionResultSet, scope: String?) {
-		completeScriptExpression(contextElement, configExpression, config, context, result, scope)
-	}
-	
-	fun completeScriptExpression(contextElement: PsiElement, configExpression: CwtDataExpression, config: CwtDataConfig<*>, context: ProcessingContext, result: CompletionResultSet, scope: String?) = with(context) {
+	fun completeScriptExpression(context: ProcessingContext, result: CompletionResultSet, scope: String?): Unit = with(context) {
+		val configExpression = configExpression
+		val config = config
+		val configs = configs
+		val configGroup = configGroup
+		val project = configGroup.project
+		val gameType = configGroup.gameType
+		
 		if(configExpression.isEmpty()) return
 		if(keyword.isParameterAwareExpression()) return //排除带参数或者的情况
 		
-		val project = configGroup.project
-		val gameType = configGroup.gameType
 		when(configExpression.type) {
 			CwtDataTypes.Bool -> {
-				result.addAllElements(boolLookupElements)
+				result.addElement(yesLookupElement)
+				result.addElement(noLookupElement)
 			}
 			CwtDataTypes.Localisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
@@ -534,7 +553,7 @@ object CwtConfigHandler {
 						.withIcon(PlsIcons.Localisation)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
-						.withExpectedInsertHandler(isKey)
+						.withExpectedInsertHandler(isKey, configs)
 					result.addElement(lookupElement)
 					true
 				}
@@ -551,7 +570,7 @@ object CwtConfigHandler {
 						.withIcon(PlsIcons.Localisation)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
-						.withExpectedInsertHandler(isKey)
+						.withExpectedInsertHandler(isKey, configs)
 					result.addElement(lookupElement)
 					true
 				}
@@ -567,7 +586,7 @@ object CwtConfigHandler {
 						.withIcon(PlsIcons.Localisation)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
-						.withExpectedInsertHandler(isKey)
+						.withExpectedInsertHandler(isKey, configs)
 					result.addElement(lookupElement)
 					true
 				}
@@ -591,7 +610,7 @@ object CwtConfigHandler {
 					val lookupElement = LookupElementBuilder.create(file, name) //没有图标
 						.withTailText(tailText, true)
 						.withTypeText(file.name, file.icon, true)
-						.withExpectedInsertHandler(isKey)
+						.withExpectedInsertHandler(isKey, configs)
 					result.addElement(lookupElement)
 				}
 			}
@@ -613,7 +632,7 @@ object CwtConfigHandler {
 					val lookupElement = LookupElementBuilder.create(file, name) //没有图标
 						.withTailText(tailText, true)
 						.withTypeText(file.name, file.icon, true)
-						.withExpectedInsertHandler(isKey)
+						.withExpectedInsertHandler(isKey, configs)
 					result.addElement(lookupElement)
 				}
 			}
@@ -630,7 +649,7 @@ object CwtConfigHandler {
 						.withIcon(PlsIcons.Definition)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
-						.withExpectedInsertHandler(isKey)
+						.withExpectedInsertHandler(isKey, configs)
 					result.addElement(lookupElement)
 					true
 				}
@@ -650,7 +669,7 @@ object CwtConfigHandler {
 						.withIcon(PlsIcons.Definition)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
-						.withExpectedInsertHandler(isKey)
+						.withExpectedInsertHandler(isKey, configs)
 					result.addElement(lookupElement)
 					true
 				}
@@ -683,7 +702,7 @@ object CwtConfigHandler {
 							.withIcon(PlsIcons.EnumValue)
 							.withTailText(tailText, true)
 							.withTypeText(typeFile?.name, typeFile?.icon, true)
-							.withExpectedInsertHandler(isKey)
+							.withExpectedInsertHandler(isKey, configs)
 							.withCaseSensitivity(false) //忽略大小写
 							.withPriority(PlsCompletionPriorities.enumPriority)
 						result.addElement(lookupElement)
@@ -705,7 +724,7 @@ object CwtConfigHandler {
 							.withIcon(PlsIcons.ComplexEnumValue)
 							.withTailText(tailText, true)
 							.withTypeText(typeFile?.name, typeFile?.icon, true)
-							.withExpectedInsertHandler(isKey)
+							.withExpectedInsertHandler(isKey, configs)
 							.withCaseSensitivity(false) //忽略大小写
 						result.addElement(lookupElement)
 						true
@@ -737,7 +756,7 @@ object CwtConfigHandler {
 								.withIcon(PlsIcons.PredefinedValueSetValue)
 								.withTailText(tailText, true)
 								.withTypeText(typeFile?.name, typeFile?.icon, true)
-								.withExpectedInsertHandler(this.isKey)
+								.withExpectedInsertHandler(isKey, configs)
 								.withCaseSensitivity(false) //忽略大小写
 								.withPriority(PlsCompletionPriorities.predefinedValueSetValuePriority)
 							result.addElement(lookupElement)
@@ -762,7 +781,7 @@ object CwtConfigHandler {
 						val lookupElement = LookupElementBuilder.create(valueSetValue, value)
 							.withIcon(icon)
 							.withTailText(tailText, true)
-							.withExpectedInsertHandler(this.isKey)
+							.withExpectedInsertHandler(isKey, configs)
 							.withCaseSensitivity(false) //忽略大小写
 						result.addElement(lookupElement)
 						true
@@ -801,24 +820,34 @@ object CwtConfigHandler {
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
 				val aliasName = configExpression.value ?: return
-				completeAliasName(contextElement, aliasName, config, context, result, scope)
+				completeAliasName(aliasName, context, result, scope)
 			}
 			CwtDataTypes.AliasName -> {
 				val aliasName = configExpression.value ?: return
-				completeAliasName(contextElement, aliasName, config, context, result, scope)
+				completeAliasName(aliasName, context, result, scope)
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataTypes.AliasMatchLeft -> pass()
 			CwtDataTypes.Constant -> {
-				val n = configExpression.value ?: return
+				val name = configExpression.value ?: return
+				//常量的值也可能是yes/no
+				if(name == "yes") {
+					if(quoted) return
+					result.addElement(yesLookupElement)
+					return
+				}
+				if(name == "no") {
+					if(quoted) return
+					result.addElement(noLookupElement)
+					return
+				}
 				//if(!n.matchesKeyword(keyword)) return //不预先过滤结果
-				val name = n.quoteIf(quoted)
 				val element = config.resolved().pointer.element ?: return
 				val typeFile = config.resolved().pointer.containingFile
-				val lookupElement = LookupElementBuilder.create(element, name)
+				val lookupElement = LookupElementBuilder.create(element, name.quoteIf(quoted))
 					.withIcon(if(isKey) PlsIcons.Property else PlsIcons.Value)
 					.withTypeText(typeFile?.name, typeFile?.icon, true)
-					.withExpectedInsertHandler(isKey)
+					.withExpectedInsertHandler(isKey, configs)
 					.withCaseSensitivity(false) //忽略大小写
 					.withPriority(PlsCompletionPriorities.constantPriority)
 				result.addElement(lookupElement)
@@ -828,7 +857,10 @@ object CwtConfigHandler {
 		pass()
 	}
 	
-	fun completeAliasName(contextElement: PsiElement, aliasName: String, config: CwtDataConfig<*>, context: ProcessingContext, result: CompletionResultSet, scope: String?) = with(context) {
+	fun completeAliasName(aliasName: String, context: ProcessingContext, result: CompletionResultSet, scope: String?) = with(context) {
+		val configExpression = configExpression
+		val config = config
+		
 		val aliasGroup = configGroup.aliasGroups[aliasName] ?: return
 		for(aliasConfigs in aliasGroup.values) {
 			//aliasConfigs的名字是相同的 
@@ -838,13 +870,19 @@ object CwtConfigHandler {
 			if(!isScopeMatched) continue
 			
 			//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
-			val nextScope = config.parent?.scope ?: scope
+			val nextScope = this.config.parent?.scope ?: scope
 			//aliasSubName是一个表达式
 			if(isKey) {
-				completeKey(contextElement, aliasConfig.keyExpression, aliasConfig.config, context, result, nextScope)
+				context.put(PlsCompletionKeys.configExpressionKey, aliasConfig.keyExpression)
+				context.put(PlsCompletionKeys.configKey, aliasConfig.config)
+				completeScriptExpression(context, result, nextScope)
 			} else {
-				completeValue(contextElement, aliasConfig.valueExpression, aliasConfig.config, context, result, nextScope)
+				context.put(PlsCompletionKeys.configExpressionKey, aliasConfig.valueExpression)
+				context.put(PlsCompletionKeys.configKey, aliasConfig.config)
+				completeScriptExpression(context, result, nextScope)
 			}
+			context.put(PlsCompletionKeys.configKey, config)
+			context.put(PlsCompletionKeys.configExpressionKey, configExpression)
 		}
 	}
 	
@@ -878,9 +916,12 @@ object CwtConfigHandler {
 	}
 	
 	fun completeScopeFieldExpression(context: ProcessingContext, result: CompletionResultSet) = with(context) {
-		//基于当前位置的代码补全
-		val expression = ParadoxScriptExpression.resolveScopeField(keyword, context.configGroup)
-		expression.complete(result, context)
+		////基于当前位置的代码补全
+		if(quoted) return
+		val textRange = TextRange.create(0, keyword.length)
+		val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup, isKey, offsetInParent)
+			?: return
+		scopeFieldExpression.complete(context, result)
 	}
 	
 	fun completeValueFieldExpression(context: ProcessingContext, result: CompletionResultSet, isInt: Boolean = false) = with(context) {
@@ -902,11 +943,11 @@ object CwtConfigHandler {
 				.withIcon(PlsIcons.SystemScope)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
-				.withExpectedInsertHandler(isKey)
 				.withCaseSensitivity(false) //忽略大小写
 				.withPriority(PlsCompletionPriorities.systemScopePriority)
 			lookupElements.add(lookupElement)
 		}
+		result.withPrefixMatcher(keyword).addAllElements(lookupElements)
 	}
 	
 	fun completeScope(context: ProcessingContext, result: CompletionResultSet) = with(context) {
@@ -929,7 +970,6 @@ object CwtConfigHandler {
 				.withIcon(PlsIcons.Scope)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
-				.withExpectedInsertHandler(isKey)
 				.withCaseSensitivity(false) //忽略大小写
 				.withPriority(PlsCompletionPriorities.scopePriority)
 			lookupElements.add(lookupElement)
@@ -938,9 +978,12 @@ object CwtConfigHandler {
 	}
 	
 	fun completeScopeLinkPrefixOrDataSource(context: ProcessingContext, result: CompletionResultSet) = with(context) {
-		//TODO 进一步匹配scope
 		val keyword = keyword
+		val configExpression = configExpression
+		val config = config
 		val linkConfigs = configGroup.linksAsScope
+		
+		//TODO 进一步匹配scope
 		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，但进行提示时不匹配
 		
@@ -955,10 +998,13 @@ object CwtConfigHandler {
 			val resultToUse = result.withPrefixMatcher(keywordToUse)
 			for(linkConfig in prefixLinkConfigsToUse) {
 				//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
-				
-				completeScriptExpression(contextElement, linkConfig.dataSource!!, linkConfig.config, context, resultToUse, outputScope)
+				context.put(PlsCompletionKeys.configExpressionKey, linkConfig.dataSource!!)
+				context.put(PlsCompletionKeys.configKey, linkConfig.config)
+				completeScriptExpression(context, resultToUse, outputScope)
 			}
 			context.put(PlsCompletionKeys.keywordKey, keyword)
+			context.put(PlsCompletionKeys.configExpressionKey, configExpression)
+			context.put(PlsCompletionKeys.configKey, config)
 		} else {
 			//没有前缀，提示所有可能的前缀
 			val resultToUse = result.withPrefixMatcher(keyword)
@@ -992,8 +1038,12 @@ object CwtConfigHandler {
 					val isScopeMatched = matchesScope(outputScope, linkConfig.inputScopes, configGroup)
 					if(!isScopeMatched) continue
 					
-					completeScriptExpression(contextElement, linkConfig.dataSource!!, linkConfig.config, context, resultToUse, outputScope)
+					context.put(PlsCompletionKeys.configExpressionKey, linkConfig.dataSource!!)
+					context.put(PlsCompletionKeys.configKey, linkConfig.config)
+					completeScriptExpression(context, resultToUse, outputScope)
 				}
+				context.put(PlsCompletionKeys.configExpressionKey, configExpression)
+				context.put(PlsCompletionKeys.configKey, config)
 			}
 		}
 	}
@@ -1019,7 +1069,6 @@ object CwtConfigHandler {
 				.withIcon(PlsIcons.ValueLinkValue)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
-				.withExpectedInsertHandler(isKey)
 				.withCaseSensitivity(false) //忽略大小写
 			lookupElements.add(lookupElement)
 		}
@@ -1045,9 +1094,13 @@ object CwtConfigHandler {
 			for(linkConfig in prefixLinkConfigsToUse) {
 				//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
 				
-				completeScriptExpression(contextElement, linkConfig.dataSource!!, linkConfig.config, context, resultToUse, outputScope)
+				context.put(PlsCompletionKeys.configExpressionKey, linkConfig.dataSource!!)
+				context.put(PlsCompletionKeys.configKey, linkConfig.config)
+				completeScriptExpression(context, resultToUse, outputScope)
 			}
 			context.put(PlsCompletionKeys.keywordKey, keyword)
+			context.put(PlsCompletionKeys.configExpressionKey, configExpression)
+			context.put(PlsCompletionKeys.configKey, config)
 		} else {
 			//没有前缀，提示所有可能的前缀
 			val resultToUse = result.withPrefixMatcher(keyword)
@@ -1198,35 +1251,36 @@ object CwtConfigHandler {
 		}
 	}
 	
-	private val boolLookupElements = PlsConstants.booleanValues.map { value ->
-		LookupElementBuilder.create(value).bold().withPriority(PlsCompletionPriorities.keywordPriority)
-	}
+	private val yesLookupElement = LookupElementBuilder.create("yes").bold().withPriority(PlsCompletionPriorities.keywordPriority)
+	private val noLookupElement = LookupElementBuilder.create("no").bold().withPriority(PlsCompletionPriorities.keywordPriority)
 	
 	private val separatorChars = charArrayOf('=', '<', '>', '!')
 	
-	private fun LookupElementBuilder.withExpectedInsertHandler(isKey: Boolean): LookupElementBuilder {
-		if(isKey) return withInsertHandler(getExpectedInsertHandler(isKey))
-		return this
-	}
-	
-	private fun getExpectedInsertHandler(isKey: Boolean): InsertHandler<LookupElement> {
-		return InsertHandler { context, _ ->
-			//如果后面没有分隔符，则要加上等号，并且根据代码格式设置来判断是否加上等号周围的空格
-			val editor = context.editor
-			val document = editor.document
-			val chars = document.charsSequence
-			val charsLength = chars.length
-			val caretOffset = editor.caretModel.offset
+	private fun LookupElementBuilder.withExpectedInsertHandler(isKey: Boolean, configs: List<CwtDataConfig<*>>? = null): LookupElementBuilder {
+		return withInsertHandler { context, _ ->
 			if(isKey) {
+				val editor = context.editor
+				val document = editor.document
+				val chars = document.charsSequence
+				val charsLength = chars.length
+				val caretOffset = editor.caretModel.offset
 				//得到光标之后的分隔符的位置
 				var offset = caretOffset
 				while(offset < charsLength && chars[offset].isWhitespace()) {
 					offset++
 				}
+				//如果后面没有分隔符，则要自动插入等号，并且根据代码格式设置来判断是否加上等号周围的空格
+				//如果对应的value是唯一确定的，则还要自动插入这个值
 				if(offset == charsLength || chars[offset] !in separatorChars) {
 					val customSettings = CodeStyle.getCustomSettings(context.file, ParadoxScriptCodeStyleSettings::class.java)
-					val separator = if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "="
-					EditorModificationUtil.insertStringAtCaret(editor, separator)
+					val textToInsert = buildString {
+						val separator = if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "="
+						append(separator)
+						val onlyConfig = configs?.singleOrNull()?.castOrNull<CwtPropertyConfig>()
+						val onlyValue = onlyConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }
+						if(onlyValue != null) append(onlyValue)
+					}
+					EditorModificationUtil.insertStringAtCaret(editor, textToInsert)
 				}
 			}
 		}

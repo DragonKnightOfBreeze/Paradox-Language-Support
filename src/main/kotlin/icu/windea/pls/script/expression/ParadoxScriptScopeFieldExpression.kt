@@ -6,8 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeScope
-import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueLinkPrefixOrDataSource
-import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueLinkValue
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeScopeLinkPrefixOrDataSource
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -143,8 +142,7 @@ class ParadoxScriptScopeFieldExpression(
 		
 		if(isLast) {
 			completeScope(this, result)
-			completeValueLinkValue(this, result)
-			completeValueLinkPrefixOrDataSource(this, result)
+			completeScopeLinkPrefixOrDataSource(this, result)
 		} else {
 			completeScope(this, result)
 		}

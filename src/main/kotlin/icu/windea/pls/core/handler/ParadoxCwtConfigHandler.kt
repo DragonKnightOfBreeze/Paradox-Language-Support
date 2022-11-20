@@ -1,5 +1,6 @@
 package icu.windea.pls.core.handler
 
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
@@ -13,41 +14,28 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxCwtConfigHandler {
 	@JvmStatic
-	fun resolveConfig(element: ParadoxScriptExpressionElement): CwtDataConfig<*>? {
+	fun resolveConfigs(element: PsiElement, allowDefinitionSelf: Boolean = false, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.ALL): List<CwtDataConfig<*>> {
 		return when {
-			element is ParadoxScriptPropertyKey -> resolvePropertyConfig(element)
-			element is ParadoxScriptValue -> resolveValueConfig(element)
-			else -> null
+			element is ParadoxScriptProperty -> resolvePropertyConfigs(element, allowDefinitionSelf, orDefault, matchType)
+			element is ParadoxScriptPropertyKey -> resolvePropertyConfigs(element, allowDefinitionSelf, orDefault, matchType)
+			element is ParadoxScriptValue -> resolveValueConfigs(element, allowDefinitionSelf, orDefault, matchType)
+			else -> emptyList()
 		}
 	}
 	
 	@JvmStatic
-	fun resolvePropertyConfig(element: ParadoxScriptProperty, allowDefinitionSelf: Boolean = false, hasDefault: Boolean = true): CwtPropertyConfig? {
-		return resolveConfig(element, CwtPropertyConfig::class.java, allowDefinitionSelf, hasDefault)
+	fun resolvePropertyConfigs(element: PsiElement, allowDefinitionSelf: Boolean = false, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.ALL): List<CwtPropertyConfig> {
+		return doResolveConfigs(element, CwtPropertyConfig::class.java, allowDefinitionSelf, orDefault, matchType)
 	}
 	
 	@JvmStatic
-	fun resolvePropertyConfig(element: ParadoxScriptPropertyKey, allowDefinitionSelf: Boolean = false, hasDefault: Boolean = true): CwtPropertyConfig? {
-		return resolveConfig(element, CwtPropertyConfig::class.java, allowDefinitionSelf, hasDefault)
-	}
-	
-	@JvmStatic
-	fun resolveValueConfig(element: ParadoxScriptValue, allowDefinitionSelf: Boolean = true, hasDefault: Boolean = true): CwtValueConfig? {
-		return resolveConfig(element, CwtValueConfig::class.java, allowDefinitionSelf, hasDefault)
-	}
-	
-	fun <T : CwtConfig<*>> resolveConfig(element: PsiElement, configType: Class<T>, allowDefinitionSelf: Boolean, hasDefault: Boolean, matchType: Int = CwtConfigMatchType.ALL): T? {
-		val configs = resolveConfigs(element, configType, allowDefinitionSelf, hasDefault, matchType)
-		return when(configType){
-			CwtPropertyConfig::class.java -> configs.firstOrNull()
-			CwtValueConfig::class.java -> configs.singleOrNull()
-			else -> throw UnsupportedOperationException()
-		}
+	fun resolveValueConfigs(element: PsiElement, allowDefinitionSelf: Boolean = true, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.ALL): List<CwtValueConfig> {
+		return doResolveConfigs(element, CwtValueConfig::class.java, allowDefinitionSelf, orDefault, matchType)
 	}
 	
 	@Suppress("UNCHECKED_CAST")
 	@JvmStatic
-	fun <T : CwtConfig<*>> resolveConfigs(element: PsiElement, configType: Class<T>, allowDefinitionSelf: Boolean, hasDefault: Boolean, matchType: Int = CwtConfigMatchType.ALL): List<T> {
+	private fun <T : CwtConfig<*>> doResolveConfigs(element: PsiElement, configType: Class<T>, allowDefinitionSelf: Boolean, orDefault: Boolean, matchType: Int): List<T> {
 		//当输入的元素是key或property时，输入的规则类型必须是property
 		return when(configType) {
 			CwtPropertyConfig::class.java -> {
@@ -75,8 +63,8 @@ object ParadoxCwtConfigHandler {
 							add(propertyConfig)
 						}
 					}
-					if(hasDefault && isEmpty()) {
-						configs.firstOrNull()?.let { add(it) }
+					if(orDefault && isEmpty()) {
+						configs.forEach { add(it) }
 					}
 				} as List<T>
 			}
@@ -103,7 +91,7 @@ object ParadoxCwtConfigHandler {
 									add(propertyConfig.valueConfig)
 								}
 							}
-							if(hasDefault && isEmpty()) {
+							if(orDefault && isEmpty()) {
 								configs.filterIsInstance<CwtPropertyConfig>().forEach { add(it.valueConfig) }
 							}
 						} as List<T>
@@ -122,8 +110,8 @@ object ParadoxCwtConfigHandler {
 								if(CwtConfigHandler.matchesScriptExpression(expression, valueExpression, configGroup, matchType)) {
 									add(childValueConfig)
 								}
-								if(hasDefault && isEmpty()) {
-									childValueConfigs.forEach { add(it) }
+								if(orDefault && isEmpty()) {
+									childValueConfigs.singleOrNull()?.let { add(it) }
 								}
 							}
 						} as List<T>

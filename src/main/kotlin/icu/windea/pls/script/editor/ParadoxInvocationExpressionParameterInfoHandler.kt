@@ -7,7 +7,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolvePropertyConfigs
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
@@ -41,7 +41,7 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
 	override fun findElementForParameterInfo(context: CreateParameterInfoContext): ParadoxScriptProperty? {
 		val targetElement = findTargetElement(context) ?: return null
 		val definitionName = targetElement.name
-		val config = ParadoxCwtConfigHandler.resolvePropertyConfig(targetElement) ?: return null
+		val config = resolvePropertyConfigs(targetElement).firstOrNull() ?: return null
 		val definitionType = config.keyExpression.value ?: return null
 		//合并所有可能的参数名
 		val selector = definitionSelector().gameTypeFrom(context.file).preferRootFrom(context.file)

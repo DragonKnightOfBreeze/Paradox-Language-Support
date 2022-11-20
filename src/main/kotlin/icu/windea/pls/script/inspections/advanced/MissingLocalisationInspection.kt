@@ -20,7 +20,7 @@ import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.selector.*
@@ -152,7 +152,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			ProgressManager.checkCanceled()
 			if(inspection.localeSet.isEmpty()) return
 			if(!inspection.checkForModifiers) return
-			val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return
+			val config = resolveConfigs(element).firstOrNull() ?: return
 			val configGroup = config.info.configGroup
 			if(config.expression.type != CwtDataTypes.Modifier) return
 			val name = element.value
@@ -166,7 +166,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 				}
 				if(localisation == null) missingLocales.add(locale)
 			}
-			if(missingLocales.isNotEmpty()){
+			if(missingLocales.isNotEmpty()) {
 				for(locale in missingLocales) {
 					val message = PlsBundle.message("script.inspection.advanced.missingLocalisation.description.4", name, locale)
 					holder.registerProblem(element, message, ProblemHighlightType.WEAK_WARNING,

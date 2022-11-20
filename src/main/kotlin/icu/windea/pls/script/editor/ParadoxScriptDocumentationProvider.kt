@@ -6,7 +6,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
@@ -44,7 +44,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 					val complexEnumValueInfo = element.complexEnumValueInfo
 					if(complexEnumValueInfo != null) return generateComplexEnumValueInfo(element, complexEnumValueInfo)
 				}
-				val config = ParadoxCwtConfigHandler.resolveConfig(element)
+				val config = resolveConfigs(element).firstOrNull()
 				if(config != null) {
 					//if(CwtConfigHandler.isComplexEnum(config)) return getComplexEnumValueInfo(element, config)
 					if(CwtConfigHandler.isValueSetValue(config)) return getValueSetValueInfo(element, config)
@@ -140,7 +140,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 					val complexEnumValueInfo = element.complexEnumValueInfo
 					if(complexEnumValueInfo != null) return generateComplexEnumValueDoc(element, complexEnumValueInfo)
 				}
-				val config = ParadoxCwtConfigHandler.resolveConfig(element)
+				val config = resolveConfigs(element).firstOrNull()
 				if(config != null) {
 					//if(CwtConfigHandler.isComplexEnum(config)) return getComplexEnumValueDoc(element, config)
 					if(CwtConfigHandler.isValueSetValue(config)) return getValueSetValueDoc(element, config)

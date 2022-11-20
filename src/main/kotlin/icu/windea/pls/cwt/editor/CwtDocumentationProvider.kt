@@ -11,6 +11,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.tool.*
@@ -308,7 +309,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			CwtConfigType.Alias -> {
 				//TODO 有些alias的supported_scopes信息并没有同步到最新版本的CWT规则文件中，需要另外写日志解析器进行解析
 				val expressionElement = originalElement?.parent?.castOrNull<ParadoxScriptExpressionElement>() ?: return
-				val config = ParadoxCwtConfigHandler.resolveConfig(expressionElement)?.castOrNull<CwtPropertyConfig>()
+				val config = resolveConfigs(expressionElement).firstOrNull()?.castOrNull<CwtPropertyConfig>()
 				val aliasConfig = config?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
 				supportedScopeNames = aliasConfig.supportedScopeNames
 			}

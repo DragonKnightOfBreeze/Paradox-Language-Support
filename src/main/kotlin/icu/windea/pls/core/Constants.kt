@@ -1,5 +1,6 @@
 package icu.windea.pls.core
 
+import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
@@ -23,8 +24,9 @@ object PlsConstants {
 	
 	const val dummyIdentifier = "windea"
 	
+	val eraseMarker = TextAttributes()
+	
 	val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
-	val booleanValues = arrayOf("yes", "no")
 	
 	val scriptFileExtensions = arrayOf("txt", "gfx", "gui", "asset", "dlc", "settings")
 	val localisationFileExtensions = arrayOf("yml")

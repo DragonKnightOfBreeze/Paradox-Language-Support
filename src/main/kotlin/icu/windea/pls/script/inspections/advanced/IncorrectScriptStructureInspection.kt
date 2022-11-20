@@ -6,7 +6,8 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolvePropertyConfigs
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveValueConfigs
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -29,12 +30,16 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 		file.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
 			override fun visitProperty(element: ParadoxScriptProperty) {
 				ProgressManager.checkCanceled()
-				if(forPropertyKey) {
-					val config = ParadoxCwtConfigHandler.resolvePropertyConfig(element)
+				val shouldCheck = forPropertyKey
+				if(shouldCheck) {
+					//skip checking property if property key may contain parameters
+					if(element.propertyKey.isParameterAwareExpression()) return
+					val config = resolvePropertyConfigs(element).firstOrNull()
 					//是定义元素，非定义自身，且路径中不带参数
 					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
 						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.description.1", element.expression))
-						return //skip property value if property key is invalid 
+						//skip checking property value if property key is invalid 
+						return
 					}
 				}
 				super.visitProperty(element)
@@ -43,13 +48,17 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 			override fun visitValue(element: ParadoxScriptValue) {
 				ProgressManager.checkCanceled()
 				//排除block
-				if(if(!element.isPropertyValue()) forValue else forPropertyValue) {
+				val shouldCheck = if(element.isPropertyValue()) forPropertyValue else forValue
+				if(shouldCheck) {
+					//skip checking value if it may contain parameters
+					if(element is ParadoxScriptString && element.isParameterAwareExpression()) return
 					//精确解析
-					val config = ParadoxCwtConfigHandler.resolveValueConfig(element, hasDefault = false)
+					val config = resolveValueConfigs(element, orDefault = false).firstOrNull()
 					//是定义元素，非定义自身，且路径中不带参数
 					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
 						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.description.1", element.expression))
-						return //skip children
+						//skip checking children
+						return
 					}
 				}
 				super.visitValue(element)

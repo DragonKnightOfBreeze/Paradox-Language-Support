@@ -465,7 +465,7 @@ val PsiElement.icon
 	get() = getIcon(0)
 
 fun PsiElement.getKeyword(offset: Int): String {
-	return text.unquote().substring(0, offset)
+	return text.substring(0, offset).unquote()
 }
 
 fun PsiFile.setNameWithoutExtension(name: String): PsiElement {

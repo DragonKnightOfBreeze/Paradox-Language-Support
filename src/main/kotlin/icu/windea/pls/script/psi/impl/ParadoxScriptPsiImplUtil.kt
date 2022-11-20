@@ -12,6 +12,8 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolvePropertyConfigs
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveValueConfigs
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
@@ -262,7 +264,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getConfigExpression(element: ParadoxScriptProperty): String? {
-		val config = ParadoxCwtConfigHandler.resolvePropertyConfig(element) ?: return null
+		val config = resolvePropertyConfigs(element).firstOrNull() ?: return null
 		return "${config.key} = ${config.value}"
 	}
 	
@@ -344,7 +346,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getConfigExpression(element: ParadoxScriptPropertyKey): String? {
-		val config = ParadoxCwtConfigHandler.resolvePropertyConfig(element) ?: return null
+		val config = resolvePropertyConfigs(element).firstOrNull() ?: return null
 		return config.key
 	}
 	//endregion
@@ -400,7 +402,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getConfigExpression(element: ParadoxScriptValue): String? {
-		val config = ParadoxCwtConfigHandler.resolveValueConfig(element) ?: return null
+		val config = resolveValueConfigs(element).firstOrNull() ?: return null
 		return config.value
 	}
 	//endregion
@@ -599,10 +601,10 @@ object ParadoxScriptPsiImplUtil {
 			val colorTypeOptionLocation = when {
 				parent is ParadoxScriptPropertyValue -> {
 					val property = parent.parent.castOrNull<ParadoxScriptProperty>() ?: return@runCatching null
-					ParadoxCwtConfigHandler.resolvePropertyConfig(property, allowDefinitionSelf = true)
+					resolvePropertyConfigs(property, allowDefinitionSelf = true).firstOrNull()
 				}
 				else -> {
-					ParadoxCwtConfigHandler.resolveValueConfig(element)
+					resolveValueConfigs(element).firstOrNull()
 				}
 			}
 			val colorTypeOption = colorTypeOptionLocation?.options?.find { it.key == "color_type" } ?: return@runCatching null

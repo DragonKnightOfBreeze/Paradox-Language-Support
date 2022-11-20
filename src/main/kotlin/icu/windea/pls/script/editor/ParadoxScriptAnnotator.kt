@@ -10,9 +10,11 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.model.*
-import icu.windea.pls.script.expression.*
+import icu.windea.pls.script.exp.*
+import icu.windea.pls.script.expression.ParadoxScriptComplexExpression
+import icu.windea.pls.script.expression.ParadoxScriptExpression
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
 
@@ -70,7 +72,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		//不高亮带有参数的情况
 		if(element.isParameterAwareExpression()) return
 		
-		val config = ParadoxCwtConfigHandler.resolveConfig(element)
+		val config = resolveConfigs(element).firstOrNull()
 		if(config != null) doAnnotateExpressionElement(element, element.textRange, config.expression, config, holder)
 		
 		val complexEnumValueInfo = element.complexEnumValueInfo
@@ -147,12 +149,13 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
-				if(!element.isQuoted()) {
-					val expressionString = range.shiftLeft(element.textRange.startOffset).substring(element.text).unquote()
-					val scopeFieldExpression = ParadoxScriptExpression.resolveScopeField(expressionString, configGroup)
-					if(scopeFieldExpression.isEmpty()) return
-					doAnnotateComplexExpression(element, scopeFieldExpression, config, range, holder)
-				}
+				val text = element.text
+				if(text.isQuoted()) return
+				val isKey = element is ParadoxScriptPropertyKey
+				val textRange = TextRange.create(0, text.length)
+				val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup, isKey)
+					?: return
+				scopeFieldExpression.annotate(element, range, holder)
 			}
 			CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
 				if(!element.isQuoted()) {

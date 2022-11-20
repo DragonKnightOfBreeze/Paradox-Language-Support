@@ -4,7 +4,7 @@ import com.intellij.lang.parameterInfo.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.expression.*
@@ -23,7 +23,7 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
 		
 		val text = targetElement.text
 		if(!text.contains("value:") || !text.contains('|')) return null //快速判断
-		val config = ParadoxCwtConfigHandler.resolveConfig(targetElement) ?: return null
+		val config = resolveConfigs(targetElement).firstOrNull() ?: return null
 		val dataType = config.expression.type
 		if(dataType != CwtDataTypes.ValueField && dataType != CwtDataTypes.IntValueField) return null
 		val configGroup = config.info.configGroup
@@ -55,7 +55,7 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
 		
 		val text = targetElement.text
 		if(!text.contains("value:") || !text.contains('|')) return null //快速判断
-		val config = ParadoxCwtConfigHandler.resolveConfig(targetElement) ?: return null
+		val config = resolveConfigs(targetElement).firstOrNull() ?: return null
 		val dataType = config.expression.type
 		if(dataType != CwtDataTypes.ValueField && dataType != CwtDataTypes.IntValueField) return null
 		val configGroup = config.info.configGroup
