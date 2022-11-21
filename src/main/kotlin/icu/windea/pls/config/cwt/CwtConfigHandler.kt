@@ -1568,7 +1568,7 @@ object CwtConfigHandler {
 					return null //不在这里处理，参见：ParadoxScriptScopeFieldExpression
 				}
 				CwtDataTypes.Constant -> {
-					//取第一个即可
+					//这里需要解析的应当是value，因此取第一个即可
 					val aliasSubNameIgnoreCase = configGroup.aliasKeysGroupConst.get(aliasName)?.get(aliasSubName)
 					val aliases = aliasGroup[aliasSubNameIgnoreCase] //需要忽略大小写
 					if(aliases != null) {
@@ -1636,7 +1636,7 @@ object CwtConfigHandler {
 					return emptyList() //不在这里处理，参见：ParadoxScriptScopeFieldExpression
 				}
 				CwtDataTypes.Constant -> {
-					//取第一个即可
+					//这里需要解析的应当是value，因此取第一个即可
 					val aliasSubNameIgnoreCase = configGroup.aliasKeysGroupConst.get(aliasName)?.get(aliasSubName)
 					val aliases = aliasGroup[aliasSubNameIgnoreCase] //需要忽略大小写
 					if(aliases != null) {

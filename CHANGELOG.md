@@ -15,24 +15,11 @@
   * [ ] 确认重命名功能能够预期正确进行（如果对应的声明/引用支持重命名）
   * [ ] 确认`inline_math`和`scripted_loc`是否需要进行转义的最终条件，并添加到对应的检查中
   * [ ] `commandField`额外支持`$@variableName$`的写法，其中`variableName`是全局封装变量（位于`common/scripted_variables`中）（来自CWT：`localisations.log`）
-  * [ ] 将本地化命令（`[xxx]`中的xxx，所有文本）解析为单个元素，如果解析scopeFieldExpression一样，将此作为localisationCommandExpression并解析，实现相关功能：检查、提示等
+  * [ ] ~~将本地化命令（`[xxx]`中的xxx，所有文本）解析为单个元素，如果解析scopeFieldExpression一样，将此作为localisationCommandExpression并解析，实现相关功能：检查、提示等~~
   * [ ] 基于facet或者合成库`SyntheticLibrary`+自定义设置配置模组的游戏类型、游戏目录、依赖模组列表等配置
   * [ ] 内嵌提示的预览文本中不再包括特殊注释，而是通过向psiFile中注入特定userData的方式提供必要的信息（类型、本地化等）
   * [ ] 基于引用的重命名需要考虑存在前后缀的情况（主要是为图标引用考虑）
   * [ ] 需要重新调整对返回的规则列表的排序
-* 新增功能 - 群友提出：
-  * [ ] 实现后缀补全：对于变量操作表达式，如`var.setv` → `set_variable = { which = var value = ? }`
-    * 需要区分游戏类型，需要扩展并基于CWT规则，需要进一步研究
-  * [ ] 实现代码折叠：对于变量操作表达式，如`set_variable = { which = var value = 1 }` → `var = 1`
-    * 需要区分游戏类型，需要扩展并基于CWT规则，需要进一步研究
-  * [ ] 进行定义元素的代码补全时，如果一个key的value是block（`{ ... }`），应用补全后除了自动插入` = `之外，还要自动插入` {}`
-    * 光标位于花括号之中，需要格式化
-    * 如果可能是block，那么同时给出提示项`key = {...}`（后面尾随其他信息文本）（参照Kotlin方法的代码补全）
-    * 需要考虑可通过设置开关此功能
-  * [ ] 进行定义元素的代码补全时，如果一个key的value是block（`{ ... }`），且其中的各个key都是确定的（固定的），应用补全后要直接插入整个block的内联模版，让用户依次输入各个value
-    * 实际上，如果value是数字，那么key和value之间应当可以是任意比较操作符，用户输入对应的value时要预先包含且选中key和value之间的等号
-    * 不需要另外编写cwt规则文件，在加入提示项时判断即可
-    * 需要考虑可通过设置开关此功能
 * 新增功能：
   * [ ] ~~添加检查：图标属性的值引用了定义自身（`foo { icon = foo ... }`）（不觉得这有什么意义）~~
   * [ ] ［搁置］添加内嵌提示：定义和定义元素的作用域的内嵌提示（需要研究）
@@ -56,6 +43,24 @@
 * 遗留问题：
   * [ ] 有时候会把`DISTRICT = district_arcology_housing`的`DISTRICT`被识别为scope_expression而非参数名，为什么？
   * [ ] 有时候`event_target:mechanocalibrator_country`中的`event_target:`无法点击导航到CWT，为什么？
+
+## 0.7.5
+
+* 功能优化：
+  * [ ] 对于忽略大小写的字符串作为键/元素的集合和映射，考虑使用内联类`CaseInsensitiveString`，以保证排序
+* 新增功能 - 群友提出：
+  * [ ] 实现后缀补全：对于变量操作表达式，如`var.setv` → `set_variable = { which = var value = ? }`
+    * 需要区分游戏类型，需要扩展并基于CWT规则，需要进一步研究
+  * [ ] 实现代码折叠：对于变量操作表达式，如`set_variable = { which = var value = 1 }` → `var = 1`
+    * 需要区分游戏类型，需要扩展并基于CWT规则，需要进一步研究
+  * [ ] 进行定义元素的代码补全时，如果一个key的value必定是block（`{ ... }`），应用补全后除了自动插入` = `之外，还要自动插入` {}`
+    * 光标位于花括号之中，需要格式化
+    * 如果可能是block，那么需要另外给出提示项`key = {...}`（后面尾随其他信息文本）（参照Kotlin方法的代码补全）
+    * 需要考虑可通过设置开关此功能
+  * [ ] 进行定义元素的代码补全时，如果一个key的value可能是block（`{ ... }`），且其中的各个key都是确定的（固定的），应用补全后要直接插入整个block的内联模版，让用户依次输入各个value
+    * 实际上，如果key或value是数字，那么key和value之间应当可以是任意比较操作符
+    * 不需要另外编写cwt规则文件，在加入提示项时判断即可
+    * 需要考虑可通过设置开关此功能
 
 ## 0.7.4
 
