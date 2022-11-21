@@ -242,7 +242,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getBlock(element: ParadoxScriptProperty): ParadoxScriptBlock? {
-		return element.propertyValue?.value?.castOrNull()
+		return element.findChild()
 	}
 	
 	@JvmStatic

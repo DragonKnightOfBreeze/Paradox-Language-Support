@@ -158,6 +158,9 @@ public interface ParadoxScriptElementTypes {
       else if (type == STRING) {
         return new ParadoxScriptStringImpl(node);
       }
+      else if (type == VALUE) {
+        return new ParadoxScriptValueImpl(node);
+      }
       throw new AssertionError("Unknown element type: " + type);
     }
   }

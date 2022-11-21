@@ -14,7 +14,7 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.script.exp.ParadoxDataType;
 import javax.swing.Icon;
 
-public abstract class ParadoxScriptValueImpl extends ASTWrapperPsiElement implements ParadoxScriptValue {
+public class ParadoxScriptValueImpl extends ASTWrapperPsiElement implements ParadoxScriptValue {
 
   public ParadoxScriptValueImpl(@NotNull ASTNode node) {
     super(node);

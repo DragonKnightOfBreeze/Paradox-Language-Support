@@ -17,7 +17,7 @@ object DefinitionConfigHandler {
 		var current = event.prevSibling ?: return null
 		while(true) {
 			if(current is ParadoxScriptProperty && current.name.equals("namespace", true)) {
-				val namespace = current.propertyValue?.value.castOrNull<ParadoxScriptString>() ?: return null
+				val namespace = current.propertyValue?.castOrNull<ParadoxScriptString>() ?: return null
 				return namespace.stringValue
 			}
 			current = current.prevSibling ?: return null

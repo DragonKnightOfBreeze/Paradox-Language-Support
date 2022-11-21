@@ -1,8 +1,7 @@
 <html>
 <body>
-  <b>NOT IMPLEMENTED</b>
   <p>
-    Reports unexpected script expressions and statements in script files.
+    Reports incorrect script syntax in script files.
   </p>
   <p>
     Include following situations currently:
@@ -10,7 +9,7 @@
   <ul>
     <li>
       Unexpected comparison operator.
-      (Expect before a number value)
+      (Expect after or before a number value)
     </li>
     <!--<li>-->
     <!--  Unexpected inline math.-->
@@ -25,11 +24,15 @@
     <!--  (Expect in a definition declaration)-->
     <!--</li>-->
     <!--<li>-->
-    <!--  Unexpected inline math start token.-->
+    <!--  Unexpected inline math expression.-->
+    <!--  (Expect in a definition declaration)-->
+    <!--</li>-->
+    <!--<li>-->
+    <!--  Unexpected inline math expression start token.-->
     <!--  (Expect<code>"@\["</code> in a scripted_effect / scripted_trigger definition declaration, otherwise<code>"@["</code>)-->
     <!--</li>-->
     <!--<li>-->
-    <!--  Multiple inline maths in single scripted_effect/ scripted_trigger definition declaration.-->
+    <!--  Multiple inline math expressions in single scripted_effect/ scripted_trigger definition declaration.-->
     <!--</li>-->
   </ul>
   <!-- tooltip end -->

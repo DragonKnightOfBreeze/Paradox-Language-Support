@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.script.exp.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -15,7 +16,7 @@ import icu.windea.pls.script.psi.*
  * * TODO 不期望的封装变量引用（必须位于定义之内）
  * * TODO 不期望的参数（必须位于定义之内）
  * * TODO 不期望的参数条件语句（必须位于定义之内）
- * * TODO 不期望的内联表达式（必须位于定义之内）
+ * * TODO 不期望的内联数学表达式（必须位于定义之内）
  * * TODO 不期望的封装本地化引用（必须位于定义之内）
  * * TODO 不期望的内联数学表达式的开始（"@["和"@\["） -> 提供快速修复：修正
  * * TODO 不期望的封装本地化引用的开始（"["和"\["） -> 提供快速修复：修正
@@ -29,6 +30,8 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
 			override fun visitProperty(element: ParadoxScriptProperty) {
 				ProgressManager.checkCanceled()
 				run {
+					val propertyKey = element.propertyKey
+					if(mayBeNumberKey(propertyKey)) return@run
 					val propertyValue = element.propertyValue ?: return@run
 					if(mayByNumberValue(propertyValue)) return@run
 					val comparisonTokens = element.findChildren(ParadoxScriptTokenSets.comparisonTokens)
@@ -41,6 +44,12 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
 				super.visitProperty(element)
 			}
 			
+			//key or value, int / float / int or float scripted variable / int or float string (can be quoted), inline_math  
+			
+			private fun mayBeNumberKey(propertyKey: ParadoxScriptPropertyKey): Boolean {
+				return ParadoxDataType.resolve(propertyKey.value).isNumberType()
+			}
+			
 			private fun mayByNumberValue(element: ParadoxScriptValue): Boolean {
 				return when {
 					element is ParadoxScriptInt -> true
@@ -50,6 +59,7 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
 						val resolvedValueElement = resolved?.scriptedVariableValue
 						resolvedValueElement == null || mayByNumberValue(resolvedValueElement)
 					}
+					element is ParadoxScriptString -> ParadoxDataType.resolve(element.value).isNumberType()
 					element is ParadoxScriptInlineMath -> true
 					else -> false
 				}

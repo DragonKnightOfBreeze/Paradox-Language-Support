@@ -33,7 +33,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 		for(property in properties) {
 			if(property.name.equals("namespace", true)) {
 				//如果值不是一个字符串，作为空字符串存到缓存中
-				val namespace = property.propertyValue?.value.castOrNull<ParadoxScriptString>()?.stringValue.orEmpty()
+				val namespace = property.propertyValue?.castOrNull<ParadoxScriptString>()?.stringValue.orEmpty()
 				nextNamespace = namespace
 				eventGroup.getOrPut(namespace) { mutableListOf() }
 			} else {
@@ -48,7 +48,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 			if(events.isEmpty()) continue
 			for(event in events) {
 				val eventIdProperty = event.findDefinitionProperty("id") ?: continue //没有事件ID，另行检查
-				val eventIdPropertyValue = eventIdProperty.propertyValue?.value.castOrNull<ParadoxScriptString>() ?: continue //事件ID不是字符串，另行检查
+				val eventIdPropertyValue = eventIdProperty.propertyValue?.castOrNull<ParadoxScriptString>() ?: continue //事件ID不是字符串，另行检查
 				val eventId = eventIdPropertyValue.stringValue
 				if(isIncorrectEventId(eventId, namespace)) {
 					if(holder == null) holder = ProblemsHolder(manager, file, isOnTheFly)

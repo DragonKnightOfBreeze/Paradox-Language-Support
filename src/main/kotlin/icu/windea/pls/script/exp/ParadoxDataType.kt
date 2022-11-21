@@ -1,6 +1,5 @@
 package icu.windea.pls.script.exp
 
-import icu.windea.pls.core.*
 import java.text.*
 
 /**
@@ -40,57 +39,23 @@ enum class ParadoxDataType(
 		}
 		
 		fun isInt(expression: String): Boolean {
-			var isFirstChar = true
-			val chars = expression.toCharArray()
-			for(char in chars) {
-				if(char.isExactDigit()) continue
-				if(isFirstChar) {
-					isFirstChar = false
-					if(char == '+' || char == '-') continue
-				}
-				return false
-			}
-			return true
+			return expression.toIntOrNull() != null
 		}
 		
 		fun isFloat(expression: String): Boolean {
-			var isFirstChar = true
-			var missingDot = true
-			val chars = expression.toCharArray()
-			for(char in chars) {
-				if(char.isExactDigit()) continue
-				if(isFirstChar) {
-					isFirstChar = false
-					if(char == '+' || char == '-') continue
-				}
-				if(missingDot) {
-					if(char == '.') {
-						missingDot = false
-						continue
-					}
-				}
-				return false
-			}
-			return true
+			return expression.toFloatOrNull() != null
 		}
+		
+		private val isPercentageFieldRegex = """[1-9]?[0-9]+%""".toRegex()
 		
 		fun isPercentageField(expression: String): Boolean {
-			val chars = expression.toCharArray()
-			for(i in expression.indices) {
-				val char = chars[i]
-				if(i == expression.lastIndex) {
-					if(char != '%') return false
-				} else {
-					if(!char.isExactDigit()) return false
-				}
-			}
-			return true
+			return expression.matches(isPercentageFieldRegex)
 		}
 		
-		private val isColorRegex = """(?:rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d. \t]*}""".toRegex()
+		private val isColorFieldRegex = """(?:rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d. \t]*}""".toRegex()
 		
 		fun isColorField(expression: String): Boolean {
-			return expression.matches(isColorRegex)
+			return expression.matches(isColorFieldRegex)
 		}
 		
 		private val threadLocalDateFormat by lazy { ThreadLocal.withInitial { SimpleDateFormat("yyyy.MM.dd") } }
@@ -111,6 +76,8 @@ fun ParadoxDataType.isBooleanType() = this == ParadoxDataType.BooleanType
 fun ParadoxDataType.isIntType() = this == ParadoxDataType.UnknownType || this == ParadoxDataType.IntType || this == ParadoxDataType.ParameterType || this == ParadoxDataType.InlineMathType
 
 fun ParadoxDataType.isFloatType() = this == ParadoxDataType.UnknownType || this == ParadoxDataType.IntType || this == ParadoxDataType.FloatType || this == ParadoxDataType.ParameterType || this == ParadoxDataType.InlineMathType
+
+fun ParadoxDataType.isNumberType() = this == ParadoxDataType.UnknownType || this == ParadoxDataType.IntType || this == ParadoxDataType.FloatType || this == ParadoxDataType.ParameterType || this == ParadoxDataType.InlineMathType
 
 fun ParadoxDataType.isStringType() = this == ParadoxDataType.UnknownType || this == ParadoxDataType.StringType || this == ParadoxDataType.ParameterType
 

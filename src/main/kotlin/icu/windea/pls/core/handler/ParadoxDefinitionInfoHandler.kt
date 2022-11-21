@@ -32,7 +32,7 @@ object ParadoxDefinitionInfoHandler {
 	@JvmStatic
 	fun resolve(element: ParadoxDefinitionProperty, file: PsiFile = element.containingFile): ParadoxDefinitionInfo? {
 		//排除带参数的情况
-		if(element is ParadoxScriptProperty && element.findChild<ParadoxScriptPropertyKey>()?.isParameterAwareExpression() == true) return null
+		if(element is ParadoxScriptProperty && element.propertyKey.isParameterAwareExpression()) return null
 		
 		val project = file.project
 		

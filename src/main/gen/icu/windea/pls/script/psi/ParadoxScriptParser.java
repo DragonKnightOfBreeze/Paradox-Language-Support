@@ -748,7 +748,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   public static boolean string(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _UPPER_, STRING, "<string>");
+    Marker m = enter_section_(b, l, _NONE_, STRING, "<string>");
     r = value_expr(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;

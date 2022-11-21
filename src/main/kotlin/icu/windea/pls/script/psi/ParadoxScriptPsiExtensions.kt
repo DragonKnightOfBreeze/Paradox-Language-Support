@@ -122,11 +122,7 @@ fun PsiElement.findParentDefinitionProperty(fromParentBlock: Boolean = false): P
 	var current: PsiElement = if(fromParentBlock) this.parent else this
 	while(current !is PsiFile) {
 		if(fromParentBlock) {
-			if(current is ParadoxScriptRootBlock) {
-				return (current.parent ?: break) as ParadoxDefinitionProperty
-			} else if(current is ParadoxScriptBlock) {
-				return (current.parent.parent ?: break) as ParadoxDefinitionProperty
-			}
+			return current.parent as? ParadoxDefinitionProperty ?: break
 		} else {
 			if(current is ParadoxDefinitionProperty) return current
 		}
@@ -155,17 +151,17 @@ fun ParadoxScriptExpressionElement.isDefinitionRootKeyOrName(): Boolean {
 }
 
 fun ParadoxScriptPropertyKey.isDefinitionRootKey(): Boolean {
-	val definition = this.parent.castOrNull<ParadoxScriptProperty>() ?: return false
+	val definition = this.parent?.castOrNull<ParadoxScriptProperty>() ?: return false
 	if(definition.definitionInfo != null) return true
 	return false
 }
 
 fun ParadoxScriptString.isDefinitionName(): Boolean {
-	val nameProperty = this.parent.parent.castOrNull<ParadoxScriptProperty>() ?: return false
+	val nameProperty = this.parent?.castOrNull<ParadoxScriptProperty>() ?: return false
 	//def = def_name
 	if(nameProperty.definitionInfo.let { it != null && it.typeConfig.nameField == nameProperty.name }) return true
-	val block = nameProperty.parent.castOrNull<ParadoxScriptBlock>() ?: return false
-	val definition = block.parent.parent.castOrNull<ParadoxScriptProperty>() ?: return false
+	val block = nameProperty.castOrNull<ParadoxScriptBlock>() ?: return false
+	val definition = block.parent?.castOrNull<ParadoxScriptProperty>() ?: return false
 	//def = { name_prop = def_name }
 	if(definition.definitionInfo.let { it != null && it.typeConfig.nameField == nameProperty.name }) return true
 	return false

@@ -44,6 +44,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
   stubClass="icu.windea.pls.script.psi.ParadoxScriptScriptedVariableStub"
   methods=[
     scripted_variable_name="scripted_variable_name" scripted_variable_value="value"
+    string=""
     getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue
     getExpressionType getPresentation
   ]
@@ -67,6 +68,7 @@ property ::= property_key property_separator property_value {
   ]
   methods=[
     property_key="property_key" property_value="value"
+    string=""
     getIcon getName setName getNameIdentifier getValue getDepth getBlock 
     getDefinitionType getExpressionType getConfigExpression getExpression
     getPathName getOriginalPathName getParameterMap getPresentation isEquivalentTo
@@ -93,6 +95,7 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
     "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
   ]
   methods=[
+    string=""
     getIcon getValue
     getExpressionType getConfigExpression
   ]
@@ -125,7 +128,7 @@ float ::= FLOAT_TOKEN {
   ]
   methods=[getValue getFloatValue getExpressionType]
 }
-upper string ::= value_expr {
+string ::= value_expr {
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   stubClass="icu.windea.pls.script.psi.ParadoxScriptStringStub"
   implements=[
@@ -133,8 +136,7 @@ upper string ::= value_expr {
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
   ]
   methods=[
-    getIcon
-    getValue setValue getReference getReferences getStringValue
+    getIcon getValue setValue getReference getReferences getStringValue
     getExpressionType getConfigExpression
     getPresentation isEquivalentTo
   ]
