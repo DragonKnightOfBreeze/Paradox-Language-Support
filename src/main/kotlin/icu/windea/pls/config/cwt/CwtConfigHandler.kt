@@ -540,8 +540,8 @@ object CwtConfigHandler {
 		
 		when(configExpression.type) {
 			CwtDataTypes.Bool -> {
-				result.addElement(yesLookupElement)
-				result.addElement(noLookupElement)
+				result.addElement(PlsConstants.yesLookupElement)
+				result.addElement(PlsConstants.noLookupElement)
 			}
 			CwtDataTypes.Localisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
@@ -810,12 +810,12 @@ object CwtConfigHandler {
 				//常量的值也可能是yes/no
 				if(name == "yes") {
 					if(quoted) return
-					result.addElement(yesLookupElement)
+					result.addElement(PlsConstants.yesLookupElement)
 					return
 				}
 				if(name == "no") {
 					if(quoted) return
-					result.addElement(noLookupElement)
+					result.addElement(PlsConstants.noLookupElement)
 					return
 				}
 				//if(!name.matchesKeyword(keyword)) return //不预先过滤结果
@@ -1224,11 +1224,6 @@ object CwtConfigHandler {
 		}
 	}
 	
-	private val yesLookupElement = LookupElementBuilder.create("yes").bold().withPriority(PlsCompletionPriorities.keywordPriority)
-	private val noLookupElement = LookupElementBuilder.create("no").bold().withPriority(PlsCompletionPriorities.keywordPriority)
-	
-	private val separatorChars = charArrayOf('=', '<', '>', '!')
-	
 	private fun LookupElementBuilder.fromScriptExpression(
 		isKey: Boolean?,
 		configs: List<CwtDataConfig<*>>? = null,
@@ -1260,7 +1255,7 @@ object CwtConfigHandler {
 				}
 				//如果后面没有分隔符，则要自动插入等号，并且根据代码格式设置来判断是否加上等号周围的空格
 				//如果对应的value是唯一确定的，则还要自动插入这个值
-				if(offset == charsLength || chars[offset] !in separatorChars) {
+				if(offset == charsLength || chars[offset] !in PlsConstants.separatorChars) {
 					val customSettings = CodeStyle.getCustomSettings(context.file, ParadoxScriptCodeStyleSettings::class.java)
 					val textToInsert = buildString {
 						val separator = if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "="

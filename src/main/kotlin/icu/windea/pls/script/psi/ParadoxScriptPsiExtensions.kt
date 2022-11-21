@@ -102,7 +102,7 @@ fun ParadoxDefinitionProperty.findDefinitionProperty(propertyName: String, ignor
 }
 
 /**
- * 得到上一级definition，可能为null。
+ * 得到上一级definition，可能为null，可能为自身。
  */
 fun PsiElement.findParentDefinition(): ParadoxDefinitionProperty? {
 	if(language != ParadoxScriptLanguage) return null

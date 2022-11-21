@@ -10,12 +10,16 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptCompletionContributor : CompletionContributor() {
 	init {
+		//当用户可能正在输入一个布尔值时提示
+		val booleanPattern = psiElement(STRING_TOKEN)
+		extend(CompletionType.BASIC, booleanPattern, ParadoxBooleanCompletionProvider())
+		
 		val scriptedVariableReferenceTokens = TokenSet.create(SCRIPTED_VARIABLE_REFERENCE_ID, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID)
 		val stringTokens = TokenSet.create(STRING_TOKEN, QUOTED_STRING_TOKEN)
 		val keyOrStringTokens = TokenSet.create(PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, STRING_TOKEN, QUOTED_STRING_TOKEN)
 		val parameterOrArgumentTokens = TokenSet.create(PARAMETER_ID, ARGUMENT_ID)
 		
-		//当用户真在输入一个scriptedVariableReference的名字时提示
+		//当用户正在输入一个scriptedVariableReference的名字时提示
 		val scriptedVariableNamePattern = psiElement().withElementType(scriptedVariableReferenceTokens)
 		extend(null, scriptedVariableNamePattern, ParadoxScriptedVariableCompletionProvider())
 		

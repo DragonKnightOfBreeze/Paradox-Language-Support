@@ -52,7 +52,7 @@ scripted_variable_name ::= AT SCRIPTED_VARIABLE_NAME_ID {
   methods=[getName]
 }
 private scripted_variable_separator ::= EQUAL_SIGN
-private scripted_variable_value ::= boolean | int | float
+private scripted_variable_value ::= boolean | int | float | string
 
 //property related
 property ::= property_key property_separator property_value {

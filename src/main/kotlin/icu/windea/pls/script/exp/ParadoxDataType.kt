@@ -116,4 +116,4 @@ fun ParadoxDataType.isStringType() = this == ParadoxDataType.UnknownType || this
 
 fun ParadoxDataType.isColorType() = this == ParadoxDataType.ColorType
 
-fun ParadoxDataType.canBeScriptedVariableValue() = this == ParadoxDataType.BooleanType || this == ParadoxDataType.IntType || this == ParadoxDataType.FloatType
+fun ParadoxDataType.canBeScriptedVariableValue() = this == ParadoxDataType.BooleanType || this == ParadoxDataType.IntType || this == ParadoxDataType.FloatType || this == ParadoxDataType.StringType
