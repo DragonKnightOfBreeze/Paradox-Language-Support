@@ -47,8 +47,8 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
     scripted_variable_name="scripted_variable_name" scripted_variable_value="value"
     string=""
     getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue
-    getExpressionType getPresentation
-    isEquivalentTo toString
+    getExpressionType
+    getPresentation isEquivalentTo toString
   ]
 }
 scripted_variable_name ::= AT SCRIPTED_VARIABLE_NAME_ID {
@@ -73,8 +73,8 @@ property ::= property_key property_separator property_value {
     string=""
     getIcon getName setName getNameIdentifier getValue getDepth getBlock 
     getDefinitionType getExpressionType getConfigExpression getExpression
-    getPathName getOriginalPathName getParameterMap getPresentation
-    isEquivalentTo toString
+    getPathName getOriginalPathName getParameterMap
+    getPresentation isEquivalentTo toString
   ]
 }
 property_key ::= key_expr {
@@ -86,8 +86,7 @@ property_key ::= key_expr {
   methods=[
     getValue setValue getReference getReferences
     getExpressionType getConfigExpression
-    getPresentation isEquivalentTo
-    toString
+    getPresentation isEquivalentTo toString
   ]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
@@ -141,7 +140,7 @@ string ::= value_expr {
   methods=[
     getIcon getValue setValue getReference getReferences getStringValue
     getExpressionType getConfigExpression
-    getPresentation isEquivalentTo
+    getPresentation isEquivalentTo toString
   ]
 }
 color ::= COLOR_TOKEN {

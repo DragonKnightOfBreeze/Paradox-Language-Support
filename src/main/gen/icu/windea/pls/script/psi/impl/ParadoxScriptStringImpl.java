@@ -102,4 +102,10 @@ public class ParadoxScriptStringImpl extends ParadoxScriptStubElementImpl<Parado
     return ParadoxScriptPsiImplUtil.isEquivalentTo(this, another);
   }
 
+  @Override
+  @NotNull
+  public String toString() {
+    return ParadoxScriptPsiImplUtil.toString(this);
+  }
+
 }

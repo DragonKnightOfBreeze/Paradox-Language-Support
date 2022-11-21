@@ -3,9 +3,11 @@ package icu.windea.pls.script.structureView
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
 import com.intellij.util.*
+import icons.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.tool.*
 import icu.windea.pls.script.psi.*
+import javax.swing.*
 
 class ParadoxScriptFileTreeElement(
 	element: ParadoxScriptFile
@@ -24,20 +26,33 @@ class ParadoxScriptFileTreeElement(
 		return result
 	}
 	
+	override fun getIcon(open: Boolean): Icon? {
+		val element = element ?: return null
+		//如果文件名是descriptor.mod（不区分大小写），则使用特殊图标
+		val name = element.name
+		if(name.equals(PlsConstants.descriptorFileName, true)) return PlsIcons.DescriptorFile
+		//如果是定义，则显示定义的图标
+		val definitionInfo = element.definitionInfo
+		if(definitionInfo != null) return PlsIcons.Definition
+		return element.icon
+	}
+	
 	override fun getPresentableText(): String? {
 		val element = element ?: return null
 		//如果文件名是descriptor.mod（不区分大小写），则直接显示该文件名
-		if(element.name.equals(PlsConstants.descriptorFileName, true)) return element.name
+		val name = element.name
+		if(name.equals(PlsConstants.descriptorFileName, true)) return name
 		//如果是定义，则优先显示定义的名字
 		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) return definitionInfo.name
-		return element.name
+		return name
 	}
 	
 	override fun getLocationString(): String? {
 		val element = element ?: return null
 		//如果文件名是descriptor.mod（不区分大小写），则忽略
-		if(element.name.equals(PlsConstants.descriptorFileName, true)) return null
+		val name = element.name
+		if(name.equals(PlsConstants.descriptorFileName, true)) return null
 		//如果是定义，则显示定义的类型信息
 		val definitionInfo = element.definitionInfo ?: return null
 		val builder = StringBuilder()
