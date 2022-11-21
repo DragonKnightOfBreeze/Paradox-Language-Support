@@ -22,7 +22,7 @@ object ParadoxLocalisationDataResolver {
 			if(!fileItem.isValid) return@file true
 			when {
 				fileItem is ParadoxLocalisationPropertyList -> {
-					val locale = fileItem.findOptionalChild<ParadoxLocalisationLocale>() ?: return@file true
+					val locale = fileItem.findChild<ParadoxLocalisationLocale>() ?: return@file true
 					val localeName = locale.name
 					val properties = mutableMapOf<String, String>()
 					result[localeName] = properties

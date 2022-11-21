@@ -1,11 +1,11 @@
 package icu.windea.pls.script.inspections.advanced
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 /**
  * 不正确的脚本语法的检查。
@@ -26,17 +26,19 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
 		if(file !is ParadoxScriptFile) return null
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
 		file.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
-			override fun visitPropertyValue(e: ParadoxScriptPropertyValue) {
-				//检查：不期望的比较操作符
-				val valueElement = e.value
-				if(!mayByNumberValue(valueElement)) {
-					valueElement.siblings(forward = false, withSelf = false).forEach {
-						if(isComparisonOperator(it)) {
-							val message = PlsBundle.message("script.inspection.advanced.incorrectScriptSyntax.description.1")
-							holder.registerProblem(it, message, ProblemHighlightType.GENERIC_ERROR)
-						}
+			override fun visitProperty(element: ParadoxScriptProperty) {
+				ProgressManager.checkCanceled()
+				run {
+					val propertyValue = element.propertyValue ?: return@run
+					if(mayByNumberValue(propertyValue)) return@run
+					val comparisonTokens = element.findChildren(ParadoxScriptTokenSets.comparisonTokens)
+					if(comparisonTokens.isEmpty()) return@run
+					val message = PlsBundle.message("script.inspection.advanced.incorrectScriptSyntax.description.1")
+					comparisonTokens.forEach {
+						holder.registerProblem(it, message, ProblemHighlightType.GENERIC_ERROR)
 					}
 				}
+				super.visitProperty(element)
 			}
 			
 			private fun mayByNumberValue(element: ParadoxScriptValue): Boolean {
@@ -51,13 +53,6 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
 					element is ParadoxScriptInlineMath -> true
 					else -> false
 				}
-			}
-			
-			private fun isComparisonOperator(element: PsiElement): Boolean {
-				//LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN 
-				val elementType = element.elementType
-				return elementType == LT_SIGN || elementType == GT_SIGN || elementType == LE_SIGN || elementType == GE_SIGN
-					|| elementType == NOT_EQUAL_SIGN
 			}
 		})
 		return holder.resultsArray

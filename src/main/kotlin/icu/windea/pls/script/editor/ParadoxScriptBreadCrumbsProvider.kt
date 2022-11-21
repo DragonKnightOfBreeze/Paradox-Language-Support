@@ -16,7 +16,7 @@ class ParadoxScriptBreadCrumbsProvider : BreadcrumbsProvider {
 	}
 	
 	override fun acceptElement(element: PsiElement): Boolean {
-		return element is ParadoxScriptProperty || (element is ParadoxScriptValue && !element.isPropertyValue())
+		return element is ParadoxScriptProperty || (element is ParadoxScriptValue && element.isBlockValue())
 			|| element is ParadoxScriptScriptedVariable
 	}
 	

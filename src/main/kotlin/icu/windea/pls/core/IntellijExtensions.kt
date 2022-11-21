@@ -2,6 +2,7 @@
 
 package icu.windea.pls.core
 
+import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.codeInsight.navigation.*
@@ -339,26 +340,28 @@ infix fun PsiElement?.isSamePosition(other: PsiElement?): Boolean{
 		&& containingFile.originalFile.virtualFile == other.containingFile.originalFile.virtualFile
 }
 
-inline fun <reified T : PsiElement> PsiElement.findOptionalChild(): T? {
-	//不会忽略某些特定类型的子元素
-	var child: PsiElement? = this.firstChild
-	while(child != null) {
-		if(child is T) return child
-		child = child.nextSibling
-	}
-	return null
+inline fun <reified T : PsiElement> PsiElement.findChild(): T? {
+	return findChildOfType()
 }
 
-inline fun <reified T : PsiElement> PsiElement.findRequiredChild(): T {
-	return findOptionalChild()!!
+fun PsiElement.findChild(type: IElementType): PsiElement? {
+	return findChildOfType { it.elementType == type }!!
 }
 
-fun PsiElement.findOptionalChild(type: IElementType): PsiElement? {
-	return node.findChildByType(type)?.psi
+fun PsiElement.findChild(tokenSet: TokenSet): PsiElement? {
+	return findChildOfType { it.elementType in tokenSet }!!
 }
 
-fun PsiElement.findRequiredChild(type: IElementType): PsiElement {
-	return node.findChildByType(type)?.psi!!
+inline fun <reified T : PsiElement> PsiElement.findChildren(): List<T> {
+	return findChildrenOfType()
+}
+
+fun PsiElement.findChildren(type: IElementType): List<PsiElement> {
+	return findChildrenOfType { it.elementType == type }
+}
+
+fun PsiElement.findChildren(tokenSet: TokenSet): List<PsiElement> {
+	return findChildrenOfType { it.elementType in tokenSet }
 }
 
 inline fun PsiElement.processChild(forward: Boolean = true, processor: ProcessEntry.(PsiElement) -> Boolean): Boolean {
@@ -370,6 +373,28 @@ inline fun PsiElement.processChild(forward: Boolean = true, processor: ProcessEn
 		child = if(forward) child.nextSibling else child.prevSibling
 	}
 	return true
+}
+
+inline fun <reified T : PsiElement> PsiElement.indexOfChild(forward: Boolean = true, element: T): Int {
+	var child = if(forward) this.firstChild else this.lastChild
+	var index = 0
+	while(child != null) {
+		when(child) {
+			element -> return index
+			is T -> index++
+			else -> child = if(forward) child.nextSibling else child.prevSibling
+		}
+	}
+	return -1
+}
+
+inline fun PsiElement.forEachChild(forward: Boolean = true, action: (PsiElement) -> Unit) {
+	//不会忽略某些特定类型的子元素
+	var child: PsiElement? = if(forward) this.firstChild else this.lastChild
+	while(child != null) {
+		action(child)
+		child = if(forward) child.nextSibling else child.prevSibling
+	}
 }
 
 inline fun <reified T : PsiElement> PsiElement.processChildrenOfType(forward: Boolean = true, processor: ProcessEntry.(T) -> Boolean): Boolean {
@@ -385,27 +410,17 @@ inline fun <reified T : PsiElement> PsiElement.processChildrenOfType(forward: Bo
 	return true
 }
 
-inline fun PsiElement.forEachChild(forward: Boolean = true, action: (PsiElement) -> Unit) {
+inline fun <reified T : PsiElement> PsiElement.findChildOfType(forward: Boolean = true, predicate: (T) -> Boolean = { true }): T? {
 	//不会忽略某些特定类型的子元素
 	var child: PsiElement? = if(forward) this.firstChild else this.lastChild
 	while(child != null) {
-		action(child)
+		if(child is T && predicate(child)) return child
 		child = if(forward) child.nextSibling else child.prevSibling
 	}
+	return null
 }
 
-inline fun <reified T : PsiElement> PsiElement.forEachChildOfType(forward: Boolean = true, action: (T) -> Unit) {
-	//不会忽略某些特定类型的子元素
-	var child: PsiElement? = if(forward) this.firstChild else this.lastChild
-	while(child != null) {
-		if(child is T) {
-			action(child)
-		}
-		child = if(forward) child.nextSibling else child.prevSibling
-	}
-}
-
-inline fun <reified T> PsiElement.filterChildOfType(forward: Boolean = true, predicate: (T) -> Boolean = { true }): List<T> {
+inline fun <reified T> PsiElement.findChildrenOfType(forward: Boolean = true, predicate: (T) -> Boolean = { true }): List<T> {
 	//不会忽略某些特定类型的子元素
 	var result: MutableList<T>? = null
 	var child: PsiElement? = if(forward) this.firstChild else this.lastChild
@@ -417,29 +432,6 @@ inline fun <reified T> PsiElement.filterChildOfType(forward: Boolean = true, pre
 		child = if(forward) child.nextSibling else child.prevSibling
 	}
 	return result ?: emptyList()
-}
-
-inline fun <reified T : PsiElement> PsiElement.findChildOfType(forward: Boolean = true, predicate: (T) -> Boolean = { true }): T? {
-	//不会忽略某些特定类型的子元素
-	var child: PsiElement? = if(forward) this.firstChild else this.lastChild
-	while(child != null) {
-		if(child is T && predicate(child)) return child
-		child = if(forward) child.nextSibling else child.prevSibling
-	}
-	return null
-}
-
-inline fun <reified T : PsiElement> PsiElement.indexOfChild(forward: Boolean = true, element: T): Int {
-	var child = if(forward) this.firstChild else this.lastChild
-	var index = 0
-	while(child != null) {
-		when(child) {
-			element -> return index
-			is T -> index++
-			else -> child = if(forward) child.nextSibling else child.prevSibling
-		}
-	}
-	return -1
 }
 
 ///**查找最远的相同类型的兄弟节点。可指定是否向后查找，以及是否在空行处中断。*/

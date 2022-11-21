@@ -132,18 +132,16 @@ PROPERTY_KEY_TOKEN_WITH_SUFFIX={PROPERTY_KEY_TOKEN}[$]?
 QUOTED_PROPERTY_KEY_TOKEN=\"([^\"(\r\n\\]|\\.)*?\"
 
 BOOLEAN_TOKEN=(yes)|(no)
-INT_TOKEN=[+-]?(0|[1-9][0-9]*)
-FLOAT_TOKEN=[+-]?(0|[1-9][0-9]*)(\.[0-9]+)
+INT_NUMBER_TOKEN=(0|[1-9][0-9]*)
+INT_TOKEN=[+-]?{INT_NUMBER_TOKEN}
+FLOAT_NUMBER_TOKEN=(0|[1-9][0-9]*)(\.[0-9]+)
+FLOAT_TOKEN=[+-]?{FLOAT_NUMBER_TOKEN}
 COLOR_TOKEN=(rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d.\s&&[^\r\n]]*}
 
 WILDCARD_VALUE_TOKEN=[^#@={}\[\]\s\"][^={}\[\]\s\"]*
 STRING_TOKEN_WITH_SUFFIX={STRING_TOKEN}[$]?
 STRING_TOKEN=[^#@$={}\[\]\s\"][^$={}\[\]\s\"]*
 QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"
-
-NUMBER_TOKEN=(0|[1-9][0-9]*)(\.[0-9]+)? //non-negative integer / float, without unary sign
-ARG_NUMBER_TOKEN=[+-]?{NUMBER_TOKEN}
-ARG_STRING_TOKEN={STRING_TOKEN}
 
 %%
 
@@ -341,8 +339,10 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  {ARG_NUMBER_TOKEN} { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return ARG_NUMBER_TOKEN;}
-  {ARG_STRING_TOKEN} { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return ARG_STRING_TOKEN;} 
+  {BOOLEAN_TOKEN} { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return BOOLEAN;}
+  {INT_TOKEN} {yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return INT_TOKEN;}
+  {FLOAT_TOKEN} {yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END);; return FLOAT_TOKEN;}
+  {STRING_TOKEN} { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return STRING_TOKEN;} 
   "$" {beginNextStateForParameter(); return PARAMETER_END;}
 }
 <WAITING_PARAMETER_DEFAULT_VALUE_END>{
@@ -408,7 +408,8 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "/" {yybegin(WAITING_INLINE_MATH); return DIV_SIGN;}
   "%" {yybegin(WAITING_INLINE_MATH); return MOD_SIGN;}
   "$" {yybegin(WAITING_PARAMETER); return PARAMETER_START;}
-  {NUMBER_TOKEN} {return NUMBER_TOKEN;}
+  {INT_NUMBER_TOKEN} {return INT_NUMBER_TOKEN;}
+  {FLOAT_NUMBER_TOKEN} {return FLOAT_NUMBER_TOKEN;}
   {VARIABLE_ID} {return INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID;}
   "]" {exitInlineMath(); beginNextState(); return INLINE_MATH_END;}
 }

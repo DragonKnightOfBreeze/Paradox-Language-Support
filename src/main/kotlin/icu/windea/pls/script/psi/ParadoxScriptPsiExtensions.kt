@@ -8,26 +8,21 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
-val ParadoxScriptScriptedVariableName.variableNameId: PsiElement get() = findRequiredChild(SCRIPTED_VARIABLE_NAME_ID)
-
-val ParadoxScriptPropertyKey.propertyKeyId: PsiElement? get() = findOptionalChild(PROPERTY_KEY_TOKEN)
-
-val ParadoxScriptPropertyKey.quotedPropertyKeyId: PsiElement? get() = findOptionalChild(QUOTED_PROPERTY_KEY_TOKEN)
-
-val ParadoxScriptScriptedVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(SCRIPTED_VARIABLE_REFERENCE_ID)
-
-val ParadoxScriptParameterConditionParameter.parameterId: PsiElement get() = findRequiredChild(ARGUMENT_ID)
-
-val ParadoxScriptInlineMathScriptedVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID)
-
-val ParadoxParameter.parameterId: PsiElement? get() = findOptionalChild(PARAMETER_ID)
-
-val ParadoxParameter.defaultValueToken: PsiElement? get() = findOptionalChild(NUMBER_TOKEN)
-
-val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptPropertyValue? get() = siblings(true, false).findIsInstance()
-
-val ParadoxScriptPropertyValue.propertyKey: ParadoxScriptPropertyKey? get() = siblings(false, true).findIsInstance()
-
+val ParadoxScriptScriptedVariableName.variableNameId: PsiElement get() = findChild(SCRIPTED_VARIABLE_NAME_ID)!!
+val ParadoxScriptPropertyKey.propertyKeyId: PsiElement? get() = findChild(PROPERTY_KEY_TOKEN)
+val ParadoxScriptPropertyKey.quotedPropertyKeyId: PsiElement? get() = findChild(QUOTED_PROPERTY_KEY_TOKEN)
+val ParadoxScriptScriptedVariableReference.variableReferenceId: PsiElement get() = findChild(SCRIPTED_VARIABLE_REFERENCE_ID)!!
+val ParadoxScriptParameterConditionParameter.parameterId: PsiElement get() = findChild(ARGUMENT_ID)!!
+val ParadoxScriptInlineMathScriptedVariableReference.variableReferenceId: PsiElement get() = findChild(INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID)!!
+val ParadoxParameter.parameterId: PsiElement? get() = findChild(PARAMETER_ID)
+val ParadoxParameter.defaultValueToken: PsiElement?
+	get() = when {
+		this is ParadoxScriptParameter -> findChild(ParadoxScriptTokenSets.parameterValueTokens)
+		this is ParadoxScriptInlineMathParameter -> findChild(ParadoxScriptTokenSets.inlineMathParameterValueTokens)
+		else -> null
+	}
+val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptValue? get() = siblings(forward = true, withSelf = false).findIsInstance()
+val ParadoxScriptValue.propertyKey: ParadoxScriptPropertyKey? get() = siblings(forward = false, withSelf = false).findIsInstance()
 
 /**
  * 遍历当前代码块中的所有（直接作为子节点的）属性。
@@ -83,11 +78,15 @@ inline fun ParadoxScriptParameterCondition.processValue(processor: (ParadoxScrip
 
 
 inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.findValue(): T? {
-	return findOptionalChild<ParadoxScriptPropertyValue>()?.findOptionalChild()
+	return findChild()
+}
+
+inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.findBlockValues(): List<T> {
+	return findChild<ParadoxScriptBlock>()?.findChildren<T>().orEmpty()
 }
 
 inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlock.findValues(): List<T> {
-	return filterChildOfType()
+	return findChildren()
 }
 
 /**
@@ -142,24 +141,24 @@ fun PsiElement.findParentDefinitionProperty(fromParentBlock: Boolean = false): P
 fun PsiElement.findParentScriptElement(): PsiElement? {
 	if(language != ParadoxScriptLanguage) return null
 	return parents(false).find {
-		it is ParadoxScriptProperty || (it is ParadoxScriptValue && !it.isPropertyValue())
+		it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockValue())
 	}
 }
 
 
-fun ParadoxScriptExpressionElement.isDefinitionRootKeyOrName(): Boolean{
-	return when{
+fun ParadoxScriptExpressionElement.isDefinitionRootKeyOrName(): Boolean {
+	return when {
 		this is ParadoxScriptPropertyKey -> isDefinitionRootKey()
 		this is ParadoxScriptString -> isDefinitionName()
 		else -> false
 	}
 }
 
-fun ParadoxScriptPropertyKey.isDefinitionRootKey() : Boolean{
+fun ParadoxScriptPropertyKey.isDefinitionRootKey(): Boolean {
 	val definition = this.parent.castOrNull<ParadoxScriptProperty>() ?: return false
 	if(definition.definitionInfo != null) return true
 	return false
-} 
+}
 
 fun ParadoxScriptString.isDefinitionName(): Boolean {
 	val nameProperty = this.parent.parent.castOrNull<ParadoxScriptProperty>() ?: return false
@@ -173,15 +172,22 @@ fun ParadoxScriptString.isDefinitionName(): Boolean {
 }
 
 
-fun ParadoxScriptExpressionElement.isSimpleScriptExpression(): Boolean {
-	val singleChild = this.firstChild?.takeIf { it.nextSibling == null } ?: return true
-	return when(this) {
-		is ParadoxScriptPropertyKey -> singleChild.elementType.let {
-			(it == PROPERTY_KEY_TOKEN && !singleChild.textContains('$')) || it == QUOTED_PROPERTY_KEY_TOKEN
-		}
-		is ParadoxScriptString -> singleChild.elementType.let {
-			(it == STRING_TOKEN && !singleChild.textContains('$')) || it == QUOTED_STRING_TOKEN
-		}
+fun ParadoxScriptValue.isScriptedVariableValue(): Boolean {
+	return parent is ParadoxScriptScriptedVariable
+}
+
+fun ParadoxScriptValue.isPropertyValue(): Boolean {
+	return parent is ParadoxScriptProperty
+}
+
+fun ParadoxScriptValue.isBlockValue(): Boolean {
+	return parent is ParadoxScriptBlockElement
+}
+
+fun PsiElement.isExpressionElement(): Boolean {
+	return when {
+		this is ParadoxScriptPropertyKey -> true
+		this is ParadoxScriptString && (this.isPropertyValue() || this.isBlockValue()) -> true
 		else -> false
 	}
 }
@@ -198,11 +204,3 @@ fun String.isParameterAwareExpression(): Boolean {
 	return !this.isQuoted() && this.any { it == '$' }
 }
 
-fun ParadoxScriptValue.isPropertyValue(): Boolean {
-	return parent is ParadoxScriptPropertyValue
-}
-
-fun PsiElement?.canBeScriptedVariableValue(): Boolean {
-	val elementType = this.elementType
-	return elementType == INT_TOKEN || elementType == FLOAT_TOKEN
-}

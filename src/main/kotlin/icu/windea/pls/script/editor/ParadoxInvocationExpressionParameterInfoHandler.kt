@@ -22,8 +22,10 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
 	
 	private fun findTargetElement(context: ParameterInfoContext): ParadoxScriptProperty? {
 		val element = context.file.findElementAt(context.offset) ?: return null
-		return element
-			.parents(true)
+		val keyOrStringElement = element.parent?.castOrNull<ParadoxScriptExpressionElement>() ?: return null
+		if(!keyOrStringElement.isExpressionElement()) return null
+		return keyOrStringElement
+			.parents(false)
 			.filterIsInstance<ParadoxScriptProperty>()
 			.find { prop ->
 				prop.definitionElementInfo?.takeIf { it.isValid }?.getConfigs()?.any { config ->

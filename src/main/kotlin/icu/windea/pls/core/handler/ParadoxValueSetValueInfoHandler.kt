@@ -12,6 +12,7 @@ object ParadoxValueSetValueInfoHandler {
 	
 	@JvmStatic
 	fun resolve(element: ParadoxScriptString): ParadoxValueSetValueInfo? {
+		if(!element.isExpressionElement()) return null
 		//排除带参数的情况和用引号括起的情况
 		if(element.isParameterAwareExpression() || element.isQuoted()) return null
 		

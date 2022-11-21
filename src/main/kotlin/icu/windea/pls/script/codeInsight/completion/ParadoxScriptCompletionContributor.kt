@@ -10,29 +10,29 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptCompletionContributor : CompletionContributor() {
 	init {
-		val scriptedVariableTokens = TokenSet.create(SCRIPTED_VARIABLE_REFERENCE_ID, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID)
+		val scriptedVariableReferenceTokens = TokenSet.create(SCRIPTED_VARIABLE_REFERENCE_ID, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID)
 		val stringTokens = TokenSet.create(STRING_TOKEN, QUOTED_STRING_TOKEN)
-		val propertyKeyOrStringTokens = TokenSet.create(PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, STRING_TOKEN, QUOTED_STRING_TOKEN)
-		val parameterTokens = TokenSet.create(PARAMETER_ID, ARGUMENT_ID)
+		val keyOrStringTokens = TokenSet.create(PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, STRING_TOKEN, QUOTED_STRING_TOKEN)
+		val parameterOrArgumentTokens = TokenSet.create(PARAMETER_ID, ARGUMENT_ID)
 		
 		//当用户真在输入一个scriptedVariableReference的名字时提示
-		val scriptedVariableNamePattern = psiElement().withElementType(scriptedVariableTokens)
+		val scriptedVariableNamePattern = psiElement().withElementType(scriptedVariableReferenceTokens)
 		extend(null, scriptedVariableNamePattern, ParadoxScriptedVariableCompletionProvider())
 		
 		//当用户正在输入一个propertyKey或string时提示
-		val definitionPattern = psiElement().withElementType(propertyKeyOrStringTokens)
+		val definitionPattern = psiElement().withElementType(keyOrStringTokens)
 		extend(null, definitionPattern, ParadoxDefinitionCompletionProvider())
 		
 		//当用户可能在输入一个eventId时提示
 		val eventIdPattern = psiElement().withElementType(stringTokens)
 			.withParent(psiElement(ParadoxScriptString::class.java)
-				.withSuperParent(2, psiElement(ParadoxScriptProperty::class.java)
+				.withParent(psiElement(ParadoxScriptProperty::class.java)
 					.withParent(psiElement(ParadoxScriptBlock::class.java)
-						.withSuperParent(2, psiElement(ParadoxScriptProperty::class.java)))))
+						.withParent(psiElement(ParadoxScriptProperty::class.java)))))
 		extend(null, eventIdPattern, ParadoxEventIdCompletionProvider())
 		
 		//当用户正在输入一个parameter的名字时提示
-		val parameterPattern = psiElement().withElementType(parameterTokens)
+		val parameterPattern = psiElement().withElementType(parameterOrArgumentTokens)
 		extend(null, parameterPattern, ParadoxParameterCompletionProvider())
 	}
 	

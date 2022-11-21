@@ -19,7 +19,7 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   ParadoxScriptPropertyKey getPropertyKey();
 
   @Nullable
-  ParadoxScriptPropertyValue getPropertyValue();
+  ParadoxScriptValue getPropertyValue();
 
   @NotNull
   Icon getIcon(@IconFlags int flags);

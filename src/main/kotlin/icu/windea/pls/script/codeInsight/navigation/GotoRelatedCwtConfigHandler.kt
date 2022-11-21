@@ -39,7 +39,7 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 	private fun findElement(file: PsiFile, offset: Int): PsiElement? {
 		return file.findElementAtCaret(offset) {
 			it.parentOfTypes(ParadoxScriptPropertyKey::class, ParadoxScriptValue::class)
-		}
+		}?.takeIf { it.isExpressionElement() }
 	}
 	
 	override fun shouldSortTargets(): Boolean {

@@ -16,7 +16,7 @@ class ParadoxScriptFile(
 	
 	override val originalPathName get() = name.let { name -> name.substringBeforeLast(".", name) }
 	
-	override val block get() = findOptionalChild<ParadoxScriptRootBlock>()
+	override val block get() = findChild<ParadoxScriptRootBlock>()
 	
 	override fun getIcon(flags: Int): Icon? {
 		//对模组描述符文件使用特定的图标

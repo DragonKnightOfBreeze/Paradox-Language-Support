@@ -18,82 +18,81 @@ object ParadoxScriptElementFactory {
 	}
 	
 	fun createRootBlock(project: Project, text: String): ParadoxScriptRootBlock {
-		return createDummyFile(project, text).findRequiredChild()
+		return createDummyFile(project, text).findChild()!!
 	}
 	
 	@JvmStatic
 	fun createVariable(project: Project, name: String, value: String): ParadoxScriptScriptedVariable {
-		return createRootBlock(project, "@$name=$value").findRequiredChild()
+		return createRootBlock(project, "@$name=$value").findChild()!!
 	}
 	
 	@JvmStatic
 	fun createVariableName(project: Project, name: String): ParadoxScriptScriptedVariableName {
-		return createVariable(project, name, "0").findRequiredChild()
+		return createVariable(project, name, "0").findChild()!!
 	}
 	
 	@JvmStatic
 	fun createProperty(project: Project, key: String, value: String): ParadoxScriptProperty {
 		val usedKey = key.quoteIfNecessary()
-		return createRootBlock(project, "$usedKey=$value").findRequiredChild()
+		return createRootBlock(project, "$usedKey=$value").findChild()!!
 	}
 	
 	@JvmStatic
 	fun createPropertyKey(project: Project, key: String): ParadoxScriptPropertyKey {
-		return createProperty(project, key, "0").findRequiredChild()
+		return createProperty(project, key, "0").findChild()!!
 	}
 	
 	@JvmStatic
-	fun createPropertyValue(project: Project, value: String): ParadoxScriptPropertyValue {
-		return createProperty(project, "a", value).findRequiredChild()
+	fun createPropertyValue(project: Project, value: String): ParadoxScriptValue {
+		return createProperty(project, "a", value).findChild()!!
 	}
 	
 	@JvmStatic
 	fun createValue(project: Project, value: String): ParadoxScriptValue {
-		return createRootBlock(project, value).findRequiredChild()
+		return createRootBlock(project, value).findChild()!!
 	}
 	
 	@JvmStatic
 	fun createVariableReference(project: Project, name: String): ParadoxScriptScriptedVariableReference {
-		return createPropertyValue(project, "@$name").findRequiredChild()
+		return createPropertyValue(project, "@$name").findChild()!!
 	}
 	
 	@JvmStatic
 	fun createString(project: Project, value: String): ParadoxScriptString {
 		val usedValue = value.quoteIfNecessary()
-		return createRootBlock(project, usedValue).findRequiredChild()
+		return createRootBlock(project, usedValue).findChild()!!
 	}
 	
 	@JvmStatic
 	fun createInlineMath(project: Project, expression: String): ParadoxScriptInlineMath {
-		return createPropertyValue(project, "@[$expression]").findRequiredChild()
+		return createPropertyValue(project, "@[$expression]").findChild()!!
 	}
 	
 	@JvmStatic
 	fun createInlineMathVariableReference(project: Project, name: String): ParadoxScriptInlineMathScriptedVariableReference {
-		return createInlineMath(project, name).findRequiredChild()
+		return createInlineMath(project, name).findChild()!!
 	}
 	
 	@JvmStatic
 	fun createParameter(project: Project, name: String): ParadoxScriptParameter {
 		val text = "$$name$"
-		return createRootBlock(project, text).findRequiredChild<ParadoxScriptString>().findRequiredChild()
+		return createRootBlock(project, text).findChild<ParadoxScriptString>()!!.findChild()!!
 	}
 	
 	@JvmStatic
 	fun createParameterConditionParameter(project: Project, name: String): ParadoxScriptParameterConditionParameter {
 		val text = "a = { [[$name] = a }"
 		return createRootBlock(project, text)
-			.findRequiredChild<ParadoxScriptProperty>()
-			.findRequiredChild<ParadoxScriptPropertyValue>()
-			.findRequiredChild<ParadoxScriptBlock>()
-			.findRequiredChild<ParadoxScriptParameterCondition>()
-			.findRequiredChild<ParadoxScriptParameterConditionExpression>()
-			.findRequiredChild()
+			.findChild<ParadoxScriptProperty>()!!
+			.findChild<ParadoxScriptBlock>()!!
+			.findChild<ParadoxScriptParameterCondition>()!!
+			.findChild<ParadoxScriptParameterConditionExpression>()!!
+			.findChild()!!
 	}
 	
 	@JvmStatic
 	fun createInlineMathParameter(project: Project, name: String): ParadoxScriptInlineMathParameter {
 		val text = "$$name$"
-		return createInlineMath(project, text).findRequiredChild()
+		return createInlineMath(project, text).findChild()!!
 	}
 }

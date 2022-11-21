@@ -33,6 +33,9 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 	override fun shouldCreateStub(node: ASTNode): Boolean {
 		//skip if it may contain parameters
 		if(node.isParameterAwareExpression()) return false
+		//skip if it is not a property value or block value
+		val parentType = node.treeParent.elementType
+		if(parentType != ParadoxScriptElementTypes.PROPERTY && parentType != ParadoxScriptElementTypes.BLOCK) return false
 		return true
 	}
 	

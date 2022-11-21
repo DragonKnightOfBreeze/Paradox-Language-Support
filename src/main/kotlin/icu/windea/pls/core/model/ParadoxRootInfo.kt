@@ -41,7 +41,7 @@ class ParadoxRootInfo(
 				//TODO 直接解析VirtualFile
 				val psiFile = descriptorFile.toPsiFile<PsiFile>(getDefaultProject())
 				if(psiFile !is ParadoxScriptFile) return null
-				val rootBlock = psiFile.findOptionalChild<ParadoxScriptRootBlock>() ?: return null
+				val rootBlock = psiFile.findChild<ParadoxScriptRootBlock>() ?: return null
 				var name: String? = null
 				var version: String? = null
 				var picture: String? = null
@@ -54,7 +54,7 @@ class ParadoxRootInfo(
 						"name" -> name = property.findValue<ParadoxScriptString>()?.stringValue
 						"version" -> version = property.findValue<ParadoxScriptString>()?.stringValue
 						"picture" -> picture = property.findValue<ParadoxScriptString>()?.stringValue
-						"tags" -> tags = property.findValue<ParadoxScriptBlock>()?.findValues<ParadoxScriptString>()?.mapTo(mutableSetOf()) { it.stringValue }
+						"tags" -> tags = property.findBlockValues<ParadoxScriptString>().mapTo(mutableSetOf()) { it.stringValue }
 						"supported_version" -> supportedVersion = property.findValue<ParadoxScriptString>()?.stringValue
 						"remote_file_id" -> remoteFileId = property.findValue<ParadoxScriptString>()?.stringValue
 						"path" -> path = property.findValue<ParadoxScriptString>()?.stringValue

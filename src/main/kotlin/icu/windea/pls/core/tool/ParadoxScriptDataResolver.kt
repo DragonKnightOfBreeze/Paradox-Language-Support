@@ -17,7 +17,7 @@ object ParadoxScriptDataResolver {
 	 */
 	fun resolve(file: PsiFile): List<BlockEntry<String?, Any>> {
 		if(file !is ParadoxScriptFile) throw IllegalArgumentException("Invalid file type (expect: 'ParadoxScriptFile')")
-		val rootBlock = file.findOptionalChild<ParadoxScriptRootBlock>() ?: return emptyList()
+		val rootBlock = file.findChild<ParadoxScriptRootBlock>() ?: return emptyList()
 		return resolveBlock(rootBlock)
 	}
 	
@@ -59,7 +59,7 @@ object ParadoxScriptDataResolver {
 	private fun resolveProperty(property: ParadoxScriptProperty): BlockEntry<String?, Any>? {
 		//注意property的名字可以重复
 		val key = property.name
-		val value = property.propertyValue?.value?.let { resolveValue(it) } ?: return null
+		val value = property.propertyValue?.let { resolveValue(it) } ?: return null
 		return BlockEntry(key, value)
 	}
 	

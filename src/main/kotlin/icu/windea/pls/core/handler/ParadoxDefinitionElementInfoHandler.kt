@@ -1,11 +1,9 @@
 package icu.windea.pls.core.handler
 
-import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -14,8 +12,8 @@ import icu.windea.pls.script.psi.*
 object ParadoxDefinitionElementInfoHandler {
 	@JvmStatic
 	fun get(element: PsiElement): ParadoxDefinitionElementInfo? {
-		val targetElement = if(element is ParadoxScriptPropertyKey) element.parent ?: return null else element
-		if(targetElement.language != ParadoxScriptLanguage) return null
+		val targetElement = if(element is ParadoxScriptProperty) element.propertyKey else element
+		if(!targetElement.isExpressionElement()) return null
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionElementInfoKey) {
 			val file = element.containingFile
 			val value = resolveDownUp(targetElement)
@@ -23,10 +21,10 @@ object ParadoxDefinitionElementInfoHandler {
 		}
 	}
 	
-	@JvmStatic
-	fun resolveUpDown(element: LighterASTNode): ParadoxDefinitionElementInfo? {
-		TODO()
-	}
+	//@JvmStatic
+	//fun resolveUpDown(element: LighterASTNode): ParadoxDefinitionElementInfo? {
+	//	TODO()
+	//}
 	
 	@JvmStatic
 	fun resolveDownUp(element: PsiElement): ParadoxDefinitionElementInfo? {

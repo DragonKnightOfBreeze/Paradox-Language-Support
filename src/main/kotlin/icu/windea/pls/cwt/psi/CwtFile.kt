@@ -10,7 +10,7 @@ class CwtFile(
 ) : PsiFileBase(viewProvider, CwtLanguage) {
 	override fun getFileType() = CwtFileType
 	
-	val block get() = findOptionalChild<CwtRootBlock>()
+	val block get() = findChild<CwtRootBlock>()
 	
 	val propertyList get() =  block?.propertyList.orEmpty()
 	

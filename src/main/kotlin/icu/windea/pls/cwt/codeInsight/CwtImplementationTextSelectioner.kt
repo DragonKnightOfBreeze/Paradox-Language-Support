@@ -19,7 +19,7 @@ class CwtImplementationTextSelectioner: ImplementationTextSelectioner {
 			element is CwtPropertyKey -> {
 				return getTextStartOffset(element.parent) //使用对应的property的
 			}
-			element is CwtString && !element.isPropertyValue() -> {
+			element is CwtString && element.isBlockValue() -> {
 				findTextStartOffsetIncludeComment(element) { it.parent is CwtRootBlock }
 			}
 			else -> {

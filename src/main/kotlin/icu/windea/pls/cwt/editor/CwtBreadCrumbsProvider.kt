@@ -16,7 +16,7 @@ class CwtBreadCrumbsProvider : BreadcrumbsProvider {
 	}
 	
 	override fun acceptElement(element: PsiElement): Boolean {
-		return element is CwtProperty || (element is CwtValue && element.parent is CwtBlock)
+		return element is CwtProperty || (element is CwtValue && element.isBlockValue())
 	}
 	
 	override fun getElementInfo(element: PsiElement): String {

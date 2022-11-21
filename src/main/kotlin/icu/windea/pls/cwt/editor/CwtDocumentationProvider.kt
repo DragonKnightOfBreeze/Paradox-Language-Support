@@ -51,7 +51,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getStringInfo(element: CwtString, originalElement: PsiElement?): String {
+	private fun getStringInfo(element: CwtString, originalElement: PsiElement?): String? {
+		//only for property value or block value
+		if(!element.isPropertyValue() && !element.isBlockValue()) return null
+		
 		return buildString {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
@@ -86,7 +89,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getStringDoc(element: CwtString, originalElement: PsiElement?): String {
+	private fun getStringDoc(element: CwtString, originalElement: PsiElement?): String? {
+		//only for property value or block value
+		if(!element.isPropertyValue() && !element.isBlockValue()) return null
+		
 		return buildString {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)

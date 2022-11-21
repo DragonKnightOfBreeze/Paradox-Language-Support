@@ -48,7 +48,7 @@ class GotoRelatedImageHandler : GotoTargetHandler() {
 		//direct parent
 		return file.findElementAtCaret(offset) {
 			it.parent as? ParadoxScriptExpressionElement
-		}
+		}?.takeIf { it.isExpressionElement() }
 	}
 	
 	override fun shouldSortTargets(): Boolean {

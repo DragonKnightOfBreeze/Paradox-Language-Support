@@ -30,8 +30,9 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 		file.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
 			override fun visitProperty(element: ParadoxScriptProperty) {
 				ProgressManager.checkCanceled()
-				val shouldCheck = forPropertyKey
-				if(shouldCheck) {
+				run {
+					val shouldCheck = forPropertyKey
+					if(!shouldCheck) return@run
 					//skip checking property if property key may contain parameters
 					if(element.propertyKey.isParameterAwareExpression()) return
 					val config = resolvePropertyConfigs(element).firstOrNull()
@@ -47,9 +48,13 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 			
 			override fun visitValue(element: ParadoxScriptValue) {
 				ProgressManager.checkCanceled()
-				//排除block
-				val shouldCheck = if(element.isPropertyValue()) forPropertyValue else forValue
-				if(shouldCheck) {
+				run {
+					val shouldCheck = when {
+						element.isPropertyValue() -> forPropertyValue
+						element.isBlockValue() -> forValue
+						else -> return //skip
+					}
+					if(!shouldCheck) return@run
 					//skip checking value if it may contain parameters
 					if(element is ParadoxScriptString && element.isParameterAwareExpression()) return
 					//精确解析

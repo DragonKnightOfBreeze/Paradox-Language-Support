@@ -43,8 +43,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
   ]
   stubClass="icu.windea.pls.script.psi.ParadoxScriptScriptedVariableStub"
   methods=[
-    scripted_variable_name="scripted_variable_name"
-    scripted_variable_value="value"
+    scripted_variable_name="scripted_variable_name" scripted_variable_value="value"
     getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue
     getExpressionType getPresentation
   ]
@@ -67,6 +66,7 @@ property ::= property_key property_separator property_value {
     "icu.windea.pls.script.psi.ParadoxDefinitionProperty"
   ]
   methods=[
+    property_key="property_key" property_value="value"
     getIcon getName setName getNameIdentifier getValue getDepth getBlock 
     getDefinitionType getExpressionType getConfigExpression getExpression
     getPathName getOriginalPathName getParameterMap getPresentation isEquivalentTo
@@ -85,7 +85,7 @@ property_key ::= key_expr {
   ]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
-property_value ::= value
+private property_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
 //(property) value related
 value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math {
@@ -182,7 +182,7 @@ private value_literal_expr ::= STRING_TOKEN | QUOTED_STRING_TOKEN
 //parameter
 //should in definition declaration (script_value / scripted_effect / scripted_trigger)
 //currently cannot be surround with double quotes
-parameter ::= PARAMETER_START PARAMETER_ID [PIPE (ARG_NUMBER_TOKEN | ARG_STRING_TOKEN)] PARAMETER_END {
+parameter ::= PARAMETER_START PARAMETER_ID [PIPE parameter_value] PARAMETER_END {
   pin=1
   recoverWhile="#auto"
   implements=[
@@ -190,6 +190,7 @@ parameter ::= PARAMETER_START PARAMETER_ID [PIPE (ARG_NUMBER_TOKEN | ARG_STRING_
   ]
   methods=[getIcon getName setName getTextOffset getValue getDefaultValue getReference]
 }
+private parameter_value ::= BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
 
 //parameter condition
 //should in definition declaration (script_value / scripted_effect / scripted_trigger)
@@ -250,7 +251,7 @@ left inline_math_bi_expression ::= inline_math_bi_op inline_math_bi_right_factor
 private inline_math_bi_op ::= PLUS_SIGN | MINUS_SIGN | TIMES_SIGN | DIV_SIGN | MOD_SIGN
 private inline_math_bi_right_factor ::= inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor
 inline_math_factor ::= inline_math_number | inline_math_scripted_variable_reference | inline_math_parameter
-inline_math_number ::= NUMBER_TOKEN { //int | float
+inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
   extends=inline_math_factor
   implements=[
     "com.intellij.psi.PsiLiteralValue"
@@ -263,9 +264,10 @@ inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERE
   implements="icu.windea.pls.script.psi.ParadoxScriptedVariableReference"
   methods=[getIcon getName setName getReference]
 }
-inline_math_parameter ::= PARAMETER_START PARAMETER_ID [PIPE ARG_NUMBER_TOKEN] PARAMETER_END {
+inline_math_parameter ::= PARAMETER_START PARAMETER_ID [PIPE inline_math_parameter_value] PARAMETER_END {
   extends=inline_math_factor
   pin=1
   implements="icu.windea.pls.script.psi.ParadoxParameter"
   methods=[getIcon getName setName getTextOffset getDefaultValue getReference]
 }
+private inline_math_parameter_value ::= INT_TOKEN | FLOAT_TOKEN

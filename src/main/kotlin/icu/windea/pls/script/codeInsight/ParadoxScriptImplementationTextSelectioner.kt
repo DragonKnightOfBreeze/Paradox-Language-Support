@@ -23,7 +23,7 @@ class ParadoxScriptImplementationTextSelectioner : ImplementationTextSelectioner
 				if(isDefinition) return getTextStartOffset(parent)
 				findTextStartOffsetIncludeComment(element) { it.parent is ParadoxScriptRootBlock }
 			}
-			element is ParadoxScriptString && !element.isPropertyValue() -> {
+			element is ParadoxScriptString && element.isBlockValue() -> {
 				findTextStartOffsetIncludeComment(element) { it.parent is ParadoxScriptRootBlock }
 			}
 			else -> {

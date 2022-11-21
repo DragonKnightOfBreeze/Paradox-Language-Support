@@ -44,6 +44,6 @@ class GotoRelatedImageAction : BaseCodeInsightAction() {
 		//direct parent
 		return file.findElementAtCaret(offset) {
 			it.parent as? ParadoxScriptExpressionElement
-		}
+		}?.takeIf { it.isExpressionElement() }
 	}
 }

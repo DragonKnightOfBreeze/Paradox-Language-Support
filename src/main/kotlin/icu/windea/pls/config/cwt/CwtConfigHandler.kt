@@ -10,7 +10,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.config.cwt.config.*
@@ -426,14 +425,14 @@ object CwtConfigHandler {
 	//endregion
 	
 	//region Complete Methods
-	fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinitionProperty, context: ProcessingContext, result: CompletionResultSet): Boolean {
+	fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinitionProperty, context: ProcessingContext, result: CompletionResultSet) {
 		val project = propertyElement.project
-		val definitionElementInfo = propertyElement.definitionElementInfo ?: return true
+		val definitionElementInfo = propertyElement.definitionElementInfo ?: return
 		val scope = definitionElementInfo.scope
 		val gameType = definitionElementInfo.gameType
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		val configs = definitionElementInfo.getChildPropertyConfigs()
-		if(configs.isEmpty()) return true
+		if(configs.isEmpty()) return
 		
 		context.put(PlsCompletionKeys.isKeyKey, true)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
@@ -451,17 +450,17 @@ object CwtConfigHandler {
 		context.put(PlsCompletionKeys.configExpressionKey, null)
 		context.put(PlsCompletionKeys.configKey, null)
 		context.put(PlsCompletionKeys.configsKey, null)
-		return true
+		return
 	}
 	
-	fun addValueCompletions(valueElement: PsiElement, propertyElement: ParadoxDefinitionProperty, context: ProcessingContext, result: CompletionResultSet): Boolean {
+	fun addValueCompletions(valueElement: PsiElement, propertyElement: ParadoxDefinitionProperty, context: ProcessingContext, result: CompletionResultSet) {
 		val project = propertyElement.project
-		val definitionElementInfo = propertyElement.definitionElementInfo ?: return true
+		val definitionElementInfo = propertyElement.definitionElementInfo ?: return
 		val scope = definitionElementInfo.scope
 		val gameType = definitionElementInfo.gameType
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		val configs = definitionElementInfo.getConfigs()
-		if(configs.isEmpty()) return true
+		if(configs.isEmpty()) return
 		
 		context.put(PlsCompletionKeys.isKeyKey, false)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
@@ -475,7 +474,7 @@ object CwtConfigHandler {
 		}
 		context.put(PlsCompletionKeys.configKey, null)
 		context.put(PlsCompletionKeys.configExpressionKey, null)
-		return true
+		return
 	}
 	
 	fun addValueCompletionsInBlock(valueElement: PsiElement, blockElement: ParadoxScriptBlock, context: ProcessingContext, result: CompletionResultSet): Boolean {
@@ -1345,7 +1344,7 @@ object CwtConfigHandler {
 				val name = expression
 				//尝试解析为参数名
 				if(isKey == true && enumName == paramsEnumName && config is CwtPropertyConfig) {
-					val definitionName = element.parent?.parentOfType<ParadoxScriptProperty>()?.name ?: return null
+					val definitionName = element.parent?.castOrNull<ParadoxScriptProperty>()?.name ?: return null
 					val definitionType = config.parent?.castOrNull<CwtPropertyConfig>()
 						?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.keyExpression
 						?.takeIf { it.type == CwtDataTypes.TypeExpression }?.value ?: return null
@@ -1463,7 +1462,7 @@ object CwtConfigHandler {
 				val name = text
 				//尝试解析为参数名
 				if(isKey == true && enumName == paramsEnumName && config is CwtPropertyConfig) {
-					val definitionName = element.parent?.parentOfType<ParadoxScriptProperty>()?.name ?: return emptyList()
+					val definitionName = element.parent?.castOrNull<ParadoxScriptProperty>()?.name ?: return emptyList()
 					val definitionType = config.parent?.castOrNull<CwtPropertyConfig>()
 						?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.keyExpression
 						?.takeIf { it.type == CwtDataTypes.TypeExpression }?.value ?: return emptyList()

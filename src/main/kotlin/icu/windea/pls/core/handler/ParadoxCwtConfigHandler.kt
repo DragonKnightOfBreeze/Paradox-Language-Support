@@ -76,8 +76,8 @@ object ParadoxCwtConfigHandler {
 				val parent = element.parent
 				when(parent) {
 					//如果value是property的value
-					is ParadoxScriptPropertyValue -> {
-						val property = parent.parent as? ParadoxScriptProperty ?: return emptyList()
+					is ParadoxScriptProperty -> {
+						val property = parent
 						val definitionElementInfo = property.definitionElementInfo ?: return emptyList()
 						if(!allowDefinitionSelf && definitionElementInfo.elementPath.isEmpty()) return emptyList()
 						val configs = definitionElementInfo.getConfigs(matchType)
@@ -98,7 +98,7 @@ object ParadoxCwtConfigHandler {
 					}
 					//如果value是block中的value
 					is ParadoxScriptBlock -> {
-						val property = parent.parent?.parent as? ParadoxScriptProperty ?: return emptyList()
+						val property = parent.parent as? ParadoxScriptProperty ?: return emptyList()
 						val definitionElementInfo = property.definitionElementInfo ?: return emptyList()
 						val childValueConfigs = definitionElementInfo.getChildValueConfigs()
 						if(childValueConfigs.isEmpty()) return emptyList()

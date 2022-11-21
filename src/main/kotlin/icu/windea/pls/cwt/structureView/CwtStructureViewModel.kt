@@ -20,7 +20,7 @@ class CwtStructureViewModel(
 	
 	//指定在结构视图中的元素
 	override fun isSuitable(element: PsiElement?): Boolean {
-		return element is CwtFile || element is CwtProperty || (element is CwtValue && !element.isPropertyValue())
+		return element is CwtFile || element is CwtProperty || (element is CwtValue && element.isBlockValue())
 	}
 	
 	override fun findAcceptableElement(element: PsiElement?): Any? {

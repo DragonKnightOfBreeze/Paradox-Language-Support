@@ -27,7 +27,7 @@ object ParadoxElementPathHandler {
 					originalSubPaths.addFirst(current.originalPathName) //这里需要使用原始文本
 					depth++
 				}
-				current is ParadoxScriptValue && !current.isPropertyValue() -> {
+				current is ParadoxScriptValue && current.isBlockValue() -> {
 					originalSubPaths.addFirst("-")
 					depth++
 				}
@@ -46,7 +46,7 @@ object ParadoxElementPathHandler {
 	fun resolveFromDefinitionWithDefinition(element: PsiElement): Tuple2<ParadoxElementPath, ParadoxDefinitionProperty>? {
 		var current: PsiElement = element
 		var depth = 0
-		val subPaths = LinkedList<String>()
+		val originalSubPaths = LinkedList<String>()
 		var definition: ParadoxDefinitionProperty? = null
 		while(current !is PsiDirectory) { //这里的上限应当是null或PsiDirectory，不能是PsiFile，因为它也可能是定义
 			when {
@@ -56,17 +56,17 @@ object ParadoxElementPathHandler {
 						definition = current
 						break
 					}
-					subPaths.addFirst(current.originalPathName) //这里需要使用原始文本
+					originalSubPaths.addFirst(current.originalPathName) //这里需要使用原始文本
 					depth++
 				}
-				current is ParadoxScriptValue && !current.isPropertyValue() -> {
-					subPaths.addFirst("#" + current.text)
+				current is ParadoxScriptValue && current.isBlockValue() -> {
+					originalSubPaths.addFirst("-")
 					depth++
 				}
 			}
 			current = current.parent ?: break
 		}
 		if(definition == null) return null //如果未找到所属的definition，则直接返回null
-		return ParadoxElementPath.resolve(subPaths) to definition
+		return ParadoxElementPath.resolve(originalSubPaths) to definition
 	}
 }

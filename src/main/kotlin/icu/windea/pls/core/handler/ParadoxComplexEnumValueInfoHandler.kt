@@ -21,6 +21,7 @@ object ParadoxComplexEnumValueInfoHandler {
 	fun get(element: ParadoxScriptExpressionElement): ParadoxComplexEnumValueInfo? {
 		//注意：element.stub可能会导致ProcessCanceledException
 		ProgressManager.checkCanceled()
+		if(!element.isExpressionElement()) return null
 		element.stub?.complexEnumValueInfo?.let { return it }
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedComplexEnumValueInfoKey) {
 			val file = element.containingFile
@@ -89,18 +90,18 @@ object ParadoxComplexEnumValueInfoHandler {
 		if(config is CwtPropertyConfig) {
 			if(config.key == "enum_name") {
 				if(element !is ParadoxScriptPropertyKey) return false
-				val valueElement = element.propertyValue?.value ?: return false
+				val valueElement = element.propertyValue ?: return false
 				if(!doMatchValue(complexEnumConfig, config, valueElement)) return false
 			} else if(config.stringValue == "enum_name") {
 				if(element !is ParadoxScriptString || !element.isPropertyValue()) return false
-				val propertyElement = element.parentOfType<ParadoxScriptProperty>() ?: return false
+				val propertyElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return false
 				if(!doMatchKey(complexEnumConfig, config, propertyElement)) return false
 			} else {
 				return false
 			}
 		} else if(config is CwtValueConfig) {
 			if(config.stringValue == "enum_name") {
-				if(element !is ParadoxScriptString || !!element.isPropertyValue()) return false
+				if(element !is ParadoxScriptString || !element.isBlockValue()) return false
 			} else {
 				return false
 			}
@@ -155,7 +156,7 @@ object ParadoxComplexEnumValueInfoHandler {
 	
 	private fun doMatchProperty(complexEnumConfig: CwtComplexEnumConfig, config: CwtPropertyConfig, propertyElement: ParadoxScriptProperty): Boolean {
 		return doMatchKey(complexEnumConfig, config, propertyElement)
-			&& doMatchValue(complexEnumConfig, config, propertyElement.propertyValue?.value ?: return false)
+			&& doMatchValue(complexEnumConfig, config, propertyElement.propertyValue ?: return false)
 	}
 	
 	private fun doMatchKey(complexEnumConfig: CwtComplexEnumConfig, config: CwtPropertyConfig, propertyElement: ParadoxScriptProperty): Boolean {

@@ -103,10 +103,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitExpressionElement(o);
   }
 
-  public void visitPropertyValue(@NotNull ParadoxScriptPropertyValue o) {
-    visitPsiElement(o);
-  }
-
   public void visitRootBlock(@NotNull ParadoxScriptRootBlock o) {
     visitBlockElement(o);
   }

@@ -60,7 +60,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getComponents(element: ParadoxScriptRootBlock): List<PsiElement> {
 		//允许混合value和property
-		return element.filterChildOfType { isRootBlockComponent(it) }
+		return element.findChildrenOfType { isRootBlockComponent(it) }
 	}
 	
 	private fun isRootBlockComponent(element: PsiElement): Boolean {
@@ -206,7 +206,7 @@ object ParadoxScriptPsiImplUtil {
 			val nameProperty = element.findDefinitionProperty(nameField)
 			if(nameProperty != null) {
 				val nameElement = nameProperty.findValue<ParadoxScriptString>()
-				nameElement?.setValue(name)
+				nameElement?.value = name
 			}
 			return element
 		}
@@ -223,7 +223,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getValue(element: ParadoxScriptProperty): String? {
-		return element.propertyValue?.value?.value
+		return element.propertyValue?.value
 	}
 	
 	//得到相对于rootBlock的深度，最大为1（element.parent is ParadoxScriptRootBlock）
@@ -252,13 +252,13 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getExpressionType(element: ParadoxScriptProperty): ParadoxDataType? {
-		return element.propertyValue?.value?.expressionType
+		return element.propertyValue?.expressionType
 	}
 	
 	@JvmStatic
 	fun getExpression(element: ParadoxScriptProperty): String {
 		val keyExpression = element.propertyKey.expression
-		val valueExpression = element.propertyValue?.value?.expression ?: PlsConstants.unresolvedString
+		val valueExpression = element.propertyValue?.expression ?: PlsConstants.unresolvedString
 		return "$keyExpression = $valueExpression"
 	}
 	
@@ -585,7 +585,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getComponents(element: ParadoxScriptBlock): List<PsiElement> {
 		//允许混合value和property
-		return element.filterChildOfType { isBlockComponent(it) }
+		return element.findChildrenOfType { isBlockComponent(it) }
 	}
 	
 	private fun isBlockComponent(element: PsiElement): Boolean {
@@ -599,13 +599,9 @@ object ParadoxScriptPsiImplUtil {
 		return runCatching {
 			val parent = element.parent
 			val colorTypeOptionLocation = when {
-				parent is ParadoxScriptPropertyValue -> {
-					val property = parent.parent.castOrNull<ParadoxScriptProperty>() ?: return@runCatching null
-					resolvePropertyConfigs(property, allowDefinitionSelf = true).firstOrNull()
-				}
-				else -> {
-					resolveValueConfigs(element).firstOrNull()
-				}
+				parent is ParadoxScriptProperty -> resolvePropertyConfigs(parent, allowDefinitionSelf = true).firstOrNull()
+				parent is ParadoxScriptBlock -> resolveValueConfigs(element).firstOrNull()
+				else -> return@runCatching null
 			}
 			val colorTypeOption = colorTypeOptionLocation?.options?.find { it.key == "color_type" } ?: return@runCatching null
 			val colorType = colorTypeOption.stringValue ?: return@runCatching null
@@ -751,7 +747,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getComponents(element: ParadoxScriptParameterCondition): List<PsiElement> {
 		//允许混合value和property
-		return element.filterChildOfType { isParameterConditionComponent(it) }
+		return element.findChildrenOfType { isParameterConditionComponent(it) }
 	}
 	
 	private fun isParameterConditionComponent(element: PsiElement): Boolean {

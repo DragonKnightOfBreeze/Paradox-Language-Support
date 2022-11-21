@@ -2,7 +2,6 @@ package icu.windea.pls.script.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
-import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.config.definition.*
 import icu.windea.pls.core.*
@@ -21,10 +20,11 @@ class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters
 		//val properties = rootBlock.propertyList
 		//if(properties.isEmpty()) return //空文件，跳过
 		//if(properties.first { it.name.equals("namespace", true) } == null) return //没有事件命名空间，跳过
-		val stringElement = parameters.position.parent.castOrNull<ParadoxScriptString>() ?: return
-		val eventIdProperty = stringElement.parentOfType<ParadoxScriptProperty>() ?: return
+		val position = parameters.position
+		val stringElement = position.parent?.castOrNull<ParadoxScriptString>() ?: return
+		val eventIdProperty = stringElement.parent?.castOrNull<ParadoxScriptProperty>() ?: return
 		if(!eventIdProperty.name.equals("id", true)) return
-		val eventDefinition = eventIdProperty.parentOfType<ParadoxScriptProperty>() ?: return
+		val eventDefinition = eventIdProperty.parent?.parent?.castOrNull<ParadoxScriptProperty>() ?: return
 		if(eventDefinition.definitionInfo?.type != "event") return
 		val namespace = DefinitionConfigHandler.getEventNamespace(eventDefinition) ?: return //找不到，跳过
 		val lookupElement = LookupElementBuilder.create("$namespace.")

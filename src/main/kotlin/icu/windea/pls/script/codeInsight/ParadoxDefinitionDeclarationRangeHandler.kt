@@ -12,10 +12,10 @@ import icu.windea.pls.script.psi.*
 class ParadoxDefinitionDeclarationRangeHandler :DeclarationRangeHandler<ParadoxScriptProperty>{
 	override fun getDeclarationRange(container: ParadoxScriptProperty): TextRange? {
 		if(container.definitionInfo == null) return null
-		val valueElement = container.propertyValue?.value ?: return null
+		val valueElement = container.propertyValue ?: return null
 		val startOffset = container.propertyKey.startOffset
 		val endOffset = when{
-			valueElement is ParadoxScriptBlock -> valueElement.startOffset + 1 //包括"{"
+			valueElement is ParadoxScriptBlock -> valueElement.startOffset + 1 //包括" = {"
 			else -> valueElement.startOffset
 		}
 		return TextRange.create(startOffset, endOffset)

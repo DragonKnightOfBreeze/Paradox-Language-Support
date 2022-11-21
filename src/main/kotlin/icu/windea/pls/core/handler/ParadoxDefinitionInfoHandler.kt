@@ -32,7 +32,7 @@ object ParadoxDefinitionInfoHandler {
 	@JvmStatic
 	fun resolve(element: ParadoxDefinitionProperty, file: PsiFile = element.containingFile): ParadoxDefinitionInfo? {
 		//排除带参数的情况
-		if(element is ParadoxScriptProperty && element.findOptionalChild<ParadoxScriptPropertyKey>()?.isParameterAwareExpression() == true) return null
+		if(element is ParadoxScriptProperty && element.findChild<ParadoxScriptPropertyKey>()?.isParameterAwareExpression() == true) return null
 		
 		val project = file.project
 		
@@ -238,7 +238,7 @@ object ParadoxDefinitionInfoHandler {
 	}
 	
 	private fun doMatchProperty(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
-		val propValue = propertyElement.propertyValue?.value
+		val propValue = propertyElement.propertyValue
 		if(propValue == null) {
 			//对于propertyValue同样这样判断（可能脚本没有写完）
 			return propertyConfig.cardinality?.min == 0
