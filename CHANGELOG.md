@@ -98,13 +98,13 @@
   * [X] 可设置要忽略的本地化文件的名字
   * [X] 为图标提供提示（tooltip），例如，鼠标悬浮到结构视图（Structure）中的节点图标上即可看到
   * [X] 可以提示本地化颜色的ID（由于颜色ID只有一个字符，当光标在本地化文本中且前一个字符是`"§"`时，手动调用代码提示功能（例如，按下`Ctrl+空格`），才会进行提示
-  * [X] 提供布尔值的代码补全（在定义声明中不提供）
+  * [X] 提供布尔值的代码补全（在定义声明中不为属性或者块中的值提供）
 * 完善CWT配置支持：
   * [X] 支持`complex_enum`，以及相关功能：匹配、代码提示
   * [X] 支持高亮`definitionName` `complexEnumValueName`（对应的PSI元素可能本身就对应着特定的CWT规则，需要同时高亮出来）
   * [X] 为`complexEnumValue`的引用（而非声明）提供特殊文档
   * [X] 以某种方式另外实现`definitionName` `complexEnumValueName`的文档、查找使用、导航到类型声明等功能 - 通过意向（intention）
-  * [X] 为预定义的`modifier`提供相关本地化支持（`mod_$` `mod_$_desc` `mod_country_$`等，需要确定具体规则是什么） *
+  * [X] 为预定义的`modifier`提供相关本地化支持（`mod_$` `mod_$_desc`等，需要确定具体规则是什么） *
 
 ## 0.7.3
 
