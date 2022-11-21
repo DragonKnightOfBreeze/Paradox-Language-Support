@@ -24,7 +24,7 @@ class ParadoxScopeLinkFromDataExpressionNode(
 				val dataSourceText = text.drop(prefixText.length)
 				if(dataSourceText.isEmpty()) {
 					//缺少前缀
-					val dataSources = linkConfigs.mapNotNull { it.dataSource }.joinToString()
+					val dataSources = linkConfigs.mapNotNullTo(mutableSetOf()) { it.dataSource }.joinToString()
 					val error = ParadoxMissingScopeLinkDataSourceExpressionError(textRange, PlsBundle.message("script.expression.missingScopeLinkDataSource", dataSources))
 					return ParadoxScopeLinkFromDataExpressionNode(text, textRange, node.toSingletonList(), error.toSingletonList())
 				} else {
