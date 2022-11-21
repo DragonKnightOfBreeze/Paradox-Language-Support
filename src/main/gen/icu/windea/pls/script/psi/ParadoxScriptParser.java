@@ -1,12 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.lang.*;
-import com.intellij.lang.PsiBuilder.*;
-import com.intellij.psi.tree.*;
-
-import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
+import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.PsiBuilder.Marker;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.TokenSet;
+import com.intellij.lang.PsiParser;
+import com.intellij.lang.LightPsiParser;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class ParadoxScriptParser implements PsiParser, LightPsiParser {
@@ -697,14 +700,12 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // boolean | int | float
-  public static boolean scripted_variable_value(PsiBuilder b, int l) {
+  static boolean scripted_variable_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "scripted_variable_value")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, SCRIPTED_VARIABLE_VALUE, "<scripted variable value>");
     r = boolean_$(b, l + 1);
     if (!r) r = int_$(b, l + 1);
     if (!r) r = float_$(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
     return r;
   }
 

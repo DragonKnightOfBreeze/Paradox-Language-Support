@@ -39,7 +39,7 @@ private option_comment_item ::= option | value
 option ::= option_key option_separator value {
   pin=1
   methods=[
-    optionKey="optionKey" optionValue="value"
+    optionKey="option_key" optionValue="value"
     getIcon getName getValue getSeparatorType
   ]
 }
@@ -54,7 +54,7 @@ property ::= property_key property_separator value {
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
   methods=[
-    propertyKey="propertyKey" propertyValue="value"
+    propertyKey="property_key" propertyValue="value"
     getIcon getName setName getNameIdentifier getValue getSeparatorType
   ]
 }

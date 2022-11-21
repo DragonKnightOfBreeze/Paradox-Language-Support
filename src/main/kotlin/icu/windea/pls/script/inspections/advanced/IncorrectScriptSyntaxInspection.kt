@@ -45,7 +45,7 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
 					element is ParadoxScriptFloat -> true
 					element is ParadoxScriptScriptedVariableReference -> {
 						val resolved = element.reference.resolve()
-						val resolvedValueElement = resolved?.scriptedVariableValue?.value
+						val resolvedValueElement = resolved?.scriptedVariableValue
 						resolvedValueElement == null || mayByNumberValue(resolvedValueElement)
 					}
 					element is ParadoxScriptInlineMath -> true

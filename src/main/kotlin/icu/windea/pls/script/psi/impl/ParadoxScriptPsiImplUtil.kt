@@ -104,17 +104,17 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getValue(element: ParadoxScriptScriptedVariable): String? {
-		return element.scriptedVariableValue?.value?.text?.unquote()
+		return element.scriptedVariableValue?.text?.unquote()
 	}
 	
 	@JvmStatic
 	fun getUnquotedValue(element: ParadoxScriptScriptedVariable): String? {
-		return element.scriptedVariableValue?.value?.text
+		return element.scriptedVariableValue?.text
 	}
 	
 	@JvmStatic
 	fun getExpressionType(element: ParadoxScriptScriptedVariable): ParadoxDataType? {
-		return element.scriptedVariableValue?.value?.expressionType
+		return element.scriptedVariableValue?.expressionType
 	}
 	
 	@JvmStatic

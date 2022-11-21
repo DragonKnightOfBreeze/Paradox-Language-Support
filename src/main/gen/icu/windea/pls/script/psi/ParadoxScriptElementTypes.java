@@ -1,9 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.lang.*;
-import com.intellij.psi.*;
-import com.intellij.psi.tree.*;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.PsiElement;
+import com.intellij.lang.ASTNode;
 import icu.windea.pls.script.psi.impl.*;
 
 public interface ParadoxScriptElementTypes {
@@ -34,7 +34,6 @@ public interface ParadoxScriptElementTypes {
   IElementType SCRIPTED_VARIABLE = ParadoxScriptElementTypeFactory.getElementType("SCRIPTED_VARIABLE");
   IElementType SCRIPTED_VARIABLE_NAME = ParadoxScriptElementTypeFactory.getElementType("SCRIPTED_VARIABLE_NAME");
   IElementType SCRIPTED_VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("SCRIPTED_VARIABLE_REFERENCE");
-  IElementType SCRIPTED_VARIABLE_VALUE = ParadoxScriptElementTypeFactory.getElementType("SCRIPTED_VARIABLE_VALUE");
   IElementType STRING = ParadoxScriptElementTypeFactory.getElementType("STRING");
   IElementType VALUE = ParadoxScriptElementTypeFactory.getElementType("VALUE");
 
@@ -160,9 +159,6 @@ public interface ParadoxScriptElementTypes {
       }
       else if (type == SCRIPTED_VARIABLE_REFERENCE) {
         return new ParadoxScriptScriptedVariableReferenceImpl(node);
-      }
-      else if (type == SCRIPTED_VARIABLE_VALUE) {
-        return new ParadoxScriptScriptedVariableValueImpl(node);
       }
       else if (type == STRING) {
         return new ParadoxScriptStringImpl(node);

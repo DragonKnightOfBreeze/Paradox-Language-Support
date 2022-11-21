@@ -1,12 +1,13 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.navigation.*;
-import com.intellij.psi.*;
-import icu.windea.pls.script.exp.*;
+import java.util.List;
 import org.jetbrains.annotations.*;
-
-import java.util.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.StubBasedPsiElement;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.PsiReference;
+import icu.windea.pls.script.exp.ParadoxDataType;
 
 public interface ParadoxScriptPropertyKey extends ParadoxScriptExpressionElement, StubBasedPsiElement<ParadoxScriptPropertyKeyStub> {
 
