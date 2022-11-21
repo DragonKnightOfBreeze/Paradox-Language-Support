@@ -21,10 +21,11 @@ import icu.windea.pls.script.exp.nodes.*
  * scope_field_expression ::= scope +
  * scope ::= system_scope | scope_link | scope_link_from_data
  * system_scope ::= TOKEN //predefined by Internal Config (in script_config.pls.cwt)
- * scope_link ::= TOKEN //predefined by CWT Config (in links.cwt)
- * scope_link_from_data ::= scope_link_prefix scope_link_data_source //predefined by CWT Config (in links.cwt)
+ * scope_link ::= TOKEN //predefined by CWT Config (in links.cwt, from_data = false, type = both | scope)
+ * scope_link_from_data ::= scope_link_prefix scope_link_data_source //predefined by CWT Config (in links.cwt, from_data = true, type = both | scope)
  * scope_link_prefix ::= TOKEN //e.g. "event_target:" while the link's prefix is "event_target:"
  * scope_link_data_source ::= EXPRESSION //e.g. "some_variable" while the link's data source is "value[variable]"
+ * expression ::= data_expression | value_set_value_expression //see: ParadoxDataExpression, ParadoxValueSetValueExpression
  * ```
  *
  * 示例：
@@ -63,10 +64,10 @@ class ParadoxScopeFieldExpressionImpl(
 		var start = false
 		for(node in nodes) {
 			if(node is ParadoxScopeExpressionNode) {
-				val nodeRange = rangeInExpression
+				val nodeRange = node.rangeInExpression
 				if(offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset) {
 					start = true
-					context.put(PlsCompletionKeys.keywordKey, node.text.substring(0, nodeRange.startOffset - offsetInParent))
+					context.put(PlsCompletionKeys.keywordKey, node.text.substring(0, offsetInParent - nodeRange.startOffset))
 					context.put(PlsCompletionKeys.prevScopeKey, prevScopeToUse)
 					CwtConfigHandler.completeSystemScope(context, result)
 					CwtConfigHandler.completeScope(context, result)

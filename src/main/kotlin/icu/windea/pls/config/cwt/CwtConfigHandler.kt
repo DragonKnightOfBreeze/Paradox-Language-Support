@@ -664,7 +664,7 @@ object CwtConfigHandler {
 			CwtDataTypes.Enum -> {
 				val enumName = configExpression.value ?: return
 				//提示参数名（仅限key）
-				if(isKey && enumName == paramsEnumName && config is CwtPropertyConfig) {
+				if(isKey == true && enumName == paramsEnumName && config is CwtPropertyConfig) {
 					ProgressManager.checkCanceled()
 					val propertyElement = contextElement.findParentDefinitionProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return
 					completeParametersForInvocationExpression(propertyElement, config, context, result)
@@ -823,7 +823,7 @@ object CwtConfigHandler {
 				val element = config.resolved().pointer.element ?: return
 				val typeFile = config.resolved().pointer.containingFile
 				val lookupElement = LookupElementBuilder.create(element, name.quoteIf(quoted))
-					.withIcon(if(isKey) PlsIcons.Property else PlsIcons.Value)
+					.withIcon(if(isKey == true) PlsIcons.Property else PlsIcons.Value)
 					.fromScriptExpression(isKey, configs, typeText = typeFile?.name, typeIcon = typeFile?.icon)
 					.withCaseSensitivity(false) //忽略大小写
 					.withPriority(PlsCompletionPriorities.constantPriority)
@@ -851,7 +851,7 @@ object CwtConfigHandler {
 			//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
 			val nextScope = this.config.parent?.scope ?: scope
 			//aliasSubName是一个表达式
-			if(isKey) {
+			if(isKey == true) {
 				context.put(PlsCompletionKeys.configExpressionKey, aliasConfig.keyExpression)
 				context.put(PlsCompletionKeys.configKey, aliasConfig.config)
 				context.put(PlsCompletionKeys.configsKey, aliasConfigs.map { it.config })
@@ -1231,7 +1231,7 @@ object CwtConfigHandler {
 	private val separatorChars = charArrayOf('=', '<', '>', '!')
 	
 	private fun LookupElementBuilder.fromScriptExpression(
-		isKey: Boolean,
+		isKey: Boolean?,
 		configs: List<CwtDataConfig<*>>? = null,
 		tailText: String? = null,
 		typeText: String? = null,
@@ -1247,7 +1247,7 @@ object CwtConfigHandler {
 		if(finalTailText.isNotEmpty()) {
 			result = result.withTailText(finalTailText, true)
 		}
-		if(isKey) {
+		if(isKey == true) {
 			result = result.withInsertHandler { context, _ ->
 				val editor = context.editor
 				val document = editor.document
