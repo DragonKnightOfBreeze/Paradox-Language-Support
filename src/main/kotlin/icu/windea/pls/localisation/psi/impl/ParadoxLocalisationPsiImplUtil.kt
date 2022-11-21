@@ -14,6 +14,7 @@ import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.references.*
+import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 //getName 确定进行重构和导航时显示的PsiElement的名字
@@ -120,6 +121,11 @@ object ParadoxLocalisationPsiImplUtil {
 		//TODO should localisations with different locales be equivalent?
 		return another is ParadoxLocalisationProperty
 			&& element.localisationInfo?.equals(another.localisationInfo) == true
+	}
+	
+	@JvmStatic
+	fun toString(element: ParadoxLocalisationProperty): String{
+		return "ParadoxLocalisationProperty(name=${element.name})"
 	}
 	//endregion
 	

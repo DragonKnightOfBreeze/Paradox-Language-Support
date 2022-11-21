@@ -44,4 +44,6 @@ public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement
   @NotNull
   ItemPresentation getPresentation();
 
+  boolean isEquivalentTo(@NotNull PsiElement another);
+
 }

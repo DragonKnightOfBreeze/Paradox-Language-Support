@@ -20,7 +20,8 @@ import icu.windea.pls.script.exp.nodes.*
  * value_link_from_data ::= value_link_prefix value_link_data_source //predefined by CWT Config (in links.cwt, from_data = true, type = both | value)
  * value_link_prefix ::= TOKEN //e.g. "value:" while the link's prefix is "value:"
  * value_link_data_source ::= expression //e.g. "some" while the link's data source is "value[variable]"
- * expression ::= data_expression | value_set_value_expression //see: ParadoxDataExpression, ParadoxValueSetValueExpression
+ * expression ::= data_expression | value_set_value_expression | sv_expression //see: ParadoxDataExpression, ParadoxValueSetValueExpression
+ * sv_expression ::= sv_name ("|" (param_name "|" param_value "|")+)? //e.g. value:some_sv|PARAM1|VALUE1|PARAM2|VALUE2|
  * ```
  *
  * 示例：

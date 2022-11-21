@@ -345,11 +345,11 @@ inline fun <reified T : PsiElement> PsiElement.findChild(): T? {
 }
 
 fun PsiElement.findChild(type: IElementType): PsiElement? {
-	return findChildOfType { it.elementType == type }!!
+	return findChildOfType { it.elementType == type }
 }
 
 fun PsiElement.findChild(tokenSet: TokenSet): PsiElement? {
-	return findChildOfType { it.elementType in tokenSet }!!
+	return findChildOfType { it.elementType in tokenSet }
 }
 
 inline fun <reified T : PsiElement> PsiElement.findChildren(): List<T> {

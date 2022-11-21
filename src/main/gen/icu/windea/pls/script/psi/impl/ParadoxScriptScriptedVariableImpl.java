@@ -101,4 +101,15 @@ public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementI
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
+  @Override
+  public boolean isEquivalentTo(@NotNull PsiElement another) {
+    return ParadoxScriptPsiImplUtil.isEquivalentTo(this, another);
+  }
+
+  @Override
+  @NotNull
+  public String toString() {
+    return ParadoxScriptPsiImplUtil.toString(this);
+  }
+
 }

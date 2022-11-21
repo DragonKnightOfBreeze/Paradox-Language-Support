@@ -69,17 +69,35 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // COMMENT | property | value | parameter_condition | scripted_variable
+  // COMMENT | property | block_value | parameter_condition | scripted_variable
   static boolean block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block_item")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
     r = consumeToken(b, COMMENT);
     if (!r) r = property(b, l + 1);
-    if (!r) r = value(b, l + 1);
+    if (!r) r = block_value(b, l + 1);
     if (!r) r = parameter_condition(b, l + 1);
     if (!r) r = scripted_variable(b, l + 1);
     exit_section_(b, l, m, r, false, block_item_auto_recover_);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // scripted_variable_reference | boolean | int | float | string | color | block | inline_math
+  static boolean block_value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "block_value")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = scripted_variable_reference(b, l + 1);
+    if (!r) r = boolean_$(b, l + 1);
+    if (!r) r = int_$(b, l + 1);
+    if (!r) r = float_$(b, l + 1);
+    if (!r) r = string(b, l + 1);
+    if (!r) r = color(b, l + 1);
+    if (!r) r = block(b, l + 1);
+    if (!r) r = inline_math(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -674,16 +692,26 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // COMMENT | value | property | scripted_variable
+  // COMMENT | root_block_value | property | scripted_variable
   static boolean root_block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_block_item")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
     r = consumeToken(b, COMMENT);
-    if (!r) r = value(b, l + 1);
+    if (!r) r = root_block_value(b, l + 1);
     if (!r) r = property(b, l + 1);
     if (!r) r = scripted_variable(b, l + 1);
     exit_section_(b, l, m, r, false, root_block_item_auto_recover_);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // value | string
+  static boolean root_block_value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_block_value")) return false;
+    boolean r;
+    r = value(b, l + 1);
+    if (!r) r = string(b, l + 1);
     return r;
   }
 
@@ -755,7 +783,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // scripted_variable_reference | boolean | int | float | string | color | block | inline_math
+  // scripted_variable_reference | boolean | int | float | color | block | inline_math
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
@@ -764,7 +792,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = boolean_$(b, l + 1);
     if (!r) r = int_$(b, l + 1);
     if (!r) r = float_$(b, l + 1);
-    if (!r) r = string(b, l + 1);
     if (!r) r = color(b, l + 1);
     if (!r) r = block(b, l + 1);
     if (!r) r = inline_math(b, l + 1);

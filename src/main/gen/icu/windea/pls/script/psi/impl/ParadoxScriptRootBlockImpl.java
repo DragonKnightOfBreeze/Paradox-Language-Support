@@ -41,6 +41,12 @@ public class ParadoxScriptRootBlockImpl extends ASTWrapperPsiElement implements 
 
   @Override
   @NotNull
+  public List<ParadoxScriptString> getStringList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptString.class);
+  }
+
+  @Override
+  @NotNull
   public List<ParadoxScriptValue> getValueList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
   }

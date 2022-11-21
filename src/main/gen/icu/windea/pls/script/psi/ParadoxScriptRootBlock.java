@@ -14,6 +14,9 @@ public interface ParadoxScriptRootBlock extends ParadoxScriptBlockElement {
   List<ParadoxScriptScriptedVariable> getScriptedVariableList();
 
   @NotNull
+  List<ParadoxScriptString> getStringList();
+
+  @NotNull
   List<ParadoxScriptValue> getValueList();
 
   @NotNull

@@ -129,6 +129,11 @@ object ParadoxScriptPsiImplUtil {
 			&& element.name == another.name
 			&& ParadoxSelectorUtils.selectGameType(element) == ParadoxSelectorUtils.selectGameType(another)
 	}
+	
+	@JvmStatic
+	fun toString(element: ParadoxScriptScriptedVariable): String {
+		return "ParadoxScriptScriptedVariable(name=${element.name})"
+	}
 	//endregion
 	
 	//region ParadoxScriptScriptedVariableName
@@ -306,6 +311,11 @@ object ParadoxScriptPsiImplUtil {
 		return another is ParadoxScriptProperty
 			&& element.definitionInfo == another.definitionInfo
 	}
+	
+	@JvmStatic
+	fun toString(element: ParadoxScriptProperty): String {
+		return "ParadoxScriptProperty(name=${element.name})"
+	}
 	//endregion
 	
 	//region ParadoxScriptPropertyKey
@@ -348,6 +358,11 @@ object ParadoxScriptPsiImplUtil {
 	fun getConfigExpression(element: ParadoxScriptPropertyKey): String? {
 		val config = resolvePropertyConfigs(element).firstOrNull() ?: return null
 		return config.key
+	}
+	
+	@JvmStatic
+	fun toString(element: ParadoxScriptPropertyKey): String {
+		return "ParadoxScriptPropertyKey(value=${element.value})"
 	}
 	//endregion
 	
@@ -479,6 +494,11 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getExpressionType(element: ParadoxScriptString): ParadoxDataType {
 		return ParadoxDataType.StringType
+	}
+	
+	@JvmStatic
+	fun toString(element: ParadoxScriptString): String{
+		return "ParadoxScriptString(value=${element.value})"
 	}
 	//endregion
 	

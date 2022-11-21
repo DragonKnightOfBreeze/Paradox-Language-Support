@@ -100,4 +100,10 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
     return ParadoxLocalisationPsiImplUtil.isEquivalentTo(this, another);
   }
 
+  @Override
+  @NotNull
+  public String toString() {
+    return ParadoxLocalisationPsiImplUtil.toString(this);
+  }
+
 }

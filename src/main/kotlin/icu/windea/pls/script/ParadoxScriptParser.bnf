@@ -27,9 +27,10 @@ root_block ::= root_block_item + {
   ]
   methods=[getValue isEmpty isNotEmpty getComponents]
 }
-private root_block_item ::= COMMENT | value | property | scripted_variable{
+private root_block_item ::= COMMENT | root_block_value | property | scripted_variable{
   recoverWhile="#auto"
 }
+private root_block_value ::= value | string
 
 //scripted_variable
 //should outside of definition declaration
@@ -47,6 +48,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
     string=""
     getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue
     getExpressionType getPresentation
+    isEquivalentTo toString
   ]
 }
 scripted_variable_name ::= AT SCRIPTED_VARIABLE_NAME_ID {
@@ -71,7 +73,8 @@ property ::= property_key property_separator property_value {
     string=""
     getIcon getName setName getNameIdentifier getValue getDepth getBlock 
     getDefinitionType getExpressionType getConfigExpression getExpression
-    getPathName getOriginalPathName getParameterMap getPresentation isEquivalentTo
+    getPathName getOriginalPathName getParameterMap getPresentation
+    isEquivalentTo toString
   ]
 }
 property_key ::= key_expr {
@@ -84,18 +87,18 @@ property_key ::= key_expr {
     getValue setValue getReference getReferences
     getExpressionType getConfigExpression
     getPresentation isEquivalentTo
+    toString
   ]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
 private property_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
 //(property) value related
-value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math {
+value ::= scripted_variable_reference | boolean | int | float | color | block | inline_math {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
   ]
   methods=[
-    string=""
     getIcon getValue
     getExpressionType getConfigExpression
   ]
@@ -157,9 +160,10 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
     getExpressionType getExpression
   ]
 }
-private block_item ::= COMMENT | property | value | parameter_condition | scripted_variable{
+private block_item ::= COMMENT | property | block_value | parameter_condition | scripted_variable{
   recoverWhile="#auto"
 }
+private block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
 //key & value expressions
 
