@@ -943,6 +943,7 @@ object CwtConfigHandler {
 	}
 	
 	fun completeScopeLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?): Unit = with(context) {
+		//TODO 兼容基于valueSetValueExpression进行提示
 		val linkConfigs = if(prefix == null) configGroup.linksAsScopeWithoutPrefix else configGroup.linksAsScopeWithPrefix
 		
 		//TODO 进一步匹配scope
@@ -1024,6 +1025,7 @@ object CwtConfigHandler {
 	}
 	
 	fun completeValueLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?): Unit = with(context) {
+		//TODO 兼容基于valueSetValueExpression进行提示和提示SV参数
 		val linkConfigs = if(prefix == null) configGroup.linksAsValueWithoutPrefix else configGroup.linksAsValueWithPrefix
 		
 		//TODO 进一步匹配scope
