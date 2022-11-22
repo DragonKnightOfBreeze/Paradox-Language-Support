@@ -25,7 +25,6 @@ import icu.windea.pls.core.selector.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.exp.*
-import icu.windea.pls.script.expression.ParadoxScriptExpression
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 import kotlin.collections.component1
@@ -301,14 +300,16 @@ object CwtConfigHandler {
 				if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) return true
 				if(!isStatic && isParameterAware) return true
 				if(expression.quoted) return false //接下来的匹配不允许用引号括起
-				return ParadoxScriptExpression.resolveValueField(expression.text, configGroup).isMatched()
+				val textRange = TextRange.create(0, expression.text.length)
+				return ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey) != null
 			}
 			CwtDataTypes.IntValueField -> {
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
 				if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
 				if(!isStatic && isParameterAware) return true
 				if(expression.quoted) return false //接下来的匹配不允许用引号括起
-				return ParadoxScriptExpression.resolveValueField(expression.text, configGroup).isMatched()
+				val textRange = TextRange.create(0, expression.text.length)
+				return ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey) != null
 			}
 			CwtDataTypes.VariableField -> {
 				if(!isStatic && isParameterAware) return true
@@ -712,58 +713,7 @@ object CwtConfigHandler {
 				}
 			}
 			CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-				//光标在'@'后面时，不进行提示
-				val atIndex = keyword.indexOf('@')
-				if(atIndex != -1 && offsetInParent > atIndex) return
-				
-				if(quoted) return
-				val valueSetName = configExpression.value ?: return
-				val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
-				//提示预定义的value
-				run {
-					ProgressManager.checkCanceled()
-					if(configExpression.type == CwtDataTypes.Value) {
-						val valueConfig = this.configGroup.values[valueSetName] ?: return@run
-						val valueSetValueConfigs = valueConfig.valueConfigMap.values
-						if(valueSetValueConfigs.isEmpty()) return@run
-						for(valueSetValueConfig in valueSetValueConfigs) {
-							if(this.quoted && valueSetValueConfig.stringValue == null) continue
-							//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
-							val name = valueSetValueConfig.value
-							val element = valueSetValueConfig.pointer.element ?: continue
-							val typeFile = valueConfig.pointer.containingFile
-							val lookupElement = LookupElementBuilder.create(element, name)
-								.withIcon(PlsIcons.PredefinedValueSetValue)
-								.fromScriptExpression(isKey, configs, tailText = tailText, typeText = typeFile?.name, typeIcon = typeFile?.icon)
-								.withCaseSensitivity(false) //忽略大小写
-								.withPriority(PlsCompletionPriorities.predefinedValueSetValuePriority)
-							result.addElement(lookupElement)
-						}
-					}
-				}
-				//提示来自脚本文件的value
-				run {
-					ProgressManager.checkCanceled()
-					val selector = valueSetValueSelector().gameType(gameType).distinctByValue()
-					val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, project, selector = selector)
-					valueSetValueQuery.processResult { valueSetValue ->
-						//去除后面的作用域信息
-						val value = valueSetValue.value.substringBefore('@')
-						//排除当前正在输入的那个
-						if(value == this.keyword.substringBefore('@') && valueSetValue isSamePosition contextElement) return@processResult true
-						val icon = when(valueSetName) {
-							"variable" -> PlsIcons.Variable
-							else -> PlsIcons.ValueSetValue
-						}
-						//不显示typeText
-						val lookupElement = LookupElementBuilder.create(valueSetValue, value)
-							.withIcon(icon)
-							.fromScriptExpression(isKey, configs, tailText = tailText)
-							.withCaseSensitivity(false) //忽略大小写
-						result.addElement(lookupElement)
-						true
-					}
-				}
+				completeValueSetValueExpression(context, result)
 			}
 			CwtDataTypes.ScopeField -> {
 				completeScopeFieldExpression(context, result)
@@ -833,7 +783,7 @@ object CwtConfigHandler {
 		pass()
 	}
 	
-	fun completeAliasName(aliasName: String, context: ProcessingContext, result: CompletionResultSet, scope: String?) = with(context) {
+	fun completeAliasName(aliasName: String, context: ProcessingContext, result: CompletionResultSet, scope: String?): Unit = with(context) {
 		val configExpression = configExpression
 		val config = config
 		val configs = configs
@@ -866,7 +816,7 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun completeModifier(context: ProcessingContext, result: CompletionResultSet, scope: String?) = with(context) {
+	fun completeModifier(context: ProcessingContext, result: CompletionResultSet, scope: String?): Unit = with(context) {
 		val modifiers = configGroup.modifiers
 		if(modifiers.isEmpty()) return
 		//批量提示
@@ -892,22 +842,31 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	fun completeScopeFieldExpression(context: ProcessingContext, result: CompletionResultSet) = with(context) {
+	fun completeScopeFieldExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		////基于当前位置的代码补全
 		if(quoted) return
 		val textRange = TextRange.create(0, keyword.length)
-		val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup, isKey, offsetInParent)
-			?: return
+		val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup, isKey, true) ?: return
 		scopeFieldExpression.complete(context, result)
 	}
 	
-	fun completeValueFieldExpression(context: ProcessingContext, result: CompletionResultSet, isInt: Boolean = false) = with(context) {
+	fun completeValueFieldExpression(context: ProcessingContext, result: CompletionResultSet, isInt: Boolean = false): Unit = with(context) {
 		//基于当前位置的代码补全
-		val expression = ParadoxScriptExpression.resolveValueField(keyword, configGroup)
-		expression.complete(result, context)
+		if(quoted) return
+		val textRange = TextRange.create(0, keyword.length)
+		val scopeFieldExpression = ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup, isKey, true) ?: return
+		scopeFieldExpression.complete(context, result)
 	}
 	
-	fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet) = with(context) {
+	fun completeValueSetValueExpression(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
+		//基于当前位置的代码补全
+		if(quoted) return
+		val textRange = TextRange.create(0, keyword.length)
+		val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(keyword, textRange, configExpression, configGroup, isKey) ?: return
+		valueSetValueExpression.complete(context, result)
+	}
+	
+	fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
 		val lookupElements = mutableSetOf<LookupElement>()
 		val systemScopeConfigs = InternalConfigHandler.getSystemScopeMap().values
 		for(systemScopeConfig in systemScopeConfigs) {
@@ -924,10 +883,10 @@ object CwtConfigHandler {
 				.withPriority(PlsCompletionPriorities.systemScopePriority)
 			lookupElements.add(lookupElement)
 		}
-		result.withPrefixMatcher(keyword).addAllElements(lookupElements)
+		result.addAllElements(lookupElements)
 	}
 	
-	fun completeScope(context: ProcessingContext, result: CompletionResultSet) = with(context) {
+	fun completeScope(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
 		//TODO 进一步匹配scope
 		val keyword = keyword
 		val lookupElements = mutableSetOf<LookupElement>()
@@ -951,10 +910,10 @@ object CwtConfigHandler {
 				.withPriority(PlsCompletionPriorities.scopePriority)
 			lookupElements.add(lookupElement)
 		}
-		result.withPrefixMatcher(keyword).addAllElements(lookupElements)
+		result.addAllElements(lookupElements)
 	}
 	
-	fun completeScopeLinkPrefixOrDataSource(context: ProcessingContext, result: CompletionResultSet) = with(context) {
+	fun completeScopeLinkPrefixOrDataSource(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
 		val keyword = keyword
 		val configExpression = configExpression
 		val config = config
@@ -1025,7 +984,7 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun completeValueLinkValue(context: ProcessingContext, result: CompletionResultSet) = with(context) {
+	fun completeValueLinkValue(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
 		//TODO 进一步匹配scope
 		val keyword = keyword
 		val lookupElements = mutableSetOf<LookupElement>()
@@ -1049,10 +1008,10 @@ object CwtConfigHandler {
 				.withCaseSensitivity(false) //忽略大小写
 			lookupElements.add(lookupElement)
 		}
-		result.withPrefixMatcher(keyword).addAllElements(lookupElements)
+		result.addAllElements(lookupElements)
 	}
 	
-	fun completeValueLinkPrefixOrDataSource(context: ProcessingContext, result: CompletionResultSet) = with(context) {
+	fun completeValueLinkPrefixOrDataSource(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
 		//TODO 进一步匹配scope
 		val keyword = keyword
 		val linkConfigs = configGroup.linksAsValue
@@ -1103,11 +1062,62 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun completeValueSetValue(context: ProcessingContext, result: CompletionResultSet) {
-		//TODO
+	fun completeValueSetValue(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
+		val configGroup = configGroup
+		val gameType = this.configGroup.gameType
+		val project = this.configGroup.project
+		
+		if(quoted) return@with 
+		val valueSetName = configExpression.value ?: return@with
+		val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
+		//提示预定义的value
+		run {
+			ProgressManager.checkCanceled()
+			if(configExpression.type == CwtDataTypes.Value) {
+				val valueConfig = this.configGroup.values[valueSetName] ?: return@run
+				val valueSetValueConfigs = valueConfig.valueConfigMap.values
+				if(valueSetValueConfigs.isEmpty()) return@run
+				for(valueSetValueConfig in valueSetValueConfigs) {
+					if(this.quoted && valueSetValueConfig.stringValue == null) continue
+					//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
+					val name = valueSetValueConfig.value
+					val element = valueSetValueConfig.pointer.element ?: continue
+					val typeFile = valueConfig.pointer.containingFile
+					val lookupElement = LookupElementBuilder.create(element, name)
+						.withIcon(PlsIcons.PredefinedValueSetValue)
+						.fromScriptExpression(isKey, configs, tailText = tailText, typeText = typeFile?.name, typeIcon = typeFile?.icon)
+						.withCaseSensitivity(false) //忽略大小写
+						.withPriority(PlsCompletionPriorities.predefinedValueSetValuePriority)
+					result.addElement(lookupElement)
+				}
+			}
+		}
+		//提示来自脚本文件的value
+		run {
+			ProgressManager.checkCanceled()
+			val selector = valueSetValueSelector().gameType(gameType).distinctByValue()
+			val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, project, selector = selector)
+			valueSetValueQuery.processResult { valueSetValue ->
+				//去除后面的作用域信息
+				val value = valueSetValue.value.substringBefore('@')
+				//排除当前正在输入的那个
+				if(value == this.keyword.substringBefore('@') && valueSetValue isSamePosition contextElement) return@processResult true
+				val icon = when(valueSetName) {
+					"variable" -> PlsIcons.Variable
+					else -> PlsIcons.ValueSetValue
+				}
+				//不显示typeText
+				val lookupElement = LookupElementBuilder.create(valueSetValue, value)
+					.withIcon(icon)
+					.fromScriptExpression(isKey, configs, tailText = tailText)
+					.withCaseSensitivity(false) //忽略大小写
+				result.addElement(lookupElement)
+				true
+			}
+		}
 	}
 	
-	fun completeLocalisationCommandScope(context: ProcessingContext, result: CompletionResultSet) = with(context) {
+	fun completeLocalisationCommandScope(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
 		//TODO 进一步匹配scope
 		val lookupElements = mutableSetOf<LookupElement>()
 		val localisationLinks = configGroup.localisationLinks
@@ -1133,7 +1143,7 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	fun completeLocalisationCommandField(context: ProcessingContext, result: CompletionResultSet) = with(context) {
+	fun completeLocalisationCommandField(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		//TODO 匹配scope
 		val localisationCommands = configGroup.localisationCommands
 		//批量提示
@@ -1156,7 +1166,7 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	fun completeParameters(element: PsiElement, read: Boolean, context: ProcessingContext, result: CompletionResultSet) = with(context) {
+	fun completeParameters(element: PsiElement, read: Boolean, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		//向上找到definition
 		val definition = element.findParentDefinition() ?: return
 		val definitionInfo = definition.definitionInfo ?: return
@@ -1177,7 +1187,7 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	fun completeParametersForInvocationExpression(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, context: ProcessingContext, result: CompletionResultSet) = with(context) {
+	fun completeParametersForInvocationExpression(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		if(quoted) return //输入参数不允许用引号括起
 		val definitionName = propertyElement.name
 		val definitionType = propertyConfig.parent?.castOrNull<CwtPropertyConfig>()
@@ -1202,7 +1212,7 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	fun completeParametersForScriptValueExpression(svName: String, parameterNames: Set<String>, context: ProcessingContext, result: CompletionResultSet) = with(context) {
+	fun completeParametersForScriptValueExpression(svName: String, parameterNames: Set<String>, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		//整合所有匹配名字的SV的参数
 		val resultToUse = result.withPrefixMatcher(keyword)
 		val existParameterNames = mutableSetOf<String>()
@@ -1668,6 +1678,20 @@ object CwtConfigHandler {
 		if(links.isEmpty()) return null
 		val linkConfig = links[name] ?: return null
 		return linkConfig.pointer.element
+	}
+	
+	fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, expression: CwtDataExpression, configGroup: CwtConfigGroup): PsiElement? {
+		val valueSetName = expression.value ?: return null
+		val read = expression.type == CwtDataTypes.Value
+		if(read) {
+			//首先尝试解析为预定义的value
+			run {
+				val valueSetValueConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(name) ?: return@run
+				val resolved = valueSetValueConfig.pointer.element.castOrNull<CwtNamedElement>()
+				if(resolved != null) return resolved
+			}
+		}
+		return ParadoxValueSetValueElement(element, name, valueSetName, configGroup.project, configGroup.gameType, read)
 	}
 	
 	fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, config: CwtDataConfig<*>): PsiElement? {

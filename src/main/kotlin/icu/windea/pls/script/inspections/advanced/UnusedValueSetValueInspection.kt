@@ -16,7 +16,7 @@ import java.util.concurrent.*
 import javax.swing.*
 
 /**
- * 值集中的值（`some_flag`）被设置但未被使用的检查
+ * 值集值值（`some_flag`）被设置但未被使用的检查
  *
  * 例如，有`set_flag = xxx`但没有`has_flag = xxx`。
  */

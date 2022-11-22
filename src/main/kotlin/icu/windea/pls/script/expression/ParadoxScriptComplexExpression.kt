@@ -14,6 +14,7 @@ import icu.windea.pls.script.exp.*
  *
  * @property errors 解析时加入的异常。不包括无法解析的异常。
  */
+@Deprecated("")
 sealed class ParadoxScriptComplexExpression(
 	expressionString: String,
 	val configGroup: CwtConfigGroup,

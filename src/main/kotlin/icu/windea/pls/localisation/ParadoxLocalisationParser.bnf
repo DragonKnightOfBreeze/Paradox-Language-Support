@@ -72,12 +72,13 @@ escape ::= VALID_ESCAPE_TOKEN | INVALID_ESCAPE_TOKEN | DOUBLE_LEFT_BRACKET{
 
 //property reference
 //see: https://stellaris.paradoxwikis.com/Localisation_modding#.24_Codes
-//may be resolved to localisation / variable / system statistics in GUI elements 
+//may be resolved to localisation / parameter / system statistics in GUI elements 
 property_reference ::= PROPERTY_REFERENCE_START [property_reference_name] [PIPE [property_reference_parameter]] PROPERTY_REFERENCE_END {
   pin=1
   extends=rich_text
   methods=[getName setName getReference]
 }
+//token / command (e.g. "[Root.GetName]") / scripted_variable (e.g. "@v") 
 private property_reference_name ::= command | PROPERTY_REFERENCE_ID
 private property_reference_parameter ::= PROPERTY_REFERENCE_PARAMETER_TOKEN //TODO check syntax
 

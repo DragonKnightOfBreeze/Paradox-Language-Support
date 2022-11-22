@@ -81,19 +81,20 @@
   * [X] 对CWT别名规则（dataType=alias/single_alias）使用特殊的别名图标，以便区分内联前后的CWT规则
   * [X] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`
   * [X] 进行代码补全时，如果在提示key时，对应的value是唯一确定的（常量，如固定字符串），应用补全后将会自动插入
+  * [ ] 本地化文件：兼容`$@some_scripted_variable$`、`£$SOME_REF$£`这样的语法
 * 功能变更：
   * [X] ~~支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`~~ → 使用CWT选项`## tag`标记特殊标签，如`optimize_memory`
   * [X] 移除`icu.windea.pls.core.ParadoxPathReferenceProvider` （用于兼容markdown锚点）
 * 新增功能：
   * [X] 实现检查：参数（`$PARAM$`）被设置/引用但未被使用（例如：有`some_effecFt = { PARAM = some_value }`但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。）
-  * [X] 实现检查：值集中的值（`some_flag`）被设置但未被使用（例如，有`set_flag = xxx`但没有`has_flag = xxx`。）
-  * [X] 实现检查：值集中的值（`some_flag`）被使用但未被设置（例如，有`has_flag = xxx`但没有`set_flag = xxx`。） - 默认不启用
+  * [X] 实现检查：值集值值（`some_flag`）被设置但未被使用（例如，有`set_flag = xxx`但没有`has_flag = xxx`。）
+  * [X] 实现检查：值集值值（`some_flag`）被使用但未被设置（例如，有`has_flag = xxx`但没有`set_flag = xxx`。） - 默认不启用
   * [X] 实现检查：无法解析的命令作用域（unresolvedCommandScope）
   * [X] 实现检查：无法解析的命令字段（unresolvedCommandField）
   * [X] 实现内嵌提示：本地化图标（渲染出选用的内嵌图标，如果对应图标的大小合适）
   * [X] 实现内嵌提示：预定义修饰符的本地化名字（`mod_$`）
   * [X] 实现动作：导航到（对应的）CWT规则（对于定义元素，在导航菜单/右键菜单中）（作为一个更加统一的入口，包括内联前后的CWT规则，包括所有完全匹配的规则）
-  * [X] 在查找使用中，区分参数和值集中的值的读/写使用
+  * [X] 在查找使用中，区分参数和值集值值的读/写使用
   * [X] 在查找使用中，区分使用的使用类型（基于读写和对应的CWT规则）（待日后完善） *
   * [X] 可设置要忽略的本地化文件的名字
   * [X] 为图标提供提示（tooltip），例如，鼠标悬浮到结构视图（Structure）中的节点图标上即可看到
@@ -111,8 +112,8 @@
 * [X] 更新cwt规则到最新版本（2022/10/13）
 * 功能优化：
   * [X] 如果通过代码检查发现一个定义上有多个缺失的相关本地化/图片，将每个单独作为一个问题
-  * [X] 参数（`$PARAM$`）和值集中的值（`some_flag`）并不存在一个事实上的声明处，点击需要导航到所有引用处
-  * [X] 测试通过对参数（`$PARAM$`）和值集中的值（`some_flag`)基于引用的统一重命名
+  * [X] 参数（`$PARAM$`）和值集值值（`some_flag`）并不存在一个事实上的声明处，点击需要导航到所有引用处
+  * [X] 测试通过对参数（`$PARAM$`）和值集值值（`some_flag`)基于引用的统一重命名
 * BUG修复：
   * [X] 进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
   * [X] 修复解析本地化位置表达式（如`$_desc`）时把占位符`$`解析成定义的rootKey而非定义的名字的问题
@@ -219,7 +220,7 @@
   * [X] 实现查找实现功能 - 可导航到所有同名的封装变量/定义/本地化
   * [X] 实现`ParadoxQualifiedNameProvider`，用于复制路径/引用（Edit > Copy Path/Reference...）
 * 完善内嵌提示：
-  * [X] 脚本文件：值集中的值的内嵌提示（值的类型即值集的名字，`xxx = value_set[event_target]`中的`event_target`）
+  * [X] 脚本文件：值集值值的内嵌提示（值的类型即值集的名字，`xxx = value_set[event_target]`中的`event_target`）
 * 脚本文件语法解析优化：
   * 兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
   * [X] 对于`stellaris v3.4`开始新增的`tag`（`optimize_memory`），提供特殊图标和代码高亮，代码提示和验证功能另外由CWT规则提供

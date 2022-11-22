@@ -438,7 +438,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildValueSetValueDefinition(name: String, valueSetName: String, configGroup: CwtConfigGroup) {
 		definition {
 			//不加上文件信息
-			//加上值集中的值的信息
+			//加上值集值值的信息
 			append(PlsDocBundle.message("name.cwt.valueSetValue")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			if(valueSetName.isNotEmpty()) {
 				val valueConfig = configGroup.values[valueSetName]

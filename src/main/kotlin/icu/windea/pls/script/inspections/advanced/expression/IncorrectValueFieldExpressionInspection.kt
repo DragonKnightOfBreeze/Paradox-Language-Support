@@ -2,6 +2,7 @@ package icu.windea.pls.script.inspections.advanced.expression
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
@@ -9,7 +10,8 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.selector.*
-import icu.windea.pls.script.expression.*
+import icu.windea.pls.script.exp.*
+import icu.windea.pls.script.exp.errors.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -17,7 +19,7 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 	@JvmField var reportsUnresolvedDs = true
 	
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-		if(file !is ParadoxScriptFile) return null
+			if(file !is ParadoxScriptFile) return null
 		val project = file.project
 		val gameType = ParadoxSelectorUtils.selectGameType(file)
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
@@ -42,28 +44,27 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 						val value = element.value
 						val gameTypeToUse = gameType ?: ParadoxSelectorUtils.selectGameType(element) ?: return
 						val configGroup = getCwtConfig(project).getValue(gameTypeToUse)
-						val expression = ParadoxScriptExpression.resolveValueField(value, configGroup)
-						if(expression.isEmpty()) {
-							//无法解析
-							holder.registerProblem(element, PlsBundle.message("script.inspection.expression.valueField.malformed", value), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
-						} else {
-							for(error in expression.errors) {
-								holder.registerScriptExpressionError(element, error)
+						val textRange = TextRange.create(0, value.length)
+						val isKey = element is ParadoxScriptPropertyKey
+						val valueFieldExpression = ParadoxValueFieldExpression.resolve(value, textRange, configGroup, isKey)
+							?: return
+						valueFieldExpression.processAllNodes { node ->
+							for(error in node.errors) {
+								handleScriptExpressionError(element, error)
 							}
-							//注册无法解析的异常
-							if(expression.infos.isNotEmpty()) {
-								for(info in expression.infos) {
-									if(reportsUnresolvedDs) {
-										if(info.isUnresolved(element, config)) {
-											val error = info.getUnresolvedError()
-											if(error != null) holder.registerScriptExpressionError(element, error)
-										}
-									}
-								}
+							val unresolvedError = node.getUnresolvedError(element)
+							if(unresolvedError != null) {
+								handleScriptExpressionError(element, unresolvedError)
 							}
+							true
 						}
 					}
 				}
+			}
+			
+			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxScriptExpressionError) {
+				if(reportsUnresolvedDs && error is ParadoxUnresolvedValueLinkDataSourceExpressionError) return
+				holder.registerScriptExpressionError(element, error)
 			}
 		})
 		return holder.resultsArray

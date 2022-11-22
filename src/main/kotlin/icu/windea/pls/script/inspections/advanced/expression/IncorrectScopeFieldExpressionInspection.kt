@@ -68,7 +68,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 			}
 			
 			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxScriptExpressionError) {
-				if(reportsUnresolvedDs && error is ParadoxUnresolvedScopeFieldDataSourceExpressionError) return
+				if(reportsUnresolvedDs && error is ParadoxUnresolvedScopeLinkDataSourceExpressionError) return
 				holder.registerScriptExpressionError(element, error)
 			}
 		})

@@ -14,7 +14,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 值集中的值的内嵌提示（值的类型即值集的名字）。
+ * 值集值值的内嵌提示（值的类型即值集的名字）。
  */
 @Suppress("UnstableApiUsage")
 class ParadoxValueSetValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {

@@ -8,7 +8,7 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 在查找使用中，区分定义、本地化、参数、值集中的值等的使用类型。
+ * 在查找使用中，区分定义、本地化、参数、值集值值等的使用类型。
  */
 class ParadoxUsageTypeProvider : UsageTypeProviderEx {
 	override fun getUsageType(element: PsiElement): UsageType? {

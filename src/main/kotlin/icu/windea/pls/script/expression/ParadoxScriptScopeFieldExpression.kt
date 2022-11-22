@@ -17,6 +17,7 @@ import icu.windea.pls.script.psi.*
  *
  * 一些例子：`root` `root.owner` `event_target:xxx` `root.event_target:xxx`
  */
+@Deprecated("")
 class ParadoxScriptScopeFieldExpression(
 	expressionString: String,
 	configGroup: CwtConfigGroup,

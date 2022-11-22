@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 值集中的值并不存在一个真正意义上的声明处，用这个模拟。
+ * 值集值值并不存在一个真正意义上的声明处，用这个模拟。
  */
 class ParadoxValueSetValueElement(
 	element: PsiElement,

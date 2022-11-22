@@ -9,7 +9,7 @@ import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 值集中的值的查询。
+ * 值集值值的查询。
  */
 class ParadoxValueSetValueSearch : ExtensibleQueryFactory<ParadoxScriptString, ParadoxValueSetValueSearch.SearchParameters>(EP_NAME) {
 	/**

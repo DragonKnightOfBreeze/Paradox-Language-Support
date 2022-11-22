@@ -22,7 +22,6 @@ class ParadoxScopeExpressionNode(
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScopeExpressionNode {
-			//text may contain parameters
 			ParadoxSystemScopeExpressionNode.resolve(text, textRange, configGroup)
 				?.let { return ParadoxScopeExpressionNode(text, textRange, it.toSingletonList()) }
 			ParadoxScopeLinkExpressionNode.resolve(text, textRange, configGroup)
@@ -37,3 +36,4 @@ class ParadoxScopeExpressionNode(
 		}
 	}
 }
+

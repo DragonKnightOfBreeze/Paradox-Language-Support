@@ -14,10 +14,12 @@ interface ParadoxScriptExpression : Expression {
 	val isKey: Boolean?
 	
 	companion object {
+		@Deprecated("")
 		fun resolveScopeField(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptScopeFieldExpression {
 			return ParadoxScriptScopeFieldExpression.resolve(expressionString, configGroup)
 		}
 		
+		@Deprecated("")
 		fun resolveValueField(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptValueFieldExpression {
 			return ParadoxScriptValueFieldExpression.resolve(expressionString, configGroup)
 		}

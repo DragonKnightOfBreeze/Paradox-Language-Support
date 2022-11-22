@@ -1,9 +1,8 @@
 package icu.windea.pls.script.exp.errors
 
-import com.intellij.codeInspection.*
 import com.intellij.openapi.util.*
 
-class ParadoxUnresolvedScopeFieldDataSourceExpressionError(
+class ParadoxMalformedValueFieldExpressionExpressionError(
 	override val rangeInExpression: TextRange,
 	override val description: String
-) : ParadoxScriptUnresolvedExpressionError
+) : ParadoxScriptMalformedExpressionError

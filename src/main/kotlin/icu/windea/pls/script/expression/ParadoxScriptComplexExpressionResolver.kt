@@ -5,6 +5,7 @@ import com.intellij.openapi.application.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 
+@Deprecated("")
 abstract class ParadoxScriptComplexExpressionResolver<T : ParadoxScriptComplexExpression> {
 	//这里需要限制缓存数量 - 因为表达式可能格式错误或者有引用无法解析
 	val cache: Cache<String, T> by lazy { CacheBuilder.newBuilder().maximumSize(1000L).buildCache() }

@@ -46,8 +46,8 @@ class ParadoxScopeFieldExpressionImpl(
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
-	override val nodes: MutableList<ParadoxScriptExpressionNode>,
-	override val errors: MutableList<ParadoxScriptExpressionError>
+	override val nodes: List<ParadoxScriptExpressionNode>,
+	override val errors: List<ParadoxScriptExpressionError>
 ) : AbstractExpression(text), ParadoxScopeFieldExpression {
 	override val quoted: Boolean = false
 	
@@ -61,19 +61,19 @@ class ParadoxScopeFieldExpressionImpl(
 		
 		val offsetInParent = context.offsetInParent
 		var prevScopeToUse: String? = null
-		var start = false
 		for(node in nodes) {
-			if(node is ParadoxScopeExpressionNode) {
-				val nodeRange = node.rangeInExpression
-				if(offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset) {
-					start = true
-					context.put(PlsCompletionKeys.keywordKey, node.text.substring(0, offsetInParent - nodeRange.startOffset))
+			val nodeRange = node.rangeInExpression
+			val inRange = offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset
+			if(inRange) {
+				if(node is ParadoxScopeExpressionNode) {
+					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+					val resultToUse = result.withPrefixMatcher(keywordToUse)
+					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
 					context.put(PlsCompletionKeys.prevScopeKey, prevScopeToUse)
-					CwtConfigHandler.completeSystemScope(context, result)
-					CwtConfigHandler.completeScope(context, result)
-					CwtConfigHandler.completeScopeLinkPrefixOrDataSource(context, result)
-				} else {
-					if(start) break
+					CwtConfigHandler.completeSystemScope(context, resultToUse)
+					CwtConfigHandler.completeScope(context, resultToUse)
+					CwtConfigHandler.completeScopeLinkPrefixOrDataSource(context, resultToUse)
+					break
 				}
 				prevScopeToUse = node.text
 			}
@@ -85,35 +85,47 @@ class ParadoxScopeFieldExpressionImpl(
 	}
 }
 
-fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null, completionOffset: Int = -1): ParadoxScopeFieldExpression? {
+fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxScopeFieldExpression? {
 	val nodes = SmartList<ParadoxScriptExpressionNode>()
 	val errors = SmartList<ParadoxScriptExpressionError>()
 	val offset = textRange.startOffset
-	var startIndex: Int
-	var endIndex: Int = -1
-	while(endIndex < text.length) {
-		startIndex = endIndex + 1
-		endIndex = text.indexOf('.', startIndex).let { if(it == -1) text.length else it }
-		val dotNode = if(endIndex != text.length) {
-			ParadoxScriptOperatorExpressionNode(".", TextRange.create(endIndex + offset, endIndex + 1 + offset))
-		} else {
-			null
+	var isLast = false
+	var index: Int
+	var dotIndex = -1
+	while(dotIndex < text.length) {
+		index = dotIndex + 1
+		dotIndex = text.indexOf('.', index)
+		if(dotIndex == -1) {
+			dotIndex == text.length
+			isLast = true
 		}
-		val nodeText = text.substring(startIndex, endIndex)
+		val nodeText = text.substring(index, dotIndex)
 		//unexpected token -> malformed
-		if(!nodeText.all { it == ':' || it == '_' || it == '@' || it.isExactLetter() || it.isExactDigit() }) {
-			val error = ParadoxMalformedScopeFieldExpressionError(textRange, PlsBundle.message("script.expression.malformedScopeFieldExpression", text))
+		val isValid = isValid(nodeText)
+		if(!isValid) {
+			val error = ParadoxMalformedScopeFieldExpressionExpressionError(textRange, PlsBundle.message("script.expression.malformedScopeFieldExpression", text))
 			errors.add(error)
 			break
 		}
-		val nodeTextRange = TextRange.create(startIndex + offset, endIndex + offset)
+		//resolve node
+		val nodeTextRange = TextRange.create(index + offset, dotIndex + offset)
 		val node = ParadoxScopeExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
 		//handle mismatch situation
-		if(startIndex == 0 && node.nodes.isEmpty() && completionOffset == -1) {
+		if(index == 0 && node.nodes.isEmpty() && !canBeMismatched) {
 			return null
 		}
 		nodes.add(node)
-		if(dotNode != null) nodes.add(dotNode)
+		if(!isLast) {
+			//resolve dot node
+			val dotNode = ParadoxScriptOperatorExpressionNode(".", TextRange.create(dotIndex + offset, dotIndex + 1 + offset))
+			nodes.add(dotNode)
+		}
 	}
+	if(nodes.isEmpty()) return null
 	return ParadoxScopeFieldExpressionImpl(text, textRange, isKey, nodes, errors)
 }
+
+private fun isValid(nodeText: String): Boolean {
+	return nodeText.isEmpty() || nodeText.all { it == ':' || it == '_' || it.isExactLetter() || it.isExactDigit() }
+}
+

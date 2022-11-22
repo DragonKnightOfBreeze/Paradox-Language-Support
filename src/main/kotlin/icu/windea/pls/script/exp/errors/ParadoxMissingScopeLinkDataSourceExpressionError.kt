@@ -6,3 +6,4 @@ class ParadoxMissingScopeLinkDataSourceExpressionError(
 	override val rangeInExpression: TextRange,
 	override val description: String
 ) : ParadoxScriptMissingExpressionError
+

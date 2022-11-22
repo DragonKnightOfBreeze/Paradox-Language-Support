@@ -33,8 +33,9 @@ class CwtConfigGroup(
 	val linksAsScopeNoPrefix: Map<@CaseInsensitive String, CwtLinkConfig>
 	val linksAsValueNotData: Map<@CaseInsensitive String, CwtLinkConfig>
 	val linksAsValue: Map<@CaseInsensitive String, CwtLinkConfig>
+	val linksAsValueNoPrefix: Map<@CaseInsensitive String, CwtLinkConfig>
 	
-	val localisationLinks: Map<@CaseInsensitive String, CwtLinkConfig>
+	val localisationLinks: Map<@CaseInsensitive String, CwtLocalisationLinkConfig>
 	
 	val localisationCommands: Map<@CaseInsensitive String, CwtLocalisationCommandConfig>
 	val modifierCategories: Map<String, CwtModifierCategoryConfig>
@@ -72,6 +73,7 @@ class CwtConfigGroup(
 		linksAsScopeNoPrefix = CollectionFactory.createCaseInsensitiveStringMap()
 		linksAsValueNotData = CollectionFactory.createCaseInsensitiveStringMap()
 		linksAsValue = CollectionFactory.createCaseInsensitiveStringMap()
+		linksAsValueNoPrefix = CollectionFactory.createCaseInsensitiveStringMap()
 		localisationLinks = CollectionFactory.createCaseInsensitiveStringMap()
 		localisationCommands = CollectionFactory.createCaseInsensitiveStringMap()
 		modifierCategories = mutableMapOf()
@@ -83,7 +85,7 @@ class CwtConfigGroup(
 		aliasGroups = mutableMapOf<String, MutableMap<String, MutableList<CwtAliasConfig>>>()
 		declarations = mutableMapOf()
 		
-		//目前不检查配置文件的位置和文件名
+		//NOTE 目前不检查配置文件的位置和文件名
 		
 		for((filePath, fileConfig) in cwtFileConfigs) {
 			fileConfig.info.configGroup = this
@@ -96,9 +98,9 @@ class CwtConfigGroup(
 			//处理fileConfig的properties
 			for(property in fileConfig.properties) {
 				val key = property.key
-				when(key) {
+				when {
 					//找到配置文件中的顶级的key为"types"的属性，然后解析它的子属性，添加到types中
-					"types" -> {
+					key == "types" -> {
 						val props = property.properties ?: continue
 						for(prop in props) {
 							val typeName = prop.key.removeSurroundingOrNull("type[", "]")
@@ -109,7 +111,7 @@ class CwtConfigGroup(
 						}
 					}
 					//找到配置文件中的顶级的key为"values"的属性，然后解析它的子属性，添加到values中
-					"values" -> {
+					key == "values" -> {
 						val props = property.properties ?: continue
 						for(prop in props) {
 							val valueName = prop.key.removeSurroundingOrNull("value[", "]")
@@ -120,7 +122,7 @@ class CwtConfigGroup(
 						}
 					}
 					//找到配置文件中的顶级的key为"enums"的属性，然后解析它的子属性，添加到enums和complexEnums中
-					"enums" -> {
+					key == "enums" -> {
 						val props = property.properties ?: continue
 						for(prop in props) {
 							val enumName = prop.key.removeSurroundingOrNull("enum[", "]")
@@ -136,43 +138,50 @@ class CwtConfigGroup(
 						}
 					}
 					//找到配置文件中的顶级的key为"links"的属性，然后解析它的子属性，添加到links中
-					"links" -> {
+					key == "links" -> {
 						val props = property.properties ?: continue
 						for(prop in props) {
 							val linkName = prop.key
 							val linkConfig = resolveLinkConfig(prop, linkName) ?: continue
 							links[linkName] = linkConfig
+							//要求data_source存在
 							val fromData = linkConfig.fromData && linkConfig.dataSource != null
 							val noPrefix = linkConfig.prefix == null
 							when(linkConfig.type) {
 								null, "scope" -> {
 									(if(fromData) linksAsScope else linksAsScopeNotData)[linkName] = linkConfig
-									//要求data_source存在
-									if(fromData && noPrefix) linksAsScopeNoPrefix[linkName] = linkConfig
+									if(fromData && noPrefix) {
+										linksAsScopeNoPrefix[linkName] = linkConfig
+									}
 								}
 								"value" -> {
 									(if(fromData) linksAsValue else linksAsValueNotData)[linkName] = linkConfig
+									if(fromData && noPrefix) {
+										linksAsValueNoPrefix[linkName] = linkConfig
+									}
 								}
 								"both" -> {
 									(if(fromData) linksAsScope else linksAsScopeNotData)[linkName] = linkConfig
 									(if(fromData) linksAsValue else linksAsValueNotData)[linkName] = linkConfig
-									//要求data_source存在
-									if(fromData && noPrefix) linksAsScopeNoPrefix[linkName] = linkConfig
+									if(fromData && noPrefix) {
+										linksAsScopeNoPrefix[linkName] = linkConfig
+										linksAsValueNoPrefix[linkName] = linkConfig
+									}
 								}
 							}
 						}
 					}
 					//找到配置文件中的顶级的key为"localisation_links"的属性，然后解析它的子属性，添加到localisationLinks中
-					"localisation_links" -> {
+					key == "localisation_links" -> {
 						val props = property.properties ?: continue
 						for(prop in props) {
 							val linkName = prop.key
-							val linkConfig = resolveLinkConfig(prop, linkName) ?: continue
+							val linkConfig = resolveLocalisationLinkConfig(prop, linkName) ?: continue
 							localisationLinks[linkName] = linkConfig
 						}
 					}
 					//找到配置文件中的顶级的key为"localisation_commands"的属性，然后解析它的子属性，添加到localisationCommands中
-					"localisation_commands" -> {
+					key == "localisation_commands" -> {
 						val props = property.properties ?: continue
 						for(prop in props) {
 							val commandName = prop.key
@@ -181,7 +190,7 @@ class CwtConfigGroup(
 						}
 					}
 					//找到配置文件中的顶级的key为"modifier_categories"的属性，然后解析它的子属性，添加到modifierCategories中
-					"modifier_categories" -> {
+					key == "modifier_categories" -> {
 						val props = property.properties ?: continue
 						for(prop in props) {
 							val modifierCategoryName = prop.key
@@ -190,7 +199,7 @@ class CwtConfigGroup(
 						}
 					}
 					//找到配置文件中的顶级的key为"modifiers"的属性，然后解析它的子属性，添加到modifiers中
-					"modifiers" -> {
+					key == "modifiers" -> {
 						val props = property.properties ?: continue
 						for(prop in props) {
 							val modifierName = prop.key
@@ -199,7 +208,7 @@ class CwtConfigGroup(
 						}
 					}
 					//找到配置文件中的顶级的key为"scopes"的属性，然后解析它的子属性，添加到scopes中
-					"scopes" -> {
+					key == "scopes" -> {
 						val props = property.properties ?: continue
 						for(prop in props) {
 							val scopeName = prop.key
@@ -211,7 +220,7 @@ class CwtConfigGroup(
 						}
 					}
 					//找到配置文件中的顶级的key为"scope_groups"的属性，然后解析它的子属性，添加到scopeGroups中
-					"scope_groups" -> {
+					key == "scope_groups" -> {
 						val props = property.properties ?: continue
 						for(prop in props) {
 							val scopeGroupName = prop.key
@@ -293,6 +302,9 @@ class CwtConfigGroup(
 	}
 	val linksAsScopeNoPrefixSorted: List<CwtLinkConfig> by lazy { 
 		linksAsScopeNoPrefix.values.sortedByPriority(this) { it.dataSource!! }
+	}
+	val linksAsValueNoPrefixSorted: List<CwtLinkConfig> by lazy {
+		linksAsValueNoPrefix.values.sortedByPriority(this) { it.dataSource!! }
 	}
 	
 	//支持参数的定义类型
@@ -570,6 +582,22 @@ class CwtConfigGroup(
 			}
 		}
 		return CwtLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, fromData, type, dataSource, prefix, inputScopes, outputScope, forDefinition)
+	}
+	
+	private fun resolveLocalisationLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationLinkConfig? {
+		var desc: String? = null
+		var inputScopes: Set<String>? = null
+		var outputScope: String? = null
+		val props = propertyConfig.properties ?: return null
+		for(prop in props) {
+			when(prop.key) {
+				"desc" -> desc = prop.stringValue?.takeIf { !it.isExactSnakeCase() }?.trim() //排除占位码 & 去除首尾空白
+				"input_scopes" -> inputScopes = prop.stringValue?.let { setOf(it) }
+					?: prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+				"output_scope" -> outputScope = prop.stringValue
+			}
+		}
+		return CwtLocalisationLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, inputScopes, outputScope)
 	}
 	
 	private fun resolveLocalisationCommandConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationCommandConfig {

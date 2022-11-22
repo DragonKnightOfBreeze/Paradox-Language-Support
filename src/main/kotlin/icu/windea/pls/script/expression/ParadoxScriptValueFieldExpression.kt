@@ -19,6 +19,7 @@ import icu.windea.pls.script.psi.*
  *
  * 一些例子：`trigger:xxx` `root.trigger:xxx` `value:xxx|PN|PV|`
  */
+@Deprecated("")
 class ParadoxScriptValueFieldExpression(
 	expressionString: String,
 	configGroup: CwtConfigGroup,

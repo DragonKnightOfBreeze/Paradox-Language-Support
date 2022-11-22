@@ -155,17 +155,16 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				if(text.isQuoted()) return
 				val isKey = element is ParadoxScriptPropertyKey
 				val textRange = TextRange.create(0, text.length)
-				val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup, isKey)
-					?: return
+				val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup, isKey) ?: return
 				annotateComplexExpression(element, scopeFieldExpression, config, range, holder)
 			}
 			CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
-				if(!element.isQuoted()) {
-					val expressionString = range.shiftLeft(element.textRange.startOffset).substring(element.text).unquote()
-					val valueFieldExpression = ParadoxScriptExpression.resolveValueField(expressionString, configGroup)
-					if(valueFieldExpression.isEmpty()) return
-					doAnnotateComplexExpression(element, valueFieldExpression, config, range, holder)
-				}
+				val text = element.text
+				if(text.isQuoted()) return
+				val isKey = element is ParadoxScriptPropertyKey
+				val textRange = TextRange.create(0, text.length)
+				val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup, isKey) ?: return
+				annotateComplexExpression(element, valueFieldExpression, config, range, holder)
 			}
 			CwtDataTypes.Modifier -> {
 				val attributesKey = Keys.MODIFIER_KEY
