@@ -93,7 +93,7 @@ class ParadoxScriptValueFieldExpression(
 						continue
 					}
 					
-					val matchedLinkConfigs = configGroup.linksAsValueSorted
+					val matchedLinkConfigs = configGroup.linksAsValueWithPrefixSorted
 						.filter { it.prefix != null && it.dataSource != null && textToCheck.startsWith(it.prefix) }
 					if(matchedLinkConfigs.isNotEmpty()) {
 						//匹配某一前缀

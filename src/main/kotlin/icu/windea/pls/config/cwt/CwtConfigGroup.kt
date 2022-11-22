@@ -29,11 +29,11 @@ class CwtConfigGroup(
 	
 	val links: Map<@CaseInsensitive String, CwtLinkConfig>
 	val linksAsScopeNotData: Map<@CaseInsensitive String, CwtLinkConfig>
-	val linksAsScope: Map<@CaseInsensitive String, CwtLinkConfig>
-	val linksAsScopeNoPrefix: Map<@CaseInsensitive String, CwtLinkConfig>
+	val linksAsScopeWithPrefix: Map<@CaseInsensitive String, CwtLinkConfig>
+	val linksAsScopeWithoutPrefix: Map<@CaseInsensitive String, CwtLinkConfig>
 	val linksAsValueNotData: Map<@CaseInsensitive String, CwtLinkConfig>
-	val linksAsValue: Map<@CaseInsensitive String, CwtLinkConfig>
-	val linksAsValueNoPrefix: Map<@CaseInsensitive String, CwtLinkConfig>
+	val linksAsValueWithPrefix: Map<@CaseInsensitive String, CwtLinkConfig>
+	val linksAsValueWithoutPrefix: Map<@CaseInsensitive String, CwtLinkConfig>
 	
 	val localisationLinks: Map<@CaseInsensitive String, CwtLocalisationLinkConfig>
 	
@@ -69,11 +69,11 @@ class CwtConfigGroup(
 		complexEnums = mutableMapOf()
 		links = CollectionFactory.createCaseInsensitiveStringMap()
 		linksAsScopeNotData = CollectionFactory.createCaseInsensitiveStringMap()
-		linksAsScope = CollectionFactory.createCaseInsensitiveStringMap()
-		linksAsScopeNoPrefix = CollectionFactory.createCaseInsensitiveStringMap()
+		linksAsScopeWithPrefix = CollectionFactory.createCaseInsensitiveStringMap()
+		linksAsScopeWithoutPrefix = CollectionFactory.createCaseInsensitiveStringMap()
 		linksAsValueNotData = CollectionFactory.createCaseInsensitiveStringMap()
-		linksAsValue = CollectionFactory.createCaseInsensitiveStringMap()
-		linksAsValueNoPrefix = CollectionFactory.createCaseInsensitiveStringMap()
+		linksAsValueWithPrefix = CollectionFactory.createCaseInsensitiveStringMap()
+		linksAsValueWithoutPrefix = CollectionFactory.createCaseInsensitiveStringMap()
 		localisationLinks = CollectionFactory.createCaseInsensitiveStringMap()
 		localisationCommands = CollectionFactory.createCaseInsensitiveStringMap()
 		modifierCategories = mutableMapOf()
@@ -146,27 +146,20 @@ class CwtConfigGroup(
 							links[linkName] = linkConfig
 							//要求data_source存在
 							val fromData = linkConfig.fromData && linkConfig.dataSource != null
-							val noPrefix = linkConfig.prefix == null
-							when(linkConfig.type) {
-								null, "scope" -> {
-									(if(fromData) linksAsScope else linksAsScopeNotData)[linkName] = linkConfig
-									if(fromData && noPrefix) {
-										linksAsScopeNoPrefix[linkName] = linkConfig
-									}
+							val withPrefix = linkConfig.prefix != null
+							val type = linkConfig.type
+							if(type == null || type == "scope" || type == "both") {
+								when {
+									!fromData -> linksAsScopeNotData[linkName] = linkConfig
+									withPrefix -> linksAsScopeWithPrefix[linkName] = linkConfig
+									else -> linksAsScopeWithoutPrefix[linkName] = linkConfig
 								}
-								"value" -> {
-									(if(fromData) linksAsValue else linksAsValueNotData)[linkName] = linkConfig
-									if(fromData && noPrefix) {
-										linksAsValueNoPrefix[linkName] = linkConfig
-									}
-								}
-								"both" -> {
-									(if(fromData) linksAsScope else linksAsScopeNotData)[linkName] = linkConfig
-									(if(fromData) linksAsValue else linksAsValueNotData)[linkName] = linkConfig
-									if(fromData && noPrefix) {
-										linksAsScopeNoPrefix[linkName] = linkConfig
-										linksAsValueNoPrefix[linkName] = linkConfig
-									}
+							}
+							if(type == "value" || type == "both") {
+								when {
+									!fromData -> linksAsValueNotData[linkName] = linkConfig
+									withPrefix -> linksAsValueWithPrefix[linkName] = linkConfig
+									else -> linksAsValueWithoutPrefix[linkName] = linkConfig
 								}
 							}
 						}
@@ -287,24 +280,17 @@ class CwtConfigGroup(
 		bindModifierCategories()
 	}
 	
-	val linksAsScopePrefixes: Set<String> by lazy {
-		linksAsScope.mapNotNullTo(mutableSetOf()) { it.value.prefix }
+	val linksAsScopeWithPrefixSorted: List<CwtLinkConfig> by lazy { 
+		linksAsScopeWithPrefix.values.sortedByPriority(this) { it.dataSource!! }
 	}
-	val linksAsValuePrefixes: Set<String> by lazy {
-		linksAsValue.mapNotNullTo(mutableSetOf()) { it.value.prefix }
+	val linksAsValueWithPrefixSorted: List<CwtLinkConfig> by lazy {
+		linksAsValueWithPrefix.values.sortedByPriority(this) { it.dataSource!! }
 	}
-	
-	val linksAsScopeSorted: List<CwtLinkConfig> by lazy { 
-		linksAsScope.values.sortedByPriority(this) { it.dataSource!! }
+	val linksAsScopeWithoutPrefixSorted: List<CwtLinkConfig> by lazy { 
+		linksAsScopeWithoutPrefix.values.sortedByPriority(this) { it.dataSource!! }
 	}
-	val linksAsValueSorted: List<CwtLinkConfig> by lazy {
-		linksAsValue.values.sortedByPriority(this) { it.dataSource!! }
-	}
-	val linksAsScopeNoPrefixSorted: List<CwtLinkConfig> by lazy { 
-		linksAsScopeNoPrefix.values.sortedByPriority(this) { it.dataSource!! }
-	}
-	val linksAsValueNoPrefixSorted: List<CwtLinkConfig> by lazy {
-		linksAsValueNoPrefix.values.sortedByPriority(this) { it.dataSource!! }
+	val linksAsValueWithoutPrefixSorted: List<CwtLinkConfig> by lazy {
+		linksAsValueWithoutPrefix.values.sortedByPriority(this) { it.dataSource!! }
 	}
 	
 	//支持参数的定义类型

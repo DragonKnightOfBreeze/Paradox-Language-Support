@@ -46,6 +46,7 @@ class ParadoxScopeLinkDataSourceExpressionNode(
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxScopeLinkDataSourceExpressionNode {
 			//text may contain parameters
+			//TODO 兼容嵌套的valueSetValueExpression
 			return ParadoxScopeLinkDataSourceExpressionNode(text, textRange, linkConfigs)
 		}
 	}

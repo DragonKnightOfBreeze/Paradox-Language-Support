@@ -78,7 +78,7 @@ class ParadoxScriptScopeFieldExpression(
 					infos.add(info)
 					continue
 				}
-				val matchedLinkConfigs = configGroup.linksAsScopeSorted
+				val matchedLinkConfigs = configGroup.linksAsScopeWithPrefixSorted
 					.filter { it.prefix != null && it.dataSource != null && textToCheck.startsWith(it.prefix) }
 				if(matchedLinkConfigs.isNotEmpty()) {
 					//匹配某一前缀
@@ -100,7 +100,7 @@ class ParadoxScriptScopeFieldExpression(
 					}
 				} else {
 					//没有前缀
-					val linkConfigsNoPrefix = configGroup.linksAsScopeNoPrefixSorted
+					val linkConfigsNoPrefix = configGroup.linksAsScopeWithoutPrefixSorted
 					if(linkConfigsNoPrefix.isEmpty()) {
 						//无法解析的scope，或者要求有前缀
 						val info = ParadoxScriptScopeExpressionInfo(textToCheck, textRange, null, configGroup.linksAsScopePrefixes)

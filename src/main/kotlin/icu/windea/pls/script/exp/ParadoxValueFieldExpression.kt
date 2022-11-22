@@ -43,9 +43,9 @@ import icu.windea.pls.script.exp.nodes.*
  * ```
  */
 interface ParadoxValueFieldExpression: ParadoxScriptComplexExpression{
-	val scopes: List<ParadoxScopeExpressionNode>
+	val scopeNodes: List<ParadoxScopeExpressionNode>
 	
-	val valueField: ParadoxValueFieldExpressionNode?
+	val valueFieldNode: ParadoxValueFieldExpressionNode?
 	
 	companion object Resolver
 }
@@ -59,9 +59,9 @@ class ParadoxValueFieldExpressionImpl(
 ) : AbstractExpression(text), ParadoxValueFieldExpression {
 	override val quoted: Boolean = false
 	
-	override val scopes: List<ParadoxScopeExpressionNode> get() = nodes.filterIsInstance<ParadoxScopeExpressionNode>()
+	override val scopeNodes: List<ParadoxScopeExpressionNode> get() = nodes.filterIsInstance<ParadoxScopeExpressionNode>()
 	
-	override val valueField: ParadoxValueFieldExpressionNode get() = nodes.last().cast()
+	override val valueFieldNode: ParadoxValueFieldExpressionNode get() = nodes.last().cast()
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
 		val keyword = context.keyword
@@ -76,28 +76,46 @@ class ParadoxValueFieldExpressionImpl(
 			val inRange = offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset
 			if(node is ParadoxScopeExpressionNode) {
 				if(inRange) {
-					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
-					val resultToUse = result.withPrefixMatcher(keywordToUse)
-					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
 					context.put(PlsCompletionKeys.prevScopeKey, prevScopeToUse)
-					CwtConfigHandler.completeSystemScope(context, resultToUse)
-					CwtConfigHandler.completeScope(context, resultToUse)
-					CwtConfigHandler.completeScopeLinkPrefixOrDataSource(context, resultToUse)
-					break
+					val prefixNode = node.prefixNode
+					if(prefixNode != null && offsetInParent >= prefixNode.rangeInExpression.endOffset) {
+						val keywordToUse = node.text.substring(0, offsetInParent - prefixNode.rangeInExpression.endOffset)
+						val resultToUse = result.withPrefixMatcher(keywordToUse)
+						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix = prefixNode.text)
+					} else {
+						val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+						val resultToUse = result.withPrefixMatcher(keywordToUse)
+						context.put(PlsCompletionKeys.keywordKey, keywordToUse)
+						CwtConfigHandler.completeSystemScope(context, resultToUse)
+						CwtConfigHandler.completeScope(context, resultToUse)
+						CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
+						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix = null)
+						break
+					}
 				}
 				prevScopeToUse = node.text
 			} else if(node is ParadoxValueFieldExpressionNode) {
 				if(inRange) {
-					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
-					val resultToUse = result.withPrefixMatcher(keywordToUse)
-					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
 					context.put(PlsCompletionKeys.prevScopeKey, prevScopeToUse)
-					CwtConfigHandler.completeSystemScope(context, resultToUse)
-					CwtConfigHandler.completeScope(context, resultToUse)
-					CwtConfigHandler.completeScopeLinkPrefixOrDataSource(context, resultToUse)
-					CwtConfigHandler.completeValueLinkValue(context, resultToUse)
-					CwtConfigHandler.completeValueLinkPrefixOrDataSource(context, resultToUse)
-					break
+					val prefixNode = node.prefixNode
+					if(prefixNode != null && offsetInParent >= prefixNode.rangeInExpression.endOffset) {
+						val keywordToUse = node.text.substring(0, offsetInParent - prefixNode.rangeInExpression.endOffset)
+						val resultToUse = result.withPrefixMatcher(keywordToUse)
+						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix = prefixNode.text)
+						CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, prefix = prefixNode.text)
+					} else {
+						val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+						val resultToUse = result.withPrefixMatcher(keywordToUse)
+						context.put(PlsCompletionKeys.keywordKey, keywordToUse)
+						CwtConfigHandler.completeSystemScope(context, resultToUse)
+						CwtConfigHandler.completeScope(context, resultToUse)
+						CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
+						CwtConfigHandler.completeValueLinkValue(context, resultToUse)
+						CwtConfigHandler.completeValueLinkPrefix(context, resultToUse)
+						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix = null)
+						CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, prefix = null)
+						break
+					}
 				}
 			}
 		}

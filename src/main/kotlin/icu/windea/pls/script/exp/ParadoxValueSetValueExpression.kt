@@ -32,7 +32,7 @@ import icu.windea.pls.script.exp.nodes.*
  * ```
  */
 interface ParadoxValueSetValueExpression : ParadoxScriptComplexExpression {
-	val valueSetValue: ParadoxValueSetValueExpressionNode
+	val valueSetValueNode: ParadoxValueSetValueExpressionNode
 	val scopeFieldExpression: ParadoxScopeFieldExpression?
 	
 	companion object Resolver
@@ -47,7 +47,7 @@ class ParadoxValueSetValueExpressionImpl(
 ) : AbstractExpression(text), ParadoxValueSetValueExpression {
 	override val quoted: Boolean = false
 	
-	override val valueSetValue: ParadoxValueSetValueExpressionNode get() = nodes.get(0).cast()
+	override val valueSetValueNode: ParadoxValueSetValueExpressionNode get() = nodes.get(0).cast()
 	override val scopeFieldExpression: ParadoxScopeFieldExpression? get() = nodes.getOrNull(2)?.cast()
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {

@@ -913,84 +913,67 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	fun completeScopeLinkPrefixOrDataSource(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
-		val keyword = keyword
-		val configExpression = configExpression
-		val config = config
-		val linkConfigs = configGroup.linksAsScope
+	fun completeScopeLinkPrefix(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+		val linkConfigs = configGroup.linksAsScopeWithPrefix
 		
 		//TODO 进一步匹配scope
 		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
-		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，但进行提示时不匹配
+		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx
 		
-		val prefixLinkConfigs = linkConfigs.values
-			.filter { it.prefix != null && it.dataSource != null }
-		val prefixLinkConfigsToUse = prefixLinkConfigs.filter { keyword.startsWith(it.prefix!!) }
-		if(prefixLinkConfigsToUse.isNotEmpty()) {
-			//有前缀，基于匹配前缀的dataSource进行提示
-			val prefix = prefixLinkConfigsToUse.first().prefix!!
-			val keywordToUse = keyword.drop(prefix.length)
-			context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-			val resultToUse = result.withPrefixMatcher(keywordToUse)
-			for(linkConfig in prefixLinkConfigsToUse) {
-				//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
-				context.put(PlsCompletionKeys.configExpressionKey, linkConfig.dataSource!!)
-				context.put(PlsCompletionKeys.configKey, linkConfig.config)
-				completeScriptExpression(context, resultToUse, outputScope)
-			}
-			context.put(PlsCompletionKeys.keywordKey, keyword)
-			context.put(PlsCompletionKeys.configExpressionKey, configExpression)
-			context.put(PlsCompletionKeys.configKey, config)
-		} else {
-			//没有前缀，提示所有可能的前缀
-			val resultToUse = result.withPrefixMatcher(keyword)
-			val lookupElements = mutableSetOf<LookupElement>()
-			for(linkConfig in prefixLinkConfigs) {
-				//排除input_scopes不匹配前一个scope的output_scope的情况
+		val lookupElements = mutableSetOf<LookupElement>()
+		for(linkConfig in linkConfigs.values) {
+			//排除input_scopes不匹配前一个scope的output_scope的情况
+			val isScopeMatched = matchesScope(outputScope, linkConfig.inputScopes, configGroup)
+			if(!isScopeMatched) continue
+			
+			val name = linkConfig.prefix ?: continue
+			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
+			val element = linkConfig.pointer.element ?: continue
+			val tailText = " from scope link ${linkConfig.name}"
+			val typeFile = linkConfig.pointer.containingFile
+			val lookupElement = LookupElementBuilder.create(element, name)
+				.withIcon(PlsIcons.ScopeLinkPrefix)
+				.withBoldness(true)
+				.withTailText(tailText, true)
+				.withTypeText(typeFile?.name, typeFile?.icon, true)
+				.withPriority(PlsCompletionPriorities.scopeLinkPrefixPriority)
+			lookupElements.add(lookupElement)
+		}
+		result.addAllElements(lookupElements)
+	}
+	
+	fun completeScopeLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?): Unit = with(context) {
+		val linkConfigs = if(prefix == null) configGroup.linksAsScopeWithoutPrefix else configGroup.linksAsScopeWithPrefix
+		
+		//TODO 进一步匹配scope
+		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
+		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx
+		
+		val configExpression = configExpression
+		val config = config
+		for(linkConfig in linkConfigs.values) {
+			//排除前缀不匹配的
+			if(prefix != null && prefix != linkConfig.prefix) continue
+			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
+			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
+			if(prefix == null) {
 				val isScopeMatched = matchesScope(outputScope, linkConfig.inputScopes, configGroup)
 				if(!isScopeMatched) continue
-				
-				val name = linkConfig.prefix ?: continue
-				//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
-				val element = linkConfig.pointer.element ?: continue
-				val tailText = " from scope link ${linkConfig.name}"
-				val typeFile = linkConfig.pointer.containingFile
-				val lookupElement = LookupElementBuilder.create(element, name)
-					.withIcon(PlsIcons.ScopeLinkPrefix)
-					.withBoldness(true)
-					.withTailText(tailText, true)
-					.withTypeText(typeFile?.name, typeFile?.icon, true)
-					.withPriority(PlsCompletionPriorities.scopeLinkPrefixPriority)
-				lookupElements.add(lookupElement)
 			}
-			resultToUse.addAllElements(lookupElements)
-			
-			//基于所有没有前缀的dataSource进行提示
-			val linkConfigsNoPrefix = linkConfigs.values
-				.filter { it.prefix == null && it.dataSource != null }
-			if(linkConfigsNoPrefix.isNotEmpty()) {
-				for(linkConfig in linkConfigsNoPrefix) {
-					//排除input_scopes不匹配前一个scope的output_scope的情况
-					val isScopeMatched = matchesScope(outputScope, linkConfig.inputScopes, configGroup)
-					if(!isScopeMatched) continue
-					
-					context.put(PlsCompletionKeys.configExpressionKey, linkConfig.dataSource!!)
-					context.put(PlsCompletionKeys.configKey, linkConfig.config)
-					completeScriptExpression(context, resultToUse, outputScope)
-				}
-				context.put(PlsCompletionKeys.configExpressionKey, configExpression)
-				context.put(PlsCompletionKeys.configKey, config)
-			}
+			context.put(PlsCompletionKeys.configExpressionKey, linkConfig.dataSource!!)
+			context.put(PlsCompletionKeys.configKey, linkConfig.config)
+			completeScriptExpression(context, result, outputScope)
 		}
+		context.put(PlsCompletionKeys.configExpressionKey, configExpression)
+		context.put(PlsCompletionKeys.configKey, config)
 	}
 	
 	fun completeValueLinkValue(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
 		//TODO 进一步匹配scope
-		val keyword = keyword
-		val lookupElements = mutableSetOf<LookupElement>()
 		val linkConfigs = configGroup.linksAsValueNotData
 		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		
+		val lookupElements = mutableSetOf<LookupElement>()
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
 			val isScopeMatched = matchesScope(outputScope, linkConfig.inputScopes, configGroup)
@@ -1011,59 +994,62 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	fun completeValueLinkPrefixOrDataSource(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
-		//TODO 进一步匹配scope
-		val keyword = keyword
-		val linkConfigs = configGroup.linksAsValue
-		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
-		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，但进行提示时不匹配
+	fun completeValueLinkPrefix(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+		val linkConfigs = configGroup.linksAsValueWithPrefix
 		
-		val prefixLinkConfigs = linkConfigs.values
-			.filter { it.prefix != null && it.dataSource != null }
-		val prefixLinkConfigsToUse = prefixLinkConfigs.filter { keyword.startsWith(it.prefix!!) }
-		if(prefixLinkConfigsToUse.isNotEmpty()) {
-			//有前缀，基于匹配前缀的dataSource进行提示
-			val prefix = prefixLinkConfigsToUse.first().prefix!!
-			val keywordToUse = keyword.drop(prefix.length)
-			context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-			val resultToUse = result.withPrefixMatcher(keywordToUse)
-			for(linkConfig in prefixLinkConfigsToUse) {
-				//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
-				context.put(PlsCompletionKeys.configExpressionKey, linkConfig.dataSource!!)
-				context.put(PlsCompletionKeys.configKey, linkConfig.config)
-				completeScriptExpression(context, resultToUse, outputScope)
-			}
-			context.put(PlsCompletionKeys.keywordKey, keyword)
-			context.put(PlsCompletionKeys.configExpressionKey, configExpression)
-			context.put(PlsCompletionKeys.configKey, config)
-		} else {
-			//没有前缀，提示所有可能的前缀
-			val resultToUse = result.withPrefixMatcher(keyword)
-			val lookupElements = mutableSetOf<LookupElement>()
-			for(linkConfig in prefixLinkConfigs) {
-				//排除input_scopes不匹配前一个scope的output_scope的情况
+		//TODO 进一步匹配scope
+		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
+		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx
+		
+		val lookupElements = mutableSetOf<LookupElement>()
+		for(linkConfig in linkConfigs.values) {
+			//排除input_scopes不匹配前一个scope的output_scope的情况
+			val isScopeMatched = matchesScope(outputScope, linkConfig.inputScopes, configGroup)
+			if(!isScopeMatched) continue
+			
+			val name = linkConfig.prefix ?: continue
+			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
+			val element = linkConfig.pointer.element ?: continue
+			val tailText = " from value link ${linkConfig.name}"
+			val typeFile = linkConfig.pointer.containingFile
+			val lookupElement = LookupElementBuilder.create(element, name)
+				.withIcon(PlsIcons.ValueLinkPrefix)
+				.withBoldness(true)
+				.withTailText(tailText, true)
+				.withTypeText(typeFile?.name, typeFile?.icon, true)
+				.withPriority(PlsCompletionPriorities.scopeLinkPrefixPriority)
+			lookupElements.add(lookupElement)
+		}
+		result.addAllElements(lookupElements)
+	}
+	
+	fun completeValueLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?): Unit = with(context) {
+		val linkConfigs = if(prefix == null) configGroup.linksAsValueWithoutPrefix else configGroup.linksAsValueWithPrefix
+		
+		//TODO 进一步匹配scope
+		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
+		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx
+		
+		val configExpression = configExpression
+		val config = config
+		for(linkConfig in linkConfigs.values) {
+			//排除前缀不匹配的
+			if(prefix != null && prefix != linkConfig.prefix) continue
+			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
+			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
+			if(prefix == null) {
 				val isScopeMatched = matchesScope(outputScope, linkConfig.inputScopes, configGroup)
 				if(!isScopeMatched) continue
-				
-				val name = linkConfig.prefix ?: continue
-				//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
-				val element = linkConfig.pointer.element ?: continue
-				val tailText = " from value link ${linkConfig.name}"
-				val typeFile = linkConfig.pointer.containingFile
-				val lookupElement = LookupElementBuilder.create(element, name)
-					.withIcon(PlsIcons.ValueLinkPrefix)
-					.withBoldness(true)
-					.withTailText(tailText, true)
-					.withTypeText(typeFile?.name, typeFile?.icon, true)
-					.withPriority(PlsCompletionPriorities.valueLinkPrefixPriority)
-				lookupElements.add(lookupElement)
 			}
-			resultToUse.addAllElements(lookupElements)
+			context.put(PlsCompletionKeys.configExpressionKey, linkConfig.dataSource!!)
+			context.put(PlsCompletionKeys.configKey, linkConfig.config)
+			completeScriptExpression(context, result, outputScope)
 		}
+		context.put(PlsCompletionKeys.configExpressionKey, configExpression)
+		context.put(PlsCompletionKeys.configKey, config)
 	}
 	
 	fun completeValueSetValue(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
-		val configGroup = configGroup
 		val gameType = this.configGroup.gameType
 		val project = this.configGroup.project
 		
