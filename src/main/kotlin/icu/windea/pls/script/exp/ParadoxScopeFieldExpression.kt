@@ -53,7 +53,6 @@ class ParadoxScopeFieldExpressionImpl(
 	
 	override val scopeNodes: List<ParadoxScopeExpressionNode> get() = nodes.filterIsInstance<ParadoxScopeExpressionNode>()
 	
-	//TODO 兼容基于valueSetValueExpression进行提示
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
 		//要求重新匹配
 		result.restartCompletionOnAnyPrefixChange()
@@ -73,6 +72,7 @@ class ParadoxScopeFieldExpressionImpl(
 					context.put(PlsCompletionKeys.prevScopeKey, prevScopeToUse)
 					val prefixNode = node.prefixNode
 					if(prefixNode != null && offsetInParent >= prefixNode.rangeInExpression.endOffset) {
+						//TODO 兼容基于valueSetValueExpression进行提示
 						val keywordToUse = node.text.substring(0, offsetInParent - prefixNode.rangeInExpression.endOffset)
 						val resultToUse = result.withPrefixMatcher(keywordToUse)
 						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix = prefixNode.text)

@@ -63,7 +63,6 @@ class ParadoxValueFieldExpressionImpl(
 	
 	override val valueFieldNode: ParadoxValueFieldExpressionNode get() = nodes.last().cast()
 	
-	//TODO 兼容基于valueSetValueExpression进行提示和提示SV参数
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
 		val keyword = context.keyword
 		val isKey = context.isKey
@@ -99,8 +98,10 @@ class ParadoxValueFieldExpressionImpl(
 				if(inRange) {
 					context.put(PlsCompletionKeys.prevScopeKey, prevScopeToUse)
 					val prefixNode = node.prefixNode
-					if(prefixNode != null && offsetInParent >= prefixNode.rangeInExpression.endOffset) {
-						val keywordToUse = node.text.substring(0, offsetInParent - prefixNode.rangeInExpression.endOffset)
+					val endOffset = prefixNode?.rangeInExpression?.endOffset ?: -1
+					if(prefixNode != null && offsetInParent >= endOffset) {
+						//TODO 兼容基于valueSetValueExpression进行提示和提示SV参数
+						val keywordToUse = node.text.substring(endOffset, offsetInParent - endOffset)
 						val resultToUse = result.withPrefixMatcher(keywordToUse)
 						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix = prefixNode.text)
 						CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, prefix = prefixNode.text)
