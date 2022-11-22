@@ -16,13 +16,7 @@ class ParadoxScriptedVariablePsiReference(
 	rangeInElement: TextRange
 ) : PsiPolyVariantReferenceBase<ParadoxScriptedVariableReference>(element, rangeInElement), SmartPsiReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		//尝试重命名关联的variable
-		val resolved = resolve()
-		when {
-			resolved == null -> pass()
-			else -> resolved.name = newElementName
-		}
-		//重命名variableReference
+		//重命名当前元素
 		return element.setName(newElementName)
 	}
 	
