@@ -12,6 +12,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.script.exp.errors.*
+import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScopeLinkDataSourceExpressionNode(
@@ -19,6 +20,8 @@ class ParadoxScopeLinkDataSourceExpressionNode(
 	override val rangeInExpression: TextRange,
 	val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxScriptExpressionNode {
+	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SCOPE_LINK_PREFIX_KEY
+	
 	override fun getAttributesKeyExpression(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): CwtDataExpression? {
 		return linkConfigs.firstNotNullOfOrNull { linkConfig ->
 			val dataSource = linkConfig.dataSource

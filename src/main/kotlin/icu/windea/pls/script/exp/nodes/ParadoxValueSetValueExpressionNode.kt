@@ -25,6 +25,8 @@ class ParadoxValueSetValueExpressionNode(
 		}
 	}
 	
+	override fun getReference(element: ParadoxScriptExpressionElement) = Reference(element, rangeInExpression, text, expression, configGroup)
+	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, expression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxValueSetValueExpressionNode? {
 			if(expression.type != CwtDataTypes.Value && expression.type != CwtDataTypes.ValueSet) return null

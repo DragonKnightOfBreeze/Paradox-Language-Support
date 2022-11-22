@@ -41,8 +41,10 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val SYSTEM_SCOPE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SYSTEM_SCOPE", STATIC_METHOD)
 	@JvmField val SCOPE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SCOPE", INSTANCE_METHOD)
 	@JvmField val SCOPE_LINK_PREFIX_KEY = createTextAttributesKey("PARADOX_SCRIPT.SCOPE_LINK_PREFIX", KEYWORD)
-	@JvmField val VALUE_LINK_PREFIX_KEY = createTextAttributesKey("PARADOX_SCRIPT.VALUE_LINK_PREFIX", KEYWORD)
+	@JvmField val SCOPE_LINK_DATA_SOURCE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SCOPE_LINK_DATA_SOURCE")
 	@JvmField val VALUE_LINK_VALUE_KEY = createTextAttributesKey("PARADOX_SCRIPT.VALUE_LINK_VALUE", INSTANCE_FIELD)
+	@JvmField val VALUE_LINK_PREFIX_KEY = createTextAttributesKey("PARADOX_SCRIPT.VALUE_LINK_PREFIX", KEYWORD)
+	@JvmField val VALUE_LINK_DATA_SOURCE_KEY = createTextAttributesKey("PARADOX_SCRIPT.VALUE_LINK_DATA_SOURCE")
 	@JvmField val MODIFIER_KEY = createTextAttributesKey("PARADOX_SCRIPT.MODIFIER", PREDEFINED_SYMBOL) //Python > Special names//Definition
 	@JvmField val TAG_KEY = createTextAttributesKey("PARADOX_SCRIPT.TAG", METADATA)
 }

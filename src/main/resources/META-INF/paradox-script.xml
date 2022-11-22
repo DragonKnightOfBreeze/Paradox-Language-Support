@@ -22,7 +22,7 @@
         implementationClass="icu.windea.pls.script.highlighter.ParadoxScriptSyntaxHighlighterFactory"/>
     <psi.referenceContributor
         language="PARADOX_SCRIPT"
-        implementation="icu.windea.pls.script.expression.reference.ParadoxScriptReferenceContributor"/>
+        implementation="icu.windea.pls.script.references.ParadoxScriptReferenceContributor"/>
     <colorSettingsPage
         implementation="icu.windea.pls.script.editor.ParadoxScriptColorSettingsPage"/>
     <lang.braceMatcher

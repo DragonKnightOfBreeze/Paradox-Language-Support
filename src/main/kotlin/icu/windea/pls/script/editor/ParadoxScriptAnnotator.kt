@@ -16,7 +16,6 @@ import icu.windea.pls.core.model.*
 import icu.windea.pls.script.exp.*
 import icu.windea.pls.script.exp.nodes.*
 import icu.windea.pls.script.expression.ParadoxScriptComplexExpression
-import icu.windea.pls.script.expression.ParadoxScriptExpression
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
 
@@ -141,14 +140,12 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-				if(!element.isQuoted()) {
-					val expressionString = range.shiftLeft(element.textRange.startOffset).substring(element.text).unquote()
-					val valueSetValueExpression = ParadoxScriptExpression.resolveValueSetValue(expressionString, configGroup)
-					if(valueSetValueExpression.isEmpty()) return
-					doAnnotateComplexExpression(element, valueSetValueExpression, config, range, holder)
-				}
-				val attributesKey = Keys.VALUE_SET_VALUE_KEY
-				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
+				val text = element.text
+				if(text.isQuoted()) return
+				val isKey = element is ParadoxScriptPropertyKey
+				val textRange = TextRange.create(0, text.length)
+				val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(text, textRange, config.expression, configGroup, isKey) ?: return
+				annotateComplexExpression(element, valueSetValueExpression, config, range, holder)
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
 				val text = element.text
@@ -215,11 +212,10 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 					.textAttributes(attributesKey)
 					.create()
 			}
-		} else {
-			val attributesKeyExpression = expressionNode.getAttributesKeyExpression(element, config)
-			if(attributesKeyExpression != null) {
-				doAnnotateExpressionElement(element, rangeToAnnotate, attributesKeyExpression, config, holder)
-			}
+		}
+		val attributesKeyExpression = expressionNode.getAttributesKeyExpression(element, config)
+		if(attributesKeyExpression != null) {
+			doAnnotateExpressionElement(element, rangeToAnnotate, attributesKeyExpression, config, holder)
 		}
 		if(expressionNode.nodes.isNotEmpty()) {
 			for(node in expressionNode.nodes) {

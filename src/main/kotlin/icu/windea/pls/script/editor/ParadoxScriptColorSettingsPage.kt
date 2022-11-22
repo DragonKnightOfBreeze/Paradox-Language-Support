@@ -46,7 +46,10 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(PlsBundle.message("script.displayName.systemScope"), ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.scope"), ParadoxScriptAttributesKeys.SCOPE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.scopeLinkPrefix"), ParadoxScriptAttributesKeys.SCOPE_LINK_PREFIX_KEY),
+			AttributesDescriptor(PlsBundle.message("script.displayName.scopeLinkDataSource"), ParadoxScriptAttributesKeys.SCOPE_LINK_DATA_SOURCE_KEY),
+			AttributesDescriptor(PlsBundle.message("script.displayName.valueLinkValue"), ParadoxScriptAttributesKeys.VALUE_LINK_VALUE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.valueLinkPrefix"), ParadoxScriptAttributesKeys.VALUE_LINK_PREFIX_KEY),
+			AttributesDescriptor(PlsBundle.message("script.displayName.valueLinkDataSource"), ParadoxScriptAttributesKeys.VALUE_LINK_DATA_SOURCE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.modifier"), ParadoxScriptAttributesKeys.MODIFIER_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.tag"), ParadoxScriptAttributesKeys.TAG_KEY)
 		)
@@ -68,7 +71,10 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 		"SYSTEM_SCOPE" to ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY,
 		"SCOPE" to ParadoxScriptAttributesKeys.SCOPE_KEY,
 		"SCOPE_LINK_PREFIX" to ParadoxScriptAttributesKeys.SCOPE_LINK_PREFIX_KEY,
+		"SCOPE_LINK_DATA_SOURCE" to ParadoxScriptAttributesKeys.SCOPE_LINK_DATA_SOURCE_KEY,
+		"VALUE_LINK_VALUE" to ParadoxScriptAttributesKeys.VALUE_LINK_VALUE_KEY,
 		"VALUE_LINK_PREFIX" to ParadoxScriptAttributesKeys.VALUE_LINK_PREFIX_KEY,
+		"VALUE_LINK_DATA_SOURCE" to ParadoxScriptAttributesKeys.VALUE_LINK_DATA_SOURCE_KEY,
 		"MODIFIER" to ParadoxScriptAttributesKeys.MODIFIER_KEY,
 		"TAG" to ParadoxScriptAttributesKeys.TAG_KEY
 	)
