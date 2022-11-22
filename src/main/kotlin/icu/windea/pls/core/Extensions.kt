@@ -234,7 +234,6 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
 		is ParadoxValueLinkDataSourceExpressionNode.Reference -> true
 		is ParadoxScriptScopeFieldDataSourceReference -> true
 		is ParadoxScriptValueFieldDataSourceReference -> true
-		is ParadoxScriptValueSetValueReference -> true
 		is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
 		is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
 		else -> false

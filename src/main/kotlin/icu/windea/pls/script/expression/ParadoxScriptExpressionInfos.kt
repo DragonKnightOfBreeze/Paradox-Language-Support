@@ -189,21 +189,3 @@ class ParadoxScriptSvParameterValueExpressionInfo(
 		return if(ParadoxDataType.resolve(text).isFloatType()) ParadoxScriptAttributesKeys.NUMBER_KEY else ParadoxScriptAttributesKeys.STRING_KEY
 	}
 }
-
-class ParadoxScriptValueSetValueExpressionInfo(
-	text: String,
-	textRange: TextRange
-): ParadoxScriptExpressionInfo(text, textRange){
-	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): PsiReference {
-		return ParadoxScriptValueSetValueReference(element, textRange, text, config)
-	}
-	
-	override fun isUnresolved(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): Boolean {
-		return false
-	}
-	
-	override fun getAttributesKey(): TextAttributesKey {
-		return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
-		//TODO 对变量使用特殊的高亮
-	}
-}
