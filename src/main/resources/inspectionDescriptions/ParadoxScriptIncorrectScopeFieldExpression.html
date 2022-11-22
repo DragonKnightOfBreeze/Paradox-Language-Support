@@ -3,30 +3,10 @@
   <p>
     Reports incorrect scope field expressions.
   </p>
-  <p><b>Example:</b></p>
-  <pre>
-# system scope
-root
-# scope
-owner
-# scope link
-root.owner
-# scope field with the prefix 'event_target:' and the event target data source 'some_target' from script files 
-event_target:some_target
-# scope field with scope link
-root.owner.event_target:some_target
-
-# ERROR: malformed scope field expression
-root..owner
-# ERROR: unresolved scope or prefix mismatch
-rot
-# ERROR: unresolved data source
-# Will not report if it's CWT data type is value_set
-event:target:some_unknown_target</pre>
   <!-- tooltip end -->
   <p>
-    A scope field expression is a script key/value expression with CWT data type
-    <code>scope_field/scope/scope_group</code>.
+    A scope field expression is a script expression matching CWT expression data type
+    <code>"scope"</code>, <code>"scope_field"</code> or <code>scope_group</code>.
   </p>
   <p>
     Based on plugin's built-in

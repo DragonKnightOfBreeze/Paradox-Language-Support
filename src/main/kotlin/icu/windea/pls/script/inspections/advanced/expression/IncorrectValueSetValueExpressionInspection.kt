@@ -4,27 +4,18 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.exp.*
 import icu.windea.pls.script.exp.errors.*
 import icu.windea.pls.script.psi.*
-import javax.swing.*
 
-/**
- * 不正确的值字段表达式的检查。
- *
- * @property reportsUnresolvedDs 是否报告无法解析的DS引用。
- */
-class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
-	@JvmField var reportsUnresolvedDs = true
-	
+class IncorrectValueSetValueExpressionInspection: LocalInspectionTool(){
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-			if(file !is ParadoxScriptFile) return null
+		if(file !is ParadoxScriptFile) return null
 		val project = file.project
 		val gameType = ParadoxSelectorUtils.selectGameType(file)
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
@@ -39,21 +30,21 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 			
 			override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
 				ProgressManager.checkCanceled()
-				val config = resolveConfigs(element).firstOrNull() ?: return
+				val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return
 				val type = config.expression.type
-				if(type == CwtDataTypes.ValueField || type == CwtDataTypes.IntValueField) {
+				if(type == CwtDataTypes.Scope || type == CwtDataTypes.ScopeField || type == CwtDataTypes.ScopeGroup) {
 					if(element.isQuoted()) {
 						//不允许用括号括起
-						holder.registerProblem(element, PlsBundle.message("script.inspection.expression.valueField.quoted"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+						holder.registerProblem(element, PlsBundle.message("script.inspection.expression.valueSetValue.quoted"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
 					} else {
 						val value = element.value
 						val gameTypeToUse = gameType ?: ParadoxSelectorUtils.selectGameType(element) ?: return
 						val configGroup = getCwtConfig(project).getValue(gameTypeToUse)
 						val textRange = TextRange.create(0, value.length)
 						val isKey = element is ParadoxScriptPropertyKey
-						val valueFieldExpression = ParadoxValueFieldExpression.resolve(value, textRange, configGroup, isKey)
+						val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(value, textRange, config.expression, configGroup, isKey)
 							?: return
-						valueFieldExpression.processAllNodes { node ->
+						valueSetValueExpression.processAllNodes { node ->
 							for(error in node.errors) {
 								handleScriptExpressionError(element, error)
 							}
@@ -68,22 +59,9 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 			}
 			
 			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxScriptExpressionError) {
-				if(reportsUnresolvedDs && error is ParadoxUnresolvedValueLinkDataSourceExpressionError) return
 				holder.registerScriptExpressionError(element, error)
 			}
 		})
 		return holder.resultsArray
 	}
-	
-	
-	override fun createOptionsPanel(): JComponent {
-		return panel {
-			row {
-				checkBox(PlsBundle.message("script.inspection.expression.incorrectValueFieldExpression.option.reportsUnresolvedDs"))
-					.bindSelected(::reportsUnresolvedDs)
-					.actionListener { _, component -> reportsUnresolvedDs = component.isSelected }
-			}
-		}
-	}
 }
-

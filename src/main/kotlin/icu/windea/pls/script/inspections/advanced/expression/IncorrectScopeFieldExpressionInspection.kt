@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 不正确的作用域值表达式的检查。
+ * 不正确的作用域字段表达式的检查。
  *
  * @property reportsUnresolvedDs 是否报告无法解析的DS引用。
  */
