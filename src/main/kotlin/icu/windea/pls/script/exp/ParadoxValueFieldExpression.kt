@@ -63,6 +63,7 @@ class ParadoxValueFieldExpressionImpl(
 	
 	override val valueFieldNode: ParadoxValueFieldExpressionNode get() = nodes.last().cast()
 	
+	//TODO 兼容基于valueSetValueExpression进行提示和提示SV参数
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
 		val keyword = context.keyword
 		val isKey = context.isKey

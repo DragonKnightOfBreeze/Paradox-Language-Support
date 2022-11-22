@@ -53,6 +53,7 @@ class ParadoxScopeFieldExpressionImpl(
 	
 	override val scopeNodes: List<ParadoxScopeExpressionNode> get() = nodes.filterIsInstance<ParadoxScopeExpressionNode>()
 	
+	//TODO 兼容基于valueSetValueExpression进行提示
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
 		//要求重新匹配
 		result.restartCompletionOnAnyPrefixChange()
