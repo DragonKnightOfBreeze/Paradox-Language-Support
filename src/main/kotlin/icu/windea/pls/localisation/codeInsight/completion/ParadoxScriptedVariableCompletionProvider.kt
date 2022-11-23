@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionParameters>() {
 	private val insertHandler = InsertHandler<LookupElement> { context, _ ->
-		//因为只能在$...$引用中出现，如果后面没有"$"，需要自动补充，光标移到补充"$"之前
+		//因为只能在$...$引用中出现，如果后面没有"$"，需要自动补充，并将光标移到补充"$"之前
 		val editor = context.editor
 		val caretModel = editor.caretModel
 		val suffixChar = editor.document.charsSequence.getOrNull(caretModel.offset)
