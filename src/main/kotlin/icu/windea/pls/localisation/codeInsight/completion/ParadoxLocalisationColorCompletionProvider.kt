@@ -13,6 +13,12 @@ import icu.windea.pls.localisation.psi.*
  * 提供颜色ID的代码补全。
  */
 class ParadoxLocalisationColorCompletionProvider : CompletionProvider<CompletionParameters>() {
+	private val insertHandler = InsertHandler<LookupElement> { context, _ ->
+		val editor = context.editor
+		val offset = editor.caretModel.offset
+		editor.document.deleteString(offset, offset + 1)
+	}
+	
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val file = parameters.originalFile
 		val originalColorId = file.findElementAt(parameters.offset)
@@ -32,11 +38,7 @@ class ParadoxLocalisationColorCompletionProvider : CompletionProvider<Completion
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.letIf(originalColorId != null) {
 					//delete existing colorId
-					it.withInsertHandler { context, _ ->
-						val editor = context.editor
-						val offset = editor.caretModel.offset
-						editor.document.deleteString(offset, offset + 1)
-					}
+					it.withInsertHandler(insertHandler)
 				}
 			lookupElements.add(lookupElement)
 		}

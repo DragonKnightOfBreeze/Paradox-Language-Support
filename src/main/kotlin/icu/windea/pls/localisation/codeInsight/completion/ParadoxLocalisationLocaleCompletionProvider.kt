@@ -18,6 +18,25 @@ import icu.windea.pls.localisation.psi.*
  * 提供语言区域名字的代码补全。
  */
 class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<CompletionParameters>() {
+	private fun getInsertHandler(insertColon: Boolean): InsertHandler<LookupElement> {
+		return InsertHandler { context, _ ->
+			//如果之后没有英文冒号，则插入：英文冒号+换行符+缩进，否则光标移到冒号之后
+			val editor = context.editor
+			if(insertColon) {
+				val settings = CodeStyle.getSettings(context.file)
+				val indentOptions = settings.getIndentOptions(ParadoxLocalisationFileType)
+				val s = ":\n" + " ".repeat(indentOptions.INDENT_SIZE)
+				EditorModificationUtil.insertStringAtCaret(editor, s)
+			} else {
+				val chars = editor.document.charsSequence
+				val colonIndex = chars.indexOf(':', context.startOffset)
+				if(colonIndex != -1) {
+					editor.caretModel.moveToOffset(colonIndex + 1)
+				}
+			}
+		}
+	}
+	
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		//直到所在行开始没有任何空白，直到所在行结束没有除了冒号之外的任何其他字符
 		val position = parameters.position
@@ -50,24 +69,5 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
 			lookupElements.add(lookupElement)
 		}
 		result.addAllElements(lookupElements)
-	}
-	
-	private fun getInsertHandler(insertColon: Boolean): InsertHandler<LookupElement> {
-		return InsertHandler { context, _ ->
-			//如果之后没有英文冒号，则插入：英文冒号+换行符+缩进，否则光标移到冒号之后
-			val editor = context.editor
-			if(insertColon) {
-				val settings = CodeStyle.getSettings(context.file)
-				val indentOptions = settings.getIndentOptions(ParadoxLocalisationFileType)
-				val s = ":\n" + " ".repeat(indentOptions.INDENT_SIZE)
-				EditorModificationUtil.insertStringAtCaret(editor, s)
-			} else {
-				val chars = editor.document.charsSequence
-				val colonIndex = chars.indexOf(':', context.startOffset)
-				if(colonIndex != -1) {
-					editor.caretModel.moveToOffset(colonIndex + 1)
-				}
-			}
-		}
 	}
 }
