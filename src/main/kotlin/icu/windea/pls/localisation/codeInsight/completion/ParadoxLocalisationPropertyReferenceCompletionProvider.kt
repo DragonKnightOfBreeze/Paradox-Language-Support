@@ -14,7 +14,6 @@ import icu.windea.pls.localisation.psi.*
  */
 class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		parameters.
 		result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 		
 		val caretOffset = parameters.offset - parameters.position.textRange.startOffset
