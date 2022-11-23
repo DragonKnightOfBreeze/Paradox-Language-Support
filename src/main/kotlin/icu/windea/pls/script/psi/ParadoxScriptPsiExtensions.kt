@@ -10,11 +10,16 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 val ParadoxScriptScriptedVariableName.variableNameId: PsiElement get() = findChild(SCRIPTED_VARIABLE_NAME_ID)!!
+
 val ParadoxScriptPropertyKey.propertyKeyId: PsiElement? get() = findChild(PROPERTY_KEY_TOKEN)
 val ParadoxScriptPropertyKey.quotedPropertyKeyId: PsiElement? get() = findChild(QUOTED_PROPERTY_KEY_TOKEN)
+
 val ParadoxScriptScriptedVariableReference.variableReferenceId: PsiElement get() = findChild(SCRIPTED_VARIABLE_REFERENCE_ID)!!
+
 val ParadoxScriptParameterConditionParameter.parameterId: PsiElement get() = findChild(ARGUMENT_ID)!!
+
 val ParadoxScriptInlineMathScriptedVariableReference.variableReferenceId: PsiElement get() = findChild(INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID)!!
+
 val ParadoxParameter.parameterId: PsiElement? get() = findChild(PARAMETER_ID)
 val ParadoxParameter.defaultValueToken: PsiElement?
 	get() = when {
@@ -22,7 +27,9 @@ val ParadoxParameter.defaultValueToken: PsiElement?
 		this is ParadoxScriptInlineMathParameter -> findChild(ParadoxScriptTokenSets.inlineMathParameterValueTokens)
 		else -> null
 	}
+
 val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptValue? get() = siblings(forward = true, withSelf = false).findIsInstance()
+
 val ParadoxScriptValue.propertyKey: ParadoxScriptPropertyKey? get() = siblings(forward = false, withSelf = false).findIsInstance()
 
 /**

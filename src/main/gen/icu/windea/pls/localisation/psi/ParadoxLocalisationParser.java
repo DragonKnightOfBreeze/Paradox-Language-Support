@@ -383,13 +383,13 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // command | PROPERTY_REFERENCE_ID
+  // PROPERTY_REFERENCE_ID | command | scripted_variable_reference
   static boolean property_reference_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_reference_name")) return false;
-    if (!nextTokenIs(b, "", COMMAND_START, PROPERTY_REFERENCE_ID)) return false;
     boolean r;
-    r = command(b, l + 1);
-    if (!r) r = consumeToken(b, PROPERTY_REFERENCE_ID);
+    r = consumeToken(b, PROPERTY_REFERENCE_ID);
+    if (!r) r = command(b, l + 1);
+    if (!r) r = scripted_variable_reference(b, l + 1);
     return r;
   }
 
@@ -461,6 +461,18 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
       if (!empty_element_parsed_guard_(b, "root", c)) break;
     }
     return true;
+  }
+
+  /* ********************************************************** */
+  // AT SCRIPTED_VARIABLE_REFERENCE_ID
+  public static boolean scripted_variable_reference(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "scripted_variable_reference")) return false;
+    if (!nextTokenIs(b, AT)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, AT, SCRIPTED_VARIABLE_REFERENCE_ID);
+    exit_section_(b, m, SCRIPTED_VARIABLE_REFERENCE, r);
+    return r;
   }
 
   /* ********************************************************** */

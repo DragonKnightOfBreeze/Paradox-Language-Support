@@ -16,6 +16,7 @@ class ParadoxLocalisationSyntaxHighlighter : SyntaxHighlighterBase() {
 		private val PROPERTY_KEY_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
 		private val STRING_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.STRING_KEY)
 		private val COMMENT_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMENT_KEY)
+		private val SCRIPTED_VARIABLE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.SCRIPTED_VARIABLE_KEY)
 		private val PROPERTY_REFERENCE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.PROPERTY_REFERENCE_KEY)
 		private val PROPERTY_REFERENCE_PARAMETER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.PROPERTY_REFERENCE_PARAMETER_KEY)
 		private val ICON_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.ICON_KEY)
@@ -34,6 +35,7 @@ class ParadoxLocalisationSyntaxHighlighter : SyntaxHighlighterBase() {
 		COMMAND_START, COMMAND_END, COLORFUL_TEXT_START, COLORFUL_TEXT_END -> MARKER_KEYS
 		PIPE -> MARKER_KEYS
 		COMMENT -> COMMENT_KEYS
+		AT, SCRIPTED_VARIABLE_REFERENCE_ID-> SCRIPTED_VARIABLE_KEYS
 		LOCALE_ID -> LOCALE_KEYS
 		PROPERTY_KEY_ID -> PROPERTY_KEY_KEYS
 		PROPERTY_REFERENCE_ID -> PROPERTY_REFERENCE_KEYS

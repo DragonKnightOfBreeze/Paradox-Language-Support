@@ -126,26 +126,6 @@
                      bundle="messages.PlsBundle" key="localisation.inspection.unsupportedLocale"
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
                      implementationClass="icu.windea.pls.localisation.inspections.UnsupportedLocaleInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedIcon"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="localisation.inspection.unresolvedIcon"
-                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
-                     implementationClass="icu.windea.pls.localisation.inspections.UnresolvedIconInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedColor"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="localisation.inspection.unresolvedColor"
-                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
-                     implementationClass="icu.windea.pls.localisation.inspections.UnresolvedColorInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedCommandScope"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="localisation.inspection.unresolvedCommandScope"
-                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
-                     implementationClass="icu.windea.pls.localisation.inspections.UnresolvedCommandScopeInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedCommandField"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="localisation.inspection.unresolvedCommandField"
-                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
-                     implementationClass="icu.windea.pls.localisation.inspections.UnresolvedCommandFieldInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationDuplicateProperties"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="localisation.inspection.duplicateProperties"
@@ -166,6 +146,37 @@
                      bundle="messages.PlsBundle" key="localisation.inspection.multipleLocales"
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
                      implementationClass="icu.windea.pls.localisation.inspections.MultipleLocalesInspection"/>
+    <!--advanced-->
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedIcon"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="localisation.inspection.advanced.unresolvedIcon"
+                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection.advanced"
+                     groupPathKey="localisation.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.localisation.inspections.advanced.UnresolvedIconInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedColor"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="localisation.inspection.advanced.unresolvedColor"
+                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection.advanced"
+                     groupPathKey="localisation.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.localisation.inspections.advanced.UnresolvedColorInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedCommandScope"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="localisation.inspection.advanced.unresolvedCommandScope"
+                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection.advanced"
+                     groupPathKey="localisation.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.localisation.inspections.advanced.UnresolvedCommandScopeInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedCommandField"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="localisation.inspection.advanced.unresolvedCommandField"
+                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection.advanced"
+                     groupPathKey="localisation.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.localisation.inspections.advanced.UnresolvedCommandFieldInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedScriptedVariable"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="localisation.inspection.advanced.unresolvedScriptedVariable"
+                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection.advanced"
+                     groupPathKey="localisation.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.localisation.inspections.advanced.UnresolvedScriptedVariableInspection"/>
   </extensions>
 
   <actions>

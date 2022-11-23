@@ -22,8 +22,10 @@ public interface ParadoxLocalisationElementTypes {
   IElementType PROPERTY_REFERENCE = new ParadoxLocalisationElementType("PROPERTY_REFERENCE");
   IElementType PROPERTY_VALUE = new ParadoxLocalisationElementType("PROPERTY_VALUE");
   IElementType RICH_TEXT = new ParadoxLocalisationElementType("RICH_TEXT");
+  IElementType SCRIPTED_VARIABLE_REFERENCE = new ParadoxLocalisationElementType("SCRIPTED_VARIABLE_REFERENCE");
   IElementType STRING = new ParadoxLocalisationElementType("STRING");
 
+  IElementType AT = new ParadoxLocalisationTokenType("AT");
   IElementType COLON = new ParadoxLocalisationTokenType("COLON");
   IElementType COLORFUL_TEXT_END = new ParadoxLocalisationTokenType("COLORFUL_TEXT_END");
   IElementType COLORFUL_TEXT_START = new ParadoxLocalisationTokenType("COLORFUL_TEXT_START");
@@ -50,6 +52,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType PROPERTY_REFERENCE_PARAMETER_TOKEN = new ParadoxLocalisationTokenType("PROPERTY_REFERENCE_PARAMETER_TOKEN");
   IElementType PROPERTY_REFERENCE_START = new ParadoxLocalisationTokenType("PROPERTY_REFERENCE_START");
   IElementType RIGHT_QUOTE = new ParadoxLocalisationTokenType("RIGHT_QUOTE");
+  IElementType SCRIPTED_VARIABLE_REFERENCE_ID = new ParadoxLocalisationTokenType("SCRIPTED_VARIABLE_REFERENCE_ID");
   IElementType STRING_TOKEN = new ParadoxLocalisationTokenType("STRING_TOKEN");
   IElementType VALID_ESCAPE_TOKEN = new ParadoxLocalisationTokenType("VALID_ESCAPE_TOKEN");
 
@@ -94,6 +97,9 @@ public interface ParadoxLocalisationElementTypes {
       }
       else if (type == PROPERTY_VALUE) {
         return new ParadoxLocalisationPropertyValueImpl(node);
+      }
+      else if (type == SCRIPTED_VARIABLE_REFERENCE) {
+        return new ParadoxLocalisationScriptedVariableReferenceImpl(node);
       }
       else if (type == STRING) {
         return new ParadoxLocalisationStringImpl(node);

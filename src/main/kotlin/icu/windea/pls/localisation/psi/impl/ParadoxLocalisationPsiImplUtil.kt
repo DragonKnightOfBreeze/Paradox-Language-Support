@@ -9,6 +9,8 @@ import com.intellij.util.*
 import icons.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.references.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
@@ -295,6 +297,34 @@ object ParadoxLocalisationPsiImplUtil {
 	fun getReference(element: ParadoxLocalisationCommandField): ParadoxLocalisationCommandFieldPsiReference? {
 		val rangeInElement = element.commandFieldId?.textRangeInParent ?: return null
 		return ParadoxLocalisationCommandFieldPsiReference(element, rangeInElement)
+	}
+	//endregion
+	
+	//region ParadoxLocalisationScriptedVariableReference
+	@JvmStatic
+	fun getIcon(element: ParadoxLocalisationScriptedVariableReference, @IconFlags flags: Int): Icon {
+		return PlsIcons.ScriptedVariable
+	}
+	
+	@JvmStatic
+	fun getName(element: ParadoxLocalisationScriptedVariableReference): String {
+		// 不包含作为前缀的"@"
+		return element.variableReferenceId.text.orEmpty()
+	}
+	
+	@JvmStatic
+	fun setName(element: ParadoxLocalisationScriptedVariableReference, name: String): ParadoxLocalisationScriptedVariableReference {
+		// 不包含作为前缀的"@"
+		val nameElement = element.variableReferenceId
+		val newNameElement = ParadoxScriptElementFactory.createVariableReference(element.project, name).variableReferenceId
+		nameElement.replace(newNameElement)
+		return element
+	}
+	
+	@JvmStatic
+	fun getReference(element: ParadoxLocalisationScriptedVariableReference): ParadoxScriptedVariablePsiReference {
+		val rangeInElement = element.variableReferenceId.textRangeInParent
+		return ParadoxScriptedVariablePsiReference(element, rangeInElement)
 	}
 	//endregion
 }

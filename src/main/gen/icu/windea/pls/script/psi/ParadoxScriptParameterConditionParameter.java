@@ -1,9 +1,12 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import icu.windea.pls.core.psi.*;
+import java.util.List;
 import org.jetbrains.annotations.*;
-import icu.windea.pls.core.references.ParadoxParameterPsiReference;
+import com.intellij.psi.PsiElement;
+import icu.windea.pls.core.psi.ParadoxArgument;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.core.references.ParadoxArgumentPsiReference;
 import javax.swing.Icon;
 
 public interface ParadoxScriptParameterConditionParameter extends ParadoxArgument {
@@ -20,6 +23,6 @@ public interface ParadoxScriptParameterConditionParameter extends ParadoxArgumen
   int getTextOffset();
 
   @NotNull
-  ParadoxParameterPsiReference getReference();
+  ParadoxArgumentPsiReference getReference();
 
 }

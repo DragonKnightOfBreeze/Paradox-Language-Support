@@ -1,5 +1,5 @@
 // This is a generated file. Not intended for manual editing.
-package icu.windea.pls.script.psi;
+package icu.windea.pls.localisation.psi;
 
 import java.util.List;
 import org.jetbrains.annotations.*;
@@ -7,10 +7,9 @@ import com.intellij.psi.PsiElement;
 import icu.windea.pls.core.psi.ParadoxScriptedVariableReference;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.core.references.ParadoxScriptedVariablePsiReference;
-import icu.windea.pls.script.exp.ParadoxDataType;
 import javax.swing.Icon;
 
-public interface ParadoxScriptScriptedVariableReference extends ParadoxScriptValue, ParadoxScriptedVariableReference {
+public interface ParadoxLocalisationScriptedVariableReference extends ParadoxScriptedVariableReference {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
@@ -19,12 +18,9 @@ public interface ParadoxScriptScriptedVariableReference extends ParadoxScriptVal
   String getName();
 
   @NotNull
-  ParadoxScriptScriptedVariableReference setName(@NotNull String name);
+  ParadoxLocalisationScriptedVariableReference setName(@NotNull String name);
 
   @NotNull
   ParadoxScriptedVariablePsiReference getReference();
-
-  @NotNull
-  ParadoxDataType getExpressionType();
 
 }

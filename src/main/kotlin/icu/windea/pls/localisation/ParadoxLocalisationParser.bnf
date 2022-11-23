@@ -79,7 +79,7 @@ property_reference ::= PROPERTY_REFERENCE_START [property_reference_name] [PIPE 
   methods=[getName setName getReference]
 }
 //token / command (e.g. "[Root.GetName]") / scripted_variable (e.g. "@v") 
-private property_reference_name ::= command | PROPERTY_REFERENCE_ID
+private property_reference_name ::= PROPERTY_REFERENCE_ID | command | scripted_variable_reference
 private property_reference_parameter ::= PROPERTY_REFERENCE_PARAMETER_TOKEN //TODO check syntax
 
 //icon
@@ -91,6 +91,15 @@ icon ::= ICON_START icon_name [PIPE icon_frame] ICON_END {
 }
 private icon_name ::= command | property_reference | ICON_ID //can be command / property reference
 private icon_frame ::= ICON_FRAME | property_reference //can be property reference (resolved as parameter)
+
+//colorful_text
+//see: https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes
+colorful_text ::= COLORFUL_TEXT_START COLOR_ID colorful_text_item [COLORFUL_TEXT_END]{
+  pin=1
+  extends=rich_text
+  methods=[getName setName getReference]
+}
+private colorful_text_item ::= rich_text *
 
 //command
 //see: https://stellaris.paradoxwikis.com/Localisation_modding#Bracket_Commands
@@ -115,11 +124,10 @@ command_field ::= COMMAND_FIELD_ID | property_reference { //can be property refe
   methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier]
 }
 
-//colorful_text
-//see: https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes
-colorful_text ::= COLORFUL_TEXT_START COLOR_ID colorful_text_item [COLORFUL_TEXT_END]{
-  pin=1
-  extends=rich_text
-  methods=[getName getName setName getReference]
+//scripted variable reference
+scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_ID {
+  implements=[
+    "icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
+  ]
+  methods=[getIcon getName setName getReference]
 }
-private colorful_text_item ::= rich_text *

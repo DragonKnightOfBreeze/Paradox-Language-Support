@@ -4,7 +4,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;
-import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
+import static icu.windea.pls.core.StdlibExtensionsKt.*;import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 %%
 
@@ -38,70 +38,71 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %state WAITING_CHECK_COLORFUL_TEXT_START
 %state WAITING_CHECK_RIGHT_QUOTE
 
-%{
-		
+%state WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME
+
+%{	
     private boolean noIndent = true;
-        private int depth = 0;
-        private int commandLocation = 0;
-        private int propertyReferenceLocation = 0;
-        private boolean inIconName = false;
-        
-        public ParadoxLocalisationLexer() {
-            this((java.io.Reader)null);
-        }
-	    
-        private void increaseDepth(){
-	        depth++;
-        }
-        
-        private void decreaseDepth(){
-	        if(depth > 0) depth--;
-        }
-        
-        private int nextStateForText(){
-          return depth <= 0 ? WAITING_RICH_TEXT : WAITING_COLORFUL_TEXT;
-        }
-        
-        private int nextStateForCommand(){
-          if(commandLocation == 0) return nextStateForText();
-          else if (commandLocation == 1) return WAITING_PROPERTY_REFERENCE;
-          else if (commandLocation == 2) return WAITING_ICON;
-          else return nextStateForText();
-        }
-        
-        private int nextStateForPropertyReference(){
-          if(propertyReferenceLocation == 0) return nextStateForText();
-          else if (propertyReferenceLocation == 1) return WAITING_ICON_ID_FINISHED;
-          else if (propertyReferenceLocation == 2) return WAITING_ICON_FRAME_FINISHED;
-          else if (propertyReferenceLocation == 3) return WAITING_COMMAND_SCOPE_OR_FIELD;
-          else return nextStateForText();
-        }
-        
-	    private boolean isPropertyReferenceStart(){
-		    if(yylength() <= 1) return false;
-		    return true;
-	    }
-	    
-        private boolean isIconStart(){
-		    if(yylength() <= 1) return false;
-	        char c = yycharat(1);
-	        return icu.windea.pls.core.StdlibExtensionsKt.isExactLetter(c) || icu.windea.pls.core.StdlibExtensionsKt.isExactDigit(c) || c == '_';
-        }
-        
-        private boolean isCommandStart(){
-		      if(yylength() <= 1) return false;
-	        return yycharat(yylength()-1) == ']';
-        }
-        
-        private boolean isColorfulTextStart(){
-		      if(yylength() <= 1) return false;
-	        return icu.windea.pls.core.StdlibExtensionsKt.isExactLetter(yycharat(1));
-        }
-        
-        private boolean isRightQuote(){
-		      if(yylength() == 1) return true;
-	        return yycharat(yylength()-1) != '"';
-        }
+    private int depth = 0;
+    private int commandLocation = 0;
+    private int propertyReferenceLocation = 0;
+    private boolean inIconName = false;
+    
+    public ParadoxLocalisationLexer() {
+        this((java.io.Reader)null);
+    }
+	
+    private void increaseDepth(){
+	    depth++;
+    }
+    
+    private void decreaseDepth(){
+	    if(depth > 0) depth--;
+    }
+    
+    private int nextStateForText(){
+      return depth <= 0 ? WAITING_RICH_TEXT : WAITING_COLORFUL_TEXT;
+    }
+    
+    private int nextStateForCommand(){
+      if(commandLocation == 0) return nextStateForText();
+      else if (commandLocation == 1) return WAITING_PROPERTY_REFERENCE;
+      else if (commandLocation == 2) return WAITING_ICON;
+      else return nextStateForText();
+    }
+    
+    private int nextStateForPropertyReference(){
+      if(propertyReferenceLocation == 0) return nextStateForText();
+      else if (propertyReferenceLocation == 1) return WAITING_ICON_ID_FINISHED;
+      else if (propertyReferenceLocation == 2) return WAITING_ICON_FRAME_FINISHED;
+      else if (propertyReferenceLocation == 3) return WAITING_COMMAND_SCOPE_OR_FIELD;
+      else return nextStateForText();
+    }
+    
+	private boolean isPropertyReferenceStart(){
+	    if(yylength() <= 1) return false;
+	    return true;
+	}
+	
+    private boolean isIconStart(){
+	    if(yylength() <= 1) return false;
+	    char c = yycharat(1);
+	    return isExactLetter(c) || isExactDigit(c) || c == '_' || c == '$';
+    }
+    
+    private boolean isCommandStart(){
+		if(yylength() <= 1) return false;
+	    return yycharat(yylength()-1) == ']';
+    }
+    
+    private boolean isColorfulTextStart(){
+		if(yylength() <= 1) return false;
+	    return isExactLetter(yycharat(1));
+    }
+    
+    private boolean isRightQuote(){
+		if(yylength() == 1) return true;
+	    return yycharat(yylength()-1) != '"';
+    }
 %}
 
 //Stellaris官方本地化文件中本身就存在语法解析错误，需要保证存在错误的情况下仍然会解析后续的本地化文本，草
@@ -113,7 +114,7 @@ COMMENT=#[^\r\n]*
 END_OF_LINE_COMMENT=#[^\"\r\n]* //行尾注释不能包含双引号，否则会有解析冲突
 
 CHECK_LOCALE_ID=[a-z_]+:\s*[\r\n]
-CHECK_PROPERTY_REFERENCE_START=\$([a-zA-Z0-9_.\-']?|{CHECK_COMMAND_START})
+CHECK_PROPERTY_REFERENCE_START=\$([a-zA-Z0-9_.\-@']?|{CHECK_COMMAND_START})
 CHECK_ICON_START=£.?
 CHECK_COMMAND_START=\[[.a-zA-Z0-9_:@\s&&[^\r\n]]*.?
 CHECK_COLORFUL_TEXT_START=§.?
@@ -133,6 +134,8 @@ COMMAND_SCOPE_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+\.
 COMMAND_FIELD_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+\]
 COLOR_ID=[a-zA-Z0-9]
 STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
+
+SCRIPTED_VARIABLE_ID=[a-zA-Z_][a-zA-Z0-9_]*
 
 %%
 
@@ -216,6 +219,7 @@ STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
   "|" {yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE;}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
+  "@" {yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME); return AT;}
   {PROPERTY_REFERENCE_ID} {return PROPERTY_REFERENCE_ID;}
 }
 <WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN>{
@@ -312,7 +316,7 @@ STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
 <WAITING_CHECK_PROPERTY_REFERENCE_START>{
   {CHECK_PROPERTY_REFERENCE_START} {
     //特殊处理
-    //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_ID或者command，则认为代表属性引用的开始
+    //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_ID或者command，或者是@，则认为代表属性引用的开始
     boolean isPropertyReferenceStart = isPropertyReferenceStart();
 	yypushback(yylength()-1);
 	if(isPropertyReferenceStart){
@@ -328,7 +332,7 @@ STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
 <WAITING_CHECK_ICON_START>{
   {CHECK_ICON_START} {
     //特殊处理
-    //如果匹配到的字符串的第2个字符存在且为字母、数字或下划线，则认为代表图标的开始
+    //如果匹配到的字符串的第2个字符存在且为字母、数字或下划线或者$，则认为代表图标的开始
     //否则认为是常规字符串
     boolean isIconStart = isIconStart();
     yypushback(yylength()-1);
@@ -392,6 +396,18 @@ STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
           return STRING_TOKEN;
       }
     }
+}
+
+<WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME>{
+   {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
+   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
+  "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
+  "[" {commandLocation=1; yypushback(yylength()); yybegin(WAITING_CHECK_COMMAND_START);}
+  "|" {yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE;}
+  "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
+  "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
+  {SCRIPTED_VARIABLE_ID} {return SCRIPTED_VARIABLE_REFERENCE_ID;}
 }
 
 [^] {return TokenType.BAD_CHARACTER; }

@@ -144,7 +144,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 			dotIndex = -1
 		}
 		if(dotIndex == -1) {
-			dotIndex == text.length
+			dotIndex = text.length
 			isLast = true
 		}
 		val nodeText = text.substring(index, dotIndex)

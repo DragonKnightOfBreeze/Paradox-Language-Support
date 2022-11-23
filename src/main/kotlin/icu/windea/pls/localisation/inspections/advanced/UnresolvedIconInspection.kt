@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.inspections
+package icu.windea.pls.localisation.inspections.advanced
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.observable.util.*
@@ -35,7 +35,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
 			val resolved = element.reference?.resolve()
 			if(resolved != null) return
 			val location = element.iconId ?: return
-			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unresolvedIcon.description", iconName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+			holder.registerProblem(location, PlsBundle.message("localisation.inspection.advanced.unresolvedIcon.description", iconName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
 				ImportGameOrModDirectoryFix(location)
 			)
 		}
@@ -44,7 +44,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
 	override fun createOptionsPanel(): JComponent {
 		return panel {
 			row {
-				label(PlsBundle.message("localisation.inspection.unresolvedIcon.option.ignoredIconNames"))
+				label(PlsBundle.message("localisation.inspection.advanced.unresolvedIcon.option.ignoredIconNames"))
 			}
 			row {
 				textField()
@@ -56,7 +56,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
 							if(text != ignoredIconNames) ignoredIconNames = text
 						}
 					}
-					.comment(PlsBundle.message("localisation.inspection.unresolvedIcon.option.ignoredIconNames.comment"))
+					.comment(PlsBundle.message("localisation.inspection.advanced.unresolvedIcon.option.ignoredIconNames.comment"))
 					.horizontalAlign(HorizontalAlign.FILL)
 					.resizableColumn()
 			}

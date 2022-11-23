@@ -23,9 +23,9 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
 
   /** lexical states */
   public static final int YYINITIAL = 0;
-  public static final int WAITING_VARIABLE_NAME = 2;
-  public static final int WAITING_VARIABLE_VALUE = 4;
-  public static final int WAITING_VARIABLE_END = 6;
+  public static final int WAITING_SCRIPTED_VARIABLE_NAME = 2;
+  public static final int WAITING_SCRIPTED_VARIABLE_VALUE = 4;
+  public static final int WAITING_SCRIPTED_VARIABLE_END = 6;
   public static final int WAITING_PROPERTY = 8;
   public static final int WAITING_PROPERTY_KEY = 10;
   public static final int WAITING_PROPERTY_VALUE = 12;
@@ -33,7 +33,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
   public static final int WAITING_WILDCARD_KEY = 16;
   public static final int WAITING_WILDCARD_VALUE = 18;
   public static final int CHECK_VARIABLE = 20;
-  public static final int WAITING_VARIABLE_REFERENCE_NAME = 22;
+  public static final int WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME = 22;
   public static final int WAITING_PARAMETER = 24;
   public static final int WAITING_PARAMETER_DEFAULT_VALUE = 26;
   public static final int WAITING_PARAMETER_DEFAULT_VALUE_END = 28;
@@ -883,7 +883,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 70: break;
           case 7: 
-            { yybegin(WAITING_VARIABLE_NAME); return AT;
+            { yybegin(WAITING_SCRIPTED_VARIABLE_NAME); return AT;
             } 
             // fall through
           case 71: break;
@@ -908,7 +908,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 75: break;
           case 12: 
-            { yybegin(WAITING_VARIABLE_VALUE); return EQUAL_SIGN;
+            { yybegin(WAITING_SCRIPTED_VARIABLE_VALUE); return EQUAL_SIGN;
             } 
             // fall through
           case 76: break;
@@ -918,12 +918,12 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 77: break;
           case 14: 
-            { yybegin(WAITING_VARIABLE_END); return STRING_TOKEN;
+            { yybegin(WAITING_SCRIPTED_VARIABLE_END); return STRING_TOKEN;
             } 
             // fall through
           case 78: break;
           case 15: 
-            { yybegin(WAITING_VARIABLE_END); return INT_TOKEN;
+            { yybegin(WAITING_SCRIPTED_VARIABLE_END); return INT_TOKEN;
             } 
             // fall through
           case 79: break;
@@ -948,7 +948,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 83: break;
           case 20: 
-            { yybegin(WAITING_VARIABLE_REFERENCE_NAME); return AT;
+            { yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME); return AT;
             } 
             // fall through
           case 84: break;
@@ -987,7 +987,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             { //如果匹配到的文本以等号结尾，则将空白之前的文本解析为VARIABLE_NAME_ID，否则将整个匹配文本解析为VARIABLE_REFERENCE_ID
 	if(yycharat(yylength() -1) == '='){
 	  pushbackUntilBeforeBlank(1);
-	  yybegin(WAITING_VARIABLE_NAME);
+	  yybegin(WAITING_SCRIPTED_VARIABLE_NAME);
 	  return SCRIPTED_VARIABLE_NAME_ID;
 	} else {
 	  yybegin(WAITING_PROPERTY_END);
@@ -1153,7 +1153,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 117: break;
           case 54: 
-            { yybegin(WAITING_VARIABLE_END); return QUOTED_STRING_TOKEN;
+            { yybegin(WAITING_SCRIPTED_VARIABLE_END); return QUOTED_STRING_TOKEN;
             } 
             // fall through
           case 118: break;
@@ -1188,7 +1188,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 123: break;
           case 60: 
-            { yybegin(WAITING_VARIABLE_END); return FLOAT_TOKEN;
+            { yybegin(WAITING_SCRIPTED_VARIABLE_END); return FLOAT_TOKEN;
             } 
             // fall through
           case 124: break;

@@ -801,7 +801,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptParameterConditionParameter): ParadoxParameterPsiReference {
+	fun getReference(element: ParadoxScriptParameterConditionParameter): ParadoxArgumentPsiReference {
 		val nameElement = element.parameterId
 		return ParadoxArgumentPsiReference(element, nameElement.textRangeInParent)
 	}

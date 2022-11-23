@@ -1,11 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import icu.windea.pls.core.psi.*;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLiteralValue;
+import icu.windea.pls.core.psi.ParadoxScriptedVariableReference;
+import icu.windea.pls.core.psi.ParadoxParameter;
+import icu.windea.pls.core.psi.ParadoxDefinitionProperty;
 import com.intellij.psi.PsiListLikeElement;
+import icu.windea.pls.core.psi.ParadoxArgument;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
 

@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.inspections
+package icu.windea.pls.localisation.inspections.advanced
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
@@ -22,7 +22,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
 			val location = element.colorId ?: return
 			if(element.reference.canResolve()) return
 			val name = element.name ?: return
-			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unresolvedColor.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+			holder.registerProblem(location, PlsBundle.message("localisation.inspection.advanced.unresolvedColor.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
 				ImportGameOrModDirectoryFix(location)
 			)
 		}

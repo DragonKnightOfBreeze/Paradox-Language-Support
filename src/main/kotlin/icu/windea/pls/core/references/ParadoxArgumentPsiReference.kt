@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxArgumentPsiReference(
 	element: ParadoxArgument,
 	rangeInElement: TextRange
-) : PsiReferenceBase<PsiElement>(element, rangeInElement) {
+) : PsiReferenceBase<ParadoxArgument>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//重命名当前元素
 		return element.setName(newElementName)

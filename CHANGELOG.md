@@ -81,7 +81,7 @@
   * [X] 对CWT别名规则（dataType=alias/single_alias）使用特殊的别名图标，以便区分内联前后的CWT规则
   * [X] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`
   * [X] 进行代码补全时，如果在提示key时，对应的value是唯一确定的（常量，如固定字符串），应用补全后将会自动插入
-  * [ ] 本地化文件：兼容`$@some_scripted_variable$`、`£$SOME_REF$£`这样的语法
+  * [X] 本地化文件：兼容`$@some_scripted_variable$`、`£$SOME_REF$£`这样的语法
 * 功能变更：
   * [X] ~~支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`~~ → 使用CWT选项`## tag`标记特殊标签，如`optimize_memory`
   * [X] 移除`icu.windea.pls.core.ParadoxPathReferenceProvider` （用于兼容markdown锚点）

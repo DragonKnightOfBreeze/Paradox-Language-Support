@@ -1,10 +1,10 @@
 package icu.windea.pls.core.psi
 
+import com.intellij.psi.*
 import icu.windea.pls.core.references.*
-import icu.windea.pls.script.exp.*
 import icu.windea.pls.script.psi.*
 
-interface ParadoxScriptedVariableReference : ParadoxScriptTypedElement {
+interface ParadoxScriptedVariableReference : PsiElement {
 	val name: String
 	
 	fun setName(name: String): ParadoxScriptedVariableReference
@@ -12,6 +12,4 @@ interface ParadoxScriptedVariableReference : ParadoxScriptTypedElement {
 	override fun getReference(): ParadoxScriptedVariablePsiReference
 	
 	val referenceValue: ParadoxScriptValue? get() = reference.resolve()?.scriptedVariableValue
-	
-	override val expressionType: ParadoxDataType? get() = referenceValue?.expressionType
 }
