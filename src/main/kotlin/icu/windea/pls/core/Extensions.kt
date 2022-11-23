@@ -25,6 +25,7 @@ import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.references.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.settings.*
@@ -220,6 +221,7 @@ fun PsiReference.canResolveParameter(): Boolean {
 	return when(this) {
 		is ParadoxScriptExpressionReference -> this.isKey
 		is ParadoxParameterPsiReference -> true
+		is ParadoxArgumentPsiReference -> true
 		is ParadoxScriptValueParameterExpressionNode.Reference -> true
 		is ParadoxSvParameterReference -> true
 		else -> false

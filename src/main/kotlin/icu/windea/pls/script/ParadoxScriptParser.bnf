@@ -66,7 +66,7 @@ property ::= property_key property_separator property_value {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
     "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
-    "icu.windea.pls.script.psi.ParadoxDefinitionProperty"
+    "icu.windea.pls.core.psi.ParadoxDefinitionProperty"
   ]
   methods=[
     property_key="property_key" property_value="value"
@@ -105,7 +105,7 @@ value ::= scripted_variable_reference | boolean | int | float | color | block | 
 scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_ID {
   extends=value
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptedVariableReference"
+    "icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
   ]
   methods=[getIcon getName setName getReference getExpressionType]
 }
@@ -191,7 +191,7 @@ parameter ::= PARAMETER_START PARAMETER_ID [PIPE parameter_value] PARAMETER_END 
   pin=1
   recoverWhile="#auto"
   implements=[
-    "icu.windea.pls.script.psi.ParadoxParameter"
+    "icu.windea.pls.core.psi.ParadoxParameter"
   ]
   methods=[getIcon getName setName getTextOffset getValue getDefaultValue getReference]
 }
@@ -212,7 +212,7 @@ private parameter_condition_expr ::= NESTED_LEFT_BRACKET parameter_condition_exp
 }
 parameter_condition_expression ::= NOT_SIGN ? parameter_condition_parameter
 parameter_condition_parameter ::= ARGUMENT_ID {
-  implements="icu.windea.pls.script.psi.ParadoxArgument"
+  implements="icu.windea.pls.core.psi.ParadoxArgument"
   methods=[getIcon getName setName getTextOffset getReference]
 }
 private parameter_condition_item ::= COMMENT | property | value
@@ -266,13 +266,13 @@ inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
 }
 inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID { //without prefix "@"
   extends=inline_math_factor
-  implements="icu.windea.pls.script.psi.ParadoxScriptedVariableReference"
+  implements="icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
   methods=[getIcon getName setName getReference]
 }
 inline_math_parameter ::= PARAMETER_START PARAMETER_ID [PIPE inline_math_parameter_value] PARAMETER_END {
   extends=inline_math_factor
   pin=1
-  implements="icu.windea.pls.script.psi.ParadoxParameter"
+  implements="icu.windea.pls.core.psi.ParadoxParameter"
   methods=[getIcon getName setName getTextOffset getDefaultValue getReference]
 }
 private inline_math_parameter_value ::= INT_TOKEN | FLOAT_TOKEN

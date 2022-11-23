@@ -1,7 +1,7 @@
 package icu.windea.pls.core.index
 
 import com.intellij.psi.stubs.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.core.psi.*
 
 //注意这里不能直接访问element.definitionInfo，需要优先通过element.stub获取定义信息
 

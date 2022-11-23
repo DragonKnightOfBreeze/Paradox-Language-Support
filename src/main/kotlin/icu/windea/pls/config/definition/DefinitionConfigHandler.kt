@@ -4,6 +4,7 @@ import com.intellij.openapi.project.*
 import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*

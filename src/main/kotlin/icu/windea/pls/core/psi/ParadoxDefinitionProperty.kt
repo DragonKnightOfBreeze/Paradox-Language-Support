@@ -1,6 +1,7 @@
-package icu.windea.pls.script.psi
+package icu.windea.pls.core.psi
 
 import com.intellij.psi.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 定义的属性 - 兼容scriptFile和scriptProperty，本身可能就是定义。

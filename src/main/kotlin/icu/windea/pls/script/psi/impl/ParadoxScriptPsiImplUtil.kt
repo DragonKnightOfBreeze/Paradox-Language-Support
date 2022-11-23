@@ -15,6 +15,7 @@ import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolvePropertyConfigs
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveValueConfigs
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.references.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.exp.*
@@ -181,7 +182,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getReference(element: ParadoxScriptParameter): ParadoxParameterPsiReference? {
 		val nameElement = element.parameterId ?: return null
-		return ParadoxParameterPsiReference(element, nameElement.textRangeInParent, true)
+		return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
 	}
 	//endregion
 	
@@ -802,7 +803,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getReference(element: ParadoxScriptParameterConditionParameter): ParadoxParameterPsiReference {
 		val nameElement = element.parameterId
-		return ParadoxParameterPsiReference(element, nameElement.textRangeInParent, false)
+		return ParadoxArgumentPsiReference(element, nameElement.textRangeInParent)
 	}
 	//endregion
 	
@@ -893,7 +894,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getReference(element: ParadoxScriptInlineMathParameter): ParadoxParameterPsiReference? {
 		val nameElement = element.parameterId ?: return null
-		return ParadoxParameterPsiReference(element, nameElement.textRangeInParent, true)
+		return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
 	}
 	//endregion
 	

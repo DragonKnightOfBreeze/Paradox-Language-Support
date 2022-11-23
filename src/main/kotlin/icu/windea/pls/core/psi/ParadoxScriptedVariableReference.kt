@@ -1,7 +1,8 @@
-package icu.windea.pls.script.psi
+package icu.windea.pls.core.psi
 
+import icu.windea.pls.core.references.*
 import icu.windea.pls.script.exp.*
-import icu.windea.pls.script.references.*
+import icu.windea.pls.script.psi.*
 
 interface ParadoxScriptedVariableReference : ParadoxScriptTypedElement {
 	val name: String

@@ -22,6 +22,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.ui.*

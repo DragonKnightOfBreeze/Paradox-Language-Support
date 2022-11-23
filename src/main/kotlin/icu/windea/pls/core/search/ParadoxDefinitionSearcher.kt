@@ -6,7 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.index.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.core.psi.*
 
 /**
  * 定义的查询器。

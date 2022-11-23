@@ -1,4 +1,4 @@
-package icu.windea.pls.core.psi;
+package icu.windea.pls.core.psi.impl;
 
 import com.intellij.ide.scratch.*;
 import com.intellij.injected.editor.*;

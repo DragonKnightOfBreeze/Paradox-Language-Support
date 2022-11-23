@@ -5,7 +5,7 @@ import com.intellij.util.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeParameters
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.core.psi.*
 
 /**
  * 提供定义参数的代码补全。

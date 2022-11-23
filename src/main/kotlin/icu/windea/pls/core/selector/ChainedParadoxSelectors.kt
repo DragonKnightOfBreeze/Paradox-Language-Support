@@ -1,6 +1,7 @@
 package icu.windea.pls.core.selector
 
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 

@@ -6,7 +6,7 @@ import com.intellij.psi.stubs.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.index.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.core.psi.*
 
 //com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
 

@@ -10,6 +10,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveValueConfigs
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.script.psi.*

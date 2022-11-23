@@ -1,6 +1,7 @@
-package icu.windea.pls.script.psi
+package icu.windea.pls.core.psi
 
 import icu.windea.pls.script.exp.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 定义的传入参数。

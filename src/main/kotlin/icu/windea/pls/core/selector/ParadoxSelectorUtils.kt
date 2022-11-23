@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxSelectorUtils {

@@ -9,6 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.ParadoxDefinitionInfo.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*

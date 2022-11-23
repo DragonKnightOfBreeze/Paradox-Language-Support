@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.tool.*
 import icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationIconHintsProvider.*
 import icu.windea.pls.localisation.psi.*

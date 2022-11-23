@@ -5,8 +5,8 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 定义的查询。

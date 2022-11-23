@@ -3,7 +3,7 @@ package icu.windea.pls.core.handler
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.core.psi.*
 
 /**
  * 用于处理一些特殊注释，实现相关功能。
