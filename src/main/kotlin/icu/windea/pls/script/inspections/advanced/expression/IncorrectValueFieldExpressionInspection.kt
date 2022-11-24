@@ -20,11 +20,11 @@ import javax.swing.*
  *
  * @property reportsUnresolvedDs 是否报告无法解析的DS引用。
  */
-class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
+class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
 	@JvmField var reportsUnresolvedDs = true
 	
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-			if(file !is ParadoxScriptFile) return null
+		if(file !is ParadoxScriptFile) return null
 		val project = file.project
 		val gameType = ParadoxSelectorUtils.selectGameType(file)
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
@@ -39,30 +39,26 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 			
 			override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
 				ProgressManager.checkCanceled()
+				if(element.isQuoted()) return //忽略
 				val config = resolveConfigs(element).firstOrNull() ?: return
 				val type = config.expression.type
 				if(type == CwtDataTypes.ValueField || type == CwtDataTypes.IntValueField) {
-					if(element.isQuoted()) {
-						//不允许用括号括起
-						holder.registerProblem(element, PlsBundle.message("script.inspection.expression.valueField.quoted"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
-					} else {
-						val value = element.value
-						val gameTypeToUse = gameType ?: ParadoxSelectorUtils.selectGameType(element) ?: return
-						val configGroup = getCwtConfig(project).getValue(gameTypeToUse)
-						val textRange = TextRange.create(0, value.length)
-						val isKey = element is ParadoxScriptPropertyKey
-						val valueFieldExpression = ParadoxValueFieldExpression.resolve(value, textRange, configGroup, isKey)
-							?: return
-						valueFieldExpression.processAllNodes { node ->
-							for(error in node.errors) {
-								handleScriptExpressionError(element, error)
-							}
-							val unresolvedError = node.getUnresolvedError(element)
-							if(unresolvedError != null) {
-								handleScriptExpressionError(element, unresolvedError)
-							}
-							true
+					val value = element.value
+					val gameTypeToUse = gameType ?: ParadoxSelectorUtils.selectGameType(element) ?: return
+					val configGroup = getCwtConfig(project).getValue(gameTypeToUse)
+					val textRange = TextRange.create(0, value.length)
+					val isKey = element is ParadoxScriptPropertyKey
+					val valueFieldExpression = ParadoxValueFieldExpression.resolve(value, textRange, configGroup, isKey)
+						?: return
+					valueFieldExpression.processAllNodes { node ->
+						for(error in node.errors) {
+							handleScriptExpressionError(element, error)
 						}
+						val unresolvedError = node.getUnresolvedError(element)
+						if(unresolvedError != null) {
+							handleScriptExpressionError(element, unresolvedError)
+						}
+						true
 					}
 				}
 			}

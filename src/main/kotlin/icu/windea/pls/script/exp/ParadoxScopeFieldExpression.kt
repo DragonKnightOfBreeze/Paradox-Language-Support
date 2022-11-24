@@ -3,9 +3,7 @@ package icu.windea.pls.script.exp
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
@@ -120,15 +118,8 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 			dotIndex = text.length
 			isLast = true
 		}
-		val nodeText = text.substring(index, dotIndex)
-		//unexpected token -> malformed
-		val isValid = isValid(nodeText)
-		if(!isValid) {
-			val error = ParadoxMalformedScopeFieldExpressionExpressionError(textRange, PlsBundle.message("script.expression.malformedScopeFieldExpression", text))
-			errors.add(error)
-			break
-		}
 		//resolve node
+		val nodeText = text.substring(index, dotIndex)
 		val nodeTextRange = TextRange.create(index + offset, dotIndex + offset)
 		val node = ParadoxScopeExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
 		//handle mismatch situation
@@ -144,9 +135,5 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 	}
 	if(nodes.isEmpty()) return null
 	return ParadoxScopeFieldExpressionImpl(text, textRange, isKey, nodes, errors)
-}
-
-private fun isValid(nodeText: String): Boolean {
-	return nodeText.isEmpty() || nodeText.all { it == '$' || it == ':' || it == '_' || it.isExactLetter() || it.isExactDigit() }
 }
 

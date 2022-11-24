@@ -39,30 +39,26 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 			
 			override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
 				ProgressManager.checkCanceled()
+				if(element.isQuoted()) return //忽略
 				val config = resolveConfigs(element).firstOrNull() ?: return
 				val type = config.expression.type
 				if(type == CwtDataTypes.Scope || type == CwtDataTypes.ScopeField || type == CwtDataTypes.ScopeGroup) {
-					if(element.isQuoted()) {
-						//不允许用括号括起
-						holder.registerProblem(element, PlsBundle.message("script.inspection.expression.scopeField.quoted"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
-					} else {
-						val value = element.value
-						val gameTypeToUse = gameType ?: ParadoxSelectorUtils.selectGameType(element) ?: return
-						val configGroup = getCwtConfig(project).getValue(gameTypeToUse)
-						val textRange = TextRange.create(0, value.length)
-						val isKey = element is ParadoxScriptPropertyKey
-						val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup, isKey)
-							?: return
-						scopeFieldExpression.processAllNodes { node ->
-							for(error in node.errors) {
-								handleScriptExpressionError(element, error)
-							}
-							val unresolvedError = node.getUnresolvedError(element)
-							if(unresolvedError != null) {
-								handleScriptExpressionError(element, unresolvedError)
-							}
-							true
+					val value = element.value
+					val gameTypeToUse = gameType ?: ParadoxSelectorUtils.selectGameType(element) ?: return
+					val configGroup = getCwtConfig(project).getValue(gameTypeToUse)
+					val textRange = TextRange.create(0, value.length)
+					val isKey = element is ParadoxScriptPropertyKey
+					val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup, isKey)
+						?: return
+					scopeFieldExpression.processAllNodes { node ->
+						for(error in node.errors) {
+							handleScriptExpressionError(element, error)
 						}
+						val unresolvedError = node.getUnresolvedError(element)
+						if(unresolvedError != null) {
+							handleScriptExpressionError(element, unresolvedError)
+						}
+						true
 					}
 				}
 			}

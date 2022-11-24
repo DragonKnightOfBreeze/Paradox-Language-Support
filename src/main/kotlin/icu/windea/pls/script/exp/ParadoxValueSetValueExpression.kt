@@ -103,12 +103,6 @@ fun Resolver.resolve(text: String, textRange: TextRange, configExpressions: List
 		}
 		//resolve valueSetValueNode
 		val nodeText = text.substring(0, atIndex)
-		val isValid = isValid(nodeText)
-		if(!isValid) {
-			val error = ParadoxMalformedValueSetValueExpressionExpressionError(textRange, PlsBundle.message("script.expression.malformedValueSetValueExpression", text))
-			errors.add(error)
-			return@run
-		}
 		val nodeTextRange = TextRange.create(offset, atIndex + offset)
 		val node = ParadoxValueSetValueExpressionNode.resolve(nodeText, nodeTextRange, configExpressions, configGroup)
 		if(node == null) return null //unexpected
@@ -130,8 +124,4 @@ fun Resolver.resolve(text: String, textRange: TextRange, configExpressions: List
 	}
 	if(nodes.isEmpty()) return null
 	return ParadoxValueSetValueExpressionImpl(text, textRange, isKey, nodes, errors, configExpressions, configGroup)
-}
-
-private fun isValid(nodeText: String): Boolean {
-	return nodeText.isEmpty() || nodeText.all { it == '$' || it == ':' || it == '_' || it.isExactLetter() || it.isExactDigit() }
 }
