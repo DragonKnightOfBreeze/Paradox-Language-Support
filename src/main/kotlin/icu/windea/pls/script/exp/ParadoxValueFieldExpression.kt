@@ -117,14 +117,18 @@ class ParadoxValueFieldExpressionImpl(
 						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
 						CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
 					} else {
+						val inFirstNode = dataSourceNode == null
+							|| offsetInParent <= dataSourceNode.nodes.first().nodes.first().rangeInExpression.endOffset
 						val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
 						val resultToUse = result.withPrefixMatcher(keywordToUse)
 						context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-						CwtConfigHandler.completeSystemScope(context, resultToUse)
-						CwtConfigHandler.completeScope(context, resultToUse)
-						CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
-						CwtConfigHandler.completeValueLinkValue(context, resultToUse)
-						CwtConfigHandler.completeValueLinkPrefix(context, resultToUse)
+						if(inFirstNode) {
+							CwtConfigHandler.completeSystemScope(context, resultToUse)
+							CwtConfigHandler.completeScope(context, resultToUse)
+							CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
+							CwtConfigHandler.completeValueLinkValue(context, resultToUse)
+							CwtConfigHandler.completeValueLinkPrefix(context, resultToUse)
+						}
 						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
 						CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
 						break
