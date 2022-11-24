@@ -14,10 +14,12 @@ import icu.windea.pls.script.psi.*
 class ParadoxValueSetValueExpressionNode(
 	override val text: String,
 	override val rangeInExpression: TextRange,
-	val expression: CwtDataExpression,
+	val expressions: List<CwtDataExpression>,
 	val configGroup: CwtConfigGroup
 ) : ParadoxScriptExpressionNode {
 	override fun getAttributesKey(): TextAttributesKey? {
+		if(text.isParameterAwareExpression()) return null
+		val expression = expressions.first() //first is ok
 		val valueSetName = expression.value ?: return null
 		return when(valueSetName) {
 			"variable" -> ParadoxScriptAttributesKeys.VARIABLE_KEY
@@ -25,12 +27,16 @@ class ParadoxValueSetValueExpressionNode(
 		}
 	}
 	
-	override fun getReference(element: ParadoxScriptExpressionElement) = Reference(element, rangeInExpression, text, expression, configGroup)
+	override fun getReference(element: ParadoxScriptExpressionElement): Reference? {
+		if(text.isParameterAwareExpression()) return null
+		return Reference(element, rangeInExpression, text, expressions, configGroup)
+	}
 	
 	companion object Resolver {
-		fun resolve(text: String, textRange: TextRange, expression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxValueSetValueExpressionNode? {
-			if(expression.type != CwtDataTypes.Value && expression.type != CwtDataTypes.ValueSet) return null
-			return ParadoxValueSetValueExpressionNode(text, textRange, expression, configGroup)
+		fun resolve(text: String, textRange: TextRange, expressions: List<CwtDataExpression>, configGroup: CwtConfigGroup): ParadoxValueSetValueExpressionNode? {
+			//text may contain parameters
+			if(expressions.any { it.type != CwtDataTypes.Value && it.type != CwtDataTypes.ValueSet }) return null
+			return ParadoxValueSetValueExpressionNode(text, textRange, expressions, configGroup)
 		}
 	}
 	
@@ -38,8 +44,8 @@ class ParadoxValueSetValueExpressionNode(
 		element: ParadoxScriptExpressionElement,
 		rangeInElement: TextRange,
 		private val name: String,
-		val expression: CwtDataExpression,
-		val configGroup: CwtConfigGroup
+		private val expressions: List<CwtDataExpression>,
+		private val configGroup: CwtConfigGroup
 	) : PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
 		override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
 			val resolved = resolve()
@@ -52,7 +58,7 @@ class ParadoxValueSetValueExpressionNode(
 		}
 		
 		override fun resolve(): PsiElement? {
-			return CwtConfigHandler.resolveValueSetValue(element, name, expression, configGroup)
+			return CwtConfigHandler.resolveValueSetValue(element, name, expressions, configGroup)
 		}
 	}
 }

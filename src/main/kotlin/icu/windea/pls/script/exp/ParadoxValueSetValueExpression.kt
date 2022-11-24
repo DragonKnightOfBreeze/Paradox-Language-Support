@@ -8,6 +8,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.exp.ParadoxValueSetValueExpression.*
 import icu.windea.pls.script.exp.errors.*
@@ -32,6 +33,9 @@ import icu.windea.pls.script.exp.nodes.*
  * ```
  */
 interface ParadoxValueSetValueExpression : ParadoxScriptComplexExpression {
+	val configExpressions: List<CwtDataExpression>
+	val configGroup: CwtConfigGroup
+	
 	val valueSetValueNode: ParadoxValueSetValueExpressionNode
 	val scopeFieldExpression: ParadoxScopeFieldExpression?
 	
@@ -43,7 +47,9 @@ class ParadoxValueSetValueExpressionImpl(
 	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
 	override val nodes: List<ParadoxScriptExpressionNode>,
-	override val errors: List<ParadoxScriptExpressionError>
+	override val errors: List<ParadoxScriptExpressionError>,
+	override val configExpressions: List<CwtDataExpression>,
+	override val configGroup: CwtConfigGroup
 ) : AbstractExpression(text), ParadoxValueSetValueExpression {
 	override val quoted: Boolean = false
 	
@@ -83,6 +89,10 @@ class ParadoxValueSetValueExpressionImpl(
 }
 
 fun Resolver.resolve(text: String, textRange: TextRange, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, isKey: Boolean? = null): ParadoxValueSetValueExpression? {
+	return resolve(text, textRange, configExpression.toSingletonList(), configGroup, isKey)
+}
+
+fun Resolver.resolve(text: String, textRange: TextRange, configExpressions: List<CwtDataExpression>, configGroup: CwtConfigGroup, isKey: Boolean? = null): ParadoxValueSetValueExpression? {
 	val nodes = SmartList<ParadoxScriptExpressionNode>()
 	val errors = SmartList<ParadoxScriptExpressionError>()
 	val offset = textRange.startOffset
@@ -100,7 +110,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configExpression: CwtDa
 			return@run
 		}
 		val nodeTextRange = TextRange.create(offset, atIndex + offset)
-		val node = ParadoxValueSetValueExpressionNode.resolve(nodeText, nodeTextRange, configExpression, configGroup)
+		val node = ParadoxValueSetValueExpressionNode.resolve(nodeText, nodeTextRange, configExpressions, configGroup)
 		if(node == null) return null //unexpected
 		nodes.add(node)
 		if(atIndex != text.length) {
@@ -110,7 +120,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configExpression: CwtDa
 			//resolve scope expression
 			val expText = text.substring(atIndex + 1)
 			if(expText.isEmpty()) {
-				val error = ParadoxMissingScopeFieldExpressionExpressionError(textRange, PlsBundle.message("script.expression.missingScopeFieldExpression"))
+				val error = ParadoxMissingScopeFieldExpressionExpressionError(textRange, PlsBundle.message("script.expression.missingScopeField"))
 				errors.add(error)
 			}
 			val expTextRange = TextRange.create(atIndex + 1, text.length)
@@ -119,9 +129,9 @@ fun Resolver.resolve(text: String, textRange: TextRange, configExpression: CwtDa
 		}
 	}
 	if(nodes.isEmpty()) return null
-	return ParadoxValueSetValueExpressionImpl(text, textRange, isKey, nodes, errors)
+	return ParadoxValueSetValueExpressionImpl(text, textRange, isKey, nodes, errors, configExpressions, configGroup)
 }
 
 private fun isValid(nodeText: String): Boolean {
-	return nodeText.isEmpty() || nodeText.all { it == ':' || it == '_' || it.isExactLetter() || it.isExactDigit() }
+	return nodeText.isEmpty() || nodeText.all { it == '$' || it == ':' || it == '_' || it.isExactLetter() || it.isExactDigit() }
 }

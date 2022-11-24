@@ -15,7 +15,9 @@ class ParadoxScopeLinkExpressionNode(
 ) : ParadoxScriptExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SCOPE_KEY
 	
-	override fun getReference(element: ParadoxScriptExpressionElement) = Reference(element, rangeInExpression, config)
+	override fun getReference(element: ParadoxScriptExpressionElement): Reference {
+		return Reference(element, rangeInExpression, config)
+	}
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScopeLinkExpressionNode? {

@@ -14,6 +14,9 @@ class ParadoxValueLinkFromDataExpressionNode(
 	override val nodes: List<ParadoxScriptExpressionNode> = emptyList(),
 	override val errors: List<ParadoxScriptExpressionError> = emptyList()
 ) : ParadoxScriptExpressionNode {
+	val prefixNode get() = nodes.findIsInstance<ParadoxValueLinkPrefixExpressionNode>()
+	val dataSourceNode get() = nodes.findIsInstance<ParadoxValueLinkDataSourceExpressionNode>()!!
+	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxValueLinkFromDataExpressionNode? {
 			val linkConfigs = configGroup.linksAsValueWithPrefixSorted

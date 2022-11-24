@@ -19,11 +19,13 @@ import javax.swing.*
 class ParadoxValueSetValueElement(
 	element: PsiElement,
 	private val name: String,
-	val valueSetName: String,
+	val valueSetNames: List<String>,
 	private val project: Project,
 	val gameType: ParadoxGameType,
 	val read: Boolean = true
 ) : RenameableFakePsiElement(element), ParadoxScriptNamedElement, Navigatable {
+	val valueSetNamesText = valueSetNames.joinToString(" | ")
+	
 	override fun getText(): String {
 		return name
 	}
@@ -37,6 +39,7 @@ class ParadoxValueSetValueElement(
 	}
 	
 	override fun getIcon(): Icon {
+		val valueSetName = valueSetNames.first() //first is ok
 		return when(valueSetName) {
 			"variable" -> PlsIcons.Variable
 			else -> PlsIcons.ValueSetValue
@@ -70,14 +73,14 @@ class ParadoxValueSetValueElement(
 	override fun equals(other: Any?): Boolean {
 		return other is ParadoxValueSetValueElement &&
 			name == other.name &&
-			valueSetName == other.valueSetName &&
+			valueSetNamesText == other.valueSetNamesText &&
 			project == other.project &&
 			gameType == other.gameType
 	}
 	
 	override fun hashCode(): Int {
 		var result = name.hashCode()
-		result = 31 * result + valueSetName.hashCode()
+		result = 31 * result + valueSetNamesText.hashCode()
 		result = 31 * result + project.hashCode()
 		result = 31 * result + gameType.hashCode()
 		return result

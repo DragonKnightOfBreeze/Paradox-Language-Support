@@ -1,99 +1,61 @@
 package icu.windea.pls.script.exp.nodes
 
 import com.intellij.openapi.util.*
-import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.psi.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.script.exp.errors.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.exp.*
+import icu.windea.pls.script.highlighter.*
 
 class ParadoxValueLinkDataSourceExpressionNode(
 	override val text: String,
 	override val rangeInExpression: TextRange,
-	val linkConfigs: List<CwtLinkConfig>
+	val linkConfigs: List<CwtLinkConfig>,
+	override val nodes: List<ParadoxScriptExpressionNode>
 ) : ParadoxScriptExpressionNode {
-	override fun getAttributesKeyExpression(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): CwtDataExpression? {
-		return linkConfigs.firstNotNullOfOrNull { linkConfig ->
-			val dataSource = linkConfig.dataSource
-				?: return@firstNotNullOfOrNull null
-			CwtConfigHandler.resolveScriptExpression(element, rangeInExpression, dataSource, linkConfig, exact = false)
-				?: return@firstNotNullOfOrNull null
-			dataSource
-		} ?: linkConfigs.firstOrNull()?.dataSource
-	}
-	
-	override fun getReference(element: ParadoxScriptExpressionElement) = Reference(element, rangeInExpression, linkConfigs)
-	
-	override fun getUnresolvedError(element: ParadoxScriptExpressionElement): ParadoxScriptExpressionError? {
-		if(nodes.isNotEmpty()) return null
-		if(text.isEmpty()) return null
-		if(text.isParameterAwareExpression()) return null
-		//忽略是valueSetValue的情况
-		if(linkConfigs.any { it.dataSource?.type == CwtDataTypes.Value }) return null
-		val dataSources = linkConfigs.mapNotNullTo(mutableSetOf()) { it.dataSource }.joinToString()
-		//排除可解析的情况
-		if(getReference(element).canResolve()) return null
-		return ParadoxUnresolvedValueLinkDataSourceExpressionError(rangeInExpression, PlsBundle.message("script.expression.unresolvedValueLinkDataSource", text, dataSources))
-	}
+	override fun getAttributesKey() = ParadoxScriptAttributesKeys.VALUE_LINK_DATA_SOURCE_KEY
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxValueLinkDataSourceExpressionNode {
 			//text may contain parameters
-			//TODO 兼容嵌套的valueSetValueExpression和scriptValueExpression
-			return ParadoxValueLinkDataSourceExpressionNode(text, textRange, linkConfigs)
-		}
-	}
-	
-	class Reference(
-		element: ParadoxScriptExpressionElement,
-		rangeInElement: TextRange,
-		private val linkConfigs: List<CwtLinkConfig>
-	) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), SmartPsiReference {
-		override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
-			//尝试重命名关联的definition、localisation、syncedLocalisation等
-			val resolved = resolve()
-			when {
-				resolved == null -> pass()
-				resolved.language == CwtLanguage -> throw IncorrectOperationException() //不允许重命名
-				resolved is PsiFile -> resolved.setNameWithoutExtension(newElementName)
-				resolved is PsiNamedElement -> resolved.setName(newElementName)
-				resolved is ParadoxScriptExpressionElement -> resolved.value = newElementName
-				else -> throw IncorrectOperationException() //不允许重命名
+			//child node can be valueSetValueExpression / scriptValueExpression
+			val nodes = SmartList<ParadoxScriptExpressionNode>()
+			run {
+				val atIndex = text.indexOf('@')
+				if(atIndex != -1) {
+					val configExpressions = linkConfigs.mapNotNull { it.dataSource }.filter { it.type == CwtDataTypes.Value }
+					if(configExpressions.isNotEmpty()) {
+						val configGroup = linkConfigs.first().info.configGroup
+						val node = ParadoxValueSetValueExpression.resolve(text, textRange, configExpressions, configGroup)
+						nodes.add(node)
+					} else {
+						val dataText = text.substring(0, atIndex)
+						val dataRange = TextRange.create(0, atIndex)
+						val dataNode = ParadoxDataExpressionNode.resolve(dataText, dataRange, linkConfigs)
+						nodes.add(dataNode)
+					}
+					return@run
+				}
+				val pipeIndex = text.indexOf('|')
+				if(pipeIndex != -1) {
+					val configExpression = linkConfigs.find { it.dataSource?.expressionString == "<script_value>" }
+					if(configExpression != null) {
+						val configGroup = linkConfigs.first().info.configGroup
+						val node = ParadoxScriptValueExpression.resolve(text, textRange, configGroup)
+						nodes.add(node)
+					} else {
+						val dataText = text.substring(0, pipeIndex)
+						val dataRange = TextRange.create(0, pipeIndex)
+						val dataNode = ParadoxDataExpressionNode.resolve(dataText, dataRange, linkConfigs)
+						nodes.add(dataNode)
+					}
+				}
 			}
-			//重命名当前元素（仅修改对应范围的文本，认为整个文本没有用引号括起）
-			return element.setValue(rangeInElement.replace(element.value, newElementName))
-		}
-		
-		override fun resolve(): PsiElement? {
-			return resolve(true)
-		}
-		
-		override fun resolve(exact: Boolean): PsiElement? {
-			val element = element
-			return linkConfigs.firstNotNullOfOrNull { linkConfig ->
-				val dataSource = linkConfig.dataSource
-					?: return@firstNotNullOfOrNull null
-				val resolved = CwtConfigHandler.resolveScriptExpression(element, rangeInElement, dataSource, linkConfig, exact = exact)
-					?: return@firstNotNullOfOrNull null
-				resolved
+			if(nodes.isEmpty()) {
+				val node = ParadoxDataExpressionNode.resolve(text, textRange, linkConfigs)
+				nodes.add(node)
 			}
-		}
-		
-		override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-			val element = element
-			return linkConfigs.flatMap { linkConfig ->
-				val dataSource = linkConfig.dataSource
-					?: return@flatMap emptyList()
-				val resolved = CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, dataSource, linkConfig)
-				resolved
-			}.mapToArray { PsiElementResolveResult(it) }
+			return ParadoxValueLinkDataSourceExpressionNode(text, textRange, linkConfigs, nodes)
 		}
 	}
 }

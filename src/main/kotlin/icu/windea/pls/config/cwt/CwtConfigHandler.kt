@@ -25,6 +25,7 @@ import icu.windea.pls.core.selector.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.exp.*
+import icu.windea.pls.script.exp.nodes.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 import kotlin.collections.component1
@@ -942,12 +943,22 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	fun completeScopeLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?): Unit = with(context) {
+	fun completeScopeLinkDataSource(
+		context: ProcessingContext,
+		result: CompletionResultSet,
+		prefix: String?,
+		dataSourceNode: ParadoxScriptExpressionNode?
+	): Unit = with(context) {
 		val linkConfigs = if(prefix == null) configGroup.linksAsScopeWithoutPrefix else configGroup.linksAsScopeWithPrefix
 		
 		//TODO 进一步匹配scope
 		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx
+		
+		if(dataSourceNode is ParadoxValueSetValueExpression) {
+			dataSourceNode.complete(context, result)
+			return@with
+		}
 		
 		val configExpression = configExpression
 		val config = config
@@ -1023,12 +1034,26 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	fun completeValueLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?): Unit = with(context) {
+	fun completeValueLinkDataSource(
+		context: ProcessingContext,
+		result: CompletionResultSet,
+		prefix: String?,
+		dataSourceNode: ParadoxScriptExpressionNode?
+	): Unit = with(context) {
 		val linkConfigs = if(prefix == null) configGroup.linksAsValueWithoutPrefix else configGroup.linksAsValueWithPrefix
 		
 		//TODO 进一步匹配scope
 		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx
+		
+		if(dataSourceNode is ParadoxValueSetValueExpression) {
+			dataSourceNode.complete(context, result)
+			return@with
+		}
+		if(dataSourceNode is ParadoxScriptValueExpression) {
+			dataSourceNode.complete(context, result)
+			return@with
+		}
 		
 		val configExpression = configExpression
 		val config = config
@@ -1666,33 +1691,22 @@ object CwtConfigHandler {
 		return linkConfig.pointer.element
 	}
 	
-	fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, expression: CwtDataExpression, configGroup: CwtConfigGroup): PsiElement? {
-		val valueSetName = expression.value ?: return null
-		val read = expression.type == CwtDataTypes.Value
-		if(read) {
-			//首先尝试解析为预定义的value
-			run {
-				val valueSetValueConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(name) ?: return@run
-				val resolved = valueSetValueConfig.pointer.element.castOrNull<CwtNamedElement>()
-				if(resolved != null) return resolved
+	fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, expressions: List<CwtDataExpression>, configGroup: CwtConfigGroup): PsiElement? {
+		for(expression in expressions) {
+			val valueSetName = expression.value ?: return null
+			val read = expression.type == CwtDataTypes.Value
+			if(read) {
+				//首先尝试解析为预定义的value
+				run {
+					val valueSetValueConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(name) ?: return@run
+					val resolved = valueSetValueConfig.pointer.element.castOrNull<CwtNamedElement>()
+					if(resolved != null) return resolved
+				}
 			}
 		}
-		return ParadoxValueSetValueElement(element, name, valueSetName, configGroup.project, configGroup.gameType, read)
-	}
-	
-	fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, config: CwtDataConfig<*>): PsiElement? {
-		val valueSetName = config.expression.value ?: return null
-		val configGroup = config.info.configGroup
-		val read = config.expression.type == CwtDataTypes.Value
-		if(read) {
-			//首先尝试解析为预定义的value
-			run {
-				val valueSetValueConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(name) ?: return@run
-				val resolved = valueSetValueConfig.pointer.element.castOrNull<CwtNamedElement>()
-				if(resolved != null) return resolved
-			}
-		}
-		return ParadoxValueSetValueElement(element, name, valueSetName, configGroup.project, configGroup.gameType, read)
+		val read = expressions.first().type == CwtDataTypes.Value //first is ok
+		val valueSetNames = expressions.mapNotNull { it.value }
+		return ParadoxValueSetValueElement(element, name, valueSetNames, configGroup.project, configGroup.gameType, read)
 	}
 	
 	fun resolveModifier(name: String, configGroup: CwtConfigGroup): PsiElement? {

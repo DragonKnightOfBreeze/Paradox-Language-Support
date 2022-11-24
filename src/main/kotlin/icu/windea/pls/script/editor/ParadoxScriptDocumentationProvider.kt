@@ -6,6 +6,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
@@ -113,14 +114,15 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getValueSetValueInfo(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): String {
 		return buildString {
 			val configGroup = config.info.configGroup
-			buildValueSetValueDefinition(element.value, config.expression.value.orEmpty(), configGroup)
+			val valueSetNames = config.expression.value.toSingletonListOrEmpty()
+			buildValueSetValueDefinition(element.value, valueSetNames, configGroup)
 		}
 	}
 	
 	private fun getValueSetValueInfo(element: ParadoxValueSetValueElement): String {
 		return buildString {
 			val configGroup = getCwtConfig(element.project).getValue(element.gameType)
-			buildValueSetValueDefinition(element.name, element.valueSetName, configGroup)
+			buildValueSetValueDefinition(element.name, element.valueSetNames, configGroup)
 		}
 	}
 	
@@ -221,14 +223,15 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getValueSetValueDoc(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): String {
 		return buildString {
 			val configGroup = config.info.configGroup
-			buildValueSetValueDefinition(element.value, config.expression.value.orEmpty(), configGroup)
+			val valueSetNames = config.expression.value.toSingletonListOrEmpty()
+			buildValueSetValueDefinition(element.value, valueSetNames, configGroup)
 		}
 	}
 	
 	private fun getValueSetValueDoc(element: ParadoxValueSetValueElement): String {
 		return buildString {
 			val configGroup = getCwtConfig(element.project).getValue(element.gameType)
-			buildValueSetValueDefinition(element.name, element.valueSetName, configGroup)
+			buildValueSetValueDefinition(element.name, element.valueSetNames, configGroup)
 		}
 	}
 	
@@ -435,12 +438,14 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildValueSetValueDefinition(name: String, valueSetName: String, configGroup: CwtConfigGroup) {
+	private fun StringBuilder.buildValueSetValueDefinition(name: String, valueSetNames: List<String>, configGroup: CwtConfigGroup) {
 		definition {
 			//不加上文件信息
 			//加上值集值值的信息
 			append(PlsDocBundle.message("name.cwt.valueSetValue")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
-			if(valueSetName.isNotEmpty()) {
+			var appendSeparator = false
+			for(valueSetName in valueSetNames) {
+				if(appendSeparator) append(" | ") else appendSeparator = true
 				val valueConfig = configGroup.values[valueSetName]
 				if(valueConfig != null) {
 					val gameType = configGroup.gameType

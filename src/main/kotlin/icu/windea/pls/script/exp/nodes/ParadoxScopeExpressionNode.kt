@@ -3,7 +3,6 @@ package icu.windea.pls.script.exp.nodes
 import com.intellij.openapi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.script.exp.errors.*
 import icu.windea.pls.script.psi.*
@@ -14,12 +13,6 @@ class ParadoxScopeExpressionNode(
 	override val nodes: List<ParadoxScriptExpressionNode> = emptyList(),
 	override val errors: List<ParadoxScriptExpressionError> = emptyList()
 ) : ParadoxScriptExpressionNode {
-	val prefixNode = nodes.singleOrNull()?.castOrNull<ParadoxScopeLinkFromDataExpressionNode>()
-		?.nodes?.getOrNull(0)?.castOrNull<ParadoxScopeLinkPrefixExpressionNode>()
-	
-	val dataSourceNode = nodes.singleOrNull()?.castOrNull<ParadoxScopeLinkFromDataExpressionNode>()
-		?.nodes?.getOrNull(0)?.castOrNull<ParadoxScopeLinkDataSourceExpressionNode>()
-	
 	override fun getUnresolvedError(element: ParadoxScriptExpressionElement): ParadoxScriptExpressionError? {
 		if(nodes.isNotEmpty()) return null
 		if(text.isEmpty()) return null

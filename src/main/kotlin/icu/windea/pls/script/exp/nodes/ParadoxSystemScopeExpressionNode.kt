@@ -17,7 +17,9 @@ class ParadoxSystemScopeExpressionNode(
 ) : ParadoxScriptExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY
 	
-	override fun getReference(element: ParadoxScriptExpressionElement) = Reference(element, rangeInExpression, config.pointer.element)
+	override fun getReference(element: ParadoxScriptExpressionElement): Reference {
+		return Reference(element, rangeInExpression, config.pointer.element)
+	}
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxSystemScopeExpressionNode? {

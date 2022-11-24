@@ -12,7 +12,9 @@ class ParadoxScriptValueParameterExpressionNode(
 ) : ParadoxScriptExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.ARGUMENT_KEY
 	
-	override fun getReference(element: ParadoxScriptExpressionElement) = Reference(element, rangeInExpression)
+	override fun getReference(element: ParadoxScriptExpressionElement): Reference {
+		return Reference(element, rangeInExpression)
+	}
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup) {
@@ -29,3 +31,4 @@ class ParadoxScriptValueParameterExpressionNode(
 		}
 	}
 }
+
