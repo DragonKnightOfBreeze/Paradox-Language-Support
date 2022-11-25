@@ -2,7 +2,7 @@ package icu.windea.pls.script.psi.impl
 
 import com.intellij.lang.*
 import com.intellij.psi.stubs.*
-import icu.windea.pls.script.exp.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.psi.*
 
 class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {

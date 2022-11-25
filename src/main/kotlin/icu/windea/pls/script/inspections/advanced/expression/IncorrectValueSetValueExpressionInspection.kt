@@ -6,10 +6,10 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.selector.*
-import icu.windea.pls.script.exp.*
-import icu.windea.pls.script.exp.errors.*
 import icu.windea.pls.script.psi.*
 
 class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
@@ -53,7 +53,7 @@ class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
 				}
 			}
 			
-			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxScriptExpressionError) {
+			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError) {
 				holder.registerScriptExpressionError(element, error)
 			}
 		})

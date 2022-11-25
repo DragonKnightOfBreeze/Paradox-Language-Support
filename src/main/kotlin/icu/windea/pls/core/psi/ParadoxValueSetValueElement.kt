@@ -24,6 +24,15 @@ class ParadoxValueSetValueElement(
 	val gameType: ParadoxGameType,
 	val read: Boolean = true
 ) : RenameableFakePsiElement(element), ParadoxScriptNamedElement, Navigatable {
+	constructor(
+		element: PsiElement,
+		name: String,
+		valueSetName: String,
+		project: Project,
+		gameType: ParadoxGameType,
+		read: Boolean = true
+	) : this(element, name, listOf(valueSetName), project, gameType, read)
+	
 	val valueSetNamesText = valueSetNames.joinToString(" | ")
 	
 	override fun getText(): String {

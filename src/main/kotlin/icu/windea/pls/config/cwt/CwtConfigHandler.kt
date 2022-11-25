@@ -18,14 +18,14 @@ import icu.windea.pls.config.internal.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.codeStyle.*
-import icu.windea.pls.script.exp.*
-import icu.windea.pls.script.exp.nodes.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 import kotlin.collections.component1

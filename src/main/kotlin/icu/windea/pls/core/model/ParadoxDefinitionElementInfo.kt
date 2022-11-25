@@ -9,7 +9,7 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.script.exp.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.psi.*
 
 /**

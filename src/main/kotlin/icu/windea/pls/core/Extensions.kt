@@ -21,6 +21,7 @@ import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.model.*
@@ -36,7 +37,6 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.references.*
 import icu.windea.pls.script.*
-import icu.windea.pls.script.exp.nodes.*
 import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
@@ -232,8 +232,7 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
 	return when(this) {
 		is ParadoxScriptExpressionReference -> true
 		is ParadoxValueSetValueExpressionNode.Reference -> true
-		is ParadoxScopeLinkDataSourceExpressionNode.Reference -> true
-		is ParadoxValueLinkDataSourceExpressionNode.Reference -> true
+		is ParadoxDataExpressionNode.Reference -> true
 		is ParadoxScriptScopeFieldDataSourceReference -> true
 		is ParadoxScriptValueFieldDataSourceReference -> true
 		is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
