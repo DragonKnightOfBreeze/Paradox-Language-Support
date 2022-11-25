@@ -1,19 +1,14 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import java.util.List;
+import com.intellij.navigation.*;
+import com.intellij.psi.*;
+import icu.windea.pls.core.expression.*;
+import icu.windea.pls.core.psi.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import icu.windea.pls.core.psi.ParadoxDefinitionProperty;
-import com.intellij.psi.StubBasedPsiElement;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
-import com.intellij.psi.SmartPsiElementPointer;
-import icu.windea.pls.core.psi.ParadoxParameter;
-import icu.windea.pls.script.exp.ParadoxDataType;
-import java.util.Map;
-import java.util.Set;
-import javax.swing.Icon;
+
+import javax.swing.*;
+import java.util.*;
 
 public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxScriptTypedElement, ParadoxDefinitionProperty, StubBasedPsiElement<ParadoxScriptPropertyStub> {
 

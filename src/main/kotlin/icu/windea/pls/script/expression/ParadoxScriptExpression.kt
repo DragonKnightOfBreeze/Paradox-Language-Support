@@ -2,7 +2,6 @@ package icu.windea.pls.script.expression
 
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.script.exp.*
 
 /**
  * 脚本表达式。

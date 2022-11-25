@@ -1,6 +1,6 @@
 package icu.windea.pls.core.psi
 
-import icu.windea.pls.script.exp.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.psi.*
 
 /**
