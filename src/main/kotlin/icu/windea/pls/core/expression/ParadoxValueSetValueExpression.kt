@@ -122,10 +122,10 @@ fun Resolver.resolve(text: String, textRange: TextRange, config: CwtConfig<*>, c
 fun Resolver.resolve(text: String, textRange: TextRange, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxValueSetValueExpression? {
 	val nodes = SmartList<ParadoxScriptExpressionNode>()
 	val offset = textRange.startOffset
-	val atIndex = text.indexOf('@')
+	var atIndex = text.indexOf('@')
 	run {
 		if(atIndex == -1) {
-			atIndex == text.length
+			atIndex = text.length
 		}
 		//resolve valueSetValueNode
 		val nodeText = text.substring(0, atIndex)
