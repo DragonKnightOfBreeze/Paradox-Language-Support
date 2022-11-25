@@ -13,6 +13,7 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.exp.ParadoxValueSetValueExpression.*
 import icu.windea.pls.script.exp.errors.*
 import icu.windea.pls.script.exp.nodes.*
+import icu.windea.pls.script.highlighter.*
 
 /**
  * 值集值表达式。
@@ -55,6 +56,8 @@ class ParadoxValueSetValueExpressionImpl(
 	
 	override val valueSetValueNode: ParadoxValueSetValueExpressionNode get() = nodes.get(0).cast()
 	override val scopeFieldExpression: ParadoxScopeFieldExpression? get() = nodes.getOrNull(2)?.cast()
+	
+	override fun getAttributesKey() = ParadoxScriptAttributesKeys.VALUE_SET_VALUE_EXPRESSION_KEY
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
 		val keyword = context.keyword
