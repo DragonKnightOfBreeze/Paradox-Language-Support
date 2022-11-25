@@ -27,7 +27,7 @@ class ParadoxScopeLinkPrefixExpressionNode (
 	class Reference(
 		element: ParadoxScriptExpressionElement,
 		rangeInElement: TextRange,
-		private val linkConfigs: List<CwtLinkConfig>
+		val linkConfigs: List<CwtLinkConfig>
 	) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
 		override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
 			return element.setValue(rangeInElement.replace(element.value, newElementName))

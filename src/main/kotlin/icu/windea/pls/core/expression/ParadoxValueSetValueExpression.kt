@@ -63,7 +63,7 @@ class ParadoxValueSetValueExpressionImpl(
 		for(node in nodes) {
 			when(node) {
 				is ParadoxValueSetValueExpressionNode -> {
-					if(!malformed && !node.text.all { it.isExactIdentifierChar() }) {
+					if(!malformed && !isValid(node)) {
 						malformed = true
 					}
 				}
@@ -81,6 +81,10 @@ class ParadoxValueSetValueExpressionImpl(
 			errors.add(0, error)
 		}
 		return errors
+	}
+	
+	private fun isValid(node: ParadoxExpressionNode): Boolean {
+		return node.text.all { it.isExactIdentifierChar() }
 	}
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {

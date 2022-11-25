@@ -85,7 +85,7 @@ class ParadoxValueFieldExpressionImpl(
 										if(!malformed) {
 											malformed = true
 										}
-									} else if(!malformed && !dataSourceChildNode.text.all { it.isExactIdentifierChar() }) {
+									} else if(!malformed && !isValid(dataSourceChildNode)) {
 										malformed = true
 									}
 								}
@@ -118,7 +118,7 @@ class ParadoxValueFieldExpressionImpl(
 										} else if(!malformed) {
 											malformed = true
 										}
-									} else if(!malformed && !dataSourceChildNode.text.all { it.isExactIdentifierChar() }) {
+									} else if(!malformed && !isValid(dataSourceChildNode)) {
 										malformed = true
 									}
 								}
@@ -139,6 +139,10 @@ class ParadoxValueFieldExpressionImpl(
 			errors.add(0, error)
 		}
 		return errors
+	}
+	
+	private fun isValid(node: ParadoxExpressionNode): Boolean {
+		return node.text.all { it.isExactIdentifierChar() }
 	}
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -234,7 +238,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 		index = dotIndex + 1
 		dotIndex = text.indexOf('.', index)
 		atIndex = text.indexOf('@', index)
-		if(dotIndex > atIndex) {
+		if(atIndex != -1 && dotIndex > atIndex) {
 			dotIndex = -1
 		}
 		val dotNode = if(dotIndex != -1) {

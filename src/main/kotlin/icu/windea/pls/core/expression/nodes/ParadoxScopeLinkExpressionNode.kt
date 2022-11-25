@@ -29,7 +29,7 @@ class ParadoxScopeLinkExpressionNode (
 	class Reference(
 		element: ParadoxScriptExpressionElement,
 		rangeInElement: TextRange,
-		private val config: CwtLinkConfig
+		val config: CwtLinkConfig
 	) : PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
 		override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
 			return element.setValue(rangeInElement.replace(element.value, newElementName))

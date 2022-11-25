@@ -5,6 +5,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.errors.*
@@ -15,6 +16,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptValueExpressionNode(
 	override val text: String,
 	override val rangeInExpression: TextRange,
+	val config: CwtConfig<*>,
 	val configGroup: CwtConfigGroup
 ) : ParadoxExpressionNode {
 	override fun getAttributesKey(): TextAttributesKey? {
@@ -27,7 +29,6 @@ class ParadoxScriptValueExpressionNode(
 		if(nodes.isNotEmpty()) return null
 		if(text.isEmpty()) return null
 		if(text.isParameterAwareExpression()) return null
-		//排除可解析的情况
 		if(getReference(element).canResolve()) return null
 		return ParadoxUnresolvedScriptValueExpressionError(rangeInExpression, PlsBundle.message("script.expression.unresolvedScriptValue", text))
 	}
@@ -35,20 +36,21 @@ class ParadoxScriptValueExpressionNode(
 	override fun getReference(element: ParadoxScriptExpressionElement): Reference? {
 		if(text.isEmpty()) return null
 		if(text.isParameterAwareExpression()) return null
-		return Reference(element, rangeInExpression, text, configGroup)
+		return Reference(element, rangeInExpression, text, config, configGroup)
 	}
 	
 	companion object Resolver {
-		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScriptValueExpressionNode {
-			return ParadoxScriptValueExpressionNode(text, textRange, configGroup)
+		fun resolve(text: String, textRange: TextRange, config: CwtConfig<*>, configGroup: CwtConfigGroup): ParadoxScriptValueExpressionNode {
+			return ParadoxScriptValueExpressionNode(text, textRange, config, configGroup)
 		}
 	}
 	
 	class Reference(
 		element: ParadoxScriptExpressionElement,
 		rangeInElement: TextRange,
-		private val name: String,
-		private val configGroup: CwtConfigGroup
+		val name: String,
+		val config: CwtConfig<*>,
+		val configGroup: CwtConfigGroup
 	) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), SmartPsiReference {
 		override fun handleElementRename(newElementName: String): PsiElement {
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
@@ -60,12 +62,12 @@ class ParadoxScriptValueExpressionNode(
 		
 		override fun resolve(exact: Boolean): PsiElement? {
 			val configExpression = CwtValueExpression.resolve("<script_value>")
-			return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, configExpression, null, configGroup, exact = exact)
+			return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, configExpression, config, configGroup, exact = exact)
 		}
 		
 		override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 			val configExpression = CwtValueExpression.resolve("<script_value>")
-			return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, configExpression, null, configGroup)
+			return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, configExpression, config, configGroup)
 				.mapToArray { PsiElementResolveResult(it) }
 		}
 	}

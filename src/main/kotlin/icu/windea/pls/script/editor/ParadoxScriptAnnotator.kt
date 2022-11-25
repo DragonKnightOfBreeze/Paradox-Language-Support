@@ -165,6 +165,14 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				val attributesKey = Keys.MODIFIER_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
+			CwtDataTypes.AliasName, CwtDataTypes.AliasKeysField -> {
+				val key = element.text
+				val aliasName = expression.value ?: return
+				val aliasMap = configGroup.aliasGroups.get(aliasName) ?: return
+				val aliasSubName = CwtConfigHandler.getAliasSubName(key, false, aliasName, configGroup) ?: return
+				val aliasConfig = aliasMap[aliasSubName]?.first() ?: return
+				doAnnotateExpressionElement(element, range, CwtValueExpression.resolve(aliasSubName), aliasConfig.config, holder)
+			}
 			else -> pass()
 		}
 	}

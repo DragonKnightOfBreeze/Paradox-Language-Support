@@ -67,7 +67,8 @@ class ParadoxScriptValueExpressionImpl(
 			if(node is ParadoxTokenExpressionNode) {
 				pipeCount++
 			} else {
-				if(!malformed && isLast || node.text.isEmpty() || !node.text.all { it.isExactIdentifierChar() }) {
+				if(isLast && node.text.isEmpty()) continue
+				if(!malformed && (node.text.isEmpty() || !isValid(node))) {
 					malformed = true
 				}
 				when(node) {
@@ -84,11 +85,18 @@ class ParadoxScriptValueExpressionImpl(
 			val error = ParadoxMalformedScriptValueExpressionExpressionError(rangeInExpression, PlsBundle.message("script.expression.malformedScriptValueExpression", text))
 			errors.add(error)
 		}
-		if(!lastIsParameter) {
+		if(lastIsParameter) {
 			val error = ParadoxMissingParameterValueExpressionExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingParameterValueExpression"))
 			errors.add(error)
 		}
 		return errors
+	}
+	
+	private fun isValid(node: ParadoxExpressionNode): Boolean {
+		return when(node){
+			is ParadoxScriptValueParameterValueExpressionNode -> node.text.all { it.isExactIdentifierChar() || it == '.' }
+			else -> node.text.all { it.isExactIdentifierChar() }
+		}
 	}
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -153,7 +161,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, config: CwtConfig<*>, c
 		val node = when {
 			n == 0 -> {
 				scriptValueName = nodeText
-				ParadoxScriptValueExpressionNode.resolve(nodeText, nodeRange, configGroup)
+				ParadoxScriptValueExpressionNode.resolve(nodeText, nodeRange, config, configGroup)
 			}
 			n % 2 == 1 -> {
 				parameterName = nodeText

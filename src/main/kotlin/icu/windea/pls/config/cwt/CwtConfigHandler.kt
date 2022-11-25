@@ -554,7 +554,7 @@ object CwtConfigHandler {
 					val typeFile = localisation.containingFile
 					val lookupElement = LookupElementBuilder.create(localisation, name.quoteIf(quoted))
 						.withIcon(PlsIcons.Localisation)
-						.fromScriptExpression(isKey, configs, tailText = tailText, typeText = typeFile.name, typeIcon = typeFile.icon)
+						.buildScriptExpressionLookupElement(isKey, configs, tailText = tailText, typeText = typeFile.name, typeIcon = typeFile.icon)
 					result.addElement(lookupElement)
 					true
 				}
@@ -568,7 +568,7 @@ object CwtConfigHandler {
 					val typeFile = syncedLocalisation.containingFile
 					val lookupElement = LookupElementBuilder.create(syncedLocalisation, name.quoteIf(quoted))
 						.withIcon(PlsIcons.Localisation)
-						.fromScriptExpression(isKey, configs, tailText = tailText, typeText = typeFile.name, typeIcon = typeFile.icon)
+						.buildScriptExpressionLookupElement(isKey, configs, tailText = tailText, typeText = typeFile.name, typeIcon = typeFile.icon)
 					result.addElement(lookupElement)
 					true
 				}
@@ -582,7 +582,7 @@ object CwtConfigHandler {
 					val typeFile = localisation.containingFile
 					val lookupElement = LookupElementBuilder.create(localisation, name)
 						.withIcon(PlsIcons.Localisation)
-						.fromScriptExpression(isKey, configs, tailText = tailText, typeText = typeFile.name, typeIcon = typeFile.icon)
+						.buildScriptExpressionLookupElement(isKey, configs, tailText = tailText, typeText = typeFile.name, typeIcon = typeFile.icon)
 					result.addElement(lookupElement)
 					true
 				}
@@ -605,7 +605,7 @@ object CwtConfigHandler {
 					val name = expressionType.extract(expressionValue, filePath) ?: continue
 					//没有图标
 					val lookupElement = LookupElementBuilder.create(file, name)
-						.fromScriptExpression(isKey, configs, tailText = tailText, typeText = file.name, typeIcon = file.icon)
+						.buildScriptExpressionLookupElement(isKey, configs, tailText = tailText, typeText = file.name, typeIcon = file.icon)
 					result.addElement(lookupElement)
 				}
 			}
@@ -626,7 +626,7 @@ object CwtConfigHandler {
 					val name = expressionType.extract(expressionValue, filePath) ?: continue
 					//没有图标
 					val lookupElement = LookupElementBuilder.create(file, name)
-						.fromScriptExpression(isKey, configs, tailText = tailText, typeText = file.name, typeIcon = file.icon)
+						.buildScriptExpressionLookupElement(isKey, configs, tailText = tailText, typeText = file.name, typeIcon = file.icon)
 					result.addElement(lookupElement)
 				}
 			}
@@ -640,7 +640,7 @@ object CwtConfigHandler {
 					val typeFile = definition.containingFile
 					val lookupElement = LookupElementBuilder.create(definition, name.quoteIf(quoted))
 						.withIcon(PlsIcons.Definition)
-						.fromScriptExpression(isKey, configs, tailText = tailText, typeText = typeFile.name, typeIcon = typeFile.icon)
+						.buildScriptExpressionLookupElement(isKey, configs, tailText = tailText, typeText = typeFile.name, typeIcon = typeFile.icon)
 					result.addElement(lookupElement)
 					true
 				}
@@ -657,7 +657,7 @@ object CwtConfigHandler {
 					val typeFile = definition.containingFile
 					val lookupElement = LookupElementBuilder.create(definition, name.quoteIf(quoted))
 						.withIcon(PlsIcons.Definition)
-						.fromScriptExpression(isKey, configs, tailText = tailText, typeText = typeFile.name, typeIcon = typeFile.icon)
+						.buildScriptExpressionLookupElement(isKey, configs, tailText = tailText, typeText = typeFile.name, typeIcon = typeFile.icon)
 					result.addElement(lookupElement)
 					true
 				}
@@ -687,7 +687,7 @@ object CwtConfigHandler {
 						val element = enumValueConfig.pointer.element ?: continue
 						val lookupElement = LookupElementBuilder.create(element, name.quoteIf(quoted))
 							.withIcon(PlsIcons.EnumValue)
-							.fromScriptExpression(isKey, configs, tailText = tailText, typeText = typeFile?.name, typeIcon = typeFile?.icon)
+							.buildScriptExpressionLookupElement(isKey, configs, tailText = tailText, typeText = typeFile?.name, typeIcon = typeFile?.icon)
 							.withCaseSensitivity(false) //忽略大小写
 							.withPriority(PlsCompletionPriorities.enumPriority)
 						result.addElement(lookupElement)
@@ -706,7 +706,7 @@ object CwtConfigHandler {
 						//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 						val lookupElement = LookupElementBuilder.create(complexEnum, name.quoteIf(quoted))
 							.withIcon(PlsIcons.ComplexEnumValue)
-							.fromScriptExpression(isKey, configs, tailText = tailText, typeText = typeFile?.name, typeIcon = typeFile?.icon)
+							.buildScriptExpressionLookupElement(isKey, configs, tailText = tailText, typeText = typeFile?.name, typeIcon = typeFile?.icon)
 							.withCaseSensitivity(false) //忽略大小写
 						result.addElement(lookupElement)
 						true
@@ -774,7 +774,7 @@ object CwtConfigHandler {
 				val typeFile = config.resolved().pointer.containingFile
 				val lookupElement = LookupElementBuilder.create(element, name.quoteIf(quoted))
 					.withIcon(if(isKey == true) PlsIcons.Property else PlsIcons.Value)
-					.fromScriptExpression(isKey, configs, typeText = typeFile?.name, typeIcon = typeFile?.icon)
+					.buildScriptExpressionLookupElement(isKey, configs, typeText = typeFile?.name, typeIcon = typeFile?.icon)
 					.withCaseSensitivity(false) //忽略大小写
 					.withPriority(PlsCompletionPriorities.constantPriority)
 				result.addElement(lookupElement)
@@ -787,6 +787,54 @@ object CwtConfigHandler {
 	private fun getScriptExpressionTailText(configExpression: CwtDataExpression?, config: CwtDataConfig<*>?): String {
 		if(config == null) return " by $configExpression"
 		return " by $configExpression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
+	}
+	
+	private fun LookupElementBuilder.buildScriptExpressionLookupElement(
+		isKey: Boolean?,
+		configs: List<CwtDataConfig<*>>? = null,
+		tailText: String? = null,
+		typeText: String? = null,
+		typeIcon: Icon? = null
+	): LookupElementBuilder {
+		val onlyConfig = configs?.singleOrNull()?.castOrNull<CwtPropertyConfig>()
+		val onlyValue = onlyConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }
+		val finalTailText = buildString {
+			if(onlyValue != null) append(" = ").append(onlyValue)
+			if(tailText != null) append(tailText)
+		}
+		var result = this
+		if(finalTailText.isNotEmpty()) {
+			result = result.withTailText(finalTailText, true)
+		}
+		if(isKey == true) {
+			result = result.withInsertHandler { context, _ ->
+				val editor = context.editor
+				val document = editor.document
+				val chars = document.charsSequence
+				val charsLength = chars.length
+				val caretOffset = editor.caretModel.offset
+				//得到光标之后的分隔符的位置
+				var offset = caretOffset
+				while(offset < charsLength && chars[offset].isWhitespace()) {
+					offset++
+				}
+				//如果后面没有分隔符，则要自动插入等号，并且根据代码格式设置来判断是否加上等号周围的空格
+				//如果对应的value是唯一确定的，则还要自动插入这个值
+				if(offset == charsLength || chars[offset] !in PlsConstants.separatorChars) {
+					val customSettings = CodeStyle.getCustomSettings(context.file, ParadoxScriptCodeStyleSettings::class.java)
+					val textToInsert = buildString {
+						val separator = if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "="
+						append(separator)
+						if(onlyValue != null) append(onlyValue)
+					}
+					EditorModificationUtil.insertStringAtCaret(editor, textToInsert)
+				}
+			}
+		}
+		if(typeText != null) {
+			result = result.withTypeText(typeText, typeIcon, true)
+		}
+		return result
 	}
 	
 	fun completeAliasName(aliasName: String, context: ProcessingContext, result: CompletionResultSet, scope: String?): Unit = with(context) {
@@ -840,7 +888,7 @@ object CwtConfigHandler {
 			val lookupElement = LookupElementBuilder.create(element, name.quoteIf(quoted))
 				//.apply { if(!scopeMatched) withItemTextForeground(Color.GRAY) }
 				.withIcon(PlsIcons.Modifier)
-				.fromScriptExpression(isKey, configs, tailText = tailText, typeText = typeFile?.name, typeIcon = typeFile?.icon)
+				.buildScriptExpressionLookupElement(isKey, configs, tailText = tailText, typeText = typeFile?.name, typeIcon = typeFile?.icon)
 				//.withPriority(PlsCompletionPriorities.modifierPriority, scopeMatched)
 				.withPriority(PlsCompletionPriorities.modifierPriority)
 			lookupElements.add(lookupElement)
@@ -864,7 +912,7 @@ object CwtConfigHandler {
 		scopeFieldExpression.complete(context, result)
 	}
 	
-	fun completeValueSetValueExpression(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
+	fun completeValueSetValueExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		//基于当前位置的代码补全
 		if(quoted) return
 		val textRange = TextRange.create(0, keyword.length)
@@ -872,7 +920,7 @@ object CwtConfigHandler {
 		valueSetValueExpression.complete(context, result)
 	}
 	
-	fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
+	fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		val lookupElements = mutableSetOf<LookupElement>()
 		val systemScopeConfigs = InternalConfigHandler.getSystemScopeMap().values
 		for(systemScopeConfig in systemScopeConfigs) {
@@ -892,7 +940,7 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	fun completeScope(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
+	fun completeScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		//TODO 进一步匹配scope
 		val lookupElements = mutableSetOf<LookupElement>()
 		val linkConfigs = configGroup.linksAsScopeNotData
@@ -963,6 +1011,10 @@ object CwtConfigHandler {
 			dataSourceNode.complete(context, result)
 			return@with
 		}
+		if(dataSourceNode is ParadoxScriptValueExpression) {
+			dataSourceNode.complete(context, result)
+			return@with
+		}
 		
 		val configExpression = configExpression
 		val config = config
@@ -983,7 +1035,7 @@ object CwtConfigHandler {
 		context.put(PlsCompletionKeys.configKey, config)
 	}
 	
-	fun completeValueLinkValue(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
+	fun completeValueLinkValue(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		//TODO 进一步匹配scope
 		val linkConfigs = configGroup.linksAsValueNotData
 		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
@@ -1078,11 +1130,11 @@ object CwtConfigHandler {
 		context.put(PlsCompletionKeys.configKey, config)
 	}
 	
-	fun completeValueSetValue(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
+	fun completeValueSetValue(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		val gameType = this.configGroup.gameType
 		val project = this.configGroup.project
 		
-		if(quoted) return@with 
+		if(quoted) return@with
 		val valueSetName = configExpression.value ?: return@with
 		val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
 		//提示预定义的value
@@ -1100,7 +1152,7 @@ object CwtConfigHandler {
 					val typeFile = valueConfig.pointer.containingFile
 					val lookupElement = LookupElementBuilder.create(element, name)
 						.withIcon(PlsIcons.PredefinedValueSetValue)
-						.fromScriptExpression(isKey, configs, tailText = tailText, typeText = typeFile?.name, typeIcon = typeFile?.icon)
+						.buildScriptExpressionLookupElement(isKey, configs, tailText = tailText, typeText = typeFile?.name, typeIcon = typeFile?.icon)
 						.withCaseSensitivity(false) //忽略大小写
 						.withPriority(PlsCompletionPriorities.predefinedValueSetValuePriority)
 					result.addElement(lookupElement)
@@ -1124,7 +1176,7 @@ object CwtConfigHandler {
 				//不显示typeText
 				val lookupElement = LookupElementBuilder.create(valueSetValue, value)
 					.withIcon(icon)
-					.fromScriptExpression(isKey, configs, tailText = tailText)
+					.buildScriptExpressionLookupElement(isKey, configs, tailText = tailText)
 					.withCaseSensitivity(false) //忽略大小写
 				result.addElement(lookupElement)
 				true
@@ -1132,7 +1184,7 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun completeLocalisationCommandScope(context: ProcessingContext, result: CompletionResultSet) : Unit = with(context) {
+	fun completeLocalisationCommandScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		//TODO 进一步匹配scope
 		val lookupElements = mutableSetOf<LookupElement>()
 		val localisationLinks = configGroup.localisationLinks
@@ -1246,54 +1298,6 @@ object CwtConfigHandler {
 			}
 			true
 		}
-	}
-	
-	private fun LookupElementBuilder.fromScriptExpression(
-		isKey: Boolean?,
-		configs: List<CwtDataConfig<*>>? = null,
-		tailText: String? = null,
-		typeText: String? = null,
-		typeIcon: Icon? = null
-	): LookupElementBuilder {
-		val onlyConfig = configs?.singleOrNull()?.castOrNull<CwtPropertyConfig>()
-		val onlyValue = onlyConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }
-		val finalTailText = buildString {
-			if(onlyValue != null) append(" = ").append(onlyValue)
-			if(tailText != null) append(tailText)
-		}
-		var result = this
-		if(finalTailText.isNotEmpty()) {
-			result = result.withTailText(finalTailText, true)
-		}
-		if(isKey == true) {
-			result = result.withInsertHandler { context, _ ->
-				val editor = context.editor
-				val document = editor.document
-				val chars = document.charsSequence
-				val charsLength = chars.length
-				val caretOffset = editor.caretModel.offset
-				//得到光标之后的分隔符的位置
-				var offset = caretOffset
-				while(offset < charsLength && chars[offset].isWhitespace()) {
-					offset++
-				}
-				//如果后面没有分隔符，则要自动插入等号，并且根据代码格式设置来判断是否加上等号周围的空格
-				//如果对应的value是唯一确定的，则还要自动插入这个值
-				if(offset == charsLength || chars[offset] !in PlsConstants.separatorChars) {
-					val customSettings = CodeStyle.getCustomSettings(context.file, ParadoxScriptCodeStyleSettings::class.java)
-					val textToInsert = buildString {
-						val separator = if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "="
-						append(separator)
-						if(onlyValue != null) append(onlyValue)
-					}
-					EditorModificationUtil.insertStringAtCaret(editor, textToInsert)
-				}
-			}
-		}
-		if(typeText != null) {
-			result = result.withTypeText(typeText, typeIcon, true)
-		}
-		return result
 	}
 	//endregion
 	

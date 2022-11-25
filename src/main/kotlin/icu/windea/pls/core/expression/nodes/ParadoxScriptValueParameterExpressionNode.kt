@@ -1,5 +1,6 @@
 package icu.windea.pls.core.expression.nodes
 
+import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.cwt.*
@@ -13,10 +14,14 @@ class ParadoxScriptValueParameterExpressionNode (
 	val scriptValueName: String?,
 	val configGroup: CwtConfigGroup
 ) : ParadoxExpressionNode {
-	override fun getAttributesKey() = ParadoxScriptAttributesKeys.ARGUMENT_KEY
+	override fun getAttributesKey(): TextAttributesKey? {
+		if(text.isEmpty()) return null
+		return ParadoxScriptAttributesKeys.ARGUMENT_KEY
+	}
 	
 	override fun getReference(element: ParadoxScriptExpressionElement): Reference? {
 		if(scriptValueName == null) return null
+		if(text.isEmpty()) return null
 		return Reference(element, rangeInExpression, scriptValueName, text, configGroup)
 	}
 	
@@ -29,9 +34,9 @@ class ParadoxScriptValueParameterExpressionNode (
 	class Reference(
 		element: ParadoxScriptExpressionElement,
 		rangeInElement: TextRange,
-		private val scriptValueName: String,
-		private val parameterName: String,
-		private val configGroup: CwtConfigGroup
+		val scriptValueName: String,
+		val parameterName: String,
+		val configGroup: CwtConfigGroup
 	) : PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
 		override fun handleElementRename(newElementName: String): PsiElement {
 			return element.setValue(rangeInElement.replace(element.value, newElementName))

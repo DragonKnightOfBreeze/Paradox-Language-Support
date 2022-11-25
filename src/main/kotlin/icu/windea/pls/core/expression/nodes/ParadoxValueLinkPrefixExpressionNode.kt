@@ -28,7 +28,7 @@ class ParadoxValueLinkPrefixExpressionNode (
 	class Reference(
 		element: ParadoxScriptExpressionElement,
 		rangeInElement: TextRange,
-		private val linkConfigs: List<CwtLinkConfig>
+		val linkConfigs: List<CwtLinkConfig>
 	) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
 		override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
 			throw IncorrectOperationException() //不允许重命名

@@ -41,9 +41,9 @@ class ParadoxValueSetValueExpressionNode (
 	class Reference(
 		element: ParadoxScriptExpressionElement,
 		rangeInElement: TextRange,
-		private val name: String,
-		private val configs: List<CwtConfig<*>>,
-		private val configGroup: CwtConfigGroup
+		val name: String,
+		val configs: List<CwtConfig<*>>,
+		val configGroup: CwtConfigGroup
 	) : PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
 		override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
 			return element.setValue(rangeInElement.replace(element.value, newElementName))

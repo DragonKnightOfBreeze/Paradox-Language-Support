@@ -221,7 +221,7 @@ fun PsiReference.canResolveParameter(): Boolean {
 		is ParadoxScriptExpressionReference -> this.isKey
 		is ParadoxParameterPsiReference -> true
 		is ParadoxArgumentPsiReference -> true
-		is ParadoxScriptValueParameterExpressionNode.Reference -> true
+		is ParadoxScriptValueParameterExpressionNode.Reference -> this.scriptValueName != null
 		else -> false
 	}
 }

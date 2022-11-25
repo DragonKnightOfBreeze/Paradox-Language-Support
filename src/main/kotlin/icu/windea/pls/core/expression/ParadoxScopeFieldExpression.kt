@@ -82,7 +82,7 @@ class ParadoxScopeFieldExpressionImpl(
 										} else if(!malformed) {
 											malformed = true
 										}
-									} else if(!malformed && !dataSourceChildNode.text.all { it.isExactIdentifierChar() }) {
+									} else if(!malformed && !isValid(dataSourceChildNode)) {
 										malformed = true
 									}
 								}
@@ -100,6 +100,10 @@ class ParadoxScopeFieldExpressionImpl(
 			errors.add(0, error)
 		}
 		return errors
+	}
+	
+	private fun isValid(node: ParadoxExpressionNode): Boolean {
+		return node.text.all { it.isExactIdentifierChar() }
 	}
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
