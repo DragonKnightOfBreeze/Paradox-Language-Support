@@ -32,7 +32,7 @@ enum class ParadoxFileType(
 		}
 		
 		private fun isIgnored(fileName: String): Boolean {
-			return getSettings().ignoredFileNames.commaDelimited().contains(fileName, ignoreCase = true)
+			return getSettings().ignoredFileNames.asCommaDelimited().contains(fileName, ignoreCase = true)
 		}
 		
 		private fun isInFolders(gameType: ParadoxGameType, path: ParadoxPath): Boolean {

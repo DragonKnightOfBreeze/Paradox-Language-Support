@@ -1,6 +1,7 @@
 package icu.windea.pls.script.expression
 
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 
 /**
