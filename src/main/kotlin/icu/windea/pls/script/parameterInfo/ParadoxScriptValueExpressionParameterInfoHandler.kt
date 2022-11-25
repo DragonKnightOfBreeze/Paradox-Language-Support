@@ -1,4 +1,4 @@
-package icu.windea.pls.script.editor
+package icu.windea.pls.script.parameterInfo
 
 import com.intellij.lang.parameterInfo.*
 import icu.windea.pls.*
