@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.*
 open class ParadoxScopeExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange
-) : ParadoxScriptExpressionNode {
+) : ParadoxExpressionNode {
 	override fun getUnresolvedError(element: ParadoxScriptExpressionElement): ParadoxExpressionError? {
 		if(nodes.isNotEmpty()) return null
 		if(text.isEmpty()) return null

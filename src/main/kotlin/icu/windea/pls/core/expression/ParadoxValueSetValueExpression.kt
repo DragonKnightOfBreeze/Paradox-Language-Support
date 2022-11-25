@@ -46,7 +46,7 @@ class ParadoxValueSetValueExpressionImpl(
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
-	override val nodes: List<ParadoxScriptExpressionNode>,
+	override val nodes: List<ParadoxExpressionNode>,
 	override val configs: List<CwtConfig<*>>,
 	override val configGroup: CwtConfigGroup
 ) : AbstractExpression(text), ParadoxValueSetValueExpression {
@@ -120,7 +120,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, config: CwtConfig<*>, c
 }
 
 fun Resolver.resolve(text: String, textRange: TextRange, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxValueSetValueExpression? {
-	val nodes = SmartList<ParadoxScriptExpressionNode>()
+	val nodes = SmartList<ParadoxExpressionNode>()
 	val offset = textRange.startOffset
 	var atIndex = text.indexOf('@')
 	run {

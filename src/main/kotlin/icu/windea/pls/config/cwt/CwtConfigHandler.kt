@@ -951,7 +951,7 @@ object CwtConfigHandler {
 		context: ProcessingContext,
 		result: CompletionResultSet,
 		prefix: String?,
-		dataSourceNode: ParadoxScriptExpressionNode?
+		dataSourceNode: ParadoxExpressionNode?
 	): Unit = with(context) {
 		val linkConfigs = if(prefix == null) configGroup.linksAsScopeWithoutPrefix else configGroup.linksAsScopeWithPrefix
 		
@@ -1042,7 +1042,7 @@ object CwtConfigHandler {
 		context: ProcessingContext,
 		result: CompletionResultSet,
 		prefix: String?,
-		dataSourceNode: ParadoxScriptExpressionNode?
+		dataSourceNode: ParadoxExpressionNode?
 	): Unit = with(context) {
 		val linkConfigs = if(prefix == null) configGroup.linksAsValueWithoutPrefix else configGroup.linksAsValueWithPrefix
 		

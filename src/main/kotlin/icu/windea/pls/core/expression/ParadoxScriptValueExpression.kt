@@ -43,7 +43,7 @@ class ParadoxScriptValueExpressionImpl(
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
-	override val nodes: List<ParadoxScriptExpressionNode>,
+	override val nodes: List<ParadoxExpressionNode>,
 	val config: CwtConfig<*>,
 	val configGroup: CwtConfigGroup
 ) : AbstractExpression(text), ParadoxScriptValueExpression {
@@ -64,7 +64,7 @@ class ParadoxScriptValueExpressionImpl(
 		var lastIsParameter = false
 		for((index, node) in nodes.withIndex()) {
 			val isLast = index == nodes.lastIndex
-			if(node is ParadoxOperatorExpressionNode) {
+			if(node is ParadoxTokenExpressionNode) {
 				pipeCount++
 			} else {
 				if(!malformed && isLast || node.text.isEmpty() || !node.text.all { it.isExactIdentifierChar() }) {
@@ -129,7 +129,7 @@ class ParadoxScriptValueExpressionImpl(
 }
 
 fun Resolver.resolve(text: String, textRange: TextRange, config: CwtConfig<*>, configGroup: CwtConfigGroup, isKey: Boolean? = null): ParadoxScriptValueExpression {
-	val nodes = SmartList<ParadoxScriptExpressionNode>()
+	val nodes = SmartList<ParadoxExpressionNode>()
 	val offset = textRange.startOffset
 	var n = 0
 	var scriptValueName: String? = null

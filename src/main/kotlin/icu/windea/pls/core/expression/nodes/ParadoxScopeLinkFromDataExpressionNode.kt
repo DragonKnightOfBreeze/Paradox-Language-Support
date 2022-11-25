@@ -10,14 +10,14 @@ import icu.windea.pls.core.expression.errors.*
 class ParadoxScopeLinkFromDataExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
-	override val nodes: List<ParadoxScriptExpressionNode> = emptyList()
+	override val nodes: List<ParadoxExpressionNode> = emptyList()
 ) : ParadoxScopeExpressionNode(text, rangeInExpression) {
 	val prefixNode get() = nodes.findIsInstance<ParadoxScopeLinkPrefixExpressionNode>()
 	val dataSourceNode get() = nodes.findIsInstance<ParadoxScopeLinkDataSourceExpressionNode>()!!
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScopeLinkFromDataExpressionNode? {
-			val nodes = SmartList<ParadoxScriptExpressionNode>()
+			val nodes = SmartList<ParadoxExpressionNode>()
 			val errors = SmartList<ParadoxExpressionError>()
 			val linkConfigs = configGroup.linksAsScopeWithPrefixSorted
 				.filter { it.prefix != null && text.startsWith(it.prefix) }

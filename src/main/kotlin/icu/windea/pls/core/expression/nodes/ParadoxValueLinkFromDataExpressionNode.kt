@@ -8,14 +8,14 @@ import icu.windea.pls.core.collections.*
 class ParadoxValueLinkFromDataExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
-	override val nodes: List<ParadoxScriptExpressionNode> = emptyList()
+	override val nodes: List<ParadoxExpressionNode> = emptyList()
 ) : ParadoxValueFieldExpressionNode(text, rangeInExpression) {
 	val prefixNode get() = nodes.findIsInstance<ParadoxValueLinkPrefixExpressionNode>()
 	val dataSourceNode get() = nodes.findIsInstance<ParadoxValueLinkDataSourceExpressionNode>()!!
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxValueLinkFromDataExpressionNode? {
-			val nodes = SmartList<ParadoxScriptExpressionNode>()
+			val nodes = SmartList<ParadoxExpressionNode>()
 			val linkConfigs = configGroup.linksAsValueWithPrefixSorted
 				.filter { it.prefix != null && text.startsWith(it.prefix) }
 			if(linkConfigs.isNotEmpty()) {

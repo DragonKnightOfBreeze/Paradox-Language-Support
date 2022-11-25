@@ -11,7 +11,7 @@ class ParadoxScopeLinkPrefixExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	val linkConfigs: List<CwtLinkConfig>
-) : ParadoxScriptExpressionNode {
+) : ParadoxExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SCOPE_LINK_PREFIX_KEY
 	
 	override fun getReference(element: ParadoxScriptExpressionElement): Reference {

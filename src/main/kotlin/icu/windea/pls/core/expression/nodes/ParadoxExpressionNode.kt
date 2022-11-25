@@ -8,10 +8,10 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.script.psi.*
 
-interface ParadoxScriptExpressionNode {
+interface ParadoxExpressionNode {
 	val text: String
 	val rangeInExpression: TextRange
-	val nodes: List<ParadoxScriptExpressionNode> get() = emptyList()
+	val nodes: List<ParadoxExpressionNode> get() = emptyList()
 	
 	fun getAttributesKey(): TextAttributesKey? = null
 	

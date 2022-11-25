@@ -14,7 +14,7 @@ class ParadoxValueSetValueExpressionNode (
 	override val rangeInExpression: TextRange,
 	val configs: List<CwtConfig<*>>,
 	val configGroup: CwtConfigGroup
-) : ParadoxScriptExpressionNode {
+) : ParadoxExpressionNode {
 	override fun getAttributesKey(): TextAttributesKey? {
 		if(text.isParameterAwareExpression()) return null
 		val expression = configs.first().expression!! //first is ok

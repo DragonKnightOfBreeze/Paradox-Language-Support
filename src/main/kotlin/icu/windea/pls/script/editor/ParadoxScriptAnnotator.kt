@@ -173,7 +173,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		doAnnotateComplexExpression(element, expression, config, range, holder)
 	}
 	
-	private fun doAnnotateComplexExpression(element: ParadoxScriptExpressionElement, expressionNode: ParadoxScriptExpressionNode, config: CwtDataConfig<*>, range: TextRange, holder: AnnotationHolder) {
+	private fun doAnnotateComplexExpression(element: ParadoxScriptExpressionElement, expressionNode: ParadoxExpressionNode, config: CwtDataConfig<*>, range: TextRange, holder: AnnotationHolder) {
 		val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(range.startOffset)
 		val attributesKey = expressionNode.getAttributesKey()
 		

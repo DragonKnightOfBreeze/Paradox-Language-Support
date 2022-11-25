@@ -46,7 +46,7 @@ class ParadoxScopeFieldExpressionImpl(
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
-	override val nodes: List<ParadoxScriptExpressionNode>
+	override val nodes: List<ParadoxExpressionNode>
 ) : AbstractExpression(text), ParadoxScopeFieldExpression {
 	override val quoted: Boolean = false
 	
@@ -156,7 +156,7 @@ class ParadoxScopeFieldExpressionImpl(
 }
 
 fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxScopeFieldExpression? {
-	val nodes = SmartList<ParadoxScriptExpressionNode>()
+	val nodes = SmartList<ParadoxExpressionNode>()
 	val offset = textRange.startOffset
 	var index: Int
 	var dotIndex = -1

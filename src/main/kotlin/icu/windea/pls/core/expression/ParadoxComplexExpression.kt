@@ -8,17 +8,17 @@ import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.script.psi.*
 
-interface ParadoxComplexExpression : ParadoxExpression, ParadoxScriptExpressionNode {
+interface ParadoxComplexExpression : ParadoxExpression, ParadoxExpressionNode {
 	fun validate(): List<ParadoxExpressionError> = emptyList()
 	
 	fun complete(context: ProcessingContext, result: CompletionResultSet) = pass()
 }
 
-fun ParadoxComplexExpression.processAllNodes(processor: Processor<ParadoxScriptExpressionNode>): Boolean {
+fun ParadoxComplexExpression.processAllNodes(processor: Processor<ParadoxExpressionNode>): Boolean {
 	return doProcessAllNodes(processor)
 }
 
-private fun ParadoxScriptExpressionNode.doProcessAllNodes(processor: Processor<ParadoxScriptExpressionNode>): Boolean {
+private fun ParadoxExpressionNode.doProcessAllNodes(processor: Processor<ParadoxExpressionNode>): Boolean {
 	val r = processor.process(this)
 	if(!r) return false
 	if(nodes.isNotEmpty()) {
@@ -30,11 +30,11 @@ private fun ParadoxScriptExpressionNode.doProcessAllNodes(processor: Processor<P
 	return true
 }
 
-fun ParadoxComplexExpression.processAllLeafNodes(processor: Processor<ParadoxScriptExpressionNode>): Boolean {
+fun ParadoxComplexExpression.processAllLeafNodes(processor: Processor<ParadoxExpressionNode>): Boolean {
 	return doProcessAllLeafNodes(processor)
 }
 
-private fun ParadoxScriptExpressionNode.doProcessAllLeafNodes(processor: Processor<ParadoxScriptExpressionNode>): Boolean {
+private fun ParadoxExpressionNode.doProcessAllLeafNodes(processor: Processor<ParadoxExpressionNode>): Boolean {
 	if(nodes.isNotEmpty()) {
 		for(node in nodes) {
 			val r1 = node.doProcessAllLeafNodes(processor)
@@ -52,7 +52,7 @@ fun ParadoxComplexExpression.getReferences(element: ParadoxScriptExpressionEleme
 	return references.toTypedArray()
 }
 
-private fun ParadoxScriptExpressionNode.doGetReferences(element: ParadoxScriptExpressionElement, references: SmartList<PsiReference>) {
+private fun ParadoxExpressionNode.doGetReferences(element: ParadoxScriptExpressionElement, references: SmartList<PsiReference>) {
 	val reference = this.getReference(element)
 	if(reference != null) {
 		references.add(reference)

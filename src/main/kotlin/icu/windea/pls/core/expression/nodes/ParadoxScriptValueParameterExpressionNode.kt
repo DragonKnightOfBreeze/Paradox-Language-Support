@@ -12,7 +12,7 @@ class ParadoxScriptValueParameterExpressionNode (
 	override val rangeInExpression: TextRange,
 	val scriptValueName: String?,
 	val configGroup: CwtConfigGroup
-) : ParadoxScriptExpressionNode {
+) : ParadoxExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.ARGUMENT_KEY
 	
 	override fun getReference(element: ParadoxScriptExpressionElement): Reference? {

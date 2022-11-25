@@ -16,7 +16,7 @@ class ParadoxScriptValueExpressionNode(
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	val configGroup: CwtConfigGroup
-) : ParadoxScriptExpressionNode {
+) : ParadoxExpressionNode {
 	override fun getAttributesKey(): TextAttributesKey? {
 		if(text.isEmpty()) return null
 		if(text.isParameterAwareExpression()) return null

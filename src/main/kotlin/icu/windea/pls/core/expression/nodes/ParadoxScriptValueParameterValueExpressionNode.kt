@@ -12,7 +12,7 @@ class ParadoxScriptValueParameterValueExpressionNode(
 	val scriptValueName: String?,
 	val parameterName: String?,
 	configGroup: CwtConfigGroup
-) : ParadoxScriptExpressionNode {
+) : ParadoxExpressionNode {
 	override fun getAttributesKey(): TextAttributesKey {
 		val type = ParadoxDataType.resolve(text)
 		return when {

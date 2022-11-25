@@ -6,6 +6,6 @@ import icu.windea.pls.script.highlighter.*
 class ParadoxMarkerExpressionNode(
 	override val text: String,
 	override val rangeInExpression: TextRange
-) : ParadoxScriptTokenExpressionNode {
+) : ParadoxTokenExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.MARKER_KEY
 }

@@ -54,7 +54,7 @@ class ParadoxValueFieldExpressionImpl(
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
-	override val nodes: List<ParadoxScriptExpressionNode>
+	override val nodes: List<ParadoxExpressionNode>
 ) : AbstractExpression(text), ParadoxValueFieldExpression {
 	override val quoted: Boolean = false
 	
@@ -224,7 +224,7 @@ class ParadoxValueFieldExpressionImpl(
 }
 
 fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxValueFieldExpression? {
-	val nodes = SmartList<ParadoxScriptExpressionNode>()
+	val nodes = SmartList<ParadoxExpressionNode>()
 	val offset = textRange.startOffset
 	var isLast = false
 	var index: Int

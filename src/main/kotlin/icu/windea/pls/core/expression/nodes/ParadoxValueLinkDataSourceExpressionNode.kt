@@ -11,15 +11,15 @@ class ParadoxValueLinkDataSourceExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	val linkConfigs: List<CwtLinkConfig>,
-	override val nodes: List<ParadoxScriptExpressionNode>
-) : ParadoxScriptExpressionNode {
+	override val nodes: List<ParadoxExpressionNode>
+) : ParadoxExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.VALUE_LINK_DATA_SOURCE_KEY
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxValueLinkDataSourceExpressionNode {
 			//text may contain parameters
 			//child node can be valueSetValueExpression / scriptValueExpression
-			val nodes = SmartList<ParadoxScriptExpressionNode>()
+			val nodes = SmartList<ParadoxExpressionNode>()
 			run {
 				val atIndex = text.indexOf('@')
 				if(atIndex != -1) {
