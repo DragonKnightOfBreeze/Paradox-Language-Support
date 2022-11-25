@@ -42,19 +42,19 @@ class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
 						?: return
 					valueSetValueExpression.processAllNodes { node ->
 						for(error in node.errors) {
-							handleScriptExpressionError(element, error)
+							handleScriptExpressionError(element, error, valueSetValueExpression)
 						}
 						val unresolvedError = node.getUnresolvedError(element)
 						if(unresolvedError != null) {
-							handleScriptExpressionError(element, unresolvedError)
+							handleScriptExpressionError(element, unresolvedError, valueSetValueExpression)
 						}
 						true
 					}
 				}
 			}
 			
-			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError) {
-				holder.registerScriptExpressionError(element, error)
+			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError, expression: ParadoxValueSetValueExpression) {
+				holder.registerScriptExpressionError(element, error, expression)
 			}
 		})
 		return holder.resultsArray

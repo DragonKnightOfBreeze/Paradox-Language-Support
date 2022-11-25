@@ -10,11 +10,11 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxSystemScopeExpressionNode(
+class ParadoxSystemScopeExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	val config: ParadoxSystemScopeConfig
-) : ParadoxScriptExpressionNode {
+) : ParadoxScopeExpressionNode(text, rangeInExpression) {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY
 	
 	override fun getReference(element: ParadoxScriptExpressionElement): Reference {

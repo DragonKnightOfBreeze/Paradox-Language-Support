@@ -2,25 +2,20 @@ package icu.windea.pls.core.expression.nodes
 
 import com.intellij.openapi.util.*
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.expression.errors.*
-import kotlin.collections.mapNotNullTo
 
-class ParadoxValueLinkFromDataExpressionNode(
+class ParadoxValueLinkFromDataExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
-	override val nodes: List<ParadoxScriptExpressionNode> = emptyList(),
-	override val errors: List<ParadoxExpressionError> = emptyList()
-) : ParadoxScriptExpressionNode {
+	override val nodes: List<ParadoxScriptExpressionNode> = emptyList()
+) : ParadoxValueFieldExpressionNode(text, rangeInExpression) {
 	val prefixNode get() = nodes.findIsInstance<ParadoxValueLinkPrefixExpressionNode>()
 	val dataSourceNode get() = nodes.findIsInstance<ParadoxValueLinkDataSourceExpressionNode>()!!
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxValueLinkFromDataExpressionNode? {
 			val nodes = SmartList<ParadoxScriptExpressionNode>()
-			val errors = SmartList<ParadoxExpressionError>()
 			val linkConfigs = configGroup.linksAsValueWithPrefixSorted
 				.filter { it.prefix != null && text.startsWith(it.prefix) }
 			if(linkConfigs.isNotEmpty()) {
@@ -32,16 +27,10 @@ class ParadoxValueLinkFromDataExpressionNode(
 				nodes.add(prefixNode)
 				//data source node
 				val dataSourceText = text.drop(prefixText.length)
-				if(dataSourceText.isEmpty()) {
-					//missing data source
-					val dataSources = linkConfigs.mapNotNullTo(mutableSetOf()) { it.dataSource }.joinToString()
-					val error = ParadoxMissingValueLinkDataSourceExpressionError(textRange, PlsBundle.message("script.expression.missingValueLinkDataSource", dataSources))
-					errors.add(error)
-				}
 				val dataSourceRange = TextRange.create(textRange.startOffset + prefixText.length, textRange.endOffset)
 				val dataSourceNode = ParadoxValueLinkDataSourceExpressionNode.resolve(dataSourceText, dataSourceRange, linkConfigs)
 				nodes.add(dataSourceNode)
-				return ParadoxValueLinkFromDataExpressionNode(text, textRange, nodes, errors)
+				return ParadoxValueLinkFromDataExpressionNode(text, textRange, nodes)
 			} else {
 				//没有前缀且允许没有前缀
 				val linkConfigsNoPrefix = configGroup.linksAsValueWithoutPrefixSorted
@@ -49,7 +38,7 @@ class ParadoxValueLinkFromDataExpressionNode(
 					//这里直接认为匹配
 					val node = ParadoxValueLinkDataSourceExpressionNode.resolve(text, textRange, linkConfigsNoPrefix)
 					nodes.add(node)
-					return ParadoxValueLinkFromDataExpressionNode(text, textRange, nodes, errors)
+					return ParadoxValueLinkFromDataExpressionNode(text, textRange, nodes)
 				}
 			}
 			return null

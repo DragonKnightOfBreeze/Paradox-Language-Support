@@ -7,7 +7,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.highlighter.*
 
-class ParadoxValueLinkDataSourceExpressionNode(
+class ParadoxValueLinkDataSourceExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	val linkConfigs: List<CwtLinkConfig>,

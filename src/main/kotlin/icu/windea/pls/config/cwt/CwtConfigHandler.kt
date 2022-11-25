@@ -863,7 +863,7 @@ object CwtConfigHandler {
 		//基于当前位置的代码补全
 		if(quoted) return
 		val textRange = TextRange.create(0, keyword.length)
-		val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(keyword, textRange, configExpression, configGroup, isKey) ?: return
+		val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(keyword, textRange, configExpression, configGroup, isKey, true) ?: return
 		valueSetValueExpression.complete(context, result)
 	}
 	

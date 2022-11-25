@@ -8,11 +8,11 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxValueLinkExpressionNode(
+class ParadoxValueLinkExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	val config: CwtLinkConfig
-) : ParadoxScriptExpressionNode {
+) : ParadoxValueFieldExpressionNode(text, rangeInExpression) {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.VALUE_LINK_VALUE_KEY
 	
 	override fun getReference(element: ParadoxScriptExpressionElement) = ParadoxScopeLinkExpressionNode.Reference(element, rangeInExpression, config)

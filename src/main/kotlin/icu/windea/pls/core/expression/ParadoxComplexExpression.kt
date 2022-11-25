@@ -4,10 +4,13 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.script.psi.*
 
 interface ParadoxComplexExpression : ParadoxExpression, ParadoxScriptExpressionNode {
+	fun validate(): List<ParadoxExpressionError> = emptyList()
+	
 	fun complete(context: ProcessingContext, result: CompletionResultSet) = pass()
 }
 
@@ -25,6 +28,22 @@ private fun ParadoxScriptExpressionNode.doProcessAllNodes(processor: Processor<P
 		}
 	}
 	return true
+}
+
+fun ParadoxComplexExpression.processAllLeafNodes(processor: Processor<ParadoxScriptExpressionNode>): Boolean {
+	return doProcessAllLeafNodes(processor)
+}
+
+private fun ParadoxScriptExpressionNode.doProcessAllLeafNodes(processor: Processor<ParadoxScriptExpressionNode>): Boolean {
+	if(nodes.isNotEmpty()) {
+		for(node in nodes) {
+			val r1 = node.doProcessAllLeafNodes(processor)
+			if(!r1) return false
+		}
+		return true
+	} else {
+		return processor.process(this)
+	}
 }
 
 fun ParadoxComplexExpression.getReferences(element: ParadoxScriptExpressionElement): Array<PsiReference> {

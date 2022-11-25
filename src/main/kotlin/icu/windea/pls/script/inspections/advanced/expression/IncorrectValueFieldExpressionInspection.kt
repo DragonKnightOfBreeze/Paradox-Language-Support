@@ -52,20 +52,20 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
 						?: return
 					valueFieldExpression.processAllNodes { node ->
 						for(error in node.errors) {
-							handleScriptExpressionError(element, error)
+							handleScriptExpressionError(element, error, valueFieldExpression)
 						}
 						val unresolvedError = node.getUnresolvedError(element)
 						if(unresolvedError != null) {
-							handleScriptExpressionError(element, unresolvedError)
+							handleScriptExpressionError(element, unresolvedError, valueFieldExpression)
 						}
 						true
 					}
 				}
 			}
 			
-			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError) {
+			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError, expression: ParadoxValueFieldExpression) {
 				if(reportsUnresolvedDs && error is ParadoxUnresolvedValueLinkDataSourceExpressionError) return
-				holder.registerScriptExpressionError(element, error)
+				holder.registerScriptExpressionError(element, error, expression)
 			}
 		})
 		return holder.resultsArray

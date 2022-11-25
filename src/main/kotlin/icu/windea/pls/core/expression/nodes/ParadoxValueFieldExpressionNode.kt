@@ -1,17 +1,14 @@
 package icu.windea.pls.core.expression.nodes
 
 import com.intellij.openapi.util.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxValueFieldExpressionNode(
+open class ParadoxValueFieldExpressionNode (
 	override val text: String,
-	override val rangeInExpression: TextRange,
-	override val nodes: List<ParadoxScriptExpressionNode> = emptyList(),
-	override val errors: List<ParadoxExpressionError> = emptyList()
+	override val rangeInExpression: TextRange
 ) : ParadoxScriptExpressionNode {
 	override fun getUnresolvedError(element: ParadoxScriptExpressionElement): ParadoxExpressionError? {
 		if(nodes.isNotEmpty()) return null
@@ -22,21 +19,9 @@ class ParadoxValueFieldExpressionNode(
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpressionNode {
-			val nodes = SmartList<ParadoxScriptExpressionNode>()
-			val errors = SmartList<ParadoxExpressionError>()
-			ParadoxValueLinkExpressionNode.resolve(text, textRange, configGroup)?.let { 
-				nodes.add(it)
-				return ParadoxValueFieldExpressionNode(text, textRange, nodes, errors)
-			}
-			ParadoxValueLinkFromDataExpressionNode.resolve(text, textRange, configGroup)?.let {
-				nodes.add(it)
-				return ParadoxValueFieldExpressionNode(text, textRange, nodes, errors)
-			}
-			if(text.isEmpty()) {
-				val error = ParadoxMissingScopeExpressionError(textRange, PlsBundle.message("script.expression.missingValueField"))
-				errors.add(error)
-			}
-			return ParadoxValueFieldExpressionNode(text, textRange, nodes, errors)
+			ParadoxValueLinkExpressionNode.resolve(text, textRange, configGroup)?.let { return it }
+			ParadoxValueLinkFromDataExpressionNode.resolve(text, textRange, configGroup)?.let {return it }
+			return ParadoxValueFieldExpressionNode(text, textRange)
 		}
 	}
 }

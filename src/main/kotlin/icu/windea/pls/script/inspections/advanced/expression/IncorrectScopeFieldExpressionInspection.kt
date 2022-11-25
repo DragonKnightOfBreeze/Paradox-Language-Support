@@ -52,20 +52,20 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 						?: return
 					scopeFieldExpression.processAllNodes { node ->
 						for(error in node.errors) {
-							handleScriptExpressionError(element, error)
+							handleScriptExpressionError(element, error, scopeFieldExpression)
 						}
 						val unresolvedError = node.getUnresolvedError(element)
 						if(unresolvedError != null) {
-							handleScriptExpressionError(element, unresolvedError)
+							handleScriptExpressionError(element, unresolvedError, scopeFieldExpression)
 						}
 						true
 					}
 				}
 			}
 			
-			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError) {
+			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError, expression: ParadoxScopeFieldExpression) {
 				if(reportsUnresolvedDs && error is ParadoxUnresolvedScopeLinkDataSourceExpressionError) return
-				holder.registerScriptExpressionError(element, error)
+				holder.registerScriptExpressionError(element, error, expression)
 			}
 		})
 		return holder.resultsArray

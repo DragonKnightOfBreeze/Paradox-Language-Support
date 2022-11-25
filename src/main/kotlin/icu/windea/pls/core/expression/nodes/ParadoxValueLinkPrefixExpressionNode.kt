@@ -8,7 +8,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxValueLinkPrefixExpressionNode(
+class ParadoxValueLinkPrefixExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	val linkConfigs: List<CwtLinkConfig>

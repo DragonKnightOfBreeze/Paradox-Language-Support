@@ -7,12 +7,11 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.errors.*
 
-class ParadoxScopeLinkFromDataExpressionNode(
+class ParadoxScopeLinkFromDataExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
-	override val nodes: List<ParadoxScriptExpressionNode> = emptyList(),
-	override val errors: List<ParadoxExpressionError> = emptyList()
-) : ParadoxScriptExpressionNode {
+	override val nodes: List<ParadoxScriptExpressionNode> = emptyList()
+) : ParadoxScopeExpressionNode(text, rangeInExpression) {
 	val prefixNode get() = nodes.findIsInstance<ParadoxScopeLinkPrefixExpressionNode>()
 	val dataSourceNode get() = nodes.findIsInstance<ParadoxScopeLinkDataSourceExpressionNode>()!!
 	
@@ -40,7 +39,7 @@ class ParadoxScopeLinkFromDataExpressionNode(
 				val dataSourceRange = TextRange.create(textRange.startOffset + prefixText.length, textRange.endOffset)
 				val dataSourceNode = ParadoxScopeLinkDataSourceExpressionNode.resolve(dataSourceText, dataSourceRange, linkConfigs)
 				nodes.add(dataSourceNode)
-				return ParadoxScopeLinkFromDataExpressionNode(text, textRange, nodes, errors)
+				return ParadoxScopeLinkFromDataExpressionNode(text, textRange, nodes)
 			} else {
 				//没有前缀且允许没有前缀
 				val linkConfigsNoPrefix = configGroup.linksAsScopeWithoutPrefixSorted
@@ -48,7 +47,7 @@ class ParadoxScopeLinkFromDataExpressionNode(
 					//这里直接认为匹配
 					val node = ParadoxScopeLinkDataSourceExpressionNode.resolve(text, textRange, linkConfigsNoPrefix)
 					nodes.add(node)
-					return ParadoxScopeLinkFromDataExpressionNode(text, textRange, nodes, errors)
+					return ParadoxScopeLinkFromDataExpressionNode(text, textRange, nodes)
 				}
 			}
 			return null

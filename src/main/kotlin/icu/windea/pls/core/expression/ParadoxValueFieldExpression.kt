@@ -3,10 +3,10 @@ package icu.windea.pls.core.expression
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.ParadoxValueFieldExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
@@ -42,7 +42,7 @@ import icu.windea.pls.script.highlighter.*
  * root.owner.some_variable
  * ```
  */
-interface ParadoxValueFieldExpression: ParadoxComplexExpression {
+interface ParadoxValueFieldExpression : ParadoxComplexExpression {
 	val scopeNodes: List<ParadoxScopeExpressionNode>
 	
 	val valueFieldNode: ParadoxValueFieldExpressionNode?
@@ -54,8 +54,7 @@ class ParadoxValueFieldExpressionImpl(
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
-	override val nodes: List<ParadoxScriptExpressionNode>,
-	override val errors: List<ParadoxExpressionError>
+	override val nodes: List<ParadoxScriptExpressionNode>
 ) : AbstractExpression(text), ParadoxValueFieldExpression {
 	override val quoted: Boolean = false
 	
@@ -64,6 +63,83 @@ class ParadoxValueFieldExpressionImpl(
 	override val valueFieldNode: ParadoxValueFieldExpressionNode get() = nodes.last().cast()
 	
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.VALUE_FILED_EXPRESSION_KEY
+	
+	override fun validate(): List<ParadoxExpressionError> {
+		val errors = SmartList<ParadoxExpressionError>()
+		var malformed = false
+		for((index, node) in nodes.withIndex()) {
+			val isLast = index == nodes.lastIndex
+			when(node) {
+				is ParadoxScopeExpressionNode -> {
+					if(node.text.isEmpty()) {
+						if(!malformed) {
+							malformed = true
+						}
+					} else {
+						if(node is ParadoxScopeLinkFromDataExpressionNode) {
+							val dataSourceNode = node.dataSourceNode
+							val dataSourceChildNode = dataSourceNode.nodes.first()
+							when(dataSourceChildNode) {
+								is ParadoxDataExpressionNode -> {
+									if(dataSourceNode.text.isEmpty()) {
+										if(!malformed) {
+											malformed = true
+										}
+									} else if(!malformed && !dataSourceChildNode.text.all { it.isExactIdentifierChar() }) {
+										malformed = true
+									}
+								}
+								is ParadoxValueSetValueExpression -> {
+									errors.addAll(dataSourceChildNode.validate())
+								}
+							}
+						}
+					}
+				}
+				is ParadoxValueFieldExpressionNode -> {
+					if(node.text.isEmpty()) {
+						if(isLast) {
+							val error = ParadoxMissingScopeExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingValueField"))
+							errors.add(error)
+						} else if(!malformed) {
+							malformed = true
+						}
+					} else {
+						if(node is ParadoxValueLinkFromDataExpressionNode) {
+							val dataSourceNode = node.dataSourceNode
+							val dataSourceChildNode = dataSourceNode.nodes.first()
+							when(dataSourceChildNode) {
+								is ParadoxDataExpressionNode -> {
+									if(dataSourceNode.text.isEmpty()) {
+										if(isLast) {
+											val possible = dataSourceNode.linkConfigs.mapNotNull { it.dataSource }.joinToString()
+											val error = ParadoxMissingValueLinkDataSourceExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingValueLinkDataSource", possible))
+											errors.add(error)
+										} else if(!malformed) {
+											malformed = true
+										}
+									} else if(!malformed && !dataSourceChildNode.text.all { it.isExactIdentifierChar() }) {
+										malformed = true
+									}
+								}
+								is ParadoxValueSetValueExpression -> {
+									errors.addAll(dataSourceChildNode.validate())
+								}
+								is ParadoxScriptValueExpression -> {
+									errors.addAll(dataSourceChildNode.validate())
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		if(malformed) {
+			val error = ParadoxMalformedValueFieldExpressionExpressionError(rangeInExpression, PlsBundle.message("script.expression.malformedValueFieldExpression", text))
+			errors.add(0, error)
+		}
+		return errors
+	}
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
 		val keyword = context.keyword
@@ -79,9 +155,9 @@ class ParadoxValueFieldExpressionImpl(
 			if(node is ParadoxScopeExpressionNode) {
 				if(inRange) {
 					context.put(PlsCompletionKeys.prevScopeKey, prevScopeToUse)
-					val childNode = node.nodes.findIsInstance<ParadoxScopeLinkFromDataExpressionNode>()
-					val prefixNode = childNode?.prefixNode
-					val dataSourceNode = childNode?.dataSourceNode
+					val linkFromDataNode = node.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
+					val prefixNode = linkFromDataNode?.prefixNode
+					val dataSourceNode = linkFromDataNode?.dataSourceNode
 					val endOffset = prefixNode?.rangeInExpression?.endOffset ?: -1
 					if(prefixNode != null && offsetInParent >= endOffset) {
 						val keywordToUse = node.text.substring(0, offsetInParent - endOffset)
@@ -107,9 +183,9 @@ class ParadoxValueFieldExpressionImpl(
 			} else if(node is ParadoxValueFieldExpressionNode) {
 				if(inRange) {
 					context.put(PlsCompletionKeys.prevScopeKey, prevScopeToUse)
-					val childNode = node.nodes.findIsInstance<ParadoxValueLinkFromDataExpressionNode>()
-					val prefixNode = childNode?.prefixNode
-					val dataSourceNode = childNode?.dataSourceNode
+					val linkFromDataNode = node.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
+					val prefixNode = linkFromDataNode?.prefixNode
+					val dataSourceNode = linkFromDataNode?.dataSourceNode
 					val dataSourceNodeToCheck = dataSourceNode?.nodes?.first()
 					val endOffset = prefixNode?.rangeInExpression?.endOffset ?: -1
 					if(prefixNode != null && offsetInParent >= endOffset) {
@@ -147,7 +223,6 @@ class ParadoxValueFieldExpressionImpl(
 
 fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxValueFieldExpression? {
 	val nodes = SmartList<ParadoxScriptExpressionNode>()
-	val errors = SmartList<ParadoxExpressionError>()
 	val offset = textRange.startOffset
 	var isLast = false
 	var index: Int
@@ -160,6 +235,12 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 		if(dotIndex > atIndex) {
 			dotIndex = -1
 		}
+		val dotNode = if(dotIndex != -1) {
+			val dotRange = TextRange.create(dotIndex + offset, dotIndex + 1 + offset)
+			ParadoxOperatorExpressionNode(".", dotRange)
+		} else {
+			null
+		}
 		if(dotIndex == -1) {
 			dotIndex = text.length
 			isLast = true
@@ -167,21 +248,17 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 		//resolve node
 		val nodeText = text.substring(index, dotIndex)
 		val nodeTextRange = TextRange.create(index + offset, dotIndex + offset)
-		val node = when{
-			isLast -> icu.windea.pls.core.expression.nodes.ParadoxValueFieldExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
-			else -> icu.windea.pls.core.expression.nodes.ParadoxScopeExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
+		val node = when {
+			isLast -> ParadoxValueFieldExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
+			else -> ParadoxScopeExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
 		}
 		//handle mismatch situation
-		if(index == 0 && node.nodes.isEmpty() && !canBeMismatched) {
+		if(!canBeMismatched && index == 0 && node.nodes.isEmpty()) {
 			return null
 		}
 		nodes.add(node)
-		if(!isLast) {
-			//resolve dot node
-			val dotNode = ParadoxScriptOperatorExpressionNode(".", TextRange.create(dotIndex + offset, dotIndex + 1 + offset))
-			nodes.add(dotNode)
-		}
+		if(dotNode != null) nodes.add(dotNode)
 	}
-	if(nodes.isEmpty()) return null
-	return ParadoxValueFieldExpressionImpl(text, textRange, isKey, nodes, errors)
+	if(!canBeMismatched && nodes.isEmpty()) return null
+	return ParadoxValueFieldExpressionImpl(text, textRange, isKey, nodes)
 }

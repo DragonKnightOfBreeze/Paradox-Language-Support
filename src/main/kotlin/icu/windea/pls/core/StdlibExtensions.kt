@@ -159,7 +159,11 @@ fun Char.isExactDigit(): Boolean {
 	return this in '0'..'9'
 }
 
-fun String.isExactSnakeCase(): Boolean {
+fun Char.isExactIdentifierChar(): Boolean {
+	return this == '_' || this.isExactLetter() || this.isExactDigit()
+}
+
+fun String.isExactIdentifier(): Boolean {
 	return this.all { it == '_' || it.isExactLetter() || it.isExactDigit() }
 }
 

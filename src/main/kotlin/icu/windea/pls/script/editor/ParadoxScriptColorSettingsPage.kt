@@ -54,7 +54,8 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(PlsBundle.message("script.displayName.tag"), ParadoxScriptAttributesKeys.TAG_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.scopeFieldExpression"), ParadoxScriptAttributesKeys.SCOPE_FILED_EXPRESSION_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.valueFieldExpression"), ParadoxScriptAttributesKeys.VALUE_FILED_EXPRESSION_KEY),
-			AttributesDescriptor(PlsBundle.message("script.displayName.valueSetValueExpression"), ParadoxScriptAttributesKeys.VALUE_SET_VALUE_EXPRESSION_KEY)
+			AttributesDescriptor(PlsBundle.message("script.displayName.valueSetValueExpression"), ParadoxScriptAttributesKeys.VALUE_SET_VALUE_EXPRESSION_KEY),
+			AttributesDescriptor(PlsBundle.message("script.displayName.scriptValueExpression"), ParadoxScriptAttributesKeys.SCRIPT_VALUE_EXPRESSION_KEY)
 		)
 	}
 	

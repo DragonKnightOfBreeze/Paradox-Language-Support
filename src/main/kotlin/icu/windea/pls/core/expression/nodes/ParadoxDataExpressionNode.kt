@@ -2,20 +2,17 @@ package icu.windea.pls.core.expression.nodes
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
 import kotlin.collections.mapNotNullTo
 
-class ParadoxDataExpressionNode(
+class ParadoxDataExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	val linkConfigs: List<CwtLinkConfig>
@@ -61,17 +58,6 @@ class ParadoxDataExpressionNode(
 		private val linkConfigs: List<CwtLinkConfig>
 	) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), SmartPsiReference {
 		override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
-			//尝试重命名关联的definition、localisation、syncedLocalisation等
-			val resolved = resolve()
-			when {
-				resolved == null -> pass()
-				resolved.language == CwtLanguage -> throw IncorrectOperationException() //不允许重命名
-				resolved is PsiFile -> resolved.setNameWithoutExtension(newElementName)
-				resolved is PsiNamedElement -> resolved.setName(newElementName)
-				resolved is ParadoxScriptExpressionElement -> resolved.value = newElementName
-				else -> throw IncorrectOperationException() //不允许重命名
-			}
-			//重命名当前元素（仅修改对应范围的文本，认为整个文本没有用引号括起）
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
 		}
 		

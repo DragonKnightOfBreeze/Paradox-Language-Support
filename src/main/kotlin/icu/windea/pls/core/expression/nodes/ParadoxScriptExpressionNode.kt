@@ -12,7 +12,6 @@ interface ParadoxScriptExpressionNode {
 	val text: String
 	val rangeInExpression: TextRange
 	val nodes: List<ParadoxScriptExpressionNode> get() = emptyList()
-	val errors: List<ParadoxExpressionError> get() = emptyList()
 	
 	fun getAttributesKey(): TextAttributesKey? = null
 	

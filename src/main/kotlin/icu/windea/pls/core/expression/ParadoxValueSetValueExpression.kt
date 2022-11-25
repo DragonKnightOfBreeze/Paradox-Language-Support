@@ -47,7 +47,6 @@ class ParadoxValueSetValueExpressionImpl(
 	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
 	override val nodes: List<ParadoxScriptExpressionNode>,
-	override val errors: List<ParadoxExpressionError>,
 	override val configExpressions: List<CwtDataExpression>,
 	override val configGroup: CwtConfigGroup
 ) : AbstractExpression(text), ParadoxValueSetValueExpression {
@@ -57,6 +56,32 @@ class ParadoxValueSetValueExpressionImpl(
 	override val scopeFieldExpression: ParadoxScopeFieldExpression? get() = nodes.getOrNull(2)?.cast()
 	
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.VALUE_SET_VALUE_EXPRESSION_KEY
+	
+	override fun validate(): List<ParadoxExpressionError> {
+		val errors = SmartList<ParadoxExpressionError>()
+		var malformed = false
+		for(node in nodes) {
+			when(node) {
+				is ParadoxValueSetValueExpressionNode -> {
+					if(!malformed && !node.text.all { it.isExactIdentifierChar() }) {
+						malformed = true
+					}
+				}
+				is ParadoxScopeFieldExpression -> {
+					if(node.text.isEmpty()) {
+						val error = ParadoxMissingScopeFieldExpressionExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingScopeFieldExpression"))
+						errors.add(error)
+					}
+					errors.addAll(node.validate())
+				}
+			}
+		}
+		if(malformed) {
+			val error = ParadoxMalformedValueSetValueExpressionExpressionError(rangeInExpression, PlsBundle.message("script.expression.malformedValueSetValueExpression", text))
+			errors.add(0, error)
+		}
+		return errors
+	}
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
 		val keyword = context.keyword
@@ -94,9 +119,8 @@ fun Resolver.resolve(text: String, textRange: TextRange, configExpression: CwtDa
 	return resolve(text, textRange, configExpression.toSingletonList(), configGroup, isKey)
 }
 
-fun Resolver.resolve(text: String, textRange: TextRange, configExpressions: List<CwtDataExpression>, configGroup: CwtConfigGroup, isKey: Boolean? = null): ParadoxValueSetValueExpression? {
+fun Resolver.resolve(text: String, textRange: TextRange, configExpressions: List<CwtDataExpression>, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxValueSetValueExpression? {
 	val nodes = SmartList<ParadoxScriptExpressionNode>()
-	val errors = SmartList<ParadoxExpressionError>()
 	val offset = textRange.startOffset
 	val atIndex = text.indexOf('@')
 	run {
@@ -106,24 +130,20 @@ fun Resolver.resolve(text: String, textRange: TextRange, configExpressions: List
 		//resolve valueSetValueNode
 		val nodeText = text.substring(0, atIndex)
 		val nodeTextRange = TextRange.create(offset, atIndex + offset)
-		val node = icu.windea.pls.core.expression.nodes.ParadoxValueSetValueExpressionNode.resolve(nodeText, nodeTextRange, configExpressions, configGroup)
+		val node = ParadoxValueSetValueExpressionNode.resolve(nodeText, nodeTextRange, configExpressions, configGroup)
 		if(node == null) return null //unexpected
 		nodes.add(node)
 		if(atIndex != text.length) {
 			//resolve at token
-			val atNode = ParadoxScriptMarkerExpressionNode("@", TextRange.create(atIndex + offset, atIndex + 1 + offset))
+			val atNode = ParadoxMarkerExpressionNode("@", TextRange.create(atIndex + offset, atIndex + 1 + offset))
 			nodes.add(atNode)
 			//resolve scope expression
 			val expText = text.substring(atIndex + 1)
-			if(expText.isEmpty()) {
-				val error = ParadoxMissingScopeFieldExpressionExpressionError(textRange, PlsBundle.message("script.expression.missingScopeField"))
-				errors.add(error)
-			}
 			val expTextRange = TextRange.create(atIndex + 1, text.length)
 			val expNode = ParadoxScopeFieldExpression.resolve(expText, expTextRange, configGroup, null, true)
 			nodes.add(expNode)
 		}
 	}
-	if(nodes.isEmpty()) return null
-	return ParadoxValueSetValueExpressionImpl(text, textRange, isKey, nodes, errors, configExpressions, configGroup)
+	if(!canBeMismatched && nodes.isEmpty()) return null
+	return ParadoxValueSetValueExpressionImpl(text, textRange, isKey, nodes, configExpressions, configGroup)
 }
