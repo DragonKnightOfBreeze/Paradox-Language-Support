@@ -142,7 +142,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				if(text.isQuoted()) return
 				val isKey = element is ParadoxScriptPropertyKey
 				val textRange = TextRange.create(0, text.length)
-				val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(text, textRange, config.expression, configGroup, isKey) ?: return
+				val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(text, textRange, config, configGroup, isKey) ?: return
 				annotateComplexExpression(element, valueSetValueExpression, config, range, holder)
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {

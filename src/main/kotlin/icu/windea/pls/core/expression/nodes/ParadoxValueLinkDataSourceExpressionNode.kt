@@ -23,10 +23,10 @@ class ParadoxValueLinkDataSourceExpressionNode (
 			run {
 				val atIndex = text.indexOf('@')
 				if(atIndex != -1) {
-					val configExpressions = linkConfigs.mapNotNull { it.dataSource }.filter { it.type == CwtDataTypes.Value }
-					if(configExpressions.isNotEmpty()) {
+					val configs = linkConfigs.filter { it.dataSource?.type == CwtDataTypes.Value }
+					if(configs.isNotEmpty()) {
 						val configGroup = linkConfigs.first().info.configGroup
-						val node = ParadoxValueSetValueExpression.resolve(text, textRange, configExpressions, configGroup)
+						val node = ParadoxValueSetValueExpression.resolve(text, textRange, configs, configGroup)
 						nodes.add(node)
 					} else {
 						val dataText = text.substring(0, atIndex)
@@ -38,10 +38,10 @@ class ParadoxValueLinkDataSourceExpressionNode (
 				}
 				val pipeIndex = text.indexOf('|')
 				if(pipeIndex != -1) {
-					val configExpression = linkConfigs.find { it.dataSource?.expressionString == "<script_value>" }
-					if(configExpression != null) {
+					val config = linkConfigs.find { it.name == "script_value" }
+					if(config != null) {
 						val configGroup = linkConfigs.first().info.configGroup
-						val node = ParadoxScriptValueExpression.resolve(text, textRange, configGroup)
+						val node = ParadoxScriptValueExpression.resolve(text, textRange, config, configGroup)
 						nodes.add(node)
 					} else {
 						val dataText = text.substring(0, pipeIndex)

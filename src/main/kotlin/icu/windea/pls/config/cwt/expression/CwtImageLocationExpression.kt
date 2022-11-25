@@ -7,7 +7,6 @@ import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveValueConfigs
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
@@ -102,7 +101,7 @@ class CwtImageLocationExpression(
 			val config = resolveValueConfigs(value).firstOrNull()
 				?.takeIf { it.expression.type in validValueTypes }
 				?: return null
-			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config.expression, config, false)
+			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config.expression, config, config.info.configGroup, false)
 			when {
 				//由filePath解析为DDS文件
 				resolved is PsiFile && resolved.fileType == DdsFileType -> {
@@ -152,7 +151,7 @@ class CwtImageLocationExpression(
 			val config = resolveValueConfigs(value).firstOrNull()
 				?.takeIf { it.expression.type in validValueTypes }
 				?: return null
-			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config.expression, config, false)
+			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config.expression, config, config.info.configGroup, false)
 			when {
 				//由filePath解析为DDS文件
 				resolved is PsiFile && resolved.fileType == DdsFileType -> {

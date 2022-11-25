@@ -22,15 +22,15 @@ class ParadoxScopeLinkDataSourceExpressionNode (
 			val nodes = SmartList<ParadoxScriptExpressionNode>()
 			val atIndex = text.indexOf('@')
 			if(atIndex != -1) {
-				val configExpressions = linkConfigs.mapNotNull { it.dataSource }.filter { it.type == CwtDataTypes.Value }
-				if(configExpressions.isEmpty()) {
+				val configs = linkConfigs.filter { it.dataSource?.type == CwtDataTypes.Value }
+				if(configs.isEmpty()) {
 					val dataText = text.substring(0, atIndex)
 					val dataRange = TextRange.create(0, atIndex)
 					val dataNode = ParadoxDataExpressionNode.resolve(dataText, dataRange, linkConfigs)
 					nodes.add(dataNode)
 				} else {
 					val configGroup = linkConfigs.first().info.configGroup
-					val node = ParadoxValueSetValueExpression.resolve(text, textRange, configExpressions, configGroup)
+					val node = ParadoxValueSetValueExpression.resolve(text, textRange, configs, configGroup)
 					nodes.add(node)
 				}
 			}

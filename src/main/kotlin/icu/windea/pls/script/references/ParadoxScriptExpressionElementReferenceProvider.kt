@@ -27,7 +27,7 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 			when(config.expression.type) {
 				CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
 					if(text.isQuoted()) return PsiReference.EMPTY_ARRAY
-					val valueFieldExpression = ParadoxValueSetValueExpression.resolve(text, textRange, config.expression, configGroup, isKey)
+					val valueFieldExpression = ParadoxValueSetValueExpression.resolve(text, textRange, config, configGroup, isKey)
 					if(valueFieldExpression == null) return PsiReference.EMPTY_ARRAY
 					return valueFieldExpression.getReferences(element)
 				}

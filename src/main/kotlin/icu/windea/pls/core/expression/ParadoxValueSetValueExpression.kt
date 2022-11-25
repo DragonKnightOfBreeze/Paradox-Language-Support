@@ -5,7 +5,7 @@ import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -33,7 +33,7 @@ import icu.windea.pls.script.highlighter.*
  * ```
  */
 interface ParadoxValueSetValueExpression : ParadoxComplexExpression {
-	val configExpressions: List<CwtDataExpression>
+	val configs: List<CwtConfig<*>>
 	val configGroup: CwtConfigGroup
 	
 	val valueSetValueNode: ParadoxValueSetValueExpressionNode
@@ -47,13 +47,13 @@ class ParadoxValueSetValueExpressionImpl(
 	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
 	override val nodes: List<ParadoxScriptExpressionNode>,
-	override val configExpressions: List<CwtDataExpression>,
+	override val configs: List<CwtConfig<*>>,
 	override val configGroup: CwtConfigGroup
 ) : AbstractExpression(text), ParadoxValueSetValueExpression {
 	override val quoted: Boolean = false
 	
-	override val valueSetValueNode: ParadoxValueSetValueExpressionNode get() = nodes.get(0).cast()
-	override val scopeFieldExpression: ParadoxScopeFieldExpression? get() = nodes.getOrNull(2)?.cast()
+	override val valueSetValueNode: ParadoxValueSetValueExpressionNode = nodes.get(0).cast()
+	override val scopeFieldExpression: ParadoxScopeFieldExpression? = nodes.getOrNull(2)?.cast()
 	
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.VALUE_SET_VALUE_EXPRESSION_KEY
 	
@@ -115,11 +115,11 @@ class ParadoxValueSetValueExpressionImpl(
 	}
 }
 
-fun Resolver.resolve(text: String, textRange: TextRange, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, isKey: Boolean? = null): ParadoxValueSetValueExpression? {
-	return resolve(text, textRange, configExpression.toSingletonList(), configGroup, isKey)
+fun Resolver.resolve(text: String, textRange: TextRange, config: CwtConfig<*>, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxValueSetValueExpression? {
+	return resolve(text, textRange, config.toSingletonList(), configGroup, isKey, canBeMismatched)
 }
 
-fun Resolver.resolve(text: String, textRange: TextRange, configExpressions: List<CwtDataExpression>, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxValueSetValueExpression? {
+fun Resolver.resolve(text: String, textRange: TextRange, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxValueSetValueExpression? {
 	val nodes = SmartList<ParadoxScriptExpressionNode>()
 	val offset = textRange.startOffset
 	val atIndex = text.indexOf('@')
@@ -130,7 +130,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configExpressions: List
 		//resolve valueSetValueNode
 		val nodeText = text.substring(0, atIndex)
 		val nodeTextRange = TextRange.create(offset, atIndex + offset)
-		val node = ParadoxValueSetValueExpressionNode.resolve(nodeText, nodeTextRange, configExpressions, configGroup)
+		val node = ParadoxValueSetValueExpressionNode.resolve(nodeText, nodeTextRange, configs, configGroup)
 		if(node == null) return null //unexpected
 		nodes.add(node)
 		if(atIndex != text.length) {
@@ -145,5 +145,5 @@ fun Resolver.resolve(text: String, textRange: TextRange, configExpressions: List
 		}
 	}
 	if(!canBeMismatched && nodes.isEmpty()) return null
-	return ParadoxValueSetValueExpressionImpl(text, textRange, isKey, nodes, configExpressions, configGroup)
+	return ParadoxValueSetValueExpressionImpl(text, textRange, isKey, nodes, configs, configGroup)
 }

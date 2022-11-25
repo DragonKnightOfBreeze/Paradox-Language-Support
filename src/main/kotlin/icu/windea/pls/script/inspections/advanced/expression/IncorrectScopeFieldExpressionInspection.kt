@@ -50,22 +50,22 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 					val isKey = element is ParadoxScriptPropertyKey
 					val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup, isKey)
 						?: return
+					scopeFieldExpression.validate().forEach { error ->
+						handleScriptExpressionError(element, error)
+					}
 					scopeFieldExpression.processAllNodes { node ->
-						for(error in node.errors) {
-							handleScriptExpressionError(element, error, scopeFieldExpression)
-						}
 						val unresolvedError = node.getUnresolvedError(element)
 						if(unresolvedError != null) {
-							handleScriptExpressionError(element, unresolvedError, scopeFieldExpression)
+							handleScriptExpressionError(element, unresolvedError)
 						}
 						true
 					}
 				}
 			}
 			
-			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError, expression: ParadoxScopeFieldExpression) {
+			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError) {
 				if(reportsUnresolvedDs && error is ParadoxUnresolvedScopeLinkDataSourceExpressionError) return
-				holder.registerScriptExpressionError(element, error, expression)
+				holder.registerScriptExpressionError(element, error)
 			}
 		})
 		return holder.resultsArray

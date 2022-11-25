@@ -72,7 +72,7 @@ class ParadoxDefinitionInfo(
 		val result = SmartList<ParadoxRelatedLocalisationInfo>()
 		//从已有的cwt规则
 		for(config in mergedLocalisationConfig) {
-			val locationExpression = CwtLocalisationLocationExpression.resolve(config.expression)
+			val locationExpression = CwtLocalisationLocationExpression.resolve(config.value)
 			val info = ParadoxRelatedLocalisationInfo(config.key, locationExpression, config.required, config.primary)
 			result.add(info)
 		}
@@ -84,7 +84,7 @@ class ParadoxDefinitionInfo(
 		val result = SmartList<ParadoxRelatedImageInfo>()
 		//从已有的cwt规则
 		for(config in mergedImagesConfig) {
-			val locationExpression = CwtImageLocationExpression.resolve(config.expression)
+			val locationExpression = CwtImageLocationExpression.resolve(config.value)
 			val info = ParadoxRelatedImageInfo(config.key, locationExpression, config.required, config.primary)
 			result.add(info)
 		}

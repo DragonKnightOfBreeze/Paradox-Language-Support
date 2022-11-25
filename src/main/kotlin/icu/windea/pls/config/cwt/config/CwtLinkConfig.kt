@@ -46,5 +46,7 @@ data class CwtLinkConfig(
 			CwtConfigHandler.getScopeName(outputScope ?: "any", info.configGroup)
 		}
 	}
+	
+	override val expression get() = dataSource
 }
 

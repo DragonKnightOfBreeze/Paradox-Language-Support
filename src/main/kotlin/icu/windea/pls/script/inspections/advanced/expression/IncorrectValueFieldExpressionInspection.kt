@@ -50,22 +50,22 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
 					val isKey = element is ParadoxScriptPropertyKey
 					val valueFieldExpression = ParadoxValueFieldExpression.resolve(value, textRange, configGroup, isKey)
 						?: return
+					valueFieldExpression.validate().forEach { error ->
+						handleScriptExpressionError(element, error)
+					}
 					valueFieldExpression.processAllNodes { node ->
-						for(error in node.errors) {
-							handleScriptExpressionError(element, error, valueFieldExpression)
-						}
 						val unresolvedError = node.getUnresolvedError(element)
 						if(unresolvedError != null) {
-							handleScriptExpressionError(element, unresolvedError, valueFieldExpression)
+							handleScriptExpressionError(element, unresolvedError)
 						}
 						true
 					}
 				}
 			}
 			
-			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError, expression: ParadoxValueFieldExpression) {
+			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError) {
 				if(reportsUnresolvedDs && error is ParadoxUnresolvedValueLinkDataSourceExpressionError) return
-				holder.registerScriptExpressionError(element, error, expression)
+				holder.registerScriptExpressionError(element, error)
 			}
 		})
 		return holder.resultsArray

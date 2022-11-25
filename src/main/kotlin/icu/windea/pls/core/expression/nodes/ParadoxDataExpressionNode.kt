@@ -22,7 +22,7 @@ class ParadoxDataExpressionNode (
 		return linkConfigs.firstNotNullOfOrNull { linkConfig ->
 			val dataSource = linkConfig.dataSource
 				?: return@firstNotNullOfOrNull null
-			CwtConfigHandler.resolveScriptExpression(element, rangeInExpression, dataSource, linkConfig, exact = false)
+			CwtConfigHandler.resolveScriptExpression(element, rangeInExpression, dataSource, linkConfig, linkConfig.info.configGroup, exact = false)
 				?: return@firstNotNullOfOrNull null
 			dataSource
 		} ?: linkConfigs.firstOrNull()?.dataSource
@@ -70,7 +70,7 @@ class ParadoxDataExpressionNode (
 			return linkConfigs.firstNotNullOfOrNull { linkConfig ->
 				val dataSource = linkConfig.dataSource
 					?: return@firstNotNullOfOrNull null
-				val resolved = CwtConfigHandler.resolveScriptExpression(element, rangeInElement, dataSource, linkConfig, exact = exact)
+				val resolved = CwtConfigHandler.resolveScriptExpression(element, rangeInElement, dataSource, linkConfig, linkConfig.info.configGroup, exact = exact)
 					?: return@firstNotNullOfOrNull null
 				resolved
 			}
@@ -81,7 +81,7 @@ class ParadoxDataExpressionNode (
 			return linkConfigs.flatMap { linkConfig ->
 				val dataSource = linkConfig.dataSource
 					?: return@flatMap emptyList()
-				val resolved = CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, dataSource, linkConfig)
+				val resolved = CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, dataSource, linkConfig, linkConfig.info.configGroup)
 				resolved
 			}.mapToArray { PsiElementResolveResult(it) }
 		}

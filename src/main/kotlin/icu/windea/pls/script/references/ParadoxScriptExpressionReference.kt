@@ -7,6 +7,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
 
@@ -18,7 +19,7 @@ class ParadoxScriptExpressionReference(
 	rangeInElement: TextRange,
 	val config: CwtDataConfig<*>,
 	val isKey: Boolean
-) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
+) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), SmartPsiReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//尝试重命名关联的definition、localisation、syncedLocalisation等
 		val resolved = resolve()
@@ -48,11 +49,17 @@ class ParadoxScriptExpressionReference(
 	}
 	
 	override fun resolve(): PsiElement? {
-		return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, config.expression, config, isKey) //根据对应的expression进行解析
+		return resolve(true)
+	}
+	
+	override fun resolve(exact: Boolean): PsiElement? {
+		//根据对应的expression进行解析
+		return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, config.expression, config, config.info.configGroup, isKey, exact = exact)
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-		return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, config.expression, config, isKey)
-			.mapToArray { PsiElementResolveResult(it) } //根据对应的expression进行解析
+		//根据对应的expression进行解析
+		return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, config.expression, config, config.info.configGroup, isKey)
+			.mapToArray { PsiElementResolveResult(it) }
 	}
 }

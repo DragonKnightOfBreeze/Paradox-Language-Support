@@ -5,7 +5,9 @@ import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.ParadoxScriptValueExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
@@ -34,8 +36,6 @@ interface ParadoxScriptValueExpression : ParadoxComplexExpression {
 	val scriptValueNode: ParadoxScriptValueExpressionNode
 	val parameterNodes: List<ParadoxScriptValueParameterExpressionNode>
 	
-	//TODO
-	
 	companion object Resolver
 }
 
@@ -43,12 +43,17 @@ class ParadoxScriptValueExpressionImpl(
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
-	override val nodes: List<ParadoxScriptExpressionNode>
+	override val nodes: List<ParadoxScriptExpressionNode>,
+	val config: CwtConfig<*>,
+	val configGroup: CwtConfigGroup
 ) : AbstractExpression(text), ParadoxScriptValueExpression {
 	override val quoted: Boolean = false
 	
 	override val scriptValueNode: ParadoxScriptValueExpressionNode get() = nodes.first().cast()
 	override val parameterNodes: List<ParadoxScriptValueParameterExpressionNode> get() = nodes.filterIsInstance<ParadoxScriptValueParameterExpressionNode>()
+	
+	val scriptValueName = scriptValueNode.text.takeIfNotEmpty()
+	val parameterNames = parameterNodes.mapNotNullTo(mutableSetOf()) { it.text.takeIfNotEmpty() }
 	
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SCRIPT_VALUE_EXPRESSION_KEY
 	
@@ -87,11 +92,43 @@ class ParadoxScriptValueExpressionImpl(
 	}
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-		super.complete(context, result)
+		//要求重新匹配
+		result.restartCompletionOnAnyPrefixChange()
+		
+		val keyword = context.keyword
+		val isKey = context.isKey
+		val offsetInParent = context.offsetInParent
+		for(node in nodes) {
+			val nodeRange = node.rangeInExpression
+			val inRange = offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset
+			if(node is ParadoxScriptValueExpressionNode) {
+				if(inRange) {
+					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+					val resultToUse = result.withPrefixMatcher(keywordToUse)
+					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
+					val configExpression = context.configExpression
+					val config = context.config
+					context.put(PlsCompletionKeys.configExpressionKey, this.config.expression)
+					context.put(PlsCompletionKeys.configKey, this.config)
+					CwtConfigHandler.completeScriptExpression(context, resultToUse, context.prevScope)
+					context.put(PlsCompletionKeys.configExpressionKey, configExpression)
+					context.put(PlsCompletionKeys.configKey, config)
+				}
+			} else if(node is ParadoxScriptValueParameterExpressionNode) {
+				if(inRange && scriptValueName != null) {
+					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+					val resultToUse = result.withPrefixMatcher(keywordToUse)
+					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
+					CwtConfigHandler.completeParametersForScriptValueExpression(scriptValueName, parameterNames, context, resultToUse)
+				}
+			}
+		}
+		context.put(PlsCompletionKeys.keywordKey, keyword)
+		context.put(PlsCompletionKeys.isKeyKey, isKey)
 	}
 }
 
-fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null): ParadoxScriptValueExpression {
+fun Resolver.resolve(text: String, textRange: TextRange, config: CwtConfig<*>, configGroup: CwtConfigGroup, isKey: Boolean? = null): ParadoxScriptValueExpression {
 	val nodes = SmartList<ParadoxScriptExpressionNode>()
 	val offset = textRange.startOffset
 	var n = 0
@@ -131,5 +168,5 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 		if(pipeNode != null) nodes.add(pipeNode)
 		n++
 	}
-	return ParadoxScriptValueExpressionImpl(text, textRange, isKey, nodes)
+	return ParadoxScriptValueExpressionImpl(text, textRange, isKey, nodes, config, configGroup)
 }

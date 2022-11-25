@@ -38,23 +38,23 @@ class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
 					val configGroup = getCwtConfig(project).getValue(gameTypeToUse)
 					val textRange = TextRange.create(0, value.length)
 					val isKey = element is ParadoxScriptPropertyKey
-					val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(value, textRange, config.expression, configGroup, isKey)
+					val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(value, textRange, config, configGroup, isKey)
 						?: return
+					valueSetValueExpression.validate().forEach { error ->
+						handleScriptExpressionError(element, error)
+					}
 					valueSetValueExpression.processAllNodes { node ->
-						for(error in node.errors) {
-							handleScriptExpressionError(element, error, valueSetValueExpression)
-						}
 						val unresolvedError = node.getUnresolvedError(element)
 						if(unresolvedError != null) {
-							handleScriptExpressionError(element, unresolvedError, valueSetValueExpression)
+							handleScriptExpressionError(element, unresolvedError)
 						}
 						true
 					}
 				}
 			}
 			
-			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError, expression: ParadoxValueSetValueExpression) {
-				holder.registerScriptExpressionError(element, error, expression)
+			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError) {
+				holder.registerScriptExpressionError(element, error)
 			}
 		})
 		return holder.resultsArray

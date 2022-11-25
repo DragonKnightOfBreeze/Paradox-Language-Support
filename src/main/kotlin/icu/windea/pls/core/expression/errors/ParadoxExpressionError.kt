@@ -6,11 +6,11 @@ import com.intellij.psi.*
 import icu.windea.pls.core.expression.*
 
 interface ParadoxExpressionError {
-	val rangeInExpression: TextRange?
+	val rangeInExpression: TextRange
 	val description: String
 	val highlightType: ProblemHighlightType
 }
 
-fun ProblemsHolder.registerScriptExpressionError(element: PsiElement, error: ParadoxExpressionError, expression: ParadoxComplexExpression) {
-	registerProblem(element, error.description, error.highlightType, error.rangeInExpression ?: expression.rangeInExpression)
+fun ProblemsHolder.registerScriptExpressionError(element: PsiElement, error: ParadoxExpressionError) {
+	registerProblem(element, error.description, error.highlightType, error.rangeInExpression )
 }

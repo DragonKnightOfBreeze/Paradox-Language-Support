@@ -51,7 +51,7 @@ class ParadoxScriptValueFieldDataSourceReference(
 		return linkConfigs.mapNotNull { linkConfig ->
 			val dataSource = linkConfig.dataSource
 				?: return@mapNotNull null
-			val resolved = CwtConfigHandler.resolveScriptExpression(element, rangeInElement, dataSource, linkConfig)
+			val resolved = CwtConfigHandler.resolveScriptExpression(element, rangeInElement, dataSource, linkConfig, linkConfig.info.configGroup)
 				?: return@mapNotNull null
 			ParadoxScriptValueFieldDataSourceResolveResult(resolved, true, dataSource)
 		}.toTypedArray()

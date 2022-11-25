@@ -5,11 +5,10 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.search.*
-import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
@@ -60,19 +59,13 @@ class ParadoxScriptValueExpressionNode(
 		}
 		
 		override fun resolve(exact: Boolean): PsiElement? {
-			val gameType = configGroup.gameType
-			val project = configGroup.project
-			val typeExpression = "script_value"
-			val selector = definitionSelector().gameType(gameType).preferRootFrom(element, exact)
-			return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).find()
+			val configExpression = CwtValueExpression.resolve("<script_value>")
+			return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, configExpression, null, configGroup, exact = exact)
 		}
 		
 		override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-			val gameType = configGroup.gameType
-			val project = configGroup.project
-			val typeExpression = "script_value"
-			val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-			return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).findAll()
+			val configExpression = CwtValueExpression.resolve("<script_value>")
+			return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, configExpression, null, configGroup)
 				.mapToArray { PsiElementResolveResult(it) }
 		}
 	}

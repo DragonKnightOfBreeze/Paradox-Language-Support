@@ -50,7 +50,7 @@ class ParadoxScopeFieldExpressionImpl(
 ) : AbstractExpression(text), ParadoxScopeFieldExpression {
 	override val quoted: Boolean = false
 	
-	override val scopeNodes: List<ParadoxScopeExpressionNode> get() = nodes.filterIsInstance<ParadoxScopeExpressionNode>()
+	override val scopeNodes: List<ParadoxScopeExpressionNode> = nodes.filterIsInstance<ParadoxScopeExpressionNode>()
 	
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SCOPE_FILED_EXPRESSION_KEY
 	
@@ -127,6 +127,7 @@ class ParadoxScopeFieldExpressionImpl(
 					if(prefixNode != null && offsetInParent >= endOffset) {
 						val keywordToUse = node.text.substring(0, offsetInParent - endOffset)
 						val resultToUse = result.withPrefixMatcher(keywordToUse)
+						context.put(PlsCompletionKeys.keywordKey, keywordToUse)
 						val prefix = prefixNode.text
 						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
 					} else {

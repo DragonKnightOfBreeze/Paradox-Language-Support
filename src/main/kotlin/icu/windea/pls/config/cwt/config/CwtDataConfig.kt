@@ -19,7 +19,7 @@ abstract class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	abstract val options: List<CwtOptionConfig>?
 	abstract val optionValues: List<CwtOptionValueConfig>?
 	
-	abstract val expression: CwtDataExpression
+	abstract override val expression: CwtDataExpression
 	
 	var parent: CwtDataConfig<*>? = null
 	
