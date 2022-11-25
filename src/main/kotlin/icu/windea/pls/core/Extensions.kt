@@ -37,7 +37,6 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.references.*
 import icu.windea.pls.script.*
-import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
 import java.lang.Integer.*
@@ -223,7 +222,6 @@ fun PsiReference.canResolveParameter(): Boolean {
 		is ParadoxParameterPsiReference -> true
 		is ParadoxArgumentPsiReference -> true
 		is ParadoxScriptValueParameterExpressionNode.Reference -> true
-		is ParadoxSvParameterReference -> true
 		else -> false
 	}
 }
@@ -233,8 +231,6 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
 		is ParadoxScriptExpressionReference -> true
 		is ParadoxValueSetValueExpressionNode.Reference -> true
 		is ParadoxDataExpressionNode.Reference -> true
-		is ParadoxScriptScopeFieldDataSourceReference -> true
-		is ParadoxScriptValueFieldDataSourceReference -> true
 		is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
 		is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
 		else -> false

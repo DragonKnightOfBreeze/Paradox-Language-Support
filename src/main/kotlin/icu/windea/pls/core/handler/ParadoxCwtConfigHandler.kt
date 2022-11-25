@@ -9,7 +9,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxCwtConfigHandler {

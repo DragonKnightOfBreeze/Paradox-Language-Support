@@ -18,7 +18,6 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
