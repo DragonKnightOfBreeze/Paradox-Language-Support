@@ -1,9 +1,9 @@
 package icu.windea.pls.script.exp.nodes
 
 import com.intellij.openapi.util.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.script.exp.errors.*
 import icu.windea.pls.script.psi.*
 
@@ -22,15 +22,21 @@ class ParadoxValueFieldExpressionNode(
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpressionNode {
-			ParadoxValueLinkExpressionNode.resolve(text, textRange, configGroup)
-				?.let { return ParadoxValueFieldExpressionNode(text, textRange, it.toSingletonList()) }
-			ParadoxValueLinkFromDataExpressionNode.resolve(text, textRange, configGroup)
-				?.let { return ParadoxValueFieldExpressionNode(text, textRange, it.toSingletonList()) }
+			val nodes = SmartList<ParadoxScriptExpressionNode>()
+			val errors = SmartList<ParadoxScriptExpressionError>()
+			ParadoxValueLinkExpressionNode.resolve(text, textRange, configGroup)?.let { 
+				nodes.add(it)
+				return ParadoxValueFieldExpressionNode(text, textRange, nodes, errors)
+			}
+			ParadoxValueLinkFromDataExpressionNode.resolve(text, textRange, configGroup)?.let {
+				nodes.add(it)
+				return ParadoxValueFieldExpressionNode(text, textRange, nodes, errors)
+			}
 			if(text.isEmpty()) {
 				val error = ParadoxMissingScopeExpressionError(textRange, PlsBundle.message("script.expression.missingValueField"))
-				return ParadoxValueFieldExpressionNode(text, textRange, emptyList(), error.toSingletonListOrEmpty())
+				errors.add(error)
 			}
-			return ParadoxValueFieldExpressionNode(text, textRange)
+			return ParadoxValueFieldExpressionNode(text, textRange, nodes, errors)
 		}
 	}
 }

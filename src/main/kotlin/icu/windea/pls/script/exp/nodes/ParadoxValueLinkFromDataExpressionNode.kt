@@ -19,12 +19,12 @@ class ParadoxValueLinkFromDataExpressionNode(
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxValueLinkFromDataExpressionNode? {
+			val nodes = SmartList<ParadoxScriptExpressionNode>()
+			val errors = SmartList<ParadoxScriptExpressionError>()
 			val linkConfigs = configGroup.linksAsValueWithPrefixSorted
 				.filter { it.prefix != null && text.startsWith(it.prefix) }
 			if(linkConfigs.isNotEmpty()) {
 				//匹配某一前缀
-				val nodes = SmartList<ParadoxScriptExpressionNode>()
-				val errors = SmartList<ParadoxScriptExpressionError>()
 				//prefix node
 				val prefixText = linkConfigs.first().prefix!!
 				val prefixRange = TextRange.create(textRange.startOffset, textRange.startOffset + prefixText.length)
@@ -48,7 +48,8 @@ class ParadoxValueLinkFromDataExpressionNode(
 				if(linkConfigsNoPrefix.isNotEmpty()) {
 					//这里直接认为匹配
 					val node = ParadoxValueLinkDataSourceExpressionNode.resolve(text, textRange, linkConfigsNoPrefix)
-					return ParadoxValueLinkFromDataExpressionNode(text, textRange, node.toSingletonList())
+					nodes.add(node)
+					return ParadoxValueLinkFromDataExpressionNode(text, textRange, nodes, errors)
 				}
 			}
 			return null
