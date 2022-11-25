@@ -9,7 +9,7 @@ class ParadoxValueLinkFromDataExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	override val nodes: List<ParadoxExpressionNode> = emptyList()
-) : ParadoxValueFieldExpressionNode(text, rangeInExpression) {
+) : ParadoxValueFieldExpressionNode {
 	val prefixNode get() = nodes.findIsInstance<ParadoxValueLinkPrefixExpressionNode>()
 	val dataSourceNode get() = nodes.findIsInstance<ParadoxValueLinkDataSourceExpressionNode>()!!
 	

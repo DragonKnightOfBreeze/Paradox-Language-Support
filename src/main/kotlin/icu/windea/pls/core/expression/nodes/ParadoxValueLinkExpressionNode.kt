@@ -12,7 +12,7 @@ class ParadoxValueLinkExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	val config: CwtLinkConfig
-) : ParadoxValueFieldExpressionNode(text, rangeInExpression) {
+) : ParadoxValueFieldExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.VALUE_LINK_VALUE_KEY
 	
 	override fun getReference(element: ParadoxScriptExpressionElement) = ParadoxScopeLinkExpressionNode.Reference(element, rangeInExpression, config)

@@ -14,7 +14,7 @@ class ParadoxSystemScopeExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	val config: ParadoxSystemScopeConfig
-) : ParadoxScopeExpressionNode(text, rangeInExpression) {
+) : ParadoxScopeExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY
 	
 	override fun getReference(element: ParadoxScriptExpressionElement): Reference {
