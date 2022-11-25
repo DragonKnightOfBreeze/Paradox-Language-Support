@@ -33,7 +33,7 @@ import icu.windea.pls.script.highlighter.*
  * some_variable@root
  * ```
  */
-interface ParadoxValueSetValueExpression : ParadoxScriptComplexExpression {
+interface ParadoxValueSetValueExpression : ParadoxComplexExpression {
 	val configExpressions: List<CwtDataExpression>
 	val configGroup: CwtConfigGroup
 	
@@ -48,7 +48,7 @@ class ParadoxValueSetValueExpressionImpl(
 	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
 	override val nodes: List<ParadoxScriptExpressionNode>,
-	override val errors: List<ParadoxScriptExpressionError>,
+	override val errors: List<ParadoxExpressionError>,
 	override val configExpressions: List<CwtDataExpression>,
 	override val configGroup: CwtConfigGroup
 ) : AbstractExpression(text), ParadoxValueSetValueExpression {
@@ -97,7 +97,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configExpression: CwtDa
 
 fun Resolver.resolve(text: String, textRange: TextRange, configExpressions: List<CwtDataExpression>, configGroup: CwtConfigGroup, isKey: Boolean? = null): ParadoxValueSetValueExpression? {
 	val nodes = SmartList<ParadoxScriptExpressionNode>()
-	val errors = SmartList<ParadoxScriptExpressionError>()
+	val errors = SmartList<ParadoxExpressionError>()
 	val offset = textRange.startOffset
 	val atIndex = text.indexOf('@')
 	run {

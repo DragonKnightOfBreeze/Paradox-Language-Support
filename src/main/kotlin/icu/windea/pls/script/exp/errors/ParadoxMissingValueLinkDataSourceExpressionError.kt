@@ -5,4 +5,4 @@ import com.intellij.openapi.util.*
 class ParadoxMissingValueLinkDataSourceExpressionError(
 	override val rangeInExpression: TextRange,
 	override val description: String
-) : ParadoxScriptMissingExpressionError
+) : ParadoxMissingExpressionError

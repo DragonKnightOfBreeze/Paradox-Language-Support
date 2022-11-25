@@ -4,7 +4,7 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.script.exp.nodes.*
 
-interface ParadoxScriptValueExpression : ParadoxScriptComplexExpression {
+interface ParadoxScriptValueExpression : ParadoxComplexExpression {
 	val scriptValueNode: ParadoxScriptValueExpressionNode
 	val parameterNodes: List<ParadoxScriptValueParameterExpressionNode>
 	

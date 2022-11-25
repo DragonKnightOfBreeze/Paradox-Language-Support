@@ -169,7 +169,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		}
 	}
 	
-	fun annotateComplexExpression(element: ParadoxScriptExpressionElement, expression: ParadoxScriptComplexExpression, config: CwtDataConfig<*>, range: TextRange, holder: AnnotationHolder) {
+	fun annotateComplexExpression(element: ParadoxScriptExpressionElement, expression: ParadoxComplexExpression, config: CwtDataConfig<*>, range: TextRange, holder: AnnotationHolder) {
 		doAnnotateComplexExpression(element, expression, config, range, holder)
 	}
 	

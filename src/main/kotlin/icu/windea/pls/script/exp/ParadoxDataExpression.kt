@@ -5,7 +5,7 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.exp.ParadoxDataExpression.*
 import icu.windea.pls.script.psi.*
 
-interface ParadoxDataExpression : ParadoxScriptExpression {
+interface ParadoxDataExpression : ParadoxExpression {
 	val type: ParadoxDataType
 	
 	companion object Resolver

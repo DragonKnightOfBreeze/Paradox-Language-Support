@@ -4,12 +4,12 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 
-interface ParadoxScriptExpressionError {
+interface ParadoxExpressionError {
 	val rangeInExpression: TextRange
 	val description: String
 	val highlightType: ProblemHighlightType
 }
 
-fun ProblemsHolder.registerScriptExpressionError(element: PsiElement, error: ParadoxScriptExpressionError) {
+fun ProblemsHolder.registerScriptExpressionError(element: PsiElement, error: ParadoxExpressionError) {
 	registerProblem(element, error.description, error.highlightType, error.rangeInExpression)
 }

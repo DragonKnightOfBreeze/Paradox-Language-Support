@@ -11,7 +11,7 @@ class ParadoxScopeLinkFromDataExpressionNode(
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	override val nodes: List<ParadoxScriptExpressionNode> = emptyList(),
-	override val errors: List<ParadoxScriptExpressionError> = emptyList()
+	override val errors: List<ParadoxExpressionError> = emptyList()
 ) : ParadoxScriptExpressionNode {
 	val prefixNode get() = nodes.findIsInstance<ParadoxScopeLinkPrefixExpressionNode>()
 	val dataSourceNode get() = nodes.findIsInstance<ParadoxScopeLinkDataSourceExpressionNode>()!!
@@ -19,7 +19,7 @@ class ParadoxScopeLinkFromDataExpressionNode(
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScopeLinkFromDataExpressionNode? {
 			val nodes = SmartList<ParadoxScriptExpressionNode>()
-			val errors = SmartList<ParadoxScriptExpressionError>()
+			val errors = SmartList<ParadoxExpressionError>()
 			val linkConfigs = configGroup.linksAsScopeWithPrefixSorted
 				.filter { it.prefix != null && text.startsWith(it.prefix) }
 			if(linkConfigs.isNotEmpty()) {

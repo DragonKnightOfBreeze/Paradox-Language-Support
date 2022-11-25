@@ -43,7 +43,7 @@ import icu.windea.pls.script.highlighter.*
  * root.owner.some_variable
  * ```
  */
-interface ParadoxValueFieldExpression: ParadoxScriptComplexExpression{
+interface ParadoxValueFieldExpression: ParadoxComplexExpression{
 	val scopeNodes: List<ParadoxScopeExpressionNode>
 	
 	val valueFieldNode: ParadoxValueFieldExpressionNode?
@@ -56,7 +56,7 @@ class ParadoxValueFieldExpressionImpl(
 	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
 	override val nodes: List<ParadoxScriptExpressionNode>,
-	override val errors: List<ParadoxScriptExpressionError>
+	override val errors: List<ParadoxExpressionError>
 ) : AbstractExpression(text), ParadoxValueFieldExpression {
 	override val quoted: Boolean = false
 	
@@ -144,7 +144,7 @@ class ParadoxValueFieldExpressionImpl(
 
 fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxValueFieldExpression? {
 	val nodes = SmartList<ParadoxScriptExpressionNode>()
-	val errors = SmartList<ParadoxScriptExpressionError>()
+	val errors = SmartList<ParadoxExpressionError>()
 	val offset = textRange.startOffset
 	var isLast = false
 	var index: Int

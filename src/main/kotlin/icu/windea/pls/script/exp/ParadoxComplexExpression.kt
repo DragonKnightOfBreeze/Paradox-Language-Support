@@ -7,11 +7,11 @@ import icu.windea.pls.core.*
 import icu.windea.pls.script.exp.nodes.*
 import icu.windea.pls.script.psi.*
 
-interface ParadoxScriptComplexExpression : ParadoxScriptExpression, ParadoxScriptExpressionNode {
+interface ParadoxComplexExpression : ParadoxExpression, ParadoxScriptExpressionNode {
 	fun complete(context: ProcessingContext, result: CompletionResultSet) = pass()
 }
 
-fun ParadoxScriptComplexExpression.processAllNodes(processor: Processor<ParadoxScriptExpressionNode>): Boolean {
+fun ParadoxComplexExpression.processAllNodes(processor: Processor<ParadoxScriptExpressionNode>): Boolean {
 	return doProcessAllNodes(processor)
 }
 
@@ -27,7 +27,7 @@ private fun ParadoxScriptExpressionNode.doProcessAllNodes(processor: Processor<P
 	return true
 }
 
-fun ParadoxScriptComplexExpression.getReferences(element: ParadoxScriptExpressionElement): Array<PsiReference> {
+fun ParadoxComplexExpression.getReferences(element: ParadoxScriptExpressionElement): Array<PsiReference> {
 	val references = SmartList<PsiReference>()
 	this.doGetReferences(element, references)
 	return references.toTypedArray()

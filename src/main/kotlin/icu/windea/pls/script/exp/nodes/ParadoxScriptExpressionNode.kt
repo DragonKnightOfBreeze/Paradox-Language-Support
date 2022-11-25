@@ -12,7 +12,7 @@ interface ParadoxScriptExpressionNode {
 	val text: String
 	val rangeInExpression: TextRange
 	val nodes: List<ParadoxScriptExpressionNode> get() = emptyList()
-	val errors: List<ParadoxScriptExpressionError> get() = emptyList()
+	val errors: List<ParadoxExpressionError> get() = emptyList()
 	
 	fun getAttributesKey(): TextAttributesKey? = null
 	
@@ -20,5 +20,5 @@ interface ParadoxScriptExpressionNode {
 	
 	fun getReference(element: ParadoxScriptExpressionElement): PsiReference? = null
 	
-	fun getUnresolvedError(element: ParadoxScriptExpressionElement): ParadoxScriptExpressionError? = null
+	fun getUnresolvedError(element: ParadoxScriptExpressionElement): ParadoxExpressionError? = null
 }

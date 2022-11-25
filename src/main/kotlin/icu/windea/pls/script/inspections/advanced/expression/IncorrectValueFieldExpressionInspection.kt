@@ -63,7 +63,7 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
 				}
 			}
 			
-			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxScriptExpressionError) {
+			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError) {
 				if(reportsUnresolvedDs && error is ParadoxUnresolvedValueLinkDataSourceExpressionError) return
 				holder.registerScriptExpressionError(element, error)
 			}

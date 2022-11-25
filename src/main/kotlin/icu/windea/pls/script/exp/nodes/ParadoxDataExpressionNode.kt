@@ -36,7 +36,7 @@ class ParadoxDataExpressionNode(
 		return Reference(element, rangeInExpression, linkConfigs)
 	}
 	
-	override fun getUnresolvedError(element: ParadoxScriptExpressionElement): ParadoxScriptExpressionError? {
+	override fun getUnresolvedError(element: ParadoxScriptExpressionElement): ParadoxExpressionError? {
 		if(nodes.isNotEmpty()) return null
 		if(text.isEmpty()) return null
 		if(text.isParameterAwareExpression()) return null

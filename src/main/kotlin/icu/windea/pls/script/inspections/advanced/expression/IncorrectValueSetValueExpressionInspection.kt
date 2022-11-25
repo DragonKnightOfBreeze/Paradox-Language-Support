@@ -53,7 +53,7 @@ class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
 				}
 			}
 			
-			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxScriptExpressionError) {
+			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError) {
 				holder.registerScriptExpressionError(element, error)
 			}
 		})

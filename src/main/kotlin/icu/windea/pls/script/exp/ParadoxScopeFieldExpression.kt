@@ -36,7 +36,7 @@ import icu.windea.pls.script.highlighter.*
  * event_target:some_target
  * ```
  */
-interface ParadoxScopeFieldExpression : ParadoxScriptComplexExpression {
+interface ParadoxScopeFieldExpression : ParadoxComplexExpression {
 	val scopeNodes: List<ParadoxScopeExpressionNode>
 	
 	companion object Resolver
@@ -47,7 +47,7 @@ class ParadoxScopeFieldExpressionImpl(
 	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
 	override val nodes: List<ParadoxScriptExpressionNode>,
-	override val errors: List<ParadoxScriptExpressionError>
+	override val errors: List<ParadoxExpressionError>
 ) : AbstractExpression(text), ParadoxScopeFieldExpression {
 	override val quoted: Boolean = false
 	
@@ -109,7 +109,7 @@ class ParadoxScopeFieldExpressionImpl(
 
 fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxScopeFieldExpression? {
 	val nodes = SmartList<ParadoxScriptExpressionNode>()
-	val errors = SmartList<ParadoxScriptExpressionError>()
+	val errors = SmartList<ParadoxExpressionError>()
 	val offset = textRange.startOffset
 	var isLast = false
 	var index: Int

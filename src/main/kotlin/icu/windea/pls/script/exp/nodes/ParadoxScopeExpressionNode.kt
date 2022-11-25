@@ -11,9 +11,9 @@ class ParadoxScopeExpressionNode(
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	override val nodes: List<ParadoxScriptExpressionNode> = emptyList(),
-	override val errors: List<ParadoxScriptExpressionError> = emptyList()
+	override val errors: List<ParadoxExpressionError> = emptyList()
 ) : ParadoxScriptExpressionNode {
-	override fun getUnresolvedError(element: ParadoxScriptExpressionElement): ParadoxScriptExpressionError? {
+	override fun getUnresolvedError(element: ParadoxScriptExpressionElement): ParadoxExpressionError? {
 		if(nodes.isNotEmpty()) return null
 		if(text.isEmpty()) return null
 		if(text.isParameterAwareExpression()) return null
@@ -23,7 +23,7 @@ class ParadoxScopeExpressionNode(
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScopeExpressionNode {
 			val nodes = SmartList<ParadoxScriptExpressionNode>()
-			val errors = SmartList<ParadoxScriptExpressionError>()
+			val errors = SmartList<ParadoxExpressionError>()
 			ParadoxSystemScopeExpressionNode.resolve(text, textRange, configGroup)?.let {
 				nodes.add(it)
 				return ParadoxScopeExpressionNode(text, textRange, nodes, errors)
