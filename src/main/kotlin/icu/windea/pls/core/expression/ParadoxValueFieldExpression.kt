@@ -233,12 +233,13 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 	var isLast = false
 	var index: Int
 	var dotIndex = -1
-	var atIndex: Int
 	while(dotIndex < text.length) {
 		index = dotIndex + 1
 		dotIndex = text.indexOf('.', index)
-		atIndex = text.indexOf('@', index)
-		if(atIndex != -1 && dotIndex > atIndex) {
+		if(text.indexOf('@', index).let { it != -1 && dotIndex > it }) {
+			dotIndex = -1
+		}
+		if(text.indexOf('|', index).let { it != -1 && dotIndex > it }) {
 			dotIndex = -1
 		}
 		val dotNode = if(dotIndex != -1) {
