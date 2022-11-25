@@ -84,7 +84,7 @@ class ParadoxScriptValueExpressionImpl(
 			val error = ParadoxMalformedScriptValueExpressionExpressionError(rangeInExpression, PlsBundle.message("script.expression.malformedScriptValueExpression", text))
 			errors.add(error)
 		}
-		if(lastIsParameter) {
+		if(!lastIsParameter) {
 			val error = ParadoxMissingParameterValueExpressionExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingParameterValueExpression"))
 			errors.add(error)
 		}

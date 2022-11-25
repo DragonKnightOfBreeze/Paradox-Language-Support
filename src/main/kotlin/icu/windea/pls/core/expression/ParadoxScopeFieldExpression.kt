@@ -177,7 +177,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 		val nodeTextRange = TextRange.create(index + offset, dotIndex + offset)
 		val node = ParadoxScopeExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
 		//handle mismatch situation
-		if(!canBeMismatched && index == 0 && node.nodes.isEmpty()) {
+		if(!canBeMismatched && index == 0 && node.text.isEmpty()) {
 			return null
 		}
 		nodes.add(node)

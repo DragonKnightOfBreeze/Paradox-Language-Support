@@ -255,7 +255,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 			else -> ParadoxScopeExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
 		}
 		//handle mismatch situation
-		if(!canBeMismatched && index == 0 && node.nodes.isEmpty()) {
+		if(!canBeMismatched && index == 0 && node.text.isEmpty()) {
 			return null
 		}
 		nodes.add(node)

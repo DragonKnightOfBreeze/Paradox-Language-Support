@@ -1384,13 +1384,13 @@ object CwtConfigHandler {
 				return null
 			}
 			CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-				return null //不在这里处理，参见：ParadoxScriptValueSetValueExpression
+				return null //不在这里处理，参见：ParadoxValueSetValueExpression
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
-				return null //不在这里处理，参见：ParadoxScriptScopeFieldExpression
+				return null //不在这里处理，参见：ParadoxScopeFieldExpression
 			}
 			CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
-				return null //不在这里处理，参见：ParadoxScriptValueFieldExpression
+				return null //不在这里处理，参见：ParadoxValueFieldExpression
 			}
 			CwtDataTypes.Modifier -> {
 				val name = expression
@@ -1504,13 +1504,13 @@ object CwtConfigHandler {
 				return emptyList()
 			}
 			CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-				return emptyList() //不在这里处理，参见：ParadoxScriptValueSetValueExpression
+				return emptyList() //不在这里处理，参见：ParadoxValueSetValueExpression
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
-				return emptyList() //不在这里处理，参见：ParadoxScriptScopeFieldExpression
+				return emptyList() //不在这里处理，参见：ParadoxScopeFieldExpression
 			}
 			CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
-				return emptyList() //不在这里处理，参见：ParadoxScriptValueFieldExpression
+				return emptyList() //不在这里处理，参见：ParadoxValueFieldExpression
 			}
 			CwtDataTypes.Modifier -> {
 				val name = text
@@ -1591,10 +1591,10 @@ object CwtConfigHandler {
 					return null
 				}
 				CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-					return null //不在这里处理，参见：ParadoxScriptValueSetValueExpression
+					return null //不在这里处理，参见：ParadoxValueSetValueExpression
 				}
 				CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
-					return null //不在这里处理，参见：ParadoxScriptScopeFieldExpression
+					return null //不在这里处理，参见：ParadoxScopeFieldExpression
 				}
 				CwtDataTypes.Constant -> {
 					//这里需要解析的应当是value，因此取第一个即可
@@ -1659,10 +1659,10 @@ object CwtConfigHandler {
 					return emptyList()
 				}
 				CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-					return emptyList() //不在这里处理，参见：ParadoxScriptValueSetValueExpression
+					return emptyList() //不在这里处理，参见：ParadoxValueSetValueExpression
 				}
 				CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
-					return emptyList() //不在这里处理，参见：ParadoxScriptScopeFieldExpression
+					return emptyList() //不在这里处理，参见：ParadoxScopeFieldExpression
 				}
 				CwtDataTypes.Constant -> {
 					//这里需要解析的应当是value，因此取第一个即可
