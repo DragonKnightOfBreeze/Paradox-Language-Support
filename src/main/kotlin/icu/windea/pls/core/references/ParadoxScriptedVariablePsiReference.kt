@@ -5,7 +5,6 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.collections.ProcessEntry.end
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
@@ -44,9 +43,15 @@ class ParadoxScriptedVariablePsiReference(
 		val project = element.project
 		val selector = scriptedVariableSelector().gameTypeFrom(element).preferRootFrom(element)
 		val localQuery = ParadoxLocalScriptedVariableSearch.search(name, element, selector = selector)
-		localQuery.processResult { result.add(it).end() }
+		localQuery.processQuery {
+			result.add(it)
+			true
+		}
 		val globalQuery = ParadoxGlobalScriptedVariableSearch.search(name, project, selector = selector)
-		globalQuery.processResult { result.add(it).end() }
+		globalQuery.processQuery {
+			result.add(it)
+			true
+		}
 		return result.mapToArray { PsiElementResolveResult(it) }
 	}
 }

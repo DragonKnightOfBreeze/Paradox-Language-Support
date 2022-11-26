@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
 object ParadoxDefinitionElementInfoHandler {
 	@JvmStatic
 	fun get(element: PsiElement): ParadoxDefinitionElementInfo? {
-		val targetElement = if(element is ParadoxScriptProperty) element.propertyKey else element
+		val targetElement = if(element is ParadoxScriptPropertyKey) element.parent else element
 		if(!targetElement.isExpressionElement()) return null
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionElementInfoKey) {
 			val file = element.containingFile
@@ -28,6 +28,7 @@ object ParadoxDefinitionElementInfoHandler {
 	
 	@JvmStatic
 	fun resolveDownUp(element: PsiElement): ParadoxDefinitionElementInfo? {
+		//element: ParadoxScriptProperty | ParadoxScriptValue
 		//这里输入的element本身可以是定义，这时elementPath会是空字符串
 		val (elementPath, definition) = ParadoxElementPathHandler.resolveFromDefinitionWithDefinition(element) ?: return null
 		val definitionInfo = definition.definitionInfo ?: return null

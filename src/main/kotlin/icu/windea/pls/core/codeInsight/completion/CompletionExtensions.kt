@@ -3,6 +3,7 @@ package icu.windea.pls.core.codeInsight.completion
 import com.intellij.util.*
 
 val ProcessingContext.completionType get() = get(PlsCompletionKeys.completionTypeKey)
+val ProcessingContext.completionIds get() = get(PlsCompletionKeys.completionIdsKey)
 val ProcessingContext.contextElement get() = get(PlsCompletionKeys.contextElementKey)
 val ProcessingContext.quoted get() = get(PlsCompletionKeys.quotedKey)
 val ProcessingContext.offsetInParent get() = get(PlsCompletionKeys.offsetInParentKey)

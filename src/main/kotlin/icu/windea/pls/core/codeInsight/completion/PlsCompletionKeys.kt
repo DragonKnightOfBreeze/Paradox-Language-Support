@@ -8,6 +8,7 @@ import icu.windea.pls.config.cwt.config.*
 
 object PlsCompletionKeys {
 	val completionTypeKey = Key.create<CompletionType>("paradoxCompletion.completionType")
+	val completionIdsKey = Key.create<MutableSet<String>>("paradoxCompletion.completionIds")
 	val contextElementKey = Key.create<PsiElement>("paradoxCompletion.contextElement")
 	val quotedKey = Key.create<Boolean>("paradoxCompletion.quoted")
 	val offsetInParentKey = Key.create<Int>("paradoxCompletion.offsetInParent")

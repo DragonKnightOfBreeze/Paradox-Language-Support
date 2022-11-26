@@ -29,7 +29,7 @@ class ParadoxDefinitionImplementationsSearch : QueryExecutor<PsiElement, Definit
 				runReadAction {
 					//这里不进行排序
 					val selector = definitionSelector().gameTypeFrom(sourceElement)
-					ParadoxDefinitionSearch.search(name, type, project, scope, selector).processResult(consumer)
+					ParadoxDefinitionSearch.search(name, type, project, scope, selector).forEach(consumer)
 				}
 			}
 		}

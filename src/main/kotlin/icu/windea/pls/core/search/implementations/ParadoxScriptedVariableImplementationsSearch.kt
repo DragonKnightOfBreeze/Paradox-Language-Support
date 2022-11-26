@@ -26,8 +26,8 @@ class ParadoxScriptedVariableImplementationsSearch: QueryExecutor<PsiElement, De
 			runReadAction {
 				//这里不进行排序
 				val selector = scriptedVariableSelector().gameTypeFrom(sourceElement)
-				ParadoxLocalScriptedVariableSearch.search(name, sourceElement, selector = selector).processResult(consumer)
-				ParadoxGlobalScriptedVariableSearch.search(name, project, selector = selector).processResult(consumer)
+				ParadoxLocalScriptedVariableSearch.search(name, sourceElement, selector = selector).forEach(consumer)
+				ParadoxGlobalScriptedVariableSearch.search(name, project, selector = selector).forEach(consumer)
 			}
 		}
 		return true

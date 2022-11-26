@@ -116,7 +116,7 @@ inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, action: () -> T?): T
 	return newValue
 }
 
-inline fun <T> Query<T>.processResult(consumer: Processor<in T>): Boolean {
+inline fun <T> Query<T>.processQuery(consumer: Processor<in T>): Boolean {
 	return forEach(consumer)
 }
 //endregion

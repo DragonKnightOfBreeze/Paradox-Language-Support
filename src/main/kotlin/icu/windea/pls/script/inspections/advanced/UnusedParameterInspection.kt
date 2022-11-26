@@ -72,7 +72,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
 					val statusMap = session.getUserData(statusMapKey)!!
 					val used = statusMap[resolved]
 					val isUsed = if(used == null) {
-						val r = ReferencesSearch.search(resolved).processResult {
+						val r = ReferencesSearch.search(resolved).processQuery {
 							val res = it.resolve()
 							if(res is ParadoxParameterElement && res.read) {
 								statusMap[resolved] = true

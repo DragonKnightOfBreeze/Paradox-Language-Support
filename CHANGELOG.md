@@ -46,8 +46,6 @@
 
 ## 0.7.5
 
-* BUG修复：
-  * [ ] 修复无法跳转到定义声明中作为key的scope对应的CWT规则的问题
 * 功能优化：
   * [ ] 对于忽略大小写的字符串作为键/元素的集合和映射，考虑使用内联类`CaseInsensitiveString`，以保证排序
   * [ ] 如果无法解析脚本表达式，如果存在，提示可能的CWT规则表达式（如，`<event>, {...}`）
@@ -79,6 +77,8 @@
     * 对于别名无法正常工作（`if` != `alias[effect:if]`）
   * [X] 兼容localisationCommandScope需要被识别为`value[event_target]`或者`value[global_event_target]`的情况，以及代码提示
   * [X] 兼容localisationCommandField需要被识别为`value[variable]`的情况，以及代码提示
+  * [ ] 修复无法跳转到定义声明中作为key的scope对应的CWT规则的问题
+  * [ ] 修复不能为对应的CWT规则是别名（alias / single_alias）的表达式（key / value）提供正确的引用读写高亮的问题（当鼠标放到表达式上时应当显示）
 * 功能优化：
   * [X] 对CWT别名规则（dataType=alias/single_alias）使用特殊的别名图标，以便区分内联前后的CWT规则
   * [X] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`

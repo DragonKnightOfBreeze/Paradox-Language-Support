@@ -60,7 +60,7 @@ class ParadoxDefinitionElementInfo(
 	/** 子值基于配置的出现次数。 */
 	val childValueOccurrence: Map<CwtValueExpression, Int> by lazy {
 		val values = when {
-			element is ParadoxScriptProperty -> element.valueList
+			element is ParadoxScriptProperty-> element.valueList
 			element is ParadoxScriptBlock -> element.valueList
 			else -> return@lazy emptyMap()
 		}
