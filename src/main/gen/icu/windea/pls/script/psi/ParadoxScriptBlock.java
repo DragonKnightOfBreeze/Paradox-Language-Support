@@ -1,13 +1,13 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.psi.*;
-import icu.windea.pls.core.expression.*;
-import org.jetbrains.annotations.*;
-
-import javax.swing.*;
-import java.awt.*;
 import java.util.List;
+import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.core.expression.ParadoxDataType;
+import java.awt.Color;
+import javax.swing.Icon;
 
 public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlockElement {
 
@@ -15,16 +15,10 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlo
   List<ParadoxScriptParameterCondition> getParameterConditionList();
 
   @NotNull
-  List<ParadoxScriptProperty> getPropertyList();
-
-  @NotNull
   List<ParadoxScriptScriptedVariable> getScriptedVariableList();
 
   @NotNull
   List<ParadoxScriptString> getStringList();
-
-  @NotNull
-  List<ParadoxScriptValue> getValueList();
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
@@ -35,6 +29,12 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlo
   boolean isEmpty();
 
   boolean isNotEmpty();
+
+  @NotNull
+  List<ParadoxScriptProperty> getPropertyList();
+
+  @NotNull
+  List<ParadoxScriptValue> getValueList();
 
   @NotNull
   List<PsiElement> getComponents();

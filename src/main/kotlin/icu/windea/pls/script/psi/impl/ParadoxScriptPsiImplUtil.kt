@@ -496,7 +496,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun toString(element: ParadoxScriptString): String{
+	fun toString(element: ParadoxScriptString): String {
 		return "ParadoxScriptString(value=${element.value})"
 	}
 	//endregion
@@ -599,6 +599,16 @@ object ParadoxScriptPsiImplUtil {
 			}
 		}
 		return false
+	}
+	
+	@JvmStatic
+	fun getPropertyList(element: ParadoxScriptBlock): List<ParadoxScriptProperty> {
+		return buildList { element.processProperty(includeConditional = true) { add(it) } }
+	}
+	
+	@JvmStatic
+	fun getValueList(element: ParadoxScriptBlock): List<ParadoxScriptValue> {
+		return buildList { element.processValue(includeConditional = true) { add(it) } }
 	}
 	
 	@JvmStatic

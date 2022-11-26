@@ -1,17 +1,21 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi.impl;
 
-import com.intellij.lang.*;
-import com.intellij.navigation.*;
-import com.intellij.psi.*;
-import com.intellij.psi.stubs.*;
-import com.intellij.psi.util.*;
-import icu.windea.pls.core.expression.*;
-import icu.windea.pls.script.psi.*;
+import java.util.List;
 import org.jetbrains.annotations.*;
-
-import javax.swing.*;
-import java.util.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.util.PsiTreeUtil;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import icu.windea.pls.script.psi.ParadoxScriptStringStub;
+import icu.windea.pls.script.psi.*;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiReference;
+import icu.windea.pls.core.expression.ParadoxDataType;
+import javax.swing.Icon;
+import com.intellij.psi.stubs.IStubElementType;
 
 public class ParadoxScriptStringImpl extends ParadoxScriptStubElementImpl<ParadoxScriptStringStub> implements ParadoxScriptString {
 

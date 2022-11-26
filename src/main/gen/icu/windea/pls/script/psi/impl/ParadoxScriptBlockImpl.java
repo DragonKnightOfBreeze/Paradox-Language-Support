@@ -1,16 +1,18 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi.impl;
 
-import com.intellij.lang.*;
-import com.intellij.psi.*;
-import com.intellij.psi.util.*;
-import icu.windea.pls.core.expression.*;
-import icu.windea.pls.script.psi.*;
-import org.jetbrains.annotations.*;
-
-import javax.swing.*;
-import java.awt.*;
 import java.util.List;
+import org.jetbrains.annotations.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.util.PsiTreeUtil;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import icu.windea.pls.script.psi.*;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.core.expression.ParadoxDataType;
+import java.awt.Color;
+import javax.swing.Icon;
 
 public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements ParadoxScriptBlock {
 
@@ -37,12 +39,6 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
 
   @Override
   @NotNull
-  public List<ParadoxScriptProperty> getPropertyList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptProperty.class);
-  }
-
-  @Override
-  @NotNull
   public List<ParadoxScriptScriptedVariable> getScriptedVariableList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptScriptedVariable.class);
   }
@@ -51,12 +47,6 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   @NotNull
   public List<ParadoxScriptString> getStringList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptString.class);
-  }
-
-  @Override
-  @NotNull
-  public List<ParadoxScriptValue> getValueList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
   }
 
   @Override
@@ -79,6 +69,18 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   @Override
   public boolean isNotEmpty() {
     return ParadoxScriptPsiImplUtil.isNotEmpty(this);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptProperty> getPropertyList() {
+    return ParadoxScriptPsiImplUtil.getPropertyList(this);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptValue> getValueList() {
+    return ParadoxScriptPsiImplUtil.getValueList(this);
   }
 
   @Override

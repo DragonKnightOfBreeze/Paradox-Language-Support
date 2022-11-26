@@ -155,7 +155,8 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
     "icu.windea.pls.script.psi.ParadoxScriptBlockElement"
   ]
   methods=[
-    getIcon getValue isEmpty isNotEmpty getComponents getColor setColor
+    property="" value=""
+    getIcon getValue isEmpty isNotEmpty getPropertyList getValueList getComponents getColor setColor
     getExpressionType getExpression
   ]
 }

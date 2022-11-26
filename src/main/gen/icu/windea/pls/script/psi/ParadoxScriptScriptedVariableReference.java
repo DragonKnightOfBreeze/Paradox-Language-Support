@@ -1,12 +1,14 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import icu.windea.pls.core.expression.*;
-import icu.windea.pls.core.psi.*;
-import icu.windea.pls.core.references.*;
+import java.util.List;
 import org.jetbrains.annotations.*;
-
-import javax.swing.*;
+import com.intellij.psi.PsiElement;
+import icu.windea.pls.core.psi.ParadoxScriptedVariableReference;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.core.expression.ParadoxDataType;
+import icu.windea.pls.core.references.ParadoxScriptedVariablePsiReference;
+import javax.swing.Icon;
 
 public interface ParadoxScriptScriptedVariableReference extends ParadoxScriptValue, ParadoxScriptedVariableReference {
 

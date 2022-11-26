@@ -47,7 +47,7 @@ class ParadoxDefinitionElementInfo(
 	/** 子属性基于配置的出现次数。 */
 	val childPropertyOccurrence: Map<CwtKeyExpression, Int> by lazy {
 		val properties = when {
-			element is ParadoxScriptProperty -> element.propertyList
+			element is ParadoxScriptPropertyKey -> element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.propertyList ?: return@lazy emptyMap()
 			else -> return@lazy emptyMap()
 		}
 		if(properties.isEmpty()) return@lazy emptyMap()
@@ -60,7 +60,7 @@ class ParadoxDefinitionElementInfo(
 	/** 子值基于配置的出现次数。 */
 	val childValueOccurrence: Map<CwtValueExpression, Int> by lazy {
 		val values = when {
-			element is ParadoxScriptProperty-> element.valueList
+			element is ParadoxScriptPropertyKey-> element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.valueList ?: return@lazy emptyMap()
 			element is ParadoxScriptBlock -> element.valueList
 			else -> return@lazy emptyMap()
 		}
