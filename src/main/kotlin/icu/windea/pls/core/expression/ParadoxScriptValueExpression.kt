@@ -140,8 +140,8 @@ fun Resolver.resolve(text: String, textRange: TextRange, config: CwtConfig<*>, c
 	val nodes = SmartList<ParadoxExpressionNode>()
 	val offset = textRange.startOffset
 	var n = 0
-	var scriptValueName: String? = null
-	var parameterName: String? = null
+	var scriptValueNode: ParadoxScriptValueExpressionNode? = null
+	var parameterNode: ParadoxScriptValueParameterExpressionNode? = null
 	var index: Int
 	var pipeIndex = -1
 	while(pipeIndex < text.length) {
@@ -160,15 +160,15 @@ fun Resolver.resolve(text: String, textRange: TextRange, config: CwtConfig<*>, c
 		val nodeRange = TextRange.create(index + offset, pipeIndex + offset)
 		val node = when {
 			n == 0 -> {
-				scriptValueName = nodeText
 				ParadoxScriptValueExpressionNode.resolve(nodeText, nodeRange, config, configGroup)
+					.also { scriptValueNode = it }
 			}
 			n % 2 == 1 -> {
-				parameterName = nodeText
-				ParadoxScriptValueParameterExpressionNode.resolve(nodeText, nodeRange, scriptValueName, configGroup)
+				ParadoxScriptValueParameterExpressionNode.resolve(nodeText, nodeRange, scriptValueNode, configGroup)
+					.also { parameterNode = it }
 			}
 			n % 2 == 0 -> {
-				ParadoxScriptValueParameterValueExpressionNode.resolve(nodeText, nodeRange, scriptValueName, parameterName, configGroup)
+				ParadoxScriptValueParameterValueExpressionNode.resolve(nodeText, nodeRange, scriptValueNode, parameterNode, configGroup)
 			}
 			else -> throw InternalError()
 		}

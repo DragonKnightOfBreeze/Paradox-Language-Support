@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptValueParameterExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
-	val scriptValueName: String?,
+	val scriptValueNode: ParadoxScriptValueExpressionNode?,
 	val configGroup: CwtConfigGroup
 ) : ParadoxExpressionNode {
 	override fun getAttributesKey(): TextAttributesKey? {
@@ -20,14 +20,15 @@ class ParadoxScriptValueParameterExpressionNode (
 	}
 	
 	override fun getReference(element: ParadoxScriptExpressionElement): Reference? {
-		if(scriptValueName == null) return null
+		if(scriptValueNode == null) return null
 		if(text.isEmpty()) return null
-		return Reference(element, rangeInExpression, scriptValueName, text, configGroup)
+		if(!scriptValueNode.getReference(element).canResolve()) return null //skip if script value cannot be resolved
+		return Reference(element, rangeInExpression, scriptValueNode.text, text, configGroup)
 	}
 	
 	companion object Resolver {
-		fun resolve(text: String, textRange: TextRange, scriptValueName: String?, configGroup: CwtConfigGroup): ParadoxScriptValueParameterExpressionNode {
-			return ParadoxScriptValueParameterExpressionNode(text, textRange, scriptValueName, configGroup)
+		fun resolve(text: String, textRange: TextRange, scriptValueNode: ParadoxScriptValueExpressionNode?, configGroup: CwtConfigGroup): ParadoxScriptValueParameterExpressionNode {
+			return ParadoxScriptValueParameterExpressionNode(text, textRange, scriptValueNode, configGroup)
 		}
 	}
 	

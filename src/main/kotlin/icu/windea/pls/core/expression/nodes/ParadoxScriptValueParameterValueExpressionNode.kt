@@ -9,8 +9,8 @@ import icu.windea.pls.script.highlighter.*
 class ParadoxScriptValueParameterValueExpressionNode(
 	override val text: String,
 	override val rangeInExpression: TextRange,
-	val scriptValueName: String?,
-	val parameterName: String?,
+	val scriptValueNode: ParadoxScriptValueExpressionNode?,
+	val parameterNode: ParadoxScriptValueParameterExpressionNode?,
 	val configGroup: CwtConfigGroup
 ) : ParadoxExpressionNode {
 	override fun getAttributesKey(): TextAttributesKey {
@@ -23,8 +23,8 @@ class ParadoxScriptValueParameterValueExpressionNode(
 	}
 	
 	companion object Resolver {
-		fun resolve(text: String, textRange: TextRange, scriptValueName: String?, parameterName: String?, configGroup: CwtConfigGroup): ParadoxScriptValueParameterValueExpressionNode {
-			return ParadoxScriptValueParameterValueExpressionNode(text, textRange, scriptValueName, parameterName, configGroup)
+		fun resolve(text: String, textRange: TextRange, scriptValueNode: ParadoxScriptValueExpressionNode?, parameterNode: ParadoxScriptValueParameterExpressionNode?, configGroup: CwtConfigGroup): ParadoxScriptValueParameterValueExpressionNode {
+			return ParadoxScriptValueParameterValueExpressionNode(text, textRange, scriptValueNode, parameterNode, configGroup)
 		}
 	}
 }
