@@ -8,7 +8,7 @@ import com.intellij.usageView.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 
-class CwtFindUsagesProvider : FindUsagesProvider , ElementDescriptionProvider{
+class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
 	override fun getType(element: PsiElement): String {
 		return getElementDescription(element, UsageViewTypeLocation.INSTANCE).orEmpty()
 	}
@@ -46,7 +46,7 @@ class CwtFindUsagesProvider : FindUsagesProvider , ElementDescriptionProvider{
 	}
 	
 	override fun canFindUsagesFor(element: PsiElement): Boolean {
-		return when(element){
+		return when(element) {
 			is CwtProperty -> CwtConfigType.resolve(element)?.isReference == true
 			is CwtString -> CwtConfigType.resolve(element)?.isReference == true
 			else -> false

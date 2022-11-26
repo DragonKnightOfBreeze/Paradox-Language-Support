@@ -50,8 +50,9 @@
       <option name="EFFECT_TYPE" value="5"/>
     </value>
   </option>
-  <option name="PARADOX_SCRIPT.VARIABLE_VALUE">
+  <option name="PARADOX_SCRIPT.VARIABLE">
     <value>
+      <option name="FONT_TYPE" value="2"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.VALUE_LINK_VALUE">

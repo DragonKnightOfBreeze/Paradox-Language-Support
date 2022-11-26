@@ -313,10 +313,14 @@ object CwtConfigHandler {
 				return ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey) != null
 			}
 			CwtDataTypes.VariableField -> {
+				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
+				if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
 				if(!isStatic && isParameterAware) return true
 				return false //TODO
 			}
 			CwtDataTypes.IntVariableField -> {
+				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
+				if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
 				if(!isStatic && isParameterAware) return true
 				return false //TODO
 			}
@@ -1395,6 +1399,9 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
 				return null //不在这里处理，参见：ParadoxValueFieldExpression
+			}
+			CwtDataTypes.VariableField, CwtDataTypes.IntVariableField -> {
+				return null //TODO
 			}
 			CwtDataTypes.Modifier -> {
 				val name = expression

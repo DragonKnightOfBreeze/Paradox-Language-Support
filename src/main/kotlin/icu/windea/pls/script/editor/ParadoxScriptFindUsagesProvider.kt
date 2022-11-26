@@ -33,17 +33,31 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 			}
 			is ParadoxScriptProperty -> {
 				//如果是定义，需要特殊处理
-				val definitionInfo = element.definitionInfo ?: return null
-				when(location) {
-					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.definition")
-					else -> definitionInfo.name
+				val definitionInfo = element.definitionInfo
+				if(definitionInfo != null) {
+					when(location) {
+						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.definition")
+						else -> definitionInfo.name
+					}
+				} else {
+					when(location) {
+						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.property")
+						else -> element.name
+					}
 				}
 			}
 			is ParadoxScriptExpressionElement -> {
-				val complexEnumValueInfo = element.complexEnumValueInfo ?: return null
-				when(location) {
-					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.complexEnumValue")
-					else -> complexEnumValueInfo.name
+				val complexEnumValueInfo = element.complexEnumValueInfo
+				if(complexEnumValueInfo != null) {
+					when(location) {
+						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.complexEnumValue")
+						else -> complexEnumValueInfo.name
+					}
+				} else {
+					when(location) {
+						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.expression")
+						else -> element.name
+					}
 				}
 			}
 			is ParadoxParameterElement -> {

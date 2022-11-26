@@ -4,8 +4,10 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -44,10 +46,15 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
 				super.visitProperty(element)
 			}
 			
-			//key or value, int / float / int or float scripted variable / int or float string (can be quoted), inline_math  
+			//int or float (can be quoted)
+			//scripted variable (int or float value)
+			//value field or variable field
+			//inline math
 			
-			private fun mayBeNumberKey(propertyKey: ParadoxScriptPropertyKey): Boolean {
-				return ParadoxDataType.resolve(propertyKey.value).isNumberType()
+			private fun mayBeNumberKey(element: ParadoxScriptPropertyKey): Boolean {
+				if(ParadoxDataType.resolve(element.value).isNumberType()) return true
+				val config = ParadoxCwtConfigHandler.resolveConfigs(element, orDefault = false).firstOrNull() ?: return false
+				return config.expression.isNumberType()
 			}
 			
 			private fun mayByNumberValue(element: ParadoxScriptValue): Boolean {
@@ -59,7 +66,11 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
 						val resolvedValueElement = resolved?.scriptedVariableValue
 						resolvedValueElement == null || mayByNumberValue(resolvedValueElement)
 					}
-					element is ParadoxScriptString -> ParadoxDataType.resolve(element.value).isNumberType()
+					element is ParadoxScriptString -> {
+						if(ParadoxDataType.resolve(element.value).isNumberType()) return true
+						val config = ParadoxCwtConfigHandler.resolveConfigs(element, orDefault = false).firstOrNull() ?: return false
+						return config.expression.isNumberType()
+					}
 					element is ParadoxScriptInlineMath -> true
 					else -> false
 				}

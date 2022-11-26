@@ -11,4 +11,10 @@ interface CwtDataExpression : CwtExpression {
 	val extraValue: Any?
 }
 
-inline fun <reified T> CwtDataExpression.extraValue() = extraValue?.cast<T>() 
+inline fun <reified T> CwtDataExpression.extraValue() = extraValue?.cast<T>()
+
+fun CwtDataExpression.isNumberType(): Boolean {
+	return type == CwtDataTypes.Int || type == CwtDataTypes.Float
+		|| type == CwtDataTypes.ValueField || type == CwtDataTypes.IntValueField
+		|| type == CwtDataTypes.VariableField || type == CwtDataTypes.VariableField
+}

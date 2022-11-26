@@ -2,7 +2,6 @@ package icu.windea.pls.config.cwt.expression
 
 import com.google.common.cache.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.config.cwt.expression.CwtDataTypes as Types
 
 /**
@@ -136,11 +135,17 @@ class CwtValueExpression private constructor(
 			expressionString == "variable_field" -> {
 				CwtValueExpression(expressionString, Types.VariableField)
 			}
+			expressionString == "variable_field_32" -> {
+				CwtValueExpression(expressionString, Types.VariableField)
+			}
 			expressionString.surroundsWith("variable_field[", "]") -> {
 				val value = expressionString.substring(15, expressionString.length - 1)
 				CwtValueExpression(expressionString, Types.VariableField, value)
 			}
 			expressionString == "int_variable_field" -> {
+				CwtValueExpression(expressionString, Types.IntVariableField)
+			}
+			expressionString == "int_variable_field_32" -> {
 				CwtValueExpression(expressionString, Types.IntVariableField)
 			}
 			expressionString.surroundsWith("int_variable_field[", "]") -> {

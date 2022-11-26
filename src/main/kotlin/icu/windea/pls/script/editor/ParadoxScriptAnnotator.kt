@@ -72,7 +72,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		if(element.isParameterAwareExpression()) return
 		
 		val config = resolveConfigs(element).firstOrNull()
-		if(config != null) doAnnotateExpressionElement(element, element.textRange, config.expression, config, holder)
+		if(config != null) doAnnotateExpressionElement(element, element.textRange, null, config.expression, config, holder)
 		
 		val complexEnumValueInfo = element.complexEnumValueInfo
 		if(complexEnumValueInfo != null) annotateComplexEnumValue(element, holder, complexEnumValueInfo)
@@ -81,6 +81,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	private fun doAnnotateExpressionElement(
 		element: ParadoxScriptExpressionElement,
 		range: TextRange,
+		rangeInElement: TextRange?,
 		expression: CwtDataExpression,
 		config: CwtDataConfig<*>,
 		holder: AnnotationHolder
@@ -92,6 +93,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		
 		//颜色高亮
 		val configGroup = config.info.configGroup
+		val text = rangeInElement?.substring(element.text) ?: element.text
 		when(expression.type) {
 			CwtDataTypes.InlineLocalisation -> {
 				if(!element.isQuoted()) {
@@ -138,7 +140,6 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-				val text = element.text
 				if(text.isQuoted()) return
 				val isKey = element is ParadoxScriptPropertyKey
 				val textRange = TextRange.create(0, text.length)
@@ -146,7 +147,6 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				annotateComplexExpression(element, valueSetValueExpression, config, range, holder)
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
-				val text = element.text
 				if(text.isQuoted()) return
 				val isKey = element is ParadoxScriptPropertyKey
 				val textRange = TextRange.create(0, text.length)
@@ -154,7 +154,6 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				annotateComplexExpression(element, scopeFieldExpression, config, range, holder)
 			}
 			CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
-				val text = element.text
 				if(text.isQuoted()) return
 				val isKey = element is ParadoxScriptPropertyKey
 				val textRange = TextRange.create(0, text.length)
@@ -166,12 +165,11 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.AliasName, CwtDataTypes.AliasKeysField -> {
-				val key = element.text
 				val aliasName = expression.value ?: return
 				val aliasMap = configGroup.aliasGroups.get(aliasName) ?: return
-				val aliasSubName = CwtConfigHandler.getAliasSubName(key, false, aliasName, configGroup) ?: return
+				val aliasSubName = CwtConfigHandler.getAliasSubName(text, false, aliasName, configGroup) ?: return
 				val aliasConfig = aliasMap[aliasSubName]?.first() ?: return
-				doAnnotateExpressionElement(element, range, CwtValueExpression.resolve(aliasSubName), aliasConfig.config, holder)
+				doAnnotateExpressionElement(element, range, rangeInElement, CwtValueExpression.resolve(aliasSubName), aliasConfig.config, holder)
 			}
 			else -> pass()
 		}
@@ -190,7 +188,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		}
 		val attributesKeyExpression = expressionNode.getAttributesKeyExpression(element, config)
 		if(attributesKeyExpression != null) {
-			doAnnotateExpressionElement(element, rangeToAnnotate, attributesKeyExpression, config, holder)
+			doAnnotateExpressionElement(element, rangeToAnnotate, expressionNode.rangeInExpression, attributesKeyExpression, config, holder)
 		}
 		if(expressionNode.nodes.isNotEmpty()) {
 			for(node in expressionNode.nodes) {
