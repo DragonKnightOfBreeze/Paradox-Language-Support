@@ -1,0 +1,52 @@
+{
+	parserClass="icu.windea.pls.expression.psi.ParadoxExpressionParser"
+	extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+	psiClassPrefix="Paradox"
+	psiImplClassSuffix="Impl"
+	psiPackage="icu.windea.pls.expression.psi"
+	psiImplPackage="icu.windea.pls.expression.psi.impl"
+	psiVisitorName="ParadoxExpressionVisitor"
+	elementTypeHolderClass="icu.windea.pls.expression.psi.ParadoxExpressionElementTypes"
+	elementTypeClass="icu.windea.pls.expression.psi.ParadoxExpressionElementType"
+	tokenTypeClass="icu.windea.pls.expression.psi.ParadoxExpressionTokenType"
+	parserUtilClass="icu.windea.pls.expression.psi.ParadoxExpressionParserUtil"
+	psiImplUtilClass="icu.windea.pls.expression.psi.impl.ParadoxExpressionPsiImplUtil"
+	generatePsi=true
+	tokens=[
+	  dot='.'
+	  at='@'
+	  pipe='|'
+	  prefix_token='regexp:[a-zA-Z_:]'
+	  identifier_token='regexp:[a-zA-Z_]'
+	  boolean_token='regexp:(yes|no)'
+	  int_token='regexp:[+-]?(0|[1-9][0-9]*)'
+	  float_token='regexp:[+-]?(0|[1-9][0-9]*)(\.[0-9]+)'
+	  string_token='regexp:[^|#@$={}\[\]\s\"][^|$={}\[\]\s\"]*'
+	]
+}
+
+root ::= scope_field_expression
+scope_field_expression ::= scope_field ('.' scope_field) * {
+  pin=1
+  implements="icu.windea.pls.expression.psi.ParadoxExpression"
+}
+
+scope_field ::= system_scope | scope_link | scope_link_from_data | dummy_scope_field {
+  implements="icu.windea.pls.expression.psi.ParadoxExpressionNode"
+}
+system_scope ::= <<parseSystemScope>> {
+  extends=scope_field
+  implements="icu.windea.pls.expression.psi.ParadoxExpressionNode"
+}
+scope_link ::= <<parseScopeLink>> {
+  extends=scope_field
+  implements="icu.windea.pls.expression.psi.ParadoxExpressionNode"
+}
+scope_link_from_data ::= <<parseScopeLinkFromData>> {
+  extends=scope_field
+  implements="icu.windea.pls.expression.psi.ParadoxExpressionNode"
+}
+dummy_scope_field ::= "identifier_token" {
+  extends=scope_field
+  implements="icu.windea.pls.expression.psi.ParadoxExpressionNode"
+}

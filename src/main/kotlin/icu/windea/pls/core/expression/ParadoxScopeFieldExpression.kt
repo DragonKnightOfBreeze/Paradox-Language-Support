@@ -159,7 +159,13 @@ class ParadoxScopeFieldExpressionImpl(
 	}
 }
 
-fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxScopeFieldExpression? {
+fun Resolver.resolve(
+	text: String,
+	textRange: TextRange,
+	configGroup: CwtConfigGroup,
+	isKey: Boolean? = null,
+	canBeMismatched: Boolean = false
+): ParadoxScopeFieldExpression? {
 	val nodes = SmartList<ParadoxExpressionNode>()
 	val offset = textRange.startOffset
 	var index: Int
