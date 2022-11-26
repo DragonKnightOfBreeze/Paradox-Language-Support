@@ -276,18 +276,20 @@
     <group id="ParadoxScript.RefactoringGroup" popup="false">
       <action id="ParadoxScript.IntroduceLocalScriptedVariable"
               class="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceLocalScriptedVariableAction">
-        <keyboard-shortcut first-keystroke="control alt v" keymap="$default"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt v"/>
         <add-to-group group-id="IntroduceActionsGroup" anchor="first"/>
       </action>
       <action id="ParadoxScript.IntroduceGlobalScriptedVariable"
               class="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceGlobalScriptedVariableAction">
-        <keyboard-shortcut first-keystroke="control alt g" keymap="$default"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt g"/>
         <add-to-group group-id="IntroduceActionsGroup" anchor="after"
                       relative-to-action="ParadoxScript.IntroduceLocalScriptedVariable"/>
       </action>
     </group>
     <group id="ParadoxScript.GotoGroup">
       <action id="ParadoxScript.GotoRelatedLocalisation" class="icu.windea.pls.script.codeInsight.navigation.GotoRelatedLocalisationAction">
+        <keyboard-shortcut first-keystroke="control alt shift p" keymap="$default"/>
+        <mouse-shortcut keymap="$default" keystroke="control alt shift button1"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
@@ -296,6 +298,8 @@
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
       <action id="ParadoxScript.GotoRelatedCwtConfig" class="icu.windea.pls.script.codeInsight.navigation.GotoRelatedCwtConfigAction">
+        <keyboard-shortcut first-keystroke="alt p" keymap="$default"/>
+        <mouse-shortcut keymap="$default" keystroke="alt button1"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>

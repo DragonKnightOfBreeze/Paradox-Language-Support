@@ -350,7 +350,6 @@ object CwtConfigHandler {
 				return false //不在这里处理
 			}
 			CwtDataTypes.ConstantKey -> {
-				val text = expression.text
 				val value = configExpression.value
 				return expression.text.equals(value, true) //忽略大小写
 			}
@@ -452,14 +451,12 @@ object CwtConfigHandler {
 		configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
 			for(config in configsWithSameKey) {
 				if(shouldComplete(config, definitionElementInfo)) {
-					context.put(PlsCompletionKeys.configExpressionKey, config.keyExpression)
 					context.put(PlsCompletionKeys.configKey, config)
 					context.put(PlsCompletionKeys.configsKey, configsWithSameKey)
 					completeScriptExpression(context, result, scope)
 				}
 			}
 		}
-		context.put(PlsCompletionKeys.configExpressionKey, null)
 		context.put(PlsCompletionKeys.configKey, null)
 		context.put(PlsCompletionKeys.configsKey, null)
 		return
@@ -479,13 +476,11 @@ object CwtConfigHandler {
 		
 		for(config in configs) {
 			if(config is CwtPropertyConfig) {
-				context.put(PlsCompletionKeys.configKey, config)
-				context.put(PlsCompletionKeys.configExpressionKey, config.valueExpression)
+				context.put(PlsCompletionKeys.configKey, config.valueConfig)
 				completeScriptExpression(context, result, scope)
 			}
 		}
 		context.put(PlsCompletionKeys.configKey, null)
-		context.put(PlsCompletionKeys.configExpressionKey, null)
 		return
 	}
 	
@@ -504,12 +499,10 @@ object CwtConfigHandler {
 		for(config in configs) {
 			if(shouldComplete(config, definitionElementInfo)) {
 				context.put(PlsCompletionKeys.configKey, config)
-				context.put(PlsCompletionKeys.configExpressionKey, config.valueExpression)
 				completeScriptExpression(context, result, scope)
 			}
 		}
 		context.put(PlsCompletionKeys.configKey, null)
-		context.put(PlsCompletionKeys.configExpressionKey, null)
 		return true
 	}
 	
@@ -540,7 +533,7 @@ object CwtConfigHandler {
 	}
 	
 	fun completeScriptExpression(context: ProcessingContext, result: CompletionResultSet, scope: String?): Unit = with(context) {
-		val configExpression = configExpression
+		val configExpression = config.expression ?: return@with
 		val config = config
 		val configs = configs
 		val configGroup = configGroup
@@ -557,7 +550,7 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Localisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
-				val tailText = getScriptExpressionTailText(configExpression, config)
+				val tailText = getScriptExpressionTailText(config)
 				val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
 				processLocalisationVariants(keyword, project, selector = selector) { localisation ->
 					val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -571,7 +564,7 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.SyncedLocalisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
-				val tailText = getScriptExpressionTailText(configExpression, config)
+				val tailText = getScriptExpressionTailText(config)
 				val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
 				processSyncedLocalisationVariants(keyword, project, selector = selector) { syncedLocalisation ->
 					val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -586,7 +579,7 @@ object CwtConfigHandler {
 			CwtDataTypes.InlineLocalisation -> {
 				if(quoted) return
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
-				val tailText = getScriptExpressionTailText(configExpression, config)
+				val tailText = getScriptExpressionTailText(config)
 				processLocalisationVariants(keyword, project) { localisation ->
 					val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val typeFile = localisation.containingFile
@@ -608,7 +601,7 @@ object CwtConfigHandler {
 					findFilesByFilePath(expressionValue, project, expressionType = expressionType, distinct = true, selector = selector)
 				}
 				if(virtualFiles.isEmpty()) return
-				val tailText = getScriptExpressionTailText(configExpression, config)
+				val tailText = getScriptExpressionTailText(config)
 				for(virtualFile in virtualFiles) {
 					val file = virtualFile.toPsiFile<PsiFile>(project) ?: continue
 					val filePath = virtualFile.fileInfo?.path?.path ?: continue
@@ -629,7 +622,7 @@ object CwtConfigHandler {
 					findFilesByFilePath(expressionValue, project, expressionType = expressionType, distinct = true, selector = selector)
 				}
 				if(virtualFiles.isEmpty()) return
-				val tailText = getScriptExpressionTailText(configExpression, config)
+				val tailText = getScriptExpressionTailText(config)
 				for(virtualFile in virtualFiles) {
 					val file = virtualFile.toPsiFile<PsiFile>(project) ?: continue
 					val filePath = virtualFile.fileInfo?.path?.path ?: continue
@@ -642,7 +635,7 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.TypeExpression -> {
 				val typeExpression = configExpression.value ?: return
-				val tailText = getScriptExpressionTailText(configExpression, config)
+				val tailText = getScriptExpressionTailText(config)
 				val selector = definitionSelector().gameType(gameType).preferRootFrom(contextElement).distinctByName()
 				val definitionQuery = ParadoxDefinitionSearch.search(typeExpression, project, selector = selector)
 				definitionQuery.processResult { definition ->
@@ -658,7 +651,7 @@ object CwtConfigHandler {
 			CwtDataTypes.TypeExpressionString -> {
 				val typeExpression = configExpression.value ?: return
 				val (prefix, suffix) = configExpression.extraValue?.cast<TypedTuple2<String>>() ?: return
-				val tailText = getScriptExpressionTailText(configExpression, config)
+				val tailText = getScriptExpressionTailText(config)
 				val selector = definitionSelector().gameType(gameType).preferRootFrom(contextElement).distinctByName()
 				val definitionQuery = ParadoxDefinitionSearch.search(typeExpression, project, selector = selector)
 				definitionQuery.processResult { definition ->
@@ -682,7 +675,7 @@ object CwtConfigHandler {
 					return
 				}
 				
-				val tailText = getScriptExpressionTailText(configExpression, config)
+				val tailText = getScriptExpressionTailText(config)
 				//提示简单枚举
 				val enumConfig = configGroup.enums[enumName]
 				if(enumConfig != null) {
@@ -724,6 +717,10 @@ object CwtConfigHandler {
 				}
 			}
 			CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
+				if(config !is CwtDataConfig<*>) {
+					completeValueSetValue(context, result)
+					return
+				}
 				completeValueSetValueExpression(context, result)
 			}
 			CwtDataTypes.ScopeField -> {
@@ -750,7 +747,7 @@ object CwtConfigHandler {
 			CwtDataTypes.Modifier -> {
 				//提示预定义的modifier
 				//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
-				val nextScope = config.parent?.scope ?: scope
+				val nextScope = getNextScope(config, scope)
 				completeModifier(context, result, nextScope)
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
@@ -806,9 +803,14 @@ object CwtConfigHandler {
 		pass()
 	}
 	
-	private fun getScriptExpressionTailText(configExpression: CwtDataExpression?, config: CwtDataConfig<*>?): String {
-		if(config == null) return " by $configExpression"
-		return " by $configExpression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
+	private fun getNextScope(config: CwtConfig<*>?, scope: String?): String? {
+		if(config == null || config !is CwtDataConfig<*>) return scope
+		return config.parent?.scope ?: scope
+	}
+	
+	private fun getScriptExpressionTailText(config: CwtConfig<*>?): String? {
+		if(config?.expression == null) return null
+		return " by ${config.expression} in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
 	}
 	
 	private fun LookupElementBuilder.buildScriptExpressionLookupElement(
@@ -860,7 +862,6 @@ object CwtConfigHandler {
 	}
 	
 	fun completeAliasName(aliasName: String, context: ProcessingContext, result: CompletionResultSet, scope: String?): Unit = with(context) {
-		val configExpression = configExpression
 		val config = config
 		val configs = configs
 		
@@ -874,19 +875,16 @@ object CwtConfigHandler {
 			if(!isScopeMatched) continue
 			
 			//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
-			val nextScope = this.config.parent?.scope ?: scope
+			val nextScope = getNextScope(config, scope)
 			//aliasSubName是一个表达式
 			if(isKey == true) {
-				context.put(PlsCompletionKeys.configExpressionKey, aliasConfig.subNameExpression)
 				context.put(PlsCompletionKeys.configKey, aliasConfig.config)
 				context.put(PlsCompletionKeys.configsKey, aliasConfigs.map { it.config })
 				completeScriptExpression(context, result, nextScope)
 			} else {
-				context.put(PlsCompletionKeys.configExpressionKey, aliasConfig.subNameExpression)
 				context.put(PlsCompletionKeys.configKey, aliasConfig.config)
 				completeScriptExpression(context, result, nextScope)
 			}
-			context.put(PlsCompletionKeys.configExpressionKey, configExpression)
 			context.put(PlsCompletionKeys.configKey, config)
 			context.put(PlsCompletionKeys.configsKey, configs)
 		}
@@ -1038,7 +1036,6 @@ object CwtConfigHandler {
 			return@with
 		}
 		
-		val configExpression = configExpression
 		val config = config
 		for(linkConfig in linkConfigs.values) {
 			//排除前缀不匹配的
@@ -1049,11 +1046,9 @@ object CwtConfigHandler {
 				val isScopeMatched = matchesScope(outputScope, linkConfig.inputScopes, configGroup)
 				if(!isScopeMatched) continue
 			}
-			context.put(PlsCompletionKeys.configExpressionKey, linkConfig.dataSource!!)
-			context.put(PlsCompletionKeys.configKey, linkConfig.config)
+			context.put(PlsCompletionKeys.configKey, linkConfig)
 			completeScriptExpression(context, result, outputScope)
 		}
-		context.put(PlsCompletionKeys.configExpressionKey, configExpression)
 		context.put(PlsCompletionKeys.configKey, config)
 	}
 	
@@ -1133,7 +1128,6 @@ object CwtConfigHandler {
 			return@with
 		}
 		
-		val configExpression = configExpression
 		val config = config
 		for(linkConfig in linkConfigs.values) {
 			//排除前缀不匹配的
@@ -1144,11 +1138,9 @@ object CwtConfigHandler {
 				val isScopeMatched = matchesScope(outputScope, linkConfig.inputScopes, configGroup)
 				if(!isScopeMatched) continue
 			}
-			context.put(PlsCompletionKeys.configExpressionKey, linkConfig.dataSource!!)
-			context.put(PlsCompletionKeys.configKey, linkConfig.config)
+			context.put(PlsCompletionKeys.configKey, linkConfig)
 			completeScriptExpression(context, result, outputScope)
 		}
-		context.put(PlsCompletionKeys.configExpressionKey, configExpression)
 		context.put(PlsCompletionKeys.configKey, config)
 	}
 	
@@ -1157,6 +1149,7 @@ object CwtConfigHandler {
 		val project = this.configGroup.project
 		
 		if(quoted) return@with
+		val configExpression = config?.expression ?: return
 		val valueSetName = configExpression.value ?: return@with
 		val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
 		//提示预定义的value

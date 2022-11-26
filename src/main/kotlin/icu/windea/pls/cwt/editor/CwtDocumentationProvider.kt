@@ -276,8 +276,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val linkConfig = configGroup.links[name] ?: return
 				val nameToUse = CwtConfigHandler.getScopeName(name, configGroup)
 				val descToUse = linkConfig.desc
-				val inputScopeNames = linkConfig.inputScopeNames.joinToString()
-				val outputScopeName = linkConfig.outputScopeName
+				val inputScopeNames = linkConfig.inputScopeNames.joinToString { "<code>$it</code>" }
+				val outputScopeName = linkConfig.outputScopeName.let { "<code>$it</code>" }
 				content {
 					append(nameToUse)
 					if(descToUse != null && descToUse.isNotEmpty()) {
@@ -325,12 +325,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			var appendBr = false
 			if(!categoryNames.isNullOrEmpty()) {
 				appendBr = true
-				val categoryNamesToUse = categoryNames.joinToString(", ")
+				val categoryNamesToUse = categoryNames.joinToString(", ") { "<code>$it</code>" }
 				append(PlsDocBundle.message("content.categories", categoryNamesToUse))
 			}
 			if(!supportedScopeNames.isNullOrEmpty()) {
 				if(appendBr) appendBr()
-				val supportedScopeNamesToUse = supportedScopeNames.joinToString(", ")
+				val supportedScopeNamesToUse = supportedScopeNames.joinToString(", ") { "<code>$it</code>" }
 				append(PlsDocBundle.message("content.supportedScopes", supportedScopeNamesToUse))
 			}
 		}

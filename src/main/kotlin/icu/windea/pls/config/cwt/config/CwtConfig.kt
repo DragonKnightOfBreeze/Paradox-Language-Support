@@ -8,5 +8,15 @@ interface CwtConfig<out T : PsiElement> {
 	val info: CwtConfigInfo
 	
 	val expression: CwtDataExpression? get() = null
+	
+	/**
+	 * 解析为被内联的CWT规则，或者返回自身。
+	 */
+	fun resolved(): CwtConfig<*> = this
+	
+	/**
+	 * 解析为被内联的规则，或者返回null。
+	 */
+	fun resolvedOrNull(): CwtConfig<*>? = null
 }
 

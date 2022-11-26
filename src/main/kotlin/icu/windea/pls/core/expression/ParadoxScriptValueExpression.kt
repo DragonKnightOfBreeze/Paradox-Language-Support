@@ -114,12 +114,9 @@ class ParadoxScriptValueExpressionImpl(
 					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
 					val resultToUse = result.withPrefixMatcher(keywordToUse)
 					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-					val configExpression = context.configExpression
 					val config = context.config
-					context.put(PlsCompletionKeys.configExpressionKey, this.config.expression)
 					context.put(PlsCompletionKeys.configKey, this.config)
 					CwtConfigHandler.completeScriptExpression(context, resultToUse, context.prevScope)
-					context.put(PlsCompletionKeys.configExpressionKey, configExpression)
 					context.put(PlsCompletionKeys.configKey, config)
 				}
 			} else if(node is ParadoxScriptValueParameterExpressionNode) {

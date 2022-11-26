@@ -170,8 +170,8 @@ class ParadoxValueFieldExpressionImpl(
 						val prefix = prefixNode.text
 						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNode)
 					} else {
-						val inFirstNode = dataSourceNode == null
-							|| offsetInParent <= dataSourceNode.nodes.first().nodes.first().rangeInExpression.endOffset
+						val inFirstNode = dataSourceNode == null || dataSourceNode.nodes.isEmpty()
+							|| offsetInParent <= dataSourceNode.nodes.first().rangeInExpression.endOffset
 						val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
 						val resultToUse = result.withPrefixMatcher(keywordToUse)
 						context.put(PlsCompletionKeys.keywordKey, keywordToUse)
@@ -194,15 +194,15 @@ class ParadoxValueFieldExpressionImpl(
 					val dataSourceNodeToCheck = dataSourceNode?.nodes?.first()
 					val endOffset = prefixNode?.rangeInExpression?.endOffset ?: -1
 					if(prefixNode != null && offsetInParent >= endOffset) {
-						val keywordToUse = node.text.substring(endOffset, offsetInParent - endOffset)
+						val keywordToUse = node.text.substring(0, offsetInParent - endOffset)
 						val resultToUse = result.withPrefixMatcher(keywordToUse)
 						context.put(PlsCompletionKeys.keywordKey, keywordToUse)
 						val prefix = prefixNode.text
 						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
 						CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
 					} else {
-						val inFirstNode = dataSourceNode == null
-							|| offsetInParent <= dataSourceNode.nodes.first().nodes.first().rangeInExpression.endOffset
+						val inFirstNode = dataSourceNode == null || dataSourceNode.nodes.isEmpty()
+							|| offsetInParent <= dataSourceNode.nodes.first().rangeInExpression.endOffset
 						val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
 						val resultToUse = result.withPrefixMatcher(keywordToUse)
 						context.put(PlsCompletionKeys.keywordKey, keywordToUse)

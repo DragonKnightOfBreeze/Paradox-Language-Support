@@ -344,7 +344,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val parameterMap = element.parameterMap
 				if(parameterMap.isNotEmpty()) {
 					content {
-						append(PlsDocBundle.message("content.parameters", parameterMap.keys.joinToString()))
+						val parameters = parameterMap.keys.joinToString { "<code>$it</code>" }
+						append(PlsDocBundle.message("content.parameters", parameters))
 					}
 				}
 			}

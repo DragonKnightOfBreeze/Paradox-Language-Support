@@ -153,6 +153,15 @@ class ParadoxScriptAnnotator : Annotator {
 			}
 			CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
 				if(text.isQuoted()) return
+				if(config !is CwtDataConfig<*>) {
+					val valueSetName = config.expression?.value ?: return
+					val textAttributesKey = when(valueSetName) {
+						"variable" -> Keys.VARIABLE_KEY
+						else -> Keys.VALUE_SET_VALUE_KEY
+					}
+					holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(textAttributesKey).create()
+					return
+				}
 				val textRange = TextRange.create(0, text.length)
 				val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(text, textRange, config, configGroup, isKey) ?: return
 				annotateComplexExpression(element, valueSetValueExpression, config, range, holder)

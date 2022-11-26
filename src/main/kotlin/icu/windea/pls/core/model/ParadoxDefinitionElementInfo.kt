@@ -90,6 +90,7 @@ private fun resolveConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElem
 	}
 }
 
+
 private fun doResolveConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtDataConfig<*>> {
 	val path = definitionElementInfo.elementPath
 	val configGroup = definitionElementInfo.configGroup

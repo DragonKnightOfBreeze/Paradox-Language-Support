@@ -75,10 +75,6 @@ abstract class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 		}
 	}
 	
-	abstract fun resolved(): CwtDataConfig<*>
-	
-	abstract fun resolvedOrNull(): CwtDataConfig<*>?
-	
 	//深拷贝
 	
 	fun deepCopyProperties(): List<CwtPropertyConfig>? {

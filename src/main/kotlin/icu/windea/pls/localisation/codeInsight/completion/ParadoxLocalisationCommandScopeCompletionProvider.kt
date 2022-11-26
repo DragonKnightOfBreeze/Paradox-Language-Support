@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
-import icu.windea.pls.config.cwt.CwtConfigHandler.completeLocalisationCommandScope
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.search.*
@@ -34,7 +34,8 @@ class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<Com
 		if(prevScope != null) context.put(PlsCompletionKeys.prevScopeKey, prevScope)
 		
 		//提示scope
-		completeLocalisationCommandScope(context, result)
+		CwtConfigHandler.completeSystemScope(context, result)
+		CwtConfigHandler.completeLocalisationCommandScope(context, result)
 		
 		//提示value[event_target]
 		ProgressManager.checkCanceled()
