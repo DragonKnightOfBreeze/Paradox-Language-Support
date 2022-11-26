@@ -669,7 +669,7 @@ class CwtConfigGroup(
 					val props = aliasConfig.config.properties ?: continue
 					if(props.isEmpty()) continue
 					if(props.none { it.keyExpression.let { e -> e.type == CwtDataTypes.Enum && e.value == CwtConfigHandler.paramsEnumName } }) continue
-					val definitionType = aliasConfig.keyExpression.takeIf { it.type == CwtDataTypes.TypeExpression }?.value ?: continue
+					val definitionType = aliasConfig.subNameExpression.takeIf { it.type == CwtDataTypes.TypeExpression }?.value ?: continue
 					result.add(definitionType)
 				}
 			}

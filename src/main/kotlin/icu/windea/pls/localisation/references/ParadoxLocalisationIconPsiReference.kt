@@ -29,21 +29,6 @@ class ParadoxLocalisationIconPsiReference(
 	rangeInElement: TextRange
 ) : PsiPolyVariantReferenceBase<ParadoxLocalisationIcon>(element, rangeInElement), SmartPsiReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		//重命名关联的sprite或definition或ddsFile
-		val resolved = resolve()
-		when {
-			resolved is PsiFile -> resolved.setNameWithoutExtension(newElementName)
-			resolved is ParadoxScriptProperty -> {
-				val definitionInfo = resolved.definitionInfo
-				if(definitionInfo != null) {
-					if(definitionInfo.type.let { it == "sprite" || it == "spriteType" }) {
-						resolved.name = resolved.name.replaceFirst(rangeInElement.substring(element.text), newElementName)
-					} else {
-						resolved.name = newElementName
-					}
-				}
-			}
-		}
 		return element.setName(newElementName)
 	}
 	

@@ -14,7 +14,7 @@ interface ParadoxExpressionNode {
 	
 	fun getAttributesKey(): TextAttributesKey? = null
 	
-	fun getAttributesKeyConfig(element: ParadoxScriptExpressionElement): CwtDataConfig<*>? = null
+	fun getAttributesKeyConfig(element: ParadoxScriptExpressionElement): CwtConfig<*>? = null
 	
 	fun getReference(element: ParadoxScriptExpressionElement): PsiReference? = null
 	

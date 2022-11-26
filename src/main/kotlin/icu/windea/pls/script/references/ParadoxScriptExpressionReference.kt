@@ -21,17 +21,6 @@ class ParadoxScriptExpressionReference(
 	val isKey: Boolean
 ) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), SmartPsiReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		//尝试重命名关联的definition、localisation、syncedLocalisation等
-		val resolved = resolve()
-		when {
-			resolved == null -> pass()
-			resolved.language == CwtLanguage -> throw IncorrectOperationException() //不允许重命名
-			resolved is PsiFile -> resolved.setNameWithoutExtension(newElementName)
-			resolved is PsiNamedElement -> resolved.setName(newElementName)
-			resolved is ParadoxScriptExpressionElement -> resolved.value = newElementName
-			else -> throw IncorrectOperationException() //不允许重命名
-		}
-		//重命名当前元素
 		return element.setValue(newElementName)
 	}
 	

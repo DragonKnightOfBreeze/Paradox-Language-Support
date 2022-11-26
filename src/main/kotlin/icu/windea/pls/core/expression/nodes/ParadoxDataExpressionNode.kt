@@ -16,12 +16,12 @@ class ParadoxDataExpressionNode (
 	override val rangeInExpression: TextRange,
 	val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxExpressionNode {
-	override fun getAttributesKeyConfig(element: ParadoxScriptExpressionElement): CwtDataConfig<*>? {
+	override fun getAttributesKeyConfig(element: ParadoxScriptExpressionElement): CwtConfig<*>? {
 		if(text.isParameterAwareExpression()) return null
 		return linkConfigs.find { linkConfig ->
 			val dataSource = linkConfig.dataSource ?: return@find false
 			CwtConfigHandler.resolveScriptExpression(element, rangeInExpression, dataSource, linkConfig, linkConfig.info.configGroup, exact = false) != null
-		}?.config ?: linkConfigs.firstOrNull()?.config
+		} ?: linkConfigs.firstOrNull()
 	}
 	
 	override fun getReference(element: ParadoxScriptExpressionElement): Reference? {

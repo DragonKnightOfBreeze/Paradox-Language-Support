@@ -69,20 +69,25 @@ class ParadoxScriptAnnotator : Annotator {
 	
 	private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
 		val config = resolveConfigs(element).firstOrNull()
-		if(config != null) doAnnotateExpressionElement(element, element.textRange, null, config.expression, config, holder)
+		if(config != null) {
+			doAnnotateExpressionElement(element, element.textRange, null, config, holder)
+		}
 		
 		val complexEnumValueInfo = element.complexEnumValueInfo
-		if(complexEnumValueInfo != null) annotateComplexEnumValue(element, holder, complexEnumValueInfo)
+		if(complexEnumValueInfo != null) {
+			annotateComplexEnumValue(element, holder, complexEnumValueInfo)
+		}
 	}
 	
 	private fun doAnnotateExpressionElement(
 		element: ParadoxScriptExpressionElement,
 		range: TextRange,
 		rangeInElement: TextRange?,
-		expression: CwtDataExpression,
-		config: CwtDataConfig<*>,
+		config: CwtConfig<*>,
 		holder: AnnotationHolder
 	) {
+		val configExpression = config.expression ?: return
+		
 		//高亮特殊标签
 		if(config is CwtValueConfig && config.isTagConfig) {
 			holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(Keys.TAG_KEY).create()
@@ -92,7 +97,7 @@ class ParadoxScriptAnnotator : Annotator {
 		val configGroup = config.info.configGroup
 		val text = rangeInElement?.substring(element.text) ?: element.text
 		val isKey = element is ParadoxScriptPropertyKey
-		when(expression.type) {
+		when(configExpression.type) {
 			CwtDataTypes.InlineLocalisation -> {
 				if(!element.isQuoted()) {
 					if(text.isParameterAwareExpression()) return
@@ -137,7 +142,7 @@ class ParadoxScriptAnnotator : Annotator {
 			}
 			CwtDataTypes.Enum -> {
 				if(text.isParameterAwareExpression()) return
-				val enumName = expression.value ?: return
+				val enumName = configExpression.value ?: return
 				val attributesKey = when {
 					enumName == CwtConfigHandler.paramsEnumName -> Keys.ARGUMENT_KEY
 					configGroup.enums[enumName] != null -> Keys.ENUM_VALUE_KEY
@@ -171,11 +176,11 @@ class ParadoxScriptAnnotator : Annotator {
 			}
 			CwtDataTypes.AliasName, CwtDataTypes.AliasKeysField -> {
 				if(text.isParameterAwareExpression()) return
-				val aliasName = expression.value ?: return
+				val aliasName = configExpression.value ?: return
 				val aliasMap = configGroup.aliasGroups.get(aliasName) ?: return
 				val aliasSubName = CwtConfigHandler.getAliasSubName(text, false, aliasName, configGroup) ?: return
 				val aliasConfig = aliasMap[aliasSubName]?.first() ?: return
-				doAnnotateExpressionElement(element, range, rangeInElement, CwtValueExpression.resolve(aliasSubName), aliasConfig.config, holder)
+				doAnnotateExpressionElement(element, range, rangeInElement, aliasConfig, holder)
 			}
 			CwtDataTypes.ConstantKey -> {
 				if(text.isParameterAwareExpression()) return
@@ -193,11 +198,11 @@ class ParadoxScriptAnnotator : Annotator {
 		}
 	}
 	
-	fun annotateComplexExpression(element: ParadoxScriptExpressionElement, expression: ParadoxComplexExpression, config: CwtDataConfig<*>, range: TextRange, holder: AnnotationHolder) {
+	fun annotateComplexExpression(element: ParadoxScriptExpressionElement, expression: ParadoxComplexExpression, config: CwtConfig<*>, range: TextRange, holder: AnnotationHolder) {
 		doAnnotateComplexExpression(element, expression, config, range, holder)
 	}
 	
-	private fun doAnnotateComplexExpression(element: ParadoxScriptExpressionElement, expressionNode: ParadoxExpressionNode, config: CwtDataConfig<*>, range: TextRange, holder: AnnotationHolder) {
+	private fun doAnnotateComplexExpression(element: ParadoxScriptExpressionElement, expressionNode: ParadoxExpressionNode, config: CwtConfig<*>, range: TextRange, holder: AnnotationHolder) {
 		val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(range.startOffset)
 		val attributesKey = expressionNode.getAttributesKey()
 		
@@ -210,7 +215,7 @@ class ParadoxScriptAnnotator : Annotator {
 		}
 		val attributesKeyConfig = expressionNode.getAttributesKeyConfig(element)
 		if(attributesKeyConfig != null) {
-			doAnnotateExpressionElement(element, rangeToAnnotate, expressionNode.rangeInExpression, attributesKeyConfig.expression, attributesKeyConfig, holder)
+			doAnnotateExpressionElement(element, rangeToAnnotate, expressionNode.rangeInExpression, attributesKeyConfig, holder)
 		}
 		if(expressionNode.nodes.isNotEmpty()) {
 			for(node in expressionNode.nodes) {
