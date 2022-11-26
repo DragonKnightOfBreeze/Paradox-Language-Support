@@ -83,7 +83,7 @@ object CwtPsiImplUtil {
 	//region CwtProperty
 	@JvmStatic
 	fun getIcon(element: CwtProperty, @Iconable.IconFlags flags: Int): Icon {
-		//0.7.4 对CWT别名规则（dataType=alias/single_alias）使用特殊的别名图标，以便区分内联前后的CWT规则
+		//0.7.4 对CWT别名规则（alias single_alias）使用特殊的别名图标，以便区分内联前后的CWT规则
 		val type = CwtConfigType.resolve(element)
 		return when {
 			type == CwtConfigType.Alias -> PlsIcons.Alias
