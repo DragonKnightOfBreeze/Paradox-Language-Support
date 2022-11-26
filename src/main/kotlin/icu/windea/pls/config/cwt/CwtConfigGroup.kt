@@ -256,7 +256,7 @@ class CwtConfigGroup(
 			var keysConst: MutableMap<String, String>? = null
 			var keysNoConst: MutableSet<String>? = null
 			for(key in v.keys) {
-				if(CwtKeyExpression.resolve(key).type == CwtDataTypes.Constant) {
+				if(CwtKeyExpression.resolve(key).type == CwtDataTypes.ConstantKey) {
 					if(keysConst == null) keysConst = CollectionFactory.createCaseInsensitiveStringMap()
 					keysConst.put(key, key)
 				} else {

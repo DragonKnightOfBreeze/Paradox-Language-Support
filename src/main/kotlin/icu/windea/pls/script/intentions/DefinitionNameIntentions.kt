@@ -17,8 +17,6 @@ import icu.windea.pls.script.psi.*
 abstract class DefinitionNameIntention : IntentionAction, PriorityAction {
 	override fun getPriority() = PriorityAction.Priority.LOW
 	
-	override fun startInWriteAction() = false
-	
 	override fun getFamilyName() = text
 	
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
@@ -45,6 +43,10 @@ abstract class DefinitionNameIntention : IntentionAction, PriorityAction {
 	}
 	
 	abstract fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project)
+	
+	override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
+	
+	override fun startInWriteAction() = false
 }
 
 /**

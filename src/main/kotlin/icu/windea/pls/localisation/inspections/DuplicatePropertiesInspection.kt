@@ -1,5 +1,6 @@
 package icu.windea.pls.localisation.inspections
 
+import com.intellij.codeInsight.intention.preview.*
 import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
@@ -69,6 +70,8 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
 				JBPopupFactory.getInstance().createListPopup(popup).showInBestPositionFor(editor)
 			}
 		}
+		
+		override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
 		
 		override fun startInWriteAction() = false
 		

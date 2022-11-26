@@ -1,6 +1,7 @@
 package icu.windea.pls.core.quickfix
 
 import com.intellij.codeInsight.intention.*
+import com.intellij.codeInsight.intention.preview.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.module.*
@@ -37,5 +38,9 @@ class ImportGameOrModDirectoryFix(
 		projectSettingsService.openGlobalLibraries()
 	}
 	
+	override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
+	
 	override fun startInWriteAction() = false
+	
+	override fun availableInBatchMode() = false
 }

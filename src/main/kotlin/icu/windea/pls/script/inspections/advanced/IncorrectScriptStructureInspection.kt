@@ -8,6 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolvePropertyConfigs
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveValueConfigs
+import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -38,7 +39,8 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 					val config = resolvePropertyConfigs(element).firstOrNull()
 					//是定义元素，非定义自身，且路径中不带参数
 					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
-						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.description.1", element.expression))
+						val fix = ImportGameOrModDirectoryFix(element)
+						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.description.1", element.expression), fix)
 						//skip checking property value if property key is invalid 
 						return
 					}
@@ -61,7 +63,8 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 					val config = resolveValueConfigs(element, orDefault = false).firstOrNull()
 					//是定义元素，非定义自身，且路径中不带参数
 					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
-						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.description.1", element.expression))
+						val fix = ImportGameOrModDirectoryFix(element)
+						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.description.1", element.expression), fix)
 						//skip checking children
 						return
 					}

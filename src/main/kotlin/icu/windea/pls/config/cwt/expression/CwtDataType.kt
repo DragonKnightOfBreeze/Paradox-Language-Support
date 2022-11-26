@@ -38,6 +38,7 @@ object CwtDataTypes {
 	object AliasName : CwtKeyDataType
 	object AliasKeysField : CwtKeyDataType, CwtValueDataType
 	object AliasMatchLeft : CwtValueDataType
-	object Constant : CwtKeyDataType, CwtValueDataType
+	object ConstantKey : CwtKeyDataType
+	object Constant : CwtValueDataType
 	object Other : CwtKeyDataType, CwtValueDataType
 }

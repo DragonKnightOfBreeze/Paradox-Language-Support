@@ -4,7 +4,6 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.script.psi.*
 
@@ -15,7 +14,7 @@ interface ParadoxExpressionNode {
 	
 	fun getAttributesKey(): TextAttributesKey? = null
 	
-	fun getAttributesKeyExpression(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): CwtDataExpression? = null
+	fun getAttributesKeyConfig(element: ParadoxScriptExpressionElement): CwtDataConfig<*>? = null
 	
 	fun getReference(element: ParadoxScriptExpressionElement): PsiReference? = null
 	

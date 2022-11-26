@@ -78,9 +78,9 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 			WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("localisation.command.introduceGlobalScriptedVariable.name"), null, command, targetFile)
 		}
 		
-		override fun availableInBatchMode() = false
-		
 		override fun startInWriteAction() = false
+		
+		override fun availableInBatchMode() = false
 	}
 }
 

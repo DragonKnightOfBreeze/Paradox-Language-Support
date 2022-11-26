@@ -1,6 +1,7 @@
 package icu.windea.pls.script.inspections
 
 import com.intellij.codeInsight.daemon.impl.actions.*
+import com.intellij.codeInsight.intention.preview.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.*
@@ -78,6 +79,8 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 				fileDocumentManager.saveDocument(document) //保存文件
 			}
 		}
+		
+		override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
 		
 		override fun startInWriteAction() = false
 	}

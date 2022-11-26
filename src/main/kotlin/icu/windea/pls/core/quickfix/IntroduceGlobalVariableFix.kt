@@ -46,7 +46,7 @@ class IntroduceGlobalVariableFix(
 		WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceGlobalScriptedVariable.name"), null, command, targetFile)
 	}
 	
-	override fun availableInBatchMode() = false
-	
 	override fun startInWriteAction() = false
+	
+	override fun availableInBatchMode() = false
 }

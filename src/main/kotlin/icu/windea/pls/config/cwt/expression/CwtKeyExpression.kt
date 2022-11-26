@@ -2,7 +2,6 @@ package icu.windea.pls.config.cwt.expression
 
 import com.google.common.cache.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.config.cwt.expression.CwtDataTypes as Types
 
 /**
@@ -17,7 +16,7 @@ class CwtKeyExpression private constructor(
 	override val extraValue: Any? = null
 ) : AbstractExpression(expressionString), CwtDataExpression {
 	companion object Resolver {
-		val EmptyStringExpression = CwtKeyExpression("", Types.Constant, "")
+		val EmptyStringExpression = CwtKeyExpression("", Types.ConstantKey, "")
 		
 		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtKeyExpression> { doResolve(it) } }
 		
@@ -103,7 +102,7 @@ class CwtKeyExpression private constructor(
 				CwtKeyExpression(expressionString, Types.Other)
 			}
 			else -> {
-				CwtKeyExpression(expressionString, Types.Constant, expressionString)
+				CwtKeyExpression(expressionString, Types.ConstantKey, expressionString)
 			}
 		}
 	}

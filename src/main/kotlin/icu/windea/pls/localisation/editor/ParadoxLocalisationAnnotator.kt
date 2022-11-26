@@ -14,7 +14,7 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.highlighter.ParadoxLocalisationAttributesKeys as Keys
 
 @Suppress("UNUSED_PARAMETER")
-class ParadoxLocalisationAnnotator : Annotator, DumbAware {
+class ParadoxLocalisationAnnotator : Annotator {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
 		when(element) {
 			is ParadoxLocalisationProperty -> annotateProperty(element, holder)

@@ -58,6 +58,7 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
 			}
 			
 			private fun mayByNumberValue(element: ParadoxScriptValue): Boolean {
+				//NOTE 后面仍然可能是个枚举值，无法验证！
 				return when {
 					element is ParadoxScriptInt -> true
 					element is ParadoxScriptFloat -> true

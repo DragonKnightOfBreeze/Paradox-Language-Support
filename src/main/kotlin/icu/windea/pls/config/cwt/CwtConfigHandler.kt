@@ -349,6 +349,11 @@ object CwtConfigHandler {
 			CwtDataTypes.AliasMatchLeft -> {
 				return false //不在这里处理
 			}
+			CwtDataTypes.ConstantKey -> {
+				val text = expression.text
+				val value = configExpression.value
+				return expression.text.equals(value, true) //忽略大小写
+			}
 			CwtDataTypes.Constant -> {
 				val text = expression.text
 				val value = configExpression.value
@@ -424,6 +429,7 @@ object CwtConfigHandler {
 			CwtDataTypes.AliasName -> 0 //不期望匹配到
 			CwtDataTypes.AliasKeysField -> 0 //不期望匹配到
 			CwtDataTypes.AliasMatchLeft -> 0 //不期望匹配到
+			CwtDataTypes.ConstantKey -> 100
 			CwtDataTypes.Constant -> 100
 			CwtDataTypes.Other -> 0 //不期望匹配到
 		}
@@ -515,7 +521,7 @@ object CwtConfigHandler {
 		//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
 		val cardinality = config.cardinality
 		val maxCount = when {
-			cardinality == null -> if(expression.type == CwtDataTypes.Constant) 1 else null
+			cardinality == null -> if(expression.type == CwtDataTypes.ConstantKey) 1 else null
 			else -> cardinality.max
 		}
 		return maxCount == null || actualCount < maxCount
@@ -760,6 +766,18 @@ object CwtConfigHandler {
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataTypes.AliasMatchLeft -> pass()
+			CwtDataTypes.ConstantKey -> {
+				val name = configExpression.value ?: return
+				//if(!name.matchesKeyword(keyword)) return //不预先过滤结果
+				val element = config.resolved().pointer.element ?: return
+				val typeFile = config.resolved().pointer.containingFile
+				val lookupElement = LookupElementBuilder.create(element, name.quoteIf(quoted))
+					.withIcon(PlsIcons.Property)
+					.buildScriptExpressionLookupElement(isKey, configs, typeText = typeFile?.name, typeIcon = typeFile?.icon)
+					.withCaseSensitivity(false) //忽略大小写
+					.withPriority(PlsCompletionPriorities.constantPriority)
+				result.addElement(lookupElement)
+			}
 			CwtDataTypes.Constant -> {
 				val name = configExpression.value ?: return
 				//常量的值也可能是yes/no
@@ -777,7 +795,7 @@ object CwtConfigHandler {
 				val element = config.resolved().pointer.element ?: return
 				val typeFile = config.resolved().pointer.containingFile
 				val lookupElement = LookupElementBuilder.create(element, name.quoteIf(quoted))
-					.withIcon(if(isKey == true) PlsIcons.Property else PlsIcons.Value)
+					.withIcon(PlsIcons.Value)
 					.buildScriptExpressionLookupElement(isKey, configs, typeText = typeFile?.name, typeIcon = typeFile?.icon)
 					.withCaseSensitivity(false) //忽略大小写
 					.withPriority(PlsCompletionPriorities.constantPriority)
@@ -1392,13 +1410,27 @@ object CwtConfigHandler {
 				return null
 			}
 			CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-				return null //不在这里处理，参见：ParadoxValueSetValueExpression
+				//参见：ParadoxValueSetValueExpression
+				val name = expression
+				val valueSetName = configExpression.value ?: return null
+				val read = configExpression.type == CwtDataTypes.Value
+				if(read) {
+					//首先尝试解析为预定义的value
+					run {
+						val valueSetValueConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(name) ?: return@run
+						val resolved = valueSetValueConfig.pointer.element.castOrNull<CwtNamedElement>()
+						if(resolved != null) return resolved
+					}
+				}
+				return ParadoxValueSetValueElement(element, name, valueSetName, configGroup.project, configGroup.gameType, read)
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
-				return null //不在这里处理，参见：ParadoxScopeFieldExpression
+				//不在这里处理，参见：ParadoxScopeFieldExpression
+				return null
 			}
 			CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
-				return null //不在这里处理，参见：ParadoxValueFieldExpression
+				//不在这里处理，参见：ParadoxValueFieldExpression
+				return null
 			}
 			CwtDataTypes.VariableField, CwtDataTypes.IntVariableField -> {
 				return null //TODO
@@ -1420,7 +1452,7 @@ object CwtConfigHandler {
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataTypes.AliasMatchLeft -> return null
-			CwtDataTypes.Constant -> {
+			CwtDataTypes.ConstantKey, CwtDataTypes.Constant -> {
 				when {
 					config == null -> return null
 					config is CwtDataConfig<*> -> return config.resolved().pointer.element
@@ -1540,7 +1572,7 @@ object CwtConfigHandler {
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataTypes.AliasMatchLeft -> return emptyList()
-			CwtDataTypes.Constant -> {
+			CwtDataTypes.ConstantKey, CwtDataTypes.Constant -> {
 				when {
 					config == null -> return emptyList()
 					config is CwtDataConfig<*> -> return config.resolved().pointer.element.toSingletonListOrEmpty()
@@ -1607,7 +1639,7 @@ object CwtConfigHandler {
 				CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
 					return null //不在这里处理，参见：ParadoxScopeFieldExpression
 				}
-				CwtDataTypes.Constant -> {
+				CwtDataTypes.ConstantKey -> {
 					//这里需要解析的应当是value，因此取第一个即可
 					val aliasSubNameIgnoreCase = configGroup.aliasKeysGroupConst.get(aliasName)?.get(aliasSubName)
 					val aliases = aliasGroup[aliasSubNameIgnoreCase] //需要忽略大小写
@@ -1675,7 +1707,7 @@ object CwtConfigHandler {
 				CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
 					return emptyList() //不在这里处理，参见：ParadoxScopeFieldExpression
 				}
-				CwtDataTypes.Constant -> {
+				CwtDataTypes.ConstantKey -> {
 					//这里需要解析的应当是value，因此取第一个即可
 					val aliasSubNameIgnoreCase = configGroup.aliasKeysGroupConst.get(aliasName)?.get(aliasSubName)
 					val aliases = aliasGroup[aliasSubNameIgnoreCase] //需要忽略大小写
@@ -1712,9 +1744,9 @@ object CwtConfigHandler {
 	
 	fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup): PsiElement? {
 		for(config in configs) {
-			val expression = config.expression ?: return null
-			val valueSetName = expression.value ?: return null
-			val read = expression.type == CwtDataTypes.Value
+			val configExpression = config.expression ?: return null
+			val valueSetName = configExpression.value ?: return null
+			val read = configExpression.type == CwtDataTypes.Value
 			if(read) {
 				//首先尝试解析为预定义的value
 				run {

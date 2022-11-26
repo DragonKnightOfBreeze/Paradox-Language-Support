@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.inspections
 
 import com.intellij.codeInsight.intention.*
+import com.intellij.codeInsight.intention.preview.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
@@ -73,6 +74,8 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
 				RefactoringSettings.getInstance().RENAME_SEARCH_FOR_TEXT_FOR_FILE
 			).run()
 		}
+		
+		override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
 		
 		override fun startInWriteAction() = false
 	}

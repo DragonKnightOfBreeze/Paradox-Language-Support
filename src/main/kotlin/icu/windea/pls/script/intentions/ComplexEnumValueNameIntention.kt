@@ -16,8 +16,6 @@ import icu.windea.pls.script.psi.*
 abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
 	override fun getPriority() = PriorityAction.Priority.LOW
 	
-	override fun startInWriteAction() = false
-	
 	override fun getFamilyName() = text
 	
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
@@ -42,6 +40,10 @@ abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
 	}
 	
 	abstract fun doInvoke(element: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project)
+	
+	override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
+	
+	override fun startInWriteAction() = false
 }
 
 /**
@@ -52,10 +54,6 @@ class ComplexEnumValueNameFindUsagesIntention: ComplexEnumValueNameIntention() {
 	
 	override fun doInvoke(element: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
 		GotoDeclarationAction.startFindUsages(editor, project, element)
-	}
-	
-	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
-		return IntentionPreviewInfo.EMPTY
 	}
 }
 

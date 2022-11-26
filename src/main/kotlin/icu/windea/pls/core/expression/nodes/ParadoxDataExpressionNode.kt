@@ -10,22 +10,18 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
-import kotlin.collections.mapNotNullTo
 
 class ParadoxDataExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxExpressionNode {
-	override fun getAttributesKeyExpression(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): CwtDataExpression? {
+	override fun getAttributesKeyConfig(element: ParadoxScriptExpressionElement): CwtDataConfig<*>? {
 		if(text.isParameterAwareExpression()) return null
-		return linkConfigs.firstNotNullOfOrNull { linkConfig ->
-			val dataSource = linkConfig.dataSource
-				?: return@firstNotNullOfOrNull null
-			CwtConfigHandler.resolveScriptExpression(element, rangeInExpression, dataSource, linkConfig, linkConfig.info.configGroup, exact = false)
-				?: return@firstNotNullOfOrNull null
-			dataSource
-		} ?: linkConfigs.firstOrNull()?.dataSource
+		return linkConfigs.find { linkConfig ->
+			val dataSource = linkConfig.dataSource ?: return@find false
+			CwtConfigHandler.resolveScriptExpression(element, rangeInExpression, dataSource, linkConfig, linkConfig.info.configGroup, exact = false) != null
+		}?.config ?: linkConfigs.firstOrNull()?.config
 	}
 	
 	override fun getReference(element: ParadoxScriptExpressionElement): Reference? {

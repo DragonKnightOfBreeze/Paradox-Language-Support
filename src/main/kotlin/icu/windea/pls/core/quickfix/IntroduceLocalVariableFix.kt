@@ -41,7 +41,7 @@ class IntroduceLocalVariableFix(
 		WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"), null, command, file)
 	}
 	
-	override fun availableInBatchMode() = false
-	
 	override fun startInWriteAction() = false
+	
+	override fun availableInBatchMode() = false
 }

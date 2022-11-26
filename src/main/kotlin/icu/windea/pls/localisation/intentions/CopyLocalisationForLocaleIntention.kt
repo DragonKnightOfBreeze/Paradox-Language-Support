@@ -168,9 +168,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 		}
 	}
 	
-	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
-		return IntentionPreviewInfo.EMPTY
-	}
+	override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
 	
 	override fun startInWriteAction() = false
 }

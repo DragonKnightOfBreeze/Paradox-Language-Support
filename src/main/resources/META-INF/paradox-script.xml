@@ -176,12 +176,12 @@
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
                      implementationClass="icu.windea.pls.script.inspections.IncorrectFileEncodingInspection"/>
     <!--advanced-->
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScriptSyntax"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="script.inspection.advanced.incorrectScriptSyntax"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
-                     groupPathKey="script.inspection.advanced.path"
-                     implementationClass="icu.windea.pls.script.inspections.advanced.IncorrectScriptSyntaxInspection"/>
+    <!--<localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScriptSyntax"-->
+    <!--                 enabledByDefault="true" level="ERROR"-->
+    <!--                 bundle="messages.PlsBundle" key="script.inspection.advanced.incorrectScriptSyntax"-->
+    <!--                 groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"-->
+    <!--                 groupPathKey="script.inspection.advanced.path"-->
+    <!--                 implementationClass="icu.windea.pls.script.inspections.advanced.IncorrectScriptSyntaxInspection"/>-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScriptStructure"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="script.inspection.advanced.incorrectScriptStructure"
