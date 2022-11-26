@@ -20,15 +20,26 @@ class ParadoxScopeLinkDataSourceExpressionNode (
 			//text may contain parameters
 			//child node can be valueSetValueExpression
 			val nodes = SmartList<ParadoxExpressionNode>()
+			val offset = textRange.startOffset
+			val configs = linkConfigs.filter { it.dataSource?.type == CwtDataTypes.Value }
 			val atIndex = text.indexOf('@')
 			if(atIndex != -1) {
-				val configs = linkConfigs.filter { it.dataSource?.type == CwtDataTypes.Value }
 				if(configs.isEmpty()) {
 					val dataText = text.substring(0, atIndex)
-					val dataRange = TextRange.create(0, atIndex)
+					val dataRange = TextRange.create(offset, atIndex + offset)
 					val dataNode = ParadoxDataExpressionNode.resolve(dataText, dataRange, linkConfigs)
 					nodes.add(dataNode)
+					val errorText = text.substring(atIndex)
+					val errorRange = TextRange.create(atIndex + offset, text.length + offset)
+					val errorNode = ParadoxErrorTokenExpressionNode(errorText, errorRange)
+					nodes.add(errorNode)
 				} else {
+					val configGroup = linkConfigs.first().info.configGroup
+					val node = ParadoxValueSetValueExpression.resolve(text, textRange, configs, configGroup)
+					nodes.add(node)
+				}
+			} else {
+				if(configs.isNotEmpty()) {
 					val configGroup = linkConfigs.first().info.configGroup
 					val node = ParadoxValueSetValueExpression.resolve(text, textRange, configs, configGroup)
 					nodes.add(node)

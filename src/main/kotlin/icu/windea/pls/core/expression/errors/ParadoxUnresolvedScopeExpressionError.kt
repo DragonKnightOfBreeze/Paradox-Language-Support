@@ -7,3 +7,4 @@ class ParadoxUnresolvedScopeExpressionError(
 	override val description: String
 ) : ParadoxUnresolvedExpressionError
 
+

@@ -674,6 +674,7 @@ class CwtConfigGroup(
 				}
 			}
 		}
+		result.add("script_value") //SV也支持参数
 		return result
 	}
 	

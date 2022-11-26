@@ -32,7 +32,7 @@ class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
 				if(element.isQuoted()) return //忽略
 				val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return
 				val type = config.expression.type
-				if(type == CwtDataTypes.Scope || type == CwtDataTypes.ScopeField || type == CwtDataTypes.ScopeGroup) {
+				if(type == CwtDataTypes.Value || type == CwtDataTypes.ValueSet) {
 					val value = element.value
 					val gameTypeToUse = gameType ?: ParadoxSelectorUtils.selectGameType(element) ?: return
 					val configGroup = getCwtConfig(project).getValue(gameTypeToUse)

@@ -9,6 +9,7 @@ import icons.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
@@ -42,7 +43,7 @@ class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<Com
 		val eventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
 		val eventTargetQuery = ParadoxValueSetValueSearch.search("event_target", project, selector = eventTargetSelector)
 		eventTargetQuery.processResult { eventTarget ->
-			val value = eventTarget.value.substringBefore('@')
+			val value = ParadoxValueSetValueInfoHandler.getName(eventTarget.value) ?: return@processResult true
 			val icon = PlsIcons.ValueSetValue
 			val tailText = " from value[event_target]"
 			val lookupElement = LookupElementBuilder.create(eventTarget, value)
@@ -58,7 +59,7 @@ class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<Com
 		val globalEventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
 		val globalEventTargetQuery = ParadoxValueSetValueSearch.search("global_event_target", project, selector = globalEventTargetSelector)
 		globalEventTargetQuery.processResult { globalEventTarget ->
-			val value = globalEventTarget.value.substringBefore('@')
+			val value = ParadoxValueSetValueInfoHandler.getName(globalEventTarget.value) ?: return@processResult true
 			val icon = PlsIcons.ValueSetValue
 			val tailText = " from value[global_event_target]"
 			val lookupElement = LookupElementBuilder.create(globalEventTarget, value)

@@ -8,7 +8,7 @@ interface ParadoxValueFieldExpressionNode : ParadoxExpressionNode {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpressionNode {
 			ParadoxValueLinkExpressionNode.resolve(text, textRange, configGroup)?.let { return it }
 			ParadoxValueLinkFromDataExpressionNode.resolve(text, textRange, configGroup)?.let { return it }
-			return ParadoxDummyValueFieldExpressionNode(text, textRange)
+			return ParadoxErrorValueFieldExpressionNode(text, textRange)
 		}
 	}
 }

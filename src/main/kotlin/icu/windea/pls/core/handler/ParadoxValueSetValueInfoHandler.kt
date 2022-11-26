@@ -8,8 +8,6 @@ import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxValueSetValueInfoHandler {
-	private val expressionTypes = arrayOf(CwtDataTypes.Value, CwtDataTypes.ValueSet)
-	
 	@JvmStatic
 	fun resolve(element: ParadoxScriptString): ParadoxValueSetValueInfo? {
 		if(!element.isExpressionElement()) return null
@@ -20,10 +18,13 @@ object ParadoxValueSetValueInfoHandler {
 		//cannot use stub index here
 		val matchType = CwtConfigMatchType.NO_STUB_INDEX
 		val config = ParadoxCwtConfigHandler.resolveValueConfigs(element, true, true, matchType)
-			.firstOrNull { it.expression.type in expressionTypes }
+			.firstOrNull { 
+				val type = it.expression.type
+				type == CwtDataTypes.Value || type == CwtDataTypes.ValueSet
+			}
 			?: return null
 		if(config.expression.type != CwtDataTypes.Value && config.expression.type != CwtDataTypes.ValueSet) return null
-		val name = element.value.substringBefore('@')
+		val name = getName(element.value) ?: return null
 		val valueSetName = config.expression.value?.takeIfNotEmpty() ?: return null
 		val configGroup = config.info.configGroup
 		val gameType = configGroup.gameType
@@ -33,7 +34,13 @@ object ParadoxValueSetValueInfoHandler {
 	@JvmStatic
 	fun getName(element: ParadoxScriptString): String? {
 		val stub = runCatching { element.stub }.getOrNull()
-		val name = stub?.valueSetValueInfo?.name ?: element.value.substringBefore('@')
-		return name.takeIfNotEmpty()
+		val name = stub?.valueSetValueInfo?.name ?: getName(element.value)
+		return name?.takeIfNotEmpty()
+	}
+	
+	@JvmStatic
+	fun getName(expression: String) : String? {
+		//exclude if name contains invalid chars
+		return expression.substringBefore('@').takeIf { it.all { c -> c.isExactIdentifierChar() } }
 	}
 }

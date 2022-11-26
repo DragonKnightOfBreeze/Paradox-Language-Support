@@ -59,7 +59,7 @@ fun ParadoxComplexEnumValueSelector.distinctByName() =
 	distinctBy { ParadoxComplexEnumValueInfoHandler.getName(it) }
 
 fun ParadoxValueSetValueSelector.distinctByValue() =
-	distinctBy { it.value.substringBefore('@') }
+	distinctBy { ParadoxValueSetValueInfoHandler.getName(it.value) }
 
 fun ParadoxLocalisationSelector.locale(locale: ParadoxLocaleConfig?) =
 	apply { if(locale != null) selectors += ParadoxLocaleSelector(locale) }

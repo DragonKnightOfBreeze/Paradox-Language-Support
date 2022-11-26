@@ -78,19 +78,23 @@ class ParadoxValueFieldExpressionImpl(
 					} else {
 						if(node is ParadoxScopeLinkFromDataExpressionNode) {
 							val dataSourceNode = node.dataSourceNode
-							val dataSourceChildNode = dataSourceNode.nodes.first()
-							when(dataSourceChildNode) {
-								is ParadoxDataExpressionNode -> {
-									if(dataSourceNode.text.isEmpty()) {
-										if(!malformed) {
+							for(dataSourceChildNode in dataSourceNode.nodes) {
+								when(dataSourceChildNode) {
+									is ParadoxDataExpressionNode -> {
+										if(dataSourceChildNode.text.isEmpty()) {
+											if(!malformed) {
+												malformed = true
+											}
+										} else if(!malformed && !isValid(dataSourceChildNode)) {
 											malformed = true
 										}
-									} else if(!malformed && !isValid(dataSourceChildNode)) {
+									}
+									is ParadoxValueSetValueExpression -> {
+										errors.addAll(dataSourceChildNode.validate())
+									}
+									is ParadoxErrorTokenExpressionNode -> {
 										malformed = true
 									}
-								}
-								is ParadoxValueSetValueExpression -> {
-									errors.addAll(dataSourceChildNode.validate())
 								}
 							}
 						}
@@ -107,26 +111,30 @@ class ParadoxValueFieldExpressionImpl(
 					} else {
 						if(node is ParadoxValueLinkFromDataExpressionNode) {
 							val dataSourceNode = node.dataSourceNode
-							val dataSourceChildNode = dataSourceNode.nodes.first()
-							when(dataSourceChildNode) {
-								is ParadoxDataExpressionNode -> {
-									if(dataSourceNode.text.isEmpty()) {
-										if(isLast) {
-											val possible = dataSourceNode.linkConfigs.mapNotNull { it.dataSource }.joinToString()
-											val error = ParadoxMissingValueLinkDataSourceExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingValueLinkDataSource", possible))
-											errors.add(error)
-										} else if(!malformed) {
+							for(dataSourceChildNode in dataSourceNode.nodes) {
+								when(dataSourceChildNode) {
+									is ParadoxDataExpressionNode -> {
+										if(dataSourceChildNode.text.isEmpty()) {
+											if(isLast) {
+												val possible = dataSourceChildNode.linkConfigs.mapNotNull { it.dataSource }.joinToString()
+												val error = ParadoxMissingValueLinkDataSourceExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingValueLinkDataSource", possible))
+												errors.add(error)
+											} else if(!malformed) {
+												malformed = true
+											}
+										} else if(!malformed && !isValid(dataSourceChildNode)) {
 											malformed = true
 										}
-									} else if(!malformed && !isValid(dataSourceChildNode)) {
+									}
+									is ParadoxValueSetValueExpression -> {
+										errors.addAll(dataSourceChildNode.validate())
+									}
+									is ParadoxScriptValueExpression -> {
+										errors.addAll(dataSourceChildNode.validate())
+									}
+									is ParadoxErrorTokenExpressionNode -> {
 										malformed = true
 									}
-								}
-								is ParadoxValueSetValueExpression -> {
-									errors.addAll(dataSourceChildNode.validate())
-								}
-								is ParadoxScriptValueExpression -> {
-									errors.addAll(dataSourceChildNode.validate())
 								}
 							}
 						}
@@ -162,13 +170,14 @@ class ParadoxValueFieldExpressionImpl(
 					val linkFromDataNode = node.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
 					val prefixNode = linkFromDataNode?.prefixNode
 					val dataSourceNode = linkFromDataNode?.dataSourceNode
-					val endOffset = prefixNode?.rangeInExpression?.endOffset ?: -1
-					if(prefixNode != null && offsetInParent >= endOffset) {
-						val keywordToUse = node.text.substring(0, offsetInParent - endOffset)
+					val dataSourceNodeToCheck = dataSourceNode?.nodes?.first()
+					val endOffset = dataSourceNode?.rangeInExpression?.startOffset ?: -1
+					if(prefixNode != null && dataSourceNode != null && offsetInParent >= dataSourceNode.rangeInExpression.startOffset) {
+						val keywordToUse = dataSourceNode.text.substring(0, offsetInParent - endOffset)
 						val resultToUse = result.withPrefixMatcher(keywordToUse)
 						context.put(PlsCompletionKeys.keywordKey, keywordToUse)
 						val prefix = prefixNode.text
-						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNode)
+						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
 					} else {
 						val inFirstNode = dataSourceNode == null || dataSourceNode.nodes.isEmpty()
 							|| offsetInParent <= dataSourceNode.nodes.first().rangeInExpression.endOffset
@@ -180,7 +189,7 @@ class ParadoxValueFieldExpressionImpl(
 							CwtConfigHandler.completeScope(context, resultToUse)
 							CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
 						}
-						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, null, dataSourceNode)
+						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
 						break
 					}
 				}
@@ -192,9 +201,9 @@ class ParadoxValueFieldExpressionImpl(
 					val prefixNode = linkFromDataNode?.prefixNode
 					val dataSourceNode = linkFromDataNode?.dataSourceNode
 					val dataSourceNodeToCheck = dataSourceNode?.nodes?.first()
-					val endOffset = prefixNode?.rangeInExpression?.endOffset ?: -1
-					if(prefixNode != null && offsetInParent >= endOffset) {
-						val keywordToUse = node.text.substring(0, offsetInParent - endOffset)
+					val endOffset = dataSourceNode?.rangeInExpression?.startOffset ?: -1
+					if(prefixNode != null && dataSourceNode != null && offsetInParent >= dataSourceNode.rangeInExpression.startOffset) {
+						val keywordToUse = dataSourceNode.text.substring(0, offsetInParent - endOffset)
 						val resultToUse = result.withPrefixMatcher(keywordToUse)
 						context.put(PlsCompletionKeys.keywordKey, keywordToUse)
 						val prefix = prefixNode.text
@@ -260,7 +269,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 			else -> ParadoxScopeExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
 		}
 		//handle mismatch situation
-		if(!canBeMismatched && index == 0 && node is ParadoxDummyExpressionNode) {
+		if(!canBeMismatched && index == 0 && node is ParadoxErrorExpressionNode) {
 			return null
 		}
 		nodes.add(node)

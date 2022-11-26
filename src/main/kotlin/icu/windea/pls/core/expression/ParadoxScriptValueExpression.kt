@@ -33,6 +33,9 @@ import icu.windea.pls.script.highlighter.*
  * ```
  */
 interface ParadoxScriptValueExpression : ParadoxComplexExpression {
+	val config: CwtConfig<*>
+	val configGroup: CwtConfigGroup
+	
 	val scriptValueNode: ParadoxScriptValueExpressionNode
 	val parameterNodes: List<ParadoxScriptValueParameterExpressionNode>
 	
@@ -44,8 +47,8 @@ class ParadoxScriptValueExpressionImpl(
 	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
 	override val nodes: List<ParadoxExpressionNode>,
-	val config: CwtConfig<*>,
-	val configGroup: CwtConfigGroup
+	override val config: CwtConfig<*>,
+	override val configGroup: CwtConfigGroup
 ) : AbstractExpression(text), ParadoxScriptValueExpression {
 	override val quoted: Boolean = false
 	
@@ -115,9 +118,8 @@ class ParadoxScriptValueExpressionImpl(
 					val resultToUse = result.withPrefixMatcher(keywordToUse)
 					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
 					val config = context.config
-					context.put(PlsCompletionKeys.configKey, this.config)
+					val configs = context.configs
 					CwtConfigHandler.completeScriptExpression(context, resultToUse, context.prevScope)
-					context.put(PlsCompletionKeys.configKey, config)
 				}
 			} else if(node is ParadoxScriptValueParameterExpressionNode) {
 				if(inRange && scriptValueName != null) {

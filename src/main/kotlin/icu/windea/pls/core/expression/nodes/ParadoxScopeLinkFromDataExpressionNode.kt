@@ -2,7 +2,6 @@ package icu.windea.pls.core.expression.nodes
 
 import com.intellij.openapi.util.*
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.errors.*
@@ -19,24 +18,19 @@ class ParadoxScopeLinkFromDataExpressionNode (
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScopeLinkFromDataExpressionNode? {
 			val nodes = SmartList<ParadoxExpressionNode>()
 			val errors = SmartList<ParadoxExpressionError>()
+			val offset = textRange.startOffset
 			val linkConfigs = configGroup.linksAsScopeWithPrefixSorted
 				.filter { it.prefix != null && text.startsWith(it.prefix) }
 			if(linkConfigs.isNotEmpty()) {
 				//匹配某一前缀
 				//prefix node
 				val prefixText = linkConfigs.first().prefix!!
-				val prefixRange = TextRange.create(textRange.startOffset, textRange.startOffset + prefixText.length)
+				val prefixRange = TextRange.create(offset, offset + prefixText.length)
 				val prefixNode = ParadoxScopeLinkPrefixExpressionNode.resolve(prefixText, prefixRange, linkConfigs)
 				nodes.add(prefixNode)
 				//data source node
 				val dataSourceText = text.drop(prefixText.length)
-				if(dataSourceText.isEmpty()) {
-					//missing data source
-					val dataSources = linkConfigs.mapNotNullTo(mutableSetOf()) { it.dataSource }.joinToString()
-					val error = ParadoxMissingScopeLinkDataSourceExpressionError(textRange, PlsBundle.message("script.expression.missingScopeLinkDataSource", dataSources))
-					errors.add(error)
-				}
-				val dataSourceRange = TextRange.create(textRange.startOffset + prefixText.length, textRange.endOffset)
+				val dataSourceRange = TextRange.create(prefixText.length + offset, text.length + offset)
 				val dataSourceNode = ParadoxScopeLinkDataSourceExpressionNode.resolve(dataSourceText, dataSourceRange, linkConfigs)
 				nodes.add(dataSourceNode)
 				return ParadoxScopeLinkFromDataExpressionNode(text, textRange, nodes)

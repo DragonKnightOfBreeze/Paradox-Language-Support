@@ -20,6 +20,7 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
@@ -684,7 +685,6 @@ object CwtConfigHandler {
 					if(enumValueConfigs.isEmpty()) return
 					val typeFile = enumConfig.pointer.containingFile
 					for(enumValueConfig in enumValueConfigs) {
-						if(quoted && enumValueConfig.stringValue == null) continue
 						val name = enumValueConfig.value
 						//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 						val element = enumValueConfig.pointer.element ?: continue
@@ -815,7 +815,7 @@ object CwtConfigHandler {
 	
 	private fun LookupElementBuilder.buildScriptExpressionLookupElement(
 		isKey: Boolean?,
-		configs: List<CwtDataConfig<*>>? = null,
+		configs: List<CwtConfig<*>>? = null,
 		tailText: String? = null,
 		typeText: String? = null,
 		typeIcon: Icon? = null
@@ -878,11 +878,11 @@ object CwtConfigHandler {
 			val nextScope = getNextScope(config, scope)
 			//aliasSubName是一个表达式
 			if(isKey == true) {
-				context.put(PlsCompletionKeys.configKey, aliasConfig.config)
-				context.put(PlsCompletionKeys.configsKey, aliasConfigs.map { it.config })
+				context.put(PlsCompletionKeys.configKey, aliasConfig)
+				context.put(PlsCompletionKeys.configsKey, aliasConfigs)
 				completeScriptExpression(context, result, nextScope)
 			} else {
-				context.put(PlsCompletionKeys.configKey, aliasConfig.config)
+				context.put(PlsCompletionKeys.configKey, aliasConfig)
 				completeScriptExpression(context, result, nextScope)
 			}
 			context.put(PlsCompletionKeys.configKey, config)
@@ -1019,27 +1019,29 @@ object CwtConfigHandler {
 		context: ProcessingContext,
 		result: CompletionResultSet,
 		prefix: String?,
-		dataSourceNode: ParadoxExpressionNode?
+		dataSourceNodeToCheck: ParadoxExpressionNode?
 	): Unit = with(context) {
-		val linkConfigs = if(prefix == null) configGroup.linksAsScopeWithoutPrefix else configGroup.linksAsScopeWithPrefix
+		val config = config
+		val configs = configs
+		
+		val allLinkConfigs = if(prefix == null) configGroup.linksAsScopeWithoutPrefix else configGroup.linksAsScopeWithPrefix
+		val linkConfigs = if(prefix == null) allLinkConfigs.values else allLinkConfigs.values.filter { prefix == it.prefix }
 		
 		//TODO 进一步匹配scope
-		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
+		val outputScope = prevScope?.let { prevScope -> allLinkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx
 		
-		if(dataSourceNode is ParadoxValueSetValueExpression) {
-			dataSourceNode.complete(context, result)
-			return@with
-		}
-		if(dataSourceNode is ParadoxScriptValueExpression) {
-			dataSourceNode.complete(context, result)
+		if(dataSourceNodeToCheck is ParadoxValueSetValueExpression) {
+			context.put(PlsCompletionKeys.configKey, dataSourceNodeToCheck.configs.first())
+			context.put(PlsCompletionKeys.configsKey, dataSourceNodeToCheck.configs)
+			dataSourceNodeToCheck.complete(context, result)
+			context.put(PlsCompletionKeys.configKey, config)
+			context.put(PlsCompletionKeys.configsKey, configs)
 			return@with
 		}
 		
-		val config = config
-		for(linkConfig in linkConfigs.values) {
-			//排除前缀不匹配的
-			if(prefix != null && prefix != linkConfig.prefix) continue
+		context.put(PlsCompletionKeys.configsKey, linkConfigs)
+		for(linkConfig in linkConfigs) {
 			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
 			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
 			if(prefix == null) {
@@ -1050,6 +1052,7 @@ object CwtConfigHandler {
 			completeScriptExpression(context, result, outputScope)
 		}
 		context.put(PlsCompletionKeys.configKey, config)
+		context.put(PlsCompletionKeys.configsKey, configs)
 	}
 	
 	fun completeValueLinkValue(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
@@ -1111,27 +1114,37 @@ object CwtConfigHandler {
 		context: ProcessingContext,
 		result: CompletionResultSet,
 		prefix: String?,
-		dataSourceNode: ParadoxExpressionNode?
+		dataSourceNodeToCheck: ParadoxExpressionNode?
 	): Unit = with(context) {
-		val linkConfigs = if(prefix == null) configGroup.linksAsValueWithoutPrefix else configGroup.linksAsValueWithPrefix
+		val config = config
+		val configs = configs
+		
+		val allLinkConfigs = if(prefix == null) configGroup.linksAsScopeWithoutPrefix else configGroup.linksAsScopeWithPrefix
+		val linkConfigs = if(prefix == null) allLinkConfigs.values else allLinkConfigs.values.filter { prefix == it.prefix }
 		
 		//TODO 进一步匹配scope
-		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
+		val outputScope = prevScope?.let { prevScope -> allLinkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx
 		
-		if(dataSourceNode is ParadoxValueSetValueExpression) {
-			dataSourceNode.complete(context, result)
+		if(dataSourceNodeToCheck is ParadoxValueSetValueExpression) {
+			context.put(PlsCompletionKeys.configKey, dataSourceNodeToCheck.configs.first())
+			context.put(PlsCompletionKeys.configsKey, dataSourceNodeToCheck.configs)
+			dataSourceNodeToCheck.complete(context, result)
+			context.put(PlsCompletionKeys.configKey, config)
+			context.put(PlsCompletionKeys.configsKey, configs)
 			return@with
 		}
-		if(dataSourceNode is ParadoxScriptValueExpression) {
-			dataSourceNode.complete(context, result)
+		if(dataSourceNodeToCheck is ParadoxScriptValueExpression) {
+			context.put(PlsCompletionKeys.configKey, dataSourceNodeToCheck.config)
+			context.put(PlsCompletionKeys.configsKey, null)
+			dataSourceNodeToCheck.complete(context, result)
+			context.put(PlsCompletionKeys.configKey, config)
+			context.put(PlsCompletionKeys.configsKey, configs)
 			return@with
 		}
 		
-		val config = config
-		for(linkConfig in linkConfigs.values) {
-			//排除前缀不匹配的
-			if(prefix != null && prefix != linkConfig.prefix) continue
+		context.put(PlsCompletionKeys.configsKey, linkConfigs)
+		for(linkConfig in linkConfigs) {
 			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
 			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
 			if(prefix == null) {
@@ -1142,14 +1155,29 @@ object CwtConfigHandler {
 			completeScriptExpression(context, result, outputScope)
 		}
 		context.put(PlsCompletionKeys.configKey, config)
+		context.put(PlsCompletionKeys.configsKey, configs)
 	}
 	
 	fun completeValueSetValue(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+		if(quoted) return@with
+		val configs = configs
+		if(configs != null && configs.isNotEmpty()) {
+			for(config in configs) {
+				doCompleteValueSetValue(context, result, config)
+			}
+		} else {
+			val config = config
+			if(config != null) {
+				doCompleteValueSetValue(context, result, config)
+			}
+		}
+	}
+	
+	private fun doCompleteValueSetValue(context: ProcessingContext, result: CompletionResultSet, config:CwtConfig<*>): Unit = with(context) {
 		val gameType = this.configGroup.gameType
 		val project = this.configGroup.project
 		
-		if(quoted) return@with
-		val configExpression = config?.expression ?: return
+		val configExpression = config.expression ?: return@with
 		val valueSetName = configExpression.value ?: return@with
 		val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
 		//提示预定义的value
@@ -1160,7 +1188,6 @@ object CwtConfigHandler {
 				val valueSetValueConfigs = valueConfig.valueConfigMap.values
 				if(valueSetValueConfigs.isEmpty()) return@run
 				for(valueSetValueConfig in valueSetValueConfigs) {
-					if(this.quoted && valueSetValueConfig.stringValue == null) continue
 					//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 					val name = valueSetValueConfig.value
 					val element = valueSetValueConfig.pointer.element ?: continue
@@ -1181,9 +1208,10 @@ object CwtConfigHandler {
 			val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, project, selector = selector)
 			valueSetValueQuery.processResult { valueSetValue ->
 				//去除后面的作用域信息
-				val value = valueSetValue.value.substringBefore('@')
-				//排除当前正在输入的那个
-				if(value == this.keyword.substringBefore('@') && valueSetValue isSamePosition contextElement) return@processResult true
+				val value = ParadoxValueSetValueInfoHandler.getName(valueSetValue) ?: return@processResult true
+				//没有其他地方使用到时，排除当前正在输入的那个
+				val keywordValue = ParadoxValueSetValueInfoHandler.getName(this.keyword)
+				if(value == keywordValue && valueSetValue isSamePosition contextElement) return@processResult true
 				val icon = when(valueSetName) {
 					"variable" -> PlsIcons.Variable
 					else -> PlsIcons.ValueSetValue
@@ -1257,7 +1285,7 @@ object CwtConfigHandler {
 		val lookupElements = mutableListOf<LookupElement>()
 		for((parameterName, parameters) in parameterMap) {
 			val parameter = parameters.firstNotNullOfOrNull { it.element } ?: continue
-			//排除当前正在输入的那个
+			////没有其他地方使用到时，排除当前正在输入的那个
 			if(parameters.size == 1 && element isSamePosition parameter) continue
 			//如果要提示的是$PARAM$中的PARAM，需要忽略与之相同参数名
 			if(read && parameterName == keyword) continue

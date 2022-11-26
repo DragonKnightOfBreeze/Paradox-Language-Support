@@ -9,7 +9,7 @@ interface ParadoxScopeExpressionNode: ParadoxExpressionNode{
 			ParadoxSystemScopeExpressionNode.resolve(text, textRange, configGroup)?.let { return it }
 			ParadoxScopeLinkExpressionNode.resolve(text, textRange, configGroup)?.let {return it }
 			ParadoxScopeLinkFromDataExpressionNode.resolve(text, textRange, configGroup)?.let {return it }
-			return ParadoxDummyScopeExpressionNode(text, textRange)
+			return ParadoxErrorScopeExpressionNode(text, textRange)
 		}
 	}
 }

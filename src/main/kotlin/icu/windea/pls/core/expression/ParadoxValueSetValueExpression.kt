@@ -143,7 +143,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configs: List<CwtConfig
 			nodes.add(atNode)
 			//resolve scope expression
 			val expText = text.substring(atIndex + 1)
-			val expTextRange = TextRange.create(atIndex + 1, text.length)
+			val expTextRange = TextRange.create(atIndex + 1 + offset, text.length + offset)
 			val expNode = ParadoxScopeFieldExpression.resolve(expText, expTextRange, configGroup, null, true)
 			nodes.add(expNode)
 		}
