@@ -116,7 +116,6 @@ tasks {
 		jvmArgs("-Xmx4096m") //自定义JVM参数
 	}
 	publishPlugin {
-		dependsOn("patchChangelog")
 		token.set(System.getenv("IDEA_TOKEN"))
 	}
 }

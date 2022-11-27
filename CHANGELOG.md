@@ -65,12 +65,9 @@
   * [X] 修复无法从项目文件中的声明导航到库中的引用的问题（考虑使用`UseScopeEnlarger`或`ResolveScopeManager`）
   * [X] 可以从定义名并非rootKey的定义（如event）的声明处导航到所有使用处（鼠标放到定义的rootKey上，然后Ctrl+鼠标左键）
   * [X] 从任意同名同类型的封装变量/定义/本地化/文件路径出发，可以通过查找使用导航到所有那个名字的使用
-    * [X] 存在定义/本地化的引用高亮不正确的奇怪BUG - 已修复，需要使用`queryParameters.effectiveSearchScope`而非`target.useScope`
-    * [X] 必要时需要重载`PsiElement.isEquivalentTo()`方法
   * [X] 兼容更复杂的表达式的情况，如：`root.owner.event_target:target@root.owner`
   * [X] 兼容`value_field`或者`int_value_field`需要被识别为变量的情况（`root.owner.var_name`）（通过更新CWT规则文件`links.cwt`）
   * [X] 脚本文件中来自CWT文件的引用需要能被同时高亮出来，同时一般情况下不能从CWT文件中的规则查找引用（`modifier`等除外）
-    * 对于别名无法正常工作（`if` != `alias[effect:if]`）
   * [X] 兼容localisationCommandScope需要被识别为`value[event_target]`或者`value[global_event_target]`的情况，以及代码提示
   * [X] 兼容localisationCommandField需要被识别为`value[variable]`的情况，以及代码提示
   * [X] 修复不能为对应的CWT规则是别名（alias）的表达式（key / value）提供正确的引用读写高亮的问题（当鼠标放到表达式上时应当显示）
