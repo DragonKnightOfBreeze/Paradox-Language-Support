@@ -54,12 +54,12 @@
     * 需要区分游戏类型，需要扩展并基于CWT规则，需要进一步研究
   * [ ] 实现代码折叠：对于变量操作表达式，如`set_variable = { which = var value = 1 }` → `var = 1`
     * 需要区分游戏类型，需要扩展并基于CWT规则，需要进一步研究
-  * [ ] 进行定义元素的代码补全时，如果一个key的value必定是block（`{ ... }`），应用补全后除了自动插入` = `之外，还要自动插入` {}`
+  * [ ] 进行定义元素的代码补全时，如果一个key的value必定是block，应用补全后除了自动插入` = `之外，还要自动插入` {}`
     * 光标位于花括号之中，需要格式化
     * 如果可能是block，那么需要另外给出提示项`key = {...}`（后面尾随其他信息文本）（参照Kotlin方法的代码补全）
     * 需要考虑可通过设置开关此功能
-  * [ ] 进行定义元素的代码补全时，如果一个key的value可能是block（`{ ... }`），且其中的各个key都是确定的（固定的），应用补全后要直接插入整个block的内联模版，让用户依次输入各个value
-    * 实际上，如果key或value是数字，那么key和value之间应当可以是任意比较操作符
+  * [ ] 进行定义元素的代码补全时，如果一个key的value可能是block，且其中的各个key都是常量字符串，应用补全后要另外给出提示项，直接插入整个block的内联模版，让用户依次输入各个value
+    * 实际上，如果key或value表示数字（但其文本不一定要是数字），那么key和value之间应当可以是任意比较操作符
     * 不需要另外编写cwt规则文件，在加入提示项时判断即可
     * 需要考虑可通过设置开关此功能
 
@@ -84,6 +84,7 @@
   * [X] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`
   * [X] 进行代码补全时，如果在提示key时，对应的value是唯一确定的（常量，如固定字符串），应用补全后将会自动插入
   * [X] 本地化文件：兼容`$@some_scripted_variable$`、`£$SOME_REF$£`这样的语法
+  * [X] 优化插件配置页面
 * 功能变更：
   * [X] ~~支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`~~ → 使用CWT选项`## tag`标记特殊标签，如`optimize_memory`
   * [X] 移除`icu.windea.pls.core.ParadoxPathReferenceProvider` （用于兼容markdown锚点）

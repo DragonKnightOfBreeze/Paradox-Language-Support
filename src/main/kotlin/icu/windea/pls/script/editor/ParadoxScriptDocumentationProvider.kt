@@ -188,8 +188,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			buildLineCommentContent(element)
 			buildParametersContent(element, definitionInfo)
 			val sections = mutableMapOf<String, String>()
-			buildRelatedImageSections(imageTargetMap, sections)
-			buildRelatedLocalisationSections(localisationTargetMap, sections)
+			addRelatedImageSections(imageTargetMap, sections)
+			addRelatedLocalisationSections(localisationTargetMap, sections)
 			buildDefinitionSections(sections)
 		}
 	}
@@ -337,42 +337,39 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun addRelatedLocalisationSections(map: Map<String, ParadoxLocalisationProperty>, sections: MutableMap<String, String>) {
+		//加上渲染后的相关本地化文本
+		if(!getSettings().documentation.renderRelatedLocalisationsForDefinitions) return
+		if(map.isNotEmpty()) {
+			for((key, target) in map) {
+				val richText = ParadoxLocalisationTextRenderer.render(target)
+				sections.put(key.toCapitalizedWords(), richText)
+			}
+		}
+	}
+	
+	private fun addRelatedImageSections(map: MutableMap<String, Tuple2<PsiFile, Int>>, sections: MutableMap<String, String>) {
+		//加上DDS图片预览图
+		if(!getSettings().documentation.renderRelatedImagesForDefinitions) return
+		if(map.isNotEmpty()) {
+			for((key, tuple) in map) {
+				val (target, frame) = tuple
+				val url = ParadoxDdsUrlResolver.resolveByFile(target.virtualFile, frame)
+				val tag = buildString { appendImgTag(url) }
+				sections.put(key.toCapitalizedWords(), tag)
+			}
+		}
+	}
+	
 	private fun StringBuilder.buildParametersContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
 		//如果定义支持参数且拥有参数，则在文档中显示
-		if(getSettings().scriptShowParameters) {
-			if(definitionInfo.type in definitionInfo.configGroup.definitionTypesSupportParameters) {
-				val parameterMap = element.parameterMap
-				if(parameterMap.isNotEmpty()) {
-					content {
-						val parameters = parameterMap.keys.joinToString { "<code>$it</code>" }
-						append(PlsDocBundle.message("content.parameters", parameters))
-					}
-				}
-			}
-		}
-	}
-	
-	private fun buildRelatedImageSections(map: MutableMap<String, Tuple2<PsiFile, Int>>, sections: MutableMap<String, String>) {
-		//加上DDS图片预览图
-		if(getSettings().scriptRenderRelatedImages) {
-			if(map.isNotEmpty()) {
-				for((key, tuple) in map) {
-					val (target, frame) = tuple
-					val url = ParadoxDdsUrlResolver.resolveByFile(target.virtualFile, frame)
-					val tag = buildString { appendImgTag(url) }
-					sections.put(key.toCapitalizedWords(), tag)
-				}
-			}
-		}
-	}
-	
-	private fun buildRelatedLocalisationSections(map: Map<String, ParadoxLocalisationProperty>, sections: MutableMap<String, String>) {
-		//加上渲染后的相关本地化文本
-		if(getSettings().scriptRenderRelatedLocalisation) {
-			if(map.isNotEmpty()) {
-				for((key, target) in map) {
-					val richText = ParadoxLocalisationTextRenderer.render(target)
-					sections.put(key.toCapitalizedWords(), richText)
+		if(!getSettings().documentation.showParameters) return
+		if(definitionInfo.type in definitionInfo.configGroup.definitionTypesSupportParameters) {
+			val parameterMap = element.parameterMap
+			if(parameterMap.isNotEmpty()) {
+				content {
+					val parameters = parameterMap.keys.joinToString { "<code>$it</code>" }
+					append(PlsDocBundle.message("content.parameters", parameters))
 				}
 			}
 		}
@@ -461,12 +458,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun StringBuilder.buildLineCommentContent(element: PsiElement) {
 		//加上单行注释文本
-		if(getSettings().scriptRenderLineComment) {
-			val docText = getLineCommentDocText(element)
-			if(docText != null && docText.isNotEmpty()) {
-				content {
-					append(docText)
-				}
+		if(!getSettings().documentation.renderLineComment) return
+		val docText = getLineCommentDocText(element)
+		if(docText != null && docText.isNotEmpty()) {
+			content {
+				append(docText)
 			}
 		}
 	}

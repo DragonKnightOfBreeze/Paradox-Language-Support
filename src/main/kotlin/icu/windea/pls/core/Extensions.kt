@@ -47,14 +47,14 @@ fun getDefaultProject() = ProjectManager.getInstance().defaultProject
 
 fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
 
-fun getSettings() = service<ParadoxSettings>()
+fun getSettings() = service<ParadoxSettings>().state
 
 fun getInternalConfig(project: Project? = null) = (project ?: getTheOnlyOpenOrDefaultProject()).service<InternalConfigProvider>().configGroup
 
 fun getCwtConfig(project: Project) = project.service<CwtConfigProvider>().configGroups
 
 fun preferredParadoxLocale(): ParadoxLocaleConfig? {
-	val primaryLocale = getSettings().localisationPreferredLocale.orEmpty()
+	val primaryLocale = getSettings().preferredLocale.orEmpty()
 	if(primaryLocale.isNotEmpty() && primaryLocale != "auto") {
 		val usedLocale = InternalConfigHandler.getLocale(primaryLocale)
 		if(usedLocale != null) return usedLocale
@@ -380,7 +380,7 @@ inline fun processLocalisationVariants(
 	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector(),
 	crossinline processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
 ): Boolean {
-	val maxSize = getSettings().maxCompleteSize
+	val maxSize = getSettings().completion.maxCompleteSize
 	return ParadoxLocalisationNameIndex.processVariants(keyword, project, scope, maxSize, selector, processor)
 }
 
@@ -421,7 +421,7 @@ inline fun processSyncedLocalisationVariants(
 	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector(),
 	crossinline processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
 ): Boolean {
-	val maxSize = getSettings().maxCompleteSize
+	val maxSize = getSettings().completion.maxCompleteSize
 	return ParadoxLocalisationNameIndex.processVariants(keyword, project, scope, maxSize, selector, processor)
 }
 

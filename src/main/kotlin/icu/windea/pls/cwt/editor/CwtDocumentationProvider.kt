@@ -143,8 +143,9 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 			}
-			//得到相关本地化
-			getRelatedLocalisations(element, originalElement, name, configGroup, sections)
+			if(configType == CwtConfigType.Modifier) {
+				addRelatedLocalisationSectionsForModifiers(element, originalElement, name, configGroup, sections)
+			}
 		}
 	}
 	
@@ -184,16 +185,19 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 			}
-			//得到相关本地化
-			getRelatedLocalisations(element, originalElement, name, configGroup, sections)
+			if(configType == CwtConfigType.Modifier) {
+				addRelatedLocalisationSectionsForModifiers(element, originalElement, name, configGroup, sections)
+			}
 		}
 	}
 	
-	private fun StringBuilder.getRelatedLocalisations(element: PsiElement, originalElement: PsiElement?, name: String, configGroup: CwtConfigGroup?, sections: MutableMap<String, String>?) {
+	private fun StringBuilder.addRelatedLocalisationSectionsForModifiers(element: PsiElement, originalElement: PsiElement?, name: String, configGroup: CwtConfigGroup?, sections: MutableMap<String, String>?) {
+		if(configGroup == null || originalElement == null) return
+		if(!getSettings().documentation.renderRelatedLocalisationsForModifiers) return
+		//为修饰符渲染相关本地化
 		//NOTE 不能确定相关本地化的名字到底是什么，并且从API层面上来说，上下文PSI元素只能是CwtProperty而非ParadoxScriptExpressionElement
 		//Name, Desc?
 		ProgressManager.checkCanceled()
-		if(originalElement == null || configGroup == null) return
 		val keys = CwtConfigHandler.getModifierLocalisationNameKeys(name, configGroup)
 		val localisation = keys?.firstNotNullOfOrNull {
 			val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(originalElement).preferLocale(preferredParadoxLocale())
@@ -227,7 +231,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun StringBuilder.buildDocumentationContent(element: PsiElement) {
-		//渲染文档注释（作为HTML）和版本号信息
+		//渲染文档注释（可能需要作为HTML）和版本号信息
 		var current: PsiElement = element
 		var lines: LinkedList<String>? = null
 		var since: String? = null
@@ -268,11 +272,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun StringBuilder.buildScopeContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?) {
+		if(configGroup == null) return
+		if(!getSettings().documentation.showScopes) return
+		//为link提示名字、描述、输入作用域、输出作用域的文档注释
+		//仅为脚本文件和本地化文件中的引用提供
 		when(configType) {
-			//为link提示名字、描述、输入作用域、输出作用域的文档注释
-			//仅为脚本文件中的引用提供
 			CwtConfigType.Link -> {
-				if(configGroup == null) return
 				val linkConfig = configGroup.links[name] ?: return
 				val nameToUse = CwtConfigHandler.getScopeName(name, configGroup)
 				val descToUse = linkConfig.desc
@@ -296,19 +301,19 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun StringBuilder.buildSupportedScopesContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?) {
+		if(configGroup == null) return
+		if(!getSettings().documentation.showScopes) return
 		//为alias modifier localisation_command等提供分类、支持的作用域的文档注释
-		//仅为脚本文件中的引用提供
+		//仅为脚本文件和本地化文件中的引用提供
 		var categoryNames: Set<String>? = null
 		var supportedScopeNames: Set<String>? = null
 		when(configType) {
 			CwtConfigType.Modifier -> {
-				if(configGroup == null) return
 				val modifierConfig = configGroup.modifiers[name] ?: return
 				categoryNames = modifierConfig.categoryConfigMap.keys
 				supportedScopeNames = modifierConfig.supportedScopeNames
 			}
 			CwtConfigType.LocalisationCommand -> {
-				if(configGroup == null) return
 				val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
 				supportedScopeNames = localisationCommandConfig.supportedScopeNames
 			}

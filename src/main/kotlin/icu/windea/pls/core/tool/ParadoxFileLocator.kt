@@ -22,7 +22,7 @@ object ParadoxFileLocator {
 		if(!directory.isDirectory) return null
 		val directoryPath = directory.fileInfo?.path ?: return null
 		if(scriptedVariablesPath.matchesPath(directoryPath.path)) {
-			val fileName = scriptedVariablesFileName(getSettings().generationFileNamePrefix.orEmpty())
+			val fileName = scriptedVariablesFileName(getSettings().generation.fileNamePrefix.orEmpty())
 			return directory.findOrCreateChildData(ParadoxFileLocator, fileName)
 		}
 		return null

@@ -20,31 +20,17 @@ import icu.windea.pls.script.*
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"), "settings.language.pls"), SearchableConfigurable {
 	override fun getId() = "settings.language.pls"
 	
-	//通用设置
-	//  （下拉框）默认游戏类型
-	//  （整数输入框）最大补全大小
-	//  （复选框）偏好重载的引用
-	//脚本语言设置
-	//  （可伸缩输入框）被忽略的文件名
-	//  文档
-	//    （复选框）渲染行注释
-	//    （复选框）渲染相关的本地化
-	//    （复选框）渲染相关的图片
-	//本地化语言设置
-	//  （下拉框）主要语言区域
-	//  （整数输入框）截断长度
-	//  文档
-	//    （复选框）渲染行注释
-	//    （复选框）渲染本地化
-	
 	override fun createPanel(): DialogPanel {
 		val settings = getSettings()
 		return panel {
+			//generic
 			group(PlsBundle.message("settings.generic")) {
+				//defaultGameType
 				row {
-					label(PlsBundle.message("settings.generic.defaultGameType")).applyToComponent {
-						toolTipText = PlsBundle.message("settings.generic.defaultGameType.tooltip")
-					}
+					label(PlsBundle.message("settings.generic.defaultGameType"))
+						.applyToComponent {
+							toolTipText = PlsBundle.message("settings.generic.defaultGameType.tooltip")
+						}
 					val values = ParadoxGameType.valueList
 					comboBox(values)
 						.bindItem({
@@ -65,10 +51,29 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 							}
 						}
 				}
+				//preferredLocale
 				row {
-					label(PlsBundle.message("settings.generic.ignoredFileNames")).applyToComponent {
-						toolTipText = PlsBundle.message("settings.generic.ignoredFileNames.tooltip")
-					}
+					label(PlsBundle.message("settings.generic.preferredLocale"))
+						.applyToComponent {
+							toolTipText = PlsBundle.message("settings.generic.preferredLocale.tooltip")
+						}
+					comboBox(settings.locales,
+						listCellRenderer { value, _, _ ->
+							if(value == "auto") {
+								text = PlsBundle.message("settings.generic.preferredLocale.auto")
+							} else {
+								text = InternalConfigHandler.getLocale(value)!!.description
+							}
+						})
+						.bindItem(settings::preferredLocale.toNullableProperty())
+						.onApply { refreshInlayHints() }
+				}
+				//ignoredFileNames
+				row {
+					label(PlsBundle.message("settings.generic.ignoredFileNames"))
+						.applyToComponent {
+							toolTipText = PlsBundle.message("settings.generic.ignoredFileNames.tooltip")
+						}
 					expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
 						.bindText({ settings.ignoredFileNames.orEmpty() }, { settings.ignoredFileNames = it })
 						.onApply {
@@ -80,78 +85,78 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						.horizontalAlign(HorizontalAlign.FILL)
 						.resizableColumn()
 				}
-				row {
-					label(PlsBundle.message("settings.generic.maxCompleteSize")).applyToComponent {
-						toolTipText = PlsBundle.message("settings.generic.maxCompleteSize.tooltip")
-					}
-					intTextField(0..1000).bindIntText(settings::maxCompleteSize)
-				}
+				//preferOverridden
 				row {
 					checkBox(PlsBundle.message("settings.generic.preferOverridden"))
 						.bindSelected(settings::preferOverridden)
 						.applyToComponent { toolTipText = PlsBundle.message("settings.generic.preferOverridden.tooltip") }
 				}
 			}
-			group(PlsBundle.message("settings.script")) {
-				buttonsGroup(PlsBundle.message("settings.script.doc")) {
-					row {
-						checkBox(PlsBundle.message("settings.script.doc.renderLineComment"))
-							.bindSelected(settings::scriptRenderLineComment)
-							.applyToComponent { toolTipText = PlsBundle.message("settings.script.doc.renderLineComment.tooltip") }
-					}
-					row {
-						checkBox(PlsBundle.message("settings.script.doc.renderRelatedLocalisation"))
-							.bindSelected(settings::scriptRenderRelatedLocalisation)
-							.applyToComponent { toolTipText = PlsBundle.message("settings.script.doc.renderRelatedLocalisation.tooltip") }
-					}
-					row {
-						checkBox(PlsBundle.message("settings.script.doc.renderRelatedImages"))
-							.bindSelected(settings::scriptRenderRelatedImages)
-							.applyToComponent { toolTipText = PlsBundle.message("settings.script.doc.renderRelatedImages.tooltip") }
-					}
-					row {
-						checkBox(PlsBundle.message("settings.script.doc.showParameters"))
-							.bindSelected(settings::scriptShowParameters)
-							.applyToComponent { toolTipText = PlsBundle.message("settings.script.doc.showParameters.tooltip") }
-					}
-				}
-			}
-			group(PlsBundle.message("settings.localisation")) {
+			//documentation
+			group(PlsBundle.message("settings.documentation")) {
+				//renderLineComment
 				row {
-					label(PlsBundle.message("settings.localisation.preferredLocale")).applyToComponent {
-						toolTipText = PlsBundle.message("settings.localisation.preferredLocale.tooltip")
-					}
-					comboBox(settings.locales, listCellRenderer { value, _, _ ->
-						if(value == "auto") {
-							text = PlsBundle.message("settings.localisation.preferredLocale.auto")
-						} else {
-							text = InternalConfigHandler.getLocale(value)!!.description
-						}
-					})
-						.bindItem(settings::localisationPreferredLocale.toNullableProperty())
-						.onApply { refreshInlayHints() }
+					checkBox(PlsBundle.message("settings.documentation.renderLineComment"))
+						.bindSelected(settings.documentation::renderLineComment)
+						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderLineComment.tooltip") }
 				}
-				buttonsGroup(PlsBundle.message("settings.localisation.doc")) {
-					row {
-						checkBox(PlsBundle.message("settings.localisation.doc.renderLineComment"))
-							.bindSelected(settings::localisationRenderLineComment)
-							.applyToComponent { toolTipText = PlsBundle.message("settings.localisation.doc.renderLineComment.tooltip") }
-					}
-					row {
-						checkBox(PlsBundle.message("settings.localisation.doc.renderLocalisation"))
-							.bindSelected(settings::localisationRenderLocalisation)
-							.applyToComponent { toolTipText = PlsBundle.message("settings.localisation.doc.renderLocalisation.tooltip") }
-					}   
+				//renderRelatedLocalisationsForDefinitions
+				row {
+					checkBox(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForDefinitions"))
+						.bindSelected(settings.documentation::renderRelatedLocalisationsForDefinitions)
+						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderRelatedLocalisationsForDefinitions.tooltip") }
+				}
+				//renderRelatedImagesForDefinitions
+				row {
+					checkBox(PlsBundle.message("settings.documentation.renderRelatedImagesForDefinitions"))
+						.bindSelected(settings.documentation::renderRelatedImagesForDefinitions)
+						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderRelatedImagesForDefinitions.tooltip") }
+				}
+				//renderRelatedLocalisationsForModifiers
+				row {
+					checkBox(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForModifiers"))
+						.bindSelected(settings.documentation::renderRelatedLocalisationsForModifiers)
+						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderRelatedLocalisationsForModifiers.tooltip") }
+				}
+				//renderLocalisationForLocalisations
+				row {
+					checkBox(PlsBundle.message("settings.documentation.renderLocalisationForLocalisations"))
+						.bindSelected(settings.documentation::renderLocalisationForLocalisations)
+						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderLocalisationForLocalisations.tooltip") }
+				}
+				//showParameters
+				row {
+					checkBox(PlsBundle.message("settings.documentation.showParameters"))
+						.bindSelected(settings.documentation::showParameters)
+						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showParameters.tooltip") }
+				}
+				//showScopes
+				row {
+					checkBox(PlsBundle.message("settings.documentation.showScopes"))
+						.bindSelected(settings.documentation::showScopes)
+						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showScopes.tooltip") }
 				}
 			}
+			//completion
+			group(PlsBundle.message("settings.completion")) {
+				//maxCompleteSize
+				row {
+					label(PlsBundle.message("settings.completion.maxCompleteSize")).applyToComponent {
+						toolTipText = PlsBundle.message("settings.completion.maxCompleteSize.tooltip")
+					}
+					intTextField(0..1000).bindIntText(settings.completion::maxCompleteSize)
+				}
+			}
+			//generation
 			group(PlsBundle.message("settings.generation")) {
+				//fileNamePrefix
 				row {
 					label(PlsBundle.message("settings.generation.fileNamePrefix")).applyToComponent {
 						toolTipText = PlsBundle.message("settings.generation.fileNamePrefix.tooltip")
 					}
-					textField().bindText(settings::generationFileNamePrefix)
+					textField().bindText(settings.generation::fileNamePrefix)
 				}
-			}
+			}.visible(false)
 		}
 	}
 	

@@ -206,12 +206,11 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun StringBuilder.buildLocalisationSections(element: ParadoxLocalisationProperty) {
 		//加上渲染后的本地化文本
-		if(getSettings().localisationRenderLocalisation) {
-			val richText = ParadoxLocalisationTextRenderer.render(element)
-			if(richText.isNotEmpty()) {
-				sections {
-					section(PlsDocBundle.message("title.text"), richText)
-				}
+		if(!getSettings().documentation.renderLocalisationForLocalisations) return
+		val richText = ParadoxLocalisationTextRenderer.render(element)
+		if(richText.isNotEmpty()) {
+			sections {
+				section(PlsDocBundle.message("title.text"), richText)
 			}
 		}
 	}
@@ -285,12 +284,11 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun StringBuilder.buildLineCommentContent(element: PsiElement) {
 		//加上单行注释文本
-		if(getSettings().localisationRenderLineComment) {
-			val docText = getLineCommentDocText(element)
-			if(docText != null && docText.isNotEmpty()) {
-				content {
-					append(docText)
-				}
+		if(!getSettings().documentation.renderLineComment) return
+		val docText = getLineCommentDocText(element)
+		if(docText != null && docText.isNotEmpty()) {
+			content {
+				append(docText)
 			}
 		}
 	}
