@@ -50,9 +50,13 @@ class ParadoxSettingsState : BaseState() {
 	
 	/**
 	 * @property maxCompleteSize 本地化在进行代码补全时的最大补全数量。
+	 * @property completeWithValue 当补全定义属性时，如果可能的值可以是常量字符串或者子句，是否另外提供提示项，自动插入常量字符串或花括号。
+	 * @property completeWithClauseTemplate 当补全定义属性时，如果可能的值可以是子句，且其中的属性名可以是常量字符串，且是有限的，是否另外提供提示项，自动插入从句内联模版。
 	 */
 	class CompletionState: BaseState(){
-		var maxCompleteSize: Int by property(100)
+		var maxCompleteSize by property(100)
+		var completeWithValue by property(true)
+		var completeWithClauseTemplate by property(true)
 	}
 	
 	@get:Tag("generation")

@@ -146,6 +146,18 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 					}
 					intTextField(0..1000).bindIntText(settings.completion::maxCompleteSize)
 				}
+				//completeWithValue
+				row {
+					checkBox(PlsBundle.message("settings.completion.completeWithValue"))
+						.bindSelected(settings.completion::completeWithValue)
+						.applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeWithValue.tooltip") }
+				}
+				//completeWithClauseTemplate
+				row {
+					checkBox(PlsBundle.message("settings.completion.completeWithClauseTemplate"))
+						.bindSelected(settings.completion::completeWithClauseTemplate)
+						.applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeWithClauseTemplate.tooltip") }
+				}.visible(false) //TODO
 			}
 			//generation
 			group(PlsBundle.message("settings.generation")) {
@@ -156,7 +168,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 					}
 					textField().bindText(settings.generation::fileNamePrefix)
 				}
-			}.visible(false)
+			}.visible(false) //TODO
 		}
 	}
 	

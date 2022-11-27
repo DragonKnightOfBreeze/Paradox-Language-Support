@@ -21,11 +21,25 @@ object PlsLookupElementBuilder {
 		tailText: String? = null,
 		typeText: String? = null,
 		typeIcon: Icon? = null
-	): LookupElementBuilder? {
-		val onlyConfig = context.configs?.singleOrNull()?.castOrNull<CwtPropertyConfig>()
-		val onlyValue = onlyConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }
+	): LookupElementBuilder? = with(context) {
+		val config = config
+		
+		val completeWithValue = getSettings().completion.completeWithValue
+		
+		val propertyConfig = when{
+			config is CwtPropertyConfig -> config
+			config is CwtAliasConfig -> config.config
+			config is CwtSingleAliasConfig -> config.config
+			else -> null
+		}
+		val constantValue = if(completeWithValue) propertyConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.value else null
+		val insertCurlyBraces = if(completeWithValue) propertyConfig?.isBlock ?: false else false
 		//这里ID不一定等同于lookupString
-		val id = lookupString
+		val id = when {
+			constantValue != null -> "$lookupString = $constantValue"
+			insertCurlyBraces -> "$lookupString = {...}"
+			else -> lookupString
+		}
 		//排除重复项
 		if(context.completionIds?.add(id) == false) return null
 		var lookupElement = LookupElementBuilder.create(element, lookupString)
@@ -33,11 +47,15 @@ object PlsLookupElementBuilder {
 			lookupElement = lookupElement.withIcon(icon)
 		}
 		val finalTailText = buildString {
-			if(onlyValue != null) append(" = ").append(onlyValue)
+			if(constantValue != null) append(" = ").append(constantValue)
+			if(insertCurlyBraces) append(" = {...}")
 			if(tailText != null) append(tailText)
 		}
 		if(finalTailText.isNotEmpty()) {
 			lookupElement = lookupElement.withTailText(finalTailText, true)
+		}
+		if(typeText != null) {
+			lookupElement = lookupElement.withTypeText(typeText, typeIcon, true)
 		}
 		if(context.isKey == true) {
 			lookupElement = lookupElement.withInsertHandler { c, _ ->
@@ -51,21 +69,22 @@ object PlsLookupElementBuilder {
 				while(offset < charsLength && chars[offset].isWhitespace()) {
 					offset++
 				}
-				//如果后面没有分隔符，则要自动插入等号，并且根据代码格式设置来判断是否加上等号周围的空格
-				//如果对应的value是唯一确定的，则还要自动插入这个值
+				//如果后面没有分隔符，则要自动插入等号，以及其他可能的要插入的文本
+				//需要基于代码格式设置来决定要插入的文本的格式
 				if(offset == charsLength || chars[offset] !in PlsConstants.separatorChars) {
 					val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
-					val textToInsert = buildString {
-						val separator = if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "="
-						append(separator)
-						if(onlyValue != null) append(onlyValue)
+					val text = buildString {
+						append(if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "=")
+						if(constantValue != null) append(constantValue)
+						if(insertCurlyBraces) append(if(customSettings.SPACE_WITHIN_BRACES) "{  }" else "{}")
 					}
-					EditorModificationUtil.insertStringAtCaret(editor, textToInsert)
+					val length = when {
+						insertCurlyBraces -> if(customSettings.SPACE_WITHIN_BRACES) text.length - 2 else text.length - 1
+						else -> text.length
+					}
+					EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
 				}
 			}
-		}
-		if(typeText != null) {
-			lookupElement = lookupElement.withTypeText(typeText, typeIcon, true)
 		}
 		return lookupElement
 	}
