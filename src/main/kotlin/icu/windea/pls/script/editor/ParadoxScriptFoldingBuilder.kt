@@ -4,13 +4,14 @@ import com.intellij.lang.*
 import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
-import com.intellij.util.*
+import com.intellij.openapi.util.*
+import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
-class ParadoxScriptFoldingBuilder : FoldingBuilder, DumbAware {
-	override fun getPlaceholderText(node: ASTNode): String {
+class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
+	override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String {
 		return when(node.elementType) {
 			BLOCK -> PlsConstants.blockFolder
 			PARAMETER_CONDITION -> {
@@ -22,14 +23,12 @@ class ParadoxScriptFoldingBuilder : FoldingBuilder, DumbAware {
 		}
 	}
 	
-	override fun isCollapsedByDefault(node: ASTNode): Boolean {
+	override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
 		return false
 	}
 	
-	override fun buildFoldRegions(node: ASTNode, document: Document): Array<FoldingDescriptor> {
-		val descriptors: MutableList<FoldingDescriptor> = SmartList()
-		collectDescriptorsRecursively(node, document, descriptors)
-		return descriptors.toTypedArray()
+	override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
+		collectDescriptorsRecursively(root.node, document, descriptors)
 	}
 	
 	private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>) {

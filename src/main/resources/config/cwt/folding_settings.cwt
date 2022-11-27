@@ -1,0 +1,47 @@
+# Folding Settings, use to apply additional code folding in script files.
+# See: icu.windea.pls.core.editor.ParadoxFoldingOptionsProvider
+# See: icu.windea.pls.core.editor.ParadoxVariableOperationExpressionFoldingBuilder
+
+# NOTE: Must be a valid definition property 
+# folding_group_name = {
+#   <key of the property to folding> = {
+#     keys = { <required child property keys> }
+#     placeholder = <folding placeholder, $k$ represents value of the required child property "k">
+#   }
+#   ...
+# }
+
+variable_operation_expressions = {
+	set_variable = {
+		keys = { which value }
+		placeholder = "val $which$ = $value$"
+	}
+	change_variable = {
+		keys = { which value }
+		placeholder = "$which$ += $value$"
+	}
+	substract_variable = {
+		keys = { which value }
+		placeholder = "$which$ -= $value$"
+	}
+	multiply_variable = {
+		keys = { which value }
+		placeholder = "$which$ *= $value$"
+	}
+	divide_variable = {
+		keys = { which value }
+		placeholder = "$which$ /= $value$"
+	}
+	modulo_variable = {
+		keys = { which value }
+		placeholder = "$which$ %= $value$"
+	}
+	round_variable_to_closest = {
+		keys = { which value }
+		placeholder = "$which$ roundTo $value$"
+	}
+	clear_variable = {
+		keys = which
+		placeholder = "$which$ = null"
+	}
+} 

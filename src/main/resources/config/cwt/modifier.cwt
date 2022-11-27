@@ -1,2 +1,2 @@
-###Applies the value of a prescripted modifier
+###Applies the value of a predefined modifier
 alias[modifier:$modifier] = float
