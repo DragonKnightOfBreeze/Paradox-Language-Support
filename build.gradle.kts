@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "icu.windea"
-version = "0.7.4"
+version = "0.7.5"
 
 intellij {
 	pluginName.set("Paradox Language Support")

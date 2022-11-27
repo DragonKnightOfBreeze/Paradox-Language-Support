@@ -44,7 +44,7 @@
   * [ ] 有时候会把`DISTRICT = district_arcology_housing`的`DISTRICT`被识别为scope_expression而非参数名，为什么？
   * [ ] 有时候`event_target:mechanocalibrator_country`中的`event_target:`无法点击导航到CWT，为什么？
 
-## 0.7.5
+## 0.7.6
 
 * 功能优化：
   * [ ] 对于忽略大小写的字符串作为键/元素的集合和映射，考虑使用内联类`CaseInsensitiveString`，以保证排序
@@ -57,6 +57,10 @@
   * （可配置是否启用）进行代码补全时，如果在提示定义属性的键时，如果其值可能是从句，应用补全后可以自动插入从句内联模版，让用户依次输入各个未定的值
     * 实际上，如果key或value表示数字（但其文本不一定要是数字），那么key和value之间应当可以是任意比较操作符
     * 不需要另外编写cwt规则文件，在加入提示项时判断即可
+
+## 0.7.5
+
+* 更新CWT规则文件到最新版本
 
 ## 0.7.4
 
