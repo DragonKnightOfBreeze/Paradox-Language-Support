@@ -10,9 +10,9 @@ import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 
 object DefinitionConfigHandler {
-	//region Shared
+	//region Global
 	/**
-	 * 得到event定义的需要匹配的namespace。基于名为"namespace"的顶级脚本属性（忽略大小写）。
+	 * 得到event的需要匹配的namespace。
 	 */
 	fun getEventNamespace(event: ParadoxDefinitionProperty): String? {
 		var current = event.prevSibling ?: return null
@@ -25,6 +25,9 @@ object DefinitionConfigHandler {
 		}
 	}
 	
+	/**
+	 * 得到textcolor的对应颜色配置。
+	 */
 	fun getTextColorConfigs(gameType: ParadoxGameType, project: Project, context: Any? = null): List<ParadoxTextColorConfig> {
 		val selector = definitionSelector().gameType(gameType).preferRootFrom(context).distinctByName()
 		val definitions = ParadoxDefinitionSearch.search("textcolor", project, selector = selector).findAll()

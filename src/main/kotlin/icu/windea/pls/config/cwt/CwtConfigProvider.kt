@@ -34,7 +34,7 @@ class CwtConfigProvider(
 		val configMaps = initConfigMaps()
 		val startTime = System.currentTimeMillis()
 		logger.info("Init cwt config groups.")
-		val configGroups = CwtConfigGroups(project, configMaps)
+		val configGroups = CwtConfigGroupsImpl(project, configMaps)
 		val endTime = System.currentTimeMillis()
 		logger.info("Init config groups finished. (${endTime - startTime} ms)")
 		return configGroups
@@ -59,21 +59,21 @@ class CwtConfigProvider(
 	}
 	
 	private fun resolveConfigFiles(configMaps: CwtConfigMaps, configDirectory: VirtualFile, configRootDirectory: VirtualFile) {
-		val sharedConfigMap: CwtConfigMap = mutableMapOf()
+		val globalConfigMap: CwtConfigMap = mutableMapOf()
 		for(configFile in configDirectory.children) {
 			if(configFile.isDirectory) {
 				//将目录的名字作为规则组的名字
 				resolveConfigFilesOfGroup(configMaps, configFile, configRootDirectory)
 			} else {
 				when(configFile.extension) {
-					"cwt" -> resolveSharedCwtConfigFile(sharedConfigMap, configFile, configRootDirectory) //解析共享的cwt配置文件
+					"cwt" -> resolveGlobalCwtConfigFile(globalConfigMap, configFile, configRootDirectory) //解析共享的cwt配置文件
 					else -> pass() //不做处理
 				}
 			}
 		}
 		//共享的配置会覆盖特定游戏类型的配置
 		for(configMap in configMaps.values) {
-			configMap.putAll(sharedConfigMap)
+			configMap.putAll(globalConfigMap)
 		}
 	}
 	
@@ -98,16 +98,16 @@ class CwtConfigProvider(
 		}
 	}
 	
-	private fun resolveSharedCwtConfigFile(sharedConfigMap: CwtConfigMap, configFile: VirtualFile, configRootDirectory: VirtualFile) {
+	private fun resolveGlobalCwtConfigFile(globalConfigMap: CwtConfigMap, configFile: VirtualFile, configRootDirectory: VirtualFile) {
 		val relativePath = configFile.relativePathTo(configRootDirectory)
-		logger.info("Resolve shared cwt config file '$relativePath'.")
+		logger.info("Resolve global cwt config file '$relativePath'.")
 		val config = doResolveCwtConfigFile(configFile)
 		if(config == null) {
-			logger.warn("Resolve shared cwt config file '$relativePath' failed. Skip it.")
+			logger.warn("Resolve global cwt config file '$relativePath' failed. Skip it.")
 			return
 		}
 		val configName = "~$relativePath" //cwt文件名应该不会以"~"开头吧
-		sharedConfigMap.put(configName, config)
+		globalConfigMap.put(configName, config)
 	}
 	
 	private fun resolveCwtConfigFile(configMap: CwtConfigMap, configFile: VirtualFile, groupDirectory: VirtualFile, configRootDirectory: VirtualFile) {

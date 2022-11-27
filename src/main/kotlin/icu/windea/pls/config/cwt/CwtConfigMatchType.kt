@@ -6,27 +6,27 @@ package icu.windea.pls.config.cwt
 object CwtConfigMatchType {
 	/**
 	 * 需要访问文件路径索引。
-	 * @see icu.windea.pls.core.psi.ParadoxFilePathIndex
+	 * @see icu.windea.pls.core.index.ParadoxFilePathIndex
 	 */
 	const val FILE_PATH = 0x01
 	
 	/**
 	 * 需要访问定义索引。
-	 * @see icu.windea.pls.script.psi.ParadoxDefinitionNameIndex
-	 * @see icu.windea.pls.script.psi.ParadoxDefinitionTypeIndex
+	 * @see icu.windea.pls.core.index.ParadoxDefinitionNameIndex
+	 * @see icu.windea.pls.core.index.ParadoxDefinitionTypeIndex
 	 */
 	const val DEFINITION = 0x02
 	
 	/**
 	 * 需要访问本地化索引。
-	 * @see icu.windea.pls.localisation.psi.ParadoxLocalisationNameIndex
-	 * @see icu.windea.pls.localisation.psi.ParadoxSyncedLocalisationNameIndex
+	 * @see icu.windea.pls.core.index.ParadoxLocalisationNameIndex
+	 * @see icu.windea.pls.core.index.ParadoxSyncedLocalisationNameIndex
 	 */
 	const val LOCALISATION = 0x04
 	
 	/**
 	 * 需要访问复杂枚举值索引。
-	 * @see icu.windea.pls.script.psi.ParadoxComplexEnumIndex
+	 * @see icu.windea.pls.core.index.ParadoxComplexEnumIndex
 	 */
 	const val COMPLEX_ENUM_VALUE = 0x08
 	

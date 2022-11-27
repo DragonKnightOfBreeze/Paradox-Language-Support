@@ -12,8 +12,6 @@ import icu.windea.pls.core.model.*
 internal typealias CwtConfigMap = MutableMap<String, CwtFileConfig>
 internal typealias CwtConfigMaps = MutableMap<String, CwtConfigMap>
 
-val MockCwtConfigGroup by lazy { CwtConfigGroup(ParadoxGameType.Stellaris, getDefaultProject(), emptyMap()) }
-
 inline fun CwtDataConfig<*>.processParent(processor: ProcessEntry.(CwtDataConfig<*>) -> Boolean): Boolean {
 	var parent = this.parent
 	while(parent != null) {

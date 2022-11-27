@@ -11,7 +11,7 @@ object PlsExtDocBundle : DynamicBundle(BUNDLE) {
 	@Nls
 	@JvmStatic
 	fun message(name: String, definitionType: String, gameType: ParadoxGameType? = null): String? {
-		val key = "${gameType?.id ?: "shared"}.$definitionType.$name"
+		val key = "${gameType?.id ?: "global"}.$definitionType.$name"
 		return messageOrNull(key)
 	}
 }
