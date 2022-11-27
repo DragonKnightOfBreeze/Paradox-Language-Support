@@ -1,12 +1,14 @@
-# Folding Settings, use to apply additional code folding in script files.
+# Folding Settings, use to apply extended code folding in script files.
 # See: icu.windea.pls.core.editor.ParadoxFoldingOptionsProvider
 # See: icu.windea.pls.core.editor.ParadoxVariableOperationExpressionFoldingBuilder
-
-# NOTE: Must be a valid definition property 
-# folding_group_name = {
+# 
+# Expressions to folding must be valid (aka, matching some CWT config)
+# 
+# <folding group name> = {
 #   <key of the property to folding> = {
-#     keys = { <required child property keys> }
-#     placeholder = <folding placeholder, $k$ represents value of the required child property "k">
+#     key = <value reference name>
+#     keys = { <value reference names, also required child property keys> }
+#     placeholder = <folding placeholder, $k$ represents a value reference named "k">
 #   }
 #   ...
 # }
@@ -41,7 +43,7 @@ variable_operation_expressions = {
 		placeholder = "$which$ roundTo $value$"
 	}
 	clear_variable = {
-		keys = which
+		key = which
 		placeholder = "$which$ = null"
 	}
 } 
