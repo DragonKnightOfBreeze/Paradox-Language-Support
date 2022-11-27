@@ -39,8 +39,8 @@ object ParadoxCwtConfigHandler {
 		return when(configType) {
 			CwtPropertyConfig::class.java -> {
 				val valueElement = when {
-					element is ParadoxScriptProperty -> element.propertyValue?.value
-					element is ParadoxScriptPropertyKey -> element.propertyValue?.value
+					element is ParadoxScriptProperty -> element.propertyValue
+					element is ParadoxScriptPropertyKey -> element.propertyValue
 					else -> throw UnsupportedOperationException()
 				}
 				val definitionElementInfo = ParadoxDefinitionElementInfoHandler.get(element) ?: return emptyList()

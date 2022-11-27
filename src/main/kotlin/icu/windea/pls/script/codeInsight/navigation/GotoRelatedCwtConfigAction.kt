@@ -19,7 +19,8 @@ class GotoRelatedCwtConfigAction : BaseCodeInsightAction() {
 	
 	override fun update(event: AnActionEvent) {
 		//当选中的文件是脚本文件时显示
-		//当光标位置的元素是是定义元素（定义中的任何key/value，key不能是定义的rootKey，value可以不是string）时显示
+		//当光标位置的元素是是定义元素时显示
+		//在PSI中向上查找，定义中的任何key/value，key不能是定义的rootKey，value可以不是string
 		val presentation = event.presentation
 		val project = event.project
 		val editor = event.editor
@@ -47,6 +48,6 @@ class GotoRelatedCwtConfigAction : BaseCodeInsightAction() {
 	private fun findElement(file: PsiFile, offset: Int): PsiElement? {
 		return file.findElementAtCaret(offset) {
 			it.parentOfTypes(ParadoxScriptPropertyKey::class, ParadoxScriptValue::class)
-		}?.takeIf { it.isExpressionElement() }
+		}
 	}
 }
