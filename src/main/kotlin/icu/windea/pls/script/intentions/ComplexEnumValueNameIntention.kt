@@ -36,7 +36,7 @@ abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-		return file.findElementAtCaret(offset) { it.parent as? ParadoxScriptExpressionElement }
+		return file.findElementAt(offset) { it.parent as? ParadoxScriptExpressionElement }
 	}
 	
 	abstract fun doInvoke(element: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project)

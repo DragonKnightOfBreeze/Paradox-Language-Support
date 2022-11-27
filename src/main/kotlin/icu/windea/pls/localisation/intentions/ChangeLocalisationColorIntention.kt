@@ -46,8 +46,8 @@ class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationColorfulText? {
-		return file.findElementAtCaret(offset) {
-			if(it.elementType != ParadoxLocalisationElementTypes.COLOR_ID) return@findElementAtCaret null
+		return file.findElementAt(offset) {
+			if(it.elementType != ParadoxLocalisationElementTypes.COLOR_ID) return@findElementAt null
 			it.parent as? ParadoxLocalisationColorfulText
 		}
 	}

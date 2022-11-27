@@ -40,7 +40,7 @@ class CopyLocalisationPlainTextIntention : IntentionAction {
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-		return file.findElementAtCaret(offset) { it.parentOfType() }
+		return file.findElementAt(offset) { it.parentOfType() }
 	}
 	
 	override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY

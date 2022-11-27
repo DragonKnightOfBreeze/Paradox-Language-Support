@@ -302,15 +302,20 @@ fun ASTNode.isEndOfLine(): Boolean {
 //endregion
 
 //region PsiElement Extensions
-fun <T: PsiElement> PsiFile.findElementAtCaret(offset: Int, findLeft: Boolean = true, transform: (element: PsiElement) -> T?): T? {
-	val element = findElementAt(offset)
-	if(element != null) {
-		val result = transform(element)
-		if(result != null) {
-			return result
+/**
+ * @param forward 查找偏移之前还是之后的PSI元素，默认为null，表示同时考虑。
+ */
+fun <T : PsiElement> PsiFile.findElementAt(offset: Int, forward: Boolean? = null, transform: (element: PsiElement) -> T?): T? {
+	if(forward != false) {
+		val element = findElementAt(offset)
+		if(element != null) {
+			val result = transform(element)
+			if(result != null) {
+				return result
+			}
 		}
 	}
-	if(offset > 0) {
+	if(forward != true && offset > 0) {
 		val leftElement = findElementAt(offset - 1)
 		if(leftElement != null) {
 			val leftResult = transform(leftElement)
@@ -320,6 +325,47 @@ fun <T: PsiElement> PsiFile.findElementAtCaret(offset: Int, findLeft: Boolean = 
 		}
 	}
 	return null
+}
+
+fun <T : PsiElement> PsiFile.findElementsBetween(startOffset: Int, endOffset: Int, rootTransform: (element: PsiElement) -> PsiElement?, transform: (element: PsiElement) -> T?): List<T> {
+	val startRoot = findElementAt(startOffset, true, rootTransform) ?: return emptyList()
+	val endRoot = findElementAt(endOffset, true, rootTransform) ?: return emptyList()
+	val root = if(startRoot.isAncestor(endRoot)) startRoot else endRoot
+	val elements = SmartList<T>()
+	root.processChild {
+		val textRange = it.textRange
+		if(textRange.endOffset > startOffset && textRange.startOffset < endOffset) {
+			val isLast = textRange.endOffset >= endOffset
+			val result = transform(it)
+			if(result != null) elements.add(result)
+			!isLast
+		} else {
+			true
+		}
+	}
+	return elements
+}
+
+fun PsiFile.findAllElementsBetween(startOffset: Int, endOffset: Int, rootTransform: (element: PsiElement) -> PsiElement?): List<PsiElement> {
+	val startRoot = findElementAt(startOffset, true, rootTransform) ?: return emptyList()
+	val endRoot = findElementAt(endOffset, true, rootTransform) ?: return emptyList()
+	val root = if(startRoot.isAncestor(endRoot)) startRoot else endRoot
+	val elements = SmartList<PsiElement>()
+	root.processChild {
+		val textRange = it.textRange
+		if(textRange.endOffset > startOffset) {
+			elements.add(it)
+			true
+		} else {
+			if(textRange.startOffset < endOffset) {
+				val isLast = textRange.endOffset >= endOffset
+				elements.add(it)
+				!isLast
+			}
+			true
+		}
+	}
+	return elements
 }
 
 fun PsiReference.resolveSingle(): PsiElement? {
@@ -333,7 +379,7 @@ fun PsiReference.resolveSingle(): PsiElement? {
 /**
  * 判断两个[PsiElement]是否在同一[VirtualFile]的同一位置。
  */
-infix fun PsiElement?.isSamePosition(other: PsiElement?): Boolean{
+infix fun PsiElement?.isSamePosition(other: PsiElement?): Boolean {
 	if(this == null || other == null) return false
 	if(this == other) return true
 	return textRange.startOffset == other.textRange.startOffset
@@ -730,7 +776,7 @@ class CommaDelimitedStringListConverter : Converter<List<String>>() {
 //endregion
 
 //region UI Extensions
-val <T: DialogWrapper> T.dialog get() = this
+val <T : DialogWrapper> T.dialog get() = this
 
 fun <T : JTextComponent> Cell<T>.bindText(prop: KMutableProperty0<String?>): Cell<T> {
 	return bindText({ prop.get().orEmpty() }, { prop.set(it) })

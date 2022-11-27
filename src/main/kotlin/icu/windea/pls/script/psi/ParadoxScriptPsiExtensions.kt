@@ -190,10 +190,18 @@ fun ParadoxScriptValue.isBlockValue(): Boolean {
 	return parent is ParadoxScriptBlockElement
 }
 
+fun PsiElement.isPropertyOrBLockValue(): Boolean {
+	return when {
+		this is ParadoxScriptProperty -> true
+		this is ParadoxScriptValue && (this.isPropertyValue() || this.isBlockValue()) -> true
+		else -> false
+	}
+}
+
 fun PsiElement.isExpressionElement(): Boolean {
 	return when {
 		this is ParadoxScriptPropertyKey -> true
-		this is ParadoxScriptString && (this.isPropertyValue() || this.isBlockValue()) -> true
+		this is ParadoxScriptValue && (this.isPropertyValue() || this.isBlockValue()) -> true
 		else -> false
 	}
 }

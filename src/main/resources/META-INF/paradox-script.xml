@@ -136,8 +136,10 @@
     <refactoring.inlineHandler
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptInlineHandler"/>
-
     <fileIconProvider implementation="icu.windea.pls.core.ParadoxFileIconProvider"/>
+    <lang.surroundDescriptor
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.surroundWith.ParadoxScriptSurroundDescriptor"/>
 
     <intentionAction>
       <className>icu.windea.pls.script.intentions.DefinitionNameFindUsagesIntention</className>

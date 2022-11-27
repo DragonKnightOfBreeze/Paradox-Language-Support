@@ -44,8 +44,8 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationLocale? {
-		return file.findElementAtCaret(offset) {
-			if(it.elementType != ParadoxLocalisationElementTypes.LOCALE_ID) return@findElementAtCaret null
+		return file.findElementAt(offset) {
+			if(it.elementType != ParadoxLocalisationElementTypes.LOCALE_ID) return@findElementAt null
 			it.parent as? ParadoxLocalisationLocale
 		}
 	}

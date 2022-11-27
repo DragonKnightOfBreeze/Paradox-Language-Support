@@ -1,5 +1,6 @@
 package icu.windea.pls.core.handler
 
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
@@ -12,6 +13,8 @@ import icu.windea.pls.script.psi.*
 object ParadoxDefinitionElementInfoHandler {
 	@JvmStatic
 	fun get(element: PsiElement): ParadoxDefinitionElementInfo? {
+		//注意：element.stub可能会导致ProcessCanceledException
+		ProgressManager.checkCanceled()
 		val targetElement = if(element is ParadoxScriptProperty) element.propertyKey else element
 		if(!targetElement.isExpressionElement()) return null
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionElementInfoKey) {

@@ -39,7 +39,7 @@ abstract class DefinitionNameIntention : IntentionAction, PriorityAction {
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptString? {
-		return file.findElementAtCaret(offset) { it.parent as? ParadoxScriptString }
+		return file.findElementAt(offset) { it.parent as? ParadoxScriptString }
 	}
 	
 	abstract fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project)

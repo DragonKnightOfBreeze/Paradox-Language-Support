@@ -47,7 +47,7 @@ class GotoRelatedImageHandler : GotoTargetHandler() {
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
 		//direct parent
-		return file.findElementAtCaret(offset) {
+		return file.findElementAt(offset) {
 			it.parent as? ParadoxScriptExpressionElement
 		}?.takeIf { it.isExpressionElement() }
 	}
