@@ -273,7 +273,7 @@ class CwtConfigGroupImpl(
 	private fun resolveFoldingSettings(fileConfig: CwtFileConfig) {
 		fileConfig.properties.forEach { groupProperty ->
 			val groupName = groupProperty.key
-			val map = mutableMapOf<String, CwtFoldingSetting>()
+			val map = CollectionFactory.createCaseInsensitiveStringMap<CwtFoldingSetting>()
 			groupProperty.properties?.forEach { property -> 
 				val name = property.key
 				var key: String? = null

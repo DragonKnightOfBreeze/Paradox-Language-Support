@@ -17,10 +17,9 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxVariableOperationExpressionFoldingBuilder : FoldingBuilderEx() {
 	private val foldingGroupName = "variable_operation_expressions"
-	private val foldingGroup = FoldingGroup.newGroup(foldingGroupName)
 	
 	override fun getPlaceholderText(node: ASTNode): String? {
-		return null
+		return ""
 	}
 	
 	override fun isCollapsedByDefault(node: ASTNode): Boolean {
@@ -28,6 +27,7 @@ class ParadoxVariableOperationExpressionFoldingBuilder : FoldingBuilderEx() {
 	}
 	
 	override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
+		if(quick) return FoldingDescriptor.EMPTY
 		if(root !is ParadoxScriptFile) return FoldingDescriptor.EMPTY
 		val project = root.project
 		val gameType = ParadoxSelectorUtils.selectGameType(root) ?: return FoldingDescriptor.EMPTY
@@ -64,25 +64,25 @@ class ParadoxVariableOperationExpressionFoldingBuilder : FoldingBuilderEx() {
 				if(!result) return true
 				if(keys.size != properties.size) return true
 				//references in placeholder must be kept in orer (declared by keys)
-				var isText = false
-				var j = -1
 				val node = element.node
 				val rootRange = element.textRange
-				var offset = rootRange.startOffset
+				var startOffset = rootRange.startOffset
+				val endOffset = rootRange.endOffset
+				var valueRange: TextRange? = null
 				val descriptors = SmartList<FoldingDescriptor>()
-				for(s in setting.placeholder.split('$')) {
-					isText = !isText
-					if(isText) {
-						if(s.isEmpty()) continue
-						val textRange = TextRange.create(offset, offset + s.length)
+				val foldingGroup = FoldingGroup.newGroup(foldingGroupName)
+				val list = setting.placeholder.split('$')
+				for((index, s) in list.withIndex()) {
+					if(index % 2 == 0) {
+						valueRange = properties.getOrNull(index / 2)?.propertyValue?.textRange
+						if(valueRange == null && index != list.lastIndex) return true //unexpected
+						val textRange = TextRange.create(startOffset, valueRange?.startOffset ?: endOffset)
 						val descriptor = FoldingDescriptor(node, textRange, foldingGroup, emptySet(), false, s, null)
-						allDescriptors.add(descriptor)
-					} else {
+						descriptors.add(descriptor)
+					} else {    
 						if(s.isEmpty()) return true //invalid
-						j++
-						if(s != keys.getOrNull(j)) return true //invalid
-						val property = properties.getOrNull(j) ?: return true //unexpected
-						offset = property.textRange.endOffset
+						if(s != keys.getOrNull(index / 2)) return true //invalid
+						startOffset = valueRange?.endOffset ?: return true //unexpected
 					}
 				}
 				allDescriptors.addAll(descriptors)
