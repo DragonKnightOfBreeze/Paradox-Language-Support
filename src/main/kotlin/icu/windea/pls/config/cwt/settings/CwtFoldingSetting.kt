@@ -8,6 +8,6 @@ class CwtFoldingSetting(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigInfo,
 	val key: String?,
-	val keys: Set<String>?,
+	val keys: List<String>?,
 	val placeholder: String
 ) : CwtConfig<CwtProperty>

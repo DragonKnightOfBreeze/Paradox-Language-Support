@@ -277,13 +277,13 @@ class CwtConfigGroupImpl(
 			groupProperty.properties?.forEach { property -> 
 				val name = property.key
 				var key: String? = null
-				var keys: Set<String>? = null
+				var keys: List<String>? = null
 				var placeholder: String? = null
-				property.properties?.forEach {  
+				property.properties?.forEach { prop ->
 					when{
-						it.key == "key" -> key = it.stringValue
-						it.key == "keys" -> keys = it.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
-						it.key == "placeholder" -> placeholder = it.stringValue
+						prop.key == "key" -> key = prop.stringValue
+						prop.key == "keys" -> keys = prop.values?.mapNotNull { it.stringValue }
+						prop.key == "placeholder" -> placeholder = prop.stringValue
 					}
 				}
 				if(placeholder != null) {

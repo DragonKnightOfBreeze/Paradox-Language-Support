@@ -80,12 +80,17 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
-	fun createParameterConditionParameter(project: Project, name: String): ParadoxScriptParameterConditionParameter {
-		val text = "a = { [[$name] = a }"
+	fun createParameterCondition(project: Project, expression: String, itemsText: String): ParadoxScriptParameterCondition {
+		val text = "a = { [[$expression] $itemsText ] }"
 		return createRootBlock(project, text)
 			.findChild<ParadoxScriptProperty>()!!
 			.findChild<ParadoxScriptBlock>()!!
-			.findChild<ParadoxScriptParameterCondition>()!!
+			.findChild()!!
+	}
+	
+	@JvmStatic
+	fun createParameterConditionParameter(project: Project, name: String): ParadoxScriptParameterConditionParameter {
+		return createParameterCondition(project, name, "a")
 			.findChild<ParadoxScriptParameterConditionExpression>()!!
 			.findChild()!!
 	}

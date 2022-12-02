@@ -1,13 +1,15 @@
 # Folding Settings, use to apply extended code folding in script files.
+# 
 # See: icu.windea.pls.core.editor.ParadoxFoldingOptionsProvider
 # See: icu.windea.pls.core.editor.ParadoxVariableOperationExpressionFoldingBuilder
 # 
-# Expressions to folding must be valid (aka, matching some CWT config)
+# Properties to folding must be valid (aka, matching some CWT config)
+# Properties to folding must contain and only contain properties whose name is specified by key / keys (ignore case) inside these clauses  
 # 
 # <folding group name> = {
 #   <key of the property to folding> = {
 #     key = <value reference name>
-#     keys = { <value reference names, also required child property keys> }
+#     keys = { <value reference names, the same as property keys> }
 #     placeholder = <folding placeholder, $k$ represents a value reference named "k">
 #   }
 #   ...

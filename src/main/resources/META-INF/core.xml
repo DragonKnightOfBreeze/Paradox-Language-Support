@@ -36,6 +36,10 @@
     <readWriteAccessDetector implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxReadWriteAccessDetector"/>
     <usageTypeProvider implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxUsageTypeProvider"/>
     
+    <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxFoldingSettings"/>
+    <codeFoldingOptionsProvider instance="icu.windea.pls.core.editor.ParadoxFoldingOptionsProvider"/>
+    <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.editor.ParadoxVariableOperationExpressionFoldingBuilder"/>
+    
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxScriptedVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionNameIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionTypeIndex"/>

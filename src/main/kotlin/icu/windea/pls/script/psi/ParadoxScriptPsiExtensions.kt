@@ -93,7 +93,7 @@ inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.findBlockValue
 	return findChild<ParadoxScriptBlock>()?.findChildren<T>().orEmpty()
 }
 
-inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlock.findValues(): List<T> {
+inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlockElement.findValues(): List<T> {
 	return findChildren()
 }
 
