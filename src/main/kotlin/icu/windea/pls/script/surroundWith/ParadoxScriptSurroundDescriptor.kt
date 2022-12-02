@@ -14,7 +14,8 @@ class ParadoxScriptSurroundDescriptor : SurroundDescriptor {
 	companion object {
 		private val defaultSurrounders = arrayOf(
 			ParadoxScriptClausePropertySurrounder(),
-			ParadoxScriptClauseSurrounder()
+			ParadoxScriptClauseSurrounder(),
+			ParadoxScriptParameterConditionSurrounder()
 		)
 	}
 	
