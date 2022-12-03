@@ -16,15 +16,15 @@ class CwtValueExpression private constructor(
 	override val extraValue: Any? = null
 ) : AbstractExpression(expressionString), CwtDataExpression {
 	companion object Resolver {
-		val EmptyExpression = CwtValueExpression("", Types.Any)
-		val EmptyStringExpression = CwtValueExpression("", Types.Constant, "")
+		val EmptyExpression = CwtValueExpression("", Types.Constant, "")
+		val BlockExpression = CwtValueExpression("", Types.Any)
 		
 		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtValueExpression> { doResolve(it) } }
 		
 		fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
 		
 		private fun doResolve(expressionString: String) = when {
-			expressionString.isEmpty() -> EmptyStringExpression
+			expressionString.isEmpty() -> EmptyExpression
 			expressionString == "any" -> {
 				CwtValueExpression(expressionString, Types.Any)
 			}

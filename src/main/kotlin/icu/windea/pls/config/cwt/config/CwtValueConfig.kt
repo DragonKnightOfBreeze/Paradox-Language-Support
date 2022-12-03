@@ -21,7 +21,7 @@ data class CwtValueConfig(
 	//val stringValues by lazy { values?.mapNotNull { it.stringValue } }
 	//val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
 	
-	val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.EmptyExpression else CwtValueExpression.resolve(value)
+	val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
 	override val expression: CwtValueExpression get() = valueExpression
 	
 	val isTagConfig = optionValues?.any { it.stringValue == "tag" } == true

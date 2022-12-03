@@ -126,7 +126,7 @@ object CwtConfigHandler {
 				CwtDataTypes.AliasMatchLeft -> {
 					val aliasName = valueExpression.value ?: return@run
 					val aliasGroup = configGroup.aliasGroups[aliasName] ?: return@run
-					val aliasSubName = CwtConfigHandler.getAliasSubName(key, isQuoted, aliasName, configGroup, matchType) ?: return@run
+					val aliasSubName = getAliasSubName(key, isQuoted, aliasName, configGroup, matchType) ?: return@run
 					val aliases = aliasGroup[aliasSubName] ?: return@run
 					for(alias in aliases) {
 						result.add(config.inlineFromAliasConfig(alias))
@@ -146,7 +146,7 @@ object CwtConfigHandler {
 	//DONE 兼容variableReference inlineMath parameter
 	fun matchesScriptExpression(expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
 		//匹配block
-		if(configExpression == CwtValueExpression.EmptyExpression) {
+		if(configExpression == CwtValueExpression.BlockExpression) {
 			return expression.type == ParadoxDataType.BlockType
 		}
 		//匹配空字符串
@@ -576,13 +576,18 @@ object CwtConfigHandler {
 		val project = configGroup.project
 		val gameType = configGroup.gameType
 		
+		if(configExpression == CwtValueExpression.BlockExpression) {
+			result.addExpressionElement(PlsLookupElements.blockLookupElement, context)
+			return
+		}
+		
 		if(configExpression.isEmpty()) return
-		if(keyword.isParameterAwareExpression()) return //排除带参数或者的情况
+		if(keyword.isParameterAwareExpression()) return //排除带参数的情况
 		
 		when(configExpression.type) {
 			CwtDataTypes.Bool -> {
-				result.addElement(PlsConstants.yesLookupElement)
-				result.addElement(PlsConstants.noLookupElement)
+				result.addExpressionElement(PlsLookupElements.yesLookupElement, context)
+				result.addExpressionElement(PlsLookupElements.noLookupElement, context)
 			}
 			CwtDataTypes.Localisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
@@ -591,15 +596,13 @@ object CwtConfigHandler {
 				processLocalisationVariants(keyword, project, selector = selector) { localisation ->
 					val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val typeFile = localisation.containingFile
-					val lookupElement = PlsLookupElementBuilder
-						.buildScriptExpressionLookupElement(localisation, name.quoteIf(quoted), context,
-							icon = PlsIcons.Localisation,
-							tailText = tailText,
-							typeText = typeFile.name,
-							typeIcon = typeFile.icon
-						)
-						?: return@processLocalisationVariants true
-					result.addElement(lookupElement)
+					result.addScriptExpressionElement(localisation, name.quoteIf(quoted),
+						context,
+						icon = PlsIcons.Localisation,
+						tailText = tailText,
+						typeText = typeFile.name,
+						typeIcon = typeFile.icon
+					)
 					true
 				}
 			}
@@ -610,15 +613,13 @@ object CwtConfigHandler {
 				processSyncedLocalisationVariants(keyword, project, selector = selector) { syncedLocalisation ->
 					val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
 					val typeFile = syncedLocalisation.containingFile
-					val lookupElement = PlsLookupElementBuilder
-						.buildScriptExpressionLookupElement(syncedLocalisation, name.quoteIf(quoted), context,
-							icon = PlsIcons.Localisation,
-							tailText = tailText,
-							typeText = typeFile.name,
-							typeIcon = typeFile.icon
-						)
-						?: return@processSyncedLocalisationVariants true
-					result.addElement(lookupElement)
+					result.addScriptExpressionElement(syncedLocalisation, name.quoteIf(quoted),
+						context,
+						icon = PlsIcons.Localisation,
+						tailText = tailText,
+						typeText = typeFile.name,
+						typeIcon = typeFile.icon
+					)
 					true
 				}
 			}
@@ -629,15 +630,13 @@ object CwtConfigHandler {
 				processLocalisationVariants(keyword, project) { localisation ->
 					val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val typeFile = localisation.containingFile
-					val lookupElement = PlsLookupElementBuilder
-						.buildScriptExpressionLookupElement(localisation, name, context,
-							icon = PlsIcons.Localisation,
-							tailText = tailText,
-							typeText = typeFile.name,
-							typeIcon = typeFile.icon
-						)
-						?: return@processLocalisationVariants true
-					result.addElement(lookupElement)
+					result.addScriptExpressionElement(localisation, name,
+						context,
+						icon = PlsIcons.Localisation,
+						tailText = tailText,
+						typeText = typeFile.name,
+						typeIcon = typeFile.icon
+					)
 					true
 				}
 			}
@@ -658,14 +657,12 @@ object CwtConfigHandler {
 					val filePath = virtualFile.fileInfo?.path?.path ?: continue
 					val name = expressionType.extract(expressionValue, filePath) ?: continue
 					//没有图标
-					val lookupElement = PlsLookupElementBuilder
-						.buildScriptExpressionLookupElement(file, name, context,
-							tailText = tailText,
-							typeText = file.name,
-							typeIcon = file.icon
-						)
-						?: continue
-					result.addElement(lookupElement)
+					result.addScriptExpressionElement(file, name,
+						context,
+						tailText = tailText,
+						typeText = file.name,
+						typeIcon = file.icon
+					)
 				}
 			}
 			CwtDataTypes.Icon -> {
@@ -684,14 +681,12 @@ object CwtConfigHandler {
 					val filePath = virtualFile.fileInfo?.path?.path ?: continue
 					val name = expressionType.extract(expressionValue, filePath) ?: continue
 					//没有图标
-					val lookupElement = PlsLookupElementBuilder
-						.buildScriptExpressionLookupElement(file, name, context,
-							tailText = tailText,
-							typeText = file.name,
-							typeIcon = file.icon
-						)
-						?: continue
-					result.addElement(lookupElement)
+					result.addScriptExpressionElement(file, name,
+						context,
+						tailText = tailText,
+						typeText = file.name,
+						typeIcon = file.icon
+					)
 				}
 			}
 			CwtDataTypes.TypeExpression -> {
@@ -702,15 +697,13 @@ object CwtConfigHandler {
 				definitionQuery.processQuery { definition ->
 					val name = definition.definitionInfo?.name ?: return@processQuery true
 					val typeFile = definition.containingFile
-					val lookupElement = PlsLookupElementBuilder
-						.buildScriptExpressionLookupElement(definition, name.quoteIf(quoted), context,
-							icon = PlsIcons.Definition,
-							tailText = tailText,
-							typeText = typeFile.name,
-							typeIcon = typeFile.icon
-						)
-						?: return@processQuery true
-					result.addElement(lookupElement)
+					result.addScriptExpressionElement(definition, name.quoteIf(quoted),
+						context,
+						icon = PlsIcons.Definition,
+						tailText = tailText,
+						typeText = typeFile.name,
+						typeIcon = typeFile.icon
+					)
 					true
 				}
 			}
@@ -724,15 +717,13 @@ object CwtConfigHandler {
 					val definitionName = definition.definitionInfo?.name ?: return@processQuery true
 					val name = "$prefix$definitionName$suffix"
 					val typeFile = definition.containingFile
-					val lookupElement = PlsLookupElementBuilder
-						.buildScriptExpressionLookupElement(definition, name.quoteIf(quoted), context,
-							icon = PlsIcons.Definition,
-							tailText = tailText,
-							typeText = typeFile.name,
-							typeIcon = typeFile.icon
-						)
-						?: return@processQuery true
-					result.addElement(lookupElement)
+					result.addScriptExpressionElement(definition, name.quoteIf(quoted),
+						context,
+						icon = PlsIcons.Definition,
+						tailText = tailText,
+						typeText = typeFile.name,
+						typeIcon = typeFile.icon
+					)
 					true
 				}
 			}
@@ -758,17 +749,16 @@ object CwtConfigHandler {
 						val name = enumValueConfig.value
 						//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 						val element = enumValueConfig.pointer.element ?: continue
-						val lookupElement = PlsLookupElementBuilder
-							.buildScriptExpressionLookupElement(element, name.quoteIf(quoted), context,
-								icon = PlsIcons.EnumValue,
-								tailText = tailText,
-								typeText = typeFile?.name,
-								typeIcon = typeFile?.icon
-							)
-							?.withCaseSensitivity(false) //忽略大小写
-							?.withPriority(PlsCompletionPriorities.enumPriority)
-							?: continue
-						result.addElement(lookupElement)
+						result.addScriptExpressionElement(element, name.quoteIf(quoted),
+							context,
+							icon = PlsIcons.EnumValue,
+							tailText = tailText,
+							typeText = typeFile?.name,
+							typeIcon = typeFile?.icon
+						) {
+							this.withCaseSensitivity(false) //忽略大小写
+								.withPriority(PlsCompletionPriorities.enumPriority)
+						}
 					}
 				}
 				//提示复杂枚举
@@ -782,16 +772,15 @@ object CwtConfigHandler {
 					query.processQuery { complexEnum ->
 						val name = complexEnum.value
 						//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
-						val lookupElement = PlsLookupElementBuilder
-							.buildScriptExpressionLookupElement(complexEnum, name.quoteIf(quoted), context,
-								icon = PlsIcons.ComplexEnumValue,
-								tailText = tailText,
-								typeText = typeFile?.name,
-								typeIcon = typeFile?.icon
-							)
-							?.withCaseSensitivity(false) //忽略大小写
-							?: return@processQuery true
-						result.addElement(lookupElement)
+						result.addScriptExpressionElement(complexEnum, name.quoteIf(quoted),
+							context,
+							icon = PlsIcons.ComplexEnumValue,
+							tailText = tailText,
+							typeText = typeFile?.name,
+							typeIcon = typeFile?.icon
+						) {
+							this.withCaseSensitivity(false) //忽略大小写
+						}
 						true
 					}
 				}
@@ -848,43 +837,41 @@ object CwtConfigHandler {
 				//if(!name.matchesKeyword(keyword)) return //不预先过滤结果
 				val element = config.resolved().pointer.element ?: return
 				val typeFile = config.resolved().pointer.containingFile
-				val lookupElement = PlsLookupElementBuilder
-					.buildScriptExpressionLookupElement(element, name.quoteIf(quoted), context,
-						icon = PlsIcons.Property,
-						typeText = typeFile?.name,
-						typeIcon = typeFile?.icon
-					)
-					?.withCaseSensitivity(false) //忽略大小写
-					?.withPriority(PlsCompletionPriorities.constantKeyPriority)
-					?: return
-				result.addElement(lookupElement)
+				result.addScriptExpressionElement(element, name.quoteIf(quoted),
+					context,
+					icon = PlsIcons.Property,
+					typeText = typeFile?.name,
+					typeIcon = typeFile?.icon
+				) {
+					this.withCaseSensitivity(false) //忽略大小写
+						.withPriority(PlsCompletionPriorities.constantKeyPriority)
+				}
 			}
 			CwtDataTypes.Constant -> {
 				val name = configExpression.value ?: return
 				//常量的值也可能是yes/no
 				if(name == "yes") {
 					if(quoted) return
-					result.addElement(PlsConstants.yesLookupElement)
+					result.addExpressionElement(PlsLookupElements.yesLookupElement, context)
 					return
 				}
 				if(name == "no") {
 					if(quoted) return
-					result.addElement(PlsConstants.noLookupElement)
+					result.addExpressionElement(PlsLookupElements.noLookupElement, context)
 					return
 				}
 				//if(!name.matchesKeyword(keyword)) return //不预先过滤结果
 				val element = config.resolved().pointer.element ?: return
 				val typeFile = config.resolved().pointer.containingFile
-				val lookupElement = PlsLookupElementBuilder
-					.buildScriptExpressionLookupElement(element, name.quoteIf(quoted), context,
-						icon = PlsIcons.Value,
-						typeText = typeFile?.name,
-						typeIcon = typeFile?.icon
-					)
-					?.withCaseSensitivity(false) //忽略大小写
-					?.withPriority(PlsCompletionPriorities.constantPriority)
-					?: return
-				result.addElement(lookupElement)
+				result.addScriptExpressionElement(element, name.quoteIf(quoted),
+					context,
+					icon = PlsIcons.Value,
+					typeText = typeFile?.name,
+					typeIcon = typeFile?.icon
+				) {
+					this.withCaseSensitivity(false) //忽略大小写
+						.withPriority(PlsCompletionPriorities.constantPriority)
+				}
 			}
 			else -> pass()
 		}
@@ -945,17 +932,15 @@ object CwtConfigHandler {
 			val element = modifierConfig.pointer.element ?: continue
 			val tailText = " from modifiers"
 			val typeFile = modifierConfig.pointer.containingFile
-			val lookupElement = PlsLookupElementBuilder
-				.buildScriptExpressionLookupElement(element, name.quoteIf(quoted), context,
-					icon = PlsIcons.Modifier,
-					tailText = tailText,
-					typeText = typeFile?.name,
-					typeIcon = typeFile?.icon
-				)
-				//?.apply { if(!scopeMatched) withItemTextForeground(Color.GRAY) }
-				?.withPriority(PlsCompletionPriorities.modifierPriority)
-				?: continue
-			lookupElements.add(lookupElement)
+			result.addScriptExpressionElement(element, name.quoteIf(quoted),
+				context,
+				icon = PlsIcons.Modifier,
+				tailText = tailText,
+				typeText = typeFile?.name,
+				typeIcon = typeFile?.icon
+			) {
+				this.withPriority(PlsCompletionPriorities.modifierPriority)
+			}
 		}
 		result.addAllElements(lookupElements)
 	}
@@ -1237,17 +1222,16 @@ object CwtConfigHandler {
 					val name = valueSetValueConfig.value
 					val element = valueSetValueConfig.pointer.element ?: continue
 					val typeFile = valueConfig.pointer.containingFile
-					val lookupElement = PlsLookupElementBuilder
-						.buildScriptExpressionLookupElement(element, name, context,
-							icon = PlsIcons.PredefinedValueSetValue,
-							tailText = tailText,
-							typeText = typeFile?.name,
-							typeIcon = typeFile?.icon
-						)
-						?.withCaseSensitivity(false) //忽略大小写
-						?.withPriority(PlsCompletionPriorities.predefinedValueSetValuePriority)
-						?: continue
-					result.addElement(lookupElement)
+					result.addScriptExpressionElement(element, name,
+						context,
+						icon = PlsIcons.PredefinedValueSetValue,
+						tailText = tailText,
+						typeText = typeFile?.name,
+						typeIcon = typeFile?.icon
+					) {
+						this.withCaseSensitivity(false) //忽略大小写
+							.withPriority(PlsCompletionPriorities.predefinedValueSetValuePriority)
+					}
 				}
 			}
 		}
@@ -1267,14 +1251,13 @@ object CwtConfigHandler {
 					else -> PlsIcons.ValueSetValue
 				}
 				//不显示typeText
-				val lookupElement = PlsLookupElementBuilder
-					.buildScriptExpressionLookupElement(valueSetValue, value, context,
-						icon = icon,
-						tailText = tailText
-					)
-					?.withCaseSensitivity(false) //忽略大小写
-					?: return@processQuery true
-				result.addElement(lookupElement)
+				result.addScriptExpressionElement(valueSetValue, value,
+					context,
+					icon = icon,
+					tailText = tailText
+				) {
+					this.withCaseSensitivity(false) //忽略大小写
+				}
 				true
 			}
 		}

@@ -26,7 +26,7 @@ data class CwtPropertyConfig(
 	//val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
 	
 	val keyExpression: CwtKeyExpression = CwtKeyExpression.resolve(key)
-	val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.EmptyExpression else CwtValueExpression.resolve(value)
+	val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
 	override val expression: CwtKeyExpression get() = keyExpression
 	
 	val valueConfig by lazy {

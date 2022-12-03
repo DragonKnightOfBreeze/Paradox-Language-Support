@@ -10,6 +10,7 @@ object PlsCompletionKeys {
 	val completionTypeKey = Key.create<CompletionType>("paradoxCompletion.completionType")
 	val completionIdsKey = Key.create<MutableSet<String>>("paradoxCompletion.completionIds")
 	val contextElementKey = Key.create<PsiElement>("paradoxCompletion.contextElement")
+	val originalFileKey = Key.create<PsiFile>("paradoxCompletion.originalFile")
 	val quotedKey = Key.create<Boolean>("paradoxCompletion.quoted")
 	val offsetInParentKey = Key.create<Int>("paradoxCompletion.offsetInParent")
 	val keywordKey = Key.create<String>("paradoxCompletion.keyword")

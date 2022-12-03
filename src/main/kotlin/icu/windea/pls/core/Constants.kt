@@ -1,6 +1,5 @@
 package icu.windea.pls.core
 
-import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.util.*
@@ -9,7 +8,6 @@ import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.definition.config.*
-import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.model.*
 
 object PlsConstants {
@@ -36,9 +34,6 @@ object PlsConstants {
 	
 	const val launcherSettingsFileName = "launcher-settings.json"
 	const val descriptorFileName = "descriptor.mod"
-	
-	val yesLookupElement = LookupElementBuilder.create("yes").bold().withPriority(PlsCompletionPriorities.keywordPriority)
-	val noLookupElement = LookupElementBuilder.create("no").bold().withPriority(PlsCompletionPriorities.keywordPriority)
 	
 	val separatorChars = charArrayOf('=', '<', '>', '!')
 	

@@ -3,6 +3,7 @@ package icu.windea.pls.script.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -16,7 +17,7 @@ class ParadoxBooleanCompletionProvider : CompletionProvider<CompletionParameters
 			if(stringElement.findParentDefinition() != null) return
 		}
 		
-		result.addElement(PlsConstants.yesLookupElement)
-		result.addElement(PlsConstants.noLookupElement)
+		result.addElement(PlsLookupElements.yesLookupElement)
+		result.addElement(PlsLookupElements.noLookupElement)
 	}
 }

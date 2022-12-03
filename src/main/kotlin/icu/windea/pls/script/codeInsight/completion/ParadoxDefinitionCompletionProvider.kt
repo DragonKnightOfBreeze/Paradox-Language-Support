@@ -24,6 +24,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 		
 		context.put(PlsCompletionKeys.completionTypeKey, parameters.completionType)
 		context.put(PlsCompletionKeys.contextElementKey, element)
+		context.put(PlsCompletionKeys.originalFileKey, parameters.originalFile)
 		context.put(PlsCompletionKeys.quotedKey, quoted)
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
