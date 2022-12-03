@@ -1,8 +1,8 @@
 package icu.windea.pls.cwt
 
+import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.internal.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
@@ -108,10 +108,9 @@ enum class CwtConfigType(
 						parentName == "modifiers" -> Modifier
 						parentName == "scopes" -> Scope
 						parentName == "scope_groups" -> ScopeGroup
-						//from internal config
-						parentName == "system_scopes" && parentProperty.containingFile.name == InternalConfigGroup.scriptConfigFileName -> SystemScope
-						parentName == "locales" && parentProperty.containingFile.name == InternalConfigGroup.localisationConfigFileName -> LocalisationLocale
-						parentName == "predefined_variables" && parentProperty.containingFile.name == InternalConfigGroup.localisationConfigFileName -> LocalisationPredefinedVariable
+						parentName == "system_scopes" && getFileKey(parentProperty) == "system_scopes" -> SystemScope
+						parentName == "localisation_locales" && getFileKey(parentProperty) == "localisation_locales" -> LocalisationLocale
+						parentName == "localisation_predefined_parameters" && getFileKey(parentProperty) == "localisation_predefined_parameters" -> LocalisationPredefinedVariable
 						else -> null
 					}
 				}
@@ -129,6 +128,10 @@ enum class CwtConfigType(
 				parentParentName == "scope_groups" -> Scope
 				else -> null
 			}
+		}
+		
+		private fun getFileKey(element: PsiElement): String? {
+			return element.containingFile?.name?.substringBefore('.')
 		}
 	}
 }

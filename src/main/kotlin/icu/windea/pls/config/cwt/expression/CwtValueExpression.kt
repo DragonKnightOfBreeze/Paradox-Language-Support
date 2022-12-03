@@ -70,7 +70,7 @@ class CwtValueExpression private constructor(
 			expressionString == "localisation_inline" -> {
 				CwtValueExpression(expressionString, Types.InlineLocalisation)
 			}
-			//NOTE: Extended by PLS
+			//EXTENDED BY PLS
 			expressionString == "abs_filepath" -> {
 				CwtValueExpression(expressionString, Types.AbsoluteFilePath)
 			}

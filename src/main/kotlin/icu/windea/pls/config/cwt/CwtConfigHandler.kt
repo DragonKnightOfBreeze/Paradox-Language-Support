@@ -12,7 +12,6 @@ import com.intellij.util.*
 import icons.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.internal.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -952,8 +951,8 @@ object CwtConfigHandler {
 	
 	fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		val lookupElements = mutableSetOf<LookupElement>()
-		val systemScopeConfigs = InternalConfigHandler.getSystemScopeMap().values
-		for(systemScopeConfig in systemScopeConfigs) {
+		val systemScopeConfigs = configGroup.systemScopes
+		for(systemScopeConfig in systemScopeConfigs.values) {
 			val name = systemScopeConfig.id
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 			val element = systemScopeConfig.pointer.element ?: continue
@@ -1804,21 +1803,20 @@ object CwtConfigHandler {
 	}
 	
 	fun resolveSystemScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-		val systemScope = InternalConfigHandler.getSystemScope(name, configGroup.project) ?: return null
+		val systemScope = configGroup.systemScopes[name]
+			?: return null
 		return systemScope.pointer.element
 	}
 	
 	fun resolveScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-		val links = configGroup.linksAsScopeNotData
-		if(links.isEmpty()) return null
-		val linkConfig = links[name] ?: return null
+		val linkConfig = configGroup.linksAsScopeNotData[name]
+			?: return null
 		return linkConfig.pointer.element
 	}
 	
 	fun resolveValueLinkValue(name: String, configGroup: CwtConfigGroup): PsiElement? {
-		val links = configGroup.linksAsValueNotData
-		if(links.isEmpty()) return null
-		val linkConfig = links[name] ?: return null
+		val linkConfig = configGroup.linksAsValueNotData[name]
+			?: return null
 		return linkConfig.pointer.element
 	}
 	

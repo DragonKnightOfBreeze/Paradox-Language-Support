@@ -9,11 +9,12 @@ import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.project.*
+import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.localisation.psi.*
 import java.util.*
 
-fun ParadoxLocaleConfig.toLang(): Lang? {
+fun CwtLocalisationLocaleConfig.toLang(): Lang? {
 	if(this.id == "l_default") {
 		//基于OS得到对应的语言区域，或者使用英文
 		val userLanguage = System.getProperty("user.language") ?: return null

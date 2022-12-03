@@ -36,8 +36,8 @@ object PlsIcons {
 	@JvmField val Property = loadIcon("/icons/property.svg")
 	@JvmField val Value = loadIcon("/icons/value.svg")
 	@JvmField val Parameter = loadIcon("/icons/parameter.svg")
+	@JvmField val PredefinedParameter = loadIcon("/icons/predefinedParameter.svg") //localisation_predefined_parameter
 	@JvmField val Variable = loadIcon("/icons/variable.svg") //value[variable]
-	@JvmField val PredefinedVariable = loadIcon("/icons/predefinedVariable.svg") //predefined_localisation_variable
 	@JvmField val ValueSetValue = loadIcon("/icons/valueSetValue.svg")
 	@JvmField val PredefinedValueSetValue = loadIcon("/icons/hardCodedValueSetValue.svg")
 	@JvmField val EnumValue = loadIcon("/icons/enumValue.svg")

@@ -1,13 +1,10 @@
-# Internal Localisation Config
+# Localisation Locale Config
 # Used to provide resolving, navigation and some other features for localisation locales, e.g. 'l_english'.
 # 
-# NOTE: below rules are from vanilla Stellaris files or Stellaris wiki, for other games, it may be incorrect.
+# See vanilla game file: localisation/languages.yml
+# See cwt rule: enum[font_languages]
 
-### Localisation locales
-### See vanilla game file: <code>localisation/languages.yml</code>
-### See cwt rule: <code>enum[font_languages]</code>
-## loc_format = html
-locales = {
+localisation_locales = {
 	### Default
 	l_default = {
 		codes = {}
@@ -52,15 +49,4 @@ locales = {
 	l_korean = { # Since: stellaris v3.4
 		codes = { "ko" }
 	}
-}
-
-### Predefined variables used in localisation text
-## loc_format = html
-predefined_variables = {
-	### Cardinal Number 1, 2, 3...
-	C = "1"
-	### Ordinal Number 1st, 2nd, 3rd...
-	O = "1st"
-	### Roman Number I, II, III...
-	R = "I"
 }

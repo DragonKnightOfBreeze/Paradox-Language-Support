@@ -3,7 +3,7 @@ package icu.windea.pls.core.selector
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
-import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.ParadoxSelectorUtils.selectGameType
@@ -95,7 +95,7 @@ class ParadoxWithSearchScopeSelector<T : PsiElement>(
 }
 
 class ParadoxLocaleSelector(
-	val locale: ParadoxLocaleConfig
+	val locale: CwtLocalisationLocaleConfig
 ) : ParadoxSelector<ParadoxLocalisationProperty> {
 	override fun select(result: ParadoxLocalisationProperty): Boolean {
 		return locale == result.localeConfig
@@ -107,7 +107,7 @@ class ParadoxLocaleSelector(
 }
 
 class ParadoxPreferLocaleSelector(
-	val locale: ParadoxLocaleConfig
+	val locale: CwtLocalisationLocaleConfig
 ) : ParadoxSelector<ParadoxLocalisationProperty> {
 	override fun select(result: ParadoxLocalisationProperty): Boolean {
 		return locale == result.localeConfig

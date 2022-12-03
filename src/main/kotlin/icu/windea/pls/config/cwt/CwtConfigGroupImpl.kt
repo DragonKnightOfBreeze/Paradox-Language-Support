@@ -4,8 +4,9 @@ import com.intellij.openapi.project.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.config.ext.*
+import icu.windea.pls.config.cwt.config.settings.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.cwt.settings.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
@@ -17,9 +18,15 @@ import kotlin.collections.mapNotNullTo
 class CwtConfigGroupImpl(
 	override val project: Project,
 	override val gameType: ParadoxGameType,
-	cwtFileConfigs: Map<String, CwtFileConfig>
+	cwtFileConfigs: MutableMap<String, CwtFileConfig>
 ) : CwtConfigGroup {
 	override val foldingSettings: MutableMap<String, MutableMap<String, CwtFoldingSetting>> = mutableMapOf()
+	
+	override val systemScopes: MutableMap<@CaseInsensitive String, CwtSystemScopeConfig> = CollectionFactory.createCaseInsensitiveStringMap()
+	override val localisationLocales: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
+	override val localisationLocalesNoDefault: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
+	override val localisationLocalesByCode: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
+	override val localisationPredefinedParameters: MutableMap<String, CwtLocalisationPredefinedParameterConfig> = mutableMapOf()
 	
 	override val folders: MutableSet<String> = mutableSetOf()
 	override val types: MutableMap<String, CwtTypeConfig> = mutableMapOf()
@@ -53,13 +60,33 @@ class CwtConfigGroupImpl(
 			fileConfig.info.configGroup = this
 			val fileKey = fileConfig.key
 			
-			//如果存在folding_settings.cwt，则将其中的代码折叠配置解析到foldingSettings中
-			if(fileKey == "folding_settings") {
-				resolveFoldingSettings(fileConfig)
-				continue
+			when(fileKey) {
+				//解析代码折叠配置
+				"folding_settings" -> {
+					resolveFoldingSettings(fileConfig)
+					continue
+				}
 			}
 			
-			//如果存在folders.cwt，则将其中的相对路径列表添加到folders中 
+			when(fileKey) {
+				//解析系统作用域规则
+				"system_scopes" -> {
+					resolveSystemScopes(fileConfig)
+					continue
+				}
+				//解析本地化语言区域规则
+				"localisation_locales" -> {
+					resolveLocalisationLocales(fileConfig)
+					continue
+				}
+				//解析本地化预定义参数规则
+				"localisation_predefined_parameters" -> {
+					resolveLocalisationPredefinedParameters(fileConfig)
+					continue
+				}
+			}
+			
+			//解析要识别为脚本文件的文件夹列表 
 			if(fileKey == "folders") {
 				resolveFolders(fileConfig)
 				continue
@@ -268,7 +295,7 @@ class CwtConfigGroupImpl(
 		initDefinitionTypesSupportParameters()
 	}
 	
-	//解析CWT设置配置
+	//解析CWT配置
 	
 	private fun resolveFoldingSettings(fileConfig: CwtFileConfig) {
 		fileConfig.properties.forEach { groupProperty ->
@@ -295,7 +322,40 @@ class CwtConfigGroupImpl(
 		}
 	}
 	
-	//解析CWT配置
+	//解析扩展的CWT规则
+	
+	private fun resolveSystemScopes(fileConfig: CwtFileConfig) {
+		fileConfig.properties.forEach { property ->
+			val id = property.key
+			val description = property.documentation.orEmpty()
+			val name = property.stringValue ?: id
+			val config = CwtSystemScopeConfig(property.pointer, fileConfig.info, id, description, name)
+			systemScopes.put(id, config)
+		}
+	}
+	
+	private fun resolveLocalisationLocales(fileConfig: CwtFileConfig) {
+		fileConfig.properties.forEach { property -> 
+			val id = property.key
+			val description = property.documentation.orEmpty()
+			val codes = property.properties?.find { p -> p.key == "codes" }?.values?.mapNotNull { v -> v.stringValue }.orEmpty()
+			val config = CwtLocalisationLocaleConfig(property.pointer, fileConfig.info, id, description, codes)
+			localisationLocales.put(id, config)
+			if(id != "l_default") localisationLocalesNoDefault.put(id, config)
+			codes.forEach { code -> localisationLocalesByCode.put(code, config) }
+		}
+	}
+	
+	private fun resolveLocalisationPredefinedParameters(fileConfig: CwtFileConfig) {
+		fileConfig.properties.forEach { property ->
+			val id = property.key
+			val description = property.documentation.orEmpty()
+			val config = CwtLocalisationPredefinedParameterConfig(property.pointer, fileConfig.info, id, description)
+			localisationPredefinedParameters.put(id, config)
+		}
+	}
+	
+	//解析CWT规则
 	
 	private fun resolveFolders(fileConfig: CwtFileConfig) {
 		fileConfig.values.mapTo(folders) { it.value }
@@ -326,7 +386,7 @@ class CwtConfigGroupImpl(
 				val key = prop.key
 				when(key) {
 					//定义的值是否需要为代码块，默认为是
-					"block" -> block = prop.booleanValue ?: continue //NOTE: Extended by PLS
+					"block" -> block = prop.booleanValue ?: continue //EXTENDED BY PLS
 					//这里的path会以"game/"开始，需要忽略
 					"path" -> path = prop.stringValue?.removePrefix("game")?.trimStart('/') ?: continue
 					"path_strict" -> pathStrict = prop.booleanValue ?: continue

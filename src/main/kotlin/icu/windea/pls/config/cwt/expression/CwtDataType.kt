@@ -18,7 +18,7 @@ object CwtDataTypes {
 	object Localisation : CwtKeyDataType, CwtValueDataType
 	object SyncedLocalisation : CwtKeyDataType, CwtValueDataType
 	object InlineLocalisation : CwtKeyDataType, CwtValueDataType
-	object AbsoluteFilePath : CwtValueDataType //NOTE: Extended by PLS
+	object AbsoluteFilePath : CwtValueDataType //EXTENDED BY PLS
 	object FilePath : CwtValueDataType
 	object Icon : CwtValueDataType
 	object TypeExpression : CwtKeyDataType, CwtValueDataType
@@ -33,7 +33,7 @@ object CwtDataTypes {
 	object IntValueField : CwtValueDataType
 	object VariableField : CwtValueDataType
 	object IntVariableField : CwtValueDataType
-	object Modifier: CwtKeyDataType //NOTE: Extended by PLS
+	object Modifier: CwtKeyDataType //EXTENDED BY PLS
 	object SingleAliasRight : CwtValueDataType
 	object AliasName : CwtKeyDataType
 	object AliasKeysField : CwtKeyDataType, CwtValueDataType

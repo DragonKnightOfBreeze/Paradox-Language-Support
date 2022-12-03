@@ -15,9 +15,8 @@ import com.intellij.util.ui.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.internal.*
-import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
@@ -49,8 +48,13 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 	@JvmField var checkOptionalForDefinitions = false
 	@JvmField var checkForModifiers = false
 	
-	private val localeList by lazy { locales.mapNotNullTo(SmartList()) { InternalConfigHandler.getLocale(it) } }
-	private val localeSet by lazy { InternalConfigHandler.getLocales().filterTo(mutableSetOf()) { it.id in locales } }
+	private val localeList by lazy {
+		val allLocales = getCwtConfig().core.localisationLocales
+		locales.mapNotNullTo(mutableListOf()) { allLocales.get(it) }
+	}
+	private val localeSet by lazy {
+		localeList.toMutableSet()
+	}
 	
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
 		return Visitor(this, holder)
@@ -84,9 +88,9 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
 			ProgressManager.checkCanceled()
 			val nameToDistinct = mutableSetOf<String>()
-			val infoMap = mutableMapOf<String, Tuple3<ParadoxRelatedLocalisationInfo, String?, ParadoxLocaleConfig>>()
+			val infoMap = mutableMapOf<String, Tuple3<ParadoxRelatedLocalisationInfo, String?, CwtLocalisationLocaleConfig>>()
 			//进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
-			val hasPrimaryLocales = mutableSetOf<ParadoxLocaleConfig>()
+			val hasPrimaryLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
 			runReadAction {
 				for(info in localisationInfos) {
 					if(info.required || if(info.primary) inspection.checkPrimaryForDefinitions else inspection.checkOptionalForDefinitions) {
@@ -124,7 +128,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			}
 		}
 		
-		private fun getMessage(info: ParadoxRelatedLocalisationInfo, key: String?, locale: ParadoxLocaleConfig): String {
+		private fun getMessage(info: ParadoxRelatedLocalisationInfo, key: String?, locale: CwtLocalisationLocaleConfig): String {
 			return if(key != null) {
 				when {
 					info.required -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1", key, locale)
@@ -158,7 +162,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			if(config.expression.type != CwtDataTypes.Modifier) return
 			val name = element.value
 			val keys = CwtConfigHandler.getModifierLocalisationNameKeys(name, configGroup) ?: return
-			val missingLocales = mutableSetOf<ParadoxLocaleConfig>()
+			val missingLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
 			for(locale in inspection.localeSet) {
 				val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(element).locale(locale)
 				//可以为全大写/全小写
@@ -222,8 +226,8 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 	//com.intellij.codeInspection.suspiciousNameCombination.SuspiciousNameCombinationInspection.NameGroupsPanel
 	
 	private inner class LocaleTableModel(
-		locales: List<ParadoxLocaleConfig>
-	) : AddEditDeleteListPanel<ParadoxLocaleConfig>(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.locales"), locales) {
+		locales: List<CwtLocalisationLocaleConfig>
+	) : AddEditDeleteListPanel<CwtLocalisationLocaleConfig>(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.locales"), locales) {
 		init {
 			minimumSize = InspectionOptionsPanel.getMinimumListSize()
 			preferredSize = JBUI.size(150, 110) //3行选项的高度
@@ -250,19 +254,19 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 				myListModel.getElementAt(i)?.let {
 					newLocales.add(it.id)
 					localeList.add(it)
+					localeSet.add(it)
 				}
 			}
 			locales = newLocales
-			InternalConfigHandler.getLocales().filterTo(localeSet) { it.id in locales }
 		}
 		
-		override fun findItemToAdd(): ParadoxLocaleConfig? {
+		override fun findItemToAdd(): CwtLocalisationLocaleConfig? {
 			val dialog = SelectParadoxLocaleDialog(null, localeList)
 			if(dialog.showAndGet()) return dialog.locale
 			return null
 		}
 		
-		override fun editSelectedItem(item: ParadoxLocaleConfig?): ParadoxLocaleConfig? {
+		override fun editSelectedItem(item: CwtLocalisationLocaleConfig?): CwtLocalisationLocaleConfig? {
 			val dialog = SelectParadoxLocaleDialog(item, localeList)
 			if(dialog.showAndGet()) return dialog.locale
 			return item

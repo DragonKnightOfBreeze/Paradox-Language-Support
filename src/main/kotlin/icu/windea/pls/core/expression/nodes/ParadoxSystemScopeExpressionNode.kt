@@ -4,8 +4,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.internal.config.*
-import icu.windea.pls.core.*
+import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
@@ -13,7 +12,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxSystemScopeExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
-	val config: ParadoxSystemScopeConfig
+	val config: CwtSystemScopeConfig
 ) : ParadoxScopeExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY
 	
@@ -23,7 +22,7 @@ class ParadoxSystemScopeExpressionNode (
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxSystemScopeExpressionNode? {
-			val config = getInternalConfig(configGroup.project).systemScopeMap.get(text)
+			val config = configGroup.systemScopes.get(text)
 				?: return null
 			return ParadoxSystemScopeExpressionNode(text, textRange, config)
 		}

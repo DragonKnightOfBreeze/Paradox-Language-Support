@@ -3,13 +3,13 @@ package icu.windea.pls.core.ui
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.config.cwt.config.ext.*
 import javax.swing.*
 
 class SelectParadoxLocaleDialog(
-	locale: ParadoxLocaleConfig? = null,
-	existingLocales: List<ParadoxLocaleConfig> = emptyList(),
-	private val localesToSelect: List<ParadoxLocaleConfig> = getLocalesToSelect(existingLocales, locale)
+	locale: CwtLocalisationLocaleConfig? = null,
+	existingLocales: List<CwtLocalisationLocaleConfig> = emptyList(),
+	private val localesToSelect: List<CwtLocalisationLocaleConfig> = getLocalesToSelect(existingLocales, locale)
 ) : DialogWrapper(null, false) {
 	var locale = locale ?: localesToSelect.firstOrNull()
 	

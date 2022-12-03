@@ -2,7 +2,6 @@ package icu.windea.pls.localisation.references
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.config.internal.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.model.*
@@ -36,8 +35,8 @@ class ParadoxLocalisationPropertyPsiReference(
 		val name = element.name
 		val project = element.project
 		
-		//尝试解析成predefined_variable
-		InternalConfigHandler.getPredefinedVariable(name)?.pointer?.element?.let { return it }
+		//尝试解析成predefined_parameter
+		getCwtConfig(project).core.localisationLocales.get(name)?.pointer?.element?.let { return it }
 		
 		//解析成localisation或者synced_localisation
 		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(locale)
@@ -54,8 +53,8 @@ class ParadoxLocalisationPropertyPsiReference(
 		val name = element.name
 		val project = element.project
 		
-		//尝试解析成predefined_variable
-		InternalConfigHandler.getPredefinedVariable(name)?.pointer?.element?.let { return arrayOf(PsiElementResolveResult(it)) }
+		//尝试解析成predefined_parameter
+		getCwtConfig(project).core.localisationLocales.get(name)?.pointer?.element?.let { return arrayOf(PsiElementResolveResult(it)) }
 		
 		//解析成localisation或者synced_localisation
 		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(locale)

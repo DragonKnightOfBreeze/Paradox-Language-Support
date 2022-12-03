@@ -2,7 +2,7 @@ package icu.windea.pls.core.selector
 
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 
@@ -61,9 +61,9 @@ fun ParadoxComplexEnumValueSelector.distinctByName() =
 fun ParadoxValueSetValueSelector.distinctByValue() =
 	distinctBy { ParadoxValueSetValueInfoHandler.getName(it.value) }
 
-fun ParadoxLocalisationSelector.locale(locale: ParadoxLocaleConfig?) =
+fun ParadoxLocalisationSelector.locale(locale: CwtLocalisationLocaleConfig?) =
 	apply { if(locale != null) selectors += ParadoxLocaleSelector(locale) }
 
 @JvmOverloads
-fun ParadoxLocalisationSelector.preferLocale(locale: ParadoxLocaleConfig?, condition: Boolean = true) =
+fun ParadoxLocalisationSelector.preferLocale(locale: CwtLocalisationLocaleConfig?, condition: Boolean = true) =
 	apply { if(locale != null && condition) selectors += ParadoxPreferLocaleSelector(locale) }

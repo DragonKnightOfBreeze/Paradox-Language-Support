@@ -8,7 +8,6 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.*
 import com.intellij.util.*
-import icu.windea.pls.config.internal.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.localisation.*
@@ -51,7 +50,7 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
 		val localeIdFromFileName = file.castOrNull<ParadoxLocalisationFile>()?.getLocaleIdFromFileName()
 		//批量提示
 		val lookupElements = mutableSetOf<LookupElement>()
-		val locales = InternalConfigHandler.getLocales(project)
+		val locales = getCwtConfig(project).core.localisationLocales.values
 		val insertHandler = getInsertHandler(insertColon)
 		for(locale in locales) {
 			val element = locale.pointer.element ?: continue

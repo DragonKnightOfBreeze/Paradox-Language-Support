@@ -15,7 +15,7 @@ import com.intellij.openapi.wm.ex.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.extension.translation.*
@@ -71,7 +71,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 		}
 		if(elements.isEmpty()) return
 		
-		val onChosen = { selected: ParadoxLocaleConfig ->
+		val onChosen = { selected: CwtLocalisationLocaleConfig ->
 			val targetLocale = selected
 			val targetLang = targetLocale.toLang()
 			val failedKeys = mutableSetOf<String>()

@@ -22,7 +22,7 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return
 		val project = parameters.originalFile.project
 		
-		//不提示predefined_variable
+		//不提示predefined_parameter
 		
 		//提示localisation或者synced_localisation
 		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale())

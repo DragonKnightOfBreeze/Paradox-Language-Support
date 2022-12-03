@@ -1,10 +1,8 @@
-# Internal Script Config
+# System Scope Config
+# Used to provide resolving, navigation and some other features for predefined scope links
 
-# NOTE: below rules are from vanilla Stellaris files or Stellaris wiki, for other games, it may be incorrect.
+# See wiki: https://stellaris.paradoxwikis.com/Scopes#System_scopes
 
-### System scopes
-### See wiki: <a href="https://stellaris.paradoxwikis.com/Scopes#System_scopes">System Scopes</a>
-## loc_format = html
 system_scopes = {
 	This = "This"
 	Root = "Root"

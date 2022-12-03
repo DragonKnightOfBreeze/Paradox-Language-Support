@@ -14,6 +14,7 @@ import com.intellij.psi.search.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.definition.*
 import icu.windea.pls.config.definition.config.*
@@ -49,19 +50,19 @@ fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.ope
 
 fun getSettings() = service<ParadoxSettings>().state
 
-fun getInternalConfig(project: Project? = null) = (project ?: getTheOnlyOpenOrDefaultProject()).service<InternalConfigProvider>().configGroup
+fun getCwtConfig(project: Project = getTheOnlyOpenOrDefaultProject()) = project.service<CwtConfigProvider>().configGroups
 
-fun getCwtConfig(project: Project) = project.service<CwtConfigProvider>().configGroups
-
-fun preferredParadoxLocale(): ParadoxLocaleConfig? {
+fun preferredParadoxLocale(): CwtLocalisationLocaleConfig? {
 	val primaryLocale = getSettings().preferredLocale.orEmpty()
 	if(primaryLocale.isNotEmpty() && primaryLocale != "auto") {
-		val usedLocale = InternalConfigHandler.getLocale(primaryLocale)
+		val locales = getCwtConfig().core.localisationLocales
+		val usedLocale = locales.get(primaryLocale)
 		if(usedLocale != null) return usedLocale
 	}
 	//基于OS得到对应的语言区域，或者使用英文
-	val userLanguage = System.getProperty("user.language")
-	return InternalConfigHandler.getLocaleByCode(userLanguage) ?: InternalConfigHandler.getLocaleByCode("en")
+	val userLanguage = System.getProperty("user.language") ?: "en"
+	val localesByCode = getCwtConfig().core.localisationLocalesByCode
+	return localesByCode.get(userLanguage) ?: localesByCode.get("en")
 }
 
 /**
@@ -263,7 +264,7 @@ fun PsiElement.isQuoted(): Boolean {
 	return text.isQuoted()
 }
 
-val PsiElement.localeConfig: ParadoxLocaleConfig?
+val PsiElement.localeConfig: CwtLocalisationLocaleConfig?
 	get() {
 		if(this.language == ParadoxLocalisationLanguage) {
 			var current = this
@@ -310,8 +311,8 @@ val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
 val ParadoxScriptExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo?
 	get() = ParadoxComplexEnumValueInfoHandler.get(this)
 
-val ParadoxLocalisationLocale.localeConfig: ParadoxLocaleConfig?
-	get() = InternalConfigHandler.getLocale(name, project)
+val ParadoxLocalisationLocale.localeConfig: CwtLocalisationLocaleConfig?
+	get() = getCwtConfig(project).core.localisationLocales.get(name)
 
 val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorConfig?
 	get() {

@@ -2,7 +2,8 @@ package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.settings.*
+import icu.windea.pls.config.cwt.config.ext.*
+import icu.windea.pls.config.cwt.config.settings.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.model.*
 
@@ -10,8 +11,13 @@ interface CwtConfigGroup {
 	val gameType: ParadoxGameType
 	val project: Project
 	
-	//NOTE: Extended by PLS
-	val foldingSettings: Map<String, Map<@CaseInsensitive String, CwtFoldingSetting>>
+	val foldingSettings: Map<String, Map<@CaseInsensitive String, CwtFoldingSetting>> //EXTENDED BY PLS
+	
+	val systemScopes: Map<@CaseInsensitive String, CwtSystemScopeConfig> //EXTENDED BY PLS
+	val localisationLocales: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
+	val localisationLocalesNoDefault: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
+	val localisationLocalesByCode: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
+	val localisationPredefinedParameters: Map<String, CwtLocalisationPredefinedParameterConfig> //EXTENDED BY PLS
 	
 	val folders: Set<String>
 	val types: Map<String, CwtTypeConfig>

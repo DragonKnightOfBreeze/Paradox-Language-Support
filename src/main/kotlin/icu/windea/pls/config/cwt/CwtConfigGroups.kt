@@ -7,6 +7,8 @@ interface CwtConfigGroups {
 	val project: Project
 	val groups: Map<String, CwtConfigGroup>
 	
+	val core get() = getValue("core")
+	
 	val ck2 get() = getValue(ParadoxGameType.Ck2)
 	val ck3 get() = getValue(ParadoxGameType.Ck3)
 	val eu4 get() = getValue(ParadoxGameType.Eu4)
@@ -18,7 +20,7 @@ interface CwtConfigGroups {
 	operator fun get(key: String) = groups.get(key)
 	fun getValue(key: String) = groups.getValue(key)
 	
-	operator fun get(key: ParadoxGameType) = groups.get(key.id)
-	fun getValue(key: ParadoxGameType) = groups.getValue(key.id)
+	operator fun get(key: ParadoxGameType?) = groups.get(key?.id ?: "core")
+	fun getValue(key: ParadoxGameType?) = groups.getValue(key?.id ?: "core")
 }
 

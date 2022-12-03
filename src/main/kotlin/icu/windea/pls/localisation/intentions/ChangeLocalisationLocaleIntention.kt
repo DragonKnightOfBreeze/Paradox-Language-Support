@@ -10,8 +10,7 @@ import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.internal.*
-import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
@@ -39,8 +38,8 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
 		if(file.language != ParadoxLocalisationLanguage) return
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return
-		val values = InternalConfigHandler.getLocales(project)
-		JBPopupFactory.getInstance().createListPopup(Popup(element, values)).showInBestPositionFor(editor)
+		val locales = getCwtConfig(project).core.localisationLocales.values.toTypedArray()
+		JBPopupFactory.getInstance().createListPopup(Popup(element, locales)).showInBestPositionFor(editor)
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationLocale? {
@@ -56,17 +55,17 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
 	
 	private class Popup(
 		private val value: ParadoxLocalisationLocale,
-		values: Array<ParadoxLocaleConfig>
-	) : BaseListPopupStep<ParadoxLocaleConfig>(PlsBundle.message("localisation.intention.changeLocalisationLocale.title"), *values) {
-		override fun getIconFor(value: ParadoxLocaleConfig) = value.icon
+		values: Array<CwtLocalisationLocaleConfig>
+	) : BaseListPopupStep<CwtLocalisationLocaleConfig>(PlsBundle.message("localisation.intention.changeLocalisationLocale.title"), *values) {
+		override fun getIconFor(value: CwtLocalisationLocaleConfig) = value.icon
 		
-		override fun getTextFor(value: ParadoxLocaleConfig) = value.text
+		override fun getTextFor(value: CwtLocalisationLocaleConfig) = value.text
 		
 		override fun getDefaultOptionIndex() = 0
 		
 		override fun isSpeedSearchEnabled(): Boolean = true
 		
-		override fun onChosen(selectedValue: ParadoxLocaleConfig, finalChoice: Boolean): PopupStep<*>? {
+		override fun onChosen(selectedValue: CwtLocalisationLocaleConfig, finalChoice: Boolean): PopupStep<*>? {
 			runUndoTransparentWriteAction { value.setName(selectedValue.id) }
 			return PopupStep.FINAL_CHOICE
 		}

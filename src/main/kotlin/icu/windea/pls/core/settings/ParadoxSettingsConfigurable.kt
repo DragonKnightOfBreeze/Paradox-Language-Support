@@ -62,7 +62,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 							if(value == "auto") {
 								text = PlsBundle.message("settings.generic.preferredLocale.auto")
 							} else {
-								text = InternalConfigHandler.getLocale(value)!!.description
+								text = getCwtConfig().core.localisationLocales.getValue(value).description
 							}
 						})
 						.bindItem(settings::preferredLocale.toNullableProperty())

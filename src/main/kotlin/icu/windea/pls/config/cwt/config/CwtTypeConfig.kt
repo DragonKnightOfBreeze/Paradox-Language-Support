@@ -29,7 +29,7 @@ data class CwtTypeConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigInfo,
 	val name: String,
-	val block: Boolean = true, //NOTE: Extended by PLS
+	val block: Boolean = true, //EXTENDED BY PLS
 	val path: String? = null,
 	val pathStrict: Boolean = false,
 	val pathFile: String? = null,

@@ -12,7 +12,7 @@ import icu.windea.pls.cwt.psi.*
 import java.lang.invoke.*
 
 /**
- * CWT规则的提供器。
+ * 提供CWT规则。
  *
  * CWT规则来自目录`config/cwt`中的配置文件。使用内置且经过扩展和修改的CWT配置文件。
  */
@@ -64,11 +64,6 @@ class CwtConfigProvider(
 			if(configFile.isDirectory) {
 				//将目录的名字作为规则组的名字
 				resolveConfigFilesOfGroup(configMaps, configFile, configRootDirectory)
-			} else {
-				when(configFile.extension) {
-					"cwt" -> resolveGlobalCwtConfigFile(globalConfigMap, configFile, configRootDirectory) //解析共享的cwt配置文件
-					else -> pass() //不做处理
-				}
 			}
 		}
 		//共享的配置会覆盖特定游戏类型的配置
@@ -98,18 +93,6 @@ class CwtConfigProvider(
 		}
 	}
 	
-	private fun resolveGlobalCwtConfigFile(globalConfigMap: CwtConfigMap, configFile: VirtualFile, configRootDirectory: VirtualFile) {
-		val relativePath = configFile.relativePathTo(configRootDirectory)
-		logger.info("Resolve global cwt config file '$relativePath'.")
-		val config = doResolveCwtConfigFile(configFile)
-		if(config == null) {
-			logger.warn("Resolve global cwt config file '$relativePath' failed. Skip it.")
-			return
-		}
-		val configName = "~$relativePath" //cwt文件名应该不会以"~"开头吧
-		globalConfigMap.put(configName, config)
-	}
-	
 	private fun resolveCwtConfigFile(configMap: CwtConfigMap, configFile: VirtualFile, groupDirectory: VirtualFile, configRootDirectory: VirtualFile) {
 		val relativePath = configFile.relativePathTo(configRootDirectory)
 		logger.info("Resolve cwt config file '$relativePath'.")
@@ -118,8 +101,7 @@ class CwtConfigProvider(
 			logger.warn("Resolve cwt config file '$relativePath' failed. Skip it.")
 			return
 		}
-		val configName = configFile.relativePathTo(groupDirectory)
-		configMap.put(configName, config)
+		configMap.put(relativePath, config)
 	}
 	
 	private fun doResolveCwtConfigFile(configFile: VirtualFile): CwtFileConfig? {
