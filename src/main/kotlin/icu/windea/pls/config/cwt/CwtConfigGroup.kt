@@ -8,7 +8,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.model.*
 
 interface CwtConfigGroup {
-	val gameType: ParadoxGameType
+	val gameType: ParadoxGameType?
 	val project: Project
 	
 	val foldingSettings: Map<String, Map<@CaseInsensitive String, CwtFoldingSetting>> //EXTENDED BY PLS

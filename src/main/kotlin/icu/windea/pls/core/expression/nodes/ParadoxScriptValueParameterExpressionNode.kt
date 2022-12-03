@@ -43,11 +43,11 @@ class ParadoxScriptValueParameterExpressionNode (
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
 		}
 		
-		override fun resolve(): PsiElement {
+		override fun resolve(): PsiElement? {
 			val element = element
 			val definitionType = "script_value"
 			val project = configGroup.project
-			val gameType = configGroup.gameType
+			val gameType = configGroup.gameType ?: return null
 			return ParadoxParameterElement(element, parameterName, scriptValueName, definitionType, project, gameType, false)
 		}
 	}

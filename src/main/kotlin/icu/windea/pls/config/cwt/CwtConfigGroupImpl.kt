@@ -17,7 +17,7 @@ import kotlin.collections.mapNotNullTo
 
 class CwtConfigGroupImpl(
 	override val project: Project,
-	override val gameType: ParadoxGameType,
+	override val gameType: ParadoxGameType?,
 	cwtFileConfigs: MutableMap<String, CwtFileConfig>
 ) : CwtConfigGroup {
 	override val foldingSettings: MutableMap<String, MutableMap<String, CwtFoldingSetting>> = mutableMapOf()

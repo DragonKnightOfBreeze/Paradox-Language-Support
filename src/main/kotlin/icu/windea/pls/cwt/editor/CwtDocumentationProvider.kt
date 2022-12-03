@@ -12,6 +12,7 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
+import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.tool.*
@@ -198,15 +199,16 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		//NOTE 不能确定相关本地化的名字到底是什么，并且从API层面上来说，上下文PSI元素只能是CwtProperty而非ParadoxScriptExpressionElement
 		//Name, Desc?
 		ProgressManager.checkCanceled()
+		val gameType = configGroup.gameType ?: return
 		val keys = CwtConfigHandler.getModifierLocalisationNameKeys(name, configGroup)
 		val localisation = keys?.firstNotNullOfOrNull {
-			val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(originalElement).preferLocale(preferredParadoxLocale())
+			val selector = localisationSelector().gameType(gameType).preferRootFrom(originalElement).preferLocale(preferredParadoxLocale())
 			//可以为全大写/全小写
 			findLocalisation(it, configGroup.project, selector = selector) ?: findLocalisation(it.uppercase(), configGroup.project, selector = selector)
 		}
 		val descKeys = CwtConfigHandler.getModifierLocalisationDescKeys(name, configGroup)
 		val descLocalisation = descKeys?.firstNotNullOfOrNull {
-			val descSelector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(originalElement).preferLocale(preferredParadoxLocale())
+			val descSelector = localisationSelector().gameType(gameType).preferRootFrom(originalElement).preferLocale(preferredParadoxLocale())
 			//可以为全大写/全小写
 			findLocalisation(it, configGroup.project, selector = descSelector) ?: findLocalisation(it.uppercase(), configGroup.project, selector = descSelector)
 		}
@@ -214,11 +216,11 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		if(localisation != null) {
 			appendBr()
 			append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ")
-			append("Name = ").appendLocalisationLink(configGroup.gameType, localisation.name, originalElement, resolved = true)
+			append("Name = ").appendLocalisationLink(gameType, localisation.name, originalElement, resolved = true)
 		}
 		if(descLocalisation != null) {
 			appendBr()
-			append("Desc = ").appendLocalisationLink(configGroup.gameType, descLocalisation.name, originalElement, resolved = true)
+			append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, originalElement, resolved = true)
 		}
 		if(sections != null) {
 			if(localisation != null) {

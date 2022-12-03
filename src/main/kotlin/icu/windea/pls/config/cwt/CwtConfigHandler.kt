@@ -1373,7 +1373,7 @@ object CwtConfigHandler {
 		if(element.isParameterAwareExpression()) return null //排除带参数的情况
 		
 		val project = element.project
-		val gameType = configGroup.gameType
+		val gameType = configGroup.gameType ?: return null
 		val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.value
 		when(configExpression.type) {
 			CwtDataTypes.Localisation -> {
@@ -1461,7 +1461,7 @@ object CwtConfigHandler {
 						if(resolved != null) return resolved
 					}
 				}
-				return ParadoxValueSetValueElement(element, valueName, valueSetName, configGroup.project, configGroup.gameType, read)
+				return ParadoxValueSetValueElement(element, valueName, valueSetName, configGroup.project, gameType, read)
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
 				//不在这里处理，参见：ParadoxScopeFieldExpression
@@ -1510,7 +1510,7 @@ object CwtConfigHandler {
 		if(element.isParameterAwareExpression()) return emptyList() //排除带参数的情况  
 		
 		val project = element.project
-		val gameType = configGroup.gameType
+		val gameType = configGroup.gameType ?: return emptyList()
 		val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.value
 		when(configExpression.type) {
 			CwtDataTypes.Localisation -> {
@@ -1598,7 +1598,7 @@ object CwtConfigHandler {
 						if(resolved != null) return resolved.toSingletonList()
 					}
 				}
-				return ParadoxValueSetValueElement(element, valueName, valueSetName, configGroup.project, configGroup.gameType, read).toSingletonList()
+				return ParadoxValueSetValueElement(element, valueName, valueSetName, configGroup.project, gameType, read).toSingletonList()
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
 				//不在这里处理，参见：ParadoxScopeFieldExpression
@@ -1642,7 +1642,7 @@ object CwtConfigHandler {
 	
 	fun resolveAliasName(element: PsiElement, expression: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, exact: Boolean = true): PsiElement? {
 		val project = configGroup.project
-		val gameType = configGroup.gameType
+		val gameType = configGroup.gameType ?: return null
 		val aliasGroup = configGroup.aliasGroups[aliasName] ?: return null
 		val aliasSubName = getAliasSubName(expression, quoted, aliasName, configGroup)
 		if(aliasSubName != null) {
@@ -1699,7 +1699,7 @@ object CwtConfigHandler {
 							if(resolved != null) return resolved
 						}
 					}
-					return ParadoxValueSetValueElement(element, valueName, valueSetName, configGroup.project, configGroup.gameType, read)
+					return ParadoxValueSetValueElement(element, valueName, valueSetName, project, gameType, read)
 				}
 				CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
 					//不在这里处理，参见：ParadoxScopeFieldExpression
@@ -1723,7 +1723,7 @@ object CwtConfigHandler {
 	
 	fun multiResolveAliasName(element: PsiElement, expression: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, exact: Boolean = true): Collection<PsiElement> {
 		val project = configGroup.project
-		val gameType = configGroup.gameType
+		val gameType = configGroup.gameType ?: return emptyList()
 		val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptyList()
 		val aliasSubName = getAliasSubName(expression, quoted, aliasName, configGroup)
 		if(aliasSubName != null) {
@@ -1780,7 +1780,7 @@ object CwtConfigHandler {
 							if(resolved != null) return resolved.toSingletonList()
 						}
 					}
-					return ParadoxValueSetValueElement(element, valueName, valueSetName, configGroup.project, configGroup.gameType, read).toSingletonList()
+					return ParadoxValueSetValueElement(element, valueName, valueSetName, project, gameType, read).toSingletonList()
 				}
 				CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
 					//不在这里处理，参见：ParadoxScopeFieldExpression
@@ -1821,6 +1821,7 @@ object CwtConfigHandler {
 	}
 	
 	fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup): PsiElement? {
+		val gameType = configGroup.gameType ?: return null
 		for(config in configs) {
 			val configExpression = config.expression ?: return null
 			val valueSetName = configExpression.value ?: return null
@@ -1836,7 +1837,7 @@ object CwtConfigHandler {
 		}
 		val read = configs.first().expression?.type == CwtDataTypes.Value //first is ok
 		val valueSetNames = configs.mapNotNull { it.expression?.value }
-		return ParadoxValueSetValueElement(element, name, valueSetNames, configGroup.project, configGroup.gameType, read)
+		return ParadoxValueSetValueElement(element, name, valueSetNames, configGroup.project, gameType, read)
 	}
 	
 	fun resolveModifier(name: String, configGroup: CwtConfigGroup): PsiElement? {

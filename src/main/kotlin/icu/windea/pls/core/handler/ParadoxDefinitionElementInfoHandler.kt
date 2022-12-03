@@ -39,6 +39,6 @@ object ParadoxDefinitionElementInfoHandler {
 		val gameType = definitionInfo.gameType
 		val project = definitionInfo.project
 		val configGroup = getCwtConfig(project).getValue(gameType)
-		return ParadoxDefinitionElementInfo(elementPath, scope, configGroup.gameType, definitionInfo, configGroup, element)
+		return ParadoxDefinitionElementInfo(elementPath, scope, gameType, definitionInfo, configGroup, element)
 	}
 }

@@ -13,13 +13,12 @@ class CwtConfigGroupsImpl(
 	
 	init {
 		//初始化各个游戏分组的CWT规则
-		val coreGroup = cwtFileConfigGroups.get("core")
+		val coreCwtFileConfigs = cwtFileConfigGroups.getValue("core")
+		groups["core"] = CwtConfigGroupImpl(project, null, coreCwtFileConfigs)
 		for((groupName, cwtFileConfigs) in cwtFileConfigGroups) {
 			val gameType = ParadoxGameType.resolve(groupName)
 			if(gameType != null) {
-				if(coreGroup != null) {
-					cwtFileConfigs.putAll(coreGroup)
-				}
+				cwtFileConfigs.putAll(coreCwtFileConfigs)
 				groups[groupName] = CwtConfigGroupImpl(project, gameType, cwtFileConfigs)
 			}
 		}

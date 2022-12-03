@@ -84,20 +84,22 @@ object ParadoxDefinitionInfoHandler {
 	}
 	
 	private fun doResolve(configGroup: CwtConfigGroup, element: ParadoxDefinitionProperty, rootKey: String, path: ParadoxPath, elementPath: ParadoxElementPath): ParadoxDefinitionInfo? {
+		val gameType = configGroup.gameType ?: return null
 		for(typeConfig in configGroup.types.values) {
 			if(matchesType(configGroup, typeConfig, element, rootKey, path, elementPath)) {
 				//需要懒加载
-				return ParadoxDefinitionInfo(rootKey, typeConfig, configGroup.gameType, configGroup, element)
+				return ParadoxDefinitionInfo(rootKey, typeConfig, gameType, configGroup, element)
 			}
 		}
 		return null
 	}
 	
 	private fun doResolveWithKnownType(configGroup: CwtConfigGroup, element: ParadoxDefinitionProperty, type: String, rootKey: String): ParadoxDefinitionInfo? {
+		val gameType = configGroup.gameType ?: return null
 		val typeConfig = configGroup.types[type] ?: return null
 		//仍然要求匹配rootKey
 		if(matchesTypeWithKnownType(typeConfig, rootKey)) {
-			return ParadoxDefinitionInfo(rootKey, typeConfig, configGroup.gameType, configGroup, element)
+			return ParadoxDefinitionInfo(rootKey, typeConfig, gameType, configGroup, element)
 		}
 		return null
 	}
