@@ -18,8 +18,6 @@ import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.definition.*
 import icu.windea.pls.config.definition.config.*
-import icu.windea.pls.config.internal.*
-import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.nodes.*

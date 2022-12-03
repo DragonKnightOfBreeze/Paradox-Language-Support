@@ -2,32 +2,24 @@ package icu.windea.pls.script.editor
 
 import com.intellij.lang.*
 import com.intellij.lang.folding.*
-import com.intellij.openapi.components.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.selector.*
-import icu.windea.pls.core.settings.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxVariableOperationExpressionFoldingBuilder : ParadoxExpressionFoldingBuilder() {
-	companion object {
-		const val GROUP_NAME = "variable_operation_expressions"
-	}
-	
-	override val groupName: String get() = GROUP_NAME
+@WithCwtSetting("folding_settings.pls.cwt", CwtFoldingSetting::class)
+abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
+	abstract val groupName: String
 	
 	override fun getPlaceholderText(node: ASTNode): String {
 		return ""
-	}
-	
-	override fun isCollapsedByDefault(node: ASTNode): Boolean {
-		return service<ParadoxFoldingSettings>().collapseVariableOperationExpressions
 	}
 	
 	override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {

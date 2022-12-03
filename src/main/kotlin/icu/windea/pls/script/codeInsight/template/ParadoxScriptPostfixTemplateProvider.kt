@@ -13,7 +13,7 @@ class ParadoxScriptPostfixTemplateProvider: PostfixTemplateProvider {
 			val postfixTemplateSettings = getCwtConfig().core.postfixTemplateSettings
 			for((groupName, settings) in postfixTemplateSettings) {
 				when(groupName) {
-					ParadoxVariableOperationExpressionPostfixTemplate.groupName -> {
+					ParadoxVariableOperationExpressionPostfixTemplate.GROUP_NAME -> {
 						for(setting in settings.values) {
 							add(ParadoxVariableOperationExpressionPostfixTemplate(setting, provider))
 						}

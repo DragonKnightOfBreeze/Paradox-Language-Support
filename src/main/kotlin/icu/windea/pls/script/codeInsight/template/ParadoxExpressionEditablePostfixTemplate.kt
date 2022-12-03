@@ -6,11 +6,15 @@ import com.intellij.codeInsight.template.postfix.templates.*
 import com.intellij.codeInsight.template.postfix.templates.editable.*
 import com.intellij.psi.*
 import icu.windea.pls.config.cwt.setting.*
+import icu.windea.pls.core.annotations.*
 
-abstract class ParadoxEditablePostfixTemplate(
+@WithCwtSetting("postfix_template_settings.pls.cwt", CwtPostfixTemplateSetting::class)
+abstract class ParadoxExpressionEditablePostfixTemplate(
 	val setting: CwtPostfixTemplateSetting,
 	provider: PostfixTemplateProvider
 ): EditablePostfixTemplate(setting.name, setting.name, createTemplate(setting), setting.example.orEmpty(), provider) {
+	abstract val groupName: String
+	
 	override fun isBuiltin(): Boolean {
 		return true
 	}
@@ -24,7 +28,7 @@ abstract class ParadoxEditablePostfixTemplate(
 	}
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || (other is ParadoxEditablePostfixTemplate && setting == other.setting) 
+		return this === other || (other is ParadoxExpressionEditablePostfixTemplate && setting == other.setting) 
 	}
 	
 	override fun hashCode(): Int {

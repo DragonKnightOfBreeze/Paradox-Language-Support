@@ -3,7 +3,6 @@ package icu.windea.pls.script.codeInsight.template
 import com.intellij.codeInsight.template.postfix.templates.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
-import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.handler.*
@@ -12,10 +11,12 @@ import icu.windea.pls.script.psi.*
 class ParadoxVariableOperationExpressionPostfixTemplate(
 	setting: CwtPostfixTemplateSetting,
 	provider: PostfixTemplateProvider
-): ParadoxEditablePostfixTemplate(setting, provider) {
+): ParadoxExpressionEditablePostfixTemplate(setting, provider) {
 	companion object {
-		val groupName = "variable_operation_expressions"
+		const val GROUP_NAME = "variable_operation_expressions"
 	}
+	
+	override val groupName: String get() = GROUP_NAME
 	
 	override fun getExpressions(context: PsiElement, document: Document, offset: Int): List<PsiElement> {
 		//上下文属性必须是数字或字符串，并且直接在块中
