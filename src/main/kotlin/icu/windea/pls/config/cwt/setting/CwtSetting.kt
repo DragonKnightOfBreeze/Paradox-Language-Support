@@ -1,3 +1,5 @@
 package icu.windea.pls.config.cwt.setting
 
-interface CwtSetting
+interface CwtSetting {
+	val id: String
+}

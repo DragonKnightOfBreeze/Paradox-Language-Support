@@ -103,9 +103,6 @@ class ParadoxScriptValueExpressionImpl(
 	}
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-		//要求重新匹配
-		result.restartCompletionOnAnyPrefixChange()
-		
 		val keyword = context.keyword
 		val isKey = context.isKey
 		val offsetInParent = context.offsetInParent

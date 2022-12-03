@@ -1,0 +1,3 @@
+root = {
+	set_variable = { which = var value = v }
+}

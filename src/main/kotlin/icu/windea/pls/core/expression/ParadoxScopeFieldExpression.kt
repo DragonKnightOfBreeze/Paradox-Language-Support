@@ -20,7 +20,7 @@ import icu.windea.pls.script.highlighter.*
  * ```bnf
  * scope_field_expression ::= scope +
  * scope ::= system_scope | scope_link | scope_link_from_data
- * system_scope ::= TOKEN //predefined by Internal Config (in script_config.pls.cwt)
+ * system_scope ::= TOKEN //predefined by CWT Config (in system_scopes.pls.cwt)
  * scope_link ::= TOKEN //predefined by CWT Config (in links.cwt, from_data = false, type = both | scope)
  * scope_link_from_data ::= scope_link_prefix scope_link_data_source //predefined by CWT Config (in links.cwt, from_data = true, type = both | scope)
  * scope_link_prefix ::= TOKEN //e.g. "event_target:" while the link's prefix is "event_target:"
@@ -111,9 +111,6 @@ class ParadoxScopeFieldExpressionImpl(
 	}
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-		//要求重新匹配
-		result.restartCompletionOnAnyPrefixChange()
-		
 		val keyword = context.keyword
 		val isKey = context.isKey
 		val prevScope = context.prevScope
@@ -124,6 +121,10 @@ class ParadoxScopeFieldExpressionImpl(
 		for(node in nodes) {
 			val nodeRange = node.rangeInExpression
 			val inRange = offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset
+			if(!inRange) {
+				//如果光标位置之前存在无法解析的scope（除非被解析为scopeLinkFromData，例如，"event_target:xxx"），不要进行补全
+				if(node is ParadoxErrorExpressionNode || node.text.isEmpty()) break
+			}
 			if(node is ParadoxScopeExpressionNode) {
 				if(inRange) {
 					context.put(PlsCompletionKeys.prevScopeKey, prevScopeToUse)

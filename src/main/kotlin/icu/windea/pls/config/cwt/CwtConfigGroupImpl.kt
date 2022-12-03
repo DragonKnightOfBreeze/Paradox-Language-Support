@@ -15,6 +15,8 @@ import icu.windea.pls.cwt.*
 import kotlin.collections.isNullOrEmpty
 import kotlin.collections.mapNotNullTo
 
+private const val s = "system_scopes"
+
 class CwtConfigGroupImpl(
 	override val project: Project,
 	override val gameType: ParadoxGameType?,
@@ -302,11 +304,12 @@ class CwtConfigGroupImpl(
 	//解析CWT配置
 	
 	private fun resolveFoldingSettings(fileConfig: CwtFileConfig) {
-		fileConfig.properties.forEach { groupProperty ->
+		val configs = fileConfig.properties
+		configs.forEach { groupProperty ->
 			val groupName = groupProperty.key
 			val map = CollectionFactory.createCaseInsensitiveStringMap<CwtFoldingSetting>()
 			groupProperty.properties?.forEach { property -> 
-				val name = property.key
+				val id = property.key
 				var key: String? = null
 				var keys: List<String>? = null
 				var placeholder: String? = null
@@ -318,8 +321,8 @@ class CwtConfigGroupImpl(
 					}
 				}
 				if(placeholder != null) {
-					val foldingSetting = CwtFoldingSetting(name, key, keys, placeholder!!)
-					map.put(name, foldingSetting)
+					val foldingSetting = CwtFoldingSetting(id, key, keys, placeholder!!)
+					map.put(id, foldingSetting)
 				}
 			}
 			foldingSettings.put(groupName, map)
@@ -327,16 +330,19 @@ class CwtConfigGroupImpl(
 	}
 	
 	private fun resolvePostfixTemplateSettings(fileConfig: CwtFileConfig) {
-		fileConfig.properties.forEach { groupProperty ->
+		val configs = fileConfig.properties
+		configs.forEach { groupProperty ->
 			val groupName = groupProperty.key
 			val map = CollectionFactory.createCaseInsensitiveStringMap<CwtPostfixTemplateSetting>()
 			groupProperty.properties?.forEach { property ->
-				val name = property.key
+				val id = property.key
+				var key: String? = null
 				var example: String? = null
 				var variables: Map<String, String>? = null
 				var expression: String? = null 
 				property.properties?.forEach { prop ->
 					when{
+						prop.key == "key" -> key = prop.stringValue
 						prop.key == "example" -> example = prop.stringValue
 						prop.key == "variables" -> variables = prop.properties?.let {
 							buildMap {
@@ -348,9 +354,9 @@ class CwtConfigGroupImpl(
 						prop.key == "expression" -> expression = prop.stringValue
 					}
 				}
-				if(expression != null) {
-					val foldingSetting = CwtPostfixTemplateSetting(name, example, variables.orEmpty(), expression!!)
-					map.put(name, foldingSetting)
+				if(key != null && expression != null) {
+					val foldingSetting = CwtPostfixTemplateSetting(id, key!!, example, variables.orEmpty(), expression!!)
+					map.put(id, foldingSetting)
 				}
 			}
 			postfixTemplateSettings.put(groupName, map)
@@ -360,7 +366,8 @@ class CwtConfigGroupImpl(
 	//解析扩展的CWT规则
 	
 	private fun resolveSystemScopes(fileConfig: CwtFileConfig) {
-		fileConfig.properties.forEach { property ->
+		val configs = fileConfig.properties.find { it.key == "system_scopes" }?.properties ?: return
+		configs.forEach { property ->
 			val id = property.key
 			val description = property.documentation.orEmpty()
 			val name = property.stringValue ?: id
@@ -370,7 +377,8 @@ class CwtConfigGroupImpl(
 	}
 	
 	private fun resolveLocalisationLocales(fileConfig: CwtFileConfig) {
-		fileConfig.properties.forEach { property -> 
+		val configs = fileConfig.properties.find { it.key == "localisation_locales" }?.properties ?: return
+		configs.forEach { property -> 
 			val id = property.key
 			val description = property.documentation.orEmpty()
 			val codes = property.properties?.find { p -> p.key == "codes" }?.values?.mapNotNull { v -> v.stringValue }.orEmpty()
@@ -382,7 +390,8 @@ class CwtConfigGroupImpl(
 	}
 	
 	private fun resolveLocalisationPredefinedParameters(fileConfig: CwtFileConfig) {
-		fileConfig.properties.forEach { property ->
+		val configs = fileConfig.properties.find { it.key == "localisation_predefined_parameters" }?.properties ?: return
+		configs.forEach { property ->
 			val id = property.key
 			val description = property.documentation.orEmpty()
 			val config = CwtLocalisationPredefinedParameterConfig(property.pointer, fileConfig.info, id, description)

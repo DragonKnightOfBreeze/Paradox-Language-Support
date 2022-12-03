@@ -12,7 +12,7 @@ import icu.windea.pls.core.annotations.*
 abstract class ParadoxExpressionEditablePostfixTemplate(
 	val setting: CwtPostfixTemplateSetting,
 	provider: PostfixTemplateProvider
-): EditablePostfixTemplate(setting.name, setting.name, createTemplate(setting), setting.example.orEmpty(), provider) {
+): EditablePostfixTemplate(setting.id, setting.key, createTemplate(setting), setting.example.orEmpty(), provider) {
 	abstract val groupName: String
 	
 	override fun isBuiltin(): Boolean {

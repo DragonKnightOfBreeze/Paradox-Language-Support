@@ -1,9 +1,12 @@
 package icu.windea.pls.script.codeInsight.template
 
+import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInsight.template.postfix.templates.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.config.cwt.setting.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.script.psi.*
@@ -19,15 +22,16 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
 	override val groupName: String get() = GROUP_NAME
 	
 	override fun getExpressions(context: PsiElement, document: Document, offset: Int): List<PsiElement> {
-		//上下文属性必须是数字或字符串，并且直接在块中
-		if(context !is ParadoxScriptInt && context !is ParadoxScriptFloat && context !is ParadoxScriptString) return emptyList()
-		if(context !is ParadoxScriptValue) return emptyList()
-		if(!context.isBlockValue()) return emptyList()
-		val parentProperty = context.findParentDefinitionProperty() ?: return emptyList()
+		val contextType = context.elementType
+		if(contextType != ParadoxScriptElementTypes.STRING_TOKEN) return emptyList()
+		ProgressManager.checkCanceled()
+		val stringElement = context.parent?.castOrNull<ParadoxScriptString>() ?: return emptyList()
+		if(!stringElement.isBlockValue()) return emptyList()
+		val parentProperty = stringElement.findParentDefinitionProperty() ?: return emptyList()
 		val definitionElementInfo = ParadoxDefinitionElementInfoHandler.get(parentProperty) ?: return emptyList()
 		val childPropertyConfigs = definitionElementInfo.getChildPropertyConfigs()
-		val config = childPropertyConfigs.find { it.key == setting.name }
+		val config = childPropertyConfigs.find { it.key == setting.id }
 		if(config == null) return emptyList()
-		return context.toSingletonList()
+		return stringElement.toSingletonList()
 	}
 }
