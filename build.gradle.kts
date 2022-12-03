@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.utils.*
 
 plugins {
 	id("org.jetbrains.kotlin.jvm") version "1.7.0"
-	id("org.jetbrains.intellij") version "1.9.0"
+	id("org.jetbrains.intellij") version "1.10.0"
 	id("org.jetbrains.grammarkit") version "2021.2.2"
 	id("org.jetbrains.changelog") version "2.0.0"
 }
@@ -14,7 +14,8 @@ version = "0.7.6"
 
 intellij {
 	pluginName.set("Paradox Language Support")
-	version.set("2022.2")
+	version.set("2022.3")
+	
 	plugins.add("com.intellij.platform.images")
 	plugins.add("cn.yiiguxing.plugin.translate:3.3.2") //https://github.com/YiiGuxing/TranslationPlugin
 	
@@ -34,6 +35,7 @@ repositories {
 dependencies {
 	implementation("ar.com.hjg:pngj:2.1.0") //FROM DDS4J
 	testImplementation("junit:junit:4.13.2")
+	implementation(kotlin("stdlib-jdk8"))
 }
 
 sourceSets {
@@ -48,7 +50,7 @@ sourceSets {
 
 kotlin {
 	jvmToolchain {
-		languageVersion.set(JavaLanguageVersion.of(11))
+		languageVersion.set(JavaLanguageVersion.of(17))
 	}
 }
 
@@ -70,7 +72,7 @@ val cwtConfigDirs = listOf(
 tasks {
 	withType<KotlinCompile> {
 		kotlinOptions {
-			jvmTarget = "11"
+			jvmTarget = "17"
 			freeCompilerArgs = listOf("-Xjvm-default=all")
 		}
 	}
@@ -94,7 +96,7 @@ tasks {
 		}
 	}
 	patchPluginXml {
-		sinceBuild.set("222")
+		sinceBuild.set("223")
 		untilBuild.set("")
 		val descriptionText = projectDir.resolve("DESCRIPTION.md").readText()
 		pluginDescription.set(descriptionText)
