@@ -114,7 +114,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 		addElement(lookupElement)
 	}
 	
-	//进行提示并在提示后插入子句内联模版
+	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
 	val file = context.contextFile
 	val props = propertyConfig?.properties
 	if(completeWithClauseTemplate && context.isKey == true && file != null && props != null && props.isNotEmpty()) {
