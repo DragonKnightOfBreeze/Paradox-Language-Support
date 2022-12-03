@@ -10,6 +10,7 @@ interface CwtConfigGroup {
 	val gameType: ParadoxGameType
 	val project: Project
 	
+	//NOTE: Extended by PLS
 	val foldingSettings: Map<String, Map<@CaseInsensitive String, CwtFoldingSetting>>
 	
 	val folders: Set<String>

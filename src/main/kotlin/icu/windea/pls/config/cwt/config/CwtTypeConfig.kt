@@ -6,7 +6,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 
 /**
- * @property block (property) block: boolean EXTENDED BY PLS
+ * @property block (property) block: boolean
  * @property path (property) path: string/path
  * @property pathStrict (property) path_strict: boolean
  * @property pathFile (property) path_file: string/fileName
@@ -29,7 +29,7 @@ data class CwtTypeConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigInfo,
 	val name: String,
-	val block: Boolean = true, //EXTENDED BY PLS
+	val block: Boolean = true, //NOTE: Extended by PLS
 	val path: String? = null,
 	val pathStrict: Boolean = false,
 	val pathFile: String? = null,

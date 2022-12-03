@@ -326,7 +326,7 @@ class CwtConfigGroupImpl(
 				val key = prop.key
 				when(key) {
 					//定义的值是否需要为代码块，默认为是
-					"block" -> block = prop.booleanValue ?: continue //EXTENDED BY PLS
+					"block" -> block = prop.booleanValue ?: continue //NOTE: Extended by PLS
 					//这里的path会以"game/"开始，需要忽略
 					"path" -> path = prop.stringValue?.removePrefix("game")?.trimStart('/') ?: continue
 					"path_strict" -> pathStrict = prop.booleanValue ?: continue

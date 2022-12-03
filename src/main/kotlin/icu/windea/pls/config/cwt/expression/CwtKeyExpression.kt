@@ -86,7 +86,7 @@ class CwtKeyExpression private constructor(
 				val value = expressionString.substring(12, expressionString.length - 1)
 				CwtKeyExpression(expressionString, Types.ScopeGroup, value)
 			}
-			//EXTENDED BY PLS
+			//NOTE: Extended by PLS
 			expressionString == "\$modifier" -> {
 				CwtKeyExpression(expressionString, Types.Modifier)
 			}
