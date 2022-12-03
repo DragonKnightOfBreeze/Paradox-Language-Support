@@ -62,12 +62,12 @@ class ParadoxScriptValueExpressionNode(
 		
 		override fun resolve(exact: Boolean): PsiElement? {
 			val configExpression = CwtValueExpression.resolve("<script_value>")
-			return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, configExpression, config, configGroup, exact = exact)
+			return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, config, configGroup, exact = exact)
 		}
 		
 		override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 			val configExpression = CwtValueExpression.resolve("<script_value>")
-			return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, configExpression, config, configGroup)
+			return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, configGroup)
 				.mapToArray { PsiElementResolveResult(it) }
 		}
 	}

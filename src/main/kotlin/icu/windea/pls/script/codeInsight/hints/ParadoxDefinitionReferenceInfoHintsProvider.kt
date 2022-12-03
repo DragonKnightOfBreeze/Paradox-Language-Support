@@ -60,13 +60,13 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<N
 				val config = resolvePropertyConfigs(element).firstOrNull()
 					?.takeIf { it.expression.type in keyExpressionTypes }
 					?: return true
-				CwtConfigHandler.resolveScriptExpression(element, null, config.expression, config, config.info.configGroup, true)
+				CwtConfigHandler.resolveScriptExpression(element, null, config, config.info.configGroup, true)
 			}
 			is ParadoxScriptString -> {
 				val config = resolveValueConfigs(element).firstOrNull()
 					?.takeIf { it.expression.type in valueExpressionTypes }
 					?: return true
-				CwtConfigHandler.resolveScriptExpression(element, null, config.expression, config, config.info.configGroup, false)
+				CwtConfigHandler.resolveScriptExpression(element, null, config, config.info.configGroup, false)
 			}
 			else -> return true
 		}
