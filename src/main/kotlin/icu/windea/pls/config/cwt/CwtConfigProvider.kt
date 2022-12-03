@@ -59,16 +59,11 @@ class CwtConfigProvider(
 	}
 	
 	private fun resolveConfigFiles(configMaps: CwtConfigMaps, configDirectory: VirtualFile, configRootDirectory: VirtualFile) {
-		val globalConfigMap: CwtConfigMap = mutableMapOf()
 		for(configFile in configDirectory.children) {
 			if(configFile.isDirectory) {
 				//将目录的名字作为规则组的名字
 				resolveConfigFilesOfGroup(configMaps, configFile, configRootDirectory)
 			}
-		}
-		//共享的配置会覆盖特定游戏类型的配置
-		for(configMap in configMaps.values) {
-			configMap.putAll(globalConfigMap)
 		}
 	}
 	
