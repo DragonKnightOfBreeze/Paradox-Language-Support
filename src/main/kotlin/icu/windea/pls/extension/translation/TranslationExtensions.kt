@@ -46,32 +46,3 @@ fun ParadoxLocalisationProperty.toTranslatableStringSnippets(): TranslatableStri
 		return null
 	}
 }
-
-
-//cn.yiiguxing.plugin.translate.trans.TranslationNotifications
-
-fun TranslationNotifications.showTranslationErrorNotification(
-	project: Project?,
-	title: String,
-	content: String,
-	throwableList: List<Throwable>,
-	vararg actions: AnAction
-) {
-	val actionList = LinkedList<AnAction>()
-	for(throwable in throwableList) {
-		val errorInfo = (throwable as? TranslateException)?.errorInfo
-		// actions的折叠是从左往右折叠的
-		errorInfo?.continueActions?.let { actionList += it }
-	}
-	
-	actionList.addAll(actions)
-	actionList.add(TranslatorActionGroup({ message("action.SwitchTranslatorAction.text") }))
-	
-	for(throwable in throwableList) {
-		if(throwable !is TranslateException) {
-			// 将异常写入IDE异常池，以便用户反馈
-			logger<TranslationNotifications>().e("Translation error: ${throwable.message}", throwable)
-		}
-	}
-	Notifications.showErrorNotification(project, title, content, *actionList.toTypedArray())
-}

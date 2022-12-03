@@ -115,7 +115,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 				TranslationNotifications.showTranslationErrorNotification(project,
 					PlsBundle.message("notification.translate.failed.title"),
 					PlsBundle.message("notification.translate.failed.content", failedKeysText, targetLocale),
-					throwableList
+					throwableList.first() // first only
 				)
 			}
 			
