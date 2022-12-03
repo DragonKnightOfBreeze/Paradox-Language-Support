@@ -74,6 +74,6 @@ object ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactor
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): PsiElement? {
-		return file.findElementAt(offset) { it.takeIf { ParadoxScriptTokenSets.scriptedVariableTokens.contains(it.elementType) } }
+		return file.findElementAt(offset) { it.takeIf { ParadoxScriptTokenSets.scriptedVariableValueTokens.contains(it.elementType) } }
 	}
 }

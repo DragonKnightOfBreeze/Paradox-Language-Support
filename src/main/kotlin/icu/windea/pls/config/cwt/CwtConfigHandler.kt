@@ -106,6 +106,41 @@ object CwtConfigHandler {
 	//}
 	//endregion
 	
+	//region Handle Methods
+	/**
+	 * 内联规则以便后续的代码提示、引用解析和结构验证。
+	 */
+	fun inlineConfig(key: String, isQuoted: Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: MutableList<CwtDataConfig<*>>, index: Int, matchType: Int): Int {
+		//内联类型为`single_alias_right`或`alias_match_left`的规则
+		run {
+			val valueExpression = config.valueExpression
+			when(valueExpression.type) {
+				CwtDataTypes.SingleAliasRight -> {
+					val singleAliasName = valueExpression.value ?: return@run
+					val singleAliases = configGroup.singleAliases[singleAliasName] ?: return@run
+					for(singleAlias in singleAliases) {
+						result.add(config.inlineFromSingleAliasConfig(singleAlias))
+					}
+					return index + 1
+				}
+				CwtDataTypes.AliasMatchLeft -> {
+					val aliasName = valueExpression.value ?: return@run
+					val aliasGroup = configGroup.aliasGroups[aliasName] ?: return@run
+					val aliasSubName = CwtConfigHandler.getAliasSubName(key, isQuoted, aliasName, configGroup, matchType) ?: return@run
+					val aliases = aliasGroup[aliasSubName] ?: return@run
+					for(alias in aliases) {
+						result.add(config.inlineFromAliasConfig(alias))
+					}
+					return index + 1
+				}
+				else -> pass()
+			}
+		}
+		result.add(config)
+		return index + 1
+	}
+	//endregion
+	
 	//region Matches Methods
 	//TODO 基于cwt规则文件的匹配方法需要进一步匹配scope
 	//DONE 兼容variableReference inlineMath parameter

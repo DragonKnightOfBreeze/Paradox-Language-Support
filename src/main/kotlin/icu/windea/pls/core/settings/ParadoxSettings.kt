@@ -57,6 +57,7 @@ class ParadoxSettingsState : BaseState() {
 		var maxCompleteSize by property(100)
 		var completeWithValue by property(true)
 		var completeWithClauseTemplate by property(true)
+		var maxExpressionCountOnOneLine by property(2)
 	}
 	
 	@get:Tag("generation")
