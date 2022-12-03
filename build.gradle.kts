@@ -17,7 +17,7 @@ intellij {
 	version.set("2022.3")
 	
 	plugins.add("com.intellij.platform.images")
-	plugins.add("cn.yiiguxing.plugin.translate:3.3.2") //https://github.com/YiiGuxing/TranslationPlugin
+	plugins.add("cn.yiiguxing.plugin.translate:3.4.0") //https://github.com/YiiGuxing/TranslationPlugin
 	
 	//reference
 	plugins.add("markdown")

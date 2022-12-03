@@ -193,13 +193,13 @@ class ParadoxScriptAnnotator : Annotator {
 			}
 			CwtDataTypes.ConstantKey -> {
 				if(text.isParameterAwareExpression()) return
-				if(rangeInElement == null) return //unnecessary
+				if(rangeInElement == null && element is ParadoxScriptPropertyKey) return //unnecessary
 				val attributesKey = Keys.PROPERTY_KEY_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.Constant -> {
 				if(text.isParameterAwareExpression()) return
-				if(rangeInElement == null) return //unnecessary
+				if(rangeInElement == null && element is ParadoxScriptString) return //unnecessary
 				val attributesKey = Keys.STRING_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
