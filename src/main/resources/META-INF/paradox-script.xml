@@ -31,6 +31,9 @@
     <lang.foldingBuilder
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptFoldingBuilder"/>
+    <lang.foldingBuilder 
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.editor.ParadoxVariableOperationExpressionFoldingBuilder"/>
     <lang.commenter
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptCommenter"/>
@@ -105,6 +108,9 @@
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxModifierInfoHintsProvider"/>
+    <codeInsight.template.postfixTemplateProvider
+        language="PARADOX_SCRIPT" 
+        implementationClass="icu.windea.pls.script.codeInsight.template.ParadoxScriptPostfixTemplateProvider"/>
     <lang.formatter
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>

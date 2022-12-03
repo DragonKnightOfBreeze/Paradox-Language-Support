@@ -19,4 +19,3 @@ interface CwtConfig<out T : PsiElement> {
 	 */
 	fun resolvedOrNull(): CwtConfig<*>? = null
 }
-

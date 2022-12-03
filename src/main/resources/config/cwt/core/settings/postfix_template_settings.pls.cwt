@@ -1,0 +1,13 @@
+# Postfix Template Settings
+# Used to provide additional postfix completion rules for script files.
+# 
+# See: icu.windea.pls.script.codeInsight.template.ParadoxScriptPostfixTemplateProvider
+# See: icu.windea.pls.script.codeInsight.template.ParadoxVariableOperationExpressionPostfixTemplate
+
+variable_operation_expressions = {
+	set_variable = {
+		example = "set_variable = { which = expr value = v }"
+		varaibles = { VALUE = v }
+		expression = "set_variable = { which = $EXPR$ value = $VALUE|$ }$END$"
+	}
+}

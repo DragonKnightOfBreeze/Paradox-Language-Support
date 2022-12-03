@@ -1,4 +1,4 @@
-package icu.windea.pls.core.editor
+package icu.windea.pls.script.editor
 
 import com.intellij.lang.*
 import com.intellij.lang.folding.*
@@ -7,7 +7,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.config.cwt.config.settings.*
+import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.handler.*
@@ -16,7 +16,9 @@ import icu.windea.pls.core.settings.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxVariableOperationExpressionFoldingBuilder : FoldingBuilderEx() {
-	private val foldingGroupName = "variable_operation_expressions"
+	companion object {
+		val groupName = "variable_operation_expressions"
+	}
 	
 	override fun getPlaceholderText(node: ASTNode): String {
 		return ""
@@ -34,9 +36,9 @@ class ParadoxVariableOperationExpressionFoldingBuilder : FoldingBuilderEx() {
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		val foldingSettings = configGroup.foldingSettings
 		if(foldingSettings.isEmpty()) return FoldingDescriptor.EMPTY
-		val settings = foldingSettings.get(foldingGroupName) ?: return FoldingDescriptor.EMPTY
+		val settings = foldingSettings.get(groupName) ?: return FoldingDescriptor.EMPTY
 		val allDescriptors = mutableListOf<FoldingDescriptor>()
-		root.acceptChildren(object: ParadoxScriptRecursiveElementWalkingVisitor() {
+		root.acceptChildren(object : ParadoxScriptRecursiveElementWalkingVisitor() {
 			override fun visitProperty(element: ParadoxScriptProperty) {
 				doVisitProperty(element, settings)
 				super.visitProperty(element)
@@ -46,7 +48,7 @@ class ParadoxVariableOperationExpressionFoldingBuilder : FoldingBuilderEx() {
 				val configs = ParadoxCwtConfigHandler.resolvePropertyConfigs(element, orDefault = false)
 				if(configs.isEmpty()) return  //must match
 				val propertyKey = element.name
-				val setting = settings.get(propertyKey) ?: return 
+				val setting = settings.get(propertyKey) ?: return
 				//property key is ignore case, properties must be kept in order (declared by keys)
 				val propertyValue = element.propertyValue ?: return
 				val elementsToKeep = when {
@@ -82,7 +84,7 @@ class ParadoxVariableOperationExpressionFoldingBuilder : FoldingBuilderEx() {
 				val endOffset = rootRange.endOffset
 				var valueRange: TextRange? = null
 				val descriptors = SmartList<FoldingDescriptor>()
-				val foldingGroup = FoldingGroup.newGroup(foldingGroupName)
+				val foldingGroup = FoldingGroup.newGroup(groupName)
 				val list = setting.placeholder.split('$')
 				val keys = setting.key?.toSingletonList() ?: setting.keys ?: emptyList()
 				for((index, s) in list.withIndex()) {
@@ -109,7 +111,7 @@ class ParadoxVariableOperationExpressionFoldingBuilder : FoldingBuilderEx() {
 						if(textRange.isEmpty) continue
 						val descriptor = FoldingDescriptor(descriptorNode, textRange, foldingGroup, emptySet(), false, s, null)
 						descriptors.add(descriptor)
-					} else {    
+					} else {
 						if(s.isEmpty()) return  //invalid
 						if(s != keys.getOrNull(index / 2)) return  //invalid
 						startOffset = valueRange?.endOffset ?: return  //unexpected

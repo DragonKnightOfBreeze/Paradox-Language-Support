@@ -54,10 +54,10 @@
   * [X] 提供包围选项：包围成从句（`k = v` → `{ k = v }`）和包围成值为从句的属性（`k = v` → `key = { k = v }`）
   * [X] 提供包围选项：用参数条件块包围（`k = v` → `[[PARAM] k = v ]`）
 * 新增功能 - 群友提出：
-  * [ ] 实现后缀补全：对于变量操作表达式，如`var.setv` → `set_variable = { which = var value = ? }`
-    * 需要区分游戏类型，需要扩展并基于CWT规则，需要进一步研究
+  * [X] 实现后缀补全：对于变量操作表达式，如`var.setv` → `set_variable = { which = var value = ? }`
+    * 基于CWT配置（配置文件：`postfix_template_settings.pls.cwt`）
   * [X] 实现代码折叠：对于变量操作表达式，如`set_variable = { which = var value = 1 }` → `var = 1`
-    * 需要区分游戏类型，需要扩展并基于CWT规则，需要进一步研究
+    * 基于CWT配置（配置文件：`folding_settings.pls.cwt`）
   * （可配置是否启用）进行代码补全时，如果在提示定义属性的键时，如果其值可能是从句，应用补全后可以自动插入从句内联模版，让用户依次输入各个未定的值
     * 实际上，如果key或value表示数字（但其文本不一定要是数字），那么key和value之间应当可以是任意比较操作符
     * 不需要另外编写cwt规则文件，在加入提示项时判断即可

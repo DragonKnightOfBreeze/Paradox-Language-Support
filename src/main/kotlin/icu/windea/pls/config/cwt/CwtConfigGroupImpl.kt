@@ -5,8 +5,8 @@ import com.intellij.util.*
 import com.intellij.util.containers.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.config.ext.*
-import icu.windea.pls.config.cwt.config.settings.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
@@ -21,6 +21,7 @@ class CwtConfigGroupImpl(
 	cwtFileConfigs: MutableMap<String, CwtFileConfig>
 ) : CwtConfigGroup {
 	override val foldingSettings: MutableMap<String, MutableMap<String, CwtFoldingSetting>> = mutableMapOf()
+	override val postfixTemplateSettings: MutableMap<String, MutableMap<String, CwtPostfixTemplateSetting>> = mutableMapOf()
 	
 	override val systemScopes: MutableMap<@CaseInsensitive String, CwtSystemScopeConfig> = CollectionFactory.createCaseInsensitiveStringMap()
 	override val localisationLocales: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
@@ -65,6 +66,9 @@ class CwtConfigGroupImpl(
 				"folding_settings" -> {
 					resolveFoldingSettings(fileConfig)
 					continue
+				}
+				"postfix_template_settings" -> {
+					resolvePostfixTemplateSettings(fileConfig)
 				}
 			}
 			
@@ -314,11 +318,42 @@ class CwtConfigGroupImpl(
 					}
 				}
 				if(placeholder != null) {
-					val foldingSetting = CwtFoldingSetting(property.pointer, property.info, key, keys, placeholder!!)
+					val foldingSetting = CwtFoldingSetting(name, key, keys, placeholder!!)
 					map.put(name, foldingSetting)
 				}
 			}
 			foldingSettings.put(groupName, map)
+		}
+	}
+	
+	private fun resolvePostfixTemplateSettings(fileConfig: CwtFileConfig) {
+		fileConfig.properties.forEach { groupProperty ->
+			val groupName = groupProperty.key
+			val map = CollectionFactory.createCaseInsensitiveStringMap<CwtPostfixTemplateSetting>()
+			groupProperty.properties?.forEach { property ->
+				val name = property.key
+				var example: String? = null
+				var variables: Map<String, String>? = null
+				var expression: String? = null 
+				property.properties?.forEach { prop ->
+					when{
+						prop.key == "example" -> example = prop.stringValue
+						prop.key == "variables" -> variables = prop.properties?.let {
+							buildMap {
+								it.forEach { p ->
+									if(p.stringValue != null) put(p.key, p.stringValue)
+								}
+							}
+						}
+						prop.key == "expression" -> expression = prop.stringValue
+					}
+				}
+				if(expression != null) {
+					val foldingSetting = CwtPostfixTemplateSetting(name, example, variables.orEmpty(), expression!!)
+					map.put(name, foldingSetting)
+				}
+			}
+			postfixTemplateSettings.put(groupName, map)
 		}
 	}
 	
