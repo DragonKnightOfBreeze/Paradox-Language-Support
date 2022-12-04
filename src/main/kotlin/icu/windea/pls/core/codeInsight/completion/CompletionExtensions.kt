@@ -46,6 +46,43 @@ fun CompletionResultSet.addExpressionElement(
 	addElement(lookupElement)
 }
 
+fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
+	val id = "{...}"
+	//排除重复项
+	if(context.completionIds?.add(id) == false) return
+	
+	val config = context.config
+	
+	run {
+		val lookupElement = LookupElementBuilder.create("").bold()
+			.withPresentableText("{...}")
+			.withInsertHandler { c, _ ->
+				val editor = c.editor
+				val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
+				val text = if(customSettings.SPACE_WITHIN_BRACES) "{  }" else "{}"
+				val length = if(customSettings.SPACE_WITHIN_BRACES) text.length - 2 else text.length - 1
+				EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
+			}
+			.withPriority(PlsCompletionPriorities.keywordPriority)
+		addElement(lookupElement)
+	}
+	
+	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
+	val file = context.originalFile
+	val props = config?.castOrNull<CwtValueConfig>()?.properties
+	val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
+	if(completeWithClauseTemplate && file != null && props != null && props.isNotEmpty()) {
+		val lookupElement = LookupElementBuilder.create("").bold()
+			.withPresentableText("{ <generate via template> }")
+			.withInsertHandler { c, _ ->
+				val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
+				startClauseTemplate(c.editor, file, props, customSettings, false)
+			}
+			.withPriority(PlsCompletionPriorities.keywordPriority - 1) //under "{...}"
+		addElement(lookupElement)
+	}
+}
+
 fun CompletionResultSet.addScriptExpressionElement(
 	element: PsiElement,
 	lookupString: String,
@@ -59,8 +96,6 @@ fun CompletionResultSet.addScriptExpressionElement(
 	val config = context.config
 	
 	val completeWithValue = getSettings().completion.completeWithValue
-	val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
-	
 	val propertyConfig = when{
 		config is CwtPropertyConfig -> config
 		config is CwtAliasConfig -> config.config
@@ -77,6 +112,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 	}
 	//排除重复项
 	if(context.completionIds?.add(id) == false) return
+	
 	var lookupElement = LookupElementBuilder.create(element, lookupString)
 	if(icon != null) {
 		lookupElement = lookupElement.withIcon(icon)
@@ -121,18 +157,19 @@ fun CompletionResultSet.addScriptExpressionElement(
 	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
 	val file = context.originalFile
 	val props = propertyConfig?.properties
-	if(completeWithClauseTemplate && context.isKey == true && file != null && props != null && props.isNotEmpty()) {
+	val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
+	if(context.isKey == true && completeWithClauseTemplate && file != null && props != null && props.isNotEmpty()) {
 		lookupElement = lookupElement.withTailText(" = { <generate via template> }")
 		val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
 			val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
-			startClauseTemplate(c.editor, file, props, customSettings)
+			startClauseTemplate(c.editor, file, props, customSettings, true)
 		}
 		addElement(resultLookupElement.builder())
 	}
 }
 
 @Suppress("UnstableApiUsage")
-private fun startClauseTemplate(editor: Editor, file: PsiFile, props: List<CwtPropertyConfig>, customSettings: ParadoxScriptCodeStyleSettings) {
+private fun startClauseTemplate(editor: Editor, file: PsiFile, props: List<CwtPropertyConfig>, customSettings: ParadoxScriptCodeStyleSettings, insertEq: Boolean) {
 	val project = file.project
 	
 	val propsToCheck = props
@@ -148,7 +185,7 @@ private fun startClauseTemplate(editor: Editor, file: PsiFile, props: List<CwtPr
 	
 	val documentManager = PsiDocumentManager.getInstance(project)
 	val command = Runnable {
-		val text = separator + "v"
+		val text = if(insertEq) separator + "v" else "v"
 		EditorModificationUtil.insertStringAtCaret(editor, text, false, true)
 		documentManager.commitDocument(editor.document)
 		val offset = editor.caretModel.offset

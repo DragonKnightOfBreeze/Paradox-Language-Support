@@ -577,7 +577,7 @@ object CwtConfigHandler {
 		val gameType = configGroup.gameType
 		
 		if(configExpression == CwtValueExpression.BlockExpression) {
-			result.addExpressionElement(PlsLookupElements.blockLookupElement, context)
+			result.addBlockElement(context)
 			return
 		}
 		
