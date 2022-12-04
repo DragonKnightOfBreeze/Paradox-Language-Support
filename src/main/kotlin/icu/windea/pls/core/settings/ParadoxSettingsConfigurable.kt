@@ -7,7 +7,9 @@ import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
+import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.ui.layout.*
@@ -152,11 +154,22 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						.applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeWithValue.tooltip") }
 				}
 				//completeWithClauseTemplate
+				lateinit var completeWithClauseTemplateCb: Cell<JBCheckBox>
 				row {
-					checkBox(PlsBundle.message("settings.completion.completeWithClauseTemplate"))
+					 checkBox(PlsBundle.message("settings.completion.completeWithClauseTemplate"))
 						.bindSelected(settings.completion::completeWithClauseTemplate)
 						.applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeWithClauseTemplate.tooltip") }
-				}.visible(false) //TODO
+						 .also { completeWithClauseTemplateCb = it }
+				}
+				indent { 
+					//maxExpressionCountInOneLine
+					row {
+						label(PlsBundle.message("settings.completion.maxExpressionCountInOneLine")).applyToComponent {
+							toolTipText = PlsBundle.message("settings.completion.maxExpressionCountInOneLine.tooltip")
+						}
+						intTextField(0..10).bindIntText(settings.completion::maxExpressionCountInOneLine)
+					}
+				}.enabledIf(completeWithClauseTemplateCb.selected)
 			}
 			//generation
 			group(PlsBundle.message("settings.generation")) {

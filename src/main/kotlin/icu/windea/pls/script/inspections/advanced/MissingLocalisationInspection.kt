@@ -10,7 +10,6 @@ import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.gridLayout.*
-import com.intellij.util.*
 import com.intellij.util.ui.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
@@ -197,9 +196,10 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			}
 			lateinit var checkForDefinitionsCb: Cell<JBCheckBox>
 			row {
-				checkForDefinitionsCb = checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.checkForDefinitions"))
+				checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.checkForDefinitions"))
 					.bindSelected(::checkForDefinitions)
 					.actionListener { _, component -> checkForDefinitions = component.isSelected }
+					.also { checkForDefinitionsCb = it }
 			}
 			indent {
 				row {

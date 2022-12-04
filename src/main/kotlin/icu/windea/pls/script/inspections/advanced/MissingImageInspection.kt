@@ -113,9 +113,10 @@ class MissingImageInspection : LocalInspectionTool() {
 		return panel {
 			lateinit var checkForDefinitionsCb: Cell<JBCheckBox>
 			row {
-				checkForDefinitionsCb = checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkForDefinitions"))
+				checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkForDefinitions"))
 					.bindSelected(::checkForDefinitions)
 					.actionListener { _, component -> checkForDefinitions = component.isSelected }
+					.also { checkForDefinitionsCb = it }
 			}
 			indent {
 				row {

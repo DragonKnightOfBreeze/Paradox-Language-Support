@@ -4,9 +4,14 @@ import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.codeInsight.template.*
+import com.intellij.codeInsight.template.impl.*
+import com.intellij.openapi.command.*
+import com.intellij.openapi.command.impl.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
+import com.intellij.refactoring.suggested.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
@@ -17,7 +22,7 @@ import javax.swing.*
 val ProcessingContext.completionType get() = get(PlsCompletionKeys.completionTypeKey)
 val ProcessingContext.completionIds get() = get(PlsCompletionKeys.completionIdsKey)
 val ProcessingContext.contextElement get() = get(PlsCompletionKeys.contextElementKey)
-val ProcessingContext.contextFile get() = get(PlsCompletionKeys.originalFileKey)
+val ProcessingContext.originalFile get() = get(PlsCompletionKeys.originalFileKey)
 val ProcessingContext.quoted get() = get(PlsCompletionKeys.quotedKey)
 val ProcessingContext.offsetInParent get() = get(PlsCompletionKeys.offsetInParentKey)
 val ProcessingContext.keyword get() = get(PlsCompletionKeys.keywordKey)
@@ -52,7 +57,6 @@ fun CompletionResultSet.addScriptExpressionElement(
 	builder: LookupElementBuilder.() -> LookupElement = { this }
 ) {
 	val config = context.config
-	val project = config.info.configGroup.project
 	
 	val completeWithValue = getSettings().completion.completeWithValue
 	val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
@@ -115,32 +119,85 @@ fun CompletionResultSet.addScriptExpressionElement(
 	}
 	
 	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
-	val file = context.contextFile
+	val file = context.originalFile
 	val props = propertyConfig?.properties
 	if(completeWithClauseTemplate && context.isKey == true && file != null && props != null && props.isNotEmpty()) {
+		lookupElement = lookupElement.withTailText(" = { <generate via template> }")
 		val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
-			val editor = c.editor
 			val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
-			val text = buildString {
-				append(if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = v" else "= v")
-			}
-			EditorModificationUtil.insertStringAtCaret(editor, text, false, true)
-			startClauseTemplate(editor, file, props)
+			startClauseTemplate(c.editor, file, props, customSettings)
 		}
 		addElement(resultLookupElement.builder())
 	}
 }
 
-private fun startClauseTemplate(editor: Editor, file: PsiFile, props: List<CwtPropertyConfig>) {
+@Suppress("UnstableApiUsage")
+private fun startClauseTemplate(editor: Editor, file: PsiFile, props: List<CwtPropertyConfig>, customSettings: ParadoxScriptCodeStyleSettings) {
 	val project = file.project
-	val offset = editor.caretModel.offset
-	val elementAtCaret = file.findElementAt(offset - 1)?.parent?.castOrNull<ParadoxScriptString>() ?: return
-	//TODO
-	val element = elementAtCaret
 	
-	PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document) //提交文档更改
-	val builder = TemplateBuilderFactory.getInstance().createTemplateBuilder(element)
-	//TODO
-	val template = builder.buildInlineTemplate()
-	TemplateManager.getInstance(project).startTemplate(editor, template)
+	val propsToCheck = props
+		.distinctBy { it.key.lowercase() }
+	val propsToInsert = props
+		.filter { it.keyExpression.type == CwtDataTypes.ConstantKey }
+		.distinctBy { it.key.lowercase() }
+	if(propsToInsert.isEmpty()) return
+	val multiline = propsToInsert.size > getSettings().completion.maxExpressionCountInOneLine
+	val hasRemain = propsToCheck.size != propsToInsert.size
+	val separator = if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "="
+	val constantValuePropertyKeys = mutableSetOf<String>()
+	
+	val documentManager = PsiDocumentManager.getInstance(project)
+	val command = Runnable {
+		val text = separator + "v"
+		EditorModificationUtil.insertStringAtCaret(editor, text, false, true)
+		documentManager.commitDocument(editor.document)
+		val offset = editor.caretModel.offset
+		
+		val elementAtCaret = file.findElementAt(offset - 1)?.parent as ParadoxScriptString
+		val clauseText = buildString {
+			append("{")
+			if(multiline) append("\n")
+			for(prop in propsToInsert) {
+				append(prop.key).append(separator)
+				if(prop.valueExpression.type ==CwtDataTypes.Constant) {
+					constantValuePropertyKeys.add(prop.key)
+					append(prop.value)
+				} else {
+					append("v")
+				}
+				if(multiline) append("\n") else append(" ")
+			}
+			if(multiline) append("\n")
+			append("}")
+		}
+		val clauseElement = ParadoxScriptElementFactory.createValue(project, clauseText)
+		val element = elementAtCaret.replace(clauseElement) as ParadoxScriptBlock
+		documentManager.doPostponedOperationsAndUnblockDocument(editor.document) //提交文档更改
+		
+		val startAction = StartMarkAction.start(editor, project, "script.command.expandClauseTemplate.name")
+		val builder = TemplateBuilderFactory.getInstance().createTemplateBuilder(element)
+		element.processProperty { p ->
+			val name = p.name
+			if(name in constantValuePropertyKeys) return@processProperty true
+			builder.replaceElement(p.propertyValue!!, name, TextExpression(""), true)
+			true
+		}
+		val textRange = element.textRange
+		val caretMarker = editor.document.createRangeMarker(textRange.startOffset, textRange.endOffset)
+		caretMarker.isGreedyToRight = true
+		editor.caretModel.moveToOffset(textRange.startOffset)
+		val template = builder.buildInlineTemplate()
+		TemplateManager.getInstance(project).startTemplate(editor, template, TemplateEditingFinishedListener { _, _ ->
+			try {
+				//如果从句中没有其他可能的元素，将光标移到子句之后的位置
+				if(!hasRemain) {
+					editor.caretModel.moveToOffset(caretMarker.endOffset)
+				}
+				editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
+			} finally {
+				FinishMarkAction.finish(project, editor, startAction)
+			}
+		})
+	}
+	WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.expandClauseTemplate.name"), null, command, file)
 }
