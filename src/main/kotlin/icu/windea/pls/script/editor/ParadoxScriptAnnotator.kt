@@ -153,7 +153,6 @@ class ParadoxScriptAnnotator : Annotator {
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-				if(text.isQuoted()) return
 				if(config !is CwtDataConfig<*>) {
 					val valueSetName = config.expression?.value ?: return
 					val textAttributesKey = when(valueSetName) {

@@ -303,7 +303,6 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Value -> {
 				if(!expression.type.isStringType()) return false
-				if(expression.quoted) return false //不允许用引号括起
 				if(isStatic) return false
 				if(isParameterAware) return true
 				return true //任意字符串即可，不需要进一步匹配

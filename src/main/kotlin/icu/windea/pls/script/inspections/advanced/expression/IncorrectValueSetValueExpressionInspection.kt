@@ -29,7 +29,6 @@ class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
 			
 			override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
 				ProgressManager.checkCanceled()
-				if(element.isQuoted()) return //忽略
 				val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return
 				val type = config.expression.type
 				if(type == CwtDataTypes.Value || type == CwtDataTypes.ValueSet) {
