@@ -27,6 +27,7 @@
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationCommenter"/>
     <liveTemplateContext
+        contextId="PARADOX_LOCALISATION"
         implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationTemplateContext"/>
     <defaultLiveTemplates file="/liveTemplates/ParadoxLocalisation.xml"/>
     <breadcrumbsInfoProvider

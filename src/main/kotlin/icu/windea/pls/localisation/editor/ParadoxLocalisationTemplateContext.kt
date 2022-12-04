@@ -6,7 +6,7 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 
-class ParadoxLocalisationTemplateContext : FileTypeBasedContextType(ParadoxLocalisationLanguage.id, PlsBundle.message("localisation.templateContextType"), ParadoxLocalisationFileType) {
+class ParadoxLocalisationTemplateContext : FileTypeBasedContextType(PlsBundle.message("localisation.templateContextType"), ParadoxLocalisationFileType) {
 	override fun isInContext(templateActionContext: TemplateActionContext): Boolean {
 		val file = templateActionContext.file
 		val startOffset = templateActionContext.startOffset

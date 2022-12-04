@@ -1,5 +1,6 @@
 package icu.windea.pls.localisation.psi.impl
 
+import com.intellij.lang.*
 import com.intellij.navigation.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.Iconable.*
@@ -8,6 +9,7 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
@@ -128,6 +130,13 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun toString(element: ParadoxLocalisationProperty): String{
 		return "ParadoxLocalisationProperty(name=${element.name})"
+	}
+	//endregion
+	
+	//region ParadoxLocalisationString
+	@JvmStatic
+	fun parseContents(element: ParadoxLocalisationString, chameleon: ASTNode) :ASTNode{
+		return ParadoxLocalisationStringHandler.parseContents(element, chameleon)
 	}
 	//endregion
 	

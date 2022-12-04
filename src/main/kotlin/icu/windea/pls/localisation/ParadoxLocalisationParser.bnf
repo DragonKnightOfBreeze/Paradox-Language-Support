@@ -64,6 +64,8 @@ rich_text ::= property_reference | command | icon | colorful_text | escape | str
 
 string ::= STRING_TOKEN{
   extends=rich_text
+  implements="com.intellij.psi.tree.ILazyParseableElementTypeBase.parseContents"
+  methods=[parseContents]
 }
 
 escape ::= VALID_ESCAPE_TOKEN | INVALID_ESCAPE_TOKEN | DOUBLE_LEFT_BRACKET{

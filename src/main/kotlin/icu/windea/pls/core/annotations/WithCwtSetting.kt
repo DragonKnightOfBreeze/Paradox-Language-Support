@@ -1,10 +1,11 @@
 package icu.windea.pls.core.annotations
 
 import icu.windea.pls.config.cwt.setting.*
+import icu.windea.pls.core.model.*
 import kotlin.reflect.*
 
 /**
- * 注明此功能基于CWT配置实现。
+ * 注明此功能基于指定的CWT配置实现。
  * @property fileName CWT配置文件的路径（相对于`config/cwt/core`）。
  * @property settingClass 对应的CWT配置类。
  */

@@ -37,7 +37,6 @@ import javax.swing.event.*
  * @property checkOptionalForDefinitions 是否同样检查定义的可选的相关本地化，默认为false。
  * @property checkForModifiers 是否检查修饰符。默认为false。
  */
-@CwtInspection("CWT100")
 class MissingLocalisationInspection : LocalInspectionTool() {
 	@OptionTag(converter = CommaDelimitedStringListConverter::class)
 	@JvmField var locales = listOf("l_english")
