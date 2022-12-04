@@ -38,9 +38,11 @@ private option_comment_item ::= option | value
 
 option ::= option_key option_separator value {
   pin=1
+  mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
+  implements="icu.windea.pls.cwt.psi.CwtNamedElement"
   methods=[
     optionKey="option_key" optionValue="value"
-    getIcon getName getValue getSeparatorType
+    getIcon getName setName getNameIdentifier getValue getSeparatorType
   ]
 }
 option_key ::= OPTION_KEY_TOKEN {

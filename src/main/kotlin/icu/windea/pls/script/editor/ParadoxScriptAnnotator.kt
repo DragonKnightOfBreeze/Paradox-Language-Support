@@ -68,7 +68,8 @@ class ParadoxScriptAnnotator : Annotator {
 	}
 	
 	private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
-		val config = resolveConfigs(element).firstOrNull()
+		val isKey = element is ParadoxScriptPropertyKey
+		val config = resolveConfigs(element, !isKey, isKey).firstOrNull()
 		if(config != null) {
 			doAnnotateExpressionElement(element, element.textRange, null, config, holder)
 		}

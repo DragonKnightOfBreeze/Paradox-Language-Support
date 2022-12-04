@@ -56,6 +56,16 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun setName(element: CwtOption, name: String): CwtOption {
+		throw IncorrectOperationException() //不允许重命名
+	}
+	
+	@JvmStatic
+	fun getNameIdentifier(element: CwtOption): PsiElement {
+		return element.optionKey
+	}
+	
+	@JvmStatic
 	fun getValue(element: CwtOption): String? {
 		return element.optionValue?.value
 	}

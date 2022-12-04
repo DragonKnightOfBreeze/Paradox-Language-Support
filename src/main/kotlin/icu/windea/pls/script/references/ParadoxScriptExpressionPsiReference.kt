@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 /**
  * @see icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider
  */
-class ParadoxScriptExpressionReference(
+class ParadoxScriptExpressionPsiReference(
 	element: ParadoxScriptExpressionElement,
 	rangeInElement: TextRange,
 	val config: CwtDataConfig<*>,

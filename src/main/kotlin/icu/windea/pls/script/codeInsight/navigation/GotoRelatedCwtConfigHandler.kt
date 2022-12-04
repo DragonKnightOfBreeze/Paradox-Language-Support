@@ -25,8 +25,8 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 		val location = findElement(file, offset) ?: return null
 		//获取所有匹配的CWT规则，不存在匹配的CWT规则时，选用所有默认的CWT规则（对于propertyConfig来说是匹配key的，对于valueConfig来说是所有）
 		//包括内联的和未被内联的（即alias或single_alias，显示时使用特殊的别名图标）规则
-		val allowDefinitionSelf = location !is ParadoxScriptPropertyKey
-		val configs = ParadoxCwtConfigHandler.resolveConfigs(location, allowDefinitionSelf, false)
+		val isKey = location is ParadoxScriptPropertyKey
+		val configs = ParadoxCwtConfigHandler.resolveConfigs(location, !isKey, isKey)
 		val targets = buildSet {
 			for(config in configs) {
 				config.resolvedOrNull()?.pointer?.element?.let { add(it) }
