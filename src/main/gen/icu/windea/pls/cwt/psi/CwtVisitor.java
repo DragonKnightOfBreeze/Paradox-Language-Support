@@ -34,7 +34,7 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitOption(@NotNull CwtOption o) {
-    visitPsiElement(o);
+    visitNamedElement(o);
   }
 
   public void visitOptionComment(@NotNull CwtOptionComment o) {

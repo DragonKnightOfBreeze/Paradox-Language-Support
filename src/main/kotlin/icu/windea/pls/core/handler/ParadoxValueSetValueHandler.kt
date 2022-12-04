@@ -12,7 +12,7 @@ object ParadoxValueSetValueHandler {
 	fun resolveInfo(element: ParadoxScriptString): ParadoxValueSetValueInfo? {
 		if(!element.isExpressionElement()) return null
 		//排除带参数的情况和用引号括起的情况
-		if(element.isParameterAwareExpression() || element.text.isLeftQuoted()) return null
+		if(element.isParameterAwareExpression()) return null
 		
 		ProgressManager.checkCanceled()
 		//cannot use stub index here

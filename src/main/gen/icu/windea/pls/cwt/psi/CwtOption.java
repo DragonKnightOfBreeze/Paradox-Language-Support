@@ -8,7 +8,7 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.cwt.CwtSeparatorType;
 import javax.swing.Icon;
 
-public interface CwtOption extends PsiElement {
+public interface CwtOption extends CwtNamedElement {
 
   @NotNull
   CwtOptionKey getOptionKey();
@@ -21,6 +21,12 @@ public interface CwtOption extends PsiElement {
 
   @NotNull
   String getName();
+
+  @NotNull
+  CwtOption setName(@NotNull String name);
+
+  @NotNull
+  PsiElement getNameIdentifier();
 
   @Nullable
   String getValue();

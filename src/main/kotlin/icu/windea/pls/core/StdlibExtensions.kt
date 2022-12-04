@@ -172,7 +172,7 @@ fun String.isLeftQuoted(): Boolean {
 }
 
 fun String.isRightQuoted() : Boolean {
-	return endsWith('"')
+	return length > 1 && endsWith('"') && get(length - 2) != '\\'
 }
 
 fun String.quote(): String {

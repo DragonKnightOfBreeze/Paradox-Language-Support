@@ -44,9 +44,9 @@
 ## 0.7.7
 
 * 优化：
-  * [ ] 进行代码补全时，尽可能兼容表达式允许用引号括起的各种情况
+  * [X] 进行代码补全时，尽可能兼容表达式用引号括起的各种情况
 * 新增功能： 
-  * [ ] 支持CWT规则：`stellaris_name_format[xxx]`
+  * [X] 支持CWT规则：`stellaris_name_format[xxx]`
     * `stellaris_name_format[x]`对应一个本地化的名称，本地化文本中可以使用格式化引用`<some_parts>`，而`some_parts`对应CWT规则`value[x]`
   * [ ] 支持引用解析：用于格式化的本地化文本中的格式化引用（`format.xxx: "<some_parts> ...""`中的`<some_parts>`） - 更新中
     * 当`empire_name_format`的名称属性`format`的值是`format.xxx`，对应一个本地化时，那个本地化中可以使用格式化引用语法

@@ -68,10 +68,12 @@ class ParadoxScriptAnnotator : Annotator {
 	}
 	
 	private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
+		checkLiteralElement(element, holder)
+		
 		val isKey = element is ParadoxScriptPropertyKey
 		val config = resolveConfigs(element, !isKey, isKey).firstOrNull()
 		if(config != null) {
-			doAnnotateExpressionElement(element, element.textRange, null, config, holder)
+			annotateExpression(element, element.textRange, null, config, holder)
 		}
 		
 		val complexEnumValueInfo = element.complexEnumValueInfo
@@ -80,7 +82,15 @@ class ParadoxScriptAnnotator : Annotator {
 		}
 	}
 	
-	private fun doAnnotateExpressionElement(
+	private fun checkLiteralElement(element: PsiElement, holder: AnnotationHolder) {
+		val text = element.text
+		if(text.isLeftQuoted() && !text.isRightQuoted()) {
+			//missing closing quote
+			holder.newAnnotation(ERROR, PlsBundle.message("syntax.error.missing.closing.quote")).create()
+		}
+	}
+	
+	private fun annotateExpression(
 		element: ParadoxScriptExpressionElement,
 		range: TextRange,
 		rangeInElement: TextRange?,
@@ -153,7 +163,8 @@ class ParadoxScriptAnnotator : Annotator {
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-				if(config !is CwtDataConfig<*>) {
+				//not key/value or quoted -> only value set value name, no scope info
+				if(config !is CwtDataConfig<*> || text.isLeftQuoted()) {
 					val valueSetName = config.expression?.value ?: return
 					val textAttributesKey = when(valueSetName) {
 						"variable" -> Keys.VARIABLE_KEY
@@ -189,7 +200,7 @@ class ParadoxScriptAnnotator : Annotator {
 				val aliasMap = configGroup.aliasGroups.get(aliasName) ?: return
 				val aliasSubName = CwtConfigHandler.getAliasSubName(text, false, aliasName, configGroup) ?: return
 				val aliasConfig = aliasMap[aliasSubName]?.first() ?: return
-				doAnnotateExpressionElement(element, range, rangeInElement, aliasConfig, holder)
+				annotateExpression(element, range, rangeInElement, aliasConfig, holder)
 			}
 			CwtDataTypes.ConstantKey -> {
 				if(text.isParameterAwareExpression()) return
@@ -207,7 +218,7 @@ class ParadoxScriptAnnotator : Annotator {
 		}
 	}
 	
-	fun annotateComplexExpression(element: ParadoxScriptExpressionElement, expression: ParadoxComplexExpression, config: CwtConfig<*>, range: TextRange, holder: AnnotationHolder) {
+	private fun annotateComplexExpression(element: ParadoxScriptExpressionElement, expression: ParadoxComplexExpression, config: CwtConfig<*>, range: TextRange, holder: AnnotationHolder) {
 		doAnnotateComplexExpression(element, expression, config, range, holder)
 	}
 	
@@ -224,7 +235,7 @@ class ParadoxScriptAnnotator : Annotator {
 		}
 		val attributesKeyConfig = expressionNode.getAttributesKeyConfig(element)
 		if(attributesKeyConfig != null) {
-			doAnnotateExpressionElement(element, rangeToAnnotate, expressionNode.rangeInExpression, attributesKeyConfig, holder)
+			annotateExpression(element, rangeToAnnotate, expressionNode.rangeInExpression, attributesKeyConfig, holder)
 		}
 		if(expressionNode.nodes.isNotEmpty()) {
 			for(node in expressionNode.nodes) {

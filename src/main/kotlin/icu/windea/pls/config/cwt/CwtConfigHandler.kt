@@ -784,7 +784,8 @@ object CwtConfigHandler {
 				}
 			}
 			CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-				if(config !is CwtDataConfig<*>) {
+				//not key/value or quoted -> only value set value name, no scope info
+				if(config !is CwtDataConfig<*> || quoted) {
 					completeValueSetValue(context, result)
 					return
 				}
@@ -1191,7 +1192,6 @@ object CwtConfigHandler {
 	}
 	
 	fun completeValueSetValue(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
-		if(quoted) return@with
 		val configs = configs
 		if(configs != null && configs.isNotEmpty()) {
 			for(config in configs) {
