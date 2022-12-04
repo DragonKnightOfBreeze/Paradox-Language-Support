@@ -1,4 +1,4 @@
-package icu.windea.pls.script.inspections.advanced
+package icu.windea.pls.script.inspections.advanced.expression
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
@@ -20,7 +20,7 @@ import javax.swing.*
  * * 这也不意味着游戏本身无法识别对应的脚本结构。
  * * 默认不会开启，一方面PLS对CWT规则支持尚不完善，另一方面CWT规则本身也尚不完善。
  */
-class IncorrectScriptStructureInspection : LocalInspectionTool() {
+class IncorrectScriptExpressionInspection : LocalInspectionTool() {
 	@JvmField var forPropertyKey = true
 	@JvmField var forPropertyValue = true
 	@JvmField var forValue = true
@@ -40,7 +40,7 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 					//是定义元素，非定义自身，且路径中不带参数
 					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
 						val fix = ImportGameOrModDirectoryFix(element)
-						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.description.1", element.expression), fix)
+						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.description.1", element.expression), fix)
 						//skip checking property value if property key is invalid 
 						return
 					}
@@ -64,7 +64,7 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 					//是定义元素，非定义自身，且路径中不带参数
 					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
 						val fix = ImportGameOrModDirectoryFix(element)
-						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.description.1", element.expression), fix)
+						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.description.1", element.expression), fix)
 						//skip checking children
 						return
 					}
@@ -78,17 +78,17 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 	override fun createOptionsPanel(): JComponent {
 		return panel {
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.option.forPropertyKey"))
+				checkBox(PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.option.forPropertyKey"))
 					.bindSelected(::forPropertyKey)
 					.actionListener { _, component -> forPropertyKey = component.isSelected }
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.option.forPropertyValue"))
+				checkBox(PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.option.forPropertyValue"))
 					.bindSelected(::forPropertyValue)
 					.actionListener { _, component -> forPropertyValue = component.isSelected }
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.option.forValue"))
+				checkBox(PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.option.forValue"))
 					.bindSelected(::forValue)
 					.actionListener { _, component -> forValue = component.isSelected }
 			}

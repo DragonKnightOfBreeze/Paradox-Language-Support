@@ -190,12 +190,6 @@
     <!--                 groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"-->
     <!--                 groupPathKey="script.inspection.advanced.path"-->
     <!--                 implementationClass="icu.windea.pls.script.inspections.advanced.IncorrectScriptSyntaxInspection"/>-->
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScriptStructure"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="script.inspection.advanced.incorrectScriptStructure"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
-                     groupPathKey="script.inspection.advanced.path"
-                     implementationClass="icu.windea.pls.script.inspections.advanced.IncorrectScriptStructureInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingLocalisation"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle"
@@ -241,6 +235,12 @@
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.UnsetValueSetValueInspection"/>
     <!--advanced > expression-->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScriptExpression"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="script.inspection.advanced.incorrectScriptExpression"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.expression"
+                     groupPathKey="script.inspection.expression.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.expression.IncorrectScriptExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeFieldExpression"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="script.inspection.expression.incorrectScopeFieldExpression"
