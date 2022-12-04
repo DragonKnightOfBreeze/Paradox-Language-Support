@@ -13,7 +13,6 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
-import org.jetbrains.kotlin.idea.base.resources.*
 
 /**
  * 定义（definition）的装订线图标提供器。
@@ -48,7 +47,7 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 			.createLineMarkerInfo(locationElement)
 		NavigateAction.setNavigateAction(
 			lineMarkerInfo,
-			KotlinBundle.message(PlsBundle.message("script.gutterIcon.definition.action")),
+			PlsBundle.message("script.gutterIcon.definition.action"),
 			PlsActions.GutterGotoDefinition
 		)
 		result.add(lineMarkerInfo)

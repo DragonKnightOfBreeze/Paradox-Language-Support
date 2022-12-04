@@ -12,7 +12,6 @@ import icu.windea.pls.core.model.ParadoxLocalisationCategory.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
-import org.jetbrains.kotlin.idea.base.resources.*
 
 /**
  * 本地化（localisation/localisation_synced）的装订线图标提供器。
@@ -49,7 +48,7 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 				.createLineMarkerInfo(locationElement)
 			NavigateAction.setNavigateAction(
 				lineMarkerInfo,
-				KotlinBundle.message(PlsBundle.message("localisation.gutterIcon.localisation.action")),
+				PlsBundle.message("localisation.gutterIcon.localisation.action"),
 				PlsActions.GutterGotoLocalisation
 			)
 			result.add(lineMarkerInfo)

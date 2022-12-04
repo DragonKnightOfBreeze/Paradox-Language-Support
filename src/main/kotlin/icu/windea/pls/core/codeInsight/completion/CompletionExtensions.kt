@@ -171,9 +171,11 @@ fun CompletionResultSet.addScriptExpressionElement(
 
 private fun skipOrInsertRightQuote(context: ProcessingContext, editor: Editor) {
 	if(context.quoted) {
-		if(context.rightQuoted) {
+		val offset = editor.caretModel.offset
+		val charsSequence = editor.document.charsSequence
+		if(charsSequence.get(offset) == '"' && charsSequence.get(offset - 1) != '\\') {
 			//移到右边的双引号之后
-			editor.caretModel.moveToOffset(editor.caretModel.offset + 1)
+			editor.caretModel.moveToOffset(offset + 1)
 		} else {
 			//插入缺失的右边的双引号
 			EditorModificationUtil.insertStringAtCaret(editor, "\"")
