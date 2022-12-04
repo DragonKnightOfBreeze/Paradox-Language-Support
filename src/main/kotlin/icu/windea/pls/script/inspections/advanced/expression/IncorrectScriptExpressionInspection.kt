@@ -40,7 +40,8 @@ class IncorrectScriptExpressionInspection : LocalInspectionTool() {
 					//是定义元素，非定义自身，且路径中不带参数
 					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
 						val fix = ImportGameOrModDirectoryFix(element)
-						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.description.1", element.expression), fix)
+						val message = PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.description.1", element.expression)
+						holder.registerProblem(element, message, fix)
 						//skip checking property value if property key is invalid 
 						return
 					}
@@ -63,8 +64,14 @@ class IncorrectScriptExpressionInspection : LocalInspectionTool() {
 					val config = resolveValueConfigs(element, orDefault = false).firstOrNull()
 					//是定义元素，非定义自身，且路径中不带参数
 					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
+						val possibleConfigs = resolveValueConfigs(element, orDefault = true)
+						val possible = possibleConfigs.mapTo(mutableSetOf()) { it.expression }.joinToString()
 						val fix = ImportGameOrModDirectoryFix(element)
-						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.description.1", element.expression), fix)
+						val message = when {
+							possible.isNotEmpty() -> PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.description.2", element.expression, possible)
+							else -> PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.description.1", element.expression, possible)
+						}
+						holder.registerProblem(element, message, fix)
 						//skip checking children
 						return
 					}
