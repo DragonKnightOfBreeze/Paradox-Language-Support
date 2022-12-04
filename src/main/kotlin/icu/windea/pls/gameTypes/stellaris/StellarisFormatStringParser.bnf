@@ -1,0 +1,24 @@
+{
+	parserClass="icu.windea.pls.gameTypes.stellaris.StellarisFormatStringParser"
+	extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+	psiClassPrefix="Stellaris"
+	psiImplClassSuffix="Impl"
+	psiPackage="icu.windea.pls.gameTypes.stellaris.psi"
+	psiImplPackage="icu.windea.pls.gameTypes.stellaris.psi.impl"
+	elementTypeHolderClass="icu.windea.pls.gameTypes.stellaris.StellarisFormatStringElementTypes"
+	elementTypeClass="icu.windea.pls.gameTypes.stellaris.psi.StellarisFormatStringElementType"
+	tokenTypeClass="icu.windea.pls.gameTypes.stellaris.psi.StellarisFormatStringTokenType"
+	psiImplUtilClass="icu.windea.pls.gameTypes.stellaris.psi.impl.StellarisFormatStringPsiImplUtil"
+	tokens=[
+	  STRING_TOKEN="regexp:[^\r\n<>]+"
+	  LEFT_ANGLE_BRACKET="<"
+	  RIGHT_ANGLE_BRACKET=">"
+	  FORMAT_REFERENCE_TOKEN="regexp:[a-zA-Z0-9_]+"
+	]
+}
+
+root ::= (STRING_TOKEN | format_reference)*
+format_reference ::= LEFT_ANGLE_BRACKET FORMAT_REFERENCE_TOKEN RIGHT_ANGLE_BRACKET {
+  pin=1
+  methods=[getName setName getReference]
+}

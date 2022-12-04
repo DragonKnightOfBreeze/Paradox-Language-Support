@@ -5,6 +5,7 @@ import com.intellij.openapi.options.colors.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.gameTypes.stellaris.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.highlighter.*
 
@@ -31,7 +32,10 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 			
 			//unused in localisation files
 			AttributesDescriptor(PlsBundle.message("localisation.displayName.localisation"), ParadoxLocalisationAttributesKeys.LOCALISATION_KEY),
-			AttributesDescriptor(PlsBundle.message("localisation.displayName.syncedLocalisation"), ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY)
+			AttributesDescriptor(PlsBundle.message("localisation.displayName.syncedLocalisation"), ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY),
+			
+			//for stellaris
+			AttributesDescriptor(StellarisBundle.message("localisation.displayName.stellarisFormatReference"), ParadoxLocalisationAttributesKeys.STELLARIS_FORMAT_REFERENCE_KEY)
 		)
 	}
 	

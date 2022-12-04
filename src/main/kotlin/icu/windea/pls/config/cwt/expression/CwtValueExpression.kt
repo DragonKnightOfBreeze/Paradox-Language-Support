@@ -70,6 +70,11 @@ class CwtValueExpression private constructor(
 			expressionString == "localisation_inline" -> {
 				CwtValueExpression(expressionString, Types.InlineLocalisation)
 			}
+			//for stellaris
+			expressionString.surroundsWith("stellaris_name_format[", "]") -> {
+				val value = expressionString.substring(22, expressionString.length - 1)
+				CwtValueExpression(expressionString, Types.Localisation, value, CwtDataTypeAlias.StellarisNameFormat)
+			}
 			//EXTENDED BY PLS
 			expressionString == "abs_filepath" -> {
 				CwtValueExpression(expressionString, Types.AbsoluteFilePath)

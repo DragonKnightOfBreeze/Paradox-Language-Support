@@ -21,7 +21,6 @@ object ParadoxLocalisationStringHandler {
 		val property = element.parentOfType<ParadoxLocalisationProperty>() ?: return null
 		val propertyName = property.name
 		if(propertyName.startsWith("format.")) {
-			//支持CWT规则类型`stellaris_name_format[xxx]`
 			return parseStellarisFormatString(element, property, chameleon)
 		} else {
 			return null

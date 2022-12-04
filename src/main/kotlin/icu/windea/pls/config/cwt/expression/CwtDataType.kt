@@ -42,3 +42,8 @@ object CwtDataTypes {
 	object Constant : CwtValueDataType
 	object Other : CwtKeyDataType, CwtValueDataType
 }
+
+enum class CwtDataTypeAlias {
+	//for stellaris
+	StellarisNameFormat
+}
