@@ -68,8 +68,8 @@ class IncorrectScriptExpressionInspection : LocalInspectionTool() {
 						val possible = possibleConfigs.mapTo(mutableSetOf()) { it.expression }.joinToString()
 						val fix = ImportGameOrModDirectoryFix(element)
 						val message = when {
-							possible.isNotEmpty() -> PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.description.2", element.expression, possible)
-							else -> PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.description.1", element.expression, possible)
+							possible.isEmpty() -> PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.description.1", element.expression, possible)
+							else -> PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.description.2", element.expression, possible)
 						}
 						holder.registerProblem(element, message, fix)
 						//skip checking children
