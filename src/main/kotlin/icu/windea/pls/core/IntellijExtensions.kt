@@ -2,7 +2,6 @@
 
 package icu.windea.pls.core
 
-import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.codeInsight.navigation.*

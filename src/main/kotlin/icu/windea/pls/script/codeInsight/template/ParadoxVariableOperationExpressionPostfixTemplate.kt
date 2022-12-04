@@ -1,10 +1,10 @@
 package icu.windea.pls.script.codeInsight.template
 
-import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInsight.template.postfix.templates.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.core.*

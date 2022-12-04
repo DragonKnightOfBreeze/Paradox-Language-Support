@@ -1,8 +1,8 @@
 package icu.windea.pls.localisation.codeInsight.completion
 
-import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.config.definition.*
 import icu.windea.pls.core.*

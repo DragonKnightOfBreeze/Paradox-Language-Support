@@ -6,12 +6,11 @@ import com.intellij.patterns.PlatformPatterns.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import org.jetbrains.kotlin.idea.completion.*
 
 class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	init {
 		//当用户可能正在输入一个locale的名字时提示
-		val localePattern = psiElement(LOCALE_ID) or psiElement(PROPERTY_KEY_ID)
+		val localePattern = or(psiElement(LOCALE_ID), psiElement(PROPERTY_KEY_ID))
 		extend(null, localePattern, ParadoxLocalisationLocaleCompletionProvider())
 		
 		//当用户正在输入一个propertyReference的名字时提示
