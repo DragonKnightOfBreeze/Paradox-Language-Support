@@ -386,7 +386,7 @@ object CwtConfigHandler {
 				val text = expression.text
 				val value = configExpression.value
 				//常量的值也可能是yes/no
-				if((value == "yes" || value == "no") && text.isQuoted()) return false
+				if((value == "yes" || value == "no") && text.isLeftQuoted()) return false
 				return expression.text.equals(value, true) //忽略大小写
 			}
 			CwtDataTypes.Other -> {
@@ -594,7 +594,7 @@ object CwtConfigHandler {
 				processLocalisationVariants(keyword, project, selector = selector) { localisation ->
 					val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val typeFile = localisation.containingFile
-					result.addScriptExpressionElement(localisation, name.quoteIf(quoted),
+					result.addScriptExpressionElement(localisation, name,
 						context,
 						icon = PlsIcons.Localisation,
 						tailText = tailText,
@@ -611,7 +611,7 @@ object CwtConfigHandler {
 				processSyncedLocalisationVariants(keyword, project, selector = selector) { syncedLocalisation ->
 					val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
 					val typeFile = syncedLocalisation.containingFile
-					result.addScriptExpressionElement(syncedLocalisation, name.quoteIf(quoted),
+					result.addScriptExpressionElement(syncedLocalisation, name,
 						context,
 						icon = PlsIcons.Localisation,
 						tailText = tailText,
@@ -695,7 +695,7 @@ object CwtConfigHandler {
 				definitionQuery.processQuery { definition ->
 					val name = definition.definitionInfo?.name ?: return@processQuery true
 					val typeFile = definition.containingFile
-					result.addScriptExpressionElement(definition, name.quoteIf(quoted),
+					result.addScriptExpressionElement(definition, name,
 						context,
 						icon = PlsIcons.Definition,
 						tailText = tailText,
@@ -715,7 +715,7 @@ object CwtConfigHandler {
 					val definitionName = definition.definitionInfo?.name ?: return@processQuery true
 					val name = "$prefix$definitionName$suffix"
 					val typeFile = definition.containingFile
-					result.addScriptExpressionElement(definition, name.quoteIf(quoted),
+					result.addScriptExpressionElement(definition, name,
 						context,
 						icon = PlsIcons.Definition,
 						tailText = tailText,
@@ -747,7 +747,7 @@ object CwtConfigHandler {
 						val name = enumValueConfig.value
 						//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 						val element = enumValueConfig.pointer.element ?: continue
-						result.addScriptExpressionElement(element, name.quoteIf(quoted),
+						result.addScriptExpressionElement(element, name,
 							context,
 							icon = PlsIcons.EnumValue,
 							tailText = tailText,
@@ -770,7 +770,7 @@ object CwtConfigHandler {
 					query.processQuery { complexEnum ->
 						val name = complexEnum.value
 						//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
-						result.addScriptExpressionElement(complexEnum, name.quoteIf(quoted),
+						result.addScriptExpressionElement(complexEnum, name,
 							context,
 							icon = PlsIcons.ComplexEnumValue,
 							tailText = tailText,
@@ -835,7 +835,7 @@ object CwtConfigHandler {
 				//if(!name.matchesKeyword(keyword)) return //不预先过滤结果
 				val element = config.resolved().pointer.element ?: return
 				val typeFile = config.resolved().pointer.containingFile
-				result.addScriptExpressionElement(element, name.quoteIf(quoted),
+				result.addScriptExpressionElement(element, name,
 					context,
 					icon = PlsIcons.Property,
 					typeText = typeFile?.name,
@@ -865,7 +865,7 @@ object CwtConfigHandler {
 					config is CwtValueConfig && config.isTagConfig -> PlsIcons.Tag
 					else -> PlsIcons.Value
 				}
-				result.addScriptExpressionElement(element, name.quoteIf(quoted),
+				result.addScriptExpressionElement(element, name,
 					context,
 					icon = icon,
 					typeText = typeFile?.name,
@@ -934,7 +934,7 @@ object CwtConfigHandler {
 			val element = modifierConfig.pointer.element ?: continue
 			val tailText = " from modifiers"
 			val typeFile = modifierConfig.pointer.containingFile
-			result.addScriptExpressionElement(element, name.quoteIf(quoted),
+			result.addScriptExpressionElement(element, name,
 				context,
 				icon = PlsIcons.Modifier,
 				tailText = tailText,
@@ -1408,7 +1408,7 @@ object CwtConfigHandler {
 				return findSyncedLocalisation(name, project, selector = selector)
 			}
 			CwtDataTypes.InlineLocalisation -> {
-				if(element.isQuoted()) return null
+				if(element.text.isLeftQuoted()) return null
 				val name = expression
 				val selector = localisationSelector().gameType(gameType).preferRootFrom(element, exact).preferLocale(preferredParadoxLocale(), exact)
 				return findLocalisation(name, project, selector = selector)
@@ -1505,14 +1505,14 @@ object CwtConfigHandler {
 			CwtDataTypes.AliasKeysField -> {
 				val aliasName = configExpression.value ?: return null
 				val aliasGroup = configGroup.aliasGroups[aliasName] ?: return null
-				val aliasSubName = getAliasSubName(expression, element.isQuoted(), aliasName, configGroup)
+				val aliasSubName = getAliasSubName(expression, element.text.isLeftQuoted(), aliasName, configGroup)
 				val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return null
 				return resolveScriptExpression(element, rangeInElement, alias, configGroup, isKey, exact)
 			}
 			CwtDataTypes.AliasName -> {
 				val aliasName = configExpression.value ?: return null
 				val aliasGroup = configGroup.aliasGroups[aliasName] ?: return null
-				val aliasSubName = getAliasSubName(expression, element.isQuoted(), aliasName, configGroup)
+				val aliasSubName = getAliasSubName(expression, element.text.isLeftQuoted(), aliasName, configGroup)
 				val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return null
 				return resolveScriptExpression(element, rangeInElement, alias, configGroup, isKey, exact)
 			}
@@ -1551,7 +1551,7 @@ object CwtConfigHandler {
 				return findSyncedLocalisations(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
 			}
 			CwtDataTypes.InlineLocalisation -> {
-				if(element.isQuoted()) return emptyList()
+				if(element.text.isLeftQuoted()) return emptyList()
 				val name = expression
 				val selector = localisationSelector().gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
 				return findLocalisations(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
@@ -1645,14 +1645,14 @@ object CwtConfigHandler {
 			CwtDataTypes.AliasKeysField -> {
 				val aliasName = configExpression.value ?: return emptyList()
 				val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptyList()
-				val aliasSubName = getAliasSubName(expression, element.isQuoted(), aliasName, configGroup)
+				val aliasSubName = getAliasSubName(expression, element.text.isLeftQuoted(), aliasName, configGroup)
 				val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return emptyList()
 				return multiResolveScriptExpression(element, rangeInElement, alias, configGroup, isKey)
 			}
 			CwtDataTypes.AliasName -> {
 				val aliasName = configExpression.value ?: return emptyList()
 				val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptyList()
-				val aliasSubName = getAliasSubName(expression, element.isQuoted(), aliasName, configGroup)
+				val aliasSubName = getAliasSubName(expression, element.text.isLeftQuoted(), aliasName, configGroup)
 				val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return emptyList()
 				return multiResolveScriptExpression(element, rangeInElement, alias, configGroup, isKey)
 			}

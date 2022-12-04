@@ -102,7 +102,7 @@ class ParadoxElementPathImpl(
 	override val subPaths: List<String> = path.split('/')
 	override val length = subPaths.size
 	override val subPathInfos: List<Tuple3<String, Boolean, Boolean>> = subPaths.map { 
-		tupleOf(it.unquote(), it.isQuoted(), it != "-")
+		tupleOf(it.unquote(), it.isLeftQuoted(), it != "-")
 	}
 	override val isParameterAware = length != 0 && this.subPaths.any { it.isParameterAwareExpression() }
 	

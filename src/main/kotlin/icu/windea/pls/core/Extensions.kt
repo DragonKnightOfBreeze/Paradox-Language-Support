@@ -258,10 +258,6 @@ fun PsiElement.useAllUseScope(): Boolean {
 	return language == CwtLanguage || language == ParadoxScriptLanguage || language == ParadoxLocalisationLanguage
 }
 
-fun PsiElement.isQuoted(): Boolean {
-	return text.isQuoted()
-}
-
 val PsiElement.localeConfig: CwtLocalisationLocaleConfig?
 	get() {
 		if(this.language == ParadoxLocalisationLanguage) {

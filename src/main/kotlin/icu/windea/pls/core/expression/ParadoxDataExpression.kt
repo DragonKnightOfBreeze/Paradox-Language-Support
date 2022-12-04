@@ -20,11 +20,11 @@ class ParadoxDataExpressionImpl(
 }
 
 fun Resolver.resolve(element: ParadoxScriptPropertyKey): ParadoxDataExpression {
-	return ParadoxDataExpressionImpl(element.value, element.expressionType, element.isQuoted(), true)
+	return ParadoxDataExpressionImpl(element.value, element.expressionType, element.text.isLeftQuoted(), true)
 }
 
 fun Resolver.resolve(element: ParadoxScriptValue): ParadoxDataExpression {
-	return ParadoxDataExpressionImpl(element.value, element.expressionType, element.isQuoted(), false)
+	return ParadoxDataExpressionImpl(element.value, element.expressionType, element.text.isLeftQuoted(), false)
 }
 
 fun Resolver.resolve(value: String, isQuoted: Boolean, isKey: Boolean? = null): ParadoxDataExpression {
@@ -35,6 +35,6 @@ fun Resolver.resolve(value: String, isQuoted: Boolean, isKey: Boolean? = null): 
 fun Resolver.resolve(text: String, isKey: Boolean? = null): ParadoxDataExpression {
 	val value = text.unquote()
 	val expressionType = ParadoxDataType.resolve(text)
-	val quoted = text.isQuoted()
+	val quoted = text.isLeftQuoted()
 	return ParadoxDataExpressionImpl(value, expressionType, quoted, isKey)
 }

@@ -167,8 +167,12 @@ fun String.isExactIdentifier(): Boolean {
 	return this.all { it == '_' || it.isExactLetter() || it.isExactDigit() }
 }
 
-fun String.isQuoted(): Boolean {
-	return startsWith('"') || endsWith('"')
+fun String.isLeftQuoted(): Boolean {
+	return startsWith('"')
+}
+
+fun String.isRightQuoted() : Boolean {
+	return endsWith('"')
 }
 
 fun String.quote(): String {
@@ -205,7 +209,7 @@ fun String.truncate(limit: Int, ellipsis: String = "..."): String {
 }
 
 fun String.truncateAndKeepQuotes(limit: Int, ellipsis: String = "..."): String {
-	if(this.isQuoted()) {
+	if(this.isLeftQuoted()) {
 		return if(this.length - 2 <= limit) this else this.take(limit + 1) + ellipsis + "\""
 	} else {
 		return if(this.length <= limit) this else this.take(limit) + ellipsis

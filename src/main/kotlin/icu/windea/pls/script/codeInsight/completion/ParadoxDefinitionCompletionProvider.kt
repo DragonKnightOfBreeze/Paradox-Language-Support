@@ -18,7 +18,8 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 		
 		ProgressManager.checkCanceled()
 		
-		val quoted = element.isQuoted()
+		val quoted = element.text.isLeftQuoted()
+		val rightQuoted = element.text.isRightQuoted()
 		val offsetInParent = parameters.offset - element.textRange.startOffset
 		val keyword = element.getKeyword(offsetInParent)
 		
@@ -26,6 +27,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 		context.put(PlsCompletionKeys.contextElementKey, element)
 		context.put(PlsCompletionKeys.originalFileKey, parameters.originalFile)
 		context.put(PlsCompletionKeys.quotedKey, quoted)
+		context.put(PlsCompletionKeys.rightQuotedKey, rightQuoted)
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
 		
@@ -49,7 +51,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 			//得到上一级definitionProperty
 			val definitionProperty = valueElement.findParentDefinitionProperty() ?: return
 			//进行提示
-			 CwtConfigHandler.addValueCompletions(valueElement, definitionProperty, context, resultToUse)
+			CwtConfigHandler.addValueCompletions(valueElement, definitionProperty, context, resultToUse)
 		}
 		if(mayBeBlockValue) {
 			//得到value元素

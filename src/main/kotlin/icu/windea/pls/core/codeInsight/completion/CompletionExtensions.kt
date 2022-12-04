@@ -24,6 +24,7 @@ val ProcessingContext.completionIds get() = get(PlsCompletionKeys.completionIdsK
 val ProcessingContext.contextElement get() = get(PlsCompletionKeys.contextElementKey)
 val ProcessingContext.originalFile get() = get(PlsCompletionKeys.originalFileKey)
 val ProcessingContext.quoted get() = get(PlsCompletionKeys.quotedKey)
+val ProcessingContext.rightQuoted get() = get(PlsCompletionKeys.rightQuotedKey)
 val ProcessingContext.offsetInParent get() = get(PlsCompletionKeys.offsetInParentKey)
 val ProcessingContext.keyword get() = get(PlsCompletionKeys.keywordKey)
 val ProcessingContext.isKey: Boolean? get() = get(PlsCompletionKeys.isKeyKey)
@@ -75,8 +76,7 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 		val lookupElement = LookupElementBuilder.create("").bold()
 			.withPresentableText("{ <generate via template> }")
 			.withInsertHandler { c, _ ->
-				val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
-				startClauseTemplate(c.editor, file, props, customSettings, false)
+				startClauseTemplate(context, c.editor, file, props, false)
 			}
 			.withPriority(PlsCompletionPriorities.keywordPriority - 1) //under "{...}"
 		addElement(lookupElement)
@@ -129,14 +129,18 @@ fun CompletionResultSet.addScriptExpressionElement(
 		lookupElement = lookupElement.withTypeText(typeText, typeIcon, true)
 	}
 	
-	if(context.contextElement is ParadoxScriptPropertyKey) {
-		addElement(lookupElement)
+	if(context.isKey != true || context.contextElement is ParadoxScriptPropertyKey) {
+		val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
+			skipOrInsertRightQuote(context, c.editor)
+		}
+		addElement(resultLookupElement)
 		return
 	}
 	
 	if(context.isKey == true) {
 		val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
 			val editor = c.editor
+			skipOrInsertRightQuote(context, c.editor)
 			val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
 			val text = buildString {
 				append(if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "=")
@@ -150,8 +154,6 @@ fun CompletionResultSet.addScriptExpressionElement(
 			EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
 		}
 		addElement(resultLookupElement.builder())
-	} else {
-		addElement(lookupElement)
 	}
 	
 	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
@@ -161,16 +163,28 @@ fun CompletionResultSet.addScriptExpressionElement(
 	if(context.isKey == true && completeWithClauseTemplate && file != null && props != null && props.isNotEmpty()) {
 		lookupElement = lookupElement.withTailText(" = { <generate via template> }")
 		val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
-			val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
-			startClauseTemplate(c.editor, file, props, customSettings, true)
+			startClauseTemplate(context, c.editor, file, props, true)
 		}
 		addElement(resultLookupElement.builder())
 	}
 }
 
+private fun skipOrInsertRightQuote(context: ProcessingContext, editor: Editor) {
+	if(context.quoted) {
+		if(context.rightQuoted) {
+			//移到右边的双引号之后
+			editor.caretModel.moveToOffset(editor.caretModel.offset + 1)
+		} else {
+			//插入缺失的右边的双引号
+			EditorModificationUtil.insertStringAtCaret(editor, "\"")
+		}
+	}
+}
+
 @Suppress("UnstableApiUsage")
-private fun startClauseTemplate(editor: Editor, file: PsiFile, props: List<CwtPropertyConfig>, customSettings: ParadoxScriptCodeStyleSettings, insertEq: Boolean) {
+private fun startClauseTemplate(context:ProcessingContext, editor: Editor, file: PsiFile, props: List<CwtPropertyConfig>, insertEq: Boolean) {
 	val project = file.project
+	val customSettings = CodeStyle.getCustomSettings(file, ParadoxScriptCodeStyleSettings::class.java)
 	
 	val propsToCheck = props
 		.distinctBy { it.key.lowercase() }
@@ -185,6 +199,7 @@ private fun startClauseTemplate(editor: Editor, file: PsiFile, props: List<CwtPr
 	
 	val documentManager = PsiDocumentManager.getInstance(project)
 	val command = Runnable {
+		skipOrInsertRightQuote(context, editor)
 		val text = if(insertEq) separator + "v" else "v"
 		EditorModificationUtil.insertStringAtCaret(editor, text, false, true)
 		documentManager.commitDocument(editor.document)

@@ -100,7 +100,7 @@ class ParadoxScriptAnnotator : Annotator {
 		val isKey = element is ParadoxScriptPropertyKey
 		when(configExpression.type) {
 			CwtDataTypes.InlineLocalisation -> {
-				if(!element.isQuoted()) {
+				if(!element.text.isLeftQuoted()) {
 					if(text.isParameterAwareExpression()) return
 					val attributesKey = Keys.LOCALISATION_REFERENCE_KEY
 					holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
@@ -167,13 +167,13 @@ class ParadoxScriptAnnotator : Annotator {
 				annotateComplexExpression(element, valueSetValueExpression, config, range, holder)
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
-				if(text.isQuoted()) return
+				if(text.isLeftQuoted()) return
 				val textRange = TextRange.create(0, text.length)
 				val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup, isKey) ?: return
 				annotateComplexExpression(element, scopeFieldExpression, config, range, holder)
 			}
 			CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
-				if(text.isQuoted()) return
+				if(text.isLeftQuoted()) return
 				val textRange = TextRange.create(0, text.length)
 				val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup, isKey) ?: return
 				annotateComplexExpression(element, valueFieldExpression, config, range, holder)

@@ -344,7 +344,7 @@ object ParadoxDefinitionHandler {
 		//aliasName和aliasSubName需要匹配
 		val aliasName = propertyConfig.keyExpression.value ?: return false
 		val key = propertyElement.name
-		val quoted = propertyElement.propertyKey.isQuoted()
+		val quoted = propertyElement.propertyKey.text.isLeftQuoted()
 		val aliasSubName = CwtConfigHandler.getAliasSubName(key, quoted, aliasName, configGroup) ?: return false
 		val aliasGroup = configGroup.aliasGroups[aliasName] ?: return false
 		val aliases = aliasGroup[aliasSubName] ?: return false

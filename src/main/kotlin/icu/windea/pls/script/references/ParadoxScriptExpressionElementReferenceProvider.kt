@@ -26,19 +26,19 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 			val textRange = TextRange.create(0, text.length)
 			when(config.expression.type) {
 				CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-					if(text.isQuoted()) return PsiReference.EMPTY_ARRAY
+					if(text.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
 					val valueFieldExpression = ParadoxValueSetValueExpression.resolve(text, textRange, config, configGroup, isKey)
 					if(valueFieldExpression == null) return PsiReference.EMPTY_ARRAY
 					return valueFieldExpression.getReferences(element)
 				}
 				CwtDataTypes.Scope, CwtDataTypes.ScopeField, CwtDataTypes.ScopeGroup -> {
-					if(text.isQuoted()) return PsiReference.EMPTY_ARRAY
+					if(text.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
 					val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup, isKey)
 					if(scopeFieldExpression == null) return PsiReference.EMPTY_ARRAY
 					return scopeFieldExpression.getReferences(element)
 				}
 				CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
-					if(text.isQuoted()) return PsiReference.EMPTY_ARRAY
+					if(text.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
 					val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup, isKey)
 					if(valueFieldExpression == null) return PsiReference.EMPTY_ARRAY
 					return valueFieldExpression.getReferences(element)

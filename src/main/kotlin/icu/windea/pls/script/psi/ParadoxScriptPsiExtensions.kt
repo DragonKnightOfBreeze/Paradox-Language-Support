@@ -207,7 +207,7 @@ fun PsiElement.isExpressionElement(): Boolean {
 }
 
 fun ParadoxScriptExpressionElement.isParameterAwareExpression(): Boolean {
-	return !this.isQuoted() && this.textContains('$')
+	return !this.text.isLeftQuoted() && this.textContains('$')
 }
 
 fun ASTNode.isParameterAwareExpression(): Boolean {
@@ -215,6 +215,6 @@ fun ASTNode.isParameterAwareExpression(): Boolean {
 }
 
 fun String.isParameterAwareExpression(): Boolean {
-	return !this.isQuoted() && this.any { it == '$' }
+	return !this.isLeftQuoted() && this.any { it == '$' }
 }
 
