@@ -8,8 +8,10 @@ import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.script.psi.*
+import org.jetbrains.kotlin.idea.base.resources.*
 
 /**
  * 定义的相关图片（relatedImages，对应类型为sprite的定义或者DDS图片）的装订线图标提供器。
@@ -54,6 +56,11 @@ class ParadoxRelatedImagesLineMarkerProvider : RelatedItemLineMarkerProvider() {
 			.setAlignment(GutterIconRenderer.Alignment.RIGHT)
 			.setNamer { PlsBundle.message("script.gutterIcon.relatedImages") }
 			.createLineMarkerInfo(locationElement)
+		NavigateAction.setNavigateAction(
+			lineMarkerInfo,
+			KotlinBundle.message(PlsBundle.message("script.gutterIcon.relatedImages.action")),
+			PlsActions.GutterGotoRelatedImage
+		)
 		result.add(lineMarkerInfo)
 	}
 	

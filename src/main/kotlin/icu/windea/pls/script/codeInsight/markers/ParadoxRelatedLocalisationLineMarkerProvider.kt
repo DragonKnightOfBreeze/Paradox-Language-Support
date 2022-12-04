@@ -7,10 +7,12 @@ import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
+import org.jetbrains.kotlin.idea.base.resources.*
 
 /**
  * 定义的相关本地化（relatedLocalisation，对应localisation，不对应localisation_synced）的装订线图标提供器。
@@ -54,6 +56,11 @@ class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvid
 			.setAlignment(GutterIconRenderer.Alignment.RIGHT)
 			.setNamer { PlsBundle.message("script.gutterIcon.relatedLocalisation") }
 			.createLineMarkerInfo(locationElement)
+		NavigateAction.setNavigateAction(
+			lineMarkerInfo,
+			KotlinBundle.message(PlsBundle.message("script.gutterIcon.relatedLocalisation.action")),
+			PlsActions.GutterGotoRelatedLocalisation
+		)
 		result.add(lineMarkerInfo)
 	}
 	
