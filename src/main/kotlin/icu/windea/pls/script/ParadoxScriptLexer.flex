@@ -120,8 +120,8 @@ COMMENT=#[^\r\n]*
 
 //判断接下来是变量名还是变量引用
 CHECK_SCRIPTED_VARIABLE={SCRIPTED_VARIABLE_ID}(\s*=)?
-//判断接下来是否是属性
-CHECK_PROPERTY_KEY=({WILDCARD_KEY_TOKEN}|{QUOTED_PROPERTY_KEY_TOKEN})\s*[=<>] //不是必须匹配参数结尾的"$"
+//判断接下来是否是属性的键
+CHECK_PROPERTY_KEY=({WILDCARD_KEY_TOKEN}|{QUOTED_PROPERTY_KEY_TOKEN})\s*[=<>]
 
 SCRIPTED_VARIABLE_ID=[a-zA-Z_][a-zA-Z0-9_]*
 PARAMETER_ID=[a-zA-Z_][a-zA-Z0-9_]*
@@ -263,6 +263,15 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  //兼容处理
+  {CHECK_PROPERTY_KEY} {
+    if(yycharat(0) == '"'){
+        pushbackUntilBeforeBlank(1);
+        return QUOTED_PROPERTY_KEY_TOKEN;
+    } else {
+       enterWildcardKey(); yypushback(yylength()); yybegin(WAITING_WILDCARD_KEY);
+    }
+  }
   "@["|"@\\[" {enterInlineMath(); yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
   "@" {yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME); return AT;}
   {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN;}

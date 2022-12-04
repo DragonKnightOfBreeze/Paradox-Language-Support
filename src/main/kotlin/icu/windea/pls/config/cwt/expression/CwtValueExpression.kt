@@ -17,7 +17,7 @@ class CwtValueExpression private constructor(
 ) : AbstractExpression(expressionString), CwtDataExpression {
 	companion object Resolver {
 		val EmptyExpression = CwtValueExpression("", Types.Constant, "")
-		val BlockExpression = CwtValueExpression("", Types.Any, "{...}")
+		val BlockExpression = CwtValueExpression("{...}", Types.Any, "{...}")
 		
 		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtValueExpression> { doResolve(it) } }
 		

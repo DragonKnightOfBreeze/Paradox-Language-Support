@@ -112,7 +112,8 @@ DOCUMENTATION_TOKEN=[^\s][^\r\n]*
   "##" {  yybegin(WAITING_OPTION); return OPTION_START; }
    
   {COMMENT} {return COMMENT; }
-      
+  
+  {CHECK_PROPERTY_KEY} {yypushback(yylength()); yybegin(WAITING_PROPERTY_KEY);}
   {BOOLEAN_TOKEN} { yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN; }
   {INT_TOKEN} { yybegin(WAITING_PROPERTY_END); return INT_TOKEN; }
   {FLOAT_TOKEN} { yybegin(WAITING_PROPERTY_END); return FLOAT_TOKEN; }
@@ -193,6 +194,8 @@ DOCUMENTATION_TOKEN=[^\s][^\r\n]*
   {COMMENT} {return COMMENT; }
   {OPTION_COMMENT_START} {  yypushback(1); yybegin(WAITING_OPTION); return OPTION_START; }
   {DOCUMENTATION_COMMENT_START} { yybegin(WAITING_DOCUMENTATION); return DOCUMENTATION_START; }
+  
+  {CHECK_OPTION_KEY} {yypushback(yylength()); yybegin(WAITING_OPTION_KEY);}
   
   {BOOLEAN_TOKEN} { yybegin(WAITING_OPTION_END); return BOOLEAN_TOKEN; }
   {INT_TOKEN} { yybegin(WAITING_OPTION_END); return INT_TOKEN; }
