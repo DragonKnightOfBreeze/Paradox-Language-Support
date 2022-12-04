@@ -25,8 +25,8 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 		//accept only one info
 		val file = psi.containingFile
 		val gameType = file.fileInfo?.rootInfo?.gameType
-		val complexEnumInfo = ParadoxComplexEnumValueInfoHandler.resolve(psi, file)
-		val valueSetInfo = if(complexEnumInfo == null) ParadoxValueSetValueInfoHandler.resolve(psi) else null
+		val complexEnumInfo = ParadoxComplexEnumValueHandler.resolveInfo(psi, file)
+		val valueSetInfo = if(complexEnumInfo == null) ParadoxValueSetValueHandler.resolveInfo(psi) else null
 		return ParadoxScriptStringStubImpl(parentStub, complexEnumInfo, valueSetInfo, gameType)
 	}
 	

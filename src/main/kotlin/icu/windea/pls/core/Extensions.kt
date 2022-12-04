@@ -292,22 +292,22 @@ val PsiElement.fileInfo: ParadoxFileInfo?
 	get() = this.containingFile?.fileInfo
 
 val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo?
-	get() = ParadoxDefinitionInfoHandler.get(this)
+	get() = ParadoxDefinitionHandler.getInfo(this)
 
 val ParadoxDefinitionProperty.definitionElementInfo: ParadoxDefinitionElementInfo?
-	get() = ParadoxDefinitionElementInfoHandler.get(this)
+	get() = ParadoxDefinitionElementHandler.getInfo(this)
 val ParadoxScriptPropertyKey.definitionElementInfo: ParadoxDefinitionElementInfo?
-	get() = ParadoxDefinitionElementInfoHandler.get(this)
+	get() = ParadoxDefinitionElementHandler.getInfo(this)
 val ParadoxScriptValue.definitionElementInfo: ParadoxDefinitionElementInfo?
-	get() = ParadoxDefinitionElementInfoHandler.get(this)
+	get() = ParadoxDefinitionElementHandler.getInfo(this)
 val ParadoxScriptExpressionElement.definitionElementInfo: ParadoxDefinitionElementInfo?
-	get() = ParadoxDefinitionElementInfoHandler.get(this)
+	get() = ParadoxDefinitionElementHandler.getInfo(this)
 
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
-	get() = ParadoxLocalisationInfoHandler.get(this)
+	get() = ParadoxLocalisationHandler.getInfo(this)
 
 val ParadoxScriptExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo?
-	get() = ParadoxComplexEnumValueInfoHandler.get(this)
+	get() = ParadoxComplexEnumValueHandler.getInfo(this)
 
 val ParadoxLocalisationLocale.localeConfig: CwtLocalisationLocaleConfig?
 	get() = getCwtConfig(project).core.localisationLocales.get(name)

@@ -50,16 +50,16 @@ fun ParadoxScriptedVariableSelector.distinctByName() =
 	distinctBy { it.name }
 
 fun ParadoxDefinitionSelector.distinctByName() =
-	distinctBy { ParadoxDefinitionInfoHandler.getName(it) }
+	distinctBy { ParadoxDefinitionHandler.getName(it) }
 
 fun ParadoxLocalisationSelector.distinctByName() =
 	distinctBy { it.name }
 
 fun ParadoxComplexEnumValueSelector.distinctByName() =
-	distinctBy { ParadoxComplexEnumValueInfoHandler.getName(it) }
+	distinctBy { ParadoxComplexEnumValueHandler.getName(it) }
 
 fun ParadoxValueSetValueSelector.distinctByValue() =
-	distinctBy { ParadoxValueSetValueInfoHandler.getName(it.value) }
+	distinctBy { ParadoxValueSetValueHandler.getName(it.value) }
 
 fun ParadoxLocalisationSelector.locale(locale: CwtLocalisationLocaleConfig?) =
 	apply { if(locale != null) selectors += ParadoxLocaleSelector(locale) }

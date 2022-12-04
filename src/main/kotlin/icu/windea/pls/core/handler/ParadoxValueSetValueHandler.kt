@@ -7,9 +7,9 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 
-object ParadoxValueSetValueInfoHandler {
+object ParadoxValueSetValueHandler {
 	@JvmStatic
-	fun resolve(element: ParadoxScriptString): ParadoxValueSetValueInfo? {
+	fun resolveInfo(element: ParadoxScriptString): ParadoxValueSetValueInfo? {
 		if(!element.isExpressionElement()) return null
 		//排除带参数的情况和用引号括起的情况
 		if(element.isParameterAwareExpression() || element.isQuoted()) return null

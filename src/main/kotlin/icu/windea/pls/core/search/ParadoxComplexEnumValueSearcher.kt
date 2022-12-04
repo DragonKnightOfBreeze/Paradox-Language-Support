@@ -25,6 +25,6 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxScriptExpressio
 	}
 	
 	private fun matchesName(element: ParadoxScriptExpressionElement, name: String): Boolean {
-		return ParadoxComplexEnumValueInfoHandler.getName(element) == name
+		return ParadoxComplexEnumValueHandler.getName(element) == name
 	}
 }

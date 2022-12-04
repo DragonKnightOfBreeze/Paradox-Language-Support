@@ -16,22 +16,22 @@ import icu.windea.pls.script.psi.*
 /**
  * 用于处理复杂枚举信息。
  */
-object ParadoxComplexEnumValueInfoHandler {
+object ParadoxComplexEnumValueHandler {
 	@JvmStatic
-	fun get(element: ParadoxScriptExpressionElement): ParadoxComplexEnumValueInfo? {
+	fun getInfo(element: ParadoxScriptExpressionElement): ParadoxComplexEnumValueInfo? {
 		//注意：element.stub可能会导致ProcessCanceledException
 		ProgressManager.checkCanceled()
 		if(!element.isExpressionElement()) return null
 		element.stub?.complexEnumValueInfo?.let { return it }
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedComplexEnumValueInfoKey) {
 			val file = element.containingFile
-			val value = resolve(element, file)
+			val value = resolveInfo(element, file)
 			CachedValueProvider.Result.create(value, file)//invalidated on file modification
 		}
 	}
 	
 	@JvmStatic
-	fun resolve(element: ParadoxScriptExpressionElement, file: PsiFile = element.containingFile): ParadoxComplexEnumValueInfo? {
+	fun resolveInfo(element: ParadoxScriptExpressionElement, file: PsiFile = element.containingFile): ParadoxComplexEnumValueInfo? {
 		//排除带参数的情况
 		if(element.isParameterAwareExpression()) return null
 		

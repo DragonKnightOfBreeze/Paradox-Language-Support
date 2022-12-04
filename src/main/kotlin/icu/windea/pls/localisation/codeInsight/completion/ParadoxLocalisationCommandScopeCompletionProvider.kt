@@ -43,7 +43,7 @@ class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<Com
 		val eventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
 		val eventTargetQuery = ParadoxValueSetValueSearch.search("event_target", project, selector = eventTargetSelector)
 		eventTargetQuery.processQuery { eventTarget ->
-			val value = ParadoxValueSetValueInfoHandler.getName(eventTarget.value) ?: return@processQuery true
+			val value = ParadoxValueSetValueHandler.getName(eventTarget.value) ?: return@processQuery true
 			val icon = PlsIcons.ValueSetValue
 			val tailText = " from value[event_target]"
 			val lookupElement = LookupElementBuilder.create(eventTarget, value)
@@ -59,7 +59,7 @@ class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<Com
 		val globalEventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
 		val globalEventTargetQuery = ParadoxValueSetValueSearch.search("global_event_target", project, selector = globalEventTargetSelector)
 		globalEventTargetQuery.processQuery { globalEventTarget ->
-			val value = ParadoxValueSetValueInfoHandler.getName(globalEventTarget.value) ?: return@processQuery true
+			val value = ParadoxValueSetValueHandler.getName(globalEventTarget.value) ?: return@processQuery true
 			val icon = PlsIcons.ValueSetValue
 			val tailText = " from value[global_event_target]"
 			val lookupElement = LookupElementBuilder.create(globalEventTarget, value)

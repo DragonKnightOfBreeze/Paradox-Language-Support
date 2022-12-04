@@ -45,10 +45,10 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionProperty, P
 	}
 	
 	private fun matchesName(element: ParadoxDefinitionProperty, name: String): Boolean {
-		return ParadoxDefinitionInfoHandler.getName(element) == name
+		return ParadoxDefinitionHandler.getName(element) == name
 	}
 	
 	private fun matchesSubtype(element: ParadoxDefinitionProperty, subtype: String): Boolean {
-		return ParadoxDefinitionInfoHandler.getSubtypes(element)?.contains(subtype) == true
+		return ParadoxDefinitionHandler.getSubtypes(element)?.contains(subtype) == true
 	}
 }

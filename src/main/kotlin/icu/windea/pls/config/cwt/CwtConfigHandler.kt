@@ -1246,9 +1246,9 @@ object CwtConfigHandler {
 			val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, project, selector = selector)
 			valueSetValueQuery.processQuery { valueSetValue ->
 				//去除后面的作用域信息
-				val value = ParadoxValueSetValueInfoHandler.getName(valueSetValue) ?: return@processQuery true
+				val value = ParadoxValueSetValueHandler.getName(valueSetValue) ?: return@processQuery true
 				//没有其他地方使用到时，排除当前正在输入的那个
-				val keywordValue = ParadoxValueSetValueInfoHandler.getName(this.keyword)
+				val keywordValue = ParadoxValueSetValueHandler.getName(this.keyword)
 				if(value == keywordValue && valueSetValue isSamePosition contextElement) return@processQuery true
 				val icon = when(valueSetName) {
 					"variable" -> PlsIcons.Variable

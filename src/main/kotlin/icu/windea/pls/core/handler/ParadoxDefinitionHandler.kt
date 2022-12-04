@@ -19,9 +19,9 @@ import icu.windea.pls.script.psi.*
 /**
  * 用于处理定义信息。
  */
-object ParadoxDefinitionInfoHandler {
+object ParadoxDefinitionHandler {
 	@JvmStatic
-	fun get(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
+	fun getInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfoKey) {
 			val file = element.containingFile
 			val value = resolve(element, file)

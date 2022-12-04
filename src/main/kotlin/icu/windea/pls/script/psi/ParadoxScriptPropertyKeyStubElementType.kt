@@ -25,7 +25,7 @@ object ParadoxScriptPropertyKeyStubElementType : IStubElementType<ParadoxScriptP
 		//accept only one info
 		val file = psi.containingFile
 		val gameType = file.fileInfo?.rootInfo?.gameType
-		val complexEnumInfo = ParadoxComplexEnumValueInfoHandler.resolve(psi)
+		val complexEnumInfo = ParadoxComplexEnumValueHandler.resolveInfo(psi)
 		return ParadoxScriptPropertyKeyStubImpl(parentStub, complexEnumInfo, gameType)
 	}
 	

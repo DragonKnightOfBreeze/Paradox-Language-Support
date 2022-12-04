@@ -63,7 +63,7 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 		val eventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
 		val eventTargetQuery = ParadoxValueSetValueSearch.search("event_target", project, selector = eventTargetSelector)
 		eventTargetQuery.processQuery { eventTarget ->
-			val value = ParadoxValueSetValueInfoHandler.getName(eventTarget.value) ?: return@processQuery true
+			val value = ParadoxValueSetValueHandler.getName(eventTarget.value) ?: return@processQuery true
 			val icon = PlsIcons.ValueSetValue
 			val tailText = " from value[event_target]"
 			val lookupElement = LookupElementBuilder.create(eventTarget, value)
@@ -79,7 +79,7 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 		val globalEventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
 		val globalEventTargetQuery = ParadoxValueSetValueSearch.search("global_event_target", project, selector = globalEventTargetSelector)
 		globalEventTargetQuery.processQuery { globalEventTarget ->
-			val value = ParadoxValueSetValueInfoHandler.getName(globalEventTarget) ?: return@processQuery true
+			val value = ParadoxValueSetValueHandler.getName(globalEventTarget) ?: return@processQuery true
 			val icon = PlsIcons.ValueSetValue
 			val tailText = " from value[global_event_target]"
 			val lookupElement = LookupElementBuilder.create(globalEventTarget, value)
@@ -95,7 +95,7 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 		val variableSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
 		val variableQuery = ParadoxValueSetValueSearch.search("variable", project, selector = variableSelector)
 		variableQuery.processQuery { variable ->
-			val value = ParadoxValueSetValueInfoHandler.getName(variable) ?: return@processQuery true
+			val value = ParadoxValueSetValueHandler.getName(variable) ?: return@processQuery true
 			val icon = PlsIcons.Variable
 			val tailText = " from value[variable]"
 			val lookupElement = LookupElementBuilder.create(variable, value)

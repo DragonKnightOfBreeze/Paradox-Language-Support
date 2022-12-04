@@ -27,7 +27,7 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxScriptString, Para
 	}
 	
 	private fun matchesName(element: ParadoxScriptString, name: String): Boolean {
-		return ParadoxValueSetValueInfoHandler.getName(element) == name
+		return ParadoxValueSetValueHandler.getName(element) == name
 	}
 }
 

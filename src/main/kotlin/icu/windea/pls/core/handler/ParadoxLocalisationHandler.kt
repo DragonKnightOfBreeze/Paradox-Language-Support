@@ -8,17 +8,17 @@ import icu.windea.pls.localisation.psi.*
 /**
  * 用于处理本地化信息。
  */
-object ParadoxLocalisationInfoHandler {
+object ParadoxLocalisationHandler {
 	@JvmStatic
-	fun get(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
+	fun getInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationInfoKey) {
-			val value = resolve(element)
+			val value = resolveInfo(element)
 			CachedValueProvider.Result.create(value, element)
 		}
 	}
 	
 	@JvmStatic
-	fun resolve(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
+	fun resolveInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
 		val name = element.name
 		val file = element.containingFile.originalFile.virtualFile ?: return null
 		val type = ParadoxLocalisationCategory.resolve(file) ?: return null

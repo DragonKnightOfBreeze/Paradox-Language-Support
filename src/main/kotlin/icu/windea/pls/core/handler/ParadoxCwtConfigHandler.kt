@@ -43,7 +43,7 @@ object ParadoxCwtConfigHandler {
 					element is ParadoxScriptPropertyKey -> element.propertyValue
 					else -> throw UnsupportedOperationException()
 				}
-				val definitionElementInfo = ParadoxDefinitionElementInfoHandler.get(element) ?: return emptyList()
+				val definitionElementInfo = ParadoxDefinitionElementHandler.getInfo(element) ?: return emptyList()
 				if(!allowDefinitionSelf && definitionElementInfo.elementPath.isEmpty()) return emptyList()
 				//如果无法匹配value，则取第一个
 				val configs = definitionElementInfo.getConfigs(matchType)
