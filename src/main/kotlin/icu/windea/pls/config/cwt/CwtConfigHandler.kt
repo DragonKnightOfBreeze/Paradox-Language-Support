@@ -863,9 +863,13 @@ object CwtConfigHandler {
 				//if(!name.matchesKeyword(keyword)) return //不预先过滤结果
 				val element = config.resolved().pointer.element ?: return
 				val typeFile = config.resolved().pointer.containingFile
+				val icon = when {
+					config is CwtValueConfig && config.isTagConfig -> PlsIcons.Tag
+					else -> PlsIcons.Value
+				}
 				result.addScriptExpressionElement(element, name.quoteIf(quoted),
 					context,
-					icon = PlsIcons.Value,
+					icon = icon,
 					typeText = typeFile?.name,
 					typeIcon = typeFile?.icon
 				) {
