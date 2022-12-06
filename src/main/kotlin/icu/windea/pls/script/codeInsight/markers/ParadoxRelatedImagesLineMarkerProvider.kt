@@ -8,7 +8,6 @@ import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.script.psi.*
 
@@ -55,11 +54,11 @@ class ParadoxRelatedImagesLineMarkerProvider : RelatedItemLineMarkerProvider() {
 			.setAlignment(GutterIconRenderer.Alignment.RIGHT)
 			.setNamer { PlsBundle.message("script.gutterIcon.relatedImages") }
 			.createLineMarkerInfo(locationElement)
-		NavigateAction.setNavigateAction(
-			lineMarkerInfo,
-			PlsBundle.message("script.gutterIcon.relatedImages.action"),
-			PlsActions.GutterGotoRelatedImage
-		)
+		//NavigateAction.setNavigateAction(
+		//	lineMarkerInfo,
+		//	PlsBundle.message("script.gutterIcon.relatedImages.action"),
+		//	PlsActions.GutterGotoRelatedImage
+		//)
 		result.add(lineMarkerInfo)
 	}
 	

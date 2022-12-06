@@ -7,10 +7,11 @@
 	psiImplClassSuffix="Impl"
 	psiPackage="icu.windea.pls.localisation.psi"
 	psiImplPackage="icu.windea.pls.localisation.psi.impl"
-
 	elementTypeHolderClass="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes"
 	elementTypeClass="icu.windea.pls.localisation.psi.ParadoxLocalisationElementType"
 	tokenTypeClass="icu.windea.pls.localisation.psi.ParadoxLocalisationTokenType"
+    elementTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypeFactory.getElementType"
+	tokenTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypeFactory.getTokenType"
 	psiImplUtilClass="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPsiImplUtil"
 }
 
@@ -64,8 +65,6 @@ rich_text ::= property_reference | command | icon | colorful_text | escape | str
 
 string ::= STRING_TOKEN{
   extends=rich_text
-  implements="com.intellij.psi.tree.ILazyParseableElementTypeBase.parseContents"
-  methods=[parseContents]
 }
 
 escape ::= VALID_ESCAPE_TOKEN | INVALID_ESCAPE_TOKEN | DOUBLE_LEFT_BRACKET{

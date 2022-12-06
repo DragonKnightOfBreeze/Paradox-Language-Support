@@ -19,6 +19,6 @@
 
 root ::= (STRING_TOKEN | format_reference)*
 format_reference ::= LEFT_ANGLE_BRACKET FORMAT_REFERENCE_TOKEN RIGHT_ANGLE_BRACKET {
-  pin=1
+  pin=1 
   methods=[getName setName getReference]
 }

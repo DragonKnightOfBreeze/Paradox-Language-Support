@@ -45,11 +45,11 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 			.setAlignment(GutterIconRenderer.Alignment.RIGHT)
 			.setNamer { PlsBundle.message("script.gutterIcon.definition") }
 			.createLineMarkerInfo(locationElement)
-		NavigateAction.setNavigateAction(
-			lineMarkerInfo,
-			PlsBundle.message("script.gutterIcon.definition.action"),
-			PlsActions.GutterGotoDefinition
-		)
+		//NavigateAction.setNavigateAction(
+		//	lineMarkerInfo,
+		//	PlsBundle.message("script.gutterIcon.definition.action"),
+		//	PlsActions.GutterGotoDefinition
+		//)
 		result.add(lineMarkerInfo)
 	}
 	

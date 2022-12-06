@@ -133,13 +133,6 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	//endregion
 	
-	//region ParadoxLocalisationString
-	@JvmStatic
-	fun parseContents(element: ParadoxLocalisationString, chameleon: ASTNode) :ASTNode{
-		return ParadoxLocalisationStringHandler.parseContents(element, chameleon)
-	}
-	//endregion
-	
 	//region ParadoxLocalisationPropertyReference
 	@JvmStatic
 	fun getIcon(element: ParadoxLocalisationPropertyReference, @IconFlags flags: Int): Icon {

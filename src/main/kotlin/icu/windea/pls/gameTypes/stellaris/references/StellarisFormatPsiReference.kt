@@ -3,7 +3,6 @@ package icu.windea.pls.gameTypes.stellaris.references
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.gameTypes.stellaris.psi.*
-import icu.windea.pls.localisation.gameTypes.stellaris.psi.*
 
 class StellarisFormatPsiReference(
 	element: StellarisFormatReference,

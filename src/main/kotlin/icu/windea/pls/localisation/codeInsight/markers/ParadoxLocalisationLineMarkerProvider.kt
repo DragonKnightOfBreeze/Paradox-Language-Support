@@ -46,11 +46,11 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 				.setAlignment(GutterIconRenderer.Alignment.RIGHT)
 				.setNamer { PlsBundle.message("localisation.gutterIcon.localisation") }
 				.createLineMarkerInfo(locationElement)
-			NavigateAction.setNavigateAction(
-				lineMarkerInfo,
-				PlsBundle.message("localisation.gutterIcon.localisation.action"),
-				PlsActions.GutterGotoLocalisation
-			)
+			//NavigateAction.setNavigateAction(
+			//	lineMarkerInfo,
+			//	PlsBundle.message("localisation.gutterIcon.localisation.action"),
+			//	PlsActions.GutterGotoLocalisation
+			//)
 			result.add(lineMarkerInfo)
 		}
 	}
