@@ -1,18 +1,22 @@
 //Stellaris官方本地化文件中本身就存在语法解析错误，需要保证存在错误的情况下仍然会解析后续的本地化文本，草
 
 {
-	parserClass="icu.windea.pls.localisation.psi.ParadoxLocalisationParser"
-	extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
-	psiClassPrefix="ParadoxLocalisation"
-	psiImplClassSuffix="Impl"
-	psiPackage="icu.windea.pls.localisation.psi"
-	psiImplPackage="icu.windea.pls.localisation.psi.impl"
-	elementTypeHolderClass="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes"
-	elementTypeClass="icu.windea.pls.localisation.psi.ParadoxLocalisationElementType"
-	tokenTypeClass="icu.windea.pls.localisation.psi.ParadoxLocalisationTokenType"
-    elementTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypeFactory.getElementType"
-	tokenTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypeFactory.getTokenType"
-	psiImplUtilClass="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPsiImplUtil"
+  parserClass="icu.windea.pls.localisation.psi.ParadoxLocalisationParser"
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+  psiClassPrefix="ParadoxLocalisation"
+  psiImplClassSuffix="Impl"
+  psiPackage="icu.windea.pls.localisation.psi"
+  psiImplPackage="icu.windea.pls.localisation.psi.impl"
+  elementTypeHolderClass="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes"
+  elementTypeClass="icu.windea.pls.localisation.psi.ParadoxLocalisationElementType"
+  tokenTypeClass="icu.windea.pls.localisation.psi.ParadoxLocalisationTokenType"
+  elementTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypeFactory.getElementType"
+  tokenTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypeFactory.getTokenType"
+  psiImplUtilClass="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPsiImplUtil"
+  tokens=[
+    COLON=":"
+    AT="@"
+  ]
 }
 
 //规则定义可以忽略空白
