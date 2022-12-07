@@ -26,13 +26,12 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %state WAITING_WILDCARD_KEY
 %state WAITING_WILDCARD_VALUE
 
-%state CHECK_VARIABLE
+%state CHECKING_VARIABLE
 %state WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME
 
 %state WAITING_PARAMETER
 %state WAITING_PARAMETER_DEFAULT_VALUE
 %state WAITING_PARAMETER_DEFAULT_VALUE_END
-%state WAITING_AFTER_PARAMETER
 
 %state WAITING_PARAMETER_CONDITION
 %state WAITING_PARAMETER_CONDITION_EXPRESSION
@@ -176,7 +175,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return QUOTED_STRING_TOKEN;}
 }
 
-<CHECK_VARIABLE>{
+<CHECKING_VARIABLE>{
   {BLANK} {beginNextState(); onBlank(); return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
@@ -241,7 +240,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   "<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
   //出于语法兼容性考虑，这里允许内联数学表达式
   "@["|"@\\[" {enterInlineMath(); leftAbsSign=true; yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
-  "@" {yybegin(CHECK_VARIABLE); return AT;}
+  "@" {yybegin(CHECKING_VARIABLE); return AT;}
   "[" {inParameterCondition=true; yybegin(WAITING_PARAMETER_CONDITION); return LEFT_BRACKET;}
    {CHECK_PROPERTY_KEY} {
  	  if(yycharat(0) == '"'){
@@ -373,7 +372,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   //出于语法兼容性考虑，这里允许内联数学表达式
   "@["|"@\\[" {enterInlineMath(); yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
-  "@" {yybegin(CHECK_VARIABLE); return AT;}
+  "@" {yybegin(CHECKING_VARIABLE); return AT;}
   {CHECK_PROPERTY_KEY} {
  	  if(yycharat(0) == '"'){
 		  pushbackUntilBeforeBlank(1);

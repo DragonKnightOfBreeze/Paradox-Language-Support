@@ -8,6 +8,7 @@ import com.intellij.psi.tree.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import icu.windea.pls.script.psi.*
 
 object ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub<*>>(ParadoxLocalisationLanguage){
 	private const val externalId = "paradoxLocalisation.file"
@@ -41,5 +42,17 @@ object ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub
 				else -> true
 			}
 		}
+	}
+	
+	override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
+		//基于启用的特性来解析本地化文本的词法
+		val project = psi.project
+		val language = ParadoxLocalisationLanguage
+		val features = ParadoxLocalisationFeatures.StellarisFormatReference
+		val lexer = ParadoxLocalisationLexerAdapter()
+		val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, lexer, language, chameleon.chars)
+		val parser = ParadoxScriptParser()
+		val node = parser.parse(this, builder)
+		return node.firstChildNode
 	}
 }

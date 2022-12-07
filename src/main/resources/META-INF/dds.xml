@@ -50,8 +50,6 @@
       <!--<separator/>-->
       <!--<reference id="Images.SetBackgroundImage"/>-->
       <separator/>
-      <reference id="AddToFavorites"/>
-      <separator/>
       <reference id="VersionControlsGroup"/>
       <separator/>
       <reference id="Dds.EditExternally"/>

@@ -5,6 +5,7 @@ import com.intellij.navigation.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.Iconable.*
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
@@ -164,6 +165,34 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	//endregion
 	
+	//region ParadoxLocalisationScriptedVariableReference
+	@JvmStatic
+	fun getIcon(element: ParadoxLocalisationScriptedVariableReference, @IconFlags flags: Int): Icon {
+		return PlsIcons.ScriptedVariable
+	}
+	
+	@JvmStatic
+	fun getName(element: ParadoxLocalisationScriptedVariableReference): String {
+		// 不包含作为前缀的"@"
+		return element.variableReferenceId.text.orEmpty()
+	}
+	
+	@JvmStatic
+	fun setName(element: ParadoxLocalisationScriptedVariableReference, name: String): ParadoxLocalisationScriptedVariableReference {
+		// 不包含作为前缀的"@"
+		val nameElement = element.variableReferenceId
+		val newNameElement = ParadoxScriptElementFactory.createVariableReference(element.project, name).variableReferenceId
+		nameElement.replace(newNameElement)
+		return element
+	}
+	
+	@JvmStatic
+	fun getReference(element: ParadoxLocalisationScriptedVariableReference): ParadoxScriptedVariablePsiReference {
+		val rangeInElement = element.variableReferenceId.textRangeInParent
+		return ParadoxScriptedVariablePsiReference(element, rangeInElement)
+	}
+	//endregion
+	
 	//region ParadoxLocalisationIcon	
 	@JvmStatic
 	fun getIcon(element: ParadoxLocalisationIcon, @IconFlags flags: Int): Icon {
@@ -302,31 +331,25 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	//endregion
 	
-	//region ParadoxLocalisationScriptedVariableReference
+	//for stellaris
+	
+	//region ParadoxLocalisationStellarisFormatReference
 	@JvmStatic
-	fun getIcon(element: ParadoxLocalisationScriptedVariableReference, @IconFlags flags: Int): Icon {
-		return PlsIcons.ScriptedVariable
+	fun getName(element: ParadoxLocalisationStellarisFormatReference): String? {
+		val token = element.stellarisFormatReferenceId ?: return null
+		return token.text
 	}
 	
 	@JvmStatic
-	fun getName(element: ParadoxLocalisationScriptedVariableReference): String {
-		// 不包含作为前缀的"@"
-		return element.variableReferenceId.text.orEmpty()
+	fun setName(element: ParadoxLocalisationStellarisFormatReference, name: String): PsiElement {
+		val token = element.stellarisFormatReferenceId ?: return element
+		return (token as LeafPsiElement).replaceWithText(name) as PsiElement
 	}
 	
 	@JvmStatic
-	fun setName(element: ParadoxLocalisationScriptedVariableReference, name: String): ParadoxLocalisationScriptedVariableReference {
-		// 不包含作为前缀的"@"
-		val nameElement = element.variableReferenceId
-		val newNameElement = ParadoxScriptElementFactory.createVariableReference(element.project, name).variableReferenceId
-		nameElement.replace(newNameElement)
-		return element
-	}
-	
-	@JvmStatic
-	fun getReference(element: ParadoxLocalisationScriptedVariableReference): ParadoxScriptedVariablePsiReference {
-		val rangeInElement = element.variableReferenceId.textRangeInParent
-		return ParadoxScriptedVariablePsiReference(element, rangeInElement)
+	fun getReference(element: ParadoxLocalisationStellarisFormatReference): ParadoxLocalisationStellarisFormatPsiReference? {
+		val token = element.stellarisFormatReferenceId ?: return null
+		return ParadoxLocalisationStellarisFormatPsiReference(element, token.textRangeInParent)
 	}
 	//endregion
 }

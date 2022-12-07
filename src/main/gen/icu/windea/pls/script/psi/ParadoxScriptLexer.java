@@ -37,10 +37,9 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
   public static final int WAITING_PARAMETER = 24;
   public static final int WAITING_PARAMETER_DEFAULT_VALUE = 26;
   public static final int WAITING_PARAMETER_DEFAULT_VALUE_END = 28;
-  public static final int WAITING_AFTER_PARAMETER = 30;
-  public static final int WAITING_PARAMETER_CONDITION = 32;
-  public static final int WAITING_PARAMETER_CONDITION_EXPRESSION = 34;
-  public static final int WAITING_INLINE_MATH = 36;
+  public static final int WAITING_PARAMETER_CONDITION = 30;
+  public static final int WAITING_PARAMETER_CONDITION_EXPRESSION = 32;
+  public static final int WAITING_INLINE_MATH = 34;
 
   /**
    * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
@@ -50,8 +49,8 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
    */
   private static final int ZZ_LEXSTATE[] = { 
      0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  3,  3, 
-     7,  7,  8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13,  4,  4, 
-    14, 14, 15, 15, 16, 16
+     7,  7,  8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 
+    15, 15, 16, 16
   };
 
   /** 

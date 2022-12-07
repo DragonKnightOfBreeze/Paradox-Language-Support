@@ -8,7 +8,7 @@ import icu.windea.pls.core.model.*
  */
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
 annotation class WithGameType(
 	vararg val value: ParadoxGameType
 )

@@ -40,7 +40,7 @@ class ParadoxLocalisationParserDefinition : ParserDefinition {
 			//语言区域之前必须换行
 			rightType == LOCALE_ID -> MUST_LINE_BREAK
 			//属性之前必须换行
-			rightType == PROPERTY_KEY_ID -> MUST_LINE_BREAK
+			rightType == PROPERTY_KEY_TOKEN -> MUST_LINE_BREAK
 			else -> MAY
 		}
 	}

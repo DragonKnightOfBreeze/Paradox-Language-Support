@@ -7,7 +7,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 val ParadoxLocalisationLocale.localeId: PsiElement get() = findChild(LOCALE_ID)!!
 
-val ParadoxLocalisationPropertyKey.propertyKeyId: PsiElement get() = findChild(PROPERTY_KEY_ID)!!
+val ParadoxLocalisationPropertyKey.propertyKeyId: PsiElement get() = findChild(PROPERTY_KEY_TOKEN)!!
 
 val ParadoxLocalisationPropertyReference.propertyReferenceId: PsiElement? get() = findChild(PROPERTY_REFERENCE_ID)
 val ParadoxLocalisationPropertyReference.propertyReferenceParameter: PsiElement? get() = findChild(PROPERTY_REFERENCE_PARAMETER_TOKEN)
@@ -39,6 +39,8 @@ val ParadoxLocalisationCommandScope.commandScopeId: PsiElement get() = findChild
 val ParadoxLocalisationCommandField.commandFieldId: PsiElement? get() = findChild(COMMAND_FIELD_ID)
 
 val ParadoxLocalisationScriptedVariableReference.variableReferenceId: PsiElement get() = findChild(SCRIPTED_VARIABLE_REFERENCE_ID)!!
+
+val ParadoxLocalisationStellarisFormatReference.stellarisFormatReferenceId: PsiElement? get() = findChild(STELLARIS_FORMAT_REFERENCE_ID)
 
 
 fun hasLocalisationPropertiesBetween(start: PsiElement, end: PsiElement?): Boolean {

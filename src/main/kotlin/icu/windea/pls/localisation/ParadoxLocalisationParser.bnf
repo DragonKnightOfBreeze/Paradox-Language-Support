@@ -16,12 +16,18 @@
   tokens=[
     COLON=":"
     AT="@"
+    PILE="|"
+    LEFT_ANGLE_BRACKET="<"
+    RIGHT_ANGLE_BRACKET=">"
   ]
+  extraRoot("text")=true
 }
 
 //规则定义可以忽略空白
 //直接导向token的rule，在flex文件中需要使用对应的token
 //即使idea提示不需要转义，一些字符在regexp中仍然需要转义
+
+//core rules
 
 root ::= property_list *
 //locale之前可以添加注释，wiki中的说明有误
@@ -59,23 +65,33 @@ property ::= property_key COLON property_number? property_value {
 //The number seen in vanilla files right after the colon can be omitted, as it is only useful for Paradox’s internal translation tracking
 //https://twitter.com/Martin_Anward/status/1039175213773144066
 private property_number ::= PROPERTY_NUMBER
-property_key ::= PROPERTY_KEY_ID
+property_key ::= PROPERTY_KEY_TOKEN
 property_value ::= LEFT_QUOTE property_value_item RIGHT_QUOTE{
   pin=1
 }
 
-private property_value_item ::= (rich_text | COLORFUL_TEXT_END) * //允许多余的彩色文本结束标记（"§!"）
-rich_text ::= property_reference | command | icon | colorful_text | escape | string
+//允许多余的彩色文本结束标记（"§!"）
+private property_value_item ::= (rich_text | COLORFUL_TEXT_END) *
+rich_text ::= escape
+  | property_reference
+  | icon
+  | colorful_text
+  | command
+  | stellaris_format_reference
+  | string
 
 string ::= STRING_TOKEN{
   extends=rich_text
 }
 
+//escape rules
+
 escape ::= VALID_ESCAPE_TOKEN | INVALID_ESCAPE_TOKEN | DOUBLE_LEFT_BRACKET{
   extends=rich_text
 }
 
-//property reference
+//reference rules
+
 //see: https://stellaris.paradoxwikis.com/Localisation_modding#.24_Codes
 //may be resolved to localisation / parameter / system statistics in GUI elements 
 property_reference ::= PROPERTY_REFERENCE_START [property_reference_name] [PIPE [property_reference_parameter]] PROPERTY_REFERENCE_END {
@@ -86,8 +102,16 @@ property_reference ::= PROPERTY_REFERENCE_START [property_reference_name] [PIPE 
 //token / command (e.g. "[Root.GetName]") / scripted_variable (e.g. "@v") 
 private property_reference_name ::= PROPERTY_REFERENCE_ID | command | scripted_variable_reference
 private property_reference_parameter ::= PROPERTY_REFERENCE_PARAMETER_TOKEN //TODO check syntax
+//scripted variable reference
+scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_ID {
+  implements=[
+    "icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
+  ]
+  methods=[getIcon getName setName getReference]
+}
 
-//icon
+//icon rules
+
 //see: https://stellaris.paradoxwikis.com/Localisation_modding#.C2.A3_Codes
 icon ::= ICON_START icon_name [PIPE icon_frame] ICON_END {
   pin=1
@@ -97,7 +121,8 @@ icon ::= ICON_START icon_name [PIPE icon_frame] ICON_END {
 private icon_name ::= command | property_reference | ICON_ID //can be command / property reference
 private icon_frame ::= ICON_FRAME | property_reference //can be property reference (resolved as parameter)
 
-//colorful_text
+//colorful text rules
+
 //see: https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes
 colorful_text ::= COLORFUL_TEXT_START COLOR_ID colorful_text_item [COLORFUL_TEXT_END]{
   pin=1
@@ -106,7 +131,8 @@ colorful_text ::= COLORFUL_TEXT_START COLOR_ID colorful_text_item [COLORFUL_TEXT
 }
 private colorful_text_item ::= rich_text *
 
-//command
+//command rules
+
 //see: https://stellaris.paradoxwikis.com/Localisation_modding#Bracket_Commands
 command ::= COMMAND_START command_expression? COMMAND_END{
   pin=1
@@ -129,10 +155,12 @@ command_field ::= COMMAND_FIELD_ID | property_reference { //can be property refe
   methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier]
 }
 
-//scripted variable reference
-scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_ID {
-  implements=[
-    "icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
-  ]
-  methods=[getIcon getName setName getReference]
+//for stellaris
+
+//stellaris format reference rules
+
+stellaris_format_reference ::= LEFT_ANGLE_BRACKET STELLARIS_FORMAT_REFERENCE_ID RIGHT_ANGLE_BRACKET {
+  pin=1
+  extends=rich_text
+  methods=[getName setName getReference]
 }

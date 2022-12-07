@@ -38,7 +38,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(COMMAND_FIELD, COMMAND_IDENTIFIER, COMMAND_SCOPE),
     create_token_set_(COLORFUL_TEXT, COMMAND, ESCAPE, ICON,
-      PROPERTY_REFERENCE, RICH_TEXT, STRING),
+      PROPERTY_REFERENCE, RICH_TEXT, STELLARIS_FORMAT_REFERENCE, STRING),
   };
 
   /* ********************************************************** */
@@ -280,13 +280,13 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PROPERTY_KEY_ID
+  // PROPERTY_KEY_TOKEN
   public static boolean property_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_key")) return false;
-    if (!nextTokenIs(b, PROPERTY_KEY_ID)) return false;
+    if (!nextTokenIs(b, PROPERTY_KEY_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, PROPERTY_KEY_ID);
+    r = consumeToken(b, PROPERTY_KEY_TOKEN);
     exit_section_(b, m, PROPERTY_KEY, r);
     return r;
   }
@@ -436,16 +436,23 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // property_reference | command | icon | colorful_text | escape | string
+  // escape
+  //   | property_reference
+  //   | icon
+  //   | colorful_text
+  //   | command
+  //   | stellaris_format_reference
+  //   | string
   public static boolean rich_text(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rich_text")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, RICH_TEXT, "<rich text>");
-    r = property_reference(b, l + 1);
-    if (!r) r = command(b, l + 1);
+    r = escape(b, l + 1);
+    if (!r) r = property_reference(b, l + 1);
     if (!r) r = icon(b, l + 1);
     if (!r) r = colorful_text(b, l + 1);
-    if (!r) r = escape(b, l + 1);
+    if (!r) r = command(b, l + 1);
+    if (!r) r = stellaris_format_reference(b, l + 1);
     if (!r) r = string(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
@@ -476,6 +483,19 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // LEFT_ANGLE_BRACKET STELLARIS_FORMAT_REFERENCE_ID RIGHT_ANGLE_BRACKET
+  public static boolean stellaris_format_reference(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stellaris_format_reference")) return false;
+    if (!nextTokenIs(b, LEFT_ANGLE_BRACKET)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, STELLARIS_FORMAT_REFERENCE, null);
+    r = consumeTokens(b, 1, LEFT_ANGLE_BRACKET, STELLARIS_FORMAT_REFERENCE_ID, RIGHT_ANGLE_BRACKET);
+    p = r; // pin = 1
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
   // STRING_TOKEN
   public static boolean string(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string")) return false;
@@ -487,7 +507,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  static final Parser locale_auto_recover_ = (b, l) -> !nextTokenIsFast(b, COMMENT, LOCALE_ID, PROPERTY_KEY_ID);
+  static final Parser locale_auto_recover_ = (b, l) -> !nextTokenIsFast(b, COMMENT, LOCALE_ID, PROPERTY_KEY_TOKEN);
   static final Parser property_auto_recover_ = locale_auto_recover_;
   static final Parser property_item_auto_recover_ = locale_auto_recover_;
 }

@@ -23,6 +23,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType PROPERTY_VALUE = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY_VALUE");
   IElementType RICH_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("RICH_TEXT");
   IElementType SCRIPTED_VARIABLE_REFERENCE = ParadoxLocalisationElementTypeFactory.getElementType("SCRIPTED_VARIABLE_REFERENCE");
+  IElementType STELLARIS_FORMAT_REFERENCE = ParadoxLocalisationElementTypeFactory.getElementType("STELLARIS_FORMAT_REFERENCE");
   IElementType STRING = ParadoxLocalisationElementTypeFactory.getElementType("STRING");
 
   IElementType AT = ParadoxLocalisationElementTypeFactory.getTokenType("@");
@@ -42,17 +43,21 @@ public interface ParadoxLocalisationElementTypes {
   IElementType ICON_ID = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_ID");
   IElementType ICON_START = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_START");
   IElementType INVALID_ESCAPE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("INVALID_ESCAPE_TOKEN");
+  IElementType LEFT_ANGLE_BRACKET = ParadoxLocalisationElementTypeFactory.getTokenType("<");
   IElementType LEFT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("LEFT_QUOTE");
   IElementType LOCALE_ID = ParadoxLocalisationElementTypeFactory.getTokenType("LOCALE_ID");
+  IElementType PILE = ParadoxLocalisationElementTypeFactory.getTokenType("|");
   IElementType PIPE = ParadoxLocalisationElementTypeFactory.getTokenType("PIPE");
-  IElementType PROPERTY_KEY_ID = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_KEY_ID");
+  IElementType PROPERTY_KEY_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_KEY_TOKEN");
   IElementType PROPERTY_NUMBER = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_NUMBER");
   IElementType PROPERTY_REFERENCE_END = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_END");
   IElementType PROPERTY_REFERENCE_ID = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_ID");
   IElementType PROPERTY_REFERENCE_PARAMETER_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_PARAMETER_TOKEN");
   IElementType PROPERTY_REFERENCE_START = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_START");
+  IElementType RIGHT_ANGLE_BRACKET = ParadoxLocalisationElementTypeFactory.getTokenType(">");
   IElementType RIGHT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_QUOTE");
   IElementType SCRIPTED_VARIABLE_REFERENCE_ID = ParadoxLocalisationElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_ID");
+  IElementType STELLARIS_FORMAT_REFERENCE_ID = ParadoxLocalisationElementTypeFactory.getTokenType("STELLARIS_FORMAT_REFERENCE_ID");
   IElementType STRING_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("STRING_TOKEN");
   IElementType VALID_ESCAPE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("VALID_ESCAPE_TOKEN");
 
@@ -100,6 +105,9 @@ public interface ParadoxLocalisationElementTypes {
       }
       else if (type == SCRIPTED_VARIABLE_REFERENCE) {
         return new ParadoxLocalisationScriptedVariableReferenceImpl(node);
+      }
+      else if (type == STELLARIS_FORMAT_REFERENCE) {
+        return new ParadoxLocalisationStellarisFormatReferenceImpl(node);
       }
       else if (type == STRING) {
         return new ParadoxLocalisationStringImpl(node);

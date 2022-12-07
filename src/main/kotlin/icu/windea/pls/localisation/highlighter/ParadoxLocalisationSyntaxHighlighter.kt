@@ -4,7 +4,6 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
-import icu.windea.pls.gameTypes.stellaris.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
@@ -41,7 +40,7 @@ class ParadoxLocalisationSyntaxHighlighter : SyntaxHighlighterBase() {
 			COMMENT -> COMMENT_KEYS
 			AT, SCRIPTED_VARIABLE_REFERENCE_ID-> SCRIPTED_VARIABLE_KEYS
 			LOCALE_ID -> LOCALE_KEYS
-			PROPERTY_KEY_ID -> PROPERTY_KEY_KEYS
+			PROPERTY_KEY_TOKEN -> PROPERTY_KEY_KEYS
 			PROPERTY_REFERENCE_ID -> PROPERTY_REFERENCE_KEYS
 			PROPERTY_REFERENCE_PARAMETER_TOKEN -> PROPERTY_REFERENCE_PARAMETER_KEYS
 			STRING_TOKEN, LEFT_QUOTE, RIGHT_QUOTE -> STRING_KEYS
@@ -54,8 +53,8 @@ class ParadoxLocalisationSyntaxHighlighter : SyntaxHighlighterBase() {
 			INVALID_ESCAPE_TOKEN -> INVALID_ESCAPE_KEYS
 			BAD_CHARACTER -> BAD_CHARACTER_KEYS
 			//for stellaris
-			StellarisFormatStringElementTypes.LEFT_ANGLE_BRACKET, StellarisFormatStringElementTypes.RIGHT_ANGLE_BRACKET -> MARKER_KEYS
-			StellarisFormatStringElementTypes.FORMAT_REFERENCE_TOKEN -> STELLARIS_FORMAT_REFERENCE_KEYS
+			LEFT_ANGLE_BRACKET, RIGHT_ANGLE_BRACKET -> MARKER_KEYS
+			STELLARIS_FORMAT_REFERENCE_ID -> STELLARIS_FORMAT_REFERENCE_KEYS
 			else -> EMPTY_KEYS
 		}
 	}

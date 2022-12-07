@@ -10,7 +10,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	init {
 		//当用户可能正在输入一个locale的名字时提示
-		val localePattern = or(psiElement(LOCALE_ID), psiElement(PROPERTY_KEY_ID))
+		val localePattern = or(psiElement(LOCALE_ID), psiElement(PROPERTY_KEY_TOKEN))
 		extend(null, localePattern, ParadoxLocalisationLocaleCompletionProvider())
 		
 		//当用户正在输入一个propertyReference的名字时提示

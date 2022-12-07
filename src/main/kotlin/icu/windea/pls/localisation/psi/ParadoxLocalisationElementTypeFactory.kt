@@ -4,10 +4,7 @@ import com.intellij.psi.tree.*
 
 object ParadoxLocalisationElementTypeFactory {
 	@JvmStatic fun getTokenType(debugName: String): IElementType {
-		return when(debugName) {
-			"STRING_TOKEN" -> ParadoxLocalisationStringTokenType(debugName)
-			else -> ParadoxLocalisationTokenType(debugName)
-		}
+		return ParadoxLocalisationTokenType(debugName)
 	}
 	
 	@JvmStatic fun getElementType(debugName: String): IElementType {
