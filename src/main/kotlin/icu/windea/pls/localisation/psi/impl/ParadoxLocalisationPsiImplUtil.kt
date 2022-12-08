@@ -335,21 +335,21 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	//region ParadoxLocalisationStellarisFormatReference
 	@JvmStatic
-	fun getName(element: ParadoxLocalisationStellarisFormatReference): String? {
-		val token = element.stellarisFormatReferenceId ?: return null
+	fun getName(element: ParadoxLocalisationStellarisNamePart): String? {
+		val token = element.stellarisNamePartId ?: return null
 		return token.text
 	}
 	
 	@JvmStatic
-	fun setName(element: ParadoxLocalisationStellarisFormatReference, name: String): PsiElement {
-		val token = element.stellarisFormatReferenceId ?: return element
+	fun setName(element: ParadoxLocalisationStellarisNamePart, name: String): PsiElement {
+		val token = element.stellarisNamePartId ?: return element
 		return (token as LeafPsiElement).replaceWithText(name) as PsiElement
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxLocalisationStellarisFormatReference): ParadoxLocalisationStellarisFormatPsiReference? {
-		val token = element.stellarisFormatReferenceId ?: return null
-		return ParadoxLocalisationStellarisFormatPsiReference(element, token.textRangeInParent)
+	fun getReference(element: ParadoxLocalisationStellarisNamePart): ParadoxLocalisationStellarisNameFormatPsiReference? {
+		val token = element.stellarisNamePartId ?: return null
+		return ParadoxLocalisationStellarisNameFormatPsiReference(element, token.textRangeInParent)
 	}
 	//endregion
 }

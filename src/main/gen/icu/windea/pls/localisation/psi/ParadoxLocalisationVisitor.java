@@ -71,7 +71,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     visitParadoxScriptedVariableReference(o);
   }
 
-  public void visitStellarisFormatReference(@NotNull ParadoxLocalisationStellarisFormatReference o) {
+  public void visitStellarisNamePart(@NotNull ParadoxLocalisationStellarisNamePart o) {
     visitRichText(o);
   }
 

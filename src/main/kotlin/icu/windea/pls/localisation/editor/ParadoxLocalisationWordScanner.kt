@@ -7,7 +7,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 class ParadoxLocalisationWordScanner : DefaultWordsScanner(
 	ParadoxLocalisationLexerAdapter(),
-	TokenSet.create(PROPERTY_KEY_TOKEN, PROPERTY_REFERENCE_ID, ICON_ID, COMMAND_SCOPE, COMMAND_FIELD, STELLARIS_FORMAT_REFERENCE_ID),
+	TokenSet.create(PROPERTY_KEY_TOKEN, PROPERTY_REFERENCE_ID, ICON_ID, COMMAND_SCOPE, COMMAND_FIELD, STELLARIS_NAME_FORMAT__ID),
 	TokenSet.create(COMMENT),
 	TokenSet.create(STRING_TOKEN)
 )

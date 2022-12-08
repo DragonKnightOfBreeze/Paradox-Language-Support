@@ -47,7 +47,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
   public static final int CHECKING_COMMAND_START = 40;
   public static final int WAITING_CHECK_COLORFUL_TEXT_START = 42;
   public static final int WAITING_CHECK_RIGHT_QUOTE = 44;
-  public static final int STELLARIS_FORMAT_REFERENCE = 46;
+  public static final int STELLARIS_NAME_FORMAT = 46;
 
   /**
    * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
@@ -759,7 +759,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
           case 19: 
             { if(context != null && context.getGameType() == ParadoxGameType.Stellaris) {
 		if(context.getStellarisNameFormatKeys().contains(context.getCurrentKey()))
-		yybegin(STELLARIS_FORMAT_REFERENCE);
+		yybegin(STELLARIS_NAME_FORMAT);
 		return LEFT_ANGLE_BRACKET;
 	} 
 	yypushback(1);
@@ -954,7 +954,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 100: break;
           case 46: 
-            { return STELLARIS_FORMAT_REFERENCE_ID;
+            { return STELLARIS_NAME_FORMAT__ID;
             } 
             // fall through
           case 101: break;

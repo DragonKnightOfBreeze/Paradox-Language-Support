@@ -77,7 +77,7 @@ rich_text ::= escape
   | icon
   | colorful_text
   | command
-  | stellaris_format_reference
+  | stellaris_name_part
   | string
 
 string ::= STRING_TOKEN{
@@ -157,9 +157,9 @@ command_field ::= COMMAND_FIELD_ID | property_reference { //can be property refe
 
 //for stellaris
 
-//stellaris format reference rules
+//stellaris name part rules
 
-stellaris_format_reference ::= LEFT_ANGLE_BRACKET STELLARIS_FORMAT_REFERENCE_ID RIGHT_ANGLE_BRACKET {
+stellaris_name_part ::= LEFT_ANGLE_BRACKET STELLARIS_NAME_FORMAT__ID RIGHT_ANGLE_BRACKET {
   pin=1
   extends=rich_text
   methods=[getName setName getReference]

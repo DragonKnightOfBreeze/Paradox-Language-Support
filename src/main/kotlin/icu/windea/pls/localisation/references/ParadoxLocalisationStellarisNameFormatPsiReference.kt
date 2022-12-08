@@ -7,10 +7,10 @@ import icu.windea.pls.core.model.*
 import icu.windea.pls.localisation.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
-class ParadoxLocalisationStellarisFormatPsiReference(
-	element: ParadoxLocalisationStellarisFormatReference,
+class ParadoxLocalisationStellarisNameFormatPsiReference(
+	element: ParadoxLocalisationStellarisNamePart,
 	rangeInElement: TextRange
-) : PsiPolyVariantReferenceBase<ParadoxLocalisationStellarisFormatReference>(element, rangeInElement) {
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationStellarisNamePart>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//重命名当前元素
 		return element.setName(newElementName)

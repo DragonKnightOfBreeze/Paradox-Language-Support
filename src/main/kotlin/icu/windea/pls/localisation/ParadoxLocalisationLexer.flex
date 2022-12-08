@@ -40,7 +40,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %state WAITING_CHECK_COLORFUL_TEXT_START
 %state WAITING_CHECK_RIGHT_QUOTE
 
-%state STELLARIS_FORMAT_REFERENCE
+%state STELLARIS_NAME_FORMAT
 
 %{	
 	private ParadoxLocalisationParsingContext context;
@@ -152,7 +152,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+\]
 COLOR_ID=[a-zA-Z0-9]
 STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
 
-STELLARIS_FORMAT_REFERENCE_ID=[a-zA-Z0-9_]+
+STELLARIS_NAME_FORMAT__ID=[a-zA-Z0-9_]+
 
 %%
 
@@ -432,19 +432,19 @@ STELLARIS_FORMAT_REFERENCE_ID=[a-zA-Z0-9_]+
     }
 }
 
-//stellaris format reference rules
+//stellaris name part rules
 
 <WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT> "<" {
 	if(context != null && context.getGameType() == ParadoxGameType.Stellaris) {
 		if(context.getStellarisNameFormatKeys().contains(context.getCurrentKey()))
-		yybegin(STELLARIS_FORMAT_REFERENCE);
+		yybegin(STELLARIS_NAME_FORMAT);
 		return LEFT_ANGLE_BRACKET;
 	} 
 	yypushback(1);
 	return STRING_TOKEN;
 }
-<STELLARIS_FORMAT_REFERENCE> {
-  {STELLARIS_FORMAT_REFERENCE_ID} { return STELLARIS_FORMAT_REFERENCE_ID; }
+<STELLARIS_NAME_FORMAT> {
+  {STELLARIS_NAME_FORMAT__ID} { return STELLARIS_NAME_FORMAT__ID; }
   ">" { yybegin(nextStateForText()); return RIGHT_ANGLE_BRACKET; }
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}

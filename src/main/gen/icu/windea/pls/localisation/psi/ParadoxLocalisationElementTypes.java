@@ -23,7 +23,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType PROPERTY_VALUE = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY_VALUE");
   IElementType RICH_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("RICH_TEXT");
   IElementType SCRIPTED_VARIABLE_REFERENCE = ParadoxLocalisationElementTypeFactory.getElementType("SCRIPTED_VARIABLE_REFERENCE");
-  IElementType STELLARIS_FORMAT_REFERENCE = ParadoxLocalisationElementTypeFactory.getElementType("STELLARIS_FORMAT_REFERENCE");
+  IElementType STELLARIS_NAME_PART = ParadoxLocalisationElementTypeFactory.getElementType("STELLARIS_NAME_PART");
   IElementType STRING = ParadoxLocalisationElementTypeFactory.getElementType("STRING");
 
   IElementType AT = ParadoxLocalisationElementTypeFactory.getTokenType("@");
@@ -57,7 +57,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType RIGHT_ANGLE_BRACKET = ParadoxLocalisationElementTypeFactory.getTokenType(">");
   IElementType RIGHT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_QUOTE");
   IElementType SCRIPTED_VARIABLE_REFERENCE_ID = ParadoxLocalisationElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_ID");
-  IElementType STELLARIS_FORMAT_REFERENCE_ID = ParadoxLocalisationElementTypeFactory.getTokenType("STELLARIS_FORMAT_REFERENCE_ID");
+  IElementType STELLARIS_NAME_FORMAT__ID = ParadoxLocalisationElementTypeFactory.getTokenType("STELLARIS_NAME_FORMAT__ID");
   IElementType STRING_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("STRING_TOKEN");
   IElementType VALID_ESCAPE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("VALID_ESCAPE_TOKEN");
 
@@ -106,8 +106,8 @@ public interface ParadoxLocalisationElementTypes {
       else if (type == SCRIPTED_VARIABLE_REFERENCE) {
         return new ParadoxLocalisationScriptedVariableReferenceImpl(node);
       }
-      else if (type == STELLARIS_FORMAT_REFERENCE) {
-        return new ParadoxLocalisationStellarisFormatReferenceImpl(node);
+      else if (type == STELLARIS_NAME_PART) {
+        return new ParadoxLocalisationStellarisNamePartImpl(node);
       }
       else if (type == STRING) {
         return new ParadoxLocalisationStringImpl(node);

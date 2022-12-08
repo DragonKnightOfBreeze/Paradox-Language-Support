@@ -34,7 +34,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(PlsBundle.message("localisation.displayName.syncedLocalisation"), ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY),
 			
 			//for stellaris
-			AttributesDescriptor(PlsBundle.message("localisation.displayName.stellarisFormatReference"), ParadoxLocalisationAttributesKeys.STELLARIS_FORMAT_REFERENCE_KEY)
+			AttributesDescriptor(PlsBundle.message("localisation.displayName.stellarisNamePart"), ParadoxLocalisationAttributesKeys.STELLARIS_NAME_PART__KEY)
 		)
 	}
 	

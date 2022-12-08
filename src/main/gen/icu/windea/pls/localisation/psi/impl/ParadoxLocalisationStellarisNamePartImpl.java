@@ -9,17 +9,17 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import icu.windea.pls.localisation.psi.*;
-import icu.windea.pls.localisation.references.ParadoxLocalisationStellarisFormatPsiReference;
+import icu.windea.pls.localisation.references.ParadoxLocalisationStellarisNameFormatPsiReference;
 
-public class ParadoxLocalisationStellarisFormatReferenceImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationStellarisFormatReference {
+public class ParadoxLocalisationStellarisNamePartImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationStellarisNamePart {
 
-  public ParadoxLocalisationStellarisFormatReferenceImpl(@NotNull ASTNode node) {
+  public ParadoxLocalisationStellarisNamePartImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
-    visitor.visitStellarisFormatReference(this);
+    visitor.visitStellarisNamePart(this);
   }
 
   @Override
@@ -42,7 +42,7 @@ public class ParadoxLocalisationStellarisFormatReferenceImpl extends ParadoxLoca
 
   @Override
   @Nullable
-  public ParadoxLocalisationStellarisFormatPsiReference getReference() {
+  public ParadoxLocalisationStellarisNameFormatPsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
   }
 
