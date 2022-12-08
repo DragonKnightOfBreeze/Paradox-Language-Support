@@ -33,6 +33,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			is ParadoxParameterElement -> getParameterInfo(element)
 			//使用FakeElement时，这里是有效的代码
 			is ParadoxValueSetValueElement -> getValueSetValueInfo(element)
+			is ParadoxLocalisationStellarisNamePart -> getStellarisNameFormatInfo(element)
 			else -> null
 		}
 	}
@@ -102,6 +103,13 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
+	private fun getStellarisNameFormatInfo(element: ParadoxLocalisationStellarisNamePart): String? {
+		val valueSetValueElement = element.reference?.resolve() ?: return null
+		return buildString {
+			buildStellarisNameFormatDefinition(valueSetValueElement.name, valueSetValueElement.valueSetName)
+		}
+	}
+	
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
 			is ParadoxLocalisationProperty -> getPropertyDoc(element)
@@ -114,6 +122,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			is ParadoxParameterElement -> getParameterDoc(element)
 			//使用FakeElement时，这里是有效的代码
 			is ParadoxValueSetValueElement -> getValueSetValueDoc(element)
+			is ParadoxLocalisationStellarisNamePart -> getStellarisNameFormatDoc(element)
 			else -> null
 		}
 	}
@@ -183,6 +192,13 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		return buildString {
 			val configGroup = getCwtConfig(element.project).getValue(element.gameType)
 			buildValueSetValueDefinition(element.name, element.valueSetNames, configGroup)
+		}
+	}
+	
+	private fun getStellarisNameFormatDoc(element: ParadoxLocalisationStellarisNamePart): String? {
+		val valueSetValueElement = element.reference?.resolve() ?: return null
+		return buildString {
+			buildStellarisNameFormatDefinition(valueSetValueElement.name, valueSetValueElement.valueSetName)
 		}
 	}
 	
@@ -279,6 +295,15 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 					append(": ").append(valueSetName)
 				}
 			}
+		}
+	}
+	
+	private fun StringBuilder.buildStellarisNameFormatDefinition(name: String, valueSetName: String) {
+		definition {
+			//不加上文件信息
+			val nameToUse = name.escapeXmlOrAnonymous()
+			append(PlsDocBundle.message("name.localisation.stellarisNamePart")).append(" <b>").append(nameToUse).append("</b> ")
+			append(": ").append(valueSetName)
 		}
 	}
 	

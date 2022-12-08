@@ -436,10 +436,11 @@ STELLARIS_NAME_FORMAT__ID=[a-zA-Z0-9_]+
 
 <WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT> "<" {
 	if(context != null && context.getGameType() == ParadoxGameType.Stellaris) {
-		if(context.getStellarisNameFormatKeys().contains(context.getCurrentKey()))
-		yybegin(STELLARIS_NAME_FORMAT);
-		return LEFT_ANGLE_BRACKET;
-	} 
+		if(context.getStellarisNameFormatKeys().contains(context.getCurrentKey())) {
+			yybegin(STELLARIS_NAME_FORMAT);
+			return LEFT_ANGLE_BRACKET;
+		}
+	}
 	yypushback(1);
 	return STRING_TOKEN;
 }

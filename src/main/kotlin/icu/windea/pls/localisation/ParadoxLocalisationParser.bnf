@@ -20,7 +20,6 @@
     LEFT_ANGLE_BRACKET="<"
     RIGHT_ANGLE_BRACKET=">"
   ]
-  extraRoot("text")=true
 }
 
 //规则定义可以忽略空白
