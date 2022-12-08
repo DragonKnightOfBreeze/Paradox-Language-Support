@@ -58,6 +58,7 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 				dataStream.writeByte(2)
 				dataStream.writeName(valueSetValueInfo.name)
 				dataStream.writeName(valueSetValueInfo.valueSetName)
+				dataStream.writeBoolean(valueSetValueInfo.read)
 			}
 			else -> {
 				dataStream.writeByte(0)
@@ -76,7 +77,8 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 		val valueSetValueInfo = if(flag != 2.toByte()) null else {
 			val name = dataStream.readNameString().orEmpty()
 			val valueSetName = dataStream.readNameString().orEmpty()
-			ParadoxValueSetValueInfo(name, valueSetName, gameType)
+			val read = dataStream.readBoolean()
+			ParadoxValueSetValueInfo(name, valueSetName, gameType, read)
 		}
 		return ParadoxScriptStringStubImpl(parentStub, complexEnumValueInfo, valueSetValueInfo, gameType)
 	}

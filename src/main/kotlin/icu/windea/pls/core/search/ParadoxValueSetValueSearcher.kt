@@ -15,10 +15,11 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxScriptString, Para
 	override fun processQuery(queryParameters: ParadoxValueSetValueSearch.SearchParameters, consumer: Processor<in ParadoxScriptString>) {
 		val name = queryParameters.name
 		val valueSetName = queryParameters.valueSetName
+		val read = queryParameters.read
 		val project = queryParameters.project
 		val scope = GlobalSearchScopeUtil.toGlobalSearchScope(queryParameters.scope, project)
 		ParadoxValueSetValueIndex.processAllElements(valueSetName, project, scope) {
-			if(name == null || matchesName(it, name)) {
+			if((name == null || matchesName(it, name)) && (read == null || matchesRead(it, read))) {
 				consumer.process(it)
 			} else {
 				true
@@ -26,8 +27,12 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxScriptString, Para
 		}
 	}
 	
-	private fun matchesName(element: ParadoxScriptString, name: String): Boolean {
+	private fun matchesName(element: ParadoxScriptString, name: String?): Boolean {
 		return ParadoxValueSetValueHandler.getName(element) == name
+	}
+	
+	private fun matchesRead(element: ParadoxScriptString, read: Boolean) : Boolean {
+		return ParadoxValueSetValueHandler.getRead(element) == read
 	}
 }
 

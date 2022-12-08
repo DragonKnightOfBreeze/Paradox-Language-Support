@@ -30,7 +30,8 @@ object ParadoxValueSetValueHandler {
 		val valueSetName = config.expression.value?.takeIfNotEmpty() ?: return null
 		val configGroup = config.info.configGroup
 		val gameType = configGroup.gameType
-		return ParadoxValueSetValueInfo(name, valueSetName, gameType)
+		val read = config.expression.type == CwtDataTypes.Value
+		return ParadoxValueSetValueInfo(name, valueSetName, gameType, read)
 	}
 	
 	@JvmStatic
@@ -44,5 +45,14 @@ object ParadoxValueSetValueHandler {
 	fun getName(expression: String) : String? {
 		//exclude if name contains invalid chars
 		return expression.substringBefore('@').takeIf { it.all { c -> c.isExactIdentifierChar() } }
+	}
+	
+	@JvmStatic
+	fun getRead(element: ParadoxScriptString) : Boolean {
+		val stub = runCatching { element.stub }.getOrNull()
+		stub?.valueSetValueInfo?.read
+			?.let { return it }
+		val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return true
+		return config.expression.type == CwtDataTypes.Value
 	}
 }

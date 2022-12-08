@@ -686,7 +686,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
           case 59: break;
           case 5: 
             { yybegin(WAITING_PROPERTY_COLON);
-    context.setCurrentKey(yytext().toString());
+    if(context != null) context.setCurrentKey(yytext().toString());
     return PROPERTY_KEY_TOKEN;
             } 
             // fall through
@@ -763,7 +763,6 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
 			return LEFT_ANGLE_BRACKET;
 		}
 	}
-	yypushback(1);
 	return STRING_TOKEN;
             } 
             // fall through
@@ -1015,7 +1014,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
  		        return LOCALE_ID;
 			} else {
 				yybegin(WAITING_PROPERTY_COLON);
-				context.setCurrentKey(yytext().toString());
+				if(context != null) context.setCurrentKey(yytext().toString());
 				return PROPERTY_KEY_TOKEN;
 			}
  	    }

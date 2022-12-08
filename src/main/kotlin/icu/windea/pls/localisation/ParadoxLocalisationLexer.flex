@@ -177,7 +177,7 @@ STELLARIS_NAME_FORMAT__ID=[a-zA-Z0-9_]+
  		        return LOCALE_ID;
 			} else {
 				yybegin(WAITING_PROPERTY_COLON);
-				context.setCurrentKey(yytext().toString());
+				if(context != null) context.setCurrentKey(yytext().toString());
 				return PROPERTY_KEY_TOKEN;
 			}
  	    }
@@ -188,7 +188,7 @@ STELLARIS_NAME_FORMAT__ID=[a-zA-Z0-9_]+
   //{LOCALE_ID} {yybegin(WAITING_LOCALE_COLON); return LOCALE_ID; }
   {PROPERTY_KEY_TOKEN} {
     yybegin(WAITING_PROPERTY_COLON);
-    context.setCurrentKey(yytext().toString());
+    if(context != null) context.setCurrentKey(yytext().toString());
     return PROPERTY_KEY_TOKEN;
   }
 }
@@ -441,7 +441,6 @@ STELLARIS_NAME_FORMAT__ID=[a-zA-Z0-9_]+
 			return LEFT_ANGLE_BRACKET;
 		}
 	}
-	yypushback(1);
 	return STRING_TOKEN;
 }
 <STELLARIS_NAME_FORMAT> {
