@@ -48,7 +48,7 @@
 * 新增功能： 
   * [X] 支持CWT规则：`stellaris_name_format[xxx]`
     * `stellaris_name_format[x]`对应一个本地化的名称，本地化文本中可以使用格式化引用`<some_parts>`，而`some_parts`对应CWT规则`value[x]`
-  * [ ] 支持引用解析：用于格式化的本地化文本中的格式化引用（`format.xxx: "<some_parts> ...""`中的`<some_parts>`） - 更新中
+  * [X] 支持引用解析：用于格式化的本地化文本中的格式化引用（`format.xxx: "<some_parts> ...""`中的`<some_parts>`） - 更新中
     * 当`empire_name_format`的名称属性`format`的值是`format.xxx`，对应一个本地化时，那个本地化中可以使用格式化引用语法
     * 当`empire_name_parts_list`的名称属性`key`的值是`xxx`时，`xxx`是合法的格式化引用
   * [ ] 同名的定义、本地化，同路径的文件之间的DIFF（左窗口显示当前的，右窗口显示包括当前在内的所有的）

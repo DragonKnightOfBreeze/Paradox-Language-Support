@@ -33,7 +33,8 @@ object ParadoxStellarisNameFormatKeyIndex : FileBasedIndexExtension<String, Stri
 				}
 				
 				private fun doVisitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-					val configs = ParadoxCwtConfigHandler.resolveConfigs(element)
+					val matchType = 0
+					val configs = ParadoxCwtConfigHandler.resolveConfigs(element, matchType = matchType)
 					val config = configs.firstOrNull() ?: return
 					val configExpression = config.expression
 					if(configExpression.type != CwtDataTypes.Localisation || configExpression.extraValue != CwtDataTypeAlias.StellarisNameFormat) return

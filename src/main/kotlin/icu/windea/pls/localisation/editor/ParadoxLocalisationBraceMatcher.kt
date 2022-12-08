@@ -11,7 +11,8 @@ class ParadoxLocalisationBraceMatcher : PairedBraceMatcher {
 			BracePair(PROPERTY_REFERENCE_START, PROPERTY_REFERENCE_END,false),
 			BracePair(ICON_START, ICON_END,false),
 			BracePair(COMMAND_START, COMMAND_END,false),
-			BracePair(COLORFUL_TEXT_START, COLORFUL_TEXT_END,false)
+			BracePair(COLORFUL_TEXT_START, COLORFUL_TEXT_END,false),
+			BracePair(LEFT_ANGLE_BRACKET, RIGHT_ANGLE_BRACKET,false)
 		)
 	}
 
