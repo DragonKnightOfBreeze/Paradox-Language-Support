@@ -46,8 +46,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType LEFT_ANGLE_BRACKET = ParadoxLocalisationElementTypeFactory.getTokenType("<");
   IElementType LEFT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("LEFT_QUOTE");
   IElementType LOCALE_ID = ParadoxLocalisationElementTypeFactory.getTokenType("LOCALE_ID");
-  IElementType PILE = ParadoxLocalisationElementTypeFactory.getTokenType("|");
-  IElementType PIPE = ParadoxLocalisationElementTypeFactory.getTokenType("PIPE");
+  IElementType PIPE = ParadoxLocalisationElementTypeFactory.getTokenType("|");
   IElementType PROPERTY_KEY_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_KEY_TOKEN");
   IElementType PROPERTY_NUMBER = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_NUMBER");
   IElementType PROPERTY_REFERENCE_END = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_END");

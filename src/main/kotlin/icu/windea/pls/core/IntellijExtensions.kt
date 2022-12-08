@@ -98,15 +98,6 @@ fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiE
 	return NavigationGutterIconBuilder.create(icon, DEFAULT_PSI_CONVERTOR, gotoRelatedItemProvider)
 }
 
-inline fun <T> UserDataHolder.getUserDataOnValid(key: Key<T>, predicate: (element: T) -> Boolean): T? {
-	val data = this.getUserData(key) ?: return null
-	if(predicate(data)) return data
-	runCatching {
-		this.putUserData(key, null)
-	}
-	return null
-}
-
 inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, action: () -> T?): T? {
 	val data = this.getUserData(key)
 	if(data != null) return data

@@ -162,7 +162,7 @@ private fun doResolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean)
 fun resolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
 	val resolvedFileInfo = doResolveFileInfo(file)
 	runCatching {
-		file.putUserData(PlsKeys.fileInfoKey, resolvedFileInfo)
+		file.putCopyableUserData(PlsKeys.fileInfoKey, resolvedFileInfo)
 	}
 	return resolvedFileInfo
 }
@@ -179,7 +179,6 @@ fun doResolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
 			val path = ParadoxPath.resolve(subPaths)
 			val fileType = ParadoxFileType.resolve(file, rootInfo.gameType, path)
 			val fileInfo = ParadoxFileInfo(fileName, path, fileType, rootInfo)
-			file.putUserData(PlsKeys.fileInfoKey, fileInfo)
 			return fileInfo
 		}
 		subPaths.addFirst(currentFile.name)
@@ -232,6 +231,7 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
 		is ParadoxDataExpressionNode.Reference -> true
 		is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
 		is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
+		is ParadoxLocalisationStellarisNameFormatPsiReference -> true //value[xxx_name_parts]
 		else -> false
 	}
 }
@@ -281,7 +281,7 @@ val PsiElement.localeConfig: CwtLocalisationLocaleConfig?
 //如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
 
 val VirtualFile.fileInfo: ParadoxFileInfo?
-	get() = this.getUserDataOnValid(PlsKeys.fileInfoKey) { it.isValid }
+	get() = this.getCopyableUserData(PlsKeys.fileInfoKey)
 val PsiFile.fileInfo: ParadoxFileInfo?
 	get() = this.originalFile.virtualFile?.fileInfo //需要使用原始文件
 val PsiElement.fileInfo: ParadoxFileInfo?

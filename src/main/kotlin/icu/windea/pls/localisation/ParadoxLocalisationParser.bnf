@@ -16,7 +16,7 @@
   tokens=[
     COLON=":"
     AT="@"
-    PILE="|"
+    PIPE="|"
     LEFT_ANGLE_BRACKET="<"
     RIGHT_ANGLE_BRACKET=">"
   ]

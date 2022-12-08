@@ -5,12 +5,14 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.search.searches.*
+import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
+import javax.swing.*
 
 /**
  * 值集值值（`some_flag`）被设置但未被使用的检查
@@ -23,6 +25,8 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 	companion object {
 		private val statusMapKey = Key.create<MutableMap<ParadoxValueSetValueElement, Boolean>>("paradox.statusMap")
 	}
+	
+	@JvmField var ignoreDefinitionNames = true
 	
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
 		session.putUserData(statusMapKey, ConcurrentHashMap())
@@ -42,6 +46,9 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 			if(!shouldVisit(element)) return
 			
 			ProgressManager.checkCanceled()
+			
+			//ignore definition names if necessary
+			if(inspection.ignoreDefinitionNames && element is ParadoxScriptString && element.isDefinitionName()) return
 			//may only resolve to single ParadoxValueSetValueElement (set-flag expression)
 			val reference = element.reference ?: return
 			if(!reference.canResolveValueSetValue()) return
@@ -82,6 +89,18 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 			holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range,
 				ImportGameOrModDirectoryFix(element)
 			)
+		}
+	}
+	
+	override fun createOptionsPanel(): JComponent {
+		return panel {
+			//ignoreDefinitionNames
+			row {
+				checkBox(PlsBundle.message("script.inspection.advanced.unusedValueSetValue.option.ignoreDefinitionNames"))
+					.bindSelected(::ignoreDefinitionNames)
+					.applyToComponent { toolTipText = PlsBundle.message("script.inspection.advanced.unusedValueSetValue.option.ignoreDefinitionNames.tooltip") }
+					.actionListener { _, component -> ignoreDefinitionNames = component.isSelected }
+			}
 		}
 	}
 }

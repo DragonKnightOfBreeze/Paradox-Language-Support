@@ -2,6 +2,7 @@ package icu.windea.pls.localisation.editor
 
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
@@ -30,10 +31,9 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			is ParadoxLocalisationCommandField -> getCommandFieldInfo(element)
 			is ParadoxLocalisationColorfulText -> getColorConfig(element)
 			//使用FakeElement时，这里是有效的代码
-			is ParadoxParameterElement -> getParameterInfo(element)
+			is ParadoxParameterElement -> getParameterInfo(element, originalElement)
 			//使用FakeElement时，这里是有效的代码
-			is ParadoxValueSetValueElement -> getValueSetValueInfo(element)
-			is ParadoxLocalisationStellarisNamePart -> getStellarisNameFormatInfo(element)
+			is ParadoxValueSetValueElement -> getValueSetValueInfo(element, originalElement)
 			else -> null
 		}
 	}
@@ -88,25 +88,18 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getParameterInfo(element: ParadoxParameterElement): String {
+	private fun getParameterInfo(element: ParadoxParameterElement, originalElement: PsiElement?): String {
 		val name = element.name
 		val definitionInfo = element.definitionName + ": " + element.definitionType
 		return buildString {
-			buildParameterDefinition(name, definitionInfo)
+			buildParameterDefinition(name, definitionInfo, originalElement)
 		}
 	}
 	
-	private fun getValueSetValueInfo(element: ParadoxValueSetValueElement): String {
+	private fun getValueSetValueInfo(element: ParadoxValueSetValueElement, originalElement: PsiElement?): String {
 		return buildString {
 			val configGroup = getCwtConfig(element.project).getValue(element.gameType)
-			buildValueSetValueDefinition(element.name, element.valueSetNames, configGroup)
-		}
-	}
-	
-	private fun getStellarisNameFormatInfo(element: ParadoxLocalisationStellarisNamePart): String? {
-		val valueSetValueElement = element.reference?.resolve() ?: return null
-		return buildString {
-			buildStellarisNameFormatDefinition(valueSetValueElement.name, valueSetValueElement.valueSetName)
+			buildValueSetValueDefinition(element.name, element.valueSetNames, configGroup, originalElement)
 		}
 	}
 	
@@ -119,10 +112,9 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			is ParadoxLocalisationCommandField -> getCommandFieldDoc(element)
 			is ParadoxLocalisationColorfulText -> getColorDoc(element)
 			//使用FakeElement时，这里是有效的代码
-			is ParadoxParameterElement -> getParameterDoc(element)
+			is ParadoxParameterElement -> getParameterDoc(element, originalElement)
 			//使用FakeElement时，这里是有效的代码
-			is ParadoxValueSetValueElement -> getValueSetValueDoc(element)
-			is ParadoxLocalisationStellarisNamePart -> getStellarisNameFormatDoc(element)
+			is ParadoxValueSetValueElement -> getValueSetValueDoc(element, originalElement)
 			else -> null
 		}
 	}
@@ -180,25 +172,18 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getParameterDoc(element: ParadoxParameterElement): String {
+	private fun getParameterDoc(element: ParadoxParameterElement, originalElement: PsiElement?): String {
 		val name =  element.name
 		val definitionInfo = element.definitionName + ": " + element.definitionType
 		return buildString {
-			buildParameterDefinition(name, definitionInfo)
+			buildParameterDefinition(name, definitionInfo, originalElement)
 		}
 	}
 	
-	private fun getValueSetValueDoc(element: ParadoxValueSetValueElement): String {
+	private fun getValueSetValueDoc(element: ParadoxValueSetValueElement, originalElement: PsiElement?): String {
 		return buildString {
 			val configGroup = getCwtConfig(element.project).getValue(element.gameType)
-			buildValueSetValueDefinition(element.name, element.valueSetNames, configGroup)
-		}
-	}
-	
-	private fun getStellarisNameFormatDoc(element: ParadoxLocalisationStellarisNamePart): String? {
-		val valueSetValueElement = element.reference?.resolve() ?: return null
-		return buildString {
-			buildStellarisNameFormatDefinition(valueSetValueElement.name, valueSetValueElement.valueSetName)
+			buildValueSetValueDefinition(element.name, element.valueSetNames, configGroup, originalElement)
 		}
 	}
 	
@@ -266,7 +251,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun StringBuilder.buildParameterDefinition(name: String, definitionInfo: String?) {
+	private fun StringBuilder.buildParameterDefinition(name: String, definitionInfo: String?, originalElement: PsiElement?) {
 		definition {
 			//不加上文件信息
 			//加上名字
@@ -278,10 +263,13 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun StringBuilder.buildValueSetValueDefinition(name: String, valueSetNames: List<String>, configGroup: CwtConfigGroup) {
+	private fun StringBuilder.buildValueSetValueDefinition(name: String, valueSetNames: List<String>, configGroup: CwtConfigGroup, originalElement: PsiElement?) {
+		val originalElementType = originalElement.elementType
+		if(originalElementType == ParadoxLocalisationElementTypes.STELLARIS_NAME_FORMAT__ID) {
+			return buildStellarisNameFormatDefinition(name, valueSetNames.first())
+		}
 		definition {
 			//不加上文件信息
-			//加上值集值值的信息
 			append(PlsDocBundle.message("name.cwt.valueSetValue")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			var appendSeparator = false
 			for(valueSetName in valueSetNames) {
@@ -301,8 +289,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	private fun StringBuilder.buildStellarisNameFormatDefinition(name: String, valueSetName: String) {
 		definition {
 			//不加上文件信息
-			val nameToUse = name.escapeXmlOrAnonymous()
-			append(PlsDocBundle.message("name.localisation.stellarisNamePart")).append(" <b>").append(nameToUse).append("</b> ")
+			append(PlsDocBundle.message("name.localisation.stellarisNamePart")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b> ")
 			append(": ").append(valueSetName)
 		}
 	}
