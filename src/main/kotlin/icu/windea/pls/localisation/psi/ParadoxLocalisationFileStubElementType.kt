@@ -43,15 +43,15 @@ object ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub
 		}
 	}
 	
-	//override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
-	//	//这里需要基于上下文来解析本地化文本的语法
-	//	val project = psi.project
-	//	val language = ParadoxLocalisationLanguage
-	//	val context = ParadoxLocalisationParsingContext(psi.fileInfo, project)
-	//	val lexer = ParadoxLocalisationLexerAdapter(context)
-	//	val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, lexer, language, chameleon.chars)
-	//	val parser = ParadoxScriptParser()
-	//	val node = parser.parse(this, builder)
-	//	return node.firstChildNode
-	//}
+	override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
+		//这里需要基于上下文来解析本地化文本的语法
+		val project = psi.project
+		val language = ParadoxLocalisationLanguage
+		val context = ParadoxLocalisationParsingContext(psi.fileInfo, project)
+		val lexer = ParadoxLocalisationLexerAdapter(context)
+		val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, lexer, language, chameleon.chars)
+		val parser = ParadoxLocalisationParser()
+		val node = parser.parse(this, builder)
+		return node.firstChildNode
+	}
 }

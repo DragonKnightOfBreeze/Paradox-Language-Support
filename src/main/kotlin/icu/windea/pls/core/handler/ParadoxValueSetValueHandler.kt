@@ -15,8 +15,8 @@ object ParadoxValueSetValueHandler {
 		if(element.isParameterAwareExpression()) return null
 		
 		ProgressManager.checkCanceled()
-		//cannot use stub index here
-		val matchType = CwtConfigMatchType.NO_STUB_INDEX
+		//cannot use index here
+		val matchType = 0
 		//only accept "value[x]" or "value_set[x]", rather than "scope_field" or "value_field"
 		//so, e.g., if there is only an expression "event_target:target", "target" will not be shown during code completion
 		val config = ParadoxCwtConfigHandler.resolveValueConfigs(element, true, true, matchType)

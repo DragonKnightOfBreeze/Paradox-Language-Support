@@ -12,7 +12,7 @@ import javax.swing.*
 
 class ParadoxScriptFile(
 	viewProvider: FileViewProvider
-) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxDefinitionProperty {
+) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxDefinitionProperty, ParadoxScriptExpressionContextElement {
 	override val pathName get() = name.let { name -> name.substringBeforeLast(".", name) }
 	
 	override val originalPathName get() = name.let { name -> name.substringBeforeLast(".", name) }

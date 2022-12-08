@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.Icon;
 
-public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxScriptTypedElement, ParadoxDefinitionProperty, StubBasedPsiElement<ParadoxScriptPropertyStub> {
+public interface ParadoxScriptProperty extends ParadoxScriptExpressionContextElement, ParadoxScriptNamedElement, ParadoxScriptTypedElement, ParadoxDefinitionProperty, StubBasedPsiElement<ParadoxScriptPropertyStub> {
 
   @NotNull
   ParadoxScriptPropertyKey getPropertyKey();

@@ -35,7 +35,7 @@ property_list ::= COMMENT * locale property_item * {
   implements="com.intellij.psi.PsiListLikeElement"
   methods=[getIcon getComponents]
 }
-private property_item ::= COMMENT | property{
+private property_item ::= COMMENT | property {
   recoverWhile="#auto"
 }
 

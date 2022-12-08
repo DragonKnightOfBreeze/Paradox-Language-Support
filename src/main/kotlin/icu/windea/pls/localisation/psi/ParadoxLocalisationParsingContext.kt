@@ -14,7 +14,5 @@ class ParadoxLocalisationParsingContext(
 	val gameType get() = fileInfo?.rootInfo?.gameType
 	
 	@WithGameType(ParadoxGameType.Stellaris)
-	val stellarisNameFormatKeys by lazy { 
-		StellarisNameFormatHandler.getAllKeys(project)
-	}
+	val stellarisNameFormatKeys = StellarisNameFormatHandler.getAllKeys(project)
 }

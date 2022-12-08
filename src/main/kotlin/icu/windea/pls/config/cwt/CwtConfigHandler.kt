@@ -1706,7 +1706,7 @@ object CwtConfigHandler {
 			}
 		}
 		val config = configs.firstOrNull() ?: return null //first is ok
-		val read = config.expression.type == CwtDataTypes.Value 
+		val read = config.expression?.type == CwtDataTypes.Value 
 		val valueSetNames = configs.mapNotNull { it.expression?.value }
 		return ParadoxValueSetValueElement(element, name, valueSetNames, configGroup.project, gameType, read)
 	}

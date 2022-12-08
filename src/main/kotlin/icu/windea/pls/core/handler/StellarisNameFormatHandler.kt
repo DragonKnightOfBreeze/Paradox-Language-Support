@@ -1,5 +1,6 @@
 package icu.windea.pls.core.handler
 
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.util.indexing.*
@@ -12,6 +13,7 @@ object StellarisNameFormatHandler {
 	fun getAllKeys(project: Project): Collection<String> {
 		if(DumbService.isDumb(project)) return emptySet()
 		
+		ProgressManager.checkCanceled()
 		val indexId = ParadoxStellarisNameFormatKeyIndex.name
 		return FileBasedIndex.getInstance().getAllKeys(indexId, project)
 	}
