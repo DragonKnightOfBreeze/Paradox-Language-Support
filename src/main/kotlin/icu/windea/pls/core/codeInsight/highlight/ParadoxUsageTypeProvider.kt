@@ -18,7 +18,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
 	override fun getUsageType(element: PsiElement?, targets: Array<out UsageTarget>): UsageType? {
 		//TODO
 		return when {
-			element is ParadoxScriptExpressionElement -> {
+			element is ParadoxScriptStringExpressionElement -> {
 				val config = resolveConfigs(element).firstOrNull() ?: return null
 				val configExpression = config.expression
 				ParadoxUsageType.FROM_CONFIG_EXPRESSION(configExpression)

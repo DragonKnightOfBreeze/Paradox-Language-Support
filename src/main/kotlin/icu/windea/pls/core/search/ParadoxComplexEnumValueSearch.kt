@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 复杂枚举的查询。
  */
-class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxScriptExpressionElement, ParadoxComplexEnumValueSearch.SearchParameters>(EP_NAME) {
+class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxScriptStringExpressionElement, ParadoxComplexEnumValueSearch.SearchParameters>(EP_NAME) {
 	/**
 	 * @property name 名字。
 	 * @property enumName 枚举的名字。
@@ -21,11 +21,11 @@ class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxScriptExpres
 		val enumName: String,
 		val project: Project,
 		val scope: SearchScope,
-		override val selector: ChainedParadoxSelector<ParadoxScriptExpressionElement>
-	) : ParadoxSearchParameters<ParadoxScriptExpressionElement>
+		override val selector: ChainedParadoxSelector<ParadoxScriptStringExpressionElement>
+	) : ParadoxSearchParameters<ParadoxScriptStringExpressionElement>
 	
 	companion object {
-		@JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxScriptExpressionElement, SearchParameters>>("icu.windea.pls.paradoxComplexEnumValueSearch")
+		@JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxScriptStringExpressionElement, SearchParameters>>("icu.windea.pls.paradoxComplexEnumValueSearch")
 		@JvmField val INSTANCE = ParadoxComplexEnumValueSearch()
 		
 		/**
@@ -37,7 +37,7 @@ class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxScriptExpres
 			enumName: String,
 			project: Project,
 			scope: SearchScope = GlobalSearchScope.allScope(project),
-			selector: ChainedParadoxSelector<ParadoxScriptExpressionElement> = nopSelector()
+			selector: ChainedParadoxSelector<ParadoxScriptStringExpressionElement> = nopSelector()
 		) = INSTANCE.createParadoxQuery(SearchParameters(name, enumName, project, scope, selector))
 		
 		/**
@@ -48,7 +48,7 @@ class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxScriptExpres
 			enumName: String,
 			project: Project,
 			scope: SearchScope = GlobalSearchScope.allScope(project),
-			selector: ChainedParadoxSelector<ParadoxScriptExpressionElement> = nopSelector()
+			selector: ChainedParadoxSelector<ParadoxScriptStringExpressionElement> = nopSelector()
 		) = INSTANCE.createParadoxQuery(SearchParameters(null, enumName, project, scope, selector))
 	}
 }

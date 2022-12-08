@@ -15,7 +15,7 @@ class ParadoxDefinitionSelector: ChainedParadoxSelector<ParadoxDefinitionPropert
 
 class ParadoxLocalisationSelector: ChainedParadoxSelector<ParadoxLocalisationProperty>()
 
-class ParadoxComplexEnumValueSelector: ChainedParadoxSelector<ParadoxScriptExpressionElement>()
+class ParadoxComplexEnumValueSelector: ChainedParadoxSelector<ParadoxScriptStringExpressionElement>()
 
 class ParadoxValueSetValueSelector: ChainedParadoxSelector<ParadoxScriptString>()
 

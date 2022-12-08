@@ -36,7 +36,7 @@ class UnsetValueSetValueInspection : LocalInspectionTool() {
 	) : ParadoxScriptVisitor() {
 		private fun shouldVisit(element: PsiElement): Boolean {
 			//ignore with parameters situation
-			return (element is ParadoxScriptExpressionElement && !element.isParameterAwareExpression())
+			return (element is ParadoxScriptStringExpressionElement && !element.isParameterAwareExpression())
 		}
 		
 		override fun visitElement(element: PsiElement) {

@@ -296,13 +296,13 @@ val ParadoxScriptPropertyKey.definitionElementInfo: ParadoxDefinitionElementInfo
 	get() = ParadoxDefinitionElementHandler.getInfo(this)
 val ParadoxScriptValue.definitionElementInfo: ParadoxDefinitionElementInfo?
 	get() = ParadoxDefinitionElementHandler.getInfo(this)
-val ParadoxScriptExpressionElement.definitionElementInfo: ParadoxDefinitionElementInfo?
+val ParadoxScriptStringExpressionElement.definitionElementInfo: ParadoxDefinitionElementInfo?
 	get() = ParadoxDefinitionElementHandler.getInfo(this)
 
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
 	get() = ParadoxLocalisationHandler.getInfo(this)
 
-val ParadoxScriptExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo?
+val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo?
 	get() = ParadoxComplexEnumValueHandler.getInfo(this)
 
 val ParadoxLocalisationLocale.localeConfig: CwtLocalisationLocaleConfig?

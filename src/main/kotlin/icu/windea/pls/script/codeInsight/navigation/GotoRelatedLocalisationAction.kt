@@ -40,10 +40,10 @@ class GotoRelatedLocalisationAction : BaseCodeInsightAction() {
 		}
 	}
 	
-	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
+	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
 		//direct parent
 		return file.findElementAt(offset) {
-			it.parent as? ParadoxScriptExpressionElement
+			it.parent as? ParadoxScriptStringExpressionElement
 		}?.takeIf { it.isExpressionElement() }
 	}
 }

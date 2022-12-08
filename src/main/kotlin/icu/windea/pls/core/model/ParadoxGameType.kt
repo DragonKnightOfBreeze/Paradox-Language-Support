@@ -28,6 +28,7 @@ enum class ParadoxGameType(
 		val valueMap = values.associateBy { it.id }
 		
 		fun resolve(id: String): ParadoxGameType? {
+			if(id.isEmpty()) return null
 			return valueMap[id.lowercase()]
 		}
 		

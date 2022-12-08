@@ -1,8 +1,7 @@
 package icu.windea.pls.localisation.psi;
 
 import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.*;
+import com.intellij.psi.tree.IElementType;import icu.windea.pls.core.model.*;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.core.StdlibExtensionsKt.*;
@@ -44,7 +43,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %state STELLARIS_FORMAT_REFERENCE
 
 %{	
-	private int features;
+	private ParadoxLocalisationParsingContext context;
 
     private boolean noIndent = true;
     private int depth = 0;
@@ -55,9 +54,9 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         this((java.io.Reader)null);
     }
 	
-	public ParadoxLocalisationLexer(int features) {
+	public ParadoxLocalisationLexer(ParadoxLocalisationParsingContext context) {
         this((java.io.Reader)null);
-    	this.features = features;
+    	this.context = context;
     }
 	
     private void increaseDepth(){
@@ -178,6 +177,7 @@ STELLARIS_FORMAT_REFERENCE_ID=[a-zA-Z0-9_]+
  		        return LOCALE_ID;
 			} else {
 				yybegin(WAITING_PROPERTY_COLON);
+				context.setCurrentKey(yytext().toString());
 				return PROPERTY_KEY_TOKEN;
 			}
  	    }
@@ -186,7 +186,11 @@ STELLARIS_FORMAT_REFERENCE_ID=[a-zA-Z0-9_]+
     return TokenType.BAD_CHARACTER; //不期望的结果
   }
   //{LOCALE_ID} {yybegin(WAITING_LOCALE_COLON); return LOCALE_ID; }
-  {PROPERTY_KEY_TOKEN} {yybegin(WAITING_PROPERTY_COLON); return PROPERTY_KEY_TOKEN; }
+  {PROPERTY_KEY_TOKEN} {
+    yybegin(WAITING_PROPERTY_COLON);
+    context.setCurrentKey(yytext().toString());
+    return PROPERTY_KEY_TOKEN;
+  }
 }
 <WAITING_LOCALE_COLON>{
   {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
@@ -223,9 +227,9 @@ STELLARIS_FORMAT_REFERENCE_ID=[a-zA-Z0-9_]+
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;} //允许多余的重置颜色标记
 }
 
-<YYINITIAL, WAITING_COLORFUL_TEXT> {VALID_ESCAPE_TOKEN} {return VALID_ESCAPE_TOKEN;}
-<YYINITIAL, WAITING_COLORFUL_TEXT> {INVALID_ESCAPE_TOKEN} {return INVALID_ESCAPE_TOKEN;}
-<YYINITIAL, WAITING_COLORFUL_TEXT> {DOUBLE_LEFT_BRACKET} {return DOUBLE_LEFT_BRACKET;}
+<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT> {VALID_ESCAPE_TOKEN} {return VALID_ESCAPE_TOKEN;}
+<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT> {INVALID_ESCAPE_TOKEN} {return INVALID_ESCAPE_TOKEN;}
+<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT> {DOUBLE_LEFT_BRACKET} {return DOUBLE_LEFT_BRACKET;}
 
 //reference rules
 
@@ -430,14 +434,14 @@ STELLARIS_FORMAT_REFERENCE_ID=[a-zA-Z0-9_]+
 
 //stellaris format reference rules
 
-<YYINITIAL, WAITING_COLORFUL_TEXT> "<" {
-	if(BitUtil.isSet(features, ParadoxLocalisationFeatures.StellarisFormatReference)) {
+<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT> "<" {
+	if(context != null && context.getGameType() == ParadoxGameType.Stellaris) {
+		if(context.getStellarisNameFormatKeys().contains(context.getCurrentKey()))
 		yybegin(STELLARIS_FORMAT_REFERENCE);
 		return LEFT_ANGLE_BRACKET;
-	} else {
-		yypushback(1);
-		return STRING_TOKEN;
-	}
+	} 
+	yypushback(1);
+	return STRING_TOKEN;
 }
 <STELLARIS_FORMAT_REFERENCE> {
   {STELLARIS_FORMAT_REFERENCE_ID} { return STELLARIS_FORMAT_REFERENCE_ID; }
@@ -446,6 +450,6 @@ STELLARIS_FORMAT_REFERENCE_ID=[a-zA-Z0-9_]+
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
 }
 
-<YYINITIAL, WAITING_COLORFUL_TEXT> {STRING_TOKEN} {return STRING_TOKEN;}
+<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT> {STRING_TOKEN} {return STRING_TOKEN;}
 
 [^] {return TokenType.BAD_CHARACTER; }

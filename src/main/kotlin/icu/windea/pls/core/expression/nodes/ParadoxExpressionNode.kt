@@ -14,10 +14,10 @@ interface ParadoxExpressionNode {
 	
 	fun getAttributesKey(): TextAttributesKey? = null
 	
-	fun getAttributesKeyConfig(element: ParadoxScriptExpressionElement): CwtConfig<*>? = null
+	fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? = null
 	
-	fun getReference(element: ParadoxScriptExpressionElement): PsiReference? = null
+	fun getReference(element: ParadoxScriptStringExpressionElement): PsiReference? = null
 	
-	fun getUnresolvedError(element: ParadoxScriptExpressionElement): ParadoxExpressionError? = null
+	fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxExpressionError? = null
 }
 

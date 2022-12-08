@@ -14,7 +14,7 @@ class ParadoxScopeLinkExpressionNode (
 ) : ParadoxScopeExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SCOPE_KEY
 	
-	override fun getReference(element: ParadoxScriptExpressionElement): Reference {
+	override fun getReference(element: ParadoxScriptStringExpressionElement): Reference {
 		return Reference(element, rangeInExpression, config)
 	}
 	
@@ -27,11 +27,11 @@ class ParadoxScopeLinkExpressionNode (
 	}
 	
 	class Reference(
-		element: ParadoxScriptExpressionElement,
+		element: ParadoxScriptStringExpressionElement,
 		rangeInElement: TextRange,
 		val config: CwtLinkConfig
-	) : PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
-		override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
+	) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+		override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
 		}
 		

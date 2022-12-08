@@ -35,11 +35,11 @@ abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
 		doInvoke(element, complexEnumValueInfo, editor, project)
 	}
 	
-	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-		return file.findElementAt(offset) { it.parent as? ParadoxScriptExpressionElement }
+	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
+		return file.findElementAt(offset) { it.parent as? ParadoxScriptStringExpressionElement }
 	}
 	
-	abstract fun doInvoke(element: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project)
+	abstract fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project)
 	
 	override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
 	
@@ -52,7 +52,7 @@ abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
 class ComplexEnumValueNameFindUsagesIntention: ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.findUsages")
 	
-	override fun doInvoke(element: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
+	override fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
 		GotoDeclarationAction.startFindUsages(editor, project, element)
 	}
 }
@@ -63,7 +63,7 @@ class ComplexEnumValueNameFindUsagesIntention: ComplexEnumValueNameIntention() {
 class ComplexEnumValueNameGotoTypeDeclarationIntention: ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.gotoTypeDeclaration")
 	
-	override fun doInvoke(element: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
+	override fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
 		val gameType = complexEnumValueInfo.gameType ?: return
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		val enumName = complexEnumValueInfo.enumName

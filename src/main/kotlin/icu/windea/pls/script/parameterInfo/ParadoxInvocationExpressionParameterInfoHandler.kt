@@ -22,7 +22,7 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
 	
 	private fun findTargetElement(context: ParameterInfoContext): ParadoxScriptProperty? {
 		val element = context.file.findElementAt(context.offset) ?: return null
-		val keyOrStringElement = element.parent?.castOrNull<ParadoxScriptExpressionElement>() ?: return null
+		val keyOrStringElement = element.parent?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return null
 		if(!keyOrStringElement.isExpressionElement()) return null
 		return keyOrStringElement
 			.parents(false)

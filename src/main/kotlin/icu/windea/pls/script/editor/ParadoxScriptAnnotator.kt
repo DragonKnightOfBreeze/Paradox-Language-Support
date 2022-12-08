@@ -28,7 +28,7 @@ class ParadoxScriptAnnotator : Annotator {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
 		when(element) {
 			is ParadoxScriptProperty -> annotateProperty(element, holder)
-			is ParadoxScriptExpressionElement -> annotateExpressionElement(element, holder)
+			is ParadoxScriptStringExpressionElement -> annotateExpressionElement(element, holder)
 		}
 	}
 	
@@ -56,7 +56,7 @@ class ParadoxScriptAnnotator : Annotator {
 		}
 	}
 	
-	private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
+	private fun annotateComplexEnumValue(element: ParadoxScriptStringExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
 		//高亮复杂枚举名对应的字符串（可能还有其他高亮）（这里不能使用PSI链接）
 		val nameString = complexEnumValueInfo.name.escapeXmlOrAnonymous()
 		val enumNameString = complexEnumValueInfo.enumName
@@ -67,7 +67,7 @@ class ParadoxScriptAnnotator : Annotator {
 			.create()
 	}
 	
-	private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
+	private fun annotateExpressionElement(element: ParadoxScriptStringExpressionElement, holder: AnnotationHolder) {
 		checkLiteralElement(element, holder)
 		
 		val isKey = element is ParadoxScriptPropertyKey
@@ -91,7 +91,7 @@ class ParadoxScriptAnnotator : Annotator {
 	}
 	
 	private fun annotateExpression(
-		element: ParadoxScriptExpressionElement,
+		element: ParadoxScriptStringExpressionElement,
 		range: TextRange,
 		rangeInElement: TextRange?,
 		config: CwtConfig<*>,
@@ -218,11 +218,11 @@ class ParadoxScriptAnnotator : Annotator {
 		}
 	}
 	
-	private fun annotateComplexExpression(element: ParadoxScriptExpressionElement, expression: ParadoxComplexExpression, config: CwtConfig<*>, range: TextRange, holder: AnnotationHolder) {
+	private fun annotateComplexExpression(element: ParadoxScriptStringExpressionElement, expression: ParadoxComplexExpression, config: CwtConfig<*>, range: TextRange, holder: AnnotationHolder) {
 		doAnnotateComplexExpression(element, expression, config, range, holder)
 	}
 	
-	private fun doAnnotateComplexExpression(element: ParadoxScriptExpressionElement, expressionNode: ParadoxExpressionNode, config: CwtConfig<*>, range: TextRange, holder: AnnotationHolder) {
+	private fun doAnnotateComplexExpression(element: ParadoxScriptStringExpressionElement, expressionNode: ParadoxExpressionNode, config: CwtConfig<*>, range: TextRange, holder: AnnotationHolder) {
 		val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(range.startOffset)
 		val attributesKey = expressionNode.getAttributesKey()
 		

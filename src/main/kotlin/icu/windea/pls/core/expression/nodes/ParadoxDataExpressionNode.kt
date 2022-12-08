@@ -16,7 +16,7 @@ class ParadoxDataExpressionNode (
 	override val rangeInExpression: TextRange,
 	val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxExpressionNode {
-	override fun getAttributesKeyConfig(element: ParadoxScriptExpressionElement): CwtConfig<*>? {
+	override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
 		if(text.isParameterAwareExpression()) return null
 		return linkConfigs.find { linkConfig ->
 			val dataSource = linkConfig.dataSource ?: return@find false
@@ -24,12 +24,12 @@ class ParadoxDataExpressionNode (
 		} ?: linkConfigs.firstOrNull()
 	}
 	
-	override fun getReference(element: ParadoxScriptExpressionElement): Reference? {
+	override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
 		if(text.isParameterAwareExpression()) return null
 		return Reference(element, rangeInExpression, linkConfigs)
 	}
 	
-	override fun getUnresolvedError(element: ParadoxScriptExpressionElement): ParadoxExpressionError? {
+	override fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxExpressionError? {
 		if(nodes.isNotEmpty()) return null
 		if(text.isEmpty()) return null
 		if(text.isParameterAwareExpression()) return null
@@ -49,11 +49,11 @@ class ParadoxDataExpressionNode (
 	}
 	
 	class Reference(
-		element: ParadoxScriptExpressionElement,
+		element: ParadoxScriptStringExpressionElement,
 		rangeInElement: TextRange,
 		val linkConfigs: List<CwtLinkConfig>
-	) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), SmartPsiReference {
-		override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
+	) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), SmartPsiReference {
+		override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
 		}
 		

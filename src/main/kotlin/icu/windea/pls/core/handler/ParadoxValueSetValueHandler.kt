@@ -9,9 +9,9 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxValueSetValueHandler {
 	@JvmStatic
-	fun resolveInfo(element: ParadoxScriptString): ParadoxValueSetValueInfo? {
+	fun resolveInfo(element: ParadoxScriptStringExpressionElement): ParadoxValueSetValueInfo? {
 		if(!element.isExpressionElement()) return null
-		//排除带参数的情况和用引号括起的情况
+		//排除带参数的情况
 		if(element.isParameterAwareExpression()) return null
 		
 		ProgressManager.checkCanceled()

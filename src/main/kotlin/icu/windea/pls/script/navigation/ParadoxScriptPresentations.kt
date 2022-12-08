@@ -32,9 +32,9 @@ class ParadoxDefinitionPresentation(
 }
 
 class ParadoxComplexEnumValuePresentation(
-	element: ParadoxScriptExpressionElement,
+	element: ParadoxScriptStringExpressionElement,
 	private val complexEnumValueInfo: ParadoxComplexEnumValueInfo
-) : ParadoxItemPresentation<ParadoxScriptExpressionElement>(element) {
+) : ParadoxItemPresentation<ParadoxScriptStringExpressionElement>(element) {
 	override fun getIcon(unused: Boolean): Icon {
 		return PlsIcons.ComplexEnumValue
 	}

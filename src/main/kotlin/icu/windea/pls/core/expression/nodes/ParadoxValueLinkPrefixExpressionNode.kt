@@ -15,7 +15,7 @@ class ParadoxValueLinkPrefixExpressionNode (
 ) : ParadoxExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.VALUE_LINK_PREFIX_KEY
 	
-	override fun getReference(element: ParadoxScriptExpressionElement): Reference {
+	override fun getReference(element: ParadoxScriptStringExpressionElement): Reference {
 		return Reference(element, rangeInExpression, linkConfigs)
 	}
 	
@@ -26,11 +26,11 @@ class ParadoxValueLinkPrefixExpressionNode (
 	}
 	
 	class Reference(
-		element: ParadoxScriptExpressionElement,
+		element: ParadoxScriptStringExpressionElement,
 		rangeInElement: TextRange,
 		val linkConfigs: List<CwtLinkConfig>
-	) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
-		override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
+	) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+		override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
 			throw IncorrectOperationException() //不允许重命名
 		}
 		

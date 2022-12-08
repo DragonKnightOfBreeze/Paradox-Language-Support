@@ -16,7 +16,7 @@ class ParadoxSystemScopeExpressionNode (
 ) : ParadoxScopeExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY
 	
-	override fun getReference(element: ParadoxScriptExpressionElement): Reference {
+	override fun getReference(element: ParadoxScriptStringExpressionElement): Reference {
 		return Reference(element, rangeInExpression, config.pointer.element)
 	}
 	
@@ -29,11 +29,11 @@ class ParadoxSystemScopeExpressionNode (
 	}
 	
 	class Reference(
-		element: ParadoxScriptExpressionElement,
+		element: ParadoxScriptStringExpressionElement,
 		rangeInElement: TextRange,
 		val resolved: CwtProperty?
-	) : PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
-		override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
+	) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+		override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
 			throw IncorrectOperationException() //不允许重命名
 		}
 		

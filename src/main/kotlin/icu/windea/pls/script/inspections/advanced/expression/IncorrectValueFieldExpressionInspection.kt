@@ -37,7 +37,7 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
 				visitExpressionElement(element)
 			}
 			
-			override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
+			override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
 				ProgressManager.checkCanceled()
 				if(element.text.isLeftQuoted()) return //忽略
 				val config = resolveConfigs(element).firstOrNull() ?: return
@@ -63,7 +63,7 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
 				}
 			}
 			
-			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError) {
+			private fun handleScriptExpressionError(element: ParadoxScriptStringExpressionElement, error: ParadoxExpressionError) {
 				if(reportsUnresolvedDs && error is ParadoxUnresolvedValueLinkDataSourceExpressionError) return
 				holder.registerScriptExpressionError(element, error)
 			}

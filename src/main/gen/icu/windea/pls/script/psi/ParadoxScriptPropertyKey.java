@@ -9,7 +9,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import icu.windea.pls.core.expression.ParadoxDataType;
 
-public interface ParadoxScriptPropertyKey extends ParadoxScriptExpressionElement, StubBasedPsiElement<ParadoxScriptPropertyKeyStub> {
+public interface ParadoxScriptPropertyKey extends ParadoxScriptStringExpressionElement, StubBasedPsiElement<ParadoxScriptPropertyKeyStub> {
 
   @NotNull
   List<ParadoxScriptParameter> getParameterList();

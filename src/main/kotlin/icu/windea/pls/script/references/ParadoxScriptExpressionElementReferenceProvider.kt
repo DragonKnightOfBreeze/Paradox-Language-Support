@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 	override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-		if(element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY
+		if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
 		val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return PsiReference.EMPTY_ARRAY
 		val configGroup = getCwtConfig(element.project).getValue(gameType)
 		val text = element.text

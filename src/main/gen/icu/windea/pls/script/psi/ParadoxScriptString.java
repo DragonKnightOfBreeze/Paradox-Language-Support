@@ -11,7 +11,7 @@ import com.intellij.psi.PsiReference;
 import icu.windea.pls.core.expression.ParadoxDataType;
 import javax.swing.Icon;
 
-public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptExpressionElement, StubBasedPsiElement<ParadoxScriptStringStub> {
+public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptStringExpressionElement, StubBasedPsiElement<ParadoxScriptStringStub> {
 
   @NotNull
   List<ParadoxScriptParameter> getParameterList();

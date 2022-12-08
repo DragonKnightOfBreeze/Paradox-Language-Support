@@ -27,14 +27,10 @@ class ParadoxFilePathIndexImpl : ScalarIndexExtension<String>() {
 	}
 	
 	override fun getInputFilter(): FileBasedIndex.InputFilter {
-		return FileBasedIndex.InputFilter { true }
+		return FileBasedIndex.InputFilter { it.fileInfo != null }
 	}
 	
 	override fun dependsOnFileContent(): Boolean {
-		return false
-	}
-	
-	override fun indexDirectories(): Boolean {
 		return false
 	}
 }

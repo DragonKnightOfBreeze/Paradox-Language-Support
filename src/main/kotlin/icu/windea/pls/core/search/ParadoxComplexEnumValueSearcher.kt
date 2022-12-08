@@ -11,8 +11,8 @@ import icu.windea.pls.script.psi.*
 /**
  * 复杂枚举的查询器。
  */
-class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxScriptExpressionElement, ParadoxComplexEnumValueSearch.SearchParameters>() {
-	override fun processQuery(queryParameters: ParadoxComplexEnumValueSearch.SearchParameters, consumer: Processor<in ParadoxScriptExpressionElement>) {
+class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxScriptStringExpressionElement, ParadoxComplexEnumValueSearch.SearchParameters>() {
+	override fun processQuery(queryParameters: ParadoxComplexEnumValueSearch.SearchParameters, consumer: Processor<in ParadoxScriptStringExpressionElement>) {
 		val name = queryParameters.name
 		val enumName = queryParameters.enumName
 		val project = queryParameters.project
@@ -24,7 +24,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxScriptExpressio
 		}
 	}
 	
-	private fun matchesName(element: ParadoxScriptExpressionElement, name: String): Boolean {
+	private fun matchesName(element: ParadoxScriptStringExpressionElement, name: String): Boolean {
 		return ParadoxComplexEnumValueHandler.getName(element) == name
 	}
 }

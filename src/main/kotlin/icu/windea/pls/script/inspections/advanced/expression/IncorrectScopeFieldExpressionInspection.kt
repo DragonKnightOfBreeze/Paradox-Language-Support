@@ -37,7 +37,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 				visitExpressionElement(element)
 			}
 			
-			override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
+			override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
 				ProgressManager.checkCanceled()
 				if(element.text.isLeftQuoted()) return //忽略
 				val config = resolveConfigs(element).firstOrNull() ?: return
@@ -63,7 +63,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 				}
 			}
 			
-			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError) {
+			private fun handleScriptExpressionError(element: ParadoxScriptStringExpressionElement, error: ParadoxExpressionError) {
 				if(reportsUnresolvedDs && error is ParadoxUnresolvedScopeLinkDataSourceExpressionError) return
 				holder.registerScriptExpressionError(element, error)
 			}

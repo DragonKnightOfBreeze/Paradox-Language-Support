@@ -86,7 +86,8 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitParameterCondition(@NotNull ParadoxScriptParameterCondition o) {
-    visitPsiListLikeElement(o);
+    visitExpressionContextElement(o);
+    // visitPsiListLikeElement(o);
   }
 
   public void visitParameterConditionExpression(@NotNull ParadoxScriptParameterConditionExpression o) {
@@ -104,7 +105,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitPropertyKey(@NotNull ParadoxScriptPropertyKey o) {
-    visitExpressionElement(o);
+    visitStringExpressionElement(o);
   }
 
   public void visitRootBlock(@NotNull ParadoxScriptRootBlock o) {
@@ -127,15 +128,11 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitString(@NotNull ParadoxScriptString o) {
     visitValue(o);
-    // visitExpressionElement(o);
+    // visitStringExpressionElement(o);
   }
 
   public void visitValue(@NotNull ParadoxScriptValue o) {
-    visitTypedElement(o);
-  }
-
-  public void visitPsiListLikeElement(@NotNull PsiListLikeElement o) {
-    visitElement(o);
+    visitExpressionElement(o);
   }
 
   public void visitParadoxArgument(@NotNull ParadoxArgument o) {
@@ -150,6 +147,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitExpressionContextElement(@NotNull ParadoxScriptExpressionContextElement o) {
+    visitPsiElement(o);
+  }
+
   public void visitExpressionElement(@NotNull ParadoxScriptExpressionElement o) {
     visitPsiElement(o);
   }
@@ -158,7 +159,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitTypedElement(@NotNull ParadoxScriptTypedElement o) {
+  public void visitStringExpressionElement(@NotNull ParadoxScriptStringExpressionElement o) {
     visitPsiElement(o);
   }
 

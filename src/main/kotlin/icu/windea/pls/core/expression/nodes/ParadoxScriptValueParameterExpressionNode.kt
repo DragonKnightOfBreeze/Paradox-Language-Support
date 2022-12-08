@@ -19,7 +19,7 @@ class ParadoxScriptValueParameterExpressionNode (
 		return ParadoxScriptAttributesKeys.ARGUMENT_KEY
 	}
 	
-	override fun getReference(element: ParadoxScriptExpressionElement): Reference? {
+	override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
 		if(scriptValueNode == null) return null
 		if(text.isEmpty()) return null
 		if(!scriptValueNode.getReference(element).canResolve()) return null //skip if script value cannot be resolved
@@ -33,12 +33,12 @@ class ParadoxScriptValueParameterExpressionNode (
 	}
 	
 	class Reference(
-		element: ParadoxScriptExpressionElement,
+		element: ParadoxScriptStringExpressionElement,
 		rangeInElement: TextRange,
 		val scriptValueName: String,
 		val parameterName: String,
 		val configGroup: CwtConfigGroup
-	) : PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
+	) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
 		override fun handleElementRename(newElementName: String): PsiElement {
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
 		}

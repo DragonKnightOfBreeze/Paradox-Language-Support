@@ -12,11 +12,11 @@ import icu.windea.pls.script.psi.*
  * @see icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider
  */
 class ParadoxScriptExpressionPsiReference(
-	element: ParadoxScriptExpressionElement,
+	element: ParadoxScriptStringExpressionElement,
 	rangeInElement: TextRange,
 	val config: CwtDataConfig<*>,
 	val isKey: Boolean
-) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), SmartPsiReference {
+) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), SmartPsiReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		return element.setValue(newElementName)
 	}

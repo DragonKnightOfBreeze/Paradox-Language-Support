@@ -39,7 +39,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//使用FakeElement时，这里是有效的代码
 			is ParadoxParameterElement -> getParameterInfo(element)
 			//进行代码提示时，这里是有效的代码
-			is ParadoxScriptExpressionElement -> {
+			is ParadoxScriptStringExpressionElement -> {
 				//only for complex enum value reference
 				if(originalElement != null && originalElement.parent?.castOrNull<ParadoxScriptString>() !== element) {
 					val complexEnumValueInfo = element.complexEnumValueInfo
@@ -85,7 +85,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun generateComplexEnumValueInfo(element: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo): String {
+	private fun generateComplexEnumValueInfo(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo): String {
 		return buildString { 
 			buildComplexEnumValueDefinition(element, complexEnumValueInfo)
 		}
@@ -104,14 +104,14 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	//private fun getComplexEnumValueInfo(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): String {
+	//private fun getComplexEnumValueInfo(element: ParadoxScriptStringExpressionElement, config: CwtDataConfig<*>): String {
 	//	return buildString {
 	//		val configGroup = config.info.configGroup
 	//		buildComplexEnumValueDefinition(element.value, config.expression.value.orEmpty(), configGroup)
 	//	}
 	//}
 	
-	private fun getValueSetValueInfo(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): String {
+	private fun getValueSetValueInfo(element: ParadoxScriptStringExpressionElement, config: CwtDataConfig<*>): String {
 		return buildString {
 			val configGroup = config.info.configGroup
 			val valueSetNames = config.expression.value.toSingletonListOrEmpty()
@@ -136,7 +136,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//使用FakeElement时，这里是有效的代码
 			is ParadoxParameterElement -> getParameterDoc(element)
 			//进行代码提示时，这里是有效的代码
-			is ParadoxScriptExpressionElement -> {
+			is ParadoxScriptStringExpressionElement -> {
 				//only for complex enum value reference
 				if(originalElement != null && originalElement.parent?.castOrNull<ParadoxScriptString>() !== element) {
 					val complexEnumValueInfo = element.complexEnumValueInfo
@@ -194,7 +194,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun generateComplexEnumValueDoc(element: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo): String {
+	private fun generateComplexEnumValueDoc(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo): String {
 		return buildString {
 			buildComplexEnumValueDefinition(element, complexEnumValueInfo)
 		}
@@ -213,14 +213,14 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getComplexEnumValueDoc(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): String {
+	private fun getComplexEnumValueDoc(element: ParadoxScriptStringExpressionElement, config: CwtDataConfig<*>): String {
 		return buildString {
 			val configGroup = config.info.configGroup
 			buildComplexEnumValueDefinition(element.value, config.expression.value.orEmpty(), configGroup)
 		}
 	}
 	
-	private fun getValueSetValueDoc(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): String {
+	private fun getValueSetValueDoc(element: ParadoxScriptStringExpressionElement, config: CwtDataConfig<*>): String {
 		return buildString {
 			val configGroup = config.info.configGroup
 			val valueSetNames = config.expression.value.toSingletonListOrEmpty()

@@ -25,7 +25,7 @@ class ParadoxScriptValueExpressionNode(
 		return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 	}
 	
-	override fun getUnresolvedError(element: ParadoxScriptExpressionElement): ParadoxExpressionError? {
+	override fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxExpressionError? {
 		if(nodes.isNotEmpty()) return null
 		if(text.isEmpty()) return null
 		if(text.isParameterAwareExpression()) return null
@@ -33,7 +33,7 @@ class ParadoxScriptValueExpressionNode(
 		return ParadoxUnresolvedScriptValueExpressionError(rangeInExpression, PlsBundle.message("script.expression.unresolvedScriptValue", text))
 	}
 	
-	override fun getReference(element: ParadoxScriptExpressionElement): Reference? {
+	override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
 		if(text.isEmpty()) return null
 		if(text.isParameterAwareExpression()) return null
 		return Reference(element, rangeInExpression, text, config, configGroup)
@@ -46,12 +46,12 @@ class ParadoxScriptValueExpressionNode(
 	}
 	
 	class Reference(
-		element: ParadoxScriptExpressionElement,
+		element: ParadoxScriptStringExpressionElement,
 		rangeInElement: TextRange,
 		val name: String,
 		val config: CwtConfig<*>,
 		val configGroup: CwtConfigGroup
-	) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), SmartPsiReference {
+	) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), SmartPsiReference {
 		override fun handleElementRename(newElementName: String): PsiElement {
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
 		}

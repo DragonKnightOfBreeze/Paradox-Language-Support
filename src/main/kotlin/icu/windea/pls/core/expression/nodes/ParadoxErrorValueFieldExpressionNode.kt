@@ -9,7 +9,7 @@ class ParadoxErrorValueFieldExpressionNode(
 	override val text: String,
 	override val rangeInExpression: TextRange
 ) : ParadoxValueFieldExpressionNode, ParadoxErrorExpressionNode {
-	override fun getUnresolvedError(element: ParadoxScriptExpressionElement): ParadoxExpressionError? {
+	override fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxExpressionError? {
 		if(nodes.isNotEmpty()) return null
 		if(text.isEmpty()) return null
 		if(text.isParameterAwareExpression()) return null

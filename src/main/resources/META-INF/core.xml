@@ -18,8 +18,6 @@
     <!--suppress PluginXmlValidity -->
     <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider"/>
     <utf8BomOptionProvider implementation="icu.windea.pls.core.ParadoxUtf8BomOptionProvider"/>
-
-    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFilePathIndexImpl"/>
     
     <registryKey key="indexing.paradox.file.path.over.vfs" defaultValue="true" restartRequired="true"
                  description="Use VFS-based implementation for ParadoxFilePathIndex"/>
@@ -38,6 +36,9 @@
     
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxFoldingSettings"/>
     <codeFoldingOptionsProvider instance="icu.windea.pls.core.editor.ParadoxFoldingOptionsProvider"/>
+    
+    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFilePathIndexImpl"/>
+    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxValueSetValueIndex"/>
     
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxScriptedVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionNameIndex"/>

@@ -19,6 +19,6 @@ class ParadoxComplexEnumValueChooseByNameContributor : ChooseByNameContributorEx
 	}
 	
 	override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
-		StubIndex.getInstance().processElements(ParadoxComplexEnumIndex.key, name, parameters.project, parameters.searchScope, parameters.idFilter, ParadoxScriptExpressionElement::class.java, processor)
+		StubIndex.getInstance().processElements(ParadoxComplexEnumIndex.key, name, parameters.project, parameters.searchScope, parameters.idFilter, ParadoxScriptStringExpressionElement::class.java, processor)
 	}
 }

@@ -21,7 +21,7 @@ object ParadoxSelectorUtils {
 				?: from.definitionInfo?.gameType
 				?: ParadoxMagicCommentHandler.resolveDefinitionTypeComment(from)?.first //这个如果合法的话会被上一个选择逻辑覆盖
 				?: selectGameType(from.parent)
-			from is ParadoxScriptExpressionElement -> runCatching { from.stub?.gameType }.getOrNull()
+			from is ParadoxScriptStringExpressionElement -> runCatching { from.stub?.gameType }.getOrNull()
 				?: selectGameType(from.parent)
 			from is PsiElement -> selectGameType(from.parent)
 			else -> null

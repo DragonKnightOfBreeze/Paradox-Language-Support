@@ -906,19 +906,19 @@ object ParadoxScriptPsiImplUtil {
 	}
 	//endregion
 	
-	//region ParadoxScriptExpressionElement
+	//region ParadoxScriptStringExpressionElement
 	@JvmStatic
-	fun getPresentation(element: ParadoxScriptExpressionElement): ItemPresentation? {
+	fun getPresentation(element: ParadoxScriptStringExpressionElement): ItemPresentation? {
 		val complexEnumValueInfo = element.complexEnumValueInfo
 		if(complexEnumValueInfo != null) return ParadoxComplexEnumValuePresentation(element, complexEnumValueInfo)
 		return null
 	}
 	
 	@JvmStatic
-	fun isEquivalentTo(element: ParadoxScriptExpressionElement, another: PsiElement): Boolean {
+	fun isEquivalentTo(element: ParadoxScriptStringExpressionElement, another: PsiElement): Boolean {
 		//for complexEnumValueName: name & enumName & gameType
 		//for others: never
-		return another is ParadoxScriptExpressionElement
+		return another is ParadoxScriptStringExpressionElement
 			&& element.complexEnumValueInfo?.equals(another.complexEnumValueInfo) == true
 	}
 	//endregion

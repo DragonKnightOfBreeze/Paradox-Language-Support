@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.*
  */
 object ParadoxComplexEnumValueHandler {
 	@JvmStatic
-	fun getInfo(element: ParadoxScriptExpressionElement): ParadoxComplexEnumValueInfo? {
+	fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
 		//注意：element.stub可能会导致ProcessCanceledException
 		ProgressManager.checkCanceled()
 		if(!element.isExpressionElement()) return null
@@ -31,7 +31,7 @@ object ParadoxComplexEnumValueHandler {
 	}
 	
 	@JvmStatic
-	fun resolveInfo(element: ParadoxScriptExpressionElement, file: PsiFile = element.containingFile): ParadoxComplexEnumValueInfo? {
+	fun resolveInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile = element.containingFile): ParadoxComplexEnumValueInfo? {
 		//排除带参数的情况
 		if(element.isParameterAwareExpression()) return null
 		
@@ -51,11 +51,11 @@ object ParadoxComplexEnumValueHandler {
 		return doResolve(element, path, configGroup)
 	}
 	
-	private fun resolveByStub(element: ParadoxScriptExpressionElement, stub: ParadoxScriptExpressionElementStub<*>): ParadoxComplexEnumValueInfo? {
+	private fun resolveByStub(element: ParadoxScriptStringExpressionElement, stub: ParadoxScriptExpressionElementStub<*>): ParadoxComplexEnumValueInfo? {
 		return stub.complexEnumValueInfo
 	}
 	
-	private fun doResolve(element: ParadoxScriptExpressionElement, path: ParadoxPath, configGroup: CwtConfigGroup): ParadoxComplexEnumValueInfo? {
+	private fun doResolve(element: ParadoxScriptStringExpressionElement, path: ParadoxPath, configGroup: CwtConfigGroup): ParadoxComplexEnumValueInfo? {
 		for(complexEnumConfig in configGroup.complexEnums.values) {
 			if(matchesComplexEnumByPath(complexEnumConfig, path)) {
 				//DEBUG
@@ -79,14 +79,14 @@ object ParadoxComplexEnumValueHandler {
 	}
 	
 	@JvmStatic
-	fun matchesComplexEnum(complexEnumConfig: CwtComplexEnumConfig, element: ParadoxScriptExpressionElement): Boolean {
+	fun matchesComplexEnum(complexEnumConfig: CwtComplexEnumConfig, element: ParadoxScriptStringExpressionElement): Boolean {
 		for(enumNameConfig in complexEnumConfig.enumNameConfigs) {
 			if(doMatchEnumName(complexEnumConfig, enumNameConfig, element)) return true
 		}
 		return false
 	}
 	
-	private fun doMatchEnumName(complexEnumConfig: CwtComplexEnumConfig, config: CwtDataConfig<*>, element: ParadoxScriptExpressionElement): Boolean {
+	private fun doMatchEnumName(complexEnumConfig: CwtComplexEnumConfig, config: CwtDataConfig<*>, element: ParadoxScriptStringExpressionElement): Boolean {
 		if(config is CwtPropertyConfig) {
 			if(config.key == "enum_name") {
 				if(element !is ParadoxScriptPropertyKey) return false
@@ -211,7 +211,7 @@ object ParadoxComplexEnumValueHandler {
 	}
 	
 	@JvmStatic
-	fun getName(element: ParadoxScriptExpressionElement): String? {
+	fun getName(element: ParadoxScriptStringExpressionElement): String? {
 		val stub     = runCatching { element.stub }.getOrNull()
 		val name = stub?.complexEnumValueInfo?.name ?: element.value
 		return name.takeIfNotEmpty()

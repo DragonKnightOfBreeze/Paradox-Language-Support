@@ -15,7 +15,7 @@ class ParadoxValueLinkExpressionNode (
 ) : ParadoxValueFieldExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.VALUE_LINK_VALUE_KEY
 	
-	override fun getReference(element: ParadoxScriptExpressionElement) = ParadoxScopeLinkExpressionNode.Reference(element, rangeInExpression, config)
+	override fun getReference(element: ParadoxScriptStringExpressionElement) = ParadoxScopeLinkExpressionNode.Reference(element, rangeInExpression, config)
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxValueLinkExpressionNode? {
@@ -26,11 +26,11 @@ class ParadoxValueLinkExpressionNode (
 	}
 	
 	class Reference(
-		element: ParadoxScriptExpressionElement,
+		element: ParadoxScriptStringExpressionElement,
 		rangeInElement: TextRange,
 		val config: CwtLinkConfig
-	) : PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
-		override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
+	) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+		override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
 			throw IncorrectOperationException() //不允许重命名
 		}
 		

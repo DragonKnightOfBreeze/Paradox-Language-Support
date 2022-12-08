@@ -13,8 +13,6 @@ class ParadoxFileInfo(
 	val descriptorInfo get() = rootInfo.descriptorInfo
 	val rootType get() = rootInfo.rootType
 	val rootPath get() = rootInfo.rootPath
-	@Deprecated("Select game type instead.", level = DeprecationLevel.ERROR)
-	val gameType get() = rootInfo.gameType
 	
 	val isValid get() = rootInfo.isValid 
 	

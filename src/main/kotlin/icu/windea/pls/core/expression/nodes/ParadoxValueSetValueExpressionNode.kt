@@ -25,7 +25,7 @@ class ParadoxValueSetValueExpressionNode (
 		}
 	}
 	
-	override fun getReference(element: ParadoxScriptExpressionElement): Reference? {
+	override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
 		if(text.isParameterAwareExpression()) return null
 		return Reference(element, rangeInExpression, text, configs, configGroup)
 	}
@@ -39,13 +39,13 @@ class ParadoxValueSetValueExpressionNode (
 	}
 	
 	class Reference(
-		element: ParadoxScriptExpressionElement,
+		element: ParadoxScriptStringExpressionElement,
 		rangeInElement: TextRange,
 		val name: String,
 		val configs: List<CwtConfig<*>>,
 		val configGroup: CwtConfigGroup
-	) : PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
-		override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
+	) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+		override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
 		}
 		

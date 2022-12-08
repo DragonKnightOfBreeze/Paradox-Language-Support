@@ -152,7 +152,7 @@ fun PsiElement.findParentScriptElement(): PsiElement? {
 }
 
 
-fun ParadoxScriptExpressionElement.isDefinitionRootKeyOrName(): Boolean {
+fun ParadoxScriptStringExpressionElement.isDefinitionRootKeyOrName(): Boolean {
 	return when {
 		this is ParadoxScriptPropertyKey -> isDefinitionRootKey()
 		this is ParadoxScriptString -> isDefinitionName()
@@ -206,7 +206,7 @@ fun PsiElement.isExpressionElement(): Boolean {
 	}
 }
 
-fun ParadoxScriptExpressionElement.isParameterAwareExpression(): Boolean {
+fun ParadoxScriptStringExpressionElement.isParameterAwareExpression(): Boolean {
 	return !this.text.isLeftQuoted() && this.textContains('$')
 }
 

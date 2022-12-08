@@ -27,7 +27,7 @@ class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
 				visitExpressionElement(element)
 			}
 			
-			override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
+			override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
 				ProgressManager.checkCanceled()
 				val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return
 				val type = config.expression.type
@@ -52,7 +52,7 @@ class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
 				}
 			}
 			
-			private fun handleScriptExpressionError(element: ParadoxScriptExpressionElement, error: ParadoxExpressionError) {
+			private fun handleScriptExpressionError(element: ParadoxScriptStringExpressionElement, error: ParadoxExpressionError) {
 				holder.registerScriptExpressionError(element, error)
 			}
 		})

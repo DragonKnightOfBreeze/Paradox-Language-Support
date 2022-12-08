@@ -2,7 +2,7 @@ package icu.windea.pls.script.psi
 
 import com.intellij.psi.*
 
-interface ParadoxScriptBlockElement : PsiListLikeElement {
+interface ParadoxScriptBlockElement : ParadoxScriptExpressionContextElement, PsiListLikeElement {
 	val propertyList: List<ParadoxScriptProperty>
 	val valueList: List<ParadoxScriptValue>
 	val scriptedVariableList: List<ParadoxScriptScriptedVariable>

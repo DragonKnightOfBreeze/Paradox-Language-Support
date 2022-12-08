@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxComplexEnumValueUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
 	override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
 		val target = queryParameters.elementToSearch
-		if(target !is ParadoxScriptExpressionElement) return
+		if(target !is ParadoxScriptStringExpressionElement) return
 		DumbService.getInstance(queryParameters.project).runReadActionInSmartMode {
 			val complexEnumValueInfo = target.complexEnumValueInfo ?: return@runReadActionInSmartMode
 			//这里不能直接使用target.useScope，否则文件高亮会出现问题
