@@ -10,6 +10,9 @@ import icu.windea.pls.core.model.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 object StellarisNameFormatHandler {
+	const val prefix = "format."
+	
+	@JvmStatic
 	fun getAllKeys(project: Project): Collection<String> {
 		if(DumbService.isDumb(project)) return emptySet()
 		

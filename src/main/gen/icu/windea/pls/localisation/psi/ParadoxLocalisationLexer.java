@@ -757,11 +757,9 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 73: break;
           case 19: 
-            { if(context != null && context.getGameType() == ParadoxGameType.Stellaris) {
-		if(context.getStellarisNameFormatKeys().contains(context.getCurrentKey())) {
-			yybegin(STELLARIS_NAME_FORMAT);
-			return LEFT_ANGLE_BRACKET;
-		}
+            { if(context != null && context.isStellarisNameFormatKey()) {
+		yybegin(STELLARIS_NAME_FORMAT);
+		return LEFT_ANGLE_BRACKET;
 	}
 	return STRING_TOKEN;
             } 
