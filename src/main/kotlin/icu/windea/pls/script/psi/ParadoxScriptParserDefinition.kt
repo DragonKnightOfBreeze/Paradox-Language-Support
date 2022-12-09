@@ -4,6 +4,7 @@ import com.intellij.lang.*
 import com.intellij.lang.ParserDefinition.*
 import com.intellij.lang.ParserDefinition.SpaceRequirements.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
@@ -26,10 +27,12 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 	
 	override fun getFileNodeType() = FILE
 	
-	override fun createFile(viewProvider: FileViewProvider) = ParadoxScriptFile(viewProvider)
+	override fun createFile(viewProvider: FileViewProvider): ParadoxScriptFile {
+		return ParadoxScriptFile(viewProvider)
+	}
 	
 	override fun createElement(node: ASTNode): PsiElement {
-		return when(node.elementType){
+		return when(node.elementType) {
 			PROPERTY -> SmartParadoxScriptProperty(node)
 			PROPERTY_KEY -> SmartParadoxScriptPropertyKey(node)
 			STRING -> SmartParadoxScriptString(node)
@@ -37,9 +40,17 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 		}
 	}
 	
-	override fun createParser(project: Project?) = ParadoxScriptParser()
+	override fun createParser(project: Project?): ParadoxScriptParser {
+		return ParadoxScriptParser()
+	}
 	
-	override fun createLexer(project: Project?) = ParadoxScriptLexerAdapter()
+	override fun createLexer(project: Project?): ParadoxScriptLexerAdapter {
+		return ParadoxScriptLexerAdapter()
+	}
+	
+	fun createLexer(virtualFile: VirtualFile, project: Project?): ParadoxScriptLexerAdapter {
+		return ParadoxScriptLexerAdapter(ParadoxScriptParsingContext(virtualFile, project))
+	}
 	
 	override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): SpaceRequirements {
 		val leftType = left?.elementType

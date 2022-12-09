@@ -38,8 +38,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 		)
 	}
 	
-	override fun getHighlighter() =
-		SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxLocalisationLanguage, null, null)
+	override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxLocalisationLanguage, null, null)
 	
 	override fun getAdditionalHighlightingTagToDescriptorMap() = null
 	

@@ -2,13 +2,18 @@ package icu.windea.pls.script.highlighter
 
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.fileTypes.*
+import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.StringEscapesTokenTypes.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
-class ParadoxScriptSyntaxHighlighter : SyntaxHighlighterBase() {
+class ParadoxScriptSyntaxHighlighter(
+	private val project: Project?,
+	private val virtualFile: VirtualFile?
+) : SyntaxHighlighter {
 	companion object {
 		private val BRACES_KEYS = arrayOf(ParadoxScriptAttributesKeys.BRACES_KEY)
 		private val OPERATOR_KEYS = arrayOf(ParadoxScriptAttributesKeys.OPERATOR_KEY)
@@ -58,5 +63,8 @@ class ParadoxScriptSyntaxHighlighter : SyntaxHighlighterBase() {
 		}
 	}
 	
-	override fun getHighlightingLexer() = ParadoxScriptLexerAdapter()
+	override fun getHighlightingLexer(): ParadoxScriptLexerAdapter {
+		val context = if(virtualFile == null) null else ParadoxScriptParsingContext(virtualFile, project)
+		return ParadoxScriptLexerAdapter(context)
+	}
 }

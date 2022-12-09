@@ -9,7 +9,7 @@ import com.intellij.psi.tree.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
-class CwtSyntaxHighlighter : SyntaxHighlighterBase() {
+class CwtSyntaxHighlighter : SyntaxHighlighter {
 	companion object {
 		private val BRACES_KEYS = arrayOf(CwtAttributesKeys.BRACES_KEY)
 		private val OPERATOR_KEYS = arrayOf(CwtAttributesKeys.OPERATOR_KEY)

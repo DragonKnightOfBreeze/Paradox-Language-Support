@@ -3,6 +3,7 @@ package icu.windea.pls.localisation.psi
 import com.intellij.lang.*
 import com.intellij.lang.ParserDefinition.SpaceRequirements.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
@@ -24,13 +25,25 @@ class ParadoxLocalisationParserDefinition : ParserDefinition {
 	
 	override fun getFileNodeType() = FILE
 	
-	override fun createFile(viewProvider: FileViewProvider) = ParadoxLocalisationFile(viewProvider)
+	override fun createFile(viewProvider: FileViewProvider): ParadoxLocalisationFile {
+		return ParadoxLocalisationFile(viewProvider)
+	}
 	
-	override fun createElement(node: ASTNode) = Factory.createElement(node)
+	override fun createElement(node: ASTNode): PsiElement {
+		return Factory.createElement(node)
+	}
 	
-	override fun createParser(project: Project?) = ParadoxLocalisationParser()
+	override fun createParser(project: Project?): ParadoxLocalisationParser {
+		return ParadoxLocalisationParser()
+	}
 	
-	override fun createLexer(project: Project?) = ParadoxLocalisationLexerAdapter()
+	override fun createLexer(project: Project?): ParadoxLocalisationLexerAdapter {
+		return ParadoxLocalisationLexerAdapter()
+	}
+	
+	fun createLexer(virtualFile: VirtualFile, project: Project?): ParadoxLocalisationLexerAdapter {
+		return ParadoxLocalisationLexerAdapter(ParadoxLocalisationParsingContext(virtualFile, project))
+	}
 	
 	override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): ParserDefinition.SpaceRequirements {
 		val leftType = left?.elementType

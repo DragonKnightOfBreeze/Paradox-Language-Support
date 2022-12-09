@@ -2,12 +2,17 @@ package icu.windea.pls.localisation.highlighter
 
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.fileTypes.*
+import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
-class ParadoxLocalisationSyntaxHighlighter : SyntaxHighlighterBase() {
+class ParadoxLocalisationSyntaxHighlighter(
+	private val project: Project?,
+	private val virtualFile: VirtualFile?
+) : SyntaxHighlighter {
 	companion object {
 		private val OPERATOR_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.OPERATOR_KEY)
 		private val MARKER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.MARKER_KEY)
@@ -59,6 +64,9 @@ class ParadoxLocalisationSyntaxHighlighter : SyntaxHighlighterBase() {
 		}
 	}
 	
-	override fun getHighlightingLexer() = ParadoxLocalisationLexerAdapter()
+	override fun getHighlightingLexer(): ParadoxLocalisationLexerAdapter {
+		val context = if(virtualFile == null) null else ParadoxLocalisationParsingContext(virtualFile, project)
+		return ParadoxLocalisationLexerAdapter(context)
+	}
 }
 

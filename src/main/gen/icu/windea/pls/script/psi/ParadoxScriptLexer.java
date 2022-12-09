@@ -32,7 +32,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
   public static final int WAITING_PROPERTY_END = 14;
   public static final int WAITING_WILDCARD_KEY = 16;
   public static final int WAITING_WILDCARD_VALUE = 18;
-  public static final int CHECK_VARIABLE = 20;
+  public static final int CHECKING_VARIABLE = 20;
   public static final int WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME = 22;
   public static final int WAITING_PARAMETER = 24;
   public static final int WAITING_PARAMETER_DEFAULT_VALUE = 26;
@@ -517,6 +517,8 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
+	private ParadoxScriptParsingContext context;
+
     private int depth = 0;
     private boolean inWildcardKey = false;
     private boolean inWildcardValue = false;
@@ -528,6 +530,11 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
     public ParadoxScriptLexer() {
         this((java.io.Reader)null);
     }
+	
+	public ParadoxScriptLexer(ParadoxScriptParsingContext context) {
+		this((java.io.Reader)null);
+		this.context = context;
+	}
     
     private void beginNextState(){
 		if(inParameterCondition){
@@ -930,7 +937,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 84: break;
           case 20: 
-            { yybegin(CHECK_VARIABLE); return AT;
+            { yybegin(CHECKING_VARIABLE); return AT;
             } 
             // fall through
           case 85: break;
