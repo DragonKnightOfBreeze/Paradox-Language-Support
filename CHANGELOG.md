@@ -48,9 +48,8 @@
 * 新增功能： 
   * [X] 支持CWT规则：`stellaris_name_format[xxx]`
     * `stellaris_name_format[x]`对应一个本地化的名称，本地化文本中可以使用格式化引用`<some_parts>`，而`some_parts`对应CWT规则`value[x]`
-  * [X] 支持引用解析：用于格式化的本地化文本中的格式化引用（`format.xxx: "<some_parts> ...""`中的`<some_parts>`） - 更新中
-    * 当`empire_name_format`的名称属性`format`的值是`format.xxx`，对应一个本地化时，那个本地化中可以使用格式化引用语法
-    * 当`empire_name_parts_list`的名称属性`key`的值是`xxx`时，`xxx`是合法的格式化引用
+  * [X] 支持语法：Stellaris格式化引用（`format.xxx: "<some_parts> ...""`中的`<some_parts>`），实现相关的代码高亮，引用解析、代码补全、代码检查等功能
+    * 当游戏类型为Stellaris，且本地化的名字以`format.`开始时，认为对应的本地化文本中支持格式化引用语法
   * [ ] 同名的定义、本地化，同路径的文件之间的DIFF（左窗口显示当前的，右窗口显示包括当前在内的所有的）
   * [ ] 实现工具栏动作：生成所有缺失语言区域的本地化文件
   * [ ] 实现工具栏动作：生成所有缺失的相关本地化

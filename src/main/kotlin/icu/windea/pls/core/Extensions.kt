@@ -231,7 +231,7 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
 		is ParadoxDataExpressionNode.Reference -> true
 		is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
 		is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
-		is ParadoxLocalisationStellarisNameFormatPsiReference -> true //value[xxx_name_parts]
+		is ParadoxLocalisationStellarisNamePartPsiReference -> true //value[xxx_name_parts]
 		else -> false
 	}
 }

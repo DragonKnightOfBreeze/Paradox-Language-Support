@@ -1,0 +1,40 @@
+<html>
+<body>
+  <p>
+    Reports unresolved stellaris name part references in localisation files.
+  </p>
+  <p>
+    Stellaris name part reference <code>"part"</code> can be resolved to:
+  </p>
+  <ul>
+    <li>
+      A stellaris name part of same name.
+    </li>
+  </ul>
+  <!-- tooltip end -->
+  <p>
+    A stellaris name part is a script expression matching CWT expression <code>"value_set[xxx_name_parts]"</code>,
+    and it's also some name parts list's definition name (aka key).
+  </p>
+  <p>
+    In a localisation file
+    under directory <code>localisation</code> / <code>localization</code> or it's subdirectories,
+    the stellaris name part reference syntax is supported in the localisation text
+    only if the localisation's name starts with <code>"format."</code>.
+  </p>
+  <p>
+    If the localisation is referenced in script files by CWT expression <code>"stellaris_name_format[xxx]"</code>,
+    the stellaris name part references in its localisation text can be resolved to script expressions
+    matching CWT expression <code>"value_set[xxx]"</code>.
+  </p>
+  <p>
+    In an event script file,
+    the event id is declared as a property of an event definition (named <code>"id"</code>),
+    the event namespace is declared as the root property of the file (named <code>"namespace"</code>) before event definitions.
+  </p>
+  <p>
+    Based on plugin's built-in
+    <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>.
+  </p>
+</body>
+</html>

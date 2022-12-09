@@ -12,7 +12,7 @@ import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
-class ParadoxLocalisationStellarisNameFormatPsiReference(
+class ParadoxLocalisationStellarisNamePartPsiReference(
 	element: ParadoxLocalisationStellarisNamePart,
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxLocalisationStellarisNamePart>(element, rangeInElement) {

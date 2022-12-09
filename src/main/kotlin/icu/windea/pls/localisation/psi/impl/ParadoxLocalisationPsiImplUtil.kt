@@ -347,9 +347,9 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxLocalisationStellarisNamePart): ParadoxLocalisationStellarisNameFormatPsiReference? {
+	fun getReference(element: ParadoxLocalisationStellarisNamePart): ParadoxLocalisationStellarisNamePartPsiReference? {
 		val token = element.stellarisNamePartId ?: return null
-		return ParadoxLocalisationStellarisNameFormatPsiReference(element, token.textRangeInParent)
+		return ParadoxLocalisationStellarisNamePartPsiReference(element, token.textRangeInParent)
 	}
 	//endregion
 }

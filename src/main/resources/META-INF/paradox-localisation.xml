@@ -178,6 +178,12 @@
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection.advanced"
                      groupPathKey="localisation.inspection.advanced.path"
                      implementationClass="icu.windea.pls.localisation.inspections.advanced.UnresolvedScriptedVariableInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedStellarisNamePart"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="localisation.inspection.advanced.unresolvedStellarisNamePart"
+                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection.advanced"
+                     groupPathKey="localisation.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.localisation.inspections.advanced.UnresolvedStellarisNamePartInspection"/>
   </extensions>
 
   <actions>

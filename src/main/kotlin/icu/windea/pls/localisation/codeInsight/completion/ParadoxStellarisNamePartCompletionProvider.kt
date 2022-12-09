@@ -16,11 +16,11 @@ import icu.windea.pls.localisation.psi.*
  */
 class ParadoxStellarisNamePartCompletionProvider: CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		val property = parameters.position.parentOfType<ParadoxLocalisationProperty>() ?: return
-		val propertyName = property.name
+		val localisationProperty = parameters.position.parentOfType<ParadoxLocalisationProperty>() ?: return
+		val localisationKey = localisationProperty.name
 		val originalFile = parameters.originalFile
 		val project = originalFile.project
-		val valueSetName = StellarisNameFormatHandler.getValueSetName(propertyName, project) ?: return
+		val valueSetName = StellarisNameFormatHandler.getValueSetName(localisationKey, project) ?: return
 		val gameType = ParadoxSelectorUtils.selectGameType(originalFile)
 		val tailText = "by value[$valueSetName]"
 		val selector = valueSetValueSelector().gameType(gameType).distinctByValue().declarationOnly()
@@ -29,10 +29,11 @@ class ParadoxStellarisNamePartCompletionProvider: CompletionProvider<CompletionP
 			val value = ParadoxValueSetValueHandler.getName(valueSetValue) ?: return@processQuery true
 			val icon = PlsIcons.ValueSetValue
 			//不显示typeText
-			LookupElementBuilder.create(valueSetValue, value)
+			val lookupElement = LookupElementBuilder.create(valueSetValue, value)
 				.withIcon(icon)
 				.withTailText(tailText)
 				.withCaseSensitivity(false) //忽略大小写
+			result.addElement(lookupElement)
 			true
 		}
 	}

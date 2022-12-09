@@ -1,10 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi;
 
-import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import icu.windea.pls.localisation.references.ParadoxLocalisationStellarisNameFormatPsiReference;
+import icu.windea.pls.localisation.references.ParadoxLocalisationStellarisNamePartPsiReference;
 
 public interface ParadoxLocalisationStellarisNamePart extends ParadoxLocalisationRichText {
 
@@ -15,6 +14,6 @@ public interface ParadoxLocalisationStellarisNamePart extends ParadoxLocalisatio
   PsiElement setName(@NotNull String name);
 
   @Nullable
-  ParadoxLocalisationStellarisNameFormatPsiReference getReference();
+  ParadoxLocalisationStellarisNamePartPsiReference getReference();
 
 }
