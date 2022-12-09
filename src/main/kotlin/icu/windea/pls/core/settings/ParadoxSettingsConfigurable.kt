@@ -28,7 +28,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 			group(PlsBundle.message("settings.generic")) {
 				//defaultGameType
 				row {
-					label(PlsBundle.message("settings.generic.defaultGameType"))
+					label(PlsBundle.message("settings.generic.defaultGameType")).widthGroup("generic")
 						.applyToComponent {
 							toolTipText = PlsBundle.message("settings.generic.defaultGameType.tooltip")
 						}
@@ -54,7 +54,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 				}
 				//preferredLocale
 				row {
-					label(PlsBundle.message("settings.generic.preferredLocale"))
+					label(PlsBundle.message("settings.generic.preferredLocale")).widthGroup("generic")
 						.applyToComponent {
 							toolTipText = PlsBundle.message("settings.generic.preferredLocale.tooltip")
 						}
@@ -71,7 +71,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 				}
 				//ignoredFileNames
 				row {
-					label(PlsBundle.message("settings.generic.ignoredFileNames"))
+					label(PlsBundle.message("settings.generic.ignoredFileNames")).widthGroup("generic")
 						.applyToComponent {
 							toolTipText = PlsBundle.message("settings.generic.ignoredFileNames.tooltip")
 						}

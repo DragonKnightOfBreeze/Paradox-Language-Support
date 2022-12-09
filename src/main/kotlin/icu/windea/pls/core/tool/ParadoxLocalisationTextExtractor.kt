@@ -24,6 +24,7 @@ object ParadoxLocalisationTextExtractor {
 			is ParadoxLocalisationIcon -> extractIconTo(element, builder)
 			is ParadoxLocalisationCommand -> extractCodeTo(element, builder)
 			is ParadoxLocalisationColorfulText -> extractColorfulTextTo(element, builder)
+			is ParadoxLocalisationStellarisNamePart -> extractStellarisNamePartTo(element, builder)
 		}
 	}
 	
@@ -71,5 +72,10 @@ object ParadoxLocalisationTextExtractor {
 		for(v in element.richTextList) {
 			extractTo(v, builder)
 		}
+	}
+	
+	private fun extractStellarisNamePartTo(element: ParadoxLocalisationStellarisNamePart, builder: StringBuilder) {
+		//使用原始文本
+		builder.append(element.text)
 	}
 }
