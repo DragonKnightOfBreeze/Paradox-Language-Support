@@ -22,8 +22,9 @@ class UnresolvedStellarisNamePartInspection : LocalInspectionTool() {
 			val project = holder.project
 			val valueSetName = StellarisNameFormatHandler.getValueSetName(localisationKey, project)
 			if(valueSetName == null) {
-				val message = PlsBundle.message("localisation.inspection.advanced.unresolvedStellarisNamePart.description.2", name, localisationKey)
-				holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+				//do not report problems here
+				//val message = PlsBundle.message("localisation.inspection.advanced.unresolvedStellarisNamePart.description.2", name, localisationKey)
+				//holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 				return
 			}
 			val gameType = ParadoxSelectorUtils.selectGameType(localisationProperty) ?: return

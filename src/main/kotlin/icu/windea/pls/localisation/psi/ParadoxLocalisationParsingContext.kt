@@ -19,6 +19,7 @@ class ParadoxLocalisationParsingContext(
 	fun isStellarisNameFormatKey() : Boolean{
 		if(gameType != ParadoxGameType.Stellaris) return false
 		if(!fileInfo.path.canBeLocalisationPath()) return false
-		return currentKey?.startsWith(StellarisNameFormatHandler.prefix) == true
+		val currentKey = currentKey ?: return false
+		return StellarisNameFormatHandler.prefixList.any { currentKey.startsWith(it) }
 	}
 }

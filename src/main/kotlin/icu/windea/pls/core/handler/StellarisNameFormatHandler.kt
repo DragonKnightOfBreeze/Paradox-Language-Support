@@ -10,7 +10,7 @@ import icu.windea.pls.core.model.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 object StellarisNameFormatHandler {
-	const val prefix = "format."
+	val prefixList = listOf("format.", "format_prefix.", "format_noun.")
 	
 	@JvmStatic
 	fun getAllKeys(project: Project): Collection<String> {
