@@ -37,24 +37,6 @@ object CwtConfigHandler {
 	//region Misc
 	const val paramsEnumName = "scripted_effect_params"
 	
-	fun getModifierLocalisationNameKeys(name: String, configGroup: CwtConfigGroup): List<String>? {
-		//TODO 检查到底是如何确定的
-		//mod_$, mod_country_$
-		val modifier = configGroup.modifiers[name] ?: return null
-		val isCountryModifier = !name.startsWith("country_") && modifier.categories.any { it.equals("country", true) || it.equals("countries", true) }
-		if(isCountryModifier) return listOf("mod_${name}", "mod_country_${name}")
-		return listOf("mod_${name}")
-	}
-	
-	fun getModifierLocalisationDescKeys(name: String, configGroup: CwtConfigGroup): List<String>? {
-		//TODO 检查到底是如何确定的
-		//mod_$_desc, mod_country_$_desc
-		val modifier = configGroup.modifiers[name] ?: return null
-		val isCountryModifier = !name.startsWith("country_") && modifier.categories.any { it.equals("country", true) || it.equals("countries", true) }
-		if(isCountryModifier) return listOf("mod_${name}_desc", "mod_country_${name}_desc")
-		return listOf("mod_${name}_desc")
-	}
-	
 	fun getScopeName(scopeNameOrAlias: String, configGroup: CwtConfigGroup): String {
 		//handle "any" and "all" scope 
 		if(scopeNameOrAlias.equals("any", true)) return "Any"
@@ -517,7 +499,7 @@ object CwtConfigHandler {
 		return
 	}
 	
-	fun addValueCompletionsInBlock(valueElement: PsiElement, blockElement: ParadoxScriptBlock, context: ProcessingContext, result: CompletionResultSet): Boolean {
+	fun addValueCompletionsInBlock(valueElement: PsiElement, blockElement: ParadoxScriptBlockElement, context: ProcessingContext, result: CompletionResultSet): Boolean {
 		val project = blockElement.project
 		val definitionElementInfo = blockElement.definitionElementInfo ?: return true
 		val scope = definitionElementInfo.scope
@@ -1728,6 +1710,24 @@ object CwtConfigHandler {
 		if(localisationCommands.isEmpty()) return null
 		val commandConfig = localisationCommands[name] ?: return null
 		return commandConfig.pointer.element
+	}
+	
+	fun getModifierLocalisationNameKeys(name: String, configGroup: CwtConfigGroup): List<String>? {
+		//TODO 检查到底是如何确定的
+		//mod_$, mod_country_$, ALL_UPPER_CASE is ok.
+		val modifier = configGroup.modifiers[name] ?: return null
+		val isCountryModifier = !name.startsWith("country_") && modifier.categories.any { it.equals("country", true) || it.equals("countries", true) }
+		if(isCountryModifier) return listOf("mod_${name}", "mod_country_${name}")
+		return listOf("mod_${name}")
+	}
+	
+	fun getModifierLocalisationDescKeys(name: String, configGroup: CwtConfigGroup): List<String>? {
+		//TODO 检查到底是如何确定的
+		//mod_$_desc, mod_country_$_desc, ALL_UPPER_CASE is ok.
+		val modifier = configGroup.modifiers[name] ?: return null
+		val isCountryModifier = !name.startsWith("country_") && modifier.categories.any { it.equals("country", true) || it.equals("countries", true) }
+		if(isCountryModifier) return listOf("mod_${name}_desc", "mod_country_${name}_desc")
+		return listOf("mod_${name}_desc")
 	}
 	//endregion
 }

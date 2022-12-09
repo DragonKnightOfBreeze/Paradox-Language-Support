@@ -61,7 +61,7 @@ class ParadoxDefinitionElementInfo(
 	val childValueOccurrence: Map<CwtValueExpression, Int> by lazy {
 		val values = when {
 			element is ParadoxScriptPropertyKey-> element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.valueList ?: return@lazy emptyMap()
-			element is ParadoxScriptBlock -> element.valueList
+			element is ParadoxScriptBlockElement -> element.valueList
 			else -> return@lazy emptyMap()
 		}
 		if(values.isEmpty()) return@lazy emptyMap()

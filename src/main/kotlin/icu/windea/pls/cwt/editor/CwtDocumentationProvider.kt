@@ -220,6 +220,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 		if(descLocalisation != null) {
 			appendBr()
+			append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ")
 			append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, originalElement, resolved = true)
 		}
 		if(sections != null) {

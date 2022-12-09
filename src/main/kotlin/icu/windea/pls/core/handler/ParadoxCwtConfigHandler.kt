@@ -95,8 +95,8 @@ object ParadoxCwtConfigHandler {
 							}
 						} as List<T>
 					}
-					//如果value是block中的value
-					is ParadoxScriptBlock -> {
+					//如果value是blockElement中的value
+					is ParadoxScriptBlockElement -> {
 						val property = parent.parent as? ParadoxScriptProperty ?: return emptyList()
 						val definitionElementInfo = property.definitionElementInfo ?: return emptyList()
 						val childValueConfigs = definitionElementInfo.getChildValueConfigs()

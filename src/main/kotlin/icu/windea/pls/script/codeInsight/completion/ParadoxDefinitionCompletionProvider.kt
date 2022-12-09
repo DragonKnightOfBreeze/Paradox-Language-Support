@@ -57,7 +57,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 			//得到value元素
 			val valueElement = element
 			//得到上一级block
-			val blockElement = element.parent as? ParadoxScriptBlock ?: return
+			val blockElement = element.parent as? ParadoxScriptBlockElement ?: return
 			//进行提示
 			CwtConfigHandler.addValueCompletionsInBlock(valueElement, blockElement, context, resultToUse)
 		}

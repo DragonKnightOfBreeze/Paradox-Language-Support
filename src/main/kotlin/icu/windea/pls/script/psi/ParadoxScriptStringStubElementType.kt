@@ -7,6 +7,7 @@ import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
 
 object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptStringStub, ParadoxScriptString>(
@@ -26,7 +27,7 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 		val file = psi.containingFile
 		val gameType = file.fileInfo?.rootInfo?.gameType
 		val complexEnumInfo = ParadoxComplexEnumValueHandler.resolveInfo(psi, file)
-		val valueSetInfo = if(complexEnumInfo == null) ParadoxValueSetValueHandler.resolveInfo(psi) else null
+		val valueSetInfo = if(complexEnumInfo != null) null else ParadoxValueSetValueHandler.resolveInfo(psi)
 		return ParadoxScriptStringStubImpl(parentStub, complexEnumInfo, valueSetInfo, gameType)
 	}
 	
@@ -35,7 +36,7 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 		if(node.isParameterAwareExpression()) return false
 		//skip if it is not a property value or block value
 		val parentType = node.treeParent.elementType
-		if(parentType != ParadoxScriptElementTypes.PROPERTY && parentType != ParadoxScriptElementTypes.BLOCK) return false
+		if(parentType != PROPERTY && parentType != BLOCK && parentType != ROOT_BLOCK) return false
 		return true
 	}
 	

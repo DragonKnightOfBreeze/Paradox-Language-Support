@@ -290,13 +290,7 @@ val PsiElement.fileInfo: ParadoxFileInfo?
 val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo?
 	get() = ParadoxDefinitionHandler.getInfo(this)
 
-val ParadoxDefinitionProperty.definitionElementInfo: ParadoxDefinitionElementInfo?
-	get() = ParadoxDefinitionElementHandler.getInfo(this)
-val ParadoxScriptPropertyKey.definitionElementInfo: ParadoxDefinitionElementInfo?
-	get() = ParadoxDefinitionElementHandler.getInfo(this)
-val ParadoxScriptValue.definitionElementInfo: ParadoxDefinitionElementInfo?
-	get() = ParadoxDefinitionElementHandler.getInfo(this)
-val ParadoxScriptStringExpressionElement.definitionElementInfo: ParadoxDefinitionElementInfo?
+val PsiElement.definitionElementInfo: ParadoxDefinitionElementInfo?
 	get() = ParadoxDefinitionElementHandler.getInfo(this)
 
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
