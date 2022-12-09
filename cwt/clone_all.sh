@@ -24,3 +24,6 @@ git clone git@github.com:/DragonKnightOfBreeze/cwtools-stellaris-config && echo 
 
 # rm -rf cwtools-vic2-config
 git clone git@github.com:/DragonKnightOfBreeze/cwtools-vic2-config && echo "git clone cwtools-vic2-config: DONE" 2>&1
+
+# rm -rf cwtools-vic3-config
+git clone git@github.com:/DragonKnightOfBreeze/cwtools-vic3-config && echo "git clone cwtools-vic3-config: DONE" 2>&1

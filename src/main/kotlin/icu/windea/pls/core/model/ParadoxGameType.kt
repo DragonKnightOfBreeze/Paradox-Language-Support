@@ -14,7 +14,8 @@ enum class ParadoxGameType(
 	Hoi4("hoi4", "Hearts of Iron IV", "394360"),
 	Ir("ir", "Imperator: Rome", "859580"),
 	Stellaris("stellaris", "Stellaris", "281990"),
-	Vic2("vic2", "Victoria II", "42960");
+	Vic2("vic2", "Victoria II", "42960"),
+	Vic3("vic3", "Victoria III", "42960");
 	
 	val gameName: String get() = description
 	

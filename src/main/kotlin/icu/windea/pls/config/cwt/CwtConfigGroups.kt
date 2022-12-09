@@ -16,6 +16,7 @@ interface CwtConfigGroups {
 	val ir get() = getValue(ParadoxGameType.Ir)
 	val stellaris get() = getValue(ParadoxGameType.Stellaris)
 	val vic2 get() = getValue(ParadoxGameType.Vic2)
+	val vic3 get() = getValue(ParadoxGameType.Vic3)
 	
 	operator fun get(key: String) = groups.get(key)
 	

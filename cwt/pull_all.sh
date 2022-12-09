@@ -22,3 +22,6 @@ git pull && git pull git@github.com:/cwtools/cwtools-stellaris-config master && 
 
 cd $root_path/cwtools-vic2-config
 git pull && git pull git@github.com:/cwtools/cwtools-vic2-config master && echo "git pull cwtools-vic2-config: DONE" 2>&1
+
+cd $root_path/cwtools-vic3-config
+git pull && git pull git@github.com:/cwtools/cwtools-vic3-config master && echo "git pull cwtools-vic3-config: DONE" 2>&1
