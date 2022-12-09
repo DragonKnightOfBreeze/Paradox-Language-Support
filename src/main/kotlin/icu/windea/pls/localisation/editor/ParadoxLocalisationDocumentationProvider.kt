@@ -2,7 +2,7 @@ package icu.windea.pls.localisation.editor
 
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
+import com.intellij.psi.impl.source.tree.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
@@ -264,12 +264,13 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	}
 	
 	private fun StringBuilder.buildValueSetValueDefinition(name: String, valueSetNames: List<String>, configGroup: CwtConfigGroup, originalElement: PsiElement?) {
-		val originalElementType = originalElement.elementType
-		if(originalElementType == ParadoxLocalisationElementTypes.STELLARIS_NAME_FORMAT__ID) {
-			return buildStellarisNameFormatDefinition(name, valueSetNames.first())
-		}
 		definition {
 			//不加上文件信息
+			val referenceElement = if(originalElement is LeafPsiElement) originalElement.parent else originalElement
+			if(referenceElement is ParadoxLocalisationStellarisNamePart) {
+				append(PlsDocBundle.message("name.localisation.stellarisNamePart")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				appendBr()
+			}
 			append(PlsDocBundle.message("name.cwt.valueSetValue")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			var appendSeparator = false
 			for(valueSetName in valueSetNames) {
@@ -283,14 +284,6 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 					append(": ").append(valueSetName)
 				}
 			}
-		}
-	}
-	
-	private fun StringBuilder.buildStellarisNameFormatDefinition(name: String, valueSetName: String) {
-		definition {
-			//不加上文件信息
-			append(PlsDocBundle.message("name.localisation.stellarisNamePart")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b> ")
-			append(": ").append(valueSetName)
 		}
 	}
 	
