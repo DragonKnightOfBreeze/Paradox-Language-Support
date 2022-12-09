@@ -12,12 +12,20 @@ import icu.windea.pls.localisation.psi.*
 import java.util.*
 
 class ParadoxDistinctSelector<T, K>(
-	val selector: (T) -> K
+	val keySelector: (T) -> K
 ) : ParadoxSelector<T> {
 	val keys = mutableSetOf<K>()
 	
 	override fun selectAll(result: T): Boolean {
-		return keys.add(selector(result))
+		return keys.add(keySelector(result))
+	}
+}
+
+class ParadoxFilterSelector<T>(
+	val predicate: (T) -> Boolean
+): ParadoxSelector<T> {
+	override fun selectAll(result: T): Boolean {
+		return predicate(result)
 	}
 }
 

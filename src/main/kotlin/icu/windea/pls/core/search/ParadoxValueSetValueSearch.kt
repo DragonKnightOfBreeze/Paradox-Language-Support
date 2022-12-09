@@ -19,7 +19,6 @@ class ParadoxValueSetValueSearch : ExtensibleQueryFactory<ParadoxScriptString, P
 	class SearchParameters(
 		val name: String?,
 		val valueSetName: String,
-		val read: Boolean?,
 		val project: Project,
 		val scope: SearchScope,
 		override val selector: ChainedParadoxSelector<ParadoxScriptString>
@@ -39,7 +38,7 @@ class ParadoxValueSetValueSearch : ExtensibleQueryFactory<ParadoxScriptString, P
 			project: Project,
 			scope: SearchScope = GlobalSearchScope.allScope(project),
 			selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
-		) = INSTANCE.createParadoxQuery(SearchParameters(name, valueSetName, null, project, scope, selector))
+		) = INSTANCE.createParadoxQuery(SearchParameters(name, valueSetName, project, scope, selector))
 		
 		/**
 		 * @see icu.windea.pls.core.search.ParadoxValueSetValueSearch.SearchParameters
@@ -50,18 +49,6 @@ class ParadoxValueSetValueSearch : ExtensibleQueryFactory<ParadoxScriptString, P
 			project: Project,
 			scope: SearchScope = GlobalSearchScope.allScope(project),
 			selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
-		) = INSTANCE.createParadoxQuery(SearchParameters(null, valueSetName, null, project, scope, selector))
-		
-		/**
-		 * @see icu.windea.pls.core.search.ParadoxValueSetValueSearch.SearchParameters
-		 */
-		@JvmStatic
-		fun searchDeclaration(
-			name: String,
-			valueSetName: String,
-			project: Project,
-			scope: SearchScope = GlobalSearchScope.allScope(project),
-			selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
-		) = INSTANCE.createParadoxQuery(SearchParameters(name, valueSetName, false, project, scope, selector))
+		) = INSTANCE.createParadoxQuery(SearchParameters(null, valueSetName, project, scope, selector))
 	}
 }

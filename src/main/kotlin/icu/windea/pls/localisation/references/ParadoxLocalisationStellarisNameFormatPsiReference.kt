@@ -29,9 +29,9 @@ class ParadoxLocalisationStellarisNameFormatPsiReference(
 		val project = localisationProperty.project
 		val valueSetName =  StellarisNameFormatHandler.getValueSetName(localisationKey, project) ?: return null
 		val gameType = ParadoxSelectorUtils.selectGameType(localisationProperty) ?: return null
-		val selector = valueSetValueSelector().gameType(gameType)
+		val selector = valueSetValueSelector().gameType(gameType).declarationOnly()
 		//必须要先有声明
-		val declaration = ParadoxValueSetValueSearch.searchDeclaration(name, valueSetName, project, selector = selector).findFirst()
+		val declaration = ParadoxValueSetValueSearch.search(name, valueSetName, project, selector = selector).findFirst()
 		if(declaration == null) return null
 		return ParadoxValueSetValueElement(element, name, valueSetName, project, gameType)
 	}

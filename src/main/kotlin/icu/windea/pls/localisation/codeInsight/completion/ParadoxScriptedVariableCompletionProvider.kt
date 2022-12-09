@@ -45,3 +45,4 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
 		return true
 	}
 }
+

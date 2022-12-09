@@ -6,6 +6,7 @@ import com.intellij.patterns.PlatformPatterns.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationStellarisNamePart
 
 class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	init {
@@ -36,6 +37,10 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		//当用户正在输入一个scriptedVariableReference的名字时提示
 		val scriptedVariableNamePattern = psiElement().withElementType(SCRIPTED_VARIABLE_REFERENCE_ID)
 		extend(null, scriptedVariableNamePattern, ParadoxScriptedVariableCompletionProvider())
+		
+		//当用户正在输入一个stellarisNamePart的名字时提示
+		val stellarisNamePartPattern = psiElement().withElementType(STELLARIS_NAME_FORMAT__ID)
+		extend(null, stellarisNamePartPattern, ParadoxStellarisNamePartCompletionProvider())
 	}
 	
 	override fun beforeCompletion(context: CompletionInitializationContext) {

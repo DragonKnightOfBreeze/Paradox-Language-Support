@@ -6,8 +6,12 @@ import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 
-fun <S : ChainedParadoxSelector<T>, T, K> S.distinctBy(selector: (T) -> K) =
-	apply { selectors += ParadoxDistinctSelector(selector) }
+fun <S : ChainedParadoxSelector<T>, T, K> S.distinctBy(keySelector: (T) -> K) =
+	apply { selectors += ParadoxDistinctSelector(keySelector) }
+
+fun <S : ChainedParadoxSelector<T>, T> S.filterBy(predicate: (T) -> Boolean) =
+	apply { selectors += ParadoxFilterSelector(predicate) }
+
 
 fun <S : ChainedParadoxSelector<T>, T> S.gameType(gameType: ParadoxGameType?) =
 	apply { if(gameType != null) selectors += ParadoxGameTypeSelector(gameType) }
@@ -45,7 +49,6 @@ fun <S : ChainedParadoxSelector<T>, T> S.preferRootFrom(from: Any?, condition: B
 fun ParadoxComplexEnumValueSelector.withSearchScope(searchScope: String?, context: PsiElement) =
 	apply { if(searchScope != null) selectors += ParadoxWithSearchScopeSelector(ParadoxSearchScope(searchScope), context) }
 
-
 fun ParadoxScriptedVariableSelector.distinctByName() =
 	distinctBy { it.name }
 
@@ -59,7 +62,10 @@ fun ParadoxComplexEnumValueSelector.distinctByName() =
 	distinctBy { ParadoxComplexEnumValueHandler.getName(it) }
 
 fun ParadoxValueSetValueSelector.distinctByValue() =
-	distinctBy { ParadoxValueSetValueHandler.getName(it.value) }
+	distinctBy { ParadoxValueSetValueHandler.getName(it) }
+
+fun ParadoxValueSetValueSelector.declarationOnly() = 
+	filterBy { !ParadoxValueSetValueHandler.getRead(it) }
 
 fun ParadoxLocalisationSelector.locale(locale: CwtLocalisationLocaleConfig?) =
 	apply { if(locale != null) selectors += ParadoxLocaleSelector(locale) }
