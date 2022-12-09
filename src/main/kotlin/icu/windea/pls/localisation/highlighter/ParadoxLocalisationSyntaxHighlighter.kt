@@ -6,6 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
@@ -65,7 +66,8 @@ class ParadoxLocalisationSyntaxHighlighter(
 	}
 	
 	override fun getHighlightingLexer(): ParadoxLocalisationLexerAdapter {
-		val context = if(virtualFile == null) null else ParadoxLocalisationParsingContext(virtualFile, project)
+		val fileInfo = virtualFile?.fileInfo
+		val context = if(fileInfo != null) ParadoxLocalisationParsingContext(fileInfo, project) else null
 		return ParadoxLocalisationLexerAdapter(context)
 	}
 }

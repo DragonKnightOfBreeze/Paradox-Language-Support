@@ -1,12 +1,9 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.core.*
+import icu.windea.pls.core.model.*
 
 class ParadoxScriptParsingContext(
-	val virtualFile: VirtualFile,
+	val fileInfo: ParadoxFileInfo,
 	val project: Project?
-) {
-	val fileInfo = virtualFile.fileInfo
-}
+)

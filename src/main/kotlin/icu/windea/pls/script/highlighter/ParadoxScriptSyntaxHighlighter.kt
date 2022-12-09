@@ -7,6 +7,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.StringEscapesTokenTypes.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
+import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -64,7 +65,8 @@ class ParadoxScriptSyntaxHighlighter(
 	}
 	
 	override fun getHighlightingLexer(): ParadoxScriptLexerAdapter {
-		val context = if(virtualFile == null) null else ParadoxScriptParsingContext(virtualFile, project)
+		val fileInfo = virtualFile?.fileInfo
+		val context = if(fileInfo != null) ParadoxScriptParsingContext(fileInfo, project) else null
 		return ParadoxScriptLexerAdapter(context)
 	}
 }

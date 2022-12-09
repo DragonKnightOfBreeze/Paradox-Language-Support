@@ -45,10 +45,10 @@ object ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub
 	
 	override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
 		//这里需要基于上下文来解析本地化文本的语法
-		val virtualFile = psi.containingFile.virtualFile
+		val fileInfo = psi.fileInfo
 		val project = psi.project
 		val language = ParadoxLocalisationLanguage
-		val context = ParadoxLocalisationParsingContext(virtualFile, project)
+		val context = if(fileInfo != null) ParadoxLocalisationParsingContext(fileInfo, project) else null
 		val lexer = ParadoxLocalisationLexerAdapter(context)
 		val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, lexer, language, chameleon.chars)
 		val parser = ParadoxLocalisationParser()

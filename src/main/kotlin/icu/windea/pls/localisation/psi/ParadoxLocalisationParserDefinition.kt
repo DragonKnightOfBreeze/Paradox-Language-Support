@@ -7,6 +7,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 class ParadoxLocalisationParserDefinition : ParserDefinition {
@@ -42,7 +43,9 @@ class ParadoxLocalisationParserDefinition : ParserDefinition {
 	}
 	
 	fun createLexer(virtualFile: VirtualFile, project: Project?): ParadoxLocalisationLexerAdapter {
-		return ParadoxLocalisationLexerAdapter(ParadoxLocalisationParsingContext(virtualFile, project))
+		val fileInfo = virtualFile.fileInfo
+		val context = if(fileInfo != null) ParadoxLocalisationParsingContext(fileInfo, project) else null
+		return ParadoxLocalisationLexerAdapter(context)
 	}
 	
 	override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): ParserDefinition.SpaceRequirements {
