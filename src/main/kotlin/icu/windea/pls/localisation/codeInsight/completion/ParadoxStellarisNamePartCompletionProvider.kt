@@ -6,7 +6,9 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
@@ -14,6 +16,7 @@ import icu.windea.pls.localisation.psi.*
 /**
  * 提示对格式化引用的代码补全。
  */
+@WithGameType(ParadoxGameType.Stellaris)
 class ParadoxStellarisNamePartCompletionProvider: CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val localisationProperty = parameters.position.parentOfType<ParadoxLocalisationProperty>() ?: return
