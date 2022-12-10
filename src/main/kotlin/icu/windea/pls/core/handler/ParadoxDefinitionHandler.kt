@@ -10,6 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.matchesScriptExpression
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.model.*
@@ -105,21 +106,7 @@ object ParadoxDefinitionHandler {
 	}
 	
 	@JvmStatic
-	fun matchesType(
-		configGroup: CwtConfigGroup,
-		typeConfig: CwtTypeConfig,
-		element: ParadoxDefinitionProperty,
-		rootKey: String,
-		path: ParadoxPath,
-		elementPath: ParadoxElementPath
-	): Boolean {
-		//判断element是否需要是scriptFile还是scriptProperty
-		val nameFromFileConfig = typeConfig.nameFromFile
-		if(nameFromFileConfig) {
-			if(element !is ParadoxScriptFile) return false
-		} else {
-			if(element !is ParadoxScriptProperty) return false
-		}
+	fun matchesTypeByPath(typeConfig: CwtTypeConfig, path: ParadoxPath): Boolean {
 		//判断path是否匹配
 		val pathConfig = typeConfig.path ?: return false
 		val pathStrictConfig = typeConfig.pathStrict
@@ -138,6 +125,40 @@ object ParadoxDefinitionHandler {
 		if(pathExtensionConfig != null) {
 			if(pathExtensionConfig != "." + path.fileExtension) return false
 		}
+		return true
+	}
+	
+	@JvmStatic
+	fun matchesType(
+		configGroup: CwtConfigGroup,
+		typeConfig: CwtTypeConfig,
+		element: ParadoxDefinitionProperty,
+		rootKey: String,
+		path: ParadoxPath,
+		elementPath: ParadoxElementPath
+	): Boolean {
+		//判断element是否需要是scriptFile还是scriptProperty
+		val nameFromFileConfig = typeConfig.nameFromFile
+		if(nameFromFileConfig) {
+			if(element !is ParadoxScriptFile) return false
+		} else {
+			if(element !is ParadoxScriptProperty) return false
+		}
+		
+		//判断element的propertyValue是否需要是block
+		val declarationConfig = configGroup.declarations[typeConfig.name]?.propertyConfig
+		if(declarationConfig != null) {
+			val isBlock = element.castOrNull<ParadoxScriptProperty>()?.propertyValue?.let { it is ParadoxScriptBlock }
+			val isBlockConfig = declarationConfig.valueExpression == CwtValueExpression.BlockExpression
+			if(isBlockConfig) {
+				if(isBlock == false) return false
+			} else {
+				if(isBlock == true) return false
+			}
+		}
+		
+		if(!matchesTypeByPath(typeConfig, path)) return false
+		
 		//如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
 		//skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
 		//skip_root_key可以重复（其中之一匹配即可）

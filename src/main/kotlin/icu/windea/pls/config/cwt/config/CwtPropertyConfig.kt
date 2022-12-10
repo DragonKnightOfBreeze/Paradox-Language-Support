@@ -15,8 +15,7 @@ data class CwtPropertyConfig(
 	override val intValue: Int? = null,
 	override val floatValue: Float? = null,
 	override val stringValue: String? = null,
-	override val properties: List<CwtPropertyConfig>? = null,
-	override val values: List<CwtValueConfig>? = null,
+	override val configs: List<CwtDataConfig<*>>? = null,
 	override val documentation: String? = null,
 	override val options: List<CwtOptionConfig>? = null,
 	override val optionValues: List<CwtOptionValueConfig>? = null,
@@ -35,7 +34,7 @@ data class CwtPropertyConfig(
 			?.let { f -> resolvedPointer.element?.propertyValue?.createPointer(f) } ?: return@lazy null
 		CwtValueConfig(
 			valuePointer, info, value, booleanValue, intValue, floatValue, stringValue,
-			properties, values, documentation, options, optionValues
+			configs, documentation, options, optionValues
 		).also { it.parent = parent }
 	}
 	
@@ -59,8 +58,7 @@ data class CwtPropertyConfig(
 			intValue = other.intValue,
 			floatValue = other.floatValue,
 			stringValue = other.stringValue,
-			properties = other.deepCopyProperties(),
-			values = other.deepCopyValues()
+			configs = other.deepCopyConfigs()
 		)
 		inlined.parent = parent
 		inlined.properties?.forEach { it.parent = inlined }
@@ -82,8 +80,7 @@ data class CwtPropertyConfig(
 			intValue = other.intValue,
 			floatValue = other.floatValue,
 			stringValue = other.stringValue,
-			properties = other.deepCopyProperties(),
-			values = other.deepCopyValues()
+			configs = other.deepCopyConfigs()
 		)
 		inlined.parent = parent
 		inlined.properties?.forEach { it.parent = inlined }

@@ -7,7 +7,6 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.ParadoxValueFieldExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
@@ -118,8 +117,8 @@ class ParadoxValueFieldExpressionImpl(
 									is ParadoxDataExpressionNode -> {
 										if(dataSourceChildNode.text.isEmpty()) {
 											if(isLast) {
-												val possible = dataSourceChildNode.linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
-												val error = ParadoxMissingValueLinkDataSourceExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingValueLinkDataSource", possible))
+												val expect = dataSourceChildNode.linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
+												val error = ParadoxMissingValueLinkDataSourceExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingValueLinkDataSource", expect))
 												errors.add(error)
 											} else if(!malformed) {
 												malformed = true

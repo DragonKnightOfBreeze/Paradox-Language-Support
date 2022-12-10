@@ -64,12 +64,12 @@ class IncorrectScriptExpressionInspection : LocalInspectionTool() {
 					val config = resolveValueConfigs(element, orDefault = false).firstOrNull()
 					//是定义元素，非定义自身，且路径中不带参数
 					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
-						val possibleConfigs = resolveValueConfigs(element, orDefault = true)
-						val possible = possibleConfigs.mapTo(mutableSetOf()) { it.expression }.joinToString()
+						val expectConfigs = resolveValueConfigs(element, orDefault = true)
+						val expect = expectConfigs.mapTo(mutableSetOf()) { it.expression }.joinToString()
 						val fix = ImportGameOrModDirectoryFix(element)
 						val message = when {
-							possible.isEmpty() -> PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.description.1", element.expression, possible)
-							else -> PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.description.2", element.expression, possible)
+							expect.isEmpty() -> PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.description.1", element.expression, expect)
+							else -> PlsBundle.message("script.inspection.advanced.incorrectScriptExpression.description.2", element.expression, expect)
 						}
 						holder.registerProblem(element, message, fix)
 						//skip checking children

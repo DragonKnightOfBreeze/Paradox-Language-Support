@@ -12,8 +12,7 @@ data class CwtValueConfig(
 	override val intValue: Int? = null,
 	override val floatValue: Float? = null,
 	override val stringValue: String? = null,
-	override val properties: List<CwtPropertyConfig>? = null,
-	override val values: List<CwtValueConfig>? = null,
+	override val configs: List<CwtDataConfig<*>>? = null,
 	override val documentation: String? = null,
 	override val options: List<CwtOptionConfig>? = null,
 	override val optionValues: List<CwtOptionValueConfig>? = null

@@ -37,6 +37,23 @@ interface ParadoxElementPath : Iterable<Tuple3<String, Boolean, Boolean>> {
 	}
 	
 	/**
+	 * 得到另一个子路径列表相对于当前元素路径的子路径列表中的第一个。例如，`"/foo/bar/x" relativeTo "/foo" -> "bar"`。
+	 * 如果两者完全匹配，则返回空字符串。
+	 * * @param ignoreCase 是否忽略大小写。默认为`true`。
+	 * * @param useAnyWildcard 对于另一个子路径列表，是否使用`"any"`字符串作为子路径通配符，表示匹配任意子路径。默认为`true`。
+	 */
+	fun relativeTo(other: List<String>, ignoreCase: Boolean = true, useAnyWildcard: Boolean = true) : String? {
+		if(this.length < other.size) return null
+		for((index, otherPath) in other.withIndex()) {
+			if(useAnyWildcard && otherPath == "any") continue
+			val thisPath = subPathInfos[index].first
+			if(!thisPath.equals(otherPath, ignoreCase)) return null
+		}
+		if(this.length == other.size) return ""
+		return this.subPathInfos.getOrNull(other.size)?.first
+	}
+	
+	/**
 	 * 判断当前元素路径是否匹配另一个子路径列表。使用"/"作为路径分隔符。
 	 * @param ignoreCase 是否忽略大小写。默认为`true`。
 	 * @param useAnyWildcard 对于另一个子路径列表，是否使用`"any"`字符串作为子路径通配符，表示匹配任意子路径。默认为`true`。
@@ -46,11 +63,10 @@ interface ParadoxElementPath : Iterable<Tuple3<String, Boolean, Boolean>> {
 		val thisLength = if(useParentPath) length - 1 else length
 		val otherLength = other.size
 		if(thisLength < 0 || thisLength != otherLength) return false //路径过短或路径长度不一致
-		for(index in 0 until thisLength) {
-			val otherPath = other[index].let { if(ignoreCase) it.lowercase() else it }
+		for((index, otherPath) in other.withIndex()) {
 			if(useAnyWildcard && otherPath == "any") continue
-			val thisPath = subPathInfos[index].first.let { if(ignoreCase) it.lowercase() else it }
-			if(thisPath != otherPath) return false
+			val thisPath = subPathInfos[index].first
+			if(!thisPath.equals(otherPath, ignoreCase)) return false
 		}
 		return true
 	}

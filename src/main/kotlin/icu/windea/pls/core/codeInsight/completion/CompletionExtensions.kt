@@ -74,6 +74,7 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 		val props = config?.castOrNull<CwtValueConfig>()?.properties
 		if(props != null && props.isNotEmpty()) {
 			val lookupElement = LookupElementBuilder.create("").bold()
+				.withTailText("{ <generate via template> }")
 			addScriptExpressionElementWithClauseTemplate(lookupElement, context, props, false) {
 				withPriority(PlsCompletionPriorities.keywordPriority - 1) //under "{...}"
 			}
@@ -82,14 +83,14 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 }
 
 fun CompletionResultSet.addScriptExpressionElement(
-	element: PsiElement,
-	lookupString: String,
-	context: ProcessingContext,
-	icon: Icon? = null,
-	tailText: String? = null,
-	typeText: String? = null,
-	typeIcon: Icon? = null,
-	builder: LookupElementBuilder.() -> LookupElement = { this }
+	element: PsiElement?,
+    lookupString: String,
+    context: ProcessingContext,
+    icon: Icon? = null,
+    tailText: String? = null,
+    typeText: String? = null,
+    typeIcon: Icon? = null,
+    builder: LookupElementBuilder.() -> LookupElement = { this }
 ) {
 	val config = context.config
 	
@@ -111,7 +112,10 @@ fun CompletionResultSet.addScriptExpressionElement(
 	//排除重复项
 	if(context.completionIds?.add(id) == false) return
 	
-	var lookupElement = LookupElementBuilder.create(element, lookupString)
+	var lookupElement = when {
+		element != null -> LookupElementBuilder.create(element, lookupString)
+		else -> LookupElementBuilder.create(lookupString)
+	}
 	if(icon != null) {
 		lookupElement = lookupElement.withIcon(icon)
 	}
@@ -159,7 +163,13 @@ fun CompletionResultSet.addScriptExpressionElement(
 	if(context.isKey == true && completeWithClauseTemplate) {
 		val props = propertyConfig?.properties
 		if(props != null && props.isNotEmpty()) {
-			addScriptExpressionElementWithClauseTemplate(lookupElement, context, props, true, builder)
+			val finalResultTailText = buildString {
+				append(" = {...}")
+				if(tailText != null) append(tailText)
+			}
+			val resultLookupElement = lookupElement
+				.withTailText(finalResultTailText)
+			addScriptExpressionElementWithClauseTemplate(resultLookupElement, context, props, true, builder)
 		}
 	}
 }
@@ -194,9 +204,7 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 		.distinctBy { it.key.lowercase() }
 	if(propsToInsert.isEmpty()) return
 	
-	val tailText = if(insertEq) " = { <generate via template> }" else "{ <generate via template> }"
 	val resultLookupElement = lookupElement
-		.withTailText(tailText)
 		.withInsertHandler { c, _ ->
 			val editor = c.editor
 			val project = file.project

@@ -35,10 +35,10 @@ class ParadoxDataExpressionNode (
 		if(text.isParameterAwareExpression()) return null
 		//忽略是valueSetValue的情况
 		if(linkConfigs.any { it.dataSource?.type == CwtDataTypes.Value }) return null
-		val possible = linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
+		val expect = linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
 		//排除可解析的情况
 		if(getReference(element).canResolve()) return null
-		return ParadoxUnresolvedScopeLinkDataSourceExpressionError(rangeInExpression, PlsBundle.message("script.expression.unresolvedData", text, possible))
+		return ParadoxUnresolvedScopeLinkDataSourceExpressionError(rangeInExpression, PlsBundle.message("script.expression.unresolvedData", text, expect))
 	}
 	
 	companion object Resolver {

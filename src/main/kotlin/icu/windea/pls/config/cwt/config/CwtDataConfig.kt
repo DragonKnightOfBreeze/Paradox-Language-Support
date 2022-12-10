@@ -7,14 +7,13 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 
-abstract class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
+sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	abstract val value: String
 	abstract val booleanValue: Boolean?
 	abstract val intValue: Int?
 	abstract val floatValue: Float?
 	abstract val stringValue: String?
-	abstract val properties: List<CwtPropertyConfig>?
-	abstract val values: List<CwtValueConfig>?
+	abstract val configs: List<CwtDataConfig<*>>?
 	abstract val documentation: String?
 	abstract val options: List<CwtOptionConfig>?
 	abstract val optionValues: List<CwtOptionValueConfig>?
@@ -23,7 +22,9 @@ abstract class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	
 	var parent: CwtDataConfig<*>? = null
 	
-	val isBlock: Boolean get() = properties != null || values != null
+	val isBlock: Boolean get() = configs != null
+	val values : List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
+	val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
 	
 	val cardinality by lazy { resolveCardinality() }
 	val scope get() = resolveScope() //不要缓存，因为parent可能有变动
@@ -75,86 +76,40 @@ abstract class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 		}
 	}
 	
-	//深拷贝
-	
-	fun deepCopyProperties(): List<CwtPropertyConfig>? {
-		return properties?.map { p -> p.copy(properties = p.deepCopyProperties(), values = p.deepCopyValues()).also { it.parent = this } }
+	/** 
+	 * 深拷贝。 
+	 */
+	fun deepCopyConfigs(): List<CwtDataConfig<*>>? {
+		return configs?.map { config ->
+			when(config) {
+				is CwtPropertyConfig -> config.copy(configs = config.deepCopyConfigs())
+				is CwtValueConfig -> config.copy(configs = config.deepCopyConfigs())
+			}.also { it.parent = this } 
+		}
 	}
 	
-	fun deepCopyValues(): List<CwtValueConfig>? {
-		return values?.map { v -> v.copy(properties = v.deepCopyProperties(), values = v.deepCopyValues()).also { it.parent = this } }
-	}
-	
-	//深拷贝 + 根据子类型进行合并
-	
+	/**
+	 * 深拷贝 + 根据子类型进行合并。
+	 */
 	fun deepMergeBySubtypes(subtypes: List<String>): List<CwtDataConfig<*>> {
-		val properties = properties
-		val values = values
-		var mergedProperties: MutableList<CwtPropertyConfig>? = if(properties != null) SmartList() else null
-		var mergedValues: MutableList<CwtValueConfig>? = if(values != null) SmartList() else null
-		if(properties != null && properties.isNotEmpty()) {
-			for(propConfig in properties) {
-				val configList = propConfig.deepMergeBySubtypes(subtypes)
-				if(configList.isEmpty()) continue
-				for(config in configList) {
-					when {
-						config is CwtPropertyConfig -> {
-							mergedProperties?.add(config)
-						}
-						config is CwtValueConfig -> {
-							if(mergedValues == null) mergedValues = SmartList()
-							mergedValues.add(config)
-						}
-					}
-				}
+		val mergedConfigs: MutableList<CwtDataConfig<*>>? = if(configs != null) SmartList() else null
+		configs?.forEach { config ->
+			val childConfigList = config.deepMergeBySubtypes(subtypes)
+			if(childConfigList.isEmpty()) return@forEach
+			for(childConfig in childConfigList) {
+				mergedConfigs?.add(childConfig)
 			}
 		}
-		if(values != null && values.isNotEmpty()) {
-			for(valueConfig in values) {
-				val configList = valueConfig.deepMergeBySubtypes(subtypes)
-				if(configList.isEmpty()) continue
-				for(config in configList) {
-					when {
-						config is CwtPropertyConfig -> {
-							if(mergedProperties == null) mergedProperties = SmartList()
-							mergedProperties.add(config)
-						}
-						config is CwtValueConfig -> {
-							mergedValues?.add(config)
-						}
-					}
-				}
+		return when(this) {
+			is CwtValueConfig -> {
+				copy(configs = mergedConfigs).also { parent = it.parent }.toSingletonList()
 			}
-		}
-		when(this) {
 			is CwtPropertyConfig -> {
 				val subtypeName = key.removeSurroundingOrNull("subtype[", "]")
-					?: return copy(properties = mergedProperties, values = mergedValues).also { parent = it.parent }.toSingletonList()
+					?: return copy(configs = mergedConfigs).also { parent = it.parent }.toSingletonList()
 				if(!matchesDefinitionSubtypeExpression(subtypeName, subtypes)) return emptyList()
-				return mergedProperties.orEmpty() + mergedValues.orEmpty()
+				mergedConfigs.orEmpty()
 			}
-			is CwtValueConfig -> {
-				return copy(properties = mergedProperties, values = mergedValues).also { parent = it.parent }.toSingletonList()
-			}
-			else -> return emptyList()
 		}
 	}
-	
-	//fun deepMergeProperties(subtypes: List<String>): List<CwtPropertyConfig>? {
-	//	return properties?.flatMap { p ->
-	//		val subtypeName = p.key.removeSurroundingOrNull("subtype[", "]")
-	//		if(subtypeName != null && matchesDefinitionSubtypeExpression(subtypeName, subtypes)) {
-	//			val list = SmartList<CwtPropertyConfig>()
-	//			list
-	//		} else {
-	//			p.copy(properties = p.deepMergeProperties(subtypes), values = p.deepMergeValues(subtypes)).also { it.parent = this }.toSingletonList()
-	//		}
-	//	}
-	//}
-	//
-	//fun deepMergeValues(subtypes: List<String>): List<CwtValueConfig>? {
-	//	return values?.map { v -> 
-	//		v.copy(properties = v.deepMergeProperties(subtypes), values = v.deepMergeValues(subtypes)).also { it.parent = this }
-	//	}
-	//}
 }

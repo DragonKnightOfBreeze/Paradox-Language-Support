@@ -56,13 +56,6 @@ object ParadoxScriptDataResolver {
 		return result
 	}
 	
-	private fun resolveProperty(property: ParadoxScriptProperty): BlockEntry<String?, Any>? {
-		//注意property的名字可以重复
-		val key = property.name
-		val value = property.propertyValue?.let { resolveValue(it) } ?: return null
-		return BlockEntry(key, value)
-	}
-	
 	private fun resolveValue(value: ParadoxScriptValue): Any? {
 		return when(value) {
 			is ParadoxScriptBoolean -> value.value.toBooleanYesNo()
@@ -74,5 +67,12 @@ object ParadoxScriptDataResolver {
 			is ParadoxScriptBlock -> resolveBlock(value)
 			else -> value.value
 		}
+	}
+	
+	private fun resolveProperty(property: ParadoxScriptProperty): BlockEntry<String?, Any>? {
+		//注意property的名字可以重复
+		val key = property.name
+		val value = property.propertyValue?.let { resolveValue(it) } ?: return null
+		return BlockEntry(key, value)
 	}
 }

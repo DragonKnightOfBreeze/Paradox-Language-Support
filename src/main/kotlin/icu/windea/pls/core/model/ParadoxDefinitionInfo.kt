@@ -99,8 +99,8 @@ class ParadoxDefinitionInfo(
 		result
 	}
 	
-	val declaration: List<CwtDataConfig<*>> by lazy {
-		configGroup.declarations.get(type)?.getMergedConfigs(subtypes) ?: emptyList()
+	val declaration: CwtPropertyConfig? by lazy {
+		configGroup.declarations.get(type)?.getMergedConfig(subtypes)
 	}
 	
 	val primaryLocalisationConfigs: List<ParadoxRelatedLocalisationInfo> by lazy {

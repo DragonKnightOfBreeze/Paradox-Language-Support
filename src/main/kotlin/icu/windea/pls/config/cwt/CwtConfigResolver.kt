@@ -35,8 +35,7 @@ object CwtConfigResolver {
 		var intValue: Int? = null
 		var floatValue: Float? = null
 		var stringValue: String? = null
-		var properties: List<CwtPropertyConfig>? = null
-		var values: List<CwtValueConfig>? = null
+		var configs: List<CwtDataConfig<*>>? = null
 		var documentationLines: LinkedList<String>? = null
 		var options: LinkedList<CwtOptionConfig>? = null
 		var optionValues: LinkedList<CwtOptionValueConfig>? = null
@@ -48,16 +47,14 @@ object CwtConfigResolver {
 			propertyValue is CwtString -> stringValue = propertyValue.stringValue
 			propertyValue is CwtBlock -> when {
 				propertyValue.isEmpty -> {
-					properties = emptyList()
-					values = emptyList()
+					configs = emptyList()
 				}
 				else -> {
-					properties = SmartList()
-					values = SmartList()
+					configs = SmartList()
 					propertyValue.processChild {
 						when {
-							it is CwtProperty -> resolveProperty(it, file, fileConfig)?.addTo(properties).end()
-							it is CwtValue -> resolveValue(it, file, fileConfig).addTo(values).end()
+							it is CwtProperty -> resolveProperty(it, file, fileConfig)?.addTo(configs).end()
+							it is CwtValue -> resolveValue(it, file, fileConfig).addTo(configs).end()
 							else -> end()
 						}
 					}
@@ -99,11 +96,10 @@ object CwtConfigResolver {
 		
 		val config = CwtPropertyConfig(
 			pointer, fileConfig.info, key, propertyValue.value,
-			booleanValue, intValue, floatValue, stringValue, properties, values,
+			booleanValue, intValue, floatValue, stringValue, configs,
 			documentation, options, optionValues, separatorType
 		)
-		properties?.forEach { it.parent = config }
-		values?.forEach { it.parent = config }
+		configs?.forEach { it.parent = config }
 		return config
 	}
 	
@@ -113,8 +109,7 @@ object CwtConfigResolver {
 		var intValue: Int? = null
 		var floatValue: Float? = null
 		var stringValue: String? = null
-		var values: List<CwtValueConfig>? = null
-		var properties: List<CwtPropertyConfig>? = null
+		var configs: List<CwtDataConfig<*>>? = null
 		var documentationLines: LinkedList<String>? = null
 		var options: LinkedList<CwtOptionConfig>? = null
 		var optionValues: LinkedList<CwtOptionValueConfig>? = null
@@ -126,16 +121,14 @@ object CwtConfigResolver {
 			value is CwtString -> stringValue = value.stringValue
 			value is CwtBlock -> when {
 				value.isEmpty -> {
-					values = emptyList()
-					properties = emptyList()
+					configs = emptyList()
 				}
 				else -> {
-					properties = SmartList()
-					values = SmartList()
+					configs = SmartList()
 					value.processChild {
 						when {
-							it is CwtProperty -> resolveProperty(it, file, fileConfig)?.addTo(properties).end()
-							it is CwtValue -> resolveValue(it, file, fileConfig).addTo(values).end()
+							it is CwtProperty -> resolveProperty(it, file, fileConfig)?.addTo(configs).end()
+							it is CwtValue -> resolveValue(it, file, fileConfig).addTo(configs).end()
 							else -> end()
 						}
 					}
@@ -177,11 +170,10 @@ object CwtConfigResolver {
 		
 		val config = CwtValueConfig(
 			pointer, fileConfig.info, value.value,
-			booleanValue, intValue, floatValue, stringValue,
-			properties, values, documentation, options, optionValues
+			booleanValue, intValue, floatValue, stringValue, configs, 
+			documentation, options, optionValues
 		)
-		properties?.forEach { it.parent = config }
-		values?.forEach { it.parent = config }
+		configs?.forEach { it.parent = config }
 		return config
 	}
 	

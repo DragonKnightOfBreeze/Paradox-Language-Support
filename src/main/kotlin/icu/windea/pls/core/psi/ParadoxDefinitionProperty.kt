@@ -21,13 +21,13 @@ interface ParadoxDefinitionProperty : ParadoxScriptNamedElement, NavigatablePsiE
 		get() {
 			return block?.scriptedVariableList.orEmpty()
 		}
-	val propertyList: List<ParadoxScriptProperty>
-		get() {
-			return buildList { block?.processProperty(includeConditional = true) { add(it) } }
-		}
 	val valueList: List<ParadoxScriptValue>
 		get() {
 			return buildList { block?.processValue(includeConditional = true) { add(it) } }
+		}
+	val propertyList: List<ParadoxScriptProperty>
+		get() {
+			return buildList { block?.processProperty(includeConditional = true) { add(it) } }
 		}
 	
 	val parameterMap: Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>> get() = emptyMap()

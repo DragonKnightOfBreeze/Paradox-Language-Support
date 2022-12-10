@@ -83,8 +83,6 @@ private fun resolveConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElem
 	val elementPath = definitionElementInfo.elementPath
 	if(elementPath.isParameterAware) return emptyList() //如果路径中可能带有参数，则不进行解析
 	
-	if(definitionInfo.declaration.isEmpty()) return emptyList()
-	
 	val cacheKey = "${definitionInfo.typesText}:${definitionElementInfo.elementPath}:$matchType"
 	return configsCache.getOrPut(cacheKey, { emptyList() }) {
 		doResolveConfigs(definitionInfo, definitionElementInfo, matchType)
@@ -95,63 +93,59 @@ private fun resolveConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElem
 private fun doResolveConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtDataConfig<*>> {
 	val elementPath = definitionElementInfo.elementPath
 	val configGroup = definitionElementInfo.configGroup
-	return when {
-		//这里的属性路径可以为空
-		elementPath.isEmpty() -> definitionInfo.declarationConfig?.propertyConfigSingletonList.orEmpty()
-		else -> {
-			var result: List<CwtDataConfig<*>> = definitionInfo.declaration
-			var index = 0
-			while(index < elementPath.length) {
-				val (key, isQuoted, isKey) = elementPath.subPathInfos[index]
-				var nextIndex = index + 1
-				
-				//如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
-				
-				val expression = ParadoxDataExpression.resolve(key, isQuoted, true)
-				val nextResult = SmartList<CwtDataConfig<*>>()
-				for(config in result) {
-					if(index == 0) {
-						if(isKey && config is CwtPropertyConfig) {
-							if(matchesScriptExpression(expression, config.keyExpression, configGroup, matchType)) {
-								nextIndex = CwtConfigHandler.inlineConfig(key, isQuoted, config, configGroup, nextResult, index, matchType)
-							}
-						} else if(!isKey && config is CwtValueConfig) {
-							nextResult.add(config)
-						}
-					} else {
-						val propertyConfigs = config.properties
-						if(isKey && propertyConfigs != null && propertyConfigs.isNotEmpty()) {
-							for(propertyConfig in propertyConfigs) {
-								if(matchesScriptExpression(expression, propertyConfig.keyExpression, configGroup, matchType)) {
-									nextIndex = CwtConfigHandler.inlineConfig(key, isQuoted, propertyConfig, configGroup, nextResult, index, matchType)
-								}
-							}
-						}
-						val valueConfigs = config.values
-						if(!isKey && valueConfigs != null && valueConfigs.isNotEmpty()) {
-							for(valueConfig in valueConfigs) {
-								nextResult.add(valueConfig)
-							}
+	val declaration = definitionInfo.declaration ?: return emptyList()
+	if(elementPath.isEmpty()) return declaration.toSingletonList()
+	var result = declaration.configs ?: return emptyList()
+	var index = 0
+	while(index < elementPath.length) {
+		val (key, isQuoted, isKey) = elementPath.subPathInfos[index]
+		var nextIndex = index + 1
+		
+		//如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
+		
+		val expression = ParadoxDataExpression.resolve(key, isQuoted, true)
+		val nextResult = SmartList<CwtDataConfig<*>>()
+		for(config in result) {
+			if(index == 0) {
+				if(isKey && config is CwtPropertyConfig) {
+					if(matchesScriptExpression(expression, config.keyExpression, configGroup, matchType)) {
+						nextIndex = CwtConfigHandler.inlineConfig(key, isQuoted, config, configGroup, nextResult, index, matchType)
+					}
+				} else if(!isKey && config is CwtValueConfig) {
+					nextResult.add(config)
+				}
+			} else {
+				val propertyConfigs = config.properties
+				if(isKey && propertyConfigs != null && propertyConfigs.isNotEmpty()) {
+					for(propertyConfig in propertyConfigs) {
+						if(matchesScriptExpression(expression, propertyConfig.keyExpression, configGroup, matchType)) {
+							nextIndex = CwtConfigHandler.inlineConfig(key, isQuoted, propertyConfig, configGroup, nextResult, index, matchType)
 						}
 					}
 				}
-				
-				//如果存在可以静态匹配（CwtConfigMatchType.STATIC）的规则，则仅选用可以静态匹配的规则
-				result = nextResult.filter {
-					matchesScriptExpression(expression, it.expression, configGroup, CwtConfigMatchType.STATIC)
-				}.ifEmpty { nextResult }
-				index = nextIndex
+				val valueConfigs = config.values
+				if(!isKey && valueConfigs != null && valueConfigs.isNotEmpty()) {
+					for(valueConfig in valueConfigs) {
+						nextResult.add(valueConfig)
+					}
+				}
 			}
-			result.sortedByPriority(configGroup) { it.expression }
 		}
+		
+		//如果存在可以静态匹配（CwtConfigMatchType.STATIC）的规则，则仅选用可以静态匹配的规则
+		result = nextResult.filter {
+			matchesScriptExpression(expression, it.expression, configGroup, CwtConfigMatchType.STATIC)
+		}.ifEmpty { nextResult }
+		index = nextIndex
 	}
+	return result.sortedByPriority(configGroup) { it.expression }
 }
 
 /**
  * 根据路径解析对应的子属性配置列表。（过滤重复的）
  */
 private fun resolveChildPropertyConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtPropertyConfig> {
-	if(definitionInfo.declaration.isEmpty()) return emptyList()
+	if(definitionInfo.declaration?.properties.isNullOrEmpty()) return emptyList()
 	//如果路径中可能待遇参数，则不进行解析
 	if(definitionElementInfo.elementPath.isParameterAware) return emptyList()
 	
@@ -166,7 +160,7 @@ private fun doResolveChildPropertyConfigs(definitionInfo: ParadoxDefinitionInfo,
 	val elementPath = definitionElementInfo.elementPath
 	return when {
 		//这里的属性路径可以为空，这时得到的就是顶级属性列表（定义的代码块类型的值中的属性列表）
-		elementPath.isEmpty() -> definitionInfo.declaration.filterIsInstance<CwtPropertyConfig>()
+		elementPath.isEmpty() -> definitionInfo.declaration?.properties.orEmpty()
 		else -> {
 			//打平propertyConfigs中的每一个properties
 			val propertyConfigs = resolveConfigs(definitionInfo, definitionElementInfo, matchType)
@@ -184,7 +178,7 @@ private fun doResolveChildPropertyConfigs(definitionInfo: ParadoxDefinitionInfo,
  * 根据路径解析对应的子值配置列表。（过滤重复的）
  */
 private fun resolveChildValueConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtValueConfig> {
-	if(definitionInfo.declaration.isEmpty()) return emptyList()
+	if(definitionInfo.declaration?.values.isNullOrEmpty()) return emptyList()
 	//如果路径中可能待遇参数，则不进行解析
 	if(definitionElementInfo.elementPath.isParameterAware) return emptyList()
 	
@@ -199,7 +193,7 @@ private fun doResolveChildValueConfigs(definitionInfo: ParadoxDefinitionInfo, de
 	val elementPath = definitionElementInfo.elementPath
 	return when {
 		//这里的属性路径可以为空，这时得到的就是顶级值列表（定义的代码块类型的值中的值列表）
-		elementPath.isEmpty() -> definitionInfo.declaration.filterIsInstance<CwtValueConfig>()
+		elementPath.isEmpty() -> definitionInfo.declaration?.values.orEmpty()
 		else -> {
 			//打平propertyConfigs中的每一个values
 			val propertyConfigs = resolveConfigs(definitionInfo, definitionElementInfo, matchType)
