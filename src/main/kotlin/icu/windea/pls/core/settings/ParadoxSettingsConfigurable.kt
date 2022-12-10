@@ -77,14 +77,14 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						}
 					expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
 						.bindText({ settings.ignoredFileNames.orEmpty() }, { settings.ignoredFileNames = it })
+						.comment(PlsBundle.message("settings.generic.ignoredFileNames.comment"))
+						.horizontalAlign(HorizontalAlign.FILL)
+						.resizableColumn()
 						.onApply {
 							runWriteAction {
 								reparseScriptFiles()
 							}
 						}
-						.comment(PlsBundle.message("settings.generic.ignoredFileNames.comment"))
-						.horizontalAlign(HorizontalAlign.FILL)
-						.resizableColumn()
 				}
 				//preferOverridden
 				row {

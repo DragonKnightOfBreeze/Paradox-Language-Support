@@ -37,6 +37,7 @@ object ParadoxDefinitionHandler {
 		//排除带参数的情况
 		if(element is ParadoxScriptProperty && element.propertyKey.isParameterAwareExpression()) return null
 		
+		ProgressManager.checkCanceled()
 		val project = file.project
 		
 		//首先尝试直接基于stub进行解析
@@ -88,6 +89,7 @@ object ParadoxDefinitionHandler {
 	private fun doResolve(configGroup: CwtConfigGroup, element: ParadoxDefinitionProperty, rootKey: String, path: ParadoxPath, elementPath: ParadoxElementPath): ParadoxDefinitionInfo? {
 		val gameType = configGroup.gameType ?: return null
 		for(typeConfig in configGroup.types.values) {
+			ProgressManager.checkCanceled()
 			if(matchesType(configGroup, typeConfig, element, rootKey, path, elementPath)) {
 				//需要懒加载
 				return ParadoxDefinitionInfo(rootKey, typeConfig, gameType, configGroup, element)
