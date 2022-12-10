@@ -145,7 +145,7 @@ private fun doResolveConfigs(definitionInfo: ParadoxDefinitionInfo, definitionEl
  * 根据路径解析对应的子属性配置列表。（过滤重复的）
  */
 private fun resolveChildPropertyConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtPropertyConfig> {
-	if(definitionInfo.declaration?.properties.isNullOrEmpty()) return emptyList()
+	if(definitionInfo.declaration?.configs.isNullOrEmpty()) return emptyList()
 	//如果路径中可能待遇参数，则不进行解析
 	if(definitionElementInfo.elementPath.isParameterAware) return emptyList()
 	
@@ -178,7 +178,7 @@ private fun doResolveChildPropertyConfigs(definitionInfo: ParadoxDefinitionInfo,
  * 根据路径解析对应的子值配置列表。（过滤重复的）
  */
 private fun resolveChildValueConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtValueConfig> {
-	if(definitionInfo.declaration?.values.isNullOrEmpty()) return emptyList()
+	if(definitionInfo.declaration?.configs.isNullOrEmpty()) return emptyList()
 	//如果路径中可能待遇参数，则不进行解析
 	if(definitionElementInfo.elementPath.isParameterAware) return emptyList()
 	

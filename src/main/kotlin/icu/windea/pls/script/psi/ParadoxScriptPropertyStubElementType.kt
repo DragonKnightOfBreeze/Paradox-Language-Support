@@ -30,7 +30,7 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 	
 	override fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
 		//这里使用scriptProperty.definitionInfo.name而非scriptProperty.name
-		val definitionInfo = psi.definitionInfo?.takeUnless { it.shouldIndex }
+		val definitionInfo = psi.definitionInfo?.takeIf { it.shouldIndex }
 		val name = definitionInfo?.name
 		val type = definitionInfo?.type
 		val subtypes = definitionInfo?.subtypes
@@ -42,7 +42,7 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 	override fun shouldCreateStub(node: ASTNode): Boolean {
 		//仅当是definition时才会创建stub
 		val element = node.psi as? ParadoxDefinitionProperty ?: return false
-		return element.definitionInfo?.takeUnless { it.shouldIndex } != null
+		return element.definitionInfo?.takeIf { it.shouldIndex } != null
 	}
 	
 	override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
