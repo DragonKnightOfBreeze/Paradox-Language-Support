@@ -112,7 +112,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		definition {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.nameText).append(" ")
-				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				append("<b>").append(name.escapeXml().orAnonymous()).append("</b>")
 				//加上类型信息
 				val typeCategory = configType?.category
 				if(typeCategory != null) {
@@ -137,10 +137,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 				val originalName = originalElement.text.unquote()
 				if(prefix != null) append(prefix)
-				append(" <b>").append(originalName.escapeXmlOrAnonymous()).append("</b>")
+				append(" <b>").append(originalName.escapeXml().orAnonymous()).append("</b>")
 				if(showDetail && name != originalName) { //这里不忽略大小写
 					grayed {
-						append(" by ").append(name.escapeXmlOrAnonymous())
+						append(" by ").append(name.escapeXml().orAnonymous())
 					}
 				}
 			}
@@ -154,7 +154,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		definition {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.nameText).append(" ")
-				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				append("<b>").append(name.escapeXml().orAnonymous()).append("</b>")
 				//加上类型信息
 				val typeCategory = configType?.category
 				if(typeCategory != null) {
@@ -179,10 +179,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 				val originalName = originalElement.text.unquote()
 				if(prefix != null) append(prefix)
-				append(" <b>").append(originalName.escapeXmlOrAnonymous()).append("</b>")
+				append(" <b>").append(originalName.escapeXml().orAnonymous()).append("</b>")
 				if(showDetail && name != originalName) { //这里不忽略大小写
 					grayed {
-						append(" by ").append(name.escapeXmlOrAnonymous())
+						append(" by ").append(name.escapeXml().orAnonymous())
 					}
 				}
 			}

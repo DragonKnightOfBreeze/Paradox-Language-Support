@@ -241,7 +241,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上文件信息
 			appendFileInfoHeader(element.fileInfo)
 			//加上定义信息
-			append(PlsDocBundle.message("name.script.scriptedVariable")).append(" <b>@").append(name.escapeXmlOrAnonymous()).append("</b>")
+			append(PlsDocBundle.message("name.script.scriptedVariable")).append(" <b>@").append(name.escapeXml().orAnonymous()).append("</b>")
 			element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 		}
 	}
@@ -251,7 +251,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上文件信息
 			appendFileInfoHeader(element.fileInfo)
 			//加上定义信息
-			append(PlsDocBundle.message("name.script.property")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			append(PlsDocBundle.message("name.script.property")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 			element.value?.let { value -> append(" = ").append(value.escapeXml()) }
 		}
 	}
@@ -281,7 +281,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 			}
-			append(PlsDocBundle.message("name.script.definition")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeLinkText)
+			append(PlsDocBundle.message("name.script.definition")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>: ").append(typeLinkText)
 			
 			//加上相关本地化信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
 			val localisationInfos = definitionInfo.localisation
@@ -391,7 +391,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上复杂枚举值信息
 			val name = complexEnumValueInfo.name
 			val enumName = complexEnumValueInfo.enumName
-			append(PlsDocBundle.message("name.script.complexEnumValue")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			append(PlsDocBundle.message("name.script.complexEnumValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 			if(enumName.isNotEmpty()) {
 				val gameType = complexEnumValueInfo.gameType.orDefault()
 				val configGroup = getCwtConfig(element.project).getValue(gameType)
@@ -410,7 +410,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		definition {
 			//不加上文件信息
 			//加上名字
-			append(PlsDocBundle.message("name.script.parameter")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			append(PlsDocBundle.message("name.script.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 			if(definitionInfo != null) {
 				append(" ")
 				append(PlsDocBundle.message("ofDefinition", definitionInfo))
@@ -422,7 +422,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		definition {
 			//不加上文件信息
 			//加上复杂枚举值信息
-			append(PlsDocBundle.message("name.script.complexEnumValue")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			append(PlsDocBundle.message("name.script.complexEnumValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 			if(enumName.isNotEmpty()) {
 				val gameType = configGroup.gameType
 				val complexEnumConfig = configGroup.complexEnums[enumName]
@@ -440,7 +440,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		definition {
 			//不加上文件信息
 			//加上值集值值的信息
-			append(PlsDocBundle.message("name.cwt.valueSetValue")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			append(PlsDocBundle.message("name.cwt.valueSetValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 			var appendSeparator = false
 			for(valueSetName in valueSetNames) {
 				if(appendSeparator) append(" | ") else appendSeparator = true

@@ -447,7 +447,7 @@ object CwtConfigHandler {
 	//endregion
 	
 	//region Complete Methods
-	fun addRootKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinitionProperty, context: ProcessingContext, result: CompletionResultSet) {
+	fun addRootKeyCompletions(propertyElement: ParadoxDefinitionProperty, context: ProcessingContext, result: CompletionResultSet) {
 		val originalFile = context.originalFile
 		val project = originalFile.project
 		val gameType = ParadoxSelectorUtils.selectGameType(originalFile) ?: return
@@ -463,11 +463,11 @@ object CwtConfigHandler {
 		context.put(PlsCompletionKeys.completionIdsKey, null)
 	}
 	
-	fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinitionProperty, context: ProcessingContext, result: CompletionResultSet) {
+	fun addKeyCompletions(propertyElement: ParadoxDefinitionProperty, context: ProcessingContext, result: CompletionResultSet) {
 		val definitionElementInfo = propertyElement.definitionElementInfo
 		if(definitionElementInfo == null) {
 			//仅提示不在定义声明中的rootKey
-			addRootKeyCompletions(keyElement, propertyElement, context, result)
+			addRootKeyCompletions(propertyElement, context, result)
 			return
 		}
 		val configGroup = definitionElementInfo.configGroup
@@ -495,7 +495,7 @@ object CwtConfigHandler {
 		return
 	}
 	
-	fun addValueCompletions(valueElement: PsiElement, propertyElement: ParadoxDefinitionProperty, context: ProcessingContext, result: CompletionResultSet) {
+	fun addValueCompletions(propertyElement: ParadoxDefinitionProperty, context: ProcessingContext, result: CompletionResultSet) {
 		val definitionElementInfo = propertyElement.definitionElementInfo ?: return
 		val configGroup = definitionElementInfo.configGroup
 		val configs = definitionElementInfo.getConfigs()
@@ -518,7 +518,7 @@ object CwtConfigHandler {
 		return
 	}
 	
-	fun addValueCompletionsInBlock(valueElement: PsiElement, blockElement: ParadoxScriptBlockElement, context: ProcessingContext, result: CompletionResultSet): Boolean {
+	fun addValueCompletionsInBlock(blockElement: ParadoxScriptBlockElement, context: ProcessingContext, result: CompletionResultSet): Boolean {
 		val definitionElementInfo = blockElement.definitionElementInfo ?: return true
 		val configGroup = definitionElementInfo.configGroup
 		val configs = definitionElementInfo.getChildValueConfigs()
@@ -628,7 +628,8 @@ object CwtConfigHandler {
 				icon = PlsIcons.Property,
 				tailText = tailText,
 				typeText = typeFile?.name,
-				typeIcon = typeFile?.icon
+				typeIcon = typeFile?.icon,
+				forceInsertCurlyBraces = tuples.isEmpty()
 			) {
 				this.bold()
 					.withCaseSensitivity(false)
@@ -959,7 +960,7 @@ object CwtConfigHandler {
 	
 	private fun getScriptExpressionTailText(config: CwtConfig<*>?): String? {
 		if(config?.expression == null) return null
-		return " by ${config.expression} in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
+		return " by ${config.expression} in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
 	}
 	
 	fun completeAliasName(aliasName: String, context: ProcessingContext, result: CompletionResultSet, scope: String?): Unit = with(context) {
@@ -1282,7 +1283,7 @@ object CwtConfigHandler {
 		
 		val configExpression = config.expression ?: return@with
 		val valueSetName = configExpression.value ?: return@with
-		val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
+		val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
 		//提示预定义的value
 		run {
 			ProgressManager.checkCanceled()

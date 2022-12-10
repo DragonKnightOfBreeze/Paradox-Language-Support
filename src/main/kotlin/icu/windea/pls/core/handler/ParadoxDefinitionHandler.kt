@@ -16,6 +16,7 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
+import kotlin.contracts.*
 
 /**
  * 用于处理定义信息。
@@ -147,14 +148,12 @@ object ParadoxDefinitionHandler {
 		
 		//判断element的propertyValue是否需要是block
 		val declarationConfig = configGroup.declarations[typeConfig.name]?.propertyConfig
-		if(declarationConfig != null) {
-			val isBlock = element.castOrNull<ParadoxScriptProperty>()?.propertyValue?.let { it is ParadoxScriptBlock }
+		//当进行代码补全时需要特殊处理
+		val isBlock = if(element.getUserData(PlsKeys.incompleteMarkerKey) == true) null
+		else element.castOrNull<ParadoxScriptProperty>()?.propertyValue?.let { it is ParadoxScriptBlock }
+		if(declarationConfig != null && isBlock != null) {
 			val isBlockConfig = declarationConfig.valueExpression == CwtValueExpression.BlockExpression
-			if(isBlockConfig) {
-				if(isBlock == false) return false
-			} else {
-				if(isBlock == true) return false
-			}
+			if(isBlockConfig != isBlock) return false
 		}
 		
 		if(!matchesTypeByPath(typeConfig, path)) return false
@@ -234,17 +233,15 @@ object ParadoxDefinitionHandler {
 	
 	private fun doMatchDefinitionProperty(propertyElement: ParadoxDefinitionProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
 		when {
-			//匹配属性列表
-			!propertyConfig.properties.isNullOrEmpty() -> {
-				val propConfigs = propertyConfig.properties
-				val props = propertyElement.propertyList
-				if(!doMatchProperties(props, propConfigs, configGroup)) return false //继续匹配
-			}
 			//匹配值列表
 			!propertyConfig.values.isNullOrEmpty() -> {
-				val valueConfigs = propertyConfig.values
 				val values = propertyElement.valueList
-				if(!doMatchValues(values, valueConfigs, configGroup)) return false //继续匹配
+				if(!doMatchValues(values, propertyConfig.values.orEmpty(), configGroup)) return false //继续匹配
+			}
+			//匹配属性列表
+			!propertyConfig.properties.isNullOrEmpty() -> {
+				val props = propertyElement.propertyList
+				if(!doMatchProperties(props, propertyConfig.properties.orEmpty(), configGroup)) return false //继续匹配
 			}
 		}
 		return true
@@ -279,13 +276,13 @@ object ParadoxDefinitionHandler {
 				!propertyConfig.properties.isNullOrEmpty() -> {
 					val propConfigs = propertyConfig.properties
 					val props = propertyElement.propertyList
-					if(!doMatchProperties(props, propConfigs, configGroup)) return false //继续匹配
+					if(!doMatchProperties(props, propConfigs.orEmpty(), configGroup)) return false //继续匹配
 				}
 				//匹配值列表
 				!propertyConfig.values.isNullOrEmpty() -> {
 					val valueConfigs = propertyConfig.values
 					val values = propertyElement.valueList
-					if(!doMatchValues(values, valueConfigs, configGroup)) return false //继续匹配
+					if(!doMatchValues(values, valueConfigs.orEmpty(), configGroup)) return false //继续匹配
 				}
 			}
 		}

@@ -6,7 +6,6 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.util.*
 import icons.*
-import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.core.model.*
 
@@ -100,5 +99,6 @@ object PlsKeys {
 		textColorConfigKey
 	)
 	
-	val cwtConfigKey = Key.create<CwtDataConfig<*>>("paradox.cwtConfig")
+	//用于在进行代码补全时标记一个property的propertyValue未填写
+	val incompleteMarkerKey = Key.create<Boolean>("paradox.incompleteMarker")
 }

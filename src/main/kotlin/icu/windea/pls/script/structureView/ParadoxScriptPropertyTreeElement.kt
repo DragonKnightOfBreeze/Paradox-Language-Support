@@ -28,7 +28,7 @@ class ParadoxScriptPropertyTreeElement(element: ParadoxScriptProperty) : PsiTree
 		val element = element ?: return null
 		//如果是定义，则优先显示定义的名字
 		val definitionInfo = element.definitionInfo
-		if(definitionInfo != null) return definitionInfo.name
+		if(definitionInfo != null) return definitionInfo.name.orAnonymous()
 		return element.name
 	}
 	

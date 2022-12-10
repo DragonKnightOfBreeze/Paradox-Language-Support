@@ -255,7 +255,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		definition {
 			//不加上文件信息
 			//加上名字
-			append(PlsDocBundle.message("name.script.parameter")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			append(PlsDocBundle.message("name.script.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 			if(definitionInfo != null) {
 				append(" ")
 				append(PlsDocBundle.message("ofDefinition", definitionInfo))
@@ -268,10 +268,10 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			//不加上文件信息
 			val referenceElement = if(originalElement is LeafPsiElement) originalElement.parent else originalElement
 			if(referenceElement is ParadoxLocalisationStellarisNamePart) {
-				append(PlsDocBundle.message("name.localisation.stellarisNamePart")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				append(PlsDocBundle.message("name.localisation.stellarisNamePart")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 				appendBr()
 			}
-			append(PlsDocBundle.message("name.cwt.valueSetValue")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			append(PlsDocBundle.message("name.cwt.valueSetValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 			var appendSeparator = false
 			for(valueSetName in valueSetNames) {
 				if(appendSeparator) append(" | ") else appendSeparator = true

@@ -56,11 +56,6 @@ class ParadoxDefinitionInfo(
 	val subtypeConfigs: List<CwtSubtypeConfig> by lazy {
 		val subtypesConfig = typeConfig.subtypes
 		val result = SmartList<CwtSubtypeConfig>()
-		//如果定义声明不完整，这里得到的是所有支持的子类型
-		if(incomplete) {
-			result.addAll(subtypesConfig.values)
-			return@lazy result
-		}
 		for(subtypeConfig in subtypesConfig.values) {
 			if(ParadoxDefinitionHandler.matchesSubtype(configGroup, subtypeConfig, element, rootKey, result)) result.add(subtypeConfig)
 		}

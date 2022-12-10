@@ -45,7 +45,7 @@ class ParadoxScriptAnnotator : Annotator {
 			//如果存在，高亮定义名对应的字符串（可能还有其他高亮）（这里不能使用PSI链接）
 			val nameElement = element.findDefinitionProperty(nameField, true)?.findValue<ParadoxScriptString>()
 			if(nameElement != null) {
-				val nameString = definitionInfo.name.escapeXmlOrAnonymous()
+				val nameString = definitionInfo.name.escapeXml().orAnonymous()
 				val typesString = definitionInfo.typesText
 				val tooltip = PlsBundle.message("script.annotator.definitionName", nameString, typesString)
 				holder.newSilentAnnotation(INFORMATION).range(nameElement)
@@ -58,7 +58,7 @@ class ParadoxScriptAnnotator : Annotator {
 	
 	private fun annotateComplexEnumValue(element: ParadoxScriptStringExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
 		//高亮复杂枚举名对应的字符串（可能还有其他高亮）（这里不能使用PSI链接）
-		val nameString = complexEnumValueInfo.name.escapeXmlOrAnonymous()
+		val nameString = complexEnumValueInfo.name.escapeXml().orAnonymous()
 		val enumNameString = complexEnumValueInfo.enumName
 		val tooltip = PlsBundle.message("script.annotator.complexEnumValueName", nameString, enumNameString)
 		holder.newSilentAnnotation(INFORMATION).range(element)

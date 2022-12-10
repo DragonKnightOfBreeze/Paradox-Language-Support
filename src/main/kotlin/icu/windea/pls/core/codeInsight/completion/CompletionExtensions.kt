@@ -55,7 +55,7 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 	val config = context.config
 	
 	run {
-		val lookupElement = LookupElementBuilder.create("").bold()
+		val lookupElement = LookupElementBuilder.create("")
 			.withPresentableText("{...}")
 			.withInsertHandler { c, _ ->
 				val editor = c.editor
@@ -73,8 +73,8 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 	if(completeWithClauseTemplate) {
 		val props = config?.castOrNull<CwtValueConfig>()?.properties
 		if(props != null && props.isNotEmpty()) {
-			val lookupElement = LookupElementBuilder.create("").bold()
-				.withTailText("{ <generate via template> }")
+			val lookupElement = LookupElementBuilder.create("")
+				.withPresentableText("{ <generate via template> }")
 			addScriptExpressionElementWithClauseTemplate(lookupElement, context, props, false) {
 				withPriority(PlsCompletionPriorities.keywordPriority - 1) //under "{...}"
 			}
@@ -90,6 +90,7 @@ fun CompletionResultSet.addScriptExpressionElement(
     tailText: String? = null,
     typeText: String? = null,
     typeIcon: Icon? = null,
+	forceInsertCurlyBraces: Boolean = false,
     builder: LookupElementBuilder.() -> LookupElement = { this }
 ) {
 	val config = context.config
@@ -164,7 +165,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 		val props = propertyConfig?.properties
 		if(props != null && props.isNotEmpty()) {
 			val finalResultTailText = buildString {
-				append(" = {...}")
+				append(" = { <generate via template> }")
 				if(tailText != null) append(tailText)
 			}
 			val resultLookupElement = lookupElement

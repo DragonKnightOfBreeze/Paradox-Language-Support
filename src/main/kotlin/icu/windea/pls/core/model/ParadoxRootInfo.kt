@@ -61,7 +61,7 @@ class ParadoxRootInfo(
 					}
 					true
 				}
-				val nameToUse = name ?: descriptorFile.parent?.name ?: PlsConstants.anonymousString //如果没有name属性，则使用根目录名
+				val nameToUse = name ?: descriptorFile.parent?.name.orAnonymous() //如果没有name属性，则使用根目录名
 				ParadoxDescriptorInfo(nameToUse, version, picture, tags, supportedVersion, remoteFileId, path, isModDescriptor = true)
 			}
 			

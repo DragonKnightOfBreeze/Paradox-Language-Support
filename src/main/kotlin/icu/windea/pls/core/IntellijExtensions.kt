@@ -152,7 +152,7 @@ inline fun StringBuilder.grayed(block: StringBuilder.() -> Unit): StringBuilder 
 
 fun String.escapeXml() = if(this.isEmpty()) "" else StringUtil.escapeXmlEntities(this)
 
-fun String.escapeXmlOrAnonymous() = if(this.isEmpty()) PlsConstants.anonymousString else StringUtil.escapeXmlEntities(this)
+fun String?.orAnonymous() = if (isNullOrEmpty()) PlsConstants.anonymousString else this
 
 fun String.escapeBlank(): String {
 	var builder: StringBuilder? = null
