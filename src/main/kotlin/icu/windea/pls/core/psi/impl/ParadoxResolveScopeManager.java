@@ -27,7 +27,7 @@ import static com.intellij.psi.impl.PsiManagerImpl.ANY_PSI_CHANGE_TOPIC;
 
 /**
  * 默认情况下，无法从项目文件中的声明导航到库中的引用，除非对应的库已导出，
- * 这里覆盖了默认的实现逻辑，当必要时，得到的使用作用域也包含模块的依赖中的文件。
+ * 这里覆盖了默认的实现逻辑，当必要时，得到的使用作用域也包含模块的依赖中的文件
  * <p>
  * （见<code>Project Structure > Project Settings > Modules</code>）
  */

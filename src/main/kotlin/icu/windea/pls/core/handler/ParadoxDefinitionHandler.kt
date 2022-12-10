@@ -24,6 +24,7 @@ import kotlin.contracts.*
 object ParadoxDefinitionHandler {
 	@JvmStatic
 	fun getInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
+		ProgressManager.checkCanceled()
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfoKey) {
 			val file = element.containingFile
 			val value = resolve(element, file)
@@ -44,7 +45,6 @@ object ParadoxDefinitionHandler {
 			return resolveByStub(element, stub, project)
 		}
 		
-		ProgressManager.checkCanceled()
 		val fileInfo = file.fileInfo
 		//当无法获取fileInfo时，尝试基于上一行的特殊注释（指定游戏类型和定义类型）、脚本文件开始的特殊注释（指定游戏类型、文件路径）进行解析
 		if(fileInfo == null) {

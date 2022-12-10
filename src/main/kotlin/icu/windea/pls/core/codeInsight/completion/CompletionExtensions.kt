@@ -55,16 +55,7 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 	val config = context.config
 	
 	run {
-		val lookupElement = LookupElementBuilder.create("")
-			.withPresentableText("{...}")
-			.withInsertHandler { c, _ ->
-				val editor = c.editor
-				val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
-				val text = if(customSettings.SPACE_WITHIN_BRACES) "{  }" else "{}"
-				val length = if(customSettings.SPACE_WITHIN_BRACES) text.length - 2 else text.length - 1
-				EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
-			}
-			.withPriority(PlsCompletionPriorities.keywordPriority)
+		val lookupElement = PlsLookupElements.blockLookupElement
 		addElement(lookupElement)
 	}
 	
@@ -102,8 +93,15 @@ fun CompletionResultSet.addScriptExpressionElement(
 		config is CwtSingleAliasConfig -> config.config
 		else -> null
 	}
-	val constantValue = if(completeWithValue) propertyConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.value else null
-	val insertCurlyBraces = if(completeWithValue) propertyConfig?.isBlock ?: false else false
+	val constantValue = when {
+		completeWithValue -> propertyConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.value
+		else -> null
+	}
+	val insertCurlyBraces = when {
+		forceInsertCurlyBraces -> true
+		completeWithValue -> propertyConfig?.isBlock ?: false
+		else -> false
+	}
 	//这里ID不一定等同于lookupString
 	val id = when {
 		constantValue != null -> "$lookupString = $constantValue"

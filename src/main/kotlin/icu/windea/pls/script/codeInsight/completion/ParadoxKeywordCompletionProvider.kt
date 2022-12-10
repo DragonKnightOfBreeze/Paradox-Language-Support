@@ -7,9 +7,9 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 提供布尔值的代码补全（在定义声明中不为属性或者块中的值提供）。
+ * 提供关键字（布尔值或子句）的代码补全（不在定义声明中提供）。
  */
-class ParadoxBooleanCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val position = parameters.position
 		val stringElement = position.parent?.castOrNull<ParadoxScriptString>()
@@ -19,5 +19,6 @@ class ParadoxBooleanCompletionProvider : CompletionProvider<CompletionParameters
 		
 		result.addElement(PlsLookupElements.yesLookupElement)
 		result.addElement(PlsLookupElements.noLookupElement)
+		result.addElement(PlsLookupElements.blockLookupElement)
 	}
 }
