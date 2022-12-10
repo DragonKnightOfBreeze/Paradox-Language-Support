@@ -37,7 +37,7 @@ object ParadoxStellarisNameFormatKeyIndex : FileBasedIndexExtension<String, Stri
 					val configs = ParadoxCwtConfigHandler.resolveConfigs(element, matchType = matchType)
 					val config = configs.firstOrNull() ?: return
 					val configExpression = config.expression
-					if(configExpression.type != CwtDataTypes.Localisation || configExpression.extraValue != CwtDataTypeAlias.StellarisNameFormat) return
+					if(configExpression.type != CwtDataTypes.StellarisNameFormat) return
 					val valueSetName = configExpression.value ?: return
 					put(element.value, valueSetName)
 				}

@@ -1,5 +1,8 @@
 package icu.windea.pls.config.cwt.expression
 
+import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.model.*
+
 sealed interface CwtDataType
 
 sealed interface CwtKeyDataType : CwtDataType
@@ -41,9 +44,7 @@ object CwtDataTypes {
 	object ConstantKey : CwtKeyDataType
 	object Constant : CwtValueDataType
 	object Other : CwtKeyDataType, CwtValueDataType
-}
-
-enum class CwtDataTypeAlias {
-	//for stellaris
-	StellarisNameFormat
+	
+	@WithGameType(ParadoxGameType.Stellaris)
+	object StellarisNameFormat: CwtValueDataType
 }

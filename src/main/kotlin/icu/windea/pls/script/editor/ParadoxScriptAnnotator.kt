@@ -109,13 +109,6 @@ class ParadoxScriptAnnotator : Annotator {
 		val text = rangeInElement?.substring(element.text) ?: element.text
 		val isKey = element is ParadoxScriptPropertyKey
 		when(configExpression.type) {
-			CwtDataTypes.InlineLocalisation -> {
-				if(!element.text.isLeftQuoted()) {
-					if(text.isParameterAwareExpression()) return
-					val attributesKey = Keys.LOCALISATION_REFERENCE_KEY
-					holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
-				}
-			}
 			CwtDataTypes.Localisation -> {
 				if(text.isParameterAwareExpression()) return
 				val attributesKey = Keys.LOCALISATION_REFERENCE_KEY
@@ -125,6 +118,20 @@ class ParadoxScriptAnnotator : Annotator {
 				if(text.isParameterAwareExpression()) return
 				val attributesKey = Keys.SYNCED_LOCALISATION_REFERENCE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
+			}
+			CwtDataTypes.InlineLocalisation -> {
+				if(!element.text.isLeftQuoted()) {
+					if(text.isParameterAwareExpression()) return
+					val attributesKey = Keys.LOCALISATION_REFERENCE_KEY
+					holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
+				}
+			}
+			CwtDataTypes.StellarisNameFormat -> {
+				if(!element.text.isLeftQuoted()) {
+					if(text.isParameterAwareExpression()) return
+					val attributesKey = Keys.LOCALISATION_REFERENCE_KEY
+					holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
+				}
 			}
 			CwtDataTypes.TypeExpression -> {
 				if(text.isParameterAwareExpression()) return

@@ -73,7 +73,7 @@ class CwtValueExpression private constructor(
 			//for stellaris
 			expressionString.surroundsWith("stellaris_name_format[", "]") -> {
 				val value = expressionString.substring(22, expressionString.length - 1)
-				CwtValueExpression(expressionString, Types.Localisation, value, CwtDataTypeAlias.StellarisNameFormat)
+				CwtValueExpression(expressionString, Types.StellarisNameFormat, value)
 			}
 			//EXTENDED BY PLS
 			expressionString == "abs_filepath" -> {

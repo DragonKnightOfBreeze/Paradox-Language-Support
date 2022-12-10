@@ -39,6 +39,7 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 			CwtDataTypes.Localisation,
 			CwtDataTypes.InlineLocalisation,
 			CwtDataTypes.SyncedLocalisation,
+			CwtDataTypes.StellarisNameFormat,
 			CwtDataTypes.SingleAliasRight, //需要兼容single_alias
 			CwtDataTypes.AliasKeysField, //需要兼容alias
 			CwtDataTypes.AliasMatchLeft //需要兼容alias

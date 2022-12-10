@@ -53,10 +53,6 @@ class CwtKeyExpression private constructor(
 			expressionString == "localisation_inline" -> {
 				CwtKeyExpression(expressionString, Types.InlineLocalisation)
 			}
-			expressionString.surroundsWith("stellaris_name_format[", "]") -> {
-				val value = expressionString.substring(22, expressionString.length - 1)
-				CwtKeyExpression(expressionString, Types.Localisation, value, CwtDataTypeAlias.StellarisNameFormat)
-			}
 			expressionString.surroundsWith('<', '>') -> {
 				val value = expressionString.substring(1, expressionString.length - 1)
 				CwtKeyExpression(expressionString, Types.TypeExpression, value)

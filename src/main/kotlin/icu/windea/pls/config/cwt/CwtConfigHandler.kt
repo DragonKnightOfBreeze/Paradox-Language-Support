@@ -208,6 +208,17 @@ object CwtConfigHandler {
 				}
 				return true
 			}
+			CwtDataTypes.StellarisNameFormat -> {
+				if(!expression.type.isStringType()) return false
+				if(expression.quoted) return true //"quoted_string" -> specific expression
+				if(isStatic) return false
+				if(isParameterAware) return true
+				if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
+					val selector = localisationSelector().gameType(gameType)
+					return findLocalisation(expression.text, project, preferFirst = true, selector = selector) != null
+				}
+				return true
+			}
 			CwtDataTypes.AbsoluteFilePath -> {
 				if(!expression.type.isStringType()) return false
 				if(isStatic) return false
@@ -413,6 +424,7 @@ object CwtConfigHandler {
 			CwtDataTypes.Localisation -> 50
 			CwtDataTypes.SyncedLocalisation -> 50
 			CwtDataTypes.InlineLocalisation -> 50
+			CwtDataTypes.StellarisNameFormat -> 50
 			CwtDataTypes.AbsoluteFilePath -> 70
 			CwtDataTypes.FilePath -> 70
 			CwtDataTypes.Icon -> 70
@@ -1480,10 +1492,16 @@ object CwtConfigHandler {
 				return findSyncedLocalisation(name, project, selector = selector)
 			}
 			CwtDataTypes.InlineLocalisation -> {
-				if(element.text.isLeftQuoted()) return null
+				if(element.text.isLeftQuoted()) return null //inline string
 				val name = expression
 				val selector = localisationSelector().gameType(gameType).preferRootFrom(element, exact).preferLocale(preferredParadoxLocale(), exact)
 				return findLocalisation(name, project, selector = selector)
+			}
+			CwtDataTypes.StellarisNameFormat -> {
+				if(element.text.isLeftQuoted()) return null //specific expression
+				val name = expression
+				val selector = localisationSelector().gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
+				return findLocalisation(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
 			}
 			CwtDataTypes.AbsoluteFilePath -> {
 				val filePath = expression
@@ -1623,7 +1641,13 @@ object CwtConfigHandler {
 				return findSyncedLocalisations(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
 			}
 			CwtDataTypes.InlineLocalisation -> {
-				if(element.text.isLeftQuoted()) return emptyList()
+				if(element.text.isLeftQuoted()) return emptyList() //inline string
+				val name = expression
+				val selector = localisationSelector().gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
+				return findLocalisations(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
+			}
+			CwtDataTypes.StellarisNameFormat -> {
+				if(element.text.isLeftQuoted()) return emptyList() //specific expression
 				val name = expression
 				val selector = localisationSelector().gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
 				return findLocalisations(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
