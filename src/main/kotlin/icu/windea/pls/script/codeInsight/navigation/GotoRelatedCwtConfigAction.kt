@@ -35,11 +35,7 @@ class GotoRelatedCwtConfigAction : BaseCodeInsightAction() {
 				return
 			}
 			val definition = element.findParentDefinition()
-			if(definition == null || (element is ParadoxScriptPropertyKey && element.parent == definition)) {
-				presentation.isEnabled = false
-				return
-			}
-			presentation.isEnabled = true
+			presentation.isEnabled = definition != null
 		} else {
 			presentation.isEnabledAndVisible = false
 		}

@@ -80,9 +80,10 @@ private val childValueConfigCache: Cache<String, List<CwtValueConfig>> by lazy {
  * 根据路径解析对应的属性/值配置列表。
  */
 private fun resolveConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtDataConfig<*>> {
+	val elementPath = definitionElementInfo.elementPath
+	if(elementPath.isParameterAware) return emptyList() //如果路径中可能带有参数，则不进行解析
+	
 	if(definitionInfo.declaration.isEmpty()) return emptyList()
-	//如果路径中可能待遇参数，则不进行解析
-	if(definitionElementInfo.elementPath.isParameterAware) return emptyList()
 	
 	val cacheKey = "${definitionInfo.typesText}:${definitionElementInfo.elementPath}:$matchType"
 	return configsCache.getOrPut(cacheKey, { emptyList() }) {
@@ -92,16 +93,16 @@ private fun resolveConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElem
 
 
 private fun doResolveConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtDataConfig<*>> {
-	val path = definitionElementInfo.elementPath
+	val elementPath = definitionElementInfo.elementPath
 	val configGroup = definitionElementInfo.configGroup
 	return when {
-		//这里的属性路径可以为空，这时得到的属性列表即是定义本身组成的单例列表
-		path.isEmpty() -> definitionInfo.declarationConfig?.propertyConfigSingletonList.orEmpty()
+		//这里的属性路径可以为空
+		elementPath.isEmpty() -> definitionInfo.declarationConfig?.propertyConfigSingletonList.orEmpty()
 		else -> {
 			var result: List<CwtDataConfig<*>> = definitionInfo.declaration
 			var index = 0
-			while(index < path.length) {
-				val (key, isQuoted, isKey) = path.subPathInfos[index]
+			while(index < elementPath.length) {
+				val (key, isQuoted, isKey) = elementPath.subPathInfos[index]
 				var nextIndex = index + 1
 				
 				//如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
@@ -162,10 +163,10 @@ private fun resolveChildPropertyConfigs(definitionInfo: ParadoxDefinitionInfo, d
 }
 
 private fun doResolveChildPropertyConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtPropertyConfig> {
-	val path = definitionElementInfo.elementPath
+	val elementPath = definitionElementInfo.elementPath
 	return when {
 		//这里的属性路径可以为空，这时得到的就是顶级属性列表（定义的代码块类型的值中的属性列表）
-		path.isEmpty() -> definitionInfo.declaration.filterIsInstance<CwtPropertyConfig>()
+		elementPath.isEmpty() -> definitionInfo.declaration.filterIsInstance<CwtPropertyConfig>()
 		else -> {
 			//打平propertyConfigs中的每一个properties
 			val propertyConfigs = resolveConfigs(definitionInfo, definitionElementInfo, matchType)
@@ -195,10 +196,10 @@ private fun resolveChildValueConfigs(definitionInfo: ParadoxDefinitionInfo, defi
 }
 
 private fun doResolveChildValueConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtValueConfig> {
-	val path = definitionElementInfo.elementPath
+	val elementPath = definitionElementInfo.elementPath
 	return when {
 		//这里的属性路径可以为空，这时得到的就是顶级值列表（定义的代码块类型的值中的值列表）
-		path.isEmpty() -> definitionInfo.declaration.filterIsInstance<CwtValueConfig>()
+		elementPath.isEmpty() -> definitionInfo.declaration.filterIsInstance<CwtValueConfig>()
 		else -> {
 			//打平propertyConfigs中的每一个values
 			val propertyConfigs = resolveConfigs(definitionInfo, definitionElementInfo, matchType)
