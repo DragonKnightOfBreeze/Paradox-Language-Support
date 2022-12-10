@@ -471,13 +471,6 @@ class DdsEditorUI(
 			return editor?.file
 		} else if(CommonDataKeys.VIRTUAL_FILE_ARRAY.`is`(dataId)) {
 			return if(editor != null) arrayOf(editor.file) else VirtualFile.EMPTY_ARRAY
-		} else if(CommonDataKeys.PSI_FILE.`is`(dataId)) {
-			return findPsiFile()
-		} else if(CommonDataKeys.PSI_ELEMENT.`is`(dataId)) {
-			return findPsiFile()
-		} else if(LangDataKeys.PSI_ELEMENT_ARRAY.`is`(dataId)) {
-			val psi: PsiElement? = findPsiFile()
-			return psi?.let { arrayOf(it) } ?: PsiElement.EMPTY_ARRAY
 		} else if(PlatformDataKeys.COPY_PROVIDER.`is`(dataId)) {
 			return this
 		} else if(PlatformDataKeys.CUT_PROVIDER.`is`(dataId) && copyPasteSupport != null) {
@@ -486,6 +479,20 @@ class DdsEditorUI(
 			return deleteProvider
 		} else if(ImageComponentDecorator.DATA_KEY.`is`(dataId)) {
 			return editor ?: this
+		} else if(PlatformCoreDataKeys.BGT_DATA_PROVIDER.`is`(dataId)) {
+			return DataProvider { slowId: String -> getSlowData(slowId) }
+		}
+		return null
+	}
+	
+	private fun getSlowData(dataId: String): Any? {
+		if(CommonDataKeys.PSI_FILE.`is`(dataId)) {
+			return findPsiFile()
+		} else if(CommonDataKeys.PSI_ELEMENT.`is`(dataId)) {
+			return findPsiFile()
+		} else if(PlatformCoreDataKeys.PSI_ELEMENT_ARRAY.`is`(dataId)) {
+			val psi: PsiElement? = findPsiFile()
+			return if(psi != null) arrayOf(psi) else PsiElement.EMPTY_ARRAY
 		}
 		return null
 	}

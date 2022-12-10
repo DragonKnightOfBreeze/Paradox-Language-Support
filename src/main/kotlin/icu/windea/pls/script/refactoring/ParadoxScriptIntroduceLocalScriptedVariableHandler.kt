@@ -50,14 +50,14 @@ object ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactor
 			PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document) //提交文档更改
 			
 			val startAction = StartMarkAction.start(editor, project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"))
-			val builder = TemplateBuilderFactory.getInstance().createTemplateBuilder(file)
+			val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(file)
 			val variableNameId = newVariable.scriptedVariableName.variableNameId
-			builder.replaceElement(variableNameId, "variableName", TextExpression(variableNameId.text), true)
-			builder.replaceElement(variableReferenceId, "variableReference", "variableName", false)
+			templateBuilder.replaceElement(variableNameId, "variableName", TextExpression(variableNameId.text), true)
+			templateBuilder.replaceElement(variableReferenceId, "variableReference", "variableName", false)
 			val caretMarker = editor.document.createRangeMarker(0, editor.caretModel.offset)
 			caretMarker.isGreedyToRight = true
 			editor.caretModel.moveToOffset(0)
-			val template = builder.buildInlineTemplate()
+			val template = templateBuilder.buildInlineTemplate()
 			TemplateManager.getInstance(project).startTemplate(editor, template, TemplateEditingFinishedListener { _, _ ->
 				try {
 					//回到原来的光标位置

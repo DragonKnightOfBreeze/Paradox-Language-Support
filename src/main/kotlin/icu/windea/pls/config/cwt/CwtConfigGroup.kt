@@ -47,6 +47,8 @@ interface CwtConfigGroup {
 	val singleAliases: Map<String, List<CwtSingleAliasConfig>>
 	//同名的alias可以有多个
 	val aliasGroups: Map<String, Map<String, List<CwtAliasConfig>>>
+	
+	
 	val declarations: Map<String, CwtDeclarationConfig>
 	
 	//目前版本的CWT配置已经不再使用

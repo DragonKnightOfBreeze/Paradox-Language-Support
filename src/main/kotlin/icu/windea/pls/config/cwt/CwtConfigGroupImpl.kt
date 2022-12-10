@@ -406,7 +406,6 @@ class CwtConfigGroupImpl(
 	}
 	
 	private fun resolveTypeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtTypeConfig {
-		var block = true
 		var path: String? = null
 		var pathStrict = false
 		var pathFile: String? = null
@@ -429,8 +428,6 @@ class CwtConfigGroupImpl(
 			for(prop in props) {
 				val key = prop.key
 				when(key) {
-					//定义的值是否需要为代码块，默认为是
-					"block" -> block = prop.booleanValue ?: continue //EXTENDED BY PLS
 					//这里的path会以"game/"开始，需要忽略
 					"path" -> path = prop.stringValue?.removePrefix("game")?.trimStart('/') ?: continue
 					"path_strict" -> pathStrict = prop.booleanValue ?: continue
@@ -525,7 +522,7 @@ class CwtConfigGroupImpl(
 		
 		return CwtTypeConfig(
 			propertyConfig.pointer, propertyConfig.info, name,
-			block, path, pathStrict, pathFile, pathExtension,
+			path, pathStrict, pathFile, pathExtension,
 			nameField, nameFromFile, typePerFile, unique, severity, skipRootKey,
 			typeKeyFilter, startsWith, graphRelatedTypes, subtypes,
 			localisation, images

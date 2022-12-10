@@ -69,17 +69,15 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 	}
 	
 	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
-	val file = context.originalFile
-	val props = config?.castOrNull<CwtValueConfig>()?.properties
 	val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
-	if(completeWithClauseTemplate && file != null && props != null && props.isNotEmpty()) {
-		val lookupElement = LookupElementBuilder.create("").bold()
-			.withPresentableText("{ <generate via template> }")
-			.withInsertHandler { c, _ ->
-				startClauseTemplate(context, c.editor, file, props, false)
+	if(completeWithClauseTemplate) {
+		val props = config?.castOrNull<CwtValueConfig>()?.properties
+		if(props != null && props.isNotEmpty()) {
+			val lookupElement = LookupElementBuilder.create("").bold()
+			addScriptExpressionElementWithClauseTemplate(lookupElement, context, props, false) {
+				withPriority(PlsCompletionPriorities.keywordPriority - 1) //under "{...}"
 			}
-			.withPriority(PlsCompletionPriorities.keywordPriority - 1) //under "{...}"
-		addElement(lookupElement)
+		}
 	}
 }
 
@@ -157,15 +155,12 @@ fun CompletionResultSet.addScriptExpressionElement(
 	}
 	
 	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
-	val file = context.originalFile
-	val props = propertyConfig?.properties
 	val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
-	if(context.isKey == true && completeWithClauseTemplate && file != null && props != null && props.isNotEmpty()) {
-		lookupElement = lookupElement.withTailText(" = { <generate via template> }")
-		val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
-			startClauseTemplate(context, c.editor, file, props, true)
+	if(context.isKey == true && completeWithClauseTemplate) {
+		val props = propertyConfig?.properties
+		if(props != null && props.isNotEmpty()) {
+			addScriptExpressionElementWithClauseTemplate(lookupElement, context, props, true, builder)
 		}
-		addElement(resultLookupElement.builder())
 	}
 }
 
@@ -184,74 +179,88 @@ private fun skipOrInsertRightQuote(context: ProcessingContext, editor: Editor) {
 }
 
 @Suppress("UnstableApiUsage")
-private fun startClauseTemplate(context:ProcessingContext, editor: Editor, file: PsiFile, props: List<CwtPropertyConfig>, insertEq: Boolean) {
-	val project = file.project
-	val customSettings = CodeStyle.getCustomSettings(file, ParadoxScriptCodeStyleSettings::class.java)
-	
+fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
+	lookupElement: LookupElementBuilder,
+	context: ProcessingContext,
+	props: List<CwtPropertyConfig>,
+	insertEq: Boolean,
+	builder: LookupElementBuilder.() -> LookupElement = { this }
+) {
+	val file = context.originalFile ?: return
 	val propsToCheck = props
 		.distinctBy { it.key.lowercase() }
 	val propsToInsert = props
 		.filter { it.keyExpression.type == CwtDataTypes.ConstantKey }
 		.distinctBy { it.key.lowercase() }
 	if(propsToInsert.isEmpty()) return
-	val multiline = propsToInsert.size > getSettings().completion.maxExpressionCountInOneLine
-	val hasRemain = propsToCheck.size != propsToInsert.size
-	val separator = if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "="
-	val constantValuePropertyKeys = mutableSetOf<String>()
 	
-	val documentManager = PsiDocumentManager.getInstance(project)
-	val command = Runnable {
-		skipOrInsertRightQuote(context, editor)
-		val text = if(insertEq) separator + "v" else "v"
-		EditorModificationUtil.insertStringAtCaret(editor, text, false, true)
-		documentManager.commitDocument(editor.document)
-		val offset = editor.caretModel.offset
-		
-		val elementAtCaret = file.findElementAt(offset - 1)?.parent as ParadoxScriptString
-		val clauseText = buildString {
-			append("{")
-			if(multiline) append("\n")
-			for(prop in propsToInsert) {
-				append(prop.key).append(separator)
-				if(prop.valueExpression.type ==CwtDataTypes.Constant) {
-					constantValuePropertyKeys.add(prop.key)
-					append(prop.value)
-				} else {
-					append("v")
+	val tailText = if(insertEq) " = { <generate via template> }" else "{ <generate via template> }"
+	val resultLookupElement = lookupElement
+		.withTailText(tailText)
+		.withInsertHandler { c, _ ->
+			val editor = c.editor
+			val project = file.project
+			val customSettings = CodeStyle.getCustomSettings(file, ParadoxScriptCodeStyleSettings::class.java)
+			
+			val multiline = propsToInsert.size > getSettings().completion.maxExpressionCountInOneLine
+			val hasRemain = propsToCheck.size != propsToInsert.size
+			val separator = if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "="
+			val constantValuePropertyKeys = mutableSetOf<String>()
+			
+			val documentManager = PsiDocumentManager.getInstance(project)
+			val command = Runnable {
+				skipOrInsertRightQuote(context, editor)
+				val text = if(insertEq) separator + "v" else "v"
+				EditorModificationUtil.insertStringAtCaret(editor, text, false, true)
+				documentManager.commitDocument(editor.document)
+				val offset = editor.caretModel.offset
+				
+				val elementAtCaret = file.findElementAt(offset - 1)?.parent as ParadoxScriptString
+				val clauseText = buildString {
+					append("{")
+					if(multiline) append("\n")
+					for(prop in propsToInsert) {
+						append(prop.key).append(separator)
+						if(prop.valueExpression.type ==CwtDataTypes.Constant) {
+							constantValuePropertyKeys.add(prop.key)
+							append(prop.value)
+						} else {
+							append("v")
+						}
+						if(multiline) append("\n") else append(" ")
+					}
+					append("}")
 				}
-				if(multiline) append("\n") else append(" ")
-			}
-			if(multiline) append("\n")
-			append("}")
-		}
-		val clauseElement = ParadoxScriptElementFactory.createValue(project, clauseText)
-		val element = elementAtCaret.replace(clauseElement) as ParadoxScriptBlock
-		documentManager.doPostponedOperationsAndUnblockDocument(editor.document) //提交文档更改
-		
-		val startAction = StartMarkAction.start(editor, project, "script.command.expandClauseTemplate.name")
-		val builder = TemplateBuilderFactory.getInstance().createTemplateBuilder(element)
-		element.processProperty { p ->
-			val name = p.name
-			if(name in constantValuePropertyKeys) return@processProperty true
-			builder.replaceElement(p.propertyValue!!, name, TextExpression(""), true)
-			true
-		}
-		val textRange = element.textRange
-		val caretMarker = editor.document.createRangeMarker(textRange.startOffset, textRange.endOffset)
-		caretMarker.isGreedyToRight = true
-		editor.caretModel.moveToOffset(textRange.startOffset)
-		val template = builder.buildInlineTemplate()
-		TemplateManager.getInstance(project).startTemplate(editor, template, TemplateEditingFinishedListener { _, _ ->
-			try {
-				//如果从句中没有其他可能的元素，将光标移到子句之后的位置
-				if(!hasRemain) {
-					editor.caretModel.moveToOffset(caretMarker.endOffset)
+				val clauseElement = ParadoxScriptElementFactory.createValue(project, clauseText)
+				val element = elementAtCaret.replace(clauseElement) as ParadoxScriptBlock
+				documentManager.doPostponedOperationsAndUnblockDocument(editor.document) //提交文档更改
+				
+				val startAction = StartMarkAction.start(editor, project, "script.command.expandClauseTemplate.name")
+				val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(element)
+				element.processProperty { p ->
+					val name = p.name
+					if(name in constantValuePropertyKeys) return@processProperty true
+					templateBuilder.replaceElement(p.propertyValue!!, name, TextExpression(""), true)
+					true
 				}
-				editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
-			} finally {
-				FinishMarkAction.finish(project, editor, startAction)
+				val textRange = element.textRange
+				val caretMarker = editor.document.createRangeMarker(textRange.startOffset, textRange.endOffset)
+				caretMarker.isGreedyToRight = true
+				editor.caretModel.moveToOffset(textRange.startOffset)
+				val template = templateBuilder.buildInlineTemplate()
+				TemplateManager.getInstance(project).startTemplate(editor, template, TemplateEditingFinishedListener { _, _ ->
+					try {
+						//如果从句中没有其他可能的元素，将光标移到子句之后的位置
+						if(!hasRemain) {
+							editor.caretModel.moveToOffset(caretMarker.endOffset)
+						}
+						editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
+					} finally {
+						FinishMarkAction.finish(project, editor, startAction)
+					}
+				})
 			}
-		})
-	}
-	WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.expandClauseTemplate.name"), null, command, file)
+			WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.expandClauseTemplate.name"), null, command, file)
+		}
+	addElement(resultLookupElement.builder())
 }

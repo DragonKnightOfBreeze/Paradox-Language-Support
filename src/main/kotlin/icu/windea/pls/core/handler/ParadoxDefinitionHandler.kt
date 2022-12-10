@@ -113,12 +113,6 @@ object ParadoxDefinitionHandler {
 		path: ParadoxPath,
 		elementPath: ParadoxElementPath
 	): Boolean {
-		//判断element.value是否需要是block
-		val blockConfig = typeConfig.block
-		val elementBlock = element.block
-		if(blockConfig) {
-			if(elementBlock == null) return false
-		}
 		//判断element是否需要是scriptFile还是scriptProperty
 		val nameFromFileConfig = typeConfig.nameFromFile
 		if(nameFromFileConfig) {
@@ -164,10 +158,6 @@ object ParadoxDefinitionHandler {
 		if(!typeKeyFilterConfig.isNullOrEmpty()) {
 			val filterResult = typeKeyFilterConfig.contains(rootKey)
 			if(!filterResult) return false
-		}
-		//到这里再次处理block为false的情况
-		if(!blockConfig) {
-			return elementBlock == null
 		}
 		return true
 	}

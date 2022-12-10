@@ -40,4 +40,3 @@ data class CwtDeclarationConfig(
 		}
 	}
 }
-

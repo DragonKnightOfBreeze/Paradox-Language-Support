@@ -19,6 +19,7 @@ import java.util.*
  * @property name 定义的名字。如果是空字符串，则表示定义是匿名的。（注意：不一定与定义的顶级键名相同，例如，可能来自某个属性的值）
  * @property rootKey 定义的顶级键名。（注意：不一定是定义的名字）
  * @property sourceType 此定义信息来自哪种解析方式。
+ * @property incomplete 此定义的声明是否不完整。
  */
 class ParadoxDefinitionInfo(
 	val rootKey: String,
@@ -30,6 +31,8 @@ class ParadoxDefinitionInfo(
 	enum class SourceType { Default, Stub, PathComment, TypeComment }
 	
 	var sourceType: SourceType = SourceType.Default
+	
+	val incomplete = element is ParadoxScriptProperty && element.propertyValue == null
 	
 	val type: String = typeConfig.name
 	
@@ -53,6 +56,11 @@ class ParadoxDefinitionInfo(
 	val subtypeConfigs: List<CwtSubtypeConfig> by lazy {
 		val subtypesConfig = typeConfig.subtypes
 		val result = SmartList<CwtSubtypeConfig>()
+		//如果定义声明不完整，这里得到的是所有支持的子类型
+		if(incomplete) {
+			result.addAll(subtypesConfig.values)
+			return@lazy result
+		}
 		for(subtypeConfig in subtypesConfig.values) {
 			if(ParadoxDefinitionHandler.matchesSubtype(configGroup, subtypeConfig, element, rootKey, result)) result.add(subtypeConfig)
 		}
