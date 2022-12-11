@@ -7,6 +7,7 @@ import com.intellij.openapi.ui.*
 import com.intellij.openapi.util.*
 import com.intellij.ui.*
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.*
 import com.intellij.util.ui.table.*
@@ -25,15 +26,18 @@ import javax.swing.table.*
 /**
  * 在插入子句内联模版之前显示，用于对要插入的属性进行选取、排序和重复。
  */
+@Suppress("DialogTitleCapitalization")
 class ExpandClauseTemplateDialog(
 	val project: Project,
 	val editor: Editor,
 	val propertyName: String?,
-	val descriptors: MutableList<ElementDescriptor>
+	val descriptors: List<ElementDescriptor>
 ) : DialogWrapper(project) {
 	private lateinit var elementsList: JBListTable
 	private lateinit var elementsTable: TableView<ElementDescriptor>
 	private var elementsTableModel: ElementTableModel
+	
+	val resultDescriptors = descriptors.toMutableList()
 	
 	init {
 		title = PlsBundle.message("ui.dialog.expandClauseTemplate.title")
@@ -42,7 +46,7 @@ class ExpandClauseTemplateDialog(
 	}
 	
 	private fun createElementsInfoModel(): ElementTableModel {
-		return ElementTableModel(descriptors)
+		return ElementTableModel(descriptors, resultDescriptors)
 	}
 	
 	override fun createNorthPanel(): JComponent? {
@@ -50,10 +54,11 @@ class ExpandClauseTemplateDialog(
 		return panel {
 			//(textField) propertyName
 			row {
-				label(PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName")).widthGroup("left")
-				textField().text(propertyName).enabled(false)
+				textField()
+					.text(propertyName).enabled(false).horizontalAlign(HorizontalAlign.FILL)
+					.label(PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName"),LabelPosition.LEFT)
 			}
-		}
+		}.withPreferredWidth(480)
 	}
 	
 	override fun createCenterPanel(): JComponent {
@@ -62,6 +67,7 @@ class ExpandClauseTemplateDialog(
 			val contentPanel = JPanel(BorderLayout())
 			with(contentPanel) {
 				val elementsPanel = createElementsPanel()
+				add(SeparatorFactory.createSeparator(PlsBundle.message("ui.dialog.expandClauseTemplate.elementsToInsert"), elementsPanel), BorderLayout.NORTH)
 				add(elementsPanel, BorderLayout.CENTER)
 			}
 			add(contentPanel, BorderLayout.CENTER)

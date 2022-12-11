@@ -13,7 +13,8 @@ import javax.swing.table.*
 //com.intellij.refactoring.changeSignature.ParameterTableModelBase
 
 class ElementTableModel(
-	val descriptors: MutableList<ElementDescriptor>
+	val descriptors: List<ElementDescriptor>,
+	val resultDescriptors: MutableList<ElementDescriptor>
 ) : ListTableModel<ElementDescriptor>(
 	NameColumn(),
 	SeparatorColumn(),
@@ -88,9 +89,9 @@ class ElementTableModel(
 			}
 		}
 		
-		override fun setValue(item: ElementDescriptor, value: String) {
+		override fun setValue(item: ElementDescriptor, value: String?) {
 			when(item) {
-				is PropertyDescriptor -> item.value = value
+				is PropertyDescriptor -> item.value = value.orEmpty()
 				is ValueDescriptor -> pass()
 			}
 		}
@@ -135,6 +136,10 @@ class ElementTableModel(
 	}
 	
 	init {
-		items = descriptors
+		items = resultDescriptors
+	}
+	
+	override fun addRow() {
+		super.addRow()
 	}
 }

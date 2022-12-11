@@ -76,19 +76,19 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 
 fun CompletionResultSet.addScriptExpressionElement(
 	element: PsiElement?,
-    lookupString: String,
-    context: ProcessingContext,
-    icon: Icon? = null,
-    tailText: String? = null,
-    typeText: String? = null,
-    typeIcon: Icon? = null,
+	lookupString: String,
+	context: ProcessingContext,
+	icon: Icon? = null,
+	tailText: String? = null,
+	typeText: String? = null,
+	typeIcon: Icon? = null,
 	forceInsertCurlyBraces: Boolean = false,
-    builder: LookupElementBuilder.() -> LookupElement = { this }
+	builder: LookupElementBuilder.() -> LookupElement = { this }
 ) {
 	val config = context.config
 	
 	val completeWithValue = getSettings().completion.completeWithValue
-	val propertyConfig = when{
+	val propertyConfig = when {
 		config is CwtPropertyConfig -> config
 		config is CwtAliasConfig -> config.config
 		config is CwtSingleAliasConfig -> config.config
@@ -204,20 +204,20 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 		.groupBy { it.expression }
 	if(constantConfigGroup.isEmpty()) return
 	
-	val resultLookupElement = lookupElement
-		.withInsertHandler { c, _ ->
+	val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
+		c.laterRunnable = Runnable {
 			val editor = c.editor
 			val project = file.project
 			
 			val allDescriptors = getDescriptors(constantConfigGroup)
 			val propertyName = if(targetConfig is CwtPropertyConfig) targetConfig.key else null
 			val dialog = ExpandClauseTemplateDialog(project, editor, propertyName, allDescriptors)
-			if(!dialog.showAndGet()) return@withInsertHandler
-			val descriptors = allDescriptors.filter { it.checked }
+			if(!dialog.showAndGet()) return@Runnable
+			val descriptors = dialog.descriptors
 			
 			val hasRemain = configList.size != constantConfigGroup.size
 			val customSettings = CodeStyle.getCustomSettings(file, ParadoxScriptCodeStyleSettings::class.java)
-			val multiline = allDescriptors.size > getSettings().completion.maxExpressionCountInOneLine
+			val multiline = descriptors.size > getSettings().completion.maxExpressionCountInOneLine
 			val around = customSettings.SPACE_AROUND_PROPERTY_SEPARATOR
 			val separator = if(around) " = " else "="
 			
@@ -286,10 +286,11 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 			}
 			WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.expandClauseTemplate.name"), null, command, file)
 		}
+	}
 	addElement(resultLookupElement.builder())
 }
 
-private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtDataConfig<*>>>): MutableList<ElementDescriptor> {
+private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtDataConfig<*>>>): List<ElementDescriptor> {
 	val descriptors = mutableListOf<ElementDescriptor>()
 	for((expression, constantConfigs) in constantConfigGroup) {
 		when(expression) {
