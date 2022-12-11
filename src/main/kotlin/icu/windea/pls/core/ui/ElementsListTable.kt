@@ -1,14 +1,12 @@
 package icu.windea.pls.core.ui
 
 import com.intellij.openapi.observable.util.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
-import com.intellij.ui.table.*
 import com.intellij.util.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
-import java.util.function.*
+import java.awt.Dimension
 import javax.swing.*
 
 //com.intellij.refactoring.changeSignature.ChangeSignatureDialogBase.ParametersListTable
@@ -25,7 +23,7 @@ class ElementsListTable(
 					if(item.value.isEmpty()) {
 						"${item.name} ${item.separator} \"\" # ${PlsBundle.message("column.tooltip.unset")}"
 					} else {
-						"${item.name} ${item.separator} ${item.value}}}"
+						"${item.name} ${item.separator} ${item.value}"
 					}
 				}
 				is ValueDescriptor -> {
@@ -35,7 +33,7 @@ class ElementsListTable(
 					if(item.value.isEmpty()) {
 						"${item.name} ${item.separator} \"\" # ${PlsBundle.message("column.tooltip.unset")}"
 					} else {
-						"${item.name} ${item.separator} ${item.value}}}"
+						"${item.name} ${item.separator} ${item.value}"
 					}
 				}
 			}
@@ -82,7 +80,7 @@ class ElementsListTable(
 								this.separatorComboBox = separatorComboBox
 								panel.add(separatorComboBox)
 							}
-							panel.preferredSize.width = panel.preferredSize.height * 2
+							panel.size = Dimension(panel.size.height * 2, panel.size.height)
 						}
 						is ElementTableModel.ValueColumn -> {
 							if(item is PropertyDescriptor) {

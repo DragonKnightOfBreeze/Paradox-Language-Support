@@ -213,7 +213,7 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 			val propertyName = if(targetConfig is CwtPropertyConfig) targetConfig.key else null
 			val dialog = ExpandClauseTemplateDialog(project, editor, propertyName, allDescriptors)
 			if(!dialog.showAndGet()) return@Runnable
-			val descriptors = dialog.descriptors
+			val descriptors = dialog.resultDescriptors
 			
 			val hasRemain = configList.size != constantConfigGroup.size
 			val customSettings = CodeStyle.getCustomSettings(file, ParadoxScriptCodeStyleSettings::class.java)
