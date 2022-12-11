@@ -509,7 +509,7 @@ class CwtConfigGroupImpl(
 						val set = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
 						if(value != null) set.add(value)
 						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
-						val notReversed = option.separatorType == CwtSeparatorType.EQUAL
+						val notReversed = option.separatorType == CwtSeparator.EQUAL
 						typeKeyFilter = set.toReversibleSet(notReversed)
 					}
 					"starts_with" -> startsWith = option.stringValue ?: continue //忽略大小写
@@ -550,7 +550,7 @@ class CwtConfigGroupImpl(
 						val set = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
 						if(value != null) set.add(value)
 						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
-						val notReversed = option.separatorType == CwtSeparatorType.EQUAL
+						val notReversed = option.separatorType == CwtSeparator.EQUAL
 						typeKeyFilter = set.toReversibleSet(notReversed)
 					}
 					"push_scope" -> pushScope = option.stringValue ?: continue

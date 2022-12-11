@@ -9,12 +9,12 @@ import com.intellij.openapi.command.*
 import com.intellij.openapi.command.impl.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
-import com.intellij.refactoring.suggested.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.ui.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -62,11 +62,12 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
 	val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
 	if(completeWithClauseTemplate) {
-		val props = config?.castOrNull<CwtValueConfig>()?.properties
-		if(props != null && props.isNotEmpty()) {
-			val lookupElement = LookupElementBuilder.create("")
-				.withPresentableText("{ <generate via template> }")
-			addScriptExpressionElementWithClauseTemplate(lookupElement, context, props, false) {
+		val targetConfig = config?.castOrNull<CwtValueConfig>()
+		if(targetConfig != null && !targetConfig.configs.isNullOrEmpty()) {
+			val tailText1 = "{ <generate via template> }"
+			val lookupElement1 = LookupElementBuilder.create("")
+				.withPresentableText(tailText1)
+			addScriptExpressionElementWithClauseTemplate(lookupElement1, context, targetConfig, false) {
 				withPriority(PlsCompletionPriorities.keywordPriority - 1) //under "{...}"
 			}
 		}
@@ -160,15 +161,14 @@ fun CompletionResultSet.addScriptExpressionElement(
 	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
 	val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
 	if(context.isKey == true && completeWithClauseTemplate) {
-		val props = propertyConfig?.properties
-		if(props != null && props.isNotEmpty()) {
-			val finalResultTailText = buildString {
+		val targetConfig = propertyConfig
+		if(targetConfig != null && !targetConfig.configs.isNullOrEmpty()) {
+			val tailText1 = buildString {
 				append(" = { <generate via template> }")
 				if(tailText != null) append(tailText)
 			}
-			val resultLookupElement = lookupElement
-				.withTailText(finalResultTailText)
-			addScriptExpressionElementWithClauseTemplate(resultLookupElement, context, props, true, builder)
+			val lookupElement1 = lookupElement.withTailText(tailText1)
+			addScriptExpressionElementWithClauseTemplate(lookupElement1, context, targetConfig, true, builder)
 		}
 	}
 }
@@ -187,32 +187,39 @@ private fun skipOrInsertRightQuote(context: ProcessingContext, editor: Editor) {
 	}
 }
 
-@Suppress("UnstableApiUsage")
+@Suppress("UnstableApiUsage", "DialogTitleCapitalization")
 fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 	lookupElement: LookupElementBuilder,
 	context: ProcessingContext,
-	props: List<CwtPropertyConfig>,
+	targetConfig: CwtDataConfig<*>,
 	insertEq: Boolean,
 	builder: LookupElementBuilder.() -> LookupElement = { this }
 ) {
 	val file = context.originalFile ?: return
-	val propsToCheck = props
-		.distinctBy { it.key.lowercase() }
-	val propsToInsert = props
-		.filter { it.keyExpression.type == CwtDataTypes.ConstantKey }
-		.distinctBy { it.key.lowercase() }
-	if(propsToInsert.isEmpty()) return
+	val configs = targetConfig.configs.orEmpty()
+	val configList = configs
+		.distinctBy { it.expression }
+	val constantConfigGroup = configs
+		.filter { it.expression.type == CwtDataTypes.ConstantKey || it.expression.type == CwtDataTypes.Constant }
+		.groupBy { it.expression }
+	if(constantConfigGroup.isEmpty()) return
 	
 	val resultLookupElement = lookupElement
 		.withInsertHandler { c, _ ->
 			val editor = c.editor
 			val project = file.project
-			val customSettings = CodeStyle.getCustomSettings(file, ParadoxScriptCodeStyleSettings::class.java)
 			
-			val multiline = propsToInsert.size > getSettings().completion.maxExpressionCountInOneLine
-			val hasRemain = propsToCheck.size != propsToInsert.size
-			val separator = if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "="
-			val constantValuePropertyKeys = mutableSetOf<String>()
+			val allDescriptors = getDescriptors(constantConfigGroup)
+			val propertyName = if(targetConfig is CwtPropertyConfig) targetConfig.key else null
+			val dialog = ExpandClauseTemplateDialog(project, editor, propertyName, allDescriptors)
+			if(!dialog.showAndGet()) return@withInsertHandler
+			val descriptors = allDescriptors.filter { it.checked }
+			
+			val hasRemain = configList.size != constantConfigGroup.size
+			val customSettings = CodeStyle.getCustomSettings(file, ParadoxScriptCodeStyleSettings::class.java)
+			val multiline = allDescriptors.size > getSettings().completion.maxExpressionCountInOneLine
+			val around = customSettings.SPACE_AROUND_PROPERTY_SEPARATOR
+			val separator = if(around) " = " else "="
 			
 			val documentManager = PsiDocumentManager.getInstance(project)
 			val command = Runnable {
@@ -226,13 +233,18 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 				val clauseText = buildString {
 					append("{")
 					if(multiline) append("\n")
-					for(prop in propsToInsert) {
-						append(prop.key).append(separator)
-						if(prop.valueExpression.type ==CwtDataTypes.Constant) {
-							constantValuePropertyKeys.add(prop.key)
-							append(prop.value)
-						} else {
-							append("v")
+					descriptors.forEach {
+						when(it) {
+							is PropertyDescriptor -> {
+								append(it.name)
+								if(around) append(" ")
+								append(it.separator)
+								if(around) append(" ")
+								append(it.value.ifEmpty { "v" })
+							}
+							is ValueDescriptor -> {
+								append(it.name)
+							}
 						}
 						if(multiline) append("\n") else append(" ")
 					}
@@ -244,10 +256,15 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 				
 				val startAction = StartMarkAction.start(editor, project, "script.command.expandClauseTemplate.name")
 				val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(element)
-				element.processProperty { p ->
-					val name = p.name
-					if(name in constantValuePropertyKeys) return@processProperty true
-					templateBuilder.replaceElement(p.propertyValue!!, name, TextExpression(""), true)
+				var i = 0
+				element.processChild { e ->
+					if(e is ParadoxScriptProperty || e is ParadoxScriptValue) {
+						val descriptor = descriptors[i]
+						if(e is ParadoxScriptProperty && descriptor is PropertyDescriptor && descriptor.value.isEmpty()) {
+							templateBuilder.replaceElement(e.propertyValue!!, descriptor.name, TextExpression(""), true)
+						}
+						i++
+					}
 					true
 				}
 				val textRange = element.textRange
@@ -270,4 +287,30 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 			WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.expandClauseTemplate.name"), null, command, file)
 		}
 	addElement(resultLookupElement.builder())
+}
+
+private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtDataConfig<*>>>): MutableList<ElementDescriptor> {
+	val descriptors = mutableListOf<ElementDescriptor>()
+	for((expression, constantConfigs) in constantConfigGroup) {
+		when(expression) {
+			is CwtKeyExpression -> {
+				val name = expression.expressionString
+				val constantValueExpressions = constantConfigs
+					.mapNotNull { it.castOrNull<CwtPropertyConfig>()?.valueExpression?.takeIf { e -> e.type == CwtDataTypes.Constant } }
+				val mustBeConstantValue = constantValueExpressions.size == constantConfigs.size
+				val value = if(mustBeConstantValue) constantValueExpressions.first().expressionString else ""
+				val constantValues = if(constantValueExpressions.size <= 1) emptyList() else buildList {
+					if(!mustBeConstantValue) add("")
+					constantValueExpressions.forEach { add(it.expressionString) }
+				}
+				val descriptor = PropertyDescriptor(name = name, value = value, constantValues = constantValues)
+				descriptors.add(descriptor)
+			}
+			is CwtValueExpression -> {
+				val descriptor = ValueDescriptor(name = expression.expressionString)
+				descriptors.add(descriptor)
+			}
+		}
+	}
+	return descriptors
 }

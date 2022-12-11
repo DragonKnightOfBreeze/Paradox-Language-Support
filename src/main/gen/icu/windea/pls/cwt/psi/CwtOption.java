@@ -1,11 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
-import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.cwt.CwtSeparatorType;
+import icu.windea.pls.cwt.CwtSeparator;
 import javax.swing.Icon;
 
 public interface CwtOption extends CwtNamedElement {
@@ -32,6 +30,6 @@ public interface CwtOption extends CwtNamedElement {
   String getValue();
 
   @NotNull
-  CwtSeparatorType getSeparatorType();
+  CwtSeparator getSeparatorType();
 
 }

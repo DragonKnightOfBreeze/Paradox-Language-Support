@@ -17,7 +17,6 @@ import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import javax.swing.*
 
 //com.intellij.refactoring.copy.CopyFilesOrDirectoriesDialog
 
@@ -47,38 +46,36 @@ class ConvertDdsToPngDialog(
 	//（输入框）文件名
 	//（文件路径输入框）目标目录
 	
-	override fun createCenterPanel(): JComponent {
-		return panel {
-			row {
-				val text = when {
-					files.size == 1 -> {
-						val virtualFile = files.first().virtualFile
-						PlsBundle.message("dds.dialog.convertDdsToPng.info", shortenPath(virtualFile))
-					}
-					else -> {
-						PlsBundle.message("dds.dialog.convertDdsToPng.info.1")
-					}
+	override fun createCenterPanel() = panel {
+		row {
+			val text = when {
+				files.size == 1 -> {
+					val virtualFile = files.first().virtualFile
+					PlsBundle.message("dds.dialog.convertDdsToPng.info", shortenPath(virtualFile))
 				}
-				label(text).bold()
-			}
-			if(files.size == 1) {
-				row {
-					label(PlsBundle.message("dds.dialog.convertDdsToPng.newName")).widthGroup("left")
-					cell(initNewNameField())
-						.horizontalAlign(HorizontalAlign.FILL)
-						.resizableColumn()
-						.focused()
+				else -> {
+					PlsBundle.message("dds.dialog.convertDdsToPng.info.1")
 				}
 			}
+			label(text).bold()
+		}
+		if(files.size == 1) {
 			row {
-				label(PlsBundle.message("dds.dialog.convertDdsToPng.targetDirectory")).widthGroup("left")
-				cell(initTargetDirectoryField())
+				label(PlsBundle.message("dds.dialog.convertDdsToPng.newName")).widthGroup("left")
+				cell(initNewNameField())
 					.horizontalAlign(HorizontalAlign.FILL)
 					.resizableColumn()
+					.focused()
 			}
-			row{
-				pathCompletionShortcutComment()
-			}
+		}
+		row {
+			label(PlsBundle.message("dds.dialog.convertDdsToPng.targetDirectory")).widthGroup("left")
+			cell(initTargetDirectoryField())
+				.horizontalAlign(HorizontalAlign.FILL)
+				.resizableColumn()
+		}
+		row {
+			pathCompletionShortcutComment()
 		}
 	}
 	

@@ -13,7 +13,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.model.*
-import javax.swing.*
 
 /**
  * 创建新的库（游戏目录/模组目录）的对话框。
@@ -51,34 +50,32 @@ class ParadoxCreateNewLibraryDialog(
 	//（下拉框）游戏类型  （下拉框）根类型
 	//（文件选择框）游戏或模组（根）目录
 	
-	override fun createCenterPanel(): JComponent {
-		return panel {
-			row {
-				label(PlsBundle.message("library.dialog.createNewLibrary.gameType")).widthGroup("left")
-				comboBox(ParadoxGameType.valueList).bindItem(dialog.gameTypeProperty)
-				
-				label(PlsBundle.message("library.dialog.createNewLibrary.rootType"))
-				comboBox(listOf(ParadoxRootType.Game, ParadoxRootType.Mod)).bindItem(dialog.rootTypeProperty)
-			}
-			row {
-				label(PlsBundle.message("library.dialog.createNewLibrary.libraryPath")).widthGroup("left")
-				val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
-					.withTitle(PlsBundle.message("library.dialog.createNewLibrary.libraryPath.browseDialogTitle", rootType, gameType))
-					.apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
-					.apply { putUserData(PlsDataKeys.rootTypePropertyKey, rootTypeProperty) }
-					.apply { descriptor = this }
-				textFieldWithBrowseButton(null, project, descriptor) { it.path }
-					.bindText(dialog.rootFilePathProperty)
-					.horizontalAlign(HorizontalAlign.FILL)
-					.resizableColumn()
-					.validationOnApply { validateLibraryPath() }
-			}
-			row {
-				pathCompletionShortcutComment()
-			}
-		}.apply {
-			withPreferredWidth(width * 2) //2倍宽度 - 基于调试结果
+	override fun createCenterPanel() = panel {
+		row {
+			label(PlsBundle.message("library.dialog.createNewLibrary.gameType")).widthGroup("left")
+			comboBox(ParadoxGameType.valueList).bindItem(dialog.gameTypeProperty)
+			
+			label(PlsBundle.message("library.dialog.createNewLibrary.rootType"))
+			comboBox(listOf(ParadoxRootType.Game, ParadoxRootType.Mod)).bindItem(dialog.rootTypeProperty)
 		}
+		row {
+			label(PlsBundle.message("library.dialog.createNewLibrary.libraryPath")).widthGroup("left")
+			val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
+				.withTitle(PlsBundle.message("library.dialog.createNewLibrary.libraryPath.browseDialogTitle", rootType, gameType))
+				.apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
+				.apply { putUserData(PlsDataKeys.rootTypePropertyKey, rootTypeProperty) }
+				.apply { descriptor = this }
+			textFieldWithBrowseButton(null, project, descriptor) { it.path }
+				.bindText(dialog.rootFilePathProperty)
+				.horizontalAlign(HorizontalAlign.FILL)
+				.resizableColumn()
+				.validationOnApply { validateLibraryPath() }
+		}
+		row {
+			pathCompletionShortcutComment()
+		}
+	}.apply {
+		withPreferredWidth(width * 2) //2倍宽度 - 基于调试结果
 	}
 	
 	private fun ValidationInfoBuilder.validateLibraryPath(): ValidationInfo? {

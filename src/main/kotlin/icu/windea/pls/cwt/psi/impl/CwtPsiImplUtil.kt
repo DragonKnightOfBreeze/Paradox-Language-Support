@@ -71,15 +71,15 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getSeparatorType(element: CwtOption): CwtSeparatorType {
+	fun getSeparatorType(element: CwtOption): CwtSeparator {
 		//这里不能遍历element.children
 		element.forEachChild { child ->
 			when(child.elementType) {
-				EQUAL_SIGN -> return CwtSeparatorType.EQUAL
-				NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
+				EQUAL_SIGN -> return CwtSeparator.EQUAL
+				NOT_EQUAL_SIGN -> return CwtSeparator.NOT_EQUAL
 			}
 		}
-		return CwtSeparatorType.EQUAL
+		return CwtSeparator.EQUAL
 	}
 	//endregion
 	
@@ -123,15 +123,15 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getSeparatorType(element: CwtProperty): CwtSeparatorType {
+	fun getSeparatorType(element: CwtProperty): CwtSeparator {
 		//这里不能遍历element.children
 		element.forEachChild { child ->
 			when(child.elementType) {
-				EQUAL_SIGN -> return CwtSeparatorType.EQUAL
-				NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
+				EQUAL_SIGN -> return CwtSeparator.EQUAL
+				NOT_EQUAL_SIGN -> return CwtSeparator.NOT_EQUAL
 			}
 		}
-		return CwtSeparatorType.EQUAL
+		return CwtSeparator.EQUAL
 	}
 	//endregion
 	

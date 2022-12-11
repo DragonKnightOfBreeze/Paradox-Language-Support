@@ -15,7 +15,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.*
-import javax.swing.*
 
 class IntroduceGlobalScriptedVariableDialog(
 	private val project: Project,
@@ -51,61 +50,59 @@ class IntroduceGlobalScriptedVariableDialog(
 	//（输入框）输入变量值
 	//（文件选择框）选择目标文件
 	
-	override fun createCenterPanel(): JComponent {
-		return panel {
+	override fun createCenterPanel() = panel {
+		row {
+			//输入变量名
+			label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName")).widthGroup("left")
+			textField()
+				.bindText(dialog.variableNameProperty)
+				.horizontalAlign(HorizontalAlign.FILL)
+				.resizableColumn()
+				.focused()
+				.validationOnApply { validateScriptedVariableName() }
+		}
+		if(setVariableValue) {
 			row {
-				//输入变量名
-				label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName")).widthGroup("left")
+				//输入变量值
+				label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue")).widthGroup("left")
 				textField()
-					.bindText(dialog.variableNameProperty)
+					.bindText(dialog.variableValueProperty)
 					.horizontalAlign(HorizontalAlign.FILL)
 					.resizableColumn()
 					.focused()
-					.validationOnApply { validateScriptedVariableName() }
+					.validationOnApply { validateScriptedVariableValue() }
 			}
-			if(setVariableValue) {
-				row {
-					//输入变量值
-					label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue")).widthGroup("left")
-					textField()
-						.bindText(dialog.variableValueProperty)
-						.horizontalAlign(HorizontalAlign.FILL)
-						.resizableColumn()
-						.focused()
-						.validationOnApply { validateScriptedVariableValue() }
-				}
-			}
-			row {
-				//选择目标文件 - 仅允许用户选择同一游戏或模组根目录下的common/scripted_variables目录下的文件
-				label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile")).widthGroup("left")
-				val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor(ParadoxScriptFileType)
-					.withRoots(scriptedVariablesFile)
-					.withTreeRootVisible(true)
-				val fileField = fileField.apply {
-					setTextFieldPreferredWidth(MAX_PATH_LENGTH)
-					val recentEntries = RecentsManager.getInstance(project).getRecentEntries(RECENT_KEYS)
-					if(recentEntries != null) childComponent.history = recentEntries
-					childComponent.text = recentEntries?.firstOrNull() ?: filePath
-					addBrowseFolderListener(
-						PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.browseDialogTitle"),
-						null,
-						project,
-						descriptor,
-						TextComponentAccessors.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT
-					)
-				}
-				cell(fileField)
-					.horizontalAlign(HorizontalAlign.FILL)
-					.resizableColumn()
-					.validationRequestor { validator -> fileField.childComponent.textEditor.whenTextChanged { validator() } }
-					.validationOnApply { validateScriptedVariableFilePath() }
-			}
-			row {
-				pathCompletionShortcutComment()
-			}
-		}.apply {
-			withPreferredWidth(width * 2) //2倍宽度 - 基于调试结果
 		}
+		row {
+			//选择目标文件 - 仅允许用户选择同一游戏或模组根目录下的common/scripted_variables目录下的文件
+			label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile")).widthGroup("left")
+			val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor(ParadoxScriptFileType)
+				.withRoots(scriptedVariablesFile)
+				.withTreeRootVisible(true)
+			val fileField = fileField.apply {
+				setTextFieldPreferredWidth(MAX_PATH_LENGTH)
+				val recentEntries = RecentsManager.getInstance(project).getRecentEntries(RECENT_KEYS)
+				if(recentEntries != null) childComponent.history = recentEntries
+				childComponent.text = recentEntries?.firstOrNull() ?: filePath
+				addBrowseFolderListener(
+					PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.browseDialogTitle"),
+					null,
+					project,
+					descriptor,
+					TextComponentAccessors.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT
+				)
+			}
+			cell(fileField)
+				.horizontalAlign(HorizontalAlign.FILL)
+				.resizableColumn()
+				.validationRequestor { validator -> fileField.childComponent.textEditor.whenTextChanged { validator() } }
+				.validationOnApply { validateScriptedVariableFilePath() }
+		}
+		row {
+			pathCompletionShortcutComment()
+		}
+	}.apply {
+		withPreferredWidth(width * 2) //2倍宽度 - 基于调试结果
 	}
 	
 	private fun ValidationInfoBuilder.validateScriptedVariableName(): ValidationInfo? {
