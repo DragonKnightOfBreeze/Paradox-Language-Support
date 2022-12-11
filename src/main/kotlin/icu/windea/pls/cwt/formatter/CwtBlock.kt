@@ -20,7 +20,7 @@ class CwtBlock(
 	companion object {
 		private val separatorTokens = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN)
 		private val shouldIndentParentTypes = TokenSet.create(BLOCK)
-		private val shouldIndentTypes = TokenSet.create(PROPERTY, VALUE, BOOLEAN, INT, FLOAT, STRING, COMMENT, DOCUMENTATION_COMMENT, OPTION_COMMENT)
+		private val shouldIndentTypes = TokenSet.create(PROPERTY, VALUE, BOOLEAN, INT, FLOAT, STRING, BLOCK, COMMENT, DOCUMENTATION_COMMENT, OPTION_COMMENT)
 		private val shouldChildIndentTypes = TokenSet.create(BLOCK)
 		
 		private fun createWrap(): Wrap? {
