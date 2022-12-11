@@ -38,9 +38,9 @@ class ExpandClauseTemplateDialog(
 	val allKeys = descriptors.filterIsInstance<PropertyDescriptor>().map { it.name }.toTypedArray()
 	val resultDescriptors = descriptors.toMutableList()
 	
-	private lateinit var elementsList: JBListTable
-	private lateinit var elementsTable: TableView<ElementDescriptor>
-	private var elementsTableModel: ElementTableModel
+	lateinit var elementsList: JBListTable
+	lateinit var elementsTable: TableView<ElementDescriptor>
+	var elementsTableModel: ElementTableModel
 	
 	init {
 		title = PlsBundle.message("ui.dialog.expandClauseTemplate.title")
@@ -49,7 +49,7 @@ class ExpandClauseTemplateDialog(
 	}
 	
 	private fun createElementsInfoModel(): ElementTableModel {
-		return ElementTableModel(resultDescriptors)
+		return ElementTableModel(this)
 	}
 	
 	override fun createNorthPanel(): JComponent? {
@@ -101,7 +101,17 @@ class ExpandClauseTemplateDialog(
 	}
 	
 	private fun createElementsListTable(): ElementsListTable {
-		return ElementsListTable(project, elementsTable, elementsTableModel, disposable)
+		return ElementsListTable(this)
+	}
+	
+	fun validateNameField(nameField: JTextField) {
+		if(nameField.text.isEmpty()) {
+			setErrorText(PlsBundle.message("column.message.name.notEmpty"), nameField)
+			isOKActionEnabled = false
+		} else {
+			setErrorText(null, nameField)
+			isOKActionEnabled = true
+		}
 	}
 	
 	class DuplicateDescriptor(

@@ -11,15 +11,15 @@ import javax.swing.table.*
 //com.intellij.refactoring.changeSignature.ParameterTableModelBase
 
 class ElementTableModel(
-	resultDescriptors: MutableList<ElementDescriptor>
+	dialog: ExpandClauseTemplateDialog
 ) : ListTableModel<ElementDescriptor>(), EditableModel {
 	init {
 		columnInfos = arrayOf(NameColumn(this), SeparatorColumn(this), ValueColumn(this))
-		items = resultDescriptors
+		items = dialog.resultDescriptors
 	}
 	
 	override fun addRow() {
-		addRow(NewPropertyDescriptor())
+		addRow(NewPropertyDescriptor(name = "key", value = "value"))
 	}
 	
 	class NameColumn(private val tableModel: ElementTableModel) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("column.name.name")) {

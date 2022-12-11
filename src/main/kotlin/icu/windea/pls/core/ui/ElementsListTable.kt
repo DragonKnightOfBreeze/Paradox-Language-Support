@@ -1,27 +1,23 @@
 package icu.windea.pls.core.ui
 
-import com.intellij.openapi.*
 import com.intellij.openapi.observable.util.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.table.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
-import java.util.function.Supplier
+import java.util.function.*
 import javax.swing.*
 
 //com.intellij.refactoring.changeSignature.ChangeSignatureDialogBase.ParametersListTable
 
 class ElementsListTable(
-	private val project: Project,
-	private val elementsTable: TableView<ElementDescriptor>,
-	private val elementsTableModel: ElementTableModel,
-	private val disposable: Disposable
-): JBListTable(elementsTable, disposable) {
-	val _rowRenderer = object : EditorTextFieldJBTableRowRenderer(project, ParadoxScriptLanguage, disposable) {
+	private val dialog: ExpandClauseTemplateDialog
+): JBListTable(dialog.elementsTable, dialog.disposable) {
+	
+	val _rowRenderer = object : EditorTextFieldJBTableRowRenderer(dialog.project, ParadoxScriptLanguage, dialog.disposable) {
 		override fun getText(table: JTable, row: Int): String {
 			val item = getRowItem(row)
 			return when(item) {
@@ -60,13 +56,14 @@ class ElementsListTable(
 			override fun prepareEditor(table: JTable, row: Int) {
 				val item = getRowItem(row)
 				layout = BoxLayout(this, BoxLayout.X_AXIS)
-				for(columnInfo in elementsTableModel.columnInfos) {
+				for(columnInfo in dialog.elementsTableModel.columnInfos) {
 					val panel = JPanel(VerticalFlowLayout(VerticalFlowLayout.TOP, 4, 2, true, false))
 					when(columnInfo) {
 						is ElementTableModel.NameColumn -> {
 							val nameField = JTextField(item.name)
 							if(item is NewPropertyDescriptor) {
-								validateNameField(nameField)
+								dialog.validateNameField(nameField)
+								nameField.whenTextChanged { dialog.validateNameField(nameField) }
 							} else {
 								nameField.isEditable = false
 							}
@@ -85,6 +82,7 @@ class ElementsListTable(
 								this.separatorComboBox = separatorComboBox
 								panel.add(separatorComboBox)
 							}
+							panel.preferredSize.width = panel.preferredSize.height * 2
 						}
 						is ElementTableModel.ValueColumn -> {
 							if(item is PropertyDescriptor) {
@@ -113,31 +111,13 @@ class ElementsListTable(
 				}
 			}
 			
-			private fun validateNameField(nameField: JTextField) {
-				val validator = ComponentValidator(disposable)
-				validator.withValidator(Supplier {
-					if(nameField.text.isEmpty()) {
-						ValidationInfo(PlsBundle.message("column.message.nameCannotBeEmpty"), nameField)
-					} else {
-						null
-					}
-				}).installOn(nameField)
-				nameField.whenTextChanged { validator.revalidate() }
-			}
-			
 			override fun getValue(): JBTableRow {
 				return JBTableRow { column ->
-					val columnInfo = elementsTableModel.columnInfos[column]
+					val columnInfo = dialog.elementsTableModel.columnInfos[column]
 					when(columnInfo) {
-						is ElementTableModel.NameColumn -> components[0].let {
-							it.castOrNull<JTextField>()?.text
-						}
-						is ElementTableModel.SeparatorColumn -> components[1].let {
-							it.castOrNull<ComboBox<ParadoxSeparator>>()?.item
-						}
-						is ElementTableModel.ValueColumn -> components[2].let {
-							it.castOrNull<JTextField>()?.text ?: it.castOrNull<ComboBox<String>>()?.item
-						}
+						is ElementTableModel.NameColumn -> nameField?.text
+						is ElementTableModel.SeparatorColumn -> separatorComboBox?.item
+						is ElementTableModel.ValueColumn -> valueField?.text ?: valueComboBox?.item
 						else -> null
 					}
 				}
@@ -154,6 +134,6 @@ class ElementsListTable(
 	}
 	
 	private fun getRowItem(row: Int): ElementDescriptor {
-		return elementsTable.items.get(row)
+		return dialog.elementsTable.items.get(row)
 	}
 }
