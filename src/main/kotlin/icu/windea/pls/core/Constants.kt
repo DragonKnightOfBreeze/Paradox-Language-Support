@@ -47,7 +47,6 @@ object PlsConstants {
 	const val anonymousString = "(anonymous)"
 	const val unknownString = "(unknown)"
 	const val unresolvedString = "(unresolved)"
-	const val unsetString = "(unset)"
 	
 	const val defaultScriptedVariableName = "var"
 	//NOTE 目前认为cwt文件中定义的definition的propertyPath的maxDepth是4（最多跳过3个rootKey）

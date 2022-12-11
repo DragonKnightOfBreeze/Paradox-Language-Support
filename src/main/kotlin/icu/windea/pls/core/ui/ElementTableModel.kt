@@ -1,8 +1,6 @@
 package icu.windea.pls.core.ui
 
 import com.intellij.openapi.ui.*
-import com.intellij.ui.ColoredTableCellRenderer
-import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -13,33 +11,44 @@ import javax.swing.table.*
 //com.intellij.refactoring.changeSignature.ParameterTableModelBase
 
 class ElementTableModel(
-	val descriptors: List<ElementDescriptor>,
-	val resultDescriptors: MutableList<ElementDescriptor>
-) : ListTableModel<ElementDescriptor>(
-	NameColumn(),
-	SeparatorColumn(),
-	ValueColumn()
-), EditableModel {
-	class NameColumn : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("column.name.name")) {
+	resultDescriptors: MutableList<ElementDescriptor>
+) : ListTableModel<ElementDescriptor>(), EditableModel {
+	init {
+		columnInfos = arrayOf(NameColumn(this), SeparatorColumn(this), ValueColumn(this))
+		items = resultDescriptors
+	}
+	
+	override fun addRow() {
+		addRow(NewPropertyDescriptor())
+	}
+	
+	class NameColumn(private val tableModel: ElementTableModel) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("column.name.name")) {
 		override fun isCellEditable(item: ElementDescriptor): Boolean {
-			return false
+			return when(item){
+				is PropertyDescriptor -> false
+				is ValueDescriptor -> false
+				is NewPropertyDescriptor -> true 
+			}
 		}
 		
 		override fun valueOf(item: ElementDescriptor): String {
 			return item.name
 		}
 		
-		override fun getRenderer(item: ElementDescriptor?): TableCellRenderer {
-			return object : ColoredTableCellRenderer() {
-				override fun customizeCellRenderer(table: JTable, value: Any?, isSelected: Boolean, hasFocus: Boolean, row: Int, column: Int) {
-					if(value == null) return
-					append(value as String, SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, null))
-				}
+		override fun getRenderer(item: ElementDescriptor): TableCellRenderer {
+			return DefaultTableCellRenderer()
+		}
+		
+		override fun getEditor(item: ElementDescriptor): TableCellEditor? {
+			return when(item) {
+				is PropertyDescriptor -> null
+				is ValueDescriptor -> null
+				is NewPropertyDescriptor -> DefaultCellEditor(JTextField())
 			}
 		}
 	}
 	
-	class SeparatorColumn : ColumnInfo<ElementDescriptor, ParadoxSeparator>(PlsBundle.message("column.name.separator")) {
+	class SeparatorColumn(private val tableModel: ElementTableModel) : ColumnInfo<ElementDescriptor, ParadoxSeparator>(PlsBundle.message("column.name.separator")) {
 		override fun isCellEditable(item: ElementDescriptor): Boolean {
 			return item is PropertyDescriptor
 		}
@@ -48,6 +57,7 @@ class ElementTableModel(
 			return when(item) {
 				is PropertyDescriptor -> item.separator
 				is ValueDescriptor -> null
+				is NewPropertyDescriptor -> item.separator
 			}
 		}
 		
@@ -55,6 +65,7 @@ class ElementTableModel(
 			when(item) {
 				is PropertyDescriptor -> item.separator = value
 				is ValueDescriptor -> pass()
+				is NewPropertyDescriptor -> item.separator = value
 			}
 		}
 		
@@ -62,13 +73,15 @@ class ElementTableModel(
 			return when(item){
 				is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparator.values())
 				is ValueDescriptor -> null
+				is NewPropertyDescriptor -> DefaultTableCellRenderer()
 			} 
 		}
 		
 		override fun getEditor(item: ElementDescriptor): TableCellEditor? {
 			return when(item){
-				is PropertyDescriptor -> DefaultCellEditor(ComboBox<ElementDescriptor>())
+				is PropertyDescriptor -> DefaultCellEditor(ComboBox(ParadoxSeparator.values()))
 				is ValueDescriptor -> null
+				is NewPropertyDescriptor -> DefaultCellEditor(ComboBox(ParadoxSeparator.values()))
 			}
 		}
 		
@@ -77,7 +90,7 @@ class ElementTableModel(
 		}
 	}
 	
-	class ValueColumn : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("column.name.value")) {
+	class ValueColumn(private val tableModel: ElementTableModel) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("column.name.value")) {
 		override fun isCellEditable(item: ElementDescriptor): Boolean {
 			return item is PropertyDescriptor && item.constantValues.isNotEmpty()
 		}
@@ -86,6 +99,7 @@ class ElementTableModel(
 			return when(item) {
 				is PropertyDescriptor -> item.value
 				is ValueDescriptor -> null
+				is NewPropertyDescriptor -> item.value
 			}
 		}
 		
@@ -93,6 +107,7 @@ class ElementTableModel(
 			when(item) {
 				is PropertyDescriptor -> item.value = value.orEmpty()
 				is ValueDescriptor -> pass()
+				is NewPropertyDescriptor -> item.value = value.orEmpty()
 			}
 		}
 		
@@ -100,12 +115,13 @@ class ElementTableModel(
 			return when(item) {
 				is PropertyDescriptor -> {
 					if(item.constantValues.isNotEmpty()) {
-						ValueComboBoxTableRender(item.constantValues) 
+						ComboBoxTableRenderer(item.constantValueArray) 
 					} else {
-						ValueTableRender()
+						DefaultTableCellRenderer()
 					}
 				}
 				is ValueDescriptor -> null 
+				is NewPropertyDescriptor -> DefaultTableCellRenderer()
 			}
 		}
 		
@@ -113,33 +129,14 @@ class ElementTableModel(
 			return when(item) {
 				is PropertyDescriptor -> {
 					if(item.constantValues.isNotEmpty()) {
-						DefaultCellEditor(ComboBox<ElementDescriptor>())
+						DefaultCellEditor(ComboBox(item.constantValueArray))
 					} else {
 						null
 					}
 				}
 				is ValueDescriptor -> null
+				is NewPropertyDescriptor -> DefaultCellEditor(JTextField())
 			}
 		}
-	}
-	
-	class ValueComboBoxTableRender(values: List<String>): ComboBoxTableRenderer<String>(values.toTypedArray()) {
-		override fun getTextFor(value: String): String {
-			return value.ifEmpty { PlsConstants.unsetString }
-		}
-	}
-	
-	class ValueTableRender: DefaultTableCellRenderer() {
-		override fun getText(): String {
-			return super.getText().ifEmpty { PlsConstants.unsetString }
-		}
-	}
-	
-	init {
-		items = resultDescriptors
-	}
-	
-	override fun addRow() {
-		super.addRow()
 	}
 }

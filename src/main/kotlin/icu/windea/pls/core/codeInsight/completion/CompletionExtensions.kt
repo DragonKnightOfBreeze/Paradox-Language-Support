@@ -245,6 +245,13 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 							is ValueDescriptor -> {
 								append(it.name)
 							}
+							is NewPropertyDescriptor -> {
+								append(it.name)
+								if(around) append(" ")
+								append(it.separator)
+								if(around) append(" ")
+								append(it.value.ifEmpty { "v" })
+							}
 						}
 						if(multiline) append("\n") else append(" ")
 					}
@@ -260,8 +267,12 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 				element.processChild { e ->
 					if(e is ParadoxScriptProperty || e is ParadoxScriptValue) {
 						val descriptor = descriptors[i]
-						if(e is ParadoxScriptProperty && descriptor is PropertyDescriptor && descriptor.value.isEmpty()) {
-							templateBuilder.replaceElement(e.propertyValue!!, descriptor.name, TextExpression(""), true)
+						if(descriptor.editInTemplate) {
+							if(e is ParadoxScriptProperty && descriptor is PropertyDescriptor) {
+								templateBuilder.replaceElement(e.propertyValue!!, descriptor.name, TextExpression(descriptor.value), true)
+							} else if(e is ParadoxScriptProperty && descriptor is NewPropertyDescriptor) {
+								templateBuilder.replaceElement(e.propertyValue!!, descriptor.name, TextExpression(descriptor.value), true)
+							}
 						}
 						i++
 					}

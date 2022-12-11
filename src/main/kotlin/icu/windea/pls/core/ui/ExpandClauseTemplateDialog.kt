@@ -1,6 +1,7 @@
 package icu.windea.pls.core.ui
 
 import com.intellij.openapi.*
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
@@ -11,6 +12,7 @@ import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.*
 import com.intellij.util.ui.table.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
@@ -33,11 +35,12 @@ class ExpandClauseTemplateDialog(
 	val propertyName: String?,
 	val descriptors: List<ElementDescriptor>
 ) : DialogWrapper(project) {
+	val allKeys = descriptors.filterIsInstance<PropertyDescriptor>().map { it.name }.toTypedArray()
+	val resultDescriptors = descriptors.toMutableList()
+	
 	private lateinit var elementsList: JBListTable
 	private lateinit var elementsTable: TableView<ElementDescriptor>
 	private var elementsTableModel: ElementTableModel
-	
-	val resultDescriptors = descriptors.toMutableList()
 	
 	init {
 		title = PlsBundle.message("ui.dialog.expandClauseTemplate.title")
@@ -46,7 +49,7 @@ class ExpandClauseTemplateDialog(
 	}
 	
 	private fun createElementsInfoModel(): ElementTableModel {
-		return ElementTableModel(descriptors, resultDescriptors)
+		return ElementTableModel(resultDescriptors)
 	}
 	
 	override fun createNorthPanel(): JComponent? {
@@ -92,11 +95,29 @@ class ExpandClauseTemplateDialog(
 		elementsList = createElementsListTable()
 		//add, remove, move up, move down, duplicate
 		val buttonsPanel = ToolbarDecorator.createDecorator(elementsList.table)
+			.addExtraAction(DuplicateDescriptor(elementsTable))
 			.createPanel()
 		return buttonsPanel
 	}
 	
 	private fun createElementsListTable(): ElementsListTable {
 		return ElementsListTable(project, elementsTable, elementsTableModel, disposable)
+	}
+	
+	class DuplicateDescriptor(
+		private val elementsTable: TableView<ElementDescriptor>
+	): AnAction(PlsBundle.message("ui.dialog.expandClauseTemplate.actions.duplicate"), null, PlsIcons.Actions.DuplicateDescriptor) {
+		init {
+			shortcutSet = CustomShortcutSet.fromString("alt C")
+		}
+		
+		override fun actionPerformed(e: AnActionEvent) {
+			val selectedRows = elementsTable.selectedRows
+			for(row in selectedRows.reversed()) {
+				elementsTable.listTableModel.insertRow(row + 1, elementsTable.getRow(row).copyDescriptor())
+			}
+		}
+		
+		override fun getActionUpdateThread() = ActionUpdateThread.EDT
 	}
 }

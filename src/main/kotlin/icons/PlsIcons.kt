@@ -1,6 +1,8 @@
 package icons
 
+import com.intellij.icons.*
 import com.intellij.ui.*
+import icu.windea.pls.core.ui.*
 import javax.swing.*
 
 object PlsIcons {
@@ -56,6 +58,8 @@ object PlsIcons {
 		@JvmField val SteamGameDirectory = loadIcon("/icons/actions/steamGameDirectory.svg")
 		@JvmField val SteamWorkshopDirectory = loadIcon("/icons/actions/steamWorkshopDirectory.svg")
 		@JvmField val GameModDirectory = loadIcon("/icons/actions/gameModDirectory.svg")
+		
+		@JvmField val DuplicateDescriptor = AllIcons.Actions.Copy
 	}
 	
 	object Gutter {
