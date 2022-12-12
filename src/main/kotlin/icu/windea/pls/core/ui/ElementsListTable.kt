@@ -1,7 +1,6 @@
 package icu.windea.pls.core.ui
 
 import com.intellij.openapi.*
-import com.intellij.openapi.observable.util.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.table.*
@@ -14,13 +13,12 @@ import javax.swing.*
 //com.intellij.refactoring.changeSignature.ChangeSignatureDialogBase.ParametersListTable
 
 class ElementsListTable(
-	private val elementsTable: TableView<ElementDescriptor>,
-	private val elementsTableModel: ElementTableModel,
-	private val disposable: Disposable,
-	private val context: ElementDescriptorContext,
-	private val dialog: DialogWithValidation
-): JBListTable(elementsTable, disposable) {
-	
+	val elementsTable: TableView<ElementDescriptor>,
+	val elementsTableModel: ElementTableModel,
+	val disposable: Disposable,
+	val context: ElementDescriptorContext,
+	val dialog: DialogWithValidation
+) : JBListTable(elementsTable, disposable) {
 	val _rowRenderer = object : EditorTextFieldJBTableRowRenderer(context.project, ParadoxScriptLanguage, disposable) {
 		override fun getText(table: JTable, row: Int): String {
 			val item = getRowItem(row)
@@ -29,12 +27,13 @@ class ElementsListTable(
 					item.name
 				}
 				is PropertyDescriptor -> {
-					buildString { 
+					buildString {
 						append(item.name.quoteIfNecessary())
 						append(" ")
 						append(item.separator)
+						append(" ")
 						if(item.value.isEmpty()) {
-							append("\"\"").append("# ").append(PlsBundle.message("column.tooltip.editInTemplate"))
+							append("\"\"").append(" # ").append(PlsBundle.message("column.tooltip.editInTemplate"))
 						} else {
 							append(item.value.quoteIfNecessary())
 						}
@@ -52,7 +51,6 @@ class ElementsListTable(
 		return object : JBTableRowEditor() {
 			private var nameComboBox: ComboBox<String>? = null
 			private var separatorComboBox: ComboBox<ParadoxSeparator>? = null
-			private var valueField: JTextField? = null
 			private var valueComboBox: ComboBox<String>? = null
 			
 			override fun prepareEditor(table: JTable, row: Int) {
@@ -62,7 +60,7 @@ class ElementsListTable(
 					val panel = JPanel(VerticalFlowLayout(VerticalFlowLayout.TOP, 4, 2, true, false))
 					when(columnInfo) {
 						is ElementTableModel.NameColumn -> {
-							if(item is ValueDescriptor){
+							if(item is ValueDescriptor) {
 								val nameComboBox = ComboBox(context.allValues)
 								nameComboBox.selectedItem = item.name
 								configureNameComboBox(nameComboBox)
@@ -83,22 +81,17 @@ class ElementsListTable(
 								configureSeparatorComboBox(separatorComboBox)
 								this.separatorComboBox = separatorComboBox
 								panel.add(separatorComboBox)
-							} 
+							}
 						}
 						is ElementTableModel.ValueColumn -> {
 							if(item is PropertyDescriptor) {
 								val constantValues = context.allKeyValuesMap[item.name].orEmpty()
-								if(constantValues.isEmpty()) {
-									val valueField = JTextField(item.value)
-									valueField.isEditable = false
-									this.valueField = valueField
-									panel.add(valueField)
-								} else {
-									val valueComboBox = ComboBox(constantValues)
-									valueComboBox.selectedItem = item.value
-									this.valueComboBox = valueComboBox
-									panel.add(valueComboBox)
-								}
+								val items = constantValues.ifEmpty { arrayOf("") }
+								val valueComboBox = ComboBox(items)
+								valueComboBox.selectedItem = item.value
+								configureValueComboBox(valueComboBox)
+								this.valueComboBox = valueComboBox
+								panel.add(valueComboBox)
 							}
 						}
 						else -> {
@@ -110,22 +103,17 @@ class ElementsListTable(
 			}
 			
 			private fun configureNameComboBox(nameComboBox: ComboBox<String>) {
-				val validator = {
-					dialog.validate {
-						when {
-							nameComboBox.item.isEmpty() -> ValidationInfo(PlsBundle.message("column.validation.name.empty"), nameComboBox)
-							else -> null
-						}
-					}
-				}
-				validator()
-				nameComboBox.whenItemSelected { validator() }
 				nameComboBox.setMinimumAndPreferredWidth(200)
 				nameComboBox.maximumRowCount = 20
 			}
 			
 			private fun configureSeparatorComboBox(separatorComboBox: ComboBox<ParadoxSeparator>) {
-				separatorComboBox.setMinimumAndPreferredWidth(50)
+				separatorComboBox.setMinimumAndPreferredWidth(60)
+			}
+			
+			private fun configureValueComboBox(valueComboBox: ComboBox<String>) {
+				valueComboBox.setMinimumAndPreferredWidth(200)
+				valueComboBox.maximumRowCount = 20
 			}
 			
 			override fun getValue(): JBTableRow {
@@ -134,7 +122,7 @@ class ElementsListTable(
 					when(columnInfo) {
 						is ElementTableModel.NameColumn -> nameComboBox?.item
 						is ElementTableModel.SeparatorColumn -> separatorComboBox?.item
-						is ElementTableModel.ValueColumn -> valueField?.text ?: valueComboBox?.item
+						is ElementTableModel.ValueColumn -> valueComboBox?.item
 						else -> null
 					}
 				}
@@ -145,7 +133,7 @@ class ElementsListTable(
 			}
 			
 			override fun getFocusableComponents(): Array<JComponent> {
-				return listOfNotNull(nameComboBox, separatorComboBox, valueField, valueComboBox).toTypedArray()
+				return listOfNotNull(nameComboBox, separatorComboBox, valueComboBox).toTypedArray()
 			}
 		}
 	}

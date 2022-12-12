@@ -88,7 +88,7 @@ object CwtConfigHandler {
 	//}
 	//endregion
 	
-	//region Handle Methods
+	//region Common Methods
 	/**
 	 * 内联规则以便后续的代码提示、引用解析和结构验证。
 	 */

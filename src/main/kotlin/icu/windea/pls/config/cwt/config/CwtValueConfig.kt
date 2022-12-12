@@ -23,6 +23,8 @@ data class CwtValueConfig(
 	val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
 	override val expression: CwtValueExpression get() = valueExpression
 	
+	var propertyConfig: CwtPropertyConfig? = null
+	
 	val isTagConfig = optionValues?.any { it.stringValue == "tag" } == true
 	
 	override fun resolved(): CwtValueConfig = this

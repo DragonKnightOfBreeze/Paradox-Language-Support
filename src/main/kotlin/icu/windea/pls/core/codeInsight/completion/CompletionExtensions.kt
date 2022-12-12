@@ -231,7 +231,10 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 			val project = file.project
 			
 			val allDescriptors = getDescriptors(constantConfigGroup)
-			val propertyName = if(targetConfig is CwtPropertyConfig) targetConfig.key else null
+			val propertyName = when(targetConfig) {
+				is CwtValueConfig -> targetConfig.propertyConfig?.key
+				is CwtPropertyConfig -> targetConfig.key
+			}
 			val dialog = ExpandClauseTemplateDialog(project, editor, propertyName, allDescriptors)
 			if(!dialog.showAndGet()) return@Runnable
 			val descriptors = dialog.context.resultDescriptors
@@ -254,10 +257,10 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 					descriptors.forEach {
 						when(it) {
 							is ValueDescriptor -> {
-								append(it.name)
+								append(it.name.quoteIfNecessary())
 							}
 							is PropertyDescriptor -> {
-								append(it.name)
+								append(it.name.quoteIfNecessary())
 								if(around) append(" ")
 								append(it.separator)
 								if(around) append(" ")
@@ -280,7 +283,8 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 						val descriptor = descriptors[i]
 						if(descriptor.editInTemplate) {
 							if(e is ParadoxScriptProperty && descriptor is PropertyDescriptor) {
-								templateBuilder.replaceElement(e.propertyValue!!, "${descriptor.name}_$i", TextExpression(descriptor.value), true)
+								val expression = TextExpression(descriptor.value.ifNotEmpty { it.quoteIfNecessary() })
+								templateBuilder.replaceElement(e.propertyValue!!, "${descriptor.name}_$i", expression, true)
 							}
 						}
 						i++

@@ -37,7 +37,7 @@ class ExpandClauseTemplateDialog(
 ) : DialogWithValidation(project) {
 	val context = ElementDescriptorContext(project, editor, descriptors)
 	
-	lateinit var elementsList: JBListTable
+	lateinit var elementsList: ElementsListTable
 	lateinit var elementsTable: TableView<ElementDescriptor>
 	var elementsTableModel: ElementTableModel
 	
@@ -51,17 +51,15 @@ class ExpandClauseTemplateDialog(
 		return ElementTableModel(context)
 	}
 	
-	override fun createNorthPanel(): JComponent? {
-		if(propertyName == null) return null
-		return panel {
-			//(textField) propertyName
-			row {
-				textField()
-					.text(propertyName).enabled(false).horizontalAlign(HorizontalAlign.FILL)
-					.label(PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName"),LabelPosition.LEFT)
-			}
-		}.withPreferredWidth(480)
-	}
+	override fun createNorthPanel() = panel {
+		//(textField) propertyName
+		row {
+			val propertyName = propertyName ?: PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName.none")
+			textField()
+				.text(propertyName).enabled(false).horizontalAlign(HorizontalAlign.FILL)
+				.label(PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName"), LabelPosition.LEFT)
+		}
+	}.withPreferredWidth(600)
 	
 	override fun createCenterPanel(): JComponent {
 		val panel = JPanel(BorderLayout())
@@ -94,7 +92,7 @@ class ExpandClauseTemplateDialog(
 		elementsList = createElementsListTable()
 		//add, remove, move up, move down, duplicate
 		val buttonsPanel = ToolbarDecorator.createDecorator(elementsList.table)
-			.addExtraAction(DuplicateAction(elementsTable))
+			.addExtraAction(DuplicateAction(elementsList))
 			.createPanel()
 		buttonsPanel.preferredSize = Dimension(buttonsPanel.preferredSize.width, 540)
 		return buttonsPanel
@@ -105,15 +103,16 @@ class ExpandClauseTemplateDialog(
 	}
 	
 	class DuplicateAction(
-		private val elementsTable: TableView<ElementDescriptor>
+		private val elementsList: ElementsListTable
 	): AnAction(PlsBundle.message("ui.dialog.expandClauseTemplate.actions.duplicate"), null, PlsIcons.Actions.DuplicateDescriptor) {
 		init {
 			shortcutSet = CustomShortcutSet.fromString("alt C")
 		}
 		
 		override fun actionPerformed(e: AnActionEvent) {
-			val selectedRows = elementsTable.selectedRows
-			for(row in selectedRows.reversed()) {
+			val selectedIndices = elementsList.table.selectionModel.selectedIndices
+			val elementsTable = elementsList.elementsTable
+			for(row in selectedIndices.reversed()) {
 				elementsTable.listTableModel.insertRow(row + 1, elementsTable.getRow(row).copyDescriptor())
 			}
 		}
