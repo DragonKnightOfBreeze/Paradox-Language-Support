@@ -39,9 +39,9 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
 		if(valueFieldExpression == null) return null
 		val valueLinkFromDataNode = valueFieldExpression.valueFieldNode?.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
 			?:return null
-		val scriptValueExpression = valueLinkFromDataNode.dataSourceNode.nodes.findIsInstance<ParadoxValueSetValueExpression>()
+		val scriptValueExpression = valueLinkFromDataNode.dataSourceNode.nodes.findIsInstance<ParadoxScriptValueExpression>()
 			?: return null
-		val valueSetValueNode = scriptValueExpression.valueSetValueNode
+		val scriptValueExpressionNode = scriptValueExpression.scriptValueNode
 		val firstParameterNode = scriptValueExpression.nodes.findIsInstance<ParadoxScriptValueParameterExpressionNode>()
 			?: return null
 		val argStartIndex = firstParameterNode.rangeInExpression.startOffset
@@ -49,7 +49,7 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
 		//要求光标位置在SV表达式中的参数部分中
 		if(offset - targetElement.textRange.startOffset < argStartIndex) return null
 		
-		return targetElement to valueSetValueNode.text
+		return targetElement to scriptValueExpressionNode.text
 	}
 	
 	override fun findElementForParameterInfo(context: CreateParameterInfoContext): ParadoxScriptStringExpressionElement? {

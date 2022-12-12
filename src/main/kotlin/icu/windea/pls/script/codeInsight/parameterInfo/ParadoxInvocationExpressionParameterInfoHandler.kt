@@ -22,9 +22,7 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
 	
 	private fun findTargetElement(context: ParameterInfoContext): ParadoxScriptProperty? {
 		val element = context.file.findElementAt(context.offset) ?: return null
-		val targetElement = element.parentOfType<ParadoxScriptStringExpressionElement>() ?: return null
-		if(!targetElement.isExpressionElement()) return null
-		return targetElement
+		return element
 			.parents(false)
 			.filterIsInstance<ParadoxScriptProperty>()
 			.find { prop ->
@@ -36,7 +34,8 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
 			}
 			?.takeIf { result ->
 				//光标位置必须位于block中
-				result.propertyValue?.textRange?.let { r -> context.offset > r.startOffset && context.offset < r.endOffset } ?: false
+				val block = result.propertyValue as? ParadoxScriptBlock ?: return@takeIf false
+				block.textRange.let { range -> context.offset > range.startOffset && context.offset < range.endOffset } 
 			}
 	}
 	
