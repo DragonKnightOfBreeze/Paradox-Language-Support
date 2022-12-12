@@ -11,7 +11,9 @@
 
 ![](../assets/images/plugin-integration/translate-documentation.gif)
 
-**注意：**暂不保证翻译后能够正确地识别并保留各种特殊标记。
+> **Note**
+> 
+> 暂不保证翻译后能够正确地识别并保留各种特殊标记。
 
 ### 意向：复制本地化到剪贴板并将本地化文本翻译为指定语言区域
 
@@ -19,4 +21,6 @@
 
 ![](../assets/images/plugin-integration/intention_copy_loc_for_locale.gif)
 
-**注意：**暂不保证翻译后能够正确地识别并保留各种特殊标记。
+> **Note**
+> 
+> 暂不保证翻译后能够正确地识别并保留各种特殊标记。

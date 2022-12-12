@@ -2,17 +2,17 @@
   Support for Paradox Language.
 </p>
 <p>
-  Supports Paradox script language (mainly
+  Support Paradox script language (mainly
   <code>*.txt</code> files) and localisation language (<code>*.yml</code> files),
-  provide functions such as syntax parsing, navigation, documentation, code validation, reference resolving,
+  provide features such as syntax parsing, navigation, documentation, code validation, reference resolving,
   inlay hints, localisation text rendering and DDS image rendering.
 </p>
 <p>
-  Supports cwt language (<code>*.cwt</code> files),
-  provide functions such as syntax parsing, navigation and documentation.
+  Support cwt language (<code>*.cwt</code> files),
+  provide features such as syntax parsing, navigation and documentation.
 </p>
 <p>
-  Supports DDS image viewing in IDE, and provide necessary editor functions, as common image support by IDE.
+  Support DDS image viewing in IDE, and provide necessary editor features, as common image support by IDE.
 </p>
 <p>
   By creating the descriptor file <code>descriptor.mod</code> in the root directory of your Mod,
@@ -23,8 +23,8 @@
   in the <code>Project Structure</code> page, can import it as a dependency of your mod.
 </p>
 <p>
-  This plugin is under developing, some complex functions may not be implemented yet, and may cause unexpected bugs during use.
-  If you need some functions that this plugin is not implemented or not implemented perfectly,
+  This plugin is under developing, some complex features may not be implemented yet, and may cause unexpected bugs during use.
+  If you need some features that this plugin is not implemented or not implemented perfectly,
   please consider using <a href="https://code.visualstudio.com">VSCode</a> with its plugin <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>.
 </p>
 <p>
@@ -34,10 +34,10 @@
 </p>
 <p>
   By also install <a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a>,
-  this plugin could provide some <a href="https://windea.icu/Paradox-Language-Support/#/end/plugin-integration.md">additional functions</a>.
+  this plugin could provide some <a href="https://windea.icu/Paradox-Language-Support/#/end/plugin-integration.md">additional features</a>.
 </p>
 <p>
-  For functions and usages of this plugin, please refer to the
+  For features and usages of this plugin, please refer to the
   <a href="https://windea.icu/Paradox-Language-Support/#/en/">Reference documentation</a> (To be written in detail).
 </p>
 

@@ -3,7 +3,7 @@
 ## Integrate **Translation** Plugin
 
 When [Translation](https://github.com/YiiGuxing/TranslationPlugin) plugin is also installed and enabled,
-PLS will provide bellow additional functions:
+PLS will provide bellow additional features:
 
 ### Translate documentation
 
@@ -13,7 +13,9 @@ or click `Translate Documentation` item in right-click menu.
 
 ![](../assets/images/plugin-integration/translate-documentation.gif)
 
-**Note:** There is no guarantee that special markers will be preserved correctly after translation yet.
+> **Note**
+> 
+> There is no guarantee that special markers will be preserved correctly after translation yet.
 
 ### Intention: Copy localisation(s) to the clipboard for locale...
 
@@ -23,4 +25,6 @@ and try to translate the localisation text into the specified locale before doin
 
 ![](../assets/images/plugin-integration/intention_copy_loc_for_locale.gif)
 
-**Note:** There is no guarantee that special markers will be preserved correctly after translation yet.
+> **Note**
+> 
+> There is no guarantee that special markers will be preserved correctly after translation yet.
