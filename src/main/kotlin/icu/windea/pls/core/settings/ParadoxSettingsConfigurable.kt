@@ -41,16 +41,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 								settings.defaultGameType = it
 							}
 						})
-						.onApply {
-							//不存在模组根目录的游戏类型标记文件，设置中的默认游戏类型被更改时，也要重新解析相关文件
-							runWriteAction {
-								for(rootInfo in ParadoxRootInfo.values) {
-									if(rootInfo.gameTypeFromMarkerFile == null) {
-										reparseFilesInRoot(rootInfo.rootFile)
-									}
-								}
-							}
-						}
+						.onApply { doReparseFilesInRoot() }
 				}
 				//preferredLocale
 				row {
@@ -67,7 +58,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 							}
 						})
 						.bindItem(settings::preferredLocale.toNullableProperty())
-						.onApply { refreshInlayHints() }
+						.onApply { doRefreshInlayHints() }
 				}
 				//ignoredFileNames
 				row {
@@ -80,11 +71,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						.comment(PlsBundle.message("settings.generic.ignoredFileNames.comment"))
 						.horizontalAlign(HorizontalAlign.FILL)
 						.resizableColumn()
-						.onApply {
-							runWriteAction {
-								reparseScriptFiles()
-							}
-						}
+						.onApply { doReparseFilesByFileNames(settings) }
 				}
 				//preferOverridden
 				row {
@@ -184,8 +171,30 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 		}
 	}
 	
+	private fun doReparseFilesInRoot() {
+		//不存在模组根目录的游戏类型标记文件，设置中的默认游戏类型被更改时，需要重新解析相关文件
+		runWriteAction {
+			for(rootInfo in ParadoxRootInfo.values) {
+				if(rootInfo.gameTypeFromMarkerFile == null) {
+					reparseFilesInRoot(rootInfo.rootFile)
+				}
+			}
+		}
+	}
+	
+	private fun doReparseFilesByFileNames(settings: ParadoxSettingsState) {
+		//设置中的被忽略文件名被更改时，需要重新解析相关文件
+		runWriteAction {
+			val fileNames = mutableSetOf<String>()
+			fileNames += settings.oldIgnoredFileNameSet
+			fileNames += settings.ignoredFileNameSet
+			settings.oldIgnoredFileNameSet = settings.ignoredFileNameSet
+			reparseFilesByFileNames(fileNames)
+		}
+	}
+	
 	@Suppress("UnstableApiUsage")
-	private fun refreshInlayHints() {
+	private fun doRefreshInlayHints() {
 		//不存在模组根目录的游戏类型标记文件，设置中的默认游戏类型被更改时，也要重新解析相关文件
 		//当某些设置变更后，需要刷新内嵌提示
 		//com.intellij.codeInsight.hints.VcsCodeAuthorInlayHintsProviderKt.refreshCodeAuthorInlayHints

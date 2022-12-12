@@ -87,7 +87,7 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
 		val fileInfo = psi.fileInfo
 		val project = psi.project
 		val language = ParadoxScriptLanguage
-		val context = if(fileInfo != null) ParadoxScriptParsingContext(fileInfo, project) else null
+		val context = ParadoxScriptParsingContext(project, fileInfo)
 		val lexer = ParadoxScriptLexerAdapter(context)
 		val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, lexer, language, chameleon.chars)
 		val parser = ParadoxScriptParser()

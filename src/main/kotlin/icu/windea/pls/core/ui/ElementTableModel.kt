@@ -11,24 +11,20 @@ import javax.swing.table.*
 //com.intellij.refactoring.changeSignature.ParameterTableModelBase
 
 class ElementTableModel(
-	dialog: ExpandClauseTemplateDialog
+	context: ElementDescriptorContext
 ) : ListTableModel<ElementDescriptor>(), EditableModel {
 	init {
-		columnInfos = arrayOf(NameColumn(this), SeparatorColumn(this), ValueColumn(this))
-		items = dialog.resultDescriptors
+		columnInfos = arrayOf(NameColumn(context), SeparatorColumn(context), ValueColumn(context))
+		items = context.resultDescriptors
 	}
 	
 	override fun addRow() {
-		addRow(NewPropertyDescriptor(name = "key", value = "value"))
+		addRow(PropertyDescriptor(name = "key", value = "value"))
 	}
 	
-	class NameColumn(private val tableModel: ElementTableModel) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("column.name.name")) {
+	class NameColumn(private val context: ElementDescriptorContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("column.name.name")) {
 		override fun isCellEditable(item: ElementDescriptor): Boolean {
-			return when(item){
-				is PropertyDescriptor -> false
-				is ValueDescriptor -> false
-				is NewPropertyDescriptor -> true 
-			}
+			return true
 		}
 		
 		override fun valueOf(item: ElementDescriptor): String {
@@ -36,52 +32,50 @@ class ElementTableModel(
 		}
 		
 		override fun getRenderer(item: ElementDescriptor): TableCellRenderer {
-			return DefaultTableCellRenderer()
+			return when(item) {
+				is ValueDescriptor -> ComboBoxTableRenderer(context.allValues)
+				is PropertyDescriptor -> ComboBoxTableRenderer(context.allKeys)
+			}
 		}
 		
-		override fun getEditor(item: ElementDescriptor): TableCellEditor? {
+		override fun getEditor(item: ElementDescriptor): TableCellEditor {
 			return when(item) {
-				is PropertyDescriptor -> null
-				is ValueDescriptor -> null
-				is NewPropertyDescriptor -> DefaultCellEditor(JTextField())
+				is ValueDescriptor -> DefaultCellEditor(ComboBox(context.allValues))
+				is PropertyDescriptor -> DefaultCellEditor(ComboBox(context.allKeys))
 			}
 		}
 	}
 	
-	class SeparatorColumn(private val tableModel: ElementTableModel) : ColumnInfo<ElementDescriptor, ParadoxSeparator>(PlsBundle.message("column.name.separator")) {
+	class SeparatorColumn(private val context: ElementDescriptorContext) : ColumnInfo<ElementDescriptor, ParadoxSeparator>(PlsBundle.message("column.name.separator")) {
 		override fun isCellEditable(item: ElementDescriptor): Boolean {
 			return item is PropertyDescriptor
 		}
 		
 		override fun valueOf(item: ElementDescriptor): ParadoxSeparator? {
 			return when(item) {
-				is PropertyDescriptor -> item.separator
 				is ValueDescriptor -> null
-				is NewPropertyDescriptor -> item.separator
+				is PropertyDescriptor -> item.separator
 			}
 		}
 		
 		override fun setValue(item: ElementDescriptor, value: ParadoxSeparator) {
 			when(item) {
-				is PropertyDescriptor -> item.separator = value
 				is ValueDescriptor -> pass()
-				is NewPropertyDescriptor -> item.separator = value
+				is PropertyDescriptor -> item.separator = value
 			}
 		}
 		
 		override fun getRenderer(item: ElementDescriptor): TableCellRenderer? {
 			return when(item){
-				is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparator.values())
 				is ValueDescriptor -> null
-				is NewPropertyDescriptor -> DefaultTableCellRenderer()
+				is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparator.values())
 			} 
 		}
 		
 		override fun getEditor(item: ElementDescriptor): TableCellEditor? {
 			return when(item){
-				is PropertyDescriptor -> DefaultCellEditor(ComboBox(ParadoxSeparator.values()))
 				is ValueDescriptor -> null
-				is NewPropertyDescriptor -> DefaultCellEditor(ComboBox(ParadoxSeparator.values()))
+				is PropertyDescriptor -> DefaultCellEditor(ComboBox(ParadoxSeparator.values()))
 			}
 		}
 		
@@ -90,52 +84,50 @@ class ElementTableModel(
 		}
 	}
 	
-	class ValueColumn(private val tableModel: ElementTableModel) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("column.name.value")) {
+	class ValueColumn(private val context: ElementDescriptorContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("column.name.value")) {
 		override fun isCellEditable(item: ElementDescriptor): Boolean {
-			return item is PropertyDescriptor && item.constantValues.isNotEmpty()
+			return item is PropertyDescriptor && context.allKeyValuesMap[item.name].orEmpty().isNotEmpty()
 		}
 		
 		override fun valueOf(item: ElementDescriptor): String? {
 			return when(item) {
-				is PropertyDescriptor -> item.value
 				is ValueDescriptor -> null
-				is NewPropertyDescriptor -> item.value
+				is PropertyDescriptor -> item.value
 			}
 		}
 		
 		override fun setValue(item: ElementDescriptor, value: String?) {
 			when(item) {
-				is PropertyDescriptor -> item.value = value.orEmpty()
 				is ValueDescriptor -> pass()
-				is NewPropertyDescriptor -> item.value = value.orEmpty()
+				is PropertyDescriptor -> item.value = value.orEmpty()
 			}
 		}
 		
 		override fun getRenderer(item: ElementDescriptor): TableCellRenderer? {
 			return when(item) {
+				is ValueDescriptor -> null
 				is PropertyDescriptor -> {
-					if(item.constantValues.isNotEmpty()) {
-						ComboBoxTableRenderer(item.constantValueArray) 
-					} else {
-						DefaultTableCellRenderer()
+					val constantValues = context.allKeyValuesMap[item.name].orEmpty()
+					if(constantValues.isEmpty()) {
+						 DefaultTableCellRenderer()
+					}  else {
+						ComboBoxTableRenderer(constantValues)
 					}
 				}
-				is ValueDescriptor -> null 
-				is NewPropertyDescriptor -> DefaultTableCellRenderer()
 			}
 		}
 		
 		override fun getEditor(item: ElementDescriptor): TableCellEditor? {
 			return when(item) {
+				is ValueDescriptor -> null
 				is PropertyDescriptor -> {
-					if(item.constantValues.isNotEmpty()) {
-						DefaultCellEditor(ComboBox(item.constantValueArray))
-					} else {
+					val constantValues = context.allKeyValuesMap[item.name].orEmpty()
+					if(constantValues.isEmpty()) {
 						null
+					}  else {
+						DefaultCellEditor(ComboBox(constantValues))
 					}
 				}
-				is ValueDescriptor -> null
-				is NewPropertyDescriptor -> DefaultCellEditor(JTextField())
 			}
 		}
 	}

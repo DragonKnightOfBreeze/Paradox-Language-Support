@@ -51,7 +51,7 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 	
 	fun createLexer(virtualFile: VirtualFile, project: Project?): ParadoxScriptLexerAdapter {
 		val fileInfo = virtualFile.fileInfo
-		val context = if(fileInfo != null) ParadoxScriptParsingContext(fileInfo, project) else null
+		val context =  ParadoxScriptParsingContext(project, fileInfo)
 		return ParadoxScriptLexerAdapter(context)
 	}
 	

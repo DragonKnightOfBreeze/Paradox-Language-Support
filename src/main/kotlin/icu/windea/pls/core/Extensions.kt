@@ -11,6 +11,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
+import com.intellij.util.FileContentUtil
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
@@ -196,20 +197,25 @@ fun reparseFilesInRoot(rootFile: VirtualFile) {
 	} finally {
 		//要求重新索引
 		FileBasedIndex.getInstance().requestReindex(rootFile)
-		//要求重建缓存（CachedValue）
-		ParadoxGameTypeModificationTracker.fromRoot(rootFile).increment()
 	}
 }
 
-fun reparseScriptFiles() {
+fun reparseFilesByFileNames(fileNames: Set<String>) {
+	//重新解析指定的根目录中的所有文件，包括非脚本非本地化文件
+	val files = mutableListOf<VirtualFile>()
 	try {
-		FileTypeManagerEx.getInstanceEx().makeFileTypesChange("Ignored file name of paradox script files changed.") { }
+		val project = getTheOnlyOpenOrDefaultProject()
+		FilenameIndex.processFilesByNames(fileNames, true, GlobalSearchScope.allScope(project), null) {file ->
+			files.add(file)
+			true
+		}
+		FileContentUtil.reparseFiles(project, files, true)
 	} catch(e: Exception) {
 		//ignore
 	} finally {
 		//要求重新索引
-		for(rootInfo in ParadoxRootInfo.values) {
-			FileBasedIndex.getInstance().requestReindex(rootInfo.rootFile)
+		for(file in files) {
+			FileBasedIndex.getInstance().requestReindex(file)
 		}
 	}
 }

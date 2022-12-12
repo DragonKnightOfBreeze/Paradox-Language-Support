@@ -4,6 +4,8 @@ import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.util.*
+import kotlin.properties.*
 
 /**
  * PLS设置。可以在设置页面`Settings > Languages & Frameworks > Paradox Language Support`中进行配置。
@@ -35,7 +37,7 @@ class ParadoxSettingsState : BaseState() {
 	 * @property showParameters 是否需要在文档中显示参数信息（如果支持且存在）。
 	 * @property showScopes 是否需要在文档中显示作用域信息（如果支持且存在）。
 	 */
-	class DocumentationState: BaseState(){
+	class DocumentationState : BaseState() {
 		var renderLineComment by property(false)
 		var renderRelatedLocalisationsForDefinitions by property(true)
 		var renderRelatedImagesForDefinitions by property(true)
@@ -54,7 +56,7 @@ class ParadoxSettingsState : BaseState() {
 	 * @property completeWithClauseTemplate 当补全定义属性时，如果可能的值可以是子句，且其中的属性名可以是常量字符串，且是有限的，是否另外提供提示项，自动插入从句内联模版。
 	 * @property maxExpressionCountInOneLine 当插入从句内联模版时，当要插入的从句中的属性的个数不超过时，会把所有属性放到同一行
 	 */
-	class CompletionState: BaseState(){
+	class CompletionState : BaseState() {
 		var maxCompleteSize by property(100)
 		var completeWithValue by property(true)
 		var completeWithClauseTemplate by property(true)
@@ -64,9 +66,12 @@ class ParadoxSettingsState : BaseState() {
 	@get:Tag("generation")
 	var generation by property(GenerationState())
 	
-	class GenerationState: BaseState(){
+	class GenerationState : BaseState() {
 		var fileNamePrefix by string("000000_")
 	}
+	
+	val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet().orEmpty() }
+	var oldIgnoredFileNameSet = ignoredFileNameSet
 	
 	val locales by lazy {
 		buildList {

@@ -175,6 +175,19 @@ fun String.isRightQuoted() : Boolean {
 	return length > 1 && endsWith('"') && get(length - 2) != '\\'
 }
 
+fun String.toCommaDelimitedStringList(): MutableList<String> {
+	return this.splitToSequence(',').mapNotNullTo(SmartList()) { it.trim().takeIfNotEmpty() }
+}
+
+fun String.toCommaDelimitedStringSet(): MutableSet<String> {
+	return this.splitToSequence(',').mapNotNullTo(mutableSetOf()) { it.trim().takeIfNotEmpty() }
+}
+
+fun Collection<String>.toCommaDelimitedString(): String {
+	val input = this
+	return if(input.isEmpty()) "" else input.joinToString(",")
+}
+
 fun String.quote(): String {
 	if(this.isEmpty() || this == "\"") return "\"\""
 	val start = startsWith('"')

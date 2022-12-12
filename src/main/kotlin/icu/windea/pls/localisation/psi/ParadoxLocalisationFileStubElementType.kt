@@ -48,7 +48,7 @@ object ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub
 		val fileInfo = psi.fileInfo
 		val project = psi.project
 		val language = ParadoxLocalisationLanguage
-		val context = if(fileInfo != null) ParadoxLocalisationParsingContext(fileInfo, project) else null
+		val context = ParadoxLocalisationParsingContext(project, fileInfo)
 		val lexer = ParadoxLocalisationLexerAdapter(context)
 		val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, lexer, language, chameleon.chars)
 		val parser = ParadoxLocalisationParser()

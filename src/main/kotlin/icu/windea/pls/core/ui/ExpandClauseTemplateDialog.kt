@@ -34,9 +34,8 @@ class ExpandClauseTemplateDialog(
 	val editor: Editor,
 	val propertyName: String?,
 	val descriptors: List<ElementDescriptor>
-) : DialogWrapper(project) {
-	val allKeys = descriptors.filterIsInstance<PropertyDescriptor>().map { it.name }.toTypedArray()
-	val resultDescriptors = descriptors.toMutableList()
+) : DialogWithValidation(project) {
+	val context = ElementDescriptorContext(project, editor, descriptors)
 	
 	lateinit var elementsList: JBListTable
 	lateinit var elementsTable: TableView<ElementDescriptor>
@@ -49,7 +48,7 @@ class ExpandClauseTemplateDialog(
 	}
 	
 	private fun createElementsInfoModel(): ElementTableModel {
-		return ElementTableModel(this)
+		return ElementTableModel(context)
 	}
 	
 	override fun createNorthPanel(): JComponent? {
@@ -88,33 +87,24 @@ class ExpandClauseTemplateDialog(
 		}
 		elementsTable.setShowGrid(false)
 		elementsTable.cellSelectionEnabled = true
-		elementsTable.selectionModel.selectionMode = ListSelectionModel.SINGLE_SELECTION
+		elementsTable.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
 		elementsTable.selectionModel.setSelectionInterval(0, 0)
 		elementsTable.surrendersFocusOnKeystroke = true
 		
 		elementsList = createElementsListTable()
 		//add, remove, move up, move down, duplicate
 		val buttonsPanel = ToolbarDecorator.createDecorator(elementsList.table)
-			.addExtraAction(DuplicateDescriptor(elementsTable))
+			.addExtraAction(DuplicateAction(elementsTable))
 			.createPanel()
+		buttonsPanel.preferredSize = Dimension(buttonsPanel.preferredSize.width, 540)
 		return buttonsPanel
 	}
 	
 	private fun createElementsListTable(): ElementsListTable {
-		return ElementsListTable(this)
+		return ElementsListTable(elementsTable, elementsTableModel, disposable, context, this)
 	}
 	
-	fun validateNameField(nameField: JTextField) {
-		if(nameField.text.isEmpty()) {
-			setErrorText(PlsBundle.message("column.message.name.notEmpty"), nameField)
-			isOKActionEnabled = false
-		} else {
-			setErrorText(null, nameField)
-			isOKActionEnabled = true
-		}
-	}
-	
-	class DuplicateDescriptor(
+	class DuplicateAction(
 		private val elementsTable: TableView<ElementDescriptor>
 	): AnAction(PlsBundle.message("ui.dialog.expandClauseTemplate.actions.duplicate"), null, PlsIcons.Actions.DuplicateDescriptor) {
 		init {

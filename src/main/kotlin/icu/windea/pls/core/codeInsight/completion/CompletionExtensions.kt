@@ -56,7 +56,7 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 	
 	run {
 		val lookupElement = PlsLookupElements.blockLookupElement
-		addElement(lookupElement)
+		addExpressionElement(lookupElement, context)
 	}
 	
 	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
@@ -67,7 +67,7 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 			val tailText1 = "{ <generate via template> }"
 			val lookupElement1 = LookupElementBuilder.create("")
 				.withPresentableText(tailText1)
-			addScriptExpressionElementWithClauseTemplate(lookupElement1, context, targetConfig, false) {
+			addScriptExpressionElementWithClauseTemplate(lookupElement1, context, targetConfig) {
 				withPriority(PlsCompletionPriorities.keywordPriority - 1) //under "{...}"
 			}
 		}
@@ -133,7 +133,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 	
 	if(context.isKey != true || context.contextElement is ParadoxScriptPropertyKey) {
 		val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
-			skipOrInsertRightQuote(context, c.editor)
+			applyKeyInsertHandler(context, c)
 		}
 		addElement(resultLookupElement)
 		return
@@ -141,19 +141,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 	
 	if(context.isKey == true) {
 		val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
-			val editor = c.editor
-			skipOrInsertRightQuote(context, c.editor)
-			val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
-			val text = buildString {
-				append(if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "=")
-				if(constantValue != null) append(constantValue)
-				if(insertCurlyBraces) append(if(customSettings.SPACE_WITHIN_BRACES) "{  }" else "{}")
-			}
-			val length = when {
-				insertCurlyBraces -> if(customSettings.SPACE_WITHIN_BRACES) text.length - 2 else text.length - 1
-				else -> text.length
-			}
-			EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
+			applyKeyAndValueInsertHandler(c, context, constantValue, insertCurlyBraces)
 		}
 		addElement(resultLookupElement.builder())
 	}
@@ -168,7 +156,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 				if(tailText != null) append(tailText)
 			}
 			val lookupElement1 = lookupElement.withTailText(tailText1)
-			addScriptExpressionElementWithClauseTemplate(lookupElement1, context, targetConfig, true, builder)
+			addScriptExpressionElementWithClauseTemplate(lookupElement1, context, targetConfig, builder)
 		}
 	}
 }
@@ -187,12 +175,40 @@ private fun skipOrInsertRightQuote(context: ProcessingContext, editor: Editor) {
 	}
 }
 
+private fun applyKeyInsertHandler(context: ProcessingContext, c: InsertionContext) {
+	skipOrInsertRightQuote(context, c.editor)
+}
+
+@Suppress("UNUSED_PARAMETER")
+private fun applyValueInsertHandler(c: InsertionContext, context: ProcessingContext, insertCurlyBraces: Boolean) {
+	if(!insertCurlyBraces) return
+	val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
+	val text =  if(customSettings.SPACE_WITHIN_BRACES) "{  }" else "{}"
+	val length = if(customSettings.SPACE_WITHIN_BRACES) text.length - 2 else text.length - 1
+	EditorModificationUtil.insertStringAtCaret(c.editor, text, false, true, length)
+}
+
+private fun applyKeyAndValueInsertHandler(c: InsertionContext, context: ProcessingContext, constantValue: String?, insertCurlyBraces: Boolean) {
+	val editor = c.editor
+	skipOrInsertRightQuote(context, c.editor)
+	val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
+	val text = buildString {
+		append(if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "=")
+		if(constantValue != null) append(constantValue)
+		if(insertCurlyBraces) append(if(customSettings.SPACE_WITHIN_BRACES) "{  }" else "{}")
+	}
+	val length = when {
+		insertCurlyBraces -> if(customSettings.SPACE_WITHIN_BRACES) text.length - 2 else text.length - 1
+		else -> text.length
+	}
+	EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
+}
+
 @Suppress("UnstableApiUsage", "DialogTitleCapitalization")
 fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 	lookupElement: LookupElementBuilder,
 	context: ProcessingContext,
 	targetConfig: CwtDataConfig<*>,
-	insertEq: Boolean,
 	builder: LookupElementBuilder.() -> LookupElement = { this }
 ) {
 	val file = context.originalFile ?: return
@@ -205,6 +221,11 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 	if(constantConfigGroup.isEmpty()) return
 	
 	val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
+		when(targetConfig) {
+			is CwtPropertyConfig -> applyKeyAndValueInsertHandler(c, context, null, true)
+			is CwtValueConfig -> applyValueInsertHandler(c, context, true)
+		}
+		
 		c.laterRunnable = Runnable {
 			val editor = c.editor
 			val project = file.project
@@ -213,39 +234,29 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 			val propertyName = if(targetConfig is CwtPropertyConfig) targetConfig.key else null
 			val dialog = ExpandClauseTemplateDialog(project, editor, propertyName, allDescriptors)
 			if(!dialog.showAndGet()) return@Runnable
-			val descriptors = dialog.resultDescriptors
+			val descriptors = dialog.context.resultDescriptors
 			
 			val hasRemain = configList.size != constantConfigGroup.size
 			val customSettings = CodeStyle.getCustomSettings(file, ParadoxScriptCodeStyleSettings::class.java)
 			val multiline = descriptors.size > getSettings().completion.maxExpressionCountInOneLine
 			val around = customSettings.SPACE_AROUND_PROPERTY_SEPARATOR
-			val separator = if(around) " = " else "="
 			
 			val documentManager = PsiDocumentManager.getInstance(project)
 			val command = Runnable {
-				skipOrInsertRightQuote(context, editor)
-				val text = if(insertEq) separator + "v" else "v"
-				EditorModificationUtil.insertStringAtCaret(editor, text, false, true)
 				documentManager.commitDocument(editor.document)
 				val offset = editor.caretModel.offset
+				val blockOffset = if(around) offset + 1 else offset
 				
-				val elementAtCaret = file.findElementAt(offset - 1)?.parent as ParadoxScriptString
+				val elementAtCaret = file.findElementAt(blockOffset)?.parent as ParadoxScriptValue
 				val clauseText = buildString {
 					append("{")
 					if(multiline) append("\n")
 					descriptors.forEach {
 						when(it) {
-							is PropertyDescriptor -> {
-								append(it.name)
-								if(around) append(" ")
-								append(it.separator)
-								if(around) append(" ")
-								append(it.value.ifEmpty { "v" })
-							}
 							is ValueDescriptor -> {
 								append(it.name)
 							}
-							is NewPropertyDescriptor -> {
+							is PropertyDescriptor -> {
 								append(it.name)
 								if(around) append(" ")
 								append(it.separator)
@@ -269,9 +280,7 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 						val descriptor = descriptors[i]
 						if(descriptor.editInTemplate) {
 							if(e is ParadoxScriptProperty && descriptor is PropertyDescriptor) {
-								templateBuilder.replaceElement(e.propertyValue!!, descriptor.name, TextExpression(descriptor.value), true)
-							} else if(e is ParadoxScriptProperty && descriptor is NewPropertyDescriptor) {
-								templateBuilder.replaceElement(e.propertyValue!!, descriptor.name, TextExpression(descriptor.value), true)
+								templateBuilder.replaceElement(e.propertyValue!!, "${descriptor.name}_$i", TextExpression(descriptor.value), true)
 							}
 						}
 						i++
@@ -305,21 +314,21 @@ private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtD
 	val descriptors = mutableListOf<ElementDescriptor>()
 	for((expression, constantConfigs) in constantConfigGroup) {
 		when(expression) {
+			is CwtValueExpression -> {
+				val descriptor = ValueDescriptor(name = expression.expressionString)
+				descriptors.add(descriptor)
+			}
 			is CwtKeyExpression -> {
 				val name = expression.expressionString
 				val constantValueExpressions = constantConfigs
 					.mapNotNull { it.castOrNull<CwtPropertyConfig>()?.valueExpression?.takeIf { e -> e.type == CwtDataTypes.Constant } }
 				val mustBeConstantValue = constantValueExpressions.size == constantConfigs.size
 				val value = if(mustBeConstantValue) constantValueExpressions.first().expressionString else ""
-				val constantValues = if(constantValueExpressions.size <= 1) emptyList() else buildList {
+				val constantValues = if(constantValueExpressions.isEmpty()) emptyList() else buildList {
 					if(!mustBeConstantValue) add("")
 					constantValueExpressions.forEach { add(it.expressionString) }
 				}
 				val descriptor = PropertyDescriptor(name = name, value = value, constantValues = constantValues)
-				descriptors.add(descriptor)
-			}
-			is CwtValueExpression -> {
-				val descriptor = ValueDescriptor(name = expression.expressionString)
 				descriptors.add(descriptor)
 			}
 		}

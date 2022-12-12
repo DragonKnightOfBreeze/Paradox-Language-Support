@@ -588,7 +588,7 @@ object CwtConfigHandler {
 			if(ParadoxDefinitionHandler.matchesTypeByPath(typeConfig, path)) {
 				val skipRootKeyConfig = typeConfig.skipRootKey
 				if(skipRootKeyConfig == null || skipRootKeyConfig.isEmpty()) {
-					if(path.isEmpty()) {
+					if(elementPath.isEmpty()) {
 						typeConfig.typeKeyFilter?.takeIf { it.notReversed }?.forEach {
 							infoMap.getOrPut(it) { SmartList()}.add(typeConfig to null)
 						}

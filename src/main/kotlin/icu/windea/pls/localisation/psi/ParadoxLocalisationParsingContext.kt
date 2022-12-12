@@ -5,12 +5,13 @@ import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 
 class ParadoxLocalisationParsingContext(
-	val fileInfo: ParadoxFileInfo,
-	val project: Project?
+	val project: Project?,
+	val fileInfo: ParadoxFileInfo?
 ) {
+	val gameType get() = fileInfo?.rootInfo?.gameType
+	
 	var currentKey: String? = null
 	
-	val gameType get() = fileInfo.rootInfo.gameType
 	
 	//@WithGameType(ParadoxGameType.Stellaris)
 	//val stellarisNameFormatKeys =
@@ -18,6 +19,7 @@ class ParadoxLocalisationParsingContext(
 	
 	fun isStellarisNameFormatKey() : Boolean{
 		if(gameType != ParadoxGameType.Stellaris) return false
+		if(fileInfo == null) return false
 		if(!fileInfo.path.canBeLocalisationPath()) return false
 		val currentKey = currentKey ?: return false
 		return StellarisNameFormatHandler.prefixList.any { currentKey.startsWith(it) }

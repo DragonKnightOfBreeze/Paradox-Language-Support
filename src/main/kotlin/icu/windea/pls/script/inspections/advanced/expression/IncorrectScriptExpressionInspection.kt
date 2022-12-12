@@ -8,6 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolvePropertyConfigs
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveValueConfigs
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -53,6 +54,7 @@ class IncorrectScriptExpressionInspection : LocalInspectionTool() {
 				ProgressManager.checkCanceled()
 				run {
 					val shouldCheck = when {
+						element is ParadoxScriptedVariableReference -> return //skip
 						element.isPropertyValue() -> forPropertyValue
 						element.isBlockValue() -> forValue
 						else -> return //skip

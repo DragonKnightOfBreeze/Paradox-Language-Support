@@ -67,7 +67,7 @@ class ParadoxLocalisationSyntaxHighlighter(
 	
 	override fun getHighlightingLexer(): ParadoxLocalisationLexerAdapter {
 		val fileInfo = virtualFile?.fileInfo
-		val context = if(fileInfo != null) ParadoxLocalisationParsingContext(fileInfo, project) else null
+		val context = ParadoxLocalisationParsingContext(project, fileInfo)
 		return ParadoxLocalisationLexerAdapter(context)
 	}
 }
