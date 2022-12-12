@@ -15,7 +15,6 @@
   * [ ] 编辑本地化文件时提供输入彩色文本、图标等的快捷键（仅在可用的位置生效）
   * [ ] 确认重命名功能能够预期正确进行（如果对应的声明/引用支持重命名）
   * [ ] 确认`inline_math`和`scripted_loc`是否需要进行转义的最终条件，并添加到对应的检查中
-  * [ ] `commandField`额外支持`$@variableName$`的写法，其中`variableName`是全局封装变量（位于`common/scripted_variables`中）（来自CWT：`localisations.log`）
   * [ ] ~~将本地化命令（`[xxx]`中的xxx，所有文本）解析为单个元素，如果解析scopeFieldExpression一样，将此作为localisationCommandExpression并解析，实现相关功能：检查、提示等~~
   * [ ] 基于facet或者合成库`SyntheticLibrary`+自定义设置配置模组的游戏类型、游戏目录、依赖模组列表等配置
   * [ ] 内嵌提示的预览文本中不再包括特殊注释，而是通过向psiFile中注入特定userData的方式提供必要的信息（类型、本地化等）
@@ -27,9 +26,6 @@
   * [ ] 可以通过特殊注释强制指定定义类型（基于文件路径或者基于直接的类型+子类型） - 用于实现差异比较等功能
   * [ ] 实现对`*.gui`文件中的GUI定义的UI预览（参考IDEA的Markdown插件的实现）
   * [ ] 实现对`*.txt`文件中的定义的UI预览（参考游戏中的效果以及灰机Wiki的实现）
-  * [ ] 同名的定义、本地化，同路径的文件之间的DIFF（左窗口显示当前的，右窗口显示包括当前在内的所有的） *
-  * [ ] 实现工具栏动作：生成所有缺失语言区域的本地化文件 *
-  * [ ] 实现工具栏动作：生成所有缺失的相关本地化 *
 * 完善CWT配置支持：
   * [ ] ~~为复杂枚举如`complex_enum[policy_option]`提供相关本地化支持（类似定义）~~（搁置，不能很好地显示出来，复杂枚举名可能本身就是一个本地化引用）
   * [ ] 优化：更好地兼容嵌套的定义
@@ -37,11 +33,36 @@
   * [ ] 优化：scope的名字（准确来说是别名）可以包含点号
   * [ ] 优化：检查scopeFieldExpression时也检查是否匹配对应的scopeName或者scopeGroupName（归类到`MismatchScopeInspection`）
   * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
-  * [ ] 优化：支持处理`value`和`value_set`自带的作用域信息（支持valueSetValueExpression，如`val@root.owner`）
   * [ ] 对于link `pop_faction_parameter`和complexEnum `pop_faction_parameters`的特殊处理 ，前者只能在`pop_faction`中使用且作为数据源的complexEnumValue只能来自同一定义声明中
 * 遗留问题：
   * [ ] 有时候会把`DISTRICT = district_arcology_housing`的`DISTRICT`被识别为scope_expression而非参数名，为什么？
   * [ ] 有时候`event_target:mechanocalibrator_country`中的`event_target:`无法点击导航到CWT，为什么？
+
+## 0.7.8
+
+* 新增功能：
+  * 代码补全（`Code > Code Completion`）
+    * [ ] 当可能正在输入一个封装变量名（scriptedVariableName）时，提供相应的代码补全，以便用户重载已有的封装变量
+    * [ ] 当可能正在输入一个定义名（definitionName）时，提供相应的代码补全，以便用户重载已有的定义
+    * [ ] 当可能正在输入一个本地化名（definitionName）时，提供相应的代码补全，以便用户重载已有的本地化
+    * 以上代码不会在输入时自动提示，需要手动调用代码补全
+  * 代码检查（`Code > Inspect Code...`）
+    * [ ] 优化代码检查：无法解析的定义元素（基于CWT规则文件，可以按照CWT规则路径/定义元素路径部分禁用此项检查）
+    * [ ] 新增代码检查：缺少的定义元素（基于CWT规则文件，可以按照CWT规则路径/定义元素路径部分禁用此项检查）
+    * [ ] 新增代码检查：过多的定义元素（基于CWT规则文件，可以按照CWT规则路径/定义元素路径部分禁用此项检查）
+  * 动态模版（`Code > Insert Live Template...`）
+    * [ ] 可以自定义脚本文件的子句作用域的动态模版
+    * [ ] 可以自定义本地化文件的本地化文本作用域的动态模版
+    * 可以通过`Code > Save as Live Template...`将选中的文本保存为动态模版，以便快速编写脚本或者文本
+  * 取消包围/移除（`Code > Unwrap/Remove...`）
+    * [ ] 删除脚本属性或者单独的值（`k = v` > `v`，包括后面的单行注释）
+    * [ ] 删除子句或者值为子句的属性并将其中的内容上移（`k = { v }` > `v`）
+    * [ ] 删除参数条件块并将其中的内容上移（`[[PARAM] v ]` > `v`）
+    * [ ] 删除本地化属性（`KEY:0 "..."`，包括后面的单行注释）
+  * 其他
+    * [ ] 同名的定义、本地化，同路径的文件之间的DIFF（左窗口显示当前的，右窗口显示包括当前在内的所有的）
+    * [ ] 实现工具栏动作：生成所有缺失语言区域的本地化文件
+    * [ ] 实现工具栏动作：生成所有缺失的相关本地化
 
 ## 0.7.7
 
