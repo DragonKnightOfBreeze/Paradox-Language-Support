@@ -13,7 +13,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptValueExpressionNode(
+	class ParadoxScriptValueExpressionNode(
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	val config: CwtConfig<*>,

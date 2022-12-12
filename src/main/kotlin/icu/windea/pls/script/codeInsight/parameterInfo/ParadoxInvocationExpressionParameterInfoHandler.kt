@@ -1,4 +1,4 @@
-package icu.windea.pls.script.parameterInfo
+package icu.windea.pls.script.codeInsight.parameterInfo
 
 import com.intellij.lang.parameterInfo.*
 import com.intellij.psi.util.*
@@ -22,9 +22,9 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
 	
 	private fun findTargetElement(context: ParameterInfoContext): ParadoxScriptProperty? {
 		val element = context.file.findElementAt(context.offset) ?: return null
-		val keyOrStringElement = element.parent?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return null
-		if(!keyOrStringElement.isExpressionElement()) return null
-		return keyOrStringElement
+		val targetElement = element.parentOfType<ParadoxScriptStringExpressionElement>() ?: return null
+		if(!targetElement.isExpressionElement()) return null
+		return targetElement
 			.parents(false)
 			.filterIsInstance<ParadoxScriptProperty>()
 			.find { prop ->
@@ -48,6 +48,7 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
 		//合并所有可能的参数名
 		val selector = definitionSelector().gameTypeFrom(context.file).preferRootFrom(context.file)
 		val definitions = ParadoxDefinitionSearch.search(definitionName, definitionType, context.project, selector = selector).findAll()
+		if(definitions.isEmpty()) return null
 		val parameterNamesSet = definitions.mapNotNullTo(mutableSetOf()) { definition ->
 			definition.parameterMap.keys.ifEmpty { setOf(PlsDocBundle.message("noParameters")) }
 		}
