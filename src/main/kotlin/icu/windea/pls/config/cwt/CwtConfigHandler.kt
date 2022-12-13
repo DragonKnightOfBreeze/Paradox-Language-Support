@@ -814,8 +814,8 @@ object CwtConfigHandler {
 				//提示参数名（仅限key）
 				if(isKey == true && enumName == paramsEnumName && config is CwtPropertyConfig) {
 					ProgressManager.checkCanceled()
-					val propertyElement = contextElement.findParentDefinitionProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return
-					completeParametersForInvocationExpression(propertyElement, config, context, result)
+					val definitionElement = contextElement.findParentDefinitionProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return
+					completeParametersForInvocationExpression(definitionElement, config, context, result)
 					return
 				}
 				
@@ -1538,7 +1538,8 @@ object CwtConfigHandler {
 				val name = expression
 				//尝试解析为参数名
 				if(isKey == true && enumName == paramsEnumName && config is CwtPropertyConfig) {
-					val definitionName = element.findParentDefinitionProperty(true)?.name ?: return null
+					val definitionElement = element.findParentDefinitionProperty(true) ?: return null
+					val definitionName = definitionElement.name
 					val definitionType = config.parent?.castOrNull<CwtPropertyConfig>()
 						?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.subNameExpression
 						?.takeIf { it.type == CwtDataTypes.TypeExpression }?.value ?: return null
@@ -1687,7 +1688,8 @@ object CwtConfigHandler {
 				val name = expression
 				//尝试解析为参数名
 				if(isKey == true && enumName == paramsEnumName && config is CwtPropertyConfig) {
-					val definitionName = element.parent?.castOrNull<ParadoxScriptProperty>()?.name ?: return emptyList()
+					val definitionElement = element.findParentDefinitionProperty(true) ?: return emptyList()
+					val definitionName = definitionElement.name
 					val definitionType = config.parent?.castOrNull<CwtPropertyConfig>()
 						?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.subNameExpression
 						?.takeIf { it.type == CwtDataTypes.TypeExpression }?.value ?: return emptyList()

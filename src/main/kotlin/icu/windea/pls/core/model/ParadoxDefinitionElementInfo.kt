@@ -1,6 +1,5 @@
 package icu.windea.pls.core.model
 
-import com.google.common.cache.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
@@ -26,74 +25,58 @@ class ParadoxDefinitionElementInfo(
 ) {
 	val isValid = element is ParadoxScriptValue || elementPath.isNotEmpty()
 	
+	private val configs: List<CwtDataConfig<*>> by lazy {
+		doGetConfigs(definitionInfo, this, CwtConfigMatchType.ALL)
+	}
+	
+	private val childPropertyConfigs: List<CwtPropertyConfig> by lazy { 
+		doGetChildPropertyConfigs(definitionInfo, this, CwtConfigMatchType.ALL)
+	}
+	
+	private val childValueConfigs: List<CwtValueConfig> by lazy {
+		doGetChildValueConfigs(definitionInfo, this, CwtConfigMatchType.ALL)
+	}
+	
 	/** 对应的属性/值配置列表。 */
 	fun getConfigs(matchType: Int = CwtConfigMatchType.ALL): List<CwtDataConfig<*>> {
-		//基于keyExpression，valueExpression可能不同
-		return resolveConfigs(definitionInfo, this, matchType)
+		if(matchType == CwtConfigMatchType.ALL) return configs
+		return doGetConfigs(definitionInfo, this, matchType)
 	}
 	
 	/** 对应的子属性配置列表。 */
 	fun getChildPropertyConfigs(matchType: Int = CwtConfigMatchType.ALL): List<CwtPropertyConfig> {
-		//基于上一级keyExpression，keyExpression一定唯一
-		return resolveChildPropertyConfigs(definitionInfo, this, matchType)
+		if(matchType == CwtConfigMatchType.ALL) return childPropertyConfigs
+		return doGetChildPropertyConfigs(definitionInfo, this, matchType)
 	}
 	
 	/** 对应的子值配置列表。 */
 	fun getChildValueConfigs(matchType: Int = CwtConfigMatchType.ALL): List<CwtValueConfig> {
-		//基于上一级keyExpression，valueExpression一定唯一
-		return resolveChildValueConfigs(definitionInfo, this, matchType)
+		if(matchType == CwtConfigMatchType.ALL) return childValueConfigs
+		return doGetChildValueConfigs(definitionInfo, this, matchType)
 	}
 	
 	/** 子属性基于配置的出现次数。 */
 	val childPropertyOccurrence: Map<CwtKeyExpression, Int> by lazy {
-		val properties = when {
-			element is ParadoxScriptPropertyKey -> element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.propertyList ?: return@lazy emptyMap()
-			else -> return@lazy emptyMap()
-		}
-		if(properties.isEmpty()) return@lazy emptyMap()
-		properties.groupAndCountBy { prop ->
-			val expression = ParadoxDataExpression.resolve(prop.propertyKey)
-			getChildPropertyConfigs().find { matchesScriptExpression(expression, it.keyExpression, configGroup) }?.keyExpression
-		}
+		doGetChildPropertyOccurrence(element)
 	}
 	
 	/** 子值基于配置的出现次数。 */
 	val childValueOccurrence: Map<CwtValueExpression, Int> by lazy {
-		val values = when {
-			element is ParadoxScriptPropertyKey-> element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.valueList ?: return@lazy emptyMap()
-			element is ParadoxScriptBlockElement -> element.valueList
-			else -> return@lazy emptyMap()
-		}
-		if(values.isEmpty()) return@lazy emptyMap()
-		values.groupAndCountBy { value ->
-			val expression = ParadoxDataExpression.resolve(value)
-			getChildValueConfigs().find { matchesScriptExpression(expression, it.valueExpression, configGroup) }?.valueExpression
-		}
+		doGetChildValueOccurrence(element)
 	}
+	
 }
-
-private val configsCache: Cache<String, List<CwtDataConfig<*>>> by lazy { CacheBuilder.newBuilder().buildCache() }
-private val childPropertyConfigCache: Cache<String, List<CwtPropertyConfig>> by lazy { CacheBuilder.newBuilder().buildCache() }
-private val childValueConfigCache: Cache<String, List<CwtValueConfig>> by lazy { CacheBuilder.newBuilder().buildCache() }
 
 /**
  * 根据路径解析对应的属性/值配置列表。
  */
-private fun resolveConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtDataConfig<*>> {
-	val elementPath = definitionElementInfo.elementPath
-	if(elementPath.isParameterAware) return emptyList() //如果路径中可能带有参数，则不进行解析
-	
-	val cacheKey = "${definitionInfo.typesText}:${definitionElementInfo.elementPath}:$matchType"
-	return configsCache.getOrPut(cacheKey, { emptyList() }) {
-		doResolveConfigs(definitionInfo, definitionElementInfo, matchType)
-	}
-}
-
-
-private fun doResolveConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtDataConfig<*>> {
-	val elementPath = definitionElementInfo.elementPath
-	val configGroup = definitionElementInfo.configGroup
+private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtDataConfig<*>> {
+	//基于keyExpression，valueExpression可能不同
 	val declaration = definitionInfo.declaration ?: return emptyList()
+	//如果路径中可能待遇参数，则不进行解析
+	val elementPath = definitionElementInfo.elementPath
+	if(elementPath.isParameterAware) return emptyList()
+	val configGroup = definitionElementInfo.configGroup
 	if(elementPath.isEmpty()) return declaration.toSingletonList()
 	var result = declaration.configs ?: return emptyList()
 	var index = 0
@@ -144,26 +127,19 @@ private fun doResolveConfigs(definitionInfo: ParadoxDefinitionInfo, definitionEl
 /**
  * 根据路径解析对应的子属性配置列表。（过滤重复的）
  */
-private fun resolveChildPropertyConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtPropertyConfig> {
+private fun doGetChildPropertyConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtPropertyConfig> {
+	//基于上一级keyExpression，keyExpression一定唯一
 	if(definitionInfo.declaration?.configs.isNullOrEmpty()) return emptyList()
 	//如果路径中可能待遇参数，则不进行解析
-	if(definitionElementInfo.elementPath.isParameterAware) return emptyList()
-	
-	//parentPath可以对应property或者value
-	val cacheKey = "${definitionInfo.typesText}:${definitionElementInfo.elementPath}:$matchType"
-	return childPropertyConfigCache.getOrPut(cacheKey, { emptyList() }) {
-		doResolveChildPropertyConfigs(definitionInfo, definitionElementInfo, matchType)
-	}
-}
-
-private fun doResolveChildPropertyConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtPropertyConfig> {
 	val elementPath = definitionElementInfo.elementPath
+	if(elementPath.isParameterAware) return emptyList()
+	//parentPath可以对应property或者value
 	return when {
 		//这里的属性路径可以为空，这时得到的就是顶级属性列表（定义的代码块类型的值中的属性列表）
 		elementPath.isEmpty() -> definitionInfo.declaration?.properties.orEmpty()
 		else -> {
 			//打平propertyConfigs中的每一个properties
-			val propertyConfigs = resolveConfigs(definitionInfo, definitionElementInfo, matchType)
+			val propertyConfigs = doGetConfigs(definitionInfo, definitionElementInfo, matchType)
 			val result = SmartList<CwtPropertyConfig>()
 			for(propertyConfig in propertyConfigs) {
 				val props = propertyConfig.properties
@@ -177,26 +153,19 @@ private fun doResolveChildPropertyConfigs(definitionInfo: ParadoxDefinitionInfo,
 /**
  * 根据路径解析对应的子值配置列表。（过滤重复的）
  */
-private fun resolveChildValueConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtValueConfig> {
+private fun doGetChildValueConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtValueConfig> {
+	//基于上一级keyExpression，valueExpression一定唯一
 	if(definitionInfo.declaration?.configs.isNullOrEmpty()) return emptyList()
 	//如果路径中可能待遇参数，则不进行解析
-	if(definitionElementInfo.elementPath.isParameterAware) return emptyList()
-	
-	//parentPath可以对应property或者value
-	val cacheKey = "${definitionInfo.typesText}:${definitionElementInfo.elementPath}:$matchType"
-	return childValueConfigCache.getOrPut(cacheKey) {
-		doResolveChildValueConfigs(definitionInfo, definitionElementInfo, matchType)
-	}
-}
-
-private fun doResolveChildValueConfigs(definitionInfo: ParadoxDefinitionInfo, definitionElementInfo: ParadoxDefinitionElementInfo, matchType: Int): List<CwtValueConfig> {
 	val elementPath = definitionElementInfo.elementPath
+	if(elementPath.isParameterAware) return emptyList()
+	//parentPath可以对应property或者value
 	return when {
 		//这里的属性路径可以为空，这时得到的就是顶级值列表（定义的代码块类型的值中的值列表）
 		elementPath.isEmpty() -> definitionInfo.declaration?.values.orEmpty()
 		else -> {
 			//打平propertyConfigs中的每一个values
-			val propertyConfigs = resolveConfigs(definitionInfo, definitionElementInfo, matchType)
+			val propertyConfigs = doGetConfigs(definitionInfo, definitionElementInfo, matchType)
 			val result = SmartList<CwtValueConfig>()
 			for(propertyConfig in propertyConfigs) {
 				val values = propertyConfig.values
@@ -204,5 +173,30 @@ private fun doResolveChildValueConfigs(definitionInfo: ParadoxDefinitionInfo, de
 			}
 			result
 		}
+	}
+}
+
+private fun ParadoxDefinitionElementInfo.doGetChildPropertyOccurrence(element: PsiElement): Map<CwtKeyExpression, Int> {
+	val properties = when {
+		element is ParadoxScriptPropertyKey -> element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.propertyList ?: return emptyMap()
+		else -> return emptyMap()
+	}
+	if(properties.isEmpty()) return emptyMap()
+	return properties.groupAndCountBy { prop ->
+		val expression = ParadoxDataExpression.resolve(prop.propertyKey)
+		getChildPropertyConfigs().find { matchesScriptExpression(expression, it.keyExpression, configGroup) }?.keyExpression
+	}
+}
+
+private fun ParadoxDefinitionElementInfo.doGetChildValueOccurrence(element: PsiElement): Map<CwtValueExpression, Int> {
+	val values = when {
+		element is ParadoxScriptPropertyKey -> element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.valueList ?: return emptyMap()
+		element is ParadoxScriptBlockElement -> element.valueList
+		else -> return emptyMap()
+	}
+	if(values.isEmpty()) return emptyMap()
+	return values.groupAndCountBy { value ->
+		val expression = ParadoxDataExpression.resolve(value)
+		getChildValueConfigs().find { matchesScriptExpression(expression, it.valueExpression, configGroup) }?.valueExpression
 	}
 }
