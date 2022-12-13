@@ -492,10 +492,6 @@ inline fun <reified T> PsiElement.findChildrenOfType(forward: Boolean = true, pr
 val PsiElement.icon
 	get() = getIcon(0)
 
-fun PsiElement.getKeyword(offset: Int): String {
-	return text.substring(0, offset).unquote()
-}
-
 fun PsiFile.setNameWithoutExtension(name: String): PsiElement {
 	return setName(name + "." + this.name.substringAfterLast('.', ""))
 }

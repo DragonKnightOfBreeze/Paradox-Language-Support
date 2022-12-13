@@ -38,6 +38,14 @@ val ProcessingContext.scopeGroupName get() = get(PlsCompletionKeys.scopeGroupNam
 val ProcessingContext.isInt get() = get(PlsCompletionKeys.isIntKey) ?: false
 val ProcessingContext.valueSetName get() = get(PlsCompletionKeys.valueSetName)
 
+fun PsiElement.getKeyword(offset: Int): String {
+	return text.substring(0, offset).unquote()
+}
+
+fun PsiElement.getFullKeyword(offset: Int) : String {
+	return (text.substring(0, offset) + text.substring(offset + PlsConstants.dummyIdentifier.length)).unquote()
+}
+
 fun CompletionResultSet.addExpressionElement(
 	lookupElement: LookupElement,
 	context: ProcessingContext
@@ -79,6 +87,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 	lookupString: String,
 	context: ProcessingContext,
 	icon: Icon? = null,
+	presentableText: String? = null,
 	tailText: String? = null,
 	typeText: String? = null,
 	typeIcon: Icon? = null,
@@ -118,6 +127,9 @@ fun CompletionResultSet.addScriptExpressionElement(
 	}
 	if(icon != null) {
 		lookupElement = lookupElement.withIcon(icon)
+	}
+	if(presentableText != null) {
+		lookupElement = lookupElement.withPresentableText(presentableText)
 	}
 	val finalTailText = buildString {
 		if(constantValue != null) append(" = ").append(constantValue)
