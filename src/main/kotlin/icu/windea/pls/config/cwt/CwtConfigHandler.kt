@@ -589,6 +589,10 @@ object CwtConfigHandler {
 				val skipRootKeyConfig = typeConfig.skipRootKey
 				if(skipRootKeyConfig == null || skipRootKeyConfig.isEmpty()) {
 					if(elementPath.isEmpty()) {
+						if(typeConfig.nameField == null) {
+							//正在输入一个定义名（作为顶级属性名）
+							infoMap.getOrPut(context.keyword) { SmartList() }.add(typeConfig to null)
+						}
 						typeConfig.typeKeyFilter?.takeIf { it.notReversed }?.forEach {
 							infoMap.getOrPut(it) { SmartList()}.add(typeConfig to null)
 						}
@@ -602,6 +606,10 @@ object CwtConfigHandler {
 					for(skipConfig in skipRootKeyConfig) {
 						elementPath.relativeTo(skipConfig)?.let { r ->
 							if(r.isEmpty()) {
+								if(typeConfig.nameField == null) {
+									//正在输入一个定义名（作为顶级属性名）
+									infoMap.getOrPut(context.keyword) { SmartList() }.add(typeConfig to null)
+								}
 								typeConfig.typeKeyFilter?.takeIf { it.notReversed }?.forEach {
 									infoMap.getOrPut(it) { SmartList()}.add(typeConfig to null)
 								}
@@ -634,10 +642,11 @@ object CwtConfigHandler {
 			} 
 			val config = if(typeToUse == null) null else configGroup.declarations[typeToUse]?.getMergedConfig(subtypesToUse)
 			val element = config?.pointer?.element
+			val icon = if(config != null) PlsIcons.Definition else PlsIcons.Property
 			val typeFile = config?.pointer?.containingFile
 			context.put(PlsCompletionKeys.configKey, config)
 			result.addScriptExpressionElement(element, key, context,
-				icon = PlsIcons.Property,
+				icon = icon,
 				tailText = tailText,
 				typeText = typeFile?.name,
 				typeIcon = typeFile?.icon,

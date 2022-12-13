@@ -39,8 +39,8 @@ interface ParadoxElementPath : Iterable<Tuple3<String, Boolean, Boolean>> {
 	/**
 	 * 得到另一个子路径列表相对于当前元素路径的子路径列表中的第一个。例如，`"/foo/bar/x" relativeTo "/foo" -> "bar"`。
 	 * 如果两者完全匹配，则返回空字符串。
-	 * * @param ignoreCase 是否忽略大小写。默认为`true`。
-	 * * @param useAnyWildcard 对于另一个子路径列表，是否使用`"any"`字符串作为子路径通配符，表示匹配任意子路径。默认为`true`。
+	 * @param ignoreCase 是否忽略大小写。默认为`true`。
+	 * @param useAnyWildcard 对于另一个子路径列表，是否使用`"any"`字符串作为子路径通配符，表示匹配任意子路径。默认为`true`。
 	 */
 	fun relativeTo(other: List<String>, ignoreCase: Boolean = true, useAnyWildcard: Boolean = true) : String? {
 		if(this.length > other.size) return null
