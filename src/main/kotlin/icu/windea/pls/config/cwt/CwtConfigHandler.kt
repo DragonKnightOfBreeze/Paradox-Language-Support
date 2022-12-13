@@ -584,14 +584,16 @@ object CwtConfigHandler {
 		val configGroup = context.configGroup
 		val path = fileInfo.path
 		val infoMap = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
+		var inputDefinitionName = false
 		for(typeConfig in configGroup.types.values) {
 			if(ParadoxDefinitionHandler.matchesTypeByPath(typeConfig, path)) {
 				val skipRootKeyConfig = typeConfig.skipRootKey
 				if(skipRootKeyConfig == null || skipRootKeyConfig.isEmpty()) {
 					if(elementPath.isEmpty()) {
-						if(typeConfig.nameField == null) {
-							//正在输入一个定义名（作为顶级属性名）
+						//如果正在输入一个定义名（作为顶级属性名，后面没有分隔符）
+						if(typeConfig.nameField == null && context.keyword.isNotEmpty() && context.contextElement !is ParadoxScriptPropertyKey) {
 							infoMap.getOrPut(context.keyword) { SmartList() }.add(typeConfig to null)
+							inputDefinitionName = true
 						}
 						typeConfig.typeKeyFilter?.takeIf { it.notReversed }?.forEach {
 							infoMap.getOrPut(it) { SmartList()}.add(typeConfig to null)
@@ -606,9 +608,10 @@ object CwtConfigHandler {
 					for(skipConfig in skipRootKeyConfig) {
 						elementPath.relativeTo(skipConfig)?.let { r ->
 							if(r.isEmpty()) {
-								if(typeConfig.nameField == null) {
-									//正在输入一个定义名（作为顶级属性名）
+								//如果正在输入一个定义名（作为顶级属性名，后面没有分隔符）
+								if(typeConfig.nameField == null && context.keyword.isNotEmpty() && context.contextElement !is ParadoxScriptPropertyKey) {
 									infoMap.getOrPut(context.keyword) { SmartList() }.add(typeConfig to null)
+									inputDefinitionName = true
 								}
 								typeConfig.typeKeyFilter?.takeIf { it.notReversed }?.forEach {
 									infoMap.getOrPut(it) { SmartList()}.add(typeConfig to null)
@@ -645,7 +648,8 @@ object CwtConfigHandler {
 			val icon = if(config != null) PlsIcons.Definition else PlsIcons.Property
 			val typeFile = config?.pointer?.containingFile
 			context.put(PlsCompletionKeys.configKey, config)
-			result.addScriptExpressionElement(element, key, context,
+			val resultToUse = if(inputDefinitionName && key == context.keyword) result.withPrefixMatcher("") else result
+			resultToUse.addScriptExpressionElement(element, key, context,
 				icon = icon,
 				tailText = tailText,
 				typeText = typeFile?.name,

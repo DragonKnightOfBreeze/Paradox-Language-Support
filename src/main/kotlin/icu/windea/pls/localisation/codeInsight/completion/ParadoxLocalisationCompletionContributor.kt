@@ -6,13 +6,17 @@ import com.intellij.patterns.PlatformPatterns.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationStellarisNamePart
 
 class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	init {
 		//当用户可能正在输入一个locale的名字时提示
 		val localePattern = or(psiElement(LOCALE_ID), psiElement(PROPERTY_KEY_TOKEN))
 		extend(null, localePattern, ParadoxLocalisationLocaleCompletionProvider())
+		
+		//当用户正在输入一个propertyKey时提示
+		//当可能正在输入一个本地化名（非引用）时，可以自动插入后面的冒号、数字以及双引号，并将光标放到合适的位置
+		val propertyKeyPattern = psiElement(PROPERTY_KEY_TOKEN)
+		extend(null, propertyKeyPattern, ParadoxLocalisationNameCompletionProvider())
 		
 		//当用户正在输入一个propertyReference的名字时提示
 		val propertyReferencePattern = psiElement(PROPERTY_REFERENCE_ID)

@@ -24,6 +24,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		extend(null, scriptedVariableNamePattern, ParadoxScriptedVariableCompletionProvider())
 		
 		//当用户正在输入一个propertyKey或string时提示
+		//当可能正在输入一个定义名（非引用，作为顶级属性名）时，可以自动插入后面的等号、花括号以及从句内联模版，并将光标放到合适的位置
 		val definitionPattern = psiElement().withElementType(keyOrStringTokens)
 		extend(null, definitionPattern, ParadoxDefinitionCompletionProvider())
 		

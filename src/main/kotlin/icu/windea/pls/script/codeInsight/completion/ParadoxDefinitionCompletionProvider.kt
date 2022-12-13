@@ -9,7 +9,7 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 提示定义的相关代码补全。基于CWT规则文件。
+ * 提供定义的相关代码补全。基于CWT规则文件。
  */
 class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
