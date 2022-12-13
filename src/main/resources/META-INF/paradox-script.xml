@@ -108,6 +108,12 @@
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxModifierInfoHintsProvider"/>
+    <liveTemplateContext contextId="PARADOX_SCRIPT"
+                         implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$Base"/>
+    <liveTemplateContext contextId="PARADOX_SCRIPT_PROPERTY_KEY" baseContextId="PARADOX_SCRIPT"
+                         implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$PropertyKey"/>
+    <liveTemplateContext contextId="PARADOX_SCRIPT_PROPERTY_VALUE" baseContextId="PARADOX_SCRIPT"
+                         implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$PropertyValue"/>
     <codeInsight.template.postfixTemplateProvider
         language="PARADOX_SCRIPT" 
         implementationClass="icu.windea.pls.script.codeInsight.template.ParadoxScriptPostfixTemplateProvider"/>

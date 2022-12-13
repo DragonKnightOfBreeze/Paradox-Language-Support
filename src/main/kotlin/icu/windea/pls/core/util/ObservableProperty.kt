@@ -1,6 +1,5 @@
 package icu.windea.pls.core.util
 
-import org.jetbrains.kotlin.idea.gradleTooling.*
 import kotlin.properties.*
 import kotlin.reflect.*
 

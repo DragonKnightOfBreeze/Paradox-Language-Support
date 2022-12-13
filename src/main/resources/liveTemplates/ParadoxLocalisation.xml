@@ -4,7 +4,7 @@
             description="Surround with property reference markers"
             toReformat="false" toShortenFQNames="true">
     <context>
-      <option name="PARADOX_LOCALISATION" value="true"/>
+      <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
     </context>
   </template>
   <template name="scolor"
@@ -13,7 +13,7 @@
             toReformat="false" toShortenFQNames="true">
     <variable name="CODE" expression="complete()" alwaysStopAt="true"/>
     <context>
-      <option name="PARADOX_LOCALISATION" value="true"/>
+      <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
     </context>
   </template>
   <template name="scmd"
@@ -21,7 +21,7 @@
             description="Surround with command markers"
             toReformat="false" toShortenFQNames="true">
     <context>
-      <option name="PARADOX_LOCALISATION" value="true"/>
+      <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
     </context>
   </template>
   <template name="ref"
@@ -30,7 +30,7 @@
             toReformat="false" toShortenFQNames="true">
     <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
     <context>
-      <option name="PARADOX_LOCALISATION" value="true"/>
+      <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
     </context>
   </template>
   <template name="color"
@@ -40,7 +40,7 @@
     <variable name="CODE" expression="complete()" alwaysStopAt="true"/>
     <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
     <context>
-      <option name="PARADOX_LOCALISATION" value="true"/>
+      <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
     </context>
   </template>
   <template name="cmd"
@@ -49,7 +49,7 @@
             toReformat="false" toShortenFQNames="true">
     <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
     <context>
-      <option name="PARADOX_LOCALISATION" value="true"/>
+      <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
     </context>
   </template>
   <template name="icon"
@@ -58,7 +58,7 @@
             toReformat="false" toShortenFQNames="true">
     <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
     <context>
-      <option name="PARADOX_LOCALISATION" value="true"/>
+      <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
     </context>
   </template>
 </templateSet>
