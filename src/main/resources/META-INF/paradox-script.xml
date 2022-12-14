@@ -114,9 +114,12 @@
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$PropertyKey"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT_PROPERTY_VALUE" baseContextId="PARADOX_SCRIPT"
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$PropertyValue"/>
-    <codeInsight.template.postfixTemplateProvider
-        language="PARADOX_SCRIPT" 
+    <codeInsight.template.postfixTemplateProvider 
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.template.postfix.ParadoxScriptPostfixTemplateProvider"/>
+    <lang.smartEnterProcessor 
+        language="PARADOX_SCRIPT" 
+        implementationClass="icu.windea.pls.script.codeInsight.editorActions.smartEnter.ParadoxScriptSmartEnterProcessor"/>
     <lang.formatter
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>

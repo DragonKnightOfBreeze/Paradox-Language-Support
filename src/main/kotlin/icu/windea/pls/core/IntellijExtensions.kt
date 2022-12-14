@@ -186,8 +186,43 @@ fun interface TemplateEditingFinishedListener : TemplateEditingListener {
 }
 //endregion
 
-//region Editor Extensions
+//region Editor & Document Extensions
+fun Document.isAtLineStart(offset:Int, skipWhitespace: Boolean = false): Boolean {
+	if(skipWhitespace) return DocumentUtil.isAtLineStart(offset, this)
+	val lineStartOffset = DocumentUtil.getLineStartOffset(offset, this)
+	val charsSequence = charsSequence
+	for(i in offset..lineStartOffset) {
+		val c = charsSequence[i]
+		if(!c.isWhitespace()) {
+			return false
+		}
+	}
+	return true
+}
 
+fun Document.isAtLineEnd(offset:Int, skipWhitespace: Boolean = false): Boolean {
+	if(skipWhitespace) return DocumentUtil.isAtLineEnd(offset, this)
+	val lineEndOffset = DocumentUtil.getLineEndOffset(offset, this)
+	val charsSequence = charsSequence
+	for(i in offset..lineEndOffset) {
+		val c = charsSequence[i]
+		if(!c.isWhitespace()) {
+			return false
+		}
+	}
+	return true
+}
+
+inline fun Document.getCharToLineStart(offset: Int, skipWhitespaceOnly: Boolean = false, predicate: (Char) -> Boolean): Int {
+	val lineStartOffset = DocumentUtil.getLineStartOffset(offset, this)
+	val charsSequence = charsSequence
+	for(i in offset..lineStartOffset) {
+		val c = charsSequence[i]
+		if(predicate(c)) return i
+		if(skipWhitespaceOnly && !c.isWhitespace()) return -1
+	}
+	return -1
+}
 //endregion
 
 //region VFS Extensions
