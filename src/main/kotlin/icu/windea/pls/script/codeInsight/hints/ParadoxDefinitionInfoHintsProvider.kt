@@ -26,13 +26,6 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings
 	override val description: String get() = PlsBundle.message("script.hints.definitionInfo.description")
 	override val key: SettingsKey<NoSettings> get() = settingsKey
 	
-	override val previewText: String get() = ParadoxScriptHintsPreviewProvider.civicPreview
-	
-	override fun createFile(project: Project, fileType: FileType, document: Document): PsiFile {
-		return super.createFile(project, fileType, document)
-			.also { file -> ParadoxScriptHintsPreviewProvider.handleCivicPreviewFile(file) }
-	}
-	
 	override fun createSettings() = NoSettings()
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {

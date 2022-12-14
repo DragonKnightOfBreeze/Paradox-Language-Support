@@ -116,7 +116,7 @@
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$PropertyValue"/>
     <codeInsight.template.postfixTemplateProvider
         language="PARADOX_SCRIPT" 
-        implementationClass="icu.windea.pls.script.codeInsight.template.ParadoxScriptPostfixTemplateProvider"/>
+        implementationClass="icu.windea.pls.script.codeInsight.template.postfix.ParadoxScriptPostfixTemplateProvider"/>
     <lang.formatter
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>

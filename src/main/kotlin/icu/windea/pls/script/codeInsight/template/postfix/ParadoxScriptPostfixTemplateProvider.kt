@@ -1,4 +1,4 @@
-package icu.windea.pls.script.codeInsight.template
+package icu.windea.pls.script.codeInsight.template.postfix
 
 import com.intellij.codeInsight.template.postfix.templates.*
 import com.intellij.openapi.editor.*

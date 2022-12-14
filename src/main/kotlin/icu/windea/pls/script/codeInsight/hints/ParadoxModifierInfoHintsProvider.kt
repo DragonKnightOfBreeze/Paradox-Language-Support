@@ -48,14 +48,14 @@ class ParadoxModifierInfoHintsProvider: ParadoxScriptHintsProvider<Settings>(){
 						.applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.textLengthLimit.tooltip") }
 					textField()
 						.bindIntText(settings::textLengthLimit)
-						.errorOnApply("Int should be positive") { (it.text.toIntOrNull() ?: 0) <= 0 }
+						.errorOnApply(PlsBundle.message("script.hints.error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
 				}
 				row {
 					label(PlsBundle.message("script.hints.settings.iconHeightLimit")).widthGroup("left")
 						.applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.iconHeightLimit.tooltip") }
 					textField()
 						.bindIntText(settings::iconHeightLimit)
-						.errorOnApply("Int should be positive") { (it.text.toIntOrNull() ?: 0) <= 0 }
+						.errorOnApply(PlsBundle.message("script.hints.error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
 				}
 			}
 		}

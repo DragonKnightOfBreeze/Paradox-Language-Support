@@ -35,13 +35,6 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<S
 	override val description: String get() = PlsBundle.message("script.hints.definitionLocalizedName.description")
 	override val key: SettingsKey<Settings> get() = settingsKey
 	
-	override val previewText: String get() = ParadoxScriptHintsPreviewProvider.civicPreview
-	
-	override fun createFile(project: Project, fileType: FileType, document: Document): PsiFile {
-		return super.createFile(project, fileType, document)
-			.also { file -> ParadoxScriptHintsPreviewProvider.handleCivicPreviewFile(file) }
-	}
-	
 	override fun createSettings() = Settings()
 	
 	override fun createConfigurable(settings: Settings): ImmediateConfigurable {
@@ -52,14 +45,14 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<S
 						.applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.textLengthLimit.tooltip") }
 					textField()
 						.bindIntText(settings::textLengthLimit)
-						.errorOnApply("Int should be positive") { (it.text.toIntOrNull() ?: 0) <= 0 }
+						.errorOnApply(PlsBundle.message("script.hints.error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
 				}
 				row {
 					label(PlsBundle.message("script.hints.settings.iconHeightLimit")).widthGroup("left")
 						.applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.iconHeightLimit.tooltip") }
 					textField()
 						.bindIntText(settings::iconHeightLimit)
-						.errorOnApply("Int should be positive") { (it.text.toIntOrNull() ?: 0) <= 0 }
+						.errorOnApply(PlsBundle.message("script.hints.error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
 				}
 			}
 		}
