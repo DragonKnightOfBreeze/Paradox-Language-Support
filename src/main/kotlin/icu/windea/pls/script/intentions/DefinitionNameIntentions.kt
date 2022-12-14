@@ -21,7 +21,6 @@ abstract class DefinitionNameIntention : IntentionAction, PriorityAction {
 	
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
 		if(editor == null || file == null) return false
-		if(file.language != ParadoxScriptLanguage) return false
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return false
 		return element.isDefinitionName()
@@ -29,7 +28,6 @@ abstract class DefinitionNameIntention : IntentionAction, PriorityAction {
 	
 	override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
 		if(editor == null || file == null) return
-		if(file.language != ParadoxScriptLanguage) return
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return
 		val definition = element.findParentDefinition() ?: return //unexpected

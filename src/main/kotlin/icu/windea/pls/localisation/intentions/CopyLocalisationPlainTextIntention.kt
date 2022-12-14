@@ -24,7 +24,6 @@ class CopyLocalisationPlainTextIntention : IntentionAction {
 	
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
 		if(editor == null || file == null) return false
-		if(file.language != ParadoxLocalisationLanguage) return false
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset)
 		return element != null
@@ -32,7 +31,6 @@ class CopyLocalisationPlainTextIntention : IntentionAction {
 	
 	override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
 		if(editor == null || file == null) return
-		if(file.language != ParadoxLocalisationLanguage) return
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return
 		val text = ParadoxLocalisationTextExtractor.extract(element)

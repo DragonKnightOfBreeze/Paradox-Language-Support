@@ -2,179 +2,95 @@
   <resource-bundle>messages.PlsBundle</resource-bundle>
   
   <extensions defaultExtensionNs="com.intellij">
-    <fileType
-        language="PARADOX_SCRIPT"
-        name="Paradox Script" fieldName="INSTANCE"
-        implementationClass="icu.windea.pls.script.ParadoxScriptFileType" fileNames="descriptor.mod"/>
-    <lang.parserDefinition
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.psi.ParadoxScriptParserDefinition"/>
+    <fileType language="PARADOX_SCRIPT" name="Paradox Script" fieldName="INSTANCE" fileNames="descriptor.mod"
+              implementationClass="icu.windea.pls.script.ParadoxScriptFileType"/>
+    <lang.parserDefinition language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.psi.ParadoxScriptParserDefinition"/>
 
-    <stubElementTypeHolder
-        class="icu.windea.pls.script.psi.ParadoxScriptStubElementTypes"
-        externalIdPrefix="paradoxScript."/>
+    <stubElementTypeHolder class="icu.windea.pls.script.psi.ParadoxScriptStubElementTypes" externalIdPrefix="paradoxScript."/>
 
-    <spellchecker.support
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.ParadoxScriptSpellchecker"/>
-    <lang.syntaxHighlighterFactory
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.highlighter.ParadoxScriptSyntaxHighlighterFactory"/>
-    <psi.referenceContributor
-        language="PARADOX_SCRIPT"
-        implementation="icu.windea.pls.script.references.ParadoxScriptReferenceContributor"/>
-    <colorSettingsPage
-        implementation="icu.windea.pls.script.editor.ParadoxScriptColorSettingsPage"/>
-    <lang.braceMatcher
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.editor.ParadoxScriptBraceMatcher"/>
-    <lang.foldingBuilder
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.editor.ParadoxScriptFoldingBuilder"/>
-    <lang.foldingBuilder 
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.editor.ParadoxVariableOperationExpressionFoldingBuilder"/>
-    <lang.commenter
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.editor.ParadoxScriptCommenter"/>
-    <breadcrumbsInfoProvider
-        implementation="icu.windea.pls.script.editor.ParadoxScriptBreadCrumbsProvider"/>
-    <colorProvider
-        implementation="icu.windea.pls.script.editor.ParadoxScriptColorProvider"/>
-    <lang.quoteHandler
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.editor.ParadoxScriptQuoteHandler"/>
-    <lang.documentationProvider
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.editor.ParadoxScriptDocumentationProvider"/>
-    <lang.findUsagesProvider
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
+    <spellchecker.support language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.ParadoxScriptSpellchecker"/>
+    <lang.syntaxHighlighterFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.highlighter.ParadoxScriptSyntaxHighlighterFactory"/>
+    <psi.referenceContributor language="PARADOX_SCRIPT" implementation="icu.windea.pls.script.references.ParadoxScriptReferenceContributor"/>
+    <colorSettingsPage implementation="icu.windea.pls.script.editor.ParadoxScriptColorSettingsPage"/>
+    <lang.braceMatcher language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptBraceMatcher"/>
+    <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptFoldingBuilder"/>
+    <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxVariableOperationExpressionFoldingBuilder"/>
+    <lang.commenter language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptCommenter"/>
+    <breadcrumbsInfoProvider implementation="icu.windea.pls.script.editor.ParadoxScriptBreadCrumbsProvider"/>
+    <colorProvider implementation="icu.windea.pls.script.editor.ParadoxScriptColorProvider"/>
+    <lang.quoteHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptQuoteHandler"/>
+    <lang.documentationProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptDocumentationProvider"/>
+    <lang.findUsagesProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
     <elementDescriptionProvider implementation="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
-    <annotator
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.editor.ParadoxScriptAnnotator"/>
-    <codeInsight.parameterInfo
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.parameterInfo.ParadoxInvocationExpressionParameterInfoHandler"/>
-    <codeInsight.parameterInfo
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.parameterInfo.ParadoxScriptValueExpressionParameterInfoHandler"/>
-    <codeInsight.typeInfo
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptTypeProvider"/>
-    <typeDeclarationProvider
-        implementation="icu.windea.pls.script.codeInsight.ParadoxScriptTypeDeclarationProvider"/>
-    <declarationRangeHandler
-        key="icu.windea.pls.script.psi.ParadoxScriptProperty"
-        implementationClass="icu.windea.pls.script.codeInsight.ParadoxDefinitionDeclarationRangeHandler"/>
-    <lang.implementationTextSelectioner
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptImplementationTextSelectioner"/>
+    <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptAnnotator"/>
+    <codeInsight.parameterInfo language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.parameterInfo.ParadoxInvocationExpressionParameterInfoHandler"/>
+    <codeInsight.parameterInfo language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.parameterInfo.ParadoxScriptValueExpressionParameterInfoHandler"/>
+    <codeInsight.typeInfo language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptTypeProvider"/>
+    <typeDeclarationProvider implementation="icu.windea.pls.script.codeInsight.ParadoxScriptTypeDeclarationProvider"/>
+    <declarationRangeHandler key="icu.windea.pls.script.psi.ParadoxScriptProperty" implementationClass="icu.windea.pls.script.codeInsight.ParadoxDefinitionDeclarationRangeHandler"/>
+    <lang.implementationTextSelectioner language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptImplementationTextSelectioner"/>
     <errorQuickFixProvider implementation="icu.windea.pls.script.codeInsight.ParadoxScriptErrorQuickFixProvider"/>
-    <completion.contributor
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.completion.ParadoxScriptCompletionContributor"/>
-    <codeInsight.lineMarkerProvider
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxDefinitionLineMarkerProvider"/>
-    <codeInsight.lineMarkerProvider
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxRelatedLocalisationLineMarkerProvider"/>
-    <codeInsight.lineMarkerProvider
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxRelatedImagesLineMarkerProvider"/>
-    <!--<codeInsight.inlayProvider-->
-    <!--    language="PARADOX_SCRIPT"-->
-    <!--    implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxScriptedVariableReferenceInfoHintsProvider"/>-->
-    <codeInsight.inlayProvider
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionInfoHintsProvider"/>
-    <codeInsight.inlayProvider
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionLocalizedNameHintsProvider"/>
-    <codeInsight.inlayProvider
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceInfoHintsProvider"/>
-    <codeInsight.inlayProvider
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceLocalizedNameHintsProvider"/>
-    <codeInsight.inlayProvider
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider"/>
-    <codeInsight.inlayProvider
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxValueSetValueInfoHintsProvider"/>
-    <codeInsight.inlayProvider
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxModifierInfoHintsProvider"/>
-    <liveTemplateContext contextId="PARADOX_SCRIPT"
+    <completion.contributor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.completion.ParadoxScriptCompletionContributor"/>
+    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxDefinitionLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxRelatedLocalisationLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxRelatedImagesLineMarkerProvider"/>
+    <!--<codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxScriptedVariableReferenceInfoHintsProvider"/>-->
+    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionInfoHintsProvider"/>
+    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionLocalizedNameHintsProvider"/>
+    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceInfoHintsProvider"/>
+    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceLocalizedNameHintsProvider"/>
+    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider"/>
+    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxValueSetValueInfoHintsProvider"/>
+    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxModifierInfoHintsProvider"/>
+    <liveTemplateContext contextId="PARADOX_SCRIPT" 
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$Base"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT_PROPERTY_KEY" baseContextId="PARADOX_SCRIPT"
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$PropertyKey"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT_PROPERTY_VALUE" baseContextId="PARADOX_SCRIPT"
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$PropertyValue"/>
-    <codeInsight.template.postfixTemplateProvider 
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.template.postfix.ParadoxScriptPostfixTemplateProvider"/>
-    <lang.smartEnterProcessor 
-        language="PARADOX_SCRIPT" 
-        implementationClass="icu.windea.pls.script.codeInsight.editorActions.smartEnter.ParadoxScriptSmartEnterProcessor"/>
-    <lang.formatter
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>
-    <codeStyleSettingsProvider
-        implementation="icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettingsProvider"/>
-    <langCodeStyleSettingsProvider
-        implementation="icu.windea.pls.script.codeStyle.ParadoxScriptLanguageCodeStyleSettingsProvider"/>
+    <codeInsight.template.postfixTemplateProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.template.postfix.ParadoxScriptPostfixTemplateProvider"/>
+    <lang.smartEnterProcessor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.editorActions.smartEnter.ParadoxScriptSmartEnterProcessor"/>
+    <lang.formatter language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>
+    <codeStyleSettingsProvider implementation="icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettingsProvider"/>
+    <langCodeStyleSettingsProvider implementation="icu.windea.pls.script.codeStyle.ParadoxScriptLanguageCodeStyleSettingsProvider"/>
     <gotoSymbolContributor implementation="icu.windea.pls.script.navigation.ParadoxDefinitionChooseByNameContributor"/>
     <gotoSymbolContributor implementation="icu.windea.pls.script.navigation.ParadoxComplexEnumValueChooseByNameContributor"/>
     <gotoSymbolContributor implementation="icu.windea.pls.script.navigation.ParadoxScriptedVariableChooseByNameContributor"/>
     <navbar implementation="icu.windea.pls.script.navigation.ParadoxScriptNavBar"/>
-    <lang.psiStructureViewFactory
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>
+    <lang.psiStructureViewFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>
     <fileStructureGroupRuleProvider implementation="icu.windea.pls.script.usages.ParadoxDefinitionFileStructureGroupRuleProvider"/>
-    <lang.refactoringSupport
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptRefactoringSupportProvider"/>
-    <renameInputValidator
-        implementation="icu.windea.pls.script.refactoring.ParadoxScriptVariableRenameInputValidator"/>
-    <renameInputValidator
-        implementation="icu.windea.pls.script.refactoring.ParadoxScriptParameterRenameInputValidator"/>
-    <refactoring.extractIncludeHandler
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceLocalScriptedVariableHandler"/>
-    <refactoring.extractIncludeHandler
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceGlobalScriptedVariableHandler"/>
-    <refactoring.inlineHandler
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptInlineHandler"/>
+    <lang.refactoringSupport language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptRefactoringSupportProvider"/>
+    <renameInputValidator implementation="icu.windea.pls.script.refactoring.ParadoxScriptVariableRenameInputValidator"/>
+    <renameInputValidator implementation="icu.windea.pls.script.refactoring.ParadoxScriptParameterRenameInputValidator"/>
+    <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceLocalScriptedVariableHandler"/>
+    <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceGlobalScriptedVariableHandler"/>
+    <refactoring.inlineHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptInlineHandler"/>
     <fileIconProvider implementation="icu.windea.pls.core.ParadoxFileIconProvider"/>
-    <lang.surroundDescriptor
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.surroundWith.ParadoxScriptSurroundDescriptor"/>
+    <lang.surroundDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.surroundWith.ParadoxScriptSurroundDescriptor"/>
 
     <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>script.intention.category</categoryKey>
       <className>icu.windea.pls.script.intentions.DefinitionNameFindUsagesIntention</className>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>script.intention.category</categoryKey>
     </intentionAction>
     <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>script.intention.category</categoryKey>
       <className>icu.windea.pls.script.intentions.DefinitionNameGotoTypeDeclarationIntention</className>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>script.intention.category</categoryKey>
     </intentionAction>
     <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>script.intention.category</categoryKey>
       <className>icu.windea.pls.script.intentions.ComplexEnumValueNameFindUsagesIntention</className>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>script.intention.category</categoryKey>
     </intentionAction>
     <intentionAction>
-      <className>icu.windea.pls.script.intentions.ComplexEnumValueNameGotoTypeDeclarationIntention</className>
+      <language>PARADOX_SCRIPT</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>script.intention.category</categoryKey>
+      <className>icu.windea.pls.script.intentions.ComplexEnumValueNameGotoTypeDeclarationIntention</className>
     </intentionAction>
     
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
@@ -291,16 +207,13 @@
 
   <actions>
     <group id="ParadoxScript.RefactoringGroup" popup="false">
-      <action id="ParadoxScript.IntroduceLocalScriptedVariable"
-              class="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceLocalScriptedVariableAction">
+      <action id="ParadoxScript.IntroduceLocalScriptedVariable" class="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceLocalScriptedVariableAction">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt v"/>
         <add-to-group group-id="IntroduceActionsGroup" anchor="first"/>
       </action>
-      <action id="ParadoxScript.IntroduceGlobalScriptedVariable"
-              class="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceGlobalScriptedVariableAction">
+      <action id="ParadoxScript.IntroduceGlobalScriptedVariable" class="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceGlobalScriptedVariableAction">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt g"/>
-        <add-to-group group-id="IntroduceActionsGroup" anchor="after"
-                      relative-to-action="ParadoxScript.IntroduceLocalScriptedVariable"/>
+        <add-to-group group-id="IntroduceActionsGroup" anchor="after" relative-to-action="ParadoxScript.IntroduceLocalScriptedVariable"/>
       </action>
     </group>
     <group id="ParadoxScript.GotoGroup">

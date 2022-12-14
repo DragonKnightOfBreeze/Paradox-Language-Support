@@ -28,7 +28,6 @@ class CopyLocalisationIntention : IntentionAction, PriorityAction {
 	
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
 		if(editor == null || file == null) return false
-		if(file.language != ParadoxLocalisationLanguage) return false
 		val selectionStart = editor.selectionModel.selectionStart
 		val selectionEnd = editor.selectionModel.selectionEnd
 		if(selectionStart == selectionEnd) {
@@ -43,7 +42,6 @@ class CopyLocalisationIntention : IntentionAction, PriorityAction {
 	
 	override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
 		if(editor == null || file == null) return
-		if(file.language != ParadoxLocalisationLanguage) return
 		val selectionStart = editor.selectionModel.selectionStart
 		val selectionEnd = editor.selectionModel.selectionEnd
 		val keys = mutableSetOf<String>()
