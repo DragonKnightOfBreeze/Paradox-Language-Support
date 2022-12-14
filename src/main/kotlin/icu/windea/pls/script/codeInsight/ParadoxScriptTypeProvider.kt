@@ -7,8 +7,10 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.script.psi.*
 
 //com.intellij.codeInsight.hint.JavaTypeProvider
@@ -60,6 +62,7 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptTypedEleme
 	
 	/**
 	 * 显示定义的类型（或者定义属性的类型）、脚本表达式的类型、脚本表达式、CWT规则表达式等（如果存在）。
+	 * 如果对应的CWT规则匹配，也显示枚举名、值集名等。
 	 */
 	override fun getAdvancedInformationHint(element: ParadoxScriptTypedElement): String {
 		val children = buildList {
@@ -74,6 +77,39 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptTypedEleme
 			}
 			element.configExpression?.let { configExpression ->
 				add(makeHtmlRow(PlsDocBundle.message("title.configExpression"), configExpression))
+			}
+			if(element is ParadoxScriptExpressionElement) {
+				var addEnumName = false
+				if(element is ParadoxScriptStringExpressionElement) {
+					val complexEnumValueInfo = element.complexEnumValueInfo
+					if(complexEnumValueInfo != null) {
+						addEnumName = true
+						add(makeHtmlRow(PlsDocBundle.message("title.complexEnumName"), complexEnumValueInfo.name))
+					}
+				}
+				val configs = ParadoxCwtConfigHandler.resolveConfigs(element)
+				val config = configs.firstOrNull()
+				if(config != null) {
+					val expression = config.expression
+					when(expression.type) {
+						CwtDataTypes.Enum -> {
+							if(!addEnumName) {
+								val configGroup = config.info.configGroup
+								val enumName = expression.value.orEmpty()
+								if(configGroup.complexEnums.keys.contains(enumName)) {
+									add(makeHtmlRow(PlsDocBundle.message("title.complexEnumName"), enumName))
+								} else {
+									add(makeHtmlRow(PlsDocBundle.message("title.enumName"), enumName))
+								}
+							}
+						}
+						CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
+							val valueSetName = expression.value.orEmpty()
+							add(makeHtmlRow(PlsDocBundle.message("title.valueSetName"), valueSetName))
+						}
+						else -> pass()
+					}
+				}
 			}
 		}
 		return HtmlChunk.tag("table").children(children).toString()

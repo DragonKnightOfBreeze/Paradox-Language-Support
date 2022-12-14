@@ -49,6 +49,7 @@ abstract class DefinitionNameIntention : IntentionAction, PriorityAction {
 
 /**
  * 为表示定义名称的字符串提供查找使用的功能的意向。
+ * @see icu.windea.pls.core.search.usages.ParadoxDefinitionUsagesSearcher
  */
 class DefinitionNameFindUsagesIntention : DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.findUsages")
@@ -62,7 +63,10 @@ class DefinitionNameFindUsagesIntention : DefinitionNameIntention() {
 	}
 }
 
-
+/**
+ * 为表示定义名称的字符串提供导航到实现的功能的意向。
+ * @see icu.windea.pls.core.search.implementations.ParadoxDefinitionImplementationsSearch
+ */
 class DefinitionNameGotoImplementationsIntention: DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.gotoImplementations")
 	
@@ -77,6 +81,7 @@ class DefinitionNameGotoImplementationsIntention: DefinitionNameIntention() {
 
 /**
  * 为表示定义名称的字符串提供导航到声明的功能的意向。
+ * @see icu.windea.pls.script.codeInsight.ParadoxScriptTypeDeclarationProvider
  */
 class DefinitionNameGotoTypeDeclarationIntention : DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.gotoTypeDeclaration")

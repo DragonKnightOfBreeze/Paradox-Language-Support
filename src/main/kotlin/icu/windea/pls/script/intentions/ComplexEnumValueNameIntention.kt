@@ -46,6 +46,7 @@ abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
 
 /**
  * 为表示复杂枚举名称的表达式提供查找使用的功能的意向。
+ * @see icu.windea.pls.core.search.usages.ParadoxComplexEnumValueUsagesSearcher
  */
 class ComplexEnumValueNameFindUsagesIntention: ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.findUsages")
@@ -57,6 +58,7 @@ class ComplexEnumValueNameFindUsagesIntention: ComplexEnumValueNameIntention() {
 
 /**
  * 为表示复杂枚举名称的表达式提供导航到实现的功能的意向。
+ * @see icu.windea.pls.core.search.implementations.ParadoxComplexEnumValueImplementationsSearch
  */
 class ComplexEnumValueNameGotoImplementationsIntention: ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.gotoImplementations")
@@ -68,6 +70,7 @@ class ComplexEnumValueNameGotoImplementationsIntention: ComplexEnumValueNameInte
 
 /**
  * 为表示复杂枚举名称的表达式提供导航到声明的功能的意向。
+ * @see icu.windea.pls.script.codeInsight.ParadoxScriptTypeDeclarationProvider
  */
 class ComplexEnumValueNameGotoTypeDeclarationIntention: ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.gotoTypeDeclaration")
