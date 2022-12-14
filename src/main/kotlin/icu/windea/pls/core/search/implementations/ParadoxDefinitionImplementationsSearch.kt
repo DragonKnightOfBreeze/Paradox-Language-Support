@@ -16,17 +16,17 @@ import icu.windea.pls.core.selector.*
 class ParadoxDefinitionImplementationsSearch : QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters> {
 	override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
 		//得到解析后的PSI元素
-		val sourceElement = queryParameters.element
-		if(sourceElement is ParadoxDefinitionProperty) {
-			val definitionInfo = sourceElement.definitionInfo
-			if(definitionInfo != null) {
-				val name = definitionInfo.name
-				val type = definitionInfo.type
-				val project = queryParameters.project
-				//使用全部作用域
-				val scope = GlobalSearchScope.allScope(project)
-				//val scope = GlobalSearchScopeUtil.toGlobalSearchScope(queryParameters.scope, project)
-				runReadAction {
+		runReadAction {
+			val sourceElement = queryParameters.element
+			if(sourceElement is ParadoxDefinitionProperty) {
+				val definitionInfo = sourceElement.definitionInfo
+				if(definitionInfo != null) {
+					val name = definitionInfo.name
+					val type = definitionInfo.type
+					val project = queryParameters.project
+					//使用全部作用域
+					val scope = GlobalSearchScope.allScope(project)
+					//val scope = GlobalSearchScopeUtil.toGlobalSearchScope(queryParameters.scope, project)
 					//这里不进行排序
 					val selector = definitionSelector().gameTypeFrom(sourceElement)
 					ParadoxDefinitionSearch.search(name, type, project, scope, selector).forEach(consumer)
