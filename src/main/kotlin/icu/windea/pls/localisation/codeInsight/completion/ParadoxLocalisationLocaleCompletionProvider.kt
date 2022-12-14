@@ -19,12 +19,19 @@ import icu.windea.pls.localisation.psi.*
 class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<CompletionParameters>() {
 	private fun getInsertHandler(insertColon: Boolean): InsertHandler<LookupElement> {
 		return InsertHandler { context, _ ->
-			//如果之后没有英文冒号，则插入：英文冒号+换行符+缩进，否则光标移到冒号之后
+			//如果之后没有英文冒号，则插入英文冒号（如果之后没有更多行，则还要插入换行符和必要的缩进），否则光标移到冒号之后
 			val editor = context.editor
 			if(insertColon) {
 				val settings = CodeStyle.getSettings(context.file)
 				val indentOptions = settings.getIndentOptions(ParadoxLocalisationFileType)
-				val s = ":\n" + " ".repeat(indentOptions.INDENT_SIZE)
+				val insertLineBreak = editor.document.getLineNumber(editor.caretModel.offset) == editor.document.lineCount -1
+				val s = buildString { 
+					append(":")
+					if(insertLineBreak) {
+						append("\n")
+						repeat(indentOptions.INDENT_SIZE) { append(" ") }
+					}
+				}
 				EditorModificationUtil.insertStringAtCaret(editor, s)
 			} else {
 				val chars = editor.document.charsSequence
