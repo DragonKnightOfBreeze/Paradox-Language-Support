@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 /**
  * 声明全局封装变量的重构。
  */
-object ParadoxScriptIntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHandler() {
+class ParadoxScriptIntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHandler() {
 	override fun isAvailable(editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
 		if(file.virtualFile == null) return false
 		val offset = editor.caretModel.offset

@@ -11,13 +11,19 @@ import icu.windea.pls.script.psi.*
 /**
  * 声明本地封装变量的动作。
  */
-class ParadoxScriptIntroduceLocalScriptedVariableAction: BasePlatformRefactoringAction(){
+class ParadoxScriptIntroduceLocalScriptedVariableAction : BasePlatformRefactoringAction() {
 	init {
 		addTextOverride(ActionPlaces.MAIN_MENU, PlsBundle.message("action.ParadoxScript.IntroduceGlobalScriptedVariable.text.mainMenu"))
 	}
 	
+	val handler = ParadoxScriptIntroduceLocalScriptedVariableHandler()
+	
 	override fun isAvailableInEditorOnly(): Boolean {
 		return true
+	}
+	
+	override fun isEnabledOnElements(elements: Array<out PsiElement>): Boolean {
+		return false
 	}
 	
 	override fun isAvailableForFile(file: PsiFile): Boolean {
@@ -25,6 +31,6 @@ class ParadoxScriptIntroduceLocalScriptedVariableAction: BasePlatformRefactoring
 	}
 	
 	override fun getRefactoringHandler(provider: RefactoringSupportProvider): RefactoringActionHandler? {
-		return ParadoxScriptIntroduceLocalScriptedVariableHandler
+		return handler
 	}
 }

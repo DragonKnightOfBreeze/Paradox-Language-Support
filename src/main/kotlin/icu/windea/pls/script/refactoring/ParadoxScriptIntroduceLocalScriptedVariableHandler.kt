@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 /**
  * 声明本地封装变量的重构。
  */
-object ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandler() {
+class ParadoxScriptIntroduceLocalScriptedVariableHandler() : ContextAwareRefactoringActionHandler() {
 	override fun isAvailable(editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return false

@@ -16,15 +16,21 @@ class ParadoxScriptIntroduceGlobalScriptedVariableAction: BasePlatformRefactorin
 		addTextOverride(ActionPlaces.MAIN_MENU, PlsBundle.message("action.ParadoxScript.IntroduceLocalScriptedVariable.text.mainMenu"))
 	}
 	
+	private val handler = ParadoxScriptIntroduceGlobalScriptedVariableHandler()
+	
 	override fun isAvailableInEditorOnly(): Boolean {
 		return true
+	}
+	
+	override fun isEnabledOnElements(elements: Array<out PsiElement>): Boolean {
+		return false
 	}
 	
 	override fun isAvailableForFile(file: PsiFile): Boolean {
 		return file is ParadoxScriptFile
 	}
 	
-	override fun getRefactoringHandler(provider: RefactoringSupportProvider): RefactoringActionHandler? {
-		return ParadoxScriptIntroduceGlobalScriptedVariableHandler
+	override fun getRefactoringHandler(provider: RefactoringSupportProvider): RefactoringActionHandler {
+		return handler
 	}
 }
