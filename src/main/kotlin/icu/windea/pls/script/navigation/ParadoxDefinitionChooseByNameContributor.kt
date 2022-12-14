@@ -22,4 +22,3 @@ class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
 		StubIndex.getInstance().processElements(ParadoxDefinitionNameIndex.key, name, parameters.project, parameters.searchScope, parameters.idFilter, ParadoxDefinitionProperty::class.java, processor)
 	}
 }
-
