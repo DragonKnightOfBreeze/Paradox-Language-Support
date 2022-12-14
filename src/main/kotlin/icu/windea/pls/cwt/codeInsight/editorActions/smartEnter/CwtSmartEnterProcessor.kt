@@ -9,9 +9,14 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.codeStyle.*
 import icu.windea.pls.cwt.psi.*
 
+/**
+ * 用于补充当前声明。
+ */
 class CwtSmartEnterProcessor: SmartEnterProcessorWithFixers() {
 	init {
-		addFixers(EqualSignFixer())
+		addFixers(
+			EqualSignFixer()
+		)
 	}
 	
 	class EqualSignFixer: Fixer<CwtSmartEnterProcessor>() {
