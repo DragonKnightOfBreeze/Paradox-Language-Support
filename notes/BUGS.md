@@ -1,6 +1,11 @@
 # BUGS
 
-## 0.5 *
+遗留问题：
+
+* [X] 有时候会把`DISTRICT = district_arcology_housing`的`DISTRICT`被识别为scope_expression而非参数名，为什么？（缓存原因）
+* [X] 有时候`event_target:mechanocalibrator_country`中的`event_target:`无法点击导航到CWT，为什么？（应当也是缓存原因）
+
+## 0.5
 
 * [ ] 将文件中UTF8编码不为32的空格视为语法错误，但允许跳过语法错误继续解析（例：UTF8编码为160的空格，`\u00a0`）
 * [X] 完善本地化文本（localisationText）的解析规则：允许单独的美元符号（`$`）
@@ -25,5 +30,5 @@
 * [X] 兼容同一个本地化文件中有多个locale的情况
 * [X] CWT规则解析：类型为枚举值、常量、别名名字的键/值的解析需要忽略大小写
 * [ ] BUG：CWT规则解析：无法匹配类型为`tradition_swap`的定义的属性的规则
-* [ ] BUG：CWT规则解析：对于数组中的对象（`a = { { b = c } }`），无法匹配定义的属性的规则
+* [X] BUG：CWT规则解析：对于数组中的对象（`a = { { b = c } }`），无法匹配定义的属性的规则
 * [X] BUG：`EN_Re = 3`中无法补全`EN_Re`

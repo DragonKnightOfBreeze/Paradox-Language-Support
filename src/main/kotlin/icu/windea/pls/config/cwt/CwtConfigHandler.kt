@@ -584,14 +584,17 @@ object CwtConfigHandler {
 		val configGroup = context.configGroup
 		val path = fileInfo.path
 		val infoMap = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
+		var completeCurrent = false
 		for(typeConfig in configGroup.types.values) {
 			if(ParadoxDefinitionHandler.matchesTypeByPath(typeConfig, path)) {
 				val skipRootKeyConfig = typeConfig.skipRootKey
 				if(skipRootKeyConfig == null || skipRootKeyConfig.isEmpty()) {
 					if(elementPath.isEmpty()) {
 						//如果正在输入一个定义名（作为顶级属性名，后面没有分隔符）
-						if(typeConfig.nameField == null && context.contextElement !is ParadoxScriptPropertyKey && context.keyword.length == context.offsetInParent) {
-							infoMap.getOrPut("") { SmartList() }.add(typeConfig to null)
+						if(typeConfig.nameField == null && context.contextElement !is ParadoxScriptPropertyKey) {
+							val fullKeyword = context.contextElement.getFullKeyword(context.offsetInParent)
+							infoMap.getOrPut(fullKeyword) { SmartList() }.add(typeConfig to null)
+							completeCurrent = true
 						}
 						if(typeConfig.nameField == null && context.keyword.isNotEmpty() && context.contextElement !is ParadoxScriptPropertyKey) {
 							
@@ -610,8 +613,10 @@ object CwtConfigHandler {
 						elementPath.relativeTo(skipConfig)?.let { r ->
 							if(r.isEmpty()) {
 								//如果正在输入一个定义名（作为顶级属性名，后面没有分隔符）
-								if(typeConfig.nameField == null && context.contextElement !is ParadoxScriptPropertyKey && context.keyword.length == context.offsetInParent) {
-									infoMap.getOrPut("") { SmartList() }.add(typeConfig to null)
+								if(typeConfig.nameField == null && context.contextElement !is ParadoxScriptPropertyKey) {
+									val fullKeyword = context.contextElement.getFullKeyword(context.offsetInParent)
+									infoMap.getOrPut(fullKeyword) { SmartList() }.add(typeConfig to null)
+									completeCurrent = true
 								}
 								typeConfig.typeKeyFilter?.takeIf { it.notReversed }?.forEach {
 									infoMap.getOrPut(it) { SmartList()}.add(typeConfig to null)
@@ -641,7 +646,6 @@ object CwtConfigHandler {
 			} 
 			val config = if(typeToUse == null) null else configGroup.declarations[typeToUse]?.getMergedConfig(subtypesToUse)
 			val element = config?.pointer?.element
-			val keyToUse = if(key.isEmpty()) context.keyword else key
 			val icon = if(config != null) PlsIcons.Definition else PlsIcons.Property
 			val tailText = if(tuples.isEmpty()) null
 			else tuples.joinToString(", ", " for ") { (typeConfig, subTypeConfig) ->
@@ -649,8 +653,8 @@ object CwtConfigHandler {
 			}
 			val typeFile = config?.pointer?.containingFile
 			context.put(PlsCompletionKeys.configKey, config)
-			val resultToUse = if(key.isEmpty()) result.withPrefixMatcher(keyToUse) else result
-			resultToUse.addScriptExpressionElement(element, keyToUse, context,
+			if(completeCurrent) result.restartCompletionOnAnyPrefixChange()
+			result.addScriptExpressionElement(element, key, context,
 				icon = icon,
 				tailText = tailText,
 				typeText = typeFile?.name,

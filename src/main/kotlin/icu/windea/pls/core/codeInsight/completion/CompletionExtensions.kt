@@ -38,12 +38,12 @@ val ProcessingContext.scopeGroupName get() = get(PlsCompletionKeys.scopeGroupNam
 val ProcessingContext.isInt get() = get(PlsCompletionKeys.isIntKey) ?: false
 val ProcessingContext.valueSetName get() = get(PlsCompletionKeys.valueSetName)
 
-fun PsiElement.getKeyword(offset: Int): String {
-	return text.substring(0, offset).unquote()
+fun PsiElement.getKeyword(offsetInParent: Int): String {
+	return text.substring(0, offsetInParent).unquote()
 }
 
-fun PsiElement.getFullKeyword(offset: Int) : String {
-	return (text.substring(0, offset) + text.substring(offset + PlsConstants.dummyIdentifier.length)).unquote()
+fun PsiElement.getFullKeyword(offsetInParent: Int) : String {
+	return (text.substring(0, offsetInParent) + text.substring(offsetInParent + PlsConstants.dummyIdentifier.length)).unquote()
 }
 
 fun CompletionResultSet.addExpressionElement(
