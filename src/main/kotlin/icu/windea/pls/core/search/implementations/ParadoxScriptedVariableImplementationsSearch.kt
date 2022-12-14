@@ -1,6 +1,6 @@
 package icu.windea.pls.core.search.implementations
 
-import com.intellij.openapi.application.*
+import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
@@ -14,20 +14,20 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxScriptedVariableImplementationsSearch : QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters> {
 	override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
-		runReadAction {
-			//得到解析后的PSI元素
-			val sourceElement = queryParameters.element
-			if(sourceElement is ParadoxScriptScriptedVariable) {
-				val name = sourceElement.name
-				val project = queryParameters.project
-				//使用全部作用域
-				val scope = GlobalSearchScope.allScope(project)
-				//val scope = GlobalSearchScopeUtil.toGlobalSearchScope(queryParameters.scope, project)
-				//这里不进行排序
-				val selector = scriptedVariableSelector().gameTypeFrom(sourceElement)
-				ParadoxLocalScriptedVariableSearch.search(name, sourceElement, selector = selector).forEach(consumer)
-				ParadoxGlobalScriptedVariableSearch.search(name, project, scope, selector = selector).forEach(consumer)
-			}
+		//得到解析后的PSI元素
+		val sourceElement = queryParameters.element
+		if(sourceElement !is ParadoxScriptScriptedVariable) return true
+		val name = sourceElement.name
+		if(name.isEmpty()) return true
+		val project = queryParameters.project
+		DumbService.getInstance(project).runReadActionInSmartMode {
+			//使用全部作用域
+			val scope = GlobalSearchScope.allScope(project)
+			//val scope = GlobalSearchScopeUtil.toGlobalSearchScope(queryParameters.scope, project)
+			//这里不进行排序
+			val selector = scriptedVariableSelector().gameTypeFrom(sourceElement)
+			ParadoxLocalScriptedVariableSearch.search(name, sourceElement, selector = selector).forEach(consumer)
+			ParadoxGlobalScriptedVariableSearch.search(name, project, scope, selector = selector).forEach(consumer)
 		}
 		return true
 	}

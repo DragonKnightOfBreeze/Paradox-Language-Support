@@ -40,6 +40,9 @@
 
 * BUG修复
   * 为了避免意外，解析获取表达式对应的CWT规则时，不再使用全局缓存，而是使用基于表达式对应的PSI元素的缓存（当所在文件被修改时会失效）
+* 功能优化：
+  * 可以通过导航到定义功能（`Navigate > Implementation(s)`）来从某一封装变量/定义/本地化/复杂枚举值跳转到所有同名的重载或者被重载的声明处
+    * 注意对于复杂枚举值，从声明处出发，需要间接通过意向（`Intentions`）来查找使用/导航到定义/导航到类型声明
 * 新增功能： 
   * 代码补全（`Code > Code Completion`）
     * [X] 当可能正在输入一个定义名（非引用，作为顶级属性名）时，可以自动插入后面的等号、花括号以及从句内联模版，并将光标放到合适的位置
@@ -422,7 +425,7 @@
 * [X] 提示定义的本地化名字（对应的localisation.name为name或title）
 * [X] 修复cwt规则文件解析问题（有时无法解析optionComment中的`<>`）
 * [X] 即使cwt规则文件中没写也为definition补充某些definitionLocalisation，从已有的推断（如果有的话）（name title desc effect）
-* [X] 实现LineMarkerProviderDescriptor改为实现RelatedItemLineMarkerProvider，从而实现`Go to related symbols`
+* [X] 实现LineMarkerProviderDescriptor改为实现RelatedItemLineMarkerProvider，从而实现`Goto related symbols`
 * [X] 基于cwt规则文件进一步解析cwt规则，尽管其中一部分暂未使用
 * [X] 完善代码风格设置
 * [X] 可以通过定义的文档中的链接跳转到定义的类型和子类型所在的cwt文件

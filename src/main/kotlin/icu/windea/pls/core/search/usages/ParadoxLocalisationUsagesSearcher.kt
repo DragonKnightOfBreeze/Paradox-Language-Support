@@ -14,8 +14,10 @@ class ParadoxLocalisationUsagesSearcher : QueryExecutorBase<PsiReference, Refere
 	override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
 		val target = queryParameters.elementToSearch
 		if(target !is ParadoxLocalisationProperty) return
-		DumbService.getInstance(queryParameters.project).runReadActionInSmartMode {
-			val name = target.name
+		val name = target.name
+		if(name.isEmpty()) return
+		val project = queryParameters.project
+		DumbService.getInstance(project).runReadActionInSmartMode {
 			//这里不能直接使用target.useScope，否则文件高亮会出现问题
 			val useScope = queryParameters.effectiveSearchScope
 			queryParameters.optimizer.searchWord(name, useScope, true, target)

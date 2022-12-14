@@ -7,11 +7,11 @@ import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.search.searches.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 abstract class DefinitionNameIntention : IntentionAction, PriorityAction {
@@ -55,6 +55,19 @@ class DefinitionNameFindUsagesIntention : DefinitionNameIntention() {
 	
 	override fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
 		GotoDeclarationAction.startFindUsages(editor, project, definition)
+	}
+	
+	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
+		return IntentionPreviewInfo.EMPTY
+	}
+}
+
+
+class DefinitionNameGotoImplementationsIntention: DefinitionNameIntention() {
+	override fun getText() = PlsBundle.message("script.intention.definitionName.gotoImplementations")
+	
+	override fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
+		DefinitionsScopedSearch.search(definition)
 	}
 	
 	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {

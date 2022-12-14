@@ -23,7 +23,8 @@ class CwtAliasUsagesSearcher: QueryExecutorBase<PsiReference, ReferencesSearch.S
 		if(CwtConfigType.resolve(target) != CwtConfigType.Alias) return
 		val name = target.name.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
 		if(name == null || name.isEmpty()) return
-		DumbService.getInstance(queryParameters.project).runReadActionInSmartMode {
+		val project = queryParameters.project
+		DumbService.getInstance(project).runReadActionInSmartMode {
 			//这里不能直接使用target.useScope，否则文件高亮会出现问题
 			val useScope = queryParameters.effectiveSearchScope
 			queryParameters.optimizer.searchWord(name, useScope, true, target)

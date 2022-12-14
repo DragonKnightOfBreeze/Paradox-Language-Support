@@ -78,6 +78,12 @@
       <language>PARADOX_SCRIPT</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>script.intention.category</categoryKey>
+      <className>icu.windea.pls.script.intentions.DefinitionNameGotoImplementationsIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>script.intention.category</categoryKey>
       <className>icu.windea.pls.script.intentions.DefinitionNameGotoTypeDeclarationIntention</className>
     </intentionAction>
     <intentionAction>
@@ -85,6 +91,12 @@
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>script.intention.category</categoryKey>
       <className>icu.windea.pls.script.intentions.ComplexEnumValueNameFindUsagesIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>script.intention.category</categoryKey>
+      <className>icu.windea.pls.script.intentions.ComplexEnumValueNameGotoImplementationsIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>

@@ -7,10 +7,10 @@ import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.search.searches.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
@@ -52,6 +52,17 @@ class ComplexEnumValueNameFindUsagesIntention: ComplexEnumValueNameIntention() {
 	
 	override fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
 		GotoDeclarationAction.startFindUsages(editor, project, element)
+	}
+}
+
+/**
+ * 为表示复杂枚举名称的表达式提供导航到实现的功能的意向。
+ */
+class ComplexEnumValueNameGotoImplementationsIntention: ComplexEnumValueNameIntention() {
+	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.gotoImplementations")
+	
+	override fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
+		DefinitionsScopedSearch.search(element)
 	}
 }
 

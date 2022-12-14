@@ -43,7 +43,7 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptTypedEleme
 	}
 	
 	/**
-	 * 显示定义的类型，或者定义属性的类型，或者值的类型。
+	 * 显示定义的类型，或者CWT规则表达式，或者脚本表达式的类型。
 	 */
 	override fun getInformationHint(element: ParadoxScriptTypedElement): String {
 		//优先显示最相关的类型
@@ -59,7 +59,7 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptTypedEleme
 	}
 	
 	/**
-	 * 显示定义的类型（或者定义属性的类型）、值的类型。
+	 * 显示定义的类型（或者定义属性的类型）、脚本表达式的类型、脚本表达式、CWT规则表达式等（如果存在）。
 	 */
 	override fun getAdvancedInformationHint(element: ParadoxScriptTypedElement): String {
 		val children = buildList {

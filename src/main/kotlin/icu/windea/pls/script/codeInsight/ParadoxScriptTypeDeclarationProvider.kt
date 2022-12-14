@@ -37,9 +37,9 @@ class ParadoxScriptTypeDeclarationProvider : TypeDeclarationProvider {
 			symbol is ParadoxScriptPropertyKey -> {
 				return getSymbolTypeDeclarations(symbol.parent)
 			}
-			symbol.language == CwtLanguage -> {
-				return symbol.toSingletonArray()
-			}
+			//symbol.language == CwtLanguage -> {
+			//	return symbol.toSingletonArray()
+			//}
 			//symbol已被解析，不能这样做
 			//symbol is ParadoxScriptStringExpressionElement -> {
 			//	val config = symbol.getConfig()
