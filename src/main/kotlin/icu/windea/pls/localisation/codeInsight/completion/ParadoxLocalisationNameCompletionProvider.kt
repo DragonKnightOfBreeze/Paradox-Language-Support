@@ -27,12 +27,12 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
 		if(!shouldComplete(propertyKey)) return //后面没有冒号、双引号等其他内容
 		val file = parameters.originalFile as? ParadoxLocalisationFile ?: return
 		val localisationCategory = ParadoxLocalisationCategory.resolve(file) ?: return
+		val keyToUse = keyword
 		val textToInsert = when(localisationCategory) {
 			ParadoxLocalisationCategory.Localisation -> ":0 \"\""
 			ParadoxLocalisationCategory.SyncedLocalisation -> ": \"\""
 		}
-		val lookupElement = LookupElementBuilder.create("")
-			.withPresentableText("<key>")
+		val lookupElement = LookupElementBuilder.create(keyToUse)
 			.bold()
 			.withTailText(textToInsert)
 			.withIcon(PlsIcons.Localisation)
@@ -44,7 +44,7 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
 				val caretModel = editor.caretModel
 				caretModel.moveToOffset(caretModel.offset - 1)
 			}
-		result.withPrefixMatcher(PrefixMatcher.ALWAYS_TRUE).addElement(lookupElement)
+		result.withPrefixMatcher(keyToUse).addElement(lookupElement)
 	}
 	
 	private fun shouldComplete(propertyKey: ParadoxLocalisationPropertyKey): Boolean {

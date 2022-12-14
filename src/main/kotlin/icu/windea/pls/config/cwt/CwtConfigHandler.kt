@@ -641,18 +641,17 @@ object CwtConfigHandler {
 			} 
 			val config = if(typeToUse == null) null else configGroup.declarations[typeToUse]?.getMergedConfig(subtypesToUse)
 			val element = config?.pointer?.element
+			val keyToUse = if(key.isEmpty()) context.keyword else key
 			val icon = if(config != null) PlsIcons.Definition else PlsIcons.Property
-			val presentableText = if(key.isEmpty()) "<key>" else null
 			val tailText = if(tuples.isEmpty()) null
 			else tuples.joinToString(", ", " for ") { (typeConfig, subTypeConfig) ->
 				if(subTypeConfig != null) "${typeConfig.name}.${subTypeConfig.name}" else typeConfig.name
 			}
 			val typeFile = config?.pointer?.containingFile
 			context.put(PlsCompletionKeys.configKey, config)
-			val resultToUse = if(key.isEmpty()) result.withPrefixMatcher(PrefixMatcher.ALWAYS_TRUE) else result
-			resultToUse.addScriptExpressionElement(element, key, context,
+			val resultToUse = if(key.isEmpty()) result.withPrefixMatcher(keyToUse) else result
+			resultToUse.addScriptExpressionElement(element, keyToUse, context,
 				icon = icon,
-				presentableText = presentableText,
 				tailText = tailText,
 				typeText = typeFile?.name,
 				typeIcon = typeFile?.icon,

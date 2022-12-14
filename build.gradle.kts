@@ -109,6 +109,7 @@ tasks {
 				subList(start + 1, end)
 			}
 			.joinToString("\n")
+			.let { it.replace("* [ ]", "*") } //不保留任务列表
 			.let { markdownToHTML(it) }
 		changeNotes.set(changelogText)
 	}
