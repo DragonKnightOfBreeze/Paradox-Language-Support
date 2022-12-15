@@ -56,7 +56,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType RIGHT_ANGLE_BRACKET = ParadoxLocalisationElementTypeFactory.getTokenType(">");
   IElementType RIGHT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_QUOTE");
   IElementType SCRIPTED_VARIABLE_REFERENCE_ID = ParadoxLocalisationElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_ID");
-  IElementType STELLARIS_NAME_FORMAT__ID = ParadoxLocalisationElementTypeFactory.getTokenType("STELLARIS_NAME_FORMAT__ID");
+  IElementType STELLARIS_NAME_FORMAT_ID = ParadoxLocalisationElementTypeFactory.getTokenType("STELLARIS_NAME_FORMAT_ID");
   IElementType STRING_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("STRING_TOKEN");
   IElementType VALID_ESCAPE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("VALID_ESCAPE_TOKEN");
 

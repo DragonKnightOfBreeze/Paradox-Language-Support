@@ -952,7 +952,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 100: break;
           case 46: 
-            { return STELLARIS_NAME_FORMAT__ID;
+            { return STELLARIS_NAME_FORMAT_ID;
             } 
             // fall through
           case 101: break;

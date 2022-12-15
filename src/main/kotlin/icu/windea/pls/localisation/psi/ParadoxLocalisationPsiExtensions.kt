@@ -40,7 +40,7 @@ val ParadoxLocalisationCommandField.commandFieldId: PsiElement? get() = findChil
 
 val ParadoxLocalisationScriptedVariableReference.variableReferenceId: PsiElement get() = findChild(SCRIPTED_VARIABLE_REFERENCE_ID)!!
 
-val ParadoxLocalisationStellarisNamePart.stellarisNamePartId: PsiElement? get() = findChild(STELLARIS_NAME_FORMAT__ID)
+val ParadoxLocalisationStellarisNamePart.stellarisNamePartId: PsiElement? get() = findChild(STELLARIS_NAME_FORMAT_ID)
 
 
 fun hasLocalisationPropertiesBetween(start: PsiElement, end: PsiElement?): Boolean {

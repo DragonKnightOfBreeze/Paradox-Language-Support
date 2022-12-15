@@ -43,7 +43,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		extend(null, scriptedVariableNamePattern, ParadoxScriptedVariableCompletionProvider())
 		
 		//当用户正在输入一个stellarisNamePart的名字时提示
-		val stellarisNamePartPattern = psiElement().withElementType(STELLARIS_NAME_FORMAT__ID)
+		val stellarisNamePartPattern = psiElement().withElementType(STELLARIS_NAME_FORMAT_ID)
 		extend(null, stellarisNamePartPattern, ParadoxStellarisNamePartCompletionProvider())
 	}
 	

@@ -158,7 +158,7 @@ command_field ::= COMMAND_FIELD_ID | property_reference { //can be property refe
 
 //stellaris name part rules
 
-stellaris_name_part ::= LEFT_ANGLE_BRACKET STELLARIS_NAME_FORMAT__ID RIGHT_ANGLE_BRACKET {
+stellaris_name_part ::= LEFT_ANGLE_BRACKET STELLARIS_NAME_FORMAT_ID RIGHT_ANGLE_BRACKET {
   pin=1
   extends=rich_text
   methods=[getName setName getReference]

@@ -152,7 +152,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+\]
 COLOR_ID=[a-zA-Z0-9]
 STRING_TOKEN=[^\"$£§\[<\r\n\\]+ //双引号实际上不需要转义
 
-STELLARIS_NAME_FORMAT__ID=[a-zA-Z0-9_]+
+STELLARIS_NAME_FORMAT_ID=[a-zA-Z0-9_]+
 
 %%
 
@@ -442,7 +442,7 @@ STELLARIS_NAME_FORMAT__ID=[a-zA-Z0-9_]+
 	return STRING_TOKEN;
 }
 <STELLARIS_NAME_FORMAT> {
-  {STELLARIS_NAME_FORMAT__ID} { return STELLARIS_NAME_FORMAT__ID; }
+  {STELLARIS_NAME_FORMAT_ID} { return STELLARIS_NAME_FORMAT_ID; }
   ">" { yybegin(nextStateForText()); return RIGHT_ANGLE_BRACKET; }
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}

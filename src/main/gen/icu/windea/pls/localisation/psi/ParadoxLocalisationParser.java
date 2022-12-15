@@ -483,13 +483,13 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LEFT_ANGLE_BRACKET STELLARIS_NAME_FORMAT__ID RIGHT_ANGLE_BRACKET
+  // LEFT_ANGLE_BRACKET STELLARIS_NAME_FORMAT_ID RIGHT_ANGLE_BRACKET
   public static boolean stellaris_name_part(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "stellaris_name_part")) return false;
     if (!nextTokenIs(b, LEFT_ANGLE_BRACKET)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, STELLARIS_NAME_PART, null);
-    r = consumeTokens(b, 1, LEFT_ANGLE_BRACKET, STELLARIS_NAME_FORMAT__ID, RIGHT_ANGLE_BRACKET);
+    r = consumeTokens(b, 1, LEFT_ANGLE_BRACKET, STELLARIS_NAME_FORMAT_ID, RIGHT_ANGLE_BRACKET);
     p = r; // pin = 1
     exit_section_(b, l, m, r, p, null);
     return r || p;
