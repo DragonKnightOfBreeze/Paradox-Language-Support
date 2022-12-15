@@ -32,6 +32,9 @@
 
     <readWriteAccessDetector implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxReadWriteAccessDetector"/>
     <usageTypeProvider implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxUsageTypeProvider"/>
+    <codeInsight.typeInfo language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.codeInsight.ParadoxTypeProvider"/>
+    <codeInsight.typeInfo language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.core.codeInsight.ParadoxTypeProvider"/>
+    <typeDeclarationProvider implementation="icu.windea.pls.core.codeInsight.ParadoxTypeDeclarationProvider"/>
     
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxFoldingSettings"/>
     <codeFoldingOptionsProvider instance="icu.windea.pls.core.editor.ParadoxFoldingOptionsProvider"/>

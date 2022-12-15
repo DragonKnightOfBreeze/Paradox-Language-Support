@@ -1,17 +1,16 @@
 package icu.windea.pls.core.psi
 
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 定义的参数。
  */
-interface ParadoxParameter : ParadoxScriptTypedElement {
+interface ParadoxParameter : ParadoxTypedElement {
 	val name: String
 	
 	fun setName(name: String): ParadoxParameter
 	
 	val defaultValue: String? get() = null
 	
-	override val expressionType: ParadoxDataType get() = ParadoxDataType.ParameterType
+	override val type: ParadoxDataType get() = ParadoxDataType.ParameterType
 }

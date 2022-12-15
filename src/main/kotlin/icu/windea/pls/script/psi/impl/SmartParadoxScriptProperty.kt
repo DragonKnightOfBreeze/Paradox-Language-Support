@@ -28,8 +28,8 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 		return _value ?: super.getValue().also { _value = it }
 	}
 	
-	override val expressionType: ParadoxDataType?
-		get() = _valueType ?: super.expressionType.also { _valueType = it }
+	override val type: ParadoxDataType?
+		get() = _valueType ?: super.getType.also { _valueType = it }
 	
 	override val pathName: String?
 		get() = _pathName ?: super.pathName.also { _pathName = it }

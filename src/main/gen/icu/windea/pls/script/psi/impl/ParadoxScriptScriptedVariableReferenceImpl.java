@@ -57,8 +57,14 @@ public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptVal
 
   @Override
   @NotNull
-  public ParadoxDataType getExpressionType() {
+  public ParadoxDataType getType() {
     return ParadoxScriptPsiImplUtil.getExpressionType(this);
+  }
+
+  @Override
+  @NotNull
+  public String getExpression() {
+    return ParadoxScriptPsiImplUtil.getExpression(this);
   }
 
 }

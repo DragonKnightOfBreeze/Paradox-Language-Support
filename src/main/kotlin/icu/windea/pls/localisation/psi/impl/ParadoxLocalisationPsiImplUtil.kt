@@ -10,6 +10,7 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
@@ -190,6 +191,16 @@ object ParadoxLocalisationPsiImplUtil {
 	fun getReference(element: ParadoxLocalisationScriptedVariableReference): ParadoxScriptedVariablePsiReference {
 		val rangeInElement = element.variableReferenceId.textRangeInParent
 		return ParadoxScriptedVariablePsiReference(element, rangeInElement)
+	}
+	
+	@JvmStatic
+	fun getExpressionType(element: ParadoxLocalisationScriptedVariableReference): ParadoxDataType {
+		return element.reference.resolve()?.type ?: ParadoxDataType.UnknownType
+	}
+	
+	@JvmStatic
+	fun getExpression(element: ParadoxLocalisationScriptedVariableReference): String {
+		return element.text
 	}
 	//endregion
 	

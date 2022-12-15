@@ -70,7 +70,7 @@ class ComplexEnumValueNameGotoImplementationsIntention: ComplexEnumValueNameInte
 
 /**
  * 为表示复杂枚举名称的表达式提供导航到声明的功能的意向。
- * @see icu.windea.pls.script.codeInsight.ParadoxScriptTypeDeclarationProvider
+ * @see icu.windea.pls.core.codeInsight.ParadoxTypeDeclarationProvider
  */
 class ComplexEnumValueNameGotoTypeDeclarationIntention: ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.gotoTypeDeclaration")

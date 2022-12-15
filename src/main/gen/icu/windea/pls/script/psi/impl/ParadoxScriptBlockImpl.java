@@ -102,7 +102,7 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
 
   @Override
   @NotNull
-  public ParadoxDataType getExpressionType() {
+  public ParadoxDataType getType() {
     return ParadoxScriptPsiImplUtil.getExpressionType(this);
   }
 

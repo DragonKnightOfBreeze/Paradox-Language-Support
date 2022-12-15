@@ -41,7 +41,7 @@ public class ParadoxScriptIntImpl extends ParadoxScriptValueImpl implements Para
 
   @Override
   @NotNull
-  public ParadoxDataType getExpressionType() {
+  public ParadoxDataType getType() {
     return ParadoxScriptPsiImplUtil.getExpressionType(this);
   }
 

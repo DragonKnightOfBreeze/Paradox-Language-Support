@@ -106,7 +106,7 @@ scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_ID {
   implements=[
     "icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
   ]
-  methods=[getIcon getName setName getReference]
+  methods=[getIcon getName setName getReference getExpressionType getExpression]
 }
 
 //icon rules

@@ -1,16 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import java.util.List;
+import icu.windea.pls.core.psi.*;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.core.expression.ParadoxDataType;
 import javax.swing.Icon;
 
-public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement, ParadoxScriptTypedElement, StubBasedPsiElement<ParadoxScriptScriptedVariableStub> {
+public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement, ParadoxTypedElement, StubBasedPsiElement<ParadoxScriptScriptedVariableStub> {
 
   @NotNull
   ParadoxScriptScriptedVariableName getScriptedVariableName();
@@ -39,7 +38,7 @@ public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement
   String getUnquotedValue();
 
   @Nullable
-  ParadoxDataType getExpressionType();
+  ParadoxDataType getType();
 
   @NotNull
   ItemPresentation getPresentation();

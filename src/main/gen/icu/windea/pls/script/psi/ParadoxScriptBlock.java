@@ -45,7 +45,7 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlo
   void setColor(@NotNull Color color);
 
   @NotNull
-  ParadoxDataType getExpressionType();
+  ParadoxDataType getType();
 
   @NotNull
   String getExpression();

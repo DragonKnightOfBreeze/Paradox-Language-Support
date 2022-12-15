@@ -11,6 +11,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.core.expression.ParadoxDataType;
 import icu.windea.pls.core.references.ParadoxScriptedVariablePsiReference;
 import javax.swing.Icon;
 
@@ -52,6 +53,18 @@ public class ParadoxLocalisationScriptedVariableReferenceImpl extends ASTWrapper
   @NotNull
   public ParadoxScriptedVariablePsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
+  }
+
+  @Override
+  @NotNull
+  public ParadoxDataType getExpressionType() {
+    return ParadoxLocalisationPsiImplUtil.getExpressionType(this);
+  }
+
+  @Override
+  @NotNull
+  public String getExpression() {
+    return ParadoxLocalisationPsiImplUtil.getExpression(this);
   }
 
 }

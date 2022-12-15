@@ -113,7 +113,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getExpressionType(element: ParadoxScriptScriptedVariable): ParadoxDataType? {
-		return element.scriptedVariableValue?.expressionType
+		return element.scriptedVariableValue?.getType
 	}
 	
 	@JvmStatic
@@ -250,13 +250,8 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getDefinitionType(element: ParadoxScriptProperty): String? {
-		return element.definitionInfo?.typesText
-	}
-	
-	@JvmStatic
 	fun getExpressionType(element: ParadoxScriptProperty): ParadoxDataType? {
-		return element.propertyValue?.expressionType
+		return element.propertyValue?.getType
 	}
 	
 	@JvmStatic
@@ -354,6 +349,11 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun getExpression(element: ParadoxScriptPropertyKey): String {
+		return element.text
+	}
+	
+	@JvmStatic
 	fun getConfigExpression(element: ParadoxScriptPropertyKey): String? {
 		val config = resolvePropertyConfigs(element).firstOrNull() ?: return null
 		return config.key
@@ -394,7 +394,12 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getExpressionType(element: ParadoxScriptScriptedVariableReference): ParadoxDataType {
-		return element.reference.resolve()?.expressionType ?: ParadoxDataType.UnknownType
+		return element.reference.resolve()?.type ?: ParadoxDataType.UnknownType
+	}
+	
+	@JvmStatic
+	fun getExpression(element: ParadoxScriptScriptedVariableReference): String {
+		return element.text
 	}
 	//endregion
 	
@@ -412,6 +417,11 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getExpressionType(element: ParadoxScriptValue): ParadoxDataType {
 		return ParadoxDataType.UnknownType
+	}
+	
+	@JvmStatic
+	fun getExpression(element: ParadoxScriptValue): String {
+		return element.text
 	}
 	
 	@JvmStatic
@@ -842,6 +852,11 @@ object ParadoxScriptPsiImplUtil {
 	fun getExpressionType(element: ParadoxScriptInlineMathNumber): ParadoxDataType {
 		return ParadoxDataType.resolve(element.text)
 	}
+	
+	@JvmStatic
+	fun getExpression(element: ParadoxScriptInlineMathNumber): String {
+		return element.text
+	}
 	//endregion
 	
 	//region ParadoxScriptInlineMathVariableReference
@@ -867,6 +882,16 @@ object ParadoxScriptPsiImplUtil {
 	fun getReference(element: ParadoxScriptInlineMathScriptedVariableReference): ParadoxScriptedVariablePsiReference {
 		val rangeInElement = element.variableReferenceId.textRangeInParent
 		return ParadoxScriptedVariablePsiReference(element, rangeInElement)
+	}
+	
+	@JvmStatic
+	fun getExpressionType(element: ParadoxScriptInlineMathScriptedVariableReference): ParadoxDataType {
+		return element.reference.resolve()?.type ?: ParadoxDataType.UnknownType
+	}
+	
+	@JvmStatic
+	fun getExpression(element: ParadoxScriptInlineMathScriptedVariableReference): String {
+		return element.text
 	}
 	//endregion
 	

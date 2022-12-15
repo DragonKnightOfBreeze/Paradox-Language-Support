@@ -48,7 +48,7 @@ public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implemen
 
   @Override
   @NotNull
-  public ParadoxDataType getExpressionType() {
+  public ParadoxDataType getType() {
     return ParadoxScriptPsiImplUtil.getExpressionType(this);
   }
 

@@ -17,8 +17,8 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 		return _value ?: super.getValue().also { _value = it }
 	}
 	
-	override val expressionType: ParadoxDataType
-		get() = _valueType ?: super.expressionType.also { _valueType = it }
+	override val type: ParadoxDataType
+		get() = _valueType ?: super.getType.also { _valueType = it }
 	
 	override fun subtreeChanged() {
 		_value = null

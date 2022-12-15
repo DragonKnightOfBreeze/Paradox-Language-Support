@@ -6,6 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import icu.windea.pls.core.psi.ParadoxScriptedVariableReference;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.core.expression.ParadoxDataType;
 import icu.windea.pls.core.references.ParadoxScriptedVariablePsiReference;
 import javax.swing.Icon;
 
@@ -22,5 +23,11 @@ public interface ParadoxScriptInlineMathScriptedVariableReference extends Parado
 
   @NotNull
   ParadoxScriptedVariablePsiReference getReference();
+
+  @NotNull
+  ParadoxDataType getExpressionType();
+
+  @NotNull
+  String getExpression();
 
 }

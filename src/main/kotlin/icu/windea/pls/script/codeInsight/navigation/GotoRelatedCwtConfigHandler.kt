@@ -10,6 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 //com.intellij.testIntegration.GotoTestOrCodeHandler
@@ -47,12 +48,12 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 	}
 	
 	override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-		val expression = sourceElement.castOrNull<ParadoxScriptTypedElement>()?.expression ?: PlsConstants.unknownString
+		val expression = sourceElement.castOrNull<ParadoxTypedElement>()?.expression ?: PlsConstants.unknownString
 		return PlsBundle.message("script.goto.relatedCwtConfig.chooseTitle", expression.escapeXml())
 	}
 	
 	override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-		val expression = sourceElement.castOrNull<ParadoxScriptTypedElement>()?.expression ?: PlsConstants.unknownString
+		val expression = sourceElement.castOrNull<ParadoxTypedElement>()?.expression ?: PlsConstants.unknownString
 		return PlsBundle.message("script.goto.relatedCwtConfig.findUsagesTitle", expression)
 	}
 	

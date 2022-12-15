@@ -12,6 +12,6 @@ public interface ParadoxScriptBoolean extends ParadoxScriptValue, PsiLiteralValu
   boolean getBooleanValue();
 
   @NotNull
-  ParadoxDataType getExpressionType();
+  ParadoxDataType getType();
 
 }

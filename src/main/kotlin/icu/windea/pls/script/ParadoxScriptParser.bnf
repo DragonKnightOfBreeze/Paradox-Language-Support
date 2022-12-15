@@ -40,7 +40,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
-    "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
+    "icu.windea.pls.core.psi.ParadoxTypedElement"
   ]
   stubClass="icu.windea.pls.script.psi.ParadoxScriptScriptedVariableStub"
   methods=[
@@ -66,7 +66,7 @@ property ::= property_key property_separator property_value {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptExpressionContextElement"
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
-    "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
+    "icu.windea.pls.core.psi.ParadoxTypedElement"
     "icu.windea.pls.core.psi.ParadoxDefinitionProperty"
   ]
   methods=[
@@ -86,7 +86,7 @@ property_key ::= key_expr {
   ] 
   methods=[
     getValue setValue getReference getReferences
-    getExpressionType getConfigExpression
+    getExpressionType getExpression getConfigExpression
     getPresentation isEquivalentTo toString
   ]
 }
@@ -100,7 +100,7 @@ value ::= scripted_variable_reference | boolean | int | float | color | block | 
   ]
   methods=[
     getIcon getValue
-    getExpressionType getConfigExpression
+    getExpressionType getExpression getConfigExpression
   ]
 }
 scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_ID {
@@ -108,7 +108,7 @@ scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_ID {
   implements=[
     "icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
   ]
-  methods=[getIcon getName setName getReference getExpressionType]
+  methods=[getIcon getName setName getReference getExpressionType getExpression]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value
@@ -265,14 +265,14 @@ inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
   extends=inline_math_factor
   implements=[
     "com.intellij.psi.PsiLiteralValue"
-    "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
+    "icu.windea.pls.core.psi.ParadoxTypedElement"
   ]
-  methods=[getValue getExpressionType]
+  methods=[getValue getExpressionType getExpression]
 }
 inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID { //without prefix "@"
   extends=inline_math_factor
   implements="icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
-  methods=[getIcon getName setName getReference]
+  methods=[getIcon getName setName getReference getExpressionType getExpression]
 }
 inline_math_parameter ::= PARAMETER_START PARAMETER_ID [PIPE inline_math_parameter_value] PARAMETER_END {
   extends=inline_math_factor

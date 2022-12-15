@@ -14,7 +14,6 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		//同时需要同时查找当前文件中的和全局的
-		
 		val element = parameters.position
 		val project = parameters.originalFile.project
 		val selector = scriptedVariableSelector().gameTypeFrom(element).preferRootFrom(element).distinctByName()
@@ -33,4 +32,16 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
 		result.addElement(lookupElement)
 		return true
 	}
+}
+
+/**
+ * 提供封装变量的名字的代码补全。
+ */
+class ParadoxScriptedVariableNameCompletionProvider: CompletionProvider<CompletionParameters>(){
+	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+		val ele
+		//查找全局的，排除正在输入的
+		TODO("Not yet implemented")
+	}
+	
 }

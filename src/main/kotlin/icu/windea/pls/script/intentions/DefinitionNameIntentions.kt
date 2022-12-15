@@ -81,7 +81,7 @@ class DefinitionNameGotoImplementationsIntention: DefinitionNameIntention() {
 
 /**
  * 为表示定义名称的字符串提供导航到声明的功能的意向。
- * @see icu.windea.pls.script.codeInsight.ParadoxScriptTypeDeclarationProvider
+ * @see icu.windea.pls.core.codeInsight.ParadoxTypeDeclarationProvider
  */
 class DefinitionNameGotoTypeDeclarationIntention : DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.gotoTypeDeclaration")

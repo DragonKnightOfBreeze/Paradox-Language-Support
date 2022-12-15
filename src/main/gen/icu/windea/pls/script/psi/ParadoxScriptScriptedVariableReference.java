@@ -25,6 +25,9 @@ public interface ParadoxScriptScriptedVariableReference extends ParadoxScriptVal
   ParadoxScriptedVariablePsiReference getReference();
 
   @NotNull
-  ParadoxDataType getExpressionType();
+  ParadoxDataType getType();
+
+  @NotNull
+  String getExpression();
 
 }
