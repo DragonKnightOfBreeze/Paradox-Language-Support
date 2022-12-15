@@ -9,22 +9,23 @@ import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 提供封装变量引用的名字的代码补全。
+ * 提供封装变量的名字的代码补全。
  */
-class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxScriptedVariableNameCompletionProvider: CompletionProvider<CompletionParameters>(){
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		//同时需要同时查找当前文件中的和全局的
+		//查找全局的
 		val element = parameters.position.parent
 		val file = parameters.originalFile
 		val project = file.project
 		val selector = scriptedVariableSelector().gameTypeFrom(file).preferRootFrom(file).distinctByName()
-		val localQuery = ParadoxLocalScriptedVariableSearch.search(element, selector = selector)
-		localQuery.processQuery { processScriptedVariable(it, result) }
 		val globalQuery = ParadoxGlobalScriptedVariableSearch.search(project, selector = selector)
-		globalQuery.processQuery { processScriptedVariable(it, result) }
+		globalQuery.processQuery {
+			if(element.isSamePosition(it)) return@processQuery true //排除正在输入的 
+			processScriptedVariable(it, result) }
 	}
 	
 	private fun processScriptedVariable(scriptedVariable: ParadoxScriptScriptedVariable, result: CompletionResultSet): Boolean {
+		//不自动插入后面的等号
 		val name = scriptedVariable.name
 		val icon = scriptedVariable.icon
 		val tailText = scriptedVariable.value?.let { " = $it" }
@@ -36,4 +37,3 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
 		return true
 	}
 }
-

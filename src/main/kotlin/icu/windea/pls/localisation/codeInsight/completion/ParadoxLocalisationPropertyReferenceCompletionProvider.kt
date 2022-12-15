@@ -31,7 +31,8 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
 			val name = it.name
 			val icon = it.icon
 			val typeFile = it.containingFile
-			val lookupElement = LookupElementBuilder.create(it, name).withIcon(icon)
+			val lookupElement = LookupElementBuilder.create(it, name)
+				.withIcon(icon)
 				.withTypeText(typeFile.name, typeFile.icon, true)
 			result.addElement(lookupElement)
 			true

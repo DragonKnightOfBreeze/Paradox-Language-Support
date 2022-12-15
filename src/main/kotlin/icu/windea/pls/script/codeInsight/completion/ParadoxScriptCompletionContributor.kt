@@ -20,8 +20,8 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		val parameterOrArgumentTokens = TokenSet.create(PARAMETER_ID, ARGUMENT_ID)
 		
 		//当用户正在输入一个scriptedVariableReference的名字时提示
-		val scriptedVariableNamePattern = psiElement().withElementType(scriptedVariableReferenceTokens)
-		extend(null, scriptedVariableNamePattern, ParadoxScriptedVariableCompletionProvider())
+		val scriptedVariableReferencePattern = psiElement().withElementType(scriptedVariableReferenceTokens)
+		extend(null, scriptedVariableReferencePattern, ParadoxScriptedVariableCompletionProvider())
 		
 		//当用户正在输入一个propertyKey或string时提示
 		//当可能正在输入一个定义名（非引用，作为顶级属性名）时，可以自动插入后面的等号、花括号以及从句内联模版，并将光标放到合适的位置
@@ -39,6 +39,11 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		//当用户正在输入一个parameter的名字时提示
 		val parameterPattern = psiElement().withElementType(parameterOrArgumentTokens)
 		extend(null, parameterPattern, ParadoxParameterCompletionProvider())
+		
+		//当用户可能正在输入一个scriptedVariable的名字时提示（除非用户也可能正在输入一个引用的名字）
+		val scriptedVariableNamePattern = psiElement().withElementType(SCRIPTED_VARIABLE_NAME_ID)
+		extend(null, scriptedVariableNamePattern, ParadoxScriptedVariableNameCompletionProvider())
+		
 	}
 	
 	override fun beforeCompletion(context: CompletionInitializationContext) {
