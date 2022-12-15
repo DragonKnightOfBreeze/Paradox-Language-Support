@@ -5,6 +5,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
+import icu.windea.pls.core.psi.ParadoxTypedElement;
 import icu.windea.pls.core.psi.ParadoxScriptedVariableReference;
 import icu.windea.pls.core.psi.ParadoxParameter;
 import icu.windea.pls.core.psi.ParadoxDefinitionProperty;
@@ -55,7 +56,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitInlineMathNumber(@NotNull ParadoxScriptInlineMathNumber o) {
     visitInlineMathFactor(o);
     // visitPsiLiteralValue(o);
-    // visitTypedElement(o);
+    // visitParadoxTypedElement(o);
   }
 
   public void visitInlineMathParExpression(@NotNull ParadoxScriptInlineMathParExpression o) {
@@ -101,7 +102,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitProperty(@NotNull ParadoxScriptProperty o) {
     visitExpressionContextElement(o);
     // visitNamedElement(o);
-    // visitTypedElement(o);
+    // visitParadoxTypedElement(o);
     // visitParadoxDefinitionProperty(o);
   }
 
@@ -115,7 +116,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitScriptedVariable(@NotNull ParadoxScriptScriptedVariable o) {
     visitNamedElement(o);
-    // visitTypedElement(o);
+    // visitParadoxTypedElement(o);
   }
 
   public void visitScriptedVariableName(@NotNull ParadoxScriptScriptedVariableName o) {

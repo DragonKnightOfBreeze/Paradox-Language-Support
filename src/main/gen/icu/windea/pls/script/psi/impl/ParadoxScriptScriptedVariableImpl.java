@@ -91,7 +91,7 @@ public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementI
 
   @Override
   @Nullable
-  public ParadoxDataType getType() {
+  public ParadoxDataType getExpressionType() {
     return ParadoxScriptPsiImplUtil.getExpressionType(this);
   }
 

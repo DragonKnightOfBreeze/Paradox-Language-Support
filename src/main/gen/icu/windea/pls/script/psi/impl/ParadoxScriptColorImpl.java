@@ -48,7 +48,7 @@ public class ParadoxScriptColorImpl extends ParadoxScriptValueImpl implements Pa
 
   @Override
   @NotNull
-  public ParadoxDataType getType() {
+  public ParadoxDataType getExpressionType() {
     return ParadoxScriptPsiImplUtil.getExpressionType(this);
   }
 

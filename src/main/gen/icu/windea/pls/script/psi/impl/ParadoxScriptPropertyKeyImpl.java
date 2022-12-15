@@ -67,7 +67,7 @@ public class ParadoxScriptPropertyKeyImpl extends ParadoxScriptStubElementImpl<P
 
   @Override
   @NotNull
-  public ParadoxDataType getType() {
+  public ParadoxDataType getExpressionType() {
     return ParadoxScriptPsiImplUtil.getExpressionType(this);
   }
 

@@ -113,7 +113,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getExpressionType(element: ParadoxScriptScriptedVariable): ParadoxDataType? {
-		return element.scriptedVariableValue?.getType
+		return element.scriptedVariableValue?.type
 	}
 	
 	@JvmStatic
@@ -251,7 +251,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getExpressionType(element: ParadoxScriptProperty): ParadoxDataType? {
-		return element.propertyValue?.getType
+		return element.propertyValue?.type
 	}
 	
 	@JvmStatic

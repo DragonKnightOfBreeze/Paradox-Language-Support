@@ -92,10 +92,10 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   public ParadoxScriptBlock getBlock() {
     return ParadoxScriptPsiImplUtil.getBlock(this);
   }
-  
+
   @Override
   @Nullable
-  public ParadoxDataType getType() {
+  public ParadoxDataType getExpressionType() {
     return ParadoxScriptPsiImplUtil.getExpressionType(this);
   }
 

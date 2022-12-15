@@ -35,7 +35,7 @@ public class ParadoxScriptBooleanImpl extends ParadoxScriptValueImpl implements 
 
   @Override
   @NotNull
-  public ParadoxDataType getType() {
+  public ParadoxDataType getExpressionType() {
     return ParadoxScriptPsiImplUtil.getExpressionType(this);
   }
 

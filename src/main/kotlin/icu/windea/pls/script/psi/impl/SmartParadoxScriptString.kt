@@ -18,7 +18,7 @@ class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {
 	}
 	
 	override val type: ParadoxDataType
-		get() = _valueType ?: super.getType.also { _valueType = it }
+		get() = _valueType ?: super.type.also { _valueType = it }
 	
 	override fun subtreeChanged() {
 		_value = null

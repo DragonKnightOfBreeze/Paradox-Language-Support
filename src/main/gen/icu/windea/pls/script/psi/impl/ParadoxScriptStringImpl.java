@@ -81,8 +81,14 @@ public class ParadoxScriptStringImpl extends ParadoxScriptStubElementImpl<Parado
 
   @Override
   @NotNull
-  public ParadoxDataType getType() {
+  public ParadoxDataType getExpressionType() {
     return ParadoxScriptPsiImplUtil.getExpressionType(this);
+  }
+
+  @Override
+  @NotNull
+  public String getExpression() {
+    return ParadoxScriptPsiImplUtil.getExpression(this);
   }
 
   @Override

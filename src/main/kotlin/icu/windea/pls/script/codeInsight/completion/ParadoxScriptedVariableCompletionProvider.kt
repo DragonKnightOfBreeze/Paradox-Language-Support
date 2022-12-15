@@ -39,9 +39,7 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
  */
 class ParadoxScriptedVariableNameCompletionProvider: CompletionProvider<CompletionParameters>(){
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		val ele
 		//查找全局的，排除正在输入的
 		TODO("Not yet implemented")
 	}
-	
 }

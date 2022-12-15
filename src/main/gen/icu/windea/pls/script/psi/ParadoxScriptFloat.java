@@ -15,6 +15,6 @@ public interface ParadoxScriptFloat extends ParadoxScriptValue, PsiLiteralValue 
   float getFloatValue();
 
   @NotNull
-  ParadoxDataType getType();
+  ParadoxDataType getExpressionType();
 
 }

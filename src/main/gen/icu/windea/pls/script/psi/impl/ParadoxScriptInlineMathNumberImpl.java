@@ -36,7 +36,7 @@ public class ParadoxScriptInlineMathNumberImpl extends ParadoxScriptInlineMathFa
 
   @Override
   @NotNull
-  public ParadoxDataType getType() {
+  public ParadoxDataType getExpressionType() {
     return ParadoxScriptPsiImplUtil.getExpressionType(this);
   }
 

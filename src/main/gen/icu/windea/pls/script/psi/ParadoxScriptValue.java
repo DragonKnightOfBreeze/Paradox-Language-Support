@@ -17,7 +17,7 @@ public interface ParadoxScriptValue extends ParadoxScriptExpressionElement {
   String getValue();
 
   @NotNull
-  ParadoxDataType getType();
+  ParadoxDataType getExpressionType();
 
   @NotNull
   String getExpression();
