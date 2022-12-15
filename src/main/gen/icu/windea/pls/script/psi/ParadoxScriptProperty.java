@@ -49,7 +49,7 @@ public interface ParadoxScriptProperty extends ParadoxScriptExpressionContextEle
   //methods are not found in ParadoxScriptPsiImplUtil
 
   @Nullable
-  ParadoxDataType getExpressionType();
+  ParadoxDataType getType();
 
   @Nullable
   String getConfigExpression();

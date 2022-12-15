@@ -18,6 +18,6 @@ public interface ParadoxScriptColor extends ParadoxScriptValue {
   void setColor(@NotNull Color color);
 
   @NotNull
-  ParadoxDataType getExpressionType();
+  ParadoxDataType getType();
 
 }

@@ -40,7 +40,7 @@ public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement
   String getUnquotedValue();
 
   @Nullable
-  ParadoxDataType getExpressionType();
+  ParadoxDataType getType();
 
   @NotNull
   ItemPresentation getPresentation();

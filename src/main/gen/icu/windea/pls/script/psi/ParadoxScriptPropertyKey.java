@@ -27,7 +27,7 @@ public interface ParadoxScriptPropertyKey extends ParadoxScriptStringExpressionE
   PsiReference[] getReferences();
 
   @NotNull
-  ParadoxDataType getExpressionType();
+  ParadoxDataType getType();
 
   @NotNull
   String getExpression();

@@ -57,8 +57,8 @@ public class ParadoxLocalisationScriptedVariableReferenceImpl extends ASTWrapper
 
   @Override
   @NotNull
-  public ParadoxDataType getExpressionType() {
-    return ParadoxLocalisationPsiImplUtil.getExpressionType(this);
+  public ParadoxDataType getType() {
+    return ParadoxLocalisationPsiImplUtil.getType(this);
   }
 
   @Override

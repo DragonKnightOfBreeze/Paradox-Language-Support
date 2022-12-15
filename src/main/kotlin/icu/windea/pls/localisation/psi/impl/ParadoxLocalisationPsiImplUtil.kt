@@ -194,7 +194,7 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxLocalisationScriptedVariableReference): ParadoxDataType {
+	fun getType(element: ParadoxLocalisationScriptedVariableReference): ParadoxDataType {
 		return element.reference.resolve()?.type ?: ParadoxDataType.UnknownType
 	}
 	

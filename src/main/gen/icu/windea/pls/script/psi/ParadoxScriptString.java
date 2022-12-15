@@ -35,7 +35,7 @@ public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptSt
   String getStringValue();
 
   @NotNull
-  ParadoxDataType getExpressionType();
+  ParadoxDataType getType();
 
   @NotNull
   String getExpression();

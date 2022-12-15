@@ -14,7 +14,7 @@ public interface ParadoxScriptInlineMathNumber extends ParadoxScriptInlineMathFa
   String getValue();
 
   @NotNull
-  ParadoxDataType getExpressionType();
+  ParadoxDataType getType();
 
   @NotNull
   String getExpression();

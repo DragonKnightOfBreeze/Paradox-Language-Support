@@ -15,6 +15,6 @@ public interface ParadoxScriptInt extends ParadoxScriptValue, PsiLiteralValue {
   int getIntValue();
 
   @NotNull
-  ParadoxDataType getExpressionType();
+  ParadoxDataType getType();
 
 }
