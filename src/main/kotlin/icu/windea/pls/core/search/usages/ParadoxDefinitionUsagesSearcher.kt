@@ -14,6 +14,8 @@ import icu.windea.pls.core.psi.*
  * 定义对应的PsiElement的名字（rootKey）不一定是定义的名字（definitionName），因此需要特殊处理。
  * 
  * 另外，某些场合引用处的文本并非完整的定义的名字，如本地化图标，这时也要特殊处理。
+ * 
+ * @see icu.windea.pls.script.intentions.DefinitionNameFindUsagesIntention
  */
 class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
 	override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
@@ -36,3 +38,4 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
 		}
 	}
 }
+

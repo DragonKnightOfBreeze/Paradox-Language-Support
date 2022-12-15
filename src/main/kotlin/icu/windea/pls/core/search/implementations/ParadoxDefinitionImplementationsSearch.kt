@@ -13,6 +13,8 @@ import icu.windea.pls.core.selector.*
 
 /**
  * 定义的实现的查询。加入所有作用域内的同名定义。
+ * 
+ * @see icu.windea.pls.script.intentions.DefinitionNameGotoImplementationsIntention
  */
 class ParadoxDefinitionImplementationsSearch : QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters> {
 	override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {

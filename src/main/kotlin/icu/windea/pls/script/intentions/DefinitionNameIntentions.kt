@@ -7,12 +7,14 @@ import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.psi.search.searches.*
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.util.SmartList
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.search.implementations.*
+import icu.windea.pls.core.search.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 
 abstract class DefinitionNameIntention : IntentionAction, PriorityAction {
@@ -72,7 +74,11 @@ class DefinitionNameGotoImplementationsIntention: DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.gotoImplementations")
 	
 	override fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
-		DefinitionsScopedSearch.search(definition)
+		val scope = GlobalSearchScope.allScope(project)
+		val selector = definitionSelector().gameType(definitionInfo.gameType).preferRootFrom(definition)
+		val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, project, scope, selector).findAll()
+		NavigationUtil.getPsiElementPopup(result.toTypedArray(), PlsBundle.message("script.intention.definitionName.gotoImplementations.title", definitionInfo.name))
+			.showInBestPositionFor(editor)
 	}
 	
 	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
@@ -88,9 +94,12 @@ class DefinitionNameGotoTypeDeclarationIntention : DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.gotoTypeDeclaration")
 	
 	override fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
-		//不包括子类型（`subtype[origin]`）
-		val resolved = definitionInfo.typeConfig.pointer.element ?: return
-		NavigationUtil.activateFileWithPsiElement(resolved)
+		val result = SmartList<PsiElement>()
+		definitionInfo.typeConfig.pointer.element?.let { result.add(it) }
+		if(result.isEmpty()) return
+		definitionInfo.subtypeConfigs.forEach { config -> config.pointer.element?.let { result.add(it) } }
+		NavigationUtil.getPsiElementPopup(result.toTypedArray(), PlsBundle.message("script.intention.definitionName.gotoTypeDeclaration.title", definitionInfo.name))
+			.showInBestPositionFor(editor)
 	}
 	
 	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {

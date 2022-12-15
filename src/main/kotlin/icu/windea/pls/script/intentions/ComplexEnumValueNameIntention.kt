@@ -7,10 +7,14 @@ import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.search.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 
 abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
@@ -64,7 +68,13 @@ class ComplexEnumValueNameGotoImplementationsIntention: ComplexEnumValueNameInte
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.gotoImplementations")
 	
 	override fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
-		DefinitionsScopedSearch.search(element)
+		val gameType = complexEnumValueInfo.gameType ?: return
+		val enumName = complexEnumValueInfo.enumName
+		val scope = GlobalSearchScope.allScope(project)
+		val selector = complexEnumValueSelector().gameType(gameType)
+		val result = ParadoxComplexEnumValueSearch.search(complexEnumValueInfo.name, complexEnumValueInfo.enumName, project, scope, selector).findAll()
+		NavigationUtil.getPsiElementPopup(result.toTypedArray(), PlsBundle.message("script.intention.complexEnumValueName.gotoImplementations.title", enumName))
+			.showInBestPositionFor(editor)
 	}
 }
 
@@ -81,7 +91,8 @@ class ComplexEnumValueNameGotoTypeDeclarationIntention: ComplexEnumValueNameInte
 		val enumName = complexEnumValueInfo.enumName
 		val config = configGroup.complexEnums[enumName] ?: return //unexpected
 		val resolved = config.pointer.element ?: return
-		NavigationUtil.activateFileWithPsiElement(resolved)
+		NavigationUtil.getPsiElementPopup(arrayOf(resolved), PlsBundle.message("script.intention.complexEnumValueName.gotoTypeDeclaration.title", enumName))
+			.showInBestPositionFor(editor)
 	}
 	
 	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
