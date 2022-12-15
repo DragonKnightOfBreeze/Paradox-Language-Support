@@ -12,6 +12,7 @@ import com.intellij.util.SmartList
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
@@ -98,7 +99,8 @@ class DefinitionNameGotoTypeDeclarationIntention : DefinitionNameIntention() {
 		definitionInfo.typeConfig.pointer.element?.let { result.add(it) }
 		if(result.isEmpty()) return
 		definitionInfo.subtypeConfigs.forEach { config -> config.pointer.element?.let { result.add(it) } }
-		NavigationUtil.getPsiElementPopup(result.toTypedArray(), PlsBundle.message("script.intention.definitionName.gotoTypeDeclaration.title", definitionInfo.name))
+		val render = NameOnlyPsiElementCellRender()
+		NavigationUtil.getPsiElementPopup(result.toTypedArray(), render,  PlsBundle.message("script.intention.definitionName.gotoTypeDeclaration.title", definitionInfo.name))
 			.showInBestPositionFor(editor)
 	}
 	

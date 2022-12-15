@@ -8,16 +8,15 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
-import com.intellij.psi.search.searches.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 
-abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
+abstract class ComplexEnumValueNameIntention : IntentionAction, PriorityAction {
 	override fun getPriority() = PriorityAction.Priority.LOW
 	
 	override fun getFamilyName() = text
@@ -52,7 +51,7 @@ abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
  * 为表示复杂枚举名称的表达式提供查找使用的功能的意向。
  * @see icu.windea.pls.core.search.usages.ParadoxComplexEnumValueUsagesSearcher
  */
-class ComplexEnumValueNameFindUsagesIntention: ComplexEnumValueNameIntention() {
+class ComplexEnumValueNameFindUsagesIntention : ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.findUsages")
 	
 	override fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
@@ -64,7 +63,7 @@ class ComplexEnumValueNameFindUsagesIntention: ComplexEnumValueNameIntention() {
  * 为表示复杂枚举名称的表达式提供导航到实现的功能的意向。
  * @see icu.windea.pls.core.search.implementations.ParadoxComplexEnumValueImplementationsSearch
  */
-class ComplexEnumValueNameGotoImplementationsIntention: ComplexEnumValueNameIntention() {
+class ComplexEnumValueNameGotoImplementationsIntention : ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.gotoImplementations")
 	
 	override fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
@@ -82,7 +81,7 @@ class ComplexEnumValueNameGotoImplementationsIntention: ComplexEnumValueNameInte
  * 为表示复杂枚举名称的表达式提供导航到声明的功能的意向。
  * @see icu.windea.pls.core.codeInsight.ParadoxTypeDeclarationProvider
  */
-class ComplexEnumValueNameGotoTypeDeclarationIntention: ComplexEnumValueNameIntention() {
+class ComplexEnumValueNameGotoTypeDeclarationIntention : ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.gotoTypeDeclaration")
 	
 	override fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
@@ -91,7 +90,8 @@ class ComplexEnumValueNameGotoTypeDeclarationIntention: ComplexEnumValueNameInte
 		val enumName = complexEnumValueInfo.enumName
 		val config = configGroup.complexEnums[enumName] ?: return //unexpected
 		val resolved = config.pointer.element ?: return
-		NavigationUtil.getPsiElementPopup(arrayOf(resolved), PlsBundle.message("script.intention.complexEnumValueName.gotoTypeDeclaration.title", enumName))
+		val render = NameOnlyPsiElementCellRender()
+		NavigationUtil.getPsiElementPopup(arrayOf(resolved), render, PlsBundle.message("script.intention.complexEnumValueName.gotoTypeDeclaration.title", enumName))
 			.showInBestPositionFor(editor)
 	}
 	
