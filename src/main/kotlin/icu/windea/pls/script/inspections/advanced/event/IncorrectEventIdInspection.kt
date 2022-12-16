@@ -4,6 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.definition.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
@@ -50,23 +51,13 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 				val eventIdProperty = event.findDefinitionProperty("id") ?: continue //没有事件ID，另行检查
 				val eventIdPropertyValue = eventIdProperty.propertyValue?.castOrNull<ParadoxScriptString>() ?: continue //事件ID不是字符串，另行检查
 				val eventId = eventIdPropertyValue.stringValue
-				if(isIncorrectEventId(eventId, namespace)) {
+				if(!DefinitionConfigHandler.isValidEventId(eventId, namespace)) {
 					if(holder == null) holder = ProblemsHolder(manager, file, isOnTheFly)
 					holder.registerProblem(eventIdPropertyValue, PlsBundle.message("script.inspection.event.incorrectEventId.description", eventId, namespace))
 				}
 			}
 		}
 		return holder?.resultsArray
-	}
-	
-	private fun isIncorrectEventId(eventId: String, eventNamespace: String): Boolean {
-		//格式：{namespace}.{0}，其中：{namespace}必须匹配事件命名空间，{0}必须是非负整数且允许作为前缀的0
-		val dotIndex = eventId.indexOf('.') //a.1 1 0,1 2,3 
-		if(dotIndex == -1) return true
-		val prefix = eventId.substring(0, dotIndex)
-		if(!prefix.equals(eventNamespace, true)) return true //TODO 不确定，应当需要忽略带小写
-		val no = eventId.substring(dotIndex + 1)
-		return no.isEmpty() || no.any { !it.isExactDigit() }
 	}
 	
 	//private class RenameEventId(

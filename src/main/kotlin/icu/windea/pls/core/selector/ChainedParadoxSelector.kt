@@ -1,6 +1,5 @@
 package icu.windea.pls.core.selector
 
-import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import icu.windea.pls.core.collections.*
 
@@ -57,7 +56,7 @@ open class ChainedParadoxSelector<T>(
 		}
 	}
 	
-	fun getGlobalSearchScope(project: Project): GlobalSearchScope? {
+	fun getGlobalSearchScope(): GlobalSearchScope? {
 		return selectors.findIsInstance<ParadoxWithSearchScopeSelector<*>>()?.getGlobalSearchScope()
 	}
 }

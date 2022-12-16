@@ -1,54 +1,45 @@
 package icu.windea.pls.localisation.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.openapi.editor.EditorModificationUtil
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.PsiErrorElement
+import com.intellij.codeInsight.lookup.*
 import com.intellij.util.*
-import icons.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 
 /**
  * 提供本地化名字的代码补全。
- * 主要是自动插入后面的冒号、数字以及双引号，并将光标放到合适的位置。
  */
 class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		ProgressManager.checkCanceled()
-		val offsetInParent = parameters.offset - parameters.position.textRange.startOffset
-		val keyword = parameters.position.getKeyword(offsetInParent)
-		if(keyword.isEmpty()) return
-		if(keyword.length != offsetInParent) return
-		val propertyKey = parameters.position.parent as? ParadoxLocalisationPropertyKey ?: return
-		if(!shouldComplete(propertyKey)) return //后面没有冒号、双引号等其他内容
-		val file = parameters.originalFile as? ParadoxLocalisationFile ?: return
-		val localisationCategory = ParadoxLocalisationCategory.resolve(file) ?: return
-		val keyToUse = keyword
-		val textToInsert = when(localisationCategory) {
-			ParadoxLocalisationCategory.Localisation -> ":0 \"\""
-			ParadoxLocalisationCategory.SyncedLocalisation -> ": \"\""
+		result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
+		
+		val element = parameters.position.parent as? ParadoxLocalisationProperty ?: return
+		val offsetInParent = parameters.offset - element.textRange.startOffset
+		val keyword = element.getKeyword(offsetInParent)
+		val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return
+		val category = ParadoxLocalisationCategory.resolve(file) ?: return
+		val project = parameters.originalFile.project
+		
+		//提示localisation或者synced_localisation
+		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale())
+		val processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean = processor@{
+			if(element.isSamePosition(it)) return@processor true //排除正在输入的 
+			val name = it.name
+			val icon = it.icon
+			val typeFile = it.containingFile
+			val lookupElement = LookupElementBuilder.create(it, name)
+				.withIcon(icon)
+				.withTypeText(typeFile.name, typeFile.icon, true)
+			result.addElement(lookupElement)
+			true
 		}
-		val lookupElement = LookupElementBuilder.create(keyToUse)
-			.bold()
-			.withTailText(textToInsert)
-			.withIcon(PlsIcons.Localisation)
-			.withInsertHandler { c, _ ->
-				val editor = c.editor
-				//插入后续文本
-				EditorModificationUtil.insertStringAtCaret(editor, textToInsert)
-				//把鼠标放到引号中间
-				val caretModel = editor.caretModel
-				caretModel.moveToOffset(caretModel.offset - 1)
-			}
-		result.withPrefixMatcher(keyToUse).addElement(lookupElement)
-	}
-	
-	private fun shouldComplete(propertyKey: ParadoxLocalisationPropertyKey): Boolean {
-		val nextSibling = propertyKey.nextSibling
-		return nextSibling is PsiErrorElement && nextSibling.textLength == 0
+		when(category) {
+			ParadoxLocalisationCategory.Localisation -> processLocalisationVariants(keyword, project, selector = selector, processor = processor)
+			ParadoxLocalisationCategory.SyncedLocalisation -> processSyncedLocalisationVariants(keyword, project, selector = selector, processor = processor)
+		}
 	}
 }

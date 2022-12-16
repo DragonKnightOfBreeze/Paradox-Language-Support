@@ -51,7 +51,7 @@ object ParadoxDefinitionHandler {
 		if(fileInfo == null) {
 			return resolveByTypeComment(element, project) ?: resolveByPathComment(element, file, project)
 		}
-		val elementPath = ParadoxElementPathHandler.resolveFromFile(element, PlsConstants.maxMayBeDefinitionDepth) ?: return null
+		val elementPath = ParadoxElementPathHandler.resolveFromFile(element, PlsConstants.maxDefinitionDepth) ?: return null
 		val rootKey = element.pathName //如果是文件名，不要包含扩展名
 		val path = fileInfo.path
 		val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
@@ -71,7 +71,7 @@ object ParadoxDefinitionHandler {
 	
 	private fun resolveByPathComment(element: ParadoxDefinitionProperty, file: PsiFile, project: Project): ParadoxDefinitionInfo? {
 		val (gameType, path) = ParadoxMagicCommentHandler.resolveFilePathComment(file) ?: return null
-		val elementPath = ParadoxElementPathHandler.resolveFromFile(element, PlsConstants.maxMayBeDefinitionDepth) ?: return null
+		val elementPath = ParadoxElementPathHandler.resolveFromFile(element, PlsConstants.maxDefinitionDepth) ?: return null
 		val rootKey = element.pathName //如果是文件名，不要包含扩展名
 		val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
 		return doResolve(configGroup, element, rootKey, path, elementPath)
@@ -110,6 +110,10 @@ object ParadoxDefinitionHandler {
 	
 	@JvmStatic
 	fun matchesTypeByPath(typeConfig: CwtTypeConfig, path: ParadoxPath): Boolean {
+		//判断element是否需要是scriptFile还是scriptProperty
+		val nameFromFileConfig = typeConfig.nameFromFile
+		if(nameFromFileConfig) return false
+		
 		//判断path是否匹配
 		val pathConfig = typeConfig.path ?: return false
 		val pathStrictConfig = typeConfig.pathStrict
@@ -158,7 +162,24 @@ object ParadoxDefinitionHandler {
 			if(isBlockConfig != isBlock) return false
 		}
 		
-		if(!matchesTypeByPath(typeConfig, path)) return false
+		//判断path是否匹配
+		val pathConfig = typeConfig.path ?: return false
+		val pathStrictConfig = typeConfig.pathStrict
+		if(pathStrictConfig) {
+			if(pathConfig != path.parent) return false
+		} else {
+			if(!pathConfig.matchesPath(path.parent)) return false
+		}
+		//判断path_name是否匹配
+		val pathFileConfig = typeConfig.pathFile //String?
+		if(pathFileConfig != null) {
+			if(pathFileConfig != path.fileName) return false
+		}
+		//判断path_extension是否匹配
+		val pathExtensionConfig = typeConfig.pathExtension //String?
+		if(pathExtensionConfig != null) {
+			if(pathExtensionConfig != "." + path.fileExtension) return false
+		}
 		
 		//如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
 		//skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）

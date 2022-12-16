@@ -16,7 +16,7 @@ data class CwtDeclarationConfig(
 	/**
 	 * 得到根据子类型列表进行合并后的配置。
 	 */
-	fun getMergedConfig(subtypes: List<String>): CwtPropertyConfig {
+	fun getMergedConfig(subtypes: List<String> = emptyList()): CwtPropertyConfig {
 		val properties = propertyConfig.properties
 		val values = propertyConfig.values
 		

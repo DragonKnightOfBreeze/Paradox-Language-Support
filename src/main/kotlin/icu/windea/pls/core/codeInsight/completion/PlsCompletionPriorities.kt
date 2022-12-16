@@ -2,12 +2,13 @@ package icu.windea.pls.core.codeInsight.completion
 
 object PlsCompletionPriorities {
 	const val pinnedPriority = 1000.0
-	const val keywordPriority = 100.0
-	const val rootKeyPriority = 99.0
-	const val constantKeyPriority = 95.0
+	const val rootKeyPriority = 100.0
+	const val definitionNamePriority = 95.0
+	const val keywordPriority = 90.0
 	const val constantPriority = 90.0
-	const val scopeLinkPrefixPriority = 95.0
-	const val valueLinkPrefixPriority = 95.0
+	const val constantKeyPriority = 90.0
+	const val scopeLinkPrefixPriority = 85.0
+	const val valueLinkPrefixPriority = 85.0
 	const val modifierPriority = 80.0
 	const val systemScopePriority = 75.0
 	const val scopePriority = 70.0

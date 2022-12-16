@@ -49,8 +49,8 @@ object PlsConstants {
 	const val unresolvedString = "(unresolved)"
 	
 	const val defaultScriptedVariableName = "var"
-	//NOTE 目前认为cwt文件中定义的definition的propertyPath的maxDepth是4（最多跳过3个rootKey）
-	const val maxMayBeDefinitionDepth = 4
+	//NOTE 目前认为cwt文件中定义的definition的elementPath的maxDepth是4（最多跳过3个rootKey）
+	const val maxDefinitionDepth = 4
 	const val keysTruncateLimit = 5
 }
 

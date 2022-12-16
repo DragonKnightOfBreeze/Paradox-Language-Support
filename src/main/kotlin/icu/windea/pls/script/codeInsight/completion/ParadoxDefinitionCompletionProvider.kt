@@ -30,6 +30,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 		context.put(PlsCompletionKeys.rightQuotedKey, rightQuoted)
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
+		context.put(PlsCompletionKeys.completionIdsKey, mutableSetOf())
 		
 		val resultToUse = result.withPrefixMatcher(keyword)
 		
@@ -48,10 +49,13 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 			val definitionProperty = element.findParentDefinitionProperty() ?: return
 			//这里需要特殊处理一下，标记属性的值是否未填写
 			val incomplete = !quoted && keyword.isEmpty()
-			if(incomplete) definitionProperty.putUserData(PlsKeys.incompleteMarkerKey, true)
-			//进行提示
-			CwtConfigHandler.addValueCompletions(definitionProperty, context, resultToUse)
-			if(incomplete) definitionProperty.putUserData(PlsKeys.incompleteMarkerKey, null)
+			try {
+				definitionProperty.putUserData(PlsKeys.incompleteMarkerKey, incomplete)
+				//进行提示
+				CwtConfigHandler.addValueCompletions(definitionProperty, context, resultToUse)
+			} finally {
+				definitionProperty.putUserData(PlsKeys.incompleteMarkerKey, null)
+			}
 		}
 		if(mayBeBlockValue) {
 			//得到原始文件中上一级block

@@ -2,8 +2,7 @@ package icu.windea.pls.script.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.util.*
-import icu.windea.pls.config.cwt.CwtConfigHandler.completeParameters
-import icu.windea.pls.core.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.psi.*
 
@@ -27,6 +26,6 @@ class ParadoxParameterCompletionProvider : CompletionProvider<CompletionParamete
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
 		
-		completeParameters(parameterElement, read, context, result)
+		CwtConfigHandler.completeParameters(parameterElement, read, context, result)
 	}
 }

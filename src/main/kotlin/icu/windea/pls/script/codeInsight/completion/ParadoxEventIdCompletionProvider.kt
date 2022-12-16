@@ -3,31 +3,32 @@ package icu.windea.pls.script.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.util.*
+import icons.*
 import icu.windea.pls.config.definition.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 提供事件ID的前缀的代码补全。基于对应的事件命名空间。
+ * 提供事件ID中事件命名空间的代码补全。
  */
 class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		//val file = parameters.originalFile
-		//if(file !is ParadoxScriptFile) return
-		//val fileInfo = file.fileInfo ?: return
-		//if(!"events".matchesPath(fileInfo.path.path, acceptSelf = false)) return
-		//val rootBlock = file.block ?: return
-		//val properties = rootBlock.propertyList
-		//if(properties.isEmpty()) return //空文件，跳过
-		//if(properties.first { it.name.equals("namespace", true) } == null) return //没有事件命名空间，跳过
-		val position = parameters.position
-		val stringElement = position.parent?.castOrNull<ParadoxScriptString>() ?: return
-		val eventIdProperty = stringElement.parent?.castOrNull<ParadoxScriptProperty>() ?: return
+		val element = parameters.position.parent?.castOrNull<ParadoxScriptString>() ?: return
+		val offsetInParent = parameters.offset - element.textRange.startOffset
+		val keyword = element.getKeyword(offsetInParent)
+		if(keyword.contains('.')) return
+		val eventIdProperty = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
 		if(!eventIdProperty.name.equals("id", true)) return
-		val eventDefinition = eventIdProperty.parent?.parent?.castOrNull<ParadoxScriptProperty>() ?: return
-		if(eventDefinition.definitionInfo?.type != "event") return
-		val namespace = DefinitionConfigHandler.getEventNamespace(eventDefinition) ?: return //找不到，跳过
-		val lookupElement = LookupElementBuilder.create("$namespace.")
+		val event = eventIdProperty.parent?.parent?.castOrNull<ParadoxScriptProperty>() ?: return
+		if(event.definitionInfo?.type != "event") return
+		
+		//仅提示脚本文件中向上查找到的那个合法的事件命名空间
+		val eventNamespace = DefinitionConfigHandler.getEventNamespace(event) ?: return //skip
+		val name = eventNamespace.value ?: return
+		val lookupElement = LookupElementBuilder.create(eventNamespace, name)
+			.withIcon(PlsIcons.EventNamespace)
+			.withPriority(PlsCompletionPriorities.definitionNamePriority) //same with event ids
 		result.addElement(lookupElement)
 	}
 }

@@ -2,7 +2,6 @@ package icons
 
 import com.intellij.icons.*
 import com.intellij.ui.*
-import icu.windea.pls.core.ui.*
 import javax.swing.*
 
 object PlsIcons {
@@ -51,7 +50,10 @@ object PlsIcons {
 	@JvmField val ValueLinkValue = loadIcon("/icons/valueLinkValue.svg")
 	@JvmField val Modifier = loadIcon("/icons/modifier.svg")
 	@JvmField val Alias = loadIcon("/icons/alias.svg")
-	@JvmField val Tag = loadIcon("icons/tag.svg")
+	@JvmField val Tag = loadIcon("/icons/tag.svg")
+	
+	@JvmField val EventNamespace = loadIcon("/icons/eventNamespace.svg")
+	@JvmField val EventId = loadIcon("/icons/eventId.svg")
 	
 	object Actions {
 		@JvmField val SteamDirectory = loadIcon("/icons/actions/steamDirectory.svg")

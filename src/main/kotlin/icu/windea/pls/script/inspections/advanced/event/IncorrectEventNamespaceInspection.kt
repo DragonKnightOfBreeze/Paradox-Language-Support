@@ -4,6 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.definition.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
@@ -34,15 +35,11 @@ class IncorrectEventNamespaceInspection  : LocalInspectionTool() {
 			ProgressManager.checkCanceled()
 			val namespacePropertyValue = namespaceProperty.propertyValue?.castOrNull<ParadoxScriptString>() ?: continue //事件ID不是字符串，另行检查
 			val namespace = namespacePropertyValue.stringValue
-			if(isIncorrectEventNamespace(namespace)){
+			if(!DefinitionConfigHandler.isValidEventNamespace(namespace)){
 				if(holder == null) holder = ProblemsHolder(manager, file, isOnTheFly)
 				holder.registerProblem(namespacePropertyValue, PlsBundle.message("script.inspection.event.incorrectEventNamespace.description", namespace))
 			}
 		}
 		return holder?.resultsArray
-	}
-	
-	private fun isIncorrectEventNamespace(namespace: String): Boolean {
-		return namespace.any() { !it.isExactLetter() && it != '_' }
 	}
 }
