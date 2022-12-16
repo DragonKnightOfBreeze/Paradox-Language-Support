@@ -42,6 +42,7 @@ fun <S : ChainedParadoxSelector<T>, T> S.preferRoot(rootFile: VirtualFile?, cond
 fun <S : ChainedParadoxSelector<T>, T> S.preferRootFrom(from: Any?, condition: Boolean = true) =
 	apply { if(from != null && condition) selectors += ParadoxPreferRootFileSelector(from = from) }
 
+
 /**
  * 目前仅支持：[ParadoxComplexEnumValueSelector]
  * @see ParadoxSearchScope
@@ -51,7 +52,7 @@ fun ParadoxComplexEnumValueSelector.withSearchScope(searchScope: String?, contex
 
 fun ParadoxScriptedVariableSelector.distinctByName() =
 	distinctBy { it.name }
-
+	
 fun ParadoxDefinitionSelector.distinctByName() =
 	distinctBy { ParadoxDefinitionHandler.getName(it) }
 

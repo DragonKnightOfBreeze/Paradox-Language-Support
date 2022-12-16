@@ -24,13 +24,13 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 		val project = file.project
 		
 		fun doAddCompletions(type: String, config: CwtPropertyConfig, isKey: Boolean?, currentDefinition: ParadoxDefinitionProperty?) {
-			val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file)
-			val query = ParadoxDefinitionSearch.search(type, project, selector = selector)
 			context.put(PlsCompletionKeys.configKey, config)
 			context.put(PlsCompletionKeys.isKeyKey, isKey)
 			context.put(PlsCompletionKeys.contextElementKey, element)
+			val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file).distinctByName()
+			val query = ParadoxDefinitionSearch.search(type, project, selector = selector)
 			query.processQuery {
-				if(currentDefinition != null && currentDefinition.isSamePosition(it)) return@processQuery true //排除正在输入的 
+				if(currentDefinition != null && currentDefinition.isSamePosition(it)) return@processQuery true //排除正在输入的
 				processDefinition(context, result, it)
 			}
 		}
@@ -83,6 +83,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 										val config = configGroup.declarations[type]?.getMergedConfig() ?: continue
 										doAddCompletions(type, config, true, null)
 									}
+									break
 								}
 							}
 						}

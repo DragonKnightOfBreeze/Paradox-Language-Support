@@ -27,11 +27,18 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 	}
 	
 	fun find(): T? {
-		return if(getSettings().preferOverridden) {
-			findLast()
-		} else {
-			findFirst()
+		val preferOverridden = getSettings().preferOverridden
+		val selector = searchParameters.selector
+		var result: T? = null
+		delegateProcessResults(original) {
+			if(selector.select(it)) {
+				result = it
+				preferOverridden
+			} else {
+				true
+			}
 		}
+		return result ?: selector.defaultValue
 	}
 	
 	override fun findFirst(): T? {
@@ -44,18 +51,6 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 			} else {
 				true
 			}
-		}
-		return result ?: selector.defaultValue
-	}
-	
-	fun findLast(): T? {
-		val selector = searchParameters.selector
-		var result: T? = null
-		delegateProcessResults(original) {
-			if(selector.select(it)) {
-				result = it
-			}
-			true
 		}
 		return result ?: selector.defaultValue
 	}

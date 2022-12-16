@@ -606,6 +606,7 @@ object CwtConfigHandler {
 						} else {
 							infoMap.getOrPut(relative) { SmartList() }
 						}
+						break
 					}
 				}
 			}
@@ -843,7 +844,7 @@ object CwtConfigHandler {
 					val typeFile = complexEnumConfig.pointer.containingFile
 					val searchScope = complexEnumConfig.searchScope
 					val selector = complexEnumValueSelector().gameType(gameType).withSearchScope(searchScope, contextElement).preferRootFrom(contextElement).distinctByName()
-					val query = ParadoxComplexEnumValueSearch.search(enumName, project, selector = selector)
+					val query = ParadoxComplexEnumValueSearch.searchAll(enumName, project, selector = selector)
 					query.processQuery { complexEnum ->
 						val name = complexEnum.value
 						//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果

@@ -38,17 +38,21 @@ class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxScriptString
 			project: Project,
 			scope: SearchScope = GlobalSearchScope.allScope(project),
 			selector: ChainedParadoxSelector<ParadoxScriptStringExpressionElement> = nopSelector()
-		) = INSTANCE.createParadoxQuery(SearchParameters(name, enumName, project, scope, selector))
+		): ParadoxQuery<ParadoxScriptStringExpressionElement, SearchParameters> {
+			return INSTANCE.createParadoxQuery(SearchParameters(name, enumName, project, scope, selector))
+		}
 		
 		/**
 		 * @see icu.windea.pls.core.search.ParadoxComplexEnumValueSearch.SearchParameters
 		 */
 		@JvmStatic
-		fun search(
+		fun searchAll(
 			enumName: String,
 			project: Project,
 			scope: SearchScope = GlobalSearchScope.allScope(project),
 			selector: ChainedParadoxSelector<ParadoxScriptStringExpressionElement> = nopSelector()
-		) = INSTANCE.createParadoxQuery(SearchParameters(null, enumName, project, scope, selector))
+		): ParadoxQuery<ParadoxScriptStringExpressionElement, SearchParameters> {
+			return INSTANCE.createParadoxQuery(SearchParameters(null, enumName, project, scope, selector))
+		}
 	}
 }

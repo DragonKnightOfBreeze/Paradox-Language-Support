@@ -26,7 +26,7 @@ class ParadoxStellarisNamePartCompletionProvider: CompletionProvider<CompletionP
 		val valueSetName = StellarisNameFormatHandler.getValueSetName(localisationKey, project) ?: return
 		val gameType = ParadoxSelectorUtils.selectGameType(originalFile)
 		val tailText = "by value[$valueSetName]"
-		val selector = valueSetValueSelector().gameType(gameType).distinctByValue().declarationOnly()
+		val selector = valueSetValueSelector().gameType(gameType).declarationOnly().distinctByValue()
 		val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, project, selector = selector)
 		valueSetValueQuery.processQuery { valueSetValue ->
 			val value = ParadoxValueSetValueHandler.getName(valueSetValue) ?: return@processQuery true
