@@ -17,9 +17,9 @@ class ParadoxLocalisationBlock(
 	private val settings: CodeStyleSettings
 ) : AbstractBlock(node, createWrap(), createAlignment()) {
 	companion object {
-		private val shouldIndentParentTypes = TokenSet.create(PROPERTY_LIST)
-		private val shouldIndentTypes = TokenSet.create(PROPERTY, COMMENT)
-		private val shouldChildIndentTypes = TokenSet.create(PROPERTY_LIST)
+		private val SHOULD_INDENT_PARENT_TYPES = TokenSet.create(PROPERTY_LIST)
+		private val SHOULD_INDENT_TYPES = TokenSet.create(PROPERTY, COMMENT)
+		private val SHOULD_CHILD_INDENT_TYPES = TokenSet.create(PROPERTY_LIST)
 		
 		private fun createWrap(): Wrap? {
 			return null
@@ -53,7 +53,7 @@ class ParadoxLocalisationBlock(
 		val elementType = myNode.elementType
 		val parentElementType = myNode.treeParent?.elementType
 		return when {
-			parentElementType in shouldIndentParentTypes && elementType in shouldIndentTypes -> Indent.getNormalIndent()
+			parentElementType in SHOULD_INDENT_PARENT_TYPES && elementType in SHOULD_INDENT_TYPES -> Indent.getNormalIndent()
 			else -> Indent.getNoneIndent()
 		}
 	}
@@ -65,7 +65,7 @@ class ParadoxLocalisationBlock(
 		val elementType = myNode.elementType
 		return when {
 			elementType is IFileElementType -> Indent.getNoneIndent()
-			elementType in shouldChildIndentTypes -> Indent.getNormalIndent()
+			elementType in SHOULD_CHILD_INDENT_TYPES -> Indent.getNormalIndent()
 			else -> null
 		}
 	}

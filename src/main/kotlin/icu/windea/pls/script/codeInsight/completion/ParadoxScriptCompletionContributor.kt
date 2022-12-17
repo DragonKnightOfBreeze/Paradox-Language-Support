@@ -14,21 +14,19 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		val keywordPattern = psiElement(STRING_TOKEN)
 		extend(CompletionType.BASIC, keywordPattern, ParadoxKeywordCompletionProvider())
 		
-		val scriptedVariableReferenceTokens = TokenSet.create(SCRIPTED_VARIABLE_REFERENCE_ID, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID)
-		val stringTokens = TokenSet.create(STRING_TOKEN, QUOTED_STRING_TOKEN)
-		val keyOrStringTokens = TokenSet.create(PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, STRING_TOKEN, QUOTED_STRING_TOKEN)
-		val parameterOrArgumentTokens = TokenSet.create(PARAMETER_ID, ARGUMENT_ID)
-		
 		//当用户可能正在输入一个scriptedVariableReference的名字时提示
-		val scriptedVariableReferencePattern = psiElement().withElementType(scriptedVariableReferenceTokens)
+		val scriptedVariableReferencePattern = psiElement()
+			.withElementType(ParadoxScriptTokenSets.SCRIPTED_VARIABLE_REFERENCES)
 		extend(null, scriptedVariableReferencePattern, ParadoxScriptedVariableCompletionProvider())
 		
 		//当用户可能正在输入一个propertyKey或string时提示
-		val definitionPattern = psiElement().withElementType(keyOrStringTokens)
+		val definitionPattern = psiElement()
+			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRINGS)
 		extend(null, definitionPattern, ParadoxDefinitionCompletionProvider())
 		
 		//当用户可能正在输入一个eventId时提示
-		val eventIdPattern = psiElement().withElementType(stringTokens)
+		val eventIdPattern = psiElement()
+			.withElementType(ParadoxScriptTokenSets.STRINGS)
 			.withParent(psiElement(ParadoxScriptString::class.java)
 				.withParent(psiElement(ParadoxScriptProperty::class.java)
 					.withParent(psiElement(ParadoxScriptBlock::class.java)
@@ -36,15 +34,18 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		extend(null, eventIdPattern, ParadoxEventIdCompletionProvider())
 		
 		//当用户可能正在输入一个parameter的名字时提示
-		val parameterPattern = psiElement().withElementType(parameterOrArgumentTokens)
+		val parameterPattern = psiElement()
+			.withElementType(ParadoxScriptTokenSets.PARAMETER_OR_ARGUMENTS)
 		extend(null, parameterPattern, ParadoxParameterCompletionProvider())
 		
 		//当用户可能正在输入一个scriptedVariable的名字时提示（除非用户也可能正在输入一个引用的名字）
-		val scriptedVariableNamePattern = psiElement().withElementType(SCRIPTED_VARIABLE_NAME_ID)
+		val scriptedVariableNamePattern = psiElement()
+			.withElementType(SCRIPTED_VARIABLE_NAME_ID)
 		extend(null, scriptedVariableNamePattern, ParadoxScriptedVariableNameCompletionProvider())
 		
 		//当用户可能正在输入一个定义的名字时提示
-		val definitionNamePattern = psiElement().withElementType(keyOrStringTokens)
+		val definitionNamePattern = psiElement()
+			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRINGS)
 		extend(null, definitionNamePattern, ParadoxDefinitionNameCompletionProvider())
 		
 	}

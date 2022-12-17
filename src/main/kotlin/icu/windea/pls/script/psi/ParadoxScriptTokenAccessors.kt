@@ -22,8 +22,8 @@ val ParadoxParameter.parameterId: PsiElement? get() = findChild(ParadoxScriptEle
 
 val ParadoxParameter.defaultValueToken: PsiElement?
 	get() = when {
-		this is ParadoxScriptParameter -> findChild(ParadoxScriptTokenSets.parameterValueTokens)
-		this is ParadoxScriptInlineMathParameter -> findChild(ParadoxScriptTokenSets.inlineMathParameterValueTokens)
+		this is ParadoxScriptParameter -> findChild(ParadoxScriptTokenSets.PARAMETER_VALUES)
+		this is ParadoxScriptInlineMathParameter -> findChild(ParadoxScriptTokenSets.INLINE_MATH_PARAMETER_VALUES)
 		else -> null
 	}
 

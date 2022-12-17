@@ -36,7 +36,7 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
 					if(mayBeNumberKey(propertyKey)) return@run
 					val propertyValue = element.propertyValue ?: return@run
 					if(mayByNumberValue(propertyValue)) return@run
-					val comparisonTokens = element.findChildren(ParadoxScriptTokenSets.comparisonTokens)
+					val comparisonTokens = element.findChildren(ParadoxScriptTokenSets.COMPARISONS)
 					if(comparisonTokens.isEmpty()) return@run
 					val message = PlsBundle.message("script.inspection.advanced.incorrectScriptSyntax.description.1")
 					comparisonTokens.forEach {

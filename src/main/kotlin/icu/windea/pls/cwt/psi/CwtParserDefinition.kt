@@ -3,24 +3,20 @@ package icu.windea.pls.cwt.psi
 import com.intellij.lang.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtParserDefinition : ParserDefinition {
 	companion object {
-		val WHITE_SPACES = TokenSet.create(WHITE_SPACE)
-		val COMMENTS = TokenSet.create(COMMENT)
-		val STRINGS = TokenSet.create(STRING_TOKEN)
 		val FILE = IFileElementType("CWT_FILE", CwtLanguage)
 	}
 	
-	override fun getWhitespaceTokens() = WHITE_SPACES
+	override fun getWhitespaceTokens() = CwtTokenSets.WHITE_SPACES
 	
-	override fun getCommentTokens() = COMMENTS
+	override fun getCommentTokens() = CwtTokenSets.COMMENTS
 	
-	override fun getStringLiteralElements() = STRINGS
+	override fun getStringLiteralElements() = CwtTokenSets.STRING_LITERALS
 	
 	override fun getFileNodeType() = FILE
 	

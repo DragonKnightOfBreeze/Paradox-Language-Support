@@ -6,27 +6,18 @@ import com.intellij.lang.ParserDefinition.SpaceRequirements.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.psi.TokenType.*
-import com.intellij.psi.tree.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
 
 class ParadoxScriptParserDefinition : ParserDefinition {
-	companion object {
-		val WHITE_SPACES = TokenSet.create(WHITE_SPACE)
-		val COMMENTS = TokenSet.create(COMMENT)
-		val STRINGS = TokenSet.create(STRING_TOKEN, QUOTED_STRING_TOKEN)
-		val FILE = ParadoxScriptStubElementTypes.FILE
-	}
+	override fun getWhitespaceTokens() = ParadoxScriptTokenSets.WHITE_SPACES
 	
-	override fun getWhitespaceTokens() = WHITE_SPACES
+	override fun getCommentTokens() = ParadoxScriptTokenSets.COMMENTS
 	
-	override fun getCommentTokens() = COMMENTS
+	override fun getStringLiteralElements() = ParadoxScriptTokenSets.STRING_LITERALS
 	
-	override fun getStringLiteralElements() = STRINGS
-	
-	override fun getFileNodeType() = FILE
+	override fun getFileNodeType() = ParadoxScriptStubElementTypes.FILE
 	
 	override fun createFile(viewProvider: FileViewProvider): ParadoxScriptFile {
 		return ParadoxScriptFile(viewProvider)
@@ -51,7 +42,7 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 	
 	fun createLexer(virtualFile: VirtualFile, project: Project?): ParadoxScriptLexerAdapter {
 		val fileInfo = virtualFile.fileInfo
-		val context =  ParadoxScriptParsingContext(project, fileInfo)
+		val context = ParadoxScriptParsingContext(project, fileInfo)
 		return ParadoxScriptLexerAdapter(context)
 	}
 	

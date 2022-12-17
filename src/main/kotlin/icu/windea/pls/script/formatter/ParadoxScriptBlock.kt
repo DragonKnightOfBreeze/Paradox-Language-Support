@@ -18,11 +18,11 @@ class ParadoxScriptBlock(
 	private val settings: CodeStyleSettings,
 ) : AbstractBlock(node, createWrap(), createAlignment()) {
 	companion object {
-		private val separatorTokens = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN, LT_SIGN, GT_SIGN, LE_SIGN, GE_SIGN)
-		private val inlineMathOperatorTokens = TokenSet.create(PLUS_SIGN, MINUS_SIGN, TIMES_SIGN, DIV_SIGN, MOD_SIGN, LABS_SIGN, RABS_SIGN, LP_SIGN, RP_SIGN)
-		private val shouldIndentParentTypes = TokenSet.create(BLOCK, PARAMETER_CONDITION)
-		private val shouldIndentTypes = TokenSet.create(SCRIPTED_VARIABLE, PROPERTY, BOOLEAN, INT, FLOAT, STRING, COLOR, INLINE_MATH, PARAMETER, BLOCK, PARAMETER_CONDITION, COMMENT)
-		private val shouldChildIndentTypes = TokenSet.create(BLOCK, PARAMETER_CONDITION, PARAMETER_CONDITION_EXPRESSION)
+		private val SEPARATORS = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN, LT_SIGN, GT_SIGN, LE_SIGN, GE_SIGN)
+		private val INLINE_MATH_OPERATORS = TokenSet.create(PLUS_SIGN, MINUS_SIGN, TIMES_SIGN, DIV_SIGN, MOD_SIGN, LABS_SIGN, RABS_SIGN, LP_SIGN, RP_SIGN)
+		private val SHOULD_INDENT_PARENT_TYPES = TokenSet.create(BLOCK, PARAMETER_CONDITION)
+		private val SHOULD_INDENT_TYPES = TokenSet.create(SCRIPTED_VARIABLE, PROPERTY, BOOLEAN, INT, FLOAT, STRING, COLOR, INLINE_MATH, PARAMETER, BLOCK, PARAMETER_CONDITION, COMMENT)
+		private val SHOULD_CHILD_INDENT_TYPES = TokenSet.create(BLOCK, PARAMETER_CONDITION, PARAMETER_CONDITION_EXPRESSION)
 		
 		private fun createWrap(): Wrap? {
 			return null
@@ -36,9 +36,9 @@ class ParadoxScriptBlock(
 			//变量声明分隔符周围的空格，属性分隔符周围的空格
 			val customSettings = settings.getCustomSettings(ParadoxScriptCodeStyleSettings::class.java)
 			return SpacingBuilder(settings, ParadoxScriptLanguage)
-				.aroundInside(separatorTokens, SCRIPTED_VARIABLE).spaceIf(customSettings.SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR) //间隔符周围按情况可能需要空格
-				.aroundInside(separatorTokens, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) //间隔符周围按情况可能需要空格
-				.around(inlineMathOperatorTokens).spaceIf(customSettings.SPACE_AROUND_INLINE_MATH_OPERATOR) //内联数学表达式操作符周围按情况可能需要空格
+				.aroundInside(SEPARATORS, SCRIPTED_VARIABLE).spaceIf(customSettings.SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR) //间隔符周围按情况可能需要空格
+				.aroundInside(SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) //间隔符周围按情况可能需要空格
+				.around(INLINE_MATH_OPERATORS).spaceIf(customSettings.SPACE_AROUND_INLINE_MATH_OPERATOR) //内联数学表达式操作符周围按情况可能需要空格
 				.between(LEFT_BRACE, RIGHT_BRACE).none()//花括号之间总是不需要空格
 				.withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES) //花括号内侧如果非换行按情况可能需要空格
 				.between(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).none() //参数条件表达式如果为空则不需要空格（尽管这是语法错误）
@@ -64,7 +64,7 @@ class ParadoxScriptBlock(
 		val elementType = myNode.elementType
 		val parentElementType = myNode.treeParent?.elementType
 		return when {
-			parentElementType in shouldIndentParentTypes && elementType in shouldIndentTypes -> Indent.getNormalIndent()
+			parentElementType in SHOULD_INDENT_PARENT_TYPES && elementType in SHOULD_INDENT_TYPES -> Indent.getNormalIndent()
 			else -> Indent.getNoneIndent()
 		}
 	}
@@ -77,7 +77,7 @@ class ParadoxScriptBlock(
 		return when {
 			elementType is IFileElementType -> Indent.getNoneIndent()
 			elementType == ROOT_BLOCK -> Indent.getNoneIndent()
-			elementType in shouldChildIndentTypes -> Indent.getNormalIndent()
+			elementType in SHOULD_CHILD_INDENT_TYPES -> Indent.getNormalIndent()
 			else -> null
 		}
 	}

@@ -7,7 +7,7 @@ import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtWordScanner: DefaultWordsScanner(
 	CwtLexerAdapter(),
-	TokenSet.create(PROPERTY_KEY_TOKEN,OPTION_KEY_TOKEN),
-	TokenSet.create(COMMENT, DOCUMENTATION_TOKEN),
-	TokenSet.create(STRING_TOKEN)
+	CwtTokenSets.IDENTIFIERS,
+	CwtTokenSets.COMMENTS,
+	CwtTokenSets.LITERALS
 )

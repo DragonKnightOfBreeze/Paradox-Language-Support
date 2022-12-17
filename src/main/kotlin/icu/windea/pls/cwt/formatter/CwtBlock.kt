@@ -18,10 +18,10 @@ class CwtBlock(
 	private val settings: CodeStyleSettings
 ) : AbstractBlock(node, createWrap(), createAlignment()) {
 	companion object {
-		private val separatorTokens = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN)
-		private val shouldIndentParentTypes = TokenSet.create(BLOCK)
-		private val shouldIndentTypes = TokenSet.create(PROPERTY, VALUE, BOOLEAN, INT, FLOAT, STRING, BLOCK, COMMENT, DOCUMENTATION_COMMENT, OPTION_COMMENT)
-		private val shouldChildIndentTypes = TokenSet.create(BLOCK)
+		private val SEPARATORS = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN)
+		private val SHOULD_INDENT_PARENT_TYPES = TokenSet.create(BLOCK)
+		private val SHOULD_INDENT_TYPES = TokenSet.create(PROPERTY, VALUE, BOOLEAN, INT, FLOAT, STRING, BLOCK, COMMENT, DOCUMENTATION_COMMENT, OPTION_COMMENT)
+		private val SHOULD_CHILD_INDENT_TYPES = TokenSet.create(BLOCK)
 		
 		private fun createWrap(): Wrap? {
 			return null
@@ -35,8 +35,8 @@ class CwtBlock(
 			//变量声明分隔符周围的空格，属性分隔符周围的空格
 			val customSettings = settings.getCustomSettings(CwtCodeStyleSettings::class.java)
 			return SpacingBuilder(settings, CwtLanguage)
-				.aroundInside(separatorTokens, OPTION).spaceIf(customSettings.SPACE_AROUND_OPTION_SEPARATOR) //等号、不等号周围按情况可能需要空格
-				.aroundInside(separatorTokens, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) //等号、不等号周围按情况可能需要空格
+				.aroundInside(SEPARATORS, OPTION).spaceIf(customSettings.SPACE_AROUND_OPTION_SEPARATOR) //等号、不等号周围按情况可能需要空格
+				.aroundInside(SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) //等号、不等号周围按情况可能需要空格
 				.between(LEFT_BRACE, RIGHT_BRACE).none() //花括号之间总是不需要空格
 				.withinPair(LEFT_BRACE,RIGHT_BRACE).spaceIf( customSettings.SPACE_WITHIN_BRACES) //花括号内侧如果非换行按情况可能需要空格
 		}
@@ -56,7 +56,7 @@ class CwtBlock(
 		val elementType = myNode.elementType
 		val parentElementType = myNode.treeParent?.elementType
 		return when {
-			parentElementType in shouldIndentParentTypes && elementType in shouldIndentTypes -> Indent.getNormalIndent()
+			parentElementType in SHOULD_INDENT_PARENT_TYPES && elementType in SHOULD_INDENT_TYPES -> Indent.getNormalIndent()
 			else -> Indent.getNoneIndent()
 		}
 	}
@@ -69,7 +69,7 @@ class CwtBlock(
 		return when {
 			elementType is IFileElementType -> Indent.getNoneIndent()
 			elementType == ROOT_BLOCK -> Indent.getNoneIndent()
-			elementType in shouldChildIndentTypes -> Indent.getNormalIndent()
+			elementType in SHOULD_CHILD_INDENT_TYPES -> Indent.getNormalIndent()
 			else -> null
 		}
 	}
