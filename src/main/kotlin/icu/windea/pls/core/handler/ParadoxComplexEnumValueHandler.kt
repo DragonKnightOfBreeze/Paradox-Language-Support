@@ -11,6 +11,7 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -21,7 +22,7 @@ object ParadoxComplexEnumValueHandler {
 	fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
 		//注意：element.stub可能会导致ProcessCanceledException
 		ProgressManager.checkCanceled()
-		if(!element.isExpressionElement()) return null
+		if(!element.isExpression()) return null
 		element.stub?.complexEnumValueInfo?.let { return it }
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedComplexEnumValueInfoKey) {
 			val file = element.containingFile
@@ -133,7 +134,7 @@ object ParadoxComplexEnumValueHandler {
 			if(complexEnumConfig.startFromRoot) {
 				return parentElement == null
 			} else {
-				return parentElement != null && parentElement.findParentScriptElement() == null
+				return parentElement != null && parentElement.findParentPropertyOrBockValue() == null
 			}
 		}
 		if(parentElement == null) return false
@@ -210,6 +211,16 @@ object ParadoxComplexEnumValueHandler {
 			if(notMatched) return false
 		}
 		return true
+	}
+	
+	/**
+	 * @return [ParadoxScriptProperty] | [ParadoxScriptValue]
+	 */
+	private fun PsiElement.findParentPropertyOrBockValue(): PsiElement? {
+		if(language != ParadoxScriptLanguage) return null
+		return parents(false).find {
+			it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockValue())
+		}
 	}
 	
 	@JvmStatic

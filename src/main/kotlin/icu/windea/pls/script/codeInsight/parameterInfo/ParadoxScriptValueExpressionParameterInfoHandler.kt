@@ -24,7 +24,7 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
 		val offset = context.offset
 		val element = context.file.findElementAt(offset) ?: return null
 		val targetElement = element.parentOfType<ParadoxScriptStringExpressionElement>() ?: return null
-		if(!targetElement.isExpressionElement()) return null
+		if(!targetElement.isExpression()) return null
 		val text = targetElement.text
 		if(text.isLeftQuoted()) return null
 		if(!text.contains("value:") || !text.contains('|')) return null //快速判断

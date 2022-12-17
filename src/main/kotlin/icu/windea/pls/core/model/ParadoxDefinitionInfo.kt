@@ -10,7 +10,6 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.ParadoxDefinitionInfo.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -45,7 +44,7 @@ class ParadoxDefinitionInfo(
 		if(nameFromFileConfig) return@lazy element.containingFile.name.substringBeforeLast('.')
 		//name_field = xxx -> 返回对应名字（xxx）的property的stringValue，如果不存在则返回空字符串
 		val nameFieldConfig = typeConfig.nameField
-		if(nameFieldConfig != null) return@lazy element.findDefinitionProperty(nameFieldConfig, true)?.findValue<ParadoxScriptString>()?.stringValue.orEmpty()
+		if(nameFieldConfig != null) return@lazy element.findProperty(nameFieldConfig, true)?.findValue<ParadoxScriptString>()?.stringValue.orEmpty()
 		//否则直接返回rootKey
 		rootKey
 	}

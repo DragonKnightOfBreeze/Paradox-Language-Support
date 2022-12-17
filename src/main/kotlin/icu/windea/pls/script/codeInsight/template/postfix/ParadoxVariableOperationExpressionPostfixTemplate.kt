@@ -29,7 +29,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
 		ProgressManager.checkCanceled()
 		val stringElement = context.parent?.castOrNull<ParadoxScriptValue>() ?: return emptyList()
 		if(!stringElement.isBlockValue()) return emptyList()
-		val parentProperty = stringElement.findParentDefinitionProperty() ?: return emptyList()
+		val parentProperty = stringElement.findParentProperty() ?: return emptyList()
 		val definitionElementInfo = ParadoxDefinitionElementHandler.getInfo(parentProperty) ?: return emptyList()
 		val configGroup = definitionElementInfo.configGroup
 		val childPropertyConfigs = definitionElementInfo.getChildPropertyConfigs()

@@ -2,35 +2,10 @@ package icu.windea.pls.script.psi
 
 import com.intellij.lang.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-
-val ParadoxScriptScriptedVariableName.variableNameId: PsiElement get() = findChild(SCRIPTED_VARIABLE_NAME_ID)!!
-
-val ParadoxScriptPropertyKey.propertyKeyId: PsiElement? get() = findChild(PROPERTY_KEY_TOKEN)
-val ParadoxScriptPropertyKey.quotedPropertyKeyId: PsiElement? get() = findChild(QUOTED_PROPERTY_KEY_TOKEN)
-
-val ParadoxScriptScriptedVariableReference.variableReferenceId: PsiElement get() = findChild(SCRIPTED_VARIABLE_REFERENCE_ID)!!
-
-val ParadoxScriptParameterConditionParameter.parameterId: PsiElement get() = findChild(ARGUMENT_ID)!!
-
-val ParadoxScriptInlineMathScriptedVariableReference.variableReferenceId: PsiElement get() = findChild(INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID)!!
-
-val ParadoxParameter.parameterId: PsiElement? get() = findChild(PARAMETER_ID)
-val ParadoxParameter.defaultValueToken: PsiElement?
-	get() = when {
-		this is ParadoxScriptParameter -> findChild(ParadoxScriptTokenSets.parameterValueTokens)
-		this is ParadoxScriptInlineMathParameter -> findChild(ParadoxScriptTokenSets.inlineMathParameterValueTokens)
-		else -> null
-	}
-
-val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptValue? get() = siblings(forward = true, withSelf = false).findIsInstance()
-
-val ParadoxScriptValue.propertyKey: ParadoxScriptPropertyKey? get() = siblings(forward = false, withSelf = false).findIsInstance()
 
 /**
  * 遍历当前代码块中的所有（直接作为子节点的）属性。
@@ -84,7 +59,6 @@ inline fun ParadoxScriptParameterCondition.processValue(processor: (ParadoxScrip
 	}
 }
 
-
 inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.findValue(): T? {
 	return findChild()
 }
@@ -98,19 +72,8 @@ inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlockElement.findValues
 }
 
 /**
- * 得到指定名字的定义属性。如果为当前定义属性本身不是定义文件且[propertyName]为空字符串，则直接返回当前定义属性。
- */
-fun ParadoxDefinitionProperty.findDefinitionProperty(propertyName: String, ignoreCase: Boolean = true): ParadoxScriptProperty? {
-	if(propertyName.isEmpty() && this is ParadoxScriptProperty) return this
-	block?.processProperty(includeConditional = true) {
-		if(it.name.equals(propertyName, ignoreCase)) return it
-		true
-	}
-	return null
-}
-
-/**
- * 得到上一级definition，可能为null，可能为自身。
+ * 向上得到第一个定义。
+ * 可能为null，可能为自身。
  */
 fun PsiElement.findParentDefinition(): ParadoxDefinitionProperty? {
 	if(language != ParadoxScriptLanguage) return null
@@ -123,9 +86,24 @@ fun PsiElement.findParentDefinition(): ParadoxDefinitionProperty? {
 }
 
 /**
- * 得到上一级definitionProperty，可能为null，可能也是definition。
+ * 得到指定名字的属性。
+ * 如果为当前定义属性（非文件），且[propertyName]为空字符串，则直接返回自身。
  */
-fun PsiElement.findParentDefinitionProperty(fromParentBlock: Boolean = false): ParadoxDefinitionProperty? {
+fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boolean = true): ParadoxScriptProperty? {
+	if(propertyName.isEmpty() && this is ParadoxScriptProperty) return this
+	block?.processProperty(includeConditional = true) {
+		if(it.name.equals(propertyName, ignoreCase)) return it
+		true
+	}
+	return null
+}
+
+/**
+ * 向上得到第一个属性。
+ * 可能为null，可能是定义。
+ * @param fromParentBlock 是否先向上得到第一个子句，再继续进行查找。
+ */
+fun PsiElement.findParentProperty(fromParentBlock: Boolean = false): ParadoxDefinitionProperty? {
 	if(language != ParadoxScriptLanguage) return null
 	var current: PsiElement = if(fromParentBlock) this.parent else this
 	while(current !is PsiFile) {
@@ -140,17 +118,6 @@ fun PsiElement.findParentDefinitionProperty(fromParentBlock: Boolean = false): P
 	}
 	return null
 }
-
-/**
- * @return [ParadoxScriptProperty] | [ParadoxScriptValue]
- */
-fun PsiElement.findParentScriptElement(): PsiElement? {
-	if(language != ParadoxScriptLanguage) return null
-	return parents(false).find {
-		it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockValue())
-	}
-}
-
 
 fun ParadoxScriptStringExpressionElement.isDefinitionRootKeyOrName(): Boolean {
 	return when {
@@ -198,7 +165,7 @@ fun PsiElement.isPropertyOrBLockValue(): Boolean {
 	}
 }
 
-fun PsiElement.isExpressionElement(): Boolean {
+fun PsiElement.isExpression(): Boolean {
 	return when {
 		this is ParadoxScriptPropertyKey -> true
 		this is ParadoxScriptValue && (this.isPropertyValue() || this.isBlockValue()) -> true

@@ -1,7 +1,6 @@
 package icu.windea.pls.core.handler
 
 import com.intellij.openapi.progress.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
@@ -10,7 +9,7 @@ import icu.windea.pls.script.psi.*
 object ParadoxValueSetValueHandler {
 	@JvmStatic
 	fun resolveInfo(element: ParadoxScriptStringExpressionElement): ParadoxValueSetValueInfo? {
-		if(!element.isExpressionElement()) return null
+		if(!element.isExpression()) return null
 		//排除带参数的情况
 		if(element.isParameterAwareExpression()) return null
 		

@@ -13,7 +13,7 @@ class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val position = parameters.position
 		val stringElement = position.parent?.castOrNull<ParadoxScriptString>()
-		if(stringElement != null && stringElement.isExpressionElement()) {
+		if(stringElement != null && stringElement.isExpression()) {
 			if(stringElement.findParentDefinition() != null) return
 		}
 		

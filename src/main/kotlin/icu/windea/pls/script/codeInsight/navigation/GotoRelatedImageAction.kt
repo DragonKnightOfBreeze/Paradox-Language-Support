@@ -50,6 +50,6 @@ class GotoRelatedImageAction : BaseCodeInsightAction() {
 		//direct parent
 		return file.findElementAt(offset) {
 			it.parent as? ParadoxScriptStringExpressionElement
-		}?.takeIf { it.isExpressionElement() }
+		}?.takeIf { it.isExpression() }
 	}
 }

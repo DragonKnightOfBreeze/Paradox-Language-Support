@@ -50,6 +50,6 @@ class GotoRelatedCwtConfigAction : BaseCodeInsightAction() {
 	private fun findElement(file: PsiFile, offset: Int): PsiElement? {
 		return file.findElementAt(offset) {
 			it.parentOfTypes(ParadoxScriptPropertyKey::class, ParadoxScriptValue::class)
-		}?.takeIf { it.isExpressionElement() }
+		}?.takeIf { it.isExpression() }
 	}
 }

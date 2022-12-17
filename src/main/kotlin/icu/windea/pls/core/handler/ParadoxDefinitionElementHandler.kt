@@ -17,7 +17,7 @@ object ParadoxDefinitionElementHandler {
 		ProgressManager.checkCanceled()
 		val targetElement = if(element is ParadoxScriptProperty) element.propertyKey else element
 		//这里可以是rootBlock，也可以是expressionElement
-		if(!(targetElement is ParadoxScriptRootBlock || targetElement.isExpressionElement())) return null
+		if(!(targetElement is ParadoxScriptRootBlock || targetElement.isExpression())) return null
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionElementInfoKey) {
 			val file = element.containingFile
 			val value = resolveInfoDownUp(targetElement)

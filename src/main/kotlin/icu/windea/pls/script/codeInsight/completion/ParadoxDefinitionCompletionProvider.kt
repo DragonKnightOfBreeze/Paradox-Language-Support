@@ -40,13 +40,13 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 		
 		if(mayBePropertyKey) {
 			//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
-			val definitionProperty = element.findParentDefinitionProperty(fromParentBlock = true) ?: return
+			val definitionProperty = element.findParentProperty(fromParentBlock = true) ?: return
 			//进行提示
 			CwtConfigHandler.addKeyCompletions(definitionProperty, context, resultToUse)
 		}
 		if(mayBePropertyValue) {
 			//得到原始文件中上一级definitionProperty
-			val definitionProperty = element.findParentDefinitionProperty() ?: return
+			val definitionProperty = element.findParentProperty() ?: return
 			//这里需要特殊处理一下，标记属性的值是否未填写
 			val incomplete = !quoted && keyword.isEmpty()
 			try {
