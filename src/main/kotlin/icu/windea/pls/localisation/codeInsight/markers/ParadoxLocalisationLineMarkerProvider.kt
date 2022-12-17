@@ -11,6 +11,7 @@ import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.model.ParadoxLocalisationCategory.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 
 /**

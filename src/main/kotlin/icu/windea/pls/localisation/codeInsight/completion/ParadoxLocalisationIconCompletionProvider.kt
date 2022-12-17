@@ -11,6 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 
 /**
  * 提供图标名字的代码补全。

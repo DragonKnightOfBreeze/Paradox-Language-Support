@@ -8,6 +8,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.highlighter.*
 
@@ -30,7 +31,7 @@ class ParadoxLocalisationCommandScopePsiReference(
 	override fun resolve(exact: Boolean): PsiElement? {
 		val name = element.name
 		val project = element.project
-		val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return null
+		val gameType = selectGameType(element) ?: return null
 		//尝试被识别为预定义的localisation_command
 		val configGroup = getCwtConfig(project).get(gameType) ?: return null
 		val systemScope = CwtConfigHandler.resolveSystemScope(name, configGroup)
@@ -51,7 +52,7 @@ class ParadoxLocalisationCommandScopePsiReference(
 	override fun resolveTextAttributesKey(): TextAttributesKey? {
 		val name = element.name
 		val project = element.project
-		val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return null
+		val gameType = selectGameType(element) ?: return null
 		
 		//尝试被识别为预定义的localisation_command
 		val configGroup = getCwtConfig(project).get(gameType) ?: return null

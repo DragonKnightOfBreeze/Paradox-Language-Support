@@ -15,6 +15,7 @@ import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.core.tool.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
@@ -46,7 +47,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val gameType = ParadoxSelectorUtils.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
+			val gameType = selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			buildPropertyDefinition(element, originalElement, name, configType, configGroup, false, null)
 		}
@@ -60,7 +61,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val gameType = ParadoxSelectorUtils.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
+			val gameType = selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			buildStringDefinition(element, originalElement, name, configType, configGroup, false, null)
 		}
@@ -79,7 +80,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val gameType = ParadoxSelectorUtils.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
+			val gameType = selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			val sections = mutableMapOf<String, String>()
 			buildPropertyDefinition(element, originalElement, name, configType, configGroup, true, sections)
@@ -98,7 +99,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val gameType = ParadoxSelectorUtils.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
+			val gameType = selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			val sections = mutableMapOf<String, String>()
 			buildStringDefinition(element, originalElement, name, configType, configGroup, true, sections)

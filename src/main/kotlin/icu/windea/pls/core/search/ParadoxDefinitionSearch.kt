@@ -6,7 +6,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 
 /**
  * 定义的查询。

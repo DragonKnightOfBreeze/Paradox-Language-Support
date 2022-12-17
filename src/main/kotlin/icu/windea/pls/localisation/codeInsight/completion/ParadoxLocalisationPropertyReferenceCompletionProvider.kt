@@ -8,6 +8,7 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 
 /**

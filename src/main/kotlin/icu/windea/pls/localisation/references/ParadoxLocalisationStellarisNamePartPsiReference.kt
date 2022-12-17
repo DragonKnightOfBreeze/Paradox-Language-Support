@@ -9,6 +9,7 @@ import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
@@ -28,7 +29,7 @@ class ParadoxLocalisationStellarisNamePartPsiReference(
 		val localisationKey = localisationProperty.name
 		val project = localisationProperty.project
 		val valueSetName =  StellarisNameFormatHandler.getValueSetName(localisationKey, project) ?: return null
-		val gameType = ParadoxSelectorUtils.selectGameType(localisationProperty) ?: return null
+		val gameType = selectGameType(localisationProperty) ?: return null
 		val selector = valueSetValueSelector().gameType(gameType).declarationOnly()
 		//必须要先有声明
 		val declaration = ParadoxValueSetValueSearch.search(name, valueSetName, project, selector = selector).findFirst()

@@ -11,7 +11,7 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 
 /**

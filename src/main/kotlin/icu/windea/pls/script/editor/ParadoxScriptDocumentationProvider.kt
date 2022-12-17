@@ -11,6 +11,7 @@ import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.core.tool.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*

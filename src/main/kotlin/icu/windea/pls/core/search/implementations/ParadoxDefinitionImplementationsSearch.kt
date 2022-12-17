@@ -9,7 +9,7 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 
 /**
  * 定义的实现的查询。加入所有作用域内的同名定义。

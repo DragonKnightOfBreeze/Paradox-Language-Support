@@ -1,7 +1,11 @@
-package icu.windea.pls.core.selector
+package icu.windea.pls.core.selector.chained
 
+import com.intellij.openapi.vfs.*
+import com.intellij.psi.*
 import com.intellij.psi.search.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.model.*
+import icu.windea.pls.core.selector.*
 
 open class ChainedParadoxSelector<T>(
 	private val baseComparator: Comparator<T>? = null
@@ -60,3 +64,39 @@ open class ChainedParadoxSelector<T>(
 		return selectors.findIsInstance<ParadoxWithSearchScopeSelector<*>>()?.getGlobalSearchScope()
 	}
 }
+
+fun <S : ChainedParadoxSelector<T>, T, K> S.distinctBy(keySelector: (T) -> K) =
+	apply { selectors += ParadoxDistinctSelector(keySelector) }
+
+fun <S : ChainedParadoxSelector<T>, T> S.filterBy(predicate: (T) -> Boolean) =
+	apply { selectors += ParadoxFilterSelector(predicate) }
+
+
+fun <S : ChainedParadoxSelector<T>, T> S.gameType(gameType: ParadoxGameType?) =
+	apply { if(gameType != null) selectors += ParadoxGameTypeSelector(gameType) }
+
+/**
+ * @param from [VirtualFile] | [PsiFile] | [PsiElement]
+ */
+fun <S : ChainedParadoxSelector<T>, T> S.gameTypeFrom(from: Any?) =
+	apply { if(from != null) selectors += ParadoxGameTypeSelector(from = from) }
+
+fun <S : ChainedParadoxSelector<T>, T> S.root(rootFile: VirtualFile?) =
+	apply { if(rootFile != null) selectors += ParadoxRootFileSelector(rootFile) }
+
+/**
+ * @param from [VirtualFile] | [PsiFile] | [PsiElement]
+ */
+fun <S : ChainedParadoxSelector<T>, T> S.rootFrom(from: Any?) =
+	apply { if(from != null) selectors += ParadoxRootFileSelector(from = from) }
+
+@JvmOverloads
+fun <S : ChainedParadoxSelector<T>, T> S.preferRoot(rootFile: VirtualFile?, condition: Boolean = true) =
+	apply { if(rootFile != null && condition) selectors += ParadoxPreferRootFileSelector(rootFile) }
+
+/**
+ * @param from [VirtualFile] | [PsiFile] | [PsiElement]
+ */
+@JvmOverloads
+fun <S : ChainedParadoxSelector<T>, T> S.preferRootFrom(from: Any?, condition: Boolean = true) =
+	apply { if(from != null && condition) selectors += ParadoxPreferRootFileSelector(from = from) }

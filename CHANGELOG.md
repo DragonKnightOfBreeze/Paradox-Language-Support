@@ -53,8 +53,7 @@
 * 功能优化
   * [X] 可以通过导航到实现功能（`Navigate > Implementation(s)`）来从某一封装变量/定义/本地化/复杂枚举值跳转到所有同名的重载或者被重载的声明处
     * 注意对于非顶级属性名的定义名（如`event`）和复杂枚举值（如`policy_flag`），从声明处出发，需要间接通过意向（`Intentions`）来查找使用/导航到实现/导航到类型声明
-  * [ ] 查找定义的使用时，如果定义类型是sprite/spriteType，也能查找本地化图标形式的使用，即使文本不同（如`GFX_text_unity`对应`unity`）
-  * [ ] 查找文件的使用时，也能查找脚本表达式和本地化图标形式的使用，即使文本不同
+  * [ ] 查找使用时，即使声明处与引用处的名字文本不同，也能正确进行（例如：`GFX_text_unity` > `unity`）
   * [X] 优化如何提供类型信息（`View > Type Info`）和快速类型声明（`View > Quick Type Definition`）
 * 新增功能
   * 代码补全（`Code > Code Completion`）

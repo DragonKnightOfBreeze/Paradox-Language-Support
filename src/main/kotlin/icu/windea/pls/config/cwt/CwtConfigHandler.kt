@@ -22,6 +22,7 @@ import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
 import kotlin.collections.component1
@@ -462,7 +463,7 @@ object CwtConfigHandler {
 	fun addRootKeyCompletions(propertyElement: ParadoxDefinitionProperty, context: ProcessingContext, result: CompletionResultSet) {
 		val originalFile = context.originalFile
 		val project = originalFile.project
-		val gameType = ParadoxSelectorUtils.selectGameType(originalFile) ?: return
+		val gameType = selectGameType(originalFile) ?: return
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		val elementPath = ParadoxElementPathHandler.resolveFromFile(propertyElement, PlsConstants.maxDefinitionDepth) ?: return
 		

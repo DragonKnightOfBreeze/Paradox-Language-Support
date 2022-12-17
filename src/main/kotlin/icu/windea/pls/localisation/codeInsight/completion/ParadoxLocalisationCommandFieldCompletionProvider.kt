@@ -11,7 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -46,7 +46,7 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 		val scriptedLocSelector = definitionSelector().gameTypeFrom(file).preferRootFrom(file).distinctByName()
 		val scriptedLocQuery = ParadoxDefinitionSearch.search("scripted_loc", project, selector = scriptedLocSelector)
 		scriptedLocQuery.processQuery { scriptedLoc ->
-			val name = scriptedLoc.definitionInfo?.name.orEmpty() //不应该为空
+			val name = scriptedLoc.definitionInfo?.name ?: return@processQuery true //不应该为空
 			val icon = PlsIcons.Definition
 			val tailText = " from <scripted_loc>"
 			val typeFile = scriptedLoc.containingFile

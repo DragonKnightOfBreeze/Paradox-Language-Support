@@ -8,7 +8,7 @@ import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 
 /**

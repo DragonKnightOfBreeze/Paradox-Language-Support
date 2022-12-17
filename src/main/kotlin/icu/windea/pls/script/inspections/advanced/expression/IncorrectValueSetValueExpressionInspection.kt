@@ -16,7 +16,7 @@ class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
 		val project = file.project
-		val gameType = ParadoxSelectorUtils.selectGameType(file)
+		val gameType = selectGameType(file)
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
 		file.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
 			override fun visitPropertyKey(element: ParadoxScriptPropertyKey) {
@@ -33,7 +33,7 @@ class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
 				val type = config.expression.type
 				if(type == CwtDataTypes.Value || type == CwtDataTypes.ValueSet) {
 					val value = element.value
-					val gameTypeToUse = gameType ?: ParadoxSelectorUtils.selectGameType(element) ?: return
+					val gameTypeToUse = gameType ?: selectGameType(element) ?: return
 					val configGroup = getCwtConfig(project).getValue(gameTypeToUse)
 					val textRange = TextRange.create(0, value.length)
 					val isKey = element is ParadoxScriptPropertyKey

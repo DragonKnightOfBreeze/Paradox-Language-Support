@@ -11,6 +11,7 @@ import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -24,7 +25,7 @@ class ParadoxStellarisNamePartCompletionProvider: CompletionProvider<CompletionP
 		val originalFile = parameters.originalFile
 		val project = originalFile.project
 		val valueSetName = StellarisNameFormatHandler.getValueSetName(localisationKey, project) ?: return
-		val gameType = ParadoxSelectorUtils.selectGameType(originalFile)
+		val gameType = selectGameType(originalFile)
 		val tailText = "by value[$valueSetName]"
 		val selector = valueSetValueSelector().gameType(gameType).declarationOnly().distinctByValue()
 		val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, project, selector = selector)

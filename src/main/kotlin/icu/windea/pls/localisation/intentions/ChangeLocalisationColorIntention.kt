@@ -14,7 +14,6 @@ import icu.windea.pls.config.definition.*
 import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.selector.*
-import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -38,7 +37,7 @@ class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
 		if(editor == null || file == null) return
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return
-		val gameType = ParadoxSelectorUtils.selectGameType(file) ?: return
+		val gameType = selectGameType(file) ?: return
 		val colorConfigs = DefinitionConfigHandler.getTextColorConfigs(gameType, project, file)
 		JBPopupFactory.getInstance().createListPopup(Popup(element, colorConfigs.toTypedArray())).showInBestPositionFor(editor)
 	}

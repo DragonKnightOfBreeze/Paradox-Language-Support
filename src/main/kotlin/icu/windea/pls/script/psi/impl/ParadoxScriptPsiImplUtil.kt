@@ -126,7 +126,7 @@ object ParadoxScriptPsiImplUtil {
 		//name & gameType
 		return another is ParadoxScriptScriptedVariable
 			&& element.name == another.name
-			&& ParadoxSelectorUtils.selectGameType(element) == ParadoxSelectorUtils.selectGameType(another)
+			&& selectGameType(element) == selectGameType(another)
 	}
 	
 	@JvmStatic

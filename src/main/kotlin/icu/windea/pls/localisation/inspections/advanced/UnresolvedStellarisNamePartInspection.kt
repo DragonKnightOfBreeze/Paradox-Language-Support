@@ -6,6 +6,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 
 //icu.windea.pls.localisation.references.ParadoxLocalisationStellarisNamePartPsiReference
@@ -27,7 +28,7 @@ class UnresolvedStellarisNamePartInspection : LocalInspectionTool() {
 				//holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 				return
 			}
-			val gameType = ParadoxSelectorUtils.selectGameType(localisationProperty) ?: return
+			val gameType = selectGameType(localisationProperty) ?: return
 			val selector = valueSetValueSelector().gameType(gameType).declarationOnly()
 			//必须要先有声明
 			val declaration = ParadoxValueSetValueSearch.search(name, valueSetName, project, selector = selector).findFirst()

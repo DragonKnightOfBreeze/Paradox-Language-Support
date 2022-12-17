@@ -34,7 +34,7 @@ class ParadoxVariableOperationExpressionFoldingBuilder : ParadoxExpressionFoldin
 		if(quick) return FoldingDescriptor.EMPTY
 		if(root !is ParadoxScriptFile) return FoldingDescriptor.EMPTY
 		val project = root.project
-		val gameType = ParadoxSelectorUtils.selectGameType(root) ?: return FoldingDescriptor.EMPTY
+		val gameType = selectGameType(root) ?: return FoldingDescriptor.EMPTY
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		val foldingSettings = configGroup.foldingSettings
 		if(foldingSettings.isEmpty()) return FoldingDescriptor.EMPTY

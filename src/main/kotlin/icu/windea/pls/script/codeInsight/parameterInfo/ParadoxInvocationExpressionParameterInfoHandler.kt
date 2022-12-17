@@ -9,7 +9,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolvePropertyConfigs
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 
 //com.intellij.codeInsight.hint.api.impls.XmlParameterInfoHandler
