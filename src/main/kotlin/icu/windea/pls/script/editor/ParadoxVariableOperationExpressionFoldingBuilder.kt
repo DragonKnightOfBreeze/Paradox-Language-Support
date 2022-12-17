@@ -53,7 +53,7 @@ class ParadoxVariableOperationExpressionFoldingBuilder : ParadoxExpressionFoldin
 				val setting = settings.get(propertyKey) ?: return
 				//property key is ignore case, properties must be kept in order (declared by keys)
 				val propertyValue = element.propertyValue ?: return
-				val elementsToKeep = when {
+				val elementsToKeep: List<PsiElement> = when {
 					setting.key != null && propertyValue !is ParadoxScriptBlock -> {
 						propertyValue.toSingletonListOrEmpty()
 					}

@@ -48,3 +48,5 @@ object CwtDataTypes {
 	@WithGameType(ParadoxGameType.Stellaris)
 	object StellarisNameFormat: CwtValueDataType
 }
+
+fun CwtDataType.isConstant() = this == CwtDataTypes.ConstantKey || this == CwtDataTypes.Constant

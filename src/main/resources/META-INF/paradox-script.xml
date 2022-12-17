@@ -125,6 +125,24 @@
     <!--                 groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"-->
     <!--                 groupPathKey="script.inspection.advanced.path"-->
     <!--                 implementationClass="icu.windea.pls.script.inspections.advanced.IncorrectScriptSyntaxInspection"/>-->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedExpression"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="script.inspection.advanced.unresolvedExpression"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
+                     groupPathKey="script.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.UnresolvedExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedExpression"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="script.inspection.advanced.missingExpression"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
+                     groupPathKey="script.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.MissingExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedExpression"
+                     enabledByDefault="true" level="WEAK WARNING"
+                     bundle="messages.PlsBundle" key="script.inspection.advanced.tooManyExpression"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
+                     groupPathKey="script.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.TooManyExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingLocalisation"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle"
@@ -170,12 +188,6 @@
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.UnsetValueSetValueInspection"/>
     <!--advanced > expression-->
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScriptExpression"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="script.inspection.advanced.incorrectScriptExpression"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.expression"
-                     groupPathKey="script.inspection.expression.path"
-                     implementationClass="icu.windea.pls.script.inspections.advanced.expression.IncorrectScriptExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeFieldExpression"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="script.inspection.expression.incorrectScopeFieldExpression"

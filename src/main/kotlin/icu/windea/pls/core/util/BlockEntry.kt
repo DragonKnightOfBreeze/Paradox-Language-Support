@@ -1,4 +1,4 @@
-package icu.windea.pls.core.collections
+package icu.windea.pls.core.util
 
 data class BlockEntry<out K, out V>(
 	val key: K,

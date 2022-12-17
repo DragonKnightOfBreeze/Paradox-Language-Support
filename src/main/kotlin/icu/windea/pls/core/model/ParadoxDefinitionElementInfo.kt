@@ -9,11 +9,12 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 
 /**
  * @property elementPath 相对于所属定义的定义元素路径。
- * @property isValid 对应的PSI元素是否是合法的定义元素（在定义声明内，非定义自身）。
  */
 class ParadoxDefinitionElementInfo(
 	val elementPath: ParadoxElementPath,
@@ -23,13 +24,14 @@ class ParadoxDefinitionElementInfo(
 	val configGroup: CwtConfigGroup,
 	element: PsiElement //直接传入element
 ) {
-	val isValid = element is ParadoxScriptValue || elementPath.isNotEmpty()
+	val isDefinition = element is ParadoxDefinitionProperty && elementPath.isEmpty()
+	val isParameterAware = elementPath.isParameterAware
 	
 	private val configs: List<CwtDataConfig<*>> by lazy {
 		doGetConfigs(definitionInfo, this, CwtConfigMatchType.ALL)
 	}
 	
-	private val childPropertyConfigs: List<CwtPropertyConfig> by lazy { 
+	private val childPropertyConfigs: List<CwtPropertyConfig> by lazy {
 		doGetChildPropertyConfigs(definitionInfo, this, CwtConfigMatchType.ALL)
 	}
 	
@@ -55,14 +57,14 @@ class ParadoxDefinitionElementInfo(
 		return doGetChildValueConfigs(definitionInfo, this, matchType)
 	}
 	
-	/** 子属性基于配置的出现次数。 */
-	val childPropertyOccurrence: Map<CwtKeyExpression, Int> by lazy {
-		doGetChildPropertyOccurrence(element)
+	/** 子属性基于键表达式的出现次数映射。 */
+	val childPropertyOccurrenceMap: Map<CwtKeyExpression, Occurrence> by lazy {
+		doGetChildPropertyOccurrenceMap(element)
 	}
 	
-	/** 子值基于配置的出现次数。 */
-	val childValueOccurrence: Map<CwtValueExpression, Int> by lazy {
-		doGetChildValueOccurrence(element)
+	/** 子值基于值表达式的出现次数映射。 */
+	val childValueOccurrenceMap: Map<CwtValueExpression, Occurrence> by lazy {
+		doGetChildValueOccurrenceMap(element)
 	}
 	
 }
@@ -176,27 +178,45 @@ private fun doGetChildValueConfigs(definitionInfo: ParadoxDefinitionInfo, defini
 	}
 }
 
-private fun ParadoxDefinitionElementInfo.doGetChildPropertyOccurrence(element: PsiElement): Map<CwtKeyExpression, Int> {
+private fun ParadoxDefinitionElementInfo.doGetChildPropertyOccurrenceMap(element: PsiElement): Map<CwtKeyExpression, Occurrence> {
+	//keyExpression - (expect actual)
+	val childPropertyConfigs = getChildPropertyConfigs()
+	val occurrenceMap = childPropertyConfigs.associateByTo(mutableMapOf(), { it.keyExpression }, { it.cardinality.toOccurrence() })
 	val properties = when {
-		element is ParadoxScriptPropertyKey -> element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.propertyList ?: return emptyMap()
-		else -> return emptyMap()
+		element is ParadoxScriptPropertyKey -> element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.propertyList ?: emptyList()
+		else -> emptyList()
 	}
-	if(properties.isEmpty()) return emptyMap()
-	return properties.groupAndCountBy { prop ->
-		val expression = ParadoxDataExpression.resolve(prop.propertyKey)
-		getChildPropertyConfigs().find { matchesScriptExpression(expression, it.keyExpression, configGroup) }?.keyExpression
+	if(properties.isNotEmpty()) {
+		for(property in properties) {
+			val expression = ParadoxDataExpression.resolve(property.propertyKey)
+			val matched = childPropertyConfigs.find { matchesScriptExpression(expression, it.keyExpression, configGroup) }
+			if(matched == null) continue
+			val occurrence = occurrenceMap[matched.keyExpression]
+			if(occurrence == null) continue
+			occurrence.actual++
+		}
 	}
+	return occurrenceMap
 }
 
-private fun ParadoxDefinitionElementInfo.doGetChildValueOccurrence(element: PsiElement): Map<CwtValueExpression, Int> {
+private fun ParadoxDefinitionElementInfo.doGetChildValueOccurrenceMap(element: PsiElement): Map<CwtValueExpression, Occurrence> {
+	//valueExpression - (expect actual)
+	val childValueConfigs = getChildValueConfigs()
+	val occurrenceMap = childValueConfigs.associateByTo(mutableMapOf(), { it.valueExpression }, { it.cardinality.toOccurrence() })
 	val values = when {
-		element is ParadoxScriptPropertyKey -> element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.valueList ?: return emptyMap()
+		element is ParadoxScriptPropertyKey -> element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.valueList ?: emptyList()
 		element is ParadoxScriptBlockElement -> element.valueList
-		else -> return emptyMap()
+		else -> emptyList()
 	}
-	if(values.isEmpty()) return emptyMap()
-	return values.groupAndCountBy { value ->
-		val expression = ParadoxDataExpression.resolve(value)
-		getChildValueConfigs().find { matchesScriptExpression(expression, it.valueExpression, configGroup) }?.valueExpression
+	if(values.isNotEmpty()) {
+		for(value in values) {
+			val expression = ParadoxDataExpression.resolve(value)
+			val matched = childValueConfigs.find { matchesScriptExpression(expression, it.valueExpression, configGroup) }
+			if(matched == null) continue
+			val occurrence = occurrenceMap[matched.valueExpression]
+			if(occurrence == null) continue
+			occurrence.actual++
+		}
 	}
+	return occurrenceMap
 }

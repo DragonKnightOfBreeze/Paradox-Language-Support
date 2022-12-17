@@ -40,7 +40,6 @@ object CwtConfigMatchType {
 	 */
 	const val EXACT = 0x20
 	
-	const val NO_STUB_INDEX  = FILE_PATH
-	
+	const val INSPECTION = DEFINITION or LOCALISATION or COMPLEX_ENUM_VALUE
 	const val ALL  = FILE_PATH or DEFINITION or LOCALISATION or COMPLEX_ENUM_VALUE
 }

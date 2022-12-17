@@ -26,7 +26,10 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
 			.parents(false)
 			.filterIsInstance<ParadoxScriptProperty>()
 			.find { prop ->
-				prop.definitionElementInfo?.takeIf { it.isValid }?.getConfigs()?.any { config ->
+				prop.definitionElementInfo
+					?.takeUnless { it.isDefinition }
+					?.getConfigs()
+					?.any { config ->
 					config is CwtPropertyConfig && config.properties?.any { prop ->
 						prop.keyExpression.let { it.type == CwtDataTypes.Enum && it.value == CwtConfigHandler.paramsEnumName }
 					} ?: false

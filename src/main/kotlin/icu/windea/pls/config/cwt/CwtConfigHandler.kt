@@ -551,7 +551,7 @@ object CwtConfigHandler {
 		val expression = config.keyExpression
 		//如果类型是aliasName，则无论cardinality如何定义，都应该提供补全（某些cwt规则文件未正确编写）
 		if(expression.type == CwtDataTypes.AliasName) return true
-		val actualCount = definitionElementInfo.childPropertyOccurrence[expression] ?: 0
+		val actualCount = definitionElementInfo.childPropertyOccurrenceMap[expression]?.actual ?: 0
 		//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
 		val cardinality = config.cardinality
 		val maxCount = when {
@@ -563,7 +563,7 @@ object CwtConfigHandler {
 	
 	private fun shouldComplete(config: CwtValueConfig, definitionElementInfo: ParadoxDefinitionElementInfo): Boolean {
 		val expression = config.valueExpression
-		val actualCount = definitionElementInfo.childValueOccurrence[expression] ?: 0
+		val actualCount = definitionElementInfo.childValueOccurrenceMap[expression]?.actual ?: 0
 		//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
 		val cardinality = config.cardinality
 		val maxCount = when {
