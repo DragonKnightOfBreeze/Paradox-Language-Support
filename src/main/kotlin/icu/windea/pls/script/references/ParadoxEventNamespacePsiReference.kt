@@ -25,7 +25,7 @@ class ParadoxEventNamespacePsiReference(
 		val element = element
 		val event = event.element ?: return null
 		val definitionInfo = event.definitionInfo ?: return null
-		val preferredEventNamespace = DefinitionConfigHandler.getEventNamespace(event)
+		val preferredEventNamespace = EventConfigHandler.getEventNamespace(event)
 		if(preferredEventNamespace != null) return preferredEventNamespace
 		
 		val gameType = definitionInfo.gameType
@@ -42,7 +42,7 @@ class ParadoxEventNamespacePsiReference(
 		val event = event.element ?: return ResolveResult.EMPTY_ARRAY
 		val definitionInfo = event.definitionInfo ?: return ResolveResult.EMPTY_ARRAY
 		val result = mutableSetOf<PsiElement>()
-		val preferredEventNamespace = DefinitionConfigHandler.getEventNamespace(event)
+		val preferredEventNamespace = EventConfigHandler.getEventNamespace(event)
 		if(preferredEventNamespace != null) result.add(preferredEventNamespace)
 		
 		val gameType = definitionInfo.gameType

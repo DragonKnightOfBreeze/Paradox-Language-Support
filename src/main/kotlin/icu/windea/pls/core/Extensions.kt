@@ -315,7 +315,7 @@ val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorConfig?
 		val colorId = this.propertyReferenceParameter?.text?.find { it.isExactLetter() } ?: return null
 		val gameType = this.fileInfo?.rootInfo?.gameType //这里还是基于fileInfo获取gameType
 			?: return null
-		return DefinitionConfigHandler.getTextColorConfig(colorId.toString(), gameType, project)
+		return TextColorConfigHandler.getTextColorConfig(colorId.toString(), gameType, project)
 	}
 
 val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorConfig?
@@ -323,7 +323,7 @@ val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorConfig?
 		val colorId = this.name ?: return null
 		val gameType = this.fileInfo?.rootInfo?.gameType //这里还是基于fileInfo获取gameType 
 			?: return null
-		return DefinitionConfigHandler.getTextColorConfig(colorId, gameType, project)
+		return TextColorConfigHandler.getTextColorConfig(colorId, gameType, project)
 	}
 
 fun ParadoxScriptValue.isNullLike(): Boolean {

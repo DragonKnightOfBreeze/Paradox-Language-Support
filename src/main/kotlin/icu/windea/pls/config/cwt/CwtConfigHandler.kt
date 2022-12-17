@@ -1533,7 +1533,7 @@ object CwtConfigHandler {
 				val name = expression
 				//尝试解析为参数名
 				if(isKey == true && enumName == paramsEnumName && config is CwtPropertyConfig) {
-					val definitionElement = element.findParentProperty(true) ?: return null
+					val definitionElement = element.findParentProperty(fromParentBlock = true) ?: return null
 					val definitionName = definitionElement.name
 					val definitionType = config.parent?.castOrNull<CwtPropertyConfig>()
 						?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.subNameExpression
@@ -1683,7 +1683,7 @@ object CwtConfigHandler {
 				val name = expression
 				//尝试解析为参数名
 				if(isKey == true && enumName == paramsEnumName && config is CwtPropertyConfig) {
-					val definitionElement = element.findParentProperty(true) ?: return emptyList()
+					val definitionElement = element.findParentProperty(fromParentBlock = true) ?: return emptyList()
 					val definitionName = definitionElement.name
 					val definitionType = config.parent?.castOrNull<CwtPropertyConfig>()
 						?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.subNameExpression

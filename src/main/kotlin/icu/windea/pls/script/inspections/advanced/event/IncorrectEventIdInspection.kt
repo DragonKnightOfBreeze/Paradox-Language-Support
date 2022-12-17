@@ -48,12 +48,11 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 			if(namespace.isEmpty()) continue
 			if(events.isEmpty()) continue
 			for(event in events) {
-				val eventIdProperty = event.findProperty("id") ?: continue //没有事件ID，另行检查
-				val eventIdPropertyValue = eventIdProperty.propertyValue?.castOrNull<ParadoxScriptString>() ?: continue //事件ID不是字符串，另行检查
-				val eventId = eventIdPropertyValue.stringValue
-				if(!DefinitionConfigHandler.isValidEventId(eventId, namespace)) {
+				val eventIdString = event.findByPath<ParadoxScriptString>("id") ?: continue //没有事件ID，另行检查
+				val eventId = eventIdString.stringValue
+				if(!EventConfigHandler.isValidEventId(eventId, namespace)) {
 					if(holder == null) holder = ProblemsHolder(manager, file, isOnTheFly)
-					holder.registerProblem(eventIdPropertyValue, PlsBundle.message("script.inspection.event.incorrectEventId.description", eventId, namespace))
+					holder.registerProblem(eventIdString, PlsBundle.message("script.inspection.event.incorrectEventId.description", eventId, namespace))
 				}
 			}
 		}

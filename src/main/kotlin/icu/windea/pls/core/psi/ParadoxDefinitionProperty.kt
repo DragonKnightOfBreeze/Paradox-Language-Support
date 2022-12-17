@@ -6,7 +6,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 定义的属性 - 兼容scriptFile和scriptProperty，本身可能就是定义。
  */
-interface ParadoxDefinitionProperty : ParadoxScriptNamedElement, NavigatablePsiElement {
+interface ParadoxDefinitionProperty : ParadoxScriptNamedElement, ParadoxPathAwareElement {
 	fun getStub(): ParadoxDefinitionPropertyStub<out ParadoxDefinitionProperty>?
 	
 	override fun getName(): String
@@ -33,3 +33,4 @@ interface ParadoxDefinitionProperty : ParadoxScriptNamedElement, NavigatablePsiE
 	val parameterMap: Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>> get() = emptyMap()
 }
 
+interface ParadoxPathAwareElement: PsiElement, NavigatablePsiElement

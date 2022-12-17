@@ -18,13 +18,11 @@ class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters
 		val offsetInParent = parameters.offset - element.textRange.startOffset
 		val keyword = element.getKeyword(offsetInParent)
 		if(keyword.contains('.')) return
-		val eventIdProperty = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
-		if(!eventIdProperty.name.equals("id", true)) return
-		val event = eventIdProperty.parent?.parent?.castOrNull<ParadoxScriptProperty>() ?: return
-		if(event.definitionInfo?.type != "event") return
+		val event = element.findParentByPath("id", definitionType = "event")
+		if(event !is ParadoxScriptProperty) return
 		
 		//仅提示脚本文件中向上查找到的那个合法的事件命名空间
-		val eventNamespace = DefinitionConfigHandler.getEventNamespace(event) ?: return //skip
+		val eventNamespace = EventConfigHandler.getEventNamespace(event) ?: return //skip
 		val name = eventNamespace.value ?: return
 		val lookupElement = LookupElementBuilder.create(eventNamespace, name)
 			.withIcon(PlsIcons.EventNamespace)

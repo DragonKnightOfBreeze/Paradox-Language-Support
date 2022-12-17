@@ -97,6 +97,7 @@ private property_value ::= scripted_variable_reference | boolean | int | float |
 value ::= scripted_variable_reference | boolean | int | float | color | block | inline_math {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
+    "icu.windea.pls.core.psi.ParadoxPathAwareElement"
   ]
   methods=[
     getIcon getValue

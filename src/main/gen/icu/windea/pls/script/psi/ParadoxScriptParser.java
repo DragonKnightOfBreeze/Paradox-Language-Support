@@ -706,12 +706,19 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // value | string
+  // boolean | int | float | string | color | block | inline_math
   static boolean root_block_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_block_value")) return false;
     boolean r;
-    r = value(b, l + 1);
+    Marker m = enter_section_(b);
+    r = boolean_$(b, l + 1);
+    if (!r) r = int_$(b, l + 1);
+    if (!r) r = float_$(b, l + 1);
     if (!r) r = string(b, l + 1);
+    if (!r) r = color(b, l + 1);
+    if (!r) r = block(b, l + 1);
+    if (!r) r = inline_math(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 

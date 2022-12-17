@@ -4,6 +4,7 @@ import com.intellij.openapi.application.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.psi.*
@@ -33,9 +34,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionProperty, P
 		}
 		//按照类型表达式查找定义
 		for(expression in typeExpression.split('|')) {
-			val dotIndex = expression.indexOf('.')
-			val type = if(dotIndex == -1) expression else expression.substring(0, dotIndex)
-			val subtype = if(dotIndex == -1) null else expression.substring(dotIndex + 1)
+			val (type, subtype) = ParadoxDefinitionTypeExpression.resolve(expression)
 			ParadoxDefinitionTypeIndex.processAllElements(type, project, scope) {
 				if(name != null && !matchesName(it, name)) return@processAllElements true
 				if(subtype != null && !matchesSubtype(it, subtype)) return@processAllElements true
