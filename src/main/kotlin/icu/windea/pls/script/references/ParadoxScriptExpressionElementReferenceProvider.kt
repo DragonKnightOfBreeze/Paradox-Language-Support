@@ -47,12 +47,11 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 					if(valueFieldExpression == null) return PsiReference.EMPTY_ARRAY
 					return valueFieldExpression.getReferences(element)
 				}
-				else -> {
-					//TODO 不能直接返回PsiReference，需要先确定rangeInElement
-					val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
-					return arrayOf(reference)
-				}
+				else -> pass()
 			}
+			//TODO 不能直接返回PsiReference，需要先确定rangeInElement
+			val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
+			return arrayOf(reference)
 		}
 		return PsiReference.EMPTY_ARRAY
 	}

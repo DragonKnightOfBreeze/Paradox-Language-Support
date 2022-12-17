@@ -4,13 +4,8 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.definition.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -55,24 +50,3 @@ class ParadoxScriptExpressionPsiReference(
 	}
 }
 
-class ParadoxEventNamespacePsiReference(
-	element: ParadoxScriptString,
-	rangeInElement: TextRange,
-	val config: CwtDataConfig<*>
-): PsiPolyVariantReferenceBase<ParadoxScriptString> ( element, rangeInElement) {
-	override fun handleElementRename(newElementName: String): PsiElement {
-		return element.setValue(rangeInElement.replace(element.value, newElementName))
-	}
-	
-	override fun resolve(): PsiElement? {
-		val gameType = config.info.configGroup.gameType ?: return null
-		val event = element.parent.castOrNull<ParadoxScriptProperty>()
-		DefinitionConfigHandler.getEventNamespace()
-	}
-	
-	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-		val gameType = config.info.configGroup.gameType ?: return ResolveResult.EMPTY_ARRAY
-		val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-		return 
-	}
-}
