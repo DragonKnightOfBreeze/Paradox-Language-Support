@@ -177,12 +177,12 @@ private fun doGetChildValueConfigs(definitionInfo: ParadoxDefinitionInfo, defini
 	}
 }
 
-private fun ParadoxDefinitionMemberInfo.doGetChildPropertyOccurrenceMap(element: PsiElement): Map<CwtKeyExpression, Occurrence> {
+private fun ParadoxDefinitionMemberInfo.doGetChildPropertyOccurrenceMap(element: ParadoxScriptMemberElement): Map<CwtKeyExpression, Occurrence> {
 	//keyExpression - (expect actual)
 	val childPropertyConfigs = getChildPropertyConfigs()
 	val occurrenceMap = childPropertyConfigs.associateByTo(mutableMapOf(), { it.keyExpression }, { it.cardinality.toOccurrence() })
 	val properties = when {
-		element is ParadoxScriptPropertyKey -> element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.propertyList ?: emptyList()
+		element is ParadoxScriptDefinitionElement -> element.block?.propertyList ?: emptyList()
 		else -> emptyList()
 	}
 	if(properties.isNotEmpty()) {
@@ -192,19 +192,19 @@ private fun ParadoxDefinitionMemberInfo.doGetChildPropertyOccurrenceMap(element:
 			if(matched == null) continue
 			val occurrence = occurrenceMap[matched.keyExpression]
 			if(occurrence == null) continue
-			occurrence.actual++
+			occurrence.actual += 1
 		}
 	}
 	return occurrenceMap
 }
 
-private fun ParadoxDefinitionMemberInfo.doGetChildValueOccurrenceMap(element: PsiElement): Map<CwtValueExpression, Occurrence> {
+private fun ParadoxDefinitionMemberInfo.doGetChildValueOccurrenceMap(element: ParadoxScriptMemberElement): Map<CwtValueExpression, Occurrence> {
 	//valueExpression - (expect actual)
 	val childValueConfigs = getChildValueConfigs()
 	val occurrenceMap = childValueConfigs.associateByTo(mutableMapOf(), { it.valueExpression }, { it.cardinality.toOccurrence() })
 	val values = when {
-		element is ParadoxScriptPropertyKey -> element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.valueList ?: emptyList()
-		element is ParadoxScriptBlockElement -> element.valueList
+		element is ParadoxScriptDefinitionElement -> element.block?.valueList ?: emptyList()
+		element is ParadoxScriptBlock -> element.valueList
 		else -> emptyList()
 	}
 	if(values.isNotEmpty()) {
@@ -214,7 +214,7 @@ private fun ParadoxDefinitionMemberInfo.doGetChildValueOccurrenceMap(element: Ps
 			if(matched == null) continue
 			val occurrence = occurrenceMap[matched.valueExpression]
 			if(occurrence == null) continue
-			occurrence.actual++
+			occurrence.actual += 1
 		}
 	}
 	return occurrenceMap

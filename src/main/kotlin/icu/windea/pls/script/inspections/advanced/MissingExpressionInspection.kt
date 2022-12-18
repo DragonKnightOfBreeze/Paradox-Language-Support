@@ -31,20 +31,14 @@ class MissingExpressionInspection : LocalInspectionTool() {
 				super.visitFile(file)
 			}
 			
-			override fun visitProperty(element: ParadoxScriptProperty) {
-				ProgressManager.checkCanceled()
-				//skip checking property if property key may contain parameters
-				val propertyKey = element.propertyKey
-				if(element.propertyKey.isParameterAwareExpression()) return
-				val position = propertyKey
-				val definitionMemberInfo = element.definitionMemberInfo
-				doCheck(position, definitionMemberInfo)
-				super.visitProperty(element)
-			}
-			
 			override fun visitBlock(element: ParadoxScriptBlock) {
 				ProgressManager.checkCanceled()
-				val position = element.findChild(ParadoxScriptElementTypes.LEFT_BRACE) ?: return
+				//skip checking property if its property key may contain parameters
+				//position: (in property) property key / (standalone) left curly brace
+				val position = element.parent?.castOrNull<ParadoxScriptProperty>()?.propertyKey
+					?.also { if(it.isParameterAwareExpression()) return }
+					?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
+					?: return
 				val definitionMemberInfo = element.definitionMemberInfo
 				doCheck(position, definitionMemberInfo)
 				super.visitBlock(element)
