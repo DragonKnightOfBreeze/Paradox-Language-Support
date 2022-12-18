@@ -105,7 +105,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 									nameToDistinct.add(info.name + "@" + locale)
 									if(info.primary) hasPrimaryLocales.add(locale)
 								}
-							} else if(info.locationExpression.placeholder == null) {
+							} else if(info.locationExpression.propertyName != null) {
 								//从定义的属性推断，例如，#name
 								infoMap.putIfAbsent(info.name + "@" + locale, tupleOf(info, null, locale))
 							}
@@ -116,7 +116,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			if(infoMap.isNotEmpty()) {
 				//显示为WEAK_WARNING，且缺失多个时，每个算作一个问题
 				for((info, key, locale) in infoMap.values) {
-					val message = getMessage(info, key, locale)
+					val message = getMessage(info, key, locale) ?: continue
 					holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING,
 						ImportGameOrModDirectoryFix(definition)
 					)
@@ -125,18 +125,23 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 		}
 		
 		private fun getMessage(info: ParadoxRelatedLocalisationInfo, key: String?, locale: CwtLocalisationLocaleConfig): String {
-			return if(key != null) {
-				when {
-					info.required -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1", key, locale)
-					info.primary -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2", key, locale)
-					else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3", key, locale)
+			val expression = info.locationExpression
+			val propertyName = expression.propertyName
+			return when {
+				info.required -> when {
+					key != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1.1", key, locale)
+					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1.2", propertyName, locale)
+					else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1.2", expression, locale)
 				}
-			} else {
-				val expression = info.locationExpression
-				when {
-					info.required -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1.1", expression, locale)
-					info.primary -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2.1", expression, locale)
-					else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3.1", expression, locale)
+				info.primary -> when {
+					key != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2.1", key, locale)
+					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2.2", propertyName, locale)
+					else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2.2", expression, locale)
+				}
+				else -> when {
+					key != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3.1", key, locale)
+					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3.2", propertyName, locale)
+					else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3.2", expression, locale)
 				}
 			}
 		}

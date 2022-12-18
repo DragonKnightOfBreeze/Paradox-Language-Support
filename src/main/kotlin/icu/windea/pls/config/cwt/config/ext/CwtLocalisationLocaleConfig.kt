@@ -31,6 +31,6 @@ class CwtLocalisationLocaleConfig(
 	}
 	
 	override fun toString(): String {
-		return description
+		return description.ifEmpty { id }
 	}
 }

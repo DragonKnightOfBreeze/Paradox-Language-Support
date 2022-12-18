@@ -92,17 +92,23 @@ class MissingImageInspection : LocalInspectionTool() {
 		}
 		
 		private fun getMessage(info: ParadoxRelatedImageInfo, key: String?): String {
-			return if(key != null) {
-				when {
-					info.required -> PlsBundle.message("script.inspection.advanced.missingImage.description.1", key)
-					info.primary -> PlsBundle.message("script.inspection.advanced.missingImage.description.2", key)
-					else -> PlsBundle.message("script.inspection.advanced.missingImage.description.3", key)
+			val expression = info.locationExpression
+			val propertyName = expression.propertyName
+			return when {
+				info.required -> when {
+					key != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.1.1", key)
+					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.1.2", propertyName)
+					else -> PlsBundle.message("script.inspection.advanced.missingImage.description.1.2", expression)
 				}
-			} else {
-				when {
-					info.required -> PlsBundle.message("script.inspection.advanced.missingImage.description.1.1", info.locationExpression)
-					info.primary -> PlsBundle.message("script.inspection.advanced.missingImage.description.2.1", info.locationExpression)
-					else -> PlsBundle.message("script.inspection.advanced.missingImage.description.3.1", info.locationExpression)
+				info.primary -> when {
+					key != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.2.1", key)
+					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.2.2", propertyName)
+					else -> PlsBundle.message("script.inspection.advanced.missingImage.description.2.2", expression)
+				}
+				else -> when {
+					key != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.3.1", key)
+					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.3.2", propertyName)
+					else -> PlsBundle.message("script.inspection.advanced.missingImage.description.3.2", expression)
 				}
 			}
 		}
