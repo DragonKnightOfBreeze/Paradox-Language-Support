@@ -18,11 +18,11 @@ class ParadoxScriptedVariableNameCompletionProvider: CompletionProvider<Completi
 		val element = parameters.position.parent
 		val file = parameters.originalFile
 		val project = file.project
-		val selector = scriptedVariableSelector().gameTypeFrom(file).preferRootFrom(file).distinctByName()
+		val selector = scriptedVariableSelector().gameTypeFrom(file).preferRootFrom(file)
+			.notSamePosition(element)
+			.distinctByName()
 		val globalQuery = ParadoxGlobalScriptedVariableSearch.search(project, selector = selector)
-		globalQuery.processQuery {
-			if(element.isSamePosition(it)) return@processQuery true //排除正在输入的 
-			processScriptedVariable(it, result) }
+		globalQuery.processQuery { processScriptedVariable(it, result) }
 	}
 	
 	private fun processScriptedVariable(scriptedVariable: ParadoxScriptScriptedVariable, result: CompletionResultSet): Boolean {

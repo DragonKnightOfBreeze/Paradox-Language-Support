@@ -18,6 +18,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 		
 		ProgressManager.checkCanceled()
 		
+		val file = parameters.originalFile
 		val quoted = element.text.isLeftQuoted()
 		val rightQuoted = element.text.isRightQuoted()
 		val offsetInParent = parameters.offset - element.textRange.startOffset
@@ -25,7 +26,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 		
 		context.put(PlsCompletionKeys.completionTypeKey, parameters.completionType)
 		context.put(PlsCompletionKeys.contextElementKey, element)
-		context.put(PlsCompletionKeys.originalFileKey, parameters.originalFile)
+		context.put(PlsCompletionKeys.originalFileKey, file)
 		context.put(PlsCompletionKeys.quotedKey, quoted)
 		context.put(PlsCompletionKeys.rightQuotedKey, rightQuoted)
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)

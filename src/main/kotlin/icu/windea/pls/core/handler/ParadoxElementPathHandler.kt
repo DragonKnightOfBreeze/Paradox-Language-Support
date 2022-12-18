@@ -1,6 +1,5 @@
 package icu.windea.pls.core.handler
 
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
@@ -16,7 +15,6 @@ object ParadoxElementPathHandler {
 	 */
 	@JvmStatic
 	fun resolveFromFile(element: PsiElement, maxDepth: Int = -1): ParadoxElementPath? {
-		ProgressManager.checkCanceled()
 		if(element is ParadoxScriptFile) {
 			return EmptyParadoxElementPath
 		}
@@ -46,7 +44,6 @@ object ParadoxElementPathHandler {
 	 */
 	@JvmStatic
 	fun resolveFromDefinitionWithDefinition(element: PsiElement): Tuple2<ParadoxElementPath, ParadoxScriptDefinitionElement>? {
-		ProgressManager.checkCanceled()
 		var current: PsiElement = element
 		var depth = 0
 		val originalSubPaths = LinkedList<String>()

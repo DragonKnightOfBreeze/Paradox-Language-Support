@@ -22,23 +22,32 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val position = parameters.position
 		val element = position.parent.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
-		val quoted = element.text.isLeftQuoted()
+		
 		val file = parameters.originalFile
 		val project = file.project
+		val quoted = element.text.isLeftQuoted()
+		val rightQuoted = element.text.isRightQuoted()
+		val offsetInParent = parameters.offset - element.textRange.startOffset
+		val keyword = element.getKeyword(offsetInParent)
 		
+		context.put(PlsCompletionKeys.completionTypeKey, parameters.completionType)
+		context.put(PlsCompletionKeys.contextElementKey, element)
+		context.put(PlsCompletionKeys.originalFileKey, file)
 		context.put(PlsCompletionKeys.quotedKey, quoted)
+		context.put(PlsCompletionKeys.rightQuotedKey, rightQuoted)
+		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
+		context.put(PlsCompletionKeys.keywordKey, keyword)
+		context.put(PlsCompletionKeys.completionIdsKey, mutableSetOf())
 		
 		fun doAddCompletions(type: String, config: CwtPropertyConfig, isKey: Boolean?, currentDefinition: ParadoxScriptDefinitionElement?) {
 			ProgressManager.checkCanceled()
 			context.put(PlsCompletionKeys.configKey, config)
 			context.put(PlsCompletionKeys.isKeyKey, isKey)
-			context.put(PlsCompletionKeys.contextElementKey, element)
-			val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file).distinctByName()
+			val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file)
+				.notSamePosition(currentDefinition)
+				.distinctByName()
 			val query = ParadoxDefinitionSearch.search(type, project, selector = selector)
-			query.processQuery {
-				if(currentDefinition != null && currentDefinition.isSamePosition(it)) return@processQuery true //排除正在输入的
-				processDefinition(context, result, it)
-			}
+			query.processQuery { processDefinition(context, result, it) }
 		}
 		
 		when {
@@ -72,7 +81,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				val definitionElement = element.findParentProperty() ?: return
 				val elementPath = ParadoxElementPathHandler.resolveFromFile(definitionElement, PlsConstants.maxDefinitionDepth) ?: return
 				for(typeConfig in configGroup.types.values) {
-					if(!typeConfig.nameField.isNullOrEmpty()) continue
+					if(typeConfig.nameField != null) continue
 					if(ParadoxDefinitionHandler.matchesTypeByPath(typeConfig, path)) {
 						val skipRootKeyConfig = typeConfig.skipRootKey
 						if(skipRootKeyConfig == null || skipRootKeyConfig.isEmpty()) {

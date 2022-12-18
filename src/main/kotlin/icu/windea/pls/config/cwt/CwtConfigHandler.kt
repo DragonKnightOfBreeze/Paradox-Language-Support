@@ -1319,14 +1319,14 @@ object CwtConfigHandler {
 		//提示来自脚本文件的value
 		run {
 			ProgressManager.checkCanceled()
-			val selector = valueSetValueSelector().gameType(gameType).distinctByValue()
+			val contextElement = contextElement
+			val selector = valueSetValueSelector().gameType(gameType)
+				.notSamePosition(contextElement)
+				.distinctByValue()
 			val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, project, selector = selector)
 			valueSetValueQuery.processQuery { valueSetValue ->
 				//去除后面的作用域信息
 				val value = ParadoxValueSetValueHandler.getName(valueSetValue) ?: return@processQuery true
-				//没有其他地方使用到时，排除当前正在输入的那个
-				val keywordValue = ParadoxValueSetValueHandler.getName(this.keyword)
-				if(value == keywordValue && valueSetValue isSamePosition contextElement) return@processQuery true
 				val icon = PlsIcons.ValueSetValue(valueSetName)
 				//不显示typeText
 				result.addScriptExpressionElement(valueSetValue, value,
@@ -1399,7 +1399,7 @@ object CwtConfigHandler {
 		val lookupElements = mutableListOf<LookupElement>()
 		for((parameterName, parameters) in parameterMap) {
 			val parameter = parameters.firstNotNullOfOrNull { it.element } ?: continue
-			////没有其他地方使用到时，排除当前正在输入的那个
+			//没有其他地方使用到时，排除当前正在输入的那个
 			if(parameters.size == 1 && element isSamePosition parameter) continue
 			//如果要提示的是$PARAM$中的PARAM，需要忽略与之相同参数名
 			if(read && parameterName == keyword) continue
