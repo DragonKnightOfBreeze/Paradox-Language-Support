@@ -23,17 +23,29 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
 		if(target !is ParadoxScriptDefinitionElement) return
 		val definitionInfo = runReadAction {  target.definitionInfo }
 		if(definitionInfo == null) return
-		val name = definitionInfo.name
-		if(name.isEmpty()) return
+		val definitionName = definitionInfo.name
+		if(definitionName.isEmpty()) return
 		val type = definitionInfo.type
 		val project = queryParameters.project
+		val configGroup = definitionInfo.configGroup
+		val extraWords = SmartList<String>()
+		if(definitionInfo.rootKey != definitionName) {
+			extraWords.add(definitionName)
+		}
+		if(type == "sprite" || type == "spriteType") {
+			definitionName.removePrefix("GFX_").takeIfNotEmpty()?.let { extraWords.add(it) }
+			definitionName.removePrefix("GFX_text_").takeIfNotEmpty()?.let { extraWords.add(it) }
+		}
+		configGroup.info.typeExpressionStringLinks
+			.firstNotNullOfOrNull { it.extract(definitionName) }
+			?.takeIfNotEmpty()
+			?.let { extraWords.add(it) }
+		if(extraWords.isEmpty()) return
 		DumbService.getInstance(project).runReadActionInSmartMode {
 			//这里不能直接使用target.useScope，否则文件高亮会出现问题
 			val useScope = queryParameters.effectiveSearchScope
-			queryParameters.optimizer.searchWord(name, useScope, true, target)
-			if(type == "sprite" || type == "spriteType") {
-				queryParameters.optimizer.searchWord(name.removePrefix("GFX_"), useScope, true, target)
-				queryParameters.optimizer.searchWord(name.removePrefix("GFX_text_"), useScope, true, target)
+			for(extraWord in extraWords) {
+				queryParameters.optimizer.searchWord(extraWord, useScope, true, target)
 			}
 		}
 	}

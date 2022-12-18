@@ -1,7 +1,9 @@
 package icu.windea.pls.config.cwt.expression
 
+import com.intellij.util.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 
 /**
  * @property type 表达式类型，即CWT规则的dataType。
@@ -20,8 +22,17 @@ fun CwtDataExpression.isNumberType(): Boolean {
 		|| type == CwtDataTypes.VariableField || type == CwtDataTypes.VariableField
 }
 
-fun <T: CwtDataExpression> T.registerTo(info: CwtConfigGroupInfo): T {
+fun <T : CwtDataExpression> T.registerTo(info: CwtConfigGroupInfo): T {
 	when(this.type) {
+		CwtDataTypes.TypeExpressionString -> {
+			val link = this.extraValue?.castOrNull<Pair<String, String>>()?.let { "$" linkTo "${it.first}$${it.second}" }
+			link?.let { info.typeExpressionStringLinks.add(it) }
+			//val typeExpression = this.value
+			//val link = this.extraValue?.castOrNull<Pair<String, String>>()?.let { "$" linkTo "${it.first}$${it.second}" }
+			//if(typeExpression != null && link != null) {
+			//	info.typeExpressionStringLinks.getOrPut(typeExpression) { SmartList() }.add(link)
+			//}
+		}
 		CwtDataTypes.FilePath -> {
 			this.value?.let { info.filePathExpressions.add(it) }
 		}

@@ -21,15 +21,17 @@ class ParadoxFileUsagesSearcher: QueryExecutorBase<PsiReference, ReferencesSearc
 		if(fileInfo == null) return
 		val gameType = fileInfo.rootInfo.gameType
 		val filePath = fileInfo.path.toString()
-		val extraWords = SmartList<String>()
 		val project = queryParameters.project
 		val configGroup = getCwtConfig(project).getValue(gameType)
+		val extraWords = SmartList<String>()
 		configGroup.info.filePathExpressions
 			.firstNotNullOfOrNull { CwtPathExpressionType.FilePath.extract(it, filePath) }
+			?.takeIfNotEmpty()
 			?.let { extraWords.add(it) }
 		if(target.name.endsWith(".dds", true)) {
 			configGroup.info.iconPathExpressions
 				.firstNotNullOfOrNull { CwtPathExpressionType.Icon.extract(it, filePath) }
+				?.takeIfNotEmpty()
 				?.let { extraWords.add(it) }
 		}
 		if(extraWords.isEmpty()) return

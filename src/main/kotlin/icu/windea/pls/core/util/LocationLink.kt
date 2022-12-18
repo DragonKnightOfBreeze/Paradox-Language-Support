@@ -5,7 +5,7 @@ import icu.windea.pls.core.*
 data class LocationLink(
 	val sourceExpression: String,
 	val targetExpression: String,
-	val placeholder: String = "#"
+	val placeholder: String = "$"
 ) {
 	//source -> target
 	fun resolve(name: String): String? {
