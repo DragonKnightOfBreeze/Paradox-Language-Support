@@ -38,12 +38,13 @@ object ParadoxCwtConfigHandler {
 		//当输入的元素是key或property时，输入的规则类型必须是property
 		return when(configType) {
 			CwtPropertyConfig::class.java -> {
-				val valueElement = when {
-					element is ParadoxScriptProperty -> element.propertyValue
-					element is ParadoxScriptPropertyKey -> element.propertyValue
+				val memberElement = when{
+					element is ParadoxScriptProperty -> element
+					element is ParadoxScriptPropertyKey -> element.parent as? ParadoxScriptProperty ?: return emptyList()
 					else -> throw UnsupportedOperationException()
 				}
-				val definitionMemberInfo = ParadoxDefinitionMemberHandler.getInfo(element) ?: return emptyList()
+				val valueElement = memberElement.propertyValue
+				val definitionMemberInfo = memberElement.definitionMemberInfo ?: return emptyList()
 				if(!allowDefinitionSelf && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
 				//如果无法匹配value，则取第一个
 				val configs = definitionMemberInfo.getConfigs(matchType)

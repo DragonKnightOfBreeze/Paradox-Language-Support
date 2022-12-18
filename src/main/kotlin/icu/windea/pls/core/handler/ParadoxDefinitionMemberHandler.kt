@@ -12,15 +12,12 @@ import icu.windea.pls.script.psi.*
  */
 object ParadoxDefinitionMemberHandler {
 	@JvmStatic
-	fun getInfo(element: PsiElement): ParadoxDefinitionMemberInfo? {
+	fun getInfo(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
 		//注意：element.stub可能会导致ProcessCanceledException
 		ProgressManager.checkCanceled()
-		val targetElement = if(element is ParadoxScriptProperty) element.propertyKey else element
-		//这里可以是rootBlock，也可以是expressionElement
-		if(!(targetElement is ParadoxScriptRootBlock || targetElement.isExpression())) return null
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionMemberInfoKey) {
 			val file = element.containingFile
-			val value = resolveInfoDownUp(targetElement)
+			val value = resolveInfoDownUp(element)
 			CachedValueProvider.Result.create(value, file) //invalidated on file modification
 		}
 	}
@@ -31,7 +28,7 @@ object ParadoxDefinitionMemberHandler {
 	//}
 	
 	@JvmStatic
-	fun resolveInfoDownUp(element: PsiElement): ParadoxDefinitionMemberInfo? {
+	fun resolveInfoDownUp(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
 		//element: ParadoxScriptPropertyKey | ParadoxScriptValue
 		//这里输入的element本身可以是定义，这时elementPath会是空字符串
 		val (elementPath, definition) = ParadoxElementPathHandler.resolveFromDefinitionWithDefinition(element) ?: return null

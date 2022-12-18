@@ -297,7 +297,7 @@ val PsiElement.fileInfo: ParadoxFileInfo?
 val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
 	get() = ParadoxDefinitionHandler.getInfo(this)
 
-val PsiElement.definitionMemberInfo: ParadoxDefinitionMemberInfo?
+val ParadoxScriptMemberElement.definitionMemberInfo: ParadoxDefinitionMemberInfo?
 	get() = ParadoxDefinitionMemberHandler.getInfo(this)
 
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?

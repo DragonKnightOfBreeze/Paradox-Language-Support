@@ -21,7 +21,7 @@ class ParadoxDefinitionMemberInfo(
 	val gameType: ParadoxGameType,
 	val definitionInfo: ParadoxDefinitionInfo,
 	val configGroup: CwtConfigGroup,
-	element: PsiElement //直接传入element
+	element: ParadoxScriptMemberElement //直接传入element
 ) {
 	val isDefinition = element is ParadoxScriptDefinitionElement && elementPath.isEmpty()
 	val isParameterAware = elementPath.isParameterAware

@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 
@@ -18,9 +19,10 @@ class TooManyExpressionInspection: LocalInspectionTool() {
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
 		file.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
 			override fun visitFile(file: PsiFile) {
-				val block = file.castOrNull<ParadoxScriptFile>()?.block ?: return
+				if(file !is ParadoxScriptFile) return
 				val position = file //TODO not very suitable
-				doVisitBlockElement(block, position)
+				val definitionMemberInfo = file.definitionMemberInfo
+				doCheck(position, definitionMemberInfo)
 				super.visitFile(file)
 			}
 			
@@ -29,22 +31,21 @@ class TooManyExpressionInspection: LocalInspectionTool() {
 				//skip checking property if property key may contain parameters
 				val propertyKey = element.propertyKey
 				if(element.propertyKey.isParameterAwareExpression()) return
-				val block = element.block ?: return
 				val position = propertyKey
-				doVisitBlockElement(block, position)
+				val definitionMemberInfo = element.definitionMemberInfo
+				doCheck(position, definitionMemberInfo)
 				super.visitProperty(element)
 			}
 			
 			override fun visitBlock(element: ParadoxScriptBlock) {
 				ProgressManager.checkCanceled()
-				val block = element
 				val position = element.findChild(ParadoxScriptElementTypes.LEFT_BRACE) ?: return
-				doVisitBlockElement(block, position)
+				val definitionMemberInfo = element.definitionMemberInfo
+				doCheck(position, definitionMemberInfo)
 				super.visitBlock(element)
 			}
 			
-			private fun doVisitBlockElement(block: ParadoxScriptBlockElement, position: PsiElement) {
-				val definitionMemberInfo = block.definitionMemberInfo
+			private fun doCheck(position: PsiElement, definitionMemberInfo: ParadoxDefinitionMemberInfo?) {
 				if(definitionMemberInfo == null) return
 				definitionMemberInfo.childPropertyOccurrenceMap.takeIf { it.isNotEmpty() }
 					?.forEach { (configExpression, occurrence) ->

@@ -46,22 +46,22 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 		}
 		if(mayBePropertyValue) {
 			//得到原始文件中上一级definitionElement
-			val definition = element.findParentProperty() ?: return
+			val definitionElement = element.findParentProperty() ?: return
 			//这里需要特殊处理一下，标记属性的值是否未填写
 			val incomplete = !quoted && keyword.isEmpty()
 			try {
-				definition.putUserData(PlsKeys.incompleteMarkerKey, incomplete)
+				definitionElement.putUserData(PlsKeys.incompleteMarkerKey, incomplete)
 				//进行提示
-				CwtConfigHandler.addValueCompletions(definition, context, resultToUse)
+				CwtConfigHandler.addValueCompletions(definitionElement, context, resultToUse)
 			} finally {
-				definition.putUserData(PlsKeys.incompleteMarkerKey, null)
+				definitionElement.putUserData(PlsKeys.incompleteMarkerKey, null)
 			}
 		}
 		if(mayBeBlockValue) {
 			//得到原始文件中上一级block
-			val blockElement = element.parent as? ParadoxScriptBlockElement ?: return
+			val block = element.parent as? ParadoxScriptBlock ?: return
 			//进行提示
-			CwtConfigHandler.addValueCompletionsInBlock(blockElement, context, resultToUse)
+			CwtConfigHandler.addValueCompletionsInBlock(block, context, resultToUse)
 		}
 	}
 }

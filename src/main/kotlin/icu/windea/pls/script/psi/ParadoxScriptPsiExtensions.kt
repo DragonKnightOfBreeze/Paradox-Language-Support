@@ -111,7 +111,7 @@ fun PsiElement.findProperty(propertyName: String? = null, ignoreCase: Boolean = 
 }
 
 /**
- * 向上得到第一个属性。可能为null，可能是定义。
+ * 向上得到第一个属性。可能为null，可能是定义，可能是脚本文件。
  * @param propertyName 要查找到的属性的名字。如果为null，则不指定。
  * @param fromParentBlock 是否先向上得到第一个子句，再继续进行查找。
  */

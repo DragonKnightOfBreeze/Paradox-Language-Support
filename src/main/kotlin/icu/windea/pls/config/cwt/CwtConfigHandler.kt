@@ -525,7 +525,7 @@ object CwtConfigHandler {
 		return
 	}
 	
-	fun addValueCompletionsInBlock(blockElement: ParadoxScriptBlockElement, context: ProcessingContext, result: CompletionResultSet) {
+	fun addValueCompletionsInBlock(blockElement: ParadoxScriptBlock, context: ProcessingContext, result: CompletionResultSet) {
 		val definitionMemberInfo = blockElement.definitionMemberInfo
 		if(definitionMemberInfo == null) return
 		val configGroup = definitionMemberInfo.configGroup
