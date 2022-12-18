@@ -24,8 +24,10 @@ class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters
 		//仅提示脚本文件中向上查找到的那个合法的事件命名空间
 		val eventNamespace = EventConfigHandler.getEventNamespace(event) ?: return //skip
 		val name = eventNamespace.value ?: return
+		val typeFile = eventNamespace.containingFile
 		val lookupElement = LookupElementBuilder.create(eventNamespace, name)
 			.withIcon(PlsIcons.EventNamespace)
+			.withTypeText(typeFile?.name, typeFile?.icon, true)
 			.withPriority(PlsCompletionPriorities.definitionNamePriority) //same with event ids
 		result.addElement(lookupElement)
 	}

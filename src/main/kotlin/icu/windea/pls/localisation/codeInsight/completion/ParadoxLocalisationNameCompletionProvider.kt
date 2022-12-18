@@ -18,7 +18,7 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 		
-		val element = parameters.position.parent as? ParadoxLocalisationProperty ?: return
+		val element = parameters.position.parent?.parent as? ParadoxLocalisationProperty ?: return
 		val offsetInParent = parameters.offset - element.textRange.startOffset
 		val keyword = element.getKeyword(offsetInParent)
 		val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return

@@ -1327,10 +1327,7 @@ object CwtConfigHandler {
 				//没有其他地方使用到时，排除当前正在输入的那个
 				val keywordValue = ParadoxValueSetValueHandler.getName(this.keyword)
 				if(value == keywordValue && valueSetValue isSamePosition contextElement) return@processQuery true
-				val icon = when(valueSetName) {
-					"variable" -> PlsIcons.Variable
-					else -> PlsIcons.ValueSetValue
-				}
+				val icon = PlsIcons.ValueSetValue(valueSetName)
 				//不显示typeText
 				result.addScriptExpressionElement(valueSetValue, value,
 					context,

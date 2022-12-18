@@ -121,6 +121,8 @@ fun CompletionResultSet.addScriptExpressionElement(
 	//排除重复项
 	if(context.completionIds?.add(id) == false) return
 	
+	val isKeyOrValueOnly = context.contextElement is ParadoxScriptPropertyKey || context.isKey != true
+	val isKey = context.isKey == true
 	var lookupElement = when {
 		element != null -> LookupElementBuilder.create(element, lookupString)
 		else -> LookupElementBuilder.create(lookupString)
@@ -132,8 +134,10 @@ fun CompletionResultSet.addScriptExpressionElement(
 		lookupElement = lookupElement.withPresentableText(presentableText)
 	}
 	val finalTailText = buildString {
-		if(constantValue != null) append(" = ").append(constantValue)
-		if(insertCurlyBraces) append(" = {...}")
+		if(!isKeyOrValueOnly) {
+			if(constantValue != null) append(" = ").append(constantValue)
+			if(insertCurlyBraces) append(" = {...}")
+		}
 		if(tailText != null) append(tailText)
 	}
 	if(finalTailText.isNotEmpty()) {
@@ -143,15 +147,15 @@ fun CompletionResultSet.addScriptExpressionElement(
 		lookupElement = lookupElement.withTypeText(typeText, typeIcon, true)
 	}
 	
-	if(context.isKey != true || context.contextElement is ParadoxScriptPropertyKey) {
+	if(isKeyOrValueOnly) {
 		val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
-			applyKeyInsertHandler(context, c)
+			applyKeyOrValueInsertHandler(context, c)
 		}
 		addElement(resultLookupElement)
 		return
 	}
 	
-	if(context.isKey == true) {
+	if(isKey) {
 		val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
 			applyKeyAndValueInsertHandler(c, context, constantValue, insertCurlyBraces)
 		}
@@ -160,7 +164,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 	
 	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
 	val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
-	if(context.isKey == true && completeWithClauseTemplate) {
+	if(isKey && completeWithClauseTemplate) {
 		val targetConfig = propertyConfig
 		if(targetConfig != null && !targetConfig.configs.isNullOrEmpty()) {
 			val tailText1 = buildString {
@@ -187,7 +191,7 @@ private fun skipOrInsertRightQuote(context: ProcessingContext, editor: Editor) {
 	}
 }
 
-private fun applyKeyInsertHandler(context: ProcessingContext, c: InsertionContext) {
+private fun applyKeyOrValueInsertHandler(context: ProcessingContext, c: InsertionContext) {
 	skipOrInsertRightQuote(context, c.editor)
 }
 

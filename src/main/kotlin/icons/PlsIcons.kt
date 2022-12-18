@@ -55,6 +55,17 @@ object PlsIcons {
 	@JvmField val EventNamespace = loadIcon("/icons/eventNamespace.svg")
 	@JvmField val EventId = loadIcon("/icons/eventId.svg")
 	
+	@JvmStatic fun Definition(type: String) = when(type) {
+		"event" -> EventId
+		"event_namespace" -> EventNamespace
+		else -> Definition
+	}
+	
+	@JvmStatic fun ValueSetValue(valueSetName: String) = when(valueSetName) {
+		"variable" -> Variable
+		else -> ValueSetValue
+	}
+	
 	object Actions {
 		@JvmField val SteamDirectory = loadIcon("/icons/actions/steamDirectory.svg")
 		@JvmField val SteamGameDirectory = loadIcon("/icons/actions/steamGameDirectory.svg")

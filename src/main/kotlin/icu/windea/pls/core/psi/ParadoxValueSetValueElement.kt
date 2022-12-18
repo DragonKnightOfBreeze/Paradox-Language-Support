@@ -51,10 +51,7 @@ class ParadoxValueSetValueElement(
 	
 	override fun getIcon(): Icon {
 		val valueSetName = valueSetNames.first() //first is ok
-		return when(valueSetName) {
-			"variable" -> PlsIcons.Variable
-			else -> PlsIcons.ValueSetValue
-		}
+		return PlsIcons.ValueSetValue(valueSetName)
 	}
 	
 	override fun getTextRange(): TextRange? {

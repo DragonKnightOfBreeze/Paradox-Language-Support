@@ -112,13 +112,14 @@ fun PsiElement.findProperty(propertyName: String? = null, ignoreCase: Boolean = 
 
 /**
  * 向上得到第一个属性。可能为null，可能是定义，可能是脚本文件。
- * @param propertyName 要查找到的属性的名字。如果为null，则不指定。
+ * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果得到的是脚本文件，则忽略。
  * @param fromParentBlock 是否先向上得到第一个子句，再继续进行查找。
  */
 fun PsiElement.findParentProperty(propertyName: String? = null, ignoreCase: Boolean = true, fromParentBlock: Boolean = false): ParadoxScriptDefinitionElement? {
 	if(language != ParadoxScriptLanguage) return null
 	var current: PsiElement = when {
-		fromParentBlock -> this.parentOfType<ParadoxScriptBlock>() ?: return null
+		fromParentBlock -> this.parentOfType<ParadoxScriptBlockElement>() ?: return null
+		this is ParadoxScriptProperty -> this.parent
 		else -> this
 	}
 	while(current !is PsiFile) {
@@ -126,6 +127,7 @@ fun PsiElement.findParentProperty(propertyName: String? = null, ignoreCase: Bool
 		if(current is ParadoxScriptBlock && !current.isPropertyValue()) return null
 		current = current.parent ?: break
 	}
+	if(current is ParadoxScriptFile) return current
 	return null
 }
 
