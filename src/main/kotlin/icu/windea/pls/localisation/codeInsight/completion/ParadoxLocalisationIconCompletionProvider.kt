@@ -8,10 +8,9 @@ import com.intellij.util.*
 import icons.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 提供图标名字的代码补全。
@@ -67,7 +66,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
 	private fun addLookupElement(name: String, element: PsiElement, result: CompletionResultSet) {
 		when(element) {
 			//val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
-			is ParadoxDefinitionProperty -> {
+			is ParadoxScriptDefinitionElement -> {
 				val icon = PlsIcons.LocalisationIcon //使用特定图标
 				val definitionInfo = element.definitionInfo //不应该为null
 				val tailText = if(definitionInfo != null) " from ${definitionInfo.type} definition ${definitionInfo.name}" else ""

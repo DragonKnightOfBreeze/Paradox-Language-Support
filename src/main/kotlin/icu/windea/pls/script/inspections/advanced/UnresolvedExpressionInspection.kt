@@ -33,8 +33,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 					if(!shouldCheck) return@run
 					//skip checking property if property key may contain parameters
 					if(element.propertyKey.isParameterAwareExpression()) return
-					val definitionElementInfo = element.definitionElementInfo
-					if(definitionElementInfo == null || definitionElementInfo.isDefinition || definitionElementInfo.isParameterAware) return
+					val definitionMemberInfo = element.definitionMemberInfo
+					if(definitionMemberInfo == null || definitionMemberInfo.isDefinition || definitionMemberInfo.isParameterAware) return
 					val matchType = CwtConfigMatchType.INSPECTION
 					val configs = resolvePropertyConfigs(element, matchType = matchType)
 					val config = configs.firstOrNull()
@@ -60,8 +60,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 					if(!shouldCheck) return@run
 					//skip checking value if it may contain parameters
 					if(element is ParadoxScriptString && element.isParameterAwareExpression()) return
-					val definitionElementInfo = element.definitionElementInfo
-					if(definitionElementInfo == null || definitionElementInfo.isDefinition || definitionElementInfo.isParameterAware) return
+					val definitionMemberInfo = element.definitionMemberInfo
+					if(definitionMemberInfo == null || definitionMemberInfo.isDefinition || definitionMemberInfo.isParameterAware) return
 					val matchType = CwtConfigMatchType.INSPECTION
 					val configs = resolveValueConfigs(element, matchType = matchType, orDefault = false)
 					val config = configs.firstOrNull()

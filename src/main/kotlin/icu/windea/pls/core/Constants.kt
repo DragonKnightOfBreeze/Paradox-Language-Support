@@ -87,7 +87,7 @@ object PlsKeys {
 	val contentFileKey = Key.create<VirtualFile>("paradox.contentFile")
 	
 	val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("paradox.cachedDefinitionInfo")
-	val cachedDefinitionElementInfoKey = Key.create<CachedValue<ParadoxDefinitionElementInfo>>("paradox.cachedDefinitionElementInfo")
+	val cachedDefinitionMemberInfoKey = Key.create<CachedValue<ParadoxDefinitionMemberInfo>>("paradox.cachedDefinitionMemberInfo")
 	val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("paradox.cachedLocalisationInfo")
 	val cachedComplexEnumValueInfoKey = Key.create<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cachedComplexEnumValueInfo")
 	

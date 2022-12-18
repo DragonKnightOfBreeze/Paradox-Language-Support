@@ -12,7 +12,7 @@ import icu.windea.pls.core.actions.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 导航到定义元素对应的CWT规则的动作。
+ * 导航到定义成员对应的CWT规则的动作。
  */
 class GotoRelatedCwtConfigAction : BaseCodeInsightAction() {
 	private val handler = GotoRelatedCwtConfigHandler()
@@ -27,7 +27,7 @@ class GotoRelatedCwtConfigAction : BaseCodeInsightAction() {
 	
 	override fun update(event: AnActionEvent) {
 		//当选中的文件是脚本文件时显示
-		//当光标位置的元素是定义的rootKey或者定义元素时显示
+		//当光标位置的元素是定义的rootKey或者定义成员时显示
 		//在PSI中向上查找，定义中的任何key/value，key可以是定义的rootKey，value可以不是string
 		val presentation = event.presentation
 		presentation.isEnabledAndVisible = false

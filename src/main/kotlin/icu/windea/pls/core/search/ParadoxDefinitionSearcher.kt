@@ -7,13 +7,13 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.index.*
-import icu.windea.pls.core.psi.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 定义的查询器。
  */
-class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionProperty, ParadoxDefinitionSearch.SearchParameters>() {
-	override fun processQuery(queryParameters: ParadoxDefinitionSearch.SearchParameters, consumer: Processor<in ParadoxDefinitionProperty>) {
+class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionElement, ParadoxDefinitionSearch.SearchParameters>() {
+	override fun processQuery(queryParameters: ParadoxDefinitionSearch.SearchParameters, consumer: Processor<in ParadoxScriptDefinitionElement>) {
 		val name = queryParameters.name
 		val typeExpression = queryParameters.typeExpression
 		val project = queryParameters.project
@@ -43,11 +43,11 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionProperty, P
 		}
 	}
 	
-	private fun matchesName(element: ParadoxDefinitionProperty, name: String): Boolean {
+	private fun matchesName(element: ParadoxScriptDefinitionElement, name: String): Boolean {
 		return ParadoxDefinitionHandler.getName(element) == name
 	}
 	
-	private fun matchesSubtype(element: ParadoxDefinitionProperty, subtype: String): Boolean {
+	private fun matchesSubtype(element: ParadoxScriptDefinitionElement, subtype: String): Boolean {
 		return ParadoxDefinitionHandler.getSubtypes(element)?.contains(subtype) == true
 	}
 }

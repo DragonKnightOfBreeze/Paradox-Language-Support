@@ -23,7 +23,7 @@ import kotlin.contracts.*
  */
 object ParadoxDefinitionHandler {
 	@JvmStatic
-	fun getInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
+	fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
 		ProgressManager.checkCanceled()
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfoKey) {
 			val file = element.containingFile
@@ -33,7 +33,7 @@ object ParadoxDefinitionHandler {
 	}
 	
 	@JvmStatic
-	fun resolve(element: ParadoxDefinitionProperty, file: PsiFile = element.containingFile): ParadoxDefinitionInfo? {
+	fun resolve(element: ParadoxScriptDefinitionElement, file: PsiFile = element.containingFile): ParadoxDefinitionInfo? {
 		//排除带参数的情况
 		if(element is ParadoxScriptProperty && element.propertyKey.isParameterAwareExpression()) return null
 		
@@ -59,7 +59,7 @@ object ParadoxDefinitionHandler {
 		return doResolve(configGroup, element, rootKey, path, elementPath)
 	}
 	
-	private fun resolveByStub(element: ParadoxDefinitionProperty, stub: ParadoxDefinitionPropertyStub<out ParadoxDefinitionProperty>, project: Project): ParadoxDefinitionInfo? {
+	private fun resolveByStub(element: ParadoxScriptDefinitionElement, stub: ParadoxScriptDefinitionElementStub<out ParadoxScriptDefinitionElement>, project: Project): ParadoxDefinitionInfo? {
 		val gameType = stub.gameType
 		val type = stub.type
 		val rootKey = stub.rootKey
@@ -69,7 +69,7 @@ object ParadoxDefinitionHandler {
 			?.apply { sourceType = ParadoxDefinitionInfo.SourceType.Stub }
 	}
 	
-	private fun resolveByPathComment(element: ParadoxDefinitionProperty, file: PsiFile, project: Project): ParadoxDefinitionInfo? {
+	private fun resolveByPathComment(element: ParadoxScriptDefinitionElement, file: PsiFile, project: Project): ParadoxDefinitionInfo? {
 		val (gameType, path) = ParadoxMagicCommentHandler.resolveFilePathComment(file) ?: return null
 		val elementPath = ParadoxElementPathHandler.resolveFromFile(element, PlsConstants.maxDefinitionDepth) ?: return null
 		val rootKey = element.pathName //如果是文件名，不要包含扩展名
@@ -78,7 +78,7 @@ object ParadoxDefinitionHandler {
 			?.apply { sourceType = ParadoxDefinitionInfo.SourceType.PathComment }
 	}
 	
-	private fun resolveByTypeComment(element: ParadoxDefinitionProperty, project: Project): ParadoxDefinitionInfo? {
+	private fun resolveByTypeComment(element: ParadoxScriptDefinitionElement, project: Project): ParadoxDefinitionInfo? {
 		val (gameType, type) = ParadoxMagicCommentHandler.resolveDefinitionTypeComment(element) ?: return null
 		val rootKey = element.pathName //如果是文件名，不要包含扩展名
 		val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
@@ -86,7 +86,7 @@ object ParadoxDefinitionHandler {
 			?.apply { sourceType = ParadoxDefinitionInfo.SourceType.TypeComment }
 	}
 	
-	private fun doResolve(configGroup: CwtConfigGroup, element: ParadoxDefinitionProperty, rootKey: String, path: ParadoxPath, elementPath: ParadoxElementPath): ParadoxDefinitionInfo? {
+	private fun doResolve(configGroup: CwtConfigGroup, element: ParadoxScriptDefinitionElement, rootKey: String, path: ParadoxPath, elementPath: ParadoxElementPath): ParadoxDefinitionInfo? {
 		val gameType = configGroup.gameType ?: return null
 		for(typeConfig in configGroup.types.values) {
 			ProgressManager.checkCanceled()
@@ -98,7 +98,7 @@ object ParadoxDefinitionHandler {
 		return null
 	}
 	
-	private fun doResolveWithKnownType(configGroup: CwtConfigGroup, element: ParadoxDefinitionProperty, type: String, rootKey: String): ParadoxDefinitionInfo? {
+	private fun doResolveWithKnownType(configGroup: CwtConfigGroup, element: ParadoxScriptDefinitionElement, type: String, rootKey: String): ParadoxDefinitionInfo? {
 		val gameType = configGroup.gameType ?: return null
 		val typeConfig = configGroup.types[type] ?: return null
 		//仍然要求匹配rootKey
@@ -139,7 +139,7 @@ object ParadoxDefinitionHandler {
 	fun matchesType(
 		configGroup: CwtConfigGroup,
 		typeConfig: CwtTypeConfig,
-		element: ParadoxDefinitionProperty,
+		element: ParadoxScriptDefinitionElement,
 		rootKey: String,
 		path: ParadoxPath,
 		elementPath: ParadoxElementPath
@@ -228,7 +228,7 @@ object ParadoxDefinitionHandler {
 	fun matchesSubtype(
 		configGroup: CwtConfigGroup,
 		subtypeConfig: CwtSubtypeConfig,
-		element: ParadoxDefinitionProperty,
+		element: ParadoxScriptDefinitionElement,
 		rootKey: String,
 		result: MutableList<CwtSubtypeConfig>
 	): Boolean {
@@ -251,19 +251,19 @@ object ParadoxDefinitionHandler {
 		}
 		//根据config对property进行内容匹配
 		val elementConfig = subtypeConfig.config
-		return doMatchDefinitionProperty(element, elementConfig, configGroup)
+		return doMatchDefinition(element, elementConfig, configGroup)
 	}
 	
-	private fun doMatchDefinitionProperty(propertyElement: ParadoxDefinitionProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
+	private fun doMatchDefinition(definitionElement: ParadoxScriptDefinitionElement, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
 		when {
 			//匹配值列表
 			!propertyConfig.values.isNullOrEmpty() -> {
-				val values = propertyElement.valueList
+				val values = definitionElement.valueList
 				if(!doMatchValues(values, propertyConfig.values.orEmpty(), configGroup)) return false //继续匹配
 			}
 			//匹配属性列表
 			!propertyConfig.properties.isNullOrEmpty() -> {
-				val props = propertyElement.propertyList
+				val props = definitionElement.propertyList
 				if(!doMatchProperties(props, propertyConfig.properties.orEmpty(), configGroup)) return false //继续匹配
 			}
 		}
@@ -384,15 +384,15 @@ object ParadoxDefinitionHandler {
 		}
 	}
 	
-	fun getName(element: ParadoxDefinitionProperty): String? {
+	fun getName(element: ParadoxScriptDefinitionElement): String? {
 		return runCatching { element.getStub() }.getOrNull()?.name ?: element.definitionInfo?.name
 	}
 	
-	fun getType(element: ParadoxDefinitionProperty): String? {
+	fun getType(element: ParadoxScriptDefinitionElement): String? {
 		return runCatching { element.getStub() }.getOrNull()?.type ?: element.definitionInfo?.type
 	}
 	
-	fun getSubtypes(element: ParadoxDefinitionProperty): List<String>? {
+	fun getSubtypes(element: ParadoxScriptDefinitionElement): List<String>? {
 		return runCatching { element.getStub() }.getOrNull()?.subtypes ?: element.definitionInfo?.subtypes
 	}
 }

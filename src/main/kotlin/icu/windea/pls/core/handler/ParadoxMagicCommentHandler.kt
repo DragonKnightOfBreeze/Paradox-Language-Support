@@ -3,7 +3,7 @@ package icu.windea.pls.core.handler
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.core.psi.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 用于处理一些特殊注释，实现相关功能。
@@ -44,7 +44,7 @@ object ParadoxMagicCommentHandler {
 	 * * 仅当PLS无法得到此脚本文件的文件信息，从而进一步解析其中的定义时才允许这样处理
 	 */
 	@JvmStatic
-	fun resolveDefinitionTypeComment(element: ParadoxDefinitionProperty): Pair<ParadoxGameType, String>? {
+	fun resolveDefinitionTypeComment(element: ParadoxScriptDefinitionElement): Pair<ParadoxGameType, String>? {
 		//上一个PSI元素必须是空白，并且包含且仅包含一个换行，这意味着上一个注释在上一行
 		val comment = (element.prevSibling ?: element.parent?.prevSibling)
 			?.takeIf { it.isSingleLineBreak() }?.prevSibling?.castOrNull<PsiComment>() 

@@ -54,7 +54,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
 		if(element is ParadoxLocalisationIcon) {
 			val resolved = element.reference?.resolve() ?: return true
 			val iconUrl = when {
-				resolved is ParadoxDefinitionProperty -> ParadoxDdsUrlResolver.resolveByDefinition(resolved, defaultToUnknown = false)
+				resolved is ParadoxScriptDefinitionElement -> ParadoxDdsUrlResolver.resolveByDefinition(resolved, defaultToUnknown = false)
 				resolved is PsiFile -> ParadoxDdsUrlResolver.resolveByFile(resolved.virtualFile, defaultToUnknown = false)
 				else -> return true
 			}

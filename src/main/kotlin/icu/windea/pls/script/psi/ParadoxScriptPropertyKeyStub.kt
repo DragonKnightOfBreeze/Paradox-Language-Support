@@ -1,3 +1,3 @@
 package icu.windea.pls.script.psi
 
-interface ParadoxScriptPropertyKeyStub : ParadoxScriptExpressionElementStub<ParadoxScriptPropertyKey>
+interface ParadoxScriptPropertyKeyStub : ParadoxScriptStringExpressionElementStub<ParadoxScriptPropertyKey>

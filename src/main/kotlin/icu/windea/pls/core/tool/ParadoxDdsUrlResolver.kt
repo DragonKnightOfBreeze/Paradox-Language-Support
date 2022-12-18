@@ -25,7 +25,7 @@ object ParadoxDdsUrlResolver {
 	 * 基于定义进行解析。定义类型可以不为sprite。返回对应的PNG图片的绝对路径。
 	 * @param frame 帧数。用于切割图片，默认为0，表示不切割。如果为0，但对应的定义可以获取帧数信息，则使用那个帧数。
 	 */
-	fun resolveByDefinition(definition: ParadoxDefinitionProperty, frame: Int = 0, defaultToUnknown: Boolean = false): String {
+	fun resolveByDefinition(definition: ParadoxScriptDefinitionElement, frame: Int = 0, defaultToUnknown: Boolean = false): String {
 		val definitionInfo = definition.definitionInfo ?: return getDefaultUrl(defaultToUnknown)
 		try {
 			//如果无法解析为png文件地址，则返回默认的地址
@@ -72,7 +72,7 @@ object ParadoxDdsUrlResolver {
 		}
 	}
 	
-	private fun doResolveByDefinition(definition: ParadoxDefinitionProperty, frame: Int , definitionInfo: ParadoxDefinitionInfo): String? {
+	private fun doResolveByDefinition(definition: ParadoxScriptDefinitionElement, frame: Int , definitionInfo: ParadoxDefinitionInfo): String? {
 		//兼容definition不是sprite的情况
 		val (_,file,inferredFrame) = runReadAction {
 			definitionInfo.primaryImageConfigs.mapAndFirst {
@@ -87,7 +87,7 @@ object ParadoxDdsUrlResolver {
 	/**
 	 * 得到sprite定义的对应DDS文件的filePath。基于名为"textureFile"的定义属性（忽略大小写）。
 	 */
-	fun getSpriteDdsFilePath(sprite: ParadoxDefinitionProperty): String? {
+	fun getSpriteDdsFilePath(sprite: ParadoxScriptDefinitionElement): String? {
 		return sprite.findProperty("textureFile")?.findValue<ParadoxScriptString>()?.stringValue
 	}
 	

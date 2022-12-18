@@ -13,7 +13,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.navigation.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
@@ -44,7 +43,7 @@ abstract class DefinitionNameIntention : IntentionAction, PriorityAction {
 		return file.findElementAt(offset) { it.parent as? ParadoxScriptString }
 	}
 	
-	abstract fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project)
+	abstract fun doInvoke(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project)
 	
 	override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
 	
@@ -58,7 +57,7 @@ abstract class DefinitionNameIntention : IntentionAction, PriorityAction {
 class DefinitionNameFindUsagesIntention : DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.findUsages")
 	
-	override fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
+	override fun doInvoke(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
 		GotoDeclarationAction.startFindUsages(editor, project, definition)
 	}
 	
@@ -74,7 +73,7 @@ class DefinitionNameFindUsagesIntention : DefinitionNameIntention() {
 class DefinitionNameGotoImplementationsIntention: DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.gotoImplementations")
 	
-	override fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
+	override fun doInvoke(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
 		val scope = GlobalSearchScope.allScope(project)
 		val selector = definitionSelector().gameType(definitionInfo.gameType).preferRootFrom(definition)
 		val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, project, scope, selector).findAll()
@@ -94,7 +93,7 @@ class DefinitionNameGotoImplementationsIntention: DefinitionNameIntention() {
 class DefinitionNameGotoTypeDeclarationIntention : DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.gotoTypeDeclaration")
 	
-	override fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
+	override fun doInvoke(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
 		val result = SmartList<PsiElement>()
 		definitionInfo.typeConfig.pointer.element?.let { result.add(it) }
 		if(result.isEmpty()) return

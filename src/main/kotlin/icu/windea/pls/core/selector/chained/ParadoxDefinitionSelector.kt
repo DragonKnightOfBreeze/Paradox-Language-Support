@@ -1,9 +1,9 @@
 package icu.windea.pls.core.selector.chained
 
 import icu.windea.pls.core.handler.*
-import icu.windea.pls.core.psi.*
+import icu.windea.pls.script.psi.*
 
-class ParadoxDefinitionSelector: ChainedParadoxSelector<ParadoxDefinitionProperty>()
+class ParadoxDefinitionSelector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>()
 
 fun definitionSelector() = ParadoxDefinitionSelector()
 

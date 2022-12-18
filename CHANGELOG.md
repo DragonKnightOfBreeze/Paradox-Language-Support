@@ -22,10 +22,10 @@
   * [ ] 内嵌提示的预览文本中不再包括特殊注释，而是通过向psiFile中注入特定userData的方式提供必要的信息（类型、本地化等）
   * [ ] 基于引用的重命名需要考虑存在前后缀的情况（主要是为图标引用考虑）
   * [ ] 需要重新调整对返回的规则列表的排序
-  * [ ] 一些检查可以基于当前文件、文件路径（相对于游戏或模组根目录）、定义类型（例如，`event`）、定义元素路径（例如，`event.abc`）等来部分禁用
+  * [ ] 一些检查可以基于当前文件、文件路径（相对于游戏或模组根目录）、定义类型（例如，`event`）、定义成员路径（例如，`event.abc`）等来部分禁用
 * 新增功能：
   * [ ] ~~添加检查：图标属性的值引用了定义自身（`foo { icon = foo ... }`）（不觉得这有什么意义）~~
-  * [ ] ［搁置］添加内嵌提示：定义和定义元素的作用域的内嵌提示（需要研究）
+  * [ ] ［搁置］添加内嵌提示：定义和定义成员的作用域的内嵌提示（需要研究）
   * [ ] 可以通过特殊注释强制指定定义类型（基于文件路径或者基于直接的类型+子类型） - 用于实现差异比较等功能
   * [ ] 实现对`*.gui`文件中的GUI定义的UI预览（参考IDEA的Markdown插件的实现）
   * [ ] 实现对`*.txt`文件中的定义的UI预览（参考游戏中的效果以及灰机Wiki的实现）
@@ -86,7 +86,7 @@
 * 优化：
   * [X] 进行代码补全时，尽可能兼容表达式用引号括起的各种情况
   * [X] 进行代码补全时，在输入`definition_root_key = `之后，也可以应用代码补全
-  * [X] 进行代码补全时，在提供定义声明中的定义元素的补全之外，也可以提示定义声明之外的属性名（如果允许）
+  * [X] 进行代码补全时，在提供定义声明中的定义成员的补全之外，也可以提示定义声明之外的属性名（如果允许）
   * [X] 进行代码补全时，如果要基于从句内联模版进行代码补全，首先弹出对话框，让用户选择需要插入的内容
     * 需要插入的内容（属性/值）可多选，可排序，可重复（不基于CWT规则判断是否允许重复）
   * [X] 导航到相关的CWT规则时，位置也可以是定义的rootKey
@@ -136,7 +136,7 @@
   * [X] 兼容localisationCommandScope需要被识别为`value[event_target]`或者`value[global_event_target]`的情况，以及代码提示
   * [X] 兼容localisationCommandField需要被识别为`value[variable]`的情况，以及代码提示
   * [X] 修复不能为对应的CWT规则是别名（alias）的表达式（key / value）提供正确的引用读写高亮的问题（当鼠标放到表达式上时应当显示）
-  * [X] 修复无法跳转到某些定义元素对应的CWT规则的问题
+  * [X] 修复无法跳转到某些定义成员对应的CWT规则的问题
 * 功能优化：
   * [X] 对CWT别名规则（dataType=alias/single_alias）使用特殊的别名图标，以便区分内联前后的CWT规则
   * [X] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`
@@ -155,7 +155,7 @@
   * [X] 实现检查：无法解析的命令字段（unresolvedCommandField）
   * [X] 实现内嵌提示：本地化图标（渲染出选用的内嵌图标，如果对应图标的大小合适）
   * [X] 实现内嵌提示：预定义修饰符的本地化名字（`mod_$`）
-  * [X] 实现动作：导航到（对应的）CWT规则（对于定义元素，在导航菜单/右键菜单中）（作为一个更加统一的入口，包括内联前后的CWT规则，包括所有完全匹配的规则）
+  * [X] 实现动作：导航到（对应的）CWT规则（对于定义成员，在导航菜单/右键菜单中）（作为一个更加统一的入口，包括内联前后的CWT规则，包括所有完全匹配的规则）
   * [X] 在查找使用中，区分参数和值集值值的读/写使用
   * [X] 在查找使用中，区分使用的使用类型（基于读写和对应的CWT规则）（待日后完善） *
   * [X] 可设置要忽略的本地化文件的名字
@@ -249,7 +249,7 @@
   * [X] 本地化文件：仅允许在正确的位置（`string_token`）插入动态模版
   * [X] 优化代码补全性能：尽可能确保提示本地化图标和属性引用时不会导致`ProcessCanceledException`
   * [X] 可以根据扩展的CWT规则显示和设置block所对应的颜色
-  * [X] 脚本文件：可以显示类型信息以及导航到类型定义，如果可用 - 支持定义元素，显示其规则表达式以及导航到规则声明
+  * [X] 脚本文件：可以显示类型信息以及导航到类型定义，如果可用 - 支持定义成员，显示其规则表达式以及导航到规则声明
   * [X] 解析本地化颜色直接基于`textcolor`类型的定义，在`shared.cwt`中定义，移除内置规则中的`colors`
   * [X] 对于修饰符`X`，如果存在本地化`mod_X`，在文档注释中渲染对应的本地化文本
   * [X] 优化导入游戏或模组目录时弹出的对话框
@@ -313,7 +313,7 @@
   * [X] 支持值类型：`value_field`，以及相关功能：匹配、代码提示、引用解析（暂不精确匹配scope，不要求值类型（float/int）必须匹配）
   * [X] 支持值类型：`value_field`的特殊SV语法（`value:xxx|PN|PV|`）以及相关功能
   * [X] 支持在文档注释中提示alias modifier localisation_command的所有支持的作用域的名字（supported scopes）
-  * [X] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
+  * [X] 优化获取和应用定义成员（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
   * [X] 支持匹配和提示参数名（`some_effect = { PARAM = xxx }`中的`PARAM`）
   * [X] 优化：支持匹配、提示和解析参数，以及显示参数信息 （当可用时）
   * [X] 本地化文件：支持提示和解析本地化命令作用域（commandScope）
@@ -353,7 +353,7 @@
   * [X] 脚本文件：显示属性的键名
   * [X] 脚本文件：显示本地化的键名，覆盖属性的
 * [X] 支持显示上下文信息
-  * [X] 定义元素的上下文信息（如：`definitionKey = {`）
+  * [X] 定义成员的上下文信息（如：`definitionKey = {`）
   * [X] 本地化（属性）的上下文信息（如：`l_english:`）
 * [X] 完善对本地化图标的支持，尽可能保证：
   * [X] 鼠标悬浮能在文档中渲染出对应的DDS图片，或者对应的sprite定义的文档
@@ -451,7 +451,7 @@
 * [X] 进行代码提示时支持aliasName 兼容aliasSubName为为expression的情况 仅提示必要的
 * [X] 进行代码提示时支持valueName
 * [X] 提示localisationCommand（commandField）
-* [X] definitionProperty对应的规则如果是const（即相同名字的规则），则将规则对应的cwtKey/cwtValue作为它的引用
+* [X] definitionElement对应的规则如果是const（即相同名字的规则），则将规则对应的cwtKey/cwtValue作为它的引用
 * [X] 修改脚本文件的类型提示逻辑
 * [X] 图标更改
 * [X] cwt规则文件中兼容`key == value`的格式，等价于`key = value` *
@@ -467,10 +467,10 @@
 * [X] 匹配、提示和解析modifier
 * [X] 提示modifier时匹配scope
 * [X] 为modifier提供特殊的文档注释
-* [X] 编写代码准备从alias/definitionProperty/subtype推断scope和scopeMap
+* [X] 编写代码准备从alias/definitionElement/subtype推断scope和scopeMap
 * [x] 为localisation_command/modifier提供关于scope的额外文档注释（未附加psi链接）
-* [X] 为definitionProperty提供关于scope的额外文档注释（未附加psi链接）
-* [X] 为definitionProperty提供关于scope的额外文档注释（附加psi链接）
+* [X] 为definitionElement提供关于scope的额外文档注释（未附加psi链接）
+* [X] 为definitionElement提供关于scope的额外文档注释（附加psi链接）
 * [X] 支持规则类型single_alias
 * [X] 支持规则类型alias_match_left
 * [X] 提示alias时匹配scope（来自`trigger_docs.log`或`triggers.log`，需要先转化为cwt，从名为`scope`或`scopes`的option中得到）
@@ -485,8 +485,8 @@
 * [X] 应用cwt配置文件`localisation.cwt` *
 * [X] 生成本地化文本的文档注释时考虑并发解析其中的图标（不知为什么还是有点慢）
 * [X] 不要缓存CwtKvConfig的scope和scopeGroup（因为内联的原因，parent可能有变动）
-* [X] 修复当规则类型为alias_name或者引用为modifier时，无法解析definitionPropertyKey的引用的bug
-* [ ] definitionProperty本身就有对应的引用（如definition）的情况时，是否同样将规则对应的cwtKey/cwtValue作为它的引用？
+* [X] 修复当规则类型为alias_name或者引用为modifier时，无法解析definitionElementKey的引用的bug
+* [ ] definitionElement本身就有对应的引用（如definition）的情况时，是否同样将规则对应的cwtKey/cwtValue作为它的引用？
 * [ ] 基于cwt规则文件，对脚本文件的结构进行验证
 * [X] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 * [X] 适配IDEA版本`2021.2`

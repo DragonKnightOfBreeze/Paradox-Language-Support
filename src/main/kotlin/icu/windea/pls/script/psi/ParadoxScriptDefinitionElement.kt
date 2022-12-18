@@ -1,13 +1,14 @@
-package icu.windea.pls.core.psi
+package icu.windea.pls.script.psi
 
 import com.intellij.psi.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.core.psi.*
 
 /**
- * 定义的属性 - 兼容scriptFile和scriptProperty，本身可能就是定义。
+ * @see ParadoxScriptFile
+ * @see ParadoxScriptProperty
  */
-interface ParadoxDefinitionProperty : ParadoxScriptNamedElement, ParadoxPathAwareElement {
-	fun getStub(): ParadoxDefinitionPropertyStub<out ParadoxDefinitionProperty>?
+interface ParadoxScriptDefinitionElement : ParadoxScriptNamedElement, ParadoxScriptMemberElement {
+	fun getStub(): ParadoxScriptDefinitionElementStub<out ParadoxScriptDefinitionElement>?
 	
 	override fun getName(): String
 	
@@ -32,5 +33,3 @@ interface ParadoxDefinitionProperty : ParadoxScriptNamedElement, ParadoxPathAwar
 	
 	val parameterMap: Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>> get() = emptyMap()
 }
-
-interface ParadoxPathAwareElement: PsiElement, NavigatablePsiElement

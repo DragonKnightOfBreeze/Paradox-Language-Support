@@ -294,11 +294,11 @@ val PsiFile.fileInfo: ParadoxFileInfo?
 val PsiElement.fileInfo: ParadoxFileInfo?
 	get() = this.containingFile?.fileInfo
 
-val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo?
+val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
 	get() = ParadoxDefinitionHandler.getInfo(this)
 
-val PsiElement.definitionElementInfo: ParadoxDefinitionElementInfo?
-	get() = ParadoxDefinitionElementHandler.getInfo(this)
+val PsiElement.definitionMemberInfo: ParadoxDefinitionMemberInfo?
+	get() = ParadoxDefinitionMemberHandler.getInfo(this)
 
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
 	get() = ParadoxLocalisationHandler.getInfo(this)
@@ -535,7 +535,7 @@ private fun resolveCwtLink(linkWithoutPrefix: String, sourceElement: PsiElement)
 	}
 }
 
-private fun resolveDefinitionLink(linkWithoutPrefix: String, sourceElement: PsiElement): ParadoxDefinitionProperty? {
+private fun resolveDefinitionLink(linkWithoutPrefix: String, sourceElement: PsiElement): ParadoxScriptDefinitionElement? {
 	ProgressManager.checkCanceled()
 	val tokens = linkWithoutPrefix.split('/')
 	if(tokens.size > 3) return null

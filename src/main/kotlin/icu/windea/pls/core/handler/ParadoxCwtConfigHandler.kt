@@ -43,11 +43,11 @@ object ParadoxCwtConfigHandler {
 					element is ParadoxScriptPropertyKey -> element.propertyValue
 					else -> throw UnsupportedOperationException()
 				}
-				val definitionElementInfo = ParadoxDefinitionElementHandler.getInfo(element) ?: return emptyList()
-				if(!allowDefinitionSelf && definitionElementInfo.elementPath.isEmpty()) return emptyList()
+				val definitionMemberInfo = ParadoxDefinitionMemberHandler.getInfo(element) ?: return emptyList()
+				if(!allowDefinitionSelf && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
 				//如果无法匹配value，则取第一个
-				val configs = definitionElementInfo.getConfigs(matchType)
-				val configGroup = definitionElementInfo.configGroup
+				val configs = definitionMemberInfo.getConfigs(matchType)
+				val configGroup = definitionMemberInfo.configGroup
 				buildList {
 					for(config in configs) {
 						val propertyConfig = config as? CwtPropertyConfig ?: continue
@@ -77,10 +77,10 @@ object ParadoxCwtConfigHandler {
 					//如果value是property的value
 					is ParadoxScriptProperty -> {
 						val property = parent
-						val definitionElementInfo = property.definitionElementInfo ?: return emptyList()
-						if(!allowDefinitionSelf && definitionElementInfo.elementPath.isEmpty()) return emptyList()
-						val configs = definitionElementInfo.getConfigs(matchType)
-						val configGroup = definitionElementInfo.configGroup
+						val definitionMemberInfo = property.definitionMemberInfo ?: return emptyList()
+						if(!allowDefinitionSelf && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
+						val configs = definitionMemberInfo.getConfigs(matchType)
+						val configGroup = definitionMemberInfo.configGroup
 						buildList {
 							for(config in configs) {
 								val propertyConfig = config as? CwtPropertyConfig ?: continue
@@ -97,11 +97,11 @@ object ParadoxCwtConfigHandler {
 					}
 					//如果value是blockElement中的value
 					is ParadoxScriptBlockElement -> {
-						val property = parent.parent as? ParadoxDefinitionProperty ?: return emptyList()
-						val definitionElementInfo = property.definitionElementInfo ?: return emptyList()
-						val childValueConfigs = definitionElementInfo.getChildValueConfigs()
+						val property = parent.parent as? ParadoxScriptDefinitionElement ?: return emptyList()
+						val definitionMemberInfo = property.definitionMemberInfo ?: return emptyList()
+						val childValueConfigs = definitionMemberInfo.getChildValueConfigs()
 						if(childValueConfigs.isEmpty()) return emptyList()
-						val configGroup = definitionElementInfo.configGroup
+						val configGroup = definitionMemberInfo.configGroup
 						buildList {
 							for(childValueConfig in childValueConfigs) {
 								val expression = ParadoxDataExpression.resolve(element)

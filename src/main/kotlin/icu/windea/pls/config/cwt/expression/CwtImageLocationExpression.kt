@@ -9,7 +9,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveValueConfigs
 import icu.windea.pls.core.model.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.script.psi.*
@@ -75,7 +74,7 @@ class CwtImageLocationExpression(
 	
 	//(key, file(s), frame)
 	
-	fun resolve(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, project: Project, frame: Int = 0): Tuple3<String, PsiFile?, Int>? {
+	fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, project: Project, frame: Int = 0): Tuple3<String, PsiFile?, Int>? {
 		if(placeholder != null) {
 			//如果定义是匿名的，则直接忽略
 			if(definitionInfo.isAnonymous) return null
@@ -111,7 +110,7 @@ class CwtImageLocationExpression(
 					return tupleOf(filePath, file, frameToUse)
 				}
 				//由filePath解析为definition，这里也可能是sprite之外的definition
-				resolved is ParadoxDefinitionProperty -> {
+				resolved is ParadoxScriptDefinitionElement -> {
 					val resolvedProject = resolved.project
 					val resolvedDefinition = resolved
 					val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
@@ -129,7 +128,7 @@ class CwtImageLocationExpression(
 		}
 	}
 	
-	fun resolveAll(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, project: Project, frame: Int = 0): Tuple3<String, Set<PsiFile>, Int>? {
+	fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, project: Project, frame: Int = 0): Tuple3<String, Set<PsiFile>, Int>? {
 		if(placeholder != null) {
 			//假定这里的filePath以.dds结尾
 			val filePath = buildString { for(c in placeholder) if(c == '$') append(definitionInfo.name) else append(c) }
@@ -161,7 +160,7 @@ class CwtImageLocationExpression(
 					return tupleOf(filePath, files, frameToUse)
 				}
 				//由filePath解析为definition，这里也可能是sprite之外的definition
-				resolved is ParadoxDefinitionProperty -> {
+				resolved is ParadoxScriptDefinitionElement -> {
 					val resolvedProject = resolved.project
 					val resolvedDefinition = resolved
 					val resolvedDefinitionInfo = resolved.definitionInfo ?: return null

@@ -21,7 +21,7 @@ class ParadoxTypeDeclarationProvider : TypeDeclarationProvider {
 	 * * 对应的预定义的CWT值集规则
 	 */
 	override fun getSymbolTypeDeclarations(symbol: PsiElement): Array<PsiElement>? {
-		//注意这里的symbol是解析引用后得到的PSI元素，因此无法定位到定义元素对应的规则声明
+		//注意这里的symbol是解析引用后得到的PSI元素，因此无法定位到定义成员对应的规则声明
 		when {
 			symbol is ParadoxScriptProperty -> {
 				val definitionInfo = symbol.definitionInfo

@@ -7,7 +7,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 定义元素的上下文信息（如：`definitionKey = {`）。
+ * 定义成员的上下文信息（如：`definitionKey = {`）。
  */
 class ParadoxDefinitionDeclarationRangeHandler :DeclarationRangeHandler<ParadoxScriptProperty>{
 	override fun getDeclarationRange(container: ParadoxScriptProperty): TextRange? {

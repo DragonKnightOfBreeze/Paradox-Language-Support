@@ -79,7 +79,7 @@ object ParadoxLocalisationTextRenderer {
 		val resolved = element.reference?.resolve() 
 		val iconFrame = element.frame
 		val iconUrl = when {
-			resolved is ParadoxDefinitionProperty -> ParadoxDdsUrlResolver.resolveByDefinition(resolved, iconFrame, defaultToUnknown = true)
+			resolved is ParadoxScriptDefinitionElement -> ParadoxDdsUrlResolver.resolveByDefinition(resolved, iconFrame, defaultToUnknown = true)
 			resolved is PsiFile -> ParadoxDdsUrlResolver.resolveByFile(resolved.virtualFile, iconFrame, defaultToUnknown = true)
 			else -> DdsToPngConverter.getUnknownPngPath()
 		}

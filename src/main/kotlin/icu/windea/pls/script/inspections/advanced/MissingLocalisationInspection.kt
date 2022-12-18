@@ -19,9 +19,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.model.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.quickfix.*
-import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.script.psi.*
@@ -79,7 +77,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			visitDefinition(property, definitionInfo)
 		}
 		
-		private fun visitDefinition(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo) {
+		private fun visitDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
 			val project = definitionInfo.project
 			val localisationInfos = definitionInfo.localisation
 			if(localisationInfos.isEmpty()) return
@@ -274,7 +272,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 	
 	//private class GenerateMissingLocalisationFix(
 	//	private val keys: Set<String>,
-	//	element: ParadoxDefinitionProperty
+	//	element: ParadoxScriptDefinitionElement
 	//): LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction{
 	//	override fun getText() = PlsBundle.message("script.inspection.definition.inspection.missingRelatedLocalisation.quickfix.1")
 	//	

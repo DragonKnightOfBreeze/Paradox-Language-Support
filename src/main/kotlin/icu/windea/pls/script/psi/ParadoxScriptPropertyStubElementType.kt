@@ -5,7 +5,6 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
@@ -41,7 +40,7 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
 		//仅当是definition时才会创建stub
-		val element = node.psi as? ParadoxDefinitionProperty ?: return false
+		val element = node.psi as? ParadoxScriptDefinitionElement ?: return false
 		return element.definitionInfo?.takeIf { it.shouldIndex } != null
 	}
 	

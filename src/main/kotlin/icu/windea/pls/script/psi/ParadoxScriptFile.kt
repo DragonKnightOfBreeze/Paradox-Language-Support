@@ -5,14 +5,13 @@ import com.intellij.navigation.*
 import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.navigation.*
 import javax.swing.*
 
 class ParadoxScriptFile(
 	viewProvider: FileViewProvider
-) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxDefinitionProperty, ParadoxScriptExpressionContextElement {
+) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxScriptDefinitionElement, ParadoxScriptExpressionContextElement {
 	override val pathName get() = name.let { name -> name.substringBeforeLast(".", name) }
 	
 	override val originalPathName get() = name.let { name -> name.substringBeforeLast(".", name) }

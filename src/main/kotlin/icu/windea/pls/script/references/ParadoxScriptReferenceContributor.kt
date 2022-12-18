@@ -2,7 +2,6 @@ package icu.windea.pls.script.references
 
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.*
-import com.intellij.usages.impl.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptReferenceContributor : PsiReferenceContributor() {

@@ -7,9 +7,9 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 定义的实现的查询。加入所有作用域内的同名定义。
@@ -20,7 +20,7 @@ class ParadoxDefinitionImplementationsSearch : QueryExecutor<PsiElement, Definit
 	override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
 		//得到解析后的PSI元素
 		val sourceElement = queryParameters.element
-		if(sourceElement !is ParadoxDefinitionProperty) return true
+		if(sourceElement !is ParadoxScriptDefinitionElement) return true
 		val definitionInfo = runReadAction { sourceElement.definitionInfo }
 		if(definitionInfo == null) return true
 		val name = definitionInfo.name

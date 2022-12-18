@@ -4,13 +4,12 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 
 object ParadoxScriptIntroducer {
 	/**
 	 * 在所属定义之前另起一行（跳过注释和空白），声明指定名字和值的封装变量。
 	 */
-	fun introduceLocalScriptedVariable(name: String, value: String, parentDefinitionOrFile: ParadoxDefinitionProperty, project: Project): ParadoxScriptScriptedVariable {
+	fun introduceLocalScriptedVariable(name: String, value: String, parentDefinitionOrFile: ParadoxScriptDefinitionElement, project: Project): ParadoxScriptScriptedVariable {
 		val (parent, anchor) = parentDefinitionOrFile.findParentAndAnchorToIntroduceLocalScriptedVariable()
 		var newVariable = ParadoxScriptElementFactory.createVariable(project, name, value)
 		val newLine = ParadoxScriptElementFactory.createLine(project)
@@ -19,7 +18,7 @@ object ParadoxScriptIntroducer {
 		return newVariable
 	}
 	
-	private fun ParadoxDefinitionProperty.findParentAndAnchorToIntroduceLocalScriptedVariable(): Pair<PsiElement, PsiElement?> {
+	private fun ParadoxScriptDefinitionElement.findParentAndAnchorToIntroduceLocalScriptedVariable(): Pair<PsiElement, PsiElement?> {
 		if(this is ParadoxScriptFile) {
 			val anchor = this.findChildOfType<ParadoxScriptScriptedVariable>(forward = false)
 				?: return this to this.lastChild

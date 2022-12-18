@@ -460,12 +460,12 @@ object CwtConfigHandler {
 	//endregion
 	
 	//region Complete Methods
-	fun addRootKeyCompletions(propertyElement: ParadoxDefinitionProperty, context: ProcessingContext, result: CompletionResultSet) {
+	fun addRootKeyCompletions(definitionElement: ParadoxScriptDefinitionElement, context: ProcessingContext, result: CompletionResultSet) {
 		val originalFile = context.originalFile
 		val project = originalFile.project
 		val gameType = selectGameType(originalFile) ?: return
 		val configGroup = getCwtConfig(project).getValue(gameType)
-		val elementPath = ParadoxElementPathHandler.resolveFromFile(propertyElement, PlsConstants.maxDefinitionDepth) ?: return
+		val elementPath = ParadoxElementPathHandler.resolveFromFile(definitionElement, PlsConstants.maxDefinitionDepth) ?: return
 		
 		context.put(PlsCompletionKeys.isKeyKey, true)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
@@ -473,24 +473,24 @@ object CwtConfigHandler {
 		completeRootKey(context, result, elementPath)
 	}
 	
-	fun addKeyCompletions(propertyElement: ParadoxDefinitionProperty, context: ProcessingContext, result: CompletionResultSet) {
-		val definitionElementInfo = propertyElement.definitionElementInfo
-		if(definitionElementInfo == null || definitionElementInfo.elementPath.isEmpty()) {
+	fun addKeyCompletions(definitionElement: ParadoxScriptDefinitionElement, context: ProcessingContext, result: CompletionResultSet) {
+		val definitionMemberInfo = definitionElement.definitionMemberInfo
+		if(definitionMemberInfo == null || definitionMemberInfo.elementPath.isEmpty()) {
 			//仅提示不在定义声明中的rootKey
-			addRootKeyCompletions(propertyElement, context, result)
+			addRootKeyCompletions(definitionElement, context, result)
 		}
-		if(definitionElementInfo == null) return
-		val configGroup = definitionElementInfo.configGroup
-		val configs = definitionElementInfo.getChildPropertyConfigs()
+		if(definitionMemberInfo == null) return
+		val configGroup = definitionMemberInfo.configGroup
+		val configs = definitionMemberInfo.getChildPropertyConfigs()
 		if(configs.isEmpty()) return
 		
 		context.put(PlsCompletionKeys.isKeyKey, true)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
 		
-		val scope = definitionElementInfo.scope
+		val scope = definitionMemberInfo.scope
 		configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
 			for(config in configsWithSameKey) {
-				if(shouldComplete(config, definitionElementInfo)) {
+				if(shouldComplete(config, definitionMemberInfo)) {
 					context.put(PlsCompletionKeys.configKey, config)
 					context.put(PlsCompletionKeys.configsKey, configsWithSameKey)
 					completeScriptExpression(context, result, scope)
@@ -503,17 +503,17 @@ object CwtConfigHandler {
 		return
 	}
 	
-	fun addValueCompletions(propertyElement: ParadoxDefinitionProperty, context: ProcessingContext, result: CompletionResultSet) {
-		val definitionElementInfo = propertyElement.definitionElementInfo
-		if(definitionElementInfo == null) return
-		val configGroup = definitionElementInfo.configGroup
-		val configs = definitionElementInfo.getConfigs()
+	fun addValueCompletions(definitionElement: ParadoxScriptDefinitionElement, context: ProcessingContext, result: CompletionResultSet) {
+		val definitionMemberInfo = definitionElement.definitionMemberInfo
+		if(definitionMemberInfo == null) return
+		val configGroup = definitionMemberInfo.configGroup
+		val configs = definitionMemberInfo.getConfigs()
 		if(configs.isEmpty()) return
 		
 		context.put(PlsCompletionKeys.isKeyKey, false)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
 		
-		val scope = definitionElementInfo.scope
+		val scope = definitionMemberInfo.scope
 		for(config in configs) {
 			if(config is CwtPropertyConfig) {
 				context.put(PlsCompletionKeys.configKey, config.valueConfig)
@@ -526,18 +526,18 @@ object CwtConfigHandler {
 	}
 	
 	fun addValueCompletionsInBlock(blockElement: ParadoxScriptBlockElement, context: ProcessingContext, result: CompletionResultSet) {
-		val definitionElementInfo = blockElement.definitionElementInfo
-		if(definitionElementInfo == null) return
-		val configGroup = definitionElementInfo.configGroup
-		val configs = definitionElementInfo.getChildValueConfigs()
+		val definitionMemberInfo = blockElement.definitionMemberInfo
+		if(definitionMemberInfo == null) return
+		val configGroup = definitionMemberInfo.configGroup
+		val configs = definitionMemberInfo.getChildValueConfigs()
 		if(configs.isEmpty()) return
 		
 		context.put(PlsCompletionKeys.isKeyKey, false)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
 		
-		val scope = definitionElementInfo.scope
+		val scope = definitionMemberInfo.scope
 		for(config in configs) {
-			if(shouldComplete(config, definitionElementInfo)) {
+			if(shouldComplete(config, definitionMemberInfo)) {
 				context.put(PlsCompletionKeys.configKey, config)
 				completeScriptExpression(context, result, scope)
 			}
@@ -547,11 +547,11 @@ object CwtConfigHandler {
 		return
 	}
 	
-	private fun shouldComplete(config: CwtPropertyConfig, definitionElementInfo: ParadoxDefinitionElementInfo): Boolean {
+	private fun shouldComplete(config: CwtPropertyConfig, definitionMemberInfo: ParadoxDefinitionMemberInfo): Boolean {
 		val expression = config.keyExpression
 		//如果类型是aliasName，则无论cardinality如何定义，都应该提供补全（某些cwt规则文件未正确编写）
 		if(expression.type == CwtDataTypes.AliasName) return true
-		val actualCount = definitionElementInfo.childPropertyOccurrenceMap[expression]?.actual ?: 0
+		val actualCount = definitionMemberInfo.childPropertyOccurrenceMap[expression]?.actual ?: 0
 		//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
 		val cardinality = config.cardinality
 		val maxCount = when {
@@ -561,9 +561,9 @@ object CwtConfigHandler {
 		return maxCount == null || actualCount < maxCount
 	}
 	
-	private fun shouldComplete(config: CwtValueConfig, definitionElementInfo: ParadoxDefinitionElementInfo): Boolean {
+	private fun shouldComplete(config: CwtValueConfig, definitionMemberInfo: ParadoxDefinitionMemberInfo): Boolean {
 		val expression = config.valueExpression
-		val actualCount = definitionElementInfo.childValueOccurrenceMap[expression]?.actual ?: 0
+		val actualCount = definitionMemberInfo.childValueOccurrenceMap[expression]?.actual ?: 0
 		//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
 		val cardinality = config.cardinality
 		val maxCount = when {

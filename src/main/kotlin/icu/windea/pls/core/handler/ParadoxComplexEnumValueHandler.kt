@@ -52,7 +52,7 @@ object ParadoxComplexEnumValueHandler {
 		return doResolve(element, path, configGroup)
 	}
 	
-	private fun resolveByStub(element: ParadoxScriptStringExpressionElement, stub: ParadoxScriptExpressionElementStub<*>): ParadoxComplexEnumValueInfo? {
+	private fun resolveByStub(element: ParadoxScriptStringExpressionElement, stub: ParadoxScriptStringExpressionElementStub<*>): ParadoxComplexEnumValueInfo? {
 		return stub.complexEnumValueInfo
 	}
 	

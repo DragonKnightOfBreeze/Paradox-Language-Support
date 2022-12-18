@@ -39,22 +39,22 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 		val mayBeBlockValue = element is ParadoxScriptString && element.isBlockValue()
 		
 		if(mayBePropertyKey) {
-			//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
-			val definitionProperty = element.findParentProperty(fromParentBlock = true) ?: return
+			//得到上一级definitionElement（跳过可能正在填写的definitionElement）
+			val definitionElement = element.findParentProperty(fromParentBlock = true) ?: return
 			//进行提示
-			CwtConfigHandler.addKeyCompletions(definitionProperty, context, resultToUse)
+			CwtConfigHandler.addKeyCompletions(definitionElement, context, resultToUse)
 		}
 		if(mayBePropertyValue) {
-			//得到原始文件中上一级definitionProperty
-			val definitionProperty = element.findParentProperty() ?: return
+			//得到原始文件中上一级definitionElement
+			val definition = element.findParentProperty() ?: return
 			//这里需要特殊处理一下，标记属性的值是否未填写
 			val incomplete = !quoted && keyword.isEmpty()
 			try {
-				definitionProperty.putUserData(PlsKeys.incompleteMarkerKey, incomplete)
+				definition.putUserData(PlsKeys.incompleteMarkerKey, incomplete)
 				//进行提示
-				CwtConfigHandler.addValueCompletions(definitionProperty, context, resultToUse)
+				CwtConfigHandler.addValueCompletions(definition, context, resultToUse)
 			} finally {
-				definitionProperty.putUserData(PlsKeys.incompleteMarkerKey, null)
+				definition.putUserData(PlsKeys.incompleteMarkerKey, null)
 			}
 		}
 		if(mayBeBlockValue) {

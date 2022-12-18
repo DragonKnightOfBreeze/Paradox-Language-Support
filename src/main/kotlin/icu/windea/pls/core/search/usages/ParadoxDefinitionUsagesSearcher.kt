@@ -6,7 +6,7 @@ import com.intellij.psi.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 定义的使用的查询。
@@ -20,7 +20,7 @@ import icu.windea.pls.core.psi.*
 class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
 	override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
 		val target = queryParameters.elementToSearch
-		if(target !is ParadoxDefinitionProperty) return
+		if(target !is ParadoxScriptDefinitionElement) return
 		val definitionInfo = runReadAction {  target.definitionInfo }
 		if(definitionInfo == null) return
 		val name = definitionInfo.name

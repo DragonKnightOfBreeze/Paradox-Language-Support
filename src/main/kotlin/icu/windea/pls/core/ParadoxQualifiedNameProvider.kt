@@ -11,9 +11,9 @@ import icu.windea.pls.script.psi.*
 /**
  * * 如果是封装变量名：返回封装变量的名字
  * * 如果是定义：返回定义的名字
- * * 如果是定义元素：返回定义元素的路径（保留括起的双引号）
+ * * 如果是定义成员：返回定义成员的路径（保留括起的双引号）
  * * 如果是本地化：返回本地化的键名
- * * 忽略非定义、非定义元素的脚本属性，以及非本地化的本地化属性
+ * * 忽略非定义、非定义成员的脚本属性，以及非本地化的本地化属性
  */
 class ParadoxQualifiedNameProvider : QualifiedNameProvider {
 	override fun adjustElementToCopy(element: PsiElement): PsiElement? {
@@ -26,8 +26,8 @@ class ParadoxQualifiedNameProvider : QualifiedNameProvider {
 			element is ParadoxScriptProperty -> {
 				val definitionInfo = element.definitionInfo
 				if(definitionInfo != null) return definitionInfo.name
-				val definitionElementInfo = element.definitionElementInfo
-				if(definitionElementInfo != null) return definitionElementInfo.elementPath.toString()
+				val definitionMemberInfo = element.definitionMemberInfo
+				if(definitionMemberInfo != null) return definitionMemberInfo.elementPath.toString()
 				return element.name
 			}
 			element is ParadoxScriptPropertyKey -> return getQualifiedName(element.parent)

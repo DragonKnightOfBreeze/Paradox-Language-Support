@@ -1,9 +1,9 @@
-package icu.windea.pls.core.psi
+package icu.windea.pls.script.psi
 
 import com.intellij.psi.stubs.*
 import icu.windea.pls.core.model.*
 
-interface ParadoxDefinitionPropertyStub<T : ParadoxDefinitionProperty> : StubElement<T> {
+interface ParadoxScriptDefinitionElementStub<T : ParadoxScriptDefinitionElement> : StubElement<T> {
 	val name: String?
 	val type: String?
 	val subtypes: List<String>?

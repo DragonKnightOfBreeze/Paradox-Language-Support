@@ -5,7 +5,6 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 import kotlin.Comparator
@@ -18,7 +17,7 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
 			?: ParadoxMagicCommentHandler.resolveFilePathComment(from)?.first
 		from is ParadoxScriptScriptedVariable -> runCatching { from.stub }.getOrNull()?.gameType
 			?: selectGameType(from.parent)
-		from is ParadoxDefinitionProperty -> runCatching { from.getStub() }.getOrNull()?.gameType
+		from is ParadoxScriptDefinitionElement -> runCatching { from.getStub() }.getOrNull()?.gameType
 			?: from.definitionInfo?.gameType
 			?: ParadoxMagicCommentHandler.resolveDefinitionTypeComment(from)?.first //这个如果合法的话会被上一个选择逻辑覆盖
 			?: selectGameType(from.parent)

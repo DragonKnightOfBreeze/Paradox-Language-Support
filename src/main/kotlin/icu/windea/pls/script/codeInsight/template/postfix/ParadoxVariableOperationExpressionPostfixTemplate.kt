@@ -30,9 +30,9 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
 		val stringElement = context.parent?.castOrNull<ParadoxScriptValue>() ?: return emptyList()
 		if(!stringElement.isBlockValue()) return emptyList()
 		val parentProperty = stringElement.findParentProperty() ?: return emptyList()
-		val definitionElementInfo = ParadoxDefinitionElementHandler.getInfo(parentProperty) ?: return emptyList()
-		val configGroup = definitionElementInfo.configGroup
-		val childPropertyConfigs = definitionElementInfo.getChildPropertyConfigs()
+		val definitionMemberInfo = parentProperty.definitionMemberInfo ?: return emptyList()
+		val configGroup = definitionMemberInfo.configGroup
+		val childPropertyConfigs = definitionMemberInfo.getChildPropertyConfigs()
 		val expression = ParadoxDataExpression.resolve(setting.id, false, true)
 		val config = childPropertyConfigs.find { CwtConfigHandler.matchesScriptExpression(expression, it.keyExpression, configGroup) }
 		if(config == null) return emptyList()

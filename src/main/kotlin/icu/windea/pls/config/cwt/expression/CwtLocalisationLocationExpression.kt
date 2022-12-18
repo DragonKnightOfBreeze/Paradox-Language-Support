@@ -4,7 +4,6 @@ import com.google.common.cache.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -51,7 +50,7 @@ class CwtLocalisationLocationExpression(
 	
 	//(localisationKey - localisation(s))
 	
-	fun resolve(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, project: Project, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): Pair<String, ParadoxLocalisationProperty?>? {
+	fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, project: Project, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): Pair<String, ParadoxLocalisationProperty?>? {
 		if(placeholder != null) {
 			//如果定义是匿名的，则直接忽略
 			if(definitionInfo.isAnonymous) return null
@@ -69,7 +68,7 @@ class CwtLocalisationLocationExpression(
 		}
 	}
 	
-	fun resolveAll(definitionName: String, definition: ParadoxDefinitionProperty, project: Project, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): Pair<String, Set<ParadoxLocalisationProperty>>? {
+	fun resolveAll(definitionName: String, definition: ParadoxScriptDefinitionElement, project: Project, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): Pair<String, Set<ParadoxLocalisationProperty>>? {
 		if(placeholder != null) {
 			val key = resolvePlaceholder(definitionName)!!
 			val localisations = findLocalisations(key, project, selector = selector)

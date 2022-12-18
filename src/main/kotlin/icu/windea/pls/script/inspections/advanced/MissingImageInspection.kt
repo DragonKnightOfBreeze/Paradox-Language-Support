@@ -9,7 +9,6 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -48,7 +47,7 @@ class MissingImageInspection : LocalInspectionTool() {
 			visitDefinition(property, definitionInfo)
 		}
 		
-		private fun visitDefinition(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo) {
+		private fun visitDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
 			val project = definitionInfo.project
 			val imageInfos = definitionInfo.images
 			if(imageInfos.isEmpty()) return

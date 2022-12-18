@@ -44,13 +44,13 @@ class MissingExpressionInspection : LocalInspectionTool() {
 			}
 			
 			private fun doVisitBlockElement(block: ParadoxScriptBlockElement, position: PsiElement) {
-				val definitionElementInfo = block.definitionElementInfo
-				if(definitionElementInfo == null) return
-				definitionElementInfo.childPropertyOccurrenceMap.takeIf { it.isNotEmpty() }
+				val definitionMemberInfo = block.definitionMemberInfo
+				if(definitionMemberInfo == null) return
+				definitionMemberInfo.childPropertyOccurrenceMap.takeIf { it.isNotEmpty() }
 					?.forEach { (configExpression, occurrence) ->
 						doCheckOccurrence(occurrence, configExpression, position)
 					}
-				definitionElementInfo.childValueOccurrenceMap.takeIf { it.isNotEmpty() }
+				definitionMemberInfo.childValueOccurrenceMap.takeIf { it.isNotEmpty() }
 					?.forEach { (configExpression, occurrence) ->
 						doCheckOccurrence(occurrence, configExpression, position)
 					}

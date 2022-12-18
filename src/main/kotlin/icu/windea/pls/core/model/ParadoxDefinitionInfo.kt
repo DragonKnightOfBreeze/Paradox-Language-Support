@@ -9,7 +9,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.ParadoxDefinitionInfo.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -26,7 +25,7 @@ class ParadoxDefinitionInfo(
 	val typeConfig: CwtTypeConfig,
 	val gameType: ParadoxGameType,
 	val configGroup: CwtConfigGroup,
-	element: ParadoxDefinitionProperty, //直接传入element
+	element: ParadoxScriptDefinitionElement, //直接传入element
 ) {
 	enum class SourceType { Default, Stub, PathComment, TypeComment }
 	
@@ -114,7 +113,7 @@ class ParadoxDefinitionInfo(
 	
 	val project get() = configGroup.project
 	
-	fun resolvePrimaryLocalisation(element: ParadoxDefinitionProperty): ParadoxLocalisationProperty? {
+	fun resolvePrimaryLocalisation(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
 		if(primaryLocalisationConfigs.isEmpty()) return null //没有或者CWT规则不完善
 		return runReadAction {
 			for(primaryLocalisationConfig in primaryLocalisationConfigs) {

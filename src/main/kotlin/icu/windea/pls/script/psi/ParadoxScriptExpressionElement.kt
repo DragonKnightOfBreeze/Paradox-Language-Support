@@ -7,4 +7,4 @@ import icu.windea.pls.core.psi.*
  * @see ParadoxScriptPropertyKey
  * @see ParadoxScriptValue
  */
-interface ParadoxScriptExpressionElement: ParadoxTypedElement, PsiLiteralValue
+interface ParadoxScriptExpressionElement: ParadoxTypedElement, PsiLiteralValue, NavigatablePsiElement

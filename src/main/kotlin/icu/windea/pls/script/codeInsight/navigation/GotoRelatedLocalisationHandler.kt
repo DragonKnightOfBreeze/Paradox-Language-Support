@@ -60,12 +60,12 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
 	}
 	
 	override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-		val definitionName = sourceElement.castOrNull<ParadoxDefinitionProperty>()?.definitionInfo?.name ?: PlsConstants.unknownString
+		val definitionName = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo?.name ?: PlsConstants.unknownString
 		return PlsBundle.message("script.goto.relatedLocalisation.chooseTitle", definitionName.escapeXml())
 	}
 	
 	override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-		val definitionName = sourceElement.castOrNull<ParadoxDefinitionProperty>()?.definitionInfo?.name ?: PlsConstants.unknownString
+		val definitionName = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo?.name ?: PlsConstants.unknownString
 		return PlsBundle.message("script.goto.relatedLocalisation.findUsagesTitle", definitionName)
 	}
 	

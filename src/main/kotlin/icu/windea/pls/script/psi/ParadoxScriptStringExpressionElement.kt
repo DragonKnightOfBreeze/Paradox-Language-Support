@@ -7,7 +7,7 @@ import com.intellij.psi.*
  * @see ParadoxScriptString 
  */
 interface ParadoxScriptStringExpressionElement: ParadoxScriptExpressionElement, ContributedReferenceHost, NavigatablePsiElement {
-	val stub: ParadoxScriptExpressionElementStub<*>?
+	val stub: ParadoxScriptStringExpressionElementStub<*>?
 	
 	override fun getValue(): String
 	

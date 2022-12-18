@@ -1,7 +1,5 @@
 package icu.windea.pls.script.psi
 
-import icu.windea.pls.core.psi.*
-
-interface ParadoxScriptFileStub : ParadoxDefinitionPropertyStub<ParadoxScriptFile> {
+interface ParadoxScriptFileStub : ParadoxScriptDefinitionElementStub<ParadoxScriptFile> {
 	override val rootKey: String? get() = null
 }

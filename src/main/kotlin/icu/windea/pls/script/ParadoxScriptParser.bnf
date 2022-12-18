@@ -67,7 +67,7 @@ property ::= property_key property_separator property_value {
     "icu.windea.pls.script.psi.ParadoxScriptExpressionContextElement"
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
     "icu.windea.pls.core.psi.ParadoxTypedElement"
-    "icu.windea.pls.core.psi.ParadoxDefinitionProperty"
+    "icu.windea.pls.script.psi.ParadoxScriptDefinitionElement"
   ]
   methods=[
     property_key="property_key" property_value="value"
@@ -97,7 +97,7 @@ private property_value ::= scripted_variable_reference | boolean | int | float |
 value ::= scripted_variable_reference | boolean | int | float | color | block | inline_math {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
-    "icu.windea.pls.core.psi.ParadoxPathAwareElement"
+    "icu.windea.pls.script.psi.ParadoxScriptMemberElement"
   ]
   methods=[
     getIcon getValue

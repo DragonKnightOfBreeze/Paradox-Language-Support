@@ -38,7 +38,7 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	
 	private fun resolveScope(): String? {
 		//option的名字可能是：replace_scope/replace_scopes/push_scope
-		//对应的option可能位于：alias规则定义上，上一级definitionProperty规则定义上，definition规则定义上，subtype规则定义上
+		//对应的option可能位于：alias规则定义上，上一级definitionElement规则定义上，definition规则定义上，subtype规则定义上
 		var current: CwtDataConfig<*>? = this
 		while(current != null) {
 			val scope = doResolveScope(current)
@@ -58,7 +58,7 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	
 	private fun resolveScopeMap(): MutableMap<String, String> {
 		//option的名字可能是：replace_scope/replace_scopes/push_scope
-		//对应的option可能位于：alias规则定义上，上一级definitionProperty规则定义上，definition规则定义上，subtype规则定义上
+		//对应的option可能位于：alias规则定义上，上一级definitionElement规则定义上，definition规则定义上，subtype规则定义上
 		val result: MutableMap<String, String> = mutableMapOf()
 		var current: CwtDataConfig<*>? = this
 		while(current != null) {

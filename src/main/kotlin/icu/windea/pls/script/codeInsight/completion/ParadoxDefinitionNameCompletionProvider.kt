@@ -24,7 +24,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 		val file = parameters.originalFile
 		val project = file.project
 		
-		fun doAddCompletions(type: String, config: CwtPropertyConfig, isKey: Boolean?, currentDefinition: ParadoxDefinitionProperty?) {
+		fun doAddCompletions(type: String, config: CwtPropertyConfig, isKey: Boolean?, currentDefinition: ParadoxScriptDefinitionElement?) {
 			context.put(PlsCompletionKeys.configKey, config)
 			context.put(PlsCompletionKeys.isKeyKey, isKey)
 			context.put(PlsCompletionKeys.contextElementKey, element)
@@ -94,7 +94,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 		}
 	}
 	
-	private fun processDefinition(context: ProcessingContext, result: CompletionResultSet, definition: ParadoxDefinitionProperty): Boolean {
+	private fun processDefinition(context: ProcessingContext, result: CompletionResultSet, definition: ParadoxScriptDefinitionElement): Boolean {
 		val typeFile = definition.containingFile
 		val icon = PlsIcons.Definition
 		val definitionInfo = definition.definitionInfo ?: return true

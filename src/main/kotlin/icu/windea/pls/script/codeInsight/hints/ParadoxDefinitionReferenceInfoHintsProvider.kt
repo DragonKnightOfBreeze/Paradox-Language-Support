@@ -63,7 +63,7 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<N
 			}
 			else -> return true
 		}
-		if(resolved is ParadoxDefinitionProperty) {
+		if(resolved is ParadoxScriptDefinitionElement) {
 			val definitionInfo = resolved.definitionInfo
 			if(definitionInfo != null) {
 				val presentation = collectDefinition(definitionInfo)

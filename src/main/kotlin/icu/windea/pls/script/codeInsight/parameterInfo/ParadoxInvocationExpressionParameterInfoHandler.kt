@@ -26,7 +26,7 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
 			.parents(false)
 			.filterIsInstance<ParadoxScriptProperty>()
 			.find { prop ->
-				prop.definitionElementInfo
+				prop.definitionMemberInfo
 					?.takeUnless { it.isDefinition }
 					?.getConfigs()
 					?.any { config ->

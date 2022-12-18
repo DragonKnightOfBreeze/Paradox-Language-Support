@@ -4,7 +4,6 @@ import com.intellij.openapi.project.*
 import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
@@ -27,7 +26,7 @@ object TextColorConfigHandler {
 		return doGetTextColorConfig(definition, name, gameType)
 	}
 	
-	private fun doGetTextColorConfig(definition: ParadoxDefinitionProperty, name: String, gameType: ParadoxGameType): ParadoxTextColorConfig? {
+	private fun doGetTextColorConfig(definition: ParadoxScriptDefinitionElement, name: String, gameType: ParadoxGameType): ParadoxTextColorConfig? {
 		//要求输入的name必须是单个字母或数字
 		if(name.singleOrNull()?.let { it.isExactLetter() || it.isExactDigit() } != true) return null
 		if(definition !is ParadoxScriptProperty) return null

@@ -21,7 +21,7 @@ import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
  * 脚本文件的注解器。
  *
  * * 提供定义的特殊颜色高亮。（基于CWT规则）
- * * 提供定义元素的特殊颜色高亮。（基于CWT规则）
+ * * 提供定义成员的特殊颜色高亮。（基于CWT规则）
  * * 提供特殊标签的特殊颜色高亮。（基于扩展的CWT规则）
  */
 class ParadoxScriptAnnotator : Annotator {
