@@ -131,13 +131,13 @@
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.UnresolvedExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedExpression"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingExpression"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="script.inspection.advanced.missingExpression"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.MissingExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedExpression"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptTooManyExpression"
                      enabledByDefault="true" level="WEAK WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.advanced.tooManyExpression"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
