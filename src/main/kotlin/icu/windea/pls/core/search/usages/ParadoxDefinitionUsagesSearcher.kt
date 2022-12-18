@@ -33,8 +33,15 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
 			extraWords.add(definitionName)
 		}
 		if(type == "sprite" || type == "spriteType") {
-			definitionName.removePrefix("GFX_").takeIfNotEmpty()?.let { extraWords.add(it) }
-			definitionName.removePrefix("GFX_text_").takeIfNotEmpty()?.let { extraWords.add(it) }
+			val gfxTextName = definitionName.removePrefix("GFX_text_")
+			if(gfxTextName.isNotEmpty()) {
+				extraWords.add(gfxTextName)
+			} else {
+				val gfxName = definitionName.removePrefix("GFX_")
+				if(gfxTextName.isNotEmpty()) {
+					extraWords.add(gfxName)
+				}
+			}
 		}
 		configGroup.info.typeExpressionStringLinks
 			.firstNotNullOfOrNull { it.extract(definitionName) }
