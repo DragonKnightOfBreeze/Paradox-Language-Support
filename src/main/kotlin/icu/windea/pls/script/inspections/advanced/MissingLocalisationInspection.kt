@@ -131,27 +131,27 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 				info.required -> when {
 					key != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1.1", key, locale)
 					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1.2", propertyName, locale)
-					else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1.2", expression, locale)
+					else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1.3", expression, locale)
 				}
 				info.primary -> when {
 					key != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2.1", key, locale)
 					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2.2", propertyName, locale)
-					else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2.2", expression, locale)
+					else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2.3", expression, locale)
 				}
 				else -> when {
 					key != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3.1", key, locale)
 					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3.2", propertyName, locale)
-					else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3.2", expression, locale)
+					else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3.3", expression, locale)
 				}
 			}
 		}
 		
 		override fun visitPropertyKey(element: ParadoxScriptPropertyKey) {
-			visitExpressionElement(element)
+			visitStringExpressionElement(element)
 		}
 		
 		override fun visitString(element: ParadoxScriptString) {
-			visitExpressionElement(element)
+			visitStringExpressionElement(element)
 		}
 		
 		override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
@@ -165,8 +165,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			val keys = ModifierConfigHandler.getModifierNameKeys(name, configGroup)
 			val missingLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
 			for(locale in inspection.localeSet) {
-				val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(element).locale(locale)
-				//可以为全大写/全小写
+				val selector = localisationSelector().gameType(configGroup.gameType).locale(locale)
 				val localisation = keys.firstNotNullOfOrNull {
 					findLocalisation(it, configGroup.project, selector = selector)
 				}

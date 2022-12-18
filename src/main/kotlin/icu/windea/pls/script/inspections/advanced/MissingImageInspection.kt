@@ -7,9 +7,14 @@ import com.intellij.psi.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.config.ext.*
+import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.definition.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.quickfix.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -18,11 +23,13 @@ import javax.swing.*
  * @property checkForDefinitions 是否检查定义。默认为true。
  * @property checkPrimaryForDefinitions 是否同样检查定义的主要的相关图片，默认为true。
  * @property checkOptionalForDefinitions 是否同样检查定义的可选的相关图片，默认为false。
+ * @property checkForModifiers 是否检查修饰符（的图标）。默认为false。
  */
 class MissingImageInspection : LocalInspectionTool() {
 	@JvmField var checkForDefinitions = true
 	@JvmField var checkPrimaryForDefinitions = true
 	@JvmField var checkOptionalForDefinitions = false
+	@JvmField var checkForModifiers = false
 	
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
 		return Visitor(this, holder)
@@ -98,18 +105,44 @@ class MissingImageInspection : LocalInspectionTool() {
 				info.required -> when {
 					key != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.1.1", key)
 					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.1.2", propertyName)
-					else -> PlsBundle.message("script.inspection.advanced.missingImage.description.1.2", expression)
+					else -> PlsBundle.message("script.inspection.advanced.missingImage.description.1.3", expression)
 				}
 				info.primary -> when {
 					key != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.2.1", key)
 					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.2.2", propertyName)
-					else -> PlsBundle.message("script.inspection.advanced.missingImage.description.2.2", expression)
+					else -> PlsBundle.message("script.inspection.advanced.missingImage.description.2.3", expression)
 				}
 				else -> when {
 					key != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.3.1", key)
 					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.3.2", propertyName)
-					else -> PlsBundle.message("script.inspection.advanced.missingImage.description.3.2", expression)
+					else -> PlsBundle.message("script.inspection.advanced.missingImage.description.3.3", expression)
 				}
+			}
+		}
+		
+		override fun visitPropertyKey(element: ParadoxScriptPropertyKey) {
+			visitStringExpressionElement(element)
+		}
+		
+		override fun visitString(element: ParadoxScriptString) {
+			visitStringExpressionElement(element)
+		}
+		
+		override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
+			ProgressManager.checkCanceled()
+			if(!inspection.checkForModifiers) return
+			val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return
+			val configGroup = config.info.configGroup
+			if(config.expression.type != CwtDataTypes.Modifier) return
+			val name = element.value
+			val iconPath = ModifierConfigHandler.getModifierIconPath(name)
+			val iconSelector = fileSelector().gameType(configGroup.gameType)
+			val iconFile = findFileByFilePath(iconPath, configGroup.project, selector = iconSelector)
+			if(iconFile == null) {
+				val message = PlsBundle.message("script.inspection.advanced.missingImage.description.4", name)
+				holder.registerProblem(element, message, ProblemHighlightType.WEAK_WARNING,
+					ImportGameOrModDirectoryFix(element)
+				)
 			}
 		}
 	}
@@ -135,6 +168,11 @@ class MissingImageInspection : LocalInspectionTool() {
 						.bindSelected(::checkOptionalForDefinitions)
 						.actionListener { _, component -> checkOptionalForDefinitions = component.isSelected }
 						.enabledIf(checkForDefinitionsCb.selected)
+				}
+				row {
+					checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkForModifiers"))
+						.bindSelected(::checkForModifiers)
+						.actionListener { _, component -> checkForModifiers = component.isSelected }
 				}
 			}
 		}

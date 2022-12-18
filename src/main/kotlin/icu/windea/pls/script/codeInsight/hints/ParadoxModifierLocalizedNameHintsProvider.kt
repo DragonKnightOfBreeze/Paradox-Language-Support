@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 修饰符的本地化名字的内嵌提示（相关本地化）
+ * 修饰符的本地化名字的内嵌提示
  */
 @Suppress("UnstableApiUsage")
 class ParadoxModifierLocalizedNameHintsProvider: ParadoxScriptHintsProvider<Settings>(){
@@ -73,7 +73,6 @@ class ParadoxModifierLocalizedNameHintsProvider: ParadoxScriptHintsProvider<Sett
 				val configGroup = config.info.configGroup
 				val keys = ModifierConfigHandler.getModifierNameKeys(name, configGroup)
 				val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(element).preferLocale(preferredParadoxLocale())
-				//可以为全大写/全小写
 				val localisation = keys.firstNotNullOfOrNull {
 					findLocalisation(it, configGroup.project, selector = selector)
 				} ?: return true
@@ -90,3 +89,4 @@ class ParadoxModifierLocalizedNameHintsProvider: ParadoxScriptHintsProvider<Sett
 		return ParadoxLocalisationTextHintsRenderer.render(localisation, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
 	}
 }
+

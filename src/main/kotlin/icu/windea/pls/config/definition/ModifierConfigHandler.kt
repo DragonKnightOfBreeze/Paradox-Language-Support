@@ -46,7 +46,7 @@ object ModifierConfigHandler {
 	
 	@JvmStatic
 	fun getModifierIconPath(modifierName: String): String {
-		return "gfx/interface/icons/modifiers/${modifierName}.dds"
+		return "gfx/interface/icons/modifiers/mod_${modifierName}.dds"
 	}
 	
 	private fun isCountryModifier(modifierName: String, modifier: CwtModifierConfig?): Boolean {

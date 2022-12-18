@@ -65,8 +65,8 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
 					val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
 					//基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
 					if(icon.iconHeight <= settings.iconHeightLimit) {
-						//只是显示图标而已，其他什么都不做，无法点击，鼠标悬浮不会显示tooltip
-						val presentation = smallScaledIcon(icon)
+						//点击可以导航到声明处（定义或DDS）
+						val presentation = psiSingleReference(smallScaledIcon(icon)) { resolved }
 						val finalPresentation = presentation.toFinalPresentation(this, file.project, smaller = true)
 						val endOffset = element.textRange.endOffset
 						sink.addInlineElement(endOffset, true, finalPresentation, false)

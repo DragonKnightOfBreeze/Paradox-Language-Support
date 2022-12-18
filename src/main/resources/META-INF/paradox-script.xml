@@ -39,6 +39,7 @@
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceLocalizedNameHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxValueSetValueInfoHintsProvider"/>
+    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxModifierIconHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxModifierLocalizedNameHintsProvider"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT" 
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$Base"/>
