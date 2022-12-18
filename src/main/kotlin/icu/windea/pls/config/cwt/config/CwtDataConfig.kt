@@ -91,7 +91,7 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	/**
 	 * 深拷贝 + 根据子类型进行合并。
 	 */
-	fun deepMergeBySubtypes(subtypes: List<String>): List<CwtDataConfig<*>> {
+	fun deepMergeBySubtypes(subtypes: List<String>?): List<CwtDataConfig<*>> {
 		val mergedConfigs: MutableList<CwtDataConfig<*>>? = if(configs != null) SmartList() else null
 		configs?.forEach { config ->
 			val childConfigList = config.deepMergeBySubtypes(subtypes)

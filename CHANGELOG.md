@@ -52,6 +52,7 @@
   * [ ] 优化：scope的名字（准确来说是别名）可以包含点号
   * [ ] 优化：检查scopeFieldExpression时也检查是否匹配对应的scopeName或者scopeGroupName（归类到`MismatchedScopeInspection`）
   * [ ] 对于link `pop_faction_parameter`和complexEnum `pop_faction_parameters`的特殊处理：前者只能在`pop_faction`中使用且作为数据源的complexEnumValue只能来自同一定义声明中
+  * [ ] 兼容CWT规则文件中的错误级别`severity = warning`或`## severity = warning`（PLS和CWTools实现有所不同，需要分析）
 
 ## 0.7.8
 
@@ -59,7 +60,7 @@
   * 为了避免意外，解析获取表达式对应的CWT规则时，不再使用全局缓存，而是使用基于表达式对应的PSI元素的缓存（当所在文件被修改时会失效）
 * 功能优化
   * [X] 可以通过导航到实现功能（`Navigate > Implementation(s)`）来从某一封装变量/定义/本地化/复杂枚举值跳转到所有同名的重载或者被重载的声明处
-    * 注意对于非顶级属性名的定义名（如`event`）和复杂枚举值（如`policy_flag`），从声明处出发，需要间接通过意向（`Intentions`）来查找使用/导航到实现/导航到类型声明
+    * 注意对于非顶级属性名的定义名（如`some_event_id`）和复杂枚举值（如`policy_flag`），从声明处出发，需要间接通过意向（`Intentions`）来查找使用/导航到实现/导航到类型声明
   * [ ] 查找使用时，即使声明处与引用处的名字文本不同，也能正确进行（例如：`GFX_text_unity` > `unity`）
   * [X] 优化如何提供类型信息（`View > Type Info`）和快速类型声明（`View > Quick Type Definition`）
 * 新增功能

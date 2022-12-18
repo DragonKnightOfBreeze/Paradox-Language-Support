@@ -56,7 +56,7 @@ class ParadoxDefinitionInfo(
 		val subtypesConfig = typeConfig.subtypes
 		val result = SmartList<CwtSubtypeConfig>()
 		for(subtypeConfig in subtypesConfig.values) {
-			if(ParadoxDefinitionHandler.matchesSubtype(configGroup, subtypeConfig, element, rootKey, result)) result.add(subtypeConfig)
+			if(ParadoxDefinitionHandler.matchesSubtype(element, subtypeConfig, rootKey, configGroup, result)) result.add(subtypeConfig)
 		}
 		result
 	}

@@ -61,7 +61,7 @@ object ParadoxDefinitionHandler {
 		val path = fileInfo.path
 		val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
 		val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-		return doResolve(configGroup, element, rootKey, path, elementPath)
+		return doResolve(element, rootKey, path, elementPath, configGroup)
 	}
 	
 	private fun resolveByStub(element: ParadoxScriptDefinitionElement, stub: ParadoxScriptDefinitionElementStub<out ParadoxScriptDefinitionElement>, project: Project): ParadoxDefinitionInfo? {
@@ -70,7 +70,7 @@ object ParadoxDefinitionHandler {
 		val rootKey = stub.rootKey
 		if(gameType == null || type == null || rootKey == null) return null
 		val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-		return doResolveWithKnownType(configGroup, element, type, rootKey)
+		return doResolveWithKnownType(element, type, rootKey, configGroup)
 			?.apply { sourceType = ParadoxDefinitionInfo.SourceType.Stub }
 	}
 	
@@ -79,7 +79,7 @@ object ParadoxDefinitionHandler {
 		val elementPath = ParadoxElementPathHandler.resolveFromFile(element, PlsConstants.maxDefinitionDepth) ?: return null
 		val rootKey = element.pathName //如果是文件名，不要包含扩展名
 		val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-		return doResolve(configGroup, element, rootKey, path, elementPath)
+		return doResolve(element, rootKey, path, elementPath, configGroup)
 			?.apply { sourceType = ParadoxDefinitionInfo.SourceType.PathComment }
 	}
 	
@@ -87,15 +87,15 @@ object ParadoxDefinitionHandler {
 		val (gameType, type) = ParadoxMagicCommentHandler.resolveDefinitionTypeComment(element) ?: return null
 		val rootKey = element.pathName //如果是文件名，不要包含扩展名
 		val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-		return doResolveWithKnownType(configGroup, element, type, rootKey)
+		return doResolveWithKnownType(element, type, rootKey, configGroup)
 			?.apply { sourceType = ParadoxDefinitionInfo.SourceType.TypeComment }
 	}
 	
-	private fun doResolve(configGroup: CwtConfigGroup, element: ParadoxScriptDefinitionElement, rootKey: String, path: ParadoxPath, elementPath: ParadoxElementPath): ParadoxDefinitionInfo? {
+	private fun doResolve(element: ParadoxScriptDefinitionElement, rootKey: String, path: ParadoxPath, elementPath: ParadoxElementPath, configGroup: CwtConfigGroup): ParadoxDefinitionInfo? {
 		val gameType = configGroup.gameType ?: return null
 		for(typeConfig in configGroup.types.values) {
 			ProgressManager.checkCanceled()
-			if(matchesType(configGroup, typeConfig, element, rootKey, path, elementPath)) {
+			if(matchesType(element, typeConfig, path, elementPath, rootKey, configGroup)) {
 				//需要懒加载
 				return ParadoxDefinitionInfo(rootKey, typeConfig, gameType, configGroup, element)
 			}
@@ -103,7 +103,7 @@ object ParadoxDefinitionHandler {
 		return null
 	}
 	
-	private fun doResolveWithKnownType(configGroup: CwtConfigGroup, element: ParadoxScriptDefinitionElement, type: String, rootKey: String): ParadoxDefinitionInfo? {
+	private fun doResolveWithKnownType(element: ParadoxScriptDefinitionElement, type: String, rootKey: String, configGroup: CwtConfigGroup): ParadoxDefinitionInfo? {
 		val gameType = configGroup.gameType ?: return null
 		val typeConfig = configGroup.types[type] ?: return null
 		//仍然要求匹配rootKey
@@ -114,40 +114,13 @@ object ParadoxDefinitionHandler {
 	}
 	
 	@JvmStatic
-	fun matchesTypeByPath(typeConfig: CwtTypeConfig, path: ParadoxPath): Boolean {
-		//判断element是否需要是scriptFile还是scriptProperty
-		val nameFromFileConfig = typeConfig.nameFromFile
-		if(nameFromFileConfig) return false
-		
-		//判断path是否匹配
-		val pathConfig = typeConfig.path ?: return false
-		val pathStrictConfig = typeConfig.pathStrict
-		if(pathStrictConfig) {
-			if(pathConfig != path.parent) return false
-		} else {
-			if(!pathConfig.matchesPath(path.parent)) return false
-		}
-		//判断path_name是否匹配
-		val pathFileConfig = typeConfig.pathFile //String?
-		if(pathFileConfig != null) {
-			if(pathFileConfig != path.fileName) return false
-		}
-		//判断path_extension是否匹配
-		val pathExtensionConfig = typeConfig.pathExtension //String?
-		if(pathExtensionConfig != null) {
-			if(pathExtensionConfig != "." + path.fileExtension) return false
-		}
-		return true
-	}
-	
-	@JvmStatic
 	fun matchesType(
-		configGroup: CwtConfigGroup,
-		typeConfig: CwtTypeConfig,
 		element: ParadoxScriptDefinitionElement,
-		rootKey: String,
+		typeConfig: CwtTypeConfig,
 		path: ParadoxPath,
-		elementPath: ParadoxElementPath
+		elementPath: ParadoxElementPath,
+		rootKey: String,
+		configGroup: CwtConfigGroup
 	): Boolean {
 		//判断element是否需要是scriptFile还是scriptProperty
 		val nameFromFileConfig = typeConfig.nameFromFile
@@ -155,16 +128,6 @@ object ParadoxDefinitionHandler {
 			if(element !is ParadoxScriptFile) return false
 		} else {
 			if(element !is ParadoxScriptProperty) return false
-		}
-		
-		//判断element的propertyValue是否需要是block
-		val declarationConfig = configGroup.declarations[typeConfig.name]?.propertyConfig
-		//当进行代码补全时需要特殊处理
-		val isBlock = if(element.getUserData(PlsKeys.incompleteMarkerKey) == true) null
-		else element.castOrNull<ParadoxScriptProperty>()?.propertyValue?.let { it is ParadoxScriptBlock }
-		if(declarationConfig != null && isBlock != null) {
-			val isBlockConfig = declarationConfig.valueExpression == CwtValueExpression.BlockExpression
-			if(isBlockConfig != isBlock) return false
 		}
 		
 		//判断path是否匹配
@@ -207,6 +170,17 @@ object ParadoxDefinitionHandler {
 			val filterResult = typeKeyFilterConfig.contains(rootKey)
 			if(!filterResult) return false
 		}
+		
+		//判断element的propertyValue是否需要是block
+		val declarationConfig = configGroup.declarations[typeConfig.name]?.propertyConfig
+		//当进行代码补全时需要特殊处理
+		val isBlock = if(element.getUserData(PlsKeys.incompleteMarkerKey) == true) null
+		else element.castOrNull<ParadoxScriptProperty>()?.propertyValue?.let { it is ParadoxScriptBlock }
+		if(declarationConfig != null && isBlock != null) {
+			val isBlockConfig = declarationConfig.valueExpression == CwtValueExpression.BlockExpression
+			if(isBlockConfig != isBlock) return false
+		}
+		
 		return true
 	}
 	
@@ -230,11 +204,71 @@ object ParadoxDefinitionHandler {
 	}
 	
 	@JvmStatic
+	fun matchesTypeWithUnknownDeclaration(
+		typeConfig: CwtTypeConfig,
+		path: ParadoxPath,
+		elementPath: ParadoxElementPath?,
+		rootKey: String?
+	): Boolean {
+		//判断element是否需要是scriptFile还是scriptProperty
+		val nameFromFileConfig = typeConfig.nameFromFile
+		if(nameFromFileConfig) return false
+		
+		//判断path是否匹配
+		val pathConfig = typeConfig.path ?: return false
+		val pathStrictConfig = typeConfig.pathStrict
+		if(pathStrictConfig) {
+			if(pathConfig != path.parent) return false
+		} else {
+			if(!pathConfig.matchesPath(path.parent)) return false
+		}
+		//判断path_name是否匹配
+		val pathFileConfig = typeConfig.pathFile //String?
+		if(pathFileConfig != null) {
+			if(pathFileConfig != path.fileName) return false
+		}
+		//判断path_extension是否匹配
+		val pathExtensionConfig = typeConfig.pathExtension //String?
+		if(pathExtensionConfig != null) {
+			if(pathExtensionConfig != "." + path.fileExtension) return false
+		}
+		
+		if(elementPath != null) {
+			//如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
+			//skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
+			//skip_root_key可以重复（其中之一匹配即可）
+			val skipRootKeyConfig = typeConfig.skipRootKey
+			if(skipRootKeyConfig.isNullOrEmpty()) {
+				if(elementPath.length > 1) return false
+			} else {
+				val skipResult = skipRootKeyConfig.any { elementPath.matchEntire(it, useParentPath = true) }
+				if(!skipResult) return false
+			}
+		}
+		
+		if(rootKey != null) {
+			//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
+			val startsWithConfig = typeConfig.startsWith
+			if(!startsWithConfig.isNullOrEmpty()) {
+				if(!rootKey.startsWith(startsWithConfig, true)) return false
+			}
+			//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
+			val typeKeyFilterConfig = typeConfig.typeKeyFilter
+			if(!typeKeyFilterConfig.isNullOrEmpty()) {
+				val filterResult = typeKeyFilterConfig.contains(rootKey)
+				if(!filterResult) return false
+			}
+		}
+		
+		return true
+	}
+	
+	@JvmStatic
 	fun matchesSubtype(
-		configGroup: CwtConfigGroup,
-		subtypeConfig: CwtSubtypeConfig,
 		element: ParadoxScriptDefinitionElement,
+		subtypeConfig: CwtSubtypeConfig,
 		rootKey: String,
+		configGroup: CwtConfigGroup,
 		result: MutableList<CwtSubtypeConfig>
 	): Boolean {
 		//如果only_if_not存在，且已经匹配指定的任意子类型，则不匹配
@@ -310,7 +344,7 @@ object ParadoxDefinitionHandler {
 	}
 	
 	private fun doMatchProperties(propertyElements: List<ParadoxScriptProperty>, propertyConfigs: List<CwtPropertyConfig>, configGroup: CwtConfigGroup): Boolean {
-		//properties为空的情况系认为不匹配
+		if(propertyConfigs.isEmpty()) return true
 		if(propertyElements.isEmpty()) return false
 		
 		//要求其中所有的value的值在最终都会小于等于0
@@ -339,7 +373,7 @@ object ParadoxDefinitionHandler {
 	}
 	
 	private fun doMatchValues(valueElements: List<ParadoxScriptValue>, valueConfigs: List<CwtValueConfig>, configGroup: CwtConfigGroup): Boolean {
-		//values为空的情况下认为不匹配 
+		if(valueConfigs.isEmpty()) return true
 		if(valueElements.isEmpty()) return false
 		
 		//要求其中所有的value的值在最终都会小于等于0

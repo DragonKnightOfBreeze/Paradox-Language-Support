@@ -579,7 +579,7 @@ object CwtConfigHandler {
 		val path = fileInfo.path
 		val infoMap = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
 		for(typeConfig in configGroup.types.values) {
-			if(ParadoxDefinitionHandler.matchesTypeByPath(typeConfig, path)) {
+			if(ParadoxDefinitionHandler.matchesTypeWithUnknownDeclaration(typeConfig, path, null, null)) {
 				val skipRootKeyConfig = typeConfig.skipRootKey
 				if(skipRootKeyConfig == null || skipRootKeyConfig.isEmpty()) {
 					if(elementPath.isEmpty()) {
@@ -616,11 +616,10 @@ object CwtConfigHandler {
 			if(key == "any") return //skip any wildcard
 			val typeConfigToUse = tuples.map { it.first }.distinctBy { it.name }.singleOrNull()
 			val typeToUse = typeConfigToUse?.name
+			//需要考虑不指定子类型的情况
 			val subtypesToUse = when {
-				typeConfigToUse == null || tuples.isEmpty() -> emptyList()
-				else -> tuples.mapNotNull { it.second }.ifEmpty { typeConfigToUse.subtypes.values }
-					.distinctBy { it.name }
-					.map { it.name }
+				typeConfigToUse == null || tuples.isEmpty() -> null
+				else -> tuples.mapNotNull { it.second }.ifEmpty { null }?.distinctBy { it.name }?.map { it.name }
 			}
 			val config = if(typeToUse == null) null else configGroup.declarations[typeToUse]?.getMergedConfig(subtypesToUse)
 			val element = config?.pointer?.element

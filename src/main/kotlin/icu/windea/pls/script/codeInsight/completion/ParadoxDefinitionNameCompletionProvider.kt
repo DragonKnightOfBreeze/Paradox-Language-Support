@@ -39,11 +39,12 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 		context.put(PlsCompletionKeys.keywordKey, keyword)
 		context.put(PlsCompletionKeys.completionIdsKey, mutableSetOf())
 		
-		fun doAddCompletions(type: String, config: CwtPropertyConfig, isKey: Boolean?, currentDefinition: ParadoxScriptDefinitionElement?) {
+		fun doAddCompletions(type: String, config: CwtPropertyConfig, isKey: Boolean?, currentDefinition: ParadoxScriptDefinitionElement?, rootKey: String?) {
 			ProgressManager.checkCanceled()
 			context.put(PlsCompletionKeys.configKey, config)
 			context.put(PlsCompletionKeys.isKeyKey, isKey)
 			val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file)
+				.filterBy { rootKey == null || (it is ParadoxScriptProperty && it.name.equals(rootKey, true))}
 				.notSamePosition(currentDefinition)
 				.distinctByName()
 			val query = ParadoxDefinitionSearch.search(type, project, selector = selector)
@@ -58,7 +59,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				if(definitionInfo != null) {
 					val type = definitionInfo.type
 					val config = definitionInfo.declaration ?: return
-					doAddCompletions(type, config, true, definition)
+					doAddCompletions(type, config, true, definition, null)
 				}
 			}
 			//event = { id = _ }
@@ -68,7 +69,8 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				if(definitionInfo != null) {
 					val type = definitionInfo.type
 					val config = definitionInfo.declaration ?: return
-					doAddCompletions(type, config, false, definition)
+					//这里需要基于rootKey过滤结果
+					doAddCompletions(type, config, false, definition, definitionInfo.rootKey)
 				}
 			}
 			//key_
@@ -82,25 +84,11 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				val elementPath = ParadoxElementPathHandler.resolveFromFile(definitionElement, PlsConstants.maxDefinitionDepth) ?: return
 				for(typeConfig in configGroup.types.values) {
 					if(typeConfig.nameField != null) continue
-					if(ParadoxDefinitionHandler.matchesTypeByPath(typeConfig, path)) {
-						val skipRootKeyConfig = typeConfig.skipRootKey
-						if(skipRootKeyConfig == null || skipRootKeyConfig.isEmpty()) {
-							if(elementPath.isEmpty()) {
-								val type = typeConfig.name
-								val config = configGroup.declarations[type]?.getMergedConfig() ?: continue
-								doAddCompletions(type, config, true, null)
-							}
-						} else {
-							for(skipConfig in skipRootKeyConfig) {
-								val relative = elementPath.relativeTo(skipConfig) ?: continue
-								if(relative.isEmpty()) {
-									val type = typeConfig.name
-									val config = configGroup.declarations[type]?.getMergedConfig() ?: continue
-									doAddCompletions(type, config, true, null)
-								}
-								break
-							}
-						}
+					if(ParadoxDefinitionHandler.matchesTypeWithUnknownDeclaration(typeConfig, path, elementPath, null)) {
+						val type = typeConfig.name
+						//需要考虑不指定子类型的情况
+						val config = configGroup.declarations[type]?.getMergedConfig(null) ?: continue
+						doAddCompletions(type, config, true, null, null)
 					}
 				}
 			}

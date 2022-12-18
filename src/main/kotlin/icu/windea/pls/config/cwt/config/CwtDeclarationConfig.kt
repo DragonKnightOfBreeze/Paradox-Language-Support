@@ -16,14 +16,14 @@ data class CwtDeclarationConfig(
 	/**
 	 * 得到根据子类型列表进行合并后的配置。
 	 */
-	fun getMergedConfig(subtypes: List<String> = emptyList()): CwtPropertyConfig {
+	fun getMergedConfig(subtypes: List<String>?): CwtPropertyConfig {
 		val properties = propertyConfig.properties
 		val values = propertyConfig.values
 		
 		//定义的值不为代码块的情况
 		if(properties == null && values == null) return propertyConfig
 		
-		val cacheKey = subtypes.joinToString(",")
+		val cacheKey = subtypes?.joinToString(",") ?: "*"
 		return mergedConfigCache.getOrPut(cacheKey) {
 			propertyConfig.copy(
 				configs = propertyConfig.configs?.flatMap { it.deepMergeBySubtypes(subtypes) }
