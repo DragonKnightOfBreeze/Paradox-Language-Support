@@ -12,10 +12,10 @@ import icu.windea.pls.core.selector.chained.*
 object ParadoxFilePathIndex {
 	val name = ID.create<String, Void>("paradox.file.path.index")
 	
-	fun findOne(filePath: String, scope: GlobalSearchScope, expressionType: CwtFilePathExpressionType, ignoreCase: Boolean, selector: ChainedParadoxSelector<VirtualFile>): VirtualFile? {
+	fun findOne(filePath: String, scope: GlobalSearchScope, expressionType: CwtPathExpressionType, ignoreCase: Boolean, selector: ChainedParadoxSelector<VirtualFile>): VirtualFile? {
 		val usedFilePath = filePath.trimEnd('/')
 		var result: VirtualFile? = null
-		if(expressionType == CwtFilePathExpressionTypes.Exact) {
+		if(expressionType == CwtPathExpressionType.Exact) {
 			val dataKeys = setOf(usedFilePath)
 			FileBasedIndex.getInstance().processFilesContainingAnyKey(name, dataKeys, scope, null, null) { file ->
 				if(selector.select(file)) {
@@ -49,10 +49,10 @@ object ParadoxFilePathIndex {
 		return result ?: selector.defaultValue
 	}
 	
-	fun findAll(filePath: String, scope: GlobalSearchScope, expressionType: CwtFilePathExpressionType, ignoreCase: Boolean, distinct: Boolean, selector: ChainedParadoxSelector<VirtualFile>): Set<VirtualFile> {
+	fun findAll(filePath: String, scope: GlobalSearchScope, expressionType: CwtPathExpressionType, ignoreCase: Boolean, distinct: Boolean, selector: ChainedParadoxSelector<VirtualFile>): Set<VirtualFile> {
 		val usedFilePath = filePath.trimEnd('/')
 		val result: MutableSet<VirtualFile> = MutableSet(selector.comparator())
-		if(expressionType == CwtFilePathExpressionTypes.Exact) {
+		if(expressionType == CwtPathExpressionType.Exact) {
 			val dataKeys = setOf(usedFilePath)
 			FileBasedIndex.getInstance().processFilesContainingAnyKey(name, dataKeys, scope, null, null) { file ->
 					result.add(file)

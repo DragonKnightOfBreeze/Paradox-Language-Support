@@ -9,6 +9,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.definition.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
@@ -17,17 +18,17 @@ import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.core.tool.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.codeInsight.hints.ParadoxModifierInfoHintsProvider.*
+import icu.windea.pls.script.codeInsight.hints.ParadoxModifierLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * （预定义的）修饰符的本地化名字的内嵌提示（相关本地化）
+ * 修饰符的本地化名字的内嵌提示（相关本地化）
  */
 @Suppress("UnstableApiUsage")
-class ParadoxModifierInfoHintsProvider: ParadoxScriptHintsProvider<Settings>(){
+class ParadoxModifierLocalizedNameHintsProvider: ParadoxScriptHintsProvider<Settings>(){
 	companion object {
-		private val settingsKey = SettingsKey<Settings>("ParadoxModifierInfoHintsSettingsKey")
+		private val settingsKey = SettingsKey<Settings>("ParadoxModifierLocalizedNameHintsSettingsKey")
 	}
 	
 	data class Settings(
@@ -70,11 +71,11 @@ class ParadoxModifierInfoHintsProvider: ParadoxScriptHintsProvider<Settings>(){
 			if(type == CwtDataTypes.Modifier) {
 				val name = element.value
 				val configGroup = config.info.configGroup
-				val keys = CwtConfigHandler.getModifierLocalisationNameKeys(name, configGroup) ?: return true
+				val keys = ModifierConfigHandler.getModifierNameKeys(name, configGroup)
 				val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(element).preferLocale(preferredParadoxLocale())
 				//可以为全大写/全小写
 				val localisation = keys.firstNotNullOfOrNull {
-					findLocalisation(it, configGroup.project, selector = selector) ?: findLocalisation(it.uppercase(), configGroup.project, selector = selector)
+					findLocalisation(it, configGroup.project, selector = selector)
 				} ?: return true
 				val presentation = collectLocalisation(localisation, editor, settings)
 				val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true

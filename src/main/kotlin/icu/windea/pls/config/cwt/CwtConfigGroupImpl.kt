@@ -20,6 +20,7 @@ private const val s = "system_scopes"
 class CwtConfigGroupImpl(
 	override val project: Project,
 	override val gameType: ParadoxGameType?,
+	override val info: CwtConfigGroupInfo,
 	cwtFileConfigs: MutableMap<String, CwtFileConfig>
 ) : CwtConfigGroup {
 	override val foldingSettings: MutableMap<String, MutableMap<String, CwtFoldingSetting>> = mutableMapOf()
@@ -243,7 +244,7 @@ class CwtConfigGroupImpl(
 						}
 						
 						//其他情况，放到definition中
-						val declarationConfig = resolveDefinitionConfig(property, key)
+						val declarationConfig = resolveDeclarationConfig(property, key)
 						declarations[key] = declarationConfig
 					}
 				}
@@ -657,7 +658,7 @@ class CwtConfigGroupImpl(
 				"desc" -> desc = prop.stringValue?.takeUnless { it.all { c -> c.isExactIdentifierChar() } }?.trim()?.trim() //排除占位码 & 去除首尾空白
 				"from_data" -> fromData = prop.booleanValue ?: false
 				"type" -> type = prop.stringValue
-				"data_source" -> dataSource = prop.valueExpression //TODO 实际上也可能data（可重复），但是目前只有一处
+				"data_source" -> dataSource = prop.valueExpression //TODO 实际上也可能是data（可重复），但是目前只有一处
 				"prefix" -> prefix = prop.stringValue
 				"input_scopes" -> inputScopes = prop.stringValue?.let { setOf(it) }
 					?: prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
@@ -744,7 +745,7 @@ class CwtConfigGroupImpl(
 		return CwtAliasConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, subName)
 	}
 	
-	private fun resolveDefinitionConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDeclarationConfig {
+	private fun resolveDeclarationConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDeclarationConfig {
 		return CwtDeclarationConfig(propertyConfig.pointer, propertyConfig.info, name, propertyConfig)
 	}
 	

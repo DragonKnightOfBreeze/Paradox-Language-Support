@@ -6,12 +6,15 @@ import com.intellij.lang.documentation.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.definition.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
+import icu.windea.pls.core.index.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
@@ -146,7 +149,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			if(configType == CwtConfigType.Modifier) {
-				addRelatedLocalisationSectionsForModifiers(element, originalElement, name, configGroup, sections)
+				addSectionsForModifiers(element, originalElement, name, configGroup, sections)
 			}
 		}
 	}
@@ -188,48 +191,57 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			if(configType == CwtConfigType.Modifier) {
-				addRelatedLocalisationSectionsForModifiers(element, originalElement, name, configGroup, sections)
+				addSectionsForModifiers(element, originalElement, name, configGroup, sections)
 			}
 		}
 	}
 	
-	private fun StringBuilder.addRelatedLocalisationSectionsForModifiers(element: PsiElement, originalElement: PsiElement?, name: String, configGroup: CwtConfigGroup?, sections: MutableMap<String, String>?) {
+	private fun StringBuilder.addSectionsForModifiers(element: PsiElement, originalElement: PsiElement?, name: String, configGroup: CwtConfigGroup?, sections: MutableMap<String, String>?) {
 		if(configGroup == null || originalElement == null) return
 		if(!getSettings().documentation.renderRelatedLocalisationsForModifiers) return
 		//为修饰符渲染相关本地化
 		//NOTE 不能确定相关本地化的名字到底是什么，并且从API层面上来说，上下文PSI元素只能是CwtProperty而非ParadoxScriptExpressionElement
 		//Name, Desc?
 		ProgressManager.checkCanceled()
+		val contextElement = originalElement
+		val project = configGroup.project
 		val gameType = configGroup.gameType ?: return
-		val keys = CwtConfigHandler.getModifierLocalisationNameKeys(name, configGroup)
-		val localisation = keys?.firstNotNullOfOrNull {
-			val selector = localisationSelector().gameType(gameType).preferRootFrom(originalElement).preferLocale(preferredParadoxLocale())
-			//可以为全大写/全小写
-			findLocalisation(it, configGroup.project, selector = selector) ?: findLocalisation(it.uppercase(), configGroup.project, selector = selector)
+		val nameKeys = ModifierConfigHandler.getModifierNameKeys(name, configGroup)
+		val localisation = nameKeys.firstNotNullOfOrNull {
+			val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
+			findLocalisation(it, configGroup.project, selector = selector)
 		}
-		val descKeys = CwtConfigHandler.getModifierLocalisationDescKeys(name, configGroup)
-		val descLocalisation = descKeys?.firstNotNullOfOrNull {
-			val descSelector = localisationSelector().gameType(gameType).preferRootFrom(originalElement).preferLocale(preferredParadoxLocale())
-			//可以为全大写/全小写
-			findLocalisation(it, configGroup.project, selector = descSelector) ?: findLocalisation(it.uppercase(), configGroup.project, selector = descSelector)
+		val descKeys = ModifierConfigHandler.getModifierDescKeys(name, configGroup)
+		val descLocalisation = descKeys.firstNotNullOfOrNull {
+			val descSelector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
+			findLocalisation(it, configGroup.project, selector = descSelector)
 		}
+		val iconPath = ModifierConfigHandler.getModifierIconPath(name)
+		val iconSelector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
+		 val iconFile = findFileByFilePath(iconPath, project, selector = iconSelector)
 		//如果没找到的话，不要在文档中显示相关本地化信息
 		if(localisation != null) {
 			appendBr()
 			append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ")
-			append("Name = ").appendLocalisationLink(gameType, localisation.name, originalElement, resolved = true)
+			append("Name = ").appendLocalisationLink(gameType, localisation.name, contextElement, resolved = true)
 		}
 		if(descLocalisation != null) {
 			appendBr()
 			append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ")
-			append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, originalElement, resolved = true)
+			append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, contextElement, resolved = true)
 		}
+		appendBr()
+		append(PlsDocBundle.message("name.script.relatedImage")).append(" ")
+		append("Icon = ").appendFilePathLink(gameType, iconPath, contextElement, resolved = true)
 		if(sections != null) {
 			if(localisation != null) {
 				sections.put("Name", ParadoxLocalisationTextRenderer.render(localisation))
 			}
 			if(descLocalisation != null) {
 				sections.put("Desc", ParadoxLocalisationTextRenderer.render(descLocalisation))
+			}
+			if(iconFile != null) {
+				sections.put("Icon", ParadoxDdsUrlResolver.resolveByFile(iconFile))
 			}
 		}
 	}

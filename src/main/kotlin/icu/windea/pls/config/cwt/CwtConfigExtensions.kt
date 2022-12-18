@@ -10,7 +10,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.model.*
 
 internal typealias CwtConfigMap = MutableMap<String, CwtFileConfig>
-internal typealias CwtConfigMaps = MutableMap<String, CwtConfigMap>
+internal typealias CwtConfigMaps = MutableMap<CwtConfigGroupInfo, CwtConfigMap>
 
 inline fun CwtDataConfig<*>.processParent(processor: ProcessEntry.(CwtDataConfig<*>) -> Boolean): Boolean {
 	var parent = this.parent

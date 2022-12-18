@@ -190,7 +190,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			val sections = mutableMapOf<String, String>()
 			addRelatedImageSections(imageTargetMap, sections)
 			addRelatedLocalisationSections(localisationTargetMap, sections)
-			buildDefinitionSections(sections)
+			buildSections(sections)
 		}
 	}
 	
@@ -375,15 +375,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildDefinitionSections(sections: Map<String, String>) {
-		if(sections.isEmpty()) return
-		sections {
-			for((key, value) in sections) {
-				section(key, value)
-			}
-		}
-	}
-	
 	private fun StringBuilder.buildComplexEnumValueDefinition(element: PsiElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
 		definition {
 			//加上文件信息
@@ -463,6 +454,15 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		if(docText != null && docText.isNotEmpty()) {
 			content {
 				append(docText)
+			}
+		}
+	}
+	
+	private fun StringBuilder.buildSections(sections: Map<String, String>) {
+		if(sections.isEmpty()) return
+		sections {
+			for((key, value) in sections) {
+				section(key, value)
 			}
 		}
 	}

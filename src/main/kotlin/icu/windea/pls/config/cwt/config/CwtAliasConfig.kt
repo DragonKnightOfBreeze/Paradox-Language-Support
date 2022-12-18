@@ -12,12 +12,12 @@ import icu.windea.pls.cwt.psi.*
  */
 data class CwtAliasConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
-	override val info: CwtConfigInfo,
+	override val info: CwtConfigGroupInfo,
 	override val config: CwtPropertyConfig,
 	override val name: String,
 	val subName: String
 ) : CwtInlineableConfig {
-	val subNameExpression = CwtKeyExpression.resolve(subName)
+	val subNameExpression = CwtKeyExpression.resolve(subName).registerTo(info)
 	
 	override val expression get() = subNameExpression
 	

@@ -13,9 +13,9 @@ import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.ui.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.definition.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.model.*
@@ -162,13 +162,13 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			val configGroup = config.info.configGroup
 			if(config.expression.type != CwtDataTypes.Modifier) return
 			val name = element.value
-			val keys = CwtConfigHandler.getModifierLocalisationNameKeys(name, configGroup) ?: return
+			val keys = ModifierConfigHandler.getModifierNameKeys(name, configGroup)
 			val missingLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
 			for(locale in inspection.localeSet) {
 				val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(element).locale(locale)
 				//可以为全大写/全小写
 				val localisation = keys.firstNotNullOfOrNull {
-					findLocalisation(it, configGroup.project, selector = selector) ?: findLocalisation(it.uppercase(), configGroup.project, selector = selector)
+					findLocalisation(it, configGroup.project, selector = selector)
 				}
 				if(localisation == null) missingLocales.add(locale)
 			}

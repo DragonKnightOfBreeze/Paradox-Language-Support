@@ -432,7 +432,7 @@ fun findFileByFilePath(
 	filePath: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	expressionType: CwtFilePathExpressionType = CwtFilePathExpressionTypes.Exact,
+	expressionType: CwtPathExpressionType = CwtPathExpressionType.Exact,
 	ignoreCase: Boolean = true,
 	selector: ChainedParadoxSelector<VirtualFile> = nopSelector()
 ): VirtualFile? {
@@ -450,7 +450,7 @@ fun findFilesByFilePath(
 	filePath: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	expressionType: CwtFilePathExpressionType = CwtFilePathExpressionTypes.Exact,
+	expressionType: CwtPathExpressionType = CwtPathExpressionType.Exact,
 	ignoreCase: Boolean = true,
 	distinct: Boolean = false,
 	selector: ChainedParadoxSelector<VirtualFile> = nopSelector()

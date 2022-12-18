@@ -69,29 +69,29 @@ class CwtConfigProvider(
 	
 	private fun resolveConfigFilesOfGroup(configMaps: CwtConfigMaps, groupDirectory: VirtualFile, configRootDirectory: VirtualFile) {
 		val groupName = getGroupName(groupDirectory)
+		val groupInfo = CwtConfigGroupInfo(groupName)
 		logger.info("Resolve cwt config files of group '$groupName'.")
-		val configMap = configMaps.getOrPut(groupName) { mutableMapOf() }
-		resolveConfigFilesInGroup(configMap, groupDirectory, groupDirectory, configRootDirectory)
+		val configMap = configMaps.getOrPut(groupInfo) { mutableMapOf() }
+		resolveConfigFilesInGroup(configMap, groupDirectory, configRootDirectory, groupInfo)
 	}
 	
-	private fun resolveConfigFilesInGroup(configMap: CwtConfigMap, configDirectory: VirtualFile, groupDirectory: VirtualFile, configRootDirectory: VirtualFile) {
-		for(configFile in configDirectory.children) {
-			if(configFile.isDirectory) {
-				//继续解析子目录里面的配置文件
-				resolveConfigFilesInGroup(configMap, configFile, groupDirectory, configRootDirectory)
-			} else {
-				when(configFile.extension) {
-					"cwt" -> resolveCwtConfigFile(configMap, configFile, groupDirectory, configRootDirectory) //解析cwt配置文件
-					else -> pass() //不做处理
+	private fun resolveConfigFilesInGroup(configMap: CwtConfigMap, configDirectory: VirtualFile, configRootDirectory: VirtualFile, groupInfo: CwtConfigGroupInfo) {
+		VfsUtilCore.visitChildrenRecursively(configDirectory, object :VirtualFileVisitor<Void>() {
+			override fun visitFile(file: VirtualFile): Boolean {
+				if(file.isDirectory) return true
+				when(file.extension) {
+					"cwt" -> resolveCwtConfigFile(configMap, file, configRootDirectory, groupInfo) //解析cwt配置文件
+					else -> pass()
 				}
+				return true
 			}
-		}
+		})
 	}
 	
-	private fun resolveCwtConfigFile(configMap: CwtConfigMap, configFile: VirtualFile, groupDirectory: VirtualFile, configRootDirectory: VirtualFile) {
+	private fun resolveCwtConfigFile(configMap: CwtConfigMap, configFile: VirtualFile, configRootDirectory: VirtualFile, groupInfo: CwtConfigGroupInfo) {
 		val relativePath = configFile.relativePathTo(configRootDirectory)
 		logger.info("Resolve cwt config file '$relativePath'.")
-		val config = doResolveCwtConfigFile(configFile)
+		val config = doResolveCwtConfigFile(configFile, groupInfo)
 		if(config == null) {
 			logger.warn("Resolve cwt config file '$relativePath' failed. Skip it.")
 			return
@@ -99,9 +99,9 @@ class CwtConfigProvider(
 		configMap.put(relativePath, config)
 	}
 	
-	private fun doResolveCwtConfigFile(configFile: VirtualFile): CwtFileConfig? {
+	private fun doResolveCwtConfigFile(configFile: VirtualFile, groupInfo: CwtConfigGroupInfo): CwtFileConfig? {
 		return try {
-			configFile.toPsiFile<CwtFile>(project)?.let { CwtConfigResolver.resolve(it) }
+			configFile.toPsiFile<CwtFile>(project)?.let { CwtConfigResolver.resolve(it, groupInfo) }
 		} catch(e: Exception) {
 			logger.warn(e.message, e)
 			null

@@ -14,7 +14,7 @@ import icu.windea.pls.cwt.psi.*
  */
 data class CwtComplexEnumConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
-	override val info: CwtConfigInfo,
+	override val info: CwtConfigGroupInfo,
 	val name: String,
 	val path: Set<String>,
 	val pathFile: String?,

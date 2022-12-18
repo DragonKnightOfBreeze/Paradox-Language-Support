@@ -5,7 +5,7 @@ import icu.windea.pls.config.cwt.expression.*
 
 interface CwtConfig<out T : PsiElement> {
 	val pointer: SmartPsiElementPointer<out T>
-	val info: CwtConfigInfo
+	val info: CwtConfigGroupInfo
 	
 	val expression: CwtDataExpression? get() = null
 	

@@ -232,7 +232,7 @@ object CwtConfigHandler {
 				if(isStatic) return false
 				if(isParameterAware) return true
 				if(BitUtil.isSet(matchType, CwtConfigMatchType.FILE_PATH)) {
-					val resolvedPath = CwtFilePathExpressionTypes.FilePath.resolve(configExpression.value, expression.text.normalizePath())
+					val resolvedPath = CwtPathExpressionType.FilePath.resolve(configExpression.value, expression.text.normalizePath()) ?: return false
 					val selector = fileSelector().gameType(gameType)
 					return findFileByFilePath(resolvedPath, project, selector = selector) != null
 				}
@@ -243,7 +243,7 @@ object CwtConfigHandler {
 				if(isStatic) return false
 				if(isParameterAware) return true
 				if(BitUtil.isSet(matchType, CwtConfigMatchType.FILE_PATH)) {
-					val resolvedPath = CwtFilePathExpressionTypes.Icon.resolve(configExpression.value, expression.text.normalizePath()) ?: return false
+					val resolvedPath = CwtPathExpressionType.Icon.resolve(configExpression.value, expression.text.normalizePath()) ?: return false
 					val selector = fileSelector().gameType(gameType)
 					return findFileByFilePath(resolvedPath, project, selector = selector) != null
 				}
@@ -718,7 +718,7 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.AbsoluteFilePath -> pass() //不提示绝对路径
 			CwtDataTypes.FilePath -> {
-				val expressionType = CwtFilePathExpressionTypes.FilePath
+				val expressionType = CwtPathExpressionType.FilePath
 				val expressionValue = configExpression.value
 				val selector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
 				val virtualFiles = if(expressionValue == null) {
@@ -742,7 +742,7 @@ object CwtConfigHandler {
 				}
 			}
 			CwtDataTypes.Icon -> {
-				val expressionType = CwtFilePathExpressionTypes.Icon
+				val expressionType = CwtPathExpressionType.Icon
 				val expressionValue = configExpression.value
 				val selector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
 				val virtualFiles = if(expressionValue == null) {
@@ -1500,13 +1500,13 @@ object CwtConfigHandler {
 				return VfsUtil.findFile(path, true)?.toPsiFile(project)
 			}
 			CwtDataTypes.FilePath -> {
-				val expressionType = CwtFilePathExpressionTypes.FilePath
-				val filePath = expressionType.resolve(configExpression.value, expression.normalizePath())
+				val expressionType = CwtPathExpressionType.FilePath
+				val filePath = expressionType.resolve(configExpression.value, expression.normalizePath()) ?: return null
 				val selector = fileSelector().gameType(gameType).preferRootFrom(element, exact)
 				return findFileByFilePath(filePath, project, selector = selector)?.toPsiFile(project)
 			}
 			CwtDataTypes.Icon -> {
-				val expressionType = CwtFilePathExpressionTypes.Icon
+				val expressionType = CwtPathExpressionType.Icon
 				val filePath = expressionType.resolve(configExpression.value, expression.normalizePath()) ?: return null
 				val selector = fileSelector().gameType(gameType).preferRootFrom(element, exact)
 				return findFileByFilePath(filePath, project, selector = selector)?.toPsiFile(project)
@@ -1650,13 +1650,13 @@ object CwtConfigHandler {
 				return VfsUtil.findFile(path, true)?.toPsiFile<PsiFile>(project).toSingletonListOrEmpty()
 			}
 			CwtDataTypes.FilePath -> {
-				val expressionType = CwtFilePathExpressionTypes.FilePath
-				val filePath = expressionType.resolve(configExpression.value, expression.normalizePath())
+				val expressionType = CwtPathExpressionType.FilePath
+				val filePath = expressionType.resolve(configExpression.value, expression.normalizePath()) ?: return emptyList()
 				val selector = fileSelector().gameType(gameType).preferRootFrom(element)
 				return findFilesByFilePath(filePath, project, selector = selector).mapNotNull { it.toPsiFile(project) }
 			}
 			CwtDataTypes.Icon -> {
-				val expressionType = CwtFilePathExpressionTypes.Icon
+				val expressionType = CwtPathExpressionType.Icon
 				val filePath = expressionType.resolve(configExpression.value, expression.normalizePath()) ?: return emptyList()
 				val selector = fileSelector().gameType(gameType).preferRootFrom(element)
 				return findFilesByFilePath(filePath, project, selector = selector).mapNotNull { it.toPsiFile(project) }
@@ -1817,24 +1817,6 @@ object CwtConfigHandler {
 		if(localisationCommands.isEmpty()) return null
 		val commandConfig = localisationCommands[name] ?: return null
 		return commandConfig.pointer.element
-	}
-	
-	fun getModifierLocalisationNameKeys(name: String, configGroup: CwtConfigGroup): List<String>? {
-		//TODO 检查到底是如何确定的
-		//mod_$, mod_country_$, ALL_UPPER_CASE is ok.
-		val modifier = configGroup.modifiers[name] ?: return null
-		val isCountryModifier = !name.startsWith("country_") && modifier.categories.any { it.equals("country", true) || it.equals("countries", true) }
-		if(isCountryModifier) return listOf("mod_${name}", "mod_country_${name}")
-		return listOf("mod_${name}")
-	}
-	
-	fun getModifierLocalisationDescKeys(name: String, configGroup: CwtConfigGroup): List<String>? {
-		//TODO 检查到底是如何确定的
-		//mod_$_desc, mod_country_$_desc, ALL_UPPER_CASE is ok.
-		val modifier = configGroup.modifiers[name] ?: return null
-		val isCountryModifier = !name.startsWith("country_") && modifier.categories.any { it.equals("country", true) || it.equals("countries", true) }
-		if(isCountryModifier) return listOf("mod_${name}_desc", "mod_country_${name}_desc")
-		return listOf("mod_${name}_desc")
 	}
 	//endregion
 }

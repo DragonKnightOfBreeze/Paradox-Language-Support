@@ -11,7 +11,7 @@ import icu.windea.pls.cwt.psi.*
  */
 data class CwtLocalisationLinkConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
-	override val info: CwtConfigInfo,
+	override val info: CwtConfigGroupInfo,
 	val config: CwtPropertyConfig,
 	val name: String,
 	val desc: String? = null,

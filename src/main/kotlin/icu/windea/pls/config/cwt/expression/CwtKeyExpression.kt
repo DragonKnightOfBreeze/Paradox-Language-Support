@@ -1,6 +1,8 @@
 package icu.windea.pls.config.cwt.expression
 
 import com.google.common.cache.*
+import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.expression.CwtDataTypes
 import icu.windea.pls.core.*
 import icu.windea.pls.config.cwt.expression.CwtDataTypes as Types
 

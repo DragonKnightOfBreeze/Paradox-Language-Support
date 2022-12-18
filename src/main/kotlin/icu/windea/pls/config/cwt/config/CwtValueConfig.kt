@@ -6,7 +6,7 @@ import icu.windea.pls.cwt.psi.*
 
 data class CwtValueConfig(
 	override val pointer: SmartPsiElementPointer<CwtValue>,
-	override val info: CwtConfigInfo,
+	override val info: CwtConfigGroupInfo,
 	override val value: String,
 	override val booleanValue: Boolean? = null,
 	override val intValue: Int? = null,
@@ -20,7 +20,7 @@ data class CwtValueConfig(
 	//val stringValues by lazy { values?.mapNotNull { it.stringValue } }
 	//val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
 	
-	val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
+	val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value).registerTo(info)
 	override val expression: CwtValueExpression get() = valueExpression
 	
 	var propertyConfig: CwtPropertyConfig? = null

@@ -11,13 +11,12 @@ import java.util.*
  * Cwt规则的解析器。
  */
 object CwtConfigResolver {
-	fun resolve(file: CwtFile): CwtFileConfig {
-		val rootBlock = file.block ?: return CwtFileConfig.EmptyConfig
-		if(rootBlock.isEmpty) return CwtFileConfig.EmptyConfig
+	fun resolve(file: CwtFile, info: CwtConfigGroupInfo): CwtFileConfig {
+		val rootBlock = file.block
 		val properties = SmartList<CwtPropertyConfig>()
 		val values = SmartList<CwtValueConfig>()
-		val fileConfig = CwtFileConfig(file.createPointer(), properties, values, file.name)
-		rootBlock.processChild {
+		val fileConfig = CwtFileConfig(file.createPointer(), info, properties, values, file.name)
+		rootBlock?.processChild {
 			when {
 				it is CwtProperty -> resolveProperty(it, file, fileConfig)?.addTo(properties).end()
 				it is CwtValue -> resolveValue(it, file, fileConfig).addTo(values).end()

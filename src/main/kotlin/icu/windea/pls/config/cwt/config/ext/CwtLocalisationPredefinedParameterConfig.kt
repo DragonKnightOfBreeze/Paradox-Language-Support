@@ -11,7 +11,7 @@ import javax.swing.*
  */
 class CwtLocalisationPredefinedParameterConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
-	override val info: CwtConfigInfo,
+	override val info: CwtConfigGroupInfo,
 	val id: String,
 	val description: String
 ) : CwtConfig<CwtProperty> {

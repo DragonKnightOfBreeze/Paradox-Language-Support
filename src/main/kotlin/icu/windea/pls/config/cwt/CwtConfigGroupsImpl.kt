@@ -7,19 +7,24 @@ import java.util.concurrent.*
 
 class CwtConfigGroupsImpl(
 	override val project: Project,
-	cwtFileConfigGroups: MutableMap<String, MutableMap<String, CwtFileConfig>>
+	cwtFileConfigGroups: CwtConfigMaps
 ) : CwtConfigGroups {
 	override val groups: MutableMap<String, CwtConfigGroup> = ConcurrentHashMap()
 	
 	init {
 		//初始化各个游戏分组的CWT规则
-		val coreCwtFileConfigs = cwtFileConfigGroups.getValue("core")
-		groups["core"] = CwtConfigGroupImpl(project, null, coreCwtFileConfigs)
-		for((groupName, cwtFileConfigs) in cwtFileConfigGroups) {
-			val gameType = ParadoxGameType.resolve(groupName)
+		val coreGroupInfo = cwtFileConfigGroups.keys.first { it.groupName == "core" }
+		val coreCwtFileConfigs = cwtFileConfigGroups.getValue(coreGroupInfo)
+		val coreGroup = CwtConfigGroupImpl(project, null, coreGroupInfo, coreCwtFileConfigs)
+		coreGroupInfo.configGroup = coreGroup
+		groups["core"] = coreGroup
+		for((groupInfo, cwtFileConfigs) in cwtFileConfigGroups) {
+			val gameType = ParadoxGameType.resolve(groupInfo.groupName)
 			if(gameType != null) {
 				cwtFileConfigs.putAll(coreCwtFileConfigs)
-				groups[groupName] = CwtConfigGroupImpl(project, gameType, cwtFileConfigs)
+				val group = CwtConfigGroupImpl(project, gameType, groupInfo, cwtFileConfigs)
+				groupInfo.configGroup = group
+				groups[groupInfo.groupName] = group
 			}
 		}
 	}

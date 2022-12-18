@@ -37,7 +37,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
 		//根据ddsFileName进行提示
 		ProgressManager.checkCanceled()
 		val fileSelector = fileSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile)
-		val ddsFiles = findFilesByFilePath("gfx/interface/icons/", project, expressionType = CwtFilePathExpressionTypes.Icon, distinct = true, selector = fileSelector)
+		val ddsFiles = findFilesByFilePath("gfx/interface/icons/", project, expressionType = CwtPathExpressionType.Icon, distinct = true, selector = fileSelector)
 		if(ddsFiles.isNotEmpty()) {
 			for(ddsFile in ddsFiles) {
 				val name = ddsFile.nameWithoutExtension

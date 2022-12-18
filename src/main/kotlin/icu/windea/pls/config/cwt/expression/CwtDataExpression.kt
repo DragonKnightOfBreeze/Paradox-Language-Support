@@ -1,5 +1,6 @@
 package icu.windea.pls.config.cwt.expression
 
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 
 /**
@@ -17,4 +18,17 @@ fun CwtDataExpression.isNumberType(): Boolean {
 	return type == CwtDataTypes.Int || type == CwtDataTypes.Float
 		|| type == CwtDataTypes.ValueField || type == CwtDataTypes.IntValueField
 		|| type == CwtDataTypes.VariableField || type == CwtDataTypes.VariableField
+}
+
+fun <T: CwtDataExpression> T.registerTo(info: CwtConfigGroupInfo): T {
+	when(this.type) {
+		CwtDataTypes.FilePath -> {
+			this.value?.let { info.filePathExpressions.add(it) }
+		}
+		CwtDataTypes.Icon -> {
+			this.value?.let { info.iconPathExpressions.add(it) }
+		}
+		else -> pass()
+	}
+	return this
 }
