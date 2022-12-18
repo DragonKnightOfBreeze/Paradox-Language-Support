@@ -3,11 +3,13 @@ package icu.windea.pls.core.search.usages
 import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
+import kotlin.experimental.*
 
 /**
  * 复杂枚举值的使用的查询。
@@ -36,7 +38,8 @@ class ParadoxComplexEnumValueUsagesSearcher : QueryExecutorBase<PsiReference, Re
 					useScope = useScope.intersectWith(globalSearchScope)
 				}
 			}
-			queryParameters.optimizer.searchWord(complexEnumValueInfo.name, useScope, true, target)
+			val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_STRINGS or UsageSearchContext.IN_COMMENTS
+			queryParameters.optimizer.searchWord(complexEnumValueInfo.name, useScope, searchContext, true, target)
 		}
 	}
 }
