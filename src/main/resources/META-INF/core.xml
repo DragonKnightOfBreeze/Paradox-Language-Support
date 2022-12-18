@@ -58,7 +58,7 @@
     <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxDefinitionUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxComplexEnumValueUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxLocalisationUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.core.search.usages.CwtAliasUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.core.search.usages.CwtConfigUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxFileUsagesSearcher"/>
     
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>

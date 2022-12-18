@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 定义的使用的查询。
  *
- * 定义对应的PsiElement的名字（rootKey）不一定是定义的名字（definitionName），因此需要特殊处理。
+ * * 定义对应的PsiElement的名字（rootKey）不一定是定义的名字（definitionName），需要特殊处理。
  * 
  * 另外，某些场合引用处的文本并非完整的定义的名字，如本地化图标，这时也要特殊处理。
  * 

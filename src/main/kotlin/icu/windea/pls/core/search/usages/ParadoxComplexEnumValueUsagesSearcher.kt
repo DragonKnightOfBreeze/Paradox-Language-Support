@@ -11,11 +11,11 @@ import icu.windea.pls.script.psi.*
 
 /**
  * 复杂枚举值的使用的查询。
- *
- * 复杂枚举值声明对应的PSi元素可能存在其他类型的使用（比如本地化），因此需要特殊处理。
- *
+ * 
+ * * 复杂枚举值声明对应的PSi元素可能存在其他类型的使用（比如本地化），需要特殊处理。
+ * 
  * 注意：无法通过直接在声明处使用`Ctrl+Click`来查找使用，需要借助于相关的意向。
- *
+ * 
  * @see icu.windea.pls.script.intentions.ComplexEnumValueNameFindUsagesIntention
  */
 class ParadoxComplexEnumValueUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
