@@ -4,7 +4,11 @@ package icu.windea.pls.script.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLiteralValue;
+import icu.windea.pls.core.psi.ParadoxTypedElement;
+import icu.windea.pls.core.psi.ParadoxScriptedVariableReference;
 import icu.windea.pls.core.psi.ParadoxParameter;
+import com.intellij.psi.PsiListLikeElement;
 import icu.windea.pls.core.psi.ParadoxArgument;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
@@ -95,10 +99,9 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitProperty(@NotNull ParadoxScriptProperty o) {
-    visitExpressionContextElement(o);
-    // visitNamedElement(o);
+    visitNamedElement(o);
     // visitParadoxTypedElement(o);
-    // visitParadoxDefinitionElement(o);
+    // visitDefinitionElement(o);
   }
 
   public void visitPropertyKey(@NotNull ParadoxScriptPropertyKey o) {
@@ -130,7 +133,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitValue(@NotNull ParadoxScriptValue o) {
     visitExpressionElement(o);
-    // visitParadoxPathAwareElement(o);
+    // visitMemberElement(o);
   }
 
   public void visitParadoxArgument(@NotNull ParadoxArgument o) {

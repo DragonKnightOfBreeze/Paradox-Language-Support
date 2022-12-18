@@ -26,6 +26,11 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 		if(file !is ParadoxScriptFile) return null
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
 		file.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
+			override fun visitElement(element: PsiElement) {
+				if(element !is ParadoxScriptExpressionContextElement) return
+				super.visitElement(element)
+			}
+			
 			override fun visitProperty(element: ParadoxScriptProperty) {
 				ProgressManager.checkCanceled()
 				run {
@@ -34,7 +39,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 					//skip checking property if property key may contain parameters
 					if(element.propertyKey.isParameterAwareExpression()) return
 					val definitionMemberInfo = element.definitionMemberInfo
-					if(definitionMemberInfo == null || definitionMemberInfo.isDefinition || definitionMemberInfo.isParameterAware) return
+					if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return@run
 					val matchType = CwtConfigMatchType.INSPECTION
 					val configs = resolvePropertyConfigs(element, matchType = matchType)
 					val config = configs.firstOrNull()
@@ -61,7 +66,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 					//skip checking value if it may contain parameters
 					if(element is ParadoxScriptString && element.isParameterAwareExpression()) return
 					val definitionMemberInfo = element.definitionMemberInfo
-					if(definitionMemberInfo == null || definitionMemberInfo.isDefinition || definitionMemberInfo.isParameterAware) return
+					if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return@run
 					val matchType = CwtConfigMatchType.INSPECTION
 					val configs = resolveValueConfigs(element, matchType = matchType, orDefault = false)
 					val config = configs.firstOrNull()

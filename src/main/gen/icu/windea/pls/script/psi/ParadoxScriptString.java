@@ -6,6 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import icu.windea.pls.core.expression.ParadoxDataType;
 import javax.swing.Icon;

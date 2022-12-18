@@ -18,6 +18,11 @@ class TooManyExpressionInspection: LocalInspectionTool() {
 		if(file !is ParadoxScriptFile) return null
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
 		file.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
+			override fun visitElement(element: PsiElement) {
+				if(element !is ParadoxScriptExpressionContextElement) return
+				super.visitElement(element)
+			}
+			
 			override fun visitFile(file: PsiFile) {
 				if(file !is ParadoxScriptFile) return
 				val position = file //TODO not very suitable

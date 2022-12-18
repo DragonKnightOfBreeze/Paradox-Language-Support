@@ -5,6 +5,6 @@ import com.intellij.psi.*
 /**
  * @see ParadoxScriptBlockElement
  * @see ParadoxScriptParameterCondition
- * @see ParadoxScriptProperty
+ * @see ParadoxScriptDefinitionElement
  */
 interface ParadoxScriptExpressionContextElement: PsiElement

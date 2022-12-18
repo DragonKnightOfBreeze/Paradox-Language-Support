@@ -7,7 +7,7 @@ import icu.windea.pls.core.psi.*
  * @see ParadoxScriptFile
  * @see ParadoxScriptProperty
  */
-interface ParadoxScriptDefinitionElement : ParadoxScriptNamedElement, ParadoxScriptMemberElement {
+interface ParadoxScriptDefinitionElement : ParadoxScriptNamedElement, ParadoxScriptMemberElement, ParadoxScriptExpressionContextElement {
 	fun getStub(): ParadoxScriptDefinitionElementStub<out ParadoxScriptDefinitionElement>?
 	
 	override fun getName(): String
