@@ -54,7 +54,9 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
 			//这里不能直接使用target.useScope，否则文件高亮会出现问题
 			val useScope = queryParameters.effectiveSearchScope
 			for(extraWord in extraWords) {
-				//这里searchContext比如包含IN_STRINGS，用于查找本地化图标引用
+				//这里searchContext必须包含IN_STRINGS，用于查找本地化图标引用
+				//否则因为它的前缀是"£"，会导致对应的偏移位置被跳过
+				//com.intellij.psi.impl.search.LowLevelSearchUtil.checkJavaIdentifier
 				val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_STRINGS or UsageSearchContext.IN_COMMENTS
 				queryParameters.optimizer.searchWord(extraWord, useScope, searchContext, true, target)
 			}
