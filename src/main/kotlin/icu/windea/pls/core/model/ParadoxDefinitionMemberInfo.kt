@@ -181,10 +181,12 @@ private fun ParadoxDefinitionMemberInfo.doGetChildPropertyOccurrenceMap(element:
 	//keyExpression - (expect actual)
 	val childPropertyConfigs = getChildPropertyConfigs()
 	val occurrenceMap = childPropertyConfigs.associateByTo(mutableMapOf(), { it.keyExpression }, { it.cardinality.toOccurrence() })
-	val properties = when {
-		element is ParadoxScriptDefinitionElement -> element.block?.propertyList ?: emptyList()
-		else -> emptyList()
+	val blockElement = when{
+		element is ParadoxScriptDefinitionElement -> element.block
+		element is ParadoxScriptBlockElement -> element
+		else -> null
 	}
+	val properties = blockElement?.propertyList.orEmpty()
 	if(properties.isNotEmpty()) {
 		for(property in properties) {
 			val expression = ParadoxDataExpression.resolve(property.propertyKey)
@@ -202,11 +204,12 @@ private fun ParadoxDefinitionMemberInfo.doGetChildValueOccurrenceMap(element: Pa
 	//valueExpression - (expect actual)
 	val childValueConfigs = getChildValueConfigs()
 	val occurrenceMap = childValueConfigs.associateByTo(mutableMapOf(), { it.valueExpression }, { it.cardinality.toOccurrence() })
-	val values = when {
-		element is ParadoxScriptDefinitionElement -> element.block?.valueList ?: emptyList()
-		element is ParadoxScriptBlock -> element.valueList
-		else -> emptyList()
+	val blockElement = when{
+		element is ParadoxScriptDefinitionElement -> element.block
+		element is ParadoxScriptBlockElement -> element
+		else -> null
 	}
+	val values = blockElement?.valueList.orEmpty()
 	if(values.isNotEmpty()) {
 		for(value in values) {
 			val expression = ParadoxDataExpression.resolve(value)

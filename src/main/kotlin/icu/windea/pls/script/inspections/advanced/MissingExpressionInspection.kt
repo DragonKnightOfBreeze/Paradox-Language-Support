@@ -3,12 +3,14 @@ package icu.windea.pls.script.inspections.advanced
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
+import javax.swing.*
 
 /**
  * 定义声明中缺失的表达式的检查。
@@ -59,10 +61,18 @@ class MissingExpressionInspection : LocalInspectionTool() {
 			private fun doCheckOccurrence(occurrence: Occurrence, configExpression: CwtDataExpression, position: PsiElement) {
 				val (actual, min, _, relaxMin) = occurrence
 				if(min != null && actual < min) {
+					val isKey = configExpression is CwtKeyExpression
 					val isConst = configExpression.type.isConstant()
-					val description = when {
-						isConst -> PlsBundle.message("script.inspection.advanced.missingExpression.description.1", configExpression, min, actual)
-						else -> PlsBundle.message("script.inspection.advanced.missingExpression.description.2", configExpression, min, actual)
+					val description = if(isKey) {
+						when {
+							isConst -> PlsBundle.message("script.inspection.advanced.missingExpression.description.1.1", configExpression, min, actual)
+							else -> PlsBundle.message("script.inspection.advanced.missingExpression.description.1.2", configExpression, min, actual)
+						}
+					} else {
+						when {
+							isConst -> PlsBundle.message("script.inspection.advanced.missingExpression.description.2.1", configExpression, min, actual)
+							else -> PlsBundle.message("script.inspection.advanced.missingExpression.description.2.2", configExpression, min, actual)
+						}
 					}
 					val highlightType = when {
 						relaxMin -> ProblemHighlightType.WEAK_WARNING //weak warning (wave lines), not warning

@@ -59,10 +59,18 @@ class TooManyExpressionInspection: LocalInspectionTool() {
 			private fun doCheckOccurrence(occurrence: Occurrence, configExpression: CwtDataExpression, position: PsiElement) {
 				val (actual, _, max) = occurrence
 				if(max != null && actual > max) {
+					val isKey = configExpression is CwtKeyExpression
 					val isConst = configExpression.type.isConstant()
-					val description = when {
-						isConst -> PlsBundle.message("script.inspection.advanced.tooManyExpression.description.1", configExpression, max, actual)
-						else -> PlsBundle.message("script.inspection.advanced.tooManyExpression.description.2", configExpression, max, actual)
+					val description = if(isKey) {
+						when {
+							isConst -> PlsBundle.message("script.inspection.advanced.tooManyExpression.description.1.1", configExpression, max, actual)
+							else -> PlsBundle.message("script.inspection.advanced.tooManyExpression.description.1.2", configExpression, max, actual)
+						}
+					} else {
+						when {
+							isConst -> PlsBundle.message("script.inspection.advanced.tooManyExpression.description.2.1", configExpression, max, actual)
+							else -> PlsBundle.message("script.inspection.advanced.tooManyExpression.description.2.2", configExpression, max, actual)
+						}
 					}
 					val highlightType = ProblemHighlightType.GENERIC_ERROR_OR_WARNING
 					holder.registerProblem(position, description, highlightType)
