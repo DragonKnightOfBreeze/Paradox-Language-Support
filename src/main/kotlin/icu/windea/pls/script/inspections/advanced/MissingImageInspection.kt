@@ -7,7 +7,6 @@ import com.intellij.psi.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.definition.*
 import icu.windea.pls.core.*
@@ -135,9 +134,11 @@ class MissingImageInspection : LocalInspectionTool() {
 			val configGroup = config.info.configGroup
 			if(config.expression.type != CwtDataTypes.Modifier) return
 			val name = element.value
-			val iconPath = ModifierConfigHandler.getModifierIconPath(name)
-			val iconSelector = fileSelector().gameType(configGroup.gameType)
-			val iconFile = findFileByFilePath(iconPath, configGroup.project, selector = iconSelector)
+			val iconPaths = ModifierConfigHandler.getModifierIconPaths(name, configGroup)
+			val iconFile = iconPaths.firstNotNullOfOrNull {
+				val iconSelector = fileSelector().gameType(configGroup.gameType)
+				findFileByFilePath(it, configGroup.project, selector = iconSelector)
+			}
 			if(iconFile == null) {
 				val message = PlsBundle.message("script.inspection.advanced.missingImage.description.4", name)
 				holder.registerProblem(element, message, ProblemHighlightType.WEAK_WARNING,

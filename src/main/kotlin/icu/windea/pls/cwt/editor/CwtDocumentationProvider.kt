@@ -216,10 +216,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val descSelector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
 			findLocalisation(it, configGroup.project, selector = descSelector)
 		}
-		val iconPath = ModifierConfigHandler.getModifierIconPath(name)
-		val iconSelector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
-		 val iconFile = findFileByFilePath(iconPath, project, selector = iconSelector)
-		//如果没找到的话，不要在文档中显示相关本地化信息
+		val iconPaths = ModifierConfigHandler.getModifierIconPaths(name, configGroup)
+		val (iconPath , iconFile) = iconPaths.firstNotNullOfOrNull {
+			val iconSelector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
+			it to findFileByFilePath(it, project, selector = iconSelector)
+		} ?: (null to null)
+		//如果没找到的话，不要在文档中显示相关信息
 		if(localisation != null) {
 			appendBr()
 			append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ")
@@ -230,9 +232,11 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ")
 			append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, contextElement, resolved = true)
 		}
-		appendBr()
-		append(PlsDocBundle.message("name.script.relatedImage")).append(" ")
-		append("Icon = ").appendFilePathLink(gameType, iconPath, contextElement, resolved = true)
+		if(iconPath != null && iconFile != null) {
+			appendBr()
+			append(PlsDocBundle.message("name.script.relatedImage")).append(" ")
+			append("Icon = ").appendFilePathLink(gameType, iconPath, contextElement, resolved = true)
+		}
 		if(sections != null) {
 			if(localisation != null) {
 				sections.put("Name", ParadoxLocalisationTextRenderer.render(localisation))

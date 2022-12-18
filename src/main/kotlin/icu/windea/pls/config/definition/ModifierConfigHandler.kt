@@ -45,8 +45,18 @@ object ModifierConfigHandler {
 	}
 	
 	@JvmStatic
-	fun getModifierIconPath(modifierName: String): String {
-		return "gfx/interface/icons/modifiers/mod_${modifierName}.dds"
+	fun getModifierIconPaths(modifierName: String, configGroup: CwtConfigGroup): List<String> {
+		//TODO 检查到底是如何确定的
+		//gfx/interface/icons/modifiers/mod_$.dds
+		//gfx/interface/icons/modifiers/mod_country_$.dds
+		val modifier = configGroup.modifiers[modifierName]
+		val isCountryModifier = isCountryModifier(modifierName, modifier)
+		return buildList { 
+			add("gfx/interface/icons/modifiers/mod_${modifierName}.dds")
+			if(isCountryModifier) {
+				add("gfx/interface/icons/modifiers/mod_country_${modifierName}.dds")
+			}
+		}
 	}
 	
 	private fun isCountryModifier(modifierName: String, modifier: CwtModifierConfig?): Boolean {
