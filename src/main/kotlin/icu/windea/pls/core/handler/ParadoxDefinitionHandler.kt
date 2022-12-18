@@ -25,6 +25,11 @@ object ParadoxDefinitionHandler {
 	@JvmStatic
 	fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
 		ProgressManager.checkCanceled()
+		val notUseCache = element.getUserData(PlsKeys.incompleteMarkerKey) == true
+		if(notUseCache) {
+			val file = element.containingFile
+			return resolve(element, file)
+		}
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfoKey) {
 			val file = element.containingFile
 			val value = resolve(element, file)
@@ -255,17 +260,13 @@ object ParadoxDefinitionHandler {
 	}
 	
 	private fun doMatchDefinition(definitionElement: ParadoxScriptDefinitionElement, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
-		when {
+		if(propertyConfig.configs.orEmpty().isNotEmpty()) {
 			//匹配值列表
-			!propertyConfig.values.isNullOrEmpty() -> {
-				val values = definitionElement.valueList
-				if(!doMatchValues(values, propertyConfig.values.orEmpty(), configGroup)) return false //继续匹配
-			}
+			val values = definitionElement.valueList
+			if(!doMatchValues(values, propertyConfig.values.orEmpty(), configGroup)) return false //继续匹配
 			//匹配属性列表
-			!propertyConfig.properties.isNullOrEmpty() -> {
-				val props = definitionElement.propertyList
-				if(!doMatchProperties(props, propertyConfig.properties.orEmpty(), configGroup)) return false //继续匹配
-			}
+			val props = definitionElement.propertyList
+			if(!doMatchProperties(props, propertyConfig.properties.orEmpty(), configGroup)) return false //继续匹配
 		}
 		return true
 	}
@@ -295,17 +296,13 @@ object ParadoxDefinitionHandler {
 				CwtConfigHandler.isAlias(propertyConfig) -> {
 					return doMatchAlias(propertyElement, propertyConfig, configGroup)
 				}
-				//匹配属性列表
-				!propertyConfig.properties.isNullOrEmpty() -> {
-					val propConfigs = propertyConfig.properties
-					val props = propertyElement.propertyList
-					if(!doMatchProperties(props, propConfigs.orEmpty(), configGroup)) return false //继续匹配
-				}
-				//匹配值列表
-				!propertyConfig.values.isNullOrEmpty() -> {
-					val valueConfigs = propertyConfig.values
+				propertyConfig.configs.orEmpty().isNotEmpty() -> {
+					//匹配值列表
 					val values = propertyElement.valueList
-					if(!doMatchValues(values, valueConfigs.orEmpty(), configGroup)) return false //继续匹配
+					if(!doMatchValues(values, propertyConfig.values.orEmpty(), configGroup)) return false
+					//匹配属性列表
+					val props = propertyElement.propertyList
+					if(!doMatchProperties(props, propertyConfig.properties.orEmpty(), configGroup)) return false
 				}
 			}
 		}
@@ -313,8 +310,8 @@ object ParadoxDefinitionHandler {
 	}
 	
 	private fun doMatchProperties(propertyElements: List<ParadoxScriptProperty>, propertyConfigs: List<CwtPropertyConfig>, configGroup: CwtConfigGroup): Boolean {
-		//properties为空的情况系认为匹配
-		if(propertyElements.isEmpty()) return true
+		//properties为空的情况系认为不匹配
+		if(propertyElements.isEmpty()) return false
 		
 		//要求其中所有的value的值在最终都会小于等于0
 		val minMap = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { it.cardinality?.min ?: 1 }) //默认为1
@@ -342,8 +339,8 @@ object ParadoxDefinitionHandler {
 	}
 	
 	private fun doMatchValues(valueElements: List<ParadoxScriptValue>, valueConfigs: List<CwtValueConfig>, configGroup: CwtConfigGroup): Boolean {
-		//values为空的情况下认为匹配 
-		if(valueElements.isEmpty()) return true
+		//values为空的情况下认为不匹配 
+		if(valueElements.isEmpty()) return false
 		
 		//要求其中所有的value的值在最终都会小于等于0
 		val minMap = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { it.cardinality?.min ?: 1 }) //默认为1
