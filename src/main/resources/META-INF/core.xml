@@ -11,8 +11,6 @@
   <extensions defaultExtensionNs="com.intellij">
     <applicationConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettings"/>
-
-    <projectService serviceInterface="com.intellij.psi.impl.ResolveScopeManager" serviceImplementation="icu.windea.pls.core.psi.impl.ParadoxResolveScopeManager" overrides="true"/>
     
     <!--suppress PluginXmlValidity -->
     <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider"/>

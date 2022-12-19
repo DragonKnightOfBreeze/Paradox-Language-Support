@@ -239,13 +239,16 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 		if(sections != null) {
 			if(localisation != null) {
-				sections.put("Name", ParadoxLocalisationTextRenderer.render(localisation))
+				val richText = ParadoxLocalisationTextRenderer.render(localisation)
+				sections.put("Name", richText)
 			}
 			if(descLocalisation != null) {
-				sections.put("Desc", ParadoxLocalisationTextRenderer.render(descLocalisation))
+				val richText = ParadoxLocalisationTextRenderer.render(descLocalisation)
+				sections.put("Desc", richText)
 			}
 			if(iconFile != null) {
-				sections.put("Icon", ParadoxDdsUrlResolver.resolveByFile(iconFile))
+				val url = ParadoxDdsUrlResolver.resolveByFile(iconFile)
+				sections.put("Icon", buildString { appendImgTag(url) })
 			}
 		}
 	}

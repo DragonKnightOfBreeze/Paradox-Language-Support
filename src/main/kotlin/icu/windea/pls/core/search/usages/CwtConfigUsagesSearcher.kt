@@ -3,6 +3,7 @@ package icu.windea.pls.core.search.usages
 import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
@@ -38,8 +39,9 @@ class CwtConfigUsagesSearcher: QueryExecutorBase<PsiReference, ReferencesSearch.
 		DumbService.getInstance(project).runReadActionInSmartMode {
 			//这里不能直接使用target.useScope，否则文件高亮会出现问题
 			val useScope = queryParameters.effectiveSearchScope
+			val searchContext = UsageSearchContext.IN_CODE
 			for(extraWord in extraWords) {
-				queryParameters.optimizer.searchWord(extraWord, useScope, true, target)
+				queryParameters.optimizer.searchWord(extraWord, useScope, searchContext, false, target) //忽略大小写
 			}
 		}
 	}

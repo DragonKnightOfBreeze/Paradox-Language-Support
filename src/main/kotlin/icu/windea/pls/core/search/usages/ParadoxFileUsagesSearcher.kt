@@ -3,10 +3,12 @@ package icu.windea.pls.core.search.usages
 import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.config.cwt.expression.*
+import kotlin.experimental.*
 
 /**
  * 文件（相对于游戏或模组根目录）的使用的查询。
@@ -39,7 +41,8 @@ class ParadoxFileUsagesSearcher: QueryExecutorBase<PsiReference, ReferencesSearc
 			//这里不能直接使用target.useScope，否则文件高亮会出现问题
 			val useScope = queryParameters.effectiveSearchScope
 			for(extraWord in extraWords) {
-				queryParameters.optimizer.searchWord(extraWord, useScope, true, target)
+				val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_STRINGS or UsageSearchContext.IN_COMMENTS
+				queryParameters.optimizer.searchWord(extraWord, useScope, searchContext, true, target)
 			}
 		}
 	}
