@@ -1,5 +1,4 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-// @formatter:off
 package com.intellij.psi.impl.file.impl;
 
 import com.intellij.ide.scratch.ScratchUtil;
@@ -40,14 +39,15 @@ import java.util.Map;
 
 import static com.intellij.psi.impl.PsiManagerImpl.ANY_PSI_CHANGE_TOPIC;
 
+// @formatter:off
+
 /**
  * 默认情况下，无法从项目文件中的声明导航到库中的引用，除非对应的库已导出，
  * 这里覆盖了默认的实现逻辑，当必要时，得到的使用作用域也包含模块的依赖中的文件
  * <p>
  * （见<code>Project Structure > Project Settings > Modules</code>）
  */
-@SuppressWarnings("ALL")
-public final class ResolveScopeManagerImpl extends ResolveScopeManager implements Disposable {
+public final class ParadoxResolveScopeManager extends ResolveScopeManager implements Disposable {
   private final Project myProject;
   private final ProjectRootManager myProjectRootManager;
   private final PsiManager myManager;
@@ -55,7 +55,7 @@ public final class ResolveScopeManagerImpl extends ResolveScopeManager implement
   private final Map<VirtualFile, GlobalSearchScope> myDefaultResolveScopesCache;
   private final AdditionalIndexableFileSet myAdditionalIndexableFileSet;
 
-  public ResolveScopeManagerImpl(Project project) {
+  public ParadoxResolveScopeManager(Project project) {
     myProject = project;
     myProjectRootManager = ProjectRootManager.getInstance(project);
     myManager = PsiManager.getInstance(project);
