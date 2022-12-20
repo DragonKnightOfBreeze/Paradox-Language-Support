@@ -13,7 +13,7 @@ import icu.windea.pls.localisation.psi.*
 @Suppress("unused")
 object ParadoxLocalisationDataResolver {
 	/**
-	 * 解析本地化文件的数据。跳过不合法的[PsiElement]，忽略重复的[ParadoxLocalisationProperty]。
+	 * 解析本地化文件的数据。跳过不合法的[PsiElement]。如果有重复的[ParadoxLocalisationProperty]，使用最后一个。
 	 */
 	fun resolve(file: PsiFile): Map<String, Map<String, String>> {
 		if(file !is ParadoxLocalisationFile) throw IllegalArgumentException("Invalid file type (expect: 'ParadoxLocalisationFile')")
