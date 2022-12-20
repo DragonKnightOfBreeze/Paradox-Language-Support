@@ -111,24 +111,24 @@ private fun doResolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean)
 	when {
 		rootName == ParadoxRootType.PdxLauncher.id -> {
 			rootType = ParadoxRootType.PdxLauncher
-			descriptorFile = rootFile.parent?.children?.find {
-				!it.isDirectory && (canBeNotAvailable || it.isValid) && it.name.equals(PlsConstants.launcherSettingsFileName, true)
-			}
+			descriptorFile = rootFile.parent?.findChild(PlsConstants.launcherSettingsFileName)
+				?.takeIf { !it.isDirectory && (canBeNotAvailable || it.isValid) }
 			markerFile = descriptorFile
 		}
 		rootName == ParadoxRootType.PdxOnlineAssets.id -> {
 			rootType = ParadoxRootType.PdxOnlineAssets
-			descriptorFile = rootFile.parent?.children?.find {
-				!it.isDirectory && (canBeNotAvailable || it.isValid) && it.name.equals(PlsConstants.launcherSettingsFileName, true)
-			}
+			descriptorFile =rootFile.parent?.findChild(PlsConstants.launcherSettingsFileName)
+				?.takeIf { !it.isDirectory && (canBeNotAvailable || it.isValid) }
 			markerFile = descriptorFile
 		}
 		rootName == ParadoxRootType.TweakerGuiAssets.id -> {
 			rootType = ParadoxRootType.TweakerGuiAssets
-			descriptorFile = rootFile.parent?.children?.find {
-				!it.isDirectory && (canBeNotAvailable || it.isValid) && it.name.equals(PlsConstants.launcherSettingsFileName, true)
-			}
+			descriptorFile = rootFile.parent?.findChild(PlsConstants.launcherSettingsFileName)
+				?.takeIf { !it.isDirectory && (canBeNotAvailable || it.isValid) }
 			markerFile = descriptorFile
+		}
+		rootName == "game" -> {
+			return doResolveRootInfo(rootFile.parent ?: return null, canBeNotAvailable)
 		}
 		else -> {
 			for(rootChild in rootFile.children) {

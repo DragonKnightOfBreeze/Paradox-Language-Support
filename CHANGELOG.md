@@ -52,7 +52,7 @@
 ## 0.7.9
 
 * BUG修复
-  * [ ] 修复：[Cannot choose path for library using CK3 #7](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/7)
+  * [X] 修复：[Cannot choose path for library using CK3 #7](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/7)
 * 新增功能
   * 快速文档
     * [ ] 如果存在，在快速文档中显示作用域上下文信息（参考CWTools的实现）
