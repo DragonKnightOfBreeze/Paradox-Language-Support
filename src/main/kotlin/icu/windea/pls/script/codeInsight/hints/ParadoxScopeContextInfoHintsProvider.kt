@@ -22,8 +22,8 @@ import javax.swing.*
  * 定义或定义成员的作用域上下文信息的内嵌提示（`this = ? root = ? from = ?`）。
  */
 @Suppress("UnstableApiUsage")
-class ParadoxScopeContextInfoHintsProvider: ParadoxScriptHintsProvider<Settings>() {
-	companion object{
+class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
+	companion object {
 		private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxScopeContextInfoHintsSettingsKey")
 	}
 	
@@ -40,7 +40,8 @@ class ParadoxScopeContextInfoHintsProvider: ParadoxScriptHintsProvider<Settings>
 	override fun createConfigurable(settings: Settings): ImmediateConfigurable {
 		return object : ImmediateConfigurable {
 			override fun createComponent(listener: ChangeListener): JComponent = panel {
-				row { checkBox(PlsBundle.message("script.hints.scopeContext.settings.showOnlyIfChanged"))
+				row {
+					checkBox(PlsBundle.message("script.hints.scopeContext.settings.showOnlyIfChanged"))
 						.bindSelected(settings::showOnlyIfChanged)
 				}
 			}
@@ -55,16 +56,16 @@ class ParadoxScopeContextInfoHintsProvider: ParadoxScriptHintsProvider<Settings>
 		val offset = leftCurlyBrace.textRange.endOffset
 		val isAtLineEnd = editor.document.isAtLineEnd(offset, true)
 		if(!isAtLineEnd) return true //仅当作为子句开始的左花括号位于行尾时，才显示此内嵌提示
-		val scopeInfo = ScopeConfigHandler.getScopeContext(element, file)
-		if(scopeInfo != null) {
-			//don't need show
-			if(settings.showOnlyIfChanged && scopeInfo.thisScope == scopeInfo.prev?.thisScope) return true
+		val scopeContext = ScopeConfigHandler.getScopeContext(element, file)
+		if(scopeContext != null) {
+			//don't need show if scope is not changed
+			if(settings.showOnlyIfChanged && !ScopeConfigHandler.isScopeContextChanged(element, scopeContext, file)) return true
 			//do not show on definition level it scope context is not from type config
-			if(!scopeInfo.fromTypeConfig && element.definitionInfo != null) return true
+			if(!ScopeConfigHandler.hasScopeContext(element, scopeContext)) return true
 			
 			val gameType = selectGameType(file) ?: return true
 			val configGroup = getCwtConfig(file.project).getValue(gameType)
-			val presentation = collectScopeContext(scopeInfo, configGroup)
+			val presentation = collectScopeContext(scopeContext, configGroup)
 			val finalPresentation = presentation.toFinalPresentation(this, file.project)
 			sink.addInlineElement(offset, true, finalPresentation, true)
 		}
@@ -74,7 +75,7 @@ class ParadoxScopeContextInfoHintsProvider: ParadoxScriptHintsProvider<Settings>
 	private fun PresentationFactory.collectScopeContext(scopeInfo: ParadoxScopeConfig, configGroup: CwtConfigGroup): InlayPresentation {
 		val presentations = mutableListOf<InlayPresentation>()
 		val (thisScope, rootScope, fromScope) = scopeInfo
-		presentations.add(smallText("> this = "))
+		presentations.add(smallText("this = "))
 		presentations.add(scopeLinkPresentation(thisScope, configGroup))
 		if(rootScope != null) {
 			presentations.add(smallText(" root = "))
@@ -88,11 +89,12 @@ class ParadoxScopeContextInfoHintsProvider: ParadoxScriptHintsProvider<Settings>
 	}
 	
 	private fun PresentationFactory.scopeLinkPresentation(scope: String, configGroup: CwtConfigGroup): InlayPresentation {
-		if(scope == ScopeConfigHandler.unknownScopeId || scope == ScopeConfigHandler.anyScopeId) {
-			return smallText(scope)
+		val scopeId = ScopeConfigHandler.getScopeId(scope)
+		if(scopeId == ScopeConfigHandler.unknownScopeId || scopeId == ScopeConfigHandler.anyScopeId) {
+			return smallText(scopeId)
 		}
-		return psiSingleReference(smallText(scope)) {
-			val scopeLink = configGroup.scopeAliasMap[scope]
+		return psiSingleReference(smallText(scopeId)) {
+			val scopeLink = configGroup.scopeAliasMap[scopeId]
 			scopeLink?.pointer?.element
 		}
 	}

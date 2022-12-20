@@ -22,17 +22,24 @@ object ScopeConfigHandler {
 	const val allScopeId = "all"
 	
 	/**
+	 * 得到作用域的ID（用于显示在内嵌提示中，全小写+下划线）。
+	 */
+	fun getScopeId(scope: String) : String {
+		return scope.lowercase().replace(' ', '_')
+	}
+	
+	/**
 	 * 得到作用域的名字（用于显示在快速文档中）。
 	 */
 	@JvmStatic
-	fun getScopeName(scopeId: String, configGroup: CwtConfigGroup): String {
+	fun getScopeName(scope: String, configGroup: CwtConfigGroup): String {
 		//handle "any" and "all" scope 
-		if(scopeId.equals("any", true)) return "Any"
-		if(scopeId.equals("all", true)) return "All"
+		if(scope.equals("any", true)) return "Any"
+		if(scope.equals("all", true)) return "All"
 		//a scope may not have aliases, or not defined in scopes.cwt
-		return configGroup.scopes[scopeId]?.name
-			?: configGroup.scopeAliasMap[scopeId]?.name
-			?: scopeId.toCapitalizedWords()
+		return configGroup.scopes[scope]?.name
+			?: configGroup.scopeAliasMap[scope]?.name
+			?: scope.toCapitalizedWords()
 	}
 	
 	fun matchesScope(scopeId: String?, scopesToMatch: Collection<String>?, configGroup: CwtConfigGroup): Boolean {
@@ -49,10 +56,27 @@ object ScopeConfigHandler {
 	//	return scopes.any { scope -> matchScope(scope, scopesToMatch, configGroup) }
 	//}
 	
-	//fun isScopeContextEntry(element: ParadoxScriptMemberElement) :Boolean {
-	//	//用于过滤在那些地方（所在行的末尾）显示作用域上下文的内嵌提示
-	//	return element is ParadoxScriptProperty && element.propertyValue is ParadoxScriptBlock
-	//}
+	fun findParentMember(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
+		return element.parents(withSelf = false)
+			.find { it is ParadoxScriptDefinitionElement || (it is ParadoxScriptBlock && it.isBlockValue()) }
+			.castOrNull<ParadoxScriptMemberElement>()
+	}
+	
+	fun isScopeContextChanged(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeConfig, file: PsiFile = element.containingFile) :Boolean {
+		//does not have scope context > changed always
+		val parentMember = findParentMember(element)
+		if(parentMember == null) return true
+		val parentScopeContext = getScopeContext(parentMember, file)
+		if(parentScopeContext == null) return true
+		if(parentScopeContext !== scopeContext) return true
+		if(!hasScopeContext(parentMember, parentScopeContext)) return true
+		return false
+	}
+	
+	fun hasScopeContext(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeConfig): Boolean {
+		val isDefinition = element is ParadoxScriptDefinitionElement && element.definitionInfo != null
+		return if(isDefinition) scopeContext.fromTypeConfig else true
+	}
 	
 	fun getScopeContext(element: ParadoxScriptMemberElement, file: PsiFile = element.containingFile) : ParadoxScopeConfig? {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
@@ -89,7 +113,8 @@ object ScopeConfigHandler {
 		if(config == null) return null
 		if(config is CwtPropertyConfig && config.expression.type == CwtDataTypes.ScopeField) {
 			if(parentScopeContext == null) return null
-			return resolveScopeContextFromScopeField(element, config, parentScopeContext)
+			val scopeField = element.castOrNull<ParadoxScriptProperty>()?.propertyKey?.text ?: return null
+			return resolveScopeContextFromScopeField(scopeField, config, parentScopeContext)
 				?: resolveUnknownScopeContext(parentScopeContext)
 		}
 		val replaceScope = config.replaceScope ?: parentScopeContext
@@ -97,18 +122,11 @@ object ScopeConfigHandler {
 		return replaceScope?.resolve(pushScope)
 	}
 	
-	private fun findParentMember(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
-		return element.parents(withSelf = false)
-			.find { it is ParadoxScriptDefinitionElement || (it is ParadoxScriptBlock && it.isBlockValue()) }
-			.castOrNull<ParadoxScriptMemberElement>()
-	}
-	
 	private fun resolveUnknownScopeContext(parentScopeContext: ParadoxScopeConfig): ParadoxScopeConfig {
 		return parentScopeContext.resolve(unknownScopeId)
 	}
 	
-	private fun resolveScopeContextFromScopeField(element: ParadoxScriptMemberElement, config: CwtPropertyConfig, parentScopeContext: ParadoxScopeConfig): ParadoxScopeConfig? {
-		val text = element.text
+	private fun resolveScopeContextFromScopeField(text: String, config: CwtPropertyConfig, parentScopeContext: ParadoxScopeConfig): ParadoxScopeConfig? {
 		if(text.isLeftQuoted()) return null
 		val textRange = TextRange.create(0, text.length)
 		val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, config.info.configGroup, true) ?: return null
