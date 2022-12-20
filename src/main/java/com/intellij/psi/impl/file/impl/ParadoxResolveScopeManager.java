@@ -1,41 +1,31 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.intellij.psi.impl.file.impl;
 
-import com.intellij.ide.scratch.ScratchUtil;
-import com.intellij.injected.editor.VirtualFileWindow;
-import com.intellij.model.ModelBranch;
-import com.intellij.model.ModelBranchImpl;
-import com.intellij.openapi.Disposable;
-import com.intellij.openapi.application.ReadAction;
+import com.intellij.ide.scratch.*;
+import com.intellij.injected.editor.*;
+import com.intellij.model.*;
+import com.intellij.openapi.*;
+import com.intellij.openapi.application.*;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.progress.ProgressIndicatorProvider;
-import com.intellij.openapi.project.Project;
+import com.intellij.openapi.progress.*;
+import com.intellij.openapi.project.*;
 import com.intellij.openapi.roots.*;
-import com.intellij.openapi.roots.impl.CustomEntityProjectModelInfoProvider;
-import com.intellij.openapi.roots.impl.LibraryScopeCache;
-import com.intellij.openapi.vfs.VfsUtilCore;
-import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.roots.impl.*;
+import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.AnyPsiChangeListener;
-import com.intellij.psi.impl.ResolveScopeManager;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.PsiSearchScopeUtil;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.testFramework.LightVirtualFile;
-import com.intellij.util.containers.ConcurrentFactoryMap;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.indexing.AdditionalIndexableFileSet;
-import com.intellij.workspaceModel.ide.WorkspaceModel;
-import com.intellij.workspaceModel.storage.EntityStorage;
-import com.intellij.workspaceModel.storage.WorkspaceEntity;
-import kotlin.sequences.Sequence;
-import kotlin.sequences.SequencesKt;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.impl.*;
+import com.intellij.psi.search.*;
+import com.intellij.testFramework.*;
+import com.intellij.util.containers.*;
+import com.intellij.util.indexing.*;
+import com.intellij.workspaceModel.ide.*;
+import com.intellij.workspaceModel.storage.*;
 import icu.windea.pls.core.*;
+import kotlin.sequences.*;
+import org.jetbrains.annotations.*;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.intellij.psi.impl.PsiManagerImpl.ANY_PSI_CHANGE_TOPIC;
 
@@ -45,8 +35,11 @@ import static com.intellij.psi.impl.PsiManagerImpl.ANY_PSI_CHANGE_TOPIC;
  * 默认情况下，无法从项目文件中的声明导航到库中的引用，除非对应的库已导出，
  * 这里覆盖了默认的实现逻辑，当必要时，得到的使用作用域也包含模块的依赖中的文件
  * <p>
- * （见<code>Project Structure > Project Settings > Modules</code>）
+ * 参见：<code>Project Structure > Project Settings > Modules</code>
+ * <p>
+ * 参见：{@link #useAllScope(com.intellij.psi.PsiElement) }
  */
+@SuppressWarnings("ALL")
 public final class ParadoxResolveScopeManager extends ResolveScopeManager implements Disposable {
   private final Project myProject;
   private final ProjectRootManager myProjectRootManager;

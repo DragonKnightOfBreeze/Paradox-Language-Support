@@ -1,32 +1,27 @@
 // Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license.
 package com.intellij.psi.impl.search;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
-import com.intellij.lang.injection.InjectedLanguageManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.lang.*;
+import com.intellij.lang.injection.*;
+import com.intellij.openapi.diagnostic.*;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.progress.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.util.*;
+import com.intellij.openapi.util.text.*;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.source.PsiFileImpl;
-import com.intellij.psi.search.TextOccurenceProcessor;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtilRt;
-import com.intellij.util.ConcurrencyUtil;
-import com.intellij.util.containers.CollectionFactory;
-import com.intellij.util.text.StringSearcher;
+import com.intellij.psi.impl.source.*;
+import com.intellij.psi.search.*;
+import com.intellij.psi.util.*;
+import com.intellij.util.*;
+import com.intellij.util.containers.*;
+import com.intellij.util.text.*;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import org.jetbrains.annotations.NotNull;
+import it.unimi.dsi.fastutil.ints.*;
+import org.jetbrains.annotations.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.function.IntPredicate;
 
 //@formatter:off
@@ -36,8 +31,9 @@ import java.util.function.IntPredicate;
  * <p>
  * {@link #checkJavaIdentifier(CharSequence, StringSearcher, int)}
  */
-public final class LowLevelSearchUtil {
-  private static final Logger LOG = Logger.getInstance(LowLevelSearchUtil.class);
+@SuppressWarnings("ALL")
+public final class ParadoxLowLevelSearchUtil {
+  private static final Logger LOG = Logger.getInstance(ParadoxLowLevelSearchUtil.class);
 
   // TRUE/FALSE -> injected psi has been discovered and processor returned true/false;
   // null -> there were nothing injected found

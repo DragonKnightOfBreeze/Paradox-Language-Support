@@ -110,3 +110,4 @@ gradle-app.setting
 hs_err_pid*
 
 tmp
+cwt/cwtools-*-config

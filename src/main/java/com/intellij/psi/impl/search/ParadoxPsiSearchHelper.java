@@ -1,80 +1,181 @@
 // Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.intellij.psi.impl.search;
 
-import com.intellij.concurrency.AsyncFuture;
-import com.intellij.concurrency.AsyncUtil;
-import com.intellij.concurrency.JobLauncher;
-import com.intellij.concurrency.SensitiveProgressWrapper;
-import com.intellij.find.ngrams.TrigramIndex;
-import com.intellij.openapi.Disposable;
-import com.intellij.openapi.application.ApplicationListener;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ReadAction;
-import com.intellij.openapi.application.ReadActionProcessor;
-import com.intellij.openapi.application.ex.ApplicationEx;
-import com.intellij.openapi.application.ex.ApplicationManagerEx;
-import com.intellij.openapi.application.ex.ApplicationUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.extensions.ExtensionPointName;
+import com.intellij.concurrency.*;
+import com.intellij.find.ngrams.*;
+import com.intellij.openapi.*;
+import com.intellij.openapi.application.*;
+import com.intellij.openapi.application.ex.*;
+import com.intellij.openapi.diagnostic.*;
+import com.intellij.openapi.extensions.*;
 import com.intellij.openapi.progress.*;
-import com.intellij.openapi.progress.impl.CoreProgressManager;
-import com.intellij.openapi.progress.util.ProgressWrapper;
-import com.intellij.openapi.progress.util.TooManyUsagesStatus;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.DumbUtil;
-import com.intellij.openapi.project.IndexNotReadyException;
-import com.intellij.openapi.project.Project;
+import com.intellij.openapi.progress.impl.*;
+import com.intellij.openapi.progress.util.*;
+import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
-import com.intellij.openapi.util.registry.Registry;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.util.text.TrigramBuilder;
-import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.util.registry.*;
+import com.intellij.openapi.util.text.*;
+import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.PsiManagerEx;
-import com.intellij.psi.impl.cache.CacheManager;
-import com.intellij.psi.impl.cache.impl.id.IdIndex;
-import com.intellij.psi.impl.cache.impl.id.IdIndexEntry;
+import com.intellij.psi.impl.*;
+import com.intellij.psi.impl.cache.*;
+import com.intellij.psi.impl.cache.impl.id.*;
 import com.intellij.psi.search.*;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.Processor;
-import com.intellij.util.Processors;
-import com.intellij.util.SmartList;
-import com.intellij.util.codeInsight.CommentUtilCore;
-import com.intellij.util.containers.CollectionFactory;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.indexing.DumbModeAccessType;
-import com.intellij.util.indexing.FileBasedIndex;
-import com.intellij.util.indexing.IndexingBundle;
-import com.intellij.util.text.StringSearcher;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
-import it.unimi.dsi.fastutil.ints.IntSets;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.util.*;
+import com.intellij.util.*;
+import com.intellij.util.codeInsight.*;
+import com.intellij.util.containers.*;
+import com.intellij.util.indexing.*;
+import com.intellij.util.text.*;
+import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.objects.*;
+import org.jetbrains.annotations.*;
 
-import java.io.IOException;
+import java.io.*;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.*;
+import java.util.stream.*;
 
 //@formatter:off
 
+@SuppressWarnings("ALL")
 public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSearchHelper {
+  private static final ExtensionPointName<ScopeOptimizer> USE_SCOPE_OPTIMIZER_EP_NAME = ExtensionPointName.create("com.intellij.useScopeOptimizer");
+  
   public static final Logger LOG = Logger.getInstance(ParadoxPsiSearchHelper.class);
   private final PsiManagerEx myManager;
   private final DumbService myDumbService;
   
+  @Override
+  public @NotNull SearchScope getUseScope(@NotNull PsiElement element) {
+    return getUseScope(element, false);
+  }
+
+  @Override
+  public @NotNull SearchScope getCodeUsageScope(@NotNull PsiElement element) {
+    return getUseScope(element, true);
+  }
+
+  private static @NotNull SearchScope getUseScope(@NotNull PsiElement element, boolean restrictToCodeUsageScope) {
+    SearchScope scope = PsiSearchScopeUtil.USE_SCOPE_KEY.get(element.getContainingFile());
+    if (scope != null) return scope;
+    scope = element.getUseScope();
+    for (UseScopeEnlarger enlarger : UseScopeEnlarger.EP_NAME.getExtensions()) {
+      ProgressManager.checkCanceled();
+      SearchScope additionalScope = null;
+      try {
+        additionalScope = enlarger.getAdditionalUseScope(element);
+      }
+      catch (IndexNotReadyException pce) {
+        LOG.debug("ProcessCancelledException thrown while getUseScope() calculation", pce);
+      }
+      if (additionalScope != null) {
+        scope = scope.union(additionalScope);
+      }
+    }
+
+    scope = restrictScope(scope, USE_SCOPE_OPTIMIZER_EP_NAME.getExtensions(), element);
+    if (restrictToCodeUsageScope) {
+      scope = restrictScope(scope, CODE_USAGE_SCOPE_OPTIMIZER_EP_NAME.getExtensions(), element);
+    }
+
+    return scope;
+  }
+
+  private static @NotNull SearchScope restrictScope(@NotNull SearchScope baseScope,
+                                                    @NotNull ScopeOptimizer @NotNull [] optimizers,
+                                                    @NotNull PsiElement element) {
+    SearchScope scopeToRestrict = ScopeOptimizer.calculateOverallRestrictedUseScope(optimizers, element);
+    if (scopeToRestrict != null) {
+      return baseScope.intersectWith(scopeToRestrict);
+    }
+
+    return baseScope;
+  }
+
   public ParadoxPsiSearchHelper(@NotNull Project project) {
     super(project);
     myManager = PsiManagerEx.getInstanceEx(project);
     myDumbService = DumbService.getInstance(myManager.getProject());
   }
-  
+
+  @Override
+  public PsiElement @NotNull [] findCommentsContainingIdentifier(@NotNull String identifier, @NotNull SearchScope searchScope) {
+    List<PsiElement> result = Collections.synchronizedList(new ArrayList<>());
+    Processor<PsiElement> processor = Processors.cancelableCollectProcessor(result);
+    processCommentsContainingIdentifier(identifier, searchScope, processor);
+    return PsiUtilCore.toPsiElementArray(result);
+  }
+
+  @Override
+  public boolean processCommentsContainingIdentifier(@NotNull String identifier,
+                                                     @NotNull SearchScope searchScope,
+                                                     @NotNull Processor<? super PsiElement> processor) {
+    TextOccurenceProcessor occurrenceProcessor = (element, offsetInElement) -> {
+      if (CommentUtilCore.isCommentTextElement(element) && element.findReferenceAt(offsetInElement) == null) {
+        return processor.process(element);
+      }
+      return true;
+    };
+    return processElementsWithWord(occurrenceProcessor, searchScope, identifier, UsageSearchContext.IN_COMMENTS, true);
+  }
+
+  @Override
+  public boolean processElementsWithWord(@NotNull TextOccurenceProcessor processor,
+                                         @NotNull SearchScope searchScope,
+                                         @NotNull String text,
+                                         short searchContext,
+                                         boolean caseSensitive) {
+    return processElementsWithWord(processor, searchScope, text, searchContext, caseSensitive, shouldProcessInjectedPsi(searchScope));
+  }
+
+  @Override
+  public boolean processElementsWithWord(@NotNull TextOccurenceProcessor processor,
+                                         @NotNull SearchScope searchScope,
+                                         @NotNull String text,
+                                         short searchContext,
+                                         boolean caseSensitive,
+                                         boolean processInjectedPsi) {
+    EnumSet<Options> options = makeOptions(caseSensitive, processInjectedPsi);
+
+    return processElementsWithWord(searchScope, text, searchContext, options, null, new SearchSession(), processor);
+  }
+
+  @Override
+  public boolean hasIdentifierInFile(@NotNull PsiFile file, @NotNull String name) {
+    PsiUtilCore.ensureValid(file);
+    if (file.getVirtualFile() == null || DumbService.isDumb(file.getProject())) {
+      return StringUtil.contains(file.getViewProvider().getContents(), name);
+    }
+
+    // TODO: direct forward index access is not used right now since IdIndex shared index doesn't have forward index
+    GlobalSearchScope fileScope = GlobalSearchScope.fileScope(file);
+    IdIndexEntry key = new IdIndexEntry(name, true);
+    return !FileBasedIndex.getInstance().getContainingFiles(IdIndex.NAME, key, fileScope).isEmpty();
+  }
+
+  @NotNull
+  private static EnumSet<Options> makeOptions(boolean caseSensitive, boolean processInjectedPsi) {
+    EnumSet<Options> options = EnumSet.of(Options.PROCESS_ONLY_JAVA_IDENTIFIERS_IF_POSSIBLE);
+    if (caseSensitive) options.add(Options.CASE_SENSITIVE_SEARCH);
+    if (processInjectedPsi) options.add(Options.PROCESS_INJECTED_PSI);
+    return options;
+  }
+
+  @NotNull
+  @Override
+  public AsyncFuture<Boolean> processElementsWithWordAsync(@NotNull TextOccurenceProcessor processor,
+                                                           @NotNull SearchScope searchScope,
+                                                           @NotNull String text,
+                                                           short searchContext,
+                                                           boolean caseSensitively) {
+    boolean result = processElementsWithWord(processor, searchScope, text, searchContext, caseSensitively,
+                                             shouldProcessInjectedPsi(searchScope));
+    return AsyncUtil.wrapBoolean(result);
+  }
+
   public boolean processElementsWithWord(@NotNull SearchScope searchScope,
                                          @NotNull String text,
                                          short searchContext,
@@ -82,8 +183,8 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
                                          @Nullable String containerName,
                                          @NotNull SearchSession session,
                                          @NotNull TextOccurenceProcessor processor) {
-    return bulkProcessElementsWithWord(searchScope, text, searchContext, options, containerName, session, (scope, offsetsInScope, searcher) ->
-      LowLevelSearchUtil.processElementsAtOffsets(scope, searcher, options.contains(Options.PROCESS_INJECTED_PSI), getOrCreateIndicator(),
+    return bulkProcessElementsWithWord(searchScope, text, searchContext, options, containerName, session, (ParadoxBulkOccurrenceProcessor) (scope, offsetsInScope, searcher) ->
+      ParadoxLowLevelSearchUtil.processElementsAtOffsets(scope, searcher, options.contains(Options.PROCESS_INJECTED_PSI), getOrCreateIndicator(),
                                                   offsetsInScope, processor));
   }
 
@@ -93,7 +194,7 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
                                       @NotNull EnumSet<Options> options,
                                       @Nullable String containerName,
                                       @NotNull SearchSession session,
-                                      @NotNull BulkOccurrenceProcessor processor) {
+                                      @NotNull ParadoxBulkOccurrenceProcessor processor) {
     if (text.isEmpty()) {
       throw new IllegalArgumentException("Cannot search for elements with empty text");
     }
@@ -127,7 +228,7 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
           LOG.debug("Element " + scopeElement + " of class " + scopeElement.getClass() + " has null range");
           return true;
         }
-        return processor.execute(scopeElement, LowLevelSearchUtil.getTextOccurrencesInScope(scopeElement, searcher), searcher);
+        return processor.execute(scopeElement, ParadoxLowLevelSearchUtil.getTextOccurrencesInScope(scopeElement, searcher), searcher);
       }
 
       @Override
@@ -139,23 +240,19 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
   }
 
   @NotNull
-  private static EnumSet<Options> makeOptions(boolean caseSensitive, boolean processInjectedPsi) {
-    EnumSet<Options> options = EnumSet.of(Options.PROCESS_ONLY_JAVA_IDENTIFIERS_IF_POSSIBLE);
-    if (caseSensitive) options.add(Options.CASE_SENSITIVE_SEARCH);
-    if (processInjectedPsi) options.add(Options.PROCESS_INJECTED_PSI);
-    return options;
-  }
-  
-  @NotNull
   private static ProgressIndicator getOrCreateIndicator() {
     ProgressIndicator progress = ProgressIndicatorProvider.getGlobalProgressIndicator();
     if (progress == null) progress = new EmptyProgressIndicator();
     progress.setIndeterminate(false);
     return progress;
   }
-  
+
+  public static boolean shouldProcessInjectedPsi(@NotNull SearchScope scope) {
+    return !(scope instanceof LocalSearchScope) || !((LocalSearchScope)scope).isIgnoreInjectedPsi();
+  }
+
   @NotNull
-  static Processor<PsiElement> localProcessor(@NotNull StringSearcher searcher, @NotNull BulkOccurrenceProcessor processor) {
+  static Processor<PsiElement> localProcessor(@NotNull StringSearcher searcher, @NotNull ParadoxBulkOccurrenceProcessor processor) {
     return new ReadActionProcessor<>() {
       @Override
       public boolean processInReadAction(PsiElement scopeElement) {
@@ -165,7 +262,7 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
         }
 
         return scopeElement.isValid() &&
-               processor.execute(scopeElement, LowLevelSearchUtil.getTextOccurrencesInScope(scopeElement, searcher), searcher);
+               processor.execute(scopeElement, ParadoxLowLevelSearchUtil.getTextOccurrencesInScope(scopeElement, searcher), searcher);
       }
 
       @Override
@@ -182,7 +279,7 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
                                                        @Nullable String containerName,
                                                        @NotNull SearchSession session,
                                                        @NotNull ProgressIndicator progress,
-                                                       @NotNull BulkOccurrenceProcessor processor) {
+                                                       @NotNull ParadoxBulkOccurrenceProcessor processor) {
     progress.setIndeterminate(false);
     progress.pushState();
     try {
@@ -455,7 +552,41 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
                                 @NotNull Collection<? super VirtualFile> result) {
     processCandidateFilesForText(scope, searchContext, caseSensitively, text, Processors.cancelableCollectProcessor(result));
   }
-  
+
+  public boolean processCandidateFilesForText(@NotNull GlobalSearchScope scope,
+                                              short searchContext,
+                                              boolean caseSensitively,
+                                              boolean useOnlyWordHashToSearch,
+                                              @NotNull String text,
+                                              @NotNull Processor<? super VirtualFile> processor) {
+    return processFilesContainingAllKeys(myManager.getProject(), scope, processor,
+                                         TextIndexQuery.fromWord(text, caseSensitively, useOnlyWordHashToSearch, searchContext));
+  }
+
+  @Override
+  public boolean processCandidateFilesForText(@NotNull GlobalSearchScope scope,
+                                              short searchContext,
+                                              boolean caseSensitively,
+                                              @NotNull String text,
+                                              @NotNull Processor<? super VirtualFile> processor) {
+    return processCandidateFilesForText(scope, searchContext, caseSensitively, false, text, processor);
+  }
+
+  @Override
+  public PsiFile @NotNull [] findFilesWithPlainTextWords(@NotNull String word) {
+    return CacheManager.getInstance(myManager.getProject()).getFilesWithWord(word, UsageSearchContext.IN_PLAIN_TEXT,
+                                                                             GlobalSearchScope.projectScope(myManager.getProject()),
+                                                                             true);
+  }
+
+
+  @Override
+  public boolean processUsagesInNonJavaFiles(@NotNull String qName,
+                                             @NotNull PsiNonJavaFileReferenceProcessor processor,
+                                             @NotNull GlobalSearchScope searchScope) {
+    return processUsagesInNonJavaFiles(null, qName, processor, searchScope);
+  }
+
   @Override
   public boolean processUsagesInNonJavaFiles(@Nullable PsiElement originalElement,
                                              @NotNull String qName,
@@ -496,7 +627,7 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
 
         CharSequence text = ReadAction.compute(() -> psiFile.getViewProvider().getContents());
 
-        LowLevelSearchUtil.processTexts(text, 0, text.length(), searcher, index -> {
+        ParadoxLowLevelSearchUtil.processTexts(text, 0, text.length(), searcher, index -> {
           boolean isReferenceOK = myDumbService.runReadActionInSmartMode(() -> {
             PsiReference referenceAt = psiFile.findReferenceAt(index);
             return referenceAt == null || useScope == null || !PsiSearchScopeUtil.isInScope(useScope.intersectWith(initialScope), psiFile);
@@ -549,7 +680,7 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
     return CacheManager.getInstance(myManager.getProject()).processFilesWithWord(processor, word, UsageSearchContext.IN_STRINGS, scope, true);
   }
 
-  private static final class RequestWithProcessor implements WordRequestInfo {
+  private static final class RequestWithProcessor implements ParadoxWordRequestInfo {
     @NotNull private final PsiSearchRequest request;
     @NotNull private Processor<? super PsiReference> refProcessor;
 
@@ -607,7 +738,48 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
       return request.containerName;
     }
   }
-  
+
+  @Override
+  public boolean processRequests(@NotNull SearchRequestCollector collector, @NotNull Processor<? super PsiReference> processor) {
+    Map<SearchRequestCollector, Processor<? super PsiReference>> collectors = new HashMap<>();
+    collectors.put(collector, processor);
+
+    ProgressIndicator progress = getOrCreateIndicator();
+    if (appendCollectorsFromQueryRequests(progress, collectors) == QueryRequestsRunResult.STOPPED) {
+      return false;
+    }
+    do {
+      Map<TextIndexQuery, Collection<RequestWithProcessor>> globals = new HashMap<>();
+      List<Computable<Boolean>> customs = new ArrayList<>();
+      Set<RequestWithProcessor> locals = new LinkedHashSet<>();
+      Map<RequestWithProcessor, Processor<? super PsiElement>> localProcessors = new HashMap<>();
+      distributePrimitives(collectors, locals, globals, customs, localProcessors);
+      if (!processGlobalRequestsOptimized(globals, progress, localProcessors)) {
+        return false;
+      }
+      for (RequestWithProcessor local : locals) {
+        progress.checkCanceled();
+        if (!processSingleRequest(local.request, local.refProcessor)) {
+          return false;
+        }
+      }
+      for (Computable<Boolean> custom : customs) {
+        progress.checkCanceled();
+        if (!custom.compute()) {
+          return false;
+        }
+      }
+      QueryRequestsRunResult result = appendCollectorsFromQueryRequests(progress, collectors);
+      if (result == QueryRequestsRunResult.STOPPED) {
+        return false;
+      }
+      else if (result == QueryRequestsRunResult.UNCHANGED) {
+        return true;
+      }
+    }
+    while (true);
+  }
+
   @NotNull
   @Override
   public AsyncFuture<Boolean> processRequestsAsync(@NotNull SearchRequestCollector collector, @NotNull Processor<? super PsiReference> processor) {
@@ -641,7 +813,79 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
     }
     return changed ? QueryRequestsRunResult.CHANGED : QueryRequestsRunResult.UNCHANGED;
   }
-  
+
+  private boolean processGlobalRequestsOptimized(@NotNull Map<TextIndexQuery, Collection<RequestWithProcessor>> singles,
+                                                 @NotNull ProgressIndicator progress,
+                                                 @NotNull Map<RequestWithProcessor, Processor<? super PsiElement>> localProcessors) {
+    if (singles.isEmpty()) {
+      return true;
+    }
+
+    if (singles.size() == 1) {
+      Collection<RequestWithProcessor> requests = singles.values().iterator().next();
+      if (requests.size() == 1) {
+        RequestWithProcessor theOnly = requests.iterator().next();
+        return processSingleRequest(theOnly.request, theOnly.refProcessor);
+      }
+    }
+
+    return doProcessGlobalRequests(singles, progress, localProcessors);
+  }
+
+  <T extends ParadoxWordRequestInfo> boolean doProcessGlobalRequests(@NotNull Map<TextIndexQuery, Collection<T>> singles,
+                                                            @NotNull ProgressIndicator progress,
+                                                            @NotNull Map<T, Processor<? super PsiElement>> localProcessors) {
+    progress.pushState();
+    progress.setText(IndexingBundle.message("psi.scanning.files.progress"));
+    boolean result;
+
+    try {
+      // files which are target of the search
+      Map<VirtualFile, Collection<T>> targetFiles = new HashMap<>();
+      // directories in which target files are contained
+      Map<VirtualFile, Collection<T>> nearDirectoryFiles = new HashMap<>();
+      // intersectionCandidateFiles holds files containing words from all requests in `singles` and words in corresponding container names
+      Map<VirtualFile, Collection<T>> intersectionCandidateFiles = new HashMap<>();
+      // restCandidateFiles holds files containing words from all requests in `singles` but EXCLUDING words in corresponding container names
+      Map<VirtualFile, Collection<T>> restCandidateFiles = new HashMap<>();
+      int totalSize = collectFiles(singles, targetFiles, nearDirectoryFiles, intersectionCandidateFiles, restCandidateFiles);
+
+      if (totalSize == 0) {
+        return true;
+      }
+
+      Set<String> allWords = new TreeSet<>();
+      for (ParadoxWordRequestInfo singleRequest : localProcessors.keySet()) {
+        ProgressManager.checkCanceled();
+        allWords.add(singleRequest.getWord());
+      }
+      progress.setText(IndexingBundle.message("psi.search.for.word.progress", concat(allWords), totalSize));
+
+      int alreadyProcessedFiles = 0;
+      if (!targetFiles.isEmpty()) {
+        result = processCandidates(localProcessors, targetFiles, progress, totalSize, alreadyProcessedFiles);
+        if (!result) return false;
+        alreadyProcessedFiles += targetFiles.size();
+      }
+      if (!nearDirectoryFiles.isEmpty()) {
+        result = processCandidates(localProcessors, nearDirectoryFiles, progress, totalSize, alreadyProcessedFiles);
+        if (!result) return false;
+        alreadyProcessedFiles += nearDirectoryFiles.size();
+      }
+      if (!intersectionCandidateFiles.isEmpty()) {
+        result = processCandidates(localProcessors, intersectionCandidateFiles, progress, totalSize, alreadyProcessedFiles);
+        if (!result) return false;
+        alreadyProcessedFiles += intersectionCandidateFiles.size();
+      }
+      result = processCandidates(localProcessors, restCandidateFiles, progress, totalSize, alreadyProcessedFiles);
+    }
+    finally {
+      progress.popState();
+    }
+
+    return result;
+  }
+
   private <T> boolean processCandidates(@NotNull Map<T, Processor<? super PsiElement>> localProcessors,
                                         @NotNull Map<VirtualFile, Collection<T>> candidateFiles,
                                         @NotNull ProgressIndicator progress,
@@ -680,12 +924,12 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
   }
 
   @NotNull
-  private static BulkOccurrenceProcessor adaptProcessor(@NotNull PsiSearchRequest singleRequest,
+  private static ParadoxBulkOccurrenceProcessor adaptProcessor(@NotNull PsiSearchRequest singleRequest,
                                                         @NotNull Processor<? super PsiReference> consumer) {
     SearchScope searchScope = singleRequest.searchScope;
     boolean ignoreInjectedPsi = searchScope instanceof LocalSearchScope && ((LocalSearchScope)searchScope).isIgnoreInjectedPsi();
     RequestResultProcessor wrapped = singleRequest.processor;
-    return new BulkOccurrenceProcessor() {
+    return new ParadoxBulkOccurrenceProcessor() {
       @Override
       public boolean execute(@NotNull PsiElement scope, int @NotNull [] offsetsInScope, @NotNull StringSearcher searcher) {
         ProgressManager.checkCanceled();
@@ -693,7 +937,7 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
           return ((RequestResultProcessor.BulkResultProcessor)wrapped).processTextOccurrences(scope, offsetsInScope, consumer);
         }
 
-        return LowLevelSearchUtil.processElementsAtOffsets(scope, searcher, !ignoreInjectedPsi,
+        return ParadoxLowLevelSearchUtil.processElementsAtOffsets(scope, searcher, !ignoreInjectedPsi,
                                                            getOrCreateIndicator(), offsetsInScope,
                                                            (element, offsetInElement) -> {
             if (ignoreInjectedPsi && element instanceof PsiLanguageInjectionHost) return true;
@@ -707,15 +951,78 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
       }
     };
   }
-  
+
+  // returns total size
+  private <T extends ParadoxWordRequestInfo> int collectFiles(@NotNull Map<TextIndexQuery, Collection<T>> singles,
+                                                       @NotNull Map<VirtualFile, Collection<T>> targetFiles,
+                                                       @NotNull Map<VirtualFile, Collection<T>> nearDirectoryFiles,
+                                                       @NotNull Map<VirtualFile, Collection<T>> containerNameFiles,
+                                                       @NotNull Map<VirtualFile, Collection<T>> restFiles) {
+    for (Map.Entry<TextIndexQuery, Collection<T>> entry : singles.entrySet()) {
+      ProgressManager.checkCanceled();
+      TextIndexQuery key = entry.getKey();
+      if (key.isEmpty()) {
+        continue;
+      }
+      Collection<T> processors = entry.getValue();
+      GlobalSearchScope commonScope = uniteScopes(processors);
+      // files which are target of the search
+      Set<VirtualFile> thisTargetFiles = ReadAction.compute(() -> processors.stream().flatMap(p -> p.getSearchSession().getTargetVirtualFiles().stream()).filter(commonScope::contains).collect(Collectors.toSet()));
+      // directories in which target files are contained
+      Set<VirtualFile> thisTargetDirectories = ContainerUtil.map2SetNotNull(thisTargetFiles, f -> f.getParent());
+      Set<VirtualFile> intersectionWithContainerNameFiles = intersectionWithContainerNameFiles(commonScope, processors, key);
+      List<VirtualFile> allFilesForKeys = new ArrayList<>();
+      processFilesContainingAllKeys(myManager.getProject(), commonScope, Processors.cancelableCollectProcessor(allFilesForKeys), key);
+      Object2IntMap<VirtualFile> file2Mask=new Object2IntOpenHashMap<>();
+      file2Mask.defaultReturnValue(-1);
+      IntRef maskRef = new IntRef();
+      for (VirtualFile file : allFilesForKeys) {
+        ProgressManager.checkCanceled();
+        for (IdIndexEntry indexEntry : key.myIdIndexEntries) {
+          ProgressManager.checkCanceled();
+          maskRef.set(0);
+          myDumbService.runReadActionInSmartMode(
+            () -> FileBasedIndex.getInstance().processValues(IdIndex.NAME, indexEntry, file, (__, value) -> {
+              maskRef.set(value);
+              return true;
+            }, commonScope));
+          int oldMask = file2Mask.getOrDefault(file, UsageSearchContext.ANY);
+          file2Mask.put(file, oldMask & maskRef.get());
+        }
+      }
+
+      for (Object2IntMap.Entry<VirtualFile> fileEntry : file2Mask.object2IntEntrySet()) {
+        VirtualFile file = fileEntry.getKey();
+        int mask = fileEntry.getIntValue();
+        myDumbService.runReadActionInSmartMode(() -> {
+          Map<VirtualFile, Collection<T>> result =
+            thisTargetFiles.contains(file)
+            ? targetFiles
+            : thisTargetDirectories.contains(file.getParent())
+              ? nearDirectoryFiles
+              : intersectionWithContainerNameFiles != null && intersectionWithContainerNameFiles.contains(file)
+                ? containerNameFiles
+                : restFiles;
+          for (T single : processors) {
+            ProgressManager.checkCanceled();
+            if ((mask & single.getSearchContext()) != 0 && single.getSearchScope().contains(file)) {
+              result.computeIfAbsent(file, ___ -> new SmartList<>()).add(single);
+            }
+          }
+        });
+      }
+    }
+    return targetFiles.size() + nearDirectoryFiles.size() + containerNameFiles.size() + restFiles.size();
+  }
+
   @Nullable("null means we did not find common container files")
   private Set<VirtualFile> intersectionWithContainerNameFiles(@NotNull GlobalSearchScope commonScope,
-                                                              @NotNull Collection<? extends WordRequestInfo> data,
+                                                              @NotNull Collection<? extends ParadoxWordRequestInfo> data,
                                                               @NotNull TextIndexQuery query) {
     String commonName = null;
     short searchContext = 0;
     boolean caseSensitive = true;
-    for (WordRequestInfo r : data) {
+    for (ParadoxWordRequestInfo r : data) {
       ProgressManager.checkCanceled();
       String containerName = r.getContainerName();
       if (containerName != null) {
@@ -750,7 +1057,7 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
   }
 
   @NotNull
-  private static GlobalSearchScope uniteScopes(@NotNull Collection<? extends WordRequestInfo> requests) {
+  private static GlobalSearchScope uniteScopes(@NotNull Collection<? extends ParadoxWordRequestInfo> requests) {
     Set<GlobalSearchScope> scopes = ContainerUtil.map2LinkedSet(requests, r -> (GlobalSearchScope)r.getSearchScope());
     return GlobalSearchScope.union(scopes.toArray(GlobalSearchScope.EMPTY_ARRAY));
   }
@@ -787,7 +1094,7 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
         ProgressManager.checkCanceled();
         PsiSearchRequest primitive = singleRequest.request;
         StringSearcher searcher = new StringSearcher(primitive.word, primitive.caseSensitive, true, false);
-        BulkOccurrenceProcessor adapted = adaptProcessor(primitive, singleRequest.refProcessor);
+        ParadoxBulkOccurrenceProcessor adapted = adaptProcessor(primitive, singleRequest.refProcessor);
 
         Processor<PsiElement> localProcessor = localProcessor(searcher, adapted);
 
@@ -810,7 +1117,52 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
     }
     collection.add(singleRequest);
   }
-  
+
+  private boolean processSingleRequest(@NotNull PsiSearchRequest single, @NotNull Processor<? super PsiReference> consumer) {
+    EnumSet<Options> options = makeOptions(single.caseSensitive, shouldProcessInjectedPsi(single.searchScope));
+
+    return bulkProcessElementsWithWord(single.searchScope, single.word, single.searchContext, options, single.containerName,
+                                       single.getSearchSession(), adaptProcessor(single, consumer));
+  }
+
+  @NotNull
+  @Override
+  public SearchCostResult isCheapEnoughToSearch(@NotNull String name,
+                                                @NotNull GlobalSearchScope scope,
+                                                @Nullable PsiFile fileToIgnoreOccurrencesIn,
+                                                @Nullable ProgressIndicator progress) {
+    if (!ReadAction.compute(() -> scope.getUnloadedModulesBelongingToScope().isEmpty())) {
+      return SearchCostResult.TOO_MANY_OCCURRENCES;
+    }
+
+    AtomicInteger filesCount = new AtomicInteger();
+    AtomicLong filesSizeToProcess = new AtomicLong();
+
+    Processor<VirtualFile> processor = new Processor<>() {
+      private final VirtualFile virtualFileToIgnoreOccurrencesIn =
+        fileToIgnoreOccurrencesIn == null ? null : fileToIgnoreOccurrencesIn.getVirtualFile();
+      private final int maxFilesToProcess = Registry.intValue("ide.unused.symbol.calculation.maxFilesToSearchUsagesIn", 10);
+      private final int maxFilesSizeToProcess = Registry.intValue("ide.unused.symbol.calculation.maxFilesSizeToSearchUsagesIn", 524288);
+
+      @Override
+      public boolean process(VirtualFile file) {
+        ProgressManager.checkCanceled();
+        if (Comparing.equal(file, virtualFileToIgnoreOccurrencesIn)) return true;
+        int currentFilesCount = filesCount.incrementAndGet();
+        long accumulatedFileSizeToProcess = filesSizeToProcess.addAndGet(file.isDirectory() ? 0 : file.getLength());
+        return currentFilesCount < maxFilesToProcess && accumulatedFileSizeToProcess < maxFilesSizeToProcess;
+      }
+    };
+    TextIndexQuery query = TextIndexQuery.fromWord(name, true, null);
+    boolean cheap = processFilesContainingAllKeys(myManager.getProject(), scope, processor, query);
+
+    if (!cheap) {
+      return SearchCostResult.TOO_MANY_OCCURRENCES;
+    }
+
+    return filesCount.get() == 0 ? SearchCostResult.ZERO_OCCURRENCES : SearchCostResult.FEW_OCCURRENCES;
+  }
+
   private static boolean processFilesContainingAllKeys(@NotNull Project project,
                                                        @NotNull GlobalSearchScope scope,
                                                        @NotNull Processor<? super VirtualFile> processor,
@@ -842,10 +1194,116 @@ public class ParadoxPsiSearchHelper extends PsiSearchHelperImpl implements PsiSe
     }
   }
 
-  private boolean processSingleRequest(@NotNull PsiSearchRequest single, @NotNull Processor<? super PsiReference> consumer) {
-    EnumSet<Options> options = makeOptions(single.caseSensitive, shouldProcessInjectedPsi(single.searchScope));
+  @ApiStatus.Internal
+  public static final class TextIndexQuery {
+    @NotNull
+    private final Set<IdIndexEntry> myIdIndexEntries;
+    @NotNull
+    private final Set<Integer> myTrigrams;
+    @Nullable
+    private final Short myContext;
+    private final boolean myUseOnlyWeakHashToSearch;
+    private final @NotNull Collection<String> myInitialWords;
 
-    return bulkProcessElementsWithWord(single.searchScope, single.word, single.searchContext, options, single.containerName,
-        single.getSearchSession(), adaptProcessor(single, consumer));
+    private TextIndexQuery(@NotNull Set<IdIndexEntry> idIndexEntries,
+                           @NotNull Set<Integer> trigrams,
+                           @Nullable Short context,
+                           boolean useOnlyWeakHashToSearch,
+                           @NotNull Collection<String> initialWords) {
+      myIdIndexEntries = idIndexEntries;
+      myTrigrams = trigrams;
+      myContext = context;
+      myUseOnlyWeakHashToSearch = useOnlyWeakHashToSearch;
+      myInitialWords = initialWords;
+    }
+
+    @NotNull Collection<String> getInitialWords() {
+      return myInitialWords;
+    }
+
+    public boolean isEmpty() {
+      return myIdIndexEntries.isEmpty();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      TextIndexQuery query = (TextIndexQuery)o;
+      return myIdIndexEntries.equals(query.myIdIndexEntries) &&
+             myTrigrams.equals(query.myTrigrams) &&
+             Objects.equals(myContext, query.myContext);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(myIdIndexEntries, myTrigrams, myContext);
+    }
+
+    @NotNull
+    public List<FileBasedIndex.AllKeysQuery<?, ?>> toFileBasedIndexQueries() {
+      Condition<Integer> contextCondition = myContext == null ? null : matchContextCondition(myContext);
+
+      FileBasedIndex.AllKeysQuery<IdIndexEntry, Integer> idIndexQuery =
+        new FileBasedIndex.AllKeysQuery<>(IdIndex.NAME, myIdIndexEntries, contextCondition);
+
+      if (myUseOnlyWeakHashToSearch || myTrigrams.isEmpty()) {
+        // short words don't produce trigrams
+        return Collections.singletonList(idIndexQuery);
+      }
+
+      if (IdIndexEntry.useStrongerHash()) {
+        return Collections.singletonList(idIndexQuery);
+      }
+
+      FileBasedIndex.AllKeysQuery<Integer, Void> trigramIndexQuery =
+        new FileBasedIndex.AllKeysQuery<>(TrigramIndex.INDEX_ID, myTrigrams, null);
+      return Arrays.asList(idIndexQuery, trigramIndexQuery);
+    }
+
+    @NotNull
+    private static TextIndexQuery fromWord(@NotNull String word,
+                                           boolean caseSensitively,
+                                           boolean useOnlyWeakHashToSearch,
+                                           @Nullable Short context) {
+      return fromWords(Collections.singleton(word), caseSensitively, useOnlyWeakHashToSearch, context);
+    }
+
+    @NotNull
+    public static TextIndexQuery fromWord(@NotNull String word, boolean caseSensitively, @Nullable Short context) {
+      return fromWord(word, caseSensitively, false, context);
+    }
+
+    @NotNull
+    public static TextIndexQuery fromWords(@NotNull Collection<String> words,
+                                           boolean caseSensitively,
+                                           boolean useOnlyWeakHashToSearch, @Nullable Short context) {
+      Set<IdIndexEntry> keys = CollectionFactory.createSmallMemoryFootprintSet(ContainerUtil.flatMap(words, w -> getWordEntries(w, caseSensitively)));
+      IntSet trigrams;
+      if (!useOnlyWeakHashToSearch) {
+        trigrams = new IntOpenHashSet();
+        for (String word : words) {
+          trigrams.addAll(TrigramBuilder.getTrigrams(word));
+        }
+      }
+      else {
+        trigrams = IntSets.EMPTY_SET;
+      }
+
+      return new TextIndexQuery(keys, trigrams, context, useOnlyWeakHashToSearch, words);
+    }
+
+    @NotNull
+    private static List<IdIndexEntry> getWordEntries(@NotNull String name, boolean caseSensitively) {
+      List<String> words = StringUtil.getWordsInStringLongestFirst(name);
+      if (words.isEmpty()) {
+        String trimmed = name.trim();
+        if (StringUtil.isNotEmpty(trimmed)) {
+          words = Collections.singletonList(trimmed);
+        }
+      }
+      if (words.isEmpty()) return Collections.emptyList();
+      return ContainerUtil.map2List(words, word -> new IdIndexEntry(word, caseSensitively));
+    }
   }
 }
