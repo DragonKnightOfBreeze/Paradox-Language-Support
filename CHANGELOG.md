@@ -54,15 +54,15 @@
 * BUG修复
   * [ ] 修复：[Cannot choose path for library using CK3 #7](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/7)
 * 新增功能
-  * 内嵌提示（`Inlay Hints`） - 对于作用域（`scope`）
-    * 作用域上下文的内嵌提示
-    * 要求的作用域的内嵌提示
-    * 参考Kotlin Lambda内嵌提示的实现）
+  * 快速文档
+    * [ ] 如果存在，在快速文档中显示作用域上下文信息（参考CWTools的实现）
+  * 内嵌提示（`Inlay Hints`）
+    * [ ] 如果存在，提供作用域上下文的内嵌提示（参考Kotlin Lambda内嵌提示的实现）
   * 代码生成
-    * [ ] 实现工具栏动作：生成所有缺失语言区域的本地化文件
-    * [ ] 实现工具栏动作：生成所有缺失的相关本地化
+    * [ ] 实现右键菜单&项目视图&工具栏操作：从指定的本地化文件生成其他语言区域的本地化文件（考虑支持指定多个或者整个目录的情况）
   * 其他
-    * 支持内联脚本（`inline_script`）
+    * [ ] 支持解析作用域（`scope`） 
+    * [ ] 支持内联脚本（`inline_script`）
 
 ## 0.7.8
 

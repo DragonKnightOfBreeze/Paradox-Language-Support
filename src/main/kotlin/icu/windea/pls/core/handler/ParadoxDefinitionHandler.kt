@@ -347,7 +347,7 @@ object ParadoxDefinitionHandler {
 		if(propertyConfigs.isEmpty()) return true
 		if(propertyElements.isEmpty()) return false
 		
-		//要求其中所有的value的值在最终都会小于等于0
+		//要求其中所有的value的值在最终都会小于等于指定值
 		val minMap = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { it.cardinality?.min ?: 1 }) //默认为1
 		
 		//注意：propConfig.key可能有重复，这种情况下只要有其中一个匹配即可
@@ -376,7 +376,7 @@ object ParadoxDefinitionHandler {
 		if(valueConfigs.isEmpty()) return true
 		if(valueElements.isEmpty()) return false
 		
-		//要求其中所有的value的值在最终都会小于等于0
+		//要求其中所有的value的值在最终都会小于等于指定值
 		val minMap = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { it.cardinality?.min ?: 1 }) //默认为1
 		
 		for(value in valueElements) {

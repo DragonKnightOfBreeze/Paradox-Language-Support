@@ -1,8 +1,8 @@
 package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.definition.*
 import icu.windea.pls.cwt.psi.*
 
 /**
@@ -36,14 +36,14 @@ data class CwtLinkConfig(
 		if(inputAnyScope) {
 			setOf("Any")
 		} else {
-			inputScopes?.mapTo(mutableSetOf()) { CwtConfigHandler.getScopeName(it, info.configGroup) }.orEmpty()
+			inputScopes?.mapTo(mutableSetOf()) { ScopeConfigHandler.getScopeName(it, info.configGroup) }.orEmpty()
 		}
 	}
 	val outputScopeName by lazy {
 		if(outputAnyScope) {
 			"Any"
 		} else {
-			CwtConfigHandler.getScopeName(outputScope ?: "any", info.configGroup)
+			ScopeConfigHandler.getScopeName(outputScope ?: "any", info.configGroup)
 		}
 	}
 	

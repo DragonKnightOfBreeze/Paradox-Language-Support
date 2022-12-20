@@ -12,6 +12,7 @@ import com.intellij.util.*
 import icons.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.definition.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -37,30 +38,6 @@ import kotlin.text.removeSurrounding
 object CwtConfigHandler {
 	//region Misc
 	const val paramsEnumName = "scripted_effect_params"
-	
-	fun getScopeName(scopeNameOrAlias: String, configGroup: CwtConfigGroup): String {
-		//handle "any" and "all" scope 
-		if(scopeNameOrAlias.equals("any", true)) return "Any"
-		if(scopeNameOrAlias.equals("all", true)) return "All"
-		//a scope may not have aliases, or not defined in scopes.cwt
-		return configGroup.scopes[scopeNameOrAlias]?.name
-			?: configGroup.scopeAliasMap[scopeNameOrAlias]?.name
-			?: scopeNameOrAlias.toCapitalizedWords()
-	}
-	
-	fun matchesScope(scope: String?, scopesToMatch: Collection<String>?, configGroup: CwtConfigGroup): Boolean {
-		if(scope == null || scope.equals("any", true) || scope.equals("all", true)) return true
-		if(scopesToMatch.isNullOrEmpty()) return true
-		return scopesToMatch.any { s ->
-			if(s.equals("any", true) || s.equals("all", true)) return@any true
-			scope.equals(s, true) || configGroup.scopeAliasMap[scope]?.aliases?.contains(s) ?: false
-		}
-	}
-	
-	//fun matchScope(scopes: Collection<String>?, scopesToMatch: Collection<String>?, configGroup: CwtConfigGroup): Boolean {
-	//	if(scopes.isNullOrEmpty()) return true
-	//	return scopes.any { scope -> matchScope(scope, scopesToMatch, configGroup) }
-	//}
 	
 	fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
 		return propertyConfig.keyExpression.type == CwtDataTypes.AliasName
@@ -961,7 +938,7 @@ object CwtConfigHandler {
 	
 	private fun getNextScope(config: CwtConfig<*>?, scope: String?): String? {
 		if(config == null || config !is CwtDataConfig<*>) return scope
-		return config.parent?.scope ?: scope
+		return config.parent?.currentScope ?: scope
 	}
 	
 	private fun getScriptExpressionTailText(config: CwtConfig<*>?): String? {
@@ -979,7 +956,7 @@ object CwtConfigHandler {
 			val aliasConfig = aliasConfigs.firstOrNull() ?: continue
 			//假定所有同名的aliasConfig的supportedScopes都是相同的
 			//TODO alias的scope需要匹配（推断得到的scope为null时，总是提示）
-			val isScopeMatched = matchesScope(scope, aliasConfig.supportedScopes, configGroup)
+			val isScopeMatched = ScopeConfigHandler.matchesScope(scope, aliasConfig.supportedScopes, configGroup)
 			if(!isScopeMatched) continue
 			
 			//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
@@ -1005,7 +982,7 @@ object CwtConfigHandler {
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(modifierConfig in modifiers.values) {
 			//排除不匹配modifier的supported_scopes的情况
-			val isScopeMatched = scope == null || modifierConfig.categoryConfigMap.values.any { c -> matchesScope(scope, c.supportedScopes, configGroup) }
+			val isScopeMatched = scope == null || modifierConfig.categoryConfigMap.values.any { c -> ScopeConfigHandler.matchesScope(scope, c.supportedScopes, configGroup) }
 			if(!isScopeMatched) continue
 			
 			val name = modifierConfig.name
@@ -1077,7 +1054,7 @@ object CwtConfigHandler {
 		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val isScopeMatched = matchesScope(outputScope, linkConfig.inputScopes, configGroup)
+			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes, configGroup)
 			if(!isScopeMatched) continue
 			
 			val name = linkConfig.name
@@ -1106,7 +1083,7 @@ object CwtConfigHandler {
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val isScopeMatched = matchesScope(outputScope, linkConfig.inputScopes, configGroup)
+			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes, configGroup)
 			if(!isScopeMatched) continue
 			
 			val name = linkConfig.prefix ?: continue
@@ -1155,7 +1132,7 @@ object CwtConfigHandler {
 			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
 			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
 			if(prefix == null) {
-				val isScopeMatched = matchesScope(outputScope, linkConfig.inputScopes, configGroup)
+				val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes, configGroup)
 				if(!isScopeMatched) continue
 			}
 			context.put(PlsCompletionKeys.configKey, linkConfig)
@@ -1173,7 +1150,7 @@ object CwtConfigHandler {
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val isScopeMatched = matchesScope(outputScope, linkConfig.inputScopes, configGroup)
+			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes, configGroup)
 			if(!isScopeMatched) continue
 			
 			val name = linkConfig.name
@@ -1202,7 +1179,7 @@ object CwtConfigHandler {
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val isScopeMatched = matchesScope(outputScope, linkConfig.inputScopes, configGroup)
+			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes, configGroup)
 			if(!isScopeMatched) continue
 			
 			val name = linkConfig.prefix ?: continue
@@ -1259,7 +1236,7 @@ object CwtConfigHandler {
 			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
 			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
 			if(prefix == null) {
-				val isScopeMatched = matchesScope(outputScope, linkConfig.inputScopes, configGroup)
+				val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes, configGroup)
 				if(!isScopeMatched) continue
 			}
 			context.put(PlsCompletionKeys.configKey, linkConfig)
@@ -1347,7 +1324,7 @@ object CwtConfigHandler {
 		val outputScope = prevScope?.let { prevScope -> localisationLinks[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		for(linkConfig in localisationLinks.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val isScopeMatched = matchesScope(outputScope, linkConfig.inputScopes, configGroup)
+			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes, configGroup)
 			if(!isScopeMatched) continue
 			
 			val name = linkConfig.name

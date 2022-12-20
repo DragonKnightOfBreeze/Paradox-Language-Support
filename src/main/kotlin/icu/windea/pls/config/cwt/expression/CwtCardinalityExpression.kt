@@ -9,7 +9,7 @@ import icu.windea.pls.core.*
  * 示例：`"0..1"`, `"0..inf"`, `"~0..10"`
  * @property min 最小值。
  * @property max 最大值，null表示无限。
- * @property relaxMin 如果值为`false`，则当实际数量小于最小值时仅会作出警告。
+ * @property relaxMin 如果值为`false`，则当实际数量小于最小值时仅会作出（弱）警告。
  */
 class CwtCardinalityExpression private constructor(
 	expressionString: String,

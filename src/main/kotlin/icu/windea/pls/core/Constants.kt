@@ -86,12 +86,14 @@ object PlsKeys {
 	val fileInfoKey = Key.create<ParadoxFileInfo>("paradox.fileInfo")
 	val contentFileKey = Key.create<VirtualFile>("paradox.contentFile")
 	
-	val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("paradox.cachedDefinitionInfo")
-	val cachedDefinitionMemberInfoKey = Key.create<CachedValue<ParadoxDefinitionMemberInfo>>("paradox.cachedDefinitionMemberInfo")
-	val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("paradox.cachedLocalisationInfo")
-	val cachedComplexEnumValueInfoKey = Key.create<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cachedComplexEnumValueInfo")
+	val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("paradox.cached.definitionInfo")
+	val cachedDefinitionMemberInfoKey = Key.create<CachedValue<ParadoxDefinitionMemberInfo>>("paradox.cached.definitionMemberInfo")
+	val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("paradox.cached.localisationInfo")
+	val cachedComplexEnumValueInfoKey = Key.create<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cached.complexEnumValueInfo")
+	val cachedScopeContextKey = Key.create<CachedValue<ParadoxScopeConfig>>("paradox.cached.scopeContext")
 	
 	val injectedInfoKey = Key.create<List<String>>("paradox.injectedInfo")
+	
 	
 	val textColorConfigKey = Key.create<ParadoxTextColorConfig>("paradox.textColorConfig")
 	

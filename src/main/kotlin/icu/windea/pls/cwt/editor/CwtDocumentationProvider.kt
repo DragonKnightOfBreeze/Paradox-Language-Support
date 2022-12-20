@@ -302,7 +302,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		when(configType) {
 			CwtConfigType.Link -> {
 				val linkConfig = configGroup.links[name] ?: return
-				val nameToUse = CwtConfigHandler.getScopeName(name, configGroup)
+				val nameToUse = ScopeConfigHandler.getScopeName(name, configGroup)
 				val descToUse = linkConfig.desc
 				val inputScopeNames = linkConfig.inputScopeNames.joinToString { "<code>$it</code>" }
 				val outputScopeName = linkConfig.outputScopeName.let { "<code>$it</code>" }

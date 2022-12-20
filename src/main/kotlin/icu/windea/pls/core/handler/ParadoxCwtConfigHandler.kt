@@ -15,7 +15,7 @@ object ParadoxCwtConfigHandler {
 	@JvmStatic
 	fun resolveConfigs(element: PsiElement, allowDefinitionSelf: Boolean = element !is ParadoxScriptPropertyKey, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.ALL): List<CwtDataConfig<*>> {
 		return when {
-			element is ParadoxScriptProperty -> resolvePropertyConfigs(element, allowDefinitionSelf, orDefault, matchType)
+			element is ParadoxScriptDefinitionElement -> resolvePropertyConfigs(element, allowDefinitionSelf, orDefault, matchType)
 			element is ParadoxScriptPropertyKey -> resolvePropertyConfigs(element, allowDefinitionSelf, orDefault, matchType)
 			element is ParadoxScriptValue -> resolveValueConfigs(element, allowDefinitionSelf, orDefault, matchType)
 			else -> emptyList()
@@ -39,11 +39,15 @@ object ParadoxCwtConfigHandler {
 		return when(configType) {
 			CwtPropertyConfig::class.java -> {
 				val memberElement = when{
-					element is ParadoxScriptProperty -> element
+					element is ParadoxScriptDefinitionElement -> element
 					element is ParadoxScriptPropertyKey -> element.parent as? ParadoxScriptProperty ?: return emptyList()
 					else -> throw UnsupportedOperationException()
 				}
-				val valueElement = memberElement.propertyValue
+				val expression = when{
+					element is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxDataExpression.resolve(it) }
+					element is ParadoxScriptFile -> BlockParadoxDataExpression 
+					else -> null
+				}
 				val definitionMemberInfo = memberElement.definitionMemberInfo ?: return emptyList()
 				if(!allowDefinitionSelf && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
 				//如果无法匹配value，则取第一个
@@ -53,12 +57,11 @@ object ParadoxCwtConfigHandler {
 					for(config in configs) {
 						val propertyConfig = config as? CwtPropertyConfig ?: continue
 						//不完整的属性 - 不匹配值
-						if(valueElement == null) {
+						if(expression == null) {
 							add(propertyConfig)
 							continue
 						}
 						val valueExpression = propertyConfig.valueExpression
-						val expression = ParadoxDataExpression.resolve(valueElement)
 						if(CwtConfigHandler.matchesScriptExpression(expression, valueExpression, configGroup, matchType)) {
 							add(propertyConfig)
 						}
@@ -73,6 +76,7 @@ object ParadoxCwtConfigHandler {
 					element is ParadoxScriptValue -> element
 					else -> throw UnsupportedOperationException()
 				}
+				val expression = ParadoxDataExpression.resolve(valueElement)
 				val parent = element.parent
 				when(parent) {
 					//如果value是property的value
@@ -85,7 +89,6 @@ object ParadoxCwtConfigHandler {
 						buildList {
 							for(config in configs) {
 								val propertyConfig = config as? CwtPropertyConfig ?: continue
-								val expression = ParadoxDataExpression.resolve(valueElement)
 								val valueExpression = propertyConfig.valueExpression
 								if(CwtConfigHandler.matchesScriptExpression(expression, valueExpression, configGroup, matchType)) {
 									add(propertyConfig.valueConfig)
@@ -105,7 +108,6 @@ object ParadoxCwtConfigHandler {
 						val configGroup = definitionMemberInfo.configGroup
 						buildList {
 							for(childValueConfig in childValueConfigs) {
-								val expression = ParadoxDataExpression.resolve(element)
 								val valueExpression = childValueConfig.valueExpression
 								if(CwtConfigHandler.matchesScriptExpression(expression, valueExpression, configGroup, matchType)) {
 									add(childValueConfig)

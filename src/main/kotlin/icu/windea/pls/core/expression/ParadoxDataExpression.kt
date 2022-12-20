@@ -19,11 +19,19 @@ class ParadoxDataExpressionImpl(
 	companion object Resolver
 }
 
+object BlockParadoxDataExpression: AbstractExpression(PlsConstants.blockFolder), ParadoxDataExpression {
+	override val type: ParadoxDataType = ParadoxDataType.BlockType
+	override val text: String  = PlsConstants.blockFolder
+	override val quoted: Boolean = false
+	override val isKey: Boolean = false
+}
+
 fun Resolver.resolve(element: ParadoxScriptPropertyKey): ParadoxDataExpression {
 	return ParadoxDataExpressionImpl(element.value, element.type, element.text.isLeftQuoted(), true)
 }
 
 fun Resolver.resolve(element: ParadoxScriptValue): ParadoxDataExpression {
+	if(element.type == ParadoxDataType.BlockType) return BlockParadoxDataExpression
 	return ParadoxDataExpressionImpl(element.value, element.type, element.text.isLeftQuoted(), false)
 }
 

@@ -1,8 +1,8 @@
 package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.definition.*
 import icu.windea.pls.cwt.psi.*
 
 /**
@@ -31,7 +31,7 @@ data class CwtAliasConfig(
 		if(supportAnyScope) {
 			setOf("Any")
 		} else {
-			supportedScopes?.mapTo(mutableSetOf()) { CwtConfigHandler.getScopeName(it, info.configGroup) }.orEmpty()
+			supportedScopes?.mapTo(mutableSetOf()) { ScopeConfigHandler.getScopeName(it, info.configGroup) }.orEmpty()
 		}
 	}
 }

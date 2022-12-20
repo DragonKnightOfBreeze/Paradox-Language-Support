@@ -4,6 +4,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 
@@ -20,21 +21,49 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	
 	abstract override val expression: CwtDataExpression
 	
-	var parent: CwtDataConfig<*>? = null
+	@Volatile var parent: CwtDataConfig<*>? = null
 	
 	val isBlock: Boolean get() = configs != null
 	val values : List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
 	val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
 	
-	val cardinality by lazy { resolveCardinality() }
-	val scope get() = resolveScope() //不要缓存，因为parent可能有变动
-	val scopeMap get() = resolveScopeMap() //不要缓存，因为parent可能有变动
-	
-	private fun resolveCardinality(): CwtCardinalityExpression? {
-		return options?.find { it.key == "cardinality" }?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
+	//may on:
+	// * a config expression in declaration config
+	// * a config expression in subtype structure config
+	val cardinality by lazy { 
+		val option = options?.find { it.key == "cardinality" } ?: return@lazy null
+		option.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
 	}
 	
-	//TODO check
+	//may on:
+	// * a config expression in declaration config (include root expression, e.g. "army = { ... }")
+	// * a type config (e.g. "type[xxx] = { ... }")
+	// * a subtype config (e.g. "subtype[xxx] = { ... }")
+	val replaceScope by lazy {
+		val option = options?.find { it.key == "replace_scope" || it.key == "replace_scopes" } ?: return@lazy null
+		val thisScope = option.options?.find { it.key == "this" }?.stringValue ?: return@lazy null
+		val rootScope = option.options.find { it.key == "root" }?.stringValue
+		val fromScope = option.options.find { it.key == "root" }?.stringValue
+		ParadoxScopeConfig(thisScope, rootScope, fromScope)
+	}
+	
+	//may on:
+	// * a config expression in declaration config (include root expression, e.g. "army = { ... }")
+	// * a type config (e.g. "type[xxx] = { ... }")
+	// * a subtype config (e.g. "subtype[xxx] = { ... }")
+	val pushScope by lazy {
+		val option = options?.find { it.key == "push_scope" } ?: return@lazy null
+		option.stringValue
+	}
+	
+	//may on:
+	// * a config expression in declaration config
+	val scope by lazy { 
+		val option = options?.find { it.key == "scope" || it.key == "scopes" } ?: return@lazy emptySet()
+		option.stringValue?.toSingletonSet() ?: option.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue } ?: emptySet()
+	}
+	
+	val currentScope get() = resolveScope()
 	
 	private fun resolveScope(): String? {
 		//option的名字可能是：replace_scope/replace_scopes/push_scope
@@ -53,27 +82,6 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 		return options.find { it.key == "push_scope" }?.value
 			?: options.find { it.key == "replace_scope" || it.key == "replace_scopes" }?.options
 				?.find { o -> o.key == "this" }?.value
-	}
-	
-	
-	private fun resolveScopeMap(): MutableMap<String, String> {
-		//option的名字可能是：replace_scope/replace_scopes/push_scope
-		//对应的option可能位于：alias规则定义上，上一级definitionElement规则定义上，definition规则定义上，subtype规则定义上
-		val result: MutableMap<String, String> = mutableMapOf()
-		var current: CwtDataConfig<*>? = this
-		while(current != null) {
-			doResolveScopeMap(current, result)
-			current = current.parent
-		}
-		return result
-	}
-	
-	private fun doResolveScopeMap(config: CwtDataConfig<*>, scopeMap: MutableMap<String, String>) {
-		val options = config.options ?: return
-		options.find { it.key == "push_scope" }?.value?.let { scopeMap.putIfAbsent("this", it) }
-		options.find { it.key == "replace_scope" || it.key == "replace_scopes" }?.options?.let {
-			for(option in it) scopeMap.putIfAbsent(option.key, option.value)
-		}
 	}
 	
 	/** 

@@ -7,6 +7,7 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.cwt.setting.*
+import icu.windea.pls.config.definition.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
@@ -522,8 +523,8 @@ class CwtConfigGroupImpl(
 		}
 		
 		return CwtTypeConfig(
-			propertyConfig.pointer, propertyConfig.info, name,
-			path, pathStrict, pathFile, pathExtension,
+			propertyConfig.pointer, propertyConfig.info, propertyConfig,
+			name, path, pathStrict, pathFile, pathExtension,
 			nameField, nameFromFile, typePerFile, unique, severity, skipRootKey,
 			typeKeyFilter, startsWith, graphRelatedTypes, subtypes,
 			localisation, images
@@ -563,8 +564,8 @@ class CwtConfigGroupImpl(
 			}
 		}
 		return CwtSubtypeConfig(
-			propertyConfig.pointer, propertyConfig.info, name, propertyConfig,
-			typeKeyFilter, pushScope, startsWith, displayName, abbreviation, onlyIfNot
+			propertyConfig.pointer, propertyConfig.info, propertyConfig,
+			name, typeKeyFilter, pushScope, startsWith, displayName, abbreviation, onlyIfNot
 		)
 	}
 	
@@ -784,7 +785,7 @@ class CwtConfigGroupImpl(
 			if(modifierCategory.supportAnyScope) {
 				modifierCategory.supportedScopeNames.add("Any")
 			} else {
-				modifierCategory.supportedScopes?.mapTo(modifierCategory.supportedScopeNames) { CwtConfigHandler.getScopeName(it, this) }
+				modifierCategory.supportedScopes?.mapTo(modifierCategory.supportedScopeNames) { ScopeConfigHandler.getScopeName(it, this) }
 			}
 		}
 	}
