@@ -5,7 +5,9 @@ import com.intellij.usages.*
 import com.intellij.usages.impl.rules.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -24,11 +26,16 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
 				val config = resolveConfigs(element).firstOrNull() ?: return null
 				val configExpression = config.expression
 				val type = configExpression.type
+				//in invocation expression
 				if(type == CwtDataTypes.Enum && configExpression.value == CwtConfigHandler.paramsEnumName) {
 					return ParadoxUsageType.PARAMETER_REFERENCE_4
 				}
+				//in script value expression
 				if(type == CwtDataTypes.ValueField || type == CwtDataTypes.IntValueField) {
-					println()
+					val targetElement = getTargetElement(targets)
+					if(targetElement is ParadoxParameterElement) {
+						return ParadoxUsageType.PARAMETER_REFERENCE_5
+					}
 				}
 				ParadoxUsageType.FROM_CONFIG_EXPRESSION(configExpression)
 			}
@@ -47,5 +54,9 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
 			element is ParadoxLocalisationCommandField -> ParadoxUsageType.LOCALISATION_COMMAND_FIELD
 			else -> null
 		}
+	}
+	
+	private fun getTargetElement(targets: Array<out UsageTarget>): PsiElement? {
+		return targets.firstOrNull()?.castOrNull<PsiElementUsageTarget>()?.element
 	}
 }
