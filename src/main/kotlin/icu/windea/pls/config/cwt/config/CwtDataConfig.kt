@@ -44,7 +44,7 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 		val thisScope = option.options?.find { it.key == "this" }?.stringValue ?: return@lazy null
 		val rootScope = option.options.find { it.key == "root" }?.stringValue
 		val fromScope = option.options.find { it.key == "root" }?.stringValue
-		ParadoxScopeConfig(thisScope, rootScope, fromScope)
+		ParadoxScopeConfig(thisScope, rootScope ?: thisScope, fromScope)
 	}
 	
 	//may on:

@@ -395,8 +395,9 @@ class CwtConfigGroupImpl(
 		val configs = fileConfig.properties.find { it.key == "localisation_predefined_parameters" }?.properties ?: return
 		configs.forEach { property ->
 			val id = property.key
+			val mockValue = property.value
 			val description = property.documentation.orEmpty()
-			val config = CwtLocalisationPredefinedParameterConfig(property.pointer, fileConfig.info, id, description)
+			val config = CwtLocalisationPredefinedParameterConfig(property.pointer, fileConfig.info, id, mockValue, description)
 			localisationPredefinedParameters.put(id, config)
 		}
 	}

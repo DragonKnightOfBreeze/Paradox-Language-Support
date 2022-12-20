@@ -23,7 +23,7 @@ class CwtSmartEnterProcessor: SmartEnterProcessorWithFixers() {
 		override fun apply(editor: Editor, processor: CwtSmartEnterProcessor, element: PsiElement) {
 			//要求光标位于行尾（忽略空白），且位于单独的（在文件顶部或者块中，或者选项注释中的单独的）的末尾（忽略空白）
 			val caretOffset = editor.caretModel.offset
-			if(!editor.document.isAtLineEnd(caretOffset)) return
+			if(!editor.document.isAtLineEnd(caretOffset, true)) return
 			val targetElement = element
 				.parentOfTypes(CwtString::class)
 				?.takeIf { it.parent is CwtBlockElement }

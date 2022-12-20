@@ -3,7 +3,7 @@ package icu.windea.pls.core.expression.nodes
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.cwt.*
 
-interface ParadoxScopeExpressionNode: ParadoxExpressionNode{
+sealed interface ParadoxScopeExpressionNode: ParadoxExpressionNode{
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScopeExpressionNode {
 			ParadoxSystemScopeExpressionNode.resolve(text, textRange, configGroup)?.let { return it }

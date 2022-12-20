@@ -13,6 +13,7 @@ class CwtLocalisationPredefinedParameterConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigGroupInfo,
 	val id: String,
+	val mockValue: String,
 	val description: String
 ) : CwtConfig<CwtProperty> {
 	val icon: Icon get() = PlsIcons.PredefinedParameter

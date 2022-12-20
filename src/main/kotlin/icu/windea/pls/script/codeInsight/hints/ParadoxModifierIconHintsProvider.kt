@@ -33,7 +33,7 @@ class ParadoxModifierIconHintsProvider: ParadoxScriptHintsProvider<Settings>() {
 	)
 	
 	override val name: String get() = PlsBundle.message("script.hints.modifierIcon")
-	override val description: String get() = PlsBundle.message("script.hints.modifierIcon")
+	override val description: String get() = PlsBundle.message("script.hints.modifierIcon.description")
 	override val key: SettingsKey<Settings> get() = settingsKey
 	
 	override fun createSettings() = Settings()

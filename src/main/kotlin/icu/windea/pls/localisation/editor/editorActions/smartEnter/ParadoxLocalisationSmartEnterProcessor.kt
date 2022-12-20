@@ -23,7 +23,7 @@ class ParadoxLocalisationSmartEnterProcessor: SmartEnterProcessorWithFixers() {
 		override fun apply(editor: Editor, processor: ParadoxLocalisationSmartEnterProcessor, element: PsiElement) {
 			//要求光标位于行尾（忽略空白），且位于属性名（propertyKey）的末尾（忽略空白）
 			val caretOffset = editor.caretModel.offset
-			if(!editor.document.isAtLineEnd(caretOffset)) return
+			if(!editor.document.isAtLineEnd(caretOffset, true)) return
 			val targetElement = element
 				.parent.castOrNull<ParadoxLocalisationPropertyKey>()
 				//.parentOfType<ParadoxLocalisationPropertyKey>()

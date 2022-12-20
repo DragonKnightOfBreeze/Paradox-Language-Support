@@ -186,6 +186,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			buildDefinitionDefinition(element, definitionInfo, localisationTargetMap, imageTargetMap)
 			buildExtDocContent(definitionInfo)
 			buildLineCommentContent(element)
+			buildScopeContextContent(element)
 			buildParametersContent(element, definitionInfo)
 			val sections = mutableMapOf<String, String>()
 			addRelatedImageSections(imageTargetMap, sections)
@@ -359,6 +360,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				sections.put(key.toCapitalizedWords(), tag)
 			}
 		}
+	}
+	
+	private fun StringBuilder.buildScopeContextContent(element: ParadoxScriptProperty) {
+		//如果存在作用域上下文信息，则在文档中显示
+		if(!getSettings().documentation.showScopeContext) return
+		//TODO 0.7.9
 	}
 	
 	private fun StringBuilder.buildParametersContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {

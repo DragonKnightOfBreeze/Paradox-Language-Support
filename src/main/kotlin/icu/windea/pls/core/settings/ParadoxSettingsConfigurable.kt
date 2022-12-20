@@ -112,6 +112,12 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						.bindSelected(settings.documentation::renderLocalisationForLocalisations)
 						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderLocalisationForLocalisations.tooltip") }
 				}
+				//showScopeContext
+				row {
+					checkBox(PlsBundle.message("settings.documentation.showScopeContext"))
+						.bindSelected(settings.documentation::showScopeContext)
+						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showScopeContext.tooltip") }
+				}
 				//showParameters
 				row {
 					checkBox(PlsBundle.message("settings.documentation.showParameters"))

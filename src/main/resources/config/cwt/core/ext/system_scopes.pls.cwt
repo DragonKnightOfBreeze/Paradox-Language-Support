@@ -4,14 +4,24 @@
 # See wiki: https://stellaris.paradoxwikis.com/Scopes#System_scopes
 
 system_scopes = {
-	This = "This"
-	Root = "Root"
-	Prev = "Prev"
-	PrevPrev = "Prev Prev"
-	PrevPrevPrev = "Prev Prev Prev"
-	PrevPrevPrevPrev = "Prev Prev Prev Prev"
-	From = "From"
-	FromFrom = "From From"
-	FromFromFrom = "From From From"
-	FromFromFromFrom = "From From From From"
+	### This
+	This = {}
+	### Root
+	Root = {}
+	### Prev
+	Prev = {}
+	### Prev Prev
+	PrevPrev = {}
+	### Prev Prev Prev
+	PrevPrevPrev = {}
+	### Prev Prev Prev Prev
+	PrevPrevPrevPrev = {}
+	### From
+	From = {}
+	### From From
+	FromFrom = {}
+	### From From From
+	FromFromFrom = {}
+	### From From From From
+	FromFromFromFrom = {}
 }

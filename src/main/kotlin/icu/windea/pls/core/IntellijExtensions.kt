@@ -188,7 +188,7 @@ fun interface TemplateEditingFinishedListener : TemplateEditingListener {
 
 //region Editor & Document Extensions
 fun Document.isAtLineStart(offset:Int, skipWhitespace: Boolean = false): Boolean {
-	if(skipWhitespace) return DocumentUtil.isAtLineStart(offset, this)
+	if(!skipWhitespace) return DocumentUtil.isAtLineStart(offset, this)
 	val lineStartOffset = DocumentUtil.getLineStartOffset(offset, this)
 	val charsSequence = charsSequence
 	for(i in offset..lineStartOffset) {
@@ -201,7 +201,7 @@ fun Document.isAtLineStart(offset:Int, skipWhitespace: Boolean = false): Boolean
 }
 
 fun Document.isAtLineEnd(offset:Int, skipWhitespace: Boolean = false): Boolean {
-	if(skipWhitespace) return DocumentUtil.isAtLineEnd(offset, this)
+	if(!skipWhitespace) return DocumentUtil.isAtLineEnd(offset, this)
 	val lineEndOffset = DocumentUtil.getLineEndOffset(offset, this)
 	val charsSequence = charsSequence
 	for(i in offset..lineEndOffset) {
