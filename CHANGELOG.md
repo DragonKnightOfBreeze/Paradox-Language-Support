@@ -25,16 +25,11 @@
   * [ ] 一些检查可以基于当前文件、文件路径（相对于游戏或模组根目录）、定义类型（例如，`event`）、定义成员路径（例如，`event.abc`）等来部分禁用
 * 新增功能：
   * [ ] ~~添加检查：图标属性的值引用了定义自身（`foo { icon = foo ... }`）（不觉得这有什么意义）~~
-  * [ ] ［搁置］添加内嵌提示：定义和定义成员的作用域的内嵌提示（需要研究）
   * [ ] 可以通过特殊注释强制指定定义类型（基于文件路径或者基于直接的类型+子类型） - 用于实现差异比较等功能
   * [ ] 实现对`*.gui`文件中的GUI定义的UI预览（参考IDEA的Markdown插件的实现）
   * [ ] 实现对`*.txt`文件中的定义的UI预览（参考游戏中的效果以及灰机Wiki的实现）
   * [ ] 同名的定义、本地化，同路径的文件之间的DIFF（左窗口显示当前的，右窗口显示包括当前在内的所有的）
   * [ ] 同名的定义、本地化，同路径的文件之间的DIFF&MERGE（左窗口显示当前的，右窗口显示包括当前在内的所有的，中间窗口显示合并后的，初始内容来自左窗口）
-  * [ ] 实现工具栏动作：生成所有缺失语言区域的本地化文件
-  * [ ] 实现工具栏动作：生成所有缺失的相关本地化
-* 新增功能 - 高优先级
-  * [ ] 通过文档和内嵌提示显示modifier的图标和本地化文本（`mod_$`和`mod_$_desc`）
   * [ ] 通过扩展的CWT规则文件支持生成的modifier、effect、trigger等（理想情况下，不需要解析游戏日志）
     * 没有实际的定义处，如果要导航到定义，改为查找使用 
     * 在快速文档中显示生成源的信息（比如，`pop_job`）
@@ -53,6 +48,21 @@
   * [ ] 优化：检查scopeFieldExpression时也检查是否匹配对应的scopeName或者scopeGroupName（归类到`MismatchedScopeInspection`）
   * [ ] 对于link `pop_faction_parameter`和complexEnum `pop_faction_parameters`的特殊处理：前者只能在`pop_faction`中使用且作为数据源的complexEnumValue只能来自同一定义声明中
   * [ ] 兼容CWT规则文件中的错误级别`severity = warning`或`## severity = warning`（PLS和CWTools实现有所不同，需要分析）
+
+## 0.7.9
+
+* BUG修复
+  * [ ] 修复：[Cannot choose path for library using CK3 #7](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/7)
+* 新增功能
+  * 内嵌提示（`Inlay Hints`） - 对于作用域（`scope`）
+    * 作用域上下文的内嵌提示
+    * 要求的作用域的内嵌提示
+    * 参考Kotlin Lambda内嵌提示的实现）
+  * 代码生成
+    * [ ] 实现工具栏动作：生成所有缺失语言区域的本地化文件
+    * [ ] 实现工具栏动作：生成所有缺失的相关本地化
+  * 其他
+    * 支持内联脚本（`inline_script`）
 
 ## 0.7.8
 
