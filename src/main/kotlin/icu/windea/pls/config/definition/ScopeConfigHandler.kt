@@ -40,6 +40,11 @@ object ScopeConfigHandler {
 	//	return scopes.any { scope -> matchScope(scope, scopesToMatch, configGroup) }
 	//}
 	
+	fun isScopeContextEntry(element: ParadoxScriptMemberElement) :Boolean {
+		//用于过滤在那些地方（所在行的末尾）显示作用域上下文的内嵌提示
+		return element is ParadoxScriptProperty && element.propertyValue is ParadoxScriptBlock
+	}
+	
 	fun getScopeContext(element: ParadoxScriptMemberElement, file: PsiFile = element.containingFile) : ParadoxScopeConfig? {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
 			val value = resolveScopeContext(element)
