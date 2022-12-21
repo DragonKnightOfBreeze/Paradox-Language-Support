@@ -189,6 +189,19 @@
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.UnsetValueSetValueInspection"/>
+    <!--advanced > scope-->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMismatchedScope"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="script.inspection.scope.mismatchedScope"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.scope"
+                     groupPathKey="script.inspection.scope.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.scope.MismatchedScopeInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeSwitch"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="script.inspection.scope.incorrectScopeSwitch"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.scope"
+                     groupPathKey="script.inspection.scope.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.scope.IncorrectScopeSwitchInspection"/>
     <!--advanced > expression-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeFieldExpression"
                      enabledByDefault="true" level="ERROR"

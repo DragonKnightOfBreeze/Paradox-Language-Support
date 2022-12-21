@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.*
  * 用于处理作用域。
  */
 object ScopeConfigHandler {
-	const val unknownScopeId = "<unknown>"
+	const val unknownScopeId = "?"
 	const val anyScopeId = "any"
 	const val allScopeId = "all"
 	
@@ -34,8 +34,8 @@ object ScopeConfigHandler {
 	@JvmStatic
 	fun getScopeName(scope: String, configGroup: CwtConfigGroup): String {
 		//handle "any" and "all" scope 
-		if(scope.equals("any", true)) return "Any"
-		if(scope.equals("all", true)) return "All"
+		if(scope.equals(anyScopeId, true)) return "Any"
+		if(scope.equals(allScopeId, true)) return "All"
 		//a scope may not have aliases, or not defined in scopes.cwt
 		return configGroup.scopes[scope]?.name
 			?: configGroup.scopeAliasMap[scope]?.name
@@ -43,10 +43,12 @@ object ScopeConfigHandler {
 	}
 	
 	fun matchesScope(scopeId: String?, scopesToMatch: Collection<String>?, configGroup: CwtConfigGroup): Boolean {
-		if(scopeId == null || scopeId.equals("any", true) || scopeId.equals("all", true)) return true
+		if(scopeId == null) return true
+		if(scopeId.equals(anyScopeId, true) || scopeId.equals(allScopeId, true)) return true
+		if(scopeId.equals(unknownScopeId, true)) return true //ignore
 		if(scopesToMatch.isNullOrEmpty()) return true
 		return scopesToMatch.any { s ->
-			if(s.equals("any", true) || s.equals("all", true)) return@any true
+			if(s.equals(anyScopeId, true) || s.equals(allScopeId, true)) return@any true
 			scopeId.equals(s, true) || configGroup.scopeAliasMap[scopeId]?.aliases?.contains(s) == true
 		}
 	}
