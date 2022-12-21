@@ -11,8 +11,10 @@ class IncorrectScopeSwitchInspection: LocalInspectionTool() {
 		val project = file.project
 		val gameType = selectGameType(file)
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		file.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
-			
+		file.accept(object : PsiRecursiveElementWalkingVisitor() {
+			override fun visitElement(element: PsiElement) {
+				if(element.isExpressionOrMemberContext()) super.visitElement(element)
+			}
 		})
 		return holder.resultsArray
 	}

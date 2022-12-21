@@ -28,16 +28,13 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 		val project = file.project
 		val gameType = selectGameType(file)
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		file.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
-			override fun visitPropertyKey(element: ParadoxScriptPropertyKey) {
-				visitExpressionElement(element)
+		file.accept(object : PsiRecursiveElementWalkingVisitor() {
+			override fun visitElement(element: PsiElement) {
+				if(element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
+				if(element.isExpressionOrMemberContext()) super.visitElement(element)
 			}
 			
-			override fun visitString(element: ParadoxScriptString) {
-				visitExpressionElement(element)
-			}
-			
-			override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
+			private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
 				ProgressManager.checkCanceled()
 				if(element.text.isLeftQuoted()) return //忽略
 				val config = resolveConfigs(element).firstOrNull() ?: return

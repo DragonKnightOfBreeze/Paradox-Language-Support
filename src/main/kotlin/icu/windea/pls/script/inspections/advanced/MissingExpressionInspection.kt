@@ -19,10 +19,10 @@ class MissingExpressionInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		file.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
+		file.accept(object : PsiRecursiveElementWalkingVisitor() {
 			override fun visitElement(element: PsiElement) {
-				if(element !is ParadoxScriptExpressionContextElement) return
-				super.visitElement(element)
+				if(element is ParadoxScriptBlock) visitBlock(element)
+				if(element.isExpressionOrMemberContext()) super.visitElement(element)
 			}
 			
 			override fun visitFile(file: PsiFile) {
@@ -33,7 +33,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
 				super.visitFile(file)
 			}
 			
-			override fun visitBlock(element: ParadoxScriptBlock) {
+			fun visitBlock(element: ParadoxScriptBlock) {
 				ProgressManager.checkCanceled()
 				//skip checking property if its property key may contain parameters
 				//position: (in property) property key / (standalone) left curly brace
@@ -43,7 +43,6 @@ class MissingExpressionInspection : LocalInspectionTool() {
 					?: return
 				val definitionMemberInfo = element.definitionMemberInfo
 				doCheck(position, definitionMemberInfo)
-				super.visitBlock(element)
 			}
 			
 			private fun doCheck(position: PsiElement, definitionMemberInfo: ParadoxDefinitionMemberInfo?) {

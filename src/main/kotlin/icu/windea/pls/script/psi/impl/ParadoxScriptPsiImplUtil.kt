@@ -281,10 +281,15 @@ object ParadoxScriptPsiImplUtil {
 	fun getParameterMap(element: ParadoxScriptProperty): Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>> {
 		val file = element.containingFile
 		val result = sortedMapOf<String, MutableSet<SmartPsiElementPointer<ParadoxParameter>>>() //按名字进行排序
-		element.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
-			override fun visitParadoxParameter(e: ParadoxParameter) {
+		element.accept(object : PsiRecursiveElementWalkingVisitor() {
+			override fun visitElement(element: PsiElement) {
+				if(element is ParadoxParameter) visitParadoxParameter(element)
+				super.visitElement(element)
+			}
+			
+			private fun visitParadoxParameter(element: ParadoxParameter) {
 				ProgressManager.checkCanceled()
-				result.getOrPut(e.name) { mutableSetOf() }.add(e.createPointer(file))
+				result.getOrPut(element.name) { mutableSetOf() }.add(element.createPointer(file))
 				//不需要继续向下遍历
 			}
 		})

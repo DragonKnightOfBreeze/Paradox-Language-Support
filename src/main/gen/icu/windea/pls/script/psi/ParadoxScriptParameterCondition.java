@@ -8,7 +8,7 @@ import com.intellij.psi.PsiListLikeElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import javax.swing.Icon;
 
-public interface ParadoxScriptParameterCondition extends ParadoxScriptExpressionContextElement, PsiListLikeElement {
+public interface ParadoxScriptParameterCondition extends PsiListLikeElement {
 
   @Nullable
   ParadoxScriptParameterConditionExpression getParameterConditionExpression();

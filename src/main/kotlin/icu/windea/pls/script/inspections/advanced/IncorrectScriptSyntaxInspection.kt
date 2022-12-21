@@ -28,22 +28,24 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		file.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
-			override fun visitProperty(element: ParadoxScriptProperty) {
+		file.accept(object : PsiRecursiveElementWalkingVisitor() {
+			override fun visitElement(element: PsiElement) {
+				if(element is ParadoxScriptProperty) visitProperty(element)
+				super.visitElement(element)
+			}
+			
+			private fun visitProperty(element: ParadoxScriptProperty) {
 				ProgressManager.checkCanceled()
-				run {
-					val propertyKey = element.propertyKey
-					if(mayBeNumberKey(propertyKey)) return@run
-					val propertyValue = element.propertyValue ?: return@run
-					if(mayByNumberValue(propertyValue)) return@run
-					val comparisonTokens = element.findChildren(ParadoxScriptTokenSets.COMPARISONS)
-					if(comparisonTokens.isEmpty()) return@run
-					val message = PlsBundle.message("script.inspection.advanced.incorrectScriptSyntax.description.1")
-					comparisonTokens.forEach {
-						holder.registerProblem(it, message, ProblemHighlightType.GENERIC_ERROR)
-					}
+				val propertyKey = element.propertyKey
+				if(mayBeNumberKey(propertyKey)) return
+				val propertyValue = element.propertyValue ?: return
+				if(mayByNumberValue(propertyValue)) return
+				val comparisonTokens = element.findChildren(ParadoxScriptTokenSets.COMPARISONS)
+				if(comparisonTokens.isEmpty()) return
+				val message = PlsBundle.message("script.inspection.advanced.incorrectScriptSyntax.description.1")
+				comparisonTokens.forEach {
+					holder.registerProblem(it, message, ProblemHighlightType.GENERIC_ERROR)
 				}
-				super.visitProperty(element)
 			}
 			
 			//int or float (can be quoted)

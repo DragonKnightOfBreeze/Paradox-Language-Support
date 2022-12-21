@@ -24,15 +24,11 @@ object ParadoxStellarisNameFormatKeyIndex : FileBasedIndexExtension<String, Stri
 		buildMap {
 			inputData.psiFile.accept(object : PsiRecursiveElementWalkingVisitor() {
 				override fun visitElement(element: PsiElement) {
-					if(element is ParadoxScriptStringExpressionElement) {
-						doVisitStringExpressionElement(element)
-					}
-					if(element is ParadoxScriptExpressionContextElement) {
-						super.visitElement(element)
-					}
+					if(element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
+					if(element.isExpressionOrMemberContext()) super.visitElement(element)
 				}
 				
-				private fun doVisitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
+				private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
 					val matchType = 0
 					val configs = ParadoxCwtConfigHandler.resolveConfigs(element, matchType = matchType)
 					val config = configs.firstOrNull() ?: return

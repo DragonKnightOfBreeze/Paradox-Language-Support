@@ -32,13 +32,13 @@ abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
 		if(foldingSettings.isEmpty()) return FoldingDescriptor.EMPTY
 		val settings = foldingSettings.get(groupName) ?: return FoldingDescriptor.EMPTY
 		val allDescriptors = mutableListOf<FoldingDescriptor>()
-		root.acceptChildren(object : ParadoxScriptRecursiveElementWalkingVisitor() {
-			override fun visitProperty(element: ParadoxScriptProperty) {
-				doVisitProperty(element, settings)
-				super.visitProperty(element)
+		root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+			override fun visitElement(element: PsiElement) {
+				if(element is ParadoxScriptProperty) visitProperty(element)
+				if(element.isExpressionOrMemberContext()) super.visitElement(element)
 			}
 			
-			private fun doVisitProperty(element: ParadoxScriptProperty, settings: Map<String, CwtFoldingSetting>) {
+			private fun visitProperty(element: ParadoxScriptProperty) {
 				val configs = ParadoxCwtConfigHandler.resolvePropertyConfigs(element, orDefault = false)
 				if(configs.isEmpty()) return  //must match
 				val propertyKey = element.name

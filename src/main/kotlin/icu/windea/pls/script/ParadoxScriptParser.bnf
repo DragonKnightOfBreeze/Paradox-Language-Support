@@ -206,7 +206,6 @@ parameter_condition ::= LEFT_BRACKET parameter_condition_expr parameter_conditio
   pin=1
   recoverWhile="#auto"
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptExpressionContextElement"
     "com.intellij.psi.PsiListLikeElement"
   ]
   methods=[getIcon getConditionExpression isEmpty isNotEmpty getComponents]
