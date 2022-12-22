@@ -30,6 +30,10 @@ object ParadoxDefinitionHandler {
 			val file = element.containingFile
 			return resolve(element, file)
 		}
+		return getInfoFromCache(element)
+	}
+	
+	private fun getInfoFromCache(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfoKey) {
 			val file = element.containingFile
 			val value = resolve(element, file)

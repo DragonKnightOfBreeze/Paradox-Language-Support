@@ -15,6 +15,10 @@ object ParadoxDefinitionMemberHandler {
 	fun getInfo(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
 		//注意：element.stub可能会导致ProcessCanceledException
 		ProgressManager.checkCanceled()
+		return getInfoFromCache(element)
+	}
+	
+	private fun getInfoFromCache(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionMemberInfoKey) {
 			val file = element.containingFile
 			val value = resolveInfoDownUp(element)

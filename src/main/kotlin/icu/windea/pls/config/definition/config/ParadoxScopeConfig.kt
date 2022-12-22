@@ -12,8 +12,6 @@ data class ParadoxScopeConfig(
 	@Volatile var prev: ParadoxScopeConfig? = null
 	@Volatile var from: ParadoxScopeConfig? = null
 	
-	@Volatile var fromTypeConfig: Boolean = false
-	
 	init {
 		if(rootScope != null) {
 			if(rootScope == thisScope) {

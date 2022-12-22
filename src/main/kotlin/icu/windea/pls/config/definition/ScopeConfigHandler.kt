@@ -72,11 +72,51 @@ object ScopeConfigHandler {
 		val parentScopeContext = getScopeContext(parentMember, file)
 		if(parentScopeContext == null) return true
 		if(parentScopeContext !== scopeContext) return true
+		if(!isScopeContextSupported(element, file)) return true
 		return false
 	}
 	
+	fun isScopeContextSupported(element: ParadoxScriptMemberElement, file: PsiFile = element.containingFile) : Boolean {
+		//child config can be "alias_name[X] = ..." and "alias[X:scope_field]" is valid
+		//or root config in config tree is "alias[X:xxx] = ..."
+		val configs = ParadoxCwtConfigHandler.resolveConfigs(element, allowDefinitionSelf = true)
+		return configs.any { config ->
+			val configGroup = config.info.configGroup
+			isScopeContextSupportedAsRoot(config, configGroup) || isScopeContextSupportedAsChild(config, configGroup)
+		}
+	}
+	
+	private fun isScopeContextSupportedAsRoot(config: CwtDataConfig<*>, configGroup: CwtConfigGroup) :Boolean {
+		if(config !is CwtPropertyConfig) return false
+		val properties = config.properties ?: return false
+		return properties.any {
+			val aliasName = getAliasName(it)
+			aliasName != null && aliasName in configGroup.aliasNameSupportScope
+		}
+	}
+	
+	private fun isScopeContextSupportedAsChild(config: CwtDataConfig<*>, configGroup: CwtConfigGroup): Boolean {
+		var currentConfig = config
+		while(true) {
+			currentConfig = config.parent ?: break
+		}
+		val aliasName = getAliasName(currentConfig)
+		return aliasName != null && aliasName in configGroup.aliasNameSupportScope
+	}
+	
+	private fun getAliasName(config: CwtDataConfig<*>): String? {
+		if(config !is CwtPropertyConfig) return null
+		if(config.keyExpression.type == CwtDataTypes.AliasName) return config.value
+		return config.key.removeSurroundingOrNull("alias[","]")
+			?.substringBefore(':', "")
+			?.takeIfNotEmpty()
+	}
+	
 	fun getScopeContext(element: ParadoxScriptMemberElement, file: PsiFile = element.containingFile) : ParadoxScopeConfig? {
-		//TODO
+		return getScopeContextFromCache(element, file)
+	}
+	
+	private fun getScopeContextFromCache(element: ParadoxScriptMemberElement, file: PsiFile) : ParadoxScopeConfig? {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
 			val value = resolveScopeContext(element)
 			CachedValueProvider.Result.create(value, file)
@@ -98,9 +138,8 @@ object ScopeConfigHandler {
 				?: typeConfig.config.pushScope)
 			val pushScope = pushScopeOnType
 				?: declarationConfig.pushScope
-			return replaceScope?.resolve(pushScope)?.apply {
-				this.fromTypeConfig = replaceScopeOnType != null || pushScopeOnType != null
-			}
+			return replaceScope?.resolve(pushScope)
+				?: ParadoxScopeConfig(anyScopeId, anyScopeId)
 		}
 		
 		//should be a definition member

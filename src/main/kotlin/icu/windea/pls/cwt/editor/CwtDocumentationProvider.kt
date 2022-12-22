@@ -223,6 +223,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.addScopeContext(element: PsiElement, originalElement: PsiElement, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
 		ProgressManager.checkCanceled()
 		val memberElement = originalElement.parentOfType<ParadoxScriptMemberElement>() ?: return
+		if(!ScopeConfigHandler.isScopeContextSupported(memberElement)) return
 		val scopeContext = ScopeConfigHandler.getScopeContext(memberElement)
 		if(scopeContext == null) return
 		val gameType = configGroup.gameType

@@ -57,6 +57,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 		val offset = leftCurlyBrace.textRange.endOffset
 		val isAtLineEnd = editor.document.isAtLineEnd(offset, true)
 		if(!isAtLineEnd) return true //仅当作为子句开始的左花括号位于行尾时，才显示此内嵌提示
+		if(!ScopeConfigHandler.isScopeContextSupported(element, file)) return true
 		val scopeContext = ScopeConfigHandler.getScopeContext(element, file)
 		if(scopeContext != null) {
 			//don't need show if scope is not changed

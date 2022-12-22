@@ -24,6 +24,10 @@ object ParadoxComplexEnumValueHandler {
 		ProgressManager.checkCanceled()
 		if(!element.isExpression()) return null
 		element.stub?.complexEnumValueInfo?.let { return it }
+		return getInfoFromCache(element)
+	}
+	
+	private fun getInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedComplexEnumValueInfoKey) {
 			val file = element.containingFile
 			val value = resolveInfo(element, file)

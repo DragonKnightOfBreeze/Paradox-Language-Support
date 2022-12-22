@@ -257,6 +257,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun StringBuilder.addDefinitionScopeContext(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+		if(!ScopeConfigHandler.isScopeContextSupported(element)) return
 		val scopeContext = ScopeConfigHandler.getScopeContext(element)
 		if(scopeContext == null) return
 		val gameType = definitionInfo.gameType
