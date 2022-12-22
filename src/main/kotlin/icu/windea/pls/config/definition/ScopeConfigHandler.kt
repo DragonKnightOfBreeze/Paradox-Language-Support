@@ -98,7 +98,7 @@ object ScopeConfigHandler {
 	private fun isScopeContextSupportedAsChild(config: CwtDataConfig<*>, configGroup: CwtConfigGroup): Boolean {
 		var currentConfig = config
 		while(true) {
-			currentConfig = config.parent ?: break
+			currentConfig = currentConfig.parent ?: break
 		}
 		val aliasName = getAliasName(currentConfig)
 		return aliasName != null && aliasName in configGroup.aliasNameSupportScope
