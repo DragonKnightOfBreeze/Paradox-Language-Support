@@ -3,6 +3,7 @@ package icu.windea.pls.core.editor
 import com.intellij.lang.documentation.AbstractDocumentationProvider
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
@@ -64,7 +65,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		val name = element.name
 		val valueSetNames = element.valueSetNames
 		val configGroup = getCwtConfig(element.project).getValue(element.gameType)
-		val referenceElement = if(originalElement is LeafPsiElement) originalElement.parent else originalElement
+		val referenceElement = getReferenceElement(originalElement)
 		return buildString {
 			when(referenceElement) {
 				is ParadoxLocalisationStellarisNamePart -> buildStellarisNameFormatDefinition(name, valueSetNames)
@@ -112,7 +113,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		val name = element.name
 		val valueSetNames = element.valueSetNames
 		val configGroup = getCwtConfig(element.project).getValue(element.gameType)
-		val referenceElement = if(originalElement is LeafPsiElement) originalElement.parent else originalElement
+		val referenceElement = getReferenceElement(originalElement)
 		return buildString {
 			when(referenceElement) {
 				is ParadoxLocalisationStellarisNamePart -> buildStellarisNameFormatDefinition(name, valueSetNames)
@@ -157,6 +158,18 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 			//不加上文件信息
 			append(PlsDocBundle.message("prefix.stellarisNamePart")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 			append(": ").append(valueSetNames.first())
+		}
+	}
+	
+	private fun getReferenceElement(originalElement: PsiElement?): PsiElement?{
+		val element = when{
+			originalElement == null -> return null
+			originalElement.elementType == TokenType.WHITE_SPACE -> originalElement.prevSibling ?: return null
+			else -> originalElement
+		}
+		return when{
+			element is LeafPsiElement -> element.parent
+			else -> element
 		}
 	}
 }

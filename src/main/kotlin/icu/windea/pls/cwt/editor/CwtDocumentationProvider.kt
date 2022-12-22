@@ -5,6 +5,7 @@ package icu.windea.pls.cwt.editor
 import com.intellij.lang.documentation.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
@@ -122,7 +123,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		sections: MutableMap<String, String>?
 	) {
 		definition {
-			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
+			val referenceElement = getReferenceElement(originalElement)
+			if(referenceElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.nameText).append(" ")
 				append("<b>").append(name.escapeXml().orAnonymous()).append("</b>")
 				//加上类型信息
@@ -143,24 +145,24 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			} else {
 				val prefix = when {
-					originalElement is ParadoxScriptPropertyKey || originalElement.parent is ParadoxScriptPropertyKey -> PlsDocBundle.message("prefix.definitionProperty")
-					originalElement is ParadoxScriptValue || originalElement.parent is ParadoxScriptValue -> PlsDocBundle.message("prefix.definitionValue")
+					referenceElement is ParadoxScriptPropertyKey -> PlsDocBundle.message("prefix.definitionProperty")
+					referenceElement is ParadoxScriptValue -> PlsDocBundle.message("prefix.definitionValue")
 					else -> null
 				}
-				val originalName = originalElement.text.unquote()
-				if(prefix != null) append(prefix)
-				append(" <b>").append(originalName.escapeXml().orAnonymous()).append("</b>")
-				if(showDetail && name != originalName) { //这里不忽略大小写
+				val referenceName = referenceElement.text.unquote()
+				if(prefix != null) append(prefix).append(" ")
+				append("<b>").append(referenceName.escapeXml().orAnonymous()).append("</b>")
+				if(showDetail && name != referenceName) { //这里不忽略大小写
 					grayed {
 						append(" by ").append(name.escapeXml().orAnonymous())
 					}
 				}
 			}
-			if(originalElement != null && configGroup != null) {
-				addScopeContext(element, originalElement, configGroup, sections)
+			if(referenceElement != null && configGroup != null) {
+				addScopeContext(element, referenceElement, configGroup, sections)
 				if(configType == CwtConfigType.Modifier) {
-					addModifierRelatedLocalisations(element, originalElement, name, configGroup, sections)
-					addModifierIcon(element, originalElement, name, configGroup, sections)
+					addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sections)
+					addModifierIcon(element, referenceElement, name, configGroup, sections)
 				}
 			}
 		}
@@ -176,7 +178,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		sections: MutableMap<String, String>?
 	) {
 		definition {
-			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
+			val referenceElement = getReferenceElement(originalElement)
+			if(referenceElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.nameText).append(" ")
 				append("<b>").append(name.escapeXml().orAnonymous()).append("</b>")
 				//加上类型信息
@@ -197,32 +200,32 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			} else {
 				val prefix = when {
-					originalElement is ParadoxScriptPropertyKey || originalElement.parent is ParadoxScriptPropertyKey -> PlsDocBundle.message("prefix.definitionProperty")
-					originalElement is ParadoxScriptValue || originalElement.parent is ParadoxScriptValue -> PlsDocBundle.message("prefix.definitionValue")
+					referenceElement is ParadoxScriptPropertyKey -> PlsDocBundle.message("prefix.definitionProperty")
+					referenceElement is ParadoxScriptValue -> PlsDocBundle.message("prefix.definitionValue")
 					else -> null
 				}
-				val originalName = originalElement.text.unquote()
-				if(prefix != null) append(prefix)
-				append(" <b>").append(originalName.escapeXml().orAnonymous()).append("</b>")
-				if(showDetail && name != originalName) { //这里不忽略大小写
+				val referenceName = referenceElement.text.unquote()
+				if(prefix != null) append(prefix).append(" ")
+				append("<b>").append(referenceName.escapeXml().orAnonymous()).append("</b>")
+				if(showDetail && name != referenceName) { //这里不忽略大小写
 					grayed {
 						append(" by ").append(name.escapeXml().orAnonymous())
 					}
 				}
 			}
-			if(originalElement != null && configGroup != null) {
-				addScopeContext(element, originalElement, configGroup, sections)
+			if(referenceElement != null && configGroup != null) {
+				addScopeContext(element, referenceElement, configGroup, sections)
 				if(configType == CwtConfigType.Modifier) {
-					addModifierRelatedLocalisations(element, originalElement, name, configGroup, sections)
-					addModifierIcon(element, originalElement, name, configGroup, sections)
+					addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sections)
+					addModifierIcon(element, referenceElement, name, configGroup, sections)
 				}
 			}
 		}
 	}
 	
-	private fun StringBuilder.addScopeContext(element: PsiElement, originalElement: PsiElement, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+	private fun StringBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
 		ProgressManager.checkCanceled()
-		val memberElement = originalElement.parentOfType<ParadoxScriptMemberElement>() ?: return
+		val memberElement = referenceElement.parentOfType<ParadoxScriptMemberElement>(true) ?: return
 		if(!ScopeConfigHandler.isScopeContextSupported(memberElement)) return
 		val scopeContext = ScopeConfigHandler.getScopeContext(memberElement)
 		if(scopeContext == null) return
@@ -237,10 +240,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.addModifierRelatedLocalisations(element: PsiElement, originalElement: PsiElement, name: String, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+	private fun StringBuilder.addModifierRelatedLocalisations(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
 		val render = getSettings().documentation.renderRelatedLocalisationsForModifiers
 		ProgressManager.checkCanceled()
-		val contextElement = originalElement
+		val contextElement = referenceElement
 		val gameType = configGroup.gameType ?: return
 		val nameKeys = ModifierConfigHandler.getModifierNameKeys(name, configGroup)
 		val localisation = nameKeys.firstNotNullOfOrNull {
@@ -275,10 +278,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.addModifierIcon(element: PsiElement, originalElement: PsiElement, name: String, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+	private fun StringBuilder.addModifierIcon(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
 		val render = getSettings().documentation.renderIconForModifiers
 		ProgressManager.checkCanceled()
-		val contextElement = originalElement
+		val contextElement = referenceElement
 		val gameType = configGroup.gameType ?: return
 		val iconPaths = ModifierConfigHandler.getModifierIconPaths(name, configGroup)
 		val (iconPath , iconFile) = iconPaths.firstNotNullOfOrNull {
@@ -409,6 +412,18 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			for((key, value) in sections) {
 				section(key, value)
 			}
+		}
+	}
+	
+	private fun getReferenceElement(originalElement: PsiElement?): PsiElement?{
+		val element = when{
+			originalElement == null -> return null
+			originalElement.elementType == TokenType.WHITE_SPACE -> originalElement.prevSibling ?: return null
+			else -> originalElement
+		}
+		return when{
+			element is LeafPsiElement -> element.parent
+			else -> element
 		}
 	}
 }

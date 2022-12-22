@@ -2,6 +2,8 @@ package icu.windea.pls.script.editor
 
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.tree.LeafPsiElement
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
@@ -23,7 +25,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//进行代码提示时，这里是有效的代码
 			is ParadoxScriptStringExpressionElement -> {
 				//only for complex enum value reference
-				if(originalElement != null && originalElement.parent?.castOrNull<ParadoxScriptString>() !== element) {
+				val referenceElement = getReferenceElement(originalElement)
+				if(referenceElement != null && referenceElement.parent?.castOrNull<ParadoxScriptString>() !== element) {
 					val complexEnumValueInfo = element.complexEnumValueInfo
 					if(complexEnumValueInfo != null) return generateComplexEnumValueInfo(element, complexEnumValueInfo)
 				}
@@ -79,7 +82,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			is ParadoxScriptProperty -> getPropertyDoc(element)
 			is ParadoxScriptStringExpressionElement -> {
 				//only for complex enum value reference
-				if(originalElement != null && originalElement.parent?.castOrNull<ParadoxScriptString>() !== element) {
+				val referenceElement = getReferenceElement(originalElement)
+				if(referenceElement != null && referenceElement.parent?.castOrNull<ParadoxScriptString>() !== element) {
 					val complexEnumValueInfo = element.complexEnumValueInfo
 					if(complexEnumValueInfo != null) return generateComplexEnumValueDoc(element, complexEnumValueInfo)
 				}
@@ -353,6 +357,18 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			for((key, value) in sections) {
 				section(key, value)
 			}
+		}
+	}
+	
+	private fun getReferenceElement(originalElement: PsiElement?): PsiElement?{
+		val element = when{
+			originalElement == null -> return null
+			originalElement.elementType == TokenType.WHITE_SPACE -> originalElement.prevSibling ?: return null
+			else -> originalElement
+		}
+		return when{
+			element is LeafPsiElement -> element.parent
+			else -> element
 		}
 	}
 }
