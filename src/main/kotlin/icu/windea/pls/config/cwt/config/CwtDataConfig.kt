@@ -27,6 +27,10 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	val values : List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
 	val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
 	
+	override fun resolved(): CwtDataConfig<*> = this
+	
+	override fun resolvedOrNull(): CwtDataConfig<*>? = null
+	
 	//may on:
 	// * a config expression in declaration config
 	// * a config expression in subtype structure config

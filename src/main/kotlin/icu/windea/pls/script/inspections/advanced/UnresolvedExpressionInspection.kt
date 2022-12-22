@@ -31,7 +31,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 				val result = when(element) {
 					is ParadoxScriptProperty -> visitProperty(element)
 					is ParadoxScriptValue -> visitValue(element)
-					else -> false
+					else -> true
 				}
 				if(result && element.isExpressionOrMemberContext()) super.visitElement(element)
 			}

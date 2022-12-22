@@ -79,7 +79,9 @@ object ScopeConfigHandler {
 		if(parentMember == null) return true
 		val parentScopeContext = getScopeContext(parentMember, file)
 		if(parentScopeContext == null) return true
-		return parentScopeContext !== scopeContext
+		if(parentScopeContext != scopeContext) return true
+		if(!isScopeContextSupported(parentMember, file)) return true
+		return false
 	}
 	
 	@JvmStatic
@@ -162,10 +164,12 @@ object ScopeConfigHandler {
 			val scopeField = element.castOrNull<ParadoxScriptProperty>()?.propertyKey?.text ?: return null
 			return resolveScopeContextFromScopeField(scopeField, config, parentScopeContext)
 				?: resolveUnknownScopeContext(parentScopeContext)
+		} else {
+			val resolvedConfig = config.resolved()
+			val replaceScope = resolvedConfig.replaceScope ?: parentScopeContext
+			val pushScope = resolvedConfig.pushScope
+			return replaceScope?.resolve(pushScope)
 		}
-		val replaceScope = config.replaceScope ?: parentScopeContext
-		val pushScope = config.pushScope
-		return replaceScope?.resolve(pushScope)
 	}
 	
 	private fun resolveUnknownScopeContext(parentScopeContext: ParadoxScopeConfig): ParadoxScopeConfig {
@@ -204,7 +208,7 @@ object ScopeConfigHandler {
 			}
 		}
 		if(resolvedScope == null) return null
-		return parentScopeContext.resolve(resolvedScope)
+		return scopeContext.resolve(resolvedScope)
 	}
 	
 	private fun resolveScopeFromScopeLink(node: ParadoxScopeLinkExpressionNode): String {
