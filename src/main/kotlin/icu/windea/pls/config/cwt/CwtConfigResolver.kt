@@ -98,6 +98,8 @@ object CwtConfigResolver {
 			booleanValue, intValue, floatValue, stringValue, configs,
 			documentation, options, optionValues, separatorType
 		)
+		fileConfig.info.acceptConfigExpression(config.keyExpression)
+		fileConfig.info.acceptConfigExpression(config.valueExpression)
 		configs?.forEach { it.parent = config }
 		return config
 	}
@@ -172,6 +174,7 @@ object CwtConfigResolver {
 			booleanValue, intValue, floatValue, stringValue, configs, 
 			documentation, options, optionValues
 		)
+		fileConfig.info.acceptConfigExpression(config.valueExpression)
 		configs?.forEach { it.parent = config }
 		return config
 	}

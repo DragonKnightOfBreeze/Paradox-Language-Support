@@ -17,7 +17,7 @@ data class CwtAliasConfig(
 	override val name: String,
 	val subName: String
 ) : CwtInlineableConfig {
-	val subNameExpression = CwtKeyExpression.resolve(subName).registerTo(info)
+	val subNameExpression = CwtKeyExpression.resolve(subName)
 	
 	override val expression get() = subNameExpression
 	

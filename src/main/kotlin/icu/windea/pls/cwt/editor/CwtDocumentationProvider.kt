@@ -112,7 +112,15 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	//返回实际使用的相关本地化
-	private fun StringBuilder.buildPropertyDefinition(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?, showDetail: Boolean, sections: MutableMap<String, String>?) {
+	private fun StringBuilder.buildPropertyDefinition(
+		element: CwtProperty,
+		originalElement: PsiElement?,
+		name: String,
+		configType: CwtConfigType?,
+		configGroup: CwtConfigGroup?,
+		showDetail: Boolean,
+		sections: MutableMap<String, String>?
+	) {
 		definition {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.nameText).append(" ")
@@ -148,13 +156,25 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 			}
-			if(configType == CwtConfigType.Modifier) {
-				addSectionsForModifiers(element, originalElement, name, configGroup, sections)
+			if(originalElement != null && configGroup != null) {
+				addScopeContext(element, originalElement, configGroup, sections)
+				if(configType == CwtConfigType.Modifier) {
+					addModifierRelatedLocalisations(element, originalElement, name, configGroup, sections)
+					addModifierIcon(element, originalElement, name, configGroup, sections)
+				}
 			}
 		}
 	}
 	
-	private fun StringBuilder.buildStringDefinition(element: CwtString, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?, showDetail: Boolean, sections: MutableMap<String, String>?) {
+	private fun StringBuilder.buildStringDefinition(
+		element: CwtString,
+		originalElement: PsiElement?,
+		name: String,
+		configType: CwtConfigType?,
+		configGroup: CwtConfigGroup?,
+		showDetail: Boolean,
+		sections: MutableMap<String, String>?
+	) {
 		definition {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.nameText).append(" ")
@@ -190,21 +210,36 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 			}
-			if(configType == CwtConfigType.Modifier) {
-				addSectionsForModifiers(element, originalElement, name, configGroup, sections)
+			if(originalElement != null && configGroup != null) {
+				addScopeContext(element, originalElement, configGroup, sections)
+				if(configType == CwtConfigType.Modifier) {
+					addModifierRelatedLocalisations(element, originalElement, name, configGroup, sections)
+					addModifierIcon(element, originalElement, name, configGroup, sections)
+				}
 			}
 		}
 	}
 	
-	private fun StringBuilder.addSectionsForModifiers(element: PsiElement, originalElement: PsiElement?, name: String, configGroup: CwtConfigGroup?, sections: MutableMap<String, String>?) {
-		if(configGroup == null || originalElement == null) return
-		if(!getSettings().documentation.renderRelatedLocalisationsForModifiers) return
-		//为修饰符渲染相关本地化
-		//NOTE 不能确定相关本地化的名字到底是什么，并且从API层面上来说，上下文PSI元素只能是CwtProperty而非ParadoxScriptExpressionElement
-		//Name, Desc?
+	private fun StringBuilder.addScopeContext(element: PsiElement, originalElement: PsiElement, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+		ProgressManager.checkCanceled()
+		val memberElement = originalElement.parentOfType<ParadoxScriptMemberElement>() ?: return
+		val scopeContext = ScopeConfigHandler.getScopeContext(memberElement)
+		if(scopeContext == null) return
+		val gameType = configGroup.gameType
+		appendBr()
+		append(PlsDocBundle.message("prefix.scopeContext"))
+		scopeContext.map.forEach { (key, value) ->
+			append(" ")
+			val scopeId = ScopeConfigHandler.getScopeId(value)
+			val link = "${gameType.id}/scopes/$scopeId"
+			append(key).append(" = ").appendCwtLink(scopeId, link, memberElement)
+		}
+	}
+	
+	private fun StringBuilder.addModifierRelatedLocalisations(element: PsiElement, originalElement: PsiElement, name: String, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+		val render = getSettings().documentation.renderRelatedLocalisationsForModifiers
 		ProgressManager.checkCanceled()
 		val contextElement = originalElement
-		val project = configGroup.project
 		val gameType = configGroup.gameType ?: return
 		val nameKeys = ModifierConfigHandler.getModifierNameKeys(name, configGroup)
 		val localisation = nameKeys.firstNotNullOfOrNull {
@@ -216,11 +251,6 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val descSelector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
 			findLocalisation(it, configGroup.project, selector = descSelector)
 		}
-		val iconPaths = ModifierConfigHandler.getModifierIconPaths(name, configGroup)
-		val (iconPath , iconFile) = iconPaths.firstNotNullOfOrNull {
-			val iconSelector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
-			it to findFileByFilePath(it, project, selector = iconSelector)
-		} ?: (null to null)
 		//如果没找到的话，不要在文档中显示相关信息
 		if(localisation != null) {
 			appendBr()
@@ -232,12 +262,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ")
 			append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, contextElement, resolved = true)
 		}
-		if(iconPath != null && iconFile != null) {
-			appendBr()
-			append(PlsDocBundle.message("prefix.relatedImage")).append(" ")
-			append("Icon = ").appendFilePathLink(gameType, iconPath, contextElement, resolved = true)
-		}
-		if(sections != null) {
+		if(sections != null && render) {
 			if(localisation != null) {
 				val richText = ParadoxLocalisationTextRenderer.render(localisation)
 				sections.put("Name", richText)
@@ -246,6 +271,26 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val richText = ParadoxLocalisationTextRenderer.render(descLocalisation)
 				sections.put("Desc", richText)
 			}
+		}
+	}
+	
+	private fun StringBuilder.addModifierIcon(element: PsiElement, originalElement: PsiElement, name: String, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+		val render = getSettings().documentation.renderIconForModifiers
+		ProgressManager.checkCanceled()
+		val contextElement = originalElement
+		val gameType = configGroup.gameType ?: return
+		val iconPaths = ModifierConfigHandler.getModifierIconPaths(name, configGroup)
+		val (iconPath , iconFile) = iconPaths.firstNotNullOfOrNull {
+			val iconSelector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
+			it to findFileByFilePath(it, configGroup.project, selector = iconSelector)
+		} ?: (null to null)
+		//如果没找到的话，不要在文档中显示相关信息
+		if(iconPath != null && iconFile != null) {
+			appendBr()
+			append(PlsDocBundle.message("prefix.relatedImage")).append(" ")
+			append("Icon = ").appendFilePathLink(gameType, iconPath, contextElement, resolved = true)
+		}
+		if(sections != null && render) {
 			if(iconFile != null) {
 				val url = ParadoxDdsUrlResolver.resolveByFile(iconFile)
 				sections.put("Icon", buildString { appendImgTag(url) })

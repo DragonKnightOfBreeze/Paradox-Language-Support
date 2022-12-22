@@ -65,22 +65,18 @@ object ScopeConfigHandler {
 	}
 	
 	fun isScopeContextChanged(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeConfig, file: PsiFile = element.containingFile) :Boolean {
+		//TODO
 		//does not have scope context > changed always
 		val parentMember = findParentMember(element)
 		if(parentMember == null) return true
 		val parentScopeContext = getScopeContext(parentMember, file)
 		if(parentScopeContext == null) return true
 		if(parentScopeContext !== scopeContext) return true
-		if(!hasScopeContext(parentMember, parentScopeContext)) return true
 		return false
 	}
 	
-	fun hasScopeContext(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeConfig): Boolean {
-		val isDefinition = element is ParadoxScriptDefinitionElement && element.definitionInfo != null
-		return if(isDefinition) scopeContext.fromTypeConfig else true
-	}
-	
 	fun getScopeContext(element: ParadoxScriptMemberElement, file: PsiFile = element.containingFile) : ParadoxScopeConfig? {
+		//TODO
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
 			val value = resolveScopeContext(element)
 			CachedValueProvider.Result.create(value, file)

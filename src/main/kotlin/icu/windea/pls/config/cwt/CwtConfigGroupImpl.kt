@@ -298,9 +298,13 @@ class CwtConfigGroupImpl(
 		linksAsValueWithoutPrefix.values.sortedByPriority(this) { it.dataSource!! }
 	}
 	
-	//支持参数的定义类型
+	override val aliasNameSupportScope: Set<String> get() = info.aliasNameSupportScope
+	
 	override val definitionTypesSupportParameters: Set<String> by lazy {
-		initDefinitionTypesSupportParameters()
+		buildSet { 
+			addAll(info.aliasNameSupportScope)
+			add("script_value") //SV也支持参数
+		}
 	}
 	
 	//解析CWT配置
@@ -745,6 +749,10 @@ class CwtConfigGroupImpl(
 	
 	private fun resolveAliasConfig(propertyConfig: CwtPropertyConfig, name: String, subName: String): CwtAliasConfig {
 		return CwtAliasConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, subName)
+			.apply { 
+				info.acceptConfigExpression(subNameExpression)
+				info.acceptAliasConfig(this)
+			}
 	}
 	
 	private fun resolveDeclarationConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDeclarationConfig {
@@ -759,23 +767,6 @@ class CwtConfigGroupImpl(
 			val internalId = modifierCategory.internalId ?: continue
 			result[internalId] = modifierCategory
 		}
-		return result
-	}
-	
-	private fun initDefinitionTypesSupportParameters(): MutableSet<String> {
-		val result = mutableSetOf<String>()
-		for(aliasGroup in aliasGroups.values) {
-			for(aliasList in aliasGroup.values) {
-				for(aliasConfig in aliasList) {
-					val props = aliasConfig.config.properties ?: continue
-					if(props.isEmpty()) continue
-					if(props.none { it.keyExpression.let { e -> e.type == CwtDataTypes.Enum && e.value == CwtConfigHandler.paramsEnumName } }) continue
-					val definitionType = aliasConfig.subNameExpression.takeIf { it.type == CwtDataTypes.TypeExpression }?.value ?: continue
-					result.add(definitionType)
-				}
-			}
-		}
-		result.add("script_value") //SV也支持参数
 		return result
 	}
 	

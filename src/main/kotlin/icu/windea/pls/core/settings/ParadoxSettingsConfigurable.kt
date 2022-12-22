@@ -108,27 +108,21 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 				}
 				//renderLocalisationForLocalisations
 				row {
+					checkBox(PlsBundle.message("settings.documentation.renderIconForModifiers"))
+						.bindSelected(settings.documentation::renderIconForModifiers)
+						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderIconForModifiers.tooltip") }
+				}
+				//renderLocalisationForLocalisations
+				row {
 					checkBox(PlsBundle.message("settings.documentation.renderLocalisationForLocalisations"))
 						.bindSelected(settings.documentation::renderLocalisationForLocalisations)
 						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderLocalisationForLocalisations.tooltip") }
-				}
-				//showScopeContext
-				row {
-					checkBox(PlsBundle.message("settings.documentation.showScopeContext"))
-						.bindSelected(settings.documentation::showScopeContext)
-						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showScopeContext.tooltip") }
 				}
 				//showScopes
 				row {
 					checkBox(PlsBundle.message("settings.documentation.showScopes"))
 						.bindSelected(settings.documentation::showScopes)
 						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showScopes.tooltip") }
-				}
-				//showParameters
-				row {
-					checkBox(PlsBundle.message("settings.documentation.showParameters"))
-						.bindSelected(settings.documentation::showParameters)
-						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showParameters.tooltip") }
 				}
 			}
 			//completion

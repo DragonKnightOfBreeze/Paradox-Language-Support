@@ -51,6 +51,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
 		if(file !is ParadoxScriptFile) return true
 		if(element !is ParadoxScriptProperty) return true
+		//show only for properties with clause value, and left curly brace should be at end of line
 		val block = element.propertyValue as? ParadoxScriptBlock ?: return true
 		val leftCurlyBrace = block.findChild(ParadoxScriptElementTypes.LEFT_BRACE) ?: return true
 		val offset = leftCurlyBrace.textRange.endOffset
@@ -60,8 +61,6 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 		if(scopeContext != null) {
 			//don't need show if scope is not changed
 			if(settings.showOnlyIfChanged && !ScopeConfigHandler.isScopeContextChanged(element, scopeContext, file)) return true
-			//do not show on definition level it scope context is not from type config
-			if(!ScopeConfigHandler.hasScopeContext(element, scopeContext)) return true
 			
 			val gameType = selectGameType(file) ?: return true
 			val configGroup = getCwtConfig(file.project).getValue(gameType)

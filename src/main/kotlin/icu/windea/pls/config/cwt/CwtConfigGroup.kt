@@ -62,6 +62,9 @@ interface CwtConfigGroup {
 	val linksAsValueWithPrefixSorted: List<CwtLinkConfig>
 	val linksAsScopeWithoutPrefixSorted: List<CwtLinkConfig>
 	val linksAsValueWithoutPrefixSorted: List<CwtLinkConfig>
+	
+	//支持作用域上下文的CWT别名规则
+	val aliasNameSupportScope: Set<String>
 	//支持参数的定义类型
 	val definitionTypesSupportParameters: Set<String>
 }

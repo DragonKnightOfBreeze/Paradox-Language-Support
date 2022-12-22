@@ -10,7 +10,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.core.tool.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
@@ -57,7 +56,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun getDefinitionInfo(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
 		return buildString {
-			buildDefinitionDefinition(element, definitionInfo, null, null)
+			buildDefinitionDefinition(element, definitionInfo, null)
 		}
 	}
 	
@@ -116,14 +115,10 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
 		return buildString {
 			//在definition部分，相关图片信息显示在相关本地化信息之后，在sections部分则显示在之前
-			val localisationTargetMap = mutableMapOf<String, ParadoxLocalisationProperty>()
-			val imageTargetMap = mutableMapOf<String, Tuple2<PsiFile, Int>>()
-			buildDefinitionDefinition(element, definitionInfo, localisationTargetMap, imageTargetMap)
+			val sections = mutableMapOf<String, String>()
+			buildDefinitionDefinition(element, definitionInfo, sections)
 			buildExtDocContent(definitionInfo)
 			buildLineCommentContent(element)
-			val sections = mutableMapOf<String, String>()
-			addRelatedImageSections(imageTargetMap, sections)
-			addRelatedLocalisationSections(localisationTargetMap, sections)
 			buildSections(sections)
 		}
 	}
@@ -161,12 +156,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildDefinitionDefinition(
-		element: ParadoxScriptProperty,
-		definitionInfo: ParadoxDefinitionInfo,
-		localisationTargetMap: MutableMap<String, ParadoxLocalisationProperty>? = null,
-		imageTargetMap: MutableMap<String, Tuple2<PsiFile, Int>>? = null
-	) {
+	private fun StringBuilder.buildDefinitionDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
 		definition {
 			//加上文件信息
 			appendFileInfoHeader(element.fileInfo)
@@ -189,72 +179,98 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			append(PlsDocBundle.message("prefix.definition")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>: ").append(typeLinkText)
 			
 			//加上相关本地化信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
-			val localisationInfos = definitionInfo.localisation
-			if(localisationInfos.isNotEmpty()) {
-				val project = element.project
-				val localisationKeys = mutableSetOf<String>()
-				val usedLocalisationTargetMap = localisationTargetMap ?: mutableMapOf()
-				for((key, locationExpression, required) in localisationInfos) {
-					if(!usedLocalisationTargetMap.containsKey(key)) {
-						val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
-						val (targetKey, target) = locationExpression.resolve(element, definitionInfo, project, selector = selector) ?: continue //发生意外，直接跳过
-						if(target != null) usedLocalisationTargetMap.put(key, target)
-						if(required || target != null) {
-							if(localisationKeys.add(key)) {
-								appendBr()
-								append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ")
-								append(key).append(" = ").appendLocalisationLink(definitionInfo.gameType, targetKey, element, resolved = true)
-							}
-						}
-					}
-				}
-			}
+			addDefinitionRelatedLocalisations(element, definitionInfo, sections)
+			
 			//加上相关图片信息：去重后的一组DDS文件的filePath，或者sprite的definitionKey，不包括可选且没有对应的图片的项，按解析顺序排序
-			val imagesInfos = definitionInfo.images
-			if(imagesInfos.isNotEmpty()) {
-				val project = element.project
-				val imageKeys = mutableSetOf<String>()
-				val usedImageTargetMap = imageTargetMap ?: mutableMapOf()
-				for((key, locationExpression, required) in imagesInfos) {
-					if(!usedImageTargetMap.containsKey(key)) {
-						val (filePath, target, frame) = locationExpression.resolve(element, definitionInfo, project) ?: continue //发生意外，直接跳过
-						if(target != null) usedImageTargetMap.put(key, tupleOf(target, frame))
-						if(required || target != null) {
-							if(imageKeys.add(key)) {
-								appendBr()
-								append(PlsDocBundle.message("prefix.relatedImage")).append(" ")
-								append(key).append(" = ").appendFilePathLink(definitionInfo.gameType, filePath, element, resolved = true)
-							}
-						}
-					}
-				}
-			}
+			addDefinitionRelatedImages(element, definitionInfo, sections)
 			
 			//加上作用域上下文信息（如果支持）
-			addScopeContextInDefinition(element, definitionInfo)
+			addDefinitionScopeContext(element, definitionInfo)
 			
 			//加上参数信息（如果支持且存在）
-			addParametersInDefinition(element, definitionInfo)
+			addDefinitionParameters(element, definitionInfo)
 		}
 	}
 	
-	private fun StringBuilder.addScopeContextInDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+	private fun StringBuilder.addDefinitionRelatedLocalisations(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
+		val localisationInfos = definitionInfo.localisation
+		if(localisationInfos.isEmpty()) return
+		val render = getSettings().documentation.renderRelatedLocalisationsForDefinitions
+		val project = element.project
+		val map = mutableMapOf<String, String>()
+		val sectionKeys = mutableSetOf<String>()
+		for((key, locationExpression, required) in localisationInfos) {
+			if(sectionKeys.contains(key)) continue
+			val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
+			val (targetKey, target) = locationExpression.resolve(element, definitionInfo, project, selector = selector) ?: continue //发生意外，直接跳过
+			if(target != null) {
+				map.put(key, buildString { appendLocalisationLink(definitionInfo.gameType, targetKey, element, resolved = true) })
+			} else if(required) {
+				map.putIfAbsent(key, targetKey)
+			} 
+			if(target != null) {
+				sectionKeys.add(key)
+				if(render && sections != null) {
+					//加上渲染后的相关本地化文本
+					val richText = ParadoxLocalisationTextRenderer.render(target)
+					sections.put(key.toCapitalizedWords(), richText)
+				}
+			}
+		}
+		for((key, value) in map) {
+			appendBr()
+			append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ")
+			append(key).append(" = ").append(value)
+		}
+	}
+	
+	private fun StringBuilder.addDefinitionRelatedImages(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
+		val imagesInfos = definitionInfo.images
+		if(imagesInfos.isEmpty()) return
+		val render = getSettings().documentation.renderRelatedImagesForDefinitions
+		val project = element.project
+		val map = mutableMapOf<String, String>()
+		val sectionKeys = mutableSetOf<String>()
+		for((key, locationExpression, required) in imagesInfos) {
+			if(sectionKeys.contains(key)) continue
+			val (filePath, target, frame) = locationExpression.resolve(element, definitionInfo, project) ?: continue //发生意外，直接跳过
+			if(target != null) {
+				map.put(key, buildString { appendFilePathLink(definitionInfo.gameType, filePath, element, resolved = true) })
+			} else if(required) {
+				map.putIfAbsent(key, filePath)
+			}
+			if(target != null) {
+				sectionKeys.add(key)
+				if(render && sections != null) {
+					//加上DDS图片预览图
+					val url = ParadoxDdsUrlResolver.resolveByFile(target.virtualFile, frame)
+					val tag = buildString { appendImgTag(url) }
+					sections.put(key.toCapitalizedWords(), tag)
+				}
+			}
+		}
+		for((key, value) in map) {
+			appendBr()
+			append(PlsDocBundle.message("prefix.relatedImage")).append(" ")
+			append(key).append(" = ").append(value)
+		}
+	}
+	
+	private fun StringBuilder.addDefinitionScopeContext(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
 		val scopeContext = ScopeConfigHandler.getScopeContext(element)
 		if(scopeContext == null) return
-		if(!ScopeConfigHandler.hasScopeContext(element, scopeContext)) return
 		val gameType = definitionInfo.gameType
 		appendBr()
 		append(PlsDocBundle.message("prefix.scopeContext"))
-		var appendSeparator = false
 		scopeContext.map.forEach { (key, value) ->
-			if(appendSeparator) append(" ") else appendSeparator = true
-			val link = "${gameType.id}/scopes/${value}"
-			append(key).append(" = ").appendCwtLink(value, link, element)
+			append(" ")
+			val scopeId = ScopeConfigHandler.getScopeId(value)
+			val link = "${gameType.id}/scopes/$scopeId"
+			append(key).append(" = ").appendCwtLink(scopeId, link, element)
 		}
 	}
 	
-	private fun StringBuilder.addParametersInDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-		if(!getSettings().documentation.showParameters) return
+	private fun StringBuilder.addDefinitionParameters(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
 		if(!definitionInfo.configGroup.definitionTypesSupportParameters.contains(definitionInfo.type)) return
 		val parameterMap = element.parameterMap
 		if(parameterMap.isEmpty()) return //ignore
@@ -275,30 +291,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		if(docText != null && docText.isNotEmpty()) {
 			content {
 				append(docText)
-			}
-		}
-	}
-	
-	private fun addRelatedLocalisationSections(map: Map<String, ParadoxLocalisationProperty>, sections: MutableMap<String, String>) {
-		//加上渲染后的相关本地化文本
-		if(!getSettings().documentation.renderRelatedLocalisationsForDefinitions) return
-		if(map.isNotEmpty()) {
-			for((key, target) in map) {
-				val richText = ParadoxLocalisationTextRenderer.render(target)
-				sections.put(key.toCapitalizedWords(), richText)
-			}
-		}
-	}
-	
-	private fun addRelatedImageSections(map: MutableMap<String, Tuple2<PsiFile, Int>>, sections: MutableMap<String, String>) {
-		//加上DDS图片预览图
-		if(!getSettings().documentation.renderRelatedImagesForDefinitions) return
-		if(map.isNotEmpty()) {
-			for((key, tuple) in map) {
-				val (target, frame) = tuple
-				val url = ParadoxDdsUrlResolver.resolveByFile(target.virtualFile, frame)
-				val tag = buildString { appendImgTag(url) }
-				sections.put(key.toCapitalizedWords(), tag)
 			}
 		}
 	}
