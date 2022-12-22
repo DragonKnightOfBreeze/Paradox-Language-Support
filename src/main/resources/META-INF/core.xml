@@ -38,6 +38,9 @@
     <codeInsight.typeInfo language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.core.codeInsight.ParadoxTypeProvider"/>
     <typeDeclarationProvider implementation="icu.windea.pls.core.codeInsight.ParadoxTypeDeclarationProvider"/>
     
+    <lang.documentationProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.editor.ParadoxDocumentationProvider"/>
+    <lang.documentationProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.core.editor.ParadoxDocumentationProvider"/>
+    
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxFoldingSettings"/>
     <codeFoldingOptionsProvider instance="icu.windea.pls.core.editor.ParadoxFoldingOptionsProvider"/>
     

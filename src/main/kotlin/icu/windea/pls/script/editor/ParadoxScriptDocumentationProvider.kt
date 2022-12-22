@@ -16,28 +16,13 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
-	override fun getDocumentationElementForLookupItem(psiManager: PsiManager?, `object`: Any?, element: PsiElement?): PsiElement? {
-		if(`object` is PsiElement) return `object`
-		return super.getDocumentationElementForLookupItem(psiManager, `object`, element)
-	}
-	
 	//do not provide special documentations for definition name and complex enum value name declarations,
 	//for the expression represents a definition name or complex enum value name, can also be a localisation reference, etc.
-	
-	override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
-		if(link == null || context == null) return null
-		return resolveLink(link, context)
-	}
 	
 	override fun getQuickNavigateInfo(element: PsiElement, originalElement: PsiElement?): String? {
 		return when(element) {
 			is ParadoxScriptScriptedVariable -> getScriptedVariableInfo(element)
 			is ParadoxScriptProperty -> getPropertyInfo(element)
-			//进行代码提示时，这里是有效的代码
-			is ParadoxArgument -> getParameterInfo(element)
-			is ParadoxParameter -> getParameterInfo(element)
-			//使用FakeElement时，这里是有效的代码
-			is ParadoxParameterElement -> getParameterInfo(element)
 			//进行代码提示时，这里是有效的代码
 			is ParadoxScriptStringExpressionElement -> {
 				//only for complex enum value reference
@@ -45,18 +30,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 					val complexEnumValueInfo = element.complexEnumValueInfo
 					if(complexEnumValueInfo != null) return generateComplexEnumValueInfo(element, complexEnumValueInfo)
 				}
-				val config = resolveConfigs(element).firstOrNull()
-				if(config != null) {
-					//if(CwtConfigHandler.isComplexEnum(config)) return getComplexEnumValueInfo(element, config)
-					if(CwtConfigHandler.isValueSetValue(config)) return getValueSetValueInfo(element, config)
-				}
 				if(element is ParadoxScriptPropertyKey) {
 					return getQuickNavigateInfo(element.parent, null)
 				}
 				null
 			}
-			//使用FakeElement时，这里是有效的代码
-			is ParadoxValueSetValueElement -> getValueSetValueInfo(element)
 			else -> null
 		}
 	}
@@ -91,19 +69,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getParameterInfo(element: PsiElement): String? {
-		val name = when(element) {
-			is ParadoxParameter -> element.name
-			is ParadoxArgument -> element.name
-			is ParadoxParameterElement -> element.name
-			else -> return null
-		}
-		val definitionInfo = if(element is ParadoxParameterElement) element.definitionName + ": " + element.definitionType else null
-		return buildString {
-			buildParameterDefinition(name, definitionInfo)
-		}
-	}
-	
 	//private fun getComplexEnumValueInfo(element: ParadoxScriptStringExpressionElement, config: CwtDataConfig<*>): String {
 	//	return buildString {
 	//		val configGroup = config.info.configGroup
@@ -111,49 +76,21 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	//	}
 	//}
 	
-	private fun getValueSetValueInfo(element: ParadoxScriptStringExpressionElement, config: CwtDataConfig<*>): String {
-		return buildString {
-			val configGroup = config.info.configGroup
-			val valueSetNames = config.expression.value.toSingletonListOrEmpty()
-			buildValueSetValueDefinition(element.value, valueSetNames, configGroup)
-		}
-	}
-	
-	private fun getValueSetValueInfo(element: ParadoxValueSetValueElement): String {
-		return buildString {
-			val configGroup = getCwtConfig(element.project).getValue(element.gameType)
-			buildValueSetValueDefinition(element.name, element.valueSetNames, configGroup)
-		}
-	}
-	
 	override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {
 		return when(element) {
 			is ParadoxScriptScriptedVariable -> getScriptedVariableDoc(element)
 			is ParadoxScriptProperty -> getPropertyDoc(element)
-			//进行代码提示时，这里是有效的代码
-			is ParadoxArgument -> getParameterDoc(element)
-			is ParadoxParameter -> getParameterDoc(element)
-			//使用FakeElement时，这里是有效的代码
-			is ParadoxParameterElement -> getParameterDoc(element)
-			//进行代码提示时，这里是有效的代码
 			is ParadoxScriptStringExpressionElement -> {
 				//only for complex enum value reference
 				if(originalElement != null && originalElement.parent?.castOrNull<ParadoxScriptString>() !== element) {
 					val complexEnumValueInfo = element.complexEnumValueInfo
 					if(complexEnumValueInfo != null) return generateComplexEnumValueDoc(element, complexEnumValueInfo)
 				}
-				val config = resolveConfigs(element).firstOrNull()
-				if(config != null) {
-					//if(CwtConfigHandler.isComplexEnum(config)) return getComplexEnumValueDoc(element, config)
-					if(CwtConfigHandler.isValueSetValue(config)) return getValueSetValueDoc(element, config)
-				}
 				if(element is ParadoxScriptPropertyKey) {
 					return generateDoc(element.parent, null)
 				}
 				null
 			}
-			//使用FakeElement时，这里是有效的代码
-			is ParadoxValueSetValueElement -> getValueSetValueDoc(element)
 			else -> null
 		}
 	}
@@ -201,41 +138,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getParameterDoc(element: PsiElement): String? {
-		val name = when(element) {
-			is ParadoxParameter -> element.name
-			is ParadoxArgument -> element.name
-			is ParadoxParameterElement -> element.name
-			else -> return null
-		}
-		val definitionInfo = if(element is ParadoxParameterElement) element.definitionName + ": " + element.definitionType else null
-		return buildString {
-			buildParameterDefinition(name, definitionInfo)
-		}
-	}
-	
 	private fun getComplexEnumValueDoc(element: ParadoxScriptStringExpressionElement, config: CwtDataConfig<*>): String {
 		return buildString {
 			val configGroup = config.info.configGroup
 			buildComplexEnumValueDefinition(element.value, config.expression.value.orEmpty(), configGroup)
 		}
 	}
-	
-	private fun getValueSetValueDoc(element: ParadoxScriptStringExpressionElement, config: CwtDataConfig<*>): String {
-		return buildString {
-			val configGroup = config.info.configGroup
-			val valueSetNames = config.expression.value.toSingletonListOrEmpty()
-			buildValueSetValueDefinition(element.value, valueSetNames, configGroup)
-		}
-	}
-	
-	private fun getValueSetValueDoc(element: ParadoxValueSetValueElement): String {
-		return buildString {
-			val configGroup = getCwtConfig(element.project).getValue(element.gameType)
-			buildValueSetValueDefinition(element.name, element.valueSetNames, configGroup)
-		}
-	}
-	
 	
 	private fun StringBuilder.buildScriptedVariableDefinition(element: ParadoxScriptScriptedVariable, name: String) {
 		definition {
@@ -404,18 +312,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildParameterDefinition(name: String, definitionInfo: String?) {
-		definition {
-			//不加上文件信息
-			//加上名字
-			append(PlsDocBundle.message("name.script.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-			if(definitionInfo != null) {
-				append(" ")
-				append(PlsDocBundle.message("ofDefinition", definitionInfo))
-			}
-		}
-	}
-	
 	private fun StringBuilder.buildComplexEnumValueDefinition(name: String, enumName: String, configGroup: CwtConfigGroup) {
 		definition {
 			//不加上文件信息
@@ -429,26 +325,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 					append(": ").appendCwtLink(enumName, typeLink)
 				} else {
 					append(": ").append(enumName)
-				}
-			}
-		}
-	}
-	
-	private fun StringBuilder.buildValueSetValueDefinition(name: String, valueSetNames: List<String>, configGroup: CwtConfigGroup) {
-		definition {
-			//不加上文件信息
-			//加上值集值值的信息
-			append(PlsDocBundle.message("name.cwt.valueSetValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-			var appendSeparator = false
-			for(valueSetName in valueSetNames) {
-				if(appendSeparator) append(" | ") else appendSeparator = true
-				val valueConfig = configGroup.values[valueSetName]
-				if(valueConfig != null) {
-					val gameType = configGroup.gameType
-					val typeLink = "${gameType.id}/values/${valueSetName}"
-					append(": ").appendCwtLink(valueSetName, typeLink)
-				} else {
-					append(": ").append(valueSetName)
 				}
 			}
 		}
