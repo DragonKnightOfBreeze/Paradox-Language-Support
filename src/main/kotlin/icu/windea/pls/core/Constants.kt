@@ -52,7 +52,6 @@ object PlsConstants {
 	//NOTE 目前认为cwt文件中定义的definition的elementPath的maxDepth是4（最多跳过3个rootKey）
 	const val maxDefinitionDepth = 4
 	const val keysTruncateLimit = 5
-	const val elementSizeWrapInDocumentation = 4
 }
 
 object PlsPaths {

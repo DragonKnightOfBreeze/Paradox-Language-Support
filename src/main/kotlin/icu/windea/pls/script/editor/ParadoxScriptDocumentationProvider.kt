@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.definition.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.chained.*
@@ -120,7 +121,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			buildDefinitionDefinition(element, definitionInfo, localisationTargetMap, imageTargetMap)
 			buildExtDocContent(definitionInfo)
 			buildLineCommentContent(element)
-			buildScopeContextContent(element)
 			val sections = mutableMapOf<String, String>()
 			addRelatedImageSections(imageTargetMap, sections)
 			addRelatedLocalisationSections(localisationTargetMap, sections)
@@ -231,9 +231,25 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			
 			//加上作用域上下文信息（如果支持）
+			addScopeContextInDefinition(element, definitionInfo)
 			
 			//加上参数信息（如果支持且存在）
 			addParametersInDefinition(element, definitionInfo)
+		}
+	}
+	
+	private fun StringBuilder.addScopeContextInDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+		val scopeContext = ScopeConfigHandler.getScopeContext(element)
+		if(scopeContext == null) return
+		if(!ScopeConfigHandler.hasScopeContext(element, scopeContext)) return
+		val gameType = definitionInfo.gameType
+		appendBr()
+		append(PlsDocBundle.message("prefix.scopeContext"))
+		var appendSeparator = false
+		scopeContext.map.forEach { (key, value) ->
+			if(appendSeparator) append(" ") else appendSeparator = true
+			val link = "${gameType.id}/scopes/${value}"
+			append(key).append(" = ").appendCwtLink(value, link, element)
 		}
 	}
 	
@@ -244,14 +260,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		if(parameterMap.isEmpty()) return //ignore
 		appendBr()
 		append(PlsDocBundle.message("prefix.parameters")).append(" ")
-		var index = 0
-		val wrapSize = PlsConstants.elementSizeWrapInDocumentation
-		for(key in parameterMap.keys) {
+		val wrapSize = 6
+		for((index, key) in parameterMap.keys.withIndex()) {
 			if(index != 0) {
 				if(index % wrapSize == 0) appendBr().append("    ") else append(" ")
 			}
 			append(key)
-			index++
 		}
 	}
 	
@@ -287,12 +301,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				sections.put(key.toCapitalizedWords(), tag)
 			}
 		}
-	}
-	
-	private fun StringBuilder.buildScopeContextContent(element: ParadoxScriptProperty) {
-		//如果存在作用域上下文信息，则在文档中显示
-		if(!getSettings().documentation.showScopeContext) return
-		//TODO 0.7.9
 	}
 	
 	private fun StringBuilder.buildComplexEnumValueDefinition(element: PsiElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {

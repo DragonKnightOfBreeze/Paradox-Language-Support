@@ -12,6 +12,8 @@ data class ParadoxScopeConfig(
 	@Volatile var prev: ParadoxScopeConfig? = null
 	@Volatile var from: ParadoxScopeConfig? = null
 	
+	@Volatile var fromTypeConfig: Boolean = false
+	
 	init {
 		if(rootScope != null) {
 			if(rootScope == thisScope) {
@@ -38,8 +40,16 @@ data class ParadoxScopeConfig(
 		}
 	}
 	
-	@Volatile var fromTypeConfig: Boolean = false
-	
+	val map by lazy { 
+		buildMap { 
+			put("this", thisScope)
+			if(rootScope != null) put("root", rootScope)
+			if(fromScope != null) put("from", fromScope)
+			if(fromFromScope != null) put("fromfrom", fromFromScope)
+			if(fromFromFromScope != null) put("fromfromfrom", fromFromFromScope)
+			if(fromFromFromFromScope != null) put("fromfromfromfrom", fromFromFromFromScope)
+		}
+	}
 	
 	fun resolve(pushScope: String?): ParadoxScopeConfig {
 		if(pushScope == null) return this

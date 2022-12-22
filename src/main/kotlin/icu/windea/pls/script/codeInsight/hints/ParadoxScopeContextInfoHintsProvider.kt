@@ -74,16 +74,9 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 	
 	private fun PresentationFactory.collectScopeContext(scopeInfo: ParadoxScopeConfig, configGroup: CwtConfigGroup): InlayPresentation {
 		val presentations = mutableListOf<InlayPresentation>()
-		val (thisScope, rootScope, fromScope) = scopeInfo
-		presentations.add(smallText("this = "))
-		presentations.add(scopeLinkPresentation(thisScope, configGroup))
-		if(rootScope != null) {
-			presentations.add(smallText(" root = "))
-			presentations.add(scopeLinkPresentation(rootScope, configGroup))
-		}
-		if(fromScope != null) {
-			presentations.add(smallText(" from = "))
-			presentations.add(scopeLinkPresentation(fromScope, configGroup))
+		scopeInfo.map.forEach { (key, value) -> 
+			presentations.add(smallText("$key = "))
+			presentations.add(scopeLinkPresentation(value, configGroup))
 		}
 		return SequencePresentation(presentations)
 	}
