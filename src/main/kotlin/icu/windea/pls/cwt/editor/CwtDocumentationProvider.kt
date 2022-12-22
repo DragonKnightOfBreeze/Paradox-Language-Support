@@ -135,8 +135,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			} else {
 				val prefix = when {
-					originalElement is ParadoxScriptPropertyKey || originalElement.parent is ParadoxScriptPropertyKey -> PlsDocBundle.message("name.script.definitionProperty")
-					originalElement is ParadoxScriptValue || originalElement.parent is ParadoxScriptValue -> PlsDocBundle.message("name.script.definitionValue")
+					originalElement is ParadoxScriptPropertyKey || originalElement.parent is ParadoxScriptPropertyKey -> PlsDocBundle.message("prefix.definitionProperty")
+					originalElement is ParadoxScriptValue || originalElement.parent is ParadoxScriptValue -> PlsDocBundle.message("prefix.definitionValue")
 					else -> null
 				}
 				val originalName = originalElement.text.unquote()
@@ -177,8 +177,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			} else {
 				val prefix = when {
-					originalElement is ParadoxScriptPropertyKey || originalElement.parent is ParadoxScriptPropertyKey -> PlsDocBundle.message("name.script.definitionProperty")
-					originalElement is ParadoxScriptValue || originalElement.parent is ParadoxScriptValue -> PlsDocBundle.message("name.script.definitionValue")
+					originalElement is ParadoxScriptPropertyKey || originalElement.parent is ParadoxScriptPropertyKey -> PlsDocBundle.message("prefix.definitionProperty")
+					originalElement is ParadoxScriptValue || originalElement.parent is ParadoxScriptValue -> PlsDocBundle.message("prefix.definitionValue")
 					else -> null
 				}
 				val originalName = originalElement.text.unquote()
@@ -224,17 +224,17 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		//如果没找到的话，不要在文档中显示相关信息
 		if(localisation != null) {
 			appendBr()
-			append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ")
+			append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ")
 			append("Name = ").appendLocalisationLink(gameType, localisation.name, contextElement, resolved = true)
 		}
 		if(descLocalisation != null) {
 			appendBr()
-			append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ")
+			append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ")
 			append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, contextElement, resolved = true)
 		}
 		if(iconPath != null && iconFile != null) {
 			appendBr()
-			append(PlsDocBundle.message("name.script.relatedImage")).append(" ")
+			append(PlsDocBundle.message("prefix.relatedImage")).append(" ")
 			append("Icon = ").appendFilePathLink(gameType, iconPath, contextElement, resolved = true)
 		}
 		if(sections != null) {

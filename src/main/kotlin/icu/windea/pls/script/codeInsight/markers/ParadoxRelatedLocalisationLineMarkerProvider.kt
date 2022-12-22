@@ -7,9 +7,7 @@ import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.navigation.*
-import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -42,7 +40,7 @@ class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvid
 			if(localisations.isNotEmpty()) targets.addAll(localisations)
 			if(localisations.isNotEmpty() && keys.add(key)) {
 				if(isFirst) isFirst = false else tooltipBuilder.appendBr()
-				tooltipBuilder.append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ").append(key).append(" = ").append(localisationKey)
+				tooltipBuilder.append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ").append(key).append(" = ").append(localisationKey)
 			}
 		}
 		if(keys.isEmpty()) return

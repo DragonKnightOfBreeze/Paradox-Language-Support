@@ -146,7 +146,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上文件信息
 			appendFileInfoHeader(element.fileInfo)
 			//加上定义信息
-			append(PlsDocBundle.message("name.script.scriptedVariable")).append(" <b>@").append(name.escapeXml().orAnonymous()).append("</b>")
+			append(PlsDocBundle.message("prefix.scriptedVariable")).append(" <b>@").append(name.escapeXml().orAnonymous()).append("</b>")
 			element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 		}
 	}
@@ -156,7 +156,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上文件信息
 			appendFileInfoHeader(element.fileInfo)
 			//加上定义信息
-			append(PlsDocBundle.message("name.script.property")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+			append(PlsDocBundle.message("prefix.property")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 			element.value?.let { value -> append(" = ").append(value.escapeXml()) }
 		}
 	}
@@ -186,7 +186,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 			}
-			append(PlsDocBundle.message("name.script.definition")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>: ").append(typeLinkText)
+			append(PlsDocBundle.message("prefix.definition")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>: ").append(typeLinkText)
 			
 			//加上相关本地化信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
 			val localisationInfos = definitionInfo.localisation
@@ -202,7 +202,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 						if(required || target != null) {
 							if(localisationKeys.add(key)) {
 								appendBr()
-								append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ")
+								append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ")
 								append(key).append(" = ").appendLocalisationLink(definitionInfo.gameType, targetKey, element, resolved = true)
 							}
 						}
@@ -222,7 +222,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 						if(required || target != null) {
 							if(imageKeys.add(key)) {
 								appendBr()
-								append(PlsDocBundle.message("name.script.relatedImage")).append(" ")
+								append(PlsDocBundle.message("prefix.relatedImage")).append(" ")
 								append(key).append(" = ").appendFilePathLink(definitionInfo.gameType, filePath, element, resolved = true)
 							}
 						}
@@ -233,20 +233,25 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上作用域上下文信息（如果支持）
 			
 			//加上参数信息（如果支持且存在）
+			addParametersInDefinition(element, definitionInfo)
 		}
 	}
 	
-	private fun StringBuilder.buildParametersContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-		//如果定义支持参数且拥有参数，则在文档中显示
+	private fun StringBuilder.addParametersInDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
 		if(!getSettings().documentation.showParameters) return
-		if(definitionInfo.type in definitionInfo.configGroup.definitionTypesSupportParameters) {
-			val parameterMap = element.parameterMap
-			if(parameterMap.isNotEmpty()) {
-				content {
-					val parameters = parameterMap.keys.joinToString { "<code>$it</code>" }
-					append(PlsDocBundle.message("content.parameters", parameters))
-				}
+		if(!definitionInfo.configGroup.definitionTypesSupportParameters.contains(definitionInfo.type)) return
+		val parameterMap = element.parameterMap
+		if(parameterMap.isEmpty()) return //ignore
+		appendBr()
+		append(PlsDocBundle.message("prefix.parameters")).append(" ")
+		var index = 0
+		val wrapSize = PlsConstants.elementSizeWrapInDocumentation
+		for(key in parameterMap.keys) {
+			if(index != 0) {
+				if(index % wrapSize == 0) appendBr().append("    ") else append(" ")
 			}
+			append(key)
+			index++
 		}
 	}
 	
@@ -297,7 +302,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上复杂枚举值信息
 			val name = complexEnumValueInfo.name
 			val enumName = complexEnumValueInfo.enumName
-			append(PlsDocBundle.message("name.script.complexEnumValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+			append(PlsDocBundle.message("prefix.complexEnumValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 			if(enumName.isNotEmpty()) {
 				val gameType = complexEnumValueInfo.gameType.orDefault()
 				val configGroup = getCwtConfig(element.project).getValue(gameType)
@@ -316,7 +321,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		definition {
 			//不加上文件信息
 			//加上复杂枚举值信息
-			append(PlsDocBundle.message("name.script.complexEnumValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+			append(PlsDocBundle.message("prefix.complexEnumValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 			if(enumName.isNotEmpty()) {
 				val gameType = configGroup.gameType
 				val complexEnumConfig = configGroup.complexEnums[enumName]

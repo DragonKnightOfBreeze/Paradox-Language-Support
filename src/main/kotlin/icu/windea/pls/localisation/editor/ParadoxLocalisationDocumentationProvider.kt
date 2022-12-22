@@ -141,7 +141,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			//加上文件信息
 			appendFileInfoHeader(element.fileInfo)
 			//加上元素定义信息
-			append(PlsDocBundle.message("name.localisation.property")).append(" <b>").append(element.name).append("</b>")
+			append(PlsDocBundle.message("prefix.localisationProperty")).append(" <b>").append(element.name).append("</b>")
 		}
 	}
 	
@@ -160,7 +160,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		val richText = ParadoxLocalisationTextRenderer.render(element)
 		if(richText.isNotEmpty()) {
 			sections {
-				section(PlsDocBundle.message("sectionTitle.text"), richText)
+				section(PlsDocBundle.message("title.text"), richText)
 			}
 		}
 	}
@@ -168,35 +168,35 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	private fun StringBuilder.buildLocaleDefinition(name: String) {
 		definition {
 			//加上元素定义信息
-			append(PlsDocBundle.message("name.localisation.locale")).append(" <b>").append(name).append("</b>")
+			append(PlsDocBundle.message("prefix.localisationLocale")).append(" <b>").append(name).append("</b>")
 		}
 	}
 	
 	private fun StringBuilder.buildIconDefinition(name: String) {
 		definition {
 			//加上元素定义信息
-			append(PlsDocBundle.message("name.localisation.icon")).append(" <b>").append(name).append("</b>")
+			append(PlsDocBundle.message("prefix.localisationIcon")).append(" <b>").append(name).append("</b>")
 		}
 	}
 	
 	private fun StringBuilder.buildCommandScopeDefinition(name: String) {
 		definition {
 			//加上元素定义信息
-			append(PlsDocBundle.message("name.localisation.commandScope")).append(" <b>").append(name).append("</b>")
+			append(PlsDocBundle.message("prefix.localisationCommandScope")).append(" <b>").append(name).append("</b>")
 		}
 	}
 	
 	private fun StringBuilder.buildCommandFieldDefinition(name: String) {
 		definition {
 			//加上元素定义信息
-			append(PlsDocBundle.message("name.localisation.commandField")).append(" <b>").append(name).append("</b>")
+			append(PlsDocBundle.message("prefix.localisationCommandField")).append(" <b>").append(name).append("</b>")
 		}
 	}
 	
 	private fun StringBuilder.buildColorDefinition(name: String) {
 		definition {
 			//加上元素定义信息
-			append(PlsDocBundle.message("name.localisation.color")).append(" <b>").append(name).append("</b>")
+			append(PlsDocBundle.message("prefix.localisationColor")).append(" <b>").append(name).append("</b>")
 		}
 	}
 	

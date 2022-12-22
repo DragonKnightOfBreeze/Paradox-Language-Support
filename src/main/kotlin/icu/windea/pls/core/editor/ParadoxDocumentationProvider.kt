@@ -125,7 +125,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		definition {
 			//不加上文件信息
 			//加上名字
-			append(PlsDocBundle.message("name.script.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+			append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 			if(definitionInfo != null) {
 				append(" ")
 				append(PlsDocBundle.message("ofDefinition", definitionInfo))
@@ -155,7 +155,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildStellarisNameFormatDefinition(name: String, valueSetNames: List<String>) {
 		definition {
 			//不加上文件信息
-			append(PlsDocBundle.message("name.localisation.stellarisNamePart")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+			append(PlsDocBundle.message("prefix.stellarisNamePart")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 			append(": ").append(valueSetNames.first())
 		}
 	}

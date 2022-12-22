@@ -73,11 +73,11 @@ enum class CwtConfigType(
 		override val descriptionText get() = PlsBundle.message("cwt.description.systemScope")
 	},
 	LocalisationLocale("localisation locale", true) {
-		override val nameText get() = PlsDocBundle.message("name.cwt.localisationLocale")
+		override val nameText get() = PlsDocBundle.message("prefix.localisationLocale")
 		override val descriptionText get() = PlsBundle.message("cwt.description.localisationLocale")
 	},
 	LocalisationPredefinedVariable("localisation predefined variable", true) {
-		override val nameText get() = PlsDocBundle.message("name.cwt.localisationPredefinedVariable")
+		override val nameText get() = PlsDocBundle.message("prefix.localisationPredefinedVariable")
 		override val descriptionText get() = PlsBundle.message("cwt.description.localisationPredefinedVariable")
 	};
 	

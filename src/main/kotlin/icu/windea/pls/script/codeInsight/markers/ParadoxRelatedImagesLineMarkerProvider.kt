@@ -39,7 +39,7 @@ class ParadoxRelatedImagesLineMarkerProvider : RelatedItemLineMarkerProvider() {
 				if(files.isNotEmpty()) targets.addAll(files)
 				if(files.isNotEmpty() && keys.add(key)) {
 					if(isFirst) isFirst = false else tooltipBuilder.appendBr()
-					tooltipBuilder.append(PlsDocBundle.message("name.script.relatedImage")).append(" ").append(key).append(" = ").append(filePath)
+					tooltipBuilder.append(PlsDocBundle.message("prefix.relatedImage")).append(" ").append(key).append(" = ").append(filePath)
 				}
 			}
 		}
