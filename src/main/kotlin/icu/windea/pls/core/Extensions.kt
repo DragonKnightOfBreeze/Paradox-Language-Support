@@ -676,13 +676,13 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilde
 			//相关链接
 			val rootUri = fileInfo.rootPath.toUri().toString() //通过这种方式获取需要的url
 			append(" ")
-			appendLink(rootUri, PlsDocBundle.message("name.core.localLinkLabel"))
+			appendLink(rootUri, PlsDocBundle.message("text.localLinkLabel"))
 			if(remoteFileId != null) {
 				append(" | ")
-				appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsDocBundle.message("name.core.steamLinkLabel"))
+				appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsDocBundle.message("text.steamLinkLabel"))
 				appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
 				append(" | ")
-				appendLink(getSteamWorkshopLink(remoteFileId), PlsDocBundle.message("name.core.steamWebsiteLinkLabel")) //自带外部链接图标
+				appendLink(getSteamWorkshopLink(remoteFileId), PlsDocBundle.message("text.steamWebsiteLinkLabel")) //自带外部链接图标
 			}
 		}
 		append("</span>")
