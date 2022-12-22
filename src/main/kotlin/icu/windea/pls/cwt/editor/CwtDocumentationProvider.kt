@@ -254,10 +254,9 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun StringBuilder.buildDocumentationContent(element: PsiElement) {
-		//渲染文档注释（可能需要作为HTML）和版本号信息
+		//渲染文档注释（可能需要作为HTML）
 		var current: PsiElement = element
 		var lines: LinkedList<String>? = null
-		var since: String? = null
 		var html = false
 		while(true) {
 			current = current.prevSibling ?: break
@@ -273,8 +272,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				current is CwtOptionComment -> {
 					val option = current.option ?: continue
 					when {
-						option.name == "since" -> since = option.value
-						option.name == "loc_format" && option.value == "html" -> html = true
+						option.name == "format" && option.value == "html" -> html = true
 					}
 				}
 				current is PsiWhiteSpace || current is PsiComment -> continue
@@ -285,11 +283,6 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		if(documentation != null) {
 			content {
 				append(documentation)
-			}
-		}
-		if(since != null) {
-			content {
-				append(PlsDocBundle.message("content.since", since))
 			}
 		}
 	}

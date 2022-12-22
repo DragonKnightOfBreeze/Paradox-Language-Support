@@ -118,17 +118,17 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						.bindSelected(settings.documentation::showScopeContext)
 						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showScopeContext.tooltip") }
 				}
-				//showParameters
-				row {
-					checkBox(PlsBundle.message("settings.documentation.showParameters"))
-						.bindSelected(settings.documentation::showParameters)
-						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showParameters.tooltip") }
-				}
 				//showScopes
 				row {
 					checkBox(PlsBundle.message("settings.documentation.showScopes"))
 						.bindSelected(settings.documentation::showScopes)
 						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showScopes.tooltip") }
+				}
+				//showParameters
+				row {
+					checkBox(PlsBundle.message("settings.documentation.showParameters"))
+						.bindSelected(settings.documentation::showParameters)
+						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showParameters.tooltip") }
 				}
 			}
 			//completion

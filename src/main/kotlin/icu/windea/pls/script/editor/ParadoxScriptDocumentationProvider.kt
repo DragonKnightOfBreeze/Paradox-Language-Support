@@ -6,10 +6,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.model.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.core.tool.*
 import icu.windea.pls.localisation.psi.*
@@ -124,7 +121,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			buildExtDocContent(definitionInfo)
 			buildLineCommentContent(element)
 			buildScopeContextContent(element)
-			buildParametersContent(element, definitionInfo)
 			val sections = mutableMapOf<String, String>()
 			addRelatedImageSections(imageTargetMap, sections)
 			addRelatedLocalisationSections(localisationTargetMap, sections)
@@ -233,6 +229,24 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 			}
+			
+			//加上作用域上下文信息（如果支持）
+			
+			//加上参数信息（如果支持且存在）
+		}
+	}
+	
+	private fun StringBuilder.buildParametersContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+		//如果定义支持参数且拥有参数，则在文档中显示
+		if(!getSettings().documentation.showParameters) return
+		if(definitionInfo.type in definitionInfo.configGroup.definitionTypesSupportParameters) {
+			val parameterMap = element.parameterMap
+			if(parameterMap.isNotEmpty()) {
+				content {
+					val parameters = parameterMap.keys.joinToString { "<code>$it</code>" }
+					append(PlsDocBundle.message("content.parameters", parameters))
+				}
+			}
 		}
 	}
 	
@@ -274,20 +288,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		//如果存在作用域上下文信息，则在文档中显示
 		if(!getSettings().documentation.showScopeContext) return
 		//TODO 0.7.9
-	}
-	
-	private fun StringBuilder.buildParametersContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-		//如果定义支持参数且拥有参数，则在文档中显示
-		if(!getSettings().documentation.showParameters) return
-		if(definitionInfo.type in definitionInfo.configGroup.definitionTypesSupportParameters) {
-			val parameterMap = element.parameterMap
-			if(parameterMap.isNotEmpty()) {
-				content {
-					val parameters = parameterMap.keys.joinToString { "<code>$it</code>" }
-					append(PlsDocBundle.message("content.parameters", parameters))
-				}
-			}
-		}
 	}
 	
 	private fun StringBuilder.buildComplexEnumValueDefinition(element: PsiElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
