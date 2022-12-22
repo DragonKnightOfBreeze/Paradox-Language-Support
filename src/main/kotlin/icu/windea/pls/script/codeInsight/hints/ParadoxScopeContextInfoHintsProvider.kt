@@ -74,8 +74,14 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 	
 	private fun PresentationFactory.collectScopeContext(scopeInfo: ParadoxScopeConfig, configGroup: CwtConfigGroup): InlayPresentation {
 		val presentations = mutableListOf<InlayPresentation>()
-		scopeInfo.map.forEach { (key, value) -> 
-			presentations.add(smallText("$key = "))
+		var appendSeparator = false
+		scopeInfo.map.forEach { (key, value) ->
+			if(appendSeparator) {
+				presentations.add(smallText(" $key = "))
+			} else {
+				presentations.add(smallText("$key = "))
+				appendSeparator = true
+			}
 			presentations.add(scopeLinkPresentation(value, configGroup))
 		}
 		return SequencePresentation(presentations)
@@ -83,12 +89,10 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 	
 	private fun PresentationFactory.scopeLinkPresentation(scope: String, configGroup: CwtConfigGroup): InlayPresentation {
 		val scopeId = ScopeConfigHandler.getScopeId(scope)
-		if(scopeId == ScopeConfigHandler.unknownScopeId || scopeId == ScopeConfigHandler.anyScopeId) {
+		if(ScopeConfigHandler.isFakeScopeId(scopeId)) {
 			return smallText(scopeId)
-		}
-		return psiSingleReference(smallText(scopeId)) {
-			val scopeLink = configGroup.scopeAliasMap[scopeId]
-			scopeLink?.pointer?.element
+		} else {
+			return psiSingleReference(smallText(scopeId)) { configGroup.scopeAliasMap[scopeId]?.pointer?.element }
 		}
 	}
 }

@@ -24,6 +24,7 @@ object ScopeConfigHandler {
 	/**
 	 * 得到作用域的ID（用于显示在内嵌提示中，全小写+下划线）。
 	 */
+	@JvmStatic
 	fun getScopeId(scope: String) : String {
 		return scope.lowercase().replace(' ', '_')
 	}
@@ -42,6 +43,12 @@ object ScopeConfigHandler {
 			?: scope.toCapitalizedWords()
 	}
 	
+	@JvmStatic
+	fun isFakeScopeId(scopeId: String): Boolean {
+		return scopeId == unknownScopeId || scopeId == anyScopeId || scopeId == allScopeId
+	}
+	
+	@JvmStatic
 	fun matchesScope(scopeId: String?, scopesToMatch: Collection<String>?, configGroup: CwtConfigGroup): Boolean {
 		if(scopeId == null) return true
 		if(scopeId.equals(anyScopeId, true) || scopeId.equals(allScopeId, true)) return true
@@ -58,24 +65,24 @@ object ScopeConfigHandler {
 	//	return scopes.any { scope -> matchScope(scope, scopesToMatch, configGroup) }
 	//}
 	
+	@JvmStatic
 	fun findParentMember(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
 		return element.parents(withSelf = false)
 			.find { it is ParadoxScriptDefinitionElement || (it is ParadoxScriptBlock && it.isBlockValue()) }
 			.castOrNull<ParadoxScriptMemberElement>()
 	}
 	
+	@JvmStatic
 	fun isScopeContextChanged(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeConfig, file: PsiFile = element.containingFile) :Boolean {
-		//TODO
 		//does not have scope context > changed always
 		val parentMember = findParentMember(element)
 		if(parentMember == null) return true
 		val parentScopeContext = getScopeContext(parentMember, file)
 		if(parentScopeContext == null) return true
-		if(parentScopeContext !== scopeContext) return true
-		if(!isScopeContextSupported(element, file)) return true
-		return false
+		return parentScopeContext !== scopeContext
 	}
 	
+	@JvmStatic
 	fun isScopeContextSupported(element: ParadoxScriptMemberElement, file: PsiFile = element.containingFile) : Boolean {
 		//child config can be "alias_name[X] = ..." and "alias[X:scope_field]" is valid
 		//or root config in config tree is "alias[X:xxx] = ..."
@@ -90,7 +97,10 @@ object ScopeConfigHandler {
 		if(config !is CwtPropertyConfig) return false
 		val properties = config.properties ?: return false
 		return properties.any {
-			val aliasName = getAliasName(it)
+			val aliasName = when{
+				it.keyExpression.type == CwtDataTypes.AliasName -> it.keyExpression.value
+				else -> null
+			}
 			aliasName != null && aliasName in configGroup.aliasNameSupportScope
 		}
 	}
@@ -98,20 +108,19 @@ object ScopeConfigHandler {
 	private fun isScopeContextSupportedAsChild(config: CwtDataConfig<*>, configGroup: CwtConfigGroup): Boolean {
 		var currentConfig = config
 		while(true) {
+			if(currentConfig is CwtPropertyConfig) {
+				val inlineableConfig = currentConfig.inlineableConfig
+				if(inlineableConfig is CwtAliasConfig) {
+					val aliasName = inlineableConfig.name
+					if(aliasName in configGroup.aliasNameSupportScope) return true
+				}
+			}
 			currentConfig = currentConfig.parent ?: break
 		}
-		val aliasName = getAliasName(currentConfig)
-		return aliasName != null && aliasName in configGroup.aliasNameSupportScope
+		return false
 	}
 	
-	private fun getAliasName(config: CwtDataConfig<*>): String? {
-		if(config !is CwtPropertyConfig) return null
-		if(config.keyExpression.type == CwtDataTypes.AliasName) return config.value
-		return config.key.removeSurroundingOrNull("alias[","]")
-			?.substringBefore(':', "")
-			?.takeIfNotEmpty()
-	}
-	
+	@JvmStatic
 	fun getScopeContext(element: ParadoxScriptMemberElement, file: PsiFile = element.containingFile) : ParadoxScopeConfig? {
 		return getScopeContextFromCache(element, file)
 	}

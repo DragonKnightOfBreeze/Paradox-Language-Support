@@ -235,8 +235,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		scopeContext.map.forEach { (key, value) ->
 			append(" ")
 			val scopeId = ScopeConfigHandler.getScopeId(value)
-			val link = "${gameType.id}/scopes/$scopeId"
-			append(key).append(" = ").appendCwtLink(scopeId, link, memberElement)
+			append(key).append(" = ")
+			if(ScopeConfigHandler.isFakeScopeId(scopeId)) {
+				append(scopeId)
+			} else {
+				appendCwtLink(scopeId, "${gameType.id}/scopes/$scopeId", memberElement)
+			}
 		}
 	}
 	
@@ -383,10 +387,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				supportedScopeNames = localisationCommandConfig.supportedScopeNames
 			}
 			CwtConfigType.Alias -> {
-				//TODO 有些alias的supported_scopes信息并没有同步到最新版本的CWT规则文件中，需要另外写日志解析器进行解析
 				val expressionElement = originalElement?.parent?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
 				val config = resolveConfigs(expressionElement).firstOrNull()?.castOrNull<CwtPropertyConfig>()
 				val aliasConfig = config?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
+				if(aliasConfig.name !in configGroup.aliasNameSupportScope) return
 				supportedScopeNames = aliasConfig.supportedScopeNames
 			}
 			else -> pass()

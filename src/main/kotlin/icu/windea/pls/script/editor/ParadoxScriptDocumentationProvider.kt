@@ -270,8 +270,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		scopeContext.map.forEach { (key, value) ->
 			append(" ")
 			val scopeId = ScopeConfigHandler.getScopeId(value)
-			val link = "${gameType.id}/scopes/$scopeId"
-			append(key).append(" = ").appendCwtLink(scopeId, link, element)
+			append(key).append(" = ")
+			if(ScopeConfigHandler.isFakeScopeId(scopeId)) {
+				append(scopeId)
+			} else {
+				appendCwtLink(scopeId, "${gameType.id}/scopes/$scopeId", element)
+			}
 		}
 	}
 	
