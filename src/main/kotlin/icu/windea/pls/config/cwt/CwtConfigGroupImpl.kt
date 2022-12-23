@@ -1,20 +1,23 @@
 package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.cwt.setting.*
-import icu.windea.pls.config.definition.*
+import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.cwt.*
+import icu.windea.pls.cwt.psi.*
 import kotlin.collections.isNullOrEmpty
 import kotlin.collections.mapNotNullTo
+import com.fasterxml.jackson.module.kotlin.readValue
 
 private const val s = "system_scopes"
 
@@ -22,7 +25,7 @@ class CwtConfigGroupImpl(
 	override val project: Project,
 	override val gameType: ParadoxGameType?,
 	override val info: CwtConfigGroupInfo,
-	cwtFileConfigs: MutableMap<String, CwtFileConfig>
+	fileGroup: MutableMap<String, VirtualFile>
 ) : CwtConfigGroup {
 	override val foldingSettings: MutableMap<String, MutableMap<String, CwtFoldingSetting>> = mutableMapOf()
 	override val postfixTemplateSettings: MutableMap<String, MutableMap<String, CwtPostfixTemplateSetting>> = mutableMapOf()
@@ -61,193 +64,30 @@ class CwtConfigGroupImpl(
 	override val declarations: MutableMap<String, CwtDeclarationConfig> = mutableMapOf()
 	
 	init {
-		for(fileConfig in cwtFileConfigs.values) {
-			fileConfig.info.configGroup = this
-			val fileKey = fileConfig.key
-			
-			when(fileKey) {
-				//解析代码折叠配置
-				"folding_settings" -> {
-					resolveFoldingSettings(fileConfig)
-					continue
+		for(virtualFile in fileGroup.values) {
+			var result: Boolean
+			//val fileName = virtualFile.name
+			val extension = virtualFile.extension?.lowercase()
+			when {
+				extension == "cwt" -> {
+					val file = virtualFile.toPsiFile<CwtFile>(project) ?: continue
+					val fileConfig = CwtConfigResolver.resolve(file, info)
+					
+					result = resolveCwtSettingInCwtFile(fileConfig)
+					if(!result) continue
+					
+					result = resolveExtendedCwtConfigInCwtFile(fileConfig)
+					if(!result) continue
+					
+					resolveCwtConfigInCwtFile(fileConfig)
 				}
-				"postfix_template_settings" -> {
-					resolvePostfixTemplateSettings(fileConfig)
-				}
-			}
-			
-			when(fileKey) {
-				//解析系统作用域规则
-				"system_scopes" -> {
-					resolveSystemScopes(fileConfig)
-					continue
-				}
-				//解析本地化语言区域规则
-				"localisation_locales" -> {
-					resolveLocalisationLocales(fileConfig)
-					continue
-				}
-				//解析本地化预定义参数规则
-				"localisation_predefined_parameters" -> {
-					resolveLocalisationPredefinedParameters(fileConfig)
-					continue
-				}
-			}
-			
-			//解析要识别为脚本文件的文件夹列表 
-			if(fileKey == "folders") {
-				resolveFolders(fileConfig)
-				continue
-			}
-			//处理fileConfig的properties
-			for(property in fileConfig.properties) {
-				val key = property.key
-				when {
-					//找到配置文件中的顶级的key为"types"的属性，然后解析它的子属性，添加到types中
-					key == "types" -> {
-						val props = property.properties ?: continue
-						for(prop in props) {
-							val typeName = prop.key.removeSurroundingOrNull("type[", "]")
-							if(!typeName.isNullOrEmpty()) {
-								val typeConfig = resolveTypeConfig(prop, typeName)
-								types[typeName] = typeConfig
-							}
-						}
+				//on_actions.csv
+				extension == "csv" -> {
+					val bufferedReader = virtualFile.inputStream.bufferedReader()
+					val data = bufferedReader.use {
+						csvMapper.readValue(bufferedReader, Map::class.java)
 					}
-					//找到配置文件中的顶级的key为"values"的属性，然后解析它的子属性，添加到values中
-					key == "values" -> {
-						val props = property.properties ?: continue
-						for(prop in props) {
-							val valueName = prop.key.removeSurroundingOrNull("value[", "]")
-							if(!valueName.isNullOrEmpty()) {
-								val valueConfig = resolveEnumConfig(prop, valueName) ?: continue
-								values[valueName] = valueConfig
-							}
-						}
-					}
-					//找到配置文件中的顶级的key为"enums"的属性，然后解析它的子属性，添加到enums和complexEnums中
-					key == "enums" -> {
-						val props = property.properties ?: continue
-						for(prop in props) {
-							val enumName = prop.key.removeSurroundingOrNull("enum[", "]")
-							if(!enumName.isNullOrEmpty()) {
-								val enumConfig = resolveEnumConfig(prop, enumName) ?: continue
-								enums[enumName] = enumConfig
-							}
-							val complexEnumName = prop.key.removeSurroundingOrNull("complex_enum[", "]")
-							if(!complexEnumName.isNullOrEmpty()) {
-								val complexEnumConfig = resolveComplexEnumConfig(prop, complexEnumName) ?: continue
-								complexEnums[complexEnumName] = complexEnumConfig
-							}
-						}
-					}
-					//找到配置文件中的顶级的key为"links"的属性，然后解析它的子属性，添加到links中
-					key == "links" -> {
-						val props = property.properties ?: continue
-						for(prop in props) {
-							val linkName = prop.key
-							val linkConfig = resolveLinkConfig(prop, linkName) ?: continue
-							links[linkName] = linkConfig
-							//要求data_source存在
-							val fromData = linkConfig.fromData && linkConfig.dataSource != null
-							val withPrefix = linkConfig.prefix != null
-							val type = linkConfig.type
-							if(type == null || type == "scope" || type == "both") {
-								when {
-									!fromData -> linksAsScopeNotData[linkName] = linkConfig
-									withPrefix -> linksAsScopeWithPrefix[linkName] = linkConfig
-									else -> linksAsScopeWithoutPrefix[linkName] = linkConfig
-								}
-							}
-							if(type == "value" || type == "both") {
-								when {
-									!fromData -> linksAsValueNotData[linkName] = linkConfig
-									withPrefix -> linksAsValueWithPrefix[linkName] = linkConfig
-									else -> linksAsValueWithoutPrefix[linkName] = linkConfig
-								}
-							}
-						}
-					}
-					//找到配置文件中的顶级的key为"localisation_links"的属性，然后解析它的子属性，添加到localisationLinks中
-					key == "localisation_links" -> {
-						val props = property.properties ?: continue
-						for(prop in props) {
-							val linkName = prop.key
-							val linkConfig = resolveLocalisationLinkConfig(prop, linkName) ?: continue
-							localisationLinks[linkName] = linkConfig
-						}
-					}
-					//找到配置文件中的顶级的key为"localisation_commands"的属性，然后解析它的子属性，添加到localisationCommands中
-					key == "localisation_commands" -> {
-						val props = property.properties ?: continue
-						for(prop in props) {
-							val commandName = prop.key
-							val commandConfig = resolveLocalisationCommandConfig(prop, commandName)
-							localisationCommands[commandName] = commandConfig
-						}
-					}
-					//找到配置文件中的顶级的key为"modifier_categories"的属性，然后解析它的子属性，添加到modifierCategories中
-					key == "modifier_categories" -> {
-						val props = property.properties ?: continue
-						for(prop in props) {
-							val modifierCategoryName = prop.key
-							val categoryConfig = resolveModifierCategoryConfig(prop, modifierCategoryName) ?: continue
-							modifierCategories[modifierCategoryName] = categoryConfig
-						}
-					}
-					//找到配置文件中的顶级的key为"modifiers"的属性，然后解析它的子属性，添加到modifiers中
-					key == "modifiers" -> {
-						val props = property.properties ?: continue
-						for(prop in props) {
-							val modifierName = prop.key
-							val modifierConfig = resolveModifierConfig(prop, modifierName) ?: continue
-							modifiers[modifierName] = modifierConfig
-						}
-					}
-					//找到配置文件中的顶级的key为"scopes"的属性，然后解析它的子属性，添加到scopes中
-					key == "scopes" -> {
-						val props = property.properties ?: continue
-						for(prop in props) {
-							val scopeName = prop.key
-							val scopeConfig = resolveScopeConfig(prop, scopeName) ?: continue
-							scopes[scopeName] = scopeConfig
-							for(alias in scopeConfig.aliases) {
-								scopeAliasMap[alias] = scopeConfig
-							}
-						}
-					}
-					//找到配置文件中的顶级的key为"scope_groups"的属性，然后解析它的子属性，添加到scopeGroups中
-					key == "scope_groups" -> {
-						val props = property.properties ?: continue
-						for(prop in props) {
-							val scopeGroupName = prop.key
-							val scopeGroupConfig = resolveScopeGroupConfig(prop, scopeGroupName) ?: continue
-							scopeGroups[scopeGroupName] = scopeGroupConfig
-						}
-					}
-					else -> {
-						//判断配置文件中的顶级的key是否匹配"single_alias[?]"，如果匹配，则解析配置并添加到single_aliases中
-						val singleAliasName = key.removeSurroundingOrNull("single_alias[", "]")
-						if(singleAliasName != null) {
-							val singleAliasConfig = resolveSingleAliasConfig(property, singleAliasName)
-							val list = singleAliases.getOrPut(singleAliasName) { SmartList() }
-							list.add(singleAliasConfig)
-						}
-						
-						//判断配置文件中的顶级的key是否匹配"alias[?:?]"，如果匹配，则解析配置并添加到aliases中
-						val aliasNamePair = key.removeSurroundingOrNull("alias[", "]")?.splitToPair(':')
-						if(aliasNamePair != null) {
-							val (aliasName, aliasSubName) = aliasNamePair
-							val aliasConfig = resolveAliasConfig(property, aliasName, aliasSubName)
-							val map = aliasGroups.getOrPut(aliasName) { mutableMapOf() }
-							val list = map.getOrPut(aliasSubName) { SmartList() }
-							list.add(aliasConfig)
-						}
-						
-						//其他情况，放到definition中
-						val declarationConfig = resolveDeclarationConfig(property, key)
-						declarations[key] = declarationConfig
-					}
+					data.entries
 				}
 			}
 		}
@@ -264,34 +104,16 @@ class CwtConfigGroupImpl(
 	override val aliasKeysGroupNoConst: MutableMap<String, Set<String>> = mutableMapOf()
 	
 	init {
-		for((k, v) in aliasGroups) {
-			var keysConst: MutableMap<String, String>? = null
-			var keysNoConst: MutableSet<String>? = null
-			for(key in v.keys) {
-				if(CwtKeyExpression.resolve(key).type == CwtDataTypes.ConstantKey) {
-					if(keysConst == null) keysConst = CollectionFactory.createCaseInsensitiveStringMap()
-					keysConst.put(key, key)
-				} else {
-					if(keysNoConst == null) keysNoConst = mutableSetOf()
-					keysNoConst.add(key)
-				}
-			}
-			if(!keysConst.isNullOrEmpty()) {
-				aliasKeysGroupConst.put(k, keysConst)
-			}
-			if(!keysNoConst.isNullOrEmpty()) {
-				aliasKeysGroupNoConst.put(k, keysNoConst.sortedByPriority(this) { CwtKeyExpression.resolve(it) }.toSet())
-			}
-		}
+		bindAliasKeysGroup()
 	}
 	
-	override val linksAsScopeWithPrefixSorted: List<CwtLinkConfig> by lazy { 
+	override val linksAsScopeWithPrefixSorted: List<CwtLinkConfig> by lazy {
 		linksAsScopeWithPrefix.values.sortedByPriority(this) { it.dataSource!! }
 	}
 	override val linksAsValueWithPrefixSorted: List<CwtLinkConfig> by lazy {
 		linksAsValueWithPrefix.values.sortedByPriority(this) { it.dataSource!! }
 	}
-	override val linksAsScopeWithoutPrefixSorted: List<CwtLinkConfig> by lazy { 
+	override val linksAsScopeWithoutPrefixSorted: List<CwtLinkConfig> by lazy {
 		linksAsScopeWithoutPrefix.values.sortedByPriority(this) { it.dataSource!! }
 	}
 	override val linksAsValueWithoutPrefixSorted: List<CwtLinkConfig> by lazy {
@@ -300,27 +122,52 @@ class CwtConfigGroupImpl(
 	
 	override val aliasNameSupportScope: Set<String> get() = info.aliasNameSupportScope
 	
-	override val definitionTypesSupportParameters: Set<String> by lazy {
+	override val definitionTypesSupportScope: Set<String> by lazy {
 		buildSet { 
+			add("script_effect")
+			add("script_trigger")
+			add("on_action")
+		}
+	}
+	
+	override val definitionTypesSupportParameters: Set<String> by lazy {
+		buildSet {
 			addAll(info.aliasNameSupportScope)
 			add("script_value") //SV也支持参数
 		}
 	}
 	
-	//解析CWT配置
+	//解析CSV
+	
+	//解析CWT设置
+	
+	private fun resolveCwtSettingInCwtFile(fileConfig: CwtFileConfig): Boolean {
+		when(fileConfig.key) {
+			//解析代码折叠配置
+			"folding_settings" -> {
+				resolveFoldingSettings(fileConfig)
+				return false
+			}
+			"postfix_template_settings" -> {
+				resolvePostfixTemplateSettings(fileConfig)
+				return false
+			}
+		}
+		return true
+	}
 	
 	private fun resolveFoldingSettings(fileConfig: CwtFileConfig) {
 		val configs = fileConfig.properties
 		configs.forEach { groupProperty ->
 			val groupName = groupProperty.key
 			val map = CollectionFactory.createCaseInsensitiveStringMap<CwtFoldingSetting>()
-			groupProperty.properties?.forEach { property -> 
+			groupProperty.properties?.forEach { property ->
 				val id = property.key
 				var key: String? = null
 				var keys: List<String>? = null
 				var placeholder: String? = null
 				property.properties?.forEach { prop ->
-					when{
+					when {
 						prop.key == "key" -> key = prop.stringValue
 						prop.key == "keys" -> keys = prop.values?.mapNotNull { it.stringValue }
 						prop.key == "placeholder" -> placeholder = prop.stringValue
@@ -345,9 +192,9 @@ class CwtConfigGroupImpl(
 				var key: String? = null
 				var example: String? = null
 				var variables: Map<String, String>? = null
-				var expression: String? = null 
+				var expression: String? = null
 				property.properties?.forEach { prop ->
-					when{
+					when {
 						prop.key == "key" -> key = prop.stringValue
 						prop.key == "example" -> example = prop.stringValue
 						prop.key == "variables" -> variables = prop.properties?.let {
@@ -371,6 +218,27 @@ class CwtConfigGroupImpl(
 	
 	//解析扩展的CWT规则
 	
+	private fun resolveExtendedCwtConfigInCwtFile(fileConfig: CwtFileConfig): Boolean {
+		when(fileConfig.key) {
+			//解析系统作用域规则
+			"system_scopes" -> {
+				resolveSystemScopes(fileConfig)
+				return false
+			}
+			//解析本地化语言区域规则
+			"localisation_locales" -> {
+				resolveLocalisationLocales(fileConfig)
+				return false
+			}
+			//解析本地化预定义参数规则
+			"localisation_predefined_parameters" -> {
+				resolveLocalisationPredefinedParameters(fileConfig)
+				return false
+			}
+		}
+		return true
+	}
+	
 	private fun resolveSystemScopes(fileConfig: CwtFileConfig) {
 		val configs = fileConfig.properties.find { it.key == "system_scopes" }?.properties ?: return
 		configs.forEach { property ->
@@ -384,7 +252,7 @@ class CwtConfigGroupImpl(
 	
 	private fun resolveLocalisationLocales(fileConfig: CwtFileConfig) {
 		val configs = fileConfig.properties.find { it.key == "localisation_locales" }?.properties ?: return
-		configs.forEach { property -> 
+		configs.forEach { property ->
 			val id = property.key
 			val description = property.documentation.orEmpty()
 			val codes = property.properties?.find { p -> p.key == "codes" }?.values?.mapNotNull { v -> v.stringValue }.orEmpty()
@@ -407,6 +275,166 @@ class CwtConfigGroupImpl(
 	}
 	
 	//解析CWT规则
+	
+	private fun resolveCwtConfigInCwtFile(fileConfig: CwtFileConfig): Boolean {
+		//解析要识别为脚本文件的文件夹列表 
+		if(fileConfig.key == "folders") {
+			resolveFolders(fileConfig)
+			return false
+		}
+		//处理fileConfig的properties
+		for(property in fileConfig.properties) {
+			val key = property.key
+			when {
+				//找到配置文件中的顶级的key为"types"的属性，然后解析它的子属性，添加到types中
+				key == "types" -> {
+					val props = property.properties ?: continue
+					for(prop in props) {
+						val typeName = prop.key.removeSurroundingOrNull("type[", "]")
+						if(!typeName.isNullOrEmpty()) {
+							val typeConfig = resolveTypeConfig(prop, typeName)
+							types[typeName] = typeConfig
+						}
+					}
+				}
+				//找到配置文件中的顶级的key为"values"的属性，然后解析它的子属性，添加到values中
+				key == "values" -> {
+					val props = property.properties ?: continue
+					for(prop in props) {
+						val valueName = prop.key.removeSurroundingOrNull("value[", "]")
+						if(!valueName.isNullOrEmpty()) {
+							val valueConfig = resolveEnumConfig(prop, valueName) ?: continue
+							values[valueName] = valueConfig
+						}
+					}
+				}
+				//找到配置文件中的顶级的key为"enums"的属性，然后解析它的子属性，添加到enums和complexEnums中
+				key == "enums" -> {
+					val props = property.properties ?: continue
+					for(prop in props) {
+						val enumName = prop.key.removeSurroundingOrNull("enum[", "]")
+						if(!enumName.isNullOrEmpty()) {
+							val enumConfig = resolveEnumConfig(prop, enumName) ?: continue
+							enums[enumName] = enumConfig
+						}
+						val complexEnumName = prop.key.removeSurroundingOrNull("complex_enum[", "]")
+						if(!complexEnumName.isNullOrEmpty()) {
+							val complexEnumConfig = resolveComplexEnumConfig(prop, complexEnumName) ?: continue
+							complexEnums[complexEnumName] = complexEnumConfig
+						}
+					}
+				}
+				//找到配置文件中的顶级的key为"links"的属性，然后解析它的子属性，添加到links中
+				key == "links" -> {
+					val props = property.properties ?: continue
+					for(prop in props) {
+						val linkName = prop.key
+						val linkConfig = resolveLinkConfig(prop, linkName) ?: continue
+						links[linkName] = linkConfig
+						//要求data_source存在
+						val fromData = linkConfig.fromData && linkConfig.dataSource != null
+						val withPrefix = linkConfig.prefix != null
+						val type = linkConfig.type
+						if(type == null || type == "scope" || type == "both") {
+							when {
+								!fromData -> linksAsScopeNotData[linkName] = linkConfig
+								withPrefix -> linksAsScopeWithPrefix[linkName] = linkConfig
+								else -> linksAsScopeWithoutPrefix[linkName] = linkConfig
+							}
+						}
+						if(type == "value" || type == "both") {
+							when {
+								!fromData -> linksAsValueNotData[linkName] = linkConfig
+								withPrefix -> linksAsValueWithPrefix[linkName] = linkConfig
+								else -> linksAsValueWithoutPrefix[linkName] = linkConfig
+							}
+						}
+					}
+				}
+				//找到配置文件中的顶级的key为"localisation_links"的属性，然后解析它的子属性，添加到localisationLinks中
+				key == "localisation_links" -> {
+					val props = property.properties ?: continue
+					for(prop in props) {
+						val linkName = prop.key
+						val linkConfig = resolveLocalisationLinkConfig(prop, linkName) ?: continue
+						localisationLinks[linkName] = linkConfig
+					}
+				}
+				//找到配置文件中的顶级的key为"localisation_commands"的属性，然后解析它的子属性，添加到localisationCommands中
+				key == "localisation_commands" -> {
+					val props = property.properties ?: continue
+					for(prop in props) {
+						val commandName = prop.key
+						val commandConfig = resolveLocalisationCommandConfig(prop, commandName)
+						localisationCommands[commandName] = commandConfig
+					}
+				}
+				//找到配置文件中的顶级的key为"modifier_categories"的属性，然后解析它的子属性，添加到modifierCategories中
+				key == "modifier_categories" -> {
+					val props = property.properties ?: continue
+					for(prop in props) {
+						val modifierCategoryName = prop.key
+						val categoryConfig = resolveModifierCategoryConfig(prop, modifierCategoryName) ?: continue
+						modifierCategories[modifierCategoryName] = categoryConfig
+					}
+				}
+				//找到配置文件中的顶级的key为"modifiers"的属性，然后解析它的子属性，添加到modifiers中
+				key == "modifiers" -> {
+					val props = property.properties ?: continue
+					for(prop in props) {
+						val modifierName = prop.key
+						val modifierConfig = resolveModifierConfig(prop, modifierName) ?: continue
+						modifiers[modifierName] = modifierConfig
+					}
+				}
+				//找到配置文件中的顶级的key为"scopes"的属性，然后解析它的子属性，添加到scopes中
+				key == "scopes" -> {
+					val props = property.properties ?: continue
+					for(prop in props) {
+						val scopeName = prop.key
+						val scopeConfig = resolveScopeConfig(prop, scopeName) ?: continue
+						scopes[scopeName] = scopeConfig
+						for(alias in scopeConfig.aliases) {
+							scopeAliasMap[alias] = scopeConfig
+						}
+					}
+				}
+				//找到配置文件中的顶级的key为"scope_groups"的属性，然后解析它的子属性，添加到scopeGroups中
+				key == "scope_groups" -> {
+					val props = property.properties ?: continue
+					for(prop in props) {
+						val scopeGroupName = prop.key
+						val scopeGroupConfig = resolveScopeGroupConfig(prop, scopeGroupName) ?: continue
+						scopeGroups[scopeGroupName] = scopeGroupConfig
+					}
+				}
+				else -> {
+					//判断配置文件中的顶级的key是否匹配"single_alias[?]"，如果匹配，则解析配置并添加到single_aliases中
+					val singleAliasName = key.removeSurroundingOrNull("single_alias[", "]")
+					if(singleAliasName != null) {
+						val singleAliasConfig = resolveSingleAliasConfig(property, singleAliasName)
+						val list = singleAliases.getOrPut(singleAliasName) { SmartList() }
+						list.add(singleAliasConfig)
+					}
+					
+					//判断配置文件中的顶级的key是否匹配"alias[?:?]"，如果匹配，则解析配置并添加到aliases中
+					val aliasNamePair = key.removeSurroundingOrNull("alias[", "]")?.splitToPair(':')
+					if(aliasNamePair != null) {
+						val (aliasName, aliasSubName) = aliasNamePair
+						val aliasConfig = resolveAliasConfig(property, aliasName, aliasSubName)
+						val map = aliasGroups.getOrPut(aliasName) { mutableMapOf() }
+						val list = map.getOrPut(aliasSubName) { SmartList() }
+						list.add(aliasConfig)
+					}
+					
+					//其他情况，放到definition中
+					val declarationConfig = resolveDeclarationConfig(property, key)
+					declarations[key] = declarationConfig
+				}
+			}
+		}
+		return true
+	}
 	
 	private fun resolveFolders(fileConfig: CwtFileConfig) {
 		fileConfig.values.mapTo(folders) { it.value }
@@ -749,7 +777,7 @@ class CwtConfigGroupImpl(
 	
 	private fun resolveAliasConfig(propertyConfig: CwtPropertyConfig, name: String, subName: String): CwtAliasConfig {
 		return CwtAliasConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, subName)
-			.apply { 
+			.apply {
 				info.acceptConfigExpression(subNameExpression)
 				info.acceptAliasConfig(this)
 			}
@@ -788,6 +816,28 @@ class CwtConfigGroupImpl(
 			for(category in modifier.categories) {
 				val categoryConfig = modifierCategories[category] ?: modifierCategoryIdMap[category] ?: continue
 				modifier.categoryConfigMap[categoryConfig.name] = categoryConfig
+			}
+		}
+	}
+	
+	private fun bindAliasKeysGroup() {
+		for((k, v) in aliasGroups) {
+			var keysConst: MutableMap<String, String>? = null
+			var keysNoConst: MutableSet<String>? = null
+			for(key in v.keys) {
+				if(CwtKeyExpression.resolve(key).type == CwtDataTypes.ConstantKey) {
+					if(keysConst == null) keysConst = CollectionFactory.createCaseInsensitiveStringMap()
+					keysConst.put(key, key)
+				} else {
+					if(keysNoConst == null) keysNoConst = mutableSetOf()
+					keysNoConst.add(key)
+				}
+			}
+			if(!keysConst.isNullOrEmpty()) {
+				aliasKeysGroupConst.put(k, keysConst)
+			}
+			if(!keysNoConst.isNullOrEmpty()) {
+				aliasKeysGroupNoConst.put(k, keysNoConst.sortedByPriority(this) { CwtKeyExpression.resolve(it) }.toSet())
 			}
 		}
 	}

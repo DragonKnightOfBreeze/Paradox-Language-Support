@@ -1,4 +1,4 @@
-package icu.windea.pls.config.definition
+package icu.windea.pls.config.script
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
@@ -6,7 +6,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.definition.config.*
+import icu.windea.pls.config.script.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
@@ -73,19 +73,17 @@ object ScopeConfigHandler {
 	}
 	
 	@JvmStatic
-	fun isScopeContextChanged(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeConfig, file: PsiFile = element.containingFile) :Boolean {
-		//does not have scope context > changed always
-		val parentMember = findParentMember(element)
-		if(parentMember == null) return true
-		val parentScopeContext = getScopeContext(parentMember, file)
-		if(parentScopeContext == null) return true
-		if(parentScopeContext != scopeContext) return true
-		if(!isScopeContextSupported(parentMember, file)) return true
-		return false
-	}
-	
-	@JvmStatic
-	fun isScopeContextSupported(element: ParadoxScriptMemberElement, file: PsiFile = element.containingFile) : Boolean {
+	fun isScopeContextSupported(element: ParadoxScriptMemberElement) : Boolean {
+		//some definitions, such as on_action, also support scope context on definition level
+		if(element is ParadoxScriptDefinitionElement) {
+			val definitionInfo = element.definitionInfo
+			if(definitionInfo != null) {
+				val configGroup = definitionInfo.configGroup
+				val definitionType = definitionInfo.type
+				if(definitionType in configGroup.definitionTypesSupportScope) return true
+			}
+		}
+		
 		//child config can be "alias_name[X] = ..." and "alias[X:scope_field]" is valid
 		//or root config in config tree is "alias[X:xxx] = ..."
 		val configs = ParadoxCwtConfigHandler.resolveConfigs(element, allowDefinitionSelf = true)
@@ -119,6 +117,18 @@ object ScopeConfigHandler {
 			}
 			currentConfig = currentConfig.parent ?: break
 		}
+		return false
+	}
+	
+	@JvmStatic
+	fun isScopeContextChanged(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeConfig, file: PsiFile = element.containingFile) :Boolean {
+		//does not have scope context > changed always
+		val parentMember = findParentMember(element)
+		if(parentMember == null) return true
+		val parentScopeContext = getScopeContext(parentMember, file)
+		if(parentScopeContext == null) return true
+		if(parentScopeContext != scopeContext) return true
+		if(!isScopeContextSupported(parentMember)) return true
 		return false
 	}
 	

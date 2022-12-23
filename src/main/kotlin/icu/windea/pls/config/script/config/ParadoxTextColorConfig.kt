@@ -1,4 +1,4 @@
-package icu.windea.pls.config.definition.config
+package icu.windea.pls.config.script.config
 
 import com.intellij.psi.*
 import com.intellij.util.ui.*
@@ -14,7 +14,7 @@ class ParadoxTextColorConfig(
 	val r: Int,
 	val g: Int,
 	val b: Int
-) : ParadoxDefinitionConfig {
+) : ParadoxScriptConfig {
 	val color: Color = Color(r, g, b)
 	val icon = ColorIcon(16, color)
 	

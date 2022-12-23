@@ -6,7 +6,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.util.*
 import icons.*
-import icu.windea.pls.config.definition.config.*
+import icu.windea.pls.config.script.config.*
 import icu.windea.pls.core.model.*
 
 object PlsConstants {
@@ -97,7 +97,7 @@ object PlsKeys {
 	
 	val textColorConfigKey = Key.create<ParadoxTextColorConfig>("paradox.textColorConfig")
 	
-	val definitionConfigKeys = setOf<Key<out ParadoxDefinitionConfig>>(
+	val definitionConfigKeys = setOf<Key<out ParadoxScriptConfig>>(
 		textColorConfigKey
 	)
 	

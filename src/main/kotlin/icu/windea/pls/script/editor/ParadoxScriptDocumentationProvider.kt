@@ -7,7 +7,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.definition.*
+import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.chained.*
@@ -188,6 +188,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上相关图片信息：去重后的一组DDS文件的filePath，或者sprite的definitionKey，不包括可选且没有对应的图片的项，按解析顺序排序
 			addDefinitionRelatedImages(element, definitionInfo, sections)
 			
+			//加上作用域上下文信息（如果支持）
+			addDefinitionScopeContext(element, definitionInfo)
+			
 			//加上参数信息（如果支持且存在）
 			addDefinitionParameters(element, definitionInfo)
 		}
@@ -254,6 +257,25 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			appendBr()
 			append(PlsDocBundle.message("prefix.relatedImage")).append(" ")
 			append(key).append(" = ").append(value)
+		}
+	}
+	
+	private fun StringBuilder.addDefinitionScopeContext(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+		if(!ScopeConfigHandler.isScopeContextSupported(element)) return
+		val scopeContext = ScopeConfigHandler.getScopeContext(element)
+		if(scopeContext == null) return
+		val gameType = definitionInfo.gameType
+		appendBr()
+		append(PlsDocBundle.message("prefix.scopeContext"))
+		scopeContext.map.forEach { (key, value) ->
+			append(" ")
+			val scopeId = ScopeConfigHandler.getScopeId(value)
+			append(key).append(" = ")
+			if(ScopeConfigHandler.isFakeScopeId(scopeId)) {
+				append(scopeId)
+			} else {
+				appendCwtLink(scopeId, "${gameType.id}/scopes/$scopeId", element)
+			}
 		}
 	}
 	

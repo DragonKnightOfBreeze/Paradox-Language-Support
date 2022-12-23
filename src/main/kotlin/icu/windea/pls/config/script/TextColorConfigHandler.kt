@@ -1,7 +1,7 @@
-package icu.windea.pls.config.definition
+package icu.windea.pls.config.script
 
 import com.intellij.openapi.project.*
-import icu.windea.pls.config.definition.config.*
+import icu.windea.pls.config.script.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.search.*

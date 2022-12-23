@@ -1,4 +1,4 @@
-package icu.windea.pls.config.definition.config
+package icu.windea.pls.config.script.config
 
 data class ParadoxScopeConfig(
 	val thisScope: String,
@@ -54,5 +54,17 @@ data class ParadoxScopeConfig(
 		val scopeConfig = copy(thisScope = pushScope)
 		scopeConfig.prev = this
 		return scopeConfig
+	}
+	
+	companion object{
+		fun resolve(map: Map<String, String?>) :ParadoxScopeConfig? {
+			val thisScope = map.get("this") ?: return null
+			val rootScope = map.get("root") ?: thisScope
+			val fromScope = map.get("from")
+			val fromFromScope = map.get("fromfrom")
+			val fromFromFromScope = map.get("fromfromfrom")
+			val fromFromFromFromScope = map.get("fromfromfromfrom")
+			return ParadoxScopeConfig(thisScope, rootScope, fromScope, fromFromScope, fromFromFromScope, fromFromFromFromScope)
+		}
 	}
 }

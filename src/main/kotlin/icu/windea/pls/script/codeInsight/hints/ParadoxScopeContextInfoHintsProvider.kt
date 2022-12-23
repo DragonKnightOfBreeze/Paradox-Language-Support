@@ -9,8 +9,8 @@ import com.intellij.refactoring.suggested.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.definition.*
-import icu.windea.pls.config.definition.config.*
+import icu.windea.pls.config.script.*
+import icu.windea.pls.config.script.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxScopeContextInfoHintsProvider.*
@@ -57,7 +57,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 		val offset = leftCurlyBrace.textRange.endOffset
 		val isAtLineEnd = editor.document.isAtLineEnd(offset, true)
 		if(!isAtLineEnd) return true //仅当作为子句开始的左花括号位于行尾时，才显示此内嵌提示
-		if(!ScopeConfigHandler.isScopeContextSupported(element, file)) return true
+		if(!ScopeConfigHandler.isScopeContextSupported(element)) return true
 		val scopeContext = ScopeConfigHandler.getScopeContext(element, file)
 		if(scopeContext != null) {
 			//don't need show if scope is not changed

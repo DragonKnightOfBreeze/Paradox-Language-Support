@@ -132,6 +132,12 @@ fun String.substringInLast(prefix: String, suffix: String, missingDelimiterValue
 	return substring(prefixIndex + prefix.length, suffixIndex)
 }
 
+private val blankRegex = "\\s+".toRegex()
+
+fun String.splitByBlank(limit: Int = 0) : List<String> {
+	return split(blankRegex, limit)
+}
+
 fun String.containsBlank(): Boolean {
 	return any { it.isWhitespace() }
 }

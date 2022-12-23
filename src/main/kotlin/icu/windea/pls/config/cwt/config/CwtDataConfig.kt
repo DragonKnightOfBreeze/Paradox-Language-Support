@@ -4,7 +4,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.definition.config.*
+import icu.windea.pls.config.script.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 
@@ -54,13 +54,7 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 		if(option == null) return@lazy null
 		val options = option.options ?: return@lazy null
 		val map = options.associateBy({ it.key.lowercase() }, { it.stringValue })
-		val thisScope = map.get("this") ?: return@lazy null
-		val rootScope = map.get("root") ?: thisScope
-		val fromScope = map.get("from")
-		val fromFromScope = map.get("fromfrom")
-		val fromFromFromScope = map.get("fromfromfrom")
-		val fromFromFromFromScope = map.get("fromfromfromfrom")
-		ParadoxScopeConfig(thisScope, rootScope, fromScope, fromFromScope, fromFromFromScope, fromFromFromFromScope)
+		ParadoxScopeConfig.resolve(map)
 	}
 	
 	//may on:

@@ -2,15 +2,13 @@
 
 package icu.windea.pls.config.cwt
 
+import com.intellij.psi.PsiFile
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.model.*
-
-internal typealias CwtConfigMap = MutableMap<String, CwtFileConfig>
-internal typealias CwtConfigMaps = MutableMap<CwtConfigGroupInfo, CwtConfigMap>
 
 inline fun CwtDataConfig<*>.processParent(processor: ProcessEntry.(CwtDataConfig<*>) -> Boolean): Boolean {
 	var parent = this.parent

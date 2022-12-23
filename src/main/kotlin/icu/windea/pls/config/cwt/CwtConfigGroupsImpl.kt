@@ -1,30 +1,33 @@
 package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.model.*
 import java.util.concurrent.*
 
 class CwtConfigGroupsImpl(
 	override val project: Project,
-	cwtFileConfigGroups: CwtConfigMaps
+	fileGroups: MutableMap<String, MutableMap<String, VirtualFile>>
 ) : CwtConfigGroups {
 	override val groups: MutableMap<String, CwtConfigGroup> = ConcurrentHashMap()
 	
 	init {
 		//初始化各个游戏分组的CWT规则
-		val coreGroupInfo = cwtFileConfigGroups.keys.first { it.groupName == "core" }
-		val coreCwtFileConfigs = cwtFileConfigGroups.getValue(coreGroupInfo)
-		val coreGroup = CwtConfigGroupImpl(project, null, coreGroupInfo, coreCwtFileConfigs)
-		coreGroupInfo.configGroup = coreGroup
-		groups["core"] = coreGroup
-		for((groupInfo, cwtFileConfigs) in cwtFileConfigGroups) {
-			val gameType = ParadoxGameType.resolve(groupInfo.groupName)
+		val coreFileGroup = fileGroups.getValue("core")
+		val coreGroupInfo = CwtConfigGroupInfo("root")
+		val coreConfigGroup = CwtConfigGroupImpl(project, null, coreGroupInfo, coreFileGroup)
+		coreGroupInfo.configGroup = coreConfigGroup
+		groups["core"] = coreConfigGroup
+		for((groupName, fileGroup) in fileGroups) {
+			val gameType = ParadoxGameType.resolve(groupName)
 			if(gameType != null) {
-				cwtFileConfigs.putAll(coreCwtFileConfigs)
-				val group = CwtConfigGroupImpl(project, gameType, groupInfo, cwtFileConfigs)
-				groupInfo.configGroup = group
-				groups[groupInfo.groupName] = group
+				fileGroup.putAll(coreFileGroup)
+				val configInfo = CwtConfigGroupInfo(groupName)
+				val configGroup = CwtConfigGroupImpl(project, gameType, configInfo, fileGroup)
+				configInfo.configGroup = configGroup
+				groups[groupName] = configGroup
 			}
 		}
 	}

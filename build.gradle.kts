@@ -34,8 +34,8 @@ repositories {
 
 dependencies {
 	implementation("ar.com.hjg:pngj:2.1.0") //FROM DDS4J
+	implementation("com.fasterxml.jackson:jackson-dataformat-csv:0.5.0") //CSV
 	testImplementation("junit:junit:4.13.2")
-	implementation(kotlin("stdlib-jdk8"))
 }
 
 sourceSets {

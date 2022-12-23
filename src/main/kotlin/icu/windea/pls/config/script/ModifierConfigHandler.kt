@@ -1,4 +1,4 @@
-package icu.windea.pls.config.definition
+package icu.windea.pls.config.script
 
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
