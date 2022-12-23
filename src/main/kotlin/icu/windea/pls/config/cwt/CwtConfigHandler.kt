@@ -863,7 +863,9 @@ object CwtConfigHandler {
 				completeValueFieldExpression(context, result)
 			}
 			CwtDataTypes.IntValueField -> {
-				completeValueFieldExpression(context, result, isInt = true)
+				put(PlsCompletionKeys.isIntKey, true)
+				completeValueFieldExpression(context, result)
+				put(PlsCompletionKeys.isIntKey, null)
 			}
 			CwtDataTypes.VariableField -> pass() //TODO
 			CwtDataTypes.IntVariableField -> pass() //TODO
@@ -1011,7 +1013,7 @@ object CwtConfigHandler {
 		scopeFieldExpression.complete(context, result)
 	}
 	
-	fun completeValueFieldExpression(context: ProcessingContext, result: CompletionResultSet, isInt: Boolean = false): Unit = with(context) {
+	fun completeValueFieldExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		//基于当前位置的代码补全
 		if(quoted) return
 		val textRange = TextRange.create(0, keyword.length)

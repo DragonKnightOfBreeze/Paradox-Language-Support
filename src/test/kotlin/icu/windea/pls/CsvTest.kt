@@ -14,8 +14,8 @@ class CsvTest {
 			.addColumn("key").addColumn("scopes").addColumn("event").addColumn("comment").build()
 			.withHeader()
 		csvMapper
-		val readValues = csvMapper.readerFor(ParadoxOnActionConfig::class.java).with(schemaFor)
-			.readValues<ParadoxOnActionConfig>(file)
+		val readValues = csvMapper.readerFor(ParadoxOnActionInfo::class.java).with(schemaFor)
+			.readValues<ParadoxOnActionInfo>(file)
 		val r = readValues.readAll()
 		r
 	}

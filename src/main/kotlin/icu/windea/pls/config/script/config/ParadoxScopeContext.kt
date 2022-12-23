@@ -1,6 +1,6 @@
 package icu.windea.pls.config.script.config
 
-data class ParadoxScopeConfig(
+data class ParadoxScopeContext(
 	val thisScope: String,
 	val rootScope: String? = null,
 	val fromScope: String? = null,
@@ -8,26 +8,26 @@ data class ParadoxScopeConfig(
 	val fromFromFromScope: String? = null,
 	val fromFromFromFromScope: String? = null
 ) {
-	@Volatile var root: ParadoxScopeConfig? = null
-	@Volatile var prev: ParadoxScopeConfig? = null
-	@Volatile var from: ParadoxScopeConfig? = null
+	@Volatile var root: ParadoxScopeContext? = null
+	@Volatile var prev: ParadoxScopeContext? = null
+	@Volatile var from: ParadoxScopeContext? = null
 	
 	init {
 		if(rootScope != null) {
 			if(rootScope == thisScope) {
 				root = this
 			} else {
-				root = ParadoxScopeConfig(rootScope, rootScope)
+				root = ParadoxScopeContext(rootScope, rootScope)
 			}
 		}
 		if(fromScope != null) {
-			val fromConfig = ParadoxScopeConfig(fromScope)
+			val fromConfig = ParadoxScopeContext(fromScope)
 			if(fromFromScope != null) {
-				val fromFromConfig = ParadoxScopeConfig(fromFromScope)
+				val fromFromConfig = ParadoxScopeContext(fromFromScope)
 				if(fromFromFromScope != null) {
-					val fromFromFromConfig = ParadoxScopeConfig(fromFromFromScope)
+					val fromFromFromConfig = ParadoxScopeContext(fromFromFromScope)
 					if(fromFromFromFromScope != null) {
-						val fromFromFromFromConfig = ParadoxScopeConfig(fromFromFromFromScope)
+						val fromFromFromFromConfig = ParadoxScopeContext(fromFromFromFromScope)
 						fromFromFromConfig.from = fromFromFromFromConfig
 					}
 					fromFromConfig.from = fromFromFromConfig
@@ -49,7 +49,7 @@ data class ParadoxScopeConfig(
 		}
 	}
 	
-	fun resolve(pushScope: String?): ParadoxScopeConfig {
+	fun resolve(pushScope: String?): ParadoxScopeContext {
 		if(pushScope == null) return this
 		val scopeConfig = copy(thisScope = pushScope)
 		scopeConfig.prev = this
@@ -57,14 +57,14 @@ data class ParadoxScopeConfig(
 	}
 	
 	companion object{
-		fun resolve(map: Map<String, String?>) :ParadoxScopeConfig? {
+		fun resolve(map: Map<String, String?>) :ParadoxScopeContext? {
 			val thisScope = map.get("this") ?: return null
 			val rootScope = map.get("root") ?: thisScope
 			val fromScope = map.get("from")
 			val fromFromScope = map.get("fromfrom")
 			val fromFromFromScope = map.get("fromfromfrom")
 			val fromFromFromFromScope = map.get("fromfromfromfrom")
-			return ParadoxScopeConfig(thisScope, rootScope, fromScope, fromFromScope, fromFromFromScope, fromFromFromFromScope)
+			return ParadoxScopeContext(thisScope, rootScope, fromScope, fromFromScope, fromFromFromScope, fromFromFromFromScope)
 		}
 	}
 }

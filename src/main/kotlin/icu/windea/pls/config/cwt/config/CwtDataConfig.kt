@@ -54,7 +54,7 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 		if(option == null) return@lazy null
 		val options = option.options ?: return@lazy null
 		val map = options.associateBy({ it.key.lowercase() }, { it.stringValue })
-		ParadoxScopeConfig.resolve(map)
+		ParadoxScopeContext.resolve(map)
 	}
 	
 	//may on:

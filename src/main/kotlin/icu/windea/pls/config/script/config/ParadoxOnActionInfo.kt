@@ -3,7 +3,7 @@ package icu.windea.pls.config.script.config
 import com.fasterxml.jackson.dataformat.csv.*
 import icu.windea.pls.core.*
 
-data class ParadoxOnActionConfig(
+data class ParadoxOnActionInfo(
 	val key: String,
 	val scopes: String,
 	val event: String,
@@ -18,7 +18,7 @@ data class ParadoxOnActionConfig(
 				put(k, v)
 			}
 		}
-		ParadoxScopeConfig.resolve(map)
+		ParadoxScopeContext.resolve(map)
 	}
 	
 	companion object{

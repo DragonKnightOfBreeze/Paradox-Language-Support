@@ -1,14 +1,13 @@
 package icu.windea.pls.config.cwt.expression
 
-import com.intellij.util.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
+import icu.windea.pls.core.model.*
 
 /**
  * @property type 表达式类型，即CWT规则的dataType。
  */
-interface CwtDataExpression : CwtExpression {
+sealed interface CwtDataExpression : CwtExpression {
 	val type: CwtDataType
 	val value: String?
 	val extraValue: Any?
@@ -20,4 +19,8 @@ fun CwtDataExpression.isNumberType(): Boolean {
 	return type == CwtDataTypes.Int || type == CwtDataTypes.Float
 		|| type == CwtDataTypes.ValueField || type == CwtDataTypes.IntValueField
 		|| type == CwtDataTypes.VariableField || type == CwtDataTypes.VariableField
+}
+
+fun CwtDataExpression.resolved(definitionMemberInfo: ParadoxDefinitionMemberInfo?): CwtDataExpression {
+	return CwtConfigExpressionResolver.resolved(this, definitionMemberInfo)
 }

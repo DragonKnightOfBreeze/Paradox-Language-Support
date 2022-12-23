@@ -22,7 +22,7 @@ interface CwtConfigGroup {
 	val localisationLocalesByCode: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
 	val localisationPredefinedParameters: Map<String, CwtLocalisationPredefinedParameterConfig> //EXTENDED BY PLS
 	
-	val onActions: Map<String, ParadoxOnActionConfig>
+	val onActions: Map<String, ParadoxOnActionInfo>
 	
 	val folders: Set<String>
 	val types: Map<String, CwtTypeConfig>

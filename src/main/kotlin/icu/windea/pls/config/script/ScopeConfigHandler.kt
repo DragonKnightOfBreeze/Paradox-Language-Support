@@ -121,7 +121,7 @@ object ScopeConfigHandler {
 	}
 	
 	@JvmStatic
-	fun isScopeContextChanged(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeConfig, file: PsiFile = element.containingFile) :Boolean {
+	fun isScopeContextChanged(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeContext, file: PsiFile = element.containingFile) :Boolean {
 		//does not have scope context > changed always
 		val parentMember = findParentMember(element)
 		if(parentMember == null) return true
@@ -133,18 +133,18 @@ object ScopeConfigHandler {
 	}
 	
 	@JvmStatic
-	fun getScopeContext(element: ParadoxScriptMemberElement, file: PsiFile = element.containingFile) : ParadoxScopeConfig? {
+	fun getScopeContext(element: ParadoxScriptMemberElement, file: PsiFile = element.containingFile) : ParadoxScopeContext? {
 		return getScopeContextFromCache(element, file)
 	}
 	
-	private fun getScopeContextFromCache(element: ParadoxScriptMemberElement, file: PsiFile) : ParadoxScopeConfig? {
+	private fun getScopeContextFromCache(element: ParadoxScriptMemberElement, file: PsiFile) : ParadoxScopeContext? {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
 			val value = resolveScopeContext(element)
 			CachedValueProvider.Result.create(value, file)
 		}
 	}
 	
-	private fun resolveScopeContext(element: ParadoxScriptMemberElement): ParadoxScopeConfig? {
+	private fun resolveScopeContext(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
 		//should be a definition
 		val definitionInfo = element.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
 		if(definitionInfo != null) {
@@ -166,7 +166,7 @@ object ScopeConfigHandler {
 			val pushScope = pushScopeOnType
 				?: declarationConfig.pushScope
 			return replaceScope?.resolve(pushScope)
-				?: ParadoxScopeConfig(anyScopeId, anyScopeId)
+				?: ParadoxScopeContext(anyScopeId, anyScopeId)
 		}
 		
 		//should be a definition member
@@ -188,18 +188,18 @@ object ScopeConfigHandler {
 		}
 	}
 	
-	private fun resolveUnknownScopeContext(parentScopeContext: ParadoxScopeConfig): ParadoxScopeConfig {
+	private fun resolveUnknownScopeContext(parentScopeContext: ParadoxScopeContext): ParadoxScopeContext {
 		return parentScopeContext.resolve(unknownScopeId)
 	}
 	
-	private fun resolveScopeContextFromScopeField(text: String, config: CwtPropertyConfig, parentScopeContext: ParadoxScopeConfig): ParadoxScopeConfig? {
+	private fun resolveScopeContextFromScopeField(text: String, config: CwtPropertyConfig, parentScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
 		if(text.isLeftQuoted()) return null
 		val textRange = TextRange.create(0, text.length)
 		val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, config.info.configGroup, true) ?: return null
 		return resolveScopeContextFromScopeFieldExpression(scopeFieldExpression, parentScopeContext)
 	}
 	
-	private fun resolveScopeContextFromScopeFieldExpression(scopeFieldExpression: ParadoxScopeFieldExpression, parentScopeContext: ParadoxScopeConfig): ParadoxScopeConfig? {
+	private fun resolveScopeContextFromScopeFieldExpression(scopeFieldExpression: ParadoxScopeFieldExpression, parentScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
 		val scopeNodes = scopeFieldExpression.scopeNodes
 		var resolvedScope: String? = null
 		var scopeContext = parentScopeContext
@@ -235,7 +235,7 @@ object ScopeConfigHandler {
 		return null //TODO
 	}
 	
-	private fun resolveScopeFromSystemScope(node: ParadoxSystemScopeExpressionNode, scopeContext: ParadoxScopeConfig) : ParadoxScopeConfig? {
+	private fun resolveScopeFromSystemScope(node: ParadoxSystemScopeExpressionNode, scopeContext: ParadoxScopeContext) : ParadoxScopeContext? {
 		val systemScopeConfig = node.config
 		val id = systemScopeConfig.id
 		return when {

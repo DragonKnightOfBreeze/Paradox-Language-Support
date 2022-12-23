@@ -17,7 +17,6 @@ import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import kotlin.collections.isNullOrEmpty
 import kotlin.collections.mapNotNullTo
-import com.fasterxml.jackson.module.kotlin.readValue
 import icu.windea.pls.config.script.config.*
 
 private const val s = "system_scopes"
@@ -37,7 +36,7 @@ class CwtConfigGroupImpl(
 	override val localisationLocalesByCode: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
 	override val localisationPredefinedParameters: MutableMap<String, CwtLocalisationPredefinedParameterConfig> = mutableMapOf()
 	
-	override val onActions: MutableMap<String, ParadoxOnActionConfig> = mutableMapOf()
+	override val onActions: MutableMap<String, ParadoxOnActionInfo> = mutableMapOf()
 	
 	override val folders: MutableSet<String> = mutableSetOf()
 	override val types: MutableMap<String, CwtTypeConfig> = mutableMapOf()
@@ -141,8 +140,8 @@ class CwtConfigGroupImpl(
 	private fun resolveOnActionConfigs(virtualFile: VirtualFile) {
 		val bufferedReader = virtualFile.inputStream.bufferedReader()
 		val data = bufferedReader.use {
-			csvMapper.readerFor(ParadoxOnActionConfig::class.java).with(ParadoxOnActionConfig.schema)
-				.readValues<ParadoxOnActionConfig>(bufferedReader)
+			csvMapper.readerFor(ParadoxOnActionInfo::class.java).with(ParadoxOnActionInfo.schema)
+				.readValues<ParadoxOnActionInfo>(bufferedReader)
 		}
 		data.forEach { config ->
 			if(config.key.isNotEmpty()) {

@@ -90,7 +90,7 @@ object PlsKeys {
 	val cachedDefinitionMemberInfoKey = Key.create<CachedValue<ParadoxDefinitionMemberInfo>>("paradox.cached.definitionMemberInfo")
 	val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("paradox.cached.localisationInfo")
 	val cachedComplexEnumValueInfoKey = Key.create<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cached.complexEnumValueInfo")
-	val cachedScopeContextKey = Key.create<CachedValue<ParadoxScopeConfig>>("paradox.cached.scopeContext")
+	val cachedScopeContextKey = Key.create<CachedValue<ParadoxScopeContext>>("paradox.cached.scopeContext")
 	
 	val injectedInfoKey = Key.create<List<String>>("paradox.injectedInfo")
 	

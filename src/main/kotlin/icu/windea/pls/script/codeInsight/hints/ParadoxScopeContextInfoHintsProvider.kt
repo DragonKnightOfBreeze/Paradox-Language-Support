@@ -72,7 +72,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 		return true
 	}
 	
-	private fun PresentationFactory.collectScopeContext(scopeInfo: ParadoxScopeConfig, configGroup: CwtConfigGroup): InlayPresentation {
+	private fun PresentationFactory.collectScopeContext(scopeInfo: ParadoxScopeContext, configGroup: CwtConfigGroup): InlayPresentation {
 		val presentations = mutableListOf<InlayPresentation>()
 		var appendSeparator = false
 		scopeInfo.map.forEach { (key, value) ->

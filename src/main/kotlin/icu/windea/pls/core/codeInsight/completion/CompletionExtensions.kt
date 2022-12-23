@@ -31,12 +31,12 @@ val ProcessingContext.isKey: Boolean? get() = get(PlsCompletionKeys.isKeyKey)
 val ProcessingContext.config get() = get(PlsCompletionKeys.configKey)
 val ProcessingContext.configs get() = get(PlsCompletionKeys.configsKey)
 val ProcessingContext.configGroup get() = get(PlsCompletionKeys.configGroupKey)
+val ProcessingContext.definitionMemberInfo get() = get(PlsCompletionKeys.definitionMemberInfoKey)
+val ProcessingContext.scopeContext get() = get(PlsCompletionKeys.scopeContextKey)
 val ProcessingContext.prevScope get() = get(PlsCompletionKeys.prevScopeKey)
-val ProcessingContext.isExpectedScopeMatched get() = get(PlsCompletionKeys.isExpectedScopeMatchedKey) ?: true
 val ProcessingContext.scopeName get() = get(PlsCompletionKeys.scopeNameKey)
 val ProcessingContext.scopeGroupName get() = get(PlsCompletionKeys.scopeGroupNameKey)
 val ProcessingContext.isInt get() = get(PlsCompletionKeys.isIntKey) ?: false
-val ProcessingContext.valueSetName get() = get(PlsCompletionKeys.valueSetName)
 
 fun PsiElement.getKeyword(offsetInParent: Int): String {
 	return text.substring(0, offsetInParent).unquote()
