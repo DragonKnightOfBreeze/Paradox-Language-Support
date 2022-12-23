@@ -35,8 +35,14 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	// * a config expression in declaration config
 	// * a config expression in subtype structure config
 	val cardinality by lazy { 
-		val option = options?.find { it.key == "cardinality" } ?: return@lazy null
-		option.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
+		val option = options?.find { it.key == "cardinality" }
+		if(option == null) {
+			//如果没有注明且类型是常量，则推断为 1..1
+			if(expression.type.isConstant()) {
+				return@lazy CwtCardinalityExpression.resolve("1..1")
+			}
+		}
+		option?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
 	}
 	
 	//may on:
@@ -44,10 +50,11 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	// * a type config (e.g. "type[xxx] = { ... }")
 	// * a subtype config (e.g. "subtype[xxx] = { ... }")
 	val replaceScope by lazy {
-		val option = options?.find { it.key == "replace_scope" || it.key == "replace_scopes" } ?: return@lazy null
-		val thisScope = option.options?.find { it.key == "this" }?.stringValue ?: return@lazy null
-		val rootScope = option.options.find { it.key == "root" }?.stringValue
-		val fromScope = option.options.find { it.key == "from" }?.stringValue
+		val option = options?.find { it.key == "replace_scope" || it.key == "replace_scopes" } 
+		val options = option?.options ?: return@lazy null
+		val thisScope = options.find { it.key == "this" }?.stringValue ?: return@lazy null
+		val rootScope = options.find { it.key == "root" }?.stringValue
+		val fromScope = options.find { it.key == "from" }?.stringValue
 		ParadoxScopeConfig(thisScope, rootScope ?: thisScope, fromScope)
 	}
 	
@@ -56,8 +63,8 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	// * a type config (e.g. "type[xxx] = { ... }")
 	// * a subtype config (e.g. "subtype[xxx] = { ... }")
 	val pushScope by lazy {
-		val option = options?.find { it.key == "push_scope" } ?: return@lazy null
-		option.stringValue
+		val option = options?.find { it.key == "push_scope" }
+		option?.stringValue
 	}
 	
 	//may on:
