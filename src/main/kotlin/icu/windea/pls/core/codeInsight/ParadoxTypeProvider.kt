@@ -7,6 +7,7 @@ import com.intellij.psi.util.*
 import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.definition.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.handler.*
@@ -20,9 +21,6 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
 	val sectionColor = Gray.get(0x90)
-	
-	private val ParadoxTypedElement.definitionType: String?
-		get() = this.castOrNull<ParadoxScriptProperty>()?.definitionInfo?.typesText
 	
 	override fun getExpressionsAt(elementAt: PsiElement): List<ParadoxTypedElement> {
 		val expressionElement = elementAt.parentOfType<ParadoxTypedElement>() ?: return emptyList()
@@ -42,7 +40,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
 	}
 	
 	/**
-	 * 显示定义的类型，或者对应的CWT规则表达式，或者数据类型。
+	 * 显示定义的类型，或者对应的CWT规则表达式（如果存在），或者数据类型。
 	 */
 	override fun getInformationHint(element: ParadoxTypedElement): String {
 		//优先显示最相关的类型
@@ -53,8 +51,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
 	}
 	
 	/**
-	 * 显示定义的类型（或者定义属性的类型）、数据类型、脚本表达式、CWT规则表达式等（如果存在）。
-	 * 如果对应的CWT规则匹配，也显示枚举名、值集名等。
+	 * 显示定义的类型、数据类型、脚本表达式、对应的CWT规则表达式（如果存在）、作用域上下文信息（如果支持）。
 	 */
 	override fun getAdvancedInformationHint(element: ParadoxTypedElement): String {
 		val children = buildList {
@@ -70,41 +67,28 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
 			element.configExpression?.let { configExpression ->
 				add(makeHtmlRow(PlsDocBundle.message("title.configExpression"), configExpression))
 			}
-			if(element is ParadoxScriptExpressionElement) {
-				var addEnumName = false
-				if(element is ParadoxScriptStringExpressionElement) {
-					val complexEnumValueInfo = element.complexEnumValueInfo
-					if(complexEnumValueInfo != null) {
-						addEnumName = true
-						add(makeHtmlRow(PlsDocBundle.message("title.complexEnumName"), complexEnumValueInfo.name))
-					}
-				}
-				val configs = ParadoxCwtConfigHandler.resolveConfigs(element)
-				val config = configs.firstOrNull()
-				if(config != null) {
-					val expression = config.expression
-					when(expression.type) {
-						CwtDataTypes.Enum -> {
-							if(!addEnumName) {
-								val configGroup = config.info.configGroup
-								val enumName = expression.value.orEmpty()
-								if(configGroup.complexEnums.keys.contains(enumName)) {
-									add(makeHtmlRow(PlsDocBundle.message("title.complexEnumName"), enumName))
-								} else {
-									add(makeHtmlRow(PlsDocBundle.message("title.enumName"), enumName))
-								}
-							}
-						}
-						CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-							val valueSetName = expression.value.orEmpty()
-							add(makeHtmlRow(PlsDocBundle.message("title.valueSetName"), valueSetName))
-						}
-						else -> pass()
-					}
+			getMemberElement(element)?.let { memberElement ->
+				if(!ScopeConfigHandler.isScopeContextSupported(memberElement)) return@let
+				val scopeContext = ScopeConfigHandler.getScopeContext(memberElement)
+				if(scopeContext != null) {
+					val text = scopeContext.map.entries.joinToString("<br>") { (key, value) -> "$key = $value" }
+					add(makeHtmlRow(PlsDocBundle.message("title.scopeContext"),text))
 				}
 			}
 		}
 		return HtmlChunk.tag("table").children(children).toString()
+	}
+	
+	private val ParadoxTypedElement.definitionType: String?
+		get() = this.castOrNull<ParadoxScriptProperty>()?.definitionInfo?.typesText
+	
+	private fun getMemberElement(element: ParadoxTypedElement): ParadoxScriptMemberElement? {
+		return when {
+			element is ParadoxScriptProperty -> element
+			element is ParadoxScriptPropertyKey -> element.parent as? ParadoxScriptProperty
+			element is ParadoxScriptValue -> element
+			else -> null
+		}
 	}
 	
 	private fun makeHtmlRow(titleText: String, contentText: String): HtmlChunk {
