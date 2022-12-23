@@ -50,12 +50,17 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	// * a type config (e.g. "type[xxx] = { ... }")
 	// * a subtype config (e.g. "subtype[xxx] = { ... }")
 	val replaceScope by lazy {
-		val option = options?.find { it.key == "replace_scope" || it.key == "replace_scopes" } 
-		val options = option?.options ?: return@lazy null
-		val thisScope = options.find { it.key == "this" }?.stringValue ?: return@lazy null
-		val rootScope = options.find { it.key == "root" }?.stringValue
-		val fromScope = options.find { it.key == "from" }?.stringValue
-		ParadoxScopeConfig(thisScope, rootScope ?: thisScope, fromScope)
+		val option = options?.find { it.key == "replace_scope" || it.key == "replace_scopes" }
+		if(option == null) return@lazy null
+		val options = option.options ?: return@lazy null
+		val map = options.associateBy({ it.key.lowercase() }, { it.stringValue })
+		val thisScope = map.get("this") ?: return@lazy null
+		val rootScope = map.get("root") ?: thisScope
+		val fromScope = map.get("from")
+		val fromFromScope = map.get("fromfrom")
+		val fromFromFromScope = map.get("fromfromfrom")
+		val fromFromFromFromScope = map.get("fromfromfromfrom")
+		ParadoxScopeConfig(thisScope, rootScope, fromScope, fromFromScope, fromFromFromScope, fromFromFromFromScope)
 	}
 	
 	//may on:
@@ -70,7 +75,8 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	//may on:
 	// * a config expression in declaration config
 	val scope by lazy { 
-		val option = options?.find { it.key == "scope" || it.key == "scopes" } ?: return@lazy emptySet()
+		val option = options?.find { it.key == "scope" || it.key == "scopes" } 
+		if(option == null) return@lazy emptySet()
 		option.stringValue?.toSingletonSet() ?: option.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue } ?: emptySet()
 	}
 	
