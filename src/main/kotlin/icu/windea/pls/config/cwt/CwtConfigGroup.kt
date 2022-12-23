@@ -4,6 +4,7 @@ import com.intellij.openapi.project.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.config.cwt.setting.*
+import icu.windea.pls.config.script.config.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.model.*
 
@@ -20,6 +21,8 @@ interface CwtConfigGroup {
 	val localisationLocalesNoDefault: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
 	val localisationLocalesByCode: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
 	val localisationPredefinedParameters: Map<String, CwtLocalisationPredefinedParameterConfig> //EXTENDED BY PLS
+	
+	val onActions: Map<String, ParadoxOnActionConfig>
 	
 	val folders: Set<String>
 	val types: Map<String, CwtTypeConfig>
@@ -48,7 +51,6 @@ interface CwtConfigGroup {
 	val singleAliases: Map<String, List<CwtSingleAliasConfig>>
 	//同名的alias可以有多个
 	val aliasGroups: Map<String, Map<String, List<CwtAliasConfig>>>
-	
 	
 	val declarations: Map<String, CwtDeclarationConfig>
 	

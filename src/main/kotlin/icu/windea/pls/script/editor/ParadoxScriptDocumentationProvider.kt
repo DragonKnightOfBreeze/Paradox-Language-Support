@@ -119,11 +119,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
 		return buildString {
 			//在definition部分，相关图片信息显示在相关本地化信息之后，在sections部分则显示在之前
-			val sections = mutableMapOf<String, String>()
-			buildDefinitionDefinition(element, definitionInfo, sections)
-			buildExtDocContent(definitionInfo)
+			//images, localisations
+			val sectionsList = List(2) { mutableMapOf<String, String>() }
+			buildDefinitionDefinition(element, definitionInfo, sectionsList)
+			buildDocumentationContent(definitionInfo)
 			buildLineCommentContent(element)
-			buildSections(sections)
+			buildSections(sectionsList)
 		}
 	}
 	
@@ -160,7 +161,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildDefinitionDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
+	private fun StringBuilder.buildDefinitionDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sectionsList: List<MutableMap<String, String>>?) {
 		definition {
 			//加上文件信息
 			appendFileInfoHeader(element.fileInfo)
@@ -183,20 +184,23 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			append(PlsDocBundle.message("prefix.definition")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>: ").append(typeLinkText)
 			
 			//加上相关本地化信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
-			addDefinitionRelatedLocalisations(element, definitionInfo, sections)
+			addRelatedLocalisationsForDefinition(element, definitionInfo, sectionsList?.get(1))
 			
 			//加上相关图片信息：去重后的一组DDS文件的filePath，或者sprite的definitionKey，不包括可选且没有对应的图片的项，按解析顺序排序
-			addDefinitionRelatedImages(element, definitionInfo, sections)
+			addRelatedImagesForDefinition(element, definitionInfo, sectionsList?.get(0))
 			
 			//加上作用域上下文信息（如果支持）
-			addDefinitionScopeContext(element, definitionInfo)
+			addScopeContextForDefinition(element, definitionInfo)
+			
+			//加上事件类型信息（对于on_action）
+			addEventTypeForOnAction(element, definitionInfo)
 			
 			//加上参数信息（如果支持且存在）
-			addDefinitionParameters(element, definitionInfo)
+			addParametersForDefinition(element, definitionInfo)
 		}
 	}
 	
-	private fun StringBuilder.addDefinitionRelatedLocalisations(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
+	private fun StringBuilder.addRelatedLocalisationsForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
 		val localisationInfos = definitionInfo.localisation
 		if(localisationInfos.isEmpty()) return
 		val render = getSettings().documentation.renderRelatedLocalisationsForDefinitions
@@ -228,7 +232,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.addDefinitionRelatedImages(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
+	private fun StringBuilder.addRelatedImagesForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
 		val imagesInfos = definitionInfo.images
 		if(imagesInfos.isEmpty()) return
 		val render = getSettings().documentation.renderRelatedImagesForDefinitions
@@ -260,7 +264,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.addDefinitionScopeContext(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+	private fun StringBuilder.addScopeContextForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
 		if(!ScopeConfigHandler.isScopeContextSupported(element)) return
 		val scopeContext = ScopeConfigHandler.getScopeContext(element)
 		if(scopeContext == null) return
@@ -279,7 +283,19 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.addDefinitionParameters(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+	private fun StringBuilder.addEventTypeForOnAction(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+		if(definitionInfo.type != "on_action") return
+		//有些游戏类型直接通过CWT文件指定了事件类型，而非CSV文件，忽略这种情况
+		val configGroup = definitionInfo.configGroup
+		val gameType = configGroup.gameType
+		val event = configGroup.onActions[definitionInfo.name]?.event
+		if(event == null) return
+		appendBr()
+		val typeLink = "${gameType.id}/types/event/${event}"
+		append(PlsDocBundle.message("prefix.eventType")).append(" ").appendCwtLink(event, typeLink)
+	}
+	
+	private fun StringBuilder.addParametersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
 		if(!definitionInfo.configGroup.definitionTypesSupportParameters.contains(definitionInfo.type)) return
 		val parameterMap = element.parameterMap
 		if(parameterMap.isEmpty()) return //ignore
@@ -294,13 +310,35 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildExtDocContent(definitionInfo: ParadoxDefinitionInfo) {
-		//加上从PlsExtDocBundle中得到的文档文本
-		val docText = PlsExtDocBundle.message(definitionInfo.name, definitionInfo.type, definitionInfo.gameType)
-		if(docText != null && docText.isNotEmpty()) {
-			content {
-				append(docText)
+	private fun StringBuilder.buildDocumentationContent(definitionInfo: ParadoxDefinitionInfo) {
+		//尝试从类型规则或者子类型规则得到文档文本
+		definitionInfo.typeConfig.let { 
+			val documentation = it.config.documentation?.takeIfNotEmpty()
+			if(documentation != null) {
+				content { append(documentation) }
 			}
+		}
+		definitionInfo.subtypeConfigs.forEach {
+			val documentation = it.config.documentation?.takeIfNotEmpty()
+			if(documentation != null) {
+				content { append(documentation) }
+			}
+		}
+		
+		//如果是on_action，加上从on_actions.csv中得到的文档文本（comment）
+		if(definitionInfo.type == "on_action") {
+			val comment = definitionInfo.configGroup.onActions[definitionInfo.name]?.comment
+				?.takeIfNotEmpty()
+			if(comment != null) {
+				content { append(comment) }
+			}
+		}
+		
+		//加上扩展的文档文本
+		val documentation = PlsDocumentationBundle.message(definitionInfo.name, definitionInfo.type, definitionInfo.gameType)
+			?.takeIfNotEmpty()
+		if(documentation != null) {
+			content { append(documentation) }
 		}
 	}
 	
@@ -355,11 +393,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildSections(sections: Map<String, String>) {
-		if(sections.isEmpty()) return
+	private fun StringBuilder.buildSections(sectionsList: List<Map<String, String>>) {
 		sections {
-			for((key, value) in sections) {
-				section(key, value)
+			for(sections in sectionsList) {
+				for((key, value) in sections) {
+					section(key, value)
+				}
 			}
 		}
 	}

@@ -1,0 +1,18 @@
+package icu.windea.pls
+
+import com.intellij.*
+import icu.windea.pls.core.model.*
+import org.jetbrains.annotations.*
+
+@NonNls
+private const val BUNDLE = "messages.PlsDocumentationBundle"
+
+object PlsDocumentationBundle : DynamicBundle(BUNDLE) {
+	@Nls
+	@JvmStatic
+	fun message(name: String, type: String, gameType: ParadoxGameType? = null): String? {
+		//${gameType}.${definitionType}.${definitionName}
+		val key = "${gameType?.id ?: "core"}.$type.$name"
+		return messageOrNull(key)
+	}
+}

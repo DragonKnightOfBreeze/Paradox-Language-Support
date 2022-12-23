@@ -148,6 +148,12 @@ object ScopeConfigHandler {
 		//should be a definition
 		val definitionInfo = element.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
 		if(definitionInfo != null) {
+			val configGroup = definitionInfo.configGroup
+			//on_action
+			if(definitionInfo.type == "on_action") {
+				val scopeContext = configGroup.onActions[definitionInfo.name]?.scopeContext
+				if(scopeContext != null) return scopeContext
+			}
 			val declarationConfig = definitionInfo.declarationConfig?.propertyConfig ?: return null
 			val subtypeConfigs = definitionInfo.subtypeConfigs
 			val typeConfig = definitionInfo.typeConfig

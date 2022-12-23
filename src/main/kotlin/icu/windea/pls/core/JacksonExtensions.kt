@@ -6,6 +6,8 @@ import com.fasterxml.jackson.module.kotlin.*
 
 val jsonMapper by lazy { jacksonObjectMapper() }
 
-val csvMapper by lazy { CsvMapper().apply { 
+val csvMapper by lazy { CsvMapper().apply {
+	findAndRegisterModules()
 	enable(CsvParser.Feature.TRIM_SPACES)
+	enable(CsvParser.Feature.SKIP_EMPTY_LINES)
 } }

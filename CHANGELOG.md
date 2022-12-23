@@ -55,8 +55,11 @@
 * BUG修复
   * [X] 修复：[Cannot choose path for library using CK3 #7](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/7)
 * 新增功能 - 概述
-  * [ ] 支持处理作用域（`scope`），以及相关的快速文档、内嵌提示、代码检查等功能（基于已有的CWT规则中的选项，以及从扩展的CWT规则推断）
-  * [ ] 支持处理生成的修饰符（`modifier`），以及相关的引用解析、代码补全、代码高亮等功能（基于扩展的CWT规则）
+  * [ ] 支持处理作用域（`scope`），以及相关的快速文档、内嵌提示、代码检查等功能
+    * 基于的CWT规则文件
+    * （对于`on_action`）基于`on_actions.csv`
+  * [ ] 支持处理生成的修饰符（`modifier`），以及相关的引用解析、代码补全、代码高亮等功能
+    * 基于扩展的CWT规则
   * [ ] 支持处理内联脚本（`inline_script`）
 * 新增功能
   * 快速文档（`Quick Documentation`）
@@ -72,6 +75,7 @@
   * 代码检查（`Code > Inspect Code...`）
     * [ ] 检查作用域上下文与当前定义成员的作用域是否匹配（警告级别）
     * [ ] 检查作用域上下文切换是否正确（警告级别）
+    * [ ] 检查`on_action`中调用的事件的类型是否正确（警告级别）
 
 ## 0.7.8
 

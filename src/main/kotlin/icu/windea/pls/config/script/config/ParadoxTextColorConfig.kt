@@ -20,7 +20,7 @@ class ParadoxTextColorConfig(
 	
 	val text = buildString {
 		append(name).append(" = { ").append(r).append(" ").append(g).append(" ").append(b).append(" }")
-		val message = PlsExtDocBundle.message(name, "textcolor", gameType)
+		val message = PlsDocumentationBundle.message(name, "textcolor", gameType)
 		if(message != null && message.isNotEmpty()) append(" (").append(message).append(")")
 	}
 }

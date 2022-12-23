@@ -86,12 +86,13 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val project = element.project
 			val gameType = selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
-			val sections = mutableMapOf<String, String>()
-			buildPropertyDefinition(element, originalElement, name, configType, configGroup, true, sections)
+			//images, localisations, scope infos
+			val sectionsList = List(3) { mutableMapOf<String, String>() }
+			buildPropertyDefinition(element, originalElement, name, configType, configGroup, true, sectionsList)
 			buildDocumentationContent(element)
 			buildScopeContent(element, originalElement, name, configType, configGroup)
 			buildSupportedScopesContent(element, originalElement, name, configType, configGroup)
-			buildSections(sections)
+			buildSections(sectionsList)
 		}
 	}
 	
@@ -105,10 +106,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val project = element.project
 			val gameType = selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
-			val sections = mutableMapOf<String, String>()
-			buildStringDefinition(element, originalElement, name, configType, configGroup, true, sections)
+			val sectionsList = List(2) { mutableMapOf<String, String>() }
+			buildStringDefinition(element, originalElement, name, configType, configGroup, true, sectionsList)
 			buildDocumentationContent(element)
-			buildSections(sections)
+			buildSections(sectionsList)
 		}
 	}
 	
@@ -120,7 +121,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		configType: CwtConfigType?,
 		configGroup: CwtConfigGroup?,
 		showDetail: Boolean,
-		sections: MutableMap<String, String>?
+		sectionsList: List<MutableMap<String, String>>?
 	) {
 		definition {
 			val referenceElement = getReferenceElement(originalElement)
@@ -159,10 +160,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			if(referenceElement != null && configGroup != null) {
-				addScopeContext(element, referenceElement, configGroup, sections)
+				addScopeContext(element, referenceElement, configGroup)
 				if(configType == CwtConfigType.Modifier) {
-					addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sections)
-					addModifierIcon(element, referenceElement, name, configGroup, sections)
+					addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sectionsList?.get(1))
+					addModifierIcon(element, referenceElement, name, configGroup, sectionsList?.get(0))
 				}
 			}
 		}
@@ -175,7 +176,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		configType: CwtConfigType?,
 		configGroup: CwtConfigGroup?,
 		showDetail: Boolean,
-		sections: MutableMap<String, String>?
+		sectionsList: List<MutableMap<String, String>>?
 	) {
 		definition {
 			val referenceElement = getReferenceElement(originalElement)
@@ -214,16 +215,16 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			if(referenceElement != null && configGroup != null) {
-				addScopeContext(element, referenceElement, configGroup, sections)
+				addScopeContext(element, referenceElement, configGroup)
 				if(configType == CwtConfigType.Modifier) {
-					addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sections)
-					addModifierIcon(element, referenceElement, name, configGroup, sections)
+					addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sectionsList?.get(0))
+					addModifierIcon(element, referenceElement, name, configGroup, sectionsList?.get(1))
 				}
 			}
 		}
 	}
 	
-	private fun StringBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+	private fun StringBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup) {
 		ProgressManager.checkCanceled()
 		val memberElement = referenceElement.parentOfType<ParadoxScriptMemberElement>(true) ?: return
 		if(!ScopeConfigHandler.isScopeContextSupported(memberElement)) return
@@ -410,11 +411,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildSections(sections: Map<String, String>) {
-		if(sections.isEmpty()) return
+	private fun StringBuilder.buildSections(sectionsList: List<Map<String, String>>) {
 		sections {
-			for((key, value) in sections) {
-				section(key, value)
+			for(sections in sectionsList) {
+				for((key, value) in sections) {
+					section(key, value)
+				}
 			}
 		}
 	}

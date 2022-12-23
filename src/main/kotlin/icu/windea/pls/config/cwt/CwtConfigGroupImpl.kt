@@ -18,6 +18,7 @@ import icu.windea.pls.cwt.psi.*
 import kotlin.collections.isNullOrEmpty
 import kotlin.collections.mapNotNullTo
 import com.fasterxml.jackson.module.kotlin.readValue
+import icu.windea.pls.config.script.config.*
 
 private const val s = "system_scopes"
 
@@ -35,6 +36,8 @@ class CwtConfigGroupImpl(
 	override val localisationLocalesNoDefault: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
 	override val localisationLocalesByCode: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
 	override val localisationPredefinedParameters: MutableMap<String, CwtLocalisationPredefinedParameterConfig> = mutableMapOf()
+	
+	override val onActions: MutableMap<String, ParadoxOnActionConfig> = mutableMapOf()
 	
 	override val folders: MutableSet<String> = mutableSetOf()
 	override val types: MutableMap<String, CwtTypeConfig> = mutableMapOf()
@@ -66,7 +69,7 @@ class CwtConfigGroupImpl(
 	init {
 		for(virtualFile in fileGroup.values) {
 			var result: Boolean
-			//val fileName = virtualFile.name
+			val fileName = virtualFile.name
 			val extension = virtualFile.extension?.lowercase()
 			when {
 				extension == "cwt" -> {
@@ -83,11 +86,7 @@ class CwtConfigGroupImpl(
 				}
 				//on_actions.csv
 				extension == "csv" -> {
-					val bufferedReader = virtualFile.inputStream.bufferedReader()
-					val data = bufferedReader.use {
-						csvMapper.readValue(bufferedReader, Map::class.java)
-					}
-					data.entries
+					resolveOnActionConfigs(virtualFile)
 				}
 			}
 		}
@@ -138,6 +137,19 @@ class CwtConfigGroupImpl(
 	}
 	
 	//解析CSV
+	
+	private fun resolveOnActionConfigs(virtualFile: VirtualFile) {
+		val bufferedReader = virtualFile.inputStream.bufferedReader()
+		val data = bufferedReader.use {
+			csvMapper.readerFor(ParadoxOnActionConfig::class.java).with(ParadoxOnActionConfig.schema)
+				.readValues<ParadoxOnActionConfig>(bufferedReader)
+		}
+		data.forEach { config ->
+			if(config.key.isNotEmpty()) {
+				onActions.put(config.key, config)
+			}
+		}
+	}
 	
 	//解析CWT设置
 	

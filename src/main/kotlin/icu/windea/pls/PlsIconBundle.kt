@@ -4,6 +4,6 @@ import com.intellij.*
 import org.jetbrains.annotations.*
 
 @NonNls
-private const val BUNDLE = "messages.PlsExtDocBundle"
+private const val BUNDLE = "messages.PlsIconBundle"
 
 object PlsIconBundle: DynamicBundle(BUNDLE)

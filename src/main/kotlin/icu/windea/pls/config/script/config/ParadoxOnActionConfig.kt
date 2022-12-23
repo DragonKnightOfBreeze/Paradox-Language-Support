@@ -1,12 +1,13 @@
 package icu.windea.pls.config.script.config
 
+import com.fasterxml.jackson.dataformat.csv.*
 import icu.windea.pls.core.*
 
 data class ParadoxOnActionConfig(
 	val key: String,
 	val scopes: String,
 	val event: String,
-	val comment: String?
+	val comment: String? = null
 ) {
 	val scopeContext by lazy {
 		val map = buildMap {
@@ -18,5 +19,12 @@ data class ParadoxOnActionConfig(
 			}
 		}
 		ParadoxScopeConfig.resolve(map)
+	}
+	
+	companion object{
+		val schema = CsvSchema.builder()
+			.addColumn("key").addColumn("scopes").addColumn("event").addColumn("comment").build()
+			.withHeader()
+			.withoutQuoteChar()
 	}
 }
