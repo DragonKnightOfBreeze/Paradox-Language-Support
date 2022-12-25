@@ -27,7 +27,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 	}
 	
 	data class Settings(
-		var showOnlyIfChanged: Boolean = true
+		var showOnlyIfScopeIsChanged: Boolean = true
 	)
 	
 	override val name: String get() = PlsBundle.message("script.hints.scopeContext")
@@ -41,7 +41,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 			override fun createComponent(listener: ChangeListener): JComponent = panel {
 				row {
 					checkBox(PlsBundle.message("script.hints.scopeContext.settings.showOnlyIfChanged"))
-						.bindSelected(settings::showOnlyIfChanged)
+						.bindSelected(settings::showOnlyIfScopeIsChanged)
 				}
 			}
 		}
@@ -60,7 +60,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 		val scopeContext = ScopeConfigHandler.getScopeContext(element, file)
 		if(scopeContext != null) {
 			//don't need show if scope is not changed
-			if(settings.showOnlyIfChanged && !ScopeConfigHandler.isScopeContextChanged(element, scopeContext, file)) return true
+			if(settings.showOnlyIfScopeIsChanged && !ScopeConfigHandler.isScopeContextChanged(element, scopeContext, file)) return true
 			
 			val gameType = selectGameType(file) ?: return true
 			val configGroup = getCwtConfig(file.project).getValue(gameType)

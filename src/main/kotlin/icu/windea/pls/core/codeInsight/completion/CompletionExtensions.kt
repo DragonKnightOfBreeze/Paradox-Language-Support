@@ -9,6 +9,7 @@ import com.intellij.openapi.command.*
 import com.intellij.openapi.command.impl.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
+import com.intellij.ui.JBColor
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
@@ -31,7 +32,6 @@ val ProcessingContext.isKey: Boolean? get() = get(PlsCompletionKeys.isKeyKey)
 val ProcessingContext.config get() = get(PlsCompletionKeys.configKey)
 val ProcessingContext.configs get() = get(PlsCompletionKeys.configsKey)
 val ProcessingContext.configGroup get() = get(PlsCompletionKeys.configGroupKey)
-val ProcessingContext.definitionMemberInfo get() = get(PlsCompletionKeys.definitionMemberInfoKey)
 val ProcessingContext.scopeContext get() = get(PlsCompletionKeys.scopeContextKey)
 val ProcessingContext.prevScope get() = get(PlsCompletionKeys.prevScopeKey)
 val ProcessingContext.scopeName get() = get(PlsCompletionKeys.scopeNameKey)
@@ -42,13 +42,13 @@ fun PsiElement.getKeyword(offsetInParent: Int): String {
 	return text.substring(0, offsetInParent).unquote()
 }
 
-fun PsiElement.getFullKeyword(offsetInParent: Int) : String {
+fun PsiElement.getFullKeyword(offsetInParent: Int): String {
 	return (text.substring(0, offsetInParent) + text.substring(offsetInParent + PlsConstants.dummyIdentifier.length)).unquote()
 }
 
 fun CompletionResultSet.addExpressionElement(
-	lookupElement: LookupElement,
-	context: ProcessingContext
+	context: ProcessingContext,
+	lookupElement: LookupElement
 ) {
 	val id = lookupElement.lookupString
 	if(context.completionIds?.add(id) == false) return
@@ -64,7 +64,7 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 	
 	run {
 		val lookupElement = PlsLookupElements.blockLookupElement
-		addExpressionElement(lookupElement, context)
+		addExpressionElement(context, lookupElement)
 	}
 	
 	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
@@ -75,26 +75,22 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 			val tailText1 = "{ <generate via template> }"
 			val lookupElement1 = LookupElementBuilder.create("")
 				.withPresentableText(tailText1)
-			addScriptExpressionElementWithClauseTemplate(lookupElement1, context, targetConfig) {
-				withPriority(PlsCompletionPriorities.keywordPriority - 1) //under "{...}"
+			addScriptExpressionElementWithClauseTemplate(context, lookupElement1, targetConfig) {
+				withPriority(PlsCompletionPriorities.keywordPriority, -1) //under "{...}"
 			}
 		}
 	}
 }
 
 fun CompletionResultSet.addScriptExpressionElement(
-	element: PsiElement?,
-	lookupString: String,
 	context: ProcessingContext,
-	icon: Icon? = null,
-	presentableText: String? = null,
-	tailText: String? = null,
-	typeText: String? = null,
-	typeIcon: Icon? = null,
-	forceInsertCurlyBraces: Boolean = false,
-	builder: LookupElementBuilder.() -> LookupElement = { this }
-) {
+	builder: ParadoxScriptExpressionLookupElementBuilder
+) = with(builder) {
+	//should be filtered out before, check again here
+	if(!builder.scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return
+	
 	val config = context.config
+	val scopeMismatchOffset = if(scopeMatched) 0 else PlsCompletionPriorities.scopeMismatchOffset
 	
 	val completeWithValue = getSettings().completion.completeWithValue
 	val propertyConfig = when {
@@ -127,11 +123,17 @@ fun CompletionResultSet.addScriptExpressionElement(
 		element != null -> LookupElementBuilder.create(element, lookupString)
 		else -> LookupElementBuilder.create(lookupString)
 	}
+	if(bold) {
+		lookupElement = lookupElement.bold()
+	}
+	if(caseSensitive) {
+		lookupElement = lookupElement.withCaseSensitivity(true)
+	}
 	if(icon != null) {
 		lookupElement = lookupElement.withIcon(icon)
 	}
 	if(presentableText != null) {
-		lookupElement = lookupElement.withPresentableText(presentableText)
+		lookupElement = lookupElement.withPresentableText(presentableText!!)
 	}
 	val finalTailText = buildString {
 		if(!isKeyOrValueOnly) {
@@ -146,11 +148,14 @@ fun CompletionResultSet.addScriptExpressionElement(
 	if(typeText != null) {
 		lookupElement = lookupElement.withTypeText(typeText, typeIcon, true)
 	}
+	if(!scopeMatched) {
+		lookupElement = lookupElement.withItemTextForeground(JBColor.GRAY)
+	}
 	
 	if(isKeyOrValueOnly) {
 		val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
 			applyKeyOrValueInsertHandler(context, c)
-		}
+		}.withPriority(priority, scopeMismatchOffset)
 		addElement(resultLookupElement)
 		return
 	}
@@ -158,8 +163,8 @@ fun CompletionResultSet.addScriptExpressionElement(
 	if(isKey) {
 		val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
 			applyKeyAndValueInsertHandler(c, context, constantValue, insertCurlyBraces)
-		}
-		addElement(resultLookupElement.builder())
+		}.withPriority(priority, scopeMismatchOffset)
+		addElement(resultLookupElement)
 	}
 	
 	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
@@ -172,7 +177,9 @@ fun CompletionResultSet.addScriptExpressionElement(
 				if(tailText != null) append(tailText)
 			}
 			val lookupElement1 = lookupElement.withTailText(tailText1)
-			addScriptExpressionElementWithClauseTemplate(lookupElement1, context, targetConfig, builder)
+			addScriptExpressionElementWithClauseTemplate(context, lookupElement1, targetConfig) {
+				withPriority(priority, -1 + scopeMismatchOffset)
+			}
 		}
 	}
 }
@@ -199,7 +206,7 @@ private fun applyKeyOrValueInsertHandler(context: ProcessingContext, c: Insertio
 private fun applyValueInsertHandler(c: InsertionContext, context: ProcessingContext, insertCurlyBraces: Boolean) {
 	if(!insertCurlyBraces) return
 	val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
-	val text =  if(customSettings.SPACE_WITHIN_BRACES) "{  }" else "{}"
+	val text = if(customSettings.SPACE_WITHIN_BRACES) "{  }" else "{}"
 	val length = if(customSettings.SPACE_WITHIN_BRACES) text.length - 2 else text.length - 1
 	EditorModificationUtil.insertStringAtCaret(c.editor, text, false, true, length)
 }
@@ -222,10 +229,10 @@ private fun applyKeyAndValueInsertHandler(c: InsertionContext, context: Processi
 
 @Suppress("UnstableApiUsage", "DialogTitleCapitalization")
 fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
-	lookupElement: LookupElementBuilder,
 	context: ProcessingContext,
+	builder: LookupElementBuilder,
 	targetConfig: CwtDataConfig<*>,
-	builder: LookupElementBuilder.() -> LookupElement = { this }
+	callback: LookupElementBuilder.() -> LookupElement = { this }
 ) {
 	val file = context.originalFile ?: return
 	val configs = targetConfig.configs.orEmpty()
@@ -236,7 +243,7 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 		.groupBy { it.expression }
 	if(constantConfigGroup.isEmpty()) return
 	
-	val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
+	val resultLookupElement = builder.withInsertHandler { c, _ ->
 		when(targetConfig) {
 			is CwtPropertyConfig -> applyKeyAndValueInsertHandler(c, context, null, true)
 			is CwtValueConfig -> applyValueInsertHandler(c, context, true)
@@ -327,7 +334,7 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 			WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.expandClauseTemplate.name"), null, command, file)
 		}
 	}
-	addElement(resultLookupElement.builder())
+	addElement(resultLookupElement.callback())
 }
 
 private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtDataConfig<*>>>): List<ElementDescriptor> {

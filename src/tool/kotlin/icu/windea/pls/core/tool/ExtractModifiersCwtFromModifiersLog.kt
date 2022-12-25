@@ -29,9 +29,9 @@ fun extractModifiersCwt(fromPath: String, toPath: String) {
 	fromFile.inputStream().bufferedReader().forEachLine { line ->
 		val matchResult = regex.matchEntire(line) ?: return@forEachLine
 		val groupValues = matchResult.groupValues
-		val tag = groupValues[1]
+		val modifier = groupValues[1]
 		val categories = groupValues[2].splitToSequence(',').map { it -> "\"${it.trim()}\"" }.joinToString(" ", "{ "," }")
-		configs.add(tag to categories)
+		configs.add(modifier to categories)
 	}
-	toFile.writeText(configs.joinToString("\n", "modifiers = {\n", "\n}") { (tag, categories) -> "    $tag = $categories" })
+	toFile.writeText(configs.joinToString("\n", "modifiers = {\n", "\n}") { (modifier, categories) -> "    $modifier = $categories" })
 }

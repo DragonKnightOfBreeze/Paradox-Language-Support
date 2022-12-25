@@ -163,6 +163,12 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						intTextField(0..10).bindIntText(settings.completion::maxExpressionCountInOneLine)
 					}
 				}.enabledIf(completeWithClauseTemplateCb.selected)
+				//completeOnlyScopeIsMatched
+				row {
+					checkBox(PlsBundle.message("settings.completion.completeOnlyScopeIsMatched"))
+						.bindSelected(settings.completion::completeOnlyScopeIsMatched)
+						.applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeOnlyScopeIsMatched.tooltip") }
+				}
 			}
 			//generation
 			group(PlsBundle.message("settings.generation")) {

@@ -53,15 +53,18 @@ object ScopeConfigHandler {
 	}
 	
 	@JvmStatic
-	fun matchesScope(scopeId: String?, scopesToMatch: Collection<String>?, configGroup: CwtConfigGroup): Boolean {
-		if(scopeId == null) return true
-		if(scopeId.equals(anyScopeId, true) || scopeId.equals(allScopeId, true)) return true
-		if(scopeId.equals(unknownScopeId, true)) return true //ignore
-		if(scopesToMatch.isNullOrEmpty()) return true
-		return scopesToMatch.any { s ->
-			if(s.equals(anyScopeId, true) || s.equals(allScopeId, true)) return@any true
-			scopeId.equals(s, true) || configGroup.scopeAliasMap[scopeId]?.aliases?.contains(s) == true
-		}
+	fun matchesScope(thisScope: String?, scopes: Set<String>?): Boolean {
+		if(thisScope == null) return true
+		if(scopes == null || scopes.isEmpty() || scopes == anyScopeIdSet) return true
+		if(thisScope == anyScopeId) return true
+		if(thisScope == unknownScopeId) return true
+		return thisScope in scopes
+	}
+	
+	@JvmStatic
+	fun matchesScope(scopeContext: ParadoxScopeContext?, scopes: Set<String>?): Boolean {
+		val thisScope = scopeContext?.thisScope
+		return matchesScope(thisScope, scopes)
 	}
 	
 	//fun matchScope(scopes: Collection<String>?, scopesToMatch: Collection<String>?, configGroup: CwtConfigGroup): Boolean {

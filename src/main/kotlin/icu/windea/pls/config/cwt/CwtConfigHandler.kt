@@ -463,14 +463,16 @@ object CwtConfigHandler {
 		
 		context.put(PlsCompletionKeys.isKeyKey, true)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
+		if(ScopeConfigHandler.isScopeContextSupported(definitionElement)) {
+			context.put(PlsCompletionKeys.scopeContextKey, ScopeConfigHandler.getScopeContext(definitionElement))
+		}
 		
-		val scope = definitionMemberInfo.scope
 		configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
 			for(config in configsWithSameKey) {
 				if(shouldComplete(config, definitionMemberInfo)) {
 					context.put(PlsCompletionKeys.configKey, config)
 					context.put(PlsCompletionKeys.configsKey, configsWithSameKey)
-					completeScriptExpression(context, result, scope)
+					completeScriptExpression(context, result)
 				}
 			}
 		}
@@ -489,12 +491,14 @@ object CwtConfigHandler {
 		
 		context.put(PlsCompletionKeys.isKeyKey, false)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
+		//if(ScopeConfigHandler.isScopeContextSupported(definitionElement)) {
+		//	context.put(PlsCompletionKeys.scopeContextKey, ScopeConfigHandler.getScopeContext(definitionElement))
+		//}
 		
-		val scope = definitionMemberInfo.scope
 		for(config in configs) {
 			if(config is CwtPropertyConfig) {
 				context.put(PlsCompletionKeys.configKey, config.valueConfig)
-				completeScriptExpression(context, result, scope)
+				completeScriptExpression(context, result)
 			}
 		}
 		
@@ -512,11 +516,10 @@ object CwtConfigHandler {
 		context.put(PlsCompletionKeys.isKeyKey, false)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
 		
-		val scope = definitionMemberInfo.scope
 		for(config in configs) {
 			if(shouldComplete(config, definitionMemberInfo)) {
 				context.put(PlsCompletionKeys.configKey, config)
-				completeScriptExpression(context, result, scope)
+				completeScriptExpression(context, result)
 			}
 		}
 		
@@ -607,22 +610,21 @@ object CwtConfigHandler {
 			}
 			val typeFile = config?.pointer?.containingFile
 			context.put(PlsCompletionKeys.configKey, config)
-			result.addScriptExpressionElement(element, key, context,
-				icon = icon,
-				tailText = tailText,
-				typeText = typeFile?.name,
-				typeIcon = typeFile?.icon,
-				forceInsertCurlyBraces = tuples.isEmpty()
-			) {
-				this.bold()
-					.withCaseSensitivity(false)
-					.withPriority(PlsCompletionPriorities.rootKeyPriority)
-			}
+			val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, key)
+				.withIcon(icon)
+				.withTailText(tailText)
+				.withTypeText(typeFile?.name)
+				.withTypeIcon(typeFile?.icon)
+				.withForceInsertCurlyBraces(tuples.isEmpty())
+				.bold()
+				.caseInsensitive()
+				.withPriority(PlsCompletionPriorities.rootKeyPriority)
+			result.addScriptExpressionElement(context, builder)
 			context.put(PlsCompletionKeys.configKey, null)
 		}
 	}
 	
-	fun completeScriptExpression(context: ProcessingContext, result: CompletionResultSet, scope: String?): Unit = with(context) {
+	fun completeScriptExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		val configExpression = config.expression ?: return@with
 		val config = config
 		val configGroup = configGroup
@@ -637,10 +639,22 @@ object CwtConfigHandler {
 		if(configExpression.isEmpty()) return
 		if(keyword.isParameterAwareExpression()) return //排除带参数的情况
 		
+		//匹配作用域
+		val scopeContext = scopeContext
+		val scopeMatched = when{
+			scopeContext == null -> true
+			config is CwtPropertyConfig -> {
+				ScopeConfigHandler.matchesScope(scopeContext, config.supportedScopes)
+			}
+			config is CwtLinkConfig -> true //TODO
+			else -> true
+		}
+		if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return
+		
 		when(configExpression.type) {
 			CwtDataTypes.Bool -> {
-				result.addExpressionElement(PlsLookupElements.yesLookupElement, context)
-				result.addExpressionElement(PlsLookupElements.noLookupElement, context)
+				result.addExpressionElement(context, PlsLookupElements.yesLookupElement)
+				result.addExpressionElement(context, PlsLookupElements.noLookupElement)
 			}
 			CwtDataTypes.Localisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
@@ -649,13 +663,12 @@ object CwtConfigHandler {
 				processLocalisationVariants(keyword, project, selector = selector) { localisation ->
 					val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val typeFile = localisation.containingFile
-					result.addScriptExpressionElement(localisation, name,
-						context,
-						icon = PlsIcons.Localisation,
-						tailText = tailText,
-						typeText = typeFile.name,
-						typeIcon = typeFile.icon
-					)
+					val builder = ParadoxScriptExpressionLookupElementBuilder.create(localisation, name)
+						.withIcon(PlsIcons.Localisation)
+						.withTailText(tailText)
+						.withTypeText(typeFile.name)
+						.withTypeIcon(typeFile.icon)
+					result.addScriptExpressionElement(context, builder)
 					true
 				}
 			}
@@ -666,13 +679,12 @@ object CwtConfigHandler {
 				processSyncedLocalisationVariants(keyword, project, selector = selector) { syncedLocalisation ->
 					val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
 					val typeFile = syncedLocalisation.containingFile
-					result.addScriptExpressionElement(syncedLocalisation, name,
-						context,
-						icon = PlsIcons.Localisation,
-						tailText = tailText,
-						typeText = typeFile.name,
-						typeIcon = typeFile.icon
-					)
+					val builder = ParadoxScriptExpressionLookupElementBuilder.create(syncedLocalisation, name)
+						.withIcon(PlsIcons.Localisation)
+						.withTailText(tailText)
+						.withTypeText(typeFile.name)
+						.withTypeIcon(typeFile.icon)
+					result.addScriptExpressionElement(context, builder)
 					true
 				}
 			}
@@ -683,13 +695,12 @@ object CwtConfigHandler {
 				processLocalisationVariants(keyword, project) { localisation ->
 					val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val typeFile = localisation.containingFile
-					result.addScriptExpressionElement(localisation, name,
-						context,
-						icon = PlsIcons.Localisation,
-						tailText = tailText,
-						typeText = typeFile.name,
-						typeIcon = typeFile.icon
-					)
+					val builder = ParadoxScriptExpressionLookupElementBuilder.create(localisation, name)
+						.withIcon(PlsIcons.Localisation)
+						.withTailText(tailText)
+						.withTypeText(typeFile.name)
+						.withTypeIcon(typeFile.icon)
+					result.addScriptExpressionElement(context, builder)
 					true
 				}
 			}
@@ -710,12 +721,11 @@ object CwtConfigHandler {
 					val filePath = virtualFile.fileInfo?.path?.path ?: continue
 					val name = expressionType.extract(expressionValue, filePath) ?: continue
 					//没有图标
-					result.addScriptExpressionElement(file, name,
-						context,
-						tailText = tailText,
-						typeText = file.name,
-						typeIcon = file.icon
-					)
+					val builder = ParadoxScriptExpressionLookupElementBuilder.create(file, name)
+						.withTailText(tailText)
+						.withTypeText(file.name)
+						.withTypeIcon(file.icon)
+					result.addScriptExpressionElement(context, builder)
 				}
 			}
 			CwtDataTypes.Icon -> {
@@ -734,12 +744,11 @@ object CwtConfigHandler {
 					val filePath = virtualFile.fileInfo?.path?.path ?: continue
 					val name = expressionType.extract(expressionValue, filePath) ?: continue
 					//没有图标
-					result.addScriptExpressionElement(file, name,
-						context,
-						tailText = tailText,
-						typeText = file.name,
-						typeIcon = file.icon
-					)
+					val builder = ParadoxScriptExpressionLookupElementBuilder.create(file, name)
+						.withTailText(tailText)
+						.withTypeText(file.name)
+						.withTypeIcon(file.icon)
+					result.addScriptExpressionElement(context, builder)
 				}
 			}
 			CwtDataTypes.TypeExpression -> {
@@ -750,13 +759,12 @@ object CwtConfigHandler {
 				definitionQuery.processQuery { definition ->
 					val name = definition.definitionInfo?.name ?: return@processQuery true
 					val typeFile = definition.containingFile
-					result.addScriptExpressionElement(definition, name,
-						context,
-						icon = PlsIcons.Definition,
-						tailText = tailText,
-						typeText = typeFile.name,
-						typeIcon = typeFile.icon
-					)
+					val builder = ParadoxScriptExpressionLookupElementBuilder.create(definition, name)
+						.withIcon(PlsIcons.Definition)
+						.withTailText(tailText)
+						.withTypeText(typeFile.name)
+						.withTypeIcon(typeFile.icon)
+					result.addScriptExpressionElement(context, builder)
 					true
 				}
 			}
@@ -770,13 +778,12 @@ object CwtConfigHandler {
 					val definitionName = definition.definitionInfo?.name ?: return@processQuery true
 					val name = "$prefix$definitionName$suffix"
 					val typeFile = definition.containingFile
-					result.addScriptExpressionElement(definition, name,
-						context,
-						icon = PlsIcons.Definition,
-						tailText = tailText,
-						typeText = typeFile.name,
-						typeIcon = typeFile.icon
-					)
+					val builder = ParadoxScriptExpressionLookupElementBuilder.create(definition, name)
+						.withIcon(PlsIcons.Definition)
+						.withTailText(tailText)
+						.withTypeText(typeFile.name)
+						.withTypeIcon(typeFile.icon)
+					result.addScriptExpressionElement(context, builder)
 					true
 				}
 			}
@@ -802,16 +809,15 @@ object CwtConfigHandler {
 						val name = enumValueConfig.value
 						//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 						val element = enumValueConfig.pointer.element ?: continue
-						result.addScriptExpressionElement(element, name,
-							context,
-							icon = PlsIcons.EnumValue,
-							tailText = tailText,
-							typeText = typeFile?.name,
-							typeIcon = typeFile?.icon
-						) {
-							this.withCaseSensitivity(false) //忽略大小写
-								.withPriority(PlsCompletionPriorities.enumPriority)
-						}
+						val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
+							.withIcon(PlsIcons.EnumValue)
+							.withTailText(tailText)
+							.withTypeText(typeFile?.name)
+							.withTypeIcon(typeFile?.icon)
+							.caseInsensitive()
+							.withPriority(PlsCompletionPriorities.enumPriority)
+							.withScopeMatched(scopeMatched)
+						result.addScriptExpressionElement(context, builder)
 					}
 				}
 				//提示复杂枚举
@@ -825,15 +831,13 @@ object CwtConfigHandler {
 					query.processQuery { complexEnum ->
 						val name = complexEnum.value
 						//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
-						result.addScriptExpressionElement(complexEnum, name,
-							context,
-							icon = PlsIcons.ComplexEnumValue,
-							tailText = tailText,
-							typeText = typeFile?.name,
-							typeIcon = typeFile?.icon
-						) {
-							this.withCaseSensitivity(false) //忽略大小写
-						}
+						val builder = ParadoxScriptExpressionLookupElementBuilder.create(complexEnum, name)
+							.withIcon(PlsIcons.ComplexEnumValue)
+							.withTailText(tailText)
+							.withTypeText(typeFile?.name)
+							.withTypeIcon(typeFile?.icon)
+							.caseInsensitive()
+						result.addScriptExpressionElement(context, builder)
 						true
 					}
 				}
@@ -871,18 +875,18 @@ object CwtConfigHandler {
 			CwtDataTypes.IntVariableField -> pass() //TODO
 			CwtDataTypes.Modifier -> {
 				//提示预定义的modifier
-				completeModifier(context, result, null)
+				completeModifier(context, result)
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataTypes.SingleAliasRight -> pass()
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
 				val aliasName = configExpression.value ?: return
-				completeAliasName(aliasName, context, result, scope)
+				completeAliasName(aliasName, context, result)
 			}
 			CwtDataTypes.AliasName -> {
 				val aliasName = configExpression.value ?: return
-				completeAliasName(aliasName, context, result, scope)
+				completeAliasName(aliasName, context, result)
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataTypes.AliasMatchLeft -> pass()
@@ -891,27 +895,26 @@ object CwtConfigHandler {
 				//if(!name.matchesKeyword(keyword)) return //不预先过滤结果
 				val element = config.resolved().pointer.element ?: return
 				val typeFile = config.resolved().pointer.containingFile
-				result.addScriptExpressionElement(element, name,
-					context,
-					icon = PlsIcons.Property,
-					typeText = typeFile?.name,
-					typeIcon = typeFile?.icon
-				) {
-					this.withCaseSensitivity(false) //忽略大小写
-						.withPriority(PlsCompletionPriorities.constantKeyPriority)
-				}
+				val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
+					.withIcon(PlsIcons.Property)
+					.withTypeText(typeFile?.name)
+					.withTypeIcon(typeFile?.icon)
+					.caseInsensitive()
+					.withPriority(PlsCompletionPriorities.constantKeyPriority)
+					.withScopeMatched(scopeMatched)
+				result.addScriptExpressionElement(context, builder)
 			}
 			CwtDataTypes.Constant -> {
 				val name = configExpression.value ?: return
 				//常量的值也可能是yes/no
 				if(name == "yes") {
 					if(quoted) return
-					result.addExpressionElement(PlsLookupElements.yesLookupElement, context)
+					result.addExpressionElement(context, PlsLookupElements.yesLookupElement)
 					return
 				}
 				if(name == "no") {
 					if(quoted) return
-					result.addExpressionElement(PlsLookupElements.noLookupElement, context)
+					result.addExpressionElement(context, PlsLookupElements.noLookupElement)
 					return
 				}
 				//if(!name.matchesKeyword(keyword)) return //不预先过滤结果
@@ -921,15 +924,14 @@ object CwtConfigHandler {
 					config is CwtValueConfig && config.isTagConfig -> PlsIcons.Tag
 					else -> PlsIcons.Value
 				}
-				result.addScriptExpressionElement(element, name,
-					context,
-					icon = icon,
-					typeText = typeFile?.name,
-					typeIcon = typeFile?.icon
-				) {
-					this.withCaseSensitivity(false) //忽略大小写
-						.withPriority(PlsCompletionPriorities.constantPriority)
-				}
+				val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
+					.withIcon(icon)
+					.withTypeText(typeFile?.name)
+					.withTypeIcon(typeFile?.icon)
+					.caseInsensitive()
+					.withPriority(PlsCompletionPriorities.constantPriority)
+					.withScopeMatched(scopeMatched)
+				result.addScriptExpressionElement(context, builder)
 			}
 			else -> pass()
 		}
@@ -941,7 +943,7 @@ object CwtConfigHandler {
 		return " by ${config.expression} in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
 	}
 	
-	fun completeAliasName(aliasName: String, context: ProcessingContext, result: CompletionResultSet, scope: String?): Unit = with(context) {
+	fun completeAliasName(aliasName: String, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		val config = config
 		val configs = configs
 		
@@ -949,48 +951,44 @@ object CwtConfigHandler {
 		for(aliasConfigs in aliasGroup.values) {
 			//aliasConfigs的名字是相同的 
 			val aliasConfig = aliasConfigs.firstOrNull() ?: continue
-			//假定所有同名的aliasConfig的supportedScopes都是相同的
-			val isScopeMatched = ScopeConfigHandler.matchesScope(scope, aliasConfig.supportedScopes, configGroup)
-			if(!isScopeMatched) continue
 			
 			//aliasSubName是一个表达式
 			if(isKey == true) {
 				context.put(PlsCompletionKeys.configKey, aliasConfig)
 				context.put(PlsCompletionKeys.configsKey, aliasConfigs)
-				completeScriptExpression(context, result, null)
+				completeScriptExpression(context, result)
 			} else {
 				context.put(PlsCompletionKeys.configKey, aliasConfig)
-				completeScriptExpression(context, result, null)
+				completeScriptExpression(context, result)
 			}
 			context.put(PlsCompletionKeys.configKey, config)
 			context.put(PlsCompletionKeys.configsKey, configs)
 		}
 	}
 	
-	fun completeModifier(context: ProcessingContext, result: CompletionResultSet, scope: String?): Unit = with(context) {
+	fun completeModifier(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		val modifiers = configGroup.modifiers
 		if(modifiers.isEmpty()) return
 		//批量提示
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(modifierConfig in modifiers.values) {
 			//排除不匹配modifier的supported_scopes的情况
-			val isScopeMatched = scope == null || modifierConfig.categoryConfigMap.values.any { c -> ScopeConfigHandler.matchesScope(scope, c.supportedScopes, configGroup) }
-			if(!isScopeMatched) continue
+			val scopeMatched = ScopeConfigHandler.matchesScope(scopeContext, modifierConfig.supportedScopes)
+			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = modifierConfig.name
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 			val element = modifierConfig.pointer.element ?: continue
 			val tailText = " from modifiers"
 			val typeFile = modifierConfig.pointer.containingFile
-			result.addScriptExpressionElement(element, name,
-				context,
-				icon = PlsIcons.Modifier,
-				tailText = tailText,
-				typeText = typeFile?.name,
-				typeIcon = typeFile?.icon
-			) {
-				this.withPriority(PlsCompletionPriorities.modifierPriority)
-			}
+			val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
+				.withIcon(PlsIcons.Modifier)
+				.withTailText(tailText)
+				.withTypeText(typeFile?.name)
+				.withTypeIcon(typeFile?.icon)
+				.withPriority(PlsCompletionPriorities.modifierPriority)
+				.withScopeMatched(scopeMatched)
+			result.addScriptExpressionElement(context, builder) 
 		}
 		result.addAllElements(lookupElements)
 	}
@@ -1046,7 +1044,7 @@ object CwtConfigHandler {
 		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes, configGroup)
+			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
 			if(!isScopeMatched) continue
 			
 			val name = linkConfig.name
@@ -1075,7 +1073,7 @@ object CwtConfigHandler {
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes, configGroup)
+			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
 			if(!isScopeMatched) continue
 			
 			val name = linkConfig.prefix ?: continue
@@ -1124,25 +1122,25 @@ object CwtConfigHandler {
 			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
 			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
 			if(prefix == null) {
-				val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes, configGroup)
+				val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
 				if(!isScopeMatched) continue
 			}
 			context.put(PlsCompletionKeys.configKey, linkConfig)
-			completeScriptExpression(context, result, outputScope)
+			completeScriptExpression(context, result)
 		}
 		context.put(PlsCompletionKeys.configKey, config)
 		context.put(PlsCompletionKeys.configsKey, configs)
 	}
 	
 	fun completeValueLinkValue(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
-		//TODO 进一步匹配scope
+		//TODO 匹配scope
 		val linkConfigs = configGroup.linksAsValueNotData
 		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes, configGroup)
+			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
 			if(!isScopeMatched) continue
 			
 			val name = linkConfig.name
@@ -1164,14 +1162,14 @@ object CwtConfigHandler {
 	fun completeValueLinkPrefix(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		val linkConfigs = configGroup.linksAsValueWithPrefix
 		
-		//TODO 进一步匹配scope
+		//TODO 匹配scope
 		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx
 		
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes, configGroup)
+			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
 			if(!isScopeMatched) continue
 			
 			val name = linkConfig.prefix ?: continue
@@ -1202,7 +1200,7 @@ object CwtConfigHandler {
 		val allLinkConfigs = if(prefix == null) configGroup.linksAsValueWithoutPrefix else configGroup.linksAsValueWithPrefix
 		val linkConfigs = if(prefix == null) allLinkConfigs.values else allLinkConfigs.values.filter { prefix == it.prefix }
 		
-		//TODO 进一步匹配scope
+		///TODO 匹配scope
 		val outputScope = prevScope?.let { prevScope -> allLinkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx
 		
@@ -1228,11 +1226,11 @@ object CwtConfigHandler {
 			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
 			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
 			if(prefix == null) {
-				val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes, configGroup)
+				val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
 				if(!isScopeMatched) continue
 			}
 			context.put(PlsCompletionKeys.configKey, linkConfig)
-			completeScriptExpression(context, result, outputScope)
+			completeScriptExpression(context, result)
 		}
 		context.put(PlsCompletionKeys.configKey, config)
 		context.put(PlsCompletionKeys.configsKey, configs)
@@ -1271,16 +1269,13 @@ object CwtConfigHandler {
 					val name = valueSetValueConfig.value
 					val element = valueSetValueConfig.pointer.element ?: continue
 					val typeFile = valueConfig.pointer.containingFile
-					result.addScriptExpressionElement(element, name,
-						context,
-						icon = PlsIcons.PredefinedValueSetValue,
-						tailText = tailText,
-						typeText = typeFile?.name,
-						typeIcon = typeFile?.icon
-					) {
-						this.withCaseSensitivity(false) //忽略大小写
-							.withPriority(PlsCompletionPriorities.predefinedValueSetValuePriority)
-					}
+					val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
+						.withIcon(PlsIcons.PredefinedValueSetValue)
+						.withTailText(tailText)
+						.withTypeText(typeFile?.name)
+						.withTypeIcon(typeFile?.icon)
+						.withPriority(PlsCompletionPriorities.predefinedValueSetValuePriority)
+					result.addScriptExpressionElement(context, builder)
 				}
 			}
 		}
@@ -1297,26 +1292,22 @@ object CwtConfigHandler {
 				val value = ParadoxValueSetValueHandler.getName(valueSetValue) ?: return@processQuery true
 				val icon = PlsIcons.ValueSetValue(valueSetName)
 				//不显示typeText
-				result.addScriptExpressionElement(valueSetValue, value,
-					context,
-					icon = icon,
-					tailText = tailText
-				) {
-					this.withCaseSensitivity(false) //忽略大小写
-				}
+				val builder = ParadoxScriptExpressionLookupElementBuilder.create(valueSetValue, value)
+					.withIcon(icon)
+					.withTailText(tailText)
+				result.addScriptExpressionElement(context, builder)
 				true
 			}
 		}
 	}
 	
 	fun completeLocalisationCommandScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
-		//TODO 进一步匹配scope
 		val lookupElements = mutableSetOf<LookupElement>()
 		val localisationLinks = configGroup.localisationLinks
 		val outputScope = prevScope?.let { prevScope -> localisationLinks[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		for(linkConfig in localisationLinks.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes, configGroup)
+			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
 			if(!isScopeMatched) continue
 			
 			val name = linkConfig.name
@@ -1340,13 +1331,12 @@ object CwtConfigHandler {
 		val localisationCommands = configGroup.localisationCommands
 		//批量提示
 		val lookupElements = mutableSetOf<LookupElement>()
-		for(localisationCommand in localisationCommands) {
-			val config = localisationCommand.value
-			val name = config.name
+		for(localisationCommand in localisationCommands.values) {
+			val name = localisationCommand.name
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
-			val element = config.pointer.element ?: continue
+			val element = localisationCommand.pointer.element ?: continue
 			val tailText = " from localisation commands"
-			val typeFile = config.pointer.containingFile
+			val typeFile = localisationCommand.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
 				.withIcon(PlsIcons.LocalisationCommandField)
 				.withTailText(tailText, true)

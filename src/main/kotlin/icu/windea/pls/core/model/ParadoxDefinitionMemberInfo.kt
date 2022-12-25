@@ -1,12 +1,10 @@
 package icu.windea.pls.core.model
 
-import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.matchesScriptExpression
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.util.*
@@ -17,7 +15,6 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxDefinitionMemberInfo(
 	val elementPath: ParadoxElementPath,
-	val scope: String? = null,
 	val gameType: ParadoxGameType,
 	val definitionInfo: ParadoxDefinitionInfo,
 	val configGroup: CwtConfigGroup,
