@@ -56,10 +56,10 @@
   * [X] 修复：[Cannot choose path for library using CK3 #7](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/7)
 * 新增功能 - 概述
   * [ ] 初步支持处理作用域（`scope`），以及相关的快速文档、内嵌提示、代码检查等功能
-    * 基于的CWT规则文件
+    * 基于已有的CWT规则文件（Github仓库中存在的）
     * （对于`on_action`）基于`on_actions.csv`
   * [ ] 初步支持处理生成的修饰符（`modifier`），以及相关的引用解析、代码补全、代码高亮等功能
-    * 基于扩展的CWT规则
+    * 基于扩展的CWT规则（`modifier_generation.cwt`）
   * [ ] 支持处理内联脚本（`inline_script`）
 * 新增功能
   * 快速文档（`Quick Documentation`）
