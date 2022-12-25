@@ -24,7 +24,7 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	@Volatile var parent: CwtDataConfig<*>? = null
 	
 	val isBlock: Boolean get() = configs != null
-	val values : List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
+	val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
 	val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
 	
 	override fun resolved(): CwtDataConfig<*> = this
@@ -34,7 +34,7 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	//may on:
 	// * a config expression in declaration config
 	// * a config expression in subtype structure config
-	val cardinality by lazy { 
+	val cardinality by lazy {
 		val option = options?.find { it.key == "cardinality" }
 		if(option == null) {
 			//如果没有注明且类型是常量，则推断为 1..1
@@ -68,8 +68,8 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	
 	//may on:
 	// * a config expression in declaration config
-	val scope by lazy { 
-		val option = options?.find { it.key == "scope" || it.key == "scopes" } 
+	val scope by lazy {
+		val option = options?.find { it.key == "scope" || it.key == "scopes" }
 		if(option == null) return@lazy emptySet()
 		option.stringValue?.toSingletonSet() ?: option.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue } ?: emptySet()
 	}
@@ -95,39 +95,49 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 				?.find { o -> o.key == "this" }?.value
 	}
 	
-	/** 
-	 * 深拷贝。 
+	/**
+	 * 深拷贝。
 	 */
 	fun deepCopyConfigs(): List<CwtDataConfig<*>>? {
 		return configs?.map { config ->
 			when(config) {
 				is CwtPropertyConfig -> config.copy(configs = config.deepCopyConfigs())
 				is CwtValueConfig -> config.copy(configs = config.deepCopyConfigs())
-			}.also { it.parent = this } 
+			}.also { it.parent = this }
 		}
 	}
 	
 	/**
-	 * 深拷贝 + 根据子类型进行合并。
+	 * 深拷贝 + 根据定义的名字、类型、子类型进行合并。
 	 */
-	fun deepMergeBySubtypes(subtypes: List<String>?): List<CwtDataConfig<*>> {
+	fun deepMergeConfigs(name: String?, type: String, subtypes: List<String>?, configGroup: CwtConfigGroup): List<CwtDataConfig<*>> {
 		val mergedConfigs: MutableList<CwtDataConfig<*>>? = if(configs != null) SmartList() else null
 		configs?.forEach { config ->
-			val childConfigList = config.deepMergeBySubtypes(subtypes)
-			if(childConfigList.isEmpty()) return@forEach
-			for(childConfig in childConfigList) {
-				mergedConfigs?.add(childConfig)
+			val childConfigList = config.deepMergeConfigs(name, type, subtypes, configGroup)
+			if(childConfigList.isNotEmpty()) {
+				for(childConfig in childConfigList) {
+					mergedConfigs?.add(childConfig)
+				}
 			}
 		}
-		return when(this) {
+		when(this) {
 			is CwtValueConfig -> {
-				copy(configs = mergedConfigs).also { parent = it.parent }.toSingletonList()
+				val valueExpression = CwtConfigExpressionHandler.handle(value, name, type, subtypes, configGroup)
+				val mergedConfig = copy(value = valueExpression, configs = mergedConfigs)
+				return mergedConfig.also { parent = it.parent }.toSingletonList()
 			}
 			is CwtPropertyConfig -> {
 				val subtypeName = key.removeSurroundingOrNull("subtype[", "]")
-					?: return copy(configs = mergedConfigs).also { parent = it.parent }.toSingletonList()
-				if(!matchesDefinitionSubtypeExpression(subtypeName, subtypes)) return emptyList()
-				mergedConfigs.orEmpty()
+				if(subtypeName == null) {
+					val keyExpression = CwtConfigExpressionHandler.handle(key, name, type, subtypes, configGroup)
+					val valueExpression = CwtConfigExpressionHandler.handle(key, name, type, subtypes, configGroup)
+					val mergedConfig = copy(key = keyExpression, value = valueExpression, configs = mergedConfigs)
+					return mergedConfig.also { parent = it.parent }.toSingletonList()
+				} else if(matchesDefinitionSubtypeExpression(subtypeName, subtypes)) {
+					return mergedConfigs.orEmpty()
+				} else {
+					return emptyList()
+				}
 			}
 		}
 	}

@@ -20,7 +20,3 @@ fun CwtDataExpression.isNumberType(): Boolean {
 		|| type == CwtDataTypes.ValueField || type == CwtDataTypes.IntValueField
 		|| type == CwtDataTypes.VariableField || type == CwtDataTypes.VariableField
 }
-
-fun CwtDataExpression.resolved(definitionMemberInfo: ParadoxDefinitionMemberInfo?): CwtDataExpression {
-	return CwtConfigExpressionResolver.resolved(this, definitionMemberInfo)
-}

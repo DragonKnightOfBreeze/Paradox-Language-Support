@@ -598,7 +598,7 @@ object CwtConfigHandler {
 				typeConfigToUse == null || tuples.isEmpty() -> null
 				else -> tuples.mapNotNull { it.second }.ifEmpty { null }?.distinctBy { it.name }?.map { it.name }
 			}
-			val config = if(typeToUse == null) null else configGroup.declarations[typeToUse]?.getMergedConfig(subtypesToUse)
+			val config = if(typeToUse == null) null else configGroup.declarations[typeToUse]?.getMergedConfig(subtypesToUse, null)
 			val element = config?.pointer?.element
 			val icon = if(config != null) PlsIcons.Definition else PlsIcons.Property
 			val tailText = if(tuples.isEmpty()) null

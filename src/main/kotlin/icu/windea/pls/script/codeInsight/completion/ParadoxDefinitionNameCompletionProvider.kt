@@ -87,7 +87,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 					if(ParadoxDefinitionHandler.matchesTypeWithUnknownDeclaration(typeConfig, path, elementPath, null)) {
 						val type = typeConfig.name
 						//需要考虑不指定子类型的情况
-						val config = configGroup.declarations[type]?.getMergedConfig(null) ?: continue
+						val config = configGroup.declarations[type]?.getMergedConfig(null, null) ?: continue
 						doAddCompletions(type, config, true, null, null)
 					}
 				}
