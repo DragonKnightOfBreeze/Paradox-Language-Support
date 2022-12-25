@@ -4,7 +4,6 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.testFramework.fixtures.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.core.tool.cwt.*
 import org.junit.*
 
 class CwtModifierConfigGeneratorTest : BasePlatformTestCase() {
@@ -13,7 +12,7 @@ class CwtModifierConfigGeneratorTest : BasePlatformTestCase() {
 	}
 	
 	@Test
-	fun test() {
+	fun testGenerateForCk3Test() {
 		CwtModifierConfigGenerator(
 			project,
 			ParadoxGameType.Ck3,
@@ -21,6 +20,11 @@ class CwtModifierConfigGeneratorTest : BasePlatformTestCase() {
 			"cwt/cwtools-ck3-config/config/modifiers.cwt",
 			"cwt/cwtools-ck3-config/config/modifier_categories.cwt"
 		).generate()
+		runInEdt { FileDocumentManager.getInstance().saveAllDocuments() }
+	}
+	
+	@Test
+	fun testGenerateForStellarisTest() {
 		CwtModifierConfigGenerator(
 			project,
 			ParadoxGameType.Stellaris,
@@ -28,6 +32,11 @@ class CwtModifierConfigGeneratorTest : BasePlatformTestCase() {
 			"cwt/cwtools-stellaris-config/config/modifiers.cwt",
 			"cwt/cwtools-stellaris-config/config/modifier_categories.cwt"
 		).generate()
+		runInEdt { FileDocumentManager.getInstance().saveAllDocuments() }
+	}
+	
+	@Test
+	fun testGenerateForVic3() {
 		CwtModifierConfigGenerator(
 			project,
 			ParadoxGameType.Vic3,
@@ -35,7 +44,6 @@ class CwtModifierConfigGeneratorTest : BasePlatformTestCase() {
 			"cwt/cwtools-vic3-config/config/modifiers.cwt",
 			"cwt/cwtools-vic3-config/config/modifier_categories.cwt"
 		).generate()
-		
 		runInEdt { FileDocumentManager.getInstance().saveAllDocuments() }
 	}
 }

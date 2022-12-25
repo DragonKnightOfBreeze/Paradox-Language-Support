@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "icu.windea"
-version = "0.7.8"
+version = "0.7.9"
 
 intellij {
 	pluginName.set("Paradox Language Support")
@@ -41,8 +41,6 @@ dependencies {
 		exclude(module = "jackson-core")
 		exclude(module = "jackson-databind")
 	}
-	//JUNIT
-	testImplementation("junit:junit:4.13.2")
 }
 
 sourceSets {
@@ -83,6 +81,9 @@ tasks {
 			jvmTarget = "17"
 			freeCompilerArgs = listOf("-Xjvm-default=all")
 		}
+	}
+	test {
+		useJUnitPlatform()
 	}
 	jar {
 		//添加项目文档和许可证
