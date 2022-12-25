@@ -531,6 +531,11 @@ private fun resolveCwtLink(linkWithoutPrefix: String, sourceElement: PsiElement)
 			val config = getCwtConfig(project).getValue(gameType).values[name] ?: return null
 			return config.pointer.element
 		}
+		"system_scopes" -> {
+			val name = tokens.getOrNull(2) ?: return null
+			val config = getCwtConfig(project).getValue(gameType).systemScopes[name] ?: return null
+			return config.pointer.element
+		}
 		else -> null
 	}
 }

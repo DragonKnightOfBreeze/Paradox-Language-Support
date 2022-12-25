@@ -273,8 +273,10 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		append(PlsDocBundle.message("prefix.scopeContext"))
 		scopeContext.map.forEach { (key, value) ->
 			append(" ")
+			appendCwtLink(key, "${gameType.id}/system_scopes/$key", element)
+			append(key)
+			append(" = ")
 			val scopeId = ScopeConfigHandler.getScopeId(value)
-			append(key).append(" = ")
 			if(ScopeConfigHandler.isFakeScopeId(scopeId)) {
 				append(scopeId)
 			} else {
@@ -282,6 +284,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			}
 		}
 	}
+	
 	
 	private fun StringBuilder.addEventTypeForOnAction(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
 		if(definitionInfo.type != "on_action") return

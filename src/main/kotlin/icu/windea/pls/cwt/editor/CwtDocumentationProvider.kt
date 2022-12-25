@@ -235,12 +235,14 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		append(PlsDocBundle.message("prefix.scopeContext"))
 		scopeContext.map.forEach { (key, value) ->
 			append(" ")
+			appendCwtLink(key, "${gameType.id}/system_scopes/$key", element)
+			append(key)
+			append(" = ")
 			val scopeId = ScopeConfigHandler.getScopeId(value)
-			append(key).append(" = ")
 			if(ScopeConfigHandler.isFakeScopeId(scopeId)) {
 				append(scopeId)
 			} else {
-				appendCwtLink(scopeId, "${gameType.id}/scopes/$scopeId", memberElement)
+				appendCwtLink(scopeId, "${gameType.id}/scopes/$scopeId", element)
 			}
 		}
 	}
