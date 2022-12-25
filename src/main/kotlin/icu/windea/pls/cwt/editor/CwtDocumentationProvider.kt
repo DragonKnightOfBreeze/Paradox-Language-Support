@@ -268,7 +268,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		val contextElement = referenceElement
 		val gameType = configGroup.gameType ?: return
 		val iconPaths = ModifierConfigHandler.getModifierIconPaths(name, configGroup)
-		val (iconPath , iconFile) = iconPaths.firstNotNullOfOrNull {
+		val (iconPath, iconFile) = iconPaths.firstNotNullOfOrNull {
 			val iconSelector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
 			it to findFileByFilePath(it, configGroup.project, selector = iconSelector)
 		} ?: (null to null)
@@ -310,24 +310,24 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					sections.put(PlsDocBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
 					
 					val outputScope = linkConfig.outputScope
-					sections.put(PlsDocBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType,contextElement))
+					sections.put(PlsDocBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
 				}
 			}
 			CwtConfigType.Modifier -> {
 				val modifierConfig = configGroup.modifiers[name] ?: return
 				if(sections != null) {
-					val categoryNames = modifierConfig.categoryConfigMap.keys.joinToString()
-					sections.put(PlsDocBundle.message("sectionTitle.categories"), "<code>$categoryNames</code>")
+					val categoryNames = modifierConfig.categoryConfigMap.keys
+					sections.put(PlsDocBundle.message("sectionTitle.categories"), getCategoriesText(categoryNames, gameType, contextElement))
 					
 					val supportedScopes = modifierConfig.supportedScopes
-					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType,contextElement))
+					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
 				}
 			}
 			CwtConfigType.LocalisationCommand -> {
 				val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
 				if(sections != null) {
 					val supportedScopes = localisationCommandConfig.supportedScopes
-					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType,contextElement))
+					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
 				}
 			}
 			CwtConfigType.Alias -> {
@@ -336,15 +336,27 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				if(aliasConfig.name !in configGroup.aliasNameSupportScope) return
 				if(sections != null) {
 					val supportedScopes = aliasConfig.supportedScopes
-					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType,contextElement))
+					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
 				}
 			}
 			else -> pass()
 		}
 	}
 	
+	private fun getCategoriesText(categories: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
+		return buildString {
+			var appendSeparator = false
+			append("<code>")
+			for(category in categories) {
+				if(appendSeparator) append(", ") else appendSeparator = true
+				appendCwtLink(category, "${gameType.id}/modifier_categories/$category", contextElement)
+			}
+			append("</code>")
+		}
+	}
+	
 	private fun getScopeText(scope: String, gameType: ParadoxGameType?, contextElement: PsiElement): String {
-		return buildString { 
+		return buildString {
 			append("<code>")
 			if(ScopeConfigHandler.isFakeScopeId(scope)) {
 				append(scope)
@@ -373,7 +385,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun StringBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
 		val show = getSettings().documentation.showScopeContext
-		if(!show) return 
+		if(!show) return
 		if(sections == null) return
 		val memberElement = referenceElement.parentOfType<ParadoxScriptMemberElement>(true) ?: return
 		if(!ScopeConfigHandler.isScopeContextSupported(memberElement)) return
@@ -441,13 +453,13 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getReferenceElement(originalElement: PsiElement?): PsiElement?{
-		val element = when{
+	private fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
+		val element = when {
 			originalElement == null -> return null
 			originalElement.elementType == TokenType.WHITE_SPACE -> originalElement.prevSibling ?: return null
 			else -> originalElement
 		}
-		return when{
+		return when {
 			element is LeafPsiElement -> element.parent
 			else -> element
 		}
