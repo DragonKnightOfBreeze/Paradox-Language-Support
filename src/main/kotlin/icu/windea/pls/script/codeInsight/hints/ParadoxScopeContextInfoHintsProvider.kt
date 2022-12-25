@@ -77,14 +77,19 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 		var appendSeparator = false
 		scopeInfo.map.forEach { (key, value) ->
 			if(appendSeparator) {
-				presentations.add(smallText(" $key = "))
+				presentations.add(smallText(" "))
 			} else {
-				presentations.add(smallText("$key = "))
 				appendSeparator = true
 			}
+			presentations.add(systemScopePresentation(key, configGroup))
+			presentations.add(smallText(" = "))
 			presentations.add(scopeLinkPresentation(value, configGroup))
 		}
 		return SequencePresentation(presentations)
+	}
+	
+	private fun PresentationFactory.systemScopePresentation(scope: String, configGroup: CwtConfigGroup): InlayPresentation {
+		return psiSingleReference(smallText(scope)) { configGroup.systemScopes[scope]?.pointer?.element }
 	}
 	
 	private fun PresentationFactory.scopeLinkPresentation(scope: String, configGroup: CwtConfigGroup): InlayPresentation {
