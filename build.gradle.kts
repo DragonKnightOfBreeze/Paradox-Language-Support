@@ -50,7 +50,7 @@ sourceSets {
 		java.srcDirs("src/main/java", "src/main/kotlin", "src/main/gen")
 	}
 	test {
-		java.srcDirs("src/test/java", "src/test/kotlin", "src/reserved/java", "src/reserved/kotlin")
+		java.srcDirs("src/test/java", "src/test/kotlin", "src/tool/java", "src/tool/kotlin")
 		resources.srcDirs("src/test/resources", "src/reserved/resources")
 	}
 }
