@@ -21,16 +21,20 @@ object ScopeConfigHandler {
 	const val anyScopeId = "any"
 	const val allScopeId = "all"
 	
+	val anyScopeIdSet = setOf(anyScopeId)
+	
 	/**
-	 * 得到作用域的ID（用于显示在内嵌提示中，全小写+下划线）。
+	 * 得到作用域的ID（全小写+下划线）。
 	 */
 	@JvmStatic
 	fun getScopeId(scope: String) : String {
-		return scope.lowercase().replace(' ', '_')
+		val scopeId = scope.lowercase().replace(' ', '_')
+		if(scopeId == allScopeId) return anyScopeId
+		return scopeId
 	}
 	
 	/**
-	 * 得到作用域的名字（用于显示在快速文档中）。
+	 * 得到作用域的名字。
 	 */
 	@JvmStatic
 	fun getScopeName(scope: String, configGroup: CwtConfigGroup): String {

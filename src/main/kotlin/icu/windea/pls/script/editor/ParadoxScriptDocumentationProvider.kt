@@ -120,7 +120,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			//在definition部分，相关图片信息显示在相关本地化信息之后，在sections部分则显示在之前
 			//images, localisations
-			val sectionsList = List(2) { mutableMapOf<String, String>() }
+			val sectionsList = List(3) { mutableMapOf<String, String>() }
 			buildDefinitionDefinition(element, definitionInfo, sectionsList)
 			buildDocumentationContent(definitionInfo)
 			buildLineCommentContent(element)
@@ -184,13 +184,13 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			append(PlsDocBundle.message("prefix.definition")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>: ").append(typeLinkText)
 			
 			//加上相关本地化信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
-			addRelatedLocalisationsForDefinition(element, definitionInfo, sectionsList?.get(1))
+			addRelatedLocalisationsForDefinition(element, definitionInfo, sectionsList?.get(2))
 			
 			//加上相关图片信息：去重后的一组DDS文件的filePath，或者sprite的definitionKey，不包括可选且没有对应的图片的项，按解析顺序排序
-			addRelatedImagesForDefinition(element, definitionInfo, sectionsList?.get(0))
+			addRelatedImagesForDefinition(element, definitionInfo, sectionsList?.get(1))
 			
 			//加上作用域上下文信息（如果支持）
-			addScopeContextForDefinition(element, definitionInfo)
+			addScopeContextForDefinition(element, definitionInfo, sectionsList?.get(0))
 			
 			//加上事件类型信息（对于on_action）
 			addEventTypeForOnAction(element, definitionInfo)
@@ -264,27 +264,31 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.addScopeContextForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+	private fun StringBuilder.addScopeContextForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
+		val show = getSettings().documentation.showScopeContext
+		if(!show) return
+		if(sections == null) return
 		if(!ScopeConfigHandler.isScopeContextSupported(element)) return
 		val scopeContext = ScopeConfigHandler.getScopeContext(element)
 		if(scopeContext == null) return
+		val contextElement = element
 		val gameType = definitionInfo.gameType
-		appendBr()
-		append(PlsDocBundle.message("prefix.scopeContext"))
-		scopeContext.map.forEach { (key, value) ->
-			append(" ")
-			appendCwtLink(key, "${gameType.id}/system_scopes/$key", element)
-			append(key)
-			append(" = ")
-			val scopeId = ScopeConfigHandler.getScopeId(value)
-			if(ScopeConfigHandler.isFakeScopeId(scopeId)) {
-				append(scopeId)
-			} else {
-				appendCwtLink(scopeId, "${gameType.id}/scopes/$scopeId", element)
+		val scopeContextText = buildString {
+			var appendSeparator = false
+			scopeContext.map.forEach { (key, value) ->
+				if(appendSeparator) appendBr() else appendSeparator = true
+				appendCwtLink(key, "${gameType.id}/system_scopes/$key", contextElement)
+				append(" = ")
+				val scopeId = ScopeConfigHandler.getScopeId(value)
+				if(ScopeConfigHandler.isFakeScopeId(scopeId)) {
+					append(scopeId)
+				} else {
+					appendCwtLink(scopeId, "${gameType.id}/scopes/$scopeId", contextElement)
+				}
 			}
 		}
+		sections.put(PlsDocBundle.message("sectionTitle.scopeContext"), "<code>$scopeContextText</code>")
 	}
-	
 	
 	private fun StringBuilder.addEventTypeForOnAction(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
 		if(definitionInfo.type != "on_action") return

@@ -1,7 +1,6 @@
 package icu.windea.pls.cwt.psi
 
 import com.intellij.psi.util.*
-import org.jetbrains.kotlin.psi.psiUtil.*
 
 fun CwtValue.isPropertyValue(): Boolean {
 	val parent = parent

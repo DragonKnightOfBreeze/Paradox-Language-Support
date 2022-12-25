@@ -15,24 +15,9 @@ data class CwtLocalisationLinkConfig(
 	val config: CwtPropertyConfig,
 	val name: String,
 	val desc: String? = null,
-	val inputScopes: Set<String>?,
-	val outputScope: String? = null
+	val inputScopes: Set<String>,
+	val outputScope: String
 ) : CwtConfig<CwtProperty> {
-	val inputAnyScope = inputScopes.isNullOrEmpty() || inputScopes.singleOrNull().let { it == "any" || it == "all" }
-	val outputAnyScope = outputScope == null || outputScope == "any"
-	
-	val inputScopeNames by lazy {
-		if(inputAnyScope) {
-			setOf("Any")
-		} else {
-			inputScopes?.mapTo(mutableSetOf()) { ScopeConfigHandler.getScopeName(it, info.configGroup) }.orEmpty()
-		}
-	}
-	val outputScopeName by lazy {
-		if(outputAnyScope) {
-			"Any"
-		} else {
-			ScopeConfigHandler.getScopeName(outputScope ?: "any", info.configGroup)
-		}
-	}
+	val inputAnyScope get() = inputScopes == ScopeConfigHandler.anyScopeIdSet
+	val outputAnyScope get() = outputScope == ScopeConfigHandler.anyScopeId
 }

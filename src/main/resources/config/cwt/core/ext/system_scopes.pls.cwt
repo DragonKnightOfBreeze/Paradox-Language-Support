@@ -1,8 +1,6 @@
 # System Scope Config
 # Used to provide resolving, navigation and some other features for predefined scope links
 
-# See wiki: https://stellaris.paradoxwikis.com/Scopes#System_scopes
-
 system_scopes = {
 	### This
 	This = {}

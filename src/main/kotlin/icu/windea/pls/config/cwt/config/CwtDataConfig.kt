@@ -4,6 +4,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.script.*
 import icu.windea.pls.config.script.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -63,37 +64,20 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	// * a subtype config (e.g. "subtype[xxx] = { ... }")
 	val pushScope by lazy {
 		val option = options?.find { it.key == "push_scope" }
-		option?.stringValue
+		option?.stringValue?.let { v -> ScopeConfigHandler.getScopeId(v) }
 	}
 	
 	//may on:
 	// * a config expression in declaration config
-	val scope by lazy {
+	val supportedScopes by lazy {
 		val option = options?.find { it.key == "scope" || it.key == "scopes" }
-		if(option == null) return@lazy emptySet()
-		option.stringValue?.toSingletonSet() ?: option.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue } ?: emptySet()
+		buildSet {
+			option?.stringValue?.let { v -> add(ScopeConfigHandler.getScopeId(v)) }
+			option?.optionValues?.forEach { it.stringValue?.let { v -> add(ScopeConfigHandler.getScopeId(v)) } }
+		}.ifEmpty { ScopeConfigHandler.anyScopeIdSet }
 	}
 	
-	val currentScope get() = resolveScope()
-	
-	private fun resolveScope(): String? {
-		//option的名字可能是：replace_scope/replace_scopes/push_scope
-		//对应的option可能位于：alias规则定义上，上一级definitionElement规则定义上，definition规则定义上，subtype规则定义上
-		var current: CwtDataConfig<*>? = this
-		while(current != null) {
-			val scope = doResolveScope(current)
-			if(scope != null) return scope
-			current = current.parent
-		}
-		return null
-	}
-	
-	private fun doResolveScope(config: CwtDataConfig<*>): String? {
-		val options = config.options ?: return null
-		return options.find { it.key == "push_scope" }?.value
-			?: options.find { it.key == "replace_scope" || it.key == "replace_scopes" }?.options
-				?.find { o -> o.key == "this" }?.value
-	}
+	val supportAnyScope = supportedScopes == ScopeConfigHandler.anyScopeIdSet
 	
 	/**
 	 * 深拷贝。
@@ -130,7 +114,7 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 				val subtypeName = key.removeSurroundingOrNull("subtype[", "]")
 				if(subtypeName == null) {
 					val keyExpression = CwtConfigExpressionHandler.handle(key, name, type, subtypes, configGroup)
-					val valueExpression = CwtConfigExpressionHandler.handle(key, name, type, subtypes, configGroup)
+					val valueExpression = CwtConfigExpressionHandler.handle(value, name, type, subtypes, configGroup)
 					val mergedConfig = copy(key = keyExpression, value = valueExpression, configs = mergedConfigs)
 					return mergedConfig.also { parent = it.parent }.toSingletonList()
 				} else if(matchesDefinitionSubtypeExpression(subtypeName, subtypes)) {

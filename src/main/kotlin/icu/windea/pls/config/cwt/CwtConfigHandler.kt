@@ -871,9 +871,7 @@ object CwtConfigHandler {
 			CwtDataTypes.IntVariableField -> pass() //TODO
 			CwtDataTypes.Modifier -> {
 				//提示预定义的modifier
-				//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
-				val nextScope = getNextScope(config, scope)
-				completeModifier(context, result, nextScope)
+				completeModifier(context, result, null)
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataTypes.SingleAliasRight -> pass()
@@ -938,11 +936,6 @@ object CwtConfigHandler {
 		pass()
 	}
 	
-	private fun getNextScope(config: CwtConfig<*>?, scope: String?): String? {
-		if(config == null || config !is CwtDataConfig<*>) return scope
-		return config.parent?.currentScope ?: scope
-	}
-	
 	private fun getScriptExpressionTailText(config: CwtConfig<*>?): String? {
 		if(config?.expression == null) return null
 		return " by ${config.expression} in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
@@ -957,20 +950,17 @@ object CwtConfigHandler {
 			//aliasConfigs的名字是相同的 
 			val aliasConfig = aliasConfigs.firstOrNull() ?: continue
 			//假定所有同名的aliasConfig的supportedScopes都是相同的
-			//TODO alias的scope需要匹配（推断得到的scope为null时，总是提示）
 			val isScopeMatched = ScopeConfigHandler.matchesScope(scope, aliasConfig.supportedScopes, configGroup)
 			if(!isScopeMatched) continue
 			
-			//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
-			val nextScope = getNextScope(config, scope)
 			//aliasSubName是一个表达式
 			if(isKey == true) {
 				context.put(PlsCompletionKeys.configKey, aliasConfig)
 				context.put(PlsCompletionKeys.configsKey, aliasConfigs)
-				completeScriptExpression(context, result, nextScope)
+				completeScriptExpression(context, result, null)
 			} else {
 				context.put(PlsCompletionKeys.configKey, aliasConfig)
-				completeScriptExpression(context, result, nextScope)
+				completeScriptExpression(context, result, null)
 			}
 			context.put(PlsCompletionKeys.configKey, config)
 			context.put(PlsCompletionKeys.configsKey, configs)

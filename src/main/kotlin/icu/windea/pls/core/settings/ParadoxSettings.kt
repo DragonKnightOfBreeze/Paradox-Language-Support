@@ -36,6 +36,7 @@ class ParadoxSettingsState : BaseState() {
 	 * @property renderIconForModifiers 是否需要为修饰符渲染图标到文档中。
 	 * @property renderLocalisationForLocalisations 是否需要为本地化渲染本地化文本到文档中。
 	 * @property showScopes 是否需要在文档中显示作用域信息（如果支持且存在）。
+	 * @property showScopeContext 是否需要在文档中显示作用域上下文（如果支持且存在）。
 	 */
 	class DocumentationState : BaseState() {
 		var renderLineComment by property(false)
@@ -45,6 +46,7 @@ class ParadoxSettingsState : BaseState() {
 		var renderIconForModifiers by property(true)
 		var renderLocalisationForLocalisations by property(true)
 		var showScopes by property(true)
+		var showScopeContext by property(true)
 	}
 	
 	@get:Tag("completion")

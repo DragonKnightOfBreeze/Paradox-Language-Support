@@ -1,6 +1,7 @@
 package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
+import icu.windea.pls.config.script.*
 import icu.windea.pls.cwt.psi.*
 
 /**
@@ -14,12 +15,12 @@ data class CwtModifierConfig(
 ) : CwtConfig<CwtProperty> {
 	val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
 	
-	val supportedScopeNames: Set<String> by lazy {
+	val supportedScopes: Set<String> by lazy {
 		val categoryConfigs = categoryConfigMap.values
 		if(categoryConfigs.any { it.supportAnyScope }) {
-			setOf("Any")
+			ScopeConfigHandler.anyScopeIdSet
 		} else {
-			categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopeNames }
+			categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopes }
 		}
 	}
 }

@@ -11,9 +11,9 @@ import icu.windea.pls.cwt.psi.*
  * @property type type: string
  * @property dataSource data_source: string (expression)
  * @property prefix prefix: string
+ * @property forDefinitionType for_definition_type: string
  * @property inputScopes input_scopes | input_scopes: string[]
  * @property outputScope output_scope: string
- * @property forDefinition output_scope: string
  */
 data class CwtLinkConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
@@ -25,27 +25,12 @@ data class CwtLinkConfig(
 	val type: String? = null,
 	val dataSource: CwtValueExpression?,
 	val prefix: String?,
-	val inputScopes: Set<String>?,
-	val outputScope: String? = null,
-	val forDefinition: String?
+	val forDefinitionType: String?,
+	val inputScopes: Set<String>,
+	val outputScope: String
 ) : CwtConfig<CwtProperty> {
-	val inputAnyScope = inputScopes.isNullOrEmpty() || inputScopes.singleOrNull().let { it == "any" || it == "all" }
-	val outputAnyScope = outputScope == null || outputScope == "any"
-	
-	val inputScopeNames by lazy {
-		if(inputAnyScope) {
-			setOf("Any")
-		} else {
-			inputScopes?.mapTo(mutableSetOf()) { ScopeConfigHandler.getScopeName(it, info.configGroup) }.orEmpty()
-		}
-	}
-	val outputScopeName by lazy {
-		if(outputAnyScope) {
-			"Any"
-		} else {
-			ScopeConfigHandler.getScopeName(outputScope ?: "any", info.configGroup)
-		}
-	}
+	val inputAnyScope get() = inputScopes == ScopeConfigHandler.anyScopeIdSet
+	val outputAnyScope get() = outputScope == ScopeConfigHandler.anyScopeId
 	
 	override val expression get() = dataSource
 }

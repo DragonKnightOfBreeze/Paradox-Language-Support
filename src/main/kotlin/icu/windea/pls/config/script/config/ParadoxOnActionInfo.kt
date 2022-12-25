@@ -25,6 +25,6 @@ data class ParadoxOnActionInfo(
 		val schema = CsvSchema.builder()
 			.addColumn("key").addColumn("scopes").addColumn("event").addColumn("comment").build()
 			.withHeader()
-			.withoutQuoteChar()
+			.withQuoteChar('"')
 	}
 }

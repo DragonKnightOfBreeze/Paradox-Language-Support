@@ -124,6 +124,12 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						.bindSelected(settings.documentation::showScopes)
 						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showScopes.tooltip") }
 				}
+				//showScopeContext
+				row {
+					checkBox(PlsBundle.message("settings.documentation.showScopeContext"))
+						.bindSelected(settings.documentation::showScopeContext)
+						.applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showScopeContext.tooltip") }
+				}
 			}
 			//completion
 			group(PlsBundle.message("settings.completion")) {

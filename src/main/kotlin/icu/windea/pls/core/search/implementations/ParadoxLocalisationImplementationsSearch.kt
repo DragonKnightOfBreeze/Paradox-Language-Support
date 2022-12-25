@@ -1,5 +1,6 @@
 package icu.windea.pls.core.search.implementations
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
@@ -7,10 +8,8 @@ import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
-import org.jetbrains.kotlin.idea.util.application.*
 
 /**
  * 本地化的实现的查询。加入所有作用域内的包括不同语言区域在内的同名本地化。

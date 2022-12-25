@@ -33,8 +33,15 @@ repositories {
 }
 
 dependencies {
-	implementation("ar.com.hjg:pngj:2.1.0") //FROM DDS4J
-	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.14.0") //CSV
+	//FROM DDS4J
+	implementation("ar.com.hjg:pngj:2.1.0")
+	//CSV
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.14.0") {
+		exclude(module = "jackson-annotations")
+		exclude(module = "jackson-core")
+		exclude(module = "jackson-databind")
+	}
+	//JUNIT
 	testImplementation("junit:junit:4.13.2")
 }
 

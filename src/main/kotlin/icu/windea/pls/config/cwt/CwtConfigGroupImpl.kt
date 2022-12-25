@@ -1,7 +1,8 @@
 package icu.windea.pls.config.cwt
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import icu.windea.pls.config.cwt.config.*
@@ -9,6 +10,7 @@ import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.config.script.*
+import icu.windea.pls.config.script.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
@@ -17,9 +19,6 @@ import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import kotlin.collections.isNullOrEmpty
 import kotlin.collections.mapNotNullTo
-import icu.windea.pls.config.script.config.*
-
-private const val s = "system_scopes"
 
 class CwtConfigGroupImpl(
 	override val project: Project,
@@ -66,26 +65,28 @@ class CwtConfigGroupImpl(
 	override val declarations: MutableMap<String, CwtDeclarationConfig> = mutableMapOf()
 	
 	init {
-		for(virtualFile in fileGroup.values) {
-			var result: Boolean
-			val fileName = virtualFile.name
-			val extension = virtualFile.extension?.lowercase()
-			when {
-				extension == "cwt" -> {
-					val file = virtualFile.toPsiFile<CwtFile>(project) ?: continue
-					val fileConfig = CwtConfigResolver.resolve(file, info)
-					
-					result = resolveCwtSettingInCwtFile(fileConfig)
-					if(!result) continue
-					
-					result = resolveExtendedCwtConfigInCwtFile(fileConfig)
-					if(!result) continue
-					
-					resolveCwtConfigInCwtFile(fileConfig)
-				}
-				//on_actions.csv
-				extension == "csv" -> {
-					resolveOnActionConfigs(virtualFile)
+		runReadAction {
+			for(virtualFile in fileGroup.values) {
+				var result: Boolean
+				val fileName = virtualFile.name
+				val extension = virtualFile.extension?.lowercase()
+				when {
+					extension == "cwt" -> {
+						val file = virtualFile.toPsiFile<CwtFile>(project) ?: continue
+						val fileConfig =  CwtConfigResolver.resolve(file, info)
+						
+						result = resolveCwtSettingInCwtFile(fileConfig)
+						if(!result) continue
+						
+						result = resolveExtendedCwtConfigInCwtFile(fileConfig)
+						if(!result) continue
+						
+						resolveCwtConfigInCwtFile(fileConfig)
+					}
+					//on_actions.csv
+					extension == "csv" -> {
+						resolveOnActionConfigs(virtualFile)
+					}
 				}
 			}
 		}
@@ -94,7 +95,6 @@ class CwtConfigGroupImpl(
 	override val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig> = initModifierCategoryIdMap()
 	
 	init {
-		bindModifierCategorySupportedScopeNames()
 		bindModifierCategories()
 	}
 	
@@ -121,7 +121,7 @@ class CwtConfigGroupImpl(
 	override val aliasNameSupportScope: Set<String> get() = info.aliasNameSupportScope
 	
 	override val definitionTypesSupportScope: Set<String> by lazy {
-		buildSet { 
+		buildSet {
 			add("script_effect")
 			add("script_trigger")
 			add("on_action")
@@ -138,14 +138,13 @@ class CwtConfigGroupImpl(
 	//解析CSV
 	
 	private fun resolveOnActionConfigs(virtualFile: VirtualFile) {
-		val bufferedReader = virtualFile.inputStream.bufferedReader()
-		val data = bufferedReader.use {
-			csvMapper.readerFor(ParadoxOnActionInfo::class.java).with(ParadoxOnActionInfo.schema)
-				.readValues<ParadoxOnActionInfo>(bufferedReader)
-		}
-		data.forEach { config ->
-			if(config.key.isNotEmpty()) {
-				onActions.put(config.key, config)
+		virtualFile.inputStream.bufferedReader().use {
+			val data = csvMapper.readerFor(ParadoxOnActionInfo::class.java).with(ParadoxOnActionInfo.schema)
+				.readValues<ParadoxOnActionInfo>(virtualFile.inputStream.bufferedReader())
+			data.forEach { config ->
+				if(config.key.isNotEmpty()) {
+					onActions.put(config.key, config)
+				}
 			}
 		}
 	}
@@ -696,7 +695,7 @@ class CwtConfigGroupImpl(
 		var prefix: String? = null
 		var inputScopes: Set<String>? = null
 		var outputScope: String? = null
-		var forDefinition: String? = null
+		var forDefinitionType: String? = null
 		val props = propertyConfig.properties ?: return null
 		for(prop in props) {
 			when(prop.key) {
@@ -705,13 +704,17 @@ class CwtConfigGroupImpl(
 				"type" -> type = prop.stringValue
 				"data_source" -> dataSource = prop.valueExpression //TODO 实际上也可能是data（可重复），但是目前只有一处
 				"prefix" -> prefix = prop.stringValue
-				"input_scopes" -> inputScopes = prop.stringValue?.let { setOf(it) }
-					?: prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
-				"output_scope" -> outputScope = prop.stringValue
-				"for_definition" -> forDefinition = prop.stringValue
+				"for_definition_type" -> forDefinitionType = prop.stringValue
+				"input_scopes" -> inputScopes = buildSet {
+					prop.stringValue?.let { v -> add(ScopeConfigHandler.getScopeId(v)) }
+					prop.values?.forEach { it.stringValue?.let { v -> add(ScopeConfigHandler.getScopeId(v)) } }
+				}.ifEmpty { ScopeConfigHandler.anyScopeIdSet }
+				"output_scope" -> outputScope = prop.stringValue?.let { v -> ScopeConfigHandler.getScopeId(v) }
+					?: ScopeConfigHandler.anyScopeId
 			}
 		}
-		return CwtLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, fromData, type, dataSource, prefix, inputScopes, outputScope, forDefinition)
+		if(inputScopes == null || outputScope == null) return null
+		return CwtLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, fromData, type, dataSource, prefix, forDefinitionType, inputScopes, outputScope)
 	}
 	
 	private fun resolveLocalisationLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationLinkConfig? {
@@ -722,16 +725,23 @@ class CwtConfigGroupImpl(
 		for(prop in props) {
 			when(prop.key) {
 				"desc" -> desc = prop.stringValue?.takeUnless { it.all { c -> c.isExactIdentifierChar() } }?.trim() //排除占位码 & 去除首尾空白
-				"input_scopes" -> inputScopes = prop.stringValue?.let { setOf(it) }
-					?: prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
-				"output_scope" -> outputScope = prop.stringValue
+				"input_scopes" -> inputScopes = buildSet {
+					prop.stringValue?.let { v -> add(ScopeConfigHandler.getScopeId(v)) }
+					prop.values?.forEach { it.stringValue?.let { v -> add(ScopeConfigHandler.getScopeId(v)) } }
+				}.ifEmpty { ScopeConfigHandler.anyScopeIdSet }
+				"output_scope" -> outputScope = prop.stringValue?.let { v -> ScopeConfigHandler.getScopeId(v) }
+					?: ScopeConfigHandler.anyScopeId
 			}
 		}
+		if(inputScopes == null || outputScope == null) return null
 		return CwtLocalisationLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, inputScopes, outputScope)
 	}
 	
 	private fun resolveLocalisationCommandConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationCommandConfig {
-		val supportedScopes = propertyConfig.stringValue?.let { setOf(it) } ?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+		val supportedScopes = buildSet {
+			propertyConfig.stringValue?.let { v -> add(ScopeConfigHandler.getScopeId(v)) }
+			propertyConfig.values?.forEach { it.stringValue?.let { v -> add(ScopeConfigHandler.getScopeId(v)) } }
+		}.ifEmpty { ScopeConfigHandler.anyScopeIdSet }
 		return CwtLocalisationCommandConfig(propertyConfig.pointer, propertyConfig.info, name, supportedScopes)
 	}
 	
@@ -743,9 +753,13 @@ class CwtConfigGroupImpl(
 		for(prop in props) {
 			when(prop.key) {
 				"internal_id" -> internalId = prop.value //目前版本的CWT配置已经不再有这个属性
-				"supported_scopes" -> supportedScopes = prop.stringValue?.let { setOf(it) } ?: prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+				"supported_scopes" -> supportedScopes =  buildSet {
+					prop.stringValue?.let { v -> add(ScopeConfigHandler.getScopeId(v)) }
+					prop.values?.forEach { it.stringValue?.let { v -> add(ScopeConfigHandler.getScopeId(v)) } }
+				}.ifEmpty { ScopeConfigHandler.anyScopeIdSet }
 			}
 		}
+		if(supportedScopes == null) return null
 		return CwtModifierCategoryConfig(propertyConfig.pointer, propertyConfig.info, name, internalId, supportedScopes)
 	}
 	
@@ -810,16 +824,6 @@ class CwtConfigGroupImpl(
 	}
 	
 	//绑定CWT配置
-	
-	private fun bindModifierCategorySupportedScopeNames() {
-		for(modifierCategory in modifierCategories.values) {
-			if(modifierCategory.supportAnyScope) {
-				modifierCategory.supportedScopeNames.add("Any")
-			} else {
-				modifierCategory.supportedScopes?.mapTo(modifierCategory.supportedScopeNames) { ScopeConfigHandler.getScopeName(it, this) }
-			}
-		}
-	}
 	
 	private fun bindModifierCategories() {
 		for(modifier in modifiers.values) {

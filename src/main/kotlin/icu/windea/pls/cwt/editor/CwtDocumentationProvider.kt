@@ -90,8 +90,6 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val sectionsList = List(3) { mutableMapOf<String, String>() }
 			buildPropertyDefinition(element, originalElement, name, configType, configGroup, true, sectionsList)
 			buildDocumentationContent(element)
-			buildScopeContent(element, originalElement, name, configType, configGroup)
-			buildSupportedScopesContent(element, originalElement, name, configType, configGroup)
 			buildSections(sectionsList)
 		}
 	}
@@ -160,11 +158,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			if(referenceElement != null && configGroup != null) {
-				addScopeContext(element, referenceElement, configGroup)
 				if(configType == CwtConfigType.Modifier) {
-					addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sectionsList?.get(1))
-					addModifierIcon(element, referenceElement, name, configGroup, sectionsList?.get(0))
+					addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sectionsList?.get(2))
+					addModifierIcon(element, referenceElement, name, configGroup, sectionsList?.get(1))
 				}
+				addScope(element, referenceElement, name, configType, configGroup, sectionsList?.get(0))
+				addScopeContext(element, referenceElement, configGroup, sectionsList?.get(0))
 			}
 		}
 	}
@@ -215,34 +214,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			if(referenceElement != null && configGroup != null) {
-				addScopeContext(element, referenceElement, configGroup)
 				if(configType == CwtConfigType.Modifier) {
-					addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sectionsList?.get(0))
+					addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sectionsList?.get(2))
 					addModifierIcon(element, referenceElement, name, configGroup, sectionsList?.get(1))
 				}
-			}
-		}
-	}
-	
-	private fun StringBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup) {
-		ProgressManager.checkCanceled()
-		val memberElement = referenceElement.parentOfType<ParadoxScriptMemberElement>(true) ?: return
-		if(!ScopeConfigHandler.isScopeContextSupported(memberElement)) return
-		val scopeContext = ScopeConfigHandler.getScopeContext(memberElement)
-		if(scopeContext == null) return
-		val gameType = configGroup.gameType
-		appendBr()
-		append(PlsDocBundle.message("prefix.scopeContext"))
-		scopeContext.map.forEach { (key, value) ->
-			append(" ")
-			appendCwtLink(key, "${gameType.id}/system_scopes/$key", element)
-			append(key)
-			append(" = ")
-			val scopeId = ScopeConfigHandler.getScopeId(value)
-			if(ScopeConfigHandler.isFakeScopeId(scopeId)) {
-				append(scopeId)
-			} else {
-				appendCwtLink(scopeId, "${gameType.id}/scopes/$scopeId", element)
+				//addScope(element, referenceElement, name, configType, configGroup, sectionsList?.get(0))
+				addScopeContext(element, referenceElement, configGroup, sectionsList?.get(0))
 			}
 		}
 	}
@@ -309,6 +286,88 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun StringBuilder.addScope(element: CwtProperty, referenceElement: PsiElement, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+		if(!getSettings().documentation.showScopes) return
+		//为link提示名字、描述、输入作用域、输出作用域的文档注释
+		//为alias modifier localisation_command等提供分类、支持的作用域的文档注释
+		//仅为脚本文件和本地化文件中的引用提供
+		when(configType) {
+			CwtConfigType.Link -> {
+				val linkConfig = configGroup.links[name] ?: return
+				val nameToUse = ScopeConfigHandler.getScopeName(name, configGroup)
+				val descToUse = linkConfig.desc?.takeIfNotEmpty()
+				content {
+					append(nameToUse)
+					if(descToUse != null) {
+						appendBr()
+						append(descToUse)
+					}
+				}
+				if(sections != null) {
+					val inputScopes = linkConfig.inputScopes.joinToString()
+					sections.put(PlsDocBundle.message("sectionTitle.inputScopes"), "<code>$inputScopes</code>")
+					
+					val outputScope = linkConfig.outputScope
+					sections.put(PlsDocBundle.message("sectionTitle.outputScopes"), "<code>$outputScope</code>")
+				}
+			}
+			CwtConfigType.Modifier -> {
+				val modifierConfig = configGroup.modifiers[name] ?: return
+				if(sections != null) {
+					val categoryNames = modifierConfig.categoryConfigMap.keys
+					sections.put(PlsDocBundle.message("sectionTitle.categories"), "<code>$categoryNames</code>")
+					
+					val supportedScopes = modifierConfig.supportedScopes
+					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), "<code>$supportedScopes</code>")
+				}
+			}
+			CwtConfigType.LocalisationCommand -> {
+				val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
+				if(sections != null) {
+					val supportedScopes = localisationCommandConfig.supportedScopes
+					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), "<code>$supportedScopes</code>")
+				}
+			}
+			CwtConfigType.Alias -> {
+				val config = resolveConfigs(referenceElement).firstOrNull()?.castOrNull<CwtPropertyConfig>()
+				val aliasConfig = config?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
+				if(aliasConfig.name !in configGroup.aliasNameSupportScope) return
+				if(sections != null) {
+					val supportedScopes = aliasConfig.supportedScopes
+					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), "<code>$supportedScopes</code>")
+				}
+			}
+			else -> pass()
+		}
+	}
+	
+	private fun StringBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+		val show = getSettings().documentation.showScopeContext
+		if(!show) return 
+		if(sections == null) return
+		val memberElement = referenceElement.parentOfType<ParadoxScriptMemberElement>(true) ?: return
+		if(!ScopeConfigHandler.isScopeContextSupported(memberElement)) return
+		val scopeContext = ScopeConfigHandler.getScopeContext(memberElement)
+		if(scopeContext == null) return
+		val contextElement = referenceElement
+		val gameType = configGroup.gameType
+		val scopeContextText = buildString {
+			var appendSeparator = false
+			scopeContext.map.forEach { (key, value) ->
+				if(appendSeparator) appendBr() else appendSeparator = true
+				appendCwtLink(key, "${gameType.id}/system_scopes/$key", contextElement)
+				append(" = ")
+				val scopeId = ScopeConfigHandler.getScopeId(value)
+				if(ScopeConfigHandler.isFakeScopeId(scopeId)) {
+					append(scopeId)
+				} else {
+					appendCwtLink(scopeId, "${gameType.id}/scopes/$scopeId", contextElement)
+				}
+			}
+		}
+		sections.put(PlsDocBundle.message("sectionTitle.scopeContext"), "<code>$scopeContextText</code>")
+	}
+	
 	private fun StringBuilder.buildDocumentationContent(element: PsiElement) {
 		//渲染文档注释（可能需要作为HTML）
 		var current: PsiElement = element
@@ -339,76 +398,6 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		if(documentation != null) {
 			content {
 				append(documentation)
-			}
-		}
-	}
-	
-	private fun StringBuilder.buildScopeContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?) {
-		if(configGroup == null) return
-		if(!getSettings().documentation.showScopes) return
-		//为link提示名字、描述、输入作用域、输出作用域的文档注释
-		//仅为脚本文件和本地化文件中的引用提供
-		when(configType) {
-			CwtConfigType.Link -> {
-				val linkConfig = configGroup.links[name] ?: return
-				val nameToUse = ScopeConfigHandler.getScopeName(name, configGroup)
-				val descToUse = linkConfig.desc
-				val inputScopeNames = linkConfig.inputScopeNames.joinToString { "<code>$it</code>" }
-				val outputScopeName = linkConfig.outputScopeName.let { "<code>$it</code>" }
-				content {
-					append(nameToUse)
-					if(descToUse != null && descToUse.isNotEmpty()) {
-						appendBr()
-						append(descToUse)
-					}
-				}
-				content {
-					append(PlsDocBundle.message("content.inputScopes", inputScopeNames))
-					appendBr()
-					append(PlsDocBundle.message("content.outputScope", outputScopeName))
-				}
-			}
-			else -> pass()
-		}
-	}
-	
-	private fun StringBuilder.buildSupportedScopesContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?) {
-		if(configGroup == null) return
-		if(!getSettings().documentation.showScopes) return
-		//为alias modifier localisation_command等提供分类、支持的作用域的文档注释
-		//仅为脚本文件和本地化文件中的引用提供
-		var categoryNames: Set<String>? = null
-		var supportedScopeNames: Set<String>? = null
-		when(configType) {
-			CwtConfigType.Modifier -> {
-				val modifierConfig = configGroup.modifiers[name] ?: return
-				categoryNames = modifierConfig.categoryConfigMap.keys
-				supportedScopeNames = modifierConfig.supportedScopeNames
-			}
-			CwtConfigType.LocalisationCommand -> {
-				val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
-				supportedScopeNames = localisationCommandConfig.supportedScopeNames
-			}
-			CwtConfigType.Alias -> {
-				val expressionElement = originalElement?.parent?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
-				val config = resolveConfigs(expressionElement).firstOrNull()?.castOrNull<CwtPropertyConfig>()
-				val aliasConfig = config?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
-				if(aliasConfig.name !in configGroup.aliasNameSupportScope) return
-				supportedScopeNames = aliasConfig.supportedScopeNames
-			}
-			else -> pass()
-		}
-		content {
-			var appendBr = false
-			if(!categoryNames.isNullOrEmpty()) {
-				appendBr = true
-				val categoryNamesToUse = categoryNames.joinToString(", ") { "<code>$it</code>" }
-				append(PlsDocBundle.message("content.categories", categoryNamesToUse))
-			}
-			if(!supportedScopeNames.isNullOrEmpty()) {
-				if(appendBr) appendBr()
-				val supportedScopeNamesToUse = supportedScopeNames.joinToString(", ") { "<code>$it</code>" }
-				append(PlsDocBundle.message("content.supportedScopes", supportedScopeNamesToUse))
 			}
 		}
 	}

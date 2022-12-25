@@ -160,7 +160,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		val richText = ParadoxLocalisationTextRenderer.render(element)
 		if(richText.isNotEmpty()) {
 			sections {
-				section(PlsDocBundle.message("title.text"), richText)
+				section(PlsDocBundle.message("sectionTitle.text"), richText)
 			}
 		}
 	}

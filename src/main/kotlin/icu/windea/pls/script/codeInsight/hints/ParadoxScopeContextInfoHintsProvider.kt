@@ -15,7 +15,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxScopeContextInfoHintsProvider.*
 import icu.windea.pls.script.psi.*
-import org.jetbrains.kotlin.idea.gradleTooling.*
 import javax.swing.*
 
 /**

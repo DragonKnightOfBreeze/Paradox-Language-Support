@@ -46,10 +46,7 @@ class CwtConfigProvider(
 		//通过这种方式得到的virtualFile可以位于jar压缩包中，可以直接得到它的子节点
 		val configDirectory = VfsUtil.findFileByURL(configUrl)
 		if(configDirectory != null) {
-			//这里必须使用ReadAction
-			ReadAction.run<Exception> {
-				resolveFiles(fileGroups, configDirectory, configDirectory)
-			}
+			resolveFiles(fileGroups, configDirectory, configDirectory)
 		}
 		return fileGroups
 	}
