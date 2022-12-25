@@ -136,7 +136,7 @@ inline fun StringBuilder.sections(block: StringBuilder.() -> Unit): StringBuilde
 @Suppress("NOTHING_TO_INLINE")
 inline fun StringBuilder.section(title: CharSequence, value: CharSequence): StringBuilder {
 	append(DocumentationMarkup.SECTION_HEADER_START)
-	append(title).append(" ")
+	append(title).append(": ")
 	append(DocumentationMarkup.SECTION_SEPARATOR).append("<p>")
 	append(value)
 	append(DocumentationMarkup.SECTION_END)

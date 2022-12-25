@@ -242,17 +242,25 @@ fun String.splitToPair(delimiter: Char): Pair<String, String>? {
 }
 
 fun String.toCapitalizedWord(): String {
-	return if(isEmpty()) this else this[0].uppercase() + this.substring(1)
+	if(isEmpty()) return this
+	return this[0].uppercase() + this.substring(1)
 }
 
 fun String.toCapitalizedWords(): String {
+	if(isEmpty()) return this
 	return buildString {
+		var isFirst = true
 		var isWordStart = true
 		for(c in this@toCapitalizedWords) {
 			when {
 				isWordStart -> {
 					isWordStart = false
-					append(c.uppercase())
+					if(isFirst) {
+						isFirst = false
+						append(c.uppercase())
+					} else {
+						append(c.lowercase())
+					}
 				}
 				c == '_' || c == '-' || c == '.' -> {
 					isWordStart = true

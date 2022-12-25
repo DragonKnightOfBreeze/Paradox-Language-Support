@@ -291,6 +291,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		//为link提示名字、描述、输入作用域、输出作用域的文档注释
 		//为alias modifier localisation_command等提供分类、支持的作用域的文档注释
 		//仅为脚本文件和本地化文件中的引用提供
+		val contextElement = referenceElement
+		val gameType = configGroup.gameType
 		when(configType) {
 			CwtConfigType.Link -> {
 				val linkConfig = configGroup.links[name] ?: return
@@ -304,28 +306,28 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 				if(sections != null) {
-					val inputScopes = linkConfig.inputScopes.joinToString()
-					sections.put(PlsDocBundle.message("sectionTitle.inputScopes"), "<code>$inputScopes</code>")
+					val inputScopes = linkConfig.inputScopes
+					sections.put(PlsDocBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
 					
 					val outputScope = linkConfig.outputScope
-					sections.put(PlsDocBundle.message("sectionTitle.outputScopes"), "<code>$outputScope</code>")
+					sections.put(PlsDocBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType,contextElement))
 				}
 			}
 			CwtConfigType.Modifier -> {
 				val modifierConfig = configGroup.modifiers[name] ?: return
 				if(sections != null) {
-					val categoryNames = modifierConfig.categoryConfigMap.keys
+					val categoryNames = modifierConfig.categoryConfigMap.keys.joinToString()
 					sections.put(PlsDocBundle.message("sectionTitle.categories"), "<code>$categoryNames</code>")
 					
 					val supportedScopes = modifierConfig.supportedScopes
-					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), "<code>$supportedScopes</code>")
+					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType,contextElement))
 				}
 			}
 			CwtConfigType.LocalisationCommand -> {
 				val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
 				if(sections != null) {
 					val supportedScopes = localisationCommandConfig.supportedScopes
-					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), "<code>$supportedScopes</code>")
+					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType,contextElement))
 				}
 			}
 			CwtConfigType.Alias -> {
@@ -334,10 +336,38 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				if(aliasConfig.name !in configGroup.aliasNameSupportScope) return
 				if(sections != null) {
 					val supportedScopes = aliasConfig.supportedScopes
-					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), "<code>$supportedScopes</code>")
+					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType,contextElement))
 				}
 			}
 			else -> pass()
+		}
+	}
+	
+	private fun getScopeText(scope: String, gameType: ParadoxGameType?, contextElement: PsiElement): String {
+		return buildString { 
+			append("<code>")
+			if(ScopeConfigHandler.isFakeScopeId(scope)) {
+				append(scope)
+			} else {
+				appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
+			}
+			append("</code>")
+		}
+	}
+	
+	private fun getScopesText(scopes: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
+		return buildString {
+			var appendSeparator = false
+			append("<code>")
+			for(scope in scopes) {
+				if(appendSeparator) append(", ") else appendSeparator = true
+				if(ScopeConfigHandler.isFakeScopeId(scope)) {
+					append(scope)
+				} else {
+					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
+				}
+			}
+			append("</code>")
 		}
 	}
 	
@@ -353,15 +383,14 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		val gameType = configGroup.gameType
 		val scopeContextText = buildString {
 			var appendSeparator = false
-			scopeContext.map.forEach { (key, value) ->
+			scopeContext.map.forEach { (systemScope, scope) ->
 				if(appendSeparator) appendBr() else appendSeparator = true
-				appendCwtLink(key, "${gameType.id}/system_scopes/$key", contextElement)
+				appendCwtLink(systemScope, "${gameType.id}/system_scopes/$systemScope", contextElement)
 				append(" = ")
-				val scopeId = ScopeConfigHandler.getScopeId(value)
-				if(ScopeConfigHandler.isFakeScopeId(scopeId)) {
-					append(scopeId)
+				if(ScopeConfigHandler.isFakeScopeId(scope)) {
+					append(scope)
 				} else {
-					appendCwtLink(scopeId, "${gameType.id}/scopes/$scopeId", contextElement)
+					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
 				}
 			}
 		}

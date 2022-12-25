@@ -69,7 +69,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
 				if(!ScopeConfigHandler.isScopeContextSupported(memberElement)) return@let
 				val scopeContext = ScopeConfigHandler.getScopeContext(memberElement)
 				if(scopeContext != null) {
-					val text = scopeContext.map.entries.joinToString("<br>") { (key, value) -> "$key = $value" }
+					val text = scopeContext.map.entries.joinToString("\n") { (key, value) -> "$key = $value" }
 					add(makeHtmlRow(PlsDocBundle.message("title.scopeContext"),text))
 				}
 			}
@@ -90,11 +90,11 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
 	}
 	
 	private fun makeHtmlRow(titleText: String, contentText: String): HtmlChunk {
-		val titleCell: HtmlChunk = HtmlChunk.tag("td")
+		val titleCell = HtmlChunk.tag("td")
 			.attr("align", "left").attr("valign", "top")
 			.style("color:" + ColorUtil.toHtmlColor(sectionColor))
 			.addText("$titleText:")
-		val contentCell: HtmlChunk = HtmlChunk.tag("td").addText(contentText)
+		val contentCell = HtmlChunk.tag("td").addText(contentText)
 		return HtmlChunk.tag("tr").children(titleCell, contentCell)
 	}
 }

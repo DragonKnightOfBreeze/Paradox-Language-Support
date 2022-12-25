@@ -1,6 +1,7 @@
 package icu.windea.pls.config.script.config
 
 import com.fasterxml.jackson.dataformat.csv.*
+import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 
 data class ParadoxOnActionInfo(
@@ -15,7 +16,7 @@ data class ParadoxOnActionInfo(
 				val i = s.indexOf('=')
 				val k = s.substring(0, i).trim().lowercase()
 				val v = s.substring(i + 1).trim()
-				put(k, v)
+				put(k, ScopeConfigHandler.getScopeId(v))
 			}
 		}
 		ParadoxScopeContext.resolve(map)

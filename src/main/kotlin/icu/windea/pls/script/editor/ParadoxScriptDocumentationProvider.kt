@@ -275,15 +275,14 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		val gameType = definitionInfo.gameType
 		val scopeContextText = buildString {
 			var appendSeparator = false
-			scopeContext.map.forEach { (key, value) ->
+			scopeContext.map.forEach { (systemScope, scope) ->
 				if(appendSeparator) appendBr() else appendSeparator = true
-				appendCwtLink(key, "${gameType.id}/system_scopes/$key", contextElement)
+				appendCwtLink(systemScope, "${gameType.id}/system_scopes/$systemScope", contextElement)
 				append(" = ")
-				val scopeId = ScopeConfigHandler.getScopeId(value)
-				if(ScopeConfigHandler.isFakeScopeId(scopeId)) {
-					append(scopeId)
+				if(ScopeConfigHandler.isFakeScopeId(scope)) {
+					append(scope)
 				} else {
-					appendCwtLink(scopeId, "${gameType.id}/scopes/$scopeId", contextElement)
+					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
 				}
 			}
 		}

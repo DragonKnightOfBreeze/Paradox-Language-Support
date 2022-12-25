@@ -92,11 +92,10 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 	}
 	
 	private fun PresentationFactory.scopeLinkPresentation(scope: String, configGroup: CwtConfigGroup): InlayPresentation {
-		val scopeId = ScopeConfigHandler.getScopeId(scope)
-		if(ScopeConfigHandler.isFakeScopeId(scopeId)) {
-			return smallText(scopeId)
+		if(ScopeConfigHandler.isFakeScopeId(scope)) {
+			return smallText(scope)
 		} else {
-			return psiSingleReference(smallText(scopeId)) { configGroup.scopeAliasMap[scopeId]?.pointer?.element }
+			return psiSingleReference(smallText(scope)) { configGroup.scopeAliasMap[scope]?.pointer?.element }
 		}
 	}
 }
