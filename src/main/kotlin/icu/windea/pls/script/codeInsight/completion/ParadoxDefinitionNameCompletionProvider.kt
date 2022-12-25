@@ -99,13 +99,12 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 		val typeFile = definition.containingFile
 		val definitionInfo = definition.definitionInfo ?: return true
 		val icon = PlsIcons.Definition(definitionInfo.type)
-		result.addScriptExpressionElement(definition, definitionInfo.name, context,
-			icon = icon,
-			typeText = typeFile?.name,
-			typeIcon = typeFile?.icon
-		) {
-			this.withPriority(PlsCompletionPriorities.definitionNamePriority)
-		}
+		val builder = ParadoxScriptExpressionLookupElementBuilder.create(definition, definitionInfo.name)
+			.withIcon(icon)
+			.withTypeText(typeFile?.name)
+			.withTypeIcon(typeFile?.icon)
+			.withPriority(PlsCompletionPriorities.definitionNamePriority)
+		result.addScriptExpressionElement(context, builder)
 		return true
 	}
 }
