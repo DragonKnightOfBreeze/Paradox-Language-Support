@@ -54,6 +54,8 @@
 
 * BUG修复
   * [X] 修复：[Cannot choose path for library using CK3 #7](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/7)
+* 功能优化
+  * [X] 实现生成器从`modifiers.log`生成或更新`modifiers.cwt`和`modifier_categories.cwt`
 * 新增功能 - 概述
   * [ ] 初步支持处理作用域（`scope`），以及相关的快速文档、内嵌提示、代码检查等功能
     * 基于已有的CWT规则文件（Github仓库中存在的）
