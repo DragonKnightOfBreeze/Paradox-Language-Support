@@ -207,8 +207,7 @@ object ScopeConfigHandler {
 		val scopeNodes = scopeFieldExpression.scopeNodes
 		var resolvedScope: String? = null
 		var scopeContext = parentScopeContext
-		for(i in scopeNodes.lastIndex .. 0) {
-			val scopeNode = scopeNodes[i]
+		for(scopeNode in scopeNodes) {
 			when(scopeNode) {
 				is ParadoxScopeLinkExpressionNode -> {
 					resolvedScope = resolveScopeFromScopeLink(scopeNode)
