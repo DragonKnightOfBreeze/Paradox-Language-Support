@@ -132,7 +132,7 @@ class MissingImageInspection : LocalInspectionTool() {
 			if(!inspection.checkForModifiers) return
 			val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return
 			val configGroup = config.info.configGroup
-			if(config.expression.type != CwtDataTypes.Modifier) return
+			if(config.expression.type != CwtDataType.Modifier) return
 			val name = element.value
 			val iconPaths = ModifierConfigHandler.getModifierIconPaths(name, configGroup)
 			val iconFile = iconPaths.firstNotNullOfOrNull {

@@ -54,14 +54,15 @@ interface ParadoxPath : Iterable<String> {
 	}
 }
 
-object EmptyParadoxPath : ParadoxPath {
-	override val path: String = ""
-	override val subPaths: List<String> = emptyList()
-	override val parent: String = ""
-	override val root: String = ""
-	override val fileName: String = ""
-	override val fileExtension: String = ""
-	override val length: Int = 0
+class ParadoxPathImpl(
+	override val path: String
+) : ParadoxPath {
+	override val subPaths = path.split('/')
+	override val parent = path.substringBeforeLast('/', "")
+	override val root = path.substringBefore('/', "")
+	override val fileName = subPaths.lastOrNull().orEmpty()
+	override val fileExtension = fileName.substringAfterLast('.', "")
+	override val length = subPaths.size
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxPathImpl && path == other.path
@@ -76,15 +77,14 @@ object EmptyParadoxPath : ParadoxPath {
 	}
 }
 
-class ParadoxPathImpl(
-	override val path: String
-) : ParadoxPath {
-	override val subPaths = path.split('/')
-	override val parent = path.substringBeforeLast('/', "")
-	override val root = path.substringBefore('/', "")
-	override val fileName = subPaths.lastOrNull().orEmpty()
-	override val fileExtension = fileName.substringAfterLast('.', "")
-	override val length = subPaths.size
+object EmptyParadoxPath : ParadoxPath {
+	override val path: String = ""
+	override val subPaths: List<String> = emptyList()
+	override val parent: String = ""
+	override val root: String = ""
+	override val fileName: String = ""
+	override val fileExtension: String = ""
+	override val length: Int = 0
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxPathImpl && path == other.path

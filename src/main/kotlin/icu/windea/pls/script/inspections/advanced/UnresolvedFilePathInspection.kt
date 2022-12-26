@@ -40,7 +40,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
 			val project = valueElement.project
 			val location = valueElement
 			when(expression.type) {
-				CwtDataTypes.AbsoluteFilePath -> {
+				CwtDataType.AbsoluteFilePath -> {
 					val filePath = valueElement.value
 					val path = filePath.toPathOrNull() ?: return
 					if(VfsUtil.findFile(path, false) == null) {
@@ -49,7 +49,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
 						)
 					}
 				}
-				CwtDataTypes.FilePath -> {
+				CwtDataType.FilePath -> {
 					val filePath = CwtPathExpressionType.FilePath.resolve(expression.value, valueElement.value.normalizePath()) ?: return
 					if(filePath.matchesAntPath(inspection.ignoredFilePaths, true)) return
 					val selector = fileSelector().gameTypeFrom(valueElement)
@@ -59,7 +59,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
 						)
 					}
 				}
-				CwtDataTypes.Icon -> {
+				CwtDataType.Icon -> {
 					val filePath = CwtPathExpressionType.Icon.resolve(expression.value, valueElement.value.normalizePath()) ?: return
 					if(filePath.matchesAntPath(inspection.ignoredFilePaths, true)) return
 					val selector = fileSelector().gameTypeFrom(valueElement)

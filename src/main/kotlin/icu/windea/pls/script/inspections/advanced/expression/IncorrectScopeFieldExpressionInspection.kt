@@ -39,7 +39,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 				if(element.text.isLeftQuoted()) return //忽略
 				val config = resolveConfigs(element).firstOrNull() ?: return
 				val type = config.expression.type
-				if(type == CwtDataTypes.Scope || type == CwtDataTypes.ScopeField || type == CwtDataTypes.ScopeGroup) {
+				if(type == CwtDataType.Scope || type == CwtDataType.ScopeField || type == CwtDataType.ScopeGroup) {
 					val value = element.value
 					val gameTypeToUse = gameType ?: selectGameType(element) ?: return
 					val configGroup = getCwtConfig(project).getValue(gameTypeToUse)

@@ -28,21 +28,21 @@ import javax.swing.*
 class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
 	companion object {
 		private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxLocalisationReferenceInfoHintsSettingsKey")
-		private val keyExpressionTypes: Array<CwtKeyDataType> = arrayOf(
-			CwtDataTypes.Localisation,
-			CwtDataTypes.InlineLocalisation,
-			CwtDataTypes.SyncedLocalisation,
-			CwtDataTypes.AliasName, //需要兼容alias
-			CwtDataTypes.AliasKeysField //需要兼容alias
+		private val keyExpressionTypes: Array<CwtDataType> = arrayOf(
+			CwtDataType.Localisation,
+			CwtDataType.InlineLocalisation,
+			CwtDataType.SyncedLocalisation,
+			CwtDataType.AliasName, //需要兼容alias
+			CwtDataType.AliasKeysField //需要兼容alias
 		)
-		private val valueExpressionTypes: Array<CwtValueDataType> = arrayOf(
-			CwtDataTypes.Localisation,
-			CwtDataTypes.InlineLocalisation,
-			CwtDataTypes.SyncedLocalisation,
-			CwtDataTypes.StellarisNameFormat,
-			CwtDataTypes.SingleAliasRight, //需要兼容single_alias
-			CwtDataTypes.AliasKeysField, //需要兼容alias
-			CwtDataTypes.AliasMatchLeft //需要兼容alias
+		private val valueExpressionTypes: Array<CwtDataType> = arrayOf(
+			CwtDataType.Localisation,
+			CwtDataType.InlineLocalisation,
+			CwtDataType.SyncedLocalisation,
+			CwtDataType.StellarisNameFormat,
+			CwtDataType.SingleAliasRight, //需要兼容single_alias
+			CwtDataType.AliasKeysField, //需要兼容alias
+			CwtDataType.AliasMatchLeft //需要兼容alias
 		)
 	}
 	

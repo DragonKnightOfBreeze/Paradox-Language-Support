@@ -34,7 +34,7 @@ class ParadoxDataExpressionNode (
 		if(text.isEmpty()) return null
 		if(text.isParameterAwareExpression()) return null
 		//忽略是valueSetValue的情况
-		if(linkConfigs.any { it.dataSource?.type == CwtDataTypes.Value }) return null
+		if(linkConfigs.any { it.dataSource?.type == CwtDataType.Value }) return null
 		val expect = linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
 		//排除可解析的情况
 		if(getReference(element).canResolve()) return null

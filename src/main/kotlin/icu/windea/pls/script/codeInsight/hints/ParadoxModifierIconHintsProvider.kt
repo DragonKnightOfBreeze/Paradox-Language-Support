@@ -59,7 +59,7 @@ class ParadoxModifierIconHintsProvider: ParadoxScriptHintsProvider<Settings>() {
 			//基于stub
 			val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return true
 			val type = config.expression.type
-			if(type == CwtDataTypes.Modifier) {
+			if(type == CwtDataType.Modifier) {
 				val name = element.value
 				val configGroup = config.info.configGroup
 				val project = configGroup.project

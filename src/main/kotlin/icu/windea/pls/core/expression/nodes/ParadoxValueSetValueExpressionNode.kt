@@ -33,7 +33,7 @@ class ParadoxValueSetValueExpressionNode (
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup): ParadoxValueSetValueExpressionNode? {
 			//text may contain parameters
-			if(configs.any { c -> c.expression?.type.let { it != CwtDataTypes.Value && it != CwtDataTypes.ValueSet } }) return null
+			if(configs.any { c -> c.expression?.type.let { it != CwtDataType.Value && it != CwtDataType.ValueSet } }) return null
 			return ParadoxValueSetValueExpressionNode(text, textRange, configs, configGroup)
 		}
 	}

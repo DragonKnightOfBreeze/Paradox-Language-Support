@@ -31,7 +31,7 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
 		val configs = ParadoxCwtConfigHandler.resolveConfigs(targetElement, false, false)
 		val config = configs.firstOrNull() ?: return null
 		val dataType = config.expression.type
-		if(dataType != CwtDataTypes.ValueField && dataType != CwtDataTypes.IntValueField) return null
+		if(dataType != CwtDataType.ValueField && dataType != CwtDataType.IntValueField) return null
 		val configGroup = config.info.configGroup
 		val textRange = TextRange.create(0, text.length)
 		val isKey = element is ParadoxScriptPropertyKey

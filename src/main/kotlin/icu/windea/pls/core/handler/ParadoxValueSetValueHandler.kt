@@ -21,15 +21,15 @@ object ParadoxValueSetValueHandler {
 		val config = ParadoxCwtConfigHandler.resolveValueConfigs(element, true, true, matchType)
 			.firstOrNull { 
 				val type = it.expression.type
-				type == CwtDataTypes.Value || type == CwtDataTypes.ValueSet
+				type == CwtDataType.Value || type == CwtDataType.ValueSet
 			}
 			?: return null
-		if(config.expression.type != CwtDataTypes.Value && config.expression.type != CwtDataTypes.ValueSet) return null
+		if(config.expression.type != CwtDataType.Value && config.expression.type != CwtDataType.ValueSet) return null
 		val name = getName(element.value) ?: return null
 		val valueSetName = config.expression.value?.takeIfNotEmpty() ?: return null
 		val configGroup = config.info.configGroup
 		val gameType = configGroup.gameType
-		val read = config.expression.type == CwtDataTypes.Value
+		val read = config.expression.type == CwtDataType.Value
 		return ParadoxValueSetValueInfo(name, valueSetName, gameType, read)
 	}
 	
@@ -52,6 +52,6 @@ object ParadoxValueSetValueHandler {
 		stub?.valueSetValueInfo?.read
 			?.let { return it }
 		val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return true
-		return config.expression.type == CwtDataTypes.Value
+		return config.expression.type == CwtDataType.Value
 	}
 }

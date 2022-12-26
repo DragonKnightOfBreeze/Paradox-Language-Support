@@ -109,56 +109,56 @@ class ParadoxScriptAnnotator : Annotator {
 		val text = rangeInElement?.substring(element.text) ?: element.text
 		val isKey = element is ParadoxScriptPropertyKey
 		when(configExpression.type) {
-			CwtDataTypes.Localisation -> {
+			CwtDataType.Localisation -> {
 				if(text.isParameterAwareExpression()) return
 				val attributesKey = Keys.LOCALISATION_REFERENCE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
-			CwtDataTypes.SyncedLocalisation -> {
+			CwtDataType.SyncedLocalisation -> {
 				if(text.isParameterAwareExpression()) return
 				val attributesKey = Keys.SYNCED_LOCALISATION_REFERENCE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
-			CwtDataTypes.InlineLocalisation -> {
+			CwtDataType.InlineLocalisation -> {
 				if(!element.text.isLeftQuoted()) {
 					if(text.isParameterAwareExpression()) return
 					val attributesKey = Keys.LOCALISATION_REFERENCE_KEY
 					holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 				}
 			}
-			CwtDataTypes.StellarisNameFormat -> {
+			CwtDataType.StellarisNameFormat -> {
 				if(!element.text.isLeftQuoted()) {
 					if(text.isParameterAwareExpression()) return
 					val attributesKey = Keys.LOCALISATION_REFERENCE_KEY
 					holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 				}
 			}
-			CwtDataTypes.TypeExpression -> {
+			CwtDataType.TypeExpression -> {
 				if(text.isParameterAwareExpression()) return
 				val attributesKey = Keys.DEFINITION_REFERENCE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
-			CwtDataTypes.TypeExpressionString -> {
+			CwtDataType.TypeExpressionString -> {
 				if(text.isParameterAwareExpression()) return
 				val attributesKey = Keys.DEFINITION_REFERENCE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
-			CwtDataTypes.AbsoluteFilePath -> {
+			CwtDataType.AbsoluteFilePath -> {
 				if(text.isParameterAwareExpression()) return
 				val attributesKey = Keys.PATH_REFERENCE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
-			CwtDataTypes.FilePath -> {
+			CwtDataType.FilePath -> {
 				if(text.isParameterAwareExpression()) return
 				val attributesKey = Keys.PATH_REFERENCE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
-			CwtDataTypes.Icon -> {
+			CwtDataType.Icon -> {
 				if(text.isParameterAwareExpression()) return
 				val attributesKey = Keys.PATH_REFERENCE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
-			CwtDataTypes.Enum -> {
+			CwtDataType.Enum -> {
 				if(text.isParameterAwareExpression()) return
 				val enumName = configExpression.value ?: return
 				val attributesKey = when {
@@ -169,7 +169,7 @@ class ParadoxScriptAnnotator : Annotator {
 				}
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
-			CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
+			CwtDataType.Value, CwtDataType.ValueSet -> {
 				//not key/value or quoted -> only value set value name, no scope info
 				if(config !is CwtDataConfig<*> || text.isLeftQuoted()) {
 					val valueSetName = config.expression?.value ?: return
@@ -184,24 +184,24 @@ class ParadoxScriptAnnotator : Annotator {
 				val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(text, textRange, config, configGroup, isKey) ?: return
 				annotateComplexExpression(element, valueSetValueExpression, config, range, holder)
 			}
-			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
+			CwtDataType.ScopeField, CwtDataType.Scope, CwtDataType.ScopeGroup -> {
 				if(text.isLeftQuoted()) return
 				val textRange = TextRange.create(0, text.length)
 				val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup, isKey) ?: return
 				annotateComplexExpression(element, scopeFieldExpression, config, range, holder)
 			}
-			CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
+			CwtDataType.ValueField, CwtDataType.IntValueField -> {
 				if(text.isLeftQuoted()) return
 				val textRange = TextRange.create(0, text.length)
 				val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup, isKey) ?: return
 				annotateComplexExpression(element, valueFieldExpression, config, range, holder)
 			}
-			CwtDataTypes.Modifier -> {
+			CwtDataType.Modifier -> {
 				if(text.isParameterAwareExpression()) return
 				val attributesKey = Keys.MODIFIER_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
-			CwtDataTypes.AliasName, CwtDataTypes.AliasKeysField -> {
+			CwtDataType.AliasName, CwtDataType.AliasKeysField -> {
 				if(text.isParameterAwareExpression()) return
 				val aliasName = configExpression.value ?: return
 				val aliasMap = configGroup.aliasGroups.get(aliasName) ?: return
@@ -209,13 +209,13 @@ class ParadoxScriptAnnotator : Annotator {
 				val aliasConfig = aliasMap[aliasSubName]?.first() ?: return
 				annotateExpression(element, range, rangeInElement, aliasConfig, holder)
 			}
-			CwtDataTypes.ConstantKey -> {
+			CwtDataType.ConstantKey -> {
 				if(text.isParameterAwareExpression()) return
 				if(rangeInElement == null && element is ParadoxScriptPropertyKey) return //unnecessary
 				val attributesKey = Keys.PROPERTY_KEY_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
-			CwtDataTypes.Constant -> {
+			CwtDataType.Constant -> {
 				if(text.isParameterAwareExpression()) return
 				if(rangeInElement == null && element is ParadoxScriptString) return //unnecessary
 				val attributesKey = Keys.STRING_KEY

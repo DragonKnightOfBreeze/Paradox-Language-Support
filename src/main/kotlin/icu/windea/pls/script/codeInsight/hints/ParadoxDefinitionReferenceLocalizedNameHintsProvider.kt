@@ -29,18 +29,18 @@ import javax.swing.*
 class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
 	companion object {
 		private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxDefinitionReferenceLocalizedNameHintsSettingsKey")
-		private val keyExpressionTypes: Array<CwtKeyDataType> = arrayOf(
-			CwtDataTypes.TypeExpression,
-			CwtDataTypes.TypeExpressionString,
-			CwtDataTypes.AliasName, //需要兼容alias
-			CwtDataTypes.AliasKeysField //需要兼容alias
+		private val keyExpressionTypes: Array<CwtDataType> = arrayOf(
+			CwtDataType.TypeExpression,
+			CwtDataType.TypeExpressionString,
+			CwtDataType.AliasName, //需要兼容alias
+			CwtDataType.AliasKeysField //需要兼容alias
 		)
-		private val valueExpressionTypes: Array<CwtValueDataType> = arrayOf(
-			CwtDataTypes.TypeExpression,
-			CwtDataTypes.TypeExpressionString,
-			CwtDataTypes.SingleAliasRight, //需要兼容single_alias
-			CwtDataTypes.AliasKeysField, //需要兼容alias
-			CwtDataTypes.AliasMatchLeft //需要兼容alias
+		private val valueExpressionTypes: Array<CwtDataType> = arrayOf(
+			CwtDataType.TypeExpression,
+			CwtDataType.TypeExpressionString,
+			CwtDataType.SingleAliasRight, //需要兼容single_alias
+			CwtDataType.AliasKeysField, //需要兼容alias
+			CwtDataType.AliasMatchLeft //需要兼容alias
 		)
 	}
 	

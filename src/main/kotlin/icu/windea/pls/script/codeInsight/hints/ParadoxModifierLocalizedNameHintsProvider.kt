@@ -68,7 +68,7 @@ class ParadoxModifierLocalizedNameHintsProvider: ParadoxScriptHintsProvider<Sett
 			//基于stub
 			val config = resolveConfigs(element).firstOrNull() ?: return true
 			val type = config.expression.type
-			if(type == CwtDataTypes.Modifier) {
+			if(type == CwtDataType.Modifier) {
 				val name = element.value
 				val configGroup = config.info.configGroup
 				val keys = ModifierConfigHandler.getModifierNameKeys(name, configGroup)

@@ -93,26 +93,6 @@ interface ParadoxElementPath : Iterable<Tuple3<String, Boolean, Boolean>> {
 	}
 }
 
-object EmptyParadoxElementPath : ParadoxElementPath {
-	override val path: String = ""
-	override val subPaths: List<String> = emptyList()
-	override val subPathInfos: List<Tuple3<String, Boolean, Boolean>> = emptyList()
-	override val length: Int = 0
-	override val isParameterAware: Boolean = false
-	
-	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxElementPath && this.path == other.path
-	}
-	
-	override fun hashCode(): Int {
-		return this.path.hashCode()
-	}
-	
-	override fun toString(): String {
-		return this.path
-	}
-}
-
 class ParadoxElementPathImpl(
 	override val path: String
 ) : ParadoxElementPath {
@@ -133,5 +113,25 @@ class ParadoxElementPathImpl(
 	
 	override fun toString(): String {
 		return path
+	}
+}
+
+object EmptyParadoxElementPath : ParadoxElementPath {
+	override val path: String = ""
+	override val subPaths: List<String> = emptyList()
+	override val subPathInfos: List<Tuple3<String, Boolean, Boolean>> = emptyList()
+	override val length: Int = 0
+	override val isParameterAware: Boolean = false
+	
+	override fun equals(other: Any?): Boolean {
+		return this === other || other is ParadoxElementPath && this.path == other.path
+	}
+	
+	override fun hashCode(): Int {
+		return this.path.hashCode()
+	}
+	
+	override fun toString(): String {
+		return this.path
 	}
 }

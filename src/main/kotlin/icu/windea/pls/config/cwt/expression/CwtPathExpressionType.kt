@@ -22,7 +22,7 @@ enum class CwtPathExpressionType {
 	
 	/**
 	 * 示例：`exp=some/path, s=some/path/file.txt`, `exp=some/path/,.ext, s=file`。
-	 * @see CwtDataTypes.FilePath
+	 * @see CwtDataType.FilePath
 	 */
 	FilePath {
 		override fun matches(expression: String, filePath: String, ignoreCase: Boolean): Boolean {
@@ -68,7 +68,7 @@ enum class CwtPathExpressionType {
 	
 	/**
 	 * 示例：`exp=gfx/interface/icons/resources/, s=unity`
-	 * @see CwtDataTypes.Icon
+	 * @see CwtDataType.Icon
 	 */
 	Icon {
 		override fun matches(expression: String, filePath: String, ignoreCase: Boolean): Boolean {

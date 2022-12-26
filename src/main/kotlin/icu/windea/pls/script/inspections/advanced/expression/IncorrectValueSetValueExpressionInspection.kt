@@ -28,7 +28,7 @@ class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
 				ProgressManager.checkCanceled()
 				val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return
 				val type = config.expression.type
-				if(type == CwtDataTypes.Value || type == CwtDataTypes.ValueSet) {
+				if(type == CwtDataType.Value || type == CwtDataType.ValueSet) {
 					val value = element.value
 					val gameTypeToUse = gameType ?: selectGameType(element) ?: return
 					val configGroup = getCwtConfig(project).getValue(gameTypeToUse)

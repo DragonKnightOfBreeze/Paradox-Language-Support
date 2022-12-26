@@ -39,7 +39,7 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
 				if(element.text.isLeftQuoted()) return //忽略
 				val config = resolveConfigs(element).firstOrNull() ?: return
 				val type = config.expression.type
-				if(type == CwtDataTypes.ValueField || type == CwtDataTypes.IntValueField) {
+				if(type == CwtDataType.ValueField || type == CwtDataType.IntValueField) {
 					val value = element.value
 					val gameTypeToUse = gameType ?: selectGameType(element) ?: return
 					val configGroup = getCwtConfig(project).getValue(gameTypeToUse)

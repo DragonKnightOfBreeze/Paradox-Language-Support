@@ -27,11 +27,11 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
 				val configExpression = config.expression
 				val type = configExpression.type
 				//in invocation expression
-				if(type == CwtDataTypes.Enum && configExpression.value == CwtConfigHandler.paramsEnumName) {
+				if(type == CwtDataType.Enum && configExpression.value == CwtConfigHandler.paramsEnumName) {
 					return ParadoxUsageType.PARAMETER_REFERENCE_4
 				}
 				//in script value expression
-				if(type == CwtDataTypes.ValueField || type == CwtDataTypes.IntValueField) {
+				if(type == CwtDataType.ValueField || type == CwtDataType.IntValueField) {
 					val targetElement = getTargetElement(targets)
 					if(targetElement is ParadoxParameterElement) {
 						return ParadoxUsageType.PARAMETER_REFERENCE_5

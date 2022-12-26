@@ -2,7 +2,6 @@ package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
 import icons.*
-import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.cwt.psi.*
 
 //EXTENDED BY PLS

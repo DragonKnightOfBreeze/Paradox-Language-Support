@@ -105,7 +105,7 @@ object ScopeConfigHandler {
 		val properties = config.properties ?: return false
 		return properties.any {
 			val aliasName = when{
-				it.keyExpression.type == CwtDataTypes.AliasName -> it.keyExpression.value
+				it.keyExpression.type == CwtDataType.AliasName -> it.keyExpression.value
 				else -> null
 			}
 			aliasName != null && aliasName in configGroup.aliasNameSupportScope
@@ -182,7 +182,7 @@ object ScopeConfigHandler {
 		val configs = ParadoxCwtConfigHandler.resolveConfigs(element, allowDefinitionSelf = true)
 		val config = configs.firstOrNull()
 		if(config == null) return null
-		if(config is CwtPropertyConfig && config.expression.type == CwtDataTypes.ScopeField) {
+		if(config is CwtPropertyConfig && config.expression.type == CwtDataType.ScopeField) {
 			if(parentScopeContext == null) return null
 			val scopeField = element.castOrNull<ParadoxScriptProperty>()?.propertyKey?.text ?: return null
 			return resolveScopeContextFromScopeField(scopeField, config, parentScopeContext)

@@ -56,7 +56,7 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
 			private fun mayBeNumberKey(element: ParadoxScriptPropertyKey): Boolean {
 				if(ParadoxDataType.resolve(element.value).isNumberType()) return true
 				val config = ParadoxCwtConfigHandler.resolveConfigs(element, orDefault = false).firstOrNull() ?: return false
-				return config.expression.isNumberType()
+				return config.expression.type.isNumberType()
 			}
 			
 			private fun mayByNumberValue(element: ParadoxScriptValue): Boolean {
@@ -72,7 +72,7 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
 					element is ParadoxScriptString -> {
 						if(ParadoxDataType.resolve(element.value).isNumberType()) return true
 						val config = ParadoxCwtConfigHandler.resolveConfigs(element, orDefault = false).firstOrNull() ?: return false
-						return config.expression.isNumberType()
+						return config.expression.type.isNumberType()
 					}
 					element is ParadoxScriptInlineMath -> true
 					else -> false

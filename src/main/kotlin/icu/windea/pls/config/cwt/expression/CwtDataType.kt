@@ -3,50 +3,49 @@ package icu.windea.pls.config.cwt.expression
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.model.*
 
-sealed interface CwtDataType
-
-sealed interface CwtKeyDataType : CwtDataType
-
-sealed interface CwtValueDataType : CwtDataType
-
-object CwtDataTypes {
-	object Any : CwtKeyDataType, CwtValueDataType
-	object Bool : CwtValueDataType
-	object Int : CwtKeyDataType, CwtValueDataType
-	object Float : CwtKeyDataType, CwtValueDataType
-	object Scalar : CwtKeyDataType, CwtValueDataType
-	object ColorField : CwtValueDataType
-	object PercentageField : CwtValueDataType
-	object DateField : CwtValueDataType
-	object Localisation : CwtKeyDataType, CwtValueDataType
-	object SyncedLocalisation : CwtKeyDataType, CwtValueDataType
-	object InlineLocalisation : CwtKeyDataType, CwtValueDataType
-	object AbsoluteFilePath : CwtValueDataType //EXTENDED BY PLS
-	object FilePath : CwtValueDataType
-	object Icon : CwtValueDataType
-	object TypeExpression : CwtKeyDataType, CwtValueDataType
-	object TypeExpressionString : CwtKeyDataType, CwtValueDataType
-	object Enum : CwtKeyDataType, CwtValueDataType
-	object Value : CwtKeyDataType, CwtValueDataType
-	object ValueSet : CwtKeyDataType, CwtValueDataType
-	object ScopeField : CwtKeyDataType, CwtValueDataType
-	object Scope : CwtKeyDataType, CwtValueDataType
-	object ScopeGroup : CwtKeyDataType, CwtValueDataType
-	object ValueField : CwtValueDataType
-	object IntValueField : CwtValueDataType
-	object VariableField : CwtValueDataType
-	object IntVariableField : CwtValueDataType
-	object Modifier: CwtKeyDataType, CwtValueDataType //EXTENDED BY PLS
-	object SingleAliasRight : CwtValueDataType
-	object AliasName : CwtKeyDataType
-	object AliasKeysField : CwtKeyDataType, CwtValueDataType
-	object AliasMatchLeft : CwtValueDataType
-	object ConstantKey : CwtKeyDataType
-	object Constant : CwtValueDataType
-	object Other : CwtKeyDataType, CwtValueDataType
-	
+enum class CwtDataType {
+	Any,
+	Bool,
+	Int,
+	Float,
+	Scalar,
+	ColorField,
+	PercentageField,
+	DateField,
+	Localisation,
+	SyncedLocalisation,
+	InlineLocalisation,
+	//EXTENDED BY PLS
+	AbsoluteFilePath,
+	FilePath,
+	Icon,
+	TypeExpression,
+	TypeExpressionString,
+	Enum,
+	Value,
+	ValueSet,
+	ScopeField,
+	Scope,
+	ScopeGroup,
+	ValueField,
+	IntValueField,
+	VariableField,
+	IntVariableField,
+	//EXTENDED BY PLS
+	Modifier,
+	SingleAliasRight,
+	AliasName,
+	AliasKeysField,
+	AliasMatchLeft,
+	ConstantKey,
+	Constant,
+	Other,
 	@WithGameType(ParadoxGameType.Stellaris)
-	object StellarisNameFormat: CwtValueDataType
+	StellarisNameFormat;
+	
+	fun CwtDataType.isConstant() = this == CwtDataType.ConstantKey || this == CwtDataType.Constant
+	
+	fun CwtDataType.isNumberType() = this == CwtDataType.Int || this == CwtDataType.Float
+		|| this == CwtDataType.ValueField || this == CwtDataType.IntValueField
+		|| this == CwtDataType.VariableField || this == CwtDataType.IntVariableField
 }
-
-fun CwtDataType.isConstant() = this == CwtDataTypes.ConstantKey || this == CwtDataTypes.Constant

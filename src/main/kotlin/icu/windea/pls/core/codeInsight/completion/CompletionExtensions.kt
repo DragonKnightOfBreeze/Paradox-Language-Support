@@ -100,7 +100,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 		else -> null
 	}
 	val constantValue = when {
-		completeWithValue -> propertyConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.value
+		completeWithValue -> propertyConfig?.valueExpression?.takeIf { it.type == CwtDataType.Constant }?.value
 		else -> null
 	}
 	val insertCurlyBraces = when {
@@ -239,7 +239,7 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 	val configList = configs
 		.distinctBy { it.expression }
 	val constantConfigGroup = configs
-		.filter { it.expression.type == CwtDataTypes.ConstantKey || it.expression.type == CwtDataTypes.Constant }
+		.filter { it.expression.type == CwtDataType.ConstantKey || it.expression.type == CwtDataType.Constant }
 		.groupBy { it.expression }
 	if(constantConfigGroup.isEmpty()) return
 	
@@ -348,7 +348,7 @@ private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtD
 			is CwtKeyExpression -> {
 				val name = expression.expressionString
 				val constantValueExpressions = constantConfigs
-					.mapNotNull { it.castOrNull<CwtPropertyConfig>()?.valueExpression?.takeIf { e -> e.type == CwtDataTypes.Constant } }
+					.mapNotNull { it.castOrNull<CwtPropertyConfig>()?.valueExpression?.takeIf { e -> e.type == CwtDataType.Constant } }
 				val mustBeConstantValue = constantValueExpressions.size == constantConfigs.size
 				val value = if(mustBeConstantValue) constantValueExpressions.first().expressionString else ""
 				val constantValues = if(constantValueExpressions.isEmpty()) emptyList() else buildList {

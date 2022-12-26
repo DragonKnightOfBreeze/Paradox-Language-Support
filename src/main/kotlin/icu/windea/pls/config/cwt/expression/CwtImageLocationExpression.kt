@@ -15,9 +15,9 @@ import icu.windea.pls.script.psi.*
 import kotlin.collections.mapNotNullTo
 
 private val validValueTypes = arrayOf(
-	CwtDataTypes.FilePath,
-	CwtDataTypes.Icon,
-	CwtDataTypes.TypeExpression
+	CwtDataType.FilePath,
+	CwtDataType.Icon,
+	CwtDataType.TypeExpression
 )
 
 /**

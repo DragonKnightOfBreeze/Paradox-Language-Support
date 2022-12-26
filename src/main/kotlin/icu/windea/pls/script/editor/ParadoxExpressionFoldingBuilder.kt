@@ -14,7 +14,7 @@ import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 
-@WithCwtSetting("folding_settings.pls.cwt", CwtFoldingSetting::class)
+@WithCwtSetting("core/settings/folding_settings.pls.cwt", CwtFoldingSetting::class)
 abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
 	abstract val groupName: String
 	

@@ -13,26 +13,26 @@ data class CwtConfigGroupInfo(
 	val aliasNameSupportScope = mutableSetOf<String>()
 	
 	/**
-	 * @see CwtDataTypes.FilePath
+	 * @see CwtDataType.FilePath
 	 * @see CwtPathExpressionType.FilePath
 	 */
 	val filePathExpressions = mutableSetOf<String>()
 	
 	/**
-	 * @see CwtDataTypes.Icon
+	 * @see CwtDataType.Icon
 	 * @see CwtPathExpressionType.Icon
 	 */
 	val iconPathExpressions = mutableSetOf<String>()
 	
 	/**
-	 * @see CwtDataTypes.TypeExpressionString
+	 * @see CwtDataType.TypeExpressionString
 	 */
 	val typeExpressionStringLinks = mutableListOf<LocationLink>()
 	//val typeExpressionStringLinks = mutableMapOf<String, MutableList<LocationLink>>() //typeExpression - links
 	
 	fun acceptConfigExpression(configExpression: CwtDataExpression) {
 		when(configExpression.type) {
-			CwtDataTypes.TypeExpressionString -> {
+			CwtDataType.TypeExpressionString -> {
 				val link = configExpression.extraValue?.castOrNull<Pair<String, String>>()?.let { "$" linkTo "${it.first}$${it.second}" }
 				link?.let { typeExpressionStringLinks.add(it) }
 				//val typeExpression = this.value
@@ -41,10 +41,10 @@ data class CwtConfigGroupInfo(
 				//	info.typeExpressionStringLinks.getOrPut(typeExpression) { SmartList() }.add(link)
 				//}
 			}
-			CwtDataTypes.FilePath -> {
+			CwtDataType.FilePath -> {
 				configExpression.value?.let { filePathExpressions.add(it) }
 			}
-			CwtDataTypes.Icon -> {
+			CwtDataType.Icon -> {
 				configExpression.value?.let { iconPathExpressions.add(it) }
 			}
 			else -> pass()
@@ -52,7 +52,7 @@ data class CwtConfigGroupInfo(
 	}
 	
 	fun acceptAliasConfig(aliasConfig: CwtAliasConfig) {
-		if(aliasConfig.expression.type == CwtDataTypes.ScopeField) {
+		if(aliasConfig.expression.type == CwtDataType.ScopeField) {
 			aliasNameSupportScope.add(aliasConfig.name)
 		}
 	}

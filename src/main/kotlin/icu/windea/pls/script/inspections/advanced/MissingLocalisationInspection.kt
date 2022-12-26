@@ -14,7 +14,6 @@ import com.intellij.util.ui.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
@@ -161,7 +160,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			if(!inspection.checkForModifiers) return
 			val config = resolveConfigs(element).firstOrNull() ?: return
 			val configGroup = config.info.configGroup
-			if(config.expression.type != CwtDataTypes.Modifier) return
+			if(config.expression.type != CwtDataType.Modifier) return
 			val name = element.value
 			val keys = ModifierConfigHandler.getModifierNameKeys(name, configGroup)
 			val missingLocales = mutableSetOf<CwtLocalisationLocaleConfig>()

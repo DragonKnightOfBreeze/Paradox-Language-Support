@@ -21,7 +21,7 @@ class ParadoxValueLinkDataSourceExpressionNode (
 			//child node can be valueSetValueExpression / scriptValueExpression
 			val nodes = SmartList<ParadoxExpressionNode>()
 			val offset = textRange.startOffset
-			val configs = linkConfigs.filter { it.dataSource?.type == CwtDataTypes.Value }
+			val configs = linkConfigs.filter { it.dataSource?.type == CwtDataType.Value }
 			val atIndex = text.indexOf('@')
 			if(atIndex != -1) {
 				if(configs.isEmpty()) {
