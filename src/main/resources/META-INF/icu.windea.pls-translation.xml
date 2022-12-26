@@ -11,6 +11,7 @@
     <lang.documentationProvider language="PARADOX_LOCALISATION" order="first" implementationClass="cn.yiiguxing.plugin.translate.provider.TranslatingDocumentationProvider"/>
     
     <intentionAction>
+      <language>PARADOX_LOCALISATION</language>
       <className>icu.windea.pls.localisation.intentions.CopyLocalisationForLocaleIntention</className>
       <category>Paradox localisation</category>
     </intentionAction>

@@ -1,6 +1,6 @@
 package icu.windea.pls.core.search.implementations
 
-import cn.yiiguxing.plugin.translate.util.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*

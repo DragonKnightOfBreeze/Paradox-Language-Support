@@ -4,8 +4,8 @@ import org.jetbrains.kotlin.utils.*
 
 plugins {
 	id("org.jetbrains.kotlin.jvm") version "1.7.22"
-	id("org.jetbrains.intellij") version "1.10.1"
-	id("org.jetbrains.grammarkit") version "2021.2.2"
+	id("org.jetbrains.intellij") version "1.11.0"
+	id("org.jetbrains.grammarkit") version "2022.3"
 	id("org.jetbrains.changelog") version "2.0.0"
 }
 
@@ -26,10 +26,14 @@ intellij {
 	plugins.add("org.jetbrains.kotlin")
 }
 
+grammarKit {
+	jflexRelease.set("1.7.0-2")
+}
+
 repositories {
-	maven("https://maven.aliyun.com/nexus/content/groups/public")
-	maven("https://www.jetbrains.com/intellij-repository/releases")
+	//maven("https://maven.aliyun.com/nexus/content/groups/public")
 	mavenCentral()
+	maven("https://www.jetbrains.com/intellij-repository/releases")
 }
 
 dependencies {

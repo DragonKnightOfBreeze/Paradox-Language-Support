@@ -2,9 +2,13 @@ package icu.windea.pls.tool.cwt
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.fileEditor.*
+import com.intellij.testFramework.HeavyPlatformTestCase
+import com.intellij.testFramework.builders.ModuleFixtureBuilder
 import com.intellij.testFramework.fixtures.*
 import icu.windea.pls.core.model.*
 import org.junit.*
+import org.junit.runner.RunWith
+import org.junit.runners.*
 
 class CwtModifierConfigGeneratorTest : BasePlatformTestCase() {
 	override fun isWriteActionRequired(): Boolean {
@@ -12,7 +16,7 @@ class CwtModifierConfigGeneratorTest : BasePlatformTestCase() {
 	}
 	
 	@Test
-	fun testGenerateForCk3Test() {
+	fun testGenerateForCk3() {
 		CwtModifierConfigGenerator(
 			project,
 			ParadoxGameType.Ck3,
@@ -24,7 +28,7 @@ class CwtModifierConfigGeneratorTest : BasePlatformTestCase() {
 	}
 	
 	@Test
-	fun testGenerateForStellarisTest() {
+	fun testGenerateForStellaris() {
 		CwtModifierConfigGenerator(
 			project,
 			ParadoxGameType.Stellaris,
