@@ -6,7 +6,7 @@ import kotlin.reflect.*
 
 /**
  * 注明此功能基于指定的CWT配置实现。
- * @property fileName CWT配置文件的路径（相对于`config/cwt`）。
+ * @property fileName CWT配置文件的文件名。
  * @property settingClass 对应的CWT配置类。
  */
 @MustBeDocumented
