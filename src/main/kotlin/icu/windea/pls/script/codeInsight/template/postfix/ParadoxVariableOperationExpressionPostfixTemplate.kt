@@ -10,7 +10,6 @@ import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxVariableOperationExpressionPostfixTemplate(

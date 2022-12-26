@@ -4,7 +4,7 @@ import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
-import com.intellij.psi.file.FileLookupInfoProvider
+import com.intellij.psi.file.*
 
 //org.intellij.images.completion.ImageLookupInfoProvider
 

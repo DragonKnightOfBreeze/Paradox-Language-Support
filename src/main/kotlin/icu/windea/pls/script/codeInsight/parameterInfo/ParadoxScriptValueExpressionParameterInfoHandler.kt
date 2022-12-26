@@ -1,7 +1,7 @@
 package icu.windea.pls.script.codeInsight.parameterInfo
 
 import com.intellij.lang.parameterInfo.*
-import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*

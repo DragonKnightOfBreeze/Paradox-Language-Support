@@ -1,7 +1,7 @@
 package icu.windea.pls.script.refactoring
 
 import com.intellij.lang.refactoring.*
-import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.*
 import com.intellij.refactoring.*
 import com.intellij.refactoring.actions.*

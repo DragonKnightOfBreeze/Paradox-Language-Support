@@ -5,7 +5,6 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.core.handler.*
-import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 
 class MismatchedScopeInspection: LocalInspectionTool() {

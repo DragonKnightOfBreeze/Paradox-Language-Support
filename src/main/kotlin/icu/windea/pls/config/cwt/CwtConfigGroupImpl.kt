@@ -6,7 +6,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.config.script.*

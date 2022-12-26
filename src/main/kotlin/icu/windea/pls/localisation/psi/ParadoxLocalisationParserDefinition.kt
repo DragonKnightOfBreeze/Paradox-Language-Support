@@ -7,7 +7,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.script.psi.*
 
 class ParadoxLocalisationParserDefinition : ParserDefinition {
 	override fun getWhitespaceTokens() = ParadoxLocalisationTokenSets. WHITE_SPACES

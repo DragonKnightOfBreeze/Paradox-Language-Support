@@ -1,7 +1,7 @@
 package icu.windea.pls.core.quickfix
 
-import com.intellij.codeInsight.daemon.impl.actions.IntentionActionWithFixAllOption
-import com.intellij.codeInsight.intention.LowPriorityAction
+import com.intellij.codeInsight.daemon.impl.actions.*
+import com.intellij.codeInsight.intention.*
 import com.intellij.ide.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*

@@ -3,7 +3,6 @@ package icu.windea.pls.localisation.references
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.highlighter.*

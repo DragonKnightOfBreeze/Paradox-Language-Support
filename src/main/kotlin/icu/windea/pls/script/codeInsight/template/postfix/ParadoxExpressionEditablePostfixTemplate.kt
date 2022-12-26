@@ -8,7 +8,6 @@ import com.intellij.psi.*
 import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.script.codeInsight.template.*
 
 @WithCwtSetting("core/settings/postfix_template_settings.pls.cwt", CwtPostfixTemplateSetting::class)
 abstract class ParadoxExpressionEditablePostfixTemplate(

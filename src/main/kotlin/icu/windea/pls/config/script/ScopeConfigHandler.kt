@@ -1,7 +1,7 @@
 package icu.windea.pls.config.script
 
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiFile
+import com.intellij.openapi.util.*
+import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*

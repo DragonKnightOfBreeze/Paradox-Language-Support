@@ -11,7 +11,6 @@ import icu.windea.pls.core.expression.ParadoxValueFieldExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.script.highlighter.*
-import kotlin.collections.mapNotNullTo
 
 /**
  * 值字段表达式。

@@ -1,6 +1,6 @@
 package icu.windea.pls.core.editor
 
-import com.intellij.lang.documentation.AbstractDocumentationProvider
+import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*

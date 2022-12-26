@@ -1,9 +1,8 @@
 package icu.windea.pls.script.codeInsight.template
 
 import com.intellij.codeInsight.template.*
-import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.psi.util.parents
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.script.*

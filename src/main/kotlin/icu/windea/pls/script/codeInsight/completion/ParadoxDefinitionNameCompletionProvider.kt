@@ -1,7 +1,7 @@
 package icu.windea.pls.script.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
-import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.config.cwt.config.*

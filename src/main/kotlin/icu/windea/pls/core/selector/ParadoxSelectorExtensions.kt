@@ -7,7 +7,6 @@ import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 import java.util.*
-import kotlin.Comparator
 
 tailrec fun selectGameType(from: Any?): ParadoxGameType? {
 	return when {

@@ -1,7 +1,7 @@
 package icu.windea.pls.localisation.psi
 
 import com.intellij.psi.*
-import com.intellij.psi.tree.TokenSet
+import com.intellij.psi.tree.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 object ParadoxLocalisationTokenSets {

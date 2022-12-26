@@ -1,8 +1,7 @@
 package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.*
+import com.intellij.openapi.vfs.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.model.*
 import java.util.concurrent.*

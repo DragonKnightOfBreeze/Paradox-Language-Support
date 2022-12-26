@@ -7,8 +7,8 @@ import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.util.SmartList
+import com.intellij.psi.search.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*

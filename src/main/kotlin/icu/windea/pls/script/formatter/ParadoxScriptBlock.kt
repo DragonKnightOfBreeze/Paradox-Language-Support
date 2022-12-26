@@ -9,7 +9,6 @@ import com.intellij.psi.formatter.common.*
 import com.intellij.psi.tree.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.cwt.formatter.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*

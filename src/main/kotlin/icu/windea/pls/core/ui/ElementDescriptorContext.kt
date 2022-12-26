@@ -1,7 +1,7 @@
 package icu.windea.pls.core.ui
 
-import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.editor.*
+import com.intellij.openapi.project.*
 
 class ElementDescriptorContext(
 	val project: Project,

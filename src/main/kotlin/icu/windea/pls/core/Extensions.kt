@@ -11,12 +11,11 @@ import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
-import com.intellij.util.FileContentUtil
+import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.config.script.config.*
