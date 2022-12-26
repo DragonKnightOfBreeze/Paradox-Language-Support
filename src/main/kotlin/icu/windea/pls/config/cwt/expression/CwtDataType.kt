@@ -43,9 +43,9 @@ enum class CwtDataType {
 	@WithGameType(ParadoxGameType.Stellaris)
 	StellarisNameFormat;
 	
-	fun CwtDataType.isConstant() = this == CwtDataType.ConstantKey || this == CwtDataType.Constant
+	fun isConstant() = this == ConstantKey || this == Constant
 	
-	fun CwtDataType.isNumberType() = this == CwtDataType.Int || this == CwtDataType.Float
-		|| this == CwtDataType.ValueField || this == CwtDataType.IntValueField
-		|| this == CwtDataType.VariableField || this == CwtDataType.IntVariableField
+	fun isNumberType() = this == Int || this == Float
+		|| this == ValueField || this == IntValueField
+		|| this == VariableField || this == IntVariableField
 }
