@@ -5,11 +5,11 @@ import com.intellij.codeInsight.template.impl.*
 import com.intellij.codeInsight.template.postfix.templates.*
 import com.intellij.codeInsight.template.postfix.templates.editable.*
 import com.intellij.psi.*
-import icu.windea.pls.config.cwt.setting.*
+import icu.windea.pls.config.cwt.config.setting.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 
-@WithCwtSetting("core/settings/postfix_template_settings.pls.cwt", CwtPostfixTemplateSetting::class)
+@WithCwtSetting("core/setting/postfix_template_settings.pls.cwt", CwtPostfixTemplateSetting::class)
 abstract class ParadoxExpressionEditablePostfixTemplate(
 	val setting: CwtPostfixTemplateSetting,
 	provider: PostfixTemplateProvider

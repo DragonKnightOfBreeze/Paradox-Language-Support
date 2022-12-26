@@ -6,8 +6,8 @@ import com.intellij.openapi.vfs.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.config.setting.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.config.script.config.*
 import icu.windea.pls.core.*

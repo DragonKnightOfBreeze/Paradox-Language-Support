@@ -1,4 +1,4 @@
-package icu.windea.pls.config.cwt.setting
+package icu.windea.pls.config.cwt.config.setting
 
 data class CwtFoldingSetting(
 	override val id: String,
