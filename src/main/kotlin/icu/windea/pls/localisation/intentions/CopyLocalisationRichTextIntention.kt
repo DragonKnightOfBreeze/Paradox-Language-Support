@@ -9,8 +9,8 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.tool.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.tool.*
 import java.awt.datatransfer.*
 
 /**

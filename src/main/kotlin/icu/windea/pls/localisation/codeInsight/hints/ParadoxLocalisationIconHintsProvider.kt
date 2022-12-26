@@ -9,10 +9,10 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.tool.*
 import icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationIconHintsProvider.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
 import javax.swing.*
 
 /**
@@ -48,7 +48,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
 		}
 	}
 	
-	//icu.windea.pls.core.tool.ParadoxLocalisationTextHintsRenderer.renderIconTo
+	//icu.windea.pls.tool.ParadoxLocalisationTextHintsRenderer.renderIconTo
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
 		if(element is ParadoxLocalisationIcon) {

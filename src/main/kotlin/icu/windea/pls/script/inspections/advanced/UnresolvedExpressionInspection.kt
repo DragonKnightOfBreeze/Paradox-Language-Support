@@ -7,8 +7,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolvePropertyConfigs
-import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveValueConfigs
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.script.psi.*
@@ -45,7 +44,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 				val definitionMemberInfo = element.definitionMemberInfo
 				if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
 				val matchType = CwtConfigMatchType.INSPECTION
-				val configs = resolvePropertyConfigs(element, matchType = matchType)
+				val configs = ParadoxCwtConfigHandler.resolvePropertyConfigs(element, matchType = matchType)
 				val config = configs.firstOrNull()
 				if(config == null) {
 					val expectConfigs = if(showExpectInfo) {
@@ -78,11 +77,11 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 				val definitionMemberInfo = element.definitionMemberInfo
 				if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
 				val matchType = CwtConfigMatchType.INSPECTION
-				val configs = resolveValueConfigs(element, matchType = matchType, orDefault = false)
+				val configs = ParadoxCwtConfigHandler.resolveValueConfigs(element, matchType = matchType, orDefault = false)
 				val config = configs.firstOrNull()
 				if(config == null) {
 					val expectConfigs = if(showExpectInfo) {
-						resolveValueConfigs(element, orDefault = true)
+						ParadoxCwtConfigHandler.resolveValueConfigs(element, orDefault = true)
 					} else null
 					val expect = expectConfigs?.mapTo(mutableSetOf()) { it.expression }?.joinToString()
 					val message = when {

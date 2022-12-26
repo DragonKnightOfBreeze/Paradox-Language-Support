@@ -1,4 +1,4 @@
-package icu.windea.pls.core.tool
+package icu.windea.pls.tool
 
 import co.phoenixlab.dds.*
 import com.google.common.cache.*

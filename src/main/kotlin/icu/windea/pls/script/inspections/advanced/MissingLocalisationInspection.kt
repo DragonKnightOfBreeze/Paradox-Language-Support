@@ -17,7 +17,7 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.selector.chained.*
@@ -158,7 +158,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			ProgressManager.checkCanceled()
 			if(inspection.localeSet.isEmpty()) return
 			if(!inspection.checkForModifiers) return
-			val config = resolveConfigs(element).firstOrNull() ?: return
+			val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return
 			val configGroup = config.info.configGroup
 			if(config.expression.type != CwtDataType.Modifier) return
 			val name = element.value

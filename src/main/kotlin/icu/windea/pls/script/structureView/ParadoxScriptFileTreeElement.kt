@@ -5,8 +5,8 @@ import com.intellij.ide.structureView.impl.common.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.tool.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
 import javax.swing.*
 
 class ParadoxScriptFileTreeElement(

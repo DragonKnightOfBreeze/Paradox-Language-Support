@@ -12,14 +12,13 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
-import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
-import icu.windea.pls.core.tool.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxModifierLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
 import javax.swing.*
 
 /**
@@ -66,7 +65,7 @@ class ParadoxModifierLocalizedNameHintsProvider: ParadoxScriptHintsProvider<Sett
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
 		if(element is ParadoxScriptStringExpressionElement) {
 			//基于stub
-			val config = resolveConfigs(element).firstOrNull() ?: return true
+			val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return true
 			val type = config.expression.type
 			if(type == CwtDataType.Modifier) {
 				val name = element.value

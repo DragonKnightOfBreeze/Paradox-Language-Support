@@ -1,6 +1,6 @@
-package icu.windea.pls.core.tool
+package icu.windea.pls.tool
 
-import icu.windea.pls.core.tool.ParadoxModPackager.packageMods
+import icu.windea.pls.tool.ParadoxModPackager.packageMods
 
 fun main() {
 	val rootPath = "D:\\Programs\\Steam\\steamapps\\workshop\\content\\281990"

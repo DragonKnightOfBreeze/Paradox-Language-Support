@@ -6,14 +6,13 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import com.intellij.ui.JBColor
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.handler.*
-import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolvePropertyConfigs
-import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveValueConfigs
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.selector.*
@@ -263,7 +262,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getConfigExpression(element: ParadoxScriptProperty): String? {
-		val config = resolvePropertyConfigs(element).firstOrNull() ?: return null
+		val config = ParadoxCwtConfigHandler.resolvePropertyConfigs(element).firstOrNull() ?: return null
 		return "${config.key} = ${config.value}"
 	}
 	
@@ -360,7 +359,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getConfigExpression(element: ParadoxScriptPropertyKey): String? {
-		val config = resolvePropertyConfigs(element).firstOrNull() ?: return null
+		val config = ParadoxCwtConfigHandler.resolvePropertyConfigs(element).firstOrNull() ?: return null
 		return config.key
 	}
 	
@@ -431,7 +430,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getConfigExpression(element: ParadoxScriptValue): String? {
-		val config = resolveValueConfigs(element).firstOrNull() ?: return null
+		val config = ParadoxCwtConfigHandler.resolveValueConfigs(element).firstOrNull() ?: return null
 		return config.value
 	}
 	//endregion
@@ -643,8 +642,8 @@ object ParadoxScriptPsiImplUtil {
 		return runCatching {
 			val parent = element.parent
 			val colorTypeOptionLocation = when {
-				parent is ParadoxScriptProperty -> resolvePropertyConfigs(parent, allowDefinitionSelf = true).firstOrNull()
-				parent is ParadoxScriptBlock -> resolveValueConfigs(element).firstOrNull()
+				parent is ParadoxScriptProperty -> ParadoxCwtConfigHandler.resolvePropertyConfigs(parent, allowDefinitionSelf = true).firstOrNull()
+				parent is ParadoxScriptBlock -> ParadoxCwtConfigHandler.resolveValueConfigs(element).firstOrNull()
 				else -> return@runCatching null
 			}
 			val colorTypeOption = colorTypeOptionLocation?.options?.find { it.key == "color_type" } ?: return@runCatching null

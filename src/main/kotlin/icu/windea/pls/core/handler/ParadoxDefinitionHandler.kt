@@ -8,7 +8,6 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.CwtConfigHandler.matchesScriptExpression
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
@@ -324,7 +323,7 @@ object ParadoxDefinitionHandler {
 				propertyConfig.stringValue != null -> {
 					val expression = ParadoxDataExpression.resolve(propValue)
 					val matchType = 0
-					return matchesScriptExpression(expression, propertyConfig.valueExpression, configGroup, matchType)
+					return CwtConfigHandler.matchesScriptExpression(expression, propertyConfig.valueExpression, configGroup, matchType)
 				}
 				//匹配single_alias
 				CwtConfigHandler.isSingleAlias(propertyConfig) -> {
@@ -360,7 +359,7 @@ object ParadoxDefinitionHandler {
 			val expression = ParadoxDataExpression.resolve(keyElement)
 			val matchType = 0
 			val propConfigs = propertyConfigs.filter {
-				matchesScriptExpression(expression, it.keyExpression, configGroup, matchType)
+				CwtConfigHandler.matchesScriptExpression(expression, it.keyExpression, configGroup, matchType)
 			}
 			//如果没有匹配的规则则忽略
 			if(propConfigs.isNotEmpty()) {
@@ -388,7 +387,7 @@ object ParadoxDefinitionHandler {
 			val expression = ParadoxDataExpression.resolve(value)
 			val matchType = 0
 			val matched = valueConfigs.any { valueConfig ->
-				val matched = matchesScriptExpression(expression, valueConfig.valueExpression, configGroup, matchType)
+				val matched = CwtConfigHandler.matchesScriptExpression(expression, valueConfig.valueExpression, configGroup, matchType)
 				if(matched) minMap.compute(valueConfig.value) { _, v -> if(v == null) 1 else v - 1 }
 				matched
 			}

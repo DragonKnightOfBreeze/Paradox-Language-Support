@@ -1,4 +1,4 @@
-package icu.windea.pls.core.tool.cwt
+package icu.windea.pls.tool.cwt
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.fileEditor.*

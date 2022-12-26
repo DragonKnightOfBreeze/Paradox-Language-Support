@@ -41,15 +41,18 @@ dependencies {
 		exclude(module = "jackson-core")
 		exclude(module = "jackson-databind")
 	}
+	//JUNIT
+	testImplementation("junit:junit:4.13.2")
 }
 
 sourceSets {
 	main {
 		java.srcDirs("src/main/java", "src/main/kotlin", "src/main/gen")
+		resources.srcDirs("src/main/resources")
 	}
 	test {
-		java.srcDirs("src/test/java", "src/test/kotlin", "src/tool/java", "src/tool/kotlin")
-		resources.srcDirs("src/test/resources", "src/reserved/resources")
+		java.srcDirs("src/test/java", "src/test/kotlin")
+		resources.srcDirs("src/test/resources")
 	}
 }
 

@@ -13,10 +13,10 @@ import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.selector.chained.*
-import icu.windea.pls.core.tool.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxModifierIconHintsProvider.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
 import javax.swing.*
 
 /**
@@ -52,7 +52,7 @@ class ParadoxModifierIconHintsProvider: ParadoxScriptHintsProvider<Settings>() {
 		}
 	}
 	
-	//icu.windea.pls.core.tool.ParadoxLocalisationTextHintsRenderer.renderIconTo
+	//icu.windea.pls.tool.ParadoxLocalisationTextHintsRenderer.renderIconTo
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
 		if(element is ParadoxScriptStringExpressionElement) {

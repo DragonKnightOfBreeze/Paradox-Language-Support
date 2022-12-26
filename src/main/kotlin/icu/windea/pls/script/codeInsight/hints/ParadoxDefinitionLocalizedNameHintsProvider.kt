@@ -12,9 +12,9 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.tool.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
 import javax.swing.*
 
 /**

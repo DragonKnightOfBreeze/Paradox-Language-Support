@@ -10,7 +10,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.errors.*
-import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -37,7 +37,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 			private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
 				ProgressManager.checkCanceled()
 				if(element.text.isLeftQuoted()) return //忽略
-				val config = resolveConfigs(element).firstOrNull() ?: return
+				val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return
 				val type = config.expression.type
 				if(type == CwtDataType.Scope || type == CwtDataType.ScopeField || type == CwtDataType.ScopeGroup) {
 					val value = element.value

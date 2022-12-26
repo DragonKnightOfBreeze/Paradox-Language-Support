@@ -4,8 +4,8 @@ import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.tool.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
 
 class ParadoxScriptPropertyTreeElement(element: ParadoxScriptProperty) : PsiTreeElementBase<ParadoxScriptProperty>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {

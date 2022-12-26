@@ -14,17 +14,16 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
-import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
-import icu.windea.pls.core.tool.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
 import java.util.*
 
 class CwtDocumentationProvider : AbstractDocumentationProvider() {
@@ -331,7 +330,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			CwtConfigType.Alias -> {
-				val config = resolveConfigs(referenceElement).firstOrNull()?.castOrNull<CwtPropertyConfig>()
+				val config = ParadoxCwtConfigHandler.resolveConfigs(referenceElement).firstOrNull()?.castOrNull<CwtPropertyConfig>()
 				val aliasConfig = config?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
 				if(aliasConfig.name !in configGroup.aliasNameSupportScope) return
 				if(sections != null) {

@@ -5,7 +5,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.util.gist.*
 import com.intellij.util.io.*
-import icu.windea.pls.core.tool.*
+import icu.windea.pls.tool.*
 import org.intellij.images.util.*
 import java.io.*
 import java.lang.invoke.*

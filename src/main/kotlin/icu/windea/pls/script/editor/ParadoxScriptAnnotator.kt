@@ -12,7 +12,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
-import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
@@ -71,7 +71,7 @@ class ParadoxScriptAnnotator : Annotator {
 		checkLiteralElement(element, holder)
 		
 		val isKey = element is ParadoxScriptPropertyKey
-		val config = resolveConfigs(element, !isKey, isKey).firstOrNull()
+		val config = ParadoxCwtConfigHandler.resolveConfigs(element, !isKey, isKey).firstOrNull()
 		if(config != null) {
 			annotateExpression(element, element.textRange, null, config, holder)
 		}

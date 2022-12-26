@@ -11,8 +11,8 @@ import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.chained.*
-import icu.windea.pls.core.tool.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
 
 class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	//do not provide special documentations for definition name and complex enum value name declarations,

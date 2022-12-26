@@ -31,7 +31,6 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.core.settings.*
-import icu.windea.pls.core.tool.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.*
@@ -40,6 +39,7 @@ import icu.windea.pls.localisation.references.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
+import icu.windea.pls.tool.*
 import java.lang.Integer.*
 import java.util.*
 

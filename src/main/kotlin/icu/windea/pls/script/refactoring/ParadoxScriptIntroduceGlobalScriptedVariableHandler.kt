@@ -11,9 +11,9 @@ import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.refactoring.*
-import icu.windea.pls.core.tool.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.tool.*
 
 /**
  * 声明全局封装变量的重构。

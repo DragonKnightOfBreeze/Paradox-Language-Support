@@ -1,4 +1,4 @@
-package icu.windea.pls.core.tool.cwt
+package icu.windea.pls.tool.cwt
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.fileEditor.*
@@ -29,8 +29,6 @@ class CwtModifierConfigGenerator(
 	)
 	
 	fun generate() {
-		//能用就行
-		
 		val newDisposable = Disposer.newDisposable()
 		if(ApplicationManager.getApplication().isUnitTestMode) {
 			VfsRootAccess.allowRootAccess(newDisposable, File("").absolutePath)

@@ -6,7 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.handler.ParadoxCwtConfigHandler.resolveConfigs
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 
@@ -21,7 +21,7 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 		//if(text.isParameterAwareExpression()) return PsiReference.EMPTY_ARRAY
 		
 		val isKey = element is ParadoxScriptPropertyKey
-		val config = resolveConfigs(element, !isKey, isKey).firstOrNull()
+		val config = ParadoxCwtConfigHandler.resolveConfigs(element, !isKey, isKey).firstOrNull()
 		if(config != null) {
 			val textRange = TextRange.create(0, text.length)
 			when(config.expression.type) {
