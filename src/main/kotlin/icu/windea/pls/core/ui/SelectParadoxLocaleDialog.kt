@@ -3,6 +3,7 @@ package icu.windea.pls.core.ui
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.config.ext.*
 
 class SelectParadoxLocaleDialog(

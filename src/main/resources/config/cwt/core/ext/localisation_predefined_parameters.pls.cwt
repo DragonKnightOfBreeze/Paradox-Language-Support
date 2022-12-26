@@ -1,5 +1,5 @@
 # Localisation Predefined Variable Config
-# Used to provide resolving, navigation and some other features for predefined localisation reference, e.g. '$C$'.
+# Used to provide language features for predefined localisation reference, e.g. "$C$"
 
 localisation_predefined_parameters = {
 	### Cardinal Number 1, 2, 3...

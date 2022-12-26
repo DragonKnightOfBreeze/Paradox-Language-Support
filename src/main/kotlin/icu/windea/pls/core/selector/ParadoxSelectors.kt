@@ -3,6 +3,7 @@ package icu.windea.pls.core.selector
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*

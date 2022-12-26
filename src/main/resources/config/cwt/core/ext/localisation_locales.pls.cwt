@@ -1,5 +1,5 @@
 # Localisation Locale Config
-# Used to provide resolving, navigation and some other features for localisation locales, e.g. 'l_english'.
+# Used to provide language features for localisation locales, e.g. "l_english"
 # 
 # See vanilla game file: localisation/languages.yml
 # See CWT rule: enum[font_languages]

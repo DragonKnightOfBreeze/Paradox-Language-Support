@@ -1,24 +1,28 @@
-package icu.windea.pls.config.cwt.config.ext
+package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.cwt.psi.*
 
-/**
- * 系统作用域的内置配置。
- */
-class CwtSystemScopeConfig(
+//EXTENDED BY PLS
+
+class CwtLocalisationLocaleConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigGroupInfo,
 	val id: String,
 	val description: String,
-	val name: String
-): CwtConfig<CwtProperty> {
-	val icon get() = PlsIcons.SystemScope
+	val codes: List<String>
+) : CwtConfig<CwtProperty> {
+	val icon get() = PlsIcons.LocalisationLocale
+	
+	val text = buildString {
+		append(id)
+		if(description.isNotEmpty()) append(" (").append(description).append(")")
+	}
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || other is CwtSystemScopeConfig && id == other.id
+		return this === other || other is CwtLocalisationLocaleConfig && id == other.id
 	}
 	
 	override fun hashCode(): Int {

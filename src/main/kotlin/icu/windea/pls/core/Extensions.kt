@@ -15,6 +15,7 @@ import com.intellij.util.FileContentUtil
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.*

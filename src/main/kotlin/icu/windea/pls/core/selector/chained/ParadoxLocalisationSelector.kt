@@ -1,5 +1,6 @@
 package icu.windea.pls.core.selector.chained
 
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*

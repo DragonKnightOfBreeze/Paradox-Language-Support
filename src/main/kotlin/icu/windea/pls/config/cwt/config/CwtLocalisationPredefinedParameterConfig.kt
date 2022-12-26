@@ -1,29 +1,24 @@
-package icu.windea.pls.config.cwt.config.ext
+package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.cwt.psi.*
+import javax.swing.*
 
-/**
- * 本地化语言区域的内置配置。
- */
-class CwtLocalisationLocaleConfig(
+//EXTENDED BY PLS
+
+class CwtLocalisationPredefinedParameterConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigGroupInfo,
 	val id: String,
-	val description: String,
-	val codes: List<String>
+	val mockValue: String,
+	val description: String
 ) : CwtConfig<CwtProperty> {
-	val icon get() = PlsIcons.LocalisationLocale
-	
-	val text = buildString {
-		append(id)
-		if(description.isNotEmpty()) append(" (").append(description).append(")")
-	}
+	val icon: Icon get() = PlsIcons.PredefinedParameter
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || other is CwtLocalisationLocaleConfig && id == other.id
+		return this === other || other is CwtLocalisationPredefinedParameterConfig && id == other.id
 	}
 	
 	override fun hashCode(): Int {

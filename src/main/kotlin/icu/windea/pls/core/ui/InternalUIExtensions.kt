@@ -1,5 +1,6 @@
 package icu.windea.pls.core.ui
 
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.config.ext.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
