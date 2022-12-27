@@ -83,6 +83,9 @@ val cwtConfigDirs = listOf(
 )
 
 tasks {
+	withType<Copy> {
+		duplicatesStrategy = DuplicatesStrategy.INCLUDE //怎么就重复了？？
+	}
 	withType<KotlinCompile> {
 		kotlinOptions {
 			jvmTarget = "17"
