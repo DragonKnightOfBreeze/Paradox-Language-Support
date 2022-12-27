@@ -1498,8 +1498,7 @@ object CwtConfigHandler {
 				//尝试解析为简单枚举
 				val enumConfig = configGroup.enums[enumName]
 				if(enumConfig != null) {
-					val enumValueConfig = enumConfig.valueConfigMap.get(name) ?: return null
-					return enumValueConfig.pointer.element.castOrNull<CwtNamedElement>()
+					return resolveEnumValue(element, name, enumName, configGroup)
 				}
 				//尝试解析为复杂枚举
 				val complexEnumConfig = configGroup.complexEnums[enumName]
@@ -1648,8 +1647,7 @@ object CwtConfigHandler {
 				//尝试解析为简单枚举
 				val enumConfig = configGroup.enums[enumName]
 				if(enumConfig != null) {
-					val enumValueConfig = enumConfig.valueConfigMap.get(name) ?: return emptyList()
-					return enumValueConfig.pointer.element.castOrNull<CwtNamedElement>().toSingletonListOrEmpty()
+					return resolveEnumValue(element, name, enumName, configGroup).toSingletonListOrEmpty()
 				}
 				//尝试解析为复杂枚举
 				val complexEnumConfig = configGroup.complexEnums[enumName]
@@ -1721,21 +1719,32 @@ object CwtConfigHandler {
 	}
 	
 	fun resolveSystemScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-		val systemScope = configGroup.systemScopes[name]
-			?: return null
-		return systemScope.pointer.element
+		val systemScope = configGroup.systemScopes[name] ?: return null
+		val resolved = systemScope.pointer.element ?: return null
+		resolved.putUserData(PlsKeys.cwtConfigKey, systemScope)
+		return resolved
 	}
 	
 	fun resolveScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-		val linkConfig = configGroup.linksAsScopeNotData[name]
-			?: return null
-		return linkConfig.pointer.element
+		val linkConfig = configGroup.linksAsScopeNotData[name] ?: return null
+		val resolved = linkConfig.pointer.element ?: return null
+		resolved.putUserData(PlsKeys.cwtConfigKey, linkConfig)
+		return resolved
 	}
 	
 	fun resolveValueLinkValue(name: String, configGroup: CwtConfigGroup): PsiElement? {
-		val linkConfig = configGroup.linksAsValueNotData[name]
-			?: return null
-		return linkConfig.pointer.element
+		val linkConfig = configGroup.linksAsValueNotData[name] ?: return null
+		val resolved = linkConfig.pointer.element ?: return null
+		resolved.putUserData(PlsKeys.cwtConfigKey, linkConfig)
+		return resolved
+	}
+	
+	fun resolveEnumValue(element: ParadoxScriptStringExpressionElement, name: String, enumName: String, configGroup: CwtConfigGroup): PsiElement? {
+		val enumConfig = configGroup.enums[enumName] ?: return null
+		val enumValueConfig = enumConfig.valueConfigMap.get(name) ?: return null
+		val resolved = enumValueConfig.pointer.element.castOrNull<CwtNamedElement>() ?: return null
+		resolved.putUserData(PlsKeys.cwtConfigKey, enumValueConfig)
+		return resolved
 	}
 	
 	fun resolveValueSetValue(element: ParadoxScriptStringExpressionElement, name: String, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup): PsiElement? {
@@ -1747,9 +1756,11 @@ object CwtConfigHandler {
 			if(read) {
 				//首先尝试解析为预定义的value
 				run {
-					val valueSetValueConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(name) ?: return@run
-					val resolved = valueSetValueConfig.pointer.element.castOrNull<CwtNamedElement>()
-					if(resolved != null) return resolved
+					val valueSetConfig = configGroup.values[valueSetName] ?: return@run
+					val valueSetValueConfig = valueSetConfig.valueConfigMap.get(name) ?: return@run
+					val resolved = valueSetValueConfig.pointer.element.castOrNull<CwtNamedElement>() ?: return null
+					resolved.putUserData(PlsKeys.cwtConfigKey, valueSetValueConfig)
+					return resolved
 				}
 			}
 		}
@@ -1761,21 +1772,23 @@ object CwtConfigHandler {
 	
 	fun resolveModifier(name: String, configGroup: CwtConfigGroup): PsiElement? {
 		val modifier = configGroup.modifiers[name] ?: return null
-		return modifier.pointer.element
+		val resolved = modifier.pointer.element ?: return null
+		resolved.putUserData(PlsKeys.cwtConfigKey, modifier)
+		return resolved
 	}
 	
 	fun resolveLocalisationScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-		val links = configGroup.localisationLinks
-		if(links.isEmpty()) return null
-		val linkConfig = links[name] ?: return null
-		return linkConfig.pointer.element
+		val linkConfig = configGroup.localisationLinks[name] ?: return null
+		val resolved = linkConfig.pointer.element ?: return null
+		resolved.putUserData(PlsKeys.cwtConfigKey, linkConfig)
+		return resolved
 	}
 	
 	fun resolveLocalisationCommand(name: String, configGroup: CwtConfigGroup): PsiElement? {
-		val localisationCommands = configGroup.localisationCommands
-		if(localisationCommands.isEmpty()) return null
-		val commandConfig = localisationCommands[name] ?: return null
-		return commandConfig.pointer.element
+		val commandConfig = configGroup.localisationCommands[name] ?: return null
+		val resolved = commandConfig.pointer.element ?: return null
+		resolved.putUserData(PlsKeys.cwtConfigKey, commandConfig)
+		return resolved
 	}
 	//endregion
 }

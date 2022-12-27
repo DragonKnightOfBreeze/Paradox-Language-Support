@@ -11,6 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.handler.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandIdentifier
 import icu.windea.pls.script.psi.*
 
 /**
@@ -146,12 +147,12 @@ object ScopeConfigHandler {
 	
 	private fun getScopeContextFromCache(element: ParadoxScriptMemberElement, file: PsiFile) : ParadoxScopeContext? {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
-			val value = resolveScopeContext(element)
+			val value = resolveScopeContextForDefinitionMember(element)
 			CachedValueProvider.Result.create(value, file)
 		}
 	}
 	
-	private fun resolveScopeContext(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
+	private fun resolveScopeContextForDefinitionMember(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
 		//should be a definition
 		val definitionInfo = element.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
 		if(definitionInfo != null) {
@@ -254,5 +255,21 @@ object ScopeConfigHandler {
 			id == "From" -> scopeContext.from
 			else -> null //TODO
 		}
+	}
+	
+	@JvmStatic
+	fun getScopeContext(element: ParadoxLocalisationCommandIdentifier, file: PsiFile = element.containingFile) : ParadoxScopeContext? {
+		return getScopeContextFromCache(element, file)
+	}
+	
+	private fun getScopeContextFromCache(element: ParadoxLocalisationCommandIdentifier, file: PsiFile) : ParadoxScopeContext? {
+		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
+			val value = resolveScopeContextForLocalisationCommandIdentifier(element)
+			CachedValueProvider.Result.create(value, file)
+		}
+	}
+	
+	private fun resolveScopeContextForLocalisationCommandIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext? {
+		TODO()
 	}
 }

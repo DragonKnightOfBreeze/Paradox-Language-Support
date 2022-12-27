@@ -6,6 +6,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.util.*
 import icons.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.script.config.*
 import icu.windea.pls.core.model.*
 
@@ -94,12 +95,14 @@ object PlsKeys {
 	
 	val injectedInfoKey = Key.create<List<String>>("paradox.injectedInfo")
 	
-	
 	val textColorConfigKey = Key.create<ParadoxTextColorConfig>("paradox.textColorConfig")
 	
 	val definitionConfigKeys = setOf<Key<out ParadoxScriptConfig>>(
 		textColorConfigKey
 	)
+	
+	//这里的数据要在解析引用为CWT规则后进行绑定
+	val cwtConfigKey = Key.create<CwtConfig<*>>("paradox.cwtConfig")
 	
 	//用于在进行代码补全时标记一个property的propertyValue未填写
 	val incompleteMarkerKey = Key.create<Boolean>("paradox.incompleteMarker")

@@ -144,6 +144,19 @@
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection.advanced"
                      groupPathKey="localisation.inspection.advanced.path"
                      implementationClass="icu.windea.pls.localisation.inspections.advanced.UnresolvedStellarisNamePartInspection"/>
+    <!--advanced > scope-->
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectScope"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="localisation.inspection.scope.incorrectScope"
+                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection.scope"
+                     groupPathKey="localisation.inspection.scope.path"
+                     implementationClass="icu.windea.pls.localisation.inspections.advanced.scope.IncorrectScopeInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectScopeSwitch"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="localisation.inspection.scope.incorrectScopeSwitch"
+                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection.scope"
+                     groupPathKey="localisation.inspection.scope.path"
+                     implementationClass="icu.windea.pls.localisation.inspections.advanced.scope.IncorrectScopeSwitchInspection"/>
   </extensions>
 
   <actions>

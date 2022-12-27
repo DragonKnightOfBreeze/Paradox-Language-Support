@@ -1,0 +1,59 @@
+package icu.windea.pls.localisation.inspections.advanced.scope
+
+import com.intellij.codeInspection.*
+import com.intellij.psi.*
+import icu.windea.pls.*
+import icu.windea.pls.config.script.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.selector.*
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandField
+import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandScope
+import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
+import icu.windea.pls.script.psi.*
+
+class IncorrectScopeInspection : LocalInspectionTool() {
+	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
+		if(file !is ParadoxScriptFile) return null
+		val project = file.project
+		val holder = ProblemsHolder(manager, file, isOnTheFly)
+		file.accept(object : PsiRecursiveElementWalkingVisitor() {
+			override fun visitElement(element: PsiElement) {
+				//command also can inside property references and icons
+				when(element) {
+					is ParadoxLocalisationLocale -> return
+					is ParadoxLocalisationCommandField -> {
+						visitLocalisationCommandField(element)
+						return
+					}
+					is ParadoxLocalisationCommandScope -> return
+					else -> super.visitElement(element)
+				}
+			}
+			
+			private fun visitLocalisationCommandField(element: ParadoxLocalisationCommandField) {
+				val gameType = selectGameType(element) ?: return
+				val resolved = element.reference?.resolve() ?: return
+				when {
+					//predefined localisation command
+					resolved is CwtProperty -> {
+						val config = getCwtConfig(project).getValue(gameType).localisationCommands[element.name] ?: return
+						val scopeContext = ScopeConfigHandler.getScopeContext(element, file) ?: return
+						val supportedScopes = config.supportedScopes
+						if(!ScopeConfigHandler.matchesScope(scopeContext, supportedScopes)) {
+							val location = element
+							val description = PlsBundle.message("localisation.inspection.scope.incorrectScope.description.1", element.name, supportedScopes.joinToString(), scopeContext.thisScope)
+							holder.registerProblem(location, description)
+						}
+					}
+					//scripted loc - any scope
+					resolved is ParadoxScriptDefinitionElement -> return //TODO
+					//variable - not supported yet
+					resolved is ParadoxValueSetValueElement -> return //TODO
+				}
+			}
+		})
+		return holder.resultsArray
+	}
+}
