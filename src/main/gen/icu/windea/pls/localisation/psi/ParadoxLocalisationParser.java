@@ -38,7 +38,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(COMMAND_FIELD, COMMAND_IDENTIFIER, COMMAND_SCOPE),
     create_token_set_(COLORFUL_TEXT, COMMAND, ESCAPE, ICON,
-      PROPERTY_REFERENCE, RICH_TEXT, STELLARIS_NAME_PART, STRING),
+      PROPERTY_REFERENCE, RICH_TEXT, STRING),
   };
 
   /* ********************************************************** */
@@ -441,7 +441,6 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   //   | icon
   //   | colorful_text
   //   | command
-  //   | stellaris_name_part
   //   | string
   public static boolean rich_text(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rich_text")) return false;
@@ -452,7 +451,6 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     if (!r) r = icon(b, l + 1);
     if (!r) r = colorful_text(b, l + 1);
     if (!r) r = command(b, l + 1);
-    if (!r) r = stellaris_name_part(b, l + 1);
     if (!r) r = string(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
@@ -480,19 +478,6 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     r = consumeTokens(b, 0, AT, SCRIPTED_VARIABLE_REFERENCE_ID);
     exit_section_(b, m, SCRIPTED_VARIABLE_REFERENCE, r);
     return r;
-  }
-
-  /* ********************************************************** */
-  // LEFT_ANGLE_BRACKET STELLARIS_NAME_FORMAT_ID RIGHT_ANGLE_BRACKET
-  public static boolean stellaris_name_part(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "stellaris_name_part")) return false;
-    if (!nextTokenIs(b, LEFT_ANGLE_BRACKET)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, STELLARIS_NAME_PART, null);
-    r = consumeTokens(b, 1, LEFT_ANGLE_BRACKET, STELLARIS_NAME_FORMAT_ID, RIGHT_ANGLE_BRACKET);
-    p = r; // pin = 1
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
   }
 
   /* ********************************************************** */

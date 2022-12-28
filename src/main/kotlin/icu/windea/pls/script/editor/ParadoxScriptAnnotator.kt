@@ -127,11 +127,7 @@ class ParadoxScriptAnnotator : Annotator {
 				}
 			}
 			CwtDataType.StellarisNameFormat -> {
-				if(!element.text.isLeftQuoted()) {
-					if(text.isParameterAwareExpression()) return
-					val attributesKey = Keys.LOCALISATION_REFERENCE_KEY
-					holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
-				}
+				//TODO
 			}
 			CwtDataType.TypeExpression -> {
 				if(text.isParameterAwareExpression()) return

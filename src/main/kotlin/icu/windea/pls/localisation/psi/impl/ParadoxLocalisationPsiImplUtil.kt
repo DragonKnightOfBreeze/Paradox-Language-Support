@@ -383,26 +383,4 @@ object ParadoxLocalisationPsiImplUtil {
 		}
 	}
 	//endregion
-	
-	//for stellaris
-	
-	//region ParadoxLocalisationStellarisFormatReference
-	@JvmStatic
-	fun getName(element: ParadoxLocalisationStellarisNamePart): String? {
-		val token = element.stellarisNamePartId ?: return null
-		return token.text
-	}
-	
-	@JvmStatic
-	fun setName(element: ParadoxLocalisationStellarisNamePart, name: String): PsiElement {
-		val token = element.stellarisNamePartId ?: return element
-		return (token as LeafPsiElement).replaceWithText(name) as PsiElement
-	}
-	
-	@JvmStatic
-	fun getReference(element: ParadoxLocalisationStellarisNamePart): ParadoxLocalisationStellarisNamePartPsiReference? {
-		val token = element.stellarisNamePartId ?: return null
-		return ParadoxLocalisationStellarisNamePartPsiReference(element, token.textRangeInParent)
-	}
-	//endregion
 }

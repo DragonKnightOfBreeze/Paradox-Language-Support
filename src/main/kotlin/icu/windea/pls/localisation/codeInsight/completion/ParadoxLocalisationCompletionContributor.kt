@@ -37,10 +37,6 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		val scriptedVariableNamePattern = psiElement().withElementType(SCRIPTED_VARIABLE_REFERENCE_ID)
 		extend(null, scriptedVariableNamePattern, ParadoxScriptedVariableCompletionProvider())
 		
-		//当用户可能正在输入一个stellarisNamePart的名字时提示
-		val stellarisNamePartPattern = psiElement().withElementType(STELLARIS_NAME_FORMAT_ID)
-		extend(null, stellarisNamePartPattern, ParadoxStellarisNamePartCompletionProvider())
-		
 		//当用户可能正在输入一个localisation的名字时提示
 		val propertyKeyPattern = psiElement(PROPERTY_KEY_TOKEN)
 		extend(null, propertyKeyPattern, ParadoxLocalisationNameCompletionProvider())

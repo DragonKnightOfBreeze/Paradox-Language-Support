@@ -32,9 +32,6 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 			//unused in localisation files
 			AttributesDescriptor(PlsBundle.message("localisation.displayName.localisation"), ParadoxLocalisationAttributesKeys.LOCALISATION_KEY),
 			AttributesDescriptor(PlsBundle.message("localisation.displayName.syncedLocalisation"), ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY),
-			
-			//for stellaris
-			AttributesDescriptor(PlsBundle.message("localisation.displayName.stellarisNamePart"), ParadoxLocalisationAttributesKeys.STELLARIS_NAME_PART__KEY)
 		)
 	}
 	

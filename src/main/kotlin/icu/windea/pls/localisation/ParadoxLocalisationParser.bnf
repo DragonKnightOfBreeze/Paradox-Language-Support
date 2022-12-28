@@ -17,8 +17,6 @@
     COLON=":"
     AT="@"
     PIPE="|"
-    LEFT_ANGLE_BRACKET="<"
-    RIGHT_ANGLE_BRACKET=">"
   ]
 }
 
@@ -76,7 +74,6 @@ rich_text ::= escape
   | icon
   | colorful_text
   | command
-  | stellaris_name_part
   | string
 
 string ::= STRING_TOKEN{
@@ -153,14 +150,4 @@ command_scope ::= COMMAND_SCOPE_ID{
 command_field ::= COMMAND_FIELD_ID | property_reference { //can be property reference (resolved as parameter)
   extends=command_identifier
   methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getExpression getConfigExpression]
-}
-
-//for stellaris
-
-//stellaris name part rules
-
-stellaris_name_part ::= LEFT_ANGLE_BRACKET STELLARIS_NAME_FORMAT_ID RIGHT_ANGLE_BRACKET {
-  pin=1
-  extends=rich_text
-  methods=[getName setName getReference]
 }

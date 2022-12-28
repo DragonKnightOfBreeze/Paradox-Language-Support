@@ -40,8 +40,6 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %state WAITING_CHECK_COLORFUL_TEXT_START
 %state WAITING_CHECK_RIGHT_QUOTE
 
-%state STELLARIS_NAME_FORMAT
-
 %{	
 	private ParadoxLocalisationParsingContext context;
 
@@ -150,9 +148,7 @@ ICON_FRAME=[1-9][0-9]* // positive integer
 COMMAND_SCOPE_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+\.
 COMMAND_FIELD_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+\]
 COLOR_ID=[a-zA-Z0-9]
-STRING_TOKEN=[^\"$£§\[<\r\n\\]+ //双引号实际上不需要转义
-
-STELLARIS_NAME_FORMAT_ID=[a-zA-Z0-9_]+
+STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
 
 %%
 
@@ -430,22 +426,6 @@ STELLARIS_NAME_FORMAT_ID=[a-zA-Z0-9_]+
           return STRING_TOKEN;
       }
     }
-}
-
-//stellaris name part rules
-
-<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT> "<" {
-	if(context != null && context.isStellarisNameFormatKey()) {
-		yybegin(STELLARIS_NAME_FORMAT);
-		return LEFT_ANGLE_BRACKET;
-	}
-	return STRING_TOKEN;
-}
-<STELLARIS_NAME_FORMAT> {
-  {STELLARIS_NAME_FORMAT_ID} { return STELLARIS_NAME_FORMAT_ID; }
-  ">" { yybegin(nextStateForText()); return RIGHT_ANGLE_BRACKET; }
-  "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
-  "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
 }
 
 <WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT> {STRING_TOKEN} {return STRING_TOKEN;}

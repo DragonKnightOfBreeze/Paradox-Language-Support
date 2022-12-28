@@ -32,8 +32,6 @@ class ParadoxLocalisationSyntaxHighlighter(
 		private val VALID_ESCAPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.VALID_ESCAPE_KEY)
 		private val INVALID_ESCAPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.INVALID_ESCAPE_KEY)
 		private val BAD_CHARACTER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.BAD_CHARACTER_KEY)
-		//for stellaris
-		private val STELLARIS_NAME_FORMAT_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.STELLARIS_NAME_PART__KEY)
 		private val EMPTY_KEYS = TextAttributesKey.EMPTY_ARRAY
 	}
 	
@@ -58,9 +56,6 @@ class ParadoxLocalisationSyntaxHighlighter(
 			VALID_ESCAPE_TOKEN, DOUBLE_LEFT_BRACKET -> VALID_ESCAPE_KEYS
 			INVALID_ESCAPE_TOKEN -> INVALID_ESCAPE_KEYS
 			BAD_CHARACTER -> BAD_CHARACTER_KEYS
-			//for stellaris
-			LEFT_ANGLE_BRACKET, RIGHT_ANGLE_BRACKET -> MARKER_KEYS
-			STELLARIS_NAME_FORMAT_ID -> STELLARIS_NAME_FORMAT_KEYS
 			else -> EMPTY_KEYS
 		}
 	}

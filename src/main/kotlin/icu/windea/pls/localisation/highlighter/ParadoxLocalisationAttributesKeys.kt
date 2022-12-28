@@ -34,9 +34,6 @@ object ParadoxLocalisationAttributesKeys {
 	@JvmField val LOCALISATION_KEY = createTextAttributesKey("PARADOX_LOCALISATION.LOCALISATION", PROPERTY_KEY_KEY) //underscored
 	@JvmField val SYNCED_LOCALISATION_KEY = createTextAttributesKey("PARADOX_LOCALISATION.SYNCED_LOCALISATION", PROPERTY_KEY_KEY) //underscored
 	
-	//for stellaris
-	@JvmField val STELLARIS_NAME_PART__KEY = createTextAttributesKey("PARADOX_LOCALISATION.STELLARIS_NAME_FORMAT", IDENTIFIER)
-	
 	private val colorKeyCache = CacheBuilder.newBuilder().buildCache { color: Color ->
 		createTextAttributesKey("PARADOX_LOCALISATION.COLOR_${color.rgb}", IDENTIFIER.defaultAttributes.clone().apply {
 			foregroundColor = color

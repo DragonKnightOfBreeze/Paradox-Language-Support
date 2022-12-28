@@ -67,10 +67,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		val configGroup = getCwtConfig(element.project).getValue(element.gameType)
 		val referenceElement = getReferenceElement(originalElement)
 		return buildString {
-			when(referenceElement) {
-				is ParadoxLocalisationStellarisNamePart -> buildStellarisNameFormatDefinition(name, valueSetNames)
-				else -> buildValueSetValueDefinition(name, valueSetNames, configGroup)
-			}
+				buildValueSetValueDefinition(name, valueSetNames, configGroup)
 		}
 	}
 	
@@ -115,10 +112,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		val configGroup = getCwtConfig(element.project).getValue(element.gameType)
 		val referenceElement = getReferenceElement(originalElement)
 		return buildString {
-			when(referenceElement) {
-				is ParadoxLocalisationStellarisNamePart -> buildStellarisNameFormatDefinition(name, valueSetNames)
-				else -> buildValueSetValueDefinition(name, valueSetNames, configGroup)
-			}
+			buildValueSetValueDefinition(name, valueSetNames, configGroup)
 		}
 	}
 	
@@ -150,14 +144,6 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 					append(": ").append(valueSetName)
 				}
 			}
-		}
-	}
-	
-	private fun StringBuilder.buildStellarisNameFormatDefinition(name: String, valueSetNames: List<String>) {
-		definition {
-			//不加上文件信息
-			append(PlsDocBundle.message("prefix.stellarisNamePart")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-			append(": ").append(valueSetNames.first())
 		}
 	}
 	

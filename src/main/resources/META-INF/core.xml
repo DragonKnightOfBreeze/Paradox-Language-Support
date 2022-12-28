@@ -45,7 +45,6 @@
     <codeFoldingOptionsProvider instance="icu.windea.pls.core.editor.ParadoxFoldingOptionsProvider"/>
     
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFilePathIndexImpl"/>
-    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxStellarisNameFormatKeyIndex"/>
     
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxScriptedVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionNameIndex"/>

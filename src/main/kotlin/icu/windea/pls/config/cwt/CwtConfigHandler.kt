@@ -195,14 +195,7 @@ object CwtConfigHandler {
 			}
 			CwtDataType.StellarisNameFormat -> {
 				if(!expression.type.isStringType()) return false
-				if(expression.quoted) return true //"quoted_string" -> specific expression
-				if(isStatic) return false
-				if(isParameterAware) return true
-				if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
-					val selector = localisationSelector().gameType(gameType)
-					return findLocalisation(expression.text, project, preferFirst = true, selector = selector) != null
-				}
-				return true
+				return true //specific expression
 			}
 			CwtDataType.AbsoluteFilePath -> {
 				if(!expression.type.isStringType()) return false

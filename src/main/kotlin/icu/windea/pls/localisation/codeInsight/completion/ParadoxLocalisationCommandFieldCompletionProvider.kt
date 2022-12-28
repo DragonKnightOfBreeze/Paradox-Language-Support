@@ -1,20 +1,12 @@
 package icu.windea.pls.localisation.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
 import com.intellij.util.*
-import icons.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
-import icu.windea.pls.core.handler.*
-import icu.windea.pls.core.search.*
-import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 
 /**

@@ -61,7 +61,6 @@ object ParadoxLocalisationTextHintsRenderer {
 			is ParadoxLocalisationIcon -> renderIconTo(element, editor, builder, context)
 			is ParadoxLocalisationCommand -> renderCodeTo(element, editor, builder, context)
 			is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, editor, builder, context)
-			is ParadoxLocalisationStellarisNamePart -> renderStellarisNamePartTo(element, editor, builder, context)
 			else -> true
 		}
 	}
@@ -158,12 +157,6 @@ object ParadoxLocalisationTextHintsRenderer {
 		val finalPresentation = if(textAttributesKey != null) WithAttributesPresentation(presentation, textAttributesKey, editor) else presentation
 		builder.add(finalPresentation)
 		return continueProcess
-	}
-	
-	private fun PresentationFactory.renderStellarisNamePartTo(element: ParadoxLocalisationStellarisNamePart, editor: Editor, builder: MutableList<InlayPresentation>, context: Context): Boolean {
-		//使用原始文本
-		builder.add(truncatedSmallText(element.text, context.truncateRemain))
-		return continueProcess(context.truncateRemain)
 	}
 	
 	private fun MutableList<InlayPresentation>.mergePresentation(): InlayPresentation? {
