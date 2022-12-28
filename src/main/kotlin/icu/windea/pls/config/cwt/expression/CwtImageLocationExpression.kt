@@ -5,9 +5,9 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.dds.*

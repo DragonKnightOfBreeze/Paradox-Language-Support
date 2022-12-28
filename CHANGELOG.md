@@ -52,11 +52,20 @@
 
 ## 0.7.9
 
+进度：
+* [ ] 对于复杂表达式的作用域上下文获取、相关检查、代码补全时匹配作用域
+* [ ] 作用域连接过长的检查（很多地方）
+* [ ] 在快速文档中显示本地化作用域和命令的作用域上下文 - 需要大幅重构相关代码
+* [ ] 编写生成器解析日志并生成trigger和effect的作用域信息（输入的作用域+输出的作用域）
+* [ ] 重新生成modifiers和modifier_categories
+* [ ] 如果定义类型的顶级属性名是限定且存在多种情况的，如有必要，解析定义信息时总是要求顶级属性名是可能的情况之一，而不是任意字符串（如stellaris中的event）
+
 * BUG修复
   * [X] 修复：[Cannot choose path for library using CK3 #7](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/7)
 * 功能优化
   * [X] 默认将基于子句内联模版的提示项放到前面
   * [X] 实现生成器从`modifiers.log`生成或更新`modifiers.cwt`和`modifier_categories.cwt`
+  * [ ] 如果定义类型的顶级属性名是限定且存在多种情况的，如有必要，解析定义信息时总是要求顶级属性名是可能的情况之一，而不是任意字符串（如stellaris中的event）
 * 新增功能 - 概述
   * [ ] 初步支持处理作用域（`scope`），以及相关的快速文档、内嵌提示、代码检查等功能
     * 基于已有的CWT规则文件（Github仓库中存在的）
@@ -71,7 +80,7 @@
   * 快速类型信息（`View > Type Info`）
     * [X] 如果支持，在类型信息中显示作用域上下文信息
   * 内嵌提示（`Inlay Hints`）
-    * [X] 如果支持，提供作用域上下文的内嵌提示（参考Kotlin Lambda内嵌提示的实现）
+    * [X] 如果支持且位置合适，提供作用域上下文的内嵌提示（参考Kotlin Lambda内嵌提示的实现）
   * 引用解析
     * [ ] 如果是生成的修饰符，可以通过`Ctrl+Click`查找使用
     * [ ] 如果是生成的修饰符，对于其中生成源对应的部分（如`job_xxx_add`中的`xxx`），则会导航到生成源的声明

@@ -1,4 +1,4 @@
-package icu.windea.pls.core.handler
+package icu.windea.pls.config.script
 
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*

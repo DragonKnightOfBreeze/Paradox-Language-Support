@@ -1015,11 +1015,10 @@ object CwtConfigHandler {
 	}
 	
 	fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
-		val lookupElements = mutableSetOf<LookupElement>()
+		//总是提示，无论作用域是否匹配
 		val systemScopeConfigs = configGroup.systemScopes
 		for(systemScopeConfig in systemScopeConfigs.values) {
 			val name = systemScopeConfig.id
-			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 			val element = systemScopeConfig.pointer.element ?: continue
 			val tailText = " from system scopes"
 			val typeFile = systemScopeConfig.pointer.containingFile
@@ -1029,35 +1028,32 @@ object CwtConfigHandler {
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withCaseSensitivity(false) //忽略大小写
 				.withPriority(PlsCompletionPriorities.systemScopePriority)
-			lookupElements.add(lookupElement)
+			result.addElement(lookupElement)
 		}
-		result.addAllElements(lookupElements)
 	}
 	
 	fun completeScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
-		//TODO 进一步匹配scope
-		val lookupElements = mutableSetOf<LookupElement>()
+		val scopeContext = context.scopeContext
+		
 		val linkConfigs = configGroup.linksAsScopeNotData
-		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
-		for(linkConfig in linkConfigs.values) {
-			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
-			if(!scopeMatched) continue
+		for(scope in linkConfigs.values) {
+			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, scope.inputScopes)
+			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
-			val name = linkConfig.name
+			val name = scope.name
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
-			val element = linkConfig.pointer.element ?: continue
+			val element = scope.pointer.element ?: continue
 			val tailText = " from scopes"
-			val typeFile = linkConfig.pointer.containingFile
+			val typeFile = scope.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
 				.withIcon(PlsIcons.Scope)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withCaseSensitivity(false) //忽略大小写
+				.withScopeMatched(scopeMatched)
 				.withPriority(PlsCompletionPriorities.scopePriority)
-			lookupElements.add(lookupElement)
+			result.addElement(lookupElement)
 		}
-		result.addAllElements(lookupElements)
 	}
 	
 	fun completeScopeLinkPrefix(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {

@@ -3,6 +3,7 @@ package icu.windea.pls.core.handler
 import com.intellij.openapi.progress.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
