@@ -13,7 +13,6 @@ import icu.windea.pls.script.psi.*
 
 class IncorrectScopeInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-		if(file !is ParadoxScriptFile) return null
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
 		file.accept(object : PsiRecursiveElementWalkingVisitor() {
 			override fun visitElement(element: PsiElement) {
