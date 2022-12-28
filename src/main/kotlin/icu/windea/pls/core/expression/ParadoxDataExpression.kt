@@ -26,11 +26,22 @@ object BlockParadoxDataExpression: AbstractExpression(PlsConstants.blockFolder),
 	override val isKey: Boolean = false
 }
 
+object UnknownParadoxDataExpression: AbstractExpression(PlsConstants.unknownString), ParadoxDataExpression {
+	override val type: ParadoxDataType = ParadoxDataType.UnknownType
+	override val text: String  = PlsConstants.unknownString
+	override val quoted: Boolean = false
+	override val isKey: Boolean = false
+}
+
 fun Resolver.resolve(element: ParadoxScriptPropertyKey): ParadoxDataExpression {
 	return ParadoxDataExpressionImpl(element.value, element.type, element.text.isLeftQuoted(), true)
 }
 
 fun Resolver.resolve(element: ParadoxScriptValue): ParadoxDataExpression {
+	if(element is ParadoxScriptScriptedVariableReference) {
+		val valueElement = element.referenceValue ?: return UnknownParadoxDataExpression
+		return ParadoxDataExpressionImpl(valueElement.value, valueElement.type, valueElement.text.isLeftQuoted(), false)
+	}
 	if(element.type == ParadoxDataType.BlockType) return BlockParadoxDataExpression
 	return ParadoxDataExpressionImpl(element.value, element.type, element.text.isLeftQuoted(), false)
 }

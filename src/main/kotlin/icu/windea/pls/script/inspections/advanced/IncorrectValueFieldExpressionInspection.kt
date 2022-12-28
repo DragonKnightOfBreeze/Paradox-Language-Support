@@ -1,4 +1,4 @@
-package icu.windea.pls.script.inspections.advanced.expression
+package icu.windea.pls.script.inspections.advanced
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
@@ -72,7 +72,7 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
 	override fun createOptionsPanel(): JComponent {
 		return panel {
 			row {
-				checkBox(PlsBundle.message("script.inspection.expression.incorrectValueFieldExpression.option.reportsUnresolvedDs"))
+				checkBox(PlsBundle.message("script.inspection.advanced.incorrectValueFieldExpression.option.reportsUnresolvedDs"))
 					.bindSelected(::reportsUnresolvedDs)
 					.actionListener { _, component -> reportsUnresolvedDs = component.isSelected }
 			}

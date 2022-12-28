@@ -146,7 +146,7 @@ string ::= value_expr {
 }
 color ::= COLOR_TOKEN {
   extends=value
-  methods=[getValue getColor setColor getType]
+  methods=[getValue getColorType getColorArgs getColor setColor getType]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1

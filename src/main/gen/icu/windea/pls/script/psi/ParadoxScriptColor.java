@@ -12,6 +12,12 @@ public interface ParadoxScriptColor extends ParadoxScriptValue {
   @NotNull
   String getValue();
 
+  @NotNull
+  String getColorType();
+
+  @NotNull
+  List<String> getColorArgs();
+
   @Nullable
   Color getColor();
 

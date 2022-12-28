@@ -6,7 +6,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.ui.JBColor
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
@@ -522,12 +521,21 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun getColorType(element: ParadoxScriptColor) : String {
+		return element.text.substringBefore('{').trim()
+	}
+	
+	@JvmStatic
+	fun getColorArgs(element: ParadoxScriptColor) : List<String> {
+		return element.text.substringIn('{', '}').trim().splitByBlank()
+	}
+	
+	@JvmStatic
 	fun getColor(element: ParadoxScriptColor): Color? {
 		//忽略异常
 		return runCatching {
-			val text = element.text
-			val colorType = text.substringBefore('{').trim()
-			val args = text.substringAfter('{').substringBefore('}').trim().split("\\s+".toRegex())
+			val colorType = element.colorType
+			val args = element.colorArgs
 			
 			//根据不同的颜色类型得到不同的颜色对象
 			when(colorType) {
@@ -546,8 +554,7 @@ object ParadoxScriptPsiImplUtil {
 		//忽略异常
 		runCatching {
 			val project = element.project
-			val text = element.text
-			val colorType = text.substringBefore('{').trim()
+			val colorType = element.colorType
 			//仅支持设置rgb/rgba颜色
 			if(colorType != "rgb" && colorType != "rgba") return //中断操作
 			val shouldBeRgba = color.alpha != 255

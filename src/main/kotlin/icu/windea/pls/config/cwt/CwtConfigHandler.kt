@@ -129,14 +129,22 @@ object CwtConfigHandler {
 				//注意：用括号括起的整数（作为scalar）也匹配这个规则
 				if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
 				//匹配范围
-				if(isExact && configExpression.extraValue<IntRange>()?.contains(expression.text.toIntOrNull()) != false) return true
+				if(isExact) {
+					val (min,max) = configExpression.extraValue<Tuple2<Int, Int?>>() ?: return true
+					val value = expression.text.toIntOrNull() ?: return true
+					return min <= value && (max == null || max >= value)
+				}
 				return false
 			}
 			CwtDataType.Float -> {
 				//注意：用括号括起的浮点数（作为scalar）也匹配这个规则
 				if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) return true
 				//匹配范围
-				if(isExact && configExpression.extraValue<FloatRange>()?.contains(expression.text.toFloatOrNull()) != false) return true
+				if(isExact) {
+					val (min,max) = configExpression.extraValue<Tuple2<Float, Float?>>() ?: return true
+					val value = expression.text.toFloatOrNull() ?: return true
+					return min <= value && (max == null || max >= value)
+				}
 				return false
 			}
 			CwtDataType.Scalar -> {

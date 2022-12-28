@@ -1,0 +1,22 @@
+<html>
+<body>
+  <p>
+    Reports insufficient expressions.
+  </p>
+  <p>
+    A expression (key / value) will be considered as insufficient in following situations:
+  </p>
+  <ul>
+    <li>It's a number matched by a CWT expression, but its value is outside the number range declared by this CWT expression.</li>
+    <li>It's a color field matched by a CWT expression, but its color type does not match the color type declared by this CWT expression.</li>
+    <li>It's a scope field matched by a CWT expression, but its value does not match the scopes declared by this CWT expression.</li>
+    <!--<li>It's a value or variable field matched by a CWT expression, but its value is outside the number range declared by this CWT expression.</li>-->
+    <!--<li>It's a value or variable field matched by a CWT expression, but its value is not an integer while integer value is required by this CWT expression..</li>-->
+  </ul>
+  <!-- tooltip end -->
+  <p>
+    Based on plugin's built-in
+    <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>.
+  </p>
+</body>
+</html>

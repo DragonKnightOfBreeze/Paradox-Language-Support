@@ -28,15 +28,19 @@ class CwtKeyExpression private constructor(
 				CwtKeyExpression(expressionString, CwtDataType.Int)
 			}
 			expressionString.surroundsWith("int[", "]") -> {
-				val extraValue = expressionString.substring(4, expressionString.length - 1).toIntRangeOrNull()
-				CwtKeyExpression(expressionString, CwtDataType.Int, null, extraValue)
+				val range = expressionString.substring(4, expressionString.length - 1)
+					.split("..", limit = 2)
+					.let { tupleOf(it.getOrNull(0)?.toIntOrNull() ?: 0, it.getOrNull(1)?.toIntOrNull()) }
+				CwtKeyExpression(expressionString, CwtDataType.Int, null, range)
 			}
 			expressionString == "float" -> {
 				CwtKeyExpression(expressionString, CwtDataType.Float)
 			}
 			expressionString.surroundsWith("float[", "]") -> {
-				val extraValue = expressionString.substring(6, expressionString.length - 1).toFloatRangeOrNull()
-				CwtKeyExpression(expressionString, CwtDataType.Float, null, extraValue)
+				val range = expressionString.substring(6, expressionString.length - 1)
+					.split("..", limit = 2)
+					.let { tupleOf(it.getOrNull(0)?.toIntOrNull() ?: 0, it.getOrNull(1)?.toIntOrNull()) }
+				CwtKeyExpression(expressionString, CwtDataType.Float, null, range)
 			}
 			expressionString == "scalar" -> {
 				CwtKeyExpression(expressionString, CwtDataType.Scalar)
