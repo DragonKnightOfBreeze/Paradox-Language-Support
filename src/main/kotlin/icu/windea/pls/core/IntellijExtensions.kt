@@ -51,16 +51,6 @@ fun String.compareToIgnoreCase(other: String): Int {
 //endregion
 
 //region Misc Extensions
-fun LookupElement.withPriority(priority: Double?, offset: Int = 0): LookupElement {
-	if(priority == null) return this
-	val finalPriority =  priority + offset
-	return PrioritizedLookupElement.withPriority(this, finalPriority)
-}
-
-fun LookupElement.withExplicitProximity(explicitProximity: Int): LookupElement {
-	return PrioritizedLookupElement.withExplicitProximity(this, explicitProximity)
-}
-
 //com.intellij.refactoring.actions.BaseRefactoringAction.findRefactoringTargetInEditor
 fun DataContext.findElement(): PsiElement? {
 	var element = this.getData(CommonDataKeys.PSI_ELEMENT)

@@ -20,8 +20,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 	@Suppress("KotlinConstantConditions")
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		val position = parameters.position
-		val element = position.parent.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
+		val element = parameters.position.parent.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
 		
 		val file = parameters.originalFile
 		val project = file.project

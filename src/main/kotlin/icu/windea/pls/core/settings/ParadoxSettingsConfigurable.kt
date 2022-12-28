@@ -157,6 +157,12 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 				indent { 
 					//maxExpressionCountInOneLine
 					row {
+						checkBox(PlsBundle.message("settings.completion.preferCompleteWithClauseTemplate"))
+							.bindSelected(settings.completion::preferCompleteWithClauseTemplate)
+							.applyToComponent { toolTipText = PlsBundle.message("settings.completion.preferCompleteWithClauseTemplate.tooltip") }
+					}
+					//maxExpressionCountInOneLine
+					row {
 						label(PlsBundle.message("settings.completion.maxExpressionCountInOneLine")).applyToComponent {
 							toolTipText = PlsBundle.message("settings.completion.maxExpressionCountInOneLine.tooltip")
 						}

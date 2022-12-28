@@ -13,8 +13,7 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		val position = parameters.position
-		val element = position.parent ?: return
+		val element = parameters.position.parent ?: return
 		
 		ProgressManager.checkCanceled()
 		
@@ -51,11 +50,11 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 			//这里需要特殊处理一下，标记属性的值是否未填写
 			val incomplete = !quoted && keyword.isEmpty()
 			try {
-				definitionElement.putUserData(PlsKeys.incompleteMarkerKey, incomplete)
+				definitionElement.putUserData(PlsKeys.isIncompleteKey, incomplete)
 				//进行提示
 				CwtConfigHandler.addValueCompletions(definitionElement, context, resultToUse)
 			} finally {
-				definitionElement.putUserData(PlsKeys.incompleteMarkerKey, null)
+				definitionElement.putUserData(PlsKeys.isIncompleteKey, null)
 			}
 		}
 		if(mayBeBlockValue) {

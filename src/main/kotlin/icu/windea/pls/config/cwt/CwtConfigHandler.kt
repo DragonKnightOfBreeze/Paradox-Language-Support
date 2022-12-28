@@ -331,9 +331,6 @@ object CwtConfigHandler {
 			CwtDataType.SingleAliasRight -> {
 				return false //不在这里处理
 			}
-			CwtDataType.SingleAliasRight -> {
-				return false //不在这里处理
-			}
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataType.AliasKeysField -> {
 				if(!isStatic && isParameterAware) return true
@@ -814,8 +811,8 @@ object CwtConfigHandler {
 							.withTypeText(typeFile?.name)
 							.withTypeIcon(typeFile?.icon)
 							.caseInsensitive()
-							.withPriority(PlsCompletionPriorities.enumPriority)
 							.withScopeMatched(scopeMatched)
+							.withPriority(PlsCompletionPriorities.enumPriority)
 						result.addScriptExpressionElement(context, builder)
 					}
 				}
@@ -899,8 +896,8 @@ object CwtConfigHandler {
 					.withTypeText(typeFile?.name)
 					.withTypeIcon(typeFile?.icon)
 					.caseInsensitive()
-					.withPriority(PlsCompletionPriorities.constantKeyPriority)
 					.withScopeMatched(scopeMatched)
+					.withPriority(PlsCompletionPriorities.constantKeyPriority)
 				result.addScriptExpressionElement(context, builder)
 			}
 			CwtDataType.Constant -> {
@@ -928,8 +925,8 @@ object CwtConfigHandler {
 					.withTypeText(typeFile?.name)
 					.withTypeIcon(typeFile?.icon)
 					.caseInsensitive()
-					.withPriority(PlsCompletionPriorities.constantPriority)
 					.withScopeMatched(scopeMatched)
+					.withPriority(PlsCompletionPriorities.constantPriority)
 				result.addScriptExpressionElement(context, builder)
 			}
 			else -> pass()
@@ -985,8 +982,8 @@ object CwtConfigHandler {
 				.withTailText(tailText)
 				.withTypeText(typeFile?.name)
 				.withTypeIcon(typeFile?.icon)
-				.withPriority(PlsCompletionPriorities.modifierPriority)
 				.withScopeMatched(scopeMatched)
+				.withPriority(PlsCompletionPriorities.modifierPriority)
 			result.addScriptExpressionElement(context, builder)
 		}
 		result.addAllElements(lookupElements)
@@ -1043,8 +1040,8 @@ object CwtConfigHandler {
 		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
-			if(!isScopeMatched) continue
+			val scopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
+			if(!scopeMatched) continue
 			
 			val name = linkConfig.name
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -1072,8 +1069,8 @@ object CwtConfigHandler {
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
-			if(!isScopeMatched) continue
+			val scopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
+			if(!scopeMatched) continue
 			
 			val name = linkConfig.prefix ?: continue
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -1121,8 +1118,8 @@ object CwtConfigHandler {
 			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
 			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
 			if(prefix == null) {
-				val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
-				if(!isScopeMatched) continue
+				val scopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
+				if(!scopeMatched) continue
 			}
 			context.put(PlsCompletionKeys.configKey, linkConfig)
 			completeScriptExpression(context, result)
@@ -1139,8 +1136,8 @@ object CwtConfigHandler {
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
-			if(!isScopeMatched) continue
+			val scopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
+			if(!scopeMatched) continue
 			
 			val name = linkConfig.name
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -1168,8 +1165,8 @@ object CwtConfigHandler {
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
-			if(!isScopeMatched) continue
+			val scopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
+			if(!scopeMatched) continue
 			
 			val name = linkConfig.prefix ?: continue
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -1225,8 +1222,8 @@ object CwtConfigHandler {
 			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
 			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
 			if(prefix == null) {
-				val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
-				if(!isScopeMatched) continue
+				val scopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
+				if(!scopeMatched) continue
 			}
 			context.put(PlsCompletionKeys.configKey, linkConfig)
 			completeScriptExpression(context, result)
@@ -1301,38 +1298,68 @@ object CwtConfigHandler {
 	}
 	
 	fun completeLocalisationCommandScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
-		val lookupElements = mutableSetOf<LookupElement>()
+		val scopeContext = context.scopeContext
+		
 		val localisationLinks = configGroup.localisationLinks
-		val outputScope = prevScope?.let { prevScope -> localisationLinks[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
-		for(linkConfig in localisationLinks.values) {
-			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val isScopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
-			if(!isScopeMatched) continue
+		for(localisationScope in localisationLinks.values) {
+			val scopeMatched = ScopeConfigHandler.matchesScope(scopeContext, localisationScope.inputScopes)
+			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
-			val name = linkConfig.name
-			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
-			val element = linkConfig.pointer.element ?: continue
+			val name = localisationScope.name
+			val element = localisationScope.pointer.element ?: continue
 			val tailText = " from localisation scopes"
-			val typeFile = linkConfig.pointer.containingFile
+			val typeFile = localisationScope.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
 				.withIcon(PlsIcons.LocalisationCommandScope)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withCaseSensitivity(false) //忽略大小写
+				.withScopeMatched(scopeMatched)
 				.withPriority(PlsCompletionPriorities.scopePriority)
-			lookupElements.add(lookupElement)
+			result.addElement(lookupElement)
 		}
-		result.addAllElements(lookupElements)
+	}
+	
+	fun completeEventTarget(file: PsiFile, result: CompletionResultSet) {
+		val project = file.project
+		val eventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
+		val eventTargetQuery = ParadoxValueSetValueSearch.search("event_target", project, selector = eventTargetSelector)
+		eventTargetQuery.processQuery { eventTarget ->
+			val value = ParadoxValueSetValueHandler.getName(eventTarget.value) ?: return@processQuery true
+			val icon = PlsIcons.ValueSetValue
+			val tailText = " from value[event_target]"
+			val lookupElement = LookupElementBuilder.create(eventTarget, value)
+				.withIcon(icon)
+				.withTailText(tailText, true)
+				.withCaseSensitivity(false) //忽略大小写
+			result.addElement(lookupElement)
+			true
+		}
+		
+		val globalEventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
+		val globalEventTargetQuery = ParadoxValueSetValueSearch.search("global_event_target", project, selector = globalEventTargetSelector)
+		globalEventTargetQuery.processQuery { globalEventTarget ->
+			val value = ParadoxValueSetValueHandler.getName(globalEventTarget) ?: return@processQuery true
+			val icon = PlsIcons.ValueSetValue
+			val tailText = " from value[global_event_target]"
+			val lookupElement = LookupElementBuilder.create(globalEventTarget, value)
+				.withIcon(icon)
+				.withTailText(tailText, true)
+				.withCaseSensitivity(false) //忽略大小写
+			result.addElement(lookupElement)
+			true
+		}
 	}
 	
 	fun completeLocalisationCommandField(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
-		//TODO 匹配scope
+		val scopeContext = context.scopeContext
+		
 		val localisationCommands = configGroup.localisationCommands
-		//批量提示
-		val lookupElements = mutableSetOf<LookupElement>()
 		for(localisationCommand in localisationCommands.values) {
+			val scopeMatched = ScopeConfigHandler.matchesScope(scopeContext, localisationCommand.supportedScopes)
+			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+			
 			val name = localisationCommand.name
-			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 			val element = localisationCommand.pointer.element ?: continue
 			val tailText = " from localisation commands"
 			val typeFile = localisationCommand.pointer.containingFile
@@ -1341,10 +1368,45 @@ object CwtConfigHandler {
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withCaseSensitivity(false) //忽略大小写
+				.withScopeMatched(scopeMatched)
 				.withPriority(PlsCompletionPriorities.localisationCommandPriority)
-			lookupElements.add(lookupElement)
+			result.addElement(lookupElement)
 		}
-		result.addAllElements(lookupElements)
+	}
+	
+	fun completeScriptedLoc(file: PsiFile, result: CompletionResultSet) {
+		val project = file.project
+		val scriptedLocSelector = definitionSelector().gameTypeFrom(file).preferRootFrom(file).distinctByName()
+		val scriptedLocQuery = ParadoxDefinitionSearch.search("scripted_loc", project, selector = scriptedLocSelector)
+		scriptedLocQuery.processQuery { scriptedLoc ->
+			val name = scriptedLoc.definitionInfo?.name ?: return@processQuery true //不应该为空
+			val icon = PlsIcons.Definition
+			val tailText = " from <scripted_loc>"
+			val typeFile = scriptedLoc.containingFile
+			val lookupElement = LookupElementBuilder.create(scriptedLoc, name).withIcon(icon)
+				.withTailText(tailText, true)
+				.withTypeText(typeFile.name, typeFile.icon, true)
+				.withCaseSensitivity(false) //忽略大小写
+			result.addElement(lookupElement)
+			true
+		}
+	}
+	
+	fun completeVariable(file: PsiFile, result: CompletionResultSet) {
+		val project = file.project
+		val variableSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
+		val variableQuery = ParadoxValueSetValueSearch.search("variable", project, selector = variableSelector)
+		variableQuery.processQuery { variable ->
+			val value = ParadoxValueSetValueHandler.getName(variable) ?: return@processQuery true
+			val icon = PlsIcons.Variable
+			val tailText = " from value[variable]"
+			val lookupElement = LookupElementBuilder.create(variable, value)
+				.withIcon(icon)
+				.withTailText(tailText, true)
+				.withCaseSensitivity(false) //忽略大小写
+			result.addElement(lookupElement)
+			true
+		}
 	}
 	
 	fun completeParameters(element: PsiElement, read: Boolean, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {

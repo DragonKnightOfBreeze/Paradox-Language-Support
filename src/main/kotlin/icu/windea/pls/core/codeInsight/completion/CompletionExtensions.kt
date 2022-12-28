@@ -46,6 +46,23 @@ fun PsiElement.getFullKeyword(offsetInParent: Int): String {
 	return (text.substring(0, offsetInParent) + text.substring(offsetInParent + PlsConstants.dummyIdentifier.length)).unquote()
 }
 
+fun LookupElementBuilder.withScopeMatched(scopeMatched: Boolean) : LookupElementBuilder {
+	if(scopeMatched) return this
+	putUserData(PlsKeys.scopeMismatchedKey, true)
+	return withItemTextForeground(JBColor.GRAY)
+}
+
+fun LookupElement.withPriority(priority: Double?, offset: Double = 0.0): LookupElement {
+	val scopeMatched = getUserData(PlsKeys.scopeMismatchedKey) != true
+	if(priority == null && scopeMatched) return this
+	val finalPriority =  (priority ?: 0.0) + offset + (if(scopeMatched) 0 else PlsCompletionPriorities.scopeMismatchOffset)
+	return PrioritizedLookupElement.withPriority(this, finalPriority)
+}
+
+fun LookupElement.withExplicitProximity(explicitProximity: Int): LookupElement {
+	return PrioritizedLookupElement.withExplicitProximity(this, explicitProximity)
+}
+
 fun CompletionResultSet.addExpressionElement(
 	context: ProcessingContext,
 	lookupElement: LookupElement
@@ -76,7 +93,8 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 			val lookupElement1 = LookupElementBuilder.create("")
 				.withPresentableText(tailText1)
 			addScriptExpressionElementWithClauseTemplate(context, lookupElement1, targetConfig) {
-				withPriority(PlsCompletionPriorities.keywordPriority, -1) //under "{...}"
+				val offset = if(getSettings().completion.preferCompleteWithClauseTemplate) 1.0 else -1.0 
+				withPriority(PlsCompletionPriorities.keywordPriority, offset) //under "{...}"
 			}
 		}
 	}
@@ -90,7 +108,6 @@ fun CompletionResultSet.addScriptExpressionElement(
 	if(!builder.scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return
 	
 	val config = context.config
-	val scopeMismatchOffset = if(scopeMatched) 0 else PlsCompletionPriorities.scopeMismatchOffset
 	
 	val completeWithValue = getSettings().completion.completeWithValue
 	val propertyConfig = when {
@@ -122,6 +139,9 @@ fun CompletionResultSet.addScriptExpressionElement(
 	var lookupElement = when {
 		element != null -> LookupElementBuilder.create(element, lookupString)
 		else -> LookupElementBuilder.create(lookupString)
+	}
+	if(!scopeMatched) {
+		lookupElement.putUserData(PlsKeys.scopeMismatchedKey, true)
 	}
 	if(bold) {
 		lookupElement = lookupElement.bold()
@@ -155,7 +175,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 	if(isKeyOrValueOnly) {
 		val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
 			applyKeyOrValueInsertHandler(context, c)
-		}.withPriority(priority, scopeMismatchOffset)
+		}.withPriority(priority)
 		addElement(resultLookupElement)
 		return
 	}
@@ -163,7 +183,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 	if(isKey) {
 		val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
 			applyKeyAndValueInsertHandler(c, context, constantValue, insertCurlyBraces)
-		}.withPriority(priority, scopeMismatchOffset)
+		}.withPriority(priority)
 		addElement(resultLookupElement)
 	}
 	
@@ -178,7 +198,8 @@ fun CompletionResultSet.addScriptExpressionElement(
 			}
 			val lookupElement1 = lookupElement.withTailText(tailText1)
 			addScriptExpressionElementWithClauseTemplate(context, lookupElement1, targetConfig) {
-				withPriority(priority, -1 + scopeMismatchOffset)
+				val offset = if(getSettings().completion.preferCompleteWithClauseTemplate) 1.0 else -1.0
+				withPriority(priority, offset)
 			}
 		}
 	}

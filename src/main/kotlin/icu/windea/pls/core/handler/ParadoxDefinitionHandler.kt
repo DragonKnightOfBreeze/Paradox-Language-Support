@@ -24,7 +24,7 @@ object ParadoxDefinitionHandler {
 	@JvmStatic
 	fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
 		ProgressManager.checkCanceled()
-		val notUseCache = element.getUserData(PlsKeys.incompleteMarkerKey) == true
+		val notUseCache = element.getUserData(PlsKeys.isIncompleteKey) == true
 		if(notUseCache) {
 			val file = element.containingFile
 			return resolve(element, file)
@@ -177,7 +177,7 @@ object ParadoxDefinitionHandler {
 		//判断element的propertyValue是否需要是block
 		val declarationConfig = configGroup.declarations[typeConfig.name]?.propertyConfig
 		//当进行代码补全时需要特殊处理
-		val isBlock = if(element.getUserData(PlsKeys.incompleteMarkerKey) == true) null
+		val isBlock = if(element.getUserData(PlsKeys.isIncompleteKey) == true) null
 		else element.castOrNull<ParadoxScriptProperty>()?.propertyValue?.let { it is ParadoxScriptBlock }
 		if(declarationConfig != null && isBlock != null) {
 			val isBlockConfig = declarationConfig.valueExpression == CwtValueExpression.BlockExpression

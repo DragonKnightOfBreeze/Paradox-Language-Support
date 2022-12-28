@@ -24,7 +24,7 @@ class IncorrectScopeInspection: LocalInspectionTool() {
 				if(!ScopeConfigHandler.isScopeContextSupported(element)) return
 				val scopeContext = ScopeConfigHandler.getScopeContext(element, file) ?: return
 				val supportedScopes = config.supportedScopes
-				if(ScopeConfigHandler.matchesScope(scopeContext, supportedScopes)) {
+				if(!ScopeConfigHandler.matchesScope(scopeContext, supportedScopes)) {
 					val propertyKey = element.propertyKey
 					val location = propertyKey
 					val description = PlsBundle.message("script.inspection.scope.incorrectScope.description.1", propertyKey.expression, supportedScopes.joinToString(), scopeContext.thisScope)

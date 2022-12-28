@@ -105,5 +105,7 @@ object PlsKeys {
 	val cwtConfigKey = Key.create<CwtConfig<*>>("paradox.cwtConfig")
 	
 	//用于在进行代码补全时标记一个property的propertyValue未填写
-	val incompleteMarkerKey = Key.create<Boolean>("paradox.incompleteMarker")
+	val isIncompleteKey = Key.create<Boolean>("paradox.isIncomplete")
+	
+	val scopeMismatchedKey = Key.create<Boolean>("paradox.scopeMismatched")
 }

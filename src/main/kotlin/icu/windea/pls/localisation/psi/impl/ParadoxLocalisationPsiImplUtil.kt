@@ -98,7 +98,7 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getTextOffset(element: ParadoxLocalisationProperty): Int{
+	fun getTextOffset(element: ParadoxLocalisationProperty): Int {
 		return element.propertyKey.textOffset
 	}
 	
@@ -131,7 +131,7 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun toString(element: ParadoxLocalisationProperty): String{
+	fun toString(element: ParadoxLocalisationProperty): String {
 		return "ParadoxLocalisationProperty(name=${element.name})"
 	}
 	//endregion
@@ -140,11 +140,11 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun getIcon(element: ParadoxLocalisationPropertyReference, @IconFlags flags: Int): Icon {
 		val resolved = element.reference?.resolve()
-		return when{
+		return when {
 			resolved is ParadoxLocalisationProperty -> PlsIcons.Localisation
 			resolved is CwtProperty -> PlsIcons.PredefinedParameter
 			else -> PlsIcons.LocalisationProperty
-		} 
+		}
 	}
 	
 	@JvmStatic
@@ -229,7 +229,7 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getFrame(element: ParadoxLocalisationIcon): Int{
+	fun getFrame(element: ParadoxLocalisationIcon): Int {
 		//NOTE 这里的帧数可能用propertyReference表示，对应脚本中的参数，这时帧数传0
 		val iconFrameElement = element.iconFrame //默认为0（不切分）
 		if(iconFrameElement != null) return iconFrameElement.text.toIntOrNull() ?: 0
@@ -317,19 +317,26 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getType(element: ParadoxLocalisationCommandScope) : String? {
+	fun getType(element: ParadoxLocalisationCommandScope): String? {
 		val resolved = element.reference.resolve()
 		val config = resolved?.getUserData(PlsKeys.cwtConfigKey)
 		return when {
 			config is CwtLocalisationLinkConfig -> "localisation scope"
 			config is CwtSystemScopeConfig -> "system scope"
-			resolved is ParadoxValueSetValueElement -> "event target"
+			resolved is ParadoxValueSetValueElement -> {
+				val valueSetName = resolved.valueSetName
+				when {
+					valueSetName == "event_target" -> "value[event_target]"
+					valueSetName == "global_event_target" -> "value[global_event_target]"
+					else -> null
+				}
+			}
 			else -> null
 		}
 	}
 	
 	@JvmStatic
-	fun getExpression(element: ParadoxLocalisationCommandScope): String{
+	fun getExpression(element: ParadoxLocalisationCommandScope): String {
 		return element.name
 	}
 	//endregion
@@ -360,18 +367,19 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getType(element: ParadoxLocalisationCommandField) : String? {
+	fun getType(element: ParadoxLocalisationCommandField): String? {
 		val resolved = element.reference?.resolve()
 		val config = resolved?.getUserData(PlsKeys.cwtConfigKey)
 		return when {
 			config is CwtLocalisationCommandConfig -> "localisation command"
-			resolved is ParadoxValueSetValueElement -> "variable"
+			resolved is ParadoxScriptProperty -> "<scripted_loc>"
+			resolved is ParadoxValueSetValueElement -> "value[variable]"
 			else -> null
 		}
 	}
 	
 	@JvmStatic
-	fun getExpression(element: ParadoxLocalisationCommandField): String{
+	fun getExpression(element: ParadoxLocalisationCommandField): String {
 		return element.name
 	}
 	//endregion

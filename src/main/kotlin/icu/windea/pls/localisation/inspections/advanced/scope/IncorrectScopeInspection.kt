@@ -47,7 +47,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
 						}
 					}
 					//TODO scripted loc - any scope
-					resolved is ParadoxScriptDefinitionElement -> {
+					resolved is ParadoxScriptProperty -> {
 						return 
 					}
 					//TODO variable - not supported yet

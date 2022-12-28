@@ -7,6 +7,7 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.handler.*
@@ -19,55 +20,27 @@ import icu.windea.pls.localisation.psi.*
  */
 class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		val offsetInParent = parameters.offset - parameters.position.textRange.startOffset
-		val keyword = parameters.position.getKeyword(offsetInParent)
+		val element = parameters.position.parent.castOrNull<ParadoxLocalisationCommandIdentifier>() ?: return
+		val offsetInParent = parameters.offset - element.textRange.startOffset
+		val keyword = element.getKeyword(offsetInParent)
 		val file = parameters.originalFile
 		val project = file.project
 		val gameType = file.fileInfo?.rootInfo?.gameType ?: return
 		val configGroup = getCwtConfig(project).get(gameType) ?: return
 		
 		context.put(PlsCompletionKeys.completionTypeKey, parameters.completionType)
+		context.put(PlsCompletionKeys.contextElementKey, element)
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
-		
-		val prevScope = parameters.position.parentOfType<ParadoxLocalisationCommandIdentifier>()?.prevIdentifier?.name
-		if(prevScope != null) context.put(PlsCompletionKeys.prevScopeKey, prevScope)
+		context.put(PlsCompletionKeys.scopeContextKey, ScopeConfigHandler.getScopeContext(element, file))
 		
 		//提示scope
 		CwtConfigHandler.completeSystemScope(context, result)
 		CwtConfigHandler.completeLocalisationCommandScope(context, result)
 		
-		//提示value[event_target]
 		ProgressManager.checkCanceled()
-		val eventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
-		val eventTargetQuery = ParadoxValueSetValueSearch.search("event_target", project, selector = eventTargetSelector)
-		eventTargetQuery.processQuery { eventTarget ->
-			val value = ParadoxValueSetValueHandler.getName(eventTarget.value) ?: return@processQuery true
-			val icon = PlsIcons.ValueSetValue
-			val tailText = " from value[event_target]"
-			val lookupElement = LookupElementBuilder.create(eventTarget, value)
-				.withIcon(icon)
-				.withTailText(tailText, true)
-				.withCaseSensitivity(false) //忽略大小写
-			result.addElement(lookupElement)
-			true
-		}
-		
-		//提示value[global_event_target]
-		ProgressManager.checkCanceled()
-		val globalEventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
-		val globalEventTargetQuery = ParadoxValueSetValueSearch.search("global_event_target", project, selector = globalEventTargetSelector)
-		globalEventTargetQuery.processQuery { globalEventTarget ->
-			val value = ParadoxValueSetValueHandler.getName(globalEventTarget.value) ?: return@processQuery true
-			val icon = PlsIcons.ValueSetValue
-			val tailText = " from value[global_event_target]"
-			val lookupElement = LookupElementBuilder.create(globalEventTarget, value)
-				.withIcon(icon)
-				.withTailText(tailText, true)
-				.withCaseSensitivity(false) //忽略大小写
-			result.addElement(lookupElement)
-			true
-		}
+		//提示value[event_target]和value[global_event_target]
+		CwtConfigHandler.completeEventTarget(file, result)
 	}
 }
