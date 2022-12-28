@@ -7,19 +7,19 @@ system_scopes = {
 	### Root
 	Root = {}
 	### Prev
-	Prev = {}
+	Prev = { base_id = Prev }
 	### Prev Prev
-	PrevPrev = {}
+	PrevPrev = { base_id = Prev }
 	### Prev Prev Prev
-	PrevPrevPrev = {}
+	PrevPrevPrev = { base_id = Prev }
 	### Prev Prev Prev Prev
-	PrevPrevPrevPrev = {}
+	PrevPrevPrevPrev = { base_id = Prev }
 	### From
-	From = {}
+	From = { base_id = From }
 	### From From
-	FromFrom = {}
+	FromFrom = { base_id = From }
 	### From From From
-	FromFromFrom = {}
+	FromFromFrom = { base_id = From }
 	### From From From From
-	FromFromFromFrom = {}
+	FromFromFromFrom = { base_id = From }
 }

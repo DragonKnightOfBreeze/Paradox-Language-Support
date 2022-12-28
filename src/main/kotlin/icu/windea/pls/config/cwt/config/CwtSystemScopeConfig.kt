@@ -10,6 +10,7 @@ class CwtSystemScopeConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigGroupInfo,
 	val id: String,
+	val baseId: String,
 	val description: String,
 	val name: String
 ): CwtConfig<CwtProperty> {

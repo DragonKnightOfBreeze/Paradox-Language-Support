@@ -25,9 +25,9 @@ interface CwtConfigGroup {
 	
 	val folders: Set<String>
 	val types: Map<String, CwtTypeConfig>
-	val values: Map<String, CwtEnumConfig>
+	val values: Map<String, CwtEnumValueConfig>
 	//enumValue可以是int、float、bool类型，统一用字符串表示
-	val enums: Map<String, CwtEnumConfig>
+	val enums: Map<String, CwtEnumValueConfig>
 	//基于enum_name进行定位，对应的可能是key/value
 	val complexEnums: Map<String, CwtComplexEnumConfig>
 	

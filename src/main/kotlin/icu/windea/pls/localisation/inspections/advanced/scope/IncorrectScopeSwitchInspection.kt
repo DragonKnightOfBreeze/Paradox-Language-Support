@@ -2,18 +2,18 @@ package icu.windea.pls.localisation.inspections.advanced.scope
 
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
+import icu.windea.pls.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.selector.*
-import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
-		val project = file.project
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
 		file.accept(object : PsiRecursiveElementWalkingVisitor() {
 			override fun visitElement(element: PsiElement) {
@@ -30,20 +30,40 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 			}
 			
 			private fun visitLocalisationCommandScope(element: ParadoxLocalisationCommandScope) {
-				//currently only use "localisation links" here
-				val gameType = selectGameType(element) ?: return
 				val resolved = element.reference.resolve() ?: return
 				when {
 					//system scope or localisation scope
 					resolved is CwtProperty -> {
-						val config = getCwtConfig(project).getValue(gameType).localisationLinks[element.name] ?: return
-						val scopeContext = ScopeConfigHandler.getScopeContext(element, file) ?: return
-						val inputScopes = config.inputScopes
+						val config = resolved.getUserData(PlsKeys.cwtConfigKey)
+						when{
+							config is CwtLocalisationLinkConfig -> {
+								val scopeContext = ScopeConfigHandler.getScopeContext(element, file) ?: return
+								val supportedScopes = config.inputScopes
+								if(!ScopeConfigHandler.matchesScope(scopeContext, supportedScopes)) {
+									val location = element
+									val description = PlsBundle.message("localisation.inspection.scope.incorrectScopeSwitch.description.1",
+										element.name, supportedScopes.joinToString(), scopeContext.thisScope)
+									holder.registerProblem(location, description)
+								}
+							}
+							//TODO depends on usages, cannot check now
+							//config is CwtSystemScopeConfig -> {
+							//	val scopeContext = ScopeConfigHandler.getScopeContext(element, file) ?: return
+							//	val resolvedScope = ScopeConfigHandler.resolveScopeBySystemScope(config, scopeContext)
+							//	if(resolvedScope == null) {
+							//		val location = element
+							//		val description = PlsBundle.message("localisation.inspection.scope.incorrectScopeSwitch.description.2",
+							//			element.name)
+							//		holder.registerProblem(location, description)
+							//	}
+							//}
+						}
 					}
-					//event target or global event target - not supported yet
-					resolved is ParadoxValueSetValueElement -> return //TODO
+					//TODO event target or global event target - not supported yet
+					resolved is ParadoxValueSetValueElement -> {
+						return
+					}
 				}
-				
 			}
 		})
 		return holder.resultsArray

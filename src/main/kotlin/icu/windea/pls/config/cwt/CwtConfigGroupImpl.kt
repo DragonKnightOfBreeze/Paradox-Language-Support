@@ -38,9 +38,9 @@ class CwtConfigGroupImpl(
 	
 	override val folders: MutableSet<String> = mutableSetOf()
 	override val types: MutableMap<String, CwtTypeConfig> = mutableMapOf()
-	override val values: MutableMap<String, CwtEnumConfig> = mutableMapOf()
+	override val values: MutableMap<String, CwtEnumValueConfig> = mutableMapOf()
 	//enumValue可以是int、float、bool类型，统一用字符串表示
-	override val enums: MutableMap<String, CwtEnumConfig> = mutableMapOf()
+	override val enums: MutableMap<String, CwtEnumValueConfig> = mutableMapOf()
 	//基于enum_name进行定位，对应的可能是key/value
 	override val complexEnums: MutableMap<String, CwtComplexEnumConfig> = mutableMapOf()
 	
@@ -252,9 +252,10 @@ class CwtConfigGroupImpl(
 		val configs = fileConfig.properties.find { it.key == "system_scopes" }?.properties ?: return
 		configs.forEach { property ->
 			val id = property.key
+			val baseId = property.properties?.find { p -> p.key == "base_id" }?.stringValue ?: id
 			val description = property.documentation.orEmpty()
 			val name = property.stringValue ?: id
-			val config = CwtSystemScopeConfig(property.pointer, fileConfig.info, id, description, name)
+			val config = CwtSystemScopeConfig(property.pointer, fileConfig.info, id, baseId, description, name)
 			systemScopes.put(id, config)
 		}
 	}
@@ -629,12 +630,12 @@ class CwtConfigGroupImpl(
 		return CwtLocationConfig(propertyConfig.pointer, propertyConfig.info, name, expression, required, primary)
 	}
 	
-	private fun resolveEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtEnumConfig? {
+	private fun resolveEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtEnumValueConfig? {
 		val pointer = propertyConfig.pointer
 		val info = propertyConfig.info
 		val propertyConfigValues = propertyConfig.values ?: return null
 		if(propertyConfigValues.isEmpty()) {
-			return CwtEnumConfig(pointer, info, name, emptySet(), emptyMap())
+			return CwtEnumValueConfig(pointer, info, name, emptySet(), emptyMap())
 		}
 		val values = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
 		val valueConfigMap = CollectionFactory.createCaseInsensitiveStringMap<CwtValueConfig>() //忽略大小写
@@ -642,7 +643,7 @@ class CwtConfigGroupImpl(
 			values.add(propertyConfigValue.value)
 			valueConfigMap.put(propertyConfigValue.value, propertyConfigValue)
 		}
-		return CwtEnumConfig(pointer, info, name, values, valueConfigMap)
+		return CwtEnumValueConfig(pointer, info, name, values, valueConfigMap)
 	}
 	
 	private fun resolveComplexEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtComplexEnumConfig? {

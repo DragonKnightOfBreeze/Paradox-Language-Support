@@ -11,7 +11,9 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.handler.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandIdentifier
+import icu.windea.pls.core.psi.*
+import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -28,8 +30,9 @@ object ScopeConfigHandler {
 	 * 得到作用域的ID（全小写+下划线）。
 	 */
 	@JvmStatic
-	fun getScopeId(scope: String) : String {
+	fun getScopeId(scope: String): String {
 		val scopeId = scope.lowercase().replace(' ', '_')
+		//"all" scope are always resolved as "any" scope
 		if(scopeId == allScopeId) return anyScopeId
 		return scopeId
 	}
@@ -81,7 +84,7 @@ object ScopeConfigHandler {
 	}
 	
 	@JvmStatic
-	fun isScopeContextSupported(element: ParadoxScriptMemberElement) : Boolean {
+	fun isScopeContextSupported(element: ParadoxScriptMemberElement): Boolean {
 		//some definitions, such as on_action, also support scope context on definition level
 		if(element is ParadoxScriptDefinitionElement) {
 			val definitionInfo = element.definitionInfo
@@ -101,11 +104,11 @@ object ScopeConfigHandler {
 		}
 	}
 	
-	private fun isScopeContextSupportedAsRoot(config: CwtDataConfig<*>, configGroup: CwtConfigGroup) :Boolean {
+	private fun isScopeContextSupportedAsRoot(config: CwtDataConfig<*>, configGroup: CwtConfigGroup): Boolean {
 		if(config !is CwtPropertyConfig) return false
 		val properties = config.properties ?: return false
 		return properties.any {
-			val aliasName = when{
+			val aliasName = when {
 				it.keyExpression.type == CwtDataType.AliasName -> it.keyExpression.value
 				else -> null
 			}
@@ -129,7 +132,7 @@ object ScopeConfigHandler {
 	}
 	
 	@JvmStatic
-	fun isScopeContextChanged(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeContext, file: PsiFile = element.containingFile) :Boolean {
+	fun isScopeContextChanged(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeContext, file: PsiFile = element.containingFile): Boolean {
 		//does not have scope context > changed always
 		val parentMember = findParentMember(element)
 		if(parentMember == null) return true
@@ -141,18 +144,18 @@ object ScopeConfigHandler {
 	}
 	
 	@JvmStatic
-	fun getScopeContext(element: ParadoxScriptMemberElement, file: PsiFile = element.containingFile) : ParadoxScopeContext? {
+	fun getScopeContext(element: ParadoxScriptMemberElement, file: PsiFile = element.containingFile): ParadoxScopeContext? {
 		return getScopeContextFromCache(element, file)
 	}
 	
-	private fun getScopeContextFromCache(element: ParadoxScriptMemberElement, file: PsiFile) : ParadoxScopeContext? {
+	private fun getScopeContextFromCache(element: ParadoxScriptMemberElement, file: PsiFile): ParadoxScopeContext? {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
-			val value = resolveScopeContextForDefinitionMember(element)
+			val value = resolveScopeContextOfDefinitionMember(element)
 			CachedValueProvider.Result.create(value, file)
 		}
 	}
 	
-	private fun resolveScopeContextForDefinitionMember(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
+	private fun resolveScopeContextOfDefinitionMember(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
 		//should be a definition
 		val definitionInfo = element.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
 		if(definitionInfo != null) {
@@ -174,7 +177,7 @@ object ScopeConfigHandler {
 			val pushScope = pushScopeOnType
 				?: declarationConfig.pushScope
 			return replaceScope?.resolve(pushScope)
-				?: ParadoxScopeContext(anyScopeId, anyScopeId)
+				?: ParadoxScopeContext.resolve(anyScopeId, anyScopeId)
 		}
 		
 		//should be a definition member
@@ -196,10 +199,6 @@ object ScopeConfigHandler {
 		}
 	}
 	
-	private fun resolveUnknownScopeContext(parentScopeContext: ParadoxScopeContext): ParadoxScopeContext {
-		return parentScopeContext.resolve(unknownScopeId)
-	}
-	
 	private fun resolveScopeContextFromScopeField(text: String, config: CwtPropertyConfig, parentScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
 		if(text.isLeftQuoted()) return null
 		val textRange = TextRange.create(0, text.length)
@@ -214,15 +213,15 @@ object ScopeConfigHandler {
 		for(scopeNode in scopeNodes) {
 			when(scopeNode) {
 				is ParadoxScopeLinkExpressionNode -> {
-					resolvedScope = resolveScopeFromScopeLink(scopeNode)
+					resolvedScope = resolveScopeByScopeLink(scopeNode)
 					break
 				}
 				is ParadoxScopeLinkFromDataExpressionNode -> {
-					resolvedScope = resolveScopeFromScopeLinkFromData(scopeNode)
+					resolvedScope = resolveScopeByScopeLinkFromData(scopeNode)
 					break
 				}
 				is ParadoxSystemScopeExpressionNode -> {
-					scopeContext = resolveScopeFromSystemScope(scopeNode, scopeContext) ?: return null
+					scopeContext = resolveScopeBySystemScope(scopeNode, scopeContext) ?: return null
 					resolvedScope = scopeContext.thisScope
 				}
 				is ParadoxErrorScopeExpressionNode -> {
@@ -234,17 +233,67 @@ object ScopeConfigHandler {
 		return scopeContext.resolve(resolvedScope)
 	}
 	
-	private fun resolveScopeFromScopeLink(node: ParadoxScopeLinkExpressionNode): String {
-		return node.config.outputScope ?: anyScopeId
+	private fun resolveScopeByScopeLink(node: ParadoxScopeLinkExpressionNode): String {
+		return node.config.outputScope
 	}
 	
-	private fun resolveScopeFromScopeLinkFromData(node: ParadoxScopeLinkFromDataExpressionNode) : String? {
+	private fun resolveScopeByScopeLinkFromData(node: ParadoxScopeLinkFromDataExpressionNode): String? {
 		return null //TODO
 	}
 	
-	private fun resolveScopeFromSystemScope(node: ParadoxSystemScopeExpressionNode, scopeContext: ParadoxScopeContext) : ParadoxScopeContext? {
+	private fun resolveScopeBySystemScope(node: ParadoxSystemScopeExpressionNode, scopeContext: ParadoxScopeContext): ParadoxScopeContext? {
 		val systemScopeConfig = node.config
-		val id = systemScopeConfig.id
+		return resolveScopeBySystemScope(systemScopeConfig, scopeContext)
+	}
+	
+	@JvmStatic
+	fun getScopeContext(element: ParadoxLocalisationCommandIdentifier, file: PsiFile = element.containingFile): ParadoxScopeContext? {
+		return getScopeContextFromCache(element, file)
+	}
+	
+	private fun getScopeContextFromCache(element: ParadoxLocalisationCommandIdentifier, file: PsiFile): ParadoxScopeContext? {
+		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
+			val value = resolveScopeContextOfLocalisationCommandIdentifier(element)
+			CachedValueProvider.Result.create(value, file)
+		}
+	}
+	
+	private fun resolveScopeContextOfLocalisationCommandIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext? {
+		//TODO depends on usages
+		val prevElement = element.prevIdentifier
+		val prevResolved = prevElement?.reference?.resolve()
+		when {
+			//system scope or localisation scope
+			prevResolved is CwtProperty -> {
+				val config = prevResolved.getUserData(PlsKeys.cwtConfigKey)
+				when {
+					config is CwtLocalisationLinkConfig -> {
+						val prevPrevElement = prevElement.prevIdentifier
+						val prevScopeContext = if(prevPrevElement != null) getScopeContext(prevPrevElement) else null
+						return prevScopeContext?.resolve(config.outputScope)
+							?: ParadoxScopeContext.resolve(config.outputScope)
+					}
+					config is CwtSystemScopeConfig -> {
+						return resolveUnknownScopeContext()
+					}
+				}
+			}
+			//TODO event target or global event target - not supported yet
+			prevResolved is ParadoxValueSetValueElement -> {
+				return resolveUnknownScopeContext()
+			}
+		}
+		return null
+	}
+	
+	@JvmStatic
+	fun resolveUnknownScopeContext(parentScopeContext: ParadoxScopeContext? = null): ParadoxScopeContext {
+		return parentScopeContext?.resolve(unknownScopeId) ?: ParadoxScopeContext.resolve(unknownScopeId)
+	}
+	
+	@JvmStatic
+	fun resolveScopeBySystemScope(systemScope: CwtSystemScopeConfig, scopeContext: ParadoxScopeContext): ParadoxScopeContext? {
+		val id = systemScope.id
 		return when {
 			id == "This" -> scopeContext
 			id == "Root" -> scopeContext.root
@@ -253,23 +302,10 @@ object ScopeConfigHandler {
 			id == "PrevPrevPrev" -> scopeContext.prev?.prev?.prev
 			id == "PrevPrevPrevPrev" -> scopeContext.prev?.prev?.prev?.prev
 			id == "From" -> scopeContext.from
-			else -> null //TODO
+			id == "FromFrom" -> scopeContext.from?.from
+			id == "FromFromFrom" -> scopeContext.from?.from?.from
+			id == "FromFromFromFrom" -> scopeContext.from?.from?.from
+			else -> null
 		}
-	}
-	
-	@JvmStatic
-	fun getScopeContext(element: ParadoxLocalisationCommandIdentifier, file: PsiFile = element.containingFile) : ParadoxScopeContext? {
-		return getScopeContextFromCache(element, file)
-	}
-	
-	private fun getScopeContextFromCache(element: ParadoxLocalisationCommandIdentifier, file: PsiFile) : ParadoxScopeContext? {
-		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
-			val value = resolveScopeContextForLocalisationCommandIdentifier(element)
-			CachedValueProvider.Result.create(value, file)
-		}
-	}
-	
-	private fun resolveScopeContextForLocalisationCommandIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext? {
-		TODO()
 	}
 }

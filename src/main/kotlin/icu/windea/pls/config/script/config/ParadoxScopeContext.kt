@@ -38,8 +38,8 @@ data class ParadoxScopeContext(
 		}
 	}
 	
-	val map by lazy { 
-		buildMap { 
+	val map by lazy {
+		buildMap {
 			put("this", thisScope)
 			if(rootScope != null) put("root", rootScope)
 			if(fromScope != null) put("from", fromScope)
@@ -56,10 +56,21 @@ data class ParadoxScopeContext(
 		return scopeConfig
 	}
 	
-	companion object{
-		fun resolve(map: Map<String, String?>) :ParadoxScopeContext? {
+	companion object {
+		fun resolve(
+			thisScope: String,
+			rootScope: String? = null,
+			fromScope: String? = null,
+			fromFromScope: String? = null,
+			fromFromFromScope: String? = null,
+			fromFromFromFromScope: String? = null
+		): ParadoxScopeContext {
+			return ParadoxScopeContext(thisScope, rootScope, fromScope, fromFromScope, fromFromFromScope, fromFromFromFromScope)
+		}
+		
+		fun resolve(map: Map<String, String?>): ParadoxScopeContext? {
 			val thisScope = map.get("this") ?: return null
-			val rootScope = map.get("root") ?: thisScope
+			val rootScope = map.get("root")
 			val fromScope = map.get("from")
 			val fromFromScope = map.get("fromfrom")
 			val fromFromFromScope = map.get("fromfromfrom")

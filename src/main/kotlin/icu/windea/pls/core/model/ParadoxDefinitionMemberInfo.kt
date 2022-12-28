@@ -68,8 +68,6 @@ class ParadoxDefinitionMemberInfo(
  * 根据路径解析对应的属性/值配置列表。
  */
 private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMemberInfo: ParadoxDefinitionMemberInfo, matchType: Int): List<CwtDataConfig<*>> {
-	//0.7.9 TODO 从这个入口得到的configExpression，可能需要作进一步的解析
-	
 	//基于keyExpression，valueExpression可能不同
 	val declaration = definitionInfo.declaration ?: return emptyList()
 	//如果路径中可能待遇参数，则不进行解析

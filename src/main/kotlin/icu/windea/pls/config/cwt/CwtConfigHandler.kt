@@ -24,7 +24,6 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
-import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -564,11 +563,11 @@ object CwtConfigHandler {
 				if(skipRootKeyConfig == null || skipRootKeyConfig.isEmpty()) {
 					if(elementPath.isEmpty()) {
 						typeConfig.typeKeyFilter?.takeIf { it.notReversed }?.forEach {
-							infoMap.getOrPut(it) { SmartList()}.add(typeConfig to null)
+							infoMap.getOrPut(it) { SmartList() }.add(typeConfig to null)
 						}
 						typeConfig.subtypes.values.forEach { subtypeConfig ->
 							subtypeConfig.typeKeyFilter?.takeIf { it.notReversed }?.forEach {
-								infoMap.getOrPut(it) { SmartList()}.add(typeConfig to subtypeConfig)
+								infoMap.getOrPut(it) { SmartList() }.add(typeConfig to subtypeConfig)
 							}
 						}
 					}
@@ -577,11 +576,11 @@ object CwtConfigHandler {
 						val relative = elementPath.relativeTo(skipConfig) ?: continue
 						if(relative.isEmpty()) {
 							typeConfig.typeKeyFilter?.takeIf { it.notReversed }?.forEach {
-								infoMap.getOrPut(it) { SmartList()}.add(typeConfig to null)
+								infoMap.getOrPut(it) { SmartList() }.add(typeConfig to null)
 							}
 							typeConfig.subtypes.values.forEach { subtypeConfig ->
 								subtypeConfig.typeKeyFilter?.takeIf { it.notReversed }?.forEach {
-									infoMap.getOrPut(it) { SmartList()}.add(typeConfig to subtypeConfig)
+									infoMap.getOrPut(it) { SmartList() }.add(typeConfig to subtypeConfig)
 								}
 							}
 						} else {
@@ -641,7 +640,7 @@ object CwtConfigHandler {
 		
 		//匹配作用域
 		val scopeContext = scopeContext
-		val scopeMatched = when{
+		val scopeMatched = when {
 			scopeContext == null -> true
 			config is CwtPropertyConfig -> {
 				ScopeConfigHandler.matchesScope(scopeContext, config.supportedScopes)
@@ -988,7 +987,7 @@ object CwtConfigHandler {
 				.withTypeIcon(typeFile?.icon)
 				.withPriority(PlsCompletionPriorities.modifierPriority)
 				.withScopeMatched(scopeMatched)
-			result.addScriptExpressionElement(context, builder) 
+			result.addScriptExpressionElement(context, builder)
 		}
 		result.addAllElements(lookupElements)
 	}
@@ -1511,18 +1510,8 @@ object CwtConfigHandler {
 			}
 			CwtDataType.Value, CwtDataType.ValueSet -> {
 				//参见：ParadoxValueSetValueExpression
-				val valueName = expression
-				val valueSetName = configExpression.value ?: return null
-				val read = configExpression.type == CwtDataType.Value
-				if(read) {
-					//首先尝试解析为预定义的value
-					run {
-						val valueSetValueConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(valueName) ?: return@run
-						val resolved = valueSetValueConfig.pointer.element.castOrNull<CwtNamedElement>()
-						if(resolved != null) return resolved
-					}
-				}
-				return ParadoxValueSetValueElement(element, valueName, valueSetName, configGroup.project, gameType, read)
+				val name = expression
+				return resolveValueSetValue(element, name, config, configGroup)
 			}
 			CwtDataType.ScopeField, CwtDataType.Scope, CwtDataType.ScopeGroup -> {
 				//不在这里处理，参见：ParadoxScopeFieldExpression
@@ -1564,7 +1553,6 @@ object CwtConfigHandler {
 					else -> return config.pointer.element
 				}
 			}
-			//对于值，如果类型是scalar、int等，不进行解析
 			else -> {
 				if(isKey == true && config is CwtPropertyConfig) return config.resolved().pointer.element
 				return null
@@ -1660,18 +1648,8 @@ object CwtConfigHandler {
 			}
 			CwtDataType.Value, CwtDataType.ValueSet -> {
 				//参见：ParadoxValueSetValueExpression
-				val valueName = expression
-				val valueSetName = configExpression.value ?: return emptyList()
-				val read = configExpression.type == CwtDataType.Value
-				if(read) {
-					//首先尝试解析为预定义的value
-					run {
-						val valueSetValueConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(valueName) ?: return@run
-						val resolved = valueSetValueConfig.pointer.element.castOrNull<CwtNamedElement>()
-						if(resolved != null) return resolved.toSingletonList()
-					}
-				}
-				return ParadoxValueSetValueElement(element, valueName, valueSetName, configGroup.project, gameType, read).toSingletonList()
+				val name = expression
+				return resolveValueSetValue(element, name, config, configGroup).toSingletonListOrEmpty()
 			}
 			CwtDataType.ScopeField, CwtDataType.Scope, CwtDataType.ScopeGroup -> {
 				//不在这里处理，参见：ParadoxScopeFieldExpression
@@ -1710,7 +1688,6 @@ object CwtConfigHandler {
 					else -> return config.pointer.element.toSingletonListOrEmpty()
 				}
 			}
-			//对于值，如果类型是scalar、int等，不进行解析
 			else -> {
 				if(isKey == true && config is CwtPropertyConfig) return config.resolved().pointer.element.toSingletonListOrEmpty()
 				return emptyList()
@@ -1742,9 +1719,27 @@ object CwtConfigHandler {
 	fun resolveEnumValue(element: ParadoxScriptStringExpressionElement, name: String, enumName: String, configGroup: CwtConfigGroup): PsiElement? {
 		val enumConfig = configGroup.enums[enumName] ?: return null
 		val enumValueConfig = enumConfig.valueConfigMap.get(name) ?: return null
-		val resolved = enumValueConfig.pointer.element.castOrNull<CwtNamedElement>() ?: return null
+		val resolved = enumValueConfig.pointer.element ?: return null
 		resolved.putUserData(PlsKeys.cwtConfigKey, enumValueConfig)
 		return resolved
+	}
+	
+	private fun resolveValueSetValue(element: ParadoxScriptStringExpressionElement, name: String, config: CwtConfig<*>, configGroup: CwtConfigGroup): PsiElement? {
+		val gameType = configGroup.gameType ?: return null
+		val configExpression = config.expression ?: return null
+		val valueSetName = configExpression.value ?: return null
+		val read = configExpression.type == CwtDataType.Value
+		if(read) {
+			//首先尝试解析为预定义的value
+			val valueSetConfig = configGroup.values.get(valueSetName)
+			val valueSetValueConfig = valueSetConfig?.valueConfigMap?.get(name)
+			val predefinedResolved = valueSetValueConfig?.pointer?.element
+			if(predefinedResolved != null) {
+				predefinedResolved.putUserData(PlsKeys.cwtConfigKey, valueSetValueConfig)
+				return predefinedResolved
+			}
+		}
+		return ParadoxValueSetValueElement(element, name, valueSetName, configGroup.project, gameType, read)
 	}
 	
 	fun resolveValueSetValue(element: ParadoxScriptStringExpressionElement, name: String, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup): PsiElement? {
@@ -1755,17 +1750,18 @@ object CwtConfigHandler {
 			val read = configExpression.type == CwtDataType.Value
 			if(read) {
 				//首先尝试解析为预定义的value
-				run {
-					val valueSetConfig = configGroup.values[valueSetName] ?: return@run
-					val valueSetValueConfig = valueSetConfig.valueConfigMap.get(name) ?: return@run
-					val resolved = valueSetValueConfig.pointer.element.castOrNull<CwtNamedElement>() ?: return null
-					resolved.putUserData(PlsKeys.cwtConfigKey, valueSetValueConfig)
-					return resolved
+				val valueSetConfig = configGroup.values.get(valueSetName)
+				val valueSetValueConfig = valueSetConfig?.valueConfigMap?.get(name)
+				val predefinedResolved = valueSetValueConfig?.pointer?.element
+				if(predefinedResolved != null) {
+					predefinedResolved.putUserData(PlsKeys.cwtConfigKey, valueSetValueConfig)
+					return predefinedResolved
 				}
 			}
 		}
 		val config = configs.firstOrNull() ?: return null //first is ok
-		val read = config.expression?.type == CwtDataType.Value 
+		val configExpression = config.expression ?: return null
+		val read = configExpression.type == CwtDataType.Value
 		val valueSetNames = configs.mapNotNull { it.expression?.value }
 		return ParadoxValueSetValueElement(element, name, valueSetNames, configGroup.project, gameType, read)
 	}

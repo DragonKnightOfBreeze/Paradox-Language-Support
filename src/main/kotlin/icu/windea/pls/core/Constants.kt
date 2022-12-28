@@ -101,7 +101,7 @@ object PlsKeys {
 		textColorConfigKey
 	)
 	
-	//这里的数据要在解析引用为CWT规则后进行绑定
+	//用于解析引用为CWT元素后，写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）
 	val cwtConfigKey = Key.create<CwtConfig<*>>("paradox.cwtConfig")
 	
 	//用于在进行代码补全时标记一个property的propertyValue未填写

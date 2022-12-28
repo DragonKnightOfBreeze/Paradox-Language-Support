@@ -14,6 +14,7 @@ class IncorrectScopeSwitchInspection: LocalInspectionTool() {
 		file.accept(object : PsiRecursiveElementWalkingVisitor() {
 			override fun visitElement(element: PsiElement) {
 				if(element.isExpressionOrMemberContext()) super.visitElement(element)
+				//TODO 0.7.9
 			}
 		})
 		return holder.resultsArray
