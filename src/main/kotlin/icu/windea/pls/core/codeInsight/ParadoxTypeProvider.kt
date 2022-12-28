@@ -10,9 +10,8 @@ import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandIdentifier
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import org.jetbrains.kotlin.idea.gradleTooling.*
 
 //com.intellij.codeInsight.hint.JavaTypeProvider
 
@@ -72,14 +71,14 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
 				val scopeContext = ScopeConfigHandler.getScopeContext(memberElement)
 				if(scopeContext != null) {
 					val text = scopeContext.map.entries.joinToString("\n") { (key, value) -> "$key = $value" }
-					add(makeHtmlRow(PlsDocBundle.message("title.scopeContext"),text))
+					add(makeHtmlRow(PlsDocBundle.message("title.scopeContext"), text))
 				}
 			}
 			if(element is ParadoxLocalisationCommandIdentifier) {
 				val scopeContext = ScopeConfigHandler.getScopeContext(element)
 				if(scopeContext != null) {
 					val text = scopeContext.map.entries.joinToString("\n") { (key, value) -> "$key = $value" }
-					add(makeHtmlRow(PlsDocBundle.message("title.scopeContext"),text))
+					add(makeHtmlRow(PlsDocBundle.message("title.scopeContext"), text))
 				}
 			}
 		}
@@ -87,7 +86,11 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
 	}
 	
 	private val ParadoxTypedElement.definitionType: String?
-		get() = this.castOrNull<ParadoxScriptProperty>()?.definitionInfo?.typesText
+		get() = when {
+			this is ParadoxScriptProperty -> this.definitionInfo?.typesText
+			this is ParadoxScriptPropertyKey -> this.parent.castOrNull<ParadoxScriptProperty>()?.definitionInfo?.typesText
+			else -> null
+		}
 	
 	private fun getMemberElement(element: ParadoxTypedElement): ParadoxScriptMemberElement? {
 		return when {

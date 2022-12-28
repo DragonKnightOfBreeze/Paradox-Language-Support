@@ -67,15 +67,15 @@ public class ParadoxLocalisationCommandScopeImpl extends ParadoxLocalisationComm
   }
 
   @Override
-  @Nullable
-  public String getType() {
-    return ParadoxLocalisationPsiImplUtil.getType(this);
-  }
-
-  @Override
   @NotNull
   public String getExpression() {
     return ParadoxLocalisationPsiImplUtil.getExpression(this);
+  }
+
+  @Override
+  @Nullable
+  public String getConfigExpression() {
+    return ParadoxLocalisationPsiImplUtil.getConfigExpression(this);
   }
 
 }

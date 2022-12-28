@@ -674,19 +674,6 @@ class CwtConfigGroupImpl(
 		return CwtComplexEnumConfig(pointer, info, name, path, pathFile, pathStrict, startFromRoot, searchScope, nameConfig)
 	}
 	
-	private fun resolveTagConfig(propertyConfig: CwtPropertyConfig, name: String): CwtTagConfig? {
-		val props = propertyConfig.properties ?: return null
-		val since = propertyConfig.options?.find { it.key == "since" }?.stringValue
-		var supportedTypes: Set<String>? = null
-		for(prop in props) {
-			when(prop.key) {
-				"supported_types" -> supportedTypes = prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
-			}
-		}
-		if(supportedTypes == null) return null //排除
-		return CwtTagConfig(propertyConfig.pointer, propertyConfig.info, name, since, supportedTypes)
-	}
-	
 	private fun resolveLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLinkConfig? {
 		var desc: String? = null
 		var fromData = false
@@ -708,12 +695,12 @@ class CwtConfigGroupImpl(
 				"input_scopes" -> inputScopes = buildSet {
 					prop.stringValue?.let { v -> add(ScopeConfigHandler.getScopeId(v)) }
 					prop.values?.forEach { it.stringValue?.let { v -> add(ScopeConfigHandler.getScopeId(v)) } }
-				}.ifEmpty { ScopeConfigHandler.anyScopeIdSet }
+				}
 				"output_scope" -> outputScope = prop.stringValue?.let { v -> ScopeConfigHandler.getScopeId(v) }
-					?: ScopeConfigHandler.anyScopeId
 			}
 		}
-		if(inputScopes == null || outputScope == null) return null
+		inputScopes = inputScopes.takeIfNotEmpty() ?: ScopeConfigHandler.anyScopeIdSet
+		outputScope = outputScope ?: ScopeConfigHandler.anyScopeId
 		return CwtLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, fromData, type, dataSource, prefix, forDefinitionType, inputScopes, outputScope)
 	}
 	
@@ -728,12 +715,12 @@ class CwtConfigGroupImpl(
 				"input_scopes" -> inputScopes = buildSet {
 					prop.stringValue?.let { v -> add(ScopeConfigHandler.getScopeId(v)) }
 					prop.values?.forEach { it.stringValue?.let { v -> add(ScopeConfigHandler.getScopeId(v)) } }
-				}.ifEmpty { ScopeConfigHandler.anyScopeIdSet }
+				}
 				"output_scope" -> outputScope = prop.stringValue?.let { v -> ScopeConfigHandler.getScopeId(v) }
-					?: ScopeConfigHandler.anyScopeId
 			}
 		}
-		if(inputScopes == null || outputScope == null) return null
+		inputScopes = inputScopes.takeIfNotEmpty() ?: ScopeConfigHandler.anyScopeIdSet
+		outputScope = outputScope ?: ScopeConfigHandler.anyScopeId
 		return CwtLocalisationLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, inputScopes, outputScope)
 	}
 	
@@ -756,10 +743,10 @@ class CwtConfigGroupImpl(
 				"supported_scopes" -> supportedScopes =  buildSet {
 					prop.stringValue?.let { v -> add(ScopeConfigHandler.getScopeId(v)) }
 					prop.values?.forEach { it.stringValue?.let { v -> add(ScopeConfigHandler.getScopeId(v)) } }
-				}.ifEmpty { ScopeConfigHandler.anyScopeIdSet }
+				}
 			}
 		}
-		if(supportedScopes == null) return null
+		supportedScopes = supportedScopes.takeIfNotEmpty() ?: ScopeConfigHandler.anyScopeIdSet
 		return CwtModifierCategoryConfig(propertyConfig.pointer, propertyConfig.info, name, internalId, supportedScopes)
 	}
 	

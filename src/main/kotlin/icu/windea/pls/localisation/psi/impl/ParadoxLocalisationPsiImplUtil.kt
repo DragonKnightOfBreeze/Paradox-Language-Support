@@ -317,7 +317,12 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getType(element: ParadoxLocalisationCommandScope): String? {
+	fun getExpression(element: ParadoxLocalisationCommandScope): String {
+		return element.name
+	}
+	
+	@JvmStatic
+	fun getConfigExpression(element: ParadoxLocalisationCommandScope): String? {
 		val resolved = element.reference.resolve()
 		val config = resolved?.getUserData(PlsKeys.cwtConfigKey)
 		return when {
@@ -333,11 +338,6 @@ object ParadoxLocalisationPsiImplUtil {
 			}
 			else -> null
 		}
-	}
-	
-	@JvmStatic
-	fun getExpression(element: ParadoxLocalisationCommandScope): String {
-		return element.name
 	}
 	//endregion
 	
@@ -367,7 +367,12 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getType(element: ParadoxLocalisationCommandField): String? {
+	fun getExpression(element: ParadoxLocalisationCommandField): String {
+		return element.name
+	}
+	
+	@JvmStatic
+	fun getConfigExpression(element: ParadoxLocalisationCommandField): String? {
 		val resolved = element.reference?.resolve()
 		val config = resolved?.getUserData(PlsKeys.cwtConfigKey)
 		return when {
@@ -376,11 +381,6 @@ object ParadoxLocalisationPsiImplUtil {
 			resolved is ParadoxValueSetValueElement -> "value[variable]"
 			else -> null
 		}
-	}
-	
-	@JvmStatic
-	fun getExpression(element: ParadoxLocalisationCommandField): String {
-		return element.name
 	}
 	//endregion
 	

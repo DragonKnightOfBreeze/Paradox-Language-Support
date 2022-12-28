@@ -148,11 +148,11 @@ command_identifier ::= {
 }
 command_scope ::= COMMAND_SCOPE_ID{
   extends=command_identifier
-  methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getType getExpression]
+  methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getExpression getConfigExpression]
 }
 command_field ::= COMMAND_FIELD_ID | property_reference { //can be property reference (resolved as parameter)
   extends=command_identifier
-  methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getType getExpression]
+  methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getExpression getConfigExpression]
 }
 
 //for stellaris

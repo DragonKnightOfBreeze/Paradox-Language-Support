@@ -31,10 +31,10 @@ public interface ParadoxLocalisationCommandField extends ParadoxLocalisationComm
   @Nullable
   ParadoxLocalisationCommandIdentifier getNextIdentifier();
 
-  @Nullable
-  String getType();
-
   @NotNull
   String getExpression();
+
+  @Nullable
+  String getConfigExpression();
 
 }
