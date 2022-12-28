@@ -143,15 +143,16 @@ private command_expression ::= (command_scope DOT)* command_field {
 }
 //noinspection BnfUnusedRule
 command_identifier ::= {
+  implements="icu.windea.pls.core.psi.ParadoxTypedElement"
   methods=[getPrevIdentifier getNextIdentifier]
 }
 command_scope ::= COMMAND_SCOPE_ID{
   extends=command_identifier
-  methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier]
+  methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getType getExpression]
 }
 command_field ::= COMMAND_FIELD_ID | property_reference { //can be property reference (resolved as parameter)
   extends=command_identifier
-  methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier]
+  methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getType getExpression]
 }
 
 //for stellaris

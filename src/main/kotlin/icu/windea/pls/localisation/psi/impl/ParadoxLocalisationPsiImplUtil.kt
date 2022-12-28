@@ -9,6 +9,7 @@ import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.handler.*
@@ -314,6 +315,23 @@ object ParadoxLocalisationPsiImplUtil {
 		val rangeInElement = element.commandScopeId.textRangeInParent
 		return ParadoxLocalisationCommandScopePsiReference(element, rangeInElement)
 	}
+	
+	@JvmStatic
+	fun getType(element: ParadoxLocalisationCommandScope) : String? {
+		val resolved = element.reference.resolve()
+		val config = resolved?.getUserData(PlsKeys.cwtConfigKey)
+		return when {
+			config is CwtLocalisationLinkConfig -> "localisation scope"
+			config is CwtSystemScopeConfig -> "system scope"
+			resolved is ParadoxValueSetValueElement -> "event target"
+			else -> null
+		}
+	}
+	
+	@JvmStatic
+	fun getExpression(element: ParadoxLocalisationCommandScope): String{
+		return element.name
+	}
 	//endregion
 	
 	//region ParadoxLocalisationCommandField
@@ -339,6 +357,22 @@ object ParadoxLocalisationPsiImplUtil {
 	fun getReference(element: ParadoxLocalisationCommandField): ParadoxLocalisationCommandFieldPsiReference? {
 		val rangeInElement = element.commandFieldId?.textRangeInParent ?: return null
 		return ParadoxLocalisationCommandFieldPsiReference(element, rangeInElement)
+	}
+	
+	@JvmStatic
+	fun getType(element: ParadoxLocalisationCommandField) : String? {
+		val resolved = element.reference?.resolve()
+		val config = resolved?.getUserData(PlsKeys.cwtConfigKey)
+		return when {
+			config is CwtLocalisationCommandConfig -> "localisation command"
+			resolved is ParadoxValueSetValueElement -> "variable"
+			else -> null
+		}
+	}
+	
+	@JvmStatic
+	fun getExpression(element: ParadoxLocalisationCommandField): String{
+		return element.name
 	}
 	//endregion
 	

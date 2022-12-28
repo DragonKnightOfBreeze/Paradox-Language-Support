@@ -10,7 +10,9 @@ import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandIdentifier
 import icu.windea.pls.script.psi.*
+import org.jetbrains.kotlin.idea.gradleTooling.*
 
 //com.intellij.codeInsight.hint.JavaTypeProvider
 
@@ -65,9 +67,16 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
 			element.configExpression?.let { configExpression ->
 				add(makeHtmlRow(PlsDocBundle.message("title.configExpression"), configExpression))
 			}
-			getMemberElement(element)?.let { memberElement ->
-				if(!ScopeConfigHandler.isScopeContextSupported(memberElement)) return@let
+			val memberElement = getMemberElement(element)
+			if(memberElement != null && ScopeConfigHandler.isScopeContextSupported(memberElement)) {
 				val scopeContext = ScopeConfigHandler.getScopeContext(memberElement)
+				if(scopeContext != null) {
+					val text = scopeContext.map.entries.joinToString("\n") { (key, value) -> "$key = $value" }
+					add(makeHtmlRow(PlsDocBundle.message("title.scopeContext"),text))
+				}
+			}
+			if(element is ParadoxLocalisationCommandIdentifier) {
+				val scopeContext = ScopeConfigHandler.getScopeContext(element)
 				if(scopeContext != null) {
 					val text = scopeContext.map.entries.joinToString("\n") { (key, value) -> "$key = $value" }
 					add(makeHtmlRow(PlsDocBundle.message("title.scopeContext"),text))
