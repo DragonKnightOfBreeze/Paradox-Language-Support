@@ -467,8 +467,8 @@ object CwtConfigHandler {
 		
 		context.put(PlsCompletionKeys.isKeyKey, true)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
-		if(ScopeConfigHandler.isScopeContextSupported(definitionElement)) {
-			context.put(PlsCompletionKeys.scopeContextKey, ScopeConfigHandler.getScopeContext(definitionElement))
+		if(ParadoxScopeConfigHandler.isScopeContextSupported(definitionElement)) {
+			context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeConfigHandler.getScopeContext(definitionElement))
 		}
 		
 		configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
@@ -495,8 +495,8 @@ object CwtConfigHandler {
 		
 		context.put(PlsCompletionKeys.isKeyKey, false)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
-		//if(ScopeConfigHandler.isScopeContextSupported(definitionElement)) {
-		//	context.put(PlsCompletionKeys.scopeContextKey, ScopeConfigHandler.getScopeContext(definitionElement))
+		//if(ParadoxScopeConfigHandler.isScopeContextSupported(definitionElement)) {
+		//	context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeConfigHandler.getScopeContext(definitionElement))
 		//}
 		
 		for(config in configs) {
@@ -648,7 +648,7 @@ object CwtConfigHandler {
 		val scopeMatched = when {
 			scopeContext == null -> true
 			config is CwtPropertyConfig -> {
-				ScopeConfigHandler.matchesScope(scopeContext, config.supportedScopes)
+				ParadoxScopeConfigHandler.matchesScope(scopeContext, config.supportedScopes)
 			}
 			config is CwtLinkConfig -> true //TODO
 			else -> true
@@ -977,7 +977,7 @@ object CwtConfigHandler {
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(modifierConfig in modifiers.values) {
 			//排除不匹配modifier的supported_scopes的情况
-			val scopeMatched = ScopeConfigHandler.matchesScope(scopeContext, modifierConfig.supportedScopes)
+			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, modifierConfig.supportedScopes)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = modifierConfig.name
@@ -1048,7 +1048,7 @@ object CwtConfigHandler {
 		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val scopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
+			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
 			if(!scopeMatched) continue
 			
 			val name = linkConfig.name
@@ -1077,7 +1077,7 @@ object CwtConfigHandler {
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val scopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
+			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
 			if(!scopeMatched) continue
 			
 			val name = linkConfig.prefix ?: continue
@@ -1126,7 +1126,7 @@ object CwtConfigHandler {
 			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
 			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
 			if(prefix == null) {
-				val scopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
+				val scopeMatched = ParadoxScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
 				if(!scopeMatched) continue
 			}
 			context.put(PlsCompletionKeys.configKey, linkConfig)
@@ -1144,7 +1144,7 @@ object CwtConfigHandler {
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val scopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
+			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
 			if(!scopeMatched) continue
 			
 			val name = linkConfig.name
@@ -1173,7 +1173,7 @@ object CwtConfigHandler {
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val scopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
+			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
 			if(!scopeMatched) continue
 			
 			val name = linkConfig.prefix ?: continue
@@ -1230,7 +1230,7 @@ object CwtConfigHandler {
 			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
 			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
 			if(prefix == null) {
-				val scopeMatched = ScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
+				val scopeMatched = ParadoxScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
 				if(!scopeMatched) continue
 			}
 			context.put(PlsCompletionKeys.configKey, linkConfig)
@@ -1310,7 +1310,7 @@ object CwtConfigHandler {
 		
 		val localisationLinks = configGroup.localisationLinks
 		for(localisationScope in localisationLinks.values) {
-			val scopeMatched = ScopeConfigHandler.matchesScope(scopeContext, localisationScope.inputScopes)
+			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, localisationScope.inputScopes)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = localisationScope.name
@@ -1364,7 +1364,7 @@ object CwtConfigHandler {
 		
 		val localisationCommands = configGroup.localisationCommands
 		for(localisationCommand in localisationCommands.values) {
-			val scopeMatched = ScopeConfigHandler.matchesScope(scopeContext, localisationCommand.supportedScopes)
+			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, localisationCommand.supportedScopes)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = localisationCommand.name

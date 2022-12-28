@@ -38,7 +38,7 @@ class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return
 		val gameType = selectGameType(file) ?: return
-		val colorConfigs = TextColorConfigHandler.getTextColorConfigs(gameType, project, file)
+		val colorConfigs = ParadoxTextColorConfigHandler.getTextColorConfigs(gameType, project, file)
 		JBPopupFactory.getInstance().createListPopup(Popup(element, colorConfigs.toTypedArray())).showInBestPositionFor(editor)
 	}
 	

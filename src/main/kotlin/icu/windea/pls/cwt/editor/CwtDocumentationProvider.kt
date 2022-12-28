@@ -228,12 +228,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		ProgressManager.checkCanceled()
 		val contextElement = referenceElement
 		val gameType = configGroup.gameType ?: return
-		val nameKeys = ModifierConfigHandler.getModifierNameKeys(name, configGroup)
+		val nameKeys = ParadoxModifierConfigHandler.getModifierNameKeys(name, configGroup)
 		val localisation = nameKeys.firstNotNullOfOrNull {
 			val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
 			findLocalisation(it, configGroup.project, selector = selector)
 		}
-		val descKeys = ModifierConfigHandler.getModifierDescKeys(name, configGroup)
+		val descKeys = ParadoxModifierConfigHandler.getModifierDescKeys(name, configGroup)
 		val descLocalisation = descKeys.firstNotNullOfOrNull {
 			val descSelector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
 			findLocalisation(it, configGroup.project, selector = descSelector)
@@ -266,7 +266,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		ProgressManager.checkCanceled()
 		val contextElement = referenceElement
 		val gameType = configGroup.gameType ?: return
-		val iconPaths = ModifierConfigHandler.getModifierIconPaths(name, configGroup)
+		val iconPaths = ParadoxModifierConfigHandler.getModifierIconPaths(name, configGroup)
 		val (iconPath, iconFile) = iconPaths.firstNotNullOfOrNull {
 			val iconSelector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
 			it to findFileByFilePath(it, configGroup.project, selector = iconSelector)
@@ -366,7 +366,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getScopeText(scope: String, gameType: ParadoxGameType?, contextElement: PsiElement): String {
 		return buildString {
 			append("<code>")
-			if(ScopeConfigHandler.isFakeScopeId(scope)) {
+			if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
 				append(scope)
 			} else {
 				appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
@@ -381,7 +381,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			append("<code>")
 			for(scope in scopes) {
 				if(appendSeparator) append(", ") else appendSeparator = true
-				if(ScopeConfigHandler.isFakeScopeId(scope)) {
+				if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
 					append(scope)
 				} else {
 					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
@@ -396,8 +396,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		if(!show) return
 		if(sections == null) return
 		val memberElement = referenceElement.parentOfType<ParadoxScriptMemberElement>(true) ?: return
-		if(!ScopeConfigHandler.isScopeContextSupported(memberElement)) return
-		val scopeContext = ScopeConfigHandler.getScopeContext(memberElement)
+		if(!ParadoxScopeConfigHandler.isScopeContextSupported(memberElement)) return
+		val scopeContext = ParadoxScopeConfigHandler.getScopeContext(memberElement)
 		if(scopeContext == null) return
 		val contextElement = referenceElement
 		val gameType = configGroup.gameType
@@ -407,7 +407,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				if(appendSeparator) appendBr() else appendSeparator = true
 				appendCwtLink(systemScope, "${gameType.id}/system_scopes/$systemScope", contextElement)
 				append(" = ")
-				if(ScopeConfigHandler.isFakeScopeId(scope)) {
+				if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
 					append(scope)
 				} else {
 					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)

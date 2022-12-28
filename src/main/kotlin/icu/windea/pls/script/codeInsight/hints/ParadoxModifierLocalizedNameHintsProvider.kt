@@ -70,7 +70,7 @@ class ParadoxModifierLocalizedNameHintsProvider: ParadoxScriptHintsProvider<Sett
 			if(type == CwtDataType.Modifier) {
 				val name = element.value
 				val configGroup = config.info.configGroup
-				val keys = ModifierConfigHandler.getModifierNameKeys(name, configGroup)
+				val keys = ParadoxModifierConfigHandler.getModifierNameKeys(name, configGroup)
 				val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(element).preferLocale(preferredParadoxLocale())
 				val localisation = keys.firstNotNullOfOrNull {
 					findLocalisation(it, configGroup.project, selector = selector)

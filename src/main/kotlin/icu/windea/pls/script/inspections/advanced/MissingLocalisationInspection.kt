@@ -162,7 +162,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			val configGroup = config.info.configGroup
 			if(config.expression.type != CwtDataType.Modifier) return
 			val name = element.value
-			val keys = ModifierConfigHandler.getModifierNameKeys(name, configGroup)
+			val keys = ParadoxModifierConfigHandler.getModifierNameKeys(name, configGroup)
 			val missingLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
 			for(locale in inspection.localeSet) {
 				val selector = localisationSelector().gameType(configGroup.gameType).locale(locale)

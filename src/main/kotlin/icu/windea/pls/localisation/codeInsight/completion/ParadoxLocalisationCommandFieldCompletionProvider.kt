@@ -35,7 +35,7 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
-		context.put(PlsCompletionKeys.scopeContextKey, ScopeConfigHandler.getScopeContext(element, file))
+		context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeConfigHandler.getScopeContext(element, file))
 		
 		//提示scope
 		CwtConfigHandler.completeSystemScope(context, result)

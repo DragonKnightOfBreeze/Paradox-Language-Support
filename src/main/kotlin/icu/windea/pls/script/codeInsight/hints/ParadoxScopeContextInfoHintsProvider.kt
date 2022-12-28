@@ -56,11 +56,11 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 		val offset = leftCurlyBrace.textRange.endOffset
 		val isAtLineEnd = editor.document.isAtLineEnd(offset, true)
 		if(!isAtLineEnd) return true //仅当作为子句开始的左花括号位于行尾时，才显示此内嵌提示
-		if(!ScopeConfigHandler.isScopeContextSupported(element)) return true
-		val scopeContext = ScopeConfigHandler.getScopeContext(element, file)
+		if(!ParadoxScopeConfigHandler.isScopeContextSupported(element)) return true
+		val scopeContext = ParadoxScopeConfigHandler.getScopeContext(element, file)
 		if(scopeContext != null) {
 			//don't need show if scope is not changed
-			if(settings.showOnlyIfScopeIsChanged && !ScopeConfigHandler.isScopeContextChanged(element, scopeContext, file)) return true
+			if(settings.showOnlyIfScopeIsChanged && !ParadoxScopeConfigHandler.isScopeContextChanged(element, scopeContext, file)) return true
 			
 			val gameType = selectGameType(file) ?: return true
 			val configGroup = getCwtConfig(file.project).getValue(gameType)
@@ -92,7 +92,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 	}
 	
 	private fun PresentationFactory.scopeLinkPresentation(scope: String, configGroup: CwtConfigGroup): InlayPresentation {
-		if(ScopeConfigHandler.isFakeScopeId(scope)) {
+		if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
 			return smallText(scope)
 		} else {
 			return psiSingleReference(smallText(scope)) { configGroup.scopeAliasMap[scope]?.pointer?.element }

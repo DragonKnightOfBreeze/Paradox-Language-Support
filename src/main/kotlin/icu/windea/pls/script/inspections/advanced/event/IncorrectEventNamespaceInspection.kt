@@ -35,7 +35,7 @@ class IncorrectEventNamespaceInspection  : LocalInspectionTool() {
 			ProgressManager.checkCanceled()
 			val namespacePropertyValue = namespaceProperty.propertyValue?.castOrNull<ParadoxScriptString>() ?: continue //事件ID不是字符串，另行检查
 			val namespace = namespacePropertyValue.stringValue
-			if(!EventConfigHandler.isValidEventNamespace(namespace)){
+			if(!ParadoxEventConfigHandler.isValidEventNamespace(namespace)){
 				if(holder == null) holder = ProblemsHolder(manager, file, isOnTheFly)
 				holder.registerProblem(namespacePropertyValue, PlsBundle.message("script.inspection.event.incorrectEventNamespace.description", namespace))
 			}

@@ -14,7 +14,7 @@ data class ParadoxOnActionInfo(
 			scopesRegex.findAll(scopes).forEach {
 				val k = it.groupValues.get(1)
 				val v = it.groupValues.get(2)
-				put(k, ScopeConfigHandler.getScopeId(v))
+				put(k, ParadoxScopeConfigHandler.getScopeId(v))
 			}
 		}
 		ParadoxScopeContext.resolve(map)

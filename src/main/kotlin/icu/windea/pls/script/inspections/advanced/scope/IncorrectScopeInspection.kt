@@ -21,10 +21,10 @@ class IncorrectScopeInspection: LocalInspectionTool() {
 			private fun visitMemberElement(element: ParadoxScriptProperty) {
 				val configs = ParadoxCwtConfigHandler.resolveConfigs(element)
 				val config = configs.firstOrNull() ?: return
-				if(!ScopeConfigHandler.isScopeContextSupported(element)) return
-				val scopeContext = ScopeConfigHandler.getScopeContext(element, file) ?: return
+				if(!ParadoxScopeConfigHandler.isScopeContextSupported(element)) return
+				val scopeContext = ParadoxScopeConfigHandler.getScopeContext(element, file) ?: return
 				val supportedScopes = config.supportedScopes
-				if(!ScopeConfigHandler.matchesScope(scopeContext, supportedScopes)) {
+				if(!ParadoxScopeConfigHandler.matchesScope(scopeContext, supportedScopes)) {
 					val propertyKey = element.propertyKey
 					val location = propertyKey
 					val description = PlsBundle.message("script.inspection.scope.incorrectScope.description.1", propertyKey.expression, supportedScopes.joinToString(), scopeContext.thisScope)

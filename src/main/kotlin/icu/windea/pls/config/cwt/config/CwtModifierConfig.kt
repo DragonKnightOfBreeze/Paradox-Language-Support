@@ -18,7 +18,7 @@ data class CwtModifierConfig(
 	val supportedScopes: Set<String> by lazy {
 		val categoryConfigs = categoryConfigMap.values
 		if(categoryConfigs.any { it.supportAnyScope }) {
-			ScopeConfigHandler.anyScopeIdSet
+			ParadoxScopeConfigHandler.anyScopeIdSet
 		} else {
 			categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopes }
 		}

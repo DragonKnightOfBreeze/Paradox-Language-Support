@@ -67,15 +67,15 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
 				add(makeHtmlRow(PlsDocBundle.message("title.configExpression"), configExpression))
 			}
 			val memberElement = getMemberElement(element)
-			if(memberElement != null && ScopeConfigHandler.isScopeContextSupported(memberElement)) {
-				val scopeContext = ScopeConfigHandler.getScopeContext(memberElement)
+			if(memberElement != null && ParadoxScopeConfigHandler.isScopeContextSupported(memberElement)) {
+				val scopeContext = ParadoxScopeConfigHandler.getScopeContext(memberElement)
 				if(scopeContext != null) {
 					val text = scopeContext.map.entries.joinToString("\n") { (key, value) -> "$key = $value" }
 					add(makeHtmlRow(PlsDocBundle.message("title.scopeContext"), text))
 				}
 			}
 			if(element is ParadoxLocalisationCommandIdentifier) {
-				val scopeContext = ScopeConfigHandler.getScopeContext(element)
+				val scopeContext = ParadoxScopeConfigHandler.getScopeContext(element)
 				if(scopeContext != null) {
 					val text = scopeContext.map.entries.joinToString("\n") { (key, value) -> "$key = $value" }
 					add(makeHtmlRow(PlsDocBundle.message("title.scopeContext"), text))

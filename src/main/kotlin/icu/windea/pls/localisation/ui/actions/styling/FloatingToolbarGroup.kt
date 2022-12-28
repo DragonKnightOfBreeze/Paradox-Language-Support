@@ -17,7 +17,7 @@ private fun doGetChildren(): List<AnAction> {
 	val project = textEditor.editor.project ?: return emptyList()
 	val file = textEditor.file
 	val gameType = file.fileInfo?.rootInfo?.gameType ?: return emptyList()
-	val colorConfigs = TextColorConfigHandler.getTextColorConfigs(gameType, project, file)
+	val colorConfigs = ParadoxTextColorConfigHandler.getTextColorConfigs(gameType, project, file)
 	if(colorConfigs.isEmpty()) return emptyList()
 	return colorConfigs.map { setColorActionCache.get(it) }
 }

@@ -3,7 +3,7 @@ package icu.windea.pls.config.script
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 
-object ModifierConfigHandler {
+object ParadoxModifierConfigHandler {
 	//private val modifierNameLocation = "$" linkTo "mod_$"
 	//private val countryModifierNameLocation = "$" linkTo "mod_$"
 	//private val modifierDescLocation = "$" linkTo "mod_country_$"
