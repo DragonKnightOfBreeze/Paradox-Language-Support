@@ -295,14 +295,23 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		when(configType) {
 			CwtConfigType.Link -> {
 				val linkConfig = configGroup.links[name] ?: return
-				val nameToUse = ScopeConfigHandler.getScopeName(name, configGroup)
 				val descToUse = linkConfig.desc?.takeIfNotEmpty()
-				content {
-					append(nameToUse)
-					if(descToUse != null) {
-						appendBr()
-						append(descToUse)
-					}
+				if(descToUse != null) {
+					content { appendBr().append(descToUse) }
+				}
+				if(sections != null) {
+					val inputScopes = linkConfig.inputScopes
+					sections.put(PlsDocBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
+					
+					val outputScope = linkConfig.outputScope
+					sections.put(PlsDocBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
+				}
+			}
+			CwtConfigType.LocalisationLink -> {
+				val linkConfig = configGroup.localisationLinks[name] ?: return
+				val descToUse = linkConfig.desc?.takeIfNotEmpty()
+				if(descToUse != null) {
+					content { appendBr().append(descToUse) }
 				}
 				if(sections != null) {
 					val inputScopes = linkConfig.inputScopes
