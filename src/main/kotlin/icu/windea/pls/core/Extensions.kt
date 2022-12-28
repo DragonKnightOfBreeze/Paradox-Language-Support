@@ -3,6 +3,7 @@
 package icu.windea.pls.core
 
 import com.intellij.codeInsight.documentation.*
+import com.intellij.lang.Language
 import com.intellij.openapi.components.*
 import com.intellij.openapi.fileTypes.ex.*
 import com.intellij.openapi.progress.*
@@ -83,6 +84,8 @@ infix fun String.compareGameVersion(otherVersion: String): Int {
 //endregion
 
 //region Core Extensions
+fun Language.isParadoxLanguage() = this.isKindOf(ParadoxScriptLanguage) || this.isKindOf(ParadoxLocalisationLanguage)
+
 fun resolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean = true): ParadoxRootInfo? {
 	val rootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
 	if(rootInfo != null && (canBeNotAvailable || rootInfo.isAvailable)) {

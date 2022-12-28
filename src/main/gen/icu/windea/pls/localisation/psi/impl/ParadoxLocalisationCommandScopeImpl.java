@@ -66,4 +66,16 @@ public class ParadoxLocalisationCommandScopeImpl extends ParadoxLocalisationComm
     return ParadoxLocalisationPsiImplUtil.getNextIdentifier(this);
   }
 
+  @Override
+  @Nullable
+  public String getType() {
+    return ParadoxLocalisationPsiImplUtil.getType(this);
+  }
+
+  @Override
+  @NotNull
+  public String getExpression() {
+    return ParadoxLocalisationPsiImplUtil.getExpression(this);
+  }
+
 }

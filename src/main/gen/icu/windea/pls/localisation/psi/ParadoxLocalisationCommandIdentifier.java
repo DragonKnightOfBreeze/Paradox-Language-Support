@@ -4,8 +4,9 @@ package icu.windea.pls.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import icu.windea.pls.core.psi.ParadoxTypedElement;
 
-public interface ParadoxLocalisationCommandIdentifier extends PsiElement {
+public interface ParadoxLocalisationCommandIdentifier extends ParadoxTypedElement {
 
   @Nullable
   ParadoxLocalisationCommandScope getPrevIdentifier();

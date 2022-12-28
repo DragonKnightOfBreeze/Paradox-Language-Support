@@ -2,7 +2,6 @@ package icu.windea.pls.config.script.config
 
 import com.fasterxml.jackson.dataformat.csv.*
 import icu.windea.pls.config.script.*
-import icu.windea.pls.core.*
 
 data class ParadoxOnActionInfo(
 	val key: String,
@@ -12,17 +11,18 @@ data class ParadoxOnActionInfo(
 ) {
 	val scopeContext by lazy {
 		val map = buildMap {
-			for(s in scopes.splitByBlank()) {
-				val i = s.indexOf('=')
-				val k = s.substring(0, i).trim().lowercase()
-				val v = s.substring(i + 1).trim()
+			scopesRegex.findAll(scopes).forEach {
+				val k = it.groupValues.get(1)
+				val v = it.groupValues.get(2)
 				put(k, ScopeConfigHandler.getScopeId(v))
 			}
 		}
 		ParadoxScopeContext.resolve(map)
 	}
 	
-	companion object{
+	companion object {
+		private val scopesRegex = """(\w+)\s*=\s*(\w+)""".toRegex()
+		
 		val schema = CsvSchema.builder()
 			.addColumn("key").addColumn("scopes").addColumn("event").addColumn("comment").build()
 			.withHeader()

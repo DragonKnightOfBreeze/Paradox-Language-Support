@@ -5,6 +5,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 import icu.windea.pls.core.psi.ParadoxScriptedVariableReference;
+import icu.windea.pls.core.psi.ParadoxTypedElement;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiListLikeElement;
 
@@ -24,7 +25,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitCommandIdentifier(@NotNull ParadoxLocalisationCommandIdentifier o) {
-    visitPsiElement(o);
+    visitParadoxTypedElement(o);
   }
 
   public void visitCommandScope(@NotNull ParadoxLocalisationCommandScope o) {
@@ -88,6 +89,10 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitParadoxScriptedVariableReference(@NotNull ParadoxScriptedVariableReference o) {
+    visitElement(o);
+  }
+
+  public void visitParadoxTypedElement(@NotNull ParadoxTypedElement o) {
     visitElement(o);
   }
 

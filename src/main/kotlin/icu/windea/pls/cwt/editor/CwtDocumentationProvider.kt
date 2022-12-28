@@ -50,7 +50,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val gameType = selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
+			val gameType = selectGameType(originalElement?.takeIf { it.language.isParadoxLanguage() })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			buildPropertyDefinition(element, originalElement, name, configType, configGroup, false, null)
 		}
@@ -64,7 +64,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val gameType = selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
+			val gameType = selectGameType(originalElement?.takeIf { it.language.isParadoxLanguage() })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			buildStringDefinition(element, originalElement, name, configType, configGroup, false, null)
 		}
@@ -83,7 +83,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val gameType = selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
+			val gameType = selectGameType(originalElement?.takeIf { it.language.isParadoxLanguage() })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			//images, localisations, scope infos
 			val sectionsList = List(3) { mutableMapOf<String, String>() }
@@ -101,7 +101,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val gameType = selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
+			val gameType = selectGameType(originalElement?.takeIf { it.language.isParadoxLanguage() })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			val sectionsList = List(2) { mutableMapOf<String, String>() }
 			buildStringDefinition(element, originalElement, name, configType, configGroup, true, sectionsList)
@@ -122,7 +122,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	) {
 		definition {
 			val referenceElement = getReferenceElement(originalElement)
-			if(referenceElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
+			if(referenceElement?.language?.isParadoxLanguage() != true || configType?.isReference == true) {
 				if(configType != null) append(configType.nameText).append(" ")
 				append("<b>").append(name.escapeXml().orAnonymous()).append("</b>")
 				//加上类型信息
@@ -178,7 +178,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	) {
 		definition {
 			val referenceElement = getReferenceElement(originalElement)
-			if(referenceElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
+			if(referenceElement?.language?.isParadoxLanguage() != true || configType?.isReference == true) {
 				if(configType != null) append(configType.nameText).append(" ")
 				append("<b>").append(name.escapeXml().orAnonymous()).append("</b>")
 				//加上类型信息
