@@ -1,6 +1,7 @@
 package icu.windea.pls.core.handler
 
 import com.intellij.openapi.progress.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
@@ -15,7 +16,7 @@ object ParadoxValueSetValueHandler {
 		
 		ProgressManager.checkCanceled()
 		//cannot use index here
-		val matchType = 0
+		val matchType = CwtConfigMatchType.STATIC
 		//only accept "value[x]" or "value_set[x]", rather than "scope_field" or "value_field"
 		//so, e.g., if there is only an expression "event_target:target", "target" will not be shown during code completion
 		val config = ParadoxCwtConfigHandler.resolveValueConfigs(element, true, true, matchType)
