@@ -190,7 +190,7 @@
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.UnsetValueSetValueInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptInsufficientExpression"
-                     enabledByDefault="true" level="ERROR"
+                     enabledByDefault="true" level="WEAK WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.advanced.insufficientExpression"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
                      groupPathKey="script.inspection.advanced.path"

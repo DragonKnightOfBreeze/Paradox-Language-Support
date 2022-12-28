@@ -283,7 +283,7 @@ object ParadoxScopeConfigHandler {
 				return resolveUnknownScopeContext()
 			}
 		}
-		return null
+		return resolveUnknownScopeContext()
 	}
 	
 	@JvmStatic
