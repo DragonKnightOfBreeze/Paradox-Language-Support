@@ -103,7 +103,7 @@ object ParadoxCwtConfigHandler {
 					is ParadoxScriptBlockElement -> {
 						val property = parent.parent as? ParadoxScriptDefinitionElement ?: return emptyList()
 						val definitionMemberInfo = property.definitionMemberInfo ?: return emptyList()
-						val childValueConfigs = definitionMemberInfo.getChildValueConfigs()
+						val childValueConfigs = definitionMemberInfo.getChildValueConfigs(matchType)
 						if(childValueConfigs.isEmpty()) return emptyList()
 						val configGroup = definitionMemberInfo.configGroup
 						buildList {

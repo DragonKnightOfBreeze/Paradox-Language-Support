@@ -159,19 +159,27 @@ object ParadoxDefinitionHandler {
 		if(skipRootKeyConfig.isNullOrEmpty()) {
 			if(elementPath.length > 1) return false
 		} else {
-			val skipResult = skipRootKeyConfig.any { elementPath.matchEntire(it, useParentPath = true) }
-			if(!skipResult) return false
+			val result = skipRootKeyConfig.any { elementPath.matchEntire(it, useParentPath = true) }
+			if(!result) return false
 		}
 		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
 		val startsWithConfig = typeConfig.startsWith
 		if(!startsWithConfig.isNullOrEmpty()) {
-			if(!rootKey.startsWith(startsWithConfig, true)) return false
+			val result = rootKey.startsWith(startsWithConfig, true)
+			if(!result) return false
 		}
 		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
 		val typeKeyFilterConfig = typeConfig.typeKeyFilter
 		if(!typeKeyFilterConfig.isNullOrEmpty()) {
-			val filterResult = typeKeyFilterConfig.contains(rootKey)
-			if(!filterResult) return false
+			val result = typeKeyFilterConfig.contains(rootKey)
+			if(!result) return false
+		}
+		//如果name_field存在，则要求type_key必须是指定的所有type_key之一
+		val nameFieldConfig = typeConfig.nameField
+		if(nameFieldConfig != null) {
+			val result = typeConfig.typeKeyFilter?.set?.contains(rootKey) == true
+				|| typeConfig.subtypes.values.any { subtypeConfig -> subtypeConfig.typeKeyFilter?.set?.contains(rootKey) == true }
+			if(!result) return false
 		}
 		
 		//判断element的propertyValue是否需要是block
@@ -202,6 +210,13 @@ object ParadoxDefinitionHandler {
 		if(!typeKeyFilterConfig.isNullOrEmpty()) {
 			val filterResult = typeKeyFilterConfig.contains(rootKey)
 			if(!filterResult) return false
+		}
+		//如果name_field存在，则要求type_key必须是指定的所有type_key之一
+		val nameFieldConfig = typeConfig.nameField
+		if(nameFieldConfig != null) {
+			val result = typeConfig.typeKeyFilter?.set?.contains(rootKey) == true
+				|| typeConfig.subtypes.values.any { subtypeConfig -> subtypeConfig.typeKeyFilter?.set?.contains(rootKey) == true }
+			if(!result) return false
 		}
 		return true
 	}
@@ -260,6 +275,13 @@ object ParadoxDefinitionHandler {
 			if(!typeKeyFilterConfig.isNullOrEmpty()) {
 				val filterResult = typeKeyFilterConfig.contains(rootKey)
 				if(!filterResult) return false
+			}
+			//如果name_field存在，则要求type_key必须是指定的所有type_key之一
+			val nameFieldConfig = typeConfig.nameField
+			if(nameFieldConfig != null) {
+				val result = typeConfig.typeKeyFilter?.set?.contains(rootKey) == true
+					|| typeConfig.subtypes.values.any { subtypeConfig -> subtypeConfig.typeKeyFilter?.set?.contains(rootKey) == true }
+				if(!result) return false
 			}
 		}
 		
