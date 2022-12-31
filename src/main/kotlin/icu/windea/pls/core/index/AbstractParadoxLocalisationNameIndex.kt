@@ -36,9 +36,14 @@ sealed class AbstractParadoxLocalisationNameIndex : StringStubIndexExtension<Par
 	
 	//因为localisation可能过多（数千个），这里我们使用特殊的内联process方法，且预先仅接收第一个相同key的元素 & 预先过滤不匹配关键字的
 	
-	inline fun processVariants(keyword: String, project: Project, scope: GlobalSearchScope, maxSize: Int,
+	inline fun processVariants(
+		keyword: String,
+		project: Project,
+		scope: GlobalSearchScope,
+		maxSize: Int,
 		selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
-		crossinline processor: ProcessEntry.(element: ParadoxLocalisationProperty) -> Boolean): Boolean {
+		crossinline processor: ProcessEntry.(element: ParadoxLocalisationProperty) -> Boolean
+	): Boolean {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return true
 		

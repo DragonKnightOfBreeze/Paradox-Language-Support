@@ -5,6 +5,7 @@ import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -57,12 +58,12 @@ class CwtLocalisationLocationExpression(
 			if(definitionInfo.isAnonymous) return null
 			
 			val key = resolvePlaceholder(definitionInfo.name)!!
-			val localisation = findLocalisation(key, project, selector = selector)
+			val localisation = ParadoxLocalisationSearch.search(key, project, selector = selector).find()
 			return key to localisation
 		} else if(propertyName != null) {
 			val value = definition.findProperty(propertyName)?.findValue<ParadoxScriptString>() ?: return null
 			val key = value.stringValue
-			val localisation = findLocalisation(key, project, selector = selector)
+			val localisation = ParadoxLocalisationSearch.search(key, project, selector = selector).find()
 			return key to localisation
 		} else {
 			return null //不期望的结果
@@ -72,12 +73,12 @@ class CwtLocalisationLocationExpression(
 	fun resolveAll(definitionName: String, definition: ParadoxScriptDefinitionElement, project: Project, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): Pair<String, Set<ParadoxLocalisationProperty>>? {
 		if(placeholder != null) {
 			val key = resolvePlaceholder(definitionName)!!
-			val localisations = findLocalisations(key, project, selector = selector)
+			val localisations = ParadoxLocalisationSearch.search(key, project, selector = selector).findAll()
 			return key to localisations
 		} else if(propertyName != null) {
 			val value = definition.findProperty(propertyName)?.findValue<ParadoxScriptString>() ?: return null
 			val key = value.stringValue
-			val localisations = findLocalisations(key, project, selector = selector)
+			val localisations = ParadoxLocalisationSearch.search(key, project, selector = selector).findAll()
 			return key to localisations
 		} else {
 			return null //不期望的结果

@@ -19,6 +19,7 @@ import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.quickfix.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.script.psi.*
@@ -166,7 +167,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			for(locale in inspection.localeSet) {
 				val selector = localisationSelector().gameType(configGroup.gameType).locale(locale)
 				val localisation = keys.firstNotNullOfOrNull {
-					findLocalisation(it, configGroup.project, selector = selector)
+					ParadoxLocalisationSearch.search(it, configGroup.project, selector = selector).findFirst()
 				}
 				if(localisation == null) missingLocales.add(locale)
 			}

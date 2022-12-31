@@ -9,6 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.ParadoxLocalisationCategory.*
 import icu.windea.pls.core.navigation.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 
@@ -33,8 +34,8 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 			val project = element.project
 			val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
 			val targets = when(category) {
-				Localisation -> findLocalisations(name, project, selector = selector)
-				SyncedLocalisation -> findSyncedLocalisations(name, project, selector = selector)
+				Localisation -> ParadoxLocalisationSearch.search(name, project, selector = selector).findAll()
+				SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, project, selector = selector).findAll()
 			}
 			if(targets.isEmpty()) return
 			val locationElement = element.propertyKey.propertyKeyId

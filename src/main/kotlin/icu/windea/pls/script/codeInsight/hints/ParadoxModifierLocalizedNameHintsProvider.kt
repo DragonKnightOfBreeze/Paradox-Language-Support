@@ -13,6 +13,7 @@ import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
@@ -73,7 +74,7 @@ class ParadoxModifierLocalizedNameHintsProvider: ParadoxScriptHintsProvider<Sett
 				val keys = ParadoxModifierConfigHandler.getModifierNameKeys(name, configGroup)
 				val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(element).preferLocale(preferredParadoxLocale())
 				val localisation = keys.firstNotNullOfOrNull {
-					findLocalisation(it, configGroup.project, selector = selector)
+					ParadoxLocalisationSearch.search(it, configGroup.project, selector = selector).find()
 				} ?: return true
 				val presentation = collectLocalisation(localisation, editor, settings)
 				val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true

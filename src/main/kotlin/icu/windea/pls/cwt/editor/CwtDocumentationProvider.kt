@@ -234,12 +234,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		val nameKeys = ParadoxModifierConfigHandler.getModifierNameKeys(name, configGroup)
 		val localisation = nameKeys.firstNotNullOfOrNull {
 			val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
-			findLocalisation(it, configGroup.project, selector = selector)
+			ParadoxLocalisationSearch.search(it, configGroup.project, selector = selector).find()
 		}
 		val descKeys = ParadoxModifierConfigHandler.getModifierDescKeys(name, configGroup)
 		val descLocalisation = descKeys.firstNotNullOfOrNull {
 			val descSelector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
-			findLocalisation(it, configGroup.project, selector = descSelector)
+			ParadoxLocalisationSearch.search(it, configGroup.project, selector = descSelector).find()
 		}
 		//如果没找到的话，不要在文档中显示相关信息
 		if(localisation != null) {

@@ -52,3 +52,4 @@ class ParadoxDefinitionSearch: ExtensibleQueryFactory<ParadoxScriptDefinitionEle
 		) = INSTANCE.createParadoxQuery(SearchParameters(null, typeExpression, project, scope, selector))
 	}
 }
+

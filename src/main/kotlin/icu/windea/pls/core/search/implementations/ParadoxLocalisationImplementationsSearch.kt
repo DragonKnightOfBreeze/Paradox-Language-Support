@@ -8,6 +8,7 @@ import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 
@@ -34,8 +35,8 @@ class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, Defin
 			//TODO 暂时限定语言区域
 			val selector = localisationSelector().gameType(gameType).preferRootFrom(sourceElement).preferLocale(preferredParadoxLocale())
 			val localisations = when(category) {
-				ParadoxLocalisationCategory.Localisation -> findLocalisations(name, project, scope, selector = selector)
-				ParadoxLocalisationCategory.SyncedLocalisation -> findSyncedLocalisations(name, project, scope, selector = selector)
+				ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.search(name, project, scope, selector = selector).findAll()
+				ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, project, scope, selector = selector).findAll()
 			}
 			localisations.forEach {
 				consumer.process(it)

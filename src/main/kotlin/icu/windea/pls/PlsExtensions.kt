@@ -342,31 +342,6 @@ fun ParadoxScriptValue.isNullLike(): Boolean {
 //endregion
 
 //region Find Extensions
-/**
- * 基于本地化名字索引，根据名字查找本地化（localisation）。
- */
-fun findLocalisation(
-	name: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	preferFirst: Boolean = !getSettings().preferOverridden,
-	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
-): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationNameIndex.findOne(name, project, scope, preferFirst, selector)
-}
-
-/**
- * 基于本地化名字索引，根据名字、语言区域查找所有的本地化（localisation）。
- * @see preferredParadoxLocale
- */
-fun findLocalisations(
-	name: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
-): Set<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.findAll(name, project, scope, selector)
-}
 
 /**
  * 基于本地化名字索引，根据关键字和推断的语言区域遍历所有的本地化（localisation）。对本地化的键去重。
@@ -381,32 +356,6 @@ inline fun processLocalisationVariants(
 ): Boolean {
 	val maxSize = getSettings().completion.maxCompleteSize
 	return ParadoxLocalisationNameIndex.processVariants(keyword, project, scope, maxSize, selector, processor)
-}
-
-/**
- * 基于同步本地化名字索引，根据名字查找同步本地化（localisation_synced）。
- */
-fun findSyncedLocalisation(
-	name: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	preferFirst: Boolean = !getSettings().preferOverridden,
-	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
-): ParadoxLocalisationProperty? {
-	return ParadoxSyncedLocalisationNameIndex.findOne(name, project, scope, preferFirst, selector)
-}
-
-/**
- * 基于同步本地化名字索引，根据名字、语言区域查找所有的同步本地化（localisation_synced）。
- * @see preferredParadoxLocale
- */
-fun findSyncedLocalisations(
-	name: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
-): Set<ParadoxLocalisationProperty> {
-	return ParadoxSyncedLocalisationNameIndex.findAll(name, project, scope, selector)
 }
 
 /**
@@ -520,7 +469,7 @@ private fun resolveLocalisationLink(linkWithoutPrefix: String, sourceElement: Ps
 	val name = tokens.getOrNull(1) ?: return null
 	val project = sourceElement.project
 	val selector = localisationSelector().gameType(gameType).preferRootFrom(sourceElement).preferLocale(sourceElement.localeConfig)
-	return findLocalisation(name, project, selector = selector)
+	return ParadoxLocalisationSearch.search(name, project, selector = selector).find()
 }
 
 private fun resolveFilePathLink(linkWithoutPrefix: String, sourceElement: PsiElement): PsiFile? {
@@ -585,7 +534,7 @@ fun StringBuilder.appendLocalisationLink(gameType: ParadoxGameType, name: String
 	//如果name为空字符串，需要特殊处理
 	if(name.isEmpty()) return append(PlsConstants.unresolvedString)
 	//如果可以被解析为本地化，则显示链接
-	val isResolved = resolved == true || (resolved == null && findLocalisation(name, context.project, preferFirst = true, selector = localisationSelector().gameTypeFrom(context)) != null)
+	val isResolved = resolved == true || (resolved == null && ParadoxLocalisationSearch.search(name, context.project, selector = localisationSelector().gameTypeFrom(context)).findFirst() != null)
 	if(isResolved) return appendPsiLink("$localisationLinkPrefix${gameType.id}/$name", name)
 	//否则显示未解析的链接
 	return appendUnresolvedLink(name)

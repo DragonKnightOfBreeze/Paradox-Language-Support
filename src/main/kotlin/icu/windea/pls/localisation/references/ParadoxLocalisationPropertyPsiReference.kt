@@ -7,6 +7,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.model.ParadoxLocalisationCategory.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 
@@ -41,8 +42,8 @@ class ParadoxLocalisationPropertyPsiReference(
 		//解析成localisation或者synced_localisation
 		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(locale)
 		return when(category) {
-			Localisation -> findLocalisation(name, project, selector = selector)
-			SyncedLocalisation -> findSyncedLocalisation(name, project, selector = selector)
+			Localisation -> ParadoxLocalisationSearch.search(name, project, selector = selector).find()
+			SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, project, selector = selector).find()
 		}
 	}
 	
@@ -59,8 +60,8 @@ class ParadoxLocalisationPropertyPsiReference(
 		//解析成localisation或者synced_localisation
 		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(locale)
 		return when(category) {
-			Localisation -> findLocalisations(name, project, selector = selector) //仅查找对应语言区域的
-			SyncedLocalisation -> findSyncedLocalisations(name, project, selector = selector) //仅查找对应语言区域的
+			Localisation -> ParadoxLocalisationSearch.search(name, project, selector = selector).findAll() //仅查找对应语言区域的
+			SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, project, selector = selector).findAll() //仅查找对应语言区域的
 		}.mapToArray { PsiElementResolveResult(it) }
 	}
 }
