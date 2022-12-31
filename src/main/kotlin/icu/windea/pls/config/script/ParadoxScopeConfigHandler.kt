@@ -25,6 +25,8 @@ object ParadoxScopeConfigHandler {
 	
 	val anyScopeIdSet = setOf(anyScopeId)
 	
+	val definitionTypesSkipCheckSystemScope = arrayOf("event", "scripted_trigger", "scripted_effect")
+	
 	/**
 	 * 得到作用域的ID（全小写+下划线）。
 	 */
@@ -142,6 +144,9 @@ object ParadoxScopeConfigHandler {
 		return false
 	}
 	
+	/**
+	 * 注意，如果输入的是值为子句的属性，这里得到的会是子句中的作用域上下文，而非此属性的作用域上下文。
+	 */
 	@JvmStatic
 	fun getScopeContext(element: ParadoxScriptMemberElement, file: PsiFile = element.containingFile): ParadoxScopeContext? {
 		return getScopeContextFromCache(element, file)
@@ -175,8 +180,8 @@ object ParadoxScopeConfigHandler {
 				?: typeConfig.config.pushScope)
 			val pushScope = pushScopeOnType
 				?: declarationConfig.pushScope
-			return replaceScope?.resolve(pushScope)
-				?: ParadoxScopeContext.resolve(anyScopeId, anyScopeId)
+			val result = replaceScope?.resolve(pushScope) ?: ParadoxScopeContext.resolve(anyScopeId, anyScopeId)
+			return result
 		}
 		
 		//should be a definition member
@@ -188,61 +193,19 @@ object ParadoxScopeConfigHandler {
 		if(config is CwtPropertyConfig && config.expression.type == CwtDataType.ScopeField) {
 			if(parentScopeContext == null) return null
 			val scopeField = element.castOrNull<ParadoxScriptProperty>()?.propertyKey?.text ?: return null
-			return resolveScopeContextFromScopeField(scopeField, config, parentScopeContext)
-				?: resolveUnknownScopeContext(parentScopeContext)
+			if(scopeField.isLeftQuoted()) return null
+			val textRange = TextRange.create(0, scopeField.length)
+			val configGroup = config.info.configGroup
+			val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup, true) ?: return null
+			val result = getScopeContext(scopeFieldExpression, parentScopeContext)
+			return result
 		} else {
 			val resolvedConfig = config.resolved()
-			val replaceScope = resolvedConfig.replaceScope ?: parentScopeContext
+			val replaceScope = resolvedConfig.replaceScope ?: parentScopeContext ?: return null
 			val pushScope = resolvedConfig.pushScope
-			return replaceScope?.resolve(pushScope)
+			val result = replaceScope.resolve(pushScope)
+			return result
 		}
-	}
-	
-	private fun resolveScopeContextFromScopeField(text: String, config: CwtPropertyConfig, parentScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
-		if(text.isLeftQuoted()) return null
-		val textRange = TextRange.create(0, text.length)
-		val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, config.info.configGroup, true) ?: return null
-		return resolveScopeContextFromScopeFieldExpression(scopeFieldExpression, parentScopeContext)
-	}
-	
-	private fun resolveScopeContextFromScopeFieldExpression(scopeFieldExpression: ParadoxScopeFieldExpression, parentScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
-		val scopeNodes = scopeFieldExpression.scopeNodes
-		var resolvedScope: String? = null
-		var scopeContext = parentScopeContext
-		for(scopeNode in scopeNodes) {
-			when(scopeNode) {
-				is ParadoxScopeLinkExpressionNode -> {
-					resolvedScope = resolveScopeByScopeLink(scopeNode)
-					break
-				}
-				is ParadoxScopeLinkFromDataExpressionNode -> {
-					resolvedScope = resolveScopeByScopeLinkFromData(scopeNode)
-					break
-				}
-				is ParadoxSystemScopeExpressionNode -> {
-					scopeContext = resolveScopeBySystemScope(scopeNode, scopeContext) ?: return null
-					resolvedScope = scopeContext.thisScope
-				}
-				is ParadoxErrorScopeExpressionNode -> {
-					return null //error
-				}
-			}
-		}
-		if(resolvedScope == null) return null
-		return scopeContext.resolve(resolvedScope)
-	}
-	
-	private fun resolveScopeByScopeLink(node: ParadoxScopeLinkExpressionNode): String {
-		return node.config.outputScope
-	}
-	
-	private fun resolveScopeByScopeLinkFromData(node: ParadoxScopeLinkFromDataExpressionNode): String? {
-		return null //TODO
-	}
-	
-	private fun resolveScopeBySystemScope(node: ParadoxSystemScopeExpressionNode, scopeContext: ParadoxScopeContext): ParadoxScopeContext? {
-		val systemScopeConfig = node.config
-		return resolveScopeBySystemScope(systemScopeConfig, scopeContext)
 	}
 	
 	@JvmStatic
@@ -286,14 +249,60 @@ object ParadoxScopeConfigHandler {
 	}
 	
 	@JvmStatic
-	fun resolveUnknownScopeContext(parentScopeContext: ParadoxScopeContext? = null): ParadoxScopeContext {
-		return parentScopeContext?.resolve(unknownScopeId) ?: ParadoxScopeContext.resolve(unknownScopeId)
+	fun getScopeContext(systemScope: CwtSystemScopeConfig, parentScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
+		return resolveScopeContextBySystemScope(systemScope, parentScopeContext)
 	}
 	
 	@JvmStatic
-	fun resolveScopeBySystemScope(systemScope: CwtSystemScopeConfig, scopeContext: ParadoxScopeContext): ParadoxScopeContext? {
+	fun getScopeContext(scopeFieldExpression: ParadoxScopeFieldExpression, parentScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+		val scopeNodes = scopeFieldExpression.scopeNodes
+		var result = parentScopeContext
+		val resolved = mutableListOf<Tuple2<ParadoxScopeExpressionNode, ParadoxScopeContext>>()
+		for(scopeNode in scopeNodes) {
+			when(scopeNode) {
+				is ParadoxScopeLinkExpressionNode -> {
+					result = resolveScopeByScopeLinkNode(scopeNode, result)
+					resolved.add(scopeNode to result)
+				}
+				is ParadoxScopeLinkFromDataExpressionNode -> {
+					result = resolveScopeByScopeLinkFromDataNode(scopeNode, result)
+						?: resolveUnknownScopeContext(result)
+					resolved.add(scopeNode to result)
+				}
+				is ParadoxSystemScopeExpressionNode -> {
+					result = resolveScopeContextBySystemScopeNode(scopeNode, result)
+						?: resolveUnknownScopeContext(result)
+					resolved.add(scopeNode to result)
+				}
+				//error
+				is ParadoxErrorScopeExpressionNode -> {
+					result = resolveUnknownScopeContext(result)
+					resolved.add(scopeNode to result)
+					break
+				}
+			}
+		}
+		result.scopeFieldInfo = resolved
+		return result
+	}
+	
+	private fun resolveScopeByScopeLinkNode(node: ParadoxScopeLinkExpressionNode, scopeContext: ParadoxScopeContext): ParadoxScopeContext {
+		val outputScope = node.config.outputScope
+		return scopeContext.resolve(outputScope)
+	}
+	
+	private fun resolveScopeByScopeLinkFromDataNode(node: ParadoxScopeLinkFromDataExpressionNode, scopeContext: ParadoxScopeContext): ParadoxScopeContext? {
+		return null //TODO
+	}
+	
+	private fun resolveScopeContextBySystemScopeNode(node: ParadoxSystemScopeExpressionNode, scopeContext: ParadoxScopeContext): ParadoxScopeContext? {
+		val systemScopeConfig = node.config
+		return resolveScopeContextBySystemScope(systemScopeConfig, scopeContext)
+	}
+	
+	private fun resolveScopeContextBySystemScope(systemScope: CwtSystemScopeConfig, scopeContext: ParadoxScopeContext): ParadoxScopeContext? {
 		val id = systemScope.id
-		return when {
+		val systemScopeContext = when {
 			id == "This" -> scopeContext
 			id == "Root" -> scopeContext.root
 			id == "Prev" -> scopeContext.prev
@@ -305,6 +314,12 @@ object ParadoxScopeConfigHandler {
 			id == "FromFromFrom" -> scopeContext.from?.from?.from
 			id == "FromFromFromFrom" -> scopeContext.from?.from?.from
 			else -> null
-		}
+		} ?: return null
+		return scopeContext.resolve(systemScopeContext)
+	}
+	
+	@JvmStatic
+	fun resolveUnknownScopeContext(parentScopeContext: ParadoxScopeContext? = null): ParadoxScopeContext {
+		return parentScopeContext?.resolve(unknownScopeId) ?: ParadoxScopeContext.resolve(unknownScopeId)
 	}
 }

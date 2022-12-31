@@ -20,10 +20,10 @@ intellij {
 	plugins.add("cn.yiiguxing.plugin.translate:3.4.0") //https://github.com/YiiGuxing/TranslationPlugin
 	
 	//reference
-	plugins.add("markdown")
-	plugins.add("properties")
-	plugins.add("com.intellij.java")
-	plugins.add("org.jetbrains.kotlin")
+	//plugins.add("markdown")
+	//plugins.add("properties")
+	//plugins.add("com.intellij.java")
+	//plugins.add("org.jetbrains.kotlin")
 }
 
 grammarKit {
@@ -45,8 +45,6 @@ dependencies {
 		exclude(module = "jackson-core")
 		exclude(module = "jackson-databind")
 	}
-	//JUNIT
-	testImplementation("junit:junit:4.13.2")
 }
 
 sourceSets {
@@ -93,7 +91,10 @@ tasks {
 		}
 	}
 	test {
+		systemProperty("idea.force.use.core.classloader", true)
 		useJUnitPlatform()
+		isScanForTestClasses = false
+		include("**/*Test.class")
 	}
 	jar {
 		//添加项目文档和许可证
@@ -135,7 +136,7 @@ tasks {
 		
 	}
 	runIde {
-		systemProperties["idea.is.internal"] = true
+		systemProperty("idea.is.internal", true)
 		jvmArgs("-Xmx4096m") //自定义JVM参数
 	}
 	publishPlugin {

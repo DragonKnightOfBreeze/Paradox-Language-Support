@@ -48,4 +48,8 @@ enum class CwtDataType {
 	fun isNumberType() = this == Int || this == Float
 		|| this == ValueField || this == IntValueField
 		|| this == VariableField || this == IntVariableField
+	
+	fun isScopeFieldType() = this == ScopeField || this == Scope || this == ScopeGroup
+		
+	fun isValueFieldType() = this == ValueField || this == IntValueField
 }

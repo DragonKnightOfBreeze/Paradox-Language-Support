@@ -9,7 +9,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
 
 class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
@@ -39,10 +38,9 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 								val scopeContext = ParadoxScopeConfigHandler.getScopeContext(element, file) ?: return
 								val supportedScopes = config.inputScopes
 								if(!ParadoxScopeConfigHandler.matchesScope(scopeContext, supportedScopes)) {
-									val location = element
 									val description = PlsBundle.message("localisation.inspection.scope.incorrectScopeSwitch.description.1",
 										element.name, supportedScopes.joinToString(), scopeContext.thisScope)
-									holder.registerProblem(location, description)
+									holder.registerProblem(element, description)
 								}
 							}
 							//TODO depends on usages, cannot check now
@@ -51,7 +49,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 							//	val resolvedScope = ParadoxScopeConfigHandler.resolveScopeBySystemScope(config, scopeContext)
 							//	if(resolvedScope == null) {
 							//		val location = element
-							//		val description = PlsBundle.message("localisation.inspection.scope.incorrectScopeSwitch.description.2",
+							//		val description = PlsBundle.message("localisation.inspection.scope.incorrectScopeSwitch.description.3",
 							//			element.name)
 							//		holder.registerProblem(location, description)
 							//	}

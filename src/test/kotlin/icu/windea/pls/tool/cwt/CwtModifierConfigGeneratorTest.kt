@@ -11,12 +11,8 @@ class CwtModifierConfigGeneratorTest : BasePlatformTestCase() {
 		return true
 	}
 	
-	override fun runInDispatchThread(): Boolean {
-		return false
-	}
-	
 	@Test
-	fun testGenerateForCk3() {
+	fun test() {
 		CwtModifierConfigGenerator(
 			project,
 			ParadoxGameType.Ck3,
@@ -24,11 +20,6 @@ class CwtModifierConfigGeneratorTest : BasePlatformTestCase() {
 			"cwt/cwtools-ck3-config/config/modifiers.cwt",
 			"cwt/cwtools-ck3-config/config/modifier_categories.cwt"
 		).generate()
-		runInEdt { FileDocumentManager.getInstance().saveAllDocuments() }
-	}
-	
-	@Test
-	fun testGenerateForStellaris() {
 		CwtModifierConfigGenerator(
 			project,
 			ParadoxGameType.Stellaris,
@@ -36,11 +27,6 @@ class CwtModifierConfigGeneratorTest : BasePlatformTestCase() {
 			"cwt/cwtools-stellaris-config/config/modifiers.cwt",
 			"cwt/cwtools-stellaris-config/config/modifier_categories.cwt"
 		).generate()
-		runInEdt { FileDocumentManager.getInstance().saveAllDocuments() }
-	}
-	
-	@Test
-	fun testGenerateForVic3() {
 		CwtModifierConfigGenerator(
 			project,
 			ParadoxGameType.Vic3,
@@ -48,6 +34,7 @@ class CwtModifierConfigGeneratorTest : BasePlatformTestCase() {
 			"cwt/cwtools-vic3-config/config/modifiers.cwt",
 			"cwt/cwtools-vic3-config/config/modifier_categories.cwt"
 		).generate()
+		
 		runInEdt { FileDocumentManager.getInstance().saveAllDocuments() }
 	}
 }

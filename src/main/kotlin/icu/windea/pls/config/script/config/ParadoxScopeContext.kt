@@ -1,5 +1,10 @@
 package icu.windea.pls.config.script.config
 
+import icu.windea.pls.config.script.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.expression.nodes.*
+import icu.windea.pls.core.model.*
+
 data class ParadoxScopeContext(
 	val thisScope: String,
 	val rootScope: String? = null,
@@ -8,35 +13,17 @@ data class ParadoxScopeContext(
 	val fromFromFromScope: String? = null,
 	val fromFromFromFromScope: String? = null
 ) {
-	@Volatile var root: ParadoxScopeContext? = null
-	@Volatile var prev: ParadoxScopeContext? = null
-	@Volatile var from: ParadoxScopeContext? = null
+	@Volatile var root: ParadoxScopeContext? = null // set when init
+	@Volatile var prev: ParadoxScopeContext? = null // lazy set
+	@Volatile var from: ParadoxScopeContext? = null // set when init
 	
-	init {
-		if(rootScope != null) {
-			if(rootScope == thisScope) {
-				root = this
-			} else {
-				root = ParadoxScopeContext(rootScope, rootScope)
-			}
-		}
-		if(fromScope != null) {
-			val fromConfig = ParadoxScopeContext(fromScope)
-			if(fromFromScope != null) {
-				val fromFromConfig = ParadoxScopeContext(fromFromScope)
-				if(fromFromFromScope != null) {
-					val fromFromFromConfig = ParadoxScopeContext(fromFromFromScope)
-					if(fromFromFromFromScope != null) {
-						val fromFromFromFromConfig = ParadoxScopeContext(fromFromFromFromScope)
-						fromFromFromConfig.from = fromFromFromFromConfig
-					}
-					fromFromConfig.from = fromFromFromConfig
-				}
-				fromConfig.from = fromFromConfig
-			}
-			from = fromConfig
-		}
-	}
+	//scope context before scope switch
+	@Volatile var parent: ParadoxScopeContext? = null
+	
+	//scope context list of scope field expression nodes
+	@Volatile var scopeFieldInfo: List<Tuple2<ParadoxScopeExpressionNode, ParadoxScopeContext>>? = null
+	
+	val supportAnyThisScope = thisScope == ParadoxScopeConfigHandler.anyScopeId
 	
 	val map by lazy {
 		buildMap {
@@ -49,11 +36,45 @@ data class ParadoxScopeContext(
 		}
 	}
 	
+	init {
+		if(rootScope != null) {
+			if(rootScope == thisScope) {
+				root = this
+			} else {
+				root = ParadoxScopeContext(rootScope, rootScope)
+			}
+		}
+		if(fromScope != null) {
+			val fromContext = ParadoxScopeContext(fromScope)
+			if(fromFromScope != null) {
+				val fromFromContext = ParadoxScopeContext(fromFromScope)
+				if(fromFromFromScope != null) {
+					val fromFromFromContext = ParadoxScopeContext(fromFromFromScope)
+					if(fromFromFromFromScope != null) {
+						val fromFromFromFromContext = ParadoxScopeContext(fromFromFromFromScope)
+						fromFromFromContext.from = fromFromFromFromContext
+					}
+					fromFromContext.from = fromFromFromContext
+				}
+				fromContext.from = fromFromContext
+			}
+			from = fromContext
+		}
+	}
+	
 	fun resolve(pushScope: String?): ParadoxScopeContext {
 		if(pushScope == null) return this
-		val scopeConfig = copy(thisScope = pushScope)
-		scopeConfig.prev = this
-		return scopeConfig
+		val result = copy(thisScope = pushScope)
+		result.prev = this
+		result.parent = this
+		return result
+	}
+	
+	fun resolve(systemScopeContext: ParadoxScopeContext): ParadoxScopeContext{
+		val result = systemScopeContext.copy()
+		result.prev = systemScopeContext.prev
+		result.parent = this
+		return result
 	}
 	
 	companion object {
