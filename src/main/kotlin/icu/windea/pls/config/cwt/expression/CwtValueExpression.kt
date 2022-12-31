@@ -20,6 +20,9 @@ class CwtValueExpression private constructor(
 		
 		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtValueExpression> { doResolve(it) } }
 		
+		/**
+		 * @param isParameterValue 参数的值的类型在规则文件中写作"scalar"的场合，实际上只要不是子句就可以。
+		 */
 		fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
 		
 		private fun doResolve(expressionString: String) = when {

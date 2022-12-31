@@ -88,7 +88,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
 		for(config in result) {
 			if(index == 0) {
 				if(isKey && config is CwtPropertyConfig) {
-					if(CwtConfigHandler.matchesScriptExpression(expression, config.keyExpression, configGroup, matchType)) {
+					if(CwtConfigHandler.matchesScriptExpression(expression, config.keyExpression, config,configGroup, matchType)) {
 						nextIndex = CwtConfigHandler.inlineConfig(key, isQuoted, config, configGroup, nextResult, index, matchType)
 					}
 				} else if(!isKey && config is CwtValueConfig) {
@@ -98,7 +98,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
 				val propertyConfigs = config.properties
 				if(isKey && propertyConfigs != null && propertyConfigs.isNotEmpty()) {
 					for(propertyConfig in propertyConfigs) {
-						if(CwtConfigHandler.matchesScriptExpression(expression, propertyConfig.keyExpression, configGroup, matchType)) {
+						if(CwtConfigHandler.matchesScriptExpression(expression, propertyConfig.keyExpression, propertyConfig, configGroup, matchType)) {
 							nextIndex = CwtConfigHandler.inlineConfig(key, isQuoted, propertyConfig, configGroup, nextResult, index, matchType)
 						}
 					}
@@ -114,7 +114,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
 		
 		//如果存在可以静态匹配（CwtConfigMatchType.STATIC）的规则，则仅选用可以静态匹配的规则
 		result = nextResult.filter {
-			CwtConfigHandler.matchesScriptExpression(expression, it.expression, configGroup, CwtConfigMatchType.STATIC)
+			CwtConfigHandler.matchesScriptExpression(expression, it.expression, it, configGroup, CwtConfigMatchType.STATIC)
 		}.ifEmpty { nextResult }
 		index = nextIndex
 	}
@@ -186,7 +186,7 @@ private fun ParadoxDefinitionMemberInfo.doGetChildPropertyOccurrenceMap(element:
 	if(properties.isNotEmpty()) {
 		for(property in properties) {
 			val expression = ParadoxDataExpression.resolve(property.propertyKey)
-			val matched = childPropertyConfigs.find { CwtConfigHandler.matchesScriptExpression(expression, it.keyExpression, configGroup) }
+			val matched = childPropertyConfigs.find { CwtConfigHandler.matchesScriptExpression(expression, it.keyExpression, it, configGroup) }
 			if(matched == null) continue
 			val occurrence = occurrenceMap[matched.keyExpression]
 			if(occurrence == null) continue
@@ -209,7 +209,7 @@ private fun ParadoxDefinitionMemberInfo.doGetChildValueOccurrenceMap(element: Pa
 	if(values.isNotEmpty()) {
 		for(value in values) {
 			val expression = ParadoxDataExpression.resolve(value)
-			val matched = childValueConfigs.find { CwtConfigHandler.matchesScriptExpression(expression, it.valueExpression, configGroup) }
+			val matched = childValueConfigs.find { CwtConfigHandler.matchesScriptExpression(expression, it.valueExpression,it, configGroup) }
 			if(matched == null) continue
 			val occurrence = occurrenceMap[matched.valueExpression]
 			if(occurrence == null) continue

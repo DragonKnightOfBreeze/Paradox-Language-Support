@@ -50,6 +50,8 @@ interface CwtConfigGroup {
 	val singleAliases: Map<String, List<CwtSingleAliasConfig>>
 	//同名的alias可以有多个
 	val aliasGroups: Map<String, Map<String, List<CwtAliasConfig>>>
+	//inline_script
+	val inlineConfigs: Map<String, List<CwtInlineConfig>>
 	
 	val declarations: Map<String, CwtDeclarationConfig>
 	

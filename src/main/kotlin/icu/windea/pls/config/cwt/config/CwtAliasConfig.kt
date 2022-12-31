@@ -23,3 +23,4 @@ data class CwtAliasConfig(
 	
 	val supportAnyScope get() = config.supportAnyScope
 }
+

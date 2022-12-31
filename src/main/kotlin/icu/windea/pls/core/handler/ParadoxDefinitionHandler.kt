@@ -345,7 +345,7 @@ object ParadoxDefinitionHandler {
 				propertyConfig.stringValue != null -> {
 					val expression = ParadoxDataExpression.resolve(propValue)
 					val matchType = CwtConfigMatchType.STATIC
-					return CwtConfigHandler.matchesScriptExpression(expression, propertyConfig.valueExpression, configGroup, matchType)
+					return CwtConfigHandler.matchesScriptExpression(expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchType)
 				}
 				//匹配single_alias
 				CwtConfigHandler.isSingleAlias(propertyConfig) -> {
@@ -381,7 +381,7 @@ object ParadoxDefinitionHandler {
 			val expression = ParadoxDataExpression.resolve(keyElement)
 			val matchType = CwtConfigMatchType.STATIC
 			val propConfigs = propertyConfigs.filter {
-				CwtConfigHandler.matchesScriptExpression(expression, it.keyExpression, configGroup, matchType)
+				CwtConfigHandler.matchesScriptExpression(expression, it.keyExpression, it, configGroup, matchType)
 			}
 			//如果没有匹配的规则则忽略
 			if(propConfigs.isNotEmpty()) {
@@ -409,7 +409,7 @@ object ParadoxDefinitionHandler {
 			val expression = ParadoxDataExpression.resolve(value)
 			val matchType = CwtConfigMatchType.STATIC
 			val matched = valueConfigs.any { valueConfig ->
-				val matched = CwtConfigHandler.matchesScriptExpression(expression, valueConfig.valueExpression, configGroup, matchType)
+				val matched = CwtConfigHandler.matchesScriptExpression(expression, valueConfig.valueExpression, valueConfig, configGroup, matchType)
 				if(matched) minMap.compute(valueConfig.value) { _, v -> if(v == null) 1 else v - 1 }
 				matched
 			}

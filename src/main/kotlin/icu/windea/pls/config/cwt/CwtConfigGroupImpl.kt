@@ -61,6 +61,7 @@ class CwtConfigGroupImpl(
 	override val scopeGroups: MutableMap<String, CwtScopeGroupConfig> = mutableMapOf()
 	override val singleAliases: MutableMap<String, MutableList<CwtSingleAliasConfig>> = mutableMapOf()
 	override val aliasGroups: MutableMap<String, MutableMap<String, MutableList<CwtAliasConfig>>> = mutableMapOf()
+	override val inlineConfigs: MutableMap<String, MutableList<CwtInlineConfig>> = mutableMapOf()
 	override val declarations: MutableMap<String, CwtDeclarationConfig> = mutableMapOf()
 	
 	init {
@@ -131,6 +132,7 @@ class CwtConfigGroupImpl(
 		buildSet {
 			addAll(info.aliasNameSupportScope)
 			add("script_value") //SV也支持参数
+			add("inline_script") //内联脚本也支持参数（并且可以表示多条语句）
 		}
 	}
 	
@@ -435,6 +437,13 @@ class CwtConfigGroupImpl(
 						val map = aliasGroups.getOrPut(aliasName) { mutableMapOf() }
 						val list = map.getOrPut(aliasSubName) { SmartList() }
 						list.add(aliasConfig)
+					}
+					
+					val inlineConfigName = key.removeSurroundingOrNull("inline[", "]")
+					if(inlineConfigName != null) {
+						val inlineConfig = resolveInlineConfig(property, inlineConfigName)
+						val list = inlineConfigs.getOrPut(inlineConfigName) { SmartList() }
+						list.add(inlineConfig)
 					}
 					
 					//其他情况，放到definition中
@@ -793,6 +802,10 @@ class CwtConfigGroupImpl(
 				info.acceptConfigExpression(subNameExpression)
 				info.acceptAliasConfig(this)
 			}
+	}
+	
+	private fun resolveInlineConfig(propertyConfig: CwtPropertyConfig, name: String): CwtInlineConfig {
+		return CwtInlineConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name)
 	}
 	
 	private fun resolveDeclarationConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDeclarationConfig {

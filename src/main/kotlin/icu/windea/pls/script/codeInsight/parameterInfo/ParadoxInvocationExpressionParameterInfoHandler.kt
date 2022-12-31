@@ -30,7 +30,7 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
 					?.getConfigs()
 					?.any { config ->
 					config is CwtPropertyConfig && config.properties?.any { prop ->
-						prop.keyExpression.let { it.type == CwtDataType.Enum && it.value == CwtConfigHandler.paramsEnumName }
+						prop.keyExpression.let { CwtConfigHandler.isParameter(prop) }
 					} ?: false
 				} ?: false
 			}

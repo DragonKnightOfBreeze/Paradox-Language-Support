@@ -22,7 +22,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.handler.*
-import icu.windea.pls.core.index.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
@@ -41,6 +40,12 @@ import kotlin.text.removeSurrounding
 object CwtConfigHandler {
 	//region Common Methods
 	const val paramsEnumName = "scripted_effect_params"
+	
+	fun isParameter(config: CwtDataConfig<*>?) : Boolean {
+		if(config !is CwtPropertyConfig) return false
+		val keyExpression = config.keyExpression
+		return keyExpression.type == CwtDataType.Enum && keyExpression.value == paramsEnumName
+	}
 	
 	fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
 		return propertyConfig.keyExpression.type == CwtDataType.AliasName
@@ -84,6 +89,9 @@ object CwtConfigHandler {
 				}
 				else -> pass()
 			}
+			if(key == "inline_script") {
+				
+			}
 		}
 		result.add(config)
 		return index + 1
@@ -107,7 +115,7 @@ object CwtConfigHandler {
 	//region Matches Methods
 	//TODO 基于cwt规则文件的匹配方法需要进一步匹配scope
 	//DONE 兼容variableReference inlineMath parameter
-	fun matchesScriptExpression(expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
+	fun matchesScriptExpression(expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
 		//匹配block
 		if(configExpression == CwtValueExpression.BlockExpression) {
 			return expression.type == ParadoxDataType.BlockType
@@ -152,6 +160,16 @@ object CwtConfigHandler {
 				return false
 			}
 			CwtDataType.Scalar -> {
+				//parameter value -> all no clause-like types are ok
+				val propertyConfig = when(config) {
+					is CwtPropertyConfig -> config
+					is CwtValueConfig -> config.propertyConfig
+					else -> null
+				}
+				if(isParameter(propertyConfig)) {
+					return !expression.type.isBlockLikeType()
+				}
+				
 				//unquoted_string, quoted, any key
 				return expression.type.isStringType() || (expression.isKey == true)
 			}
@@ -372,7 +390,7 @@ object CwtConfigHandler {
 		//TODO 匹配scope
 		val aliasSubName = getAliasSubName(expression.text, expression.quoted, aliasName, configGroup, matchType) ?: return false
 		val configExpression = CwtKeyExpression.resolve(aliasSubName)
-		return matchesScriptExpression(expression, configExpression, configGroup, matchType)
+		return matchesScriptExpression(expression, configExpression, null, configGroup, matchType)
 	}
 	
 	fun matchesModifier(name: String, configGroup: CwtConfigGroup): Boolean {
@@ -386,7 +404,7 @@ object CwtConfigHandler {
 		val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
 		val expression = ParadoxDataExpression.resolve(key, quoted, true)
 		return keys.find {
-			matchesScriptExpression(expression, CwtKeyExpression.resolve(it), configGroup, matchType)
+			matchesScriptExpression(expression, CwtKeyExpression.resolve(it), null, configGroup, matchType)
 		}
 	}
 	

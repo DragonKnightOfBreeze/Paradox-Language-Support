@@ -64,12 +64,13 @@
   * [X] 实现生成器从`modifiers.log`生成或更新`modifiers.cwt`和`modifier_categories.cwt`
   * [X] 如果定义类型的顶级属性名是限定且存在多种情况的，如有必要，解析定义信息时总是要求顶级属性名是可能的情况之一，而不是任意字符串（如stellaris中的event）
 * 新增功能 - 概述
-  * [ ] 初步支持处理作用域（`scope`），以及相关的快速文档、内嵌提示、代码检查等功能
+  * [X] 初步支持处理作用域（`scope`），以及相关的快速文档、内嵌提示、代码检查等功能
     * 基于已有的CWT规则文件
     * （对于`on_action`）基于`on_actions.csv`
   * [ ] 初步支持处理生成的修饰符（`modifier`），以及相关的引用解析、代码补全、代码高亮等功能
-    * 基于扩展的CWT规则（`modifier_generation.cwt`）
-  * [ ] 支持处理内联脚本（`inline_script`）
+    * 基于形如`alias[modifier:xxx]`的CWT规则（如果`xxx`并非表示一个定义，使用特殊的高亮）
+    * 基于CWT类型规则中的`modifiers`规则（例如：`modifiers = { job_$_add = Planets }`）
+  * [X] 支持处理内联脚本（`inline_script`）
 * 新增功能
   * 快速文档（`Quick Documentation`）
     * [X] 如果支持，在快速文档中显示作用域上下文信息

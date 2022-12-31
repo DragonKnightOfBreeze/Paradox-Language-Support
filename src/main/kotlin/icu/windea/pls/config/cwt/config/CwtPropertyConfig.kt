@@ -1,6 +1,7 @@
 package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
@@ -26,6 +27,7 @@ data class CwtPropertyConfig(
 	
 	val keyExpression: CwtKeyExpression = CwtKeyExpression.resolve(key)
 	val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
+	
 	override val expression: CwtKeyExpression get() = keyExpression
 	
 	val valueConfig by lazy {
@@ -34,8 +36,9 @@ data class CwtPropertyConfig(
 			?.let { f -> resolvedPointer.element?.propertyValue?.createPointer(f) } ?: return@lazy null
 		CwtValueConfig(
 			valuePointer, info, value, booleanValue, intValue, floatValue, stringValue,
-			configs, documentation, options, optionValues
-		).also { it.parent = parent }.also { it.propertyConfig = this }
+			configs, documentation, options, optionValues,
+			this
+		).also { it.parent = parent }
 	}
 	
 	override fun resolved(): CwtPropertyConfig = inlineableConfig?.config ?: this

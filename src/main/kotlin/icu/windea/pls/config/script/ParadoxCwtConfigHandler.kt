@@ -61,8 +61,7 @@ object ParadoxCwtConfigHandler {
 							add(propertyConfig)
 							continue
 						}
-						val valueExpression = propertyConfig.valueExpression
-						if(CwtConfigHandler.matchesScriptExpression(expression, valueExpression, configGroup, matchType)) {
+						if(CwtConfigHandler.matchesScriptExpression(expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchType)) {
 							add(propertyConfig)
 						}
 					}
@@ -89,8 +88,7 @@ object ParadoxCwtConfigHandler {
 						buildList {
 							for(config in configs) {
 								val propertyConfig = config as? CwtPropertyConfig ?: continue
-								val valueExpression = propertyConfig.valueExpression
-								if(CwtConfigHandler.matchesScriptExpression(expression, valueExpression, configGroup, matchType)) {
+								if(CwtConfigHandler.matchesScriptExpression(expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchType)) {
 									add(propertyConfig.valueConfig)
 								}
 							}
@@ -108,8 +106,7 @@ object ParadoxCwtConfigHandler {
 						val configGroup = definitionMemberInfo.configGroup
 						buildList {
 							for(childValueConfig in childValueConfigs) {
-								val valueExpression = childValueConfig.valueExpression
-								if(CwtConfigHandler.matchesScriptExpression(expression, valueExpression, configGroup, matchType)) {
+								if(CwtConfigHandler.matchesScriptExpression(expression, childValueConfig.valueExpression, childValueConfig, configGroup, matchType)) {
 									add(childValueConfig)
 								}
 								if(orDefault && isEmpty()) {
