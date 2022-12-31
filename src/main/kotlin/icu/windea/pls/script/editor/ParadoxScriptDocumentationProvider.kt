@@ -266,7 +266,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun StringBuilder.addScopeContextForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
-		//进行代码提示时不应当提示作用域上下文
+		//进行代码提示时不应当显示作用域上下文信息
 		@Suppress("DEPRECATION")
 		if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 		

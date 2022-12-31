@@ -5,6 +5,7 @@ package icu.windea.pls.config.cwt
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
@@ -14,6 +15,7 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
@@ -35,7 +37,7 @@ import kotlin.text.removeSurrounding
  * 提供基于CWT规则实现的匹配、校验、代码提示、引用解析等功能。
  */
 object CwtConfigHandler {
-	//region Misc
+	//region Common Methods
 	const val paramsEnumName = "scripted_effect_params"
 	
 	fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
@@ -52,20 +54,6 @@ object CwtConfigHandler {
 			&& config.expression.value?.let { config.info.configGroup.complexEnums[it] } != null
 	}
 	
-	fun isValueSetValue(config: CwtDataConfig<*>): Boolean {
-		return config.expression.type == CwtDataType.Value
-			|| config.expression.type == CwtDataType.ValueSet
-	}
-	
-	//fun mergeScope(scopeMap: MutableMap<String, String>, thisScope: String?): MutableMap<String, String> {
-	//	if(thisScope == null) return scopeMap
-	//	val mergedScopeMap = scopeMap.toMutableMap()
-	//	mergedScopeMap.put("this", thisScope)
-	//	return scopeMap
-	//}
-	//endregion
-	
-	//region Common Methods
 	/**
 	 * 内联规则以便后续的代码提示、引用解析和结构验证。
 	 */
@@ -97,6 +85,20 @@ object CwtConfigHandler {
 		}
 		result.add(config)
 		return index + 1
+	}
+	
+	/**
+	 * 从CWT规则推断得到对应的CWT规则组。
+	 */
+	@InferMethod
+	fun getConfigGroupFromConfig(from: PsiElement, project: Project): CwtConfigGroup? {
+		val file = from.containingFile ?: return null
+		val virtualFile = file.virtualFile ?: return null
+		val path = virtualFile.path
+		//这里的key可能是"core"，而这不是gameType
+		val key = path.substringAfter("config/cwt/", "").substringBefore("/", "")
+		if(key.isEmpty()) return null
+		return getCwtConfig(project).get(key)
 	}
 	//endregion
 	

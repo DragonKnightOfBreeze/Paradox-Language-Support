@@ -5,6 +5,7 @@ package icu.windea.pls.cwt.editor
 import com.intellij.codeInsight.documentation.DocumentationManager
 import com.intellij.lang.documentation.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
@@ -51,8 +52,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val gameType = selectGameType(originalElement?.takeIf { it.language.isParadoxLanguage() })
-			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
+			val configGroup = getConfigGroup(element, originalElement, project)
 			buildPropertyDefinition(element, originalElement, name, configType, configGroup, false, null)
 		}
 	}
@@ -65,8 +65,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val gameType = selectGameType(originalElement?.takeIf { it.language.isParadoxLanguage() })
-			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
+			val configGroup = getConfigGroup(element, originalElement, project)
 			buildStringDefinition(element, originalElement, name, configType, configGroup, false, null)
 		}
 	}
@@ -157,13 +156,15 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 			}
-			if(referenceElement != null && configGroup != null) {
-				if(configType == CwtConfigType.Modifier) {
+			if(configGroup != null) {
+				if(referenceElement != null && configType == CwtConfigType.Modifier) {
 					addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sectionsList?.get(2))
 					addModifierIcon(element, referenceElement, name, configGroup, sectionsList?.get(1))
 				}
-				addScope(element, referenceElement, name, configType, configGroup, sectionsList?.get(0))
-				addScopeContext(element, referenceElement, configGroup, sectionsList?.get(0))
+				addScope(element, name, configType, configGroup, sectionsList?.get(0))
+				if(referenceElement != null) {
+					addScopeContext(element, referenceElement, configGroup, sectionsList?.get(0))
+				}
 			}
 		}
 	}
@@ -213,13 +214,15 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 			}
-			if(referenceElement != null && configGroup != null) {
-				if(configType == CwtConfigType.Modifier) {
+			if(configGroup != null) {
+				if(referenceElement != null && configType == CwtConfigType.Modifier) {
 					addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sectionsList?.get(2))
 					addModifierIcon(element, referenceElement, name, configGroup, sectionsList?.get(1))
 				}
-				//addScope(element, referenceElement, name, configType, configGroup, sectionsList?.get(0))
-				addScopeContext(element, referenceElement, configGroup, sectionsList?.get(0))
+				//addScope(element, name, configType, configGroup, sectionsList?.get(0))
+				if(referenceElement != null) {
+					addScopeContext(element, referenceElement, configGroup, sectionsList?.get(0))
+				}
 			}
 		}
 	}
@@ -286,12 +289,14 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.addScope(element: CwtProperty, referenceElement: PsiElement, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+	private fun StringBuilder.addScope(element: CwtProperty, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+		//即使是在CWT文件中，如果可以推断得到CWT规则组，也显示作用域信息
+		
 		if(!getSettings().documentation.showScopes) return
 		//为link提示名字、描述、输入作用域、输出作用域的文档注释
 		//为alias modifier localisation_command等提供分类、支持的作用域的文档注释
 		//仅为脚本文件和本地化文件中的引用提供
-		val contextElement = referenceElement
+		val contextElement = element
 		val gameType = configGroup.gameType
 		when(configType) {
 			CwtConfigType.Link -> {
@@ -340,8 +345,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			CwtConfigType.Alias -> {
-				val config = ParadoxCwtConfigHandler.resolveConfigs(referenceElement).firstOrNull()?.castOrNull<CwtPropertyConfig>()
-				val aliasConfig = config?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
+				val (aliasName, aliasSubName) = name.removeSurroundingOrNull("alias[", "]")?.split(':') ?: return
+				val aliasConfigGroup = configGroup.aliasGroups[aliasName] ?: return
+				val aliasConfigs = aliasConfigGroup[aliasSubName] ?: return
+				val aliasConfig = aliasConfigs.singleOrNull()
+					?: aliasConfigs.find { element.isSamePosition(it.pointer.element) }
+					?: return
 				if(aliasConfig.name !in configGroup.aliasNameSupportScope) return
 				if(sections != null) {
 					val supportedScopes = aliasConfig.supportedScopes
@@ -393,7 +402,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun StringBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
-		//进行代码提示时不应当提示作用域上下文
+		//进行代码提示时不应当显示作用域上下文信息
 		@Suppress("DEPRECATION")
 		if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 		
@@ -406,7 +415,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		if(scopeContext == null) return
 		//TODO 如果作用域引用位于表达式中，应当使用那个位置的作用域上下文，但是目前实现不了，因为这里的referenceElement是整个scriptProperty
 		val scopeContextToUse = scopeContext
-		val contextElement = referenceElement
+		val contextElement = element
 		val gameType = configGroup.gameType
 		val scopeContextText = buildString {
 			var appendSeparator = false
@@ -478,5 +487,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			element is LeafPsiElement -> element.parent
 			else -> element
 		}
+	}
+	
+	private fun getConfigGroup(element: PsiElement, originalElement: PsiElement?, project: Project): CwtConfigGroup? {
+		val gameType = selectGameType(originalElement?.takeIf { it.language.isParadoxLanguage() })
+		val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
+			?: CwtConfigHandler.getConfigGroupFromConfig(element, project)
+		return configGroup
 	}
 }

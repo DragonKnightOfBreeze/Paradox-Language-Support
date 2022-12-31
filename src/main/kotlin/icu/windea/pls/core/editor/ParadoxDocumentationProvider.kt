@@ -35,7 +35,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 			is ParadoxValueSetValueElement -> getValueSetValueInfo(element, originalElement)
 			is ParadoxScriptStringExpressionElement -> {
 				val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull()
-				if(config != null && CwtConfigHandler.isValueSetValue(config)) {
+				if(config != null && config.expression.type.isValueSetValueType()) {
 					return getValueSetValueInfo(element, originalElement)
 				}
 				null
@@ -66,9 +66,8 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		val name = element.name
 		val valueSetNames = element.valueSetNames
 		val configGroup = getCwtConfig(element.project).getValue(element.gameType)
-		val referenceElement = getReferenceElement(originalElement)
 		return buildString {
-				buildValueSetValueDefinition(name, valueSetNames, configGroup)
+			buildValueSetValueDefinition(name, valueSetNames, configGroup)
 		}
 	}
 	
@@ -80,7 +79,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 			is ParadoxValueSetValueElement -> getValueSetValueDoc(element, originalElement)
 			is ParadoxScriptStringExpressionElement -> {
 				val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull()
-				if(config != null && CwtConfigHandler.isValueSetValue(config)) {
+				if(config != null && config.expression.type.isValueSetValueType()) {
 					return getValueSetValueDoc(element, originalElement)
 				}
 				null
@@ -111,7 +110,6 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		val name = element.name
 		val valueSetNames = element.valueSetNames
 		val configGroup = getCwtConfig(element.project).getValue(element.gameType)
-		val referenceElement = getReferenceElement(originalElement)
 		return buildString {
 			buildValueSetValueDefinition(name, valueSetNames, configGroup)
 		}
@@ -148,13 +146,13 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getReferenceElement(originalElement: PsiElement?): PsiElement?{
-		val element = when{
+	private fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
+		val element = when {
 			originalElement == null -> return null
 			originalElement.elementType == TokenType.WHITE_SPACE -> originalElement.prevSibling ?: return null
 			else -> originalElement
 		}
-		return when{
+		return when {
 			element is LeafPsiElement -> element.parent
 			else -> element
 		}
