@@ -1,5 +1,7 @@
 package icu.windea.pls.script.highlighter
 
+import com.intellij.ide.highlighter.custom.*
+import com.intellij.ide.highlighter.custom.CustomHighlighterColors.*
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors.*
 import com.intellij.openapi.editor.colors.*
@@ -45,7 +47,10 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val VALUE_LINK_VALUE_KEY = createTextAttributesKey("PARADOX_SCRIPT.VALUE_LINK_VALUE", INSTANCE_FIELD)
 	@JvmField val VALUE_LINK_PREFIX_KEY = createTextAttributesKey("PARADOX_SCRIPT.VALUE_LINK_PREFIX", KEYWORD)
 	@JvmField val VALUE_LINK_DATA_SOURCE_KEY = createTextAttributesKey("PARADOX_SCRIPT.VALUE_LINK_DATA_SOURCE")
-	@JvmField val MODIFIER_KEY = createTextAttributesKey("PARADOX_SCRIPT.MODIFIER", PREDEFINED_SYMBOL) //Python > Special names//Definition
+	
+	@JvmField val MODIFIER_KEY = createTextAttributesKey("PARADOX_SCRIPT.MODIFIER", CUSTOM_KEYWORD1_ATTRIBUTES)
+	@JvmField val TRIGGER_KEY = createTextAttributesKey("PARADOX_SCRIPT.TRIGGER", CUSTOM_KEYWORD2_ATTRIBUTES)
+	@JvmField val EFFECT_KEY = createTextAttributesKey("PARADOX_SCRIPT.EFFECT", CUSTOM_KEYWORD2_ATTRIBUTES)
 	@JvmField val TAG_KEY = createTextAttributesKey("PARADOX_SCRIPT.TAG", METADATA)
 	
 	@JvmField val SCOPE_FILED_EXPRESSION_KEY = createTextAttributesKey("PARADOX_SCRIPT.SCOPE_FILED_EXPRESSION")

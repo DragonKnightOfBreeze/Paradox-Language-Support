@@ -38,6 +38,8 @@ settings = {
 			some_value_set_value_expression = <VALUE_SET_VALUE_EXPRESSION><VALUE_SET_VALUE>some_value_set_value</VALUE_SET_VALUE></VALUE_SET_VALUE_EXPRESSION>
 			some_script_value_expression = <SCRIPT_VALUE_EXPRESSION>some_script_value||</SCRIPT_VALUE_EXPRESSION>
 			some_modifier = <MODIFIER>some_modifier</MODIFIER>
+			some_trigger = <TRIGGER>some_trigger</TRIGGER>
+			some_effect = <EFFECT>some_effect</EFFECT>
 			some_variable = <VARIABLE>some_variable</VARIABLE>
 		}
 	}

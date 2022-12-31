@@ -88,7 +88,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
 		for(config in result) {
 			if(index == 0) {
 				if(isKey && config is CwtPropertyConfig) {
-					if(CwtConfigHandler.matchesScriptExpression(expression, config.keyExpression, config,configGroup, matchType)) {
+					if(CwtConfigHandler.matchesScriptExpression(expression, config.keyExpression, config, configGroup, matchType)) {
 						nextIndex = CwtConfigHandler.inlineConfig(key, isQuoted, config, configGroup, nextResult, index, matchType)
 					}
 				} else if(!isKey && config is CwtValueConfig) {

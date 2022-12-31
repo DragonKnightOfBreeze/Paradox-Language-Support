@@ -50,6 +50,8 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(PlsBundle.message("script.displayName.valueLinkPrefix"), ParadoxScriptAttributesKeys.VALUE_LINK_PREFIX_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.valueLinkDataSource"), ParadoxScriptAttributesKeys.VALUE_LINK_DATA_SOURCE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.modifier"), ParadoxScriptAttributesKeys.MODIFIER_KEY),
+			AttributesDescriptor(PlsBundle.message("script.displayName.trigger"), ParadoxScriptAttributesKeys.TRIGGER_KEY),
+			AttributesDescriptor(PlsBundle.message("script.displayName.effect"), ParadoxScriptAttributesKeys.EFFECT_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.tag"), ParadoxScriptAttributesKeys.TAG_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.scopeFieldExpression"), ParadoxScriptAttributesKeys.SCOPE_FILED_EXPRESSION_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.valueFieldExpression"), ParadoxScriptAttributesKeys.VALUE_FILED_EXPRESSION_KEY),
@@ -83,6 +85,8 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 		"VALUE_FILED_EXPRESSION" to ParadoxScriptAttributesKeys.VALUE_FILED_EXPRESSION_KEY,
 		"VALUE_SET_VALUE_EXPRESSION" to ParadoxScriptAttributesKeys.VALUE_SET_VALUE_EXPRESSION_KEY,
 		"MODIFIER" to ParadoxScriptAttributesKeys.MODIFIER_KEY,
+		"TRIGGER" to ParadoxScriptAttributesKeys.TRIGGER_KEY,
+		"EFFECT" to ParadoxScriptAttributesKeys.EFFECT_KEY,
 		"VARIABLE" to ParadoxScriptAttributesKeys.VARIABLE_KEY
 	)
 	
