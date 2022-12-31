@@ -1,98 +1,38 @@
 package icu.windea.pls.core.index
 
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.search.*
+import com.intellij.openapi.util.registry.*
 import com.intellij.util.indexing.*
+import com.intellij.util.io.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.selector.chained.*
+import java.util.*
 
-object ParadoxFilePathIndex {
-	val name = ID.create<String, Void>("paradox.file.path.index")
+object ParadoxFilePathIndex : ScalarIndexExtension<String>() {
+	private val name = ID.create<String, Void>("paradox.file.path.index")
 	
-	fun findOne(filePath: String, scope: GlobalSearchScope, expressionType: CwtPathExpressionType, ignoreCase: Boolean, selector: ChainedParadoxSelector<VirtualFile>): VirtualFile? {
-		val usedFilePath = filePath.trimEnd('/')
-		var result: VirtualFile? = null
-		if(expressionType == CwtPathExpressionType.Exact) {
-			val dataKeys = setOf(usedFilePath)
-			FileBasedIndex.getInstance().processFilesContainingAnyKey(name, dataKeys, scope, null, null) { file ->
-				if(selector.select(file)) {
-					result = file
-					false
-				} else {
-					true
-				}
-			}
-		} else {
-			var dataKey: String? = null
-			FileBasedIndex.getInstance().processAllKeys(name, { path ->
-				if(expressionType.matches(usedFilePath, path, ignoreCase)) {
-					dataKey = path
-					false
-				} else {
-					true
-				}
-			}, scope, null)
-			if(dataKey == null) return null
-			val dataKeys = setOf(dataKey)
-			FileBasedIndex.getInstance().processFilesContainingAnyKey(name, dataKeys, scope, null, null) { file ->
-				if(selector.select(file)) {
-					result = file
-					false
-				} else {
-					true
-				}
-			}
-		}
-		return result ?: selector.defaultValue
+	override fun getName(): ID<String, Void> {
+		return name
 	}
 	
-	fun findAll(filePath: String, scope: GlobalSearchScope, expressionType: CwtPathExpressionType, ignoreCase: Boolean, distinct: Boolean, selector: ChainedParadoxSelector<VirtualFile>): Set<VirtualFile> {
-		val usedFilePath = filePath.trimEnd('/')
-		val result: MutableSet<VirtualFile> = MutableSet(selector.comparator())
-		if(expressionType == CwtPathExpressionType.Exact) {
-			val dataKeys = setOf(usedFilePath)
-			FileBasedIndex.getInstance().processFilesContainingAnyKey(name, dataKeys, scope, null, null) { file ->
-					result.add(file)
-				true
-			}
-		} else {
-			val dataKeys: MutableSet<String> = mutableSetOf()
-			FileBasedIndex.getInstance().processAllKeys(name, { path ->
-				if(expressionType.matches(usedFilePath, path, ignoreCase)) {
-					dataKeys.add(path)
-				}
-				true
-			}, scope, null)
-			if(dataKeys.isEmpty()) return emptySet()
-			val keysToDistinct = if(distinct) mutableSetOf<String>() else null
-			FileBasedIndex.getInstance().processFilesContainingAnyKey(name, dataKeys, scope, null, null) { file ->
-				if(keysToDistinct == null || file.fileInfo?.path?.path.let { it != null && keysToDistinct.add(if(ignoreCase) it.lowercase() else it) }) {
-					if(selector.selectAll(file)) {
-						result.add(file)
-					}
-				}
-				true
-			}
+	override fun getIndexer(): DataIndexer<String, Void, FileContent> {
+		return DataIndexer { inputData ->
+			val path = inputData.file.fileInfo?.path?.path
+			if(path == null) emptyMap() else Collections.singletonMap(path, null)
 		}
-		return result
 	}
 	
-	fun findAll(project: Project, scope: GlobalSearchScope, ignoreCase: Boolean, distinct: Boolean, selector: ChainedParadoxSelector<VirtualFile>): Set<VirtualFile> {
-		val result: MutableSet<VirtualFile> = MutableSet(selector.comparator())
-		val allKeys = FileBasedIndex.getInstance().getAllKeys(name, project)
-		if(allKeys.isEmpty()) return emptySet()
-		val keysToDistinct = if(distinct) mutableSetOf<String>() else null
-		FileBasedIndex.getInstance().processFilesContainingAnyKey(name, allKeys, scope, null, null) { file ->
-			if(keysToDistinct == null || file.fileInfo?.path?.path.let { it != null && keysToDistinct.add(if(ignoreCase) it.lowercase() else it) }) {
-				if(selector.selectAll(file)) {
-					result.add(file)
-				}
-			}
-			true
-		}
-		return result
+	override fun getKeyDescriptor(): KeyDescriptor<String> {
+		return EnumeratorStringDescriptor.INSTANCE
+	}
+	
+	override fun getVersion(): Int {
+		return 3 + (if(Registry.`is`("indexing.paradox.file.path.over.vfs")) 0xff else 0)
+	}
+	
+	override fun getInputFilter(): FileBasedIndex.InputFilter {
+		return FileBasedIndex.InputFilter { it.fileInfo != null }
+	}
+	
+	override fun dependsOnFileContent(): Boolean {
+		return false
 	}
 }

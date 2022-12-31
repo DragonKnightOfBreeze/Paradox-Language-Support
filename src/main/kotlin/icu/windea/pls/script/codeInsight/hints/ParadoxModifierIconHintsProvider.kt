@@ -12,6 +12,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxModifierIconHintsProvider.*
@@ -66,7 +67,7 @@ class ParadoxModifierIconHintsProvider: ParadoxScriptHintsProvider<Settings>() {
 				val iconPaths =  ParadoxModifierConfigHandler.getModifierIconPaths(name, configGroup)
 				val iconFile = iconPaths.firstNotNullOfOrNull {
 					val iconSelector = fileSelector().gameType(configGroup.gameType).preferRootFrom(element)
-					findFileByFilePath(it, project, selector = iconSelector)
+					ParadoxFilePathSearch.search(it, project, selector = iconSelector).find()
 				} ?: return true
 				val iconUrl = ParadoxDdsUrlResolver.resolveByFile(iconFile, defaultToUnknown = false)
 				if(iconUrl.isNotEmpty()) {

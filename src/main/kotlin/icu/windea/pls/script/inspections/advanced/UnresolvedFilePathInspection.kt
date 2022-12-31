@@ -12,6 +12,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.quickfix.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -53,7 +54,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
 					val filePath = CwtPathExpressionType.FilePath.resolve(expression.value, valueElement.value.normalizePath()) ?: return
 					if(filePath.matchesAntPath(inspection.ignoredFilePaths, true)) return
 					val selector = fileSelector().gameTypeFrom(valueElement)
-					if(findFileByFilePath(filePath, project, selector = selector) == null) {
+					if(ParadoxFilePathSearch.search(filePath, project, selector = selector).findFirst() == null) {
 						holder.registerProblem(location, PlsBundle.message("script.inspection.advanced.unresolvedFilePath.description.2", filePath), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
 							ImportGameOrModDirectoryFix(valueElement)
 						)
@@ -63,7 +64,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
 					val filePath = CwtPathExpressionType.Icon.resolve(expression.value, valueElement.value.normalizePath()) ?: return
 					if(filePath.matchesAntPath(inspection.ignoredFilePaths, true)) return
 					val selector = fileSelector().gameTypeFrom(valueElement)
-					if(findFileByFilePath(filePath, project, selector = selector) == null) {
+					if(ParadoxFilePathSearch.search(filePath, project, selector = selector).findFirst() == null) {
 						holder.registerProblem(location, PlsBundle.message("script.inspection.advanced.unresolvedFilePath.description.3", filePath), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
 							ImportGameOrModDirectoryFix(valueElement)
 						)

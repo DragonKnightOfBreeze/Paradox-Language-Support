@@ -214,7 +214,7 @@ object CwtConfigHandler {
 				if(BitUtil.isSet(matchType, CwtConfigMatchType.FILE_PATH)) {
 					val resolvedPath = CwtPathExpressionType.FilePath.resolve(configExpression.value, expression.text.normalizePath()) ?: return false
 					val selector = fileSelector().gameType(gameType)
-					return findFileByFilePath(resolvedPath, project, selector = selector) != null
+					return ParadoxFilePathSearch.search(resolvedPath, project, selector = selector).findFirst() != null
 				}
 				return true
 			}
@@ -225,7 +225,7 @@ object CwtConfigHandler {
 				if(BitUtil.isSet(matchType, CwtConfigMatchType.FILE_PATH)) {
 					val resolvedPath = CwtPathExpressionType.Icon.resolve(configExpression.value, expression.text.normalizePath()) ?: return false
 					val selector = fileSelector().gameType(gameType)
-					return findFileByFilePath(resolvedPath, project, selector = selector) != null
+					return ParadoxFilePathSearch.search(resolvedPath, project, selector = selector).findFirst() != null
 				}
 				return true
 			}
@@ -708,47 +708,39 @@ object CwtConfigHandler {
 			CwtDataType.FilePath -> {
 				val expressionType = CwtPathExpressionType.FilePath
 				val expressionValue = configExpression.value
-				val selector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
-				val virtualFiles = if(expressionValue == null) {
-					findAllFilesByFilePath(project, distinct = true, selector = selector)
-				} else {
-					findFilesByFilePath(expressionValue, project, expressionType = expressionType, distinct = true, selector = selector)
-				}
-				if(virtualFiles.isEmpty()) return
 				val tailText = getScriptExpressionTailText(config)
-				for(virtualFile in virtualFiles) {
-					val file = virtualFile.toPsiFile<PsiFile>(project) ?: continue
-					val filePath = virtualFile.fileInfo?.path?.path ?: continue
-					val name = expressionType.extract(expressionValue, filePath) ?: continue
+				val selector = fileSelector().gameType(gameType).preferRootFrom(contextElement).distinctByFilePath()
+				val virtualFileQuery = ParadoxFilePathSearch.search(expressionValue, project, expressionType, selector = selector)
+				virtualFileQuery.processQuery { virtualFile ->
+					val file = virtualFile.toPsiFile<PsiFile>(project) ?: return@processQuery true
+					val filePath = virtualFile.fileInfo?.path?.path ?: return@processQuery true
+					val name = expressionType.extract(expressionValue, filePath) ?: return@processQuery true
 					//没有图标
 					val builder = ParadoxScriptExpressionLookupElementBuilder.create(file, name)
 						.withTailText(tailText)
 						.withTypeText(file.name)
 						.withTypeIcon(file.icon)
 					result.addScriptExpressionElement(context, builder)
+					true
 				}
 			}
 			CwtDataType.Icon -> {
 				val expressionType = CwtPathExpressionType.Icon
 				val expressionValue = configExpression.value
-				val selector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
-				val virtualFiles = if(expressionValue == null) {
-					findAllFilesByFilePath(project, distinct = true, selector = selector)
-				} else {
-					findFilesByFilePath(expressionValue, project, expressionType = expressionType, distinct = true, selector = selector)
-				}
-				if(virtualFiles.isEmpty()) return
 				val tailText = getScriptExpressionTailText(config)
-				for(virtualFile in virtualFiles) {
-					val file = virtualFile.toPsiFile<PsiFile>(project) ?: continue
-					val filePath = virtualFile.fileInfo?.path?.path ?: continue
-					val name = expressionType.extract(expressionValue, filePath) ?: continue
+				val selector = fileSelector().gameType(gameType).preferRootFrom(contextElement).distinctByFilePath()
+				val virtualFileQuery = ParadoxFilePathSearch.search(expressionValue, project, expressionType, selector = selector)
+				virtualFileQuery.processQuery { virtualFile ->
+					val file = virtualFile.toPsiFile<PsiFile>(project) ?: return@processQuery true
+					val filePath = virtualFile.fileInfo?.path?.path ?: return@processQuery true
+					val name = expressionType.extract(expressionValue, filePath) ?: return@processQuery true
 					//没有图标
 					val builder = ParadoxScriptExpressionLookupElementBuilder.create(file, name)
 						.withTailText(tailText)
 						.withTypeText(file.name)
 						.withTypeIcon(file.icon)
 					result.addScriptExpressionElement(context, builder)
+					true
 				}
 			}
 			CwtDataType.TypeExpression -> {
@@ -1504,13 +1496,15 @@ object CwtConfigHandler {
 				val expressionType = CwtPathExpressionType.FilePath
 				val filePath = expressionType.resolve(configExpression.value, expression.normalizePath()) ?: return null
 				val selector = fileSelector().gameType(gameType).preferRootFrom(element, exact)
-				return findFileByFilePath(filePath, project, selector = selector)?.toPsiFile(project)
+				return ParadoxFilePathSearch.search(filePath, project, selector = selector).find()
+					?.toPsiFile(project)
 			}
 			CwtDataType.Icon -> {
 				val expressionType = CwtPathExpressionType.Icon
 				val filePath = expressionType.resolve(configExpression.value, expression.normalizePath()) ?: return null
 				val selector = fileSelector().gameType(gameType).preferRootFrom(element, exact)
-				return findFileByFilePath(filePath, project, selector = selector)?.toPsiFile(project)
+				return ParadoxFilePathSearch.search(filePath, project, selector = selector).find()
+					?.toPsiFile(project)
 			}
 			CwtDataType.TypeExpression -> {
 				val name = expression
@@ -1642,13 +1636,13 @@ object CwtConfigHandler {
 				val expressionType = CwtPathExpressionType.FilePath
 				val filePath = expressionType.resolve(configExpression.value, expression.normalizePath()) ?: return emptyList()
 				val selector = fileSelector().gameType(gameType).preferRootFrom(element)
-				return findFilesByFilePath(filePath, project, selector = selector).mapNotNull { it.toPsiFile(project) }
+				return ParadoxFilePathSearch.search(filePath, project, selector = selector).findAll().mapNotNull { it.toPsiFile(project) }
 			}
 			CwtDataType.Icon -> {
 				val expressionType = CwtPathExpressionType.Icon
 				val filePath = expressionType.resolve(configExpression.value, expression.normalizePath()) ?: return emptyList()
 				val selector = fileSelector().gameType(gameType).preferRootFrom(element)
-				return findFilesByFilePath(filePath, project, selector = selector).mapNotNull { it.toPsiFile(project) }
+				return ParadoxFilePathSearch.search(filePath, project, selector = selector).findAll().mapNotNull { it.toPsiFile(project) }
 			}
 			CwtDataType.TypeExpression -> {
 				val name = expression

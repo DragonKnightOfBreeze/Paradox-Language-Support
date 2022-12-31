@@ -19,6 +19,7 @@ import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.cwt.*
@@ -271,7 +272,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		val iconPaths = ParadoxModifierConfigHandler.getModifierIconPaths(name, configGroup)
 		val (iconPath, iconFile) = iconPaths.firstNotNullOfOrNull {
 			val iconSelector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
-			it to findFileByFilePath(it, configGroup.project, selector = iconSelector)
+			it to ParadoxFilePathSearch.search(it, configGroup.project, selector = iconSelector).find()
 		} ?: (null to null)
 		//如果没找到的话，不要在文档中显示相关信息
 		if(iconPath != null && iconFile != null) {

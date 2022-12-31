@@ -37,16 +37,15 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
 		
 		//根据ddsFileName进行提示
 		ProgressManager.checkCanceled()
-		val fileSelector = fileSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile)
-		val ddsFiles = findFilesByFilePath("gfx/interface/icons/", project, expressionType = CwtPathExpressionType.Icon, distinct = true, selector = fileSelector)
-		if(ddsFiles.isNotEmpty()) {
-			for(ddsFile in ddsFiles) {
-				val name = ddsFile.nameWithoutExtension
-				val file = ddsFile.toPsiFile<PsiFile>(project)
-				if(file != null && namesToDistinct.add(name)) {
-					addLookupElement(name, file, result)
-				}
+		val fileSelector = fileSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile).distinctByFilePath()
+		val ddsFileQuery = ParadoxFilePathSearch.search("gfx/interface/icons/", project, type = CwtPathExpressionType.Icon, selector = fileSelector)
+		ddsFileQuery.processQuery { ddsFile ->
+			val name = ddsFile.nameWithoutExtension
+			val file = ddsFile.toPsiFile<PsiFile>(project)
+			if(file != null && namesToDistinct.add(name)) {
+				addLookupElement(name, file, result)
 			}
+			true
 		}
 		
 		//作为生成的图标处理（解析为其他类型的定义）
@@ -54,8 +53,8 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
 		val definitionSelector = definitionSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile).distinctByName()
 		//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
 		val definitionQuery = ParadoxDefinitionSearch.search("job", project, selector = definitionSelector)
-		definitionQuery.processQuery { definition -> 
-			val jobName = definition.definitionInfo?.name ?: return@processQuery   true
+		definitionQuery.processQuery { definition ->
+			val jobName = definition.definitionInfo?.name ?: return@processQuery true
 			val name = "job_$jobName"
 			if(namesToDistinct.add(name)) {
 				addLookupElement(name, definition, result)

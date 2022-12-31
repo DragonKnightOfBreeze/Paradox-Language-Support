@@ -423,59 +423,6 @@ inline fun processSyncedLocalisationVariants(
 	val maxSize = getSettings().completion.maxCompleteSize
 	return ParadoxLocalisationNameIndex.processVariants(keyword, project, scope, maxSize, selector, processor)
 }
-
-
-/**
- * 基于文件索引，根据相对于游戏或模组目录的文件路径查找匹配的文件（非目录）。
- * @param expressionType 使用何种文件路径表达式类型。默认使用精确路径。
- * @param ignoreCase 匹配路径时是否忽略大小写。 默认为`true`。
- * @param selector 用于指定如何选择需要查找的文件，尤其是当存在覆盖与重载的情况时。
- */
-fun findFileByFilePath(
-	filePath: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	expressionType: CwtPathExpressionType = CwtPathExpressionType.Exact,
-	ignoreCase: Boolean = true,
-	selector: ChainedParadoxSelector<VirtualFile> = nopSelector()
-): VirtualFile? {
-	return ParadoxFilePathIndex.findOne(filePath, scope, expressionType, ignoreCase, selector)
-}
-
-/**
- * 基于文件索引，根据相对于游戏或模组目录的文件路径查找所有匹配的文件（非目录）。
- * @param expressionType 使用何种文件路径表达式类型。默认使用精确路径。
- * @param ignoreCase 匹配路径时是否忽略大小写。默认为`true`。
- * @param distinct 是否需要对相同路径的文件进行去重。默认为`false`。
- * @param selector 用于指定如何选择需要查找的文件，尤其是当存在覆盖与重载的情况时。
- */
-fun findFilesByFilePath(
-	filePath: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	expressionType: CwtPathExpressionType = CwtPathExpressionType.Exact,
-	ignoreCase: Boolean = true,
-	distinct: Boolean = false,
-	selector: ChainedParadoxSelector<VirtualFile> = nopSelector()
-): Set<VirtualFile> {
-	return ParadoxFilePathIndex.findAll(filePath, scope, expressionType, ignoreCase, distinct, selector)
-}
-
-/**
- * 基于文件索引，根据相查找所有匹配的（位于游戏或模组根目录或其子目录中的）文件（非目录）。
- * @param ignoreCase 匹配路径时是否忽略大小写。默认为`true`。
- * @param distinct 是否需要对相同路径的文件进行去重。默认为`false`。
- * @param selector 用于指定如何选择需要查找的文件，尤其是当存在覆盖与重载的情况时。
- */
-fun findAllFilesByFilePath(
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	ignoreCase: Boolean = true,
-	distinct: Boolean = false,
-	selector: ChainedParadoxSelector<VirtualFile> = nopSelector()
-): Set<VirtualFile> {
-	return ParadoxFilePathIndex.findAll(project, scope, ignoreCase, distinct, selector)
-}
 //endregion
 
 //region Psi Link Extensions
@@ -583,7 +530,8 @@ private fun resolveFilePathLink(linkWithoutPrefix: String, sourceElement: PsiEle
 	val filePath = tokens.getOrNull(1) ?: return null
 	val project = sourceElement.project
 	val selector = fileSelector().gameType(gameType).preferRootFrom(sourceElement)
-	return findFileByFilePath(filePath, project, selector = selector)?.toPsiFile(project)
+	return ParadoxFilePathSearch.search(filePath, project, selector = selector).find()
+		?.toPsiFile(project)
 }
 //endregion
 
@@ -645,7 +593,7 @@ fun StringBuilder.appendLocalisationLink(gameType: ParadoxGameType, name: String
 
 fun StringBuilder.appendFilePathLink(gameType: ParadoxGameType, filePath: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
 	//如果可以定位到绝对路径，则显示链接
-	val isResolved = resolved == true || (resolved == null && findFileByFilePath(filePath, context.project, selector = fileSelector().gameTypeFrom(context)) != null)
+	val isResolved = resolved == true || (resolved == null && ParadoxFilePathSearch.search(filePath, context.project, selector = fileSelector().gameTypeFrom(context)).findFirst() != null)
 	if(isResolved) return appendPsiLink("$filePathLinkPrefix${gameType.id}/$filePath", filePath)
 	//否则显示未解析的链接
 	return appendUnresolvedLink(filePath)

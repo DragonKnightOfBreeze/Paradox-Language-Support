@@ -3,6 +3,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.paradoxLocalScriptedVariableSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.paradoxGlobalScriptedVariableSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.paradoxDefinitionSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.paradoxFilePathSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     
     <extensionPoint qualifiedName="icu.windea.pls.paradoxValueSetValuesSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.paradoxComplexEnumValueSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
@@ -44,7 +45,7 @@
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxFoldingSettings"/>
     <codeFoldingOptionsProvider instance="icu.windea.pls.core.editor.ParadoxFoldingOptionsProvider"/>
     
-    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFilePathIndexImpl"/>
+    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFilePathIndex"/>
     
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxScriptedVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionNameIndex"/>
@@ -74,6 +75,7 @@
     <paradoxLocalScriptedVariableSearch implementation="icu.windea.pls.core.search.ParadoxLocalScriptedVariableSearcher"/>
     <paradoxGlobalScriptedVariableSearch implementation="icu.windea.pls.core.search.ParadoxGlobalScriptedVariableSearcher"/>
     <paradoxDefinitionSearch implementation="icu.windea.pls.core.search.ParadoxDefinitionSearcher"/>
+    <paradoxFilePathSearch implementation="icu.windea.pls.core.search.ParadoxFilePathSearcher"/>
     
     <paradoxComplexEnumValueSearch implementation="icu.windea.pls.core.search.ParadoxComplexEnumValueSearcher"/>
     <paradoxValueSetValuesSearch implementation="icu.windea.pls.core.search.ParadoxValueSetValueSearcher"/>

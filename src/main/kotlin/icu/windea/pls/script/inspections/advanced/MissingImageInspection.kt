@@ -12,6 +12,7 @@ import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.quickfix.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -136,7 +137,7 @@ class MissingImageInspection : LocalInspectionTool() {
 			val iconPaths = ParadoxModifierConfigHandler.getModifierIconPaths(name, configGroup)
 			val iconFile = iconPaths.firstNotNullOfOrNull {
 				val iconSelector = fileSelector().gameType(configGroup.gameType)
-				findFileByFilePath(it, configGroup.project, selector = iconSelector)
+				ParadoxFilePathSearch.search(it, configGroup.project, selector = iconSelector).find()
 			}
 			if(iconFile == null) {
 				val message = PlsBundle.message("script.inspection.advanced.missingImage.description.4", name)
