@@ -2,7 +2,7 @@
 
 package icu.windea.pls.cwt.editor
 
-import com.intellij.codeInsight.documentation.DocumentationManager
+import com.intellij.codeInsight.documentation.*
 import com.intellij.lang.documentation.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
@@ -83,8 +83,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val gameType = selectGameType(originalElement?.takeIf { it.language.isParadoxLanguage() })
-			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
+			val configGroup = getConfigGroup(element, originalElement, project)
 			//images, localisations, scope infos
 			val sectionsList = List(3) { mutableMapOf<String, String>() }
 			buildPropertyDefinition(element, originalElement, name, configType, configGroup, true, sectionsList)
@@ -101,8 +100,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val gameType = selectGameType(originalElement?.takeIf { it.language.isParadoxLanguage() })
-			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
+			val configGroup = getConfigGroup(element, originalElement, project)
 			val sectionsList = List(2) { mutableMapOf<String, String>() }
 			buildStringDefinition(element, originalElement, name, configType, configGroup, true, sectionsList)
 			buildDocumentationContent(element)
