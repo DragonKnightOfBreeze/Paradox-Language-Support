@@ -991,10 +991,11 @@ object CwtConfigHandler {
 	}
 	
 	fun completeScopeFieldExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
-		////基于当前位置的代码补全
+		//基于当前位置的代码补全
 		if(quoted) return
 		val textRange = TextRange.create(0, keyword.length)
 		val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup, isKey, true) ?: return
+		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，目前不基于此进行过滤
 		scopeFieldExpression.complete(context, result)
 	}
 	
@@ -1033,7 +1034,7 @@ object CwtConfigHandler {
 	}
 	
 	fun completeScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
-		val scopeContext = context.scopeContext
+		val scopeContext = scopeContext
 		
 		val linkConfigs = configGroup.linksAsScopeNotData
 		for(scope in linkConfigs.values) {
@@ -1057,17 +1058,12 @@ object CwtConfigHandler {
 	}
 	
 	fun completeScopeLinkPrefix(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+		val scopeContext = scopeContext
+		
 		val linkConfigs = configGroup.linksAsScopeWithPrefix
-		
-		//TODO 进一步匹配scope
-		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
-		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx
-		
-		val lookupElements = mutableSetOf<LookupElement>()
 		for(linkConfig in linkConfigs.values) {
-			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
-			if(!scopeMatched) continue
+			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, linkConfig.inputScopes)
+			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = linkConfig.prefix ?: continue
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -1079,34 +1075,27 @@ object CwtConfigHandler {
 				.withBoldness(true)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
+				.withScopeMatched(scopeMatched)
 				.withPriority(PlsCompletionPriorities.scopeLinkPrefixPriority)
-			lookupElements.add(lookupElement)
+			result.addElement(lookupElement)
 		}
-		result.addAllElements(lookupElements)
 	}
 	
-	fun completeScopeLinkDataSource(
-		context: ProcessingContext,
-		result: CompletionResultSet,
-		prefix: String?,
-		dataSourceNodeToCheck: ParadoxExpressionNode?
-	): Unit = with(context) {
+	fun completeScopeLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?, dataSourceNodeToCheck: ParadoxExpressionNode?): Unit = with(context) {
 		val config = config
 		val configs = configs
+		val scopeContext = scopeContext
 		
 		val allLinkConfigs = if(prefix == null) configGroup.linksAsScopeWithoutPrefix else configGroup.linksAsScopeWithPrefix
 		val linkConfigs = if(prefix == null) allLinkConfigs.values else allLinkConfigs.values.filter { prefix == it.prefix }
-		
-		//TODO 进一步匹配scope
-		val outputScope = prevScope?.let { prevScope -> allLinkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
-		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx
-		
 		if(dataSourceNodeToCheck is ParadoxValueSetValueExpression) {
 			context.put(PlsCompletionKeys.configKey, dataSourceNodeToCheck.configs.first())
 			context.put(PlsCompletionKeys.configsKey, dataSourceNodeToCheck.configs)
+			context.put(PlsCompletionKeys.scopeContextKey, null) //don't check now
 			dataSourceNodeToCheck.complete(context, result)
 			context.put(PlsCompletionKeys.configKey, config)
 			context.put(PlsCompletionKeys.configsKey, configs)
+			context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
 			return@with
 		}
 		
@@ -1115,26 +1104,26 @@ object CwtConfigHandler {
 			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
 			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
 			if(prefix == null) {
-				val scopeMatched = ParadoxScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
-				if(!scopeMatched) continue
+				val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, linkConfig.inputScopes)
+				if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+				context.put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
 			}
 			context.put(PlsCompletionKeys.configKey, linkConfig)
 			completeScriptExpression(context, result)
 		}
 		context.put(PlsCompletionKeys.configKey, config)
 		context.put(PlsCompletionKeys.configsKey, configs)
+		context.put(PlsCompletionKeys.scopeMatchedKey, null)
 	}
 	
 	fun completeValueLinkValue(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
-		//TODO 匹配scope
-		val linkConfigs = configGroup.linksAsValueNotData
-		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
+		val scopeContext = scopeContext
 		
-		val lookupElements = mutableSetOf<LookupElement>()
+		val linkConfigs = configGroup.linksAsValueNotData
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
-			if(!scopeMatched) continue
+			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, linkConfig.inputScopes)
+			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = linkConfig.name
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -1146,24 +1135,19 @@ object CwtConfigHandler {
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withCaseSensitivity(false) //忽略大小写
+				.withScopeMatched(scopeMatched)
 				.withPriority(PlsCompletionPriorities.valueLinkValuePriority)
-			lookupElements.add(lookupElement)
+			result.addElement(lookupElement)
 		}
-		result.addAllElements(lookupElements)
 	}
 	
 	fun completeValueLinkPrefix(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+		val scopeContext = scopeContext
+		
 		val linkConfigs = configGroup.linksAsValueWithPrefix
-		
-		//TODO 匹配scope
-		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
-		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx
-		
-		val lookupElements = mutableSetOf<LookupElement>()
 		for(linkConfig in linkConfigs.values) {
-			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
-			if(!scopeMatched) continue
+			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, linkConfig.inputScopes)
+			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = linkConfig.prefix ?: continue
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -1176,41 +1160,36 @@ object CwtConfigHandler {
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withPriority(PlsCompletionPriorities.scopeLinkPrefixPriority)
-			lookupElements.add(lookupElement)
+			result.addElement(lookupElement)
 		}
-		result.addAllElements(lookupElements)
 	}
 	
-	fun completeValueLinkDataSource(
-		context: ProcessingContext,
-		result: CompletionResultSet,
-		prefix: String?,
-		dataSourceNodeToCheck: ParadoxExpressionNode?
-	): Unit = with(context) {
+	fun completeValueLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?, dataSourceNodeToCheck: ParadoxExpressionNode?): Unit = with(context) {
 		val config = config
 		val configs = configs
+		val scopeContext = scopeContext
 		
 		val allLinkConfigs = if(prefix == null) configGroup.linksAsValueWithoutPrefix else configGroup.linksAsValueWithPrefix
 		val linkConfigs = if(prefix == null) allLinkConfigs.values else allLinkConfigs.values.filter { prefix == it.prefix }
 		
-		///TODO 匹配scope
-		val outputScope = prevScope?.let { prevScope -> allLinkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
-		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx
-		
 		if(dataSourceNodeToCheck is ParadoxValueSetValueExpression) {
 			context.put(PlsCompletionKeys.configKey, dataSourceNodeToCheck.configs.first())
 			context.put(PlsCompletionKeys.configsKey, dataSourceNodeToCheck.configs)
+			context.put(PlsCompletionKeys.scopeContextKey, null) //don't check now
 			dataSourceNodeToCheck.complete(context, result)
 			context.put(PlsCompletionKeys.configKey, config)
 			context.put(PlsCompletionKeys.configsKey, configs)
+			context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
 			return@with
 		}
 		if(dataSourceNodeToCheck is ParadoxScriptValueExpression) {
 			context.put(PlsCompletionKeys.configKey, dataSourceNodeToCheck.config)
 			context.put(PlsCompletionKeys.configsKey, null)
+			context.put(PlsCompletionKeys.scopeContextKey, null) //don't check now
 			dataSourceNodeToCheck.complete(context, result)
 			context.put(PlsCompletionKeys.configKey, config)
 			context.put(PlsCompletionKeys.configsKey, configs)
+			context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
 			return@with
 		}
 		
@@ -1219,14 +1198,16 @@ object CwtConfigHandler {
 			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
 			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
 			if(prefix == null) {
-				val scopeMatched = ParadoxScopeConfigHandler.matchesScope(outputScope, linkConfig.inputScopes)
-				if(!scopeMatched) continue
+				val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, linkConfig.inputScopes)
+				if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+				context.put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
 			}
 			context.put(PlsCompletionKeys.configKey, linkConfig)
 			completeScriptExpression(context, result)
 		}
 		context.put(PlsCompletionKeys.configKey, config)
 		context.put(PlsCompletionKeys.configsKey, configs)
+		context.put(PlsCompletionKeys.scopeMatchedKey, null)
 	}
 	
 	fun completeValueSetValue(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {

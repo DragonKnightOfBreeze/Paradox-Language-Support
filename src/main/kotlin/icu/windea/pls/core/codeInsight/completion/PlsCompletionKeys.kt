@@ -21,7 +21,7 @@ object PlsCompletionKeys {
 	val configsKey = Key.create<List<CwtConfig<*>>>("paradoxCompletion.configs")
 	val configGroupKey = Key.create<CwtConfigGroup>("paradoxCompletion.configGroup")
 	val scopeContextKey = Key.create<ParadoxScopeContext>("paradoxCompletion.scopeContext")
-	val prevScopeKey = Key.create<String>("paradoxCompletion.prevScope")
+	val scopeMatchedKey = Key.create<Boolean>("paradoxCompletion.scopeMatched")
 	val scopeNameKey = Key.create<String>("paradoxCompletion.scopeName")
 	val scopeGroupNameKey = Key.create<String>("paradoxCompletion.scopeGroupName")
 	val isIntKey = Key.create<Boolean>("paradoxCompletion.isInt")

@@ -5,6 +5,7 @@ import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.ParadoxValueFieldExpression.*
@@ -156,11 +157,12 @@ class ParadoxValueFieldExpressionImpl(
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
 		val keyword = context.keyword
 		val isKey = context.isKey
-		val prevScope = context.prevScope
+		val scopeContext = context.scopeContext
+		
 		context.put(PlsCompletionKeys.isKeyKey, null)
 		
+		var scopeContextInExpression = scopeContext
 		val offsetInParent = context.offsetInParent
-		var prevScopeToUse: String? = null
 		for(node in nodes) {
 			val nodeRange = node.rangeInExpression
 			val inRange = offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset
@@ -170,7 +172,7 @@ class ParadoxValueFieldExpressionImpl(
 			}
 			if(node is ParadoxScopeExpressionNode) {
 				if(inRange) {
-					context.put(PlsCompletionKeys.prevScopeKey, prevScopeToUse)
+					context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
 					val linkFromDataNode = node.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
 					val prefixNode = linkFromDataNode?.prefixNode
 					val dataSourceNode = linkFromDataNode?.dataSourceNode
@@ -194,13 +196,14 @@ class ParadoxValueFieldExpressionImpl(
 							CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
 						}
 						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
-						break
 					}
+					break
+				} else {
+					scopeContextInExpression = ParadoxScopeConfigHandler.resolveScopeContext(node, scopeContextInExpression)
 				}
-				prevScopeToUse = node.text
 			} else if(node is ParadoxValueFieldExpressionNode) {
 				if(inRange) {
-					context.put(PlsCompletionKeys.prevScopeKey, prevScopeToUse)
+					context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
 					val linkFromDataNode = node.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
 					val prefixNode = linkFromDataNode?.prefixNode
 					val dataSourceNode = linkFromDataNode?.dataSourceNode
@@ -228,15 +231,15 @@ class ParadoxValueFieldExpressionImpl(
 						}
 						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
 						CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
-						break
 					}
+					break
 				}
 			}
 		}
 		
 		context.put(PlsCompletionKeys.keywordKey, keyword)
 		context.put(PlsCompletionKeys.isKeyKey, isKey)
-		context.put(PlsCompletionKeys.prevScopeKey, prevScope)
+		context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
 	}
 }
 

@@ -39,7 +39,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 								val inputScopes = scopeNode.config.inputScopes
 								if(!ParadoxScopeConfigHandler.matchesScope(parentScopeContext, inputScopes)) {
 									val description = PlsBundle.message("script.inspection.scope.incorrectScopeSwitch.description.1",
-										scopeNode.text, inputScopes, parentScopeContext.thisScope)
+										scopeNode.text, inputScopes.joinToString(), parentScopeContext.thisScope)
 									holder.registerProblem(propertyKey, rangeInExpression, description)
 								}
 							}

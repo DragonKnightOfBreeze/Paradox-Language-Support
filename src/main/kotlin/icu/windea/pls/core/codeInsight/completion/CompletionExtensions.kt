@@ -33,7 +33,7 @@ val ProcessingContext.config get() = get(PlsCompletionKeys.configKey)
 val ProcessingContext.configs get() = get(PlsCompletionKeys.configsKey)
 val ProcessingContext.configGroup get() = get(PlsCompletionKeys.configGroupKey)
 val ProcessingContext.scopeContext get() = get(PlsCompletionKeys.scopeContextKey)
-val ProcessingContext.prevScope get() = get(PlsCompletionKeys.prevScopeKey)
+val ProcessingContext.scopeMatched get() = get(PlsCompletionKeys.scopeMatchedKey)
 val ProcessingContext.scopeName get() = get(PlsCompletionKeys.scopeNameKey)
 val ProcessingContext.scopeGroupName get() = get(PlsCompletionKeys.scopeGroupNameKey)
 val ProcessingContext.isInt get() = get(PlsCompletionKeys.isIntKey) ?: false
@@ -105,7 +105,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 	builder: ParadoxScriptExpressionLookupElementBuilder
 ) = with(builder) {
 	//should be filtered out before, check again here
-	if(!builder.scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return
+	if((!builder.scopeMatched || context.scopeMatched == false) && getSettings().completion.completeOnlyScopeIsMatched) return
 	
 	val config = context.config
 	

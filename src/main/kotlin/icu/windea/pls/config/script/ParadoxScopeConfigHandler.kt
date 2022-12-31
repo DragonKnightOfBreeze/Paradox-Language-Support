@@ -195,7 +195,7 @@ object ParadoxScopeConfigHandler {
 			val textRange = TextRange.create(0, scopeField.length)
 			val configGroup = config.info.configGroup
 			val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup, true) ?: return null
-			val result = getScopeContext(scopeFieldExpression, parentScopeContext)
+			val result = resolveScopeContext(scopeFieldExpression, parentScopeContext)
 			return result
 		} else {
 			val resolvedConfig = config.resolved()
@@ -244,41 +244,41 @@ object ParadoxScopeConfigHandler {
 	}
 	
 	@JvmStatic
-	fun getScopeContext(systemScope: CwtSystemScopeConfig, parentScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
+	fun resolveScopeContext(systemScope: CwtSystemScopeConfig, parentScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
 		return resolveScopeContextBySystemScope(systemScope, parentScopeContext)
 	}
 	
 	@JvmStatic
-	fun getScopeContext(scopeFieldExpression: ParadoxScopeFieldExpression, parentScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+	fun resolveScopeContext(scopeFieldExpression: ParadoxScopeFieldExpression, parentScopeContext: ParadoxScopeContext): ParadoxScopeContext {
 		val scopeNodes = scopeFieldExpression.scopeNodes
 		var result = parentScopeContext
 		val resolved = mutableListOf<Tuple2<ParadoxScopeExpressionNode, ParadoxScopeContext>>()
 		for(scopeNode in scopeNodes) {
-			when(scopeNode) {
-				is ParadoxScopeLinkExpressionNode -> {
-					result = resolveScopeByScopeLinkNode(scopeNode, result)
-					resolved.add(scopeNode to result)
-				}
-				is ParadoxScopeLinkFromDataExpressionNode -> {
-					result = resolveScopeByScopeLinkFromDataNode(scopeNode, result)
-						?: resolveUnknownScopeContext(result)
-					resolved.add(scopeNode to result)
-				}
-				is ParadoxSystemScopeExpressionNode -> {
-					result = resolveScopeContextBySystemScopeNode(scopeNode, result)
-						?: resolveUnknownScopeContext(result)
-					resolved.add(scopeNode to result)
-				}
-				//error
-				is ParadoxErrorScopeExpressionNode -> {
-					result = resolveUnknownScopeContext(result)
-					resolved.add(scopeNode to result)
-					break
-				}
-			}
+			result = resolveScopeContext(scopeNode, result)
+			resolved.add(scopeNode to result)
+			if(scopeNode is ParadoxErrorScopeExpressionNode) break
 		}
 		result.scopeFieldInfo = resolved
 		return result
+	}
+	
+	@JvmStatic
+	fun resolveScopeContext(scopeNode: ParadoxScopeExpressionNode, parentScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+		return when(scopeNode) {
+			is ParadoxScopeLinkExpressionNode -> {
+				resolveScopeByScopeLinkNode(scopeNode, parentScopeContext)
+			}
+			is ParadoxScopeLinkFromDataExpressionNode -> {
+				resolveScopeByScopeLinkFromDataNode(scopeNode, parentScopeContext) 
+					?: resolveUnknownScopeContext(parentScopeContext)
+			}
+			is ParadoxSystemScopeExpressionNode -> {
+				resolveScopeContextBySystemScopeNode(scopeNode, parentScopeContext)
+					?: resolveUnknownScopeContext(parentScopeContext)
+			}
+			//error
+			is ParadoxErrorScopeExpressionNode -> resolveUnknownScopeContext(parentScopeContext)
+		}
 	}
 	
 	private fun resolveScopeByScopeLinkNode(node: ParadoxScopeLinkExpressionNode, scopeContext: ParadoxScopeContext): ParadoxScopeContext {

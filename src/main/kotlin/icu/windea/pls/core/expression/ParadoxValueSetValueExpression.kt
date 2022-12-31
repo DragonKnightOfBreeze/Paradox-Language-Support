@@ -90,7 +90,10 @@ class ParadoxValueSetValueExpressionImpl(
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
 		val keyword = context.keyword
 		val isKey = context.isKey
+		val scopeContext = context.scopeContext
+		
 		context.put(PlsCompletionKeys.isKeyKey, null)
+		context.put(PlsCompletionKeys.scopeContextKey, null) //don't check now
 		
 		val offsetInParent = context.offsetInParent
 		for(node in nodes) {
@@ -116,6 +119,7 @@ class ParadoxValueSetValueExpressionImpl(
 		}
 		context.put(PlsCompletionKeys.keywordKey, keyword)
 		context.put(PlsCompletionKeys.isKeyKey, isKey)
+		context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
 	}
 }
 

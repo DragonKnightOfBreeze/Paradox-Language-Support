@@ -2,6 +2,7 @@
 
 package icu.windea.pls.cwt.editor
 
+import com.intellij.codeInsight.documentation.DocumentationManager
 import com.intellij.lang.documentation.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
@@ -392,6 +393,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun StringBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+		//进行代码提示时不应当提示作用域上下文
+		@Suppress("DEPRECATION")
+		if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
+		
 		val show = getSettings().documentation.showScopeContext
 		if(!show) return
 		if(sections == null) return
@@ -399,11 +404,13 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		if(!ParadoxScopeConfigHandler.isScopeContextSupported(memberElement)) return
 		val scopeContext = ParadoxScopeConfigHandler.getScopeContext(memberElement)
 		if(scopeContext == null) return
+		//TODO 如果作用域引用位于表达式中，应当使用那个位置的作用域上下文，但是目前实现不了，因为这里的referenceElement是整个scriptProperty
+		val scopeContextToUse = scopeContext
 		val contextElement = referenceElement
 		val gameType = configGroup.gameType
 		val scopeContextText = buildString {
 			var appendSeparator = false
-			scopeContext.map.forEach { (systemScope, scope) ->
+			scopeContextToUse.map.forEach { (systemScope, scope) ->
 				if(appendSeparator) appendBr() else appendSeparator = true
 				appendCwtLink(systemScope, "${gameType.id}/system_scopes/$systemScope", contextElement)
 				append(" = ")
