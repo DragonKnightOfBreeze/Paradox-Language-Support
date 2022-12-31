@@ -57,10 +57,10 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 		val isAtLineEnd = editor.document.isAtLineEnd(offset, true)
 		if(!isAtLineEnd) return true //仅当作为子句开始的左花括号位于行尾时，才显示此内嵌提示
 		if(!ParadoxScopeConfigHandler.isScopeContextSupported(element)) return true
-		val scopeContext = ParadoxScopeConfigHandler.getScopeContext(element, file)
+		val scopeContext = ParadoxScopeConfigHandler.getScopeContext(element)
 		if(scopeContext != null) {
 			//don't need show if scope is not changed
-			if(settings.showOnlyIfScopeIsChanged && !ParadoxScopeConfigHandler.isScopeContextChanged(element, scopeContext, file)) return true
+			if(settings.showOnlyIfScopeIsChanged && !ParadoxScopeConfigHandler.isScopeContextChanged(element, scopeContext)) return true
 			
 			val gameType = selectGameType(file) ?: return true
 			val configGroup = getCwtConfig(file.project).getValue(gameType)

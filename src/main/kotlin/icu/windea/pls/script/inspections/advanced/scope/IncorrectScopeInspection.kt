@@ -20,7 +20,7 @@ class IncorrectScopeInspection: LocalInspectionTool() {
 				val configs = ParadoxCwtConfigHandler.resolveConfigs(element)
 				val config = configs.firstOrNull() ?: return
 				if(!ParadoxScopeConfigHandler.isScopeContextSupported(element)) return
-				val scopeContext = ParadoxScopeConfigHandler.getScopeContext(element, file) ?: return
+				val scopeContext = ParadoxScopeConfigHandler.getScopeContext(element) ?: return
 				val supportedScopes = config.supportedScopes
 				if(!ParadoxScopeConfigHandler.matchesScope(scopeContext, supportedScopes)) {
 					val propertyKey = element.propertyKey

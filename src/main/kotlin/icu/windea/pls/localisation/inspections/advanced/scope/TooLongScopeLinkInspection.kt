@@ -2,7 +2,6 @@ package icu.windea.pls.localisation.inspections.advanced.scope
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.util.io.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.script.*
@@ -33,8 +32,8 @@ class TooLongScopeLinkInspection : LocalInspectionTool() {
 				}
 			}
 			if(size > ParadoxScopeConfigHandler.maxScopeLinkSize) {
-				val startOffset = firstScope?.textRange?.startOffset ?: return
-				val endOffset = lastScope?.textRange?.endOffset ?: return
+				val startOffset = firstScope?.textRangeInParent?.startOffset ?: return
+				val endOffset = lastScope?.textRangeInParent?.endOffset ?: return
 				val range = TextRange.create(startOffset, endOffset)
 				val description = PlsBundle.message("localisation.inspection.scope.tooLongScopeLink.description")
 				holder.registerProblem(element, range, description)

@@ -1,7 +1,6 @@
 package icu.windea.pls.config.script
 
 import com.intellij.openapi.util.*
-import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
@@ -135,11 +134,11 @@ object ParadoxScopeConfigHandler {
 	}
 	
 	@JvmStatic
-	fun isScopeContextChanged(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeContext, file: PsiFile = element.containingFile): Boolean {
+	fun isScopeContextChanged(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeContext): Boolean {
 		//does not have scope context > changed always
 		val parentMember = findParentMember(element)
 		if(parentMember == null) return true
-		val parentScopeContext = getScopeContext(parentMember, file)
+		val parentScopeContext = getScopeContext(parentMember)
 		if(parentScopeContext == null) return true
 		if(parentScopeContext != scopeContext) return true
 		if(!isScopeContextSupported(parentMember)) return true
@@ -150,12 +149,9 @@ object ParadoxScopeConfigHandler {
 	 * 注意，如果输入的是值为子句的属性，这里得到的会是子句中的作用域上下文，而非此属性的作用域上下文。
 	 */
 	@JvmStatic
-	fun getScopeContext(element: ParadoxScriptMemberElement, file: PsiFile = element.containingFile): ParadoxScopeContext? {
-		return getScopeContextFromCache(element, file)
-	}
-	
-	private fun getScopeContextFromCache(element: ParadoxScriptMemberElement, file: PsiFile): ParadoxScopeContext? {
+	fun getScopeContext(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
+			val file = element.containingFile
 			val value = resolveScopeContextOfDefinitionMember(element)
 			CachedValueProvider.Result.create(value, file)
 		}
@@ -211,18 +207,15 @@ object ParadoxScopeConfigHandler {
 	}
 	
 	@JvmStatic
-	fun getScopeContext(element: ParadoxLocalisationCommandIdentifier, file: PsiFile = element.containingFile): ParadoxScopeContext? {
-		return getScopeContextFromCache(element, file)
-	}
-	
-	private fun getScopeContextFromCache(element: ParadoxLocalisationCommandIdentifier, file: PsiFile): ParadoxScopeContext? {
+	fun getScopeContext(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext? {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
+			val file = element.containingFile
 			val value = resolveScopeContextOfLocalisationCommandIdentifier(element)
 			CachedValueProvider.Result.create(value, file)
 		}
 	}
 	
-	private fun resolveScopeContextOfLocalisationCommandIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext? {
+	private fun resolveScopeContextOfLocalisationCommandIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext {
 		//TODO depends on usages
 		val prevElement = element.prevIdentifier
 		val prevResolved = prevElement?.reference?.resolve()
