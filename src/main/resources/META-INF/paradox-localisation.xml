@@ -151,6 +151,12 @@
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection.scope"
                      groupPathKey="localisation.inspection.scope.path"
                      implementationClass="icu.windea.pls.localisation.inspections.advanced.scope.IncorrectScopeSwitchInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationTooLongScopeLink"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="localisation.inspection.scope.tooLongScopeLink"
+                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection.scope"
+                     groupPathKey="localisation.inspection.scope.path"
+                     implementationClass="icu.windea.pls.localisation.inspections.advanced.scope.TooLongScopeLinkInspection"/>
   </extensions>
 
   <actions>

@@ -19,6 +19,8 @@ import icu.windea.pls.script.psi.*
  * 用于处理作用域。
  */
 object ParadoxScopeConfigHandler {
+	const val maxScopeLinkSize = 5
+	
 	const val unknownScopeId = "?"
 	const val anyScopeId = "any"
 	const val allScopeId = "all"

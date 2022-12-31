@@ -52,4 +52,6 @@ enum class CwtDataType {
 	fun isScopeFieldType() = this == ScopeField || this == Scope || this == ScopeGroup
 		
 	fun isValueFieldType() = this == ValueField || this == IntValueField
+	
+	fun isValueSetValueType() = this == Value || this == ValueSet
 }

@@ -4,19 +4,14 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.errors.*
-import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 
 class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
-		val project = file.project
-		val gameType = selectGameType(file)
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
 		file.accept(object : PsiRecursiveElementWalkingVisitor() {
 			override fun visitElement(element: PsiElement) {
@@ -27,11 +22,10 @@ class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
 			private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
 				ProgressManager.checkCanceled()
 				val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return
-				val type = config.expression.type
-				if(type == CwtDataType.Value || type == CwtDataType.ValueSet) {
+				val configGroup = config.info.configGroup
+				val dataType = config.expression.type
+				if(dataType.isValueSetValueType()) {
 					val value = element.value
-					val gameTypeToUse = gameType ?: selectGameType(element) ?: return
-					val configGroup = getCwtConfig(project).getValue(gameTypeToUse)
 					val textRange = TextRange.create(0, value.length)
 					val isKey = element is ParadoxScriptPropertyKey
 					val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(value, textRange, config, configGroup, isKey)

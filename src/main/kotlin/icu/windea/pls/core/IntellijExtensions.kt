@@ -318,6 +318,10 @@ fun ASTNode.isEndOfLine(): Boolean {
 //endregion
 
 //region PsiElement Extensions
+fun PsiElement.hasSyntaxError(): Boolean {
+	return this.lastChild is PsiErrorElement
+}
+
 /**
  * @param forward 查找偏移之前还是之后的PSI元素，默认为null，表示同时考虑。
  */
