@@ -54,6 +54,9 @@ class CwtKeyExpression private constructor(
 			expressionString == "localisation_inline" -> {
 				CwtKeyExpression(expressionString, CwtDataType.InlineLocalisation)
 			}
+			expressionString == "<modifier>" -> {
+				CwtKeyExpression(expressionString, CwtDataType.Modifier)
+			}
 			expressionString.surroundsWith('<', '>') -> {
 				val value = expressionString.substring(1, expressionString.length - 1)
 				CwtKeyExpression(expressionString, CwtDataType.TypeExpression, value)
@@ -86,10 +89,6 @@ class CwtKeyExpression private constructor(
 			expressionString.surroundsWith("scope_group[", "]") -> {
 				val value = expressionString.substring(12, expressionString.length - 1)
 				CwtKeyExpression(expressionString, CwtDataType.ScopeGroup, value)
-			}
-			//EXTENDED BY PLS
-			expressionString == "\$modifier" -> {
-				CwtKeyExpression(expressionString, CwtDataType.Modifier)
 			}
 			expressionString.surroundsWith("alias_keys_field[", "]") -> {
 				val value = expressionString.substring(17, expressionString.length - 1)
