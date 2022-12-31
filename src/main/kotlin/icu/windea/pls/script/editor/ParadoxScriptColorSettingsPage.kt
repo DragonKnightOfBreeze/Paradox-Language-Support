@@ -4,7 +4,6 @@ import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.options.colors.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.highlighter.*

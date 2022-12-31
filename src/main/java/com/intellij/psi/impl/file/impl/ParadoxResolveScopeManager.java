@@ -20,7 +20,7 @@ import com.intellij.util.containers.*;
 import com.intellij.util.indexing.*;
 import com.intellij.workspaceModel.ide.*;
 import com.intellij.workspaceModel.storage.*;
-import icu.windea.pls.core.*;
+import icu.windea.pls.*;
 import kotlin.sequences.*;
 import org.jetbrains.annotations.*;
 
@@ -268,6 +268,6 @@ public final class ParadoxResolveScopeManager extends ResolveScopeManager implem
   }
 
   private static boolean useAllScope(PsiElement element) {
-    return ExtensionsKt.useAllUseScope(element);
+    return PlsExtensionsKt.useAllUseScope(element);
   }
 }

@@ -3,7 +3,6 @@ package icu.windea.pls.core.codeInsight.completion
 import com.intellij.application.options.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.*
-import icu.windea.pls.core.*
 import icu.windea.pls.script.codeStyle.*
 
 object PlsLookupElements {

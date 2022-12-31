@@ -5,7 +5,7 @@ import com.intellij.codeInsight.daemon.impl.analysis.*
 import com.intellij.codeInsight.daemon.impl.quickfix.*
 import com.intellij.psi.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.quickfix.InsertMissingTokenFix
+import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.script.*
 
 /**

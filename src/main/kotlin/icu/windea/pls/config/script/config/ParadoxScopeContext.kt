@@ -3,7 +3,6 @@ package icu.windea.pls.config.script.config
 import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.nodes.*
-import icu.windea.pls.core.model.*
 
 data class ParadoxScopeContext(
 	val thisScope: String,

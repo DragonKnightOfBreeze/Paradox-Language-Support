@@ -2,7 +2,7 @@ package icu.windea.pls.localisation.references
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.core.*
+import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.model.ParadoxLocalisationCategory.*

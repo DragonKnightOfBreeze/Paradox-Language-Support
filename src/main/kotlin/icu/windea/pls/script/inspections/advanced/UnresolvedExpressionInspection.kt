@@ -7,7 +7,6 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.script.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.script.psi.*

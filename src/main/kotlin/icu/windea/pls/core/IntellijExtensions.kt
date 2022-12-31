@@ -33,6 +33,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import com.intellij.util.xmlb.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*

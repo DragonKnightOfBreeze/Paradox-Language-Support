@@ -4,7 +4,6 @@ import com.intellij.codeInsight.template.postfix.templates.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 
 class ParadoxScriptPostfixTemplateProvider: PostfixTemplateProvider {
 	private val defaultTemplates by lazy {

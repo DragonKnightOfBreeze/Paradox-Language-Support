@@ -1,7 +1,7 @@
 package icu.windea.pls.localisation.inspections.advanced.scope
 
 import com.intellij.codeInspection.*
-import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.script.*

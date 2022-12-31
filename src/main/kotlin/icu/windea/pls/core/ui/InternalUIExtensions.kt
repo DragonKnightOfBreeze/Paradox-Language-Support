@@ -1,7 +1,7 @@
 package icu.windea.pls.core.ui
 
+import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 
 internal fun getLocalesToSelect(existingLocales: List<CwtLocalisationLocaleConfig>, locale: CwtLocalisationLocaleConfig?): List<CwtLocalisationLocaleConfig> {

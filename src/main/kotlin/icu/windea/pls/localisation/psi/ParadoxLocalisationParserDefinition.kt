@@ -5,7 +5,7 @@ import com.intellij.lang.ParserDefinition.SpaceRequirements.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import icu.windea.pls.core.*
+import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 class ParadoxLocalisationParserDefinition : ParserDefinition {

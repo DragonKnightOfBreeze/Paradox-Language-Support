@@ -3,6 +3,7 @@ package icu.windea.pls.script.references
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*

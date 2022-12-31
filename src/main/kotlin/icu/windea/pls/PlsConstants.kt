@@ -1,4 +1,4 @@
-package icu.windea.pls.core
+package icu.windea.pls
 
 import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.fileEditor.*
@@ -8,6 +8,7 @@ import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.script.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 
 object PlsConstants {

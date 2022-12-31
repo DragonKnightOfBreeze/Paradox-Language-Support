@@ -5,6 +5,7 @@ package icu.windea.pls.script.psi
 import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*

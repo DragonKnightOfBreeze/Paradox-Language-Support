@@ -1,9 +1,9 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.core
+package icu.windea.pls
 
 import com.intellij.codeInsight.documentation.*
-import com.intellij.lang.Language
+import com.intellij.lang.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.fileTypes.ex.*
 import com.intellij.openapi.progress.*

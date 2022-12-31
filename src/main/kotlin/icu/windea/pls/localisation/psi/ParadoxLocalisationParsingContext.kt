@@ -1,7 +1,6 @@
 package icu.windea.pls.localisation.psi
 
 import com.intellij.openapi.project.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 
 class ParadoxLocalisationParsingContext(

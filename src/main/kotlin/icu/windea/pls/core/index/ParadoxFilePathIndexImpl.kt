@@ -3,7 +3,7 @@ package icu.windea.pls.core.index
 import com.intellij.openapi.util.registry.*
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
-import icu.windea.pls.core.*
+import icu.windea.pls.*
 import java.util.*
 
 class ParadoxFilePathIndexImpl : ScalarIndexExtension<String>() {
