@@ -40,7 +40,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 								if(!ParadoxScopeConfigHandler.matchesScope(parentScopeContext, inputScopes)) {
 									val description = PlsBundle.message("script.inspection.scope.incorrectScopeSwitch.description.1",
 										scopeNode.text, inputScopes, parentScopeContext.thisScope)
-									holder.registerProblem(propertyKey, rangeInExpression.shiftRight(range.startOffset), description)
+									holder.registerProblem(propertyKey, rangeInExpression, description)
 								}
 							}
 							//TODO 'event_target:xxx', not supported now
@@ -55,7 +55,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 									if(ParadoxScopeConfigHandler.definitionTypesSkipCheckSystemScope.contains(definitionType)) continue
 									val description = PlsBundle.message("script.inspection.scope.incorrectScopeSwitch.description.3",
 										scopeNode.text)
-									holder.registerProblem(propertyKey, rangeInExpression.shiftRight(range.startOffset), description)
+									holder.registerProblem(propertyKey, rangeInExpression, description)
 								}
 							}
 							//error

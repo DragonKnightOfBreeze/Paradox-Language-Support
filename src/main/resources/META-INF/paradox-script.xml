@@ -227,7 +227,7 @@
                      groupPathKey="script.inspection.scope.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.scope.IncorrectScopeSwitchInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptTooLongScopeLink"
-                     enabledByDefault="true" level="ERROR"
+                     enabledByDefault="true" level="WEAK WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.scope.tooLongScopeLink"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.scope"
                      groupPathKey="script.inspection.scope.path"
