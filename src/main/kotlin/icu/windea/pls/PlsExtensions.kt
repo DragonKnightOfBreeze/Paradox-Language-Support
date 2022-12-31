@@ -341,39 +341,6 @@ fun ParadoxScriptValue.isNullLike(): Boolean {
 }
 //endregion
 
-//region Find Extensions
-
-/**
- * 基于本地化名字索引，根据关键字和推断的语言区域遍历所有的本地化（localisation）。对本地化的键去重。
- * @see preferredParadoxLocale
- */
-inline fun processLocalisationVariants(
-	keyword: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector(),
-	crossinline processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
-): Boolean {
-	val maxSize = getSettings().completion.maxCompleteSize
-	return ParadoxLocalisationNameIndex.processVariants(keyword, project, scope, maxSize, selector, processor)
-}
-
-/**
- * 基于同步本地化名字索引，根据关键字和推断的语言区域遍历所有的同步本地化（synced_localisation）。对本地化的键去重。
- * @see preferredParadoxLocale
- */
-inline fun processSyncedLocalisationVariants(
-	keyword: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector(),
-	crossinline processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
-): Boolean {
-	val maxSize = getSettings().completion.maxCompleteSize
-	return ParadoxLocalisationNameIndex.processVariants(keyword, project, scope, maxSize, selector, processor)
-}
-//endregion
-
 //region Psi Link Extensions
 private const val cwtLinkPrefix = "#cwt/"
 private const val definitionLinkPrefix = "#definition/"

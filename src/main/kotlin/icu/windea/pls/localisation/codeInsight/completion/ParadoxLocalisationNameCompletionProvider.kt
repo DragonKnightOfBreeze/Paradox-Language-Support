@@ -7,7 +7,9 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.index.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 
@@ -40,8 +42,8 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
 			true
 		}
 		when(category) {
-			ParadoxLocalisationCategory.Localisation -> processLocalisationVariants(keyword, project, selector = selector, processor = processor)
-			ParadoxLocalisationCategory.SyncedLocalisation -> processSyncedLocalisationVariants(keyword, project, selector = selector, processor = processor)
+			ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.processVariants(keyword, project, selector = selector, processor = processor)
+			ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.processVariants(keyword, project, selector = selector, processor = processor)
 		}
 	}
 }
