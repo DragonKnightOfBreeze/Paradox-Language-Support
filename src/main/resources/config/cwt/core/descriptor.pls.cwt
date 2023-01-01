@@ -1,7 +1,7 @@
 types = {
 	type[mod_descriptor] = {
 		path = "game"
-		type_per_file = yes
+		name_from_file = yes
 	}
 }
 
