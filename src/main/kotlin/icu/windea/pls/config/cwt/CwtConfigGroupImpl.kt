@@ -118,13 +118,18 @@ class CwtConfigGroupImpl(
 		linksAsValueWithoutPrefix.values.sortedByPriority(this) { it.dataSource!! }
 	}
 	
-	override val aliasNameSupportScope: Set<String> get() = info.aliasNameSupportScope
+	override val aliasNameSupportScope: Set<String> by lazy { 
+		buildSet {
+			addAll(info.aliasNameSupportScope)
+			add("modifier") //也支持，但不能切换作用域
+		}
+	}
 	
 	override val definitionTypesSupportScope: Set<String> by lazy {
 		buildSet {
 			add("script_effect")
 			add("script_trigger")
-			add("on_action")
+			add("on_action") //也支持，其中调用的事件的类型要匹配
 		}
 	}
 	

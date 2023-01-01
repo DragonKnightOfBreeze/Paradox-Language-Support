@@ -65,7 +65,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 			private fun visitValue(element: ParadoxScriptValue): Boolean {
 				ProgressManager.checkCanceled()
 				val shouldCheck = when {
-					element is ParadoxScriptedVariableReference -> return false //skip
+					//also check if element is a scripted_variable
+					//element is ParadoxScriptedVariableReference -> return false
 					element.isPropertyValue() -> checkPropertyValue
 					element.isBlockValue() -> checkValue
 					else -> return false //skip

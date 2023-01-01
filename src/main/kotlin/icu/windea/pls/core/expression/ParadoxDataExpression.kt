@@ -1,5 +1,6 @@
 package icu.windea.pls.core.expression
 
+import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.ParadoxDataExpression.*
@@ -40,6 +41,7 @@ fun Resolver.resolve(element: ParadoxScriptPropertyKey): ParadoxDataExpression {
 
 fun Resolver.resolve(element: ParadoxScriptValue): ParadoxDataExpression {
 	if(element is ParadoxScriptScriptedVariableReference) {
+		ProgressManager.checkCanceled() //这是必要的
 		val valueElement = element.referenceValue ?: return UnknownParadoxDataExpression
 		return ParadoxDataExpressionImpl(valueElement.value, valueElement.type, valueElement.text.isLeftQuoted(), false)
 	}

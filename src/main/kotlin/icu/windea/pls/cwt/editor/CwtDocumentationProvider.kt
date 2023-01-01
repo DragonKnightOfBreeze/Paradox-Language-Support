@@ -54,7 +54,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
 			val configGroup = getConfigGroup(element, originalElement, project)
-			buildPropertyDefinition(element, originalElement, name, configType, configGroup, false, null)
+			buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, false, null)
 		}
 	}
 	
@@ -67,7 +67,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
 			val configGroup = getConfigGroup(element, originalElement, project)
-			buildStringDefinition(element, originalElement, name, configType, configGroup, false, null)
+			buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, false, null)
 		}
 	}
 	
@@ -87,7 +87,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val configGroup = getConfigGroup(element, originalElement, project)
 			//images, localisations, scope infos
 			val sectionsList = List(3) { mutableMapOf<String, String>() }
-			buildPropertyDefinition(element, originalElement, name, configType, configGroup, true, sectionsList)
+			buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, true, sectionsList)
 			buildDocumentationContent(element)
 			buildSections(sectionsList)
 		}
@@ -103,15 +103,14 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val project = element.project
 			val configGroup = getConfigGroup(element, originalElement, project)
 			val sectionsList = List(2) { mutableMapOf<String, String>() }
-			buildStringDefinition(element, originalElement, name, configType, configGroup, true, sectionsList)
+			buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, true, sectionsList)
 			buildDocumentationContent(element)
 			buildSections(sectionsList)
 		}
 	}
 	
-	//返回实际使用的相关本地化
-	private fun StringBuilder.buildPropertyDefinition(
-		element: CwtProperty,
+	private fun StringBuilder.buildPropertyOrStringDefinition(
+		element: PsiElement,
 		originalElement: PsiElement?,
 		name: String,
 		configType: CwtConfigType?,
@@ -160,65 +159,9 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sectionsList?.get(2))
 					addModifierIcon(element, referenceElement, name, configGroup, sectionsList?.get(1))
 				}
-				addScope(element, name, configType, configGroup, sectionsList?.get(0))
-				if(referenceElement != null) {
-					addScopeContext(element, referenceElement, configGroup, sectionsList?.get(0))
+				if(element is CwtProperty) {
+					addScope(element, name, configType, configGroup, sectionsList?.get(0))
 				}
-			}
-		}
-	}
-	
-	private fun StringBuilder.buildStringDefinition(
-		element: CwtString,
-		originalElement: PsiElement?,
-		name: String,
-		configType: CwtConfigType?,
-		configGroup: CwtConfigGroup?,
-		showDetail: Boolean,
-		sectionsList: List<MutableMap<String, String>>?
-	) {
-		definition {
-			val referenceElement = getReferenceElement(originalElement)
-			if(referenceElement?.language?.isParadoxLanguage() != true || configType?.isReference == true) {
-				if(configType != null) append(configType.nameText).append(" ")
-				append("<b>").append(name.escapeXml().orAnonymous()).append("</b>")
-				//加上类型信息
-				val typeCategory = configType?.category
-				if(typeCategory != null) {
-					val typeElement = element.parentOfType<CwtProperty>()
-					val typeName = typeElement?.name?.substringIn('[', ']')?.takeIfNotEmpty()
-					if(typeName != null && typeName.isNotEmpty()) {
-						//在脚本文件中显示为链接
-						if(configGroup != null) {
-							val gameType = configGroup.gameType
-							val typeLink = "${gameType.id}/${typeCategory}/${typeName}"
-							append(": ").appendCwtLink(typeName, typeLink, typeElement)
-						} else {
-							append(": ").append(typeName)
-						}
-					}
-				}
-			} else {
-				val prefix = when {
-					referenceElement is ParadoxScriptPropertyKey -> PlsDocBundle.message("prefix.definitionProperty")
-					referenceElement is ParadoxScriptValue -> PlsDocBundle.message("prefix.definitionValue")
-					else -> null
-				}
-				val referenceName = referenceElement.text.unquote()
-				if(prefix != null) append(prefix).append(" ")
-				append("<b>").append(referenceName.escapeXml().orAnonymous()).append("</b>")
-				if(showDetail && name != referenceName) { //这里不忽略大小写
-					grayed {
-						append(" by ").append(name.escapeXml().orAnonymous())
-					}
-				}
-			}
-			if(configGroup != null) {
-				if(referenceElement != null && configType == CwtConfigType.Modifier) {
-					addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sectionsList?.get(2))
-					addModifierIcon(element, referenceElement, name, configGroup, sectionsList?.get(1))
-				}
-				//addScope(element, name, configType, configGroup, sectionsList?.get(0))
 				if(referenceElement != null) {
 					addScopeContext(element, referenceElement, configGroup, sectionsList?.get(0))
 				}

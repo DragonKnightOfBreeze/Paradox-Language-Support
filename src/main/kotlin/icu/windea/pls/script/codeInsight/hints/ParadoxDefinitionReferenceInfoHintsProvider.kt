@@ -54,7 +54,14 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<N
 					?: return true
 				CwtConfigHandler.resolveScriptExpression(element, null, config, config.info.configGroup, true)
 			}
-			is ParadoxScriptString -> {
+			is ParadoxScriptString-> {
+				val config = ParadoxCwtConfigHandler.resolveValueConfigs(element).firstOrNull()
+					?.takeIf { it.expression.type in valueExpressionTypes }
+					?: return true
+				CwtConfigHandler.resolveScriptExpression(element, null, config, config.info.configGroup, false)
+			}
+			//这也是需要判断的
+			is ParadoxScriptInt-> {
 				val config = ParadoxCwtConfigHandler.resolveValueConfigs(element).firstOrNull()
 					?.takeIf { it.expression.type in valueExpressionTypes }
 					?: return true

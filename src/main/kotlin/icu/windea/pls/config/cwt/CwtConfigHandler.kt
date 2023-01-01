@@ -255,7 +255,8 @@ object CwtConfigHandler {
 				return true
 			}
 			CwtDataType.TypeExpression -> {
-				if(!expression.type.isStringType()) return false
+				//注意这里可能是一个整数，例如，对于<technology_tier>
+				if(!expression.type.isStringType() && expression.type != ParadoxDataType.IntType) return false
 				if(isStatic) return false
 				if(isParameterAware) return true
 				val typeExpression = configExpression.value ?: return false //invalid cwt config
@@ -312,13 +313,8 @@ object CwtConfigHandler {
 				if(isParameterAware) return true
 				return true //任意字符串即可，不需要进一步匹配
 			}
-			CwtDataType.ScopeField, CwtDataType.Scope -> {
-				if(expression.quoted) return false //不允许用引号括起
-				if(!isStatic && isParameterAware) return true
-				val textRange = TextRange.create(0, expression.text.length)
-				return ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey) != null
-			}
-			CwtDataType.ScopeGroup -> {
+			CwtDataType.ScopeField, CwtDataType.Scope, CwtDataType.ScopeGroup -> {
+				//作为trigger的值时也可以
 				if(expression.quoted) return false //不允许用引号括起
 				if(!isStatic && isParameterAware) return true
 				val textRange = TextRange.create(0, expression.text.length)
@@ -1477,8 +1473,8 @@ object CwtConfigHandler {
 	 * @param element 需要解析的PSI元素。
 	 * @param rangeInElement 需要解析的文本在需要解析的PSI元素对应的整个文本中的位置。
 	 */
-	fun resolveScriptExpression(element: ParadoxScriptStringExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configGroup: CwtConfigGroup, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
-		if(element.isParameterAwareExpression()) return null //排除带参数的情况
+	fun resolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configGroup: CwtConfigGroup, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+		if(element is ParadoxScriptStringExpressionElement && element.isParameterAwareExpression()) return null //排除带参数的情况
 		
 		val project = element.project
 		val gameType = configGroup.gameType ?: return null
@@ -1617,8 +1613,8 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun multiResolveScriptExpression(element: ParadoxScriptStringExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configGroup: CwtConfigGroup, isKey: Boolean? = null): Collection<PsiElement> {
-		if(element.isParameterAwareExpression()) return emptyList() //排除带参数的情况  
+	fun multiResolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configGroup: CwtConfigGroup, isKey: Boolean? = null): Collection<PsiElement> {
+		if(element is ParadoxScriptStringExpressionElement && element.isParameterAwareExpression()) return emptyList() //排除带参数的情况  
 		
 		val project = element.project
 		val gameType = configGroup.gameType ?: return emptyList()
@@ -1773,7 +1769,7 @@ object CwtConfigHandler {
 		return resolved
 	}
 	
-	fun resolveEnumValue(element: ParadoxScriptStringExpressionElement, name: String, enumName: String, configGroup: CwtConfigGroup): PsiElement? {
+	fun resolveEnumValue(element: ParadoxScriptExpressionElement, name: String, enumName: String, configGroup: CwtConfigGroup): PsiElement? {
 		val enumConfig = configGroup.enums[enumName] ?: return null
 		val enumValueConfig = enumConfig.valueConfigMap.get(name) ?: return null
 		val resolved = enumValueConfig.pointer.element ?: return null
@@ -1781,7 +1777,7 @@ object CwtConfigHandler {
 		return resolved
 	}
 	
-	private fun resolveValueSetValue(element: ParadoxScriptStringExpressionElement, name: String, config: CwtConfig<*>, configGroup: CwtConfigGroup): PsiElement? {
+	private fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, config: CwtConfig<*>, configGroup: CwtConfigGroup): PsiElement? {
 		val gameType = configGroup.gameType ?: return null
 		val configExpression = config.expression ?: return null
 		val valueSetName = configExpression.value ?: return null
@@ -1796,10 +1792,11 @@ object CwtConfigHandler {
 				return predefinedResolved
 			}
 		}
+		if(element !is ParadoxScriptStringExpressionElement) return null
 		return ParadoxValueSetValueElement(element, name, valueSetName, configGroup.project, gameType, read)
 	}
 	
-	fun resolveValueSetValue(element: ParadoxScriptStringExpressionElement, name: String, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup): PsiElement? {
+	fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup): PsiElement? {
 		val gameType = configGroup.gameType ?: return null
 		for(config in configs) {
 			val configExpression = config.expression ?: return null
@@ -1816,6 +1813,7 @@ object CwtConfigHandler {
 				}
 			}
 		}
+		if(element !is ParadoxScriptStringExpressionElement) return null
 		val config = configs.firstOrNull() ?: return null //first is ok
 		val configExpression = config.expression ?: return null
 		val read = configExpression.type == CwtDataType.Value

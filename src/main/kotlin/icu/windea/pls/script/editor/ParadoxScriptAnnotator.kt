@@ -28,7 +28,9 @@ class ParadoxScriptAnnotator : Annotator {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
 		when(element) {
 			is ParadoxScriptProperty -> annotateProperty(element, holder)
-			is ParadoxScriptStringExpressionElement -> annotateExpressionElement(element, holder)
+			is ParadoxScriptPropertyKey -> annotateExpressionElement(element, holder)
+			is ParadoxScriptString -> annotateExpressionElement(element, holder)
+			is ParadoxScriptInt -> annotateExpressionElement(element, holder)
 		}
 	}
 	
@@ -56,7 +58,7 @@ class ParadoxScriptAnnotator : Annotator {
 		}
 	}
 	
-	private fun annotateComplexEnumValue(element: ParadoxScriptStringExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
+	private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
 		//高亮复杂枚举名对应的字符串（可能还有其他高亮）（这里不能使用PSI链接）
 		val nameString = complexEnumValueInfo.name.escapeXml().orAnonymous()
 		val enumNameString = complexEnumValueInfo.enumName
@@ -67,7 +69,7 @@ class ParadoxScriptAnnotator : Annotator {
 			.create()
 	}
 	
-	private fun annotateExpressionElement(element: ParadoxScriptStringExpressionElement, holder: AnnotationHolder) {
+	private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
 		checkLiteralElement(element, holder)
 		
 		val isKey = element is ParadoxScriptPropertyKey
@@ -76,9 +78,11 @@ class ParadoxScriptAnnotator : Annotator {
 			annotateExpression(element, element.textRange, null, config, holder)
 		}
 		
-		val complexEnumValueInfo = element.complexEnumValueInfo
-		if(complexEnumValueInfo != null) {
-			annotateComplexEnumValue(element, holder, complexEnumValueInfo)
+		if(element is ParadoxScriptStringExpressionElement) {
+			val complexEnumValueInfo = element.complexEnumValueInfo
+			if(complexEnumValueInfo != null) {
+				annotateComplexEnumValue(element, holder, complexEnumValueInfo)
+			}
 		}
 	}
 	
@@ -91,7 +95,7 @@ class ParadoxScriptAnnotator : Annotator {
 	}
 	
 	private fun annotateExpression(
-		element: ParadoxScriptStringExpressionElement,
+		element: ParadoxScriptExpressionElement,
 		range: TextRange,
 		rangeInElement: TextRange?,
 		config: CwtConfig<*>,
@@ -102,6 +106,11 @@ class ParadoxScriptAnnotator : Annotator {
 		//高亮特殊标签
 		if(config is CwtValueConfig && config.isTagConfig) {
 			holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(Keys.TAG_KEY).create()
+		}
+		
+		//如果不是字符串，除非是定义引用，否则不作高亮
+		if(element !is ParadoxScriptStringExpressionElement && configExpression.type != CwtDataType.TypeExpression) {
+			return
 		}
 		
 		//颜色高亮
@@ -240,7 +249,8 @@ class ParadoxScriptAnnotator : Annotator {
 		return true
 	}
 	
-	private fun annotateComplexExpression(element: ParadoxScriptStringExpressionElement, expression: ParadoxComplexExpression, config: CwtConfig<*>, range: TextRange, holder: AnnotationHolder) {
+	private fun annotateComplexExpression(element: ParadoxScriptExpressionElement, expression: ParadoxComplexExpression, config: CwtConfig<*>, range: TextRange, holder: AnnotationHolder) {
+		if(element !is ParadoxScriptStringExpressionElement) return
 		doAnnotateComplexExpression(element, expression, config, range, holder)
 	}
 	

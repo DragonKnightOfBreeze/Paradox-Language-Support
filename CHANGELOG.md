@@ -65,6 +65,8 @@
   * [X] 如果定义类型的顶级属性名是限定且存在多种情况的，如有必要，解析定义信息时总是要求顶级属性名是可能的情况之一，而不是任意字符串（如stellaris中的event）
   * [X] 为修饰符、触发器和效果（`modifier trigger effect`）提供特殊的高亮
   * [X] 为修饰符、触发器和效果（`modifier trigger effect`）提供特殊的图标
+  * [ ] 作为trigger的值的CWT规则`scope_field` `scope[xxx]` `scope_group[xxx]`也可以匹配一个布尔值
+  * [X] 定义引用也可以是一个整数，例如，对于`<technology_tier>`
 * 新增功能 - 概述
   * [X] 初步支持处理作用域（`scope`），以及相关的快速文档、内嵌提示、代码检查等功能
     * 基于已有的CWT规则文件

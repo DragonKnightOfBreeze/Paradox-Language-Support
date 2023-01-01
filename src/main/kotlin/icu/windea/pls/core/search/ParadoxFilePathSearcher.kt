@@ -27,23 +27,23 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
 			}
 			return
 		}
-		val dataKeys = if(type == CwtPathExpressionType.Exact) {
-			setOf(filePath)
+		if(type == CwtPathExpressionType.Exact) {
+			val path = filePath
+			val keys = setOf(path)
+			FileBasedIndex.getInstance().processFilesContainingAnyKey(name, keys, scope, null, null) { file ->
+				consumer.process(file)
+			}
 		} else {
-			var dataKey: String? = null
 			FileBasedIndex.getInstance().processAllKeys(name, { path ->
 				if(type.matches(filePath, path, ignoreCase)) {
-					dataKey = path
-					false
-				} else {
-					true
+					val keys = setOf(path)
+					val r = FileBasedIndex.getInstance().processFilesContainingAnyKey(name, keys, scope, null, null) { file ->
+						consumer.process(file)
+					}
+					if(!r) return@processAllKeys false
 				}
+				true
 			}, scope, null)
-			if(dataKey == null) return
-			setOf(dataKey)
-		}
-		FileBasedIndex.getInstance().processFilesContainingAnyKey(name, dataKeys, scope, null, null) { file ->
-			consumer.process(file)
 		}
 	}
 }
