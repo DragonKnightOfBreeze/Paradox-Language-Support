@@ -46,7 +46,8 @@ object ParadoxCwtConfigHandler {
 				val expression = when{
 					element is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxDataExpression.resolve(it) }
 					element is ParadoxScriptFile -> BlockParadoxDataExpression 
-					else -> null
+					element is ParadoxScriptPropertyKey -> element.propertyValue?.let { ParadoxDataExpression.resolve(it) }
+					else -> throw UnsupportedOperationException()
 				}
 				val definitionMemberInfo = memberElement.definitionMemberInfo ?: return emptyList()
 				if(!allowDefinitionSelf && definitionMemberInfo.elementPath.isEmpty()) return emptyList()

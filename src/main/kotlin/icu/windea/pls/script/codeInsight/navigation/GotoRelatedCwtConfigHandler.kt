@@ -37,7 +37,7 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 				config.resolvedOrNull()?.pointer?.element?.let { add(it) }
 				
 				val configGroup = config.info.configGroup
-				if(config is CwtValueConfig && config.expression.type == CwtDataType.Modifier) {
+				if(config.expression.type == CwtDataType.Modifier) {
 					if(location is ParadoxScriptStringExpressionElement) {
 						configGroup.modifiers[location.value]?.pointer?.element?.let { add(it) }
 					}
