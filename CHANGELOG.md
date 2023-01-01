@@ -49,13 +49,15 @@
   * [ ] 优化：检查scopeFieldExpression时也检查是否匹配对应的scopeName或者scopeGroupName（归类到`MismatchedScopeInspection`）
   * [ ] 对于link `pop_faction_parameter`和complexEnum `pop_faction_parameters`的特殊处理：前者只能在`pop_faction`中使用且作为数据源的complexEnumValue只能来自同一定义声明中
   * [ ] 兼容CWT规则文件中的错误级别`severity = warning`或`## severity = warning`（PLS和CWTools实现有所不同，需要分析）
+  * [ ] ［待确定］作为trigger的值的CWT规则`scope_field` `scope[xxx]` `scope_group[xxx]`也可以匹配一个布尔值？
 
-## 0.7.9
+## PROCESS
 
-进度：
 * [ ] 编写生成器解析日志并生成trigger和effect的作用域信息（输入的作用域+输出的作用域）
 * [ ] 在快速文档中显示本地化作用域和命令的作用域上下文 - 需要大幅重构相关代码
 * [ ] 也许需要重构复杂表达式相关代码，更好地支持相关功能，以及支持额外的复杂表达式
+
+## 0.7.9
 
 * BUG修复
   * [X] 修复：[Cannot choose path for library using CK3 #7](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/7)
@@ -65,7 +67,6 @@
   * [X] 如果定义类型的顶级属性名是限定且存在多种情况的，如有必要，解析定义信息时总是要求顶级属性名是可能的情况之一，而不是任意字符串（如stellaris中的event）
   * [X] 为修饰符、触发器和效果（`modifier trigger effect`）提供特殊的高亮
   * [X] 为修饰符、触发器和效果（`modifier trigger effect`）提供特殊的图标
-  * [ ] 作为trigger的值的CWT规则`scope_field` `scope[xxx]` `scope_group[xxx]`也可以匹配一个布尔值
   * [X] 定义引用也可以是一个整数，例如，对于`<technology_tier>`
 * 新增功能 - 概述
   * [X] 初步支持处理作用域（`scope`），以及相关的快速文档、内嵌提示、代码检查等功能

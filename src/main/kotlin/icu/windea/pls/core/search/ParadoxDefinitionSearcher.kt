@@ -1,12 +1,17 @@
 package icu.windea.pls.core.search
 
 import com.intellij.openapi.application.*
+import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.core.model.*
+import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -32,7 +37,20 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
 			}
 			return
 		}
+		
 		//按照类型表达式查找定义
+		doProcessQueryByTypeExpression(typeExpression, project, scope, name, consumer)
+		
+		//如果是切换类型，也要按照基础类型的类型表达式查找定义
+		val gameType = queryParameters.selector.gameType
+		val configGroup = getCwtConfig(project).get(gameType.id)
+		val baseTypeExpression = configGroup?.types?.get(typeExpression)?.baseType
+		if(baseTypeExpression != null) {
+			doProcessQueryByTypeExpression(baseTypeExpression, project, scope, name, consumer)
+		}
+	}
+	
+	private fun doProcessQueryByTypeExpression(typeExpression: String, project: Project, scope: GlobalSearchScope, name: String?, consumer: Processor<in ParadoxScriptDefinitionElement>) {
 		for(expression in typeExpression.split('|')) {
 			val (type, subtype) = ParadoxDefinitionTypeExpression.resolve(expression)
 			ParadoxDefinitionTypeIndex.processAllElements(type, project, scope) {

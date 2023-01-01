@@ -53,7 +53,7 @@ interface CwtConfigGroup {
 	//inline_script
 	val inlineConfigGroup: Map<String, List<CwtInlineConfig>>
 	
-	val declarations: Map<String, CwtDeclarationConfig>
+	val declarations: MutableMap<String, CwtDeclarationConfig>
 	
 	//目前版本的CWT配置已经不再使用
 	val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig>

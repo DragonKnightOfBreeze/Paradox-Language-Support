@@ -44,18 +44,23 @@ object ParadoxElementPathHandler {
 	 * 解析指定元素相对于所属定义的属性路径。
 	 */
 	@JvmStatic
-	fun resolveFromDefinitionWithDefinition(element: PsiElement): Tuple2<ParadoxElementPath, ParadoxScriptDefinitionElement>? {
+	fun resolveFromDefinitionWithDefinition(element: PsiElement, allowDefinitionSelf: Boolean): Tuple2<ParadoxElementPath, ParadoxScriptDefinitionElement>? {
 		var current: PsiElement = element
 		var depth = 0
 		val originalSubPaths = LinkedList<String>()
 		var definition: ParadoxScriptDefinitionElement? = null
+		var flag = allowDefinitionSelf
 		while(current !is PsiDirectory) { //这里的上限应当是null或PsiDirectory，不能是PsiFile，因为它也可能是定义
 			when {
 				current is ParadoxScriptDefinitionElement -> {
-					val definitionInfo = current.definitionInfo
-					if(definitionInfo != null) {
-						definition = current
-						break
+					if(flag) {
+						val definitionInfo = current.definitionInfo
+						if(definitionInfo != null) {
+							definition = current
+							break
+						}
+					} else {
+						flag = true
 					}
 					originalSubPaths.addFirst(current.originalPathName) //这里需要使用原始文本
 					depth++
