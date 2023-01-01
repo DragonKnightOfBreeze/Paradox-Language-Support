@@ -37,7 +37,18 @@ class CwtConfigGroupImpl(
 	override val onActions: MutableMap<String, ParadoxOnActionInfo> = mutableMapOf()
 	
 	override val folders: MutableSet<String> = mutableSetOf()
+	
 	override val types: MutableMap<String, CwtTypeConfig> = mutableMapOf()
+	override val typeAndSwapTypeMap: Map<String, String> by lazy { 
+		val map = BidirectionalMap<String, String>()
+		for(typeConfig in types.values) {
+			if(typeConfig.baseType != null) {
+				map.put(typeConfig.baseType, typeConfig.name)
+			}
+		}
+		map
+	}
+	
 	override val values: MutableMap<String, CwtEnumValueConfig> = mutableMapOf()
 	//enumValue可以是int、float、bool类型，统一用字符串表示
 	override val enums: MutableMap<String, CwtEnumValueConfig> = mutableMapOf()

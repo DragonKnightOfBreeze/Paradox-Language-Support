@@ -24,7 +24,10 @@ interface CwtConfigGroup {
 	val onActions: Map<String, ParadoxOnActionInfo>
 	
 	val folders: Set<String>
+	
 	val types: Map<String, CwtTypeConfig>
+	val typeAndSwapTypeMap: Map<String, String>
+	
 	val values: Map<String, CwtEnumValueConfig>
 	//enumValue可以是int、float、bool类型，统一用字符串表示
 	val enums: Map<String, CwtEnumValueConfig>

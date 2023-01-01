@@ -121,7 +121,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		definition {
 			val referenceElement = getReferenceElement(originalElement)
 			if(referenceElement?.language?.isParadoxLanguage() != true || configType?.isReference == true) {
-				if(configType != null) append(configType.nameText).append(" ")
+				if(configType != null) append(configType.prefix).append(" ")
 				append("<b>").append(name.escapeXml().orAnonymous()).append("</b>")
 				//加上类型信息
 				val typeCategory = configType?.category

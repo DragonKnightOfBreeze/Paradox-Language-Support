@@ -68,6 +68,7 @@
   * [X] 为修饰符、触发器和效果（`modifier trigger effect`）提供特殊的高亮
   * [X] 为修饰符、触发器和效果（`modifier trigger effect`）提供特殊的图标
   * [X] 定义引用也可以是一个整数，例如，对于`<technology_tier>`
+  * [X] 兼容切换类型（例如，`swapped_civic`），包括引用解析、代码提示等功能
 * 新增功能 - 概述
   * [X] 初步支持处理作用域（`scope`），以及相关的快速文档、内嵌提示、代码检查等功能
     * 基于已有的CWT规则文件
