@@ -28,8 +28,7 @@ class ParadoxScriptAnnotator : Annotator {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
 		when(element) {
 			is ParadoxScriptProperty -> annotateProperty(element, holder)
-			is ParadoxScriptPropertyKey -> annotateExpressionElement(element, holder)
-			is ParadoxScriptString -> annotateExpressionElement(element, holder)
+			is ParadoxScriptStringExpressionElement -> annotateExpressionElement(element, holder)
 			is ParadoxScriptInt -> annotateExpressionElement(element, holder)
 		}
 	}

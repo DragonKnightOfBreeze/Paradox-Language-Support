@@ -35,6 +35,12 @@ public class ParadoxScriptIntImpl extends ParadoxScriptValueImpl implements Para
   }
 
   @Override
+  @NotNull
+  public ParadoxScriptValue setValue(@NotNull String name) {
+    return ParadoxScriptPsiImplUtil.setValue(this, name);
+  }
+
+  @Override
   public int getIntValue() {
     return ParadoxScriptPsiImplUtil.getIntValue(this);
   }

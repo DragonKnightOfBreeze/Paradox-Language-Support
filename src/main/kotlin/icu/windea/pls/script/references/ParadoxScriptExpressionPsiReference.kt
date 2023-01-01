@@ -2,6 +2,7 @@ package icu.windea.pls.script.references
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.collections.*
@@ -12,13 +13,18 @@ import icu.windea.pls.script.psi.*
  * @see icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider
  */
 class ParadoxScriptExpressionPsiReference(
-	element: ParadoxScriptStringExpressionElement,
+	element: ParadoxScriptExpressionElement,
 	rangeInElement: TextRange,
 	val config: CwtDataConfig<*>,
 	val isKey: Boolean
-) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), SmartPsiReference {
+) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), SmartPsiReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		return element.setValue(newElementName)
+		val element = element
+		return when {
+			element is ParadoxScriptStringExpressionElement -> element.setValue(newElementName)
+			element is ParadoxScriptInt -> element.setValue(newElementName)
+			else -> throw IncorrectOperationException()
+		}
 	}
 	
 	override fun isReferenceTo(element: PsiElement): Boolean {

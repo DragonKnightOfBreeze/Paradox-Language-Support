@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 	override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-		if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
+		if(element !is ParadoxScriptStringExpressionElement && element !is ParadoxScriptInt) return PsiReference.EMPTY_ARRAY
 		val gameType = selectGameType(element) ?: return PsiReference.EMPTY_ARRAY
 		val configGroup = getCwtConfig(element.project).getValue(gameType)
 		val text = element.text
@@ -27,6 +27,7 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 			val textRange = TextRange.create(0, text.length)
 			when(config.expression.type) {
 				CwtDataType.Value, CwtDataType.ValueSet -> {
+					if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
 					//quoted -> only value set value name, no scope info
 					if(text.isLeftQuoted()) {
 						val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
@@ -37,12 +38,14 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 					return valueFieldExpression.getReferences(element)
 				}
 				CwtDataType.Scope, CwtDataType.ScopeField, CwtDataType.ScopeGroup -> {
+					if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
 					if(text.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
 					val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup, isKey)
 					if(scopeFieldExpression == null) return PsiReference.EMPTY_ARRAY
 					return scopeFieldExpression.getReferences(element)
 				}
 				CwtDataType.ValueField, CwtDataType.IntValueField -> {
+					if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
 					if(text.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
 					val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup, isKey)
 					if(valueFieldExpression == null) return PsiReference.EMPTY_ARRAY
@@ -51,6 +54,7 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 				else -> pass()
 			}
 			//TODO 不能直接返回PsiReference，需要先确定rangeInElement
+			if(element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY
 			val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
 			return arrayOf(reference)
 		}

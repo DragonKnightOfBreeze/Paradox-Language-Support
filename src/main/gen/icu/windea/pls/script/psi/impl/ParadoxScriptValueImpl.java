@@ -44,6 +44,12 @@ public abstract class ParadoxScriptValueImpl extends ASTWrapperPsiElement implem
 
   @Override
   @NotNull
+  public ParadoxScriptValue setValue(@NotNull String name) {
+    return ParadoxScriptPsiImplUtil.setValue(this, name);
+  }
+
+  @Override
+  @NotNull
   public ParadoxDataType getType() {
     return ParadoxScriptPsiImplUtil.getType(this);
   }

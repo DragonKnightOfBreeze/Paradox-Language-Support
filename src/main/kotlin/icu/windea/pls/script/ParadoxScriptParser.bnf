@@ -99,7 +99,7 @@ value ::= scripted_variable_reference | boolean | int | float | color | block | 
     "icu.windea.pls.script.psi.ParadoxScriptMemberElement"
   ]
   methods=[
-    getIcon getValue
+    getIcon getValue setValue
     getType getExpression getConfigExpression
   ]
 }
@@ -122,14 +122,14 @@ int ::= INT_TOKEN {
   implements=[
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getValue getIntValue getType]
+  methods=[getValue setValue getIntValue getType]
 }
 float ::= FLOAT_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getValue getFloatValue getType]
+  methods=[getValue setValue getFloatValue getType]
 }
 string ::= value_expr {
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"

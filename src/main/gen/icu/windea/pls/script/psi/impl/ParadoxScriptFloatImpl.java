@@ -35,6 +35,12 @@ public class ParadoxScriptFloatImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
+  @NotNull
+  public ParadoxScriptValue setValue(@NotNull String name) {
+    return ParadoxScriptPsiImplUtil.setValue(this, name);
+  }
+
+  @Override
   public float getFloatValue() {
     return ParadoxScriptPsiImplUtil.getFloatValue(this);
   }

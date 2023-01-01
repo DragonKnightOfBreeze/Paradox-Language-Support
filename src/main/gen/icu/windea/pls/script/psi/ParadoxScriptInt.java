@@ -12,6 +12,9 @@ public interface ParadoxScriptInt extends ParadoxScriptValue, PsiLiteralValue {
   @NotNull
   String getValue();
 
+  @NotNull
+  ParadoxScriptValue setValue(@NotNull String name);
+
   int getIntValue();
 
   @NotNull

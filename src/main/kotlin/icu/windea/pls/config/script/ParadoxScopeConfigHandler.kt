@@ -179,7 +179,9 @@ object ParadoxScopeConfigHandler {
 				?: typeConfig.config.pushScope)
 			val pushScope = pushScopeOnType
 				?: declarationConfig.pushScope
-			val result = replaceScope?.resolve(pushScope) ?: ParadoxScopeContext.resolve(anyScopeId, anyScopeId)
+			val result = replaceScope?.resolve(pushScope)
+				?: pushScope?.let { ParadoxScopeContext.resolve(it, it) }
+				?: ParadoxScopeContext.resolve(anyScopeId, anyScopeId)
 			return result
 		}
 		

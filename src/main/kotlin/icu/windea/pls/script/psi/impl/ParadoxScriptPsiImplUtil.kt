@@ -403,7 +403,11 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getExpression(element: ParadoxScriptScriptedVariableReference): String {
-		return element.text
+		return buildString {
+			append(element.text)
+			val expression = element.referenceValue?.expression
+			if(expression != null) append("(= ").append(expression).append(")")
+		}
 	}
 	//endregion
 	
@@ -416,6 +420,13 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getValue(element: ParadoxScriptValue): String {
 		return element.text
+	}
+	
+	@JvmStatic
+	fun setValue(element: ParadoxScriptValue, name: String): ParadoxScriptValue {
+		val newElement = ParadoxScriptElementFactory.createValue(element.project, name)
+		element.replace(newElement)
+		return element
 	}
 	
 	@JvmStatic
