@@ -853,7 +853,6 @@ object CwtConfigHandler {
 							.withTailText(tailText)
 							.withTypeText(typeFile?.name)
 							.withTypeIcon(typeFile?.icon)
-							.caseInsensitive()
 						result.addScriptExpressionElement(context, builder)
 						true
 					}

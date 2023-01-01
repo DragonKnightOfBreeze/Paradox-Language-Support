@@ -2,9 +2,11 @@ package icu.windea.pls.cwt
 
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
+import javax.swing.Icon
 
 enum class CwtConfigType(
 	val id: String,
@@ -28,29 +30,36 @@ enum class CwtConfigType(
 	},
 	SingleAlias("single alias") {
 		override val nameText get() = PlsDocBundle.message("prefix.singleAlias")
+		override val icon get() =  PlsIcons.Alias
 	},
 	Alias("alias") {
 		override val nameText get() = PlsDocBundle.message("prefix.alias")
+		override val icon get() =  PlsIcons.Alias
 	},
 	EnumValue("enum value", true, "enums") {
 		override val nameText get() = PlsDocBundle.message("prefix.enumValue")
 		override val descriptionText get() = PlsBundle.message("cwt.description.enumValue")
+		override val icon get() =  PlsIcons.EnumValue
 	},
 	ValueSetValue("value set value", true, "values") {
 		override val nameText get() = PlsDocBundle.message("prefix.valueSetValue")
 		override val descriptionText get() = PlsBundle.message("cwt.description.valueSetValue")
+		override val icon get() =  PlsIcons.ValueSetValue
 	},
 	Link("link", true) {
 		override val nameText get() = PlsDocBundle.message("prefix.link")
 		override val descriptionText get() = PlsBundle.message("cwt.description.link")
+		override val icon get() = PlsIcons.Link
 	},
 	LocalisationLink("localisation link", true) {
 		override val nameText get() = PlsDocBundle.message("prefix.localisationLink")
 		override val descriptionText get() = PlsBundle.message("cwt.description.localisationLink")
+		override val icon get() = PlsIcons.Link
 	},
 	LocalisationCommand("localisation command", true) {
 		override val nameText get() = PlsDocBundle.message("prefix.localisationCommand")
 		override val descriptionText get() = PlsBundle.message("cwt.description.localisationCommand")
+		override val icon get() = PlsIcons.LocalisationCommandField
 	},
 	ModifierCategory("modifier category", true) {
 		override val nameText get() = PlsDocBundle.message("prefix.modifierCategory")
@@ -59,10 +68,12 @@ enum class CwtConfigType(
 	Modifier("modifier", true) {
 		override val nameText get() = PlsDocBundle.message("prefix.modifier")
 		override val descriptionText get() = PlsBundle.message("cwt.description.modifier")
+		override val icon get() = PlsIcons.Modifier
 	},
 	Scope("scope", true) {
 		override val nameText get() = PlsDocBundle.message("prefix.scope")
 		override val descriptionText get() = PlsBundle.message("cwt.description.scope")
+		override val icon get() = PlsIcons.Scope
 	},
 	ScopeGroup("scope group", true) {
 		override val nameText get() = PlsDocBundle.message("prefix.scopeGroup")
@@ -71,18 +82,22 @@ enum class CwtConfigType(
 	SystemScope("system scope", true) {
 		override val nameText get() = PlsDocBundle.message("prefix.systemScope")
 		override val descriptionText get() = PlsBundle.message("cwt.description.systemScope")
+		override val icon get() = PlsIcons.SystemScope
 	},
 	LocalisationLocale("localisation locale", true) {
 		override val nameText get() = PlsDocBundle.message("prefix.localisationLocale")
 		override val descriptionText get() = PlsBundle.message("cwt.description.localisationLocale")
+		override val icon get() = PlsIcons.LocalisationLocale
 	},
-	LocalisationPredefinedVariable("localisation predefined variable", true) {
-		override val nameText get() = PlsDocBundle.message("prefix.localisationPredefinedVariable")
-		override val descriptionText get() = PlsBundle.message("cwt.description.localisationPredefinedVariable")
+	LocalisationPredefinedParameter("localisation predefined parameter", true) {
+		override val nameText get() = PlsDocBundle.message("prefix.localisationPredefinedParameter")
+		override val descriptionText get() = PlsBundle.message("cwt.description.localisationPredefinedParameter")
+		override val icon get() = PlsIcons.PredefinedParameter
 	};
 	
 	abstract val nameText: String
 	open val descriptionText: String? = null
+	open val icon: Icon? = null
 	
 	companion object {
 		//属性名匹配+父属性名匹配，不检查属性是否在正确的位置，插件开发者应当保证CWT配置是正确的……
@@ -110,7 +125,7 @@ enum class CwtConfigType(
 						parentName == "scope_groups" -> ScopeGroup
 						parentName == "system_scopes" && getFileKey(parentProperty) == "system_scopes" -> SystemScope
 						parentName == "localisation_locales" && getFileKey(parentProperty) == "localisation_locales" -> LocalisationLocale
-						parentName == "localisation_predefined_parameters" && getFileKey(parentProperty) == "localisation_predefined_parameters" -> LocalisationPredefinedVariable
+						parentName == "localisation_predefined_parameters" && getFileKey(parentProperty) == "localisation_predefined_parameters" -> LocalisationPredefinedParameter
 						else -> null
 					}
 				}

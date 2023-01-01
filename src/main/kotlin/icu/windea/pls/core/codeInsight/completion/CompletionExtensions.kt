@@ -148,8 +148,8 @@ fun CompletionResultSet.addScriptExpressionElement(
 	if(bold) {
 		lookupElement = lookupElement.bold()
 	}
-	if(caseSensitive) {
-		lookupElement = lookupElement.withCaseSensitivity(true)
+	if(!caseSensitive) {
+		lookupElement = lookupElement.withCaseSensitivity(false)
 	}
 	if(icon != null) {
 		lookupElement = lookupElement.withIcon(getIconToUse(icon, config))
@@ -220,7 +220,7 @@ private fun getIconToUse(icon: Icon?, config: CwtConfig<*>): Icon? {
 			val aliasName = aliasConfig.name
 			return when {
 				aliasName == "modifier" -> PlsIcons.Modifier
-				aliasName == "trigger" -> PlsIcons.TRIGGER
+				aliasName == "trigger" -> PlsIcons.Trigger
 				aliasName == "effect" -> PlsIcons.Effect
 				else -> icon
 			}
