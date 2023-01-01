@@ -103,7 +103,7 @@ class CwtValueExpression private constructor(
 			expressionString.indexOf('<').let { it > 0 && it < expressionString.indexOf('>') } -> {
 				val value = expressionString.substring(expressionString.indexOf('<'), expressionString.indexOf('>'))
 				val extraValue = expressionString.substringBefore('<') to expressionString.substringAfterLast('>')
-				CwtValueExpression(expressionString, CwtDataType.TypeExpressionString, value, extraValue)
+				CwtValueExpression(expressionString, CwtDataType.TemplateExpression, value, extraValue)
 			}
 			expressionString.surroundsWith("value[", "]") -> {
 				val value = expressionString.substring(6, expressionString.length - 1)

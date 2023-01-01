@@ -20,7 +20,7 @@ enum class CwtDataType {
 	FilePath,
 	Icon,
 	TypeExpression,
-	TypeExpressionString,
+	TemplateExpression,
 	Enum,
 	Value,
 	ValueSet,
@@ -31,7 +31,6 @@ enum class CwtDataType {
 	IntValueField,
 	VariableField,
 	IntVariableField,
-	//EXTENDED BY PLS
 	Modifier,
 	SingleAliasRight,
 	AliasName,

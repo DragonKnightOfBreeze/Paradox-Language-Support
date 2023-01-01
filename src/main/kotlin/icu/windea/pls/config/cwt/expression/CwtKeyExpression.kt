@@ -64,7 +64,7 @@ class CwtKeyExpression private constructor(
 			expressionString.indexOf('<').let { it > 0 && it < expressionString.indexOf('>') } && !expressionString.endsWith("]") -> {
 				val value = expressionString.substring(expressionString.indexOf('<'), expressionString.indexOf('>'))
 				val extraValue = expressionString.substringBefore('<') to expressionString.substringAfterLast('>')
-				CwtKeyExpression(expressionString, CwtDataType.TypeExpressionString, value, extraValue)
+				CwtKeyExpression(expressionString, CwtDataType.TemplateExpression, value, extraValue)
 			}
 			expressionString.surroundsWith("enum[", "]") -> {
 				val value = expressionString.substring(5, expressionString.length - 1)

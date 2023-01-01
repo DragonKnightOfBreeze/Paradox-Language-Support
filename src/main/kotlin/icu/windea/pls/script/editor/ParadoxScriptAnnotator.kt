@@ -134,7 +134,7 @@ class ParadoxScriptAnnotator : Annotator {
 				val attributesKey = Keys.DEFINITION_REFERENCE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
-			CwtDataType.TypeExpressionString -> {
+			CwtDataType.TemplateExpression -> {
 				if(text.isParameterAwareExpression()) return
 				val attributesKey = Keys.DEFINITION_REFERENCE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
@@ -228,7 +228,7 @@ class ParadoxScriptAnnotator : Annotator {
 	private fun annotateAliasName(config: CwtConfig<*>, holder: AnnotationHolder, range: TextRange): Boolean {
 		val aliasConfig = config.castOrNull<CwtAliasConfig>() ?: return false
 		val type = aliasConfig.expression.type
-		if(type != CwtDataType.ConstantKey && type != CwtDataType.TypeExpressionString) return false
+		if(type != CwtDataType.ConstantKey && type != CwtDataType.TemplateExpression) return false
 		val aliasName = aliasConfig.name
 		val attributesKey = when {
 			aliasName == "modifier" -> Keys.MODIFIER_KEY

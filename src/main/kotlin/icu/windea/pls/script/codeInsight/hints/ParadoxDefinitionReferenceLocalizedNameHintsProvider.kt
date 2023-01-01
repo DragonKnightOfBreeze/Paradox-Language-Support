@@ -30,13 +30,13 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 		private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxDefinitionReferenceLocalizedNameHintsSettingsKey")
 		private val keyExpressionTypes: Array<CwtDataType> = arrayOf(
 			CwtDataType.TypeExpression,
-			CwtDataType.TypeExpressionString,
+			CwtDataType.TemplateExpression,
 			CwtDataType.AliasName, //需要兼容alias
 			CwtDataType.AliasKeysField //需要兼容alias
 		)
 		private val valueExpressionTypes: Array<CwtDataType> = arrayOf(
 			CwtDataType.TypeExpression,
-			CwtDataType.TypeExpressionString,
+			CwtDataType.TemplateExpression,
 			CwtDataType.SingleAliasRight, //需要兼容single_alias
 			CwtDataType.AliasKeysField, //需要兼容alias
 			CwtDataType.AliasMatchLeft //需要兼容alias

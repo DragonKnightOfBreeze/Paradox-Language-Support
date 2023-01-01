@@ -46,7 +46,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
 				}
 			}
 		}
-		configGroup.info.typeExpressionStringLinks
+		configGroup.info.templateExpressionLinks
 			.firstNotNullOfOrNull { it.extract(definitionName) }
 			?.takeIfNotEmpty()
 			?.let { extraWords.add(it) }

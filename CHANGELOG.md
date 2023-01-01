@@ -64,6 +64,7 @@
   * [X] 实现生成器从`modifiers.log`生成或更新`modifiers.cwt`和`modifier_categories.cwt`
   * [X] 如果定义类型的顶级属性名是限定且存在多种情况的，如有必要，解析定义信息时总是要求顶级属性名是可能的情况之一，而不是任意字符串（如stellaris中的event）
   * [X] 为修饰符、触发器和效果（`modifier trigger effect`）提供特殊的高亮
+  * [X] 为修饰符、触发器和效果（`modifier trigger effect`）提供特殊的图标
 * 新增功能 - 概述
   * [X] 初步支持处理作用域（`scope`），以及相关的快速文档、内嵌提示、代码检查等功能
     * 基于已有的CWT规则文件

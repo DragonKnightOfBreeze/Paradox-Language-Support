@@ -49,8 +49,10 @@ object PlsIcons {
 	@JvmField val ValueLinkPrefix = loadIcon("/icons/valueLinkPrefix.svg")
 	@JvmField val ValueLinkValue = loadIcon("/icons/valueLinkValue.svg")
 	@JvmField val Modifier = loadIcon("/icons/modifier.svg")
-	@JvmField val Alias = loadIcon("/icons/alias.svg")
+	@JvmField val TRIGGER = loadIcon("/icons/trigger.svg")
+	@JvmField val Effect = loadIcon("/icons/effect.svg")
 	@JvmField val Tag = loadIcon("/icons/tag.svg")
+	@JvmField val Alias = loadIcon("/icons/alias.svg")
 	
 	@JvmField val EventNamespace = loadIcon("/icons/eventNamespace.svg")
 	@JvmField val EventId = loadIcon("/icons/eventId.svg")

@@ -11,12 +11,14 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import com.intellij.ui.*
 import com.intellij.util.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.script.codeStyle.*
+import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -150,7 +152,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 		lookupElement = lookupElement.withCaseSensitivity(true)
 	}
 	if(icon != null) {
-		lookupElement = lookupElement.withIcon(icon)
+		lookupElement = lookupElement.withIcon(getIconToUse(icon, config))
 	}
 	if(presentableText != null) {
 		lookupElement = lookupElement.withPresentableText(presentableText!!)
@@ -203,6 +205,24 @@ fun CompletionResultSet.addScriptExpressionElement(
 			}
 		}
 	}
+}
+
+private fun getIconToUse(icon: Icon?, config: CwtConfig<*>): Icon? {
+	if(icon == null) return null
+	if(config is CwtValueConfig) {
+		if(config.isTagConfig) return PlsIcons.Tag
+		val aliasConfig = config.propertyConfig?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return icon
+		val type = aliasConfig.expression.type
+		if(type != CwtDataType.ConstantKey && type != CwtDataType.TemplateExpression) return icon
+		val aliasName = aliasConfig.name
+		return when {
+			aliasName == "modifier" -> PlsIcons.Modifier
+			aliasName == "trigger" -> PlsIcons.TRIGGER
+			aliasName == "effect" -> PlsIcons.Effect
+			else -> icon
+		}
+	}
+	return icon
 }
 
 private fun skipOrInsertRightQuote(context: ProcessingContext, editor: Editor) {

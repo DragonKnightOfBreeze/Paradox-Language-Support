@@ -259,7 +259,7 @@ object CwtConfigHandler {
 				}
 				return true
 			}
-			CwtDataType.TypeExpressionString -> {
+			CwtDataType.TemplateExpression -> {
 				if(!expression.type.isStringType()) return false
 				if(isStatic) return false
 				if(isParameterAware) return true
@@ -426,7 +426,7 @@ object CwtConfigHandler {
 			CwtDataType.FilePath -> 70
 			CwtDataType.Icon -> 70
 			CwtDataType.TypeExpression -> 60
-			CwtDataType.TypeExpressionString -> 60
+			CwtDataType.TemplateExpression -> 55
 			CwtDataType.Enum -> {
 				val enumName = configExpression.value ?: return 0 //不期望匹配到
 				if(enumName == paramsEnumName) return 10
@@ -779,7 +779,7 @@ object CwtConfigHandler {
 					true
 				}
 			}
-			CwtDataType.TypeExpressionString -> {
+			CwtDataType.TemplateExpression -> {
 				val typeExpression = configExpression.value ?: return
 				val (prefix, suffix) = configExpression.extraValue?.cast<TypedTuple2<String>>() ?: return
 				val tailText = getScriptExpressionTailText(config)
@@ -931,12 +931,8 @@ object CwtConfigHandler {
 				//if(!name.matchesKeyword(keyword)) return //不预先过滤结果
 				val element = config.resolved().pointer.element ?: return
 				val typeFile = config.resolved().pointer.containingFile
-				val icon = when {
-					config is CwtValueConfig && config.isTagConfig -> PlsIcons.Tag
-					else -> PlsIcons.Value
-				}
 				val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
-					.withIcon(icon)
+					.withIcon(PlsIcons.Value)
 					.withTypeText(typeFile?.name)
 					.withTypeIcon(typeFile?.icon)
 					.caseInsensitive()
@@ -1531,7 +1527,7 @@ object CwtConfigHandler {
 				val selector = definitionSelector().gameType(gameType).preferRootFrom(element, exact)
 				return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).find()
 			}
-			CwtDataType.TypeExpressionString -> {
+			CwtDataType.TemplateExpression -> {
 				val (prefix, suffix) = configExpression.extraValue?.cast<TypedTuple2<String>>() ?: return null
 				val name = expression.removeSurrounding(prefix, suffix)
 				val typeExpression = configExpression.value ?: return null
@@ -1669,7 +1665,7 @@ object CwtConfigHandler {
 				val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
 				return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).findAll()
 			}
-			CwtDataType.TypeExpressionString -> {
+			CwtDataType.TemplateExpression -> {
 				val (prefix, suffix) = configExpression.extraValue?.cast<TypedTuple2<String>>() ?: return emptyList()
 				val name = expression.removeSurrounding(prefix, suffix)
 				val typeExpression = configExpression.value ?: return emptyList()
