@@ -61,7 +61,7 @@ class CwtConfigGroupImpl(
 	override val scopeGroups: MutableMap<String, CwtScopeGroupConfig> = mutableMapOf()
 	override val singleAliases: MutableMap<String, MutableList<CwtSingleAliasConfig>> = mutableMapOf()
 	override val aliasGroups: MutableMap<String, MutableMap<String, MutableList<CwtAliasConfig>>> = mutableMapOf()
-	override val inlineConfigs: MutableMap<String, MutableList<CwtInlineConfig>> = mutableMapOf()
+	override val inlineConfigGroup: MutableMap<String, MutableList<CwtInlineConfig>> = mutableMapOf()
 	override val declarations: MutableMap<String, CwtDeclarationConfig> = mutableMapOf()
 	
 	init {
@@ -442,7 +442,7 @@ class CwtConfigGroupImpl(
 					val inlineConfigName = key.removeSurroundingOrNull("inline[", "]")
 					if(inlineConfigName != null) {
 						val inlineConfig = resolveInlineConfig(property, inlineConfigName)
-						val list = inlineConfigs.getOrPut(inlineConfigName) { SmartList() }
+						val list = inlineConfigGroup.getOrPut(inlineConfigName) { SmartList() }
 						list.add(inlineConfig)
 					}
 					

@@ -74,50 +74,44 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
 	val elementPath = definitionMemberInfo.elementPath
 	if(elementPath.isParameterAware) return emptyList()
 	val configGroup = definitionMemberInfo.configGroup
-	if(elementPath.isEmpty()) return declaration.toSingletonList()
-	var result = declaration.configs ?: return emptyList()
-	var index = 0
-	while(index < elementPath.length) {
-		val (key, isQuoted, isKey) = elementPath.subPathInfos[index]
-		var nextIndex = index + 1
-		
+	
+	var result: List<CwtDataConfig<*>> = declaration.toSingletonList()
+	if(elementPath.isEmpty()) return result
+	
+	var isInlined = false
+	
+	for((key, isQuoted, isKey) in elementPath) {
 		//如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
+		//如果整个过程中的某个key匹配内联规则的名字（如，inline_script），则内联此内联规则
 		
 		val expression = ParadoxDataExpression.resolve(key, isQuoted, true)
 		val nextResult = SmartList<CwtDataConfig<*>>()
-		for(config in result) {
-			if(index == 0) {
+		for(parentConfig in result) {
+			//处理内联规则 不能嵌套内联
+			if(!isInlined && isKey && parentConfig is CwtPropertyConfig) {
+				isInlined = CwtConfigHandler.inlineConfigAsChild(key, isQuoted, parentConfig, configGroup, nextResult)
+				if(isInlined) continue
+			}
+			
+			val configs = parentConfig.configs
+			if(configs.isNullOrEmpty()) continue
+			for(config in configs) {
 				if(isKey && config is CwtPropertyConfig) {
 					if(CwtConfigHandler.matchesScriptExpression(expression, config.keyExpression, config, configGroup, matchType)) {
-						nextIndex = CwtConfigHandler.inlineConfig(key, isQuoted, config, configGroup, nextResult, index, matchType)
+						CwtConfigHandler.inlineConfig(key, isQuoted, config, configGroup, nextResult, matchType)
 					}
 				} else if(!isKey && config is CwtValueConfig) {
 					nextResult.add(config)
-				}
-			} else {
-				val propertyConfigs = config.properties
-				if(isKey && propertyConfigs != null && propertyConfigs.isNotEmpty()) {
-					for(propertyConfig in propertyConfigs) {
-						if(CwtConfigHandler.matchesScriptExpression(expression, propertyConfig.keyExpression, propertyConfig, configGroup, matchType)) {
-							nextIndex = CwtConfigHandler.inlineConfig(key, isQuoted, propertyConfig, configGroup, nextResult, index, matchType)
-						}
-					}
-				}
-				val valueConfigs = config.values
-				if(!isKey && valueConfigs != null && valueConfigs.isNotEmpty()) {
-					for(valueConfig in valueConfigs) {
-						nextResult.add(valueConfig)
-					}
 				}
 			}
 		}
 		
 		//如果存在可以静态匹配（CwtConfigMatchType.STATIC）的规则，则仅选用可以静态匹配的规则
-		result = nextResult.filter {
-			CwtConfigHandler.matchesScriptExpression(expression, it.expression, it, configGroup, CwtConfigMatchType.STATIC)
-		}.ifEmpty { nextResult }
-		index = nextIndex
+		result = nextResult
+			.filter { CwtConfigHandler.matchesScriptExpression(expression, it.expression, it, configGroup, CwtConfigMatchType.STATIC) }
+			.ifEmpty { nextResult }
 	}
+	
 	return result.sortedByPriority(configGroup) { it.expression }
 }
 

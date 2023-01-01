@@ -64,8 +64,7 @@ data class CwtPropertyConfig(
 			configs = other.deepCopyConfigs()
 		)
 		inlined.parent = parent
-		inlined.properties?.forEach { it.parent = inlined }
-		inlined.values?.forEach { it.parent = inlined }
+		inlined.configs?.forEach { it.parent = inlined }
 		inlined.inlineableConfig = singleAliasConfig
 		return inlined
 	}
@@ -86,9 +85,21 @@ data class CwtPropertyConfig(
 			configs = other.deepCopyConfigs()
 		)
 		inlined.parent = parent
-		inlined.properties?.forEach { it.parent = inlined }
-		inlined.values?.forEach { it.parent = inlined }
+		inlined.configs?.forEach { it.parent = inlined }
 		inlined.inlineableConfig = aliasConfig
+		return inlined
+	}
+	
+	/**
+	 * 将指定的[inlineConfig]内联作为子节点并返回。如果需要拷贝，则进行深拷贝。
+	 */
+	fun inlineConfigAsChild(inlineConfig: CwtInlineConfig) : CwtPropertyConfig{
+		val inlined = inlineConfig.config.copy(
+			configs = inlineConfig.config.deepCopyConfigs()
+		)
+		inlined.parent = this
+		inlined.configs?.forEach { it.parent = inlined }
+		inlined.inlineableConfig = inlineConfig
 		return inlined
 	}
 }
