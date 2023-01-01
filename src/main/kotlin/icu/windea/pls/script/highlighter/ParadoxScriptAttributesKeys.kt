@@ -50,7 +50,7 @@ object ParadoxScriptAttributesKeys {
 	
 	@JvmField val MODIFIER_KEY = createTextAttributesKey("PARADOX_SCRIPT.MODIFIER", CUSTOM_KEYWORD1_ATTRIBUTES)
 	@JvmField val TRIGGER_KEY = createTextAttributesKey("PARADOX_SCRIPT.TRIGGER", CUSTOM_KEYWORD2_ATTRIBUTES)
-	@JvmField val EFFECT_KEY = createTextAttributesKey("PARADOX_SCRIPT.EFFECT", CUSTOM_KEYWORD2_ATTRIBUTES)
+	@JvmField val EFFECT_KEY = createTextAttributesKey("PARADOX_SCRIPT.EFFECT", CUSTOM_KEYWORD3_ATTRIBUTES)
 	@JvmField val TAG_KEY = createTextAttributesKey("PARADOX_SCRIPT.TAG", METADATA)
 	
 	@JvmField val SCOPE_FILED_EXPRESSION_KEY = createTextAttributesKey("PARADOX_SCRIPT.SCOPE_FILED_EXPRESSION")

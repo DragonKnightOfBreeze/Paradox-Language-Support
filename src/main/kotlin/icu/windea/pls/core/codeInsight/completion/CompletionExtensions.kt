@@ -209,17 +209,21 @@ fun CompletionResultSet.addScriptExpressionElement(
 
 private fun getIconToUse(icon: Icon?, config: CwtConfig<*>): Icon? {
 	if(icon == null) return null
-	if(config is CwtValueConfig) {
-		if(config.isTagConfig) return PlsIcons.Tag
-		val aliasConfig = config.propertyConfig?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return icon
-		val type = aliasConfig.expression.type
-		if(type != CwtDataType.ConstantKey && type != CwtDataType.TemplateExpression) return icon
-		val aliasName = aliasConfig.name
-		return when {
-			aliasName == "modifier" -> PlsIcons.Modifier
-			aliasName == "trigger" -> PlsIcons.TRIGGER
-			aliasName == "effect" -> PlsIcons.Effect
-			else -> icon
+	when(config) {
+		is CwtValueConfig -> {
+			if(config.isTagConfig) return PlsIcons.Tag
+		}
+		is CwtAliasConfig -> {
+			val aliasConfig = config
+			val type = aliasConfig.expression.type
+			if(type != CwtDataType.ConstantKey && type != CwtDataType.TemplateExpression) return icon
+			val aliasName = aliasConfig.name
+			return when {
+				aliasName == "modifier" -> PlsIcons.Modifier
+				aliasName == "trigger" -> PlsIcons.TRIGGER
+				aliasName == "effect" -> PlsIcons.Effect
+				else -> icon
+			}
 		}
 	}
 	return icon

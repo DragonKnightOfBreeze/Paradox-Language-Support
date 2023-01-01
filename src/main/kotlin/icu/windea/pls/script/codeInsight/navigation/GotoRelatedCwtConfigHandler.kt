@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
@@ -26,13 +27,21 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 		val offset = editor.caretModel.offset
 		val location = findElement(file, offset) ?: return null
 		//获取所有匹配的CWT规则，不存在匹配的CWT规则时，选用所有默认的CWT规则（对于propertyConfig来说是匹配key的，对于valueConfig来说是所有）
-		//包括内联的和未被内联的（即alias或single_alias，显示时使用特殊的别名图标）规则
+		//包括内联规则（例如alias，显示时使用特殊的别名图标）
+		//如果对应，也包括modifier规则
 		val isKey = location is ParadoxScriptPropertyKey
 		val configs = ParadoxCwtConfigHandler.resolveConfigs(location, true, isKey)
 		val targets = buildSet {
 			for(config in configs) {
-				config.resolvedOrNull()?.pointer?.element?.let { add(it) }
 				config.pointer.element?.let { add(it) }
+				config.resolvedOrNull()?.pointer?.element?.let { add(it) }
+				
+				val configGroup = config.info.configGroup
+				if(config is CwtValueConfig && config.expression.type == CwtDataType.Modifier) {
+					if(location is ParadoxScriptStringExpressionElement) {
+						configGroup.modifiers[location.value]?.pointer?.element?.let { add(it) }
+					}
+				}
 			}
 		}
 		return GotoData(location, targets.toTypedArray(), emptyList())

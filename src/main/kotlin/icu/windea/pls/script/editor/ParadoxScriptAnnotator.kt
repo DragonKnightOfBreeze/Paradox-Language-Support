@@ -226,7 +226,7 @@ class ParadoxScriptAnnotator : Annotator {
 	}
 	
 	private fun annotateAliasName(config: CwtConfig<*>, holder: AnnotationHolder, range: TextRange): Boolean {
-		val aliasConfig = config.castOrNull<CwtAliasConfig>() ?: return false
+		val aliasConfig = config.findAliasConfig() ?: return false
 		val type = aliasConfig.expression.type
 		if(type != CwtDataType.ConstantKey && type != CwtDataType.TemplateExpression) return false
 		val aliasName = aliasConfig.name

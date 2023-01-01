@@ -42,10 +42,19 @@ private fun CwtDataConfig<*>.doProcessDescendants(processor: ProcessEntry.(CwtDa
 	return true
 }
 
+fun CwtConfig<*>.findAliasConfig(): CwtAliasConfig? {
+	return when{
+		this is CwtPropertyConfig -> this.inlineableConfig?.castOrNull()
+		this is CwtValueConfig -> this.propertyConfig?.inlineableConfig?.castOrNull()
+		this is CwtAliasConfig -> this
+		else -> null
+	}
+}
+
+
 inline fun <T> Iterable<T>.sortedByPriority(configGroup: CwtConfigGroup, crossinline expressionExtractor: (T) -> CwtDataExpression): List<T> {
 	return this.sortedByDescending { CwtConfigHandler.getPriority(expressionExtractor(it), configGroup) }
 }
-
 
 /**
  * 判断指定的定义子类型表达式是否匹配一组子类型。
