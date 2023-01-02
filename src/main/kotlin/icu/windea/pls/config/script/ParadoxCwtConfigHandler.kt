@@ -67,7 +67,7 @@ object ParadoxCwtConfigHandler {
 						}
 					}
 					if(orDefault && isEmpty()) {
-						configs.forEach { add(it) }
+						configs.filterIsInstance<CwtPropertyConfig>().forEach { add(it) }
 					}
 				} as List<T>
 			}
