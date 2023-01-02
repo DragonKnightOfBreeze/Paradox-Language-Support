@@ -138,6 +138,7 @@ class CwtConfigGroupImpl(
 	
 	override val definitionTypesSupportScope: Set<String> by lazy {
 		buildSet {
+			add("game_rule")
 			add("script_effect")
 			add("script_trigger")
 			add("on_action") //也支持，其中调用的事件的类型要匹配

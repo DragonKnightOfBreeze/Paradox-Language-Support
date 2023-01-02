@@ -35,7 +35,7 @@ object CwtConfigResolver {
 		val key = property.name
 		val propertyValue = property.propertyValue
 		if(propertyValue == null) {
-			logger.error("Incorrect cwt config in ${fileConfig.name}\n${property.text})
+			logger.error("Incorrect cwt config in ${fileConfig.name}\n${property.text}")
 			return null
 		}
 		var booleanValue: Boolean? = null
