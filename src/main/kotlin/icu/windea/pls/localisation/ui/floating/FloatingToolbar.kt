@@ -115,11 +115,13 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 		val selectionModel = textEditor.editor.selectionModel
 		val selectionStart = selectionModel.selectionStart
 		val selectionEnd = selectionModel.selectionEnd
+		//忽略没有选择文本的情况
+		if(selectionStart == selectionEnd) return false
 		//忽略跨行的情况
 		if(textEditor.editor.document.getLineNumber(selectionStart) != textEditor.editor.document.getLineNumber(selectionEnd)) return false
 		val elementAtStart = PsiUtilCore.getElementAtOffset(file, selectionStart)
-		val elementAtEnd = PsiUtilCore.getElementAtOffset(file, selectionEnd)
-		//开始位置和结束位置的PSI元素类型必须是string_token
+		val elementAtEnd = PsiUtilCore.getElementAtOffset(file, selectionEnd - 1)
+		//开始位置和结束位置（之前）的PSI元素类型必须是string_token
 		return elementAtStart.elementType.let { it == STRING_TOKEN || it == COLORFUL_TEXT_START || it == COLOR_ID }
 			&& elementAtEnd.elementType.let { it == STRING_TOKEN || it == COLORFUL_TEXT_END }
 	}
