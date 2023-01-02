@@ -65,6 +65,12 @@
 * [ ] ［不确定］在快速文档中显示本地化作用域和命令的作用域上下文 - 需要大幅重构相关代码
 * [ ] ［不确定］也许需要重构复杂表达式相关代码，更好地支持相关功能，以及支持额外的复杂表达式
 
+```
+# errors found while check ECI
+overlord_gaiaseeder_upkeep_machine
+有时候某些inlayHints不显示
+```
+
 ## 0.7.10
 
 * 新增功能 - 概述

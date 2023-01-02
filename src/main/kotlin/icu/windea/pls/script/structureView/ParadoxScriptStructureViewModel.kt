@@ -56,6 +56,11 @@ class ParadoxScriptStructureViewModel(
 	override fun isSmartExpand(): Boolean {
 		return false
 	}
+	
+	@Suppress("UnstableApiUsage")
+	override fun getMinimumAutoExpandDepth(): Int {
+		return 1 //do not expand definitions at top level by default
+	}
 }
 
 object VariablesFilter : Filter {
