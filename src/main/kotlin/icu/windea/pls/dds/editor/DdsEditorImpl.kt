@@ -141,6 +141,8 @@ class DdsEditorImpl(
 					editorManager.closeFile(file)
 				}
 			}
+			
+			doInvalidateDdsFile(file)
 		}
 	}
 	
@@ -148,6 +150,8 @@ class DdsEditorImpl(
 		if(file == event.file) {
 			// Change document
 			refreshFile()
+			
+			doInvalidateDdsFile(file)
 		}
 	}
 	
