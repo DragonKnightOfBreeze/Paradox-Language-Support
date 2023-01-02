@@ -518,7 +518,8 @@ object CwtConfigHandler {
 		
 		for(config in configs) {
 			if(config is CwtPropertyConfig) {
-				context.put(PlsCompletionKeys.configKey, config.valueConfig)
+				val valueConfig = config.valueConfig ?: continue
+				context.put(PlsCompletionKeys.configKey, valueConfig)
 				completeScriptExpression(context, result)
 			}
 		}

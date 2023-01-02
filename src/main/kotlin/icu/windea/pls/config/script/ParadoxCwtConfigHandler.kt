@@ -67,7 +67,7 @@ object ParadoxCwtConfigHandler {
 						}
 					}
 					if(orDefault && isEmpty()) {
-						configs.filterIsInstance<CwtPropertyConfig>().forEach { add(it) }
+						configs.forEach { it.castOrNull<CwtPropertyConfig>()?.let { c -> add(c) } }
 					}
 				} as List<T>
 			}
@@ -89,12 +89,13 @@ object ParadoxCwtConfigHandler {
 						buildList {
 							for(config in configs) {
 								val propertyConfig = config as? CwtPropertyConfig ?: continue
-								if(CwtConfigHandler.matchesScriptExpression(expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchType)) {
-									add(propertyConfig.valueConfig)
+								val valueConfig = propertyConfig.valueConfig ?:  continue
+								if(CwtConfigHandler.matchesScriptExpression(expression, valueConfig.expression, propertyConfig, configGroup, matchType)) {
+									add(valueConfig)
 								}
 							}
 							if(orDefault && isEmpty()) {
-								configs.filterIsInstance<CwtPropertyConfig>().forEach { add(it.valueConfig) }
+								configs.forEach { it.castOrNull<CwtPropertyConfig>()?.valueConfig?.let { c -> add(c) } }
 							}
 						} as List<T>
 					}

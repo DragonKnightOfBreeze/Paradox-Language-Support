@@ -1,16 +1,20 @@
 package icu.windea.pls.config.cwt
 
+import com.intellij.openapi.diagnostic.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
+import java.lang.invoke.*
 import java.util.*
 
 /**
  * Cwt规则的解析器。
  */
 object CwtConfigResolver {
+	private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
+	
 	fun resolve(file: CwtFile, info: CwtConfigGroupInfo): CwtFileConfig {
 		val rootBlock = file.block
 		val properties = SmartList<CwtPropertyConfig>()
@@ -29,7 +33,11 @@ object CwtConfigResolver {
 	private fun resolveProperty(property: CwtProperty, file: CwtFile, fileConfig: CwtFileConfig): CwtPropertyConfig? {
 		val pointer = property.createPointer(file)
 		val key = property.name
-		val propertyValue = property.propertyValue ?: return null
+		val propertyValue = property.propertyValue
+		if(propertyValue == null) {
+			logger.error("Incorrect cwt config in ${fileConfig.name}\n${property.text})
+			return null
+		}
 		var booleanValue: Boolean? = null
 		var intValue: Int? = null
 		var floatValue: Float? = null
