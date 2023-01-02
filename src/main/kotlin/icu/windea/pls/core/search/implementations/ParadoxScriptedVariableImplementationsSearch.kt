@@ -1,5 +1,6 @@
 package icu.windea.pls.core.search.implementations
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
@@ -17,7 +18,7 @@ class ParadoxScriptedVariableImplementationsSearch : QueryExecutor<PsiElement, D
 		//得到解析后的PSI元素
 		val sourceElement = queryParameters.element
 		if(sourceElement !is ParadoxScriptScriptedVariable) return true
-		val name = sourceElement.name
+		val name = runReadAction { sourceElement.name }
 		if(name.isEmpty()) return true
 		val project = queryParameters.project
 		DumbService.getInstance(project).runReadActionInSmartMode {

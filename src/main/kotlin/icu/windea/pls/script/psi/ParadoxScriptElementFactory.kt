@@ -43,29 +43,24 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
-	fun createPropertyValue(project: Project, value: String): ParadoxScriptValue {
+	fun createValue(project: Project, value: String): ParadoxScriptValue {
 		return createProperty(project, "a", value).findChild()!!
 	}
 	
 	@JvmStatic
-	fun createValue(project: Project, value: String): ParadoxScriptValue {
-		return createRootBlock(project, value).findChild()!!
-	}
-	
-	@JvmStatic
 	fun createVariableReference(project: Project, name: String): ParadoxScriptScriptedVariableReference {
-		return createPropertyValue(project, "@$name").findChild()!!
+		return createValue(project, "@$name").cast()
 	}
 	
 	@JvmStatic
 	fun createString(project: Project, value: String): ParadoxScriptString {
 		val usedValue = value.quoteIfNecessary()
-		return createRootBlock(project, usedValue).findChild()!!
+		return createValue(project, usedValue).cast()!!
 	}
 	
 	@JvmStatic
 	fun createInlineMath(project: Project, expression: String): ParadoxScriptInlineMath {
-		return createPropertyValue(project, "@[$expression]").findChild()!!
+		return createValue(project, "@[$expression]").cast()
 	}
 	
 	@JvmStatic
