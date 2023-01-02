@@ -20,7 +20,7 @@
 variable_operation_expressions = {
 	set_variable = {
 		keys = { which value }
-		placeholder = "var $which$ = $value$"
+		placeholder = "$which$ = $value$"
 	}
 	change_variable = {
 		keys = { which value }
