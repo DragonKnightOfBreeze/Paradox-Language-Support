@@ -11,8 +11,10 @@ mod_descriptor = {
 	### Mod's version.
 	version = scalar
 	### Mod's thumbnail picture.
+	## cardinality = 0..1
 	picture = filepath
 	### Mod's Tags.
+	## cardinality = 0..1
 	tags = {
 		## cardinality = 0..inf
 		scalar
@@ -21,8 +23,10 @@ mod_descriptor = {
 	supported_version = scalar
 	### Mod's Steam workshop item id.
 	### Use one of "remote_file_id" and "path".
+	## cardinality = 0..1
 	remote_file_id = scalar
 	### Mod's absolute directory / absolute zip file path
 	### Use one of "remote_file_id" and "path".
+	## cardinality = 0..1
 	path = abs_filepath
 }
