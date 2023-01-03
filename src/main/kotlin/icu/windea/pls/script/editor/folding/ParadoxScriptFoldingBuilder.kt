@@ -1,13 +1,15 @@
-package icu.windea.pls.script.editor
+package icu.windea.pls.script.editor.folding
 
 import com.intellij.lang.*
 import com.intellij.lang.folding.*
+import com.intellij.openapi.components.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.settings.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -25,7 +27,12 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 	}
 	
 	override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
-		return false
+		return when(node.elementType) {
+			BLOCK -> false
+			PARAMETER_CONDITION -> service<ParadoxFoldingSettings>().collapseParameterConditions
+			INLINE_MATH -> service<ParadoxFoldingSettings>().collapseInlineMathBlocks
+			else -> false
+		}
 	}
 	
 	override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {

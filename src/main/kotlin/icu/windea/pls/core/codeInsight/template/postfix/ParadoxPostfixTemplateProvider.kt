@@ -1,14 +1,14 @@
-package icu.windea.pls.script.codeInsight.template.postfix
+package icu.windea.pls.core.codeInsight.template.postfix
 
 import com.intellij.codeInsight.template.postfix.templates.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 
-class ParadoxScriptPostfixTemplateProvider: PostfixTemplateProvider {
+class ParadoxPostfixTemplateProvider: PostfixTemplateProvider {
 	private val defaultTemplates by lazy {
 		buildSet<PostfixTemplate> {
-			val provider = this@ParadoxScriptPostfixTemplateProvider
+			val provider = this@ParadoxPostfixTemplateProvider
 			val postfixTemplateSettings = getCwtConfig().core.postfixTemplateSettings
 			for((groupName, settings) in postfixTemplateSettings) {
 				when(groupName) {

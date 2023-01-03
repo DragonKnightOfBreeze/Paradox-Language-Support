@@ -1,6 +1,5 @@
-package icu.windea.pls.script.editor
+package icu.windea.pls.core.editor.folding
 
-import com.intellij.lang.*
 import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
@@ -12,25 +11,25 @@ import icu.windea.pls.config.script.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 @WithCwtSetting("folding_settings.pls.cwt", CwtFoldingSetting::class)
 abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
-	abstract val groupName: String
+	abstract fun getGroupName(): String
 	
-	override fun getPlaceholderText(node: ASTNode): String {
-		return ""
-	}
+	abstract fun getFoldingGroup(): FoldingGroup?
 	
 	override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
 		if(quick) return FoldingDescriptor.EMPTY
-		if(root !is ParadoxScriptFile) return FoldingDescriptor.EMPTY
+		if(!root.language.isKindOf(ParadoxScriptLanguage)) return FoldingDescriptor.EMPTY
 		val project = root.project
 		val gameType = selectGameType(root) ?: return FoldingDescriptor.EMPTY
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		val foldingSettings = configGroup.foldingSettings
 		if(foldingSettings.isEmpty()) return FoldingDescriptor.EMPTY
-		val settings = foldingSettings.get(groupName) ?: return FoldingDescriptor.EMPTY
+		val settings = foldingSettings.get(getGroupName()) ?: return FoldingDescriptor.EMPTY
+		val foldingGroup = getFoldingGroup()
 		val allDescriptors = mutableListOf<FoldingDescriptor>()
 		root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
 			override fun visitElement(element: PsiElement) {
@@ -78,7 +77,6 @@ abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
 				val endOffset = rootRange.endOffset
 				var valueRange: TextRange? = null
 				val descriptors = SmartList<FoldingDescriptor>()
-				val foldingGroup = FoldingGroup.newGroup(groupName)
 				val list = setting.placeholder.split('$')
 				val keys = setting.key?.toSingletonList() ?: setting.keys ?: emptyList()
 				for((index, s) in list.withIndex()) {

@@ -98,6 +98,9 @@ property_reference ::= PROPERTY_REFERENCE_START [property_reference_name] [PIPE 
 //token / command (e.g. "[Root.GetName]") / scripted_variable (e.g. "@v") 
 private property_reference_name ::= PROPERTY_REFERENCE_ID | command | scripted_variable_reference
 private property_reference_parameter ::= PROPERTY_REFERENCE_PARAMETER_TOKEN //TODO check syntax
+
+//scripted variable reference rules
+
 //scripted variable reference
 scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_ID {
   implements=[

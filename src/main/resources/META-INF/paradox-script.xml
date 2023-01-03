@@ -13,8 +13,7 @@
     <psi.referenceContributor language="PARADOX_SCRIPT" implementation="icu.windea.pls.script.references.ParadoxScriptReferenceContributor"/>
     <colorSettingsPage implementation="icu.windea.pls.script.editor.ParadoxScriptColorSettingsPage"/>
     <lang.braceMatcher language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptBraceMatcher"/>
-    <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptFoldingBuilder"/>
-    <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxVariableOperationExpressionFoldingBuilder"/>
+    <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.folding.ParadoxScriptFoldingBuilder"/>
     <lang.commenter language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptCommenter"/>
     <breadcrumbsInfoProvider implementation="icu.windea.pls.script.editor.ParadoxScriptBreadCrumbsProvider"/>
     <colorProvider implementation="icu.windea.pls.script.editor.ParadoxScriptColorProvider"/>
@@ -48,7 +47,6 @@
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$PropertyKey"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT_PROPERTY_VALUE" baseContextId="PARADOX_SCRIPT"
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$PropertyValue"/>
-    <codeInsight.template.postfixTemplateProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.template.postfix.ParadoxScriptPostfixTemplateProvider"/>
     <lang.smartEnterProcessor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.editorActions.smartEnter.ParadoxScriptSmartEnterProcessor"/>
     <lang.formatter language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>
     <codeStyleSettingsProvider implementation="icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettingsProvider"/>

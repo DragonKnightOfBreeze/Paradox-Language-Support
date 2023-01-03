@@ -1,8 +1,8 @@
 # Folding Settings
 # Used to provide additional code folding rules for script files.
 # 
-# See: icu.windea.pls.core.editor.ParadoxFoldingOptionsProvider
-# See: icu.windea.pls.script.editor.ParadoxVariableOperationExpressionFoldingBuilder
+# See: icu.windea.pls.core.editor.folding.ParadoxFoldingOptionsProvider
+# See: icu.windea.pls.core.editor.folding.ParadoxVariableOperationExpressionFoldingBuilder
 # 
 # Properties to folding must be valid (aka, matching some CWT config)
 # Properties to folding must contain and only contain properties whose name is specified by keys (ignore case) inside these clauses  
