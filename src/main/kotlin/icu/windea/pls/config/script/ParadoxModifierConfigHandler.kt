@@ -59,7 +59,7 @@ object ParadoxModifierConfigHandler {
 		}
 	}
 	
-	private fun isCountryModifier(modifierName: String, modifier: CwtModifierConfig?): Boolean {
+	private fun isCountryModifier(modifierName: String, modifier: CwtOldModifierConfig?): Boolean {
 		return (!modifierName.startsWith("country_")
 			&& (modifier != null && modifier.categories.any { it.equals("country", true) || it.equals("countries", true) }))
 	}

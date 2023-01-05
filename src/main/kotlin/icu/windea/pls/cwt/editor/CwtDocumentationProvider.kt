@@ -273,7 +273,9 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val modifierConfig = configGroup.modifiers[name] ?: return
 				if(sections != null) {
 					val categoryNames = modifierConfig.categoryConfigMap.keys
-					sections.put(PlsDocBundle.message("sectionTitle.categories"), getCategoriesText(categoryNames, gameType, contextElement))
+					if(categoryNames.isNotEmpty()) {
+						sections.put(PlsDocBundle.message("sectionTitle.categories"), getCategoriesText(categoryNames, gameType, contextElement))
+					}
 					
 					val supportedScopes = modifierConfig.supportedScopes
 					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))

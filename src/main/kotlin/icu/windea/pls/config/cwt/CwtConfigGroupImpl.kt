@@ -66,13 +66,14 @@ class CwtConfigGroupImpl(
 	override val localisationLinks: MutableMap<@CaseInsensitive String, CwtLocalisationLinkConfig> = CollectionFactory.createCaseInsensitiveStringMap()
 	override val localisationCommands: MutableMap<@CaseInsensitive String, CwtLocalisationCommandConfig> = CollectionFactory.createCaseInsensitiveStringMap()
 	override val modifierCategories: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
-	override val modifiers: MutableMap<String, CwtModifierConfig> = mutableMapOf()
 	override val scopes: MutableMap<@CaseInsensitive String, CwtScopeConfig> = CollectionFactory.createCaseInsensitiveStringMap()
 	override val scopeAliasMap: MutableMap<@CaseInsensitive String, CwtScopeConfig> = CollectionFactory.createCaseInsensitiveStringMap()
 	override val scopeGroups: MutableMap<String, CwtScopeGroupConfig> = mutableMapOf()
 	override val singleAliases: MutableMap<String, MutableList<CwtSingleAliasConfig>> = mutableMapOf()
 	override val aliasGroups: MutableMap<String, MutableMap<String, MutableList<CwtAliasConfig>>> = mutableMapOf()
 	override val inlineConfigGroup: MutableMap<String, MutableList<CwtInlineConfig>> = mutableMapOf()
+	
+	override val modifiers: MutableMap<String, CwtModifierConfig> = mutableMapOf()
 	override val declarations: MutableMap<String, CwtDeclarationConfig> = mutableMapOf()
 	
 	init {
@@ -412,7 +413,7 @@ class CwtConfigGroupImpl(
 					val props = property.properties ?: continue
 					for(prop in props) {
 						val modifierName = prop.key
-						val modifierConfig = resolveModifierConfig(prop, modifierName) ?: continue
+						val modifierConfig = resolveModifierConfigInModifiers(prop, modifierName) ?: continue
 						modifiers[modifierName] = modifierConfig
 					}
 				}
@@ -451,9 +452,14 @@ class CwtConfigGroupImpl(
 					if(aliasNamePair != null) {
 						val (aliasName, aliasSubName) = aliasNamePair
 						val aliasConfig = resolveAliasConfig(property, aliasName, aliasSubName)
-						val map = aliasGroups.getOrPut(aliasName) { mutableMapOf() }
-						val list = map.getOrPut(aliasSubName) { SmartList() }
-						list.add(aliasConfig)
+						if(aliasConfig.name == "modifier" && aliasConfig.expression.type.isGeneratorType()) {
+							val modifierConfig = resolveModifierConfigFromAliasConfig(aliasConfig)
+							modifiers.put(modifierConfig.name, modifierConfig)
+						} else {
+							val map = aliasGroups.getOrPut(aliasName) { mutableMapOf() }
+							val list = map.getOrPut(aliasSubName) { SmartList() }
+							list.add(aliasConfig)
+						}
 					}
 					
 					val inlineConfigName = key.removeSurroundingOrNull("inline[", "]")
@@ -779,12 +785,12 @@ class CwtConfigGroupImpl(
 		return CwtModifierCategoryConfig(propertyConfig.pointer, propertyConfig.info, name, internalId, supportedScopes)
 	}
 	
-	private fun resolveModifierConfig(propertyConfig: CwtPropertyConfig, name: String): CwtModifierConfig? {
+	private fun resolveModifierConfigInModifiers(propertyConfig: CwtPropertyConfig, name: String): CwtModifierConfig? {
 		//string | string[]
 		val categories = propertyConfig.stringValue?.let { setOf(it) }
 			?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 			?: return null
-		return CwtModifierConfig(propertyConfig.pointer, propertyConfig.info, name, categories)
+		return CwtModifierConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, categories)
 	}
 	
 	private fun resolveScopeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtScopeConfig? {
@@ -822,6 +828,11 @@ class CwtConfigGroupImpl(
 				info.acceptConfigExpression(subNameExpression)
 				info.acceptAliasConfig(this)
 			}
+	}
+	
+	private fun resolveModifierConfigFromAliasConfig(aliasConfig: CwtAliasConfig): CwtModifierConfig {
+		val propertyConfig = aliasConfig.config
+		return CwtModifierConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, aliasConfig.subName)
 	}
 	
 	private fun resolveInlineConfig(propertyConfig: CwtPropertyConfig, name: String): CwtInlineConfig {

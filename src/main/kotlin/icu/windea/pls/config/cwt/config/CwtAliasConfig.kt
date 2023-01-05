@@ -5,7 +5,6 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 
 /**
- *
  * @property supportedScopes (option) scope/scopes: string | string[]
  */
 data class CwtAliasConfig(

@@ -45,7 +45,6 @@ interface CwtConfigGroup {
 	val localisationCommands: Map<@CaseInsensitive String, CwtLocalisationCommandConfig>
 	
 	val modifierCategories: Map<String, CwtModifierCategoryConfig>
-	val modifiers: Map<String, CwtModifierConfig>
 	val scopes: Map<@CaseInsensitive String, CwtScopeConfig>
 	val scopeAliasMap: Map<@CaseInsensitive String, CwtScopeConfig>
 	val scopeGroups: Map<String, CwtScopeGroupConfig>
@@ -56,6 +55,7 @@ interface CwtConfigGroup {
 	//inline_script
 	val inlineConfigGroup: Map<String, List<CwtInlineConfig>>
 	
+	val modifiers: Map<String, CwtModifierConfig>
 	val declarations: MutableMap<String, CwtDeclarationConfig>
 	
 	//目前版本的CWT配置已经不再使用

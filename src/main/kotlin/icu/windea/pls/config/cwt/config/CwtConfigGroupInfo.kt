@@ -1,16 +1,14 @@
 package icu.windea.pls.config.cwt.config
 
+import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 
 data class CwtConfigGroupInfo(
 	val groupName: String
 ) {
 	lateinit var configGroup: CwtConfigGroup
-	
-	val aliasNameSupportScope = mutableSetOf<String>()
 	
 	/**
 	 * @see CwtDataType.FilePath
@@ -26,9 +24,11 @@ data class CwtConfigGroupInfo(
 	
 	/**
 	 * @see CwtDataType.TemplateExpression
+	 * @see CwtTemplateExpression
 	 */
-	val templateExpressionLinks = mutableListOf<LocationLink>()
-	//val templateExpressionLinks = mutableMapOf<String, MutableList<LocationLink>>() //typeExpression - links
+	val templateExpressions = mutableMapOf<CwtDataExpression, MutableList<CwtTemplateExpression>>()
+	
+	val aliasNameSupportScope = mutableSetOf<String>()
 	
 	fun acceptConfigExpression(configExpression: CwtDataExpression) {
 		when(configExpression.type) {
@@ -39,13 +39,11 @@ data class CwtConfigGroupInfo(
 				configExpression.value?.let { iconPathExpressions.add(it) }
 			}
 			CwtDataType.TemplateExpression -> {
-				val link = configExpression.extraValue?.castOrNull<Pair<String, String>>()?.let { "$" linkTo "${it.first}$${it.second}" }
-				link?.let { templateExpressionLinks.add(it) }
-				//val typeExpression = this.value
-				//val link = this.extraValue?.castOrNull<Pair<String, String>>()?.let { "$" linkTo "${it.first}$${it.second}" }
-				//if(typeExpression != null && link != null) {
-				//	info.templateExpressionLinks.getOrPut(typeExpression) { SmartList() }.add(link)
-				//}
+				val templateExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
+				for(referenceExpression in templateExpression.referenceExpressions) {
+					templateExpressions.getOrPut(referenceExpression){ SmartList()}
+						.add(templateExpression)
+				}
 			}
 			else -> pass()
 		}

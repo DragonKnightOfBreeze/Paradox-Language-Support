@@ -20,7 +20,6 @@ enum class CwtDataType {
 	FilePath,
 	Icon,
 	TypeExpression,
-	TemplateExpression,
 	Enum,
 	Value,
 	ValueSet,
@@ -36,6 +35,7 @@ enum class CwtDataType {
 	AliasName,
 	AliasKeysField,
 	AliasMatchLeft,
+	TemplateExpression,
 	ConstantKey,
 	Constant,
 	Other,
@@ -53,4 +53,6 @@ enum class CwtDataType {
 	fun isValueFieldType() = this == ValueField || this == IntValueField
 	
 	fun isValueSetValueType() = this == Value || this == ValueSet
+	
+	fun isGeneratorType() = this == ConstantKey || this == Constant || this == TemplateExpression
 }

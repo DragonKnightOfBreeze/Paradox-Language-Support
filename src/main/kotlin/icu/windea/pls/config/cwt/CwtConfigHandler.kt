@@ -30,7 +30,6 @@ import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.text.removeSurrounding
 
 /**
  * CWT规则的处理器。
@@ -266,17 +265,6 @@ object CwtConfigHandler {
 				}
 				return true
 			}
-			CwtDataType.TemplateExpression -> {
-				if(!expression.type.isStringType()) return false
-				if(isStatic) return false
-				if(isParameterAware) return true
-				val typeExpression = configExpression.value ?: return false //invalid cwt config
-				if(BitUtil.isSet(matchType, CwtConfigMatchType.DEFINITION)) {
-					val selector = definitionSelector().gameType(gameType)
-					return ParadoxDefinitionSearch.search(expression.text, typeExpression, project, selector = selector).findFirst() != null
-				}
-				return true
-			}
 			CwtDataType.Enum -> {
 				//if(!expression.type.isStringType()) return false
 				if(!isStatic && isParameterAware) return true
@@ -370,6 +358,17 @@ object CwtConfigHandler {
 			CwtDataType.AliasMatchLeft -> {
 				return false //不在这里处理
 			}
+			CwtDataType.TemplateExpression -> {
+				if(!expression.type.isStringType()) return false
+				if(isStatic) return false
+				if(isParameterAware) return true
+				val typeExpression = configExpression.value ?: return false //invalid cwt config
+				if(BitUtil.isSet(matchType, CwtConfigMatchType.DEFINITION)) {
+					val selector = definitionSelector().gameType(gameType)
+					return ParadoxDefinitionSearch.search(expression.text, typeExpression, project, selector = selector).findFirst() != null
+				}
+				return true
+			}
 			CwtDataType.ConstantKey -> {
 				val value = configExpression.value
 				return expression.text.equals(value, true) //忽略大小写
@@ -428,7 +427,6 @@ object CwtConfigHandler {
 			CwtDataType.FilePath -> 70
 			CwtDataType.Icon -> 70
 			CwtDataType.TypeExpression -> 60
-			CwtDataType.TemplateExpression -> 55
 			CwtDataType.Enum -> {
 				val enumName = configExpression.value ?: return 0 //不期望匹配到
 				if(enumName == paramsEnumName) return 10
@@ -450,6 +448,7 @@ object CwtConfigHandler {
 			CwtDataType.AliasName -> 0 //不期望匹配到
 			CwtDataType.AliasKeysField -> 0 //不期望匹配到
 			CwtDataType.AliasMatchLeft -> 0 //不期望匹配到
+			CwtDataType.TemplateExpression -> 65
 			CwtDataType.ConstantKey -> 100
 			CwtDataType.Constant -> 100
 			CwtDataType.Other -> 0 //不期望匹配到
@@ -783,25 +782,6 @@ object CwtConfigHandler {
 					true
 				}
 			}
-			CwtDataType.TemplateExpression -> {
-				val typeExpression = configExpression.value ?: return
-				val (prefix, suffix) = configExpression.extraValue?.cast<TypedTuple2<String>>() ?: return
-				val tailText = getScriptExpressionTailText(config)
-				val selector = definitionSelector().gameType(gameType).preferRootFrom(contextElement).distinctByName()
-				val definitionQuery = ParadoxDefinitionSearch.search(typeExpression, project, selector = selector)
-				definitionQuery.processQuery { definition ->
-					val definitionName = definition.definitionInfo?.name ?: return@processQuery true
-					val name = "$prefix$definitionName$suffix"
-					val typeFile = definition.containingFile
-					val builder = ParadoxScriptExpressionLookupElementBuilder.create(definition, name)
-						.withIcon(PlsIcons.Definition)
-						.withTailText(tailText)
-						.withTypeText(typeFile.name)
-						.withTypeIcon(typeFile.icon)
-					result.addScriptExpressionElement(context, builder)
-					true
-				}
-			}
 			CwtDataType.Enum -> {
 				val enumName = configExpression.value ?: return
 				//提示参数名（仅限key）
@@ -904,6 +884,9 @@ object CwtConfigHandler {
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataType.AliasMatchLeft -> pass()
+			CwtDataType.TemplateExpression -> {
+				//TODO
+			}
 			CwtDataType.ConstantKey -> {
 				val name = configExpression.value ?: return
 				//if(!name.matchesKeyword(keyword)) return //不预先过滤结果
@@ -1530,13 +1513,6 @@ object CwtConfigHandler {
 				val selector = definitionSelector().gameType(gameType).preferRootFrom(element, exact)
 				return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).find()
 			}
-			CwtDataType.TemplateExpression -> {
-				val (prefix, suffix) = configExpression.extraValue?.cast<TypedTuple2<String>>() ?: return null
-				val name = expression.removeSurrounding(prefix, suffix)
-				val typeExpression = configExpression.value ?: return null
-				val selector = definitionSelector().gameType(gameType).preferRootFrom(element, exact)
-				return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).find()
-			}
 			CwtDataType.Enum -> {
 				val enumName = configExpression.value ?: return null
 				val name = expression
@@ -1602,6 +1578,10 @@ object CwtConfigHandler {
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataType.AliasMatchLeft -> return null
+			CwtDataType.TemplateExpression -> {
+				//不在这里处理，参见：ParadoxTemplateExpression
+				return null
+			}
 			CwtDataType.ConstantKey, CwtDataType.Constant -> {
 				when {
 					config is CwtDataConfig<*> -> return config.resolved().pointer.element
@@ -1661,19 +1641,6 @@ object CwtConfigHandler {
 				val filePath = expressionType.resolve(configExpression.value, expression.normalizePath()) ?: return emptyList()
 				val selector = fileSelector().gameType(gameType).preferRootFrom(element)
 				return ParadoxFilePathSearch.search(filePath, project, selector = selector).findAll().mapNotNull { it.toPsiFile(project) }
-			}
-			CwtDataType.TypeExpression -> {
-				val name = expression
-				val typeExpression = configExpression.value ?: return emptyList()
-				val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-				return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).findAll()
-			}
-			CwtDataType.TemplateExpression -> {
-				val (prefix, suffix) = configExpression.extraValue?.cast<TypedTuple2<String>>() ?: return emptyList()
-				val name = expression.removeSurrounding(prefix, suffix)
-				val typeExpression = configExpression.value ?: return emptyList()
-				val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-				return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).findAll()
 			}
 			CwtDataType.Enum -> {
 				val enumName = configExpression.value ?: return emptyList()
@@ -1737,6 +1704,10 @@ object CwtConfigHandler {
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataType.AliasMatchLeft -> return emptyList()
+			CwtDataType.TemplateExpression -> {
+				//不在这里处理，参见：ParadoxTemplalteExpression
+				return emptyList()
+			}
 			CwtDataType.ConstantKey, CwtDataType.Constant -> {
 				when {
 					config is CwtDataConfig<*> -> return config.resolved().pointer.element.toSingletonListOrEmpty()

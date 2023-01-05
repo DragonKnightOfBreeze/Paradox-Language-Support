@@ -20,9 +20,6 @@ class CwtValueExpression private constructor(
 		
 		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtValueExpression> { doResolve(it) } }
 		
-		/**
-		 * @param isParameterValue 参数的值的类型在规则文件中写作"scalar"的场合，实际上只要不是子句就可以。
-		 */
 		fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
 		
 		private fun doResolve(expressionString: String) = when {
@@ -100,11 +97,6 @@ class CwtValueExpression private constructor(
 				val value = expressionString.substring(1, expressionString.length - 1)
 				CwtValueExpression(expressionString, CwtDataType.TypeExpression, value)
 			}
-			expressionString.indexOf('<').let { it > 0 && it < expressionString.indexOf('>') } -> {
-				val value = expressionString.substring(expressionString.indexOf('<'), expressionString.indexOf('>'))
-				val extraValue = expressionString.substringBefore('<') to expressionString.substringAfterLast('>')
-				CwtValueExpression(expressionString, CwtDataType.TemplateExpression, value, extraValue)
-			}
 			expressionString.surroundsWith("value[", "]") -> {
 				val value = expressionString.substring(6, expressionString.length - 1)
 				CwtValueExpression(expressionString, CwtDataType.Value, value)
@@ -174,6 +166,9 @@ class CwtValueExpression private constructor(
 			expressionString.surroundsWith("alias_match_left[", "]") -> {
 				val value = expressionString.substring(17, expressionString.length - 1)
 				CwtValueExpression(expressionString, CwtDataType.AliasMatchLeft, value)
+			}
+			CwtTemplateExpression.resolve(expressionString).isNotEmpty() -> {
+				CwtValueExpression(expressionString, CwtDataType.TemplateExpression)
 			}
 			expressionString.endsWith(']') -> {
 				CwtValueExpression(expressionString, CwtDataType.Other)
