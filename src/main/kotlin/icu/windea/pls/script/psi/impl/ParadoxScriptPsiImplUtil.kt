@@ -341,15 +341,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getType(element: ParadoxScriptPropertyKey): ParadoxDataType {
-		element.processChild {
-			when(it.elementType) {
-				PROPERTY_KEY_TOKEN -> return ParadoxDataType.resolve(it.text)
-				QUOTED_PROPERTY_KEY_TOKEN -> return ParadoxDataType.StringType
-				PARAMETER_ID -> return ParadoxDataType.ParameterType
-				else -> end()
-			}
-		}
-		return ParadoxDataType.UnknownType
+		return ParadoxDataType.resolve(element.value)
 	}
 	
 	@JvmStatic

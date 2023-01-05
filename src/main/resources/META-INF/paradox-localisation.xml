@@ -26,6 +26,7 @@
     <liveTemplateContext contextId="PARADOX_LOCALISATION_LOCALISATION_TEXT" baseContextId="PARADOX_LOCALISATION"
                          implementation="icu.windea.pls.localisation.codeInsight.template.ParadoxLocalisationTemplateContextType$LocalisationText"/>
     <defaultLiveTemplates file="/liveTemplates/ParadoxLocalisation.xml"/>
+    <lang.smartEnterProcessor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.editorActions.smartEnter.ParadoxLocalisationSmartEnterProcessor"/>
     <lang.formatter language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.formatter.ParadoxLocalisationFormattingModelBuilder"/>
     <codeStyleSettingsProvider implementation="icu.windea.pls.localisation.codeStyle.ParadoxLocalisationCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.localisation.codeStyle.ParadoxLocalisationLanguageCodeStyleSettingsProvider"/>

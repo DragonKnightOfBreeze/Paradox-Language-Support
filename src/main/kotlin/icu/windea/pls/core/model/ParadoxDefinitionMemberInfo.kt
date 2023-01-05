@@ -180,6 +180,8 @@ private fun ParadoxDefinitionMemberInfo.doGetChildPropertyOccurrenceMap(element:
 	if(properties.isNotEmpty()) {
 		for(property in properties) {
 			val expression = ParadoxDataExpression.resolve(property.propertyKey)
+			val isParameterAware = expression.type == ParadoxDataType.StringType && expression.text.isParameterAwareExpression()
+			if(isParameterAware) return emptyMap() //may contain parameter -> can't and should not get occurrences
 			val matched = childPropertyConfigs.find { CwtConfigHandler.matchesScriptExpression(expression, it.keyExpression, it, configGroup) }
 			if(matched == null) continue
 			val occurrence = occurrenceMap[matched.keyExpression]
@@ -203,6 +205,8 @@ private fun ParadoxDefinitionMemberInfo.doGetChildValueOccurrenceMap(element: Pa
 	if(values.isNotEmpty()) {
 		for(value in values) {
 			val expression = ParadoxDataExpression.resolve(value)
+			val isParameterAware = expression.type == ParadoxDataType.StringType && expression.text.isParameterAwareExpression()
+			if(isParameterAware) return emptyMap() //may contain parameter -> can't and should not get occurrences
 			val matched = childValueConfigs.find { CwtConfigHandler.matchesScriptExpression(expression, it.valueExpression,it, configGroup) }
 			if(matched == null) continue
 			val occurrence = occurrenceMap[matched.valueExpression]

@@ -679,10 +679,10 @@ object CwtConfigHandler {
 				result.addExpressionElement(context, PlsLookupElements.noLookupElement)
 			}
 			CwtDataType.Localisation -> {
-				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 				val tailText = getScriptExpressionTailText(config)
+				//这里selector不需要指定去重
 				val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
-				ParadoxLocalisationSearch.processVariants(keyword, project, selector = selector) { localisation ->
+				ParadoxLocalisationSearch.processVariants(project, selector = selector) { localisation ->
 					val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val typeFile = localisation.containingFile
 					val builder = ParadoxScriptExpressionLookupElementBuilder.create(localisation, name)
@@ -695,10 +695,10 @@ object CwtConfigHandler {
 				}
 			}
 			CwtDataType.SyncedLocalisation -> {
-				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 				val tailText = getScriptExpressionTailText(config)
+				//这里selector不需要指定去重
 				val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
-				ParadoxSyncedLocalisationSearch.processVariants(keyword, project, selector = selector) { syncedLocalisation ->
+				ParadoxSyncedLocalisationSearch.processVariants(project, selector = selector) { syncedLocalisation ->
 					val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
 					val typeFile = syncedLocalisation.containingFile
 					val builder = ParadoxScriptExpressionLookupElementBuilder.create(syncedLocalisation, name)
@@ -712,9 +712,10 @@ object CwtConfigHandler {
 			}
 			CwtDataType.InlineLocalisation -> {
 				if(quoted) return
-				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 				val tailText = getScriptExpressionTailText(config)
-				ParadoxLocalisationSearch.processVariants(keyword, project) { localisation ->
+				//这里selector不需要指定去重
+				val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
+				ParadoxLocalisationSearch.processVariants(project, selector = selector) { localisation ->
 					val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val typeFile = localisation.containingFile
 					val builder = ParadoxScriptExpressionLookupElementBuilder.create(localisation, name)

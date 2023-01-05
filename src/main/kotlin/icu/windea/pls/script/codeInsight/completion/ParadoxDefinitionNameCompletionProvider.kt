@@ -43,6 +43,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 			ProgressManager.checkCanceled()
 			context.put(PlsCompletionKeys.configKey, config)
 			context.put(PlsCompletionKeys.isKeyKey, isKey)
+			//排除正在输入的那一个
 			val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file)
 				.filterBy { rootKey == null || (it is ParadoxScriptProperty && it.name.equals(rootKey, true))}
 				.notSamePosition(currentDefinition)

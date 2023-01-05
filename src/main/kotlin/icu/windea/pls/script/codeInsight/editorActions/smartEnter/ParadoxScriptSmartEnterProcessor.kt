@@ -14,9 +14,8 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxScriptSmartEnterProcessor: SmartEnterProcessorWithFixers() {
 	init {
-		addFixers(
-			EqualSignFixer()
-		)
+		addFixers(EqualSignFixer())
+		addEnterProcessors(MyFixEnterProcessor())
 	}
 	
 	/**
@@ -37,15 +36,18 @@ class ParadoxScriptSmartEnterProcessor: SmartEnterProcessorWithFixers() {
 				is ParadoxScriptScriptedVariableReference -> customSettings.SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR
 				else -> return
 			}
-			val endOffset = element.textRange.endOffset
-			if(caretOffset != endOffset){
-				editor.document.deleteString(endOffset, caretOffset)
-			}
 			if(spaceAroundSeparator) {
 				EditorModificationUtil.insertStringAtCaret(editor, " = ")
 			} else {
 				EditorModificationUtil.insertStringAtCaret(editor, "=")
 			}
+		}
+	}
+	
+	class MyFixEnterProcessor: FixEnterProcessor() {
+		override fun doEnter(atCaret: PsiElement?, file: PsiFile?, editor: Editor, modified: Boolean): Boolean {
+			plainEnter(editor)
+			return true
 		}
 	}
 }
