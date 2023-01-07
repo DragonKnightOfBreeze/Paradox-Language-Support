@@ -81,7 +81,7 @@ overlord_gaiaseeder_upkeep_machine
     * 基于CWT类型规则中的`modifiers`规则（例如：`modifiers = { job_$_add = Planets }`）（认为没有实际上的声明处，并使用特殊的高亮）
 * 新增功能
   * 快速文档（`Quick Documentation`）
-    * [ ] 优化CWT规则的快速文档显示
+    * [X] 优化CWT规则的快速文档显示
     * [ ] 如果是生成的修饰符，在快速文档中显示生成源的信息，包括名字和类型（例如，`job_xxx: job`）
   * 引用解析
     * [ ] 如果是生成的修饰符，可以通过`Ctrl+Click`查找使用

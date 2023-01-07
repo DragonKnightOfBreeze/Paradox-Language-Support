@@ -17,6 +17,7 @@ open class CwtTemplateExpression(
 		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtTemplateExpression> { doResolve(it) } }
 		
 		// job_<job>_add
+		// xxx_value[xxx]_xxx
 		
 		fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
 		

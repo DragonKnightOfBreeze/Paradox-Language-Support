@@ -120,40 +120,42 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	) {
 		definition {
 			val referenceElement = getReferenceElement(originalElement)
-			if(referenceElement?.language?.isParadoxLanguage() != true || configType?.isReference == true) {
-				if(configType != null) append(configType.prefix).append(" ")
-				append("<b>").append(name.escapeXml().orAnonymous()).append("</b>")
-				//加上类型信息
-				val typeCategory = configType?.category
-				if(typeCategory != null) {
-					val typeElement = element.parentOfType<CwtProperty>()
-					val typeName = typeElement?.name?.substringIn('[', ']')?.takeIfNotEmpty()
-					if(typeName != null && typeName.isNotEmpty()) {
-						//在脚本文件中显示为链接
-						if(configGroup != null) {
-							val gameType = configGroup.gameType
-							val typeLink = "${gameType.id}/${typeCategory}/${typeName}"
-							append(": ").appendCwtLink(typeName, typeLink, typeElement)
-						} else {
-							append(": ").append(typeName)
-						}
-					}
-				}
-			} else {
-				val prefix = when {
-					referenceElement is ParadoxScriptPropertyKey -> PlsDocBundle.message("prefix.definitionProperty")
-					referenceElement is ParadoxScriptValue -> PlsDocBundle.message("prefix.definitionValue")
-					else -> null
-				}
-				val referenceName = referenceElement.text.unquote()
-				if(prefix != null) append(prefix).append(" ")
-				append("<b>").append(referenceName.escapeXml().orAnonymous()).append("</b>")
-				if(showDetail && name != referenceName) { //这里不忽略大小写
-					grayed {
-						append(" by ").append(name.escapeXml().orAnonymous())
+			val shortName = name.substringIn('[', ']', "")
+				.substringAfter(':', "")
+				.ifEmpty { name }
+			val byName = if(shortName == name) null else name
+			val prefix = when {
+				configType?.isReference == true -> configType.prefix
+				referenceElement is ParadoxScriptPropertyKey && referenceElement.name == shortName -> PlsDocBundle.message("prefix.definitionProperty")
+				referenceElement is ParadoxScriptValue && referenceElement.name == shortName -> PlsDocBundle.message("prefix.definitionValue")
+				else -> configType?.prefix
+			}
+			val typeCategory = configType?.category
+			
+			if(prefix != null) {
+				append(prefix).append(" ")
+			}
+			append("<b>").append(shortName.escapeXml().orAnonymous()).append("</b>")
+			if(typeCategory != null) {
+				val typeElement = element.parentOfType<CwtProperty>()
+				val typeName = typeElement?.name?.substringIn('[', ']')?.takeIfNotEmpty()
+				if(typeName != null && typeName.isNotEmpty()) {
+					//在脚本文件中显示为链接
+					if(configGroup != null) {
+						val gameType = configGroup.gameType
+						val typeLink = "${gameType.id}/${typeCategory}/${typeName}"
+						append(": ").appendCwtLink(typeName, typeLink, typeElement)
+					} else {
+						append(": ").append(typeName)
 					}
 				}
 			}
+			if(byName != null) {
+				grayed { 
+					append(" by ").append(byName.escapeXml().orAnonymous())
+				}
+			}
+			
 			if(configGroup != null) {
 				if(referenceElement != null && configType == CwtConfigType.Modifier) {
 					addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sectionsList?.get(2))
