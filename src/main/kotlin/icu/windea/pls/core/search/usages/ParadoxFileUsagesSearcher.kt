@@ -26,7 +26,7 @@ class ParadoxFileUsagesSearcher: QueryExecutorBase<PsiReference, ReferencesSearc
 		val filePath = fileInfo.path.toString()
 		val project = queryParameters.project
 		val configGroup = getCwtConfig(project).getValue(gameType)
-		val extraWords = SmartList<String>()
+		val extraWords = mutableSetOf<String>()
 		configGroup.info.filePathExpressions
 			.firstNotNullOfOrNull { CwtPathExpressionType.FilePath.extract(it, filePath) }
 			?.takeIfNotEmpty()

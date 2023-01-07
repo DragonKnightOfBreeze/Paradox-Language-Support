@@ -20,7 +20,7 @@ class CwtConfigUsagesSearcher: QueryExecutorBase<PsiReference, ReferencesSearch.
 	override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
 		val target = queryParameters.elementToSearch
 		if(target !is CwtProperty) return
-		val extraWords = SmartList<String>()
+		val extraWords = mutableSetOf<String>()
 		val configType = CwtConfigType.resolve(target)
 		when(configType) {
 			CwtConfigType.Alias -> {
