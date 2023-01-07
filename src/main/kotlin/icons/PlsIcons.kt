@@ -52,6 +52,7 @@ object PlsIcons {
 	@JvmField val Trigger = loadIcon("/icons/trigger.svg")
 	@JvmField val Effect = loadIcon("/icons/effect.svg")
 	@JvmField val Tag = loadIcon("/icons/tag.svg")
+	@JvmField val Template = loadIcon("icons/property.svg")
 	
 	@JvmField val Link = loadIcon("/icons/link.svg")
 	@JvmField val Alias = loadIcon("/icons/alias.svg")

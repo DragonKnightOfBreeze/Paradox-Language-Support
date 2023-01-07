@@ -19,8 +19,8 @@ import javax.swing.*
 class ParadoxModifierElement(
 	element: PsiElement,
 	private val name: String,
-	val templateExpression: ParadoxTemplateExpression,
 	val modifierConfig: CwtModifierConfig,
+	val templateExpression: ParadoxTemplateExpression?,
 	private val project: Project,
 	val gameType: ParadoxGameType
 ) : RenameableFakePsiElement(element), PsiNameIdentifierOwner, NavigatablePsiElement {

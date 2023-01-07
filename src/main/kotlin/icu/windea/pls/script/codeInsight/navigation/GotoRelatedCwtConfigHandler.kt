@@ -28,7 +28,7 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 		val location = findElement(file, offset) ?: return null
 		//获取所有匹配的CWT规则，不存在匹配的CWT规则时，选用所有默认的CWT规则（对于propertyConfig来说是匹配key的，对于valueConfig来说是所有）
 		//包括内联规则（例如alias，显示时使用特殊的别名图标）
-		//如果对应，也包括modifier规则
+		//如果对应，也包括一些相关的规则，如modifierConfig
 		val isKey = location is ParadoxScriptPropertyKey
 		val configs = ParadoxCwtConfigHandler.resolveConfigs(location, true, isKey)
 		val targets = buildSet {
@@ -37,10 +37,20 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 				config.resolvedOrNull()?.pointer?.element?.let { add(it) }
 				
 				val configGroup = config.info.configGroup
-				if(config.expression.type == CwtDataType.Modifier) {
-					if(location is ParadoxScriptStringExpressionElement) {
-						configGroup.modifiers[location.value]?.pointer?.element?.let { add(it) }
+				val value = if(location is ParadoxScriptStringExpressionElement) location.value else location.text
+				val dataType = config.expression.type
+				when {
+					dataType == CwtDataType.Enum -> {
+						configGroup.enums[value]?.pointer?.element?.let { add(it) }
+						configGroup.complexEnums[value]?.pointer?.element?.let { add(it) }
 					}
+					dataType.isValueSetValueType() -> {
+						configGroup.values[value]?.pointer?.element?.let { add(it) }
+					}
+					dataType == CwtDataType.Modifier -> {
+						configGroup.modifiers[value]?.pointer?.element?.let { add(it) }
+					}
+					else -> pass()
 				}
 			}
 		}

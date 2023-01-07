@@ -1,6 +1,7 @@
 package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
+import com.intellij.util.containers.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.config.setting.*
 import icu.windea.pls.config.script.config.*
@@ -27,10 +28,11 @@ interface CwtConfigGroup {
 	
 	val types: Map<String, CwtTypeConfig>
 	//typeExpression - swapType
-	val typeToSwapTypeMap: Map<String, String>
+	val typeToSwapTypeMap: BidirectionalMap<String, String>
 	//typeExpression - modifierSimpleName - modifierConfig
 	//job - job_$_add - <config>
 	val typeToModifiersMap: Map<String, Map<String, CwtModifierConfig>>
+	val declarations: MutableMap<String, CwtDeclarationConfig>
 	
 	val values: Map<String, CwtEnumConfig>
 	//enumValue可以是int、float、bool类型，统一用字符串表示
@@ -60,7 +62,6 @@ interface CwtConfigGroup {
 	val inlineConfigGroup: Map<String, List<CwtInlineConfig>>
 	
 	val modifiers: Map<String, CwtModifierConfig>
-	val declarations: MutableMap<String, CwtDeclarationConfig>
 	
 	//目前版本的CWT配置已经不再使用
 	val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig>

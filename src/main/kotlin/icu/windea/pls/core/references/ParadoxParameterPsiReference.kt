@@ -27,4 +27,3 @@ class ParadoxParameterPsiReference(
 		return ParadoxParameterElement(element, name, definitionInfo.name, definitionInfo.types, definitionInfo.project, definitionInfo.gameType, true)
 	}
 }
-

@@ -8,7 +8,7 @@ open class CwtTemplateExpression(
 	expressionString: String,
 	val snippetExpressions: List<CwtDataExpression>
 ) : AbstractExpression(expressionString), CwtExpression {
-	//allowed: enum[xxx], value[xxx], <xxx>
+	//allowed: enum[xxx], value[xxx], <xxx>, <modifier>
 	val referenceExpressions = snippetExpressions.filterTo(mutableSetOf()) { it -> it.type != CwtDataType.Constant }
 	
 	fun resolveName(referenceName: String): String{
@@ -86,6 +86,7 @@ open class CwtTemplateExpression(
 						}
 						break
 					}
+					if(snippets.isEmpty()) return EmptyExpression
 					CwtTemplateExpression(expressionString, snippets)
 				}
 			}

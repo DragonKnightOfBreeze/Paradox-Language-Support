@@ -39,7 +39,7 @@ class CwtConfigGroupImpl(
 	override val folders: MutableSet<String> = mutableSetOf()
 	
 	override val types: MutableMap<String, CwtTypeConfig> = mutableMapOf()
-	override val typeToSwapTypeMap: Map<String, String> by lazy { 
+	override val typeToSwapTypeMap: BidirectionalMap<String, String> by lazy { 
 		val map = BidirectionalMap<String, String>()
 		for(typeConfig in types.values) {
 			if(typeConfig.baseType != null) {
@@ -49,6 +49,7 @@ class CwtConfigGroupImpl(
 		map
 	}
 	override val typeToModifiersMap: MutableMap<String, MutableMap<String, CwtModifierConfig>> = mutableMapOf()
+	override val declarations: MutableMap<String, CwtDeclarationConfig> = mutableMapOf()
 	
 	override val values: MutableMap<String, CwtEnumConfig> = mutableMapOf()
 	//enumValue可以是int、float、bool类型，统一用字符串表示
@@ -75,7 +76,6 @@ class CwtConfigGroupImpl(
 	override val inlineConfigGroup: MutableMap<String, MutableList<CwtInlineConfig>> = mutableMapOf()
 	
 	override val modifiers: MutableMap<String, CwtModifierConfig> = mutableMapOf()
-	override val declarations: MutableMap<String, CwtDeclarationConfig> = mutableMapOf()
 	
 	init {
 		runReadAction {
@@ -454,14 +454,16 @@ class CwtConfigGroupImpl(
 					if(aliasNamePair != null) {
 						val (aliasName, aliasSubName) = aliasNamePair
 						val aliasConfig = resolveAliasConfig(property, aliasName, aliasSubName)
-						if(aliasConfig.name == "modifier" && aliasConfig.expression.type.isGeneratorType()) {
-							val modifierConfig = resolveModifierConfigFromAliasConfig(aliasConfig)
-							modifiers.put(modifierConfig.name, modifierConfig)
-						} else {
-							val map = aliasGroups.getOrPut(aliasName) { mutableMapOf() }
-							val list = map.getOrPut(aliasSubName) { SmartList() }
-							list.add(aliasConfig)
-						}
+						//目前不这样处理
+						//if(aliasConfig.name == "modifier" && aliasConfig.expression.type.isGeneratorType()) {
+						//	val modifierConfig = resolveModifierConfigFromAliasConfig(aliasConfig)
+						//	modifiers.put(modifierConfig.name, modifierConfig)
+						//	continue
+						//} 
+						val map = aliasGroups.getOrPut(aliasName) { mutableMapOf() }
+						val list = map.getOrPut(aliasSubName) { SmartList() }
+						list.add(aliasConfig)
+						
 					}
 					
 					val inlineConfigName = key.removeSurroundingOrNull("inline[", "]")

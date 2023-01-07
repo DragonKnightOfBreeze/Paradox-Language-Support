@@ -8,6 +8,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.errors.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 class IncorrectTemplateExpressionInspection : LocalInspectionTool() {
@@ -30,12 +31,27 @@ class IncorrectTemplateExpressionInspection : LocalInspectionTool() {
 					val textRange = TextRange.create(0, value.length)
 					val isKey = element is ParadoxScriptPropertyKey
 					val template = CwtTemplateExpression.resolve(config.expression.expressionString)
-					val valueSetValueExpression = ParadoxTemplateExpression.resolve(value, textRange, template, configGroup, isKey)
+					val templateExpression = ParadoxTemplateExpression.resolve(value, textRange, template, configGroup, isKey)
 						?: return
-					valueSetValueExpression.validate().forEach { error ->
+					templateExpression.validate().forEach { error ->
 						handleScriptExpressionError(element, error)
 					}
-					valueSetValueExpression.processAllNodes { node ->
+					templateExpression.processAllNodes { node ->
+						val unresolvedError = node.getUnresolvedError(element)
+						if(unresolvedError != null) {
+							handleScriptExpressionError(element, unresolvedError)
+						}
+						true
+					}
+				} else if(dataType == CwtDataType.Modifier) {
+					//检查生成的modifier
+					val modifier = element.references.firstOrNull()?.resolve() as? ParadoxModifierElement ?: return
+					val templateExpression = modifier.templateExpression 
+						?: return
+					templateExpression.validate().forEach { error ->
+						handleScriptExpressionError(element, error)
+					}
+					templateExpression.processAllNodes { node ->
 						val unresolvedError = node.getUnresolvedError(element)
 						if(unresolvedError != null) {
 							handleScriptExpressionError(element, unresolvedError)

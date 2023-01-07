@@ -59,12 +59,12 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 					if(templateExpression == null) return PsiReference.EMPTY_ARRAY
 					return templateExpression.getReferences(element)
 				}
-				else -> pass()
+				else -> {
+					if(element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY
+					val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
+					return arrayOf(reference)
+				}
 			}
-			
-			if(element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY
-			val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
-			return arrayOf(reference)
 		}
 		return PsiReference.EMPTY_ARRAY
 	}

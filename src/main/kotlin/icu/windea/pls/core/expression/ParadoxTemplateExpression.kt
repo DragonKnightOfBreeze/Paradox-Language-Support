@@ -3,9 +3,11 @@ package icu.windea.pls.core.expression
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
+import icons.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.ParadoxTemplateExpression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.script.highlighter.*
@@ -24,6 +26,20 @@ interface ParadoxTemplateExpression: ParadoxComplexExpression {
 	
 	val template: CwtTemplateExpression
 	companion object Resolver
+	
+	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+		val scopeMatched = context.scopeMatched ?: true
+		val tailText = CwtConfigHandler.getScriptExpressionTailText(context.config)
+		CwtConfigHandler.processTemplateResolveResult(template, configGroup) {name ->
+			val builder = ParadoxScriptExpressionLookupElementBuilder.create(null, name)
+				.withIcon(PlsIcons.Template)
+				.withTailText(tailText)
+				.caseInsensitive()
+				.withScopeMatched(scopeMatched)
+			result.addScriptExpressionElement(context, builder)
+			true
+		}
+	}
 }
 
 class ParadoxTemplateExpressionImpl(
@@ -40,13 +56,11 @@ class ParadoxTemplateExpressionImpl(
 	
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.TEMPLATE_EXPRESSION_KEY
 	
-	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-		//直接基于整个正在输入的表达式进行提示
-		TODO()
-	}
 }
 
-fun Resolver.resolve(text: String, textRange: TextRange, template: CwtTemplateExpression, configGroup: CwtConfigGroup, isKey: Boolean?): ParadoxTemplateExpression? {
+fun Resolver.resolve(text: String, textRange: TextRange, template: CwtTemplateExpression, configGroup: CwtConfigGroup, isKey: Boolean? = null): ParadoxTemplateExpression? {
+	if(template.isEmpty()) return null
+	
 	//可以用引号包围
 	val snippets = template.snippetExpressions
 	if(snippets.isEmpty()) return null

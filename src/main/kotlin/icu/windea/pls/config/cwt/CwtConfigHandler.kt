@@ -391,8 +391,22 @@ object CwtConfigHandler {
 	}
 	
 	fun matchesModifier(name: String, configGroup: CwtConfigGroup): Boolean {
-		val modifiers = configGroup.modifiers
-		return modifiers.containsKey(name)
+		//修正会由特定的定义类型生成
+		//TODO 修正会由经济类型（economic_category）的声明生成
+		val fastModifierConfig = configGroup.modifiers[name]
+		if(fastModifierConfig != null ) {
+			//预定义的非生成的修正
+			if(fastModifierConfig.template.isEmpty()) return false //unexpected
+			return true
+		}
+		//生成的修正，生成源可以未定义
+		val text = name
+		val textRange = TextRange.create(0, text.length)
+		val templateExpression = configGroup.modifiers.values.firstNotNullOfOrNull { config ->
+			ParadoxTemplateExpression.resolve(text, textRange, config.template, configGroup)
+		}
+		if(templateExpression != null) return true
+		return false
 	}
 	
 	fun getAliasSubName(key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): String? {
@@ -667,6 +681,7 @@ object CwtConfigHandler {
 			else -> true
 		}
 		if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return
+		put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
 		
 		when(configExpression.type) {
 			CwtDataType.Bool -> {
@@ -881,7 +896,7 @@ object CwtConfigHandler {
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataType.AliasMatchLeft -> pass()
 			CwtDataType.TemplateExpression -> {
-				//TODO
+				completeTemplateExpression(context, result)
 			}
 			CwtDataType.ConstantKey -> {
 				val name = configExpression.value ?: return
@@ -924,12 +939,9 @@ object CwtConfigHandler {
 			}
 			else -> pass()
 		}
-		pass()
-	}
-	
-	private fun getScriptExpressionTailText(config: CwtConfig<*>?): String? {
-		if(config?.expression == null) return null
-		return " by ${config.expression} in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
+		
+		put(PlsCompletionKeys.scopeContextKey, scopeContext)
+		put(PlsCompletionKeys.scopeMatchedKey, null)
 	}
 	
 	fun completeAliasName(aliasName: String, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
@@ -958,28 +970,42 @@ object CwtConfigHandler {
 	fun completeModifier(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		val modifiers = configGroup.modifiers
 		if(modifiers.isEmpty()) return
-		//批量提示
-		val lookupElements = mutableSetOf<LookupElement>()
+		val project = configGroup.project
+		val gameType = configGroup.gameType ?: return
+		val element = contextElement
 		for(modifierConfig in modifiers.values) {
 			//排除不匹配modifier的supported_scopes的情况
 			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, modifierConfig.supportedScopes)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
-			val name = modifierConfig.name
-			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
-			val element = modifierConfig.pointer.element ?: continue
-			val tailText = " from modifiers"
-			val typeFile = modifierConfig.pointer.containingFile
-			val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
-				.withIcon(PlsIcons.Modifier)
-				.withTailText(tailText)
-				.withTypeText(typeFile?.name)
-				.withTypeIcon(typeFile?.icon)
-				.withScopeMatched(scopeMatched)
-				.withPriority(PlsCompletionPriorities.modifierPriority)
-			result.addScriptExpressionElement(context, builder)
+			val tailText = getScriptExpressionTailText(modifierConfig.config)
+			val template = modifierConfig.template
+			if(template.isEmpty()) {
+				//预定义的modifier
+				val name = modifierConfig.name
+				//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
+				val modifierElement = ParadoxModifierElement(element, name, modifierConfig, null, project, gameType)
+				val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
+					.withIcon(PlsIcons.Modifier)
+					.withTailText(tailText)
+					.withScopeMatched(scopeMatched)
+					//.withPriority(PlsCompletionPriorities.modifierPriority)
+				result.addScriptExpressionElement(context, builder)
+			} else {
+				//生成的modifier
+				processTemplateResolveResult(template, configGroup) {name ->
+					//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
+					val modifierElement = ParadoxModifierElement(element, name, modifierConfig, null, project, gameType)
+					val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
+						.withIcon(PlsIcons.Modifier)
+						.withTailText(tailText)
+						.withScopeMatched(scopeMatched)
+						//.withPriority(PlsCompletionPriorities.modifierPriority)
+					result.addScriptExpressionElement(context, builder)
+					true
+				}
+			}
 		}
-		result.addAllElements(lookupElements)
 	}
 	
 	fun completeScopeFieldExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
@@ -1005,6 +1031,15 @@ object CwtConfigHandler {
 		val textRange = TextRange.create(0, keyword.length)
 		val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(keyword, textRange, config, configGroup, isKey, true) ?: return
 		valueSetValueExpression.complete(context, result)
+	}
+	
+	fun completeTemplateExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+		//基于当前位置的代码补全
+		val configExpression = context.config.expression ?: return
+		val textRange = TextRange.create(0, keyword.length)
+		val template = CwtTemplateExpression.resolve(configExpression.expressionString)
+		val templateExpression = ParadoxTemplateExpression.resolve(keyword, textRange, template, configGroup, isKey) ?: return
+		templateExpression.complete(context, result)
 	}
 	
 	fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
@@ -1385,19 +1420,18 @@ object CwtConfigHandler {
 		val definitionInfo = definition.definitionInfo ?: return
 		val parameterMap = definition.parameterMap
 		if(parameterMap.isEmpty()) return
-		val lookupElements = mutableListOf<LookupElement>()
+		val project = definitionInfo.project
+		val gameType = definitionInfo.gameType
 		for((parameterName, parameters) in parameterMap) {
 			val parameter = parameters.firstNotNullOfOrNull { it.element } ?: continue
-			//没有其他地方使用到时，排除当前正在输入的那个
+			//排除当前正在输入的那个
 			if(parameters.size == 1 && element isSamePosition parameter) continue
-			//如果要提示的是$PARAM$中的PARAM，需要忽略与之相同参数名
-			if(read && parameterName == keyword) continue
-			val lookupElement = LookupElementBuilder.create(parameter, parameterName)
+			val parameterElement = ParadoxParameterElement(element, parameterName, definitionInfo.name, definitionInfo.types, project, gameType, true)
+			val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
 				.withIcon(PlsIcons.Parameter)
 				.withTypeText(definitionInfo.name, definition.icon, true)
-			lookupElements.add(lookupElement)
+			result.addElement(lookupElement)
 		}
-		result.addAllElements(lookupElements)
 	}
 	
 	fun completeParametersForInvocationExpression(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
@@ -1405,45 +1439,59 @@ object CwtConfigHandler {
 		val definitionName = propertyElement.name
 		val definitionType = propertyConfig.parent?.castOrNull<CwtPropertyConfig>()
 			?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.subNameExpression
-			?.takeIf { it.type == CwtDataType.Definition }?.value ?: return //不期望的结果
+			?.takeIf { it.type == CwtDataType.Definition }?.value
+			?: return //不期望的结果
 		val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(propertyElement)
 		val definition = ParadoxDefinitionSearch.search(definitionName, definitionType, configGroup.project, selector = selector).find() ?: return
+		val definitionInfo = definition.definitionInfo ?: return
 		val parameterMap = definition.parameterMap
 		if(parameterMap.isEmpty()) return
 		val existParameterNames = mutableSetOf<String>()
 		propertyElement.block?.processProperty { existParameterNames.add(it.text) }
-		//批量提示
-		val lookupElements = mutableSetOf<LookupElement>()
-		for((parameterName, parameters) in parameterMap) {
-			if(parameterName in existParameterNames) continue //排除已输入的
-			val parameter = parameters.firstOrNull() ?: continue
-			val lookupElement = LookupElementBuilder.create(parameter, parameterName)
+		val project = definitionInfo.project
+		val gameType = definitionInfo.gameType
+		for((parameterName, _) in parameterMap) {
+			//排除已输入的
+			if(parameterName in existParameterNames) continue
+			val parameterElement = ParadoxParameterElement(contextElement, parameterName, definitionInfo.name, definitionInfo.types, project, gameType, true)
+			val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
 				.withIcon(PlsIcons.Parameter)
 				.withTypeText(definitionName, definition.icon, true)
-			lookupElements.add(lookupElement)
+			result.addElement(lookupElement)
 		}
-		result.addAllElements(lookupElements)
 	}
 	
 	fun completeParametersForScriptValueExpression(svName: String, parameterNames: Set<String>, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		//整合所有匹配名字的SV的参数
 		val existParameterNames = mutableSetOf<String>()
 		existParameterNames.addAll(parameterNames)
+		val namesToDistinct = mutableSetOf<String>()
 		val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(contextElement)
 		val svQuery = ParadoxDefinitionSearch.search(svName, "script_value", configGroup.project, selector = selector)
 		svQuery.processQuery { sv ->
+			ProgressManager.checkCanceled()
+			val definitionInfo = sv.definitionInfo ?: return@processQuery true
+			val project = definitionInfo.project
+			val gameType = definitionInfo.gameType
 			val parameterMap = sv.parameterMap
 			if(parameterMap.isEmpty()) return@processQuery true
-			for((parameterName, parameters) in parameterMap) {
-				if(parameterName in existParameterNames) continue //排除已输入的
-				val parameter = parameters.firstNotNullOfOrNull { it.element } ?: continue
-				val lookupElement = LookupElementBuilder.create(parameter, parameterName)
+			for((parameterName, _) in parameterMap) {
+				//排除已输入的
+				if(parameterName in existParameterNames) continue
+				if(!namesToDistinct.add(parameterName)) continue
+				val parameterElement = ParadoxParameterElement(contextElement, parameterName, definitionInfo.name, definitionInfo.types, project, gameType, true)
+				val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
 					.withIcon(PlsIcons.Parameter)
 					.withTypeText(svName, sv.icon, true)
 				result.addElement(lookupElement)
 			}
 			true
 		}
+	}
+	
+	fun getScriptExpressionTailText(config: CwtConfig<*>?): String? {
+		if(config?.expression == null) return null
+		return " by ${config.expression} in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
 	}
 	//endregion
 	
@@ -1552,8 +1600,7 @@ object CwtConfigHandler {
 				return null //TODO
 			}
 			CwtDataType.Modifier -> {
-				val name = expression
-				return resolveModifier(name, configGroup)
+				return resolveModifier(element, expression, configGroup)
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataType.SingleAliasRight -> return null
@@ -1684,8 +1731,7 @@ object CwtConfigHandler {
 				return emptyList()
 			}
 			CwtDataType.Modifier -> {
-				val name = expression
-				return resolveModifier(name, configGroup).toSingletonListOrEmpty()
+				return resolveModifier(element, expression, configGroup).toSingletonListOrEmpty()
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataType.SingleAliasRight -> return emptyList()
@@ -1797,11 +1843,29 @@ object CwtConfigHandler {
 		return ParadoxValueSetValueElement(element, name, valueSetNames, configGroup.project, gameType, read)
 	}
 	
-	fun resolveModifier(name: String, configGroup: CwtConfigGroup): PsiElement? {
-		val modifier = configGroup.modifiers[name] ?: return null
-		val resolved = modifier.pointer.element ?: return null
-		resolved.putUserData(PlsKeys.cwtConfigKey, modifier)
-		return resolved
+	fun resolveModifier(element: ParadoxScriptExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
+		//修正会由特定的定义类型生成
+		//TODO 修正会由经济类型（economic_category）的声明生成
+		val gameType = configGroup.gameType ?: return null
+		val fastModifierConfig = configGroup.modifiers[name]
+		if(fastModifierConfig != null ) {
+			//预定义的非生成的修正
+			if(fastModifierConfig.template.isEmpty()) return null //unexpected
+			return ParadoxModifierElement(element, name, fastModifierConfig, null, configGroup.project, gameType)
+		}
+		//生成的修正，生成源可以未定义
+		val text = name
+		val textRange = TextRange.create(0, text.length)
+		val isKey = element is ParadoxScriptPropertyKey
+		val templateExpression = configGroup.modifiers.values.firstNotNullOfOrNull { config ->
+			ParadoxTemplateExpression.resolve(text, textRange, config.template, configGroup, isKey)
+		}
+		if(templateExpression != null) {
+			val generatedModifierConfig = configGroup.modifiers[templateExpression.template.expressionString]
+			if(generatedModifierConfig == null) return null
+			return ParadoxModifierElement(element, name, generatedModifierConfig, templateExpression, configGroup.project, gameType)
+		}
+		return null
 	}
 	
 	fun resolveLocalisationScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
@@ -1816,6 +1880,12 @@ object CwtConfigHandler {
 		val resolved = commandConfig.pointer.element ?: return null
 		resolved.putUserData(PlsKeys.cwtConfigKey, commandConfig)
 		return resolved
+	}
+	//endregion
+	
+	//region Other Methods
+	fun processTemplateResolveResult(templateExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, processor: Processor<String>) {
+		//TODO
 	}
 	//endregion
 }
