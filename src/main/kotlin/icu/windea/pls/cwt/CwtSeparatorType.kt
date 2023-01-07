@@ -1,6 +1,6 @@
 package icu.windea.pls.cwt
 
-enum class CwtSeparator(val text: String) {
+enum class CwtSeparatorType(val text: String) {
 	EQUAL("="),
 	NOT_EQUAL("==");
 	
@@ -9,7 +9,7 @@ enum class CwtSeparator(val text: String) {
 	}
 	
 	companion object {
-		fun resolve(text: String): CwtSeparator? {
+		fun resolve(text: String): CwtSeparatorType? {
 			return when(text) {
 				"=", "==" -> EQUAL
 				"<>", "!=" -> NOT_EQUAL

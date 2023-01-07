@@ -143,7 +143,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 			if(definitionType.isEmpty()) return@definition
 			val gameType = element.gameType
 			appendBr()
-			append(PlsDocBundle.message("ofDefinition"))
+			append("&emsp;").append(PlsDocBundle.message("ofDefinition"))
 			append(" ")
 			append(definitionName.escapeXml().orAnonymous())
 			append(": ")
@@ -194,13 +194,15 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 				val gameType = element.gameType
 				val template = templateExpression.template
 				val templateString = template.expressionString
-				appendBr().append(PlsDocBundle.message("by")).append(" ")
+				appendBr()
+				append("&emsp;").append(PlsDocBundle.message("by")).append(" ")
 				appendCwtLink(templateString, "${gameType.id}/modifiers/$templateString")
 				
 				//加上生成源信息
 				val referenceNodes = templateExpression.referenceNodes
 				if(referenceNodes.isNotEmpty()) {
-					appendBr().append(PlsDocBundle.message("generatedFrom")).append(" ")
+					appendBr()
+					append("&emsp;").append(PlsDocBundle.message("generatedFrom")).append(" ")
 					var appendSeparator = false
 					for(referenceNode in referenceNodes) {
 						if(appendSeparator) append(", ") else appendSeparator = true

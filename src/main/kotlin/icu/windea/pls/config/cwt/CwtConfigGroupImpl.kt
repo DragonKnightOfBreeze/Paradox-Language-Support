@@ -78,7 +78,9 @@ class CwtConfigGroupImpl(
 	override val modifiers: MutableMap<String, CwtModifierConfig> = mutableMapOf()
 	override val modifierTemplates: List<CwtTemplateExpression> by lazy {
 		//put xxx_<xxx>_xxx before xxx_<xxx>
-		modifiers.mapNotNull { it.value.template }.sortedByDescending { it.snippetExpressions.size }
+		modifiers
+			.mapNotNull { it.value.template.takeIf { it.isNotEmpty() } }
+			.sortedByDescending { it.snippetExpressions.size }
 	}
 	
 	init {
@@ -156,6 +158,16 @@ class CwtConfigGroupImpl(
 			addAll(info.aliasNameSupportScope)
 			add("script_value") //SV也支持参数
 			add("inline_script") //内联脚本也支持参数（并且可以表示多条语句）
+		}
+	}
+	
+	override val definitionTypesSkipCheckSystemScope: Set<String> by lazy {
+		buildSet { 
+			add("event")
+			add("game_rule")
+			add("script_trigger")
+			add("script_effect")
+			add("script_value")
 		}
 	}
 	
@@ -614,7 +626,7 @@ class CwtConfigGroupImpl(
 						val set = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
 						if(value != null) set.add(value)
 						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
-						val notReversed = option.separatorType == CwtSeparator.EQUAL
+						val notReversed = option.separatorType == CwtSeparatorType.EQUAL
 						typeKeyFilter = set.toReversibleSet(notReversed)
 					}
 					"starts_with" -> startsWith = option.stringValue ?: continue //忽略大小写
@@ -656,7 +668,7 @@ class CwtConfigGroupImpl(
 						val set = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
 						if(value != null) set.add(value)
 						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
-						val notReversed = option.separatorType == CwtSeparator.EQUAL
+						val notReversed = option.separatorType == CwtSeparatorType.EQUAL
 						typeKeyFilter = set.toReversibleSet(notReversed)
 					}
 					"push_scope" -> pushScope = option.stringValue ?: continue

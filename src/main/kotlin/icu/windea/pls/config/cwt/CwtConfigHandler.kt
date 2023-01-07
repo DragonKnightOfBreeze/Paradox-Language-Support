@@ -136,9 +136,6 @@ object CwtConfigHandler {
 		val isExact = BitUtil.isSet(matchType, CwtConfigMatchType.EXACT)
 		val isParameterAware = expression.type == ParadoxDataType.StringType && expression.text.isParameterAwareExpression()
 		when(configExpression.type) {
-			CwtDataType.Any -> {
-				return true
-			}
 			CwtDataType.Bool -> {
 				return expression.type.isBooleanType()
 			}
@@ -396,7 +393,7 @@ object CwtConfigHandler {
 		val fastModifierConfig = configGroup.modifiers[name]
 		if(fastModifierConfig != null) {
 			//预定义的非生成的修正
-			if(fastModifierConfig.template.isEmpty()) return false //unexpected
+			if(fastModifierConfig.template.isNotEmpty()) return false //unexpected
 			return true
 		}
 		//生成的修正，生成源可以未定义
@@ -419,7 +416,6 @@ object CwtConfigHandler {
 	
 	fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Int {
 		return when(configExpression.type) {
-			CwtDataType.Any -> 100
 			CwtDataType.Bool -> 100
 			CwtDataType.Int -> 90
 			CwtDataType.Float -> 90
@@ -1834,14 +1830,9 @@ object CwtConfigHandler {
 	fun resolveModifier(element: ParadoxScriptExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
 		//修正会由特定的定义类型生成
 		//TODO 修正会由经济类型（economic_category）的声明生成
+		//这里需要最后尝试解析为预定义的非生成的修正
 		val gameType = configGroup.gameType ?: return null
-		val fastModifierConfig = configGroup.modifiers[name]
-		if(fastModifierConfig != null) {
-			//预定义的非生成的修正
-			if(fastModifierConfig.template.isEmpty()) return null //unexpected
-			return ParadoxModifierElement(element, name, fastModifierConfig, null, configGroup.project, gameType)
-		}
-		//生成的修正，生成源可以未定义
+		//尝试解析为生成的修正，生成源可以未定义
 		val text = name
 		val textRange = TextRange.create(0, text.length)
 		val isKey = element is ParadoxScriptPropertyKey
@@ -1850,6 +1841,12 @@ object CwtConfigHandler {
 			val generatedModifierConfig = configGroup.modifiers[templateExpression.template.expressionString]
 			if(generatedModifierConfig == null) return null
 			return ParadoxModifierElement(element, name, generatedModifierConfig, templateExpression, configGroup.project, gameType)
+		}
+		//尝试解析为预定义的非生成的修正
+		val modifierConfig = configGroup.modifiers[name]
+		if(modifierConfig != null) {
+			if(modifierConfig.template.isNotEmpty()) return null //unexpected
+			return ParadoxModifierElement(element, name, modifierConfig, null, configGroup.project, gameType)
 		}
 		return null
 	}

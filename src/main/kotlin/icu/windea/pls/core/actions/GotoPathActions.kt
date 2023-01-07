@@ -18,7 +18,7 @@ abstract class GotoPathAction(private val icon: Icon) : FileChooserAction(), Lig
 	open val expand: Boolean = false
 	
 	override fun getActionUpdateThread(): ActionUpdateThread {
-		return ActionUpdateThread.EDT
+		return ActionUpdateThread.BGT
 	}
 	
 	protected abstract fun setVisible(e: AnActionEvent): Boolean

@@ -4,7 +4,6 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.model.*
 
 enum class CwtDataType {
-	Any,
 	Bool,
 	Int,
 	Float,

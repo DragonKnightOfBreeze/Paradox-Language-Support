@@ -6,7 +6,6 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.script.psi.*
 
@@ -30,7 +29,6 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 					val scopeFieldInfo = resultScopeContext.scopeFieldInfo
 					if(scopeFieldInfo.isNullOrEmpty()) return
 					val propertyKey = element.propertyKey
-					val range = propertyKey.textRange
 					for((scopeNode, scopeContext) in scopeFieldInfo) {
 						val rangeInExpression = scopeNode.rangeInExpression
 						when(scopeNode) {
@@ -52,7 +50,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 							is ParadoxSystemScopeExpressionNode -> {
 								if(scopeContext.thisScope == ParadoxScopeConfigHandler.anyScopeId) {
 									val definitionType = definitionInfo?.type ?: continue
-									if(ParadoxScopeConfigHandler.definitionTypesSkipCheckSystemScope.contains(definitionType)) continue
+									if(config.info.configGroup.definitionTypesSkipCheckSystemScope.contains(definitionType)) continue
 									val description = PlsBundle.message("script.inspection.scope.incorrectScopeSwitch.description.3",
 										scopeNode.text)
 									holder.registerProblem(propertyKey, rangeInExpression, description)

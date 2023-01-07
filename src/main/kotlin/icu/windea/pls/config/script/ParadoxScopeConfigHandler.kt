@@ -27,8 +27,6 @@ object ParadoxScopeConfigHandler {
 	
 	val anyScopeIdSet = setOf(anyScopeId)
 	
-	val definitionTypesSkipCheckSystemScope = arrayOf("event", "scripted_trigger", "scripted_effect")
-	
 	/**
 	 * 得到作用域的ID（全小写+下划线）。
 	 */

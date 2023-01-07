@@ -82,4 +82,6 @@ interface CwtConfigGroup {
 	val definitionTypesSupportScope: Set<String>
 	//支持参数的定义类型
 	val definitionTypesSupportParameters: Set<String>
+	//不需要检查系统作用域切换的定义类型
+	val definitionTypesSkipCheckSystemScope: Set<String>
 }

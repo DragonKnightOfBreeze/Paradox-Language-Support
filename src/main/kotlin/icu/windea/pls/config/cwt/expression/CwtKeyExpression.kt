@@ -21,9 +21,6 @@ class CwtKeyExpression private constructor(
 		
 		private fun doResolve(expressionString: String) = when {
 			expressionString.isEmpty() -> EmptyStringExpression
-			expressionString == "any" -> {
-				CwtKeyExpression(expressionString, CwtDataType.Any)
-			}
 			expressionString == "int" -> {
 				CwtKeyExpression(expressionString, CwtDataType.Int)
 			}
@@ -93,7 +90,7 @@ class CwtKeyExpression private constructor(
 				val value = expressionString.substring(11, expressionString.length - 1)
 				CwtKeyExpression(expressionString, CwtDataType.AliasName, value)
 			}
-			!expressionString.surroundsWith("alias[", "]") && CwtTemplateExpression.resolve(expressionString).isNotEmpty() -> {
+			CwtTemplateExpression.resolve(expressionString).isNotEmpty() -> {
 				CwtKeyExpression(expressionString, CwtDataType.TemplateExpression)
 			}
 			expressionString.endsWith(']') -> {

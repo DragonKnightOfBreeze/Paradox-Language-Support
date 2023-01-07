@@ -9,8 +9,11 @@ object ParadoxModifierConfigHandler {
 	@JvmStatic
 	fun resolveModifierTemplate(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null): ParadoxTemplateExpression? {
 		//不能直接这样做
-		return configGroup.modifiers.values.firstNotNullOfOrNull { config ->
-			ParadoxTemplateExpression.resolve(text, textRange, config.template, configGroup, isKey)
+		//return configGroup.modifiers.values.firstNotNullOfOrNull { config ->
+		//	ParadoxTemplateExpression.resolve(text, textRange, config.template, configGroup, isKey)
+		//}
+		return configGroup.modifierTemplates.firstNotNullOfOrNull { template ->
+			ParadoxTemplateExpression.resolve(text, textRange, template, configGroup, isKey)
 		}
 	}
 	
@@ -18,7 +21,7 @@ object ParadoxModifierConfigHandler {
 	fun getModifierNameKeys(modifierName: String, configGroup: CwtConfigGroup): List<String> {
 		//TODO 检查到底是如何确定的
 		//mod_$, mod_country_$, ALL_UPPER_CASE is ok.
-		val modifier = configGroup.modifiers[modifierName] 
+		val modifier = configGroup.modifiers[modifierName]
 		val isCountryModifier = isCountryModifier(modifierName, modifier)
 		return buildList {
 			val nameKey = "mod_${modifierName}"
@@ -36,7 +39,7 @@ object ParadoxModifierConfigHandler {
 	fun getModifierDescKeys(modifierName: String, configGroup: CwtConfigGroup): List<String> {
 		//TODO 检查到底是如何确定的
 		//mod_$_desc, mod_country_$_desc, ALL_UPPER_CASE is ok.
-		val modifier = configGroup.modifiers[modifierName] 
+		val modifier = configGroup.modifiers[modifierName]
 		val isCountryModifier = isCountryModifier(modifierName, modifier)
 		return buildList {
 			val descKey = "mod_${modifierName}_desc"

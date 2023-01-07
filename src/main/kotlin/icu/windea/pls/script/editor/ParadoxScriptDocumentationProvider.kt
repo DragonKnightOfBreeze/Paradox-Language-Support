@@ -276,8 +276,15 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		for(modifier in modifiers) {
 			appendBr()
 			append(PlsDocBundle.message("prefix.generatedModifier")).append(" ")
-			append(modifier)
-			//目前不显示其他信息
+			append(modifier.name)
+			grayed {
+				append(" ")
+				append(PlsDocBundle.message("by"))
+				append(" ")
+				val key = modifier.config.name
+				val gameType = definitionInfo.gameType
+				appendCwtLink(key, "${gameType.id}/modifiers/${key}")
+			}
 		}
 	}
 	

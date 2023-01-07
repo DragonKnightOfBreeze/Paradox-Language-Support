@@ -1,10 +1,9 @@
 package icu.windea.pls.config.cwt.expression
 
-import com.google.common.cache.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 
-open class CwtTemplateExpression(
+class CwtTemplateExpression(
 	expressionString: String,
 	val snippetExpressions: List<CwtDataExpression>
 ) : AbstractExpression(expressionString), CwtExpression {
@@ -38,61 +37,81 @@ open class CwtTemplateExpression(
 	companion object Resolver {
 		val EmptyExpression = CwtTemplateExpression("", emptyList())
 		
-		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtTemplateExpression> { doResolve(it) } }
-		
 		// job_<job>_add
 		// xxx_value[xxx]_xxx
 		
-		fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
+		//do not cache
+		fun resolve(expressionString: String) = doResolve(expressionString)
 		
 		private fun doResolve(expressionString: String): CwtTemplateExpression {
 			return when {
 				expressionString.isEmpty() -> EmptyExpression
 				else -> {
-					val snippets = SmartList<CwtDataExpression>()
+					var snippets: SmartList<CwtDataExpression>? = null
 					var startIndex = 0
-					var i1: Int
-					var i2: Int
+					var i1: Int = -1
+					var i2: Int = -1
 					while(true) {
-						i1 = expressionString.indexOf("enum[", startIndex)
+						i1 = expressionString.indexOf('[')
 						if(i1 != -1) {
-							i2 = expressionString.indexOf(']', i1 + 5)
-							if(i2 == -1) return EmptyExpression //error
-							val nextIndex = i2 + 1
-							if(startIndex != i1) {
-								snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
+							//预先排除
+							if(expressionString.contains("complex_enum[")) return EmptyExpression
+							
+							i1 = expressionString.indexOf("enum[", startIndex)
+							if(i1 != -1) {
+								i2 = expressionString.indexOf(']', i1 + 5)
+								if(i2 == -1) return EmptyExpression //error
+								val nextIndex = i2 + 1
+								if(i1 == 0 && nextIndex == expressionString.length) return EmptyExpression
+								if(startIndex != i1) {
+									if(snippets == null) snippets = SmartList()
+									snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
+								}
+								if(snippets == null) snippets = SmartList()
+								snippets.add(CwtValueExpression.resolve(expressionString.substring(i1, nextIndex)))
+								startIndex = nextIndex
+								continue
 							}
-							snippets.add(CwtValueExpression.resolve(expressionString.substring(i1, nextIndex)))
-							startIndex = nextIndex
-							continue
-						}
-						i1 = expressionString.indexOf("value[", startIndex)
-						if(i1 != -1) {
-							i2 = expressionString.indexOf(']', i1 + 6)
-							if(i2 == -1) return EmptyExpression //error
-							val nextIndex = i2 + 1
-							if(startIndex != i1) {
-								snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
+							i1 = expressionString.indexOf("value[", startIndex)
+							if(i1 != -1) {
+								i2 = expressionString.indexOf(']', i1 + 6)
+								if(i2 == -1) return EmptyExpression //error
+								val nextIndex = i2 + 1
+								if(i1 == 0 && nextIndex == expressionString.length) return EmptyExpression
+								if(startIndex != i1) {
+									if(snippets == null) snippets = SmartList()
+									snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
+								}
+								if(snippets == null) snippets = SmartList()
+								snippets.add(CwtValueExpression.resolve(expressionString.substring(i1, nextIndex)))
+								startIndex = nextIndex
+								continue
 							}
-							snippets.add(CwtValueExpression.resolve(expressionString.substring(i1, nextIndex)))
-							startIndex = nextIndex
-							continue
+							return EmptyExpression
 						}
 						i1 = expressionString.indexOf('<', startIndex)
 						if(i1 != -1) {
 							i2 = expressionString.indexOf('>', i1 + 1)
 							if(i2 == -1) return EmptyExpression //error
 							val nextIndex = i2 + 1
+							if(i1 == 0 && nextIndex == expressionString.length) return EmptyExpression
 							if(startIndex != i1) {
+								if(snippets == null) snippets = SmartList()
 								snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
 							}
+							if(snippets == null) snippets = SmartList()
 							snippets.add(CwtValueExpression.resolve(expressionString.substring(i1, nextIndex)))
 							startIndex = nextIndex
 							continue
 						}
+						if(startIndex == 0) return EmptyExpression
 						break
 					}
-					if(snippets.isEmpty()) return EmptyExpression
+					if(snippets == null) return EmptyExpression
+					if(snippets.size <= 1) return EmptyExpression
+					if(startIndex != expressionString.length) {
+						snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex)))
+					}
 					CwtTemplateExpression(expressionString, snippets)
 				}
 			}

@@ -15,7 +15,7 @@ data class CwtOptionConfig(
 	val stringValue: String? = null,
 	val options: List<CwtOptionConfig>? = null,
 	val optionValues: List<CwtOptionValueConfig>? = null,
-	val separatorType: CwtSeparator = CwtSeparator.EQUAL
+	val separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL
 ) : CwtConfig<CwtOption> {
 	//val stringValues = values?.mapNotNull { it.stringValue }
 	//val stringValueOrValues = stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue }
