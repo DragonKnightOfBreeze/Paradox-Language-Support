@@ -75,7 +75,7 @@ class CwtConfigGroupImpl(
 	override val aliasGroups: MutableMap<String, MutableMap<String, MutableList<CwtAliasConfig>>> = mutableMapOf()
 	override val inlineConfigGroup: MutableMap<String, MutableList<CwtInlineConfig>> = mutableMapOf()
 	
-	override val modifiers: MutableMap<String, CwtModifierConfig> = mutableMapOf()
+	override val modifiers: MutableMap<@CaseInsensitive String, CwtModifierConfig> = CollectionFactory.createCaseInsensitiveStringMap()
 	override val modifierTemplates: List<CwtTemplateExpression> by lazy {
 		//put xxx_<xxx>_xxx before xxx_<xxx>
 		modifiers

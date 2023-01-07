@@ -63,7 +63,7 @@ interface CwtConfigGroup {
 	val inlineConfigGroup: Map<String, List<CwtInlineConfig>>
 	
 	//key: lowercase
-	val modifiers: Map<String, CwtModifierConfig>
+	val modifiers: Map<@CaseInsensitive String, CwtModifierConfig>
 	val modifierTemplates: List<CwtTemplateExpression>
 	
 	//目前版本的CWT配置已经不再使用
