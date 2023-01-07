@@ -1,11 +1,13 @@
 package icu.windea.pls.core.editor
 
+import ai.grazie.utils.*
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -34,12 +36,14 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 			is ParadoxParameter -> getParameterInfo(element, originalElement)
 			is ParadoxValueSetValueElement -> getValueSetValueInfo(element, originalElement)
 			is ParadoxScriptStringExpressionElement -> {
+				//TODO 直接基于ParadoxValueSetValueElement进行索引，从而下面的代码不再需要
 				val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull()
 				if(config != null && config.expression.type.isValueSetValueType()) {
 					return getValueSetValueInfo(element, originalElement)
 				}
 				null
 			}
+			is ParadoxModifierElement -> getModifierInfo(element, originalElement)
 			else -> null
 		}
 	}
@@ -50,10 +54,8 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getParameterInfo(element: ParadoxParameterElement, originalElement: PsiElement?): String {
-		val name = element.name
-		val definitionInfo = element.definitionName + ": " + element.definitionType
 		return buildString {
-			buildParameterDefinition(name, definitionInfo)
+			buildParameterDefinition(element)
 		}
 	}
 	
@@ -71,6 +73,12 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun getModifierInfo(element: ParadoxModifierElement, originalElement: PsiElement?): String? {
+		return buildString {
+			buildModifierDefinition(element)
+		}
+	}
+	
 	override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {
 		return when(element) {
 			is ParadoxParameterElement -> getParameterDoc(element, originalElement)
@@ -84,6 +92,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 				}
 				null
 			}
+			is ParadoxModifierElement -> getModifierDoc(element, originalElement)
 			else -> null
 		}
 	}
@@ -94,10 +103,8 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getParameterDoc(element: ParadoxParameterElement, originalElement: PsiElement?): String {
-		val name = element.name
-		val definitionInfo = element.definitionName + ": " + element.definitionType
 		return buildString {
-			buildParameterDefinition(name, definitionInfo)
+			buildParameterDefinition(element)
 		}
 	}
 	
@@ -115,14 +122,40 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildParameterDefinition(name: String, definitionInfo: String?) {
+	private fun getModifierDoc(element: ParadoxModifierElement, originalElement: PsiElement?): String? {
+		return buildString {
+			buildModifierDefinition(element)
+		}
+	}
+	
+	private fun StringBuilder.buildParameterDefinition(element: ParadoxParameterElement) {
 		definition {
 			//不加上文件信息
+			
 			//加上名字
+			val name = element.name
 			append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-			if(definitionInfo != null) {
-				append(" ")
-				append(PlsDocBundle.message("ofDefinition", definitionInfo))
+			
+			
+			//加上定义信息
+			val definitionName = element.definitionName
+			val definitionType = element.definitionType
+			if(definitionType.isEmpty()) return@definition
+			val gameType = element.gameType
+			appendBr()
+			append(PlsDocBundle.message("ofDefinition"))
+			append(" ")
+			append(definitionName.escapeXml().orAnonymous())
+			append(": ")
+			
+			val type = definitionType.first()
+			val typeLink = "${gameType.id}/types/${type}"
+			appendCwtLink(type, typeLink)
+			for((index, t) in definitionType.withIndex()) {
+				if(index == 0) continue
+				append(", ")
+				val subtypeLink = "$typeLink/${t}"
+				appendCwtLink(t, subtypeLink)
 			}
 		}
 	}
@@ -141,6 +174,76 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 					append(": ").appendCwtLink(valueSetName, typeLink)
 				} else {
 					append(": ").append(valueSetName)
+				}
+			}
+		}
+	}
+	
+	private fun StringBuilder.buildModifierDefinition(element: ParadoxModifierElement) {
+		definition {
+			//没有文件信息
+			
+			//加上名字
+			val name = element.name
+			append(PlsDocBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+			
+			//加上模版信息
+			val configGroup = element.templateExpression.configGroup
+			val gameType = element.gameType
+			val template = element.templateExpression.template
+			val templateString = template.expressionString
+			appendBr().append(PlsDocBundle.message("by")).append(" ")
+			appendCwtLink(templateString, "${gameType.id}/modifiers/$templateString")
+			
+			//加上生成源信息
+			val referenceNodes = element.templateExpression.referenceNodes
+			if(referenceNodes.isNotEmpty()) {
+				appendBr().append(PlsDocBundle.message("generatedFrom")).append(" ")
+				var appendSeparator = false
+				for(referenceNode in referenceNodes) {
+					if(appendSeparator) append(", ") else appendSeparator = true
+					val configExpression = referenceNode.configExpression ?: continue
+					when(configExpression.type) {
+						CwtDataType.Definition -> {
+							val definitionName = referenceNode.text
+							val definitionType = configExpression.value!!
+							append(PlsDocBundle.message("prefix.definition"))
+							append(" ")
+							appendDefinitionLink(gameType, definitionName, definitionType, element)
+						}
+						CwtDataType.Enum -> {
+							val enumValueName = referenceNode.text
+							val enumName = configExpression.value!!
+							if(configGroup.enums.containsKey(enumName)) {
+								append(PlsDocBundle.message("prefix.enumValue"))
+								append(" ")
+								appendCwtLink(enumName, "${gameType.id}/enums/${enumName}/${enumValueName}", element)
+							} else if(configGroup.complexEnums.containsKey(enumName)) {
+								append(PlsDocBundle.message("prefix.complexEnumValue"))
+								append(" ")
+								append(enumValueName)
+							} else {
+								//unexpected
+								append(PlsDocBundle.message("prefix.enumValue"))
+								append(" ")
+								append(enumValueName)
+							}
+						}
+						CwtDataType.Value -> {
+							val valueSetName = referenceNode.text
+							val valueName = configExpression.value!!
+							if(configGroup.values.containsKey(valueName)) {
+								append(PlsDocBundle.message("prefix.valueSetValue"))
+								append(" ")
+								appendCwtLink(valueName, "${gameType.id}/values/${valueName}/${valueSetName}", element)
+							} else {
+								append(PlsDocBundle.message("prefix.valueSetValue"))
+								append(" ")
+								append(valueName)
+							}
+						}
+						else -> pass()
+					}
 				}
 			}
 		}

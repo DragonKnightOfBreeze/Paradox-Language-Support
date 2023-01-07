@@ -45,9 +45,10 @@ interface ParadoxScopeFieldExpression : ParadoxComplexExpression {
 
 class ParadoxScopeFieldExpressionImpl(
 	override val text: String,
-	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
-	override val nodes: List<ParadoxExpressionNode>
+	override val rangeInExpression: TextRange,
+	override val nodes: List<ParadoxExpressionNode>,
+	override val configGroup: CwtConfigGroup
 ) : AbstractExpression(text), ParadoxScopeFieldExpression {
 	override val quoted: Boolean = false
 	
@@ -195,5 +196,5 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 		nodes.add(node)
 		if(dotNode != null) nodes.add(dotNode)
 	}
-	return ParadoxScopeFieldExpressionImpl(text, textRange, isKey, nodes)
+	return ParadoxScopeFieldExpressionImpl(text, isKey, textRange, nodes, configGroup)
 }

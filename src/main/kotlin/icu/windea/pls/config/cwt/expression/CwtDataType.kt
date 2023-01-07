@@ -19,7 +19,7 @@ enum class CwtDataType {
 	AbsoluteFilePath,
 	FilePath,
 	Icon,
-	TypeExpression,
+	Definition,
 	Enum,
 	Value,
 	ValueSet,

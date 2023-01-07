@@ -39,7 +39,7 @@ class CwtConfigGroupImpl(
 	override val folders: MutableSet<String> = mutableSetOf()
 	
 	override val types: MutableMap<String, CwtTypeConfig> = mutableMapOf()
-	override val typeAndSwapTypeMap: Map<String, String> by lazy { 
+	override val typeToSwapTypeMap: Map<String, String> by lazy { 
 		val map = BidirectionalMap<String, String>()
 		for(typeConfig in types.values) {
 			if(typeConfig.baseType != null) {
@@ -48,10 +48,11 @@ class CwtConfigGroupImpl(
 		}
 		map
 	}
+	override val typeToModifiersMap: MutableMap<String, MutableMap<String, CwtModifierConfig>> = mutableMapOf()
 	
-	override val values: MutableMap<String, CwtEnumValueConfig> = mutableMapOf()
+	override val values: MutableMap<String, CwtEnumConfig> = mutableMapOf()
 	//enumValue可以是int、float、bool类型，统一用字符串表示
-	override val enums: MutableMap<String, CwtEnumValueConfig> = mutableMapOf()
+	override val enums: MutableMap<String, CwtEnumConfig> = mutableMapOf()
 	//基于enum_name进行定位，对应的可能是key/value
 	override val complexEnums: MutableMap<String, CwtComplexEnumConfig> = mutableMapOf()
 	
@@ -331,6 +332,7 @@ class CwtConfigGroupImpl(
 				key == "values" -> {
 					val props = property.properties ?: continue
 					for(prop in props) {
+						//TODO valueName may be a template expression (e.g. xxx_<xxx>)
 						val valueName = prop.key.removeSurroundingOrNull("value[", "]")
 						if(!valueName.isNullOrEmpty()) {
 							val valueConfig = resolveEnumConfig(prop, valueName) ?: continue
@@ -413,7 +415,7 @@ class CwtConfigGroupImpl(
 					val props = property.properties ?: continue
 					for(prop in props) {
 						val modifierName = prop.key
-						val modifierConfig = resolveModifierConfigInModifiers(prop, modifierName) ?: continue
+						val modifierConfig = resolveModifierConfig(prop, modifierName) ?: continue
 						modifiers[modifierName] = modifierConfig
 					}
 				}
@@ -530,8 +532,7 @@ class CwtConfigGroupImpl(
 						val propPointer = prop.pointer
 						val propProps = prop.properties ?: continue
 						for(p in propProps) {
-							val k = p.key
-							val subtypeName = k.removeSurroundingOrNull("subtype[", "]")
+							val subtypeName = p.key.removeSurroundingOrNull("subtype[", "]")
 							if(subtypeName != null) {
 								val pps = p.properties ?: continue
 								for(pp in pps) {
@@ -539,7 +540,7 @@ class CwtConfigGroupImpl(
 									configs.add(subtypeName to locationConfig)
 								}
 							} else {
-								val locationConfig = resolveLocationConfig(p, k) ?: continue
+								val locationConfig = resolveLocationConfig(p, p.key) ?: continue
 								configs.add(null to locationConfig)
 							}
 						}
@@ -550,8 +551,7 @@ class CwtConfigGroupImpl(
 						val propPointer = prop.pointer
 						val propProps = prop.properties ?: continue
 						for(p in propProps) {
-							val k = p.key
-							val subtypeName = k.removeSurroundingOrNull("subtype[", "]")
+							val subtypeName = p.key.removeSurroundingOrNull("subtype[", "]")
 							if(subtypeName != null) {
 								val pps = p.properties ?: continue
 								for(pp in pps) {
@@ -559,11 +559,31 @@ class CwtConfigGroupImpl(
 									configs.add(subtypeName to locationConfig)
 								}
 							} else {
-								val locationConfig = resolveLocationConfig(p, k) ?: continue
+								val locationConfig = resolveLocationConfig(p, p.key) ?: continue
 								configs.add(null to locationConfig)
 							}
 						}
 						images = CwtTypeImagesConfig(propPointer, propertyConfig.info, configs)
+					}
+					"modifiers" -> {
+						val propProps = prop.properties ?: continue
+						for(p in propProps) {
+							val subtypeName = p.key.removeSurroundingOrNull("subtype[", "]")
+							if(subtypeName != null) {
+								val pps = p.properties ?: continue
+								for(pp in pps) {
+									val typeExpression = "$name.$subtypeName"
+									val modifierConfig = resolveDefinitionModifierConfig(pp, pp.key, typeExpression) ?: continue
+									modifiers.put(modifierConfig.name, modifierConfig)
+									typeToModifiersMap.getOrPut(typeExpression) { mutableMapOf() }.put(pp.key, modifierConfig)
+								}
+							} else {
+								val typeExpression = name
+								val modifierConfig = resolveDefinitionModifierConfig(p, p.key, typeExpression) ?: continue
+								modifiers.put(modifierConfig.name, modifierConfig)
+								typeToModifiersMap.getOrPut(typeExpression) { mutableMapOf() }.put(p.key, modifierConfig)
+							}
+						}
 					}
 				}
 				
@@ -665,12 +685,21 @@ class CwtConfigGroupImpl(
 		return CwtLocationConfig(propertyConfig.pointer, propertyConfig.info, name, expression, required, primary)
 	}
 	
-	private fun resolveEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtEnumValueConfig? {
+	private fun resolveDefinitionModifierConfig(propertyConfig: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig? {
+		//string | string[]
+		val modifierName = name.replace("$", "<$typeExpression>")
+		val categories = propertyConfig.stringValue?.let { setOf(it) }
+			?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+			?: return null
+		return CwtModifierConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, modifierName, categories)
+	}
+	
+	private fun resolveEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtEnumConfig? {
 		val pointer = propertyConfig.pointer
 		val info = propertyConfig.info
 		val propertyConfigValues = propertyConfig.values ?: return null
 		if(propertyConfigValues.isEmpty()) {
-			return CwtEnumValueConfig(pointer, info, name, emptySet(), emptyMap())
+			return CwtEnumConfig(pointer, info, name, emptySet(), emptyMap())
 		}
 		val values = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
 		val valueConfigMap = CollectionFactory.createCaseInsensitiveStringMap<CwtValueConfig>() //忽略大小写
@@ -678,7 +707,7 @@ class CwtConfigGroupImpl(
 			values.add(propertyConfigValue.value)
 			valueConfigMap.put(propertyConfigValue.value, propertyConfigValue)
 		}
-		return CwtEnumValueConfig(pointer, info, name, values, valueConfigMap)
+		return CwtEnumConfig(pointer, info, name, values, valueConfigMap)
 	}
 	
 	private fun resolveComplexEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtComplexEnumConfig? {
@@ -785,7 +814,7 @@ class CwtConfigGroupImpl(
 		return CwtModifierCategoryConfig(propertyConfig.pointer, propertyConfig.info, name, internalId, supportedScopes)
 	}
 	
-	private fun resolveModifierConfigInModifiers(propertyConfig: CwtPropertyConfig, name: String): CwtModifierConfig? {
+	private fun resolveModifierConfig(propertyConfig: CwtPropertyConfig, name: String): CwtModifierConfig? {
 		//string | string[]
 		val categories = propertyConfig.stringValue?.let { setOf(it) }
 			?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }

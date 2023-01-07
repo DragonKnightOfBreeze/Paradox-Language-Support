@@ -1,6 +1,5 @@
 package icu.windea.pls.script.highlighter
 
-import com.intellij.ide.highlighter.custom.*
 import com.intellij.ide.highlighter.custom.CustomHighlighterColors.*
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors.*
@@ -57,4 +56,5 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val VALUE_FILED_EXPRESSION_KEY = createTextAttributesKey("PARADOX_SCRIPT.VALUE_FILED_EXPRESSION")
 	@JvmField val VALUE_SET_VALUE_EXPRESSION_KEY = createTextAttributesKey("PARADOX_SCRIPT.VALUE_SET_VALUE_EXPRESSION")
 	@JvmField val SCRIPT_VALUE_EXPRESSION_KEY = createTextAttributesKey("PARADOX_SCRIPT.SCRIPT_VALUE_EXPRESSION")
+	@JvmField val TEMPLATE_EXPRESSION_KEY = createTextAttributesKey("PARADOX_SCRIPT.TEMPLATE_EXPRESSION")
 }

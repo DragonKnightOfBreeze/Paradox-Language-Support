@@ -4,7 +4,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.cwt.psi.*
 
-data class CwtEnumValueConfig(
+data class CwtEnumConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigGroupInfo,
 	val name: String,

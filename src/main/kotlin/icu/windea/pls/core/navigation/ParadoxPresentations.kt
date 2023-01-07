@@ -27,3 +27,15 @@ class ParadoxValueSetValueElementPresentation(
 		return element.name
 	}
 }
+
+class ParadoxModifierElementPresentation(
+	private val element: ParadoxModifierElement
+): ItemPresentation{
+	override fun getIcon(unused: Boolean): Icon {
+		return element.icon
+	}
+	
+	override fun getPresentableText(): String {
+		return element.name
+	}
+}

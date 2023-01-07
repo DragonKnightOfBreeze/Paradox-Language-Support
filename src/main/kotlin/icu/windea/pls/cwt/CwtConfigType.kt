@@ -6,7 +6,7 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
-import javax.swing.Icon
+import javax.swing.*
 
 enum class CwtConfigType(
 	val id: String,
@@ -33,7 +33,7 @@ enum class CwtConfigType(
 		override val icon get() =  PlsIcons.Alias
 	},
 	Alias("alias") {
-		override val prefix get() = PlsDocBundle.message("prefix.alias")
+		override val prefix: String get() = PlsDocBundle.message("prefix.alias")
 		override val icon get() =  PlsIcons.Alias
 	},
 	EnumValue("enum value", true, "enums") {

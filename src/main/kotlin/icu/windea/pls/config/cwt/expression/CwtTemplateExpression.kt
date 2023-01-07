@@ -11,6 +11,30 @@ open class CwtTemplateExpression(
 	//allowed: enum[xxx], value[xxx], <xxx>
 	val referenceExpressions = snippetExpressions.filterTo(mutableSetOf()) { it -> it.type != CwtDataType.Constant }
 	
+	fun resolveName(referenceName: String): String{
+		if(referenceExpressions.size != 1) throw IllegalStateException()
+		return buildString {
+			for(snippetExpression in snippetExpressions) {
+				when(snippetExpression.type) {
+					CwtDataType.Constant -> append(snippetExpression.expressionString)
+					else -> append(referenceName)
+				}
+			}
+		}
+	}
+	
+	fun resolveName(referenceNames: Map<CwtDataExpression, String>): String{
+		if(referenceExpressions.size != referenceNames.size) throw IllegalStateException()
+		return buildString {
+			for(snippetExpression in snippetExpressions) {
+				when(snippetExpression.type) {
+					CwtDataType.Constant -> append(snippetExpression.expressionString)
+					else -> append(referenceNames.getValue(snippetExpression))
+				}
+			}
+		}
+	}
+	
 	companion object Resolver {
 		val EmptyExpression = CwtTemplateExpression("", emptyList())
 		

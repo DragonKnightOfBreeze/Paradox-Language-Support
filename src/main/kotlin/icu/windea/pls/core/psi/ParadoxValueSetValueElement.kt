@@ -22,8 +22,8 @@ class ParadoxValueSetValueElement(
 	val valueSetNames: List<String>,
 	private val project: Project,
 	val gameType: ParadoxGameType,
-	val read: Boolean = true
-) : RenameableFakePsiElement(element), ParadoxScriptNamedElement, Navigatable {
+	val read: Boolean
+) : RenameableFakePsiElement(element), PsiNameIdentifierOwner, NavigatablePsiElement {
 	constructor(
 		element: PsiElement,
 		name: String,

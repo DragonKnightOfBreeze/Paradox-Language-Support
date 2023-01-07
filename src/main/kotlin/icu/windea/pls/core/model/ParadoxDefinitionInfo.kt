@@ -93,6 +93,15 @@ class ParadoxDefinitionInfo(
 		result
 	}
 	
+	val modifiers: List<ParadoxModifierInfo> by lazy { 
+		buildList {
+			configGroup.typeToModifiersMap.get(type)?.forEach { (_, v) -> add(ParadoxModifierInfo(v.template.resolveName(name), v)) }
+			for(subtype in subtypes) {
+				configGroup.typeToModifiersMap.get("$type.$subtype")?.forEach { (_, v) -> add(ParadoxModifierInfo(v.template.resolveName(name), v)) }
+			}
+		}
+	}
+	
 	val declaration: CwtPropertyConfig? by lazy {
 		configGroup.declarations.get(type)?.getMergedConfig(subtypes, name)
 	}
@@ -125,6 +134,8 @@ class ParadoxDefinitionInfo(
 			null
 		}
 	}
+	
+	
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxDefinitionInfo

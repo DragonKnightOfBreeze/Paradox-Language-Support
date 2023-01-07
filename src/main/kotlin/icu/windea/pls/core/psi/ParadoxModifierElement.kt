@@ -7,22 +7,23 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.navigation.*
 import javax.swing.*
 
 /**
- * 定义的参数并不存在一个真正意义上的声明处，用这个模拟。
+ * （生成的）修正可能并不存在一个真正意义上的声明处，用这个模拟。
  */
-class ParadoxParameterElement(
+class ParadoxModifierElement(
 	element: PsiElement,
 	private val name: String,
-	val definitionName: String,
-	val definitionType: List<String>,
+	val templateExpression: ParadoxTemplateExpression,
+	val modifierConfig: CwtModifierConfig,
 	private val project: Project,
-	val gameType: ParadoxGameType,
-	val read: Boolean
-): RenameableFakePsiElement(element), PsiNameIdentifierOwner, NavigatablePsiElement {
+	val gameType: ParadoxGameType
+) : RenameableFakePsiElement(element), PsiNameIdentifierOwner, NavigatablePsiElement {
 	override fun getText(): String {
 		return name
 	}
@@ -32,11 +33,11 @@ class ParadoxParameterElement(
 	}
 	
 	override fun getTypeName(): String {
-		return PlsBundle.message("script.description.parameter")
+		return PlsBundle.message("script.description.modifier")
 	}
 	
 	override fun getIcon(): Icon {
-		return PlsIcons.Parameter
+		return PlsIcons.Modifier
 	}
 	
 	override fun getTextRange(): TextRange? {
@@ -48,7 +49,7 @@ class ParadoxParameterElement(
 	}
 	
 	override fun getPresentation(): ItemPresentation {
-		return ParadoxParameterElementPresentation(this)
+		return ParadoxModifierElementPresentation(this)
 	}
 	
 	override fun getProject(): Project {
@@ -64,18 +65,16 @@ class ParadoxParameterElement(
 	}
 	
 	override fun equals(other: Any?): Boolean {
-		return other is ParadoxParameterElement &&
+		return other is ParadoxModifierElement &&
 			name == other.name &&
-			definitionName == other.definitionName &&
-			definitionType == other.definitionType &&
+			templateExpression == other.templateExpression &&
 			project == other.project &&
 			gameType == other.gameType
 	}
 	
 	override fun hashCode(): Int {
 		var result = name.hashCode()
-		result = 31 * result + definitionName.hashCode()
-		result = 31 * result + definitionType.hashCode()
+		result = 31 * result + templateExpression.hashCode()
 		result = 31 * result + project.hashCode()
 		result = 31 * result + gameType.hashCode()
 		return result

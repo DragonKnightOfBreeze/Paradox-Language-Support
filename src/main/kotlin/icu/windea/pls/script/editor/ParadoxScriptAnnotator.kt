@@ -108,7 +108,7 @@ class ParadoxScriptAnnotator : Annotator {
 		}
 		
 		//如果不是字符串，除非是定义引用，否则不作高亮
-		if(element !is ParadoxScriptStringExpressionElement && configExpression.type != CwtDataType.TypeExpression) {
+		if(element !is ParadoxScriptStringExpressionElement && configExpression.type != CwtDataType.Definition) {
 			return
 		}
 		
@@ -142,7 +142,7 @@ class ParadoxScriptAnnotator : Annotator {
 				val attributesKey = Keys.DEFINITION_REFERENCE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
-			CwtDataType.TypeExpression -> {
+			CwtDataType.Definition -> {
 				if(text.isParameterAwareExpression()) return
 				val attributesKey = Keys.DEFINITION_REFERENCE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()

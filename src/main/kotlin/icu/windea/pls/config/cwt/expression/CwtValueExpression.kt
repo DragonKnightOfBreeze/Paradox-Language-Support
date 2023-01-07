@@ -95,7 +95,7 @@ class CwtValueExpression private constructor(
 			}
 			expressionString.surroundsWith('<', '>') -> {
 				val value = expressionString.substring(1, expressionString.length - 1)
-				CwtValueExpression(expressionString, CwtDataType.TypeExpression, value)
+				CwtValueExpression(expressionString, CwtDataType.Definition, value)
 			}
 			expressionString.surroundsWith("value[", "]") -> {
 				val value = expressionString.substring(6, expressionString.length - 1)

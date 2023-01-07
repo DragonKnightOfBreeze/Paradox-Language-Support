@@ -46,12 +46,12 @@ class ParadoxScriptExpressionPsiReference(
 	
 	override fun resolve(exact: Boolean): PsiElement? {
 		//根据对应的expression进行解析
-		return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.info.configGroup, isKey, exact = exact)
+		return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey, exact = exact)
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 		//根据对应的expression进行解析
-		return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.info.configGroup, isKey)
+		return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
 			.mapToArray { PsiElementResolveResult(it) }
 	}
 }

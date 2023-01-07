@@ -22,6 +22,7 @@ import icu.windea.pls.config.script.*
 import icu.windea.pls.config.script.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.index.*
@@ -100,6 +101,7 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
 		is ParadoxScriptExpressionPsiReference -> true
 		is ParadoxValueSetValueExpressionNode.Reference -> true
 		is ParadoxDataExpressionNode.Reference -> true
+		is ParadoxTemplateSnippetExpressionNode.Reference -> true
 		is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
 		is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
 		else -> false
@@ -219,7 +221,7 @@ fun resolveLink(link: String, sourceElement: PsiElement): PsiElement? {
 	return null
 }
 
-private fun resolveCwtLink(linkWithoutPrefix: String, sourceElement: PsiElement): CwtProperty? {
+private fun resolveCwtLink(linkWithoutPrefix: String, sourceElement: PsiElement): PsiElement? {
 	ProgressManager.checkCanceled()
 	val tokens = linkWithoutPrefix.split('/')
 	if(tokens.size > 4) return null
@@ -244,8 +246,10 @@ private fun resolveCwtLink(linkWithoutPrefix: String, sourceElement: PsiElement)
 		}
 		"enums" -> {
 			val name = tokens.getOrNull(2) ?: return null
+			val valueName = tokens.getOrNull(3)
 			val config = getCwtConfig(project).getValue(gameType).enums[name] ?: return null
-			return config.pointer.element
+			if(valueName == null) return config.pointer.element
+			return config.valueConfigMap.get(valueName)?.pointer?.element
 		}
 		"complex_enums" -> {
 			val name = tokens.getOrNull(2) ?: return null
@@ -254,8 +258,10 @@ private fun resolveCwtLink(linkWithoutPrefix: String, sourceElement: PsiElement)
 		}
 		"values" -> {
 			val name = tokens.getOrNull(2) ?: return null
+			val valueName = tokens.getOrNull(3)
 			val config = getCwtConfig(project).getValue(gameType).values[name] ?: return null
-			return config.pointer.element
+			if(valueName == null) return config.pointer.element
+			return config.valueConfigMap.get(valueName)?.pointer?.element
 		}
 		"modifier_categories" -> {
 			val name = tokens.getOrNull(2) ?: return null

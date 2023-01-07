@@ -24,6 +24,6 @@ class ParadoxArgumentPsiReference(
 		//向上找到definition
 		val definition = element.findParentDefinition() ?: return null
 		val definitionInfo = definition.definitionInfo ?: return null
-		return ParadoxParameterElement(element, name, definitionInfo.name, definitionInfo.type, definitionInfo.project, definitionInfo.gameType, false)
+		return ParadoxParameterElement(element, name, definitionInfo.name, definitionInfo.types, definitionInfo.project, definitionInfo.gameType, false)
 	}
 }

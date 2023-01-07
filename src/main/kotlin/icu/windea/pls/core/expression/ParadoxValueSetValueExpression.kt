@@ -34,7 +34,6 @@ import icu.windea.pls.script.highlighter.*
  */
 interface ParadoxValueSetValueExpression : ParadoxComplexExpression {
 	val configs: List<CwtConfig<*>>
-	val configGroup: CwtConfigGroup
 	
 	val valueSetValueNode: ParadoxValueSetValueExpressionNode
 	val scopeFieldExpression: ParadoxScopeFieldExpression?
@@ -44,8 +43,8 @@ interface ParadoxValueSetValueExpression : ParadoxComplexExpression {
 
 class ParadoxValueSetValueExpressionImpl(
 	override val text: String,
-	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
+	override val rangeInExpression: TextRange,
 	override val nodes: List<ParadoxExpressionNode>,
 	override val configs: List<CwtConfig<*>>,
 	override val configGroup: CwtConfigGroup
@@ -153,5 +152,5 @@ fun Resolver.resolve(text: String, textRange: TextRange, configs: List<CwtConfig
 		}
 	}
 	if(!canBeMismatched && nodes.isEmpty()) return null
-	return ParadoxValueSetValueExpressionImpl(text, textRange, isKey, nodes, configs, configGroup)
+	return ParadoxValueSetValueExpressionImpl(text, isKey, textRange, nodes, configs, configGroup)
 }

@@ -19,7 +19,7 @@ import kotlin.collections.mapNotNullTo
 private val validValueTypes = arrayOf(
 	CwtDataType.FilePath,
 	CwtDataType.Icon,
-	CwtDataType.TypeExpression
+	CwtDataType.Definition
 )
 
 /**
@@ -103,7 +103,7 @@ class CwtImageLocationExpression(
 			val config = ParadoxCwtConfigHandler.resolveValueConfigs(value).firstOrNull()
 				?.takeIf { it.expression.type in validValueTypes }
 				?: return null
-			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config, config.info.configGroup, false)
+			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config, config.expression, config.info.configGroup, false)
 			when {
 				//由filePath解析为DDS文件
 				resolved is PsiFile && resolved.fileType == DdsFileType -> {
@@ -155,7 +155,7 @@ class CwtImageLocationExpression(
 			val config = ParadoxCwtConfigHandler.resolveValueConfigs(value).firstOrNull()
 				?.takeIf { it.expression.type in validValueTypes }
 				?: return null
-			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config, config.info.configGroup, false)
+			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config, config.expression, config.info.configGroup, false)
 			when {
 				//由filePath解析为DDS文件
 				resolved is PsiFile && resolved.fileType == DdsFileType -> {

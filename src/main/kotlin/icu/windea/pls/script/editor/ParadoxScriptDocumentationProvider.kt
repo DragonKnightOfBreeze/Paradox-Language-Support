@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package icu.windea.pls.script.editor
 
 import com.intellij.codeInsight.documentation.*
@@ -190,6 +192,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上相关图片信息：去重后的一组DDS文件的filePath，或者sprite的definitionKey，不包括可选且没有对应的图片的项，按解析顺序排序
 			addRelatedImagesForDefinition(element, definitionInfo, sectionsList?.get(1))
 			
+			//加上生成的修正的信息
+			addGeneratedModifiersForDefinition(element, definitionInfo)
+			
 			//加上作用域上下文信息（如果支持）
 			addScopeContextForDefinition(element, definitionInfo, sectionsList?.get(0))
 			
@@ -262,6 +267,17 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			appendBr()
 			append(PlsDocBundle.message("prefix.relatedImage")).append(" ")
 			append(key).append(" = ").append(value)
+		}
+	}
+	
+	private fun StringBuilder.addGeneratedModifiersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+		val modifiers = definitionInfo.modifiers
+		if(modifiers.isEmpty()) return
+		for(modifier in modifiers) {
+			appendBr()
+			append(PlsDocBundle.message("prefix.generatedModifier")).append(" ")
+			append(modifier)
+			//目前不显示其他信息
 		}
 	}
 	

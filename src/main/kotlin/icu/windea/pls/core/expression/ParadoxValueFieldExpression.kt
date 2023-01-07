@@ -53,9 +53,10 @@ interface ParadoxValueFieldExpression : ParadoxComplexExpression {
 
 class ParadoxValueFieldExpressionImpl(
 	override val text: String,
-	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
-	override val nodes: List<ParadoxExpressionNode>
+	override val rangeInExpression: TextRange,
+	override val nodes: List<ParadoxExpressionNode>,
+	override val configGroup: CwtConfigGroup
 ) : AbstractExpression(text), ParadoxValueFieldExpression {
 	override val quoted: Boolean = false
 	
@@ -282,5 +283,5 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 		nodes.add(node)
 		if(dotNode != null) nodes.add(dotNode)
 	}
-	return ParadoxValueFieldExpressionImpl(text, textRange, isKey, nodes)
+	return ParadoxValueFieldExpressionImpl(text, isKey, textRange, nodes, configGroup)
 }

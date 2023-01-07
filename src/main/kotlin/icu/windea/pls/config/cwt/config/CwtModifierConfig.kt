@@ -5,24 +5,6 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.cwt.psi.*
 
-data class CwtOldModifierConfig(
-	override val pointer: SmartPsiElementPointer<CwtProperty>,
-	override val info: CwtConfigGroupInfo,
-	val name: String,
-	val categories: Set<String> //name or internal id
-) : CwtConfig<CwtProperty> {
-	val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
-	
-	val supportedScopes: Set<String> by lazy {
-		val categoryConfigs = categoryConfigMap.values
-		if(categoryConfigs.any { it.supportAnyScope }) {
-			ParadoxScopeConfigHandler.anyScopeIdSet
-		} else {
-			categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopes }
-		}
-	}
-}
-
 data class CwtModifierConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigGroupInfo,

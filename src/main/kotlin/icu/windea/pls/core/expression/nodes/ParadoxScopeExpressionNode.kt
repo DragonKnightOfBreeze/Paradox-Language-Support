@@ -13,4 +13,3 @@ sealed interface ParadoxScopeExpressionNode: ParadoxExpressionNode{
 		}
 	}
 }
-

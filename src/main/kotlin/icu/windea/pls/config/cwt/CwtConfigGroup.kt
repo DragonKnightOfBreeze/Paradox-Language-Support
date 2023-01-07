@@ -26,11 +26,15 @@ interface CwtConfigGroup {
 	val folders: Set<String>
 	
 	val types: Map<String, CwtTypeConfig>
-	val typeAndSwapTypeMap: Map<String, String>
+	//typeExpression - swapType
+	val typeToSwapTypeMap: Map<String, String>
+	//typeExpression - modifierSimpleName - modifierConfig
+	//job - job_$_add - <config>
+	val typeToModifiersMap: Map<String, Map<String, CwtModifierConfig>>
 	
-	val values: Map<String, CwtEnumValueConfig>
+	val values: Map<String, CwtEnumConfig>
 	//enumValue可以是int、float、bool类型，统一用字符串表示
-	val enums: Map<String, CwtEnumValueConfig>
+	val enums: Map<String, CwtEnumConfig>
 	//基于enum_name进行定位，对应的可能是key/value
 	val complexEnums: Map<String, CwtComplexEnumConfig>
 	
