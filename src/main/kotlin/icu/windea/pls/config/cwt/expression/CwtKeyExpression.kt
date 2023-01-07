@@ -93,7 +93,7 @@ class CwtKeyExpression private constructor(
 				val value = expressionString.substring(11, expressionString.length - 1)
 				CwtKeyExpression(expressionString, CwtDataType.AliasName, value)
 			}
-			CwtTemplateExpression.resolve(expressionString).isNotEmpty() -> {
+			!expressionString.surroundsWith("alias[", "]") && CwtTemplateExpression.resolve(expressionString).isNotEmpty() -> {
 				CwtKeyExpression(expressionString, CwtDataType.TemplateExpression)
 			}
 			expressionString.endsWith(']') -> {

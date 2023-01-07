@@ -72,9 +72,9 @@ fun Resolver.resolve(text: String, textRange: TextRange, template: CwtTemplateEx
 	for(snippet in snippets) {
 		if(snippet.type == CwtDataType.Constant) {
 			val expressionString = snippet.expressionString
-			i2 = text.indexOf(expressionString, i1)
+			i2 = text.lastIndexOf(expressionString, i1)
 			if(i2 == -1) return null
-			if(i2 != i1 && prevSnippet != null) {
+			if(i1 != i2 && prevSnippet != null) {
 				val nodeText = text.substring(i1, i2)
 				val nodeRange = TextRange.create(i1, i2)
 				val node = ParadoxTemplateSnippetExpressionNode(nodeText, nodeRange, prevSnippet, configGroup)
@@ -89,9 +89,9 @@ fun Resolver.resolve(text: String, textRange: TextRange, template: CwtTemplateEx
 			prevSnippet = snippet
 		}
 	}
-	if(i2 != i1 && prevSnippet != null) {
-		val nodeText = text.substring(i1, i2)
-		val nodeRange = TextRange.create(i1, i2)
+	if(i1 != text.length && prevSnippet != null) {
+		val nodeText = text.substring(i1)
+		val nodeRange = TextRange.create(i1, text.length)
 		val node = ParadoxTemplateSnippetExpressionNode(nodeText, nodeRange, prevSnippet, configGroup)
 		nodes.add(node)
 	}

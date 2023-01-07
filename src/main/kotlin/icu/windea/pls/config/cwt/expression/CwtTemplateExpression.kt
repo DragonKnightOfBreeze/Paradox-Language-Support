@@ -59,27 +59,33 @@ open class CwtTemplateExpression(
 							i2 = expressionString.indexOf(']', i1 + 5)
 							if(i2 == -1) return EmptyExpression //error
 							val nextIndex = i2 + 1
-							snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
+							if(startIndex != i1) {
+								snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
+							}
 							snippets.add(CwtValueExpression.resolve(expressionString.substring(i1, nextIndex)))
 							startIndex = nextIndex
 							continue
 						}
-						i1 = expressionString.indexOf("value[")
+						i1 = expressionString.indexOf("value[", startIndex)
 						if(i1 != -1) {
 							i2 = expressionString.indexOf(']', i1 + 6)
 							if(i2 == -1) return EmptyExpression //error
 							val nextIndex = i2 + 1
-							snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
+							if(startIndex != i1) {
+								snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
+							}
 							snippets.add(CwtValueExpression.resolve(expressionString.substring(i1, nextIndex)))
 							startIndex = nextIndex
 							continue
 						}
-						i1 = expressionString.indexOf('<')
+						i1 = expressionString.indexOf('<', startIndex)
 						if(i1 != -1) {
 							i2 = expressionString.indexOf('>', i1 + 1)
 							if(i2 == -1) return EmptyExpression //error
 							val nextIndex = i2 + 1
-							snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
+							if(startIndex != i1) {
+								snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
+							}
 							snippets.add(CwtValueExpression.resolve(expressionString.substring(i1, nextIndex)))
 							startIndex = nextIndex
 							continue
