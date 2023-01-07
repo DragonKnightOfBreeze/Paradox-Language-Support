@@ -402,9 +402,7 @@ object CwtConfigHandler {
 		//生成的修正，生成源可以未定义
 		val text = name
 		val textRange = TextRange.create(0, text.length)
-		val templateExpression = configGroup.modifiers.values.firstNotNullOfOrNull { config ->
-			ParadoxTemplateExpression.resolve(text, textRange, config.template, configGroup)
-		}
+		val templateExpression = ParadoxModifierConfigHandler.resolveModifierTemplate(text, textRange, configGroup)
 		if(templateExpression != null) return true
 		return false
 	}
@@ -1847,9 +1845,7 @@ object CwtConfigHandler {
 		val text = name
 		val textRange = TextRange.create(0, text.length)
 		val isKey = element is ParadoxScriptPropertyKey
-		val templateExpression = configGroup.modifiers.values.firstNotNullOfOrNull { config ->
-			ParadoxTemplateExpression.resolve(text, textRange, config.template, configGroup, isKey)
-		}
+		val templateExpression = ParadoxModifierConfigHandler.resolveModifierTemplate(text, textRange, configGroup, isKey)
 		if(templateExpression != null) {
 			val generatedModifierConfig = configGroup.modifiers[templateExpression.template.expressionString]
 			if(generatedModifierConfig == null) return null

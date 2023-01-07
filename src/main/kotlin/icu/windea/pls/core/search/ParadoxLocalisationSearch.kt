@@ -67,7 +67,7 @@ class ParadoxLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisationPrope
 			
 			//保证返回结果的名字的唯一性
 			return ParadoxLocalisationNameIndex.processFirstElementByKeys(project, scope,
-				predicate = { element -> selector.select(element) },
+				predicate = { element -> selector.selectAll(element) },
 				getDefaultValue = { selector.defaultValue },
 				resetDefaultValue = { selector.defaultValue = null },
 				processor = processor

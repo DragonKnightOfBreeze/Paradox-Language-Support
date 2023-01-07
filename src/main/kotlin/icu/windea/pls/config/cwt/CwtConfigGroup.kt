@@ -4,6 +4,7 @@ import com.intellij.openapi.project.*
 import com.intellij.util.containers.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.config.setting.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.config.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.model.*
@@ -62,6 +63,7 @@ interface CwtConfigGroup {
 	val inlineConfigGroup: Map<String, List<CwtInlineConfig>>
 	
 	val modifiers: Map<String, CwtModifierConfig>
+	val modifierTemplates: List<CwtTemplateExpression>
 	
 	//目前版本的CWT配置已经不再使用
 	val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig>

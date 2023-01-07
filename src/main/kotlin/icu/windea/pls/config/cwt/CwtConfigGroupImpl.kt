@@ -76,6 +76,10 @@ class CwtConfigGroupImpl(
 	override val inlineConfigGroup: MutableMap<String, MutableList<CwtInlineConfig>> = mutableMapOf()
 	
 	override val modifiers: MutableMap<String, CwtModifierConfig> = mutableMapOf()
+	override val modifierTemplates: List<CwtTemplateExpression> by lazy {
+		//put xxx_<xxx>_xxx before xxx_<xxx>
+		modifiers.mapNotNull { it.value.template }.sortedByDescending { it.snippetExpressions.size }
+	}
 	
 	init {
 		runReadAction {

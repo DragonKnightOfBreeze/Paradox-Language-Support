@@ -22,6 +22,10 @@ class ParadoxDistinctSelector<T, K>(
 class ParadoxFilterSelector<T>(
 	val predicate: (T) -> Boolean
 ): ParadoxSelector<T> {
+	override fun select(result: T): Boolean {
+		return predicate(result)
+	}
+	
 	override fun selectAll(result: T): Boolean {
 		return predicate(result)
 	}

@@ -1,10 +1,19 @@
 package icu.windea.pls.config.script
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.expression.*
 
 object ParadoxModifierConfigHandler {
+	@JvmStatic
+	fun resolveModifierTemplate(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null): ParadoxTemplateExpression? {
+		//不能直接这样做
+		return configGroup.modifiers.values.firstNotNullOfOrNull { config ->
+			ParadoxTemplateExpression.resolve(text, textRange, config.template, configGroup, isKey)
+		}
+	}
+	
 	@JvmStatic
 	fun getModifierNameKeys(modifierName: String, configGroup: CwtConfigGroup): List<String> {
 		//TODO 检查到底是如何确定的
