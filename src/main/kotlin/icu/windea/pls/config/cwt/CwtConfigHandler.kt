@@ -40,7 +40,7 @@ object CwtConfigHandler {
 	//region Common Methods
 	const val paramsEnumName = "scripted_effect_params"
 	
-	fun isParameter(config: CwtDataConfig<*>?) : Boolean {
+	fun isParameter(config: CwtDataConfig<*>?): Boolean {
 		if(config !is CwtPropertyConfig) return false
 		val keyExpression = config.keyExpression
 		return keyExpression.type == CwtDataType.Enum && keyExpression.value == paramsEnumName
@@ -147,7 +147,7 @@ object CwtConfigHandler {
 				if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
 				//匹配范围
 				if(isExact) {
-					val (min,max) = configExpression.extraValue<Tuple2<Int, Int?>>() ?: return true
+					val (min, max) = configExpression.extraValue<Tuple2<Int, Int?>>() ?: return true
 					val value = expression.text.toIntOrNull() ?: return true
 					return min <= value && (max == null || max >= value)
 				}
@@ -158,7 +158,7 @@ object CwtConfigHandler {
 				if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) return true
 				//匹配范围
 				if(isExact) {
-					val (min,max) = configExpression.extraValue<Tuple2<Float, Float?>>() ?: return true
+					val (min, max) = configExpression.extraValue<Tuple2<Float, Float?>>() ?: return true
 					val value = expression.text.toFloatOrNull() ?: return true
 					return min <= value && (max == null || max >= value)
 				}
@@ -394,7 +394,7 @@ object CwtConfigHandler {
 		//修正会由特定的定义类型生成
 		//TODO 修正会由经济类型（economic_category）的声明生成
 		val fastModifierConfig = configGroup.modifiers[name]
-		if(fastModifierConfig != null ) {
+		if(fastModifierConfig != null) {
 			//预定义的非生成的修正
 			if(fastModifierConfig.template.isEmpty()) return false //unexpected
 			return true
@@ -813,7 +813,6 @@ object CwtConfigHandler {
 					val typeFile = enumConfig.pointer.containingFile
 					for(enumValueConfig in enumValueConfigs) {
 						val name = enumValueConfig.value
-						//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 						val element = enumValueConfig.pointer.element ?: continue
 						val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
 							.withIcon(PlsIcons.EnumValue)
@@ -836,7 +835,6 @@ object CwtConfigHandler {
 					val query = ParadoxComplexEnumValueSearch.searchAll(enumName, project, selector = selector)
 					query.processQuery { complexEnum ->
 						val name = complexEnum.value
-						//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 						val builder = ParadoxScriptExpressionLookupElementBuilder.create(complexEnum, name)
 							.withIcon(PlsIcons.ComplexEnumValue)
 							.withTailText(tailText)
@@ -900,7 +898,6 @@ object CwtConfigHandler {
 			}
 			CwtDataType.ConstantKey -> {
 				val name = configExpression.value ?: return
-				//if(!name.matchesKeyword(keyword)) return //不预先过滤结果
 				val element = config.resolved().pointer.element ?: return
 				val typeFile = config.resolved().pointer.containingFile
 				val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
@@ -925,7 +922,6 @@ object CwtConfigHandler {
 					result.addExpressionElement(context, PlsLookupElements.noLookupElement)
 					return
 				}
-				//if(!name.matchesKeyword(keyword)) return //不预先过滤结果
 				val element = config.resolved().pointer.element ?: return
 				val typeFile = config.resolved().pointer.containingFile
 				val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
@@ -983,24 +979,23 @@ object CwtConfigHandler {
 			if(template.isEmpty()) {
 				//预定义的modifier
 				val name = modifierConfig.name
-				//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 				val modifierElement = ParadoxModifierElement(element, name, modifierConfig, null, project, gameType)
 				val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
 					.withIcon(PlsIcons.Modifier)
 					.withTailText(tailText)
 					.withScopeMatched(scopeMatched)
-					//.withPriority(PlsCompletionPriorities.modifierPriority)
+				//.withPriority(PlsCompletionPriorities.modifierPriority)
 				result.addScriptExpressionElement(context, builder)
 			} else {
 				//生成的modifier
-				processTemplateResolveResult(template, configGroup) {name ->
-					//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
-					val modifierElement = ParadoxModifierElement(element, name, modifierConfig, null, project, gameType)
+				processTemplateResolveResult(template, configGroup) { templateExpression ->
+					val name = templateExpression.text
+					val modifierElement = ParadoxModifierElement(element, name, modifierConfig, templateExpression, project, gameType)
 					val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
 						.withIcon(PlsIcons.Modifier)
 						.withTailText(tailText)
 						.withScopeMatched(scopeMatched)
-						//.withPriority(PlsCompletionPriorities.modifierPriority)
+					//.withPriority(PlsCompletionPriorities.modifierPriority)
 					result.addScriptExpressionElement(context, builder)
 					true
 				}
@@ -1069,7 +1064,6 @@ object CwtConfigHandler {
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = scope.name
-			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 			val element = scope.pointer.element ?: continue
 			val tailText = " from scopes"
 			val typeFile = scope.pointer.containingFile
@@ -1093,7 +1087,6 @@ object CwtConfigHandler {
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = linkConfig.prefix ?: continue
-			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 			val element = linkConfig.pointer.element ?: continue
 			val tailText = " from scope link ${linkConfig.name}"
 			val typeFile = linkConfig.pointer.containingFile
@@ -1153,7 +1146,6 @@ object CwtConfigHandler {
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = linkConfig.name
-			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 			val element = linkConfig.pointer.element ?: continue
 			val tailText = " from values"
 			val typeFile = linkConfig.pointer.containingFile
@@ -1177,7 +1169,6 @@ object CwtConfigHandler {
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = linkConfig.prefix ?: continue
-			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 			val element = linkConfig.pointer.element ?: continue
 			val tailText = " from value link ${linkConfig.name}"
 			val typeFile = linkConfig.pointer.containingFile
@@ -1266,7 +1257,6 @@ object CwtConfigHandler {
 				val valueSetValueConfigs = valueConfig.valueConfigMap.values
 				if(valueSetValueConfigs.isEmpty()) return@run
 				for(valueSetValueConfig in valueSetValueConfigs) {
-					//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 					val name = valueSetValueConfig.value
 					val element = valueSetValueConfig.pointer.element ?: continue
 					val typeFile = valueConfig.pointer.containingFile
@@ -1848,7 +1838,7 @@ object CwtConfigHandler {
 		//TODO 修正会由经济类型（economic_category）的声明生成
 		val gameType = configGroup.gameType ?: return null
 		val fastModifierConfig = configGroup.modifiers[name]
-		if(fastModifierConfig != null ) {
+		if(fastModifierConfig != null) {
 			//预定义的非生成的修正
 			if(fastModifierConfig.template.isEmpty()) return null //unexpected
 			return ParadoxModifierElement(element, name, fastModifierConfig, null, configGroup.project, gameType)
@@ -1884,7 +1874,7 @@ object CwtConfigHandler {
 	//endregion
 	
 	//region Other Methods
-	fun processTemplateResolveResult(templateExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, processor: Processor<String>) {
+	fun processTemplateResolveResult(templateExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, processor: Processor<ParadoxTemplateExpression>) {
 		//TODO
 	}
 	//endregion
