@@ -62,6 +62,7 @@ interface CwtConfigGroup {
 	//inline_script
 	val inlineConfigGroup: Map<String, List<CwtInlineConfig>>
 	
+	//key: lowercase
 	val modifiers: Map<String, CwtModifierConfig>
 	val modifierTemplates: List<CwtTemplateExpression>
 	

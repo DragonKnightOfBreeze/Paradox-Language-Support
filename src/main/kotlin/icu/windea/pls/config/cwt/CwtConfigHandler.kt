@@ -390,16 +390,16 @@ object CwtConfigHandler {
 	fun matchesModifier(name: String, configGroup: CwtConfigGroup): Boolean {
 		//修正会由特定的定义类型生成
 		//TODO 修正会由经济类型（economic_category）的声明生成
-		val fastModifierConfig = configGroup.modifiers[name]
-		if(fastModifierConfig != null) {
+		val modifierName = name.lowercase()
+		val modifierConfig = configGroup.modifiers[modifierName]
+		if(modifierConfig != null) {
 			//预定义的非生成的修正
-			if(fastModifierConfig.template.isNotEmpty()) return false //unexpected
+			if(modifierConfig.template.isNotEmpty()) return false //unexpected
 			return true
 		}
 		//生成的修正，生成源可以未定义
-		val text = name
-		val textRange = TextRange.create(0, text.length)
-		val templateExpression = ParadoxModifierConfigHandler.resolveModifierTemplate(text, textRange, configGroup)
+		val textRange = TextRange.create(0, modifierName.length)
+		val templateExpression = ParadoxModifierConfigHandler.resolveModifierTemplate(modifierName, textRange, configGroup)
 		if(templateExpression != null) return true
 		return false
 	}
@@ -1833,7 +1833,7 @@ object CwtConfigHandler {
 		//这里需要最后尝试解析为预定义的非生成的修正
 		val gameType = configGroup.gameType ?: return null
 		//尝试解析为生成的修正，生成源可以未定义
-		val text = name
+		val text = name.lowercase()
 		val textRange = TextRange.create(0, text.length)
 		val isKey = element is ParadoxScriptPropertyKey
 		val templateExpression = ParadoxModifierConfigHandler.resolveModifierTemplate(text, textRange, configGroup, isKey)

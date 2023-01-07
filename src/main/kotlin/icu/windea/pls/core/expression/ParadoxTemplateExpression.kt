@@ -73,9 +73,9 @@ fun Resolver.resolve(text: String, textRange: TextRange, template: CwtTemplateEx
 		if(snippet.type == CwtDataType.Constant) {
 			val expressionString = snippet.expressionString
 			i2 = if(index == snippets.lastIndex) {
-				text.lastIndexOf(expressionString)
+				text.lastIndexOf(expressionString, ignoreCase = true)
 			} else {
-				text.indexOf(expressionString, i1)
+				text.indexOf(expressionString, i1, ignoreCase = true)
 			}
 			if(i2 == -1) return null
 			if(i1 != i2 && prevSnippet != null) {
