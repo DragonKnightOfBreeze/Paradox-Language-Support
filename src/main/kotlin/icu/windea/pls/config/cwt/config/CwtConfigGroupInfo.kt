@@ -28,8 +28,6 @@ data class CwtConfigGroupInfo(
 	 */
 	val templateExpressions = mutableMapOf<CwtDataExpression, MutableList<CwtTemplateExpression>>()
 	
-	val aliasNameSupportScope = mutableSetOf<String>()
-	
 	fun acceptConfigExpression(configExpression: CwtDataExpression) {
 		when(configExpression.type) {
 			CwtDataType.FilePath -> {
@@ -46,12 +44,6 @@ data class CwtConfigGroupInfo(
 				}
 			}
 			else -> pass()
-		}
-	}
-	
-	fun acceptAliasConfig(aliasConfig: CwtAliasConfig) {
-		if(aliasConfig.expression.type == CwtDataType.ScopeField) {
-			aliasNameSupportScope.add(aliasConfig.name)
 		}
 	}
 }

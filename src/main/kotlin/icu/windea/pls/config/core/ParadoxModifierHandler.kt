@@ -18,8 +18,7 @@ object ParadoxModifierHandler {
 	//TODO 修正会由经济类型（economic_category）的声明生成
 	
 	@JvmStatic
-	fun getModifierInfo(element: ParadoxScriptStringExpressionElement, project: Project): ParadoxModifierInfo? {
-		if(DumbService.isDumb(project)) return resolveModifierInfo(element, element.value, project)
+	fun getModifierInfo(element: ParadoxScriptStringExpressionElement): ParadoxModifierInfo? {
 		return getModifierInfoFromCache(element)
 	}
 	
@@ -43,7 +42,7 @@ object ParadoxModifierHandler {
 		val modifierConfig = configGroup.modifiers[modifierName]?.takeIf { it.template.isEmpty() }
 		//尝试解析为生成的修正，生成源未定义时，使用预定义的修正
 		var generatedModifierConfig: CwtModifierConfig? = null
-		val templateExpression = resolveModifierTemplate(modifierName, configGroup)
+		var templateExpression = resolveModifierTemplate(modifierName, configGroup)
 		if(templateExpression != null) {
 			val canResolve = templateExpression.referenceNodes.all {
 				val reference = it.getReference(element)
@@ -52,6 +51,8 @@ object ParadoxModifierHandler {
 			if(canResolve) {
 				val templateString = templateExpression.template.expressionString
 				generatedModifierConfig = configGroup.modifiers[templateString]
+			} else {
+				templateExpression = null
 			}
 		}
 		if(modifierConfig == null && generatedModifierConfig == null) return null

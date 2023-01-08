@@ -4,7 +4,6 @@ import com.intellij.openapi.project.*
 import com.intellij.util.containers.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.config.setting.*
 import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.core.annotations.*
 
@@ -77,12 +76,12 @@ interface CwtConfigGroup {
 	val linksAsScopeWithoutPrefixSorted: List<CwtLinkConfig>
 	val linksAsValueWithoutPrefixSorted: List<CwtLinkConfig>
 	
-	//支持作用域上下文的CWT别名规则
-	val aliasNameSupportScope: Set<String>
-	//支持作用域上下文的定义类型
+	//必定支持作用域上下文的CWT别名规则
+	val aliasNamesSupportScope: Set<String>
+	//必定支持作用域上下文的定义类型
 	val definitionTypesSupportScope: Set<String>
-	//支持参数的定义类型
-	val definitionTypesSupportParameters: Set<String>
 	//不需要检查系统作用域切换的定义类型
 	val definitionTypesSkipCheckSystemScope: Set<String>
+	//支持参数的定义类型
+	val definitionTypesSupportParameters: Set<String>
 }

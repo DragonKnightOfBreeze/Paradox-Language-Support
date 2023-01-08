@@ -51,7 +51,7 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
 			if(!runResult) return null
 			return GotoData(definition, targets.toTypedArray(), emptyList())
 		}
-		val modifierInfo = ParadoxModifierHandler.getModifierInfo(element, project)
+		val modifierInfo = ParadoxModifierHandler.getModifierInfo(element)
 		if(modifierInfo != null) {
 			val gameType = modifierInfo.gameType
 			val configGroup = getCwtConfig(project).getValue(gameType)

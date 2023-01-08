@@ -5,17 +5,14 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
-import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.config.setting.*
-import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.core.*
 import icu.windea.pls.config.core.config.*
+import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.model.*
-import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import kotlin.collections.isNullOrEmpty
 import kotlin.collections.mapNotNullTo
@@ -90,6 +87,35 @@ class CwtConfigGroupImpl(
 			.associateBy { it.name }
 	}
 	
+	override val aliasNamesSupportScope: MutableSet<String> = mutableSetOf(
+		"modifier", //也支持，但不能切换作用域
+		"trigger",
+		"effect",
+		//另外加上可以切换作用域的alias
+	)
+	
+	override val definitionTypesSupportScope: MutableSet<String> = mutableSetOf(
+		"game_rule",
+		"script_effect",
+		"script_trigger",
+		"on_action", //也支持，其中调用的事件的类型要匹配
+	)
+	
+	override val definitionTypesSkipCheckSystemScope: MutableSet<String> = mutableSetOf(
+		"event",
+		"game_rule",
+		"script_trigger",
+		"script_effect",
+		"script_value",
+	)
+	
+	override val definitionTypesSupportParameters: MutableSet<String> = mutableSetOf(
+		"script_trigger",
+		"script_effect",
+		"script_value", //SV也支持参数
+		"inline_script", //内联脚本也支持参数（并且可以表示多条语句）
+	)
+	
 	init {
 		runReadAction {
 			for(virtualFile in fileGroup.values) {
@@ -142,40 +168,6 @@ class CwtConfigGroupImpl(
 	}
 	override val linksAsValueWithoutPrefixSorted: List<CwtLinkConfig> by lazy {
 		linksAsValueWithoutPrefix.values.sortedByPriority(this) { it.dataSource!! }
-	}
-	
-	override val aliasNameSupportScope: Set<String> by lazy { 
-		buildSet {
-			addAll(info.aliasNameSupportScope)
-			add("modifier") //也支持，但不能切换作用域
-		}
-	}
-	
-	override val definitionTypesSupportScope: Set<String> by lazy {
-		buildSet {
-			add("game_rule")
-			add("script_effect")
-			add("script_trigger")
-			add("on_action") //也支持，其中调用的事件的类型要匹配
-		}
-	}
-	
-	override val definitionTypesSupportParameters: Set<String> by lazy {
-		buildSet {
-			addAll(info.aliasNameSupportScope)
-			add("script_value") //SV也支持参数
-			add("inline_script") //内联脚本也支持参数（并且可以表示多条语句）
-		}
-	}
-	
-	override val definitionTypesSkipCheckSystemScope: Set<String> by lazy {
-		buildSet { 
-			add("event")
-			add("game_rule")
-			add("script_trigger")
-			add("script_effect")
-			add("script_value")
-		}
 	}
 	
 	//解析CSV
@@ -880,7 +872,10 @@ class CwtConfigGroupImpl(
 		return CwtAliasConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, subName)
 			.apply {
 				info.acceptConfigExpression(subNameExpression)
-				info.acceptAliasConfig(this)
+				//加上可以切换作用域的alias
+				if(expression.type == CwtDataType.ScopeField) {
+					aliasNamesSupportScope.add(name)
+				}
 			}
 	}
 	

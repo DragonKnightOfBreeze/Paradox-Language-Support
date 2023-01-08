@@ -124,8 +124,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val byName = if(shortName == name) null else name
 			val prefix = when {
 				configType?.isReference == true -> configType.prefix
-				referenceElement is ParadoxScriptPropertyKey && referenceElement.name == shortName -> PlsDocBundle.message("prefix.definitionProperty")
-				referenceElement is ParadoxScriptValue && referenceElement.name == shortName -> PlsDocBundle.message("prefix.definitionValue")
+				referenceElement is ParadoxScriptPropertyKey -> PlsDocBundle.message("prefix.definitionProperty")
+				referenceElement is ParadoxScriptValue -> PlsDocBundle.message("prefix.definitionValue")
 				else -> configType?.prefix
 			}
 			val typeCategory = configType?.category
@@ -295,7 +295,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val aliasConfig = aliasConfigs.singleOrNull()
 					?: aliasConfigs.find { element.isSamePosition(it.pointer.element) }
 					?: return
-				if(aliasConfig.name !in configGroup.aliasNameSupportScope) return
+				if(aliasConfig.name !in configGroup.aliasNamesSupportScope) return
 				if(sections != null) {
 					val supportedScopes = aliasConfig.supportedScopes
 					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))

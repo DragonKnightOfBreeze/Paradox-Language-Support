@@ -48,7 +48,7 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 							configGroup.values[name]?.pointer?.element?.let { add(it) }
 						}
 						dataType == CwtDataType.Modifier -> {
-							val modifierInfo = ParadoxModifierHandler.getModifierInfo(location, file.project)
+							val modifierInfo = ParadoxModifierHandler.getModifierInfo(location)
 							if(modifierInfo != null) {
 								modifierInfo.generatedModifierConfig?.pointer?.element?.let { add(it) }
 								modifierInfo.modifierConfig?.pointer?.element?.let { add(it) }

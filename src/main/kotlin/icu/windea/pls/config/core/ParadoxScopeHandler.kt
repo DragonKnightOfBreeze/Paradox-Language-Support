@@ -3,10 +3,10 @@ package icu.windea.pls.config.core
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
@@ -113,7 +113,7 @@ object ParadoxScopeHandler {
 				it.keyExpression.type == CwtDataType.AliasName -> it.keyExpression.value
 				else -> null
 			}
-			aliasName != null && aliasName in configGroup.aliasNameSupportScope
+			aliasName != null && aliasName in configGroup.aliasNamesSupportScope
 		}
 	}
 	
@@ -124,7 +124,7 @@ object ParadoxScopeHandler {
 				val inlineableConfig = currentConfig.inlineableConfig
 				if(inlineableConfig is CwtAliasConfig) {
 					val aliasName = inlineableConfig.name
-					if(aliasName in configGroup.aliasNameSupportScope) return true
+					if(aliasName in configGroup.aliasNamesSupportScope) return true
 				}
 			}
 			currentConfig = currentConfig.parent ?: break

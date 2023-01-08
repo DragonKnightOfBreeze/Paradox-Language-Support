@@ -111,7 +111,9 @@ enum class CwtConfigType(
 	fun getShortName(name: String) : String{
 		//简单判断
 		return when(this) {
-			Modifier, Trigger, Effect -> name.substringIn('[',']').substringAfter(':')
+			Type, Subtype, Enum, ComplexEnum, ValueSet -> name.substringIn('[',']')
+			SingleAlias -> name.substringIn('[',']')
+			Alias, Modifier, Trigger, Effect -> name.substringIn('[',']').substringAfter(':')
 			else -> name
 		}
 	}

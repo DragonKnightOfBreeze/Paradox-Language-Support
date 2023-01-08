@@ -433,7 +433,7 @@ object CwtConfigHandler {
 			CwtDataType.IntValueField -> 30
 			CwtDataType.VariableField -> 20
 			CwtDataType.IntVariableField -> 20
-			CwtDataType.Modifier -> 80
+			CwtDataType.Modifier -> 55 //lower than definition
 			CwtDataType.SingleAliasRight -> 0 //不期望匹配到
 			CwtDataType.AliasName -> 0 //不期望匹配到
 			CwtDataType.AliasKeysField -> 0 //不期望匹配到
@@ -473,9 +473,7 @@ object CwtConfigHandler {
 		
 		context.put(PlsCompletionKeys.isKeyKey, true)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
-		if(ParadoxScopeHandler.isScopeContextSupported(definitionElement)) {
-			context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeHandler.getScopeContext(definitionElement))
-		}
+		context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeHandler.getScopeContext(definitionElement))
 		
 		configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
 			for(config in configsWithSameKey) {
@@ -501,9 +499,7 @@ object CwtConfigHandler {
 		
 		context.put(PlsCompletionKeys.isKeyKey, false)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
-		//if(ParadoxScopeHandler.isScopeContextSupported(definitionElement)) {
-		//	context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeHandler.getScopeContext(definitionElement))
-		//}
+		context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeHandler.getScopeContext(definitionElement))
 		
 		for(config in configs) {
 			if(config is CwtPropertyConfig) {
@@ -1825,7 +1821,7 @@ object CwtConfigHandler {
 		if(element !is ParadoxScriptStringExpressionElement) return null
 		val project = configGroup.project
 		val modifierInfo = when{
-			name == element.value -> ParadoxModifierHandler.getModifierInfo(element, project)
+			name == element.value -> ParadoxModifierHandler.getModifierInfo(element)
 			else -> ParadoxModifierHandler.resolveModifierInfo(element, name, project)
 		} 
 		if(modifierInfo == null) return null

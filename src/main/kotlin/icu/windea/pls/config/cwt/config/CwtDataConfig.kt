@@ -2,10 +2,10 @@ package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.core.*
 import icu.windea.pls.config.core.config.*
+import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 
@@ -44,6 +44,11 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 			}
 		}
 		option?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
+	}
+	
+	val hasScopeOption by lazy {
+		options?.any { it.key == "replace_scope" || it.key == "replace_scopes" || it.key == "push_scope" || it.key == "scope" || it.key == "scopes" }
+			?: false
 	}
 	
 	//may on:
