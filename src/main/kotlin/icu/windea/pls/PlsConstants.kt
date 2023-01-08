@@ -6,9 +6,9 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.util.*
 import icons.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.script.config.*
-import icu.windea.pls.config.script.config.ParadoxModifierInfo
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 
@@ -96,6 +96,7 @@ object PlsKeys {
 	val cachedTextColorInfoKey = Key.create<CachedValue<ParadoxTextColorInfo>>("paradox.cached.textColorInfo")
 	val cachedModifierInfoKey = Key.create<CachedValue<ParadoxModifierInfo>>("paradox.cached.modifierInfo")
 	val cachedScopeContextKey = Key.create<CachedValue<ParadoxScopeContext>>("paradox.cached.scopeContext")
+	val cachedCwtConfigTypeKey = Key.create<CachedValue<CwtConfigType>>("paradox.cached.cwtConfigType")
 	
 	val injectedInfoKey = Key.create<List<String>>("paradox.injectedInfo")
 	

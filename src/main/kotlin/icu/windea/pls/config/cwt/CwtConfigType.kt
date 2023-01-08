@@ -1,4 +1,4 @@
-package icu.windea.pls.config.cwt.config
+package icu.windea.pls.config.cwt
 
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -100,20 +100,42 @@ enum class CwtConfigType(
 	open val icon: Icon? = null
 	
 	companion object {
-		//属性名匹配+父属性名匹配，不检查属性是否在正确的位置，插件开发者应当保证CWT配置是正确的……
-		
+		@JvmStatic
 		fun resolve(element: CwtProperty): CwtConfigType? {
+			return CachedValuesManager.getCachedValue(element, PlsKeys.cachedCwtConfigTypeKey) {
+				val file = element.containingFile
+				val value =  doResolve(element, file)
+				CachedValueProvider.Result.create(value, file)
+			}
+		}
+		
+		private fun doResolve(element: CwtProperty, file: PsiFile): CwtConfigType? {
+			val fileKey = file.name.substringBefore('.')
 			val name = element.name
-			return when {
-				name.surroundsWith("type[", "]") -> Type
-				name.surroundsWith("subtype[", "]") -> Subtype
-				name.surroundsWith("enum[", "]") -> Enum
-				name.surroundsWith("complex_enum[", "]") -> ComplexEnum
-				name.surroundsWith("value[", "]") -> ValueSet
-				name.surroundsWith("single_alias[", "]") -> SingleAlias
-				name.surroundsWith("alias[", "]") -> Alias
+			when {
+				name.surroundsWith("type[", "]") -> {
+					Type
+				}
+				name.surroundsWith("subtype[", "]") -> {
+					Subtype
+				}
+				name.surroundsWith("enum[", "]") -> {
+					Enum
+				}
+				name.surroundsWith("complex_enum[", "]") -> {
+					ComplexEnum
+				}
+				name.surroundsWith("value[", "]") -> {
+					ValueSet
+				}
+				name.surroundsWith("single_alias[", "]") -> {
+					SingleAlias
+				}
+				name.surroundsWith("alias[", "]") -> {
+					Alias
+				}
 				else -> {
-					val parentProperty = element.parentOfType<CwtProperty>() ?: return null
+					val parentProperty = element.parentProperty() ?: return null
 					val parentName = parentProperty.name
 					when {
 						parentName == "links" -> Link
@@ -123,30 +145,38 @@ enum class CwtConfigType(
 						parentName == "modifiers" -> Modifier
 						parentName == "scopes" -> Scope
 						parentName == "scope_groups" -> ScopeGroup
-						parentName == "system_scopes" && getFileKey(parentProperty) == "system_scopes" -> SystemScope
-						parentName == "localisation_locales" && getFileKey(parentProperty) == "localisation_locales" -> LocalisationLocale
-						parentName == "localisation_predefined_parameters" && getFileKey(parentProperty) == "localisation_predefined_parameters" -> LocalisationPredefinedParameter
+						parentName == "system_scopes" && fileKey == "system_scopes" -> SystemScope
+						parentName == "localisation_locales" && fileKey == "localisation_locales" -> LocalisationLocale
+						parentName == "localisation_predefined_parameters" && fileKey == "localisation_predefined_parameters" -> LocalisationPredefinedParameter
 						else -> null
 					}
 				}
 			}
+			return null
 		}
 		
 		fun resolve(element: CwtValue): CwtConfigType? {
+			return CachedValuesManager.getCachedValue(element, PlsKeys.cachedCwtConfigTypeKey) {
+				val file = element.containingFile
+				val value =  doResolve(element, file)
+				CachedValueProvider.Result.create(value, file)
+			}
+		}
+		
+		private fun doResolve(element: CwtValue, file: PsiFile): CwtConfigType? {
+			val fileKey = file.name.substringBefore('.')
 			val parentProperty = element.parentOfType<CwtProperty>() ?: return null
 			val parentName = parentProperty.name
-			val parentParentProperty = parentProperty.parentOfType<CwtProperty>()
+			val parentParentProperty = parentProperty.parentProperty()
 			val parentParentName = parentParentProperty?.name
 			return when {
 				parentName.surroundsWith("enum[", "]") -> EnumValue
 				parentName.surroundsWith("value[", "]") -> ValueSetValue
-				parentParentName == "scope_groups" -> Scope
+				parentParentName == "scope_groups" && fileKey == "scopes" -> Scope
 				else -> null
 			}
 		}
 		
-		private fun getFileKey(element: PsiElement): String? {
-			return element.containingFile?.name?.substringBefore('.')
-		}
+		private fun CwtProperty.parentProperty() = parentOfType<CwtProperty>()
 	}
 }
