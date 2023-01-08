@@ -1,12 +1,17 @@
+@file:Suppress("UnusedReceiverParameter")
+
 package icu.windea.pls.core.editor
 
 import ai.grazie.utils.*
+import com.intellij.codeInsight.documentation.*
 import com.intellij.lang.documentation.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
@@ -14,8 +19,13 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.search.*
+import icu.windea.pls.core.selector.chained.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
+import java.util.*
 
 @Suppress("UNUSED_PARAMETER")
 class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
@@ -28,6 +38,8 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		if(link == null || context == null) return null
 		return resolveLink(link, context)
 	}
+	
+	//这里为RenameableFakePsiElement，也就是那些实际上没有声明处的PsiElement，提供快速文档
 	
 	override fun getQuickNavigateInfo(element: PsiElement, originalElement: PsiElement?): String? {
 		return when(element) {
@@ -75,7 +87,8 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun getModifierInfo(element: ParadoxModifierElement, originalElement: PsiElement?): String {
 		return buildString {
-			buildModifierDefinition(element)
+			val configGroup = element.modifierConfig.info.configGroup
+			buildModifierDefinition(element, configGroup, null)
 		}
 	}
 	
@@ -124,7 +137,10 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun getModifierDoc(element: ParadoxModifierElement, originalElement: PsiElement?): String {
 		return buildString {
-			buildModifierDefinition(element)
+			val configGroup = element.modifierConfig.info.configGroup
+			val sectionsList = List(3) { mutableMapOf<String, String>() }
+			buildModifierDefinition(element, configGroup, sectionsList)
+			buildSections(sectionsList)
 		}
 	}
 	
@@ -135,7 +151,6 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 			//加上名字
 			val name = element.name
 			append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-			
 			
 			//加上定义信息
 			val definitionName = element.definitionName
@@ -179,7 +194,11 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildModifierDefinition(element: ParadoxModifierElement) {
+	private fun StringBuilder.buildModifierDefinition(
+		element: ParadoxModifierElement,
+		configGroup: CwtConfigGroup,
+		sectionsList: List<MutableMap<String, String>>?
+	) {
 		definition {
 			//没有文件信息
 			
@@ -190,7 +209,6 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 			//加上模版信息
 			val templateExpression = element.templateExpression
 			if(templateExpression != null) {
-				val configGroup = templateExpression.configGroup
 				val gameType = element.gameType
 				val template = templateExpression.template
 				val templateString = template.expressionString
@@ -255,6 +273,194 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 							else -> pass()
 						}
 					}
+				}
+			}
+			
+			addModifierRelatedLocalisations(element, name, configGroup, sectionsList?.get(2))
+			addModifierIcon(element, name, configGroup, sectionsList?.get(1))
+			addModifierScope(element, name, configGroup, sectionsList?.get(0))
+			addScopeContext(element, name, configGroup, sectionsList?.get(0))
+		}
+	}
+	
+	private fun StringBuilder.addModifierRelatedLocalisations(
+		element: ParadoxModifierElement,
+		name: String,
+		configGroup: CwtConfigGroup,
+		sections: MutableMap<String, String>?
+	) {
+		val render = getSettings().documentation.renderRelatedLocalisationsForModifiers
+		ProgressManager.checkCanceled()
+		val gameType = configGroup.gameType ?: return
+		val nameKeys = ParadoxModifierConfigHandler.getModifierNameKeys(name, configGroup)
+		val localisation = nameKeys.firstNotNullOfOrNull {
+			val selector = localisationSelector().gameType(gameType).preferRootFrom(element).preferLocale(preferredParadoxLocale())
+			ParadoxLocalisationSearch.search(it, configGroup.project, selector = selector).find()
+		}
+		val descKeys = ParadoxModifierConfigHandler.getModifierDescKeys(name, configGroup)
+		val descLocalisation = descKeys.firstNotNullOfOrNull {
+			val descSelector = localisationSelector().gameType(gameType).preferRootFrom(element).preferLocale(preferredParadoxLocale())
+			ParadoxLocalisationSearch.search(it, configGroup.project, selector = descSelector).find()
+		}
+		//如果没找到的话，不要在文档中显示相关信息
+		if(localisation != null) {
+			appendBr()
+			append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ")
+			append("Name = ").appendLocalisationLink(gameType, localisation.name, element, resolved = true)
+		}
+		if(descLocalisation != null) {
+			appendBr()
+			append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ")
+			append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, element, resolved = true)
+		}
+		if(sections != null && render) {
+			if(localisation != null) {
+				val richText = ParadoxLocalisationTextRenderer.render(localisation)
+				sections.put("Name", richText)
+			}
+			if(descLocalisation != null) {
+				val richText = ParadoxLocalisationTextRenderer.render(descLocalisation)
+				sections.put("Desc", richText)
+			}
+		}
+	}
+	
+	private fun StringBuilder.addModifierIcon(
+		element: ParadoxModifierElement,
+		name: String,
+		configGroup: CwtConfigGroup,
+		sections: MutableMap<String, String>?
+	) {
+		val render = getSettings().documentation.renderIconForModifiers
+		ProgressManager.checkCanceled()
+		val gameType = configGroup.gameType ?: return
+		val iconPaths = ParadoxModifierConfigHandler.getModifierIconPaths(name, configGroup)
+		val (iconPath, iconFile) = iconPaths.firstNotNullOfOrNull {
+			val iconSelector = fileSelector().gameType(gameType).preferRootFrom(element)
+			it to ParadoxFilePathSearch.search(it, configGroup.project, selector = iconSelector).find()
+		} ?: (null to null)
+		//如果没找到的话，不要在文档中显示相关信息
+		if(iconPath != null && iconFile != null) {
+			appendBr()
+			append(PlsDocBundle.message("prefix.relatedImage")).append(" ")
+			append("Icon = ").appendFilePathLink(gameType, iconPath, element, resolved = true)
+		}
+		if(sections != null && render) {
+			if(iconFile != null) {
+				val url = ParadoxDdsUrlResolver.resolveByFile(iconFile)
+				sections.put("Icon", buildString { appendImgTag(url) })
+			}
+		}
+	}
+	
+	private fun StringBuilder.addModifierScope(
+		element: ParadoxModifierElement,
+		name: String,
+		configGroup: CwtConfigGroup,
+		sections: MutableMap<String, String>?
+	) {
+		//即使是在CWT文件中，如果可以推断得到CWT规则组，也显示作用域信息
+		
+		if(!getSettings().documentation.showScopes) return
+		//为link提示名字、描述、输入作用域、输出作用域的文档注释
+		//为alias modifier localisation_command等提供分类、支持的作用域的文档注释
+		//仅为脚本文件和本地化文件中的引用提供
+		val contextElement = element
+		val gameType = configGroup.gameType
+		val modifierConfig = element.modifierConfig
+		if(sections != null) {
+			val categoryNames = modifierConfig.categoryConfigMap.keys
+			if(categoryNames.isNotEmpty()) {
+				sections.put(PlsDocBundle.message("sectionTitle.categories"), getCategoriesText(categoryNames, gameType, contextElement))
+			}
+			
+			val supportedScopes = modifierConfig.supportedScopes
+			sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
+		}
+	}
+	
+	private fun getCategoriesText(categories: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
+		return buildString {
+			var appendSeparator = false
+			append("<code>")
+			for(category in categories) {
+				if(appendSeparator) append(", ") else appendSeparator = true
+				appendCwtLink(category, "${gameType.id}/modifier_categories/$category", contextElement)
+			}
+			append("</code>")
+		}
+	}
+	
+	private fun getScopeText(scope: String, gameType: ParadoxGameType?, contextElement: PsiElement): String {
+		return buildString {
+			append("<code>")
+			if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
+				append(scope)
+			} else {
+				appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
+			}
+			append("</code>")
+		}
+	}
+	
+	private fun getScopesText(scopes: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
+		return buildString {
+			var appendSeparator = false
+			append("<code>")
+			for(scope in scopes) {
+				if(appendSeparator) append(", ") else appendSeparator = true
+				if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
+					append(scope)
+				} else {
+					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
+				}
+			}
+			append("</code>")
+		}
+	}
+	
+	private fun StringBuilder.addScopeContext(
+		element: ParadoxModifierElement,
+		name: String,
+		configGroup: CwtConfigGroup,
+		sections: MutableMap<String, String>?
+	) {
+		//进行代码提示时不应当显示作用域上下文信息
+		@Suppress("DEPRECATION")
+		if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
+		
+		val show = getSettings().documentation.showScopeContext
+		if(!show) return
+		if(sections == null) return
+		val memberElement = element.parentOfType<ParadoxScriptMemberElement>(true) ?: return
+		if(!ParadoxScopeConfigHandler.isScopeContextSupported(memberElement)) return
+		val scopeContext = ParadoxScopeConfigHandler.getScopeContext(memberElement)
+		if(scopeContext == null) return
+		//TODO 如果作用域引用位于表达式中，应当使用那个位置的作用域上下文，但是目前实现不了，因为这里的referenceElement是整个scriptProperty
+		val scopeContextToUse = scopeContext
+		val contextElement = element
+		val gameType = configGroup.gameType
+		val scopeContextText = buildString {
+			var appendSeparator = false
+			scopeContextToUse.map.forEach { (systemScope, scope) ->
+				if(appendSeparator) appendBr() else appendSeparator = true
+				appendCwtLink(systemScope, "${gameType.id}/system_scopes/$systemScope", contextElement)
+				append(" = ")
+				if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
+					append(scope)
+				} else {
+					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
+				}
+			}
+		}
+		sections.put(PlsDocBundle.message("sectionTitle.scopeContext"), "<code>$scopeContextText</code>")
+	}
+	
+	private fun StringBuilder.buildSections(sectionsList: List<Map<String, String>>) {
+		sections {
+			for(sections in sectionsList) {
+				for((key, value) in sections) {
+					section(key, value)
 				}
 			}
 		}

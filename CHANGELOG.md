@@ -59,7 +59,7 @@
 ## PROCESS
 
 * [X] modifier忽略大小写
-* [ ] 快速文档中显示modifier的相关本地化、图标、分类、支持的作用域、作用域上下文信息
+* [ ] 快速文档中显示modifier的生成模版、生成源、相关本地化、图标、分类、支持的作用域、作用域上下文信息
 * [ ] 支持补全模版表达式和modifier
 * [ ] 转到相关本地化/图片操作也可以用于modifier
 * [ ] 编写生成器解析日志并生成trigger和effect的作用域信息（输入的作用域+输出的作用域）
@@ -69,7 +69,6 @@
 ```
 # errors found while check ECI
 overlord_gaiaseeder_upkeep_machine
-有时候某些inlayHints不显示
 ```
 
 ## 0.7.11
@@ -83,8 +82,8 @@ overlord_gaiaseeder_upkeep_machine
 * 新增功能
   * 快速文档（`Quick Documentation`）
     * [X] 优化CWT规则的快速文档显示
-    * [X] 在快速文档中显示模版信息（例如，`job_<job>`）
-    * [X] 如果是生成的修饰符，在快速文档中显示生成源的信息，包括名字和类型（例如，`job_xxx`）
+    * [ ] 如果是修饰符，在快速文档中显示相关本地化、图标、分类、支持的作用域、作用域上下文等信息
+    * [X] 如果是生成修饰符，在快速文档中显示生成模版（例如，`job_<job>_add`）和生成源的信息（例如，`job_xxx_add`）
   * 引用解析
     * [X] 可以通过`Ctrl+Click`查找使用
   * 代码检查（`Code > Inspect Code...`）
