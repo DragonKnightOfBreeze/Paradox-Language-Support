@@ -160,7 +160,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 			val gameType = element.gameType
 			appendBr().appendIndent()
 			append(PlsDocBundle.message("ofDefinition")).append(" ")
-			append(definitionName.escapeXml().orAnonymous())
+			appendDefinitionLink(gameType, definitionName, definitionType, element)
 			append(": ")
 			
 			val type = definitionType.first()

@@ -29,7 +29,8 @@ class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
 				if(!aliasSubName.isNullOrEmpty()) extraWords.add(aliasSubName)
 			}
 			CwtConfigType.Link -> {
-				val prefixProperty = target.findChildOfType<CwtProperty> { it.name == "prefix" }
+				val prefixProperty = target.propertyValue?.castOrNull<CwtBlock>()
+					?.findChildOfType<CwtProperty> { it.name == "prefix" }
 				val prefix = prefixProperty?.propertyValue?.castOrNull<CwtString>()?.stringValue
 				if(!prefix.isNullOrEmpty()) extraWords.add(prefix)
 			}

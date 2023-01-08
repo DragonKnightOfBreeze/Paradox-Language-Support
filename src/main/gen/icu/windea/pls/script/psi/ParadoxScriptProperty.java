@@ -43,10 +43,6 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   @Nullable
   ParadoxScriptBlock getBlock();
 
-  //WARNING: getDefinitionType(...) is skipped
-  //matching getDefinitionType(ParadoxScriptProperty, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
-
   @Nullable
   ParadoxDataType getType();
 
