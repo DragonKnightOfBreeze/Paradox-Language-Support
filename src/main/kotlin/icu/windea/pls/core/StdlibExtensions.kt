@@ -17,14 +17,15 @@ import kotlin.contracts.*
 import kotlin.math.*
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun pass() {}
+inline fun pass() {
+}
 
 @OptIn(ExperimentalContracts::class)
 inline fun <T : R, R> T.letIf(condition: Boolean, block: (T) -> R): R {
 	contract {
 		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
 	}
-	return if (condition) block(this) else this
+	return if(condition) block(this) else this
 }
 
 @OptIn(ExperimentalContracts::class)
@@ -32,7 +33,7 @@ inline fun <T : R, R> T.letUnless(condition: Boolean, block: (T) -> R): R {
 	contract {
 		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
 	}
-	return if (!condition) block(this) else this
+	return if(!condition) block(this) else this
 }
 
 fun Number.format(digits: Int): String {
@@ -134,7 +135,7 @@ fun String.substringInLast(prefix: String, suffix: String, missingDelimiterValue
 
 private val blankRegex = "\\s+".toRegex()
 
-fun String.splitByBlank(limit: Int = 0) : List<String> {
+fun String.splitByBlank(limit: Int = 0): List<String> {
 	return split(blankRegex, limit)
 }
 
@@ -177,7 +178,7 @@ fun String.isLeftQuoted(): Boolean {
 	return startsWith('"')
 }
 
-fun String.isRightQuoted() : Boolean {
+fun String.isRightQuoted(): Boolean {
 	return length > 1 && endsWith('"') && get(length - 2) != '\\'
 }
 
@@ -235,7 +236,7 @@ fun String.unquote(): String {
 					'\"' -> append(c)
 					else -> append('\\').append(c)
 				}
-			} else if(c == '\\'){
+			} else if(c == '\\') {
 				escape = true
 			} else {
 				append(c)
@@ -307,10 +308,10 @@ fun String.matchesKeyword(keyword: String): Boolean {
 	var index = -1
 	var lastIndex = -2
 	for(c in keyword) {
-		index = indexOf(c,index+1,true)
+		index = indexOf(c, index + 1, true)
 		when {
 			index == -1 -> return false
-			c !in keywordDelimiters && index != 0 && lastIndex != index-1 && this[index-1] !in keywordDelimiters -> return false
+			c !in keywordDelimiters && index != 0 && lastIndex != index - 1 && this[index - 1] !in keywordDelimiters -> return false
 		}
 		lastIndex = index
 	}
@@ -354,134 +355,69 @@ fun String.matchesGlobFileName(pattern: String, ignoreCase: Boolean = false): Bo
 	return pattern.split(';').any { doMatchGlobFileName(it.trim(), ignoreCase) }
 }
 
-private fun String.doMatchGlobFileName(pattern: String, ignoreCase: Boolean): Boolean {
-	if(pattern.isEmpty()) return false
-	if(pattern == "*") return true
-	val usedPath = this
-	val usedPattern = pattern
-	var flag = false
-	val patternLength = usedPattern.length
-	var patternIndex = 0
-	val pathLength = usedPath.length
-	var pathIndex = 0
-	while(patternIndex < patternLength) {
-		val c = pattern[patternIndex]
-		when {
-			flag -> {
-				patternIndex++
-				val nc = pattern.getOrNull(patternIndex)
-				if(nc == '*') {
-					patternIndex++
-					val nextPatternChar = usedPattern.getOrNull(patternIndex) ?: return true
-					while(true) {
-						if(pathIndex >= pathLength) return true
-						val c1 = usedPath[pathIndex]
-						if(c1.equals(nextPatternChar, ignoreCase)) break
-						pathIndex++
-					}
-					flag = false
-				} else {
-					val nextPatternChar = nc
-					while(true) {
-						if(pathIndex >= pathLength) return true
-						val c1 = usedPath[pathIndex]
-						if(nextPatternChar != null && c1.equals(nextPatternChar, ignoreCase)) break
-						pathIndex++
-					}
-					flag = false
-					continue
-				}
+private val globPatternToRegexCache = CacheBuilder.newBuilder().buildCache<String, Regex> {
+	buildString {
+		append("\\Q")
+		var i = 0
+		while(i < it.length) {
+			val c = it[i]
+			when {
+				c == '*' -> append("\\E.*\\Q")
+				c == '?' -> append("\\E.\\Q")
+				else -> append(c)
 			}
-			c == '.' -> {
-				if(pathIndex == pathLength - 1) return true
-				pathIndex++
-				if(pathIndex > pathLength) return false
-				patternIndex++
-			}
-			c == '*' -> {
-				flag = true
-			}
-			else -> {
-				val cc = usedPath[pathIndex]
-				if(!cc.equals(c, ignoreCase)) return false
-				if(pathIndex == pathLength - 1) return true
-				pathIndex++
-				if(pathIndex > pathLength) return false
-				patternIndex++
-			}
+			i++
 		}
-	}
-	return flag
+		append("\\E")
+	}.toRegex()
+}
+
+private fun String.doMatchGlobFileName(pattern: String, ignoreCase: Boolean): Boolean {
+	val usedPath = this.let { if(ignoreCase) it.lowercase() else it }
+	val usedPattern = pattern.let { if(ignoreCase) it.lowercase() else it }
+	val regex = globPatternToRegexCache.get(usedPattern)
+	return usedPath.matches(regex)
 }
 
 /**
- * 判断当前路径是否匹配另一个ANT路径通配符。使用"."匹配单个字符，使用"*"匹配单个子路径中的任意个字符，使用"**"匹配任意个字符。
+ * 判断当前路径是否匹配另一个ANT路径通配符。使用"."匹配单个子路径中的单个字符，使用"*"匹配单个子路径中的任意个字符，使用"**"匹配任意个字符。
  */
 fun String.matchesAntPath(pattern: String, ignoreCase: Boolean = false): Boolean {
 	if(pattern.isEmpty()) return false
-	if(pattern == "*" || pattern == "**" || pattern == "/**") return true
+	if(pattern == "**" || pattern == "/**") return true
 	return pattern.split(';').any { doMatchAntPath(it.trim(), ignoreCase) }
 }
 
-private fun String.doMatchAntPath(pattern: String, ignoreCase: Boolean): Boolean {
-	if(pattern.isEmpty()) return false
-	if(pattern == "*" || pattern == "**" || pattern == "/**") return true
-	val usedPath = this.trim('/')
-	val usedPattern = pattern.trim('/')
-	var flag = false
-	val patternLength = usedPattern.length
-	var patternIndex = 0
-	val pathLength = usedPath.length
-	var pathIndex = 0
-	while(patternIndex < patternLength) {
-		val c = usedPattern[patternIndex]
-		when {
-			flag -> {
-				patternIndex++
-				val nc = usedPattern.getOrNull(patternIndex)
-				if(nc == '*') {
-					patternIndex++
-					val nextPatternChar = usedPattern.getOrNull(patternIndex) ?: return true
-					while(true) {
-						if(pathIndex >= pathLength) return true
-						val c1 = usedPath[pathIndex]
-						if(c1.equals(nextPatternChar, ignoreCase)) break
-						pathIndex++
+private val antPatternToRegexCache = CacheBuilder.newBuilder().buildCache<String, Regex> {
+	buildString {
+		append("\\Q")
+		var i = 0
+		while(i < it.length) {
+			val c = it[i]
+			when {
+				c == '*' -> {
+					val nc = it.getOrNull(i + 1)
+					if(nc == '*') {
+						i++
+						append("\\E.*\\Q")
+					} else {
+						append("\\E[^/]*\\Q")
 					}
-					flag = false
-				} else {
-					val nextPatternChar = nc
-					while(true) {
-						if(pathIndex >= pathLength) return true
-						val c1 = usedPath[pathIndex]
-						if(c1 == '/') break
-						if(nextPatternChar != null && c1.equals(nextPatternChar, ignoreCase)) break
-						pathIndex++
-					}
-					flag = false
-					continue
 				}
+				c == '?' -> append("\\E[^/]\\Q")
+				else -> append(c)
 			}
-			c == '.' -> {
-				if(pathIndex == pathLength - 1) return true
-				pathIndex++
-				if(pathIndex > pathLength) return false
-				patternIndex++
-			}
-			c == '*' -> {
-				flag = true
-			}
-			else -> {
-				val cc = usedPath[pathIndex]
-				if(!cc.equals(c, ignoreCase)) return false
-				if(pathIndex == pathLength - 1) return true
-				pathIndex++
-				if(pathIndex > pathLength) return false
-				patternIndex++
-			}
+			i++
 		}
-	}
-	return flag
+		append("\\E")
+	}.toRegex()
+}
+
+private fun String.doMatchAntPath(pattern: String, ignoreCase: Boolean): Boolean {
+	val usedPath = this.trim('/').let { if(ignoreCase) it.lowercase() else it }
+	val usedPattern = pattern.trim('/').let { if(ignoreCase) it.lowercase() else it }
+	val regex = antPatternToRegexCache.get(usedPattern)
+	return usedPath.matches(regex)
 }
 
 /**
