@@ -194,33 +194,54 @@ fun Collection<String>.toCommaDelimitedString(): String {
 	return if(input.isEmpty()) "" else input.joinToString(",")
 }
 
-fun String.quote(): String {
-	if(this.isEmpty() || this == "\"") return "\"\""
-	val start = startsWith('"')
-	val end = endsWith('"')
-	return when {
-		start && end -> this
-		start -> "$this\""
-		end -> "\"$this"
-		else -> "\"$this\""
-	}
-}
-
-fun String.quoteIf(quoted: Boolean): String {
-	return if(quoted) quote() else this //不判断之前是否已经用引号括起，依据quoted 
+fun String.quoteIf(condition: Boolean): String {
+	return if(condition) quote() else this //不判断之前是否已经用引号括起，依据quoted 
 }
 
 fun String.quoteIfNecessary(): String {
 	return if(containsBlank()) quote() else this //如果包含空白的话要使用引号括起
 }
 
+fun String.quote(): String {
+	val s = this
+	if(s.isEmpty() || s == "\"") return "\"\""
+	val start = startsWith('"')
+	val end = endsWith('"')
+	if(start && end) return s
+	return buildString {
+		if(!start) append("\"")
+		for(c in s) {
+			if(c == '"') append("\\\"") else append(c)
+		}
+		if(!end) append("\"")
+	}
+}
+
 fun String.unquote(): String {
-	if(this.isEmpty() || this == "\"") return ""
-	var startIndex = 0
-	var endIndex = length
-	if(startsWith('"')) startIndex++
-	if(endsWith('"')) endIndex--
-	return substring(startIndex, endIndex)
+	val s = this
+	if(s.isEmpty() || s == "\"") return ""
+	val start = startsWith('"')
+	val end = endsWith('"')
+	if(!start && !end) return s
+	return buildString {
+		var escape = false
+		for((index, c) in s.withIndex()) {
+			if(start && index == 0) continue
+			if(end && index == s.lastIndex) continue
+			if(escape) {
+				escape = false
+				when(c) {
+					'\'' -> append(c)
+					'\"' -> append(c)
+					else -> append('\\').append(c)
+				}
+			} else if(c == '\\'){
+				escape = true
+			} else {
+				append(c)
+			}
+		}
+	}
 }
 
 fun String.truncate(limit: Int, ellipsis: String = "..."): String {

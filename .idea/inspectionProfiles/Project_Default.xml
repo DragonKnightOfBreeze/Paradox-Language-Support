@@ -128,7 +128,6 @@
     <inspection_tool class="MalformedSetUpTearDown" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MdUnresolvedReference" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="MemberVisibilityCanBePrivate" enabled="false" level="INFO" enabled_by_default="false" />
-    <inspection_tool class="MigrateAssertToMatcherAssert" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MisorderedAssertEqualsParameters" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MissingJavadoc" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="PACKAGE_SETTINGS">

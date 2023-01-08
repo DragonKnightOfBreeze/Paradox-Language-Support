@@ -44,4 +44,18 @@ class ExtensionsTest {
 		Assert.assertEquals("&nbsp;abc&nbsp;&nbsp;", " abc  ".escapeBlank())
 		Assert.assertEquals("&nbsp;a&nbsp;bc&nbsp;&nbsp;", " a bc  ".escapeBlank())
 	}
+	
+	@Test
+	fun quoteAndUnquoteTest() {
+		Assert.assertEquals("\"abc\"", "abc".quote())
+		Assert.assertEquals("\"abc\"", "\"abc\"".quote())
+		Assert.assertEquals("abc", "abc".unquote())
+		Assert.assertEquals("abc", "\"abc\"".unquote())
+		Assert.assertEquals("abc", "\"abc".unquote())
+		Assert.assertEquals("abc", "abc\"".unquote())
+		Assert.assertEquals("abc abc", "abc abc".unquote())
+		Assert.assertEquals("abc abc", "\"abc abc\"".unquote())
+		Assert.assertEquals("abc abc", "\"abc abc".unquote())
+		Assert.assertEquals("abc abc", "abc abc\"".unquote())
+	}
 }
