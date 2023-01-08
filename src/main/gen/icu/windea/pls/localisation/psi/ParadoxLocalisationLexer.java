@@ -3,7 +3,7 @@
 package icu.windea.pls.localisation.psi;
 
 import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;import icu.windea.pls.core.model.*;
+import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.core.StdlibExtensionsKt.*;

@@ -3,7 +3,7 @@ package icu.windea.pls.cwt.psi;
 
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import icu.windea.pls.config.cwt.CwtSeparatorType;
+import icu.windea.pls.config.cwt.config.CwtSeparator;
 import javax.swing.Icon;
 
 public interface CwtProperty extends CwtNamedElement {
@@ -30,6 +30,6 @@ public interface CwtProperty extends CwtNamedElement {
   String getValue();
 
   @NotNull
-  CwtSeparatorType getSeparatorType();
+  CwtSeparator getSeparatorType();
 
 }

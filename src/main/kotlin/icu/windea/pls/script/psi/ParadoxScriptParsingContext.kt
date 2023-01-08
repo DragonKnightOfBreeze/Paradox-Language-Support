@@ -1,7 +1,7 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.openapi.project.*
-import icu.windea.pls.core.model.*
+import icu.windea.pls.config.core.config.*
 
 class ParadoxScriptParsingContext(
 	val project: Project?,

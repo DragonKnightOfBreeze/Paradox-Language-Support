@@ -7,8 +7,8 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
 import com.intellij.psi.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import java.io.*

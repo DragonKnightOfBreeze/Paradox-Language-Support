@@ -6,11 +6,9 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.util.*
 import icons.*
-import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.script.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.model.*
 
 object PlsConstants {
 	val locationClass = PlsIcons::class.java
@@ -96,15 +94,16 @@ object PlsKeys {
 	val cachedTextColorInfoKey = Key.create<CachedValue<ParadoxTextColorInfo>>("paradox.cached.textColorInfo")
 	val cachedModifierInfoKey = Key.create<CachedValue<ParadoxModifierInfo>>("paradox.cached.modifierInfo")
 	val cachedScopeContextKey = Key.create<CachedValue<ParadoxScopeContext>>("paradox.cached.scopeContext")
-	val cachedCwtConfigTypeKey = Key.create<CachedValue<CwtConfigType>>("paradox.cached.cwtConfigType")
+	val cachedElementPathKey = Key.create<CachedValue<ParadoxElementPath>>("paradox.cached.elementPath")
 	
-	val injectedInfoKey = Key.create<List<String>>("paradox.injectedInfo")
+	val cachedCwtConfigTypeKey = Key.create<CachedValue<CwtConfigType>>("paradox.cached.cwtConfigType")
+	val cachedCwtConfigPathKey = Key.create<CachedValue<CwtConfigPath>>("paradox.cached.cwtConfigPath")
 	
 	//用于解析引用为CWT元素后，写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）
 	val cwtConfigKey = Key.create<CwtConfig<*>>("paradox.cwtConfig")
 	
 	//用于在进行代码补全时标记一个property的propertyValue未填写
 	val isIncompleteKey = Key.create<Boolean>("paradox.isIncomplete")
-	
+	//用于在进行代码补全时标记作用域不匹配
 	val scopeMismatchedKey = Key.create<Boolean>("paradox.scopeMismatched")
 }

@@ -1,7 +1,7 @@
 package icu.windea.pls.config.cwt.expression
 
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.model.*
 
 enum class CwtDataType {
 	Bool,

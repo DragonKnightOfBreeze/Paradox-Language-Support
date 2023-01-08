@@ -3,9 +3,9 @@ package icu.windea.pls.core.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.script.config.*
 
 object PlsCompletionKeys {
 	val completionTypeKey = Key.create<CompletionType>("paradoxCompletion.completionType")

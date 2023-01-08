@@ -15,6 +15,9 @@ class ExtensionsTest {
 	@Test
 	fun matchesAntPathTest(){
 		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/bar/name**", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPath("foo/bar/name**", false))
+		Assert.assertTrue("foo/bar/name".matchesAntPath("/foo/bar/name**", false))
+		Assert.assertTrue("foo/bar/name".matchesAntPath("foo/bar/name**", false))
 		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/bar/name", false))
 		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/bar/**", false))
 		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/**", false))
@@ -34,6 +37,10 @@ class ExtensionsTest {
 		Assert.assertFalse("/foo/bar/name".matchesAntPath("/*/name", false))
 		Assert.assertFalse("/foo/bar/name".matchesAntPath("/foo/bar/na.", false))
 		Assert.assertFalse("/foo/bar/name".matchesAntPath("/foo/bar/", false))
+		
+		Assert.assertTrue("enums/enum[e]".matchesAntPath("enums/enum[*]", false))
+		Assert.assertFalse("enums/enum[e".matchesAntPath("enums/enum[*]", false))
+		Assert.assertFalse("enums/enum123".matchesAntPath("enums/enum[*]", false))
 	}
 	
 	@Test

@@ -13,7 +13,8 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.index.*
@@ -51,7 +52,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyInfo(element: CwtProperty, originalElement: PsiElement?): String {
 		return buildString {
 			val name = element.name
-			val configType = CwtConfigType.resolve(element)
+			val configType = element.configType
 			val project = element.project
 			val configGroup = getConfigGroup(element, originalElement, project)
 			buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, false, null)
@@ -64,7 +65,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		
 		return buildString {
 			val name = element.name
-			val configType = CwtConfigType.resolve(element)
+			val configType = element.configType
 			val project = element.project
 			val configGroup = getConfigGroup(element, originalElement, project)
 			buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, false, null)
@@ -82,7 +83,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyDoc(element: CwtProperty, originalElement: PsiElement?): String {
 		return buildString {
 			val name = element.name
-			val configType = CwtConfigType.resolve(element)
+			val configType = element.configType
 			val project = element.project
 			val configGroup = getConfigGroup(element, originalElement, project)
 			//images, localisations, scope infos
@@ -99,7 +100,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		
 		return buildString {
 			val name = element.name
-			val configType = CwtConfigType.resolve(element)
+			val configType = element.configType
 			val project = element.project
 			val configGroup = getConfigGroup(element, originalElement, project)
 			val sectionsList = List(2) { mutableMapOf<String, String>() }

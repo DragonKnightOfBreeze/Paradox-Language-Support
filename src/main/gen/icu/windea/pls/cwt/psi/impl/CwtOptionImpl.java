@@ -6,7 +6,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import icu.windea.pls.cwt.psi.*;
-import icu.windea.pls.config.cwt.CwtSeparatorType;
+import icu.windea.pls.config.cwt.config.CwtSeparator;
 import javax.swing.Icon;
 
 public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
@@ -69,7 +69,7 @@ public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
 
   @Override
   @NotNull
-  public CwtSeparatorType getSeparatorType() {
+  public CwtSeparator getSeparatorType() {
     return CwtPsiImplUtil.getSeparatorType(this);
   }
 

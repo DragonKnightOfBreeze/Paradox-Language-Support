@@ -1,7 +1,6 @@
 package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
@@ -19,7 +18,7 @@ data class CwtPropertyConfig(
 	override val documentation: String? = null,
 	override val options: List<CwtOptionConfig>? = null,
 	override val optionValues: List<CwtOptionValueConfig>? = null,
-	val separatorType: CwtSeparatorType,
+	val separatorType: CwtSeparator,
 ) : CwtDataConfig<CwtProperty>() {
 	//val stringValues by lazy { values?.mapNotNull { it.stringValue } }
 	//val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }

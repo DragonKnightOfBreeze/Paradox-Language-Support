@@ -1,7 +1,7 @@
 package icu.windea.pls
 
 import com.fasterxml.jackson.dataformat.csv.CsvSchema
-import icu.windea.pls.config.script.config.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import org.junit.Test
 import java.io.*

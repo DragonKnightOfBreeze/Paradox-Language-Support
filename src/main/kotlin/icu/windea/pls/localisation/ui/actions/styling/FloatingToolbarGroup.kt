@@ -3,8 +3,8 @@ package icu.windea.pls.localisation.ui.actions.styling
 import com.google.common.cache.*
 import com.intellij.openapi.actionSystem.*
 import icu.windea.pls.*
-import icu.windea.pls.config.script.*
-import icu.windea.pls.config.script.config.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 
 //这里actions是基于project动态获取的，需要特殊处理
 

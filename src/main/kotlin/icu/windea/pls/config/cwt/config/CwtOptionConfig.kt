@@ -1,7 +1,6 @@
 package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.cwt.psi.*
 
 data class CwtOptionConfig(
@@ -15,7 +14,7 @@ data class CwtOptionConfig(
 	val stringValue: String? = null,
 	val options: List<CwtOptionConfig>? = null,
 	val optionValues: List<CwtOptionValueConfig>? = null,
-	val separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL
+	val separatorType: CwtSeparator = CwtSeparator.EQUAL
 ) : CwtConfig<CwtOption> {
 	//val stringValues = values?.mapNotNull { it.stringValue }
 	//val stringValueOrValues = stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue }

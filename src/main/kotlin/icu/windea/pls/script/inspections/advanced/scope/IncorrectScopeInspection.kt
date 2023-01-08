@@ -3,7 +3,7 @@ package icu.windea.pls.script.inspections.advanced.scope
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.script.psi.*
 
 class IncorrectScopeInspection: LocalInspectionTool() {

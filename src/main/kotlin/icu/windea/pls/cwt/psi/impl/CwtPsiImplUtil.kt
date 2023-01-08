@@ -72,15 +72,15 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getSeparatorType(element: CwtOption): CwtSeparatorType {
+	fun getSeparatorType(element: CwtOption): CwtSeparator {
 		//这里不能遍历element.children
 		element.forEachChild { child ->
 			when(child.elementType) {
-				EQUAL_SIGN -> return CwtSeparatorType.EQUAL
-				NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
+				EQUAL_SIGN -> return CwtSeparator.EQUAL
+				NOT_EQUAL_SIGN -> return CwtSeparator.NOT_EQUAL
 			}
 		}
-		return CwtSeparatorType.EQUAL
+		return CwtSeparator.EQUAL
 	}
 	//endregion
 	
@@ -94,7 +94,7 @@ object CwtPsiImplUtil {
 	//region CwtProperty
 	@JvmStatic
 	fun getIcon(element: CwtProperty, @Iconable.IconFlags flags: Int): Icon {
-		val type = CwtConfigType.resolve(element)
+		val type = element.configType
 		return type?.icon ?: PlsIcons.CwtProperty
 	}
 	
@@ -119,15 +119,15 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getSeparatorType(element: CwtProperty): CwtSeparatorType {
+	fun getSeparatorType(element: CwtProperty): CwtSeparator {
 		//这里不能遍历element.children
 		element.forEachChild { child ->
 			when(child.elementType) {
-				EQUAL_SIGN -> return CwtSeparatorType.EQUAL
-				NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
+				EQUAL_SIGN -> return CwtSeparator.EQUAL
+				NOT_EQUAL_SIGN -> return CwtSeparator.NOT_EQUAL
 			}
 		}
-		return CwtSeparatorType.EQUAL
+		return CwtSeparator.EQUAL
 	}
 	//endregion
 	
@@ -141,7 +141,7 @@ object CwtPsiImplUtil {
 	//region CwtValue
 	@JvmStatic
 	fun getIcon(element: CwtValue, @Iconable.IconFlags flags: Int): Icon {
-		val type = CwtConfigType.resolve(element)
+		val type = element.configType
 		return type?.icon ?: PlsIcons.CwtValue
 	}
 	

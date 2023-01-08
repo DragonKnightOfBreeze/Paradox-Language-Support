@@ -2,7 +2,7 @@ package icu.windea.pls.core.actions
 
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.observable.properties.*
-import icu.windea.pls.core.model.*
+import icu.windea.pls.config.core.config.*
 
 object PlsDataKeys {
 	val gameTypePropertyKey = DataKey.create<GraphProperty<ParadoxGameType>>("PARADOX_GAME_TYPE_PROPERTY")

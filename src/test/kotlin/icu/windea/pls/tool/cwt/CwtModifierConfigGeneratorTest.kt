@@ -3,7 +3,7 @@ package icu.windea.pls.tool.cwt
 import com.intellij.openapi.application.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.testFramework.fixtures.*
-import icu.windea.pls.core.model.*
+import icu.windea.pls.config.core.config.*
 import org.junit.*
 
 class CwtModifierConfigGeneratorTest : BasePlatformTestCase() {

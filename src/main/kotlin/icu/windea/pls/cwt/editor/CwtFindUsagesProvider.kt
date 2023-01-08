@@ -24,14 +24,14 @@ class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
 	override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
 		return when(element) {
 			is CwtProperty -> {
-				val configType = CwtConfigType.resolve(element)?.takeIf { it.isReference } ?: return null
+				val configType = element.configType?.takeIf { it.isReference } ?: return null
 				when(location) {
 					UsageViewTypeLocation.INSTANCE -> configType.descriptionText
 					else -> element.name
 				}
 			}
 			is CwtString -> {
-				val configType = CwtConfigType.resolve(element)?.takeIf { it.isReference } ?: return null
+				val configType = element.configType?.takeIf { it.isReference } ?: return null
 				when(location) {
 					UsageViewTypeLocation.INSTANCE -> configType.descriptionText
 					else -> element.value
@@ -47,8 +47,8 @@ class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
 	
 	override fun canFindUsagesFor(element: PsiElement): Boolean {
 		return when(element) {
-			is CwtProperty -> CwtConfigType.resolve(element)?.isReference == true
-			is CwtString -> CwtConfigType.resolve(element)?.isReference == true
+			is CwtProperty -> element.configType?.isReference == true
+			is CwtString -> element.configType?.isReference == true
 			else -> false
 		}
 	}

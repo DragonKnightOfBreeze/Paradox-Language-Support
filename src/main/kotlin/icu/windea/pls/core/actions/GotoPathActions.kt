@@ -7,6 +7,8 @@ import com.intellij.openapi.fileChooser.actions.*
 import com.intellij.openapi.vfs.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import java.nio.file.*

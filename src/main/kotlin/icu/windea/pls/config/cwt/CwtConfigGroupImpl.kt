@@ -8,8 +8,9 @@ import com.intellij.util.containers.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.config.setting.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.script.*
-import icu.windea.pls.config.script.config.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
+import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
@@ -632,7 +633,7 @@ class CwtConfigGroupImpl(
 						val set = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
 						if(value != null) set.add(value)
 						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
-						val notReversed = option.separatorType == CwtSeparatorType.EQUAL
+						val notReversed = option.separatorType == CwtSeparator.EQUAL
 						typeKeyFilter = set.toReversibleSet(notReversed)
 					}
 					"starts_with" -> startsWith = option.stringValue ?: continue //忽略大小写
@@ -674,7 +675,7 @@ class CwtConfigGroupImpl(
 						val set = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
 						if(value != null) set.add(value)
 						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
-						val notReversed = option.separatorType == CwtSeparatorType.EQUAL
+						val notReversed = option.separatorType == CwtSeparator.EQUAL
 						typeKeyFilter = set.toReversibleSet(notReversed)
 					}
 					"push_scope" -> pushScope = option.stringValue ?: continue

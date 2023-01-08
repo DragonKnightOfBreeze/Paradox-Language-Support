@@ -3,8 +3,8 @@ package icu.windea.pls.core.selector
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.handler.*
-import icu.windea.pls.core.model.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
