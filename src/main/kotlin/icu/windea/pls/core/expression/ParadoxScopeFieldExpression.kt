@@ -157,7 +157,7 @@ class ParadoxScopeFieldExpressionImpl(
 					}
 					break
 				} else {
-					scopeContextInExpression = ParadoxScopeConfigHandler.resolveScopeContext(node, scopeContextInExpression)
+					scopeContextInExpression = ParadoxScopeHandler.resolveScopeContext(node, scopeContextInExpression)
 				}
 			}
 		}

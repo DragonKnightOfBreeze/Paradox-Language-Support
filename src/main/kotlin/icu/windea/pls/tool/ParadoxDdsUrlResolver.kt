@@ -2,6 +2,7 @@ package icu.windea.pls.tool
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
@@ -35,7 +36,9 @@ object ParadoxDdsUrlResolver {
 			return url
 		} catch(e: Exception) {
 			//如果出现异常，那么返回默认图标
-			logger.warn("Resolve dds url failed. (definition name: ${definitionInfo.name})", e)
+			if(e !is ProcessCanceledException) {
+				logger.warn("Resolve dds url failed. (definition name: ${definitionInfo.name})", e)
+			}
 			return getDefaultUrl(defaultToUnknown)
 		}
 	}
@@ -52,7 +55,9 @@ object ParadoxDdsUrlResolver {
 			return url
 		} catch(e: Exception) {
 			//如果出现异常，那么返回默认图标
-			logger.warn("Resolve dds url failed. (dds file path: ${file.path})", e)
+			if(e !is ProcessCanceledException) {
+				logger.warn("Resolve dds url failed. (dds file path: ${file.path})", e)
+			}
 			return getDefaultUrl(defaultToUnknown)
 		}
 	}
@@ -68,7 +73,9 @@ object ParadoxDdsUrlResolver {
 			return url
 		} catch(e: Exception) {
 			//如果出现异常，那么返回默认图标
-			logger.warn("Resolve dds url failed. (dds file path: ${filePath})", e)
+			if(e !is ProcessCanceledException) {
+				logger.warn("Resolve dds url failed. (dds file path: ${filePath})", e)
+			}
 			return getDefaultUrl(defaultToUnknown)
 		}
 	}

@@ -775,14 +775,14 @@ class CwtConfigGroupImpl(
 				"prefix" -> prefix = prop.stringValue
 				"for_definition_type" -> forDefinitionType = prop.stringValue
 				"input_scopes" -> inputScopes = buildSet {
-					prop.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) }
-					prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) } }
+					prop.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
+					prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
 				}
-				"output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeConfigHandler.getScopeId(v) }
+				"output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) }
 			}
 		}
-		inputScopes = inputScopes.takeIfNotEmpty() ?: ParadoxScopeConfigHandler.anyScopeIdSet
-		outputScope = outputScope ?: ParadoxScopeConfigHandler.anyScopeId
+		inputScopes = inputScopes.takeIfNotEmpty() ?: ParadoxScopeHandler.anyScopeIdSet
+		outputScope = outputScope ?: ParadoxScopeHandler.anyScopeId
 		return CwtLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, fromData, type, dataSource, prefix, forDefinitionType, inputScopes, outputScope)
 	}
 	
@@ -795,22 +795,22 @@ class CwtConfigGroupImpl(
 			when(prop.key) {
 				"desc" -> desc = prop.stringValue?.takeUnless { it.all { c -> c.isExactIdentifierChar() } }?.trim() //排除占位码 & 去除首尾空白
 				"input_scopes" -> inputScopes = buildSet {
-					prop.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) }
-					prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) } }
+					prop.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
+					prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
 				}
-				"output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeConfigHandler.getScopeId(v) }
+				"output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) }
 			}
 		}
-		inputScopes = inputScopes.takeIfNotEmpty() ?: ParadoxScopeConfigHandler.anyScopeIdSet
-		outputScope = outputScope ?: ParadoxScopeConfigHandler.anyScopeId
+		inputScopes = inputScopes.takeIfNotEmpty() ?: ParadoxScopeHandler.anyScopeIdSet
+		outputScope = outputScope ?: ParadoxScopeHandler.anyScopeId
 		return CwtLocalisationLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, inputScopes, outputScope)
 	}
 	
 	private fun resolveLocalisationCommandConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationCommandConfig {
 		val supportedScopes = buildSet {
-			propertyConfig.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) }
-			propertyConfig.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) } }
-		}.ifEmpty { ParadoxScopeConfigHandler.anyScopeIdSet }
+			propertyConfig.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
+			propertyConfig.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
+		}.ifEmpty { ParadoxScopeHandler.anyScopeIdSet }
 		return CwtLocalisationCommandConfig(propertyConfig.pointer, propertyConfig.info, name, supportedScopes)
 	}
 	
@@ -823,12 +823,12 @@ class CwtConfigGroupImpl(
 			when(prop.key) {
 				"internal_id" -> internalId = prop.value //目前版本的CWT配置已经不再有这个属性
 				"supported_scopes" -> supportedScopes =  buildSet {
-					prop.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) }
-					prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) } }
+					prop.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
+					prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
 				}
 			}
 		}
-		supportedScopes = supportedScopes.takeIfNotEmpty() ?: ParadoxScopeConfigHandler.anyScopeIdSet
+		supportedScopes = supportedScopes.takeIfNotEmpty() ?: ParadoxScopeHandler.anyScopeIdSet
 		return CwtModifierCategoryConfig(propertyConfig.pointer, propertyConfig.info, name, internalId, supportedScopes)
 	}
 	

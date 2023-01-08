@@ -22,7 +22,7 @@ data class ParadoxScopeContext(
 	//scope context list of scope field expression nodes
 	@Volatile var scopeFieldInfo: List<Tuple2<ParadoxScopeExpressionNode, ParadoxScopeContext>>? = null
 	
-	val supportAnyThisScope = thisScope == ParadoxScopeConfigHandler.anyScopeId
+	val supportAnyThisScope = thisScope == ParadoxScopeHandler.anyScopeId
 	
 	val map by lazy {
 		buildMap {

@@ -3,7 +3,7 @@ package icu.windea.pls.config.script
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
-object ParadoxEventConfigHandler {
+object ParadoxEventHandler {
 	@JvmStatic
 	fun isValidEventNamespace(eventNamespace: String): Boolean {
 		if(eventNamespace.isEmpty()) return false

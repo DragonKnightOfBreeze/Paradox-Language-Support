@@ -176,12 +176,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		ProgressManager.checkCanceled()
 		val contextElement = referenceElement
 		val gameType = configGroup.gameType ?: return
-		val nameKeys = ParadoxModifierConfigHandler.getModifierNameKeys(name, configGroup)
+		val nameKeys = ParadoxModifierHandler.getModifierNameKeys(name, configGroup)
 		val localisation = nameKeys.firstNotNullOfOrNull {
 			val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
 			ParadoxLocalisationSearch.search(it, configGroup.project, selector = selector).find()
 		}
-		val descKeys = ParadoxModifierConfigHandler.getModifierDescKeys(name, configGroup)
+		val descKeys = ParadoxModifierHandler.getModifierDescKeys(name, configGroup)
 		val descLocalisation = descKeys.firstNotNullOfOrNull {
 			val descSelector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
 			ParadoxLocalisationSearch.search(it, configGroup.project, selector = descSelector).find()
@@ -214,7 +214,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		ProgressManager.checkCanceled()
 		val contextElement = referenceElement
 		val gameType = configGroup.gameType ?: return
-		val iconPaths = ParadoxModifierConfigHandler.getModifierIconPaths(name, configGroup)
+		val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name, configGroup)
 		val (iconPath, iconFile) = iconPaths.firstNotNullOfOrNull {
 			val iconSelector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
 			it to ParadoxFilePathSearch.search(it, configGroup.project, selector = iconSelector).find()
@@ -322,7 +322,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getScopeText(scope: String, gameType: ParadoxGameType?, contextElement: PsiElement): String {
 		return buildString {
 			append("<code>")
-			if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
+			if(ParadoxScopeHandler.isFakeScopeId(scope)) {
 				append(scope)
 			} else {
 				appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
@@ -337,7 +337,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			append("<code>")
 			for(scope in scopes) {
 				if(appendSeparator) append(", ") else appendSeparator = true
-				if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
+				if(ParadoxScopeHandler.isFakeScopeId(scope)) {
 					append(scope)
 				} else {
 					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
@@ -356,8 +356,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		if(!show) return
 		if(sections == null) return
 		val memberElement = referenceElement.parentOfType<ParadoxScriptMemberElement>(true) ?: return
-		if(!ParadoxScopeConfigHandler.isScopeContextSupported(memberElement)) return
-		val scopeContext = ParadoxScopeConfigHandler.getScopeContext(memberElement)
+		if(!ParadoxScopeHandler.isScopeContextSupported(memberElement)) return
+		val scopeContext = ParadoxScopeHandler.getScopeContext(memberElement)
 		if(scopeContext == null) return
 		//TODO 如果作用域引用位于表达式中，应当使用那个位置的作用域上下文，但是目前实现不了，因为这里的referenceElement是整个scriptProperty
 		val scopeContextToUse = scopeContext
@@ -369,7 +369,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				if(appendSeparator) appendBr() else appendSeparator = true
 				appendCwtLink(systemScope, "${gameType.id}/system_scopes/$systemScope", contextElement)
 				append(" = ")
-				if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
+				if(ParadoxScopeHandler.isFakeScopeId(scope)) {
 					append(scope)
 				} else {
 					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)

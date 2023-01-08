@@ -10,14 +10,14 @@ import icu.windea.pls.config.script.config.*
 
 private val setColorActionCache = CacheBuilder.newBuilder()
 	.weakKeys()
-	.build(CacheLoader.from<ParadoxTextColorConfig, SetColorAction> { SetColorAction(it) })
+	.build(CacheLoader.from<ParadoxTextColorInfo, SetColorAction> { SetColorAction(it) })
 
 private fun doGetChildren(): List<AnAction> {
 	val textEditor = PlsThreadLocals.threadLocalTextEditorContainer.get() ?: return emptyList()
 	val project = textEditor.editor.project ?: return emptyList()
 	val file = textEditor.file
 	val gameType = file.fileInfo?.rootInfo?.gameType ?: return emptyList()
-	val colorConfigs = ParadoxTextColorConfigHandler.getTextColorConfigs(gameType, project, file)
+	val colorConfigs = ParadoxTextColorHandler.getTextColorInfos(gameType, project, file)
 	if(colorConfigs.isEmpty()) return emptyList()
 	return colorConfigs.map { setColorActionCache.get(it) }
 }

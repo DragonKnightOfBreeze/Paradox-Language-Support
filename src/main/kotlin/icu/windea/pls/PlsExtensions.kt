@@ -174,21 +174,21 @@ val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnu
 val ParadoxLocalisationLocale.localeConfig: CwtLocalisationLocaleConfig?
 	get() = getCwtConfig(project).core.localisationLocales.get(name)
 
-val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorConfig?
+val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorInfo?
 	get() {
 		//大写或小写字母，不限定位置
 		val colorId = this.propertyReferenceParameter?.text?.find { it.isExactLetter() } ?: return null
 		val gameType = this.fileInfo?.rootInfo?.gameType //这里还是基于fileInfo获取gameType
 			?: return null
-		return ParadoxTextColorConfigHandler.getTextColorConfig(colorId.toString(), gameType, project)
+		return ParadoxTextColorHandler.getTextColorInfo(colorId.toString(), gameType, project)
 	}
 
-val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorConfig?
+val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorInfo?
 	get() {
 		val colorId = this.name ?: return null
 		val gameType = this.fileInfo?.rootInfo?.gameType //这里还是基于fileInfo获取gameType 
 			?: return null
-		return ParadoxTextColorConfigHandler.getTextColorConfig(colorId, gameType, project)
+		return ParadoxTextColorHandler.getTextColorInfo(colorId, gameType, project)
 	}
 
 fun ParadoxScriptValue.isNullLike(): Boolean {
@@ -444,5 +444,9 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilde
 
 fun StringBuilder.appendBr(): StringBuilder {
 	return append("<br>")
+}
+
+fun StringBuilder.appendIndent(): StringBuilder {
+	return append("&nbsp;&nbsp;&nbsp;&nbsp;")
 }
 //endregion

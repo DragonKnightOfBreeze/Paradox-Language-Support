@@ -13,7 +13,7 @@ import icu.windea.pls.core.actions.*
 //org.intellij.plugins.markdown.ui.actions.styling.MarkdownCreateLinkAction
 
 class SetColorAction(
-	val colorConfig: ParadoxTextColorConfig
+	val colorConfig: ParadoxTextColorInfo
 ) : ToggleAction(colorConfig.text, null, colorConfig.icon) {
 	private val setColorActionBaseName = PlsBundle.message("action.ParadoxLocalisation.Styling.SetColor.text")
 	

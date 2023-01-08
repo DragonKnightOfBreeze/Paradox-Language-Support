@@ -47,12 +47,6 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 		_pathName = null
 		_originalPathName = null
 		_parameterMap = null
-		clearCachedData()
 		super.subtreeChanged()
-	}
-	
-	private fun clearCachedData() {
-		//清除基于定义结构的配置信息
-		PlsKeys.definitionConfigKeys.forEach { putUserData(it, null) }
 	}
 }

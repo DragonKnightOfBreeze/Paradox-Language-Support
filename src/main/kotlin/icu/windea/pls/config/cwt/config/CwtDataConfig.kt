@@ -54,7 +54,7 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 		val option = options?.find { it.key == "replace_scope" || it.key == "replace_scopes" }
 		if(option == null) return@lazy null
 		val options = option.options ?: return@lazy null
-		val map = options.associateBy({ it.key.lowercase() }, { it.stringValue?.let { v -> ParadoxScopeConfigHandler.getScopeId(v) } })
+		val map = options.associateBy({ it.key.lowercase() }, { it.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) } })
 		ParadoxScopeContext.resolve(map)
 	}
 	
@@ -64,7 +64,7 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	// * a subtype config (e.g. "subtype[xxx] = { ... }")
 	val pushScope by lazy {
 		val option = options?.find { it.key == "push_scope" }
-		option?.stringValue?.let { v -> ParadoxScopeConfigHandler.getScopeId(v) }
+		option?.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) }
 	}
 	
 	//may on:
@@ -72,12 +72,12 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	val supportedScopes by lazy {
 		val option = options?.find { it.key == "scope" || it.key == "scopes" }
 		buildSet {
-			option?.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) }
-			option?.optionValues?.forEach { it.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) } }
-		}.ifEmpty { ParadoxScopeConfigHandler.anyScopeIdSet }
+			option?.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
+			option?.optionValues?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
+		}.ifEmpty { ParadoxScopeHandler.anyScopeIdSet }
 	}
 	
-	val supportAnyScope = supportedScopes == ParadoxScopeConfigHandler.anyScopeIdSet
+	val supportAnyScope = supportedScopes == ParadoxScopeHandler.anyScopeIdSet
 	
 	/**
 	 * 深拷贝。

@@ -65,7 +65,7 @@ class TooLongScopeLinkInspection : LocalInspectionTool() {
 						}
 						else -> emptyList()
 					}
-					if(scopeNodes.size > ParadoxScopeConfigHandler.maxScopeLinkSize) {
+					if(scopeNodes.size > ParadoxScopeHandler.maxScopeLinkSize) {
 						val startOffset = scopeNodes.first().rangeInExpression.startOffset
 						val endOffset = scopeNodes.last().rangeInExpression.endOffset
 						val range = TextRange.create(startOffset, endOffset)

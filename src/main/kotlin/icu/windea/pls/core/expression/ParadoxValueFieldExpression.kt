@@ -200,7 +200,7 @@ class ParadoxValueFieldExpressionImpl(
 					}
 					break
 				} else {
-					scopeContextInExpression = ParadoxScopeConfigHandler.resolveScopeContext(node, scopeContextInExpression)
+					scopeContextInExpression = ParadoxScopeHandler.resolveScopeContext(node, scopeContextInExpression)
 				}
 			} else if(node is ParadoxValueFieldExpressionNode) {
 				if(inRange) {

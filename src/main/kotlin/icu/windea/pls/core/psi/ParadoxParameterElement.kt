@@ -18,7 +18,7 @@ class ParadoxParameterElement(
 	element: PsiElement,
 	private val name: String,
 	val definitionName: String,
-	val definitionType: List<String>,
+	val definitionTypes: List<String>,
 	private val project: Project,
 	val gameType: ParadoxGameType,
 	val read: Boolean
@@ -67,7 +67,7 @@ class ParadoxParameterElement(
 		return other is ParadoxParameterElement &&
 			name == other.name &&
 			definitionName == other.definitionName &&
-			definitionType == other.definitionType &&
+			definitionTypes == other.definitionTypes &&
 			project == other.project &&
 			gameType == other.gameType
 	}
@@ -75,7 +75,7 @@ class ParadoxParameterElement(
 	override fun hashCode(): Int {
 		var result = name.hashCode()
 		result = 31 * result + definitionName.hashCode()
-		result = 31 * result + definitionType.hashCode()
+		result = 31 * result + definitionTypes.hashCode()
 		result = 31 * result + project.hashCode()
 		result = 31 * result + gameType.hashCode()
 		return result

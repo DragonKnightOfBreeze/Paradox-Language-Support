@@ -279,7 +279,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			append(modifier.name)
 			grayed {
 				append(" ")
-				append(PlsDocBundle.message("by"))
+				append(PlsDocBundle.message("byTemplate"))
 				append(" ")
 				val key = modifier.config.name
 				val gameType = definitionInfo.gameType
@@ -296,8 +296,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		val show = getSettings().documentation.showScopeContext
 		if(!show) return
 		if(sections == null) return
-		if(!ParadoxScopeConfigHandler.isScopeContextSupported(element)) return
-		val scopeContext = ParadoxScopeConfigHandler.getScopeContext(element)
+		if(!ParadoxScopeHandler.isScopeContextSupported(element)) return
+		val scopeContext = ParadoxScopeHandler.getScopeContext(element)
 		if(scopeContext == null) return
 		val contextElement = element
 		val gameType = definitionInfo.gameType
@@ -307,7 +307,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				if(appendSeparator) appendBr() else appendSeparator = true
 				appendCwtLink(systemScope, "${gameType.id}/system_scopes/$systemScope", contextElement)
 				append(" = ")
-				if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
+				if(ParadoxScopeHandler.isFakeScopeId(scope)) {
 					append(scope)
 				} else {
 					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)

@@ -36,21 +36,27 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 				config.pointer.element?.let { add(it) }
 				config.resolvedOrNull()?.pointer?.element?.let { add(it) }
 				
-				val configGroup = config.info.configGroup
-				val value = if(location is ParadoxScriptStringExpressionElement) location.value else location.text
-				val dataType = config.expression.type
-				when {
-					dataType == CwtDataType.Enum -> {
-						configGroup.enums[value]?.pointer?.element?.let { add(it) }
-						configGroup.complexEnums[value]?.pointer?.element?.let { add(it) }
+				if(location is ParadoxScriptStringExpressionElement) {
+					val configGroup = config.info.configGroup
+					val name = location.value 
+					val dataType = config.expression.type
+					when {
+						dataType == CwtDataType.Enum -> {
+							configGroup.enums[name]?.pointer?.element?.let { add(it) }
+							configGroup.complexEnums[name]?.pointer?.element?.let { add(it) }
+						}
+						dataType.isValueSetValueType() -> {
+							configGroup.values[name]?.pointer?.element?.let { add(it) }
+						}
+						dataType == CwtDataType.Modifier -> {
+							val modifierInfo = ParadoxModifierHandler.getModifierInfo(location)
+							if(modifierInfo != null) {
+								modifierInfo.generatedModifierConfig?.pointer?.element?.let { add(it) }
+								modifierInfo.modifierConfig?.pointer?.element?.let { add(it) }
+							}
+						}
+						else -> pass()
 					}
-					dataType.isValueSetValueType() -> {
-						configGroup.values[value]?.pointer?.element?.let { add(it) }
-					}
-					dataType == CwtDataType.Modifier -> {
-						configGroup.modifiers[value]?.pointer?.element?.let { add(it) }
-					}
-					else -> pass()
 				}
 			}
 		}

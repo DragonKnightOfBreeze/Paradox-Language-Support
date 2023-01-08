@@ -6,6 +6,7 @@ import ai.grazie.utils.*
 import com.intellij.codeInsight.documentation.*
 import com.intellij.lang.documentation.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.util.text.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
@@ -152,14 +153,13 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 			
-			//加上定义信息
+			//加上所属定义信息
 			val definitionName = element.definitionName
-			val definitionType = element.definitionType
+			val definitionType = element.definitionTypes
 			if(definitionType.isEmpty()) return@definition
 			val gameType = element.gameType
-			appendBr()
-			append("&emsp;").append(PlsDocBundle.message("ofDefinition"))
-			append(" ")
+			appendBr().appendIndent()
+			append(PlsDocBundle.message("ofDefinition")).append(" ")
 			append(definitionName.escapeXml().orAnonymous())
 			append(": ")
 			
@@ -206,68 +206,75 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			append(PlsDocBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 			
-			//加上模版信息
 			val templateExpression = element.templateExpression
 			if(templateExpression != null) {
 				val gameType = element.gameType
 				val template = templateExpression.template
 				val templateString = template.expressionString
+				
+				//加上模版信息
 				appendBr()
-				append("&emsp;").append(PlsDocBundle.message("by")).append(" ")
+				append(PlsDocBundle.message("byTemplate")).append(" ")
 				appendCwtLink(templateString, "${gameType.id}/modifiers/$templateString")
 				
 				//加上生成源信息
 				val referenceNodes = templateExpression.referenceNodes
 				if(referenceNodes.isNotEmpty()) {
-					appendBr()
-					append("&emsp;").append(PlsDocBundle.message("generatedFrom")).append(" ")
-					var appendSeparator = false
 					for(referenceNode in referenceNodes) {
-						if(appendSeparator) append(", ") else appendSeparator = true
+						appendBr().appendIndent()
 						val configExpression = referenceNode.configExpression ?: continue
 						when(configExpression.type) {
-							CwtDataType.Modifier -> {
-								val modifierName = referenceNode.text
-								append(PlsDocBundle.message("prefix.modifier"))
-								append(" ")
-								append(modifierName)
-							}
 							CwtDataType.Definition -> {
 								val definitionName = referenceNode.text
 								val definitionType = configExpression.value!!
-								append(PlsDocBundle.message("prefix.definition"))
+								val definitionTypes = definitionType.split('.', limit = 2)
+								append(PlsDocBundle.message("generatedFromDefinition"))
 								append(" ")
 								appendDefinitionLink(gameType, definitionName, definitionType, element)
+								append(": ")
+								
+								val type = definitionTypes.first()
+								val typeLink = "${gameType.id}/types/${type}"
+								appendCwtLink(type, typeLink)
+								for((index, t) in definitionTypes.withIndex()) {
+									if(index == 0) continue
+									append(", ")
+									val subtypeLink = "$typeLink/${t}"
+									appendCwtLink(t, subtypeLink)
+								}
 							}
 							CwtDataType.Enum -> {
 								val enumValueName = referenceNode.text
 								val enumName = configExpression.value!!
+								append(PlsDocBundle.message("generatedFromEnumValue"))
+								append(" ")
 								if(configGroup.enums.containsKey(enumName)) {
-									append(PlsDocBundle.message("prefix.enumValue"))
-									append(" ")
 									appendCwtLink(enumName, "${gameType.id}/enums/${enumName}/${enumValueName}", element)
+									append(": ")
+									appendCwtLink(enumName, "${gameType.id}/enums/${enumName}", element)
 								} else if(configGroup.complexEnums.containsKey(enumName)) {
-									append(PlsDocBundle.message("prefix.complexEnumValue"))
-									append(" ")
-									append(enumValueName)
+									append(enumValueName.escapeXml())
+									append(": ")
+									appendCwtLink(enumName, "${gameType.id}/complex_enums/${enumName}", element)
 								} else {
 									//unexpected
-									append(PlsDocBundle.message("prefix.enumValue"))
-									append(" ")
-									append(enumValueName)
+									append(enumValueName.escapeXml())
+									append(": ")
+									append(enumName.escapeXml())
 								}
 							}
 							CwtDataType.Value -> {
 								val valueSetName = referenceNode.text
 								val valueName = configExpression.value!!
+								append(PlsDocBundle.message("generatedFromValueSetValue"))
 								if(configGroup.values.containsKey(valueName)) {
-									append(PlsDocBundle.message("prefix.valueSetValue"))
-									append(" ")
-									appendCwtLink(valueName, "${gameType.id}/values/${valueName}/${valueSetName}", element)
+									appendCwtLink(valueName, "${gameType.id}/values/${valueSetName}/${valueName}", element)
+									append(": ")
+									appendCwtLink(valueName, "${gameType.id}/values/${valueSetName}", element)
 								} else {
-									append(PlsDocBundle.message("prefix.valueSetValue"))
-									append(" ")
-									append(valueName)
+									append(valueName.escapeXml())
+									append(": ")
+									append(valueSetName.escapeXml())
 								}
 							}
 							else -> pass()
@@ -292,12 +299,12 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		val render = getSettings().documentation.renderRelatedLocalisationsForModifiers
 		ProgressManager.checkCanceled()
 		val gameType = configGroup.gameType ?: return
-		val nameKeys = ParadoxModifierConfigHandler.getModifierNameKeys(name, configGroup)
+		val nameKeys = ParadoxModifierHandler.getModifierNameKeys(name, configGroup)
 		val localisation = nameKeys.firstNotNullOfOrNull {
 			val selector = localisationSelector().gameType(gameType).preferRootFrom(element).preferLocale(preferredParadoxLocale())
 			ParadoxLocalisationSearch.search(it, configGroup.project, selector = selector).find()
 		}
-		val descKeys = ParadoxModifierConfigHandler.getModifierDescKeys(name, configGroup)
+		val descKeys = ParadoxModifierHandler.getModifierDescKeys(name, configGroup)
 		val descLocalisation = descKeys.firstNotNullOfOrNull {
 			val descSelector = localisationSelector().gameType(gameType).preferRootFrom(element).preferLocale(preferredParadoxLocale())
 			ParadoxLocalisationSearch.search(it, configGroup.project, selector = descSelector).find()
@@ -334,7 +341,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		val render = getSettings().documentation.renderIconForModifiers
 		ProgressManager.checkCanceled()
 		val gameType = configGroup.gameType ?: return
-		val iconPaths = ParadoxModifierConfigHandler.getModifierIconPaths(name, configGroup)
+		val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name, configGroup)
 		val (iconPath, iconFile) = iconPaths.firstNotNullOfOrNull {
 			val iconSelector = fileSelector().gameType(gameType).preferRootFrom(element)
 			it to ParadoxFilePathSearch.search(it, configGroup.project, selector = iconSelector).find()
@@ -394,7 +401,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getScopeText(scope: String, gameType: ParadoxGameType?, contextElement: PsiElement): String {
 		return buildString {
 			append("<code>")
-			if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
+			if(ParadoxScopeHandler.isFakeScopeId(scope)) {
 				append(scope)
 			} else {
 				appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
@@ -409,7 +416,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 			append("<code>")
 			for(scope in scopes) {
 				if(appendSeparator) append(", ") else appendSeparator = true
-				if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
+				if(ParadoxScopeHandler.isFakeScopeId(scope)) {
 					append(scope)
 				} else {
 					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
@@ -433,8 +440,8 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		if(!show) return
 		if(sections == null) return
 		val memberElement = element.parentOfType<ParadoxScriptMemberElement>(true) ?: return
-		if(!ParadoxScopeConfigHandler.isScopeContextSupported(memberElement)) return
-		val scopeContext = ParadoxScopeConfigHandler.getScopeContext(memberElement)
+		if(!ParadoxScopeHandler.isScopeContextSupported(memberElement)) return
+		val scopeContext = ParadoxScopeHandler.getScopeContext(memberElement)
 		if(scopeContext == null) return
 		//TODO 如果作用域引用位于表达式中，应当使用那个位置的作用域上下文，但是目前实现不了，因为这里的referenceElement是整个scriptProperty
 		val scopeContextToUse = scopeContext
@@ -446,7 +453,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 				if(appendSeparator) appendBr() else appendSeparator = true
 				appendCwtLink(systemScope, "${gameType.id}/system_scopes/$systemScope", contextElement)
 				append(" = ")
-				if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
+				if(ParadoxScopeHandler.isFakeScopeId(scope)) {
 					append(scope)
 				} else {
 					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)

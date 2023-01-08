@@ -25,7 +25,7 @@ data class CwtModifierConfig(
 		if(categoryConfigMap.isNotEmpty()) {
 			val categoryConfigs = categoryConfigMap.values
 			if(categoryConfigs.any { it.supportAnyScope }) {
-				ParadoxScopeConfigHandler.anyScopeIdSet
+				ParadoxScopeHandler.anyScopeIdSet
 			} else {
 				categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopes }
 			}

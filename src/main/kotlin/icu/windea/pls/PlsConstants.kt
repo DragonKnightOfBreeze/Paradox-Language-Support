@@ -8,6 +8,7 @@ import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.script.config.*
+import icu.windea.pls.config.script.config.ParadoxModifierInfo
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 
@@ -92,15 +93,11 @@ object PlsKeys {
 	val cachedDefinitionMemberInfoKey = Key.create<CachedValue<ParadoxDefinitionMemberInfo>>("paradox.cached.definitionMemberInfo")
 	val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("paradox.cached.localisationInfo")
 	val cachedComplexEnumValueInfoKey = Key.create<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cached.complexEnumValueInfo")
+	val cachedTextColorInfoKey = Key.create<CachedValue<ParadoxTextColorInfo>>("paradox.cached.textColorInfo")
+	val cachedModifierInfoKey = Key.create<CachedValue<ParadoxModifierInfo>>("paradox.cached.modifierInfo")
 	val cachedScopeContextKey = Key.create<CachedValue<ParadoxScopeContext>>("paradox.cached.scopeContext")
 	
 	val injectedInfoKey = Key.create<List<String>>("paradox.injectedInfo")
-	
-	val textColorConfigKey = Key.create<ParadoxTextColorConfig>("paradox.textColorConfig")
-	
-	val definitionConfigKeys = setOf<Key<out ParadoxScriptConfig>>(
-		textColorConfigKey
-	)
 	
 	//用于解析引用为CWT元素后，写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）
 	val cwtConfigKey = Key.create<CwtConfig<*>>("paradox.cwtConfig")

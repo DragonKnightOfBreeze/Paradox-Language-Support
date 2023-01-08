@@ -25,7 +25,7 @@ class ParadoxLocalisationColorCompletionProvider : CompletionProvider<Completion
 			?.takeIf { it.elementType == ParadoxLocalisationElementTypes.COLOR_ID }
 		val project = file.project
 		val gameType = selectGameType(file) ?: return
-		val colorConfigs = ParadoxTextColorConfigHandler.getTextColorConfigs(gameType, project, file)
+		val colorConfigs = ParadoxTextColorHandler.getTextColorInfos(gameType, project, file)
 		val lookupElements = mutableListOf<LookupElement>()
 		for(colorConfig in colorConfigs) {
 			val element = colorConfig.pointer.element ?: continue

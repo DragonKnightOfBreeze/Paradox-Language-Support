@@ -10,6 +10,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.*
+import com.jetbrains.rd.util.string.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
@@ -388,20 +389,7 @@ object CwtConfigHandler {
 	}
 	
 	fun matchesModifier(name: String, configGroup: CwtConfigGroup): Boolean {
-		//修正会由特定的定义类型生成
-		//TODO 修正会由经济类型（economic_category）的声明生成
-		val modifierName = name.lowercase()
-		val modifierConfig = configGroup.modifiers[modifierName]
-		if(modifierConfig != null) {
-			//预定义的非生成的修正
-			if(modifierConfig.template.isNotEmpty()) return false //unexpected
-			return true
-		}
-		//生成的修正，生成源可以未定义
-		val textRange = TextRange.create(0, modifierName.length)
-		val templateExpression = ParadoxModifierConfigHandler.resolveModifierTemplate(modifierName, textRange, configGroup)
-		if(templateExpression != null) return true
-		return false
+		return ParadoxModifierHandler.matchesModifier(name, configGroup)
 	}
 	
 	fun getAliasSubName(key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): String? {
@@ -487,8 +475,8 @@ object CwtConfigHandler {
 		
 		context.put(PlsCompletionKeys.isKeyKey, true)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
-		if(ParadoxScopeConfigHandler.isScopeContextSupported(definitionElement)) {
-			context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeConfigHandler.getScopeContext(definitionElement))
+		if(ParadoxScopeHandler.isScopeContextSupported(definitionElement)) {
+			context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeHandler.getScopeContext(definitionElement))
 		}
 		
 		configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
@@ -515,8 +503,8 @@ object CwtConfigHandler {
 		
 		context.put(PlsCompletionKeys.isKeyKey, false)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
-		//if(ParadoxScopeConfigHandler.isScopeContextSupported(definitionElement)) {
-		//	context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeConfigHandler.getScopeContext(definitionElement))
+		//if(ParadoxScopeHandler.isScopeContextSupported(definitionElement)) {
+		//	context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeHandler.getScopeContext(definitionElement))
 		//}
 		
 		for(config in configs) {
@@ -669,7 +657,7 @@ object CwtConfigHandler {
 		val scopeMatched = when {
 			scopeContext == null -> true
 			config is CwtPropertyConfig -> {
-				ParadoxScopeConfigHandler.matchesScope(scopeContext, config.supportedScopes)
+				ParadoxScopeHandler.matchesScope(scopeContext, config.supportedScopes)
 			}
 			config is CwtLinkConfig -> true //TODO
 			else -> true
@@ -965,7 +953,7 @@ object CwtConfigHandler {
 		val element = contextElement
 		for(modifierConfig in modifiers.values) {
 			//排除不匹配modifier的supported_scopes的情况
-			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, modifierConfig.supportedScopes)
+			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, modifierConfig.supportedScopes)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val tailText = getScriptExpressionTailText(modifierConfig.config)
@@ -1054,7 +1042,7 @@ object CwtConfigHandler {
 		
 		val linkConfigs = configGroup.linksAsScopeNotData
 		for(scope in linkConfigs.values) {
-			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, scope.inputScopes)
+			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, scope.inputScopes)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = scope.name
@@ -1077,7 +1065,7 @@ object CwtConfigHandler {
 		
 		val linkConfigs = configGroup.linksAsScopeWithPrefix
 		for(linkConfig in linkConfigs.values) {
-			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, linkConfig.inputScopes)
+			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, linkConfig.inputScopes)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = linkConfig.prefix ?: continue
@@ -1118,7 +1106,7 @@ object CwtConfigHandler {
 			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
 			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
 			if(prefix == null) {
-				val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, linkConfig.inputScopes)
+				val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, linkConfig.inputScopes)
 				if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 				context.put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
 			}
@@ -1136,7 +1124,7 @@ object CwtConfigHandler {
 		val linkConfigs = configGroup.linksAsValueNotData
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, linkConfig.inputScopes)
+			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, linkConfig.inputScopes)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = linkConfig.name
@@ -1159,7 +1147,7 @@ object CwtConfigHandler {
 		
 		val linkConfigs = configGroup.linksAsValueWithPrefix
 		for(linkConfig in linkConfigs.values) {
-			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, linkConfig.inputScopes)
+			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, linkConfig.inputScopes)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = linkConfig.prefix ?: continue
@@ -1210,7 +1198,7 @@ object CwtConfigHandler {
 			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
 			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
 			if(prefix == null) {
-				val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, linkConfig.inputScopes)
+				val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, linkConfig.inputScopes)
 				if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 				context.put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
 			}
@@ -1291,7 +1279,7 @@ object CwtConfigHandler {
 		
 		val localisationLinks = configGroup.localisationLinks
 		for(localisationScope in localisationLinks.values) {
-			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, localisationScope.inputScopes)
+			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, localisationScope.inputScopes)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = localisationScope.name
@@ -1345,7 +1333,7 @@ object CwtConfigHandler {
 		
 		val localisationCommands = configGroup.localisationCommands
 		for(localisationCommand in localisationCommands.values) {
-			val scopeMatched = ParadoxScopeConfigHandler.matchesScope(scopeContext, localisationCommand.supportedScopes)
+			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, localisationCommand.supportedScopes)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = localisationCommand.name
@@ -1828,27 +1816,14 @@ object CwtConfigHandler {
 	}
 	
 	fun resolveModifier(element: ParadoxScriptExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
-		//修正会由特定的定义类型生成
-		//TODO 修正会由经济类型（economic_category）的声明生成
-		//这里需要最后尝试解析为预定义的非生成的修正
-		val gameType = configGroup.gameType ?: return null
-		//尝试解析为生成的修正，生成源可以未定义
-		val text = name.lowercase()
-		val textRange = TextRange.create(0, text.length)
-		val isKey = element is ParadoxScriptPropertyKey
-		val templateExpression = ParadoxModifierConfigHandler.resolveModifierTemplate(text, textRange, configGroup, isKey)
-		if(templateExpression != null) {
-			val generatedModifierConfig = configGroup.modifiers[templateExpression.template.expressionString]
-			if(generatedModifierConfig == null) return null
-			return ParadoxModifierElement(element, name, generatedModifierConfig, templateExpression, configGroup.project, gameType)
-		}
-		//尝试解析为预定义的非生成的修正
-		val modifierConfig = configGroup.modifiers[name]
-		if(modifierConfig != null) {
-			if(modifierConfig.template.isNotEmpty()) return null //unexpected
-			return ParadoxModifierElement(element, name, modifierConfig, null, configGroup.project, gameType)
-		}
-		return null
+		if(element !is ParadoxScriptStringExpressionElement) return null
+		val modifierInfo = ParadoxModifierHandler.getModifierInfo(element) ?: return null
+		val modifierName = modifierInfo.name
+		val modifierConfig = modifierInfo.generatedModifierConfig ?: modifierInfo.modifierConfig ?: return null
+		val templateExpression = modifierInfo.templateExpression
+		val project = modifierConfig.info.configGroup.project
+		val gameType = modifierInfo.gameType
+		return ParadoxModifierElement(element, modifierName, modifierConfig, templateExpression, project, gameType)
 	}
 	
 	fun resolveLocalisationScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
