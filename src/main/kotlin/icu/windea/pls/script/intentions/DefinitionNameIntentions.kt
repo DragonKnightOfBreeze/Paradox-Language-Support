@@ -63,10 +63,6 @@ class DefinitionNameFindUsagesIntention : DefinitionNameIntention() {
 	override fun doInvoke(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
 		GotoDeclarationAction.startFindUsages(editor, project, definition)
 	}
-	
-	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
-		return IntentionPreviewInfo.EMPTY
-	}
 }
 
 /**
@@ -82,10 +78,6 @@ class DefinitionNameGotoImplementationsIntention: DefinitionNameIntention() {
 		val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, project, scope, selector).findAll()
 		NavigationUtil.getPsiElementPopup(result.toTypedArray(), PlsBundle.message("script.intention.definitionName.gotoImplementations.title", definitionInfo.name))
 			.showInBestPositionFor(editor)
-	}
-	
-	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
-		return IntentionPreviewInfo.EMPTY
 	}
 }
 
@@ -104,9 +96,5 @@ class DefinitionNameGotoTypeDeclarationIntention : DefinitionNameIntention() {
 		val render = NameOnlyPsiElementCellRender()
 		NavigationUtil.getPsiElementPopup(result.toTypedArray(), render,  PlsBundle.message("script.intention.definitionName.gotoTypeDeclaration.title", definitionInfo.name))
 			.showInBestPositionFor(editor)
-	}
-	
-	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
-		return IntentionPreviewInfo.EMPTY
 	}
 }

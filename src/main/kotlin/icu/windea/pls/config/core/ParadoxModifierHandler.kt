@@ -4,9 +4,9 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.*
@@ -18,31 +18,32 @@ object ParadoxModifierHandler {
 	//TODO 修正会由经济类型（economic_category）的声明生成
 	
 	@JvmStatic
-	fun getModifierInfo(element: ParadoxScriptStringExpressionElement): ParadoxModifierInfo? {
+	fun getModifierInfo(element: ParadoxScriptStringExpressionElement, project: Project): ParadoxModifierInfo? {
+		if(DumbService.isDumb(project)) return resolveModifierInfo(element, element.value, project)
 		return getModifierInfoFromCache(element)
 	}
 	
 	private fun getModifierInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxModifierInfo? {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedModifierInfoKey) {
+			val name = element.value
 			val project = element.project
-			val value = resolveModifierInfo(element, project)
+			val value = resolveModifierInfo(element, name, project)
 			//invalidate on any script psi change
 			val tracker = PsiModificationTracker.getInstance(project).forLanguage(ParadoxScriptLanguage)
 			CachedValueProvider.Result.create(value, tracker)
 		}
 	}
 	
-	private fun resolveModifierInfo(element: ParadoxScriptStringExpressionElement, project: Project): ParadoxModifierInfo? {
-		val name = element.value
+	@JvmStatic
+	fun resolveModifierInfo(element: ParadoxScriptStringExpressionElement, name: String, project: Project): ParadoxModifierInfo? {
 		val gameType = selectGameType(element) ?: return null
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		val modifierName = name.lowercase()
 		//尝试解析为预定义的非生成的修正
 		val modifierConfig = configGroup.modifiers[modifierName]?.takeIf { it.template.isEmpty() }
 		//尝试解析为生成的修正，生成源未定义时，使用预定义的修正
-		val isKey = element is ParadoxScriptPropertyKey
 		var generatedModifierConfig: CwtModifierConfig? = null
-		val templateExpression = resolveModifierTemplate(modifierName, configGroup, isKey)
+		val templateExpression = resolveModifierTemplate(modifierName, configGroup)
 		if(templateExpression != null) {
 			val canResolve = templateExpression.referenceNodes.all {
 				val reference = it.getReference(element)
@@ -57,7 +58,7 @@ object ParadoxModifierHandler {
 		return ParadoxModifierInfo(modifierName, gameType, modifierConfig, generatedModifierConfig, templateExpression)
 	}
 	
-	private fun resolveModifierTemplate(name: String, configGroup: CwtConfigGroup, isKey: Boolean? = null): ParadoxTemplateExpression? {
+	private fun resolveModifierTemplate(name: String, configGroup: CwtConfigGroup): ParadoxTemplateExpression? {
 		val text = name
 		val textRange = TextRange.create(0, text.length)
 		//不能直接这样做
@@ -66,7 +67,7 @@ object ParadoxModifierHandler {
 		//}
 		return configGroup.generatedModifiers.values.firstNotNullOfOrNull { 
 			val template = it.template
-			ParadoxTemplateExpression.resolve(text, textRange, template, configGroup, isKey)
+			ParadoxTemplateExpression.resolve(text, textRange, template, configGroup)
 		}
 	}
 	

@@ -1477,6 +1477,7 @@ object CwtConfigHandler {
 	 * @param rangeInElement 需要解析的文本在需要解析的PSI元素对应的整个文本中的位置。
 	 */
 	fun resolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>?, configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+		ProgressManager.checkCanceled()
 		if(configExpression == null) return null
 		if(element is ParadoxScriptStringExpressionElement && element.isParameterAwareExpression()) return null //排除带参数的情况
 		
@@ -1619,6 +1620,7 @@ object CwtConfigHandler {
 	}
 	
 	fun multiResolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>?, configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, isKey: Boolean? = null): Collection<PsiElement> {
+		ProgressManager.checkCanceled()
 		if(configExpression == null) return emptyList()
 		if(element is ParadoxScriptStringExpressionElement && element.isParameterAwareExpression()) return emptyList() //排除带参数的情况  
 		
@@ -1821,11 +1823,15 @@ object CwtConfigHandler {
 	
 	fun resolveModifier(element: ParadoxScriptExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
 		if(element !is ParadoxScriptStringExpressionElement) return null
-		val modifierInfo = ParadoxModifierHandler.getModifierInfo(element) ?: return null
+		val project = configGroup.project
+		val modifierInfo = when{
+			name == element.value -> ParadoxModifierHandler.getModifierInfo(element, project)
+			else -> ParadoxModifierHandler.resolveModifierInfo(element, name, project)
+		} 
+		if(modifierInfo == null) return null
 		val modifierName = modifierInfo.name
 		val modifierConfig = modifierInfo.generatedModifierConfig ?: modifierInfo.modifierConfig ?: return null
 		val templateExpression = modifierInfo.templateExpression
-		val project = modifierConfig.info.configGroup.project
 		val gameType = modifierInfo.gameType
 		return ParadoxModifierElement(element, modifierName, modifierConfig, templateExpression, project, gameType)
 	}

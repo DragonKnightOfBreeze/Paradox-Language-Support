@@ -97,8 +97,4 @@ class ComplexEnumValueNameGotoTypeDeclarationIntention : ComplexEnumValueNameInt
 		NavigationUtil.getPsiElementPopup(arrayOf(resolved), render, PlsBundle.message("script.intention.complexEnumValueName.gotoTypeDeclaration.title", enumName))
 			.showInBestPositionFor(editor)
 	}
-	
-	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
-		return IntentionPreviewInfo.EMPTY
-	}
 }

@@ -47,7 +47,7 @@ class GotoRelatedImageAction : BaseCodeInsightAction() {
 		val isEnabled = when {
 			element == null -> false
 			element.isDefinitionRootKeyOrName() -> true
-			ParadoxModifierHandler.getModifierInfo(element) != null -> true
+			ParadoxModifierHandler.getModifierInfo(element, project) != null -> true
 			else -> false
 		}
 		presentation.isEnabled = isEnabled

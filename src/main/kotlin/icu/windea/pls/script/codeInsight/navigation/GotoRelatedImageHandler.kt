@@ -49,7 +49,7 @@ class GotoRelatedImageHandler : GotoTargetHandler() {
 			if(!runResult) return null
 			return GotoData(definition, targets.toTypedArray(), emptyList())
 		}
-		val modifierInfo = ParadoxModifierHandler.getModifierInfo(element)
+		val modifierInfo = ParadoxModifierHandler.getModifierInfo(element, project)
 		if(modifierInfo != null) {
 			val gameType = modifierInfo.gameType
 			val configGroup = getCwtConfig(project).getValue(gameType)

@@ -7,9 +7,9 @@ import com.intellij.pom.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.core.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
@@ -48,7 +48,7 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 							configGroup.values[name]?.pointer?.element?.let { add(it) }
 						}
 						dataType == CwtDataType.Modifier -> {
-							val modifierInfo = ParadoxModifierHandler.getModifierInfo(location)
+							val modifierInfo = ParadoxModifierHandler.getModifierInfo(location, file.project)
 							if(modifierInfo != null) {
 								modifierInfo.generatedModifierConfig?.pointer?.element?.let { add(it) }
 								modifierInfo.modifierConfig?.pointer?.element?.let { add(it) }
