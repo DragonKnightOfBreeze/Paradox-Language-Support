@@ -65,7 +65,7 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   @NotNull
   Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>> getParameterMap();
 
-  @NotNull
+  @Nullable
   ItemPresentation getPresentation();
 
   boolean isEquivalentTo(@NotNull PsiElement another);

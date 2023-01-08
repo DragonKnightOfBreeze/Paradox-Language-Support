@@ -27,7 +27,6 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
 		if(definitionName.isEmpty()) return
 		val type = definitionInfo.type
 		val project = queryParameters.project
-		val configGroup = definitionInfo.configGroup
 		val extraWords = mutableSetOf<String>()
 		if(definitionInfo.rootKey != definitionName) {
 			extraWords.add(definitionName)

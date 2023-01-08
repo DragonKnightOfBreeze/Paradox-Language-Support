@@ -14,10 +14,6 @@ class ParadoxScriptScriptedVariablePresentation(
 	element: ParadoxScriptScriptedVariable
 ) : ParadoxItemPresentation<ParadoxScriptScriptedVariable>(element)
 
-class ParadoxScriptPropertyPresentation(
-	element: ParadoxScriptProperty
-) : ParadoxItemPresentation<ParadoxScriptProperty>(element)
-
 class ParadoxDefinitionPresentation(
 	element: ParadoxScriptProperty,
 	private val definitionInfo: ParadoxDefinitionInfo

@@ -10,6 +10,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.cwt.psi.*;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import javax.swing.Icon;
 
 public class CwtPropertyKeyImpl extends ASTWrapperPsiElement implements CwtPropertyKey {
 
@@ -25,6 +27,12 @@ public class CwtPropertyKeyImpl extends ASTWrapperPsiElement implements CwtPrope
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof CwtVisitor) accept((CwtVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return CwtPsiImplUtil.getIcon(this, flags);
   }
 
   @Override

@@ -23,6 +23,7 @@ class ParadoxFileUsagesSearcher: QueryExecutorBase<PsiReference, ReferencesSearc
 		val fileInfo = target.fileInfo
 		if(fileInfo == null) return
 		val gameType = fileInfo.rootInfo.gameType
+		val fileName = target.name
 		val filePath = fileInfo.path.toString()
 		val project = queryParameters.project
 		val configGroup = getCwtConfig(project).getValue(gameType)
@@ -31,7 +32,8 @@ class ParadoxFileUsagesSearcher: QueryExecutorBase<PsiReference, ReferencesSearc
 			.firstNotNullOfOrNull { CwtPathExpressionType.FilePath.extract(it, filePath) }
 			?.takeIfNotEmpty()
 			?.let { extraWords.add(it) }
-		if(target.name.endsWith(".dds", true)) {
+		fileName.removeSuffixOrNull(".dds", true)?.let { shortName ->
+			extraWords.add(shortName)
 			configGroup.info.iconPathExpressions
 				.firstNotNullOfOrNull { CwtPathExpressionType.Icon.extract(it, filePath) }
 				?.takeIfNotEmpty()

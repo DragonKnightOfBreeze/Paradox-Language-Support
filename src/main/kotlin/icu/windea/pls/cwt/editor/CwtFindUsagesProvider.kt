@@ -27,14 +27,20 @@ class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
 				val configType = element.configType?.takeIf { it.isReference } ?: return null
 				when(location) {
 					UsageViewTypeLocation.INSTANCE -> configType.descriptionText
-					else -> element.name
+					else -> {
+						val name = element.name
+						element.configType?.getShortName(name) ?: name
+					}
 				}
 			}
 			is CwtString -> {
 				val configType = element.configType?.takeIf { it.isReference } ?: return null
 				when(location) {
 					UsageViewTypeLocation.INSTANCE -> configType.descriptionText
-					else -> element.value
+					else -> {
+						val name = element.value
+						element.configType?.getShortName(name) ?: name
+					}
 				}
 			}
 			else -> null

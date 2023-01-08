@@ -13,18 +13,18 @@ import icu.windea.pls.cwt.psi.*
 
 /**
  * CWT规则的查询。
- * 
+ *
  * * CWT别名规则对应的属性名是"alias[x:y]"，而脚本文件中对应的属性名是"y"，需要特殊处理。
  * * CWT连接规则的属性名是"script_value"，而脚本文件中可能会使用其前缀"value:"，需要特殊处理。
  */
-class CwtConfigUsagesSearcher: QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
+class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
 	override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
 		val target = queryParameters.elementToSearch
 		if(target !is CwtProperty) return
 		val extraWords = mutableSetOf<String>()
 		val configType = target.configType
 		when(configType) {
-			CwtConfigType.Alias -> {
+			CwtConfigType.Alias, CwtConfigType.Modifier, CwtConfigType.Trigger, CwtConfigType.Effect -> {
 				val aliasSubName = target.name.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
 				if(!aliasSubName.isNullOrEmpty()) extraWords.add(aliasSubName)
 			}

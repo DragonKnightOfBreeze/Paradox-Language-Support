@@ -86,6 +86,11 @@ object CwtPsiImplUtil {
 	
 	//region CwtOptionKey
 	@JvmStatic
+	fun getIcon(element: CwtOptionKey, @Iconable.IconFlags flags: Int): Icon {
+		return PlsIcons.CwtOption
+	}
+	
+	@JvmStatic
 	fun getValue(element: CwtOptionKey): String {
 		return element.findChild(OPTION_KEY_TOKEN)!!.text.unquote()
 	}
@@ -132,6 +137,11 @@ object CwtPsiImplUtil {
 	//endregion
 	
 	//region CwtPropertyKey
+	@JvmStatic
+	fun getIcon(element: CwtPropertyKey, @Iconable.IconFlags flags: Int): Icon {
+		return PlsIcons.CwtProperty
+	}
+	
 	@JvmStatic
 	fun getValue(element: CwtPropertyKey): String {
 		return element.findChild(PROPERTY_KEY_TOKEN)!!.text.unquote()

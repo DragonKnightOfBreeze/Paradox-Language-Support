@@ -62,7 +62,9 @@ property ::= property_key COLON property_number? property_value {
 //The number seen in vanilla files right after the colon can be omitted, as it is only useful for Paradox’s internal translation tracking
 //https://twitter.com/Martin_Anward/status/1039175213773144066
 private property_number ::= PROPERTY_NUMBER
-property_key ::= PROPERTY_KEY_TOKEN
+property_key ::= PROPERTY_KEY_TOKEN {
+  methods=[getIcon]
+}
 property_value ::= LEFT_QUOTE property_value_item RIGHT_QUOTE{
   pin=1
 }

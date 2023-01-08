@@ -2,6 +2,7 @@ package icu.windea.pls.config.cwt.config
 
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import javax.swing.*
 
 enum class CwtConfigType(
@@ -106,4 +107,12 @@ enum class CwtConfigType(
 	abstract val prefix: String
 	open val descriptionText: String? = null
 	open val icon: Icon? = null
+	
+	fun getShortName(name: String) : String{
+		//简单判断
+		return when(this) {
+			Modifier, Trigger, Effect -> name.substringIn('[',']').substringAfter(':')
+			else -> name
+		}
+	}
 }

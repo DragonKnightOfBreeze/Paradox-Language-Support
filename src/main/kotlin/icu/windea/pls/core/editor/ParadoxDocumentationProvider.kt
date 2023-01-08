@@ -11,14 +11,13 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.core.*
-import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
@@ -214,7 +213,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 				val templateString = template.expressionString
 				
 				//加上模版信息
-				appendBr()
+				appendBr().appendIndent()
 				append(PlsDocBundle.message("byTemplate")).append(" ")
 				appendCwtLink(templateString, "${gameType.id}/modifiers/$templateString")
 				

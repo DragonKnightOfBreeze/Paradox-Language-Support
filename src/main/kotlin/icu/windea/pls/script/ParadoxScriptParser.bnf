@@ -84,7 +84,7 @@ property_key ::= key_expr {
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
   ] 
   methods=[
-    getValue setValue getReference getReferences
+    getIcon getValue setValue getReference getReferences
     getType getExpression getConfigExpression
     getPresentation isEquivalentTo toString
   ]

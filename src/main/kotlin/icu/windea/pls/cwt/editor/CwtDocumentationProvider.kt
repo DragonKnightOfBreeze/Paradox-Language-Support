@@ -11,12 +11,11 @@ import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.core.*
 import icu.windea.pls.config.core.config.*
+import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
@@ -121,9 +120,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	) {
 		definition {
 			val referenceElement = getReferenceElement(originalElement)
-			val shortName = name.substringIn('[', ']', "")
-				.substringAfter(':', "")
-				.ifEmpty { name }
+			val shortName = configType?.getShortName(name) ?: name
 			val byName = if(shortName == name) null else name
 			val prefix = when {
 				configType?.isReference == true -> configType.prefix
