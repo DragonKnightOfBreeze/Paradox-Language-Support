@@ -76,7 +76,8 @@ object ParadoxModifierHandler {
 		//return configGroup.modifiers.values.firstNotNullOfOrNull { config ->
 		//	ParadoxTemplateExpression.resolve(text, textRange, config.template, configGroup, isKey)
 		//}
-		return configGroup.modifierTemplates.firstNotNullOfOrNull { template ->
+		return configGroup.generatedModifiers.values.firstNotNullOfOrNull { 
+			val template = it.template
 			ParadoxTemplateExpression.resolve(text, textRange, template, configGroup, isKey)
 		}
 	}

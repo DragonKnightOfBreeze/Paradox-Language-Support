@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 定义的相关图片（relatedImages，对应类型为sprite的定义或者DDS图片）的装订线图标提供器。
  */
-class ParadoxRelatedImagesLineMarkerProvider : RelatedItemLineMarkerProvider() {
+class ParadoxDefinitionRelatedImagesLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	override fun getName() = PlsBundle.message("script.gutterIcon.relatedImages")
 	
 	override fun getIcon() = PlsIcons.Gutter.RelatedImage

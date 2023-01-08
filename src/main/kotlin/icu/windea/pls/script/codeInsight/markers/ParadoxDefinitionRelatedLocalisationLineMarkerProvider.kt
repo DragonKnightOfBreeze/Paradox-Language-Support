@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 定义的相关本地化（relatedLocalisation，对应localisation，不对应localisation_synced）的装订线图标提供器。
  */
-class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
+class ParadoxDefinitionRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	override fun getName() = PlsBundle.message("script.gutterIcon.relatedLocalisation")
 	
 	override fun getIcon() = PlsIcons.Gutter.RelatedLocalisation

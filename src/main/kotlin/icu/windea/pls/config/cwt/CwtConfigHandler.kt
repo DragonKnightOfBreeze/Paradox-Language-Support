@@ -10,7 +10,6 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import com.jetbrains.rd.util.string.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
@@ -956,9 +955,24 @@ object CwtConfigHandler {
 			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, modifierConfig.supportedScopes)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
-			val tailText = getScriptExpressionTailText(modifierConfig.config)
+			//首先提示生成的modifier，然后再提示预定义的modifier，排除重复的
+			val tailText = getScriptExpressionTailText(modifierConfig.config, withExpression = false)
+			val tailTextWithExpression = getScriptExpressionTailText(modifierConfig.config, withExpression = true)
 			val template = modifierConfig.template
-			if(template.isEmpty()) {
+			if(template.isNotEmpty()) {
+				//生成的modifier
+				processTemplateResolveResult(template, configGroup) { templateExpression ->
+					val name = templateExpression.text
+					val modifierElement = ParadoxModifierElement(element, name, modifierConfig, templateExpression, project, gameType)
+					val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
+						.withIcon(PlsIcons.Modifier)
+						.withTailText(tailTextWithExpression)
+						.withScopeMatched(scopeMatched)
+					//.withPriority(PlsCompletionPriorities.modifierPriority)
+					result.addScriptExpressionElement(context, builder)
+					true
+				}
+			} else {
 				//预定义的modifier
 				val name = modifierConfig.name
 				val modifierElement = ParadoxModifierElement(element, name, modifierConfig, null, project, gameType)
@@ -968,19 +982,6 @@ object CwtConfigHandler {
 					.withScopeMatched(scopeMatched)
 				//.withPriority(PlsCompletionPriorities.modifierPriority)
 				result.addScriptExpressionElement(context, builder)
-			} else {
-				//生成的modifier
-				processTemplateResolveResult(template, configGroup) { templateExpression ->
-					val name = templateExpression.text
-					val modifierElement = ParadoxModifierElement(element, name, modifierConfig, templateExpression, project, gameType)
-					val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
-						.withIcon(PlsIcons.Modifier)
-						.withTailText(tailText)
-						.withScopeMatched(scopeMatched)
-					//.withPriority(PlsCompletionPriorities.modifierPriority)
-					result.addScriptExpressionElement(context, builder)
-					true
-				}
 			}
 		}
 	}
@@ -1461,9 +1462,13 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun getScriptExpressionTailText(config: CwtConfig<*>?): String? {
+	fun getScriptExpressionTailText(config: CwtConfig<*>?, withExpression: Boolean = true): String? {
 		if(config?.expression == null) return null
-		return " by ${config.expression} in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
+		if(withExpression) {
+			return " by ${config.expression} in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
+		} else {
+			return " in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
+		}
 	}
 	//endregion
 	

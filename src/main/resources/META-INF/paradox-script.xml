@@ -29,8 +29,8 @@
     <errorQuickFixProvider implementation="icu.windea.pls.script.codeInsight.ParadoxScriptErrorQuickFixProvider"/>
     <completion.contributor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.completion.ParadoxScriptCompletionContributor"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxDefinitionLineMarkerProvider"/>
-    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxRelatedLocalisationLineMarkerProvider"/>
-    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxRelatedImagesLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxDefinitionRelatedLocalisationLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxDefinitionRelatedImagesLineMarkerProvider"/>
     <!--<codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxScriptedVariableReferenceInfoHintsProvider"/>-->
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionInfoHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionLocalizedNameHintsProvider"/>

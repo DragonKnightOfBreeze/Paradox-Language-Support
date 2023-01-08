@@ -76,18 +76,24 @@ class CwtConfigGroupImpl(
 	override val inlineConfigGroup: MutableMap<String, MutableList<CwtInlineConfig>> = mutableMapOf()
 	
 	override val modifiers: MutableMap<@CaseInsensitive String, CwtModifierConfig> = CollectionFactory.createCaseInsensitiveStringMap()
-	override val modifierTemplates: List<CwtTemplateExpression> by lazy {
+	override val generatedModifiers: Map<String, CwtModifierConfig> by lazy {
 		//put xxx_<xxx>_xxx before xxx_<xxx>
-		modifiers
-			.mapNotNull { it.value.template.takeIf { it.isNotEmpty() } }
-			.sortedByDescending { it.snippetExpressions.size }
+		modifiers.values
+			.filter { it.template.isNotEmpty() }
+			.sortedByDescending { it.template.snippetExpressions.size }
+			.associateBy { it.name }
+	}
+	override val predefinedModifiers: Map<String, CwtModifierConfig> by lazy {
+		modifiers.values
+			.filter { it.template.isEmpty() }
+			.associateBy { it.name }
 	}
 	
 	init {
 		runReadAction {
 			for(virtualFile in fileGroup.values) {
 				var result: Boolean
-				val fileName = virtualFile.name
+				//val fileName = virtualFile.name
 				val extension = virtualFile.extension?.lowercase()
 				when {
 					extension == "cwt" -> {
