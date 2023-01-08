@@ -6,6 +6,7 @@ import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
@@ -17,8 +18,10 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 
-abstract class DefinitionNameIntention : IntentionAction, PriorityAction {
-	override fun getPriority() = PriorityAction.Priority.LOW
+abstract class DefinitionNameIntention : IntentionAction, PriorityAction, Iconable {
+	override fun getIcon(flags: Int) = null
+	
+	override fun getPriority() = PriorityAction.Priority.HIGH
 	
 	override fun getFamilyName() = text
 	

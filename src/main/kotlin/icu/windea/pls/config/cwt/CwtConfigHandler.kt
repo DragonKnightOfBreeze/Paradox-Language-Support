@@ -649,7 +649,7 @@ object CwtConfigHandler {
 		}
 		
 		if(configExpression.isEmpty()) return
-		if(keyword.isParameterAwareExpression()) return //排除带参数的情况
+		if(quoted != true && keyword.isParameterAwareExpression()) return //排除带参数的情况
 		
 		//匹配作用域
 		val scopeContext = scopeContext
