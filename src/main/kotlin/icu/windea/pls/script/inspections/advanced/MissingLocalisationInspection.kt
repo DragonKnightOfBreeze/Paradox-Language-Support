@@ -84,7 +84,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
 			ProgressManager.checkCanceled()
 			val nameToDistinct = mutableSetOf<String>()
-			val infoMap = mutableMapOf<String, Tuple3<ParadoxRelatedLocalisationInfo, String?, CwtLocalisationLocaleConfig>>()
+			val infoMap = mutableMapOf<String, Tuple3<ParadoxDefinitionRelatedLocalisationInfo, String?, CwtLocalisationLocaleConfig>>()
 			//进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
 			val hasPrimaryLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
 			runReadAction {
@@ -124,7 +124,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			}
 		}
 		
-		private fun getMessage(info: ParadoxRelatedLocalisationInfo, key: String?, locale: CwtLocalisationLocaleConfig): String {
+		private fun getMessage(info: ParadoxDefinitionRelatedLocalisationInfo, key: String?, locale: CwtLocalisationLocaleConfig): String {
 			val expression = info.locationExpression
 			val propertyName = expression.propertyName
 			return when {

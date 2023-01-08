@@ -69,35 +69,35 @@ class ParadoxDefinitionInfo(
 		types.joinToString(", ")
 	}
 	
-	val localisation: List<ParadoxRelatedLocalisationInfo> by lazy {
+	val localisation: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
 		val mergedLocalisationConfig = typeConfig.localisation?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
-		val result = SmartList<ParadoxRelatedLocalisationInfo>()
+		val result = SmartList<ParadoxDefinitionRelatedLocalisationInfo>()
 		//从已有的cwt规则
 		for(config in mergedLocalisationConfig) {
 			val locationExpression = CwtLocalisationLocationExpression.resolve(config.value)
-			val info = ParadoxRelatedLocalisationInfo(config.key, locationExpression, config.required, config.primary)
+			val info = ParadoxDefinitionRelatedLocalisationInfo(config.key, locationExpression, config.required, config.primary)
 			result.add(info)
 		}
 		result
 	}
 	
-	val images: List<ParadoxRelatedImageInfo> by lazy {
+	val images: List<ParadoxDefinitionRelatedImageInfo> by lazy {
 		val mergedImagesConfig = typeConfig.images?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
-		val result = SmartList<ParadoxRelatedImageInfo>()
+		val result = SmartList<ParadoxDefinitionRelatedImageInfo>()
 		//从已有的cwt规则
 		for(config in mergedImagesConfig) {
 			val locationExpression = CwtImageLocationExpression.resolve(config.value)
-			val info = ParadoxRelatedImageInfo(config.key, locationExpression, config.required, config.primary)
+			val info = ParadoxDefinitionRelatedImageInfo(config.key, locationExpression, config.required, config.primary)
 			result.add(info)
 		}
 		result
 	}
 	
-	val modifiers: List<ParadoxModifierInfo> by lazy { 
+	val modifiers: List<ParadoxDefinitionModifierInfo> by lazy { 
 		buildList {
-			configGroup.typeToModifiersMap.get(type)?.forEach { (_, v) -> add(ParadoxModifierInfo(v.template.resolveName(name), v)) }
+			configGroup.typeToModifiersMap.get(type)?.forEach { (_, v) -> add(ParadoxDefinitionModifierInfo(v.template.resolveName(name), v)) }
 			for(subtype in subtypes) {
-				configGroup.typeToModifiersMap.get("$type.$subtype")?.forEach { (_, v) -> add(ParadoxModifierInfo(v.template.resolveName(name), v)) }
+				configGroup.typeToModifiersMap.get("$type.$subtype")?.forEach { (_, v) -> add(ParadoxDefinitionModifierInfo(v.template.resolveName(name), v)) }
 			}
 		}
 	}
@@ -106,11 +106,11 @@ class ParadoxDefinitionInfo(
 		configGroup.declarations.get(type)?.getMergedConfig(subtypes, name)
 	}
 	
-	val primaryLocalisationConfigs: List<ParadoxRelatedLocalisationInfo> by lazy {
+	val primaryLocalisationConfigs: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
 		localisation.filter { it.primary || it.inferIsPrimary() }
 	}
 	
-	val primaryImageConfigs: List<ParadoxRelatedImageInfo> by lazy {
+	val primaryImageConfigs: List<ParadoxDefinitionRelatedImageInfo> by lazy {
 		images.filter { it.primary || it.inferIsPrimary() }
 	}
 	
@@ -158,11 +158,11 @@ val ParadoxDefinitionInfo.shouldIndex: Boolean get() = sourceType != SourceType.
 val ParadoxDefinitionInfo.isAnonymous: Boolean get() = name.isEmpty()
 
 @InferMethod
-private fun ParadoxRelatedLocalisationInfo.inferIsPrimary(): Boolean {
+private fun ParadoxDefinitionRelatedLocalisationInfo.inferIsPrimary(): Boolean {
 	return name.equals("name", true) || name.equals("title", true)
 }
 
 @InferMethod
-private fun ParadoxRelatedImageInfo.inferIsPrimary(): Boolean {
+private fun ParadoxDefinitionRelatedImageInfo.inferIsPrimary(): Boolean {
 	return name.equals("icon", true)
 }

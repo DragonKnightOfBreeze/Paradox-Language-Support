@@ -298,7 +298,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 	) {
 		val render = getSettings().documentation.renderRelatedLocalisationsForModifiers
 		ProgressManager.checkCanceled()
-		val gameType = configGroup.gameType ?: return
+		val gameType = element.gameType
 		val nameKeys = ParadoxModifierHandler.getModifierNameKeys(name, configGroup)
 		val localisation = nameKeys.firstNotNullOfOrNull {
 			val selector = localisationSelector().gameType(gameType).preferRootFrom(element).preferLocale(preferredParadoxLocale())
@@ -340,7 +340,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 	) {
 		val render = getSettings().documentation.renderIconForModifiers
 		ProgressManager.checkCanceled()
-		val gameType = configGroup.gameType ?: return
+		val gameType = element.gameType
 		val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name, configGroup)
 		val (iconPath, iconFile) = iconPaths.firstNotNullOfOrNull {
 			val iconSelector = fileSelector().gameType(gameType).preferRootFrom(element)

@@ -1,4 +1,4 @@
-package icu.windea.pls.cwt
+package icu.windea.pls.config.cwt
 
 enum class CwtSeparatorType(val text: String) {
 	EQUAL("="),

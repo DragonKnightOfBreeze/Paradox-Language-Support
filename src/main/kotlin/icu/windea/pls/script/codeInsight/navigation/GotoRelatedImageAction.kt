@@ -8,12 +8,13 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 导航到定义的相关图片的动作。
+ * 导航到定义/修正的相关图片的动作。
  */
 class GotoRelatedImageAction : BaseCodeInsightAction() {
 	private val handler = GotoRelatedImageHandler()
@@ -36,15 +37,20 @@ class GotoRelatedImageAction : BaseCodeInsightAction() {
 		if(editor == null || project == null) return
 		val file = PsiUtilBase.getPsiFileInEditor(editor, project)
 		if(file !is ParadoxScriptFile) return
-			presentation.isVisible = true
-			if(file.definitionInfo != null) {
-				presentation.isEnabled = true
-				return
-			}
-			val offset = editor.caretModel.offset
-			val element = findElement(file, offset)
-			val isRootKeyOrName = element?.isDefinitionRootKeyOrName() == true
-			presentation.isEnabled = isRootKeyOrName
+		presentation.isVisible = true
+		if(file.definitionInfo != null) {
+			presentation.isEnabled = true
+			return
+		}
+		val offset = editor.caretModel.offset
+		val element = findElement(file, offset)
+		val isEnabled = when {
+			element == null -> false
+			element.isDefinitionRootKeyOrName() -> true
+			ParadoxModifierHandler.getModifierInfo(element) != null -> true
+			else -> false
+		}
+		presentation.isEnabled = isEnabled
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {

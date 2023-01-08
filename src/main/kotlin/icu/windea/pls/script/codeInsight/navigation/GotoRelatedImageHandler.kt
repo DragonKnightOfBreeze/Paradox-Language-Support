@@ -9,8 +9,12 @@ import com.intellij.pom.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.search.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
@@ -26,23 +30,45 @@ class GotoRelatedImageHandler : GotoTargetHandler() {
 		val project = file.project
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return null
-		val definition = element.findParentDefinition() ?: return null
-		val definitionInfo = definition.definitionInfo ?: return null
-		val imageInfos = definitionInfo.images
-		if(imageInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
-		val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
-		val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
-			//need read action here
-			runReadAction {
-				for((_, locationExpression) in imageInfos) {
-					ProgressManager.checkCanceled()
-					val (_, files) = locationExpression.resolveAll(definition, definitionInfo, project) ?: continue
-					if(files.isNotEmpty()) targets.addAll(files)
+		if(element.isDefinitionRootKeyOrName()) {
+			val definition = element.findParentDefinition() ?: return null
+			val definitionInfo = definition.definitionInfo ?: return null
+			val imageInfos = definitionInfo.images
+			if(imageInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
+			val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
+			val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
+				//need read action here
+				runReadAction {
+					for((_, locationExpression) in imageInfos) {
+						ProgressManager.checkCanceled()
+						val (_, files) = locationExpression.resolveAll(definition, definitionInfo, project) ?: continue
+						if(files.isNotEmpty()) targets.addAll(files)
+					}
 				}
-			}
-		}, PlsBundle.message("script.goto.relatedImage.search", definitionInfo.name), true, project)
-		if(!runResult) return null
-		return GotoData(definition, targets.toTypedArray(), emptyList())
+			}, PlsBundle.message("script.goto.relatedImage.search.1", definitionInfo.name), true, project)
+			if(!runResult) return null
+			return GotoData(definition, targets.toTypedArray(), emptyList())
+		}
+		val modifierInfo = ParadoxModifierHandler.getModifierInfo(element)
+		if(modifierInfo != null) {
+			val gameType = modifierInfo.gameType
+			val configGroup = getCwtConfig(project).getValue(gameType)
+			val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
+			val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
+				runReadAction {
+					val iconPaths = ParadoxModifierHandler.getModifierIconPaths(modifierInfo.name, configGroup)
+					val iconFiles = iconPaths.firstNotNullOfOrNull {
+						val iconSelector = fileSelector().gameType(gameType).preferRootFrom(element)
+						val result = ParadoxFilePathSearch.search(it, project, selector = iconSelector).findAll()
+						result.takeIfNotEmpty()
+					} 
+					if(iconFiles != null) targets.addAll(targets)
+				}
+			}, PlsBundle.message("script.goto.relatedImage.search.2", modifierInfo.name), true, project)
+			if(!runResult) return null
+			return GotoData(element, targets.toTypedArray(), emptyList())
+		}
+		return null
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
@@ -57,13 +83,33 @@ class GotoRelatedImageHandler : GotoTargetHandler() {
 	}
 	
 	override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-		val definitionName = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo?.name ?: PlsConstants.unknownString
-		return PlsBundle.message("script.goto.relatedImage.chooseTitle", definitionName.escapeXml())
+		val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
+		if(definitionInfo != null) {
+			val definitionName = definitionInfo.name.orAnonymous()
+			return PlsBundle.message("script.goto.relatedImage.chooseTitle.1", definitionName.escapeXml())
+		}
+		val modifierInfo = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()?.modifierInfo
+		if(modifierInfo != null) {
+			val modifierName = modifierInfo.name
+			return PlsBundle.message("script.goto.relatedImage.chooseTitle.2", modifierName.escapeXml())
+		}
+		val sourceName = sourceElement.text.unquote()
+		return PlsBundle.message("script.goto.relatedImage.chooseTitle.0", sourceName.escapeXml())
 	}
 	
 	override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-		val definitionName = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo?.name ?: PlsConstants.unknownString
-		return PlsBundle.message("script.goto.relatedImage.findUsagesTitle", definitionName)
+		val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
+		if(definitionInfo != null) {
+			val definitionName = definitionInfo.name.orAnonymous()
+			return PlsBundle.message("script.goto.relatedImage.findUsagesTitle.1", definitionName.escapeXml())
+		}
+		val modifierInfo = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()?.modifierInfo
+		if(modifierInfo != null) {
+			val modifierName = modifierInfo.name
+			return PlsBundle.message("script.goto.relatedImage.findUsagesTitle.2", modifierName.escapeXml())
+		}
+		val sourceName = sourceElement.text.unquote()
+		return PlsBundle.message("script.goto.relatedImage.findUsagesTitle.0", sourceName.escapeXml())
 	}
 	
 	override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {

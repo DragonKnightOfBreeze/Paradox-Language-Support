@@ -18,18 +18,6 @@ object ParadoxModifierHandler {
 	//TODO 修正会由经济类型（economic_category）的声明生成
 	
 	@JvmStatic
-	fun matchesModifier(name: String, configGroup: CwtConfigGroup): Boolean {
-		val modifierName = name.lowercase()
-		//预定义的非生成的修正
-		val modifierConfig = configGroup.modifiers[modifierName]?.takeIf { it.template.isEmpty() }
-		if(modifierConfig != null) return true
-		//生成的修正，生成源可以未定义
-		val templateExpression = resolveModifierTemplate(modifierName, configGroup)
-		if(templateExpression != null) return true
-		return false
-	}
-	
-	@JvmStatic
 	fun getModifierInfo(element: ParadoxScriptStringExpressionElement): ParadoxModifierInfo? {
 		return getModifierInfoFromCache(element)
 	}
@@ -80,6 +68,18 @@ object ParadoxModifierHandler {
 			val template = it.template
 			ParadoxTemplateExpression.resolve(text, textRange, template, configGroup, isKey)
 		}
+	}
+	
+	@JvmStatic
+	fun matchesModifier(name: String, configGroup: CwtConfigGroup): Boolean {
+		val modifierName = name.lowercase()
+		//预定义的非生成的修正
+		val modifierConfig = configGroup.modifiers[modifierName]?.takeIf { it.template.isEmpty() }
+		if(modifierConfig != null) return true
+		//生成的修正，生成源可以未定义
+		val templateExpression = resolveModifierTemplate(modifierName, configGroup)
+		if(templateExpression != null) return true
+		return false
 	}
 	
 	//TODO 检查修正的相关本地化和图标到底是如何确定的

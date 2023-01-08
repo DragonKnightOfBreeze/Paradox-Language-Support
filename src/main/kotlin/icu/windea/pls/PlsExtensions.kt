@@ -170,6 +170,8 @@ val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
 
 val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo?
 	get() = ParadoxComplexEnumValueHandler.getInfo(this)
+val ParadoxScriptStringExpressionElement.modifierInfo: ParadoxModifierInfo?
+	get() = ParadoxModifierHandler.getModifierInfo(this)
 
 val ParadoxLocalisationLocale.localeConfig: CwtLocalisationLocaleConfig?
 	get() = getCwtConfig(project).core.localisationLocales.get(name)
