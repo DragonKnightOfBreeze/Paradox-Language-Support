@@ -33,7 +33,7 @@ interface ParadoxTemplateExpression: ParadoxComplexExpression {
 		CwtConfigHandler.processTemplateResolveResult(template, configGroup) { templateExpression ->
 			val name = templateExpression.text
 			val builder = ParadoxScriptExpressionLookupElementBuilder.create(null, name)
-				.withIcon(PlsIcons.Template)
+				.withIcon(PlsIcons.TemplateExpression)
 				.withTailText(tailText)
 				.caseInsensitive()
 				.withScopeMatched(scopeMatched)
