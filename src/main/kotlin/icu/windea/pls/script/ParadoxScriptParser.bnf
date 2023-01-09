@@ -72,7 +72,7 @@ property ::= property_key property_separator property_value {
     property_key="property_key" property_value="value"
     string=""
     getIcon getName setName getNameIdentifier getValue getDepth getBlock 
-    getDefinitionType getType getConfigExpression getExpression
+    getType getConfigExpression getExpression
     getPathName getOriginalPathName getParameterMap
     getPresentation isEquivalentTo toString
   ]
@@ -84,7 +84,7 @@ property_key ::= key_expr {
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
   ] 
   methods=[
-    getValue setValue getReference getReferences
+    getIcon getValue setValue getReference getReferences
     getType getExpression getConfigExpression
     getPresentation isEquivalentTo toString
   ]

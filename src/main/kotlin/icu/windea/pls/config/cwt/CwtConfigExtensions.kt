@@ -8,6 +8,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.cwt.psi.*
 
 inline fun CwtDataConfig<*>.processParent(processor: ProcessEntry.(CwtDataConfig<*>) -> Boolean): Boolean {
 	var parent = this.parent
@@ -43,7 +44,7 @@ private fun CwtDataConfig<*>.doProcessDescendants(processor: ProcessEntry.(CwtDa
 }
 
 fun CwtConfig<*>.findAliasConfig(): CwtAliasConfig? {
-	return when{
+	return when {
 		this is CwtPropertyConfig -> this.inlineableConfig?.castOrNull()
 		this is CwtValueConfig -> this.propertyConfig?.inlineableConfig?.castOrNull()
 		this is CwtAliasConfig -> this
@@ -68,3 +69,16 @@ fun matchesDefinitionSubtypeExpression(expression: String, subtypes: List<String
 		else -> subtypes.isNotEmpty() && expression in subtypes
 	}
 }
+
+
+val CwtProperty.configPath: CwtConfigPath?
+	get() = CwtConfigPathHandler.get(this)
+
+val CwtValue.configPath: CwtConfigPath?
+	get() = CwtConfigPathHandler.get(this)
+
+val CwtProperty.configType: CwtConfigType?
+	get() = CwtConfigTypeHandler.get(this)
+
+val CwtValue.configType: CwtConfigType?
+	get() = CwtConfigTypeHandler.get(this)

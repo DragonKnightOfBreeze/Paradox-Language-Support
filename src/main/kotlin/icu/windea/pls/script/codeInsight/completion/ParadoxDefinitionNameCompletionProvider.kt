@@ -5,10 +5,10 @@ import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
@@ -43,6 +43,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 			ProgressManager.checkCanceled()
 			context.put(PlsCompletionKeys.configKey, config)
 			context.put(PlsCompletionKeys.isKeyKey, isKey)
+			//排除正在输入的那一个
 			val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file)
 				.filterBy { rootKey == null || (it is ParadoxScriptProperty && it.name.equals(rootKey, true))}
 				.notSamePosition(currentDefinition)
@@ -81,7 +82,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				val configGroup = getCwtConfig(project).getValue(gameType)
 				val path = fileInfo.path
 				val definitionElement = element.findParentProperty() ?: return
-				val elementPath = ParadoxElementPathHandler.resolveFromFile(definitionElement, PlsConstants.maxDefinitionDepth) ?: return
+				val elementPath = ParadoxElementPathHandler.getFromFile(definitionElement, PlsConstants.maxDefinitionDepth) ?: return
 				for(typeConfig in configGroup.types.values) {
 					if(typeConfig.nameField != null) continue
 					if(ParadoxDefinitionHandler.matchesTypeWithUnknownDeclaration(typeConfig, path, elementPath, null)) {

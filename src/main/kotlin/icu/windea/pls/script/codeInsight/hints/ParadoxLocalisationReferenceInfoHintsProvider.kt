@@ -11,9 +11,8 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider.*
 import icu.windea.pls.script.psi.*
@@ -82,13 +81,13 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 				val config = ParadoxCwtConfigHandler.resolvePropertyConfigs(element).firstOrNull()
 					?.takeIf { it.expression.type in keyExpressionTypes }
 					?: return true
-				CwtConfigHandler.resolveScriptExpression(element, null, config, config.info.configGroup, true)
+				CwtConfigHandler.resolveScriptExpression(element, null, config, config.expression, config.info.configGroup, true)
 			}
 			is ParadoxScriptString -> {
 				val config = ParadoxCwtConfigHandler.resolveValueConfigs(element).firstOrNull()
 					?.takeIf { it.expression.type in valueExpressionTypes }
 					?: return true
-				CwtConfigHandler.resolveScriptExpression(element, null, config, config.info.configGroup, false)
+				CwtConfigHandler.resolveScriptExpression(element, null, config, config.expression, config.info.configGroup, false)
 			}
 			else -> return true
 		}

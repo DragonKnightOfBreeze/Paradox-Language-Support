@@ -2,8 +2,8 @@ package icu.windea.pls.config.cwt.expression
 
 import com.google.common.cache.*
 import com.intellij.openapi.project.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*

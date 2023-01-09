@@ -6,18 +6,21 @@ import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 
-abstract class ComplexEnumValueNameIntention : IntentionAction, PriorityAction {
-	override fun getPriority() = PriorityAction.Priority.LOW
+abstract class ComplexEnumValueNameIntention : IntentionAction, PriorityAction, Iconable {
+	override fun getIcon(flags: Int) = null
+	
+	override fun getPriority() = PriorityAction.Priority.HIGH
 	
 	override fun getFamilyName() = text
 	
@@ -93,9 +96,5 @@ class ComplexEnumValueNameGotoTypeDeclarationIntention : ComplexEnumValueNameInt
 		val render = NameOnlyPsiElementCellRender()
 		NavigationUtil.getPsiElementPopup(arrayOf(resolved), render, PlsBundle.message("script.intention.complexEnumValueName.gotoTypeDeclaration.title", enumName))
 			.showInBestPositionFor(editor)
-	}
-	
-	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
-		return IntentionPreviewInfo.EMPTY
 	}
 }

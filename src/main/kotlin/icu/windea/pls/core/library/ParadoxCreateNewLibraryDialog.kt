@@ -10,9 +10,10 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
-import icu.windea.pls.core.model.*
 
 /**
  * 创建新的库（游戏目录/模组目录）的对话框。
@@ -90,7 +91,7 @@ class ParadoxCreateNewLibraryDialog(
 				return error(PlsBundle.message("library.dialog.createNewLibrary.libraryPath.invalid.4"))
 			}
 		}
-		val rootInfo = resolveRootInfo(rootFile, false)
+		val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile, false)
 		val descriptorInfo = rootInfo?.descriptorInfo
 		if(rootInfo != null && descriptorInfo != null && gameType == rootInfo.gameType && rootType == rootInfo.rootType) {
 			this@ParadoxCreateNewLibraryDialog.rootFile = rootFile

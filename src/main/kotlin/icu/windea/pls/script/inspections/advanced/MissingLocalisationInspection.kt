@@ -15,9 +15,9 @@ import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
@@ -84,7 +84,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
 			ProgressManager.checkCanceled()
 			val nameToDistinct = mutableSetOf<String>()
-			val infoMap = mutableMapOf<String, Tuple3<ParadoxRelatedLocalisationInfo, String?, CwtLocalisationLocaleConfig>>()
+			val infoMap = mutableMapOf<String, Tuple3<ParadoxDefinitionRelatedLocalisationInfo, String?, CwtLocalisationLocaleConfig>>()
 			//进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
 			val hasPrimaryLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
 			runReadAction {
@@ -124,7 +124,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			}
 		}
 		
-		private fun getMessage(info: ParadoxRelatedLocalisationInfo, key: String?, locale: CwtLocalisationLocaleConfig): String {
+		private fun getMessage(info: ParadoxDefinitionRelatedLocalisationInfo, key: String?, locale: CwtLocalisationLocaleConfig): String {
 			val expression = info.locationExpression
 			val propertyName = expression.propertyName
 			return when {
@@ -162,7 +162,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			val configGroup = config.info.configGroup
 			if(config.expression.type != CwtDataType.Modifier) return
 			val name = element.value
-			val keys = ParadoxModifierConfigHandler.getModifierNameKeys(name, configGroup)
+			val keys = ParadoxModifierHandler.getModifierNameKeys(name, configGroup)
 			val missingLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
 			for(locale in inspection.localeSet) {
 				val selector = localisationSelector().gameType(configGroup.gameType).locale(locale)

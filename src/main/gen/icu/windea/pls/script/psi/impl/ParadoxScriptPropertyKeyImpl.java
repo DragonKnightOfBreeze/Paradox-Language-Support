@@ -11,8 +11,10 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKeyStub;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import icu.windea.pls.core.expression.ParadoxDataType;
+import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 
 public class ParadoxScriptPropertyKeyImpl extends ParadoxScriptStubElementImpl<ParadoxScriptPropertyKeyStub> implements ParadoxScriptPropertyKey {
@@ -39,6 +41,12 @@ public class ParadoxScriptPropertyKeyImpl extends ParadoxScriptStubElementImpl<P
   @NotNull
   public List<ParadoxScriptParameter> getParameterList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameter.class);
+  }
+
+  @Override
+  @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
   @Override

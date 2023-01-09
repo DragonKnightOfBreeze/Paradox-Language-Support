@@ -5,12 +5,11 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.index.*
-import icu.windea.pls.core.model.*
-import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 
@@ -44,7 +43,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
 		//如果是切换类型，也要按照基础类型的类型表达式查找定义
 		val gameType = queryParameters.selector.gameType
 		val configGroup = getCwtConfig(project).get(gameType.id)
-		val baseTypeExpression = configGroup?.typeAndSwapTypeMap?.get(typeExpression)
+		val baseTypeExpression = configGroup?.typeToSwapTypeMap?.get(typeExpression)
 		if(baseTypeExpression != null) {
 			doProcessQueryByTypeExpression(baseTypeExpression, project, scope, name, consumer)
 		}

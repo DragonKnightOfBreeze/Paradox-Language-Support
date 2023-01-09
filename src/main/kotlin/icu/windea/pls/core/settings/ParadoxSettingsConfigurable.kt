@@ -14,6 +14,8 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
@@ -194,7 +196,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 		runWriteAction {
 			for(rootInfo in ParadoxRootInfo.values) {
 				if(rootInfo.gameTypeFromMarkerFile == null) {
-					reparseFilesInRoot(rootInfo.rootFile)
+					ParadoxCoreHandler.reparseFilesInRoot(rootInfo.rootFile)
 				}
 			}
 		}
@@ -207,7 +209,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 			fileNames += settings.oldIgnoredFileNameSet
 			fileNames += settings.ignoredFileNameSet
 			settings.oldIgnoredFileNameSet = settings.ignoredFileNameSet
-			reparseFilesByFileNames(fileNames)
+			ParadoxCoreHandler.reparseFilesByFileNames(fileNames)
 		}
 	}
 	

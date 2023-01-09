@@ -1,7 +1,7 @@
 package icu.windea.pls.localisation.psi.impl
 
 import com.intellij.psi.stubs.*
-import icu.windea.pls.core.model.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationStubImpl(

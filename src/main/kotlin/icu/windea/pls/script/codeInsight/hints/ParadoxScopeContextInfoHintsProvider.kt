@@ -9,8 +9,8 @@ import com.intellij.refactoring.suggested.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.script.*
-import icu.windea.pls.config.script.config.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxScopeContextInfoHintsProvider.*
@@ -56,11 +56,11 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 		val offset = leftCurlyBrace.textRange.endOffset
 		val isAtLineEnd = editor.document.isAtLineEnd(offset, true)
 		if(!isAtLineEnd) return true //仅当作为子句开始的左花括号位于行尾时，才显示此内嵌提示
-		if(!ParadoxScopeConfigHandler.isScopeContextSupported(element)) return true
-		val scopeContext = ParadoxScopeConfigHandler.getScopeContext(element)
+		if(!ParadoxScopeHandler.isScopeContextSupported(element)) return true
+		val scopeContext = ParadoxScopeHandler.getScopeContext(element)
 		if(scopeContext != null) {
 			//don't need show if scope is not changed
-			if(settings.showOnlyIfScopeIsChanged && !ParadoxScopeConfigHandler.isScopeContextChanged(element, scopeContext)) return true
+			if(settings.showOnlyIfScopeIsChanged && !ParadoxScopeHandler.isScopeContextChanged(element, scopeContext)) return true
 			
 			val gameType = selectGameType(file) ?: return true
 			val configGroup = getCwtConfig(file.project).getValue(gameType)
@@ -92,7 +92,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 	}
 	
 	private fun PresentationFactory.scopeLinkPresentation(scope: String, configGroup: CwtConfigGroup): InlayPresentation {
-		if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
+		if(ParadoxScopeHandler.isFakeScopeId(scope)) {
 			return smallText(scope)
 		} else {
 			return psiSingleReference(smallText(scope)) { configGroup.scopeAliasMap[scope]?.pointer?.element }

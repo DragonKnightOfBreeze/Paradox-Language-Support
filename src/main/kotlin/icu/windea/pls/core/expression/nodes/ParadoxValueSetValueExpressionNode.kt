@@ -9,7 +9,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxValueSetValueExpressionNode (
+class ParadoxValueSetValueExpressionNode(
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	val configs: List<CwtConfig<*>>,
@@ -45,12 +45,14 @@ class ParadoxValueSetValueExpressionNode (
 		val configs: List<CwtConfig<*>>,
 		val configGroup: CwtConfigGroup
 	) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+		val configExpressions = configs.mapNotNull { it.expression }
+		
 		override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
 		}
 		
 		override fun resolve(): PsiElement? {
-			return CwtConfigHandler.resolveValueSetValue(element, name, configs, configGroup)
+			return CwtConfigHandler.resolveValueSetValue(element, name, configExpressions, configGroup)
 		}
 	}
 }

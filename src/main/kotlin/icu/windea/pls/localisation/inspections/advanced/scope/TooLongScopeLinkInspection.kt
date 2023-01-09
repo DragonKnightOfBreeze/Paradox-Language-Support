@@ -4,7 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 
@@ -31,7 +31,7 @@ class TooLongScopeLinkInspection : LocalInspectionTool() {
 					else -> true
 				}
 			}
-			if(size > ParadoxScopeConfigHandler.maxScopeLinkSize) {
+			if(size > ParadoxScopeHandler.maxScopeLinkSize) {
 				val startOffset = firstScope?.textRangeInParent?.startOffset ?: return
 				val endOffset = lastScope?.textRangeInParent?.endOffset ?: return
 				val range = TextRange.create(startOffset, endOffset)

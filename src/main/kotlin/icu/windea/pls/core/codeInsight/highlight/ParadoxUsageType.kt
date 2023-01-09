@@ -24,7 +24,7 @@ object ParadoxUsageType {
 	
 	private val FROM_CONFIG_EXPRESSION_TYPES : MutableMap<String, UsageType> = ConcurrentHashMap()
 	
-	fun FROM_CONFIG_EXPRESSION(configExpression: CwtDataExpression) = FROM_CONFIG_EXPRESSION_TYPES.getOrPut(configExpression.expressionString){
-		UsageType { PlsBundle.message("usageType.byConfigExpression", configExpression) }
+	fun FROM_CONFIG_EXPRESSION(configExpression: CwtDataExpression) = FROM_CONFIG_EXPRESSION_TYPES.compute(configExpression.expressionString){ k,v ->
+		v ?: UsageType { PlsBundle.message("usageType.byConfigExpression", configExpression) }
 	}
 }

@@ -6,10 +6,10 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.dds.*
@@ -19,7 +19,7 @@ import kotlin.collections.mapNotNullTo
 private val validValueTypes = arrayOf(
 	CwtDataType.FilePath,
 	CwtDataType.Icon,
-	CwtDataType.TypeExpression
+	CwtDataType.Definition
 )
 
 /**
@@ -103,7 +103,7 @@ class CwtImageLocationExpression(
 			val config = ParadoxCwtConfigHandler.resolveValueConfigs(value).firstOrNull()
 				?.takeIf { it.expression.type in validValueTypes }
 				?: return null
-			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config, config.info.configGroup, false)
+			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config, config.expression, config.info.configGroup, false)
 			when {
 				//由filePath解析为DDS文件
 				resolved is PsiFile && resolved.fileType == DdsFileType -> {
@@ -155,7 +155,7 @@ class CwtImageLocationExpression(
 			val config = ParadoxCwtConfigHandler.resolveValueConfigs(value).firstOrNull()
 				?.takeIf { it.expression.type in validValueTypes }
 				?: return null
-			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config, config.info.configGroup, false)
+			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config, config.expression, config.info.configGroup, false)
 			when {
 				//由filePath解析为DDS文件
 				resolved is PsiFile && resolved.fileType == DdsFileType -> {

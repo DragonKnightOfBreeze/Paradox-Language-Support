@@ -1,7 +1,7 @@
 package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.cwt.psi.*
 
 data class CwtLocalisationCommandConfig(
@@ -10,5 +10,5 @@ data class CwtLocalisationCommandConfig(
 	val name: String,
 	val supportedScopes: Set<String>
 ) : CwtConfig<CwtProperty> {
-	val supportAnyScope = supportedScopes == ParadoxScopeConfigHandler.anyScopeIdSet
+	val supportAnyScope = supportedScopes == ParadoxScopeHandler.anyScopeIdSet
 }

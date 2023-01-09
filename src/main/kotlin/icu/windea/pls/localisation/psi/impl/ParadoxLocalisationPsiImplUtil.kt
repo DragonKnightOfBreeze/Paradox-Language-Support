@@ -10,10 +10,10 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
@@ -117,10 +117,10 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getPresentation(element: ParadoxLocalisationProperty): ItemPresentation {
+	fun getPresentation(element: ParadoxLocalisationProperty): ItemPresentation? {
 		val localisationInfo = element.localisationInfo
 		if(localisationInfo != null) return ParadoxLocalisationPresentation(element)
-		return ParadoxLocalisationPropertyPresentation(element)
+		return null
 	}
 	
 	@JvmStatic
@@ -134,6 +134,13 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun toString(element: ParadoxLocalisationProperty): String {
 		return "ParadoxLocalisationProperty(name=${element.name})"
+	}
+	//endregion
+	
+	//region ParadoxLocalisationPropertyKey
+	@JvmStatic
+	fun getIcon(element: ParadoxLocalisationPropertyKey, @IconFlags flags: Int): Icon {
+		return PlsIcons.LocalisationProperty
 	}
 	//endregion
 	

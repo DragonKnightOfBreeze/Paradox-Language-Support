@@ -13,8 +13,7 @@
     <psi.referenceContributor language="PARADOX_SCRIPT" implementation="icu.windea.pls.script.references.ParadoxScriptReferenceContributor"/>
     <colorSettingsPage implementation="icu.windea.pls.script.editor.ParadoxScriptColorSettingsPage"/>
     <lang.braceMatcher language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptBraceMatcher"/>
-    <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptFoldingBuilder"/>
-    <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxVariableOperationExpressionFoldingBuilder"/>
+    <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.folding.ParadoxScriptFoldingBuilder"/>
     <lang.commenter language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptCommenter"/>
     <breadcrumbsInfoProvider implementation="icu.windea.pls.script.editor.ParadoxScriptBreadCrumbsProvider"/>
     <colorProvider implementation="icu.windea.pls.script.editor.ParadoxScriptColorProvider"/>
@@ -30,8 +29,8 @@
     <errorQuickFixProvider implementation="icu.windea.pls.script.codeInsight.ParadoxScriptErrorQuickFixProvider"/>
     <completion.contributor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.completion.ParadoxScriptCompletionContributor"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxDefinitionLineMarkerProvider"/>
-    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxRelatedLocalisationLineMarkerProvider"/>
-    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxRelatedImagesLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxDefinitionRelatedLocalisationLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxDefinitionRelatedImagesLineMarkerProvider"/>
     <!--<codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxScriptedVariableReferenceInfoHintsProvider"/>-->
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionInfoHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionLocalizedNameHintsProvider"/>
@@ -48,7 +47,6 @@
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$PropertyKey"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT_PROPERTY_VALUE" baseContextId="PARADOX_SCRIPT"
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$PropertyValue"/>
-    <codeInsight.template.postfixTemplateProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.template.postfix.ParadoxScriptPostfixTemplateProvider"/>
     <lang.smartEnterProcessor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.editorActions.smartEnter.ParadoxScriptSmartEnterProcessor"/>
     <lang.formatter language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>
     <codeStyleSettingsProvider implementation="icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettingsProvider"/>
@@ -103,6 +101,19 @@
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>script.intention.category</categoryKey>
       <className>icu.windea.pls.script.intentions.ComplexEnumValueNameGotoTypeDeclarationIntention</className>
+    </intentionAction>
+
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>script.intention.category</categoryKey>
+      <className>icu.windea.pls.script.intentions.QuoteIdentifierIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>script.intention.category</categoryKey>
+      <className>icu.windea.pls.script.intentions.UnquoteIdentifierIntention</className>
     </intentionAction>
     
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
@@ -195,24 +206,6 @@
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.InsufficientExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeFieldExpression"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="script.inspection.advanced.incorrectScopeFieldExpression"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
-                     groupPathKey="script.inspection.advanced.path"
-                     implementationClass="icu.windea.pls.script.inspections.advanced.IncorrectScopeFieldExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectValueFieldExpression"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="script.inspection.incorrectValueFieldExpression"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
-                     groupPathKey="script.inspection.advanced.path"
-                     implementationClass="icu.windea.pls.script.inspections.advanced.IncorrectValueFieldExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectValueSetValueExpression"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="script.inspection.incorrectValueSetValueExpression"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
-                     groupPathKey="script.inspection.advanced.path"
-                     implementationClass="icu.windea.pls.script.inspections.advanced.IncorrectValueSetValueExpressionInspection"/>
     <!--advanced > scope-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScope"
                      enabledByDefault="true" level="WARNING"
@@ -232,6 +225,31 @@
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.scope"
                      groupPathKey="script.inspection.scope.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.scope.TooLongScopeLinkInspection"/>
+    <!--advanced > template-->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeFieldExpression"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="script.inspection.expression.incorrectScopeFieldExpression"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
+                     groupPathKey="script.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.expression.IncorrectScopeFieldExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectValueFieldExpression"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="script.inspection.expression.incorrectValueFieldExpression"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
+                     groupPathKey="script.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.expression.IncorrectValueFieldExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectValueSetValueExpression"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="script.inspection.expression.incorrectValueSetValueExpression"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
+                     groupPathKey="script.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.expression.IncorrectValueSetValueExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectTemplateExpression"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="script.inspection.expression.incorrectTemplateExpression"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
+                     groupPathKey="script.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.expression.IncorrectTemplateExpressionInspection"/>
     <!--advanced > event-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingEventNamespace"
                      enabledByDefault="true" level="WARNING"

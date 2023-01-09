@@ -46,7 +46,7 @@ option ::= option_key option_separator value {
   ]
 }
 option_key ::= OPTION_KEY_TOKEN {
-  methods=[getValue]
+  methods=[getIcon getValue]
 }
 private option_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
 
@@ -61,7 +61,7 @@ property ::= property_key property_separator value {
   ]
 }
 property_key ::= PROPERTY_KEY_TOKEN {
-  methods=[getValue]
+  methods=[getIcon getValue]
 }
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
 

@@ -5,7 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.psi.*
@@ -65,7 +65,7 @@ class TooLongScopeLinkInspection : LocalInspectionTool() {
 						}
 						else -> emptyList()
 					}
-					if(scopeNodes.size > ParadoxScopeConfigHandler.maxScopeLinkSize) {
+					if(scopeNodes.size > ParadoxScopeHandler.maxScopeLinkSize) {
 						val startOffset = scopeNodes.first().rangeInExpression.startOffset
 						val endOffset = scopeNodes.last().rangeInExpression.endOffset
 						val range = TextRange.create(startOffset, endOffset)

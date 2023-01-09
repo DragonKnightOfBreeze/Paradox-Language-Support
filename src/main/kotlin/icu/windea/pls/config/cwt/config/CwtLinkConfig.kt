@@ -2,7 +2,7 @@ package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.cwt.psi.*
 
 /**
@@ -29,8 +29,8 @@ data class CwtLinkConfig(
 	val inputScopes: Set<String>,
 	val outputScope: String
 ) : CwtConfig<CwtProperty> {
-	val inputAnyScope get() = inputScopes == ParadoxScopeConfigHandler.anyScopeIdSet
-	val outputAnyScope get() = outputScope == ParadoxScopeConfigHandler.anyScopeId
+	val inputAnyScope get() = inputScopes == ParadoxScopeHandler.anyScopeIdSet
+	val outputAnyScope get() = outputScope == ParadoxScopeHandler.anyScopeId
 	
 	override val expression get() = dataSource
 }

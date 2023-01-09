@@ -1,6 +1,6 @@
 package icu.windea.pls.core.selector.chained
 
-import icu.windea.pls.core.handler.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxDefinitionSelector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>()

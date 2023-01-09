@@ -18,12 +18,12 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.script.*
-import icu.windea.pls.config.script.config.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
@@ -81,148 +81,8 @@ infix fun String.compareGameVersion(otherVersion: String): Int {
 	}
 	return 0
 }
-//endregion
 
-//region Core Extensions
 fun Language.isParadoxLanguage() = this.isKindOf(ParadoxScriptLanguage) || this.isKindOf(ParadoxLocalisationLanguage)
-
-fun resolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean = true): ParadoxRootInfo? {
-	val rootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
-	if(rootInfo != null && (canBeNotAvailable || rootInfo.isAvailable)) {
-		ParadoxRootInfo.values.add(rootInfo)
-		return rootInfo
-	}
-	ParadoxRootInfo.values.remove(rootInfo)
-	val resolvedRootInfo = doResolveRootInfo(rootFile, canBeNotAvailable)
-	runCatching {
-		rootFile.putUserData(PlsKeys.rootInfoKey, resolvedRootInfo)
-	}
-	if(resolvedRootInfo != null) {
-		ParadoxRootInfo.values.add(resolvedRootInfo)
-	}
-	return resolvedRootInfo
-}
-
-private fun doResolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean): ParadoxRootInfo? {
-	if(rootFile is StubVirtualFile || !rootFile.isValid) return null
-	if(!rootFile.isDirectory) return null
-	
-	var rootType: ParadoxRootType? = null
-	var descriptorFile: VirtualFile? = null
-	var markerFile: VirtualFile? = null
-	val rootName = rootFile.nameWithoutExtension //忽略扩展名
-	when {
-		rootName == ParadoxRootType.PdxLauncher.id -> {
-			rootType = ParadoxRootType.PdxLauncher
-			descriptorFile = rootFile.parent?.findChild(PlsConstants.launcherSettingsFileName)
-				?.takeIf { !it.isDirectory && (canBeNotAvailable || it.isValid) }
-			markerFile = descriptorFile
-		}
-		rootName == ParadoxRootType.PdxOnlineAssets.id -> {
-			rootType = ParadoxRootType.PdxOnlineAssets
-			descriptorFile =rootFile.parent?.findChild(PlsConstants.launcherSettingsFileName)
-				?.takeIf { !it.isDirectory && (canBeNotAvailable || it.isValid) }
-			markerFile = descriptorFile
-		}
-		rootName == ParadoxRootType.TweakerGuiAssets.id -> {
-			rootType = ParadoxRootType.TweakerGuiAssets
-			descriptorFile = rootFile.parent?.findChild(PlsConstants.launcherSettingsFileName)
-				?.takeIf { !it.isDirectory && (canBeNotAvailable || it.isValid) }
-			markerFile = descriptorFile
-		}
-		rootName == "game" -> {
-			return doResolveRootInfo(rootFile.parent ?: return null, canBeNotAvailable)
-		}
-		else -> {
-			for(rootChild in rootFile.children) {
-				if(rootChild.isDirectory) continue
-				if(!canBeNotAvailable && !rootChild.isValid) continue
-				val rootChildName = rootChild.name
-				when {
-					rootChildName.equals(PlsConstants.launcherSettingsFileName, true) -> {
-						rootType = ParadoxRootType.Game
-						descriptorFile = rootChild
-						markerFile = rootChild
-						break
-					}
-					rootChildName.equals(PlsConstants.descriptorFileName, true) -> {
-						rootType = ParadoxRootType.Mod
-						descriptorFile = rootChild
-						if(descriptorFile != null && markerFile != null) break
-					}
-					ParadoxGameType.resolve(rootChild) != null -> {
-						markerFile = rootChild
-						if(descriptorFile != null && markerFile != null) break
-					}
-				}
-			}
-		}
-	}
-	if(descriptorFile != null && rootType != null) {
-		return ParadoxRootInfo(rootFile, descriptorFile, markerFile, rootType)
-	}
-	return null
-}
-
-fun resolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
-	val resolvedFileInfo = doResolveFileInfo(file)
-	runCatching {
-		file.putCopyableUserData(PlsKeys.fileInfoKey, resolvedFileInfo)
-	}
-	return resolvedFileInfo
-}
-
-fun doResolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
-	if(file is StubVirtualFile || !file.isValid) return null
-	val fileName = file.name
-	val subPaths = LinkedList<String>()
-	subPaths.addFirst(fileName)
-	var currentFile: VirtualFile? = file.parent
-	while(currentFile != null) {
-		val rootInfo = resolveRootInfo(currentFile, false)
-		if(rootInfo != null) {
-			val path = ParadoxPath.resolve(subPaths)
-			val fileType = ParadoxFileType.resolve(file, rootInfo.gameType, path)
-			val fileInfo = ParadoxFileInfo(fileName, path, fileType, rootInfo)
-			return fileInfo
-		}
-		subPaths.addFirst(currentFile.name)
-		currentFile = currentFile.parent
-	}
-	return null
-}
-
-fun reparseFilesInRoot(rootFile: VirtualFile) {
-	//重新解析指定的根目录中的所有文件，包括非脚本非本地化文件
-	try {
-		FileTypeManagerEx.getInstanceEx().makeFileTypesChange("Root of paradox files $rootFile changed.") { }
-	} catch(e: Exception) {
-		//ignore
-	} finally {
-		//要求重新索引
-		FileBasedIndex.getInstance().requestReindex(rootFile)
-	}
-}
-
-fun reparseFilesByFileNames(fileNames: Set<String>) {
-	//重新解析指定的根目录中的所有文件，包括非脚本非本地化文件
-	val files = mutableListOf<VirtualFile>()
-	try {
-		val project = getTheOnlyOpenOrDefaultProject()
-		FilenameIndex.processFilesByNames(fileNames, true, GlobalSearchScope.allScope(project), null) {file ->
-			files.add(file)
-			true
-		}
-		FileContentUtil.reparseFiles(project, files, true)
-	} catch(e: Exception) {
-		//ignore
-	} finally {
-		//要求重新索引
-		for(file in files) {
-			FileBasedIndex.getInstance().requestReindex(file)
-		}
-	}
-}
 
 fun PsiReference.canResolveParameter(): Boolean {
 	return when(this) {
@@ -240,6 +100,7 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
 		is ParadoxScriptExpressionPsiReference -> true
 		is ParadoxValueSetValueExpressionNode.Reference -> true
 		is ParadoxDataExpressionNode.Reference -> true
+		is ParadoxTemplateSnippetExpressionNode.Reference -> true
 		is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
 		is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
 		else -> false
@@ -291,11 +152,11 @@ val PsiElement.localeConfig: CwtLocalisationLocaleConfig?
 //如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
 
 val VirtualFile.fileInfo: ParadoxFileInfo?
-	get() = this.getCopyableUserData(PlsKeys.fileInfoKey)
+	get() = ParadoxCoreHandler.getFileInfo(this)
 val PsiFile.fileInfo: ParadoxFileInfo?
-	get() = this.originalFile.virtualFile?.fileInfo //需要使用原始文件
+	get() = ParadoxCoreHandler.getFileInfo(this)
 val PsiElement.fileInfo: ParadoxFileInfo?
-	get() = this.containingFile?.fileInfo
+	get() = ParadoxCoreHandler.getFileInfo(this)
 
 val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
 	get() = ParadoxDefinitionHandler.getInfo(this)
@@ -308,25 +169,27 @@ val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
 
 val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo?
 	get() = ParadoxComplexEnumValueHandler.getInfo(this)
+val ParadoxScriptStringExpressionElement.modifierInfo: ParadoxModifierInfo?
+	get() = ParadoxModifierHandler.getModifierInfo(this)
 
 val ParadoxLocalisationLocale.localeConfig: CwtLocalisationLocaleConfig?
 	get() = getCwtConfig(project).core.localisationLocales.get(name)
 
-val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorConfig?
+val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorInfo?
 	get() {
 		//大写或小写字母，不限定位置
 		val colorId = this.propertyReferenceParameter?.text?.find { it.isExactLetter() } ?: return null
 		val gameType = this.fileInfo?.rootInfo?.gameType //这里还是基于fileInfo获取gameType
 			?: return null
-		return ParadoxTextColorConfigHandler.getTextColorConfig(colorId.toString(), gameType, project)
+		return ParadoxTextColorHandler.getTextColorInfo(colorId.toString(), gameType, project)
 	}
 
-val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorConfig?
+val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorInfo?
 	get() {
 		val colorId = this.name ?: return null
 		val gameType = this.fileInfo?.rootInfo?.gameType //这里还是基于fileInfo获取gameType 
 			?: return null
-		return ParadoxTextColorConfigHandler.getTextColorConfig(colorId, gameType, project)
+		return ParadoxTextColorHandler.getTextColorInfo(colorId, gameType, project)
 	}
 
 fun ParadoxScriptValue.isNullLike(): Boolean {
@@ -359,7 +222,7 @@ fun resolveLink(link: String, sourceElement: PsiElement): PsiElement? {
 	return null
 }
 
-private fun resolveCwtLink(linkWithoutPrefix: String, sourceElement: PsiElement): CwtProperty? {
+private fun resolveCwtLink(linkWithoutPrefix: String, sourceElement: PsiElement): PsiElement? {
 	ProgressManager.checkCanceled()
 	val tokens = linkWithoutPrefix.split('/')
 	if(tokens.size > 4) return null
@@ -384,8 +247,10 @@ private fun resolveCwtLink(linkWithoutPrefix: String, sourceElement: PsiElement)
 		}
 		"enums" -> {
 			val name = tokens.getOrNull(2) ?: return null
+			val valueName = tokens.getOrNull(3)
 			val config = getCwtConfig(project).getValue(gameType).enums[name] ?: return null
-			return config.pointer.element
+			if(valueName == null) return config.pointer.element
+			return config.valueConfigMap.get(valueName)?.pointer?.element
 		}
 		"complex_enums" -> {
 			val name = tokens.getOrNull(2) ?: return null
@@ -394,8 +259,10 @@ private fun resolveCwtLink(linkWithoutPrefix: String, sourceElement: PsiElement)
 		}
 		"values" -> {
 			val name = tokens.getOrNull(2) ?: return null
+			val valueName = tokens.getOrNull(3)
 			val config = getCwtConfig(project).getValue(gameType).values[name] ?: return null
-			return config.pointer.element
+			if(valueName == null) return config.pointer.element
+			return config.valueConfigMap.get(valueName)?.pointer?.element
 		}
 		"modifier_categories" -> {
 			val name = tokens.getOrNull(2) ?: return null
@@ -578,5 +445,9 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilde
 
 fun StringBuilder.appendBr(): StringBuilder {
 	return append("<br>")
+}
+
+fun StringBuilder.appendIndent(): StringBuilder {
+	return append("&nbsp;&nbsp;&nbsp;&nbsp;")
 }
 //endregion

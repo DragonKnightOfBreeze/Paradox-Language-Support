@@ -5,8 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.script.*
-import icu.windea.pls.core.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.script.psi.*
 
@@ -25,19 +24,18 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 				if(config == null) return
 				val definitionInfo by lazy { element.findParentDefinition()?.definitionInfo } 
 				if(config is CwtPropertyConfig && config.expression.type == CwtDataType.ScopeField) {
-					val resultScopeContext = ParadoxScopeConfigHandler.getScopeContext(element)
+					val resultScopeContext = ParadoxScopeHandler.getScopeContext(element)
 					if(resultScopeContext == null) return
 					val scopeFieldInfo = resultScopeContext.scopeFieldInfo
 					if(scopeFieldInfo.isNullOrEmpty()) return
 					val propertyKey = element.propertyKey
-					val range = propertyKey.textRange
 					for((scopeNode, scopeContext) in scopeFieldInfo) {
 						val rangeInExpression = scopeNode.rangeInExpression
 						when(scopeNode) {
 							is ParadoxScopeLinkExpressionNode -> {
 								val parentScopeContext = scopeContext.parent ?: continue
 								val inputScopes = scopeNode.config.inputScopes
-								if(!ParadoxScopeConfigHandler.matchesScope(parentScopeContext, inputScopes)) {
+								if(!ParadoxScopeHandler.matchesScope(parentScopeContext, inputScopes)) {
 									val description = PlsBundle.message("script.inspection.scope.incorrectScopeSwitch.description.1",
 										scopeNode.text, inputScopes.joinToString(), parentScopeContext.thisScope)
 									holder.registerProblem(propertyKey, rangeInExpression, description)
@@ -50,9 +48,9 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 							//TODO may depends on usages
 							//check when root parent scope context is not from event, scripted_trigger or scripted_effect
 							is ParadoxSystemScopeExpressionNode -> {
-								if(scopeContext.thisScope == ParadoxScopeConfigHandler.anyScopeId) {
+								if(scopeContext.thisScope == ParadoxScopeHandler.anyScopeId) {
 									val definitionType = definitionInfo?.type ?: continue
-									if(ParadoxScopeConfigHandler.definitionTypesSkipCheckSystemScope.contains(definitionType)) continue
+									if(config.info.configGroup.definitionTypesSkipCheckSystemScope.contains(definitionType)) continue
 									val description = PlsBundle.message("script.inspection.scope.incorrectScopeSwitch.description.3",
 										scopeNode.text)
 									holder.registerProblem(propertyKey, rangeInExpression, description)

@@ -3,8 +3,8 @@ package icu.windea.pls.localisation.editor.editorActions.smartEnter
 import com.intellij.lang.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -12,9 +12,7 @@ import icu.windea.pls.localisation.psi.*
  */
 class ParadoxLocalisationSmartEnterProcessor: SmartEnterProcessorWithFixers() {
 	init {
-		addFixers(
-			AfterLocalisationKeyFixer()
-		)
+		addFixers(AfterLocalisationKeyFixer())
 	}
 	
 	class AfterLocalisationKeyFixer: Fixer<ParadoxLocalisationSmartEnterProcessor>() {
@@ -28,7 +26,7 @@ class ParadoxLocalisationSmartEnterProcessor: SmartEnterProcessorWithFixers() {
 				?: return
 			val endOffset = element.textRange.endOffset
 			if(caretOffset != endOffset){
-				editor.document.deleteString(endOffset, caretOffset)
+				editor.document.deleteString(caretOffset, endOffset)
 			}
 			val property = targetElement.parent as? ParadoxLocalisationProperty ?: return
 			val category = ParadoxLocalisationCategory.resolve(property)

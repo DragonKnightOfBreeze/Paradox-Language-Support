@@ -6,13 +6,18 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import icu.windea.pls.core.expression.ParadoxDataType;
+import javax.swing.Icon;
 
 public interface ParadoxScriptPropertyKey extends ParadoxScriptStringExpressionElement, StubBasedPsiElement<ParadoxScriptPropertyKeyStub> {
 
   @NotNull
   List<ParadoxScriptParameter> getParameterList();
+
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
 
   @NotNull
   String getValue();

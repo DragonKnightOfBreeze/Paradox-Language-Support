@@ -16,20 +16,14 @@ class CwtValueExpression private constructor(
 ) : AbstractExpression(expressionString), CwtDataExpression {
 	companion object Resolver {
 		val EmptyExpression = CwtValueExpression("", CwtDataType.Constant, "")
-		val BlockExpression = CwtValueExpression("{...}", CwtDataType.Any, "{...}")
+		val BlockExpression = CwtValueExpression("{...}", CwtDataType.Other, "{...}")
 		
 		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtValueExpression> { doResolve(it) } }
 		
-		/**
-		 * @param isParameterValue 参数的值的类型在规则文件中写作"scalar"的场合，实际上只要不是子句就可以。
-		 */
 		fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
 		
 		private fun doResolve(expressionString: String) = when {
 			expressionString.isEmpty() -> EmptyExpression
-			expressionString == "any" -> {
-				CwtValueExpression(expressionString, CwtDataType.Any)
-			}
 			expressionString == "bool" -> {
 				CwtValueExpression(expressionString, CwtDataType.Bool)
 			}
@@ -98,12 +92,7 @@ class CwtValueExpression private constructor(
 			}
 			expressionString.surroundsWith('<', '>') -> {
 				val value = expressionString.substring(1, expressionString.length - 1)
-				CwtValueExpression(expressionString, CwtDataType.TypeExpression, value)
-			}
-			expressionString.indexOf('<').let { it > 0 && it < expressionString.indexOf('>') } -> {
-				val value = expressionString.substring(expressionString.indexOf('<'), expressionString.indexOf('>'))
-				val extraValue = expressionString.substringBefore('<') to expressionString.substringAfterLast('>')
-				CwtValueExpression(expressionString, CwtDataType.TemplateExpression, value, extraValue)
+				CwtValueExpression(expressionString, CwtDataType.Definition, value)
 			}
 			expressionString.surroundsWith("value[", "]") -> {
 				val value = expressionString.substring(6, expressionString.length - 1)
@@ -174,6 +163,9 @@ class CwtValueExpression private constructor(
 			expressionString.surroundsWith("alias_match_left[", "]") -> {
 				val value = expressionString.substring(17, expressionString.length - 1)
 				CwtValueExpression(expressionString, CwtDataType.AliasMatchLeft, value)
+			}
+			CwtTemplateExpression.resolve(expressionString).isNotEmpty() -> {
+				CwtValueExpression(expressionString, CwtDataType.TemplateExpression)
 			}
 			expressionString.endsWith(']') -> {
 				CwtValueExpression(expressionString, CwtDataType.Other)

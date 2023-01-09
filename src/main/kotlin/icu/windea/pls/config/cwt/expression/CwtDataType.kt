@@ -1,10 +1,9 @@
 package icu.windea.pls.config.cwt.expression
 
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.model.*
 
 enum class CwtDataType {
-	Any,
 	Bool,
 	Int,
 	Float,
@@ -19,8 +18,7 @@ enum class CwtDataType {
 	AbsoluteFilePath,
 	FilePath,
 	Icon,
-	TypeExpression,
-	TemplateExpression,
+	Definition,
 	Enum,
 	Value,
 	ValueSet,
@@ -36,6 +34,7 @@ enum class CwtDataType {
 	AliasName,
 	AliasKeysField,
 	AliasMatchLeft,
+	TemplateExpression,
 	ConstantKey,
 	Constant,
 	Other,
@@ -53,4 +52,6 @@ enum class CwtDataType {
 	fun isValueFieldType() = this == ValueField || this == IntValueField
 	
 	fun isValueSetValueType() = this == Value || this == ValueSet
+	
+	fun isGeneratorType() = this == ConstantKey || this == Constant || this == TemplateExpression
 }

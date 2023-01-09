@@ -9,10 +9,6 @@ class ParadoxLocalisationFilePresentation(
 	element: ParadoxLocalisationFile
 ): ParadoxItemPresentation<ParadoxLocalisationFile>(element)
 
-class ParadoxLocalisationPropertyPresentation(
-	element: ParadoxLocalisationProperty
-): ParadoxItemPresentation<ParadoxLocalisationProperty>(element)
-
 class ParadoxLocalisationPresentation(
 	element: ParadoxLocalisationProperty
 ): ParadoxItemPresentation<ParadoxLocalisationProperty>(element) {

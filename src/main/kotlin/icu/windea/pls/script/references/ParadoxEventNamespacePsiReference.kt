@@ -3,7 +3,7 @@ package icu.windea.pls.script.references
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
@@ -25,7 +25,7 @@ class ParadoxEventNamespacePsiReference(
 		val element = element
 		val event = event.element ?: return null
 		val definitionInfo = event.definitionInfo ?: return null
-		val preferredEventNamespace = ParadoxEventConfigHandler.getEventNamespace(event)
+		val preferredEventNamespace = ParadoxEventHandler.getEventNamespace(event)
 		if(preferredEventNamespace != null) return preferredEventNamespace
 		
 		val gameType = definitionInfo.gameType
@@ -42,7 +42,7 @@ class ParadoxEventNamespacePsiReference(
 		val event = event.element ?: return ResolveResult.EMPTY_ARRAY
 		val definitionInfo = event.definitionInfo ?: return ResolveResult.EMPTY_ARRAY
 		val result = mutableSetOf<PsiElement>()
-		val preferredEventNamespace = ParadoxEventConfigHandler.getEventNamespace(event)
+		val preferredEventNamespace = ParadoxEventHandler.getEventNamespace(event)
 		if(preferredEventNamespace != null) result.add(preferredEventNamespace)
 		
 		val gameType = definitionInfo.gameType

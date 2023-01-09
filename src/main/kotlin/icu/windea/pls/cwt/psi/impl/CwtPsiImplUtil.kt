@@ -7,6 +7,7 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
@@ -85,6 +86,11 @@ object CwtPsiImplUtil {
 	
 	//region CwtOptionKey
 	@JvmStatic
+	fun getIcon(element: CwtOptionKey, @Iconable.IconFlags flags: Int): Icon {
+		return PlsIcons.CwtOption
+	}
+	
+	@JvmStatic
 	fun getValue(element: CwtOptionKey): String {
 		return element.findChild(OPTION_KEY_TOKEN)!!.text.unquote()
 	}
@@ -93,7 +99,7 @@ object CwtPsiImplUtil {
 	//region CwtProperty
 	@JvmStatic
 	fun getIcon(element: CwtProperty, @Iconable.IconFlags flags: Int): Icon {
-		val type = CwtConfigType.resolve(element)
+		val type = element.configType
 		return type?.icon ?: PlsIcons.CwtProperty
 	}
 	
@@ -132,6 +138,11 @@ object CwtPsiImplUtil {
 	
 	//region CwtPropertyKey
 	@JvmStatic
+	fun getIcon(element: CwtPropertyKey, @Iconable.IconFlags flags: Int): Icon {
+		return PlsIcons.CwtProperty
+	}
+	
+	@JvmStatic
 	fun getValue(element: CwtPropertyKey): String {
 		return element.findChild(PROPERTY_KEY_TOKEN)!!.text.unquote()
 	}
@@ -140,7 +151,7 @@ object CwtPsiImplUtil {
 	//region CwtValue
 	@JvmStatic
 	fun getIcon(element: CwtValue, @Iconable.IconFlags flags: Int): Icon {
-		val type = CwtConfigType.resolve(element)
+		val type = element.configType
 		return type?.icon ?: PlsIcons.CwtValue
 	}
 	

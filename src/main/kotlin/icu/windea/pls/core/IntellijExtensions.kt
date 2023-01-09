@@ -548,7 +548,12 @@ fun <E : PsiElement> E.createPointer(): SmartPsiElementPointer<E> {
 }
 
 fun <E : PsiElement> E.createPointer(file: PsiFile): SmartPsiElementPointer<E> {
-	return SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this, file)
+	return try {
+		SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this, file)
+	} catch(e: IllegalArgumentException) {
+		//Element from alien project - use empty pointer
+		emptyPointer()
+	}
 }
 
 fun PsiElement.reformatted(canChangeWhiteSpacesOnly: Boolean = false): PsiElement = let {

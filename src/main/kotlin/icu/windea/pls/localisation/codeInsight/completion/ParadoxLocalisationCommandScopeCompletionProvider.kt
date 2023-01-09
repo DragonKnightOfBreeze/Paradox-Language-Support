@@ -5,7 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.localisation.psi.*
@@ -28,7 +28,7 @@ class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<Com
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
-		context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeConfigHandler.getScopeContext(element))
+		context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeHandler.getScopeContext(element))
 		
 		//提示scope
 		CwtConfigHandler.completeSystemScope(context, result)

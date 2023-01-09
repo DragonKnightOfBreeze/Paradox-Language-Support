@@ -7,11 +7,10 @@ import com.intellij.pom.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -28,7 +27,7 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 		val location = findElement(file, offset) ?: return null
 		//获取所有匹配的CWT规则，不存在匹配的CWT规则时，选用所有默认的CWT规则（对于propertyConfig来说是匹配key的，对于valueConfig来说是所有）
 		//包括内联规则（例如alias，显示时使用特殊的别名图标）
-		//如果对应，也包括modifier规则
+		//如果对应，也包括一些相关的规则，如modifierConfig
 		val isKey = location is ParadoxScriptPropertyKey
 		val configs = ParadoxCwtConfigHandler.resolveConfigs(location, true, isKey)
 		val targets = buildSet {
@@ -36,10 +35,26 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 				config.pointer.element?.let { add(it) }
 				config.resolvedOrNull()?.pointer?.element?.let { add(it) }
 				
-				val configGroup = config.info.configGroup
-				if(config.expression.type == CwtDataType.Modifier) {
-					if(location is ParadoxScriptStringExpressionElement) {
-						configGroup.modifiers[location.value]?.pointer?.element?.let { add(it) }
+				if(location is ParadoxScriptStringExpressionElement) {
+					val configGroup = config.info.configGroup
+					val name = location.value 
+					val dataType = config.expression.type
+					when {
+						dataType == CwtDataType.Enum -> {
+							configGroup.enums[name]?.pointer?.element?.let { add(it) }
+							configGroup.complexEnums[name]?.pointer?.element?.let { add(it) }
+						}
+						dataType.isValueSetValueType() -> {
+							configGroup.values[name]?.pointer?.element?.let { add(it) }
+						}
+						dataType == CwtDataType.Modifier -> {
+							val modifierInfo = ParadoxModifierHandler.getModifierInfo(location)
+							if(modifierInfo != null) {
+								modifierInfo.generatedModifierConfig?.pointer?.element?.let { add(it) }
+								modifierInfo.modifierConfig?.pointer?.element?.let { add(it) }
+							}
+						}
+						else -> pass()
 					}
 				}
 			}

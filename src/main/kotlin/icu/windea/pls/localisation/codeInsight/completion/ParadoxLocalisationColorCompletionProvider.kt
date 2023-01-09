@@ -4,7 +4,7 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
@@ -25,7 +25,7 @@ class ParadoxLocalisationColorCompletionProvider : CompletionProvider<Completion
 			?.takeIf { it.elementType == ParadoxLocalisationElementTypes.COLOR_ID }
 		val project = file.project
 		val gameType = selectGameType(file) ?: return
-		val colorConfigs = ParadoxTextColorConfigHandler.getTextColorConfigs(gameType, project, file)
+		val colorConfigs = ParadoxTextColorHandler.getTextColorInfos(gameType, project, file)
 		val lookupElements = mutableListOf<LookupElement>()
 		for(colorConfig in colorConfigs) {
 			val element = colorConfig.pointer.element ?: continue

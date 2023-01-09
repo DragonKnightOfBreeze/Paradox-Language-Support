@@ -11,7 +11,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 object ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub<*>>(ParadoxLocalisationLanguage){
 	private const val externalId = "paradoxLocalisation.file"
-	private const val stubVersion = 5 //0.7.6
+	private const val stubVersion = 6 //0.7.11
 	
 	override fun getExternalId() = externalId
 	

@@ -4,7 +4,7 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.util.*
 import icons.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.script.psi.*
@@ -22,7 +22,7 @@ class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters
 		if(event !is ParadoxScriptProperty) return
 		
 		//仅提示脚本文件中向上查找到的那个合法的事件命名空间
-		val eventNamespace = ParadoxEventConfigHandler.getEventNamespace(event) ?: return //skip
+		val eventNamespace = ParadoxEventHandler.getEventNamespace(event) ?: return //skip
 		val name = eventNamespace.value ?: return
 		val typeFile = eventNamespace.containingFile
 		val lookupElement = LookupElementBuilder.create(eventNamespace, name)

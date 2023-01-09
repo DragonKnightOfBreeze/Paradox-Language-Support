@@ -4,8 +4,8 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxDistinctSelector<T, K>(
@@ -22,6 +22,10 @@ class ParadoxDistinctSelector<T, K>(
 class ParadoxFilterSelector<T>(
 	val predicate: (T) -> Boolean
 ): ParadoxSelector<T> {
+	override fun select(result: T): Boolean {
+		return predicate(result)
+	}
+	
 	override fun selectAll(result: T): Boolean {
 		return predicate(result)
 	}

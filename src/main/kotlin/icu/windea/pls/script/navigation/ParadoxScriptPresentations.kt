@@ -1,7 +1,7 @@
 package icu.windea.pls.script.navigation
 
 import icons.*
-import icu.windea.pls.core.model.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -13,10 +13,6 @@ class ParadoxScriptFilePresentation(
 class ParadoxScriptScriptedVariablePresentation(
 	element: ParadoxScriptScriptedVariable
 ) : ParadoxItemPresentation<ParadoxScriptScriptedVariable>(element)
-
-class ParadoxScriptPropertyPresentation(
-	element: ParadoxScriptProperty
-) : ParadoxItemPresentation<ParadoxScriptProperty>(element)
 
 class ParadoxDefinitionPresentation(
 	element: ParadoxScriptProperty,

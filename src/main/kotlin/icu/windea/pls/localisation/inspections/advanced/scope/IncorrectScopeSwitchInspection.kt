@@ -4,7 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
@@ -34,9 +34,9 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 						val config = resolved.getUserData(PlsKeys.cwtConfigKey)
 						when{
 							config is CwtLocalisationLinkConfig -> {
-								val scopeContext = ParadoxScopeConfigHandler.getScopeContext(element) ?: return
+								val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
 								val supportedScopes = config.inputScopes
-								if(!ParadoxScopeConfigHandler.matchesScope(scopeContext, supportedScopes)) {
+								if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes)) {
 									val description = PlsBundle.message("localisation.inspection.scope.incorrectScopeSwitch.description.1",
 										element.name, supportedScopes.joinToString(), scopeContext.thisScope)
 									holder.registerProblem(element, description)
@@ -44,8 +44,8 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 							}
 							//TODO depends on usages, cannot check now
 							//config is CwtSystemScopeConfig -> {
-							//	val scopeContext = ParadoxScopeConfigHandler.getScopeContext(element, file) ?: return
-							//	val resolvedScope = ParadoxScopeConfigHandler.resolveScopeBySystemScope(config, scopeContext)
+							//	val scopeContext = ParadoxScopeHandler.getScopeContext(element, file) ?: return
+							//	val resolvedScope = ParadoxScopeHandler.resolveScopeBySystemScope(config, scopeContext)
 							//	if(resolvedScope == null) {
 							//		val location = element
 							//		val description = PlsBundle.message("localisation.inspection.scope.incorrectScopeSwitch.description.3",

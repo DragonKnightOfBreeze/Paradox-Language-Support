@@ -2,10 +2,10 @@ package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
 import com.intellij.util.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.script.*
-import icu.windea.pls.config.script.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 
@@ -46,6 +46,11 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 		option?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
 	}
 	
+	val hasScopeOption by lazy {
+		options?.any { it.key == "replace_scope" || it.key == "replace_scopes" || it.key == "push_scope" || it.key == "scope" || it.key == "scopes" }
+			?: false
+	}
+	
 	//may on:
 	// * a config expression in declaration config (include root expression, e.g. "army = { ... }")
 	// * a type config (e.g. "type[xxx] = { ... }")
@@ -54,7 +59,7 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 		val option = options?.find { it.key == "replace_scope" || it.key == "replace_scopes" }
 		if(option == null) return@lazy null
 		val options = option.options ?: return@lazy null
-		val map = options.associateBy({ it.key.lowercase() }, { it.stringValue?.let { v -> ParadoxScopeConfigHandler.getScopeId(v) } })
+		val map = options.associateBy({ it.key.lowercase() }, { it.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) } })
 		ParadoxScopeContext.resolve(map)
 	}
 	
@@ -64,7 +69,7 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	// * a subtype config (e.g. "subtype[xxx] = { ... }")
 	val pushScope by lazy {
 		val option = options?.find { it.key == "push_scope" }
-		option?.stringValue?.let { v -> ParadoxScopeConfigHandler.getScopeId(v) }
+		option?.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) }
 	}
 	
 	//may on:
@@ -72,12 +77,12 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	val supportedScopes by lazy {
 		val option = options?.find { it.key == "scope" || it.key == "scopes" }
 		buildSet {
-			option?.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) }
-			option?.optionValues?.forEach { it.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) } }
-		}.ifEmpty { ParadoxScopeConfigHandler.anyScopeIdSet }
+			option?.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
+			option?.optionValues?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
+		}.ifEmpty { ParadoxScopeHandler.anyScopeIdSet }
 	}
 	
-	val supportAnyScope = supportedScopes == ParadoxScopeConfigHandler.anyScopeIdSet
+	val supportAnyScope = supportedScopes == ParadoxScopeHandler.anyScopeIdSet
 	
 	/**
 	 * 深拷贝。

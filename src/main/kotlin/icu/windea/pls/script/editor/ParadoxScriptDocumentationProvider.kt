@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package icu.windea.pls.script.editor
 
 import com.intellij.codeInsight.documentation.*
@@ -8,7 +10,8 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.chained.*
@@ -190,6 +193,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上相关图片信息：去重后的一组DDS文件的filePath，或者sprite的definitionKey，不包括可选且没有对应的图片的项，按解析顺序排序
 			addRelatedImagesForDefinition(element, definitionInfo, sectionsList?.get(1))
 			
+			//加上生成的修正的信息
+			addGeneratedModifiersForDefinition(element, definitionInfo)
+			
 			//加上作用域上下文信息（如果支持）
 			addScopeContextForDefinition(element, definitionInfo, sectionsList?.get(0))
 			
@@ -265,6 +271,24 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun StringBuilder.addGeneratedModifiersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+		val modifiers = definitionInfo.modifiers
+		if(modifiers.isEmpty()) return
+		for(modifier in modifiers) {
+			appendBr()
+			append(PlsDocBundle.message("prefix.generatedModifier")).append(" ")
+			append(modifier.name)
+			grayed {
+				append(" ")
+				append(PlsDocBundle.message("byTemplate"))
+				append(" ")
+				val key = modifier.config.name
+				val gameType = definitionInfo.gameType
+				appendCwtLink(key, "${gameType.id}/modifiers/${key}")
+			}
+		}
+	}
+	
 	private fun StringBuilder.addScopeContextForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
 		//进行代码提示时不应当显示作用域上下文信息
 		@Suppress("DEPRECATION")
@@ -273,8 +297,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		val show = getSettings().documentation.showScopeContext
 		if(!show) return
 		if(sections == null) return
-		if(!ParadoxScopeConfigHandler.isScopeContextSupported(element)) return
-		val scopeContext = ParadoxScopeConfigHandler.getScopeContext(element)
+		if(!ParadoxScopeHandler.isScopeContextSupported(element)) return
+		val scopeContext = ParadoxScopeHandler.getScopeContext(element)
 		if(scopeContext == null) return
 		val contextElement = element
 		val gameType = definitionInfo.gameType
@@ -284,7 +308,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				if(appendSeparator) appendBr() else appendSeparator = true
 				appendCwtLink(systemScope, "${gameType.id}/system_scopes/$systemScope", contextElement)
 				append(" = ")
-				if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
+				if(ParadoxScopeHandler.isFakeScopeId(scope)) {
 					append(scope)
 				} else {
 					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)

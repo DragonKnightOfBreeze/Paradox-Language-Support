@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED_PARAMETER")
+@file:Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
 
 package icu.windea.pls.cwt.editor
 
@@ -11,11 +11,11 @@ import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
@@ -51,7 +51,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyInfo(element: CwtProperty, originalElement: PsiElement?): String {
 		return buildString {
 			val name = element.name
-			val configType = CwtConfigType.resolve(element)
+			val configType = element.configType
 			val project = element.project
 			val configGroup = getConfigGroup(element, originalElement, project)
 			buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, false, null)
@@ -64,7 +64,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		
 		return buildString {
 			val name = element.name
-			val configType = CwtConfigType.resolve(element)
+			val configType = element.configType
 			val project = element.project
 			val configGroup = getConfigGroup(element, originalElement, project)
 			buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, false, null)
@@ -82,7 +82,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyDoc(element: CwtProperty, originalElement: PsiElement?): String {
 		return buildString {
 			val name = element.name
-			val configType = CwtConfigType.resolve(element)
+			val configType = element.configType
 			val project = element.project
 			val configGroup = getConfigGroup(element, originalElement, project)
 			//images, localisations, scope infos
@@ -99,7 +99,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		
 		return buildString {
 			val name = element.name
-			val configType = CwtConfigType.resolve(element)
+			val configType = element.configType
 			val project = element.project
 			val configGroup = getConfigGroup(element, originalElement, project)
 			val sectionsList = List(2) { mutableMapOf<String, String>() }
@@ -120,40 +120,40 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	) {
 		definition {
 			val referenceElement = getReferenceElement(originalElement)
-			if(referenceElement?.language?.isParadoxLanguage() != true || configType?.isReference == true) {
-				if(configType != null) append(configType.prefix).append(" ")
-				append("<b>").append(name.escapeXml().orAnonymous()).append("</b>")
-				//加上类型信息
-				val typeCategory = configType?.category
-				if(typeCategory != null) {
-					val typeElement = element.parentOfType<CwtProperty>()
-					val typeName = typeElement?.name?.substringIn('[', ']')?.takeIfNotEmpty()
-					if(typeName != null && typeName.isNotEmpty()) {
-						//在脚本文件中显示为链接
-						if(configGroup != null) {
-							val gameType = configGroup.gameType
-							val typeLink = "${gameType.id}/${typeCategory}/${typeName}"
-							append(": ").appendCwtLink(typeName, typeLink, typeElement)
-						} else {
-							append(": ").append(typeName)
-						}
-					}
-				}
-			} else {
-				val prefix = when {
-					referenceElement is ParadoxScriptPropertyKey -> PlsDocBundle.message("prefix.definitionProperty")
-					referenceElement is ParadoxScriptValue -> PlsDocBundle.message("prefix.definitionValue")
-					else -> null
-				}
-				val referenceName = referenceElement.text.unquote()
-				if(prefix != null) append(prefix).append(" ")
-				append("<b>").append(referenceName.escapeXml().orAnonymous()).append("</b>")
-				if(showDetail && name != referenceName) { //这里不忽略大小写
-					grayed {
-						append(" by ").append(name.escapeXml().orAnonymous())
+			val shortName = configType?.getShortName(name) ?: name
+			val byName = if(shortName == name) null else name
+			val prefix = when {
+				configType?.isReference == true -> configType.prefix
+				referenceElement is ParadoxScriptPropertyKey -> PlsDocBundle.message("prefix.definitionProperty")
+				referenceElement is ParadoxScriptValue -> PlsDocBundle.message("prefix.definitionValue")
+				else -> configType?.prefix
+			}
+			val typeCategory = configType?.category
+			
+			if(prefix != null) {
+				append(prefix).append(" ")
+			}
+			append("<b>").append(shortName.escapeXml().orAnonymous()).append("</b>")
+			if(typeCategory != null) {
+				val typeElement = element.parentOfType<CwtProperty>()
+				val typeName = typeElement?.name?.substringIn('[', ']')?.takeIfNotEmpty()
+				if(typeName != null && typeName.isNotEmpty()) {
+					//在脚本文件中显示为链接
+					if(configGroup != null) {
+						val gameType = configGroup.gameType
+						val typeLink = "${gameType.id}/${typeCategory}/${typeName}"
+						append(": ").appendCwtLink(typeName, typeLink, typeElement)
+					} else {
+						append(": ").append(typeName)
 					}
 				}
 			}
+			if(byName != null) {
+				grayed { 
+					append(" by ").append(byName.escapeXml().orAnonymous())
+				}
+			}
+			
 			if(configGroup != null) {
 				if(referenceElement != null && configType == CwtConfigType.Modifier) {
 					addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sectionsList?.get(2))
@@ -174,12 +174,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		ProgressManager.checkCanceled()
 		val contextElement = referenceElement
 		val gameType = configGroup.gameType ?: return
-		val nameKeys = ParadoxModifierConfigHandler.getModifierNameKeys(name, configGroup)
+		val nameKeys = ParadoxModifierHandler.getModifierNameKeys(name, configGroup)
 		val localisation = nameKeys.firstNotNullOfOrNull {
 			val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
 			ParadoxLocalisationSearch.search(it, configGroup.project, selector = selector).find()
 		}
-		val descKeys = ParadoxModifierConfigHandler.getModifierDescKeys(name, configGroup)
+		val descKeys = ParadoxModifierHandler.getModifierDescKeys(name, configGroup)
 		val descLocalisation = descKeys.firstNotNullOfOrNull {
 			val descSelector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
 			ParadoxLocalisationSearch.search(it, configGroup.project, selector = descSelector).find()
@@ -212,7 +212,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		ProgressManager.checkCanceled()
 		val contextElement = referenceElement
 		val gameType = configGroup.gameType ?: return
-		val iconPaths = ParadoxModifierConfigHandler.getModifierIconPaths(name, configGroup)
+		val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name, configGroup)
 		val (iconPath, iconFile) = iconPaths.firstNotNullOfOrNull {
 			val iconSelector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
 			it to ParadoxFilePathSearch.search(it, configGroup.project, selector = iconSelector).find()
@@ -273,7 +273,9 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val modifierConfig = configGroup.modifiers[name] ?: return
 				if(sections != null) {
 					val categoryNames = modifierConfig.categoryConfigMap.keys
-					sections.put(PlsDocBundle.message("sectionTitle.categories"), getCategoriesText(categoryNames, gameType, contextElement))
+					if(categoryNames.isNotEmpty()) {
+						sections.put(PlsDocBundle.message("sectionTitle.categories"), getCategoriesText(categoryNames, gameType, contextElement))
+					}
 					
 					val supportedScopes = modifierConfig.supportedScopes
 					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
@@ -293,7 +295,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val aliasConfig = aliasConfigs.singleOrNull()
 					?: aliasConfigs.find { element.isSamePosition(it.pointer.element) }
 					?: return
-				if(aliasConfig.name !in configGroup.aliasNameSupportScope) return
+				if(aliasConfig.name !in configGroup.aliasNamesSupportScope) return
 				if(sections != null) {
 					val supportedScopes = aliasConfig.supportedScopes
 					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
@@ -318,7 +320,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getScopeText(scope: String, gameType: ParadoxGameType?, contextElement: PsiElement): String {
 		return buildString {
 			append("<code>")
-			if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
+			if(ParadoxScopeHandler.isFakeScopeId(scope)) {
 				append(scope)
 			} else {
 				appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
@@ -333,7 +335,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			append("<code>")
 			for(scope in scopes) {
 				if(appendSeparator) append(", ") else appendSeparator = true
-				if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
+				if(ParadoxScopeHandler.isFakeScopeId(scope)) {
 					append(scope)
 				} else {
 					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
@@ -352,8 +354,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		if(!show) return
 		if(sections == null) return
 		val memberElement = referenceElement.parentOfType<ParadoxScriptMemberElement>(true) ?: return
-		if(!ParadoxScopeConfigHandler.isScopeContextSupported(memberElement)) return
-		val scopeContext = ParadoxScopeConfigHandler.getScopeContext(memberElement)
+		if(!ParadoxScopeHandler.isScopeContextSupported(memberElement)) return
+		val scopeContext = ParadoxScopeHandler.getScopeContext(memberElement)
 		if(scopeContext == null) return
 		//TODO 如果作用域引用位于表达式中，应当使用那个位置的作用域上下文，但是目前实现不了，因为这里的referenceElement是整个scriptProperty
 		val scopeContextToUse = scopeContext
@@ -365,7 +367,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				if(appendSeparator) appendBr() else appendSeparator = true
 				appendCwtLink(systemScope, "${gameType.id}/system_scopes/$systemScope", contextElement)
 				append(" = ")
-				if(ParadoxScopeConfigHandler.isFakeScopeId(scope)) {
+				if(ParadoxScopeHandler.isFakeScopeId(scope)) {
 					append(scope)
 				} else {
 					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)

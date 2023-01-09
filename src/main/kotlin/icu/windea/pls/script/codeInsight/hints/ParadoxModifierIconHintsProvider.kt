@@ -9,9 +9,8 @@ import com.intellij.refactoring.suggested.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
@@ -64,7 +63,7 @@ class ParadoxModifierIconHintsProvider: ParadoxScriptHintsProvider<Settings>() {
 				val name = element.value
 				val configGroup = config.info.configGroup
 				val project = configGroup.project
-				val iconPaths =  ParadoxModifierConfigHandler.getModifierIconPaths(name, configGroup)
+				val iconPaths =  ParadoxModifierHandler.getModifierIconPaths(name, configGroup)
 				val iconFile = iconPaths.firstNotNullOfOrNull {
 					val iconSelector = fileSelector().gameType(configGroup.gameType).preferRootFrom(element)
 					ParadoxFilePathSearch.search(it, project, selector = iconSelector).find()

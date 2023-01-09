@@ -5,16 +5,14 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.config.setting.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.script.*
-import icu.windea.pls.config.script.config.*
+import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.model.*
-import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import kotlin.collections.isNullOrEmpty
 import kotlin.collections.mapNotNullTo
@@ -39,7 +37,7 @@ class CwtConfigGroupImpl(
 	override val folders: MutableSet<String> = mutableSetOf()
 	
 	override val types: MutableMap<String, CwtTypeConfig> = mutableMapOf()
-	override val typeAndSwapTypeMap: Map<String, String> by lazy { 
+	override val typeToSwapTypeMap: BidirectionalMap<String, String> by lazy { 
 		val map = BidirectionalMap<String, String>()
 		for(typeConfig in types.values) {
 			if(typeConfig.baseType != null) {
@@ -48,10 +46,12 @@ class CwtConfigGroupImpl(
 		}
 		map
 	}
+	override val typeToModifiersMap: MutableMap<String, MutableMap<String, CwtModifierConfig>> = mutableMapOf()
+	override val declarations: MutableMap<String, CwtDeclarationConfig> = mutableMapOf()
 	
-	override val values: MutableMap<String, CwtEnumValueConfig> = mutableMapOf()
+	override val values: MutableMap<String, CwtEnumConfig> = mutableMapOf()
 	//enumValue可以是int、float、bool类型，统一用字符串表示
-	override val enums: MutableMap<String, CwtEnumValueConfig> = mutableMapOf()
+	override val enums: MutableMap<String, CwtEnumConfig> = mutableMapOf()
 	//基于enum_name进行定位，对应的可能是key/value
 	override val complexEnums: MutableMap<String, CwtComplexEnumConfig> = mutableMapOf()
 	
@@ -66,20 +66,61 @@ class CwtConfigGroupImpl(
 	override val localisationLinks: MutableMap<@CaseInsensitive String, CwtLocalisationLinkConfig> = CollectionFactory.createCaseInsensitiveStringMap()
 	override val localisationCommands: MutableMap<@CaseInsensitive String, CwtLocalisationCommandConfig> = CollectionFactory.createCaseInsensitiveStringMap()
 	override val modifierCategories: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
-	override val modifiers: MutableMap<String, CwtModifierConfig> = mutableMapOf()
 	override val scopes: MutableMap<@CaseInsensitive String, CwtScopeConfig> = CollectionFactory.createCaseInsensitiveStringMap()
 	override val scopeAliasMap: MutableMap<@CaseInsensitive String, CwtScopeConfig> = CollectionFactory.createCaseInsensitiveStringMap()
 	override val scopeGroups: MutableMap<String, CwtScopeGroupConfig> = mutableMapOf()
 	override val singleAliases: MutableMap<String, MutableList<CwtSingleAliasConfig>> = mutableMapOf()
 	override val aliasGroups: MutableMap<String, MutableMap<String, MutableList<CwtAliasConfig>>> = mutableMapOf()
 	override val inlineConfigGroup: MutableMap<String, MutableList<CwtInlineConfig>> = mutableMapOf()
-	override val declarations: MutableMap<String, CwtDeclarationConfig> = mutableMapOf()
+	
+	override val modifiers: MutableMap<@CaseInsensitive String, CwtModifierConfig> = CollectionFactory.createCaseInsensitiveStringMap()
+	override val generatedModifiers: Map<String, CwtModifierConfig> by lazy {
+		//put xxx_<xxx>_xxx before xxx_<xxx>
+		modifiers.values
+			.filter { it.template.isNotEmpty() }
+			.sortedByDescending { it.template.snippetExpressions.size }
+			.associateBy { it.name }
+	}
+	override val predefinedModifiers: Map<String, CwtModifierConfig> by lazy {
+		modifiers.values
+			.filter { it.template.isEmpty() }
+			.associateBy { it.name }
+	}
+	
+	override val aliasNamesSupportScope: MutableSet<String> = mutableSetOf(
+		"modifier", //也支持，但不能切换作用域
+		"trigger",
+		"effect",
+		//另外加上可以切换作用域的alias
+	)
+	
+	override val definitionTypesSupportScope: MutableSet<String> = mutableSetOf(
+		"game_rule",
+		"script_effect",
+		"script_trigger",
+		"on_action", //也支持，其中调用的事件的类型要匹配
+	)
+	
+	override val definitionTypesSkipCheckSystemScope: MutableSet<String> = mutableSetOf(
+		"event",
+		"game_rule",
+		"script_trigger",
+		"script_effect",
+		"script_value",
+	)
+	
+	override val definitionTypesSupportParameters: MutableSet<String> = mutableSetOf(
+		"script_trigger",
+		"script_effect",
+		"script_value", //SV也支持参数
+		"inline_script", //内联脚本也支持参数（并且可以表示多条语句）
+	)
 	
 	init {
 		runReadAction {
 			for(virtualFile in fileGroup.values) {
 				var result: Boolean
-				val fileName = virtualFile.name
+				//val fileName = virtualFile.name
 				val extension = virtualFile.extension?.lowercase()
 				when {
 					extension == "cwt" -> {
@@ -127,30 +168,6 @@ class CwtConfigGroupImpl(
 	}
 	override val linksAsValueWithoutPrefixSorted: List<CwtLinkConfig> by lazy {
 		linksAsValueWithoutPrefix.values.sortedByPriority(this) { it.dataSource!! }
-	}
-	
-	override val aliasNameSupportScope: Set<String> by lazy { 
-		buildSet {
-			addAll(info.aliasNameSupportScope)
-			add("modifier") //也支持，但不能切换作用域
-		}
-	}
-	
-	override val definitionTypesSupportScope: Set<String> by lazy {
-		buildSet {
-			add("game_rule")
-			add("script_effect")
-			add("script_trigger")
-			add("on_action") //也支持，其中调用的事件的类型要匹配
-		}
-	}
-	
-	override val definitionTypesSupportParameters: Set<String> by lazy {
-		buildSet {
-			addAll(info.aliasNameSupportScope)
-			add("script_value") //SV也支持参数
-			add("inline_script") //内联脚本也支持参数（并且可以表示多条语句）
-		}
 	}
 	
 	//解析CSV
@@ -330,6 +347,7 @@ class CwtConfigGroupImpl(
 				key == "values" -> {
 					val props = property.properties ?: continue
 					for(prop in props) {
+						//TODO valueName may be a template expression (e.g. xxx_<xxx>)
 						val valueName = prop.key.removeSurroundingOrNull("value[", "]")
 						if(!valueName.isNullOrEmpty()) {
 							val valueConfig = resolveEnumConfig(prop, valueName) ?: continue
@@ -451,9 +469,16 @@ class CwtConfigGroupImpl(
 					if(aliasNamePair != null) {
 						val (aliasName, aliasSubName) = aliasNamePair
 						val aliasConfig = resolveAliasConfig(property, aliasName, aliasSubName)
+						//目前不这样处理
+						//if(aliasConfig.name == "modifier" && aliasConfig.expression.type.isGeneratorType()) {
+						//	val modifierConfig = resolveModifierConfigFromAliasConfig(aliasConfig)
+						//	modifiers.put(modifierConfig.name, modifierConfig)
+						//	continue
+						//} 
 						val map = aliasGroups.getOrPut(aliasName) { mutableMapOf() }
 						val list = map.getOrPut(aliasSubName) { SmartList() }
 						list.add(aliasConfig)
+						
 					}
 					
 					val inlineConfigName = key.removeSurroundingOrNull("inline[", "]")
@@ -524,8 +549,7 @@ class CwtConfigGroupImpl(
 						val propPointer = prop.pointer
 						val propProps = prop.properties ?: continue
 						for(p in propProps) {
-							val k = p.key
-							val subtypeName = k.removeSurroundingOrNull("subtype[", "]")
+							val subtypeName = p.key.removeSurroundingOrNull("subtype[", "]")
 							if(subtypeName != null) {
 								val pps = p.properties ?: continue
 								for(pp in pps) {
@@ -533,7 +557,7 @@ class CwtConfigGroupImpl(
 									configs.add(subtypeName to locationConfig)
 								}
 							} else {
-								val locationConfig = resolveLocationConfig(p, k) ?: continue
+								val locationConfig = resolveLocationConfig(p, p.key) ?: continue
 								configs.add(null to locationConfig)
 							}
 						}
@@ -544,8 +568,7 @@ class CwtConfigGroupImpl(
 						val propPointer = prop.pointer
 						val propProps = prop.properties ?: continue
 						for(p in propProps) {
-							val k = p.key
-							val subtypeName = k.removeSurroundingOrNull("subtype[", "]")
+							val subtypeName = p.key.removeSurroundingOrNull("subtype[", "]")
 							if(subtypeName != null) {
 								val pps = p.properties ?: continue
 								for(pp in pps) {
@@ -553,11 +576,31 @@ class CwtConfigGroupImpl(
 									configs.add(subtypeName to locationConfig)
 								}
 							} else {
-								val locationConfig = resolveLocationConfig(p, k) ?: continue
+								val locationConfig = resolveLocationConfig(p, p.key) ?: continue
 								configs.add(null to locationConfig)
 							}
 						}
 						images = CwtTypeImagesConfig(propPointer, propertyConfig.info, configs)
+					}
+					"modifiers" -> {
+						val propProps = prop.properties ?: continue
+						for(p in propProps) {
+							val subtypeName = p.key.removeSurroundingOrNull("subtype[", "]")
+							if(subtypeName != null) {
+								val pps = p.properties ?: continue
+								for(pp in pps) {
+									val typeExpression = "$name.$subtypeName"
+									val modifierConfig = resolveDefinitionModifierConfig(pp, pp.key, typeExpression) ?: continue
+									modifiers.put(modifierConfig.name, modifierConfig)
+									typeToModifiersMap.getOrPut(typeExpression) { mutableMapOf() }.put(pp.key, modifierConfig)
+								}
+							} else {
+								val typeExpression = name
+								val modifierConfig = resolveDefinitionModifierConfig(p, p.key, typeExpression) ?: continue
+								modifiers.put(modifierConfig.name, modifierConfig)
+								typeToModifiersMap.getOrPut(typeExpression) { mutableMapOf() }.put(p.key, modifierConfig)
+							}
+						}
 					}
 				}
 				
@@ -659,12 +702,21 @@ class CwtConfigGroupImpl(
 		return CwtLocationConfig(propertyConfig.pointer, propertyConfig.info, name, expression, required, primary)
 	}
 	
-	private fun resolveEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtEnumValueConfig? {
+	private fun resolveDefinitionModifierConfig(propertyConfig: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig? {
+		//string | string[]
+		val modifierName = name.replace("$", "<$typeExpression>")
+		val categories = propertyConfig.stringValue?.let { setOf(it) }
+			?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+			?: return null
+		return CwtModifierConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, modifierName, categories)
+	}
+	
+	private fun resolveEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtEnumConfig? {
 		val pointer = propertyConfig.pointer
 		val info = propertyConfig.info
 		val propertyConfigValues = propertyConfig.values ?: return null
 		if(propertyConfigValues.isEmpty()) {
-			return CwtEnumValueConfig(pointer, info, name, emptySet(), emptyMap())
+			return CwtEnumConfig(pointer, info, name, emptySet(), emptyMap())
 		}
 		val values = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
 		val valueConfigMap = CollectionFactory.createCaseInsensitiveStringMap<CwtValueConfig>() //忽略大小写
@@ -672,7 +724,7 @@ class CwtConfigGroupImpl(
 			values.add(propertyConfigValue.value)
 			valueConfigMap.put(propertyConfigValue.value, propertyConfigValue)
 		}
-		return CwtEnumValueConfig(pointer, info, name, values, valueConfigMap)
+		return CwtEnumConfig(pointer, info, name, values, valueConfigMap)
 	}
 	
 	private fun resolveComplexEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtComplexEnumConfig? {
@@ -722,14 +774,14 @@ class CwtConfigGroupImpl(
 				"prefix" -> prefix = prop.stringValue
 				"for_definition_type" -> forDefinitionType = prop.stringValue
 				"input_scopes" -> inputScopes = buildSet {
-					prop.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) }
-					prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) } }
+					prop.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
+					prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
 				}
-				"output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeConfigHandler.getScopeId(v) }
+				"output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) }
 			}
 		}
-		inputScopes = inputScopes.takeIfNotEmpty() ?: ParadoxScopeConfigHandler.anyScopeIdSet
-		outputScope = outputScope ?: ParadoxScopeConfigHandler.anyScopeId
+		inputScopes = inputScopes.takeIfNotEmpty() ?: ParadoxScopeHandler.anyScopeIdSet
+		outputScope = outputScope ?: ParadoxScopeHandler.anyScopeId
 		return CwtLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, fromData, type, dataSource, prefix, forDefinitionType, inputScopes, outputScope)
 	}
 	
@@ -742,22 +794,22 @@ class CwtConfigGroupImpl(
 			when(prop.key) {
 				"desc" -> desc = prop.stringValue?.takeUnless { it.all { c -> c.isExactIdentifierChar() } }?.trim() //排除占位码 & 去除首尾空白
 				"input_scopes" -> inputScopes = buildSet {
-					prop.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) }
-					prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) } }
+					prop.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
+					prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
 				}
-				"output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeConfigHandler.getScopeId(v) }
+				"output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) }
 			}
 		}
-		inputScopes = inputScopes.takeIfNotEmpty() ?: ParadoxScopeConfigHandler.anyScopeIdSet
-		outputScope = outputScope ?: ParadoxScopeConfigHandler.anyScopeId
+		inputScopes = inputScopes.takeIfNotEmpty() ?: ParadoxScopeHandler.anyScopeIdSet
+		outputScope = outputScope ?: ParadoxScopeHandler.anyScopeId
 		return CwtLocalisationLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, inputScopes, outputScope)
 	}
 	
 	private fun resolveLocalisationCommandConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationCommandConfig {
 		val supportedScopes = buildSet {
-			propertyConfig.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) }
-			propertyConfig.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) } }
-		}.ifEmpty { ParadoxScopeConfigHandler.anyScopeIdSet }
+			propertyConfig.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
+			propertyConfig.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
+		}.ifEmpty { ParadoxScopeHandler.anyScopeIdSet }
 		return CwtLocalisationCommandConfig(propertyConfig.pointer, propertyConfig.info, name, supportedScopes)
 	}
 	
@@ -770,12 +822,12 @@ class CwtConfigGroupImpl(
 			when(prop.key) {
 				"internal_id" -> internalId = prop.value //目前版本的CWT配置已经不再有这个属性
 				"supported_scopes" -> supportedScopes =  buildSet {
-					prop.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) }
-					prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeConfigHandler.getScopeId(v)) } }
+					prop.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
+					prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
 				}
 			}
 		}
-		supportedScopes = supportedScopes.takeIfNotEmpty() ?: ParadoxScopeConfigHandler.anyScopeIdSet
+		supportedScopes = supportedScopes.takeIfNotEmpty() ?: ParadoxScopeHandler.anyScopeIdSet
 		return CwtModifierCategoryConfig(propertyConfig.pointer, propertyConfig.info, name, internalId, supportedScopes)
 	}
 	
@@ -784,7 +836,7 @@ class CwtConfigGroupImpl(
 		val categories = propertyConfig.stringValue?.let { setOf(it) }
 			?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 			?: return null
-		return CwtModifierConfig(propertyConfig.pointer, propertyConfig.info, name, categories)
+		return CwtModifierConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, categories)
 	}
 	
 	private fun resolveScopeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtScopeConfig? {
@@ -820,8 +872,16 @@ class CwtConfigGroupImpl(
 		return CwtAliasConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, subName)
 			.apply {
 				info.acceptConfigExpression(subNameExpression)
-				info.acceptAliasConfig(this)
+				//加上可以切换作用域的alias
+				if(expression.type == CwtDataType.ScopeField) {
+					aliasNamesSupportScope.add(name)
+				}
 			}
+	}
+	
+	private fun resolveModifierConfigFromAliasConfig(aliasConfig: CwtAliasConfig): CwtModifierConfig {
+		val propertyConfig = aliasConfig.config
+		return CwtModifierConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, aliasConfig.subName)
 	}
 	
 	private fun resolveInlineConfig(propertyConfig: CwtPropertyConfig, name: String): CwtInlineConfig {

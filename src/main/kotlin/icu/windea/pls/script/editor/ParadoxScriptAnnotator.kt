@@ -6,14 +6,14 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
 
@@ -108,7 +108,7 @@ class ParadoxScriptAnnotator : Annotator {
 		}
 		
 		//如果不是字符串，除非是定义引用，否则不作高亮
-		if(element !is ParadoxScriptStringExpressionElement && configExpression.type != CwtDataType.TypeExpression) {
+		if(element !is ParadoxScriptStringExpressionElement && configExpression.type != CwtDataType.Definition) {
 			return
 		}
 		
@@ -137,12 +137,12 @@ class ParadoxScriptAnnotator : Annotator {
 			CwtDataType.StellarisNameFormat -> {
 				//TODO
 			}
-			CwtDataType.TypeExpression -> {
+			CwtDataType.TemplateExpression -> {
 				if(text.isParameterAwareExpression()) return
 				val attributesKey = Keys.DEFINITION_REFERENCE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
-			CwtDataType.TemplateExpression -> {
+			CwtDataType.Definition -> {
 				if(text.isParameterAwareExpression()) return
 				val attributesKey = Keys.DEFINITION_REFERENCE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
@@ -236,7 +236,7 @@ class ParadoxScriptAnnotator : Annotator {
 	private fun annotateAliasName(config: CwtConfig<*>, holder: AnnotationHolder, range: TextRange): Boolean {
 		val aliasConfig = config.findAliasConfig() ?: return false
 		val type = aliasConfig.expression.type
-		if(type != CwtDataType.ConstantKey && type != CwtDataType.TemplateExpression) return false
+		if(!type.isGeneratorType()) return false
 		val aliasName = aliasConfig.name
 		val attributesKey = when {
 			aliasName == "modifier" -> Keys.MODIFIER_KEY

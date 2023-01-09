@@ -4,8 +4,8 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.script.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.ParadoxScopeFieldExpression.*
@@ -45,9 +45,10 @@ interface ParadoxScopeFieldExpression : ParadoxComplexExpression {
 
 class ParadoxScopeFieldExpressionImpl(
 	override val text: String,
-	override val rangeInExpression: TextRange,
 	override val isKey: Boolean?,
-	override val nodes: List<ParadoxExpressionNode>
+	override val rangeInExpression: TextRange,
+	override val nodes: List<ParadoxExpressionNode>,
+	override val configGroup: CwtConfigGroup
 ) : AbstractExpression(text), ParadoxScopeFieldExpression {
 	override val quoted: Boolean = false
 	
@@ -156,7 +157,7 @@ class ParadoxScopeFieldExpressionImpl(
 					}
 					break
 				} else {
-					scopeContextInExpression = ParadoxScopeConfigHandler.resolveScopeContext(node, scopeContextInExpression)
+					scopeContextInExpression = ParadoxScopeHandler.resolveScopeContext(node, scopeContextInExpression)
 				}
 			}
 		}
@@ -195,5 +196,5 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 		nodes.add(node)
 		if(dotNode != null) nodes.add(dotNode)
 	}
-	return ParadoxScopeFieldExpressionImpl(text, textRange, isKey, nodes)
+	return ParadoxScopeFieldExpressionImpl(text, isKey, textRange, nodes, configGroup)
 }

@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.selector.*
@@ -25,7 +25,8 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 		val config = ParadoxCwtConfigHandler.resolveConfigs(element, !isKey, isKey).firstOrNull()
 		if(config != null) {
 			val textRange = TextRange.create(0, text.length)
-			when(config.expression.type) {
+			val configExpression = config.expression
+			when(configExpression.type) {
 				CwtDataType.Value, CwtDataType.ValueSet -> {
 					if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
 					//quoted -> only value set value name, no scope info
@@ -51,12 +52,19 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 					if(valueFieldExpression == null) return PsiReference.EMPTY_ARRAY
 					return valueFieldExpression.getReferences(element)
 				}
-				else -> pass()
+				CwtDataType.TemplateExpression -> {
+					if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
+					val template = CwtTemplateExpression.resolve(configExpression.expressionString)
+					val templateExpression = ParadoxTemplateExpression.resolve(text, textRange, template, configGroup, isKey)
+					if(templateExpression == null) return PsiReference.EMPTY_ARRAY
+					return templateExpression.getReferences(element)
+				}
+				else -> {
+					if(element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY
+					val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
+					return arrayOf(reference)
+				}
 			}
-			//TODO 不能直接返回PsiReference，需要先确定rangeInElement
-			if(element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY
-			val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
-			return arrayOf(reference)
 		}
 		return PsiReference.EMPTY_ARRAY
 	}

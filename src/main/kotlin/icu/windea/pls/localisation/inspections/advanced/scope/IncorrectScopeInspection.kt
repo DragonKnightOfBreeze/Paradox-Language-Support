@@ -4,7 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
@@ -34,9 +34,9 @@ class IncorrectScopeInspection : LocalInspectionTool() {
 					resolved is CwtProperty -> {
 						val config = resolved.getUserData(PlsKeys.cwtConfigKey)
 						if(config is CwtLocalisationCommandConfig) {
-							val scopeContext = ParadoxScopeConfigHandler.getScopeContext(element) ?: return
+							val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
 							val supportedScopes = config.supportedScopes
-							if(!ParadoxScopeConfigHandler.matchesScope(scopeContext, supportedScopes)) {
+							if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes)) {
 								val location = element
 								val description = PlsBundle.message("localisation.inspection.scope.incorrectScope.description.1",
 									element.name, supportedScopes.joinToString(), scopeContext.thisScope)

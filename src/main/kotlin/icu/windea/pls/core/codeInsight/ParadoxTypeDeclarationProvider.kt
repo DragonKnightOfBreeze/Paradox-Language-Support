@@ -3,8 +3,9 @@ package icu.windea.pls.core.codeInsight
 import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -57,7 +58,7 @@ class ParadoxTypeDeclarationProvider : TypeDeclarationProvider {
 				if(symbol is ParadoxScriptPropertyKey) return getSymbolTypeDeclarations(symbol.parent)
 			}
 			symbol is CwtValue -> {
-				val configType = CwtConfigType.resolve(symbol)
+				val configType = symbol.configType
 				return when(configType) {
 					CwtConfigType.EnumValue -> symbol.parent?.let { arrayOf(it) }
 					CwtConfigType.ValueSetValue -> symbol.parent?.let { arrayOf(it) }

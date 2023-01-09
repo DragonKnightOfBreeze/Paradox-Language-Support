@@ -4,7 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
@@ -50,7 +50,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 			for(event in events) {
 				val eventIdString = event.findByPath<ParadoxScriptString>("id") ?: continue //没有事件ID，另行检查
 				val eventId = eventIdString.stringValue
-				if(!ParadoxEventConfigHandler.isValidEventId(eventId, namespace)) {
+				if(!ParadoxEventHandler.isValidEventId(eventId, namespace)) {
 					if(holder == null) holder = ProblemsHolder(manager, file, isOnTheFly)
 					holder.registerProblem(eventIdString, PlsBundle.message("script.inspection.event.incorrectEventId.description", eventId, namespace))
 				}

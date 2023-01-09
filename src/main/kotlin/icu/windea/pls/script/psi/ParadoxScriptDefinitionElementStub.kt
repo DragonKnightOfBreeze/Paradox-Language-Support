@@ -1,7 +1,7 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.stubs.*
-import icu.windea.pls.core.model.*
+import icu.windea.pls.config.core.config.*
 
 interface ParadoxScriptDefinitionElementStub<T : ParadoxScriptDefinitionElement> : StubElement<T> {
 	val name: String?

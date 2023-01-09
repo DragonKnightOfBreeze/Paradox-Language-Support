@@ -21,9 +21,6 @@ class CwtKeyExpression private constructor(
 		
 		private fun doResolve(expressionString: String) = when {
 			expressionString.isEmpty() -> EmptyStringExpression
-			expressionString == "any" -> {
-				CwtKeyExpression(expressionString, CwtDataType.Any)
-			}
 			expressionString == "int" -> {
 				CwtKeyExpression(expressionString, CwtDataType.Int)
 			}
@@ -59,12 +56,7 @@ class CwtKeyExpression private constructor(
 			}
 			expressionString.surroundsWith('<', '>') -> {
 				val value = expressionString.substring(1, expressionString.length - 1)
-				CwtKeyExpression(expressionString, CwtDataType.TypeExpression, value)
-			}
-			expressionString.indexOf('<').let { it > 0 && it < expressionString.indexOf('>') } && !expressionString.endsWith("]") -> {
-				val value = expressionString.substring(expressionString.indexOf('<'), expressionString.indexOf('>'))
-				val extraValue = expressionString.substringBefore('<') to expressionString.substringAfterLast('>')
-				CwtKeyExpression(expressionString, CwtDataType.TemplateExpression, value, extraValue)
+				CwtKeyExpression(expressionString, CwtDataType.Definition, value)
 			}
 			expressionString.surroundsWith("enum[", "]") -> {
 				val value = expressionString.substring(5, expressionString.length - 1)
@@ -97,6 +89,9 @@ class CwtKeyExpression private constructor(
 			expressionString.surroundsWith("alias_name[", "]") -> {
 				val value = expressionString.substring(11, expressionString.length - 1)
 				CwtKeyExpression(expressionString, CwtDataType.AliasName, value)
+			}
+			CwtTemplateExpression.resolve(expressionString).isNotEmpty() -> {
+				CwtKeyExpression(expressionString, CwtDataType.TemplateExpression)
 			}
 			expressionString.endsWith(']') -> {
 				CwtKeyExpression(expressionString, CwtDataType.Other)

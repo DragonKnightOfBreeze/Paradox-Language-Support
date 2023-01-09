@@ -3,14 +3,12 @@ package icu.windea.pls.core.psi
 import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
-import com.intellij.pom.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.core.model.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.navigation.*
-import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
@@ -20,11 +18,11 @@ class ParadoxParameterElement(
 	element: PsiElement,
 	private val name: String,
 	val definitionName: String,
-	val definitionType: String,
+	val definitionTypes: List<String>,
 	private val project: Project,
 	val gameType: ParadoxGameType,
 	val read: Boolean
-): RenameableFakePsiElement(element), ParadoxScriptNamedElement, Navigatable {
+): RenameableFakePsiElement(element), PsiNameIdentifierOwner, NavigatablePsiElement {
 	override fun getText(): String {
 		return name
 	}
@@ -49,7 +47,7 @@ class ParadoxParameterElement(
 		return this
 	}
 	
-	override fun getPresentation(): ItemPresentation? {
+	override fun getPresentation(): ItemPresentation {
 		return ParadoxParameterElementPresentation(this)
 	}
 	
@@ -69,7 +67,7 @@ class ParadoxParameterElement(
 		return other is ParadoxParameterElement &&
 			name == other.name &&
 			definitionName == other.definitionName &&
-			definitionType == other.definitionType &&
+			definitionTypes == other.definitionTypes &&
 			project == other.project &&
 			gameType == other.gameType
 	}
@@ -77,7 +75,7 @@ class ParadoxParameterElement(
 	override fun hashCode(): Int {
 		var result = name.hashCode()
 		result = 31 * result + definitionName.hashCode()
-		result = 31 * result + definitionType.hashCode()
+		result = 31 * result + definitionTypes.hashCode()
 		result = 31 * result + project.hashCode()
 		result = 31 * result + gameType.hashCode()
 		return result

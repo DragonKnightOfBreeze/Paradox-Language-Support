@@ -1,7 +1,7 @@
 package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
-import icu.windea.pls.core.model.*
+import icu.windea.pls.config.core.config.*
 
 interface CwtConfigGroups {
 	val project: Project

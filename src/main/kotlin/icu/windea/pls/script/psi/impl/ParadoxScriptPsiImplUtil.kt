@@ -9,10 +9,9 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.selector.*
@@ -296,10 +295,10 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getPresentation(element: ParadoxScriptProperty): ItemPresentation {
+	fun getPresentation(element: ParadoxScriptProperty): ItemPresentation? {
 		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) return ParadoxDefinitionPresentation(element, definitionInfo)
-		return ParadoxScriptPropertyPresentation(element)
+		return null
 	}
 	
 	@JvmStatic
@@ -317,6 +316,11 @@ object ParadoxScriptPsiImplUtil {
 	//endregion
 	
 	//region ParadoxScriptPropertyKey
+	@JvmStatic
+	fun getIcon(element: ParadoxScriptPropertyKey, @Iconable.IconFlags flags: Int): Icon {
+		return PlsIcons.ScriptProperty
+	}
+	
 	@JvmStatic
 	fun getValue(element: ParadoxScriptPropertyKey): String {
 		return element.text.unquote()
@@ -341,15 +345,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getType(element: ParadoxScriptPropertyKey): ParadoxDataType {
-		element.processChild {
-			when(it.elementType) {
-				PROPERTY_KEY_TOKEN -> return ParadoxDataType.resolve(it.text)
-				QUOTED_PROPERTY_KEY_TOKEN -> return ParadoxDataType.StringType
-				PARAMETER_ID -> return ParadoxDataType.ParameterType
-				else -> end()
-			}
-		}
-		return ParadoxDataType.UnknownType
+		return ParadoxDataType.resolve(element.value)
 	}
 	
 	@JvmStatic

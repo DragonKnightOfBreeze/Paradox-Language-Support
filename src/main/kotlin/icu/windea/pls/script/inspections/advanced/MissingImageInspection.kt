@@ -8,9 +8,9 @@ import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
@@ -60,7 +60,7 @@ class MissingImageInspection : LocalInspectionTool() {
 			val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
 			ProgressManager.checkCanceled()
 			val nameToDistinct = mutableSetOf<String>()
-			val infoMap = mutableMapOf<String, Tuple2<ParadoxRelatedImageInfo, String?>>()
+			val infoMap = mutableMapOf<String, Tuple2<ParadoxDefinitionRelatedImageInfo, String?>>()
 			//进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
 			var hasPrimary = false
 			runReadAction {
@@ -97,7 +97,7 @@ class MissingImageInspection : LocalInspectionTool() {
 			}
 		}
 		
-		private fun getMessage(info: ParadoxRelatedImageInfo, key: String?): String {
+		private fun getMessage(info: ParadoxDefinitionRelatedImageInfo, key: String?): String {
 			val expression = info.locationExpression
 			val propertyName = expression.propertyName
 			return when {
@@ -134,7 +134,7 @@ class MissingImageInspection : LocalInspectionTool() {
 			val configGroup = config.info.configGroup
 			if(config.expression.type != CwtDataType.Modifier) return
 			val name = element.value
-			val iconPaths = ParadoxModifierConfigHandler.getModifierIconPaths(name, configGroup)
+			val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name, configGroup)
 			val iconFile = iconPaths.firstNotNullOfOrNull {
 				val iconSelector = fileSelector().gameType(configGroup.gameType)
 				ParadoxFilePathSearch.search(it, configGroup.project, selector = iconSelector).find()

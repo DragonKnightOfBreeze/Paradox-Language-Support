@@ -52,29 +52,22 @@ class ParadoxLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisationPrope
 		) = INSTANCE.createParadoxQuery(SearchParameters(null, project, scope, selector))
 		
 		/**
-		 * 基于本地化名字索引，根据关键字和推断的语言区域遍历所有的本地化（localisation）。对本地化的键去重。
+		 * 基于本地化名字索引，根据关键字和推断的语言区域遍历所有的本地化（localisation），并按照本地化的键进行去重。
 		 * @see preferredParadoxLocale
 		 */
-		inline fun processVariants(
-			keyword: String,
+		@JvmStatic
+		fun processVariants(
 			project: Project,
 			scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 			selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector(),
-			crossinline processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
+			processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
 		): Boolean {
-			//因为结果可能过多（数千个），这里我们使用特殊的内联process方法，且预先仅接收第一个相同key的元素 & 预先过滤不匹配关键字的
-			
 			//如果索引未完成
 			if(DumbService.isDumb(project)) return true
 			
-			val maxSize  = getSettings().completion.maxCompleteSize
-			
-			//注意：如果不预先过滤，结果可能过多（10w+）
-			//需要保证返回结果的名字的唯一性
-			val noKeyword = keyword.isEmpty()
-			return ParadoxLocalisationNameIndex.processFirstElementByKeys(project, scope, maxSize = maxSize,
-				keyPredicate = { key -> noKeyword || key.matchesKeyword(keyword) },
-				predicate = { element -> selector.select(element) },
+			//保证返回结果的名字的唯一性
+			return ParadoxLocalisationNameIndex.processFirstElementByKeys(project, scope,
+				predicate = { element -> selector.selectAll(element) },
 				getDefaultValue = { selector.defaultValue },
 				resetDefaultValue = { selector.defaultValue = null },
 				processor = processor

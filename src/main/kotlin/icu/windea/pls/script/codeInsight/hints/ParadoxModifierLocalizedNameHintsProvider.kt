@@ -9,9 +9,8 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.script.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
@@ -71,7 +70,7 @@ class ParadoxModifierLocalizedNameHintsProvider: ParadoxScriptHintsProvider<Sett
 			if(type == CwtDataType.Modifier) {
 				val name = element.value
 				val configGroup = config.info.configGroup
-				val keys = ParadoxModifierConfigHandler.getModifierNameKeys(name, configGroup)
+				val keys = ParadoxModifierHandler.getModifierNameKeys(name, configGroup)
 				val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(element).preferLocale(preferredParadoxLocale())
 				val localisation = keys.firstNotNullOfOrNull {
 					ParadoxLocalisationSearch.search(it, configGroup.project, selector = selector).find()

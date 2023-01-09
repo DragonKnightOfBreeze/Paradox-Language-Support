@@ -1,11 +1,11 @@
 package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
+import com.intellij.util.containers.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.config.setting.*
-import icu.windea.pls.config.script.config.*
+import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.model.*
 
 interface CwtConfigGroup {
 	val gameType: ParadoxGameType?
@@ -26,11 +26,16 @@ interface CwtConfigGroup {
 	val folders: Set<String>
 	
 	val types: Map<String, CwtTypeConfig>
-	val typeAndSwapTypeMap: Map<String, String>
+	//typeExpression - swapType
+	val typeToSwapTypeMap: BidirectionalMap<String, String>
+	//typeExpression - modifierSimpleName - modifierConfig
+	//job - job_$_add - <config>
+	val typeToModifiersMap: Map<String, Map<String, CwtModifierConfig>>
+	val declarations: MutableMap<String, CwtDeclarationConfig>
 	
-	val values: Map<String, CwtEnumValueConfig>
+	val values: Map<String, CwtEnumConfig>
 	//enumValue可以是int、float、bool类型，统一用字符串表示
-	val enums: Map<String, CwtEnumValueConfig>
+	val enums: Map<String, CwtEnumConfig>
 	//基于enum_name进行定位，对应的可能是key/value
 	val complexEnums: Map<String, CwtComplexEnumConfig>
 	
@@ -45,7 +50,6 @@ interface CwtConfigGroup {
 	val localisationCommands: Map<@CaseInsensitive String, CwtLocalisationCommandConfig>
 	
 	val modifierCategories: Map<String, CwtModifierCategoryConfig>
-	val modifiers: Map<String, CwtModifierConfig>
 	val scopes: Map<@CaseInsensitive String, CwtScopeConfig>
 	val scopeAliasMap: Map<@CaseInsensitive String, CwtScopeConfig>
 	val scopeGroups: Map<String, CwtScopeGroupConfig>
@@ -56,7 +60,10 @@ interface CwtConfigGroup {
 	//inline_script
 	val inlineConfigGroup: Map<String, List<CwtInlineConfig>>
 	
-	val declarations: MutableMap<String, CwtDeclarationConfig>
+	//key: lowercase
+	val modifiers: Map<@CaseInsensitive String, CwtModifierConfig>
+	val predefinedModifiers: Map<@CaseInsensitive String, CwtModifierConfig>
+	val generatedModifiers: Map<@CaseInsensitive String, CwtModifierConfig>
 	
 	//目前版本的CWT配置已经不再使用
 	val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig>
@@ -69,10 +76,12 @@ interface CwtConfigGroup {
 	val linksAsScopeWithoutPrefixSorted: List<CwtLinkConfig>
 	val linksAsValueWithoutPrefixSorted: List<CwtLinkConfig>
 	
-	//支持作用域上下文的CWT别名规则
-	val aliasNameSupportScope: Set<String>
-	//支持作用域上下文的定义类型
+	//必定支持作用域上下文的CWT别名规则
+	val aliasNamesSupportScope: Set<String>
+	//必定支持作用域上下文的定义类型
 	val definitionTypesSupportScope: Set<String>
+	//不需要检查系统作用域切换的定义类型
+	val definitionTypesSkipCheckSystemScope: Set<String>
 	//支持参数的定义类型
 	val definitionTypesSupportParameters: Set<String>
 }
