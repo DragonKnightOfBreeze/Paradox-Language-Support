@@ -82,7 +82,7 @@ val cwtConfigDirs = listOf(
 
 tasks {
 	withType<Copy> {
-		duplicatesStrategy = DuplicatesStrategy.INCLUDE //怎么就重复了？？
+		duplicatesStrategy = DuplicatesStrategy.INCLUDE //需要加上
 	}
 	withType<KotlinCompile> {
 		kotlinOptions {
