@@ -3,7 +3,6 @@
 package icu.windea.pls.config.cwt
 
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.core.model.*
 
 /**
  * 某些情况下，需要对configExpression作进一步的处理。（例如，对于`on_action`）

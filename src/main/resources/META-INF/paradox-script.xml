@@ -244,12 +244,6 @@
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.expression.IncorrectValueSetValueExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectTemplateExpression"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="script.inspection.expression.incorrectTemplateExpression"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
-                     groupPathKey="script.inspection.advanced.path"
-                     implementationClass="icu.windea.pls.script.inspections.advanced.expression.IncorrectTemplateExpressionInspection"/>
     <!--advanced > event-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingEventNamespace"
                      enabledByDefault="true" level="WARNING"

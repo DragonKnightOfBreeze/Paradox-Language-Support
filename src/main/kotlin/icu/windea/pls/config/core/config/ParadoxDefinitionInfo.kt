@@ -95,9 +95,9 @@ class ParadoxDefinitionInfo(
 	
 	val modifiers: List<ParadoxDefinitionModifierInfo> by lazy { 
 		buildList {
-			configGroup.typeToModifiersMap.get(type)?.forEach { (_, v) -> add(ParadoxDefinitionModifierInfo(v.template.resolveName(name), v)) }
+			configGroup.typeToModifiersMap.get(type)?.forEach { (_, v) -> add(ParadoxDefinitionModifierInfo(v.template.extract(name), v)) }
 			for(subtype in subtypes) {
-				configGroup.typeToModifiersMap.get("$type.$subtype")?.forEach { (_, v) -> add(ParadoxDefinitionModifierInfo(v.template.resolveName(name), v)) }
+				configGroup.typeToModifiersMap.get("$type.$subtype")?.forEach { (_, v) -> add(ParadoxDefinitionModifierInfo(v.template.extract(name), v)) }
 			}
 		}
 	}

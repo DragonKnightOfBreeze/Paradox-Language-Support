@@ -28,18 +28,7 @@ interface ParadoxTemplateExpression: ParadoxComplexExpression {
 	companion object Resolver
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-		val scopeMatched = context.scopeMatched ?: true
-		val tailText = CwtConfigHandler.getScriptExpressionTailText(context.config)
-		CwtConfigHandler.processTemplateResolveResult(template, configGroup) { templateExpression ->
-			val name = templateExpression.text
-			val builder = ParadoxScriptExpressionLookupElementBuilder.create(null, name)
-				.withIcon(PlsIcons.TemplateExpression)
-				.withTailText(tailText)
-				.caseInsensitive()
-				.withScopeMatched(scopeMatched)
-			result.addScriptExpressionElement(context, builder)
-			true
-		}
+
 	}
 }
 

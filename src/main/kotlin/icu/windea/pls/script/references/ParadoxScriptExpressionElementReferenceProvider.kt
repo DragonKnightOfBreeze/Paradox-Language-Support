@@ -52,13 +52,6 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 					if(valueFieldExpression == null) return PsiReference.EMPTY_ARRAY
 					return valueFieldExpression.getReferences(element)
 				}
-				CwtDataType.TemplateExpression -> {
-					if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
-					val template = CwtTemplateExpression.resolve(configExpression.expressionString)
-					val templateExpression = ParadoxTemplateExpression.resolve(text, textRange, template, configGroup, isKey)
-					if(templateExpression == null) return PsiReference.EMPTY_ARRAY
-					return templateExpression.getReferences(element)
-				}
 				else -> {
 					if(element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY
 					val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)

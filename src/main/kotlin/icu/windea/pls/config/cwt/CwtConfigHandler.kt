@@ -357,9 +357,7 @@ object CwtConfigHandler {
 				if(!expression.type.isStringType()) return false
 				//允许用引号括起
 				if(!isStatic && isParameterAware) return true
-				val textRange = TextRange.create(0, expression.text.length)
-				val template = CwtTemplateExpression.resolve(expression.expressionString)
-				return ParadoxTemplateExpression.resolve(expression.text, textRange, template, configGroup, expression.isKey) != null
+				return matchesTemplateExpression(expression, configExpression, configGroup)
 			}
 			CwtDataType.ConstantKey -> {
 				val value = configExpression.value
@@ -388,6 +386,11 @@ object CwtConfigHandler {
 	
 	fun matchesModifier(name: String, configGroup: CwtConfigGroup): Boolean {
 		return ParadoxModifierHandler.matchesModifier(name, configGroup)
+	}
+	
+	private fun matchesTemplateExpression(expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
+		val templateExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
+		return templateExpression.resolve(expression.text, configGroup) != null
 	}
 	
 	fun getAliasSubName(key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): String? {
@@ -954,7 +957,7 @@ object CwtConfigHandler {
 			val template = modifierConfig.template
 			if(template.isNotEmpty()) {
 				//生成的modifier
-				processTemplateResolveResult(template, configGroup) { templateExpression ->
+				template.processResolveResult(configGroup) { templateExpression ->
 					val name = templateExpression.text
 					val modifierElement = ParadoxModifierElement(element, name, modifierConfig, templateExpression, project, gameType)
 					val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
@@ -976,6 +979,24 @@ object CwtConfigHandler {
 				//.withPriority(PlsCompletionPriorities.modifierPriority)
 				result.addScriptExpressionElement(context, builder)
 			}
+		}
+	}
+	
+	fun completeTemplateExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+		//基于当前位置的代码补全
+		val configExpression = context.config.expression ?: return
+		val template = CwtTemplateExpression.resolve(configExpression.expressionString)
+		val scopeMatched = context.scopeMatched ?: true
+		val tailText = getScriptExpressionTailText(context.config)
+		template.processResolveResult(configGroup) { templateExpression ->
+			val name = templateExpression.text
+			val builder = ParadoxScriptExpressionLookupElementBuilder.create(null, name)
+				.withIcon(PlsIcons.TemplateExpression)
+				.withTailText(tailText)
+				.caseInsensitive()
+				.withScopeMatched(scopeMatched)
+			result.addScriptExpressionElement(context, builder)
+			true
 		}
 	}
 	
@@ -1002,15 +1023,6 @@ object CwtConfigHandler {
 		val textRange = TextRange.create(0, keyword.length)
 		val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(keyword, textRange, config, configGroup, isKey, true) ?: return
 		valueSetValueExpression.complete(context, result)
-	}
-	
-	fun completeTemplateExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
-		//基于当前位置的代码补全
-		val configExpression = context.config.expression ?: return
-		val textRange = TextRange.create(0, keyword.length)
-		val template = CwtTemplateExpression.resolve(configExpression.expressionString)
-		val templateExpression = ParadoxTemplateExpression.resolve(keyword, textRange, template, configGroup, isKey) ?: return
-		templateExpression.complete(context, result)
 	}
 	
 	fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
@@ -1093,9 +1105,6 @@ object CwtConfigHandler {
 			context.put(PlsCompletionKeys.configsKey, configs)
 			context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
 			return@with
-		}
-		if(dataSourceNodeToCheck is ParadoxTemplateExpression) {
-			dataSourceNodeToCheck.complete(context, result)
 		}
 		
 		context.put(PlsCompletionKeys.configsKey, linkConfigs)
@@ -1181,9 +1190,6 @@ object CwtConfigHandler {
 			context.put(PlsCompletionKeys.configsKey, configs)
 			context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
 			return@with
-		}
-		if(dataSourceNodeToCheck is ParadoxTemplateExpression) {
-			dataSourceNodeToCheck.complete(context, result)
 		}
 		
 		context.put(PlsCompletionKeys.configsKey, linkConfigs)
@@ -1585,8 +1591,7 @@ object CwtConfigHandler {
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataType.AliasMatchLeft -> return null
 			CwtDataType.TemplateExpression -> {
-				//不在这里处理，参见：ParadoxTemplateExpression
-				return null
+				return resolveTemplateExpression(element, configExpression, configGroup)
 			}
 			CwtDataType.ConstantKey, CwtDataType.Constant -> {
 				return when {
@@ -1737,6 +1742,27 @@ object CwtConfigHandler {
 		}
 	}
 	
+	fun resolveModifier(element: ParadoxScriptExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
+		if(element !is ParadoxScriptStringExpressionElement) return null
+		val project = configGroup.project
+		val modifierInfo = when{
+			name == element.value -> ParadoxModifierHandler.getModifierInfo(element)
+			else -> ParadoxModifierHandler.resolveModifierInfo(element, name, project)
+		}
+		if(modifierInfo == null) return null
+		val modifierName = modifierInfo.name
+		val modifierConfig = modifierInfo.generatedModifierConfig ?: modifierInfo.modifierConfig ?: return null
+		val templateExpression = modifierInfo.templateExpression
+		val gameType = modifierInfo.gameType
+		return ParadoxModifierElement(element, modifierName, modifierConfig, templateExpression, project, gameType)
+	}
+	
+	fun resolveTemplateExpression(element: ParadoxScriptExpressionElement, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): PsiElement? {
+		if(element !is ParadoxScriptStringExpressionElement) return null
+		val templateExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
+		return templateExpression.resolve(element.value, configGroup)
+	}
+	
 	fun resolveSystemScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
 		val systemScope = configGroup.systemScopes[name] ?: return null
 		val resolved = systemScope.pointer.element ?: return null
@@ -1807,21 +1833,6 @@ object CwtConfigHandler {
 		return ParadoxValueSetValueElement(element, name, valueSetNames, configGroup.project, gameType, read)
 	}
 	
-	fun resolveModifier(element: ParadoxScriptExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
-		if(element !is ParadoxScriptStringExpressionElement) return null
-		val project = configGroup.project
-		val modifierInfo = when{
-			name == element.value -> ParadoxModifierHandler.getModifierInfo(element)
-			else -> ParadoxModifierHandler.resolveModifierInfo(element, name, project)
-		} 
-		if(modifierInfo == null) return null
-		val modifierName = modifierInfo.name
-		val modifierConfig = modifierInfo.generatedModifierConfig ?: modifierInfo.modifierConfig ?: return null
-		val templateExpression = modifierInfo.templateExpression
-		val gameType = modifierInfo.gameType
-		return ParadoxModifierElement(element, modifierName, modifierConfig, templateExpression, project, gameType)
-	}
-	
 	fun resolveLocalisationScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
 		val linkConfig = configGroup.localisationLinks[name] ?: return null
 		val resolved = linkConfig.pointer.element ?: return null
@@ -1834,13 +1845,6 @@ object CwtConfigHandler {
 		val resolved = commandConfig.pointer.element ?: return null
 		resolved.putUserData(PlsKeys.cwtConfigKey, commandConfig)
 		return resolved
-	}
-	//endregion
-	
-	//region Other Methods
-	fun processTemplateResolveResult(templateExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, processor: Processor<ParadoxTemplateExpression>) {
-		//TODO
-		templateExpression
 	}
 	//endregion
 }

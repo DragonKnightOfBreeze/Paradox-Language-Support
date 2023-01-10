@@ -63,10 +63,6 @@ object ParadoxModifierHandler {
 	private fun resolveModifierTemplate(name: String, configGroup: CwtConfigGroup): ParadoxTemplateExpression? {
 		val text = name
 		val textRange = TextRange.create(0, text.length)
-		//不能直接这样做
-		//return configGroup.modifiers.values.firstNotNullOfOrNull { config ->
-		//	ParadoxTemplateExpression.resolve(text, textRange, config.template, configGroup, isKey)
-		//}
 		return configGroup.generatedModifiers.values.firstNotNullOfOrNull { 
 			val template = it.template
 			ParadoxTemplateExpression.resolve(text, textRange, template, configGroup)
