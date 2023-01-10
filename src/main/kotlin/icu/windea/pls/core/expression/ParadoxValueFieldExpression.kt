@@ -91,7 +91,7 @@ class ParadoxValueFieldExpressionImpl(
 											malformed = true
 										}
 									}
-									is ParadoxValueSetValueExpression -> {
+									is ParadoxComplexExpression -> {
 										errors.addAll(dataSourceChildNode.validate())
 									}
 									is ParadoxErrorTokenExpressionNode -> {
@@ -128,10 +128,7 @@ class ParadoxValueFieldExpressionImpl(
 											malformed = true
 										}
 									}
-									is ParadoxValueSetValueExpression -> {
-										errors.addAll(dataSourceChildNode.validate())
-									}
-									is ParadoxScriptValueExpression -> {
+									is ParadoxComplexExpression -> {
 										errors.addAll(dataSourceChildNode.validate())
 									}
 									is ParadoxErrorTokenExpressionNode -> {

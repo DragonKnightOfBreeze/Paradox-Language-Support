@@ -88,7 +88,7 @@ class ParadoxScopeFieldExpressionImpl(
 											malformed = true
 										}
 									}
-									is ParadoxValueSetValueExpression -> {
+									is ParadoxComplexExpression -> {
 										errors.addAll(dataSourceChildNode.validate())
 									}
 									is ParadoxErrorTokenExpressionNode -> {
