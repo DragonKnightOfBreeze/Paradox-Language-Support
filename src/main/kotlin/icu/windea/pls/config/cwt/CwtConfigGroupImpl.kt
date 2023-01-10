@@ -26,7 +26,7 @@ class CwtConfigGroupImpl(
 	override val foldingSettings: MutableMap<String, MutableMap<String, CwtFoldingSetting>> = mutableMapOf()
 	override val postfixTemplateSettings: MutableMap<String, MutableMap<String, CwtPostfixTemplateSetting>> = mutableMapOf()
 	
-	override val systemScopes: MutableMap<@CaseInsensitive String, CwtSystemScopeConfig> = CollectionFactory.createCaseInsensitiveStringMap()
+	override val systemScopes: MutableMap<@CaseInsensitive String, CwtSystemScopeConfig> = caseInsensitiveStringKeyMap()
 	override val localisationLocales: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
 	override val localisationLocalesNoDefault: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
 	override val localisationLocalesByCode: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
@@ -55,25 +55,25 @@ class CwtConfigGroupImpl(
 	//基于enum_name进行定位，对应的可能是key/value
 	override val complexEnums: MutableMap<String, CwtComplexEnumConfig> = mutableMapOf()
 	
-	override val links: MutableMap<@CaseInsensitive String, CwtLinkConfig> = CollectionFactory.createCaseInsensitiveStringMap()
-	override val linksAsScopeNotData: MutableMap<@CaseInsensitive String, CwtLinkConfig> = CollectionFactory.createCaseInsensitiveStringMap()
-	override val linksAsScopeWithPrefix: MutableMap<@CaseInsensitive String, CwtLinkConfig> = CollectionFactory.createCaseInsensitiveStringMap()
-	override val linksAsScopeWithoutPrefix: MutableMap<@CaseInsensitive String, CwtLinkConfig> = CollectionFactory.createCaseInsensitiveStringMap()
-	override val linksAsValueNotData: MutableMap<@CaseInsensitive String, CwtLinkConfig> = CollectionFactory.createCaseInsensitiveStringMap()
-	override val linksAsValueWithPrefix: MutableMap<@CaseInsensitive String, CwtLinkConfig> = CollectionFactory.createCaseInsensitiveStringMap()
-	override val linksAsValueWithoutPrefix: MutableMap<@CaseInsensitive String, CwtLinkConfig> = CollectionFactory.createCaseInsensitiveStringMap()
+	override val links: MutableMap<@CaseInsensitive String, CwtLinkConfig> = caseInsensitiveStringKeyMap()
+	override val linksAsScopeNotData: MutableMap<@CaseInsensitive String, CwtLinkConfig> = caseInsensitiveStringKeyMap()
+	override val linksAsScopeWithPrefix: MutableMap<@CaseInsensitive String, CwtLinkConfig> = caseInsensitiveStringKeyMap()
+	override val linksAsScopeWithoutPrefix: MutableMap<@CaseInsensitive String, CwtLinkConfig> = caseInsensitiveStringKeyMap()
+	override val linksAsValueNotData: MutableMap<@CaseInsensitive String, CwtLinkConfig> = caseInsensitiveStringKeyMap()
+	override val linksAsValueWithPrefix: MutableMap<@CaseInsensitive String, CwtLinkConfig> = caseInsensitiveStringKeyMap()
+	override val linksAsValueWithoutPrefix: MutableMap<@CaseInsensitive String, CwtLinkConfig> = caseInsensitiveStringKeyMap()
 	
-	override val localisationLinks: MutableMap<@CaseInsensitive String, CwtLocalisationLinkConfig> = CollectionFactory.createCaseInsensitiveStringMap()
-	override val localisationCommands: MutableMap<@CaseInsensitive String, CwtLocalisationCommandConfig> = CollectionFactory.createCaseInsensitiveStringMap()
+	override val localisationLinks: MutableMap<@CaseInsensitive String, CwtLocalisationLinkConfig> = caseInsensitiveStringKeyMap()
+	override val localisationCommands: MutableMap<@CaseInsensitive String, CwtLocalisationCommandConfig> = caseInsensitiveStringKeyMap()
 	override val modifierCategories: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
-	override val scopes: MutableMap<@CaseInsensitive String, CwtScopeConfig> = CollectionFactory.createCaseInsensitiveStringMap()
-	override val scopeAliasMap: MutableMap<@CaseInsensitive String, CwtScopeConfig> = CollectionFactory.createCaseInsensitiveStringMap()
+	override val scopes: MutableMap<@CaseInsensitive String, CwtScopeConfig> = caseInsensitiveStringKeyMap()
+	override val scopeAliasMap: MutableMap<@CaseInsensitive String, CwtScopeConfig> = caseInsensitiveStringKeyMap()
 	override val scopeGroups: MutableMap<String, CwtScopeGroupConfig> = mutableMapOf()
 	override val singleAliases: MutableMap<String, MutableList<CwtSingleAliasConfig>> = mutableMapOf()
 	override val aliasGroups: MutableMap<String, MutableMap<String, MutableList<CwtAliasConfig>>> = mutableMapOf()
 	override val inlineConfigGroup: MutableMap<String, MutableList<CwtInlineConfig>> = mutableMapOf()
 	
-	override val modifiers: MutableMap<@CaseInsensitive String, CwtModifierConfig> = CollectionFactory.createCaseInsensitiveStringMap()
+	override val modifiers: MutableMap<@CaseInsensitive String, CwtModifierConfig> = caseInsensitiveStringKeyMap()
 	override val generatedModifiers: Map<String, CwtModifierConfig> by lazy {
 		//put xxx_<xxx>_xxx before xxx_<xxx>
 		modifiers.values
@@ -622,7 +622,7 @@ class CwtConfigGroupImpl(
 						val value = option.stringValue
 						val values = option.optionValues
 						if(value == null && values == null) continue
-						val set = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
+						val set = caseInsensitiveStringSet() //忽略大小写
 						if(value != null) set.add(value)
 						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
 						val notReversed = option.separatorType == CwtSeparator.EQUAL
@@ -664,7 +664,7 @@ class CwtConfigGroupImpl(
 						val value = option.stringValue
 						val values = option.optionValues
 						if(value == null && values == null) continue
-						val set = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
+						val set = caseInsensitiveStringSet() //忽略大小写
 						if(value != null) set.add(value)
 						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
 						val notReversed = option.separatorType == CwtSeparator.EQUAL
@@ -718,7 +718,7 @@ class CwtConfigGroupImpl(
 		if(propertyConfigValues.isEmpty()) {
 			return CwtEnumConfig(pointer, info, name, emptySet(), emptyMap())
 		}
-		val values = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
+		val values = caseInsensitiveStringSet() //忽略大小写
 		val valueConfigMap = CollectionFactory.createCaseInsensitiveStringMap<CwtValueConfig>() //忽略大小写
 		for(propertyConfigValue in propertyConfigValues) {
 			values.add(propertyConfigValue.value)
@@ -845,7 +845,7 @@ class CwtConfigGroupImpl(
 		val props = propertyConfig.properties
 		if(props.isNullOrEmpty()) return null
 		for(prop in props) {
-			if(prop.key == "aliases") aliases = prop.values?.mapNotNullTo(CollectionFactory.createCaseInsensitiveStringSet()) { it.stringValue }
+			if(prop.key == "aliases") aliases = prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
 		}
 		if(aliases == null) aliases = emptySet()
 		return CwtScopeConfig(propertyConfig.pointer, propertyConfig.info, name, aliases)
@@ -856,7 +856,7 @@ class CwtConfigGroupImpl(
 		val info = propertyConfig.info
 		val propertyConfigValues = propertyConfig.values ?: return null
 		if(propertyConfigValues.isEmpty()) return CwtScopeGroupConfig(pointer, info, name, emptySet(), emptyMap())
-		val values = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
+		val values = caseInsensitiveStringSet() //忽略大小写
 		val valueConfigMap = CollectionFactory.createCaseInsensitiveStringMap<CwtValueConfig>() //忽略大小写
 		for(propertyConfigValue in propertyConfigValues) {
 			values.add(propertyConfigValue.value)
@@ -922,7 +922,7 @@ class CwtConfigGroupImpl(
 			var keysNoConst: MutableSet<String>? = null
 			for(key in v.keys) {
 				if(CwtKeyExpression.resolve(key).type == CwtDataType.ConstantKey) {
-					if(keysConst == null) keysConst = CollectionFactory.createCaseInsensitiveStringMap()
+					if(keysConst == null) keysConst = caseInsensitiveStringKeyMap()
 					keysConst.put(key, key)
 				} else {
 					if(keysNoConst == null) keysNoConst = mutableSetOf()

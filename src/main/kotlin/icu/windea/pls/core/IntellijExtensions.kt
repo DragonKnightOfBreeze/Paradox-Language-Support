@@ -21,6 +21,7 @@ import com.intellij.openapi.ui.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
+import com.intellij.openapi.vfs.newvfs.events.*
 import com.intellij.psi.*
 import com.intellij.psi.codeStyle.*
 import com.intellij.psi.search.*
@@ -35,15 +36,31 @@ import com.intellij.util.containers.*
 import com.intellij.util.xmlb.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
+import it.unimi.dsi.fastutil.objects.*
 import java.io.*
 import java.util.*
 import javax.swing.*
 import javax.swing.text.*
 import kotlin.reflect.*
+
+//region RT Extensions
+@Suppress("UnstableApiUsage")
+fun caseInsensitiveStringSet(): MutableSet<@CaseInsensitive String> {
+	//com.intellij.util.containers.CollectionFactory.createCaseInsensitiveStringSet()
+	return ObjectLinkedOpenCustomHashSet(FastUtilHashingStrategies.getCaseInsensitiveStringStrategy())
+}
+
+@Suppress("UnstableApiUsage")
+fun <V> caseInsensitiveStringKeyMap(): MutableMap<@CaseInsensitive String, V> {
+	//com.intellij.util.containers.createCaseInsensitiveStringMap()
+	return Object2ObjectLinkedOpenCustomHashMap(FastUtilHashingStrategies.getCaseInsensitiveStringStrategy())
+}
+//endregion
 
 //region JRT Extensions
 fun String.compareToIgnoreCase(other: String): Int {
