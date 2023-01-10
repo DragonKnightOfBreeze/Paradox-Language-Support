@@ -137,11 +137,6 @@ class ParadoxScriptAnnotator : Annotator {
 			CwtDataType.StellarisNameFormat -> {
 				//TODO
 			}
-			CwtDataType.TemplateExpression -> {
-				if(text.isParameterAwareExpression()) return
-				val attributesKey = Keys.DEFINITION_REFERENCE_KEY
-				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
-			}
 			CwtDataType.Definition -> {
 				if(text.isParameterAwareExpression()) return
 				val attributesKey = Keys.DEFINITION_REFERENCE_KEY
