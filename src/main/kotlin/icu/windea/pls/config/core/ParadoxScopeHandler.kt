@@ -282,6 +282,13 @@ object ParadoxScopeHandler {
 		}
 	}
 	
+	@JvmStatic
+	fun resolveScopeContext(scopeNode: ParadoxLinkPrefixExpressionNode, parentScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+		val linkConfig = scopeNode.linkConfigs.firstOrNull()
+		if(linkConfig == null || linkConfig.transferScope) return parentScopeContext
+		return parentScopeContext.resolve(linkConfig.outputScope)
+	}
+	
 	private fun resolveScopeByScopeLinkNode(node: ParadoxScopeLinkExpressionNode, scopeContext: ParadoxScopeContext): ParadoxScopeContext {
 		val outputScope = node.config.outputScope
 		return scopeContext.resolve(outputScope)

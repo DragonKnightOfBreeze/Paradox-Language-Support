@@ -48,6 +48,7 @@ object ParadoxModifierHandler {
 				val reference = it.getReference(element)
 				reference == null || reference.canResolve()
 			}
+			//如果是生成的修正,生成源必须可以解析
 			if(canResolve) {
 				val templateString = templateExpression.template.expressionString
 				generatedModifierConfig = configGroup.modifiers[templateString]

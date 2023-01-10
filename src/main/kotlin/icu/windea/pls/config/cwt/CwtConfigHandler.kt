@@ -638,11 +638,6 @@ object CwtConfigHandler {
 		val project = configGroup.project
 		val gameType = configGroup.gameType
 		
-		if(configExpression == CwtValueExpression.BlockExpression) {
-			result.addBlockElement(context)
-			return
-		}
-		
 		if(configExpression.isEmpty()) return
 		if(quoted != true && keyword.isParameterAwareExpression()) return //排除带参数的情况
 		
@@ -650,14 +645,17 @@ object CwtConfigHandler {
 		val scopeContext = scopeContext
 		val scopeMatched = when {
 			scopeContext == null -> true
-			config is CwtPropertyConfig -> {
-				ParadoxScopeHandler.matchesScope(scopeContext, config.supportedScopes)
-			}
-			config is CwtLinkConfig -> true //TODO
+			config is CwtPropertyConfig -> ParadoxScopeHandler.matchesScope(scopeContext, config.supportedScopes)
+			config is CwtLinkConfig -> ParadoxScopeHandler.matchesScope(scopeContext, config.inputScopes)
 			else -> true
 		}
 		if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return
 		put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
+		
+		if(configExpression == CwtValueExpression.BlockExpression) {
+			result.addBlockElement(context)
+			return
+		}
 		
 		when(configExpression.type) {
 			CwtDataType.Bool -> {
@@ -1096,16 +1094,12 @@ object CwtConfigHandler {
 			context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
 			return@with
 		}
+		if(dataSourceNodeToCheck is ParadoxTemplateExpression) {
+			dataSourceNodeToCheck.complete(context, result)
+		}
 		
 		context.put(PlsCompletionKeys.configsKey, linkConfigs)
 		for(linkConfig in linkConfigs) {
-			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
-			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
-			if(prefix == null) {
-				val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, linkConfig.inputScopes)
-				if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
-				context.put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
-			}
 			context.put(PlsCompletionKeys.configKey, linkConfig)
 			completeScriptExpression(context, result)
 		}
@@ -1188,16 +1182,12 @@ object CwtConfigHandler {
 			context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
 			return@with
 		}
+		if(dataSourceNodeToCheck is ParadoxTemplateExpression) {
+			dataSourceNodeToCheck.complete(context, result)
+		}
 		
 		context.put(PlsCompletionKeys.configsKey, linkConfigs)
 		for(linkConfig in linkConfigs) {
-			//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
-			//如果没有前缀，排除input_scopes不匹配前一个scope的output_scope的情况
-			if(prefix == null) {
-				val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, linkConfig.inputScopes)
-				if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
-				context.put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
-			}
 			context.put(PlsCompletionKeys.configKey, linkConfig)
 			completeScriptExpression(context, result)
 		}
@@ -1850,6 +1840,7 @@ object CwtConfigHandler {
 	//region Other Methods
 	fun processTemplateResolveResult(templateExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, processor: Processor<ParadoxTemplateExpression>) {
 		//TODO
+		templateExpression
 	}
 	//endregion
 }

@@ -11,8 +11,8 @@ import icu.windea.pls.script.psi.*
 class ParadoxValueLinkPrefixExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
-	val linkConfigs: List<CwtLinkConfig>
-) : ParadoxExpressionNode {
+	override val linkConfigs: List<CwtLinkConfig>
+) : ParadoxLinkPrefixExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.VALUE_LINK_PREFIX_KEY
 	
 	override fun getReference(element: ParadoxScriptStringExpressionElement): Reference {

@@ -173,19 +173,23 @@ class ParadoxValueFieldExpressionImpl(
 			}
 			if(node is ParadoxScopeExpressionNode) {
 				if(inRange) {
-					context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
 					val linkFromDataNode = node.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
 					val prefixNode = linkFromDataNode?.prefixNode
 					val dataSourceNode = linkFromDataNode?.dataSourceNode
 					val dataSourceNodeToCheck = dataSourceNode?.nodes?.first()
 					val endOffset = dataSourceNode?.rangeInExpression?.startOffset ?: -1
 					if(prefixNode != null && dataSourceNode != null && offsetInParent >= dataSourceNode.rangeInExpression.startOffset) {
+						scopeContextInExpression = ParadoxScopeHandler.resolveScopeContext(prefixNode, scopeContextInExpression)
+						context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
+						
 						val keywordToUse = dataSourceNode.text.substring(0, offsetInParent - endOffset)
 						val resultToUse = result.withPrefixMatcher(keywordToUse)
 						context.put(PlsCompletionKeys.keywordKey, keywordToUse)
 						val prefix = prefixNode.text
 						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
 					} else {
+						context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
+						
 						val inFirstNode = dataSourceNode == null || dataSourceNode.nodes.isEmpty()
 							|| offsetInParent <= dataSourceNode.nodes.first().rangeInExpression.endOffset
 						val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
@@ -204,13 +208,15 @@ class ParadoxValueFieldExpressionImpl(
 				}
 			} else if(node is ParadoxValueFieldExpressionNode) {
 				if(inRange) {
-					context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
 					val linkFromDataNode = node.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
 					val prefixNode = linkFromDataNode?.prefixNode
 					val dataSourceNode = linkFromDataNode?.dataSourceNode
 					val dataSourceNodeToCheck = dataSourceNode?.nodes?.first()
 					val endOffset = dataSourceNode?.rangeInExpression?.startOffset ?: -1
 					if(prefixNode != null && dataSourceNode != null && offsetInParent >= dataSourceNode.rangeInExpression.startOffset) {
+						scopeContextInExpression = ParadoxScopeHandler.resolveScopeContext(prefixNode, scopeContextInExpression)
+						context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
+						
 						val keywordToUse = dataSourceNode.text.substring(0, offsetInParent - endOffset)
 						val resultToUse = result.withPrefixMatcher(keywordToUse)
 						context.put(PlsCompletionKeys.keywordKey, keywordToUse)
@@ -218,6 +224,8 @@ class ParadoxValueFieldExpressionImpl(
 						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
 						CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
 					} else {
+						context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
+						
 						val inFirstNode = dataSourceNode == null || dataSourceNode.nodes.isEmpty()
 							|| offsetInParent <= dataSourceNode.nodes.first().rangeInExpression.endOffset
 						val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
