@@ -1,9 +1,9 @@
 package icu.windea.pls.config.core
 
 import com.intellij.openapi.progress.*
-import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 

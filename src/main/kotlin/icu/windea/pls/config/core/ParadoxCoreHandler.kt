@@ -3,8 +3,7 @@ package icu.windea.pls.config.core
 import com.intellij.openapi.fileTypes.ex.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
+import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*

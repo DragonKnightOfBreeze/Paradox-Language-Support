@@ -4,8 +4,8 @@ import com.intellij.lang.parameterInfo.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.core.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*

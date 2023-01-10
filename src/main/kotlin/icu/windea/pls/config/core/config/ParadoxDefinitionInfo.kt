@@ -4,11 +4,11 @@ import com.intellij.openapi.application.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.ParadoxDefinitionInfo.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.config.core.config.ParadoxDefinitionInfo.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*

@@ -3,8 +3,8 @@ package icu.windea.pls.localisation.inspections.advanced.scope
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.core.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*

@@ -1,6 +1,6 @@
 package icu.windea.pls.core.expression
 
-import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.ParadoxDataExpression.*
