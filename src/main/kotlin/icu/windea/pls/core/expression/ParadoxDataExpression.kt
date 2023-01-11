@@ -17,9 +17,7 @@ class ParadoxDataExpressionImpl(
 	override val type: ParadoxDataType,
 	override val quoted: Boolean,
 	override val isKey: Boolean?
-) : AbstractExpression(text), ParadoxDataExpression {
-	companion object Resolver
-}
+) : AbstractExpression(text), ParadoxDataExpression
 
 object BlockParadoxDataExpression: AbstractExpression(PlsConstants.blockFolder), ParadoxDataExpression {
 	override val type: ParadoxDataType = ParadoxDataType.BlockType

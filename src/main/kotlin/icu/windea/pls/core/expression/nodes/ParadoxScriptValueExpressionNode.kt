@@ -51,7 +51,7 @@ import icu.windea.pls.script.psi.*
 		val name: String,
 		val config: CwtConfig<*>,
 		val configGroup: CwtConfigGroup
-	) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), SmartPsiReference {
+	) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), PsiNodeReference {
 		override fun handleElementRename(newElementName: String): PsiElement {
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
 		}

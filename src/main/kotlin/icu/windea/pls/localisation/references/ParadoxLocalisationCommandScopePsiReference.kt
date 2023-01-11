@@ -18,7 +18,7 @@ import icu.windea.pls.script.highlighter.*
 class ParadoxLocalisationCommandScopePsiReference(
 	element: ParadoxLocalisationCommandScope,
 	rangeInElement: TextRange
-) : PsiReferenceBase<ParadoxLocalisationCommandScope>(element, rangeInElement), SmartPsiReference {
+) : PsiReferenceBase<ParadoxLocalisationCommandScope>(element, rangeInElement), PsiNodeReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//重命名当前元素
 		return element.setName(newElementName)
@@ -48,26 +48,27 @@ class ParadoxLocalisationCommandScopePsiReference(
 		
 		return null
 	}
-	
-	override fun resolveTextAttributesKey(): TextAttributesKey? {
-		val name = element.name
-		val project = element.project
-		val gameType = selectGameType(element) ?: return null
-		
-		//尝试被识别为预定义的localisation_command
-		val configGroup = getCwtConfig(project).get(gameType) ?: return null
-		val systemScope = CwtConfigHandler.resolveSystemScope(name, configGroup)
-		if(systemScope != null) return ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY
-		val localisationScope = CwtConfigHandler.resolveLocalisationScope(name, configGroup)
-		if(localisationScope != null) return ParadoxScriptAttributesKeys.SCOPE_KEY
-		
-		//尝试识别为value[event_target]或value[global_event_target]
-		val selector = valueSetValueSelector().gameType(gameType)
-		val eventTarget = ParadoxValueSetValueSearch.search(name, "event_target", project, selector = selector).findFirst()
-		if(eventTarget != null) return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
-		val globalEventTarget = ParadoxValueSetValueSearch.search(name, "global_event_target", project, selector = selector).findFirst()
-		if(globalEventTarget != null) return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
-		
-		return null
-	}
+    
+    override val textAttributesKey: TextAttributesKey?
+        get() {
+            val name = element.name
+            val project = element.project
+            val gameType = selectGameType(element) ?: return null
+            
+            //尝试被识别为预定义的localisation_command
+            val configGroup = getCwtConfig(project).get(gameType) ?: return null
+            val systemScope = CwtConfigHandler.resolveSystemScope(name, configGroup)
+            if(systemScope != null) return ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY
+            val localisationScope = CwtConfigHandler.resolveLocalisationScope(name, configGroup)
+            if(localisationScope != null) return ParadoxScriptAttributesKeys.SCOPE_KEY
+            
+            //尝试识别为value[event_target]或value[global_event_target]
+            val selector = valueSetValueSelector().gameType(gameType)
+            val eventTarget = ParadoxValueSetValueSearch.search(name, "event_target", project, selector = selector).findFirst()
+            if(eventTarget != null) return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
+            val globalEventTarget = ParadoxValueSetValueSearch.search(name, "global_event_target", project, selector = selector).findFirst()
+            if(globalEventTarget != null) return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
+            
+            return null
+        }
 }

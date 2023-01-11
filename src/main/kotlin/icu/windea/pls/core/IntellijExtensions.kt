@@ -49,6 +49,14 @@ import javax.swing.text.*
 import kotlin.reflect.*
 
 //region RT Extensions
+fun String.unquotedTextRange(): TextRange {
+	val leftQuoted = this.isLeftQuoted()
+	val rightQuoted = this.isRightQuoted()
+	val startOffset = if(leftQuoted) 1 else 0
+	val endOffset = if(rightQuoted) length - 1 else length
+	return TextRange.create(startOffset, endOffset)
+}
+
 @Suppress("UnstableApiUsage")
 fun caseInsensitiveStringSet(): MutableSet<@CaseInsensitive String> {
 	//com.intellij.util.containers.CollectionFactory.createCaseInsensitiveStringSet()

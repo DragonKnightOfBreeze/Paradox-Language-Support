@@ -3,6 +3,7 @@
 package icu.windea.pls.core
 
 import com.google.common.cache.*
+import com.intellij.openapi.util.TextRange
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import com.intellij.util.io.*
@@ -47,7 +48,7 @@ fun Number.format(digits: Int): String {
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun String.takeIfNotEmpty() = this.takeIf { it.isNotEmpty() }
+inline fun <T: CharSequence> T.takeIfNotEmpty() = this.takeIf { it.isNotEmpty() }
 
 fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean = false): Boolean {
 	return startsWith(prefix, ignoreCase) && endsWith(suffix, ignoreCase)

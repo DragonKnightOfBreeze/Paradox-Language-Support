@@ -1,34 +1,25 @@
 package icu.windea.pls.core.psi
 
-import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.*
+import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
-import icu.windea.pls.core.navigation.*
+import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.references.*
 import javax.swing.*
 
-/**
- * 值集值值并不存在一个真正意义上的声明处，用这个模拟。
- */
-class ParadoxValueSetValueElement(
+class ParadoxTemplateExpressionElement(
     parent: PsiElement,
     val name: String,
-    val valueSetNames: List<String>,
+    val configExpression: CwtTemplateExpression,
     val project: Project,
     val gameType: ParadoxGameType,
-    val read: Boolean
-) : RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
-    constructor(element: PsiElement, name: String, valueSetName: String, project: Project, gameType: ParadoxGameType, read: Boolean = true)
-        : this(element, name, listOf(valueSetName), project, gameType, read)
-    
-    val valueSetName = valueSetNames.first()
-    
-    val valueSetNamesText = valueSetNames.joinToString(" | ")
-    
+    val references: List<ParadoxInTemplateExpressionReference>,
+): RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
     override fun getText(): String {
         return name
     }
@@ -37,13 +28,16 @@ class ParadoxValueSetValueElement(
         return name
     }
     
+    override fun setName(name: String): PsiElement {
+        throw IncorrectOperationException() //cannot rename
+    }
+    
     override fun getTypeName(): String {
-        return PlsBundle.message("script.description.valueSetValue")
+        return PlsBundle.message("script.description.templateExpression")
     }
     
     override fun getIcon(): Icon {
-        val valueSetName = valueSetNames.first() //first is ok
-        return PlsIcons.ValueSetValue(valueSetName)
+        return PlsIcons.TemplateExpression
     }
     
     override fun getTextRange(): TextRange? {
@@ -52,10 +46,6 @@ class ParadoxValueSetValueElement(
     
     override fun getNameIdentifier(): PsiElement {
         return this
-    }
-    
-    override fun getPresentation(): ItemPresentation {
-        return ParadoxValueSetValueElementPresentation(this)
     }
     
     override fun getProject(): Project {
@@ -67,18 +57,19 @@ class ParadoxValueSetValueElement(
     }
     
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxValueSetValueElement &&
+        return other is ParadoxTemplateExpressionElement &&
             name == other.name &&
-            valueSetNamesText == other.valueSetNamesText &&
+            configExpression == other.configExpression &&
             project == other.project &&
             gameType == other.gameType
     }
     
     override fun hashCode(): Int {
         var result = name.hashCode()
-        result = 31 * result + valueSetNamesText.hashCode()
+        result = 31 * result + configExpression.hashCode()
         result = 31 * result + project.hashCode()
         result = 31 * result + gameType.hashCode()
         return result
     }
 }
+

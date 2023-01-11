@@ -209,7 +209,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 			val templateExpression = element.templateExpression
 			if(templateExpression != null) {
 				val gameType = element.gameType
-				val template = templateExpression.template
+				val template = templateExpression.configExpression
 				val templateString = template.expressionString
 				
 				//加上模版信息

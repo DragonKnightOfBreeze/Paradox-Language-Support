@@ -3,11 +3,15 @@ package icu.windea.pls.config.core
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
+import com.intellij.util.SmartList
 import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.references.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
@@ -18,67 +22,42 @@ object ParadoxModifierHandler {
 	//TODO 修正会由经济类型（economic_category）的声明生成
 	
 	@JvmStatic
-	fun getModifierInfo(element: ParadoxScriptStringExpressionElement): ParadoxModifierInfo? {
-		return getModifierInfoFromCache(element)
-	}
-	
-	private fun getModifierInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxModifierInfo? {
-		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedModifierInfoKey) {
-			val name = element.value
-			val project = element.project
-			val value = resolveModifierInfo(element, name, project)
-			//invalidate on any script psi change
-			val tracker = PsiModificationTracker.getInstance(project).forLanguage(ParadoxScriptLanguage)
-			CachedValueProvider.Result.create(value, tracker)
+	fun matchesModifier(name: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
+		val modifierName = name.lowercase()
+		//预定义的非生成的修正
+		val modifierConfig = configGroup.predefinedModifiers[modifierName]
+		if(modifierConfig != null) return true
+		//生成的修正，生成源必须已定义
+		return configGroup.generatedModifiers.values.any { config ->
+			config.template.matches(name, configGroup, matchType)
 		}
 	}
 	
 	@JvmStatic
-	fun resolveModifierInfo(element: ParadoxScriptStringExpressionElement, name: String, project: Project): ParadoxModifierInfo? {
-		val gameType = selectGameType(element) ?: return null
-		val configGroup = getCwtConfig(project).getValue(gameType)
-		val modifierName = name.lowercase()
+	fun resolveModifier(element: ParadoxScriptStringExpressionElement, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxModifierElement? {
+		val project = configGroup.project
+		val gameType = configGroup.gameType ?: return null
+		val modifierName = textRange.substring(element.text)
 		//尝试解析为预定义的非生成的修正
-		val modifierConfig = configGroup.modifiers[modifierName]?.takeIf { it.template.isEmpty() }
+		val modifierConfig = configGroup.predefinedModifiers[modifierName]
 		//尝试解析为生成的修正，生成源未定义时，使用预定义的修正
 		var generatedModifierConfig: CwtModifierConfig? = null
-		var templateExpression = resolveModifierTemplate(modifierName, configGroup)
-		if(templateExpression != null) {
-			val canResolve = templateExpression.referenceNodes.all {
-				val reference = it.getReference(element)
-				reference == null || reference.canResolve()
-			}
-			//如果是生成的修正,生成源必须可以解析
-			if(canResolve) {
-				val templateString = templateExpression.template.expressionString
-				generatedModifierConfig = configGroup.modifiers[templateString]
-			} else {
-				templateExpression = null
-			}
+		val references = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
+			config.template.resolveReferences(element, textRange, configGroup)
+				?.also { generatedModifierConfig = config }
 		}
+		if(references == null) return null
 		if(modifierConfig == null && generatedModifierConfig == null) return null
-		return ParadoxModifierInfo(modifierName, gameType, modifierConfig, generatedModifierConfig, templateExpression)
+		return ParadoxModifierElement(element, modifierName, modifierConfig, generatedModifierConfig, project, gameType, references)
 	}
 	
 	private fun resolveModifierTemplate(name: String, configGroup: CwtConfigGroup): ParadoxTemplateExpression? {
 		val text = name
 		val textRange = TextRange.create(0, text.length)
-		return configGroup.generatedModifiers.values.firstNotNullOfOrNull { 
+		return configGroup.generatedModifiers.values.firstNotNullOfOrNull {
 			val template = it.template
 			ParadoxTemplateExpression.resolve(text, textRange, template, configGroup)
 		}
-	}
-	
-	@JvmStatic
-	fun matchesModifier(name: String, configGroup: CwtConfigGroup): Boolean {
-		val modifierName = name.lowercase()
-		//预定义的非生成的修正
-		val modifierConfig = configGroup.modifiers[modifierName]?.takeIf { it.template.isEmpty() }
-		if(modifierConfig != null) return true
-		//生成的修正，生成源可以未定义
-		val templateExpression = resolveModifierTemplate(modifierName, configGroup)
-		if(templateExpression != null) return true
-		return false
 	}
 	
 	//TODO 检查修正的相关本地化和图标到底是如何确定的

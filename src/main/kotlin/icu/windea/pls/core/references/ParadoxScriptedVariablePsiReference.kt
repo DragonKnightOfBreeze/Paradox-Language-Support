@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptedVariablePsiReference(
 	element: ParadoxScriptedVariableReference,
 	rangeInElement: TextRange
-) : PsiPolyVariantReferenceBase<ParadoxScriptedVariableReference>(element, rangeInElement), SmartPsiReference {
+) : PsiPolyVariantReferenceBase<ParadoxScriptedVariableReference>(element, rangeInElement), PsiNodeReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//重命名当前元素
 		return element.setName(newElementName)

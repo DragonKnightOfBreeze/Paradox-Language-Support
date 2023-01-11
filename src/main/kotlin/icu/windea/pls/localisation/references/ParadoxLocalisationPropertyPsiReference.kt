@@ -17,7 +17,7 @@ import icu.windea.pls.localisation.psi.*
 class ParadoxLocalisationPropertyPsiReference(
 	element: ParadoxLocalisationPropertyReference,
 	rangeInElement: TextRange
-) : PsiPolyVariantReferenceBase<ParadoxLocalisationPropertyReference>(element, rangeInElement), SmartPsiReference {
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationPropertyReference>(element, rangeInElement), PsiNodeReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//TODO 重命名关联的definition
 		return element.setName(newElementName)

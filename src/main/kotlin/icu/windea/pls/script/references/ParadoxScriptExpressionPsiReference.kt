@@ -17,7 +17,7 @@ class ParadoxScriptExpressionPsiReference(
 	rangeInElement: TextRange,
 	val config: CwtDataConfig<*>,
 	val isKey: Boolean
-) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), SmartPsiReference {
+) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiNodeReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		val element = element
 		return when {
@@ -30,7 +30,7 @@ class ParadoxScriptExpressionPsiReference(
 	override fun isReferenceTo(element: PsiElement): Boolean {
 		//必要的处理，否则查找使用时会出现问题（输入的PsiElement永远不会是propertyKey）
 		val results = multiResolve(false)
-		val manager = getElement().manager
+		val manager = element.manager
 		for(result in results) {
 			val resolved = result.element
 			if(manager.areElementsEquivalent(resolved, element) || (resolved is ParadoxScriptProperty && manager.areElementsEquivalent(resolved.propertyKey, element))) {

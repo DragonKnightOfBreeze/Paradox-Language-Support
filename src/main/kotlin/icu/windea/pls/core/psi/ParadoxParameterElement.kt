@@ -15,14 +15,14 @@ import javax.swing.*
  * 定义的参数并不存在一个真正意义上的声明处，用这个模拟。
  */
 class ParadoxParameterElement(
-	element: PsiElement,
-	private val name: String,
+	parent: PsiElement,
+	val name: String,
 	val definitionName: String,
 	val definitionTypes: List<String>,
-	private val project: Project,
+	val project: Project,
 	val gameType: ParadoxGameType,
 	val read: Boolean
-): RenameableFakePsiElement(element), PsiNameIdentifierOwner, NavigatablePsiElement {
+): RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
 	override fun getText(): String {
 		return name
 	}
@@ -53,10 +53,6 @@ class ParadoxParameterElement(
 	
 	override fun getProject(): Project {
 		return project
-	}
-	
-	override fun navigate(requestFocus: Boolean) {
-		
 	}
 	
 	override fun canNavigate(): Boolean {

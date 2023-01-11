@@ -2,6 +2,7 @@
 
 package icu.windea.pls.config.cwt
 
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
@@ -10,7 +11,10 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.references.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.script.psi.*
 
 inline fun CwtDataConfig<*>.processParent(processor: ProcessEntry.(CwtDataConfig<*>) -> Boolean): Boolean {
     var parent = this.parent
@@ -94,8 +98,16 @@ fun CwtTemplateExpression.extract(referenceNames: Map<CwtDataExpression, String>
     return CwtTemplateExpressionHandler.extract(this, referenceNames)
 }
 
-fun CwtTemplateExpression.resolve(text: String, configGroup: CwtConfigGroup): PsiElement? {
-    return CwtTemplateExpressionHandler.resolve(this, text, configGroup)
+fun CwtTemplateExpression.matches(text: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL) : Boolean {
+    return CwtTemplateExpressionHandler.matches(text, this, configGroup, matchType)
+}
+
+fun CwtTemplateExpression.resolve(element: ParadoxScriptStringExpressionElement, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
+    return CwtTemplateExpressionHandler.resolve(element, textRange, this, configGroup)
+}
+
+fun CwtTemplateExpression.resolveReferences(element: ParadoxScriptStringExpressionElement, textRange: TextRange, configGroup: CwtConfigGroup): List<ParadoxInTemplateExpressionReference>? {
+    return CwtTemplateExpressionHandler.resolveReferences(element, textRange, this, configGroup)
 }
 
 fun CwtTemplateExpression.processResolveResult(configGroup: CwtConfigGroup, processor: Processor<ParadoxTemplateExpression>) {

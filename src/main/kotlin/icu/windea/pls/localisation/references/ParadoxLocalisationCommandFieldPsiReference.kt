@@ -19,7 +19,7 @@ import icu.windea.pls.script.highlighter.*
 class ParadoxLocalisationCommandFieldPsiReference(
 	element: ParadoxLocalisationCommandField,
 	rangeInElement: TextRange
-) : PsiPolyVariantReferenceBase<ParadoxLocalisationCommandField>(element, rangeInElement), SmartPsiReference {
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationCommandField>(element, rangeInElement), PsiNodeReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//重命名当前元素
 		return element.setName(newElementName)
@@ -74,27 +74,28 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		
 		return ResolveResult.EMPTY_ARRAY
 	}
-	
-	override fun resolveTextAttributesKey(): TextAttributesKey? {
-		val name = element.name
-		val project = element.project
-		val gameType = selectGameType(element) ?: return null
-		val configGroup = getCwtConfig(project).getValue(gameType)
-		
-		//尝试识别为预定义的localisation_command
-		val localisationCommand = CwtConfigHandler.resolveLocalisationCommand(name, configGroup)
-		if(localisationCommand != null) return null //no highlight
-		
-		//尝试识别为<scripted_loc>
-		val selector = definitionSelector().gameType(gameType)
-		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", project, selector = selector).findFirst()
-		if(scriptedLoc != null) return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY //definition reference
-		
-		//尝试识别为value[variable]
-		val variableSelector = valueSetValueSelector().gameType(gameType)
-		val variable = ParadoxValueSetValueSearch.search(name, "variable", project, selector = variableSelector).findFirst()
-		if(variable != null) return ParadoxScriptAttributesKeys.VARIABLE_KEY
-		
-		return null
-	}
+    
+    override val textAttributesKey: TextAttributesKey?
+        get() {
+            val name = element.name
+            val project = element.project
+            val gameType = selectGameType(element) ?: return null
+            val configGroup = getCwtConfig(project).getValue(gameType)
+            
+            //尝试识别为预定义的localisation_command
+            val localisationCommand = CwtConfigHandler.resolveLocalisationCommand(name, configGroup)
+            if(localisationCommand != null) return null //no highlight
+            
+            //尝试识别为<scripted_loc>
+            val selector = definitionSelector().gameType(gameType)
+            val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", project, selector = selector).findFirst()
+            if(scriptedLoc != null) return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY //definition reference
+            
+            //尝试识别为value[variable]
+            val variableSelector = valueSetValueSelector().gameType(gameType)
+            val variable = ParadoxValueSetValueSearch.search(name, "variable", project, selector = variableSelector).findFirst()
+            if(variable != null) return ParadoxScriptAttributesKeys.VARIABLE_KEY
+            
+            return null
+        }
 }

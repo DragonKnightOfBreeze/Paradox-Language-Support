@@ -388,9 +388,9 @@ object CwtConfigHandler {
 		return ParadoxModifierHandler.matchesModifier(name, configGroup)
 	}
 	
-	private fun matchesTemplateExpression(expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
-		val templateExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
-		return templateExpression.resolve(expression.text, configGroup) != null
+	fun matchesTemplateExpression(expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
+		val templateConfigExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
+		return templateConfigExpression.matches(expression.text, configGroup, matchType)
 	}
 	
 	fun getAliasSubName(key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): String? {
@@ -957,17 +957,18 @@ object CwtConfigHandler {
 			val template = modifierConfig.template
 			if(template.isNotEmpty()) {
 				//生成的modifier
-				template.processResolveResult(configGroup) { templateExpression ->
-					val name = templateExpression.text
-					val modifierElement = ParadoxModifierElement(element, name, modifierConfig, templateExpression, project, gameType)
-					val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
-						.withIcon(PlsIcons.Modifier)
-						.withTailText(tailTextWithExpression)
-						.withScopeMatched(scopeMatched)
-					//.withPriority(PlsCompletionPriorities.modifierPriority)
-					result.addScriptExpressionElement(context, builder)
-					true
-				}
+				//TODO 0.7.11
+				//template.processResolveResult(configGroup) { templateExpression ->
+				//	val name = templateExpression.text
+				//	val modifierElement = ParadoxModifierElement(element, name, modifierConfig, templateExpression, project, gameType)
+				//	val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
+				//		.withIcon(PlsIcons.Modifier)
+				//		.withTailText(tailTextWithExpression)
+				//		.withScopeMatched(scopeMatched)
+				//	//.withPriority(PlsCompletionPriorities.modifierPriority)
+				//	result.addScriptExpressionElement(context, builder)
+				//	true
+				//}
 			} else {
 				//预定义的modifier
 				val name = modifierConfig.name
@@ -988,9 +989,8 @@ object CwtConfigHandler {
 		val template = CwtTemplateExpression.resolve(configExpression.expressionString)
 		val scopeMatched = context.scopeMatched ?: true
 		val tailText = getScriptExpressionTailText(context.config)
-		template.processResolveResult(configGroup) { templateExpression ->
-			val name = templateExpression.text
-			val builder = ParadoxScriptExpressionLookupElementBuilder.create(null, name)
+		template.processResolveResult(configGroup) { expression ->
+			val builder = ParadoxScriptExpressionLookupElementBuilder.create(null, expression)
 				.withIcon(PlsIcons.TemplateExpression)
 				.withTailText(tailText)
 				.caseInsensitive()
@@ -1757,10 +1757,11 @@ object CwtConfigHandler {
 		return ParadoxModifierElement(element, modifierName, modifierConfig, templateExpression, project, gameType)
 	}
 	
-	fun resolveTemplateExpression(element: ParadoxScriptExpressionElement, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): PsiElement? {
+	fun resolveTemplateExpression(element: ParadoxScriptExpressionElement, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
 		if(element !is ParadoxScriptStringExpressionElement) return null
-		val templateExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
-		return templateExpression.resolve(element.value, configGroup)
+		val templateConfigExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
+		val textRange = element.text.unquotedTextRange()
+		return templateConfigExpression.resolve(element, textRange, configGroup)
 	}
 	
 	fun resolveSystemScope(name: String, configGroup: CwtConfigGroup): PsiElement? {

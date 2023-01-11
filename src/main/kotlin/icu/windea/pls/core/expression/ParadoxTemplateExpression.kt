@@ -1,6 +1,5 @@
 package icu.windea.pls.core.expression
 
-import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
@@ -8,7 +7,6 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.ParadoxTemplateExpression.*
 import icu.windea.pls.core.expression.nodes.*
-import icu.windea.pls.script.highlighter.*
 
 /**
  * 模版表达式。
@@ -20,39 +18,33 @@ import icu.windea.pls.script.highlighter.*
  * ```
  */
 interface ParadoxTemplateExpression: ParadoxComplexExpression {
-	val referenceNodes: List<ParadoxTemplateSnippetExpressionNode>
+	val configExpression: CwtTemplateExpression
 	
-	val template: CwtTemplateExpression
+	val referenceNodes: List<ParadoxTemplateExpressionNode>
+	
 	companion object Resolver
-	
-	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-
-	}
 }
 
 class ParadoxTemplateExpressionImpl(
 	override val text: String,
-	override val isKey: Boolean?,
 	override val rangeInExpression: TextRange,
-	override val nodes: List<ParadoxTemplateSnippetExpressionNode>,
-	override val configGroup: CwtConfigGroup,
-	override val template: CwtTemplateExpression
+	override val nodes: List<ParadoxTemplateExpressionNode>,
+	override val configExpression: CwtTemplateExpression,
+	override val configGroup: CwtConfigGroup
 ): AbstractExpression(text), ParadoxTemplateExpression {
+	override val isKey: Boolean? = null
 	override val quoted: Boolean = text.isLeftQuoted()
 	
-	override val referenceNodes: List<ParadoxTemplateSnippetExpressionNode> = nodes.filterTo(SmartList()) { it.configExpression != null }
-	
-	override fun getAttributesKey() = ParadoxScriptAttributesKeys.TEMPLATE_EXPRESSION_KEY
-	
+	override val referenceNodes: List<ParadoxTemplateExpressionNode> = nodes.filterTo(SmartList()) { it.configExpression != null }
 }
 
-fun Resolver.resolve(text: String, textRange: TextRange, template: CwtTemplateExpression, configGroup: CwtConfigGroup, isKey: Boolean? = null): ParadoxTemplateExpression? {
-	if(template.isEmpty()) return null
+fun Resolver.resolve(text: String, textRange: TextRange, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpression? {
+	if(configExpression.isEmpty()) return null
 	
 	//可以用引号包围
-	val snippets = template.snippetExpressions
+	val snippets = configExpression.snippetExpressions
 	if(snippets.isEmpty()) return null
-	val nodes = mutableListOf<ParadoxTemplateSnippetExpressionNode>()
+	val nodes = mutableListOf<ParadoxTemplateExpressionNode>()
 	var i1 = 0
 	var i2 = 0
 	var prevSnippet: CwtDataExpression? = null
@@ -65,29 +57,29 @@ fun Resolver.resolve(text: String, textRange: TextRange, template: CwtTemplateEx
 				text.indexOf(expressionString, i1, ignoreCase = true)
 			}
 			if(i2 == -1) return null
-			if(i1 != i2 && prevSnippet != null) {
+			if(prevSnippet != null && i1 != i2) {
 				val nodeText = text.substring(i1, i2)
 				val nodeRange = TextRange.create(i1, i2)
-				val node = ParadoxTemplateSnippetExpressionNode(nodeText, nodeRange, prevSnippet, configGroup)
+				val node = ParadoxTemplateExpressionNode(nodeText, nodeRange, prevSnippet, configGroup)
 				nodes.add(node)
 			}
 			i1 = i2 + expressionString.length
 			val nodeText = expressionString
 			val nodeRange = TextRange.create(i2, i1)
-			val node = ParadoxTemplateSnippetExpressionNode(nodeText, nodeRange, null, configGroup)
+			val node = ParadoxTemplateExpressionNode(nodeText, nodeRange, null, configGroup)
 			nodes.add(node)
 		} else {
 			prevSnippet = snippet
 		}
 	}
-	if(i1 != text.length && prevSnippet != null) {
+	if(prevSnippet != null && i1 != text.length) {
 		val nodeText = text.substring(i1)
 		val nodeRange = TextRange.create(i1, text.length)
-		val node = ParadoxTemplateSnippetExpressionNode(nodeText, nodeRange, prevSnippet, configGroup)
+		val node = ParadoxTemplateExpressionNode(nodeText, nodeRange, prevSnippet, configGroup)
 		nodes.add(node)
 	}
 	if(nodes.size != snippets.size) {
 		return null
 	}
-	return ParadoxTemplateExpressionImpl(text, isKey, textRange, nodes, configGroup, template)
+	return ParadoxTemplateExpressionImpl(text, textRange, nodes, configExpression, configGroup)
 }

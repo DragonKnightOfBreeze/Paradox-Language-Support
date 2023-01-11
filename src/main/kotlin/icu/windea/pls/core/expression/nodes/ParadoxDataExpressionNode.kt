@@ -52,7 +52,7 @@ class ParadoxDataExpressionNode (
 		element: ParadoxScriptStringExpressionElement,
 		rangeInElement: TextRange,
 		val linkConfigs: List<CwtLinkConfig>
-	) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), SmartPsiReference {
+	) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), PsiNodeReference {
 		override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
 		}

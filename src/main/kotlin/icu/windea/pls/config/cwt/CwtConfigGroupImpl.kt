@@ -74,17 +74,17 @@ class CwtConfigGroupImpl(
 	override val inlineConfigGroup: MutableMap<String, MutableList<CwtInlineConfig>> = mutableMapOf()
 	
 	override val modifiers: MutableMap<@CaseInsensitive String, CwtModifierConfig> = caseInsensitiveStringKeyMap()
-	override val generatedModifiers: Map<String, CwtModifierConfig> by lazy {
+	override val generatedModifiers: Map<@CaseInsensitive String, CwtModifierConfig> by lazy {
 		//put xxx_<xxx>_xxx before xxx_<xxx>
 		modifiers.values
 			.filter { it.template.isNotEmpty() }
 			.sortedByDescending { it.template.snippetExpressions.size }
-			.associateBy { it.name }
+			.associateByTo(caseInsensitiveStringKeyMap()) { it.name }
 	}
-	override val predefinedModifiers: Map<String, CwtModifierConfig> by lazy {
+	override val predefinedModifiers: Map<@CaseInsensitive String, CwtModifierConfig> by lazy {
 		modifiers.values
 			.filter { it.template.isEmpty() }
-			.associateBy { it.name }
+			.associateByTo(caseInsensitiveStringKeyMap()) { it.name }
 	}
 	
 	override val aliasNamesSupportScope: MutableSet<String> = mutableSetOf(

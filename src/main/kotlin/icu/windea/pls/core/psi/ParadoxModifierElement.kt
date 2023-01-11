@@ -5,31 +5,42 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.*
+import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.navigation.*
+import icu.windea.pls.core.references.*
 import javax.swing.*
 
 /**
  * （生成的）修正可能并不存在一个真正意义上的声明处，用这个模拟。
  */
 class ParadoxModifierElement(
-	element: PsiElement,
-	private val name: String,
-	val modifierConfig: CwtModifierConfig,
-	val templateExpression: ParadoxTemplateExpression?,
-	private val project: Project,
-	val gameType: ParadoxGameType
-) : RenameableFakePsiElement(element), PsiNameIdentifierOwner, NavigatablePsiElement {
+	parent: PsiElement,
+	val name: String,
+	val modifierConfig: CwtModifierConfig?,
+	val generatedModifierConfig: CwtModifierConfig?,
+	val project: Project,
+	val gameType: ParadoxGameType,
+	val references: List<ParadoxInTemplateExpressionReference>,
+) : RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
+	val configExpression: CwtTemplateExpression =
+		generatedModifierConfig?.template ?: modifierConfig?.template ?: CwtTemplateExpression.EmptyExpression
+	
 	override fun getText(): String {
 		return name
 	}
 	
 	override fun getName(): String {
 		return name
+	}
+	
+	override fun setName(name: String): PsiElement {
+		throw IncorrectOperationException() //cannot rename
 	}
 	
 	override fun getTypeName(): String {
@@ -56,10 +67,6 @@ class ParadoxModifierElement(
 		return project
 	}
 	
-	override fun navigate(requestFocus: Boolean) {
-		
-	}
-	
 	override fun canNavigate(): Boolean {
 		return false // false -> click to show usages
 	}
@@ -67,14 +74,14 @@ class ParadoxModifierElement(
 	override fun equals(other: Any?): Boolean {
 		return other is ParadoxModifierElement &&
 			name == other.name &&
-			templateExpression == other.templateExpression &&
+			configExpression == other.configExpression &&
 			project == other.project &&
 			gameType == other.gameType
 	}
 	
 	override fun hashCode(): Int {
 		var result = name.hashCode()
-		result = 31 * result + templateExpression.hashCode()
+		result = 31 * result + configExpression.hashCode()
 		result = 31 * result + project.hashCode()
 		result = 31 * result + gameType.hashCode()
 		return result

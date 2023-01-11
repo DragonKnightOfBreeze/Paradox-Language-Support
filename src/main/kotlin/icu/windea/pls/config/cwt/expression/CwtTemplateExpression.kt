@@ -1,5 +1,6 @@
 package icu.windea.pls.config.cwt.expression
 
+import com.google.common.cache.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 
@@ -16,8 +17,9 @@ class CwtTemplateExpression(
 		// job_<job>_add
 		// xxx_value[xxx]_xxx
 		
-		//do not cache
-		fun resolve(expressionString: String) = doResolve(expressionString)
+		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtTemplateExpression> { doResolve(it) } }
+		
+		fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
 		
 		private fun doResolve(expressionString: String): CwtTemplateExpression {
 			return when {

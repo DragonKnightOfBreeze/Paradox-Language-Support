@@ -11,7 +11,7 @@ import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxTemplateSnippetExpressionNode(
+class ParadoxTemplateExpressionNode(
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	val configExpression: CwtDataExpression?,
@@ -44,7 +44,7 @@ class ParadoxTemplateSnippetExpressionNode(
 		rangeInElement: TextRange,
 		val configExpression: CwtDataExpression,
 		val configGroup: CwtConfigGroup
-	) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), SmartPsiReference {
+	) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), PsiNodeReference {
 		override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
 		}

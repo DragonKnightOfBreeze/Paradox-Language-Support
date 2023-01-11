@@ -59,19 +59,19 @@ class ParadoxLocalisationAnnotator : Annotator {
 	private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
 		//颜色高亮
 		val location = element.colorId ?: return
-		val attributesKey = element.reference?.resolveTextAttributesKey() ?: return
+		val attributesKey = element.reference?.textAttributesKey ?: return
 		holder.newSilentAnnotation(INFORMATION).range(location).textAttributes(attributesKey).create()
 	}
 	
 	private fun annotateCommandScope(element: ParadoxLocalisationCommandScope, holder: AnnotationHolder) {
 		//颜色高亮
-		val attributesKey = element.reference.resolveTextAttributesKey() ?: return
+		val attributesKey = element.reference.textAttributesKey ?: return
 		holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
 	}
 	
 	private fun annotateCommandField(element: ParadoxLocalisationCommandField, holder: AnnotationHolder) {
 		//颜色高亮
-		val attributesKey = element.reference?.resolveTextAttributesKey() ?: return
+		val attributesKey = element.reference?.textAttributesKey ?: return
 		holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
 	}
 }

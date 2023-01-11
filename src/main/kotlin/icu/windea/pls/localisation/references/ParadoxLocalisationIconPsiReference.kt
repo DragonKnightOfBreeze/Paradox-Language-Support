@@ -26,7 +26,7 @@ import kotlin.collections.mapNotNullTo
 class ParadoxLocalisationIconPsiReference(
 	element: ParadoxLocalisationIcon,
 	rangeInElement: TextRange
-) : PsiPolyVariantReferenceBase<ParadoxLocalisationIcon>(element, rangeInElement), SmartPsiReference {
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationIcon>(element, rangeInElement), PsiNodeReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		return element.setName(newElementName)
 	}
