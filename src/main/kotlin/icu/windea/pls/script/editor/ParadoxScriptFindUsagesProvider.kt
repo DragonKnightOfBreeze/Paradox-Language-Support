@@ -59,6 +59,12 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 					}
 				}
 			}
+			is ParadoxTemplateExpressionElement -> {
+				when(location) {
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.templateExpression")
+					else -> element.name
+				}
+			}
 			is ParadoxParameterElement -> {
 				when(location) {
 					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.parameter")
@@ -68,6 +74,12 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 			is ParadoxValueSetValueElement -> {
 				when(location) {
 					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.valueSetValue")
+					else -> element.name
+				}
+			}
+			is ParadoxModifierElement -> {
+				when(location) {
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.modifier")
 					else -> element.name
 				}
 			}
@@ -84,8 +96,10 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 			is ParadoxScriptScriptedVariable -> true
 			is ParadoxScriptProperty -> element.definitionInfo != null
 			is ParadoxScriptStringExpressionElement -> element.complexEnumValueInfo != null
+			is ParadoxTemplateExpressionElement -> true
 			is ParadoxParameterElement -> true
 			is ParadoxValueSetValueElement -> true
+			is ParadoxModifierElement -> true
 			else -> false
 		}
 	}
