@@ -110,6 +110,6 @@ fun CwtTemplateExpression.resolveReferences(element: ParadoxScriptStringExpressi
     return CwtTemplateExpressionHandler.resolveReferences(element, textRange, this, configGroup)
 }
 
-fun CwtTemplateExpression.processResolveResult(configGroup: CwtConfigGroup, processor: Processor<ParadoxTemplateExpression>) {
+fun CwtTemplateExpression.processResolveResult(configGroup: CwtConfigGroup, processor: Processor<String>) {
     CwtTemplateExpressionHandler.processResolveResult(this, configGroup, processor)
 }

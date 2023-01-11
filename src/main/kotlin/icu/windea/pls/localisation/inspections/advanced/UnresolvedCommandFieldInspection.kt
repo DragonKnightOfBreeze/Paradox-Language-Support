@@ -4,6 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.localisation.psi.*
@@ -20,7 +21,8 @@ class UnresolvedCommandFieldInspection : LocalInspectionTool() {
 		override fun visitCommandField(element: ParadoxLocalisationCommandField) {
 			ProgressManager.checkCanceled()
 			val location = element
-			if(element.reference.canResolve()) return
+			val reference = element.reference
+			if(reference == null || reference.canResolve()) return
 			val name = element.name
 			holder.registerProblem(location, PlsBundle.message("localisation.inspection.advanced.unresolvedCommandField.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
 				ImportGameOrModDirectoryFix(location)

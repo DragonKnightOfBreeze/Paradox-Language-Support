@@ -9,5 +9,3 @@ interface PsiNodeReference : PsiReference, PsiNode {
 		return resolve(false) != null
 	}
 }
-
-fun PsiNodeReference?.canResolve() = this == null || this.canResolve()

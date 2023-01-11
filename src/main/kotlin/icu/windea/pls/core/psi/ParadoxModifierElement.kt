@@ -22,14 +22,14 @@ import javax.swing.*
 class ParadoxModifierElement(
 	parent: PsiElement,
 	val name: String,
-	val modifierConfig: CwtModifierConfig?,
+	val predefinedModifierConfig: CwtModifierConfig?,
 	val generatedModifierConfig: CwtModifierConfig?,
 	val project: Project,
 	val gameType: ParadoxGameType,
 	val references: List<ParadoxInTemplateExpressionReference>,
 ) : RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
-	val configExpression: CwtTemplateExpression =
-		generatedModifierConfig?.template ?: modifierConfig?.template ?: CwtTemplateExpression.EmptyExpression
+	val modifierConfig = generatedModifierConfig ?: predefinedModifierConfig ?: throw IllegalStateException()
+	val configExpression: CwtTemplateExpression = modifierConfig.template
 	
 	override fun getText(): String {
 		return name

@@ -27,9 +27,8 @@ class ParadoxLocalisationColorPsiReference(
 	override fun resolve(exact: Boolean): PsiElement? {
 		return element.colorConfig?.pointer?.element
 	}
-    
-    override val textAttributesKey: TextAttributesKey?
-        get() {
-            return element.colorConfig?.color?.let { ParadoxLocalisationAttributesKeys.getColorKey(it) }
-        }
+	
+	override fun getTextAttributesKey(): TextAttributesKey? {
+		return element.colorConfig?.color?.let { ParadoxLocalisationAttributesKeys.getColorKey(it) }
+	}
 }

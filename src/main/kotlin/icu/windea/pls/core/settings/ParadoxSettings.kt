@@ -6,7 +6,6 @@ import icu.windea.pls.*
 import icu.windea.pls.config.core.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.core.util.*
 import kotlin.properties.*
 

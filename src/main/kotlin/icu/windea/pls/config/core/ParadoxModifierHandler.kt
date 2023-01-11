@@ -1,19 +1,13 @@
 package icu.windea.pls.config.core
 
-import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
-import com.intellij.psi.util.*
-import com.intellij.util.SmartList
 import icu.windea.pls.*
-import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.references.*
 import icu.windea.pls.core.selector.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxModifierHandler {
@@ -25,12 +19,21 @@ object ParadoxModifierHandler {
 	fun matchesModifier(name: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
 		val modifierName = name.lowercase()
 		//预定义的非生成的修正
-		val modifierConfig = configGroup.predefinedModifiers[modifierName]
-		if(modifierConfig != null) return true
+		val predefinedModifierConfig = configGroup.predefinedModifiers[modifierName]
+		if(predefinedModifierConfig != null) return true
 		//生成的修正，生成源必须已定义
 		return configGroup.generatedModifiers.values.any { config ->
 			config.template.matches(name, configGroup, matchType)
 		}
+	}
+	
+	@JvmStatic
+	fun resolveModifier(element: ParadoxScriptStringExpressionElement) : ParadoxModifierElement? {
+		val textRange = element.text.unquotedTextRange()
+		val gameType = selectGameType(element) ?: return null
+		val project = element.project
+		val configGroup = getCwtConfig(project).getValue(gameType)
+		return resolveModifier(element, textRange, configGroup)
 	}
 	
 	@JvmStatic
@@ -39,7 +42,7 @@ object ParadoxModifierHandler {
 		val gameType = configGroup.gameType ?: return null
 		val modifierName = textRange.substring(element.text)
 		//尝试解析为预定义的非生成的修正
-		val modifierConfig = configGroup.predefinedModifiers[modifierName]
+		val predefinedModifierConfig = configGroup.predefinedModifiers[modifierName]
 		//尝试解析为生成的修正，生成源未定义时，使用预定义的修正
 		var generatedModifierConfig: CwtModifierConfig? = null
 		val references = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
@@ -47,8 +50,8 @@ object ParadoxModifierHandler {
 				?.also { generatedModifierConfig = config }
 		}
 		if(references == null) return null
-		if(modifierConfig == null && generatedModifierConfig == null) return null
-		return ParadoxModifierElement(element, modifierName, modifierConfig, generatedModifierConfig, project, gameType, references)
+		if(predefinedModifierConfig == null && generatedModifierConfig == null) return null
+		return ParadoxModifierElement(element, modifierName, predefinedModifierConfig, generatedModifierConfig, project, gameType, references)
 	}
 	
 	private fun resolveModifierTemplate(name: String, configGroup: CwtConfigGroup): ParadoxTemplateExpression? {

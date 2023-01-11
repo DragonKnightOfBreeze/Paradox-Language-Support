@@ -25,7 +25,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.index.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.search.*
@@ -169,8 +168,6 @@ val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
 
 val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo?
 	get() = ParadoxComplexEnumValueHandler.getInfo(this)
-val ParadoxScriptStringExpressionElement.modifierInfo: ParadoxModifierInfo?
-	get() = ParadoxModifierHandler.getModifierInfo(this)
 
 val ParadoxLocalisationLocale.localeConfig: CwtLocalisationLocaleConfig?
 	get() = getCwtConfig(project).core.localisationLocales.get(name)

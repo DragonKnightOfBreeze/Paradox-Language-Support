@@ -9,7 +9,6 @@ import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.highlighter.ParadoxLocalisationAttributesKeys as Keys
 
@@ -59,19 +58,19 @@ class ParadoxLocalisationAnnotator : Annotator {
 	private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
 		//颜色高亮
 		val location = element.colorId ?: return
-		val attributesKey = element.reference?.textAttributesKey ?: return
+		val attributesKey = element.reference?.getTextAttributesKey() ?: return
 		holder.newSilentAnnotation(INFORMATION).range(location).textAttributes(attributesKey).create()
 	}
 	
 	private fun annotateCommandScope(element: ParadoxLocalisationCommandScope, holder: AnnotationHolder) {
 		//颜色高亮
-		val attributesKey = element.reference.textAttributesKey ?: return
+		val attributesKey = element.reference.getTextAttributesKey() ?: return
 		holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
 	}
 	
 	private fun annotateCommandField(element: ParadoxLocalisationCommandField, holder: AnnotationHolder) {
 		//颜色高亮
-		val attributesKey = element.reference?.textAttributesKey ?: return
+		val attributesKey = element.reference?.getTextAttributesKey() ?: return
 		holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
 	}
 }

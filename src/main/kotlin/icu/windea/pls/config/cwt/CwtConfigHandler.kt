@@ -1744,17 +1744,7 @@ object CwtConfigHandler {
 	
 	fun resolveModifier(element: ParadoxScriptExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
 		if(element !is ParadoxScriptStringExpressionElement) return null
-		val project = configGroup.project
-		val modifierInfo = when{
-			name == element.value -> ParadoxModifierHandler.getModifierInfo(element)
-			else -> ParadoxModifierHandler.resolveModifierInfo(element, name, project)
-		}
-		if(modifierInfo == null) return null
-		val modifierName = modifierInfo.name
-		val modifierConfig = modifierInfo.generatedModifierConfig ?: modifierInfo.modifierConfig ?: return null
-		val templateExpression = modifierInfo.templateExpression
-		val gameType = modifierInfo.gameType
-		return ParadoxModifierElement(element, modifierName, modifierConfig, templateExpression, project, gameType)
+		return ParadoxModifierHandler.resolveModifier(element, name, configGroup)
 	}
 	
 	fun resolveTemplateExpression(element: ParadoxScriptExpressionElement, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
