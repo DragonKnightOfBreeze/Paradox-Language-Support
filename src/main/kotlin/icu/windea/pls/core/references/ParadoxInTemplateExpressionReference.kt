@@ -12,6 +12,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxInTemplateExpressionReference(
     element: ParadoxScriptStringExpressionElement,
     rangeInElement: TextRange,
+    val name: String,
     val configExpression: CwtDataExpression,
     val configGroup: CwtConfigGroup
 ) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), PsiNodeReference {

@@ -27,7 +27,8 @@ class ParadoxTemplateExpressionNode(
 		if(configExpression == null) return null
 		if(text.isParameterAwareExpression()) return null
 		//排除可解析的情况
-		if(getReference(element).canResolve()) return null
+		val reference = getReference(element)
+		if(reference == null || reference.canResolve()) return null
 		val expect = configExpression
 		return ParadoxUnresolvedScopeLinkDataSourceExpressionError(rangeInExpression, PlsBundle.message("script.expression.unresolvedData", text, expect))
 	}

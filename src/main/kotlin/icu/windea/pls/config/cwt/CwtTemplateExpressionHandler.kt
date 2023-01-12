@@ -100,8 +100,9 @@ object CwtTemplateExpressionHandler {
         for((index, snippetExpression) in snippetExpressions.withIndex()) {
             if(snippetExpression.type != CwtDataType.Constant) {
                 val matchGroup = matchResult.groups.get(index + 1) ?: return null
+                val name = matchGroup.value
                 val range = TextRange.create(matchGroup.range.first + startOffset, matchGroup.range.last + startOffset)
-                val reference = ParadoxInTemplateExpressionReference(element, range, snippetExpression, configGroup)
+                val reference = ParadoxInTemplateExpressionReference(element, range, name, snippetExpression, configGroup)
                 references.add(reference)
             } else {
                 //ignore

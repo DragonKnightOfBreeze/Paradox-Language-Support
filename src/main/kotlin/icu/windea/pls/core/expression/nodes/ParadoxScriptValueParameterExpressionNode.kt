@@ -23,7 +23,8 @@ class ParadoxScriptValueParameterExpressionNode (
 	override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
 		if(scriptValueNode == null) return null
 		if(text.isEmpty()) return null
-		if(!scriptValueNode.getReference(element).canResolve()) return null //skip if script value cannot be resolved
+		val reference = scriptValueNode.getReference(element)
+		if(reference == null || !reference.canResolve()) return null //skip if script value cannot be resolved
 		return Reference(element, rangeInExpression, scriptValueNode.text, text, configGroup)
 	}
 	

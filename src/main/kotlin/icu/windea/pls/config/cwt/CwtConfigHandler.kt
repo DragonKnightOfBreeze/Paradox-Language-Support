@@ -972,6 +972,7 @@ object CwtConfigHandler {
 			} else {
 				//预定义的modifier
 				val name = modifierConfig.name
+				resolveModifier(element, name, configGroup)
 				val modifierElement = ParadoxModifierElement(element, name, modifierConfig, null, project, gameType)
 				val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
 					.withIcon(PlsIcons.Modifier)

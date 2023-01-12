@@ -37,7 +37,8 @@ class ParadoxDataExpressionNode (
 		if(linkConfigs.any { it.dataSource?.type == CwtDataType.Value }) return null
 		val expect = linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
 		//排除可解析的情况
-		if(getReference(element).canResolve()) return null
+		val reference = getReference(element)
+		if(reference == null || reference.canResolve()) return null
 		return ParadoxUnresolvedScopeLinkDataSourceExpressionError(rangeInExpression, PlsBundle.message("script.expression.unresolvedData", text, expect))
 	}
 	

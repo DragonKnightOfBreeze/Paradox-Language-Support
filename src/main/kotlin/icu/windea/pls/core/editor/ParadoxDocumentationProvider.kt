@@ -204,12 +204,10 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 			//加上名字
 			val name = element.name
 			append(PlsDocBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-			
-			val templateExpression = element.templateExpression
-			if(templateExpression != null) {
+			val templateConfigExpression = element.configExpression
+			if(templateConfigExpression.isNotEmpty()) {
 				val gameType = element.gameType
-				val template = templateExpression.configExpression
-				val templateString = template.expressionString
+				val templateString = templateConfigExpression.expressionString
 				
 				//加上模版信息
 				appendBr().appendIndent()
@@ -217,14 +215,14 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 				appendCwtLink(templateString, "${gameType.id}/modifiers/$templateString")
 				
 				//加上生成源信息
-				val referenceNodes = templateExpression.referenceNodes
-				if(referenceNodes.isNotEmpty()) {
-					for(referenceNode in referenceNodes) {
+				val references = element.references
+				if(references.isNotEmpty()) {
+					for(reference in references) {
 						appendBr().appendIndent()
-						val configExpression = referenceNode.configExpression ?: continue
+						val configExpression = reference.configExpression
 						when(configExpression.type) {
 							CwtDataType.Definition -> {
-								val definitionName = referenceNode.text
+								val definitionName = reference.name
 								val definitionType = configExpression.value!!
 								val definitionTypes = definitionType.split('.', limit = 2)
 								append(PlsDocBundle.message("generatedFromDefinition"))
@@ -243,7 +241,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 								}
 							}
 							CwtDataType.Enum -> {
-								val enumValueName = referenceNode.text
+								val enumValueName = reference.name
 								val enumName = configExpression.value!!
 								append(PlsDocBundle.message("generatedFromEnumValue"))
 								append(" ")
@@ -263,7 +261,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 								}
 							}
 							CwtDataType.Value -> {
-								val valueSetName = referenceNode.text
+								val valueSetName = reference.name
 								val valueName = configExpression.value!!
 								append(PlsDocBundle.message("generatedFromValueSetValue"))
 								if(configGroup.values.containsKey(valueName)) {

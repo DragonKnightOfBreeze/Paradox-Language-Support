@@ -13,7 +13,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
-	class ParadoxScriptValueExpressionNode(
+class ParadoxScriptValueExpressionNode(
 	override val text: String,
 	override val rangeInExpression: TextRange,
 	val config: CwtConfig<*>,
@@ -29,7 +29,8 @@ import icu.windea.pls.script.psi.*
 		if(nodes.isNotEmpty()) return null
 		if(text.isEmpty()) return null
 		if(text.isParameterAwareExpression()) return null
-		if(getReference(element).canResolve()) return null
+		val reference = getReference(element)
+		if(reference == null || reference.canResolve()) return null
 		return ParadoxUnresolvedScriptValueExpressionError(rangeInExpression, PlsBundle.message("script.expression.unresolvedScriptValue", text))
 	}
 	
