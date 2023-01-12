@@ -77,31 +77,29 @@ object CwtTemplateExpressionHandler {
     }
     
     @JvmStatic
-    fun resolve(element: ParadoxScriptStringExpressionElement, textRange: TextRange, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
+    fun resolve(element: ParadoxScriptStringExpressionElement, text: String, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
         //需要保证里面的每个引用都能解析
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return null
-        val expressionString = textRange.substring(element.text)
-        val references = resolveReferences(element, textRange, configExpression, configGroup) ?: return null
-        return ParadoxTemplateExpressionElement(element, expressionString, configExpression, project, gameType, references)
+        val references = resolveReferences(element, text, configExpression, configGroup) ?: return null
+        return ParadoxTemplateExpressionElement(element, text, configExpression, project, gameType, references)
     }
     
     
     @JvmStatic
-    fun resolveReferences(element: ParadoxScriptStringExpressionElement, textRange: TextRange, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): List<ParadoxInTemplateExpressionReference>? {
+    fun resolveReferences(element: ParadoxScriptStringExpressionElement, text: String, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): List<ParadoxInTemplateExpressionReference>? {
         val snippetExpressions = configExpression.snippetExpressions
         if(snippetExpressions.isEmpty()) return null
-        val expressionString = textRange.substring(element.text)
+        val expressionString = text
         val regex = toRegex(configExpression)
         val matchResult = regex.matchEntire(expressionString) ?: return null
         if(snippetExpressions.size != matchResult.groups.size - 1) return null
         val references = SmartList<ParadoxInTemplateExpressionReference>()
-        val startOffset = textRange.startOffset
         for((index, snippetExpression) in snippetExpressions.withIndex()) {
             if(snippetExpression.type != CwtDataType.Constant) {
                 val matchGroup = matchResult.groups.get(index + 1) ?: return null
                 val name = matchGroup.value
-                val range = TextRange.create(matchGroup.range.first + startOffset, matchGroup.range.last + startOffset)
+                val range = TextRange.create(matchGroup.range.first, matchGroup.range.last)
                 val reference = ParadoxInTemplateExpressionReference(element, range, name, snippetExpression, configGroup)
                 references.add(reference)
             } else {

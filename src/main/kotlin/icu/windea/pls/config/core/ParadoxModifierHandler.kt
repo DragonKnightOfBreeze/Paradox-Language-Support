@@ -1,11 +1,8 @@
 package icu.windea.pls.config.core
 
-import com.intellij.openapi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
@@ -29,38 +26,28 @@ object ParadoxModifierHandler {
 	
 	@JvmStatic
 	fun resolveModifier(element: ParadoxScriptStringExpressionElement) : ParadoxModifierElement? {
-		val textRange = element.text.unquotedTextRange()
+		val name = element.value
 		val gameType = selectGameType(element) ?: return null
 		val project = element.project
 		val configGroup = getCwtConfig(project).getValue(gameType)
-		return resolveModifier(element, textRange, configGroup)
+		return resolveModifier(element, name, configGroup)
 	}
 	
 	@JvmStatic
-	fun resolveModifier(element: ParadoxScriptStringExpressionElement, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxModifierElement? {
+	fun resolveModifier(element: ParadoxScriptStringExpressionElement, name: String, configGroup: CwtConfigGroup): ParadoxModifierElement? {
 		val project = configGroup.project
 		val gameType = configGroup.gameType ?: return null
-		val modifierName = textRange.substring(element.text)
 		//尝试解析为预定义的非生成的修正
-		val predefinedModifierConfig = configGroup.predefinedModifiers[modifierName]
+		val predefinedModifierConfig = configGroup.predefinedModifiers[name]
 		//尝试解析为生成的修正，生成源未定义时，使用预定义的修正
 		var generatedModifierConfig: CwtModifierConfig? = null
 		val references = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
-			config.template.resolveReferences(element, textRange, configGroup)
+			config.template.resolveReferences(element, name, configGroup)
 				?.also { generatedModifierConfig = config }
 		}
 		if(references == null) return null
 		if(predefinedModifierConfig == null && generatedModifierConfig == null) return null
-		return ParadoxModifierElement(element, modifierName, predefinedModifierConfig, generatedModifierConfig, project, gameType, references)
-	}
-	
-	private fun resolveModifierTemplate(name: String, configGroup: CwtConfigGroup): ParadoxTemplateExpression? {
-		val text = name
-		val textRange = TextRange.create(0, text.length)
-		return configGroup.generatedModifiers.values.firstNotNullOfOrNull {
-			val template = it.template
-			ParadoxTemplateExpression.resolve(text, textRange, template, configGroup)
-		}
+		return ParadoxModifierElement(element, name, predefinedModifierConfig, generatedModifierConfig, project, gameType, references)
 	}
 	
 	//TODO 检查修正的相关本地化和图标到底是如何确定的

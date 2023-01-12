@@ -102,12 +102,12 @@ fun CwtTemplateExpression.matches(text: String, configGroup: CwtConfigGroup, mat
     return CwtTemplateExpressionHandler.matches(text, this, configGroup, matchType)
 }
 
-fun CwtTemplateExpression.resolve(element: ParadoxScriptStringExpressionElement, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
-    return CwtTemplateExpressionHandler.resolve(element, textRange, this, configGroup)
+fun CwtTemplateExpression.resolve(element: ParadoxScriptStringExpressionElement, text: String, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
+    return CwtTemplateExpressionHandler.resolve(element, text, this, configGroup)
 }
 
-fun CwtTemplateExpression.resolveReferences(element: ParadoxScriptStringExpressionElement, textRange: TextRange, configGroup: CwtConfigGroup): List<ParadoxInTemplateExpressionReference>? {
-    return CwtTemplateExpressionHandler.resolveReferences(element, textRange, this, configGroup)
+fun CwtTemplateExpression.resolveReferences(element: ParadoxScriptStringExpressionElement, text: String, configGroup: CwtConfigGroup): List<ParadoxInTemplateExpressionReference>? {
+    return CwtTemplateExpressionHandler.resolveReferences(element, text, this, configGroup)
 }
 
 fun CwtTemplateExpression.processResolveResult(configGroup: CwtConfigGroup, processor: Processor<String>) {

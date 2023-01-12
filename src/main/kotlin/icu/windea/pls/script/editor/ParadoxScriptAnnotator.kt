@@ -208,20 +208,18 @@ class ParadoxScriptAnnotator : Annotator {
 				val aliasConfig = aliasMap[aliasSubName]?.first() ?: return
 				annotateExpression(element, range, rangeInElement, aliasConfig, holder)
 			}
-			CwtDataType.ConstantKey -> {
+			CwtDataType.TemplateExpression, CwtDataType.Constant, CwtDataType.ConstantKey -> {
 				if(text.isParameterAwareExpression()) return
 				val isAnnotated = annotateAliasName(config, holder, range)
 				if(isAnnotated) return
-				if(rangeInElement == null && element is ParadoxScriptPropertyKey) return //unnecessary
-				val attributesKey = Keys.PROPERTY_KEY_KEY
-				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
-			}
-			CwtDataType.Constant -> {
-				if(text.isParameterAwareExpression()) return
-				val isAnnotated = annotateAliasName(config, holder, range)
-				if(isAnnotated) return
-				if(rangeInElement == null && element is ParadoxScriptString) return //unnecessary
-				val attributesKey = Keys.STRING_KEY
+				if(rangeInElement == null) {
+					if(element is ParadoxScriptPropertyKey && configExpression is CwtKeyExpression) return //unnecessary
+					if(element is ParadoxScriptString && configExpression is CwtValueExpression) return //unnecessary
+				}
+				val attributesKey = when(configExpression) {
+					is CwtKeyExpression -> Keys.PROPERTY_KEY_KEY
+					is CwtValueExpression -> Keys.STRING_KEY
+				}
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			else -> return
