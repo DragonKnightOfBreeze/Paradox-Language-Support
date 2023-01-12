@@ -14,9 +14,9 @@ import javax.swing.*
 
 class ParadoxTemplateExpressionElement(
     parent: PsiElement,
-    val name: String,
+    private val name: String,
     val configExpression: CwtTemplateExpression,
-    val project: Project,
+    private val project: Project,
     val gameType: ParadoxGameType,
     val references: List<ParadoxInTemplateExpressionReference>,
 ): RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {

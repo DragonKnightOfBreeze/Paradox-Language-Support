@@ -20,10 +20,10 @@ import javax.swing.*
  */
 class ParadoxModifierElement(
 	parent: PsiElement,
-	val name: String,
+	private val name: String,
 	val predefinedModifierConfig: CwtModifierConfig?,
 	val generatedModifierConfig: CwtModifierConfig?,
-	val project: Project,
+	private val project: Project,
 	val gameType: ParadoxGameType,
 	val references: List<ParadoxInTemplateExpressionReference>,
 ) : RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {

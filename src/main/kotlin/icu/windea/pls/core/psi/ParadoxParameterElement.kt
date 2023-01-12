@@ -16,10 +16,10 @@ import javax.swing.*
  */
 class ParadoxParameterElement(
 	parent: PsiElement,
-	val name: String,
+	private val name: String,
 	val definitionName: String,
 	val definitionTypes: List<String>,
-	val project: Project,
+	private val project: Project,
 	val gameType: ParadoxGameType,
 	val read: Boolean
 ): RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {

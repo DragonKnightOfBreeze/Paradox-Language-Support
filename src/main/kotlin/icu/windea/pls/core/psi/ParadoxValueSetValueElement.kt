@@ -16,9 +16,9 @@ import javax.swing.*
  */
 class ParadoxValueSetValueElement(
     parent: PsiElement,
-    val name: String,
+    private val name: String,
     val valueSetNames: List<String>,
-    val project: Project,
+    private val project: Project,
     val gameType: ParadoxGameType,
     val read: Boolean
 ) : RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
