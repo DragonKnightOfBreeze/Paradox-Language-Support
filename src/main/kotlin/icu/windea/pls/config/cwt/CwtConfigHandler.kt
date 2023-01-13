@@ -1216,7 +1216,7 @@ object CwtConfigHandler {
 		run {
 			ProgressManager.checkCanceled()
 			if(configExpression.type == CwtDataType.Value) {
-				val valueConfig = this.configGroup.values[valueSetName] ?: return@run
+				val valueConfig = configGroup.values[valueSetName] ?: return@run
 				val valueSetValueConfigs = valueConfig.valueConfigMap.values
 				if(valueSetValueConfigs.isEmpty()) return@run
 				for(valueSetValueConfig in valueSetValueConfigs) {
@@ -1243,10 +1243,10 @@ object CwtConfigHandler {
 			val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, project, selector = selector)
 			valueSetValueQuery.processQuery { valueSetValue ->
 				//去除后面的作用域信息
-				val value = ParadoxValueSetValueHandler.getName(valueSetValue) ?: return@processQuery true
+				val name = ParadoxValueSetValueHandler.getName(valueSetValue) ?: return@processQuery true
 				val icon = PlsIcons.ValueSetValue(valueSetName)
 				//不显示typeText
-				val builder = ParadoxScriptExpressionLookupElementBuilder.create(valueSetValue, value)
+				val builder = ParadoxScriptExpressionLookupElementBuilder.create(valueSetValue, name)
 					.withIcon(icon)
 					.withTailText(tailText)
 				result.addScriptExpressionElement(context, builder)
