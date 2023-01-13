@@ -13,7 +13,7 @@ class CwtKeyExpression private constructor(
 	override val extraValue: Any? = null
 ) : AbstractExpression(expressionString), CwtDataExpression {
 	companion object Resolver {
-		val EmptyStringExpression = CwtKeyExpression("", CwtDataType.ConstantKey, "")
+		val EmptyStringExpression = CwtKeyExpression("", CwtDataType.Constant, "")
 		
 		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtKeyExpression> { doResolve(it) } }
 		
@@ -97,7 +97,7 @@ class CwtKeyExpression private constructor(
 				CwtKeyExpression(expressionString, CwtDataType.Other)
 			}
 			else -> {
-				CwtKeyExpression(expressionString, CwtDataType.ConstantKey, expressionString)
+				CwtKeyExpression(expressionString, CwtDataType.Constant, expressionString)
 			}
 		}
 	}

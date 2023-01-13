@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.cwt.expression.CwtDataType.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
@@ -59,7 +60,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
 				val (actual, min, _, relaxMin) = occurrence
 				if(min != null && actual < min) {
 					val isKey = configExpression is CwtKeyExpression
-					val isConst = configExpression.type.isConstant()
+					val isConst = configExpression.type == Constant
 					val description = if(isKey) {
 						when {
 							isConst -> PlsBundle.message("script.inspection.advanced.missingExpression.description.1.1", configExpression, min, actual)

@@ -208,7 +208,7 @@ class ParadoxScriptAnnotator : Annotator {
 				val aliasConfig = aliasMap[aliasSubName]?.first() ?: return
 				annotateExpression(element, range, rangeInElement, aliasConfig, holder)
 			}
-			CwtDataType.TemplateExpression, CwtDataType.Constant, CwtDataType.ConstantKey -> {
+			CwtDataType.TemplateExpression, CwtDataType.Constant -> {
 				if(text.isParameterAwareExpression()) return
 				val isAnnotated = annotateAliasName(config, holder, range)
 				if(isAnnotated) return

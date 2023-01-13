@@ -6,6 +6,7 @@ import icu.windea.pls.config.core.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.cwt.expression.CwtDataType.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 
@@ -39,7 +40,7 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 		val option = options?.find { it.key == "cardinality" }
 		if(option == null) {
 			//如果没有注明且类型是常量，则推断为 1..1
-			if(expression.type.isConstant()) {
+			if(expression.type == Constant) {
 				return@lazy CwtCardinalityExpression.resolve("1..1")
 			}
 		}

@@ -359,15 +359,13 @@ object CwtConfigHandler {
 				if(!isStatic && isParameterAware) return true
 				return matchesTemplateExpression(expression, configExpression, configGroup)
 			}
-			CwtDataType.ConstantKey -> {
-				val value = configExpression.value
-				return expression.text.equals(value, true) //忽略大小写
-			}
 			CwtDataType.Constant -> {
-				val text = expression.text
 				val value = configExpression.value
-				//常量的值也可能是yes/no
-				if((value == "yes" || value == "no") && text.isLeftQuoted()) return false
+				if(configExpression is CwtValueExpression) {
+					//常量的值也可能是yes/no
+					val text = expression.text
+					if((value == "yes" || value == "no") && text.isLeftQuoted()) return false
+				}
 				return expression.text.equals(value, true) //忽略大小写
 			}
 			CwtDataType.Other -> {
@@ -442,7 +440,6 @@ object CwtConfigHandler {
 			CwtDataType.AliasKeysField -> 0 //不期望匹配到
 			CwtDataType.AliasMatchLeft -> 0 //不期望匹配到
 			CwtDataType.TemplateExpression -> 65
-			CwtDataType.ConstantKey -> 100
 			CwtDataType.Constant -> 100
 			CwtDataType.Other -> 0 //不期望匹配到
 		}
@@ -545,7 +542,7 @@ object CwtConfigHandler {
 		//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
 		val cardinality = config.cardinality
 		val maxCount = when {
-			cardinality == null -> if(expression.type == CwtDataType.ConstantKey) 1 else null
+			cardinality == null -> if(expression.type == CwtDataType.Constant) 1 else null
 			else -> cardinality.max
 		}
 		return maxCount == null || actualCount < maxCount
@@ -873,36 +870,29 @@ object CwtConfigHandler {
 			CwtDataType.TemplateExpression -> {
 				completeTemplateExpression(context, result)
 			}
-			CwtDataType.ConstantKey -> {
-				val name = configExpression.value ?: return
-				val element = config.resolved().pointer.element ?: return
-				val typeFile = config.resolved().pointer.containingFile
-				val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
-					.withIcon(PlsIcons.Property)
-					.withTypeText(typeFile?.name)
-					.withTypeIcon(typeFile?.icon)
-					.caseInsensitive()
-					.withScopeMatched(scopeMatched)
-					.withPriority(PlsCompletionPriorities.constantKeyPriority)
-				result.addScriptExpressionElement(context, builder)
-			}
 			CwtDataType.Constant -> {
-				val name = configExpression.value ?: return
-				//常量的值也可能是yes/no
-				if(name == "yes") {
-					if(quoted) return
-					result.addExpressionElement(context, PlsLookupElements.yesLookupElement)
-					return
+				val icon = when(configExpression) {
+					is CwtKeyExpression -> PlsIcons.Property
+					is CwtValueExpression -> PlsIcons.Value
 				}
-				if(name == "no") {
-					if(quoted) return
-					result.addExpressionElement(context, PlsLookupElements.noLookupElement)
-					return
+				val name = configExpression.value ?: return
+				if(configExpression is CwtValueExpression) {
+					//常量的值也可能是yes/no
+					if(name == "yes") {
+						if(quoted) return
+						result.addExpressionElement(context, PlsLookupElements.yesLookupElement)
+						return
+					}
+					if(name == "no") {
+						if(quoted) return
+						result.addExpressionElement(context, PlsLookupElements.noLookupElement)
+						return
+					}
 				}
 				val element = config.resolved().pointer.element ?: return
 				val typeFile = config.resolved().pointer.containingFile
 				val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
-					.withIcon(PlsIcons.Value)
+					.withIcon(icon)
 					.withTypeText(typeFile?.name)
 					.withTypeIcon(typeFile?.icon)
 					.caseInsensitive()
@@ -1592,7 +1582,7 @@ object CwtConfigHandler {
 			CwtDataType.TemplateExpression -> {
 				return resolveTemplateExpression(element, expression, configExpression, configGroup)
 			}
-			CwtDataType.ConstantKey, CwtDataType.Constant -> {
+			CwtDataType.Constant -> {
 				return when {
 					config == null -> null
 					config is CwtDataConfig<*> -> config.resolved().pointer.element
@@ -1724,7 +1714,7 @@ object CwtConfigHandler {
 				//不在这里处理，参见：ParadoxTemplateExpression
 				return emptyList()
 			}
-			CwtDataType.ConstantKey, CwtDataType.Constant -> {
+			CwtDataType.Constant -> {
 				return when {
 					config == null -> emptyList()
 					config is CwtDataConfig<*> -> config.resolved().pointer.element.toSingletonListOrEmpty()

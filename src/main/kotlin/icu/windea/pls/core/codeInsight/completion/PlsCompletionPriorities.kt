@@ -6,7 +6,6 @@ object PlsCompletionPriorities {
 	const val definitionNamePriority = 95.0
 	const val keywordPriority = 90.0
 	const val constantPriority = 90.0
-	const val constantKeyPriority = 90.0
 	const val scopeLinkPrefixPriority = 85.0
 	const val valueLinkPrefixPriority = 85.0
 	//const val modifierPriority = 80.0

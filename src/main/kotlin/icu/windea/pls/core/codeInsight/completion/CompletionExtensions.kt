@@ -284,7 +284,7 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 	val configList = configs
 		.distinctBy { it.expression }
 	val constantConfigGroup = configs
-		.filter { it.expression.type == CwtDataType.ConstantKey || it.expression.type == CwtDataType.Constant }
+		.filter { it.expression.type == CwtDataType.Constant }
 		.groupBy { it.expression }
 	if(constantConfigGroup.isEmpty()) return
 	

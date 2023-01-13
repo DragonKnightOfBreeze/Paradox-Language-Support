@@ -35,13 +35,10 @@ enum class CwtDataType {
 	AliasKeysField,
 	AliasMatchLeft,
 	TemplateExpression,
-	ConstantKey,
 	Constant,
 	Other,
 	@WithGameType(ParadoxGameType.Stellaris)
 	StellarisNameFormat;
-	
-	fun isConstant() = this == ConstantKey || this == Constant
 	
 	fun isNumberType() = this == Int || this == Float
 		|| this == ValueField || this == IntValueField
@@ -53,5 +50,5 @@ enum class CwtDataType {
 	
 	fun isValueSetValueType() = this == Value || this == ValueSet
 	
-	fun isGeneratorType() = this == ConstantKey || this == Constant || this == TemplateExpression
+	fun isGeneratorType() = this == Constant || this == TemplateExpression
 }
