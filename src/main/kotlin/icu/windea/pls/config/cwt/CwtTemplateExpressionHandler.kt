@@ -54,7 +54,7 @@ object CwtTemplateExpressionHandler {
         return buildString {
             configExpression.snippetExpressions.forEach {
                 if(it.type == CwtDataType.Constant) {
-                    append("\\E(").append(it.expressionString).append(")\\Q")
+                    append("\\Q(").append(it.expressionString).append(")\\E")
                 } else {
                     append(".*?")
                 }

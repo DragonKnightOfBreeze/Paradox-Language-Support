@@ -87,7 +87,7 @@ overlord_gaiaseeder_upkeep_machine
     * [X] 如果是修饰符，在快速文档中显示相关本地化、图标、分类、支持的作用域、作用域上下文等信息
     * [X] 如果是生成的修饰符，在快速文档中显示生成模版（例如，`job_<job>_add`）和生成源的信息（例如，`job_xxx_add`）
   * 代码补全（`Code > Code Completion`）
-    * [ ] 可以补全预定义/生成的修饰符
+    * [X] 可以补全预定义/生成的修饰符
   * 引用解析
     * [X] 可以通过`Ctrl+Click`查找修饰符使用
   * 意向（`Intention`）
