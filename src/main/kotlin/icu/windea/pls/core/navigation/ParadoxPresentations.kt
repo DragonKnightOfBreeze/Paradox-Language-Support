@@ -39,3 +39,15 @@ class ParadoxModifierElementPresentation(
 		return element.name
 	}
 }
+
+class ParadoxTemplateExpressionElementPresentation(
+	private val element: ParadoxTemplateExpressionElement
+): ItemPresentation{
+	override fun getIcon(unused: Boolean): Icon {
+		return element.icon
+	}
+	
+	override fun getPresentableText(): String {
+		return element.name
+	}
+}

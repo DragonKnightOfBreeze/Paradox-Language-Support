@@ -62,6 +62,10 @@ class ParadoxValueSetValueElement(
         return project
     }
     
+    override fun navigate(requestFocus: Boolean) {
+        //click to show usages
+    }
+    
     override fun canNavigate(): Boolean {
         return false // false -> click to show usages
     }

@@ -1,5 +1,6 @@
 package icu.windea.pls.core.psi
 
+import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -9,6 +10,7 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.references.*
 import javax.swing.*
 
@@ -48,8 +50,16 @@ class ParadoxTemplateExpressionElement(
         return this
     }
     
+    override fun getPresentation(): ItemPresentation {
+        return ParadoxTemplateExpressionElementPresentation(this)
+    }
+    
     override fun getProject(): Project {
         return project
+    }
+    
+    override fun navigate(requestFocus: Boolean) {
+        //click to show usages
     }
     
     override fun canNavigate(): Boolean {
