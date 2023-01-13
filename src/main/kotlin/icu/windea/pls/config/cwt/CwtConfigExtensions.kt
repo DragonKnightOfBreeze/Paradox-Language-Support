@@ -106,7 +106,7 @@ fun CwtTemplateExpression.resolve(element: ParadoxScriptStringExpressionElement,
     return CwtTemplateExpressionHandler.resolve(element, text, this, configGroup)
 }
 
-fun CwtTemplateExpression.resolveReferences(element: ParadoxScriptStringExpressionElement, text: String, configGroup: CwtConfigGroup): List<ParadoxInTemplateExpressionReference>? {
+fun CwtTemplateExpression.resolveReferences(element: ParadoxScriptStringExpressionElement, text: String, configGroup: CwtConfigGroup): List<ParadoxInTemplateExpressionReference> {
     return CwtTemplateExpressionHandler.resolveReferences(element, text, this, configGroup)
 }
 

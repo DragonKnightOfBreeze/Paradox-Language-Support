@@ -3,6 +3,7 @@ package icu.windea.pls.config.core
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
@@ -42,10 +43,10 @@ object ParadoxModifierHandler {
 		//尝试解析为生成的修正，生成源未定义时，使用预定义的修正
 		var generatedModifierConfig: CwtModifierConfig? = null
 		val references = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
-			config.template.resolveReferences(element, name, configGroup)
-				?.also { generatedModifierConfig = config }
-		}
-		if(references == null) return null
+			val resolvedReferences = config.template.resolveReferences(element, name, configGroup).takeIfNotEmpty()
+			if(resolvedReferences != null) generatedModifierConfig = config
+			resolvedReferences
+		}.orEmpty()
 		if(predefinedModifierConfig == null && generatedModifierConfig == null) return null
 		return ParadoxModifierElement(element, name, predefinedModifierConfig, generatedModifierConfig, project, gameType, references)
 	}
