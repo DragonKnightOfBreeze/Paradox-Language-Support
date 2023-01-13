@@ -946,7 +946,7 @@ object CwtConfigHandler {
 			val template = modifierConfig.template
 			if(template.isNotEmpty()) {
 				//生成的modifier
-				template.processResolveResult(configGroup) { name ->
+				template.processResolveResult(contextElement, configGroup) { name ->
 					val modifierElement = resolveModifier(element, name, configGroup)
 					val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
 						.withIcon(PlsIcons.Modifier)
@@ -977,7 +977,7 @@ object CwtConfigHandler {
 		val template = CwtTemplateExpression.resolve(configExpression.expressionString)
 		val scopeMatched = context.scopeMatched ?: true
 		val tailText = getScriptExpressionTailText(context.config)
-		template.processResolveResult(configGroup) { expression ->
+		template.processResolveResult(contextElement, configGroup) { expression ->
 			val templateExpressionElement = resolveTemplateExpression(element, expression, configExpression, configGroup)
 			val builder = ParadoxScriptExpressionLookupElementBuilder.create(templateExpressionElement, expression)
 				.withIcon(PlsIcons.TemplateExpression)
