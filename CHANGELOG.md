@@ -68,7 +68,10 @@
 * [ ] ［不确定］也许需要重构复杂表达式相关代码，更好地支持相关功能，以及支持额外的复杂表达式
 
 ```
-# errors found while check ECI
+# check vanilla
+set_fleet_settings
+
+# check ECI
 overlord_gaiaseeder_upkeep_machine
 ```
 
