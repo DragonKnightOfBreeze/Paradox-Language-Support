@@ -71,7 +71,7 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
 					CwtDataType.Scope -> {
 						//TODO
 					}
-					CwtDataType.ScopeField -> {
+					CwtDataType.ScopeGroup -> {
 						//TODO
 					}
 					CwtDataType.IntValueField -> {
