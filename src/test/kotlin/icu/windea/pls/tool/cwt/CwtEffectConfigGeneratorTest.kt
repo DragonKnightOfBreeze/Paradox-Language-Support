@@ -6,10 +6,12 @@ import org.junit.*
 class CwtEffectConfigGeneratorTest {
     @Test
     fun testForStellaris() {
-        CwtEffectConfigGenerator(
+        val generator = CwtEffectConfigGenerator(
             ParadoxGameType.Stellaris,
             "cwt/cwtools-stellaris-config/script-docs/effects.log",
             "cwt/cwtools-stellaris-config/config/effects.cwt",
-        ).generate()
+        )
+        generator.overrideDocumentation = false
+        generator.generate()
     }
 }
