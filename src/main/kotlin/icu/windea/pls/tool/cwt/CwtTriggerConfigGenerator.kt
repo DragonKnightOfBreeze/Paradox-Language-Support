@@ -14,6 +14,7 @@ class CwtTriggerConfigGenerator(
     val cwtPath: String,
 ) {
     var overrideDocumentation = true
+    var generateMissingTriggers = true
     
     companion object {
         private const val startMarker = "== TRIGGER DOCUMENTATION =="
@@ -107,17 +108,19 @@ class CwtTriggerConfigGenerator(
             for(name in missingNames) {
                 println("- $name")
             }
-            lines.add("")
-            lines.add("# Missing triggers:")
-            for(name in missingNames) {
-                val info = infos[name] ?: continue
+            if(generateMissingTriggers) {
                 lines.add("")
-                info.description.forEach { lines.add("### $it") }
-                val scopesText = getScopesText(info)
-                info.supportedScopes.let { lines.add("## $scopesText") }
-                info.name.let { lines.add("alias[trigger:$it] = {") }
-                info.declaration.forEach { lines.add("# $it") }
-                lines.add("}")
+                lines.add("# TODO missing triggers")
+                for(name in missingNames) {
+                    val info = infos[name] ?: continue
+                    lines.add("")
+                    info.description.forEach { lines.add("### $it") }
+                    val scopesText = getScopesText(info)
+                    info.supportedScopes.let { lines.add("## $scopesText") }
+                    info.name.let { lines.add("alias[trigger:$it] = {") }
+                    info.declaration.forEach { lines.add("# $it") }
+                    lines.add("}")
+                }
             }
         }
         

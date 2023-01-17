@@ -14,6 +14,7 @@ class CwtEffectConfigGenerator(
     val cwtPath: String,
 ) {
     var overrideDocumentation = true
+    var generateMissingEffects = true
     
     companion object {
         private const val startMarker = "== EFFECT DOCUMENTATION =="
@@ -107,17 +108,19 @@ class CwtEffectConfigGenerator(
             for(name in missingNames) {
                 println("- $name")
             }
-            lines.add("")
-            lines.add("# Missing effects:")
-            for(name in missingNames) {
-                val info = infos[name] ?: continue
+            if(generateMissingEffects) {
                 lines.add("")
-                info.description.forEach { lines.add("### $it") }
-                val scopesText = getScopesText(info)
-                info.supportedScopes.let { lines.add("## $scopesText") }
-                info.name.let { lines.add("alias[effect:$it] = {") }
-                info.declaration.forEach { lines.add("# $it") }
-                lines.add("}")
+                lines.add("# TODO missing effects")
+                for(name in missingNames) {
+                    val info = infos[name] ?: continue
+                    lines.add("")
+                    info.description.forEach { lines.add("### $it") }
+                    val scopesText = getScopesText(info)
+                    info.supportedScopes.let { lines.add("## $scopesText") }
+                    info.name.let { lines.add("alias[effect:$it] = {") }
+                    info.declaration.forEach { lines.add("# $it") }
+                    lines.add("}")
+                }
             }
         }
         
@@ -196,7 +199,7 @@ class CwtEffectConfigGenerator(
         }
         optionTextList.sortBy { it.substringBefore('=').trim().let { optionName -> optionNames.indexOf(optionName) } }
         optionTextList.forEach { optionText ->
-            lines.add(lineIndex + offset, "## $optionText")    
+            lines.add(lineIndex + offset, "## $optionText")
             offset += 1
         }
         return 0
