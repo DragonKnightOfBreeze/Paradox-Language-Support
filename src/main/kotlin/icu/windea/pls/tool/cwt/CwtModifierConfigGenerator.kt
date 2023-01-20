@@ -62,5 +62,7 @@ class CwtModifierConfigGenerator(
 		for(modifierCategory in modifierCategories) {
 			println("- $modifierCategory")
 		}
+		
+		//TODO update modifier_categories.cwt
 	}
 }
