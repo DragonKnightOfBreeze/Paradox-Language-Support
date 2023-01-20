@@ -2,24 +2,24 @@
 # Used to provide language features for predefined scope links
 
 system_scopes = {
-	### This
+	### Scopes to the current scope.
 	This = {}
-	### Root
+	### Scopes to the original scope of this context, e.g. the country of a country_event.
 	Root = {}
-	### Prev
+	### Scopes to the previous scope, e.g. owner = { capital_scope = { is_owned_by = prev } } would refer to the owner of the capital here (and always be true).
 	Prev = { base_id = Prev }
-	### Prev Prev
+	### Scopes back to two scope changes ago, e.g. planet = { owner = { any_owned_planet = { is_same_value = prevprev } } } would be checking if the owner of the planet owns any planet that is the same as the planet you are starting in (which would always be true).
 	PrevPrev = { base_id = Prev }
-	### Prev Prev Prev
+	### Scopes back to three scope changes ago (the PREV of PREVPREV).
 	PrevPrevPrev = { base_id = Prev }
-	### Prev Prev Prev Prev
+	### Scopes back to four scope changes ago (the PREV of PREVPREVPREV).
 	PrevPrevPrevPrev = { base_id = Prev }
-	### From
+	### Scopes to the ROOT of the previous event, or the preset hardcoded FROM scope.
 	From = { base_id = From }
-	### From From
+	### Scopes to the FROM of the FROM scope (ROOT of two events ago, or the preset hardcoded FROMFROM scope).
 	FromFrom = { base_id = From }
-	### From From From
+	### Scopes to the FROM of the FROMFROM scope (ROOT of three events ago, or the preset hardcoded FROMFROMFROM scope)
 	FromFromFrom = { base_id = From }
-	### From From From From
+	### Scopes to the FROM of the FROMFROMFROM scope (ROOT of four events ago, or the preset hardcoded FROMFROMFROMFROM scope)
 	FromFromFromFrom = { base_id = From }
 }
