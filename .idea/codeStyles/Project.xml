@@ -1388,6 +1388,9 @@
     </codeStyleSettings>
     <codeStyleSettings language="CWT">
       <option name="LINE_COMMENT_ADD_SPACE" value="true" />
+      <indentOptions>
+        <option name="USE_TAB_CHARACTER" value="true" />
+      </indentOptions>
     </codeStyleSettings>
     <codeStyleSettings language="DB2">
       <indentOptions>

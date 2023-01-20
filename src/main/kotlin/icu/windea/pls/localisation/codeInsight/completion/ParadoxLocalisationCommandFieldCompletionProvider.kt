@@ -31,7 +31,7 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 		context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeHandler.getScopeContext(element))
 		
 		//提示scope
-		CwtConfigHandler.completeSystemScope(context, result)
+		CwtConfigHandler.completeSystemLink(context, result)
 		CwtConfigHandler.completeLocalisationCommandScope(context, result)
 		
 		//提示command

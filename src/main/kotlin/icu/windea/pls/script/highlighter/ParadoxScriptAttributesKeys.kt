@@ -39,7 +39,7 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val COMPLEX_ENUM_VALUE_KEY = createTextAttributesKey("PARADOX_SCRIPT.COMPLEX_ENUM_VALUE", INSTANCE_FIELD) //dotted line #707D95
 	@JvmField val VARIABLE_KEY = createTextAttributesKey("PARADOX_SCRIPT.VARIABLE", LOCAL_VARIABLE) //italic
 	@JvmField val VALUE_SET_VALUE_KEY = createTextAttributesKey("PARADOX_SCRIPT.VALUE_SET_VALUE", LOCAL_VARIABLE)
-	@JvmField val SYSTEM_SCOPE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SYSTEM_SCOPE", STATIC_METHOD)
+	@JvmField val SYSTEM_LINK_KEY = createTextAttributesKey("PARADOX_SCRIPT.SYSTEM_LINK", STATIC_METHOD)
 	@JvmField val SCOPE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SCOPE", INSTANCE_METHOD)
 	@JvmField val SCOPE_LINK_PREFIX_KEY = createTextAttributesKey("PARADOX_SCRIPT.SCOPE_LINK_PREFIX", KEYWORD)
 	@JvmField val SCOPE_LINK_DATA_SOURCE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SCOPE_LINK_DATA_SOURCE")

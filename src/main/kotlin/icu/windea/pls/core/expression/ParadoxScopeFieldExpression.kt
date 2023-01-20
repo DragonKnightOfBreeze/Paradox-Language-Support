@@ -20,8 +20,8 @@ import icu.windea.pls.script.highlighter.*
  *
  * ```bnf
  * scope_field_expression ::= scope +
- * scope ::= system_scope | scope_link | scope_link_from_data
- * system_scope ::= TOKEN //predefined by CWT Config (in system_scopes.pls.cwt)
+ * scope ::= system_link | scope_link | scope_link_from_data
+ * system_link ::= TOKEN //predefined by CWT Config (in system_links.pls.cwt)
  * scope_link ::= TOKEN //predefined by CWT Config (in links.cwt, from_data = false, type = both | scope)
  * scope_link_from_data ::= scope_link_prefix scope_link_data_source //predefined by CWT Config (in links.cwt, from_data = true, type = both | scope)
  * scope_link_prefix ::= TOKEN //e.g. "event_target:" while the link's prefix is "event_target:"
@@ -153,7 +153,7 @@ class ParadoxScopeFieldExpressionImpl(
 						val resultToUse = result.withPrefixMatcher(keywordToUse)
 						context.put(PlsCompletionKeys.keywordKey, keywordToUse)
 						if(inFirstNode) {
-							CwtConfigHandler.completeSystemScope(context, resultToUse)
+							CwtConfigHandler.completeSystemLink(context, resultToUse)
 							CwtConfigHandler.completeScope(context, resultToUse)
 							CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
 						}

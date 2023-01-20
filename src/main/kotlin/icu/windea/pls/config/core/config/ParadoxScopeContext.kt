@@ -69,9 +69,9 @@ data class ParadoxScopeContext(
 		return result
 	}
 	
-	fun resolve(systemScopeContext: ParadoxScopeContext): ParadoxScopeContext{
-		val result = systemScopeContext.copy()
-		result.prev = systemScopeContext.prev
+	fun resolve(systemLinkContext: ParadoxScopeContext): ParadoxScopeContext{
+		val result = systemLinkContext.copy()
+		result.prev = systemLinkContext.prev
 		result.parent = this
 		return result
 	}

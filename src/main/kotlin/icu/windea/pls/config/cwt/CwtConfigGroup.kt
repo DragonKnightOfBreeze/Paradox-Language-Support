@@ -15,7 +15,7 @@ interface CwtConfigGroup {
 	val foldingSettings: Map<String, Map<@CaseInsensitive String, CwtFoldingSetting>> //EXTENDED BY PLS
 	val postfixTemplateSettings: Map<String, Map<@CaseInsensitive String, CwtPostfixTemplateSetting>> //EXTENDED BY PLS
 	
-	val systemScopes: Map<@CaseInsensitive String, CwtSystemScopeConfig> //EXTENDED BY PLS
+	val systemLinks: Map<@CaseInsensitive String, CwtSystemLinkConfig> //EXTENDED BY PLS
 	val localisationLocales: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
 	val localisationLocalesNoDefault: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
 	val localisationLocalesByCode: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
@@ -81,7 +81,7 @@ interface CwtConfigGroup {
 	//必定支持作用域上下文的定义类型
 	val definitionTypesSupportScope: Set<String>
 	//不需要检查系统作用域切换的定义类型
-	val definitionTypesSkipCheckSystemScope: Set<String>
+	val definitionTypesSkipCheckSystemLink: Set<String>
 	//支持参数的定义类型
 	val definitionTypesSupportParameters: Set<String>
 }

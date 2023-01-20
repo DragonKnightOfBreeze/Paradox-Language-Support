@@ -221,7 +221,7 @@ object ParadoxScopeHandler {
 		val prevElement = element.prevIdentifier
 		val prevResolved = prevElement?.reference?.resolve()
 		when {
-			//system scope or localisation scope
+			//system link or localisation scope
 			prevResolved is CwtProperty -> {
 				val config = prevResolved.getUserData(PlsKeys.cwtConfigKey)
 				when {
@@ -231,7 +231,7 @@ object ParadoxScopeHandler {
 						return prevScopeContext?.resolve(config.outputScope)
 							?: ParadoxScopeContext.resolve(config.outputScope)
 					}
-					config is CwtSystemScopeConfig -> {
+					config is CwtSystemLinkConfig -> {
 						return resolveUnknownScopeContext()
 					}
 				}
@@ -245,8 +245,8 @@ object ParadoxScopeHandler {
 	}
 	
 	@JvmStatic
-	fun resolveScopeContext(systemScope: CwtSystemScopeConfig, parentScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
-		return resolveScopeContextBySystemScope(systemScope, parentScopeContext)
+	fun resolveScopeContext(systemLink: CwtSystemLinkConfig, parentScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
+		return resolveScopeContextBySystemLink(systemLink, parentScopeContext)
 	}
 	
 	@JvmStatic
@@ -273,8 +273,8 @@ object ParadoxScopeHandler {
 				resolveScopeByScopeLinkFromDataNode(scopeNode, parentScopeContext) 
 					?: resolveUnknownScopeContext(parentScopeContext)
 			}
-			is ParadoxSystemScopeExpressionNode -> {
-				resolveScopeContextBySystemScopeNode(scopeNode, parentScopeContext)
+			is ParadoxSystemLinkExpressionNode -> {
+				resolveScopeContextBySystemLinkNode(scopeNode, parentScopeContext)
 					?: resolveUnknownScopeContext(parentScopeContext)
 			}
 			//error
@@ -298,14 +298,14 @@ object ParadoxScopeHandler {
 		return null //TODO
 	}
 	
-	private fun resolveScopeContextBySystemScopeNode(node: ParadoxSystemScopeExpressionNode, scopeContext: ParadoxScopeContext): ParadoxScopeContext? {
-		val systemScopeConfig = node.config
-		return resolveScopeContextBySystemScope(systemScopeConfig, scopeContext)
+	private fun resolveScopeContextBySystemLinkNode(node: ParadoxSystemLinkExpressionNode, scopeContext: ParadoxScopeContext): ParadoxScopeContext? {
+		val systemLinkConfig = node.config
+		return resolveScopeContextBySystemLink(systemLinkConfig, scopeContext)
 	}
 	
-	private fun resolveScopeContextBySystemScope(systemScope: CwtSystemScopeConfig, scopeContext: ParadoxScopeContext): ParadoxScopeContext? {
-		val id = systemScope.id
-		val systemScopeContext = when {
+	private fun resolveScopeContextBySystemLink(systemLink: CwtSystemLinkConfig, scopeContext: ParadoxScopeContext): ParadoxScopeContext? {
+		val id = systemLink.id
+		val systemLinkContext = when {
 			id == "This" -> scopeContext
 			id == "Root" -> scopeContext.root
 			id == "Prev" -> scopeContext.prev
@@ -318,7 +318,7 @@ object ParadoxScopeHandler {
 			id == "FromFromFromFrom" -> scopeContext.from?.from?.from
 			else -> null
 		} ?: return null
-		return scopeContext.resolve(systemScopeContext)
+		return scopeContext.resolve(systemLinkContext)
 	}
 	
 	@JvmStatic

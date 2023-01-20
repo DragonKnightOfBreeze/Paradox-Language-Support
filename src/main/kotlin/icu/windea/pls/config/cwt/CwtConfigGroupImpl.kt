@@ -26,7 +26,7 @@ class CwtConfigGroupImpl(
 	override val foldingSettings: MutableMap<String, MutableMap<String, CwtFoldingSetting>> = mutableMapOf()
 	override val postfixTemplateSettings: MutableMap<String, MutableMap<String, CwtPostfixTemplateSetting>> = mutableMapOf()
 	
-	override val systemScopes: MutableMap<@CaseInsensitive String, CwtSystemScopeConfig> = caseInsensitiveStringKeyMap()
+	override val systemLinks: MutableMap<@CaseInsensitive String, CwtSystemLinkConfig> = caseInsensitiveStringKeyMap()
 	override val localisationLocales: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
 	override val localisationLocalesNoDefault: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
 	override val localisationLocalesByCode: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
@@ -101,7 +101,7 @@ class CwtConfigGroupImpl(
 		"on_action", //也支持，其中调用的事件的类型要匹配
 	)
 	
-	override val definitionTypesSkipCheckSystemScope: MutableSet<String> = mutableSetOf(
+	override val definitionTypesSkipCheckSystemLink: MutableSet<String> = mutableSetOf(
 		"event",
 		"game_rule",
 		"script_trigger",
@@ -266,8 +266,8 @@ class CwtConfigGroupImpl(
 	private fun resolveExtendedCwtConfigInCwtFile(fileConfig: CwtFileConfig): Boolean {
 		when(fileConfig.key) {
 			//解析系统作用域规则
-			"system_scopes" -> {
-				resolveSystemScopes(fileConfig)
+			"system_links" -> {
+				resolveSystemLinks(fileConfig)
 				return false
 			}
 			//解析本地化语言区域规则
@@ -284,15 +284,15 @@ class CwtConfigGroupImpl(
 		return true
 	}
 	
-	private fun resolveSystemScopes(fileConfig: CwtFileConfig) {
-		val configs = fileConfig.properties.find { it.key == "system_scopes" }?.properties ?: return
+	private fun resolveSystemLinks(fileConfig: CwtFileConfig) {
+		val configs = fileConfig.properties.find { it.key == "system_links" }?.properties ?: return
 		configs.forEach { property ->
 			val id = property.key
 			val baseId = property.properties?.find { p -> p.key == "base_id" }?.stringValue ?: id
 			val description = property.documentation.orEmpty()
 			val name = property.stringValue ?: id
-			val config = CwtSystemScopeConfig(property.pointer, fileConfig.info, id, baseId, description, name)
-			systemScopes.put(id, config)
+			val config = CwtSystemLinkConfig(property.pointer, fileConfig.info, id, baseId, description, name)
+			systemLinks.put(id, config)
 		}
 	}
 	

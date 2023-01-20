@@ -334,7 +334,7 @@ object ParadoxLocalisationPsiImplUtil {
 		val config = resolved?.getUserData(PlsKeys.cwtConfigKey)
 		return when {
 			config is CwtLocalisationLinkConfig -> "localisation scope"
-			config is CwtSystemScopeConfig -> "system scope"
+			config is CwtSystemLinkConfig -> "system link"
 			resolved is ParadoxValueSetValueElement -> {
 				val valueSetName = resolved.valueSetName
 				when {
