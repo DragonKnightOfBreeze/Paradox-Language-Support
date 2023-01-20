@@ -1,23 +1,26 @@
 # BUGS
 
-遗留问题：
+## 遗留问题
 
 * [X] 有时候会把`DISTRICT = district_arcology_housing`的`DISTRICT`被识别为scope_expression而非参数名，为什么？（缓存原因）
 * [X] 有时候`event_target:mechanocalibrator_country`中的`event_target:`无法点击导航到CWT，为什么？（应当也是缓存原因）
 
-## 0.5
+## TODO
 
 * [ ] 将文件中UTF8编码不为32的空格视为语法错误，但允许跳过语法错误继续解析（例：UTF8编码为160的空格，`\u00a0`）
+* [ ] 对于脚本颜色（scriptColor），颜色设置应当同步更改到文件中（目前仅限于第一次更改会同步）
+* [ ] 当项目中存在模组文件夹（基于`descriptor.mod`）时，应当弹出通知要求玩家选择对应的原版游戏文件夹（参考CwTools）
+  ![](BUGS.assets/image-20220404120657429.png)
+  ![](BUGS.assets/image-20220404120720948.png)
+
+## 0.5
+
 * [X] 完善本地化文本（localisationText）的解析规则：允许单独的美元符号（`$`）
 * [X] 完善本地化文本（localisationText）的解析规则：本地化文本中连续的左方括号会起到转义的效果，之后的方括号中的内容不再视为本地化命令（localisationCommand）
 * [X] 完善脚本文件（scriptFile）的解析规则：分隔符之前允许换行
-* [ ] 对于脚本颜色（scriptColor），颜色设置应当同步更改到文件中（目前仅限于第一次更改会同步）
 * [X] 对于脚本颜色（scriptColor），颜色设置应该保持颜色类型（`rgb` `hsv`等）
 * [X] 是否缺失event namespace的检查，应当仅对于events目录下的脚本文件（scriptFile）生效
       ![](BUGS.assets/image-20220404120448300.png)
-* [ ] 当项目中存在模组文件夹（基于`descriptor.mod`）时，应当弹出通知要求玩家选择对应的原版游戏文件夹（参考CwTools）
-      ![](BUGS.assets/image-20220404120657429.png)
-      ![](BUGS.assets/image-20220404120720948.png)
 * [X] BUG：查找引用的对象名不准确
       ![](BUGS.assets/image-20220404115700617.png)
 * [X] BUG：当要添加或移除文件的BOM时，没有在物理层面上添加机票移除
@@ -29,6 +32,6 @@
 * [X] 兼容同一个event脚本文件中有多个event_namespace的情况
 * [X] 兼容同一个本地化文件中有多个locale的情况
 * [X] CWT规则解析：类型为枚举值、常量、别名名字的键/值的解析需要忽略大小写
-* [ ] BUG：CWT规则解析：无法匹配类型为`tradition_swap`的定义的属性的规则
+* [X] BUG：CWT规则解析：无法匹配类型为`tradition_swap`的定义的属性的规则
 * [X] BUG：CWT规则解析：对于数组中的对象（`a = { { b = c } }`），无法匹配定义的属性的规则
 * [X] BUG：`EN_Re = 3`中无法补全`EN_Re`
