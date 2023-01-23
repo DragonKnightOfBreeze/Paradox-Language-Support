@@ -60,6 +60,12 @@ public class CwtStringImpl extends CwtNamedElementImpl implements CwtString {
 
   @Override
   @NotNull
+  public CwtString setValue(@NotNull String value) {
+    return CwtPsiImplUtil.setValue(this, value);
+  }
+
+  @Override
+  @NotNull
   public String getStringValue() {
     return CwtPsiImplUtil.getStringValue(this);
   }

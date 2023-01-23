@@ -41,4 +41,10 @@ public abstract class CwtValueImpl extends ASTWrapperPsiElement implements CwtVa
     return CwtPsiImplUtil.getValue(this);
   }
 
+  @Override
+  @NotNull
+  public CwtValue setValue(@NotNull String value) {
+    return CwtPsiImplUtil.setValue(this, value);
+  }
+
 }

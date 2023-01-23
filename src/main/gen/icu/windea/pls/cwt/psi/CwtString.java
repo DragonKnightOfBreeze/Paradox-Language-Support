@@ -25,6 +25,9 @@ public interface CwtString extends CwtValue, CwtNamedElement {
   String getValue();
 
   @NotNull
+  CwtString setValue(@NotNull String value);
+
+  @NotNull
   String getStringValue();
 
 }

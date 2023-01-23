@@ -22,5 +22,21 @@
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.cwt.codeStyle.CwtLanguageCodeStyleSettingsProvider"/>
     <navbar implementation="icu.windea.pls.cwt.navigation.CwtNavBar"/>
     <lang.psiStructureViewFactory language="CWT" implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>
+    <lang.surroundDescriptor language="CWT" implementationClass="icu.windea.pls.cwt.surroundWith.CwtSurroundDescriptor"/>
+
+    <intentionAction>
+      <language>CWT</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>cwt.intention.category</categoryKey>
+      <className>icu.windea.pls.cwt.intentions.QuoteIdentifierIntention</className>
+      <descriptionDirectoryName>CwtQuoteIdentifierIntention</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
+      <language>CWT</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>cwt.intention.category</categoryKey>
+      <className>icu.windea.pls.cwt.intentions.UnquoteIdentifierIntention</className>
+      <descriptionDirectoryName>CwtUnquoteIdentifierIntention</descriptionDirectoryName>
+    </intentionAction>
   </extensions>
 </idea-plugin>

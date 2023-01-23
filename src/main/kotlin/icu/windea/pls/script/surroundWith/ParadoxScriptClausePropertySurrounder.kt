@@ -6,7 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.cwt.psi.*
 
 /**
  * 从句的包围器，将选中的表达式（一个或多个属性或者单独的值）用花括号包围并在前面加上属性的键。
@@ -24,7 +24,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptClausePropertySurrounder: Surrounder {
 	@Suppress("DialogTitleCapitalization")
 	override fun getTemplateDescription(): String {
-		return PlsBundle.message("script.surroundWith.clauseProperty.description")
+		return PlsBundle.message("cwt.surroundWith.clauseProperty.description")
 	}
 	
 	override fun isApplicable(elements: Array<out PsiElement>): Boolean {
@@ -40,8 +40,8 @@ class ParadoxScriptClausePropertySurrounder: Surrounder {
 		if(firstElement != lastElement) {
 			firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
 		}
-		val newProperty = ParadoxScriptElementFactory.createProperty(project, "key", "{\n${replacedText}\n}")
-		val replacement = firstElement.replace(newProperty) as ParadoxScriptProperty
+		val newProperty = CwtElementFactory.createProperty(project, "key", "{\n${replacedText}\n}")
+		val replacement = firstElement.replace(newProperty) as CwtProperty
 		val newNameElement = replacement.propertyKey
 		return newNameElement.textRange
 	}

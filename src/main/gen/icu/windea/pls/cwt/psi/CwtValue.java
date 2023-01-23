@@ -15,4 +15,7 @@ public interface CwtValue extends PsiElement {
   @NotNull
   String getValue();
 
+  @NotNull
+  CwtValue setValue(@NotNull String value);
+
 }
