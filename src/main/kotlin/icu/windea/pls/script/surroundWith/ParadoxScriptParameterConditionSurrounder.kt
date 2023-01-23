@@ -5,7 +5,9 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.codeStyle.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -40,9 +42,9 @@ class ParadoxScriptParameterConditionSurrounder: Surrounder {
 		if(firstElement != lastElement) {
 			firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
 		}
-		val newProperty = ParadoxScriptElementFactory.createParameterCondition(project, "PARAM", "\n${replacedText}\n")
-		val replacement = firstElement.replace(newProperty) as ParadoxScriptParameterCondition
-		val newNameElement = replacement.parameterConditionExpression!!
-		return newNameElement.textRange
+		var newElement = ParadoxScriptElementFactory.createParameterCondition(project, "PARAM", "\n${replacedText}\n")
+		newElement = firstElement.replace(newElement) as ParadoxScriptParameterCondition
+		newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as ParadoxScriptParameterCondition
+		return newElement.parameterConditionExpression!!.textRange
 	}
 }

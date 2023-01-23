@@ -5,7 +5,9 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.codeStyle.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -40,9 +42,9 @@ class CwtClausePropertySurrounder: Surrounder {
         if(firstElement != lastElement) {
             firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
         }
-        val newProperty = ParadoxScriptElementFactory.createProperty(project, "key", "{\n${replacedText}\n}")
-        val replacement = firstElement.replace(newProperty) as ParadoxScriptProperty
-        val newNameElement = replacement.propertyKey
-        return newNameElement.textRange
+        var newElement = CwtElementFactory.createProperty(project, "key", "{\n${replacedText}\n}")
+        newElement = firstElement.replace(newElement) as CwtProperty
+        newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as CwtProperty
+        return newElement.propertyKey.textRange
     }
 }

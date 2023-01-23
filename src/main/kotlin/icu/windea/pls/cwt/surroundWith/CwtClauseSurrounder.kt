@@ -5,8 +5,10 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.codeStyle.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 从句的包围器，将选中的表达式（一个或多个属性或者单独的值）用花括号包围。
@@ -40,9 +42,10 @@ class CwtClauseSurrounder : Surrounder {
         if(firstElement != lastElement) {
             firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
         }
-        val newBlock = CwtElementFactory.createValue(project, "{\n${replacedText}\n}")
-        val replacement = firstElement.replace(newBlock) as CwtBlock
-        val endOffset = replacement.textRange.endOffset
+        var newElement = CwtElementFactory.createValue(project, "{\n${replacedText}\n}")
+        newElement = firstElement.replace(newElement) as CwtBlock
+        newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as CwtBlock
+        val endOffset = newElement.textRange.endOffset
         return TextRange.create(endOffset, endOffset)
     }
 }

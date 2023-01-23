@@ -581,10 +581,6 @@ fun <E : PsiElement> E.createPointer(file: PsiFile): SmartPsiElementPointer<E> {
 	}
 }
 
-fun PsiElement.reformatted(canChangeWhiteSpacesOnly: Boolean = false): PsiElement = let {
-	CodeStyleManager.getInstance(it.project).reformat(it, canChangeWhiteSpacesOnly)
-}
-
 fun PsiElement.isSpaceOrSingleLineBreak(): Boolean {
 	return this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) <= 1
 }
