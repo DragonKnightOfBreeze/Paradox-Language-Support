@@ -125,6 +125,10 @@ overlord_gaiaseeder_upkeep_machine
   * [X] 为修饰符、触发器和效果（`modifier trigger effect`）提供特殊的图标
   * [X] 定义引用也可以是一个整数，例如，对于`<technology_tier>`
   * [X] 兼容切换类型（例如，`swapped_civic`），包括引用解析、代码提示等功能
+* 功能变更
+  * 补充当前声明（`Code > Code Completion > Complete Current Statement`）
+    * [X] ~~对于脚本文件：`k` > `k = `~~（删除，不适合且不是特别必要）
+    * [X] ~~对于CWT文件：`k` > `k = `~~（删除，不适合且不是特别必要）
 * 新增功能 - 概述
   * [X] 初步支持处理作用域（`scope`），以及相关的快速文档、内嵌提示、代码检查等功能
     * 基于已有的CWT规则文件
