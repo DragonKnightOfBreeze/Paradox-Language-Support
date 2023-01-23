@@ -197,8 +197,8 @@ inline fun ParadoxScriptMemberElement.findParentByPath(
 		if(definitionType.isNotEmpty()) {
 			var match = false
 			for(expression in definitionType.split('|')) {
-				val (type, subtype) = ParadoxDefinitionTypeExpression.resolve(expression)
-				if(definitionInfo.type == type && (subtype == null || definitionInfo.subtypes.contains(subtype))) {
+				val (type, subtypes) = ParadoxDefinitionTypeExpression.resolve(expression)
+				if(definitionInfo.type == type && (subtypes.isEmpty() || definitionInfo.subtypes.containsAll(subtypes))) {
 					match = true
 					break
 				}
