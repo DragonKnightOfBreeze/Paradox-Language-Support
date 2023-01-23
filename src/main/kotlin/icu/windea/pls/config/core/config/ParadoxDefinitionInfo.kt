@@ -128,14 +128,11 @@ class ParadoxDefinitionInfo(
 			for(primaryLocalisationConfig in primaryLocalisationConfigs) {
 				val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
 				val resolved = primaryLocalisationConfig.locationExpression.resolve(element, this, configGroup.project, selector = selector) ?: continue
-				val localisation = resolved.second
-				if(localisation != null)  return@runReadAction localisation
+				if(resolved.localisation != null)  return@runReadAction resolved.localisation
 			}
 			null
 		}
 	}
-	
-	
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxDefinitionInfo

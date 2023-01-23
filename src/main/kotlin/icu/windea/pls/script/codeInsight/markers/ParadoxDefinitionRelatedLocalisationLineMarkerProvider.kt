@@ -36,11 +36,16 @@ class ParadoxDefinitionRelatedLocalisationLineMarkerProvider : RelatedItemLineMa
 		var isFirst = true
 		for((key, locationExpression) in localisationInfos) {
 			val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
-			val (localisationKey, localisations) = locationExpression.resolveAll(definitionInfo.name, element, project, selector = selector) ?: continue
-			if(localisations.isNotEmpty()) targets.addAll(localisations)
-			if(localisations.isNotEmpty() && keys.add(key)) {
+			val resolved = locationExpression.resolveAll(definitionInfo.name, element, project, selector = selector) ?: continue
+			if(resolved.localisations.isNotEmpty()) {
+				targets.addAll(resolved.localisations)
+			}
+			if(resolved.message != null) {
 				if(isFirst) isFirst = false else tooltipBuilder.appendBr()
-				tooltipBuilder.append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ").append(key).append(" = ").append(localisationKey)
+				tooltipBuilder.append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ").append(key).append(" = ").append(resolved.message)
+			} else if(resolved.localisations.isNotEmpty() && keys.add(key)) {
+				if(isFirst) isFirst = false else tooltipBuilder.appendBr()
+				tooltipBuilder.append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ").append(key).append(" = ").append(resolved.key)
 			}
 		}
 		if(keys.isEmpty()) return
