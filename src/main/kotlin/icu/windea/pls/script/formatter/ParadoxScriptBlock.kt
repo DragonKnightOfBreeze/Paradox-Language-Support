@@ -44,7 +44,7 @@ class ParadoxScriptBlock(
 				.between(LEFT_BRACE, RIGHT_BRACE).none()//花括号之间总是不需要空格
 				.withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true) //花括号内侧如果非换行按情况可能需要空格
 				.between(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).none() //参数条件表达式如果为空则不需要空格（尽管这是语法错误）
-				.withinPair(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS, true) //参数条件表达式内侧如果非换行按情况可能需要空格
+				.withinPair(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS) //参数条件表达式内侧如果非换行按情况可能需要空格
 				.between(NESTED_RIGHT_BRACKET, RIGHT_BRACKET).none() //参数条件代码块如果为空则不需要空格
 				.withinPair(NESTED_RIGHT_BRACKET, RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS, true) //参数条件代码块内侧如果非换行按情况可能需要空格
 				.between(INLINE_MATH_START, INLINE_MATH_END).none() //内联数字表达式如果为空则不需要空格（尽管这是语法错误）
