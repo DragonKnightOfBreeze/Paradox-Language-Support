@@ -1,6 +1,5 @@
 package icu.windea.pls.tool.cwt
 
-import com.intellij.openapi.project.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import java.io.*
@@ -9,25 +8,28 @@ import java.io.*
  * 用于从`modifiers.log`生成`modifiers.cwt`和`modifier_categories.cwt`
  */
 class CwtModifierConfigGenerator(
-	val project: Project,
 	val gameType: ParadoxGameType,
 	val modifiersLogPath: String,
 	val modifiersCwtPath: String,
-	val modifierCategoriesPath: String
+	val modifierCategoriesCwtPath: String
 ) {
+	private val regex = when(gameType) {
+		ParadoxGameType.Stellaris -> """- (.*),\s*Category:\s*(.*)""".toRegex()
+		else -> """Tag:(.*),\s*Categories:\s*(.*)""".toRegex()
+	}
+	private val categoryRegex = """\t(\w+|".*?")\s*=\s*\{""".toRegex()
+	
 	data class ModifierInfo(
 		val name: String,
 		val categories: Set<String>
 	)
 	
 	fun generate() {
+		setUserDir()
+		
 		val modifiersLogFile = File(modifiersLogPath)
 		val modifiersCwtFile = File(modifiersCwtPath)
-		val modifierCategoriesFile = File(modifierCategoriesPath)
-		val regex = when(gameType) {
-			ParadoxGameType.Stellaris -> """- (.*),\s*Category:\s*(.*)""".toRegex()
-			else -> """Tag:(.*),\s*Categories:\s*(.*)""".toRegex()
-		}
+		val modifierCategoriesCwtFile = File(modifierCategoriesCwtPath)
 		val infos = mutableListOf<ModifierInfo>()
 		modifiersLogFile.inputStream().bufferedReader().forEachLine { line ->
 			val matchResult = regex.matchEntire(line) ?: return@forEachLine
@@ -63,6 +65,26 @@ class CwtModifierConfigGenerator(
 			println("- $modifierCategory")
 		}
 		
+		val missingModifierCategories = modifierCategories.toMutableSet()
+		modifierCategoriesCwtFile.inputStream().bufferedReader().forEachLine { line ->
+			val matchResult = categoryRegex.matchEntire(line) ?: return@forEachLine
+			val groupValues = matchResult.groupValues
+			val modifierCategory = groupValues[1].trim().unquote()
+			missingModifierCategories.remove(modifierCategory)
+		}
+		if(missingModifierCategories.isNotEmpty()) {
+			println()
+			println("Missing modifier categories:")
+			for(modifierCategory in missingModifierCategories) {
+				println("- $modifierCategory")
+			}
+		}
+		
 		//TODO update modifier_categories.cwt
+	}
+	
+	private fun setUserDir() {
+		val userDir = System.getProperty("user.dir").toPath().normalize().joinToString("/").removeSuffix("/src/test")
+		System.setProperty("user.dir", userDir)
 	}
 }
