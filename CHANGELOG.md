@@ -92,7 +92,7 @@ overlord_gaiaseeder_upkeep_machine
   * [X] 初步支持处理生成的修饰符（`modifier`），以及相关的引用解析、代码补全、代码高亮等功能
     * 基于CWT类型规则中的`modifiers`规则（例如：`modifiers = { job_<job>_add = Planets }`）（认为没有实际上的声明处，并使用特殊的高亮）
     * 基于`modifiers.log`生成`modifiers.gen.cwt`，并且整理编写`modifiers.cwt`，以处理生成的修饰符（包括由Stellaris的`economic_category`生成的）
-    * 注意：由Stellaris的`economic_category`生成的修饰符，目前不基于具体的声明检查某个修饰符最终是否会在游戏中生成
+    * 注意：暂不支持由Stellaris的`economic_category`生成的修饰符（原版游戏会生成的照常支持）
 * 新增功能
   * 快速文档（`Quick Documentation`）
     * [X] 优化CWT规则的快速文档显示

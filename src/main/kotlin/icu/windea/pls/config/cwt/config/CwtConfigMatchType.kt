@@ -26,7 +26,7 @@ object CwtConfigMatchType {
 	
 	/**
 	 * 需要访问复杂枚举值索引。
-	 * @see icu.windea.pls.core.index.ParadoxComplexEnumIndex
+	 * @see icu.windea.pls.core.index.ParadoxComplexEnumValueIndex
 	 */
 	const val COMPLEX_ENUM_VALUE = 0x08
 	

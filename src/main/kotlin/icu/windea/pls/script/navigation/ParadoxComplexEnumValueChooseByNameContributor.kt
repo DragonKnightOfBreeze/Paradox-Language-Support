@@ -15,10 +15,10 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxComplexEnumValueChooseByNameContributor : ChooseByNameContributorEx {
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
-        StubIndex.getInstance().processAllKeys(ParadoxComplexEnumIndex.key, processor, scope, filter)
+        StubIndex.getInstance().processAllKeys(ParadoxComplexEnumValueIndex.key, processor, scope, filter)
     }
     
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
-        StubIndex.getInstance().processElements(ParadoxComplexEnumIndex.key, name, parameters.project, parameters.searchScope, parameters.idFilter, ParadoxScriptStringExpressionElement::class.java, processor)
+        StubIndex.getInstance().processElements(ParadoxComplexEnumValueIndex.key, name, parameters.project, parameters.searchScope, parameters.idFilter, ParadoxScriptStringExpressionElement::class.java, processor)
     }
 }
