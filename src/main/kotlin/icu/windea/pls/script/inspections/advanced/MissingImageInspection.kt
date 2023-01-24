@@ -170,11 +170,11 @@ class MissingImageInspection : LocalInspectionTool() {
 						.actionListener { _, component -> checkOptionalForDefinitions = component.isSelected }
 						.enabledIf(checkForDefinitionsCb.selected)
 				}
-				row {
-					checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkForModifiers"))
-						.bindSelected(::checkForModifiers)
-						.actionListener { _, component -> checkForModifiers = component.isSelected }
-				}
+			}
+			row {
+				checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkForModifiers"))
+					.bindSelected(::checkForModifiers)
+					.actionListener { _, component -> checkForModifiers = component.isSelected }
 			}
 		}
 	}

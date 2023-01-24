@@ -90,8 +90,9 @@ overlord_gaiaseeder_upkeep_machine
   * [ ] 实现生成器从日志文件中生成CWT规则
 * 新增功能 - 概述
   * [X] 初步支持处理生成的修饰符（`modifier`），以及相关的引用解析、代码补全、代码高亮等功能
-    * 基于形如`alias[modifier:xxx]`的CWT规则（如果`xxx`并非表示一个定义，认为没有实际上的声明处，并使用特殊的高亮）
-    * 基于CWT类型规则中的`modifiers`规则（例如：`modifiers = { job_$_add = Planets }`）（认为没有实际上的声明处，并使用特殊的高亮）
+    * 基于CWT类型规则中的`modifiers`规则（例如：`modifiers = { job_<job>_add = Planets }`）（认为没有实际上的声明处，并使用特殊的高亮）
+    * 基于`modifiers.log`生成`modifiers.gen.cwt`，并且整理编写`modifiers.cwt`，以处理生成的修饰符（包括由Stellaris的`economic_category`生成的）
+    * 注意：由Stellaris的`economic_category`生成的修饰符，目前不基于具体的声明检查某个修饰符最终是否会在游戏中生成
 * 新增功能
   * 快速文档（`Quick Documentation`）
     * [X] 优化CWT规则的快速文档显示
@@ -165,7 +166,7 @@ overlord_gaiaseeder_upkeep_machine
   * [X] 查找使用时，即使声明处与引用处的名字文本不同，也能正确进行，同时鼠标放到声明或使用处时也能正确显示引用高亮（例如：`GFX_text_unity` > `unity`）
   * [X] 优化如何提供类型信息（`View > Type Info`）和快速类型声明（`View > Quick Type Definition`）
 * 功能变更
-  * [ ] ~~Stellaris格式化引用（`format.xxx: "<some_parts> ..."`中的`<some_parts>`）~~ （移除支持，stellaris 3.6已经不再使用）
+  * [X] ~~Stellaris格式化引用（`format.xxx: "<some_parts> ..."`中的`<some_parts>`）~~ （移除支持，stellaris 3.6已经不再使用）
 * 新增功能
   * 代码补全（`Code > Code Completion`）
     * [X] 当可能正在输入一个定义名（非引用，作为顶级属性名）时，可以自动插入后面的等号、花括号以及从句内联模版，并将光标放到合适的位置
