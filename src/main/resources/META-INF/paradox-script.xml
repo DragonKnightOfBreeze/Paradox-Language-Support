@@ -160,6 +160,12 @@
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.TooManyExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptInsufficientExpression"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="script.inspection.advanced.insufficientExpression"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
+                     groupPathKey="script.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.InsufficientExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingLocalisation"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle"
@@ -204,12 +210,6 @@
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.UnsetValueSetValueInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptInsufficientExpression"
-                     enabledByDefault="true" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="script.inspection.advanced.insufficientExpression"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
-                     groupPathKey="script.inspection.advanced.path"
-                     implementationClass="icu.windea.pls.script.inspections.advanced.InsufficientExpressionInspection"/>
     <!--advanced > scope-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScope"
                      enabledByDefault="true" level="WARNING"
