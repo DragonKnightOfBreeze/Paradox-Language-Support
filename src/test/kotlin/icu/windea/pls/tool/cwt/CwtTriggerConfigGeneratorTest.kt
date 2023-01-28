@@ -11,6 +11,7 @@ class CwtTriggerConfigGeneratorTest {
             "cwt/cwtools-stellaris-config/script-docs/triggers.log",
             "cwt/cwtools-stellaris-config/config/triggers.cwt",
         )
+        generator.overrideDocumentation = false
         generator.generate()
     }
 }
