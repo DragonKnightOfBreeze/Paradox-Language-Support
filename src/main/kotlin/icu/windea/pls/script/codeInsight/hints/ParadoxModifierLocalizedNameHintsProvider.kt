@@ -31,7 +31,7 @@ class ParadoxModifierLocalizedNameHintsProvider: ParadoxScriptHintsProvider<Sett
 	}
 	
 	data class Settings(
-		var textLengthLimit: Int = 20,
+		var textLengthLimit: Int = 30,
 		var iconHeightLimit: Int = 32
 	)
 	
