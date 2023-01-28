@@ -315,20 +315,27 @@ object CwtConfigHandler {
 				val textRange = TextRange.create(0, expression.text.length)
 				val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
 				if(scopeFieldExpression == null) return false
+				if(isStatic) return true
 				if(isNotExact) return true
-				if(isStatic) return false
-				if(configExpression.type == CwtDataType.Scope) {
-					val expectedScope = configExpression.value ?: return true
-					val memberElement = element?.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return true
-					val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return true
-					val scopeContext = ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, parentScopeContext)
-					if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return true
-				} else if(configExpression.type == CwtDataType.ScopeGroup) {
-					val expectedScopeGroup = configExpression.value ?: return true
-					val memberElement = element?.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return true
-					val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return true
-					val scopeContext = ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, parentScopeContext)
-					if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return true
+				when(configExpression.type) {
+					CwtDataType.ScopeField -> {
+						return true
+					}
+					CwtDataType.Scope -> {
+						val expectedScope = configExpression.value ?: return true
+						val memberElement = element?.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return true
+						val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return true
+						val scopeContext = ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, parentScopeContext)
+						if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return true
+					}
+					CwtDataType.ScopeGroup -> {
+						val expectedScopeGroup = configExpression.value ?: return true
+						val memberElement = element?.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return true
+						val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return true
+						val scopeContext = ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, parentScopeContext)
+						if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return true
+					}
+					else -> pass()
 				}
 				return false
 			}

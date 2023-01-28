@@ -12,7 +12,7 @@ object CwtConfigMatchType {
 	/**
 	 * 非精确匹配：不需要匹配数字范围、作用域等。
 	 */
-	const val NOT_EXACT = 0x20
+	const val NOT_EXACT = 0x02
 	
 	/**
 	 * 需要访问文件路径索引。

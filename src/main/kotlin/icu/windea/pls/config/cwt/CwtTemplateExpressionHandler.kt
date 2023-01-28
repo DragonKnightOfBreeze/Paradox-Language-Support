@@ -104,6 +104,7 @@ object CwtTemplateExpressionHandler {
         val references = SmartList<ParadoxInTemplateExpressionReference>()
         var i = 1
         for(snippetExpression in snippetExpressions) {
+            ProgressManager.checkCanceled()
             if(snippetExpression.type != CwtDataType.Constant) {
                 val matchGroup = matchResult.groups.get(i++) ?: return emptyList()
                 val name = matchGroup.value //job_miner_add 

@@ -1,5 +1,6 @@
 package icu.windea.pls.config.core
 
+import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
@@ -46,6 +47,7 @@ object ParadoxModifierHandler {
 		//尝试解析为生成的修正，生成源未定义时，使用预定义的修正
 		var generatedModifierConfig: CwtModifierConfig? = null
 		val references = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
+			ProgressManager.checkCanceled()
 			val resolvedReferences = config.template.resolveReferences(element, name, configGroup).takeIfNotEmpty()
 			if(resolvedReferences != null) generatedModifierConfig = config
 			resolvedReferences
