@@ -34,7 +34,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
 		val configGroup = definitionMemberInfo.configGroup
 		val childPropertyConfigs = definitionMemberInfo.getChildPropertyConfigs()
 		val expression = ParadoxDataExpression.resolve(setting.id, false, true)
-		val config = childPropertyConfigs.find { CwtConfigHandler.matchesScriptExpression(expression, it.keyExpression, it, configGroup) }
+		val config = childPropertyConfigs.find { CwtConfigHandler.matchesScriptExpression(null, expression, it.keyExpression, it, configGroup) }
 		if(config == null) return emptyList()
 		return stringElement.toSingletonList()
 	}

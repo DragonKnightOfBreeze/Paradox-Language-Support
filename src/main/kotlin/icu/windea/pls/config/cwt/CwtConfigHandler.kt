@@ -9,6 +9,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
@@ -114,12 +115,20 @@ object CwtConfigHandler {
 		}
 		return true
 	}
+	
 	//endregion
 	
 	//region Matches Methods
-	//TODO 基于cwt规则文件的匹配方法需要进一步匹配scope
+	//DONE 基于cwt规则文件的匹配方法需要进一步匹配scope
 	//DONE 兼容variableReference inlineMath parameter
-	fun matchesScriptExpression(expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
+	fun matchesScriptExpression(
+		element: PsiElement?,
+		expression: ParadoxDataExpression,
+		configExpression: CwtDataExpression,
+		config: CwtConfig<*>?,
+		configGroup: CwtConfigGroup,
+		matchType: Int = CwtConfigMatchType.ALL
+	): Boolean {
 		//匹配block
 		if(configExpression == CwtValueExpression.BlockExpression) {
 			return expression.type == ParadoxDataType.BlockType
@@ -132,7 +141,7 @@ object CwtConfigHandler {
 		val project = configGroup.project
 		val gameType = configGroup.gameType
 		val isStatic = BitUtil.isSet(matchType, CwtConfigMatchType.STATIC)
-		val isExact = BitUtil.isSet(matchType, CwtConfigMatchType.EXACT)
+		val isNotExact = BitUtil.isSet(matchType, CwtConfigMatchType.NOT_EXACT)
 		val isParameterAware = expression.type == ParadoxDataType.StringType && expression.text.isParameterAwareExpression()
 		when(configExpression.type) {
 			CwtDataType.Bool -> {
@@ -140,9 +149,8 @@ object CwtConfigHandler {
 			}
 			CwtDataType.Int -> {
 				//quoted number (e.g. "1") -> ok according to vanilla game files
-				if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
-				//匹配范围
-				if(isExact) {
+				if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) {
+					if(isNotExact) return true
 					val (min, max) = configExpression.extraValue<Tuple2<Int, Int?>>() ?: return true
 					val value = expression.text.toIntOrNull() ?: return true
 					return min <= value && (max == null || max >= value)
@@ -151,9 +159,8 @@ object CwtConfigHandler {
 			}
 			CwtDataType.Float -> {
 				//quoted number (e.g. "1") -> ok according to vanilla game files
-				if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) return true
-				//匹配范围
-				if(isExact) {
+				if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) {
+					if(isNotExact) return true
 					val (min, max) = configExpression.extraValue<Tuple2<Float, Float?>>() ?: return true
 					val value = expression.text.toFloatOrNull() ?: return true
 					return min <= value && (max == null || max >= value)
@@ -306,7 +313,23 @@ object CwtConfigHandler {
 				if(expression.quoted) return false //不允许用引号括起
 				if(!isStatic && isParameterAware) return true
 				val textRange = TextRange.create(0, expression.text.length)
-				return ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey) != null
+				val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
+				if(scopeFieldExpression == null) return false
+				if(isNotExact) return true
+				if(configExpression.type == CwtDataType.Scope) {
+					val expectedScope = configExpression.value ?: return true
+					val memberElement = element?.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return true
+					val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return true
+					val scopeContext = ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, parentScopeContext)
+					if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return true
+				} else if(configExpression.type == CwtDataType.ScopeGroup) {
+					val expectedScopeGroup = configExpression.value ?: return true
+					val memberElement = element?.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return true
+					val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return true
+					val scopeContext = ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, parentScopeContext)
+					if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return true
+				}
+				return false
 			}
 			CwtDataType.ValueField -> {
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
@@ -314,7 +337,8 @@ object CwtConfigHandler {
 				if(!isStatic && isParameterAware) return true
 				if(expression.quoted) return false //接下来的匹配不允许用引号括起
 				val textRange = TextRange.create(0, expression.text.length)
-				return ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey) != null
+				val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
+				return valueFieldExpression != null
 			}
 			CwtDataType.IntValueField -> {
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
@@ -322,7 +346,8 @@ object CwtConfigHandler {
 				if(!isStatic && isParameterAware) return true
 				if(expression.quoted) return false //接下来的匹配不允许用引号括起
 				val textRange = TextRange.create(0, expression.text.length)
-				return ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey) != null
+				val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
+				return valueFieldExpression != null
 			}
 			CwtDataType.VariableField -> {
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
@@ -330,7 +355,8 @@ object CwtConfigHandler {
 				if(!isStatic && isParameterAware) return true
 				if(expression.quoted) return false //接下来的匹配不允许用引号括起
 				val textRange = TextRange.create(0, expression.text.length)
-				return ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey) != null
+				val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
+				return variableFieldExpression != null
 			}
 			CwtDataType.IntVariableField -> {
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
@@ -338,7 +364,8 @@ object CwtConfigHandler {
 				if(!isStatic && isParameterAware) return true
 				if(expression.quoted) return false //接下来的匹配不允许用引号括起
 				val textRange = TextRange.create(0, expression.text.length)
-				return ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey) != null
+				val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
+				return variableFieldExpression != null
 			}
 			CwtDataType.Modifier -> {
 				if(!isStatic && isParameterAware) return true
@@ -351,12 +378,12 @@ object CwtConfigHandler {
 			CwtDataType.AliasKeysField -> {
 				if(!isStatic && isParameterAware) return true
 				val aliasName = configExpression.value ?: return false
-				return matchesAliasName(expression, aliasName, configGroup, matchType)
+				return matchesAliasName(element, expression, aliasName, configGroup, matchType)
 			}
 			CwtDataType.AliasName -> {
 				if(!isStatic && isParameterAware) return true
 				val aliasName = configExpression.value ?: return false
-				return matchesAliasName(expression, aliasName, configGroup, matchType)
+				return matchesAliasName(element, expression, aliasName, configGroup, matchType)
 			}
 			CwtDataType.AliasMatchLeft -> {
 				return false //不在这里处理
@@ -383,11 +410,16 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun matchesAliasName(expression: ParadoxDataExpression, aliasName: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
-		//TODO 匹配scope
+	fun matchesAliasName(
+		element: PsiElement?,
+		expression: ParadoxDataExpression,
+		aliasName: String,
+		configGroup: CwtConfigGroup,
+		matchType: Int = CwtConfigMatchType.ALL
+	): Boolean {
 		val aliasSubName = getAliasSubName(expression.text, expression.quoted, aliasName, configGroup, matchType) ?: return false
 		val configExpression = CwtKeyExpression.resolve(aliasSubName)
-		return matchesScriptExpression(expression, configExpression, null, configGroup, matchType)
+		return matchesScriptExpression(element, expression, configExpression, null, configGroup, matchType)
 	}
 	
 	fun matchesModifier(name: String, configGroup: CwtConfigGroup): Boolean {
@@ -405,7 +437,18 @@ object CwtConfigHandler {
 		val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
 		val expression = ParadoxDataExpression.resolve(key, quoted, true)
 		return keys.find {
-			matchesScriptExpression(expression, CwtKeyExpression.resolve(it), null, configGroup, matchType)
+			matchesScriptExpression(null, expression, CwtKeyExpression.resolve(it), null, configGroup, matchType)
+		}
+	}
+	
+	fun requireNotExactMatch(configExpression: CwtDataExpression): Boolean {
+		return when {
+			configExpression.type == CwtDataType.Int && configExpression.extraValue != null -> true
+			configExpression.type == CwtDataType.Float && configExpression.extraValue != null -> true
+			configExpression.type == CwtDataType.ColorField && configExpression.value != null -> true
+			configExpression.type == CwtDataType.Scope && configExpression.value != null -> true
+			configExpression.type == CwtDataType.ScopeGroup && configExpression.value != null -> true
+			else -> false
 		}
 	}
 	

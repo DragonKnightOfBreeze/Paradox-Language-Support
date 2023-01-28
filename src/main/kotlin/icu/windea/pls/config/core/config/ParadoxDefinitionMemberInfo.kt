@@ -1,7 +1,6 @@
 package icu.windea.pls.config.core.config
 
 import com.intellij.util.*
-import icu.windea.pls.config.core.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
@@ -98,7 +97,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
 			if(configs.isNullOrEmpty()) continue
 			for(config in configs) {
 				if(isKey && config is CwtPropertyConfig) {
-					if(CwtConfigHandler.matchesScriptExpression(expression, config.keyExpression, config, configGroup, matchType)) {
+					if(CwtConfigHandler.matchesScriptExpression(null, expression, config.keyExpression, config, configGroup, matchType)) {
 						CwtConfigHandler.inlineConfig(key, isQuoted, config, configGroup, nextResult, matchType)
 					}
 				} else if(!isKey && config is CwtValueConfig) {
@@ -109,7 +108,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
 		
 		//如果存在可以静态匹配（CwtConfigMatchType.STATIC）的规则，则仅选用可以静态匹配的规则
 		result = nextResult
-			.filter { CwtConfigHandler.matchesScriptExpression(expression, it.expression, it, configGroup, CwtConfigMatchType.STATIC) }
+			.filter { CwtConfigHandler.matchesScriptExpression(null, expression, it.expression, it, configGroup, CwtConfigMatchType.STATIC) }
 			.ifEmpty { nextResult }
 	}
 	
@@ -183,7 +182,7 @@ private fun ParadoxDefinitionMemberInfo.doGetChildPropertyOccurrenceMap(element:
 			val expression = ParadoxDataExpression.resolve(property.propertyKey)
 			val isParameterAware = expression.type == ParadoxDataType.StringType && expression.text.isParameterAwareExpression()
 			if(isParameterAware) return emptyMap() //may contain parameter -> can't and should not get occurrences
-			val matched = childPropertyConfigs.find { CwtConfigHandler.matchesScriptExpression(expression, it.keyExpression, it, configGroup) }
+			val matched = childPropertyConfigs.find { CwtConfigHandler.matchesScriptExpression(property, expression, it.keyExpression, it, configGroup) }
 			if(matched == null) continue
 			val occurrence = occurrenceMap[matched.keyExpression]
 			if(occurrence == null) continue
@@ -208,7 +207,7 @@ private fun ParadoxDefinitionMemberInfo.doGetChildValueOccurrenceMap(element: Pa
 			val expression = ParadoxDataExpression.resolve(value)
 			val isParameterAware = expression.type == ParadoxDataType.StringType && expression.text.isParameterAwareExpression()
 			if(isParameterAware) return emptyMap() //may contain parameter -> can't and should not get occurrences
-			val matched = childValueConfigs.find { CwtConfigHandler.matchesScriptExpression(expression, it.valueExpression,it, configGroup) }
+			val matched = childValueConfigs.find { CwtConfigHandler.matchesScriptExpression(value, expression, it.valueExpression, it, configGroup) }
 			if(matched == null) continue
 			val occurrence = occurrenceMap[matched.valueExpression]
 			if(occurrence == null) continue

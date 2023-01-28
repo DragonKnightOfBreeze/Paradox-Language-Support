@@ -1,9 +1,9 @@
 package icu.windea.pls.config.cwt
 
-import com.google.common.cache.CacheBuilder
+import com.google.common.cache.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
+import com.intellij.openapi.util.*
+import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.*
@@ -75,7 +75,7 @@ object CwtTemplateExpressionHandler {
                 val matchGroup = matchResult.groups.get(index + 1) ?: return false
                 val referenceName = matchGroup.value
                 val expression = ParadoxDataExpression.resolve(referenceName, false)
-                val isMatched = CwtConfigHandler.matchesScriptExpression(expression, snippetExpression, null, configGroup, matchType)
+                val isMatched = CwtConfigHandler.matchesScriptExpression(null, expression, snippetExpression, null, configGroup, matchType)
                 if(!isMatched) return false
             }
         }

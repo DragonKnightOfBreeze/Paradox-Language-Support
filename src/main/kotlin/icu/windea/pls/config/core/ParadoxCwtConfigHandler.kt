@@ -55,17 +55,34 @@ object ParadoxCwtConfigHandler {
 				val configs = definitionMemberInfo.getConfigs(matchType)
 				val configGroup = definitionMemberInfo.configGroup
 				buildList {
-					for(config in configs) {
-						val propertyConfig = config as? CwtPropertyConfig ?: continue
-						//不完整的属性 - 不匹配值
-						if(expression == null) {
-							add(propertyConfig)
-							continue
+					//不完整的属性 - 不匹配值
+					if(expression == null) {
+						for(config in configs) {
+							if(config !is CwtPropertyConfig) continue
+							add(config)
 						}
-						if(CwtConfigHandler.matchesScriptExpression(expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchType)) {
-							add(propertyConfig)
+						return@buildList
+					}
+					//精确匹配
+					for(config in configs) {
+						if(config !is CwtPropertyConfig) continue
+						if(CwtConfigHandler.matchesScriptExpression(memberElement, expression, config.valueExpression, config, configGroup, matchType)) {
+							add(config)
 						}
 					}
+					//精确匹配无结果 - 不精确匹配
+					if(isEmpty()) {
+						val newMatchType = matchType or CwtConfigMatchType.NOT_EXACT
+						for(config in configs) {
+							if(config !is CwtPropertyConfig) continue
+							val configExpression = config.valueExpression
+							if(!CwtConfigHandler.requireNotExactMatch(configExpression)) continue
+							if(CwtConfigHandler.matchesScriptExpression(memberElement, expression, configExpression, config, configGroup, newMatchType)) {
+								add(config)
+							}
+						}
+					}
+					//仍然无结果 - 判断是否使用默认值
 					if(orDefault && isEmpty()) {
 						configs.forEach { it.castOrNull<CwtPropertyConfig>()?.let { c -> add(c) } }
 					}
@@ -87,13 +104,28 @@ object ParadoxCwtConfigHandler {
 						val configs = definitionMemberInfo.getConfigs(matchType)
 						val configGroup = definitionMemberInfo.configGroup
 						buildList {
+							//精确匹配
 							for(config in configs) {
-								val propertyConfig = config as? CwtPropertyConfig ?: continue
-								val valueConfig = propertyConfig.valueConfig ?:  continue
-								if(CwtConfigHandler.matchesScriptExpression(expression, valueConfig.expression, propertyConfig, configGroup, matchType)) {
+								if(config !is CwtPropertyConfig) continue
+								val valueConfig = config.valueConfig ?:  continue
+								if(CwtConfigHandler.matchesScriptExpression(valueElement, expression, valueConfig.expression, config, configGroup, matchType)) {
 									add(valueConfig)
 								}
 							}
+							//精确匹配无结果 - 不精确匹配
+							if(isEmpty()) {
+								val newMatchType = matchType or CwtConfigMatchType.NOT_EXACT
+								for(config in configs) {
+									if(config !is CwtPropertyConfig) continue
+									val valueConfig = config.valueConfig ?:  continue
+									val configExpression = valueConfig.expression
+									if(!CwtConfigHandler.requireNotExactMatch(configExpression)) continue
+									if(CwtConfigHandler.matchesScriptExpression(valueElement, expression, configExpression, config, configGroup, newMatchType)) {
+										add(valueConfig)
+									}
+								}
+							}
+							//仍然无结果 - 判断是否使用默认值
 							if(orDefault && isEmpty()) {
 								configs.forEach { it.castOrNull<CwtPropertyConfig>()?.valueConfig?.let { c -> add(c) } }
 							}
@@ -108,12 +140,25 @@ object ParadoxCwtConfigHandler {
 						val configGroup = definitionMemberInfo.configGroup
 						buildList {
 							for(childValueConfig in childValueConfigs) {
-								if(CwtConfigHandler.matchesScriptExpression(expression, childValueConfig.valueExpression, childValueConfig, configGroup, matchType)) {
+								//精确匹配
+								if(CwtConfigHandler.matchesScriptExpression(valueElement, expression, childValueConfig.valueExpression, childValueConfig, configGroup, matchType)) {
 									add(childValueConfig)
 								}
-								if(orDefault && isEmpty()) {
-									childValueConfigs.singleOrNull()?.let { add(it) }
+							}
+							//精确匹配无结果 - 不精确匹配
+							if(isEmpty()) {
+								val newMatchType = matchType or CwtConfigMatchType.NOT_EXACT
+								for(childValueConfig in childValueConfigs) {
+									val configExpression = childValueConfig.valueExpression
+									if(!CwtConfigHandler.requireNotExactMatch(configExpression)) continue
+									if(CwtConfigHandler.matchesScriptExpression(valueElement, expression, configExpression, childValueConfig, configGroup, newMatchType)) {
+										add(childValueConfig)
+									}
 								}
+							}
+							//仍然无结果 - 判断是否使用默认值
+							if(orDefault && isEmpty()) {
+								childValueConfigs.singleOrNull()?.let { add(it) }
 							}
 						} as List<T>
 					}
