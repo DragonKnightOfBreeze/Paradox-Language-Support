@@ -54,9 +54,9 @@ object CwtTemplateExpressionHandler {
         return buildString {
             configExpression.snippetExpressions.forEach {
                 if(it.type == CwtDataType.Constant) {
-                    append("\\Q(").append(it.expressionString).append(")\\E")
+                    append("\\Q").append(it.expressionString).append("\\E")
                 } else {
-                    append(".*?")
+                    append("(.*?)")
                 }
             }
         }.toRegex(RegexOption.IGNORE_CASE)
@@ -102,10 +102,12 @@ object CwtTemplateExpressionHandler {
         val matchResult = regex.matchEntire(expressionString) ?: return emptyList()
         if(snippetExpressions.size != matchResult.groups.size - 1) return emptyList()
         val references = SmartList<ParadoxInTemplateExpressionReference>()
+        var i = 1
         for((index, snippetExpression) in snippetExpressions.withIndex()) {
             if(snippetExpression.type != CwtDataType.Constant) {
-                val matchGroup = matchResult.groups.get(index + 1) ?: return emptyList()
-                val name = matchGroup.value
+                val matchGroup = matchResult.groups.get(i++) ?: return emptyList()
+                val name = matchGroup.value //job_miner_add 
+                //\Qjob_\E(.*?)\Q_add\E
                 val range = TextRange.create(matchGroup.range.first, matchGroup.range.last)
                 val reference = ParadoxInTemplateExpressionReference(element, range, name, snippetExpression, configGroup)
                 references.add(reference)

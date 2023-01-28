@@ -59,7 +59,10 @@ data class CwtPropertyConfig(
 			intValue = other.intValue,
 			floatValue = other.floatValue,
 			stringValue = other.stringValue,
-			configs = other.deepCopyConfigs()
+			configs = other.deepCopyConfigs(),
+			documentation = other.documentation,
+			options = other.options,
+			optionValues = other.optionValues
 		)
 		inlined.parent = parent
 		inlined.configs?.forEach { it.parent = inlined }
@@ -80,7 +83,10 @@ data class CwtPropertyConfig(
 			intValue = other.intValue,
 			floatValue = other.floatValue,
 			stringValue = other.stringValue,
-			configs = other.deepCopyConfigs()
+			configs = other.deepCopyConfigs(),
+			documentation = other.documentation,
+			options = other.options,
+			optionValues = other.optionValues
 		)
 		inlined.parent = parent
 		inlined.configs?.forEach { it.parent = inlined }
