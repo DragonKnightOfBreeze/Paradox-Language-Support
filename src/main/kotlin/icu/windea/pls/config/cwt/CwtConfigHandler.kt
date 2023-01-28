@@ -316,6 +316,7 @@ object CwtConfigHandler {
 				val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
 				if(scopeFieldExpression == null) return false
 				if(isNotExact) return true
+				if(isStatic) return false
 				if(configExpression.type == CwtDataType.Scope) {
 					val expectedScope = configExpression.value ?: return true
 					val memberElement = element?.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return true
@@ -392,6 +393,7 @@ object CwtConfigHandler {
 				if(!expression.type.isStringType()) return false
 				//允许用引号括起
 				if(!isStatic && isParameterAware) return true
+				if(isStatic) return false
 				return matchesTemplateExpression(expression, configExpression, configGroup)
 			}
 			CwtDataType.Constant -> {

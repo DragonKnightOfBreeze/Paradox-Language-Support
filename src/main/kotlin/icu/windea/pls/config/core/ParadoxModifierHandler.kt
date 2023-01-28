@@ -1,5 +1,6 @@
 package icu.windea.pls.config.core
 
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
@@ -19,6 +20,8 @@ object ParadoxModifierHandler {
 		//预定义的非生成的修正
 		val predefinedModifierConfig = configGroup.predefinedModifiers[modifierName]
 		if(predefinedModifierConfig != null) return true
+		val isStatic = BitUtil.isSet(matchType, CwtConfigMatchType.STATIC)
+		if(isStatic) return false
 		//生成的修正，生成源必须已定义
 		return configGroup.generatedModifiers.values.any { config ->
 			config.template.matches(name, configGroup, matchType)

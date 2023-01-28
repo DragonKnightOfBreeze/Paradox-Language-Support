@@ -144,6 +144,12 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun getName(element: CwtPropertyKey): String {
+		return element.value
+	}
+	
+	
+	@JvmStatic
 	fun getValue(element: CwtPropertyKey): String {
 		return element.findChild(PROPERTY_KEY_TOKEN)!!.text.unquote()
 	}
@@ -161,6 +167,11 @@ object CwtPsiImplUtil {
 	fun getIcon(element: CwtValue, @Iconable.IconFlags flags: Int): Icon {
 		val type = element.configType
 		return type?.icon ?: PlsIcons.CwtValue
+	}
+	
+	@JvmStatic
+	fun getName(element: CwtValue): String {
+		return element.value
 	}
 	
 	@JvmStatic

@@ -51,7 +51,7 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 							val modifierInfo = ParadoxModifierHandler.resolveModifier(location)
 							if(modifierInfo != null) {
 								modifierInfo.generatedModifierConfig?.pointer?.element?.let { add(it) }
-								modifierInfo.modifierConfig?.pointer?.element?.let { add(it) }
+								modifierInfo.predefinedModifierConfig?.pointer?.element.let { add(it) }
 							}
 						}
 						else -> pass()

@@ -1,6 +1,7 @@
 package icu.windea.pls.config.core
 
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
@@ -15,8 +16,7 @@ object ParadoxValueSetValueHandler {
 		if(element.isParameterAwareExpression()) return null
 		
 		ProgressManager.checkCanceled()
-		//cannot use index here
-		val matchType = CwtConfigMatchType.STATIC
+		val matchType = if(DumbService.isDumbAware(element.project)) CwtConfigMatchType.STATIC else CwtConfigMatchType.ALL
 		//only accept "value[x]" or "value_set[x]", rather than "scope_field" or "value_field"
 		//so, e.g., if there is only an expression "event_target:target", "target" will not be shown during code completion
 		val config = ParadoxCwtConfigHandler.resolveValueConfigs(element, true, true, matchType)

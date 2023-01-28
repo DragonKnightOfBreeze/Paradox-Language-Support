@@ -37,6 +37,12 @@ public class CwtPropertyKeyImpl extends ASTWrapperPsiElement implements CwtPrope
 
   @Override
   @NotNull
+  public String getName() {
+    return CwtPsiImplUtil.getName(this);
+  }
+
+  @Override
+  @NotNull
   public String getValue() {
     return CwtPsiImplUtil.getValue(this);
   }

@@ -61,12 +61,12 @@ property ::= property_key property_separator value {
   ]
 }
 property_key ::= PROPERTY_KEY_TOKEN {
-  methods=[getIcon getValue setValue]
+  methods=[getIcon getName getValue setValue]
 }
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
 
 value ::= boolean | int | float | string | block {
-  methods=[getIcon getValue setValue]
+  methods=[getIcon getName getValue setValue]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value
