@@ -318,15 +318,17 @@ object ParadoxDefinitionHandler {
 	}
 	
 	private fun doMatchDefinition(definitionElement: ParadoxScriptDefinitionElement, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
-		if(propertyConfig.values.orEmpty().isNotEmpty()) {
+		val childValueConfigs = propertyConfig.values.orEmpty()
+		if(childValueConfigs.isNotEmpty()) {
 			//匹配值列表
 			val values = definitionElement.valueList
-			if(!doMatchValues(values, propertyConfig.values.orEmpty(), configGroup)) return false //继续匹配
+			if(!doMatchValues(values, childValueConfigs, configGroup)) return false //继续匹配
 		}
-		if(propertyConfig.configs.orEmpty().isNotEmpty()) {
+		val childPropertyConfigs = propertyConfig.properties.orEmpty()
+		if(childPropertyConfigs.isNotEmpty()) {
 			//匹配属性列表
 			val properties = definitionElement.propertyList
-			if(!doMatchProperties(properties, propertyConfig.properties.orEmpty(), configGroup)) return false //继续匹配
+			if(!doMatchProperties(properties, childPropertyConfigs, configGroup)) return false //继续匹配
 		}
 		return true
 	}
