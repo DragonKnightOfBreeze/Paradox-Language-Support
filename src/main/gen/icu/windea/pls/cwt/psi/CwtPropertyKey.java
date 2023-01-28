@@ -15,4 +15,7 @@ public interface CwtPropertyKey extends PsiElement {
   @NotNull
   String getValue();
 
+  @NotNull
+  CwtPropertyKey setValue(@NotNull String value);
+
 }

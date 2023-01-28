@@ -29,7 +29,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 			private fun visitLocalisationCommandScope(element: ParadoxLocalisationCommandScope) {
 				val resolved = element.reference.resolve() ?: return
 				when {
-					//system scope or localisation scope
+					//system link or localisation scope
 					resolved is CwtProperty -> {
 						val config = resolved.getUserData(PlsKeys.cwtConfigKey)
 						when{
@@ -43,9 +43,9 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 								}
 							}
 							//TODO depends on usages, cannot check now
-							//config is CwtSystemScopeConfig -> {
+							//config is CwtSystemLinkConfig -> {
 							//	val scopeContext = ParadoxScopeHandler.getScopeContext(element, file) ?: return
-							//	val resolvedScope = ParadoxScopeHandler.resolveScopeBySystemScope(config, scopeContext)
+							//	val resolvedScope = ParadoxScopeHandler.resolveScopeBySystemLink(config, scopeContext)
 							//	if(resolvedScope == null) {
 							//		val location = element
 							//		val description = PlsBundle.message("localisation.inspection.scope.incorrectScopeSwitch.description.3",

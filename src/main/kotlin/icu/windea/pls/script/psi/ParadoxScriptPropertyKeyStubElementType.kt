@@ -36,7 +36,7 @@ object ParadoxScriptPropertyKeyStubElementType : IStubElementType<ParadoxScriptP
 	}
 	
 	override fun indexStub(stub: ParadoxScriptPropertyKeyStub, sink: IndexSink) {
-		stub.complexEnumValueInfo?.let { info -> sink.occurrence(ParadoxComplexEnumIndex.key, info.enumName) }
+		stub.complexEnumValueInfo?.let { info -> sink.occurrence(ParadoxComplexEnumValueIndex.key, info.enumName) }
 	}
 	
 	override fun serialize(stub: ParadoxScriptPropertyKeyStub, dataStream: StubOutputStream) {

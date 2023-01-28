@@ -43,9 +43,10 @@ object PlsIcons {
 	@JvmField val PredefinedValueSetValue = loadIcon("/icons/hardCodedValueSetValue.svg")
 	@JvmField val EnumValue = loadIcon("/icons/enumValue.svg")
 	@JvmField val ComplexEnumValue = loadIcon("/icons/complexEnumValue.svg")
-	@JvmField val SystemScope = loadIcon("/icons/systemScope.svg")
 	@JvmField val Scope = loadIcon("/icons/scope.svg")
 	@JvmField val ScopeGroup = loadIcon("/icons/scopeGroup.svg")
+	@JvmField val SystemLink = loadIcon("/icons/systemLink.svg")
+	@JvmField val Link = loadIcon("/icons/link.svg")
 	@JvmField val ScopeLinkPrefix = loadIcon("/icons/scopeLinkPrefix.svg")
 	@JvmField val ValueLinkPrefix = loadIcon("/icons/valueLinkPrefix.svg")
 	@JvmField val ValueLinkValue = loadIcon("/icons/valueLinkValue.svg")
@@ -55,8 +56,6 @@ object PlsIcons {
 	@JvmField val Effect = loadIcon("/icons/effect.svg")
 	@JvmField val Tag = loadIcon("/icons/tag.svg")
 	@JvmField val TemplateExpression = loadIcon("icons/templateExpression.svg")
-	
-	@JvmField val Link = loadIcon("/icons/link.svg")
 	@JvmField val Alias = loadIcon("/icons/alias.svg")
 	
 	@JvmField val EventNamespace = loadIcon("/icons/eventNamespace.svg")

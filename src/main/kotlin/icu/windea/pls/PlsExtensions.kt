@@ -237,11 +237,6 @@ private fun resolveCwtLink(linkWithoutPrefix: String, sourceElement: PsiElement)
 			} ?: return null
 			return config.pointer.element
 		}
-		"scopes" -> {
-			val name = tokens.getOrNull(2) ?: return null
-			val config = getCwtConfig(project).getValue(gameType).scopeAliasMap[name] ?: return null
-			return config.pointer.element
-		}
 		"enums" -> {
 			val name = tokens.getOrNull(2) ?: return null
 			val valueName = tokens.getOrNull(3)
@@ -261,6 +256,21 @@ private fun resolveCwtLink(linkWithoutPrefix: String, sourceElement: PsiElement)
 			if(valueName == null) return config.pointer.element
 			return config.valueConfigMap.get(valueName)?.pointer?.element
 		}
+		"scopes" -> {
+			val name = tokens.getOrNull(2) ?: return null
+			val config = getCwtConfig(project).getValue(gameType).scopeAliasMap[name] ?: return null
+			return config.pointer.element
+		}
+		"system_links" -> {
+			val name = tokens.getOrNull(2) ?: return null
+			val config = getCwtConfig(project).getValue(gameType).systemLinks[name] ?: return null
+			return config.pointer.element
+		}
+		"links" -> {
+			val name = tokens.getOrNull(2) ?: return null
+			val config = getCwtConfig(project).getValue(gameType).links[name] ?: return null
+			return config.pointer.element
+		}
 		"modifier_categories" -> {
 			val name = tokens.getOrNull(2) ?: return null
 			val config = getCwtConfig(project).getValue(gameType).modifierCategories[name] ?: return null
@@ -269,11 +279,6 @@ private fun resolveCwtLink(linkWithoutPrefix: String, sourceElement: PsiElement)
 		"modifiers" -> {
 			val name = tokens.getOrNull(2) ?: return null
 			val config = getCwtConfig(project).getValue(gameType).modifiers[name] ?: return null
-			return config.pointer.element
-		}
-		"system_scopes" -> {
-			val name = tokens.getOrNull(2) ?: return null
-			val config = getCwtConfig(project).getValue(gameType).systemScopes[name] ?: return null
 			return config.pointer.element
 		}
 		else -> null

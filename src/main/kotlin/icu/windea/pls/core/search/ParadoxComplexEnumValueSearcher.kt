@@ -18,7 +18,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxScriptStringExp
 		val project = queryParameters.project
 		val searchScope = queryParameters.selector.getGlobalSearchScope()
 		val scope = searchScope ?: GlobalSearchScopeUtil.toGlobalSearchScope(queryParameters.scope, project)
-		ParadoxComplexEnumIndex.processAllElements(enumName, project, scope) {
+		ParadoxComplexEnumValueIndex.processAllElements(enumName, project, scope) {
 			if(name != null && !matchesName(it, name)) return@processAllElements true
 			consumer.process(it)
 		}

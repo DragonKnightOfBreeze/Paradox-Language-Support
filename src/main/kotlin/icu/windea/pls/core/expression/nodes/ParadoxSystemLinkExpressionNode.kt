@@ -9,22 +9,22 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxSystemScopeExpressionNode (
+class ParadoxSystemLinkExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
-	val config: CwtSystemScopeConfig
+	val config: CwtSystemLinkConfig
 ) : ParadoxScopeExpressionNode {
-	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY
+	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SYSTEM_LINK_KEY
 	
 	override fun getReference(element: ParadoxScriptStringExpressionElement): Reference {
 		return Reference(element, rangeInExpression, config.pointer.element)
 	}
 	
 	companion object Resolver {
-		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxSystemScopeExpressionNode? {
-			val config = configGroup.systemScopes.get(text)
+		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxSystemLinkExpressionNode? {
+			val config = configGroup.systemLinks.get(text)
 				?: return null
-			return ParadoxSystemScopeExpressionNode(text, textRange, config)
+			return ParadoxSystemLinkExpressionNode(text, textRange, config)
 		}
 	}
 	

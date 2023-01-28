@@ -41,4 +41,10 @@ public class CwtPropertyKeyImpl extends ASTWrapperPsiElement implements CwtPrope
     return CwtPsiImplUtil.getValue(this);
   }
 
+  @Override
+  @NotNull
+  public CwtPropertyKey setValue(@NotNull String value) {
+    return CwtPsiImplUtil.setValue(this, value);
+  }
+
 }

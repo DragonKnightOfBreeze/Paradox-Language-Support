@@ -74,9 +74,14 @@ class CwtImageLocationExpression(
 		return buildString { for(c in placeholder) if(c == '$') append(name) else append(c) }
 	}
 	
-	//(key, file(s), frame)
+	data class ResolveResult(
+		val filePath: String,
+		val file: PsiFile?,
+		val frame: Int,
+		val message: String? = null
+	)
 	
-	fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, project: Project, frame: Int = 0): Tuple3<String, PsiFile?, Int>? {
+	fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, project: Project, frame: Int = 0): ResolveResult? {
 		if(placeholder != null) {
 			//如果定义是匿名的，则直接忽略
 			if(definitionInfo.isAnonymous) return null
@@ -86,13 +91,18 @@ class CwtImageLocationExpression(
 			val selector = fileSelector().gameTypeFrom(definition).preferRootFrom(definition)
 			val file = ParadoxFilePathSearch.search(filePath, project, selector = selector).find()
 				?.toPsiFile<PsiFile>(project)
-			return tupleOf(filePath, file, frame)
+			return ResolveResult(filePath, file, frame)
 		} else if(propertyName != null) {
-			//目前只接收类型为string的值
 			//propertyName可以为空字符串，这时直接查找定义的字符串类型的值（如果存在）
-			val value = definition.findProperty(propertyName)?.findValue<ParadoxScriptString>() ?: return null
-			val resolvedName = value.value
-			if(definitionInfo.name.equals(resolvedName, true)) return null //防止出现SOF
+			//dynamic -> returns ("", null, 0)
+			val property = definition.findProperty(propertyName) ?: return null
+			val propertyValue = property.propertyValue ?: return null
+			val config = ParadoxCwtConfigHandler.resolveValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
+			if(config.expression.type !in validValueTypes) {
+				return ResolveResult("", null, 0, PlsDocBundle.message("dynamic"))
+			}
+			val key = propertyValue.value
+			if(definitionInfo.name.equals(key, true)) return null //防止出现SOF
 			val frameToUse = when {
 				frame != 0 -> frame
 				extraPropertyNames.isNullOrEmpty() -> 0
@@ -100,10 +110,7 @@ class CwtImageLocationExpression(
 					definition.findProperty(propertyName)?.findValue<ParadoxScriptInt>()?.intValue ?: 0
 				} ?: 0
 			}
-			val config = ParadoxCwtConfigHandler.resolveValueConfigs(value).firstOrNull()
-				?.takeIf { it.expression.type in validValueTypes }
-				?: return null
-			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config, config.expression, config.info.configGroup, false)
+			val resolved = CwtConfigHandler.resolveScriptExpression(propertyValue, null, config, config.expression, config.info.configGroup, false)
 			when {
 				//由filePath解析为DDS文件
 				resolved is PsiFile && resolved.fileType == DdsFileType -> {
@@ -111,7 +118,7 @@ class CwtImageLocationExpression(
 					val selector = fileSelector().gameTypeFrom(definition).preferRootFrom(definition)
 					val file = ParadoxFilePathSearch.search(filePath, project, selector = selector).find()
 						?.toPsiFile<PsiFile>(project)
-					return tupleOf(filePath, file, frameToUse)
+					return ResolveResult(filePath, file, frameToUse)
 				}
 				//由filePath解析为definition，这里也可能是sprite之外的definition
 				resolved is ParadoxScriptDefinitionElement -> {
@@ -120,9 +127,10 @@ class CwtImageLocationExpression(
 					val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
 					val primaryImageConfigs = resolvedDefinitionInfo.primaryImageConfigs
 					if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
-					return primaryImageConfigs.mapAndFirst({ it?.second != null }) { primaryImageConfig ->
+					return primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
 						val locationExpression = primaryImageConfig.locationExpression
-						locationExpression.resolve(resolvedDefinition, resolvedDefinitionInfo, resolvedProject, frameToUse)
+						val r = locationExpression.resolve(resolvedDefinition, resolvedDefinitionInfo, resolvedProject, frameToUse)
+						r?.takeIf { it.file != null || it.message != null }
 					}
 				}
 				else -> return null //解析失败或不支持
@@ -132,19 +140,31 @@ class CwtImageLocationExpression(
 		}
 	}
 	
-	fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, project: Project, frame: Int = 0): Tuple3<String, Set<PsiFile>, Int>? {
+	data class ResolveAllResult(
+		val filePath: String,
+		val files: Set<PsiFile>,
+		val frame: Int,
+		val message: String? = null
+	)
+	
+	fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, project: Project, frame: Int = 0): ResolveAllResult? {
 		if(placeholder != null) {
 			//假定这里的filePath以.dds结尾
 			val filePath = buildString { for(c in placeholder) if(c == '$') append(definitionInfo.name) else append(c) }
 			val selector = fileSelector().gameTypeFrom(definition).preferRootFrom(definition)
 			val files  = ParadoxFilePathSearch.search(filePath, project, selector = selector).findAll()
 				.mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
-			return tupleOf(filePath, files, frame)
+			return ResolveAllResult(filePath, files, frame)
 		} else if(!propertyName.isNullOrEmpty()) {
-			//目前只接收类型为string的值
-			val value = definition.findProperty(propertyName)?.findValue<ParadoxScriptString>() ?: return null
-			val resolvedName = value.value
-			if(definitionInfo.name.equals(resolvedName, true)) return null //防止出现SOF
+			//dynamic -> returns ("", null, 0)
+			val property = definition.findProperty(propertyName) ?: return null
+			val propertyValue = property.propertyValue ?: return null
+			val config = ParadoxCwtConfigHandler.resolveValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
+			if(config.expression.type !in validValueTypes) {
+				return ResolveAllResult("", emptySet(), 0, PlsDocBundle.message("dynamic"))
+			}
+			val key = propertyValue.value
+			if(definitionInfo.name.equals(key, true)) return null //防止出现SOF
 			val frameToUse = when {
 				frame != 0 -> frame
 				extraPropertyNames.isNullOrEmpty() -> 0
@@ -152,10 +172,7 @@ class CwtImageLocationExpression(
 					definition.findProperty(propertyName)?.findValue<ParadoxScriptInt>()?.intValue ?: 0
 				} ?: 0
 			}
-			val config = ParadoxCwtConfigHandler.resolveValueConfigs(value).firstOrNull()
-				?.takeIf { it.expression.type in validValueTypes }
-				?: return null
-			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config, config.expression, config.info.configGroup, false)
+			val resolved = CwtConfigHandler.resolveScriptExpression(propertyValue, null, config, config.expression, config.info.configGroup, false)
 			when {
 				//由filePath解析为DDS文件
 				resolved is PsiFile && resolved.fileType == DdsFileType -> {
@@ -163,7 +180,7 @@ class CwtImageLocationExpression(
 					val selector = fileSelector().gameTypeFrom(definition).preferRootFrom(definition)
 					val files = ParadoxFilePathSearch.search(filePath, project, selector = selector).findAll()
 						.mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
-					return tupleOf(filePath, files, frameToUse)
+					return ResolveAllResult(filePath, files, frameToUse)
 				}
 				//由filePath解析为definition，这里也可能是sprite之外的definition
 				resolved is ParadoxScriptDefinitionElement -> {
@@ -176,13 +193,15 @@ class CwtImageLocationExpression(
 					var resolvedSet: MutableSet<PsiFile>? = null
 					for(primaryImageConfig in primaryImageConfigs) {
 						val locationExpression = primaryImageConfig.locationExpression
-						val (filePath, set) = locationExpression.resolveAll(resolvedDefinition, resolvedDefinitionInfo, resolvedProject, frameToUse) ?: continue
+						val r = locationExpression.resolveAll(resolvedDefinition, resolvedDefinitionInfo, resolvedProject, frameToUse) ?: continue
+						if(r.message != null) return r
+						val (filePath, files) = r
 						if(resolvedFilePath == null) resolvedFilePath = filePath
 						if(resolvedSet == null) resolvedSet = mutableSetOf()
-						resolvedSet.addAll(set)
+						resolvedSet.addAll(files)
 					}
 					if(resolvedFilePath == null) return null
-					return tupleOf(resolvedFilePath, resolvedSet ?: emptySet(), frameToUse)
+					return ResolveAllResult(resolvedFilePath, resolvedSet ?: emptySet(), frameToUse)
 				}
 				else -> return null //解析失败或不支持
 			}

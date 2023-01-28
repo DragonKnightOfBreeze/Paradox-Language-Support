@@ -61,12 +61,12 @@ property ::= property_key property_separator value {
   ]
 }
 property_key ::= PROPERTY_KEY_TOKEN {
-  methods=[getIcon getValue]
+  methods=[getIcon getValue setValue]
 }
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
 
 value ::= boolean | int | float | string | block {
-  methods=[getIcon getValue]
+  methods=[getIcon getValue setValue]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value
@@ -84,7 +84,7 @@ string ::= STRING_TOKEN {
   extends=value
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
-  methods=[getIcon getName setName getNameIdentifier getValue getStringValue]
+  methods=[getIcon getName setName getNameIdentifier getValue setValue getStringValue]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1

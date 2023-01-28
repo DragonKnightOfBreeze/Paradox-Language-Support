@@ -6,7 +6,7 @@ import icu.windea.pls.config.cwt.*
 sealed interface ParadoxScopeExpressionNode: ParadoxExpressionNode{
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScopeExpressionNode {
-			ParadoxSystemScopeExpressionNode.resolve(text, textRange, configGroup)?.let { return it }
+			ParadoxSystemLinkExpressionNode.resolve(text, textRange, configGroup)?.let { return it }
 			ParadoxScopeLinkExpressionNode.resolve(text, textRange, configGroup)?.let {return it }
 			ParadoxScopeLinkFromDataExpressionNode.resolve(text, textRange, configGroup)?.let {return it }
 			return ParadoxErrorScopeExpressionNode(text, textRange)

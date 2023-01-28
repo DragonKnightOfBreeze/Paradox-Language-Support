@@ -97,9 +97,9 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 							val selector = localisationSelector().gameTypeFrom(definition).locale(locale)
 							val resolved = info.locationExpression.resolve(definition, definitionInfo, project, selector = selector)
 							if(resolved != null) {
-								val (key, loc) = resolved
-								if(loc == null) {
-									infoMap.putIfAbsent(info.name + "@" + locale, tupleOf(info, key, locale))
+								if(resolved.message != null) continue //skip if it's dynamic or inlined
+								if(resolved.localisation == null) {
+									infoMap.putIfAbsent(info.name + "@" + locale, tupleOf(info, resolved.key, locale))
 								} else {
 									infoMap.remove(info.name + "@" + locale)
 									nameToDistinct.add(info.name + "@" + locale)

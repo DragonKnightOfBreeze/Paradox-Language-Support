@@ -88,10 +88,10 @@ enum class CwtConfigType(
 		override val descriptionText get() = PlsBundle.message("cwt.description.scopeGroup")
 		override val icon get() = PlsIcons.Scope
 	},
-	SystemScope("system scope", true) {
-		override val prefix get() = PlsDocBundle.message("prefix.systemScope")
-		override val descriptionText get() = PlsBundle.message("cwt.description.systemScope")
-		override val icon get() = PlsIcons.SystemScope
+	SystemLink("system link", true) {
+		override val prefix get() = PlsDocBundle.message("prefix.systemLink")
+		override val descriptionText get() = PlsBundle.message("cwt.description.systemLink")
+		override val icon get() = PlsIcons.SystemLink
 	},
 	LocalisationLocale("localisation locale", true) {
 		override val prefix get() = PlsDocBundle.message("prefix.localisationLocale")

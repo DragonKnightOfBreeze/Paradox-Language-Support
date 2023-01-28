@@ -1014,20 +1014,20 @@ object CwtConfigHandler {
 		valueSetValueExpression.complete(context, result)
 	}
 	
-	fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+	fun completeSystemLink(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		//总是提示，无论作用域是否匹配
-		val systemScopeConfigs = configGroup.systemScopes
-		for(systemScopeConfig in systemScopeConfigs.values) {
-			val name = systemScopeConfig.id
-			val element = systemScopeConfig.pointer.element ?: continue
-			val tailText = " from system scopes"
-			val typeFile = systemScopeConfig.pointer.containingFile
+		val systemLinkConfigs = configGroup.systemLinks
+		for(systemLinkConfig in systemLinkConfigs.values) {
+			val name = systemLinkConfig.id
+			val element = systemLinkConfig.pointer.element ?: continue
+			val tailText = " from system links"
+			val typeFile = systemLinkConfig.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
-				.withIcon(PlsIcons.SystemScope)
+				.withIcon(PlsIcons.SystemLink)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withCaseSensitivity(false) //忽略大小写
-				.withPriority(PlsCompletionPriorities.systemScopePriority)
+				.withPriority(PlsCompletionPriorities.systemLinkPriority)
 			result.addElement(lookupElement)
 		}
 	}
@@ -1742,10 +1742,10 @@ object CwtConfigHandler {
 		return templateConfigExpression.resolve(element, text, configGroup)
 	}
 	
-	fun resolveSystemScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-		val systemScope = configGroup.systemScopes[name] ?: return null
-		val resolved = systemScope.pointer.element ?: return null
-		resolved.putUserData(PlsKeys.cwtConfigKey, systemScope)
+	fun resolveSystemLink(name: String, configGroup: CwtConfigGroup): PsiElement? {
+		val systemLink = configGroup.systemLinks[name] ?: return null
+		val resolved = systemLink.pointer.element ?: return null
+		resolved.putUserData(PlsKeys.cwtConfigKey, systemLink)
 		return resolved
 	}
 	

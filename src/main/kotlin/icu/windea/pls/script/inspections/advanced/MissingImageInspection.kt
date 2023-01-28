@@ -71,9 +71,9 @@ class MissingImageInspection : LocalInspectionTool() {
 					if(info.required || if(info.primary) inspection.checkPrimaryForDefinitions else inspection.checkOptionalForDefinitions) {
 						val resolved = info.locationExpression.resolve(definition, definitionInfo, project)
 						if(resolved != null) {
-							val (key, image) = resolved
-							if(image == null) {
-								infoMap.putIfAbsent(info.name, tupleOf(info, key))
+							if(resolved.message != null) continue //skip if it's dynamic
+							if(resolved.file == null) {
+								infoMap.putIfAbsent(info.name, tupleOf(info, resolved.filePath))
 							} else {
 								infoMap.remove(info.name)
 								nameToDistinct.add(info.name)
@@ -170,11 +170,11 @@ class MissingImageInspection : LocalInspectionTool() {
 						.actionListener { _, component -> checkOptionalForDefinitions = component.isSelected }
 						.enabledIf(checkForDefinitionsCb.selected)
 				}
-				row {
-					checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkForModifiers"))
-						.bindSelected(::checkForModifiers)
-						.actionListener { _, component -> checkForModifiers = component.isSelected }
-				}
+			}
+			row {
+				checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkForModifiers"))
+					.bindSelected(::checkForModifiers)
+					.actionListener { _, component -> checkForModifiers = component.isSelected }
 			}
 		}
 	}

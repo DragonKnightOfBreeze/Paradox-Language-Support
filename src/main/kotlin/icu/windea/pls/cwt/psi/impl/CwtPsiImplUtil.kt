@@ -13,6 +13,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
@@ -146,6 +147,13 @@ object CwtPsiImplUtil {
 	fun getValue(element: CwtPropertyKey): String {
 		return element.findChild(PROPERTY_KEY_TOKEN)!!.text.unquote()
 	}
+	
+	@JvmStatic
+	fun setValue(element: CwtPropertyKey, value: String) : CwtPropertyKey {
+		val newElement = CwtElementFactory.createPropertyKey(element.project, value)
+		element.replace(newElement)
+		return element
+	}
 	//endregion
 	
 	//region CwtValue
@@ -158,6 +166,13 @@ object CwtPsiImplUtil {
 	@JvmStatic
 	fun getValue(element: CwtValue): String {
 		return element.text
+	}
+	
+	@JvmStatic
+	fun setValue(element: CwtValue, value: String) : CwtValue {
+		val newElement = CwtElementFactory.createValue(element.project, value)
+		element.replace(newElement)
+		return element
 	}
 	//endregion
 	
@@ -204,6 +219,13 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun setValue(element: CwtString, value: String) : CwtString {
+		val newElement = CwtElementFactory.createString(element.project, value)
+		element.replace(newElement)
+		return element
+	}
+	
+	@JvmStatic
 	fun getStringValue(element: CwtString): String {
 		return element.value
 	}
@@ -245,14 +267,14 @@ object CwtPsiImplUtil {
 	//region CwtDocumentationComment
 	@JvmStatic
 	fun getTokenType(element: CwtDocumentationComment): IElementType {
-		return CwtElementTypes.DOCUMENTATION_COMMENT
+		return DOCUMENTATION_COMMENT
 	}
 	//endregion
 	
 	//region CwtOptionComment
 	@JvmStatic
 	fun getTokenType(element: CwtOptionComment): IElementType {
-		return CwtElementTypes.OPTION_COMMENT
+		return OPTION_COMMENT
 	}
 	//endregion
 }

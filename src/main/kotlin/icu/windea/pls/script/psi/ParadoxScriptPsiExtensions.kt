@@ -197,8 +197,8 @@ inline fun ParadoxScriptMemberElement.findParentByPath(
 		if(definitionType.isNotEmpty()) {
 			var match = false
 			for(expression in definitionType.split('|')) {
-				val (type, subtype) = ParadoxDefinitionTypeExpression.resolve(expression)
-				if(definitionInfo.type == type && (subtype == null || definitionInfo.subtypes.contains(subtype))) {
+				val (type, subtypes) = ParadoxDefinitionTypeExpression.resolve(expression)
+				if(definitionInfo.type == type && (subtypes.isEmpty() || definitionInfo.subtypes.containsAll(subtypes))) {
 					match = true
 					break
 				}
@@ -246,14 +246,6 @@ fun ParadoxScriptValue.isPropertyValue(): Boolean {
 
 fun ParadoxScriptValue.isBlockValue(): Boolean {
 	return parent is ParadoxScriptBlockElement
-}
-
-fun PsiElement.isPropertyOrBLockValue(): Boolean {
-	return when {
-		this is ParadoxScriptProperty -> true
-		this is ParadoxScriptValue && (this.isPropertyValue() || this.isBlockValue()) -> true
-		else -> false
-	}
 }
 
 fun PsiElement.isExpression(): Boolean {

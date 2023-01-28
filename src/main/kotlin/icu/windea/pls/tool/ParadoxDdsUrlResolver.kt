@@ -82,14 +82,14 @@ object ParadoxDdsUrlResolver {
 	
 	private fun doResolveByDefinition(definition: ParadoxScriptDefinitionElement, frame: Int , definitionInfo: ParadoxDefinitionInfo): String? {
 		//兼容definition不是sprite的情况
-		val (_,file,inferredFrame) = runReadAction {
-			definitionInfo.primaryImageConfigs.mapAndFirst {
+		val resolved = runReadAction {
+			definitionInfo.primaryImageConfigs.firstNotNullOfOrNull {
 				it.locationExpression.resolve(definition, definitionInfo, definitionInfo.project)
 			}
-		}  ?: return null
-		if(file == null) return null
-		val frameToUse = if(frame == 0) inferredFrame else frame
-		return doResolveByFile(file.virtualFile, frameToUse)
+		} ?: return null
+		if(resolved.file == null) return null
+		val frameToUse = if(frame == 0) resolved.frame else frame
+		return doResolveByFile(resolved.file.virtualFile, frameToUse)
 	}
 	
 	/**

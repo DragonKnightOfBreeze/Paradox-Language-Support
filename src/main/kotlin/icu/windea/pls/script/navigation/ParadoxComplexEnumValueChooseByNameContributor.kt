@@ -14,11 +14,11 @@ import icu.windea.pls.script.psi.*
  * 用于让`Navigate | Class or Navigate | Symbol`可以查找到匹配名字的复杂枚举值。
  */
 class ParadoxComplexEnumValueChooseByNameContributor : ChooseByNameContributorEx {
-	override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
-		StubIndex.getInstance().processAllKeys(ParadoxComplexEnumIndex.key, processor, scope, filter)
-	}
-	
-	override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
-		StubIndex.getInstance().processElements(ParadoxComplexEnumIndex.key, name, parameters.project, parameters.searchScope, parameters.idFilter, ParadoxScriptStringExpressionElement::class.java, processor)
-	}
+    override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
+        StubIndex.getInstance().processAllKeys(ParadoxComplexEnumValueIndex.key, processor, scope, filter)
+    }
+    
+    override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
+        StubIndex.getInstance().processElements(ParadoxComplexEnumValueIndex.key, name, parameters.project, parameters.searchScope, parameters.idFilter, ParadoxScriptStringExpressionElement::class.java, processor)
+    }
 }

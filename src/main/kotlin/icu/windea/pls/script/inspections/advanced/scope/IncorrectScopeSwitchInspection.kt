@@ -47,10 +47,10 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 							}
 							//TODO may depends on usages
 							//check when root parent scope context is not from event, scripted_trigger or scripted_effect
-							is ParadoxSystemScopeExpressionNode -> {
+							is ParadoxSystemLinkExpressionNode -> {
 								if(scopeContext.thisScope == ParadoxScopeHandler.anyScopeId) {
 									val definitionType = definitionInfo?.type ?: continue
-									if(config.info.configGroup.definitionTypesSkipCheckSystemScope.contains(definitionType)) continue
+									if(config.info.configGroup.definitionTypesSkipCheckSystemLink.contains(definitionType)) continue
 									val description = PlsBundle.message("script.inspection.scope.incorrectScopeSwitch.description.3",
 										scopeNode.text)
 									holder.registerProblem(propertyKey, rangeInExpression, description)

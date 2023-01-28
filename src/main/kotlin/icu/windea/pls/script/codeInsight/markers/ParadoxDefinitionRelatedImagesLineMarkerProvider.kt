@@ -33,14 +33,17 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : RelatedItemLineMarkerPr
 		val keys = mutableSetOf<String>()
 		val targets = mutableSetOf<PsiElement>() //这里需要考虑基于引用相等去重
 		var isFirst = true
-		runReadAction {
-			for((key, locationExpression) in imageInfos) {
-				val (filePath, files) = locationExpression.resolveAll(element, definitionInfo, project) ?: continue
-				if(files.isNotEmpty()) targets.addAll(files)
-				if(files.isNotEmpty() && keys.add(key)) {
-					if(isFirst) isFirst = false else tooltipBuilder.appendBr()
-					tooltipBuilder.append(PlsDocBundle.message("prefix.relatedImage")).append(" ").append(key).append(" = ").append(filePath)
-				}
+		for((key, locationExpression) in imageInfos) {
+			val resolved = locationExpression.resolveAll(element, definitionInfo, project) ?: continue
+			if(resolved.files.isNotEmpty()) {
+				targets.addAll(resolved.files)
+			}
+			if(resolved.message != null) {
+				if(isFirst) isFirst = false else tooltipBuilder.appendBr()
+				tooltipBuilder.append(PlsDocBundle.message("prefix.relatedImage")).append(" ").append(key).append(" = ").append(resolved.message)
+			} else if(resolved.files.isNotEmpty() && keys.add(key)) {
+				if(isFirst) isFirst = false else tooltipBuilder.appendBr()
+				tooltipBuilder.append(PlsDocBundle.message("prefix.relatedImage")).append(" ").append(key).append(" = ").append(resolved.filePath)
 			}
 		}
 		if(keys.isEmpty()) return

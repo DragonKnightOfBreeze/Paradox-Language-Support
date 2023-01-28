@@ -51,10 +51,10 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
 	
 	private fun doProcessQueryByTypeExpression(typeExpression: String, project: Project, scope: GlobalSearchScope, name: String?, consumer: Processor<in ParadoxScriptDefinitionElement>) {
 		for(expression in typeExpression.split('|')) {
-			val (type, subtype) = ParadoxDefinitionTypeExpression.resolve(expression)
+			val (type, subtypes) = ParadoxDefinitionTypeExpression.resolve(expression)
 			ParadoxDefinitionTypeIndex.processAllElements(type, project, scope) {
 				if(name != null && !matchesName(it, name)) return@processAllElements true
-				if(subtype != null && !matchesSubtype(it, subtype)) return@processAllElements true
+				if(subtypes.isNotEmpty() && !matchesSubtypes(it, subtypes)) return@processAllElements true
 				consumer.process(it)
 			}
 		}
@@ -64,7 +64,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
 		return ParadoxDefinitionHandler.getName(element) == name
 	}
 	
-	private fun matchesSubtype(element: ParadoxScriptDefinitionElement, subtype: String): Boolean {
-		return ParadoxDefinitionHandler.getSubtypes(element)?.contains(subtype) == true
+	private fun matchesSubtypes(element: ParadoxScriptDefinitionElement, subtypes: List<String>): Boolean {
+		return ParadoxDefinitionHandler.getSubtypes(element)?.containsAll(subtypes) == true
 	}
 }

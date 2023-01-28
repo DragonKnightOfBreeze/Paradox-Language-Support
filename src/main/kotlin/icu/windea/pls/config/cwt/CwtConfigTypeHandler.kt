@@ -91,8 +91,8 @@ object CwtConfigTypeHandler {
 			fileKey == "scopes" && path.matchesAntPath("scope_groups/*") -> {
 				CwtConfigType.ScopeGroup
 			}
-			fileKey == "system_scopes" && path.matchesAntPath("system_scopes/*") -> {
-				CwtConfigType.SystemScope
+			fileKey == "system_links" && path.matchesAntPath("system_links/*") -> {
+				CwtConfigType.SystemLink
 			}
 			fileKey == "localisation_locales" && path.matchesAntPath("localisation_locales/*") -> {
 				CwtConfigType.LocalisationLocale

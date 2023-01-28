@@ -9,7 +9,7 @@ object PlsCompletionPriorities {
 	const val scopeLinkPrefixPriority = 85.0
 	const val valueLinkPrefixPriority = 85.0
 	//const val modifierPriority = 80.0
-	const val systemScopePriority = 75.0
+	const val systemLinkPriority = 75.0
 	const val scopePriority = 70.0
 	const val localisationCommandPriority = 50.0
 	//const val pathPriority = 60.0
