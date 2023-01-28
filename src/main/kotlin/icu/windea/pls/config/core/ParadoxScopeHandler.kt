@@ -58,24 +58,41 @@ object ParadoxScopeHandler {
 	}
 	
 	@JvmStatic
-	fun matchesScope(thisScope: String?, scopes: Set<String>?): Boolean {
+	fun matchesScope(scopeContext: ParadoxScopeContext?, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {
+		val thisScope = scopeContext?.thisScope
 		if(thisScope == null) return true
-		if(scopes == null || scopes.isEmpty() || scopes == anyScopeIdSet) return true
+		if(scopeToMatch == anyScopeId) return true
 		if(thisScope == anyScopeId) return true
 		if(thisScope == unknownScopeId) return true
-		return thisScope in scopes
+		if(thisScope == scopeToMatch) return true
+		val scopeConfig = configGroup.scopeAliasMap[thisScope]
+		if(scopeConfig != null) return scopeConfig.aliases.any { it == scopeToMatch }
+		return false
 	}
 	
 	@JvmStatic
-	fun matchesScope(scopeContext: ParadoxScopeContext?, scopes: Set<String>?): Boolean {
+	fun matchesScope(scopeContext: ParadoxScopeContext?, scopesToMatch: Set<String>?, configGroup: CwtConfigGroup): Boolean {
 		val thisScope = scopeContext?.thisScope
-		return matchesScope(thisScope, scopes)
+		if(thisScope == null) return true
+		if(scopesToMatch == null || scopesToMatch.isEmpty() || scopesToMatch == anyScopeIdSet) return true
+		if(thisScope == anyScopeId) return true
+		if(thisScope == unknownScopeId) return true
+		if(thisScope in scopesToMatch) return true
+		val scopeConfig = configGroup.scopeAliasMap[thisScope]
+		if(scopeConfig != null) return scopeConfig.aliases.any { it in scopesToMatch }
+		return false
 	}
 	
-	//fun matchScope(scopes: Collection<String>?, scopesToMatch: Collection<String>?, configGroup: CwtConfigGroup): Boolean {
-	//	if(scopes.isNullOrEmpty()) return true
-	//	return scopes.any { scope -> matchScope(scope, scopesToMatch, configGroup) }
-	//}
+	@JvmStatic
+	fun matchesScopeGroup(scopeContext: ParadoxScopeContext?, scopeGroupToMatch: String, configGroup: CwtConfigGroup): Boolean {
+		val thisScope = scopeContext?.thisScope
+		if(thisScope == null) return true
+		if(thisScope == anyScopeId) return true
+		if(thisScope == unknownScopeId) return true
+		val scopeGroupConfig = configGroup.scopeGroups[scopeGroupToMatch]
+		if(scopeGroupConfig != null) return scopeGroupConfig.values.any { thisScope == it }
+		return false //cwt config error
+	}
 	
 	@JvmStatic
 	fun findParentMember(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {

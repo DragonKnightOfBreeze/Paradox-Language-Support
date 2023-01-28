@@ -2,11 +2,14 @@ package icu.windea.pls.script.inspections.advanced
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -24,8 +27,10 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
 			
 			private fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
 				ProgressManager.checkCanceled()
-				if(element.text.isLeftQuoted()) return //忽略
+				val text = element.text
+				if(text.isLeftQuoted()) return //忽略
 				//得到完全匹配的CWT规则
+				val isKey = element is ParadoxScriptPropertyKey
 				val config = ParadoxCwtConfigHandler.resolveConfigs(element, orDefault = false).firstOrNull() ?: return
 				val configExpression = config.expression
 				when(configExpression.type) {
@@ -69,10 +74,30 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
 						}
 					}
 					CwtDataType.Scope -> {
-						//TODO
+						if(element !is ParadoxScriptStringExpressionElement) return
+						val expectedScope = configExpression.value ?: return
+						val textRange = TextRange.create(0, text.length)
+						val configGroup = config.info.configGroup
+						val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup, isKey) ?: return
+						val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
+						val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return
+						val scopeContext = ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, parentScopeContext)
+						if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return
+						val expression = element.expression ?: return
+						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.insufficientExpression.description.4", expression, expectedScope, scopeContext.thisScope))
 					}
 					CwtDataType.ScopeGroup -> {
-						//TODO
+						if(element !is ParadoxScriptStringExpressionElement) return
+						val expectedScopeGroup = configExpression.value ?: return
+						val textRange = TextRange.create(0, text.length)
+						val configGroup = config.info.configGroup
+						val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup, isKey) ?: return
+						val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
+						val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return
+						val scopeContext = ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, parentScopeContext)
+						if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return
+						val expression = element.expression ?: return
+						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.insufficientExpression.description.5", expression, expectedScopeGroup, scopeContext.thisScope))
 					}
 					CwtDataType.IntValueField -> {
 						//TODO

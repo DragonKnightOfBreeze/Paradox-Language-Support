@@ -67,9 +67,13 @@
 * [X] modifier忽略大小写
 * [X] 快速文档中显示modifier的生成模版、生成源、相关本地化、图标、分类、支持的作用域、作用域上下文信息
 * [X] 转到相关本地化/图片操作也可以用于modifier
-* [ ] 无法查找定义和图标中的引用 - 这又是为啥？
+* [ ] 无法查找定义和图标中的引用
+* [ ] 无法全局查找复杂枚举值
+* [ ] 动态模版的上下文范围判定有问题（脚本文件的property key/property value）
 * [X] 支持补全模版表达式和modifier
 * [X] 模版表达式提供特殊图标
+* [ ] 检查：生成的modifier的解析、快速文档、代码补全
+* [ ] 检查：不充分的表达式的检查 - 检查作用域和作用域组是否匹配
 * [ ] ［不确定］在快速文档中显示本地化作用域和命令的作用域上下文 - 需要大幅重构相关代码
 * [ ] ［不确定］也许需要重构复杂表达式相关代码，更好地支持相关功能，以及支持额外的复杂表达式
 
@@ -83,6 +87,7 @@ overlord_gaiaseeder_upkeep_machine
 
 ## 0.7.11
 
+* BUG修复
 * 功能优化
   * [X] 对于名称忽略大小写的CWT规则，在读取时保留规则文件中声明的顺序
   * [X] 如果某个游戏的规则文件未写明localisation_link规则，则使用from_data=no的link规则
@@ -109,6 +114,8 @@ overlord_gaiaseeder_upkeep_machine
     * [X] 可以通过`Ctrl+Click`查找修饰符使用
   * 意向（`Intention`）
     * [X] 用双引号括起/不再用双引号括起（对于属性名、数字和字符串）
+  * 代码检查（`Code > Inspect Code...`）
+    * [X] 不充分的表达式的检查 - 检查作用域和作用域组是否匹配
 
 ## 0.7.10
 
@@ -122,6 +129,10 @@ overlord_gaiaseeder_upkeep_machine
 ## 0.7.9
 
 * BUG修复
+  * [ ] 修复无法查找定义的引用的问题
+  * [ ] 修复无法查找本地化图标中引用的问题
+  * [ ] 修复无法全局查找复杂枚举值的问题
+  * [ ] 修复动态模版的上下文范围判定的问题（脚本文件的property key/property value）
   * [X] 修复：[Cannot choose path for library using CK3 #7](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/7)
 * 功能优化
   * [X] 默认将基于子句内联模版的提示项放到前面
