@@ -150,7 +150,7 @@ object CwtConfigHandler {
 				return false
 			}
 			CwtDataType.Float -> {
-				//注意：用括号括起的浮点数（作为scalar）也匹配这个规则
+				//注意：用双引号括起的浮点数（作为scalar）也匹配这个规则
 				if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) return true
 				//匹配范围
 				if(isExact) {

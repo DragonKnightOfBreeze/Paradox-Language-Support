@@ -85,6 +85,7 @@ overlord_gaiaseeder_upkeep_machine
 
 * 功能优化
   * [X] 对于名称忽略大小写的CWT规则，在读取时保留规则文件中声明的顺序
+  * [X] 如果某个游戏的规则文件未写明localisation_link规则，则使用from_data=no的link规则
   * [X] 兼容可能的动态的相关本地化和相关图片（例如，相关本地化基于触发器（`trigger`）时需要跳过检查）
   * [ ] 实现生成器基于日志文件生成CWT规则文件（`modifiers.cwt` `effects.cwt` `triggers.cwt`等）
   * [ ] 完善Stellaris的CWT规则文件（`modifiers.cwt` `effects.cwt` `triggers.cwt`等）
