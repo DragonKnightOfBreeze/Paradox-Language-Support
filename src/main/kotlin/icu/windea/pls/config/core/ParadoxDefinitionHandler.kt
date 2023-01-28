@@ -146,11 +146,9 @@ object ParadoxDefinitionHandler {
 		if(pathFileConfig != null) {
 			if(pathFileConfig != path.fileName) return false
 		}
-		//判断path_extension是否匹配
-		val pathExtensionConfig = typeConfig.pathExtension //String?
-		if(pathExtensionConfig != null) {
-			if(pathExtensionConfig != "." + path.fileExtension) return false
-		}
+		//判断path_extension是否匹配（默认为".txt"）
+		val pathExtensionConfig = typeConfig.pathExtension ?: ".txt" //String?
+		if(pathExtensionConfig != "." + path.fileExtension) return false
 		
 		//如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
 		//skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
@@ -174,11 +172,12 @@ object ParadoxDefinitionHandler {
 			val result = typeKeyFilterConfig.contains(rootKey)
 			if(!result) return false
 		}
-		//如果name_field存在，则要求type_key必须是指定的所有type_key之一
+		//如果name_field存在，则要求type_key必须是指定的所有type_key之一，或者没有任何指定的type_key
 		val nameFieldConfig = typeConfig.nameField
 		if(nameFieldConfig != null) {
-			val result = typeConfig.typeKeyFilter?.set?.contains(rootKey) == true
-				|| typeConfig.subtypes.values.any { subtypeConfig -> subtypeConfig.typeKeyFilter?.set?.contains(rootKey) == true }
+			val result = (typeConfig.typeKeyFilter == null && typeConfig.subtypes.values.all { it.typeKeyFilter == null })
+				|| typeConfig.typeKeyFilter?.set?.contains(rootKey) == true
+				|| typeConfig.subtypes.values.any { it.typeKeyFilter?.set?.contains(rootKey) == true }
 			if(!result) return false
 		}
 		
@@ -319,13 +318,15 @@ object ParadoxDefinitionHandler {
 	}
 	
 	private fun doMatchDefinition(definitionElement: ParadoxScriptDefinitionElement, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
-		if(propertyConfig.configs.orEmpty().isNotEmpty()) {
+		if(propertyConfig.values.orEmpty().isNotEmpty()) {
 			//匹配值列表
 			val values = definitionElement.valueList
 			if(!doMatchValues(values, propertyConfig.values.orEmpty(), configGroup)) return false //继续匹配
+		}
+		if(propertyConfig.configs.orEmpty().isNotEmpty()) {
 			//匹配属性列表
-			val props = definitionElement.propertyList
-			if(!doMatchProperties(props, propertyConfig.properties.orEmpty(), configGroup)) return false //继续匹配
+			val properties = definitionElement.propertyList
+			if(!doMatchProperties(properties, propertyConfig.properties.orEmpty(), configGroup)) return false //继续匹配
 		}
 		return true
 	}

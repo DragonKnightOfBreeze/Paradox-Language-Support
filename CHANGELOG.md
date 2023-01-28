@@ -91,7 +91,7 @@ overlord_gaiaseeder_upkeep_machine
   * [ ] 修复无法查找定义的引用的问题
   * [ ] 修复无法查找本地化图标中引用的问题
   * [ ] 修复无法全局查找复杂枚举值的问题
-  * [ ] 修复动态模版的上下文范围判定的问题（脚本文件的keyExpressions/valueExpressions）
+  * [X] 修复动态模版的上下文范围判定的问题（脚本文件的keyExpressions/valueExpressions）
   * [X] 修复：[Cannot choose path for library using CK3 #7](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/7)
 * 功能优化
   * [X] 对于名称忽略大小写的CWT规则，在读取时保留规则文件中声明的顺序
