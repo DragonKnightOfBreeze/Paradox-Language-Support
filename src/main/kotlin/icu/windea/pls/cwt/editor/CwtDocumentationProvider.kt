@@ -287,7 +287,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
 				}
 			}
-			CwtConfigType.Alias -> {
+			CwtConfigType.Alias, CwtConfigType.Trigger, CwtConfigType.Effect -> {
 				val (aliasName, aliasSubName) = name.removeSurroundingOrNull("alias[", "]")?.split(':') ?: return
 				val aliasConfigGroup = configGroup.aliasGroups[aliasName] ?: return
 				val aliasConfigs = aliasConfigGroup[aliasSubName] ?: return
@@ -298,6 +298,9 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				if(sections != null) {
 					val supportedScopes = aliasConfig.supportedScopes
 					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
+					
+					val outputScope = aliasConfig.outputScope
+					if(outputScope != null) sections.put(PlsDocBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
 				}
 			}
 			else -> pass()

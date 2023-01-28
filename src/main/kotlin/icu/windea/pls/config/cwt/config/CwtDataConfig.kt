@@ -83,7 +83,7 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 		}.ifEmpty { ParadoxScopeHandler.anyScopeIdSet }
 	}
 	
-	val supportAnyScope = supportedScopes == ParadoxScopeHandler.anyScopeIdSet
+	val supportAnyScope get() = supportedScopes == ParadoxScopeHandler.anyScopeIdSet
 	
 	/**
 	 * 深拷贝。

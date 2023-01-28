@@ -10,5 +10,5 @@ data class CwtLocalisationCommandConfig(
 	val name: String,
 	val supportedScopes: Set<String>
 ) : CwtConfig<CwtProperty> {
-	val supportAnyScope = supportedScopes == ParadoxScopeHandler.anyScopeIdSet
+	val supportAnyScope get() = supportedScopes == ParadoxScopeHandler.anyScopeIdSet
 }

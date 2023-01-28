@@ -15,6 +15,6 @@ data class CwtModifierCategoryConfig(
 	val internalId: String? = null,
 	val supportedScopes: Set<String>
 ) : CwtConfig<CwtProperty>{
-	val supportAnyScope = supportedScopes == ParadoxScopeHandler.anyScopeIdSet
+	val supportAnyScope get() = supportedScopes == ParadoxScopeHandler.anyScopeIdSet
 }
 
