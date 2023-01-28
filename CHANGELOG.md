@@ -89,7 +89,7 @@ overlord_gaiaseeder_upkeep_machine
   * [X] CWT规则类型`scalar`也可以对应一个数字，不需要用引号括起（因此也可以对应一个scripted_variable或者inline_math）
   * [X] 兼容可能的动态的相关本地化和相关图片（例如，相关本地化基于触发器（`trigger`）时需要跳过检查）
   * [X] 实现生成器基于日志文件生成CWT规则文件（`modifiers.cwt` `effects.cwt` `triggers.cwt`等）
-  * [ ] 完善Stellaris的CWT规则文件（`modifiers.cwt` `effects.cwt` `triggers.cwt`等）
+  * [X] 完善Stellaris的CWT规则文件（`modifiers.cwt` `effects.cwt` `triggers.cwt`等）
 * 新增功能 - 概述
   * [X] 初步支持CWT规则类型`variable_field`和`int_variable_field`，以及相关的引用解析、代码补全、代码高亮等功能
     * 作为`value_field`和`int_value_field`的子级
