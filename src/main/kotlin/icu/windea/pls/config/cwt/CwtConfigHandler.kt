@@ -139,7 +139,7 @@ object CwtConfigHandler {
 				return expression.type.isBooleanType()
 			}
 			CwtDataType.Int -> {
-				//注意：用括号括起的整数（作为scalar）也匹配这个规则
+				//quoted number (e.g. "1") -> ok according to vanilla game files
 				if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
 				//匹配范围
 				if(isExact) {
@@ -150,7 +150,7 @@ object CwtConfigHandler {
 				return false
 			}
 			CwtDataType.Float -> {
-				//注意：用双引号括起的浮点数（作为scalar）也匹配这个规则
+				//quoted number (e.g. "1") -> ok according to vanilla game files
 				if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) return true
 				//匹配范围
 				if(isExact) {
@@ -171,8 +171,13 @@ object CwtConfigHandler {
 					return !expression.type.isBlockLikeType()
 				}
 				
-				//unquoted_string, quoted, any key
-				return expression.type.isStringType() || (expression.isKey == true)
+				return when {
+					expression.isKey == true -> true //key -> ok
+					expression.type == ParadoxDataType.ParameterType -> true //parameter -> ok
+					expression.type.isNumberType() -> true //number -> ok according to vanilla game files
+					expression.type.isStringType() -> true //unquoted/quoted string -> ok
+					else -> false
+				}
 			}
 			CwtDataType.ColorField -> {
 				return expression.type.isColorType() && configExpression.value?.let { expression.text.startsWith(it) } != false
