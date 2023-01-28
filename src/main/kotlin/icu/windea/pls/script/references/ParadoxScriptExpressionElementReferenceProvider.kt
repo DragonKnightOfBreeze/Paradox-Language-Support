@@ -52,6 +52,13 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 					if(valueFieldExpression == null) return PsiReference.EMPTY_ARRAY
 					return valueFieldExpression.getReferences(element)
 				}
+				CwtDataType.VariableField, CwtDataType.IntVariableField -> {
+					if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
+					if(text.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
+					val variableFieldExpression = ParadoxVariableFieldExpression.resolve(text, textRange, configGroup, isKey)
+					if(variableFieldExpression == null) return PsiReference.EMPTY_ARRAY
+					return variableFieldExpression.getReferences(element)
+				}
 				else -> {
 					if(element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY
 					val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)

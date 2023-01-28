@@ -195,6 +195,12 @@ class ParadoxScriptAnnotator : Annotator {
 				val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup, isKey) ?: return
 				annotateComplexExpression(element, valueFieldExpression, config, range, holder)
 			}
+			CwtDataType.VariableField, CwtDataType.IntVariableField -> {
+				if(text.isLeftQuoted()) return
+				val textRange = TextRange.create(0, text.length)
+				val variableFieldExpression = ParadoxVariableFieldExpression.resolve(text, textRange, configGroup, isKey) ?: return
+				annotateComplexExpression(element, variableFieldExpression, config, range, holder)
+			}
 			CwtDataType.Modifier -> {
 				if(text.isParameterAwareExpression()) return
 				val attributesKey = Keys.MODIFIER_KEY

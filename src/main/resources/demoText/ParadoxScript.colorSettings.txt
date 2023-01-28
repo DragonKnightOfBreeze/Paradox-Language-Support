@@ -33,14 +33,15 @@ settings = {
 	key = <COMPLEX_ENUM_VALUE>complex_enum_value</COMPLEX_ENUM_VALUE>
 	<SYSTEM_LINK>root</SYSTEM_LINK> = {
 		<SCOPE>owner</SCOPE> = {
-			some_scope_field_expression = <SCOPE_FILED_EXPRESSION><SCOPE_LINK_PREFIX>prefix:</SCOPE_LINK_PREFIX><SCOPE_LINK_DATA_SOURCE>value</SCOPE_LINK_DATA_SOURCE></SCOPE_FILED_EXPRESSION>
-			some_value_field_expression = <VALUE_FILED_EXPRESSION><VALUE_LINK_PREFIX>prefix:</VALUE_LINK_PREFIX><VALUE_LINK_DATA_SOURCE>value</VALUE_LINK_DATA_SOURCE></VALUE_FILED_EXPRESSION>
-			some_value_set_value_expression = <VALUE_SET_VALUE_EXPRESSION><VALUE_SET_VALUE>some_value_set_value</VALUE_SET_VALUE></VALUE_SET_VALUE_EXPRESSION>
-			some_script_value_expression = <SCRIPT_VALUE_EXPRESSION>some_script_value||</SCRIPT_VALUE_EXPRESSION>
-			some_modifier = <MODIFIER>some_modifier</MODIFIER>
-			some_trigger = <TRIGGER>some_trigger</TRIGGER>
-			some_effect = <EFFECT>some_effect</EFFECT>
-			some_variable = <VARIABLE>some_variable</VARIABLE>
+			scope_field_expression = <SCOPE_FILED_EXPRESSION><SCOPE_LINK_PREFIX>prefix:</SCOPE_LINK_PREFIX><SCOPE_LINK_DATA_SOURCE>value</SCOPE_LINK_DATA_SOURCE></SCOPE_FILED_EXPRESSION>
+			value_field_expression = <VALUE_FILED_EXPRESSION><VALUE_LINK_PREFIX>prefix:</VALUE_LINK_PREFIX><VALUE_LINK_DATA_SOURCE>value</VALUE_LINK_DATA_SOURCE></VALUE_FILED_EXPRESSION>
+			variable_field_expression = <VARIABLE_FILED_EXPRESSION><VARIABLE>some_variable</VARIABLE></VARIABLE_FILED_EXPRESSION>
+			value_set_value_expression = <VALUE_SET_VALUE_EXPRESSION><VALUE_SET_VALUE>some_value_set_value</VALUE_SET_VALUE></VALUE_SET_VALUE_EXPRESSION>
+			script_value_expression = <SCRIPT_VALUE_EXPRESSION>some_script_value||</SCRIPT_VALUE_EXPRESSION>
+			modifier = <MODIFIER>some_modifier</MODIFIER>
+			trigger = <TRIGGER>some_trigger</TRIGGER>
+			effect = <EFFECT>some_effect</EFFECT>
+			variable = <VARIABLE>some_variable</VARIABLE>
 		}
 	}
 }

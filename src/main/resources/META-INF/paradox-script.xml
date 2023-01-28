@@ -238,6 +238,12 @@
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.expression.IncorrectValueFieldExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectVariableFieldExpression"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="script.inspection.expression.incorrectVariableFieldExpression"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
+                     groupPathKey="script.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.expression.IncorrectVariableFieldExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectValueSetValueExpression"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="script.inspection.expression.incorrectValueSetValueExpression"

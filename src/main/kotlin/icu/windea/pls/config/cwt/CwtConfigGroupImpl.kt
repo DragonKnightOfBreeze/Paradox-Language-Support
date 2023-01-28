@@ -173,6 +173,9 @@ class CwtConfigGroupImpl(
 	override val linksAsValueWithoutPrefixSorted: List<CwtLinkConfig> by lazy {
 		linksAsValueWithoutPrefix.values.sortedByPriority(this) { it.dataSource!! }
 	}
+	override val linksAsVariable: List<CwtLinkConfig> by lazy { 
+		linksAsValueWithoutPrefix["variable"].toSingletonListOrEmpty()
+	}
 	
 	//解析CSV
 	

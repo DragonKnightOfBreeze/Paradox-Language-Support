@@ -12,4 +12,3 @@ sealed interface ParadoxValueFieldExpressionNode : ParadoxExpressionNode {
 		}
 	}
 }
-

@@ -321,15 +321,19 @@ object CwtConfigHandler {
 			}
 			CwtDataType.VariableField -> {
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
-				if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
+				if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) return true
 				if(!isStatic && isParameterAware) return true
-				return false //TODO
+				if(expression.quoted) return false //接下来的匹配不允许用引号括起
+				val textRange = TextRange.create(0, expression.text.length)
+				return ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey) != null
 			}
 			CwtDataType.IntVariableField -> {
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
 				if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
 				if(!isStatic && isParameterAware) return true
-				return false //TODO
+				if(expression.quoted) return false //接下来的匹配不允许用引号括起
+				val textRange = TextRange.create(0, expression.text.length)
+				return ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey) != null
 			}
 			CwtDataType.Modifier -> {
 				if(!isStatic && isParameterAware) return true
@@ -339,7 +343,6 @@ object CwtConfigHandler {
 			CwtDataType.SingleAliasRight -> {
 				return false //不在这里处理
 			}
-			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataType.AliasKeysField -> {
 				if(!isStatic && isParameterAware) return true
 				val aliasName = configExpression.value ?: return false
@@ -432,8 +435,8 @@ object CwtConfigHandler {
 			CwtDataType.ScopeGroup -> 30
 			CwtDataType.ValueField -> 30
 			CwtDataType.IntValueField -> 30
-			CwtDataType.VariableField -> 20
-			CwtDataType.IntVariableField -> 20
+			CwtDataType.VariableField -> 30
+			CwtDataType.IntVariableField -> 30
 			CwtDataType.Modifier -> 55 //lower than definition
 			CwtDataType.SingleAliasRight -> 0 //不期望匹配到
 			CwtDataType.AliasName -> 0 //不期望匹配到
@@ -848,15 +851,20 @@ object CwtConfigHandler {
 				completeValueFieldExpression(context, result)
 				put(PlsCompletionKeys.isIntKey, null)
 			}
-			CwtDataType.VariableField -> pass() //TODO
-			CwtDataType.IntVariableField -> pass() //TODO
+			CwtDataType.VariableField -> {
+				completeVariableFieldExpression(context, result)
+			}
+			CwtDataType.IntVariableField -> {
+				put(PlsCompletionKeys.isIntKey, true)
+				completeVariableFieldExpression(context, result)
+				put(PlsCompletionKeys.isIntKey, null)
+			}
 			CwtDataType.Modifier -> {
 				//提示预定义的modifier
 				completeModifier(context, result)
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataType.SingleAliasRight -> pass()
-			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataType.AliasKeysField -> {
 				val aliasName = configExpression.value ?: return
 				completeAliasName(aliasName, context, result)
@@ -1002,8 +1010,16 @@ object CwtConfigHandler {
 		//基于当前位置的代码补全
 		if(quoted) return
 		val textRange = TextRange.create(0, keyword.length)
-		val scopeFieldExpression = ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup, isKey, true) ?: return
-		scopeFieldExpression.complete(context, result)
+		val valueFieldExpression = ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup, isKey, true) ?: return
+		valueFieldExpression.complete(context, result)
+	}
+	
+	fun completeVariableFieldExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+		//基于当前位置的代码补全
+		if(quoted) return
+		val textRange = TextRange.create(0, keyword.length)
+		val variableFieldExpression = ParadoxVariableFieldExpression.resolve(keyword, textRange, configGroup, isKey, true) ?: return
+		variableFieldExpression.complete(context, result)
 	}
 	
 	fun completeValueSetValueExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
@@ -1083,8 +1099,11 @@ object CwtConfigHandler {
 		val configs = configs
 		val scopeContext = scopeContext
 		
-		val allLinkConfigs = if(prefix == null) configGroup.linksAsScopeWithoutPrefix else configGroup.linksAsScopeWithPrefix
-		val linkConfigs = if(prefix == null) allLinkConfigs.values else allLinkConfigs.values.filter { prefix == it.prefix }
+		val linkConfigs = when {
+			prefix == null -> configGroup.linksAsScopeWithoutPrefix.values
+			else -> configGroup.linksAsScopeWithPrefix.values.filter { prefix == it.prefix }
+		}
+		
 		if(dataSourceNodeToCheck is ParadoxValueSetValueExpression) {
 			context.put(PlsCompletionKeys.configKey, dataSourceNodeToCheck.configs.first())
 			context.put(PlsCompletionKeys.configsKey, dataSourceNodeToCheck.configs)
@@ -1152,13 +1171,15 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun completeValueLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?, dataSourceNodeToCheck: ParadoxExpressionNode?): Unit = with(context) {
+	fun completeValueLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?, dataSourceNodeToCheck: ParadoxExpressionNode?, variableOnly: Boolean = false): Unit = with(context) {
 		val config = config
 		val configs = configs
 		val scopeContext = scopeContext
 		
-		val allLinkConfigs = if(prefix == null) configGroup.linksAsValueWithoutPrefix else configGroup.linksAsValueWithPrefix
-		val linkConfigs = if(prefix == null) allLinkConfigs.values else allLinkConfigs.values.filter { prefix == it.prefix }
+		val linkConfigs = when {
+			prefix == null -> configGroup.linksAsScopeWithoutPrefix.values
+			else -> configGroup.linksAsScopeWithPrefix.values.filter { prefix == it.prefix }
+		}
 		
 		if(dataSourceNodeToCheck is ParadoxValueSetValueExpression) {
 			context.put(PlsCompletionKeys.configKey, dataSourceNodeToCheck.configs.first())
@@ -1350,14 +1371,15 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun completeVariable(file: PsiFile, result: CompletionResultSet) {
-		val project = file.project
+	fun completeVariable(context: ProcessingContext, result: CompletionResultSet) {
+		val file = context.originalFile.project
+		val project = file
 		val variableSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
 		val variableQuery = ParadoxValueSetValueSearch.search("variable", project, selector = variableSelector)
 		variableQuery.processQuery { variable ->
 			val value = ParadoxValueSetValueHandler.getName(variable) ?: return@processQuery true
 			val icon = PlsIcons.Variable
-			val tailText = " from value[variable]"
+			val tailText = " from variables"
 			val lookupElement = LookupElementBuilder.create(variable, value)
 				.withIcon(icon)
 				.withTailText(tailText, true)
@@ -1555,14 +1577,14 @@ object CwtConfigHandler {
 				return null
 			}
 			CwtDataType.VariableField, CwtDataType.IntVariableField -> {
-				return null //TODO
+				//不在这里处理，参见：ParadoxVariableFieldExpression
+				return null
 			}
 			CwtDataType.Modifier -> {
 				return resolveModifier(element, expression, configGroup)
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataType.SingleAliasRight -> return null
-			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataType.AliasKeysField -> {
 				val aliasName = configExpression.value ?: return null
 				val aliasGroup = configGroup.aliasGroups[aliasName] ?: return null
@@ -1688,12 +1710,15 @@ object CwtConfigHandler {
 				//不在这里处理，参见：ParadoxValueFieldExpression
 				return emptyList()
 			}
+			CwtDataType.VariableField, CwtDataType.IntVariableField -> {
+				//不在这里处理，参见：ParadoxVariableFieldExpression
+				return emptyList()
+			}
 			CwtDataType.Modifier -> {
 				return resolveModifier(element, expression, configGroup).toSingletonListOrEmpty()
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataType.SingleAliasRight -> return emptyList()
-			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataType.AliasKeysField -> {
 				val aliasName = configExpression.value ?: return emptyList()
 				val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptyList()

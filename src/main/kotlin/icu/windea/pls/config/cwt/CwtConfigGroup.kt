@@ -71,10 +71,12 @@ interface CwtConfigGroup {
 	val aliasKeysGroupConst: Map<String, Map<@CaseInsensitive String, String>>
 	//非常量字符串的别名的组名的映射
 	val aliasKeysGroupNoConst: Map<String, Set<String>>
+	//处理后的连接规则
 	val linksAsScopeWithPrefixSorted: List<CwtLinkConfig>
 	val linksAsValueWithPrefixSorted: List<CwtLinkConfig>
 	val linksAsScopeWithoutPrefixSorted: List<CwtLinkConfig>
 	val linksAsValueWithoutPrefixSorted: List<CwtLinkConfig>
+	val linksAsVariable: List<CwtLinkConfig>
 	
 	//必定支持作用域上下文的CWT别名规则
 	val aliasNamesSupportScope: Set<String>

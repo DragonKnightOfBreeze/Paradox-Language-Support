@@ -19,7 +19,6 @@ class ParadoxDataExpressionNode (
 	override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
 		if(text.isParameterAwareExpression()) return null
 		return linkConfigs.find { linkConfig ->
-			val dataSource = linkConfig.dataSource ?: return@find false
 			CwtConfigHandler.resolveScriptExpression(element, rangeInExpression, linkConfig, linkConfig.expression, linkConfig.info.configGroup, exact = false) != null
 		} ?: linkConfigs.firstOrNull()
 	}

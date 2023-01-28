@@ -40,6 +40,9 @@ enum class CwtDataType {
 	@WithGameType(ParadoxGameType.Stellaris)
 	StellarisNameFormat;
 	
+	//modify implementation of below methods should also check codes that directly based on enum constants
+	//so they are just as a convenience
+	
 	fun isNumberType() = this == Int || this == Float
 		|| this == ValueField || this == IntValueField
 		|| this == VariableField || this == IntVariableField
@@ -47,6 +50,8 @@ enum class CwtDataType {
 	fun isScopeFieldType() = this == ScopeField || this == Scope || this == ScopeGroup
 		
 	fun isValueFieldType() = this == ValueField || this == IntValueField
+	
+	fun isVariableFieldType() = this == VariableField || this == IntVariableField
 	
 	fun isValueSetValueType() = this == Value || this == ValueSet
 	

@@ -43,6 +43,14 @@ class TooLongScopeLinkInspection : LocalInspectionTool() {
 							?: return
 						checkExpression(element, valueFieldExpression)
 					}
+					dataType.isVariableFieldType() -> {
+						val value = element.value
+						val textRange = TextRange.create(0, value.length)
+						val isKey = element is ParadoxScriptPropertyKey
+						val valueFieldExpression = ParadoxVariableFieldExpression.resolve(value, textRange, configGroup, isKey)
+							?: return
+						checkExpression(element, valueFieldExpression)
+					}
 					dataType.isValueSetValueType() -> {
 						val value = element.value
 						val textRange = TextRange.create(0, value.length)

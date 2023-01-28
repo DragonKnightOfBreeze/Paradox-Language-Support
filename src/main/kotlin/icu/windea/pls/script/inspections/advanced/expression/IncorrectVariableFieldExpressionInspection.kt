@@ -15,10 +15,8 @@ import javax.swing.*
 
 /**
  * 不正确的值字段表达式的检查。
- *
- * @property reportsUnresolvedDs 是否报告无法解析的DS引用。
  */
-class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
+class IncorrectVariableFieldExpressionInspection : LocalInspectionTool() {
     @JvmField var reportsUnresolvedDs = true
     
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
@@ -36,21 +34,21 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
                 val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return
                 val configGroup = config.info.configGroup
                 val dataType = config.expression.type
-                if(dataType.isValueFieldType()) {
+                if(dataType.isVariableFieldType()) {
                     val value = element.value
                     val textRange = TextRange.create(0, value.length)
                     val isKey = element is ParadoxScriptPropertyKey
-                    val valueFieldExpression = ParadoxValueFieldExpression.resolve(value, textRange, configGroup, isKey)
-                    if(valueFieldExpression == null) return
-                    handleErrors(element, valueFieldExpression)
+                    val variableFieldExpression = ParadoxVariableFieldExpression.resolve(value, textRange, configGroup, isKey)
+                    if(variableFieldExpression == null) return
+                    handleErrors(element, variableFieldExpression)
                 }
             }
             
-            private fun handleErrors(element: ParadoxScriptStringExpressionElement, valueFieldExpression: ParadoxValueFieldExpression) {
-                valueFieldExpression.validate().forEach { error ->
+            private fun handleErrors(element: ParadoxScriptStringExpressionElement, variableFieldExpression: ParadoxVariableFieldExpression) {
+                variableFieldExpression.validate().forEach { error ->
                     handleError(element, error)
                 }
-                valueFieldExpression.processAllNodes { node ->
+                variableFieldExpression.processAllNodes { node ->
                     val unresolvedError = node.getUnresolvedError(element)
                     if(unresolvedError != null) {
                         handleError(element, unresolvedError)
@@ -70,11 +68,10 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                checkBox(PlsBundle.message("script.inspection.expression.incorrectValueFieldExpression.option.reportsUnresolvedDs"))
+                checkBox(PlsBundle.message("script.inspection.expression.incorrectVariableFieldExpression.option.reportsUnresolvedDs"))
                     .bindSelected(::reportsUnresolvedDs)
                     .actionListener { _, component -> reportsUnresolvedDs = component.isSelected }
             }
         }
     }
 }
-

@@ -24,6 +24,7 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 		val configGroup = getCwtConfig(project).get(gameType) ?: return
 		
 		context.put(PlsCompletionKeys.completionTypeKey, parameters.completionType)
+		context.put(PlsCompletionKeys.originalFileKey, file)
 		context.put(PlsCompletionKeys.contextElementKey, element)
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
@@ -47,7 +48,7 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 		
 		ProgressManager.checkCanceled()
 		//提示value[variable]
-		CwtConfigHandler.completeVariable(file, result)
+		CwtConfigHandler.completeVariable(context, result)
 	}
 }
 

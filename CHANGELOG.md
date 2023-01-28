@@ -86,10 +86,14 @@ overlord_gaiaseeder_upkeep_machine
 * 功能优化
   * [X] 对于名称忽略大小写的CWT规则，在读取时保留规则文件中声明的顺序
   * [X] 如果某个游戏的规则文件未写明localisation_link规则，则使用from_data=no的link规则
+  * [ ] CWT规则类型`scalar`也可以对应一个数字，不需要用引号括起（因此也可以对应一个scripted_variable或者inline_math）
   * [X] 兼容可能的动态的相关本地化和相关图片（例如，相关本地化基于触发器（`trigger`）时需要跳过检查）
-  * [ ] 实现生成器基于日志文件生成CWT规则文件（`modifiers.cwt` `effects.cwt` `triggers.cwt`等）
+  * [X] 实现生成器基于日志文件生成CWT规则文件（`modifiers.cwt` `effects.cwt` `triggers.cwt`等）
   * [ ] 完善Stellaris的CWT规则文件（`modifiers.cwt` `effects.cwt` `triggers.cwt`等）
 * 新增功能 - 概述
+  * [X] 初步支持CWT规则类型`variable_field`和`int_variable_field`，以及相关的引用解析、代码补全、代码高亮等功能
+    * 作为`value_field`和`int_value_field`的子级
+    * 仅支持`root.var`的格式
   * [X] 初步支持处理生成的修饰符（`modifier`），以及相关的引用解析、代码补全、代码高亮等功能
     * 基于CWT类型规则中的`modifiers`规则（例如：`modifiers = { job_<job>_add = Planets }`）（认为没有实际上的声明处，并使用特殊的高亮）
     * 基于`modifiers.log`生成`modifiers.gen.cwt`，并且整理编写`modifiers.cwt`，以处理生成的修饰符（包括由Stellaris的`economic_category`生成的）

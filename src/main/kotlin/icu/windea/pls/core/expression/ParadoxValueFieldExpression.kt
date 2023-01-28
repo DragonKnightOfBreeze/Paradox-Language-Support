@@ -46,7 +46,7 @@ import icu.windea.pls.script.highlighter.*
 interface ParadoxValueFieldExpression : ParadoxComplexExpression {
 	val scopeNodes: List<ParadoxScopeExpressionNode>
 	
-	val valueFieldNode: ParadoxValueFieldExpressionNode?
+	val valueFieldNode: ParadoxValueFieldExpressionNode
 	
 	companion object Resolver
 }
@@ -105,7 +105,7 @@ class ParadoxValueFieldExpressionImpl(
 				is ParadoxValueFieldExpressionNode -> {
 					if(node.text.isEmpty()) {
 						if(isLast) {
-							val error = ParadoxMissingScopeExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingValueField"))
+							val error = ParadoxMissingValueFieldExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingValueField"))
 							errors.add(error)
 						} else if(!malformed) {
 							malformed = true
