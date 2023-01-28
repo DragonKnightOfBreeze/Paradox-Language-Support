@@ -181,7 +181,8 @@ object CwtConfigHandler {
 				return when {
 					expression.isKey == true -> true //key -> ok
 					expression.type == ParadoxDataType.ParameterType -> true //parameter -> ok
-					expression.type.isNumberType() -> true //number -> ok according to vanilla game files
+					expression.type == ParadoxDataType.IntType -> true //number -> ok according to vanilla game files
+					expression.type == ParadoxDataType.FloatType -> true //number -> ok according to vanilla game files
 					expression.type.isStringType() -> true //unquoted/quoted string -> ok
 					else -> false
 				}
