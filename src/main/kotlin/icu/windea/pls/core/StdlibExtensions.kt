@@ -3,7 +3,6 @@
 package icu.windea.pls.core
 
 import com.google.common.cache.*
-import com.intellij.openapi.util.TextRange
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import com.intellij.util.io.*
@@ -168,11 +167,11 @@ fun Char.isExactDigit(): Boolean {
 }
 
 fun Char.isExactIdentifierChar(): Boolean {
-	return this == '_' || this.isExactLetter() || this.isExactDigit()
+	return this == '_' || this == '$' || this.isExactLetter() || this.isExactDigit()
 }
 
 fun String.isExactIdentifier(): Boolean {
-	return this.all { it == '_' || it.isExactLetter() || it.isExactDigit() }
+	return this.all { it.isExactIdentifierChar() }
 }
 
 fun String.isLeftQuoted(): Boolean {
