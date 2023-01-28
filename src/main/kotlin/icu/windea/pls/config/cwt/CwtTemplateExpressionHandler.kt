@@ -100,10 +100,10 @@ object CwtTemplateExpressionHandler {
         val expressionString = text
         val regex = toRegex(configExpression)
         val matchResult = regex.matchEntire(expressionString) ?: return emptyList()
-        if(snippetExpressions.size != matchResult.groups.size - 1) return emptyList()
+        if(configExpression.referenceExpressions.size != matchResult.groups.size - 1) return emptyList()
         val references = SmartList<ParadoxInTemplateExpressionReference>()
         var i = 1
-        for((index, snippetExpression) in snippetExpressions.withIndex()) {
+        for(snippetExpression in snippetExpressions) {
             if(snippetExpression.type != CwtDataType.Constant) {
                 val matchGroup = matchResult.groups.get(i++) ?: return emptyList()
                 val name = matchGroup.value //job_miner_add 

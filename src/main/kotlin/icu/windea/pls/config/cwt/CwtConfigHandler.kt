@@ -699,6 +699,7 @@ object CwtConfigHandler {
 		val scopeMatched = when {
 			scopeContext == null -> true
 			config is CwtPropertyConfig -> ParadoxScopeHandler.matchesScope(scopeContext, config.supportedScopes, configGroup)
+			config is CwtAliasConfig -> ParadoxScopeHandler.matchesScope(scopeContext, config.supportedScopes, configGroup)
 			config is CwtLinkConfig -> ParadoxScopeHandler.matchesScope(scopeContext, config.inputScopes, configGroup)
 			else -> true
 		}
