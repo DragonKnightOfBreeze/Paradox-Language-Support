@@ -9,17 +9,17 @@ import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 
 class TooLongScopeLinkInspection : LocalInspectionTool() {
-	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-		return Visitor(holder)
-	}
-	
-	private class Visitor(private val holder: ProblemsHolder) : ParadoxLocalisationVisitor() {
-		override fun visitCommand(element: ParadoxLocalisationCommand) {
+	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = object : PsiElementVisitor() {
+		override fun visitElement(element: PsiElement) {
+			if(element is ParadoxLocalisationCommand) visitCommand(element)
+		}
+		
+		private fun visitCommand(element: ParadoxLocalisationCommand) {
 			if(element.hasSyntaxError()) return //skip if any syntax error
 			var firstScope: ParadoxLocalisationCommandScope? = null
 			var lastScope: ParadoxLocalisationCommandScope? = null
 			var size = 0
-			element.processChild { 
+			element.processChild {
 				when {
 					it is ParadoxLocalisationCommandScope -> {
 						if(firstScope == null) firstScope = it

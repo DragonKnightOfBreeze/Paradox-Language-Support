@@ -11,51 +11,38 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 class IncorrectScopeInspection : LocalInspectionTool() {
-	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		file.accept(object : PsiRecursiveElementWalkingVisitor() {
-			override fun visitElement(element: PsiElement) {
-				//command also can inside property references and icons
-				when(element) {
-					is ParadoxLocalisationLocale -> return
-					is ParadoxLocalisationCommandField -> {
-						visitLocalisationCommandField(element)
-						return
-					}
-					is ParadoxLocalisationCommandScope -> return
-					else -> super.visitElement(element)
-				}
-			}
-			
-			private fun visitLocalisationCommandField(element: ParadoxLocalisationCommandField) {
-				val resolved = element.reference?.resolve() ?: return
-				when {
-					//predefined localisation command
-					resolved is CwtProperty -> {
-						val config = resolved.getUserData(PlsKeys.cwtConfigKey)
-						if(config is CwtLocalisationCommandConfig) {
-							val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
-							val supportedScopes = config.supportedScopes
-							val configGroup = config.info.configGroup
-							if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)) {
-								val location = element
-								val description = PlsBundle.message("localisation.inspection.scope.incorrectScope.description.1",
-									element.name, supportedScopes.joinToString(), scopeContext.thisScope)
-								holder.registerProblem(location, description)
-							}
+	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = object : PsiElementVisitor() {
+		override fun visitElement(element: PsiElement) {
+			if(element is ParadoxLocalisationCommandField) visitLocalisationCommandField(element)
+		}
+		
+		private fun visitLocalisationCommandField(element: ParadoxLocalisationCommandField) {
+			val resolved = element.reference?.resolve() ?: return
+			when {
+				//predefined localisation command
+				resolved is CwtProperty -> {
+					val config = resolved.getUserData(PlsKeys.cwtConfigKey)
+					if(config is CwtLocalisationCommandConfig) {
+						val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
+						val supportedScopes = config.supportedScopes
+						val configGroup = config.info.configGroup
+						if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)) {
+							val location = element
+							val description = PlsBundle.message("localisation.inspection.scope.incorrectScope.description.1",
+								element.name, supportedScopes.joinToString(), scopeContext.thisScope)
+							holder.registerProblem(location, description)
 						}
 					}
-					//TODO scripted loc - any scope
-					resolved is ParadoxScriptProperty -> {
-						return 
-					}
-					//TODO variable - not supported yet
-					resolved is ParadoxValueSetValueElement -> {
-						return
-					}
+				}
+				//TODO scripted loc - any scope
+				resolved is ParadoxScriptProperty -> {
+					return
+				}
+				//TODO variable - not supported yet
+				resolved is ParadoxValueSetValueElement -> {
+					return
 				}
 			}
-		})
-		return holder.resultsArray
+		}
 	}
 }
