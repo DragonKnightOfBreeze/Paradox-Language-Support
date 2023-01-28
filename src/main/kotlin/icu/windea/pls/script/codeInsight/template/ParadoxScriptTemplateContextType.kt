@@ -1,78 +1,81 @@
 package icu.windea.pls.script.codeInsight.template
 
 import com.intellij.codeInsight.template.*
-import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
-abstract class ParadoxScriptTemplateContextType(presentableName: String): TemplateContextType(presentableName) {
-	override fun isInContext(templateActionContext: TemplateActionContext): Boolean {
-		val file = templateActionContext.file
-		if(!file.language.isKindOf(ParadoxScriptLanguage)) return false
-		return doIsInContext(templateActionContext)
-	}
-	
-	abstract fun doIsInContext(templateActionContext: TemplateActionContext): Boolean
-	
-	class Base: ParadoxScriptTemplateContextType(PlsBundle.message("script.templateContextType")) {
-		override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
-			return true
-		}
-	}
-	
-	class PropertyKey: ParadoxScriptTemplateContextType(PlsBundle.message("script.templateContextType.propertyKey")) {
-		override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
-			val file = templateActionContext.file
-			val startOffset = templateActionContext.startOffset
-			val endOffset = templateActionContext.endOffset
-			val start = file.findElementAt(startOffset)
-				?.siblings(forward = true, withSelf = true)
-				?.find { it !is PsiWhiteSpace }
-				?: return false
-			val startElement = start
-				.parents(false)
-				.findIsInstance<ParadoxScriptPropertyKey>()
-				?: return false
-			if(endOffset <= 0) return true
-			val end = file.findElementAt(endOffset - 1)
-				?.siblings(forward = false, withSelf = true)
-				?.find { it !is PsiWhiteSpace }
-				?: return false
-			val endElement = end
-				.parents(false)
-				.findIsInstance<ParadoxScriptPropertyKey>()
-				?: return false
-			return startElement === endElement
-		}
-	}
-	
-	class PropertyValue: ParadoxScriptTemplateContextType(PlsBundle.message("script.templateContextType.propertyValue")) {
-		override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
-			val file = templateActionContext.file
-			val startOffset = templateActionContext.startOffset
-			val endOffset = templateActionContext.endOffset
-			val start = file.findElementAt(startOffset)
-				?.siblings(forward = true, withSelf = true)
-				?.find { it !is PsiWhiteSpace }
-				?: return false
-			val startElement = start
-				.parents(false)
-				.findIsInstance<ParadoxScriptValue>()
-				?.takeIf { it.isPropertyValue() }
-				?: return false
-			val end = file.findElementAt(endOffset - 1)
-				?.siblings(forward = false, withSelf = true)
-				?.find { it !is PsiWhiteSpace }
-				?: return false
-			val endElement  = end
-				.parents(false)
-				.findIsInstance<ParadoxScriptValue>()
-				?.takeIf { it.isPropertyValue() }
-				?: return false
-			return startElement === endElement
-		}
-	}
+abstract class ParadoxScriptTemplateContextType(presentableName: String) : TemplateContextType(presentableName) {
+    override fun isInContext(templateActionContext: TemplateActionContext): Boolean {
+        val file = templateActionContext.file
+        if(!file.language.isKindOf(ParadoxScriptLanguage)) return false
+        return doIsInContext(templateActionContext)
+    }
+    
+    abstract fun doIsInContext(templateActionContext: TemplateActionContext): Boolean
+    
+    class Base : ParadoxScriptTemplateContextType(PlsBundle.message("script.templateContextType")) {
+        override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
+            return true
+        }
+    }
+    
+    class Member : ParadoxScriptTemplateContextType(PlsBundle.message("script.templateContextType.members")) {
+        override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
+            val file = templateActionContext.file
+            val startOffset = templateActionContext.startOffset
+            val start = file.findElementAt(startOffset) ?: return false
+            val startElement = start.parents(withSelf = false)
+                .find {
+                    if(it is ParadoxScriptInlineMath && it.textRange.startOffset != startOffset) return false
+                    if(it is ParadoxScriptParameterConditionExpression && it.textRange.startOffset != startOffset) return false
+                    it is ParadoxScriptMemberElement
+                }
+            return startElement != null
+        }
+    }
+    
+    class KeyExpression : ParadoxScriptTemplateContextType(PlsBundle.message("script.templateContextType.keyExpressions")) {
+        override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
+            val file = templateActionContext.file
+            val startOffset = templateActionContext.startOffset
+            val start = file.findElementAt(startOffset) ?: return false
+            val startElement = start.parents(withSelf = false)
+                .find {
+                    if(it is ParadoxScriptInlineMath && it.textRange.startOffset != startOffset) return false
+                    if(it is ParadoxScriptParameterConditionExpression && it.textRange.startOffset != startOffset) return false
+                    it is ParadoxScriptPropertyKey
+                }
+            return startElement != null
+        }
+    }
+    
+    class ValueExpression : ParadoxScriptTemplateContextType(PlsBundle.message("script.templateContextType.valueExpressions")) {
+        override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
+            val file = templateActionContext.file
+            val startOffset = templateActionContext.startOffset
+            val start = file.findElementAt(startOffset) ?: return false
+            val startElement = start.parents(withSelf = false)
+                .find {
+                    if(it is ParadoxScriptPropertyKey) return false
+                    if(it is ParadoxScriptInlineMath && it.textRange.startOffset != startOffset) return false
+                    if(it is ParadoxScriptParameterConditionExpression && it.textRange.startOffset != startOffset) return false
+                    it is ParadoxScriptValue
+                }
+            return startElement != null
+        }
+    }
+    
+    class InlineMathExpression : ParadoxScriptTemplateContextType(PlsBundle.message("script.templateContextType.inlineMathExpressions")) {
+        override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
+            val file = templateActionContext.file.originalFile
+            val startOffset = templateActionContext.startOffset
+            val endOffset = templateActionContext.endOffset
+            val start = file.findElementAt(startOffset) ?: return false
+            if(start.elementType == ParadoxScriptElementTypes.INLINE_MATH_START) return false
+            val startElement = start.parentOfType<ParadoxScriptInlineMath>()
+            return startElement != null
+        }
+    }
 }

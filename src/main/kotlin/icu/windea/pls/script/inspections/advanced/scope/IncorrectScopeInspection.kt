@@ -22,7 +22,8 @@ class IncorrectScopeInspection: LocalInspectionTool() {
 				if(!ParadoxScopeHandler.isScopeContextSupported(element)) return
 				val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
 				val supportedScopes = config.supportedScopes
-				if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes)) {
+				val configGroup = config.info.configGroup
+				if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)) {
 					val propertyKey = element.propertyKey
 					val location = propertyKey
 					val description = PlsBundle.message("script.inspection.scope.incorrectScope.description.1",

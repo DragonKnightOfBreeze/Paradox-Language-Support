@@ -11,11 +11,12 @@
 IDEA Plugin: Support for Paradox Language.
 
 Support Paradox script language (mainly `*.txt` files) and localisation language (`*.yml` files),
-provide features such as syntax parsing, navigation, documentation, code validation, reference resolving,
-inlay hints, localisation text rendering and DDS image rendering.
+provide features such as syntax parsing, reference resolving, quick documentation code navigation, code inspection,
+inlay hints, live template,
+localisation text rendering and DDS image rendering.
 
 Support cwt language (`*.cwt` files),
-provide features such as syntax parsing, navigation and documentation.
+provide features such as syntax parsing, reference resolving, quick documentation and code navigation.
 
 Support DDS image viewing in IDE, and provide necessary editor features, as common image support by IDE.
 

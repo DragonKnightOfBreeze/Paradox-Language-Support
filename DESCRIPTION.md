@@ -4,8 +4,9 @@
 <p>
   Support Paradox script language (mainly
   <code>*.txt</code> files) and localisation language (<code>*.yml</code> files),
-  provide features such as syntax parsing, navigation, documentation, code validation, reference resolving,
-  inlay hints, localisation text rendering and DDS image rendering.
+  provide features such as syntax parsing, reference resolving, quick documentation code navigation, code inspection,
+  inlay hints, live template,
+  localisation text rendering and DDS image rendering.
 </p>
 <p>
   Support cwt language (<code>*.cwt</code> files),
@@ -46,7 +47,7 @@
 </p>
 <p>
   支持Paradox脚本语言（以<code>*.txt</code>文件为主）和本地化语言（<code>*.yml</code>文件），
-  提供语法解析、导航、文档、代码检查、代码补全、引用解析、内嵌提示、本地化文本渲染、DDS图片渲染等功能。
+提供语法解析、引用解析、快速文档、代码导航、代码检查、代码补全、内嵌提示、动态模版、本地化文本渲染、DDS图片渲染等功能。
 </p>
 <p>
   支持CWT语言（<code>*.cwt</code>文件），

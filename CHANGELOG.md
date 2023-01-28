@@ -88,6 +88,11 @@ overlord_gaiaseeder_upkeep_machine
 ## 0.7.11
 
 * BUG修复
+  * [ ] 修复无法查找定义的引用的问题
+  * [ ] 修复无法查找本地化图标中引用的问题
+  * [ ] 修复无法全局查找复杂枚举值的问题
+  * [ ] 修复动态模版的上下文范围判定的问题（脚本文件的keyExpressions/valueExpressions）
+  * [X] 修复：[Cannot choose path for library using CK3 #7](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/7)
 * 功能优化
   * [X] 对于名称忽略大小写的CWT规则，在读取时保留规则文件中声明的顺序
   * [X] 如果某个游戏的规则文件未写明localisation_link规则，则使用from_data=no的link规则
@@ -129,11 +134,6 @@ overlord_gaiaseeder_upkeep_machine
 ## 0.7.9
 
 * BUG修复
-  * [ ] 修复无法查找定义的引用的问题
-  * [ ] 修复无法查找本地化图标中引用的问题
-  * [ ] 修复无法全局查找复杂枚举值的问题
-  * [ ] 修复动态模版的上下文范围判定的问题（脚本文件的property key/property value）
-  * [X] 修复：[Cannot choose path for library using CK3 #7](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/7)
 * 功能优化
   * [X] 默认将基于子句内联模版的提示项放到前面
   * [X] 实现生成器从`modifiers.log`生成或更新`modifiers.cwt`和`modifier_categories.cwt`

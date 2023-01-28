@@ -43,10 +43,14 @@
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxScopeContextInfoHintsProvider"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT" 
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$Base"/>
-    <liveTemplateContext contextId="PARADOX_SCRIPT_PROPERTY_KEY" baseContextId="PARADOX_SCRIPT"
-                         implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$PropertyKey"/>
-    <liveTemplateContext contextId="PARADOX_SCRIPT_PROPERTY_VALUE" baseContextId="PARADOX_SCRIPT"
-                         implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$PropertyValue"/>
+    <liveTemplateContext contextId="PARADOX_SCRIPT_MEMBER" baseContextId="PARADOX_SCRIPT"
+                         implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$Member"/>
+    <liveTemplateContext contextId="PARADOX_SCRIPT_KEY_EXPRESSION" baseContextId="PARADOX_SCRIPT"
+                         implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$KeyExpression"/>
+    <liveTemplateContext contextId="PARADOX_SCRIPT_VALUE_EXPRESSION" baseContextId="PARADOX_SCRIPT"
+                         implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$ValueExpression"/>
+    <liveTemplateContext contextId="PARADOX_SCRIPT_INLINE_MATH_EXPRESSION" baseContextId="PARADOX_SCRIPT"
+                         implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$InlineMathExpression"/>
     <lang.smartEnterProcessor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.editorActions.smartEnter.ParadoxScriptSmartEnterProcessor"/>
     <lang.formatter language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>
     <codeStyleSettingsProvider implementation="icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettingsProvider"/>

@@ -4,6 +4,7 @@ import com.intellij.codeInsight.template.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 abstract class ParadoxLocalisationTemplateContextType(presentableName: String) : TemplateContextType(presentableName) {
@@ -25,9 +26,10 @@ abstract class ParadoxLocalisationTemplateContextType(presentableName: String) :
 		override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
 			val file = templateActionContext.file
 			val startOffset = templateActionContext.startOffset
-			val endOffset = templateActionContext.endOffset
-			return file.findElementAt(startOffset).elementType == STRING_TOKEN
-				&& (file.findElementAt(endOffset).elementType == STRING_TOKEN || file.findElementAt(endOffset - 1).elementType == STRING_TOKEN)
+			val start = file.findElementAt(startOffset) ?: return false
+			if(start.elementType == LEFT_QUOTE) return false
+			val startElement = start.parentOfType<ParadoxLocalisationPropertyValue>()
+			return startElement != null
 		}
 	}
 }

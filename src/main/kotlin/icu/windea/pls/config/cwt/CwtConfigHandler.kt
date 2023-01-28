@@ -653,8 +653,8 @@ object CwtConfigHandler {
 		val scopeContext = scopeContext
 		val scopeMatched = when {
 			scopeContext == null -> true
-			config is CwtPropertyConfig -> ParadoxScopeHandler.matchesScope(scopeContext, config.supportedScopes)
-			config is CwtLinkConfig -> ParadoxScopeHandler.matchesScope(scopeContext, config.inputScopes)
+			config is CwtPropertyConfig -> ParadoxScopeHandler.matchesScope(scopeContext, config.supportedScopes, configGroup)
+			config is CwtLinkConfig -> ParadoxScopeHandler.matchesScope(scopeContext, config.inputScopes, configGroup)
 			else -> true
 		}
 		if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return
@@ -950,7 +950,7 @@ object CwtConfigHandler {
 		if(element !is ParadoxScriptStringExpressionElement) return
 		for(modifierConfig in modifiers.values) {
 			//排除不匹配modifier的supported_scopes的情况
-			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, modifierConfig.supportedScopes)
+			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			//首先提示生成的modifier，然后再提示预定义的modifier，排除重复的
@@ -1058,7 +1058,7 @@ object CwtConfigHandler {
 		
 		val linkConfigs = configGroup.linksAsScopeNotData
 		for(scope in linkConfigs.values) {
-			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, scope.inputScopes)
+			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, scope.inputScopes, configGroup)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = scope.name
@@ -1081,7 +1081,7 @@ object CwtConfigHandler {
 		
 		val linkConfigs = configGroup.linksAsScopeWithPrefix
 		for(linkConfig in linkConfigs.values) {
-			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, linkConfig.inputScopes)
+			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = linkConfig.prefix ?: continue
@@ -1136,7 +1136,7 @@ object CwtConfigHandler {
 		val linkConfigs = configGroup.linksAsValueNotData
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, linkConfig.inputScopes)
+			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = linkConfig.name
@@ -1159,7 +1159,7 @@ object CwtConfigHandler {
 		
 		val linkConfigs = configGroup.linksAsValueWithPrefix
 		for(linkConfig in linkConfigs.values) {
-			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, linkConfig.inputScopes)
+			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = linkConfig.prefix ?: continue
@@ -1286,7 +1286,7 @@ object CwtConfigHandler {
 		
 		val localisationLinks = configGroup.localisationLinks
 		for(localisationScope in localisationLinks.values) {
-			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, localisationScope.inputScopes)
+			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, localisationScope.inputScopes, configGroup)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = localisationScope.name
@@ -1340,7 +1340,7 @@ object CwtConfigHandler {
 		
 		val localisationCommands = configGroup.localisationCommands
 		for(localisationCommand in localisationCommands.values) {
-			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, localisationCommand.supportedScopes)
+			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, localisationCommand.supportedScopes, configGroup)
 			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 			
 			val name = localisationCommand.name

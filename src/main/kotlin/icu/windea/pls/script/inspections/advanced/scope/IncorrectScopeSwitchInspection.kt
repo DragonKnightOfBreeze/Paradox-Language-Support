@@ -35,7 +35,8 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
 							is ParadoxScopeLinkExpressionNode -> {
 								val parentScopeContext = scopeContext.parent ?: continue
 								val inputScopes = scopeNode.config.inputScopes
-								if(!ParadoxScopeHandler.matchesScope(parentScopeContext, inputScopes)) {
+								val configGroup = config.info.configGroup
+								if(!ParadoxScopeHandler.matchesScope(parentScopeContext, inputScopes, configGroup)) {
 									val description = PlsBundle.message("script.inspection.scope.incorrectScopeSwitch.description.1",
 										scopeNode.text, inputScopes.joinToString(), parentScopeContext.thisScope)
 									holder.registerProblem(propertyKey, rangeInExpression, description)

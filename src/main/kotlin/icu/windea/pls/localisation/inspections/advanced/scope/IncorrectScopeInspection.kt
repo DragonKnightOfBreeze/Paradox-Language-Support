@@ -36,7 +36,8 @@ class IncorrectScopeInspection : LocalInspectionTool() {
 						if(config is CwtLocalisationCommandConfig) {
 							val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
 							val supportedScopes = config.supportedScopes
-							if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes)) {
+							val configGroup = config.info.configGroup
+							if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)) {
 								val location = element
 								val description = PlsBundle.message("localisation.inspection.scope.incorrectScope.description.1",
 									element.name, supportedScopes.joinToString(), scopeContext.thisScope)
