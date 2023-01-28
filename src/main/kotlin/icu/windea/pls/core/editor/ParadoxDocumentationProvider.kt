@@ -178,6 +178,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		definition {
 			//不加上文件信息
 			append(PlsDocBundle.message("prefix.valueSetValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+			append(": ")
 			var appendSeparator = false
 			for(valueSetName in valueSetNames) {
 				if(appendSeparator) append(" | ") else appendSeparator = true
@@ -185,9 +186,9 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 				if(valueConfig != null) {
 					val gameType = configGroup.gameType
 					val typeLink = "${gameType.id}/values/${valueSetName}"
-					append(": ").appendCwtLink(valueSetName, typeLink)
+					appendCwtLink(valueSetName, typeLink)
 				} else {
-					append(": ").append(valueSetName)
+					append(valueSetName)
 				}
 			}
 		}
