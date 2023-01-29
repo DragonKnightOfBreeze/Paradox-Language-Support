@@ -9,6 +9,7 @@ import icons.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 
 object PlsConstants {
 	val locationClass = PlsIcons::class.java
@@ -92,9 +93,10 @@ object PlsKeys {
 	val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("paradox.cached.localisationInfo")
 	val cachedComplexEnumValueInfoKey = Key.create<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cached.complexEnumValueInfo")
 	val cachedTextColorInfoKey = Key.create<CachedValue<ParadoxTextColorInfo>>("paradox.cached.textColorInfo")
-	val cachedModifierInfoKey = Key.create<CachedValue<ParadoxModifierInfo>>("paradox.cached.modifierInfo")
 	val cachedScopeContextKey = Key.create<CachedValue<ParadoxScopeContext>>("paradox.cached.scopeContext")
 	val cachedElementPathKey = Key.create<CachedValue<ParadoxElementPath>>("paradox.cached.elementPath")
+	
+	val cachedModifierElementKey = Key.create<CachedValue<ParadoxModifierElement>>("paradox.cached.modifierElement")
 	
 	val cachedCwtConfigTypeKey = Key.create<CachedValue<CwtConfigType>>("paradox.cached.cwtConfigType")
 	val cachedCwtConfigPathKey = Key.create<CachedValue<CwtConfigPath>>("paradox.cached.cwtConfigPath")

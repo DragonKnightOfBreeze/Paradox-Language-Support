@@ -69,10 +69,12 @@ object CwtTemplateExpressionHandler {
         val expressionString = text.unquote()
         val regex = toRegex(configExpression)
         val matchResult = regex.matchEntire(expressionString) ?: return false
-        if(snippetExpressions.size != matchResult.groups.size - 1) return false
-        for((index, snippetExpression) in snippetExpressions.withIndex()) {
+        if(configExpression.referenceExpressions.size != matchResult.groups.size - 1) return false
+        var i = 1
+        for(snippetExpression in snippetExpressions) {
+            ProgressManager.checkCanceled()
             if(snippetExpression.type != CwtDataType.Constant) {
-                val matchGroup = matchResult.groups.get(index + 1) ?: return false
+                val matchGroup = matchResult.groups.get(i++) ?: return false
                 val referenceName = matchGroup.value
                 val expression = ParadoxDataExpression.resolve(referenceName, false)
                 val isMatched = CwtConfigHandler.matchesScriptExpression(null, expression, snippetExpression, null, configGroup, matchType)
@@ -107,10 +109,9 @@ object CwtTemplateExpressionHandler {
             ProgressManager.checkCanceled()
             if(snippetExpression.type != CwtDataType.Constant) {
                 val matchGroup = matchResult.groups.get(i++) ?: return emptyList()
-                val name = matchGroup.value //job_miner_add 
-                //\Qjob_\E(.*?)\Q_add\E
+                val referenceName = matchGroup.value
                 val range = TextRange.create(matchGroup.range.first, matchGroup.range.last)
-                val reference = ParadoxInTemplateExpressionReference(element, range, name, snippetExpression, configGroup)
+                val reference = ParadoxInTemplateExpressionReference(element, range, referenceName, snippetExpression, configGroup)
                 references.add(reference)
             } else {
                 //ignore

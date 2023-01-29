@@ -1,6 +1,7 @@
 package icu.windea.pls.config.core
 
 import com.intellij.openapi.progress.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
@@ -8,6 +9,7 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxModifierHandler {
@@ -40,6 +42,15 @@ object ParadoxModifierHandler {
 	
 	@JvmStatic
 	fun resolveModifier(element: ParadoxScriptStringExpressionElement, name: String, configGroup: CwtConfigGroup): ParadoxModifierElement? {
+		//当任何脚本文件发生变化时清空缓存 - 应当兼容name和configGroup的变化
+		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedModifierElementKey) {
+			val value = doResolveModifier(configGroup, name, element)
+			val modificationTracker = PsiModificationTracker.getInstance(configGroup.project).forLanguage(ParadoxScriptLanguage)
+			CachedValueProvider.Result.create(value, modificationTracker)
+		}
+	}
+	
+	private fun doResolveModifier(configGroup: CwtConfigGroup, name: String, element: ParadoxScriptStringExpressionElement): ParadoxModifierElement? {
 		val project = configGroup.project
 		val gameType = configGroup.gameType ?: return null
 		//尝试解析为预定义的非生成的修正
