@@ -75,6 +75,7 @@ class ComplexEnumValueNameGotoImplementationsIntention : ComplexEnumValueNameInt
 		val scope = GlobalSearchScope.allScope(project)
 		val selector = complexEnumValueSelector().gameType(gameType)
 		val result = ParadoxComplexEnumValueSearch.search(complexEnumValueInfo.name, complexEnumValueInfo.enumName, project, scope, selector).findAll()
+		if(result.isEmpty()) return
 		NavigationUtil.getPsiElementPopup(result.toTypedArray(), PlsBundle.message("script.intention.complexEnumValueName.gotoImplementations.title", enumName))
 			.showInBestPositionFor(editor)
 	}

@@ -76,6 +76,7 @@ class DefinitionNameGotoImplementationsIntention: DefinitionNameIntention() {
 		val scope = GlobalSearchScope.allScope(project)
 		val selector = definitionSelector().gameType(definitionInfo.gameType).preferRootFrom(definition)
 		val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, project, scope, selector).findAll()
+		if(result.isEmpty()) return
 		NavigationUtil.getPsiElementPopup(result.toTypedArray(), PlsBundle.message("script.intention.definitionName.gotoImplementations.title", definitionInfo.name))
 			.showInBestPositionFor(editor)
 	}
