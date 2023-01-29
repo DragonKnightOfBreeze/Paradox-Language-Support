@@ -65,6 +65,7 @@
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxDefinitionImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxComplexEnumValueImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxLocalisationImplementationsSearch"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxFileImplementationsSearch"/>
     
     <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxDefinitionUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxComplexEnumValueUsagesSearcher"/>

@@ -1,34 +1,36 @@
 package icu.windea.pls.core.search.implementations
 
-import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
+import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
-import icu.windea.pls.script.psi.*
 
 /**
- * 封装变量的实现的查询。加入所有作用域内的同名封装变量。
+ * 文件的实现的查询。加入所有作用域内的同路径的文件。
  */
-class ParadoxScriptedVariableImplementationsSearch : QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters> {
+class ParadoxFileImplementationsSearch : QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters> {
     override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
         //得到解析后的PSI元素
         val sourceElement = queryParameters.element
-        if(sourceElement !is ParadoxScriptScriptedVariable) return true
-        val name = runReadAction { sourceElement.name }
-        if(name.isEmpty()) return true
+        if(sourceElement !is PsiFile) return true
+        val fileInfo = sourceElement.fileInfo
+        val filePath = fileInfo?.path
+        if(filePath == null || filePath.isEmpty()) return true
         val project = queryParameters.project
         DumbService.getInstance(project).runReadActionInSmartMode {
             //使用全部作用域
             val scope = GlobalSearchScope.allScope(project)
             //val scope = GlobalSearchScopeUtil.toGlobalSearchScope(queryParameters.scope, project)
             //这里不进行排序
-            val selector = scriptedVariableSelector().gameTypeFrom(sourceElement)
-            ParadoxLocalScriptedVariableSearch.search(name, sourceElement, selector = selector).forEach(consumer)
-            ParadoxGlobalScriptedVariableSearch.search(name, project, scope, selector = selector).forEach(consumer)
+            val selector = fileSelector().gameType(fileInfo.rootInfo.gameType)
+            ParadoxFilePathSearch.search(filePath.path, project, scope = scope, selector = selector).forEach(Processor {
+                consumer.process(it.toPsiFile<PsiFile>(project))
+            })
         }
         return true
     }
