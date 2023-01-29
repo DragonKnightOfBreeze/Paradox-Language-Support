@@ -5,6 +5,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.chained.*
 import java.util.function.*
 
 /**

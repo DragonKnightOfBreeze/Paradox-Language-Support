@@ -10,11 +10,11 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxLocalScriptedVariableSearch.SearchParameters>() {
 	override fun processQuery(queryParameters: ParadoxLocalScriptedVariableSearch.SearchParameters, consumer: Processor<in ParadoxScriptScriptedVariable>) {
+		//在当前脚本文件中递归向上向前查找（包括自身）
 		val context = queryParameters.context
-		//在整个脚本文件中递归向上向前查找
 		var current: PsiElement = context
 		while(current !is PsiFile) {
-			var prevSibling = current.prevSibling
+			var prevSibling : PsiElement? = current
 			while(prevSibling != null) {
 				if(prevSibling is ParadoxScriptScriptedVariable) {
 					if(queryParameters.name == null || queryParameters.name == prevSibling.name) {
