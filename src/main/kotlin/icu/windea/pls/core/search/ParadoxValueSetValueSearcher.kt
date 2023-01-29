@@ -17,7 +17,7 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxScriptString, Para
 		val valueSetName = queryParameters.valueSetName
 		val project = queryParameters.project
 		val scope = GlobalSearchScopeUtil.toGlobalSearchScope(queryParameters.scope, project)
-		ParadoxValueSetValueIndex.processAllElements(valueSetName, project, scope) {
+		ParadoxValueSetIndex.processAllElements(valueSetName, project, scope) {
 			if((name == null || matchesName(it, name))) {
 				consumer.process(it)
 			} else {
