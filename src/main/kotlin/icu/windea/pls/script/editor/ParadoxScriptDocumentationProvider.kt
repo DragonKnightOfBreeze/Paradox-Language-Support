@@ -29,7 +29,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             is ParadoxScriptStringExpressionElement -> {
                 //only for complex enum value reference
                 val referenceElement = getReferenceElement(originalElement)
-                if(referenceElement != null && referenceElement.parent?.castOrNull<ParadoxScriptString>() !== element) {
+                if(referenceElement != null && referenceElement !== element) {
                     val complexEnumValueInfo = element.complexEnumValueInfo
                     if(complexEnumValueInfo != null) return generateComplexEnumValueInfo(element, complexEnumValueInfo)
                 }
@@ -86,7 +86,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             is ParadoxScriptStringExpressionElement -> {
                 //only for complex enum value reference
                 val referenceElement = getReferenceElement(originalElement)
-                if(referenceElement != null && referenceElement.parent?.castOrNull<ParadoxScriptString>() !== element) {
+                if(referenceElement != null && referenceElement !== element) {
                     val complexEnumValueInfo = element.complexEnumValueInfo
                     if(complexEnumValueInfo != null) return generateComplexEnumValueDoc(element, complexEnumValueInfo)
                 }
