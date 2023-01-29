@@ -1728,6 +1728,12 @@ object CwtConfigHandler {
 				val selector = fileSelector().gameType(gameType).preferRootFrom(element)
 				return ParadoxFilePathSearch.search(filePath, project, selector = selector).findAll().mapNotNull { it.toPsiFile(project) }
 			}
+			CwtDataType.Definition -> {
+				val name = expression
+				val typeExpression = configExpression.value ?: return emptyList()
+				val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
+				return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).findAll()
+			}
 			CwtDataType.Enum -> {
 				val enumName = configExpression.value ?: return emptyList()
 				val name = expression

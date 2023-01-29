@@ -29,15 +29,10 @@ class ParadoxScriptExpressionPsiReference(
 	
 	override fun isReferenceTo(element: PsiElement): Boolean {
 		//必要的处理，否则查找使用时会出现问题（输入的PsiElement永远不会是propertyKey）
-		val results = multiResolve(false)
+		//直接调用resolve()即可
+		val resolved = resolve(false)
 		val manager = element.manager
-		for(result in results) {
-			val resolved = result.element
-			if(manager.areElementsEquivalent(resolved, element) || (resolved is ParadoxScriptProperty && manager.areElementsEquivalent(resolved.propertyKey, element))) {
-				return true
-			}
-		}
-		return false
+		return manager.areElementsEquivalent(resolved, element) || (resolved is ParadoxScriptProperty && manager.areElementsEquivalent(resolved.propertyKey, element))
 	}
 	
 	override fun resolve(): PsiElement? {

@@ -26,6 +26,8 @@
   * [ ] 内嵌提示的预览文本中不再包括特殊注释，而是通过向psiFile中注入特定userData的方式提供必要的信息（类型、本地化等）
   * [ ] 需要重新调整对返回的规则列表的排序
   * [ ] 编辑本地化文件时提供输入彩色文本、图标等的快捷键（仅在可用的位置生效）
+  * [ ] ［不确定］在快速文档中显示本地化作用域和命令的作用域上下文 - 需要大幅重构相关代码
+  * [ ] ［不确定］也许需要重构复杂表达式相关代码，更好地支持相关功能，以及支持额外的复杂表达式
 * 优化 - 智能推断：
   * [ ] 基于使用处推断`inline_script`的位置（即需要对应的CWT规则文件入口）
   * [ ] 基于使用处推断定义（如`scripted_effect`）的作用域上下文
@@ -62,20 +64,6 @@
   * [ ] 兼容CWT规则文件中的错误级别`severity = warning`或`## severity = warning`（PLS和CWTools实现有所不同，需要分析）
   * [ ] ［待确定］作为trigger的值的CWT规则`scope_field` `scope[xxx]` `scope_group[xxx]`也可以匹配一个布尔值？
 
-## PROCESS
-
-* [X] modifier忽略大小写
-* [X] 快速文档中显示modifier的生成模版、生成源、相关本地化、图标、分类、支持的作用域、作用域上下文信息
-* [X] 转到相关本地化/图片操作也可以用于modifier
-* [X] 支持补全模版表达式和modifier
-* [X] 模版表达式提供特殊图标
-* [ ] 无法查找定义和图标中的引用
-* [X] 无法全局查找复杂枚举值
-* [X] 检查：生成的modifier的解析、快速文档、代码补全
-* [X] 检查：不充分的表达式的检查 - 检查作用域和作用域组是否匹配
-* [ ] ［不确定］在快速文档中显示本地化作用域和命令的作用域上下文 - 需要大幅重构相关代码
-* [ ] ［不确定］也许需要重构复杂表达式相关代码，更好地支持相关功能，以及支持额外的复杂表达式
-
 ```
 # check vanilla
 set_fleet_settings
@@ -87,8 +75,7 @@ overlord_gaiaseeder_upkeep_machine
 ## 0.7.11
 
 * BUG修复
-  * [ ] 修复无法查找定义的引用的问题
-  * [ ] 修复无法查找本地化图标中引用的问题
+  * [X] 修复无法查找定义的引用和本地化图标中引用的问题
   * [X] 修复无法全局查找复杂枚举值的问题
   * [X] 修复动态模版的上下文范围判定的问题（脚本文件的keyExpressions/valueExpressions）
   * [X] 修复：[Cannot choose path for library using CK3 #7](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/7)
