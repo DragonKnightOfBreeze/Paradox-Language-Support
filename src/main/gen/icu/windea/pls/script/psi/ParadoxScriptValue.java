@@ -14,6 +14,9 @@ public interface ParadoxScriptValue extends ParadoxScriptExpressionElement, Para
   Icon getIcon(@IconFlags int flags);
 
   @NotNull
+  String getName();
+
+  @NotNull
   String getValue();
 
   @NotNull

@@ -92,6 +92,11 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun getName(element: CwtOptionKey): String {
+		return element.value
+	}
+	
+	@JvmStatic
 	fun getValue(element: CwtOptionKey): String {
 		return element.findChild(OPTION_KEY_TOKEN)!!.text.unquote()
 	}
@@ -147,7 +152,6 @@ object CwtPsiImplUtil {
 	fun getName(element: CwtPropertyKey): String {
 		return element.value
 	}
-	
 	
 	@JvmStatic
 	fun getValue(element: CwtPropertyKey): String {

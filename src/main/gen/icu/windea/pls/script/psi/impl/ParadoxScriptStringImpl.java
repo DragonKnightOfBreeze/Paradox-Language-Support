@@ -51,6 +51,12 @@ public class ParadoxScriptStringImpl extends ParadoxScriptStubElementImpl<Parado
 
   @Override
   @NotNull
+  public String getName() {
+    return ParadoxScriptPsiImplUtil.getName(this);
+  }
+
+  @Override
+  @NotNull
   public String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
   }

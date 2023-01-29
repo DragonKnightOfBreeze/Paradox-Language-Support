@@ -30,6 +30,12 @@ public class ParadoxScriptFloatImpl extends ParadoxScriptValueImpl implements Pa
 
   @Override
   @NotNull
+  public String getName() {
+    return ParadoxScriptPsiImplUtil.getName(this);
+  }
+
+  @Override
+  @NotNull
   public String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
   }

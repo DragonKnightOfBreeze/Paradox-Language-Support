@@ -51,6 +51,12 @@ public class ParadoxScriptPropertyKeyImpl extends ParadoxScriptStubElementImpl<P
 
   @Override
   @NotNull
+  public String getName() {
+    return ParadoxScriptPsiImplUtil.getName(this);
+  }
+
+  @Override
+  @NotNull
   public String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
   }

@@ -10,6 +10,9 @@ import icu.windea.pls.core.expression.ParadoxDataType;
 public interface ParadoxScriptInt extends ParadoxScriptValue, PsiLiteralValue {
 
   @NotNull
+  String getName();
+
+  @NotNull
   String getValue();
 
   @NotNull

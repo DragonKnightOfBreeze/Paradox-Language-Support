@@ -322,6 +322,11 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun getName(element: ParadoxScriptPropertyKey): String {
+		return element.value
+	}
+	
+	@JvmStatic
 	fun getValue(element: ParadoxScriptPropertyKey): String {
 		return element.text.unquote()
 	}
@@ -411,6 +416,11 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptValue, @Iconable.IconFlags flags: Int): Icon {
 		return PlsIcons.ScriptValue
+	}
+	
+	@JvmStatic
+	fun getName(element: ParadoxScriptValue): String {
+		return element.value
 	}
 	
 	@JvmStatic

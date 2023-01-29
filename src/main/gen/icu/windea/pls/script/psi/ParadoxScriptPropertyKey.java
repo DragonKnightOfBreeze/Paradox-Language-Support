@@ -20,6 +20,9 @@ public interface ParadoxScriptPropertyKey extends ParadoxScriptStringExpressionE
   Icon getIcon(@IconFlags int flags);
 
   @NotNull
+  String getName();
+
+  @NotNull
   String getValue();
 
   @NotNull

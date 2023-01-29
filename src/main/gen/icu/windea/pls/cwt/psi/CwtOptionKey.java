@@ -13,6 +13,9 @@ public interface CwtOptionKey extends PsiElement {
   Icon getIcon(@IconFlags int flags);
 
   @NotNull
+  String getName();
+
+  @NotNull
   String getValue();
 
 }

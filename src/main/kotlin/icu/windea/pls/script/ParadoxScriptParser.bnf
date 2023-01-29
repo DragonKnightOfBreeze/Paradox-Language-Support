@@ -84,7 +84,7 @@ property_key ::= key_expr {
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
   ] 
   methods=[
-    getIcon getValue setValue getReference getReferences
+    getIcon getName getValue setValue getReference getReferences
     getType getExpression getConfigExpression
     getPresentation isEquivalentTo toString
   ]
@@ -99,7 +99,7 @@ value ::= scripted_variable_reference | boolean | int | float | color | block | 
     "icu.windea.pls.script.psi.ParadoxScriptMemberElement"
   ]
   methods=[
-    getIcon getValue setValue
+    getIcon getName getValue setValue
     getType getExpression getConfigExpression
   ]
 }
@@ -122,14 +122,14 @@ int ::= INT_TOKEN {
   implements=[
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getValue setValue getIntValue getType]
+  methods=[getName getValue setValue getIntValue getType]
 }
 float ::= FLOAT_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getValue setValue getFloatValue getType]
+  methods=[getName getValue setValue getFloatValue getType]
 }
 string ::= value_expr {
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
@@ -139,7 +139,7 @@ string ::= value_expr {
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
   ]
   methods=[
-    getIcon getValue setValue getReference getReferences getStringValue
+    getIcon getName getValue setValue getReference getReferences getStringValue
     getType getExpression getConfigExpression
     getPresentation isEquivalentTo toString
   ]
