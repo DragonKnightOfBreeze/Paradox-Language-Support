@@ -123,6 +123,10 @@ inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, action: () -> T?): T
 	return newValue
 }
 
+fun <T> Key<T>.copyTo(from: UserDataHolder, to: UserDataHolder) {
+	to.putUserData(this, from.getUserData(this))
+}
+
 inline fun <T> Query<T>.processQuery(consumer: Processor<in T>): Boolean {
 	return forEach(consumer)
 }

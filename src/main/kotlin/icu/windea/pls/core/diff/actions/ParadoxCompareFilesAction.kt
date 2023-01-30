@@ -6,6 +6,7 @@ import com.intellij.diff.actions.*
 import com.intellij.diff.actions.impl.*
 import com.intellij.diff.chains.*
 import com.intellij.diff.requests.*
+import com.intellij.diff.tools.util.base.*
 import com.intellij.diff.util.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
@@ -93,7 +94,7 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         val editor = e.editor
         if(editor != null) {
             val currentLine = editor.caretModel.logicalPosition.line
-            chain.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.RIGHT, currentLine))
+            chain.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.LEFT, currentLine))
         }
         return chain
     }
@@ -121,6 +122,14 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         override fun createGoToChangeAction(onSelected: Consumer<in Int>, defaultSelection: Int): AnAction {
             return FileGotoChangePopupAction(this, onSelected, defaultSelection)
         }
+        
+        fun syncEditorsCaretPosition(index: Int, selectedIndex: Int) {
+            val request = (requests[index] as FileRequestProducer).request
+            val selectedRequest = (requests[selectedIndex] as FileRequestProducer).request
+            val positions = DiffUserDataKeysEx.EDITORS_CARET_POSITION.get(request)
+            val selectedPositions = DiffUserDataKeysEx.EDITORS_CARET_POSITION.get(selectedRequest)
+            selectedPositions[0] = positions[0]
+        }
     }
     
     class FileRequestProducer(
@@ -134,7 +143,7 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
     }
     
     class FileGotoChangePopupAction(
-        val chain: DiffRequestChain,
+        val chain: FileDiffRequestChain,
         val onSelected: Consumer<in Int>,
         val defaultSelection: Int
     ) : GoToChangePopupBuilder.BaseGoToChangePopupAction() {
@@ -143,22 +152,27 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         }
         
         override fun createPopup(e: AnActionEvent): JBPopup {
-            return JBPopupFactory.getInstance().createListPopup(Popup())
+            return JBPopupFactory.getInstance().createListPopup(Popup(e))
         }
         
-        private inner class Popup : BaseListPopupStep<DiffRequestProducer>(PlsBundle.message("diff.compare.files.popup.title"), chain.requests) {
+        private inner class Popup(
+            val e: AnActionEvent
+        ) : BaseListPopupStep<DiffRequestProducer>(PlsBundle.message("diff.compare.files.popup.title"), chain.requests) {
             init {
                 defaultOptionIndex = defaultSelection
             }
             
             override fun getIconFor(value: DiffRequestProducer) = (value as FileRequestProducer).otherFile.fileType.icon
-    
+            
             override fun getTextFor(value: DiffRequestProducer) = value.name
             
             override fun isSpeedSearchEnabled() = true
             
             override fun onChosen(selectedValue: DiffRequestProducer, finalChoice: Boolean) = doFinalStep {
-                onSelected.consume(chain.requests.indexOf(selectedValue))
+                //如果打开了编辑器，左窗口重新定位到当前光标位置
+                val selectedIndex = chain.requests.indexOf(selectedValue)
+                chain.syncEditorsCaretPosition(chain.index, selectedIndex)
+                onSelected.consume(selectedIndex)
             }
         }
     }
