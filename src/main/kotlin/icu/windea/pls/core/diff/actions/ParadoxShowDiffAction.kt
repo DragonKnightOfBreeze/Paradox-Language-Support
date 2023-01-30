@@ -5,6 +5,7 @@ import com.intellij.diff.chains.*
 import com.intellij.diff.util.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.*
 
 //com.intellij.diff.actions.BaseShowDiffAction
 
@@ -35,4 +36,9 @@ abstract class ParadoxShowDiffAction: AnAction() {
     }
     
     protected abstract fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain?
+    
+    protected fun getFileContentTitle(file: VirtualFile): String? {
+        val fileInfo = file.fileInfo ?: return null
+        return PlsBundle.message("diff.compare.files.content.title", fileInfo.path, fileInfo.rootPath)
+    }
 }
