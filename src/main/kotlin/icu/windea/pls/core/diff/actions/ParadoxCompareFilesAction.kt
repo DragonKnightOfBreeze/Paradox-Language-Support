@@ -44,6 +44,8 @@ class ParadoxCompareFilesAction: ParadoxShowDiffAction() {
         
         val chain = createBlankDiffRequestChain(content1, content2, null)
         chain.windowTitle = PlsBundle.message("diff.compare.files.dialog.title", fileInfo.path, fileInfo.rootPath)
+        chain.title1 = PlsBundle.message("diff.compare.files.content.title", fileInfo.path, fileInfo.rootPath)
+        chain.title2 = PlsBundle.message("diff.compare.files.content.title", fileInfo.path, fileInfo.rootPath)
         
         val editor = e.editor
         if(editor != null) {
