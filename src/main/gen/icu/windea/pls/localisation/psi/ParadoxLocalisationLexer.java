@@ -214,7 +214,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
     "\1\0\3\51\1\0\12\51\1\52\1\53\1\40\1\51"+
     "\1\0\2\51\1\0\1\51\2\0\1\51\1\0\3\51"+
     "\1\0\11\51\13\0\1\123\50\0\1\124\1\0\2\125"+
-    "\2\0\1\125\1\126\2\125\1\126\1\125\2\126\1\125"+
+    "\2\0\1\125\1\126\2\125\1\126\1\125\1\126\2\125"+
     "\1\126\4\125\1\126\10\125\1\0\1\61\1\62\1\40"+
     "\35\0\1\63\2\0\1\63\5\0\2\63\1\0\2\63"+
     "\1\0\2\63\1\0\1\63\2\0\3\70\1\0\1\70"+
@@ -859,7 +859,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
           case 91: break;
           case 40: 
             { //特殊处理
-    //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_ID或者command，或者是@，则认为代表属性引用的开始
+    //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_ID或者command，或者是@，且后面还有"$"，则认为代表属性引用的开始
     boolean isReferenceStart = isReferenceStart();
 	yypushback(yylength()-1);
 	if(isReferenceStart){
