@@ -9,12 +9,6 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 
 %%
 
-%{
-  public CwtLexer() {
-    this((java.io.Reader)null);
-  }
-%}
-
 %public
 %class CwtLexer
 %implements FlexLexer
@@ -39,6 +33,10 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 
 %{
   private int optionDepth = 0;
+  
+  public CwtLexer() {
+    this((java.io.Reader)null);
+  }
 %}
 
 EOL=\s*\R
@@ -97,7 +95,7 @@ DOCUMENTATION_TOKEN=[^\s][^\r\n]*
   "{" {yybegin(YYINITIAL); return LEFT_BRACE;}
   "}" {yybegin(YYINITIAL); return RIGHT_BRACE;}
   "="|"==" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
-  "<>"|"!=" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
+  "!="|"<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
     
   {COMMENT} {return COMMENT;}
 }
@@ -179,7 +177,7 @@ DOCUMENTATION_TOKEN=[^\s][^\r\n]*
   "{" {yybegin(WAITING_OPTION); optionDepth++; return LEFT_BRACE;}
   "}" {yybegin(WAITING_OPTION); optionDepth--; return RIGHT_BRACE;}
   "="|"==" {yybegin(WAITING_OPTION_VALUE); return EQUAL_SIGN;}
-  "<>"|"!=" {yybegin(WAITING_OPTION_VALUE); return NOT_EQUAL_SIGN;}
+  "!="|"<>" {yybegin(WAITING_OPTION_VALUE); return NOT_EQUAL_SIGN;}
   
   {RELAX_COMMENT} {return COMMENT; }
 }

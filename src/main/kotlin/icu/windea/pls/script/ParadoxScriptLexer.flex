@@ -1,5 +1,6 @@
 package icu.windea.pls.script.psi;
 
+import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;
@@ -9,7 +10,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 %public
 %class ParadoxScriptLexer
-%implements com.intellij.lexer.FlexLexer
+%implements FlexLexer
 %function advance
 %type IElementType
 %unicode
@@ -127,7 +128,7 @@ COMMENT=#[^\r\n]*
 //判断接下来是变量名还是变量引用
 CHECK_SCRIPTED_VARIABLE={SCRIPTED_VARIABLE_ID}(\s*=)?
 //判断接下来是否是属性的键
-CHECK_PROPERTY_KEY=({WILDCARD_KEY_TOKEN}|{QUOTED_PROPERTY_KEY_TOKEN})\s*[=<>]
+CHECK_PROPERTY_KEY=({WILDCARD_KEY_TOKEN}|{QUOTED_PROPERTY_KEY_TOKEN})\s*[!=<>]
 
 SCRIPTED_VARIABLE_ID=[a-zA-Z_][a-zA-Z0-9_]*
 PARAMETER_ID=[a-zA-Z_][a-zA-Z0-9_]*
@@ -161,7 +162,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
   "<=" {yybegin(WAITING_PROPERTY_VALUE); return LE_SIGN;}
   ">=" {yybegin(WAITING_PROPERTY_VALUE); return GE_SIGN;}
-  "<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
+  "!="|"<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
   //出于语法兼容性考虑，这里允许内联数学表达式
   "@["|"@\\[" {enterInlineMath(); yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
   //这里必定是variable_name
@@ -244,7 +245,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
   "<=" {yybegin(WAITING_PROPERTY_VALUE); return LE_SIGN;}
   ">=" {yybegin(WAITING_PROPERTY_VALUE); return GE_SIGN;}
-  "<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
+  "!="|"<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
   //出于语法兼容性考虑，这里允许内联数学表达式
   "@["|"@\\[" {enterInlineMath(); leftAbsSign=true; yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
   "@" {yybegin(CHECKING_VARIABLE); return AT;}
@@ -306,7 +307,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
   "<=" {yybegin(WAITING_PROPERTY_VALUE); return LE_SIGN;}
   ">=" {yybegin(WAITING_PROPERTY_VALUE); return GE_SIGN;}
-  "<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
+  "!="|"<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
   "$" {isWildcardContainsParameter=true; yybegin(WAITING_PARAMETER); return PARAMETER_START;}
   {PROPERTY_KEY_TOKEN_WITH_SUFFIX} {
 	  if(yycharat(yylength() - 1) == '$'){

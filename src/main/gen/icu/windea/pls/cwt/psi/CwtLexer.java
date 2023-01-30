@@ -381,10 +381,11 @@ public class CwtLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
+  private int optionDepth = 0;
+  
   public CwtLexer() {
     this((java.io.Reader)null);
   }
-  private int optionDepth = 0;
 
 
   /**

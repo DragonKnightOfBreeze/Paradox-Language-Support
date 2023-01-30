@@ -1,7 +1,8 @@
 package icu.windea.pls.localisation.psi;
 
-import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;import icu.windea.pls.core.model.*;
+
+import com.intellij.lexer.*;
+import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.core.StdlibExtensionsKt.*;
@@ -11,7 +12,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 %public
 %class ParadoxLocalisationLexer
-%implements com.intellij.lexer.FlexLexer
+%implements FlexLexer
 %function advance
 %type IElementType
 %unicode
@@ -179,7 +180,7 @@ STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
  	    }
  	    i--;
     }
-    return TokenType.BAD_CHARACTER; //不期望的结果
+    return BAD_CHARACTER; //不期望的结果
   }
   //{LOCALE_ID} {yybegin(WAITING_LOCALE_COLON); return LOCALE_ID; }
   {PROPERTY_KEY_TOKEN} {
@@ -430,4 +431,4 @@ STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
 
 <WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT> {STRING_TOKEN} {return STRING_TOKEN;}
 
-[^] {return TokenType.BAD_CHARACTER; }
+[^] {return BAD_CHARACTER; }

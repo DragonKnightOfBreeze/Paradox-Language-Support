@@ -2,7 +2,8 @@
 
 package icu.windea.pls.localisation.psi;
 
-import com.intellij.psi.TokenType;
+
+import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;
@@ -15,7 +16,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
  * <a href="http://www.jflex.de/">JFlex</a> 1.7.0
  * from the specification file <tt>ParadoxLocalisationLexer.flex</tt>
  */
-public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
+public class ParadoxLocalisationLexer implements FlexLexer {
 
   /** This character denotes the end of file */
   public static final int YYEOF = -1;
@@ -660,7 +661,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { return TokenType.BAD_CHARACTER;
+            { return BAD_CHARACTER;
             } 
             // fall through
           case 53: break;
@@ -994,7 +995,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
  	    }
  	    i--;
     }
-    return TokenType.BAD_CHARACTER; //不期望的结果
+    return BAD_CHARACTER; //不期望的结果
             } 
             // fall through
           case 104: break;
