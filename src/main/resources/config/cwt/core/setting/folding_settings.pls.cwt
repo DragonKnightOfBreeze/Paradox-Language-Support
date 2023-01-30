@@ -26,7 +26,7 @@ variable_operation_expressions = {
 		keys = { which value }
 		placeholder = "$which$ += $value$"
 	}
-	substract_variable = {
+	subtract_variable = {
 		keys = { which value }
 		placeholder = "$which$ -= $value$"
 	}

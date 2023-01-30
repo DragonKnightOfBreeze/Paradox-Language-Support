@@ -17,11 +17,11 @@ variable_operation_expressions = {
 		variables = { VALUE = v }
 		expression = "change_variable = { which = $EXPR$ value = $VALUE$ }$END$"
 	}
-	substract_variable = {
+	subtract_variable = {
 		key = subv
-		example = "substract_variable = { which = expr value = v }"
+		example = "subtract_variable = { which = expr value = v }"
 		variables = { VALUE = v }
-		expression = "substract_variable = { which = $EXPR$ value = $VALUE$ }$END$"
+		expression = "subtract_variable = { which = $EXPR$ value = $VALUE$ }$END$"
 	}
 	multiply_variable = {
 		key = mulv
