@@ -78,7 +78,7 @@ overlord_gaiaseeder_upkeep_machine
   * [X] 修复：[Exception on project load #9](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/9) 
 * 优化：
   * [X] 语法解析优化 - 支持脚本文件中的`!=`
-  * [ ] 语法解析优化 - CWT文件的文档注释和选项注释中可以任意使用`#`
+  * [X] 语法解析优化 - CWT文件的文档注释中可以任意使用`#` *
   * [ ] 在判断子类型时兼容`category = <deposit_category.blocker>`这样的表达式（这在之前意味着进行索引时需要使用索引后的数据）
 * 优化 - 智能推断：
   * [ ] 基于使用处推断`inline_script`的位置（即需要对应的CWT规则文件入口）
