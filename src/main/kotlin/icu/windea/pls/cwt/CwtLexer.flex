@@ -33,10 +33,18 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 
 %{
   private int optionDepth = 0;
-  
-  public CwtLexer() {
-    this((java.io.Reader)null);
-  }
+    
+    public CwtLexer() {
+      this((java.io.Reader)null);
+    }
+    
+    public boolean nextCharIs(char c) {
+	    try {
+			return yycharat(yylength()) == c;
+		} catch(Exception e) {
+	        return false;
+		}
+    }
 %}
 
 EOL=\s*\R
@@ -45,7 +53,7 @@ WHITE_SPACE=[\s&&[^\r\n]]+
 
 RELAX_COMMENT=#[^\r\n]*
 COMMENT=(#)|(#[^#\r\n][^\r\n]*)
-OPTION_COMMENT_START=##[^#]
+OPTION_COMMENT_START=##
 DOCUMENTATION_COMMENT_START=###
 
 CHECK_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?({WHITE_SPACE})?((=)|(\!=)|(<>))
@@ -67,8 +75,8 @@ DOCUMENTATION_TOKEN=[^\s][^\r\n]*
   "{" {return LEFT_BRACE;}
   "}" {return RIGHT_BRACE;}
   
-  {COMMENT} {return COMMENT; }
-  {OPTION_COMMENT_START} { yypushback(1); yybegin(WAITING_OPTION); return OPTION_START; }
+  {COMMENT} { return COMMENT; }
+  {OPTION_COMMENT_START} { if(!nextCharIs('#')) { yypushback(1); yybegin(WAITING_OPTION); return OPTION_START; } }
   {DOCUMENTATION_COMMENT_START} { yybegin(WAITING_DOCUMENTATION); return DOCUMENTATION_START; }
   
   {CHECK_PROPERTY_KEY} {yypushback(yylength()); yybegin(WAITING_PROPERTY_KEY);}
@@ -106,11 +114,10 @@ DOCUMENTATION_TOKEN=[^\s][^\r\n]*
   "{" {yybegin(YYINITIAL); return LEFT_BRACE;}
   "}" {yybegin(YYINITIAL); return RIGHT_BRACE;}
   
-  "###" { yybegin(WAITING_DOCUMENTATION); return DOCUMENTATION_START; }
-  "##" {  yybegin(WAITING_OPTION); return OPTION_START; }
-   
-  {COMMENT} {return COMMENT; }
-  
+  {COMMENT} { return COMMENT; }
+  {OPTION_COMMENT_START} { if(!nextCharIs('#')) { yypushback(1); yybegin(WAITING_OPTION); return OPTION_START; } }
+  {DOCUMENTATION_COMMENT_START} { yybegin(WAITING_DOCUMENTATION); return DOCUMENTATION_START; }
+
   {CHECK_PROPERTY_KEY} {yypushback(yylength()); yybegin(WAITING_PROPERTY_KEY);}
   {BOOLEAN_TOKEN} { yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN; }
   {INT_TOKEN} { yybegin(WAITING_PROPERTY_END); return INT_TOKEN; }
@@ -189,8 +196,8 @@ DOCUMENTATION_TOKEN=[^\s][^\r\n]*
   "{" {yybegin(WAITING_OPTION); optionDepth++; return LEFT_BRACE;}
   "}" {yybegin(WAITING_OPTION); optionDepth--; return RIGHT_BRACE;}
   
-  {COMMENT} {return COMMENT; }
-  {OPTION_COMMENT_START} {  yypushback(1); yybegin(WAITING_OPTION); return OPTION_START; }
+  {COMMENT} { return COMMENT; }
+  {OPTION_COMMENT_START} { if(!nextCharIs('#')) { yypushback(1); yybegin(WAITING_OPTION); return OPTION_START; } }
   {DOCUMENTATION_COMMENT_START} { yybegin(WAITING_DOCUMENTATION); return DOCUMENTATION_START; }
   
   {CHECK_OPTION_KEY} {yypushback(yylength()); yybegin(WAITING_OPTION_KEY);}
