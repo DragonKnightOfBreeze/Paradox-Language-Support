@@ -146,16 +146,21 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 		val cardinality = this.cardinality ?: return Occurrence(0, null, null, false)
 		val cardinalityMinDefine = this.cardinalityMinDefine
 		val cardinalityMaxDefine = this.cardinalityMaxDefine
-		
-		var min = cardinality.min
+		val occurrence = Occurrence(0, cardinality.min, cardinality.max, cardinality.relaxMin)
 		if(cardinalityMinDefine != null) {
-			min = ParadoxDefineHandler.getDefineValue(contextElement, project, cardinalityMinDefine, Int::class.java) ?: min
+			val defineValue = ParadoxDefineHandler.getDefineValue(contextElement, project, cardinalityMinDefine, Int::class.java)
+			if(defineValue != null) {
+				occurrence.min = defineValue
+				occurrence.minDefine = cardinalityMinDefine
+			}
 		}
-		var max = cardinality.max
 		if(cardinalityMaxDefine != null) {
-			max = ParadoxDefineHandler.getDefineValue(contextElement, project, cardinalityMaxDefine, Int::class.java) ?: max
+			val defineValue = ParadoxDefineHandler.getDefineValue(contextElement, project, cardinalityMaxDefine, Int::class.java)
+			if(defineValue != null) {
+				occurrence.max != defineValue
+				occurrence.maxDefine = cardinalityMaxDefine
+			}
 		}
-		val relaxMin = cardinality.relaxMin
-		return Occurrence(0, min, max, relaxMin)
+		return occurrence
 	}
 }

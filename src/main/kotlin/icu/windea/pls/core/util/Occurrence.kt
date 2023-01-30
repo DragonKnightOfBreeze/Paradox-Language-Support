@@ -1,10 +1,11 @@
 package icu.windea.pls.core.util
 
-import icu.windea.pls.config.cwt.expression.*
-
 data class Occurrence(
 	var actual: Int,
-	val min: Int?,
-	val max: Int?,
+	var min: Int?,
+	var max: Int?,
 	val relaxMin: Boolean = false
-)
+) {
+	var minDefine: String? = null
+	var maxDefine: String? = null
+}

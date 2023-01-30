@@ -63,17 +63,22 @@ class TooManyExpressionInspection: LocalInspectionTool() {
                     val isConst = configExpression.type == Constant
                     val description = if(isKey) {
                         when {
-                            isConst -> PlsBundle.message("script.inspection.advanced.tooManyExpression.description.1.1", configExpression, max, actual)
-                            else -> PlsBundle.message("script.inspection.advanced.tooManyExpression.description.1.2", configExpression, max, actual)
+                            isConst -> PlsBundle.message("script.inspection.advanced.tooManyExpression.description.1.1", configExpression)
+                            else -> PlsBundle.message("script.inspection.advanced.tooManyExpression.description.1.2", configExpression)
                         }
                     } else {
                         when {
-                            isConst -> PlsBundle.message("script.inspection.advanced.tooManyExpression.description.2.1", configExpression, max, actual)
-                            else -> PlsBundle.message("script.inspection.advanced.tooManyExpression.description.2.2", configExpression, max, actual)
+                            isConst -> PlsBundle.message("script.inspection.advanced.tooManyExpression.description.2.1", configExpression)
+                            else -> PlsBundle.message("script.inspection.advanced.tooManyExpression.description.2.2", configExpression)
                         }
                     }
+					val maxDefine = occurrence.maxDefine
+					val detail = when {
+						maxDefine == null -> PlsBundle.message("script.inspection.advanced.tooManyExpression.description.detail.1", max, actual)
+						else -> PlsBundle.message("script.inspection.advanced.tooManyExpression.description.detail.2", max, actual, maxDefine)
+					}
                     val highlightType = ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                    holder.registerProblem(position, description, highlightType)
+                    holder.registerProblem(position, "$description $detail", highlightType)
                 }
 			}
 		})
