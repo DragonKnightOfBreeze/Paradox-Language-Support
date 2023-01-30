@@ -24,6 +24,7 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.search.*
@@ -91,7 +92,9 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         val content = contentFactory.createFragment(project, documentContent, textRange)
         
         val producers = localisations.mapNotNull { otherLocalisation ->
-            val otherFile = otherLocalisation.containingFile?.virtualFile ?: return@mapNotNull null
+            val otherPsiFile = otherLocalisation.containingFile ?: return@mapNotNull null
+            val locale = otherPsiFile.localeConfig ?: return@mapNotNull null
+            val otherFile = otherPsiFile.virtualFile ?: return@mapNotNull null
             val isSamePosition = localisation isSamePosition otherLocalisation
             val otherContentTitle = when {
                 isSamePosition -> getContentTitle(otherLocalisation, true)
@@ -112,7 +115,7 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
             }
             if(otherReadOnly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
             val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
-            MyRequestProducer(request, otherLocalisation.name, otherFile)
+            MyRequestProducer(request, otherLocalisation.name, locale, otherFile)
         }
         val chain = MyDiffRequestChain(producers)
         //如果打开了编辑器，左窗口定位到当前光标位置
@@ -168,11 +171,12 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
     class MyRequestProducer(
         request: DiffRequest,
         val otherLocalisationName: String,
+        val locale: CwtLocalisationLocaleConfig,
         val otherFile: VirtualFile
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
-            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, fileInfo.path, fileInfo.rootPath)
+            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, locale, fileInfo.path, fileInfo.rootPath)
         }
     }
     
