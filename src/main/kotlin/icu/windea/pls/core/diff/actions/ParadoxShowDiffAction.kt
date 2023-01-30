@@ -1,5 +1,6 @@
 package icu.windea.pls.core.diff.actions
 
+import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.diff.*
 import com.intellij.diff.chains.*
 import com.intellij.diff.util.*
@@ -8,7 +9,7 @@ import com.intellij.openapi.vfs.*
 
 //com.intellij.diff.actions.BaseShowDiffAction
 
-abstract class ParadoxShowDiffAction: AnAction() {
+abstract class ParadoxShowDiffAction : AnAction() {
     init {
         isEnabledInModalContext = true
     }
@@ -24,7 +25,7 @@ abstract class ParadoxShowDiffAction: AnAction() {
     
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project
-        val chain = getDiffRequestChain(e) ?: return
+        val chain = runReadAction { getDiffRequestChain(e) } ?: return
         DiffManager.getInstance().showDiff(project, chain, DiffDialogHints.DEFAULT)
     }
     

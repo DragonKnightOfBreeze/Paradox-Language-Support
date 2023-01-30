@@ -8,6 +8,7 @@ import com.intellij.diff.contents.*
 import com.intellij.diff.requests.*
 import com.intellij.diff.tools.util.base.*
 import com.intellij.diff.util.*
+import com.intellij.notification.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
@@ -37,7 +38,7 @@ import javax.swing.*
 
 /**
  * 将当前本地化与包括当前本地化的只读副本在内的相同名称的本地化进行DIFF。
- * 
+ *
  * TODO 按照覆盖顺序进行排序。
  */
 @Suppress("ComponentNotRegistered")
@@ -66,22 +67,26 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return null
         val element = psiFile.findElementAt(offset) ?: return null
         val localisation = element.parentOfType<ParadoxLocalisationProperty>(withSelf = false) ?: return null
+        val localisationName = localisation.name
         val localisations = Collections.synchronizedList(mutableListOf<ParadoxLocalisationProperty>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
-            //need read action here
-            runReadAction {
-                val selector = localisationSelector().gameTypeFrom(file)
-                val result = ParadoxLocalisationSearch.search(localisation.name, project, selector = selector).findAll()
-                localisations.addAll(result)
-            }
+            val selector = localisationSelector().gameTypeFrom(file)
+            val result = ParadoxLocalisationSearch.search(localisationName, project, selector = selector).findAll()
+            localisations.addAll(result)
         }, PlsBundle.message("diff.compare.localisations.collect.title"), true, project)
-        if(localisations.size <= 1) return null
+        if(localisations.size <= 1) {
+            NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
+                PlsBundle.message("diff.compare.localisations.content.title.info.1"),
+                NotificationType.INFORMATION
+            ).notify(project)
+            return null
+        }
         
         val contentFactory = DiffContentFactory.getInstance()
         
         val windowTitle = getWindowsTitle(localisation) ?: return null
         val contentTitle = getContentTitle(localisation) ?: return null
-        val documentContent = contentFactory.createDocument(project, file) ?:  return null
+        val documentContent = contentFactory.createDocument(project, file) ?: return null
         val textRange = localisation.textRange
         val content = contentFactory.createFragment(project, documentContent, textRange)
         
@@ -96,18 +101,18 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
             val otherContent = when {
                 isSamePosition -> {
                     otherReadOnly = true
-                    val otherDocument = EditorFactory.getInstance().createDocument(content.document.text)
+                    val otherDocument = EditorFactory.getInstance().createDocument(documentContent.document.text)
                     val otherDocumentContent = contentFactory.create(project, otherDocument, content.highlightFile)
                     contentFactory.createFragment(project, otherDocumentContent, textRange)
                 }
                 else -> {
-                    val otherDocumentContent = contentFactory.createDocument(project, otherFile) ?:  return null
-                    contentFactory.createFragment(project, otherDocumentContent, otherLocalisation.textRange) 
+                    val otherDocumentContent = contentFactory.createDocument(project, otherFile) ?: return null
+                    contentFactory.createFragment(project, otherDocumentContent, otherLocalisation.textRange)
                 }
             }
             if(otherReadOnly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
             val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
-            MyRequestProducer(request, otherLocalisation, otherFile)
+            MyRequestProducer(request, otherLocalisation.name, otherFile)
         }
         val chain = MyDiffRequestChain(producers)
         //如果打开了编辑器，左窗口定位到当前光标位置
@@ -137,9 +142,10 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
     }
     
     class MyDiffRequestChain(
-        producers: List<DiffRequestProducer>
+        producers: List<DiffRequestProducer>,
+        var currentIndex: Int = 0
     ) : UserDataHolderBase(), DiffRequestSelectionChain, GoToChangePopupBuilder.Chain {
-        private val listSelection = ListSelection.createAt(producers, 0)
+        private val listSelection = ListSelection.createAt(producers, currentIndex)
         
         override fun getListSelection() = listSelection
         
@@ -147,24 +153,26 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
             return MyGotoChangePopupAction(this, onSelected, defaultSelection)
         }
         
-        fun syncEditorsCaretPosition(index: Int, selectedIndex: Int) {
-            if(index == selectedIndex) return
-            val request = (requests[index] as MyRequestProducer).request
+        fun syncEditorsCaretPosition(selectedIndex: Int) {
+            if(currentIndex == selectedIndex) return
+            val request = (requests[currentIndex] as MyRequestProducer).request
             val selectedRequest = (requests[selectedIndex] as MyRequestProducer).request
             val positions = DiffUserDataKeysEx.EDITORS_CARET_POSITION.get(request)
-            val selectedPositions = DiffUserDataKeysEx.EDITORS_CARET_POSITION.get(selectedRequest)
-            selectedPositions[0] = positions[0]
+            val vPositions = InitialScrollPositionSupport.EditorsVisiblePositions.KEY.get(request)
+            if(positions != null) DiffUserDataKeysEx.EDITORS_CARET_POSITION.set(selectedRequest, positions)
+            if(vPositions != null) InitialScrollPositionSupport.EditorsVisiblePositions.KEY.set(selectedRequest, vPositions)
+            currentIndex = selectedIndex
         }
     }
     
     class MyRequestProducer(
         request: DiffRequest,
-        val otherLocalisation: ParadoxLocalisationProperty,
+        val otherLocalisationName: String,
         val otherFile: VirtualFile
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
-            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisation.name, fileInfo.path, fileInfo.rootPath)
+            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, fileInfo.path, fileInfo.rootPath)
         }
     }
     
@@ -197,7 +205,7 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
             override fun onChosen(selectedValue: DiffRequestProducer, finalChoice: Boolean) = doFinalStep {
                 //如果打开了编辑器，左窗口重新定位到当前光标位置
                 val selectedIndex = chain.requests.indexOf(selectedValue)
-                chain.syncEditorsCaretPosition(chain.index, selectedIndex)
+                chain.syncEditorsCaretPosition(selectedIndex)
                 onSelected.consume(selectedIndex)
             }
         }

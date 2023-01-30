@@ -9,6 +9,7 @@ import com.intellij.diff.requests.*
 import com.intellij.diff.tools.util.base.*
 import com.intellij.diff.tools.util.base.InitialScrollPositionSupport.*
 import com.intellij.diff.util.*
+import com.intellij.notification.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
@@ -60,14 +61,17 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         val path = fileInfo.path.path
         val files = Collections.synchronizedList(mutableListOf<VirtualFile>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
-            //need read action here
-            runReadAction {
-                val selector = fileSelector().gameType(gameType)
-                val result = ParadoxFilePathSearch.search(path, project, selector = selector).findAll()
-                files.addAll(result)
-            }
+            val selector = fileSelector().gameType(gameType)
+            val result = ParadoxFilePathSearch.search(path, project, selector = selector).findAll()
+            files.addAll(result)
         }, PlsBundle.message("diff.compare.files.collect.title"), true, project)
-        if(files.size <= 1) return null
+        if(files.size <= 1) {
+            NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
+                PlsBundle.message("diff.compare.files.content.title.info.1"),
+                NotificationType.INFORMATION
+            ).notify(project)
+            return null
+        }
         
         val contentFactory = DiffContentFactory.getInstance()
         
