@@ -1,5 +1,6 @@
 package icu.windea.pls.config.cwt.config
 
+import com.intellij.openapi.project.Project
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.core.*
@@ -9,6 +10,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.cwt.expression.CwtDataType.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 
 sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	abstract val value: String
@@ -45,6 +47,14 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 			}
 		}
 		option?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
+	}
+	val cardinalityMinDefine by lazy { 
+		val option = options?.find { it.key == "cardinality_min_define" }
+		option?.stringValue
+	}
+	val cardinalityMaxDefine by lazy {
+		val option = options?.find { it.key == "cardinality_max_define" }
+		option?.stringValue
 	}
 	
 	val hasScopeOption by lazy {
@@ -130,5 +140,22 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 				}
 			}
 		}
+	}
+	
+	fun toOccurrence(contextElement: PsiElement, project: Project): Occurrence {
+		val cardinality = this.cardinality ?: return Occurrence(0, null, null, false)
+		val cardinalityMinDefine = this.cardinalityMinDefine
+		val cardinalityMaxDefine = this.cardinalityMaxDefine
+		
+		var min = cardinality.min
+		if(cardinalityMinDefine != null) {
+			min = ParadoxDefineHandler.getDefineValue(contextElement, project, cardinalityMinDefine, Int::class.java) ?: min
+		}
+		var max = cardinality.max
+		if(cardinalityMaxDefine != null) {
+			max = ParadoxDefineHandler.getDefineValue(contextElement, project, cardinalityMaxDefine, Int::class.java) ?: max
+		}
+		val relaxMin = cardinality.relaxMin
+		return Occurrence(0, min, max, relaxMin)
 	}
 }

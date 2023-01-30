@@ -168,9 +168,10 @@ private fun doGetChildValueConfigs(definitionInfo: ParadoxDefinitionInfo, defini
 }
 
 private fun ParadoxDefinitionMemberInfo.doGetChildPropertyOccurrenceMap(element: ParadoxScriptMemberElement): Map<CwtKeyExpression, Occurrence> {
+	val project = configGroup.project
 	//keyExpression - (expect actual)
 	val childPropertyConfigs = getChildPropertyConfigs()
-	val occurrenceMap = childPropertyConfigs.associateByTo(mutableMapOf(), { it.keyExpression }, { it.cardinality.toOccurrence() })
+	val occurrenceMap = childPropertyConfigs.associateByTo(mutableMapOf(), { it.keyExpression }, { it.toOccurrence(element, project) })
 	val blockElement = when{
 		element is ParadoxScriptDefinitionElement -> element.block
 		element is ParadoxScriptBlockElement -> element
@@ -193,9 +194,10 @@ private fun ParadoxDefinitionMemberInfo.doGetChildPropertyOccurrenceMap(element:
 }
 
 private fun ParadoxDefinitionMemberInfo.doGetChildValueOccurrenceMap(element: ParadoxScriptMemberElement): Map<CwtValueExpression, Occurrence> {
+	val project = configGroup.project
 	//valueExpression - (expect actual)
 	val childValueConfigs = getChildValueConfigs()
-	val occurrenceMap = childValueConfigs.associateByTo(mutableMapOf(), { it.valueExpression }, { it.cardinality.toOccurrence() })
+	val occurrenceMap = childValueConfigs.associateByTo(mutableMapOf(), { it.valueExpression }, { it.toOccurrence(element, project) })
 	val blockElement = when{
 		element is ParadoxScriptDefinitionElement -> element.block
 		element is ParadoxScriptBlockElement -> element

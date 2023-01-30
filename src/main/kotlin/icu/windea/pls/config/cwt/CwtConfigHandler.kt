@@ -601,9 +601,11 @@ object CwtConfigHandler {
 		if(expression.type == CwtDataType.AliasName) return true
 		val actualCount = definitionMemberInfo.childPropertyOccurrenceMap[expression]?.actual ?: 0
 		//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
+		//如果上限是动态的值（如，基于define的值），也不作限制
 		val cardinality = config.cardinality
 		val maxCount = when {
 			cardinality == null -> if(expression.type == CwtDataType.Constant) 1 else null
+			config.cardinalityMaxDefine != null -> null
 			else -> cardinality.max
 		}
 		return maxCount == null || actualCount < maxCount
@@ -613,9 +615,11 @@ object CwtConfigHandler {
 		val expression = config.valueExpression
 		val actualCount = definitionMemberInfo.childValueOccurrenceMap[expression]?.actual ?: 0
 		//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
+		//如果上限是动态的值（如，基于define的值），也不作限制
 		val cardinality = config.cardinality
 		val maxCount = when {
 			cardinality == null -> if(expression.type == CwtDataType.Constant) 1 else null
+			config.cardinalityMaxDefine != null -> null
 			else -> cardinality.max
 		}
 		return maxCount == null || actualCount < maxCount

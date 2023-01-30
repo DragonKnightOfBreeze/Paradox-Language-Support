@@ -57,7 +57,7 @@ object ParadoxScriptDataResolver {
 		return result
 	}
 	
-	private fun resolveValue(value: ParadoxScriptValue): Any? {
+	fun resolveValue(value: ParadoxScriptValue): Any? {
 		return when(value) {
 			is ParadoxScriptBoolean -> value.value.toBooleanYesNo()
 			is ParadoxScriptInt -> value.value.toInt()
@@ -70,7 +70,7 @@ object ParadoxScriptDataResolver {
 		}
 	}
 	
-	private fun resolveProperty(property: ParadoxScriptProperty): BlockEntry<String?, Any>? {
+	fun resolveProperty(property: ParadoxScriptProperty): BlockEntry<String?, Any>? {
 		//注意property的名字可以重复
 		val key = property.name
 		val value = property.propertyValue?.let { resolveValue(it) } ?: return null

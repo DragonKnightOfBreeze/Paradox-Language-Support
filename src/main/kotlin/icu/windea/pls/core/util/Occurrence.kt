@@ -8,5 +8,3 @@ data class Occurrence(
 	val max: Int?,
 	val relaxMin: Boolean = false
 )
-
-fun CwtCardinalityExpression?.toOccurrence() = Occurrence(0, this?.min, this?.max, this?.relaxMin ?: false)

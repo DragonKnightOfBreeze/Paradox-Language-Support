@@ -2,11 +2,19 @@ package icu.windea.pls.config.cwt.expression
 
 import com.google.common.cache.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 
 /**
  * CWT基数表达式。
  *
- * 示例：`"0..1"`, `"0..inf"`, `"~0..10"`
+ * 示例：
+ *
+ * ```
+ * ## cardinality = 0..1
+ * ## cardinality = 0..inf
+ * ## cardinality = ~1..10
+ * ```
+ *
  * @property min 最小值。
  * @property max 最大值，null表示无限。
  * @property relaxMin 如果值为`false`，则当实际数量小于最小值时仅会作出（弱）警告。
@@ -44,8 +52,6 @@ class CwtCardinalityExpression private constructor(
 			}
 		}
 	}
-	
-	operator fun contains(value: Int) = value >= min && (max == null || value <= max)
 	
 	operator fun component1() = min
 	
