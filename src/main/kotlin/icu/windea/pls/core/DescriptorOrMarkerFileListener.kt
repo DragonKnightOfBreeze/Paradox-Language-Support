@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.newvfs.events.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.*
 import icu.windea.pls.config.core.config.*
+import org.jetbrains.kotlin.idea.util.application.*
 
 /**
  * 监听描述符文件或者游戏类型标记文件。
@@ -36,21 +37,28 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 					rootFile.putUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile) ?: return
-				if(fileName == rootInfo.descriptorFile.name) {
-					ParadoxCoreHandler.reparseFilesInRoot(rootFile)
-				} else if(fileName == rootInfo.markerFile?.name && rootInfo.gameType != oldRootInfo?.gameType) {
-					ParadoxCoreHandler.reparseFilesInRoot(rootFile)
+				runWriteAction {
+					if(fileName == rootInfo.descriptorFile.name) {
+						ParadoxCoreHandler.reparseFilesInRoot(rootFile)
+					} else if(fileName == rootInfo.markerFile?.name && rootInfo.gameType != oldRootInfo?.gameType) {
+						ParadoxCoreHandler.reparseFilesInRoot(rootFile)
+					}
 				}
 			}
 			event is VFileDeleteEvent -> {
 				val file = event.file
 				if(!isPossibleDescriptorOrMarkerFile(file.name)) return
-				ParadoxCoreHandler.reparseFilesInRoot(file.parent) //不能从file.parent.children中获取file，因为已经不合法
+				runWriteAction {
+					//不能从file.parent.children中获取file，因为已经不合法
+					ParadoxCoreHandler.reparseFilesInRoot(file.parent)
+				}
 			}
 			event is VFileMoveEvent -> {
 				val file = event.file
 				if(!isPossibleDescriptorOrMarkerFile(file.name)) return
-				ParadoxCoreHandler.reparseFilesInRoot(event.oldParent)
+				runWriteAction {
+					ParadoxCoreHandler.reparseFilesInRoot(event.oldParent)
+				}
 				val rootFile = event.newParent
 				val oldRootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
 				if(oldRootInfo != null) {
@@ -58,10 +66,12 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 					rootFile.putUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile) ?: return
-				if(file == rootInfo.descriptorFile) {
-					ParadoxCoreHandler.reparseFilesInRoot(rootFile)
-				} else if(file == rootInfo.markerFile && rootInfo.gameType != oldRootInfo?.gameType) {
-					ParadoxCoreHandler.reparseFilesInRoot(rootFile)
+				runWriteAction {
+					if(file == rootInfo.descriptorFile) {
+						ParadoxCoreHandler.reparseFilesInRoot(rootFile)
+					} else if(file == rootInfo.markerFile && rootInfo.gameType != oldRootInfo?.gameType) {
+						ParadoxCoreHandler.reparseFilesInRoot(rootFile)
+					}
 				}
 			}
 			event is VFileContentChangeEvent -> {
@@ -74,10 +84,12 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 					rootFile.putUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile) ?: return
-				if(file == rootInfo.descriptorFile) {
-					file.putUserData(PlsKeys.descriptorInfoKey, null) //清空描述符信息缓存
-				} else if(file == rootInfo.markerFile && file.name == PlsConstants.launcherSettingsFileName) {
-					ParadoxCoreHandler.reparseFilesInRoot(rootFile) //这种情况下也需要重新解析
+				runWriteAction {
+					if(file == rootInfo.descriptorFile) {
+						file.putUserData(PlsKeys.descriptorInfoKey, null) //清空描述符信息缓存
+					} else if(file == rootInfo.markerFile && file.name == PlsConstants.launcherSettingsFileName) {
+						ParadoxCoreHandler.reparseFilesInRoot(rootFile) //这种情况下也需要重新解析
+					}
 				}
 			}
 			event is VFilePropertyChangeEvent && event.propertyName == "name" -> {
@@ -90,10 +102,12 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 					rootFile.putUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile) ?: return
-				if(file == rootInfo.descriptorFile) {
-					ParadoxCoreHandler.reparseFilesInRoot(rootFile)
-				} else if(file == rootInfo.markerFile && rootInfo.gameType != oldRootInfo?.gameType) {
-					ParadoxCoreHandler.reparseFilesInRoot(rootFile)
+				runWriteAction {
+					if(file == rootInfo.descriptorFile) {
+						ParadoxCoreHandler.reparseFilesInRoot(rootFile)
+					} else if(file == rootInfo.markerFile && rootInfo.gameType != oldRootInfo?.gameType) {
+						ParadoxCoreHandler.reparseFilesInRoot(rootFile)
+					}
 				}
 			}
 		}

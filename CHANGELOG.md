@@ -74,6 +74,8 @@ overlord_gaiaseeder_upkeep_machine
 * 支持比较同名的文件、定义、本地化等
 * 支持通过economic_category生成的修饰符
 
+* BUG修复：
+  * [X] 修复：[Exception on project load #9](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/9) 
 * 优化：
   * [ ] 在判断子类型时兼容`category = <deposit_category.blocker>`这样的表达式（这在之前意味着进行索引时需要使用索引后的数据）
 * 优化 - 智能推断：
