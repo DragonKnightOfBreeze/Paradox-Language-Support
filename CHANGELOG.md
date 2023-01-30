@@ -66,20 +66,15 @@ set_fleet_settings
 overlord_gaiaseeder_upkeep_machine
 ```
 
-## 0.7.12
+## 0.7.13
 
 计划内容：
 
 * 支持推断inline_script的调用位置从而为其提供各种功能
-* 支持比较同名的文件、定义、本地化等
 * 支持通过economic_category生成的修饰符
 
-* BUG修复：
-  * [X] 修复：[Exception on project load #9](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/9) 
+* BUG修复
 * 优化：
-  * [X] 语法解析优化 - 支持脚本文件中的`!=`
-  * [X] 语法解析优化 - CWT文件的文档注释中可以任意使用`#`
-  * [X] CWT规则文件的`cardinality`选项也可以引用define的数值（如，`## cardinality_max_define = "NGameplay/ETHOS_MAX_POINTS"`）
   * [ ] 在判断子类型时兼容`category = <deposit_category.blocker>`这样的表达式（这在之前意味着进行索引时需要使用索引后的数据）
 * 优化 - 智能推断：
   * [ ] 基于使用处推断`inline_script`的位置（即需要对应的CWT规则文件入口）
@@ -88,16 +83,31 @@ overlord_gaiaseeder_upkeep_machine
     * [ ] 支持通过Stellaris的`economic_category`生成修饰符（原版游戏会生成的照常支持）
     * [ ] 提供修饰符解析器的扩展点，便于后续扩展
   * [ ] 操作（`Action`）
-    * [X] ~~在文件上使用`Goto Implementations`操作可以导航到同名的重载或者被重载的文件~~（IDE默认不可行）
-    * [ ] 同名的定义、本地化，同路径的文件之间的DIFF（左窗口显示当前的，右窗口显示包括当前的只读副本在内的所有的） *
-      * 显示在编辑器右键菜单/结构视图右键菜单/顶部导航栏`View`下拉菜单中
-      * 切换DIFF对象时同步鼠标和编辑器页面的位置
-      * 选择DIFF对象时显示图标，高亮只读副本对应的选项 *
     * [ ] 从封装变量/定义/本地化/文件进行重载（通过对话框选择生成的位置）
     * [ ] 从指定的本地化文件生成其他语言区域的本地化文件（右键菜单&项目视图&工具栏操作，考虑支持指定多个或者整个目录的情况）
   * 代码检查（`Code > Inspect Code...`）
     * [ ] 缺少的传参（在调用表达式、SV表达式、内联脚本调用中，如果参数不存在默认值且未传递，则认为缺少传参）
     * [ ] 推断的`inline_script`的位置存在冲突（对应的CWT规则的路径不一样，此时显示警告，不使用推断的信息进行引用解析等）
+
+## 0.7.12
+
+计划内容：
+
+* 支持比较同名的文件、定义、本地化等
+
+* BUG修复：
+  * [X] 修复：[Exception on project load #9](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/9) 
+* 优化：
+  * [X] 语法解析优化 - 支持脚本文件中的`!=`
+  * [X] 语法解析优化 - CWT文件的文档注释中可以任意使用`#`
+  * [X] CWT规则文件的`cardinality`选项也可以引用define的数值（如，`## cardinality_max_define = "NGameplay/ETHOS_MAX_POINTS"`）
+* 新增功能：
+  * 操作（`Action`）
+    * [X] ~~在文件上使用`Goto Implementations`操作可以导航到同名的重载或者被重载的文件~~（IDE默认不可行，无法生效）
+    * [ ] 同名的定义、本地化，同路径的文件之间的DIFF（左窗口显示当前的，右窗口显示包括当前的只读副本在内的所有的） *
+      * 显示在编辑器右键菜单/结构视图右键菜单/顶部导航栏`View`下拉菜单中
+      * 切换DIFF对象时同步鼠标和编辑器页面的位置
+      * 选择DIFF对象时显示对应的图标，且高亮只读副本对应的选项 *
   * 装订线图标（`Gutter Icon`）
     * [X] 也为封装变量（`@a = 1`，本地化&全局）提供装订线图标，以便导航到同名的重载或者被重载的封装变量
 
