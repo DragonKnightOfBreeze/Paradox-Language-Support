@@ -108,6 +108,8 @@
       <separator/>
       <action id="ParadoxCompareFilesAction" class="icu.windea.pls.core.diff.actions.ParadoxCompareFilesAction"
               icon="AllIcons.Actions.Diff"/>
+      <action id="ParadoxCompareLocalisationsAction" class="icu.windea.pls.core.diff.actions.ParadoxCompareLocalisationsAction"
+              icon="AllIcons.Actions.Diff"/>
 
       <add-to-group group-id="EditorPopupMenu" relative-to-action="CompareClipboardWithSelection" anchor="after"/>
       <add-to-group group-id="CompareActions" relative-to-action="CompareClipboardWithSelection" anchor="after"/>

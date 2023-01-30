@@ -1,15 +1,17 @@
 package icu.windea.pls.core.diff.actions
 
-import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.diff.*
 import com.intellij.diff.actions.*
 import com.intellij.diff.actions.impl.*
 import com.intellij.diff.chains.*
+import com.intellij.diff.contents.*
 import com.intellij.diff.requests.*
 import com.intellij.diff.tools.util.base.*
+import com.intellij.diff.tools.util.base.InitialScrollPositionSupport.*
 import com.intellij.diff.util.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.diff.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
@@ -29,6 +31,8 @@ import javax.swing.*
 
 /**
  * 将当前文件与包括当前文件的只读副本在内的相同路径的文件进行DIFF。
+ *
+ * 可以用于比较二进制文件。（如DDS图片）
  *
  * TODO 按照覆盖顺序进行排序。
  */
@@ -54,11 +58,11 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         val path = fileInfo.path.path
-        val selector = fileSelector().gameType(gameType)
         val files = Collections.synchronizedList(mutableListOf<VirtualFile>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
             //need read action here
-            com.intellij.openapi.application.runReadAction {
+            runReadAction {
+                val selector = fileSelector().gameType(gameType)
                 val result = ParadoxFilePathSearch.search(path, project, selector = selector).findAll()
                 files.addAll(result)
             }
@@ -69,32 +73,52 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         
         val windowTitle = getWindowsTitle(file) ?: return null
         val contentTitle = getContentTitle(file) ?: return null
-        val content = contentFactory.createDocument(project, file) ?: return null
+        val binary = file.fileType.isBinary
+        var readOnly = false
+        val content = when {
+            binary -> {
+                readOnly = true
+                contentFactory.createFile(project, file)
+            }
+            else -> contentFactory.createDocument(project, file)
+        } ?: return null
+        if(readOnly) content.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
         
         val producers = files.mapNotNull { otherFile ->
+            if(file.fileType != otherFile.fileType) return@mapNotNull null
             val otherContentTitle = when {
                 file == otherFile -> getContentTitle(otherFile, true)
                 else -> getContentTitle(otherFile)
             } ?: return@mapNotNull null
+            var otherReadOnly = false
             val otherContent = when {
-                file == otherFile -> {
-                    val document = EditorFactory.getInstance().createDocument(content.document.text)
-                    contentFactory.create(project, document, content.highlightFile).apply {
-                        putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
-                    }
+                binary -> {
+                    otherReadOnly = true
+                    contentFactory.createFile(project, otherFile) ?: return@mapNotNull null
                 }
-                else -> contentFactory.createDocument(project, otherFile) ?: return@mapNotNull null
+                file == otherFile -> {
+                    otherReadOnly = true
+                    content as DocumentContent
+                    val otherDocument = EditorFactory.getInstance().createDocument(content.document.text)
+                    contentFactory.create(project, otherDocument, content.highlightFile)
+                }
+                else -> {
+                    contentFactory.createDocument(project, otherFile) ?: return@mapNotNull null
+                }
             }
+            if(otherReadOnly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
             val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
-            FileRequestProducer(request, otherFile)
+            MyRequestProducer(request, otherFile)
         }
-        val chain = FileDiffRequestChain(producers)
+        val chain = MyDiffRequestChain(producers)
         
         //如果打开了编辑器，左窗口定位到当前光标位置
-        val editor = e.editor
-        if(editor != null) {
-            val currentLine = editor.caretModel.logicalPosition.line
-            chain.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.LEFT, currentLine))
+        if(!binary) {
+            val editor = e.editor
+            if(editor != null) {
+                val currentLine = editor.caretModel.logicalPosition.line
+                chain.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.LEFT, currentLine))
+            }
         }
         return chain
     }
@@ -112,27 +136,31 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         }
     }
     
-    class FileDiffRequestChain(
-        producers: List<DiffRequestProducer>
+    class MyDiffRequestChain(
+        producers: List<DiffRequestProducer>,
+        var currentIndex: Int = 0
     ) : UserDataHolderBase(), DiffRequestSelectionChain, GoToChangePopupBuilder.Chain {
-        private val listSelection = ListSelection.createAt(producers, 0)
+        private val listSelection = ListSelection.createAt(producers, currentIndex)
         
         override fun getListSelection() = listSelection
         
         override fun createGoToChangeAction(onSelected: Consumer<in Int>, defaultSelection: Int): AnAction {
-            return FileGotoChangePopupAction(this, onSelected, defaultSelection)
+            return MyGotoChangePopupAction(this, onSelected, defaultSelection)
         }
         
-        fun syncEditorsCaretPosition(index: Int, selectedIndex: Int) {
-            val request = (requests[index] as FileRequestProducer).request
-            val selectedRequest = (requests[selectedIndex] as FileRequestProducer).request
+        fun syncEditorsCaretPosition(selectedIndex: Int) {
+            if(currentIndex == selectedIndex) return
+            val request = (requests[currentIndex] as MyRequestProducer).request
+            val selectedRequest = (requests[selectedIndex] as MyRequestProducer).request
             val positions = DiffUserDataKeysEx.EDITORS_CARET_POSITION.get(request)
-            val selectedPositions = DiffUserDataKeysEx.EDITORS_CARET_POSITION.get(selectedRequest)
-            selectedPositions[0] = positions[0]
+            val vPositions = EditorsVisiblePositions.KEY.get(request)
+            if(positions != null) DiffUserDataKeysEx.EDITORS_CARET_POSITION.set(selectedRequest, positions)
+            if(vPositions != null) EditorsVisiblePositions.KEY.set(selectedRequest, vPositions)
+            currentIndex = selectedIndex
         }
     }
     
-    class FileRequestProducer(
+    class MyRequestProducer(
         request: DiffRequest,
         val otherFile: VirtualFile
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
@@ -142,8 +170,8 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         }
     }
     
-    class FileGotoChangePopupAction(
-        val chain: FileDiffRequestChain,
+    class MyGotoChangePopupAction(
+        val chain: MyDiffRequestChain,
         val onSelected: Consumer<in Int>,
         val defaultSelection: Int
     ) : GoToChangePopupBuilder.BaseGoToChangePopupAction() {
@@ -162,7 +190,7 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
                 defaultOptionIndex = defaultSelection
             }
             
-            override fun getIconFor(value: DiffRequestProducer) = (value as FileRequestProducer).otherFile.fileType.icon
+            override fun getIconFor(value: DiffRequestProducer) = (value as MyRequestProducer).otherFile.fileType.icon
             
             override fun getTextFor(value: DiffRequestProducer) = value.name
             
@@ -171,7 +199,7 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
             override fun onChosen(selectedValue: DiffRequestProducer, finalChoice: Boolean) = doFinalStep {
                 //如果打开了编辑器，左窗口重新定位到当前光标位置
                 val selectedIndex = chain.requests.indexOf(selectedValue)
-                chain.syncEditorsCaretPosition(chain.index, selectedIndex)
+                chain.syncEditorsCaretPosition(selectedIndex)
                 onSelected.consume(selectedIndex)
             }
         }
