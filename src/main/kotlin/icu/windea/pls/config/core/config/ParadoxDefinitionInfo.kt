@@ -145,9 +145,9 @@ class ParadoxDefinitionInfo(
 }
 
 /**
- * 对应的定义是否需要进行索引。
+ * 对应的定义是否需要进行索引和检查。
  */
-val ParadoxDefinitionInfo.shouldIndex: Boolean get() = sourceType != SourceType.PathComment && sourceType != SourceType.TypeComment
+val ParadoxDefinitionInfo.isGlobal: Boolean get() = sourceType != SourceType.PathComment && sourceType != SourceType.TypeComment
 
 /**
  * 对应的定义是否是匿名的。
