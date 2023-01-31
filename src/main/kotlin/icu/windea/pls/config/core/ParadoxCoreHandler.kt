@@ -22,7 +22,7 @@ object ParadoxCoreHandler {
 			//仅索引游戏或模组根目录下的文件
 			if(rootType != ParadoxRootType.Game && rootType != ParadoxRootType.Mod) return false
 			//不索引内联脚本文件
-			if(path.matchesPath("common/inline_scripts")) return false
+			if("common/inline_scripts".matchesPath(path)) return false
 			return true
 		} catch(e: Exception) {
 			return false
