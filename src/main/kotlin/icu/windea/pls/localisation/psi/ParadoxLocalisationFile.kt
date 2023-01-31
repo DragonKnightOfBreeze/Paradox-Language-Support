@@ -3,6 +3,7 @@ package icu.windea.pls.localisation.psi
 import com.intellij.extapi.psi.*
 import com.intellij.navigation.*
 import com.intellij.psi.*
+import icu.windea.pls.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.navigation.*
 
@@ -40,5 +41,9 @@ class ParadoxLocalisationFile(
 	
 	override fun getPresentation(): ItemPresentation {
 		return ParadoxLocalisationFilePresentation(this)
+	}
+	
+	override fun isEquivalentTo(another: PsiElement?): Boolean {
+		return super.isEquivalentTo(another) || (another is ParadoxLocalisationFile && fileInfo == another.fileInfo)
 	}
 }

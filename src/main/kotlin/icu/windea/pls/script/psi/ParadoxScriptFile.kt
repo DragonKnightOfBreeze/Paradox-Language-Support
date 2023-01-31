@@ -34,5 +34,9 @@ class ParadoxScriptFile(
 	override fun getPresentation(): ItemPresentation {
 		return ParadoxScriptFilePresentation(this)
 	}
+	
+	override fun isEquivalentTo(another: PsiElement?): Boolean {
+		return super.isEquivalentTo(another) || (another is ParadoxScriptFile && fileInfo == another.fileInfo)
+	}
 }
 

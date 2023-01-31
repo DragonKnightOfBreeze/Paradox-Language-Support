@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
@@ -21,13 +22,8 @@ object ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub
 		return Builder()
 	}
 	
-	override fun shouldBuildStubFor(file: VirtualFile?): Boolean {
-		//仅为合法的paradox文件创建索引
-		try {
-			return file?.fileInfo?.rootType != null
-		} catch(e: Exception) {
-			return false
-		}
+	override fun shouldBuildStubFor(file: VirtualFile): Boolean {
+		return ParadoxCoreHandler.shouldIndexFile(file)
 	}
 	
 	class Builder: DefaultStubBuilder(){

@@ -9,9 +9,26 @@ import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
+import icu.windea.pls.core.*
 import java.util.*
 
 object ParadoxCoreHandler {
+	fun shouldIndexFile(virtualFile: VirtualFile): Boolean {
+		try {
+			//仅索引有根目录的文件
+			val fileInfo = virtualFile.fileInfo ?: return false
+			val rootType = fileInfo.rootType
+			val path = fileInfo.path.path
+			//仅索引游戏或模组根目录下的文件
+			if(rootType != ParadoxRootType.Game && rootType != ParadoxRootType.Mod) return false
+			//不索引内联脚本文件
+			if(path.matchesPath("common/inline_scripts")) return false
+			return true
+		} catch(e: Exception) {
+			return false
+		}
+	}
+	
 	fun getFileInfo(virtualFile: VirtualFile): ParadoxFileInfo? {
 		return virtualFile.getCopyableUserData(PlsKeys.fileInfoKey)
 	}

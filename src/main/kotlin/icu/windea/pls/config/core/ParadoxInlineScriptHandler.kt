@@ -1,7 +1,6 @@
 package icu.windea.pls.config.core
 
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.psi.util.*
@@ -19,16 +18,16 @@ import java.util.*
 object ParadoxInlineScriptHandler {
     private const val inlineScriptPathExpression = "common/inline_scripts/,.txt"
     
+    fun isInlineScriptFile(file: ParadoxScriptFile): Boolean {
+        val fileInfo = file.fileInfo ?: return false
+        val inlineScriptPath = CwtPathExpressionType.FilePath.extract(inlineScriptPathExpression, fileInfo.path.path)
+        return inlineScriptPath != null
+    }
+    
     @JvmStatic
     fun getLinkedDefinition(file: ParadoxScriptFile, originalSubPaths: LinkedList<String>): ParadoxScriptDefinitionElement? {
-        if(DumbService.isDumb(file.project)) return null
-        
         val project = file.project
         ProgressManager.checkCanceled()
-        val fileInfo = file.fileInfo ?: return null
-        val path = fileInfo.path.path
-        val inlineScriptPath = CwtPathExpressionType.FilePath.extract(inlineScriptPathExpression, path)
-        if(inlineScriptPath == null) return null
         val scope = GlobalSearchScope.allScope(project)
         val referenceQuery = ReferencesSearch.search(file, scope)
         var linkedSubPaths: List<String>? = null
@@ -61,7 +60,7 @@ object ParadoxInlineScriptHandler {
                     return@processQuery true
                 }
             }
-            linkedSubPaths = definitionMemberInfo.elementPath.subPaths
+            linkedSubPaths = definitionMemberInfo.elementPath.subPaths.dropLast(1)
             positionConfig = config
             linkedDefinition = linkedProperty.findParentDefinition()
             return@processQuery true
