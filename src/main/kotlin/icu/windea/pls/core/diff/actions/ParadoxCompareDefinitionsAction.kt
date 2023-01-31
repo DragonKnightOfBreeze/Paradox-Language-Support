@@ -57,6 +57,7 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
     
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
         val project = e.project ?: return null
+        val editor = e.editor
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
         if(file.fileType != ParadoxScriptFileType) return null
         val offset = e.editor?.caretModel?.offset ?: return null
@@ -116,22 +117,24 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
                         contentFactory.createFragment(project, otherDocumentContent, otherDefinition.textRange)
                     }
                 }
-                if(isCurrent) defaultIndex = index
-                if(readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+                if(isCurrent) {
+                    defaultIndex = index
+                    //窗口定位到当前光标位置
+                    if(editor != null) {
+                        val currentLine = editor.caretModel.logicalPosition.line
+                        otherContent.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.LEFT, currentLine))
+                    }
+                }
+                if(readonly) {
+                    otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+                }
                 index++
                 val icon = otherDefinition.icon
                 val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
                 MyRequestProducer(request, otherDefinitionInfo, otherFile, icon, isCurrent)
             }
         }
-        val chain = MyDiffRequestChain(producers, defaultIndex)
-        //如果打开了编辑器，窗口定位到当前光标位置
-        val editor = e.editor
-        if(editor != null) {
-            val currentLine = editor.caretModel.logicalPosition.line
-            chain.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.RIGHT, currentLine))
-        }
-        return chain
+        return MyDiffRequestChain(producers, defaultIndex)
     }
     
     private fun getWindowsTitle(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
