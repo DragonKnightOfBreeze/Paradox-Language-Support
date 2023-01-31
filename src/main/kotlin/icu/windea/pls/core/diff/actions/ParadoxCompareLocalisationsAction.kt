@@ -5,6 +5,7 @@ import com.intellij.diff.actions.impl.*
 import com.intellij.diff.chains.*
 import com.intellij.diff.requests.*
 import com.intellij.diff.tools.util.base.*
+import com.intellij.diff.tools.util.base.InitialScrollPositionSupport.*
 import com.intellij.diff.util.*
 import com.intellij.notification.*
 import com.intellij.openapi.*
@@ -156,13 +157,12 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         }
         
         fun syncEditorsCaretPosition(selectedIndex: Int) {
-            if(currentIndex == selectedIndex) return
             val request = (requests[currentIndex] as MyRequestProducer).request
             val selectedRequest = (requests[selectedIndex] as MyRequestProducer).request
             val positions = DiffUserDataKeysEx.EDITORS_CARET_POSITION.get(request)
-            val vPositions = InitialScrollPositionSupport.EditorsVisiblePositions.KEY.get(request)
+            val vPositions = EditorsVisiblePositions.KEY.get(request)
             if(positions != null) DiffUserDataKeysEx.EDITORS_CARET_POSITION.set(selectedRequest, positions)
-            if(vPositions != null) InitialScrollPositionSupport.EditorsVisiblePositions.KEY.set(selectedRequest, vPositions)
+            if(vPositions != null) EditorsVisiblePositions.KEY.set(selectedRequest, vPositions)
             currentIndex = selectedIndex
         }
     }
