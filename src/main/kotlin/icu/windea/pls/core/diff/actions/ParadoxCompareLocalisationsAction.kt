@@ -123,11 +123,11 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
             }
         }
         val chain = MyDiffRequestChain(producers, defaultIndex)
-        //如果打开了编辑器，左窗口定位到当前光标位置
+        //如果打开了编辑器，窗口定位到当前光标位置
         val editor = e.editor
         if(editor != null) {
             val currentLine = editor.caretModel.logicalPosition.line
-            chain.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.LEFT, currentLine))
+            chain.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.RIGHT, currentLine))
         }
         return chain
     }
