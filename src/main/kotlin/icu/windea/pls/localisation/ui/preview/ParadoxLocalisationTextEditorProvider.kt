@@ -5,7 +5,7 @@ import com.intellij.lang.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.fileEditor.impl.text.*
 import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.options.advanced.*
+import com.intellij.openapi.options.general.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
