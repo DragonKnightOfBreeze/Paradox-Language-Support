@@ -83,7 +83,8 @@ object DefinitionsFilter : Filter {
 	override fun isReverted() = true
 	
 	override fun isVisible(treeNode: TreeElement): Boolean {
-		return treeNode !is ParadoxScriptVariableTreeElement
+		//忽略本身是文件的定义
+		return treeNode !is ParadoxScriptProperty || treeNode.definitionInfo == null
 	}
 	
 	override fun getPresentation(): ActionPresentation {

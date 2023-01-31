@@ -38,14 +38,17 @@ import javax.swing.*
  */
 @Suppress("ComponentNotRegistered")
 class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
+    private fun findElemnt(psiFile: PsiFile, offset: Int): ParadoxLocalisationProperty? {
+        return psiFile.findElementAt(offset)?.parentOfType<ParadoxLocalisationProperty>(withSelf = false)
+    }
+    
     override fun isAvailable(e: AnActionEvent): Boolean {
         val project = e.project ?: return false
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return false
         if(file.fileType != ParadoxLocalisationFileType) return false
         val offset = e.editor?.caretModel?.offset ?: return false
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return false
-        val element = psiFile.findElementAt(offset) ?: return false
-        val localisation = element.parentOfType<ParadoxLocalisationProperty>(withSelf = false) ?: return false
+        val localisation = findElemnt(psiFile, offset) ?: return false
         //要求能够获取本地化信息
         return localisation.localisationInfo != null
     }
@@ -60,8 +63,7 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         if(file.fileType != ParadoxLocalisationFileType) return null
         val offset = e.editor?.caretModel?.offset ?: return null
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return null
-        val element = psiFile.findElementAt(offset) ?: return null
-        val localisation = element.parentOfType<ParadoxLocalisationProperty>(withSelf = false) ?: return null
+        val localisation = findElemnt(psiFile, offset) ?: return null
         val localisationName = localisation.name
         val localisations = Collections.synchronizedList(mutableListOf<ParadoxLocalisationProperty>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({

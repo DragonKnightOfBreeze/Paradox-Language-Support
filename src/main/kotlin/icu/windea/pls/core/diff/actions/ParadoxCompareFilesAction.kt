@@ -22,6 +22,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
+import icu.windea.pls.tool.*
 import java.awt.*
 import java.util.*
 import javax.swing.*
@@ -104,9 +105,9 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
                     isSameFile -> {
                         isCurrent = true
                         readonly = true
-                        content as DocumentContent
-                        val otherDocument = EditorFactory.getInstance().createDocument(content.document.text)
-                        contentFactory.create(project, otherDocument, content.highlightFile)
+                        //创建临时文件作为只读副本
+                        val tempFile = ParadoxFileManager.createTempFile(file, fileInfo) ?: return@mapNotNull null
+                        contentFactory.createDocument(project, tempFile) ?: return@mapNotNull null
                     }
                     else -> {
                         contentFactory.createDocument(project, otherFile) ?: return@mapNotNull null

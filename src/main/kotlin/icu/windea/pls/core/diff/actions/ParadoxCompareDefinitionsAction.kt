@@ -39,14 +39,20 @@ import javax.swing.*
  */
 @Suppress("ComponentNotRegistered")
 class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
+    private fun findElement(psiFile: PsiFile, offset: Int): ParadoxScriptDefinitionElement? {
+        return psiFile.findElementAt(offset)
+            ?.parents(withSelf = false)
+            ?.find { it is ParadoxScriptDefinitionElement && it.definitionInfo != null }
+            ?.castOrNull()
+    }
+    
     override fun isAvailable(e: AnActionEvent): Boolean {
         val project = e.project ?: return false
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return false
         if(file.fileType != ParadoxScriptFileType) return false
         val offset = e.editor?.caretModel?.offset ?: return false
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return false
-        val element = psiFile.findElementAt(offset) ?: return false
-        val definition = element.parentOfType<ParadoxScriptDefinitionElement>(withSelf = false) ?: return false
+        val definition = findElement(psiFile, offset) ?: return false
         //要求能够获取定义信息
         return definition.definitionInfo != null
     }
@@ -62,8 +68,7 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
         if(file.fileType != ParadoxScriptFileType) return null
         val offset = e.editor?.caretModel?.offset ?: return null
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return null
-        val element = psiFile.findElementAt(offset) ?: return null
-        val definition = element.parentOfType<ParadoxScriptDefinitionElement>(withSelf = false) ?: return null
+        val definition = findElement(psiFile, offset) ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         val definitions = Collections.synchronizedList(mutableListOf<ParadoxScriptDefinitionElement>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({

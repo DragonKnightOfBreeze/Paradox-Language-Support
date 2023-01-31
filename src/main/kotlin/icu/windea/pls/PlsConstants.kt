@@ -2,6 +2,7 @@ package icu.windea.pls
 
 import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.fileEditor.*
+import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.util.*
@@ -58,7 +59,9 @@ object PlsConstants {
 
 object PlsPaths {
 	val userHome = System.getProperty("user.home")
+	
 	const val dataDirectoryName = ".pls"
+	
 	const val imagesDirectoryName = "images"
 	const val unknownPngName = "unknown.png"
 	
@@ -69,6 +72,9 @@ object PlsPaths {
 	val unknownPngUrl by lazy { unknownPngPath.toUri().toURL() }
 	
 	val unknownPngClasspathUrl = "/$unknownPngName".toClasspathUrl()
+	
+	const val tmpDirectoryName = "tmp"
+	val tmpDirectoryPath by lazy { dataDirectoryPath.resolve(tmpDirectoryName) }
 }
 
 object PlsPatterns {
@@ -86,6 +92,7 @@ object PlsKeys {
 	val rootInfoKey = Key.create<ParadoxRootInfo>("paradox.rootInfo")
 	val descriptorInfoKey = Key.create<ParadoxDescriptorInfo>("paradox.descriptorInfo")
 	val fileInfoKey = Key.create<ParadoxFileInfo>("paradox.fileInfo")
+	val fileTypeKey = Key.create<FileType>("paradox.fileType")
 	val contentFileKey = Key.create<VirtualFile>("paradox.contentFile")
 	
 	val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("paradox.cached.definitionInfo")
