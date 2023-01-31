@@ -16,7 +16,7 @@ class ParadoxScriptStructureViewModel(
 	companion object {
 		private val defaultGroupers = emptyArray<Grouper>()
 		private val defaultSorters = arrayOf(Sorter.ALPHA_SORTER)
-		private val defaultFilters = arrayOf(VariablesFilter)
+		private val defaultFilters = arrayOf(VariablesFilter, DefinitionsFilter)
 	}
 	
 	//指定根节点，一般为psiFile
@@ -74,5 +74,19 @@ object VariablesFilter : Filter {
 	
 	override fun getPresentation(): ActionPresentation {
 		return ActionPresentationData(PlsBundle.message("script.structureView.showScriptedVariables"), null, PlsIcons.ScriptedVariable)
+	}
+}
+
+object DefinitionsFilter : Filter {
+	override fun getName() = "PARADOX_SCRIPT_SHOW_DEFINITIONS"
+	
+	override fun isReverted() = true
+	
+	override fun isVisible(treeNode: TreeElement): Boolean {
+		return treeNode !is ParadoxScriptVariableTreeElement
+	}
+	
+	override fun getPresentation(): ActionPresentation {
+		return ActionPresentationData(PlsBundle.message("script.structureView.showDefinitions"), null, PlsIcons.Definition)
 	}
 }
