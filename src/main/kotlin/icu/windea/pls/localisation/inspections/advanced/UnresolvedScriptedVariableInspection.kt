@@ -41,7 +41,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 				IntroduceGlobalVariableFix(variableName, element),
 				ImportGameOrModDirectoryFix(element)
 			)
-			val message = PlsBundle.message("localisation.inspection.advanced.unresolvedScriptedVariable.description", element.name)
+			val message = PlsBundle.message("inspection.localisation.advanced.unresolvedScriptedVariable.description", element.name)
 			holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *quickFixes.toTypedArray())
 		}
 	}
@@ -52,7 +52,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
 		override fun getPriority() = PriorityAction.Priority.HIGH
 		
-		override fun getText() = PlsBundle.message("localisation.inspection.advanced.unresolvedScriptedVariable.quickfix.2", variableName)
+		override fun getText() = PlsBundle.message("inspection.localisation.advanced.unresolvedScriptedVariable.quickfix.2", variableName)
 		
 		override fun getFamilyName() = text
 		

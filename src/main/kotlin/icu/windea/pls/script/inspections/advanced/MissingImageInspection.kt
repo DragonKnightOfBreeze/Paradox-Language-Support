@@ -102,19 +102,19 @@ class MissingImageInspection : LocalInspectionTool() {
 			val propertyName = expression.propertyName
 			return when {
 				info.required -> when {
-					key != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.1.1", key)
-					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.1.2", propertyName)
-					else -> PlsBundle.message("script.inspection.advanced.missingImage.description.1.3", expression)
+					key != null -> PlsBundle.message("inspection.script.advanced.missingImage.description.1.1", key)
+					propertyName != null -> PlsBundle.message("inspection.script.advanced.missingImage.description.1.2", propertyName)
+					else -> PlsBundle.message("inspection.script.advanced.missingImage.description.1.3", expression)
 				}
 				info.primary -> when {
-					key != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.2.1", key)
-					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.2.2", propertyName)
-					else -> PlsBundle.message("script.inspection.advanced.missingImage.description.2.3", expression)
+					key != null -> PlsBundle.message("inspection.script.advanced.missingImage.description.2.1", key)
+					propertyName != null -> PlsBundle.message("inspection.script.advanced.missingImage.description.2.2", propertyName)
+					else -> PlsBundle.message("inspection.script.advanced.missingImage.description.2.3", expression)
 				}
 				else -> when {
-					key != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.3.1", key)
-					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingImage.description.3.2", propertyName)
-					else -> PlsBundle.message("script.inspection.advanced.missingImage.description.3.3", expression)
+					key != null -> PlsBundle.message("inspection.script.advanced.missingImage.description.3.1", key)
+					propertyName != null -> PlsBundle.message("inspection.script.advanced.missingImage.description.3.2", propertyName)
+					else -> PlsBundle.message("inspection.script.advanced.missingImage.description.3.3", expression)
 				}
 			}
 		}
@@ -140,7 +140,7 @@ class MissingImageInspection : LocalInspectionTool() {
 				ParadoxFilePathSearch.search(it, configGroup.project, selector = iconSelector).find()
 			}
 			if(iconFile == null) {
-				val message = PlsBundle.message("script.inspection.advanced.missingImage.description.4", name)
+				val message = PlsBundle.message("inspection.script.advanced.missingImage.description.4", name)
 				holder.registerProblem(element, message, ProblemHighlightType.WEAK_WARNING,
 					ImportGameOrModDirectoryFix(element)
 				)
@@ -152,27 +152,27 @@ class MissingImageInspection : LocalInspectionTool() {
 		return panel {
 			lateinit var checkForDefinitionsCb: Cell<JBCheckBox>
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkForDefinitions"))
+				checkBox(PlsBundle.message("inspection.script.advanced.missingImage.option.checkForDefinitions"))
 					.bindSelected(::checkForDefinitions)
 					.actionListener { _, component -> checkForDefinitions = component.isSelected }
 					.also { checkForDefinitionsCb = it }
 			}
 			indent {
 				row {
-					checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkPrimaryForDefinitions"))
+					checkBox(PlsBundle.message("inspection.script.advanced.missingImage.option.checkPrimaryForDefinitions"))
 						.bindSelected(::checkPrimaryForDefinitions)
 						.actionListener { _, component -> checkPrimaryForDefinitions = component.isSelected }
 						.enabledIf(checkForDefinitionsCb.selected)
 				}
 				row {
-					checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkOptionalForDefinitions"))
+					checkBox(PlsBundle.message("inspection.script.advanced.missingImage.option.checkOptionalForDefinitions"))
 						.bindSelected(::checkOptionalForDefinitions)
 						.actionListener { _, component -> checkOptionalForDefinitions = component.isSelected }
 						.enabledIf(checkForDefinitionsCb.selected)
 				}
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkForModifiers"))
+				checkBox(PlsBundle.message("inspection.script.advanced.missingImage.option.checkForModifiers"))
 					.bindSelected(::checkForModifiers)
 					.actionListener { _, component -> checkForModifiers = component.isSelected }
 			}

@@ -34,7 +34,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 		if(!isValid) {
 			val holder = ProblemsHolder(manager, file, isOnTheFly)
 			val bom = if(hasBom) "BOM" else "NO BOM"
-			holder.registerProblem(file, PlsBundle.message("localisation.inspection.incorrectFileEncoding.description", charset, bom),
+			holder.registerProblem(file, PlsBundle.message("inspection.localisation.incorrectFileEncoding.description", charset, bom),
 				ChangeToCorrectFileEncodingFix(file)
 			)
 			return holder.resultsArray
@@ -45,7 +45,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 	private class ChangeToCorrectFileEncodingFix(
 		element: PsiElement
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
-		override fun getText() = PlsBundle.message("localisation.inspection.incorrectFileEncoding.quickfix.1")
+		override fun getText() = PlsBundle.message("inspection.localisation.incorrectFileEncoding.quickfix.1")
 		
 		override fun getFamilyName() = text
 		

@@ -98,7 +98,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
 		}
 		
 		private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
-			val message = PlsBundle.message("script.inspection.advanced.unusedParameter.description", name)
+			val message = PlsBundle.message("inspection.script.advanced.unusedParameter.description", name)
 			holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range,
 				ImportGameOrModDirectoryFix(element)
 			)
@@ -108,21 +108,21 @@ class UnusedParameterInspection : LocalInspectionTool() {
 	override fun createOptionsPanel(): JComponent {
 		return panel {
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.unusedParameter.option.forParameterConditionExpressions"))
+				checkBox(PlsBundle.message("inspection.script.advanced.unusedParameter.option.forParameterConditionExpressions"))
 					.bindSelected(::forParameterConditionExpressions)
-					.applyToComponent { toolTipText = PlsBundle.message("script.inspection.advanced.unusedParameter.option.forParameterConditionExpressions.tooltip") }
+					.applyToComponent { toolTipText = PlsBundle.message("inspection.script.advanced.unusedParameter.option.forParameterConditionExpressions.tooltip") }
 					.actionListener { _, component -> forParameterConditionExpressions = component.isSelected }
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.unusedParameter.option.forInvocationExpressions"))
+				checkBox(PlsBundle.message("inspection.script.advanced.unusedParameter.option.forInvocationExpressions"))
 					.bindSelected(::forInvocationExpressions)
-					.applyToComponent { toolTipText = PlsBundle.message("script.inspection.advanced.unusedParameter.option.forInvocationExpressions.tooltip") }
+					.applyToComponent { toolTipText = PlsBundle.message("inspection.script.advanced.unusedParameter.option.forInvocationExpressions.tooltip") }
 					.actionListener { _, component -> forInvocationExpressions = component.isSelected }
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.unusedParameter.option.forScriptValueExpressions"))
+				checkBox(PlsBundle.message("inspection.script.advanced.unusedParameter.option.forScriptValueExpressions"))
 					.bindSelected(::forScriptValueExpressions)
-					.applyToComponent { toolTipText = PlsBundle.message("script.inspection.advanced.unusedParameter.option.forScriptValueExpressions.tooltip") }
+					.applyToComponent { toolTipText = PlsBundle.message("inspection.script.advanced.unusedParameter.option.forScriptValueExpressions.tooltip") }
 					.actionListener { _, component -> forScriptValueExpressions = component.isSelected }
 			}
 		}

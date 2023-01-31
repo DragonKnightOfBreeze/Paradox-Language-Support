@@ -50,9 +50,9 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 					} else null
 					val expect = expectConfigs?.mapTo(mutableSetOf()) { it.expression }?.joinToString()
 					val message = when {
-						expect == null -> PlsBundle.message("script.inspection.advanced.unresolvedExpression.description.1.1", element.expression)
-						expect.isNotEmpty() -> PlsBundle.message("script.inspection.advanced.unresolvedExpression.description.1.2", element.expression, expect)
-						else -> PlsBundle.message("script.inspection.advanced.unresolvedExpression.description.1.3", element.expression)
+						expect == null -> PlsBundle.message("inspection.script.advanced.unresolvedExpression.description.1.1", element.expression)
+						expect.isNotEmpty() -> PlsBundle.message("inspection.script.advanced.unresolvedExpression.description.1.2", element.expression, expect)
+						else -> PlsBundle.message("inspection.script.advanced.unresolvedExpression.description.1.3", element.expression)
 					}
 					val fix = ImportGameOrModDirectoryFix(element)
 					holder.registerProblem(element, message, fix)
@@ -84,9 +84,9 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 					} else null
 					val expect = expectConfigs?.mapTo(mutableSetOf()) { it.expression }?.joinToString()
 					val message = when {
-						expect == null -> PlsBundle.message("script.inspection.advanced.unresolvedExpression.description.2.1", element.expression)
-						expect.isNotEmpty() -> PlsBundle.message("script.inspection.advanced.unresolvedExpression.description.2.2", element.expression, expect)
-						else -> PlsBundle.message("script.inspection.advanced.unresolvedExpression.description.2.3", element.expression)
+						expect == null -> PlsBundle.message("inspection.script.advanced.unresolvedExpression.description.2.1", element.expression)
+						expect.isNotEmpty() -> PlsBundle.message("inspection.script.advanced.unresolvedExpression.description.2.2", element.expression, expect)
+						else -> PlsBundle.message("inspection.script.advanced.unresolvedExpression.description.2.3", element.expression)
 					}
 					val fix = ImportGameOrModDirectoryFix(element)
 					holder.registerProblem(element, message, fix)
@@ -102,22 +102,22 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 	override fun createOptionsPanel(): JComponent {
 		return panel {
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.unresolvedExpression.option.showExpectInfo"))
+				checkBox(PlsBundle.message("inspection.script.advanced.unresolvedExpression.option.showExpectInfo"))
 					.bindSelected(::showExpectInfo)
 					.actionListener { _, component -> showExpectInfo = component.isSelected }
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.unresolvedExpression.option.checkPropertyKey"))
+				checkBox(PlsBundle.message("inspection.script.advanced.unresolvedExpression.option.checkPropertyKey"))
 					.bindSelected(::checkPropertyKey)
 					.actionListener { _, component -> checkPropertyKey = component.isSelected }
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.unresolvedExpression.option.checkPropertyValue"))
+				checkBox(PlsBundle.message("inspection.script.advanced.unresolvedExpression.option.checkPropertyValue"))
 					.bindSelected(::checkPropertyValue)
 					.actionListener { _, component -> checkPropertyValue = component.isSelected }
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.unresolvedExpression.option.checkValue"))
+				checkBox(PlsBundle.message("inspection.script.advanced.unresolvedExpression.option.checkValue"))
 					.bindSelected(::checkValue)
 					.actionListener { _, component -> checkValue = component.isSelected }
 			}

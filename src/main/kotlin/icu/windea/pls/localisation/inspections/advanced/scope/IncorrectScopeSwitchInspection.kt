@@ -31,7 +31,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                             val supportedScopes = config.inputScopes
                             val configGroup = config.info.configGroup
                             if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)) {
-                                val description = PlsBundle.message("localisation.inspection.scope.incorrectScopeSwitch.description.1",
+                                val description = PlsBundle.message("inspection.localisation.scope.incorrectScopeSwitch.description.1",
                                     element.name, supportedScopes.joinToString(), scopeContext.thisScope)
                                 holder.registerProblem(element, description)
                             }
@@ -43,7 +43,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                         //	val resolvedScope = ParadoxScopeHandler.resolveScopeBySystemLink(config, scopeContext)
                         //	if(resolvedScope == null) {
                         //		val location = element
-                        //		val description = PlsBundle.message("localisation.inspection.scope.incorrectScopeSwitch.description.3",
+                        //		val description = PlsBundle.message("inspection.localisation.scope.incorrectScopeSwitch.description.3",
                         //			element.name)
                         //		holder.registerProblem(location, description)
                         //	}
@@ -61,7 +61,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                checkBox(PlsBundle.message("localisation.inspection.scope.incorrectScopeSwitch.option.checkForSystemLink"))
+                checkBox(PlsBundle.message("inspection.localisation.scope.incorrectScopeSwitch.option.checkForSystemLink"))
                     .bindSelected(::checkForSystemLink)
                     .actionListener { _, component -> checkForSystemLink = component.isSelected }
             }

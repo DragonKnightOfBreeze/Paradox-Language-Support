@@ -68,7 +68,7 @@ class IncorrectVariableFieldExpressionInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                checkBox(PlsBundle.message("script.inspection.expression.incorrectVariableFieldExpression.option.reportsUnresolvedDs"))
+                checkBox(PlsBundle.message("inspection.script.expression.incorrectVariableFieldExpression.option.reportsUnresolvedDs"))
                     .bindSelected(::reportsUnresolvedDs)
                     .actionListener { _, component -> reportsUnresolvedDs = component.isSelected }
             }

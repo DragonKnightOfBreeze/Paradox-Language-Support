@@ -43,9 +43,9 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
 						}.toIntOrNull() ?: return //skip
 						if(!(min <= value && (max == null || max >= value))) {
 							if(max != null) {
-								holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.insufficientExpression.description.1", expression, min, max, value))
+								holder.registerProblem(element, PlsBundle.message("inspection.script.advanced.insufficientExpression.description.1", expression, min, max, value))
 							} else {
-								holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.insufficientExpression.description.2", expression, min, value))
+								holder.registerProblem(element, PlsBundle.message("inspection.script.advanced.insufficientExpression.description.2", expression, min, value))
 							}
 						}
 					}
@@ -58,9 +58,9 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
 						}.toFloatOrNull() ?: return //skip
 						if(!(min <= value && (max == null || max >= value))) {
 							if(max != null) {
-								holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.insufficientExpression.description.1", expression, min, max, value))
+								holder.registerProblem(element, PlsBundle.message("inspection.script.advanced.insufficientExpression.description.1", expression, min, max, value))
 							} else {
-								holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.insufficientExpression.description.2", expression, min, value))
+								holder.registerProblem(element, PlsBundle.message("inspection.script.advanced.insufficientExpression.description.2", expression, min, value))
 							}
 						}
 					}
@@ -70,7 +70,7 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
 						val expectedColorType = configExpression.value ?: return
 						val colorType = element.colorType
 						if(!(colorType == expectedColorType || (colorType == "rgb" && expectedColorType == "rgba"))) {
-							holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.insufficientExpression.description.3", expression, expectedColorType, colorType))
+							holder.registerProblem(element, PlsBundle.message("inspection.script.advanced.insufficientExpression.description.3", expression, expectedColorType, colorType))
 						}
 					}
 					CwtDataType.Scope -> {
@@ -84,7 +84,7 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
 						val scopeContext = ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, parentScopeContext)
 						if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return
 						val expression = element.expression ?: return
-						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.insufficientExpression.description.4", expression, expectedScope, scopeContext.thisScope))
+						holder.registerProblem(element, PlsBundle.message("inspection.script.advanced.insufficientExpression.description.4", expression, expectedScope, scopeContext.thisScope))
 					}
 					CwtDataType.ScopeGroup -> {
 						if(element !is ParadoxScriptStringExpressionElement) return
@@ -97,7 +97,7 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
 						val scopeContext = ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, parentScopeContext)
 						if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return
 						val expression = element.expression ?: return
-						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.insufficientExpression.description.5", expression, expectedScopeGroup, scopeContext.thisScope))
+						holder.registerProblem(element, PlsBundle.message("inspection.script.advanced.insufficientExpression.description.5", expression, expectedScopeGroup, scopeContext.thisScope))
 					}
 					CwtDataType.IntValueField -> {
 						//TODO

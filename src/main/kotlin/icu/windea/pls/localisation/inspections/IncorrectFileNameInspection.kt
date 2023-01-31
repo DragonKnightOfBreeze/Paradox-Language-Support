@@ -49,7 +49,7 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
 			if(localeIdFromFile != null) this += RenameLocaleFix(locale, localeIdFromFile)
 		}.toTypedArray<LocalQuickFix>()
 		//将检查注册在locale上，而非file上
-		holder.registerProblem(locale, PlsBundle.message("localisation.inspection.incorrectFileName.description", fileName, localeId), *quickFixes)
+		holder.registerProblem(locale, PlsBundle.message("inspection.localisation.incorrectFileName.description", fileName, localeId), *quickFixes)
 		return holder.resultsArray
 	}
 	
@@ -59,7 +59,7 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
 		element: ParadoxLocalisationLocale,
 		private val expectedFileName: String
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-		override fun getText() = PlsBundle.message("localisation.inspection.incorrectFileName.quickfix.1", expectedFileName)
+		override fun getText() = PlsBundle.message("inspection.localisation.incorrectFileName.quickfix.1", expectedFileName)
 		
 		override fun getFamilyName() = text
 		
@@ -86,7 +86,7 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
 		override fun getPriority() = PriorityAction.Priority.TOP //高优先级，如果可用
 		
-		override fun getText() = PlsBundle.message("localisation.inspection.incorrectFileName.quickfix.2", expectedLocaleId)
+		override fun getText() = PlsBundle.message("inspection.localisation.incorrectFileName.quickfix.2", expectedLocaleId)
 		
 		override fun getFamilyName() = text
 		
@@ -101,7 +101,7 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
 	//private class RenameFileFix(
 	//	element: ParadoxLocalisationLocale
 	//) : LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction {
-	//	override fun getText() = PlsBundle.message("localisation.inspection.incorrectFileName.quickfix.3")
+	//	override fun getText() = PlsBundle.message("inspection.localisation.incorrectFileName.quickfix.3")
 	//
 	//  override fun getFamilyName() = text
 	//	

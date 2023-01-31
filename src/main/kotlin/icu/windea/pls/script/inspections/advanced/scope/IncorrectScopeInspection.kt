@@ -25,7 +25,7 @@ class IncorrectScopeInspection: LocalInspectionTool() {
 			if(!ParadoxScopeHandler.matchesScope(parentScopeContext, supportedScopes, configGroup)) {
 				val propertyKey = element.propertyKey
 				val location = propertyKey
-				val description = PlsBundle.message("script.inspection.scope.incorrectScope.description.1",
+				val description = PlsBundle.message("inspection.script.scope.incorrectScope.description.1",
 					propertyKey.expression, supportedScopes.joinToString(), parentScopeContext.thisScope)
 				holder.registerProblem(location, description)
 			}

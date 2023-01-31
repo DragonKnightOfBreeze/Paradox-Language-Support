@@ -38,7 +38,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                             val inputScopes = scopeNode.config.inputScopes
                             val configGroup = config.info.configGroup
                             if(!ParadoxScopeHandler.matchesScope(parentScopeContext, inputScopes, configGroup)) {
-                                val description = PlsBundle.message("script.inspection.scope.incorrectScopeSwitch.description.1",
+                                val description = PlsBundle.message("inspection.script.scope.incorrectScopeSwitch.description.1",
                                     scopeNode.text, inputScopes.joinToString(), parentScopeContext.thisScope)
                                 holder.registerProblem(propertyKey, rangeInExpression, description)
                             }
@@ -54,7 +54,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                             if(scopeContext.thisScope == ParadoxScopeHandler.unknownScopeId) {
                                 val definitionType = definitionInfo?.type ?: continue
                                 if(config.info.configGroup.definitionTypesSkipCheckSystemLink.contains(definitionType)) continue
-                                val description = PlsBundle.message("script.inspection.scope.incorrectScopeSwitch.description.3",
+                                val description = PlsBundle.message("inspection.script.scope.incorrectScopeSwitch.description.3",
                                     scopeNode.text)
                                 holder.registerProblem(propertyKey, rangeInExpression, description)
                             }
@@ -70,7 +70,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                checkBox(PlsBundle.message("script.inspection.scope.incorrectScopeSwitch.option.checkForSystemLink"))
+                checkBox(PlsBundle.message("inspection.script.scope.incorrectScopeSwitch.option.checkForSystemLink"))
                     .bindSelected(::checkForSystemLink)
                     .actionListener { _, component -> checkForSystemLink = component.isSelected }
             }

@@ -23,7 +23,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
 			val reference = element.reference
 			if(reference == null || reference.canResolve()) return
 			val name = element.name ?: return
-			holder.registerProblem(location, PlsBundle.message("localisation.inspection.advanced.unresolvedColor.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+			holder.registerProblem(location, PlsBundle.message("inspection.localisation.advanced.unresolvedColor.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
 				ImportGameOrModDirectoryFix(location)
 			)
 		}

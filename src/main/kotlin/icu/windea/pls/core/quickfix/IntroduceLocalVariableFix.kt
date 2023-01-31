@@ -17,7 +17,7 @@ class IntroduceLocalVariableFix(
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
 	override fun getPriority() = PriorityAction.Priority.TOP
 	
-	override fun getText() = PlsBundle.message("script.inspection.advanced.unresolvedScriptedVariable.quickfix.1", variableName)
+	override fun getText() = PlsBundle.message("inspection.script.advanced.unresolvedScriptedVariable.quickfix.1", variableName)
 	
 	override fun getFamilyName() = text
 	

@@ -23,15 +23,15 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 		if(file.name.matchesGlobFileName(ignoredFileNames, true)) return null //忽略
 		if(file.propertyLists.size <= 1) return null
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		holder.registerProblem(file, PlsBundle.message("localisation.inspection.multipleLocales.description"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+		holder.registerProblem(file, PlsBundle.message("inspection.localisation.multipleLocales.description"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
 		return holder.resultsArray
 	}
 	
 	override fun createOptionsPanel(): JComponent {
 		return panel {
 			row {
-				label(PlsBundle.message("localisation.inspection.multipleLocales.option.ignoredFileNames")).applyToComponent { 
-					toolTipText = PlsBundle.message("localisation.inspection.multipleLocales.option.ignoredFileNames.tooltip")
+				label(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames")).applyToComponent { 
+					toolTipText = PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames.tooltip")
 				}
 			}
 			row {
@@ -44,7 +44,7 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 							if(text != ignoredFileNames) ignoredFileNames = text
 						}
 					}
-					.comment(PlsBundle.message("localisation.inspection.multipleLocales.option.ignoredFileNames.comment"))
+					.comment(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames.comment"))
 					.horizontalAlign(HorizontalAlign.FILL)
 					.resizableColumn()
 			}

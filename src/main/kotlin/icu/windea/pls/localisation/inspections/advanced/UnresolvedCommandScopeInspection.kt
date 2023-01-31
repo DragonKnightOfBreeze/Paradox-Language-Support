@@ -21,7 +21,7 @@ class UnresolvedCommandScopeInspection : LocalInspectionTool() {
 			val location = element
 			if(element.reference.canResolve()) return
 			val name = element.name
-			holder.registerProblem(location, PlsBundle.message("localisation.inspection.advanced.unresolvedCommandScope.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+			holder.registerProblem(location, PlsBundle.message("inspection.localisation.advanced.unresolvedCommandScope.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
 				ImportGameOrModDirectoryFix(location)
 			)
 		}

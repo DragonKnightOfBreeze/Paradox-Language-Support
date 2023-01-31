@@ -129,19 +129,19 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			val propertyName = expression.propertyName
 			return when {
 				info.required -> when {
-					key != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1.1", key, locale)
-					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1.2", propertyName, locale)
-					else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1.3", expression, locale)
+					key != null -> PlsBundle.message("inspection.script.advanced.missingLocalisation.description.1.1", key, locale)
+					propertyName != null -> PlsBundle.message("inspection.script.advanced.missingLocalisation.description.1.2", propertyName, locale)
+					else -> PlsBundle.message("inspection.script.advanced.missingLocalisation.description.1.3", expression, locale)
 				}
 				info.primary -> when {
-					key != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2.1", key, locale)
-					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2.2", propertyName, locale)
-					else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2.3", expression, locale)
+					key != null -> PlsBundle.message("inspection.script.advanced.missingLocalisation.description.2.1", key, locale)
+					propertyName != null -> PlsBundle.message("inspection.script.advanced.missingLocalisation.description.2.2", propertyName, locale)
+					else -> PlsBundle.message("inspection.script.advanced.missingLocalisation.description.2.3", expression, locale)
 				}
 				else -> when {
-					key != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3.1", key, locale)
-					propertyName != null -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3.2", propertyName, locale)
-					else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3.3", expression, locale)
+					key != null -> PlsBundle.message("inspection.script.advanced.missingLocalisation.description.3.1", key, locale)
+					propertyName != null -> PlsBundle.message("inspection.script.advanced.missingLocalisation.description.3.2", propertyName, locale)
+					else -> PlsBundle.message("inspection.script.advanced.missingLocalisation.description.3.3", expression, locale)
 				}
 			}
 		}
@@ -173,7 +173,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			}
 			if(missingLocales.isNotEmpty()) {
 				for(locale in missingLocales) {
-					val message = PlsBundle.message("script.inspection.advanced.missingLocalisation.description.4", name, locale)
+					val message = PlsBundle.message("inspection.script.advanced.missingLocalisation.description.4", name, locale)
 					holder.registerProblem(element, message, ProblemHighlightType.WEAK_WARNING,
 						ImportGameOrModDirectoryFix(element)
 					)
@@ -190,34 +190,34 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 					.resizableColumn()
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.forPreferredLocale"))
+				checkBox(PlsBundle.message("inspection.script.advanced.missingLocalisation.option.forPreferredLocale"))
 					.bindSelected(::checkPrimaryLocale)
-					.applyToComponent { toolTipText = PlsBundle.message("script.inspection.advanced.missingLocalisation.option.forPrimaryLocale.tooltip") }
+					.applyToComponent { toolTipText = PlsBundle.message("inspection.script.advanced.missingLocalisation.option.forPrimaryLocale.tooltip") }
 					.actionListener { _, component -> checkPrimaryLocale = component.isSelected }
 			}
 			lateinit var checkForDefinitionsCb: Cell<JBCheckBox>
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.checkForDefinitions"))
+				checkBox(PlsBundle.message("inspection.script.advanced.missingLocalisation.option.checkForDefinitions"))
 					.bindSelected(::checkForDefinitions)
 					.actionListener { _, component -> checkForDefinitions = component.isSelected }
 					.also { checkForDefinitionsCb = it }
 			}
 			indent {
 				row {
-					checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.checkPrimaryForDefinitions"))
+					checkBox(PlsBundle.message("inspection.script.advanced.missingLocalisation.option.checkPrimaryForDefinitions"))
 						.bindSelected(::checkPrimaryForDefinitions)
 						.actionListener { _, component -> checkPrimaryForDefinitions = component.isSelected }
 						.enabledIf(checkForDefinitionsCb.selected)
 				}
 				row {
-					checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.checkOptionalForDefinitions"))
+					checkBox(PlsBundle.message("inspection.script.advanced.missingLocalisation.option.checkOptionalForDefinitions"))
 						.bindSelected(::checkOptionalForDefinitions)
 						.actionListener { _, component -> checkOptionalForDefinitions = component.isSelected }
 						.enabledIf(checkForDefinitionsCb.selected)
 				}
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.checkForModifiers"))
+				checkBox(PlsBundle.message("inspection.script.advanced.missingLocalisation.option.checkForModifiers"))
 					.bindSelected(::checkForModifiers)
 					.actionListener { _, component -> checkForModifiers = component.isSelected }
 			}
@@ -228,7 +228,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 	
 	private inner class LocaleTableModel(
 		locales: List<CwtLocalisationLocaleConfig>
-	) : AddEditDeleteListPanel<CwtLocalisationLocaleConfig>(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.locales"), locales) {
+	) : AddEditDeleteListPanel<CwtLocalisationLocaleConfig>(PlsBundle.message("inspection.script.advanced.missingLocalisation.option.locales"), locales) {
 		init {
 			minimumSize = InspectionOptionsPanel.getMinimumListSize()
 			preferredSize = JBUI.size(150, 110) //3行选项的高度
@@ -278,7 +278,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 	//	private val keys: Set<String>,
 	//	element: ParadoxScriptDefinitionElement
 	//): LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction{
-	//	override fun getText() = PlsBundle.message("script.inspection.definition.inspection.missingRelatedLocalisation.quickfix.1")
+	//	override fun getText() = PlsBundle.message("inspection.script.definition.inspection.missingRelatedLocalisation.quickfix.1")
 	//	
 	//	override fun getFamilyName() = text
 	//	

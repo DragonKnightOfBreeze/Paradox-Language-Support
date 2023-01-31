@@ -35,7 +35,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 				for(value in values) {
 					//第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
 					val location = value.scriptedVariableName
-					holder.registerProblem(location, PlsBundle.message("script.inspection.duplicateScriptedVariables.description", name),
+					holder.registerProblem(location, PlsBundle.message("inspection.script.duplicateScriptedVariables.description", name),
 						NavigateToDuplicatesFix(name, value, values)
 					)
 				}
@@ -50,7 +50,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
 		private val pointers = duplicates.map { it.createPointer() }
 		
-		override fun getText() = PlsBundle.message("script.inspection.duplicateScriptedVariables.quickfix.1")
+		override fun getText() = PlsBundle.message("inspection.script.duplicateScriptedVariables.quickfix.1")
 		
 		override fun getFamilyName() = text
 		
@@ -80,11 +80,11 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 			values: List<ParadoxScriptScriptedVariable>,
 			private val key: String,
 			private val editor: Editor
-		) : BaseListPopupStep<ParadoxScriptScriptedVariable>(PlsBundle.message("script.inspection.duplicateScriptedVariables.quickFix.1.popup.header", key), values) {
+		) : BaseListPopupStep<ParadoxScriptScriptedVariable>(PlsBundle.message("inspection.script.duplicateScriptedVariables.quickFix.1.popup.header", key), values) {
 			override fun getIconFor(value: ParadoxScriptScriptedVariable) = value.icon
 			
 			override fun getTextFor(value: ParadoxScriptScriptedVariable) =
-				PlsBundle.message("script.inspection.duplicateScriptedVariables.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+				PlsBundle.message("inspection.script.duplicateScriptedVariables.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
 			
 			override fun getDefaultOptionIndex(): Int = 0
 			

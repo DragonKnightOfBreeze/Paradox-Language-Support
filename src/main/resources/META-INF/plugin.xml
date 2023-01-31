@@ -19,4 +19,5 @@
   <xi:include href="/META-INF/dds.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/paradox-script.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/paradox-localisation.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>

@@ -85,7 +85,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 		}
 		
 		private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
-			val message = PlsBundle.message("script.inspection.advanced.unusedValueSetValue.description", name)
+			val message = PlsBundle.message("inspection.script.advanced.unusedValueSetValue.description", name)
 			holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range,
 				ImportGameOrModDirectoryFix(element)
 			)
@@ -96,9 +96,9 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 		return panel {
 			//ignoreDefinitionNames
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.unusedValueSetValue.option.ignoreDefinitionNames"))
+				checkBox(PlsBundle.message("inspection.script.advanced.unusedValueSetValue.option.ignoreDefinitionNames"))
 					.bindSelected(::ignoreDefinitionNames)
-					.applyToComponent { toolTipText = PlsBundle.message("script.inspection.advanced.unusedValueSetValue.option.ignoreDefinitionNames.tooltip") }
+					.applyToComponent { toolTipText = PlsBundle.message("inspection.script.advanced.unusedValueSetValue.option.ignoreDefinitionNames.tooltip") }
 					.actionListener { _, component -> ignoreDefinitionNames = component.isSelected }
 			}
 		}

@@ -70,7 +70,7 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                checkBox(PlsBundle.message("script.inspection.expression.incorrectValueFieldExpression.option.reportsUnresolvedDs"))
+                checkBox(PlsBundle.message("inspection.script.expression.incorrectValueFieldExpression.option.reportsUnresolvedDs"))
                     .bindSelected(::reportsUnresolvedDs)
                     .actionListener { _, component -> reportsUnresolvedDs = component.isSelected }
             }

@@ -34,7 +34,7 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
             if(mayKeyRepresentNumber(propertyKey)) return
             val propertyValue = element.propertyValue ?: return
             if(mayValueRepresentNumber(propertyValue)) return
-            val message = PlsBundle.message("script.inspection.advanced.incorrectScriptSyntax.description.1")
+            val message = PlsBundle.message("inspection.script.advanced.incorrectScriptSyntax.description.1")
             holder.registerProblem(comparisonToken, message, ProblemHighlightType.GENERIC_ERROR)
         }
         

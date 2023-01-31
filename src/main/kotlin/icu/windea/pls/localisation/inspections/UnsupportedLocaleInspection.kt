@@ -20,7 +20,7 @@ class UnsupportedLocaleInspection : LocalInspectionTool() {
 			val localeConfig = element.localeConfig
 			if(localeConfig != null) return
 			val location = element.localeId
-			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unsupportedLocale.description", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+			holder.registerProblem(location, PlsBundle.message("inspection.localisation.unsupportedLocale.description", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 		}
 	}
 }

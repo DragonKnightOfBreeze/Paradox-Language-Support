@@ -52,7 +52,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 				val eventId = eventIdString.stringValue
 				if(!ParadoxEventHandler.isValidEventId(eventId, namespace)) {
 					if(holder == null) holder = ProblemsHolder(manager, file, isOnTheFly)
-					holder.registerProblem(eventIdString, PlsBundle.message("script.inspection.event.incorrectEventId.description", eventId, namespace))
+					holder.registerProblem(eventIdString, PlsBundle.message("inspection.script.event.incorrectEventId.description", eventId, namespace))
 				}
 			}
 		}
@@ -62,7 +62,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 	//private class RenameEventId(
 	//	element: ParadoxScriptValue
 	//) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
-	//	override fun getText() = PlsBundle.message("script.inspection.internal.mismatchedEventId.quickFix.1")
+	//	override fun getText() = PlsBundle.message("inspection.script.internal.mismatchedEventId.quickFix.1")
 	//	
 	//	override fun getFamilyName() = text
 	//	

@@ -36,7 +36,7 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
 				for(value in values) {
 					//第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
 					val location = value.propertyKey
-					holder.registerProblem(location, PlsBundle.message("localisation.inspection.duplicateProperties.description", key),
+					holder.registerProblem(location, PlsBundle.message("inspection.localisation.duplicateProperties.description", key),
 						NavigateToDuplicatesFix(key, value, values)
 					)
 				}
@@ -51,7 +51,7 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
 	) : LocalQuickFixAndIntentionActionOnPsiElement(property) {
 		private val pointers = duplicates.map { it.createPointer() }
 		
-		override fun getText() = PlsBundle.message("localisation.inspection.duplicateProperties.quickfix.1")
+		override fun getText() = PlsBundle.message("inspection.localisation.duplicateProperties.quickfix.1")
 		
 		override fun getFamilyName() = text
 		
@@ -81,11 +81,11 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
 			values: List<ParadoxLocalisationProperty>,
 			private val key: String,
 			private val editor: Editor
-		) : BaseListPopupStep<ParadoxLocalisationProperty>(PlsBundle.message("localisation.inspection.duplicateProperties.quickFix.1.popup.header", key), values) {
+		) : BaseListPopupStep<ParadoxLocalisationProperty>(PlsBundle.message("inspection.localisation.duplicateProperties.quickFix.1.popup.header", key), values) {
 			override fun getIconFor(value: ParadoxLocalisationProperty) = value.icon
 			
 			override fun getTextFor(value: ParadoxLocalisationProperty) =
-				PlsBundle.message("localisation.inspection.duplicateProperties.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+				PlsBundle.message("inspection.localisation.duplicateProperties.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
 			
 			override fun getDefaultOptionIndex() = 0
 			
