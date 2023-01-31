@@ -36,24 +36,22 @@
 * 新增功能：
   * 代码检查（`Code > Inspect Code...`）
     * [ ] ~~图标属性的值引用了定义自身（`foo { icon = foo ... }`）（不觉得这有什么意义）~~
+  * 操作（`Action`）
+    * [ ] 从封装变量/定义/本地化/文件进行重载（通过对话框选择生成的位置）
   * 其他
     * [ ] 实现对`*.gui`文件中的GUI定义的UI预览（参考IDEA的Markdown插件的实现）
     * [ ] 实现对`*.txt`文件中的定义的UI预览（参考游戏中的效果以及灰机Wiki的实现）
-* 新增功能 - 低优先级：
-  * 取消包围/移除（`Code > Unwrap/Remove...`）
+  * ［低优先级］取消包围/移除（`Code > Unwrap/Remove...`）
     * [ ] 脚本文件：删除属性或者单独的值（`k = v` > `v`，包括后面的单行注释）
     * [ ] 脚本文件：删除子句或者值为子句的属性并将其中的内容上移（`k = { v }` > `v`）
     * [ ] 脚本文件：删除参数条件块并将其中的内容上移（`[[PARAM] v ]` > `v`）
     * [ ] 本地化文件：删除本地化属性（`KEY:0 "..."`，包括后面的单行注释）
-  * 上下移动声明（`Code > Move Statement Up/Down`）
+  * ［低优先级］上下移动声明（`Code > Move Statement Up/Down`）
     * [ ] 脚本文件：上下移动属性或单独的值
     * [ ] 本地化文件：上下移动本地化属性
 * 完善CWT配置支持：
-  * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
-  * [ ] 优化：更好地兼容嵌套的定义
   * [ ] ~~为复杂枚举如`complex_enum[policy_option]`提供相关本地化支持（类似定义）~~（搁置，不能很好地显示出来，复杂枚举名可能本身就是一个本地化引用）
   * [ ] 优化：scope的名字（准确来说是别名）可以包含点号
-  * [ ] 优化：检查scopeFieldExpression时也检查是否匹配对应的scopeName或者scopeGroupName（归类到`MismatchedScopeInspection`）
   * [ ] 对于link `pop_faction_parameter`和complexEnum `pop_faction_parameters`的特殊处理：前者只能在`pop_faction`中使用且作为数据源的complexEnumValue只能来自同一定义声明中
   * [ ] 兼容CWT规则文件中的错误级别`severity = warning`或`## severity = warning`（PLS和CWTools实现有所不同，需要分析）
   * [ ] ［待确定］作为trigger的值的CWT规则`scope_field` `scope[xxx]` `scope_group[xxx]`也可以匹配一个布尔值？
@@ -82,8 +80,7 @@ overlord_gaiaseeder_upkeep_machine
   * [ ] 完善支持处理生成的修饰符（`modifier`），以及相关的引用解析、代码补全、代码高亮等功能
     * [ ] 支持通过Stellaris的`economic_category`生成修饰符（原版游戏会生成的照常支持）
     * [ ] 提供修饰符解析器的扩展点，便于后续扩展
-  * [ ] 操作（`Action`）
-    * [ ] 从封装变量/定义/本地化/文件进行重载（通过对话框选择生成的位置）
+  * 操作（`Action`）
     * [ ] 从指定的本地化文件生成其他语言区域的本地化文件（右键菜单&项目视图&工具栏操作，考虑支持指定多个或者整个目录的情况）
   * 代码检查（`Code > Inspect Code...`）
     * [ ] 缺少的传参（在调用表达式、SV表达式、内联脚本调用中，如果参数不存在默认值且未传递，则认为缺少传参）
