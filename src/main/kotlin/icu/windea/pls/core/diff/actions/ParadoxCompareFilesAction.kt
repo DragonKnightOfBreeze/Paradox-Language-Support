@@ -154,7 +154,6 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         }
         
         fun syncEditorsCaretPosition(selectedIndex: Int) {
-            if(currentIndex == selectedIndex) return
             val request = (requests[currentIndex] as MyRequestProducer).request
             val selectedRequest = (requests[selectedIndex] as MyRequestProducer).request
             val positions = DiffUserDataKeysEx.EDITORS_CARET_POSITION.get(request)
