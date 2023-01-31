@@ -1,6 +1,5 @@
 package icu.windea.pls.core.diff.actions
 
-import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.diff.*
 import com.intellij.diff.chains.*
 import com.intellij.diff.util.*

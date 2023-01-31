@@ -1,11 +1,11 @@
 package icu.windea.pls.core
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.*
 import icu.windea.pls.config.core.config.*
-import org.jetbrains.kotlin.idea.util.application.*
 
 /**
  * 监听描述符文件或者游戏类型标记文件。
