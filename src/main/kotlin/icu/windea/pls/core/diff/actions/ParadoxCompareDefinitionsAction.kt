@@ -89,6 +89,8 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
         val textRange = definition.textRange
         val content = contentFactory.createFragment(project, documentContent, textRange)
         
+        var index = 0
+        var currentIndex = 0
         val producers = runReadAction {
             definitions.mapNotNull { otherDefinition ->
                 val otherDefinitionInfo = otherDefinition.definitionInfo ?: return@mapNotNull null
@@ -100,9 +102,11 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
                     else -> getContentTitle(otherDefinition, otherDefinitionInfo)
                 } ?: return@mapNotNull null
                 var isCurrent = false
+                var readonly = false
                 val otherContent = when {
                     isSamePosition -> {
                         isCurrent = true
+                        readonly = true
                         val otherDocument = EditorFactory.getInstance().createDocument(documentContent.document.text)
                         val otherDocumentContent = contentFactory.create(project, otherDocument, content.highlightFile)
                         contentFactory.createFragment(project, otherDocumentContent, textRange)
@@ -112,13 +116,15 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
                         contentFactory.createFragment(project, otherDocumentContent, otherDefinition.textRange)
                     }
                 }
-                if(isCurrent) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+                index++
+                if(isCurrent) currentIndex = index
+                if(readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
                 val icon = otherDefinition.icon
                 val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
                 MyRequestProducer(request, otherDefinitionInfo, otherFile, icon, isCurrent)
             }
         }
-        val chain = MyDiffRequestChain(producers)
+        val chain = MyDiffRequestChain(producers, currentIndex)
         //如果打开了编辑器，左窗口定位到当前光标位置
         val editor = e.editor
         if(editor != null) {

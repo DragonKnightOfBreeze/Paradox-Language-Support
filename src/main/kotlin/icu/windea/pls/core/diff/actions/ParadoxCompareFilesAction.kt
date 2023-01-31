@@ -76,31 +76,33 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         val windowTitle = getWindowsTitle(file) ?: return null
         val contentTitle = getContentTitle(file) ?: return null
         val binary = file.fileType.isBinary
-        var readOnly = false
         val content = when {
-            binary -> {
-                readOnly = true
-                contentFactory.createFile(project, file)
-            }
+            binary -> contentFactory.createFile(project, file)
+                ?.apply { putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true) }
             else -> contentFactory.createDocument(project, file)
         } ?: return null
-        if(readOnly) content.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
         
+        var index = 0
+        var currentIndex = 0
         val producers = runReadAction {
             files.mapNotNull { otherFile ->
                 if(file.fileType != otherFile.fileType) return@mapNotNull null
+                val isSameFile = file == otherFile
                 val otherContentTitle = when {
-                    file == otherFile -> getContentTitle(otherFile, true)
+                    isSameFile -> getContentTitle(otherFile, true)
                     else -> getContentTitle(otherFile)
                 } ?: return@mapNotNull null
                 var isCurrent = false
+                var readonly = false
                 val otherContent = when {
                     binary -> {
-                        isCurrent = true
+                        if(isSameFile) isCurrent = true
+                        readonly = true
                         contentFactory.createFile(project, otherFile) ?: return@mapNotNull null
                     }
-                    file == otherFile -> {
+                    isSameFile -> {
                         isCurrent = true
+                        readonly = true
                         content as DocumentContent
                         val otherDocument = EditorFactory.getInstance().createDocument(content.document.text)
                         contentFactory.create(project, otherDocument, content.highlightFile)
@@ -109,13 +111,15 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
                         contentFactory.createDocument(project, otherFile) ?: return@mapNotNull null
                     }
                 }
-                if(isCurrent) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+                index++
+                if(isCurrent) currentIndex = index
+                if(readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
                 val icon = otherFile.fileType.icon
                 val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
                 MyRequestProducer(request, otherFile, icon, isCurrent)
             }
         }
-        val chain = MyDiffRequestChain(producers)
+        val chain = MyDiffRequestChain(producers, currentIndex)
         
         //如果打开了编辑器，左窗口定位到当前光标位置
         if(!binary) {

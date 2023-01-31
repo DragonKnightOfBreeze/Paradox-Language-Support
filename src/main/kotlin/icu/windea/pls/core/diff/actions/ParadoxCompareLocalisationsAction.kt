@@ -4,7 +4,6 @@ import com.intellij.diff.*
 import com.intellij.diff.actions.impl.*
 import com.intellij.diff.chains.*
 import com.intellij.diff.requests.*
-import com.intellij.diff.tools.util.base.*
 import com.intellij.diff.tools.util.base.InitialScrollPositionSupport.*
 import com.intellij.diff.util.*
 import com.intellij.notification.*
@@ -88,6 +87,8 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         val textRange = localisation.textRange
         val content = contentFactory.createFragment(project, documentContent, textRange)
         
+        var index = 0
+        var currentIndex = 0
         val producers = runReadAction {
             localisations.mapNotNull { otherLocalisation ->
                 val otherPsiFile = otherLocalisation.containingFile ?: return@mapNotNull null
@@ -99,9 +100,11 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
                     else -> getContentTitle(otherLocalisation)
                 } ?: return@mapNotNull null
                 var isCurrent = false
+                var readonly = false
                 val otherContent = when {
                     isSamePosition -> {
                         isCurrent = true
+                        readonly = true
                         val otherDocument = EditorFactory.getInstance().createDocument(documentContent.document.text)
                         val otherDocumentContent = contentFactory.create(project, otherDocument, content.highlightFile)
                         contentFactory.createFragment(project, otherDocumentContent, textRange)
@@ -111,13 +114,15 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
                         contentFactory.createFragment(project, otherDocumentContent, otherLocalisation.textRange)
                     }
                 }
-                if(isCurrent) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+                index++
+                if(isCurrent) currentIndex = index
+                if(readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
                 val icon = otherLocalisation.icon
                 val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
                 MyRequestProducer(request, otherLocalisation.name, locale, otherFile, icon, isCurrent)
             }
         }
-        val chain = MyDiffRequestChain(producers)
+        val chain = MyDiffRequestChain(producers, currentIndex)
         //如果打开了编辑器，左窗口定位到当前光标位置
         val editor = e.editor
         if(editor != null) {
