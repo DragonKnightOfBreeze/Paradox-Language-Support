@@ -9,6 +9,7 @@ import com.intellij.diff.util.*
 import com.intellij.notification.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.ui.popup.*
@@ -64,9 +65,11 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         val localisationName = localisation.name
         val localisations = Collections.synchronizedList(mutableListOf<ParadoxLocalisationProperty>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
-            val selector = localisationSelector().gameTypeFrom(file)
-            val result = ParadoxLocalisationSearch.search(localisationName, project, selector = selector).findAll()
-            localisations.addAll(result)
+            runReadAction {
+                val selector = localisationSelector().gameTypeFrom(file)
+                val result = ParadoxLocalisationSearch.search(localisationName, project, selector = selector).findAll()
+                localisations.addAll(result)
+            }
         }, PlsBundle.message("diff.compare.localisations.collect.title"), true, project)
         if(localisations.size <= 1) {
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
@@ -84,32 +87,34 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         val textRange = localisation.textRange
         val content = contentFactory.createFragment(project, documentContent, textRange)
         
-        val producers = localisations.mapNotNull { otherLocalisation ->
-            val otherPsiFile = otherLocalisation.containingFile ?: return@mapNotNull null
-            val locale = otherPsiFile.localeConfig ?: return@mapNotNull null
-            val otherFile = otherPsiFile.virtualFile ?: return@mapNotNull null
-            val isSamePosition = localisation isSamePosition otherLocalisation
-            val otherContentTitle = when {
-                isSamePosition -> getContentTitle(otherLocalisation, true)
-                else -> getContentTitle(otherLocalisation)
-            } ?: return@mapNotNull null
-            var isCurrent = false
-            val otherContent = when {
-                isSamePosition -> {
-                    isCurrent = true
-                    val otherDocument = EditorFactory.getInstance().createDocument(documentContent.document.text)
-                    val otherDocumentContent = contentFactory.create(project, otherDocument, content.highlightFile)
-                    contentFactory.createFragment(project, otherDocumentContent, textRange)
+        val producers = runReadAction {
+            localisations.mapNotNull { otherLocalisation ->
+                val otherPsiFile = otherLocalisation.containingFile ?: return@mapNotNull null
+                val locale = otherPsiFile.localeConfig ?: return@mapNotNull null
+                val otherFile = otherPsiFile.virtualFile ?: return@mapNotNull null
+                val isSamePosition = localisation isSamePosition otherLocalisation
+                val otherContentTitle = when {
+                    isSamePosition -> getContentTitle(otherLocalisation, true)
+                    else -> getContentTitle(otherLocalisation)
+                } ?: return@mapNotNull null
+                var isCurrent = false
+                val otherContent = when {
+                    isSamePosition -> {
+                        isCurrent = true
+                        val otherDocument = EditorFactory.getInstance().createDocument(documentContent.document.text)
+                        val otherDocumentContent = contentFactory.create(project, otherDocument, content.highlightFile)
+                        contentFactory.createFragment(project, otherDocumentContent, textRange)
+                    }
+                    else -> {
+                        val otherDocumentContent = contentFactory.createDocument(project, otherFile) ?: return@mapNotNull null
+                        contentFactory.createFragment(project, otherDocumentContent, otherLocalisation.textRange)
+                    }
                 }
-                else -> {
-                    val otherDocumentContent = contentFactory.createDocument(project, otherFile) ?: return null
-                    contentFactory.createFragment(project, otherDocumentContent, otherLocalisation.textRange)
-                }
+                if(isCurrent) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+                val icon = otherLocalisation.icon
+                val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
+                MyRequestProducer(request, otherLocalisation.name, locale, otherFile, icon, isCurrent)
             }
-            if(isCurrent) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
-            val icon = otherLocalisation.icon
-            val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
-            MyRequestProducer(request, otherLocalisation.name, locale, otherFile, icon, isCurrent)
         }
         val chain = MyDiffRequestChain(producers)
         //如果打开了编辑器，左窗口定位到当前光标位置

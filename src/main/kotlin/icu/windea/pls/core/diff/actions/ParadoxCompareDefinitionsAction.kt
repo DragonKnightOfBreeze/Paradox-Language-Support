@@ -9,6 +9,7 @@ import com.intellij.diff.util.*
 import com.intellij.notification.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.ui.popup.*
@@ -64,10 +65,12 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
         val definitionInfo = definition.definitionInfo ?: return null
         val definitions = Collections.synchronizedList(mutableListOf<ParadoxScriptDefinitionElement>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
-            val selector = definitionSelector().gameTypeFrom(file)
-            //pass main type only
-            val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, project, selector = selector).findAll()
-            definitions.addAll(result)
+            runReadAction {
+                val selector = definitionSelector().gameTypeFrom(file)
+                //pass main type only
+                val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, project, selector = selector).findAll()
+                definitions.addAll(result)
+            }
         }, PlsBundle.message("diff.compare.definitions.collect.title"), true, project)
         if(definitions.size <= 1) {
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
@@ -85,32 +88,34 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
         val textRange = definition.textRange
         val content = contentFactory.createFragment(project, documentContent, textRange)
         
-        val producers = definitions.mapNotNull { otherDefinition ->
-            val otherDefinitionInfo = otherDefinition.definitionInfo ?: return@mapNotNull null
-            val otherPsiFile = otherDefinition.containingFile ?: return@mapNotNull null
-            val otherFile = otherPsiFile.virtualFile ?: return@mapNotNull null
-            val isSamePosition = definition isSamePosition otherDefinition
-            val otherContentTitle = when {
-                isSamePosition -> getContentTitle(otherDefinition, otherDefinitionInfo, true)
-                else -> getContentTitle(otherDefinition, otherDefinitionInfo)
-            } ?: return@mapNotNull null
-            var isCurrent = false
-            val otherContent = when {
-                isSamePosition -> {
-                    isCurrent = true
-                    val otherDocument = EditorFactory.getInstance().createDocument(documentContent.document.text)
-                    val otherDocumentContent = contentFactory.create(project, otherDocument, content.highlightFile)
-                    contentFactory.createFragment(project, otherDocumentContent, textRange)
+        val producers = runReadAction {
+            definitions.mapNotNull { otherDefinition ->
+                val otherDefinitionInfo = otherDefinition.definitionInfo ?: return@mapNotNull null
+                val otherPsiFile = otherDefinition.containingFile ?: return@mapNotNull null
+                val otherFile = otherPsiFile.virtualFile ?: return@mapNotNull null
+                val isSamePosition = definition isSamePosition otherDefinition
+                val otherContentTitle = when {
+                    isSamePosition -> getContentTitle(otherDefinition, otherDefinitionInfo, true)
+                    else -> getContentTitle(otherDefinition, otherDefinitionInfo)
+                } ?: return@mapNotNull null
+                var isCurrent = false
+                val otherContent = when {
+                    isSamePosition -> {
+                        isCurrent = true
+                        val otherDocument = EditorFactory.getInstance().createDocument(documentContent.document.text)
+                        val otherDocumentContent = contentFactory.create(project, otherDocument, content.highlightFile)
+                        contentFactory.createFragment(project, otherDocumentContent, textRange)
+                    }
+                    else -> {
+                        val otherDocumentContent = contentFactory.createDocument(project, otherFile) ?: return@mapNotNull null
+                        contentFactory.createFragment(project, otherDocumentContent, otherDefinition.textRange)
+                    }
                 }
-                else -> {
-                    val otherDocumentContent = contentFactory.createDocument(project, otherFile) ?: return null
-                    contentFactory.createFragment(project, otherDocumentContent, otherDefinition.textRange)
-                }
+                if(isCurrent) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+                val icon = otherDefinition.icon
+                val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
+                MyRequestProducer(request, otherDefinitionInfo, otherFile, icon, isCurrent)
             }
-            if(isCurrent) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
-            val icon = otherDefinition.icon
-            val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
-            MyRequestProducer(request, otherDefinitionInfo, otherFile, icon, isCurrent)
         }
         val chain = MyDiffRequestChain(producers)
         //如果打开了编辑器，左窗口定位到当前光标位置

@@ -10,6 +10,7 @@ import com.intellij.diff.util.*
 import com.intellij.notification.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.ui.popup.*
@@ -56,9 +57,11 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         val path = fileInfo.path.path
         val files = Collections.synchronizedList(mutableListOf<VirtualFile>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
-            val selector = fileSelector().gameType(gameType)
-            val result = ParadoxFilePathSearch.search(path, project, selector = selector).findAll()
-            files.addAll(result)
+            runReadAction {
+                val selector = fileSelector().gameType(gameType)
+                val result = ParadoxFilePathSearch.search(path, project, selector = selector).findAll()
+                files.addAll(result)
+            }
         }, PlsBundle.message("diff.compare.files.collect.title"), true, project)
         if(files.size <= 1) {
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
@@ -83,32 +86,34 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         } ?: return null
         if(readOnly) content.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
         
-        val producers = files.mapNotNull { otherFile ->
-            if(file.fileType != otherFile.fileType) return@mapNotNull null
-            val otherContentTitle = when {
-                file == otherFile -> getContentTitle(otherFile, true)
-                else -> getContentTitle(otherFile)
-            } ?: return@mapNotNull null
-            var isCurrent = false
-            val otherContent = when {
-                binary -> {
-                    isCurrent = true
-                    contentFactory.createFile(project, otherFile) ?: return@mapNotNull null
+        val producers = runReadAction {
+            files.mapNotNull { otherFile ->
+                if(file.fileType != otherFile.fileType) return@mapNotNull null
+                val otherContentTitle = when {
+                    file == otherFile -> getContentTitle(otherFile, true)
+                    else -> getContentTitle(otherFile)
+                } ?: return@mapNotNull null
+                var isCurrent = false
+                val otherContent = when {
+                    binary -> {
+                        isCurrent = true
+                        contentFactory.createFile(project, otherFile) ?: return@mapNotNull null
+                    }
+                    file == otherFile -> {
+                        isCurrent = true
+                        content as DocumentContent
+                        val otherDocument = EditorFactory.getInstance().createDocument(content.document.text)
+                        contentFactory.create(project, otherDocument, content.highlightFile)
+                    }
+                    else -> {
+                        contentFactory.createDocument(project, otherFile) ?: return@mapNotNull null
+                    }
                 }
-                file == otherFile -> {
-                    isCurrent = true
-                    content as DocumentContent
-                    val otherDocument = EditorFactory.getInstance().createDocument(content.document.text)
-                    contentFactory.create(project, otherDocument, content.highlightFile)
-                }
-                else -> {
-                    contentFactory.createDocument(project, otherFile) ?: return@mapNotNull null
-                }
+                if(isCurrent) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+                val icon = otherFile.fileType.icon
+                val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
+                MyRequestProducer(request, otherFile, icon, isCurrent)
             }
-            if(isCurrent) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
-            val icon = otherFile.fileType.icon
-            val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
-            MyRequestProducer(request, otherFile, icon, isCurrent)
         }
         val chain = MyDiffRequestChain(producers)
         

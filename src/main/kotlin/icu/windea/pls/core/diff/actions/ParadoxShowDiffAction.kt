@@ -25,7 +25,7 @@ abstract class ParadoxShowDiffAction : AnAction() {
     
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project
-        val chain = runReadAction { getDiffRequestChain(e) } ?: return
+        val chain = getDiffRequestChain(e) ?: return
         DiffManager.getInstance().showDiff(project, chain, DiffDialogHints.DEFAULT)
     }
     
