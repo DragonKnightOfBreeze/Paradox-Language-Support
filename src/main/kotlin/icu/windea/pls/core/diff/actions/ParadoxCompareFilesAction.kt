@@ -106,7 +106,7 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
                         isCurrent = true
                         readonly = true
                         //创建临时文件作为只读副本
-                        val tempFile = ParadoxFileManager.createTempFile(file, fileInfo) ?: return@mapNotNull null
+                        val tempFile = runWriteAction { ParadoxFileManager.createTempFile(file, fileInfo) } ?: return@mapNotNull null
                         contentFactory.createDocument(project, tempFile) ?: return@mapNotNull null
                     }
                     else -> {

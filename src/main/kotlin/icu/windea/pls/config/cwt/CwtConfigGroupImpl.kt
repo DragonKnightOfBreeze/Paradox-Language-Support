@@ -439,6 +439,12 @@ class CwtConfigGroupImpl(
 						val modifierName = prop.key
 						val modifierConfig = resolveModifierConfig(prop, modifierName) ?: continue
 						modifiers[modifierName] = modifierConfig
+						for(snippetExpression in modifierConfig.template.snippetExpressions) {
+							if(snippetExpression.type == CwtDataType.Definition) {
+								val typeExpression = snippetExpression.value ?: continue
+								typeToModifiersMap.getOrPut(typeExpression) { mutableMapOf() }.put(modifierName, modifierConfig)
+							}
+						}
 					}
 				}
 				//找到配置文件中的顶级的key为"scopes"的属性，然后解析它的子属性，添加到scopes中
@@ -598,13 +604,13 @@ class CwtConfigGroupImpl(
 								for(pp in pps) {
 									val typeExpression = "$name.$subtypeName"
 									val modifierConfig = resolveDefinitionModifierConfig(pp, pp.key, typeExpression) ?: continue
-									modifiers.put(modifierConfig.name, modifierConfig)
+									modifiers[modifierConfig.name] = modifierConfig
 									typeToModifiersMap.getOrPut(typeExpression) { mutableMapOf() }.put(pp.key, modifierConfig)
 								}
 							} else {
 								val typeExpression = name
 								val modifierConfig = resolveDefinitionModifierConfig(p, p.key, typeExpression) ?: continue
-								modifiers.put(modifierConfig.name, modifierConfig)
+								modifiers[modifierConfig.name] = modifierConfig
 								typeToModifiersMap.getOrPut(typeExpression) { mutableMapOf() }.put(p.key, modifierConfig)
 							}
 						}
