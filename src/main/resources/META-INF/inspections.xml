@@ -244,15 +244,16 @@
                      groupPathKey="inspection.localisation.scope.path"
                      implementationClass="icu.windea.pls.localisation.inspections.scope.TooLongScopeLinkInspection"/>
     <!--endregion-->
+    <!--endregion-->
     
-  <!--region Compatibility-->
+    <!--region Compatibility-->
     <localInspection language="" shortName="ParadoxOverridingOrOverriddenFiles"
                      enabledByDefault="false" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.compat.file"
                      groupBundle="messages.PlsBundle" groupKey="inspection.compat"
                      groupPathKey="inspection.compat.path"
                      implementationClass="icu.windea.pls.core.inspections.compat.OverridingOrOverriddenFilesInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxOverridingOrOverriddenDefinitions"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxOverridingOrOverriddenDefinitions"
                      enabledByDefault="false" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.compat.definition"
                      groupBundle="messages.PlsBundle" groupKey="inspection.compat"
