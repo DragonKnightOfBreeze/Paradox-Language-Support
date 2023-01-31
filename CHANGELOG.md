@@ -72,6 +72,8 @@ overlord_gaiaseeder_upkeep_machine
 * 支持通过economic_category生成的修饰符
 
 * BUG修复
+  * [ ] 修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
+  * [ ] 基本修复：[Support for HoI4 is almost completely broken #10](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/10)
 * 优化：
   * [ ] 在判断子类型时兼容`category = <deposit_category.blocker>`这样的表达式（这在之前意味着进行索引时需要使用索引后的数据）
 * 优化 - 智能推断：

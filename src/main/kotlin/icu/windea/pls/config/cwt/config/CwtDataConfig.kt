@@ -1,6 +1,6 @@
 package icu.windea.pls.config.cwt.config
 
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.core.*
@@ -11,6 +11,7 @@ import icu.windea.pls.config.cwt.expression.CwtDataType.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
+import java.util.*
 
 sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	abstract val value: String
@@ -26,6 +27,16 @@ sealed class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	abstract override val expression: CwtDataExpression
 	
 	@Volatile var parent: CwtDataConfig<*>? = null
+	
+	val path by lazy { 
+		val list = LinkedList<String>()
+		var current: CwtDataConfig<*> = this
+		while(true) {
+			list.addFirst(current.expression.expressionString)
+			current = current.resolved().parent ?: break
+		}
+		list.joinToString("/")
+	}
 	
 	val isBlock: Boolean get() = configs != null
 	val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }

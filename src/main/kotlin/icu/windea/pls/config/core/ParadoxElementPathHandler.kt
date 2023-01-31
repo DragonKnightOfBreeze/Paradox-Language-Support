@@ -75,10 +75,19 @@ object ParadoxElementPathHandler {
 					originalSubPaths.addFirst("-")
 					depth++
 				}
+				current is PsiFile -> break
 			}
 			current = current.parent ?: break
 		}
+		if(current is ParadoxScriptFile) {
+			definition = inferDefinitionFromFile(current, originalSubPaths)
+		}
 		if(definition == null) return null //如果未找到所属的definition，则直接返回null
 		return ParadoxElementPath.resolve(originalSubPaths) to definition
+	}
+	
+	private fun inferDefinitionFromFile(file: ParadoxScriptFile, originalSubPaths: LinkedList<String>): ParadoxScriptDefinitionElement? {
+		ParadoxInlineScriptHandler.getLinkedDefinition(file, originalSubPaths)?.let { return it }
+		return null
 	}
 }
