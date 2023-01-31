@@ -116,9 +116,9 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
                         contentFactory.createFragment(project, otherDocumentContent, otherDefinition.textRange)
                     }
                 }
-                index++
                 if(isCurrent) currentIndex = index
                 if(readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+                index++
                 val icon = otherDefinition.icon
                 val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
                 MyRequestProducer(request, otherDefinitionInfo, otherFile, icon, isCurrent)
@@ -162,6 +162,7 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
         }
         
         fun syncEditorsCaretPosition(selectedIndex: Int) {
+            if(currentIndex == selectedIndex) return
             val request = (requests[currentIndex] as MyRequestProducer).request
             val selectedRequest = (requests[selectedIndex] as MyRequestProducer).request
             val positions = DiffUserDataKeysEx.EDITORS_CARET_POSITION.get(request)

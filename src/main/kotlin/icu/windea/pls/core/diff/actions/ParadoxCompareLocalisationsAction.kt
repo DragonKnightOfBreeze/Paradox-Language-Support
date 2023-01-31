@@ -114,9 +114,9 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
                         contentFactory.createFragment(project, otherDocumentContent, otherLocalisation.textRange)
                     }
                 }
-                index++
                 if(isCurrent) currentIndex = index
                 if(readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+                index++
                 val icon = otherLocalisation.icon
                 val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
                 MyRequestProducer(request, otherLocalisation.name, locale, otherFile, icon, isCurrent)
@@ -162,6 +162,7 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         }
         
         fun syncEditorsCaretPosition(selectedIndex: Int) {
+            if(currentIndex == selectedIndex) return
             val request = (requests[currentIndex] as MyRequestProducer).request
             val selectedRequest = (requests[selectedIndex] as MyRequestProducer).request
             val positions = DiffUserDataKeysEx.EDITORS_CARET_POSITION.get(request)
