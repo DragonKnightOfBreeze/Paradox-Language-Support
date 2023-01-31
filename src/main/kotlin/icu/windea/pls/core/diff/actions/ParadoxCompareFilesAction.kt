@@ -83,7 +83,7 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         } ?: return null
         
         var index = 0
-        var currentIndex = 0
+        var defaultIndex = 0
         val producers = runReadAction {
             files.mapNotNull { otherFile ->
                 if(file.fileType != otherFile.fileType) return@mapNotNull null
@@ -111,7 +111,7 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
                         contentFactory.createDocument(project, otherFile) ?: return@mapNotNull null
                     }
                 }
-                if(isCurrent) currentIndex = index
+                if(isCurrent) defaultIndex = index
                 if(readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
                 index++
                 val icon = otherFile.fileType.icon
@@ -119,7 +119,7 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
                 MyRequestProducer(request, otherFile, icon, isCurrent)
             }
         }
-        val chain = MyDiffRequestChain(producers, currentIndex)
+        val chain = MyDiffRequestChain(producers, defaultIndex)
         
         //如果打开了编辑器，左窗口定位到当前光标位置
         if(!binary) {
@@ -129,6 +129,8 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
                 chain.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.LEFT, currentLine))
             }
         }
+        chain.putUserData(DiffUserDataKeys.MASTER_SIDE, Side.LEFT)
+        chain.putUserData(DiffUserDataKeys.PREFERRED_FOCUS_SIDE, Side.LEFT)
         return chain
     }
     
@@ -147,25 +149,14 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
     
     class MyDiffRequestChain(
         producers: List<DiffRequestProducer>,
-        var currentIndex: Int = 0
+        defaultIndex: Int = 0
     ) : UserDataHolderBase(), DiffRequestSelectionChain, GoToChangePopupBuilder.Chain {
-        private val listSelection = ListSelection.createAt(producers, currentIndex)
+        private val listSelection = ListSelection.createAt(producers, defaultIndex)
         
         override fun getListSelection() = listSelection
         
         override fun createGoToChangeAction(onSelected: Consumer<in Int>, defaultSelection: Int): AnAction {
             return MyGotoChangePopupAction(this, onSelected, defaultSelection)
-        }
-        
-        fun syncEditorsCaretPosition(selectedIndex: Int) {
-            if(currentIndex == selectedIndex) return
-            val request = (requests[currentIndex] as MyRequestProducer).request
-            val selectedRequest = (requests[selectedIndex] as MyRequestProducer).request
-            val positions = DiffUserDataKeysEx.EDITORS_CARET_POSITION.get(request)
-            val vPositions = EditorsVisiblePositions.KEY.get(request)
-            if(positions != null) DiffUserDataKeysEx.EDITORS_CARET_POSITION.set(selectedRequest, positions)
-            if(vPositions != null) EditorsVisiblePositions.KEY.set(selectedRequest, vPositions)
-            currentIndex = selectedIndex
         }
     }
     
@@ -212,9 +203,7 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
             override fun isSpeedSearchEnabled() = true
             
             override fun onChosen(selectedValue: DiffRequestProducer, finalChoice: Boolean) = doFinalStep {
-                //如果打开了编辑器，左窗口重新定位到当前光标位置
                 val selectedIndex = chain.requests.indexOf(selectedValue)
-                chain.syncEditorsCaretPosition(selectedIndex)
                 onSelected.consume(selectedIndex)
             }
         }

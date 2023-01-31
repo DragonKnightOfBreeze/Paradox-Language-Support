@@ -88,7 +88,7 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         val content = contentFactory.createFragment(project, documentContent, textRange)
         
         var index = 0
-        var currentIndex = 0
+        var defaultIndex = 0
         val producers = runReadAction {
             localisations.mapNotNull { otherLocalisation ->
                 val otherPsiFile = otherLocalisation.containingFile ?: return@mapNotNull null
@@ -114,7 +114,7 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
                         contentFactory.createFragment(project, otherDocumentContent, otherLocalisation.textRange)
                     }
                 }
-                if(isCurrent) currentIndex = index
+                if(isCurrent) defaultIndex = index
                 if(readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
                 index++
                 val icon = otherLocalisation.icon
@@ -122,7 +122,7 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
                 MyRequestProducer(request, otherLocalisation.name, locale, otherFile, icon, isCurrent)
             }
         }
-        val chain = MyDiffRequestChain(producers, currentIndex)
+        val chain = MyDiffRequestChain(producers, defaultIndex)
         //如果打开了编辑器，左窗口定位到当前光标位置
         val editor = e.editor
         if(editor != null) {
@@ -151,25 +151,14 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
     
     class MyDiffRequestChain(
         producers: List<DiffRequestProducer>,
-        var currentIndex: Int = 0
+        defaultIndex: Int = 0
     ) : UserDataHolderBase(), DiffRequestSelectionChain, GoToChangePopupBuilder.Chain {
-        private val listSelection = ListSelection.createAt(producers, currentIndex)
+        private val listSelection = ListSelection.createAt(producers, defaultIndex)
         
         override fun getListSelection() = listSelection
         
         override fun createGoToChangeAction(onSelected: Consumer<in Int>, defaultSelection: Int): AnAction {
             return MyGotoChangePopupAction(this, onSelected, defaultSelection)
-        }
-        
-        fun syncEditorsCaretPosition(selectedIndex: Int) {
-            if(currentIndex == selectedIndex) return
-            val request = (requests[currentIndex] as MyRequestProducer).request
-            val selectedRequest = (requests[selectedIndex] as MyRequestProducer).request
-            val positions = DiffUserDataKeysEx.EDITORS_CARET_POSITION.get(request)
-            val vPositions = EditorsVisiblePositions.KEY.get(request)
-            if(positions != null) DiffUserDataKeysEx.EDITORS_CARET_POSITION.set(selectedRequest, positions)
-            if(vPositions != null) EditorsVisiblePositions.KEY.set(selectedRequest, vPositions)
-            currentIndex = selectedIndex
         }
     }
     
@@ -218,9 +207,7 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
             override fun isSpeedSearchEnabled() = true
             
             override fun onChosen(selectedValue: DiffRequestProducer, finalChoice: Boolean) = doFinalStep {
-                //如果打开了编辑器，左窗口重新定位到当前光标位置
                 val selectedIndex = chain.requests.indexOf(selectedValue)
-                chain.syncEditorsCaretPosition(selectedIndex)
                 onSelected.consume(selectedIndex)
             }
         }
