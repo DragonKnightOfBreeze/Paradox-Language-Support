@@ -112,20 +112,16 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
                         contentFactory.createDocument(project, otherFile) ?: return@mapNotNull null
                     }
                 }
-                if(isCurrent) {
-                    defaultIndex = index
-                    //窗口定位到当前光标位置
-                    if(!binary && editor != null) {
-                        val currentLine = editor.caretModel.logicalPosition.line
-                        otherContent.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.LEFT, currentLine))
-                    }
-                }
-                if(readonly) {
-                    otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
-                }
+                if(isCurrent) defaultIndex = index
+                if(readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
                 index++
                 val icon = otherFile.fileType.icon
                 val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
+                //窗口定位到当前光标位置
+                if(!binary && editor != null) {
+                    val currentLine = editor.caretModel.logicalPosition.line
+                    request.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.LEFT, currentLine))
+                }
                 MyRequestProducer(request, otherFile, icon, isCurrent)
             }
         }

@@ -117,20 +117,16 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
                         contentFactory.createFragment(project, otherDocumentContent, otherDefinition.textRange)
                     }
                 }
-                if(isCurrent) {
-                    defaultIndex = index
-                    //窗口定位到当前光标位置
-                    if(editor != null) {
-                        val currentLine = editor.caretModel.logicalPosition.line
-                        otherContent.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.LEFT, currentLine))
-                    }
-                }
-                if(readonly) {
-                    otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
-                }
+                if(isCurrent) defaultIndex = index
+                if(readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
                 index++
                 val icon = otherDefinition.icon
                 val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
+                //窗口定位到当前光标位置
+                if(editor != null) {
+                    val currentLine = editor.caretModel.logicalPosition.line
+                    request.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.LEFT, currentLine))
+                }
                 MyRequestProducer(request, otherDefinitionInfo, otherFile, icon, isCurrent)
             }
         }
