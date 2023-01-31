@@ -26,6 +26,7 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import java.awt.*
 import java.util.*
 import javax.swing.*
 
@@ -93,10 +94,10 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
                 isSamePosition -> getContentTitle(otherDefinition, otherDefinitionInfo, true)
                 else -> getContentTitle(otherDefinition, otherDefinitionInfo)
             } ?: return@mapNotNull null
-            var otherReadOnly = false
+            var isCurrent = false
             val otherContent = when {
                 isSamePosition -> {
-                    otherReadOnly = true
+                    isCurrent = true
                     val otherDocument = EditorFactory.getInstance().createDocument(documentContent.document.text)
                     val otherDocumentContent = contentFactory.create(project, otherDocument, content.highlightFile)
                     contentFactory.createFragment(project, otherDocumentContent, textRange)
@@ -106,10 +107,10 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
                     contentFactory.createFragment(project, otherDocumentContent, otherDefinition.textRange)
                 }
             }
-            if(otherReadOnly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+            if(isCurrent) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
             val icon = otherDefinition.icon
             val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
-            MyRequestProducer(request, otherDefinitionInfo, otherFile, icon)
+            MyRequestProducer(request, otherDefinitionInfo, otherFile, icon, isCurrent)
         }
         val chain = MyDiffRequestChain(producers)
         //如果打开了编辑器，左窗口定位到当前光标位置
@@ -164,7 +165,8 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
         request: DiffRequest,
         val otherDefinitionInfo: ParadoxDefinitionInfo,
         val otherFile: VirtualFile,
-        val icon: Icon
+        val icon: Icon,
+        val isCurrent: Boolean
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
@@ -195,6 +197,10 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
             override fun getIconFor(value: DiffRequestProducer) = (value as MyRequestProducer).icon
             
             override fun getTextFor(value: DiffRequestProducer) = value.name
+            
+            //com.intellij.find.actions.ShowUsagesTableCellRenderer.getTableCellRendererComponent L205
+            override fun getBackgroundFor(value: DiffRequestProducer) =
+                if((value as MyRequestProducer).isCurrent) Color(0x808080) else null
             
             override fun isSpeedSearchEnabled() = true
             
