@@ -186,7 +186,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 		return panel {
 			row {
 				cell(LocaleTableModel(localeList))
-					.horizontalAlign(HorizontalAlign.FILL)
+					.align(Align.FILL)
 					.resizableColumn()
 			}
 			row {

@@ -90,7 +90,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
 						}
 					}
 					.comment(PlsBundle.message("inspection.script.general.unresolvedFilePath.option.ignoredFilePaths.comment"))
-					.horizontalAlign(HorizontalAlign.FILL)
+					.align(Align.FILL)
 					.resizableColumn()
 			}
 		}

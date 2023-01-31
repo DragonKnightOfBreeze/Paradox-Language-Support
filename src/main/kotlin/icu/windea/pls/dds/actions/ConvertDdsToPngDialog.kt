@@ -63,7 +63,7 @@ class ConvertDdsToPngDialog(
 			row {
 				label(PlsBundle.message("dds.dialog.convertDdsToPng.newName")).widthGroup("left")
 				cell(initNewNameField())
-					.horizontalAlign(HorizontalAlign.FILL)
+					.align(Align.FILL)
 					.resizableColumn()
 					.focused()
 			}
@@ -71,7 +71,7 @@ class ConvertDdsToPngDialog(
 		row {
 			label(PlsBundle.message("dds.dialog.convertDdsToPng.targetDirectory")).widthGroup("left")
 			cell(initTargetDirectoryField())
-				.horizontalAlign(HorizontalAlign.FILL)
+				.align(Align.FILL)
 				.resizableColumn()
 		}
 		row {

@@ -57,7 +57,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
 						}
 					}
 					.comment(PlsBundle.message("inspection.localisation.general.unresolvedIcon.option.ignoredIconNames.comment"))
-					.horizontalAlign(HorizontalAlign.FILL)
+					.align(Align.FILL)
 					.resizableColumn()
 			}
 		}

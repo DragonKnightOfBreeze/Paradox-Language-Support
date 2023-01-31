@@ -70,7 +70,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 					expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
 						.bindText({ settings.ignoredFileNames.orEmpty() }, { settings.ignoredFileNames = it })
 						.comment(PlsBundle.message("settings.generic.ignoredFileNames.comment"))
-						.horizontalAlign(HorizontalAlign.FILL)
+						.align(Align.FILL)
 						.resizableColumn()
 						.onApply { doReparseFilesByFileNames(settings) }
 				}

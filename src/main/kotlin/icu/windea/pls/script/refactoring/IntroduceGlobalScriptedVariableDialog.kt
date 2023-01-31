@@ -56,7 +56,7 @@ class IntroduceGlobalScriptedVariableDialog(
 			label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName")).widthGroup("left")
 			textField()
 				.bindText(dialog.variableNameProperty)
-				.horizontalAlign(HorizontalAlign.FILL)
+				.align(Align.FILL)
 				.resizableColumn()
 				.focused()
 				.validationOnApply { validateScriptedVariableName() }
@@ -67,7 +67,7 @@ class IntroduceGlobalScriptedVariableDialog(
 				label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue")).widthGroup("left")
 				textField()
 					.bindText(dialog.variableValueProperty)
-					.horizontalAlign(HorizontalAlign.FILL)
+					.align(Align.FILL)
 					.resizableColumn()
 					.focused()
 					.validationOnApply { validateScriptedVariableValue() }
@@ -93,7 +93,7 @@ class IntroduceGlobalScriptedVariableDialog(
 				)
 			}
 			cell(fileField)
-				.horizontalAlign(HorizontalAlign.FILL)
+				.align(Align.FILL)
 				.resizableColumn()
 				.validationRequestor { validator -> fileField.childComponent.textEditor.whenTextChanged { validator() } }
 				.validationOnApply { validateScriptedVariableFilePath() }

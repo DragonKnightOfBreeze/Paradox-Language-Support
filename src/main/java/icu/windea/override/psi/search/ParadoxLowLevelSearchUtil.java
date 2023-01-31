@@ -1,5 +1,5 @@
 // Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license.
-package com.intellij.psi.impl.search;
+package icu.windea.override.psi.search;
 
 import com.intellij.lang.*;
 import com.intellij.lang.injection.*;
@@ -24,6 +24,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.IntPredicate;
 
+//com.intellij.psi.impl.search.LowLevelSearchUtil
 //@formatter:off
 
 /**

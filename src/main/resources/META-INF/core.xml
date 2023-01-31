@@ -16,8 +16,8 @@
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettings"/>
 
     <!--override extensions-->
-    <projectService serviceInterface="com.intellij.psi.impl.ResolveScopeManager" serviceImplementation="com.intellij.psi.impl.file.impl.ParadoxResolveScopeManager" overrides="true"/>
-    <projectService serviceInterface="com.intellij.psi.search.PsiSearchHelper" serviceImplementation="com.intellij.psi.impl.search.ParadoxPsiSearchHelper" overrides="true"/>
+    <projectService serviceInterface="com.intellij.psi.impl.ResolveScopeManager" serviceImplementation="icu.windea.override.psi.impl.file.impl.ParadoxResolveScopeManager" overrides="true"/>
+    <projectService serviceInterface="com.intellij.psi.search.PsiSearchHelper" serviceImplementation="icu.windea.override.psi.search.ParadoxPsiSearchHelper" overrides="true"/>
     
     <!--suppress PluginXmlValidity -->
     <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider"/>

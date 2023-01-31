@@ -55,7 +55,7 @@ class ExpandClauseTemplateDialog(
 		row {
 			val propertyName = propertyName ?: PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName.none")
 			textField()
-				.text(propertyName).enabled(false).horizontalAlign(HorizontalAlign.FILL)
+				.text(propertyName).enabled(false).align(Align.FILL)
 				.label(PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName"), LabelPosition.LEFT)
 		}
 	}.withPreferredWidth(600)

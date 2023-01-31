@@ -45,7 +45,7 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 						}
 					}
 					.comment(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames.comment"))
-					.horizontalAlign(HorizontalAlign.FILL)
+					.align(Align.FILL)
 					.resizableColumn()
 			}
 		}

@@ -68,7 +68,7 @@ class ParadoxCreateNewLibraryDialog(
 				.apply { descriptor = this }
 			textFieldWithBrowseButton(null, project, descriptor) { it.path }
 				.bindText(dialog.rootFilePathProperty)
-				.horizontalAlign(HorizontalAlign.FILL)
+				.align(Align.FILL)
 				.resizableColumn()
 				.validationOnApply { validateLibraryPath() }
 		}

@@ -95,6 +95,7 @@ overlord_gaiaseeder_upkeep_machine
 
 * 支持比较同名的文件、定义、本地化等
 
+* 提高代码兼容性
 * BUG修复：
   * [X] 修复：[Exception on project load #9](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/9) 
 * 优化：

@@ -1,5 +1,5 @@
 // Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-package com.intellij.psi.impl.search;
+package icu.windea.override.psi.search;
 
 import com.intellij.concurrency.*;
 import com.intellij.find.ngrams.*;
@@ -20,6 +20,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.impl.*;
 import com.intellij.psi.impl.cache.*;
 import com.intellij.psi.impl.cache.impl.id.*;
+import com.intellij.psi.impl.search.*;
 import com.intellij.psi.search.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
@@ -38,6 +39,7 @@ import java.util.*;
 import java.util.concurrent.atomic.*;
 import java.util.stream.*;
 
+//com.intellij.psi.impl.search.PsiSearchHelperImpl
 //@formatter:off
 
 @SuppressWarnings("ALL")
