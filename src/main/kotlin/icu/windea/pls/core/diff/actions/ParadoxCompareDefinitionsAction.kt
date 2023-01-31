@@ -19,33 +19,33 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.*
+import icu.windea.pls.script.psi.*
 import java.util.*
 import javax.swing.*
 
 /**
- * 将当前本地化与包括当前本地化的只读副本在内的相同名称的本地化进行DIFF。
+ * 将当前定义与包括当前本地化的只读副本在内的相同名称且相同主要类型的定义进行DIFF。
  *
  * TODO 按照覆盖顺序进行排序。
  */
 @Suppress("ComponentNotRegistered")
-class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
+class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
     override fun isAvailable(e: AnActionEvent): Boolean {
         val project = e.project ?: return false
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return false
-        if(file.fileType != ParadoxLocalisationFileType) return false
+        if(file.fileType != ParadoxScriptFileType) return false
         val offset = e.editor?.caretModel?.offset ?: return false
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return false
         val element = psiFile.findElementAt(offset) ?: return false
-        val localisation = element.parentOfType<ParadoxLocalisationProperty>(withSelf = false) ?: return false
-        //要求能够获取本地化信息
-        return localisation.localisationInfo != null
+        val definition = element.parentOfType<ParadoxScriptDefinitionElement>(withSelf = false) ?: return false
+        //要求能够获取定义信息
+        return definition.definitionInfo != null
     }
     
     override fun getActionUpdateThread(): ActionUpdateThread {
@@ -55,21 +55,22 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
         val project = e.project ?: return null
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
-        if(file.fileType != ParadoxLocalisationFileType) return null
+        if(file.fileType != ParadoxScriptFileType) return null
         val offset = e.editor?.caretModel?.offset ?: return null
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return null
         val element = psiFile.findElementAt(offset) ?: return null
-        val localisation = element.parentOfType<ParadoxLocalisationProperty>(withSelf = false) ?: return null
-        val localisationName = localisation.name
-        val localisations = Collections.synchronizedList(mutableListOf<ParadoxLocalisationProperty>())
+        val definition = element.parentOfType<ParadoxScriptDefinitionElement>(withSelf = false) ?: return null
+        val definitionInfo = definition.definitionInfo ?: return null
+        val definitions = Collections.synchronizedList(mutableListOf<ParadoxScriptDefinitionElement>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
-            val selector = localisationSelector().gameTypeFrom(file)
-            val result = ParadoxLocalisationSearch.search(localisationName, project, selector = selector).findAll()
-            localisations.addAll(result)
-        }, PlsBundle.message("diff.compare.localisations.collect.title"), true, project)
-        if(localisations.size <= 1) {
+            val selector = definitionSelector().gameTypeFrom(file)
+            //pass main type only
+            val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, project, selector = selector).findAll()
+            definitions.addAll(result)
+        }, PlsBundle.message("diff.compare.definitions.collect.title"), true, project)
+        if(definitions.size <= 1) {
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
-                PlsBundle.message("diff.compare.localisations.content.title.info.1"),
+                PlsBundle.message("diff.compare.definitions.content.title.info.1"),
                 NotificationType.INFORMATION
             ).notify(project)
             return null
@@ -77,20 +78,20 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         
         val contentFactory = DiffContentFactory.getInstance()
         
-        val windowTitle = getWindowsTitle(localisation) ?: return null
-        val contentTitle = getContentTitle(localisation) ?: return null
+        val windowTitle = getWindowsTitle(definition, definitionInfo) ?: return null
+        val contentTitle = getContentTitle(definition, definitionInfo) ?: return null
         val documentContent = contentFactory.createDocument(project, file) ?: return null
-        val textRange = localisation.textRange
+        val textRange = definition.textRange
         val content = contentFactory.createFragment(project, documentContent, textRange)
         
-        val producers = localisations.mapNotNull { otherLocalisation ->
-            val otherPsiFile = otherLocalisation.containingFile ?: return@mapNotNull null
-            val locale = otherPsiFile.localeConfig ?: return@mapNotNull null
+        val producers = definitions.mapNotNull { otherDefinition ->
+            val otherDefinitionInfo = otherDefinition.definitionInfo ?: return@mapNotNull null
+            val otherPsiFile = otherDefinition.containingFile ?: return@mapNotNull null
             val otherFile = otherPsiFile.virtualFile ?: return@mapNotNull null
-            val isSamePosition = localisation isSamePosition otherLocalisation
+            val isSamePosition = definition isSamePosition otherDefinition
             val otherContentTitle = when {
-                isSamePosition -> getContentTitle(otherLocalisation, true)
-                else -> getContentTitle(otherLocalisation)
+                isSamePosition -> getContentTitle(otherDefinition, otherDefinitionInfo, true)
+                else -> getContentTitle(otherDefinition, otherDefinitionInfo)
             } ?: return@mapNotNull null
             var otherReadOnly = false
             val otherContent = when {
@@ -102,13 +103,13 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
                 }
                 else -> {
                     val otherDocumentContent = contentFactory.createDocument(project, otherFile) ?: return null
-                    contentFactory.createFragment(project, otherDocumentContent, otherLocalisation.textRange)
+                    contentFactory.createFragment(project, otherDocumentContent, otherDefinition.textRange)
                 }
             }
             if(otherReadOnly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
-            val icon = otherLocalisation.icon
+            val icon = otherDefinition.icon
             val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
-            MyRequestProducer(request, otherLocalisation.name, locale, otherFile, icon)
+            MyRequestProducer(request, otherDefinitionInfo, otherFile, icon)
         }
         val chain = MyDiffRequestChain(producers)
         //如果打开了编辑器，左窗口定位到当前光标位置
@@ -120,20 +121,18 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         return chain
     }
     
-    private fun getWindowsTitle(localisation: ParadoxLocalisationProperty): String? {
-        val name = localisation.name
-        val file = localisation.containingFile ?: return null
+    private fun getWindowsTitle(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
+        val file = definition.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
-        return PlsBundle.message("diff.compare.localisations.dialog.title", name, fileInfo.path, fileInfo.rootPath)
+        return PlsBundle.message("diff.compare.definitions.dialog.title", definitionInfo.name, definitionInfo.typesText, fileInfo.path, fileInfo.rootPath)
     }
     
-    private fun getContentTitle(localisation: ParadoxLocalisationProperty, original: Boolean = false): String? {
-        val name = localisation.name
-        val file = localisation.containingFile ?: return null
+    private fun getContentTitle(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, original: Boolean = false): String? {
+        val file = definition.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
         return when {
-            original -> PlsBundle.message("diff.compare.localisations.originalContent.title", name, fileInfo.path, fileInfo.rootPath)
-            else -> PlsBundle.message("diff.compare.localisations.content.title", name, fileInfo.path, fileInfo.rootPath)
+            original -> PlsBundle.message("diff.compare.definitions.originalContent.title", definitionInfo.name, definitionInfo.typesText, fileInfo.path, fileInfo.rootPath)
+            else -> PlsBundle.message("diff.compare.definitions.content.title", definitionInfo.name, definitionInfo.typesText, fileInfo.path, fileInfo.rootPath)
         }
     }
     
@@ -163,14 +162,13 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
     
     class MyRequestProducer(
         request: DiffRequest,
-        val otherLocalisationName: String,
-        val locale: CwtLocalisationLocaleConfig,
+        val otherDefinitionInfo: ParadoxDefinitionInfo,
         val otherFile: VirtualFile,
         val icon: Icon
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
-            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, locale, fileInfo.path, fileInfo.rootPath)
+            return PlsBundle.message("diff.compare.definitions.popup.name", otherDefinitionInfo.name, otherDefinitionInfo.typesText, fileInfo.path, fileInfo.rootPath)
         }
     }
     
@@ -189,7 +187,7 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         
         private inner class Popup(
             val e: AnActionEvent
-        ) : BaseListPopupStep<DiffRequestProducer>(PlsBundle.message("diff.compare.localisations.popup.title"), chain.requests) {
+        ) : BaseListPopupStep<DiffRequestProducer>(PlsBundle.message("diff.compare.definitions.popup.title"), chain.requests) {
             init {
                 defaultOptionIndex = defaultSelection
             }

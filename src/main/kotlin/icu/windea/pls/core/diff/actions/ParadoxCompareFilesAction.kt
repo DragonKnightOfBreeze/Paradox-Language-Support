@@ -1,19 +1,15 @@
 package icu.windea.pls.core.diff.actions
 
 import com.intellij.diff.*
-import com.intellij.diff.actions.*
 import com.intellij.diff.actions.impl.*
 import com.intellij.diff.chains.*
 import com.intellij.diff.contents.*
 import com.intellij.diff.requests.*
-import com.intellij.diff.tools.util.base.*
 import com.intellij.diff.tools.util.base.InitialScrollPositionSupport.*
 import com.intellij.diff.util.*
 import com.intellij.notification.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.diff.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.ui.popup.*
@@ -22,8 +18,6 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.config.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
@@ -111,8 +105,9 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
                 }
             }
             if(otherReadOnly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+            val icon = otherFile.fileType.icon
             val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
-            MyRequestProducer(request, otherFile)
+            MyRequestProducer(request, otherFile, icon)
         }
         val chain = MyDiffRequestChain(producers)
         
@@ -166,7 +161,8 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
     
     class MyRequestProducer(
         request: DiffRequest,
-        val otherFile: VirtualFile
+        val otherFile: VirtualFile,
+        val icon: Icon
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
@@ -194,7 +190,7 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
                 defaultOptionIndex = defaultSelection
             }
             
-            override fun getIconFor(value: DiffRequestProducer) = (value as MyRequestProducer).otherFile.fileType.icon
+            override fun getIconFor(value: DiffRequestProducer) = (value as MyRequestProducer).icon
             
             override fun getTextFor(value: DiffRequestProducer) = value.name
             
