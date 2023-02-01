@@ -1,6 +1,5 @@
 package icu.windea.pls.config.core
 
-import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -24,11 +23,13 @@ object ParadoxDefinitionMemberHandler {
     private fun getInfoFromCache(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
         val file = element.containingFile ?: return null
         if(file !is ParadoxScriptFile) return null
+        val project = file.project
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionMemberInfoKey) {
             val value = resolveInfoDownUp(element)
-            //invalidated on file modification or ParadoxModificationTrackerProvider.DefinitionMemberInfo
-            val modificationTracker = file.project.service<ParadoxModificationTrackerProvider>().DefinitionMemberInfo
-            CachedValueProvider.Result.create(value, file, modificationTracker)
+            //invalidated on file modification or DefinitionMemberInfoTracker or InlineScriptTracker
+            val tracker = ParadoxModificationTrackerProvider.getInstance().DefinitionMemberInfo
+            val inlineScriptTracker = ParadoxModificationTrackerProvider.getInstance().InlineScript
+            CachedValueProvider.Result.create(value, file, tracker, inlineScriptTracker)
         }
     }
     

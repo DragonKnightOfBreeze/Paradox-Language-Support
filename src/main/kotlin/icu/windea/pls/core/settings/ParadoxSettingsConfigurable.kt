@@ -250,10 +250,6 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 	}
 	
 	private fun doRefreshDefinitionMemberInfos(){
-		runReadAction {
-			ProjectManager.getInstance().openProjects.forEach { project ->
-				project.service<ParadoxModificationTrackerProvider>().DefinitionMemberInfo.incModificationCount()
-			}
-		}
+		ParadoxModificationTrackerProvider.getInstance().DefinitionMemberInfo.incModificationCount()
 	}
 }

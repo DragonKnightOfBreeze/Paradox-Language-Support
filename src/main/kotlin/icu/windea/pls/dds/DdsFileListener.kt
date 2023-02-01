@@ -11,14 +11,18 @@ class DdsFileListener : AsyncFileListener {
 	override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier? {
 		return object : AsyncFileListener.ChangeApplier {
 			override fun afterVfsChange() {
+				val files = mutableSetOf<VirtualFile>()
 				//当DDS文件内容发生变化或者被删除时，需要重新转化
 				for(event in events) {
 					when {
-						event is VFileContentChangeEvent -> doInvalidateDdsFile(event.file)
-						event is VFileDeleteEvent -> doInvalidateDdsFile(event.file)
-						event is VFileMoveEvent -> doInvalidateDdsFile(event.file)
-						event is VFilePropertyChangeEvent -> doInvalidateDdsFile(event.file)
+						event is VFileContentChangeEvent -> files.add(event.file)
+						event is VFileDeleteEvent -> files.add(event.file)
+						event is VFileMoveEvent -> files.add(event.file)
+						event is VFilePropertyChangeEvent -> files.add(event.file)
 					}
+				}
+				for(file in files) {
+					doInvalidateDdsFile(file)
 				}
 			}
 		}

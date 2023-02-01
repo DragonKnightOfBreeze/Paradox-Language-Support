@@ -14,8 +14,13 @@ import icu.windea.pls.script.*
 class ParadoxModificationTrackerProvider(
     project: Project
 ) {
-    val DefinitionMemberInfo = SimpleModificationTracker()
+    companion object {
+        fun getInstance() = this
+        
+        fun getInstance(project: Project) = project.service<ParadoxModificationTrackerProvider>()
     
-    val Modifier = PsiModificationTracker.getInstance(project).forLanguage(ParadoxScriptLanguage)
-    
-    val InlineScript = PsiModificationTracker.getInstance(project).forLanguage(ParadoxScriptLanguage)}
+        val DefinitionMemberInfo = SimpleModificationTracker()
+        val InlineScript = SimpleModificationTracker()
+        val Modifier = SimpleModificationTracker()
+    }
+}

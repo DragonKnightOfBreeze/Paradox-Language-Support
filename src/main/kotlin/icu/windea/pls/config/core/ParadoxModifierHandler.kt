@@ -1,6 +1,5 @@
 package icu.windea.pls.config.core
 
-import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
@@ -44,10 +43,11 @@ object ParadoxModifierHandler {
 	@JvmStatic
 	fun resolveModifier(element: ParadoxScriptStringExpressionElement, name: String, configGroup: CwtConfigGroup): ParadoxModifierElement? {
 		//当任何脚本文件发生变化时清空缓存 - 应当兼容name和configGroup的变化
+		val project = configGroup.project
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedModifierElementKey) {
 			val value = doResolveModifier(configGroup, name, element)
-			val modificationTracker = configGroup.project.service<ParadoxModificationTrackerProvider>().Modifier
-			CachedValueProvider.Result.create(value, modificationTracker)
+			val tracker = ParadoxModificationTrackerProvider.getInstance(project).Modifier
+			CachedValueProvider.Result.create(value, tracker)
 		}
 	}
 	

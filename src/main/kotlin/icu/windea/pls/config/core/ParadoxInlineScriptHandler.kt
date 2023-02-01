@@ -1,8 +1,8 @@
 package icu.windea.pls.config.core
 
-import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
@@ -21,7 +21,8 @@ import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxInlineScriptHandler {
-    private const val inlineScriptPathExpression = "common/inline_scripts/,.txt"
+    const val inlineScriptDirPath = "common/inline_scripts"
+    const val inlineScriptPathExpression = "common/inline_scripts/,.txt"
     
     fun isGameTypeSupport(gameType: ParadoxGameType): Boolean {
         return gameType == ParadoxGameType.Stellaris
@@ -87,6 +88,17 @@ object ParadoxInlineScriptHandler {
     }
     
     @JvmStatic
+    fun getInlineScriptExpression(file: VirtualFile): String? {
+        val fileInfo = file.fileInfo ?: return null
+        if(fileInfo.fileType != ParadoxFileType.ParadoxScript) return null
+        val gameType = fileInfo.rootInfo.gameType
+        if(!isGameTypeSupport(gameType)) return null
+        val filePath = fileInfo.path.path
+        return CwtPathExpressionType.FilePath.extract(inlineScriptPathExpression, filePath)
+            ?.takeIfNotEmpty()
+    }
+    
+    @JvmStatic
     fun getInlineScriptExpression(file: ParadoxScriptFile): String? {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
@@ -111,12 +123,13 @@ object ParadoxInlineScriptHandler {
         return usageInfo
     }
     
-    private fun getUsageInfoFromCache(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? =
-        CachedValuesManager.getCachedValue(file, PlsKeys.cachedInlineScriptUsageInfoKey) {
+    private fun getUsageInfoFromCache(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
+        return CachedValuesManager.getCachedValue(file, PlsKeys.cachedInlineScriptUsageInfoKey) {
             val value = doGetInlineScriptUsageInfo(file)
-            val modificationTracker = file.project.service<ParadoxModificationTrackerProvider>().InlineScript
-            CachedValueProvider.Result.create(value, modificationTracker)
+            val tracker = ParadoxModificationTrackerProvider.InlineScript
+            CachedValueProvider.Result.create(value, tracker)
         }
+    }
     
     private fun doGetInlineScriptUsageInfo(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
         val fileInfo = file.fileInfo ?: return null
