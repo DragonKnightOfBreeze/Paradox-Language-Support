@@ -149,7 +149,9 @@ object ParadoxDefinitionHandler {
 		}
 		//判断path_extension是否匹配（默认为".txt"，CWT文件中可能未填写，此时直接留空）
 		val pathExtensionConfig = typeConfig.pathExtension //String?
-		if(pathExtensionConfig != "." + path.fileExtension) return false
+		if(pathExtensionConfig != null) {
+			if(pathExtensionConfig != "." + path.fileExtension) return false
+		}
 		
 		//如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
 		//skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
