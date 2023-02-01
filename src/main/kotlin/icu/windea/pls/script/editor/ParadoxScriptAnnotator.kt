@@ -14,6 +14,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
+import icu.windea.pls.script.inspections.inference.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
 
@@ -27,9 +28,26 @@ import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
 class ParadoxScriptAnnotator : Annotator {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
 		when(element) {
+			is ParadoxScriptFile -> annotateFile(element, holder)
 			is ParadoxScriptProperty -> annotateProperty(element, holder)
 			is ParadoxScriptStringExpressionElement -> annotateExpressionElement(element, holder)
 			is ParadoxScriptInt -> annotateExpressionElement(element, holder)
+		}
+	}
+	
+	private fun annotateFile(file: ParadoxScriptFile, holder: AnnotationHolder) {
+		annotateInlineScriptFile(file, holder)
+	}
+	
+	private fun annotateInlineScriptFile(file: ParadoxScriptFile, holder: AnnotationHolder) {
+		if(!getSettings().inference.inlineScriptLocation) return
+		val expression = ParadoxInlineScriptHandler.getInlineScriptExpression(file)
+		if(expression != null) {
+			val usageInfo = ParadoxInlineScriptHandler.getInlineScriptUsageInfo(file)
+			if(usageInfo != null && !usageInfo.hasConflict) {
+				val message = PlsBundle.message("script.annotator.inlineScript", expression)
+				holder.newAnnotation(INFORMATION, message).fileLevel().withFix(GotoInlineScriptUsagesIntention()).create()
+			}
 		}
 	}
 	

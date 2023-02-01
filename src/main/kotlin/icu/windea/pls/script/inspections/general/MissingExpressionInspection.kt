@@ -35,11 +35,11 @@ class MissingExpressionInspection : LocalInspectionTool() {
             override fun visitFile(file: PsiFile) {
                 if(file !is ParadoxScriptFile) return
                 //忽略可能的脚本片段入口
-                if(ParadoxElementLinker.canLink(file)) super.visitFile(file)
-    
-                val position = file //TODO not very suitable
-                val definitionMemberInfo = file.definitionMemberInfo
-                doCheck(position, definitionMemberInfo, true)
+                if(!ParadoxElementLinker.canLink(file)) {
+                    val position = file //TODO not very suitable
+                    val definitionMemberInfo = file.definitionMemberInfo
+                    doCheck(position, definitionMemberInfo, true)
+                }
                 super.visitFile(file)
             }
             

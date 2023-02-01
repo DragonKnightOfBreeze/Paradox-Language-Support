@@ -9,20 +9,17 @@ import icu.windea.pls.script.psi.*
  * 以便从另一个元素向上查找定义成员和定义，或者上下查找定义成员，或者获取需要的[ParadoxElementPath]。
  */
 interface ParadoxElementLinker {
-    companion object{
+    companion object INSTANCE {
         @JvmStatic val EP_NAME = ExtensionPointName.create<ParadoxElementLinker>("icu.windea.pls.paradoxElementLinker")
-    
-        @JvmStatic
+        
         fun canLink(element: ParadoxScriptMemberElement): Boolean {
             return EP_NAME.extensions.firstNotNullOfOrNull { it.canLink(element) } ?: false
         }
-    
-        @JvmStatic
+        
         fun linkElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
             return EP_NAME.extensions.firstNotNullOfOrNull { it.linkElement(element) }
         }
         
-        @JvmStatic
         fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
             return EP_NAME.extensions.firstNotNullOfOrNull { it.inlineElement(element) }
         }
@@ -32,5 +29,5 @@ interface ParadoxElementLinker {
     
     fun linkElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement?
     
-    fun inlineElement(element: ParadoxScriptMemberElement) : ParadoxScriptMemberElement?
+    fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement?
 }   

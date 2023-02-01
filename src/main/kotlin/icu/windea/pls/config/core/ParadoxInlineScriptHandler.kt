@@ -8,10 +8,12 @@ import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
@@ -45,36 +47,35 @@ object ParadoxInlineScriptHandler {
     
     @JvmStatic
     fun resolveInfo(element: ParadoxScriptPropertyKey, file: PsiFile = element.containingFile): ParadoxInlineScriptInfo? {
+        //这里不能调用ParadoxCwtConfigHandler.resolveConfigs，因为需要处理内联的情况，会导致StackOverFlow
+        
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         if(!isGameTypeSupport(gameType)) return null
         val value = element.value
         if(value != "inline_script") return null
         val matchType = CwtConfigMatchType.STATIC
-        val configs = ParadoxCwtConfigHandler.resolveConfigs(element, matchType = matchType)
-        if(configs.isEmpty()) return null
-        var expression: String? = null
-        if(configs.any { config -> isExpressionConfig(config) }) {
-            expression = element.propertyValue?.castOrNull<ParadoxScriptString>()?.value
-        } else {
-            //直接使用查找到的第一个
-            element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.processProperty { p ->
-                val pConfigs = ParadoxCwtConfigHandler.resolveConfigs(p, matchType = matchType)
-                if(pConfigs.isEmpty()) return@processProperty true
-                if(pConfigs.any { pConfig -> isExpressionConfig(pConfig) }) {
-                    expression = p.propertyValue?.castOrNull<ParadoxScriptString>()?.value
-                    return@processProperty false
-                } else {
-                    return@processProperty true
-                }
-            }
+        val project = file.project
+        val configGroup = getCwtConfig(project).getValue(gameType)
+        val inlineConfigs = configGroup.inlineConfigGroup[value] ?: return null
+        val propertyValue = element.propertyValue ?: return null
+        val inlineConfig = inlineConfigs.find {
+            val expression = ParadoxDataExpression.resolve(propertyValue)
+            CwtConfigHandler.matchesScriptExpression(propertyValue, expression, it.config.valueExpression, it.config, configGroup, matchType)
         }
-        val finalExpression = expression ?: return null
-        return ParadoxInlineScriptInfo(finalExpression, gameType)
+        if(inlineConfig == null) return null
+        val expressionLocation = getExpressionLocation(inlineConfig.config) ?: return null
+        val expressionElement = if(expressionLocation.isEmpty()) {
+            propertyValue.castOrNull<ParadoxScriptString>()
+        } else {
+            propertyValue.findProperty(expressionLocation)?.propertyValue?.castOrNull<ParadoxScriptString>()
+        }
+        val expression = expressionElement?.stringValue ?: return null
+        return ParadoxInlineScriptInfo(expression, gameType)
     }
     
-    private fun isExpressionConfig(it: CwtDataConfig<*>): Boolean {
-        return it.optionValues?.any { it.stringValue == "inline_script_expression" } == true
+    private fun getExpressionLocation(it: CwtDataConfig<*>): String? {
+        return it.options?.find { it.key == "inline_script_expression" }?.stringValue 
     }
     
     @JvmStatic
@@ -100,14 +101,22 @@ object ParadoxInlineScriptHandler {
      */
     @JvmStatic
     fun getInlineScriptUsageInfo(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
-        if(!getSettings().inference.inlineScriptLocation) return null
         ProgressManager.checkCanceled()
-        return CachedValuesManager.getCachedValue(file, PlsKeys.cachedInlineScriptUsageInfoKey) {
+        val usageInfo = getUsageInfoFromCache(file) ?: return null
+        //处理缓存对应的锚点属性已经不存在的情况
+        if(usageInfo.pointer.element == null) {
+            file.putUserData(PlsKeys.cachedInlineScriptUsageInfoKey, null)
+            return getUsageInfoFromCache(file)
+        }
+        return usageInfo
+    }
+    
+    private fun getUsageInfoFromCache(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? =
+        CachedValuesManager.getCachedValue(file, PlsKeys.cachedInlineScriptUsageInfoKey) {
             val value = doGetInlineScriptUsageInfo(file)
             val modificationTracker = file.project.service<ParadoxModificationTrackerProvider>().InlineScript
             CachedValueProvider.Result.create(value, modificationTracker)
         }
-    }
     
     private fun doGetInlineScriptUsageInfo(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
         val fileInfo = file.fileInfo ?: return null

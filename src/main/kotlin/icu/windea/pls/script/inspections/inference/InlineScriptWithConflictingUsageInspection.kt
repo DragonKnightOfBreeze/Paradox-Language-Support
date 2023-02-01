@@ -15,6 +15,7 @@ import icu.windea.pls.script.psi.*
 class InlineScriptWithConflictingUsageInspection : LocalInspectionTool(){
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if(file !is ParadoxScriptFile) return null
+        if(!getSettings().inference.inlineScriptLocation) return null
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         if(!ParadoxInlineScriptHandler.isGameTypeSupport(gameType)) return null
@@ -23,9 +24,10 @@ class InlineScriptWithConflictingUsageInspection : LocalInspectionTool(){
         if(usageInfo.hasConflict) {
             val holder = ProblemsHolder(manager, file, isOnTheFly)
             val description = PlsBundle.message("inspection.script.inference.inlineScriptWithConflictingUsage.description", inlineScriptExpression)
-            holder.registerProblem(file, description)
+            holder.registerProblem(file, description, GotoInlineScriptUsagesIntention())
             return holder.resultsArray
         }
         return null
     }
 }
+

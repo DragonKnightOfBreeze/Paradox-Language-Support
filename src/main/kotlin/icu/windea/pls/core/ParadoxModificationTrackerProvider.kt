@@ -18,6 +18,4 @@ class ParadoxModificationTrackerProvider(
     
     val Modifier = PsiModificationTracker.getInstance(project).forLanguage(ParadoxScriptLanguage)
     
-    val InlineScript = StubIndex.getInstance().cast<StubIndexImpl>()
-        .getIndexModificationTracker(ParadoxInlineScriptIndex.key, project)
-}
+    val InlineScript = PsiModificationTracker.getInstance(project).forLanguage(ParadoxScriptLanguage)}
