@@ -2,7 +2,6 @@ package icu.windea.pls.config.core
 
 import com.intellij.openapi.progress.*
 import com.intellij.psi.search.*
-import com.intellij.psi.search.searches.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
@@ -12,8 +11,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.references.*
-import java.util.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxInlineScriptHandler {
@@ -46,7 +43,7 @@ object ParadoxInlineScriptHandler {
         val gameType = configGroup.gameType
         var expression: String? = null
         if(isExpressionConfig(config)) {
-            element.propertyValue?.castOrNull<ParadoxScriptString>()?.value
+            expression = element.propertyValue?.castOrNull<ParadoxScriptString>()?.value
         } else {
             //直接使用查找到的第一个
             element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.processProperty(includeConditional = true) {p ->
