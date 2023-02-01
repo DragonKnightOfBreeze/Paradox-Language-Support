@@ -77,7 +77,7 @@ overlord_gaiaseeder_upkeep_machine
 * 优化：
   * [ ] 在判断子类型时兼容`category = <deposit_category.blocker>`这样的表达式（这在之前意味着进行索引时需要使用索引后的数据）
 * 优化 - 智能推断：
-  * [ ] 基于使用处推断`inline_script`的位置（即需要对应的CWT规则文件入口）
+  * [X] 基于使用处推断`inline_script`的位置（即需要对应的CWT规则文件入口）
 * 新增功能：
   * [ ] 完善支持处理生成的修饰符（`modifier`），以及相关的引用解析、代码补全、代码高亮等功能
     * [ ] 支持通过Stellaris的`economic_category`生成修饰符（原版游戏会生成的照常支持）
