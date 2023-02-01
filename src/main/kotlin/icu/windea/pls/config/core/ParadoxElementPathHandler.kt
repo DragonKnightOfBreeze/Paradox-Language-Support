@@ -57,6 +57,7 @@ object ParadoxElementPathHandler {
         val originalSubPaths = LinkedList<String>()
         var definition: ParadoxScriptDefinitionElement? = null
         var flag = allowDefinitionSelf
+        var linked = false
         while(current !is PsiDirectory) { //这里的上限应当是null或PsiDirectory，不能是PsiFile，因为它也可能是定义
             when {
                 current is ParadoxScriptDefinitionElement -> {
@@ -79,7 +80,7 @@ object ParadoxElementPathHandler {
                     depth++
                 }
             }
-            current = linkElement(current) ?: current
+            current = linkElement(current)?.also { linked = true } ?: current
             current = current.parent ?: break
         }
         if(definition == null) return null //如果未找到所属的definition，则直接返回null

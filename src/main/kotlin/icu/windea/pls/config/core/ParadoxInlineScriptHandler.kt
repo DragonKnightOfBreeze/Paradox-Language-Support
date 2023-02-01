@@ -73,7 +73,7 @@ object ParadoxInlineScriptHandler {
     }
     
     @JvmStatic
-    fun linkElement(file: ParadoxScriptFile): ParadoxScriptPropertyKey? {
+    fun linkElement(file: ParadoxScriptFile): ParadoxScriptProperty? {
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path.path
         val expression = CwtPathExpressionType.FilePath.extract(inlineScriptPathExpression, path) ?: return null
@@ -86,6 +86,6 @@ object ParadoxInlineScriptHandler {
             element = it
             true
         }
-        return element
+        return element?.parent as? ParadoxScriptProperty
     }
 }
