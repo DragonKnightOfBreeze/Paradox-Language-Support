@@ -47,7 +47,7 @@ object ParadoxModifierHandler {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedModifierElementKey) {
 			val value = doResolveModifier(configGroup, name, element)
 			val modificationTracker = configGroup.project.service<ParadoxModificationTrackerProvider>().Modifier
-			CachedValueProvider.Result.create(value, modificationTracker.modificationCount)
+			CachedValueProvider.Result.create(value, modificationTracker)
 		}
 	}
 	

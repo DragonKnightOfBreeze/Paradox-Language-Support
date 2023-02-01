@@ -1,5 +1,8 @@
 package icu.windea.pls.config.core.config
 
+import com.intellij.psi.*
+import icu.windea.pls.script.psi.*
+
 /**
  * 内联脚本信息。
  * 
@@ -9,6 +12,14 @@ package icu.windea.pls.config.core.config
 data class ParadoxInlineScriptInfo(
     val expression: String,
     val gameType: ParadoxGameType?
+)
+
+/**
+ * 内联脚本的使用信息。
+ */
+data class ParadoxInlineScriptUsageInfo(
+    val pointer: SmartPsiElementPointer<ParadoxScriptProperty>,
+    val hasConflict: Boolean
 )
 
 //* @param params 传入的参数信息.

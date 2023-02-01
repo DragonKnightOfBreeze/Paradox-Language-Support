@@ -2,6 +2,7 @@ package icu.windea.pls.core.settings
 
 import com.intellij.codeInsight.hints.*
 import com.intellij.openapi.application.*
+import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.options.*
@@ -177,6 +178,16 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						.applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeOnlyScopeIsMatched.tooltip") }
 				}
 			}
+			//inference
+			group(PlsBundle.message("settings.inference")) {
+				//inlineScriptLocation
+				row {
+					checkBox(PlsBundle.message("settings.inference.inlineScriptLocation"))
+						.bindSelected(settings.inference::inlineScriptLocation)
+						.applyToComponent { toolTipText = PlsBundle.message("settings.inference.inlineScriptLocation.tooltip") }
+						.onApply { doRefreshDefinitionMemberInfos() }
+				}
+			}
 			//generation
 			group(PlsBundle.message("settings.generation")) {
 				//fileNamePrefix
@@ -235,6 +246,14 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 			}
 		} catch(e: Exception) {
 			thisLogger().warn(e.message)
+		}
+	}
+	
+	private fun doRefreshDefinitionMemberInfos(){
+		runReadAction {
+			ProjectManager.getInstance().openProjects.forEach { project ->
+				project.service<ParadoxModificationTrackerProvider>().DefinitionMemberInfo.incModificationCount()
+			}
 		}
 	}
 }

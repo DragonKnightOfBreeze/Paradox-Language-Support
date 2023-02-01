@@ -1,12 +1,13 @@
 package icu.windea.pls.config.core
 
+import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.DumbService
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -25,8 +26,9 @@ object ParadoxDefinitionMemberHandler {
         if(file !is ParadoxScriptFile) return null
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionMemberInfoKey) {
             val value = resolveInfoDownUp(element)
-            //invalidated on file modification
-            CachedValueProvider.Result.create(value, file)
+            //invalidated on file modification or ParadoxModificationTrackerProvider.DefinitionMemberInfo
+            val modificationTracker = file.project.service<ParadoxModificationTrackerProvider>().DefinitionMemberInfo
+            CachedValueProvider.Result.create(value, file, modificationTracker)
         }
     }
     

@@ -158,7 +158,7 @@
                      implementationClass="icu.windea.pls.script.inspections.event.IncorrectEventIdInspection"/>
     <!--endregion-->
     <!--region Smart inference-->
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxInlineScriptWithConflictingUsage"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptInlineScriptWithConflictingUsage"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.inference.inlineScriptWithConflictingUsage"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.inference"

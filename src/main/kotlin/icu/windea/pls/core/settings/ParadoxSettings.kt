@@ -71,6 +71,16 @@ class ParadoxSettingsState : BaseState() {
 		var completeOnlyScopeIsMatched by property(true)
 	}
 	
+	@get:Tag("inference")
+	var inference by property(InferenceState())
+	
+	/**
+	 * @property inlineScriptLocation 是否推断内联脚本的使用位置，以便为内联脚本提供高级语言功能支持。
+	 */
+	class InferenceState : BaseState() {
+		var inlineScriptLocation by property(true)
+	}
+	
 	@get:Tag("generation")
 	var generation by property(GenerationState())
 	

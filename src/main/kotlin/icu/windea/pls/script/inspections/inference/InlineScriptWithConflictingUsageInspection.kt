@@ -19,8 +19,8 @@ class InlineScriptWithConflictingUsageInspection : LocalInspectionTool(){
         val gameType = fileInfo.rootInfo.gameType
         if(!ParadoxInlineScriptHandler.isGameTypeSupport(gameType)) return null
         val inlineScriptExpression = ParadoxInlineScriptHandler.getInlineScriptExpression(file) ?: return null
-        val checkResult = ParadoxInlineScriptHandler.checkInlineScript(file)
-        if(!checkResult) {
+        val usageInfo = ParadoxInlineScriptHandler.getInlineScriptUsageInfo(file) ?: return null
+        if(usageInfo.hasConflict) {
             val holder = ProblemsHolder(manager, file, isOnTheFly)
             val description = PlsBundle.message("inspection.script.inference.inlineScriptWithConflictingUsage.description", inlineScriptExpression)
             holder.registerProblem(file, description)

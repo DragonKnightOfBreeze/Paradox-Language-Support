@@ -106,11 +106,10 @@ object PlsKeys {
 	val cachedElementPathKey = Key.create<CachedValue<ParadoxElementPath>>("paradox.cached.elementPath")
 	val cachedDefineValuesKey = Key.create<CachedValue<MutableMap<String, Any?>>>("paradox.cached.defineValues")
 	
-	val cachedInlineScriptInfoKey = Key.create<CachedValue<ParadoxInlineScriptInfo>>("paradox.cached.inlineScriptInfo")
-	
 	val cachedModifierElementKey = Key.create<CachedValue<ParadoxModifierElement>>("paradox.cached.modifierElement")
-	val cachedInlineScriptProperty = Key.create<CachedValue<SmartPsiElementPointer<ParadoxScriptProperty>>>("paradox.cached.inlineScriptProperty")
-	val cachedInlineScriptCheckResult = Key.create<CachedValue<Boolean>>("paradox.cached.inlineScriptCheckResult")
+	
+	val cachedInlineScriptInfoKey = Key.create<CachedValue<ParadoxInlineScriptInfo>>("paradox.cached.inlineScriptInfo")
+	val cachedInlineScriptUsageInfoKey = Key.create<CachedValue<ParadoxInlineScriptUsageInfo>>("paradox.cached.inlineScriptUsageInfo")
 	
 	val cachedCwtConfigTypeKey = Key.create<CachedValue<CwtConfigType>>("paradox.cached.cwtConfigType")
 	val cachedCwtConfigPathKey = Key.create<CachedValue<CwtConfigPath>>("paradox.cached.cwtConfigPath")
