@@ -23,7 +23,6 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 	}
 	
 	override fun createStub(psi: ParadoxScriptString, parentStub: StubElement<*>): ParadoxScriptStringStub {
-		//accept only one info
 		val file = psi.containingFile
 		val gameType = file.fileInfo?.rootInfo?.gameType
 		val complexEnumInfo = ParadoxComplexEnumValueHandler.resolveInfo(psi, file)
@@ -54,33 +53,21 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 		dataStream.writeName(stub.gameType?.id)
 		val complexEnumValueInfo = stub.complexEnumValueInfo
 		val valueSetValueInfo = stub.valueSetValueInfo
-		when {
-			complexEnumValueInfo != null -> {
-				dataStream.writeByte(1)
-				dataStream.writeName(complexEnumValueInfo.name)
-				dataStream.writeName(complexEnumValueInfo.enumName)
-			}
-			valueSetValueInfo != null -> {
-				dataStream.writeByte(2)
-				dataStream.writeName(valueSetValueInfo.name)
-				dataStream.writeName(valueSetValueInfo.valueSetName)
-				dataStream.writeBoolean(valueSetValueInfo.read)
-			}
-			else -> {
-				dataStream.writeByte(0)
-			}
-		}
+		dataStream.writeName(complexEnumValueInfo?.name)
+		dataStream.writeName(complexEnumValueInfo?.enumName)
+		dataStream.writeName(valueSetValueInfo?.name)
+		dataStream.writeName(valueSetValueInfo?.valueSetName)
+		dataStream.writeBoolean(valueSetValueInfo?.read ?: false)
 	}
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptStringStub {
 		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
-		val flag = dataStream.readByte()
-		val complexEnumValueInfo = if(flag != 1.toByte()) null else {
+		val complexEnumValueInfo = run {
 			val name = dataStream.readNameString().orEmpty()
 			val enumName = dataStream.readNameString().orEmpty()
 			ParadoxComplexEnumValueInfo(name, enumName, gameType)
 		}
-		val valueSetValueInfo = if(flag != 2.toByte()) null else {
+		val valueSetValueInfo = run {
 			val name = dataStream.readNameString().orEmpty()
 			val valueSetName = dataStream.readNameString().orEmpty()
 			val read = dataStream.readBoolean()

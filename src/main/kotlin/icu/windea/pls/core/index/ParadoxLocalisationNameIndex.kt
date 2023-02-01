@@ -5,7 +5,7 @@ import icu.windea.pls.localisation.psi.*
 
 object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
-	private const val version = 13 //0.7.11
+	private const val version = 14 //0.7.13
 	private const val cacheSize = 100 * 1024
 	
 	override fun getKey() = key
