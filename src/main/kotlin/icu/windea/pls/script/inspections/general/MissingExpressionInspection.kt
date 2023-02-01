@@ -3,6 +3,7 @@ package icu.windea.pls.script.inspections.general
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.expression.*
@@ -10,11 +11,17 @@ import icu.windea.pls.config.cwt.expression.CwtDataType.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
+import javax.swing.*
 
 /**
  * 定义声明中缺失的表达式的检查。
+ * @property firstOnly 是否仅标出第一个错误。
+ * @property firstOnlyOnFile 在文件级别上，是否仅标出第一个错误。（默认为true，否则文件顶部的错误列可能会过多）
  */
 class MissingExpressionInspection : LocalInspectionTool() {
+    @JvmField var firstOnly = false
+    @JvmField var firstOnlyOnFile = true
+    
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if(file !is ParadoxScriptFile) return null
         val holder = ProblemsHolder(manager, file, isOnTheFly)
@@ -28,7 +35,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                 if(file !is ParadoxScriptFile) return
                 val position = file //TODO not very suitable
                 val definitionMemberInfo = file.definitionMemberInfo
-                doCheck(position, definitionMemberInfo)
+                doCheck(position, definitionMemberInfo, true)
                 super.visitFile(file)
             }
             
@@ -41,22 +48,24 @@ class MissingExpressionInspection : LocalInspectionTool() {
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
                 val definitionMemberInfo = element.definitionMemberInfo
-                doCheck(position, definitionMemberInfo)
+                doCheck(position, definitionMemberInfo, false)
             }
             
-            private fun doCheck(position: PsiElement, definitionMemberInfo: ParadoxDefinitionMemberInfo?) {
+            private fun doCheck(position: PsiElement, definitionMemberInfo: ParadoxDefinitionMemberInfo?, fileLevel: Boolean) {
                 if(definitionMemberInfo == null) return
                 definitionMemberInfo.childPropertyOccurrenceMap.takeIf { it.isNotEmpty() }
                     ?.forEach { (configExpression, occurrence) ->
-                        doCheckOccurrence(occurrence, configExpression, position)
+                        val r = doCheckOccurrence(occurrence, configExpression, position, fileLevel)
+                        if(!r) return
                     }
                 definitionMemberInfo.childValueOccurrenceMap.takeIf { it.isNotEmpty() }
                     ?.forEach { (configExpression, occurrence) ->
-                        doCheckOccurrence(occurrence, configExpression, position)
+                        val r = doCheckOccurrence(occurrence, configExpression, position, fileLevel)
+                        if(!r) return
                     }
             }
             
-            private fun doCheckOccurrence(occurrence: Occurrence, configExpression: CwtDataExpression, position: PsiElement) {
+            private fun doCheckOccurrence(occurrence: Occurrence, configExpression: CwtDataExpression, position: PsiElement, fileLevel: Boolean): Boolean {
                 val (actual, min, _, relaxMin) = occurrence
                 if(min != null && actual < min) {
                     val isKey = configExpression is CwtKeyExpression
@@ -81,10 +90,30 @@ class MissingExpressionInspection : LocalInspectionTool() {
                         relaxMin -> ProblemHighlightType.WEAK_WARNING //weak warning (wave lines), not warning
                         else -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
                     }
+                    if(!fileLevel && firstOnly && holder.hasResults()) return false
+                    if(fileLevel && firstOnlyOnFile && holder.hasResults()) return false
                     holder.registerProblem(position, "$description $detail", highlightType)
                 }
+                return true
             }
         })
         return holder.resultsArray
+    }
+    
+    override fun createOptionsPanel(): JComponent {
+        return panel {
+            //firstOnly
+            row {
+                checkBox(PlsBundle.message("inspection.script.general.missingExpression.option.firstOnly"))
+                    .bindSelected(::firstOnly)
+                    .actionListener { _, component -> firstOnly = component.isSelected }
+            }
+            //firstOnlyOnFile
+            row {
+                checkBox(PlsBundle.message("inspection.script.general.missingExpression.option.firstOnlyOnFile"))
+                    .bindSelected(::firstOnlyOnFile)
+                    .actionListener { _, component -> firstOnlyOnFile = component.isSelected }
+            }
+        }
     }
 }
