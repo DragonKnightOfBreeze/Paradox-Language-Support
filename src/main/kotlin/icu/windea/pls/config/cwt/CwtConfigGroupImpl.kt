@@ -113,7 +113,7 @@ class CwtConfigGroupImpl(
 		"script_trigger",
 		"script_effect",
 		"script_value", //SV也支持参数
-		"inline_script", //内联脚本也支持参数（并且可以表示多条语句）
+		//"inline_script", //内联脚本也支持参数（并且可以表示多条语句）（但不是定义）
 	)
 	
 	init {

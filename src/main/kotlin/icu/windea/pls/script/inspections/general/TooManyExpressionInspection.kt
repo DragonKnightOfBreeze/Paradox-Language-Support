@@ -47,7 +47,11 @@ class TooManyExpressionInspection: LocalInspectionTool() {
 				ProgressManager.checkCanceled()
 				//skip checking property if its property key may contain parameters
 				//position: (in property) property key / (standalone) left curly brace
-				val position = element.parent?.castOrNull<ParadoxScriptProperty>()?.propertyKey
+				val property = element.parent
+					?.castOrNull<ParadoxScriptProperty>()
+				//忽略可能的脚本片段入口
+				if(property != null && ParadoxElementLinker.canLink(property)) return
+				val position = property?.propertyKey
 					?.also { if(it.isParameterAwareExpression()) return }
 					?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
 					?: return
