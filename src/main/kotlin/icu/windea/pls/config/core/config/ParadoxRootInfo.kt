@@ -50,7 +50,7 @@ class ParadoxRootInfo(
 				var supportedVersion: String? = null
 				var remoteFileId: String? = null
 				var path: String? = null
-				rootBlock.processProperty { property ->
+				rootBlock.processProperty(includeConditional = false, includeInline = false) { property ->
 					when(property.name) {
 						"name" -> name = property.findValue<ParadoxScriptString>()?.stringValue
 						"version" -> version = property.findValue<ParadoxScriptString>()?.stringValue

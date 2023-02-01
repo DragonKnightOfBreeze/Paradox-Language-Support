@@ -642,12 +642,12 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getPropertyList(element: ParadoxScriptBlock): List<ParadoxScriptProperty> {
-		return buildList { element.processProperty(includeConditional = true) { add(it) } }
+		return buildList { element.processProperty { add(it) } }
 	}
 	
 	@JvmStatic
 	fun getValueList(element: ParadoxScriptBlock): List<ParadoxScriptValue> {
-		return buildList { element.processValue(includeConditional = true) { add(it) } }
+		return buildList { element.processValue { add(it) } }
 	}
 	
 	@JvmStatic

@@ -19,7 +19,11 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
  * 遍历当前代码块中的所有（直接作为子节点的）属性。
  * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  */
-inline fun ParadoxScriptBlockElement.processProperty(includeConditional: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+inline fun ParadoxScriptBlockElement.processProperty(
+	includeConditional: Boolean = true,
+	includeInline: Boolean = true,
+	processor: (ParadoxScriptProperty) -> Boolean
+): Boolean {
 	return processChild {
 		when {
 			it is ParadoxScriptProperty -> processor(it)
@@ -33,7 +37,11 @@ inline fun ParadoxScriptBlockElement.processProperty(includeConditional: Boolean
  * 遍历当前代码块中的所有（直接作为子节点的）值。
  * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的值。
  */
-inline fun ParadoxScriptBlockElement.processValue(includeConditional: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
+inline fun ParadoxScriptBlockElement.processValue(
+	includeConditional: Boolean = true,
+	includeInline: Boolean = true,
+	processor: (ParadoxScriptValue) -> Boolean
+): Boolean {
 	return processChild {
 		when {
 			it is ParadoxScriptValue -> processor(it)
@@ -105,7 +113,7 @@ fun PsiElement.findProperty(propertyName: String? = null, ignoreCase: Boolean = 
 		this is ParadoxScriptBlock -> this
 		else -> null
 	}
-	block?.processProperty(includeConditional = true) {
+	block?.processProperty {
 		if(propertyName == null || propertyName.equals(it.name, ignoreCase)) return it
 		true
 	}

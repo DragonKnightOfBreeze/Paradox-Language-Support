@@ -55,7 +55,7 @@ object ParadoxInlineScriptHandler {
             expression = element.propertyValue?.castOrNull<ParadoxScriptString>()?.value
         } else {
             //直接使用查找到的第一个
-            element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.processProperty(includeConditional = true) { p ->
+            element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.processProperty(includeInline = false) { p ->
                 val pConfigs = ParadoxCwtConfigHandler.resolveConfigs(p, matchType = matchType)
                 if(pConfigs.isEmpty()) return@processProperty true
                 if(pConfigs.any { pConfig -> isExpressionConfig(pConfig) }) {
