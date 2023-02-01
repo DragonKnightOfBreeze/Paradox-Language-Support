@@ -2,15 +2,17 @@ package icu.windea.pls
 
 import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.fileTypes.FileType
+import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
+import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.script.psi.*
 
 object PlsConstants {
 	val locationClass = PlsIcons::class.java
@@ -104,9 +106,11 @@ object PlsKeys {
 	val cachedElementPathKey = Key.create<CachedValue<ParadoxElementPath>>("paradox.cached.elementPath")
 	val cachedDefineValuesKey = Key.create<CachedValue<MutableMap<String, Any?>>>("paradox.cached.defineValues")
 	
-	val cachedInlineScriptInfoKey = Key.create<CachedValue<ParadoxInlineScriptInfo>>("paradox.cached.inlineScriptInof")
+	val cachedInlineScriptInfoKey = Key.create<CachedValue<ParadoxInlineScriptInfo>>("paradox.cached.inlineScriptInfo")
 	
 	val cachedModifierElementKey = Key.create<CachedValue<ParadoxModifierElement>>("paradox.cached.modifierElement")
+	val cachedInlineScriptProperty = Key.create<CachedValue<SmartPsiElementPointer<ParadoxScriptProperty>>>("paradox.cached.inlineScriptProperty")
+	val cachedInlineScriptCheckResult = Key.create<CachedValue<Boolean>>("paradox.cached.inlineScriptCheckResult")
 	
 	val cachedCwtConfigTypeKey = Key.create<CachedValue<CwtConfigType>>("paradox.cached.cwtConfigType")
 	val cachedCwtConfigPathKey = Key.create<CachedValue<CwtConfigPath>>("paradox.cached.cwtConfigPath")

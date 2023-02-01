@@ -22,7 +22,8 @@ object CwtConfigTypeHandler {
 				is CwtValue -> resolve(element, file)
 				else -> null
 			}
-			CachedValueProvider.Result.create(value, file) //invalidated on file modification
+			//invalidated on file modification
+			CachedValueProvider.Result.create(value, file)
 		}
 	}
 	

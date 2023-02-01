@@ -31,7 +31,8 @@ object ParadoxComplexEnumValueHandler {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedComplexEnumValueInfoKey) {
 			val file = element.containingFile
 			val value = resolveInfo(element, file)
-			CachedValueProvider.Result.create(value, file)//invalidated on file modification
+			//invalidated on file modification
+			CachedValueProvider.Result.create(value, file)
 		}
 	}
 	

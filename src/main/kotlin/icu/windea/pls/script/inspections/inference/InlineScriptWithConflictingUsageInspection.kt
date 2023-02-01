@@ -1,0 +1,31 @@
+package icu.windea.pls.script.inspections.inference
+
+import com.intellij.codeInspection.*
+import com.intellij.psi.*
+import icu.windea.pls.*
+import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.config.*
+import icu.windea.pls.core.annotations.*
+import icu.windea.pls.script.psi.*
+
+/**
+ * 使用位置有冲突的内联脚本的检查。
+ */
+@WithGameType(ParadoxGameType.Stellaris)
+class InlineScriptWithConflictingUsageInspection : LocalInspectionTool(){
+    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
+        if(file !is ParadoxScriptFile) return null
+        val fileInfo = file.fileInfo ?: return null
+        val gameType = fileInfo.rootInfo.gameType
+        if(!ParadoxInlineScriptHandler.isGameTypeSupport(gameType)) return null
+        val inlineScriptExpression = ParadoxInlineScriptHandler.getInlineScriptExpression(file) ?: return null
+        val checkResult = ParadoxInlineScriptHandler.checkInlineScript(file)
+        if(!checkResult) {
+            val holder = ProblemsHolder(manager, file, isOnTheFly)
+            val description = PlsBundle.message("inspection.script.inference.inlineScriptWithConflictingUsage.description", inlineScriptExpression)
+            holder.registerProblem(file, description)
+            return holder.resultsArray
+        }
+        return null
+    }
+}

@@ -36,7 +36,8 @@ object ParadoxDefinitionHandler {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfoKey) {
 			val file = element.containingFile
 			val value = resolve(element, file)
-			CachedValueProvider.Result.create(value, file) //invalidated on file modification
+			//invalidated on file modification
+			CachedValueProvider.Result.create(value, file)
 		}
 	}
 	

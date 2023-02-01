@@ -157,6 +157,14 @@
                      groupPathKey="inspection.script.event.path"
                      implementationClass="icu.windea.pls.script.inspections.event.IncorrectEventIdInspection"/>
     <!--endregion-->
+    <!--region Smart inference-->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxInlineScriptWithConflictingUsage"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.inference.inlineScriptWithConflictingUsage"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.inference"
+                     groupPathKey="inspection.script.inference.path"
+                     implementationClass="icu.windea.pls.script.inspections.inference.InlineScriptWithConflictingUsageInspection"/>
+    <!--endregion-->
     <!--endregion-->
     
     <!--region Paradox localisation-->

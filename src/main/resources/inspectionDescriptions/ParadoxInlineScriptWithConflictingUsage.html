@@ -1,0 +1,35 @@
+<html>
+<body>
+  <p>
+    Reports inline scripts with conflicting usages.
+  </p>
+  <p>
+    Usages of an inline script will be considered as conflicting
+    if their matching cwt configs have different config paths.
+    (e.g. <code>alias_name[trigger]</code> vs <code>alias_name[effect]</code>)
+  </p>
+  
+  <!-- tooltip end -->
+  <p>
+    An inline script file is a script file with extension ".txt"
+    under directory <code>common/inline_scripts</code> or it's subdirectories.
+    Then it can be used in other script files (almost everywhere).
+  </p>
+  <p><b>Example:</b></p>
+  <pre>
+# some_inline_script.txt (under directory common/inline_scripts/dir)
+# ...
+
+# some_other_script_file.txt
+some_other_definition = {
+    inline_script = "dir/some_inline_script"
+}</pre>
+  <p>
+    Based on plugin's built-in
+    <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>.
+  </p>
+  <p>
+    For <b>Stellaris</b> only.
+  </p>
+</body>
+</html>

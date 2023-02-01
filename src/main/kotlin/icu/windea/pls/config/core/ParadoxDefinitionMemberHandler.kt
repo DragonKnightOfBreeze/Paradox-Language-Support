@@ -25,7 +25,8 @@ object ParadoxDefinitionMemberHandler {
         if(file !is ParadoxScriptFile) return null
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionMemberInfoKey) {
             val value = resolveInfoDownUp(element)
-            CachedValueProvider.Result.create(value, file) //invalidated on file modification
+            //invalidated on file modification
+            CachedValueProvider.Result.create(value, file)
         }
     }
     

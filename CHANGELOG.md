@@ -76,7 +76,7 @@ overlord_gaiaseeder_upkeep_machine
 
 * 优化：
   * [X] 匹配CWT规则使用静态匹配，需要访问索引时，大部分情况下认为直接匹配
-  * [ ] 在判断子类型时兼容`category = <deposit_category.blocker>`这样的表达式（这在之前意味着进行索引时需要使用索引后的数据）
+  * [ ] 在判断子类型时兼容`category = <deposit_category.blocker>`这样的表达式（这意味着进行索引时需要使用索引后的数据）
 * 优化 - 智能推断：
   * [X] 基于使用处推断`inline_script`的位置（即需要对应的CWT规则文件入口）
 * 新增功能：
@@ -87,7 +87,7 @@ overlord_gaiaseeder_upkeep_machine
     * [ ] 从指定的本地化文件生成其他语言区域的本地化文件（右键菜单&项目视图&工具栏操作，考虑支持指定多个或者整个目录的情况）
   * 代码检查（`Code > Inspect Code...`）
     * [ ] 缺少的传参（在调用表达式、SV表达式、内联脚本调用中，如果参数不存在默认值且未传递，则认为缺少传参）
-    * [ ] 推断的`inline_script`的位置存在冲突（对应的CWT规则的路径不一样，此时显示警告，不使用推断的信息进行引用解析等）
+    * [X] 推断的`inline_script`的位置存在冲突（使用处对应的CWT规则的路径存在不一致的情况）
 
 ## 0.7.12
 
