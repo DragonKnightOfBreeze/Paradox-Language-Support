@@ -3,8 +3,8 @@ package icu.windea.pls.core.index
 import com.intellij.psi.stubs.*
 import icu.windea.pls.script.psi.*
 
-object ParadoxComplexEnumValueIndex: StringStubIndexExtension<ParadoxScriptStringExpressionElement>(){
-	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptStringExpressionElement>("paradox.complexEnumValue.index")
+object ParadoxInlineScriptIndex: StringStubIndexExtension<ParadoxScriptPropertyKey>(){
+	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptPropertyKey>("paradox.inlineScript.index")
 	private const val version = 14 //0.7.13
 	private const val cacheSize = 2 * 1024
 	
@@ -14,4 +14,3 @@ object ParadoxComplexEnumValueIndex: StringStubIndexExtension<ParadoxScriptStrin
 	
 	override fun getCacheSize() = cacheSize
 }
-

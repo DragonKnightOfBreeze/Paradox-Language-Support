@@ -62,6 +62,7 @@
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxValueSetIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxSyncedLocalisationNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.core.index.ParadoxInlineScriptIndex"/>
     
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxScriptedVariableImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxDefinitionImplementationsSearch"/>
