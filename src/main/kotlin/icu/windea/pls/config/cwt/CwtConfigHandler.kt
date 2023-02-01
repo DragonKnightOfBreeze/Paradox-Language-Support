@@ -200,7 +200,7 @@ object CwtConfigHandler {
 			}
 			CwtDataType.Localisation -> {
 				if(!expression.type.isStringType()) return false
-				if(isStatic) return false
+				if(isStatic) return true
 				if(isParameterAware) return true
 				if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
 					val selector = localisationSelector().gameType(gameType)
@@ -210,7 +210,7 @@ object CwtConfigHandler {
 			}
 			CwtDataType.SyncedLocalisation -> {
 				if(!expression.type.isStringType()) return false
-				if(isStatic) return false
+				if(isStatic) return true
 				if(isParameterAware) return true
 				if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
 					val selector = localisationSelector().gameType(gameType)
@@ -221,7 +221,7 @@ object CwtConfigHandler {
 			CwtDataType.InlineLocalisation -> {
 				if(!expression.type.isStringType()) return false
 				if(expression.quoted) return true //"quoted_string" -> any string
-				if(isStatic) return false
+				if(isStatic) return true
 				if(isParameterAware) return true
 				if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
 					val selector = localisationSelector().gameType(gameType)
@@ -235,14 +235,11 @@ object CwtConfigHandler {
 			}
 			CwtDataType.AbsoluteFilePath -> {
 				if(!expression.type.isStringType()) return false
-				if(isStatic) return false
-				if(isParameterAware) return true
-				val path = expression.text.toPathOrNull() ?: return false
-				return VfsUtil.findFile(path, true) != null
+				return true //总是匹配
 			}
 			CwtDataType.FilePath -> {
 				if(!expression.type.isStringType()) return false
-				if(isStatic) return false
+				if(isStatic) return true
 				if(isParameterAware) return true
 				if(BitUtil.isSet(matchType, CwtConfigMatchType.FILE_PATH)) {
 					val resolvedPath = CwtPathExpressionType.FilePath.resolve(configExpression.value, expression.text.normalizePath()) ?: return false
@@ -253,7 +250,7 @@ object CwtConfigHandler {
 			}
 			CwtDataType.Icon -> {
 				if(!expression.type.isStringType()) return false
-				if(isStatic) return false
+				if(isStatic) return true
 				if(isParameterAware) return true
 				if(BitUtil.isSet(matchType, CwtConfigMatchType.FILE_PATH)) {
 					val resolvedPath = CwtPathExpressionType.Icon.resolve(configExpression.value, expression.text.normalizePath()) ?: return false
@@ -265,7 +262,7 @@ object CwtConfigHandler {
 			CwtDataType.Definition -> {
 				//注意这里可能是一个整数，例如，对于<technology_tier>
 				if(!expression.type.isStringType() && expression.type != ParadoxDataType.IntType) return false
-				if(isStatic) return false
+				if(isStatic) return true
 				if(isParameterAware) return true
 				val typeExpression = configExpression.value ?: return false //invalid cwt config
 				if(BitUtil.isSet(matchType, CwtConfigMatchType.DEFINITION)) {
@@ -286,7 +283,7 @@ object CwtConfigHandler {
 				if(enumConfig != null) {
 					return name in enumConfig.values
 				}
-				if(isStatic) return false
+				if(isStatic) return true
 				//匹配复杂枚举
 				val complexEnumConfig = configGroup.complexEnums[enumName]
 				if(complexEnumConfig != null) {
@@ -300,23 +297,23 @@ object CwtConfigHandler {
 			}
 			CwtDataType.Value -> {
 				if(!expression.type.isStringType()) return false
-				if(isStatic) return false
+				if(isStatic) return true
 				if(isParameterAware) return true
 				return true //任意字符串即可，不需要进一步匹配
 			}
 			CwtDataType.ValueSet -> {
 				if(!expression.type.isStringType()) return false
-				if(isStatic) return false
+				if(isStatic) return true
 				if(isParameterAware) return true
 				return true //任意字符串即可，不需要进一步匹配
 			}
 			CwtDataType.ScopeField, CwtDataType.Scope, CwtDataType.ScopeGroup -> {
 				if(expression.quoted) return false //不允许用引号括起
-				if(!isStatic && isParameterAware) return true
+				if(isStatic) return true
+				if(isParameterAware) return true
 				val textRange = TextRange.create(0, expression.text.length)
 				val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
 				if(scopeFieldExpression == null) return false
-				if(isStatic) return true
 				if(isNotExact) return true
 				when(configExpression.type) {
 					CwtDataType.ScopeField -> {
@@ -343,7 +340,8 @@ object CwtConfigHandler {
 			CwtDataType.ValueField -> {
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
 				if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) return true
-				if(!isStatic && isParameterAware) return true
+				if(isStatic) return true
+				if(isParameterAware) return true
 				if(expression.quoted) return false //接下来的匹配不允许用引号括起
 				val textRange = TextRange.create(0, expression.text.length)
 				val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
@@ -352,7 +350,8 @@ object CwtConfigHandler {
 			CwtDataType.IntValueField -> {
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
 				if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
-				if(!isStatic && isParameterAware) return true
+				if(isStatic) return true
+				if(isParameterAware) return true
 				if(expression.quoted) return false //接下来的匹配不允许用引号括起
 				val textRange = TextRange.create(0, expression.text.length)
 				val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
@@ -361,7 +360,8 @@ object CwtConfigHandler {
 			CwtDataType.VariableField -> {
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
 				if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) return true
-				if(!isStatic && isParameterAware) return true
+				if(isStatic) return true
+				if(isParameterAware) return true
 				if(expression.quoted) return false //接下来的匹配不允许用引号括起
 				val textRange = TextRange.create(0, expression.text.length)
 				val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
@@ -370,7 +370,8 @@ object CwtConfigHandler {
 			CwtDataType.IntVariableField -> {
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
 				if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
-				if(!isStatic && isParameterAware) return true
+				if(isStatic) return true
+				if(isParameterAware) return true
 				if(expression.quoted) return false //接下来的匹配不允许用引号括起
 				val textRange = TextRange.create(0, expression.text.length)
 				val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
@@ -400,8 +401,8 @@ object CwtConfigHandler {
 			CwtDataType.TemplateExpression -> {
 				if(!expression.type.isStringType()) return false
 				//允许用引号括起
-				if(!isStatic && isParameterAware) return true
-				if(isStatic) return false
+				if(isStatic) return true
+				if(isParameterAware) return true
 				return matchesTemplateExpression(expression, configExpression, configGroup)
 			}
 			CwtDataType.Constant -> {
@@ -414,7 +415,6 @@ object CwtConfigHandler {
 				return expression.text.equals(value, true) //忽略大小写
 			}
 			CwtDataType.Other -> {
-				if(isStatic) return false
 				return true
 			}
 		}

@@ -37,19 +37,20 @@ object ParadoxInlineScriptHandler {
     fun resolveInfo(element: ParadoxScriptPropertyKey): ParadoxInlineScriptInfo? {
         val value = element.value
         if(value != "inline_script") return null
-        val configs = ParadoxCwtConfigHandler.resolveConfigs(element)
-        val config = configs.firstOrNull() ?: return null
-        val configGroup = config.info.configGroup
+        val matchType = CwtConfigMatchType.STATIC
+        val configs = ParadoxCwtConfigHandler.resolveConfigs(element, matchType = matchType)
+        if(configs.isEmpty()) return null
+        val configGroup = configs.first().info.configGroup
         val gameType = configGroup.gameType
         var expression: String? = null
-        if(isExpressionConfig(config)) {
+        if(configs.any { config -> isExpressionConfig(config) }) {
             expression = element.propertyValue?.castOrNull<ParadoxScriptString>()?.value
         } else {
             //直接使用查找到的第一个
             element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.processProperty(includeConditional = true) {p ->
-                val pConfigs = ParadoxCwtConfigHandler.resolveConfigs(p)
-                val pConfig = pConfigs.firstOrNull() ?: return@processProperty true
-                if(isExpressionConfig(pConfig)) {
+                val pConfigs = ParadoxCwtConfigHandler.resolveConfigs(p, matchType = matchType)
+                if(pConfigs.isEmpty()) return@processProperty true
+                if(pConfigs.any { pConfig -> isExpressionConfig(pConfig) }) {
                     expression = p.propertyValue?.castOrNull<ParadoxScriptString>()?.value
                     return@processProperty false
                 } else {

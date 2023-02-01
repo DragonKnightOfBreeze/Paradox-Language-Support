@@ -17,6 +17,9 @@
 更新计划：
 
 * 完善在线参考文档
+* BUG修复
+  * [ ] 修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
+  * [ ] 基本修复：[Support for HoI4 is almost completely broken #10](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/10)
 * 优化：
   * [ ] 确认重命名功能能够预期正确进行（如果对应的声明/引用支持重命名）
   * [ ] 基于引用的重命名需要考虑存在前后缀的情况（主要是为图标引用考虑）
@@ -71,10 +74,8 @@ overlord_gaiaseeder_upkeep_machine
 * 支持推断inline_script的调用位置从而为其提供各种功能
 * 支持通过economic_category生成的修饰符
 
-* BUG修复
-  * [ ] 修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
-  * [ ] 基本修复：[Support for HoI4 is almost completely broken #10](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/10)
 * 优化：
+  * [X] 匹配CWT规则使用静态匹配，需要访问索引时，大部分情况下认为直接匹配
   * [ ] 在判断子类型时兼容`category = <deposit_category.blocker>`这样的表达式（这在之前意味着进行索引时需要使用索引后的数据）
 * 优化 - 智能推断：
   * [X] 基于使用处推断`inline_script`的位置（即需要对应的CWT规则文件入口）
