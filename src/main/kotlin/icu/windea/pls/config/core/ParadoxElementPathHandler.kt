@@ -2,8 +2,8 @@ package icu.windea.pls.config.core
 
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.core.component.*
+import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 import java.util.*
@@ -80,14 +80,12 @@ object ParadoxElementPathHandler {
                     depth++
                 }
             }
-            current = linkElement(current)?.also { linked = true } ?: current
+            if(current is ParadoxScriptMemberElement) {
+                current = ParadoxElementLinker.linkElement(current)?.also { linked = true } ?: current
+            }
             current = current.parent ?: break
         }
         if(definition == null) return null //如果未找到所属的definition，则直接返回null
         return ParadoxElementPath.resolve(originalSubPaths) to definition
-    }
-    
-    private fun linkElement(element: PsiElement): PsiElement? {
-        return ParadoxElementLinker.EP_NAME.extensions.firstNotNullOfOrNull { it.linkElement(element) }
     }
 }

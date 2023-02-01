@@ -1485,7 +1485,7 @@ object CwtConfigHandler {
 		val parameterMap = definition.parameterMap
 		if(parameterMap.isEmpty()) return
 		val existParameterNames = mutableSetOf<String>()
-		propertyElement.block?.processProperty(includeConditional = false, includeInline = false) { existParameterNames.add(it.text) }
+		propertyElement.block?.processProperty(includeConditional = false) { existParameterNames.add(it.text) }
 		val project = definitionInfo.project
 		val gameType = definitionInfo.gameType
 		for((parameterName, _) in parameterMap) {

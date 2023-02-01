@@ -146,7 +146,7 @@ object ParadoxComplexEnumValueHandler {
 		parentConfig.properties?.forEach { propConfig ->
 			//ignore same config or enum name config
 			if(propConfig == config || propConfig.key == "enum_name" || propConfig.stringValue == "enum_name") return@forEach
-			val notMatched = parentBlockElement.processProperty { propElement ->
+			val notMatched = parentBlockElement.processProperty(inline = true) { propElement ->
 				!doMatchProperty(complexEnumConfig, propConfig, propElement)
 			}
 			if(notMatched) return false
@@ -154,7 +154,7 @@ object ParadoxComplexEnumValueHandler {
 		parentConfig.values?.forEach { valueConfig ->
 			//ignore same config or enum name config
 			if(valueConfig == config || valueConfig.stringValue == "enum_name") return@forEach
-			val notMatched = parentBlockElement.processValue { valueElement ->
+			val notMatched = parentBlockElement.processValue(inline = true) { valueElement ->
 				!doMatchValue(complexEnumConfig, valueConfig, valueElement)
 			}
 			if(notMatched) return false
@@ -204,13 +204,13 @@ object ParadoxComplexEnumValueHandler {
 	
 	private fun doMatchBlock(complexEnumConfig: CwtComplexEnumConfig, config: CwtDataConfig<*>, blockElement: ParadoxScriptBlockElement): Boolean {
 		config.properties?.forEach { propConfig ->
-			val notMatched = blockElement.processProperty { propElement ->
+			val notMatched = blockElement.processProperty(inline = true) { propElement ->
 				!doMatchProperty(complexEnumConfig, propConfig, propElement)
 			}
 			if(notMatched) return false
 		}
 		config.values?.forEach { valueConfig ->
-			val notMatched = blockElement.processValue { valueElement ->
+			val notMatched = blockElement.processValue(inline = true) { valueElement ->
 				!doMatchValue(complexEnumConfig, valueConfig, valueElement)
 			}
 			if(notMatched) return false

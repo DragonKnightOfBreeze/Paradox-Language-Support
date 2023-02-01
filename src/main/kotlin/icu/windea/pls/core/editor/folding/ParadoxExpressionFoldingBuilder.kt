@@ -51,7 +51,7 @@ abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
 					setting.keys != null && propertyValue is ParadoxScriptBlock -> {
 						var i = -1
 						val r = mutableListOf<ParadoxScriptProperty>()
-						propertyValue.processProperty(includeConditional = false, includeInline = false) {
+						propertyValue.processProperty(includeConditional = false) {
 							i++
 							if(it.name.equals(setting.keys.getOrNull(i), true)) {
 								r.add(it)

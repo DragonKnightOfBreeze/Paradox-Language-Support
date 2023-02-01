@@ -24,11 +24,11 @@ interface ParadoxScriptDefinitionElement : ParadoxScriptNamedElement, ParadoxScr
 		}
 	val valueList: List<ParadoxScriptValue>
 		get() {
-			return buildList { block?.processValue { add(it) } }
+			return buildList { block?.processValue(inline = true) { add(it) } }
 		}
 	val propertyList: List<ParadoxScriptProperty>
 		get() {
-			return buildList { block?.processProperty { add(it) } }
+			return buildList { block?.processProperty(inline = true) { add(it) } }
 		}
 	
 	val parameterMap: Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>> get() = emptyMap()

@@ -205,12 +205,14 @@ object ParadoxScriptPsiImplUtil {
 		if(definitionInfo == null) throw IncorrectOperationException()
 		val nameField = definitionInfo.typeConfig.nameField
 		if(nameField != null) {
-			val nameProperty = element.findProperty(nameField)
+			val nameProperty = element.findProperty(nameField) //不处理内联的情况
 			if(nameProperty != null) {
 				val nameElement = nameProperty.findValue<ParadoxScriptString>()
 				nameElement?.value = name
+				return element
+			} else {
+				throw IncorrectOperationException()
 			}
-			return element
 		}
 		val nameElement = element.propertyKey
 		val newNameElement = ParadoxScriptElementFactory.createPropertyKey(element.project, name)
@@ -642,12 +644,12 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getPropertyList(element: ParadoxScriptBlock): List<ParadoxScriptProperty> {
-		return buildList { element.processProperty { add(it) } }
+		return buildList { element.processProperty(inline = true) { add(it) } }
 	}
 	
 	@JvmStatic
 	fun getValueList(element: ParadoxScriptBlock): List<ParadoxScriptValue> {
-		return buildList { element.processValue { add(it) } }
+		return buildList { element.processValue(inline = true) { add(it) } }
 	}
 	
 	@JvmStatic

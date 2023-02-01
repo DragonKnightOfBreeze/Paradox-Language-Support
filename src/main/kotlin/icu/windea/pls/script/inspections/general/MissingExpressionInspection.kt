@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.component.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.cwt.expression.CwtDataType.*
@@ -33,6 +34,9 @@ class MissingExpressionInspection : LocalInspectionTool() {
             
             override fun visitFile(file: PsiFile) {
                 if(file !is ParadoxScriptFile) return
+                //忽略可能的脚本片段入口
+                if(ParadoxElementLinker.canLink(file)) super.visitFile(file)
+    
                 val position = file //TODO not very suitable
                 val definitionMemberInfo = file.definitionMemberInfo
                 doCheck(position, definitionMemberInfo, true)

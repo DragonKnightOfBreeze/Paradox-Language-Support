@@ -2,6 +2,7 @@ package icu.windea.pls.config.core
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
@@ -12,6 +13,8 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.core.search.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
@@ -55,7 +58,7 @@ object ParadoxInlineScriptHandler {
             expression = element.propertyValue?.castOrNull<ParadoxScriptString>()?.value
         } else {
             //直接使用查找到的第一个
-            element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.processProperty(includeInline = false) { p ->
+            element.propertyValue?.castOrNull<ParadoxScriptBlock>()?.processProperty { p ->
                 val pConfigs = ParadoxCwtConfigHandler.resolveConfigs(p, matchType = matchType)
                 if(pConfigs.isEmpty()) return@processProperty true
                 if(pConfigs.any { pConfig -> isExpressionConfig(pConfig) }) {
@@ -75,11 +78,20 @@ object ParadoxInlineScriptHandler {
     }
     
     @JvmStatic
+    fun getInlineScript(expression: String, context: PsiElement, project: Project): ParadoxScriptFile? {
+        val filePath = CwtPathExpressionType.FilePath.resolve(inlineScriptPathExpression, expression)
+        val selector = fileSelector().gameTypeFrom(context).preferRootFrom(context)
+        val query = ParadoxFilePathSearch.search(filePath, project, selector = selector)
+        return query.find()?.toPsiFile(project)
+    }
+    
+    @JvmStatic
     fun getInlineScriptExpression(file: ParadoxScriptFile): String? {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         if(!isGameTypeSupport(gameType)) return null
-        return CwtPathExpressionType.FilePath.extract(inlineScriptPathExpression, fileInfo.path.path)
+        val filePath = fileInfo.path.path
+        return CwtPathExpressionType.FilePath.extract(inlineScriptPathExpression, filePath)
             ?.takeIfNotEmpty()
     }
     
