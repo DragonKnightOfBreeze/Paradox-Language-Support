@@ -1,13 +1,15 @@
 package icu.windea.pls.config.core
 
-import com.intellij.openapi.progress.*
+import com.intellij.codeInsight.completion.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
+import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.component.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
@@ -20,15 +22,11 @@ object ParadoxModifierHandler {
 	@JvmStatic
 	fun matchesModifier(name: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
 		val modifierName = name.lowercase()
-		//预定义的非生成的修正
+		//先判断是否存在对应的预定义的非生成的修正
 		val predefinedModifierConfig = configGroup.predefinedModifiers[modifierName]
 		if(predefinedModifierConfig != null) return true
-		val isStatic = BitUtil.isSet(matchType, CwtConfigMatchType.STATIC)
-		if(isStatic) return false
-		//生成的修正，生成源必须已定义
-		return configGroup.generatedModifiers.values.any { config ->
-			config.template.matches(name, configGroup, matchType)
-		}
+		//否则基于解析器逻辑判断
+		return ParadoxModifierResolver.matchModifier(name, configGroup, matchType)
 	}
 	
 	@JvmStatic
@@ -42,8 +40,7 @@ object ParadoxModifierHandler {
 	
 	@JvmStatic
 	fun resolveModifier(element: ParadoxScriptStringExpressionElement, name: String, configGroup: CwtConfigGroup): ParadoxModifierElement? {
-		//当任何脚本文件发生变化时清空缓存 - 应当兼容name和configGroup的变化
-		val project = configGroup.project
+		//当任何可能包含生成源的脚本文件发生变化时清空缓存 - 应当兼容name和configGroup的变化
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedModifierElementKey) {
 			val value = doResolveModifier(configGroup, name, element)
 			val tracker = ParadoxModificationTrackerProvider.getInstance().Modifier
@@ -52,20 +49,55 @@ object ParadoxModifierHandler {
 	}
 	
 	private fun doResolveModifier(configGroup: CwtConfigGroup, name: String, element: ParadoxScriptStringExpressionElement): ParadoxModifierElement? {
-		val project = configGroup.project
-		val gameType = configGroup.gameType ?: return null
 		//尝试解析为预定义的非生成的修正
 		val predefinedModifierConfig = configGroup.predefinedModifiers[name]
-		//尝试解析为生成的修正，生成源未定义时，使用预定义的修正
-		var generatedModifierConfig: CwtModifierConfig? = null
-		val references = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
-			ProgressManager.checkCanceled()
-			val resolvedReferences = config.template.resolveReferences(element, name, configGroup).takeIfNotEmpty()
-			if(resolvedReferences != null) generatedModifierConfig = config
-			resolvedReferences
-		}.orEmpty()
-		if(predefinedModifierConfig == null && generatedModifierConfig == null) return null
-		return ParadoxModifierElement(element, name, predefinedModifierConfig, generatedModifierConfig, project, gameType, references)
+		//尝试解析为生成的修正
+		val generatedModifier = ParadoxModifierResolver.resolveModifier(name, element, configGroup)
+		if(generatedModifier != null) return generatedModifier
+		if(predefinedModifierConfig == null) return null
+		val project = configGroup.project
+		val gameType = configGroup.gameType ?: return null
+		return ParadoxModifierElement(element, name, predefinedModifierConfig, gameType, project)
+	}
+	
+	fun completeModifier(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+		val modifiers = configGroup.modifiers
+		if(modifiers.isEmpty()) return
+		val element = contextElement
+		if(element !is ParadoxScriptStringExpressionElement) return
+		for(modifierConfig in modifiers.values) {
+			//排除不匹配modifier的supported_scopes的情况
+			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
+			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+			
+			//首先提示生成的modifier，然后再提示预定义的modifier，排除重复的
+			val tailText = CwtConfigHandler.getScriptExpressionTailText(modifierConfig.config, withExpression = false)
+			val tailTextWithExpression = CwtConfigHandler.getScriptExpressionTailText(modifierConfig.config, withExpression = true)
+			val template = modifierConfig.template
+			if(template.isNotEmpty()) {
+				//生成的modifier
+				template.processResolveResult(contextElement, configGroup) { name ->
+					val modifierElement = CwtConfigHandler.resolveModifier(element, name, configGroup)
+					val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
+						.withIcon(PlsIcons.Modifier)
+						.withTailText(tailTextWithExpression)
+						.withScopeMatched(scopeMatched)
+					//.withPriority(PlsCompletionPriorities.modifierPriority)
+					result.addScriptExpressionElement(context, builder)
+					true
+				}
+			} else {
+				//预定义的modifier
+				val name = modifierConfig.name
+				val modifierElement = CwtConfigHandler.resolveModifier(element, name, configGroup)
+				val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
+					.withIcon(PlsIcons.Modifier)
+					.withTailText(tailText)
+					.withScopeMatched(scopeMatched)
+				//.withPriority(PlsCompletionPriorities.modifierPriority)
+				result.addScriptExpressionElement(context, builder)
+			}
+		}
 	}
 	
 	//TODO 检查修正的相关本地化和图标到底是如何确定的

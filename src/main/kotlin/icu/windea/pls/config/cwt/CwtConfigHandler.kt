@@ -1010,44 +1010,8 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun completeModifier(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
-		val modifiers = configGroup.modifiers
-		if(modifiers.isEmpty()) return
-		val element = contextElement
-		if(element !is ParadoxScriptStringExpressionElement) return
-		for(modifierConfig in modifiers.values) {
-			//排除不匹配modifier的supported_scopes的情况
-			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
-			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
-			
-			//首先提示生成的modifier，然后再提示预定义的modifier，排除重复的
-			val tailText = getScriptExpressionTailText(modifierConfig.config, withExpression = false)
-			val tailTextWithExpression = getScriptExpressionTailText(modifierConfig.config, withExpression = true)
-			val template = modifierConfig.template
-			if(template.isNotEmpty()) {
-				//生成的modifier
-				template.processResolveResult(contextElement, configGroup) { name ->
-					val modifierElement = resolveModifier(element, name, configGroup)
-					val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
-						.withIcon(PlsIcons.Modifier)
-						.withTailText(tailTextWithExpression)
-						.withScopeMatched(scopeMatched)
-					//.withPriority(PlsCompletionPriorities.modifierPriority)
-					result.addScriptExpressionElement(context, builder)
-					true
-				}
-			} else {
-				//预定义的modifier
-				val name = modifierConfig.name
-				val modifierElement = resolveModifier(element, name, configGroup)
-				val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
-					.withIcon(PlsIcons.Modifier)
-					.withTailText(tailText)
-					.withScopeMatched(scopeMatched)
-				//.withPriority(PlsCompletionPriorities.modifierPriority)
-				result.addScriptExpressionElement(context, builder)
-			}
-		}
+	fun completeModifier(context: ProcessingContext, result: CompletionResultSet) {
+		return ParadoxModifierHandler.completeModifier(context, result)
 	}
 	
 	fun completeTemplateExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {

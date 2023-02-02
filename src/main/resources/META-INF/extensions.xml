@@ -28,7 +28,10 @@
     <paradoxValueSetValuesSearch implementation="icu.windea.pls.core.search.ParadoxValueSetValueSearcher"/>
 
     <paradoxElementLinker implementation="icu.windea.pls.config.core.component.ParadoxInlineScriptElementLinker"/>
+    
     <paradoxParameterResolver implementation="icu.windea.pls.config.core.component.ParadoxDefinitionParameterResolver"/>
     <paradoxParameterResolver implementation="icu.windea.pls.config.core.component.ParadoxInlineScriptParameterResolver"/>
+    <paradoxModifierResolver implementation="icu.windea.pls.config.core.component.ParadoxTemplateModifierResolver"/>
+    <paradoxModifierResolver implementation="icu.windea.pls.config.core.component.ParadoxEconomicCategoryResolver"/>
   </extensions>
 </idea-plugin>
