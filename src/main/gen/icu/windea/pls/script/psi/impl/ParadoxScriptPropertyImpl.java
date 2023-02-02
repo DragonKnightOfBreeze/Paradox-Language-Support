@@ -2,21 +2,20 @@
 package icu.windea.pls.script.psi.impl;
 
 import java.util.List;
+
+import kotlin.*;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.ParadoxScriptPropertyStub;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.SmartPsiElementPointer;
 import icu.windea.pls.core.expression.ParadoxDataType;
 import icu.windea.pls.core.psi.ParadoxParameter;
 import java.util.Map;
-import java.util.Set;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 
@@ -124,8 +123,7 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
-  @NotNull
-  public Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>> getParameterMap() {
+  public Map<String, List<Pair<SmartPsiElementPointer<ParadoxParameter>, String>>> getParameterMap() {
     return ParadoxScriptPsiImplUtil.getParameterMap(this);
   }
 

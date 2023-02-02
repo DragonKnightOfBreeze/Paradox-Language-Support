@@ -1,0 +1,35 @@
+<html>
+<body>
+  <p>
+    Reports missing parameters.
+  </p>
+  <p>
+    A parameter is considered as missing if it is
+    used without a default value (in definition declarations),
+    but not set (in, such as, definition declarations).
+  </p>
+  <p>
+    Based on first parameter context (e.g. a definition declaration) that was found.
+  </p>
+  <p><b>Example:</b></p>
+  <pre>
+# some_script_file.txt
+some_definition = {
+    some_prop = $PARAM1$
+    some_other_prop = $PARAM2$
+}
+
+# some_other_script_file.txt
+some_other_definition = {
+    some_definition = {
+        $PARAM1$ = value # PARAM2 is missing
+    }
+    some_sv_prop = value:some_sv|$PARAM1$|value| # PARAM2 is missing
+}</pre>
+  <!-- tooltip end -->
+  <p>
+    Based on plugin's built-in
+    <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>.
+  </p>
+</body>
+</html>

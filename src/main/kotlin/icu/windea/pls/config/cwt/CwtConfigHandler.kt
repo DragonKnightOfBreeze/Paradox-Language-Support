@@ -1463,11 +1463,11 @@ object CwtConfigHandler {
 		val parameterContext =  ParadoxParameterResolver.findContext(element, file) ?: return
 		val parameterMap = parameterContext.parameterMap
 		if(parameterMap.isEmpty()) return
-		for((parameterName, parameters) in parameterMap) {
+		for((parameterName, parameterInfos) in parameterMap) {
 			ProgressManager.checkCanceled()
-			val parameter = parameters.firstNotNullOfOrNull { it.element } ?: continue
+			val parameter = parameterInfos.firstNotNullOfOrNull { (p) -> p.element } ?: continue
 			//排除当前正在输入的那个
-			if(parameters.size == 1 && element isSamePosition parameter) continue
+			if(parameterInfos.size == 1 && element isSamePosition parameter) continue
             val parameterElement = ParadoxParameterResolver.resolveParameterWithContext(parameterName, element, parameterContext)
 				?: continue
 			val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
@@ -1480,11 +1480,13 @@ object CwtConfigHandler {
 	fun completeParametersForInvocationExpression(invocationExpressionElement: ParadoxScriptProperty, invocationExpressionConfig: CwtPropertyConfig, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		if(quoted) return //输入参数不允许用引号括起
 		val contextElement = context.contextElement
+		val block = invocationExpressionElement.block ?: return
 		val existParameterNames = mutableSetOf<String>()
-		invocationExpressionElement.block?.processProperty(includeConditional = false) {
+		block.processProperty(includeConditional = false) {
 			val propertyKey = it.propertyKey	
 			val name = if(contextElement == propertyKey) propertyKey.getKeyword(context.offsetInParent) else propertyKey.name
 			existParameterNames.add(name)
+			true
 		}
 		val namesToDistinct = mutableSetOf<String>()
 		

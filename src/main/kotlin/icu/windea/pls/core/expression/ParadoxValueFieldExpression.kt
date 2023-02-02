@@ -8,10 +8,12 @@ import icu.windea.pls.config.core.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.ParadoxValueFieldExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.script.highlighter.*
+import kotlin.collections.mapNotNullTo
 
 /**
  * 值字段表达式。
@@ -50,6 +52,10 @@ interface ParadoxValueFieldExpression : ParadoxComplexExpression {
 	
 	companion object Resolver
 }
+
+val ParadoxValueFieldExpression.scriptValueExpression
+	get() = this.valueFieldNode.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
+		?.dataSourceNode?.nodes?.findIsInstance<ParadoxScriptValueExpression>()
 
 class ParadoxValueFieldExpressionImpl(
 	override val text: String,

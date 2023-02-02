@@ -19,7 +19,7 @@ import java.util.concurrent.*
 import javax.swing.*
 
 /**
- * 参数（`$PARAM$`）被设置/引用但未被使用的检查
+ * 参数（`$PARAM$`）被设置/引用但未被使用的检查。
  *
  * 例如：有`some_effect = {PARAM = some_value}`但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。
  * @property forParameterConditionExpressions 是否对参数条件表达式进行检查。（`[[PARAM] ... ]`）
@@ -39,70 +39,64 @@ class UnusedParameterInspection : LocalInspectionTool() {
 	
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
 		session.putUserData(statusMapKey, ConcurrentHashMap())
-		return Visitor(this, holder, session)
-	}
-	
-	private class Visitor(
-		private val inspection: UnusedParameterInspection,
-		private val holder: ProblemsHolder,
-		private val session: LocalInspectionToolSession
-	) : ParadoxScriptVisitor() {
-		private fun shouldVisit(element: PsiElement): Boolean {
-			//ignore with parameters situation
-			//propertyKey -> can only be invocation expression
-			//string -> can only be sv expression
-			//parameterConditionParameter -> must be parameter condition expression
-			return (element is ParadoxScriptPropertyKey && inspection.forInvocationExpressions && !element.isParameterAwareExpression())
-				|| (element is ParadoxScriptString && inspection.forScriptValueExpressions && !element.isParameterAwareExpression())
-				|| (element is ParadoxScriptParameterConditionParameter && inspection.forParameterConditionExpressions)
-		}
-		
-		override fun visitElement(element: PsiElement) {
-			if(!shouldVisit(element)) return
-			ProgressManager.checkCanceled()
+		return object: PsiElementVisitor() {
+			private fun shouldVisit(element: PsiElement): Boolean {
+				//ignore with parameters situation
+				//propertyKey -> can only be invocation expression
+				//string -> can only be sv expression
+				//parameterConditionParameter -> must be parameter condition expression
+				return (element is ParadoxScriptPropertyKey && forInvocationExpressions && !element.isParameterAwareExpression())
+					|| (element is ParadoxScriptString && forScriptValueExpressions && !element.isParameterAwareExpression())
+					|| (element is ParadoxScriptParameterConditionParameter && forParameterConditionExpressions)
+			}
 			
-			val references = element.references
-			for(reference in references) {
+			override fun visitElement(element: PsiElement) {
+				if(!shouldVisit(element)) return
 				ProgressManager.checkCanceled()
-				if(!reference.canResolveParameter()) continue
 				
-				val resolved = reference.resolveSingle()
-				if(resolved !is ParadoxParameterElement) continue
-				if(resolved.readWriteAccess == ReadWriteAccessDetector.Access.Write) {
-					//当确定同一文件中某一名称的参数已被使用时，后续不需要再进行ReferencesSearch
-					val statusMap = session.getUserData(statusMapKey)!!
-					val used = statusMap[resolved]
-					val isUsed = if(used == null) {
-						val r = ReferencesSearch.search(resolved).processQuery {
-							val res = it.resolve()
-							if(res is ParadoxParameterElement && res.readWriteAccess == ReadWriteAccessDetector.Access.Read) {
-								statusMap[resolved] = true
+				val references = element.references
+				for(reference in references) {
+					ProgressManager.checkCanceled()
+					if(!reference.canResolveParameter()) continue
+					
+					val resolved = reference.resolveSingle()
+					if(resolved !is ParadoxParameterElement) continue
+					if(resolved.readWriteAccess == ReadWriteAccessDetector.Access.Write) {
+						//当确定同一文件中某一名称的参数已被使用时，后续不需要再进行ReferencesSearch
+						val statusMap = session.getUserData(statusMapKey)!!
+						val used = statusMap[resolved]
+						val isUsed = if(used == null) {
+							val r = ReferencesSearch.search(resolved).processQuery {
+								val res = it.resolve()
+								if(res is ParadoxParameterElement && res.readWriteAccess == ReadWriteAccessDetector.Access.Read) {
+									statusMap[resolved] = true
+									false
+								} else {
+									true
+								}
+							}
+							if(r) {
+								statusMap[resolved] = false
 								false
 							} else {
 								true
 							}
-						}
-						if(r) {
-							statusMap[resolved] = false
-							false
 						} else {
-							true
+							used
 						}
-					} else {
-						used
-					}
-					if(!isUsed) {
-						registerProblem(element, resolved.name, reference.rangeInElement)
+						if(!isUsed) {
+							registerProblem(element, resolved.name, reference.rangeInElement)
+						}
 					}
 				}
 			}
-		}
-		
-		private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
-			val message = PlsBundle.message("inspection.script.general.unusedParameter.description", name)
-			holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range,
-				ImportGameOrModDirectoryFix(element)
-			)
+			
+			private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
+				val message = PlsBundle.message("inspection.script.general.unusedParameter.description", name)
+				holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range,
+					ImportGameOrModDirectoryFix(element)
+				)
+			}
 		}
 	}
 	

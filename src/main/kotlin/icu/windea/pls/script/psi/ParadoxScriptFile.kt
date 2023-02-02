@@ -15,16 +15,16 @@ import javax.swing.*
 class ParadoxScriptFile(
 	viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxScriptDefinitionElement {
-	@Volatile private var _parameterMap: Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>>? = null
+	@Volatile private var _parameterMap: Map<String, List<Tuple2<SmartPsiElementPointer<ParadoxParameter>, String?>>>? = null
 	
 	override val pathName get() = name.let { name -> name.substringBeforeLast(".", name) }
 	override val originalPathName get() = name.let { name -> name.substringBeforeLast(".", name) }
-	override val parameterMap: Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>>
+	override val parameterMap: Map<String, List<Tuple2<SmartPsiElementPointer<ParadoxParameter>, String?>>>
 		get() = _parameterMap ?: doGetParameters().also { _parameterMap = it }
 	
 	override val block get() = findChild<ParadoxScriptRootBlock>()
 	
-	private fun doGetParameters(): Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>> {
+	private fun doGetParameters(): Map<String, List<Tuple2<SmartPsiElementPointer<ParadoxParameter>, String?>>> {
 		return ParadoxScriptPsiImplUtil.getParameterMap(this)
 	}
 	

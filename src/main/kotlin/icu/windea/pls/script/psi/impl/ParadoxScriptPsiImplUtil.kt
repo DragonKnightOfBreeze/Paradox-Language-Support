@@ -944,12 +944,12 @@ object ParadoxScriptPsiImplUtil {
 	
 	//region ParadoxScriptDefinitionElement
 	@JvmStatic
-	fun getParameterMap(element: ParadoxScriptDefinitionElement): Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>> {
+	fun getParameterMap(element: ParadoxScriptDefinitionElement): Map<String, List<Tuple2<SmartPsiElementPointer<ParadoxParameter>, String?>>> {
 		//不支持参数时，直接返回空映射
 		if(!ParadoxParameterResolver.supports(element)) return emptyMap()
 		
 		val file = element.containingFile
-		val result = sortedMapOf<String, MutableSet<SmartPsiElementPointer<ParadoxParameter>>>() //按名字进行排序
+		val result = sortedMapOf<String, MutableList<Tuple2<SmartPsiElementPointer<ParadoxParameter>, String?>>>() //按名字进行排序
 		element.accept(object : PsiRecursiveElementWalkingVisitor() {
 			override fun visitElement(element: PsiElement) {
 				if(element is ParadoxParameter) visitParadoxParameter(element)
@@ -958,7 +958,7 @@ object ParadoxScriptPsiImplUtil {
 			
 			private fun visitParadoxParameter(element: ParadoxParameter) {
 				ProgressManager.checkCanceled()
-				result.getOrPut(element.name) { mutableSetOf() }.add(element.createPointer(file))
+				result.getOrPut(element.name) { mutableListOf() }.add(element.createPointer(file) to element.defaultValue)
 				//不需要继续向下遍历
 			}
 		})

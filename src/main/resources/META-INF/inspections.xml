@@ -78,6 +78,12 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
                      implementationClass="icu.windea.pls.script.inspections.general.UnusedParameterInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingParameter"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.general.missingParameter"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
+                     groupPathKey="inspection.script.general.path"
+                     implementationClass="icu.windea.pls.script.inspections.general.MissingParameterInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedValueSetValue"
                      enabledByDefault="true" level="WEAK WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.general.unusedValueSetValue"

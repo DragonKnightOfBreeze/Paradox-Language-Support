@@ -5,7 +5,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.*
-import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
@@ -31,16 +30,13 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
 		val configs = ParadoxCwtConfigHandler.resolveConfigs(targetElement, false, false)
 		val config = configs.firstOrNull() ?: return null
 		val dataType = config.expression.type
-		if(dataType != CwtDataType.ValueField && dataType != CwtDataType.IntValueField) return null
+		if(!dataType.isValueFieldType()) return null
 		val configGroup = config.info.configGroup
 		val textRange = TextRange.create(0, text.length)
 		val isKey = element is ParadoxScriptPropertyKey
 		val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup, isKey)
 		if(valueFieldExpression == null) return null
-		val valueLinkFromDataNode = valueFieldExpression.valueFieldNode.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
-			?:return null
-		val scriptValueExpression = valueLinkFromDataNode.dataSourceNode.nodes.findIsInstance<ParadoxScriptValueExpression>()
-			?: return null
+		val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
 		val scriptValueExpressionNode = scriptValueExpression.scriptValueNode
 		val firstParameterNode = scriptValueExpression.nodes.findIsInstance<ParadoxScriptValueParameterExpressionNode>()
 			?: return null
