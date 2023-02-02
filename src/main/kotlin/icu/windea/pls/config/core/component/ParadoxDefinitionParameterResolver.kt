@@ -6,10 +6,13 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.search.*
+import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxDefinitionParameterResolver: ParadoxParameterResolver {
+class ParadoxDefinitionParameterResolver : ParadoxParameterResolver {
     companion object {
         @JvmField val definitionNameKey = Key.create<String>("paradox.parameterElement.definitionName")
         @JvmField val definitionTypesKey = Key.create<List<String>>("paradox.parameterElement.definitionTypes")
@@ -28,7 +31,7 @@ class ParadoxDefinitionParameterResolver: ParadoxParameterResolver {
         return element.findParentDefinition()?.takeIf { supports(it) }
     }
     
-     override fun resolveParameter(name: String, element: PsiElement, context: ParadoxScriptDefinitionElement): ParadoxParameterElement? {
+    override fun resolveParameter(name: String, element: PsiElement, context: ParadoxScriptDefinitionElement): ParadoxParameterElement? {
         val definitionInfo = context.definitionInfo ?: return null
         val definitionName = context.name
         val definitionTypes = definitionInfo.types
@@ -61,6 +64,50 @@ class ParadoxDefinitionParameterResolver: ParadoxParameterResolver {
         element is ParadoxParameter -> ReadWriteAccessDetector.Access.Read
         element is ParadoxArgument -> ReadWriteAccessDetector.Access.Write
         else -> ReadWriteAccessDetector.Access.ReadWrite
+    }
+    
+    override fun processContextFromInvocationExpression(element: ParadoxScriptProperty, config: CwtPropertyConfig, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+        val configExpression = config.resolved().expression
+        if(configExpression.type != CwtDataType.Definition) return false
+        val definitionType = configExpression.value ?: return false
+        val definitionName = element.name
+        val configGroup = config.info.configGroup
+        val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(element)
+        ParadoxDefinitionSearch.search(definitionName, definitionType, configGroup.project, selector = selector)
+            .processQuery(processor)
+        return true
+    }
+    
+    override fun buildDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {
+        val definitionName = element.getUserData(definitionNameKey) ?: return false
+        val definitionType = element.getUserData(definitionTypesKey) ?: return false
+        if(definitionType.isEmpty()) return false
+        
+        //不加上文件信息
+        
+        //加上名字
+        definition {
+            val name = element.name
+            append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+            
+            //加上所属定义信息
+            val gameType = element.gameType
+            appendBr().appendIndent()
+            append(PlsDocBundle.message("ofDefinition")).append(" ")
+            appendDefinitionLink(gameType, definitionName, definitionType.first(), element)
+            append(": ")
+            
+            val type = definitionType.first()
+            val typeLink = "${gameType.id}/types/${type}"
+            appendCwtLink(type, typeLink)
+            for((index, t) in definitionType.withIndex()) {
+                if(index == 0) continue
+                append(", ")
+                val subtypeLink = "$typeLink/${t}"
+                appendCwtLink(t, subtypeLink)
+            }
+        }
+        return true
     }
 }
 

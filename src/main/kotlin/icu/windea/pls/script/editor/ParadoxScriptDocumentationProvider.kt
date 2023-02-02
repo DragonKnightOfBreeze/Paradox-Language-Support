@@ -253,7 +253,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             if(resolved.message != null) {
                 map.putIfAbsent(key, resolved.message)
             } else if(resolved.file != null) {
-                map.put(key, buildString { appendFilePathLink(definitionInfo.gameType, resolved.filePath, element, resolved = true) })
+                map.put(key, buildString { appendFilePathLink(resolved.filePath, definitionInfo.gameType, resolved.filePath, element, resolved = true) })
             } else if(required) {
                 map.putIfAbsent(key, resolved.filePath)
             }

@@ -12,6 +12,33 @@ import icu.windea.pls.script.psi.*
  * 对于快速文档中的参数信息：目前仅为支持参数的定义提供。
  */
 interface ParadoxParameterResolver {
+    fun supports(context: ParadoxScriptDefinitionElement): Boolean
+    
+    fun findContext(element: PsiElement, file: PsiFile?) : ParadoxScriptDefinitionElement?
+    
+    fun resolveParameter(name: String, element: PsiElement, context: ParadoxScriptDefinitionElement): ParadoxParameterElement?
+    
+    fun resolveParameterWithContext(name: String, element: PsiElement, file: PsiFile?): ParadoxParameterElement? {
+        val context = findContext(element, file) ?: return null
+        return resolveParameter(name, element, context)
+    }
+    
+    /**
+     * @param element 调用表达式。（如，`some_scripted_effect = { PARAM = str }`）
+     */
+    fun resolveParameterFromInvocationExpression(name: String, element: ParadoxScriptProperty, config: CwtPropertyConfig): ParadoxParameterElement?
+    
+    /**
+     * @return 此解析器是否适用。
+     */
+    fun processContextFromInvocationExpression(element: ParadoxScriptProperty, config: CwtPropertyConfig, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
+    
+    /**
+     * 构建参数的快速文档中的定义部分。
+     * @return 此解析器是否适用。
+     */
+    fun buildDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean
+    
     companion object INSTANCE {
         @JvmStatic val EP_NAME = ExtensionPointName.create<ParadoxParameterResolver>("icu.windea.pls.paradoxParameterResolver")
         
@@ -38,23 +65,9 @@ interface ParadoxParameterResolver {
         fun processContextFromInvocationExpression(element: ParadoxScriptProperty, config: CwtPropertyConfig, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
             return EP_NAME.extensions.any { it.processContextFromInvocationExpression(element, config, processor) }
         }
+        
+        fun getDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean {
+            return EP_NAME.extensions.any { it.buildDocumentationDefinition(element, builder) }
+        }
     }
-    
-    fun supports(context: ParadoxScriptDefinitionElement): Boolean
-    
-    fun findContext(element: PsiElement, file: PsiFile?) : ParadoxScriptDefinitionElement?
-    
-    fun resolveParameter(name: String, element: PsiElement, context: ParadoxScriptDefinitionElement): ParadoxParameterElement?
-    
-    fun resolveParameterWithContext(name: String, element: PsiElement, file: PsiFile?): ParadoxParameterElement? {
-        val context = findContext(element, file) ?: return null
-        return resolveParameter(name, element, context)
-    }
-    
-    fun resolveParameterFromInvocationExpression(name: String, element: ParadoxScriptProperty, config: CwtPropertyConfig): ParadoxParameterElement?
-    
-    /**
-     * @return 是否可以用来获取参数上下文。
-     */
-    fun processContextFromInvocationExpression(element: ParadoxScriptProperty, config: CwtPropertyConfig, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
 }

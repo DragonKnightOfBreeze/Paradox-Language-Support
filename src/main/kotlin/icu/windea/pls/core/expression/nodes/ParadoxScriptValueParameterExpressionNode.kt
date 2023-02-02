@@ -47,16 +47,16 @@ class ParadoxScriptValueParameterExpressionNode (
 		}
 		
 		override fun resolve(): PsiElement? {
-			//NOTE 这里不使用 icu.windea.pls.config.core.component.ParadoxParameterResolver
+			//NOTE 这里目前不使用 icu.windea.pls.config.core.component.ParadoxParameterResolver
 			val element = element
 			val name = parameterName
-			val contextName = "definition@script_value"
+			val contextKey = "definition@script_value"
 			val definitionName = scriptValueName
 			val definitionTypes = listOf("script_value")
 			val readWriteAccess = ReadWriteAccessDetector.Access.Write
 			val gameType = configGroup.gameType ?: return null
 			val project = configGroup.project
-			val result = ParadoxParameterElement(element, name, contextName, readWriteAccess, gameType, project)
+			val result = ParadoxParameterElement(element, name, definitionName, contextKey, readWriteAccess, gameType, project)
 			result.putUserData(ParadoxDefinitionParameterResolver.definitionNameKey, definitionName)
 			result.putUserData(ParadoxDefinitionParameterResolver.definitionTypesKey, definitionTypes)
 			return result

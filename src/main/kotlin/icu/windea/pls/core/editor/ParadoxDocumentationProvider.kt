@@ -2,30 +2,24 @@
 
 package icu.windea.pls.core.editor
 
-import ai.grazie.utils.*
 import com.intellij.codeInsight.documentation.*
 import com.intellij.lang.documentation.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.text.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.component.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
-import java.util.*
 
 @Suppress("UNUSED_PARAMETER")
 class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
@@ -145,33 +139,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun StringBuilder.buildParameterDefinition(element: ParadoxParameterElement) {
-		definition {
-			//不加上文件信息
-			
-			//加上名字
-			val name = element.name
-			append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-			
-			//加上所属定义信息
-			val definitionName = element.definitionName
-			val definitionType = element.definitionTypes
-			if(definitionType.isEmpty()) return@definition
-			val gameType = element.gameType
-			appendBr().appendIndent()
-			append(PlsDocBundle.message("ofDefinition")).append(" ")
-			appendDefinitionLink(gameType, definitionName, definitionType.first(), element)
-			append(": ")
-			
-			val type = definitionType.first()
-			val typeLink = "${gameType.id}/types/${type}"
-			appendCwtLink(type, typeLink)
-			for((index, t) in definitionType.withIndex()) {
-				if(index == 0) continue
-				append(", ")
-				val subtypeLink = "$typeLink/${t}"
-				appendCwtLink(t, subtypeLink)
-			}
-		}
+		ParadoxParameterResolver.getDocumentationDefinition(element, this)
 	}
 	
 	private fun StringBuilder.buildValueSetValueDefinition(name: String, valueSetNames: List<String>, configGroup: CwtConfigGroup) {
@@ -348,7 +316,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		if(iconPath != null && iconFile != null) {
 			appendBr()
 			append(PlsDocBundle.message("prefix.relatedImage")).append(" ")
-			append("Icon = ").appendFilePathLink(gameType, iconPath, element, resolved = true)
+			append("Icon = ").appendFilePathLink(iconPath, gameType, iconPath, element, resolved = true)
 		}
 		if(sections != null && render) {
 			if(iconFile != null) {
