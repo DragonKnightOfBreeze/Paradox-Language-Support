@@ -40,7 +40,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 	@JvmField var locales = listOf("l_english")
 	@JvmField var checkForDefinitions = true
 	@JvmField var checkPrimaryLocale = true
-	@JvmField var checkPrimaryForDefinitions = true
+	@JvmField var checkPrimaryForDefinitions = false
 	@JvmField var checkOptionalForDefinitions = false
 	@JvmField var checkForModifiers = false
 	
