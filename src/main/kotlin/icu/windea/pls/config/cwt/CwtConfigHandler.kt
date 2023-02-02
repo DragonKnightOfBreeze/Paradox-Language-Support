@@ -2,8 +2,10 @@
 
 package icu.windea.pls.config.cwt
 
+import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -28,6 +30,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
+import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -839,8 +842,9 @@ object CwtConfigHandler {
 				//提示参数名（仅限key）
 				if(isKey == true && enumName == paramsEnumName && config is CwtPropertyConfig) {
 					ProgressManager.checkCanceled()
-					val definitionElement = contextElement.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return
-					completeParametersForInvocationExpression(definitionElement, config, context, result)
+					val invocationExpressionElement = contextElement.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return
+					val invocationExpressionConfig = config.parent as? CwtPropertyConfig ?: return
+					completeParametersForInvocationExpression(invocationExpressionElement, invocationExpressionConfig, context, result)
 					return
 				}
 				
@@ -1473,14 +1477,20 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun completeParametersForInvocationExpression(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+	fun completeParametersForInvocationExpression(invocationExpressionElement: ParadoxScriptProperty, invocationExpressionConfig: CwtPropertyConfig, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		if(quoted) return //输入参数不允许用引号括起
+		val contextElement = context.contextElement
 		val existParameterNames = mutableSetOf<String>()
-		propertyElement.block?.processProperty(includeConditional = false) { existParameterNames.add(it.text) }
+		invocationExpressionElement.block?.processProperty(includeConditional = false) {
+			val propertyKey = it.propertyKey	
+			val name = if(contextElement == propertyKey) propertyKey.getKeyword(context.offsetInParent) else propertyKey.name
+			existParameterNames.add(name)
+		}
 		val namesToDistinct = mutableSetOf<String>()
 		
 		//整合查找到的所有参数上下文
-		ParadoxParameterResolver.processContextFromInvocationExpression(propertyElement, propertyConfig) p@{ parameterContext ->
+		val insertSeparator = contextElement !is ParadoxScriptPropertyKey
+		ParadoxParameterResolver.processContextFromInvocationExpression(invocationExpressionElement, invocationExpressionConfig) p@{ parameterContext ->
 			ProgressManager.checkCanceled()
 			val parameterMap = parameterContext.parameterMap
 			if(parameterMap.isEmpty()) return@p true
@@ -1494,6 +1504,14 @@ object CwtConfigHandler {
 				val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
 					.withIcon(PlsIcons.Parameter)
 					.withTypeText(parameterElement.contextName, parameterContext.icon, true)
+					.letIf(insertSeparator) {
+						it.withInsertHandler { c, _ ->
+							val editor = c.editor
+							val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
+							val text = if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "="
+							EditorModificationUtil.insertStringAtCaret(editor, text, false, true)
+						}
+					}
 				result.addElement(lookupElement)
 			}
 			true

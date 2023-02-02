@@ -46,7 +46,7 @@ class ParadoxDefinitionParameterResolver : ParadoxParameterResolver {
     }
     
     override fun resolveParameterFromInvocationExpression(name: String, element: ParadoxScriptProperty, config: CwtPropertyConfig): ParadoxParameterElement? {
-        val configExpression = config.resolved().expression
+        val configExpression = config.expression
         if(configExpression.type != CwtDataType.Definition) return null
         val definitionTypes = configExpression.value?.split('.') ?: return null
         val definitionName = element.name
@@ -67,7 +67,7 @@ class ParadoxDefinitionParameterResolver : ParadoxParameterResolver {
     }
     
     override fun processContextFromInvocationExpression(element: ParadoxScriptProperty, config: CwtPropertyConfig, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-        val configExpression = config.resolved().expression
+        val configExpression = config.expression
         if(configExpression.type != CwtDataType.Definition) return false
         val definitionType = configExpression.value ?: return false
         val definitionName = element.name

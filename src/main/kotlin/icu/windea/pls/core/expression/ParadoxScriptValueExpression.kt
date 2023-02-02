@@ -96,7 +96,8 @@ class ParadoxScriptValueExpressionImpl(
 	
 	private fun isValid(node: ParadoxExpressionNode): Boolean {
 		return when(node){
-			is ParadoxScriptValueParameterValueExpressionNode -> node.text.all { it.isExactIdentifierChar() || it == '.' }
+			//兼容数字文本
+			is ParadoxScriptValueParameterValueExpressionNode -> node.text.all { it.isExactIdentifierChar() || it == '.' || it == '-' }
 			else -> node.text.all { it.isExactIdentifierChar() }
 		}
 	}
