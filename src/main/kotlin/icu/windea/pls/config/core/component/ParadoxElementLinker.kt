@@ -13,7 +13,7 @@ interface ParadoxElementLinker {
         @JvmStatic val EP_NAME = ExtensionPointName.create<ParadoxElementLinker>("icu.windea.pls.paradoxElementLinker")
         
         fun canLink(element: ParadoxScriptMemberElement): Boolean {
-            return EP_NAME.extensions.firstNotNullOfOrNull { it.canLink(element) } ?: false
+            return EP_NAME.extensions.any { it.canLink(element) }
         }
         
         fun linkElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
@@ -30,4 +30,4 @@ interface ParadoxElementLinker {
     fun linkElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement?
     
     fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement?
-}   
+}

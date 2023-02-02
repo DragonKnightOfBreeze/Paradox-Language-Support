@@ -1,5 +1,6 @@
 package icu.windea.pls.core.psi
 
+import com.intellij.codeInsight.highlighting.*
 import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -17,11 +18,11 @@ import javax.swing.*
 class ParadoxParameterElement(
 	parent: PsiElement,
 	private val name: String,
-	val definitionName: String,
-	val definitionTypes: List<String>,
-	private val project: Project,
+	val contextName: String,
+	val contextKey: String,
+	val readWriteAccess: ReadWriteAccessDetector.Access,
 	val gameType: ParadoxGameType,
-	val read: Boolean
+	private val project: Project,
 ): RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
 	override fun getText(): String {
 		return name
@@ -66,16 +67,14 @@ class ParadoxParameterElement(
 	override fun equals(other: Any?): Boolean {
 		return other is ParadoxParameterElement &&
 			name == other.name &&
-			definitionName == other.definitionName &&
-			definitionTypes == other.definitionTypes &&
+			contextName == other.contextName &&
 			project == other.project &&
 			gameType == other.gameType
 	}
 	
 	override fun hashCode(): Int {
 		var result = name.hashCode()
-		result = 31 * result + definitionName.hashCode()
-		result = 31 * result + definitionTypes.hashCode()
+		result = 31 * result + contextName.hashCode()
 		result = 31 * result + project.hashCode()
 		result = 31 * result + gameType.hashCode()
 		return result

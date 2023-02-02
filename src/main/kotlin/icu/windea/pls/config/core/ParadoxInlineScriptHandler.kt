@@ -61,18 +61,13 @@ object ParadoxInlineScriptHandler {
         val configGroup = getCwtConfig(project).getValue(gameType)
         val inlineConfigs = configGroup.inlineConfigGroup[value] ?: return null
         val propertyValue = element.propertyValue ?: return null
+        //TODO 更加准确的匹配，目前没必要
         val inlineConfig = inlineConfigs.find {
             val expression = ParadoxDataExpression.resolve(propertyValue)
             CwtConfigHandler.matchesScriptExpression(propertyValue, expression, it.config.valueExpression, it.config, configGroup, matchType)
         }
         if(inlineConfig == null) return null
-        val expressionLocation = getExpressionLocation(inlineConfig.config) ?: return null
-        val expressionElement = if(expressionLocation.isEmpty()) {
-            propertyValue.castOrNull<ParadoxScriptString>()
-        } else {
-            propertyValue.findProperty(expressionLocation)?.propertyValue?.castOrNull<ParadoxScriptString>()
-        }
-        val expression = expressionElement?.stringValue ?: return null
+        val expression = getExpressionFromInlineConfig(propertyValue, inlineConfig) ?: return null
         return ParadoxInlineScriptInfo(expression, gameType)
     }
     
@@ -81,11 +76,35 @@ object ParadoxInlineScriptHandler {
     }
     
     @JvmStatic
+    fun getExpressionFromInlineConfig(propertyValue: ParadoxScriptValue, inlineConfig: CwtInlineConfig): String? {
+        if(inlineConfig.name != "inline_script") return null
+        val expressionLocation = getExpressionLocation(inlineConfig.config) ?: return null
+        val expressionElement = if(expressionLocation.isEmpty()) {
+            propertyValue.castOrNull<ParadoxScriptString>()
+        } else {
+            propertyValue.findProperty(expressionLocation)?.propertyValue?.castOrNull<ParadoxScriptString>()
+        }
+        return expressionElement?.stringValue ?: return null
+    }
+    
+    @JvmStatic
     fun getInlineScript(expression: String, context: PsiElement, project: Project): ParadoxScriptFile? {
         val filePath = CwtPathExpressionType.FilePath.resolve(inlineScriptPathExpression, expression)
         val selector = fileSelector().gameTypeFrom(context).preferRootFrom(context)
         val query = ParadoxFilePathSearch.search(filePath, project, selector = selector)
         return query.find()?.toPsiFile(project)
+    }
+    
+    @JvmStatic
+    fun processInlineScript(expression: String, context: PsiElement, project: Project, processor: (ParadoxScriptFile) -> Boolean): Boolean {
+        val filePath = CwtPathExpressionType.FilePath.resolve(inlineScriptPathExpression, expression)
+        val selector = fileSelector().gameTypeFrom(context).preferRootFrom(context)
+        val query = ParadoxFilePathSearch.search(filePath, project, selector = selector)
+        return query.processQuery {
+            val file = it.toPsiFile<ParadoxScriptFile>(project)
+            if(file != null) processor(file)
+            true
+        }
     }
     
     @JvmStatic

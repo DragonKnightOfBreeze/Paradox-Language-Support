@@ -6,44 +6,65 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 
 data class CwtConfigGroupInfo(
-	val groupName: String
+    val groupName: String
 ) {
-	lateinit var configGroup: CwtConfigGroup
-	
-	/**
-	 * @see CwtDataType.FilePath
-	 * @see CwtPathExpressionType.FilePath
-	 */
-	val filePathExpressions = mutableSetOf<String>()
-	
-	/**
-	 * @see CwtDataType.Icon
-	 * @see CwtPathExpressionType.Icon
-	 */
-	val iconPathExpressions = mutableSetOf<String>()
-	
-	/**
-	 * @see CwtDataType.TemplateExpression
-	 * @see CwtTemplateExpression
-	 */
-	val templateExpressions = mutableMapOf<CwtDataExpression, MutableList<CwtTemplateExpression>>()
-	
-	fun acceptConfigExpression(configExpression: CwtDataExpression) {
-		when(configExpression.type) {
-			CwtDataType.FilePath -> {
-				configExpression.value?.let { filePathExpressions.add(it) }
-			}
-			CwtDataType.Icon -> {
-				configExpression.value?.let { iconPathExpressions.add(it) }
-			}
-			CwtDataType.TemplateExpression -> {
-				val templateExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
-				for(referenceExpression in templateExpression.referenceExpressions) {
-					templateExpressions.getOrPut(referenceExpression){ SmartList()}
-						.add(templateExpression)
-				}
-			}
-			else -> pass()
-		}
-	}
+    lateinit var configGroup: CwtConfigGroup
+    
+    /**
+     * @see CwtDataType.FilePath
+     * @see CwtPathExpressionType.FilePath
+     */
+    val filePathExpressions = mutableSetOf<String>()
+    
+    /**
+     * @see CwtDataType.Icon
+     * @see CwtPathExpressionType.Icon
+     */
+    val iconPathExpressions = mutableSetOf<String>()
+    
+    /**
+     * @see CwtDataType.TemplateExpression
+     * @see CwtTemplateExpression
+     */
+    val templateExpressions = mutableMapOf<CwtDataExpression, MutableList<CwtTemplateExpression>>()
+    
+    val aliasNamesSupportScope = mutableSetOf<String>()
+    val definitionTypesSupportParameters = mutableSetOf<String>()
+    
+    fun acceptConfigExpression(configExpression: CwtDataExpression, parent: CwtDataConfig<*>?) {
+        when(configExpression.type) {
+            CwtDataType.FilePath -> {
+                configExpression.value?.let { filePathExpressions.add(it) }
+            }
+            CwtDataType.Icon -> {
+                configExpression.value?.let { iconPathExpressions.add(it) }
+            }
+            CwtDataType.TemplateExpression -> {
+                val templateExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
+                for(referenceExpression in templateExpression.referenceExpressions) {
+                    templateExpressions.getOrPut(referenceExpression) { SmartList() }
+                        .add(templateExpression)
+                }
+            }
+            CwtDataType.Enum -> {
+                if(configExpression.value == CwtConfigHandler.paramsEnumName && parent is CwtPropertyConfig) {
+                    val aliasSubName = parent.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
+                    val contextExpression = if(aliasSubName.isNullOrEmpty()) parent.keyExpression else CwtKeyExpression.resolve(aliasSubName)
+                    if(contextExpression.type == CwtDataType.Definition) {
+                        if(contextExpression.value != null) {
+                            definitionTypesSupportParameters.add(contextExpression.value)
+                        }
+                    }
+                }
+            }
+            else -> pass()
+        }
+    }
+    
+    fun acceptAliasSubNameConfigExpression(name: String, configExpression: CwtDataExpression) {
+        //加上可以切换作用域的alias
+        if(configExpression.type == CwtDataType.ScopeField) {
+            aliasNamesSupportScope.add(name)
+        }
+    }
 }

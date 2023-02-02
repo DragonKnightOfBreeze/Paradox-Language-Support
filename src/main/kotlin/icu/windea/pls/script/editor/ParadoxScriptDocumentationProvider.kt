@@ -334,7 +334,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     }
     
     private fun StringBuilder.addParametersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-        if(!definitionInfo.configGroup.definitionTypesSupportParameters.contains(definitionInfo.type)) return
         val parameterMap = element.parameterMap
         if(parameterMap.isEmpty()) return //ignore
         appendBr()

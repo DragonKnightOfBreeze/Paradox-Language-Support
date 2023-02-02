@@ -62,5 +62,5 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
 	
 	private fun ParadoxValueSetValueElement.getAccess() = if(read) Access.Read else Access.Write
 	
-	private fun ParadoxParameterElement.getAccess() = if(read) Access.Read else Access.Write
+	private fun ParadoxParameterElement.getAccess() = readWriteAccess
 }

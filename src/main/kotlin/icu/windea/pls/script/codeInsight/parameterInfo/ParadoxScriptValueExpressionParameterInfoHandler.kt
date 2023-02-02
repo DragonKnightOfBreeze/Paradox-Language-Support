@@ -37,7 +37,7 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
 		val isKey = element is ParadoxScriptPropertyKey
 		val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup, isKey)
 		if(valueFieldExpression == null) return null
-		val valueLinkFromDataNode = valueFieldExpression.valueFieldNode?.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
+		val valueLinkFromDataNode = valueFieldExpression.valueFieldNode.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
 			?:return null
 		val scriptValueExpression = valueLinkFromDataNode.dataSourceNode.nodes.findIsInstance<ParadoxScriptValueExpression>()
 			?: return null
