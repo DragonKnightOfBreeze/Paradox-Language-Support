@@ -7,9 +7,11 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 处理如何获取参数的上下文以及调用表达式中传入参数的上下文。
+ * 处理如何解析参数，以及获取参数的上下文以及调用表达式中传入参数的上下文。
  * 
  * 对于快速文档中的参数信息：目前仅为支持参数的定义提供。
+ * 
+ * @see ParadoxParameterElement
  */
 interface ParadoxParameterResolver {
     fun supports(context: ParadoxScriptDefinitionElement): Boolean

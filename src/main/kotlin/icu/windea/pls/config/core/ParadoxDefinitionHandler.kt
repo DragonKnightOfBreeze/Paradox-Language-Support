@@ -427,10 +427,8 @@ object ParadoxDefinitionHandler {
 	
 	private fun doMatchSingleAlias(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
 		val singleAliasName = propertyConfig.valueExpression.value ?: return false
-		val singleAliases = configGroup.singleAliases[singleAliasName] ?: return false
-		return singleAliases.any { singleAlias ->
-			doMatchProperty(propertyElement, singleAlias.config, configGroup)
-		}
+		val singleAlias = configGroup.singleAliases[singleAliasName] ?: return false
+		return doMatchProperty(propertyElement, singleAlias.config, configGroup)
 	}
 	
 	private fun doMatchAlias(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {

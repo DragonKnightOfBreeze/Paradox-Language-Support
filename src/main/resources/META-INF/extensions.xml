@@ -11,7 +11,9 @@
     <extensionPoint qualifiedName="icu.windea.pls.paradoxComplexEnumValueSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
 
     <extensionPoint qualifiedName="icu.windea.pls.paradoxElementLinker" interface="icu.windea.pls.config.core.component.ParadoxElementLinker" dynamic="true"/>
+    
     <extensionPoint qualifiedName="icu.windea.pls.paradoxParameterResolver" interface="icu.windea.pls.config.core.component.ParadoxParameterResolver" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.paradoxModifierResolver" interface="icu.windea.pls.config.core.component.ParadoxModifierResolver" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">

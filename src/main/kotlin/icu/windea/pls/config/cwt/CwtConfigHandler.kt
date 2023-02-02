@@ -88,10 +88,8 @@ object CwtConfigHandler {
 			when(valueExpression.type) {
 				CwtDataType.SingleAliasRight -> {
 					val singleAliasName = valueExpression.value ?: return@run
-					val singleAliases = configGroup.singleAliases[singleAliasName] ?: return@run
-					for(singleAlias in singleAliases) {
-						result.add(config.inlineFromSingleAliasConfig(singleAlias))
-					}
+					val singleAlias = configGroup.singleAliases[singleAliasName] ?: return@run
+					result.add(config.inlineFromSingleAliasConfig(singleAlias))
 					return
 				}
 				CwtDataType.AliasMatchLeft -> {
@@ -100,7 +98,13 @@ object CwtConfigHandler {
 					val aliasSubName = getAliasSubName(key, isQuoted, aliasName, configGroup, matchType) ?: return@run
 					val aliases = aliasGroup[aliasSubName] ?: return@run
 					for(alias in aliases) {
-						result.add(config.inlineFromAliasConfig(alias))
+						var inlinedConfig = config.inlineFromAliasConfig(alias)
+						if(inlinedConfig.valueExpression.type == CwtDataType.SingleAliasRight) {
+							val singleAliasName = inlinedConfig.valueExpression.value ?: return@run
+							val singleAlias = configGroup.singleAliases[singleAliasName] ?: return@run
+							inlinedConfig = inlinedConfig.inlineFromSingleAliasConfig(singleAlias)
+						}
+						result.add(inlinedConfig)
 					}
 					return
 				}

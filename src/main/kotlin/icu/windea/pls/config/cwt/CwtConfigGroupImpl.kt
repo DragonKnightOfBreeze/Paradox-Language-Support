@@ -69,7 +69,7 @@ class CwtConfigGroupImpl(
 	override val scopes: MutableMap<@CaseInsensitive String, CwtScopeConfig> = caseInsensitiveStringKeyMap()
 	override val scopeAliasMap: MutableMap<@CaseInsensitive String, CwtScopeConfig> = caseInsensitiveStringKeyMap()
 	override val scopeGroups: MutableMap<String, CwtScopeGroupConfig> = mutableMapOf()
-	override val singleAliases: MutableMap<String, MutableList<CwtSingleAliasConfig>> = mutableMapOf()
+	override val singleAliases: MutableMap<String, CwtSingleAliasConfig> = mutableMapOf()
 	override val aliasGroups: MutableMap<String, MutableMap<String, MutableList<CwtAliasConfig>>> = mutableMapOf()
 	override val inlineConfigGroup: MutableMap<String, MutableList<CwtInlineConfig>> = mutableMapOf()
 	
@@ -482,8 +482,7 @@ class CwtConfigGroupImpl(
 					val singleAliasName = key.removeSurroundingOrNull("single_alias[", "]")
 					if(singleAliasName != null) {
 						val singleAliasConfig = resolveSingleAliasConfig(property, singleAliasName)
-						val list = singleAliases.getOrPut(singleAliasName) { SmartList() }
-						list.add(singleAliasConfig)
+						singleAliases[singleAliasName] = singleAliasConfig
 					}
 					
 					//判断配置文件中的顶级的key是否匹配"alias[?:?]"，如果匹配，则解析配置并添加到aliases中

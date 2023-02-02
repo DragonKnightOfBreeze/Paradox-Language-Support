@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.*
 object ParadoxModifierHandler {
 	//可通过运行游戏后输出的modifiers.log判断到底会生成哪些修正
 	//修正会由特定的定义类型生成
-	//TODO 修正会由经济类型（economic_category）的声明生成
+	//对于Stellaris：修正会由经济类型（economic_category）的声明生成
 	
 	@JvmStatic
 	fun matchesModifier(name: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {

@@ -157,6 +157,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
   "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
   ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
@@ -188,6 +189,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   {CHECK_SCRIPTED_VARIABLE} {
     //如果匹配到的文本以等号结尾，则将空白之前的文本解析为VARIABLE_NAME_ID，否则将整个匹配文本解析为VARIABLE_REFERENCE_ID
 	if(yycharat(yylength() -1) == '='){
@@ -205,6 +207,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   {SCRIPTED_VARIABLE_ID} {return SCRIPTED_VARIABLE_NAME_ID;}
   "=" {yybegin(WAITING_SCRIPTED_VARIABLE_VALUE); return EQUAL_SIGN;}
 }
@@ -213,6 +216,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN;}
   {INT_TOKEN} {yybegin(WAITING_SCRIPTED_VARIABLE_END); return INT_TOKEN;}
   {FLOAT_TOKEN} {yybegin(WAITING_SCRIPTED_VARIABLE_END); return FLOAT_TOKEN;}
@@ -232,6 +236,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   {SCRIPTED_VARIABLE_ID} {yybegin(WAITING_PROPERTY_END); return SCRIPTED_VARIABLE_REFERENCE_ID;}
 }
 
@@ -240,6 +245,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
   "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
   ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
@@ -270,6 +276,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   //兼容处理
   {CHECK_PROPERTY_KEY} {
     if(yycharat(0) == '"'){
@@ -302,6 +309,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
   "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
   ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
@@ -327,6 +335,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   "$" {isWildcardContainsParameter=true; yybegin(WAITING_PARAMETER); return PARAMETER_START;}
   {STRING_TOKEN_WITH_SUFFIX} {
 	  if(yycharat(yylength() - 1) == '$'){
@@ -348,6 +357,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   {PARAMETER_ID} {return PARAMETER_ID;}
   "|" {yybegin(WAITING_PARAMETER_DEFAULT_VALUE); return PIPE;}
   "$" {beginNextStateForParameter(); return PARAMETER_END;}
@@ -357,6 +367,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   {BOOLEAN_TOKEN} { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return BOOLEAN_TOKEN;}
   {INT_TOKEN} {yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return INT_TOKEN;}
   {FLOAT_TOKEN} {yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END);; return FLOAT_TOKEN;}
@@ -368,6 +379,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   "$" {beginNextStateForParameter(); return PARAMETER_END;}
 }
 

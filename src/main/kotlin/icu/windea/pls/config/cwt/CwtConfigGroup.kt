@@ -54,7 +54,7 @@ interface CwtConfigGroup {
 	val scopeAliasMap: Map<@CaseInsensitive String, CwtScopeConfig>
 	val scopeGroups: Map<String, CwtScopeGroupConfig>
 	//同名的single_alias可以有多个
-	val singleAliases: Map<String, List<CwtSingleAliasConfig>>
+	val singleAliases: Map<String, CwtSingleAliasConfig>
 	//同名的alias可以有多个
 	val aliasGroups: Map<String, Map<String, List<CwtAliasConfig>>>
 	//inline_script
