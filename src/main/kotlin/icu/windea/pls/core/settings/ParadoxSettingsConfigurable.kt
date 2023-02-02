@@ -1,24 +1,21 @@
 package icu.windea.pls.core.settings
 
-import com.intellij.codeInsight.hints.*
 import com.intellij.openapi.application.*
-import com.intellij.openapi.components.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.options.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.localisation.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.*
+import icu.windea.pls.script.psi.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"), "settings.language.pls"), SearchableConfigurable {
 	override fun getId() = "settings.language.pls"
@@ -185,7 +182,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 					checkBox(PlsBundle.message("settings.inference.inlineScriptLocation"))
 						.bindSelected(settings.inference::inlineScriptLocation)
 						.applyToComponent { toolTipText = PlsBundle.message("settings.inference.inlineScriptLocation.tooltip") }
-						.onApply { doRefreshDefinitionMemberInfos() }
+						.onApply { doRefreshInlineScripts() }
 				}
 			}
 			//generation
@@ -223,33 +220,20 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 		}
 	}
 	
-	@Suppress("UnstableApiUsage")
 	private fun doRefreshInlayHints() {
-		//不存在模组根目录的游戏类型标记文件，设置中的默认游戏类型被更改时，也要重新解析相关文件
-		//当某些设置变更后，需要刷新内嵌提示
-		//com.intellij.codeInsight.hints.VcsCodeAuthorInlayHintsProviderKt.refreshCodeAuthorInlayHints
-		try {
-			val openProjects = ProjectManager.getInstance().openProjects
-			if(openProjects.isEmpty()) return
-			for(project in openProjects) {
-				val allEditors = FileEditorManager.getInstance(project).allEditors
-				if(allEditors.isEmpty()) continue
-				for(fileEditor in allEditors) {
-					if(fileEditor is TextEditor) {
-						val fileType = fileEditor.file.fileType
-						if(fileType == ParadoxScriptFileType) {
-							val editor = fileEditor.editor
-							InlayHintsPassFactory.clearModificationStamp(editor)
-						}
-					}
-				}
-			}
-		} catch(e: Exception) {
-			thisLogger().warn(e.message)
+		//不存在模组根目录的游戏类型标记文件，设置中的默认游戏类型被更改时，也要刷新相关文件的内嵌提示
+		ParadoxCoreHandler.refreshInlayHints { file, _ -> 
+			val fileType = file.fileType
+			fileType == ParadoxScriptFileType || fileType == ParadoxLocalisationFileType
 		}
 	}
 	
-	private fun doRefreshDefinitionMemberInfos(){
+	private fun doRefreshInlineScripts(){
+		//清空定义成员缓存以便重新解析inline script文件
 		ParadoxModificationTrackerProvider.getInstance().DefinitionMemberInfo.incModificationCount()
+		//刷新inline script文件的内嵌提示
+		ParadoxCoreHandler.refreshInlayHints { file, _ -> 
+			ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null 
+		}
 	}
 }

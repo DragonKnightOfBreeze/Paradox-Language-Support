@@ -17,6 +17,7 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
@@ -89,8 +90,8 @@ object ParadoxInlineScriptHandler {
     
     @JvmStatic
     fun getInlineScriptExpression(file: VirtualFile): String? {
+        if(file.fileType != ParadoxScriptFileType) return null
         val fileInfo = file.fileInfo ?: return null
-        if(fileInfo.fileType != ParadoxFileType.ParadoxScript) return null
         val gameType = fileInfo.rootInfo.gameType
         if(!isGameTypeSupport(gameType)) return null
         val filePath = fileInfo.path.path
