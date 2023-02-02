@@ -1,5 +1,6 @@
 package icu.windea.pls.script.inspections.general
 
+import com.intellij.codeInsight.highlighting.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
@@ -67,14 +68,14 @@ class UnusedParameterInspection : LocalInspectionTool() {
 				
 				val resolved = reference.resolveSingle()
 				if(resolved !is ParadoxParameterElement) continue
-				if(!resolved.read) {
+				if(resolved.readWriteAccess == ReadWriteAccessDetector.Access.Write) {
 					//当确定同一文件中某一名称的参数已被使用时，后续不需要再进行ReferencesSearch
 					val statusMap = session.getUserData(statusMapKey)!!
 					val used = statusMap[resolved]
 					val isUsed = if(used == null) {
 						val r = ReferencesSearch.search(resolved).processQuery {
 							val res = it.resolve()
-							if(res is ParadoxParameterElement && res.read) {
+							if(res is ParadoxParameterElement && res.readWriteAccess == ReadWriteAccessDetector.Access.Read) {
 								statusMap[resolved] = true
 								false
 							} else {

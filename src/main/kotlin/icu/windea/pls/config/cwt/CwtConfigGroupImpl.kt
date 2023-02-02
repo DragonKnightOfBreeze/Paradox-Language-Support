@@ -157,15 +157,15 @@ class CwtConfigGroupImpl(
 	)
 	override val definitionTypesSupportScope: MutableSet<String> = mutableSetOf(
 		"game_rule",
-		"script_effect",
-		"script_trigger",
+		"scripted_effect",
+		"scripted_trigger",
 		"on_action", //也支持，其中调用的事件的类型要匹配
 	)
 	override val definitionTypesSkipCheckSystemLink: MutableSet<String> = mutableSetOf(
 		"event",
 		"game_rule",
-		"script_trigger",
-		"script_effect",
+		"scripted_trigger",
+		"scripted_effect",
 		"script_value",
 	)
 	override val definitionTypesSupportParameters: MutableSet<String> = mutableSetOf(
