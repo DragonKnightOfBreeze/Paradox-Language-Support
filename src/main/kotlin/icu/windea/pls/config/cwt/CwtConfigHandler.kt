@@ -1564,11 +1564,11 @@ object CwtConfigHandler {
 	fun resolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>?, configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
 		ProgressManager.checkCanceled()
 		if(configExpression == null) return null
-		if(element is ParadoxScriptStringExpressionElement && element.isParameterAwareExpression()) return null //排除带参数的情况
 		
 		val project = element.project
 		val gameType = configGroup.gameType ?: return null
 		val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.value
+		if(expression.isParameterAwareExpression()) return null //排除引用文本带参数的情况
 		when(configExpression.type) {
 			CwtDataType.Localisation -> {
 				val name = expression
@@ -1705,11 +1705,11 @@ object CwtConfigHandler {
 	fun multiResolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>?, configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, isKey: Boolean? = null): Collection<PsiElement> {
 		ProgressManager.checkCanceled()
 		if(configExpression == null) return emptyList()
-		if(element is ParadoxScriptStringExpressionElement && element.isParameterAwareExpression()) return emptyList() //排除带参数的情况  
 		
 		val project = element.project
 		val gameType = configGroup.gameType ?: return emptyList()
 		val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.value
+		if(expression.isParameterAwareExpression()) return emptyList() //排除引用文本带参数的情况
 		when(configExpression.type) {
 			CwtDataType.Localisation -> {
 				val name = expression

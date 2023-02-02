@@ -59,6 +59,10 @@
   * [ ] 兼容CWT规则文件中的错误级别`severity = warning`或`## severity = warning`（PLS和CWTools实现有所不同，需要分析）
   * [ ] ［待确定］作为trigger的值的CWT规则`scope_field` `scope[xxx]` `scope_group[xxx]`也可以匹配一个布尔值？
 
+## PROCESS
+
+* [ ] 复杂表达式中的参数被高亮成了白色（为啥？）
+
 ```
 # check vanilla
 set_fleet_settings
@@ -75,7 +79,7 @@ overlord_gaiaseeder_upkeep_machine
 * 支持通过economic_category生成的修饰符
 
 * 优化：
-  * [ ] 优化对复杂表达式的处理：特殊代码高亮绝不高亮参数部分，增强兼容性
+  * [X] 优化对复杂表达式的处理：特殊代码高亮绝不高亮参数部分，增强兼容性
   * [X] 匹配CWT规则使用静态匹配，需要访问索引时，大部分情况下认为直接匹配
   * [ ] 匹配CWT规则时，如果规则可能是多个不同的子句时，需要按照子属性/子值的出现次数来判断到底匹配哪个子句规则
   * [ ] 在判断子类型时兼容`category = <deposit_category.blocker>`这样的表达式（这意味着进行索引时需要使用索引后的数据）

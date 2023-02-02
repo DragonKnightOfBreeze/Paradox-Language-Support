@@ -121,4 +121,6 @@ object PlsKeys {
 	val isIncompleteKey = Key.create<Boolean>("paradox.isIncomplete")
 	//用于在进行代码补全时标记作用域不匹配
 	val scopeMismatchedKey = Key.create<Boolean>("paradox.scopeMismatched")
+	
+	val parameterRangesKey = Key.create<List<TextRange>>("paradox.parameterRanges")
 }

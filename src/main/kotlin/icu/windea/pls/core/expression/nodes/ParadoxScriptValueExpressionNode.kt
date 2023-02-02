@@ -6,7 +6,6 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.psi.*
@@ -62,12 +61,10 @@ class ParadoxScriptValueExpressionNode(
 		}
 		
 		override fun resolve(exact: Boolean): PsiElement? {
-			val configExpression = CwtValueExpression.resolve("<script_value>")
 			return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, configGroup, exact = exact)
 		}
 		
 		override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-			val configExpression = CwtValueExpression.resolve("<script_value>")
 			return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, configGroup)
 				.mapToArray { PsiElementResolveResult(it) }
 		}
