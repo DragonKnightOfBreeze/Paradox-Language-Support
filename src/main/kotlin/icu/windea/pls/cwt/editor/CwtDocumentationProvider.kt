@@ -275,6 +275,13 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
 				}
 			}
+			CwtConfigType.ModifierCategory -> {
+				val modifierCategoryConfig = configGroup.modifierCategories[name] ?: return
+				if(sections != null) {
+					val supportedScopes = modifierCategoryConfig.supportedScopes
+					sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
+				}
+			}
 			CwtConfigType.LocalisationCommand -> {
 				val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
 				if(sections != null) {

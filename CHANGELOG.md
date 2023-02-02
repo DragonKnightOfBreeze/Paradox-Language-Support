@@ -89,7 +89,7 @@
     * [X] 定义声明中缺失/过多的表达式检查 - 现在可以配置仅显示第一个错误
     * [X] 定义声明中缺失/过多的表达式检查 - 现在可以配置是否解析内联的内联脚本，内联后进行检查 
 
-## 0.7.12[00_common_categories.txt](..%2F..%2F..%2FProgram%20Files%2FSteam%2Fsteamapps%2Fcommon%2FStellaris%2Fcommon%2Feconomic_categories%2F00_common_categories.txt)
+## 0.7.12
 
 计划内容：
 

@@ -3,8 +3,11 @@ package icu.windea.pls.config.core.component
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
@@ -16,7 +19,6 @@ import icu.windea.pls.script.psi.*
 class ParadoxTemplateModifierResolver: ParadoxModifierResolver {
     companion object {
         @JvmField val referencesKey = Key.create<List<ParadoxInTemplateExpressionReference>>("paradox.modifierElement.references")
-        @JvmField val definitionTypesKey = Key.create<List<String>>("paradox.parameterElement.definitionTypes")
     }
     
     override fun matchModifier(name: String, configGroup: CwtConfigGroup, matchType: Int) : Boolean {
@@ -43,5 +45,93 @@ class ParadoxTemplateModifierResolver: ParadoxModifierResolver {
         val result = ParadoxModifierElement(element, name, generatedModifierConfig, gameType, project)
         result.putUserData(referencesKey, references)
         return result
+    }
+    
+    override fun buildDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean = with(builder) {
+        val modifierConfig = element.modifierConfig ?: return false
+        val references = element.getUserData(referencesKey) ?: return false
+    
+        //没有文件信息
+    
+        //加上名字
+        val configGroup = modifierConfig.info.configGroup
+        val name = element.name
+        append(PlsDocBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        val templateConfigExpression = modifierConfig.template
+        if(templateConfigExpression.isNotEmpty()) {
+            val gameType = element.gameType
+            val templateString = templateConfigExpression.expressionString
+        
+            //加上模版信息
+            appendBr().appendIndent()
+            append(PlsDocBundle.message("byTemplate")).append(" ")
+            appendCwtLink(templateString, "${gameType.id}/modifiers/$templateString")
+        
+            //加上生成源信息
+            if(references.isNotEmpty()) {
+                for(reference in references) {
+                    appendBr().appendIndent()
+                    val configExpression = reference.configExpression
+                    when(configExpression.type) {
+                        CwtDataType.Definition -> {
+                            val definitionName = reference.name
+                            val definitionType = configExpression.value!!
+                            val definitionTypes = definitionType.split('.', limit = 2)
+                            append(PlsDocBundle.message("generatedFromDefinition"))
+                            append(" ")
+                            appendDefinitionLink(gameType, definitionName, definitionType, element)
+                            append(": ")
+                        
+                            val type = definitionTypes.first()
+                            val typeLink = "${gameType.id}/types/${type}"
+                            appendCwtLink(type, typeLink)
+                            for((index, t) in definitionTypes.withIndex()) {
+                                if(index == 0) continue
+                                append(", ")
+                                val subtypeLink = "$typeLink/${t}"
+                                appendCwtLink(t, subtypeLink)
+                            }
+                        }
+                        CwtDataType.Enum -> {
+                            val enumValueName = reference.name
+                            val enumName = configExpression.value!!
+                            append(PlsDocBundle.message("generatedFromEnumValue"))
+                            append(" ")
+                            if(configGroup.enums.containsKey(enumName)) {
+                                appendCwtLink(enumName, "${gameType.id}/enums/${enumName}/${enumValueName}", element)
+                                append(": ")
+                                appendCwtLink(enumName, "${gameType.id}/enums/${enumName}", element)
+                            } else if(configGroup.complexEnums.containsKey(enumName)) {
+                                append(enumValueName.escapeXml())
+                                append(": ")
+                                appendCwtLink(enumName, "${gameType.id}/complex_enums/${enumName}", element)
+                            } else {
+                                //unexpected
+                                append(enumValueName.escapeXml())
+                                append(": ")
+                                append(enumName.escapeXml())
+                            }
+                        }
+                        CwtDataType.Value -> {
+                            val valueSetName = reference.name
+                            val valueName = configExpression.value!!
+                            append(PlsDocBundle.message("generatedFromValueSetValue"))
+                            if(configGroup.values.containsKey(valueName)) {
+                                appendCwtLink(valueName, "${gameType.id}/values/${valueSetName}/${valueName}", element)
+                                append(": ")
+                                appendCwtLink(valueName, "${gameType.id}/values/${valueSetName}", element)
+                            } else {
+                                append(valueName.escapeXml())
+                                append(": ")
+                                append(valueSetName.escapeXml())
+                            }
+                        }
+                        else -> pass()
+                    }
+                }
+            }
+        }
+        
+        return true
     }
 }

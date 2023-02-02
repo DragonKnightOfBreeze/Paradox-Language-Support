@@ -32,6 +32,6 @@
     <paradoxParameterResolver implementation="icu.windea.pls.config.core.component.ParadoxDefinitionParameterResolver"/>
     <paradoxParameterResolver implementation="icu.windea.pls.config.core.component.ParadoxInlineScriptParameterResolver"/>
     <paradoxModifierResolver implementation="icu.windea.pls.config.core.component.ParadoxTemplateModifierResolver"/>
-    <paradoxModifierResolver implementation="icu.windea.pls.config.core.component.ParadoxEconomicCategoryResolver"/>
+    <paradoxModifierResolver implementation="icu.windea.pls.config.core.component.ParadoxEconomicCategoryModifierResolver"/>
   </extensions>
 </idea-plugin>

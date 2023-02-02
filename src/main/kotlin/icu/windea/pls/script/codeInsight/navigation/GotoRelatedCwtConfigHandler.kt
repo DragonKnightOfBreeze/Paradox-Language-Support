@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.component.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
@@ -48,10 +49,12 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 							configGroup.values[name]?.pointer?.element?.let { add(it) }
 						}
 						dataType == CwtDataType.Modifier -> {
-							val modifierInfo = ParadoxModifierHandler.resolveModifier(location)
-							if(modifierInfo != null) {
-								modifierInfo.generatedModifierConfig?.pointer?.element?.let { add(it) }
-								modifierInfo.predefinedModifierConfig?.pointer?.element.let { add(it) }
+							//这里需要遍历所有解析器
+							configGroup.predefinedModifiers[name]?.pointer?.element?.let { add(it) }
+							ParadoxModifierResolver.EP_NAME.extensions.forEach { resolver ->
+								val modifierElement = resolver.resolveModifier(name, location, configGroup)
+								val configElement = modifierElement?.modifierConfig?.pointer?.element
+								configElement?.let { add(it) }
 							}
 						}
 						else -> pass()

@@ -14,7 +14,7 @@ import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
-class ParadoxInlineScriptParameterResolver: ParadoxParameterResolver {
+class ParadoxInlineScriptParameterResolver : ParadoxParameterResolver {
     companion object {
         @JvmField val inlineScriptExpressionKey = Key.create<String>("paradox.parameterElement.inlineScriptExpression")
     }
@@ -79,16 +79,14 @@ class ParadoxInlineScriptParameterResolver: ParadoxParameterResolver {
         //不加上文件信息
         
         //加上名字
-        definition {
-            val name = element.name
-            append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-            
-            //加上所属定义信息
-            val gameType = element.gameType
-            appendBr().appendIndent()
-            append(PlsDocBundle.message("ofInlineScript")).append(" ")
-            appendFilePathLink(inlineScriptExpression, gameType, filePath, element, true)
-        }
+        val name = element.name
+        append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        
+        //加上所属定义信息
+        val gameType = element.gameType
+        appendBr().appendIndent()
+        append(PlsDocBundle.message("ofInlineScript")).append(" ")
+        appendFilePathLink(inlineScriptExpression, gameType, filePath, element, true)
         return true
     }
 }

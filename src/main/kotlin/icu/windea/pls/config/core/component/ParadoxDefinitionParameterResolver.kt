@@ -86,26 +86,24 @@ class ParadoxDefinitionParameterResolver : ParadoxParameterResolver {
         //不加上文件信息
         
         //加上名字
-        definition {
-            val name = element.name
-            append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-            
-            //加上所属定义信息
-            val gameType = element.gameType
-            appendBr().appendIndent()
-            append(PlsDocBundle.message("ofDefinition")).append(" ")
-            appendDefinitionLink(gameType, definitionName, definitionType.first(), element)
-            append(": ")
-            
-            val type = definitionType.first()
-            val typeLink = "${gameType.id}/types/${type}"
-            appendCwtLink(type, typeLink)
-            for((index, t) in definitionType.withIndex()) {
-                if(index == 0) continue
-                append(", ")
-                val subtypeLink = "$typeLink/${t}"
-                appendCwtLink(t, subtypeLink)
-            }
+        val name = element.name
+        append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        
+        //加上所属定义信息
+        val gameType = element.gameType
+        appendBr().appendIndent()
+        append(PlsDocBundle.message("ofDefinition")).append(" ")
+        appendDefinitionLink(gameType, definitionName, definitionType.first(), element)
+        append(": ")
+        
+        val type = definitionType.first()
+        val typeLink = "${gameType.id}/types/${type}"
+        appendCwtLink(type, typeLink)
+        for((index, t) in definitionType.withIndex()) {
+            if(index == 0) continue
+            append(", ")
+            val subtypeLink = "$typeLink/${t}"
+            appendCwtLink(t, subtypeLink)
         }
         return true
     }

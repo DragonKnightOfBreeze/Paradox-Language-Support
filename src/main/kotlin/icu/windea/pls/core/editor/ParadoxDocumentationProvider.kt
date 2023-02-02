@@ -81,8 +81,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun getModifierInfo(element: ParadoxModifierElement, originalElement: PsiElement?): String {
 		return buildString {
-			val configGroup = element.modifierConfig.info.configGroup
-			buildModifierDefinition(element, configGroup, null)
+			buildModifierDefinition(element, null)
 		}
 	}
 	
@@ -131,15 +130,21 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun getModifierDoc(element: ParadoxModifierElement, originalElement: PsiElement?): String {
 		return buildString {
-			val configGroup = element.modifierConfig.info.configGroup
 			val sectionsList = List(3) { mutableMapOf<String, String>() }
-			buildModifierDefinition(element, configGroup, sectionsList)
+			buildModifierDefinition(element, sectionsList)
 			buildSections(sectionsList)
 		}
 	}
 	
 	private fun StringBuilder.buildParameterDefinition(element: ParadoxParameterElement) {
-		ParadoxParameterResolver.getDocumentationDefinition(element, this)
+		val name = element.name
+		definition {
+			val r = ParadoxParameterResolver.getDocumentationDefinition(element, this)
+			if(!r) {
+				//显示默认的快速文档
+				append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+			}
+		}
 	}
 	
 	private fun StringBuilder.buildValueSetValueDefinition(name: String, valueSetNames: List<String>, configGroup: CwtConfigGroup) {
@@ -164,92 +169,19 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun StringBuilder.buildModifierDefinition(
 		element: ParadoxModifierElement,
-		configGroup: CwtConfigGroup,
 		sectionsList: List<MutableMap<String, String>>?
 	) {
+		val name = element.name
 		definition {
-			//没有文件信息
-			
-			//加上名字
-			val name = element.name
-			append(PlsDocBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-			val templateConfigExpression = element.configExpression
-			if(templateConfigExpression.isNotEmpty()) {
-				val gameType = element.gameType
-				val templateString = templateConfigExpression.expressionString
-				
-				//加上模版信息
-				appendBr().appendIndent()
-				append(PlsDocBundle.message("byTemplate")).append(" ")
-				appendCwtLink(templateString, "${gameType.id}/modifiers/$templateString")
-				
-				//加上生成源信息
-				val references = element.references
-				if(references.isNotEmpty()) {
-					for(reference in references) {
-						appendBr().appendIndent()
-						val configExpression = reference.configExpression
-						when(configExpression.type) {
-							CwtDataType.Definition -> {
-								val definitionName = reference.name
-								val definitionType = configExpression.value!!
-								val definitionTypes = definitionType.split('.', limit = 2)
-								append(PlsDocBundle.message("generatedFromDefinition"))
-								append(" ")
-								appendDefinitionLink(gameType, definitionName, definitionType, element)
-								append(": ")
-								
-								val type = definitionTypes.first()
-								val typeLink = "${gameType.id}/types/${type}"
-								appendCwtLink(type, typeLink)
-								for((index, t) in definitionTypes.withIndex()) {
-									if(index == 0) continue
-									append(", ")
-									val subtypeLink = "$typeLink/${t}"
-									appendCwtLink(t, subtypeLink)
-								}
-							}
-							CwtDataType.Enum -> {
-								val enumValueName = reference.name
-								val enumName = configExpression.value!!
-								append(PlsDocBundle.message("generatedFromEnumValue"))
-								append(" ")
-								if(configGroup.enums.containsKey(enumName)) {
-									appendCwtLink(enumName, "${gameType.id}/enums/${enumName}/${enumValueName}", element)
-									append(": ")
-									appendCwtLink(enumName, "${gameType.id}/enums/${enumName}", element)
-								} else if(configGroup.complexEnums.containsKey(enumName)) {
-									append(enumValueName.escapeXml())
-									append(": ")
-									appendCwtLink(enumName, "${gameType.id}/complex_enums/${enumName}", element)
-								} else {
-									//unexpected
-									append(enumValueName.escapeXml())
-									append(": ")
-									append(enumName.escapeXml())
-								}
-							}
-							CwtDataType.Value -> {
-								val valueSetName = reference.name
-								val valueName = configExpression.value!!
-								append(PlsDocBundle.message("generatedFromValueSetValue"))
-								if(configGroup.values.containsKey(valueName)) {
-									appendCwtLink(valueName, "${gameType.id}/values/${valueSetName}/${valueName}", element)
-									append(": ")
-									appendCwtLink(valueName, "${gameType.id}/values/${valueSetName}", element)
-								} else {
-									append(valueName.escapeXml())
-									append(": ")
-									append(valueSetName.escapeXml())
-								}
-							}
-							else -> pass()
-						}
-					}
-				}
+			val r = ParadoxModifierResolver.getDocumentationDefinition(element, this)
+			if(!r) {
+				//显示默认的快速文档
+				append(PlsDocBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
 			}
 			
+			val configGroup = getCwtConfig(element.project).getValue(element.gameType)
 			addModifierRelatedLocalisations(element, name, configGroup, sectionsList?.get(2))
+			
 			addModifierIcon(element, name, configGroup, sectionsList?.get(1))
 			addModifierScope(element, name, configGroup, sectionsList?.get(0))
 			addScopeContext(element, name, configGroup, sectionsList?.get(0))
@@ -340,7 +272,8 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		//仅为脚本文件和本地化文件中的引用提供
 		val contextElement = element
 		val gameType = configGroup.gameType
-		val modifierConfig = element.modifierConfig
+		//TODO 0.7.13
+		val modifierConfig = element.modifierConfig ?: return
 		if(sections != null) {
 			val categoryNames = modifierConfig.categoryConfigMap.keys
 			if(categoryNames.isNotEmpty()) {
