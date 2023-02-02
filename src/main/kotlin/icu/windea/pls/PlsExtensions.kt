@@ -5,34 +5,21 @@ package icu.windea.pls
 import com.intellij.codeInsight.documentation.*
 import com.intellij.lang.*
 import com.intellij.openapi.components.*
-import com.intellij.openapi.fileTypes.ex.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
-import com.intellij.openapi.vfs.newvfs.impl.*
 import com.intellij.psi.*
-import com.intellij.psi.search.*
-import com.intellij.util.*
-import com.intellij.util.indexing.*
-import icu.windea.pls.*
 import icu.windea.pls.config.core.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
-import icu.windea.pls.core.index.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.cwt.*
-import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.references.*
@@ -41,7 +28,6 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
 import icu.windea.pls.tool.*
 import java.lang.Integer.*
-import java.util.*
 
 //region Misc Extensions
 fun getDefaultProject() = ProjectManager.getInstance().defaultProject
@@ -376,10 +362,10 @@ fun StringBuilder.appendLocalisationLink(gameType: ParadoxGameType, name: String
 	return appendUnresolvedLink(name)
 }
 
-fun StringBuilder.appendFilePathLink(gameType: ParadoxGameType, filePath: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
+fun StringBuilder.appendFilePathLink(text: String, gameType: ParadoxGameType, filePath: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
 	//如果可以定位到绝对路径，则显示链接
 	val isResolved = resolved == true || (resolved == null && ParadoxFilePathSearch.search(filePath, context.project, selector = fileSelector().gameTypeFrom(context)).findFirst() != null)
-	if(isResolved) return appendPsiLink("$filePathLinkPrefix${gameType.id}/$filePath", filePath)
+	if(isResolved) return appendPsiLink("$filePathLinkPrefix${gameType.id}/$filePath", text)
 	//否则显示未解析的链接
 	return appendUnresolvedLink(filePath)
 }

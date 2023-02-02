@@ -14,6 +14,7 @@ import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.component.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
@@ -1453,74 +1454,74 @@ object CwtConfigHandler {
 	}
 	
 	fun completeParameters(element: PsiElement, read: Boolean, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
-		//向上找到definition
-		val definition = element.findParentDefinition() ?: return
-		val definitionInfo = definition.definitionInfo ?: return
-		val parameterMap = definition.parameterMap
+		//向上找到参数上下文
+		val file = originalFile
+		val parameterContext =  ParadoxParameterResolver.findContext(element, file) ?: return
+		val parameterMap = parameterContext.parameterMap
 		if(parameterMap.isEmpty()) return
-		val project = definitionInfo.project
-		val gameType = definitionInfo.gameType
 		for((parameterName, parameters) in parameterMap) {
+			ProgressManager.checkCanceled()
 			val parameter = parameters.firstNotNullOfOrNull { it.element } ?: continue
 			//排除当前正在输入的那个
 			if(parameters.size == 1 && element isSamePosition parameter) continue
-			val parameterElement = ParadoxParameterElement(element, parameterName, definitionInfo.name, definitionInfo.types, project, gameType, true)
+            val parameterElement = ParadoxParameterResolver.resolveParameterWithContext(parameterName, element, parameterContext)
+				?: continue
 			val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
 				.withIcon(PlsIcons.Parameter)
-				.withTypeText(definitionInfo.name, definition.icon, true)
+				.withTypeText(parameterElement.contextName, parameterContext.icon, true)
 			result.addElement(lookupElement)
 		}
 	}
 	
 	fun completeParametersForInvocationExpression(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		if(quoted) return //输入参数不允许用引号括起
-		val definitionName = propertyElement.name
-		val definitionType = propertyConfig.parent?.castOrNull<CwtPropertyConfig>()
-			?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.subNameExpression
-			?.takeIf { it.type == CwtDataType.Definition }?.value
-			?: return //不期望的结果
-		val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(propertyElement)
-		val definition = ParadoxDefinitionSearch.search(definitionName, definitionType, configGroup.project, selector = selector).find() ?: return
-		val definitionInfo = definition.definitionInfo ?: return
-		val parameterMap = definition.parameterMap
-		if(parameterMap.isEmpty()) return
 		val existParameterNames = mutableSetOf<String>()
 		propertyElement.block?.processProperty(includeConditional = false) { existParameterNames.add(it.text) }
-		val project = definitionInfo.project
-		val gameType = definitionInfo.gameType
-		for((parameterName, _) in parameterMap) {
-			//排除已输入的
-			if(parameterName in existParameterNames) continue
-			val parameterElement = ParadoxParameterElement(contextElement, parameterName, definitionInfo.name, definitionInfo.types, project, gameType, true)
-			val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
-				.withIcon(PlsIcons.Parameter)
-				.withTypeText(definitionName, definition.icon, true)
-			result.addElement(lookupElement)
-		}
-	}
-	
-	fun completeParametersForScriptValueExpression(svName: String, parameterNames: Set<String>, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
-		//整合所有匹配名字的SV的参数
-		val existParameterNames = mutableSetOf<String>()
-		existParameterNames.addAll(parameterNames)
 		val namesToDistinct = mutableSetOf<String>()
-		val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(contextElement)
-		val svQuery = ParadoxDefinitionSearch.search(svName, "script_value", configGroup.project, selector = selector)
-		svQuery.processQuery { sv ->
+		
+		//整合查找到的所有参数上下文
+		ParadoxParameterResolver.processContextFromInvocationExpression(propertyElement, propertyConfig) p@{ parameterContext ->
 			ProgressManager.checkCanceled()
-			val definitionInfo = sv.definitionInfo ?: return@processQuery true
-			val project = definitionInfo.project
-			val gameType = definitionInfo.gameType
-			val parameterMap = sv.parameterMap
-			if(parameterMap.isEmpty()) return@processQuery true
+			val parameterMap = parameterContext.parameterMap
+			if(parameterMap.isEmpty()) return@p true
 			for((parameterName, _) in parameterMap) {
 				//排除已输入的
 				if(parameterName in existParameterNames) continue
 				if(!namesToDistinct.add(parameterName)) continue
-				val parameterElement = ParadoxParameterElement(contextElement, parameterName, definitionInfo.name, definitionInfo.types, project, gameType, true)
+				
+				val parameterElement = ParadoxParameterResolver.resolveParameterWithContext(parameterName, contextElement, parameterContext)
+					?: continue
 				val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
 					.withIcon(PlsIcons.Parameter)
-					.withTypeText(svName, sv.icon, true)
+					.withTypeText(parameterElement.contextName, parameterContext.icon, true)
+				result.addElement(lookupElement)
+			}
+			true
+		}
+	}
+	
+	fun completeParametersForScriptValueExpression(svName: String, parameterNames: Set<String>, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+		val existParameterNames = mutableSetOf<String>()
+		existParameterNames.addAll(parameterNames)
+		val namesToDistinct = mutableSetOf<String>()
+		
+		//整合查找到的所有SV
+		val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(contextElement)
+		ParadoxDefinitionSearch.search(svName, "script_value", configGroup.project, selector = selector).processQuery p@{ sv ->
+			ProgressManager.checkCanceled()
+			val parameterContext = sv
+			val parameterMap = parameterContext.parameterMap
+			if(parameterMap.isEmpty()) return@p true
+			for((parameterName, _) in parameterMap) {
+				//排除已输入的
+				if(parameterName in existParameterNames) continue
+				if(!namesToDistinct.add(parameterName)) continue
+				
+				val parameterElement = ParadoxParameterResolver.resolveParameterWithContext(parameterName, contextElement, parameterContext)
+					?: continue
+				val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
+					.withIcon(PlsIcons.Parameter)
+					.withTypeText(parameterElement.contextName, parameterContext.icon, true)
 				result.addElement(lookupElement)
 			}
 			true
@@ -1603,14 +1604,13 @@ object CwtConfigHandler {
 				val name = expression
 				//尝试解析为参数名
 				if(isKey == true && enumName == paramsEnumName && config is CwtPropertyConfig) {
-					val definitionElement = element.findParentProperty(fromParentBlock = true) ?: return null
-					val definitionName = definitionElement.name
-					val definitionType = config.parent?.castOrNull<CwtPropertyConfig>()
-						?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.subNameExpression
-						?.takeIf { it.type == CwtDataType.Definition }?.value
-						?.split('.', limit = 2)
+					val invocationExpression = element.findParentProperty(fromParentBlock = true)
+						?.castOrNull<ParadoxScriptProperty>()
 						?: return null
-					return ParadoxParameterElement(element, name, definitionName, definitionType, project, gameType, false)
+					val invocationExpressionConfig = config.parent
+						?.castOrNull<CwtPropertyConfig>()
+						?: return null
+					return ParadoxParameterResolver.resolveParameterFromInvocationExpression(name, invocationExpression, invocationExpressionConfig)
 				}
 				//尝试解析为简单枚举
 				val enumConfig = configGroup.enums[enumName]
@@ -1743,14 +1743,14 @@ object CwtConfigHandler {
 				val name = expression
 				//尝试解析为参数名
 				if(isKey == true && enumName == paramsEnumName && config is CwtPropertyConfig) {
-					val definitionElement = element.findParentProperty(fromParentBlock = true) ?: return emptyList()
-					val definitionName = definitionElement.name
-					val definitionType = config.parent?.castOrNull<CwtPropertyConfig>()
-						?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.subNameExpression
-						?.takeIf { it.type == CwtDataType.Definition }?.value
-						?.split('.', limit = 2)
+					val invocationExpression = element.findParentProperty(fromParentBlock = true)
+						?.castOrNull<ParadoxScriptProperty>()
 						?: return emptyList()
-					return ParadoxParameterElement(element, name, definitionName, definitionType, project, gameType, false).toSingletonList()
+					val invocationExpressionConfig = config.parent
+						?.castOrNull<CwtPropertyConfig>()
+						?: return emptyList()
+					return ParadoxParameterResolver.resolveParameterFromInvocationExpression(name, invocationExpression, invocationExpressionConfig)
+						.toSingletonListOrEmpty()
 				}
 				//尝试解析为简单枚举
 				val enumConfig = configGroup.enums[enumName]

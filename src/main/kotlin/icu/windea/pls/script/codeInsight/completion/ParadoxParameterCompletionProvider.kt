@@ -23,6 +23,7 @@ class ParadoxParameterCompletionProvider : CompletionProvider<CompletionParamete
 		val offsetInParent = parameters.offset - tokenElement.textRange.startOffset
 		val keyword = tokenElement.getKeyword(offsetInParent)
 		
+		context.put(PlsCompletionKeys.originalFileKey, parameters.originalFile)
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
 		

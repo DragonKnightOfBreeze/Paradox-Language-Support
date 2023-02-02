@@ -10,16 +10,15 @@ import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.component.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.selector.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.references.*
 import org.apache.commons.imaging.color.*
 import java.awt.*
 import javax.swing.*
@@ -275,25 +274,6 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getOriginalPathName(element: ParadoxScriptProperty): String {
 		return element.propertyKey.value
-	}
-	
-	@JvmStatic
-	fun getParameterMap(element: ParadoxScriptProperty): Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>> {
-		val file = element.containingFile
-		val result = sortedMapOf<String, MutableSet<SmartPsiElementPointer<ParadoxParameter>>>() //按名字进行排序
-		element.accept(object : PsiRecursiveElementWalkingVisitor() {
-			override fun visitElement(element: PsiElement) {
-				if(element is ParadoxParameter) visitParadoxParameter(element)
-				super.visitElement(element)
-			}
-			
-			private fun visitParadoxParameter(element: ParadoxParameter) {
-				ProgressManager.checkCanceled()
-				result.getOrPut(element.name) { mutableSetOf() }.add(element.createPointer(file))
-				//不需要继续向下遍历
-			}
-		})
-		return result
 	}
 	
 	@JvmStatic
@@ -959,6 +939,30 @@ object ParadoxScriptPsiImplUtil {
 	fun getReference(element: ParadoxScriptInlineMathParameter): ParadoxParameterPsiReference? {
 		val nameElement = element.parameterId ?: return null
 		return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
+	}
+	//endregion
+	
+	//region ParadoxScriptDefinitionElement
+	@JvmStatic
+	fun getParameterMap(element: ParadoxScriptDefinitionElement): Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>> {
+		//不支持参数时，直接返回空映射
+		if(!ParadoxParameterResolver.supports(element)) return emptyMap()
+		
+		val file = element.containingFile
+		val result = sortedMapOf<String, MutableSet<SmartPsiElementPointer<ParadoxParameter>>>() //按名字进行排序
+		element.accept(object : PsiRecursiveElementWalkingVisitor() {
+			override fun visitElement(element: PsiElement) {
+				if(element is ParadoxParameter) visitParadoxParameter(element)
+				super.visitElement(element)
+			}
+			
+			private fun visitParadoxParameter(element: ParadoxParameter) {
+				ProgressManager.checkCanceled()
+				result.getOrPut(element.name) { mutableSetOf() }.add(element.createPointer(file))
+				//不需要继续向下遍历
+			}
+		})
+		return result
 	}
 	//endregion
 	

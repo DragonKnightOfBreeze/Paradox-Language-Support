@@ -1,11 +1,12 @@
 package icu.windea.pls.core.expression.nodes
 
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.config.core.component.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.references.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
@@ -46,11 +47,19 @@ class ParadoxScriptValueParameterExpressionNode (
 		}
 		
 		override fun resolve(): PsiElement? {
+			//NOTE 这里目前不使用 icu.windea.pls.config.core.component.ParadoxParameterResolver
 			val element = element
-			val definitionType = listOf("script_value")
-			val project = configGroup.project
+			val name = parameterName
+			val contextKey = "definition@script_value"
+			val definitionName = scriptValueName
+			val definitionTypes = listOf("script_value")
+			val readWriteAccess = ReadWriteAccessDetector.Access.Write
 			val gameType = configGroup.gameType ?: return null
-			return ParadoxParameterElement(element, parameterName, scriptValueName, definitionType, project, gameType, false)
+			val project = configGroup.project
+			val result = ParadoxParameterElement(element, name, definitionName, contextKey, readWriteAccess, gameType, project)
+			result.putUserData(ParadoxDefinitionParameterResolver.definitionNameKey, definitionName)
+			result.putUserData(ParadoxDefinitionParameterResolver.definitionTypesKey, definitionTypes)
+			return result
 		}
 	}
 }

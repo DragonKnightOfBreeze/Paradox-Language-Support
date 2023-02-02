@@ -10,6 +10,9 @@ import icu.windea.pls.core.psi.*
 interface ParadoxScriptDefinitionElement : ParadoxScriptNamedElement, ParadoxScriptMemberElement {
 	fun getStub(): ParadoxScriptDefinitionElementStub<out ParadoxScriptDefinitionElement>?
 	
+	/**
+	 * 注意：如果这个对象是定义，这里得到的是定义的顶级键名（rootKey），而不一定是定义的名字（definitionName）。
+	 */
 	override fun getName(): String
 	
 	override fun getNameIdentifier(): PsiElement? = null
@@ -31,5 +34,5 @@ interface ParadoxScriptDefinitionElement : ParadoxScriptNamedElement, ParadoxScr
 			return buildList { block?.processProperty(inline = true) { add(it) } }
 		}
 	
-	val parameterMap: Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>> get() = emptyMap()
+	val parameterMap: Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>>
 }

@@ -87,35 +87,6 @@ class CwtConfigGroupImpl(
 			.associateByTo(caseInsensitiveStringKeyMap()) { it.name }
 	}
 	
-	override val aliasNamesSupportScope: MutableSet<String> = mutableSetOf(
-		"modifier", //也支持，但不能切换作用域
-		"trigger",
-		"effect",
-		//另外加上可以切换作用域的alias
-	)
-	
-	override val definitionTypesSupportScope: MutableSet<String> = mutableSetOf(
-		"game_rule",
-		"script_effect",
-		"script_trigger",
-		"on_action", //也支持，其中调用的事件的类型要匹配
-	)
-	
-	override val definitionTypesSkipCheckSystemLink: MutableSet<String> = mutableSetOf(
-		"event",
-		"game_rule",
-		"script_trigger",
-		"script_effect",
-		"script_value",
-	)
-	
-	override val definitionTypesSupportParameters: MutableSet<String> = mutableSetOf(
-		"script_trigger",
-		"script_effect",
-		"script_value", //SV也支持参数
-		//"inline_script", //内联脚本也支持参数（并且可以表示多条语句）（但不是定义）
-	)
-	
 	init {
 		runReadAction {
 			for(virtualFile in fileGroup.values) {
@@ -175,6 +146,37 @@ class CwtConfigGroupImpl(
 	}
 	override val linksAsVariable: List<CwtLinkConfig> by lazy { 
 		linksAsValueWithoutPrefix["variable"].toSingletonListOrEmpty()
+	}
+	
+	
+	override val aliasNamesSupportScope: MutableSet<String> = mutableSetOf(
+		"modifier", //也支持，但不能切换作用域
+		"trigger",
+		"effect",
+		//其它的随后加入
+	)
+	override val definitionTypesSupportScope: MutableSet<String> = mutableSetOf(
+		"game_rule",
+		"script_effect",
+		"script_trigger",
+		"on_action", //也支持，其中调用的事件的类型要匹配
+	)
+	override val definitionTypesSkipCheckSystemLink: MutableSet<String> = mutableSetOf(
+		"event",
+		"game_rule",
+		"script_trigger",
+		"script_effect",
+		"script_value",
+	)
+	override val definitionTypesSupportParameters: MutableSet<String> = mutableSetOf(
+		"script_value", //SV也支持参数
+		//"inline_script", //内联脚本也支持参数（并且可以表示多条语句）（但不是定义）
+		//其它的随后加入
+	)
+	
+	init {
+		aliasNamesSupportScope.addAll(info.aliasNamesSupportScope)
+		definitionTypesSupportParameters.addAll(info.definitionTypesSupportParameters)
 	}
 	
 	//解析CSV
@@ -885,11 +887,7 @@ class CwtConfigGroupImpl(
 	private fun resolveAliasConfig(propertyConfig: CwtPropertyConfig, name: String, subName: String): CwtAliasConfig {
 		return CwtAliasConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, subName)
 			.apply {
-				info.acceptConfigExpression(subNameExpression)
-				//加上可以切换作用域的alias
-				if(expression.type == CwtDataType.ScopeField) {
-					aliasNamesSupportScope.add(name)
-				}
+				info.acceptConfigExpression(subNameExpression, null)
 			}
 	}
 	
