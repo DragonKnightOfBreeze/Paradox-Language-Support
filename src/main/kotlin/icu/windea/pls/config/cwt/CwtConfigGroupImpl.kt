@@ -175,8 +175,15 @@ class CwtConfigGroupImpl(
 	)
 	
 	init {
-		aliasNamesSupportScope.addAll(info.aliasNamesSupportScope)
-		definitionTypesSupportParameters.addAll(info.definitionTypesSupportParameters)
+		info.aliasNamesSupportScope.forEach { aliasNamesSupportScope.add(it) }
+		info.parameterConfigs.forEach {
+			val propertyConfig = it.parent as? CwtPropertyConfig ?: return@forEach
+			val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
+			val contextExpression = if(aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression else CwtKeyExpression.resolve(aliasSubName)
+			if(contextExpression.type == CwtDataType.Definition && contextExpression.value != null) {
+				definitionTypesSupportParameters.add(contextExpression.value)
+			}
+		}
 	}
 	
 	//解析CSV

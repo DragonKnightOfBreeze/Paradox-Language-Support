@@ -29,9 +29,11 @@ data class CwtConfigGroupInfo(
     val templateExpressions = mutableMapOf<CwtDataExpression, MutableList<CwtTemplateExpression>>()
     
     val aliasNamesSupportScope = mutableSetOf<String>()
-    val definitionTypesSupportParameters = mutableSetOf<String>()
     
-    fun acceptConfigExpression(configExpression: CwtDataExpression, parent: CwtDataConfig<*>?) {
+    //enum[scripted_effect_params] = xxx
+    val parameterConfigs = mutableListOf<CwtPropertyConfig>() 
+    
+    fun acceptConfigExpression(configExpression: CwtDataExpression, config: CwtConfig<*>?) {
         when(configExpression.type) {
             CwtDataType.FilePath -> {
                 configExpression.value?.let { filePathExpressions.add(it) }
@@ -47,14 +49,8 @@ data class CwtConfigGroupInfo(
                 }
             }
             CwtDataType.Enum -> {
-                if(configExpression.value == CwtConfigHandler.paramsEnumName && parent is CwtPropertyConfig) {
-                    val aliasSubName = parent.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
-                    val contextExpression = if(aliasSubName.isNullOrEmpty()) parent.keyExpression else CwtKeyExpression.resolve(aliasSubName)
-                    if(contextExpression.type == CwtDataType.Definition) {
-                        if(contextExpression.value != null) {
-                            definitionTypesSupportParameters.add(contextExpression.value)
-                        }
-                    }
+                if(configExpression.value == CwtConfigHandler.paramsEnumName && config is CwtPropertyConfig) {
+                    parameterConfigs.add(config)
                 }
             }
             else -> pass()

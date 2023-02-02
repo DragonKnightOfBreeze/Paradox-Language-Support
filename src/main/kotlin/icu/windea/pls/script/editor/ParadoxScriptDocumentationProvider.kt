@@ -17,6 +17,7 @@ import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 
+@Suppress("UnusedReceiverParameter")
 class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     //do not provide special documentations for definition name and complex enum value name declarations,
     //for the expression represents a definition name or complex enum value name, can also be a localisation reference, etc.
@@ -123,7 +124,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         return buildString {
             //在definition部分，相关图片信息显示在相关本地化信息之后，在sections部分则显示在之前
             //images, localisations
-            val sectionsList = List(3) { mutableMapOf<String, String>() }
+            val sectionsList = List(4) { mutableMapOf<String, String>() }
             buildDefinitionDefinition(element, definitionInfo, sectionsList)
             buildDocumentationContent(definitionInfo)
             buildLineCommentContent(element)
@@ -198,11 +199,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             //加上作用域上下文信息（如果支持）
             addScopeContextForDefinition(element, definitionInfo, sectionsList?.get(0))
             
+            //加上参数信息（如果支持且存在）
+            addParametersForDefinition(element, definitionInfo, sectionsList?.get(3))
+            
             //加上事件类型信息（对于on_action）
             addEventTypeForOnAction(element, definitionInfo)
-            
-            //加上参数信息（如果支持且存在）
-            addParametersForDefinition(element, definitionInfo)
         }
     }
     
@@ -321,6 +322,18 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         sections.put(PlsDocBundle.message("sectionTitle.scopeContext"), "<code>$scopeContextText</code>")
     }
     
+    private fun StringBuilder.addParametersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
+        val show = getSettings().documentation.showParameters
+        if(!show) return
+        if(sections == null) return
+        val parameterMap = element.parameterMap
+        if(parameterMap.isEmpty()) return //ignore
+        val parametersText = parameterMap.keys.joinToString("<br>") {
+            "<code>$it</code>"
+        }
+        sections.put(PlsDocBundle.message("sectionTitle.parameters"), parametersText)
+    }
+    
     private fun StringBuilder.addEventTypeForOnAction(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
         if(definitionInfo.type != "on_action") return
         //有些游戏类型直接通过CWT文件指定了事件类型，而非CSV文件，忽略这种情况
@@ -331,20 +344,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         appendBr()
         val typeLink = "${gameType.id}/types/event/${event}"
         append(PlsDocBundle.message("prefix.eventType")).append(" ").appendCwtLink(event, typeLink)
-    }
-    
-    private fun StringBuilder.addParametersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-        val parameterMap = element.parameterMap
-        if(parameterMap.isEmpty()) return //ignore
-        appendBr()
-        append(PlsDocBundle.message("prefix.parameters")).append(" ")
-        val wrapSize = 6
-        for((index, key) in parameterMap.keys.withIndex()) {
-            if(index != 0) {
-                if(index % wrapSize == 0) appendBr().append("    ") else append(" ")
-            }
-            append(key)
-        }
     }
     
     private fun StringBuilder.buildDocumentationContent(definitionInfo: ParadoxDefinitionInfo) {
