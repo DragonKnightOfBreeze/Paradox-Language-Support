@@ -21,12 +21,6 @@ import icu.windea.pls.script.psi.*
  */
 @WithGameType(ParadoxGameType.Stellaris)
 class ParadoxEconomicCategoryModifierResolver: ParadoxModifierResolver {
-    // will be generated based on detailed declaration
-    // <key>_<resource>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }
-    // 
-    // will be generated if use_for_ai_budget = yes
-    // <key>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }
-    
     companion object {
         @JvmField val economicCategoryInfoKey = Key.create<ParadoxEconomicCategoryInfo>("paradox.modifierElement.economicCategoryInfo")
         @JvmField val economicCategoryModifierInfoKey = Key.create<ParadoxEconomicCategoryModifierInfo>("paradox.modifierElement.economicCategoryModifierInfo")
@@ -127,7 +121,7 @@ class ParadoxEconomicCategoryModifierResolver: ParadoxModifierResolver {
         if(!isGameTypeSupported(gameType)) return@with false
         
         val economicCategoryInfo = element.getUserData(economicCategoryInfoKey) ?: return false
-        val economicCategoryModifierInfo = element.getUserData(economicCategoryModifierInfoKey) ?: return false
+        val modifierInfo = element.getUserData(economicCategoryModifierInfoKey) ?: return false
         
         //加上名字
         val name = element.name
@@ -136,51 +130,46 @@ class ParadoxEconomicCategoryModifierResolver: ParadoxModifierResolver {
         appendBr().appendIndent()
         append(PlsDocBundle.message("generatedFromEconomicCategory"))
         append(" ")
-        val economicCategoryName = economicCategoryInfo.name
-        appendDefinitionLink(gameType, economicCategoryName, "economic_category", element)
-        append(": ")
-        val typeLink = "${gameType.id}/types/economic_category"
-        appendCwtLink("economic_category", typeLink)
-        val note = getModifierInfoNote(economicCategoryModifierInfo)
-        if(note != null) appendBr().appendIndent().append(note)
+        appendDefinitionLink(gameType, economicCategoryInfo.name, "economic_category", element)
+        if(modifierInfo.resource != null) {
+            appendBr().appendIndent()
+            append(PlsDocBundle.message("generatedFromResource"))
+            append(" ")
+            appendDefinitionLink(gameType, modifierInfo.resource, "resource", element)
+        } else {
+            appendBr().appendIndent()
+            append(PlsDocBundle.message("forAiBudget"))
+        }
         
         return true
-    }
-    
-    private fun getModifierInfoNote(info: ParadoxEconomicCategoryModifierInfo): String? {
-        return when {
-            info.triggered && info.aiBudget -> PlsDocBundle.message("triggeredAndForAiBudget")
-            info.triggered -> PlsDocBundle.message("triggered")
-            info.aiBudget -> PlsDocBundle.message("forAiBudget")
-            else -> null
-        }
     }
     
     override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder): Boolean = with(builder) {
         val gameType = definitionInfo.gameType
         if(!isGameTypeSupported(gameType)) return false
-        
+    
         val configGroup = definitionInfo.configGroup
         val selector = definitionSelector().gameType(gameType).preferRootFrom(definition)
         val economicCategory = ParadoxDefinitionSearch.search(definitionInfo.name, "economic_category", configGroup.project, selector = selector)
             .findFirst()
             ?: return false
         val economicCategoryInfo = ParadoxEconomicCategoryHandler.getInfo(economicCategory) ?: return false
-        val modifiers = economicCategoryInfo.modifiers
-        if(modifiers.isEmpty()) return true //don't generate modifiers, return true
-        for(modifier in modifiers) {
+        for(modifierInfo in economicCategoryInfo.modifiers) {
             appendBr()
             append(PlsDocBundle.message("prefix.generatedModifier")).append(" ")
-            append(modifier.name)
-            grayed {
-                append(" ")
-                append(PlsDocBundle.message("fromEconomicCategory"))
-                append(" ")
-                val economicCategoryName = economicCategoryInfo.name
-                appendDefinitionLink(gameType, economicCategoryName, "economic_category", definition)
-                append(": ")
-                val typeLink = "${gameType.id}/types/economic_category"
-                appendCwtLink("economic_category", typeLink)
+            append(modifierInfo.name)
+            if(modifierInfo.resource != null) {
+                grayed {
+                    append(" ")
+                    append(PlsDocBundle.message("fromResource"))
+                    append(" ")
+                    appendDefinitionLink(gameType, modifierInfo.resource, "resource", definition)
+                }
+            } else {
+                grayed {
+                    append(" ")
+                    append(PlsDocBundle.message("forAiBudget"))
+                }
             }
         }
         return true
