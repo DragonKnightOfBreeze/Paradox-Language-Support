@@ -8,6 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.core.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*
@@ -89,10 +90,11 @@ class ParadoxEconomicCategoryModifierResolver: ParadoxModifierResolver {
             .processQuery p@{
                 val info = ParadoxEconomicCategoryHandler.getInfo(it) ?: return@p true
                 
-                //TODO
                 //排除不匹配modifier的supported_scopes的情况
-                //val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
-                //if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+                val modifierCategories = ParadoxEconomicCategoryHandler.resolveModifierCategory(info.modifierCategory, configGroup)
+                val supportedScopes = modifierCategories.getSupportedScopes()
+                val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)
+                if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return@p true
                 
                 val tailText = PlsDocBundle.message("fromEconomicCategory") + " " + info.name
                 val typeText = info.name
@@ -114,6 +116,13 @@ class ParadoxEconomicCategoryModifierResolver: ParadoxModifierResolver {
                 }
                 true
             }
+    }
+    
+    override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
+        val economicCategoryInfo = element.getUserData(economicCategoryInfoKey) ?: return null
+        val modifierCategory = economicCategoryInfo.modifierCategory //may be null
+        val configGroup = getCwtConfig(element.project).getValue(element.gameType)
+        return ParadoxEconomicCategoryHandler.resolveModifierCategory(modifierCategory, configGroup)
     }
     
     override fun buildDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean = with(builder) {

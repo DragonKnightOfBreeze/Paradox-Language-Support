@@ -1,7 +1,6 @@
 package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
-import icu.windea.pls.config.core.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 
@@ -23,12 +22,7 @@ data class CwtModifierConfig(
 	val template = CwtTemplateExpression.resolve(name)
 	val supportedScopes: Set<String> by lazy {
 		if(categoryConfigMap.isNotEmpty()) {
-			val categoryConfigs = categoryConfigMap.values
-			if(categoryConfigs.any { it.supportAnyScope }) {
-				ParadoxScopeHandler.anyScopeIdSet
-			} else {
-				categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopes }
-			}
+			categoryConfigMap.getSupportedScopes()
 		} else {
 			//没有注明categories时从scopes选项中获取
 			config.supportedScopes

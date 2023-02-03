@@ -1,10 +1,13 @@
 package icu.windea.pls.config.core
 
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
+import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
@@ -17,6 +20,8 @@ import java.lang.invoke.*
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxEconomicCategoryHandler {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
+    
+    val modifierCategoriesKey = Key.create<Set<String>>("paradox.economicCategory.modifierCategories")
     
     /**
      * 输入[definition]的定义类型应当保证是`economic_category`。
@@ -35,6 +40,7 @@ object ParadoxEconomicCategoryHandler {
     
     private fun resolveInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         //这种写法可能存在一定性能问题，但是问题不大
+        //TODO 兼容继承的mult修饰符
         try {
             val data = ParadoxScriptDataResolver.resolveProperty(definition) ?: return null
             val name = definition.name.takeIfNotEmpty() ?: return null
@@ -62,27 +68,26 @@ object ParadoxEconomicCategoryHandler {
             // <economic_category>_<resource>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }
             
             fun addModifiers(resource: String?) {
-                val aiBudget = resource == null
                 val target = if(resource != null) "_${resource}" else ""
                 generateAddModifiers.forEach { category ->
-                    modifiers.add(ParadoxEconomicCategoryModifierInfo("${name}${target}_${category}_add", aiBudget, false))
+                    modifiers.add(ParadoxEconomicCategoryModifierInfo("${name}${target}_${category}_add", resource, false))
                 }
                 generateMultModifiers.forEach { category ->
-                    modifiers.add(ParadoxEconomicCategoryModifierInfo("${name}${target}_${category}_mult", aiBudget, false))
+                    modifiers.add(ParadoxEconomicCategoryModifierInfo("${name}${target}_${category}_mult", resource, false))
                 }
                 triggeredProducesModifiers.forEach { (key, useParentIcon, types) ->
                     types.forEach { type ->
-                        modifiers.add(ParadoxEconomicCategoryModifierInfo("${key}${target}_produces_${type}", aiBudget, true, useParentIcon))
+                        modifiers.add(ParadoxEconomicCategoryModifierInfo("${key}${target}_produces_${type}", resource, true, useParentIcon))
                     }
                 }
                 triggeredCostModifiers.forEach { (key, useParentIcon, types) ->
                     types.forEach { type ->
-                        modifiers.add(ParadoxEconomicCategoryModifierInfo("${key}${target}_cost_${type}", aiBudget, true, useParentIcon))
+                        modifiers.add(ParadoxEconomicCategoryModifierInfo("${key}${target}_cost_${type}", resource, true, useParentIcon))
                     }
                 }
                 triggeredUpkeepModifiers.forEach { (key, useParentIcon, types) ->
                     types.forEach { type ->
-                        modifiers.add(ParadoxEconomicCategoryModifierInfo("${key}${target}_upkeep_${type}", aiBudget, true, useParentIcon))
+                        modifiers.add(ParadoxEconomicCategoryModifierInfo("${key}${target}_upkeep_${type}", resource, true, useParentIcon))
                     }
                 }
             }
@@ -109,5 +114,23 @@ object ParadoxEconomicCategoryHandler {
         val useParentIcon = data.getValue("use_parent_icon")?.booleanValue() ?: false
         val modifierTypes = data.getValues("modifier_types").mapNotNull { it.stringValue() }.takeIfNotEmpty() ?: return null
         return ParadoxTriggeredModifierInfo(key, useParentIcon, modifierTypes)
+    }
+    
+    fun resolveModifierCategory(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig>{
+        val finalValue = value ?: "economic_unit" //default to economic_unit
+        val enumConfig = configGroup.enums.getValue("scripted_modifier_categories")
+        var keys = getModifierCategoryKeys(enumConfig, finalValue)
+        if(keys == null) keys = getModifierCategoryKeys(enumConfig, "economic_unit")
+        if(keys == null) keys = emptySet() //unexpected
+        val modifierCategories = configGroup.modifierCategories
+        return keys.associateWith { modifierCategories.getValue(it) }
+    }
+    
+    private fun getModifierCategoryKeys(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
+        val valueConfig = enumConfig.valueConfigMap.getValue(finalValue)
+        return valueConfig.getOrPutUserData(modifierCategoriesKey) {
+            valueConfig.options?.find { it.key == "modifier_categories" }
+                ?.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue }?.takeIfNotEmpty()
+        }
     }
 }

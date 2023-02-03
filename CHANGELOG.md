@@ -19,6 +19,7 @@
   * [ ] 修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
   * [ ] 基本修复：[Support for HoI4 is almost completely broken #10](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/10)
 * 优化：
+  * [ ] 在判断子类型时兼容`category = <deposit_category.blocker>`这样的表达式（这意味着进行索引时需要使用索引后的数据，IDEA似乎无法实现？）
   * [ ] 确认重命名功能能够预期正确进行（如果对应的声明/引用支持重命名）
   * [ ] 基于引用的重命名需要考虑存在前后缀的情况（主要是为图标引用考虑）
   * [ ] 一些检查可以基于当前文件、文件路径（相对于游戏或模组根目录）、定义类型（例如，`event`）、定义成员路径（例如，`event.abc`）等来部分禁用
@@ -73,13 +74,12 @@
   * [X] 优化对复杂表达式的处理：特殊代码高亮绝不高亮参数部分，增强兼容性
   * [X] 匹配CWT规则使用静态匹配，需要访问索引时，大部分情况下认为直接匹配
   * [ ] 匹配CWT规则时，如果规则可能是多个不同的子句时，需要按照子属性/子值的出现次数来判断到底匹配哪个子句规则
-  * [ ] 在判断子类型时兼容`category = <deposit_category.blocker>`这样的表达式（这意味着进行索引时需要使用索引后的数据，IDEA似乎无法实现？）
 * 优化 - 智能推断：
   * [X] 基于使用处推断`inline_script`的位置（即需要对应的CWT规则文件入口，同时如果可以推断，在内联脚本文件上方提示，同时也提供对参数的支持）
   * [X] 可扩展的参数解析器（提供推断参数的上下文、调用表达式中传入参数的上下文等功能）
 * 新增功能：
   * 完善支持处理生成的修饰符（`modifier`），以及相关的引用解析、代码补全、代码高亮等功能
-    * [ ] 支持通过Stellaris的`economic_category`生成修饰符
+    * [X] 支持通过Stellaris的`economic_category`生成修饰符
     * [X] 提供修饰符解析器的扩展点，便于后续扩展
   * 代码检查（`Code > Inspect Code...`）
     * [X] 缺少的传参（警告级别，在调用表达式、SV表达式中，如果参数不存在默认值且未传递，则认为缺少传参）

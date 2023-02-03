@@ -13,37 +13,36 @@ import icu.windea.pls.cwt.psi.*
  * @property nameConfig (property) name: block 描述如何获取枚举名。将`enum_name`对应的key/value作为枚举名。
  */
 data class CwtComplexEnumConfig(
-	override val pointer: SmartPsiElementPointer<CwtProperty>,
-	override val info: CwtConfigGroupInfo,
-	val name: String,
-	val path: Set<String>,
-	val pathFile: String?,
-	val pathStrict: Boolean,
-	val startFromRoot: Boolean,
-	val searchScope: String?,
-	val nameConfig: CwtPropertyConfig
+    override val pointer: SmartPsiElementPointer<CwtProperty>,
+    override val info: CwtConfigGroupInfo,
+    val name: String,
+    val path: Set<String>,
+    val pathFile: String?,
+    val pathStrict: Boolean,
+    val startFromRoot: Boolean,
+    val searchScope: String?,
+    val nameConfig: CwtPropertyConfig
 ) : CwtConfig<CwtProperty> {
-	
-	/**
-	 * [nameConfig]中作为锚点的`enum_name`对应的CWT规则。
-	 */
-	val enumNameConfigs: List<CwtDataConfig<*>> by lazy {
-		buildList {
-			nameConfig.processDescendants {
-				when {
-					it is CwtPropertyConfig -> {
-						if(it.key == "enum_name" || it.stringValue == "enum_name") {
-							add(it)
-						}
-					}
-					it is CwtValueConfig -> {
-						if(it.stringValue == "enum_name") {
-							add(it)
-						}
-					}
-				}
-				true
-			}
-		}
-	}
+    /**
+     * [nameConfig]中作为锚点的`enum_name`对应的CWT规则。
+     */
+    val enumNameConfigs: List<CwtDataConfig<*>> by lazy {
+        buildList {
+            nameConfig.processDescendants {
+                when {
+                    it is CwtPropertyConfig -> {
+                        if(it.key == "enum_name" || it.stringValue == "enum_name") {
+                            add(it)
+                        }
+                    }
+                    it is CwtValueConfig -> {
+                        if(it.stringValue == "enum_name") {
+                            add(it)
+                        }
+                    }
+                }
+                true
+            }
+        }
+    }
 }

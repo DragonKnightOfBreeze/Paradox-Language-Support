@@ -18,4 +18,4 @@ interface CwtConfig<out T : PsiElement> {
 	 * 解析为被内联的规则，或者返回null。
 	 */
 	fun resolvedOrNull(): CwtConfig<*>? = null
-}
+} 

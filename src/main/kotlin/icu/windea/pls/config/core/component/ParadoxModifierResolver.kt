@@ -5,6 +5,7 @@ import com.intellij.openapi.extensions.*
 import com.intellij.util.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -20,7 +21,9 @@ interface ParadoxModifierResolver {
     
     fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>)
     
-    //TODO 获取icon和modifierCategory
+    fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>?
+    
+    //TODO 获取icon
     
     /**
      * 构建参数的快速文档中的定义部分。
@@ -44,6 +47,14 @@ interface ParadoxModifierResolver {
         fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
             return EP_NAME.extensions.firstNotNullOfOrNull { it.resolveModifier(name, element, configGroup) }
         }
+    
+        fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
+            EP_NAME.extensions.forEach { it.completeModifier(context, result, modifierNames) }
+        }
+    
+        fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
+            return EP_NAME.extensions.firstNotNullOfOrNull { it.getModifierCategories(element) }
+        }
         
         fun getDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean {
             return EP_NAME.extensions.any { it.buildDocumentationDefinition(element, builder) }
@@ -51,10 +62,6 @@ interface ParadoxModifierResolver {
         
         fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder): Boolean{
             return EP_NAME.extensions.any { it.buildDDocumentationDefinitionForDefinition(definition, definitionInfo, builder) }
-        }
-        
-        fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
-            EP_NAME.extensions.forEach { it.completeModifier(context, result, modifierNames) }
         }
     }
 }

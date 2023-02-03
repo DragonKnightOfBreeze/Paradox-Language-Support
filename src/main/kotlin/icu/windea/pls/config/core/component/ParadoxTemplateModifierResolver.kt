@@ -83,6 +83,10 @@ class ParadoxTemplateModifierResolver : ParadoxModifierResolver {
         }
     }
     
+    override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
+        return element.modifierConfig?.categoryConfigMap
+    }
+    
     override fun buildDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean = with(builder) {
         val modifierConfig = element.modifierConfig ?: return false
         val references = element.getUserData(referencesKey) ?: return false

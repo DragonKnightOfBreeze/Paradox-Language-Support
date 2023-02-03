@@ -18,3 +18,11 @@ data class CwtModifierCategoryConfig(
 	val supportAnyScope get() = supportedScopes == ParadoxScopeHandler.anyScopeIdSet
 }
 
+fun Map<String, CwtModifierCategoryConfig>.getSupportedScopes(): Set<String> {
+	val categoryConfigs = this.values
+	if(categoryConfigs.any { it.supportAnyScope }) {
+		return ParadoxScopeHandler.anyScopeIdSet
+	} else {
+		return categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopes }
+	}
+}

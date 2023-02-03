@@ -13,6 +13,7 @@ import icu.windea.pls.config.core.*
 import icu.windea.pls.config.core.component.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
@@ -262,22 +263,18 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		sections: MutableMap<String, String>?
 	) {
 		//即使是在CWT文件中，如果可以推断得到CWT规则组，也显示作用域信息
-		
 		if(!getSettings().documentation.showScopes) return
-		//为link提示名字、描述、输入作用域、输出作用域的文档注释
-		//为alias modifier localisation_command等提供分类、支持的作用域的文档注释
-		//仅为脚本文件和本地化文件中的引用提供
-		val contextElement = element
-		val gameType = configGroup.gameType
-		//TODO 0.7.13
-		val modifierConfig = element.modifierConfig ?: return
+		
 		if(sections != null) {
-			val categoryNames = modifierConfig.categoryConfigMap.keys
+			val modifierCategories = ParadoxModifierResolver.getModifierCategories(element) ?: return
+			val gameType = configGroup.gameType
+			val contextElement = element
+			val categoryNames = modifierCategories.keys
 			if(categoryNames.isNotEmpty()) {
 				sections.put(PlsDocBundle.message("sectionTitle.categories"), getCategoriesText(categoryNames, gameType, contextElement))
 			}
 			
-			val supportedScopes = modifierConfig.supportedScopes
+			val supportedScopes = modifierCategories.getSupportedScopes()
 			sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
 		}
 	}
