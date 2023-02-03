@@ -19,6 +19,7 @@
   * [ ] 修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
   * [ ] 基本修复：[Support for HoI4 is almost completely broken #10](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/10)
 * 优化：
+  * [ ] 匹配CWT规则时，如果规则可能是多个不同的子句时，需要按照子属性/子值的出现次数来判断到底匹配哪个子句规则
   * [ ] 在判断子类型时兼容`category = <deposit_category.blocker>`这样的表达式（这意味着进行索引时需要使用索引后的数据，IDEA似乎无法实现？）
   * [ ] 确认重命名功能能够预期正确进行（如果对应的声明/引用支持重命名）
   * [ ] 基于引用的重命名需要考虑存在前后缀的情况（主要是为图标引用考虑）
@@ -55,6 +56,7 @@
 * 完善CWT配置支持：
   * [ ] ~~为复杂枚举如`complex_enum[policy_option]`提供相关本地化支持（类似定义）~~（搁置，不能很好地显示出来，复杂枚举名可能本身就是一个本地化引用）
   * [ ] 优化：scope的名字（准确来说是别名）可以包含点号
+  * [ ] 有些之前被认为必定是常量字符串的地方（如枚举值的名字），也可能是一个表达式而非仅仅是常量字符串
   * [ ] 对于link `pop_faction_parameter`和complexEnum `pop_faction_parameters`的特殊处理：前者只能在`pop_faction`中使用且作为数据源的complexEnumValue只能来自同一定义声明中
   * [ ] 兼容CWT规则文件中的错误级别`severity = warning`或`## severity = warning`（PLS和CWTools实现有所不同，需要分析）
   * [ ] ［待确定］作为trigger的值的CWT规则`scope_field` `scope[xxx]` `scope_group[xxx]`也可以匹配一个布尔值？
@@ -70,10 +72,13 @@
 * 支持推断inline_script的调用位置从而为其提供各种功能
 * 支持通过economic_category生成的修饰符
 
+* BUG修复
+  * [ ] 修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
 * 优化：
   * [X] 优化对复杂表达式的处理：特殊代码高亮绝不高亮参数部分，增强兼容性
   * [X] 匹配CWT规则使用静态匹配，需要访问索引时，大部分情况下认为直接匹配
-  * [ ] 匹配CWT规则时，如果规则可能是多个不同的子句时，需要按照子属性/子值的出现次数来判断到底匹配哪个子句规则
+  * [ ] 优化游戏目录（基于`launcher-settings.json`）和模组目录（基于`descriptor.mod`）的判断逻辑
+  * [ ] 优化在快速文档中或者新建库对话框中，点击文本超链接或者工具栏图标按钮以导航到Steam和游戏相关目录时的导航逻辑
 * 优化 - 智能推断：
   * [X] 基于使用处推断`inline_script`的位置（即需要对应的CWT规则文件入口，同时如果可以推断，在内联脚本文件上方提示，同时也提供对参数的支持）
   * [X] 可扩展的参数解析器（提供推断参数的上下文、调用表达式中传入参数的上下文等功能）
@@ -85,7 +90,7 @@
   * 代码检查（`Code > Inspect Code...`）
     * [X] 缺少的传参（警告级别，在调用表达式、SV表达式中，如果参数不存在默认值且未传递，则认为缺少传参）
     * [X] 推断的`inline_script`的位置存在冲突（使用处的父节点对应的CWT规则存在不一致的情况）
-    * [X] 定义声明中缺失/过多的表达式检查 - 现在可以配置仅显示第一个错误[00_common_categories.txt](..%2F..%2F..%2FProgram%20Files%2FSteam%2Fsteamapps%2Fcommon%2FStellaris%2Fcommon%2Feconomic_categories%2F00_common_categories.txt)
+    * [X] 定义声明中缺失/过多的表达式检查 - 现在可以配置仅显示第一个错误
     * [X] 定义声明中缺失/过多的表达式检查 - 现在可以配置是否解析内联的内联脚本，内联后进行检查 
 
 ## 0.7.12

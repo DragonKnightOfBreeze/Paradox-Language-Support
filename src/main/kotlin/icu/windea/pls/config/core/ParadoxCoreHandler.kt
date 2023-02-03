@@ -9,14 +9,18 @@ import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
+import java.lang.invoke.*
 import java.util.*
 
 object ParadoxCoreHandler {
+    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
+    
     fun shouldIndexFile(virtualFile: VirtualFile): Boolean {
         try {
             //仅索引有根目录的文件
@@ -69,61 +73,52 @@ object ParadoxCoreHandler {
         if(rootFile is StubVirtualFile || !rootFile.isValid) return null
         if(!rootFile.isDirectory) return null
         
+        // 尝试向下查找descriptor.mod，如果找到，再尝试向下查找.{gameType}，确认rootType和gameType
         var rootType: ParadoxRootType? = null
         var descriptorFile: VirtualFile? = null
-        var markerFile: VirtualFile? = null
-        val rootName = rootFile.nameWithoutExtension //忽略扩展名
-        when {
-            rootName == ParadoxRootType.PdxLauncher.id -> {
-                rootType = ParadoxRootType.PdxLauncher
-                descriptorFile = rootFile.parent?.findChild(PlsConstants.launcherSettingsFileName)
-                    ?.takeIf { !it.isDirectory && (canBeNotAvailable || it.isValid) }
-                markerFile = descriptorFile
-            }
-            rootName == ParadoxRootType.PdxOnlineAssets.id -> {
-                rootType = ParadoxRootType.PdxOnlineAssets
-                descriptorFile = rootFile.parent?.findChild(PlsConstants.launcherSettingsFileName)
-                    ?.takeIf { !it.isDirectory && (canBeNotAvailable || it.isValid) }
-                markerFile = descriptorFile
-            }
-            rootName == ParadoxRootType.TweakerGuiAssets.id -> {
-                rootType = ParadoxRootType.TweakerGuiAssets
-                descriptorFile = rootFile.parent?.findChild(PlsConstants.launcherSettingsFileName)
-                    ?.takeIf { !it.isDirectory && (canBeNotAvailable || it.isValid) }
-                markerFile = descriptorFile
-            }
-            rootName == "game" -> {
-                return doResolveRootInfo(rootFile.parent ?: return null, canBeNotAvailable)
-            }
-            else -> {
-                for(rootChild in rootFile.children) {
-                    if(rootChild.isDirectory) continue
-                    if(!canBeNotAvailable && !rootChild.isValid) continue
-                    val rootChildName = rootChild.name
-                    when {
-                        rootChildName.equals(PlsConstants.launcherSettingsFileName, true) -> {
-                            rootType = ParadoxRootType.Game
-                            descriptorFile = rootChild
-                            markerFile = rootChild
-                            break
-                        }
-                        rootChildName.equals(PlsConstants.descriptorFileName, true) -> {
-                            rootType = ParadoxRootType.Mod
-                            descriptorFile = rootChild
-                            if(descriptorFile != null && markerFile != null) break
-                        }
-                        ParadoxGameType.resolve(rootChild) != null -> {
-                            markerFile = rootChild
-                            if(descriptorFile != null && markerFile != null) break
-                        }
-                    }
+        val rootName = rootFile.name
+        // descriptor.mod > Mod
+        val descriptorModFile = rootFile.findChild(PlsConstants.descriptorFileName)
+        if(descriptorModFile != null) {
+            var markerFile: VirtualFile? = null
+            for(rootChild in rootFile.children) {
+                if(rootChild.isDirectory) continue
+                if(!canBeNotAvailable && !rootChild.isValid) continue
+                // .{gameType} > set game type
+                if(ParadoxGameType.resolve(rootChild) != null) {
+                    markerFile = rootChild
+                    break
                 }
             }
+            return try {
+                val descriptorInfo = getDescriptorInfo(descriptorModFile) ?: return null
+                ParadoxModRootInfo(rootFile, descriptorModFile, markerFile, ParadoxRootType.Mod, descriptorInfo)
+            } catch(e: Exception) {
+                logger.warn(e)
+                null
+            }
         }
-        if(descriptorFile != null && rootType != null) {
-            return ParadoxRootInfo(rootFile, descriptorFile, markerFile, rootType)
-        }
+        
+        // 从此目录向下递归查找launcher-settings.json，如果找到，再根据"dlcPath"的值获取游戏文件的根目录
+        // 或者判断此目录是否是特定的名字，然后再从此目录的父目录向下递归查找launcher-settings.json（参见其他的ParadoxRootType）
+        // 注意游戏文件可能位于此目录的game子目录中，而非直接位于此目录中
+        // TODO
+        
         return null
+    }
+    
+    private fun getLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo? {
+        return CachedValuesManager.getManager(getDefaultProject()).getCachedValue(file) {
+            val value = ParadoxLauncherSettingsInfo.resolve(file)
+            CachedValueProvider.Result.create(value, file)
+        }
+    }
+    
+    private fun getDescriptorInfo(file: VirtualFile): ParadoxDescriptorInfo? {
+        return CachedValuesManager.getManager(getDefaultProject()).getCachedValue(file) {
+            val value = ParadoxDescriptorInfo.resolve(file)
+            CachedValueProvider.Result.create(value, file)
+        }
     }
     
     @JvmStatic

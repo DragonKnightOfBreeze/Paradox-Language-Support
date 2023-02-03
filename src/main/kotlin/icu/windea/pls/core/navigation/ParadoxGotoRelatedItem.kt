@@ -5,6 +5,8 @@ import com.intellij.openapi.util.NlsContexts.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
 @Suppress("UnstableApiUsage")
@@ -23,12 +25,18 @@ class ParadoxGotoRelatedItem(element: PsiElement, @Separator group: String) : Go
 		val element = element
 		val file = element?.containingFile?.virtualFile ?: return null
 		return buildString {
+			val rootInfo = file.fileInfo?.rootInfo ?: return null
 			append(file.path)
-			val descriptorInfo = file.fileInfo?.descriptorInfo
-			val modName = descriptorInfo?.name
-			if(modName != null) append(", ").append(modName)
-			val modVersion = descriptorInfo?.version
-			if(modVersion != null) append("@").append(modVersion)
+			when(rootInfo) {
+				is ParadoxGameRootInfo -> {
+					val launcherSettingsInfo = rootInfo.launcherSettingsInfo
+					append(rootInfo.rootType.description).append("@").append(launcherSettingsInfo.version)
+				}
+				is ParadoxModRootInfo -> {
+					val descriptorInfo = rootInfo.descriptorInfo
+					append(descriptorInfo.name).append("@").append(descriptorInfo.version)
+				}
+			}
 		}
 	}
 	

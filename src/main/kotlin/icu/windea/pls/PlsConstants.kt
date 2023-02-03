@@ -90,10 +90,12 @@ object PlsThreadLocals {
 
 object PlsKeys {
 	val rootInfoKey = Key.create<ParadoxRootInfo>("paradox.rootInfo")
-	val descriptorInfoKey = Key.create<ParadoxDescriptorInfo>("paradox.descriptorInfo")
 	val fileInfoKey = Key.create<ParadoxFileInfo>("paradox.fileInfo")
 	val fileTypeKey = Key.create<FileType>("paradox.fileType")
 	val contentFileKey = Key.create<VirtualFile>("paradox.contentFile")
+	
+	//val cachedDescriptorInfoKey = Key.create<CachedValue<ParadoxDescriptorInfo>>("paradox.cached.descriptorInfo")
+	//val cachedLauncherSettingsInfoKey = Key.create<CachedValue<ParadoxLauncherSettingsInfo>>("paradox.cached.launcherSettingsInfo")
 	
 	val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("paradox.cached.definitionInfo")
 	val cachedDefinitionMemberInfoKey = Key.create<CachedValue<ParadoxDefinitionMemberInfo>>("paradox.cached.definitionMemberInfo")

@@ -35,6 +35,7 @@ enum class ParadoxGameType(
 		}
 		
 		fun resolve(markerFile: VirtualFile): ParadoxGameType? {
+			// launcher-settings.json / descriptor.mod 
 			try {
 				if(markerFile.isDirectory) return null //非目录
 				val markerFileName = markerFile.name

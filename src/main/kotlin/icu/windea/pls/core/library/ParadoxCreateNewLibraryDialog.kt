@@ -91,8 +91,7 @@ class ParadoxCreateNewLibraryDialog(
 			}
 		}
 		val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile, false)
-		val descriptorInfo = rootInfo?.descriptorInfo
-		if(rootInfo != null && descriptorInfo != null && gameType == rootInfo.gameType && rootType == rootInfo.rootType) {
+		if(rootInfo != null && gameType == rootInfo.gameType && rootType == rootInfo.rootType) {
 			this@ParadoxCreateNewLibraryDialog.rootFile = rootFile
 			this@ParadoxCreateNewLibraryDialog.rootInfo = rootInfo
 			return null
@@ -100,7 +99,7 @@ class ParadoxCreateNewLibraryDialog(
 		when(rootType) {
 			ParadoxRootType.Mod -> return error(PlsBundle.message("library.dialog.createNewLibrary.libraryPath.invalid.1", gameType.description))
 			ParadoxRootType.Game -> return error(PlsBundle.message("library.dialog.createNewLibrary.libraryPath.invalid.2", gameType.description))
-			else -> return error(PlsBundle.message("library.dialog.createNewLibrary.libraryPath.invalid.3", gameType.description))
+			else -> throw IllegalStateException()
 		}
 	}
 }

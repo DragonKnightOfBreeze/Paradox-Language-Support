@@ -394,18 +394,22 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilde
 	if(fileInfo != null) {
 		append("<span>")
 		//描述符信息（模组名、版本等）
-		append("[").append(fileInfo.rootInfo.gameType.description).append(" ").append(fileInfo.rootType.description)
-		val descriptorInfo = fileInfo.descriptorInfo
-		if(descriptorInfo != null) {
-			if(fileInfo.rootType == ParadoxRootType.Mod) {
-				append(": ").append(descriptorInfo.name.escapeXml())
+		val rootInfo = fileInfo.rootInfo
+		append("[").append(rootInfo.gameType.description).append(" ").append(fileInfo.rootType.description)
+		when(rootInfo){
+			is ParadoxGameRootInfo -> {
+				val info = rootInfo.launcherSettingsInfo
+				append("@").append(info.version.escapeXml())
 			}
-			val version = descriptorInfo.version
-			if(version != null) append("@").append(version)
+			is ParadoxModRootInfo -> {
+				val info = rootInfo.descriptorInfo
+				append(": ").append(info.name.escapeXml())
+				if(!info.version.isNullOrEmpty()) append("@").append(info.version.escapeXml())
+			}
 		}
 		append("]")
 		grayed {
-			val remoteFileId = descriptorInfo?.remoteFileId
+			val remoteFileId = (rootInfo as? ParadoxModRootInfo)?.descriptorInfo?.remoteFileId
 			//remoteFileId（暂不显示）
 			//if(remoteFileId != null) {
 			//	append(" ").append(PlsDocBundle.message("name.core.remoteFileId")).append(": ").append(remoteFileId).append(" )
