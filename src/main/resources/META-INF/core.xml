@@ -71,10 +71,13 @@
   
   <actions>
     <group id="ParadoxGotoPathActions">
+      <separator/>
       <action id="FileChooser.Pls.GotoSteamPath" class="icu.windea.pls.core.actions.GotoSteamPathAction"/>
       <action id="FileChooser.Pls.GotoSteamGamePath" class="icu.windea.pls.core.actions.GotoSteamGamePathAction"/>
       <action id="FileChooser.Pls.GotoSteamWorkshopPath" class="icu.windea.pls.core.actions.GotoSteamWorkshopPathAction"/>
       <action id="FileChooser.Pls.GotoGameModPath" class="icu.windea.pls.core.actions.GotoGameModPathAction"/>
+      
+      <add-to-group group-id="FileChooserToolbar" anchor="last"/>
     </group>
 
     <group id="ParadoxDiffActions">
