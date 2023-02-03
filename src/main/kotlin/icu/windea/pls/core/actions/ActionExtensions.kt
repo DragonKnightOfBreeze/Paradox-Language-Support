@@ -1,8 +1,8 @@
 package icu.windea.pls.core.actions
 
 import com.intellij.openapi.actionSystem.*
+import icu.windea.pls.core.*
 
-val AnActionEvent.editor get() = CommonDataKeys.EDITOR.getData(dataContext)
-
-val AnActionEvent.gameTypeProperty get() = getData(PlsDataKeys.gameTypePropertyKey)
-val AnActionEvent.rootTypeProperty get() = getData(PlsDataKeys.rootTypePropertyKey)
+val AnActionEvent.editor by CommonDataKeys.EDITOR
+val AnActionEvent.gameTypeProperty by PlsDataKeys.gameTypePropertyKey
+val AnActionEvent.rootTypeProperty by PlsDataKeys.rootTypePropertyKey

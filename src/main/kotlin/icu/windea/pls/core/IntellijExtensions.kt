@@ -115,6 +115,10 @@ fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiE
 	return NavigationGutterIconBuilder.create(icon, DEFAULT_PSI_CONVERTOR, gotoRelatedItemProvider)
 }
 
+inline fun <T> Query<T>.processQuery(consumer: Processor<in T>): Boolean {
+	return forEach(consumer)
+}
+
 inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, action: () -> T?): T? {
 	val data = this.getUserData(key)
 	if(data != null) return data
@@ -123,13 +127,11 @@ inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, action: () -> T?): T
 	return newValue
 }
 
-fun <T> Key<T>.copyTo(from: UserDataHolder, to: UserDataHolder) {
-	to.putUserData(this, from.getUserData(this))
-}
+operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? = thisRef.getUserData(this)
+operator fun <T> Key<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T) = thisRef.putUserData(this, value)
 
-inline fun <T> Query<T>.processQuery(consumer: Processor<in T>): Boolean {
-	return forEach(consumer)
-}
+operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)
+operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KProperty<*>): T? = thisRef.getData(this)
 //endregion
 
 //region Documentation Extensions
