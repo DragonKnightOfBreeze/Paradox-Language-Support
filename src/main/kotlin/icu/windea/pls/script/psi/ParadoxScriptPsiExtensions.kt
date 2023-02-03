@@ -341,14 +341,6 @@ fun ParadoxScriptExpressionElement.isValidExpression(matchType: Int = CwtConfigM
 	return ParadoxCwtConfigHandler.resolveConfigs(this, orDefault = false, matchType = matchType).size == 1
 }
 
-fun <T: ParadoxScriptExpressionElement> T.validated(matchType: Int = CwtConfigMatchType.ALL) : T? {
-	return this.takeIf { it.isValidExpression(matchType) }
-}
-
-fun <T: ParadoxScriptExpressionElement> Iterable<T>.validated(matchType: Int = CwtConfigMatchType.ALL) : List<T> {
-	return this.filter { it.isValidExpression(matchType) }
-}
-
 fun ASTNode.isParameterAwareExpression(): Boolean {
 	return !this.processChild { it.elementType != PARAMETER }
 }

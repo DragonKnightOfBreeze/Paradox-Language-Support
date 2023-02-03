@@ -35,11 +35,11 @@ object ParadoxEconomicCategoryHandler {
         try {
             val data = ParadoxScriptDataResolver.resolveProperty(definition) ?: return null
             val name = definition.name.takeIfNotEmpty() ?: return null
-            val parent = data.getValue("parent")?.stringValue()?.validated()?.stringValue
-            val useForAiBudget = data.getValue("use_for_ai_budget")?.booleanValue()?.booleanValue ?: false
-            val generateAddModifiers = data.getValue("generate_add_modifiers")
+            val parent = data.getValue("parent", valid = true)?.stringValue()
+            val useForAiBudget = data.getValue("use_for_ai_budget")?.booleanValue() ?: false
+            val generateAddModifiers = data.getValue("generate_add_modifiers", valid = true)
             val modifiers = emptySet<ParadoxEconomicCategoryModifierInfo>()
-            val modifierCategory = data.getValue("modifier_category")?.stringValue()?.validated()?.stringValue
+            val modifierCategory = data.getValue("modifier_category", valid = true)?.stringValue()
             return ParadoxEconomicCategoryInfo(name, parent, useForAiBudget, modifiers, modifierCategory)
         } catch(e: Exception) {
             logger.error(e)
