@@ -8,7 +8,6 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationIconHintsProvider.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -48,7 +47,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
 		}
 	}
 	
-	//icu.windea.pls.tool.ParadoxLocalisationTextHintsRenderer.renderIconTo
+	//icu.windea.pls.tool.localisation.ParadoxLocalisationTextHintsRenderer.renderIconTo
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
 		if(element is ParadoxLocalisationIcon) {

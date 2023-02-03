@@ -4,8 +4,6 @@ import com.intellij.diff.*
 import com.intellij.diff.actions.impl.*
 import com.intellij.diff.chains.*
 import com.intellij.diff.requests.*
-import com.intellij.diff.tools.util.base.*
-import com.intellij.diff.tools.util.base.InitialScrollPositionSupport.*
 import com.intellij.diff.util.*
 import com.intellij.notification.*
 import com.intellij.openapi.*

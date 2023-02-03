@@ -2,7 +2,7 @@ package icu.windea.pls.script.editor
 
 import com.intellij.lang.*
 import com.intellij.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes
+import icu.windea.pls.script.psi.*
 
 class ParadoxScriptCommenter : CodeDocumentationAwareCommenter {
     override fun getLineCommentPrefix() = "#"

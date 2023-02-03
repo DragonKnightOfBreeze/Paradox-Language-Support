@@ -9,7 +9,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.ui.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*

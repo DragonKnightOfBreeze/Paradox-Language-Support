@@ -2,10 +2,8 @@ package icu.windea.pls.script.codeInsight.hints
 
 import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*
-import com.intellij.internal.statistic.utils.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
-import com.intellij.refactoring.suggested.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.*

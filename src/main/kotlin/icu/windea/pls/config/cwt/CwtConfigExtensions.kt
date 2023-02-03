@@ -2,15 +2,12 @@
 
 package icu.windea.pls.config.cwt
 
-import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.cwt.psi.*

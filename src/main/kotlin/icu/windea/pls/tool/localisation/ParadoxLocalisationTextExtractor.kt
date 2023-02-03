@@ -1,4 +1,4 @@
-package icu.windea.pls.tool
+package icu.windea.pls.tool.localisation
 
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*

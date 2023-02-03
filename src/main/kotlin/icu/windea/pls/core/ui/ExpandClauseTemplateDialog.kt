@@ -1,25 +1,17 @@
 package icu.windea.pls.core.ui
 
-import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.*
-import com.intellij.openapi.util.*
 import com.intellij.ui.*
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.*
-import com.intellij.util.ui.table.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.script.*
 import java.awt.*
 import javax.swing.*
 import javax.swing.event.*
-import javax.swing.table.*
 
 //com.intellij.refactoring.extractInterface.ExtractInterfaceDialog
 //com.intellij.refactoring.changeSignature.ChangeSignatureDialogBase

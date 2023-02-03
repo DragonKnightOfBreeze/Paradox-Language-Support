@@ -2,7 +2,7 @@ package icu.windea.pls.core.references
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.IncorrectOperationException
+import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.collections.*

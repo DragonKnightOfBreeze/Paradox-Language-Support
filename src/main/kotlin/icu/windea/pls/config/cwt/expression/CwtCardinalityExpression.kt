@@ -2,7 +2,6 @@ package icu.windea.pls.config.cwt.expression
 
 import com.google.common.cache.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 
 /**
  * CWT基数表达式。

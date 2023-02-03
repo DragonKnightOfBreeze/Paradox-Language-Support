@@ -3,8 +3,6 @@ package icu.windea.pls.script.codeInsight.hints
 import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import com.intellij.util.*
@@ -13,8 +11,6 @@ import icu.windea.pls.config.core.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 /**

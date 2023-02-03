@@ -13,9 +13,7 @@ import icu.windea.pls.config.core.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"), "settings.language.pls"), SearchableConfigurable {
 	override fun getId() = "settings.language.pls"

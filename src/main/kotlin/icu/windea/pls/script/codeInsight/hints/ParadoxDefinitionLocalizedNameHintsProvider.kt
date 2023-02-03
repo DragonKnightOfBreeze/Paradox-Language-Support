@@ -3,18 +3,14 @@ package icu.windea.pls.script.codeInsight.hints
 import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
+import icu.windea.pls.tool.localisation.*
 import javax.swing.*
 
 /**

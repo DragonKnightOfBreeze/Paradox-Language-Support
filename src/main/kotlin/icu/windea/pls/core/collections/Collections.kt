@@ -1,6 +1,5 @@
 package icu.windea.pls.core.collections
 
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 
 @Suppress("NOTHING_TO_INLINE")

@@ -21,6 +21,7 @@ import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
+import icu.windea.pls.tool.localisation.*
 import java.util.*
 
 class CwtDocumentationProvider : AbstractDocumentationProvider() {

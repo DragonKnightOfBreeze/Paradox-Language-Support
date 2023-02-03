@@ -17,6 +17,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
+import icu.windea.pls.tool.localisation.*
 
 @Suppress("UnusedReceiverParameter")
 class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {

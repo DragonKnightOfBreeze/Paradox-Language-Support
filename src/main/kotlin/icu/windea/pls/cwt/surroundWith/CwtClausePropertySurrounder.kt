@@ -8,7 +8,6 @@ import com.intellij.psi.*
 import com.intellij.psi.codeStyle.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 从句的包围器，将选中的表达式（一个或多个属性或者单独的值）用花括号包围并在前面加上属性的键。

@@ -2,11 +2,9 @@ package icu.windea.pls.core.search
 
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
-import java.util.function.*
 
 /**
  * 可对查询结果进行进一步的处理。

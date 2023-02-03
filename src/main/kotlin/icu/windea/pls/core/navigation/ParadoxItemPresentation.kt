@@ -3,7 +3,6 @@ package icu.windea.pls.core.navigation
 import com.intellij.ide.util.treeView.*
 import com.intellij.navigation.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import javax.swing.*
 

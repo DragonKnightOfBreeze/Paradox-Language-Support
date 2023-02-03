@@ -1,4 +1,4 @@
-package icu.windea.pls.tool
+package icu.windea.pls.tool.localisation
 
 import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.editor.*
@@ -11,6 +11,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
 import java.util.concurrent.atomic.*
 
 /**

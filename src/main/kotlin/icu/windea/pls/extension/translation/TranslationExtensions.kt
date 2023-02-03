@@ -2,16 +2,9 @@
 
 package icu.windea.pls.extension.translation
 
-import cn.yiiguxing.plugin.translate.*
-import cn.yiiguxing.plugin.translate.action.*
 import cn.yiiguxing.plugin.translate.trans.*
-import cn.yiiguxing.plugin.translate.util.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.project.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.localisation.psi.*
-import java.util.*
 
 fun CwtLocalisationLocaleConfig.toLang(): Lang? {
 	if(this.id == "l_default") {

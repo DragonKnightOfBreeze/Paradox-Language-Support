@@ -1,6 +1,5 @@
 package icu.windea.pls.script.surroundWith
 
-import com.intellij.codeInsight.*
 import com.intellij.lang.surroundWith.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
@@ -8,9 +7,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.codeStyle.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
-import org.jetbrains.kotlin.psi.*
 
 /**
  * 从句的包围器，将选中的表达式（一个或多个属性或者单独的值）用花括号包围。

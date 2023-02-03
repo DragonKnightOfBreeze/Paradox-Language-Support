@@ -12,7 +12,7 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
+import icu.windea.pls.tool.script.*
 import java.lang.invoke.*
 
 object ParadoxDefineHandler {

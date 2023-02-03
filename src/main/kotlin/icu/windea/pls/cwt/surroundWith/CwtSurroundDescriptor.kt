@@ -5,8 +5,6 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.surroundWith.*
 
 //com.intellij.json.surroundWith.JsonSurroundDescriptor
 //com.intellij.json.surroundWith.JsonSurrounderBase

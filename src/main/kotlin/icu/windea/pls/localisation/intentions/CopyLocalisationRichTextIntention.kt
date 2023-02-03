@@ -10,7 +10,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.tool.*
+import icu.windea.pls.tool.localisation.*
 import java.awt.datatransfer.*
 
 /**

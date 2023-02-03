@@ -3,15 +3,12 @@ package icu.windea.pls.core.diff.actions
 import com.intellij.diff.*
 import com.intellij.diff.actions.impl.*
 import com.intellij.diff.chains.*
-import com.intellij.diff.contents.*
 import com.intellij.diff.requests.*
-import com.intellij.diff.tools.util.base.InitialScrollPositionSupport.*
 import com.intellij.diff.util.*
 import com.intellij.notification.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
-import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*

@@ -5,7 +5,6 @@ import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.refactoring.suggested.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.*
@@ -13,7 +12,6 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxModifierIconHintsProvider.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
@@ -52,7 +50,7 @@ class ParadoxModifierIconHintsProvider: ParadoxScriptHintsProvider<Settings>() {
 		}
 	}
 	
-	//icu.windea.pls.tool.ParadoxLocalisationTextHintsRenderer.renderIconTo
+	//icu.windea.pls.tool.localisation.ParadoxLocalisationTextHintsRenderer.renderIconTo
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
 		if(element is ParadoxScriptStringExpressionElement) {

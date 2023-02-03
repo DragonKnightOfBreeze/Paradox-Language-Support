@@ -2,8 +2,6 @@
 
 package icu.windea.pls.core.collections
 
-import icu.windea.pls.*
-
 fun <T> Iterable<T>.process(processor: ProcessEntry.(T) -> Boolean): Boolean {
 	for(e in this) {
 		val result = ProcessEntry.processor(e)

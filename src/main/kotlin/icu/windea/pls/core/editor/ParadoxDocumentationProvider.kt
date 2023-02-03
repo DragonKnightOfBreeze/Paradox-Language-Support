@@ -13,13 +13,13 @@ import icu.windea.pls.config.core.*
 import icu.windea.pls.config.core.component.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
+import icu.windea.pls.tool.localisation.*
 
 @Suppress("UNUSED_PARAMETER")
 class ParadoxDocumentationProvider : AbstractDocumentationProvider() {

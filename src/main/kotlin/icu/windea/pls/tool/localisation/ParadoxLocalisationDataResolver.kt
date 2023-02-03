@@ -1,14 +1,11 @@
-package icu.windea.pls.tool
+package icu.windea.pls.tool.localisation
 
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 
 /**
  * Paradox本地化文件的数据解析器。
- *
- * 返回值类型：`Map<String,String>`
  */
 @Suppress("unused")
 object ParadoxLocalisationDataResolver {

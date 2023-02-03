@@ -4,10 +4,8 @@ package icu.windea.pls.core
 
 import com.google.common.cache.*
 import com.intellij.util.*
-import com.intellij.util.containers.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import java.io.*
 import java.net.*
 import java.nio.charset.*

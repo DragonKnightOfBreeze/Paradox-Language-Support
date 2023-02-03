@@ -8,7 +8,6 @@ import com.intellij.openapi.editor.HighlighterColors.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
 import com.intellij.openapi.editor.markup.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import java.awt.*
 

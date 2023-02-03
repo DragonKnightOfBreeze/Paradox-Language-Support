@@ -8,17 +8,13 @@ import com.intellij.refactoring.suggested.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxModifierLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
+import icu.windea.pls.tool.localisation.*
 import javax.swing.*
 
 /**

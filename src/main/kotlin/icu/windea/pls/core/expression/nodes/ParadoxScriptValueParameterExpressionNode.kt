@@ -1,6 +1,6 @@
 package icu.windea.pls.core.expression.nodes
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*

@@ -13,7 +13,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.ui.*
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*

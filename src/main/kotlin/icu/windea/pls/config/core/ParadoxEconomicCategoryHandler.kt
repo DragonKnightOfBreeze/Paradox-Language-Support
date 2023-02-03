@@ -5,6 +5,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.script.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxEconomicCategoryHandler {
@@ -24,6 +25,7 @@ object ParadoxEconomicCategoryHandler {
     }
     
     private fun resolveInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
+        val data = ParadoxScriptDataResolver.resolveProperty(definition) ?: return null
         return null
     }
 }

@@ -2,8 +2,7 @@ package icu.windea.pls.localisation.editor
 
 import com.intellij.lang.*
 import com.intellij.psi.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationCommenter : CodeDocumentationAwareCommenter {
     override fun getLineCommentPrefix() = "#"

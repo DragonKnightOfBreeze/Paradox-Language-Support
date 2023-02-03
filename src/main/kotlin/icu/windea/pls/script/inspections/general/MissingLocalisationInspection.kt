@@ -9,7 +9,6 @@ import com.intellij.ui.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
-import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.ui.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*

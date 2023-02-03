@@ -1,11 +1,9 @@
 package icu.windea.pls.localisation.psi.impl
 
-import com.intellij.lang.*
 import com.intellij.navigation.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.Iconable.*
 import com.intellij.psi.*
-import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*

@@ -6,13 +6,10 @@ import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.*
 import icu.windea.pls.config.core.component.*
 import icu.windea.pls.config.core.config.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 

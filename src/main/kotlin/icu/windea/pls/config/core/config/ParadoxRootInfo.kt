@@ -39,7 +39,6 @@ class ParadoxRootInfo(
 		val fileName = descriptorFile.name
 		return when {
 			fileName == PlsConstants.descriptorFileName -> {
-				//TODO 直接解析VirtualFile
 				val psiFile = descriptorFile.toPsiFile<PsiFile>(getDefaultProject())
 				if(psiFile !is ParadoxScriptFile) return null
 				val rootBlock = psiFile.findChild<ParadoxScriptRootBlock>() ?: return null
