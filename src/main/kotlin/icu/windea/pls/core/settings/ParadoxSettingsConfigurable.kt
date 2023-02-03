@@ -136,13 +136,6 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 			}
 			//completion
 			group(PlsBundle.message("settings.completion")) {
-				//maxCompleteSize
-				row {
-					label(PlsBundle.message("settings.completion.maxCompleteSize")).applyToComponent {
-						toolTipText = PlsBundle.message("settings.completion.maxCompleteSize.tooltip")
-					}
-					intTextField(0..1000).bindIntText(settings.completion::maxCompleteSize)
-				}
 				//completeWithValue
 				row {
 					checkBox(PlsBundle.message("settings.completion.completeWithValue"))

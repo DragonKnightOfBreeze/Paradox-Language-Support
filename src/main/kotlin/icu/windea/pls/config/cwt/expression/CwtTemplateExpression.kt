@@ -86,7 +86,6 @@ class CwtTemplateExpression(
 						break
 					}
 					if(snippets == null) return EmptyExpression
-					if(snippets.size <= 1) return EmptyExpression
 					if(startIndex != expressionString.length) {
 						snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex)))
 					}
@@ -96,4 +95,3 @@ class CwtTemplateExpression(
 		}
 	}
 }
-

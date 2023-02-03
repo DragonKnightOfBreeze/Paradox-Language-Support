@@ -846,7 +846,7 @@ class CwtConfigGroupImpl(
 				"supported_scopes" -> supportedScopes =  buildSet {
 					prop.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
 					prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
-				}.takeIfNotEmpty()
+				} //may be empty here (e.g. "AI Economy")
 			}
 		}
 		supportedScopes = supportedScopes ?: ParadoxScopeHandler.anyScopeIdSet

@@ -40,7 +40,7 @@ object ParadoxEconomicCategoryHandler {
     
     private fun resolveInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         //这种写法可能存在一定性能问题，但是问题不大
-        //TODO 兼容继承的mult修饰符
+        //需要兼容继承的mult修饰符
         try {
             val data = ParadoxScriptDataResolver.resolveProperty(definition) ?: return null
             val name = definition.name.takeIfNotEmpty() ?: return null

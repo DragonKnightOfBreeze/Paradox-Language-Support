@@ -96,7 +96,7 @@ class ParadoxEconomicCategoryModifierResolver: ParadoxModifierResolver {
                 val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)
                 if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return@p true
                 
-                val tailText = PlsDocBundle.message("fromEconomicCategory") + " " + info.name
+                val tailText = " from economic category " + info.name
                 val typeText = info.name
                 val typeIcon = PlsIcons.Definition
                 for(modifierInfo in info.modifiers) {

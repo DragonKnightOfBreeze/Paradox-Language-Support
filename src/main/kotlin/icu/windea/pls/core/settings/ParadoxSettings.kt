@@ -57,7 +57,6 @@ class ParadoxSettingsState : BaseState() {
 	var completion by property(CompletionState())
 	
 	/**
-	 * @property maxCompleteSize 本地化在进行代码补全时的最大补全数量。
 	 * @property completeWithValue 进行代码补全时，如果可能，将会另外提供提示项，自动插入常量字符串或者花括号。
 	 * @property completeWithClauseTemplate 进行代码补全时，如果可能，将会另外提供提示项，自动插入从句内联模版。
 	 * @property preferCompleteWithClauseTemplate 是否将基于从句内联模版的提示项放到前面。
@@ -65,7 +64,6 @@ class ParadoxSettingsState : BaseState() {
 	 * @property completeOnlyScopeIsMatched 如果存在，是否仅提供匹配当前作用域的提示项。
 	 */
 	class CompletionState : BaseState() {
-		var maxCompleteSize by property(100)
 		var completeWithValue by property(true)
 		var completeWithClauseTemplate by property(true)
 		var preferCompleteWithClauseTemplate by property(true)

@@ -65,7 +65,8 @@ class ParadoxTemplateModifierResolver : ParadoxModifierResolver {
             
             val tailText = CwtConfigHandler.getScriptExpressionTailText(modifierConfig.config, withExpression = true)
             val template = modifierConfig.template
-            if(template.isNotEmpty()) continue
+            if(template.isEmpty()) continue
+            val typeFile = modifierConfig.pointer.containingFile
             //生成的modifier
             template.processResolveResult(contextElement, configGroup) p@{ name ->
                 //排除重复的
@@ -75,6 +76,8 @@ class ParadoxTemplateModifierResolver : ParadoxModifierResolver {
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
                     .withIcon(PlsIcons.Modifier)
                     .withTailText(tailText)
+                    .withTypeText(typeFile?.name)
+                    .withTypeIcon(typeFile?.icon)
                     .withScopeMatched(scopeMatched)
                 //.withPriority(PlsCompletionPriorities.modifierPriority)
                 result.addScriptExpressionElement(context, builder)

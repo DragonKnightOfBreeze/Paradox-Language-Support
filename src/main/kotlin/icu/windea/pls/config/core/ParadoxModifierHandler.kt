@@ -98,11 +98,14 @@ object ParadoxModifierHandler {
 			val tailText = CwtConfigHandler.getScriptExpressionTailText(modifierConfig.config, withExpression = false)
 			val template = modifierConfig.template
 			if(template.isNotEmpty()) continue
+			val typeFile = modifierConfig.pointer.containingFile
 			val name = modifierConfig.name
 			val modifierElement = resolvePredefinedModifier(name, element, configGroup)
 			val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
 				.withIcon(PlsIcons.Modifier)
 				.withTailText(tailText)
+				.withTypeText(typeFile?.name)
+				.withTypeIcon(typeFile?.icon)
 				.withScopeMatched(scopeMatched)
 			//.withPriority(PlsCompletionPriorities.modifierPriority)
 			result.addScriptExpressionElement(context, builder)
