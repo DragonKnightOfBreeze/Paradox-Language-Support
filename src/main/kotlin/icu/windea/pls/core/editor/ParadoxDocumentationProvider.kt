@@ -167,10 +167,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildModifierDefinition(
-		element: ParadoxModifierElement,
-		sectionsList: List<MutableMap<String, String>>?
-	) {
+	private fun StringBuilder.buildModifierDefinition(element: ParadoxModifierElement, sectionsList: List<MutableMap<String, String>>?) {
 		val name = element.name
 		definition {
 			val r = ParadoxModifierResolver.getDocumentationDefinition(element, this)

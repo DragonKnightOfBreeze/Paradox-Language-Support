@@ -15,30 +15,30 @@ object ParadoxTextColorHandler {
 	 * 得到textcolor的对应颜色配置。
 	 */
 	@JvmStatic
-	fun getTextColorInfos(gameType: ParadoxGameType, project: Project, context: Any? = null): List<ParadoxTextColorInfo> {
+	fun getInfos(gameType: ParadoxGameType, project: Project, context: Any? = null): List<ParadoxTextColorInfo> {
 		val selector = definitionSelector().gameType(gameType).preferRootFrom(context).distinctByName()
 		val definitions = ParadoxDefinitionSearch.search("textcolor", project, selector = selector).findAll()
 		if(definitions.isEmpty()) return emptyList()
-		return definitions.mapNotNull { definition -> getTextColorInfoFromCache(definition) } //it.name == it.definitionInfo.name
+		return definitions.mapNotNull { definition -> getInfoFromCache(definition) } //it.name == it.definitionInfo.name
 	}
 	
 	@JvmStatic
-	fun getTextColorInfo(name: String, gameType: ParadoxGameType, project: Project, context: Any? = null): ParadoxTextColorInfo? {
+	fun getInfo(name: String, gameType: ParadoxGameType, project: Project, context: Any? = null): ParadoxTextColorInfo? {
 		val selector = definitionSelector().gameType(gameType).preferRootFrom(context)
 		val definition = ParadoxDefinitionSearch.search(name, "textcolor", project, selector = selector).find() 
 		if(definition == null) return null
-		return getTextColorInfoFromCache(definition)
+		return getInfoFromCache(definition)
 	}
 	
-	private fun getTextColorInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
+	private fun getInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
 		if(definition !is ParadoxScriptProperty) return null
 		return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedTextColorInfoKey) {
-			val value = resolveTextColorInfo(definition)
+			val value = resolveInfo(definition)
 			CachedValueProvider.Result.create(value, definition)
 		}
 	}
 	
-	private fun resolveTextColorInfo(definition: ParadoxScriptProperty): ParadoxTextColorInfo? {
+	private fun resolveInfo(definition: ParadoxScriptProperty): ParadoxTextColorInfo? {
 		//要求输入的name必须是单个字母或数字
 		val name = definition.name
 		if(name.singleOrNull()?.let { it.isExactLetter() || it.isExactDigit() } != true) return null

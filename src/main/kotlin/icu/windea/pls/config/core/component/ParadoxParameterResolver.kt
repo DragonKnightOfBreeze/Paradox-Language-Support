@@ -39,7 +39,7 @@ interface ParadoxParameterResolver {
      * 构建参数的快速文档中的定义部分。
      * @return 此解析器是否适用。
      */
-    fun buildDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean
+    fun buildDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean = false
     
     companion object INSTANCE {
         @JvmStatic val EP_NAME = ExtensionPointName.create<ParadoxParameterResolver>("icu.windea.pls.paradoxParameterResolver")

@@ -9,6 +9,7 @@ import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.*
+import icu.windea.pls.config.core.component.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
@@ -276,21 +277,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     }
     
     private fun StringBuilder.addGeneratedModifiersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-        val modifiers = definitionInfo.modifiers
-        if(modifiers.isEmpty()) return
-        for(modifier in modifiers) {
-            appendBr()
-            append(PlsDocBundle.message("prefix.generatedModifier")).append(" ")
-            append(modifier.name)
-            grayed {
-                append(" ")
-                append(PlsDocBundle.message("byTemplate"))
-                append(" ")
-                val key = modifier.config.name
-                val gameType = definitionInfo.gameType
-                appendCwtLink(key, "${gameType.id}/modifiers/${key}")
-            }
-        }
+        ParadoxModifierResolver.buildDDocumentationDefinitionForDefinition(element, definitionInfo, this)
     }
     
     private fun StringBuilder.addScopeContextForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {

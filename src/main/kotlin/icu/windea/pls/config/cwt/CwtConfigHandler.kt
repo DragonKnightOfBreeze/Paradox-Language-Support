@@ -1815,7 +1815,7 @@ object CwtConfigHandler {
 	
 	fun resolveModifier(element: ParadoxScriptExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
 		if(element !is ParadoxScriptStringExpressionElement) return null
-		return ParadoxModifierHandler.resolveModifier(element, name, configGroup)
+		return ParadoxModifierHandler.resolveModifier(name, element, configGroup)
 	}
 	
 	fun resolveTemplateExpression(element: ParadoxScriptExpressionElement, text: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {

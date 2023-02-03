@@ -23,7 +23,6 @@ object ParadoxDefinitionMemberHandler {
     private fun getInfoFromCache(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
         val file = element.containingFile ?: return null
         if(file !is ParadoxScriptFile) return null
-        val project = file.project
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionMemberInfoKey) {
             val value = resolveInfoDownUp(element)
             //invalidated on file modification or DefinitionMemberInfoTracker or InlineScriptTracker

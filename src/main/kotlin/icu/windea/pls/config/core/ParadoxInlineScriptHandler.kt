@@ -25,7 +25,7 @@ object ParadoxInlineScriptHandler {
     const val inlineScriptDirPath = "common/inline_scripts"
     const val inlineScriptPathExpression = "common/inline_scripts/,.txt"
     
-    fun isGameTypeSupport(gameType: ParadoxGameType): Boolean {
+    fun isGameTypeSupported(gameType: ParadoxGameType): Boolean {
         return gameType == ParadoxGameType.Stellaris
     }
     
@@ -53,7 +53,7 @@ object ParadoxInlineScriptHandler {
         
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
-        if(!isGameTypeSupport(gameType)) return null
+        if(!isGameTypeSupported(gameType)) return null
         val value = element.value
         if(value != "inline_script") return null
         val matchType = CwtConfigMatchType.STATIC
@@ -117,7 +117,7 @@ object ParadoxInlineScriptHandler {
         if(file.fileType != ParadoxScriptFileType) return null
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
-        if(!isGameTypeSupport(gameType)) return null
+        if(!isGameTypeSupported(gameType)) return null
         val filePath = fileInfo.path.path
         return CwtPathExpressionType.FilePath.extract(inlineScriptPathExpression, filePath)
             ?.takeIfNotEmpty()
@@ -127,7 +127,7 @@ object ParadoxInlineScriptHandler {
     fun getInlineScriptExpression(file: ParadoxScriptFile): String? {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
-        if(!isGameTypeSupport(gameType)) return null
+        if(!isGameTypeSupported(gameType)) return null
         val filePath = fileInfo.path.path
         return CwtPathExpressionType.FilePath.extract(inlineScriptPathExpression, filePath)
             ?.takeIfNotEmpty()
@@ -159,7 +159,7 @@ object ParadoxInlineScriptHandler {
     private fun doGetInlineScriptUsageInfo(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
-        if(!isGameTypeSupport(gameType)) return null
+        if(!isGameTypeSupported(gameType)) return null
         val expression = getInlineScriptExpression(file) ?: return null
         val project = file.project
         val scope = GlobalSearchScope.allScope(project)

@@ -108,6 +108,7 @@ object PlsKeys {
 	
 	val cachedModifierElementKey = Key.create<CachedValue<ParadoxModifierElement>>("paradox.cached.modifierElement")
 	
+	val cachedEconomicCategoryInfoKey = Key.create<CachedValue<ParadoxEconomicCategoryInfo>>("paradox.cached.economicCategoryInfo")
 	val cachedInlineScriptInfoKey = Key.create<CachedValue<ParadoxInlineScriptInfo>>("paradox.cached.inlineScriptInfo")
 	val cachedInlineScriptUsageInfoKey = Key.create<CachedValue<ParadoxInlineScriptUsageInfo>>("paradox.cached.inlineScriptUsageInfo")
 	
