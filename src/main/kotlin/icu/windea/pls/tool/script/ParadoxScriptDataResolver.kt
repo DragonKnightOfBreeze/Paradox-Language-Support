@@ -3,7 +3,6 @@ package icu.windea.pls.tool.script
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -14,64 +13,41 @@ object ParadoxScriptDataResolver {
 	/**
 	 * 解析脚本文件的数据。跳过不合法的[PsiElement]。
 	 */
-	fun resolve(file: PsiFile): List<BlockEntry<String?, Any>> {
+	fun resolve(file: PsiFile): List<ParadoxScriptData> {
 		if(file !is ParadoxScriptFile) throw IllegalArgumentException("Invalid file type (expect: 'ParadoxScriptFile')")
 		val rootBlock = file.findChild<ParadoxScriptRootBlock>() ?: return emptyList()
 		return resolveBlock(rootBlock)
 	}
 	
-	private fun resolveBlock(block: ParadoxScriptBlockElement): List<BlockEntry<String?, Any>> {
-		val result: MutableList<BlockEntry<String?, Any>> = SmartList()
-		block.processChild block@{ blockItem ->
-			if(!blockItem.isValid) return@block true
-			when {
-				blockItem is ParadoxScriptValue -> {
-					val value = resolveValue(blockItem) ?: return@block true
-					result.add(BlockEntry(null, value))
-				}
-				blockItem is ParadoxScriptProperty -> {
-					val property = resolveProperty(blockItem) ?: return@block true
-					result.add(property)
-				}
-				blockItem is ParadoxScriptParameterCondition -> {
-					blockItem.processChild condition@{ conditionItem ->
-						if(!conditionItem.isValid) return@condition true
-						when {
-							conditionItem is ParadoxScriptValue -> {
-								val value = resolveValue(conditionItem) ?: return@condition true
-								result.add(BlockEntry(null, value))
-							}
-							conditionItem is ParadoxScriptProperty -> {
-								val property = resolveProperty(conditionItem) ?: return@condition true
-								result.add(property)
-							}
-							else -> true
-						}
-					}
-				}
-				else -> true
+	fun resolveBlock(element: ParadoxScriptBlockElement): List<ParadoxScriptData> {
+		val result: MutableList<ParadoxScriptData> = SmartList()
+		element.processData(includeConditional = true, inline = true) p@{ e -> 
+			when{
+				e is ParadoxScriptValue -> resolveValue(e).let{ result.add(it) }
+				e is ParadoxScriptProperty -> resolveProperty(e)?.let{ result.add(it) }
 			}
+			true
 		}
 		return result
 	}
 	
-	fun resolveValue(value: ParadoxScriptValue): Any? {
-		return when(value) {
-			is ParadoxScriptBoolean -> value.value.toBooleanYesNo()
-			is ParadoxScriptInt -> value.value.toInt()
-			is ParadoxScriptFloat -> value.value.toFloat()
-			is ParadoxScriptString -> value.value
-			is ParadoxScriptColor -> value.color
-			is ParadoxScriptScriptedVariableReference -> value.referenceValue?.let { resolveValue(it) }
-			is ParadoxScriptBlock -> resolveBlock(value)
-			else -> value.value
+	fun resolveValue(element: ParadoxScriptValue): ParadoxScriptData {
+		val children = when {
+			element is ParadoxScriptBlock -> resolveBlock(element)
+			else -> null
 		}
+		return ParadoxScriptData(null, element, children)
 	}
 	
-	fun resolveProperty(property: ParadoxScriptProperty): BlockEntry<String?, Any>? {
-		//注意property的名字可以重复
-		val key = property.name
-		val value = property.propertyValue?.let { resolveValue(it) } ?: return null
-		return BlockEntry(key, value)
+	fun resolveProperty(element: ParadoxScriptProperty): ParadoxScriptData? {
+		val propertyKey = element.propertyKey
+		val propertyValue = element.propertyValue
+		if(propertyValue == null) return null //ignore
+		
+		val children = when {
+			propertyValue is ParadoxScriptBlock -> resolveBlock(propertyValue)
+			else -> null
+		}
+		return ParadoxScriptData(propertyKey, propertyValue, children)
 	}
 }

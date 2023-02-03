@@ -6,12 +6,35 @@ import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.core.*
 import icu.windea.pls.config.core.component.*
 import icu.windea.pls.config.core.config.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+
+/**
+ * 遍历当前代码块中的所有（直接作为子节点的）值和属性。
+ * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的属性。
+ * @param inline 是否处理需要内联脚本片段的情况。不能嵌套内联。（如，内联脚本）
+ */
+fun ParadoxScriptBlockElement.processData(
+	includeConditional: Boolean = true,
+	inline: Boolean = false,
+	processor: (ParadoxScriptMemberElement) -> Boolean
+): Boolean {
+	val target = this
+	return target.processChild {
+		when {
+			it is ParadoxScriptValue -> doProcessValueChild(it, includeConditional, inline, processor)
+			it is ParadoxScriptProperty -> doProcessPropertyChild(it, includeConditional, inline, processor)
+			includeConditional && it is ParadoxScriptParameterCondition -> it.processData(processor)
+			else -> true
+		}
+	}
+}
 
 /**
  * 遍历当前代码块中的所有（直接作为子节点的）属性。
@@ -26,26 +49,8 @@ fun ParadoxScriptBlockElement.processProperty(
 	val target = this
 	return target.processChild {
 		when {
-			it is ParadoxScriptProperty -> {
-				val r = processor(it)
-				if(!r) return@processChild false
-				if(inline) {
-					val inlined = ParadoxElementLinker.inlineElement(it)
-					if(inlined is ParadoxScriptDefinitionElement) {
-						val block = inlined.block
-						if(block != null) {
-							//不能嵌套内联
-							val r1 = block.processProperty(includeConditional, processor = processor)
-							if(!r1) return@processChild false
-						}
-					}
-					//不处理inlined是value的情况
-				}
-				true
-			}
-			includeConditional && it is ParadoxScriptParameterCondition -> {
-				it.processProperty(processor)
-			}
+			it is ParadoxScriptProperty -> doProcessPropertyChild(it, includeConditional, inline, processor)
+			includeConditional && it is ParadoxScriptParameterCondition -> it.processProperty(processor)
 			else -> true
 		}
 	}
@@ -64,26 +69,58 @@ fun ParadoxScriptBlockElement.processValue(
 	val target = this
 	return target.processChild {
 		when {
-			it is ParadoxScriptValue -> {
-				val r = processor(it)
-				if(!r) return@processChild false
-				if(inline) {
-					val inlined = ParadoxElementLinker.inlineElement(it)
-					if(inlined is ParadoxScriptDefinitionElement) {
-						val block = inlined.block
-						if(block != null) {
-							//不能嵌套内联
-							val r1 = block.processValue(includeConditional, processor = processor)
-							if(!r1) return@processChild false
-						}
-					}
-					//不处理inlined是value的情况
-				}
-				true
+			it is ParadoxScriptValue -> doProcessValueChild(it, includeConditional, inline, processor)
+			includeConditional && it is ParadoxScriptParameterCondition -> it.processValue(processor)
+			else -> true
+		}
+	}
+}
+
+private fun doProcessValueChild(it: ParadoxScriptValue, includeConditional: Boolean, inline: Boolean, processor: (ParadoxScriptValue) -> Boolean): Boolean {
+	val r = processor(it)
+	if(!r) return false
+	if(inline) {
+		val inlined = ParadoxElementLinker.inlineElement(it)
+		if(inlined is ParadoxScriptDefinitionElement) {
+			val block = inlined.block
+			if(block != null) {
+				//不能嵌套内联
+				val r1 = block.processValue(includeConditional, processor = processor)
+				if(!r1) return false
 			}
-			includeConditional && it is ParadoxScriptParameterCondition -> {
-				it.processValue(processor)
+		}
+		//不处理inlined是value的情况
+	}
+	return true
+}
+
+private fun doProcessPropertyChild(it: ParadoxScriptProperty, includeConditional: Boolean, inline: Boolean, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+	val r = processor(it)
+	if(!r) return false
+	if(inline) {
+		val inlined = ParadoxElementLinker.inlineElement(it)
+		if(inlined is ParadoxScriptDefinitionElement) {
+			val block = inlined.block
+			if(block != null) {
+				//不能嵌套内联
+				val r1 = block.processProperty(includeConditional, processor = processor)
+				if(!r1) return false
 			}
+		}
+		//不处理inlined是value的情况
+	}
+	return true
+}
+
+
+/**
+ * 遍历当前参数表达式中的所有（直接作为子节点的）值或属性。
+ */
+inline fun ParadoxScriptParameterCondition.processData(processor: (ParadoxScriptMemberElement) -> Boolean): Boolean {
+	return processChild {
+		when {
+			it is ParadoxScriptValue -> processor(it)
+			it is ParadoxScriptProperty -> processor(it)
 			else -> true
 		}
 	}
@@ -111,18 +148,6 @@ inline fun ParadoxScriptParameterCondition.processValue(processor: (ParadoxScrip
 			else -> true
 		}
 	}
-}
-
-inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.findValue(): T? {
-	return findChild()
-}
-
-inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.findBlockValues(): List<T> {
-	return findChild<ParadoxScriptBlock>()?.findChildren<T>().orEmpty()
-}
-
-inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlockElement.findValues(): List<T> {
-	return findChildren()
 }
 
 /**
@@ -272,6 +297,70 @@ inline fun ParadoxScriptMemberElement.findParentByPath(
 }
 
 
+inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.findValue(): T? {
+	return findChild()
+}
+
+inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.findBlockValues(): List<T> {
+	return findChild<ParadoxScriptBlock>()?.findChildren<T>().orEmpty()
+}
+
+inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlockElement.findBlockValues(): List<T> {
+	return findChildren()
+}
+
+
+fun ParadoxScriptValue.isScriptedVariableValue(): Boolean {
+	return parent is ParadoxScriptScriptedVariable
+}
+
+fun ParadoxScriptValue.isPropertyValue(): Boolean {
+	return parent is ParadoxScriptProperty
+}
+
+fun ParadoxScriptValue.isBlockValue(): Boolean {
+	return parent is ParadoxScriptBlockElement
+}
+
+fun ParadoxScriptExpressionElement.isExpression(): Boolean {
+	return when {
+		this is ParadoxScriptPropertyKey -> true
+		this is ParadoxScriptValue && (this.isPropertyValue() || this.isBlockValue()) -> true
+		else -> false
+	}
+}
+
+fun ParadoxScriptStringExpressionElement.isParameterAwareExpression(): Boolean {
+	return !this.text.isLeftQuoted() && this.textContains('$')
+}
+
+/**
+ * 判断当前字符串表达式是否在顶层或者子句中或者作为属性的值，并且拥有唯一匹配的CWT规则。
+ */
+fun ParadoxScriptExpressionElement.isValidExpression(matchType: Int = CwtConfigMatchType.ALL): Boolean {
+	return ParadoxCwtConfigHandler.resolveConfigs(this, orDefault = false, matchType = matchType).size == 1
+}
+
+fun <T: ParadoxScriptExpressionElement> T.validated(matchType: Int = CwtConfigMatchType.ALL) : T? {
+	return this.takeIf { it.isValidExpression(matchType) }
+}
+
+fun <T: ParadoxScriptExpressionElement> Iterable<T>.validated(matchType: Int = CwtConfigMatchType.ALL) : List<T> {
+	return this.filter { it.isValidExpression(matchType) }
+}
+
+fun ASTNode.isParameterAwareExpression(): Boolean {
+	return !this.processChild { it.elementType != PARAMETER }
+}
+
+fun String.isParameterAwareExpression(): Boolean {
+	return !this.isLeftQuoted() && this.any { it == '$' }
+}
+
+fun PsiElement.isExpressionOrMemberContext(): Boolean {
+	return this is ParadoxScriptDefinitionElement || this is ParadoxScriptBlockElement || this is ParadoxScriptParameterCondition
+}
+
 fun ParadoxScriptStringExpressionElement.isDefinitionRootKeyOrName(): Boolean {
 	return when {
 		this is ParadoxScriptPropertyKey -> isDefinitionRootKey()
@@ -295,41 +384,4 @@ fun ParadoxScriptString.isDefinitionName(): Boolean {
 	//def = { name_prop = def_name }
 	if(definition.definitionInfo.let { it != null && it.typeConfig.nameField == nameProperty.name }) return true
 	return false
-}
-
-
-fun ParadoxScriptValue.isScriptedVariableValue(): Boolean {
-	return parent is ParadoxScriptScriptedVariable
-}
-
-fun ParadoxScriptValue.isPropertyValue(): Boolean {
-	return parent is ParadoxScriptProperty
-}
-
-fun ParadoxScriptValue.isBlockValue(): Boolean {
-	return parent is ParadoxScriptBlockElement
-}
-
-fun PsiElement.isExpression(): Boolean {
-	return when {
-		this is ParadoxScriptPropertyKey -> true
-		this is ParadoxScriptValue && (this.isPropertyValue() || this.isBlockValue()) -> true
-		else -> false
-	}
-}
-
-fun ParadoxScriptStringExpressionElement.isParameterAwareExpression(): Boolean {
-	return !this.text.isLeftQuoted() && this.textContains('$')
-}
-
-fun ASTNode.isParameterAwareExpression(): Boolean {
-	return !this.processChild { it.elementType != PARAMETER }
-}
-
-fun String.isParameterAwareExpression(): Boolean {
-	return !this.isLeftQuoted() && this.any { it == '$' }
-}
-
-fun PsiElement.isExpressionOrMemberContext(): Boolean {
-	return this is ParadoxScriptDefinitionElement || this is ParadoxScriptBlockElement || this is ParadoxScriptParameterCondition
 }

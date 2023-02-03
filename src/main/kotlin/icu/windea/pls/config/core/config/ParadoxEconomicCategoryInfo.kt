@@ -8,7 +8,7 @@ import icu.windea.pls.core.annotations.*
 @WithGameType(ParadoxGameType.Stellaris)
 data class ParadoxEconomicCategoryInfo(
     val name: String,
-    val parent: String,
+    val parent: String?,
     val useForAiBudget: Boolean,
     val modifiers: Set<ParadoxEconomicCategoryModifierInfo>,
     val modifierCategory: String?,

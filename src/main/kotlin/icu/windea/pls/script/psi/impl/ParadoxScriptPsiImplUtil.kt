@@ -657,7 +657,7 @@ object ParadoxScriptPsiImplUtil {
 			val colorType = colorTypeOption.stringValue ?: return@runCatching null
 			//目前仅支持rgb和rgba
 			if(colorType == "rgb" || colorType == "rgba") {
-				val values = element.findValues<ParadoxScriptValue>()
+				val values = element.findBlockValues<ParadoxScriptValue>()
 				getColorFromValues(colorType, values)
 			} else {
 				null
@@ -700,7 +700,7 @@ object ParadoxScriptPsiImplUtil {
 		//FIXME 首次选择颜色后不关闭取色器，继续选择颜色，文档不会发生相应的变更，得到的document=null
 		runCatching {
 			val project = element.project
-			val values = element.findValues<ParadoxScriptValue>()
+			val values = element.findBlockValues<ParadoxScriptValue>()
 			//仅支持设置rgb/rgba颜色
 			if(values.size != 3 && values.size != 4) return //中断操作
 			val isRgba = values.size == 4
