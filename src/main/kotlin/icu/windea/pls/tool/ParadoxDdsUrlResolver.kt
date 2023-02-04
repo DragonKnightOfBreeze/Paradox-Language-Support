@@ -94,7 +94,7 @@ object ParadoxDdsUrlResolver {
 	 * 得到sprite定义的对应DDS文件的filePath。基于名为"textureFile"的定义属性（忽略大小写）。
 	 */
 	fun getSpriteDdsFilePath(sprite: ParadoxScriptDefinitionElement): String? {
-		return sprite.findProperty("textureFile", inline = true)?.findValue<ParadoxScriptString>()?.stringValue
+		return sprite.findProperty("textureFile", inline = true)?.propertyValue?.stringValue()
 	}
 	
 	//private fun doResolveByFile(fileName: String, project: Project, frame: Int): String? {

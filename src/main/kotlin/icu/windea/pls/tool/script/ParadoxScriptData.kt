@@ -1,7 +1,6 @@
 package icu.windea.pls.tool.script
 
 import com.intellij.util.*
-import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -57,15 +56,10 @@ data class ParadoxScriptData(
         return result
     }
     
-    fun booleanValue() = value?.resolved()?.castOrNull<ParadoxScriptBoolean>()?.booleanValue
-    fun intValue() = value?.resolved()?.castOrNull<ParadoxScriptInt>()?.intValue
-    fun floatValue() = value?.resolved()?.castOrNull<ParadoxScriptFloat>()?.floatValue
-    fun stringText() = value?.resolved()?.castOrNull<ParadoxScriptString>()?.text
-    fun stringValue() = value?.resolved()?.castOrNull<ParadoxScriptString>()?.stringValue
-    fun colorValue() = value.castOrNull<ParadoxScriptColor>()?.color
-    
-    private fun ParadoxScriptValue.resolved(): ParadoxScriptValue? {
-        if(this !is ParadoxScriptScriptedVariableReference) return this
-        return this.referenceValue
-    }
+    fun booleanValue() = value?.booleanValue()
+    fun intValue() = value?.intValue()
+    fun floatValue() = value?.floatValue()
+    fun stringText() = value?.stringText()
+    fun stringValue() = value?.stringValue()
+    fun colorValue() = value?.colorValue()
 }

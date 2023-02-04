@@ -378,3 +378,15 @@ fun ParadoxScriptString.isDefinitionName(): Boolean {
 	if(definition.definitionInfo.let { it != null && it.typeConfig.nameField == nameProperty.name }) return true
 	return false
 }
+
+fun ParadoxScriptValue.booleanValue() = resolved()?.castOrNull<ParadoxScriptBoolean>()?.booleanValue
+fun ParadoxScriptValue.intValue() = resolved()?.castOrNull<ParadoxScriptInt>()?.intValue
+fun ParadoxScriptValue.floatValue() = resolved()?.castOrNull<ParadoxScriptFloat>()?.floatValue
+fun ParadoxScriptValue.stringText() = resolved()?.castOrNull<ParadoxScriptString>()?.text
+fun ParadoxScriptValue.stringValue() = resolved()?.castOrNull<ParadoxScriptString>()?.stringValue
+fun ParadoxScriptValue.colorValue() = castOrNull<ParadoxScriptColor>()?.color
+
+fun ParadoxScriptValue.resolved(): ParadoxScriptValue? {
+	if(this !is ParadoxScriptScriptedVariableReference) return this
+	return this.referenceValue
+}

@@ -84,7 +84,7 @@ object ParadoxInlineScriptHandler {
         } else {
             propertyValue.findProperty(expressionLocation)?.propertyValue?.castOrNull<ParadoxScriptString>()
         }
-        return expressionElement?.stringValue ?: return null
+        return expressionElement?.stringValue() ?: return null
     }
     
     @JvmStatic
