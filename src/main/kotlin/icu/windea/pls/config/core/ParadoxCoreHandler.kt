@@ -114,35 +114,43 @@ object ParadoxCoreHandler {
     }
     
     private fun getLauncherSettingsFile(root: VirtualFile): VirtualFile? {
-        var result: VirtualFile? = null
-        VfsUtilCore.visitChildrenRecursively(root, object : VirtualFileVisitor<Void?>() {
-            override fun visitFileEx(file: VirtualFile): Result {
-                if(file.isDirectory) {
-                    if(file.name.startsWith('.')) return SKIP_CHILDREN //skip .git, .idea, .vscode, etc.
-                    return CONTINUE
-                }
-                if(file.name == PlsConstants.launcherSettingsFileName) {
-                    result = file
-                    return skipTo(root)
-                }
-                return CONTINUE
-            }
-        })
-        return result
+        val rootPath = root.toNioPath()
+        rootPath.resolve(PlsConstants.launcherSettingsFileName)
+            .let { VfsUtil.findFile(it, true) }
+            ?.let { return it }
+        rootPath.resolve("launcher/" + PlsConstants.launcherSettingsFileName)
+            .let { VfsUtil.findFile(it, true) }
+            ?.let { return it }
+        return null
+        
+        //不能这样做 - 太慢了！
+        //var result: VirtualFile? = null
+        //VfsUtilCore.visitChildrenRecursively(root, object : VirtualFileVisitor<Void?>() {
+        //    override fun visitFileEx(file: VirtualFile): Result {
+        //        if(file.isDirectory) {
+        //            if(file.name.startsWith('.')) return SKIP_CHILDREN //skip .git, .idea, .vscode, etc.
+        //            return CONTINUE
+        //        }
+        //        if(file.name == PlsConstants.launcherSettingsFileName) {
+        //            result = file
+        //            return skipTo(root)
+        //        }
+        //        return CONTINUE
+        //    }
+        //})
+        //return result
     }
     
     private fun getLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo? {
-        return CachedValuesManager.getManager(getDefaultProject()).getCachedValue(file, PlsKeys.cachedLauncherSettingsInfoKey, {
-            val value = ParadoxLauncherSettingsInfo.resolve(file)
-            CachedValueProvider.Result.create(value, file)
-        }, false)
+        return file.getOrPutUserData(PlsKeys.launcherSettingsInfoKey) {
+            ParadoxLauncherSettingsInfo.resolve(file)
+        }
     }
     
     private fun getDescriptorInfo(file: VirtualFile): ParadoxDescriptorInfo? {
-        return CachedValuesManager.getManager(getDefaultProject()).getCachedValue(file, PlsKeys.cachedDescriptorInfoKey, {
-            val value = ParadoxDescriptorInfo.resolve(file)
-            CachedValueProvider.Result.create(value, file)
-        }, false)
+        return file.getOrPutUserData(PlsKeys.descriptorInfoKey) {
+            ParadoxDescriptorInfo.resolve(file)
+        }
     }
     
     @JvmStatic

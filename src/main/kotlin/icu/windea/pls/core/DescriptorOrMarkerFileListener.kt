@@ -89,7 +89,7 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				if(rootInfo !is ParadoxModRootInfo) return
 				runWriteAction {
 					if(file == rootInfo.descriptorFile) {
-						file.putUserData(PlsKeys.cachedDescriptorInfoKey, null) //清空描述符信息缓存
+						file.putUserData(PlsKeys.descriptorInfoKey, null) //清空描述符信息缓存
 					} else if(file == rootInfo.markerFile && file.name == PlsConstants.launcherSettingsFileName) {
 						ParadoxCoreHandler.reparseFilesInRoot(rootFile) //这种情况下也需要重新解析
 					}
@@ -119,6 +119,7 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 	
 	private fun isPossibleDescriptorOrMarkerFile(fileName: String): Boolean {
 		return when {
+			//fileName.equals(PlsConstants.launcherSettingsFileName, true) -> true //不监听 - 不应当发生变化
 			fileName.equals(PlsConstants.descriptorFileName, true) -> true
 			fileName.startsWith('.') -> ParadoxGameType.resolve(fileName.drop(1)) != null
 			else -> false

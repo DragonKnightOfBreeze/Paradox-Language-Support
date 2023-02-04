@@ -94,8 +94,8 @@ object PlsKeys {
 	val fileTypeKey = Key.create<FileType>("paradox.fileType")
 	val contentFileKey = Key.create<VirtualFile>("paradox.contentFile")
 	
-	val cachedDescriptorInfoKey = Key.create<CachedValue<ParadoxDescriptorInfo>>("paradox.cached.descriptorInfo")
-	val cachedLauncherSettingsInfoKey = Key.create<CachedValue<ParadoxLauncherSettingsInfo>>("paradox.cached.launcherSettingsInfo")
+	val descriptorInfoKey = Key.create<ParadoxDescriptorInfo>("paradox.descriptorInfo")
+	val launcherSettingsInfoKey = Key.create<ParadoxLauncherSettingsInfo>("paradox.launcherSettingsInfo")
 	
 	val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("paradox.cached.definitionInfo")
 	val cachedDefinitionMemberInfoKey = Key.create<CachedValue<ParadoxDefinitionMemberInfo>>("paradox.cached.definitionMemberInfo")
