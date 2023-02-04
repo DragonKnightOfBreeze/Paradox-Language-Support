@@ -1,6 +1,7 @@
 package icu.windea.pls.lang
 
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -40,12 +41,13 @@ object ParadoxEconomicCategoryHandler {
     
     private fun resolveInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         //这种写法可能存在一定性能问题，但是问题不大
-        //需要兼容继承的mult修饰符
+        //兼容继承的mult修饰符
         try {
             val data = ParadoxScriptDataResolver.resolveProperty(definition, inline = true) ?: return null
             val name = definition.name.takeIfNotEmpty() ?: return null
             val parent = data.getValue("parent", valid = true)?.stringValue()
-            val useForAiBudget = data.getValue("use_for_ai_budget")?.booleanValue() ?: false
+            val useForAiBudget = data.getValue("use_for_ai_budget")?.booleanValue()
+                ?: getUseForAiBudgetFromParent(name, parent, definition)
             val modifiers = mutableSetOf<ParadoxEconomicCategoryModifierInfo>()
             val modifierCategory = data.getValue("modifier_category", valid = true)?.stringValue()
             
@@ -61,45 +63,85 @@ object ParadoxEconomicCategoryHandler {
                 .mapNotNull { resolveTriggeredModifier(it) }
             val triggeredUpkeepModifiers = data.getValues("triggered_upkeep_modifier", validKey = true)
                 .mapNotNull { resolveTriggeredModifier(it) }
-    
+            
             // will generate if use_for_ai_budget = yes (inherited by parent property for _mult modifiers)
             // <economic_category>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }
             // will generate:
             // <economic_category>_<resource>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }
             
-            fun addModifiers(resource: String?) {
-                val target = if(resource != null) "_${resource}" else ""
-                generateAddModifiers.forEach { category ->
-                    modifiers.add(ParadoxEconomicCategoryModifierInfo("${name}${target}_${category}_add", resource, false))
+            fun addModifier(key: String, category: String, type: String, triggered: Boolean, useParentIcon: Boolean) {
+                fun addModifier(modifierName: String, resource: String?) {
+                    modifiers.add(ParadoxEconomicCategoryModifierInfo(modifierName, resource, triggered, useParentIcon))
                 }
-                generateMultModifiers.forEach { category ->
-                    modifiers.add(ParadoxEconomicCategoryModifierInfo("${name}${target}_${category}_mult", resource, false))
+                
+                if(useForAiBudget && triggered) {
+                    addModifier("${key}_${category}_${type}", null)
                 }
-                triggeredProducesModifiers.forEach { (key, useParentIcon, types) ->
-                    types.forEach { type ->
-                        modifiers.add(ParadoxEconomicCategoryModifierInfo("${key}${target}_produces_${type}", resource, true, useParentIcon))
-                    }
+                resources.forEach { resource ->
+                    addModifier("${key}_${resource}_${category}_${type}", resource)
                 }
-                triggeredCostModifiers.forEach { (key, useParentIcon, types) ->
-                    types.forEach { type ->
-                        modifiers.add(ParadoxEconomicCategoryModifierInfo("${key}${target}_cost_${type}", resource, true, useParentIcon))
-                    }
-                }
-                triggeredUpkeepModifiers.forEach { (key, useParentIcon, types) ->
-                    types.forEach { type ->
-                        modifiers.add(ParadoxEconomicCategoryModifierInfo("${key}${target}_upkeep_${type}", resource, true, useParentIcon))
-                    }
+                if(useForAiBudget && !triggered) {
+                    addModifier("${key}_${category}_${type}", null)
                 }
             }
-    
-            if(useForAiBudget) addModifiers(null)
-            resources.forEach { resource -> addModifiers(resource) }
+            
+            generateAddModifiers.forEach { category ->
+                val type = "add"
+                val triggered = false
+                val useParentIcon = false
+                addModifier(name, category, type, triggered, useParentIcon)
+            }
+            generateMultModifiers.forEach { category ->
+                val type = "mult"
+                val triggered = false
+                val useParentIcon = false
+                addModifier(name, category, type, triggered, useParentIcon)
+            }
+            triggeredProducesModifiers.forEach { (key, useParentIcon, types) ->
+                val category = "produces"
+                val triggered = false
+                types.forEach { type ->
+                    addModifier(name, category, type, triggered, useParentIcon)
+                }
+            }
+            triggeredCostModifiers.forEach { (key, useParentIcon, types) ->
+                val category = "cost"
+                val triggered = false
+                types.forEach { type ->
+                    addModifier(name, category, type, triggered, useParentIcon)
+                }
+            }
+            triggeredUpkeepModifiers.forEach { (key, useParentIcon, types) ->
+                val category = "upkeep"
+                val triggered = false
+                types.forEach { type ->
+                    addModifier(name, category, type, triggered, useParentIcon)
+                }
+            }
             
             return ParadoxEconomicCategoryInfo(name, parent, useForAiBudget, modifiers, modifierCategory)
         } catch(e: Exception) {
             logger.error(e)
             return null
         }
+    }
+    
+    private fun getUseForAiBudgetFromParent(source: String, parent: String?, contextElement: ParadoxScriptProperty): Boolean {
+        if(parent == null) return false // no parent > return false
+        if(source == parent) return false //recursive parent > invalid, return false
+        val file = contextElement.containingFile ?: return false
+        val project = file.project
+        val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file)
+        return doGetUseForAiBudgetFromParent(source, parent, project, selector)
+    }
+    
+    private fun doGetUseForAiBudgetFromParent(source: String, parent: String?, project: Project, selector: ParadoxDefinitionSelector): Boolean {
+        if(parent == null) return false // no parent > return false
+        if(source == parent) return false //recursive parent > invalid, return false
+        val parentElement = ParadoxDefinitionSearch.search(parent, "economic_category", project, selector = selector).find()
+        val newParent = parentElement?.findProperty("parent", inline = true)
+            ?.findValue<ParadoxScriptString>()?.stringValue
+        return doGetUseForAiBudgetFromParent(source, newParent, project, selector)
     }
     
     private fun getResources(contextElement: PsiElement): Set<String> {
@@ -116,7 +158,7 @@ object ParadoxEconomicCategoryHandler {
         return ParadoxTriggeredModifierInfo(key, useParentIcon, modifierTypes)
     }
     
-    fun resolveModifierCategory(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig>{
+    fun resolveModifierCategory(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
         val finalValue = value ?: "economic_unit" //default to economic_unit
         val enumConfig = configGroup.enums.getValue("scripted_modifier_categories")
         var keys = getModifierCategoryKeys(enumConfig, finalValue)
