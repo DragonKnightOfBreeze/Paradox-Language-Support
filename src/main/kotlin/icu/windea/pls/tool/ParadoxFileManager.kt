@@ -1,6 +1,7 @@
 package icu.windea.pls.tool
 
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.model.*
@@ -25,6 +26,7 @@ object ParadoxFileManager {
             tempFile.putUserData(PlsKeys.fileInfoKey, fileInfo)
             return tempFile
         } catch(e: Exception) {
+            if(e is ProcessCanceledException) throw e
             logger.error(e.message, e)
             return null
         }
@@ -45,6 +47,7 @@ object ParadoxFileManager {
             tempFile.putUserData(PlsKeys.fileTypeKey, file.fileType)
             return tempFile
         } catch(e: Exception) {
+            if(e is ProcessCanceledException) throw e
             logger.error(e.message, e)
             return null
         }

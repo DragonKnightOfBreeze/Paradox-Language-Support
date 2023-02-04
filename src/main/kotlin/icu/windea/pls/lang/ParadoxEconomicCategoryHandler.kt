@@ -1,6 +1,7 @@
 package icu.windea.pls.lang
 
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -121,6 +122,7 @@ object ParadoxEconomicCategoryHandler {
             
             return ParadoxEconomicCategoryInfo(name, parent, useForAiBudget, modifiers, modifierCategory)
         } catch(e: Exception) {
+            if(e is ProcessCanceledException) throw e
             logger.error(e)
             return null
         }

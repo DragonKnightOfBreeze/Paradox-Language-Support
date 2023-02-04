@@ -6,6 +6,7 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.fileTypes.ex.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
@@ -36,6 +37,7 @@ object ParadoxCoreHandler {
             }
             return true
         } catch(e: Exception) {
+            if(e is ProcessCanceledException) throw e
             return false
         }
     }
@@ -63,6 +65,7 @@ object ParadoxCoreHandler {
         val resolvedRootInfo = try {
             doResolveRootInfo(rootFile, canBeNotAvailable)
         } catch(e: Exception) {
+            if(e is ProcessCanceledException) throw e
             logger.warn(e)
             null
         }
@@ -148,6 +151,7 @@ object ParadoxCoreHandler {
             try {
                 return jsonMapper.readValue(file.inputStream)
             } catch(e: Exception) {
+                if(e is ProcessCanceledException) throw e
                 logger.warn(e)
                 return null
             }
@@ -205,6 +209,7 @@ object ParadoxCoreHandler {
         try {
             FileTypeManagerEx.getInstanceEx().makeFileTypesChange("Root of paradox files $rootFile changed.") { }
         } catch(e: Exception) {
+            if(e is ProcessCanceledException) throw e
             //ignore
         } finally {
             //要求重新索引
@@ -224,6 +229,7 @@ object ParadoxCoreHandler {
             }
             FileContentUtil.reparseFiles(project, files, true)
         } catch(e: Exception) {
+            if(e is ProcessCanceledException) throw e
             //ignore
         } finally {
             //要求重新索引
@@ -254,6 +260,7 @@ object ParadoxCoreHandler {
                 }
             }
         } catch(e: Exception) {
+            if(e is ProcessCanceledException) throw e
             logger.warn(e.message)
         }
     }

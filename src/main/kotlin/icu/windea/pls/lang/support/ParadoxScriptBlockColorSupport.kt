@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -66,7 +67,6 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
     }
     
     private fun doSetColor(element: ParadoxScriptBlock, color: Color) {
-        //FIXME 首次选择颜色后不关闭取色器，继续选择颜色，文档不会发生相应的变更，得到的document=null
         val project = element.project
         val colorType = getColorType(element)
         val colorArgs = getColorArgs(element) ?: return //中断操作
@@ -83,9 +83,9 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
             "hsv" -> {
                 val colorHsv = ColorConversions.convertRGBtoHSV(color.rgb shr 8)
                 if(shouldBeRgba) {
-                    "{ ${colorHsv.run { "$H $S $V ${color.alpha / 0f}" }} }"
+                    "{ ${colorHsv.run { "${H.asFloat()} ${S.asFloat()} ${V.asFloat()} ${(color.alpha / 255f).asFloat()}" }} }"
                 } else {
-                    "{ ${colorHsv.run { "$H $S $V" }} }"
+                    "{ ${colorHsv.run { "${H.asFloat()} ${S.asFloat()} ${V.asFloat()}" }} }"
                 }
             }
             else -> null
@@ -99,6 +99,7 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
             element.replace(newBlock)
         }
         CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
-        documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
+    
+    fun  Number.asFloat() = this.format(4)
 }

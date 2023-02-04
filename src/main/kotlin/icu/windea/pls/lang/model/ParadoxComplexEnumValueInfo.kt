@@ -7,7 +7,7 @@ import icu.windea.pls.config.cwt.config.*
 data class ParadoxComplexEnumValueInfo(
 	val name: String,
 	val enumName: String,
-	val gameType: icu.windea.pls.lang.model.ParadoxGameType?
+	val gameType: ParadoxGameType?
 ){
 	fun getConfig(project: Project): CwtComplexEnumConfig?{
 		if(gameType == null) return null

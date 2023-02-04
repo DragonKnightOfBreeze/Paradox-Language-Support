@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -68,9 +69,9 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
             "hsv" -> {
                 val colorHsv = ColorConversions.convertRGBtoHSV(color.rgb shr 8)
                 if(shouldBeRgba) {
-                    "hsv { ${colorHsv.run { "$H $S $V ${color.alpha / 0f}" }} }"
+                    "hsv { ${colorHsv.run { "${H.asFloat()} ${S.asFloat()} ${V.asFloat()} ${(color.alpha / 255f).asFloat()}" }} }"
                 } else {
-                    "hsv { ${colorHsv.run { "$H $S $V" }} }"
+                    "hsv { ${colorHsv.run { "${H.asFloat()} ${S.asFloat()} ${V.asFloat()}" }} }"
                 }
             }
             else -> null
@@ -84,6 +85,7 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
         val documentManager = PsiDocumentManager.getInstance(project)
         val document = documentManager.getDocument(element.containingFile) ?: return
         CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
-        documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
+    
+    fun  Number.asFloat() = this.format(4)
 }

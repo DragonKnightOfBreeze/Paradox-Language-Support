@@ -58,6 +58,5 @@ class ParadoxScriptStringColorSupport : ParadoxColorSupport {
         val documentManager = PsiDocumentManager.getInstance(project)
         val document = documentManager.getDocument(element.containingFile) ?: return
         CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
-        documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
 }
