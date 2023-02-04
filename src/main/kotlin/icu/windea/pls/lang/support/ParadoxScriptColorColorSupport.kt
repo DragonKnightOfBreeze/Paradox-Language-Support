@@ -9,7 +9,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import org.apache.commons.imaging.color.*
 import java.awt.*
 
 class ParadoxScriptColorColorSupport : ParadoxColorSupport {
@@ -60,18 +59,18 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
         val shouldBeRgba = color.alpha != 255 || colorArgs.size == 4
         val newText = when(colorType) {
             "rgb" -> {
-                if(shouldBeRgba) {
-                    "rgb { ${color.run { "$red $green $blue $alpha" }} }"
-                } else {
-                    "rgb { ${color.run { "$red $green $blue" }} }"
+                val (r, g, b, a) = color
+                when {
+                    shouldBeRgba -> "rgb { $r $g $b $a }"
+                    else -> "rgb { $r $g $b }"
                 }
             }
             "hsv" -> {
-                val colorHsv = ColorConversions.convertRGBtoHSV(color.rgb shr 8)
-                if(shouldBeRgba) {
-                    "hsv { ${colorHsv.run { "${H.asFloat()} ${S.asFloat()} ${V.asFloat()} ${(color.alpha / 255f).asFloat()}" }} }"
-                } else {
-                    "hsv { ${colorHsv.run { "${H.asFloat()} ${S.asFloat()} ${V.asFloat()}" }} }"
+                val (r, g, b, a) = color
+                val (h, s, v) = Color.RGBtoHSB(r, g, b, null)
+                when {
+                    shouldBeRgba -> "hsv { ${h.asFloat()} ${s.asFloat()} ${v.asFloat()} ${(a / 255f).asFloat()} }"
+                    else -> "hsv { ${h.asFloat()} ${s.asFloat()} ${v.asFloat()} }"
                 }
             }
             else -> null
@@ -85,7 +84,8 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
         val documentManager = PsiDocumentManager.getInstance(project)
         val document = documentManager.getDocument(element.containingFile) ?: return
         CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
+        documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
     
-    fun  Number.asFloat() = this.format(4)
+    fun Number.asFloat() = this.format(-4)
 }

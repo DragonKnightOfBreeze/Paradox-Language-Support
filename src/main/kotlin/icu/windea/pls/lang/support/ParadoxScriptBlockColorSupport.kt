@@ -9,7 +9,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import org.apache.commons.imaging.color.*
 import java.awt.*
 
 class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
@@ -74,18 +73,18 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
         val shouldBeRgba = color.alpha != 255 || colorArgs.size == 4
         val newText = when(colorType) {
             "rgb" -> {
-                if(shouldBeRgba) {
-                    "{ ${color.run { "$red $green $blue $alpha" }} }"
-                } else {
-                    "{ ${color.run { "$red $green $blue" }} }"
+                val (r, g, b, a) = color
+                when {
+                    shouldBeRgba -> "{ $r $g $b $a }"
+                    else -> "{ $r $g $b }"
                 }
             }
             "hsv" -> {
-                val colorHsv = ColorConversions.convertRGBtoHSV(color.rgb shr 8)
-                if(shouldBeRgba) {
-                    "{ ${colorHsv.run { "${H.asFloat()} ${S.asFloat()} ${V.asFloat()} ${(color.alpha / 255f).asFloat()}" }} }"
-                } else {
-                    "{ ${colorHsv.run { "${H.asFloat()} ${S.asFloat()} ${V.asFloat()}" }} }"
+                val (r, g, b, a) = color
+                val (h, s, v) = Color.RGBtoHSB(r, g, b, null)
+                when {
+                    shouldBeRgba -> "{ ${h.asFloat()} ${s.asFloat()} ${v.asFloat()} ${(a / 255f).asFloat()} }"
+                    else -> "{ ${h.asFloat()} ${s.asFloat()} ${v.asFloat()} }"
                 }
             }
             else -> null
@@ -99,7 +98,8 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
             element.replace(newBlock)
         }
         CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
+        documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
     
-    fun  Number.asFloat() = this.format(4)
+    fun Number.asFloat() = this.format(4)
 }

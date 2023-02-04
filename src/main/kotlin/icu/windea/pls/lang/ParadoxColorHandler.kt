@@ -3,7 +3,7 @@ package icu.windea.pls.lang
 import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.config.cwt.config.*
-import org.apache.commons.imaging.color.*
+import icu.windea.pls.core.*
 import java.awt.*
 
 object ParadoxColorHandler {
@@ -53,13 +53,12 @@ object ParadoxColorHandler {
     
     @JvmStatic
     fun getHsvColor(colorArgs: List<String>): Color? {
-        val h = colorArgs.get(0).toDouble().takeIf { it in 0.0 .. 1.0 } ?: return null
-        val s = colorArgs.get(1).toDouble().takeIf { it in 0.0 .. 1.0 } ?: return null
-        val v = colorArgs.get(2).toDouble().takeIf { it in 0.0 .. 1.0 } ?: return null
-        val a = (colorArgs.getOrNull(3)?.toDouble() ?: 1.0).takeIf { it in 0.0..1.0 } ?: return null
-        val colorRgb = ColorConversions.convertHSVtoRGB(h * 360, s * 100, v * 100)
-        val c = Color(colorRgb)
-        val color = Color(c.red,  c.green, c.blue, (a * 255).toInt())
+        val h = colorArgs.get(0).toFloat().takeIf { it in 0f..1f } ?: return null
+        val s = colorArgs.get(1).toFloat().takeIf { it in 0f..1f } ?: return null
+        val v = colorArgs.get(2).toFloat().takeIf { it in 0f..1f } ?: return null
+        val a = (colorArgs.getOrNull(3)?.toFloat() ?: 1f).takeIf { it in 0f..1f } ?: return null
+        val (r, g, b) = Color.getHSBColor(h, s, v)
+        val color = Color(r, g, b, (a * 255f).toInt())
         return color
     }
     
