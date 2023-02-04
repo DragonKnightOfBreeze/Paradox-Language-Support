@@ -1,6 +1,7 @@
 package icu.windea.pls.lang
 
 import com.intellij.openapi.command.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -33,6 +34,7 @@ object ParadoxColorHandler {
             val value = try {
                 doGetColor(element)
             } catch(e: Exception) {
+                if(e is ProcessCanceledException) throw e
                 null
             }
             CachedValueProvider.Result.create(value, element)
@@ -111,6 +113,7 @@ object ParadoxColorHandler {
         try {
             return doSetColor(element, color)
         } catch(e: Exception) {
+            if(e is ProcessCanceledException) throw e
             //ignored
         }
     }
@@ -157,6 +160,7 @@ object ParadoxColorHandler {
     }
     
     private fun doSetColor(element: ParadoxScriptBlock, color: Color) {
+        //FIXME 首次选择颜色后不关闭取色器，继续选择颜色，文档不会发生相应的变更，得到的document=null
         val project = element.project
         val colorType = getColorType(element)
         val colorArgs = getColorArgs(element) ?: return //中断操作
