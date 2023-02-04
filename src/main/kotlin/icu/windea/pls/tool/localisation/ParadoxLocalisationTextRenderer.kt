@@ -54,13 +54,13 @@ object ParadoxLocalisationTextRenderer {
 	
 	private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, builder: StringBuilder) {
 		val reference = element.reference
-		val rgbText = element.colorConfig?.color?.rgbString
+		val colorHex = element.colorConfig?.color?.toHex()
 		if(reference != null) {
 			val resolved = reference.resolve()
 			if(resolved is ParadoxLocalisationProperty) {
-				if(rgbText != null) builder.append("<span style=\"color: ").append(rgbText).append("\">")
+				if(colorHex != null) builder.append("<span style=\"color: #").append(colorHex).append("\">")
 				renderTo(resolved, builder)
-				if(rgbText != null) builder.append("</span>")
+				if(colorHex != null) builder.append("</span>")
 				return
 			} else if(resolved is CwtProperty){
 				builder.append(resolved.value)
@@ -68,8 +68,8 @@ object ParadoxLocalisationTextRenderer {
 			}
 		}
 		//如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，否则保留颜色码
-		if(rgbText != null) {
-			builder.append("<code style=\"color: ").append(rgbText).append("\">").append(element.text).append("</code>")
+		if(colorHex != null) {
+			builder.append("<code style=\"color: ").append(colorHex).append("\">").append(element.text).append("</code>")
 		} else {
 			builder.append("<code>").append(element.text).append("</code>")
 		}
@@ -105,11 +105,11 @@ object ParadoxLocalisationTextRenderer {
 		//如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
 		val richTextList = element.richTextList
 		if(richTextList.isEmpty()) return
-		val rgbText = element.colorConfig?.color?.rgbString
-		if(rgbText != null) builder.append("<span style=\"color: ").append(rgbText).append("\">")
+		val colorHex = element.colorConfig?.color?.toHex()
+		if(colorHex != null) builder.append("<span style=\"color: #").append(colorHex).append("\">")
 		for(richText in richTextList) {
 			renderTo(richText, builder)
 		}
-		if(rgbText != null) builder.append("</span>")
+		if(colorHex != null) builder.append("</span>")
 	}
 }

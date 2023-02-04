@@ -3,7 +3,7 @@ package icu.windea.pls.script.editor
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.lang.support.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import java.awt.*
@@ -14,13 +14,13 @@ class ParadoxScriptColorProvider : ElementColorProvider {
 	override fun getColorFrom(element: PsiElement): Color? {
 		val targetElement = getTargetElement(element)
 		if(targetElement == null) return null
-		return ParadoxColorHandler.getColor(targetElement)
+		return ParadoxColorSupport.getColor(targetElement)
 	}
 	
 	override fun setColorTo(element: PsiElement, color: Color) {
 		val targetElement = getTargetElement(element)
 		if(targetElement == null) return
-		return ParadoxColorHandler.setColor(targetElement, color)
+		return ParadoxColorSupport.setColor(targetElement, color)
 	}
 	
 	private fun getTargetElement(element: PsiElement): ParadoxScriptValue? {

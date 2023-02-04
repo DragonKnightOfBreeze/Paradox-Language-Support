@@ -2,7 +2,7 @@
 # Used to provide language features for localisation locales, e.g. "l_english"
 # 
 # See vanilla game file: localisation/languages.yml
-# See CWT rule: enum[font_languages]
+# See CWT rule: enum[font_language]
 
 localisation_locales = {
 	### Default
