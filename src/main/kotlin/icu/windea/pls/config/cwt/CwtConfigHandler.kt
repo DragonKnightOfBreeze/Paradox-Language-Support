@@ -1450,7 +1450,7 @@ object CwtConfigHandler {
 		val contextElement = context.contextElement
 		val block = invocationExpressionElement.block ?: return
 		val existParameterNames = mutableSetOf<String>()
-		block.processProperty(includeConditional = false) {
+		block.processProperty(conditional = false) {
 			val propertyKey = it.propertyKey	
 			val name = if(contextElement == propertyKey) propertyKey.getKeyword(context.offsetInParent) else propertyKey.name
 			existParameterNames.add(name)

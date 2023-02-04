@@ -1,6 +1,8 @@
 package icu.windea.pls.config.core
 
+import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.codeInsight.hints.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.fileTypes.ex.*
@@ -15,6 +17,8 @@ import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.script.*
 import java.lang.invoke.*
 import java.util.*
 
@@ -114,12 +118,13 @@ object ParadoxCoreHandler {
     }
     
     private fun getLauncherSettingsFile(root: VirtualFile): VirtualFile? {
-        val rootPath = root.toNioPath()
-        rootPath.resolve(PlsConstants.launcherSettingsFileName)
-            .let { VfsUtil.findFile(it, true) }
+        root.findChild(PlsConstants.launcherSettingsFileName)
+            ?.takeIf { !it.isDirectory }
             ?.let { return it }
-        rootPath.resolve("launcher/" + PlsConstants.launcherSettingsFileName)
-            .let { VfsUtil.findFile(it, true) }
+        root.findChild("launcher")
+            ?.takeIf { it.isDirectory }
+            ?.findChild(PlsConstants.launcherSettingsFileName)
+            ?.takeIf { !it.isDirectory }
             ?.let { return it }
         return null
         
@@ -143,13 +148,41 @@ object ParadoxCoreHandler {
     
     private fun getLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo? {
         return file.getOrPutUserData(PlsKeys.launcherSettingsInfoKey) {
-            ParadoxLauncherSettingsInfo.resolve(file)
+            try {
+                return jsonMapper.readValue(file.inputStream)
+            } catch(e: Exception) {
+                logger.warn(e)
+                return null
+            }
         }
     }
     
     private fun getDescriptorInfo(file: VirtualFile): ParadoxDescriptorInfo? {
+        //see: descriptor.cwt
         return file.getOrPutUserData(PlsKeys.descriptorInfoKey) {
-            ParadoxDescriptorInfo.resolve(file)
+            val psiFile = file.toPsiFile<ParadoxScriptFile>(getDefaultProject()) ?: return null
+            val rootBlock = psiFile.findChild<ParadoxScriptRootBlock>() ?: return null
+            var name: String? = null
+            var version: String? = null
+            var picture: String? = null
+            var tags: Set<String>? = null
+            var supportedVersion: String? = null
+            var remoteFileId: String? = null
+            var path: String? = null
+            rootBlock.processProperty(conditional = false, inline = false) { property ->
+                when(property.name) {
+                    "name" -> name = property.findValue<ParadoxScriptString>()?.stringValue
+                    "version" -> version = property.findValue<ParadoxScriptString>()?.stringValue
+                    "picture" -> picture = property.findValue<ParadoxScriptString>()?.stringValue
+                    "tags" -> tags = property.findBlockValues<ParadoxScriptString>().mapTo(mutableSetOf()) { it.stringValue }
+                    "supported_version" -> supportedVersion = property.findValue<ParadoxScriptString>()?.stringValue
+                    "remote_file_id" -> remoteFileId = property.findValue<ParadoxScriptString>()?.stringValue
+                    "path" -> path = property.findValue<ParadoxScriptString>()?.stringValue
+                }
+                true
+            }
+            val nameToUse = name ?: file.parent?.name.orAnonymous() //如果没有name属性，则使用根目录名
+            return ParadoxDescriptorInfo(nameToUse, version, picture, tags, supportedVersion, remoteFileId, path, isModDescriptor = true)
         }
     }
     
@@ -238,7 +271,7 @@ object ParadoxCoreHandler {
                 }
             }
         } catch(e: Exception) {
-            thisLogger().warn(e.message)
+            logger.warn(e.message)
         }
     }
 }

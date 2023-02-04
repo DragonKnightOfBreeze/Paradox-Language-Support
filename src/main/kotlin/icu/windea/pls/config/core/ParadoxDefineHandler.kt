@@ -33,7 +33,7 @@ object ParadoxDefineHandler {
                 val defineValue = defines.getOrPut(path) { 
                     val property = file.findByPath<ParadoxScriptProperty>(path, ignoreCase = false) ?: return@getOrPut null
                     val propertyValue = property.propertyValue ?: return@getOrPut null
-                    ParadoxScriptDataResolver.resolveValue(propertyValue)
+                    ParadoxScriptDataResolver.resolveValue(propertyValue, conditional = false)
                 }
                 if(defineValue != null) {
                     result = defineValue

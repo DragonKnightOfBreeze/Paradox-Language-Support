@@ -44,7 +44,7 @@ class MissingParameterInspection : LocalInspectionTool() {
 				
 				val parameterNames = mutableSetOf<String>()
 				val block = element.block ?: return
-				block.processProperty(includeConditional = false) { 
+				block.processProperty(conditional = false) { 
 					parameterNames.add(it.name)
 					true
 				}

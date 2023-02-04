@@ -31,7 +31,7 @@ object DdsToPngConverter {
 	fun convert(ddsAbsPath: String, ddsRelPath: String? = null, frame: Int = 0): String? {
 		try {
 			//如果存在基于DDS文件绝对路径的缓存数据，则使用缓存的PNG文件绝对路径
-			val pngAbsPath = getPngAbsPath(ddsAbsPath, ddsRelPath, frame)
+			val pngAbsPath = getPngAbsPath(ddsAbsPath.replace('\\', '/'), ddsRelPath, frame)
 			if(pngAbsPath.notExists()) {
 				doConvertDdsToPng(ddsAbsPath, pngAbsPath, frame)
 			}
@@ -92,7 +92,7 @@ object DdsToPngConverter {
 	 * @param frame 帧数，用于切割DDS图片。默认为0表示不切割。
 	 */
 	fun invalidate(ddsAbsPath: String, frame: Int = 0) {
-		val cacheKey = getCacheKey(ddsAbsPath, frame)
+		val cacheKey = getCacheKey(ddsAbsPath.replace('\\', '/'), frame)
 		ddsCache.invalidate(cacheKey)
 		externalDdsCache.invalidate(cacheKey)
 	}

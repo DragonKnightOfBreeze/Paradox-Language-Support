@@ -17,20 +17,20 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 /**
  * 遍历当前代码块中的所有（直接作为子节点的）值和属性。
- * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的属性。
+ * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段的情况。不能嵌套内联。（如，内联脚本）
  */
 fun ParadoxScriptBlockElement.processData(
-	includeConditional: Boolean = true,
+	conditional: Boolean = true,
 	inline: Boolean = false,
 	processor: (ParadoxScriptMemberElement) -> Boolean
 ): Boolean {
 	val target = this
 	return target.processChild {
 		when {
-			it is ParadoxScriptValue -> doProcessValueChild(it, includeConditional, inline, processor)
-			it is ParadoxScriptProperty -> doProcessPropertyChild(it, includeConditional, inline, processor)
-			includeConditional && it is ParadoxScriptParameterCondition -> it.processData(processor)
+			it is ParadoxScriptValue -> doProcessValueChild(it, conditional, inline, processor)
+			it is ParadoxScriptProperty -> doProcessPropertyChild(it, conditional, inline, processor)
+			conditional && it is ParadoxScriptParameterCondition -> it.processData(processor)
 			else -> true
 		}
 	}
@@ -38,19 +38,19 @@ fun ParadoxScriptBlockElement.processData(
 
 /**
  * 遍历当前代码块中的所有（直接作为子节点的）属性。
- * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的属性。
+ * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段的情况。不能嵌套内联。（如，内联脚本）
  */
 fun ParadoxScriptBlockElement.processProperty(
-	includeConditional: Boolean = true,
+	conditional: Boolean = true,
 	inline: Boolean = false,
 	processor: (ParadoxScriptProperty) -> Boolean
 ): Boolean {
 	val target = this
 	return target.processChild {
 		when {
-			it is ParadoxScriptProperty -> doProcessPropertyChild(it, includeConditional, inline, processor)
-			includeConditional && it is ParadoxScriptParameterCondition -> it.processProperty(processor)
+			it is ParadoxScriptProperty -> doProcessPropertyChild(it, conditional, inline, processor)
+			conditional && it is ParadoxScriptParameterCondition -> it.processProperty(processor)
 			else -> true
 		}
 	}
@@ -58,25 +58,25 @@ fun ParadoxScriptBlockElement.processProperty(
 
 /**
  * 遍历当前代码块中的所有（直接作为子节点的）值。
- * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的值。
+ * @param conditional 是否也包括间接作为其中的参数表达式的子节点的值。
  * @param inline 是否处理需要内联脚本片段的情况。不能嵌套内联。（如，内联脚本）
  */
 fun ParadoxScriptBlockElement.processValue(
-	includeConditional: Boolean = true,
+	conditional: Boolean = true,
 	inline: Boolean = false,
 	processor: (ParadoxScriptValue) -> Boolean
 ): Boolean {
 	val target = this
 	return target.processChild {
 		when {
-			it is ParadoxScriptValue -> doProcessValueChild(it, includeConditional, inline, processor)
-			includeConditional && it is ParadoxScriptParameterCondition -> it.processValue(processor)
+			it is ParadoxScriptValue -> doProcessValueChild(it, conditional, inline, processor)
+			conditional && it is ParadoxScriptParameterCondition -> it.processValue(processor)
 			else -> true
 		}
 	}
 }
 
-private fun doProcessValueChild(it: ParadoxScriptValue, includeConditional: Boolean, inline: Boolean, processor: (ParadoxScriptValue) -> Boolean): Boolean {
+private fun doProcessValueChild(it: ParadoxScriptValue, conditional: Boolean, inline: Boolean, processor: (ParadoxScriptValue) -> Boolean): Boolean {
 	val r = processor(it)
 	if(!r) return false
 	if(inline) {
@@ -85,7 +85,7 @@ private fun doProcessValueChild(it: ParadoxScriptValue, includeConditional: Bool
 			val block = inlined.block
 			if(block != null) {
 				//不能嵌套内联
-				val r1 = block.processValue(includeConditional, processor = processor)
+				val r1 = block.processValue(conditional, processor = processor)
 				if(!r1) return false
 			}
 		}
@@ -94,7 +94,7 @@ private fun doProcessValueChild(it: ParadoxScriptValue, includeConditional: Bool
 	return true
 }
 
-private fun doProcessPropertyChild(it: ParadoxScriptProperty, includeConditional: Boolean, inline: Boolean, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+private fun doProcessPropertyChild(it: ParadoxScriptProperty, conditional: Boolean, inline: Boolean, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
 	val r = processor(it)
 	if(!r) return false
 	if(inline) {
@@ -103,7 +103,7 @@ private fun doProcessPropertyChild(it: ParadoxScriptProperty, includeConditional
 			val block = inlined.block
 			if(block != null) {
 				//不能嵌套内联
-				val r1 = block.processProperty(includeConditional, processor = processor)
+				val r1 = block.processProperty(conditional, processor = processor)
 				if(!r1) return false
 			}
 		}
@@ -167,13 +167,13 @@ fun PsiElement.findParentDefinition(): ParadoxScriptDefinitionElement? {
 /**
  * 得到指定名字的属性。
  * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果为空字符串且自身是脚本属性，则返回自身
- * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的属性。
+ * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段的情况。不能嵌套内联。（如，内联脚本）
  */
 fun PsiElement.findProperty(
 	propertyName: String? = null,
 	ignoreCase: Boolean = true,
-	includeConditional: Boolean = true,
+	conditional: Boolean = true,
 	inline: Boolean = false,
 ): ParadoxScriptProperty? {
 	if(language != ParadoxScriptLanguage) return null
@@ -184,7 +184,7 @@ fun PsiElement.findProperty(
 		else -> null
 	}
 	var result: ParadoxScriptProperty? = null
-	block?.processProperty(includeConditional, inline) {
+	block?.processProperty(conditional, inline) {
 		if(propertyName == null || propertyName.equals(it.name, ignoreCase)) {
 			result = it
 			false
@@ -219,7 +219,7 @@ fun PsiElement.findParentProperty(propertyName: String? = null, ignoreCase: Bool
 
 /**
  * 基于路径向下查找指定的属性或值。如果路径为空，则返回查找到的第一个属性或值。
- * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的属性。
+ * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段的情况。不能嵌套内联。（如，内联脚本）
  * @see ParadoxElementPath
  * @see ParadoxScriptMemberElement
@@ -227,7 +227,7 @@ fun PsiElement.findParentProperty(propertyName: String? = null, ignoreCase: Bool
 inline fun <reified T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
 	path: String = "",
 	ignoreCase: Boolean = true,
-	includeConditional: Boolean = true,
+	conditional: Boolean = true,
 	inline: Boolean = false,
 ): T? {
 	if(language != ParadoxScriptLanguage) return null
@@ -238,10 +238,10 @@ inline fun <reified T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.f
 		for(subPathInfo in subPathInfos) {
 			val (subPath) = subPathInfo
 			if(subPath == "-") return null //TODO 暂不支持
-			current = current.findProperty(subPath, ignoreCase, includeConditional, inline) ?: return null
+			current = current.findProperty(subPath, ignoreCase, conditional, inline) ?: return null
 		}
 	} else {
-		current = current.findProperty("", ignoreCase, includeConditional, inline) ?: return null
+		current = current.findProperty("", ignoreCase, conditional, inline) ?: return null
 	}
 	val targetType = T::class.java
 	when {

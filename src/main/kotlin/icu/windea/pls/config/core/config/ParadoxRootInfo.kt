@@ -1,10 +1,7 @@
 package icu.windea.pls.config.core.config
 
-import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.script.psi.*
 import java.nio.file.*
 
 /**
@@ -33,13 +30,14 @@ class ParadoxGameRootInfo(
     val launcherSettingsInfo: ParadoxLauncherSettingsInfo,
 ) : ParadoxRootInfo {
 	override val gameType: ParadoxGameType = launcherSettingsInfo.gameId.let { ParadoxGameType.resolve(it) } ?: throw IllegalStateException()
-    override val gameRootFile: VirtualFile 
-		get() {
-            if(rootType != ParadoxRootType.Game) return rootFile
-			val dlcPath = launcherSettingsInfo.dlcPath
-			val path = launcherSettingsFile.toNioPath().resolve(dlcPath)
-			return VfsUtil.findFile(path, true) ?: throw IllegalStateException()
-		}
+    override val gameRootFile: VirtualFile get() = doGetGameRootFile()
+    
+    private fun doGetGameRootFile(): VirtualFile {
+        if(rootType != ParadoxRootType.Game) return rootFile
+        val dlcPath = launcherSettingsInfo.dlcPath
+        val path = launcherSettingsFile.toNioPath().resolve(dlcPath).normalize().toAbsolutePath()
+        return VfsUtil.findFile(path, true) ?: throw IllegalStateException()
+    }
     
     override val rootPath: Path = rootFile.toNioPath()
     override val gameRootPath: Path = gameRootFile.toNioPath()
@@ -59,21 +57,11 @@ class ParadoxLauncherSettingsInfo(
     val gameId: String,
     val version: String,
     val rawVersion: String,
-    val gameDataPath: String, // %USER_DOCUMENTS%/Paradox Interactive/${gameDisplayName}
-    val dlcPath: String,
+    val gameDataPath: String = "%USER_DOCUMENTS%/Paradox Interactive/${ParadoxGameType.resolve(gameId)!!}",
+    val dlcPath: String = "",
     val exePath: String,
     val exeArgs: List<String>
-) {
-    companion object Resolver {
-        fun resolve(file: VirtualFile): ParadoxLauncherSettingsInfo? {
-            try {
-                return jsonMapper.readValue(file.inputStream)
-            } catch(e: Exception) {
-                return null
-            }
-        }
-    }
-}
+) 
 
 class ParadoxModRootInfo(
     override val rootFile: VirtualFile,
@@ -108,34 +96,4 @@ class ParadoxDescriptorInfo(
     val remoteFileId: String? = null,
     val path: String? = null,
     val isModDescriptor: Boolean = true
-) {
-    //see: descriptor.cwt
-    
-    companion object Resolver {
-        fun resolve(file: VirtualFile): ParadoxDescriptorInfo? {
-            val psiFile = file.toPsiFile<ParadoxScriptFile>(getDefaultProject()) ?: return null
-            val rootBlock = psiFile.findChild<ParadoxScriptRootBlock>() ?: return null
-            var name: String? = null
-            var version: String? = null
-            var picture: String? = null
-            var tags: Set<String>? = null
-            var supportedVersion: String? = null
-            var remoteFileId: String? = null
-            var path: String? = null
-            rootBlock.processProperty(includeConditional = false) { property ->
-                when(property.name) {
-                    "name" -> name = property.findValue<ParadoxScriptString>()?.stringValue
-                    "version" -> version = property.findValue<ParadoxScriptString>()?.stringValue
-                    "picture" -> picture = property.findValue<ParadoxScriptString>()?.stringValue
-                    "tags" -> tags = property.findBlockValues<ParadoxScriptString>().mapTo(mutableSetOf()) { it.stringValue }
-                    "supported_version" -> supportedVersion = property.findValue<ParadoxScriptString>()?.stringValue
-                    "remote_file_id" -> remoteFileId = property.findValue<ParadoxScriptString>()?.stringValue
-                    "path" -> path = property.findValue<ParadoxScriptString>()?.stringValue
-                }
-                true
-            }
-            val nameToUse = name ?: file.parent?.name.orAnonymous() //如果没有name属性，则使用根目录名
-            return ParadoxDescriptorInfo(nameToUse, version, picture, tags, supportedVersion, remoteFileId, path, isModDescriptor = true)
-        }
-    }
-}
+)

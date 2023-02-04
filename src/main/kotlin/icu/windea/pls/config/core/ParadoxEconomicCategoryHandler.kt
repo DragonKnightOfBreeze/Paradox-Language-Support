@@ -42,7 +42,7 @@ object ParadoxEconomicCategoryHandler {
         //这种写法可能存在一定性能问题，但是问题不大
         //需要兼容继承的mult修饰符
         try {
-            val data = ParadoxScriptDataResolver.resolveProperty(definition) ?: return null
+            val data = ParadoxScriptDataResolver.resolveProperty(definition, inline = true) ?: return null
             val name = definition.name.takeIfNotEmpty() ?: return null
             val parent = data.getValue("parent", valid = true)?.stringValue()
             val useForAiBudget = data.getValue("use_for_ai_budget")?.booleanValue() ?: false
@@ -55,11 +55,11 @@ object ParadoxEconomicCategoryHandler {
                 .mapNotNull { it.stringValue() }
             val generateMultModifiers = data.getValues("generate_mult_modifiers/-", valid = true)
                 .mapNotNull { it.stringValue() }
-            val triggeredProducesModifiers = data.getValues("triggered_produces_modifier")
+            val triggeredProducesModifiers = data.getValues("triggered_produces_modifier", validKey = true)
                 .mapNotNull { resolveTriggeredModifier(it) }
-            val triggeredCostModifiers = data.getValues("triggered_cost_modifier")
+            val triggeredCostModifiers = data.getValues("triggered_cost_modifier", validKey = true)
                 .mapNotNull { resolveTriggeredModifier(it) }
-            val triggeredUpkeepModifiers = data.getValues("triggered_upkeep_modifier")
+            val triggeredUpkeepModifiers = data.getValues("triggered_upkeep_modifier", validKey = true)
                 .mapNotNull { resolveTriggeredModifier(it) }
     
             // will generate if use_for_ai_budget = yes (inherited by parent property for _mult modifiers)

@@ -13,39 +13,37 @@ object ParadoxScriptDataResolver {
 	/**
 	 * 解析脚本文件的数据。跳过不合法的[PsiElement]。
 	 */
-	fun resolve(file: PsiFile): List<ParadoxScriptData> {
+	fun resolve(file: PsiFile, conditional: Boolean = true, inline: Boolean = false): ParadoxScriptData? {
 		if(file !is ParadoxScriptFile) throw IllegalArgumentException("Invalid file type (expect: 'ParadoxScriptFile')")
-		val rootBlock = file.findChild<ParadoxScriptRootBlock>() ?: return emptyList()
-		return resolveBlock(rootBlock)
+		val rootBlock = file.findChild<ParadoxScriptRootBlock>() ?: return null
+		return resolveBlock(rootBlock, conditional, inline)
 	}
 	
-	fun resolveBlock(element: ParadoxScriptBlockElement): List<ParadoxScriptData> {
-		val result: MutableList<ParadoxScriptData> = SmartList()
-		element.processData(includeConditional = true, inline = true) p@{ e -> 
+	fun resolveBlock(element: ParadoxScriptBlockElement, conditional: Boolean = true, inline: Boolean = false): ParadoxScriptData {
+		val value = element as? ParadoxScriptBlock
+		val children: MutableList<ParadoxScriptData> = SmartList()
+		element.processData(conditional, inline) p@{ e -> 
 			when{
-				e is ParadoxScriptValue -> resolveValue(e).let{ result.add(it) }
-				e is ParadoxScriptProperty -> resolveProperty(e)?.let{ result.add(it) }
+				e is ParadoxScriptValue -> resolveValue(e).let{ children.add(it) }
+				e is ParadoxScriptProperty -> resolveProperty(e)?.let{ children.add(it) }
 			}
 			true
 		}
-		return result
+		return ParadoxScriptData(null, value, children)
 	}
 	
-	fun resolveValue(element: ParadoxScriptValue): ParadoxScriptData {
-		val children = when {
-			element is ParadoxScriptBlock -> resolveBlock(element)
-			else -> null
-		}
-		return ParadoxScriptData(null, element, children)
+	fun resolveValue(element: ParadoxScriptValue, conditional: Boolean = true, inline: Boolean = false): ParadoxScriptData {
+		if(element is ParadoxScriptBlock) return resolveBlock(element, conditional, inline)
+		return ParadoxScriptData(null, element, null)
 	}
 	
-	fun resolveProperty(element: ParadoxScriptProperty): ParadoxScriptData? {
+	fun resolveProperty(element: ParadoxScriptProperty, conditional: Boolean = true, inline: Boolean = false): ParadoxScriptData? {
 		val propertyKey = element.propertyKey
 		val propertyValue = element.propertyValue
 		if(propertyValue == null) return null //ignore
 		
 		val children = when {
-			propertyValue is ParadoxScriptBlock -> resolveBlock(propertyValue)
+			propertyValue is ParadoxScriptBlock -> resolveBlock(propertyValue, conditional, inline).children
 			else -> null
 		}
 		return ParadoxScriptData(propertyKey, propertyValue, children)
