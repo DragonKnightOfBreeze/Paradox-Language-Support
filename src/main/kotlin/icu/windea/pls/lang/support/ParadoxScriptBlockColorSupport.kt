@@ -5,19 +5,21 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import org.apache.commons.imaging.color.*
 import java.awt.*
 
 class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
-    override fun supports(element: PsiElement): Boolean {
-        return element is ParadoxScriptBlock
+    override fun getElementFromToken(tokenElement: PsiElement): PsiElement? {
+        val elementType = tokenElement.elementType
+        if(elementType != LEFT_BRACE) return null
+        return tokenElement.parent as? ParadoxScriptBlock
     }
     
     override fun getColor(element: PsiElement): Color? {
-        element as ParadoxScriptBlock
+        if(element !is ParadoxScriptBlock) return null
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedColorKey) {
             val value = try {
                 doGetColor(element)
@@ -36,16 +38,13 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
     }
     
     private fun getColorType(element: ParadoxScriptBlock): String? {
-        val elementToGetOption = when {
+        val elementToGetOption: ParadoxScriptMemberElement? = when {
             element.isPropertyValue() -> element.parent as? ParadoxScriptProperty
             element.isBlockValue() -> element
             else -> null
         }
         if(elementToGetOption == null) return null
-        val configToGetOption = ParadoxCwtConfigHandler.resolveConfigs(elementToGetOption, allowDefinitionSelf = true)
-            .firstOrNull()
-        if(configToGetOption == null) return null
-        return getColorType(configToGetOption)
+        return ParadoxColorHandler.getColorType(elementToGetOption)
     }
     
     private fun getColorArgs(element: ParadoxScriptBlock): List<String>? {
@@ -56,12 +55,8 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
             ?.map { it.value }
     }
     
-    private fun getColorType(configToGetOption: CwtDataConfig<*>): String? {
-        return configToGetOption.options?.find { it.key == "color_type" }?.stringValue
-    }
-    
     override fun setColor(element: PsiElement, color: Color) {
-        element as ParadoxScriptBlock
+        if(element !is ParadoxScriptBlock) return
         try {
             return doSetColor(element, color)
         } catch(e: Exception) {

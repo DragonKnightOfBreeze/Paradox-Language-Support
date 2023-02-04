@@ -7,16 +7,23 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import org.apache.commons.imaging.color.*
 import java.awt.*
 
 class ParadoxScriptColorColorSupport : ParadoxColorSupport {
-    override fun supports(element: PsiElement): Boolean {
-        return element is ParadoxScriptColor
+    companion object {
+        val INSTANCE = ParadoxScriptColorColorSupport()
+    }
+    
+    override fun getElementFromToken(tokenElement: PsiElement): PsiElement? {
+        val elementType = tokenElement.elementType
+        if(elementType != COLOR_TOKEN) return null
+        return tokenElement.parent as? ParadoxScriptColor
     }
     
     override fun getColor(element: PsiElement): Color? {
-        element as ParadoxScriptColor
+        if(element !is ParadoxScriptColor) return null
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedColorKey) {
             val value = try {
                 doGetColor(element)
@@ -35,7 +42,7 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
     }
     
     override fun setColor(element: PsiElement, color: Color) {
-        element as ParadoxScriptColor
+        if(element !is ParadoxScriptColor) return
         try {
             return doSetColor(element, color)
         } catch(e: Exception) {

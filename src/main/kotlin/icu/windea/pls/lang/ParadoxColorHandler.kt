@@ -1,5 +1,8 @@
 package icu.windea.pls.lang
 
+import com.intellij.psi.*
+import com.intellij.ui.*
+import icu.windea.pls.config.cwt.config.*
 import org.apache.commons.imaging.color.*
 import java.awt.*
 
@@ -15,7 +18,7 @@ object ParadoxColorHandler {
     // h,s,v,a - int[0..255] or float[0.0..1.0]
     
     fun getColor(hex: String): Color {
-        return Color(hex.toInt())
+        return ColorUtil.fromHex(hex)
     }
     
     fun getColor(colorType: String, colorArgs: List<String>): Color? {
@@ -37,5 +40,16 @@ object ParadoxColorHandler {
                 return null
             }
         }
+    }
+    
+    fun getColorType(element: PsiElement): String? {
+        val configToGetOption = ParadoxCwtConfigHandler.resolveConfigs(element, allowDefinitionSelf = true)
+            .firstOrNull()
+        if(configToGetOption == null) return null
+        return getColorType(configToGetOption)
+    }
+    
+    private fun getColorType(configToGetOption: CwtDataConfig<*>): String? {
+        return configToGetOption.options?.find { it.key == "color_type" }?.stringValue
     }
 }

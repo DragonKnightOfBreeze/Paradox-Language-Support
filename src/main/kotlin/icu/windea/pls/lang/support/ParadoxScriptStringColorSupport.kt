@@ -3,30 +3,41 @@ package icu.windea.pls.lang.support
 import com.intellij.openapi.command.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import java.awt.*
 
 class ParadoxScriptStringColorSupport : ParadoxColorSupport {
-    override fun supports(element: PsiElement): Boolean {
-        return element is ParadoxScriptString
+    override fun getElementFromToken(tokenElement: PsiElement): PsiElement? {
+        val elementType = tokenElement.elementType
+        if(elementType != STRING_TOKEN && elementType != QUOTED_STRING_TOKEN) return null
+        return tokenElement.parent as? ParadoxScriptString
     }
     
     override fun getColor(element: PsiElement): Color? {
-        element as ParadoxScriptString
-        val hex = element.value.lowercase().removePrefixOrNull("0x") ?: return null
+        if(element !is ParadoxScriptString) return null
         return try {
-            ParadoxColorHandler.getColor(hex)
+            doGetColor(element)
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
             null
         }
     }
     
+    private fun doGetColor(element: ParadoxScriptString): Color? {
+        val hex = element.value.lowercase().removePrefixOrNull("0x") ?: return null
+        if(hex.length != 6 && hex.length != 8) return null
+        val colorType = ParadoxColorHandler.getColorType(element) ?: return null
+        if(colorType != "hex") return null
+        return ParadoxColorHandler.getColor(hex)
+    }
+    
     override fun setColor(element: PsiElement, color: Color) {
-        element as ParadoxScriptString
+        if(element !is ParadoxScriptString) return
         try {
             return doSetColor(element, color)
         } catch(e: Exception) {
