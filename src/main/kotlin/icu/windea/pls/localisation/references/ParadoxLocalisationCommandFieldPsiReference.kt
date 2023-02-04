@@ -98,7 +98,6 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", project, selector = selector).findFirst()
 		if(scriptedLoc != null) return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY //definition reference
 		
-		
 		//尝试识别为预定义的value[variable] （忽略大小写）
 		val predefinedVariable = configGroup.values.get("variable")?.valueConfigMap?.get(name)
 		if(predefinedVariable != null) return ParadoxScriptAttributesKeys.VARIABLE_KEY
