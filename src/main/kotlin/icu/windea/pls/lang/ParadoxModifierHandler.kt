@@ -24,7 +24,7 @@ object ParadoxModifierHandler {
 		//先判断是否存在对应的预定义的非生成的修正
 		if(matchesPredefinedModifier(configGroup, name)) return true
 		//否则基于解析器逻辑判断
-		return ParadoxModifierResolver.matchModifier(name, configGroup, matchType)
+		return ParadoxModifierSupport.matchModifier(name, configGroup, matchType)
 	}
 	
 	@JvmStatic
@@ -55,7 +55,7 @@ object ParadoxModifierHandler {
 	
 	private fun doResolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
 		//尝试解析为生成的修正
-		val generatedModifier = ParadoxModifierResolver.resolveModifier(name, element, configGroup)
+		val generatedModifier = ParadoxModifierSupport.resolveModifier(name, element, configGroup)
 		if(generatedModifier != null) return generatedModifier
 		//尝试解析为预定义的非生成的修正
 		return resolvePredefinedModifier(name, element, configGroup)
@@ -76,7 +76,7 @@ object ParadoxModifierHandler {
 		if(element !is ParadoxScriptStringExpressionElement) return
 		val modifierNames = mutableSetOf<String>()
 		//提示生成的修饰符
-		ParadoxModifierResolver.completeModifier(context, result, modifierNames)
+		ParadoxModifierSupport.completeModifier(context, result, modifierNames)
 		//提示预定义的修饰符
 		completePredefinedModifier(context, result, modifierNames)
 	}

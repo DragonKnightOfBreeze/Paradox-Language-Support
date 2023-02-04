@@ -50,7 +50,7 @@ class MissingParameterInspection : LocalInspectionTool() {
 				}
 				
 				val requiredParameterNames = mutableSetOf<String>()
-				ParadoxParameterResolver.processContextFromInvocationExpression(element, config) p@{
+				ParadoxParameterSupport.processContextFromInvocationExpression(element, config) p@{
 					val parameterMap = it.parameterMap
 					if(parameterMap.isNotEmpty()) {
 						parameterMap.forEach { (name, parameterInfos) ->

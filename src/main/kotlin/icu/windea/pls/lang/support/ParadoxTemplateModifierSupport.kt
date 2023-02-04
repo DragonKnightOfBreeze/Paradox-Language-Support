@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 通过模版表达式生成修饰符。（如：`job_<job>_add` -> `job_researcher_add`）
  */
-class ParadoxTemplateModifierResolver : ParadoxModifierResolver {
+class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     companion object {
         @JvmField
         val referencesKey = Key.create<List<ParadoxInTemplateExpressionReference>>("paradox.modifierElement.references")

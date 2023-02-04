@@ -20,6 +20,6 @@ class ParadoxParameterPsiReference(
 	override fun resolve(): PsiElement? {
 		val element = element
 		val name = rangeInElement.substring(element.text)
-		return ParadoxParameterResolver.resolveParameter(name, element)
+		return ParadoxParameterSupport.resolveParameter(name, element)
 	}
 }

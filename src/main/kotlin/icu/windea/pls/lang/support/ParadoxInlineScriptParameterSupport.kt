@@ -14,7 +14,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
-class ParadoxInlineScriptParameterResolver : ParadoxParameterResolver {
+class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     companion object {
         @JvmField val inlineScriptExpressionKey = Key.create<String>("paradox.parameterElement.inlineScriptExpression")
     }

@@ -1428,7 +1428,7 @@ object CwtConfigHandler {
 	fun completeParameters(element: PsiElement, read: Boolean, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		//向上找到参数上下文
 		val file = originalFile
-		val parameterContext =  ParadoxParameterResolver.findContext(element, file) ?: return
+		val parameterContext =  ParadoxParameterSupport.findContext(element, file) ?: return
 		val parameterMap = parameterContext.parameterMap
 		if(parameterMap.isEmpty()) return
 		for((parameterName, parameterInfos) in parameterMap) {
@@ -1436,7 +1436,7 @@ object CwtConfigHandler {
 			val parameter = parameterInfos.firstNotNullOfOrNull { (p) -> p.element } ?: continue
 			//排除当前正在输入的那个
 			if(parameterInfos.size == 1 && element isSamePosition parameter) continue
-            val parameterElement = ParadoxParameterResolver.resolveParameterWithContext(parameterName, element, parameterContext)
+            val parameterElement = ParadoxParameterSupport.resolveParameterWithContext(parameterName, element, parameterContext)
 				?: continue
 			val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
 				.withIcon(PlsIcons.Parameter)
@@ -1460,7 +1460,7 @@ object CwtConfigHandler {
 		
 		//整合查找到的所有参数上下文
 		val insertSeparator = contextElement !is ParadoxScriptPropertyKey
-		ParadoxParameterResolver.processContextFromInvocationExpression(invocationExpressionElement, invocationExpressionConfig) p@{ parameterContext ->
+		ParadoxParameterSupport.processContextFromInvocationExpression(invocationExpressionElement, invocationExpressionConfig) p@{ parameterContext ->
 			ProgressManager.checkCanceled()
 			val parameterMap = parameterContext.parameterMap
 			if(parameterMap.isEmpty()) return@p true
@@ -1469,7 +1469,7 @@ object CwtConfigHandler {
 				if(parameterName in existParameterNames) continue
 				if(!namesToDistinct.add(parameterName)) continue
 				
-				val parameterElement = ParadoxParameterResolver.resolveParameterWithContext(parameterName, contextElement, parameterContext)
+				val parameterElement = ParadoxParameterSupport.resolveParameterWithContext(parameterName, contextElement, parameterContext)
 					?: continue
 				val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
 					.withIcon(PlsIcons.Parameter)
@@ -1505,7 +1505,7 @@ object CwtConfigHandler {
 				if(parameterName in existParameterNames) continue
 				if(!namesToDistinct.add(parameterName)) continue
 				
-				val parameterElement = ParadoxParameterResolver.resolveParameterWithContext(parameterName, contextElement, parameterContext)
+				val parameterElement = ParadoxParameterSupport.resolveParameterWithContext(parameterName, contextElement, parameterContext)
 					?: continue
 				val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
 					.withIcon(PlsIcons.Parameter)
@@ -1598,7 +1598,7 @@ object CwtConfigHandler {
 					val invocationExpressionConfig = config.parent
 						?.castOrNull<CwtPropertyConfig>()
 						?: return null
-					return ParadoxParameterResolver.resolveParameterFromInvocationExpression(name, invocationExpression, invocationExpressionConfig)
+					return ParadoxParameterSupport.resolveParameterFromInvocationExpression(name, invocationExpression, invocationExpressionConfig)
 				}
 				//尝试解析为简单枚举
 				val enumConfig = configGroup.enums[enumName]
@@ -1739,7 +1739,7 @@ object CwtConfigHandler {
 					val invocationExpressionConfig = config.parent
 						?.castOrNull<CwtPropertyConfig>()
 						?: return emptyList()
-					return ParadoxParameterResolver.resolveParameterFromInvocationExpression(name, invocationExpression, invocationExpressionConfig)
+					return ParadoxParameterSupport.resolveParameterFromInvocationExpression(name, invocationExpression, invocationExpressionConfig)
 						.toSingletonListOrEmpty()
 				}
 				//尝试解析为简单枚举

@@ -278,7 +278,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     }
     
     private fun StringBuilder.addGeneratedModifiersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-        ParadoxModifierResolver.buildDDocumentationDefinitionForDefinition(element, definitionInfo, this)
+        ParadoxModifierSupport.buildDDocumentationDefinitionForDefinition(element, definitionInfo, this)
     }
     
     private fun StringBuilder.addScopeContextForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {

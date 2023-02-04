@@ -140,7 +140,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildParameterDefinition(element: ParadoxParameterElement) {
 		val name = element.name
 		definition {
-			val r = ParadoxParameterResolver.getDocumentationDefinition(element, this)
+			val r = ParadoxParameterSupport.getDocumentationDefinition(element, this)
 			if(!r) {
 				//显示默认的快速文档
 				append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
@@ -171,7 +171,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildModifierDefinition(element: ParadoxModifierElement, sectionsList: List<MutableMap<String, String>>?) {
 		val name = element.name
 		definition {
-			val r = ParadoxModifierResolver.getDocumentationDefinition(element, this)
+			val r = ParadoxModifierSupport.getDocumentationDefinition(element, this)
 			if(!r) {
 				//显示默认的快速文档
 				append(PlsDocBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
@@ -266,7 +266,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		if(!getSettings().documentation.showScopes) return
 		
 		if(sections != null) {
-			val modifierCategories = ParadoxModifierResolver.getModifierCategories(element) ?: return
+			val modifierCategories = ParadoxModifierSupport.getModifierCategories(element) ?: return
 			val gameType = configGroup.gameType
 			val contextElement = element
 			val categoryNames = modifierCategories.keys

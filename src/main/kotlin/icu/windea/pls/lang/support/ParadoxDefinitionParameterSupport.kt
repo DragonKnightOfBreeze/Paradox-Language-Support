@@ -12,7 +12,7 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxDefinitionParameterResolver : ParadoxParameterResolver {
+class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     companion object {
         @JvmField val definitionNameKey = Key.create<String>("paradox.parameterElement.definitionName")
         @JvmField val definitionTypesKey = Key.create<List<String>>("paradox.parameterElement.definitionTypes")

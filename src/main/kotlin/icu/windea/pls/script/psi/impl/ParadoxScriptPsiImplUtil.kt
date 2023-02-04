@@ -946,7 +946,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getParameterMap(element: ParadoxScriptDefinitionElement): Map<String, List<Tuple2<SmartPsiElementPointer<ParadoxParameter>, String?>>> {
 		//不支持参数时，直接返回空映射
-		if(!ParadoxParameterResolver.supports(element)) return emptyMap()
+		if(!ParadoxParameterSupport.supports(element)) return emptyMap()
 		
 		val file = element.containingFile
 		val result = sortedMapOf<String, MutableList<Tuple2<SmartPsiElementPointer<ParadoxParameter>, String?>>>() //按名字进行排序

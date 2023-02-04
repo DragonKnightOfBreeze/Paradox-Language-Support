@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.*
  * 通过经济类型（`economic_category`）生成修饰符。
  */
 @WithGameType(ParadoxGameType.Stellaris)
-class ParadoxEconomicCategoryModifierResolver: ParadoxModifierResolver {
+class ParadoxEconomicCategoryModifierSupport: ParadoxModifierSupport {
     companion object {
         @JvmField val economicCategoryInfoKey = Key.create<ParadoxEconomicCategoryInfo>("paradox.modifierElement.economicCategoryInfo")
         @JvmField val economicCategoryModifierInfoKey = Key.create<ParadoxEconomicCategoryModifierInfo>("paradox.modifierElement.economicCategoryModifierInfo")

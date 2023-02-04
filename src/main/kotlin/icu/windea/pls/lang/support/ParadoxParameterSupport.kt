@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.*
  * 
  * @see ParadoxParameterElement
  */
-interface ParadoxParameterResolver {
+interface ParadoxParameterSupport {
     fun supports(context: ParadoxScriptDefinitionElement): Boolean
     
     fun findContext(element: PsiElement, file: PsiFile?) : ParadoxScriptDefinitionElement?
@@ -42,7 +42,7 @@ interface ParadoxParameterResolver {
     fun buildDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean = false
     
     companion object INSTANCE {
-        @JvmStatic val EP_NAME = ExtensionPointName.create<ParadoxParameterResolver>("icu.windea.pls.paradoxParameterResolver")
+        @JvmStatic val EP_NAME = ExtensionPointName.create<ParadoxParameterSupport>("icu.windea.pls.paradoxParameterSupport")
         
         fun supports(context: ParadoxScriptDefinitionElement): Boolean {
             return EP_NAME.extensions.any { it.supports(context) }
