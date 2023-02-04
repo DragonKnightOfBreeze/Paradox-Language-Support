@@ -1,0 +1,17 @@
+<idea-plugin>
+  <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.paradoxMemberElementLinker" interface="icu.windea.pls.lang.linker.ParadoxMemberElementLinker" dynamic="true"/>
+    
+    <extensionPoint qualifiedName="icu.windea.pls.paradoxParameterResolver" interface="icu.windea.pls.lang.support.ParadoxParameterResolver" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.paradoxModifierResolver" interface="icu.windea.pls.lang.support.ParadoxModifierResolver" dynamic="true"/>
+  </extensionPoints>
+
+  <extensions defaultExtensionNs="icu.windea.pls">
+    <paradoxMemberElementLinker implementation="icu.windea.pls.lang.linker.ParadoxInlineScriptMemberElementLinker"/>
+    
+    <paradoxParameterResolver implementation="icu.windea.pls.lang.support.ParadoxDefinitionParameterResolver"/>
+    <paradoxParameterResolver implementation="icu.windea.pls.lang.support.ParadoxInlineScriptParameterResolver"/>
+    <paradoxModifierResolver implementation="icu.windea.pls.lang.support.ParadoxTemplateModifierResolver"/>
+    <paradoxModifierResolver implementation="icu.windea.pls.lang.support.ParadoxEconomicCategoryModifierResolver"/>
+  </extensions>
+</idea-plugin>

@@ -4,14 +4,14 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.config.core.*
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.cwt.expression.CwtDataType.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.*
 import java.util.*
 
 sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig<T> {

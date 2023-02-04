@@ -10,7 +10,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.search.*
@@ -43,7 +42,7 @@ abstract class ComplexEnumValueNameIntention : IntentionAction, PriorityAction, 
 		return file.findElementAt(offset) { it.parent as? ParadoxScriptStringExpressionElement }
 	}
 	
-	abstract fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project)
+	abstract fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo, editor: Editor, project: Project)
 	
 	override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
 	
@@ -57,7 +56,7 @@ abstract class ComplexEnumValueNameIntention : IntentionAction, PriorityAction, 
 class ComplexEnumValueNameFindUsagesIntention : ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.findUsages")
 	
-	override fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
+	override fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
 		GotoDeclarationAction.startFindUsages(editor, project, element)
 	}
 }
@@ -69,7 +68,7 @@ class ComplexEnumValueNameFindUsagesIntention : ComplexEnumValueNameIntention() 
 class ComplexEnumValueNameGotoImplementationsIntention : ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.gotoImplementations")
 	
-	override fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
+	override fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
 		val gameType = complexEnumValueInfo.gameType ?: return
 		val enumName = complexEnumValueInfo.enumName
 		val scope = GlobalSearchScope.allScope(project)
@@ -88,7 +87,7 @@ class ComplexEnumValueNameGotoImplementationsIntention : ComplexEnumValueNameInt
 class ComplexEnumValueNameGotoTypeDeclarationIntention : ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.gotoTypeDeclaration")
 	
-	override fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
+	override fun doInvoke(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
 		val gameType = complexEnumValueInfo.gameType ?: return
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		val enumName = complexEnumValueInfo.enumName

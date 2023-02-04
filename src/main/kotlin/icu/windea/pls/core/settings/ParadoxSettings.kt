@@ -3,8 +3,8 @@ package icu.windea.pls.core.settings
 import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.*
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import kotlin.properties.*

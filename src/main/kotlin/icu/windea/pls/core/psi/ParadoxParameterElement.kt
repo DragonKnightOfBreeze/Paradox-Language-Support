@@ -8,8 +8,8 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.component.*
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.support.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.core.navigation.*
 import javax.swing.*
 

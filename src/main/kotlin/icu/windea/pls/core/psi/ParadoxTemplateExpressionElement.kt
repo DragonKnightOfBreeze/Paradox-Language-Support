@@ -8,7 +8,7 @@ import com.intellij.psi.impl.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.references.*

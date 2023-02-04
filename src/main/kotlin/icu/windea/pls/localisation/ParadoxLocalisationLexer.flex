@@ -129,19 +129,19 @@ COMMENT=#[^\r\n]*
 END_OF_LINE_COMMENT=#[^\"\r\n]* //行尾注释不能包含双引号，否则会有解析冲突
 
 CHECK_LOCALE_ID=[a-z_]+:\s*[\r\n]
-CHECK_PROPERTY_REFERENCE_START=\$([a-zA-Z0-9_.\-@']?|{CHECK_COMMAND_START})
+CHECK_PROPERTY_REFERENCE_START=\$([a-zA-Z0-9_.\-'@]?|{CHECK_COMMAND_START})
 CHECK_ICON_START=£.?
-CHECK_COMMAND_START=\[[.a-zA-Z0-9_:@\s&&[^\r\n]]*.?
 CHECK_COLORFUL_TEXT_START=§.?
 CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 
 NUMBER=\d+
 //LOCALE_ID=[a-z_]+
-PROPERTY_KEY_TOKEN=[a-zA-Z0-9_.\-']+
+PROPERTY_KEY_CHAR=[a-zA-Z0-9_.\-']
+PROPERTY_KEY_TOKEN={PROPERTY_KEY_CHAR}+
 VALID_ESCAPE_TOKEN=\\[rnt\"$£§]
 INVALID_ESCAPE_TOKEN=\\.
 DOUBLE_LEFT_BRACKET=\[\[
-PROPERTY_REFERENCE_ID=[a-zA-Z0-9_.\-']+
+PROPERTY_REFERENCE_ID={PROPERTY_KEY_CHAR}+
 PROPERTY_REFERENCE_PARAMETER_TOKEN=[^\"$£§\[\r\n\\]+
 SCRIPTED_VARIABLE_ID=[a-zA-Z_][a-zA-Z0-9_]*
 ICON_ID=[a-zA-Z0-9\-_\\/]+
@@ -152,8 +152,9 @@ STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
 //[Root.@var]
 //[owner.MakeScope.Var('adventure_artifact_location').Title.GetHolder.GetCulture.GetNameNoTooltip]
 //[Artifact.GetOwner.Custom('ArtifactPrefixGenericAfterCreation')|U]
-COMMAND_SCOPE_ID_WITH_SUFFIX=[a-zA-Z0-9_:@()'|]+\.
-COMMAND_FIELD_ID_WITH_SUFFIX=[a-zA-Z0-9_:@)'|]+\]
+CHECK_COMMAND_START=\[[a-zA-Z0-9_:@()'.|\s&&[^\r\n]]*.?
+COMMAND_SCOPE_ID_WITH_SUFFIX=[^\r\n.\[\]]+\.
+COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
 
 %%
 

@@ -4,10 +4,10 @@ import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
@@ -25,8 +25,8 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                 //system link or localisation scope
                 resolved is CwtProperty -> {
                     val config = resolved.getUserData(PlsKeys.cwtConfigKey)
-                    when {
-                        config is CwtLocalisationLinkConfig -> {
+                    when(config) {
+                        is CwtLocalisationLinkConfig -> {
                             val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
                             val supportedScopes = config.inputScopes
                             val configGroup = config.info.configGroup
@@ -36,8 +36,9 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                 holder.registerProblem(element, description)
                             }
                         }
+        
                         //TODO depends on usages, cannot check now
-                        //config is CwtSystemLinkConfig -> {
+                        //is CwtSystemLinkConfig -> {
                         // if(!checkForSystemLink) return
                         //	val scopeContext = ParadoxScopeHandler.getScopeContext(element, file) ?: return
                         //	val resolvedScope = ParadoxScopeHandler.resolveScopeBySystemLink(config, scopeContext)
@@ -49,7 +50,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                         //	}
                         //}
                         //predefined event target - no scope info in cwt files yet
-                        config is CwtValueConfig -> {
+                        is CwtValueConfig -> {
                             return
                         }
                     }

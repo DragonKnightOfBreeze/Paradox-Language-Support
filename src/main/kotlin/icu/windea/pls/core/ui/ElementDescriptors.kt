@@ -1,6 +1,6 @@
 package icu.windea.pls.core.ui
 
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.model.*
 
 sealed interface ElementDescriptor{
 	val name: String

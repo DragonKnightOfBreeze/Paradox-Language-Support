@@ -7,7 +7,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.util.*
 import icons.*
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
@@ -100,7 +100,7 @@ object PlsKeys {
 	val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("paradox.cached.definitionInfo")
 	val cachedDefinitionMemberInfoKey = Key.create<CachedValue<ParadoxDefinitionMemberInfo>>("paradox.cached.definitionMemberInfo")
 	val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("paradox.cached.localisationInfo")
-	val cachedComplexEnumValueInfoKey = Key.create<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cached.complexEnumValueInfo")
+	val cachedComplexEnumValueInfoKey = Key.create<CachedValue<icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo>>("paradox.cached.complexEnumValueInfo")
 	val cachedTextColorInfoKey = Key.create<CachedValue<ParadoxTextColorInfo>>("paradox.cached.textColorInfo")
 	val cachedScopeContextKey = Key.create<CachedValue<ParadoxScopeContext>>("paradox.cached.scopeContext")
 	val cachedElementPathKey = Key.create<CachedValue<ParadoxElementPath>>("paradox.cached.elementPath")

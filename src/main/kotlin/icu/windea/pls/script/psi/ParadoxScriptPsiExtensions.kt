@@ -6,12 +6,14 @@ import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.*
-import icu.windea.pls.config.core.component.*
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.support.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.lang.linker.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.lang.linker.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -80,7 +82,7 @@ private fun doProcessValueChild(it: ParadoxScriptValue, conditional: Boolean, in
 	val r = processor(it)
 	if(!r) return false
 	if(inline) {
-		val inlined = ParadoxElementLinker.inlineElement(it)
+		val inlined = ParadoxMemberElementLinker.inlineElement(it)
 		if(inlined is ParadoxScriptDefinitionElement) {
 			val block = inlined.block
 			if(block != null) {
@@ -98,7 +100,7 @@ private fun doProcessPropertyChild(it: ParadoxScriptProperty, conditional: Boole
 	val r = processor(it)
 	if(!r) return false
 	if(inline) {
-		val inlined = ParadoxElementLinker.inlineElement(it)
+		val inlined = ParadoxMemberElementLinker.inlineElement(it)
 		if(inlined is ParadoxScriptDefinitionElement) {
 			val block = inlined.block
 			if(block != null) {

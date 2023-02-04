@@ -9,8 +9,8 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import icu.windea.pls.config.core.*
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
@@ -20,6 +20,7 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.cwt.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.references.*
@@ -152,7 +153,7 @@ val ParadoxScriptMemberElement.definitionMemberInfo: ParadoxDefinitionMemberInfo
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
 	get() = ParadoxLocalisationHandler.getInfo(this)
 
-val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo?
+val ParadoxScriptStringExpressionElement.complexEnumValueInfo: icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo?
 	get() = ParadoxComplexEnumValueHandler.getInfo(this)
 
 val ParadoxLocalisationLocale.localeConfig: CwtLocalisationLocaleConfig?

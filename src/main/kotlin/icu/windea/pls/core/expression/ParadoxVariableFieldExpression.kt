@@ -4,13 +4,13 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.ParadoxVariableFieldExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.highlighter.*
 
 /**

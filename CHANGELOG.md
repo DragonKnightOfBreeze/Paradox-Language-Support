@@ -73,7 +73,7 @@
 * 支持通过economic_category生成的修饰符
 
 * BUG修复
-  * [ ] 修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
+  * [X] 修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
 * 优化：
   * [X] 优化对复杂表达式的处理：特殊代码高亮绝不高亮参数部分，增强兼容性
   * [X] 匹配CWT规则使用静态匹配，需要访问索引时，大部分情况下认为直接匹配

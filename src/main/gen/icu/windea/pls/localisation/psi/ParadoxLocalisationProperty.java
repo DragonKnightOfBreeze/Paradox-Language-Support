@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.config.core.config.ParadoxLocalisationCategory;
+import icu.windea.pls.lang.model.ParadoxLocalisationCategory;
 import javax.swing.Icon;
 
 public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedElement, StubBasedPsiElement<ParadoxLocalisationStub> {

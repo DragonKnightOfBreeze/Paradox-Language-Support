@@ -5,12 +5,13 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.component.*
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.cwt.expression.CwtDataType.*
+import icu.windea.pls.lang.linker.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.linker.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -35,7 +36,7 @@ class TooManyExpressionInspection: LocalInspectionTool() {
 			override fun visitFile(file: PsiFile) {
 				if(file !is ParadoxScriptFile) return
 				//忽略可能的脚本片段入口
-				if(!ParadoxElementLinker.canLink(file)) {
+				if(!ParadoxMemberElementLinker.canLink(file)) {
 					val position = file //TODO not very suitable
 					val definitionMemberInfo = file.definitionMemberInfo
 					doCheck(position, definitionMemberInfo, true)
@@ -50,7 +51,7 @@ class TooManyExpressionInspection: LocalInspectionTool() {
 				val property = element.parent
 					?.castOrNull<ParadoxScriptProperty>()
 				//忽略可能的脚本片段入口
-				if(property != null && ParadoxElementLinker.canLink(property)) return
+				if(property != null && ParadoxMemberElementLinker.canLink(property)) return
 				val position = property?.propertyKey
 					?.also { if(it.isParameterAwareExpression()) return }
 					?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)

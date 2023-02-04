@@ -7,11 +7,13 @@ import com.intellij.pom.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.*
-import icu.windea.pls.config.core.component.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.support.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.lang.support.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.support.*
 import icu.windea.pls.script.psi.*
 
 //com.intellij.testIntegration.GotoTestOrCodeHandler

@@ -9,8 +9,8 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import com.intellij.util.text.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.*
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
@@ -79,7 +79,7 @@ class ParadoxScriptAnnotator : Annotator {
         }
     }
     
-    private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
+    private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo) {
         //高亮复杂枚举名对应的字符串（可能还有其他高亮）（这里不能使用PSI链接）
         val nameString = complexEnumValueInfo.name.escapeXml().orAnonymous()
         val enumNameString = complexEnumValueInfo.enumName

@@ -1,7 +1,7 @@
 package icu.windea.pls
 
 import com.intellij.*
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.model.*
 import org.jetbrains.annotations.*
 
 @NonNls

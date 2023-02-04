@@ -12,7 +12,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationStub;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.config.core.config.ParadoxLocalisationCategory;
+import icu.windea.pls.lang.model.ParadoxLocalisationCategory;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 

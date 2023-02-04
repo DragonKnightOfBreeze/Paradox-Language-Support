@@ -3,7 +3,7 @@ package icu.windea.pls.localisation.editor
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.tool.localisation.*

@@ -3,10 +3,10 @@ package icu.windea.pls.localisation.inspections.scope
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -22,15 +22,21 @@ class IncorrectScopeInspection : LocalInspectionTool() {
 				//predefined localisation command
 				resolved is CwtProperty -> {
 					val config = resolved.getUserData(PlsKeys.cwtConfigKey)
-					if(config is CwtLocalisationCommandConfig) {
-						val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
-						val supportedScopes = config.supportedScopes
-						val configGroup = config.info.configGroup
-						if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)) {
-							val location = element
-							val description = PlsBundle.message("inspection.localisation.scope.incorrectScope.description.1",
-								element.name, supportedScopes.joinToString(), scopeContext.thisScope)
-							holder.registerProblem(location, description)
+					when(config) {
+						is CwtLocalisationCommandConfig -> {
+							val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
+							val supportedScopes = config.supportedScopes
+							val configGroup = config.info.configGroup
+							if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)) {
+								val location = element
+								val description = PlsBundle.message("inspection.localisation.scope.incorrectScope.description.1",
+									element.name, supportedScopes.joinToString(), scopeContext.thisScope)
+								holder.registerProblem(location, description)
+							}
+						}
+						//predefined event target - no scope info in cwt files yet
+						is CwtValueConfig -> {
+							return
 						}
 					}
 				}

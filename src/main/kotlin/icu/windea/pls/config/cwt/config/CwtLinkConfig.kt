@@ -1,9 +1,9 @@
 package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
-import icu.windea.pls.config.core.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.*
 
 /**
  * @property desc desc: string

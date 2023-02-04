@@ -6,7 +6,7 @@ import com.intellij.openapi.roots.libraries.*
 import com.intellij.openapi.roots.libraries.ui.*
 import com.intellij.openapi.vfs.*
 import icons.*
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.core.*
 import javax.swing.*
 

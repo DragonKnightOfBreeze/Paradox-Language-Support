@@ -2,7 +2,7 @@ package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
 import com.intellij.util.containers.*
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.core.annotations.*

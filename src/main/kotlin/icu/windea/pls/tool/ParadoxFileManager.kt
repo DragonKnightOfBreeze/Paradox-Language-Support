@@ -3,7 +3,7 @@ package icu.windea.pls.tool
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.model.*
 import java.lang.invoke.*
 import java.nio.file.*
 import java.util.*

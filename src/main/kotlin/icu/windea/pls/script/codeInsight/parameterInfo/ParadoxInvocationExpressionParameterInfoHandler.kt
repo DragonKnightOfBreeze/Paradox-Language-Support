@@ -3,7 +3,7 @@ package icu.windea.pls.script.codeInsight.parameterInfo
 import com.intellij.lang.parameterInfo.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.search.*

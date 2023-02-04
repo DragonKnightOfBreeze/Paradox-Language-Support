@@ -4,9 +4,10 @@ import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.config.core.component.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.lang.support.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.support.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
@@ -47,7 +48,7 @@ class ParadoxScriptValueParameterExpressionNode (
 		}
 		
 		override fun resolve(): PsiElement? {
-			//NOTE 这里目前不使用 icu.windea.pls.config.core.component.ParadoxParameterResolver
+			//NOTE 这里目前不使用 icu.windea.pls.config.support.ParadoxParameterResolver
 			val element = element
 			val name = parameterName
 			val contextKey = "definition@script_value"

@@ -44,6 +44,10 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", project, selector = selector).find(exact)
 		if(scriptedLoc != null) return scriptedLoc
 		
+		//尝试识别为预定义的value[variable] （忽略大小写）
+		val predefinedVariable = configGroup.values.get("variable")?.valueConfigMap?.get(name)
+		if(predefinedVariable != null) return predefinedVariable.pointer.element
+		
 		//尝试识别为value[variable]
 		val variableSelector = valueSetValueSelector().gameType(gameType).preferRootFrom(element, exact)
 		val variable = ParadoxValueSetValueSearch.search(name, "variable", project, selector = variableSelector).findFirst()
@@ -67,6 +71,10 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		val scriptedLocs = ParadoxDefinitionSearch.search(name, "scripted_loc", project, selector = selector).findAll()
 		if(scriptedLocs.isNotEmpty()) return scriptedLocs.mapToArray { PsiElementResolveResult(it) }
 		
+		//尝试识别为预定义的value[variable] （忽略大小写）
+		val predefinedVariable = configGroup.values.get("variable")?.valueConfigMap?.get(name)
+		if(predefinedVariable != null) return predefinedVariable.pointer.element?.let { arrayOf(PsiElementResolveResult(it)) } ?: ResolveResult.EMPTY_ARRAY
+		
 		//尝试识别为value[variable]
 		val variableSelector = valueSetValueSelector().gameType(gameType).preferRootFrom(element)
 		val variables = ParadoxValueSetValueSearch.search(name, "variable", project, selector = variableSelector).findAll()
@@ -89,6 +97,11 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		val selector = definitionSelector().gameType(gameType)
 		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", project, selector = selector).findFirst()
 		if(scriptedLoc != null) return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY //definition reference
+		
+		
+		//尝试识别为预定义的value[variable] （忽略大小写）
+		val predefinedVariable = configGroup.values.get("variable")?.valueConfigMap?.get(name)
+		if(predefinedVariable != null) return ParadoxScriptAttributesKeys.VARIABLE_KEY
 		
 		//尝试识别为value[variable]
 		val variableSelector = valueSetValueSelector().gameType(gameType)

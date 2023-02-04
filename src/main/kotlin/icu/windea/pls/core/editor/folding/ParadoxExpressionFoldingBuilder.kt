@@ -6,7 +6,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.config.cwt.setting.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*

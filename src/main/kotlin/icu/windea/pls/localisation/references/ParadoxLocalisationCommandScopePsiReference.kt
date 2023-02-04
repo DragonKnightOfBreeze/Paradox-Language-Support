@@ -32,7 +32,8 @@ class ParadoxLocalisationCommandScopePsiReference(
 		val name = element.name
 		val project = element.project
 		val gameType = selectGameType(element) ?: return null
-		//尝试被识别为预定义的localisation_command
+		
+		//尝试识别为system_link或者localisation_scope
 		val configGroup = getCwtConfig(project).get(gameType) ?: return null
 		val systemLink = CwtConfigHandler.resolveSystemLink(name, configGroup)
 		if(systemLink != null) return systemLink
@@ -64,6 +65,10 @@ class ParadoxLocalisationCommandScopePsiReference(
 		if(systemLink != null) return ParadoxScriptAttributesKeys.SYSTEM_LINK_KEY
 		val localisationScope = CwtConfigHandler.resolvePredefinedLocalisationScope(name, configGroup)
 		if(localisationScope != null) return ParadoxScriptAttributesKeys.SCOPE_KEY
+		
+		//尝试识别为预定义的value[event_target] （忽略大小写）
+		val predefinedEventTarget = configGroup.values.get("event_target")?.valueConfigMap?.get(name)
+		if(predefinedEventTarget != null) return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
 		
 		//尝试识别为value[event_target]或value[global_event_target]
 		val selector = valueSetValueSelector().gameType(gameType)

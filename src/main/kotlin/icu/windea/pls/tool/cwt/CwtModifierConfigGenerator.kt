@@ -1,6 +1,6 @@
 package icu.windea.pls.tool.cwt
 
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.core.*
 import java.io.*
 

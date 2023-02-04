@@ -5,9 +5,9 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 class TooLongScopeLinkInspection : LocalInspectionTool() {

@@ -5,8 +5,8 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
-import icu.windea.pls.config.core.*
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.cwt.setting.*
@@ -14,6 +14,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.*
 import kotlin.collections.isNullOrEmpty
 import kotlin.collections.mapNotNullTo
 

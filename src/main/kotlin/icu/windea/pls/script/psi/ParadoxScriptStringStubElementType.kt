@@ -3,9 +3,9 @@ package icu.windea.pls.script.psi
 import com.intellij.lang.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.*
-import icu.windea.pls.config.core.config.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
@@ -65,7 +65,7 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 		val complexEnumValueInfo = run {
 			val name = dataStream.readNameString().orEmpty()
 			val enumName = dataStream.readNameString().orEmpty()
-			ParadoxComplexEnumValueInfo(name, enumName, gameType)
+			icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo(name, enumName, gameType)
 		}
 		val valueSetValueInfo = run {
 			val name = dataStream.readNameString().orEmpty()

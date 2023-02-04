@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.config.core.config.ParadoxLocalisationCategory.*
+import icu.windea.pls.lang.model.ParadoxLocalisationCategory.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.search.*
