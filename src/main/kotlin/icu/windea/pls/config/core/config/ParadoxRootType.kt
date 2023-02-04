@@ -3,7 +3,7 @@ package icu.windea.pls.config.core.config
 enum class ParadoxRootType(
 	val id: String,
 	val description: String,
-	val byRootName: Boolean = false
+	val byRootName: Boolean = false,
 ) {
 	Game("game", "Game"),
 	Mod("mod", "Mod"),

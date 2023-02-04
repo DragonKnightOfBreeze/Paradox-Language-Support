@@ -35,7 +35,7 @@ class ParadoxGameRootInfo(
     private fun doGetGameRootFile(): VirtualFile {
         if(rootType != ParadoxRootType.Game) return rootFile
         val dlcPath = launcherSettingsInfo.dlcPath
-        val path = launcherSettingsFile.toNioPath().resolve(dlcPath).normalize().toAbsolutePath()
+        val path = launcherSettingsFile.toNioPath().parent.resolve(dlcPath).normalize().toAbsolutePath()
         return VfsUtil.findFile(path, true) ?: throw IllegalStateException()
     }
     

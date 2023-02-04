@@ -2,9 +2,11 @@ package icu.windea.pls.config.core
 
 import com.intellij.openapi.progress.*
 import icu.windea.pls.config.core.config.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxValueSetValueHandler {
@@ -53,5 +55,24 @@ object ParadoxValueSetValueHandler {
 			?.let { return it }
 		val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return true
 		return config.expression.type == CwtDataType.Value
+	}
+	
+	@JvmStatic
+	fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxValueSetValueElement? {
+		val gameType = configGroup.gameType ?: return null
+		if(element !is ParadoxScriptStringExpressionElement) return null
+		val read = configExpression.type == CwtDataType.Value
+		val valueSetName = configExpression.value ?: return null
+		return ParadoxValueSetValueElement(element, name, valueSetName, configGroup.project, gameType, read)
+	}
+	
+	@JvmStatic
+	fun resolveValueSetValue(element: ParadoxScriptExpressionElement, configExpressions: List<CwtDataExpression>, name: String, configGroup: CwtConfigGroup): ParadoxValueSetValueElement? {
+		val gameType = configGroup.gameType ?: return null
+		if(element !is ParadoxScriptStringExpressionElement) return null
+		val configExpression = configExpressions.firstOrNull() ?: return null
+		val read = configExpression.type == CwtDataType.Value
+		val valueSetNames = configExpressions.mapNotNull { it.value }
+		return ParadoxValueSetValueElement(element, name, valueSetNames, configGroup.project, gameType, read)
 	}
 }

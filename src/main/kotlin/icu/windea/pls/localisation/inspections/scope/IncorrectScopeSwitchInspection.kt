@@ -48,6 +48,10 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                         //		holder.registerProblem(location, description)
                         //	}
                         //}
+                        //predefined event target - no scope info in cwt files yet
+                        config is CwtValueConfig -> {
+                            return
+                        }
                     }
                 }
                 //TODO event target or global event target - not supported yet

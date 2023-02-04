@@ -52,7 +52,7 @@ abstract class GotoPathAction(private val icon: Icon) : FileChooserAction(), Lig
     override fun actionPerformed(fileChooser: FileSystemTree, e: AnActionEvent) {
         runCatching {
             val targetPath = targetPath ?: return
-            val file = VfsUtil.findFile(targetPath, false) ?: return
+            val file = VfsUtil.findFile(targetPath, true) ?: return
             fileChooser.select(file, if(expand) Runnable { fileChooser.expand(file, null) } else null)
         }
     }

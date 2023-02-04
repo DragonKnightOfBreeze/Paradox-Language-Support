@@ -52,7 +52,7 @@ class ParadoxValueSetValueExpressionNode(
 		}
 		
 		override fun resolve(): PsiElement? {
-			return CwtConfigHandler.resolveValueSetValue(element, name, configExpressions, configGroup)
+			return CwtConfigHandler.resolvePredefinedValueSetValue(element, name, configExpressions, configGroup)
 		}
 	}
 }

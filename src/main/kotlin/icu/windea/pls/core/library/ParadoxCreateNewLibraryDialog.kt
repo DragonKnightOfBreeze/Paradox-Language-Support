@@ -47,16 +47,23 @@ class ParadoxCreateNewLibraryDialog(
 		init()
 	}
 	
-	//（下拉框）游戏类型  （下拉框）根类型
+	//（下拉框）游戏类型  （下拉框）根类型 （快速选中游戏目录的文本链接）
 	//（文件选择框）游戏或模组（根）目录
 	
 	override fun createCenterPanel() = panel {
+		lateinit var rootTypeComboBox: ComboBox<ParadoxRootType>
+		
 		row {
 			label(PlsBundle.message("library.dialog.createNewLibrary.gameType")).widthGroup("left")
 			comboBox(ParadoxGameType.valueList).bindItem(dialog.gameTypeProperty)
 			
 			label(PlsBundle.message("library.dialog.createNewLibrary.rootType"))
 			comboBox(listOf(ParadoxRootType.Game, ParadoxRootType.Mod)).bindItem(dialog.rootTypeProperty)
+				.applyToComponent { rootTypeComboBox = this }
+			
+			link(PlsBundle.message("library.dialog.createNewLibrary.quickSelect")) {
+				quickSelectGamePath()
+			}.enabledIf(rootTypeComboBox.selectedValueMatches { it == ParadoxRootType.Game })
 		}
 		row {
 			label(PlsBundle.message("library.dialog.createNewLibrary.libraryPath")).widthGroup("left")
@@ -78,22 +85,27 @@ class ParadoxCreateNewLibraryDialog(
 		withPreferredWidth(width * 2) //2倍宽度 - 基于调试结果
 	}
 	
+	private fun quickSelectGamePath() {
+		val targetPath = getSteamGamePath(gameType.gameSteamId, gameType.gameName)?: return
+		rootFilePath = targetPath
+	}
+	
 	private fun ValidationInfoBuilder.validateLibraryPath(): ValidationInfo? {
 		//验证库的路径是否合法
 		//存在，不在项目中，拥有对应的rootInfo和descriptorInfo，且匹配gameType和rootType
 		//NOTE 仍然可以添加路径重复的库（相对于其他库来说）
-		val rootFile = VfsUtil.findFile(rootFilePath.toPath(), false)
+		val rootFileToSelect = VfsUtil.findFile(rootFilePath.toPath(), false)
 			?.takeIf { it.exists() }
 			?: return error(PlsBundle.message("library.dialog.createNewLibrary.libraryPath.invalid.0"))
 		project.guessProjectDir()?.let { projectDir ->
-			if(VfsUtilCore.isAncestor(projectDir, rootFile, false)) {
+			if(VfsUtilCore.isAncestor(projectDir, rootFileToSelect, false)) {
 				return error(PlsBundle.message("library.dialog.createNewLibrary.libraryPath.invalid.4"))
 			}
 		}
-		val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile, false)
-		if(rootInfo != null && gameType == rootInfo.gameType && rootType == rootInfo.rootType) {
-			this@ParadoxCreateNewLibraryDialog.rootFile = rootFile
-			this@ParadoxCreateNewLibraryDialog.rootInfo = rootInfo
+		val rootInfoToSelect = ParadoxCoreHandler.resolveRootInfo(rootFileToSelect, false)
+		if(rootInfoToSelect != null && gameType == rootInfoToSelect.gameType && rootType == rootInfoToSelect.rootType) {
+			rootFile = rootFileToSelect
+			rootInfo = rootInfoToSelect
 			return null
 		}
 		when(rootType) {

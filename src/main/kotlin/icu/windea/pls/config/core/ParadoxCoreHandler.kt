@@ -30,9 +30,8 @@ object ParadoxCoreHandler {
             //仅索引有根目录的文件
             val fileInfo = virtualFile.fileInfo ?: return false
             val rootType = fileInfo.rootInfo.rootType
+            
             val path = fileInfo.path.path
-            //仅索引游戏或模组根目录下的文件
-            if(rootType != ParadoxRootType.Game && rootType != ParadoxRootType.Mod) return false
             //不索引内联脚本文件
             if("common/inline_scripts".matchesPath(path)) {
                 return false
@@ -199,18 +198,17 @@ object ParadoxCoreHandler {
     fun doResolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
         if(file is StubVirtualFile || !file.isValid) return null
         val fileName = file.name
-        val subPaths = LinkedList<String>()
-        subPaths.addFirst(fileName)
         var currentFile: VirtualFile? = file.parent
         while(currentFile != null) {
             val rootInfo = resolveRootInfo(currentFile, false)
             if(rootInfo != null) {
-                val path = ParadoxPath.resolve(subPaths)
+                //filePath.relative(gameRootPath)
+                val filePath = file.path.removePrefix(rootInfo.gameRootFile.path).trimStart('/')
+                val path = ParadoxPath.resolve(filePath)
                 val fileType = ParadoxFileType.resolve(file, rootInfo.gameType, path)
                 val fileInfo = ParadoxFileInfo(fileName, path, fileType, rootInfo)
                 return fileInfo
             }
-            subPaths.addFirst(currentFile.name)
             currentFile = currentFile.parent
         }
         return null
