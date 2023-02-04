@@ -532,53 +532,12 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getColor(element: ParadoxScriptColor): Color? {
-		//忽略异常
-		return runCatching {
-			val colorType = element.colorType
-			val args = element.colorArgs
-			
-			//根据不同的颜色类型得到不同的颜色对象
-			when(colorType) {
-				"rgb" -> args.takeIf { it.size == 3 }?.map { it.toInt() }?.let { Color(it[0], it[1], it[2]) }
-				"rgba" -> args.takeIf { it.size == 3 || it.size == 4 }?.map { it.toInt() }?.let { Color(it[0], it[1], it[2], it.getOrElse(3) { 255 }) }
-				"hsb" -> args.takeIf { it.size == 3 }?.map { it.toFloat() }?.let { Color.getHSBColor(it[0], it[1], it[2]) }
-				"hsv" -> args.takeIf { it.size == 3 }?.map { it.toDouble() }?.let { ColorHsv(it[0], it[1], it[2]).toColor() }
-				"hsl" -> args.takeIf { it.size == 3 }?.map { it.toDouble() }?.let { ColorHsl(it[0], it[1], it[2]).toColor() }
-				else -> null
-			}
-		}.getOrNull()
+		return ParadoxColorHandler.getColor(element)
 	}
 	
 	@JvmStatic
 	fun setColor(element: ParadoxScriptColor, color: Color) {
-		//忽略异常
-		runCatching {
-			val project = element.project
-			val colorType = element.colorType
-			//仅支持设置rgb/rgba颜色
-			if(colorType != "rgb" && colorType != "rgba") return //中断操作
-			val shouldBeRgba = color.alpha != 255
-			val newText = when {
-				colorType == "rgba" || shouldBeRgba -> "rgba { ${color.run { "$red $green $blue $alpha" }} }"
-				else -> "rgb { ${color.run { "$red $green $blue" }} }"
-			}
-			//不支持根据不同的颜色类型生成不同的文本
-			//val newText = when(colorType) {
-			//	"rgb" -> "rgb { ${color.run { "$red $green $blue" }} }"
-			//	"rgba" -> "rgba { ${color.run { "$red $green $blue $alpha" }} }"
-			//	"hsv" -> "hsv { ${color.toColorHsv().run { "$H $S $V" }} }"
-			//	"hsl" -> "hsl { ${color.toColorHsl().run { "$H $S $L" }} }"
-			//	else -> "rgba { ${color.run { "$red $green $blue $alpha" }} }"
-			//}
-			val newColor = ParadoxScriptElementFactory.createValue(project, newText) as? ParadoxScriptColor
-			if(newColor != null) {
-				val command = Runnable {
-					element.replace(newColor)
-				}
-				val document = PsiDocumentManager.getInstance(project).getDocument(element.containingFile)
-				CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
-			}
-		}
+		return ParadoxColorHandler.setColor(element, color)
 	}
 	
 	@JvmStatic
@@ -641,96 +600,6 @@ object ParadoxScriptPsiImplUtil {
 	private fun isBlockComponent(element: PsiElement): Boolean {
 		return element is ParadoxScriptScriptedVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
 			|| element is ParadoxScriptParameterCondition
-	}
-	
-	@JvmStatic
-	fun getColor(element: ParadoxScriptBlock): Color? {
-		//忽略异常
-		return runCatching {
-			val parent = element.parent
-			val colorTypeOptionLocation = when {
-				parent is ParadoxScriptProperty -> ParadoxCwtConfigHandler.resolvePropertyConfigs(parent, allowDefinitionSelf = true).firstOrNull()
-				parent is ParadoxScriptBlock -> ParadoxCwtConfigHandler.resolveValueConfigs(element).firstOrNull()
-				else -> return@runCatching null
-			}
-			val colorTypeOption = colorTypeOptionLocation?.options?.find { it.key == "color_type" } ?: return@runCatching null
-			val colorType = colorTypeOption.stringValue ?: return@runCatching null
-			//目前仅支持rgb和rgba
-			if(colorType == "rgb" || colorType == "rgba") {
-				val values = element.findBlockValues<ParadoxScriptValue>()
-				getColorFromValues(colorType, values)
-			} else {
-				null
-			}
-		}.getOrNull()
-	}
-	
-	private fun getColorFromValues(colorType: String, values: List<ParadoxScriptValue>): Color? {
-		when(colorType) {
-			"rgb" -> {
-				if(values.size != 3) return null
-				when {
-					values.all { it is ParadoxScriptInt } -> {
-						return values.map { it.cast<ParadoxScriptInt>().intValue }.let { Color(it[0], it[1], it[2]) }
-					}
-					values.all { it is ParadoxScriptFloat } -> {
-						return values.map { it.cast<ParadoxScriptFloat>().floatValue }.let { Color(it[0], it[1], it[2]) }
-					}
-					else -> return null
-				}
-			}
-			"rgba" -> {
-				if(values.size != 3 && values.size != 4) return null
-				when {
-					values.all { it is ParadoxScriptInt } -> {
-						return values.map { it.cast<ParadoxScriptInt>().intValue }.let { Color(it[0], it[1], it[2], it.getOrElse(3) { 255 }) }
-					}
-					values.all { it is ParadoxScriptFloat } -> {
-						return values.map { it.cast<ParadoxScriptFloat>().floatValue }.let { Color(it[0], it[1], it[2], it.getOrElse(3) { 1.0f }) }
-					}
-					else -> return null
-				}
-			}
-			else -> return null
-		}
-	}
-	
-	@JvmStatic
-	fun setColor(element: ParadoxScriptBlock, color: Color) {
-		//FIXME 首次选择颜色后不关闭取色器，继续选择颜色，文档不会发生相应的变更，得到的document=null
-		runCatching {
-			val project = element.project
-			val values = element.findBlockValues<ParadoxScriptValue>()
-			//仅支持设置rgb/rgba颜色
-			if(values.size != 3 && values.size != 4) return //中断操作
-			val isRgba = values.size == 4
-			val newText = color.run {
-				when {
-					values.all { it is ParadoxScriptInt } -> {
-						if(isRgba) "{ $red $green $blue $alpha }" else "{ $red $green $blue }"
-					}
-					values.all { it is ParadoxScriptFloat } -> {
-						if(isRgba) "{ ${red.asFloat()} ${green.asFloat()} ${blue.asFloat()} ${alpha.asFloat()} }"
-						else "{ ${red.asFloat()} ${green.asFloat()} ${blue.asFloat()} }"
-					}
-					else -> return //中断操作
-				}
-			}
-			val newBlock = ParadoxScriptElementFactory.createValue(project, newText) as? ParadoxScriptBlock
-			if(newBlock != null) {
-				val documentManager = PsiDocumentManager.getInstance(project)
-				val document = documentManager.getDocument(element.containingFile) ?: return
-				val command = Runnable {
-					element.replace(newBlock)
-				}
-				documentManager.doPostponedOperationsAndUnblockDocument(document)
-				CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
-			}
-		}
-	}
-	
-	private fun Int.asFloat(): String {
-		return (this / 255.0).format(-2)
 	}
 	
 	@JvmStatic

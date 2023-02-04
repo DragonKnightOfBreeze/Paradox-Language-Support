@@ -159,13 +159,13 @@ object ParadoxCoreHandler {
         return file.getOrPutUserData(PlsKeys.descriptorInfoKey) {
             val psiFile = file.toPsiFile<ParadoxScriptFile>(getDefaultProject()) ?: return null
             val data = ParadoxScriptDataResolver.resolve(psiFile, conditional = false, inline = false) ?: return null
-            val name = data.getValue("name")?.stringValue() ?: file.parent?.name.orAnonymous() //如果没有name属性，则使用根目录名
-            val version = data.getValue("version")?.stringValue()
-            val picture = data.getValue("picture")?.stringValue()
-            val tags = data.getValues("tags").mapNotNull { it.stringValue() }.toSet()
-            val supportedVersion = data.getValue("supported_version")?.stringValue()
-            val remoteFileId = data.getValue("remote_file_id")?.stringValue()
-            val path = data.getValue("path")?.stringValue()
+            val name = data.getData("name")?.value?.stringValue() ?: file.parent?.name.orAnonymous() //如果没有name属性，则使用根目录名
+            val version = data.getData("version")?.value?.stringValue()
+            val picture = data.getData("picture")?.value?.stringValue()
+            val tags = data.getAllData("tags").mapNotNull { it.value?.stringValue() }.toSet()
+            val supportedVersion = data.getData("supported_version")?.value?.stringValue()
+            val remoteFileId = data.getData("remote_file_id")?.value?.stringValue()
+            val path = data.getData("path")?.value?.stringValue()
             return ParadoxDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path, isModDescriptor = true)
         }
     }

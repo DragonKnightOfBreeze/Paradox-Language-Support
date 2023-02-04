@@ -3,6 +3,7 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.lang.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -15,6 +16,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.support.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import java.awt.*
 
 /**
  * 遍历当前代码块中的所有（直接作为子节点的）值和属性。
@@ -379,14 +381,69 @@ fun ParadoxScriptString.isDefinitionName(): Boolean {
 	return false
 }
 
-fun ParadoxScriptValue.booleanValue() = resolved()?.castOrNull<ParadoxScriptBoolean>()?.booleanValue
-fun ParadoxScriptValue.intValue() = resolved()?.castOrNull<ParadoxScriptInt>()?.intValue
-fun ParadoxScriptValue.floatValue() = resolved()?.castOrNull<ParadoxScriptFloat>()?.floatValue
-fun ParadoxScriptValue.stringText() = resolved()?.castOrNull<ParadoxScriptString>()?.text
-fun ParadoxScriptValue.stringValue() = resolved()?.castOrNull<ParadoxScriptString>()?.stringValue
-fun ParadoxScriptValue.colorValue() = castOrNull<ParadoxScriptColor>()?.color
 
-fun ParadoxScriptValue.resolved(): ParadoxScriptValue? {
-	if(this !is ParadoxScriptScriptedVariableReference) return this
-	return this.referenceValue
+fun ParadoxScriptValue.booleanValue(): Boolean? {
+	val resolved = this.resolved() ?: return null
+	return when(resolved) {
+		is ParadoxScriptBoolean -> resolved.booleanValue
+		else -> null
+	}
+}
+
+fun ParadoxScriptExpressionElement.intValue(): Int? {
+	val resolved = this.resolved() ?: return null
+	return when(resolved) {
+		is ParadoxScriptPropertyKey -> resolved.value.toIntOrNull()
+		is ParadoxScriptInt -> resolved.intValue
+		is ParadoxScriptString -> resolved.value.toIntOrNull()
+		else -> null
+	}
+}
+
+fun ParadoxScriptExpressionElement.floatValue(): Float? {
+	val resolved = this.resolved() ?: return null
+	return when(resolved) {
+		is ParadoxScriptPropertyKey -> resolved.value.toFloatOrNull()
+		is ParadoxScriptFloat -> resolved.floatValue
+		is ParadoxScriptString -> resolved.value.toFloatOrNull()
+		else -> null
+	}
+}
+
+fun ParadoxScriptExpressionElement.stringText(valid: Boolean = false): String? {
+	if(valid && !this.isValidExpression()) return null
+	val resolved = this.resolved() ?: return null
+	return when(resolved) {
+		is ParadoxScriptPropertyKey -> resolved.text
+		is ParadoxScriptString -> resolved.text
+		is ParadoxScriptInt -> resolved.value
+		is ParadoxScriptFloat -> resolved.value
+		else -> null
+	}
+}
+
+fun ParadoxScriptExpressionElement.stringValue(valid: Boolean = false): String? {
+	if(valid && !this.isValidExpression()) return null
+	val resolved = this.resolved() ?: return null
+	return when(resolved) {
+		is ParadoxScriptPropertyKey -> resolved.value
+		is ParadoxScriptString -> resolved.value
+		is ParadoxScriptInt -> resolved.value
+		is ParadoxScriptFloat -> resolved.value
+		else -> null
+	}
+}
+
+fun ParadoxScriptValue.colorValue(): Color? {
+	return when(this) {
+		is ParadoxScriptColor -> this.color
+		else -> null
+	}
+}
+
+fun ParadoxScriptExpressionElement.resolved(): ParadoxScriptExpressionElement? {
+	return when(this) {
+		is ParadoxScriptScriptedVariableReference -> this.referenceValue
+		else -> this
+	}
 }

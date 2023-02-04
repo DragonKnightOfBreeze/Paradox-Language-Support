@@ -157,7 +157,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   ]
   methods=[
     property="" value=""
-    getIcon getValue isEmpty isNotEmpty getPropertyList getValueList getComponents getColor setColor
+    getIcon getValue isEmpty isNotEmpty getPropertyList getValueList getComponents
     getType getExpression
   ]
 }

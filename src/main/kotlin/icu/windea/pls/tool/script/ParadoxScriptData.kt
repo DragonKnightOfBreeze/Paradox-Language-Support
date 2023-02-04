@@ -25,7 +25,7 @@ data class ParadoxScriptData(
         map
     }
     
-    fun getValue(path: String, validKey: Boolean = false, valid: Boolean = false): ParadoxScriptData? {
+    fun getData(path: String): ParadoxScriptData? {
         val pathList = path.trimStart('/').split('/')
         var current: ParadoxScriptData? = this
         for(p in pathList) {
@@ -33,33 +33,16 @@ data class ParadoxScriptData(
             current = current?.map?.get(k)?.firstOrNull()
         }
         if(current == null) return null
-        if(validKey && current.key?.isValidExpression() == false) return null
-        if(valid && current.value?.isValidExpression() == false) return null
         return current
     }
     
-    fun getValues(path: String, validKey: Boolean = false, valid: Boolean = false): List<ParadoxScriptData> {
+    fun getAllData(path: String): List<ParadoxScriptData> {
         val pathList = path.trimStart('/').split('/')
         var result: List<ParadoxScriptData> = listOf(this)
         for(p in pathList) {
             val k = if(p == "-") null else p
-            result = buildList { 
-                result.forEach r@{ r ->
-                    r.map?.get(k)?.forEach rr@{ rr ->
-                        if(validKey && rr.key?.isValidExpression() == false) return@rr
-                        if(valid && rr.value?.isValidExpression() == false) return@rr
-                        add(rr)
-                    }
-                }
-            }
+            result = result.flatMap { it.map?.get(k).orEmpty() }
         }
         return result
     }
-    
-    fun booleanValue() = value?.booleanValue()
-    fun intValue() = value?.intValue()
-    fun floatValue() = value?.floatValue()
-    fun stringText() = value?.stringText()
-    fun stringValue() = value?.stringValue()
-    fun colorValue() = value?.colorValue()
 }

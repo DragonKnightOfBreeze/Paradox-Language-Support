@@ -6,7 +6,6 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.core.expression.ParadoxDataType;
-import java.awt.Color;
 import javax.swing.Icon;
 
 public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlockElement {
@@ -38,11 +37,6 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlo
 
   @NotNull
   List<PsiElement> getComponents();
-
-  @Nullable
-  Color getColor();
-
-  void setColor(@NotNull Color color);
 
   @NotNull
   ParadoxDataType getType();

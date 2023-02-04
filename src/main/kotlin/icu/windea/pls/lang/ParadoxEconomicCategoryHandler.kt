@@ -45,23 +45,23 @@ object ParadoxEconomicCategoryHandler {
         try {
             val data = ParadoxScriptDataResolver.resolveProperty(definition, inline = true) ?: return null
             val name = definition.name.takeIfNotEmpty() ?: return null
-            val parent = data.getValue("parent", valid = true)?.stringValue()
-            val useForAiBudget = data.getValue("use_for_ai_budget")?.booleanValue()
+            val parent = data.getData("parent")?.value?.stringValue()
+            val useForAiBudget = data.getData("use_for_ai_budget")?.value?.booleanValue()
                 ?: getUseForAiBudgetFromParent(name, parent, definition)
             val modifiers = mutableSetOf<ParadoxEconomicCategoryModifierInfo>()
-            val modifierCategory = data.getValue("modifier_category", valid = true)?.stringValue()
+            val modifierCategory = data.getData("modifier_category")?.value?.stringValue()
             
             val resources = getResources(definition)
                 .takeIfNotEmpty() ?: return null //unexpected
-            val generateAddModifiers = data.getValues("generate_add_modifiers/-", valid = true)
-                .mapNotNull { it.stringValue() }
-            val generateMultModifiers = data.getValues("generate_mult_modifiers/-", valid = true)
-                .mapNotNull { it.stringValue() }
-            val triggeredProducesModifiers = data.getValues("triggered_produces_modifier", validKey = true)
+            val generateAddModifiers = data.getAllData("generate_add_modifiers/-")
+                .mapNotNull { it.value?.stringValue() }
+            val generateMultModifiers = data.getAllData("generate_mult_modifiers/-")
+                .mapNotNull { it.value?.stringValue() }
+            val triggeredProducesModifiers = data.getAllData("triggered_produces_modifier")
                 .mapNotNull { resolveTriggeredModifier(it) }
-            val triggeredCostModifiers = data.getValues("triggered_cost_modifier", validKey = true)
+            val triggeredCostModifiers = data.getAllData("triggered_cost_modifier")
                 .mapNotNull { resolveTriggeredModifier(it) }
-            val triggeredUpkeepModifiers = data.getValues("triggered_upkeep_modifier", validKey = true)
+            val triggeredUpkeepModifiers = data.getAllData("triggered_upkeep_modifier")
                 .mapNotNull { resolveTriggeredModifier(it) }
             
             // will generate if use_for_ai_budget = yes (inherited by parent property for _mult modifiers)
@@ -101,21 +101,21 @@ object ParadoxEconomicCategoryHandler {
                 val category = "produces"
                 val triggered = false
                 types.forEach { type ->
-                    addModifier(name, category, type, triggered, useParentIcon)
+                    addModifier(key, category, type, triggered, useParentIcon)
                 }
             }
             triggeredCostModifiers.forEach { (key, useParentIcon, types) ->
                 val category = "cost"
                 val triggered = false
                 types.forEach { type ->
-                    addModifier(name, category, type, triggered, useParentIcon)
+                    addModifier(key, category, type, triggered, useParentIcon)
                 }
             }
             triggeredUpkeepModifiers.forEach { (key, useParentIcon, types) ->
                 val category = "upkeep"
                 val triggered = false
                 types.forEach { type ->
-                    addModifier(name, category, type, triggered, useParentIcon)
+                    addModifier(key, category, type, triggered, useParentIcon)
                 }
             }
             
@@ -152,9 +152,9 @@ object ParadoxEconomicCategoryHandler {
     
     private fun resolveTriggeredModifier(data: ParadoxScriptData): ParadoxTriggeredModifierInfo? {
         //key, modifier_types, use_parent_icon
-        val key = data.getValue("key")?.stringValue() ?: return null
-        val useParentIcon = data.getValue("use_parent_icon")?.booleanValue() ?: false
-        val modifierTypes = data.getValues("modifier_types").mapNotNull { it.stringValue() }.takeIfNotEmpty() ?: return null
+        val key = data.getData("key")?.value?.stringValue() ?: return null
+        val useParentIcon = data.getData("use_parent_icon")?.value?.booleanValue() ?: false
+        val modifierTypes = data.getAllData("modifier_types").mapNotNull { it.value?.stringValue() }.takeIfNotEmpty() ?: return null
         return ParadoxTriggeredModifierInfo(key, useParentIcon, modifierTypes)
     }
     

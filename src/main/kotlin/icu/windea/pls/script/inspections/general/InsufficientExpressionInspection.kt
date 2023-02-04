@@ -69,7 +69,7 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
 						if(element !is ParadoxScriptColor) return
 						val expectedColorType = configExpression.value ?: return
 						val colorType = element.colorType
-						if(!(colorType == expectedColorType || (colorType == "rgb" && expectedColorType == "rgba"))) {
+						if(colorType != expectedColorType) {
 							holder.registerProblem(element, PlsBundle.message("inspection.script.general.insufficientExpression.description.3", expression, expectedColorType, colorType))
 						}
 					}

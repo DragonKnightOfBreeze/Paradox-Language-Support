@@ -107,7 +107,7 @@ class CwtImageLocationExpression(
 				frame != 0 -> frame
 				extraPropertyNames.isNullOrEmpty() -> 0
 				else -> extraPropertyNames.mapAndFirst { propertyName ->
-					definition.findProperty(propertyName, inline = true)?.findValue<ParadoxScriptInt>()?.intValue ?: 0
+					definition.findProperty(propertyName, inline = true)?.propertyValue?.intValue() ?: 0
 				} ?: 0
 			}
 			val resolved = CwtConfigHandler.resolveScriptExpression(propertyValue, null, config, config.expression, config.info.configGroup, false)
@@ -169,7 +169,7 @@ class CwtImageLocationExpression(
 				frame != 0 -> frame
 				extraPropertyNames.isNullOrEmpty() -> 0
 				else -> extraPropertyNames.mapAndFirst { propertyName ->
-					definition.findProperty(propertyName, inline = true)?.findValue<ParadoxScriptInt>()?.intValue ?: 0
+					definition.findProperty(propertyName, inline = true)?.propertyValue?.intValue() ?: 0
 				} ?: 0
 			}
 			val resolved = CwtConfigHandler.resolveScriptExpression(propertyValue, null, config, config.expression, config.info.configGroup, false)
