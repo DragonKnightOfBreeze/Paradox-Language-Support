@@ -3,8 +3,8 @@ package icu.windea.pls.core.ui
 import com.intellij.openapi.ui.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.model.*
 import javax.swing.*
 import javax.swing.table.*
 

@@ -3,10 +3,10 @@ package icu.windea.pls.lang.support
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.extensions.*
 import com.intellij.util.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 /**

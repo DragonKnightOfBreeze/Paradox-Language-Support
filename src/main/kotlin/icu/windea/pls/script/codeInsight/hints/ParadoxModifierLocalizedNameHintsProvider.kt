@@ -7,7 +7,6 @@ import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*

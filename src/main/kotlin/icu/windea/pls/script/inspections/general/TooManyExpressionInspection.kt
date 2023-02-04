@@ -5,13 +5,12 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.cwt.expression.CwtDataType.*
-import icu.windea.pls.lang.linker.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.linker.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 

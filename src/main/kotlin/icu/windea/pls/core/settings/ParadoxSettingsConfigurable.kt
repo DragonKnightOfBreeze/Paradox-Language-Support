@@ -9,9 +9,9 @@ import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 

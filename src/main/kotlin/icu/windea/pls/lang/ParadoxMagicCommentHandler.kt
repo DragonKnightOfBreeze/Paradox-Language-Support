@@ -1,8 +1,8 @@
 package icu.windea.pls.lang
 
 import com.intellij.psi.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 /**

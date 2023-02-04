@@ -5,14 +5,14 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.dds.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import kotlin.collections.mapNotNullTo
 

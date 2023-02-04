@@ -9,10 +9,10 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 
 /**
  * 创建新的库（游戏目录/模组目录）的对话框。

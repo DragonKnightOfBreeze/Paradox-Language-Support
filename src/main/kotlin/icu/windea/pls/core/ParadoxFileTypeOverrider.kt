@@ -6,7 +6,6 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 

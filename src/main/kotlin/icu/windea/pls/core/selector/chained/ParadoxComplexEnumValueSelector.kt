@@ -1,9 +1,9 @@
 package icu.windea.pls.core.selector.chained
 
 import com.intellij.psi.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxComplexEnumValueSelector: ChainedParadoxSelector<ParadoxScriptStringExpressionElement>()

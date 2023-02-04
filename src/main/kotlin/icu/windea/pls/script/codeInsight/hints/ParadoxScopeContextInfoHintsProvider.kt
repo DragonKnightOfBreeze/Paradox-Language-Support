@@ -6,12 +6,11 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxScopeContextInfoHintsProvider.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*

@@ -9,14 +9,14 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import com.intellij.util.text.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.inspections.inference.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys

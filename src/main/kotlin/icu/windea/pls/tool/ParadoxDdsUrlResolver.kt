@@ -6,10 +6,10 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.dds.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import java.lang.invoke.*
 import kotlin.io.path.*

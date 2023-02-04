@@ -7,7 +7,6 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
@@ -17,6 +16,7 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 

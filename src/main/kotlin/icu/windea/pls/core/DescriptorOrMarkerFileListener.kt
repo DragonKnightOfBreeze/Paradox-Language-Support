@@ -4,8 +4,8 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 
 /**
  * 监听描述符文件或者游戏类型标记文件。

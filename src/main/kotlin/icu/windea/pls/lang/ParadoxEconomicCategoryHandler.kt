@@ -5,7 +5,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
@@ -13,6 +12,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
 import java.lang.invoke.*

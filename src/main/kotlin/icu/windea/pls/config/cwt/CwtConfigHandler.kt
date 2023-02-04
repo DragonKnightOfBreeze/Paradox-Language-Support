@@ -15,12 +15,8 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.support.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.lang.support.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*
@@ -32,6 +28,7 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.support.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*

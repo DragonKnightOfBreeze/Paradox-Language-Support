@@ -6,8 +6,8 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 /**

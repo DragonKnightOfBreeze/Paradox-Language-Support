@@ -1,7 +1,6 @@
 package icu.windea.pls.config.cwt.config
 
 import com.google.common.cache.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
