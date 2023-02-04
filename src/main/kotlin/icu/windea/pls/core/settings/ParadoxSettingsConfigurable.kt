@@ -199,8 +199,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 		//不存在模组根目录的游戏类型标记文件，设置中的默认游戏类型被更改时，需要重新解析相关文件
 		runWriteAction {
 			for(rootInfo in ParadoxRootInfo.values) {
-				if(rootInfo.gameTypeFromMarkerFile == null) {
-					ParadoxCoreHandler.reparseFilesInRoot(rootInfo.rootFile)
+				if(rootInfo is ParadoxModRootInfo && rootInfo.markerFile == null) {
+					ParadoxCoreHandler.reparseFilesInRoot(rootInfo.gameRootFile)
 				}
 			}
 		}

@@ -37,6 +37,7 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 					rootFile.putUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile) ?: return
+				if(rootInfo !is ParadoxModRootInfo) return
 				runWriteAction {
 					if(fileName == rootInfo.descriptorFile.name) {
 						ParadoxCoreHandler.reparseFilesInRoot(rootFile)
@@ -66,6 +67,7 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 					rootFile.putUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile) ?: return
+				if(rootInfo !is ParadoxModRootInfo) return
 				runWriteAction {
 					if(file == rootInfo.descriptorFile) {
 						ParadoxCoreHandler.reparseFilesInRoot(rootFile)
@@ -84,9 +86,10 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 					rootFile.putUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile) ?: return
+				if(rootInfo !is ParadoxModRootInfo) return
 				runWriteAction {
 					if(file == rootInfo.descriptorFile) {
-						file.putUserData(PlsKeys.descriptorInfoKey, null) //清空描述符信息缓存
+						file.putUserData(PlsKeys.cachedDescriptorInfoKey, null) //清空描述符信息缓存
 					} else if(file == rootInfo.markerFile && file.name == PlsConstants.launcherSettingsFileName) {
 						ParadoxCoreHandler.reparseFilesInRoot(rootFile) //这种情况下也需要重新解析
 					}
@@ -102,6 +105,7 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 					rootFile.putUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile) ?: return
+				if(rootInfo !is ParadoxModRootInfo) return
 				runWriteAction {
 					if(file == rootInfo.descriptorFile) {
 						ParadoxCoreHandler.reparseFilesInRoot(rootFile)
@@ -116,7 +120,6 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 	private fun isPossibleDescriptorOrMarkerFile(fileName: String): Boolean {
 		return when {
 			fileName.equals(PlsConstants.descriptorFileName, true) -> true
-			fileName.equals(PlsConstants.launcherSettingsFileName, true) -> true
 			fileName.startsWith('.') -> ParadoxGameType.resolve(fileName.drop(1)) != null
 			else -> false
 		}

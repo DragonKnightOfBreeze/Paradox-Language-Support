@@ -395,7 +395,7 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilde
 		append("<span>")
 		//描述符信息（模组名、版本等）
 		val rootInfo = fileInfo.rootInfo
-		append("[").append(rootInfo.gameType.description).append(" ").append(fileInfo.rootType.description)
+		append("[").append(rootInfo.gameType.description).append(" ").append(fileInfo.rootInfo.rootType.description)
 		when(rootInfo){
 			is ParadoxGameRootInfo -> {
 				val info = rootInfo.launcherSettingsInfo
@@ -415,7 +415,8 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilde
 			//	append(" ").append(PlsDocBundle.message("name.core.remoteFileId")).append(": ").append(remoteFileId).append(" )
 			//}
 			//相关链接
-			val rootUri = fileInfo.rootPath.toUri().toString() //通过这种方式获取需要的url
+			//通过这种方式获取需要的url，使用rootPath而非gameRootPath
+			val rootUri = fileInfo.rootInfo.rootPath.toUri().toString() 
 			append(" ")
 			appendLink(rootUri, PlsDocBundle.message("text.localLinkLabel"))
 			if(remoteFileId != null) {

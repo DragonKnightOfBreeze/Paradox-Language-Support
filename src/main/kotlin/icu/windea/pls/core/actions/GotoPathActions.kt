@@ -86,7 +86,7 @@ class GotoSteamGamePathAction : GotoPathAction(PlsIcons.Actions.SteamGameDirecto
         if(this.targetPath == null || this.gameType != gameType || this.rootType != rootType) {
             this.gameType = gameType
             this.rootType = rootType
-            this.targetPath = getSteamGamePath(gameType.gameName)?.toPathOrNull()
+            this.targetPath = getSteamGamePath(gameType.gameSteamId, gameType.gameName)?.toPathOrNull()
         }
         return true
     }

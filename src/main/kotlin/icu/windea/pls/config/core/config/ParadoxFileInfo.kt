@@ -8,10 +8,6 @@ class ParadoxFileInfo(
 	val fileType: ParadoxFileType,
 	val rootInfo: ParadoxRootInfo
 ) {
-	val rootFile get() = rootInfo.rootFile
-	val rootType get() = rootInfo.rootType
-	val rootPath get() = rootInfo.rootPath
-	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxFileInfo && path == other.path && rootInfo == other.rootInfo
 	}

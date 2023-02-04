@@ -10,7 +10,7 @@ object ParadoxFileLocator {
 	private fun scriptedVariablesFileName(prefix: String) = "${prefix}scripted_variables.txt"
 	
 	fun getRootFile(context: VirtualFile): VirtualFile? {
-		return context.fileInfo?.rootFile
+		return context.fileInfo?.let { it.rootInfo.gameRootFile }
 	}
 	
 	fun getScriptedVariablesDirectory(context: VirtualFile): VirtualFile? {

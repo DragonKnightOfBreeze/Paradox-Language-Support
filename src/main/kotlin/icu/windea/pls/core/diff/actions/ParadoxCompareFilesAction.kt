@@ -128,14 +128,14 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
     
     private fun getWindowsTitle(file: VirtualFile): String? {
         val fileInfo = file.fileInfo ?: return null
-        return PlsBundle.message("diff.compare.files.dialog.title", fileInfo.path, fileInfo.rootPath)
+        return PlsBundle.message("diff.compare.files.dialog.title", fileInfo.path, fileInfo.rootInfo.gameRootPath)
     }
     
     private fun getContentTitle(file: VirtualFile, original: Boolean = false): String? {
         val fileInfo = file.fileInfo ?: return null
         return when {
-            original -> PlsBundle.message("diff.compare.files.originalContent.title", fileInfo.path, fileInfo.rootPath)
-            else -> PlsBundle.message("diff.compare.files.content.title", fileInfo.path, fileInfo.rootPath)
+            original -> PlsBundle.message("diff.compare.files.originalContent.title", fileInfo.path, fileInfo.rootInfo.gameRootPath)
+            else -> PlsBundle.message("diff.compare.files.content.title", fileInfo.path, fileInfo.rootInfo.gameRootPath)
         }
     }
     
@@ -160,7 +160,7 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
-            return PlsBundle.message("diff.compare.files.popup.name", fileInfo.path, fileInfo.rootPath)
+            return PlsBundle.message("diff.compare.files.popup.name", fileInfo.path, fileInfo.rootInfo.gameRootPath)
         }
     }
     

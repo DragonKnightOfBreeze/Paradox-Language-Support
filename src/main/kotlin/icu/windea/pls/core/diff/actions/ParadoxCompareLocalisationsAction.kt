@@ -137,7 +137,7 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         val name = localisation.name
         val file = localisation.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
-        return PlsBundle.message("diff.compare.localisations.dialog.title", name, fileInfo.path, fileInfo.rootPath)
+        return PlsBundle.message("diff.compare.localisations.dialog.title", name, fileInfo.path, fileInfo.rootInfo.gameRootPath)
     }
     
     private fun getContentTitle(localisation: ParadoxLocalisationProperty, original: Boolean = false): String? {
@@ -145,8 +145,8 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         val file = localisation.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
         return when {
-            original -> PlsBundle.message("diff.compare.localisations.originalContent.title", name, fileInfo.path, fileInfo.rootPath)
-            else -> PlsBundle.message("diff.compare.localisations.content.title", name, fileInfo.path, fileInfo.rootPath)
+            original -> PlsBundle.message("diff.compare.localisations.originalContent.title", name, fileInfo.path, fileInfo.rootInfo.gameRootPath)
+            else -> PlsBundle.message("diff.compare.localisations.content.title", name, fileInfo.path, fileInfo.rootInfo.gameRootPath)
         }
     }
     
@@ -173,7 +173,7 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
-            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, locale, fileInfo.path, fileInfo.rootPath)
+            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, locale, fileInfo.path, fileInfo.rootInfo.gameRootPath)
         }
     }
     

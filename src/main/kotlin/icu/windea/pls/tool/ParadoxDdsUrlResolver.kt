@@ -102,20 +102,20 @@ object ParadoxDdsUrlResolver {
 	//	val file = files.firstOrNull() ?: return null //直接取第一个
 	//	return doResolveByFile(file, frame)
 	//}
-	
-	private fun doResolveByFile(file: VirtualFile, frame: Int): String? {
-		if(file.fileType != DdsFileType) return null
-		//如果可以得到相对于游戏或模组根路径的文件路径，则使用绝对根路径+相对路径定位，否则直接使用绝对路径
-		val fileInfo = file.fileInfo
-		val rootPath = fileInfo?.rootPath
-		val ddsRelPath = fileInfo?.path?.path
-		val ddsAbsPath = if(rootPath != null && ddsRelPath != null) {
-			rootPath.absolutePathString() + "/" + ddsRelPath
-		} else {
-			file.toNioPath().absolutePathString()
-		}
-		return DdsToPngConverter.convert(ddsAbsPath, ddsRelPath, frame)
-	}
+    
+    private fun doResolveByFile(file: VirtualFile, frame: Int): String? {
+        if(file.fileType != DdsFileType) return null
+        //如果可以得到相对于游戏或模组根路径的文件路径，则使用绝对根路径+相对路径定位，否则直接使用绝对路径
+        val fileInfo = file.fileInfo
+        val rootPath = fileInfo?.let { it.rootInfo.gameRootPath }
+        val ddsRelPath = fileInfo?.path?.path
+        val ddsAbsPath = if(rootPath != null && ddsRelPath != null) {
+            rootPath.absolutePathString() + "/" + ddsRelPath
+        } else {
+            file.toNioPath().absolutePathString()
+        }
+        return DdsToPngConverter.convert(ddsAbsPath, ddsRelPath, frame)
+    }
 	
 	private fun doResolveByFilePath(filePath: String, project: Project, frame: Int): String? {
 		val file = ParadoxFilePathSearch.search(filePath, project).find() ?: return null

@@ -30,8 +30,8 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
 tailrec fun selectRootFile(from: Any?): VirtualFile? {
 	return when {
 		from == null -> null
-		from is VirtualFile -> from.fileInfo?.rootFile
-		from is PsiFile -> from.fileInfo?.rootFile
+		from is VirtualFile -> from.fileInfo?.let { it.rootInfo.gameRootFile }
+		from is PsiFile -> from.fileInfo?.let { it.rootInfo.gameRootFile }
 		from is PsiElement -> selectRootFile(from.parent)
 		else -> null
 	}
