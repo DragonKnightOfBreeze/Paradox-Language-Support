@@ -4,6 +4,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 
 /**
+ * 与当前脚本文件同一目录下的指定文件名的文件。（不允许在子目录下）
  * @see CwtDataType.FileName
  */
 class ParadoxFileNamePathReferenceExpression : ParadoxPathReferenceExpression {
