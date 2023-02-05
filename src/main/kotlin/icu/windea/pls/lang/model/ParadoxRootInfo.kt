@@ -8,15 +8,18 @@ import java.nio.file.*
  * @property rootFile 游戏或模组的根目录。
  * @property gameRootFile 游戏文件的根目录。可能等同于rootFile，也可能是其game子目录。
  */
-sealed interface ParadoxRootInfo {
-    val rootFile: VirtualFile
-    val gameRootFile: VirtualFile
-    val rootType: ParadoxRootType
-    val gameType: ParadoxGameType
-    val isAvailable: Boolean
+sealed class ParadoxRootInfo {
+    abstract val rootFile: VirtualFile
+    abstract val gameRootFile: VirtualFile
+    abstract val rootType: ParadoxRootType
+    abstract val gameType: ParadoxGameType
     
-    val rootPath: Path
-    val gameRootPath: Path
+    abstract val rootPath: Path
+    abstract val gameRootPath: Path
+    
+    val gameEntry: String? by lazy { rootPath.relativize(gameRootPath).toString().let { if(it.isEmpty()) null else "$it/" }  }
+    
+    abstract val isAvailable: Boolean
     
     companion object {
         val values = mutableSetOf<ParadoxRootInfo>()
@@ -28,9 +31,9 @@ class ParadoxGameRootInfo(
     val launcherSettingsFile: VirtualFile,
     override val rootType: ParadoxRootType,
     val launcherSettingsInfo: ParadoxLauncherSettingsInfo,
-) : ParadoxRootInfo {
-	override val gameType: ParadoxGameType = launcherSettingsInfo.gameId.let { ParadoxGameType.resolve(it) } ?: throw IllegalStateException()
-    override val gameRootFile: VirtualFile get() = doGetGameRootFile()
+) : ParadoxRootInfo() {
+    override val gameType: ParadoxGameType = launcherSettingsInfo.gameId.let { ParadoxGameType.resolve(it) } ?: throw IllegalStateException()
+    override val gameRootFile: VirtualFile = doGetGameRootFile()
     
     private fun doGetGameRootFile(): VirtualFile {
         if(rootType != ParadoxRootType.Game) return rootFile
@@ -61,7 +64,7 @@ class ParadoxLauncherSettingsInfo(
     val dlcPath: String = "",
     val exePath: String,
     val exeArgs: List<String>
-) 
+)
 
 class ParadoxModRootInfo(
     override val rootFile: VirtualFile,
@@ -69,9 +72,9 @@ class ParadoxModRootInfo(
     val markerFile: VirtualFile?,
     override val rootType: ParadoxRootType,
     val descriptorInfo: ParadoxDescriptorInfo
-) : ParadoxRootInfo {
-	override val gameType: ParadoxGameType = markerFile?.let { ParadoxGameType.resolve(it) } ?: getSettings().defaultGameType
-    override val gameRootFile: VirtualFile get() = rootFile
+) : ParadoxRootInfo() {
+    override val gameType: ParadoxGameType = markerFile?.let { ParadoxGameType.resolve(it) } ?: getSettings().defaultGameType
+    override val gameRootFile: VirtualFile = rootFile
     
     override val rootPath: Path = rootFile.toNioPath()
     override val gameRootPath: Path = rootPath

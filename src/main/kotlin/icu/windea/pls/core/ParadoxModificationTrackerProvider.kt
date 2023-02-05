@@ -11,6 +11,8 @@ import icu.windea.pls.script.*
 
 @Service(Service.Level.APP)
 class ParadoxModificationTrackerProvider {
+    //其实可以区分游戏类型，但是一般情况下不会这么做
+    
     val ScriptFile = SimpleModificationTracker()
     val InlineScript = SimpleModificationTracker()
     val Modifier = SimpleModificationTracker()
