@@ -537,7 +537,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun setColor(element: ParadoxScriptColor, color: Color) {
-		return ParadoxScriptColorColorSupport.INSTANCE.setColor(element, color)
+		ParadoxScriptColorColorSupport.INSTANCE.setColor(element, color)
 	}
 	
 	@JvmStatic
