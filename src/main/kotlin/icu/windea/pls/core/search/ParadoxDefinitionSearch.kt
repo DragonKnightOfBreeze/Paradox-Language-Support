@@ -38,7 +38,9 @@ class ParadoxDefinitionSearch: ExtensibleQueryFactory<ParadoxScriptDefinitionEle
 			project: Project,
 			scope: SearchScope = GlobalSearchScope.allScope(project),
 			selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement> = nopSelector()
-		) = INSTANCE.createParadoxQuery(SearchParameters(name, typeExpression, project, scope, selector))
+		): ParadoxQuery<ParadoxScriptDefinitionElement, SearchParameters> {
+			return INSTANCE.createParadoxQuery(SearchParameters(name, typeExpression, project, scope, selector))
+		}
 		
 		/**
 		 *  @see icu.windea.pls.core.search.ParadoxDefinitionSearch.SearchParameters
@@ -49,7 +51,9 @@ class ParadoxDefinitionSearch: ExtensibleQueryFactory<ParadoxScriptDefinitionEle
 			project: Project,
 			scope: SearchScope = GlobalSearchScope.allScope(project),
 			selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement> = nopSelector()
-		) = INSTANCE.createParadoxQuery(SearchParameters(null, typeExpression, project, scope, selector))
+		): ParadoxQuery<ParadoxScriptDefinitionElement, SearchParameters> {
+			return INSTANCE.createParadoxQuery(SearchParameters(null, typeExpression, project, scope, selector))
+		}
 	}
 }
 

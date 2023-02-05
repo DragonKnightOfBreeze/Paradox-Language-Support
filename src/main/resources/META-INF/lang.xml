@@ -11,8 +11,8 @@
 
   <extensions defaultExtensionNs="icu.windea.pls">
     <paradoxPathReferenceExpression implementation="icu.windea.pls.lang.expression.ParadoxIconPathReferenceExpression"/>
-    <paradoxPathReferenceExpression implementation="icu.windea.pls.lang.expression.ParadoxFileNamePathReferenceExpression"/>
     <paradoxPathReferenceExpression implementation="icu.windea.pls.lang.expression.ParadoxFilePathPathReferenceExpression"/>
+    <paradoxPathReferenceExpression implementation="icu.windea.pls.lang.expression.ParadoxFileNamePathReferenceExpression"/>
     
     <paradoxMemberElementLinker implementation="icu.windea.pls.lang.linker.ParadoxInlineScriptMemberElementLinker"/>
     

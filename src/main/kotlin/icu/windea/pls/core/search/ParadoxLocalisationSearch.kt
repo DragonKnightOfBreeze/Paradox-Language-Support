@@ -39,7 +39,9 @@ class ParadoxLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisationPrope
 			project: Project,
 			scope: SearchScope = GlobalSearchScope.allScope(project),
 			selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
-		) = INSTANCE.createParadoxQuery(SearchParameters(name, project, scope, selector))
+		): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
+			return INSTANCE.createParadoxQuery(SearchParameters(name, project, scope, selector))
+		}
 		
 		/**
 		 *  @see icu.windea.pls.core.search.ParadoxLocalisationSearch.SearchParameters
@@ -49,7 +51,9 @@ class ParadoxLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisationPrope
 			project: Project,
 			scope: SearchScope = GlobalSearchScope.allScope(project),
 			selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
-		) = INSTANCE.createParadoxQuery(SearchParameters(null, project, scope, selector))
+		): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
+			return INSTANCE.createParadoxQuery(SearchParameters(null, project, scope, selector))
+		}
 		
 		/**
 		 * 基于本地化名字索引，根据关键字和推断的语言区域遍历所有的本地化（localisation），并按照本地化的键进行去重。

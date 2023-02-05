@@ -13,16 +13,17 @@ import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expression.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
  * 无法解析的文件路径的检查。
  *
- * @property ignoredFilePaths （配置项）需要忽略的文件路径的模式。使用ANT模式。忽略大小写。
+ * @property ignoredFileNames （配置项）需要忽略的文件路径的模式。使用ANT模式。忽略大小写。
  */
 class UnresolvedFilePathInspection : LocalInspectionTool() {
-    @JvmField var ignoredFilePaths = "*.lua"
+    @JvmField var ignoredFileNames = "*.lua"
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return Visitor(this, holder)
@@ -36,54 +37,30 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
             ProgressManager.checkCanceled()
             //match or single
             val valueConfig = ParadoxCwtConfigHandler.resolveValueConfigs(valueElement).firstOrNull() ?: return
-            val expression = valueConfig.valueExpression
+            val configExpression = valueConfig.valueExpression
             val project = valueElement.project
             val location = valueElement
-            when(expression.type) {
-                CwtDataType.AbsoluteFilePath -> {
-                    val filePath = valueElement.value
-                    val path = filePath.toPathOrNull() ?: return
-                    if(VfsUtil.findFile(path, false) != null) return
-                    val message = PlsBundle.message("inspection.script.general.unresolvedFilePath.description.1", path)
-                    holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
-                        ImportGameOrModDirectoryFix(valueElement)
-                    )
-                }
-                CwtDataType.FileName -> {
-                    val filePath = CwtPathExpressionType.FileName.resolve(expression.value, valueElement.value.normalizePath()) ?: return
-                    if(filePath.matchesAntPath(inspection.ignoredFilePaths, true)) return
-                    val selector = fileSelector().gameTypeFrom(valueElement)
-                    if(ParadoxFilePathSearch.search(filePath, project, selector = selector).findFirst() != null) return
-                    val message = PlsBundle.message("inspection.script.general.unresolvedFilePath.description.2", filePath)
-                    holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
-                        ImportGameOrModDirectoryFix(valueElement)
-                    )
-                }
-                CwtDataType.FilePath -> {
-                    val filePath = CwtPathExpressionType.FilePath.resolve(expression.value, valueElement.value.normalizePath()) ?: return
-                    if(filePath.matchesAntPath(inspection.ignoredFilePaths, true)) return
-                    val selector = fileSelector().gameTypeFrom(valueElement)
-                    if(ParadoxFilePathSearch.search(filePath, project, selector = selector).findFirst() != null) return
-                    val filePathExpression = expression.value?.replace(",", "$")
-                    val message = if(filePathExpression == null) PlsBundle.message("inspection.script.general.unresolvedFilePath.description.3", filePath)
-                    else PlsBundle.message("inspection.script.general.unresolvedFilePath.description.3_1", filePath, filePathExpression)
-                    holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
-                        ImportGameOrModDirectoryFix(valueElement)
-                    )
-                }
-                CwtDataType.Icon -> {
-                    val filePath = CwtPathExpressionType.Icon.resolve(expression.value, valueElement.value.normalizePath()) ?: return
-                    if(filePath.matchesAntPath(inspection.ignoredFilePaths, true)) return
-                    val selector = fileSelector().gameTypeFrom(valueElement)
-                    if(ParadoxFilePathSearch.search(filePath, project, selector = selector).findFirst() != null) return
-                    val filePathExpression = expression.value?.let { "${it}/$.dds" }
-                    val message = if(filePathExpression == null) PlsBundle.message("inspection.script.general.unresolvedFilePath.description.4", filePath)
-                    else PlsBundle.message("inspection.script.general.unresolvedFilePath.description.4_1", filePath, filePathExpression)
-                    holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
-                        ImportGameOrModDirectoryFix(valueElement)
-                    )
-                }
-                else -> pass()
+            if(configExpression.type == CwtDataType.AbsoluteFilePath) {
+                val filePath = valueElement.value
+                val path = filePath.toPathOrNull() ?: return
+                if(VfsUtil.findFile(path, false) != null) return
+                val message = PlsBundle.message("inspection.script.general.unresolvedFilePath.description.abs", path)
+                holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+                    ImportGameOrModDirectoryFix(valueElement)
+                )
+                return
+            }
+            val fileReferenceExpression = ParadoxPathReferenceExpression.get(configExpression)
+            if(fileReferenceExpression != null) {
+                val pathReference = valueElement.value.normalizePath()
+                val fileName = fileReferenceExpression.resolveFileName(configExpression, pathReference)
+                if(fileName.matchesGlobFileName(inspection.ignoredFileNames, true)) return
+                val selector = fileSelector().gameTypeFrom(valueElement)
+                if(ParadoxFilePathSearch.search(fileName, project, configExpression, selector = selector).findFirst() != null) return
+                val message = fileReferenceExpression.getUnresolvedMessage(configExpression, pathReference)
+                holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+                    ImportGameOrModDirectoryFix(valueElement)
+                )
             }
         }
     }
@@ -91,18 +68,18 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                label(PlsBundle.message("inspection.script.general.unresolvedFilePath.option.ignoredFilePaths"))
+                label(PlsBundle.message("inspection.script.general.unresolvedFilePath.option.ignoredFileNames"))
             }
             row {
-                textField().bindText(::ignoredFilePaths)
+                textField().bindText(::ignoredFileNames)
                     .applyToComponent {
                         whenTextChanged {
                             val document = it.document
                             val text = document.getText(0, document.length)
-                            if(text != ignoredFilePaths) ignoredFilePaths = text
+                            if(text != ignoredFileNames) ignoredFileNames = text
                         }
                     }
-                    .comment(PlsBundle.message("inspection.script.general.unresolvedFilePath.option.ignoredFilePaths.comment"))
+                    .comment(PlsBundle.message("inspection.script.general.unresolvedFilePath.option.ignoredFileNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

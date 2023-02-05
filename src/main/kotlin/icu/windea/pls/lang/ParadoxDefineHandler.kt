@@ -18,6 +18,8 @@ import java.lang.invoke.*
 object ParadoxDefineHandler {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
+    val definePathExpression = CwtValueExpression.resolve("filepath[common/defines/,.txt]")
+    
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
     fun <T> getDefineValue(contextElement: PsiElement, project: Project, path: String, type: Class<T>): T? {
@@ -25,23 +27,23 @@ object ParadoxDefineHandler {
         ProgressManager.checkCanceled()
         try {
             val selector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
-            val query = ParadoxFilePathSearch.search("common/defines/,.txt", project, CwtPathExpressionType.FilePath, selector = selector)
             var result: Any? = null
-            query.processQuery {
-                val file = it.toPsiFile<ParadoxScriptFile>(project) ?: return@processQuery true
-                val defines = getDefinesFromFile(file)
-                val defineValue = defines.getOrPut(path) { 
-                    val property = file.findByPath<ParadoxScriptProperty>(path, ignoreCase = false) ?: return@getOrPut null
-                    val propertyValue = property.propertyValue ?: return@getOrPut null
-                    ParadoxScriptDataValueResolver.resolveValue(propertyValue, conditional = false)
+            ParadoxFilePathSearch.search(project, definePathExpression, selector = selector)
+                .processQuery {
+                    val file = it.toPsiFile<ParadoxScriptFile>(project) ?: return@processQuery true
+                    val defines = getDefinesFromFile(file)
+                    val defineValue = defines.getOrPut(path) {
+                        val property = file.findByPath<ParadoxScriptProperty>(path, ignoreCase = false) ?: return@getOrPut null
+                        val propertyValue = property.propertyValue ?: return@getOrPut null
+                        ParadoxScriptDataValueResolver.resolveValue(propertyValue, conditional = false)
+                    }
+                    if(defineValue != null) {
+                        result = defineValue
+                        false
+                    } else {
+                        true
+                    }
                 }
-                if(defineValue != null) {
-                    result = defineValue
-                    false
-                } else {
-                    true
-                }
-            }
             return result as T?
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e

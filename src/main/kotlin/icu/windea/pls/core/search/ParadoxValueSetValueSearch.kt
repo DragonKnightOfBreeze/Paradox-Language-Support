@@ -38,7 +38,9 @@ class ParadoxValueSetValueSearch : ExtensibleQueryFactory<ParadoxScriptString, P
 			project: Project,
 			scope: SearchScope = GlobalSearchScope.allScope(project),
 			selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
-		) = INSTANCE.createParadoxQuery(SearchParameters(name, valueSetName, project, scope, selector))
+		): ParadoxQuery<ParadoxScriptString, SearchParameters> {
+			return INSTANCE.createParadoxQuery(SearchParameters(name, valueSetName, project, scope, selector))
+		}
 		
 		/**
 		 * @see icu.windea.pls.core.search.ParadoxValueSetValueSearch.SearchParameters
@@ -49,6 +51,8 @@ class ParadoxValueSetValueSearch : ExtensibleQueryFactory<ParadoxScriptString, P
 			project: Project,
 			scope: SearchScope = GlobalSearchScope.allScope(project),
 			selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
-		) = INSTANCE.createParadoxQuery(SearchParameters(null, valueSetName, project, scope, selector))
+		): ParadoxQuery<ParadoxScriptString, SearchParameters> {
+			return INSTANCE.createParadoxQuery(SearchParameters(null, valueSetName, project, scope, selector))
+		}
 	}
 }

@@ -10,17 +10,7 @@ data class CwtConfigGroupInfo(
 ) {
     lateinit var configGroup: CwtConfigGroup
     
-    /**
-     * @see CwtDataType.FilePath
-     * @see CwtPathExpressionType.FilePath
-     */
-    val filePathExpressions = mutableSetOf<String>()
-    
-    /**
-     * @see CwtDataType.Icon
-     * @see CwtPathExpressionType.Icon
-     */
-    val iconPathExpressions = mutableSetOf<String>()
+    val filePathExpressions = mutableSetOf<CwtDataExpression>()
     
     /**
      * @see CwtDataType.TemplateExpression
@@ -36,10 +26,10 @@ data class CwtConfigGroupInfo(
     fun acceptConfigExpression(configExpression: CwtDataExpression, config: CwtConfig<*>?) {
         when(configExpression.type) {
             CwtDataType.FilePath -> {
-                configExpression.value?.let { filePathExpressions.add(it) }
+                configExpression.value?.let { filePathExpressions.add(configExpression) }
             }
             CwtDataType.Icon -> {
-                configExpression.value?.let { iconPathExpressions.add(it) }
+                configExpression.value?.let { filePathExpressions.add(configExpression) }
             }
             CwtDataType.TemplateExpression -> {
                 val templateExpression = CwtTemplateExpression.resolve(configExpression.expressionString)

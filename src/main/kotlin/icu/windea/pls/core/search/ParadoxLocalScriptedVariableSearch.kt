@@ -33,7 +33,9 @@ class ParadoxLocalScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptS
 			name: String,
 			context: PsiElement,
 			selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable> = nopSelector()
-		) = INSTANCE.createParadoxQuery(SearchParameters(name, context, selector))
+		): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
+			return INSTANCE.createParadoxQuery(SearchParameters(name, context, selector))
+		}
 		
 		/**
 		 *  @see icu.windea.pls.core.search.ParadoxLocalScriptedVariableSearch.SearchParameters
@@ -42,6 +44,8 @@ class ParadoxLocalScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptS
 		fun search(
 			context: PsiElement,
 			selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable> = nopSelector()
-		) = INSTANCE.createParadoxQuery(SearchParameters(null, context, selector))
+		): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
+			return INSTANCE.createParadoxQuery(SearchParameters(null, context, selector))
+		}
 	}
 }

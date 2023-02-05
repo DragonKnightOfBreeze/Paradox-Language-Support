@@ -16,6 +16,7 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
+import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
@@ -23,7 +24,7 @@ import icu.windea.pls.script.psi.*
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxInlineScriptHandler {
     const val inlineScriptDirPath = "common/inline_scripts"
-    const val inlineScriptPathExpression = "common/inline_scripts/,.txt"
+    val inlineScriptPathExpression =  CwtValueExpression.resolve("filepath[common/inline_scripts/,.txt]")
     
     fun isGameTypeSupported(gameType: ParadoxGameType): Boolean {
         return gameType == ParadoxGameType.Stellaris
@@ -84,7 +85,7 @@ object ParadoxInlineScriptHandler {
         } else {
             propertyValue.findProperty(expressionLocation)?.propertyValue?.castOrNull<ParadoxScriptString>()
         }
-        return expressionElement?.stringValue() ?: return null
+        return expressionElement?.stringValue()
     }
     
     @JvmStatic
@@ -108,8 +109,10 @@ object ParadoxInlineScriptHandler {
     }
     
     @JvmStatic
-    fun getInlineScriptFilePath(expression: String): String? {
-        return CwtPathExpressionType.FilePath.resolve(inlineScriptPathExpression, expression)
+    fun getInlineScriptFilePath(pathReference: String): String? {
+        val configExpression = inlineScriptPathExpression
+        val pathReferenceExpression = ParadoxPathReferenceExpression.get(configExpression) ?: return null
+        return pathReferenceExpression.resolvePath(configExpression, pathReference)
     }
     
     @JvmStatic
@@ -118,9 +121,7 @@ object ParadoxInlineScriptHandler {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         if(!isGameTypeSupported(gameType)) return null
-        val filePath = fileInfo.path.path
-        return CwtPathExpressionType.FilePath.extract(inlineScriptPathExpression, filePath)
-            ?.takeIfNotEmpty()
+        return doGetInlineScriptExpression(fileInfo)
     }
     
     @JvmStatic
@@ -128,9 +129,14 @@ object ParadoxInlineScriptHandler {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         if(!isGameTypeSupported(gameType)) return null
+        return doGetInlineScriptExpression(fileInfo)
+    }
+    
+    private fun doGetInlineScriptExpression(fileInfo: ParadoxFileInfo): String? {
         val filePath = fileInfo.path.path
-        return CwtPathExpressionType.FilePath.extract(inlineScriptPathExpression, filePath)
-            ?.takeIfNotEmpty()
+        val configExpression = inlineScriptPathExpression
+        val pathReferenceExpression = ParadoxPathReferenceExpression.get(configExpression) ?: return null
+        return pathReferenceExpression.extract(configExpression, filePath)?.takeIfNotEmpty()
     }
     
     /**

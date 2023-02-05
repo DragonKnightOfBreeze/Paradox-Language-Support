@@ -35,7 +35,9 @@ class ParadoxGlobalScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScript
 			project: Project,
 			scope: SearchScope = GlobalSearchScope.allScope(project),
 			selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable> = nopSelector()
-		) = INSTANCE.createParadoxQuery(SearchParameters(name, project, scope, selector))
+		): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
+			return INSTANCE.createParadoxQuery(SearchParameters(name, project, scope, selector))
+		}
 		
 		/**
 		 *  @see icu.windea.pls.core.search.ParadoxGlobalScriptedVariableSearch.SearchParameters
@@ -45,6 +47,8 @@ class ParadoxGlobalScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScript
 			project: Project,
 			scope: SearchScope = GlobalSearchScope.allScope(project),
 			selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable> = nopSelector()
-		) = INSTANCE.createParadoxQuery(SearchParameters(null, project, scope, selector))
+		): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
+			return INSTANCE.createParadoxQuery(SearchParameters(null, project, scope, selector))
+		}
 	}
 }

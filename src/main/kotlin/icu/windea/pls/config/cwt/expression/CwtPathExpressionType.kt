@@ -11,7 +11,7 @@ enum class CwtPathExpressionType {
 			return expression.equals(filePath, ignoreCase)
 		}
 		
-		override fun resolve(expression: String?, string: String): String {
+		override fun resolveFileName(expression: String?, string: String): String {
 			return string
 		}
 		
@@ -38,7 +38,7 @@ enum class CwtPathExpressionType {
 			}
 		}
 		
-		override fun resolve(expression: String?, string: String): String {
+		override fun resolveFileName(expression: String?, string: String): String {
 			if(expression == null) return string
 			val index = expression.lastIndexOf(',') //","应当最多出现一次
 			if(index == -1) {
@@ -84,7 +84,7 @@ enum class CwtPathExpressionType {
 			}
 		}
 		
-		override fun resolve(expression: String?, string: String): String {
+		override fun resolveFileName(expression: String?, string: String): String {
 			if(expression == null) return string
 			val index = expression.lastIndexOf(',') //","应当最多出现一次
 			if(index == -1) {
@@ -120,7 +120,7 @@ enum class CwtPathExpressionType {
 			return expression.matchesPath(filePath, ignoreCase) && filePath.endsWith(".dds", true)
 		}
 		
-		override fun resolve(expression: String?, string: String): String? {
+		override fun resolveFileName(expression: String?, string: String): String? {
 			//TODO 可以在子目录中
 			if(expression == null) return null
 			return "$expression/$string.dds"
@@ -140,11 +140,11 @@ enum class CwtPathExpressionType {
 	abstract fun matches(expression: String, filePath: String, ignoreCase: Boolean = true): Boolean
 	
 	/**
-	 * 解析指定的文件路径表达式，得到精确路径。
+	 * 解析指定的文件路径表达式，得到文件名。
 	 * @param expression 表达式。示例：`some/path`, `some/path/,.ext`。
 	 * @param string 作为值的字符串。
 	 */
-	abstract fun resolve(expression: String?, string: String): String?
+	abstract fun resolveFileName(expression: String?, string: String): String?
 	
 	/**
 	 * 根据指定的文件路径表达式，从精确路径中提取出需要的作为值的字符串。
