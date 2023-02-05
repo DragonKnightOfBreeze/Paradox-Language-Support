@@ -28,6 +28,7 @@ object ParadoxEconomicCategoryHandler {
     /**
      * 输入[definition]的定义类型应当保证是`economic_category`。
      */
+    @JvmStatic
     fun getInfo(definition: ParadoxScriptDefinitionElement): ParadoxEconomicCategoryInfo? {
         return getInfoFromCache(definition)
     }
@@ -160,17 +161,19 @@ object ParadoxEconomicCategoryHandler {
         return ParadoxTriggeredModifierInfo(key, useParentIcon, modifierTypes)
     }
     
+    @JvmStatic
     fun resolveModifierCategory(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
         val finalValue = value ?: "economic_unit" //default to economic_unit
         val enumConfig = configGroup.enums.getValue("scripted_modifier_categories")
-        var keys = getModifierCategoryKeys(enumConfig, finalValue)
-        if(keys == null) keys = getModifierCategoryKeys(enumConfig, "economic_unit")
+        var keys = getModifierCategoryOptionValues(enumConfig, finalValue)
+        if(keys == null) keys = getModifierCategoryOptionValues(enumConfig, "economic_unit")
         if(keys == null) keys = emptySet() //unexpected
         val modifierCategories = configGroup.modifierCategories
         return keys.associateWith { modifierCategories.getValue(it) }
     }
     
-    private fun getModifierCategoryKeys(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
+    @JvmStatic
+    fun getModifierCategoryOptionValues(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
         val valueConfig = enumConfig.valueConfigMap.getValue(finalValue)
         return valueConfig.getOrPutUserData(modifierCategoriesKey) {
             valueConfig.options?.find { it.key == "modifier_categories" }

@@ -47,6 +47,9 @@ enum class CwtDataType {
 		|| this == ValueField || this == IntValueField
 		|| this == VariableField || this == IntVariableField
 	
+	fun isFilePathType() = this == AbsoluteFilePath
+		|| this == FileName || this == FilePath || this == Icon
+	
 	fun isScopeFieldType() = this == ScopeField || this == Scope || this == ScopeGroup
 		
 	fun isValueFieldType() = this == ValueField || this == IntValueField
