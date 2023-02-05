@@ -148,7 +148,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildValueSetValueDefinition(name: String, valueSetNames: List<String>, configGroup: CwtConfigGroup) {
+	private fun StringBuilder.buildValueSetValueDefinition(name: String, valueSetNames: Set<String>, configGroup: CwtConfigGroup) {
 		definition {
 			//不加上文件信息
 			append(PlsDocBundle.message("prefix.valueSetValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
