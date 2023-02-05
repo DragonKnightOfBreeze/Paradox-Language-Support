@@ -636,7 +636,7 @@ object CwtConfigHandler {
 	fun completeRootKey(context: ProcessingContext, result: CompletionResultSet, elementPath: ParadoxElementPath) {
 		val fileInfo = context.originalFile.fileInfo ?: return
 		val configGroup = context.configGroup
-		val path = fileInfo.path
+		val path = fileInfo.entryPath //这里使用entryPath
 		val infoMap = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
 		for(typeConfig in configGroup.types.values) {
 			if(ParadoxDefinitionHandler.matchesTypeWithUnknownDeclaration(typeConfig, path, null, null)) {

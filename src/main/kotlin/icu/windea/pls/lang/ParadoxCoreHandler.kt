@@ -102,19 +102,10 @@ object ParadoxCoreHandler {
         }
         
         // 从此目录向下递归查找launcher-settings.json，如果找到，再根据"dlcPath"的值获取游戏文件的根目录
-        // 或者判断此目录是否是特定的名字，然后再从此目录的父目录向下递归查找launcher-settings.json（参见其他的ParadoxRootType）
         // 注意游戏文件可能位于此目录的game子目录中，而非直接位于此目录中
-        val rootTypeByRootName = ParadoxRootType.valueMapByRootName[rootName]
-        if(rootTypeByRootName != null) {
-            val rootFileParent = rootFile.parent ?: return null
-            val launcherSettingsFile = getLauncherSettingsFile(rootFileParent) ?: return null
-            val launcherSettingsInfo = getLauncherSettingsInfo(launcherSettingsFile) ?: return null
-            return ParadoxGameRootInfo(rootFile, launcherSettingsFile, rootTypeByRootName, launcherSettingsInfo)
-        } else {
-            val launcherSettingsFile = getLauncherSettingsFile(rootFile) ?: return null
-            val launcherSettingsInfo = getLauncherSettingsInfo(launcherSettingsFile) ?: return null
-            return ParadoxGameRootInfo(rootFile, launcherSettingsFile, ParadoxRootType.Game, launcherSettingsInfo)
-        }
+        val launcherSettingsFile = getLauncherSettingsFile(rootFile) ?: return null
+        val launcherSettingsInfo = getLauncherSettingsInfo(launcherSettingsFile) ?: return null
+        return ParadoxGameRootInfo(rootFile, launcherSettingsFile, ParadoxRootType.Game, launcherSettingsInfo)
     }
     
     private fun getLauncherSettingsFile(root: VirtualFile): VirtualFile? {
@@ -191,8 +182,8 @@ object ParadoxCoreHandler {
         while(currentFile != null) {
             val rootInfo = resolveRootInfo(currentFile, false)
             if(rootInfo != null) {
-                //filePath.relative(gameRootPath)
-                val filePath = file.path.removePrefix(rootInfo.gameRootFile.path).trimStart('/')
+                //filePath.relative(rootPath)
+                val filePath = file.path.removePrefix(rootInfo.rootFile.path).trimStart('/')
                 val path = ParadoxPath.resolve(filePath)
                 val fileType = ParadoxFileType.resolve(file, rootInfo.gameType, path)
                 val fileInfo = ParadoxFileInfo(fileName, path, fileType, rootInfo)

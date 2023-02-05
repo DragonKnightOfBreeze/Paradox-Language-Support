@@ -60,7 +60,7 @@ object ParadoxDefinitionHandler {
 		}
 		val elementPath = ParadoxElementPathHandler.getFromFile(element, PlsConstants.maxDefinitionDepth) ?: return null
 		val rootKey = element.pathName //如果是文件名，不要包含扩展名
-		val path = fileInfo.path
+		val path = fileInfo.entryPath //这里使用entryPath
 		val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
 		val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
 		return doResolve(element, rootKey, path, elementPath, configGroup)

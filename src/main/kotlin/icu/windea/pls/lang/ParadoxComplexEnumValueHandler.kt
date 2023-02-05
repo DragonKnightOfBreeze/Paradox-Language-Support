@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.*
  */
 object ParadoxComplexEnumValueHandler {
 	@JvmStatic
-	fun getInfo(element: ParadoxScriptStringExpressionElement): icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo? {
+	fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
 		//注意：element.stub可能会导致ProcessCanceledException
 		ProgressManager.checkCanceled()
 		if(!element.isExpression()) return null
@@ -26,7 +26,7 @@ object ParadoxComplexEnumValueHandler {
 		return getInfoFromCache(element)
 	}
 	
-	private fun getInfoFromCache(element: ParadoxScriptStringExpressionElement): icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo? {
+	private fun getInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedComplexEnumValueInfoKey) {
 			val file = element.containingFile
 			val value = resolveInfo(element, file)
@@ -36,7 +36,7 @@ object ParadoxComplexEnumValueHandler {
 	}
 	
 	@JvmStatic
-	fun resolveInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile = element.containingFile): icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo? {
+	fun resolveInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile = element.containingFile): ParadoxComplexEnumValueInfo? {
 		//排除带参数的情况
 		if(element.isParameterAwareExpression()) return null
 		
@@ -50,23 +50,23 @@ object ParadoxComplexEnumValueHandler {
 		
 		ProgressManager.checkCanceled()
 		val fileInfo = file.fileInfo ?: return null
-		val path = fileInfo.path
+		val path = fileInfo.entryPath //这里使用entryPath
 		val gameType = fileInfo.rootInfo.gameType
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		return doResolve(element, path, configGroup)
 	}
 	
-	private fun resolveByStub(element: ParadoxScriptStringExpressionElement, stub: ParadoxScriptStringExpressionElementStub<*>): icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo? {
+	private fun resolveByStub(element: ParadoxScriptStringExpressionElement, stub: ParadoxScriptStringExpressionElementStub<*>): ParadoxComplexEnumValueInfo? {
 		return stub.complexEnumValueInfo
 	}
 	
-	private fun doResolve(element: ParadoxScriptStringExpressionElement, path: ParadoxPath, configGroup: CwtConfigGroup): icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo? {
+	private fun doResolve(element: ParadoxScriptStringExpressionElement, path: ParadoxPath, configGroup: CwtConfigGroup): ParadoxComplexEnumValueInfo? {
 		for(complexEnumConfig in configGroup.complexEnums.values) {
 			if(matchesComplexEnumByPath(complexEnumConfig, path)) {
 				if(matchesComplexEnum(complexEnumConfig, element)) {
 					val name = element.value
 					val enumName = complexEnumConfig.name
-					return icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo(name, enumName, configGroup.gameType)
+					return ParadoxComplexEnumValueInfo(name, enumName, configGroup.gameType)
 				}
 			}
 		}

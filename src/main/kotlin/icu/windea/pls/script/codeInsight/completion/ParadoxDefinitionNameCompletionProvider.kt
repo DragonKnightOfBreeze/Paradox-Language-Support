@@ -78,7 +78,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				val fileInfo = file.fileInfo ?: return
 				val gameType = fileInfo.rootInfo.gameType
 				val configGroup = getCwtConfig(project).getValue(gameType)
-				val path = fileInfo.path
+				val path = fileInfo.entryPath //这里使用entryPath
 				val definitionElement = element.findParentProperty() ?: return
 				val elementPath = ParadoxElementPathHandler.getFromFile(definitionElement, PlsConstants.maxDefinitionDepth) ?: return
 				for(typeConfig in configGroup.types.values) {
