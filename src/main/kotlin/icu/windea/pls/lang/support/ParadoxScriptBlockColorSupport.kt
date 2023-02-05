@@ -3,21 +3,15 @@ package icu.windea.pls.lang.support
 import com.intellij.openapi.command.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import java.awt.*
 
 class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
-    override fun getElementFromToken(tokenElement: PsiElement): PsiElement? {
-        val elementType = tokenElement.elementType
-        if(elementType != LEFT_BRACE) return null
-        return tokenElement.parent as? ParadoxScriptBlock
-    }
-    
     override fun getColor(element: PsiElement): Color? {
         if(element !is ParadoxScriptBlock) return null
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedColorKey) {
@@ -32,8 +26,9 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
     }
     
     private fun doGetColor(element: ParadoxScriptBlock): Color? {
-        val colorType = getColorType(element) ?: return null
-        val colorArgs = getColorArgs(element) ?: return null
+        val colorType = getColorType(element)
+        val colorArgs = getColorArgs(element)
+        if(colorType == null || colorArgs == null) return null
         return ParadoxColorHandler.getColor(colorType, colorArgs)
     }
     
@@ -49,26 +44,29 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
     
     private fun getColorArgs(element: ParadoxScriptBlock): List<String>? {
         return element.valueList
+            //.takeIf { (it.size == 3 || it.size == 4) && it.all { v -> v.isValidExpression() } }
             .takeIf { (it.size == 3 || it.size == 4) && it.all { v -> v.isValidExpression() } }
             ?.map { it.resolved() ?: return null }
             ?.takeIf { it.all { v -> v is ParadoxScriptInt || v is ParadoxScriptFloat } }
             ?.map { it.value }
     }
     
-    override fun setColor(element: PsiElement, color: Color) {
-        if(element !is ParadoxScriptBlock) return
+    override fun setColor(element: PsiElement, color: Color): Boolean {
+        if(element !is ParadoxScriptBlock) return false
         try {
-            return doSetColor(element, color)
+            doSetColor(element, color)
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
             //ignored
         }
+        return true
     }
     
     private fun doSetColor(element: ParadoxScriptBlock, color: Color) {
         val project = element.project
         val colorType = getColorType(element)
-        val colorArgs = getColorArgs(element) ?: return //中断操作
+        val colorArgs = getColorArgs(element)
+        if(colorType == null || colorArgs == null) return
         if(colorArgs.size != 3 && colorArgs.size != 4) return //中断操作
         val shouldBeRgba = color.alpha != 255 || colorArgs.size == 4
         val newText = when(colorType) {
@@ -95,10 +93,11 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
         val documentManager = PsiDocumentManager.getInstance(project)
         val document = documentManager.getDocument(element.containingFile) ?: return
         val command = Runnable {
-            element.replace(newBlock)
+            //element.replace(newBlock) //do not do this, element could be reused
+            (element.node as CompositeElement).replaceAllChildrenToChildrenOf(newBlock.node)
         }
         CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
-        documentManager.doPostponedOperationsAndUnblockDocument(document)
+        //documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
     
     fun Number.asFloat() = this.format(4)

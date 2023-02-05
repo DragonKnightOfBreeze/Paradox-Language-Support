@@ -10,13 +10,23 @@ import java.awt.*
  * @see ParadoxScriptColorProvider
  */
 interface ParadoxColorSupport {
-    fun getElementFromToken(tokenElement: PsiElement): PsiElement?
-    
     fun getColor(element: PsiElement): Color?
     
-    fun setColor(element: PsiElement, color: Color)
+    fun setColor(element: PsiElement, color: Color): Boolean
     
     companion object INSTANCE {
         @JvmStatic val EP_NAME = ExtensionPointName.create<ParadoxColorSupport>("icu.windea.pls.paradoxColorSupport")
+    
+        fun getColor(element: PsiElement): Color? {
+            return EP_NAME.extensions.firstNotNullOfOrNull {
+                it.getColor(element)
+            }
+        }
+    
+        fun setColor(element: PsiElement, color: Color) {
+            EP_NAME.extensions.any {
+                it.setColor(element, color)
+            }
+        }
     }
 }

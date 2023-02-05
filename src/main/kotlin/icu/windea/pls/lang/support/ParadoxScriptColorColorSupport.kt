@@ -3,23 +3,17 @@ package icu.windea.pls.lang.support
 import com.intellij.openapi.command.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import java.awt.*
 
 class ParadoxScriptColorColorSupport : ParadoxColorSupport {
     companion object {
         val INSTANCE = ParadoxScriptColorColorSupport()
-    }
-    
-    override fun getElementFromToken(tokenElement: PsiElement): PsiElement? {
-        val elementType = tokenElement.elementType
-        if(elementType != COLOR_TOKEN) return null
-        return tokenElement.parent as? ParadoxScriptColor
     }
     
     override fun getColor(element: PsiElement): Color? {
@@ -41,14 +35,15 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
         return ParadoxColorHandler.getColor(colorType, colorArgs)
     }
     
-    override fun setColor(element: PsiElement, color: Color) {
-        if(element !is ParadoxScriptColor) return
+    override fun setColor(element: PsiElement, color: Color): Boolean {
+        if(element !is ParadoxScriptColor) return false
         try {
-            return doSetColor(element, color)
+            doSetColor(element, color)
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
             //ignored
         }
+        return true
     }
     
     private fun doSetColor(element: ParadoxScriptColor, color: Color) {
@@ -79,12 +74,13 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
         val newColor = ParadoxScriptElementFactory.createValue(project, newText)
         if(newColor !is ParadoxScriptColor) return
         val command = Runnable {
-            element.replace(newColor)
+            //element.replace(newColor) //do not do this, element could be reused
+            (element.node as CompositeElement).replaceAllChildrenToChildrenOf(newColor.node)
         }
         val documentManager = PsiDocumentManager.getInstance(project)
         val document = documentManager.getDocument(element.containingFile) ?: return
         CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
-        documentManager.doPostponedOperationsAndUnblockDocument(document)
+        //documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
     
     fun Number.asFloat() = this.format(-4)
