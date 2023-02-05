@@ -55,7 +55,7 @@ class MissingParameterInspection : LocalInspectionTool() {
 					if(parameterMap.isNotEmpty()) {
 						parameterMap.forEach { (name, parameterInfo) ->
 							if(requiredParameterNames.contains(name)) return@forEach
-							if(!parameterInfo.conditional) requiredParameterNames.add(name)
+							if(!parameterInfo.optional) requiredParameterNames.add(name)
 						}
 					}
 					false
@@ -91,7 +91,7 @@ class MissingParameterInspection : LocalInspectionTool() {
 				if(parameterMap.isNotEmpty()) {
 					parameterMap.forEach { (name, parameterInfo) ->
 						if(requiredParameterNames.contains(name)) return@forEach
-						if(!parameterInfo.conditional) requiredParameterNames.add(name)
+						if(!parameterInfo.optional) requiredParameterNames.add(name)
 					}
 				}
 				requiredParameterNames.removeAll(parameterNames)

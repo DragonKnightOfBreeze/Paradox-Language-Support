@@ -841,7 +841,7 @@ object ParadoxScriptPsiImplUtil {
 				val info = result.getOrPut(name) { ParadoxParameterInfo(name) }
 				info.pointers.add(element.createPointer(file))
 				if(element.defaultValueToken != null) conditionalParameterNames.add(name)
-				if(!info.conditional && conditionalParameterNames.contains(name)) info.conditional = true
+				if(!info.optional && conditionalParameterNames.contains(name)) info.optional = true
 				//不需要继续向下遍历
 			}
 		})

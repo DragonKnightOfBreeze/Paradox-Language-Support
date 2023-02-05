@@ -316,8 +316,15 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         if(sections == null) return
         val parameterMap = element.parameters
         if(parameterMap.isEmpty()) return //ignore
-        val parametersText = parameterMap.keys.joinToString("<br>") {
-            "<code>$it</code>"
+        var isFirst = true
+        val parametersText = buildString {
+            parameterMap.entries.forEach { (name, info) ->
+                if(isFirst) isFirst = false else append("<br>")
+                append("<code>")
+                append(name)
+                if(info.optional) append("?") //optional marker
+                append("</code>")
+            }
         }
         sections.put(PlsDocBundle.message("sectionTitle.parameters"), parametersText)
     }
