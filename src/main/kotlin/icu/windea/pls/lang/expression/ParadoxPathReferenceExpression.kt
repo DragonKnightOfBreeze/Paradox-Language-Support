@@ -15,6 +15,11 @@ interface ParadoxPathReferenceExpression {
     fun supports(configExpression: CwtDataExpression): Boolean
     
     /**
+     * 判断是否可以直接匹配完整的文件路径。即路径引用表达式等同于文件路径。
+     */
+    fun matchEntire(configExpression: CwtDataExpression): Boolean = false
+    
+    /**
      * 判断指定的文件路径表达式是否匹配另一个相对于游戏或模组目录根路径的路径。
      * @param configExpression 对应的CWT规则表达式。拥有数种写法的文件路径表达式。
      * @param ignoreCase 匹配时是否需要忽略大小写。

@@ -31,8 +31,6 @@ class ParadoxIconPathReferenceExpression : ParadoxPathReferenceExpression {
     }
     
     override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {
-        val filePathExpression = configExpression.value?.let { "${it}/$.dds" }
-        return if(filePathExpression == null) PlsBundle.message("inspection.script.general.unresolvedFilePath.description.icon", pathReference)
-        else PlsBundle.message("inspection.script.general.unresolvedFilePath.description.icon1", pathReference, filePathExpression)
+        return PlsBundle.message("inspection.script.general.unresolvedFilePath.description.icon", pathReference, configExpression)
     }
 }

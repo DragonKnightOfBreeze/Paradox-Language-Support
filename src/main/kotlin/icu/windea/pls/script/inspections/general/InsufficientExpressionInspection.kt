@@ -67,15 +67,13 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
 						holder.registerProblem(element, message)
 					}
 					dataType.isFilePathType() -> {
-						if(dataType == CwtDataType.Icon) return
-						if(dataType == CwtDataType.FilePath && configExpression.value?.contains(',') == true) return
 						val expression = element.expression ?: return
 						val fileExtensions = ParadoxFilePathHandler.getFileExtensionOptionValues(config)
 						if(fileExtensions.isEmpty()) return
 						val value = element.value
 						if(fileExtensions.any { value.endsWith(it, true) }) return
-						val extensionsString = fileExtensions.joinToString("/")
-						val extension = value.substringAfterLast('.', "").lowercase()
+						val extensionsString = fileExtensions.joinToString(" / ")
+						val extension = value.substringAfterLast('.', "").lowercase().ifNotEmpty { ".$it" }
 						val message = if(extension.isNotEmpty()) PlsBundle.message("inspection.script.general.insufficientExpression.description.4", expression, extensionsString, extension)
 						else PlsBundle.message("inspection.script.general.insufficientExpression.description.4_1", expression, extensionsString)
 						holder.registerProblem(element, message)

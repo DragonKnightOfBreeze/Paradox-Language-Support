@@ -943,7 +943,14 @@ object CwtConfigHandler {
 				val pathReferenceExpression = ParadoxPathReferenceExpression.get(configExpression)
 				if(pathReferenceExpression != null) {
 					val tailText = getScriptExpressionTailText(config)
-					val selector = fileSelector().gameType(gameType).preferRootFrom(contextElement).distinctByFilePath()
+					val fileExtensions = when(config) {
+						is CwtDataConfig<*> -> ParadoxFilePathHandler.getFileExtensionOptionValues(config)
+						else -> emptySet()
+					}
+					//仅提示匹配file_extensions选项指定的扩展名的，如果存在
+					val selector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
+						.withFileExtensions(fileExtensions)
+						.distinctByFilePath()
 					ParadoxFilePathSearch.search(project, configExpression, selector = selector)
 						.processQuery p@{ virtualFile ->
 							val file = virtualFile.toPsiFile<PsiFile>(project) ?: return@p true

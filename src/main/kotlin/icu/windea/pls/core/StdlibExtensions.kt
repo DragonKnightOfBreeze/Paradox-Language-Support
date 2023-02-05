@@ -424,11 +424,11 @@ private fun String.doMatchAntPath(pattern: String, ignoreCase: Boolean): Boolean
  * @param ignoreCase 是否忽略大小写。默认为`true`。
  */
 fun String.matchesPath(other: String, acceptSelf: Boolean = true, ignoreCase: Boolean = true): Boolean {
-	val path = if(ignoreCase) this.lowercase().trimEnd('/') else this
-	val otherPath = if(ignoreCase) other.lowercase().trimEnd('/') else other
+	val path = if(ignoreCase) this.lowercase().trimEnd('/') else this.trimEnd('/')
+	val otherPath = if(ignoreCase) other.lowercase().trimEnd('/') else other.trimEnd('/')
 	if(path == otherPath) return acceptSelf
 	if(path.length > otherPath.length) return false
-	if(path == otherPath.take(length) && otherPath[length] == '/') return true
+	if(path == otherPath.take(path.length) && otherPath[path.length] == '/') return true
 	return false
 }
 

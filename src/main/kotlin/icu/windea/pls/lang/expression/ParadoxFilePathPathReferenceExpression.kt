@@ -12,6 +12,10 @@ class ParadoxFilePathPathReferenceExpression : ParadoxPathReferenceExpression {
         return configExpression.type == CwtDataType.FilePath
     }
     
+    override fun matchEntire(configExpression: CwtDataExpression): Boolean {
+        return configExpression.value == null
+    }
+    
     override fun matches(configExpression: CwtDataExpression, filePath: String, ignoreCase: Boolean): Boolean {
         val expression = configExpression.value ?: return true
         val index = expression.lastIndexOf(',') //","应当最多出现一次
@@ -64,8 +68,6 @@ class ParadoxFilePathPathReferenceExpression : ParadoxPathReferenceExpression {
     }
     
     override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {
-        val expression = configExpression.value?.replace(",", "$")
-        return if(expression == null) PlsBundle.message("inspection.script.general.unresolvedFilePath.description.filePath", pathReference)
-        else PlsBundle.message("inspection.script.general.unresolvedFilePath.description.filePath1", pathReference, expression)
+        return PlsBundle.message("inspection.script.general.unresolvedFilePath.description.filePath", pathReference, configExpression)
     }
 }

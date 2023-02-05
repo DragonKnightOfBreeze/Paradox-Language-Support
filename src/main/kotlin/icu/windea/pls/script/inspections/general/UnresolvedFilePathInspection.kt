@@ -56,7 +56,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
                 val fileName = fileReferenceExpression.resolveFileName(configExpression, pathReference)
                 if(fileName.matchesGlobFileName(inspection.ignoredFileNames, true)) return
                 val selector = fileSelector().gameTypeFrom(valueElement)
-                if(ParadoxFilePathSearch.search(fileName, project, configExpression, selector = selector).findFirst() != null) return
+                if(ParadoxFilePathSearch.search(pathReference, project, configExpression, selector = selector).findFirst() != null) return
                 val message = fileReferenceExpression.getUnresolvedMessage(configExpression, pathReference)
                 holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
                     ImportGameOrModDirectoryFix(valueElement)
