@@ -2,6 +2,8 @@
 package icu.windea.pls.script.psi.impl;
 
 import java.util.List;
+
+import icu.windea.pls.lang.model.*;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -125,7 +127,7 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
 
   @Override
   @NotNull
-  public Map<String, List<Pair<SmartPsiElementPointer<ParadoxParameter>, String>>> getParameterMap() {
+  public Map<String, ParadoxParameterInfo> getParameters() {
     return ParadoxScriptPsiImplUtil.getParameterMap(this);
   }
 

@@ -15,6 +15,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.support.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
@@ -813,21 +814,34 @@ object ParadoxScriptPsiImplUtil {
 	
 	//region ParadoxScriptDefinitionElement
 	@JvmStatic
-	fun getParameterMap(element: ParadoxScriptDefinitionElement): Map<String, List<Tuple2<SmartPsiElementPointer<ParadoxParameter>, String?>>> {
+	fun getParameterMap(element: ParadoxScriptDefinitionElement): Map<String, ParadoxParameterInfo> {
 		//不支持参数时，直接返回空映射
 		if(!ParadoxParameterSupport.supports(element)) return emptyMap()
 		
 		val file = element.containingFile
-		val result = sortedMapOf<String, MutableList<Tuple2<SmartPsiElementPointer<ParadoxParameter>, String?>>>() //按名字进行排序
+		val conditionalParameterNames = mutableSetOf<String>()
+		val result = sortedMapOf<String, ParadoxParameterInfo>() //按名字进行排序
 		element.accept(object : PsiRecursiveElementWalkingVisitor() {
 			override fun visitElement(element: PsiElement) {
 				if(element is ParadoxParameter) visitParadoxParameter(element)
+				if(element is ParadoxArgument) visitParadoxArgument(element)
 				super.visitElement(element)
+			}
+			
+			private fun visitParadoxArgument(element: ParadoxArgument) {
+				ProgressManager.checkCanceled()
+				val name = element.name
+				conditionalParameterNames.add(name)
+				//不需要继续向下遍历
 			}
 			
 			private fun visitParadoxParameter(element: ParadoxParameter) {
 				ProgressManager.checkCanceled()
-				result.getOrPut(element.name) { mutableListOf() }.add(element.createPointer(file) to element.defaultValue)
+				val name = element.name
+				val info = result.getOrPut(name) { ParadoxParameterInfo(name) }
+				info.pointers.add(element.createPointer(file))
+				if(element.defaultValueToken != null) conditionalParameterNames.add(name)
+				if(!info.conditional && conditionalParameterNames.contains(name)) info.conditional = true
 				//不需要继续向下遍历
 			}
 		})

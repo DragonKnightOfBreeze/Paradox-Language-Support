@@ -6,7 +6,7 @@ import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.impl.*
@@ -15,16 +15,16 @@ import javax.swing.*
 class ParadoxScriptFile(
 	viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxScriptDefinitionElement {
-	@Volatile private var _parameterMap: Map<String, List<Tuple2<SmartPsiElementPointer<ParadoxParameter>, String?>>>? = null
+	@Volatile private var _parameterMap: Map<String, ParadoxParameterInfo>? = null
 	
 	override val pathName get() = name.let { name -> name.substringBeforeLast(".", name) }
 	override val originalPathName get() = name.let { name -> name.substringBeforeLast(".", name) }
-	override val parameterMap: Map<String, List<Tuple2<SmartPsiElementPointer<ParadoxParameter>, String?>>>
+	override val parameters: Map<String, ParadoxParameterInfo>
 		get() = _parameterMap ?: doGetParameters().also { _parameterMap = it }
 	
 	override val block get() = findChild<ParadoxScriptRootBlock>()
 	
-	private fun doGetParameters(): Map<String, List<Tuple2<SmartPsiElementPointer<ParadoxParameter>, String?>>> {
+	private fun doGetParameters(): Map<String, ParadoxParameterInfo> {
 		return ParadoxScriptPsiImplUtil.getParameterMap(this)
 	}
 	

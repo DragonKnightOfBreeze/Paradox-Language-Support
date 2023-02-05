@@ -1,11 +1,9 @@
 package icu.windea.pls.script.psi.impl
 
 import com.intellij.lang.*
-import com.intellij.psi.*
 import com.intellij.psi.stubs.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptProperty {
@@ -18,7 +16,7 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 	@Volatile private var _valueType: ParadoxDataType? = null
 	@Volatile private var _pathName: String? = null
 	@Volatile private var _originalPathName: String? = null
-	@Volatile private var _parameterMap: Map<String, List<Tuple2<SmartPsiElementPointer<ParadoxParameter>, String?>>>? = null
+	@Volatile private var _parameters: Map<String, ParadoxParameterInfo>? = null
 	
 	override fun getName(): String {
 		return _name ?: super.getName().also { _name = it }
@@ -37,8 +35,8 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 	override val originalPathName: String
 		get() = _originalPathName ?: super.originalPathName.also { _originalPathName = it }
 	
-	override val parameterMap: Map<String, List<Tuple2<SmartPsiElementPointer<ParadoxParameter>, String?>>>
-		get() = _parameterMap ?: super.parameterMap.also { _parameterMap = it }
+	override val parameters: Map<String, ParadoxParameterInfo>
+		get() = _parameters ?: super.parameters.also { _parameters = it }
 	
 	override fun subtreeChanged() {
 		_name = null
@@ -46,7 +44,7 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 		_valueType = null
 		_pathName = null
 		_originalPathName = null
-		_parameterMap = null
+		_parameters = null
 		super.subtreeChanged()
 	}
 }

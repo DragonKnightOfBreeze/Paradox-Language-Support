@@ -51,13 +51,11 @@ class MissingParameterInspection : LocalInspectionTool() {
 				
 				val requiredParameterNames = mutableSetOf<String>()
 				ParadoxParameterSupport.processContextFromInvocationExpression(element, config) p@{
-					val parameterMap = it.parameterMap
+					val parameterMap = it.parameters
 					if(parameterMap.isNotEmpty()) {
-						parameterMap.forEach { (name, parameterInfos) ->
+						parameterMap.forEach { (name, parameterInfo) ->
 							if(requiredParameterNames.contains(name)) return@forEach
-							parameterInfos.forEach { (_, dv) ->
-								if(dv == null) requiredParameterNames.add(name)
-							}
+							if(!parameterInfo.conditional) requiredParameterNames.add(name)
 						}
 					}
 					false
@@ -89,13 +87,11 @@ class MissingParameterInspection : LocalInspectionTool() {
 				val requiredParameterNames = mutableSetOf<String>()
 				val sv = scriptValueExpressionNode.getReference(element)?.resolve() ?: return //ignore
 				if(sv !is ParadoxScriptProperty) return
-				val parameterMap = sv.parameterMap
+				val parameterMap = sv.parameters
 				if(parameterMap.isNotEmpty()) {
-					parameterMap.forEach { (name, parameterInfos) ->
+					parameterMap.forEach { (name, parameterInfo) ->
 						if(requiredParameterNames.contains(name)) return@forEach
-						parameterInfos.forEach { (_, dv) ->
-							if(dv == null) requiredParameterNames.add(name)
-						}
+						if(!parameterInfo.conditional) requiredParameterNames.add(name)
 					}
 				}
 				requiredParameterNames.removeAll(parameterNames)

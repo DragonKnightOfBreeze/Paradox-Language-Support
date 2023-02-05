@@ -50,7 +50,7 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
 		val definitions = ParadoxDefinitionSearch.search(definitionName, definitionType, context.project, selector = selector).findAll()
 		if(definitions.isEmpty()) return null
 		val parameterNamesSet = definitions.mapNotNullTo(mutableSetOf()) { definition ->
-			definition.parameterMap.keys.ifEmpty { setOf(PlsDocBundle.message("noParameters")) }
+			definition.parameters.keys.ifEmpty { setOf(PlsDocBundle.message("noParameters")) }
 		}
 		if(parameterNamesSet.isEmpty()) return null
 		context.itemsToShow = parameterNamesSet.toTypedArray()

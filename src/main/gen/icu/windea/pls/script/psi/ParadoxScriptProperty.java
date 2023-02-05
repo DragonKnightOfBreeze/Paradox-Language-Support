@@ -2,6 +2,8 @@
 package icu.windea.pls.script.psi;
 
 import java.util.List;
+
+import icu.windea.pls.lang.model.*;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import icu.windea.pls.core.psi.ParadoxTypedElement;
@@ -59,7 +61,7 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   String getOriginalPathName();
 
   @NotNull
-  Map<String, List<Pair<SmartPsiElementPointer<ParadoxParameter>, String>>> getParameterMap();
+  Map<String, ParadoxParameterInfo> getParameters();
 
   @Nullable
   ItemPresentation getPresentation();

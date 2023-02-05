@@ -55,7 +55,7 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
 		val definitions = ParadoxDefinitionSearch.search(svName, "script_value", context.project, selector = selector).findAll()
 		if(definitions.isEmpty()) return null
 		val parameterNamesSet = definitions.mapNotNullTo(mutableSetOf()) { definition ->
-			definition.parameterMap.keys.ifEmpty { setOf(PlsDocBundle.message("noParameters")) }
+			definition.parameters.keys.ifEmpty { setOf(PlsDocBundle.message("noParameters")) }
 		}
 		if(parameterNamesSet.isEmpty()) return null
 		context.itemsToShow = parameterNamesSet.toTypedArray()

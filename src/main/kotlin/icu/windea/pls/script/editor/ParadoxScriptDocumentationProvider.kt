@@ -314,7 +314,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         val show = getSettings().documentation.showParameters
         if(!show) return
         if(sections == null) return
-        val parameterMap = element.parameterMap
+        val parameterMap = element.parameters
         if(parameterMap.isEmpty()) return //ignore
         val parametersText = parameterMap.keys.joinToString("<br>") {
             "<code>$it</code>"
