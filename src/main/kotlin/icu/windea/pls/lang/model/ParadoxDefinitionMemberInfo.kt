@@ -17,7 +17,7 @@ class ParadoxDefinitionMemberInfo(
 	val gameType: ParadoxGameType,
 	val definitionInfo: ParadoxDefinitionInfo,
 	val configGroup: CwtConfigGroup,
-	element: ParadoxScriptMemberElement //直接传入element
+	val element: ParadoxScriptMemberElement //直接作为属性的话可能会有些问题，不过这个缓存会在所在脚本文件便跟
 ) {
 	val isDefinition = element is ParadoxScriptDefinitionElement && elementPath.isEmpty()
 	val isParameterAware = elementPath.isParameterAware
@@ -68,6 +68,7 @@ class ParadoxDefinitionMemberInfo(
  * 根据路径解析对应的属性/值配置列表。
  */
 private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMemberInfo: ParadoxDefinitionMemberInfo, matchType: Int): List<CwtDataConfig<*>> {
+	val element = definitionMemberInfo.element
 	//基于keyExpression，valueExpression可能不同
 	val declaration = definitionInfo.declaration ?: return emptyList()
 	//如果路径中可能待遇参数，则不进行解析
@@ -97,8 +98,8 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
 			if(configs.isNullOrEmpty()) continue
 			for(config in configs) {
 				if(isKey && config is CwtPropertyConfig) {
-					if(CwtConfigHandler.matchesScriptExpression(null, expression, config.keyExpression, config, configGroup, matchType)) {
-						CwtConfigHandler.inlineConfig(key, isQuoted, config, configGroup, nextResult, matchType)
+					if(CwtConfigHandler.matchesScriptExpression(element, expression, config.keyExpression, config, configGroup, matchType)) {
+						CwtConfigHandler.inlineConfig(element, key, isQuoted, config, configGroup, nextResult, matchType)
 					}
 				} else if(!isKey && config is CwtValueConfig) {
 					nextResult.add(config)
@@ -108,7 +109,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
 		
 		//如果存在可以静态匹配（CwtConfigMatchType.STATIC）的规则，则仅选用可以静态匹配的规则
 		result = nextResult
-			.filter { CwtConfigHandler.matchesScriptExpression(null, expression, it.expression, it, configGroup, CwtConfigMatchType.STATIC) }
+			.filter { CwtConfigHandler.matchesScriptExpression(element, expression, it.expression, it, configGroup, CwtConfigMatchType.STATIC) }
 			.ifEmpty { nextResult }
 	}
 	

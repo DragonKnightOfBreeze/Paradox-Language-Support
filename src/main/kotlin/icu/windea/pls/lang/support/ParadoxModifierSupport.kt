@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.*
  * @see ParadoxModifierElement
  */
 interface ParadoxModifierSupport {
-    fun matchModifier(name: String, configGroup: CwtConfigGroup, matchType: Int): Boolean
+    fun matchModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup, matchType: Int): Boolean
     
     fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement?
     
@@ -42,8 +42,8 @@ interface ParadoxModifierSupport {
         @JvmStatic
         val EP_NAME = ExtensionPointName.create<ParadoxModifierSupport>("icu.windea.pls.paradoxModifierSupport")
         
-        fun matchModifier(name: String, configGroup: CwtConfigGroup, matchType: Int): Boolean {
-            return EP_NAME.extensions.any { it.matchModifier(name, configGroup, matchType) }
+        fun matchModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
+            return EP_NAME.extensions.any { it.matchModifier(name, element, configGroup, matchType) }
         }
         
         fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {

@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
@@ -52,7 +53,10 @@ class ParadoxValueSetValueExpressionNode(
 		}
 		
 		override fun resolve(): PsiElement? {
-			return CwtConfigHandler.resolvePredefinedValueSetValue(element, name, configExpressions, configGroup)
+			val predefinedResolved = CwtConfigHandler.resolvePredefinedValueSetValue(element, name, configExpressions, configGroup)
+			if(predefinedResolved != null) return predefinedResolved
+			val configExpressions = configs.mapNotNullTo(mutableSetOf()) { it.expression }
+			return ParadoxValueSetValueHandler.resolveValueSetValue(element, name, configExpressions, configGroup)
 		}
 	}
 }

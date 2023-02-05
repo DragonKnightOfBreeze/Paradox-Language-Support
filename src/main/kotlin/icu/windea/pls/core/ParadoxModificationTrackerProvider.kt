@@ -9,17 +9,14 @@ import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.*
 
-@Service(Service.Level.PROJECT)
-class ParadoxModificationTrackerProvider(
-    project: Project
-) {
-    companion object {
-        fun getInstance() = this
-        
-        fun getInstance(project: Project) = project.service<ParadoxModificationTrackerProvider>()
+@Service(Service.Level.APP)
+class ParadoxModificationTrackerProvider {
+    val ScriptFile = SimpleModificationTracker()
+    val InlineScript = SimpleModificationTracker()
+    val Modifier = SimpleModificationTracker()
     
-        val DefinitionMemberInfo = SimpleModificationTracker()
-        val InlineScript = SimpleModificationTracker()
-        val Modifier = SimpleModificationTracker()
+    companion object {
+        @JvmStatic
+        fun getInstance() = service<ParadoxModificationTrackerProvider>()
     }
 }

@@ -65,7 +65,7 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 		val complexEnumValueInfo = run {
 			val name = dataStream.readNameString().orEmpty()
 			val enumName = dataStream.readNameString().orEmpty()
-			icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo(name, enumName, gameType)
+			ParadoxComplexEnumValueInfo(name, enumName, gameType)
 		}
 		val valueSetValueInfo = run {
 			val name = dataStream.readNameString().orEmpty()

@@ -25,10 +25,9 @@ object ParadoxDefinitionMemberHandler {
         if(file !is ParadoxScriptFile) return null
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionMemberInfoKey) {
             val value = resolveInfoDownUp(element)
-            //invalidated on file modification or DefinitionMemberInfoTracker or InlineScriptTracker
-            val tracker = ParadoxModificationTrackerProvider.getInstance().DefinitionMemberInfo
-            val inlineScriptTracker = ParadoxModificationTrackerProvider.getInstance().InlineScript
-            CachedValueProvider.Result.create(value, file, tracker, inlineScriptTracker)
+            //invalidated on file modification or ScriptFileTracker
+            val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFile
+            CachedValueProvider.Result.create(value, file, tracker)
         }
     }
     

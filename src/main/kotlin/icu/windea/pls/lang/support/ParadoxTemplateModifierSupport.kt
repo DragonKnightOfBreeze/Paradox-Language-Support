@@ -27,12 +27,12 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val referencesKey = Key.create<List<ParadoxInTemplateExpressionReference>>("paradox.modifierElement.references")
     }
     
-    override fun matchModifier(name: String, configGroup: CwtConfigGroup, matchType: Int): Boolean {
+    override fun matchModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
         val isStatic = BitUtil.isSet(matchType, CwtConfigMatchType.STATIC)
         if(isStatic) return false
         //要求生成源必须已定义
         return configGroup.generatedModifiers.values.any { config ->
-            config.template.matches(name, configGroup, matchType)
+            config.template.matches(name, element, configGroup, matchType)
         }
     }
     

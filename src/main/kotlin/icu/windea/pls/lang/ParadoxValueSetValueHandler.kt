@@ -67,7 +67,7 @@ object ParadoxValueSetValueHandler {
 	}
 	
 	@JvmStatic
-	fun resolveValueSetValue(element: ParadoxScriptExpressionElement, configExpressions: List<CwtDataExpression>, name: String, configGroup: CwtConfigGroup): ParadoxValueSetValueElement? {
+	fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, configExpressions: Iterable<CwtDataExpression>, configGroup: CwtConfigGroup): ParadoxValueSetValueElement? {
 		val gameType = configGroup.gameType ?: return null
 		if(element !is ParadoxScriptStringExpressionElement) return null
 		val configExpression = configExpressions.firstOrNull() ?: return null

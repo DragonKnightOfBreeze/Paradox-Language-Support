@@ -34,7 +34,7 @@ class ParadoxEconomicCategoryModifierSupport: ParadoxModifierSupport {
         return gameType == ParadoxGameType.Stellaris
     }
     
-    override fun matchModifier(name: String, configGroup: CwtConfigGroup, matchType: Int): Boolean {
+    override fun matchModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
         val gameType = configGroup.gameType ?: return false
         if(!isGameTypeSupported(gameType)) return false
         val selector = definitionSelector().gameType(gameType) 

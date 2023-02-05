@@ -14,7 +14,7 @@ class ParadoxSearchScope(private val searchScope: String) {
 	
 	fun getGlobalSearchScope(context: PsiElement): GlobalSearchScope? {
 		return when {
-			searchScope == "definition" -> GlobalSearchScope.fileScope(context.containingFile)
+			searchScope == "definition" -> GlobalSearchScope.fileScope(context.containingFile) //TODO
 			else -> null
 		}
 	}

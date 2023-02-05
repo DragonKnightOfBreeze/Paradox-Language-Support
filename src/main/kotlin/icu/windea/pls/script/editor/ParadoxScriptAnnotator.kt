@@ -243,7 +243,7 @@ class ParadoxScriptAnnotator : Annotator {
                 if(text.isParameterAwareExpression()) return
                 val aliasName = configExpression.value ?: return
                 val aliasMap = configGroup.aliasGroups.get(aliasName) ?: return
-                val aliasSubName = CwtConfigHandler.getAliasSubName(text, false, aliasName, configGroup) ?: return
+                val aliasSubName = CwtConfigHandler.getAliasSubName(element, text, false, aliasName, configGroup) ?: return
                 val aliasConfig = aliasMap[aliasSubName]?.first() ?: return
                 annotateExpression(element, range, rangeInElement, aliasConfig, holder)
             }
