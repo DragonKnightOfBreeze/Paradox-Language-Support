@@ -247,7 +247,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					sections.put(PlsDocBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
 					
 					val outputScope = linkConfig.outputScope
-					sections.put(PlsDocBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
+					if(outputScope != null) sections.put(PlsDocBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
 				}
 			}
 			CwtConfigType.LocalisationLink -> {
@@ -261,7 +261,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					sections.put(PlsDocBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
 					
 					val outputScope = linkConfig.outputScope
-					sections.put(PlsDocBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
+					if(outputScope != null) sections.put(PlsDocBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
 				}
 			}
 			CwtConfigType.Modifier -> {

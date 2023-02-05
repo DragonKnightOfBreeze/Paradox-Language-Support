@@ -3,12 +3,14 @@ package icu.windea.pls.core.expression.nodes
 import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.collections.*
 
 class ParadoxValueLinkFromDataExpressionNode (
 	override val text: String,
 	override val rangeInExpression: TextRange,
-	override val nodes: List<ParadoxExpressionNode> = emptyList()
+	override val nodes: List<ParadoxExpressionNode> = emptyList(),
+	val linkConfigs: List<CwtLinkConfig>,
 ) : ParadoxValueFieldExpressionNode {
 	val prefixNode get() = nodes.findIsInstance<ParadoxValueLinkPrefixExpressionNode>()
 	val dataSourceNode get() = nodes.findIsInstance<ParadoxValueLinkDataSourceExpressionNode>()!!
@@ -31,7 +33,7 @@ class ParadoxValueLinkFromDataExpressionNode (
 				val dataSourceRange = TextRange.create(prefixText.length + offset, text.length + offset)
 				val dataSourceNode = ParadoxValueLinkDataSourceExpressionNode.resolve(dataSourceText, dataSourceRange, linkConfigs)
 				nodes.add(dataSourceNode)
-				return ParadoxValueLinkFromDataExpressionNode(text, textRange, nodes)
+				return ParadoxValueLinkFromDataExpressionNode(text, textRange, nodes, linkConfigs)
 			} else {
 				//没有前缀且允许没有前缀
 				val linkConfigsNoPrefix = configGroup.linksAsValueWithoutPrefixSorted
@@ -39,7 +41,7 @@ class ParadoxValueLinkFromDataExpressionNode (
 					//这里直接认为匹配
 					val node = ParadoxValueLinkDataSourceExpressionNode.resolve(text, textRange, linkConfigsNoPrefix)
 					nodes.add(node)
-					return ParadoxValueLinkFromDataExpressionNode(text, textRange, nodes)
+					return ParadoxValueLinkFromDataExpressionNode(text, textRange, nodes, linkConfigs)
 				}
 			}
 			return null

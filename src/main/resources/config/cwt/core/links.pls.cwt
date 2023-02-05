@@ -1,6 +1,8 @@
 links = {
 	event_target = {
 		desc = "Event target"
+		input_scopes = { all }
+		output_scope = any
 		from_data = yes
 		type = scope
 		prefix = event_target:
@@ -8,15 +10,11 @@ links = {
 	}
 	global_event_target = {
 		desc = "Global event target"
+		input_scopes = { all }
+		output_scope = any
 		from_data = yes
 		type = scope
 		prefix = event_target:
 		data_source = value[global_event_target]
-	}
-	variable = {
-		desc = "Variable"
-		from_data = yes
-		type = value
-		data_source = value[variable]
 	}
 }

@@ -7,7 +7,7 @@ import icu.windea.pls.lang.*
 /**
  * @property desc desc: string
  * @property inputScopes input_scopes | input_scopes: string[]
- * @property outputScope output_scope: string
+ * @property outputScope output_scope: string? - 为null时表示会传递scope
  */
 data class CwtLocalisationLinkConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
@@ -16,7 +16,7 @@ data class CwtLocalisationLinkConfig(
 	val name: String,
 	val desc: String? = null,
 	val inputScopes: Set<String>,
-	val outputScope: String
+	val outputScope: String?
 ) : CwtConfig<CwtProperty> {
 	val inputAnyScope get() = inputScopes == ParadoxScopeHandler.anyScopeIdSet
 	val outputAnyScope get() = outputScope == ParadoxScopeHandler.anyScopeId

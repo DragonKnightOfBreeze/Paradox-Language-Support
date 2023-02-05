@@ -62,6 +62,7 @@ data class ParadoxScopeContext(
 	}
 	
 	fun resolve(pushScope: String?): ParadoxScopeContext {
+		//push_scope = null > transfer scope
 		if(pushScope == null) return this
 		val result = copy(thisScope = pushScope)
 		result.prev = this

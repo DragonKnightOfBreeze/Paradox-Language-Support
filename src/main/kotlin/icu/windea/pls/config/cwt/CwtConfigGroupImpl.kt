@@ -795,14 +795,12 @@ class CwtConfigGroupImpl(
 				"input_scopes" -> inputScopes = buildSet {
 					prop.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
 					prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
-				}.takeIfNotEmpty()
+				}
 				"output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) }
 			}
 		}
-		val transferScope = inputScopes == null && outputScope == null
-		inputScopes = inputScopes ?: ParadoxScopeHandler.anyScopeIdSet
-		outputScope = outputScope ?: ParadoxScopeHandler.anyScopeId
-		return CwtLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, fromData, type, dataSource, prefix, forDefinitionType, inputScopes, outputScope, transferScope)
+		inputScopes = inputScopes.takeIfNotEmpty() ?: ParadoxScopeHandler.anyScopeIdSet
+		return CwtLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, fromData, type, dataSource, prefix, forDefinitionType, inputScopes, outputScope)
 	}
 	
 	private fun resolveLocalisationLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationLinkConfig? {
@@ -816,12 +814,11 @@ class CwtConfigGroupImpl(
 				"input_scopes" -> inputScopes = buildSet {
 					prop.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
 					prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
-				}.takeIfNotEmpty()
+				}
 				"output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) }
 			}
 		}
-		inputScopes = inputScopes ?: ParadoxScopeHandler.anyScopeIdSet
-		outputScope = outputScope ?: ParadoxScopeHandler.anyScopeId
+		inputScopes = inputScopes.takeIfNotEmpty() ?: ParadoxScopeHandler.anyScopeIdSet
 		return CwtLocalisationLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, inputScopes, outputScope)
 	}
 	
