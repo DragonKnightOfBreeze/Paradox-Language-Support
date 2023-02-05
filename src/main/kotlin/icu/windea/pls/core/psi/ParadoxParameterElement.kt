@@ -68,7 +68,7 @@ class ParadoxParameterElement(
 		return false // false -> click to show usages
 	}
 	
-	override fun equals(other: Any?): Boolean {
+	override fun isEquivalentTo(other: PsiElement?): Boolean {
 		return other is ParadoxParameterElement &&
 			name == other.name &&
 			contextName == other.contextName &&
@@ -76,11 +76,11 @@ class ParadoxParameterElement(
 			gameType == other.gameType
 	}
 	
+	override fun equals(other: Any?): Boolean {
+		return other is ParadoxModifierElement && parent == other.parent
+	}
+	
 	override fun hashCode(): Int {
-		var result = name.hashCode()
-		result = 31 * result + contextName.hashCode()
-		result = 31 * result + project.hashCode()
-		result = 31 * result + gameType.hashCode()
-		return result
+		return parent.hashCode()
 	}
 }

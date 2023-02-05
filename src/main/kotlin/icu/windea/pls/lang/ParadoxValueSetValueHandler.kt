@@ -72,7 +72,7 @@ object ParadoxValueSetValueHandler {
 		if(element !is ParadoxScriptStringExpressionElement) return null
 		val configExpression = configExpressions.firstOrNull() ?: return null
 		val read = configExpression.type == CwtDataType.Value
-		val valueSetNames = configExpressions.mapNotNull { it.value }
+		val valueSetNames = configExpressions.mapNotNullTo(mutableSetOf()) { it.value }
 		return ParadoxValueSetValueElement(element, name, valueSetNames, configGroup.project, gameType, read)
 	}
 }

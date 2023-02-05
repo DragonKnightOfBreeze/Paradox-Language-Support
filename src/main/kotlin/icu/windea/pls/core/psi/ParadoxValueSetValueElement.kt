@@ -17,13 +17,13 @@ import javax.swing.*
 class ParadoxValueSetValueElement(
     parent: PsiElement,
     private val name: String,
-    val valueSetNames: List<String>,
+    val valueSetNames: Set<String>,
     private val project: Project,
     val gameType: ParadoxGameType,
     val read: Boolean
 ) : RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
     constructor(element: PsiElement, name: String, valueSetName: String, project: Project, gameType: ParadoxGameType, read: Boolean = true)
-        : this(element, name, listOf(valueSetName), project, gameType, read)
+        : this(element, name, setOf(valueSetName), project, gameType, read)
     
     val valueSetName = valueSetNames.first()
     
@@ -70,19 +70,19 @@ class ParadoxValueSetValueElement(
         return false // false -> click to show usages
     }
     
-    override fun equals(other: Any?): Boolean {
+    override fun isEquivalentTo(other: PsiElement?): Boolean {
         return other is ParadoxValueSetValueElement &&
             name == other.name &&
-            valueSetNamesText == other.valueSetNamesText &&
+            valueSetNames.any { it in other.valueSetNames } &&
             project == other.project &&
             gameType == other.gameType
     }
     
+    override fun equals(other: Any?): Boolean {
+        return other is ParadoxModifierElement && parent == other.parent
+    }
+    
     override fun hashCode(): Int {
-        var result = name.hashCode()
-        result = 31 * result + valueSetNamesText.hashCode()
-        result = 31 * result + project.hashCode()
-        result = 31 * result + gameType.hashCode()
-        return result
+        return parent.hashCode()
     }
 }

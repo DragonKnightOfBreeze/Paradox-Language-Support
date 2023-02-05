@@ -73,7 +73,6 @@
 
 * [ ] 复杂表达式中的参数被高亮成了白色（为啥？）
 * [ ] 颜色在第一次被设置后之后不再起效
-* [ ] valueSetValue无法点击
 
 * BUG修复
   * [X] 修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
