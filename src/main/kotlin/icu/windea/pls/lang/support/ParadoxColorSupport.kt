@@ -2,10 +2,12 @@ package icu.windea.pls.lang.support
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
+import icu.windea.pls.script.editor.*
 import java.awt.*
 
 /**
  * 提供对颜色的支持。（颜色的装订线图标。）
+ * @see ParadoxScriptColorProvider
  */
 interface ParadoxColorSupport {
     fun getElementFromToken(tokenElement: PsiElement): PsiElement?

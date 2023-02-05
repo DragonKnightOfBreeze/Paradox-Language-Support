@@ -15,11 +15,11 @@ import icu.windea.pls.script.highlighter.*
 
 /**
  * 变量字段表达式。
- * 
+ *
  * 相较于值字段表达式（[ParadoxValueFieldExpression]），仅支持调用变量（可带上作用域信息）。
- * 
+ *
  * 示例：
- * 
+ *
  * ```
  * root.owner.some_variable
  * ```
@@ -126,35 +126,8 @@ class ParadoxVariableFieldExpressionImpl(
             }
             if(node is ParadoxScopeExpressionNode) {
                 if(inRange) {
-                    val linkFromDataNode = node.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
-                    val prefixNode = linkFromDataNode?.prefixNode
-                    val dataSourceNode = linkFromDataNode?.dataSourceNode
-                    val dataSourceNodeToCheck = dataSourceNode?.nodes?.first()
-                    val endOffset = dataSourceNode?.rangeInExpression?.startOffset ?: -1
-                    if(prefixNode != null && dataSourceNode != null && offsetInParent >= dataSourceNode.rangeInExpression.startOffset) {
-                        scopeContextInExpression = ParadoxScopeHandler.resolveScopeContext(prefixNode, scopeContextInExpression)
-                        context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
-                        
-                        val keywordToUse = dataSourceNode.text.substring(0, offsetInParent - endOffset)
-                        val resultToUse = result.withPrefixMatcher(keywordToUse)
-                        context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-                        val prefix = prefixNode.text
-                        CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
-                    } else {
-                        context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
-                        
-                        val inFirstNode = dataSourceNode == null || dataSourceNode.nodes.isEmpty()
-                            || offsetInParent <= dataSourceNode.nodes.first().rangeInExpression.endOffset
-                        val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
-                        val resultToUse = result.withPrefixMatcher(keywordToUse)
-                        context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-                        if(inFirstNode) {
-                            CwtConfigHandler.completeSystemLink(context, resultToUse)
-                            CwtConfigHandler.completeScope(context, resultToUse)
-                            CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
-                        }
-                        CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
-                    }
+                    context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
+                    completeForScopeExpressionNode(node, context, result)
                     break
                 } else {
                     scopeContextInExpression = ParadoxScopeHandler.resolveScopeContext(node, scopeContextInExpression)
@@ -162,14 +135,7 @@ class ParadoxVariableFieldExpressionImpl(
             } else if(node is ParadoxDataExpressionNode) {
                 if(inRange) {
                     context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
-                    val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
-                    val resultToUse = result.withPrefixMatcher(keywordToUse)
-                    context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-                    CwtConfigHandler.completeSystemLink(context, resultToUse)
-                    CwtConfigHandler.completeScope(context, resultToUse)
-                    CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
-                    CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, null, node)
-                    CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, null, node, variableOnly = true)
+                    completeForVariableDataExpressionNode(node, context, result)
                     break
                 }
             }

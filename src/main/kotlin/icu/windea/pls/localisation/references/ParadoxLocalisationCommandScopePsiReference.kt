@@ -35,7 +35,7 @@ class ParadoxLocalisationCommandScopePsiReference(
 		
 		//尝试识别为system_link或者localisation_scope
 		val configGroup = getCwtConfig(project).get(gameType) ?: return null
-		val systemLink = CwtConfigHandler.resolveSystemLink(name, configGroup)
+		val systemLink = CwtConfigHandler.resolvePredefinedScope(name, configGroup)
 		if(systemLink != null) return systemLink
 		val localisationScope = CwtConfigHandler.resolvePredefinedLocalisationScope(name, configGroup)
 		if(localisationScope != null) return localisationScope
@@ -61,7 +61,7 @@ class ParadoxLocalisationCommandScopePsiReference(
 		
 		//尝试被识别为预定义的localisation_command
 		val configGroup = getCwtConfig(project).get(gameType) ?: return null
-		val systemLink = CwtConfigHandler.resolveSystemLink(name, configGroup)
+		val systemLink = CwtConfigHandler.resolvePredefinedScope(name, configGroup)
 		if(systemLink != null) return ParadoxScriptAttributesKeys.SYSTEM_LINK_KEY
 		val localisationScope = CwtConfigHandler.resolvePredefinedLocalisationScope(name, configGroup)
 		if(localisationScope != null) return ParadoxScriptAttributesKeys.SCOPE_KEY

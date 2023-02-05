@@ -7,6 +7,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
@@ -322,6 +323,14 @@ object ParadoxScopeHandler {
 	private fun resolveScopeByScopeLinkFromDataNode(node: ParadoxScopeLinkFromDataExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
 		val linkConfig = node.linkConfigs.firstOrNull() // first is ok
 		if(linkConfig == null) return inputScopeContext //unexpected
+		if(linkConfig.outputScope == null && linkConfig.expression?.type?.isScopeFieldType() == true) {
+			//hidden:owner = {...}
+			//hidden:event_target:xxx = {...}
+			val nestedNode = node.dataSourceNode.nodes.findIsInstance<ParadoxScopeLinkExpressionNode>()
+			if(nestedNode != null) {
+				return resolveScopeContext(nestedNode, inputScopeContext)
+			}
+		}
 		return inputScopeContext.resolve(linkConfig.outputScope)
 	}
 	

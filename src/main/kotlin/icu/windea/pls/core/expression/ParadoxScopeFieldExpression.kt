@@ -88,6 +88,43 @@ class ParadoxScopeFieldExpressionImpl(
 											malformed = true
 										}
 									}
+									is ParadoxScopeExpressionNode -> {
+										if(dataSourceChildNode.text.isEmpty()) {
+											if(isLast) {
+												val error = ParadoxMissingScopeExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingScope"))
+												errors.add(error)
+											} else if(!malformed) {
+												malformed = true
+											}
+										} else {
+											if(dataSourceChildNode is ParadoxScopeLinkFromDataExpressionNode) {
+												val nestedDataSourceNode = dataSourceChildNode.dataSourceNode
+												for(nestedDataSourceChildNode in nestedDataSourceNode.nodes) {
+													when(nestedDataSourceChildNode) {
+														is ParadoxDataExpressionNode -> {
+															if(nestedDataSourceChildNode.text.isEmpty()) {
+																if(isLast) {
+																	val expect = nestedDataSourceChildNode.linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
+																	val error = ParadoxMissingScopeLinkDataSourceExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingScopeLinkDataSource", expect))
+																	errors.add(error)
+																} else if(!malformed) {
+																	malformed = true
+																}
+															} else if(!malformed && !isValid(nestedDataSourceChildNode)) {
+																malformed = true
+															}
+														}
+														is ParadoxComplexExpression -> {
+															errors.addAll(nestedDataSourceChildNode.validate())
+														}
+														is ParadoxErrorTokenExpressionNode -> {
+															malformed = true
+														}
+													}
+												}
+											}
+										}
+									}
 									is ParadoxComplexExpression -> {
 										errors.addAll(dataSourceChildNode.validate())
 									}
@@ -130,35 +167,8 @@ class ParadoxScopeFieldExpressionImpl(
 			}
 			if(node is ParadoxScopeExpressionNode) {
 				if(inRange) {
-					val scopeLinkFromDataNode = node.castOrNull<ParadoxScopeLinkFromDataExpressionNode>()
-					val prefixNode = scopeLinkFromDataNode?.prefixNode
-					val dataSourceNode = scopeLinkFromDataNode?.dataSourceNode
-					val dataSourceNodeToCheck = dataSourceNode?.nodes?.first()
-					val endOffset = dataSourceNode?.rangeInExpression?.startOffset ?: -1
-					if(prefixNode != null && dataSourceNode != null && offsetInParent >= dataSourceNode.rangeInExpression.startOffset) {
-						scopeContextInExpression = ParadoxScopeHandler.resolveScopeContext(prefixNode, scopeContextInExpression)
-						context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
-						
-						val keywordToUse = dataSourceNode.text.substring(0, offsetInParent - endOffset)
-						val resultToUse = result.withPrefixMatcher(keywordToUse)
-						context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-						val prefix = prefixNode.text
-						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
-					} else {
-						context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
-						
-						val inFirstNode = dataSourceNode == null || dataSourceNode.nodes.isEmpty()
-							|| offsetInParent <= dataSourceNode.nodes.first().rangeInExpression.endOffset
-						val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
-						val resultToUse = result.withPrefixMatcher(keywordToUse)
-						context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-						if(inFirstNode) {
-							CwtConfigHandler.completeSystemLink(context, resultToUse)
-							CwtConfigHandler.completeScope(context, resultToUse)
-							CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
-						}
-						CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
-					}
+					context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
+					completeForScopeExpressionNode(node, context, result)
 					break
 				} else {
 					scopeContextInExpression = ParadoxScopeHandler.resolveScopeContext(node, scopeContextInExpression)

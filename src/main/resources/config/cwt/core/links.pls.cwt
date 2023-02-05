@@ -17,4 +17,10 @@ links = {
 		prefix = event_target:
 		data_source = value[global_event_target]
 	}
+	hidden_link = {
+		from_data = yes
+		type = scope
+		prefix = hidden:
+		data_source = scope_field
+	}
 }

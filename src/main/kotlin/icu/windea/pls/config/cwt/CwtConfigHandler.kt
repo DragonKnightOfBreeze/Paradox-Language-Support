@@ -1873,7 +1873,7 @@ object CwtConfigHandler {
 		return templateConfigExpression.resolve(text, element, configGroup)
 	}
 	
-	fun resolveSystemLink(name: String, configGroup: CwtConfigGroup): PsiElement? {
+	fun resolvePredefinedScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
 		val systemLink = configGroup.systemLinks[name] ?: return null
 		val resolved = systemLink.pointer.element ?: return null
 		resolved.putUserData(PlsKeys.cwtConfigKey, systemLink)

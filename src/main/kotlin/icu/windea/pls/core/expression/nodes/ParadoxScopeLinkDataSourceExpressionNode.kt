@@ -46,6 +46,14 @@ class ParadoxScopeLinkDataSourceExpressionNode (
 				}
 			}
 			if(nodes.isEmpty()) {
+				val scopeFieldConfig = linkConfigs.find { it.expression?.type?.isScopeFieldType() == true }
+				if(scopeFieldConfig != null) {
+					val configGroup = linkConfigs.first().info.configGroup
+					val node = ParadoxScopeExpressionNode.resolve(text, textRange, configGroup)
+					nodes.add(node)
+				}
+			}
+			if(nodes.isEmpty()) {
 				val node = ParadoxDataExpressionNode.resolve(text, textRange, linkConfigs)
 				nodes.add(node)
 			}
