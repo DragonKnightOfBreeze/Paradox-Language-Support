@@ -19,13 +19,11 @@
   * [ ] 修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
   * [ ] 基本修复：[Support for HoI4 is almost completely broken #10](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/10)
 * 优化：
-  * [ ] 匹配CWT规则时，如果规则可能是多个不同的子句时，需要按照子属性/子值的出现次数来判断到底匹配哪个子句规则
   * [ ] 在判断子类型时兼容`category = <deposit_category.blocker>`这样的表达式（这意味着进行索引时需要使用索引后的数据，IDEA似乎无法实现？）
   * [ ] 确认重命名功能能够预期正确进行（如果对应的声明/引用支持重命名）
   * [ ] 基于引用的重命名需要考虑存在前后缀的情况（主要是为图标引用考虑）
   * [ ] 一些检查可以基于当前文件、文件路径（相对于游戏或模组根目录）、定义类型（例如，`event`）、定义成员路径（例如，`event.abc`）等来部分禁用
   * [ ] ~~将本地化命令（`[xxx]`中的xxx，所有文本）解析为单个元素，如果解析scopeFieldExpression一样，将此作为localisationCommandExpression并解析，实现相关功能：检查、提示等~~
-  * [ ] 基于facet或者合成库`SyntheticLibrary`+自定义设置配置模组的游戏类型、游戏目录、依赖模组列表等配置
   * [ ] 可扩展的对本地化命令、本地化命令作用域的支持（包括引用解析、作用域获取、代码补全等）
   * [ ] 内嵌提示的预览文本中不再包括特殊注释，而是通过向psiFile中注入特定userData的方式提供必要的信息（类型、本地化等）
   * [ ] 需要重新调整对返回的规则列表的排序
@@ -33,7 +31,6 @@
   * [ ] ［不确定］在快速文档中显示本地化作用域和命令的作用域上下文 - 需要大幅重构相关代码
   * [ ] ［不确定］也许需要重构复杂表达式相关代码，更好地支持相关功能，以及支持额外的复杂表达式
 * 优化 - 智能推断：
-  * [ ] 基于使用处推断定义（如`scripted_effect`）的作用域上下文
   * [ ] 基于使用处推断本地化命令的作用域上下文
   * [ ] 基于使用处推断本地化文本中作为参数的引用（如`$PARAM$`）
   * [ ] 可以通过特殊注释强制指定定义类型（基于文件路径或者基于直接的类型+子类型） - 用于实现差异比较等功能
@@ -62,19 +59,30 @@
   * [ ] 兼容CWT规则文件中的错误级别`severity = warning`或`## severity = warning`（PLS和CWTools实现有所不同，需要分析）
   * [ ] ［待确定］作为trigger的值的CWT规则`scope_field` `scope[xxx]` `scope_group[xxx]`也可以匹配一个布尔值？
 
+## PROCESSING
+
+* [ ] 复杂表达式中的参数被高亮成了白色（为啥？）
+
+### 0.7.14
+
+* 优化：
+  * [ ] 改为基于facet或者合成库`SyntheticLibrary`+自定义设置配置模组的游戏类型、游戏目录、依赖模组列表等配置
+  * [ ] 可以从模组列表文件一键导入模组作为依赖并保留顺序
+  * [ ] 如果可以直接获取游戏目录的位置，在模组配置中自动配置并在界面右下方提示，否则也在界面右下方提示，并要求手动配置
+  * [ ] 更加完善的DIFF支持 - 比较时也显示内联提示，比较定义和本地化时也提供高级语言功能（低层实现：创建临时文件并进行比较）
+  * [ ] 匹配CWT规则时，如果规则可能是多个不同的子句时，需要按照子属性/子值的出现次数来判断到底匹配哪个子句规则
+* 优化 - 智能推断：
+  * [ ] 基于使用处推断一些定义（如`scripted_effect`）的作用域上下文
+
 ## 0.7.13
 
 计划内容：
 
 * 支持推断inline_script的调用位置从而为其提供各种功能
 * 支持通过economic_category生成的修饰符
+* 提供更加完善的颜色支持（可以通过颜色装订线图标显示和设置颜色）
 
-进行中：
-
-* [ ] 复杂表达式中的参数被高亮成了白色（为啥？）
-* [ ] 颜色在第一次被设置后之后不再起效
-
-* BUG修复
+* BUG修复：
   * [X] 修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
   * [X] 修复：通过颜色装订线图标修改颜色时，颜色在第一次被设置后，不关闭对话框再次设置会无法生效
 * 优化：
