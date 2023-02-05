@@ -8,7 +8,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
@@ -80,10 +79,9 @@ class ComplexEnumValueNameGotoImplementationsIntention : ComplexEnumValueNameInt
 	override fun doInvoke(element: ParadoxScriptStringExpressionElement, info: ParadoxComplexEnumValueInfo, config: CwtComplexEnumConfig, editor: Editor, project: Project) {
 		val gameType = info.gameType ?: return
 		val enumName = info.enumName
-		val scope = GlobalSearchScope.allScope(project)
 		val searchScope = config.searchScope
 		val selector = complexEnumValueSelector().gameType(gameType).withSearchScope(searchScope, element)
-		val result = ParadoxComplexEnumValueSearch.search(info.name, info.enumName, project, scope, selector).findAll()
+		val result = ParadoxComplexEnumValueSearch.search(info.name, info.enumName, project, selector = selector).findAll()
 		if(result.isEmpty()) return
 		NavigationUtil.getPsiElementPopup(result.toTypedArray(), PlsBundle.message("script.intention.complexEnumValueName.gotoImplementations.title", enumName))
 			.showInBestPositionFor(editor)

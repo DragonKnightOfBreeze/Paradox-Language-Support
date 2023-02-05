@@ -63,7 +63,7 @@ object CwtTemplateExpressionHandler {
     }
     
     @JvmStatic
-    fun matches(text: String, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
+    fun matches(text: String, element: PsiElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
         val snippetExpressions = configExpression.snippetExpressions
         if(snippetExpressions.isEmpty()) return false
         val expressionString = text.unquote()
@@ -77,7 +77,7 @@ object CwtTemplateExpressionHandler {
                 val matchGroup = matchResult.groups.get(i++) ?: return false
                 val referenceName = matchGroup.value
                 val expression = ParadoxDataExpression.resolve(referenceName, false)
-                val isMatched = CwtConfigHandler.matchesScriptExpression(null, expression, snippetExpression, null, configGroup, matchType)
+                val isMatched = CwtConfigHandler.matchesScriptExpression(element, expression, snippetExpression, null, configGroup, matchType)
                 if(!isMatched) return false
             }
         }
@@ -85,18 +85,18 @@ object CwtTemplateExpressionHandler {
     }
     
     @JvmStatic
-    fun resolve(element: ParadoxScriptStringExpressionElement, text: String, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
+    fun resolve(text: String, element: ParadoxScriptStringExpressionElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
         //需要保证里面的每个引用都能解析
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return null
-        val references = resolveReferences(element, text, configExpression, configGroup)
+        val references = resolveReferences(text, element, configExpression, configGroup)
         if(references.isEmpty()) return null
         return ParadoxTemplateExpressionElement(element, text, configExpression, project, gameType, references)
     }
     
     
     @JvmStatic
-    fun resolveReferences(element: ParadoxScriptStringExpressionElement, text: String, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): List<ParadoxInTemplateExpressionReference> {
+    fun resolveReferences(text: String, element: ParadoxScriptStringExpressionElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): List<ParadoxInTemplateExpressionReference> {
         val snippetExpressions = configExpression.snippetExpressions
         if(snippetExpressions.isEmpty()) return emptyList()
         val expressionString = text

@@ -95,16 +95,16 @@ fun CwtTemplateExpression.extract(referenceNames: Map<CwtDataExpression, String>
     return CwtTemplateExpressionHandler.extract(this, referenceNames)
 }
 
-fun CwtTemplateExpression.matches(text: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL) : Boolean {
-    return CwtTemplateExpressionHandler.matches(text, this, configGroup, matchType)
+fun CwtTemplateExpression.matches(text: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL) : Boolean {
+    return CwtTemplateExpressionHandler.matches(text, element, this, configGroup, matchType)
 }
 
-fun CwtTemplateExpression.resolve(element: ParadoxScriptStringExpressionElement, text: String, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
-    return CwtTemplateExpressionHandler.resolve(element, text, this, configGroup)
+fun CwtTemplateExpression.resolve(text: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
+    return CwtTemplateExpressionHandler.resolve(text, element, this, configGroup)
 }
 
-fun CwtTemplateExpression.resolveReferences(element: ParadoxScriptStringExpressionElement, text: String, configGroup: CwtConfigGroup): List<ParadoxInTemplateExpressionReference> {
-    return CwtTemplateExpressionHandler.resolveReferences(element, text, this, configGroup)
+fun CwtTemplateExpression.resolveReferences(text: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): List<ParadoxInTemplateExpressionReference> {
+    return CwtTemplateExpressionHandler.resolveReferences(text, element, this, configGroup)
 }
 
 fun CwtTemplateExpression.processResolveResult(contextElement: PsiElement, configGroup: CwtConfigGroup, processor: Processor<String>) {

@@ -3,6 +3,7 @@ package icu.windea.pls.lang.support
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
+import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
@@ -27,7 +28,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val referencesKey = Key.create<List<ParadoxInTemplateExpressionReference>>("paradox.modifierElement.references")
     }
     
-    override fun matchModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
+    override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
         val isStatic = BitUtil.isSet(matchType, CwtConfigMatchType.STATIC)
         if(isStatic) return false
         //要求生成源必须已定义
@@ -43,7 +44,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         var generatedModifierConfig: CwtModifierConfig? = null
         val references = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
             ProgressManager.checkCanceled()
-            val resolvedReferences = config.template.resolveReferences(element, name, configGroup).takeIfNotEmpty()
+            val resolvedReferences = config.template.resolveReferences(name, element, configGroup).takeIfNotEmpty()
             if(resolvedReferences != null) generatedModifierConfig = config
             resolvedReferences
         }.orEmpty()

@@ -1,6 +1,7 @@
 package icu.windea.pls.lang
 
 import com.intellij.codeInsight.completion.*
+import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
@@ -20,15 +21,15 @@ object ParadoxModifierHandler {
 	//对于Stellaris：修正会由经济类型（economic_category）的声明生成
 	
 	@JvmStatic
-	fun matchesModifier(name: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
+	fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
 		//先判断是否存在对应的预定义的非生成的修正
-		if(matchesPredefinedModifier(configGroup, name)) return true
+		if(matchesPredefinedModifier(name, configGroup)) return true
 		//否则基于解析器逻辑判断
-		return ParadoxModifierSupport.matchModifier(name, configGroup, matchType)
+		return ParadoxModifierSupport.matchModifier(name, element, configGroup, matchType)
 	}
 	
 	@JvmStatic
-	fun matchesPredefinedModifier(configGroup: CwtConfigGroup, name: String): Boolean {
+	fun matchesPredefinedModifier(name: String, configGroup: CwtConfigGroup): Boolean {
 		val predefinedModifierConfig = configGroup.predefinedModifiers[name]
 		if(predefinedModifierConfig != null) return true
 		return false

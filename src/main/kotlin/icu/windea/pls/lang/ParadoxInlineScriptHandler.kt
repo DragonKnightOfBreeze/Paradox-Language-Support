@@ -151,7 +151,7 @@ object ParadoxInlineScriptHandler {
     private fun getUsageInfoFromCache(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
         return CachedValuesManager.getCachedValue(file, PlsKeys.cachedInlineScriptUsageInfoKey) {
             val value = doGetInlineScriptUsageInfo(file)
-            val tracker = ParadoxModificationTrackerProvider.InlineScript
+            val tracker = ParadoxModificationTrackerProvider.getInstance().InlineScript
             CachedValueProvider.Result.create(value, tracker)
         }
     }

@@ -400,7 +400,7 @@ object CwtConfigHandler {
 			CwtDataType.Modifier -> {
 				if(!isStatic && isParameterAware) return true
 				//匹配预定义的modifier
-				return matchesModifier(expression.text, configGroup)
+				return matchesModifier(element, expression.text, configGroup)
 			}
 			CwtDataType.SingleAliasRight -> {
 				return false //不在这里处理
@@ -423,7 +423,7 @@ object CwtConfigHandler {
 				//允许用引号括起
 				if(isStatic) return true
 				if(isParameterAware) return true
-				return matchesTemplateExpression(expression, configExpression, configGroup)
+				return matchesTemplateExpression(element, expression, configExpression, configGroup)
 			}
 			CwtDataType.Constant -> {
 				val value = configExpression.value
@@ -452,13 +452,13 @@ object CwtConfigHandler {
 		return matchesScriptExpression(element, expression, configExpression, null, configGroup, matchType)
 	}
 	
-	fun matchesModifier(name: String, configGroup: CwtConfigGroup): Boolean {
-		return ParadoxModifierHandler.matchesModifier(name, configGroup)
+	fun matchesModifier(element: PsiElement, name: String, configGroup: CwtConfigGroup): Boolean {
+		return ParadoxModifierHandler.matchesModifier(name, element, configGroup)
 	}
 	
-	fun matchesTemplateExpression(expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
+	fun matchesTemplateExpression(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
 		val templateConfigExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
-		return templateConfigExpression.matches(expression.text, configGroup, matchType)
+		return templateConfigExpression.matches(expression.text, element, configGroup, matchType)
 	}
 	
 	fun getAliasSubName(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): String? {
@@ -912,6 +912,7 @@ object CwtConfigHandler {
 					val typeFile = complexEnumConfig.pointer.containingFile
 					val searchScope = complexEnumConfig.searchScope
 					val selector = complexEnumValueSelector().gameType(gameType).withSearchScope(searchScope, contextElement).preferRootFrom(contextElement).distinctByName()
+					
 					val query = ParadoxComplexEnumValueSearch.searchAll(enumName, project, selector = selector)
 					query.processQuery { complexEnum ->
 						val name = complexEnum.value
@@ -1869,7 +1870,7 @@ object CwtConfigHandler {
 	fun resolveTemplateExpression(element: ParadoxScriptExpressionElement, text: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
 		if(element !is ParadoxScriptStringExpressionElement) return null
 		val templateConfigExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
-		return templateConfigExpression.resolve(element, text, configGroup)
+		return templateConfigExpression.resolve(text, element, configGroup)
 	}
 	
 	fun resolveSystemLink(name: String, configGroup: CwtConfigGroup): PsiElement? {

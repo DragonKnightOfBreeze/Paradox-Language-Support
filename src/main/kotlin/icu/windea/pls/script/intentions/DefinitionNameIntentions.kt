@@ -8,7 +8,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -73,9 +72,8 @@ class DefinitionNameGotoImplementationsIntention: DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.gotoImplementations")
 	
 	override fun doInvoke(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
-		val scope = GlobalSearchScope.allScope(project)
 		val selector = definitionSelector().gameType(definitionInfo.gameType).preferRootFrom(definition)
-		val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, project, scope, selector).findAll()
+		val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, project, selector = selector).findAll()
 		if(result.isEmpty()) return
 		NavigationUtil.getPsiElementPopup(result.toTypedArray(), PlsBundle.message("script.intention.definitionName.gotoImplementations.title", definitionInfo.name))
 			.showInBestPositionFor(editor)

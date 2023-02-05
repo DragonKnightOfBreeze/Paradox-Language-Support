@@ -2,6 +2,7 @@ package icu.windea.pls.lang.support
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
+import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
@@ -34,7 +35,7 @@ class ParadoxEconomicCategoryModifierSupport: ParadoxModifierSupport {
         return gameType == ParadoxGameType.Stellaris
     }
     
-    override fun matchModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
+    override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
         val gameType = configGroup.gameType ?: return false
         if(!isGameTypeSupported(gameType)) return false
         val selector = definitionSelector().gameType(gameType) 

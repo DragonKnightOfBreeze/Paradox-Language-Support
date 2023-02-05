@@ -2,6 +2,7 @@ package icu.windea.pls.lang.support
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.extensions.*
+import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
@@ -17,7 +18,10 @@ import icu.windea.pls.script.psi.*
  * @see ParadoxModifierElement
  */
 interface ParadoxModifierSupport {
-    fun matchModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup, matchType: Int): Boolean
+    /**
+     * @param element 进行匹配时的上下文PSI元素。
+     */
+    fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int): Boolean
     
     fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement?
     
@@ -42,7 +46,7 @@ interface ParadoxModifierSupport {
         @JvmStatic
         val EP_NAME = ExtensionPointName.create<ParadoxModifierSupport>("icu.windea.pls.paradoxModifierSupport")
         
-        fun matchModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
+        fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
             return EP_NAME.extensions.any { it.matchModifier(name, element, configGroup, matchType) }
         }
         
