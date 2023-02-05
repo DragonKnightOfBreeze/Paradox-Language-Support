@@ -21,6 +21,51 @@ enum class CwtPathExpressionType {
 	},
 	
 	/**
+	 * @see CwtDataType.FileName
+	 */
+	FileName {
+		override fun matches(expression: String, filePath: String, ignoreCase: Boolean): Boolean {
+			val index = expression.lastIndexOf(',') //","应当最多出现一次
+			if(index == -1) {
+				//匹配父路径
+				return expression.matchesPath(filePath, ignoreCase)
+			} else {
+				//匹配父路径+文件名前缀+扩展名
+				val parentAndFileNamePrefix = expression.substring(0, index)
+				if(!filePath.startsWith(parentAndFileNamePrefix, ignoreCase)) return false
+				val fileNameSuffix = expression.substring(index + 1)
+				return filePath.endsWith(fileNameSuffix, ignoreCase)
+			}
+		}
+		
+		override fun resolve(expression: String?, string: String): String {
+			if(expression == null) return string
+			val index = expression.lastIndexOf(',') //","应当最多出现一次
+			if(index == -1) {
+				if(expression.endsWith('/')) {
+					return expression + string
+				} else {
+					return "$expression/$string"
+				}
+			} else {
+				return expression.replace(",", string)
+			}
+		}
+		
+		override fun extract(expression: String?, filePath: String, ignoreCase: Boolean): String? {
+			if(expression == null) return filePath
+			val index = expression.lastIndexOf(',') //","应当最多出现一次
+			if(index == -1) {
+				return filePath.removePrefixOrNull(expression, ignoreCase)
+			} else {
+				val s1 = expression.substring(0, index)
+				val s2 = expression.substring(index + 1)
+				return filePath.removeSurroundingOrNull(s1, s2, ignoreCase)?.trimStart('/')
+			}
+		}
+	},
+	
+	/**
 	 * 示例：`exp=some/path, s=some/path/file.txt`, `exp=some/path/,.ext, s=file`。
 	 * @see CwtDataType.FilePath
 	 */
@@ -76,6 +121,7 @@ enum class CwtPathExpressionType {
 		}
 		
 		override fun resolve(expression: String?, string: String): String? {
+			//TODO 可以在子目录中
 			if(expression == null) return null
 			return "$expression/$string.dds"
 		}

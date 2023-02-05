@@ -175,6 +175,11 @@ class ParadoxScriptAnnotator : Annotator {
                 val attributesKey = Keys.PATH_REFERENCE_KEY
                 doHighlightScriptExpression(element, range, attributesKey, holder)
             }
+            CwtDataType.FileName -> {
+                if(text.isParameterAwareExpression()) return
+                val attributesKey = Keys.PATH_REFERENCE_KEY
+                doHighlightScriptExpression(element, range, attributesKey, holder)
+            }
             CwtDataType.FilePath -> {
                 if(text.isParameterAwareExpression()) return
                 val attributesKey = Keys.PATH_REFERENCE_KEY

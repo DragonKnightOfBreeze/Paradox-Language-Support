@@ -12,7 +12,7 @@ import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
 class IncorrectScopeSwitchInspection : LocalInspectionTool() {
-    private var checkForSystemLink = true
+    private var checkForSystemLink = false
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = object : PsiElementVisitor() {
         override fun visitElement(element: PsiElement) {

@@ -9,7 +9,7 @@ fun Icon.resize(width: Int, height: Int): Icon {
     return IconUtil.toSize(this, width, height)
 }
 
-fun Color.toHex() = ColorUtil.toHex(this)
+fun Color.toHex(withAlpha: Boolean = true) = ColorUtil.toHex(this, withAlpha)
 
 operator fun Color.component1() = red
 operator fun Color.component2() = green

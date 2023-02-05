@@ -14,9 +14,9 @@ enum class CwtDataType {
 	Localisation,
 	SyncedLocalisation,
 	InlineLocalisation,
-	//EXTENDED BY PLS
-	AbsoluteFilePath,
+	AbsoluteFilePath, //EXTENDED BY PLS
 	FilePath,
+	FileName, //EXTENDED BY PLS
 	Icon,
 	Definition,
 	Enum,
@@ -29,7 +29,7 @@ enum class CwtDataType {
 	IntValueField,
 	VariableField,
 	IntVariableField,
-	Modifier,
+	Modifier, //<modifier>
 	SingleAliasRight,
 	AliasName,
 	AliasKeysField,

@@ -62,17 +62,18 @@
   * [ ] 兼容CWT规则文件中的错误级别`severity = warning`或`## severity = warning`（PLS和CWTools实现有所不同，需要分析）
   * [ ] ［待确定］作为trigger的值的CWT规则`scope_field` `scope[xxx]` `scope_group[xxx]`也可以匹配一个布尔值？
 
-## PROCESS
-
-* [ ] 复杂表达式中的参数被高亮成了白色（为啥？）
-* [ ] 颜色在第一次被设置后之后不再起效
-
 ## 0.7.13
 
 计划内容：
 
 * 支持推断inline_script的调用位置从而为其提供各种功能
 * 支持通过economic_category生成的修饰符
+
+进行中：
+
+* [ ] 复杂表达式中的参数被高亮成了白色（为啥？）
+* [ ] 颜色在第一次被设置后之后不再起效
+* [ ] valueSetValue无法点击
 
 * BUG修复
   * [X] 修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
@@ -83,6 +84,8 @@
   * [X] 优化在快速文档中或者新建库对话框中，点击文本超链接或者工具栏图标按钮以导航到Steam和游戏相关目录时的导航逻辑，并且可以快速选择游戏目录
   * [X] 优化对颜色的支持（示例：`rgb { 255 255 255 }`，`color = { 255 255 255 }`）
   * [X] 兼容用文件路径匹配规则文件路径时，文件路径需要相对于入口目录（如`game` `jomini`）而非游戏根目录的情况
+  * [ ] 支持扩展的CWT数据类型`filename`，用于匹配脚本文件下指定名称的文件
+  * [ ] 支持复杂枚举的查询作用域`search_scope = xxx`，认为仅该作用域下的复杂枚举值是等同的。（目前支持：definition）
 * 优化 - 智能推断：
   * [X] 基于使用处推断`inline_script`的位置（即需要对应的CWT规则文件入口，同时如果可以推断，在内联脚本文件上方提示，同时也提供对参数的支持）
   * [X] 可扩展的参数解析器（提供推断参数的上下文、调用表达式中传入参数的上下文等功能）

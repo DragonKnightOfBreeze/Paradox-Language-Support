@@ -79,6 +79,10 @@ class CwtValueExpression private constructor(
 			expressionString == "abs_filepath" -> {
 				CwtValueExpression(expressionString, CwtDataType.AbsoluteFilePath)
 			}
+			//EXTENDED BY PLS
+			expressionString == "filename" -> {
+				CwtValueExpression(expressionString, CwtDataType.FileName)
+			}
 			expressionString == "filepath" -> {
 				CwtValueExpression(expressionString, CwtDataType.FilePath)
 			}
