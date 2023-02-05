@@ -73,9 +73,9 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
 						val fileExtensions = ParadoxFilePathHandler.getFileExtensionOptionValues(config)
 						if(fileExtensions.isEmpty()) return
 						val value = element.value
-						if(fileExtensions.any { value.endsWith(it) }) return
+						if(fileExtensions.any { value.endsWith(it, true) }) return
 						val extensionsString = fileExtensions.joinToString("/")
-						val extension = value.substringAfterLast('.', "")
+						val extension = value.substringAfterLast('.', "").lowercase()
 						val message = if(extension.isNotEmpty()) PlsBundle.message("inspection.script.general.insufficientExpression.description.4", expression, extensionsString, extension)
 						else PlsBundle.message("inspection.script.general.insufficientExpression.description.4_1", expression, extensionsString)
 						holder.registerProblem(element, message)
