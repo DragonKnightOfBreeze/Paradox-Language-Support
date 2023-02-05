@@ -31,7 +31,7 @@ class ParadoxFilePathPathReferenceExpression : ParadoxPathReferenceExpression {
         val expression = configExpression.value ?: return filePath
         val index = expression.lastIndexOf(',') //","应当最多出现一次
         if(index == -1) {
-            return filePath.removePrefixOrNull(expression, ignoreCase)
+            return filePath.removePrefixOrNull(expression, ignoreCase)?.trimStart('/')
         } else {
             val s1 = expression.substring(0, index)
             val s2 = expression.substring(index + 1)

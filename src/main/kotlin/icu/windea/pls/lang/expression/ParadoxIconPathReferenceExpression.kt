@@ -19,7 +19,7 @@ class ParadoxIconPathReferenceExpression : ParadoxPathReferenceExpression {
     
     override fun extract(configExpression: CwtDataExpression, filePath: String, ignoreCase: Boolean): String? {
         val expression = configExpression.value ?: return null
-        return filePath.removeSurroundingOrNull(expression, ".dds", ignoreCase)?.trimStart('/')
+        return filePath.removeSurroundingOrNull(expression, ".dds", ignoreCase)?.substringAfterLast('/')
     }
     
     override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): String? {
