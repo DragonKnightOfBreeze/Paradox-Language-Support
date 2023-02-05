@@ -1,12 +1,19 @@
 <idea-plugin>
   <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.paradoxPathReferenceExpression" interface="icu.windea.pls.lang.expression.ParadoxPathReferenceExpression"/>
+    
     <extensionPoint qualifiedName="icu.windea.pls.paradoxMemberElementLinker" interface="icu.windea.pls.lang.linker.ParadoxMemberElementLinker" dynamic="true"/>
+    
     <extensionPoint qualifiedName="icu.windea.pls.paradoxColorSupport" interface="icu.windea.pls.lang.support.ParadoxColorSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.paradoxParameterSupport" interface="icu.windea.pls.lang.support.ParadoxParameterSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.paradoxModifierSupport" interface="icu.windea.pls.lang.support.ParadoxModifierSupport" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
+    <paradoxPathReferenceExpression implementation="icu.windea.pls.lang.expression.ParadoxIconPathReferenceExpression"/>
+    <paradoxPathReferenceExpression implementation="icu.windea.pls.lang.expression.ParadoxFileNamePathReferenceExpression"/>
+    <paradoxPathReferenceExpression implementation="icu.windea.pls.lang.expression.ParadoxFilePathPathReferenceExpression"/>
+    
     <paradoxMemberElementLinker implementation="icu.windea.pls.lang.linker.ParadoxInlineScriptMemberElementLinker"/>
     
     <paradoxColorSupport implementation="icu.windea.pls.lang.support.ParadoxScriptColorColorSupport"/>

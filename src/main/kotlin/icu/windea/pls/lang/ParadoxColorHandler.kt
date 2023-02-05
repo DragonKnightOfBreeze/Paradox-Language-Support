@@ -46,7 +46,7 @@ object ParadoxColorHandler {
         val r = colorArgs.get(0).toInt().takeIf { it in 0..255 } ?: return null
         val g = colorArgs.get(1).toInt().takeIf { it in 0..255 } ?: return null
         val b = colorArgs.get(2).toInt().takeIf { it in 0..255 } ?: return null
-        val a = (colorArgs.getOrNull(3)?.toInt() ?: 255).takeIf { it in 0..255 } ?: return null
+        val a = colorArgs.getOrNull(3)?.toInt() ?: 255 // < 0 or > 255 is allowed
         val color = Color(r, g, b, a)
         return color
     }
@@ -56,7 +56,7 @@ object ParadoxColorHandler {
         val h = colorArgs.get(0).toFloat().takeIf { it in 0f..1f } ?: return null
         val s = colorArgs.get(1).toFloat().takeIf { it in 0f..1f } ?: return null
         val v = colorArgs.get(2).toFloat().takeIf { it in 0f..1f } ?: return null
-        val a = (colorArgs.getOrNull(3)?.toFloat() ?: 1f).takeIf { it in 0f..1f } ?: return null
+        val a = colorArgs.getOrNull(3)?.toFloat() ?: 1f // < 0.0 or > 1.0 is allowed
         val (r, g, b) = Color.getHSBColor(h, s, v)
         val color = Color(r, g, b, (a * 255f).toInt())
         return color

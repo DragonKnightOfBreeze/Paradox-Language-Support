@@ -7,6 +7,9 @@ import java.awt.*
 
 /**
  * 提供对颜色的支持。（颜色的装订线图标。）
+ * 
+ * 备注：alpha值可以小于0或者大于255（对于浮点数写法则是小于0.0或者大于1.0），表示粒子外溢的光照强度。
+ * 
  * @see ParadoxScriptColorProvider
  */
 interface ParadoxColorSupport {
