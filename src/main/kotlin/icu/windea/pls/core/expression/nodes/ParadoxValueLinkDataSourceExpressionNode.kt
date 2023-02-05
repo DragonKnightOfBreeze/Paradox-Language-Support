@@ -20,32 +20,48 @@ class ParadoxValueLinkDataSourceExpressionNode (
 			//text may contain parameters
 			//child node can be valueSetValueExpression / scriptValueExpression
 			val nodes = SmartList<ParadoxExpressionNode>()
-			val offset = textRange.startOffset
-			val configs = linkConfigs.filter { it.dataSource?.type == CwtDataType.Value }
-			val atIndex = text.indexOf('@')
-			if(atIndex != -1) {
-				if(configs.isEmpty()) {
-					val dataText = text.substring(0, atIndex)
-					val dataRange = TextRange.create(offset, atIndex + offset)
-					val dataNode = ParadoxDataExpressionNode.resolve(dataText, dataRange, linkConfigs)
-					nodes.add(dataNode)
-					val errorText = text.substring(atIndex)
-					val errorRange = TextRange.create(atIndex + offset, text.length + offset)
-					val errorNode = ParadoxErrorTokenExpressionNode(errorText, errorRange)
-					nodes.add(errorNode)
-				} else {
-					val configGroup = linkConfigs.first().info.configGroup
-					val node = ParadoxValueSetValueExpression.resolve(text, textRange, configs, configGroup)
-					nodes.add(node)
-				}
-			} else {
+			//if(nodes.isEmpty()) {
+			//	val scopeFieldConfig = linkConfigs.find { it.expression?.type?.isScopeFieldType() == true }
+			//	if(scopeFieldConfig != null) {
+			//		val configGroup = linkConfigs.first().info.configGroup
+			//		val node = ParadoxScopeExpressionNode.resolve(text, textRange, configGroup)
+			//		nodes.add(node)
+			//	}
+			//}
+			if(nodes.isEmpty()) {
+				val configs = linkConfigs.filter { it.dataSource?.type == CwtDataType.Value }
 				if(configs.isNotEmpty()) {
 					val configGroup = linkConfigs.first().info.configGroup
 					val node = ParadoxValueSetValueExpression.resolve(text, textRange, configs, configGroup)
 					nodes.add(node)
 				}
+				//val offset = textRange.startOffset
+				//val atIndex = text.indexOf('@')
+				//if(atIndex != -1) {
+				//	if(configs.isEmpty()) {
+				//		val dataText = text.substring(0, atIndex)
+				//		val dataRange = TextRange.create(offset, atIndex + offset)
+				//		val dataNode = ParadoxDataExpressionNode.resolve(dataText, dataRange, linkConfigs)
+				//		nodes.add(dataNode)
+				//		val errorText = text.substring(atIndex)
+				//		val errorRange = TextRange.create(atIndex + offset, text.length + offset)
+				//		val errorNode = ParadoxErrorTokenExpressionNode(errorText, errorRange)
+				//		nodes.add(errorNode)
+				//	} else {
+				//		val configGroup = linkConfigs.first().info.configGroup
+				//		val node = ParadoxValueSetValueExpression.resolve(text, textRange, configs, configGroup)
+				//		nodes.add(node)
+				//	}
+				//} else {
+				//	if(configs.isNotEmpty()) {
+				//		val configGroup = linkConfigs.first().info.configGroup
+				//		val node = ParadoxValueSetValueExpression.resolve(text, textRange, configs, configGroup)
+				//		nodes.add(node)
+				//	}
+				//}
 			}
 			if(nodes.isEmpty()) {
+				val offset = textRange.startOffset
 				val pipeIndex = text.indexOf('|')
 				if(pipeIndex != -1) {
 					val scriptValueConfig = linkConfigs.find { it.name == "script_value" }

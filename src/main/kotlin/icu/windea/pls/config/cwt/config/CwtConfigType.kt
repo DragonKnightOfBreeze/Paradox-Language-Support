@@ -91,7 +91,7 @@ enum class CwtConfigType(
 	SystemLink("system link", true) {
 		override val prefix get() = PlsDocBundle.message("prefix.systemLink")
 		override val descriptionText get() = PlsBundle.message("cwt.description.systemLink")
-		override val icon get() = PlsIcons.SystemLink
+		override val icon get() = PlsIcons.SystemScope
 	},
 	LocalisationLocale("localisation locale", true) {
 		override val prefix get() = PlsDocBundle.message("prefix.localisationLocale")

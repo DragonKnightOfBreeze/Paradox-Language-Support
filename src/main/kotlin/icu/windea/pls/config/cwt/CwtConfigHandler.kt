@@ -1098,16 +1098,16 @@ object CwtConfigHandler {
 		valueSetValueExpression.complete(context, result)
 	}
 	
-	fun completeSystemLink(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+	fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		//总是提示，无论作用域是否匹配
 		val systemLinkConfigs = configGroup.systemLinks
 		for(systemLinkConfig in systemLinkConfigs.values) {
 			val name = systemLinkConfig.id
 			val element = systemLinkConfig.pointer.element ?: continue
-			val tailText = " from system links"
+			val tailText = " from system scopes"
 			val typeFile = systemLinkConfig.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
-				.withIcon(PlsIcons.SystemLink)
+				.withIcon(PlsIcons.SystemScope)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withCaseSensitivity(false) //忽略大小写
@@ -1172,6 +1172,11 @@ object CwtConfigHandler {
 			else -> configGroup.linksAsScopeWithPrefix.values.filter { prefix == it.prefix }
 		}
 		
+		if(dataSourceNodeToCheck is ParadoxScopeExpressionNode) {
+			completeForScopeExpressionNode(dataSourceNodeToCheck, context, result)
+			context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
+			return@with
+		}
 		if(dataSourceNodeToCheck is ParadoxValueSetValueExpression) {
 			context.put(PlsCompletionKeys.configKey, dataSourceNodeToCheck.configs.first())
 			context.put(PlsCompletionKeys.configsKey, dataSourceNodeToCheck.configs)
@@ -1300,31 +1305,17 @@ object CwtConfigHandler {
 		
 		val configExpression = config.expression ?: return@with
 		val valueSetName = configExpression.value ?: return@with
-		val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
 		//提示预定义的value
 		run {
 			ProgressManager.checkCanceled()
 			if(configExpression.type == CwtDataType.Value) {
-				val valueConfig = configGroup.values[valueSetName] ?: return@run
-				val valueSetValueConfigs = valueConfig.valueConfigMap.values
-				if(valueSetValueConfigs.isEmpty()) return@run
-				for(valueSetValueConfig in valueSetValueConfigs) {
-					val name = valueSetValueConfig.value
-					val element = valueSetValueConfig.pointer.element ?: continue
-					val typeFile = valueConfig.pointer.containingFile
-					val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
-						.withIcon(PlsIcons.PredefinedValueSetValue)
-						.withTailText(tailText)
-						.withTypeText(typeFile?.name)
-						.withTypeIcon(typeFile?.icon)
-						.withPriority(PlsCompletionPriorities.predefinedValueSetValuePriority)
-					result.addScriptExpressionElement(context, builder)
-				}
+				completePredefinedValueSetValue(valueSetName, result, context)
 			}
 		}
 		//提示来自脚本文件的value
 		run {
 			ProgressManager.checkCanceled()
+			val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
 			val contextElement = contextElement
 			val selector = valueSetValueSelector().gameType(gameType)
 				.notSamePosition(contextElement)
@@ -1344,7 +1335,27 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun completeLocalisationCommandScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+	fun completePredefinedValueSetValue(valueSetName: String, result: CompletionResultSet, context: ProcessingContext) = with(context) {
+		val configExpression = config.expression ?: return@with
+		val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
+		val valueConfig = configGroup.values[valueSetName] ?: return
+		val valueSetValueConfigs = valueConfig.valueConfigMap.values
+		if(valueSetValueConfigs.isEmpty()) return
+		for(valueSetValueConfig in valueSetValueConfigs) {
+			val name = valueSetValueConfig.value
+			val element = valueSetValueConfig.pointer.element ?: continue
+			val typeFile = valueConfig.pointer.containingFile
+			val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
+				.withIcon(PlsIcons.PredefinedValueSetValue)
+				.withTailText(tailText)
+				.withTypeText(typeFile?.name)
+				.withTypeIcon(typeFile?.icon)
+				.withPriority(PlsCompletionPriorities.predefinedValueSetValuePriority)
+			result.addScriptExpressionElement(context, builder)
+		}
+	}
+	
+	fun completePredefinedLocalisationScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		val scopeContext = context.scopeContext
 		
 		val localisationLinks = configGroup.localisationLinks
@@ -1363,6 +1374,29 @@ object CwtConfigHandler {
 				.withCaseSensitivity(false) //忽略大小写
 				.withScopeMatched(scopeMatched)
 				.withPriority(PlsCompletionPriorities.scopePriority)
+			result.addElement(lookupElement)
+		}
+	}
+	
+	fun completePredefinedLocalisationCommand(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+		val scopeContext = context.scopeContext
+		
+		val localisationCommands = configGroup.localisationCommands
+		for(localisationCommand in localisationCommands.values) {
+			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, localisationCommand.supportedScopes, configGroup)
+			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+			
+			val name = localisationCommand.name
+			val element = localisationCommand.pointer.element ?: continue
+			val tailText = " from localisation commands"
+			val typeFile = localisationCommand.pointer.containingFile
+			val lookupElement = LookupElementBuilder.create(element, name)
+				.withIcon(PlsIcons.LocalisationCommandField)
+				.withTailText(tailText, true)
+				.withTypeText(typeFile?.name, typeFile?.icon, true)
+				.withCaseSensitivity(false) //忽略大小写
+				.withScopeMatched(scopeMatched)
+				.withPriority(PlsCompletionPriorities.localisationCommandPriority)
 			result.addElement(lookupElement)
 		}
 	}
@@ -1395,29 +1429,6 @@ object CwtConfigHandler {
 				.withCaseSensitivity(false) //忽略大小写
 			result.addElement(lookupElement)
 			true
-		}
-	}
-	
-	fun completeLocalisationCommandField(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
-		val scopeContext = context.scopeContext
-		
-		val localisationCommands = configGroup.localisationCommands
-		for(localisationCommand in localisationCommands.values) {
-			val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, localisationCommand.supportedScopes, configGroup)
-			if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
-			
-			val name = localisationCommand.name
-			val element = localisationCommand.pointer.element ?: continue
-			val tailText = " from localisation commands"
-			val typeFile = localisationCommand.pointer.containingFile
-			val lookupElement = LookupElementBuilder.create(element, name)
-				.withIcon(PlsIcons.LocalisationCommandField)
-				.withTailText(tailText, true)
-				.withTypeText(typeFile?.name, typeFile?.icon, true)
-				.withCaseSensitivity(false) //忽略大小写
-				.withScopeMatched(scopeMatched)
-				.withPriority(PlsCompletionPriorities.localisationCommandPriority)
-			result.addElement(lookupElement)
 		}
 	}
 	

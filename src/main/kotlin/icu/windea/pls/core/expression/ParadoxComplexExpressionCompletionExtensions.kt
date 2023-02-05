@@ -32,7 +32,7 @@ fun completeForScopeExpressionNode(node: ParadoxScopeExpressionNode, context: Pr
         val resultToUse = result.withPrefixMatcher(keywordToUse)
         context.put(PlsCompletionKeys.keywordKey, keywordToUse)
         if(inFirstNode) {
-            CwtConfigHandler.completeSystemLink(context, resultToUse)
+            CwtConfigHandler.completeSystemScope(context, resultToUse)
             CwtConfigHandler.completeScope(context, resultToUse)
             CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
         }
@@ -65,7 +65,7 @@ fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, contex
         val resultToUse = result.withPrefixMatcher(keywordToUse)
         context.put(PlsCompletionKeys.keywordKey, keywordToUse)
         if(inFirstNode) {
-            CwtConfigHandler.completeSystemLink(context, resultToUse)
+            CwtConfigHandler.completeSystemScope(context, resultToUse)
             CwtConfigHandler.completeScope(context, resultToUse)
             CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
             CwtConfigHandler.completeValueLinkValue(context, resultToUse)
@@ -82,7 +82,7 @@ fun completeForVariableDataExpressionNode(node: ParadoxDataExpressionNode, conte
     val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
     val resultToUse = result.withPrefixMatcher(keywordToUse)
     context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-    CwtConfigHandler.completeSystemLink(context, resultToUse)
+    CwtConfigHandler.completeSystemScope(context, resultToUse)
     CwtConfigHandler.completeScope(context, resultToUse)
     CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
     CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, null, node)

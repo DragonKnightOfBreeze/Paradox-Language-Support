@@ -45,7 +45,7 @@ object PlsIcons {
 	@JvmField val ComplexEnumValue = loadIcon("/icons/complexEnumValue.svg")
 	@JvmField val Scope = loadIcon("/icons/scope.svg")
 	@JvmField val ScopeGroup = loadIcon("/icons/scopeGroup.svg")
-	@JvmField val SystemLink = loadIcon("/icons/systemLink.svg")
+	@JvmField val SystemScope = loadIcon("/icons/systemScope.svg")
 	@JvmField val Link = loadIcon("/icons/link.svg")
 	@JvmField val ScopeLinkPrefix = loadIcon("/icons/scopeLinkPrefix.svg")
 	@JvmField val ValueLinkPrefix = loadIcon("/icons/valueLinkPrefix.svg")

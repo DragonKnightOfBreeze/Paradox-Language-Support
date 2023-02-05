@@ -32,11 +32,11 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 		context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeHandler.getScopeContext(element))
 		
 		//提示scope
-		CwtConfigHandler.completeSystemLink(context, result)
-		CwtConfigHandler.completeLocalisationCommandScope(context, result)
+		CwtConfigHandler.completeSystemScope(context, result)
+		CwtConfigHandler.completePredefinedLocalisationScope(context, result)
 		
 		//提示command
-		CwtConfigHandler.completeLocalisationCommandField(context, result)
+		CwtConfigHandler.completePredefinedLocalisationCommand(context, result)
 		
 		ProgressManager.checkCanceled()
 		//提示<scripted_loc>

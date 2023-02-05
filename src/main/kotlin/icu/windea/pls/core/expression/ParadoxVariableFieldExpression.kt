@@ -72,6 +72,43 @@ class ParadoxVariableFieldExpressionImpl(
                                             malformed = true
                                         }
                                     }
+                                    is ParadoxScopeExpressionNode -> {
+                                        if(dataSourceChildNode.text.isEmpty()) {
+                                            if(isLast) {
+                                                val error = ParadoxMissingScopeExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingScope"))
+                                                errors.add(error)
+                                            } else if(!malformed) {
+                                                malformed = true
+                                            }
+                                        } else {
+                                            if(dataSourceChildNode is ParadoxScopeLinkFromDataExpressionNode) {
+                                                val nestedDataSourceNode = dataSourceChildNode.dataSourceNode
+                                                for(nestedDataSourceChildNode in nestedDataSourceNode.nodes) {
+                                                    when(nestedDataSourceChildNode) {
+                                                        is ParadoxDataExpressionNode -> {
+                                                            if(nestedDataSourceChildNode.text.isEmpty()) {
+                                                                if(isLast) {
+                                                                    val expect = nestedDataSourceChildNode.linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
+                                                                    val error = ParadoxMissingScopeLinkDataSourceExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingScopeLinkDataSource", expect))
+                                                                    errors.add(error)
+                                                                } else if(!malformed) {
+                                                                    malformed = true
+                                                                }
+                                                            } else if(!malformed && !isValid(nestedDataSourceChildNode)) {
+                                                                malformed = true
+                                                            }
+                                                        }
+                                                        is ParadoxComplexExpression -> {
+                                                            errors.addAll(nestedDataSourceChildNode.validate())
+                                                        }
+                                                        is ParadoxErrorTokenExpressionNode -> {
+                                                            malformed = true
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                     is ParadoxComplexExpression -> {
                                         errors.addAll(dataSourceChildNode.validate())
                                     }

@@ -14,7 +14,7 @@ class CwtSystemLinkConfig(
 	val description: String,
 	val name: String
 ): CwtConfig<CwtProperty> {
-	val icon get() = PlsIcons.SystemLink
+	val icon get() = PlsIcons.SystemScope
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is CwtSystemLinkConfig && id == other.id
