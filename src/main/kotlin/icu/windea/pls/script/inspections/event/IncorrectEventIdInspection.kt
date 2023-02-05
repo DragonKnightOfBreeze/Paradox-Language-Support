@@ -23,7 +23,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
 		val fileInfo = file.fileInfo ?: return null
-		if(!"events".matchesPath(fileInfo.path.path, acceptSelf = false)) return null
+		if(!"events".matchesPath(fileInfo.entryPath.path, acceptSelf = false)) return null
 		val rootBlock = file.block ?: return null
 		val properties = rootBlock.propertyList
 		if(properties.isEmpty()) return null //空文件，不进行检查
@@ -48,11 +48,16 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 			if(namespace.isEmpty()) continue
 			if(events.isEmpty()) continue
 			for(event in events) {
-				val eventIdString = event.findByPath<ParadoxScriptString>("id") ?: continue //没有事件ID，另行检查
-				val eventId = eventIdString.stringValue
-				if(!ParadoxEventHandler.isValidEventId(eventId, namespace)) {
+				val definitionInfo = event.definitionInfo ?: continue
+				val eventIdField = definitionInfo.typeConfig.nameField
+				val eventId: ParadoxScriptExpressionElement = when(eventIdField) {
+					null -> event.propertyKey
+					else -> event.findProperty(eventIdField, conditional = false, inline =  false)?.propertyValue
+				} ?: continue
+				val eventIdString = eventId.stringValue() ?: continue
+				if(!ParadoxEventHandler.isValidEventId(eventIdString, namespace)) {
 					if(holder == null) holder = ProblemsHolder(manager, file, isOnTheFly)
-					holder.registerProblem(eventIdString, PlsBundle.message("inspection.script.event.incorrectEventId.description", eventId, namespace))
+					holder.registerProblem(eventId, PlsBundle.message("inspection.script.event.incorrectEventId.description", eventId, namespace))
 				}
 			}
 		}

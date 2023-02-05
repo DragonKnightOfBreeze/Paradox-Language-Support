@@ -21,7 +21,7 @@ object ParadoxFileLocator {
 	
 	fun getGeneratedFileName(directory: VirtualFile): VirtualFile? {
 		if(!directory.isDirectory) return null
-		val directoryPath = directory.fileInfo?.path ?: return null
+		val directoryPath = directory.fileInfo?.entryPath ?: return null
 		if(scriptedVariablesPath.matchesPath(directoryPath.path)) {
 			val fileName = scriptedVariablesFileName(getSettings().generation.fileNamePrefix.orEmpty())
 			return directory.findOrCreateChildData(ParadoxFileLocator, fileName)

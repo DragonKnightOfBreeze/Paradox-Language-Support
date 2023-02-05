@@ -31,10 +31,10 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				val fileName = event.childName
 				if(!isPossibleDescriptorOrMarkerFile(fileName)) return
 				val rootFile = event.parent
-				val oldRootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
+				val oldRootInfo = rootFile.getCopyableUserData(PlsKeys.rootInfoKey)
 				if(oldRootInfo != null) {
 					ParadoxRootInfo.values.remove(oldRootInfo)
-					rootFile.putUserData(PlsKeys.rootInfoKey, null)
+					rootFile.putCopyableUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile) ?: return
 				if(rootInfo !is ParadoxModRootInfo) return
@@ -61,10 +61,10 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 					ParadoxCoreHandler.reparseFilesInRoot(event.oldParent)
 				}
 				val rootFile = event.newParent
-				val oldRootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
+				val oldRootInfo = rootFile.getCopyableUserData(PlsKeys.rootInfoKey)
 				if(oldRootInfo != null) {
 					ParadoxRootInfo.values.remove(oldRootInfo)
-					rootFile.putUserData(PlsKeys.rootInfoKey, null)
+					rootFile.putCopyableUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile) ?: return
 				if(rootInfo !is ParadoxModRootInfo) return
@@ -80,10 +80,10 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				val file = event.file
 				if(!isPossibleDescriptorOrMarkerFile(file.name)) return
 				val rootFile = file.parent ?: return
-				val oldFileInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
+				val oldFileInfo = rootFile.getCopyableUserData(PlsKeys.rootInfoKey)
 				if(oldFileInfo != null) {
 					ParadoxRootInfo.values.remove(oldFileInfo)
-					rootFile.putUserData(PlsKeys.rootInfoKey, null)
+					rootFile.putCopyableUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile) ?: return
 				if(rootInfo !is ParadoxModRootInfo) return
@@ -99,10 +99,10 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				val file = event.file
 				if(!isPossibleDescriptorOrMarkerFile(file.name)) return
 				val rootFile = file.parent
-				val oldRootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
+				val oldRootInfo = rootFile.getCopyableUserData(PlsKeys.rootInfoKey)
 				if(oldRootInfo != null) {
 					ParadoxRootInfo.values.remove(oldRootInfo)
-					rootFile.putUserData(PlsKeys.rootInfoKey, null)
+					rootFile.putCopyableUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile) ?: return
 				if(rootInfo !is ParadoxModRootInfo) return

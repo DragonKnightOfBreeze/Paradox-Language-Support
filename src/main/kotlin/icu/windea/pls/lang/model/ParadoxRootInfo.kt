@@ -2,6 +2,7 @@ package icu.windea.pls.lang.model
 
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import java.nio.file.*
 
 /**
@@ -17,7 +18,7 @@ sealed class ParadoxRootInfo {
     abstract val rootPath: Path
     abstract val gameRootPath: Path
     
-    val gameEntry: String? by lazy { rootPath.relativize(gameRootPath).toString().let { if(it.isEmpty()) null else "$it/" }  }
+    val gameEntry: String? by lazy { rootPath.relativize(gameRootPath).toString().takeIfNotEmpty() }
     
     abstract val isAvailable: Boolean
     

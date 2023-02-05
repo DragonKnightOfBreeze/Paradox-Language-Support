@@ -31,8 +31,8 @@ object ParadoxScriptScriptedVariableStubElementType : IStubElementType<ParadoxSc
 		//仅当是全局的scripted_variable时才创建stub
 		if(node.treeParent.elementType != ParadoxScriptElementTypes.ROOT_BLOCK) return false
 		val file = node.psi.containingFile
-		val path = file.fileInfo?.path?.path ?: return false
-		return "common/scripted_variables".matchesPath(path, acceptSelf = false)
+		val entryPath = file.fileInfo?.entryPath?.path ?: return false
+		return "common/scripted_variables".matchesPath(entryPath, acceptSelf = false)
 	}
 	
 	override fun indexStub(stub: ParadoxScriptScriptedVariableStub, sink: IndexSink) {

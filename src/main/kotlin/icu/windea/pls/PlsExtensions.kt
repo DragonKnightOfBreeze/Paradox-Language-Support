@@ -152,7 +152,7 @@ val ParadoxScriptMemberElement.definitionMemberInfo: ParadoxDefinitionMemberInfo
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
 	get() = ParadoxLocalisationHandler.getInfo(this)
 
-val ParadoxScriptStringExpressionElement.complexEnumValueInfo: icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo?
+val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo?
 	get() = ParadoxComplexEnumValueHandler.getInfo(this)
 
 val ParadoxLocalisationLocale.localeConfig: CwtLocalisationLocaleConfig?

@@ -31,7 +31,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 		val charset = virtualFile.charset
 		val hasBom = virtualFile.hasBom(PlsConstants.utf8Bom)
 		val fileInfo = virtualFile.fileInfo ?: return null //无法获取文件信息时跳过检查
-		val isNameList = fileInfo.path.parent.startsWith("common/name_lists")
+		val isNameList = fileInfo.entryPath.parent.startsWith("common/name_lists")
 		val isValid = charset == Charsets.UTF_8 && (if(isNameList) hasBom else !hasBom)
 		if(!isValid) {
 			val holder = ProblemsHolder(manager, file, isOnTheFly)

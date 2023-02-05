@@ -132,8 +132,8 @@ class IntroduceGlobalScriptedVariableDialog(
 		val file = VfsUtil.findFile(filePath.toPath(), false)
 			?.takeIf { it.exists() }
 			?: return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.1"))
-		val path = file.fileInfo?.path?.path
-		if(path == null || !"common/scripted_variables".matchesPath(path, acceptSelf = false)) {
+		val entryPath = file.fileInfo?.entryPath?.path
+		if(entryPath == null || !"common/scripted_variables".matchesPath(entryPath, acceptSelf = false)) {
 			return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.2"))
 		}
 		dialog.file = file

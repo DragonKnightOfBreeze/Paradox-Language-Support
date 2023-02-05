@@ -1,5 +1,6 @@
 package icu.windea.pls.lang
 
+import cn.yiiguxing.plugin.translate.util.*
 import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.codeInsight.hints.*
 import com.intellij.openapi.application.*
@@ -56,7 +57,7 @@ object ParadoxCoreHandler {
     
     @JvmStatic
     fun resolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean = true): ParadoxRootInfo? {
-        val rootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
+        val rootInfo = rootFile.getCopyableUserData(PlsKeys.rootInfoKey)
         if(rootInfo != null && (canBeNotAvailable || rootInfo.isAvailable)) {
             ParadoxRootInfo.values.add(rootInfo)
             return rootInfo
@@ -70,7 +71,7 @@ object ParadoxCoreHandler {
             null
         }
         runCatching {
-            rootFile.putUserData(PlsKeys.rootInfoKey, resolvedRootInfo)
+            rootFile.putCopyableUserData(PlsKeys.rootInfoKey, resolvedRootInfo)
         }
         if(resolvedRootInfo != null) {
             ParadoxRootInfo.values.add(resolvedRootInfo)
@@ -81,7 +82,6 @@ object ParadoxCoreHandler {
     private fun doResolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean): ParadoxRootInfo? {
         if(rootFile is StubVirtualFile || !rootFile.isValid) return null
         if(!rootFile.isDirectory) return null
-        val rootName = rootFile.name
         
         // 尝试向下查找descriptor.mod，如果找到，再尝试向下查找.{gameType}，确认rootType和gameType
         // descriptor.mod > Mod
@@ -167,17 +167,8 @@ object ParadoxCoreHandler {
     
     @JvmStatic
     fun resolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        val resolvedFileInfo = doResolveFileInfo(file)
-        runCatching {
-            file.putCopyableUserData(PlsKeys.fileInfoKey, resolvedFileInfo)
-        }
-        return resolvedFileInfo
-    }
-    
-    @JvmStatic
-    fun doResolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
         if(file is StubVirtualFile || !file.isValid) return null
-        val fileName = file.name
+        val name = file.name
         var currentFile: VirtualFile? = file.parent
         while(currentFile != null) {
             val rootInfo = resolveRootInfo(currentFile, false)
@@ -185,14 +176,36 @@ object ParadoxCoreHandler {
                 //filePath.relative(rootPath)
                 val filePath = file.path.removePrefix(rootInfo.rootFile.path).trimStart('/')
                 val path = ParadoxPath.resolve(filePath)
-                val fileType = ParadoxFileType.resolve(file, rootInfo.gameType, path)
-                val fileInfo = ParadoxFileInfo(fileName, path, fileType, rootInfo)
+                val entryPath = resolveEntryPath(path, rootInfo)
+                val fileType = ParadoxFileType.resolve(file, rootInfo.gameType, entryPath)
+                val cachedFileInfo = file.getCopyableUserData(PlsKeys.fileInfoKey)
+                if(cachedFileInfo != null && cachedFileInfo.path == path && cachedFileInfo.entryPath == entryPath
+                    && cachedFileInfo.fileType == fileType && cachedFileInfo.rootInfo == rootInfo) {
+                    return cachedFileInfo
+                }
+                val fileInfo = ParadoxFileInfo(name, path, entryPath, fileType, rootInfo)
+                runCatching { file.putCopyableUserData(PlsKeys.fileInfoKey, fileInfo) }
                 return fileInfo
             }
             currentFile = currentFile.parent
         }
+        runCatching { file.putCopyableUserData(PlsKeys.fileInfoKey, null) }
         return null
     }
+    
+    private fun resolveEntryPath(path: ParadoxPath, rootInfo: ParadoxRootInfo): ParadoxPath {
+        val filePath = path.path
+        rootInfo.gameEntry?.let { entry ->
+            if(entry == filePath) return EmptyParadoxPath
+            filePath.removePrefixOrNull("$entry/")?.let { return ParadoxPath.resolve(it) }
+        }
+        rootInfo.gameType.entries.forEach { entry ->
+            if(entry == filePath) return EmptyParadoxPath
+            filePath.removePrefixOrNull("$entry/")?.let { return ParadoxPath.resolve(it) }
+        }
+        return path
+    }
+    
     
     @JvmStatic
     fun reparseFilesInRoot(rootFile: VirtualFile) {
