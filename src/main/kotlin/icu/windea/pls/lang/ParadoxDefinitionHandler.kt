@@ -161,10 +161,10 @@ object ParadoxDefinitionHandler {
 			val result = skipRootKeyConfig.any { elementPath.matchEntire(it, useParentPath = true) }
 			if(!result) return false
 		}
-		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
+		//如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
 		val startsWithConfig = typeConfig.startsWith
 		if(!startsWithConfig.isNullOrEmpty()) {
-			val result = rootKey.startsWith(startsWithConfig, true)
+			val result = rootKey.startsWith(startsWithConfig, false)
 			if(!result) return false
 		}
 		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
@@ -200,10 +200,11 @@ object ParadoxDefinitionHandler {
 		typeConfig: CwtTypeConfig,
 		rootKey: String
 	): Boolean {
-		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
+		//如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
 		val startsWithConfig = typeConfig.startsWith
 		if(!startsWithConfig.isNullOrEmpty()) {
-			if(!rootKey.startsWith(startsWithConfig, true)) return false
+			val result = rootKey.startsWith(startsWithConfig, false)
+			if(!result) return false
 		}
 		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
 		val typeKeyFilterConfig = typeConfig.typeKeyFilter
@@ -265,10 +266,11 @@ object ParadoxDefinitionHandler {
 		}
 		
 		if(rootKey != null) {
-			//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
+			//如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
 			val startsWithConfig = typeConfig.startsWith
 			if(!startsWithConfig.isNullOrEmpty()) {
-				if(!rootKey.startsWith(startsWithConfig, true)) return false
+				val result = rootKey.startsWith(startsWithConfig, false)
+				if(!result) return false
 			}
 			//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
 			val typeKeyFilterConfig = typeConfig.typeKeyFilter
@@ -294,18 +296,19 @@ object ParadoxDefinitionHandler {
 		subtypeConfig: CwtSubtypeConfig,
 		rootKey: String,
 		configGroup: CwtConfigGroup,
-		result: MutableList<CwtSubtypeConfig>
+		subtypes: MutableList<CwtSubtypeConfig>
 	): Boolean {
 		//如果only_if_not存在，且已经匹配指定的任意子类型，则不匹配
 		val onlyIfNotConfig = subtypeConfig.onlyIfNot
 		if(!onlyIfNotConfig.isNullOrEmpty()) {
-			val matchesAny = result.any { it.name in onlyIfNotConfig }
+			val matchesAny = subtypes.any { it.name in onlyIfNotConfig }
 			if(matchesAny) return false
 		}
-		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
+		//如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
 		val startsWithConfig = subtypeConfig.startsWith
 		if(!startsWithConfig.isNullOrEmpty()) {
-			if(!rootKey.startsWith(startsWithConfig, true)) return false
+			val result = rootKey.startsWith(startsWithConfig, false)
+			if(!result) return false
 		}
 		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
 		val typeKeyFilterConfig = subtypeConfig.typeKeyFilter
