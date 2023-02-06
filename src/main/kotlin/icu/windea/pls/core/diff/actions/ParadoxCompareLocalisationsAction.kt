@@ -26,6 +26,8 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.*
+import icu.windea.pls.script.psi.*
 import java.awt.*
 import java.util.*
 import javax.swing.*
@@ -33,23 +35,39 @@ import javax.swing.*
 /**
  * 将当前本地化与包括当前本地化的只读副本在内的相同名称的本地化进行DIFF。
  *
- * TODO 按照覆盖顺序进行排序。
+ * * 当当前文件是模组或游戏文件且是本地化文件时显示。
+ * * 当前鼠标位置位于本地化声明中时启用。
+ * * 忽略直接位于游戏或模组入口目录下的文件。
+ * * 可以用于比较二进制文件。（如DDS图片）
+ * * TODO 按照覆盖顺序进行排序。
  */
 @Suppress("ComponentNotRegistered")
 class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
-    private fun findElemnt(psiFile: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return psiFile.findElementAt(offset)?.parentOfType<ParadoxLocalisationProperty>(withSelf = false)
+    private fun findElement(psiFile: PsiFile, offset: Int): ParadoxLocalisationProperty? {
+        return psiFile.findElementAt(offset)
+            ?.parents(withSelf = false)
+            ?.find { it is ParadoxLocalisationProperty && it.localisationInfo != null }
+            ?.castOrNull()
     }
     
-    override fun isAvailable(e: AnActionEvent): Boolean {
-        val project = e.project ?: return false
-        val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return false
-        if(file.fileType != ParadoxLocalisationFileType) return false
-        val offset = e.editor?.caretModel?.offset ?: return false
-        val psiFile = file.toPsiFile<PsiFile>(project) ?: return false
-        val localisation = findElemnt(psiFile, offset) ?: return false
-        //要求能够获取本地化信息
-        return localisation.localisationInfo != null
+    override fun update(e: AnActionEvent) {
+        val presentation = e.presentation
+        presentation.isVisible = false
+        presentation.isEnabled = false
+        val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
+            ?: e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)?.singleOrNull()
+            ?: return
+        if(file.isDirectory) return
+        if(file.fileType != ParadoxScriptFileType) return
+        val fileInfo = file.fileInfo ?: return
+        //忽略直接位于游戏或模组入口目录下的文件
+        if(fileInfo.entryPath.length <= 1) return
+        presentation.isVisible = true
+        val project = e.project ?: return
+        val offset = e.editor?.caretModel?.offset ?: return
+        val psiFile = file.toPsiFile<PsiFile>(project) ?: return
+        val localisation = findElement(psiFile, offset)
+        presentation.isEnabled = localisation != null
     }
     
     override fun getActionUpdateThread(): ActionUpdateThread {
@@ -62,7 +80,7 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         if(file.fileType != ParadoxLocalisationFileType) return null
         val offset = e.editor?.caretModel?.offset ?: return null
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return null
-        val localisation = findElemnt(psiFile, offset) ?: return null
+        val localisation = findElement(psiFile, offset) ?: return null
         val localisationName = localisation.name
         val localisations = Collections.synchronizedList(mutableListOf<ParadoxLocalisationProperty>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({

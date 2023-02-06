@@ -25,7 +25,7 @@ intellij {
 	plugins.add("com.intellij.java")
 	plugins.add("org.jetbrains.kotlin")
 }
-
+ 
 grammarKit {
 	jflexRelease.set("1.7.0-2")
 }
