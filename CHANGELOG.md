@@ -18,7 +18,7 @@
 * BUG修复
   * [ ] 修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
   * [ ] 基本修复：[Support for HoI4 is almost completely broken #10](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/10)
-* 优化：
+* 功能优化
   * [ ] 在判断子类型时兼容`category = <deposit_category.blocker>`这样的表达式（这意味着进行索引时需要使用索引后的数据，IDEA似乎无法实现？）
   * [ ] 确认重命名功能能够预期正确进行（如果对应的声明/引用支持重命名）
   * [ ] 基于引用的重命名需要考虑存在前后缀的情况（主要是为图标引用考虑）
@@ -30,11 +30,19 @@
   * [ ] 编辑本地化文件时提供输入彩色文本、图标等的快捷键（仅在可用的位置生效）
   * [ ] ［不确定］在快速文档中显示本地化作用域和命令的作用域上下文 - 需要大幅重构相关代码
   * [ ] ［不确定］也许需要重构复杂表达式相关代码，更好地支持相关功能，以及支持额外的复杂表达式
-* 优化 - 智能推断：
+* 功能优化 - CWT规则支持
+  * [ ] ~~为复杂枚举如`complex_enum[policy_option]`提供相关本地化支持（类似定义）~~（搁置，不能很好地显示出来，复杂枚举名可能本身就是一个本地化引用）
+  * [ ] 优化：scope的名字（准确来说是别名）可以包含点号
+  * [ ] 有些之前被认为必定是常量字符串的地方（如枚举值的名字），也可能是一个表达式而非仅仅是常量字符串
+  * [ ] 对于link `pop_faction_parameter`和complexEnum `pop_faction_parameters`的特殊处理：前者只能在`pop_faction`中使用且作为数据源的complexEnumValue只能来自同一定义声明中
+  * [ ] 兼容CWT规则文件中的错误级别`severity = warning`或`## severity = warning`（PLS和CWTools实现有所不同，需要分析）
+  * [ ] ［待确定］作为trigger的值的CWT规则`scope_field` `scope[xxx]` `scope_group[xxx]`也可以匹配一个布尔值？
+* 功能优化 - 智能推断
+  * [ ] 基于使用处推断一些定义（如`scripted_effect`）的作用域上下文
   * [ ] 基于使用处推断本地化命令的作用域上下文
   * [ ] 基于使用处推断本地化文本中作为参数的引用（如`$PARAM$`）
   * [ ] 可以通过特殊注释强制指定定义类型（基于文件路径或者基于直接的类型+子类型） - 用于实现差异比较等功能
-* 新增功能：
+* 新增功能
   * 代码检查（`Code > Inspect Code...`）
     * [ ] ~~图标属性的值引用了定义自身（`foo { icon = foo ... }`）（不觉得这有什么意义）~~
   * 操作（`Action`）
@@ -51,13 +59,6 @@
   * ［低优先级］上下移动声明（`Code > Move Statement Up/Down`）
     * [ ] 脚本文件：上下移动属性或单独的值
     * [ ] 本地化文件：上下移动本地化属性
-* 完善CWT配置支持：
-  * [ ] ~~为复杂枚举如`complex_enum[policy_option]`提供相关本地化支持（类似定义）~~（搁置，不能很好地显示出来，复杂枚举名可能本身就是一个本地化引用）
-  * [ ] 优化：scope的名字（准确来说是别名）可以包含点号
-  * [ ] 有些之前被认为必定是常量字符串的地方（如枚举值的名字），也可能是一个表达式而非仅仅是常量字符串
-  * [ ] 对于link `pop_faction_parameter`和complexEnum `pop_faction_parameters`的特殊处理：前者只能在`pop_faction`中使用且作为数据源的complexEnumValue只能来自同一定义声明中
-  * [ ] 兼容CWT规则文件中的错误级别`severity = warning`或`## severity = warning`（PLS和CWTools实现有所不同，需要分析）
-  * [ ] ［待确定］作为trigger的值的CWT规则`scope_field` `scope[xxx]` `scope_group[xxx]`也可以匹配一个布尔值？
 
 ## PROCESSING
 
@@ -65,14 +66,24 @@
 
 ### 0.7.14
 
-* 优化：
+计划内容：
+
+* [ ] 模组配置以及相关功能
+* [ ] 更加完善的DIFF支持
+
+更新项：
+
+* 功能优化
   * [ ] 改为基于facet或者合成库`SyntheticLibrary`+自定义设置配置模组的游戏类型、游戏目录、依赖模组列表等配置
   * [ ] 可以从模组列表文件一键导入模组作为依赖并保留顺序
   * [ ] 如果可以直接获取游戏目录的位置，在模组配置中自动配置并在界面右下方提示，否则也在界面右下方提示，并要求手动配置
   * [ ] 更加完善的DIFF支持 - 比较时也显示内联提示，比较定义和本地化时也提供高级语言功能（低层实现：创建临时文件并进行比较）
+* 功能优化 - CWT规则支持
   * [ ] 匹配CWT规则时，如果规则可能是多个不同的子句时，需要按照子属性/子值的出现次数来判断到底匹配哪个子句规则
-* 优化 - 智能推断：
-  * [ ] 基于使用处推断一些定义（如`scripted_effect`）的作用域上下文
+  * [ ] CWT数据类型`filename`：要求匹配直接位于脚本文件所在目录下的指定名称的文件
+  * [ ] 判断定义的类型和子类型时，支持选项`## starts_with = likes_`（不忽略大小写）
+* 新增功能 - 代码检查（`Code > Inspect Code...`）
+    * [ ] 定义名不匹配指定前缀的检查（基于扩展的CWT选项`## prefix = xxx`，不忽略大小写）
 
 ## 0.7.13
 
@@ -82,46 +93,51 @@
 * 支持通过economic_category生成的修饰符
 * 提供更加完善的颜色支持（可以通过颜色装订线图标显示和设置颜色）
 
-* BUG修复：
+更新项：
+
+* BUG修复
   * [X] 修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
   * [X] 修复：通过颜色装订线图标修改颜色时，颜色在第一次被设置后，不关闭对话框再次设置会无法生效
-* 优化：
+* 功能优化
   * [X] 优化对复杂表达式的处理：特殊代码高亮绝不高亮参数部分，增强兼容性
   * [X] 匹配CWT规则使用静态匹配，需要访问索引时，大部分情况下认为直接匹配
   * [X] 优化游戏目录（基于`launcher-settings.json`）和模组目录（基于`descriptor.mod`）的判断逻辑
   * [X] 优化在快速文档中或者新建库对话框中，点击文本超链接或者工具栏图标按钮以导航到Steam和游戏相关目录时的导航逻辑，并且可以快速选择游戏目录
-  * [X] 优化对颜色的支持（示例：`rgb { 255 255 255 }`，`color = { 255 255 255 }`）
+  * [X] 优化对颜色的支持（示例：`rgb { 255 255 255 }`，`color = { 255 255 255 }`，基于扩展的CWT选项`## color_type = rgb/hsv/hex`）
   * [X] 兼容用文件路径匹配规则文件路径时，文件路径需要相对于入口目录（如`game` `jomini`）而非游戏根目录的情况
-  * [X] 支持扩展的CWT数据类型`filename`，用于匹配脚本文件下指定名称的文件
+  * [X] 支持扩展的CWT数据类型`filename`，用于匹配直接位于脚本文件所在目录下的指定名称的文件（待完善）
   * [X] 支持复杂枚举的查询作用域`search_scope = xxx`，认为仅该作用域下的复杂枚举值是等同的。（目前支持：definition）
-* 优化 - 智能推断：
+* 功能优化 - 智能推断
   * [X] 基于使用处推断`inline_script`的位置（即需要对应的CWT规则文件入口，同时如果可以推断，在内联脚本文件上方提示，同时也提供对参数的支持）
   * [X] 可扩展的参数解析器（提供推断参数的上下文、调用表达式中传入参数的上下文等功能）
-* 新增功能：
+* 新增功能
   * 完善支持处理生成的修饰符（`modifier`），以及相关的引用解析、代码补全、代码高亮等功能
     * [X] 支持通过Stellaris的`economic_category`生成修饰符
     * [X] 通过Stellaris的`economic_category`生成修饰符，兼容继承的mult修饰符（如，`starbase_outpost_cost_mult`）
     * [X] 提供修饰符解析器的扩展点，便于后续扩展
   * 代码检查（`Code > Inspect Code...`）
-    * [X] 缺少的传参（警告级别，在调用表达式、SV表达式中，如果参数不存在默认值且未传递，则认为缺少传参）
+    * [X] 缺少的传参的检查（警告级别，在调用表达式、SV表达式中，如果参数不存在默认值且未传递，则认为缺少传参）
     * [X] 推断的`inline_script`的位置存在冲突（使用处的父节点对应的CWT规则存在不一致的情况）
-    * [X] 定义声明中缺失/过多的表达式检查 - 现在可以配置仅显示第一个错误
-    * [X] 定义声明中缺失/过多的表达式检查 - 现在可以配置是否解析内联的内联脚本，内联后进行检查 
+    * [X] 定义声明中缺失/过多的表达式的检查 - 现在可以配置仅显示第一个错误
+    * [X] 定义声明中缺失/过多的表达式的检查 - 现在可以配置是否解析内联的内联脚本，内联后进行检查
+    * [X] 路径引用的文件扩展名不匹配的检查（归类到`InsufficientExpressionInspection`，基于扩展的CWT选项`## file_extensions = xxx`）
 
 ## 0.7.12
 
-计划内容：
+计划内容
 
 * 支持比较同名的文件、定义、本地化等
 
+更新项：
+
 * 提高代码兼容性
-* BUG修复：
+* BUG修复
   * [X] 修复：[Exception on project load #9](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/9) 
-* 优化：
+* 功能优化
   * [X] 语法解析优化 - 支持脚本文件中的`!=`
   * [X] 语法解析优化 - CWT文件的文档注释中可以任意使用`#`
   * [X] CWT规则文件的`cardinality`选项也可以引用define的数值（如，`## cardinality_max_define = "NGameplay/ETHOS_MAX_POINTS"`）
-* 新增功能：
+* 新增功能
   * 操作（`Action`）
     * [X] ~~在文件上使用`Goto Implementations`操作可以导航到同名的重载或者被重载的文件~~（IDE默认不可行，无法生效）
     * [X] 同名的定义、本地化，同路径的文件之间的DIFF（左窗口显示当前的，右窗口显示包括当前的只读副本在内的所有的）
@@ -253,17 +269,17 @@
 ## 0.7.7
 
 * 支持VIC3（基于CWT规则文件提供基本的游戏类型支持）
-* BUG修复：
+* BUG修复
   * [X] 修复无法识别直接作为字符串写在脚本文件顶层的复杂枚举值的问题（例如，`component_tags`）
   * [X] 修复格式化时对嵌套的块（子句）的缩进问题
-* 优化：
+* 优化
   * [X] 进行代码补全时，尽可能兼容表达式用引号括起的各种情况
   * [X] 进行代码补全时，在输入`definition_root_key = `之后，也可以应用代码补全
   * [X] 进行代码补全时，在提供定义声明中的定义成员的补全之外，也可以提示定义声明之外的属性名（如果允许）
   * [X] 进行代码补全时，如果要基于从句内联模版进行代码补全，首先弹出对话框，让用户选择需要插入的内容
     * 需要插入的内容（属性/值）可多选，可排序，可重复（不基于CWT规则判断是否允许重复）
   * [X] 导航到相关的CWT规则时，位置也可以是定义的rootKey
-* 新增功能： 
+* 新增功能
   * [X] 支持CWT规则：`stellaris_name_format[xxx]`
     * （需要确定3.6是否仍然支持）如果未用引号括起，则对应一个本地化的名称，本地化文本中可以使用格式化引用`<some_parts>`，而`some_parts`对应CWT规则`value[x]`
     * （3.6开始支持）如果用引号括起，则是一个特殊的表达式，例如`"{AofB{<imperial_mil> [This.Capital.GetName]}}"`
@@ -275,14 +291,14 @@
 ## 0.7.6
 
 * 更新IDEA版本到2022.3
-* 优化：
+* 优化
   * [X] 整合内部配置到CWT配置（作为全局的配置，要求检查文件名）
   * [X] 如果无法解析值表达式（`k = v`中的`v`），如果存在，在代码检查的错误信息中提示可能的CWT规则表达式（如，`possible: <event>, {...}`）
   * [X] 将非法的表达式`k = k1 = v`中的`k1`解析成key而非value，以便在某些情况下，例如使用从句内联模版进行代码补全时，能提供正确的高亮
-* 新增功能：
+* 新增功能
   * [X] 提供包围选项：包围成从句（`k = v` → `{ k = v }`）和包围成值为从句的属性（`k = v` → `key = { k = v }`）
   * [X] 提供包围选项：用参数条件块包围（`k = v` → `[[PARAM] k = v ]`）
-* 新增功能 - 群友提出：
+* 新增功能 - 群友提出
   * [X] 实现后缀补全：对于变量操作表达式，如`var.setv` → `set_variable = { which = var value = ? }`
     * 基于CWT配置（配置文件：`postfix_template_settings.pls.cwt`）
     * 目前用处不大：在可以进行后缀补全的位置，并不会提供对变量名的提示
@@ -299,7 +315,7 @@
 
 ## 0.7.4
 
-* BUG修复：
+* BUG修复
   * [X] 修复无法从项目文件中的声明导航到库中的引用的问题（考虑使用`UseScopeEnlarger`或`ResolveScopeManager`）
   * [X] 可以从定义名并非rootKey的定义（如event）的声明处导航到所有使用处（鼠标放到定义的rootKey上，然后Ctrl+鼠标左键）
   * [X] 从任意同名同类型的封装变量/定义/本地化/文件路径出发，可以通过查找使用导航到所有那个名字的使用
@@ -310,17 +326,17 @@
   * [X] 兼容localisationCommandField需要被识别为`value[variable]`的情况，以及代码提示
   * [X] 修复不能为对应的CWT规则是别名（alias）的表达式（key / value）提供正确的引用读写高亮的问题（当鼠标放到表达式上时应当显示）
   * [X] 修复无法跳转到某些定义成员对应的CWT规则的问题
-* 功能优化：
+* 功能优化
   * [X] 对CWT别名规则（dataType=alias/single_alias）使用特殊的别名图标，以便区分内联前后的CWT规则
   * [X] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`
   * [X] （可配置是否启用）进行代码补全时，如果在提示定义属性的键时，如果其值可能是常量字符串，应用补全后可以自动插入
   * [X] （可配置是否启用）进行代码补全时，如果在提示定义属性的键时，如果其值可能是从句，应用补全后可以自动插入花括号并将鼠标放到花括号中
   * [X] 本地化文件：兼容`$@some_scripted_variable$`、`£$SOME_REF$£`这样的语法
   * [X] 优化插件配置页面
-* 功能变更：
+* 功能变更
   * [X] ~~支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`~~ → 使用CWT选项`## tag`标记特殊标签，如`optimize_memory`
   * [X] 移除`icu.windea.pls.core.ParadoxPathReferenceProvider` （用于兼容markdown锚点）
-* 新增功能：
+* 新增功能
   * [X] 实现检查：参数（`$PARAM$`）被设置/引用但未被使用（例如：有`some_effecFt = { PARAM = some_value }`但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。）
   * [X] 实现检查：值集值值（`some_flag`）被设置但未被使用（例如，有`set_flag = xxx`但没有`has_flag = xxx`。）
   * [X] 实现检查：值集值值（`some_flag`）被使用但未被设置（例如，有`has_flag = xxx`但没有`set_flag = xxx`。） - 默认不启用
@@ -335,7 +351,7 @@
   * [X] 为图标提供提示（tooltip），例如，鼠标悬浮到结构视图（Structure）中的节点图标上即可看到
   * [X] 可以提示本地化颜色的ID（由于颜色ID只有一个字符，当光标在本地化文本中且前一个字符是`"§"`时，手动调用代码提示功能（例如，按下`Ctrl+空格`），才会进行提示
   * [X] 提供布尔值的代码补全（在定义声明中不为属性或者块中的值提供）
-* 完善CWT配置支持：
+* 完善CWT规则支持
   * [X] 支持`complex_enum`，以及相关功能：匹配、代码提示
   * [X] 支持高亮`definitionName` `complexEnumValueName`（对应的PSI元素可能本身就对应着特定的CWT规则，需要同时高亮出来）
   * [X] 为`complexEnumValue`的引用（而非声明）提供特殊文档
@@ -345,11 +361,11 @@
 ## 0.7.3
 
 * [X] 更新cwt规则到最新版本（2022/10/13）
-* 功能优化：
+* 功能优化
   * [X] 如果通过代码检查发现一个定义上有多个缺失的相关本地化/图片，将每个单独作为一个问题
   * [X] 参数（`$PARAM$`）和值集值值（`some_flag`）并不存在一个事实上的声明处，点击需要导航到所有引用处
   * [X] 测试通过对参数（`$PARAM$`）和值集值值（`some_flag`)基于引用的统一重命名
-* BUG修复：
+* BUG修复
   * [X] 进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
   * [X] 修复解析本地化位置表达式（如`$_desc`）时把占位符`$`解析成定义的rootKey而非定义的名字的问题
   * [X] 解析本地化位置表达式（如`$_desc`）时如果存在占位符`$`但对应的定义是匿名的，则应直接忽略，返回空结果
@@ -358,10 +374,10 @@
   * [X] 修复valueSetValue索引在索引时会被IDE认为栈溢出的问题，改为基于`ParadoxValueSetValuesSearch`和索引进行查找
   * [X] 脚本文件 - 基于注解器的语法高亮，不高亮带有参数的表达式
   * [X] 修复无法从项目文件中的声明导航到库中的引用的问题（默认情况下，对应的库需要导出）
-* 新增功能：
+* 新增功能
   * [x] 实现动作：导航到相关本地化和导航到相关图片（对于定义，在导航菜单/右键菜单中，在动作"导航到相关符号/Go to related symbol"下面）
-* 功能变更：
-  * 支持一些特殊注释：
+* 功能变更
+  * 支持一些特殊注释
     * [X] 通过在脚本文件的第一行添加特殊注释`@path:{gameType}:{path}`，可以强制指定脚本文件相对于模组根目录的路径
       * 仅当PLS无法得到此脚本文件的文件信息，从而进一步解析其中的定义时才允许这样处理
       * 特殊注释不能包含任何其他非空白文本，合法的特殊注释文本示例：`@file:stellaris:events/dummy.txt`
@@ -377,11 +393,11 @@
 ## 0.7.1
 
 * BUG修复
-* 功能优化：
+* 功能优化
   * [X] multiResolve本地化时不指定偏好的语言区域
   * [X] 优化paradoxSelector
   * [X] 补充内嵌提示的预览文本
-* 新增功能：
+* 新增功能
   * [X] 通过在脚本文件的第一行添加特殊注释`@path:{gameType}:{path}`，可以强制指定脚本文件相对于模组根目录的路径
     * 仅当PLS无法得到此脚本文件的文件信息，从而进一步解析其中的定义时才允许这样处理
     * 特殊注释不能包含任何其他非空白文本，合法的特殊注释文本示例：`@file:stellaris:events/dummy.txt`
@@ -403,13 +419,13 @@
 
 * [X] 更新cwt规则到最新版本（2022/6/10）
 * [X] 将CWT配置移动到项目根目录下`cwt`目录中，以便随远程GIT仓库更新CWT配置
-* BUG修复：
+* BUG修复
   * [X] 修复：[.${gameType} file is ignored #3](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/3)
   * [X] 修复：[Cyan color support in localisation #4](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/4)
   * [X] 修复：[Bugs in translation #6](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/6)
   * [X] 修复：对声明的查找使用的结果不完整（定义，本地化，参数等）
   * [X] 尝试修复：访问缓存（CachedValue）时导致的PsiInvalidElementAccessException（限制太多，暂时避免使用）
-* 代码优化：
+* 代码优化
   * [X] 提供方法以及检查代码：当需要获取定义或代码块的属性/值的时候，可以获取参数表达式中的属性/值
   * [X] 检查代码：同一代码块（block）中允许同时存在属性和值，且可以同时被CWT规则校验
   * [X] 绝不把本地化文件夹（如`localisation`）中的文件视为脚本文件，绝不把本地化文件夹之外的文件视为本地化文件
@@ -417,7 +433,7 @@
   * [X] 优化文件类型的重载逻辑（使用`ParadoxRootInfo`和`ParadoxFileInfo`保存上下文信息，监听描述符文件和游戏类型标记文件）
   * [X] 脚本文件中的文件路径分隔符兼容"/" "\" "\\"混用
   * [X] 解析引用时限定相同的游戏类型，并且如果可用，优先选用同一游戏或模组根目录下的
-* 功能优化：
+* 功能优化
   * [X] 结构视图-脚本文件：如果存在，显示定义的本地化名字（最相关的本地化文本）（以方便定位需要浏览的定义）
   * [X] 本地化文件：仅允许在正确的位置（`string_token`）插入动态模版
   * [X] 优化代码补全性能：尽可能确保提示本地化图标和属性引用时不会导致`ProcessCanceledException`
@@ -434,7 +450,7 @@
   * [X] 优化：`View > Quick Definition`显示的文本中也包含定义的相关注释
   * [X] 完善快速类型定义功能（`View > Quick Type Definition`）
   * ~~将游戏类型和游戏/模组目录依赖的配置保存到游戏或模组根目录下的特定配置文件（暂定为`.pls.settings.json`）中，将游戏/模组目录依赖视为合成库（参见`AdditionalLibraryRootsProvider`）~~
-* 新增功能：
+* 新增功能
   * ~~当用户新打开的项目中被识别包含模组文件夹时，如果没有将对应的游戏目录作为依赖添加到对应的项目/模块，弹出右下角通知要求用户添加，如同CWTools一样。~~ （需要延迟判断，何时判断？）
   * [X] 本地化文件：提供快速更改文本颜色的悬浮工具栏
   * [X] 支持自定义的本地化颜色
@@ -454,9 +470,9 @@
   * [X] 实现代码检查-脚本文件；不正确的脚本结构
   * [X] 实现查找实现功能 - 可导航到所有同名的封装变量/定义/本地化
   * [X] 实现`ParadoxQualifiedNameProvider`，用于复制路径/引用（Edit > Copy Path/Reference...）
-* 完善内嵌提示：
+* 完善内嵌提示
   * [X] 脚本文件：值集值值的内嵌提示（值的类型即值集的名字，`xxx = value_set[event_target]`中的`event_target`）
-* 脚本文件语法解析优化：
+* 脚本文件语法解析优化
   * 兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
   * [X] 对于`stellaris v3.4`开始新增的`tag`（`optimize_memory`），提供特殊图标和代码高亮，代码提示和验证功能另外由CWT规则提供
   * [X] 兼容`inline_math`语法，以及相关功能：代码高亮、代码补全、代码折叠、引用解析、格式化、代码风格设置
@@ -465,21 +481,21 @@
   * [X] 兼容`parameter_condition`语法，以及相关功能：代码高亮、代码折叠、格式化、代码风格设置
   * [X] 获取封装变量名时不再包含作为前缀的"@"
   * [X] 封装变量的值也可以是bool类型（`yes`和`no`）
-* 本地化文件语法解析优化：
+* 本地化文件语法解析优化
   * [X] 删除`sequentialNumber`，作为一种特殊的`propertyReference`（如`$VALUE$`）（`stellaris v3.4`开始其语法由`%O%`改成了`$O$`）
   * [X] 支持`iconFrame`（`£leader_skill|3£`中的`3`，可以为变量，如`$LEVEL$`）
   * [X] 支持本地化语言`l_japanese`和`l_korean`
   * [ ] 兼容作为format的本地化中的`<some_part>`语法，其中`some_part`对应特定类型的定义（需要修改原始的CWT规则）
-* 内置配置：
+* 内置配置
   * [X] 添加`predefined_variables`，表示预定义的变量，在本地化文本中使用，实现相关功能：引用解析
-* CWT配置：
+* CWT配置
   * [X] ~~支持额外的CWT选项：`## since = "3.3"`，用于在文档注释中显示开始支持的游戏版本号~~（已移除）
   * [X] 支持额外的CWT选项：`## format = html`，用于指定将文档注释渲染为HTML
   * [X] 支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`
   * [X] 支持额外的CWT选项：`## color_type = rgb / rgba`，用于以装订线图标的方式显示对应的颜色
   * [X] 仅当对应的数据类型是`bool`时，才会提示`yes`和`no`
   * [X] 支持的额外的CWT规则：`types.type[*].pictures`改为`types.type[*].images`
-* ［长期］完善CWT配置支持
+* ［长期］完善CWT规则支持
   * [X] 支持解析scopeExpression（如`from.owner`）
   * [X] 支持额外的值类型：`value`和`value_set`，以及相关功能：匹配、代码提示、引用解析、索引（多对多）
   * [X] 支持值类型：`scope` `scope_field` `scope_group`，以及相关功能：匹配、代码提示、引用解析、代码检查（暂不精确匹配scope）
