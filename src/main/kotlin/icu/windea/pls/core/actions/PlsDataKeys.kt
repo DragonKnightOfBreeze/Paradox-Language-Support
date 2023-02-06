@@ -7,4 +7,5 @@ import icu.windea.pls.lang.model.*
 object PlsDataKeys {
 	val gameTypePropertyKey = DataKey.create<GraphProperty<ParadoxGameType>>("PARADOX_GAME_TYPE_PROPERTY")
 	val rootTypePropertyKey = DataKey.create<GraphProperty<ParadoxRootType>>("PARADOX_ROOT_TYPE_PROPERTY")
+	val fileInfoKey = DataKey.create<ParadoxFileInfo>("PARADOX_FILE_INFO")
 }

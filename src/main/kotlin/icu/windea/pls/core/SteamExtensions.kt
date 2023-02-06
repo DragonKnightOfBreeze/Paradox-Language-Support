@@ -52,10 +52,10 @@ fun getSteamWorkshopPath(gameSteamId: String): String? {
     return getSteamPath()?.let { steamPath -> """$steamPath\steamapps\workshop\content\$gameSteamId""" }
 }
 
-fun getGameModPath(gameName: String): String? {
+fun getGameDataPath(gameName: String): String? {
     //实际上基于launcher-settings.json中的gameDataPath，有谁会去改这个……
     val userHome = System.getProperty("user.home") ?: return null
-    return """$userHome\Documents\Paradox Interactive\$gameName\mod"""
+    return """$userHome\Documents\Paradox Interactive\$gameName"""
 }
 
 /**

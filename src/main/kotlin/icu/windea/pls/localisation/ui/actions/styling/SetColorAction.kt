@@ -15,7 +15,7 @@ import icu.windea.pls.lang.model.*
 class SetColorAction(
 	val colorConfig: ParadoxTextColorInfo
 ) : ToggleAction(colorConfig.text, null, colorConfig.icon) {
-	private val setColorActionBaseName = PlsBundle.message("action.ParadoxLocalisation.Styling.SetColor.text")
+	private val setColorActionBaseName = PlsBundle.message("action.Pls.Localisation.Styling.SetColor.text")
 	
 	override fun getActionUpdateThread(): ActionUpdateThread {
 		return ActionUpdateThread.BGT

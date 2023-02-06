@@ -1,18 +1,21 @@
-package icu.windea.pls.core.actions
+@file:Suppress("ComponentNotRegistered")
+
+package icu.windea.pls.core.library.actions
 
 import com.intellij.ide.lightEdit.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.fileChooser.actions.*
 import com.intellij.openapi.vfs.*
-import icons.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.actions.*
 import icu.windea.pls.lang.model.*
 import java.nio.file.*
-import javax.swing.*
 
-@Suppress("UnstableApiUsage")
-abstract class GotoPathAction(private val icon: Icon) : FileChooserAction(), LightEditCompatible {
+/**
+ * 用于在文件选择页面中跳转到一个路径。
+ */
+abstract class GotoPathAction : FileChooserAction(), LightEditCompatible {
     abstract val targetPath: Path?
     open val expand: Boolean = false
     
@@ -24,14 +27,12 @@ abstract class GotoPathAction(private val icon: Icon) : FileChooserAction(), Lig
     
     override fun update(panel: FileChooserPanel, e: AnActionEvent) {
         val presentation = e.presentation
-        presentation.icon = icon
         presentation.isVisible = setVisible(e)
         presentation.isEnabled = presentation.isVisible && targetPath != null
     }
     
     override fun update(fileChooser: FileSystemTree, e: AnActionEvent) {
         val presentation = e.presentation
-        presentation.icon = icon
         presentation.isVisible = setVisible(e)
         if(presentation.isEnabled) {
             presentation.isEnabled = presentation.isVisible && runCatching {
@@ -58,8 +59,7 @@ abstract class GotoPathAction(private val icon: Icon) : FileChooserAction(), Lig
     }
 }
 
-@Suppress("ComponentNotRegistered")
-class GotoSteamPathAction : GotoPathAction(PlsIcons.Actions.SteamDirectory) {
+class GotoSteamPathAction : GotoPathAction() {
     override var targetPath: Path? = null
     
     override fun setVisible(e: AnActionEvent): Boolean {
@@ -71,8 +71,7 @@ class GotoSteamPathAction : GotoPathAction(PlsIcons.Actions.SteamDirectory) {
     }
 }
 
-@Suppress("ComponentNotRegistered")
-class GotoSteamGamePathAction : GotoPathAction(PlsIcons.Actions.SteamGameDirectory) {
+class GotoSteamGamePathAction : GotoPathAction() {
     private var gameType: ParadoxGameType? = null
     private var rootType: ParadoxRootType? = null
     
@@ -92,8 +91,7 @@ class GotoSteamGamePathAction : GotoPathAction(PlsIcons.Actions.SteamGameDirecto
     }
 }
 
-@Suppress("ComponentNotRegistered")
-class GotoSteamWorkshopPathAction : GotoPathAction(PlsIcons.Actions.SteamWorkshopDirectory) {
+class GotoSteamWorkshopPathAction : GotoPathAction() {
     private var gameType: ParadoxGameType? = null
     private var rootType: ParadoxRootType? = null
     
@@ -115,8 +113,7 @@ class GotoSteamWorkshopPathAction : GotoPathAction(PlsIcons.Actions.SteamWorksho
 }
 
 
-@Suppress("ComponentNotRegistered")
-class GotoGameModPathAction : GotoPathAction(PlsIcons.Actions.GameModDirectory) {
+class GotoGameDataPathAction : GotoPathAction() {
     private var gameType: ParadoxGameType? = null
     private var rootType: ParadoxRootType? = null
     
@@ -131,7 +128,7 @@ class GotoGameModPathAction : GotoPathAction(PlsIcons.Actions.GameModDirectory) 
         if(this.targetPath == null || this.gameType != gameType || this.rootType != rootType) {
             this.gameType = gameType
             this.rootType = rootType
-            this.targetPath = getGameModPath(gameType.gameName)?.toPathOrNull()
+            this.targetPath = getGameDataPath(gameType.gameName)?.toPathOrNull()
         }
         return true
     }

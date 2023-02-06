@@ -131,7 +131,7 @@ operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>
 operator fun <T> Key<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T) = thisRef.putUserData(this, value)
 
 operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)
-operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KProperty<*>): T? = thisRef.getData(this)
+operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KProperty<*>): T? = thisRef.dataContext.getData(this)
 //endregion
 
 //region Documentation Extensions
