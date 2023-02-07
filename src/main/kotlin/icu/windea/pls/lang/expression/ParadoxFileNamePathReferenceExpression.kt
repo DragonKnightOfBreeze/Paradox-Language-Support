@@ -29,6 +29,6 @@ class ParadoxFileNamePathReferenceExpression : ParadoxPathReferenceExpression {
     }
     
     override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {
-        return PlsBundle.message("inspection.script.general.unresolvedFilePath.description.fileName", pathReference, configExpression)
+        return PlsBundle.message("inspection.script.general.unresolvedPathReference.description.fileName", pathReference, configExpression)
     }
 }

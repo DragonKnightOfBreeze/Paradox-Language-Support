@@ -66,12 +66,12 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
                      implementationClass="icu.windea.pls.script.inspections.general.UnresolvedScriptedVariableInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedFilePath"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedPathReference"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.script.general.unresolvedFilePath"
+                     bundle="messages.PlsBundle" key="inspection.script.general.unresolvedPathReference"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
-                     implementationClass="icu.windea.pls.script.inspections.general.UnresolvedFilePathInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.general.UnresolvedPathReferenceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedParameter"
                      enabledByDefault="true" level="WEAK WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.general.unusedParameter"
@@ -96,6 +96,18 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
                      implementationClass="icu.windea.pls.script.inspections.general.UnsetValueSetValueInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectDefinitionName"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.general.incorrectDefinitionName"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
+                     groupPathKey="inspection.script.general.path"
+                     implementationClass="icu.windea.pls.script.inspections.general.IncorrectDefinitionNameInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectPathReference"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.general.incorrectPathReference"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
+                     groupPathKey="inspection.script.general.path"
+                     implementationClass="icu.windea.pls.script.inspections.general.IncorrectPathReferenceInspection"/>
     <!--endregion-->
     <!--region Paradox script/Scope Issues-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScope"

@@ -66,18 +66,6 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
 						val message = PlsBundle.message("inspection.script.general.insufficientExpression.description.3", expression, expectedColorType, colorType)
 						holder.registerProblem(element, message)
 					}
-					dataType.isFilePathType() -> {
-						val expression = element.expression ?: return
-						val fileExtensions = ParadoxFilePathHandler.getFileExtensionOptionValues(config)
-						if(fileExtensions.isEmpty()) return
-						val value = element.value
-						if(fileExtensions.any { value.endsWith(it, true) }) return
-						val extensionsString = fileExtensions.joinToString(" / ")
-						val extension = value.substringAfterLast('.', "").lowercase().ifNotEmpty { ".$it" }
-						val message = if(extension.isNotEmpty()) PlsBundle.message("inspection.script.general.insufficientExpression.description.4", expression, extensionsString, extension)
-						else PlsBundle.message("inspection.script.general.insufficientExpression.description.4_1", expression, extensionsString)
-						holder.registerProblem(element, message)
-					}
 					dataType == CwtDataType.Scope -> {
 						if(element !is ParadoxScriptStringExpressionElement) return
 						val expectedScope = configExpression.value ?: return
@@ -121,3 +109,4 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
 		return holder.resultsArray
 	}
 }
+

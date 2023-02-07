@@ -1,11 +1,12 @@
 <html>
 <body>
   <p>
-    Reports files that have overriding or overridden files.
+    Reports incorrect definition names.
   </p>
   <p>
-    Files with same path relative to game or mod directory will be considered as the same file at game runtime,
-    And only the first one sorted by specific override strategy will be used finally.
+    A definition name is considered as incorrect
+    if it doesn't match specific prefix,
+    which are declared by the <code>prefix</code> option on the matched CWT definition config.
   </p>
   <!-- tooltip end -->
   <p>

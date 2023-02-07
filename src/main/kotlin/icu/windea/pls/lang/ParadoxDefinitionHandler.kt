@@ -4,6 +4,7 @@ package icu.windea.pls.lang
 
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -19,6 +20,8 @@ import icu.windea.pls.script.psi.*
  * 用于处理定义信息。
  */
 object ParadoxDefinitionHandler {
+	val definitionNamePrefixKey = Key.create<String>("paradox.definition.prefix")
+	
 	@JvmStatic
 	fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
 		ProgressManager.checkCanceled()
@@ -450,15 +453,41 @@ object ParadoxDefinitionHandler {
 		//return if(DumbService.isDumbAware(configGroup.project)) CwtConfigMatchType.STATIC else CwtConfigMatchType.ALL
 	}
 	
+	@JvmStatic
 	fun getName(element: ParadoxScriptDefinitionElement): String? {
 		return runCatching { element.getStub() }.getOrNull()?.name ?: element.definitionInfo?.name
 	}
 	
+	@JvmStatic
 	fun getType(element: ParadoxScriptDefinitionElement): String? {
 		return runCatching { element.getStub() }.getOrNull()?.type ?: element.definitionInfo?.type
 	}
 	
+	@JvmStatic
 	fun getSubtypes(element: ParadoxScriptDefinitionElement): List<String>? {
 		return runCatching { element.getStub() }.getOrNull()?.subtypes ?: element.definitionInfo?.subtypes
+	}
+	
+	@JvmStatic
+	fun getDefinitionNamePrefixOption(typeConfig: CwtTypeConfig) : String {
+		//return config.getOrPutUserData(definitionNamePrefixKey) {
+		//	val option = config.options?.find { it.key == "prefix" }
+		//	return option?.stringValue.orEmpty()
+		//}
+		var prefix = ""
+		typeConfig.subtypes.values.forEach { subtypeConfig ->
+			val config = subtypeConfig.config
+			prefix = config.getOrPutUserData(definitionNamePrefixKey) {
+				val option = config.options?.find { it.key == "prefix" }
+				return option?.stringValue.orEmpty()
+			}
+			if(prefix.isNotEmpty()) return prefix
+		}
+		val config = typeConfig.config
+		prefix = config.getOrPutUserData(definitionNamePrefixKey) {
+			val option = config.options?.find { it.key == "prefix" }
+			return option?.stringValue.orEmpty()
+		}
+		return prefix
 	}
 }

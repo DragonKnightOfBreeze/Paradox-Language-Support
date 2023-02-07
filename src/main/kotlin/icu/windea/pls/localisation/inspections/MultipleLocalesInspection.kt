@@ -12,7 +12,7 @@ import javax.swing.*
 /**
  * （同一文件中）多个语言区域的检查。
  *
- * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。默认为"languages.yml"
+ * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。默认为"languages.yml"。
  */
 class MultipleLocalesInspection : LocalInspectionTool() {
 	@JvmField var ignoredFileNames = "languages.yml"

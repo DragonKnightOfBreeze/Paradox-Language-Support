@@ -18,11 +18,10 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 无法解析的文件路径的检查。
- *
- * @property ignoredFileNames （配置项）需要忽略的文件路径的模式。使用ANT模式。忽略大小写。
+ * 无法解析的路径引用的检查。
+ * * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。默认为"*.lua"。
  */
-class UnresolvedFilePathInspection : LocalInspectionTool() {
+class UnresolvedPathReferenceInspection : LocalInspectionTool() {
     @JvmField var ignoredFileNames = "*.lua"
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -30,7 +29,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
     }
     
     private class Visitor(
-        private val inspection: UnresolvedFilePathInspection,
+        private val inspection: UnresolvedPathReferenceInspection,
         private val holder: ProblemsHolder
     ) : ParadoxScriptVisitor() {
         override fun visitString(valueElement: ParadoxScriptString) {
@@ -44,7 +43,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
                 val filePath = valueElement.value
                 val path = filePath.toPathOrNull() ?: return
                 if(VfsUtil.findFile(path, false) != null) return
-                val message = PlsBundle.message("inspection.script.general.unresolvedFilePath.description.abs", path)
+                val message = PlsBundle.message("inspection.script.general.unresolvedPathReference.description.abs", path)
                 holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
                     ImportGameOrModDirectoryFix(valueElement)
                 )
@@ -68,7 +67,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                label(PlsBundle.message("inspection.script.general.unresolvedFilePath.option.ignoredFileNames"))
+                label(PlsBundle.message("inspection.script.general.unresolvedPathReference.option.ignoredFileNames"))
             }
             row {
                 textField().bindText(::ignoredFileNames)
@@ -79,7 +78,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
                             if(text != ignoredFileNames) ignoredFileNames = text
                         }
                     }
-                    .comment(PlsBundle.message("inspection.script.general.unresolvedFilePath.option.ignoredFileNames.comment"))
+                    .comment(PlsBundle.message("inspection.script.general.unresolvedPathReference.option.ignoredFileNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()
             }
