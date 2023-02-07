@@ -16,11 +16,11 @@
 
 * 完善在线参考文档
 * BUG修复
-  * [ ] 修复：[Continued Inability to set the CK3 game folder as a library #8](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/8)
   * [ ] 基本修复：[Support for HoI4 is almost completely broken #10](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/10)
 * 功能优化
   * [ ] 在判断子类型时兼容`category = <deposit_category.blocker>`这样的表达式（这意味着进行索引时需要使用索引后的数据，IDEA似乎无法实现？）
   * [ ] 确认重命名功能能够预期正确进行（如果对应的声明/引用支持重命名）
+  * [ ] 对于封装变量、定义和本地化实现安全删除功能
   * [ ] 基于引用的重命名需要考虑存在前后缀的情况（主要是为图标引用考虑）
   * [ ] 一些检查可以基于当前文件、文件路径（相对于游戏或模组根目录）、定义类型（例如，`event`）、定义成员路径（例如，`event.abc`）等来部分禁用
   * [ ] ~~将本地化命令（`[xxx]`中的xxx，所有文本）解析为单个元素，如果解析scopeFieldExpression一样，将此作为localisationCommandExpression并解析，实现相关功能：检查、提示等~~
