@@ -68,10 +68,6 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
         presentation.isEnabled = definition != null
     }
     
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
-    }
-    
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
         val project = e.project ?: return null
         val editor = e.editor

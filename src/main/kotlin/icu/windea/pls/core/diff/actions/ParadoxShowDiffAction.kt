@@ -13,6 +13,11 @@ abstract class ParadoxShowDiffAction : AnAction() {
         isEnabledInModalContext = true
     }
     
+    override fun getActionUpdateThread(): ActionUpdateThread {
+        return ActionUpdateThread.BGT
+    }
+    
+    
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project
         val chain = getDiffRequestChain(e) ?: return

@@ -70,10 +70,6 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         presentation.isEnabled = localisation != null
     }
     
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
-    }
-    
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
         val project = e.project ?: return null
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null

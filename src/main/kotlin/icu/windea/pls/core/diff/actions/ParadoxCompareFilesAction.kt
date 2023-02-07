@@ -49,10 +49,6 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         presentation.isEnabled = true
     }
     
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
-    }
-    
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
         val project = e.project ?: return null
         val editor = e.editor

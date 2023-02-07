@@ -185,6 +185,7 @@
     <inspection_tool class="ReplaceCollectionCountWithSize" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="ReplaceGetOrSet" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="ReplaceNotNullAssertionWithElvisReturn" enabled="true" level="INFORMATION" enabled_by_default="true" />
+    <inspection_tool class="ReplacePutWithAssignment" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="ReplaceSubstringWithDropLast" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ReplaceSubstringWithIndexingOperation" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ReplaceSubstringWithSubstringAfter" enabled="true" level="WARNING" enabled_by_default="true" />

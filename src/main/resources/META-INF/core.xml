@@ -12,12 +12,19 @@
   </extensionPoints>
   
   <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
-    <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettings"/>
-
     <!--override extensions-->
     <projectService serviceInterface="com.intellij.psi.impl.ResolveScopeManager" serviceImplementation="icu.windea.override.psi.impl.file.impl.ParadoxResolveScopeManager" overrides="true"/>
     <projectService serviceInterface="com.intellij.psi.search.PsiSearchHelper" serviceImplementation="icu.windea.override.psi.search.ParadoxPsiSearchHelper" overrides="true"/>
+  </extensions>
+  
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
+    <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettings"/>
+    
+    <!--no configurable for mod settings, but for single mod setting-->
+    <projectService serviceImplementation="icu.windea.pls.core.settings.ParadoxProjectModSettings"/>
+    
+    <additionalLibraryRootsProvider implementation="icu.windea.pls.core.settings.ParadoxLibraryProvider"/>
     
     <!--suppress PluginXmlValidity -->
     <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider"/>
@@ -30,11 +37,9 @@
 
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType"/>
     
-    <!--<preloadingActivity implementation="icu.windea.pls.core.ParadoxPreloadActivity"/>-->
-    
-    <qualifiedNameProvider implementation="icu.windea.pls.core.ParadoxQualifiedNameProvider"/>
     <vfs.asyncListener implementation="icu.windea.pls.core.DescriptorOrMarkerFileListener"/>
 
+    <qualifiedNameProvider implementation="icu.windea.pls.core.ParadoxQualifiedNameProvider"/>
     <readWriteAccessDetector implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxReadWriteAccessDetector"/>
     <usageTypeProvider implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxUsageTypeProvider"/>
     <codeInsight.typeInfo language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.codeInsight.ParadoxTypeProvider"/>
@@ -79,7 +84,6 @@
     <iconDescriptionBundle resourceBundle="messages.PlsIconBundle"/>
     
     <vfs.asyncListener implementation="icu.windea.pls.core.ParadoxTrackFileListener"/>
-    
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls">
@@ -93,6 +97,11 @@
     <paradoxComplexEnumValueSearch implementation="icu.windea.pls.core.search.ParadoxComplexEnumValueSearcher"/>
     <paradoxValueSetValuesSearch implementation="icu.windea.pls.core.search.ParadoxValueSetValueSearcher"/>
   </extensions>
+  
+  <projectListeners>
+    <listener class="icu.windea.pls.core.settings.ParadoxUpdateLibraryOnModSettingsChangedListener"
+              topic="icu.windea.pls.core.settings.ParadoxModSettingsChangedListener"/>
+  </projectListeners>
   
   <actions>
     <group id="PlsToolActions">

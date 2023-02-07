@@ -10,6 +10,7 @@ import icons.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.model.*
 import java.awt.*
 
@@ -90,6 +91,7 @@ object PlsThreadLocals {
 }
 
 object PlsKeys {
+	val libraryKey = Key.create<ParadoxLibrary>("paradox.library")
 	val rootInfoKey = Key.create<ParadoxRootInfo>("paradox.rootInfo")
 	val fileInfoKey = Key.create<ParadoxFileInfo>("paradox.fileInfo")
 	val fileTypeKey = Key.create<FileType>("paradox.fileType")
