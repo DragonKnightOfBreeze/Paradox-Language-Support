@@ -74,6 +74,8 @@ object PlsIcons {
 	}
 	
 	object Actions {
+		@JvmField val ModSettings = loadIcon("/icons/actions/modSettings.svg")
+		
 		@JvmField val SteamDirectory = loadIcon("/icons/actions/steamDirectory.svg")
 		@JvmField val SteamGameDirectory = loadIcon("/icons/actions/steamGameDirectory.svg")
 		@JvmField val SteamWorkshopDirectory = loadIcon("/icons/actions/steamWorkshopDirectory.svg")

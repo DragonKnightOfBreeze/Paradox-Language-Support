@@ -3,9 +3,9 @@
 package icu.windea.pls.core.settings.actions
 
 import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
+import com.intellij.openapi.roots.ProjectFileIndex
 import icu.windea.pls.*
+import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.model.*
 
 /**
@@ -33,6 +33,8 @@ class OpenModSettingsAction: AnAction() {
         if(fileInfo.rootInfo.rootType != ParadoxRootType.Mod) return
         //必须位于当前项目中
         val project = e.project ?: return
+        val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
+        if(!isInProject) return
         presentation.isVisible = true
         presentation.isEnabled = true
     }
@@ -46,6 +48,12 @@ class OpenModSettingsAction: AnAction() {
         if(fileInfo.rootInfo.rootType != ParadoxRootType.Mod) return
         //必须位于当前项目中
         val project = e.project ?: return
+        val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
+        if(!isInProject) return
         val rootPath = fileInfo.rootInfo.rootPath
+        val modSettings = getAllModSettings(project).getSetting(rootPath.toString())
+        if(modSettings == null) return //unexpected
+        val dialog = ParadoxModSettingsDialog(project, modSettings)
+        dialog.show()
     }
 }

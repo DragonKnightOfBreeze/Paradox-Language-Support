@@ -16,8 +16,8 @@ class ParadoxProjectModSettings(private val project: Project) : SimplePersistent
 class ParadoxProjectModSettingsState : BaseState() {
     val settings: MutableMap<String, ParadoxModSettingsState> by map() //path > setting
     
-    fun getSetting(modPath: String): ParadoxModSettingsState {
-        return settings.getOrPut(modPath) { ParadoxModSettingsState() }
+    fun getSetting(modPath: String): ParadoxModSettingsState? {
+        return settings.get(modPath)
     }
     
     //must also update roots when update settings
