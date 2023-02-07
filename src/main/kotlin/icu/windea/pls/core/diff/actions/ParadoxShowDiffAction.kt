@@ -13,22 +13,11 @@ abstract class ParadoxShowDiffAction : AnAction() {
         isEnabledInModalContext = true
     }
     
-    override fun update(e: AnActionEvent) {
-        val presentation = e.presentation
-        val canShow = isAvailable(e)
-        presentation.isEnabled = canShow
-        if(ActionPlaces.isPopupPlace(e.place)) {
-            presentation.isVisible = canShow
-        }
-    }
-    
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project
         val chain = getDiffRequestChain(e) ?: return
         DiffManager.getInstance().showDiff(project, chain, DiffDialogHints.DEFAULT)
     }
-    
-    protected abstract fun isAvailable(e: AnActionEvent): Boolean
     
     protected fun hasContent(file: VirtualFile): Boolean {
         return !DiffUtil.isFileWithoutContent(file)

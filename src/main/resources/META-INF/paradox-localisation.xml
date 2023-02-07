@@ -85,6 +85,6 @@
   </extensions>
 
   <actions>
-    <group id="ParadoxLocalisation.Toolbar.Floating" searchable="false" class="icu.windea.pls.localisation.ui.actions.styling.FloatingToolbarGroup"/>
+    <group id="Pls.Localisation.Toolbar.Floating" class="icu.windea.pls.localisation.ui.actions.styling.FloatingToolbarGroup" searchable="false"/>
   </actions>
 </idea-plugin>

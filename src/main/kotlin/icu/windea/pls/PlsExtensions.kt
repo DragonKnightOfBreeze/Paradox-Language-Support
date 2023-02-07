@@ -36,6 +36,8 @@ fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.ope
 
 fun getSettings() = service<ParadoxSettings>().state
 
+fun getModSetting(modPath: String) = service<ParadoxModSettings>().state.settings.getOrPut(modPath) { ParadoxModSettingState() }
+
 fun getCwtConfig(project: Project = getTheOnlyOpenOrDefaultProject()) = project.service<CwtConfigProvider>().configGroups
 
 fun preferredParadoxLocale(): CwtLocalisationLocaleConfig? {

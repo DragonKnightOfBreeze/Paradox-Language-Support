@@ -79,6 +79,7 @@
     <iconDescriptionBundle resourceBundle="messages.PlsIconBundle"/>
     
     <vfs.asyncListener implementation="icu.windea.pls.core.ParadoxTrackFileListener"/>
+    
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls">
@@ -94,28 +95,47 @@
   </extensions>
   
   <actions>
-    <group id="ParadoxGotoPathActions">
+    <group id="PlsToolActions">
+      <group id="PlsOpenPathActions">
+        <action id="Pls.Tool.OpenPath.OpenSteamPath" class="icu.windea.pls.core.tool.actions.OpenSteamPathAction"
+                icon="PlsIcons.Actions.SteamDirectory"/>
+        <action id="Pls.Tool.OpenPath.OpenSteamGamePath" class="icu.windea.pls.core.tool.actions.OpenSteamGamePathAction"
+                icon="PlsIcons.Actions.SteamGameDirectory"/>
+        <action id="Pls.toolOpenPath.OpenSteamWorkshopPath" class="icu.windea.pls.core.tool.actions.OpenSteamWorkshopPathAction"
+                icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
+        <action id="Pls.Tool.OpenPath.OpenGameDataPath" class="icu.windea.pls.core.tool.actions.OpenGameDataPathAction"
+                icon="PlsIcons.Actions.GameDataDirectory"/>
+      </group>
+      <add-to-group group-id="ToolWindowsGroup"/>
+      <add-to-group group-id="EditorPopupMenu"/>
+    </group>
+    
+    <group id="PlsGotoPathActions">
       <separator/>
-      <action id="FileChooser.Pls.GotoSteamPath" class="icu.windea.pls.core.actions.GotoSteamPathAction"/>
-      <action id="FileChooser.Pls.GotoSteamGamePath" class="icu.windea.pls.core.actions.GotoSteamGamePathAction"/>
-      <action id="FileChooser.Pls.GotoSteamWorkshopPath" class="icu.windea.pls.core.actions.GotoSteamWorkshopPathAction"/>
-      <action id="FileChooser.Pls.GotoGameModPath" class="icu.windea.pls.core.actions.GotoGameModPathAction"/>
+      <action id="Pls.FileChooser.GotoSteamPath" class="icu.windea.pls.core.library.actions.GotoSteamPathAction" icon="PlsIcons.Actions.SteamDirectory"/>
+      <action id="Pls.FileChooser.GotoSteamGamePath" class="icu.windea.pls.core.library.actions.GotoSteamGamePathAction" icon="PlsIcons.Actions.SteamGameDirectory"/>
+      <action id="Pls.FileChooser.GotoSteamWorkshopPath" class="icu.windea.pls.core.library.actions.GotoSteamWorkshopPathAction" icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
+      <action id="Pls.FileChooser.GotoGameDataPath" class="icu.windea.pls.core.library.actions.GotoGameDataPathAction" icon="PlsIcons.Actions.GameDataDirectory"/>
       
       <add-to-group group-id="FileChooserToolbar" anchor="last"/>
     </group>
 
-    <group id="ParadoxDiffActions">
+    <group id="PlsDiffActions">
       <separator/>
-      <action id="ParadoxCompareFilesAction" class="icu.windea.pls.core.diff.actions.ParadoxCompareFilesAction"
-              icon="AllIcons.Actions.Diff"/>
-      <action id="ParadoxCompareLocalisationsAction" class="icu.windea.pls.core.diff.actions.ParadoxCompareLocalisationsAction"
-              icon="AllIcons.Actions.Diff"/>
-      <action id="ParadoxCompareDefinitionsAction" class="icu.windea.pls.core.diff.actions.ParadoxCompareDefinitionsAction"
-              icon="AllIcons.Actions.Diff"/>
+      <action id="Pls.Diff.ParadoxCompareFiles" class="icu.windea.pls.core.diff.actions.ParadoxCompareFilesAction" icon="AllIcons.Actions.Diff">
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt f"/>
+      </action>
+      <action id="Pls.Diff.ParadoxCompareDefinitions" class="icu.windea.pls.core.diff.actions.ParadoxCompareDefinitionsAction" icon="AllIcons.Actions.Diff">
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt d"/>
+      </action>
+      <action id="Pls.Diff.ParadoxCompareLocalisations" class="icu.windea.pls.core.diff.actions.ParadoxCompareLocalisationsAction" icon="AllIcons.Actions.Diff">
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt l"/>
+      </action>
 
       <add-to-group group-id="EditorPopupMenu" relative-to-action="CompareClipboardWithSelection" anchor="after"/>
       <add-to-group group-id="CompareActions" relative-to-action="CompareClipboardWithSelection" anchor="after"/>
       <add-to-group group-id="ProjectViewPopupMenu" relative-to-action="CompareFileWithEditor" anchor="after"/>
+      <add-to-group group-id="EditorContextBarMenu" anchor="last"/>
     </group>
   </actions>
 </idea-plugin>

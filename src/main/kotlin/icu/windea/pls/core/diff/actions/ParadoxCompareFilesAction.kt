@@ -27,20 +27,26 @@ import javax.swing.*
 /**
  * 将当前文件与包括当前文件的只读副本在内的相同路径的文件进行DIFF。
  *
- * 可以用于比较二进制文件。（如DDS图片）
- *
- * TODO 按照覆盖顺序进行排序。
+ * * 当当前文件是模组或游戏文件时显示并启用。
+ * * 忽略直接位于游戏或模组入口目录下的文件。
+ * * 可以用于比较二进制文件。（如DDS图片）
+ * * TODO 按照覆盖顺序进行排序。
  */
 @Suppress("ComponentNotRegistered")
 class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
-    override fun isAvailable(e: AnActionEvent): Boolean {
+    override fun update(e: AnActionEvent) {
+        val presentation = e.presentation
+        presentation.isVisible = false
+        presentation.isEnabled = false
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
             ?: e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)?.singleOrNull()
-            ?: return false
-        if(file.isDirectory) return false
-        val fileInfo = file.fileInfo ?: return false
-        //忽略游戏或模组根目录下的文件
-        return fileInfo.path.length > 1
+            ?: return
+        if(file.isDirectory) return
+        val fileInfo = file.fileInfo ?: return
+        //忽略直接位于游戏或模组入口目录下的文件
+        if(fileInfo.entryPath.length <= 1) return
+        presentation.isVisible = true
+        presentation.isEnabled = true
     }
     
     override fun getActionUpdateThread(): ActionUpdateThread {
@@ -54,15 +60,15 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         val path = fileInfo.path.path
-        val files = Collections.synchronizedList(mutableListOf<VirtualFile>())
+        val virtualFiles = Collections.synchronizedList(mutableListOf<VirtualFile>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
             runReadAction {
                 val selector = fileSelector().gameType(gameType)
                 val result = ParadoxFilePathSearch.search(path, project, selector = selector).findAll()
-                files.addAll(result)
+                virtualFiles.addAll(result)
             }
         }, PlsBundle.message("diff.compare.files.collect.title"), true, project)
-        if(files.size <= 1) {
+        if(virtualFiles.size <= 1) {
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
                 PlsBundle.message("diff.compare.files.content.title.info.1"),
                 NotificationType.INFORMATION
@@ -84,7 +90,7 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         var index = 0
         var defaultIndex = 0
         val producers = runReadAction {
-            files.mapNotNull { otherFile ->
+            virtualFiles.mapNotNull { otherFile ->
                 if(file.fileType != otherFile.fileType) return@mapNotNull null
                 val isSameFile = file == otherFile
                 val otherContentTitle = when {

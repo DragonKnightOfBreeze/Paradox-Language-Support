@@ -77,7 +77,7 @@ object PlsIcons {
 		@JvmField val SteamDirectory = loadIcon("/icons/actions/steamDirectory.svg")
 		@JvmField val SteamGameDirectory = loadIcon("/icons/actions/steamGameDirectory.svg")
 		@JvmField val SteamWorkshopDirectory = loadIcon("/icons/actions/steamWorkshopDirectory.svg")
-		@JvmField val GameModDirectory = loadIcon("/icons/actions/gameModDirectory.svg")
+		@JvmField val GameDataDirectory = loadIcon("/icons/actions/gameDataDirectory.svg")
 		
 		@JvmField val DuplicateDescriptor = AllIcons.Actions.Copy
 	}

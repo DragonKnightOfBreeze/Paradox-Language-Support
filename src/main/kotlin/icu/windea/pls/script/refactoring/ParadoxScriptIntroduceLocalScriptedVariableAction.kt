@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxScriptIntroduceLocalScriptedVariableAction : BasePlatformRefactoringAction() {
 	init {
-		addTextOverride(ActionPlaces.MAIN_MENU, PlsBundle.message("action.ParadoxScript.IntroduceGlobalScriptedVariable.text.mainMenu"))
+		addTextOverride(ActionPlaces.MAIN_MENU, PlsBundle.message("action.Pls.Script.IntroduceGlobalScriptedVariable.text.mainMenu"))
 	}
 	
 	val handler = ParadoxScriptIntroduceLocalScriptedVariableHandler()

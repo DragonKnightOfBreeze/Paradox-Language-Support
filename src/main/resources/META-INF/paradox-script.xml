@@ -128,30 +128,30 @@
   </extensions>
 
   <actions>
-    <group id="ParadoxScript.RefactoringGroup" popup="false">
-      <action id="ParadoxScript.IntroduceLocalScriptedVariable" class="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceLocalScriptedVariableAction">
+    <group id="Pls.Script.RefactoringGroup" popup="false">
+      <action id="Pls.Script.IntroduceLocalScriptedVariable" class="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceLocalScriptedVariableAction">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt v"/>
         <add-to-group group-id="IntroduceActionsGroup" anchor="first"/>
       </action>
-      <action id="ParadoxScript.IntroduceGlobalScriptedVariable" class="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceGlobalScriptedVariableAction">
+      <action id="Pls.Script.IntroduceGlobalScriptedVariable" class="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceGlobalScriptedVariableAction">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt g"/>
-        <add-to-group group-id="IntroduceActionsGroup" anchor="after" relative-to-action="ParadoxScript.IntroduceLocalScriptedVariable"/>
+        <add-to-group group-id="IntroduceActionsGroup" anchor="after" relative-to-action="Pls.Script.IntroduceLocalScriptedVariable"/>
       </action>
     </group>
-    <group id="ParadoxScript.GotoGroup">
-      <action id="ParadoxScript.GotoRelatedLocalisation" class="icu.windea.pls.script.codeInsight.navigation.GotoRelatedLocalisationAction">
+    <group id="Pls.Script.GotoGroup">
+      <action id="Pls.Script.GotoRelatedLocalisation" class="icu.windea.pls.script.codeInsight.navigation.GotoRelatedLocalisationAction">
         <keyboard-shortcut first-keystroke="alt shift p" keymap="$default"/>
         <mouse-shortcut keymap="$default" keystroke="alt shift button1"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
-      <action id="ParadoxScript.GotoRelatedImage" class="icu.windea.pls.script.codeInsight.navigation.GotoRelatedImageAction">
+      <action id="Pls.Script.GotoRelatedImage" class="icu.windea.pls.script.codeInsight.navigation.GotoRelatedImageAction">
         <keyboard-shortcut first-keystroke="control alt shift p" keymap="$default"/>
         <mouse-shortcut keymap="$default" keystroke="control alt shift button1"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
-      <action id="ParadoxScript.GotoRelatedCwtConfig" class="icu.windea.pls.script.codeInsight.navigation.GotoRelatedCwtConfigAction">
+      <action id="Pls.Script.GotoRelatedCwtConfig" class="icu.windea.pls.script.codeInsight.navigation.GotoRelatedCwtConfigAction">
         <keyboard-shortcut first-keystroke="alt p" keymap="$default"/>
         <mouse-shortcut keymap="$default" keystroke="alt button1"/>
         <override-text place="MainMenu"/>
