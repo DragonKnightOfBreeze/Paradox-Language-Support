@@ -1,6 +1,5 @@
 package icu.windea.pls.lang
 
-import cn.yiiguxing.plugin.translate.util.*
 import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.codeInsight.hints.*
 import com.intellij.openapi.application.*
@@ -13,7 +12,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
-import com.intellij.psi.util.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
@@ -22,7 +20,6 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
 import java.lang.invoke.*
-import java.util.*
 
 object ParadoxCoreHandler {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
@@ -138,9 +135,10 @@ object ParadoxCoreHandler {
     }
     
     private fun getLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo? {
+        //launcher-settings.json
         return file.getOrPutUserData(PlsKeys.launcherSettingsInfoKey) {
             try {
-                return jsonMapper.readValue(file.inputStream)
+                return doGetLauncherSettingsInfo(file)
             } catch(e: Exception) {
                 if(e is ProcessCanceledException) throw e
                 logger.warn(e)
@@ -149,20 +147,28 @@ object ParadoxCoreHandler {
         }
     }
     
+    private fun doGetLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo? {
+        return jsonMapper.readValue(file.inputStream)
+    }
+    
     private fun getDescriptorInfo(file: VirtualFile): ParadoxDescriptorInfo? {
         //see: descriptor.cwt
         return file.getOrPutUserData(PlsKeys.descriptorInfoKey) {
-            val psiFile = file.toPsiFile<ParadoxScriptFile>(getDefaultProject()) ?: return null
-            val data = ParadoxScriptDataResolver.resolve(psiFile, conditional = false, inline = false) ?: return null
-            val name = data.getData("name")?.value?.stringValue() ?: file.parent?.name.orAnonymous() //如果没有name属性，则使用根目录名
-            val version = data.getData("version")?.value?.stringValue()
-            val picture = data.getData("picture")?.value?.stringValue()
-            val tags = data.getAllData("tags").mapNotNull { it.value?.stringValue() }.toSet()
-            val supportedVersion = data.getData("supported_version")?.value?.stringValue()
-            val remoteFileId = data.getData("remote_file_id")?.value?.stringValue()
-            val path = data.getData("path")?.value?.stringValue()
-            return ParadoxDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path, isModDescriptor = true)
+            return runReadAction { doGetDescriptorInfo(file) }
         }
+    }
+    
+    private fun doGetDescriptorInfo(file: VirtualFile): ParadoxDescriptorInfo? {
+        val psiFile = file.toPsiFile<ParadoxScriptFile>(getDefaultProject()) ?: return null
+        val data = ParadoxScriptDataResolver.resolve(psiFile, conditional = false, inline = false) ?: return null
+        val name = data.getData("name")?.value?.stringValue() ?: file.parent?.name.orAnonymous() //如果没有name属性，则使用根目录名
+        val version = data.getData("version")?.value?.stringValue()
+        val picture = data.getData("picture")?.value?.stringValue()
+        val tags = data.getAllData("tags").mapNotNull { it.value?.stringValue() }.toSet()
+        val supportedVersion = data.getData("supported_version")?.value?.stringValue()
+        val remoteFileId = data.getData("remote_file_id")?.value?.stringValue()
+        val path = data.getData("path")?.value?.stringValue()
+        return ParadoxDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path, isModDescriptor = true)
     }
     
     @JvmStatic
