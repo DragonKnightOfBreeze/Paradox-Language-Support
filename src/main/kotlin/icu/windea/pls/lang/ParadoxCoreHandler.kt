@@ -82,8 +82,8 @@ object ParadoxCoreHandler {
         
         // 尝试向下查找descriptor.mod，如果找到，再尝试向下查找.{gameType}，确认rootType和gameType
         // descriptor.mod > Mod
-        val descriptorModFile = rootFile.findChild(PlsConstants.descriptorFileName)
-        if(descriptorModFile != null) {
+        val descriptorFile = rootFile.findChild(PlsConstants.descriptorFileName)
+        if(descriptorFile != null) {
             var markerFile: VirtualFile? = null
             for(rootChild in rootFile.children) {
                 if(rootChild.isDirectory) continue
@@ -94,8 +94,8 @@ object ParadoxCoreHandler {
                     break
                 }
             }
-            val descriptorInfo = getDescriptorInfo(descriptorModFile) ?: return null
-            return ParadoxModRootInfo(rootFile, descriptorModFile, markerFile, ParadoxRootType.Mod, descriptorInfo)
+            val descriptorInfo = getDescriptorInfo(descriptorFile) ?: return null
+            return ParadoxModRootInfo(rootFile, descriptorFile, markerFile, ParadoxRootType.Mod, descriptorInfo)
         }
         
         // 从此目录向下递归查找launcher-settings.json，如果找到，再根据"dlcPath"的值获取游戏文件的根目录
@@ -159,7 +159,8 @@ object ParadoxCoreHandler {
     }
     
     private fun doGetDescriptorInfo(file: VirtualFile): ParadoxDescriptorInfo? {
-        val psiFile = file.toPsiFile<ParadoxScriptFile>(getDefaultProject()) ?: return null
+        //val psiFile = file.toPsiFile<ParadoxScriptFile>(getDefaultProject()) ?: return null //会导致StackOverflowError
+        val psiFile = ParadoxScriptElementFactory.createDummyFile(getDefaultProject(), file.inputStream.reader().readText())
         val data = ParadoxScriptDataResolver.resolve(psiFile) ?: return null
         val name = data.getData("name")?.value?.stringValue() ?: file.parent?.name.orAnonymous() //如果没有name属性，则使用根目录名
         val version = data.getData("version")?.value?.stringValue()
