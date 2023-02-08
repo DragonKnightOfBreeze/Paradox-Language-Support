@@ -19,6 +19,9 @@ import java.util.concurrent.atomic.*
  */
 @Suppress("unused", "UnstableApiUsage", "UNUSED_PARAMETER")
 object ParadoxLocalisationTextHintsRenderer {
+	/**
+	 * 如果[truncateLimit]小于等于0，则渲染首行文本。
+	 */
 	data class Context(
 		val truncateLimit: Int,
 		val iconHeightLimit: Int
@@ -69,8 +72,8 @@ object ParadoxLocalisationTextHintsRenderer {
 	
 	private fun PresentationFactory.renderStringTo(element: ParadoxLocalisationString, editor: Editor, builder: MutableList<InlayPresentation>, context: Context): Boolean {
 		val elementText = element.text
-		builder.add(truncatedSmallText(elementText, context.truncateRemain))
-		return continueProcess(context.truncateRemain)
+		builder.add(truncatedSmallText(elementText, context))
+		return continueProcess(context)
 	}
 	
 	private fun PresentationFactory.renderEscapeTo(element: ParadoxLocalisationEscape, editor: Editor, builder: MutableList<InlayPresentation>, context: Context): Boolean {
@@ -80,8 +83,8 @@ object ParadoxLocalisationTextHintsRenderer {
 			elementText == "\\n" -> return false
 			elementText == "\\r" -> return false
 			else -> {
-				builder.add(truncatedSmallText(elementText, context.truncateRemain))
-				return continueProcess(context.truncateRemain)
+				builder.add(truncatedSmallText(elementText, context))
+				return continueProcess(context)
 			}
 		}
 	}
@@ -99,7 +102,7 @@ object ParadoxLocalisationTextHintsRenderer {
 			resolved is CwtProperty -> {
 				smallText(resolved.value ?: PlsConstants.unresolvedString)
 			}
-			else -> truncatedSmallText(element.text, context.truncateRemain)
+			else -> truncatedSmallText(element.text, context)
 		} ?: return true
 		val textAttributesKey = if(colorConfig != null) ParadoxLocalisationAttributesKeys.getColorOnlyKey(colorConfig.color) else null
 		val finalPresentation = when {
@@ -107,7 +110,7 @@ object ParadoxLocalisationTextHintsRenderer {
 			else -> presentation
 		}
 		builder.add(finalPresentation)
-		return continueProcess(context.truncateRemain)
+		return continueProcess(context)
 	}
 	
 	private fun PresentationFactory.renderIconTo(element: ParadoxLocalisationIcon, editor: Editor, builder: MutableList<InlayPresentation>, context: Context): Boolean {
@@ -136,8 +139,8 @@ object ParadoxLocalisationTextHintsRenderer {
 	
 	private fun PresentationFactory.renderCodeTo(element: ParadoxLocalisationCommand, editor: Editor, builder: MutableList<InlayPresentation>, context: Context): Boolean {
 		//使用原始文本
-		builder.add(truncatedSmallText(element.text, context.truncateRemain))
-		return continueProcess(context.truncateRemain)
+		builder.add(truncatedSmallText(element.text, context))
+		return continueProcess(context)
 	}
 	
 	private fun PresentationFactory.renderColorfulTextTo(element: ParadoxLocalisationColorfulText, editor: Editor, builder: MutableList<InlayPresentation>, context: Context): Boolean {
@@ -169,13 +172,20 @@ object ParadoxLocalisationTextHintsRenderer {
 		}
 	}
 	
-	private fun PresentationFactory.truncatedSmallText(text: String, truncateRemain: AtomicInteger): InlayPresentation {
-		val result = smallText(text.take(truncateRemain.get()))
-		truncateRemain.addAndGet(-text.length)
-		return result
+	private fun PresentationFactory.truncatedSmallText(text: String, context: Context): InlayPresentation {
+		if(context.truncateLimit <= 0) {
+			val finalText = text
+			val result = smallText(finalText)
+			return result
+		} else {
+			val finalText = text.take(context.truncateRemain.get())
+			val result = smallText(finalText)
+			context.truncateRemain.addAndGet(-text.length)
+			return result
+		}
 	}
 	
-	private fun continueProcess(truncateRemain: AtomicInteger): Boolean {
-		return truncateRemain.get() >= 0
+	private fun continueProcess(context: Context): Boolean {
+		return context.truncateLimit <= 0 || context.truncateRemain.get() >= 0
 	}
 }
