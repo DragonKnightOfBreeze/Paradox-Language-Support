@@ -126,7 +126,7 @@
               icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
       <action id="Pls.OpenPath.OpenGameDataPath" class="icu.windea.pls.core.tool.actions.OpenGameDataPathAction"
               icon="PlsIcons.Actions.GameDataDirectory"/>
-      <add-to-group group-id="Pls.Tools"/>
+      <add-to-group group-id="Pls.Tools" anchor="after"/>
     </group>
     
     <group id="Pls.GotoPath">
