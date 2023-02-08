@@ -138,10 +138,19 @@ object CwtConfigHandler {
 		configGroup: CwtConfigGroup,
 		matchType: Int = CwtConfigMatchType.ALL
 	): Boolean {
+		val isStatic = BitUtil.isSet(matchType, CwtConfigMatchType.STATIC)
+		val isNotExact = BitUtil.isSet(matchType, CwtConfigMatchType.NOT_EXACT)
+		
 		//匹配block
 		if(configExpression == CwtValueExpression.BlockExpression) {
-			return expression.type == ParadoxDataType.BlockType
+			if(expression.isKey != false) return false
+			if(expression.type != ParadoxDataType.BlockType) return false
+			if(element !is ParadoxScriptBlock) return true
+			if(isNotExact) return true //非精确匹配 - 直接使用第一个
+			val configsInBlock = config?.castOrNull<CwtDataConfig<*>>()?.configs ?: return true
+			return matchesScriptExpressionInBlock(element, configsInBlock, configGroup)
 		}
+		
 		//匹配空字符串
 		if(configExpression.isEmpty()) {
 			return expression.isEmpty()
@@ -149,8 +158,6 @@ object CwtConfigHandler {
 		
 		val project = configGroup.project
 		val gameType = configGroup.gameType
-		val isStatic = BitUtil.isSet(matchType, CwtConfigMatchType.STATIC)
-		val isNotExact = BitUtil.isSet(matchType, CwtConfigMatchType.NOT_EXACT)
 		val isParameterAware = expression.type == ParadoxDataType.StringType && expression.text.isParameterAwareExpression()
 		when(configExpression.type) {
 			CwtDataType.Bool -> {
@@ -423,6 +430,24 @@ object CwtConfigHandler {
 		}
 	}
 	
+	private fun matchesScriptExpressionInBlock(block: ParadoxScriptBlock, configsInBlock: List<CwtConfig<*>>, configGroup: CwtConfigGroup): Boolean {
+		//简单判断：如果block中包含configsInBlock声明的任意propertyKey（作为常量字符串，忽略大小写），则认为匹配
+		val propertyKeys = caseInsensitiveStringSet()
+		configsInBlock.forEach { 
+			if(it is CwtPropertyConfig && it.keyExpression.type == CwtDataType.Constant) {
+				propertyKeys.add(it.key)
+			} 
+		}
+		var result = false
+		block.processData(conditional = true, inline = true) {
+			if(it is ParadoxScriptProperty && it.name in propertyKeys) {
+				result = true
+			}
+			true
+		}
+		return result
+	}
+	
 	fun matchesAliasName(
 		element: PsiElement,
 		expression: ParadoxDataExpression,
@@ -456,6 +481,7 @@ object CwtConfigHandler {
 	
 	fun requireNotExactMatch(configExpression: CwtDataExpression): Boolean {
 		return when {
+			configExpression == CwtValueExpression.BlockExpression -> true
 			configExpression.type == CwtDataType.Int && configExpression.extraValue != null -> true
 			configExpression.type == CwtDataType.Float && configExpression.extraValue != null -> true
 			configExpression.type == CwtDataType.ColorField && configExpression.value != null -> true

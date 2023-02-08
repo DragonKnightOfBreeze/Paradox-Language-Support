@@ -76,7 +76,7 @@ private fun doProcessValueChild(it: ParadoxScriptValue, conditional: Boolean, in
     val r = processor(it)
     if(!r) return false
     if(inline) {
-        val inlined = ParadoxMemberElementLinker.inlineElement(it)
+        val inlined = ParadoxScriptMemberElementLinker.inlineElement(it)
         if(inlined is ParadoxScriptDefinitionElement) {
             val block = inlined.block
             if(block != null) {
@@ -93,7 +93,7 @@ private fun doProcessPropertyChild(it: ParadoxScriptProperty, conditional: Boole
     val r = processor(it)
     if(!r) return false
     if(inline) {
-        val inlined = ParadoxMemberElementLinker.inlineElement(it)
+        val inlined = ParadoxScriptMemberElementLinker.inlineElement(it)
         if(inlined is ParadoxScriptDefinitionElement) {
             val block = inlined.block
             if(block != null) {
@@ -231,12 +231,15 @@ fun < T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
 fun PsiElement.findParentDefinition(link: Boolean = false): ParadoxScriptDefinitionElement? {
     if(language != ParadoxScriptLanguage) return null
     var current: PsiElement = this
-    var linked = false
     while(current !is PsiFile) {
-        if(current is ParadoxScriptDefinitionElement && current.definitionInfo != null) return current
-        if(link && !linked && current is ParadoxScriptMemberElement) {
-            current = ParadoxMemberElementLinker.linkElement(current)?.also { linked = true } ?: current
+        if(link && current is ParadoxScriptMemberElement) {
+            val linked = ParadoxScriptMemberElementLinker.linkElement(current)
+            if(linked != null) {
+                current = linked.parent ?: break
+                continue
+            }
         }
+        if(current is ParadoxScriptDefinitionElement && current.definitionInfo != null) return current
         current = current.parent ?: break
     }
     return null
@@ -260,13 +263,16 @@ fun PsiElement.findParentProperty(
         this is ParadoxScriptProperty -> this.parent
         else -> this
     }
-    var linked = false
     while(current !is PsiFile) {
+        if(link && current is ParadoxScriptMemberElement) {
+            val linked = ParadoxScriptMemberElementLinker.linkElement(current)
+            if(linked != null) {
+                current = linked.parent ?: break
+                continue
+            }
+        }
         if(current is ParadoxScriptDefinitionElement) return current.takeIf { propertyName == null || propertyName.equals(it.name, ignoreCase) }
         if(current is ParadoxScriptBlock && !current.isPropertyValue()) return null
-        if(link && !linked && current is ParadoxScriptMemberElement) {
-            current = ParadoxMemberElementLinker.linkElement(current)?.also { linked = true } ?: current
-        }
         current = current.parent ?: break
     }
     if(current is ParadoxScriptFile) return current

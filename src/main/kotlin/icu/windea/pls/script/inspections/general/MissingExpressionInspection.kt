@@ -35,7 +35,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
             override fun visitFile(file: PsiFile) {
                 if(file !is ParadoxScriptFile) return
                 //忽略可能的脚本片段入口
-                if(!ParadoxMemberElementLinker.canLink(file)) {
+                if(!ParadoxScriptMemberElementLinker.canLink(file)) {
                     val position = file //TODO not very suitable
                     val definitionMemberInfo = file.definitionMemberInfo
                     doCheck(position, definitionMemberInfo, true)
@@ -50,7 +50,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                 val property = element.parent
                     ?.castOrNull<ParadoxScriptProperty>()
                 //忽略可能的脚本片段入口
-                if(property != null && ParadoxMemberElementLinker.canLink(property)) return
+                if(property != null && ParadoxScriptMemberElementLinker.canLink(property)) return
                 val position = property?.propertyKey
                     ?.also { if(it.isParameterAwareExpression()) return }
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)

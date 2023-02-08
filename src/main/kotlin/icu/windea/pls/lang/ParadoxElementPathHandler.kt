@@ -53,11 +53,17 @@ object ParadoxElementPathHandler {
     
     private fun resolveFromDefinitionWithDefinition(element: PsiElement, allowDefinitionSelf: Boolean): Pair<ParadoxElementPath, ParadoxScriptDefinitionElement>? {
         var current: PsiElement = element
-        var depth = 0
         val originalSubPaths = LinkedList<String>()
         var definition: ParadoxScriptDefinitionElement? = null
         var flag = allowDefinitionSelf
         while(current !is PsiDirectory) { //这里的上限应当是null或PsiDirectory，不能是PsiFile，因为它也可能是定义
+            if(current is ParadoxScriptMemberElement) {
+                val linked = ParadoxScriptMemberElementLinker.linkElement(current)
+                if(linked != null) {
+                    current = linked.parent ?: break
+                    continue
+                }
+            }
             when {
                 current is ParadoxScriptDefinitionElement -> {
                     if(flag) {
@@ -69,18 +75,11 @@ object ParadoxElementPathHandler {
                     } else {
                         flag = true
                     }
-                    if(current !is PsiFile) {
-                        originalSubPaths.addFirst(current.originalPathName) //这里需要使用原始文本
-                    }
-                    depth++
+                    originalSubPaths.addFirst(current.originalPathName) //这里需要使用原始文本
                 }
                 current is ParadoxScriptValue && current.isBlockValue() -> {
                     originalSubPaths.addFirst("-")
-                    depth++
                 }
-            }
-            if(current is ParadoxScriptMemberElement) {
-                current = ParadoxMemberElementLinker.linkElement(current) ?: current
             }
             current = current.parent ?: break
         }

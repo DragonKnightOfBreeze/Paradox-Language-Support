@@ -8,7 +8,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
-class ParadoxInlineScriptMemberElementLinker : ParadoxMemberElementLinker {
+class ParadoxInlineScriptScriptMemberElementLinker : ParadoxScriptMemberElementLinker {
     override fun canLink(element: ParadoxScriptMemberElement): Boolean {
         if(element !is ParadoxScriptFile) return false
         if(getInlineScriptExpression(element) == null) return false
