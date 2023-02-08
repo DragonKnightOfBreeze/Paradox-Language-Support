@@ -160,7 +160,7 @@ object ParadoxCoreHandler {
     
     private fun doGetDescriptorInfo(file: VirtualFile): ParadoxDescriptorInfo? {
         val psiFile = file.toPsiFile<ParadoxScriptFile>(getDefaultProject()) ?: return null
-        val data = ParadoxScriptDataResolver.resolve(psiFile, conditional = false, inline = false) ?: return null
+        val data = ParadoxScriptDataResolver.resolve(psiFile) ?: return null
         val name = data.getData("name")?.value?.stringValue() ?: file.parent?.name.orAnonymous() //如果没有name属性，则使用根目录名
         val version = data.getData("version")?.value?.stringValue()
         val picture = data.getData("picture")?.value?.stringValue()

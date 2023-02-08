@@ -18,7 +18,7 @@ class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters
 		val offsetInParent = parameters.offset - element.textRange.startOffset
 		val keyword = element.getKeyword(offsetInParent)
 		if(keyword.contains('.')) return
-		val event = element.findParentByPath("id", definitionType = "event")
+		val event = element.findParentByPath("id", definitionType = "event") //不处理内联的情况
 		if(event !is ParadoxScriptProperty) return
 		
 		//仅提示脚本文件中向上查找到的那个合法的事件命名空间

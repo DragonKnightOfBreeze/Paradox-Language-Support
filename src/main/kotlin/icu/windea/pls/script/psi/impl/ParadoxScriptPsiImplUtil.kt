@@ -1,7 +1,6 @@
 package icu.windea.pls.script.psi.impl
 
 import com.intellij.navigation.*
-import com.intellij.openapi.command.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -20,7 +19,6 @@ import icu.windea.pls.lang.support.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import org.apache.commons.imaging.color.*
 import java.awt.*
 import javax.swing.*
 
@@ -207,7 +205,7 @@ object ParadoxScriptPsiImplUtil {
 		if(nameField != null) {
 			val nameProperty = element.findProperty(nameField) //不处理内联的情况
 			if(nameProperty != null) {
-				val nameElement = nameProperty.findValue<ParadoxScriptString>()
+				val nameElement = nameProperty.value<ParadoxScriptString>()
 				nameElement?.value = name
 				return element
 			} else {
@@ -584,12 +582,12 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getPropertyList(element: ParadoxScriptBlock): List<ParadoxScriptProperty> {
-		return buildList { element.processProperty(inline = true) { add(it) } }
+		return buildList { element.processProperty(conditional = true, inline = true) { add(it) } }
 	}
 	
 	@JvmStatic
 	fun getValueList(element: ParadoxScriptBlock): List<ParadoxScriptValue> {
-		return buildList { element.processValue(inline = true) { add(it) } }
+		return buildList { element.processValue(conditional = true, inline = true) { add(it) } }
 	}
 	
 	@JvmStatic

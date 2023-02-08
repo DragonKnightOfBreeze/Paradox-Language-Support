@@ -80,7 +80,7 @@ object ParadoxElementPathHandler {
                     depth++
                 }
             }
-            if(current is ParadoxScriptMemberElement) {
+            if(!linked && current is ParadoxScriptMemberElement) {
                 current = ParadoxMemberElementLinker.linkElement(current)?.also { linked = true } ?: current
             }
             current = current.parent ?: break

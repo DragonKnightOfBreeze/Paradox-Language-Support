@@ -95,7 +95,7 @@ class CwtImageLocationExpression(
 		} else if(propertyName != null) {
 			//propertyName可以为空字符串，这时直接查找定义的字符串类型的值（如果存在）
 			//dynamic -> returns ("", null, 0)
-			val property = definition.findProperty(propertyName, inline = true) ?: return null
+			val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
 			val propertyValue = property.propertyValue ?: return null
 			val config = ParadoxCwtConfigHandler.resolveValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
 			if(config.expression.type !in validValueTypes) {
@@ -107,7 +107,7 @@ class CwtImageLocationExpression(
 				frame != 0 -> frame
 				extraPropertyNames.isNullOrEmpty() -> 0
 				else -> extraPropertyNames.mapAndFirst { propertyName ->
-					definition.findProperty(propertyName, inline = true)?.propertyValue?.intValue() ?: 0
+					definition.findProperty(propertyName, conditional = true, inline = true)?.propertyValue?.intValue() ?: 0
 				} ?: 0
 			}
 			val resolved = CwtConfigHandler.resolveScriptExpression(propertyValue, null, config, config.expression, config.info.configGroup, false)

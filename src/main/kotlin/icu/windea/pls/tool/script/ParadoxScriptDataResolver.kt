@@ -13,13 +13,13 @@ object ParadoxScriptDataResolver {
 	/**
 	 * 解析脚本文件的数据。跳过不合法的[PsiElement]。
 	 */
-	fun resolve(file: PsiFile, conditional: Boolean = true, inline: Boolean = false): ParadoxScriptData? {
+	fun resolve(file: PsiFile, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData? {
 		if(file !is ParadoxScriptFile) throw IllegalArgumentException("Invalid file type (expect: 'ParadoxScriptFile')")
 		val rootBlock = file.findChild<ParadoxScriptRootBlock>() ?: return null
 		return resolveBlock(rootBlock, conditional, inline)
 	}
 	
-	fun resolveBlock(element: ParadoxScriptBlockElement, conditional: Boolean = true, inline: Boolean = false): ParadoxScriptData {
+	fun resolveBlock(element: ParadoxScriptBlockElement, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData {
 		val value = element as? ParadoxScriptBlock
 		val children: MutableList<ParadoxScriptData> = SmartList()
 		element.processData(conditional, inline) p@{ e -> 
@@ -32,12 +32,12 @@ object ParadoxScriptDataResolver {
 		return ParadoxScriptData(null, value, children)
 	}
 	
-	fun resolveValue(element: ParadoxScriptValue, conditional: Boolean = true, inline: Boolean = false): ParadoxScriptData {
+	fun resolveValue(element: ParadoxScriptValue, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData {
 		if(element is ParadoxScriptBlock) return resolveBlock(element, conditional, inline)
 		return ParadoxScriptData(null, element, null)
 	}
 	
-	fun resolveProperty(element: ParadoxScriptProperty, conditional: Boolean = true, inline: Boolean = false): ParadoxScriptData? {
+	fun resolveProperty(element: ParadoxScriptProperty, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData? {
 		val propertyKey = element.propertyKey
 		val propertyValue = element.propertyValue
 		if(propertyValue == null) return null //ignore

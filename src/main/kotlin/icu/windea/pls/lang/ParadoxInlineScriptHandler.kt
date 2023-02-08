@@ -83,7 +83,7 @@ object ParadoxInlineScriptHandler {
         val expressionElement = if(expressionLocation.isEmpty()) {
             propertyValue.castOrNull<ParadoxScriptString>()
         } else {
-            propertyValue.findProperty(expressionLocation)?.propertyValue?.castOrNull<ParadoxScriptString>()
+            propertyValue.findProperty(expressionLocation, conditional = true)?.propertyValue?.castOrNull<ParadoxScriptString>()
         }
         return expressionElement?.stringValue()
     }

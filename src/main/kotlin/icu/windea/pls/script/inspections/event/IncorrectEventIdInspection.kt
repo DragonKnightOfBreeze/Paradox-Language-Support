@@ -52,7 +52,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 				val eventIdField = definitionInfo.typeConfig.nameField
 				val eventId: ParadoxScriptExpressionElement = when(eventIdField) {
 					null -> event.propertyKey
-					else -> event.findProperty(eventIdField, conditional = false, inline =  false)?.propertyValue
+					else -> event.findProperty(eventIdField)?.propertyValue
 				} ?: continue
 				val eventIdString = eventId.stringValue() ?: continue
 				if(!ParadoxEventHandler.isValidEventId(eventIdString, namespace)) {

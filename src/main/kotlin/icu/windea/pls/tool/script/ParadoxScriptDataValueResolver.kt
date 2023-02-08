@@ -14,13 +14,13 @@ object ParadoxScriptDataValueResolver {
     /**
      * 解析脚本文件的数据。跳过不合法的[PsiElement]。
      */
-    fun resolve(file: PsiFile, conditional: Boolean = true, inline: Boolean = false): List<BlockEntry<String?, Any>> {
+    fun resolve(file: PsiFile, conditional: Boolean = false, inline: Boolean = false): List<BlockEntry<String?, Any>> {
         if(file !is ParadoxScriptFile) throw IllegalArgumentException("Invalid file type (expect: 'ParadoxScriptFile')")
         val rootBlock = file.findChild<ParadoxScriptRootBlock>() ?: return emptyList()
         return resolveBlock(rootBlock, conditional, inline)
     }
     
-    private fun resolveBlock(block: ParadoxScriptBlockElement, conditional: Boolean = true, inline: Boolean = false): List<BlockEntry<String?, Any>> {
+    private fun resolveBlock(block: ParadoxScriptBlockElement, conditional: Boolean = false, inline: Boolean = false): List<BlockEntry<String?, Any>> {
         val result: MutableList<BlockEntry<String?, Any>> = SmartList()
         block.processData(conditional, inline) p@{ e ->
             when {
@@ -32,7 +32,7 @@ object ParadoxScriptDataValueResolver {
         return result
     }
     
-    fun resolveValue(value: ParadoxScriptValue, conditional: Boolean = true, inline: Boolean = false): Any? {
+    fun resolveValue(value: ParadoxScriptValue, conditional: Boolean = false, inline: Boolean = false): Any? {
         return when(value) {
             is ParadoxScriptBoolean -> value.value.toBooleanYesNo()
             is ParadoxScriptInt -> value.value.toInt()
@@ -45,7 +45,7 @@ object ParadoxScriptDataValueResolver {
         }
     }
     
-    fun resolveProperty(property: ParadoxScriptProperty, conditional: Boolean = true, inline: Boolean = false): BlockEntry<String?, Any>? {
+    fun resolveProperty(property: ParadoxScriptProperty, conditional: Boolean = false, inline: Boolean = false): BlockEntry<String?, Any>? {
         val propertyValue = property.propertyValue
         if(propertyValue == null) return null //ignore
         
