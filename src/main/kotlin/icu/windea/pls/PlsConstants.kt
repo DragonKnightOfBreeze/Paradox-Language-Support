@@ -95,7 +95,7 @@ object PlsKeys {
 	val rootInfoKey = Key.create<ParadoxRootInfo>("paradox.rootInfo")
 	val fileInfoKey = Key.create<ParadoxFileInfo>("paradox.fileInfo")
 	val fileTypeKey = Key.create<FileType>("paradox.fileType")
-	val contentFileKey = Key.create<VirtualFile>("paradox.contentFile")
+	val localeConfigKey = Key.create<CwtLocalisationLocaleConfig>("paradox.localeConfig")
 	
 	val descriptorInfoKey = Key.create<ParadoxDescriptorInfo>("paradox.descriptorInfo")
 	val launcherSettingsInfoKey = Key.create<ParadoxLauncherSettingsInfo>("paradox.launcherSettingsInfo")

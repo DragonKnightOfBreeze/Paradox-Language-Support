@@ -3,6 +3,7 @@ package icu.windea.pls.core.diff.actions
 import com.intellij.diff.*
 import com.intellij.diff.actions.impl.*
 import com.intellij.diff.chains.*
+import com.intellij.diff.contents.*
 import com.intellij.diff.requests.*
 import com.intellij.diff.util.*
 import com.intellij.notification.*
@@ -11,6 +12,7 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.openapi.util.*
@@ -27,7 +29,6 @@ import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
 import java.awt.*
 import java.util.*
 import javax.swing.*
@@ -99,8 +100,7 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         val windowTitle = getWindowsTitle(localisation) ?: return null
         val contentTitle = getContentTitle(localisation) ?: return null
         val documentContent = contentFactory.createDocument(project, file) ?: return null
-        val textRange = localisation.textRange
-        val content = contentFactory.createFragment(project, documentContent, textRange)
+        val content = createContent(contentFactory, project, documentContent, localisation)
         
         var index = 0
         var defaultIndex = 0
@@ -122,11 +122,11 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
                         readonly = true
                         val otherDocument = EditorFactory.getInstance().createDocument(documentContent.document.text)
                         val otherDocumentContent = contentFactory.create(project, otherDocument, content.highlightFile)
-                        contentFactory.createFragment(project, otherDocumentContent, textRange)
+                        createContent(contentFactory, project, otherDocumentContent, localisation)
                     }
                     else -> {
                         val otherDocumentContent = contentFactory.createDocument(project, otherFile) ?: return@mapNotNull null
-                        contentFactory.createFragment(project, otherDocumentContent, otherLocalisation.textRange)
+                        createContent(contentFactory, project, otherDocumentContent, otherLocalisation)
                     }
                 }
                 if(isCurrent) defaultIndex = index
@@ -145,6 +145,10 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
             chain.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.RIGHT, currentLine))
         }
         return chain
+    }
+    
+    private fun createContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, localisation: ParadoxLocalisationProperty): DocumentContent {
+        return contentFactory.createFragment(project, documentContent, localisation.textRange)
     }
     
     private fun getWindowsTitle(localisation: ParadoxLocalisationProperty): String? {

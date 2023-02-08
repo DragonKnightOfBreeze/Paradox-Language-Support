@@ -95,18 +95,6 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
 }
 //endregion
 
-//region VFS Extensions
-/**
- * 当前[VirtualFile]的内容文件。（缓存且仍然存在的文件，首个子文件，生成的子文件，或者自身）
- */
-var VirtualFile.contentFile
-	get() = getUserData(PlsKeys.contentFileKey)?.takeIf { it.exists() }
-		?: this.children.firstOrNull()
-		?: ParadoxFileLocator.getGeneratedFileName(this)
-		?: this
-	set(value) = putUserData(PlsKeys.contentFileKey, value)
-//endregion
-
 //region PsiElement Extensions
 fun PsiElement.useAllUseScope(): Boolean {
 	if(this is PsiFile) {
@@ -123,16 +111,14 @@ val PsiElement.localeConfig: CwtLocalisationLocaleConfig?
 			while(true) {
 				when {
 					current is ParadoxLocalisationFile -> return current.locale?.localeConfig
+					current is PsiFile -> return preferredParadoxLocale() //不期望的结果
 					current is ParadoxLocalisationPropertyList -> return current.locale.localeConfig
 					current is ParadoxLocalisationLocale -> return current.localeConfig
-					current is PsiFile -> return preferredParadoxLocale() //不期望的结果
 				}
 				current = current.parent ?: break
 			}
-			return current.containingFile.localeConfig
-		} else {
-			return preferredParadoxLocale()
 		}
+		return preferredParadoxLocale()
 	}
 
 //注意：不要更改直接调用CachedValuesManager.getCachedValue(...)的那个顶级方法（静态方法）的方法声明，IDE内部会进行检查

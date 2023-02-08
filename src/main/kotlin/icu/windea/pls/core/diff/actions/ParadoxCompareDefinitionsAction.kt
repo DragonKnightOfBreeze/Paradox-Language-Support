@@ -3,6 +3,7 @@ package icu.windea.pls.core.diff.actions
 import com.intellij.diff.*
 import com.intellij.diff.actions.impl.*
 import com.intellij.diff.chains.*
+import com.intellij.diff.contents.*
 import com.intellij.diff.requests.*
 import com.intellij.diff.util.*
 import com.intellij.notification.*
@@ -11,6 +12,7 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.openapi.util.*
@@ -99,8 +101,7 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
         val windowTitle = getWindowsTitle(definition, definitionInfo) ?: return null
         val contentTitle = getContentTitle(definition, definitionInfo) ?: return null
         val documentContent = contentFactory.createDocument(project, file) ?: return null
-        val textRange = definition.textRange
-        val content = contentFactory.createFragment(project, documentContent, textRange)
+        val content = createContent(contentFactory, project, documentContent, definition)
         
         var index = 0
         var defaultIndex = 0
@@ -122,11 +123,11 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
                         readonly = true
                         val otherDocument = EditorFactory.getInstance().createDocument(documentContent.document.text)
                         val otherDocumentContent = contentFactory.create(project, otherDocument, content.highlightFile)
-                        contentFactory.createFragment(project, otherDocumentContent, textRange)
+                        createContent(contentFactory, project, otherDocumentContent, definition)
                     }
                     else -> {
                         val otherDocumentContent = contentFactory.createDocument(project, otherFile) ?: return@mapNotNull null
-                        contentFactory.createFragment(project, otherDocumentContent, otherDefinition.textRange)
+                        createContent(contentFactory, project, otherDocumentContent, otherDefinition)
                     }
                 }
                 if(isCurrent) defaultIndex = index
@@ -143,6 +144,10 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
             }
         }
         return MyDiffRequestChain(producers, defaultIndex)
+    }
+    
+    private fun createContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptDefinitionElement): DocumentContent {
+        return contentFactory.createFragment(project, documentContent, definition.textRange)
     }
     
     private fun getWindowsTitle(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {

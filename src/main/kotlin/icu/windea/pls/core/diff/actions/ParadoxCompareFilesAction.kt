@@ -3,6 +3,7 @@ package icu.windea.pls.core.diff.actions
 import com.intellij.diff.*
 import com.intellij.diff.actions.impl.*
 import com.intellij.diff.chains.*
+import com.intellij.diff.contents.*
 import com.intellij.diff.requests.*
 import com.intellij.diff.util.*
 import com.intellij.notification.*
@@ -10,6 +11,7 @@ import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.openapi.util.*
@@ -78,10 +80,10 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         val contentTitle = getContentTitle(file) ?: return null
         val binary = file.fileType.isBinary
         val content = when {
-            binary -> contentFactory.createFile(project, file)
-                ?.apply { putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true) }
-            else -> contentFactory.createDocument(project, file)
+            binary -> createBinaryContent(contentFactory, project, file)
+            else -> createContent(contentFactory, project, file)
         } ?: return null
+        if(binary) content.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
         
         var index = 0
         var defaultIndex = 0
@@ -99,19 +101,17 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
                     binary -> {
                         if(isSameFile) isCurrent = true
                         readonly = true
-                        contentFactory.createFile(project, otherFile) ?: return@mapNotNull null
+                        createBinaryContent(contentFactory, project, otherFile)
                     }
                     isSameFile -> {
                         isCurrent = true
                         readonly = true
-                        //创建临时文件作为只读副本
-                        val tempFile = runWriteAction { ParadoxFileManager.createTempFile(file, fileInfo) } ?: return@mapNotNull null
-                        contentFactory.createDocument(project, tempFile) ?: return@mapNotNull null
+                        createCopiedContent(contentFactory, project, file)
                     }
                     else -> {
-                        contentFactory.createDocument(project, otherFile) ?: return@mapNotNull null
+                        createContent(contentFactory, project, otherFile)
                     }
-                }
+                } ?: return@mapNotNull null
                 if(isCurrent) defaultIndex = index
                 if(readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
                 index++
@@ -126,6 +126,20 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
             }
         }
         return MyDiffRequestChain(producers, defaultIndex)
+    }
+    
+    private fun createBinaryContent(contentFactory: DiffContentFactory, project: Project, file: VirtualFile): FileContent? {
+        return contentFactory.createFile(project, file)
+    }
+    
+    private fun createContent(contentFactory: DiffContentFactory, project: Project, file: VirtualFile): DocumentContent? {
+        return contentFactory.createDocument(project, file)
+    }
+    
+    private fun createCopiedContent(contentFactory: DiffContentFactory, project: Project, file: VirtualFile): DocumentContent? {
+        //创建临时文件作为只读副本
+        val tempFile = runWriteAction { ParadoxFileManager.createTempFile(file) } ?: return null
+        return contentFactory.createDocument(project, tempFile)
     }
     
     private fun getWindowsTitle(file: VirtualFile): String? {

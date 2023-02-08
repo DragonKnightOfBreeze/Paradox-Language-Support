@@ -36,14 +36,14 @@ object ParadoxFileManager {
      * 基于指定的文件信息和模版创建一个临时文件。
      */
     @JvmStatic
-    fun createTempFile(file: VirtualFile, fileInfo: ParadoxFileInfo): VirtualFile? {
+    fun createTempFile(file: VirtualFile): VirtualFile? {
         try {
             val diffDirPath = PlsPaths.tmpDirectoryPath
             val fileName = UUID.randomUUID().toString()
             Files.createDirectories(diffDirPath)
             val diffDirFile = VfsUtil.findFile(diffDirPath, false) ?: return null
             val tempFile = VfsUtil.copyFile(ParadoxFileManager, file, diffDirFile, fileName)
-            tempFile.putUserData(PlsKeys.fileInfoKey, fileInfo)
+            tempFile.putUserData(PlsKeys.fileInfoKey, file.fileInfo)
             tempFile.putUserData(PlsKeys.fileTypeKey, file.fileType)
             return tempFile
         } catch(e: Exception) {
