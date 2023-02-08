@@ -59,7 +59,7 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
             ?: e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)?.singleOrNull()
             ?: return
         if(file.isDirectory) return
-        if(file.fileType != ParadoxScriptFileType) return
+        if(file.fileType != ParadoxLocalisationFileType) return
         val fileInfo = file.fileInfo ?: return
         //忽略直接位于游戏或模组入口目录下的文件
         if(fileInfo.entryPath.length <= 1) return

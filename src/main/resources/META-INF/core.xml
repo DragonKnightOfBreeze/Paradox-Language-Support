@@ -104,6 +104,12 @@
   </projectListeners>
   
   <actions>
+    <group id="PlsToolActions">
+      <add-to-group group-id="ToolWindowsGroup"/>
+      <add-to-group group-id="EditorPopupMenu"/>
+      <add-to-group group-id="ProjectViewPopupMenu"/>
+    </group>
+    
     <action id="Pls.OpenModSettings" class="icu.windea.pls.core.settings.actions.OpenModSettingsAction"
             icon="PlsIcons.Actions.ModSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
@@ -111,20 +117,16 @@
       <add-to-group group-id="EditorContextBarMenu" anchor="first"/>
     </action>
     
-    <group id="PlsToolActions">
-      <group id="PlsOpenPathActions">
-        <action id="Pls.Tool.OpenPath.OpenSteamPath" class="icu.windea.pls.core.tool.actions.OpenSteamPathAction"
-                icon="PlsIcons.Actions.SteamDirectory"/>
-        <action id="Pls.Tool.OpenPath.OpenSteamGamePath" class="icu.windea.pls.core.tool.actions.OpenSteamGamePathAction"
-                icon="PlsIcons.Actions.SteamGameDirectory"/>
-        <action id="Pls.toolOpenPath.OpenSteamWorkshopPath" class="icu.windea.pls.core.tool.actions.OpenSteamWorkshopPathAction"
-                icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
-        <action id="Pls.Tool.OpenPath.OpenGameDataPath" class="icu.windea.pls.core.tool.actions.OpenGameDataPathAction"
-                icon="PlsIcons.Actions.GameDataDirectory"/>
-      </group>
-      <add-to-group group-id="ToolWindowsGroup"/>
-      <add-to-group group-id="EditorPopupMenu"/>
-      <add-to-group group-id="ProjectViewPopupMenu"/>
+    <group id="PlsOpenPathActions">
+      <action id="Pls.Tool.OpenPath.OpenSteamPath" class="icu.windea.pls.core.tool.actions.OpenSteamPathAction"
+              icon="PlsIcons.Actions.SteamDirectory"/>
+      <action id="Pls.Tool.OpenPath.OpenSteamGamePath" class="icu.windea.pls.core.tool.actions.OpenSteamGamePathAction"
+              icon="PlsIcons.Actions.SteamGameDirectory"/>
+      <action id="Pls.toolOpenPath.OpenSteamWorkshopPath" class="icu.windea.pls.core.tool.actions.OpenSteamWorkshopPathAction"
+              icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
+      <action id="Pls.Tool.OpenPath.OpenGameDataPath" class="icu.windea.pls.core.tool.actions.OpenGameDataPathAction"
+              icon="PlsIcons.Actions.GameDataDirectory"/>
+      <add-to-group group-id="PlsToolActions"/>
     </group>
     
     <group id="PlsGotoPathActions">

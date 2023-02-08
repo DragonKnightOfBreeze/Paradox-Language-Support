@@ -39,7 +39,6 @@ class CwtConfigProvider(
 	}
 	
 	private fun initConfigMaps(): MutableMap<String, MutableMap<String, VirtualFile>> {
-		val startTime = System.currentTimeMillis()
 		logger.info("Resolve cwt config files.")
 		val fileGroups: MutableMap<String, MutableMap<String, VirtualFile>> = mutableMapOf()
 		val configUrl = cwtConfigPath.toClasspathUrl()
