@@ -14,7 +14,7 @@ import icu.windea.pls.script.*
 /**
  * 遍历当前代码块中的所有（直接作为子节点的）值和属性。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
- * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。不能嵌套内联。
+ * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
 fun ParadoxScriptBlockElement.processData(
     conditional: Boolean = false,
@@ -35,7 +35,7 @@ fun ParadoxScriptBlockElement.processData(
 /**
  * 遍历当前代码块中的所有（直接作为子节点的）属性。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
- * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。不能嵌套内联。
+ * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
 fun ParadoxScriptBlockElement.processProperty(
     conditional: Boolean = false,
@@ -55,7 +55,7 @@ fun ParadoxScriptBlockElement.processProperty(
 /**
  * 遍历当前代码块中的所有（直接作为子节点的）值。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的值。
- * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。不能嵌套内联。
+ * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
 fun ParadoxScriptBlockElement.processValue(
     conditional: Boolean = false,
@@ -80,8 +80,7 @@ private fun doProcessValueChild(it: ParadoxScriptValue, conditional: Boolean, in
         if(inlined is ParadoxScriptDefinitionElement) {
             val block = inlined.block
             if(block != null) {
-                //不能嵌套内联
-                val r1 = block.processValue(conditional, processor = processor)
+                val r1 = block.processValue(conditional, inline, processor = processor)
                 if(!r1) return false
             }
         }
@@ -98,8 +97,7 @@ private fun doProcessPropertyChild(it: ParadoxScriptProperty, conditional: Boole
         if(inlined is ParadoxScriptDefinitionElement) {
             val block = inlined.block
             if(block != null) {
-                //不能嵌套内联
-                val r1 = block.processProperty(conditional, processor = processor)
+                val r1 = block.processProperty(conditional, inline, processor = processor)
                 if(!r1) return false
             }
         }
@@ -149,7 +147,7 @@ inline fun ParadoxScriptParameterCondition.processValue(processor: (ParadoxScrip
  * 得到指定名字的属性。
  * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果为空字符串且自身是脚本属性，则返回自身
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
- * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。不能嵌套内联。
+ * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
 fun PsiElement.findProperty(
     propertyName: String? = null,
@@ -179,7 +177,7 @@ fun PsiElement.findProperty(
 /**
  * 基于路径向下查找指定的属性或值。如果路径为空，则返回查找到的第一个属性或值。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
- * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。不能嵌套内联。
+ * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  * @see ParadoxElementPath
  * @see ParadoxScriptMemberElement
  */
@@ -228,7 +226,7 @@ fun < T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
 /**
  * 向上得到第一个定义。
  * 可能为null，可能为自身。
- * @param link 是否处理需要连接定义成员的情况。不能嵌套连接。注意连接前后的成员元素不会包括在查找结果内。
+ * @param link 是否处理需要连接定义成员的情况。注意连接前后的成员元素不会包括在查找结果内。
  */
 fun PsiElement.findParentDefinition(link: Boolean = false): ParadoxScriptDefinitionElement? {
     if(language != ParadoxScriptLanguage) return null
@@ -248,7 +246,7 @@ fun PsiElement.findParentDefinition(link: Boolean = false): ParadoxScriptDefinit
  * 向上得到第一个属性。可能为null，可能是定义，可能是脚本文件。
  * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果得到的是脚本文件，则忽略。
  * @param fromParentBlock 是否先向上得到第一个子句，再继续进行查找。
- * @param link 是否处理需要连接定义成员的情况。不能嵌套连接。注意连接前后的成员元素不会包括在查找结果内。
+ * @param link 是否处理需要连接定义成员的情况。注意连接前后的成员元素不会包括在查找结果内。
  */
 fun PsiElement.findParentProperty(
     propertyName: String? = null,
@@ -278,7 +276,7 @@ fun PsiElement.findParentProperty(
 /**
  * 基于路径向上查找指定的属性。如果路径为空，则返回查找到的第一个属性或值。
  * @param definitionType 如果不为null则在查找到指定的属性之后再向上查找一层属性，并要求其是定义，如果接着不为空字符串则要求匹配该定义类型表达式。
- * @param link 是否处理需要连接定义成员的情况。不能嵌套连接。注意连接前后的成员元素不会包括在查找结果内。
+ * @param link 是否处理需要连接定义成员的情况。注意连接前后的成员元素不会包括在查找结果内。
  * @see ParadoxElementPath
  * @see ParadoxScriptMemberElement
  * @see ParadoxDefinitionTypeExpression

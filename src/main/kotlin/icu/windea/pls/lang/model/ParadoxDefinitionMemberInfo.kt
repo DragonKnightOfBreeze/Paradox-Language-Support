@@ -88,7 +88,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
 		val expression = ParadoxDataExpression.resolve(key, isQuoted, true)
 		val nextResult = SmartList<CwtDataConfig<*>>()
 		for(parentConfig in result) {
-			//处理内联规则 不能嵌套内联
+			//处理内联规则
 			if(!isInlined && isKey && parentConfig is CwtPropertyConfig) {
 				isInlined = CwtConfigHandler.inlineConfigAsChild(key, isQuoted, parentConfig, configGroup, nextResult)
 				if(isInlined) continue
