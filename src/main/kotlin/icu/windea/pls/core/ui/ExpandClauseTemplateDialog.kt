@@ -7,6 +7,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import java.awt.*
 import javax.swing.*
 import javax.swing.event.*
@@ -27,6 +28,8 @@ class ExpandClauseTemplateDialog(
 	lateinit var elementsTable: TableView<ElementDescriptor>
 	var elementsTableModel: ElementTableModel
 	
+	val multipleGroup = context.descriptorsInfoList.size > 1
+	
 	init {
 		title = PlsBundle.message("ui.dialog.expandClauseTemplate.title")
 		elementsTableModel = createElementsInfoModel()
@@ -45,6 +48,10 @@ class ExpandClauseTemplateDialog(
 			textField()
 				.text(propertyName).enabled(false).align(Align.FILL)
 				.label(PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName"), LabelPosition.LEFT)
+		}.apply { 
+			if(multipleGroup) {
+				rowComment(PlsBundle.message("ui.dialog.expandClauseTemplate.comment.1"))
+			}
 		}
 	}.withPreferredWidth(600)
 	
@@ -80,8 +87,10 @@ class ExpandClauseTemplateDialog(
 		//add, remove, move up, move down, duplicate
 		val buttonsPanel = ToolbarDecorator.createDecorator(elementsList.table)
 			.addExtraAction(ElementsListTable.DuplicateAction(elementsList))
-			.addExtraAction(ElementsListTable.SwitchToPrevAction(elementsList))
-			.addExtraAction(ElementsListTable.SwitchToNextAction(elementsList))
+			.letIf(multipleGroup) {
+				it.addExtraAction(ElementsListTable.SwitchToPrevAction(elementsList))
+				it.addExtraAction(ElementsListTable.SwitchToNextAction(elementsList))
+			}
 			.createPanel()
 		buttonsPanel.preferredSize = Dimension(buttonsPanel.preferredSize.width, 540)
 		return buttonsPanel
