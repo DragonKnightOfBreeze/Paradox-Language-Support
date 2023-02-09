@@ -2,9 +2,11 @@
 
 package icu.windea.pls.core.settings.actions
 
+import com.intellij.ide.projectView.impl.nodes.*
 import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.roots.ProjectFileIndex
+import com.intellij.openapi.roots.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.model.*
 
@@ -25,10 +27,11 @@ class OpenModSettingsAction: AnAction() {
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
+        //这里需要兼容直接从项目根目录右键打开菜单的情况
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
             ?: e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)?.singleOrNull()
-            ?: return
-        val fileInfo = file.fileInfo ?: return
+            ?: e.getData(PlatformCoreDataKeys.SELECTED_ITEM)?.castOrNull<PsiDirectoryNode>()?.virtualFile
+        val fileInfo = file?.fileInfo ?: return
         //不为游戏文件提供
         if(fileInfo.rootInfo.rootType != ParadoxRootType.Mod) return
         //必须位于当前项目中

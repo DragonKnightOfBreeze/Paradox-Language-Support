@@ -8,7 +8,6 @@ import com.intellij.openapi.project.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.actions.*
 import icu.windea.pls.lang.model.*
 import java.nio.file.*
 
@@ -19,7 +18,7 @@ import java.nio.file.*
  */
 abstract class OpenPathAction : DumbAwareAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.EDT
+        return ActionUpdateThread.BGT
     }
     
     override fun update(e: AnActionEvent) {
