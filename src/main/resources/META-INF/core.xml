@@ -117,7 +117,7 @@
       <add-to-group group-id="EditorContextBarMenu" anchor="first"/>
     </action>
     
-    <group id="Pls.OpenPath">
+    <group id="Pls.OpenPath" popup="true">
       <action id="Pls.OpenPath.OpenSteamPath" class="icu.windea.pls.core.tool.actions.OpenSteamPathAction"
               icon="PlsIcons.Actions.SteamDirectory"/>
       <action id="Pls.OpenPath.OpenSteamGamePath" class="icu.windea.pls.core.tool.actions.OpenSteamGamePathAction"
@@ -126,7 +126,7 @@
               icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
       <action id="Pls.OpenPath.OpenGameDataPath" class="icu.windea.pls.core.tool.actions.OpenGameDataPathAction"
               icon="PlsIcons.Actions.GameDataDirectory"/>
-      <add-to-group group-id="Pls.Tools" anchor="after"/>
+      <add-to-group group-id="Pls.Tools"/>
     </group>
     
     <group id="Pls.GotoPath">

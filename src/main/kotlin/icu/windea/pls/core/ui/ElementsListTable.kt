@@ -151,7 +151,7 @@ class ElementsListTable(
         private val elementsList: ElementsListTable
     ) : AnAction(PlsBundle.message("ui.dialog.expandClauseTemplate.actions.duplicate"), null, PlsIcons.Actions.SwitchToPrevDescriptor) {
         init {
-            shortcutSet = CustomShortcutSet.fromString("alt c")
+            shortcutSet = CustomShortcutSet.fromString("alt C")
         }
         
         override fun getActionUpdateThread() = ActionUpdateThread.EDT
@@ -173,7 +173,7 @@ class ElementsListTable(
         private val elementsList: ElementsListTable
     ) : AnAction(PlsBundle.message("ui.dialog.expandClauseTemplate.actions.switchToPrev"), null, PlsIcons.Actions.SwitchToPrevDescriptor) {
         init {
-            shortcutSet = CustomShortcutSet.fromString("alt p")
+            shortcutSet = CustomShortcutSet.fromString("alt P")
         }
         
         override fun getActionUpdateThread() = ActionUpdateThread.EDT
@@ -198,7 +198,7 @@ class ElementsListTable(
         private val elementsList: ElementsListTable
     ) : AnAction(PlsBundle.message("ui.dialog.expandClauseTemplate.actions.switchToNext"), null, PlsIcons.Actions.SwitchToNextDescriptor) {
         init {
-            shortcutSet = CustomShortcutSet.fromString("alt n")
+            shortcutSet = CustomShortcutSet.fromString("alt N")
         }
         
         override fun getActionUpdateThread() = ActionUpdateThread.EDT

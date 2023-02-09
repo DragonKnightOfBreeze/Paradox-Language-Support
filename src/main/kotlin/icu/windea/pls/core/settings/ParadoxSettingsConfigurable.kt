@@ -22,12 +22,12 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 		val settings = getSettings()
 		return panel {
 			//generic
-			group(PlsBundle.message("settings.generic")) {
+			group(PlsBundle.message("settings.general")) {
 				//defaultGameType
 				row {
-					label(PlsBundle.message("settings.generic.defaultGameType")).widthGroup("generic")
+					label(PlsBundle.message("settings.general.defaultGameType")).widthGroup("generic")
 						.applyToComponent {
-							toolTipText = PlsBundle.message("settings.generic.defaultGameType.tooltip")
+							toolTipText = PlsBundle.message("settings.general.defaultGameType.tooltip")
 						}
 					val values = ParadoxGameType.valueList
 					comboBox(values)
@@ -42,14 +42,14 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 				}
 				//preferredLocale
 				row {
-					label(PlsBundle.message("settings.generic.preferredLocale")).widthGroup("generic")
+					label(PlsBundle.message("settings.general.preferredLocale")).widthGroup("generic")
 						.applyToComponent {
-							toolTipText = PlsBundle.message("settings.generic.preferredLocale.tooltip")
+							toolTipText = PlsBundle.message("settings.general.preferredLocale.tooltip")
 						}
 					comboBox(settings.locales,
 						listCellRenderer { value, _, _ ->
 							if(value == "auto") {
-								text = PlsBundle.message("settings.generic.preferredLocale.auto")
+								text = PlsBundle.message("settings.general.preferredLocale.auto")
 							} else {
 								text = getCwtConfig().core.localisationLocales.getValue(value).description
 							}
@@ -59,22 +59,22 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 				}
 				//ignoredFileNames
 				row {
-					label(PlsBundle.message("settings.generic.ignoredFileNames")).widthGroup("generic")
+					label(PlsBundle.message("settings.general.ignoredFileNames")).widthGroup("generic")
 						.applyToComponent {
-							toolTipText = PlsBundle.message("settings.generic.ignoredFileNames.tooltip")
+							toolTipText = PlsBundle.message("settings.general.ignoredFileNames.tooltip")
 						}
 					expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
 						.bindText({ settings.ignoredFileNames.orEmpty() }, { settings.ignoredFileNames = it })
-						.comment(PlsBundle.message("settings.generic.ignoredFileNames.comment"))
+						.comment(PlsBundle.message("settings.general.ignoredFileNames.comment"))
 						.align(Align.FILL)
 						.resizableColumn()
 						.onApply { doReparseFilesByFileNames(settings) }
 				}
 				//preferOverridden
 				row {
-					checkBox(PlsBundle.message("settings.generic.preferOverridden"))
+					checkBox(PlsBundle.message("settings.general.preferOverridden"))
 						.bindSelected(settings::preferOverridden)
-						.applyToComponent { toolTipText = PlsBundle.message("settings.generic.preferOverridden.tooltip") }
+						.applyToComponent { toolTipText = PlsBundle.message("settings.general.preferOverridden.tooltip") }
 				}
 			}
 			//documentation
@@ -150,13 +150,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						.applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeWithClauseTemplate.tooltip") }
 						 .also { completeWithClauseTemplateCb = it }
 				}
-				indent { 
-					//maxExpressionCountInOneLine
-					row {
-						checkBox(PlsBundle.message("settings.completion.preferCompleteWithClauseTemplate"))
-							.bindSelected(settings.completion::preferCompleteWithClauseTemplate)
-							.applyToComponent { toolTipText = PlsBundle.message("settings.completion.preferCompleteWithClauseTemplate.tooltip") }
-					}
+				indent {
 					//maxExpressionCountInOneLine
 					row {
 						label(PlsBundle.message("settings.completion.maxExpressionCountInOneLine")).applyToComponent {
@@ -164,6 +158,12 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						}
 						intTextField(0..10).bindIntText(settings.completion::maxExpressionCountInOneLine)
 					}
+				}.enabledIf(completeWithClauseTemplateCb.selected)
+				//preferCompleteWithClauseTemplate
+				row {
+					checkBox(PlsBundle.message("settings.completion.preferCompleteWithClauseTemplate"))
+						.bindSelected(settings.completion::preferCompleteWithClauseTemplate)
+						.applyToComponent { toolTipText = PlsBundle.message("settings.completion.preferCompleteWithClauseTemplate.tooltip") }
 				}.enabledIf(completeWithClauseTemplateCb.selected)
 				//completeOnlyScopeIsMatched
 				row {
