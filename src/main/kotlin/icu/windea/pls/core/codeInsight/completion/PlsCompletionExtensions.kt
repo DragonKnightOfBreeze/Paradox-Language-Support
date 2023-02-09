@@ -314,13 +314,13 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 				is CwtValueConfig -> targetConfig.propertyConfig?.key
 				is CwtPropertyConfig -> targetConfig.key
 			}
-			val descriptorsInfoList = constantConfigGroupList.indices.map {i-> 
+			val descriptorsInfoList = constantConfigGroupList.indices.map { i ->
 				val descriptors = getDescriptors(constantConfigGroupList[i])
 				val hasRemain = hasRemainList[i]
 				ElementDescriptorsInfo(descriptors, hasRemain)
 			}
 			val descriptorsContext = ElementDescriptorsContext(project, editor, propertyName, descriptorsInfoList)
-
+			
 			val dialog = ExpandClauseTemplateDialog(project, editor, descriptorsContext)
 			if(!dialog.showAndGet()) return@Runnable
 			

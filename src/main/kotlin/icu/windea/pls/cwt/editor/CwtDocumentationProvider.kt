@@ -441,7 +441,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getConfigGroup(element: PsiElement, originalElement: PsiElement?, project: Project): CwtConfigGroup? {
 		val gameType = selectGameType(originalElement?.takeIf { it.language.isParadoxLanguage() })
 		val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
-			?: CwtConfigHandler.getConfigGroupFromConfig(element, project)
+			?: CwtConfigHandler.getConfigGroupFromCwt(element, project)
 		return configGroup
 	}
 }

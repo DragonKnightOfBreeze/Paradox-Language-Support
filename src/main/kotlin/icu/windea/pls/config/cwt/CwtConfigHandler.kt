@@ -33,8 +33,6 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.support.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 /**
  * CWT规则的处理器。
@@ -66,10 +64,10 @@ object CwtConfigHandler {
 	}
 	
 	/**
-	 * 从CWT规则推断得到对应的CWT规则组。
+	 * 从CWT规则元素推断得到对应的CWT规则组。
 	 */
 	@InferMethod
-	fun getConfigGroupFromConfig(from: PsiElement, project: Project): CwtConfigGroup? {
+	fun getConfigGroupFromCwt(from: PsiElement, project: Project): CwtConfigGroup? {
 		val file = from.containingFile ?: return null
 		val virtualFile = file.virtualFile ?: return null
 		val path = virtualFile.path
