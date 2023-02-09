@@ -30,6 +30,7 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 	@Volatile var parent: CwtDataConfig<*>? = null
 	
 	val isBlock: Boolean get() = configs != null
+	
 	val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
 	val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
 	

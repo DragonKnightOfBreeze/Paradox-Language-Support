@@ -16,6 +16,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
@@ -278,14 +279,27 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 	targetConfig: CwtDataConfig<*>,
 	callback: LookupElementBuilder.() -> LookupElement = { this }
 ) {
+	//这里我们得到的targetConfig是精确匹配的或者默认的首个子句规则
+	//如果补全位置所在的子句为空或者都不精确匹配，显示对话框时默认列出的属性/值应该有数种情况
+	
 	val file = context.originalFile ?: return
-	val configs = targetConfig.configs.orEmpty()
-	val configList = configs
-		.distinctBy { it.expression }
-	val constantConfigGroup = configs
-		.filter { it.expression.type == CwtDataType.Constant }
-		.groupBy { it.expression }
-	if(constantConfigGroup.isEmpty()) return
+	val targetConfigList = getTargetConfigList(targetConfig)
+	val constantConfigGroupList = mutableListOf<Map<CwtDataExpression, List<CwtDataConfig<*>>>>()
+	val hasRemainList = mutableListOf<Boolean>()
+	for(targetConfig0 in targetConfigList) {
+		val constantConfigGroup = targetConfig0.configs
+			?.filter { it.expression.type == CwtDataType.Constant }
+			?.groupBy { it.expression }
+			.orEmpty()
+		if(constantConfigGroup.isEmpty()) continue //skip
+		val configList = targetConfig.configs
+			?.distinctBy { it.expression }
+			.orEmpty()
+		val hasRemain = constantConfigGroup.size != configList.size
+		constantConfigGroupList.add(constantConfigGroup)
+		hasRemainList.add(hasRemain)
+	}
+	if(targetConfigList.isEmpty()) return//skip, unnecessary to show
 	
 	val resultLookupElement = builder.withInsertHandler { c, _ ->
 		when(targetConfig) {
@@ -294,19 +308,25 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 		}
 		
 		c.laterRunnable = Runnable {
-			val editor = c.editor
 			val project = file.project
-			
-			val allDescriptors = getDescriptors(constantConfigGroup)
+			val editor = c.editor
 			val propertyName = when(targetConfig) {
 				is CwtValueConfig -> targetConfig.propertyConfig?.key
 				is CwtPropertyConfig -> targetConfig.key
 			}
-			val dialog = ExpandClauseTemplateDialog(project, editor, propertyName, allDescriptors)
+			val descriptorsInfoList = constantConfigGroupList.indices.map {i-> 
+				val descriptors = getDescriptors(constantConfigGroupList[i])
+				val hasRemain = hasRemainList[i]
+				ElementDescriptorsInfo(descriptors, hasRemain)
+			}
+			val descriptorsContext = ElementDescriptorsContext(project, editor, propertyName, descriptorsInfoList)
+
+			val dialog = ExpandClauseTemplateDialog(project, editor, descriptorsContext)
 			if(!dialog.showAndGet()) return@Runnable
-			val descriptors = dialog.context.resultDescriptors
 			
-			val hasRemain = configList.size != constantConfigGroup.size
+			val descriptors = descriptorsContext.descriptorsInfo.resultDescriptors
+			val hasRemain = descriptorsContext.descriptorsInfo.hasRemain
+			
 			val customSettings = CodeStyle.getCustomSettings(file, ParadoxScriptCodeStyleSettings::class.java)
 			val multiline = descriptors.size > getSettings().completion.maxExpressionCountInOneLine
 			val around = customSettings.SPACE_AROUND_PROPERTY_SEPARATOR
@@ -379,6 +399,16 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 		}
 	}
 	addElement(resultLookupElement.callback())
+}
+
+private fun getTargetConfigList(targetConfig: CwtDataConfig<*>): List<CwtDataConfig<*>> {
+	return targetConfig.parent?.configs?.filter {
+		if(targetConfig is CwtPropertyConfig) {
+			it is CwtPropertyConfig && it.key.equals(targetConfig.key, true) && it.valueExpression == CwtValueExpression.BlockExpression
+		} else {
+			it is CwtValueConfig && it.valueExpression == CwtValueExpression.BlockExpression
+		}
+	} ?: targetConfig.toSingletonList()
 }
 
 private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtDataConfig<*>>>): List<ElementDescriptor> {

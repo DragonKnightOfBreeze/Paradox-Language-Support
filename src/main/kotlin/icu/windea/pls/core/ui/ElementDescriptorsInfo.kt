@@ -1,12 +1,8 @@
 package icu.windea.pls.core.ui
 
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-
-class ElementDescriptorContext(
-	val project: Project,
-	val editor: Editor,
-	val descriptors: List<ElementDescriptor>
+class ElementDescriptorsInfo(
+	val descriptors: List<ElementDescriptor>,
+	val hasRemain: Boolean
 ) {
 	val allValues = descriptors.filterIsInstance<ValueDescriptor>().map { it.name }.toTypedArray()
 	val allKeys = descriptors.filterIsInstance<PropertyDescriptor>().map { it.name }.toTypedArray()

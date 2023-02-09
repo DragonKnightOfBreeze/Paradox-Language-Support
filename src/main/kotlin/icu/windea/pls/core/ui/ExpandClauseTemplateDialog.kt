@@ -1,13 +1,11 @@
 package icu.windea.pls.core.ui
 
-import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.*
-import icons.*
 import icu.windea.pls.*
 import java.awt.*
 import javax.swing.*
@@ -23,11 +21,8 @@ import javax.swing.event.*
 class ExpandClauseTemplateDialog(
 	val project: Project,
 	val editor: Editor,
-	val propertyName: String?,
-	val descriptors: List<ElementDescriptor>
+	val context: ElementDescriptorsContext
 ) : DialogWithValidation(project) {
-	val context = ElementDescriptorContext(project, editor, descriptors)
-	
 	lateinit var elementsList: ElementsListTable
 	lateinit var elementsTable: TableView<ElementDescriptor>
 	var elementsTableModel: ElementTableModel
@@ -45,7 +40,8 @@ class ExpandClauseTemplateDialog(
 	override fun createNorthPanel() = panel {
 		//(textField) propertyName
 		row {
-			val propertyName = propertyName ?: PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName.none")
+			val propertyName = context.propertyName
+				?: PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName.none")
 			textField()
 				.text(propertyName).enabled(false).align(Align.FILL)
 				.label(PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName"), LabelPosition.LEFT)
@@ -83,7 +79,9 @@ class ExpandClauseTemplateDialog(
 		elementsList = createElementsListTable()
 		//add, remove, move up, move down, duplicate
 		val buttonsPanel = ToolbarDecorator.createDecorator(elementsList.table)
-			.addExtraAction(DuplicateAction(elementsList))
+			.addExtraAction(ElementsListTable.DuplicateAction(elementsList))
+			.addExtraAction(ElementsListTable.SwitchToPrevAction(elementsList))
+			.addExtraAction(ElementsListTable.SwitchToNextAction(elementsList))
 			.createPanel()
 		buttonsPanel.preferredSize = Dimension(buttonsPanel.preferredSize.width, 540)
 		return buttonsPanel
@@ -93,21 +91,4 @@ class ExpandClauseTemplateDialog(
 		return ElementsListTable(elementsTable, elementsTableModel, disposable, context, this)
 	}
 	
-	class DuplicateAction(
-		private val elementsList: ElementsListTable
-	): AnAction(PlsBundle.message("ui.dialog.expandClauseTemplate.actions.duplicate"), null, PlsIcons.Actions.DuplicateDescriptor) {
-		init {
-			shortcutSet = CustomShortcutSet.fromString("alt C")
-		}
-		
-		override fun actionPerformed(e: AnActionEvent) {
-			val selectedIndices = elementsList.table.selectionModel.selectedIndices
-			val elementsTable = elementsList.elementsTable
-			for(row in selectedIndices.reversed()) {
-				elementsTable.listTableModel.insertRow(row + 1, elementsTable.getRow(row).copyDescriptor())
-			}
-		}
-		
-		override fun getActionUpdateThread() = ActionUpdateThread.EDT
-	}
 }

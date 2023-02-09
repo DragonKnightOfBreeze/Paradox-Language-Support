@@ -142,7 +142,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptParameter
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptParameter, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.ScriptParameter
+		return PlsIcons.Parameter
 	}
 	
 	@JvmStatic
@@ -676,7 +676,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptParameterConditionParameter
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptParameterConditionParameter, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.ScriptParameter
+		return PlsIcons.Parameter
 	}
 	
 	@JvmStatic
@@ -777,7 +777,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptInlineMathParameter
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptInlineMathParameter, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.ScriptParameter
+		return PlsIcons.Parameter
 	}
 	
 	@JvmStatic

@@ -8,22 +8,20 @@ object PlsIcons {
 	@JvmField val Library = loadIcon("/icons/library.svg")
 	
 	@JvmField val DdsFile = loadIcon("/icons/ddsFile.svg")
-	
-	@JvmField val DescriptorFile = loadIcon("icons/descriptorFile.svg")
 	@JvmField val CwtFile = loadIcon("/icons/cwtFile.svg")
 	@JvmField val ParadoxScriptFile = loadIcon("/icons/paradoxScriptFile.svg")
 	@JvmField val ParadoxLocalisationFile = loadIcon("/icons/paradoxLocalisationFile.svg")
+	@JvmField val DescriptorFile = loadIcon("icons/descriptorFile.svg")
 	
 	@JvmField val CwtProperty = loadIcon("/icons/cwtProperty.svg")
-	@JvmField val CwtOption = loadIcon("/icons/cwtOption.svg")
 	@JvmField val CwtValue = loadIcon("/icons/cwtValue.svg")
 	@JvmField val CwtBlock = loadIcon("/icons/cwtBlock.svg")
+	@JvmField val CwtOption = loadIcon("/icons/cwtOption.svg")
 	
 	@JvmField val ScriptProperty = loadIcon("/icons/scriptProperty.svg")
 	@JvmField val ScriptValue = loadIcon("/icons/scriptValue.svg")
 	@JvmField val ScriptBlock = loadIcon("/icons/scriptBlock.svg")
 	@JvmField val ScriptParameterCondition = loadIcon("/icons/scriptParameterCondition.svg")
-	@JvmField val ScriptParameter = loadIcon("/icons/scriptParameter.svg")
 	
 	@JvmField val LocalisationLocale = loadIcon("/icons/localisationLocale.svg")
 	@JvmField val LocalisationProperty = loadIcon("/icons/localisationProperty.svg")
@@ -82,6 +80,8 @@ object PlsIcons {
 		@JvmField val GameDataDirectory = loadIcon("/icons/actions/gameDataDirectory.svg")
 		
 		@JvmField val DuplicateDescriptor = AllIcons.Actions.Copy
+		@JvmField val SwitchToPrevDescriptor = AllIcons.General.ArrowLeft
+		@JvmField val SwitchToNextDescriptor = AllIcons.General.ArrowRight
 	}
 	
 	object Gutter {

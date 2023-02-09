@@ -11,18 +11,21 @@ import javax.swing.table.*
 //com.intellij.refactoring.changeSignature.ParameterTableModelBase
 
 class ElementTableModel(
-	context: ElementDescriptorContext
+	val context: ElementDescriptorsContext
 ) : ListTableModel<ElementDescriptor>(), EditableModel {
 	init {
 		columnInfos = arrayOf(NameColumn(context), SeparatorColumn(context), ValueColumn(context))
-		items = context.resultDescriptors
+	}
+	
+	override fun getItems(): MutableList<ElementDescriptor> {
+		return context.descriptorsInfo.resultDescriptors
 	}
 	
 	override fun addRow() {
 		addRow(PropertyDescriptor())
 	}
 	
-	class NameColumn(private val context: ElementDescriptorContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("column.name.name")) {
+	class NameColumn(private val context: ElementDescriptorsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("column.name.name")) {
 		override fun isCellEditable(item: ElementDescriptor): Boolean {
 			return true
 		}
@@ -40,20 +43,20 @@ class ElementTableModel(
 		
 		override fun getRenderer(item: ElementDescriptor): TableCellRenderer {
 			return when(item) {
-				is ValueDescriptor -> ComboBoxTableRenderer(context.allValues)
-				is PropertyDescriptor -> ComboBoxTableRenderer(context.allKeys)
+				is ValueDescriptor -> ComboBoxTableRenderer(context.descriptorsInfo.allValues)
+				is PropertyDescriptor -> ComboBoxTableRenderer(context.descriptorsInfo.allKeys)
 			}
 		}
 		
 		override fun getEditor(item: ElementDescriptor): TableCellEditor {
 			return when(item) {
-				is ValueDescriptor -> DefaultCellEditor(ComboBox(context.allValues))
-				is PropertyDescriptor -> DefaultCellEditor(ComboBox(context.allKeys))
+				is ValueDescriptor -> DefaultCellEditor(ComboBox(context.descriptorsInfo.allValues))
+				is PropertyDescriptor -> DefaultCellEditor(ComboBox(context.descriptorsInfo.allKeys))
 			}
 		}
 	}
 	
-	class SeparatorColumn(private val context: ElementDescriptorContext) : ColumnInfo<ElementDescriptor, ParadoxSeparator>(PlsBundle.message("column.name.separator")) {
+	class SeparatorColumn(private val context: ElementDescriptorsContext) : ColumnInfo<ElementDescriptor, ParadoxSeparator>(PlsBundle.message("column.name.separator")) {
 		override fun isCellEditable(item: ElementDescriptor): Boolean {
 			return item is PropertyDescriptor
 		}
@@ -91,7 +94,7 @@ class ElementTableModel(
 		}
 	}
 	
-	class ValueColumn(private val context: ElementDescriptorContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("column.name.value")) {
+	class ValueColumn(private val context: ElementDescriptorsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("column.name.value")) {
 		override fun isCellEditable(item: ElementDescriptor): Boolean {
 			return item is PropertyDescriptor
 		}
@@ -114,7 +117,7 @@ class ElementTableModel(
 			return when(item) {
 				is ValueDescriptor -> null
 				is PropertyDescriptor -> {
-					val constantValues = context.allKeyValuesMap[item.name].orEmpty()
+					val constantValues = context.descriptorsInfo.allKeyValuesMap[item.name].orEmpty()
 					val items = constantValues.ifEmpty { arrayOf("") }
 					ComboBoxTableRenderer(items)
 				}
@@ -125,7 +128,7 @@ class ElementTableModel(
 			return when(item) {
 				is ValueDescriptor -> null
 				is PropertyDescriptor -> {
-					val constantValues = context.allKeyValuesMap[item.name].orEmpty()
+					val constantValues = context.descriptorsInfo.allKeyValuesMap[item.name].orEmpty()
 					val items = constantValues.ifEmpty { arrayOf("") }
 					DefaultCellEditor(ComboBox(items))
 				}
