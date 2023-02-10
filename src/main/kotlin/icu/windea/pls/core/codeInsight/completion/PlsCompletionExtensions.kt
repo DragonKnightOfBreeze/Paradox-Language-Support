@@ -17,7 +17,6 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
@@ -299,6 +298,7 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 		constantConfigGroupList.add(constantConfigGroup)
 		hasRemainList.add(hasRemain)
 	}
+	val propertyName = CwtConfigHandler.getEntryName(context.config)
 	
 	val resultLookupElement = builder.withInsertHandler { c, _ ->
 		when(entryConfig) {
@@ -309,10 +309,6 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 		c.laterRunnable = Runnable {
 			val project = file.project
 			val editor = c.editor
-			val propertyName = when(entryConfig) {
-				is CwtValueConfig -> entryConfig.propertyConfig?.key
-				is CwtPropertyConfig -> entryConfig.key
-			}
 			val descriptorsInfoList = constantConfigGroupList.indices.map { i ->
 				val descriptors = getDescriptors(constantConfigGroupList[i])
 				val hasRemain = hasRemainList[i]
@@ -398,16 +394,6 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 		}
 	}
 	addElement(resultLookupElement.callback())
-}
-
-private fun getTargetConfigList(targetConfig: CwtDataConfig<*>): List<CwtDataConfig<*>> {
-	return targetConfig.parent?.configs?.filter {
-		if(targetConfig is CwtPropertyConfig) {
-			it is CwtPropertyConfig && it.key.equals(targetConfig.key, true) && it.valueExpression == CwtValueExpression.BlockExpression
-		} else {
-			it is CwtValueConfig && it.valueExpression == CwtValueExpression.BlockExpression
-		}
-	} ?: targetConfig.toSingletonList()
 }
 
 private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtDataConfig<*>>>): List<ElementDescriptor> {

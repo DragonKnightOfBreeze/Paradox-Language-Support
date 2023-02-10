@@ -149,7 +149,7 @@ class ElementsListTable(
      */
     class DuplicateAction(
         private val elementsList: ElementsListTable
-    ) : AnAction(PlsBundle.message("ui.dialog.expandClauseTemplate.actions.duplicate"), null, PlsIcons.Actions.SwitchToPrevDescriptor) {
+    ) : AnAction(PlsBundle.message("ui.dialog.expandClauseTemplate.actions.duplicate"), null, PlsIcons.Actions.DuplicateDescriptor) {
         init {
             shortcutSet = CustomShortcutSet.fromString("alt C")
         }
@@ -188,6 +188,7 @@ class ElementsListTable(
             if(descriptorsContext.index > 0) {
                 descriptorsContext.index--
             }
+            elementsList.elementsTableModel.items = descriptorsContext.descriptorsInfo.resultDescriptors
         }
     }
     
@@ -213,6 +214,7 @@ class ElementsListTable(
             if(descriptorsContext.index < descriptorsContext.descriptorsInfoList.lastIndex) {
                 descriptorsContext.index++
             }
+            elementsList.elementsTableModel.items = descriptorsContext.descriptorsInfo.resultDescriptors
         }
     }
 }

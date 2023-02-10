@@ -46,14 +46,16 @@ class ExpandClauseTemplateDialog(
 			val propertyName = context.propertyName
 				?: PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName.none")
 			textField()
-				.text(propertyName).enabled(false).align(Align.FILL)
+				.text(propertyName).enabled(false)
 				.label(PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName"), LabelPosition.LEFT)
-		}.apply { 
+				.align(Align.FILL)
+				.columns(COLUMNS_MEDIUM)
+		}.apply {
 			if(multipleGroup) {
 				rowComment(PlsBundle.message("ui.dialog.expandClauseTemplate.comment.1"))
 			}
 		}
-	}.withPreferredWidth(600)
+	}
 	
 	override fun createCenterPanel(): JComponent {
 		val panel = JPanel(BorderLayout())

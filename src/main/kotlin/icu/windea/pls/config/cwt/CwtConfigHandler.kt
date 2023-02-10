@@ -123,6 +123,16 @@ object CwtConfigHandler {
 		return true
 	}
 	
+	fun getEntryName(config: CwtConfig<*>) : String? {
+		return when {
+			config is CwtPropertyConfig -> config.key
+			config is CwtValueConfig && config.propertyConfig != null -> getEntryName(config.propertyConfig)
+			config is CwtValueConfig -> null
+			config is CwtAliasConfig -> config.subName
+			else -> null
+		}
+	}
+	
 	fun getEntryConfigs(config: CwtConfig<*>): List<CwtDataConfig<*>> {
 		val configGroup = config.info.configGroup
 		return when {

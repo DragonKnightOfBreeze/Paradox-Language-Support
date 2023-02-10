@@ -15,10 +15,7 @@ class ElementTableModel(
 ) : ListTableModel<ElementDescriptor>(), EditableModel {
 	init {
 		columnInfos = arrayOf(NameColumn(context), SeparatorColumn(context), ValueColumn(context))
-	}
-	
-	override fun getItems(): MutableList<ElementDescriptor> {
-		return context.descriptorsInfo.resultDescriptors
+		items = context.descriptorsInfo.resultDescriptors
 	}
 	
 	override fun addRow() {
