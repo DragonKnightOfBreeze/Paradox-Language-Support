@@ -123,6 +123,23 @@ object CwtConfigHandler {
 		return true
 	}
 	
+	fun getEntryConfigs(config: CwtConfig<*>): List<CwtDataConfig<*>> {
+		val configGroup = config.info.configGroup
+		return when {
+			config is CwtPropertyConfig -> config.parent?.castOrNull<CwtPropertyConfig>()?.configs
+				?.filter { it is CwtPropertyConfig && it.key == config.key }
+				.orEmpty()
+			config is CwtValueConfig && config.propertyConfig != null -> getEntryConfigs(config.propertyConfig)
+			config is CwtValueConfig -> config.parent?.castOrNull<CwtPropertyConfig>()?.configs
+				?.filter { it is CwtValueConfig }
+				.orEmpty()
+			config is CwtSingleAliasConfig -> config.config.toSingletonListOrEmpty()  
+			config is CwtAliasConfig -> configGroup.aliasGroups.get(config.name)?.get(config.subName)
+				?.map { it.config }
+				.orEmpty()
+			else -> emptyList()
+		}
+	}
 	//endregion
 	
 	//region Matches Methods
@@ -1470,7 +1487,7 @@ object CwtConfigHandler {
 		val contextElement = context.contextElement
 		val block = invocationExpressionElement.block ?: return
 		val existParameterNames = mutableSetOf<String>()
-		block.processProperty() {
+		block.processProperty {
 			val propertyKey = it.propertyKey	
 			val name = if(contextElement == propertyKey) propertyKey.getKeyword(context.offsetInParent) else propertyKey.name
 			existParameterNames.add(name)

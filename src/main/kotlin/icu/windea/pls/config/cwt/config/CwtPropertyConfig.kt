@@ -35,8 +35,8 @@ data class CwtPropertyConfig(
 			?: return@lazy null
 		CwtValueConfig(
 			valuePointer, info, value, booleanValue, intValue, floatValue, stringValue,
-			configs, documentation, options, optionValues
-		).also { it.parent = parent }
+			configs, documentation, options, optionValues, this
+		)
 	}
 	
 	override fun resolved(): CwtPropertyConfig = inlineableConfig?.config ?: this

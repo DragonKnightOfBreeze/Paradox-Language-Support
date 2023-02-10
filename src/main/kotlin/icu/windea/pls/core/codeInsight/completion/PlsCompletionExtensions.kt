@@ -13,6 +13,7 @@ import com.intellij.ui.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
@@ -89,12 +90,12 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
 	val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
 	if(completeWithClauseTemplate) {
-		val targetConfig = config?.castOrNull<CwtValueConfig>()
-		if(targetConfig != null && !targetConfig.configs.isNullOrEmpty()) {
+		val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
+		if(entryConfigs.isNotEmpty()) {
 			val tailText1 = "{ <generate via template> }"
 			val lookupElement1 = LookupElementBuilder.create("")
 				.withPresentableText(tailText1)
-			addScriptExpressionElementWithClauseTemplate(context, lookupElement1, targetConfig) {
+			addScriptExpressionElementWithClauseTemplate(context, lookupElement1, entryConfigs) {
 				val offset = if(getSettings().completion.preferCompleteWithClauseTemplate) 1.0 else -1.0 
 				withPriority(PlsCompletionPriorities.keywordPriority, offset) //under "{...}"
 			}
@@ -112,19 +113,19 @@ fun CompletionResultSet.addScriptExpressionElement(
 	val config = context.config
 	
 	val completeWithValue = getSettings().completion.completeWithValue
-	val propertyConfig = when {
+	val targetConfig = when {
 		config is CwtPropertyConfig -> config
 		config is CwtAliasConfig -> config.config
 		config is CwtSingleAliasConfig -> config.config
 		else -> null
 	}
 	val constantValue = when {
-		completeWithValue -> propertyConfig?.valueExpression?.takeIf { it.type == CwtDataType.Constant }?.value
+		completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataType.Constant }?.value
 		else -> null
 	}
 	val insertCurlyBraces = when {
 		forceInsertCurlyBraces -> true
-		completeWithValue -> propertyConfig?.isBlock ?: false
+		completeWithValue -> targetConfig?.isBlock ?: false
 		else -> false
 	}
 	//这里ID不一定等同于lookupString
@@ -192,14 +193,14 @@ fun CompletionResultSet.addScriptExpressionElement(
 	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
 	val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
 	if(isKey && completeWithClauseTemplate) {
-		val targetConfig = propertyConfig
-		if(targetConfig != null && !targetConfig.configs.isNullOrEmpty()) {
+		val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
+		if(entryConfigs.isNotEmpty()) {
 			val tailText1 = buildString {
 				append(" = { <generate via template> }")
 				if(tailText != null) append(tailText)
 			}
 			val lookupElement1 = lookupElement.withTailText(tailText1)
-			addScriptExpressionElementWithClauseTemplate(context, lookupElement1, targetConfig) {
+			addScriptExpressionElementWithClauseTemplate(context, lookupElement1, entryConfigs) {
 				val offset = if(getSettings().completion.preferCompleteWithClauseTemplate) 1.0 else -1.0
 				withPriority(priority, offset)
 			}
@@ -276,33 +277,31 @@ private fun applyKeyAndValueInsertHandler(c: InsertionContext, context: Processi
 fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 	context: ProcessingContext,
 	builder: LookupElementBuilder,
-	targetConfig: CwtDataConfig<*>,
+	entryConfigs: List<CwtDataConfig<*>>,
 	callback: LookupElementBuilder.() -> LookupElement = { this }
 ) {
-	//这里我们得到的targetConfig是精确匹配的或者默认的首个子句规则
-	//如果补全位置所在的子句为空或者都不精确匹配，显示对话框时默认列出的属性/值应该有数种情况
+	//如果补全位置所在的子句为空或者都不精确匹配，显示对话框时默认列出的属性/值应该有数种情况，因此这里需要传入entryConfigs
+	val entryConfig = entryConfigs.firstOrNull() ?: return
 	
 	val file = context.originalFile ?: return
-	val targetConfigList = getTargetConfigList(targetConfig)
 	val constantConfigGroupList = mutableListOf<Map<CwtDataExpression, List<CwtDataConfig<*>>>>()
 	val hasRemainList = mutableListOf<Boolean>()
-	for(targetConfig0 in targetConfigList) {
-		val constantConfigGroup = targetConfig0.configs
+	for(entry in entryConfigs) {
+		val constantConfigGroup = entry.configs
 			?.filter { it.expression.type == CwtDataType.Constant }
 			?.groupBy { it.expression }
 			.orEmpty()
 		if(constantConfigGroup.isEmpty()) continue //skip
-		val configList = targetConfig.configs
+		val configList = entry.configs
 			?.distinctBy { it.expression }
 			.orEmpty()
 		val hasRemain = constantConfigGroup.size != configList.size
 		constantConfigGroupList.add(constantConfigGroup)
 		hasRemainList.add(hasRemain)
 	}
-	if(targetConfigList.isEmpty()) return//skip, unnecessary to show
 	
 	val resultLookupElement = builder.withInsertHandler { c, _ ->
-		when(targetConfig) {
+		when(entryConfig) {
 			is CwtPropertyConfig -> applyKeyAndValueInsertHandler(c, context, null, true)
 			is CwtValueConfig -> applyValueInsertHandler(c, context, true)
 		}
@@ -310,9 +309,9 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 		c.laterRunnable = Runnable {
 			val project = file.project
 			val editor = c.editor
-			val propertyName = when(targetConfig) {
-				is CwtValueConfig -> targetConfig.propertyConfig?.key
-				is CwtPropertyConfig -> targetConfig.key
+			val propertyName = when(entryConfig) {
+				is CwtValueConfig -> entryConfig.propertyConfig?.key
+				is CwtPropertyConfig -> entryConfig.key
 			}
 			val descriptorsInfoList = constantConfigGroupList.indices.map { i ->
 				val descriptors = getDescriptors(constantConfigGroupList[i])
