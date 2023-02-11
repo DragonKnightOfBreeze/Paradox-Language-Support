@@ -5,7 +5,7 @@ package icu.windea.pls.config.cwt.config
  */
 object CwtConfigMatchType {
 	/**
-	 * 静态匹配：带参数、需要访问索引等场合，直接认为不匹配。
+	 * 静态匹配：带参数、需要访问索引等场合，直接认为匹配。
 	 */
 	const val STATIC = 0x01
 	

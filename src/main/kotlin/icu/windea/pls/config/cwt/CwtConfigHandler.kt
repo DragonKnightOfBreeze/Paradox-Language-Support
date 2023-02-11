@@ -172,10 +172,14 @@ object CwtConfigHandler {
 		if(configExpression == CwtValueExpression.BlockExpression) {
 			if(expression.isKey != false) return false
 			if(expression.type != ParadoxDataType.BlockType) return false
-			if(element !is ParadoxScriptBlock) return true
 			if(isNotExact) return true //非精确匹配 - 直接使用第一个
+			val block = when {
+				element is ParadoxScriptProperty -> element.value()
+				element is ParadoxScriptBlock -> element
+				else -> null
+			} ?: return false
 			val configsInBlock = config?.castOrNull<CwtDataConfig<*>>()?.configs ?: return true
-			return matchesScriptExpressionInBlock(element, configsInBlock, configGroup)
+			return matchesScriptExpressionInBlock(block, configsInBlock, configGroup)
 		}
 		
 		//匹配空字符串
