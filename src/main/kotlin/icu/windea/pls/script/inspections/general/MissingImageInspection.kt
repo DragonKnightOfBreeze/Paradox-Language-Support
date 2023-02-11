@@ -127,7 +127,7 @@ class MissingImageInspection : LocalInspectionTool() {
 			visitStringExpressionElement(element)
 		}
 		
-		override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
+		private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
 			ProgressManager.checkCanceled()
 			if(!inspection.checkForModifiers) return
 			val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return

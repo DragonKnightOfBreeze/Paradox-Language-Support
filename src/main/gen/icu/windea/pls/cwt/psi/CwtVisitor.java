@@ -4,6 +4,8 @@ package icu.windea.pls.cwt.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLiteralValue;
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiComment;
 
 public class CwtVisitor extends PsiElementVisitor {
@@ -15,6 +17,7 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitBoolean(@NotNull CwtBoolean o) {
     visitValue(o);
+    // visitPsiLiteralValue(o);
   }
 
   public void visitDocumentationComment(@NotNull CwtDocumentationComment o) {
@@ -27,10 +30,12 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitFloat(@NotNull CwtFloat o) {
     visitValue(o);
+    // visitPsiLiteralValue(o);
   }
 
   public void visitInt(@NotNull CwtInt o) {
     visitValue(o);
+    // visitPsiLiteralValue(o);
   }
 
   public void visitOption(@NotNull CwtOption o) {
@@ -50,7 +55,8 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitPropertyKey(@NotNull CwtPropertyKey o) {
-    visitPsiElement(o);
+    visitPsiLiteralValue(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitRootBlock(@NotNull CwtRootBlock o) {
@@ -60,13 +66,22 @@ public class CwtVisitor extends PsiElementVisitor {
   public void visitString(@NotNull CwtString o) {
     visitValue(o);
     // visitNamedElement(o);
+    // visitPsiLiteralValue(o);
   }
 
   public void visitValue(@NotNull CwtValue o) {
-    visitPsiElement(o);
+    visitNavigatablePsiElement(o);
+  }
+
+  public void visitNavigatablePsiElement(@NotNull NavigatablePsiElement o) {
+    visitElement(o);
   }
 
   public void visitPsiComment(@NotNull PsiComment o) {
+    visitElement(o);
+  }
+
+  public void visitPsiLiteralValue(@NotNull PsiLiteralValue o) {
     visitElement(o);
   }
 

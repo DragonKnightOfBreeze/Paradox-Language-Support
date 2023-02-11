@@ -13,9 +13,11 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 	@Volatile private var _value: String? = null
 	@Volatile private var _valueType: ParadoxDataType? = null
 	
-	override fun getValue(): String {
-		return _value ?: super.getValue().also { _value = it }
-	}
+	override var value: String
+		get() {
+			return _value ?: super.getValue().also { _value = it }
+		}
+		set(value) { setValue(value) }
 	
 	override val type: ParadoxDataType
 		get() = _valueType ?: super.type.also { _valueType = it }

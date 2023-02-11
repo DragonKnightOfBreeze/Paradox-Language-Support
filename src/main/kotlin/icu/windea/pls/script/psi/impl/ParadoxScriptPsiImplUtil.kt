@@ -206,7 +206,7 @@ object ParadoxScriptPsiImplUtil {
 			val nameProperty = element.findProperty(nameField) //不处理内联的情况
 			if(nameProperty != null) {
 				val nameElement = nameProperty.value<ParadoxScriptString>()
-				nameElement?.value = name
+				nameElement?.setValue(name)
 				return element
 			} else {
 				throw IncorrectOperationException()
