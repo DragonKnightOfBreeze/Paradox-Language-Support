@@ -11,7 +11,6 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.lang.model.*
@@ -92,8 +91,7 @@ class DefinitionNameGotoTypeDeclarationIntention : DefinitionNameIntention() {
 		definitionInfo.typeConfig.pointer.element?.let { result.add(it) }
 		if(result.isEmpty()) return
 		definitionInfo.subtypeConfigs.forEach { config -> config.pointer.element?.let { result.add(it) } }
-		val render = NameOnlyPsiElementCellRender()
-		NavigationUtil.getPsiElementPopup(result.toTypedArray(), render,  PlsBundle.message("script.intention.definitionName.gotoTypeDeclaration.title", definitionInfo.name))
+		NavigationUtil.getPsiElementPopup(result.toTypedArray(),  PlsBundle.message("script.intention.definitionName.gotoTypeDeclaration.title", definitionInfo.name))
 			.showInBestPositionFor(editor)
 	}
 }

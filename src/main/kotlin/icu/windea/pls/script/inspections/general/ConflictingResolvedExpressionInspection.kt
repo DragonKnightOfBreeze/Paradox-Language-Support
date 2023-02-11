@@ -1,16 +1,11 @@
 package icu.windea.pls.script.inspections.general
 
-import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInspection.*
-import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.navigation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
@@ -49,7 +44,7 @@ class ConflictingResolvedExpressionInspection: LocalInspectionTool() {
                     isKey -> PlsBundle.message("inspection.script.general.conflictingResolvedExpression.description.1", expression)
                     else -> PlsBundle.message("inspection.script.general.conflictingResolvedExpression.description.2", expression)
                 }
-                holder.registerProblem(position, description, GotoRelatedCwtConfigsIntention(configs))
+                holder.registerProblem(position, description)
             }
     
             private fun skipCheck(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Boolean {
@@ -62,25 +57,5 @@ class ConflictingResolvedExpressionInspection: LocalInspectionTool() {
             }
         })
         return holder.resultsArray
-    }
-}
-
-class GotoRelatedCwtConfigsIntention(private val configs: List<CwtDataConfig<*>>): IntentionAndQuickFixAction() {
-    override fun getName(): String {
-        return PlsBundle.message("script.intention.gotoRelatedCwtConfigs")
-    }
-    
-    override fun getFamilyName(): String {
-        return name
-    }
-    
-    override fun applyFix(project: Project, file: PsiFile?, editor: Editor?) {
-        if(file == null || editor == null) return
-        val result = SmartList<PsiElement>()
-        configs.forEach { config -> config.pointer.element?.let { result.add(it) } }
-        if(result.isEmpty()) return
-        val render = NameOnlyPsiElementCellRender()
-        NavigationUtil.getPsiElementPopup(result.toTypedArray(), render,  PlsBundle.message("script.intention.gotoRelatedCwtConfigs.title"))
-            .showInBestPositionFor(editor)
     }
 }

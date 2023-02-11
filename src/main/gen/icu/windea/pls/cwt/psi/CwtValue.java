@@ -5,6 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.NavigatablePsiElement;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import javax.swing.Icon;
 
@@ -21,5 +22,8 @@ public interface CwtValue extends NavigatablePsiElement {
 
   @NotNull
   CwtValue setValue(@NotNull String value);
+
+  @NotNull
+  ItemPresentation getPresentation();
 
 }

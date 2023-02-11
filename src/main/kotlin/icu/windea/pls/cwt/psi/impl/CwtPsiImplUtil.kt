@@ -1,5 +1,6 @@
 package icu.windea.pls.cwt.psi.impl
 
+import com.intellij.navigation.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.tree.*
@@ -10,8 +11,11 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.cwt.navigation.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import icu.windea.pls.localisation.navigation.*
+import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
@@ -295,4 +299,9 @@ object CwtPsiImplUtil {
 		return OPTION_COMMENT
 	}
 	//endregion
+	
+	@JvmStatic
+	fun getPresentation(element: PsiElement): ItemPresentation {
+		return CwtItemPresentation(element)
+	}
 }

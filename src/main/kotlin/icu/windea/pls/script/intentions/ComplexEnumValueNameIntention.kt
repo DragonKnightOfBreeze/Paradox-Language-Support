@@ -11,7 +11,6 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
@@ -98,8 +97,7 @@ class ComplexEnumValueNameGotoTypeDeclarationIntention : ComplexEnumValueNameInt
 	override fun doInvoke(element: ParadoxScriptStringExpressionElement, info: ParadoxComplexEnumValueInfo, config: CwtComplexEnumConfig, editor: Editor, project: Project) {
 		val enumName = info.enumName
 		val resolved = config.pointer.element ?: return
-		val render = NameOnlyPsiElementCellRender()
-		NavigationUtil.getPsiElementPopup(arrayOf(resolved), render, PlsBundle.message("script.intention.complexEnumValueName.gotoTypeDeclaration.title", enumName))
+		NavigationUtil.getPsiElementPopup(arrayOf(resolved), PlsBundle.message("script.intention.complexEnumValueName.gotoTypeDeclaration.title", enumName))
 			.showInBestPositionFor(editor)
 	}
 }
