@@ -4,8 +4,8 @@ import com.intellij.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.script.psi.*
 
-interface ParadoxScriptedVariableReference : PsiElement {
-	val name: String
+interface ParadoxScriptedVariableReference : PsiElement,  NavigatablePsiElement{
+	override fun getName(): String
 	
 	fun setName(name: String): ParadoxScriptedVariableReference
 	

@@ -28,12 +28,6 @@ public interface ParadoxScriptPropertyKey extends ParadoxScriptStringExpressionE
   @NotNull
   ParadoxScriptPropertyKey setValue(@NotNull String value);
 
-  @Nullable
-  PsiReference getReference();
-
-  @NotNull
-  PsiReference[] getReferences();
-
   @NotNull
   ParadoxDataType getType();
 
@@ -47,5 +41,11 @@ public interface ParadoxScriptPropertyKey extends ParadoxScriptStringExpressionE
   ItemPresentation getPresentation();
 
   boolean isEquivalentTo(@NotNull PsiElement another);
+
+  @Nullable
+  PsiReference getReference();
+
+  @NotNull
+  PsiReference[] getReferences();
 
 }

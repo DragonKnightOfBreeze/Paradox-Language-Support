@@ -320,16 +320,6 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptPropertyKey): PsiReference? {
-		return element.references.singleOrNull()
-	}
-	
-	@JvmStatic
-	fun getReferences(element: ParadoxScriptPropertyKey): Array<out PsiReference> {
-		return PsiReferenceService.getService().getContributedReferences(element)
-	}
-	
-	@JvmStatic
 	fun getType(element: ParadoxScriptPropertyKey): ParadoxDataType {
 		return ParadoxDataType.resolve(element.value)
 	}
@@ -490,16 +480,6 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getStringValue(element: ParadoxScriptString): String {
 		return element.value
-	}
-	
-	@JvmStatic
-	fun getReference(element: ParadoxScriptString): PsiReference? {
-		return element.references.singleOrNull()
-	}
-	
-	@JvmStatic
-	fun getReferences(element: ParadoxScriptString): Array<out PsiReference> {
-		return PsiReferenceService.getService().getContributedReferences(element)
 	}
 	
 	@JvmStatic
@@ -863,4 +843,14 @@ object ParadoxScriptPsiImplUtil {
 			&& element.complexEnumValueInfo?.equals(another.complexEnumValueInfo) == true
 	}
 	//endregion
+	
+	@JvmStatic
+	fun getReference(element: PsiElement): PsiReference? {
+		return element.references.singleOrNull()
+	}
+	
+	@JvmStatic
+	fun getReferences(element: PsiElement): Array<out PsiReference> {
+		return PsiReferenceService.getService().getContributedReferences(element)
+	}
 }

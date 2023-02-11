@@ -68,18 +68,6 @@ public class ParadoxScriptPropertyKeyImpl extends ParadoxScriptStubElementImpl<P
   }
 
   @Override
-  @Nullable
-  public PsiReference getReference() {
-    return ParadoxScriptPsiImplUtil.getReference(this);
-  }
-
-  @Override
-  @NotNull
-  public PsiReference[] getReferences() {
-    return ParadoxScriptPsiImplUtil.getReferences(this);
-  }
-
-  @Override
   @NotNull
   public ParadoxDataType getType() {
     return ParadoxScriptPsiImplUtil.getType(this);
@@ -112,6 +100,18 @@ public class ParadoxScriptPropertyKeyImpl extends ParadoxScriptStubElementImpl<P
   @NotNull
   public String toString() {
     return ParadoxScriptPsiImplUtil.toString(this);
+  }
+
+  @Override
+  @Nullable
+  public PsiReference getReference() {
+    return ParadoxScriptPsiImplUtil.getReference(this);
+  }
+
+  @Override
+  @NotNull
+  public PsiReference[] getReferences() {
+    return ParadoxScriptPsiImplUtil.getReferences(this);
   }
 
 }

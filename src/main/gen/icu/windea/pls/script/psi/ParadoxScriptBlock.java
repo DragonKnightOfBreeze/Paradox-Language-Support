@@ -6,6 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ContributedReferenceHost;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiReference;
 import icu.windea.pls.core.expression.ParadoxDataType;
 import javax.swing.Icon;
 
@@ -44,5 +45,11 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlo
 
   @NotNull
   String getExpression();
+
+  @Nullable
+  PsiReference getReference();
+
+  @NotNull
+  PsiReference[] getReferences();
 
 }

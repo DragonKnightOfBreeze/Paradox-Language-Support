@@ -59,6 +59,7 @@ object ParadoxDefinitionMemberHandler {
             val upDeclaration = upDefinition.definitionInfo?.declaration ?: return
             var declaration = upDeclaration
             for((key) in upElementPath) {
+                val  a = 1 + 1
                 declaration = declaration.properties?.find { it.key == key } ?: return
             }
             val declarationConfig = CwtDeclarationConfig(declaration.pointer, declaration.info, declaration.key, declaration)

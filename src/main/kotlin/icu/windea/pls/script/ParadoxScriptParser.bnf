@@ -84,9 +84,10 @@ property_key ::= key_expr {
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
   ] 
   methods=[
-    getIcon getName getValue setValue getReference getReferences
+    getIcon getName getValue setValue
     getType getExpression getConfigExpression
     getPresentation isEquivalentTo toString
+    getReference getReferences
   ]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
@@ -121,13 +122,18 @@ int ::= INT_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
+    "com.intellij.psi.ContributedReferenceHost"
   ]
-  methods=[getName getValue setValue getIntValue getType]
+  methods=[
+    getName getValue setValue getIntValue getType
+    getReference getReferences
+  ]
 }
 float ::= FLOAT_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
+    "com.intellij.psi.ContributedReferenceHost"
   ]
   methods=[getName getValue setValue getFloatValue getType]
 }
@@ -139,9 +145,10 @@ string ::= value_expr {
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
   ]
   methods=[
-    getIcon getName getValue setValue getReference getReferences getStringValue
+    getIcon getName getValue setValue getStringValue
     getType getExpression getConfigExpression
     getPresentation isEquivalentTo toString
+    getReference getReferences
   ]
 }
 color ::= COLOR_TOKEN {
@@ -160,6 +167,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
     property="" value=""
     getIcon getValue isEmpty isNotEmpty getPropertyList getValueList getComponents
     getType getExpression
+    getReference getReferences
   ]
 }
 private block_item ::= COMMENT | property | block_value | parameter_condition | scripted_variable{

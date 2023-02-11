@@ -4,9 +4,9 @@ package icu.windea.pls.localisation.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.NavigatablePsiElement;
 import icu.windea.pls.core.psi.ParadoxScriptedVariableReference;
 import icu.windea.pls.core.psi.ParadoxTypedElement;
-import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiListLikeElement;
 
 public class ParadoxLocalisationVisitor extends PsiElementVisitor {
@@ -38,6 +38,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitIcon(@NotNull ParadoxLocalisationIcon o) {
     visitRichText(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitLocale(@NotNull ParadoxLocalisationLocale o) {
@@ -58,6 +59,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitPropertyReference(@NotNull ParadoxLocalisationPropertyReference o) {
     visitRichText(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitPropertyValue(@NotNull ParadoxLocalisationPropertyValue o) {
