@@ -68,7 +68,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
             }
     
             private fun skipCheck(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Boolean {
-                //子句不为空且可以精确匹配多个子句规则时，适用此检查
+                //子句不为空且可以精确匹配多个子句规则时，不适用此检查
                 if(configs.isEmpty()) return true
                 if(configs.size == 1) return false
                 if(element is ParadoxScriptFile && element.block?.isEmpty == true) return false

@@ -28,6 +28,12 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
                      implementationClass="icu.windea.pls.script.inspections.general.UnresolvedExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingResolvedExpression"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.script.general.conflictingResolvedExpression"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
+                     groupPathKey="inspection.script.general.path"
+                     implementationClass="icu.windea.pls.script.inspections.general.ConflictingResolvedExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingExpression"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="inspection.script.general.missingExpression"
@@ -176,12 +182,12 @@
                      implementationClass="icu.windea.pls.script.inspections.event.IncorrectEventIdInspection"/>
     <!--endregion-->
     <!--region Smart inference-->
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptInlineScriptWithConflictingUsage"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingInlineScriptUsage"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.inference.inlineScriptWithConflictingUsage"
+                     bundle="messages.PlsBundle" key="inspection.script.inference.conflictingInlineScriptUsage"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.inference"
                      groupPathKey="inspection.script.inference.path"
-                     implementationClass="icu.windea.pls.script.inspections.inference.InlineScriptWithConflictingUsageInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.inference.ConflictingInlineScriptUsageInspection"/>
     <!--endregion-->
     <!--endregion-->
     
@@ -191,31 +197,31 @@
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="inspection.localisation.unsupportedLocale"
                      groupBundle="messages.PlsBundle" groupKey="inspection.localisation"
-                     groupPathKey="inspection.script.path"
+                     groupPathKey="inspection.localisation.path"
                      implementationClass="icu.windea.pls.localisation.inspections.UnsupportedLocaleInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationDuplicateProperties"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.localisation.duplicateProperties"
                      groupBundle="messages.PlsBundle" groupKey="inspection.localisation"
-                     groupPathKey="inspection.script.path"
+                     groupPathKey="inspection.localisation.path"
                      implementationClass="icu.windea.pls.localisation.inspections.DuplicatePropertiesInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectFileName"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.localisation.incorrectFileName"
                      groupBundle="messages.PlsBundle" groupKey="inspection.localisation"
-                     groupPathKey="inspection.script.path"
+                     groupPathKey="inspection.localisation.path"
                      implementationClass="icu.windea.pls.localisation.inspections.IncorrectFileNameInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectFileEncoding"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.localisation.incorrectFileEncoding"
                      groupBundle="messages.PlsBundle" groupKey="inspection.localisation"
-                     groupPathKey="inspection.script.path"
+                     groupPathKey="inspection.localisation.path"
                      implementationClass="icu.windea.pls.localisation.inspections.IncorrectFileEncodingInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationMultipleLocales"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.localisation.multipleLocales"
                      groupBundle="messages.PlsBundle" groupKey="inspection.localisation"
-                     groupPathKey="inspection.script.path"
+                     groupPathKey="inspection.localisation.path"
                      implementationClass="icu.windea.pls.localisation.inspections.MultipleLocalesInspection"/>
     <!--endregion-->
     <!--region Paradox localisation/General-->
