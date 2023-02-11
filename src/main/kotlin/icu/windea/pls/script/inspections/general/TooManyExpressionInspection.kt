@@ -35,9 +35,8 @@ class TooManyExpressionInspection : LocalInspectionTool() {
             override fun visitFile(file: PsiFile) {
                 if(file !is ParadoxScriptFile) return
                 //忽略可能的脚本片段入口
-                if(ParadoxScriptMemberElementLinker.canLink(file)) return
+                if(ParadoxScriptMemberElementLinker.canLink(file)) return super.visitFile(file)
                 val configs = ParadoxCwtConfigHandler.resolveConfigs(file, allowDefinition = true)
-                if(configs.isEmpty()) return
                 doCheck(file, file, configs)
                 super.visitFile(file)
             }
@@ -55,24 +54,26 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
                 val configs = ParadoxCwtConfigHandler.resolveConfigs(element, allowDefinition = true)
-                if(configs.isEmpty()) return
-                if(skipCheck(element, configs)) return
                 doCheck(element, position, configs)
             }
             
-            private fun skipCheck(element: ParadoxScriptBlock, configs: List<CwtDataConfig<*>>): Boolean {
-                //子句不为空且可以精确匹配多个子句规则时，适用此检查
-                if(configs.size > 1 && element.isNotEmpty) return true
-                return false
-            }
-            
             private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement, configs: List<CwtDataConfig<*>>) {
+                if(skipCheck(element, configs)) return
                 val occurrenceMap = ParadoxCwtConfigHandler.getChildOccurrenceMap(element, configs)
                 if(occurrenceMap.isEmpty()) return
                 occurrenceMap.forEach { (configExpression, occurrence) ->
                     val r = doCheckOccurrence(element, position, occurrence, configExpression)
                     if(!r) return
                 }
+            }
+    
+            private fun skipCheck(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Boolean {
+                //子句不为空且可以精确匹配多个子句规则时，适用此检查
+                if(configs.isEmpty()) return true
+                if(configs.size == 1) return false
+                if(element is ParadoxScriptFile && element.block?.isEmpty == true) return false
+                if(element is ParadoxScriptBlock && element.isEmpty) return false
+                return true
             }
             
             private fun doCheckOccurrence(element: ParadoxScriptMemberElement, position: PsiElement, occurrence: Occurrence, configExpression: CwtDataExpression): Boolean {
