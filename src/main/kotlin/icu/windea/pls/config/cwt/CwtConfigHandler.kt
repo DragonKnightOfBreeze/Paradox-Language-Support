@@ -136,14 +136,16 @@ object CwtConfigHandler {
 	fun getEntryConfigs(config: CwtConfig<*>): List<CwtDataConfig<*>> {
 		val configGroup = config.info.configGroup
 		return when {
-			config is CwtPropertyConfig -> config.parent?.castOrNull<CwtPropertyConfig>()?.configs
+			config is CwtPropertyConfig -> config.inlineableConfig?.let { getEntryConfigs(it) } ?: config.parent
+				?.castOrNull<CwtPropertyConfig>()?.configs
 				?.filter { it is CwtPropertyConfig && it.key == config.key }
 				.orEmpty()
 			config is CwtValueConfig && config.propertyConfig != null -> getEntryConfigs(config.propertyConfig)
-			config is CwtValueConfig -> config.parent?.castOrNull<CwtPropertyConfig>()?.configs
+			config is CwtValueConfig -> config.parent
+				?.castOrNull<CwtPropertyConfig>()?.configs
 				?.filter { it is CwtValueConfig }
 				.orEmpty()
-			config is CwtSingleAliasConfig -> config.config.toSingletonListOrEmpty()  
+			config is CwtSingleAliasConfig -> config.config.toSingletonListOrEmpty()
 			config is CwtAliasConfig -> configGroup.aliasGroups.get(config.name)?.get(config.subName)
 				?.map { it.config }
 				.orEmpty()

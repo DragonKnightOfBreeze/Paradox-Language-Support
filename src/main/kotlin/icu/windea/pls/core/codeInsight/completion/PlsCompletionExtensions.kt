@@ -118,6 +118,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 		config is CwtSingleAliasConfig -> config.config
 		else -> null
 	}
+	val isBlock = targetConfig?.isBlock ?: false
 	val constantValue = when {
 		completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataType.Constant }?.value
 		else -> null
@@ -191,7 +192,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 	
 	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
 	val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
-	if(isKey && completeWithClauseTemplate) {
+	if(isKey && isBlock && completeWithClauseTemplate) {
 		val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
 		if(entryConfigs.isNotEmpty()) {
 			val tailText1 = buildString {
@@ -282,6 +283,7 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 	//如果补全位置所在的子句为空或者都不精确匹配，显示对话框时默认列出的属性/值应该有数种情况，因此这里需要传入entryConfigs
 	val entryConfig = entryConfigs.firstOrNull() ?: return
 	
+	//目前默认列出并且仅允许选择直接的作为常量字符串的key（不包括通过alias内联的常量字符串）
 	val file = context.originalFile ?: return
 	val constantConfigGroupList = mutableListOf<Map<CwtDataExpression, List<CwtDataConfig<*>>>>()
 	val hasRemainList = mutableListOf<Boolean>()
@@ -298,12 +300,14 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 		constantConfigGroupList.add(constantConfigGroup)
 		hasRemainList.add(hasRemain)
 	}
+	if(constantConfigGroupList.isEmpty()) return
 	val propertyName = CwtConfigHandler.getEntryName(context.config)
 	
 	val resultLookupElement = builder.withInsertHandler { c, _ ->
-		when(entryConfig) {
-			is CwtPropertyConfig -> applyKeyAndValueInsertHandler(c, context, null, true)
-			is CwtValueConfig -> applyValueInsertHandler(c, context, true)
+		if(context.isKey == true) {
+			applyKeyAndValueInsertHandler(c, context, null, true)
+		} else {
+			applyValueInsertHandler(c, context, true)
 		}
 		
 		c.laterRunnable = Runnable {
