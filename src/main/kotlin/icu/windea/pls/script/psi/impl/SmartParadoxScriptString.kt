@@ -5,6 +5,7 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.psi.*
 
+@Suppress("ABSTRACT_MEMBER_NOT_IMPLEMENTED")
 class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {
 	constructor(stub: ParadoxScriptStringStub, type: IStubElementType<*,*>): super(stub, type)
 	
@@ -14,8 +15,9 @@ class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {
 	@Volatile private var _valueType: ParadoxDataType? = null
 	
 	override var value: String
+		@get:JvmName("getValue")
 		get() {
-			return _value ?: super.getValue().also { _value = it }
+			return _value ?: super.value.also { _value = it }
 		}
 		set(value) { setValue(value) }
 	

@@ -9,7 +9,7 @@ import com.intellij.psi.*
 interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement, PsiLiteralValue, ContributedReferenceHost, NavigatablePsiElement {
     val stub: ParadoxScriptStringExpressionElementStub<*>?
     
-    override var value: String
+    override val value: String
     
     override fun setValue(value: String): ParadoxScriptStringExpressionElement
 }

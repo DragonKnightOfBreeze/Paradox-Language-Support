@@ -27,8 +27,8 @@ class QuoteIdentifierIntention : IntentionAction, PriorityAction {
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return
 		when(element) {
-			is ParadoxScriptPropertyKey -> element.value = element.text.quote()
-			is ParadoxScriptValue -> element.value = element.text.quote()
+			is ParadoxScriptPropertyKey -> element.setValue(element.text.quote())
+			is ParadoxScriptValue -> element.setValue(element.text.quote())
 		}
 	}
 	
@@ -74,8 +74,8 @@ class UnquoteIdentifierIntention : IntentionAction, PriorityAction {
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return
 		when(element) {
-			is ParadoxScriptPropertyKey -> element.value = element.text.unquote()
-			is ParadoxScriptValue -> element.value = element.text.unquote()
+			is ParadoxScriptPropertyKey -> element.setValue(element.text.unquote())
+			is ParadoxScriptValue -> element.setValue(element.text.unquote())
 		}
 	}
 	
