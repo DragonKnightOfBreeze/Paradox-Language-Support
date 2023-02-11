@@ -10,9 +10,11 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.cwt.navigation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.support.*
@@ -279,7 +281,7 @@ object ParadoxScriptPsiImplUtil {
 	fun getPresentation(element: ParadoxScriptProperty): ItemPresentation? {
 		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) return ParadoxDefinitionPresentation(element, definitionInfo)
-		return null
+		return BaseParadoxItemPresentation(element)
 	}
 	
 	@JvmStatic
@@ -829,10 +831,10 @@ object ParadoxScriptPsiImplUtil {
 	
 	//region ParadoxScriptStringExpressionElement
 	@JvmStatic
-	fun getPresentation(element: ParadoxScriptStringExpressionElement): ItemPresentation? {
+	fun getPresentation(element: ParadoxScriptStringExpressionElement): ItemPresentation {
 		val complexEnumValueInfo = element.complexEnumValueInfo
 		if(complexEnumValueInfo != null) return ParadoxComplexEnumValuePresentation(element, complexEnumValueInfo)
-		return null
+		return BaseParadoxItemPresentation(element)
 	}
 	
 	@JvmStatic
@@ -852,5 +854,10 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getReferences(element: PsiElement): Array<out PsiReference> {
 		return PsiReferenceService.getService().getContributedReferences(element)
+	}
+	
+	@JvmStatic
+	fun getPresentation(element: PsiElement): ItemPresentation {
+		return BaseParadoxItemPresentation(element)
 	}
 }
