@@ -64,7 +64,7 @@ object ParadoxColorHandler {
     
     @JvmStatic
     fun getColorType(element: PsiElement): String? {
-        val configToGetOption = ParadoxCwtConfigHandler.resolveConfigs(element, allowDefinitionSelf = true)
+        val configToGetOption = ParadoxCwtConfigHandler.resolveConfigs(element, allowDefinition = true)
             .firstOrNull()
         if(configToGetOption == null) return null
         return getColorType(configToGetOption)

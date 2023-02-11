@@ -58,7 +58,7 @@ class TooManyExpressionInspection: LocalInspectionTool() {
 			}
 			
 			private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement) {
-				val configs = ParadoxCwtConfigHandler.resolveConfigs(element, allowDefinitionSelf = true)
+				val configs = ParadoxCwtConfigHandler.resolveConfigs(element, allowDefinition = true)
 				if(skipCheck(configs)) return
 				val occurrenceMap = ParadoxCwtConfigHandler.getChildOccurrenceMap(element, configs)
 				if(occurrenceMap.isEmpty()) return

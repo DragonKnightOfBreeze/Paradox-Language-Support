@@ -32,7 +32,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
 		if(!stringElement.isBlockValue()) return emptyList()
 		val parentProperty = stringElement.findParentProperty() ?: return emptyList()
 		val expression = ParadoxDataExpression.resolve(setting.id, false, true)
-		val configs = ParadoxCwtConfigHandler.resolveConfigs(parentProperty, allowDefinitionSelf = true)
+		val configs = ParadoxCwtConfigHandler.resolveConfigs(parentProperty, allowDefinition = true)
 		if(configs.isEmpty()) return emptyList()
 		val configGroup = configs.first().info.configGroup
 		val matched = configs.any { config ->

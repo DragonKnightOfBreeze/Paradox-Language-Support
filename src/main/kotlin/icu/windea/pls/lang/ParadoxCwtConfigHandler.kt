@@ -12,28 +12,28 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxCwtConfigHandler {
 	@JvmStatic
-	fun resolveConfigs(element: PsiElement, allowDefinitionSelf: Boolean = element is ParadoxScriptValue, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtDataConfig<*>> {
+	fun resolveConfigs(element: PsiElement, allowDefinition: Boolean = element is ParadoxScriptValue, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtDataConfig<*>> {
 		return when {
-			element is ParadoxScriptDefinitionElement -> resolvePropertyConfigs(element, allowDefinitionSelf, orDefault, matchType)
-			element is ParadoxScriptPropertyKey -> resolvePropertyConfigs(element, allowDefinitionSelf, orDefault, matchType)
-			element is ParadoxScriptValue -> resolveValueConfigs(element, allowDefinitionSelf, orDefault, matchType)
+			element is ParadoxScriptDefinitionElement -> resolvePropertyConfigs(element, allowDefinition, orDefault, matchType)
+			element is ParadoxScriptPropertyKey -> resolvePropertyConfigs(element, allowDefinition, orDefault, matchType)
+			element is ParadoxScriptValue -> resolveValueConfigs(element, allowDefinition, orDefault, matchType)
 			else -> emptyList()
 		}
 	}
 	
 	@JvmStatic
-	fun resolvePropertyConfigs(element: PsiElement, allowDefinitionSelf: Boolean = false, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtPropertyConfig> {
-		return doResolveConfigs(element, CwtPropertyConfig::class.java, allowDefinitionSelf, orDefault, matchType)
+	fun resolvePropertyConfigs(element: PsiElement, allowDefinition: Boolean = false, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtPropertyConfig> {
+		return doResolveConfigs(element, CwtPropertyConfig::class.java, allowDefinition, orDefault, matchType)
 	}
 	
 	@JvmStatic
-	fun resolveValueConfigs(element: PsiElement, allowDefinitionSelf: Boolean = true, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtValueConfig> {
-		return doResolveConfigs(element, CwtValueConfig::class.java, allowDefinitionSelf, orDefault, matchType)
+	fun resolveValueConfigs(element: PsiElement, allowDefinition: Boolean = true, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtValueConfig> {
+		return doResolveConfigs(element, CwtValueConfig::class.java, allowDefinition, orDefault, matchType)
 	}
 	
 	@Suppress("UNCHECKED_CAST")
 	@JvmStatic
-	private fun <T : CwtConfig<*>> doResolveConfigs(element: PsiElement, configType: Class<T>, allowDefinitionSelf: Boolean, orDefault: Boolean, matchType: Int): List<T> {
+	private fun <T : CwtConfig<*>> doResolveConfigs(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
 		//当输入的元素是key或property时，输入的规则类型必须是property
 		return when(configType) {
 			CwtPropertyConfig::class.java -> {
@@ -49,7 +49,7 @@ object ParadoxCwtConfigHandler {
 					else -> throw UnsupportedOperationException()
 				}
 				val definitionMemberInfo = memberElement.definitionMemberInfo ?: return emptyList()
-				if(!allowDefinitionSelf && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
+				if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
 				//如果无法匹配value，则取第一个
 				val configs = definitionMemberInfo.getConfigs(matchType)
 				val configGroup = definitionMemberInfo.configGroup
@@ -99,7 +99,7 @@ object ParadoxCwtConfigHandler {
 					is ParadoxScriptProperty -> {
 						val property = parent
 						val definitionMemberInfo = property.definitionMemberInfo ?: return emptyList()
-						if(!allowDefinitionSelf && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
+						if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
 						val configs = definitionMemberInfo.getConfigs(matchType)
 						val configGroup = definitionMemberInfo.configGroup
 						buildList {

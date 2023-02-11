@@ -591,7 +591,7 @@ object CwtConfigHandler {
 		
 		val configGroup = definitionMemberInfo.configGroup
 		//这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-		val parentConfigs = ParadoxCwtConfigHandler.resolveConfigs(definitionElement, allowDefinitionSelf = true)
+		val parentConfigs = ParadoxCwtConfigHandler.resolveConfigs(definitionElement, allowDefinition = true)
 		val configs = parentConfigs.flatMap { it.properties.orEmpty() }
 		if(configs.isEmpty()) return
 		val occurrenceMap = ParadoxCwtConfigHandler.getChildOccurrenceMap(definitionElement, parentConfigs)
@@ -621,7 +621,7 @@ object CwtConfigHandler {
 		
 		val configGroup = definitionMemberInfo.configGroup
 		//这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-		val parentConfigs = ParadoxCwtConfigHandler.resolveConfigs(blockElement, allowDefinitionSelf = true)
+		val parentConfigs = ParadoxCwtConfigHandler.resolveConfigs(blockElement, allowDefinition = true)
 		val configs = parentConfigs.flatMap { it.values.orEmpty() }
 		if(configs.isEmpty()) return
 		val occurrenceMap = ParadoxCwtConfigHandler.getChildOccurrenceMap(blockElement, parentConfigs)
