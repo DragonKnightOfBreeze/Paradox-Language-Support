@@ -38,7 +38,7 @@ class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
                 when(location) {
                     UsageViewTypeLocation.INSTANCE -> configType?.descriptionText ?: PlsBundle.message("cwt.description.property")
                     else -> {
-                        element.configType?.getShortName(element.value) ?: element.value
+                        element.configType?.getShortName(element.name) ?: element.name
                     }
                 }
             }

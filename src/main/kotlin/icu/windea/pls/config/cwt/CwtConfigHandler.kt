@@ -1588,6 +1588,7 @@ object CwtConfigHandler {
 		val gameType = configGroup.gameType ?: return null
 		val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.value
 		if(expression.isParameterAwareExpression()) return null //排除引用文本带参数的情况
+		
 		when(configExpression.type) {
 			CwtDataType.Localisation -> {
 				val name = expression
@@ -1705,7 +1706,9 @@ object CwtConfigHandler {
 					val selector = fileSelector().gameType(gameType).preferRootFrom(element)
 					return ParadoxFilePathSearch.search(pathReference, project, configExpression, selector = selector).find()?.toPsiFile(project)
 				}
-				if(isKey == true && config is CwtPropertyConfig) return config.resolved().pointer.element
+				if(config != null) {
+					return config.resolved().pointer.element
+				}
 				return null
 			}
 		}
@@ -1838,7 +1841,9 @@ object CwtConfigHandler {
 					val selector = fileSelector().gameType(gameType).preferRootFrom(element)
 					return ParadoxFilePathSearch.search(pathReference, project, configExpression, selector = selector).findAll().mapNotNull { it.toPsiFile(project) }
 				}
-				if(isKey == true && config is CwtPropertyConfig) return config.resolved().pointer.element.toSingletonListOrEmpty()
+				if(config != null) {
+					return config.resolved().pointer.element.toSingletonListOrEmpty()
+				}
 				return emptyList()
 			}
 		}
