@@ -87,8 +87,8 @@ object PlsIcons {
 	object Gutter {
 		@JvmField val ScriptedVariable = loadIcon("/icons/gutter/scriptedVariable.svg")
 		@JvmField val Definition = loadIcon("/icons/gutter/definition.svg")
-		@JvmField val RelatedLocalisations = loadIcon("/icons/gutter/relatedLocalisation.svg")
-		@JvmField val RelatedImages = loadIcon("/icons/gutter/relatedImage.svg")
+		@JvmField val RelatedLocalisations = loadIcon("/icons/gutter/relatedLocalisations.svg")
+		@JvmField val RelatedImages = loadIcon("/icons/gutter/relatedImages.svg")
 		@JvmField val Localisation = loadIcon("/icons/gutter/localisation.svg")
 		@JvmField val ComplexEnumValue = loadIcon("icons/gutter/complexEnumValue.svg")
 	}

@@ -10,7 +10,7 @@ import javax.swing.*
 @Suppress("UNCHECKED_CAST")
 abstract class ParadoxItemPresentation<T : PsiElement>(
 	element: T
-) : ItemPresentation, LocationPresentation {
+) : ItemPresentation {
 	private val anchor = TreeAnchorizer.getService().createAnchor(element)
 	
 	val element get() = TreeAnchorizer.getService().retrieveElement(anchor) as T?
@@ -38,14 +38,6 @@ abstract class ParadoxItemPresentation<T : PsiElement>(
 		if(element == null) return null
 		return element.fileInfo?.path?.path
 			?: element.containingFile?.virtualFile?.path
-	}
-	
-	override fun getLocationPrefix(): String {
-		return " ["
-	}
-	
-	override fun getLocationSuffix(): String {
-		return "]"
 	}
 }
 

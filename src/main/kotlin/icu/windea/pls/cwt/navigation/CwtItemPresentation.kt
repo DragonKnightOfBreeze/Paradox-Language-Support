@@ -9,7 +9,7 @@ import javax.swing.*
 @Suppress("UNCHECKED_CAST")
 class CwtItemPresentation(
     element: PsiElement
-) : ItemPresentation, LocationPresentation {
+) : ItemPresentation {
     private val anchor = TreeAnchorizer.getService().createAnchor(element)
     
     val element get() = TreeAnchorizer.getService().retrieveElement(anchor) as PsiElement?
@@ -35,13 +35,5 @@ class CwtItemPresentation(
         //使用文件名
         val element = element
         return element?.containingFile?.name
-    }
-    
-    override fun getLocationPrefix(): String {
-        return " ["
-    }
-    
-    override fun getLocationSuffix(): String {
-        return "]"
     }
 }
