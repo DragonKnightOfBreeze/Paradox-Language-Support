@@ -10,6 +10,8 @@ import java.util.*
 
 /**
  * 用于处理元素路径。
+ * 
+ * @see ParadoxElementPath
  */
 object ParadoxElementPathHandler {
     /**

@@ -34,7 +34,7 @@ import javax.swing.*
  * * 可以用于比较二进制文件。（如DDS图片）
  * * TODO 按照覆盖顺序进行排序。
  */
-@Suppress("ComponentNotRegistered")
+@Suppress("ComponentNotRegistered", "UNUSED_VARIABLE")
 class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
         return e.getData(CommonDataKeys.VIRTUAL_FILE)
@@ -51,11 +51,11 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return
         if(fileInfo.entryPath.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
         presentation.isVisible = true
-        val gameType = fileInfo.rootInfo.gameType
-        val path = fileInfo.path.path
-        val selector = fileSelector().gameType(gameType)
-        val multiple = ParadoxFilePathSearch.search(path, project, selector = selector).hasMultipleResults()
-        if(!multiple) return //忽略不存在重载/被重载的情况
+        //val gameType = fileInfo.rootInfo.gameType
+        //val path = fileInfo.path.path
+        //val selector = fileSelector().gameType(gameType)
+        //val multiple = ParadoxFilePathSearch.search(path, project, selector = selector).hasMultipleResults()
+        //if(!multiple) return //忽略不存在重载/被重载的情况 - 出于性能原因，目前不在update方法中判断
         presentation.isEnabled = true
     }
     
@@ -76,7 +76,6 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
             }
         }, PlsBundle.message("diff.compare.files.collect.title"), true, project)
         if(virtualFiles.size <= 1) {
-            //unexpected, should not be empty here
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
                 PlsBundle.message("diff.compare.files.content.title.info.1"),
                 NotificationType.INFORMATION

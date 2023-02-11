@@ -41,7 +41,7 @@ import javax.swing.*
  * * 可以用于比较二进制文件。（如DDS图片）
  * * TODO 按照覆盖顺序进行排序。
  */
-@Suppress("ComponentNotRegistered")
+@Suppress("ComponentNotRegistered", "UNUSED_VARIABLE")
 class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
         return e.getData(CommonDataKeys.VIRTUAL_FILE)
@@ -68,10 +68,10 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
         val offset = e.editor?.caretModel?.offset ?: return
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return
         val definition = findElement(psiFile, offset) ?: return
-        val definitionInfo = definition.definitionInfo ?: return
-        val selector = definitionSelector().gameTypeFrom(file)
-        val multiple = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, project, selector = selector).hasMultipleResults()
-        if(!multiple) return //忽略不存在重载/被重载的情况
+        //val definitionInfo = definition.definitionInfo ?: return
+        //val selector = definitionSelector().gameTypeFrom(file)
+        //val multiple = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, project, selector = selector).hasMultipleResults()
+        //if(!multiple) return //忽略不存在重载/被重载的情况 - 出于性能原因，目前不在update方法中判断
         presentation.isEnabled = true
     }
     
@@ -96,7 +96,6 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
             }
         }, PlsBundle.message("diff.compare.definitions.collect.title"), true, project)
         if(definitions.size <= 1) {
-            //unexpected, should not be empty here
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
                 PlsBundle.message("diff.compare.definitions.content.title.info.1"),
                 NotificationType.INFORMATION

@@ -11,6 +11,9 @@ import icu.windea.pls.script.psi.*
 
 /**
  * 用于处理定义成员信息。
+ * 
+ * @see ParadoxScriptMemberElement
+ * @see ParadoxDefinitionMemberInfo
  */
 object ParadoxDefinitionMemberHandler {
     @JvmStatic

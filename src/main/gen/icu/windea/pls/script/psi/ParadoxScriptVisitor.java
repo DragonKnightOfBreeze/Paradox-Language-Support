@@ -9,6 +9,7 @@ import icu.windea.pls.core.psi.ParadoxTypedElement;
 import icu.windea.pls.core.psi.ParadoxScriptedVariableReference;
 import icu.windea.pls.core.psi.ParadoxParameter;
 import com.intellij.psi.PsiListLikeElement;
+import com.intellij.psi.ContributedReferenceHost;
 import icu.windea.pls.core.psi.ParadoxArgument;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
@@ -16,6 +17,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitBlock(@NotNull ParadoxScriptBlock o) {
     visitValue(o);
     // visitBlockElement(o);
+    // visitContributedReferenceHost(o);
   }
 
   public void visitBoolean(@NotNull ParadoxScriptBoolean o) {

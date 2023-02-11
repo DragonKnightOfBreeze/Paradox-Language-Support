@@ -28,7 +28,6 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.*
 import java.awt.*
 import java.util.*
 import javax.swing.*
@@ -42,7 +41,7 @@ import javax.swing.*
  * * 可以用于比较二进制文件。（如DDS图片）
  * * TODO 按照覆盖顺序进行排序。
  */
-@Suppress("ComponentNotRegistered")
+@Suppress("ComponentNotRegistered", "UNUSED_VARIABLE")
 class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
         return e.getData(CommonDataKeys.VIRTUAL_FILE)
@@ -69,10 +68,10 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         val offset = e.editor?.caretModel?.offset ?: return
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return
         val localisation = findElement(psiFile, offset) ?: return
-        val localisationName = localisation.name
-        val selector = localisationSelector().gameTypeFrom(file)
-        val multiple = ParadoxLocalisationSearch.search(localisationName, project, selector = selector).hasMultipleResults()
-        if(!multiple) return //忽略不存在重载/被重载的情况
+        //val localisationName = localisation.name
+        //val selector = localisationSelector().gameTypeFrom(file)
+        //val multiple = ParadoxLocalisationSearch.search(localisationName, project, selector = selector).hasMultipleResults()
+        //if(!multiple) return //忽略不存在重载/被重载的情况 - 出于性能原因，目前不在update方法中判断
         presentation.isEnabled = true
     }
     

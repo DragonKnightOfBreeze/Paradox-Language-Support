@@ -89,7 +89,7 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 		val flag = AtomicBoolean(false)
 		delegateProcessResults(original) {
 			if(selector.selectAll(it)) {
-				if(!flag.get()) return@delegateProcessResults false
+				if(flag.get()) return@delegateProcessResults false
 				flag.set(true)
 			}
 			true

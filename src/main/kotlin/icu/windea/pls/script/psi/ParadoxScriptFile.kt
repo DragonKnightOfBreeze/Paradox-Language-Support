@@ -25,7 +25,7 @@ class ParadoxScriptFile(
 	override val block get() = findChild<ParadoxScriptRootBlock>()
 	
 	private fun doGetParameters(): Map<String, ParadoxParameterInfo> {
-		return ParadoxScriptPsiImplUtil.getParameterMap(this)
+		return ParadoxScriptPsiImplUtil.getParameters(this)
 	}
 	
 	override fun getIcon(flags: Int): Icon? {

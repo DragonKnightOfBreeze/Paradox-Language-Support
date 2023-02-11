@@ -18,6 +18,9 @@ import icu.windea.pls.script.psi.*
 
 /**
  * 用于处理定义信息。
+ * 
+ * @see ParadoxScriptDefinitionElement
+ * @see ParadoxDefinitionInfo
  */
 object ParadoxDefinitionHandler {
 	val definitionNamePrefixKey = Key.create<String>("paradox.definition.prefix")

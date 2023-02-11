@@ -812,7 +812,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	//region ParadoxScriptDefinitionElement
 	@JvmStatic
-	fun getParameterMap(element: ParadoxScriptDefinitionElement): Map<String, ParadoxParameterInfo> {
+	fun getParameters(element: ParadoxScriptDefinitionElement): Map<String, ParadoxParameterInfo> {
 		//不支持参数时，直接返回空映射
 		if(!ParadoxParameterSupport.supports(element)) return emptyMap()
 		
