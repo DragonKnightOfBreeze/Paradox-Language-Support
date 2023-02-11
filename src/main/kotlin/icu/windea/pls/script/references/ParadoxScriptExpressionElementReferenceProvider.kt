@@ -13,7 +13,6 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 	override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-		if(element !is ParadoxScriptStringExpressionElement && element !is ParadoxScriptInt) return PsiReference.EMPTY_ARRAY
 		val gameType = selectGameType(element) ?: return PsiReference.EMPTY_ARRAY
 		val configGroup = getCwtConfig(element.project).getValue(gameType)
 		val text = element.text
@@ -22,9 +21,13 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 		//if(text.isParameterAwareExpression()) return PsiReference.EMPTY_ARRAY
 		
 		val isKey = element is ParadoxScriptPropertyKey
-		val config = ParadoxCwtConfigHandler.resolveConfigs(element, !isKey, isKey).firstOrNull()
+		val configs = ParadoxCwtConfigHandler.resolveConfigs(element, !isKey, isKey)
+		val config = configs.firstOrNull()
 		if(config != null) {
-			val textRange = TextRange.create(0, text.length)
+			val textRange = when {
+				element is ParadoxScriptBlock -> TextRange.create(0, 1) //left curly brace
+				else -> TextRange.create(0, text.length) //whole text, including possible quotes
+			}
 			val configExpression = config.expression
 			when(configExpression.type) {
 				CwtDataType.Value, CwtDataType.ValueSet -> {

@@ -44,6 +44,10 @@ import javax.swing.*
  */
 @Suppress("ComponentNotRegistered")
 class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
+    private fun findFile(e: AnActionEvent): VirtualFile? {
+        return e.getData(CommonDataKeys.VIRTUAL_FILE)
+    }
+    
     private fun findElement(psiFile: PsiFile, offset: Int): ParadoxLocalisationProperty? {
         return psiFile.findElementAt(offset)
             ?.parents(withSelf = false)
@@ -55,25 +59,26 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
-        val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
-            ?: e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)?.singleOrNull()
-            ?: return
-        if(file.isDirectory) return
+        val file = findFile(e) ?: return
+        //if(file.isDirectory) return
         if(file.fileType != ParadoxLocalisationFileType) return
-        val fileInfo = file.fileInfo ?: return
-        //忽略直接位于游戏或模组入口目录下的文件
-        if(fileInfo.entryPath.length <= 1) return
+        //val fileInfo = file.fileInfo ?: return
+        //if(fileInfo.entryPath.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
         presentation.isVisible = true
         val project = e.project ?: return
         val offset = e.editor?.caretModel?.offset ?: return
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return
-        val localisation = findElement(psiFile, offset)
-        presentation.isEnabled = localisation != null
+        val localisation = findElement(psiFile, offset) ?: return
+        val localisationName = localisation.name
+        val selector = localisationSelector().gameTypeFrom(file)
+        val multiple = ParadoxLocalisationSearch.search(localisationName, project, selector = selector).hasMultipleResults()
+        if(!multiple) return //忽略不存在重载/被重载的情况
+        presentation.isEnabled = true
     }
     
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
         val project = e.project ?: return null
-        val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
+        val file = findFile(e) ?: return null
         if(file.fileType != ParadoxLocalisationFileType) return null
         val offset = e.editor?.caretModel?.offset ?: return null
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return null
@@ -88,6 +93,7 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
             }
         }, PlsBundle.message("diff.compare.localisations.collect.title"), true, project)
         if(localisations.size <= 1) {
+            //unexpected, should not be empty here
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
                 PlsBundle.message("diff.compare.localisations.content.title.info.1"),
                 NotificationType.INFORMATION

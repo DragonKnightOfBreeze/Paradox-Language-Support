@@ -5,6 +5,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
+import java.util.concurrent.atomic.*
 
 /**
  * 可对查询结果进行进一步的处理。
@@ -79,6 +80,22 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 			true
 		}
 	}
+	
+	/**
+	 * 是否有多个查询结果。
+	 */
+	fun hasMultipleResults(): Boolean {
+		val selector = searchParameters.selector
+		val flag = AtomicBoolean(false)
+		delegateProcessResults(original) {
+			if(selector.selectAll(it)) {
+				if(!flag.get()) return@delegateProcessResults false
+				flag.set(true)
+			}
+			true
+		}
+		return flag.get()
+	} 
 	
 	override fun toString(): String {
 		return "ParadoxQuery: $original"

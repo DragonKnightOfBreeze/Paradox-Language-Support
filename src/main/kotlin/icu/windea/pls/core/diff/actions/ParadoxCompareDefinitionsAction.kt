@@ -43,6 +43,10 @@ import javax.swing.*
  */
 @Suppress("ComponentNotRegistered")
 class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
+    private fun findFile(e: AnActionEvent): VirtualFile? {
+        return e.getData(CommonDataKeys.VIRTUAL_FILE)
+    }
+    
     private fun findElement(psiFile: PsiFile, offset: Int): ParadoxScriptDefinitionElement? {
         return psiFile.findElementAt(offset)
             ?.parents(withSelf = false)
@@ -54,27 +58,30 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
-        val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
-            ?: e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)?.singleOrNull()
-            ?: return
+        val file = findFile(e) ?: return
         if(file.isDirectory) return
         if(file.fileType != ParadoxScriptFileType) return
         val fileInfo = file.fileInfo ?: return
-        //忽略直接位于游戏或模组入口目录下的文件
-        if(fileInfo.entryPath.length <= 1) return
+        if(fileInfo.entryPath.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
         presentation.isVisible = true
         val project = e.project ?: return
         val offset = e.editor?.caretModel?.offset ?: return
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return
-        val definition = findElement(psiFile, offset)
-        presentation.isEnabled = definition != null
+        val definition = findElement(psiFile, offset) ?: return
+        val definitionInfo = definition.definitionInfo ?: return
+        val selector = definitionSelector().gameTypeFrom(file)
+        val multiple = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, project, selector = selector).hasMultipleResults()
+        if(!multiple) return //忽略不存在重载/被重载的情况
+        presentation.isEnabled = true
     }
     
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
         val project = e.project ?: return null
-        val editor = e.editor
-        val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
+        val file = findFile(e) ?: return null
+        //if(file.isDirectory) return null
         if(file.fileType != ParadoxScriptFileType) return null
+        //val fileInfo = file.fileInfo ?: return
+        //if(fileInfo.entryPath.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
         val offset = e.editor?.caretModel?.offset ?: return null
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return null
         val definition = findElement(psiFile, offset) ?: return null
@@ -89,13 +96,15 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
             }
         }, PlsBundle.message("diff.compare.definitions.collect.title"), true, project)
         if(definitions.size <= 1) {
+            //unexpected, should not be empty here
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
                 PlsBundle.message("diff.compare.definitions.content.title.info.1"),
                 NotificationType.INFORMATION
             ).notify(project)
             return null
         }
-        
+    
+        val editor = e.editor
         val contentFactory = DiffContentFactory.getInstance()
         
         val windowTitle = getWindowsTitle(definition, definitionInfo) ?: return null

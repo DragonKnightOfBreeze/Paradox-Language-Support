@@ -4,8 +4,12 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
+/**
+ * 解析事件ID中的事件命名空间引用。
+ */
 class ParadoxEventNamespaceReferenceProvider : PsiReferenceProvider() {
 	override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
 		if(element !is ParadoxScriptString) return PsiReference.EMPTY_ARRAY
