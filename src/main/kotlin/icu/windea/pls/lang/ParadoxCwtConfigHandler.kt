@@ -172,10 +172,9 @@ object ParadoxCwtConfigHandler {
 	//DONE 这里需要兼容匹配key的子句规则有多个的情况 - 匹配任意则使用匹配的首个规则，空子句或者都不匹配则使用合并的规则
 	
 	/**
-	 * 得到指定的[element]的作为值的子句中的子属性/值的出现次数信息。
+	 * 得到指定的[element]的作为值的子句中的子属性/值的出现次数信息。（先合并子规则）
 	 */
-	fun getChildPropertyOccurrenceMap(element: ParadoxScriptMemberElement): Map<CwtDataExpression, Occurrence> {
-		val configs = resolveConfigs(element, allowDefinitionSelf = true)
+	fun getChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Map<CwtDataExpression, Occurrence> {
 		if(configs.isEmpty()) return emptyMap()
 		val configGroup = configs.first().info.configGroup
 		val project = configGroup.project

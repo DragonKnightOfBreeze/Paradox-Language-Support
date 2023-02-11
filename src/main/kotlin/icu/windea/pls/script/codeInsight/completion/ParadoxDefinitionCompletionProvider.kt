@@ -53,7 +53,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 			try {
 				definitionElement.putUserData(PlsKeys.isIncompleteKey, incomplete)
 				//进行提示
-				CwtConfigHandler.addValueCompletions(definitionElement, context, resultToUse)
+				CwtConfigHandler.addPropertyValueCompletions(definitionElement, context, resultToUse)
 			} finally {
 				definitionElement.putUserData(PlsKeys.isIncompleteKey, null)
 			}
@@ -62,7 +62,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 			//得到原始文件中上一级block
 			val block = element.parent as? ParadoxScriptBlock ?: return
 			//进行提示
-			CwtConfigHandler.addValueCompletionsInBlock(block, context, resultToUse)
+			CwtConfigHandler.addValueCompletions(block, context, resultToUse)
 		}
 	}
 }

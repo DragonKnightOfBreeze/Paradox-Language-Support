@@ -5,8 +5,8 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.cwt.expression.CwtDataType.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.linker.*
@@ -58,7 +58,9 @@ class TooManyExpressionInspection: LocalInspectionTool() {
 			}
 			
 			private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement) {
-				val occurrenceMap = ParadoxCwtConfigHandler.getChildPropertyOccurrenceMap(element)
+				val configs = ParadoxCwtConfigHandler.resolveConfigs(element, allowDefinitionSelf = true)
+				if(skipCheck(configs)) return
+				val occurrenceMap = ParadoxCwtConfigHandler.getChildOccurrenceMap(element, configs)
 				if(occurrenceMap.isEmpty()) return
 				occurrenceMap.forEach { (configExpression, occurrence) ->
 					val r = doCheckOccurrence(element, position, occurrence, configExpression)
@@ -66,11 +68,19 @@ class TooManyExpressionInspection: LocalInspectionTool() {
 				}
 			}
 			
+			private fun skipCheck(configs: List<CwtDataConfig<*>>): Boolean {
+				if(configs.size <= 1) return true
+				//可以精确匹配多个子句规则时，适用此检查
+				if(configs.count { it is CwtPropertyConfig && it.valueExpression.type == CwtDataType.Block } > 1) return true
+				if(configs.count { it is CwtValueConfig && it.valueExpression.type == CwtDataType.Block } > 1) return true
+				return false
+			}
+			
 			private fun doCheckOccurrence(element: ParadoxScriptMemberElement, position: PsiElement, occurrence: Occurrence, configExpression: CwtDataExpression): Boolean {
 				val (actual, _, max) = occurrence
 				if(max != null && actual > max) {
                     val isKey = configExpression is CwtKeyExpression
-                    val isConst = configExpression.type == Constant
+                    val isConst = configExpression.type == CwtDataType.Constant
                     val description = if(isKey) {
                         when {
                             isConst -> PlsBundle.message("inspection.script.general.tooManyExpression.description.1.1", configExpression)
