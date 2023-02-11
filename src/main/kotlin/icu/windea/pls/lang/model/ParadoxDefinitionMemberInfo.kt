@@ -3,10 +3,8 @@ package icu.windea.pls.lang.model
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -17,51 +15,46 @@ class ParadoxDefinitionMemberInfo(
 	val gameType: ParadoxGameType,
 	val definitionInfo: ParadoxDefinitionInfo,
 	val configGroup: CwtConfigGroup,
-	val element: ParadoxScriptMemberElement //直接作为属性的话可能会有些问题，不过这个缓存会在所在脚本文件便跟
+	val element: ParadoxScriptMemberElement //直接作为属性的话可能会有些问题，不过这个缓存会在所在脚本文件变更时被清除，应当问题不大
 ) {
 	val isDefinition = element is ParadoxScriptDefinitionElement && elementPath.isEmpty()
 	val isParameterAware = elementPath.isParameterAware
 	
 	private val configs: List<CwtDataConfig<*>> by lazy {
-		doGetConfigs(definitionInfo, this, CwtConfigMatchType.ALL)
+		doGetConfigs(definitionInfo, this, CwtConfigMatchType.DEFAULT)
 	}
 	
 	private val childPropertyConfigs: List<CwtPropertyConfig> by lazy {
-		doGetChildPropertyConfigs(definitionInfo, this, CwtConfigMatchType.ALL)
+		doGetChildPropertyConfigs(definitionInfo, this, CwtConfigMatchType.DEFAULT)
 	}
 	
 	private val childValueConfigs: List<CwtValueConfig> by lazy {
-		doGetChildValueConfigs(definitionInfo, this, CwtConfigMatchType.ALL)
+		doGetChildValueConfigs(definitionInfo, this, CwtConfigMatchType.DEFAULT)
 	}
 	
-	/** 对应的属性/值配置列表。 */
-	fun getConfigs(matchType: Int = CwtConfigMatchType.ALL): List<CwtDataConfig<*>> {
-		if(matchType == CwtConfigMatchType.ALL) return configs
+	/** 
+	 * 对应的属性/值配置列表。
+	 */
+	fun getConfigs(matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtDataConfig<*>> {
+		if(matchType == CwtConfigMatchType.DEFAULT) return configs
 		return doGetConfigs(definitionInfo, this, matchType)
 	}
 	
-	/** 对应的子属性配置列表。 */
-	fun getChildPropertyConfigs(matchType: Int = CwtConfigMatchType.ALL): List<CwtPropertyConfig> {
-		if(matchType == CwtConfigMatchType.ALL) return childPropertyConfigs
+	/**
+	 * 对应的子属性配置列表。（得到的是合并后的规则列表，且过滤重复的）
+	 */
+	fun getChildPropertyConfigs(matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtPropertyConfig> {
+		if(matchType == CwtConfigMatchType.DEFAULT) return childPropertyConfigs
 		return doGetChildPropertyConfigs(definitionInfo, this, matchType)
 	}
 	
-	/** 对应的子值配置列表。 */
-	fun getChildValueConfigs(matchType: Int = CwtConfigMatchType.ALL): List<CwtValueConfig> {
-		if(matchType == CwtConfigMatchType.ALL) return childValueConfigs
+	/**
+	 * 对应的子值配置列表。（得到的是合并后的规则列表，且过滤重复的）
+	 */
+	fun getChildValueConfigs(matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtValueConfig> {
+		if(matchType == CwtConfigMatchType.DEFAULT) return childValueConfigs
 		return doGetChildValueConfigs(definitionInfo, this, matchType)
 	}
-	
-	/** 子属性基于键表达式的出现次数映射。 */
-	val childPropertyOccurrenceMap: Map<CwtKeyExpression, Occurrence> by lazy {
-		doGetChildPropertyOccurrenceMap(element)
-	}
-	
-	/** 子值基于值表达式的出现次数映射。 */
-	val childValueOccurrenceMap: Map<CwtValueExpression, Occurrence> by lazy {
-		doGetChildValueOccurrenceMap(element)
-	}
-	
 }
 
 /**
@@ -117,7 +110,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
 }
 
 /**
- * 根据路径解析对应的子属性配置列表。（过滤重复的）
+ * 根据路径解析对应的子属性规则列表。（得到的是合并后的规则列表，且过滤重复的）
  */
 private fun doGetChildPropertyConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMemberInfo: ParadoxDefinitionMemberInfo, matchType: Int): List<CwtPropertyConfig> {
 	//基于上一级keyExpression，keyExpression一定唯一
@@ -143,7 +136,7 @@ private fun doGetChildPropertyConfigs(definitionInfo: ParadoxDefinitionInfo, def
 }
 
 /**
- * 根据路径解析对应的子值配置列表。（过滤重复的）
+ * 根据路径解析对应的子值规则列表。（得到的是合并后的规则列表，且过滤重复的）
  */
 private fun doGetChildValueConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMemberInfo: ParadoxDefinitionMemberInfo, matchType: Int): List<CwtValueConfig> {
 	//基于上一级keyExpression，valueExpression一定唯一
@@ -166,56 +159,4 @@ private fun doGetChildValueConfigs(definitionInfo: ParadoxDefinitionInfo, defini
 			result
 		}
 	}
-}
-
-private fun ParadoxDefinitionMemberInfo.doGetChildPropertyOccurrenceMap(element: ParadoxScriptMemberElement): Map<CwtKeyExpression, Occurrence> {
-	val project = configGroup.project
-	//keyExpression - (expect actual)
-	val childPropertyConfigs = getChildPropertyConfigs()
-	val occurrenceMap = childPropertyConfigs.associateByTo(mutableMapOf(), { it.keyExpression }, { it.toOccurrence(element, project) })
-	val blockElement = when{
-		element is ParadoxScriptDefinitionElement -> element.block
-		element is ParadoxScriptBlockElement -> element
-		else -> null
-	}
-	val properties = blockElement?.propertyList.orEmpty()
-	if(properties.isNotEmpty()) {
-		for(property in properties) {
-			val expression = ParadoxDataExpression.resolve(property.propertyKey)
-			val isParameterAware = expression.type == ParadoxDataType.StringType && expression.text.isParameterAwareExpression()
-			if(isParameterAware) return emptyMap() //may contain parameter -> can't and should not get occurrences
-			val matched = childPropertyConfigs.find { CwtConfigHandler.matchesScriptExpression(property, expression, it.keyExpression, it, configGroup) }
-			if(matched == null) continue
-			val occurrence = occurrenceMap[matched.keyExpression]
-			if(occurrence == null) continue
-			occurrence.actual += 1
-		}
-	}
-	return occurrenceMap
-}
-
-private fun ParadoxDefinitionMemberInfo.doGetChildValueOccurrenceMap(element: ParadoxScriptMemberElement): Map<CwtValueExpression, Occurrence> {
-	val project = configGroup.project
-	//valueExpression - (expect actual)
-	val childValueConfigs = getChildValueConfigs()
-	val occurrenceMap = childValueConfigs.associateByTo(mutableMapOf(), { it.valueExpression }, { it.toOccurrence(element, project) })
-	val blockElement = when{
-		element is ParadoxScriptDefinitionElement -> element.block
-		element is ParadoxScriptBlockElement -> element
-		else -> null
-	}
-	val values = blockElement?.valueList.orEmpty()
-	if(values.isNotEmpty()) {
-		for(value in values) {
-			val expression = ParadoxDataExpression.resolve(value)
-			val isParameterAware = expression.type == ParadoxDataType.StringType && expression.text.isParameterAwareExpression()
-			if(isParameterAware) return emptyMap() //may contain parameter -> can't and should not get occurrences
-			val matched = childValueConfigs.find { CwtConfigHandler.matchesScriptExpression(value, expression, it.valueExpression, it, configGroup) }
-			if(matched == null) continue
-			val occurrence = occurrenceMap[matched.valueExpression]
-			if(occurrence == null) continue
-			occurrence.actual += 1
-		}
-	}
-	return occurrenceMap
 }

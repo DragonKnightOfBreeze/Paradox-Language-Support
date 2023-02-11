@@ -28,6 +28,9 @@ public interface CwtBlock extends CwtValue, CwtBlockElement {
   Icon getIcon(@IconFlags int flags);
 
   @NotNull
+  String getName();
+
+  @NotNull
   String getValue();
 
   boolean isEmpty();

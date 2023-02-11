@@ -8,7 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.cwt.expression.CwtDataType.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.linker.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
@@ -33,12 +33,11 @@ class TooManyExpressionInspection: LocalInspectionTool() {
 			}
 			
 			override fun visitFile(file: PsiFile) {
+				
 				if(file !is ParadoxScriptFile) return
 				//忽略可能的脚本片段入口
 				if(!ParadoxScriptMemberElementLinker.canLink(file)) {
-					val position = file //TODO not very suitable
-					val definitionMemberInfo = file.definitionMemberInfo
-					doCheck(position, definitionMemberInfo, true)
+					doCheck(file, file)
 				}
 				super.visitFile(file)
 			}
@@ -55,25 +54,19 @@ class TooManyExpressionInspection: LocalInspectionTool() {
 					?.also { if(it.isParameterAwareExpression()) return }
 					?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
 					?: return
-				val definitionMemberInfo = element.definitionMemberInfo
-				doCheck(position, definitionMemberInfo, false)
+				doCheck(element, position)
 			}
 			
-			private fun doCheck(position: PsiElement, definitionMemberInfo: ParadoxDefinitionMemberInfo?, fileLevel: Boolean) {
-				if(definitionMemberInfo == null) return
-				definitionMemberInfo.childPropertyOccurrenceMap.takeIf { it.isNotEmpty() }
-					?.forEach { (configExpression, occurrence) ->
-						val r = doCheckOccurrence(occurrence, configExpression, position, fileLevel)
-						if(!r) return
-					}
-				definitionMemberInfo.childValueOccurrenceMap.takeIf { it.isNotEmpty() }
-					?.forEach { (configExpression, occurrence) ->
-						val r = doCheckOccurrence(occurrence, configExpression, position, fileLevel)
-						if(!r) return
-					}
+			private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement) {
+				val occurrenceMap = ParadoxCwtConfigHandler.getChildPropertyOccurrenceMap(element)
+				if(occurrenceMap.isEmpty()) return
+				occurrenceMap.forEach { (configExpression, occurrence) ->
+					val r = doCheckOccurrence(element, position, occurrence, configExpression)
+					if(!r) return
+				}
 			}
 			
-			private fun doCheckOccurrence(occurrence: Occurrence, configExpression: CwtDataExpression, position: PsiElement, fileLevel: Boolean): Boolean {
+			private fun doCheckOccurrence(element: ParadoxScriptMemberElement, position: PsiElement, occurrence: Occurrence, configExpression: CwtDataExpression): Boolean {
 				val (actual, _, max) = occurrence
 				if(max != null && actual > max) {
                     val isKey = configExpression is CwtKeyExpression
@@ -95,6 +88,7 @@ class TooManyExpressionInspection: LocalInspectionTool() {
 						else -> PlsBundle.message("inspection.script.general.tooManyExpression.description.detail.2", max, actual, maxDefine)
 					}
                     val highlightType = ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+					val fileLevel = element is PsiFile
 					if(!fileLevel && firstOnly && holder.hasResults()) return false
 					if(fileLevel && firstOnlyOnFile && holder.hasResults()) return false
                     holder.registerProblem(position, "$description $detail", highlightType)

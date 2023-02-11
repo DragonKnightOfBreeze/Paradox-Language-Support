@@ -4,13 +4,15 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxCwtConfigHandler {
 	@JvmStatic
-	fun resolveConfigs(element: PsiElement, allowDefinitionSelf: Boolean = element !is ParadoxScriptPropertyKey, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.ALL): List<CwtDataConfig<*>> {
+	fun resolveConfigs(element: PsiElement, allowDefinitionSelf: Boolean = element is ParadoxScriptValue, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtDataConfig<*>> {
 		return when {
 			element is ParadoxScriptDefinitionElement -> resolvePropertyConfigs(element, allowDefinitionSelf, orDefault, matchType)
 			element is ParadoxScriptPropertyKey -> resolvePropertyConfigs(element, allowDefinitionSelf, orDefault, matchType)
@@ -20,12 +22,12 @@ object ParadoxCwtConfigHandler {
 	}
 	
 	@JvmStatic
-	fun resolvePropertyConfigs(element: PsiElement, allowDefinitionSelf: Boolean = false, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.ALL): List<CwtPropertyConfig> {
+	fun resolvePropertyConfigs(element: PsiElement, allowDefinitionSelf: Boolean = false, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtPropertyConfig> {
 		return doResolveConfigs(element, CwtPropertyConfig::class.java, allowDefinitionSelf, orDefault, matchType)
 	}
 	
 	@JvmStatic
-	fun resolveValueConfigs(element: PsiElement, allowDefinitionSelf: Boolean = true, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.ALL): List<CwtValueConfig> {
+	fun resolveValueConfigs(element: PsiElement, allowDefinitionSelf: Boolean = true, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtValueConfig> {
 		return doResolveConfigs(element, CwtValueConfig::class.java, allowDefinitionSelf, orDefault, matchType)
 	}
 	
@@ -164,5 +166,53 @@ object ParadoxCwtConfigHandler {
 			}
 			else -> throw UnsupportedOperationException()
 		}
+	}
+	
+	//DONE 兼容需要考虑内联的情况（如内联脚本）
+	//DONE 这里需要兼容匹配key的子句规则有多个的情况 - 匹配任意则使用匹配的首个规则，空子句或者都不匹配则使用合并的规则
+	
+	/**
+	 * 得到指定的[element]的作为值的子句中的子属性/值的出现次数信息。
+	 */
+	fun getChildPropertyOccurrenceMap(element: ParadoxScriptMemberElement): Map<CwtDataExpression, Occurrence> {
+		val configs = resolveConfigs(element, allowDefinitionSelf = true)
+		if(configs.isEmpty()) return emptyMap()
+		val configGroup = configs.first().info.configGroup
+		val project = configGroup.project
+		val blockElement = when{
+			element is ParadoxScriptDefinitionElement -> element.block
+			element is ParadoxScriptBlockElement -> element
+			else -> null
+		}
+		if(blockElement == null) return emptyMap()
+		val childConfigs = configs.flatMap { it.configs.orEmpty() }
+		val occurrenceMap = mutableMapOf<CwtDataExpression, Occurrence>()
+		for(childConfig in childConfigs) {
+			occurrenceMap.put(childConfig.expression, childConfig.toOccurrence(element, project))
+		}
+		blockElement.processData p@{ data ->
+			val expression = when {
+				data is ParadoxScriptProperty -> ParadoxDataExpression.resolve(data.propertyKey)
+				data is ParadoxScriptValue -> ParadoxDataExpression.resolve(data)
+				else -> return@p true
+			}
+			val isParameterAware = expression.type == ParadoxDataType.StringType && expression.text.isParameterAwareExpression()
+			//may contain parameter -> can't and should not get occurrences
+			if(isParameterAware) {
+				occurrenceMap.clear()
+				return@p true
+			}
+			val matched = childConfigs.find { childConfig ->
+				if(childConfig is CwtPropertyConfig && data !is ParadoxScriptProperty) return@find false
+				if(childConfig is CwtValueConfig && data !is ParadoxScriptValue) return@find false
+				CwtConfigHandler.matchesScriptExpression(data, expression, childConfig.expression, childConfig, configGroup)
+			}
+			if(matched == null) return@p  true
+			val occurrence = occurrenceMap[matched.expression]
+			if(occurrence == null) return@p true
+			occurrence.actual += 1
+			true
+		}
+		return occurrenceMap
 	}
 }

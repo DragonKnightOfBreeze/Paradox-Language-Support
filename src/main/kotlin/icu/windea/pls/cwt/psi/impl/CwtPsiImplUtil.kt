@@ -173,7 +173,7 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: CwtValue): String {
-		return element.value
+		return getValue(element)
 	}
 	
 	@JvmStatic
@@ -248,6 +248,11 @@ object CwtPsiImplUtil {
 	@JvmStatic
 	fun getIcon(element: CwtBlock, @Iconable.IconFlags flags: Int): Icon {
 		return PlsIcons.CwtBlock
+	}
+	
+	@JvmStatic
+	fun getName(element: CwtBlock): String {
+		return element.value
 	}
 	
 	@JvmStatic

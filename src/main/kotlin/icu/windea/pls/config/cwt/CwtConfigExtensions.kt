@@ -95,7 +95,7 @@ fun CwtTemplateExpression.extract(referenceNames: Map<CwtDataExpression, String>
     return CwtTemplateExpressionHandler.extract(this, referenceNames)
 }
 
-fun CwtTemplateExpression.matches(text: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL) : Boolean {
+fun CwtTemplateExpression.matches(text: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.DEFAULT) : Boolean {
     return CwtTemplateExpressionHandler.matches(text, element, this, configGroup, matchType)
 }
 
