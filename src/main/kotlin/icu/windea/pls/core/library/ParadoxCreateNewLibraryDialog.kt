@@ -70,7 +70,6 @@ class ParadoxCreateNewLibraryDialog(
 			val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
 				.withTitle(PlsBundle.message("library.dialog.createNewLibrary.libraryPath.browseDialogTitle", rootType, gameType))
 				.apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
-				.apply { putUserData(PlsDataKeys.rootTypePropertyKey, rootTypeProperty) }
 				.apply { descriptor = this }
 			textFieldWithBrowseButton(null, project, descriptor) { it.path }
 				.bindText(dialog.rootFilePathProperty)

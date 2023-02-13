@@ -1,6 +1,6 @@
-@file:Suppress("ComponentNotRegistered")
+@file:Suppress("ComponentNotRegistered", "UnstableApiUsage")
 
-package icu.windea.pls.core.library.actions
+package icu.windea.pls.core.settings.actions
 
 import com.intellij.ide.lightEdit.*
 import com.intellij.openapi.actionSystem.*
@@ -17,6 +17,7 @@ import java.nio.file.*
  */
 abstract class GotoPathAction : FileChooserAction(), LightEditCompatible {
     abstract val targetPath: Path?
+    
     open val expand: Boolean = false
     
     override fun getActionUpdateThread(): ActionUpdateThread {
@@ -63,7 +64,7 @@ class GotoSteamPathAction : GotoPathAction() {
     override var targetPath: Path? = null
     
     override fun setVisible(e: AnActionEvent): Boolean {
-        if(e.gameTypeProperty == null || e.rootTypeProperty == null) return false
+        if(e.gameTypeProperty == null) return false
         if(targetPath == null) {
             targetPath = getSteamPath()?.toPathOrNull()
         }
@@ -73,18 +74,14 @@ class GotoSteamPathAction : GotoPathAction() {
 
 class GotoSteamGamePathAction : GotoPathAction() {
     private var gameType: ParadoxGameType? = null
-    private var rootType: ParadoxRootType? = null
     
     override var targetPath: Path? = null
     
     override fun setVisible(e: AnActionEvent): Boolean {
         val gameType = e.gameTypeProperty?.get()
-        val rootType = e.rootTypeProperty?.get()
-        if(gameType == null || rootType == null) return false
-        //if(gameType == null || rootType == null || rootType != ParadoxRootType.Game) return false
-        if(this.targetPath == null || this.gameType != gameType || this.rootType != rootType) {
+        if(gameType == null) return false
+        if(this.targetPath == null || this.gameType != gameType) {
             this.gameType = gameType
-            this.rootType = rootType
             this.targetPath = getSteamGamePath(gameType.gameSteamId, gameType.gameName)?.toPathOrNull()
         }
         return true
@@ -93,19 +90,15 @@ class GotoSteamGamePathAction : GotoPathAction() {
 
 class GotoSteamWorkshopPathAction : GotoPathAction() {
     private var gameType: ParadoxGameType? = null
-    private var rootType: ParadoxRootType? = null
     
     override var targetPath: Path? = null
     override val expand: Boolean = true
     
     override fun setVisible(e: AnActionEvent): Boolean {
         val gameType = e.gameTypeProperty?.get()
-        val rootType = e.rootTypeProperty?.get()
-        if(gameType == null || rootType == null) return false
-        //if(gameType == null || rootType == null || rootType != ParadoxRootType.Mod) return false
-        if(this.targetPath == null || this.gameType != gameType || this.rootType != rootType) {
+        if(gameType == null) return false
+        if(this.targetPath == null || this.gameType != gameType) {
             this.gameType = gameType
-            this.rootType = rootType
             this.targetPath = getSteamWorkshopPath(gameType.gameSteamId)?.toPathOrNull()
         }
         return true
@@ -115,19 +108,15 @@ class GotoSteamWorkshopPathAction : GotoPathAction() {
 
 class GotoGameDataPathAction : GotoPathAction() {
     private var gameType: ParadoxGameType? = null
-    private var rootType: ParadoxRootType? = null
     
     override var targetPath: Path? = null
     override val expand: Boolean = true
     
     override fun setVisible(e: AnActionEvent): Boolean {
         val gameType = e.gameTypeProperty?.get()
-        val rootType = e.rootTypeProperty?.get()
-        if(gameType == null || rootType == null) return false
-        //if(gameType == null || rootType == null || rootType != ParadoxRootType.Mod) return false
-        if(this.targetPath == null || this.gameType != gameType || this.rootType != rootType) {
+        if(gameType == null ) return false
+        if(this.targetPath == null || this.gameType != gameType) {
             this.gameType = gameType
-            this.rootType = rootType
             this.targetPath = getGameDataPath(gameType.gameName)?.toPathOrNull()
         }
         return true

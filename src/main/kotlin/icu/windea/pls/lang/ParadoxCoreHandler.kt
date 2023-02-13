@@ -72,6 +72,7 @@ object ParadoxCoreHandler {
     
     @JvmStatic
     fun resolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean = true): ParadoxRootInfo? {
+        if(!rootFile.isDirectory) return null
         val rootInfo = rootFile.getCopyableUserData(PlsKeys.rootInfoKey)
         if(rootInfo != null && (canBeNotAvailable || rootInfo.isAvailable)) {
             addRootInfo(rootInfo)

@@ -164,13 +164,13 @@
     </group>
 
     <group id="Pls.GotoPath">
-      <action id="Pls.FileChooser.GotoSteamPath" class="icu.windea.pls.core.library.actions.GotoSteamPathAction"
+      <action id="Pls.FileChooser.GotoSteamPath" class="icu.windea.pls.core.settings.actions.GotoSteamPathAction"
               icon="PlsIcons.Actions.SteamDirectory"/>
-      <action id="Pls.FileChooser.GotoSteamGamePath" class="icu.windea.pls.core.library.actions.GotoSteamGamePathAction"
+      <action id="Pls.FileChooser.GotoSteamGamePath" class="icu.windea.pls.core.settings.actions.GotoSteamGamePathAction"
               icon="PlsIcons.Actions.SteamGameDirectory"/>
-      <action id="Pls.FileChooser.GotoSteamWorkshopPath" class="icu.windea.pls.core.library.actions.GotoSteamWorkshopPathAction"
+      <action id="Pls.FileChooser.GotoSteamWorkshopPath" class="icu.windea.pls.core.settings.actions.GotoSteamWorkshopPathAction"
               icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
-      <action id="Pls.FileChooser.GotoGameDataPath" class="icu.windea.pls.core.library.actions.GotoGameDataPathAction"
+      <action id="Pls.FileChooser.GotoGameDataPath" class="icu.windea.pls.core.settings.actions.GotoGameDataPathAction"
               icon="PlsIcons.Actions.GameDataDirectory"/>
     </group>
     <group id="Pls.GotoPath.WithSeparator">
