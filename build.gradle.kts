@@ -40,11 +40,12 @@ dependencies {
 	//FROM DDS4J
 	implementation("ar.com.hjg:pngj:2.1.0")
 	//CSV
-	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.14.0") {
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.14.2") {
 		exclude(module = "jackson-annotations")
 		exclude(module = "jackson-core")
 		exclude(module = "jackson-databind")
 	}
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
 }
 
 sourceSets {
