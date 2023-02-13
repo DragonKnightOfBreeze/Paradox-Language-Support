@@ -72,8 +72,6 @@ class ParadoxProjectModSettingsState : BaseState() {
     //val roots: Set<VirtualFile> get() = rootsWithModPaths.keys
 }
 
-//注意这里的所有path都是通过Path.toString()得到的
-
 /**
  * 单个模组的配置。
  * @property modDependencies 模组依赖。不包括游戏目录和本模组。

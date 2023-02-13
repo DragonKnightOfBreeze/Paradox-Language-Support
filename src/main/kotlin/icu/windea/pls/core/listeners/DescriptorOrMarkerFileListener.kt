@@ -1,4 +1,4 @@
-package icu.windea.pls.core
+package icu.windea.pls.core.listeners
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.vfs.*
@@ -33,7 +33,7 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				val rootFile = event.parent
 				val oldRootInfo = rootFile.getCopyableUserData(PlsKeys.rootInfoKey)
 				if(oldRootInfo != null) {
-					ParadoxRootInfo.values.remove(oldRootInfo)
+					ParadoxCoreHandler.removeRootInfo(oldRootInfo)
 					rootFile.putCopyableUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile) ?: return
@@ -63,7 +63,7 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				val rootFile = event.newParent
 				val oldRootInfo = rootFile.getCopyableUserData(PlsKeys.rootInfoKey)
 				if(oldRootInfo != null) {
-					ParadoxRootInfo.values.remove(oldRootInfo)
+					ParadoxCoreHandler.removeRootInfo(oldRootInfo)
 					rootFile.putCopyableUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile) ?: return
@@ -82,7 +82,7 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				val rootFile = file.parent ?: return
 				val oldFileInfo = rootFile.getCopyableUserData(PlsKeys.rootInfoKey)
 				if(oldFileInfo != null) {
-					ParadoxRootInfo.values.remove(oldFileInfo)
+					ParadoxCoreHandler.removeRootInfo(oldFileInfo)
 					rootFile.putCopyableUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile) ?: return
@@ -101,7 +101,7 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				val rootFile = file.parent
 				val oldRootInfo = rootFile.getCopyableUserData(PlsKeys.rootInfoKey)
 				if(oldRootInfo != null) {
-					ParadoxRootInfo.values.remove(oldRootInfo)
+					ParadoxCoreHandler.removeRootInfo(oldRootInfo)
 					rootFile.putCopyableUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile) ?: return

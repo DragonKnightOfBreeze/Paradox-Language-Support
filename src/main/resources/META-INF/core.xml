@@ -37,7 +37,7 @@
 
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType"/>
     
-    <vfs.asyncListener implementation="icu.windea.pls.core.DescriptorOrMarkerFileListener"/>
+    <vfs.asyncListener implementation="icu.windea.pls.core.listeners.DescriptorOrMarkerFileListener"/>
 
     <qualifiedNameProvider implementation="icu.windea.pls.core.ParadoxQualifiedNameProvider"/>
     <readWriteAccessDetector implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxReadWriteAccessDetector"/>
@@ -83,7 +83,7 @@
     
     <iconDescriptionBundle resourceBundle="messages.PlsIconBundle"/>
     
-    <vfs.asyncListener implementation="icu.windea.pls.core.ParadoxTrackFileListener"/>
+    <vfs.asyncListener implementation="icu.windea.pls.core.listeners.ParadoxTrackFileListener"/>
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls">
@@ -99,8 +99,10 @@
   </extensions>
   
   <projectListeners>
-    <listener class="icu.windea.pls.core.settings.ParadoxUpdateLibraryOnModSettingsChangedListener"
-              topic="icu.windea.pls.core.settings.ParadoxModSettingsChangedListener"/>
+    <listener class="icu.windea.pls.core.listeners.ParadoxUpdateLibraryListener"
+              topic="icu.windea.pls.core.listeners.ParadoxModSettingsListener"/>
+    <listener class="icu.windea.pls.core.listeners.ParadoxUpdateModSettingsListener"
+              topic="icu.windea.pls.core.listeners.ParadoxRootInfoListener"/>
   </projectListeners>
   
   <actions>
@@ -110,7 +112,7 @@
       <add-to-group group-id="ProjectViewPopupMenu"/>
     </group>
     
-    <action id="Pls.OpenModSettings" class="icu.windea.pls.core.settings.actions.OpenModSettingsAction"
+    <action id="Pls.OpenModSettings" class="icu.windea.pls.core.tool.actions.OpenModSettingsAction"
             icon="PlsIcons.Actions.ModSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
       <add-to-group group-id="Pls.Tools" anchor="first"/>

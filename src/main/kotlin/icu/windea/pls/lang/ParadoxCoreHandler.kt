@@ -2,6 +2,7 @@ package icu.windea.pls.lang
 
 import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.codeInsight.hints.*
+import com.intellij.ide.projectView.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileEditor.*
@@ -16,6 +17,7 @@ import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.listeners.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
@@ -40,26 +42,43 @@ object ParadoxCoreHandler {
         }
     }
     
+    @JvmStatic
     fun getFileInfo(virtualFile: VirtualFile): ParadoxFileInfo? {
         return virtualFile.getCopyableUserData(PlsKeys.fileInfoKey)
     }
     
+    @JvmStatic
     fun getFileInfo(file: PsiFile): ParadoxFileInfo? {
         return file.originalFile.virtualFile?.let { getFileInfo(it) }
     }
     
+    @JvmStatic
     fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
         return element.containingFile?.let { getFileInfo(it) }
+    }
+    
+    @JvmStatic
+    fun addRootInfo(rootInfo: ParadoxRootInfo) {
+        ParadoxRootInfo.values.add(rootInfo)
+        
+        ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
+    }
+    
+    @JvmStatic
+    fun removeRootInfo(rootInfo: ParadoxRootInfo) {
+        ParadoxRootInfo.values.remove(rootInfo)
+        
+        ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onRemove(rootInfo)
     }
     
     @JvmStatic
     fun resolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean = true): ParadoxRootInfo? {
         val rootInfo = rootFile.getCopyableUserData(PlsKeys.rootInfoKey)
         if(rootInfo != null && (canBeNotAvailable || rootInfo.isAvailable)) {
-            ParadoxRootInfo.values.add(rootInfo)
+            addRootInfo(rootInfo)
             return rootInfo
         }
-        ParadoxRootInfo.values.remove(rootInfo)
+        removeRootInfo(rootInfo)
         val resolvedRootInfo = try {
             doResolveRootInfo(rootFile, canBeNotAvailable)
         } catch(e: Exception) {
@@ -71,7 +90,7 @@ object ParadoxCoreHandler {
             rootFile.putCopyableUserData(PlsKeys.rootInfoKey, resolvedRootInfo)
         }
         if(resolvedRootInfo != null) {
-            ParadoxRootInfo.values.add(resolvedRootInfo)
+            addRootInfo(resolvedRootInfo)
         }
         return resolvedRootInfo
     }

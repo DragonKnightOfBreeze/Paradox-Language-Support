@@ -1,7 +1,8 @@
-package icu.windea.pls.core
+package icu.windea.pls.core.listeners
 
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.*
 
@@ -13,7 +14,6 @@ class ParadoxTrackFileListener : AsyncFileListener {
 		return object : AsyncFileListener.ChangeApplier {
 			override fun afterVfsChange() {
 				val files = mutableSetOf<VirtualFile>()
-				//当DDS文件内容发生变化或者被删除时，需要重新转化
 				for(event in events) {
 					when {
 						event is VFileContentChangeEvent -> files.add(event.file)
@@ -57,7 +57,6 @@ class ParadoxTrackFileListener : AsyncFileListener {
 					if(count == 3) break
 				}
 			}
-			
 		}
 	}
 }

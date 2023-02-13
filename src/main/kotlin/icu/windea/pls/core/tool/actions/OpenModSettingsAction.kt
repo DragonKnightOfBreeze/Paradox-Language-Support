@@ -1,6 +1,6 @@
 @file:Suppress("ComponentNotRegistered")
 
-package icu.windea.pls.core.settings.actions
+package icu.windea.pls.core.tool.actions
 
 import com.intellij.ide.projectView.impl.nodes.*
 import com.intellij.openapi.actionSystem.*

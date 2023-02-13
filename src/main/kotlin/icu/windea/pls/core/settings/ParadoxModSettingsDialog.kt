@@ -7,6 +7,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
+import icu.windea.pls.core.listeners.*
 import icu.windea.pls.lang.model.*
 
 class ParadoxModSettingsDialog(
@@ -102,5 +103,11 @@ class ParadoxModSettingsDialog(
         val gameType = modSettings.gameType
         val targetPath = getSteamGamePath(gameType.gameSteamId, gameType.gameName) ?: return
         modSettings.gameDirectory = targetPath
+    }
+    
+    override fun doOKAction() {
+        super.doOKAction()
+        
+        project.messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(project, modSettings)
     }
 }
