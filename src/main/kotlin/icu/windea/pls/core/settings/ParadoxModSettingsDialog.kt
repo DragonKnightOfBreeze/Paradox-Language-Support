@@ -5,6 +5,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.lang.model.*
 
@@ -64,6 +65,10 @@ class ParadoxModSettingsDialog(
                 label(PlsBundle.message("mod.settings.gameType")).widthGroup("mod.settings.label")
                 comboBox(ParadoxGameType.valueList)
                     .bindItem(modSettings::gameType.toNullableProperty())
+                //quickSelectGameDirectory
+                link(PlsBundle.message("mod.settings.quickSelectGameDirectory")) {
+                    quickSelectGameDirectory()
+                }.align(AlignX.RIGHT + AlignY.CENTER)
             }
             row {
                 //gameDirectory
@@ -76,7 +81,7 @@ class ParadoxModSettingsDialog(
                     .resizableColumn()
             }
             row {
-                //gameDirectory
+                //modPath
                 label(PlsBundle.message("mod.settings.modPath")).widthGroup("mod.settings.label")
                 val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
                     .withTitle(PlsBundle.message("mod.settings.modPath.title"))
@@ -91,5 +96,11 @@ class ParadoxModSettingsDialog(
                 
             }
         }
+    }
+    
+    private fun quickSelectGameDirectory() {
+        val gameType = modSettings.gameType
+        val targetPath = getSteamGamePath(gameType.gameSteamId, gameType.gameName) ?: return
+        modSettings.gameDirectory = targetPath
     }
 }
