@@ -1,7 +1,7 @@
 package icu.windea.pls.core.settings
 
 import com.intellij.openapi.components.*
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -28,12 +28,12 @@ class ParadoxProjectModSettingsState : BaseState() {
         val result = mutableSetOf<VirtualFile>()
         val rootPaths = mutableSetOf<String>()
         settings.values.forEach { modSettings ->
-            modSettings.path?.let {
+            modSettings.modPath?.let {
                 modSettings.gameDirectory?.let { path ->
                     rootPaths.add(path)
                 }
                 modSettings.modDependencies.forEach { modDependency ->
-                    modDependency.path?.let { path ->
+                    modDependency.modPath?.let { path ->
                         rootPaths.add(path)
                     }
                 }
@@ -82,9 +82,10 @@ class ParadoxProjectModSettingsState : BaseState() {
 class ParadoxModSettingsState : BaseState() {
     var name: String? by string()
     var version: String? by string()
-    var path: String? by string()
+    var supportedVersion: String? by string()
     var gameType: ParadoxGameType by enum(getSettings().defaultGameType)
     var gameDirectory: String? by string()
+    var modPath: String? by string()
     val modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
     var orderInDependencies: Int by property(-1)
 }
@@ -95,6 +96,6 @@ class ParadoxModSettingsState : BaseState() {
 class ParadoxModDependencySettingsState(val modSettings: ParadoxModSettingsState) : BaseState() {
     var name: String? by string()
     var version: String? by string()
-    var path: String? by string()
     val gameType: ParadoxGameType get() = modSettings.gameType
+    var modPath: String? by string()
 }

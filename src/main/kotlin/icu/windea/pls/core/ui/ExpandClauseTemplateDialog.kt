@@ -46,10 +46,11 @@ class ExpandClauseTemplateDialog(
             val propertyName = context.propertyName
                 ?: PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName.none")
             textField()
-                .text(propertyName).enabled(false)
+                .text(propertyName)
                 .label(PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName"), LabelPosition.LEFT)
                 .align(Align.FILL)
                 .columns(COLUMNS_LARGE)
+                .enabled(false)
         }
         if(multipleGroup) {
             row {

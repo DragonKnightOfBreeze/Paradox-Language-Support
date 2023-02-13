@@ -7,4 +7,3 @@ val AnActionEvent.editor by CommonDataKeys.EDITOR
 
 val AnActionEvent.gameTypeProperty by PlsDataKeys.gameTypePropertyKey
 val AnActionEvent.rootTypeProperty by PlsDataKeys.rootTypePropertyKey
-val AnActionEvent.fileInfo by PlsDataKeys.fileInfoKey

@@ -129,7 +129,7 @@ tasks {
 			}
 			.joinToString("\n")
 			.let { 
-				val regex = "* \\[[xX ]\\]".toRegex()
+				val regex = "\\* \\[[xX ]\\]".toRegex()
 				it.replace(regex, "*")
 			} //将任务列表替换为无序列表
 			.let { markdownToHTML(it) }
