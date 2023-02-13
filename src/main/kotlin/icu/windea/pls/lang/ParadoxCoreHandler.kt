@@ -77,7 +77,9 @@ object ParadoxCoreHandler {
             addRootInfo(rootInfo)
             return rootInfo
         }
-        removeRootInfo(rootInfo)
+        if(rootInfo != null) {
+            removeRootInfo(rootInfo)
+        }
         val resolvedRootInfo = try {
             doResolveRootInfo(rootFile)
         } catch(e: Exception) {
@@ -101,7 +103,6 @@ object ParadoxCoreHandler {
         // 尝试从此目录向下查找descriptor.mod
         val descriptorFile = rootFile.findChild(PlsConstants.descriptorFileName)
         if(descriptorFile != null) {
-            if(descriptorFile.fileType.isBinary) return null //unexpected
             return ParadoxModRootInfo(rootFile, descriptorFile, ParadoxRootType.Mod)
         }
         
@@ -109,7 +110,6 @@ object ParadoxCoreHandler {
         // 注意游戏文件可能位于此目录的game子目录中，而非直接位于此目录中
         val launcherSettingsFile = getLauncherSettingsFile(rootFile)
         if(launcherSettingsFile != null) {
-            if(launcherSettingsFile.fileType.isBinary) return null //unexpected
             val launcherSettingsInfo = getLauncherSettingsInfo(launcherSettingsFile)
             if(launcherSettingsInfo == null) return null
             return ParadoxGameRootInfo(rootFile, launcherSettingsFile, ParadoxRootType.Game, launcherSettingsInfo)
@@ -149,7 +149,6 @@ object ParadoxCoreHandler {
     
     fun getLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo? {
         //launcher-settings.json
-        if(file.fileType.isBinary) return null //unexpected
         return file.getOrPutUserData(PlsKeys.launcherSettingsInfoKey) {
             try {
                 return doGetLauncherSettingsInfo(file)

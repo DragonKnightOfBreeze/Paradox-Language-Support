@@ -10,6 +10,7 @@ import javax.swing.*
 
 class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {
     override fun getSourceRoots(): Collection<VirtualFile> {
+        //TODO 0.8.1 优化 - 限定在单个项目范围
         return getAllModSettings().roots
     }
     

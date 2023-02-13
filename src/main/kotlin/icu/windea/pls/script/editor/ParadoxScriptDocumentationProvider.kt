@@ -163,7 +163,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             appendFileInfoHeader(element.fileInfo)
             //加上定义信息
             append(PlsDocBundle.message("prefix.property")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-            element.value?.let { value -> append(" = ").append(value.escapeXml()) }
+            element.propertyValue?.text?.let { value -> append(" = ").append(value.escapeXml()) }
         }
     }
     

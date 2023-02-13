@@ -2,6 +2,7 @@ package icu.windea.pls.script.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.progress.*
+import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
@@ -37,28 +38,38 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 		context.put(PlsCompletionKeys.keywordKey, keyword)
 		context.put(PlsCompletionKeys.completionIdsKey, mutableSetOf())
 		
-		fun doAddCompletions(type: String, config: CwtPropertyConfig, isKey: Boolean?, currentDefinition: ParadoxScriptDefinitionElement?, rootKey: String?) {
+		fun doAddCompletions(type: String, config: CwtPropertyConfig, isKey: Boolean?, currentElement: PsiElement, rootKey: String?) {
 			ProgressManager.checkCanceled()
 			context.put(PlsCompletionKeys.configKey, config)
 			context.put(PlsCompletionKeys.isKeyKey, isKey)
 			//排除正在输入的那一个
 			val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file)
 				.filterBy { rootKey == null || (it is ParadoxScriptProperty && it.name.equals(rootKey, true))}
-				.notSamePosition(currentDefinition)
+				.notSamePosition(currentElement)
 				.distinctByName()
 			val query = ParadoxDefinitionSearch.search(type, project, selector = selector)
 			query.processQuery { processDefinition(context, result, it) }
 		}
 		
 		when {
+			//key_
+			//key_ = 
 			//key_ = { ... }
-			element is ParadoxScriptPropertyKey -> {
-				val definition = element.parent.castOrNull<ParadoxScriptProperty>() ?: return
-				val definitionInfo = definition.definitionInfo
-				if(definitionInfo != null) {
-					val type = definitionInfo.type
-					val config = definitionInfo.declaration ?: return
-					doAddCompletions(type, config, true, definition, null)
+			element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockValue()) -> {
+				val fileInfo = file.fileInfo ?: return
+				val gameType = fileInfo.rootInfo.gameType
+				val configGroup = getCwtConfig(project).getValue(gameType)
+				val path = fileInfo.entryPath //这里使用entryPath
+				val definitionElement = element.findParentProperty() ?: return
+				val elementPath = ParadoxElementPathHandler.getFromFile(element, PlsConstants.maxDefinitionDepth) ?: return
+				for(typeConfig in configGroup.types.values) {
+					if(typeConfig.nameField != null) continue
+					if(ParadoxDefinitionHandler.matchesTypeWithUnknownDeclaration(typeConfig, path, elementPath, null)) {
+						val type = typeConfig.name
+						//需要考虑不指定子类型的情况
+						val config = configGroup.declarations[type]?.getMergedConfig(null, null) ?: continue
+						doAddCompletions(type, config, true, element, null)
+					}
 				}
 			}
 			//event = { id = _ }
@@ -69,26 +80,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 					val type = definitionInfo.type
 					val config = definitionInfo.declaration ?: return
 					//这里需要基于rootKey过滤结果
-					doAddCompletions(type, config, false, definition, definitionInfo.rootKey)
-				}
-			}
-			//key_
-			//key_ = 
-			else -> {
-				val fileInfo = file.fileInfo ?: return
-				val gameType = fileInfo.rootInfo.gameType
-				val configGroup = getCwtConfig(project).getValue(gameType)
-				val path = fileInfo.entryPath //这里使用entryPath
-				val definitionElement = element.findParentProperty() ?: return
-				val elementPath = ParadoxElementPathHandler.getFromFile(definitionElement, PlsConstants.maxDefinitionDepth) ?: return
-				for(typeConfig in configGroup.types.values) {
-					if(typeConfig.nameField != null) continue
-					if(ParadoxDefinitionHandler.matchesTypeWithUnknownDeclaration(typeConfig, path, elementPath, null)) {
-						val type = typeConfig.name
-						//需要考虑不指定子类型的情况
-						val config = configGroup.declarations[type]?.getMergedConfig(null, null) ?: continue
-						doAddCompletions(type, config, true, null, null)
-					}
+					doAddCompletions(type, config, false, element, definitionInfo.rootKey)
 				}
 			}
 		}

@@ -45,7 +45,6 @@ dependencies {
 		exclude(module = "jackson-core")
 		exclude(module = "jackson-databind")
 	}
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
 }
 
 sourceSets {
@@ -88,7 +87,12 @@ tasks {
 	withType<KotlinCompile> {
 		kotlinOptions {
 			jvmTarget = "17"
-			freeCompilerArgs = listOf("-Xjvm-default=all")
+			freeCompilerArgs = listOf(
+				"-Xjvm-default=all",
+				"-Xinline-classes",
+				"-Xopt-in=kotlin.RequiresOptIn",
+				"-Xopt-in=kotlin.ExperimentalStdlibApi",
+			)
 		}
 	}
 	test {

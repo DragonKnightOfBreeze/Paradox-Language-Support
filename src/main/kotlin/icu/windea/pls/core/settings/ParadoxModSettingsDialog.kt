@@ -16,6 +16,11 @@ class ParadoxModSettingsDialog(
 ): DialogWrapper(project, true) {
     val oldGameType = modSettings.gameType
     
+    init {
+        title = PlsBundle.message("mod.settings")
+        init()
+    }
+    
     //name (readonly)
     //version (readonly) supportedVersion? (readonly)
     //comment
@@ -27,7 +32,7 @@ class ParadoxModSettingsDialog(
     //mod dependencies (foldable group)
     //  mod dependencies table
     //  actions: add (select mod path & import from file), remove, move up, move down, edit
-    //  columns: order (int text field), icon (thumbnail), name (readonly), version (readonly), supportedVersion (readonly)
+    //  columns: order (int text field), ~~icon (thumbnail)~~, name (readonly), version (readonly), supportedVersion (readonly)
     //  when add or edit a column: show edit dialog (+ mod path)
     
     override fun createCenterPanel(): DialogPanel {
