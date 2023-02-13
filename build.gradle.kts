@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "icu.windea"
-version = "0.8.0"
+version = "0.8.1"
 
 intellij {
 	pluginName.set("Paradox Language Support")
@@ -128,7 +128,10 @@ tasks {
 				subList(start + 1, end)
 			}
 			.joinToString("\n")
-			.let { it.replace("* [ ]", "*") } //不保留任务列表
+			.let { 
+				val regex = "* \\[[xX ]\\]".toRegex()
+				it.replace(regex, "*")
+			} //将任务列表替换为无序列表
 			.let { markdownToHTML(it) }
 		changeNotes.set(changelogText)
 	}

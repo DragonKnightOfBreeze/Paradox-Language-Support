@@ -21,7 +21,7 @@
     <applicationConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettings"/>
     
-    <!--no configurable for mod settings, but for single mod setting-->
+    <!--no configurable for project mod settings, but for single mod settings-->
     <projectService serviceImplementation="icu.windea.pls.core.settings.ParadoxProjectModSettings"/>
     
     <additionalLibraryRootsProvider implementation="icu.windea.pls.core.settings.ParadoxLibraryProvider"/>
@@ -110,12 +110,12 @@
       <add-to-group group-id="ProjectViewPopupMenu"/>
     </group>
     
-    <!--<action id="Pls.OpenModSettings" class="icu.windea.pls.core.settings.actions.OpenModSettingsAction"-->
-    <!--        icon="PlsIcons.Actions.ModSettings">-->
-    <!--  <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>-->
-    <!--  <add-to-group group-id="Pls.Tools" anchor="first"/>-->
-    <!--  <add-to-group group-id="EditorContextBarMenu" anchor="first"/>-->
-    <!--</action>-->
+    <action id="Pls.OpenModSettings" class="icu.windea.pls.core.settings.actions.OpenModSettingsAction"
+            icon="PlsIcons.Actions.ModSettings">
+      <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
+      <add-to-group group-id="Pls.Tools" anchor="first"/>
+      <add-to-group group-id="EditorContextBarMenu" anchor="first"/>
+    </action>
     
     <group id="Pls.OpenPath" popup="true">
       <action id="Pls.OpenPath.OpenSteamPath" class="icu.windea.pls.core.tool.actions.OpenSteamPathAction"

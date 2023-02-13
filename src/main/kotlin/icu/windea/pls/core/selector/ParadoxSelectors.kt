@@ -94,7 +94,7 @@ class ParadoxWithSearchScopeSelector<T : PsiElement>(
 		return select(result)
 	}
 	
-	private fun findRoot(context: PsiElement): PsiElement? {
+	fun findRoot(context: PsiElement): PsiElement? {
 		return searchScope.findRoot(context)
 	}
 	

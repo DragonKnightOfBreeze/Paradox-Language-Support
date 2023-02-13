@@ -14,7 +14,7 @@ class ParadoxSearchScope(private val searchScope: String) {
 	
 	fun getGlobalSearchScope(context: PsiElement): GlobalSearchScope? {
 		return when {
-			searchScope == "definition" -> GlobalSearchScope.fileScope(context.containingFile) //TODO
+			searchScope == "definition" -> GlobalSearchScope.fileScope(context.containingFile) //限定在当前文件作用域
 			else -> null
 		}
 	}
