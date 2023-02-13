@@ -132,22 +132,14 @@
       <add-to-group group-id="Pls.Tools"/>
     </group>
     
-    <group id="Pls.GotoPath">
-      <action id="Pls.FileChooser.GotoSteamPath" class="icu.windea.pls.core.library.actions.GotoSteamPathAction"
-              icon="PlsIcons.Actions.SteamDirectory"/>
-      <action id="Pls.FileChooser.GotoSteamGamePath" class="icu.windea.pls.core.library.actions.GotoSteamGamePathAction"
-              icon="PlsIcons.Actions.SteamGameDirectory"/>
-      <action id="Pls.FileChooser.GotoSteamWorkshopPath" class="icu.windea.pls.core.library.actions.GotoSteamWorkshopPathAction"
-              icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
-      <action id="Pls.FileChooser.GotoGameDataPath" class="icu.windea.pls.core.library.actions.GotoGameDataPathAction"
-              icon="PlsIcons.Actions.GameDataDirectory"/>
+    <group id="Pls.OpenUrl" popup="true">
+      <action id="Pls.OpenUrl.OpenModPageOnSteamWebsite" class="icu.windea.pls.core.tool.actions.OpenModPageOnSteamWebsiteAction"
+              icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenModPageOnSteam" class="icu.windea.pls.core.tool.actions.OpenModPageOnSteamAction"
+              icon="PlsIcons.Steam"/>
+      <add-to-group group-id="Pls.Tools"/>
     </group>
-    <group id="Pls.GotoPath.WithSeparator">
-      <separator/>
-      <reference ref="Pls.GotoPath"/>
-      <add-to-group group-id="FileChooserToolbar" anchor="last"/>
-    </group>
-
+    
     <group id="Pls.Diff">
       <action id="Pls.Diff.ParadoxCompareFiles" class="icu.windea.pls.core.diff.actions.ParadoxCompareFilesAction"
               icon="AllIcons.Actions.Diff">
@@ -169,6 +161,22 @@
       <add-to-group group-id="EditorPopupMenu" relative-to-action="CompareClipboardWithSelection" anchor="after"/>
       <add-to-group group-id="ProjectViewPopupMenu" relative-to-action="CompareFileWithEditor" anchor="after"/>
       <add-to-group group-id="EditorContextBarMenu" anchor="last"/>
+    </group>
+
+    <group id="Pls.GotoPath">
+      <action id="Pls.FileChooser.GotoSteamPath" class="icu.windea.pls.core.library.actions.GotoSteamPathAction"
+              icon="PlsIcons.Actions.SteamDirectory"/>
+      <action id="Pls.FileChooser.GotoSteamGamePath" class="icu.windea.pls.core.library.actions.GotoSteamGamePathAction"
+              icon="PlsIcons.Actions.SteamGameDirectory"/>
+      <action id="Pls.FileChooser.GotoSteamWorkshopPath" class="icu.windea.pls.core.library.actions.GotoSteamWorkshopPathAction"
+              icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
+      <action id="Pls.FileChooser.GotoGameDataPath" class="icu.windea.pls.core.library.actions.GotoGameDataPathAction"
+              icon="PlsIcons.Actions.GameDataDirectory"/>
+    </group>
+    <group id="Pls.GotoPath.WithSeparator">
+      <separator/>
+      <reference ref="Pls.GotoPath"/>
+      <add-to-group group-id="FileChooserToolbar" anchor="last"/>
     </group>
   </actions>
 </idea-plugin>

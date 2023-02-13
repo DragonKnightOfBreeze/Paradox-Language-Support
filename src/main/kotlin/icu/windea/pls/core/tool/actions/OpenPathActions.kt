@@ -27,7 +27,7 @@ abstract class OpenPathAction : DumbAwareAction() {
         presentation.isEnabled = false 
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val fileInfo = virtualFile.fileInfo ?: return
-        presentation.isVisible = true
+        presentation.isVisible = isVisible(fileInfo)
         presentation.isEnabled = isEnabled(fileInfo)
     }
     
@@ -41,12 +41,18 @@ abstract class OpenPathAction : DumbAwareAction() {
         }
     }
     
+    protected abstract fun isVisible(fileInfo: ParadoxFileInfo): Boolean
+    
     protected abstract fun isEnabled(fileInfo: ParadoxFileInfo) : Boolean
     
     protected abstract fun getTargetPath(fileInfo: ParadoxFileInfo): Path?
 }
 
 class OpenSteamPathAction: OpenPathAction() {
+    override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
+        return true
+    }
+    
     override fun isEnabled(fileInfo: ParadoxFileInfo): Boolean {
         return true
     }
@@ -57,6 +63,10 @@ class OpenSteamPathAction: OpenPathAction() {
 }
 
 class OpenSteamGamePathAction: OpenPathAction() {
+    override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
+        return true
+    }
+    
     override fun isEnabled(fileInfo: ParadoxFileInfo): Boolean {
         return true
     }
@@ -68,6 +78,10 @@ class OpenSteamGamePathAction: OpenPathAction() {
 }
 
 class OpenSteamWorkshopPathAction: OpenPathAction() {
+    override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
+        return true
+    }
+    
     override fun isEnabled(fileInfo: ParadoxFileInfo): Boolean {
         return true
     }
@@ -79,6 +93,10 @@ class OpenSteamWorkshopPathAction: OpenPathAction() {
 }
 
 class OpenGameDataPathAction: OpenPathAction() {
+    override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
+        return true
+    }
+    
     override fun isEnabled(fileInfo: ParadoxFileInfo): Boolean {
         return true
     }
