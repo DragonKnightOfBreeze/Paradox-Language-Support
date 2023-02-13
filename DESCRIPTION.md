@@ -63,7 +63,7 @@
   通过在<code>项目结构</code>页面中将游戏目录或者第三方模组目录作为库添加到所属的项目或模块，以将其导入作为你的模组的依赖。
 </p>
 <p>
-  通过设置页面<code>Settings > Languages & Frameworks > Paradox Language Support</code>（以及其他一些通用设置页面），可以变更插件的一些设置。
+通过配置页面<code>Settings > Languages & Frameworks > Paradox Language Support</code>（以及某些通用配置页面），可以变更插件的一些配置。
 </p>
 <p>
   这个插件正在开发中，部分比较复杂的功能可能尚未实现，并且使用过程中可能会发生意外的BUG。
