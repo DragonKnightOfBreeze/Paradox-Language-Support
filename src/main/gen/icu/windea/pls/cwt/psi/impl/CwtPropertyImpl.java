@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import icu.windea.pls.cwt.psi.*;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.config.cwt.config.CwtSeparator;
 import javax.swing.Icon;
@@ -75,6 +76,12 @@ public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty 
   @NotNull
   public CwtSeparator getSeparatorType() {
     return CwtPsiImplUtil.getSeparatorType(this);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return CwtPsiImplUtil.getPresentation(this);
   }
 
 }

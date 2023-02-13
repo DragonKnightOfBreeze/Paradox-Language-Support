@@ -10,6 +10,8 @@ import java.util.*
 
 /**
  * 用于处理元素路径。
+ * 
+ * @see ParadoxElementPath
  */
 object ParadoxElementPathHandler {
     /**
@@ -47,15 +49,15 @@ object ParadoxElementPathHandler {
      * 解析指定元素相对于所属定义的属性路径。
      */
     @JvmStatic
-    fun getFromDefinitionWithDefinition(element: PsiElement, allowDefinitionSelf: Boolean): Tuple2<ParadoxElementPath, ParadoxScriptDefinitionElement>? {
-        return resolveFromDefinitionWithDefinition(element, allowDefinitionSelf)
+    fun getFromDefinitionWithDefinition(element: PsiElement, allowDefinition: Boolean): Tuple2<ParadoxElementPath, ParadoxScriptDefinitionElement>? {
+        return resolveFromDefinitionWithDefinition(element, allowDefinition)
     }
     
-    private fun resolveFromDefinitionWithDefinition(element: PsiElement, allowDefinitionSelf: Boolean): Pair<ParadoxElementPath, ParadoxScriptDefinitionElement>? {
+    private fun resolveFromDefinitionWithDefinition(element: PsiElement, allowDefinition: Boolean): Pair<ParadoxElementPath, ParadoxScriptDefinitionElement>? {
         var current: PsiElement = element
         val originalSubPaths = LinkedList<String>()
         var definition: ParadoxScriptDefinitionElement? = null
-        var flag = allowDefinitionSelf
+        var flag = allowDefinition
         while(current !is PsiDirectory) { //这里的上限应当是null或PsiDirectory，不能是PsiFile，因为它也可能是定义
             if(current is ParadoxScriptMemberElement) {
                 val linked = ParadoxScriptMemberElementLinker.linkElement(current)

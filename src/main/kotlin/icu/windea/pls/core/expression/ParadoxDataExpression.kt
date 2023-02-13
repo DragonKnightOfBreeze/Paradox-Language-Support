@@ -33,18 +33,21 @@ object UnknownParadoxDataExpression: AbstractExpression(PlsConstants.unknownStri
 	override val isKey: Boolean = false
 }
 
-fun Resolver.resolve(element: ParadoxScriptPropertyKey): ParadoxDataExpression {
-	return ParadoxDataExpressionImpl(element.value, element.type, element.text.isLeftQuoted(), true)
-}
-
-fun Resolver.resolve(element: ParadoxScriptValue): ParadoxDataExpression {
-	if(element is ParadoxScriptScriptedVariableReference) {
-		ProgressManager.checkCanceled() //这是必要的
-		val valueElement = element.referenceValue ?: return UnknownParadoxDataExpression
-		return ParadoxDataExpressionImpl(valueElement.value, valueElement.type, valueElement.text.isLeftQuoted(), false)
+fun Resolver.resolve(element: ParadoxScriptExpressionElement): ParadoxDataExpression {
+	return when {
+		element is ParadoxScriptScriptedVariableReference -> {
+			ProgressManager.checkCanceled() //这是必要的
+			val valueElement = element.referenceValue ?: return UnknownParadoxDataExpression
+			ParadoxDataExpressionImpl(valueElement.value, valueElement.type, valueElement.text.isLeftQuoted(), false)
+		}
+		element.type == ParadoxDataType.BlockType -> {
+			BlockParadoxDataExpression
+		}
+		else -> {
+			val isKey = element is ParadoxScriptPropertyKey
+			ParadoxDataExpressionImpl(element.value, element.type, element.text.isLeftQuoted(), isKey)
+		}
 	}
-	if(element.type == ParadoxDataType.BlockType) return BlockParadoxDataExpression
-	return ParadoxDataExpressionImpl(element.value, element.type, element.text.isLeftQuoted(), false)
 }
 
 fun Resolver.resolve(value: String, isQuoted: Boolean, isKey: Boolean? = null): ParadoxDataExpression {

@@ -5,9 +5,11 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
+import com.intellij.psi.ContributedReferenceHost;
+import com.intellij.psi.PsiReference;
 import icu.windea.pls.core.expression.ParadoxDataType;
 
-public interface ParadoxScriptInt extends ParadoxScriptValue, PsiLiteralValue {
+public interface ParadoxScriptInt extends ParadoxScriptValue, PsiLiteralValue, ContributedReferenceHost {
 
   @NotNull
   String getName();
@@ -22,5 +24,11 @@ public interface ParadoxScriptInt extends ParadoxScriptValue, PsiLiteralValue {
 
   @NotNull
   ParadoxDataType getType();
+
+  @Nullable
+  PsiReference getReference();
+
+  @NotNull
+  PsiReference[] getReferences();
 
 }

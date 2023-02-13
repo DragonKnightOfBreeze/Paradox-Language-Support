@@ -45,6 +45,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 				val configs = ParadoxCwtConfigHandler.resolvePropertyConfigs(element, matchType = matchType)
 				val config = configs.firstOrNull()
 				if(config == null) {
+					//这里使用合并后的子规则，即使parentProperty可以精确匹配
 					val expectConfigs = if(showExpectInfo) {
 						element.findParentProperty()?.definitionMemberInfo?.getChildPropertyConfigs()
 					} else null
@@ -124,3 +125,4 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 		}
 	}
 }
+

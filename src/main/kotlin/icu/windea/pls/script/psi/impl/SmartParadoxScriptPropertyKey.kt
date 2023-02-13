@@ -5,6 +5,7 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.psi.*
 
+@Suppress("ABSTRACT_MEMBER_NOT_IMPLEMENTED")
 class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScriptPropertyKey {
 	constructor(node: ASTNode) : super(node)
 	
@@ -13,9 +14,12 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 	@Volatile private var _value: String? = null
 	@Volatile private var _valueType: ParadoxDataType? = null
 	
-	override fun getValue(): String {
-		return _value ?: super.getValue().also { _value = it }
-	}
+	override var value: String
+		@get:JvmName("getValue")
+		get() {
+			return _value ?: super.value.also { _value = it }
+		}
+		set(value) { setValue(value) }
 	
 	override val type: ParadoxDataType
 		get() = _valueType ?: super.type.also { _valueType = it }

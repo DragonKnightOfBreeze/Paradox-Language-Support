@@ -153,7 +153,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			visitStringExpressionElement(element)
 		}
 		
-		override fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
+		private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
 			ProgressManager.checkCanceled()
 			if(inspection.localeSet.isEmpty()) return
 			if(!inspection.checkForModifiers) return

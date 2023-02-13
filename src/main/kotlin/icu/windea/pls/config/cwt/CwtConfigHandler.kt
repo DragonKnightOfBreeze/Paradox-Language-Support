@@ -136,14 +136,16 @@ object CwtConfigHandler {
 	fun getEntryConfigs(config: CwtConfig<*>): List<CwtDataConfig<*>> {
 		val configGroup = config.info.configGroup
 		return when {
-			config is CwtPropertyConfig -> config.parent?.castOrNull<CwtPropertyConfig>()?.configs
+			config is CwtPropertyConfig -> config.inlineableConfig?.let { getEntryConfigs(it) } ?: config.parent
+				?.castOrNull<CwtPropertyConfig>()?.configs
 				?.filter { it is CwtPropertyConfig && it.key == config.key }
 				.orEmpty()
 			config is CwtValueConfig && config.propertyConfig != null -> getEntryConfigs(config.propertyConfig)
-			config is CwtValueConfig -> config.parent?.castOrNull<CwtPropertyConfig>()?.configs
+			config is CwtValueConfig -> config.parent
+				?.castOrNull<CwtPropertyConfig>()?.configs
 				?.filter { it is CwtValueConfig }
 				.orEmpty()
-			config is CwtSingleAliasConfig -> config.config.toSingletonListOrEmpty()  
+			config is CwtSingleAliasConfig -> config.config.toSingletonListOrEmpty()
 			config is CwtAliasConfig -> configGroup.aliasGroups.get(config.name)?.get(config.subName)
 				?.map { it.config }
 				.orEmpty()
@@ -154,27 +156,17 @@ object CwtConfigHandler {
 	
 	//region Matches Methods
 	//DONE 基于cwt规则文件的匹配方法需要进一步匹配scope
-	//DONE 兼容variableReference inlineMath parameter
+	//DONE 兼容scriptedVariableReference inlineMath parameter
 	fun matchesScriptExpression(
 		element: PsiElement,
 		expression: ParadoxDataExpression,
 		configExpression: CwtDataExpression,
 		config: CwtConfig<*>?,
 		configGroup: CwtConfigGroup,
-		matchType: Int = CwtConfigMatchType.ALL
+		matchType: Int = CwtConfigMatchType.DEFAULT
 	): Boolean {
 		val isStatic = BitUtil.isSet(matchType, CwtConfigMatchType.STATIC)
 		val isNotExact = BitUtil.isSet(matchType, CwtConfigMatchType.NOT_EXACT)
-		
-		//匹配block
-		if(configExpression == CwtValueExpression.BlockExpression) {
-			if(expression.isKey != false) return false
-			if(expression.type != ParadoxDataType.BlockType) return false
-			if(element !is ParadoxScriptBlock) return true
-			if(isNotExact) return true //非精确匹配 - 直接使用第一个
-			val configsInBlock = config?.castOrNull<CwtDataConfig<*>>()?.configs ?: return true
-			return matchesScriptExpressionInBlock(element, configsInBlock, configGroup)
-		}
 		
 		//匹配空字符串
 		if(configExpression.isEmpty()) {
@@ -185,6 +177,18 @@ object CwtConfigHandler {
 		val gameType = configGroup.gameType
 		val isParameterAware = expression.type == ParadoxDataType.StringType && expression.text.isParameterAwareExpression()
 		when(configExpression.type) {
+			CwtDataType.Block -> {
+				if(expression.isKey != false) return false
+				if(expression.type != ParadoxDataType.BlockType) return false
+				if(isNotExact) return true //非精确匹配 - 直接使用第一个
+				val block = when {
+					element is ParadoxScriptProperty -> element.value()
+					element is ParadoxScriptBlock -> element
+					else -> null
+				} ?: return false
+				val configsInBlock = config?.castOrNull<CwtDataConfig<*>>()?.configs ?: return true
+				return matchesScriptExpressionInBlock(block, configsInBlock, configGroup)
+			}
 			CwtDataType.Bool -> {
 				return expression.type.isBooleanType()
 			}
@@ -456,10 +460,10 @@ object CwtConfigHandler {
 	}
 	
 	private fun matchesScriptExpressionInBlock(block: ParadoxScriptBlock, configsInBlock: List<CwtConfig<*>>, configGroup: CwtConfigGroup): Boolean {
-		//简单判断：如果block中包含configsInBlock声明的任意propertyKey（作为常量字符串，忽略大小写），则认为匹配
+		//简单判断：如果block中包含configsInBlock声明的必须的任意propertyKey（作为常量字符串，忽略大小写），则认为匹配
 		val propertyKeys = caseInsensitiveStringSet()
 		configsInBlock.forEach { 
-			if(it is CwtPropertyConfig && it.keyExpression.type == CwtDataType.Constant) {
+			if(it is CwtPropertyConfig && it.keyExpression.type == CwtDataType.Constant && it.cardinality.isRequired()) {
 				propertyKeys.add(it.key)
 			} 
 		}
@@ -478,7 +482,7 @@ object CwtConfigHandler {
 		expression: ParadoxDataExpression,
 		aliasName: String,
 		configGroup: CwtConfigGroup,
-		matchType: Int = CwtConfigMatchType.ALL
+		matchType: Int = CwtConfigMatchType.DEFAULT
 	): Boolean {
 		val aliasSubName = getAliasSubName(element, expression.text, expression.quoted, aliasName, configGroup, matchType) ?: return false
 		val configExpression = CwtKeyExpression.resolve(aliasSubName)
@@ -489,12 +493,12 @@ object CwtConfigHandler {
 		return ParadoxModifierHandler.matchesModifier(name, element, configGroup)
 	}
 	
-	fun matchesTemplateExpression(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
+	fun matchesTemplateExpression(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.DEFAULT): Boolean {
 		val templateConfigExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
 		return templateConfigExpression.matches(expression.text, element, configGroup, matchType)
 	}
 	
-	fun getAliasSubName(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): String? {
+	fun getAliasSubName(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.DEFAULT): String? {
 		val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
 		if(constKey != null) return constKey
 		val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
@@ -506,7 +510,7 @@ object CwtConfigHandler {
 	
 	fun requireNotExactMatch(configExpression: CwtDataExpression): Boolean {
 		return when {
-			configExpression == CwtValueExpression.BlockExpression -> true
+			configExpression.type == CwtDataType.Block -> true
 			configExpression.type == CwtDataType.Int && configExpression.extraValue != null -> true
 			configExpression.type == CwtDataType.Float && configExpression.extraValue != null -> true
 			configExpression.type == CwtDataType.ColorField && configExpression.value != null -> true
@@ -518,6 +522,7 @@ object CwtConfigHandler {
 	
 	fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Int {
 		return when(configExpression.type) {
+			CwtDataType.Block -> 100
 			CwtDataType.Bool -> 100
 			CwtDataType.Int -> 90
 			CwtDataType.Float -> 90
@@ -583,9 +588,13 @@ object CwtConfigHandler {
 			addRootKeyCompletions(definitionElement, context, result)
 		}
 		if(definitionMemberInfo == null) return
+		
 		val configGroup = definitionMemberInfo.configGroup
-		val configs = definitionMemberInfo.getChildPropertyConfigs()
+		//这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
+		val parentConfigs = ParadoxCwtConfigHandler.resolveConfigs(definitionElement, allowDefinition = true)
+		val configs = parentConfigs.flatMap { it.properties.orEmpty() }
 		if(configs.isEmpty()) return
+		val occurrenceMap = ParadoxCwtConfigHandler.getChildOccurrenceMap(definitionElement, parentConfigs)
 		
 		context.put(PlsCompletionKeys.isKeyKey, true)
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
@@ -593,7 +602,7 @@ object CwtConfigHandler {
 		
 		configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
 			for(config in configsWithSameKey) {
-				if(shouldComplete(config, definitionMemberInfo)) {
+				if(shouldComplete(config, occurrenceMap)) {
 					context.put(PlsCompletionKeys.configKey, config)
 					context.put(PlsCompletionKeys.configsKey, configsWithSameKey)
 					completeScriptExpression(context, result)
@@ -606,9 +615,35 @@ object CwtConfigHandler {
 		return
 	}
 	
-	fun addValueCompletions(definitionElement: ParadoxScriptDefinitionElement, context: ProcessingContext, result: CompletionResultSet) {
+	fun addValueCompletions(blockElement: ParadoxScriptBlock, context: ProcessingContext, result: CompletionResultSet) {
+		val definitionMemberInfo = blockElement.definitionMemberInfo
+		if(definitionMemberInfo == null) return
+		
+		val configGroup = definitionMemberInfo.configGroup
+		//这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
+		val parentConfigs = ParadoxCwtConfigHandler.resolveConfigs(blockElement, allowDefinition = true)
+		val configs = parentConfigs.flatMap { it.values.orEmpty() }
+		if(configs.isEmpty()) return
+		val occurrenceMap = ParadoxCwtConfigHandler.getChildOccurrenceMap(blockElement, parentConfigs)
+		
+		context.put(PlsCompletionKeys.isKeyKey, false)
+		context.put(PlsCompletionKeys.configGroupKey, configGroup)
+		
+		for(config in configs) {
+			if(shouldComplete(config, occurrenceMap)) {
+				context.put(PlsCompletionKeys.configKey, config)
+				completeScriptExpression(context, result)
+			}
+		}
+		
+		context.put(PlsCompletionKeys.configKey, null)
+		return
+	}
+	
+	fun addPropertyValueCompletions(definitionElement: ParadoxScriptDefinitionElement, context: ProcessingContext, result: CompletionResultSet) {
 		val definitionMemberInfo = definitionElement.definitionMemberInfo
 		if(definitionMemberInfo == null) return
+		
 		val configGroup = definitionMemberInfo.configGroup
 		val configs = definitionMemberInfo.getConfigs()
 		if(configs.isEmpty()) return
@@ -629,32 +664,11 @@ object CwtConfigHandler {
 		return
 	}
 	
-	fun addValueCompletionsInBlock(blockElement: ParadoxScriptBlock, context: ProcessingContext, result: CompletionResultSet) {
-		val definitionMemberInfo = blockElement.definitionMemberInfo
-		if(definitionMemberInfo == null) return
-		val configGroup = definitionMemberInfo.configGroup
-		val configs = definitionMemberInfo.getChildValueConfigs()
-		if(configs.isEmpty()) return
-		
-		context.put(PlsCompletionKeys.isKeyKey, false)
-		context.put(PlsCompletionKeys.configGroupKey, configGroup)
-		
-		for(config in configs) {
-			if(shouldComplete(config, definitionMemberInfo)) {
-				context.put(PlsCompletionKeys.configKey, config)
-				completeScriptExpression(context, result)
-			}
-		}
-		
-		context.put(PlsCompletionKeys.configKey, null)
-		return
-	}
-	
-	private fun shouldComplete(config: CwtPropertyConfig, definitionMemberInfo: ParadoxDefinitionMemberInfo): Boolean {
+	private fun shouldComplete(config: CwtPropertyConfig, occurrenceMap: Map<CwtDataExpression, Occurrence>): Boolean {
 		val expression = config.keyExpression
 		//如果类型是aliasName，则无论cardinality如何定义，都应该提供补全（某些cwt规则文件未正确编写）
 		if(expression.type == CwtDataType.AliasName) return true
-		val actualCount = definitionMemberInfo.childPropertyOccurrenceMap[expression]?.actual ?: 0
+		val actualCount = occurrenceMap[expression]?.actual ?: 0
 		//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
 		//如果上限是动态的值（如，基于define的值），也不作限制
 		val cardinality = config.cardinality
@@ -666,9 +680,9 @@ object CwtConfigHandler {
 		return maxCount == null || actualCount < maxCount
 	}
 	
-	private fun shouldComplete(config: CwtValueConfig, definitionMemberInfo: ParadoxDefinitionMemberInfo): Boolean {
+	private fun shouldComplete(config: CwtValueConfig, occurrenceMap: Map<CwtDataExpression, Occurrence>): Boolean {
 		val expression = config.valueExpression
-		val actualCount = definitionMemberInfo.childValueOccurrenceMap[expression]?.actual ?: 0
+		val actualCount = occurrenceMap[expression]?.actual ?: 0
 		//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
 		//如果上限是动态的值（如，基于define的值），也不作限制
 		val cardinality = config.cardinality
@@ -773,12 +787,10 @@ object CwtConfigHandler {
 		if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return
 		put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
 		
-		if(configExpression == CwtValueExpression.BlockExpression) {
-			result.addBlockElement(context)
-			return
-		}
-		
 		when(configExpression.type) {
+			CwtDataType.Block -> {
+				result.addBlockElement(context)
+			}
 			CwtDataType.Bool -> {
 				result.addExpressionElement(context, PlsLookupElements.yesLookupElement)
 				result.addExpressionElement(context, PlsLookupElements.noLookupElement)
@@ -1586,7 +1598,11 @@ object CwtConfigHandler {
 		val gameType = configGroup.gameType ?: return null
 		val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.value
 		if(expression.isParameterAwareExpression()) return null //排除引用文本带参数的情况
+		
 		when(configExpression.type) {
+			CwtDataType.Block -> {
+				return config?.pointer?.element
+			}
 			CwtDataType.Localisation -> {
 				val name = expression
 				val selector = localisationSelector().gameType(gameType).preferRootFrom(element, exact).preferLocale(preferredParadoxLocale(), exact)
@@ -1703,7 +1719,9 @@ object CwtConfigHandler {
 					val selector = fileSelector().gameType(gameType).preferRootFrom(element)
 					return ParadoxFilePathSearch.search(pathReference, project, configExpression, selector = selector).find()?.toPsiFile(project)
 				}
-				if(isKey == true && config is CwtPropertyConfig) return config.resolved().pointer.element
+				if(config != null && configExpression is CwtKeyExpression) {
+					return config.resolved().pointer.element
+				}
 				return null
 			}
 		}
@@ -1718,6 +1736,9 @@ object CwtConfigHandler {
 		val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.value
 		if(expression.isParameterAwareExpression()) return emptyList() //排除引用文本带参数的情况
 		when(configExpression.type) {
+			CwtDataType.Block -> {
+				return config?.pointer?.element.toSingletonListOrEmpty()
+			}
 			CwtDataType.Localisation -> {
 				val name = expression
 				val selector = localisationSelector().gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
@@ -1836,7 +1857,9 @@ object CwtConfigHandler {
 					val selector = fileSelector().gameType(gameType).preferRootFrom(element)
 					return ParadoxFilePathSearch.search(pathReference, project, configExpression, selector = selector).findAll().mapNotNull { it.toPsiFile(project) }
 				}
-				if(isKey == true && config is CwtPropertyConfig) return config.resolved().pointer.element.toSingletonListOrEmpty()
+				if(config != null && configExpression is CwtKeyExpression) {
+					return config.resolved().pointer.element.toSingletonListOrEmpty()
+				}
 				return emptyList()
 			}
 		}

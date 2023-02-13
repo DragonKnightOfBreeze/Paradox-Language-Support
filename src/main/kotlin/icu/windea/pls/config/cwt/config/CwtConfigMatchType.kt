@@ -5,7 +5,7 @@ package icu.windea.pls.config.cwt.config
  */
 object CwtConfigMatchType {
 	/**
-	 * 静态匹配：带参数、需要访问索引等场合，直接认为不匹配。
+	 * 静态匹配：带参数、需要访问索引等场合，直接认为匹配。
 	 */
 	const val STATIC = 0x01
 	
@@ -41,6 +41,6 @@ object CwtConfigMatchType {
 	 */
 	const val COMPLEX_ENUM_VALUE = 0x20
 	
+	const val DEFAULT  = FILE_PATH or DEFINITION or LOCALISATION or COMPLEX_ENUM_VALUE
 	const val INSPECTION = DEFINITION or LOCALISATION or COMPLEX_ENUM_VALUE
-	const val ALL  = FILE_PATH or DEFINITION or LOCALISATION or COMPLEX_ENUM_VALUE
 }

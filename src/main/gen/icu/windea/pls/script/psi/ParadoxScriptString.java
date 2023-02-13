@@ -28,12 +28,6 @@ public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptSt
   @NotNull
   ParadoxScriptString setValue(@NotNull String name);
 
-  @Nullable
-  PsiReference getReference();
-
-  @NotNull
-  PsiReference[] getReferences();
-
   @NotNull
   String getStringValue();
 
@@ -50,5 +44,11 @@ public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptSt
   ItemPresentation getPresentation();
 
   boolean isEquivalentTo(@NotNull PsiElement another);
+
+  @Nullable
+  PsiReference getReference();
+
+  @NotNull
+  PsiReference[] getReferences();
 
 }

@@ -1,4 +1,4 @@
-package icu.windea.pls.core.util
+package icu.windea.pls.lang.model
 
 data class Occurrence(
 	var actual: Int,

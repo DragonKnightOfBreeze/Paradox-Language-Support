@@ -4,10 +4,13 @@ package icu.windea.pls.cwt.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLiteralValue;
+import com.intellij.psi.NavigatablePsiElement;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import javax.swing.Icon;
 
-public interface CwtPropertyKey extends PsiElement {
+public interface CwtPropertyKey extends PsiLiteralValue, NavigatablePsiElement {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
@@ -20,5 +23,8 @@ public interface CwtPropertyKey extends PsiElement {
 
   @NotNull
   CwtPropertyKey setValue(@NotNull String value);
+
+  @NotNull
+  ItemPresentation getPresentation();
 
 }

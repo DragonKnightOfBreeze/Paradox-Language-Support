@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
  * 使用位置有冲突的内联脚本的检查。
  */
 @WithGameType(ParadoxGameType.Stellaris)
-class InlineScriptWithConflictingUsageInspection : LocalInspectionTool(){
+class ConflictingInlineScriptUsageInspection : LocalInspectionTool(){
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if(file !is ParadoxScriptFile) return null
         if(!getSettings().inference.inlineScriptLocation) return null
@@ -23,7 +23,7 @@ class InlineScriptWithConflictingUsageInspection : LocalInspectionTool(){
         val usageInfo = ParadoxInlineScriptHandler.getInlineScriptUsageInfo(file) ?: return null
         if(usageInfo.hasConflict) {
             val holder = ProblemsHolder(manager, file, isOnTheFly)
-            val description = PlsBundle.message("inspection.script.inference.inlineScriptWithConflictingUsage.description", inlineScriptExpression)
+            val description = PlsBundle.message("inspection.script.inference.conflictingInlineScriptUsage.description", inlineScriptExpression)
             holder.registerProblem(file, description, GotoInlineScriptUsagesIntention())
             return holder.resultsArray
         }

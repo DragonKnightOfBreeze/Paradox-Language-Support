@@ -5,10 +5,10 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.config.cwt.expression.CwtDataType.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.linker.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
@@ -31,19 +31,17 @@ class MissingExpressionInspection : LocalInspectionTool() {
                 if(element is ParadoxScriptBlock) visitBlock(element)
                 if(element.isExpressionOrMemberContext()) super.visitElement(element)
             }
-            
+    
             override fun visitFile(file: PsiFile) {
                 if(file !is ParadoxScriptFile) return
                 //忽略可能的脚本片段入口
-                if(!ParadoxScriptMemberElementLinker.canLink(file)) {
-                    val position = file //TODO not very suitable
-                    val definitionMemberInfo = file.definitionMemberInfo
-                    doCheck(position, definitionMemberInfo, true)
-                }
+                if(ParadoxScriptMemberElementLinker.canLink(file)) return super.visitFile(file)
+                val configs = ParadoxCwtConfigHandler.resolveConfigs(file, allowDefinition = true)
+                doCheck(file, file, configs)
                 super.visitFile(file)
             }
-            
-            fun visitBlock(element: ParadoxScriptBlock) {
+    
+            private fun visitBlock(element: ParadoxScriptBlock) {
                 ProgressManager.checkCanceled()
                 //skip checking property if its property key may contain parameters
                 //position: (in property) property key / (standalone) left curly brace
@@ -55,29 +53,34 @@ class MissingExpressionInspection : LocalInspectionTool() {
                     ?.also { if(it.isParameterAwareExpression()) return }
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
-                val definitionMemberInfo = element.definitionMemberInfo
-                doCheck(position, definitionMemberInfo, false)
+                val configs = ParadoxCwtConfigHandler.resolveConfigs(element, allowDefinition = true)
+                doCheck(element, position, configs)
+            }
+    
+            private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement, configs: List<CwtDataConfig<*>>) {
+                if(skipCheck(element, configs)) return
+                val occurrenceMap = ParadoxCwtConfigHandler.getChildOccurrenceMap(element, configs)
+                if(occurrenceMap.isEmpty()) return
+                occurrenceMap.forEach { (configExpression, occurrence) ->
+                    val r = doCheckOccurrence(element, position, occurrence, configExpression)
+                    if(!r) return
+                }
+            }
+    
+            private fun skipCheck(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Boolean {
+                //子句不为空且可以精确匹配多个子句规则时，不适用此检查
+                if(configs.isEmpty()) return true
+                if(configs.size == 1) return false
+                if(element is ParadoxScriptFile && element.block?.isEmpty == true) return false
+                if(element is ParadoxScriptBlock && element.isEmpty) return false
+                return true
             }
             
-            private fun doCheck(position: PsiElement, definitionMemberInfo: ParadoxDefinitionMemberInfo?, fileLevel: Boolean) {
-                if(definitionMemberInfo == null) return
-                definitionMemberInfo.childPropertyOccurrenceMap.takeIf { it.isNotEmpty() }
-                    ?.forEach { (configExpression, occurrence) ->
-                        val r = doCheckOccurrence(occurrence, configExpression, position, fileLevel)
-                        if(!r) return
-                    }
-                definitionMemberInfo.childValueOccurrenceMap.takeIf { it.isNotEmpty() }
-                    ?.forEach { (configExpression, occurrence) ->
-                        val r = doCheckOccurrence(occurrence, configExpression, position, fileLevel)
-                        if(!r) return
-                    }
-            }
-            
-            private fun doCheckOccurrence(occurrence: Occurrence, configExpression: CwtDataExpression, position: PsiElement, fileLevel: Boolean): Boolean {
+            private fun doCheckOccurrence(element: ParadoxScriptMemberElement, position: PsiElement, occurrence: Occurrence, configExpression: CwtDataExpression): Boolean {
                 val (actual, min, _, relaxMin) = occurrence
                 if(min != null && actual < min) {
                     val isKey = configExpression is CwtKeyExpression
-                    val isConst = configExpression.type == Constant
+                    val isConst = configExpression.type == CwtDataType.Constant
                     val description = if(isKey) {
                         when {
                             isConst -> PlsBundle.message("inspection.script.general.missingExpression.description.1.1", configExpression)
@@ -98,6 +101,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                         relaxMin -> ProblemHighlightType.WEAK_WARNING //weak warning (wave lines), not warning
                         else -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
                     }
+                    val fileLevel = element is PsiFile
                     if(!fileLevel && firstOnly && holder.hasResults()) return false
                     if(fileLevel && firstOnlyOnFile && holder.hasResults()) return false
                     holder.registerProblem(position, "$description $detail", highlightType)

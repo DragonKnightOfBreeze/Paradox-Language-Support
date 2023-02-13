@@ -57,40 +57,59 @@ property ::= property_key property_separator value {
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
   methods=[
     propertyKey="property_key" propertyValue="value"
-    getIcon getName setName getNameIdentifier getValue getSeparatorType
+    getIcon getName setName getNameIdentifier getValue getSeparatorType getPresentation
   ]
 }
 property_key ::= PROPERTY_KEY_TOKEN {
-  methods=[getIcon getName getValue setValue]
+  methods=[getIcon getName getValue setValue getPresentation]
+  implements=[
+    "com.intellij.psi.PsiLiteralValue"
+    "com.intellij.psi.NavigatablePsiElement"
+  ]
 }
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
 
 value ::= boolean | int | float | string | block {
-  methods=[getIcon getName getValue setValue]
+  implements=[
+    "com.intellij.psi.NavigatablePsiElement"
+  ]
+  methods=[getIcon getName getValue setValue getPresentation]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value
+  implements=[
+    "com.intellij.psi.PsiLiteralValue"
+  ]
   methods=[getBooleanValue]
 }
 int ::= INT_TOKEN {
   extends=value
+  implements=[
+    "com.intellij.psi.PsiLiteralValue"
+  ]
   methods=[getIntValue]
 }
 float ::= FLOAT_TOKEN {
   extends=value
+  implements=[
+    "com.intellij.psi.PsiLiteralValue"
+  ]
   methods=[getFloatValue]
 }
 string ::= STRING_TOKEN {
   extends=value
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
-  implements="icu.windea.pls.cwt.psi.CwtNamedElement"
+  implements=[
+    "icu.windea.pls.cwt.psi.CwtNamedElement"
+    "com.intellij.psi.PsiLiteralValue"
+  ]
   methods=[getIcon getName setName getNameIdentifier getValue setValue getStringValue]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
   extends=value
   implements="icu.windea.pls.cwt.psi.CwtBlockElement"
-  methods=[getIcon getValue isEmpty isNotEmpty getComponents]
+  methods=[getIcon getName getValue isEmpty isNotEmpty getComponents]
 }
 private block_item ::= comment | property | option | value{
   recoverWhile="#auto"

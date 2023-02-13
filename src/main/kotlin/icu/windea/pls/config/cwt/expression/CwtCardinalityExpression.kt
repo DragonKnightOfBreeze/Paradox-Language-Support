@@ -57,4 +57,8 @@ class CwtCardinalityExpression private constructor(
 	operator fun component2() = max
 	
 	operator fun component3() = relaxMin
+	
+	fun isOptional() = min == 0
+	
+	fun isRequired() = min > 0
 }

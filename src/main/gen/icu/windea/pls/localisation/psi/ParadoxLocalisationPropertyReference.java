@@ -4,9 +4,10 @@ package icu.windea.pls.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.NavigatablePsiElement;
 import icu.windea.pls.localisation.references.ParadoxLocalisationPropertyPsiReference;
 
-public interface ParadoxLocalisationPropertyReference extends ParadoxLocalisationRichText {
+public interface ParadoxLocalisationPropertyReference extends ParadoxLocalisationRichText, NavigatablePsiElement {
 
   @Nullable
   ParadoxLocalisationCommand getCommand();

@@ -56,7 +56,7 @@ fun ParadoxScriptStringExpressionElement.isParameterAwareExpression(): Boolean {
 /**
  * 判断当前字符串表达式是否在顶层或者子句中或者作为属性的值，并且拥有唯一匹配的CWT规则。
  */
-fun ParadoxScriptExpressionElement.isValidExpression(matchType: Int = CwtConfigMatchType.ALL): Boolean {
+fun ParadoxScriptExpressionElement.isValidExpression(matchType: Int = CwtConfigMatchType.DEFAULT): Boolean {
 	return ParadoxCwtConfigHandler.resolveConfigs(this, orDefault = false, matchType = matchType).size == 1
 }
 

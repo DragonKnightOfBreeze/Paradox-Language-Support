@@ -11,6 +11,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.cwt.psi.*
@@ -388,4 +389,9 @@ object ParadoxLocalisationPsiImplUtil {
 		}
 	}
 	//endregion
+	
+	@JvmStatic
+	fun getPresentation(element: PsiElement): ItemPresentation {
+		return BaseParadoxItemPresentation(element)
+	}
 }

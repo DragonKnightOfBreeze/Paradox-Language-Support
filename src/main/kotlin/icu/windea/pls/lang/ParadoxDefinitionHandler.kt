@@ -18,6 +18,9 @@ import icu.windea.pls.script.psi.*
 
 /**
  * 用于处理定义信息。
+ * 
+ * @see ParadoxScriptDefinitionElement
+ * @see ParadoxDefinitionInfo
  */
 object ParadoxDefinitionHandler {
 	val definitionNamePrefixKey = Key.create<String>("paradox.definition.prefix")
@@ -191,7 +194,7 @@ object ParadoxDefinitionHandler {
 		val isBlock = if(element.getUserData(PlsKeys.isIncompleteKey) == true) null
 		else element.castOrNull<ParadoxScriptProperty>()?.propertyValue?.let { it is ParadoxScriptBlock }
 		if(declarationConfig != null && isBlock != null) {
-			val isBlockConfig = declarationConfig.valueExpression == CwtValueExpression.BlockExpression
+			val isBlockConfig = declarationConfig.valueExpression.type == CwtDataType.Block
 			if(isBlockConfig != isBlock) return false
 		}
 		

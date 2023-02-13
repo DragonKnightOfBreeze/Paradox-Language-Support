@@ -4,6 +4,7 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
@@ -11,7 +12,7 @@ import com.intellij.psi.PsiReference;
 import icu.windea.pls.core.expression.ParadoxDataType;
 import javax.swing.Icon;
 
-public interface ParadoxScriptPropertyKey extends ParadoxScriptStringExpressionElement, StubBasedPsiElement<ParadoxScriptPropertyKeyStub> {
+public interface ParadoxScriptPropertyKey extends NavigatablePsiElement, ParadoxScriptStringExpressionElement, StubBasedPsiElement<ParadoxScriptPropertyKeyStub> {
 
   @NotNull
   List<ParadoxScriptParameter> getParameterList();
@@ -28,12 +29,6 @@ public interface ParadoxScriptPropertyKey extends ParadoxScriptStringExpressionE
   @NotNull
   ParadoxScriptPropertyKey setValue(@NotNull String value);
 
-  @Nullable
-  PsiReference getReference();
-
-  @NotNull
-  PsiReference[] getReferences();
-
   @NotNull
   ParadoxDataType getType();
 
@@ -47,5 +42,11 @@ public interface ParadoxScriptPropertyKey extends ParadoxScriptStringExpressionE
   ItemPresentation getPresentation();
 
   boolean isEquivalentTo(@NotNull PsiElement another);
+
+  @Nullable
+  PsiReference getReference();
+
+  @NotNull
+  PsiReference[] getReferences();
 
 }

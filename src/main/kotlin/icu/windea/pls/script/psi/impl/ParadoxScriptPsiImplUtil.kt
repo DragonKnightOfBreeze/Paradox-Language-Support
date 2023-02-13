@@ -10,9 +10,11 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.cwt.navigation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.support.*
@@ -206,7 +208,7 @@ object ParadoxScriptPsiImplUtil {
 			val nameProperty = element.findProperty(nameField) //不处理内联的情况
 			if(nameProperty != null) {
 				val nameElement = nameProperty.value<ParadoxScriptString>()
-				nameElement?.value = name
+				nameElement?.setValue(name)
 				return element
 			} else {
 				throw IncorrectOperationException()
@@ -279,7 +281,7 @@ object ParadoxScriptPsiImplUtil {
 	fun getPresentation(element: ParadoxScriptProperty): ItemPresentation? {
 		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) return ParadoxDefinitionPresentation(element, definitionInfo)
-		return null
+		return BaseParadoxItemPresentation(element)
 	}
 	
 	@JvmStatic
@@ -317,16 +319,6 @@ object ParadoxScriptPsiImplUtil {
 		val newElement = ParadoxScriptElementFactory.createPropertyKey(element.project, value)
 		element.replace(newElement)
 		return element
-	}
-	
-	@JvmStatic
-	fun getReference(element: ParadoxScriptPropertyKey): PsiReference? {
-		return element.references.singleOrNull()
-	}
-	
-	@JvmStatic
-	fun getReferences(element: ParadoxScriptPropertyKey): Array<out PsiReference> {
-		return PsiReferenceService.getService().getContributedReferences(element)
 	}
 	
 	@JvmStatic
@@ -490,16 +482,6 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getStringValue(element: ParadoxScriptString): String {
 		return element.value
-	}
-	
-	@JvmStatic
-	fun getReference(element: ParadoxScriptString): PsiReference? {
-		return element.references.singleOrNull()
-	}
-	
-	@JvmStatic
-	fun getReferences(element: ParadoxScriptString): Array<out PsiReference> {
-		return PsiReferenceService.getService().getContributedReferences(element)
 	}
 	
 	@JvmStatic
@@ -812,7 +794,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	//region ParadoxScriptDefinitionElement
 	@JvmStatic
-	fun getParameterMap(element: ParadoxScriptDefinitionElement): Map<String, ParadoxParameterInfo> {
+	fun getParameters(element: ParadoxScriptDefinitionElement): Map<String, ParadoxParameterInfo> {
 		//不支持参数时，直接返回空映射
 		if(!ParadoxParameterSupport.supports(element)) return emptyMap()
 		
@@ -849,10 +831,10 @@ object ParadoxScriptPsiImplUtil {
 	
 	//region ParadoxScriptStringExpressionElement
 	@JvmStatic
-	fun getPresentation(element: ParadoxScriptStringExpressionElement): ItemPresentation? {
+	fun getPresentation(element: ParadoxScriptStringExpressionElement): ItemPresentation {
 		val complexEnumValueInfo = element.complexEnumValueInfo
 		if(complexEnumValueInfo != null) return ParadoxComplexEnumValuePresentation(element, complexEnumValueInfo)
-		return null
+		return BaseParadoxItemPresentation(element)
 	}
 	
 	@JvmStatic
@@ -863,4 +845,19 @@ object ParadoxScriptPsiImplUtil {
 			&& element.complexEnumValueInfo?.equals(another.complexEnumValueInfo) == true
 	}
 	//endregion
+	
+	@JvmStatic
+	fun getReference(element: PsiElement): PsiReference? {
+		return element.references.singleOrNull()
+	}
+	
+	@JvmStatic
+	fun getReferences(element: PsiElement): Array<out PsiReference> {
+		return PsiReferenceService.getService().getContributedReferences(element)
+	}
+	
+	@JvmStatic
+	fun getPresentation(element: PsiElement): ItemPresentation {
+		return BaseParadoxItemPresentation(element)
+	}
 }

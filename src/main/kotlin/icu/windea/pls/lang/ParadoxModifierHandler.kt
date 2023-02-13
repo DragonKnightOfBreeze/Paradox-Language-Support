@@ -21,7 +21,7 @@ object ParadoxModifierHandler {
 	//对于Stellaris：修正会由经济类型（economic_category）的声明生成
 	
 	@JvmStatic
-	fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
+	fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.DEFAULT): Boolean {
 		//先判断是否存在对应的预定义的非生成的修正
 		if(matchesPredefinedModifier(name, configGroup)) return true
 		//否则基于解析器逻辑判断

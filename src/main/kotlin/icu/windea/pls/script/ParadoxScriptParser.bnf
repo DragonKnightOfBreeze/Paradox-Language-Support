@@ -73,7 +73,7 @@ property ::= property_key property_separator property_value {
     string=""
     getIcon getName setName getNameIdentifier getValue getDepth getBlock 
     getType getConfigExpression getExpression
-    getPathName getOriginalPathName getParameterMap
+    getPathName getOriginalPathName getParameters
     getPresentation isEquivalentTo toString
   ]
 }
@@ -81,12 +81,15 @@ property_key ::= key_expr {
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKeyStub"
   implements=[
+    //"com.intellij.psi.PsiLiteralValue"
+    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
   ] 
   methods=[
-    getIcon getName getValue setValue getReference getReferences
+    getIcon getName getValue setValue
     getType getExpression getConfigExpression
     getPresentation isEquivalentTo toString
+    getReference getReferences
   ]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
@@ -95,12 +98,14 @@ private property_value ::= scripted_variable_reference | boolean | int | float |
 //(property) value related
 value ::= scripted_variable_reference | boolean | int | float | color | block | inline_math {
   implements=[
+    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptMemberElement"
   ]
   methods=[
     getIcon getName getValue setValue
     getType getExpression getConfigExpression
+    getPresentation
   ]
 }
 scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_ID {
@@ -121,13 +126,20 @@ int ::= INT_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
+    "com.intellij.psi.PsiLiteralValue"
+    "com.intellij.psi.ContributedReferenceHost"
   ]
-  methods=[getName getValue setValue getIntValue getType]
+  methods=[
+    getName getValue setValue getIntValue getType
+    getReference getReferences
+  ]
 }
 float ::= FLOAT_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
+    "com.intellij.psi.PsiLiteralValue"
+    "com.intellij.psi.ContributedReferenceHost"
   ]
   methods=[getName getValue setValue getFloatValue getType]
 }
@@ -135,13 +147,15 @@ string ::= value_expr {
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   stubClass="icu.windea.pls.script.psi.ParadoxScriptStringStub"
   implements=[
+    //"com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
   ]
   methods=[
-    getIcon getName getValue setValue getReference getReferences getStringValue
+    getIcon getName getValue setValue getStringValue
     getType getExpression getConfigExpression
     getPresentation isEquivalentTo toString
+    getReference getReferences
   ]
 }
 color ::= COLOR_TOKEN {
@@ -154,11 +168,13 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   extends=value
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptBlockElement"
+    "com.intellij.psi.ContributedReferenceHost"
   ]
   methods=[
     property="" value=""
     getIcon getValue isEmpty isNotEmpty getPropertyList getValueList getComponents
     getType getExpression
+    getReference getReferences
   ]
 }
 private block_item ::= COMMENT | property | block_value | parameter_condition | scripted_variable{

@@ -11,6 +11,9 @@ import icu.windea.pls.script.psi.*
 
 /**
  * 用于处理定义成员信息。
+ * 
+ * @see ParadoxScriptMemberElement
+ * @see ParadoxDefinitionMemberInfo
  */
 object ParadoxDefinitionMemberHandler {
     @JvmStatic
@@ -56,6 +59,7 @@ object ParadoxDefinitionMemberHandler {
             val upDeclaration = upDefinition.definitionInfo?.declaration ?: return
             var declaration = upDeclaration
             for((key) in upElementPath) {
+                val  a = 1 + 1
                 declaration = declaration.properties?.find { it.key == key } ?: return
             }
             val declarationConfig = CwtDeclarationConfig(declaration.pointer, declaration.info, declaration.key, declaration)

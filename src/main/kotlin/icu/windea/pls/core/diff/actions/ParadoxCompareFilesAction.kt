@@ -34,28 +34,37 @@ import javax.swing.*
  * * 可以用于比较二进制文件。（如DDS图片）
  * * TODO 按照覆盖顺序进行排序。
  */
-@Suppress("ComponentNotRegistered")
+@Suppress("ComponentNotRegistered", "UNUSED_VARIABLE")
 class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
+    private fun findFile(e: AnActionEvent): VirtualFile? {
+        return e.getData(CommonDataKeys.VIRTUAL_FILE)
+            ?: e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)?.singleOrNull()
+    }
+    
     override fun update(e: AnActionEvent) {
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
-        val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
-            ?: e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)?.singleOrNull()
-            ?: return
+        val project = e.project ?: return
+        val file = findFile(e) ?: return
         if(file.isDirectory) return
         val fileInfo = file.fileInfo ?: return
-        //忽略直接位于游戏或模组入口目录下的文件
-        if(fileInfo.entryPath.length <= 1) return
+        if(fileInfo.entryPath.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
         presentation.isVisible = true
+        //val gameType = fileInfo.rootInfo.gameType
+        //val path = fileInfo.path.path
+        //val selector = fileSelector().gameType(gameType)
+        //val multiple = ParadoxFilePathSearch.search(path, project, selector = selector).hasMultipleResults()
+        //if(!multiple) return //忽略不存在重载/被重载的情况 - 出于性能原因，目前不在update方法中判断
         presentation.isEnabled = true
     }
     
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
         val project = e.project ?: return null
-        val editor = e.editor
-        val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
+        val file = findFile(e) ?: return null
+        //if(file.isDirectory) return null
         val fileInfo = file.fileInfo ?: return null
+        //if(fileInfo.entryPath.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
         val gameType = fileInfo.rootInfo.gameType
         val path = fileInfo.path.path
         val virtualFiles = Collections.synchronizedList(mutableListOf<VirtualFile>())
@@ -73,7 +82,8 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
             ).notify(project)
             return null
         }
-        
+    
+        val editor = e.editor
         val contentFactory = DiffContentFactory.getInstance()
         
         val windowTitle = getWindowsTitle(file) ?: return null
