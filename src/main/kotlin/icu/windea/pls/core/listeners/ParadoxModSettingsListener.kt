@@ -15,4 +15,3 @@ interface ParadoxModSettingsListener {
         val TOPIC = Topic.create("ParadoxModSettingsListener", ParadoxModSettingsListener::class.java)
     }
 }
-

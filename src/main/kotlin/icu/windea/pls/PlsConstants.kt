@@ -4,7 +4,6 @@ import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.*
 import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.config.cwt.config.*
@@ -97,8 +96,8 @@ object PlsKeys {
 	val fileTypeKey = Key.create<FileType>("paradox.fileType")
 	val localeConfigKey = Key.create<CwtLocalisationLocaleConfig>("paradox.localeConfig")
 	
-	val descriptorInfoKey = Key.create<ParadoxDescriptorInfo>("paradox.descriptorInfo")
 	val launcherSettingsInfoKey = Key.create<ParadoxLauncherSettingsInfo>("paradox.launcherSettingsInfo")
+	val descriptorInfoKey = Key.create<ParadoxDescriptorInfo>("paradox.descriptorInfo")
 	
 	val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("paradox.cached.definitionInfo")
 	val cachedDefinitionMemberInfoKey = Key.create<CachedValue<ParadoxDefinitionMemberInfo>>("paradox.cached.definitionMemberInfo")

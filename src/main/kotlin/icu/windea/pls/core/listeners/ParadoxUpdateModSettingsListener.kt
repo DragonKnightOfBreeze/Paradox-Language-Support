@@ -7,7 +7,7 @@ import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.model.*
 
 /**
- * 当根信息被添加或移除时，同步更改模组配置。
+ * 当根信息被添加或移除时，同步更改模组配置并更新库信息。
  */
 class ParadoxUpdateModSettingsListener: ParadoxRootInfoListener {
     override fun onAdd(rootInfo: ParadoxRootInfo) {

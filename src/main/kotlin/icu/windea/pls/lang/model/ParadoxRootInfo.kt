@@ -3,6 +3,7 @@ package icu.windea.pls.lang.model
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import java.nio.file.*
 
 /**
@@ -70,17 +71,17 @@ class ParadoxLauncherSettingsInfo(
 class ParadoxModRootInfo(
     override val rootFile: VirtualFile,
     val descriptorFile: VirtualFile,
-    val markerFile: VirtualFile?,
     override val rootType: ParadoxRootType,
-    val descriptorInfo: ParadoxDescriptorInfo
 ) : ParadoxRootInfo() {
-    override val gameType: ParadoxGameType = markerFile?.let { ParadoxGameType.resolve(it) } ?: getSettings().defaultGameType
+    val descriptorInfo: ParadoxDescriptorInfo get() = ParadoxCoreHandler.getDescriptorInfo(descriptorFile)
+    
+    override var gameType: ParadoxGameType = getSettings().defaultGameType
     override val gameRootFile: VirtualFile = rootFile
     
     override val rootPath: Path = rootFile.toNioPath()
     override val gameRootPath: Path = rootPath
     
-    override val isAvailable get() = descriptorFile.isValid && (markerFile?.isValid != false)
+    override val isAvailable get() = descriptorFile.isValid
     
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxRootInfo && rootFile == other.rootFile
@@ -98,6 +99,5 @@ class ParadoxDescriptorInfo(
     val tags: Set<String>? = null,
     val supportedVersion: String? = null,
     val remoteFileId: String? = null,
-    val path: String? = null,
-    val isModDescriptor: Boolean = true
+    val path: String? = null
 )

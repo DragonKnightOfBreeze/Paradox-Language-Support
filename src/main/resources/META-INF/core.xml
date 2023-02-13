@@ -37,7 +37,7 @@
 
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType"/>
     
-    <vfs.asyncListener implementation="icu.windea.pls.core.listeners.DescriptorOrMarkerFileListener"/>
+    <vfs.asyncListener implementation="icu.windea.pls.core.listeners.ParadoxDescriptorFileListener"/>
 
     <qualifiedNameProvider implementation="icu.windea.pls.core.ParadoxQualifiedNameProvider"/>
     <readWriteAccessDetector implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxReadWriteAccessDetector"/>
@@ -83,7 +83,7 @@
     
     <iconDescriptionBundle resourceBundle="messages.PlsIconBundle"/>
     
-    <vfs.asyncListener implementation="icu.windea.pls.core.listeners.ParadoxTrackFileListener"/>
+    <vfs.asyncListener implementation="icu.windea.pls.core.listeners.ParadoxModificationTrackerFileListener"/>
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls">

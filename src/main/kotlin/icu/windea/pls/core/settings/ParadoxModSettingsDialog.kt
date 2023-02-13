@@ -14,6 +14,8 @@ class ParadoxModSettingsDialog(
     val project: Project,
     val modSettings: ParadoxModSettingsState,
 ): DialogWrapper(project, true) {
+    val oldGameType = modSettings.gameType
+    
     //name (readonly)
     //version (readonly) supportedVersion? (readonly)
     //comment

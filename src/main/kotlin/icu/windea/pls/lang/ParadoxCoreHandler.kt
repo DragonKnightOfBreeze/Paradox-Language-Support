@@ -2,7 +2,6 @@ package icu.windea.pls.lang
 
 import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.codeInsight.hints.*
-import com.intellij.ide.projectView.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileEditor.*
@@ -80,7 +79,7 @@ object ParadoxCoreHandler {
         }
         removeRootInfo(rootInfo)
         val resolvedRootInfo = try {
-            doResolveRootInfo(rootFile, canBeNotAvailable)
+            doResolveRootInfo(rootFile)
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
             logger.warn(e)
@@ -95,33 +94,28 @@ object ParadoxCoreHandler {
         return resolvedRootInfo
     }
     
-    private fun doResolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean): ParadoxRootInfo? {
+    private fun doResolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         if(rootFile is StubVirtualFile || !rootFile.isValid) return null
         if(!rootFile.isDirectory) return null
         
-        // 尝试向下查找descriptor.mod，如果找到，再尝试向下查找.{gameType}，确认rootType和gameType
-        // descriptor.mod > Mod
+        // 尝试从此目录向下查找descriptor.mod
         val descriptorFile = rootFile.findChild(PlsConstants.descriptorFileName)
         if(descriptorFile != null) {
-            var markerFile: VirtualFile? = null
-            for(rootChild in rootFile.children) {
-                if(rootChild.isDirectory) continue
-                if(!canBeNotAvailable && !rootChild.isValid) continue
-                // .{gameType} > set game type
-                if(ParadoxGameType.resolve(rootChild) != null) {
-                    markerFile = rootChild
-                    break
-                }
-            }
-            val descriptorInfo = getDescriptorInfo(descriptorFile) ?: return null
-            return ParadoxModRootInfo(rootFile, descriptorFile, markerFile, ParadoxRootType.Mod, descriptorInfo)
+            if(descriptorFile.fileType.isBinary) return null //unexpected
+            return ParadoxModRootInfo(rootFile, descriptorFile, ParadoxRootType.Mod)
         }
         
-        // 从此目录向下递归查找launcher-settings.json，如果找到，再根据"dlcPath"的值获取游戏文件的根目录
+        // 尝试从此目录向下递归查找launcher-settings.json，如果找到，再根据"dlcPath"的值获取游戏文件的根目录
         // 注意游戏文件可能位于此目录的game子目录中，而非直接位于此目录中
-        val launcherSettingsFile = getLauncherSettingsFile(rootFile) ?: return null
-        val launcherSettingsInfo = getLauncherSettingsInfo(launcherSettingsFile) ?: return null
-        return ParadoxGameRootInfo(rootFile, launcherSettingsFile, ParadoxRootType.Game, launcherSettingsInfo)
+        val launcherSettingsFile = getLauncherSettingsFile(rootFile)
+        if(launcherSettingsFile != null) {
+            if(launcherSettingsFile.fileType.isBinary) return null //unexpected
+            val launcherSettingsInfo = getLauncherSettingsInfo(launcherSettingsFile)
+            if(launcherSettingsInfo == null) return null
+            return ParadoxGameRootInfo(rootFile, launcherSettingsFile, ParadoxRootType.Game, launcherSettingsInfo)
+        }
+        
+        return null
     }
     
     private fun getLauncherSettingsFile(root: VirtualFile): VirtualFile? {
@@ -153,8 +147,9 @@ object ParadoxCoreHandler {
         //return result
     }
     
-    private fun getLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo? {
+    fun getLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo? {
         //launcher-settings.json
+        if(file.fileType.isBinary) return null //unexpected
         return file.getOrPutUserData(PlsKeys.launcherSettingsInfoKey) {
             try {
                 return doGetLauncherSettingsInfo(file)
@@ -170,25 +165,25 @@ object ParadoxCoreHandler {
         return jsonMapper.readValue(file.inputStream)
     }
     
-    private fun getDescriptorInfo(file: VirtualFile): ParadoxDescriptorInfo? {
+    fun getDescriptorInfo(file: VirtualFile): ParadoxDescriptorInfo {
         //see: descriptor.cwt
         return file.getOrPutUserData(PlsKeys.descriptorInfoKey) {
             return runReadAction { doGetDescriptorInfo(file) }
         }
     }
     
-    private fun doGetDescriptorInfo(file: VirtualFile): ParadoxDescriptorInfo? {
+    private fun doGetDescriptorInfo(file: VirtualFile): ParadoxDescriptorInfo {
         //val psiFile = file.toPsiFile<ParadoxScriptFile>(getDefaultProject()) ?: return null //会导致StackOverflowError
         val psiFile = ParadoxScriptElementFactory.createDummyFile(getDefaultProject(), file.inputStream.reader().readText())
-        val data = ParadoxScriptDataResolver.resolve(psiFile) ?: return null
-        val name = data.getData("name")?.value?.stringValue() ?: file.parent?.name.orAnonymous() //如果没有name属性，则使用根目录名
-        val version = data.getData("version")?.value?.stringValue()
-        val picture = data.getData("picture")?.value?.stringValue()
-        val tags = data.getAllData("tags").mapNotNull { it.value?.stringValue() }.toSet()
-        val supportedVersion = data.getData("supported_version")?.value?.stringValue()
-        val remoteFileId = data.getData("remote_file_id")?.value?.stringValue()
-        val path = data.getData("path")?.value?.stringValue()
-        return ParadoxDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path, isModDescriptor = true)
+        val data = ParadoxScriptDataResolver.resolve(psiFile)
+        val name = data?.getData("name")?.value?.stringValue() ?: file.parent?.name ?: "" //如果没有name属性，则使用根目录名
+        val version = data?.getData("version")?.value?.stringValue()
+        val picture = data?.getData("picture")?.value?.stringValue()
+        val tags = data?.getAllData("tags")?.mapNotNull { it.value?.stringValue() }?.toSet()
+        val supportedVersion = data?.getData("supported_version")?.value?.stringValue()
+        val remoteFileId = data?.getData("remote_file_id")?.value?.stringValue()
+        val path = data?.getData("path")?.value?.stringValue()
+        return ParadoxDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
     }
     
     @JvmStatic

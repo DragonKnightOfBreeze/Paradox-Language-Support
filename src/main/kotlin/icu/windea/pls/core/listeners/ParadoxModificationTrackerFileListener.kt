@@ -9,7 +9,7 @@ import icu.windea.pls.script.*
 /**
  * 监听文件以跟踪更改。
  */
-class ParadoxTrackFileListener : AsyncFileListener {
+class ParadoxModificationTrackerFileListener : AsyncFileListener {
 	override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier {
 		return object : AsyncFileListener.ChangeApplier {
 			override fun afterVfsChange() {
@@ -22,10 +22,10 @@ class ParadoxTrackFileListener : AsyncFileListener {
 						event is VFileMoveEvent -> files.add(event.file)
 					}
 				}
-				track(files)
+				onChange(files)
 			}
 			
-			private fun track(files: MutableSet<VirtualFile>) {
+			private fun onChange(files: MutableSet<VirtualFile>) {
 				//这才是正确的做法，如此简单！
 				var trackScriptFile = true
 				var trackInlineScript = true
