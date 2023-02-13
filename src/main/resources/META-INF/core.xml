@@ -20,9 +20,8 @@
   <extensions defaultExtensionNs="com.intellij">
     <applicationConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettings"/>
-    
-    <!--no configurable for project mod settings, but for single mod settings-->
-    <projectService serviceImplementation="icu.windea.pls.core.settings.ParadoxProjectModSettings"/>
+    <!--no configurable for all mod settings, but for single mod settings-->
+    <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxAllModSettings"/>
     
     <additionalLibraryRootsProvider implementation="icu.windea.pls.core.settings.ParadoxLibraryProvider"/>
     
@@ -99,9 +98,11 @@
   </extensions>
   
   <projectListeners>
-    <listener class="icu.windea.pls.core.listeners.ParadoxUpdateLibraryListener"
+    <listener class="icu.windea.pls.core.listeners.ParadoxUpdateLibraryOnModSettingsChangedListener"
               topic="icu.windea.pls.core.listeners.ParadoxModSettingsListener"/>
-    <listener class="icu.windea.pls.core.listeners.ParadoxUpdateModSettingsListener"
+    <listener class="icu.windea.pls.core.listeners.ParadoxRefreshOnModGameTypeChangedListener"
+              topic="icu.windea.pls.core.listeners.ParadoxModGameTypeListener"/>
+    <listener class="icu.windea.pls.core.listeners.ParadoxUpdateModSettingsOnRootInfoChangedListener"
               topic="icu.windea.pls.core.listeners.ParadoxRootInfoListener"/>
   </projectListeners>
   

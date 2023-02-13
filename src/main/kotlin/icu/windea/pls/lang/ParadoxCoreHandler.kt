@@ -58,14 +58,14 @@ object ParadoxCoreHandler {
     
     @JvmStatic
     fun addRootInfo(rootInfo: ParadoxRootInfo) {
-        ParadoxRootInfo.values.add(rootInfo)
+        ParadoxRootInfo.values.put(rootInfo.rootFile.path, rootInfo)
         
         ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
     }
     
     @JvmStatic
     fun removeRootInfo(rootInfo: ParadoxRootInfo) {
-        ParadoxRootInfo.values.remove(rootInfo)
+        ParadoxRootInfo.values.remove(rootInfo.rootFile.path)
         
         ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onRemove(rootInfo)
     }

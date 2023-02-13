@@ -10,7 +10,7 @@ import javax.swing.*
 
 class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {
     override fun getSourceRoots(): Collection<VirtualFile> {
-        return getAllModSettings(project).roots
+        return getAllModSettings().roots
     }
     
     override fun isShowInExternalLibrariesNode(): Boolean {

@@ -5,7 +5,7 @@ import com.intellij.util.messages.*
 import icu.windea.pls.core.settings.*
 
 /**
- * 对于单个模组，监听游戏根目录和模组依赖根目录的变化。
+ * 监听模组配置的更改。
  */
 interface ParadoxModSettingsListener {
     fun onChange(project: Project, modSettings: ParadoxModSettingsState)
@@ -15,3 +15,4 @@ interface ParadoxModSettingsListener {
         val TOPIC = Topic.create("ParadoxModSettingsListener", ParadoxModSettingsListener::class.java)
     }
 }
+

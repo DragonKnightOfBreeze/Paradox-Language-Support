@@ -1,7 +1,6 @@
 package icu.windea.pls.core.settings
 
 import com.intellij.openapi.components.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -11,9 +10,9 @@ import icu.windea.pls.lang.model.*
  * 单个项目中所有模组的配置。
  */
 @State(name = "ParadoxModSettings", storages = [Storage("paradox-language-support.mods.xml")])
-class ParadoxProjectModSettings(private val project: Project) : SimplePersistentStateComponent<ParadoxProjectModSettingsState>(ParadoxProjectModSettingsState())
+class ParadoxAllModSettings : SimplePersistentStateComponent<ParadoxAllModSettingsState>(ParadoxAllModSettingsState())
 
-class ParadoxProjectModSettingsState : BaseState() {
+class ParadoxAllModSettingsState : BaseState() {
     val settings: MutableMap<String, ParadoxModSettingsState> by map() //path > setting
     
     fun getSetting(modPath: String): ParadoxModSettingsState? {

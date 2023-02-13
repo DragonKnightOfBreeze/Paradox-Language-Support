@@ -24,7 +24,8 @@ sealed class ParadoxRootInfo {
     abstract val isAvailable: Boolean
     
     companion object {
-        val values = mutableSetOf<ParadoxRootInfo>()
+        //rootPath - rootInfo
+        val values = mutableMapOf<String, ParadoxRootInfo>()
     }
 }
 
@@ -34,8 +35,12 @@ class ParadoxGameRootInfo(
     override val rootType: ParadoxRootType,
     val launcherSettingsInfo: ParadoxLauncherSettingsInfo,
 ) : ParadoxRootInfo() {
-    override val gameType: ParadoxGameType = launcherSettingsInfo.gameId.let { ParadoxGameType.resolve(it) } ?: throw IllegalStateException()
+    override val gameType: ParadoxGameType = doGetGameType()
     override val gameRootFile: VirtualFile = doGetGameRootFile()
+    
+    private fun doGetGameType(): ParadoxGameType {
+        return launcherSettingsInfo.gameId.let { ParadoxGameType.resolve(it) } ?: throw IllegalStateException()
+    }
     
     private fun doGetGameRootFile(): VirtualFile {
         if(rootType != ParadoxRootType.Game) return rootFile
@@ -75,8 +80,14 @@ class ParadoxModRootInfo(
 ) : ParadoxRootInfo() {
     val descriptorInfo: ParadoxDescriptorInfo get() = ParadoxCoreHandler.getDescriptorInfo(descriptorFile)
     
-    override var gameType: ParadoxGameType = getSettings().defaultGameType
+    override var gameType: ParadoxGameType = doGetGameType()
     override val gameRootFile: VirtualFile = rootFile
+    
+    private fun doGetGameType(): ParadoxGameType {
+        //TODO 0.8.1 需要兼容模组依赖
+        return getAllModSettings().settings.get(rootFile.path)?.gameType
+            ?: getSettings().defaultGameType
+    }
     
     override val rootPath: Path = rootFile.toNioPath()
     override val gameRootPath: Path = rootPath

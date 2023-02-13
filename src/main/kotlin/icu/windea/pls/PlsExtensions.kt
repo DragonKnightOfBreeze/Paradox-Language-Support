@@ -26,7 +26,6 @@ import icu.windea.pls.localisation.references.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
-import icu.windea.pls.tool.*
 import java.lang.Integer.*
 
 //region Misc Extensions
@@ -36,7 +35,7 @@ fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.ope
 
 fun getSettings() = service<ParadoxSettings>().state
 
-fun getAllModSettings(project: Project) = project.service<ParadoxProjectModSettings>().state
+fun getAllModSettings() = service<ParadoxAllModSettings>().state
 
 fun getCwtConfig(project: Project = getTheOnlyOpenOrDefaultProject()) = project.service<CwtConfigProvider>().configGroups
 

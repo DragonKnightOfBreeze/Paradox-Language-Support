@@ -18,6 +18,6 @@ class ParadoxLibraryProvider : AdditionalLibraryRootsProvider() {
     }
     
     override fun getRootsToWatch(project: Project): Collection<VirtualFile> {
-        return getAllModSettings(project).roots
+        return getAllModSettings().roots
     }
 }

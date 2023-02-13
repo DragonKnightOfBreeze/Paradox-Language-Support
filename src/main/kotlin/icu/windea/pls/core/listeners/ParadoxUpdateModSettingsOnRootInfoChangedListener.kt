@@ -9,14 +9,14 @@ import icu.windea.pls.lang.model.*
 /**
  * 当根信息被添加或移除时，同步更改模组配置并更新库信息。
  */
-class ParadoxUpdateModSettingsListener: ParadoxRootInfoListener {
+class ParadoxUpdateModSettingsOnRootInfoChangedListener: ParadoxRootInfoListener {
     override fun onAdd(rootInfo: ParadoxRootInfo) {
         if(rootInfo !is ParadoxModRootInfo) return
         val modSettings = createModSettings(rootInfo)
         val projects = ProjectManager.getInstance().openProjects
         for(project in projects) {
-            val allModSettings = getAllModSettings(project)
-            allModSettings.settings.put(rootInfo.rootFile.path, modSettings)
+            val allModSettings = getAllModSettings()
+            allModSettings.settings.putIfAbsent(rootInfo.rootFile.path, modSettings)
             allModSettings.roots = allModSettings.computeRoots()
         }
     }
@@ -34,7 +34,7 @@ class ParadoxUpdateModSettingsListener: ParadoxRootInfoListener {
         if(rootInfo !is ParadoxModRootInfo) return
         val projects = ProjectManager.getInstance().openProjects
         for(project in projects) {
-            val allModSettings = getAllModSettings(project)
+            val allModSettings = getAllModSettings()
             allModSettings.settings.remove(rootInfo.rootFile.path)
             allModSettings.roots = allModSettings.computeRoots()
         }
