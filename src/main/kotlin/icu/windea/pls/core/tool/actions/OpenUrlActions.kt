@@ -34,11 +34,39 @@ abstract class OpenUrlAction : DumbAwareAction(){
         BrowserUtil.open(targetUrl)
     }
     
-    protected abstract fun isVisible(fileInfo: ParadoxFileInfo): Boolean
+    protected open fun isVisible(fileInfo: ParadoxFileInfo): Boolean = true
     
-    protected abstract fun isEnabled(fileInfo: ParadoxFileInfo) : Boolean
+    protected open fun isEnabled(fileInfo: ParadoxFileInfo) : Boolean = true
     
     protected abstract fun getTargetUrl(fileInfo: ParadoxFileInfo): String?
+}
+
+class OpenGameStorePageOnSteamWebsiteAction: OpenUrlAction() {
+    override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
+        val steamId = fileInfo.rootInfo.gameType.gameSteamId
+        return getSteamGameStoreLink(steamId)
+    }
+}
+
+class OpenGameStorePageOnSteamAction: OpenUrlAction() {
+    override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
+        val steamId = fileInfo.rootInfo.gameType.gameSteamId
+        return getSteamGameStoreLinkOnSteam(steamId)
+    }
+}
+
+class OpenGameWorkshopPageOnSteamWebsiteAction: OpenUrlAction() {
+    override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
+        val steamId = fileInfo.rootInfo.gameType.gameSteamId
+        return getSteamGameWorkshopLink(steamId)
+    }
+}
+
+class OpenGameWorkshopPageOnSteamAction: OpenUrlAction() {
+    override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
+        val steamId = fileInfo.rootInfo.gameType.gameSteamId
+        return getSteamGameWorkshopLinkOnSteam(steamId)
+    }
 }
 
 class OpenModPageOnSteamWebsiteAction: OpenUrlAction() {
@@ -47,15 +75,15 @@ class OpenModPageOnSteamWebsiteAction: OpenUrlAction() {
     }
     
     override fun isEnabled(fileInfo: ParadoxFileInfo): Boolean {
-        return getRemoteId(fileInfo) != null
+        return getSteamId(fileInfo) != null
     }
     
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
-        val remoteId = getRemoteId(fileInfo) ?: return null
-        return getSteamWorkshopLink(remoteId)
+        val steamId = getSteamId(fileInfo) ?: return null
+        return getSteamWorkshopLink(steamId)
     }
     
-    private fun getRemoteId(fileInfo: ParadoxFileInfo): String? {
+    private fun getSteamId(fileInfo: ParadoxFileInfo): String? {
         return fileInfo.rootInfo.castOrNull<ParadoxModRootInfo>()?.descriptorInfo?.remoteFileId
     }
 }
@@ -66,15 +94,15 @@ class OpenModPageOnSteamAction: OpenUrlAction() {
     }
     
     override fun isEnabled(fileInfo: ParadoxFileInfo): Boolean {
-        return getRemoteId(fileInfo) != null
+        return getSteamId(fileInfo) != null
     }
     
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
-        val remoteId = getRemoteId(fileInfo) ?: return null
-        return getSteamWorkshopLinkOnSteam(remoteId)
+        val steamId = getSteamId(fileInfo) ?: return null
+        return getSteamWorkshopLinkOnSteam(steamId)
     }
     
-    private fun getRemoteId(fileInfo: ParadoxFileInfo): String? {
+    private fun getSteamId(fileInfo: ParadoxFileInfo): String? {
         return fileInfo.rootInfo.castOrNull<ParadoxModRootInfo>()?.descriptorInfo?.remoteFileId
     }
 }

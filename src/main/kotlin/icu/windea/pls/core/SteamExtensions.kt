@@ -31,10 +31,10 @@ fun getSteamPath(): String? {
 private fun getSteamGamePathCommand(steamId: String) =
     arrayOf("powershell", "-command", "Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App ${steamId}' | Select-Object InstallLocation | Format-Table -HideTableHeaders")
 
-fun getSteamGamePath(gameSteamId: String, gameName: String): String? {
+fun getSteamGamePath(steamId: String, gameName: String): String? {
     try {
         if(System.getProperty("os.name")?.contains("windows", true) != true) return null
-        val command = getSteamGamePathCommand(gameSteamId)
+        val command = getSteamGamePathCommand(steamId)
         val process = Runtime.getRuntime().exec(command)
         process.waitFor()
         val result = process.inputStream.reader().use { it.readText() }.trim().takeIfNotEmpty()
@@ -47,15 +47,43 @@ fun getSteamGamePath(gameSteamId: String, gameName: String): String? {
     }
 }
 
-fun getSteamWorkshopPath(gameSteamId: String): String? {
+fun getSteamWorkshopPath(steamId: String): String? {
     //不准确，可以放在不同库目录下
-    return getSteamPath()?.let { steamPath -> """$steamPath\steamapps\workshop\content\$gameSteamId""" }
+    return getSteamPath()?.let { steamPath -> """$steamPath\steamapps\workshop\content\$steamId""" }
 }
 
 fun getGameDataPath(gameName: String): String? {
     //实际上基于launcher-settings.json中的gameDataPath，有谁会去改这个……
     val userHome = System.getProperty("user.home") ?: return null
     return """$userHome\Documents\Paradox Interactive\$gameName"""
+}
+
+/**
+ * 得到指定ID对应的Steam游戏商店页面链接。
+ */
+fun getSteamGameStoreLink(steamId: String): String {
+    return "https://store.steampowered.com/app/$steamId/"
+}
+
+/**
+ * 得到指定ID对应的Steam游戏商店页面链接。（直接在Steam中打开）
+ */
+fun getSteamGameStoreLinkOnSteam(steamId: String): String {
+    return "steam://store/$steamId"
+}
+
+/**
+ * 得到指定ID对应的Steam游戏创意工坊页面链接。
+ */
+fun getSteamGameWorkshopLink(steamId: String): String {
+    return "https://steamcommunity.com/app/$steamId/workshop/"
+}
+
+/**
+ * 得到指定ID对应的Steam游戏创意工坊页面链接。（直接在Steam中打开）
+ */
+fun getSteamGameWorkshopLinkOnSteam(steamId: String): String {
+    return "steam://openurl/https://steamcommunity.com/app/$steamId/workshop/"
 }
 
 /**

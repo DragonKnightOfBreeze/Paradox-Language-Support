@@ -41,36 +41,20 @@ abstract class OpenPathAction : DumbAwareAction() {
         }
     }
     
-    protected abstract fun isVisible(fileInfo: ParadoxFileInfo): Boolean
+    protected open fun isVisible(fileInfo: ParadoxFileInfo): Boolean = true
     
-    protected abstract fun isEnabled(fileInfo: ParadoxFileInfo) : Boolean
+    protected open fun isEnabled(fileInfo: ParadoxFileInfo) : Boolean = true
     
     protected abstract fun getTargetPath(fileInfo: ParadoxFileInfo): Path?
 }
 
 class OpenSteamPathAction: OpenPathAction() {
-    override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
-        return true
-    }
-    
-    override fun isEnabled(fileInfo: ParadoxFileInfo): Boolean {
-        return true
-    }
-    
     override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
         return getSteamPath()?.toPathOrNull()
     }
 }
 
 class OpenSteamGamePathAction: OpenPathAction() {
-    override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
-        return true
-    }
-    
-    override fun isEnabled(fileInfo: ParadoxFileInfo): Boolean {
-        return true
-    }
-    
     override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
         val gameType = fileInfo.rootInfo.gameType
         return getSteamGamePath(gameType.gameSteamId, gameType.gameName)?.toPathOrNull()
@@ -78,14 +62,6 @@ class OpenSteamGamePathAction: OpenPathAction() {
 }
 
 class OpenSteamWorkshopPathAction: OpenPathAction() {
-    override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
-        return true
-    }
-    
-    override fun isEnabled(fileInfo: ParadoxFileInfo): Boolean {
-        return true
-    }
-    
     override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
         val gameType = fileInfo.rootInfo.gameType
         return getSteamWorkshopPath(gameType.gameSteamId)?.toPathOrNull()
@@ -93,14 +69,6 @@ class OpenSteamWorkshopPathAction: OpenPathAction() {
 }
 
 class OpenGameDataPathAction: OpenPathAction() {
-    override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
-        return true
-    }
-    
-    override fun isEnabled(fileInfo: ParadoxFileInfo): Boolean {
-        return true
-    }
-    
     override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
         val gameType = fileInfo.rootInfo.gameType
         return getGameDataPath(gameType.gameName)?.toPathOrNull()
