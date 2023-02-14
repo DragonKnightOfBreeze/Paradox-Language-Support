@@ -1,5 +1,7 @@
 package icu.windea.pls.core
 
+import java.util.concurrent.*
+
 //直接得到steam的安装路径
 //powershell -command "Get-ItemProperty -Path 'HKLM:\SOFTWARE\Wow6432Node\Valve\Steam' | Select-Object InstallPath | Format-Table -HideTableHeaders"
 //直接得到steam游戏的安装路径
@@ -12,36 +14,42 @@ package icu.windea.pls.core
 
 //游戏模组安装目录：~\Documents\Paradox Interactive\{gameName}\mod
 
-private val getSteamPathCommand =
-    arrayOf("powershell", "-command", "Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Wow6432Node\\Valve\\Steam' | Select-Object InstallPath | Format-Table -HideTableHeaders")
+//使用不会自动清理的缓存
+private val steamPathCache = ConcurrentHashMap<String, String>()
 
 fun getSteamPath(): String? {
+    val result = steamPathCache.getOrPut("") { doGetSteamPath() }
+    return result
+}
+
+private fun doGetSteamPath(): String? {
     try {
         if(System.getProperty("os.name")?.contains("windows", true) != true) return null
-        val command = getSteamPathCommand
-        val process = Runtime.getRuntime().exec(command)
+        val command = "Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Wow6432Node\\Valve\\Steam' | Select-Object InstallPath | Format-Table -HideTableHeaders"
+        val commandArray = arrayOf("powershell", "-command", command)
+        val process = Runtime.getRuntime().exec(commandArray)
         process.waitFor()
-        val result = process.inputStream.reader().use { it.readText() }.trim().takeIfNotEmpty()
-        return result
+        return process.inputStream.reader().use { it.readText() }.trim().takeIfNotEmpty()
     } catch(e: Exception) {
         return null
     }
 }
 
-private fun getSteamGamePathCommand(steamId: String) =
-    arrayOf("powershell", "-command", "Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App ${steamId}' | Select-Object InstallLocation | Format-Table -HideTableHeaders")
-
 fun getSteamGamePath(steamId: String, gameName: String): String? {
+    val result = steamPathCache.getOrPut(steamId) { doGetSteamGamePath(steamId) }
+    if(result != null) return result
+    //不准确，可以放在不同库目录下
+    return getSteamPath()?.let { steamPath -> """$steamPath\steamapps\common\$gameName""" }
+}
+
+private fun doGetSteamGamePath(steamId: String): String? {
     try {
         if(System.getProperty("os.name")?.contains("windows", true) != true) return null
-        val command = getSteamGamePathCommand(steamId)
-        val process = Runtime.getRuntime().exec(command)
+        val command = "Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App ${steamId}' | Select-Object InstallLocation | Format-Table -HideTableHeaders"
+        val commandArray = arrayOf("powershell", "-command", command)
+        val process = Runtime.getRuntime().exec(commandArray)
         process.waitFor()
-        val result = process.inputStream.reader().use { it.readText() }.trim().takeIfNotEmpty()
-        if(result != null) return result
-        //不准确，可以放在不同库目录下
-        val resultFromSteamPath = getSteamPath()?.let { steamPath -> """$steamPath\steamapps\common\$gameName""" }
-        return resultFromSteamPath
+        return process.inputStream.reader().use { it.readText() }.trim().takeIfNotEmpty()
     } catch(e: Exception) {
         return null
     }
