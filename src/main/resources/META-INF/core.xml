@@ -38,6 +38,8 @@
     
     <vfs.asyncListener implementation="icu.windea.pls.core.listeners.ParadoxDescriptorFileListener"/>
 
+    <projectViewNodeDecorator implementation="icu.windea.pls.core.ParadoxProjectViewDecorator"/>
+    
     <qualifiedNameProvider implementation="icu.windea.pls.core.ParadoxQualifiedNameProvider"/>
     <readWriteAccessDetector implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxReadWriteAccessDetector"/>
     <usageTypeProvider implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxUsageTypeProvider"/>
