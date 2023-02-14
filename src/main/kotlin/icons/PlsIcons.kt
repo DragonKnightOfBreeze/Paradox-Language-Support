@@ -5,7 +5,10 @@ import com.intellij.ui.*
 import javax.swing.*
 
 object PlsIcons {
-	@JvmField val Library = loadIcon("/icons/library.svg")
+	@JvmField val GameDirectory = AllIcons.Modules.SourceRoot
+	@JvmField val ModDirectory = AllIcons.Modules.SourceRoot
+	@JvmField val Library = AllIcons.Nodes.PpLibFolder
+	@JvmField val Steam = loadIcon("/icons/steam.svg")
 	
 	@JvmField val DdsFile = loadIcon("/icons/ddsFile.svg")
 	@JvmField val CwtFile = loadIcon("/icons/cwtFile.svg")
@@ -59,8 +62,6 @@ object PlsIcons {
 	
 	@JvmField val EventNamespace = loadIcon("/icons/eventNamespace.svg")
 	@JvmField val EventId = loadIcon("/icons/eventId.svg")
-	
-	@JvmField val Steam = loadIcon("/icons/steam.svg")
 	
 	@JvmStatic fun Definition(type: String) = when(type) {
 		"event" -> EventId
