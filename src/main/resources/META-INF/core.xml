@@ -99,14 +99,16 @@
     <paradoxValueSetValuesSearch implementation="icu.windea.pls.core.search.ParadoxValueSetValueSearcher"/>
   </extensions>
   
-  <projectListeners>
+  <applicationListeners>
+    <listener class="icu.windea.pls.core.listeners.ParadoxRefreshOnDefaultGameTypeChangedListener"
+              topic="icu.windea.pls.core.listeners.ParadoxDefaultGameTypeListener"/>
     <listener class="icu.windea.pls.core.listeners.ParadoxUpdateLibraryOnModSettingsChangedListener"
               topic="icu.windea.pls.core.listeners.ParadoxModSettingsListener"/>
     <listener class="icu.windea.pls.core.listeners.ParadoxRefreshOnModGameTypeChangedListener"
               topic="icu.windea.pls.core.listeners.ParadoxModGameTypeListener"/>
     <listener class="icu.windea.pls.core.listeners.ParadoxUpdateModSettingsOnRootInfoChangedListener"
               topic="icu.windea.pls.core.listeners.ParadoxRootInfoListener"/>
-  </projectListeners>
+  </applicationListeners>
   
   <actions>
     <group id="Pls.Tools" popup="true">

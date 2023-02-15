@@ -68,6 +68,5 @@ class ParadoxModSettingsState : BaseState() {
  * 单个模组依赖的配置。
  */
 class ParadoxModDependencySettingsState : BaseState() {
-    var gameType: ParadoxGameType? by enum()
     var modPath: String? by string()
 }

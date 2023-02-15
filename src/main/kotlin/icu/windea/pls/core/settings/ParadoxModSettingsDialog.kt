@@ -1,5 +1,6 @@
 package icu.windea.pls.core.settings
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
@@ -15,24 +16,26 @@ import icu.windea.pls.core.ui.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 
+
 class ParadoxModSettingsDialog(
     val project: Project,
-    val modSettings: ParadoxModSettingsState,
+    val modPath: String,
 ): DialogWrapper(project, true) {
-    val oldGameType = modSettings.gameType
+    val allModSettings = getAllModSettings()
+    val modSettings = allModSettings.settings.getValue(modPath)
+    val modDescriptorSettings = allModSettings.descriptorSettings.getValue(modPath)
+    
+    val oldGameType = modSettings.gameType ?: getSettings().defaultGameType
     
     val graph = PropertyGraph()
     
-    val gameTypeProperty = graph.property(modSettings.gameType)
+    val gameTypeProperty = graph.property(modSettings.gameType ?: getSettings().defaultGameType)
         .apply { afterChange { modSettings.gameType = it } }
     val gameDirectoryProperty = graph.property(modSettings.gameDirectory.orEmpty())
         .apply { afterChange { modSettings.gameDirectory = it } }
-    val modPathProperty = graph.property(modSettings.modPath.orEmpty())
-        .apply { afterChange { modSettings.modPath = it } }
     
     var gameType by gameTypeProperty
     var gameDirectory by gameDirectoryProperty
-    var modPath by modPathProperty
     
     init {
         title = PlsBundle.message("mod.settings")
@@ -59,7 +62,7 @@ class ParadoxModSettingsDialog(
                 //name
                 label(PlsBundle.message("mod.settings.name")).widthGroup("mod.settings.left")
                 textField()
-                    .text(modSettings.name.orEmpty())
+                    .text(modDescriptorSettings.name.orEmpty())
                     .align(Align.FILL)
                     .columns(32)
                     .enabled(false)
@@ -68,19 +71,19 @@ class ParadoxModSettingsDialog(
                 //version
                 label(PlsBundle.message("mod.settings.version")).widthGroup("mod.settings.left")
                 textField()
-                    .text(modSettings.version.orEmpty())
+                    .text(modDescriptorSettings.version.orEmpty())
                     .align(Align.FILL)
                     .columns(18)
                     .enabled(false)
-                    .visible(modSettings.version.orEmpty().isNotEmpty())
+                    .visible(modDescriptorSettings.version.orEmpty().isNotEmpty())
                 //supportedVersion
                 label(PlsBundle.message("mod.settings.supportedVersion")).widthGroup("mod.settings.right")
                 textField()
-                    .text(modSettings.supportedVersion.orEmpty())
+                    .text(modDescriptorSettings.supportedVersion.orEmpty())
                     .align(Align.FILL)
                     .columns(18)
                     .enabled(false)
-                    .visible(modSettings.supportedVersion.orEmpty().isNotEmpty())
+                    .visible(modDescriptorSettings.supportedVersion.orEmpty().isNotEmpty())
             }
             row {
                 comment(PlsBundle.message("mod.settings.comment"))
@@ -115,7 +118,7 @@ class ParadoxModSettingsDialog(
                     .withTitle(PlsBundle.message("mod.settings.modPath.title"))
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
-                    .bindText(modPathProperty)
+                    .text(modPath)
                     .align(Align.FILL)
                     .columns(36)
                     .enabled(false)
@@ -151,10 +154,10 @@ class ParadoxModSettingsDialog(
     override fun doOKAction() {
         super.doOKAction()
         
-        project.messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(project, modSettings)
-        
+        val messageBus = ApplicationManager.getApplication().messageBus
+        messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(modSettings)
         if(oldGameType != modSettings.gameType) {
-            project.messageBus.syncPublisher(ParadoxModGameTypeListener.TOPIC).onChange(project, modSettings, oldGameType)
+            messageBus.syncPublisher(ParadoxModGameTypeListener.TOPIC).onChange(modSettings)
         }
     }
 }

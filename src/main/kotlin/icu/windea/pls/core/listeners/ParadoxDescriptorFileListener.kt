@@ -25,18 +25,16 @@ class ParadoxDescriptorFileListener : AsyncFileListener {
 			val file = event.file
 			if(file.fileType.isBinary) return //unexpected
 			if(file.name.equals(PlsConstants.descriptorFileName, true)) {
-				//描述符文件内容发生变化时，需要更新rootInfo和modSettings
-				//icu.windea.pls.lang.model.ParadoxModRootInfo.getDescriptorInfo
 				val descriptorInfo = ParadoxCoreHandler.getDescriptorInfo(file)
 				file.putUserData(PlsKeys.descriptorInfoKey, descriptorInfo)
 				val modPath = file.fileInfo?.rootInfo?.rootFile?.path
 				if(modPath != null) {
 					val allModSettings = getAllModSettings()
-					val modSettings = allModSettings.settings.get(modPath)
-					if(modSettings != null) {
-						modSettings.name = descriptorInfo.name.takeIfNotEmpty() ?: PlsBundle.message("mod.name.unnamed")
-						modSettings.version = descriptorInfo.version?.takeIfNotEmpty()
-						modSettings.supportedVersion = descriptorInfo.supportedVersion?.takeIfNotEmpty()
+					val settings = allModSettings.descriptorSettings.get(modPath)
+					if(settings != null) {
+						settings.name = descriptorInfo.name.takeIfNotEmpty() ?: PlsBundle.message("mod.name.unnamed")
+						settings.version = descriptorInfo.version?.takeIfNotEmpty()
+						settings.supportedVersion = descriptorInfo.supportedVersion?.takeIfNotEmpty()
 					}
 				}
 			}

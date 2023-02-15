@@ -89,7 +89,6 @@ class ParadoxSettingsState : BaseState() {
 	}
 	
 	val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet().orEmpty() }
-	var oldIgnoredFileNameSet = ignoredFileNameSet
 	
 	val locales by lazy {
 		buildList {

@@ -10,6 +10,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.listeners.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
@@ -20,6 +21,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 	
 	override fun createPanel(): DialogPanel {
 		val settings = getSettings()
+		val oldDefaultGameType = settings.defaultGameType
+		val oldIgnoredFileNameSet = settings.ignoredFileNameSet
 		return panel {
 			//generic
 			group(PlsBundle.message("settings.general")) {
@@ -31,13 +34,13 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						}
 					val values = ParadoxGameType.valueList
 					comboBox(values)
-						.bindItem({
-							settings.defaultGameType
-						}, {
-							if(it != null) {
-								settings.defaultGameType = it
+						.bindItem(settings::defaultGameType.toNullableProperty())
+						.onApply {
+							if(oldDefaultGameType != settings.defaultGameType) {
+								val messageBus = ApplicationManager.getApplication().messageBus
+								messageBus.syncPublisher(ParadoxDefaultGameTypeListener.TOPIC).onChange(settings.defaultGameType)
 							}
-						})
+						}
 				}
 				//preferredLocale
 				row {
@@ -67,7 +70,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						.comment(PlsBundle.message("settings.general.ignoredFileNames.comment"))
 						.align(Align.FILL)
 						.resizableColumn()
-						.onApply { doReparseFilesByFileNames(settings) }
+						.onApply { doReparseFilesByFileNames(settings.ignoredFileNameSet, oldIgnoredFileNameSet) }
 				}
 				//preferOverridden
 				row {
@@ -194,13 +197,12 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 		}
 	}
 	
-	private fun doReparseFilesByFileNames(settings: ParadoxSettingsState) {
+	private fun doReparseFilesByFileNames(ignoredFileNameSet: Set<String>, oldIgnoredFileNameSet: Set<String>) {
 		//设置中的被忽略文件名被更改时，需要重新解析相关文件
 		runWriteAction {
 			val fileNames = mutableSetOf<String>()
-			fileNames += settings.oldIgnoredFileNameSet
-			fileNames += settings.ignoredFileNameSet
-			settings.oldIgnoredFileNameSet = settings.ignoredFileNameSet
+			fileNames += oldIgnoredFileNameSet
+			fileNames += ignoredFileNameSet
 			ParadoxCoreHandler.reparseFilesByFileNames(fileNames)
 		}
 	}

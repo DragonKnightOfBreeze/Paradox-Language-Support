@@ -12,7 +12,7 @@ interface ParadoxRootInfoListener {
     fun onRemove(rootInfo: ParadoxRootInfo)
     
     companion object {
-        @Topic.ProjectLevel
+        @Topic.AppLevel
         val TOPIC = Topic.create("ParadoxRootInfoListener", ParadoxRootInfoListener::class.java)
     }
 }
