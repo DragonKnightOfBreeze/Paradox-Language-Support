@@ -57,29 +57,15 @@ object ParadoxCoreHandler {
     }
     
     @JvmStatic
-    fun addRootInfo(rootInfo: ParadoxRootInfo) {
-        ParadoxRootInfo.values.put(rootInfo.rootFile.path, rootInfo)
-        
-        ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
-    }
-    
-    @JvmStatic
-    fun removeRootInfo(rootInfo: ParadoxRootInfo) {
-        ParadoxRootInfo.values.remove(rootInfo.rootFile.path)
-        
-        ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onRemove(rootInfo)
-    }
-    
-    @JvmStatic
     fun resolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean = true): ParadoxRootInfo? {
         if(!rootFile.isDirectory) return null
         val rootInfo = rootFile.getCopyableUserData(PlsKeys.rootInfoKey)
         if(rootInfo != null && (canBeNotAvailable || rootInfo.isAvailable)) {
-            addRootInfo(rootInfo)
+            onAddRootInfo(rootInfo)
             return rootInfo
         }
         if(rootInfo != null) {
-            removeRootInfo(rootInfo)
+            onRemoveRootInfo(rootInfo)
         }
         val resolvedRootInfo = try {
             doResolveRootInfo(rootFile)
@@ -92,9 +78,17 @@ object ParadoxCoreHandler {
             rootFile.putCopyableUserData(PlsKeys.rootInfoKey, resolvedRootInfo)
         }
         if(resolvedRootInfo != null) {
-            addRootInfo(resolvedRootInfo)
+            onAddRootInfo(resolvedRootInfo)
         }
         return resolvedRootInfo
+    }
+    
+    private fun onAddRootInfo(rootInfo: ParadoxRootInfo) {
+        ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
+    }
+    
+    private fun onRemoveRootInfo(rootInfo: ParadoxRootInfo) {
+        ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onRemove(rootInfo)
     }
     
     private fun doResolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {

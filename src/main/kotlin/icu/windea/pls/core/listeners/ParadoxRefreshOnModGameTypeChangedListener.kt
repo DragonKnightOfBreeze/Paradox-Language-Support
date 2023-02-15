@@ -3,6 +3,7 @@ package icu.windea.pls.core.listeners
 import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.*
@@ -12,7 +13,7 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
     override fun onChange(project: Project, modSettings: ParadoxModSettingsState, oldGameType: ParadoxGameType) {
         val gameType = modSettings.gameType
         
-        //更新rootInfo缓存的游戏类型
+        //更新游戏类型信息缓存
         modSettings.modPath?.let { modPath -> refreshGameType(modPath, gameType) }
         modSettings.modDependencies.keys.forEach { modPath -> refreshGameType(modPath, gameType) }
         
@@ -24,10 +25,8 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
     }
     
     private fun refreshGameType(modPath: String, gameType: ParadoxGameType) {
-        val rootInfo = ParadoxRootInfo.values[modPath]
-        if(rootInfo is ParadoxModRootInfo) {
-            rootInfo.gameType = gameType
-        }
+        val settings = getAllModSettings().descriptorSettings.get(modPath) ?: return
+        settings.gameType = gameType 
     }
     
     private fun reparseFiles(modPath: String) {

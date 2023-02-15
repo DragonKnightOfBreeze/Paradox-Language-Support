@@ -80,14 +80,13 @@ class ParadoxModRootInfo(
 ) : ParadoxRootInfo() {
     val descriptorInfo: ParadoxDescriptorInfo get() = ParadoxCoreHandler.getDescriptorInfo(descriptorFile)
     
-    override var gameType: ParadoxGameType = doGetGameType()
-    override val gameRootFile: VirtualFile = rootFile
+    override val gameType: ParadoxGameType get() = doGetGameType()
+    override val gameRootFile: VirtualFile get() = rootFile
     
     private fun doGetGameType(): ParadoxGameType {
         val allModSettings = getAllModSettings()
         val modPath = rootFile.path
-        return allModSettings.getSetting(modPath)?.gameType
-            ?: allModSettings.getDependencySetting(modPath)?.gameType
+        return allModSettings.descriptorSettings.get(modPath)?.gameType
             ?: getSettings().defaultGameType
     }
     
