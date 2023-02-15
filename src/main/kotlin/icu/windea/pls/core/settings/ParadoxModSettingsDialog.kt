@@ -1,6 +1,5 @@
 package icu.windea.pls.core.settings
 
-import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
@@ -12,6 +11,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.listeners.*
+import icu.windea.pls.core.ui.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 
@@ -99,7 +99,7 @@ class ParadoxModSettingsDialog(
             row {
                 //gameDirectory
                 label(PlsBundle.message("mod.settings.gameDirectory")).widthGroup("mod.settings.left")
-                val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
+                val descriptor = ParadoxRootDirectoryDescriptor()
                     .withTitle(PlsBundle.message("mod.settings.gameDirectory.title"))
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
@@ -111,7 +111,7 @@ class ParadoxModSettingsDialog(
             row {
                 //modPath
                 label(PlsBundle.message("mod.settings.modPath")).widthGroup("mod.settings.left")
-                val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
+                val descriptor = ParadoxRootDirectoryDescriptor()
                     .withTitle(PlsBundle.message("mod.settings.modPath.title"))
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }

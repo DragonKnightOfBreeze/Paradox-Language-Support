@@ -15,3 +15,4 @@ abstract class DialogWithValidation(project: Project) : DialogWrapper(project) {
 		}
 	}
 }
+

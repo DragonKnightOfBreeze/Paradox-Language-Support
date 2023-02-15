@@ -7,6 +7,9 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.model.*
 
+/**
+ * @see icu.windea.pls.core.ui.ParadoxRootDirectoryDescriptor
+ */
 class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
     override fun decorate(node: ProjectViewNode<*>, data: PresentationData) {
         if(node is PsiFileNode) {
@@ -26,11 +29,11 @@ class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
                 data.setIcon(icon)
                 val name = rootInfo.descriptorInfo.name
                 val version = rootInfo.descriptorInfo.version
-                val text = buildString {
+                val comment = buildString {
                     append(name)
                     if(version != null) append("@").append(version)
                 }
-                data.locationString = text
+                data.locationString = comment
             }
         }
     }
