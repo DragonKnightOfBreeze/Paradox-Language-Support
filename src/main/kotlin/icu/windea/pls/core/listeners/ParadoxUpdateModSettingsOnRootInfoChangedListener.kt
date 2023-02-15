@@ -16,16 +16,17 @@ class ParadoxUpdateModSettingsOnRootInfoChangedListener: ParadoxRootInfoListener
         val projects = ProjectManager.getInstance().openProjects
         for(project in projects) {
             val allModSettings = getAllModSettings()
-            allModSettings.settings.putIfAbsent(rootInfo.rootFile.path, modSettings)
+            allModSettings.addSetting(rootInfo.rootFile.path, modSettings)
             allModSettings.roots = allModSettings.computeRoots()
         }
     }
     
     private fun createModSettings(rootInfo: ParadoxModRootInfo): ParadoxModSettingsState {
         val modSettings = ParadoxModSettingsState()
-        modSettings.name = rootInfo.descriptorInfo.name.takeIfNotEmpty() ?: PlsBundle.message("mod.name.unnamed")
-        modSettings.version = rootInfo.descriptorInfo.version?.takeIfNotEmpty()
-        modSettings.supportedVersion = rootInfo.descriptorInfo.supportedVersion?.takeIfNotEmpty()
+        val descriptorInfo = rootInfo.descriptorInfo
+        modSettings.name = descriptorInfo.name.takeIfNotEmpty() ?: PlsBundle.message("mod.name.unnamed")
+        modSettings.version = descriptorInfo.version?.takeIfNotEmpty()
+        modSettings.supportedVersion = descriptorInfo.supportedVersion?.takeIfNotEmpty()
         modSettings.modPath = rootInfo.rootFile.path
         return modSettings
     }
@@ -35,7 +36,7 @@ class ParadoxUpdateModSettingsOnRootInfoChangedListener: ParadoxRootInfoListener
         val projects = ProjectManager.getInstance().openProjects
         for(project in projects) {
             val allModSettings = getAllModSettings()
-            allModSettings.settings.remove(rootInfo.rootFile.path)
+            allModSettings.removeSetting(rootInfo.rootFile.path)
             allModSettings.roots = allModSettings.computeRoots()
         }
     }

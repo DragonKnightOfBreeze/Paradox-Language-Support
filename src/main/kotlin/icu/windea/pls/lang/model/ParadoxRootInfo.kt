@@ -84,8 +84,10 @@ class ParadoxModRootInfo(
     override val gameRootFile: VirtualFile = rootFile
     
     private fun doGetGameType(): ParadoxGameType {
-        //TODO 0.8.1 需要兼容模组依赖
-        return getAllModSettings().settings.get(rootFile.path)?.gameType
+        val allModSettings = getAllModSettings()
+        val modPath = rootFile.path
+        return allModSettings.getSetting(modPath)?.gameType
+            ?: allModSettings.getDependencySetting(modPath)?.gameType
             ?: getSettings().defaultGameType
     }
     

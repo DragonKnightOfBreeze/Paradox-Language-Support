@@ -13,10 +13,22 @@ import icu.windea.pls.lang.model.*
 class ParadoxAllModSettings : SimplePersistentStateComponent<ParadoxAllModSettingsState>(ParadoxAllModSettingsState())
 
 class ParadoxAllModSettingsState : BaseState() {
-    val settings: MutableMap<String, ParadoxModSettingsState> by map() //path > setting
+    private val settings: MutableMap<String, ParadoxModSettingsState> by map() //modPath > modSettings
     
     fun getSetting(modPath: String): ParadoxModSettingsState? {
         return settings.get(modPath)
+    }
+    
+    fun addSetting(modPath: String, modSettings: ParadoxModSettingsState) {
+        settings.putIfAbsent(modPath, modSettings)
+    }
+    
+    fun removeSetting(modPath: String) {
+        settings.remove(modPath)
+    }
+    
+    fun getDependencySetting(modPath: String): ParadoxModDependencySettingsState? {
+        return settings.values.firstNotNullOfOrNull { it.modDependencies.get(modPath) }
     }
     
     //must also update roots when update settings
@@ -31,8 +43,8 @@ class ParadoxAllModSettingsState : BaseState() {
                 modSettings.gameDirectory?.let { path ->
                     rootPaths.add(path)
                 }
-                modSettings.modDependencies.forEach { modDependency ->
-                    modDependency.modPath?.let { path ->
+                modSettings.modDependencies.keys.forEach { modPath ->
+                    modPath.let { path ->
                         rootPaths.add(path)
                     }
                 }
@@ -44,31 +56,6 @@ class ParadoxAllModSettingsState : BaseState() {
         }
         return result
     }
-    
-    //val rootsWithModPaths: MutableMap<VirtualFile, MutableSet<String>> by lazy {
-    //    val result = mutableMapOf<VirtualFile, MutableSet<String>>()
-    //    val rootPathsWithModPaths = mutableMapOf<String, MutableSet<String>>()
-    //    settings.values.forEach { modSettings ->
-    //        modSettings.path?.let { modPath ->
-    //            modSettings.gameDirectory?.let { path ->
-    //                rootPathsWithModPaths.getOrPut(path) { mutableSetOf() }.add(modPath)
-    //            }
-    //            modSettings.modDependencies.forEach { modDependency ->
-    //                modDependency.path?.let { path ->
-    //                    rootPathsWithModPaths.getOrPut(path) { mutableSetOf() }.add(modPath)
-    //                }
-    //            }
-    //        }
-    //    }
-    //    rootPathsWithModPaths.forEach { (rootPath, modPaths) ->
-    //        if(modPaths.isEmpty()) return@forEach
-    //        val root = rootPath.toPathOrNull()?.let { VfsUtil.findFile(it, true) }
-    //        if(root != null) result.put(root, modPaths)
-    //    }
-    //    result
-    //}
-    //
-    //val roots: Set<VirtualFile> get() = rootsWithModPaths.keys
 }
 
 /**
@@ -83,7 +70,7 @@ class ParadoxModSettingsState : BaseState() {
     var gameType: ParadoxGameType by enum(getSettings().defaultGameType)
     var gameDirectory: String? by string()
     var modPath: String? by string()
-    val modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
+    val modDependencies: MutableMap<String, ParadoxModDependencySettingsState> by map() //modPath > modDepencencySettings
     var orderInDependencies: Int by property(-1)
 }
 
@@ -93,6 +80,7 @@ class ParadoxModSettingsState : BaseState() {
 class ParadoxModDependencySettingsState(val modSettings: ParadoxModSettingsState) : BaseState() {
     var name: String? by string()
     var version: String? by string()
+    var supportedVersion: String? by string()
     val gameType: ParadoxGameType get() = modSettings.gameType
     var modPath: String? by string()
 }

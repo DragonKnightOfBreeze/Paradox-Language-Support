@@ -14,12 +14,12 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
         
         //更新rootInfo缓存的游戏类型
         modSettings.modPath?.let { modPath -> refreshGameType(modPath, gameType) }
-        modSettings.modDependencies.forEach { it.modPath?.let { path -> refreshGameType(path, gameType) } }
+        modSettings.modDependencies.keys.forEach { modPath -> refreshGameType(modPath, gameType) }
         
         //重新解析文件
         runWriteAction {
             modSettings.modPath?.let { modPath -> reparseFiles(modPath) }
-            modSettings.modDependencies.forEach { it.modPath?.let { modPath -> reparseFiles(modPath) } }
+            modSettings.modDependencies.keys.forEach { modPath -> reparseFiles(modPath) }
         }
     }
     
