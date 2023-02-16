@@ -29,6 +29,7 @@ class ParadoxUpdateModSettingsOnRootInfoChangedListener: ParadoxRootInfoListener
             descriptorSettings.modDirectory = rootInfo.rootFile.path
             allModSettings.descriptorSettings.put(modDirectory, descriptorSettings)
         }
+        
         var settings = allModSettings.settings.get(modDirectory)
         if(settings == null) {
             settings = ParadoxModSettingsState()
@@ -44,3 +45,4 @@ class ParadoxUpdateModSettingsOnRootInfoChangedListener: ParadoxRootInfoListener
         
     }
 }
+

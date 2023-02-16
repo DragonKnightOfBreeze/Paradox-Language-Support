@@ -82,7 +82,7 @@
     
     <iconDescriptionBundle resourceBundle="messages.PlsIconBundle"/>
     
-    <vfs.asyncListener implementation="icu.windea.pls.core.listeners.ParadoxModificationTrackerFileListener"/>
+    <vfs.asyncListener implementation="icu.windea.pls.core.listeners.ParadoxModificationTrackFileListener"/>
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls">
@@ -107,6 +107,11 @@
     <listener class="icu.windea.pls.core.listeners.ParadoxUpdateModSettingsOnRootInfoChangedListener"
               topic="icu.windea.pls.core.listeners.ParadoxRootInfoListener"/>
   </applicationListeners>
+  
+  <projectListeners>
+    <listener class="icu.windea.pls.core.listeners.ParadoxCheckModSettingsFileEditorManagerListener"
+              topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+  </projectListeners>
   
   <actions>
     <group id="Pls.Tools" popup="true">

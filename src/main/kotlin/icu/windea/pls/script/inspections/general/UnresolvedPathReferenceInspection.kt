@@ -3,7 +3,6 @@ package icu.windea.pls.script.inspections.general
 import com.intellij.codeInspection.*
 import com.intellij.openapi.observable.util.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
@@ -41,9 +40,9 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
             val location = valueElement
             if(configExpression.type == CwtDataType.AbsoluteFilePath) {
                 val filePath = valueElement.value
-                val path = filePath.toPathOrNull() ?: return
-                if(VfsUtil.findFile(path, false) != null) return
-                val message = PlsBundle.message("inspection.script.general.unresolvedPathReference.description.abs", path)
+                val file = filePath.toVirtualFile(false)
+                if(file != null) return
+                val message = PlsBundle.message("inspection.script.general.unresolvedPathReference.description.abs", filePath)
                 holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
                     ImportGameOrModDirectoryFix(valueElement)
                 )

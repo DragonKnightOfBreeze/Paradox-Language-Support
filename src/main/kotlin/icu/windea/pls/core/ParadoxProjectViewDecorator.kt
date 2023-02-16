@@ -27,13 +27,7 @@ class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
                     ParadoxRootType.Mod -> PlsIcons.ModDirectory
                 }
                 data.setIcon(icon)
-                val name = rootInfo.descriptorInfo.name
-                val version = rootInfo.descriptorInfo.version
-                val comment = buildString {
-                    append(name)
-                    if(version != null) append("@").append(version)
-                }
-                data.locationString = comment
+                data.locationString = rootInfo.descriptorInfo.qualifiedName
             }
         }
     }

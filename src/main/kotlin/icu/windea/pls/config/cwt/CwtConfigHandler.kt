@@ -1634,8 +1634,7 @@ object CwtConfigHandler {
             }
             CwtDataType.AbsoluteFilePath -> {
                 val filePath = expression
-                val path = filePath.toPathOrNull() ?: return null
-                return VfsUtil.findFile(path, true)?.toPsiFile(project)
+                return filePath.toVirtualFile(false)?.toPsiFile(project)
             }
             CwtDataType.Definition -> {
                 val name = expression
@@ -1770,8 +1769,7 @@ object CwtConfigHandler {
             }
             CwtDataType.AbsoluteFilePath -> {
                 val filePath = expression
-                val path = filePath.toPathOrNull() ?: return emptyList()
-                return VfsUtil.findFile(path, true)?.toPsiFile<PsiFile>(project).toSingletonListOrEmpty()
+                return filePath.toVirtualFile(false)?.toPsiFile<PsiFile>(project).toSingletonListOrEmpty()
             }
             CwtDataType.Definition -> {
                 val name = expression

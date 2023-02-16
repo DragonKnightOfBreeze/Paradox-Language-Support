@@ -17,8 +17,7 @@ import icu.windea.pls.core.settings.*
 class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListener {
     override fun onAdd(modSettings: ParadoxModSettingsState) {
         val modDirectory = modSettings.modDirectory ?: return
-        val modPath = modDirectory.toPathOrNull() ?: return
-        val modFile = VfsUtil.findFile(modPath, false) ?: return
+        val modFile = modDirectory.toVirtualFile(false) ?: return
         doUpdate(modFile)
     }
     
@@ -26,8 +25,7 @@ class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListe
     
     override fun onChange(modSettings: ParadoxModSettingsState) {
         val modDirectory = modSettings.modDirectory ?: return
-        val modPath = modDirectory.toPathOrNull() ?: return
-        val modFile = VfsUtil.findFile(modPath, false) ?: return
+        val modFile = modDirectory.toVirtualFile(false) ?: return
         doUpdate(modFile)
     }
     

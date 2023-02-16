@@ -28,13 +28,7 @@ class ParadoxRootDirectoryDescriptor: FileChooserDescriptor(false, true, false, 
 		val fileInfo = file.fileInfo ?: return super.getComment(file)
 		val rootInfo = fileInfo.rootInfo
 		if(rootInfo is ParadoxModRootInfo && file == rootInfo.rootFile) {
-			val name = rootInfo.descriptorInfo.name
-			val version = rootInfo.descriptorInfo.version
-			val comment = buildString {
-				append(name)
-				if(version != null) append("@").append(version)
-			}
-			return comment
+			return rootInfo.descriptorInfo.qualifiedName
 		}
 		return super.getComment(file)
 	}

@@ -249,7 +249,6 @@ inline fun Document.getCharToLineStart(offset: Int, skipWhitespaceOnly: Boolean 
 //endregion
 
 //region VFS Extensions
-
 ///**查找当前项目中指定语言文件类型和作用域的VirtualFile。*/
 //fun findVirtualFiles(project: Project, type: LanguageFileType): Collection<VirtualFile> {
 //	return FileTypeIndex.getFiles(type, GlobalSearchScope.projectScope(project))
@@ -269,6 +268,11 @@ inline fun Document.getCharToLineStart(offset: Int, skipWhitespaceOnly: Boolean 
 //	}
 //	return destination
 //}
+
+fun String.toVirtualFile(refreshIfNeed: Boolean): VirtualFile?{
+	val path = this.toPathOrNull() ?: return null
+	return VfsUtil.findFile(path, refreshIfNeed)
+}
 
 /** 将VirtualFile转化为指定类型的PsiFile。 */
 inline fun <reified T : PsiFile> VirtualFile.toPsiFile(project: Project): T? {

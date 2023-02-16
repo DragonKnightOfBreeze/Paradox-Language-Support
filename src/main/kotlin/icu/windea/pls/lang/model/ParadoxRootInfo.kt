@@ -71,7 +71,9 @@ class ParadoxLauncherSettingsInfo(
     val dlcPath: String = "",
     val exePath: String,
     val exeArgs: List<String>
-)
+) {
+    val qualifiedName = "Game@$version"
+}
 
 class ParadoxModRootInfo(
     override val rootFile: VirtualFile,
@@ -112,4 +114,9 @@ class ParadoxDescriptorInfo(
     val supportedVersion: String? = null,
     val remoteFileId: String? = null,
     val path: String? = null
-)
+) {
+    val qualifiedName = buildString {
+        append(name)
+        if(version != null) append("@").append(version)
+    }
+}

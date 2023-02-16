@@ -5,7 +5,6 @@ import com.intellij.openapi.util.NlsContexts.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
@@ -28,14 +27,8 @@ class ParadoxGotoRelatedItem(element: PsiElement, @Separator group: String) : Go
 			val rootInfo = file.fileInfo?.rootInfo ?: return null
 			append(file.path)
 			when(rootInfo) {
-				is ParadoxGameRootInfo -> {
-					val launcherSettingsInfo = rootInfo.launcherSettingsInfo
-					append(rootInfo.rootType.description).append("@").append(launcherSettingsInfo.version)
-				}
-				is ParadoxModRootInfo -> {
-					val descriptorInfo = rootInfo.descriptorInfo
-					append(descriptorInfo.name).append("@").append(descriptorInfo.version)
-				}
+				is ParadoxGameRootInfo -> rootInfo.launcherSettingsInfo.qualifiedName
+				is ParadoxModRootInfo -> rootInfo.descriptorInfo.qualifiedName
 			}
 		}
 	}

@@ -9,7 +9,7 @@ import icu.windea.pls.script.*
 /**
  * 监听文件以跟踪更改。
  */
-class ParadoxModificationTrackerFileListener : AsyncFileListener {
+class ParadoxModificationTrackFileListener : AsyncFileListener {
 	override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier {
 		return object : AsyncFileListener.ChangeApplier {
 			override fun afterVfsChange() {
