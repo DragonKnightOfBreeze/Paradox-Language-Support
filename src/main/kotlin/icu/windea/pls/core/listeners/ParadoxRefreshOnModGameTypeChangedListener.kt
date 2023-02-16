@@ -1,9 +1,6 @@
 package icu.windea.pls.core.listeners
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
@@ -17,21 +14,15 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
         modSettings.modDependencies.keys.forEach { modPath -> refreshGameType(modPath, gameType) }
         
         //重新解析文件
-        runWriteAction {
-            modSettings.modPath?.let { modPath -> reparseFiles(modPath) }
-            modSettings.modDependencies.keys.forEach { modPath -> reparseFiles(modPath) }
-        }
+        val modPaths = mutableListOf<String>()
+        modSettings.modPath?.let { modPath -> modPaths.add(modPath) }
+        modSettings.modDependencies.keys.forEach { modPath -> modPaths.add(modPath) }
+        ParadoxCoreHandler.reparseFilesInRoot(modPaths)
     }
     
     private fun refreshGameType(modPath: String, gameType: ParadoxGameType?) {
         val settings = getAllModSettings().descriptorSettings.get(modPath) ?: return
-        settings.gameType = gameType 
-    }
-    
-    private fun reparseFiles(modPath: String) {
-        val path = modPath.toPathOrNull() ?: return
-        val rootFile = VfsUtil.findFile(path, true) ?: return
-        ParadoxCoreHandler.reparseFilesInRoot(rootFile)
+        settings.gameType = gameType
     }
 }
    

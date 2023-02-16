@@ -199,12 +199,10 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 	
 	private fun doReparseFilesByFileNames(ignoredFileNameSet: Set<String>, oldIgnoredFileNameSet: Set<String>) {
 		//设置中的被忽略文件名被更改时，需要重新解析相关文件
-		runWriteAction {
-			val fileNames = mutableSetOf<String>()
-			fileNames += oldIgnoredFileNameSet
-			fileNames += ignoredFileNameSet
-			ParadoxCoreHandler.reparseFilesByFileNames(fileNames)
-		}
+		val fileNames = mutableSetOf<String>()
+		fileNames += oldIgnoredFileNameSet
+		fileNames += ignoredFileNameSet
+		ParadoxCoreHandler.reparseFilesByFileNames(fileNames)
 	}
 	
 	private fun doRefreshInlayHints() {

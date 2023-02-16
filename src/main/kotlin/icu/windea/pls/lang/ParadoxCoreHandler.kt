@@ -223,16 +223,22 @@ object ParadoxCoreHandler {
     
     
     @JvmStatic
-    fun reparseFilesInRoot(rootFile: VirtualFile) {
+    fun reparseFilesInRoot(rootFilePaths: List<String>) {
         //重新解析指定的根目录中的所有文件，包括非脚本非本地化文件
         try {
-            FileTypeManagerEx.getInstanceEx().makeFileTypesChange("Root of paradox files $rootFile changed.") { }
+            FileTypeManagerEx.getInstanceEx().makeFileTypesChange("Root of paradox files $rootFilePaths changed.") { }
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
             //ignore
         } finally {
             //要求重新索引
-            FileBasedIndex.getInstance().requestReindex(rootFile)
+            runWriteAction {
+                for(rootFilePath in rootFilePaths) {
+                    val path = rootFilePath.toPathOrNull() ?: continue
+                    val rootFile = VfsUtil.findFile(path, false) ?: continue
+                    FileBasedIndex.getInstance().requestReindex(rootFile)
+                }
+            }
         }
     }
     
@@ -251,9 +257,11 @@ object ParadoxCoreHandler {
             if(e is ProcessCanceledException) throw e
             //ignore
         } finally {
-            //要求重新索引
-            for(file in files) {
-                FileBasedIndex.getInstance().requestReindex(file)
+            runWriteAction {
+                //要求重新索引
+                for(file in files) {
+                    FileBasedIndex.getInstance().requestReindex(file)
+                }
             }
         }
     }
