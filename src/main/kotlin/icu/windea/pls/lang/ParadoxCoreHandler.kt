@@ -57,11 +57,10 @@ object ParadoxCoreHandler {
     }
     
     @JvmStatic
-    fun resolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean = true): ParadoxRootInfo? {
+    fun resolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         if(!rootFile.isDirectory) return null
         val rootInfo = rootFile.getCopyableUserData(PlsKeys.rootInfoKey)
-        if(rootInfo != null && (canBeNotAvailable || rootInfo.isAvailable)) {
-            onAddRootInfo(rootInfo)
+        if(rootInfo != null && rootInfo.isAvailable) {
             return rootInfo
         }
         if(rootInfo != null) {
@@ -186,7 +185,7 @@ object ParadoxCoreHandler {
         val name = file.name
         var currentFile: VirtualFile? = file.parent
         while(currentFile != null) {
-            val rootInfo = resolveRootInfo(currentFile, false)
+            val rootInfo = resolveRootInfo(currentFile)
             if(rootInfo != null) {
                 //filePath.relative(rootPath)
                 val filePath = file.path.removePrefix(rootInfo.rootFile.path).trimStart('/')

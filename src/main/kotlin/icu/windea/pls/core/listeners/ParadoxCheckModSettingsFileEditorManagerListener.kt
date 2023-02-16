@@ -47,7 +47,7 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
                 PlsBundle.message("mod.settings.notification.1.title", descriptorInfo.qualifiedName),
                 PlsBundle.message("mod.settings.notification.1.content"),
                 NotificationType.INFORMATION
-            ).addAction(action).notify(project)
+            ).addAction(action).setImportant(true).notify(project)
         }
         modPaths.add(modPath)
     }
