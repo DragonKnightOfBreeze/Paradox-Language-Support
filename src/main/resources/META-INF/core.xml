@@ -168,6 +168,7 @@
               icon="AllIcons.Actions.Diff">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt l"/>
       </action>
+      <add-to-group group-id="EditorContextBarMenu" anchor="last"/>
     </group>
     <group id="Pls.Diff.WithSeparator">
       <separator/>
@@ -175,7 +176,6 @@
       <add-to-group group-id="CompareActions" relative-to-action="CompareClipboardWithSelection" anchor="after"/>
       <add-to-group group-id="EditorPopupMenu" relative-to-action="CompareClipboardWithSelection" anchor="after"/>
       <add-to-group group-id="ProjectViewPopupMenu" relative-to-action="CompareFileWithEditor" anchor="after"/>
-      <add-to-group group-id="EditorContextBarMenu" anchor="last"/>
     </group>
 
     <group id="Pls.GotoPath">
