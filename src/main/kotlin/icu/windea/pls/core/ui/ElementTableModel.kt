@@ -22,7 +22,7 @@ class ElementTableModel(
 		addRow(PropertyDescriptor())
 	}
 	
-	class NameColumn(private val context: ElementDescriptorsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("column.name.name")) {
+	class NameColumn(private val context: ElementDescriptorsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("ui.table.element.column.name.name")) {
 		override fun isCellEditable(item: ElementDescriptor): Boolean {
 			return true
 		}
@@ -47,13 +47,13 @@ class ElementTableModel(
 		
 		override fun getEditor(item: ElementDescriptor): TableCellEditor {
 			return when(item) {
-				is ValueDescriptor -> DefaultCellEditor(ComboBox(context.descriptorsInfo.allValues))
-				is PropertyDescriptor -> DefaultCellEditor(ComboBox(context.descriptorsInfo.allKeys))
+				is ValueDescriptor -> ComboBoxTableRenderer(context.descriptorsInfo.allValues)
+				is PropertyDescriptor -> ComboBoxTableRenderer(context.descriptorsInfo.allKeys)
 			}
 		}
 	}
 	
-	class SeparatorColumn(private val context: ElementDescriptorsContext) : ColumnInfo<ElementDescriptor, ParadoxSeparator>(PlsBundle.message("column.name.separator")) {
+	class SeparatorColumn(private val context: ElementDescriptorsContext) : ColumnInfo<ElementDescriptor, ParadoxSeparator>(PlsBundle.message("ui.table.element.column.name.separator")) {
 		override fun isCellEditable(item: ElementDescriptor): Boolean {
 			return item is PropertyDescriptor
 		}
@@ -82,7 +82,7 @@ class ElementTableModel(
 		override fun getEditor(item: ElementDescriptor): TableCellEditor? {
 			return when(item) {
 				is ValueDescriptor -> null
-				is PropertyDescriptor -> DefaultCellEditor(ComboBox(ParadoxSeparator.values()))
+				is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparator.values())
 			}
 		}
 		
@@ -91,7 +91,7 @@ class ElementTableModel(
 		}
 	}
 	
-	class ValueColumn(private val context: ElementDescriptorsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("column.name.value")) {
+	class ValueColumn(private val context: ElementDescriptorsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("ui.table.element.column.name.value")) {
 		override fun isCellEditable(item: ElementDescriptor): Boolean {
 			return item is PropertyDescriptor
 		}

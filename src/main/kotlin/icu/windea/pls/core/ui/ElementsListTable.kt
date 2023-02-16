@@ -35,7 +35,7 @@ class ElementsListTable(
                         append(item.separator)
                         append(" ")
                         if(item.value.isEmpty()) {
-                            append("\"\"").append(" # ").append(PlsBundle.message("column.tooltip.editInTemplate"))
+                            append("\"\"").append(" # ").append(PlsBundle.message("ui.table.element.column.tooltip.editInTemplate"))
                         } else {
                             append(item.value.quoteIfNecessary())
                         }

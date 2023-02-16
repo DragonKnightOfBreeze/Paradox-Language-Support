@@ -38,7 +38,11 @@ class ParadoxModSettingsState : BaseState() {
 
 /**
  * 单个模组依赖的配置。
+ * @property selected 用于以后的基于模组列表运行游戏的功能。
+ * @property order 模组在模组列表中的顺序，从1开始。
  */
 class ParadoxModDependencySettingsState : BaseState() {
     var modDirectory: String? by string()
+    var selected: Boolean by property(true)
+    var order: Int by property(-1)
 }

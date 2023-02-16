@@ -89,15 +89,15 @@ class ExpandClauseTemplateDialog(
         
         elementsList = createElementsListTable()
         //add, remove, move up, move down, duplicate
-        val buttonsPanel = ToolbarDecorator.createDecorator(elementsList.table)
+        val panel = ToolbarDecorator.createDecorator(elementsList.table)
             .addExtraAction(ElementsListTable.DuplicateAction(elementsList))
             .letIf(multipleGroup) {
                 it.addExtraAction(ElementsListTable.SwitchToPrevAction(elementsList))
                 it.addExtraAction(ElementsListTable.SwitchToNextAction(elementsList))
             }
             .createPanel()
-        buttonsPanel.preferredSize = Dimension(buttonsPanel.preferredSize.width, 540)
-        return buttonsPanel
+        panel.preferredSize = Dimension(panel.preferredSize.width, 540)
+        return panel
     }
     
     private fun createElementsListTable(): ElementsListTable {
