@@ -1,11 +1,9 @@
 package icu.windea.pls.core.ui
 
 import com.intellij.openapi.*
-import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.table.*
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
@@ -16,7 +14,7 @@ import javax.swing.*
 
 class ElementsListTable(
     val elementsTable: TableView<ElementDescriptor>,
-    val elementsTableModel: ElementTableModel,
+    val elementsTableModel: ElementsTableModel,
     val disposable: Disposable,
     val context: ElementDescriptorsContext,
     val dialog: DialogWithValidation
@@ -61,7 +59,7 @@ class ElementsListTable(
                 for(columnInfo in elementsTableModel.columnInfos) {
                     val panel = JPanel(VerticalFlowLayout(VerticalFlowLayout.TOP, 4, 2, true, false))
                     when(columnInfo) {
-                        is ElementTableModel.NameColumn -> {
+                        is ElementsTableModel.NameColumn -> {
                             if(item is ValueDescriptor) {
                                 val nameComboBox = ComboBox(context.descriptorsInfo.allValues)
                                 nameComboBox.selectedItem = item.name
@@ -76,7 +74,7 @@ class ElementsListTable(
                                 panel.add(nameComboBox)
                             }
                         }
-                        is ElementTableModel.SeparatorColumn -> {
+                        is ElementsTableModel.SeparatorColumn -> {
                             if(item is PropertyDescriptor) {
                                 val separatorComboBox = ComboBox(ParadoxSeparator.values())
                                 separatorComboBox.selectedItem = item.separator
@@ -85,7 +83,7 @@ class ElementsListTable(
                                 panel.add(separatorComboBox)
                             }
                         }
-                        is ElementTableModel.ValueColumn -> {
+                        is ElementsTableModel.ValueColumn -> {
                             if(item is PropertyDescriptor) {
                                 val constantValues = context.descriptorsInfo.allKeyValuesMap[item.name].orEmpty()
                                 val items = constantValues.ifEmpty { arrayOf("") }
@@ -122,9 +120,9 @@ class ElementsListTable(
                 return JBTableRow { column ->
                     val columnInfo = elementsTableModel.columnInfos[column]
                     when(columnInfo) {
-                        is ElementTableModel.NameColumn -> nameComboBox?.item
-                        is ElementTableModel.SeparatorColumn -> separatorComboBox?.item
-                        is ElementTableModel.ValueColumn -> valueComboBox?.item
+                        is ElementsTableModel.NameColumn -> nameComboBox?.item
+                        is ElementsTableModel.SeparatorColumn -> separatorComboBox?.item
+                        is ElementsTableModel.ValueColumn -> valueComboBox?.item
                         else -> null
                     }
                 }
@@ -142,79 +140,5 @@ class ElementsListTable(
     
     private fun getRowItem(row: Int): ElementDescriptor {
         return elementsTable.items.get(row)
-    }
-    
-    /**
-     * 复制选中的所有描述符。
-     */
-    class DuplicateAction(
-        private val elementsList: ElementsListTable
-    ) : AnAction(PlsBundle.message("ui.dialog.expandClauseTemplate.actions.duplicate"), null, PlsIcons.Actions.DuplicateDescriptor) {
-        init {
-            shortcutSet = CustomShortcutSet.fromString("alt C")
-        }
-        
-        override fun getActionUpdateThread() = ActionUpdateThread.EDT
-        
-        override fun actionPerformed(e: AnActionEvent) {
-            val selectedIndices = elementsList.table.selectionModel.selectedIndices
-            val elementsTable = elementsList.elementsTable
-            for(row in selectedIndices.reversed()) {
-                elementsTable.listTableModel.insertRow(row + 1, elementsTable.getRow(row).copyDescriptor())
-            }
-        }
-    }
-    
-    
-    /**
-     * 切换到上一组描述符。（如果存在多组描述符）
-     */
-    class SwitchToPrevAction(
-        private val elementsList: ElementsListTable
-    ) : AnAction(PlsBundle.message("ui.dialog.expandClauseTemplate.actions.switchToPrev"), null, PlsIcons.Actions.SwitchToPrevDescriptor) {
-        init {
-            shortcutSet = CustomShortcutSet.fromString("alt P")
-        }
-        
-        override fun getActionUpdateThread() = ActionUpdateThread.EDT
-        
-        override fun update(e: AnActionEvent) {
-            val descriptorsContext = elementsList.context
-            e.presentation.isEnabled = descriptorsContext.index > 0
-        }
-        
-        override fun actionPerformed(e: AnActionEvent) {
-            val descriptorsContext = elementsList.context
-            if(descriptorsContext.index > 0) {
-                descriptorsContext.index--
-            }
-            elementsList.elementsTableModel.items = descriptorsContext.descriptorsInfo.resultDescriptors
-        }
-    }
-    
-    /**
-     * 切换到下一组描述符。（如果存在多组描述符）
-     */
-    class SwitchToNextAction(
-        private val elementsList: ElementsListTable
-    ) : AnAction(PlsBundle.message("ui.dialog.expandClauseTemplate.actions.switchToNext"), null, PlsIcons.Actions.SwitchToNextDescriptor) {
-        init {
-            shortcutSet = CustomShortcutSet.fromString("alt N")
-        }
-        
-        override fun getActionUpdateThread() = ActionUpdateThread.EDT
-        
-        override fun update(e: AnActionEvent) {
-            val descriptorsContext = elementsList.context
-            e.presentation.isEnabled = descriptorsContext.index < descriptorsContext.descriptorsInfoList.lastIndex
-        }
-        
-        override fun actionPerformed(e: AnActionEvent) {
-            val descriptorsContext = elementsList.context
-            if(descriptorsContext.index < descriptorsContext.descriptorsInfoList.lastIndex) {
-                descriptorsContext.index++
-            }
-            elementsList.elementsTableModel.items = descriptorsContext.descriptorsInfo.resultDescriptors
-        }
     }
 }

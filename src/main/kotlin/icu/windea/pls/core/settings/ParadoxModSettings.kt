@@ -32,8 +32,11 @@ class ParadoxModSettingsState : BaseState() {
     var gameType: ParadoxGameType? by enum()
     var modDirectory: String? by string()
     var gameDirectory: String? by string()
-    val modDependencies: MutableMap<String, ParadoxModDependencySettingsState> by map() //modDirectory > modDepencencySettings
+    val modDependencies: MutableMap<String, ParadoxModDependencySettingsState> by map() //modDirectory > modDependencySettings
     var orderInDependencies: Int by property(-1)
+    
+    //有些地方需要用到列表（保证排序和去重）
+    val modDependencyList: MutableList<ParadoxModDependencySettingsState> = mutableListOf()
 }
 
 /**

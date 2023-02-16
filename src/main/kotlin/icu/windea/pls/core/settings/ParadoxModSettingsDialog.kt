@@ -30,7 +30,6 @@ class ParadoxModSettingsDialog(
     val allModSettings = getAllModSettings()
     val modSettings = allModSettings.settings.getValue(modDirectory)
     val modDescriptorSettings = allModSettings.descriptorSettings.getValue(modDirectory)
-    val modDependencies = modSettings.modDependencies.values.toList()
     
     val oldGameType = modSettings.gameType ?: getSettings().defaultGameType
     
@@ -190,7 +189,7 @@ class ParadoxModSettingsDialog(
         super.doOKAction()
     
         modSettings.modDependencies.clear()
-        modDependencies.associateByTo(modSettings.modDependencies) { it.modDirectory.orEmpty() }
+        modSettings.modDependencyList.associateByTo(modSettings.modDependencies) { it.modDirectory.orEmpty() }
         
         val messageBus = ApplicationManager.getApplication().messageBus
         messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(modSettings)
@@ -207,7 +206,7 @@ class ParadoxModDependenciesTableModel(
 ) : ListTableModel<ParadoxModDependencySettingsState>() {
     init {
         columnInfos = arrayOf(SelectedItem, OrderItem, NameItem, VersionItem)
-        items = dialog.modDependencies
+        items = dialog.modSettings.modDependencyList
     }
     
     override fun exchangeRows(idx1: Int, idx2: Int) {

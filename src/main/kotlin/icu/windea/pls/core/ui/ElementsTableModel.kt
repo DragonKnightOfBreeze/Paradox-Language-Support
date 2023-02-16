@@ -10,7 +10,7 @@ import javax.swing.table.*
 
 //com.intellij.refactoring.changeSignature.ParameterTableModelBase
 
-class ElementTableModel(
+class ElementsTableModel(
 	val context: ElementDescriptorsContext
 ) : ListTableModel<ElementDescriptor>(), EditableModel {
 	init {

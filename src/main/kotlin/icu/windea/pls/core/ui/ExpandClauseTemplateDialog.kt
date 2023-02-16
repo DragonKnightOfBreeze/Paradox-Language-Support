@@ -1,11 +1,13 @@
 package icu.windea.pls.core.ui
 
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import java.awt.*
@@ -24,7 +26,7 @@ class ExpandClauseTemplateDialog(
     val editor: Editor,
     val context: ElementDescriptorsContext
 ) : DialogWithValidation(project) {
-    var elementsTableModel: ElementTableModel
+    var elementsTableModel: ElementsTableModel
     
     val multipleGroup = context.descriptorsInfoList.size > 1
     
@@ -34,8 +36,8 @@ class ExpandClauseTemplateDialog(
         init()
     }
     
-    private fun createElementsInfoModel(): ElementTableModel {
-        return ElementTableModel(context)
+    private fun createElementsInfoModel(): ElementsTableModel {
+        return ElementsTableModel(context)
     }
     
     override fun createNorthPanel() = panel {
@@ -88,14 +90,14 @@ class ExpandClauseTemplateDialog(
         val elementsList = ElementsListTable(tableView, elementsTableModel, disposable, context, this)
         //add, remove, move up, move down, duplicate
         val panel = ToolbarDecorator.createDecorator(elementsList.table)
-            .addExtraAction(ElementsListTable.DuplicateAction(elementsList))
+            .addExtraAction(ElementsToolbarActions.DuplicateAction(elementsList))
             .letIf(multipleGroup) {
-                it.addExtraAction(ElementsListTable.SwitchToPrevAction(elementsList))
-                it.addExtraAction(ElementsListTable.SwitchToNextAction(elementsList))
+                it.addExtraAction(ElementsToolbarActions.SwitchToPrevAction(elementsList))
+                it.addExtraAction(ElementsToolbarActions.SwitchToNextAction(elementsList))
             }
             .createPanel()
         panel.preferredSize = Dimension(panel.preferredSize.width, 540)
         return panel
     }
-    
 }
+
