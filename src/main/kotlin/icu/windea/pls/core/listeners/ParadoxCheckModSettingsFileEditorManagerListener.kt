@@ -1,14 +1,13 @@
 package icu.windea.pls.core.listeners
 
 import com.intellij.notification.*
-import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.tool.actions.*
+import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.model.*
 
 /**
@@ -40,9 +39,13 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
         if(modPaths.contains(modPath)) return
         val settings = getAllModSettings().settings.get(modPath) ?: return
         if(settings.gameType == null || settings.gameDirectory.isNullOrEmpty()) {
-            val action = ActionManager.getInstance().getAction(PlsToolsActions.OPEN_MOD_SETTINGS)
+            val action = NotificationAction.createSimple(PlsBundle.message("mod.settings.notification.1.action.1")) {
+                val dialog = ParadoxModSettingsDialog(project, modPath)
+                dialog.show()
+            }
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
                 PlsBundle.message("mod.settings.notification.1.title", descriptorInfo.qualifiedName),
+                PlsBundle.message("mod.settings.notification.1.content"),
                 NotificationType.INFORMATION
             ).addAction(action).notify(project)
         }

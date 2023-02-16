@@ -72,7 +72,7 @@ class ParadoxLauncherSettingsInfo(
     val exePath: String,
     val exeArgs: List<String>
 ) {
-    val qualifiedName = "Game@$version"
+    val qualifiedName = "Game@$rawVersion"
 }
 
 class ParadoxModRootInfo(

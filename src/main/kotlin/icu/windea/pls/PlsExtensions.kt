@@ -393,7 +393,7 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilde
 		when(rootInfo){
 			is ParadoxGameRootInfo -> {
 				val info = rootInfo.launcherSettingsInfo
-				append("@").append(info.version.escapeXml())
+				append("@").append(info.rawVersion.escapeXml())
 			}
 			is ParadoxModRootInfo -> {
 				val info = rootInfo.descriptorInfo

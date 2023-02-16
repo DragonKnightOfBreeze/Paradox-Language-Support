@@ -53,8 +53,8 @@ class OpenModSettingsAction: AnAction() {
         val project = e.project ?: return
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
         if(!isInProject) return
-        val modDirectory = fileInfo.rootInfo.rootFile.path
-        val dialog = ParadoxModSettingsDialog(project, modDirectory)
+        val modPath = fileInfo.rootInfo.rootFile.path
+        val dialog = ParadoxModSettingsDialog(project, modPath)
         dialog.show()
     }
 }

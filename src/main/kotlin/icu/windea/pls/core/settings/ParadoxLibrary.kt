@@ -10,7 +10,7 @@ import icu.windea.pls.core.*
 import javax.swing.*
 
 class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {
-    @Volatile var roots: MutableSet<VirtualFile> = computeRoots()
+    @Volatile var roots: MutableSet<VirtualFile> = mutableSetOf()
     
     fun computeRoots(): MutableSet<VirtualFile> {
         val newRoots = mutableSetOf<VirtualFile>()
