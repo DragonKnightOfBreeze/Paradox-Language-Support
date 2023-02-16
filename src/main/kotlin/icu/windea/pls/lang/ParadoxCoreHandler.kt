@@ -223,7 +223,7 @@ object ParadoxCoreHandler {
     
     
     @JvmStatic
-    fun reparseFilesInRoot(rootFilePaths: List<String>) {
+    fun reparseFilesInRoot(rootFilePaths: Set<String>) {
         //重新解析指定的根目录中的所有文件，包括非脚本非本地化文件
         try {
             FileTypeManagerEx.getInstanceEx().makeFileTypesChange("Root of paradox files $rootFilePaths changed.") { }
@@ -245,7 +245,7 @@ object ParadoxCoreHandler {
     @JvmStatic
     fun reparseFilesByFileNames(fileNames: Set<String>) {
         //重新解析指定的根目录中的所有文件，包括非脚本非本地化文件
-        val files = mutableListOf<VirtualFile>()
+        val files = mutableSetOf<VirtualFile>()
         try {
             val project = getTheOnlyOpenOrDefaultProject()
             FilenameIndex.processFilesByNames(fileNames, true, GlobalSearchScope.allScope(project), null) { file ->

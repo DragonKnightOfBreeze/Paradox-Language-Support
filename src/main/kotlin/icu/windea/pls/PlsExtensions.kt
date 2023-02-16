@@ -103,6 +103,13 @@ fun PsiElement.useAllUseScope(): Boolean {
 	return language == CwtLanguage || language == ParadoxScriptLanguage || language == ParadoxLocalisationLanguage
 }
 
+val Project.paradoxLibrary: ParadoxLibrary
+	get() {
+		return this.getOrPutUserData(PlsKeys.libraryKey) {
+			ParadoxLibrary(this)
+		}
+	}
+
 val PsiElement.localeConfig: CwtLocalisationLocaleConfig?
 	get() {
 		if(this.language == ParadoxLocalisationLanguage) {

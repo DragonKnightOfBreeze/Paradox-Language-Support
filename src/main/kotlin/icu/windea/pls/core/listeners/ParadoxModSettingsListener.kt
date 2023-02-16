@@ -7,6 +7,8 @@ import icu.windea.pls.core.settings.*
  * 监听模组配置的更改。
  */
 interface ParadoxModSettingsListener {
+    fun onAdd(modSettings: ParadoxModSettingsState)
+    
     fun onChange(modSettings: ParadoxModSettingsState)
     
     companion object {

@@ -1,8 +1,6 @@
 package icu.windea.pls.core.settings
 
 import com.intellij.openapi.components.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
 
 /**
@@ -15,32 +13,6 @@ class ParadoxAllModSettingsState : BaseState() {
     val descriptorSettings: MutableMap<String, ParadoxModDescriptorSettingsState> by map() 
     
     val settings: MutableMap<String, ParadoxModSettingsState> by map()
-    
-    //must also update roots when update settings
-    
-    var roots: MutableSet<VirtualFile> = computeRoots()
-    
-    fun computeRoots(): MutableSet<VirtualFile> {
-        val result = mutableSetOf<VirtualFile>()
-        val rootPaths = mutableSetOf<String>()
-        settings.values.forEach { modSettings ->
-            modSettings.modPath?.let {
-                modSettings.gameDirectory?.let { path ->
-                    rootPaths.add(path)
-                }
-                modSettings.modDependencies.keys.forEach { modPath ->
-                    modPath.let { path ->
-                        rootPaths.add(path)
-                    }
-                }
-            }
-        }
-        rootPaths.forEach { rootPath ->
-            val root = rootPath.toPathOrNull()?.let { VfsUtil.findFile(it, true) }
-            if(root != null) result.add(root)
-        }
-        return result
-    }
 }
 
 class ParadoxModDescriptorSettingsState: BaseState() {
@@ -48,7 +20,7 @@ class ParadoxModDescriptorSettingsState: BaseState() {
     var version: String? by string()
     var supportedVersion: String? by string()
     var gameType: ParadoxGameType? by enum()
-    var modPath: String? by string()
+    var modDirectory: String? by string()
 }
 
 /**
@@ -58,9 +30,9 @@ class ParadoxModDescriptorSettingsState: BaseState() {
  */
 class ParadoxModSettingsState : BaseState() {
     var gameType: ParadoxGameType? by enum()
-    var modPath: String? by string()
+    var modDirectory: String? by string()
     var gameDirectory: String? by string()
-    val modDependencies: MutableMap<String, ParadoxModDependencySettingsState> by map() //modPath > modDepencencySettings
+    val modDependencies: MutableMap<String, ParadoxModDependencySettingsState> by map() //modDirectory > modDepencencySettings
     var orderInDependencies: Int by property(-1)
 }
 
@@ -68,5 +40,5 @@ class ParadoxModSettingsState : BaseState() {
  * 单个模组依赖的配置。
  */
 class ParadoxModDependencySettingsState : BaseState() {
-    var modPath: String? by string()
+    var modDirectory: String? by string()
 }

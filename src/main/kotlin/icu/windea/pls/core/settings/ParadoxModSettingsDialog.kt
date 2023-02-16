@@ -19,11 +19,11 @@ import icu.windea.pls.lang.model.*
 
 class ParadoxModSettingsDialog(
     val project: Project,
-    val modPath: String,
+    val modDirectory: String,
 ): DialogWrapper(project, true) {
     val allModSettings = getAllModSettings()
-    val modSettings = allModSettings.settings.getValue(modPath)
-    val modDescriptorSettings = allModSettings.descriptorSettings.getValue(modPath)
+    val modSettings = allModSettings.settings.getValue(modDirectory)
+    val modDescriptorSettings = allModSettings.descriptorSettings.getValue(modDirectory)
     
     val oldGameType = modSettings.gameType ?: getSettings().defaultGameType
     
@@ -48,13 +48,13 @@ class ParadoxModSettingsDialog(
     
     //game type (combobox)
     //game directory (filepath text field)
-    //mod path (filepath text field)
+    //mod directory (filepath text field)
     
     //mod dependencies (foldable group)
     //  mod dependencies table
-    //  actions: add (select mod path & import from file), remove, move up, move down, edit
+    //  actions: add (select mod directory & import from file), remove, move up, move down, edit
     //  columns: order (int text field), ~~icon (thumbnail)~~, name (readonly), version (readonly), supportedVersion (readonly)
-    //  when add or edit a column: show edit dialog (+ mod path)
+    //  when add or edit a column: show edit dialog (+ mod directory)
     
     override fun createCenterPanel(): DialogPanel {
         return panel {
@@ -112,13 +112,13 @@ class ParadoxModSettingsDialog(
                     .validationOnApply { validateGameDirectory() }
             }
             row {
-                //modPath
-                label(PlsBundle.message("mod.settings.modPath")).widthGroup("mod.settings.left")
+                //modDirectory
+                label(PlsBundle.message("mod.settings.modDirectory")).widthGroup("mod.settings.left")
                 val descriptor = ParadoxRootDirectoryDescriptor()
-                    .withTitle(PlsBundle.message("mod.settings.modPath.title"))
+                    .withTitle(PlsBundle.message("mod.settings.modDirectory.title"))
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
-                    .text(modPath)
+                    .text(modDirectory)
                     .align(Align.FILL)
                     .columns(36)
                     .enabled(false)

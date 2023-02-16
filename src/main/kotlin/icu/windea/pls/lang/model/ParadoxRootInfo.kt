@@ -85,8 +85,8 @@ class ParadoxModRootInfo(
     
     private fun doGetGameType(): ParadoxGameType {
         val allModSettings = getAllModSettings()
-        val modPath = rootFile.path
-        return allModSettings.descriptorSettings.get(modPath)?.gameType
+        val modDirectory = rootFile.path
+        return allModSettings.descriptorSettings.get(modDirectory)?.gameType
             ?: getSettings().defaultGameType
     }
     

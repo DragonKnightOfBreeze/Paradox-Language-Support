@@ -22,15 +22,16 @@ class ParadoxDescriptorFileListener : AsyncFileListener {
 	
 	private fun onChange(event: VFileEvent) {
 		if(event is VFileContentChangeEvent) {
+			//TODo 如果用户一直在更改descriptor.mod，这个事件可能会触发很多次
 			val file = event.file
 			if(file.fileType.isBinary) return //unexpected
 			if(file.name.equals(PlsConstants.descriptorFileName, true)) {
 				val descriptorInfo = ParadoxCoreHandler.getDescriptorInfo(file)
 				file.putUserData(PlsKeys.descriptorInfoKey, descriptorInfo)
-				val modPath = file.fileInfo?.rootInfo?.rootFile?.path
-				if(modPath != null) {
+				val modDirectory = file.fileInfo?.rootInfo?.rootFile?.path
+				if(modDirectory != null) {
 					val allModSettings = getAllModSettings()
-					val settings = allModSettings.descriptorSettings.get(modPath)
+					val settings = allModSettings.descriptorSettings.get(modDirectory)
 					if(settings != null) {
 						settings.name = descriptorInfo.name.takeIfNotEmpty() ?: PlsBundle.message("mod.name.unnamed")
 						settings.version = descriptorInfo.version?.takeIfNotEmpty()

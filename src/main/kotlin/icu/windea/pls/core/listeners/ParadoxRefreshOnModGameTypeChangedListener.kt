@@ -10,18 +10,18 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
         val gameType = modSettings.gameType
         
         //更新游戏类型信息缓存
-        modSettings.modPath?.let { modPath -> refreshGameType(modPath, gameType) }
-        modSettings.modDependencies.keys.forEach { modPath -> refreshGameType(modPath, gameType) }
+        modSettings.modDirectory?.let { modDirectory -> refreshGameType(modDirectory, gameType) }
+        modSettings.modDependencies.keys.forEach { modDirectory -> refreshGameType(modDirectory, gameType) }
         
         //重新解析文件
-        val modPaths = mutableListOf<String>()
-        modSettings.modPath?.let { modPath -> modPaths.add(modPath) }
-        modSettings.modDependencies.keys.forEach { modPath -> modPaths.add(modPath) }
-        ParadoxCoreHandler.reparseFilesInRoot(modPaths)
+        val modDirectories = mutableSetOf<String>()
+        modSettings.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) }
+        modSettings.modDependencies.keys.forEach { modDirectory -> modDirectories.add(modDirectory) }
+        ParadoxCoreHandler.reparseFilesInRoot(modDirectories)
     }
     
-    private fun refreshGameType(modPath: String, gameType: ParadoxGameType?) {
-        val settings = getAllModSettings().descriptorSettings.get(modPath) ?: return
+    private fun refreshGameType(modDirectory: String, gameType: ParadoxGameType?) {
+        val settings = getAllModSettings().descriptorSettings.get(modDirectory) ?: return
         settings.gameType = gameType
     }
 }
