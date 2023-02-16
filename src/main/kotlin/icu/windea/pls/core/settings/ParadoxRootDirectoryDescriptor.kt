@@ -1,4 +1,4 @@
-package icu.windea.pls.core.ui
+package icu.windea.pls.core.settings
 
 import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.vfs.*

@@ -12,7 +12,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.listeners.*
-import icu.windea.pls.core.ui.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 
@@ -20,7 +19,7 @@ import icu.windea.pls.lang.model.*
 class ParadoxModSettingsDialog(
     val project: Project,
     val modDirectory: String,
-): DialogWrapper(project, true) {
+) : DialogWrapper(project, true) {
     val allModSettings = getAllModSettings()
     val modSettings = allModSettings.settings.getValue(modDirectory)
     val modDescriptorSettings = allModSettings.descriptorSettings.getValue(modDirectory)
