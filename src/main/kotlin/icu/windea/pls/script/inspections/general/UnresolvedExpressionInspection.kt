@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
@@ -46,10 +47,17 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 				val config = configs.firstOrNull()
 				if(config == null) {
 					//这里使用合并后的子规则，即使parentProperty可以精确匹配
-					val expectConfigs = if(showExpectInfo) {
-						element.findParentProperty()?.definitionMemberInfo?.getChildPropertyConfigs()
+					val expect = if(showExpectInfo) {
+						val allConfigs = element.findParentProperty()?.definitionMemberInfo?.getChildConfigs()
+						val allExpressions = if(allConfigs.isNullOrEmpty()) emptySet() else {
+							buildSet {
+								for(c in allConfigs) {
+									if(c is CwtPropertyConfig) add(c.expression)
+								}
+							}
+						}
+						allExpressions.takeIfNotEmpty()?.joinToString()
 					} else null
-					val expect = expectConfigs?.mapTo(mutableSetOf()) { it.expression }?.joinToString()
 					val message = when {
 						expect == null -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.1.1", element.expression)
 						expect.isNotEmpty() -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.1.2", element.expression, expect)
@@ -80,10 +88,17 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 				val configs = ParadoxCwtConfigHandler.resolveValueConfigs(element, matchType = matchType, orDefault = false)
 				val config = configs.firstOrNull()
 				if(config == null) {
-					val expectConfigs = if(showExpectInfo) {
-						ParadoxCwtConfigHandler.resolveValueConfigs(element, orDefault = true)
+					val expect = if(showExpectInfo) {
+						val allConfigs = ParadoxCwtConfigHandler.resolveValueConfigs(element, orDefault = true)
+						val allExpressions = if(allConfigs.isEmpty()) emptySet() else {
+							buildSet {
+								for(c in allConfigs) {
+									add(c.expression)
+								}
+							}
+						}
+						allExpressions.takeIfNotEmpty()?.joinToString()
 					} else null
-					val expect = expectConfigs?.mapTo(mutableSetOf()) { it.expression }?.joinToString()
 					val message = when {
 						expect == null -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.2.1", element.expression)
 						expect.isNotEmpty() -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.2.2", element.expression, expect)

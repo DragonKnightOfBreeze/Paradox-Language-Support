@@ -32,7 +32,6 @@ object ParadoxCwtConfigHandler {
 	}
 	
 	@Suppress("UNCHECKED_CAST")
-	@JvmStatic
 	private fun <T : CwtConfig<*>> doResolveConfigs(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
 		//当输入的元素是key或property时，输入的规则类型必须是property
 		return when(configType) {
@@ -50,6 +49,7 @@ object ParadoxCwtConfigHandler {
 				}
 				val definitionMemberInfo = memberElement.definitionMemberInfo ?: return emptyList()
 				if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
+				
 				//如果无法匹配value，则取第一个
 				val configs = definitionMemberInfo.getConfigs(matchType)
 				val configGroup = definitionMemberInfo.configGroup
@@ -100,6 +100,7 @@ object ParadoxCwtConfigHandler {
 						val property = parent
 						val definitionMemberInfo = property.definitionMemberInfo ?: return emptyList()
 						if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
+						
 						val configs = definitionMemberInfo.getConfigs(matchType)
 						val configGroup = definitionMemberInfo.configGroup
 						buildList {
@@ -134,30 +135,33 @@ object ParadoxCwtConfigHandler {
 					is ParadoxScriptBlockElement -> {
 						val property = parent.parent as? ParadoxScriptDefinitionElement ?: return emptyList()
 						val definitionMemberInfo = property.definitionMemberInfo ?: return emptyList()
-						val childValueConfigs = definitionMemberInfo.getChildValueConfigs(matchType)
-						if(childValueConfigs.isEmpty()) return emptyList()
+						
+						val childConfigs = definitionMemberInfo.getChildConfigs(matchType)
+						if(childConfigs.isEmpty()) return emptyList()
 						val configGroup = definitionMemberInfo.configGroup
 						buildList {
-							for(childValueConfig in childValueConfigs) {
+							for(childConfig in childConfigs) {
+								if(childConfig !is CwtValueConfig) continue
 								//精确匹配
-								if(CwtConfigHandler.matchesScriptExpression(valueElement, expression, childValueConfig.valueExpression, childValueConfig, configGroup, matchType)) {
-									add(childValueConfig)
+								if(CwtConfigHandler.matchesScriptExpression(valueElement, expression, childConfig.valueExpression, childConfig, configGroup, matchType)) {
+									add(childConfig)
 								}
 							}
 							//精确匹配无结果 - 不精确匹配
 							if(isEmpty()) {
 								val newMatchType = matchType or CwtConfigMatchType.NOT_EXACT
-								for(childValueConfig in childValueConfigs) {
-									val configExpression = childValueConfig.valueExpression
+								for(childConfig in childConfigs) {
+									if(childConfig !is CwtValueConfig) continue
+									val configExpression = childConfig.valueExpression
 									if(!CwtConfigHandler.requireNotExactMatch(configExpression)) continue
-									if(CwtConfigHandler.matchesScriptExpression(valueElement, expression, configExpression, childValueConfig, configGroup, newMatchType)) {
-										add(childValueConfig)
+									if(CwtConfigHandler.matchesScriptExpression(valueElement, expression, configExpression, childConfig, configGroup, newMatchType)) {
+										add(childConfig)
 									}
 								}
 							}
 							//仍然无结果 - 判断是否使用默认值
 							if(orDefault && isEmpty()) {
-								childValueConfigs.singleOrNull()?.let { add(it) }
+								childConfigs.singleOrNull { it is CwtValueConfig }?.let { add(it) }
 							}
 						} as List<T>
 					}
@@ -174,6 +178,7 @@ object ParadoxCwtConfigHandler {
 	/**
 	 * 得到指定的[element]的作为值的子句中的子属性/值的出现次数信息。（先合并子规则）
 	 */
+	@JvmStatic
 	fun getChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Map<CwtDataExpression, Occurrence> {
 		if(configs.isEmpty()) return emptyMap()
 		val configGroup = configs.first().info.configGroup

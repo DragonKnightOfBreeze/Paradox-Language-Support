@@ -28,6 +28,7 @@ object ParadoxDefinitionMemberHandler {
         if(file !is ParadoxScriptFile) return null
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionMemberInfoKey) {
             val value = resolveInfoDownUp(element)
+            //TODo 需要确定最合适的依赖项
             //invalidated on file modification or ScriptFileTracker
             val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFile
             CachedValueProvider.Result.create(value, file, tracker)
