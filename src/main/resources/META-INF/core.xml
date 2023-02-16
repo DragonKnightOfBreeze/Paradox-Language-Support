@@ -33,8 +33,6 @@
                  description="Use VFS-based implementation for ParadoxFilePathIndex"/>
     <registryKey key="run.convert.dds.to.png.under.progress" defaultValue="true" restartRequired="true"
                  description="Run convert DDS to PNG write action under progress, not to freeze the UI during long operations"/>
-
-    <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType"/>
     
     <vfs.asyncListener implementation="icu.windea.pls.core.listeners.ParadoxDescriptorFileListener"/>
 
