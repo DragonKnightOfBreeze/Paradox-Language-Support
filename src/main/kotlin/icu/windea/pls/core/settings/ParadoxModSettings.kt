@@ -38,6 +38,9 @@ class ParadoxModSettingsState : BaseState() {
 
 /**
  * 单个模组依赖的配置。
+ * 
+ * 始终将模组放到自身的模组依赖列表中，其排序可以调整。
+ * 
  * @property selected 用于以后的基于模组列表运行游戏的功能。
  * @property order 模组在模组列表中的顺序，从1开始。
  */

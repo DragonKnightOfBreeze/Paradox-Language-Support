@@ -143,6 +143,8 @@ class ParadoxModSettingsDialog(
         }
     }
     
+    //com.intellij.openapi.roots.ui.configuration.classpath.ClasspathPanelImpl.createTableWithButtons
+    
     private fun createModDependenciesPanel(): JPanel {
         val tableView = object : TableView<ParadoxModDependencySettingsState>(modDependenciesTableModel) {
             override fun editingStopped(e: ChangeEvent?) {
@@ -155,6 +157,8 @@ class ParadoxModSettingsDialog(
         tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
         tableView.selectionModel.setSelectionInterval(0, 0)
         tableView.surrendersFocusOnKeystroke = true
+        //这里我们需要保证排序正确（基于表格中你的顺序以及order属性的值）
+        //TODO 始终将模组放到自身的模组依赖列表中，其排序可以调整
         val panel = ToolbarDecorator.createDecorator(tableView)
             //TODO
             .createPanel()
@@ -197,7 +201,6 @@ class ParadoxModSettingsDialog(
 }
 
 //com.intellij.openapi.roots.ui.configuration.classpath.ClasspathTableModel
-//com.intellij.openapi.roots.ui.configuration.classpath.ClasspathPanelImpl.createTableWithButtons
 
 class ParadoxModDependenciesTableModel(
     val dialog: ParadoxModSettingsDialog

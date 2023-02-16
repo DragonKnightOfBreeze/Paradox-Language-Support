@@ -24,8 +24,6 @@ class ExpandClauseTemplateDialog(
     val editor: Editor,
     val context: ElementDescriptorsContext
 ) : DialogWithValidation(project) {
-    lateinit var elementsList: ElementsListTable
-    lateinit var elementsTable: TableView<ElementDescriptor>
     var elementsTableModel: ElementTableModel
     
     val multipleGroup = context.descriptorsInfoList.size > 1
@@ -75,19 +73,19 @@ class ExpandClauseTemplateDialog(
     }
     
     private fun createElementsPanel(): JPanel {
-        elementsTable = object : TableView<ElementDescriptor>(elementsTableModel) {
+        val tableView = object : TableView<ElementDescriptor>(elementsTableModel) {
             override fun editingStopped(e: ChangeEvent?) {
                 super.editingStopped(e)
                 repaint() // to update disabled cells background
             }
         }
-        elementsTable.setShowGrid(false)
-        elementsTable.cellSelectionEnabled = true
-        elementsTable.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
-        elementsTable.selectionModel.setSelectionInterval(0, 0)
-        elementsTable.surrendersFocusOnKeystroke = true
+        tableView.setShowGrid(false)
+        tableView.cellSelectionEnabled = true
+        tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
+        tableView.selectionModel.setSelectionInterval(0, 0)
+        tableView.surrendersFocusOnKeystroke = true
         
-        elementsList = createElementsListTable()
+        val elementsList = ElementsListTable(tableView, elementsTableModel, disposable, context, this)
         //add, remove, move up, move down, duplicate
         val panel = ToolbarDecorator.createDecorator(elementsList.table)
             .addExtraAction(ElementsListTable.DuplicateAction(elementsList))
@@ -98,10 +96,6 @@ class ExpandClauseTemplateDialog(
             .createPanel()
         panel.preferredSize = Dimension(panel.preferredSize.width, 540)
         return panel
-    }
-    
-    private fun createElementsListTable(): ElementsListTable {
-        return ElementsListTable(elementsTable, elementsTableModel, disposable, context, this)
     }
     
 }
