@@ -95,6 +95,7 @@ class ParadoxModSettingsDialog(
                     .bindItem(gameTypeProperty)
                     .align(Align.FILL)
                     .columns(18)
+                    .onApply { modSettings.gameType = gameTypeProperty.get() } //set game type to non-default on apply
                 //quickSelectGameDirectory
                 link(PlsBundle.message("mod.settings.quickSelectGameDirectory")) { quickSelectGameDirectory() }
             }
