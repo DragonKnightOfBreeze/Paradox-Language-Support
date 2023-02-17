@@ -4,14 +4,15 @@ import com.intellij.openapi.actionSystem.*
 import icons.*
 import icu.windea.pls.*
 
-class ElementsToolbarActions {
+interface ElementsToolbarActions {
     /**
      * 复制选中的所有描述符。
      */
     class DuplicateAction(
         private val elementsList: ElementsListTable
-    ) : AnAction(PlsBundle.message("ui.dialog.expandClauseTemplate.actions.duplicate"), null, PlsIcons.Actions.DuplicateDescriptor) {
+    ) : AnAction(PlsIcons.Actions.DuplicateDescriptor) {
         init {
+            templatePresentation.text = PlsBundle.message("ui.dialog.expandClauseTemplate.actions.duplicate")
             shortcutSet = CustomShortcutSet.fromString("alt C")
         }
         
@@ -31,8 +32,9 @@ class ElementsToolbarActions {
      */
     class SwitchToPrevAction(
         private val elementsList: ElementsListTable
-    ) : AnAction(PlsBundle.message("ui.dialog.expandClauseTemplate.actions.switchToPrev"), null, PlsIcons.Actions.SwitchToPrevDescriptor) {
+    ) : AnAction(PlsIcons.Actions.SwitchToPrevDescriptor) {
         init {
+            templatePresentation.text = PlsBundle.message("ui.dialog.expandClauseTemplate.actions.switchToPrev")
             shortcutSet = CustomShortcutSet.fromString("alt P")
         }
         
@@ -57,8 +59,9 @@ class ElementsToolbarActions {
      */
     class SwitchToNextAction(
         private val elementsList: ElementsListTable
-    ) : AnAction(PlsBundle.message("ui.dialog.expandClauseTemplate.actions.switchToNext"), null, PlsIcons.Actions.SwitchToNextDescriptor) {
+    ) : AnAction(PlsIcons.Actions.SwitchToNextDescriptor) {
         init {
+            templatePresentation.text = PlsBundle.message("ui.dialog.expandClauseTemplate.actions.switchToNext")
             shortcutSet = CustomShortcutSet.fromString("alt N")
         }
         

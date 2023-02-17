@@ -35,7 +35,7 @@ fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.ope
 
 fun getSettings() = service<ParadoxSettings>().state
 
-fun getAllModSettings() = service<ParadoxAllModSettings>().state
+fun getProfilesSettings() = service<ParadoxProfilesSettings>().state
 
 fun getCwtConfig(project: Project = getTheOnlyOpenOrDefaultProject()) = project.service<CwtConfigProvider>().configGroups
 

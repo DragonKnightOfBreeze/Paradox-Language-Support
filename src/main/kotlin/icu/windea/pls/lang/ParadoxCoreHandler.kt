@@ -158,14 +158,14 @@ object ParadoxCoreHandler {
         return jsonMapper.readValue(file.inputStream)
     }
     
-    fun getDescriptorInfo(file: VirtualFile): ParadoxDescriptorInfo {
+    fun getDescriptorInfo(file: VirtualFile): ParadoxModDescriptorInfo {
         //see: descriptor.cwt
         return file.getOrPutUserData(PlsKeys.descriptorInfoKey) {
             return runReadAction { doGetDescriptorInfo(file) }
         }
     }
     
-    private fun doGetDescriptorInfo(file: VirtualFile): ParadoxDescriptorInfo {
+    private fun doGetDescriptorInfo(file: VirtualFile): ParadoxModDescriptorInfo {
         //val psiFile = file.toPsiFile<ParadoxScriptFile>(getDefaultProject()) ?: return null //会导致StackOverflowError
         val psiFile = ParadoxScriptElementFactory.createDummyFile(getDefaultProject(), file.inputStream.reader().readText())
         val data = ParadoxScriptDataResolver.resolve(psiFile)
@@ -176,7 +176,7 @@ object ParadoxCoreHandler {
         val supportedVersion = data?.getData("supported_version")?.value?.stringValue()
         val remoteFileId = data?.getData("remote_file_id")?.value?.stringValue()
         val path = data?.getData("path")?.value?.stringValue()
-        return ParadoxDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
+        return ParadoxModDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
     }
     
     @JvmStatic

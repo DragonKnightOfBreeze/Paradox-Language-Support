@@ -97,7 +97,7 @@ object PlsKeys {
     val localeConfigKey = Key.create<CwtLocalisationLocaleConfig>("paradox.localeConfig")
     
     val launcherSettingsInfoKey = Key.create<ParadoxLauncherSettingsInfo>("paradox.launcherSettingsInfo")
-    val descriptorInfoKey = Key.create<ParadoxDescriptorInfo>("paradox.descriptorInfo")
+    val descriptorInfoKey = Key.create<ParadoxModDescriptorInfo>("paradox.descriptorInfo")
     
     val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("paradox.cached.definitionInfo")
     val cachedDefinitionMemberInfoKey = Key.create<CachedValue<ParadoxDefinitionMemberInfo>>("paradox.cached.definitionMemberInfo")

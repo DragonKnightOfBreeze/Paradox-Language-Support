@@ -7,7 +7,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.settings.*
+import icu.windea.pls.core.tool.*
 import icu.windea.pls.lang.model.*
 
 /**
@@ -37,7 +37,7 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
             return
         }
         if(modPaths.contains(modPath)) return
-        val modSettings = getAllModSettings().settings.get(modPath) ?: return
+        val modSettings = getProfilesSettings().modSettings.get(modPath) ?: return
         if(modSettings.gameType == null || modSettings.gameDirectory.isNullOrEmpty()) {
             val action = NotificationAction.createSimple(PlsBundle.message("mod.settings.notification.1.action.1")) {
                 val dialog = ParadoxModSettingsDialog(project, modSettings)

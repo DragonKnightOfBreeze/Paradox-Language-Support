@@ -12,33 +12,39 @@ import icu.windea.pls.lang.model.*
 class ParadoxUpdateModSettingsOnRootInfoChangedListener: ParadoxRootInfoListener {
     override fun onAdd(rootInfo: ParadoxRootInfo) {
         if(rootInfo !is ParadoxModRootInfo) return
-        val allModSettings = getAllModSettings()
+        val settings = getProfilesSettings()
         val descriptorInfo = rootInfo.descriptorInfo
         val modDirectory = rootInfo.rootFile.path
-        var descriptorSettings = allModSettings.descriptorSettings.get(modDirectory)
+        var descriptorSettings = settings.modDescriptorSettings.get(modDirectory)
         if(descriptorSettings != null) {
-            descriptorSettings.name = descriptorInfo.name.takeIfNotEmpty() ?: PlsBundle.message("mod.name.unnamed")
-            descriptorSettings.version = descriptorInfo.version?.takeIfNotEmpty()
-            descriptorSettings.supportedVersion = descriptorInfo.supportedVersion?.takeIfNotEmpty()
-            descriptorSettings.modDirectory = rootInfo.rootFile.path
+            syncDescriptorSettings(descriptorSettings, descriptorInfo, rootInfo)
+            settings.updateSettings()
         } else {
             descriptorSettings = ParadoxModDescriptorSettingsState()
-            descriptorSettings.name = descriptorInfo.name.takeIfNotEmpty() ?: PlsBundle.message("mod.name.unnamed")
-            descriptorSettings.version = descriptorInfo.version?.takeIfNotEmpty()
-            descriptorSettings.supportedVersion = descriptorInfo.supportedVersion?.takeIfNotEmpty()
-            descriptorSettings.modDirectory = rootInfo.rootFile.path
-            allModSettings.descriptorSettings.put(modDirectory, descriptorSettings)
+            syncDescriptorSettings(descriptorSettings, descriptorInfo, rootInfo)
+            settings.modDescriptorSettings.put(modDirectory, descriptorSettings)
+            //settings.updateSettings()
         }
         
-        var settings = allModSettings.settings.get(modDirectory)
-        if(settings == null) {
-            settings = ParadoxModSettingsState()
-            settings.gameType = descriptorSettings.gameType
-            settings.modDirectory = modDirectory
-            allModSettings.settings.put(modDirectory, settings)
+        var modSettings = settings.modSettings.get(modDirectory)
+        if(modSettings == null) {
+            modSettings = ParadoxModSettingsState()
+            modSettings.gameType = descriptorSettings.gameType
+            modSettings.modDirectory = modDirectory
+            settings.modSettings.put(modDirectory, modSettings)
+            //settings.updateSettings()
             
-            ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onAdd(settings)
+            ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onAdd(modSettings)
         }
+    }
+    
+    private fun syncDescriptorSettings(descriptorSettings: ParadoxModDescriptorSettingsState, descriptorInfo: ParadoxModDescriptorInfo, rootInfo: ParadoxRootInfo) {
+        descriptorSettings.name = descriptorInfo.name.takeIfNotEmpty() ?: PlsBundle.message("mod.name.unnamed")
+        descriptorSettings.version = descriptorInfo.version?.takeIfNotEmpty()
+        descriptorSettings.picture = descriptorInfo.version?.takeIfNotEmpty()
+        descriptorSettings.supportedVersion = descriptorInfo.supportedVersion?.takeIfNotEmpty()
+        descriptorSettings.remoteFileId = descriptorInfo.remoteFileId?.takeIfNotEmpty()
+        descriptorSettings.modDirectory = rootInfo.rootFile.path
     }
     
     override fun onRemove(rootInfo: ParadoxRootInfo) {

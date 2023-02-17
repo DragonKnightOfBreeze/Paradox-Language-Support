@@ -1,6 +1,6 @@
 @file:Suppress("ComponentNotRegistered", "UnstableApiUsage")
 
-package icu.windea.pls.core.settings.actions
+package icu.windea.pls.core.tool.actions
 
 import com.intellij.ide.lightEdit.*
 import com.intellij.openapi.actionSystem.*

@@ -30,12 +30,13 @@ class ParadoxDescriptorFileListener : AsyncFileListener {
 				file.putUserData(PlsKeys.descriptorInfoKey, descriptorInfo)
 				val modDirectory = file.fileInfo?.rootInfo?.rootFile?.path
 				if(modDirectory != null) {
-					val allModSettings = getAllModSettings()
-					val settings = allModSettings.descriptorSettings.get(modDirectory)
-					if(settings != null) {
-						settings.name = descriptorInfo.name.takeIfNotEmpty() ?: PlsBundle.message("mod.name.unnamed")
-						settings.version = descriptorInfo.version?.takeIfNotEmpty()
-						settings.supportedVersion = descriptorInfo.supportedVersion?.takeIfNotEmpty()
+					val settings = getProfilesSettings()
+					val modDescriptorSettings = settings.modDescriptorSettings.get(modDirectory)
+					if(modDescriptorSettings != null) {
+						modDescriptorSettings.name = descriptorInfo.name.takeIfNotEmpty() ?: PlsBundle.message("mod.name.unnamed")
+						modDescriptorSettings.version = descriptorInfo.version?.takeIfNotEmpty()
+						modDescriptorSettings.supportedVersion = descriptorInfo.supportedVersion?.takeIfNotEmpty()
+						settings.updateSettings()
 					}
 				}
 			}

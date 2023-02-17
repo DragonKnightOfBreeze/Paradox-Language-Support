@@ -15,8 +15,8 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
     fun computeRoots(): MutableSet<VirtualFile> {
         val newRoots = mutableSetOf<VirtualFile>()
         val projectFileIndex = ProjectFileIndex.getInstance(project)
-        val allModSettings = getAllModSettings()
-        for(modSettings in allModSettings.settings.values) {
+        val allModSettings = getProfilesSettings()
+        for(modSettings in allModSettings.modSettings.values) {
             val modDirectory = modSettings.modDirectory ?: continue
             val modFile = modDirectory.toVirtualFile(true) ?: continue
             if(!modFile.isValid) continue

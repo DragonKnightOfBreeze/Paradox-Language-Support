@@ -7,7 +7,7 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.roots.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.settings.*
+import icu.windea.pls.core.tool.*
 import icu.windea.pls.lang.model.*
 
 /**
@@ -16,7 +16,7 @@ import icu.windea.pls.lang.model.*
  * * 当当前文件是项目中的模组文件或目录时启用。
  * 
  * @see icu.windea.pls.core.settings.ParadoxModSettingsState
- * @see icu.windea.pls.core.settings.ParadoxModSettingsDialog
+ * @see icu.windea.pls.core.tool.ParadoxModSettingsDialog
  */
 class OpenModSettingsAction: AnAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
@@ -54,7 +54,7 @@ class OpenModSettingsAction: AnAction() {
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
         if(!isInProject) return
         val modPath = fileInfo.rootInfo.rootFile.path
-        val modSettings = getAllModSettings().settings.get(modPath) ?: return
+        val modSettings = getProfilesSettings().modSettings.get(modPath) ?: return
         val dialog = ParadoxModSettingsDialog(project, modSettings)
         dialog.show()
     }

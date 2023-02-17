@@ -21,7 +21,7 @@
     <applicationConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettings"/>
     <!--no configurable for all mod settings, but for single mod settings-->
-    <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxAllModSettings"/>
+    <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxProfilesSettings"/>
     
     <additionalLibraryRootsProvider implementation="icu.windea.pls.core.settings.ParadoxLibraryProvider"/>
     
@@ -179,13 +179,13 @@
     </group>
 
     <group id="Pls.GotoPath">
-      <action id="Pls.FileChooser.GotoSteamPath" class="icu.windea.pls.core.settings.actions.GotoSteamPathAction"
+      <action id="Pls.FileChooser.GotoSteamPath" class="icu.windea.pls.core.tool.actions.GotoSteamPathAction"
               icon="PlsIcons.Actions.SteamDirectory"/>
-      <action id="Pls.FileChooser.GotoSteamGamePath" class="icu.windea.pls.core.settings.actions.GotoSteamGamePathAction"
+      <action id="Pls.FileChooser.GotoSteamGamePath" class="icu.windea.pls.core.tool.actions.GotoSteamGamePathAction"
               icon="PlsIcons.Actions.SteamGameDirectory"/>
-      <action id="Pls.FileChooser.GotoSteamWorkshopPath" class="icu.windea.pls.core.settings.actions.GotoSteamWorkshopPathAction"
+      <action id="Pls.FileChooser.GotoSteamWorkshopPath" class="icu.windea.pls.core.tool.actions.GotoSteamWorkshopPathAction"
               icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
-      <action id="Pls.FileChooser.GotoGameDataPath" class="icu.windea.pls.core.settings.actions.GotoGameDataPathAction"
+      <action id="Pls.FileChooser.GotoGameDataPath" class="icu.windea.pls.core.tool.actions.GotoGameDataPathAction"
               icon="PlsIcons.Actions.GameDataDirectory"/>
     </group>
     <group id="Pls.GotoPath.WithSeparator">
