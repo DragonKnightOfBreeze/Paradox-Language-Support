@@ -97,7 +97,7 @@ class CwtImageLocationExpression(
 			//dynamic -> returns ("", null, 0)
 			val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
 			val propertyValue = property.propertyValue ?: return null
-			val config = ParadoxCwtConfigHandler.resolveValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
+			val config = ParadoxCwtConfigHandler.getValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
 			if(config.expression.type !in validValueTypes) {
 				return ResolveResult("", null, 0, PlsDocBundle.message("dynamic"))
 			}
@@ -159,7 +159,7 @@ class CwtImageLocationExpression(
 			//dynamic -> returns ("", null, 0)
 			val property = definition.findProperty(propertyName, inline = true) ?: return null
 			val propertyValue = property.propertyValue ?: return null
-			val config = ParadoxCwtConfigHandler.resolveValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
+			val config = ParadoxCwtConfigHandler.getValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
 			if(config.expression.type !in validValueTypes) {
 				return ResolveAllResult("", emptySet(), 0, PlsDocBundle.message("dynamic"))
 			}

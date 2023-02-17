@@ -21,7 +21,7 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 		//if(text.isParameterAwareExpression()) return PsiReference.EMPTY_ARRAY
 		
 		val isKey = element is ParadoxScriptPropertyKey
-		val configs = ParadoxCwtConfigHandler.resolveConfigs(element, !isKey, isKey)
+		val configs = ParadoxCwtConfigHandler.getConfigs(element, !isKey, isKey)
 		val config = configs.firstOrNull()
 		if(config != null) {
 			val textRange = when {

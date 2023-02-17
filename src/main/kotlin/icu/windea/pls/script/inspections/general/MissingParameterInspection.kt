@@ -37,7 +37,7 @@ class MissingParameterInspection : LocalInspectionTool() {
 			}
 			
 			private fun visitElementForInvocationExpression(element: ParadoxScriptProperty) {
-				val configs = ParadoxCwtConfigHandler.resolveConfigs(element)
+				val configs = ParadoxCwtConfigHandler.getConfigs(element)
 				val config = configs.firstOrNull() as? CwtPropertyConfig ?: return
 				val condition = config.configs?.any { CwtConfigHandler.isParameter(it) } == true
 				if(!condition) return
@@ -70,7 +70,7 @@ class MissingParameterInspection : LocalInspectionTool() {
 				val value = element.text
 				if(value.isLeftQuoted()) return
 				if(!value.startsWith("value:")) return //快速判断
-				val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return
+				val config = ParadoxCwtConfigHandler.getConfigs(element).firstOrNull() ?: return
 				val configGroup = config.info.configGroup
 				val dataType = config.expression.type
 				if(!dataType.isValueFieldType()) return

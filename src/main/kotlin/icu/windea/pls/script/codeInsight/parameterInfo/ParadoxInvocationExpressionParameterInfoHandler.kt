@@ -44,7 +44,7 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): ParadoxScriptProperty? {
         val targetElement = findTargetElement(context) ?: return null
         val definitionName = targetElement.name
-        val config = ParadoxCwtConfigHandler.resolvePropertyConfigs(targetElement).firstOrNull() ?: return null
+        val config = ParadoxCwtConfigHandler.getPropertyConfigs(targetElement).firstOrNull() ?: return null
         val definitionType = config.keyExpression.value ?: return null
         //合并所有可能的参数名
         val selector = definitionSelector().gameTypeFrom(context.file).preferRootFrom(context.file)

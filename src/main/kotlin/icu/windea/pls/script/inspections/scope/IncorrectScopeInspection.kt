@@ -16,7 +16,7 @@ class IncorrectScopeInspection: LocalInspectionTool() {
 		}
 		
 		private fun visitMemberElement(element: ParadoxScriptProperty) {
-			val configs = ParadoxCwtConfigHandler.resolveConfigs(element)
+			val configs = ParadoxCwtConfigHandler.getConfigs(element)
 			val config = configs.firstOrNull() ?: return
 			if(!ParadoxScopeHandler.isScopeContextSupported(element)) return
 			val parentMember = ParadoxScopeHandler.findParentMember(element) ?: return

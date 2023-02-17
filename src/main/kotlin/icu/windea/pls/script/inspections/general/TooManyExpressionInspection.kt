@@ -36,7 +36,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 if(file !is ParadoxScriptFile) return
                 //忽略可能的脚本片段入口
                 if(ParadoxScriptMemberElementLinker.canLink(file)) return super.visitFile(file)
-                val configs = ParadoxCwtConfigHandler.resolveConfigs(file, allowDefinition = true)
+                val configs = ParadoxCwtConfigHandler.getConfigs(file, allowDefinition = true)
                 doCheck(file, file, configs)
                 super.visitFile(file)
             }
@@ -53,7 +53,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                     ?.also { if(it.isParameterAwareExpression()) return }
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
-                val configs = ParadoxCwtConfigHandler.resolveConfigs(element, allowDefinition = true)
+                val configs = ParadoxCwtConfigHandler.getConfigs(element, allowDefinition = true)
                 doCheck(element, position, configs)
             }
             

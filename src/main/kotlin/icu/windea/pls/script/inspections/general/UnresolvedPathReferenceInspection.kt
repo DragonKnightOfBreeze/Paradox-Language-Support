@@ -34,7 +34,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
         override fun visitString(valueElement: ParadoxScriptString) {
             ProgressManager.checkCanceled()
             //match or single
-            val valueConfig = ParadoxCwtConfigHandler.resolveValueConfigs(valueElement).firstOrNull() ?: return
+            val valueConfig = ParadoxCwtConfigHandler.getValueConfigs(valueElement).firstOrNull() ?: return
             val configExpression = valueConfig.valueExpression
             val project = valueElement.project
             val location = valueElement

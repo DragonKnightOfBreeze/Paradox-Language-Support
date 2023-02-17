@@ -22,7 +22,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
 		//TODO
 		return when {
 			element is ParadoxScriptStringExpressionElement -> {
-				val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return null
+				val config = ParadoxCwtConfigHandler.getConfigs(element).firstOrNull() ?: return null
 				val configExpression = config.expression
 				val type = configExpression.type
 				//in invocation expression

@@ -1,6 +1,7 @@
 package icu.windea.pls.lang
 
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
@@ -9,30 +10,58 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
+import java.util.concurrent.*
 
+@Suppress("UNCHECKED_CAST")
 object ParadoxCwtConfigHandler {
 	@JvmStatic
-	fun resolveConfigs(element: PsiElement, allowDefinition: Boolean = element is ParadoxScriptValue, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtDataConfig<*>> {
+	fun getConfigs(element: PsiElement, allowDefinition: Boolean = element is ParadoxScriptValue, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtDataConfig<*>> {
 		return when {
-			element is ParadoxScriptDefinitionElement -> resolvePropertyConfigs(element, allowDefinition, orDefault, matchType)
-			element is ParadoxScriptPropertyKey -> resolvePropertyConfigs(element, allowDefinition, orDefault, matchType)
-			element is ParadoxScriptValue -> resolveValueConfigs(element, allowDefinition, orDefault, matchType)
+			element is ParadoxScriptDefinitionElement -> getPropertyConfigs(element, allowDefinition, orDefault, matchType)
+			element is ParadoxScriptPropertyKey -> getPropertyConfigs(element, allowDefinition, orDefault, matchType)
+			element is ParadoxScriptValue -> getValueConfigs(element, allowDefinition, orDefault, matchType)
 			else -> emptyList()
 		}
 	}
 	
 	@JvmStatic
-	fun resolvePropertyConfigs(element: PsiElement, allowDefinition: Boolean = false, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtPropertyConfig> {
-		return doResolveConfigs(element, CwtPropertyConfig::class.java, allowDefinition, orDefault, matchType)
+	fun getPropertyConfigs(element: PsiElement, allowDefinition: Boolean = false, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtPropertyConfig> {
+		return resolveConfigs(element, CwtPropertyConfig::class.java, allowDefinition, orDefault, matchType)
 	}
 	
 	@JvmStatic
-	fun resolveValueConfigs(element: PsiElement, allowDefinition: Boolean = true, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtValueConfig> {
-		return doResolveConfigs(element, CwtValueConfig::class.java, allowDefinition, orDefault, matchType)
+	fun getValueConfigs(element: PsiElement, allowDefinition: Boolean = true, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtValueConfig> {
+		return resolveConfigs(element, CwtValueConfig::class.java, allowDefinition, orDefault, matchType)
 	}
 	
-	@Suppress("UNCHECKED_CAST")
-	private fun <T : CwtConfig<*>> doResolveConfigs(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
+	private fun <T: CwtConfig<*>> getConfigsFromCache(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
+		val configsMap = getConfigsMapFromCache(element) ?: return emptyList()
+		val key = buildString { 
+			when(configType) {
+				CwtPropertyConfig::class.java -> append("property")
+				CwtValueConfig::class.java -> append("value")
+				else -> throw UnsupportedOperationException()
+			}
+			append("#").append(allowDefinition.toIntString())
+			append("#").append(orDefault.toIntString())
+			append("#").append(matchType)
+		}
+		return configsMap.getOrPut(key) { resolveConfigs(element, configType, allowDefinition, orDefault, matchType) } as List<T>
+	}
+	
+	private fun getConfigsMapFromCache(element: PsiElement): MutableMap<String, List<CwtConfig<*>>>? {
+		val file = element.containingFile ?: return null
+		if(file !is ParadoxScriptFile) return null
+		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsMapKey) {
+			val value = ConcurrentHashMap<String, List<CwtConfig<*>>>()
+			//TODO 需要确定最合适的依赖项
+			//invalidated on file modification or ScriptFileTracker
+			val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFile
+			CachedValueProvider.Result.create(value, file, tracker)
+		}
+	}
+	
+	private fun <T : CwtConfig<*>> resolveConfigs(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
 		//当输入的元素是key或property时，输入的规则类型必须是property
 		return when(configType) {
 			CwtPropertyConfig::class.java -> {

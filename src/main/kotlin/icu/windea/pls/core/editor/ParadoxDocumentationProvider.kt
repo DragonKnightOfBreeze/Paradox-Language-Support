@@ -44,7 +44,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 			is ParadoxValueSetValueElement -> getValueSetValueInfo(element, originalElement)
 			is ParadoxScriptStringExpressionElement -> {
 				//TODO 直接基于ParadoxValueSetValueElement进行索引，从而下面的代码不再需要
-				val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull()
+				val config = ParadoxCwtConfigHandler.getConfigs(element).firstOrNull()
 				if(config != null && config.expression.type.isValueSetValueType()) {
 					return getValueSetValueInfo(element, originalElement)
 				}
@@ -93,7 +93,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
 			//is ParadoxParameter -> getParameterDoc(element, originalElement)
 			is ParadoxValueSetValueElement -> getValueSetValueDoc(element, originalElement)
 			is ParadoxScriptStringExpressionElement -> {
-				val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull()
+				val config = ParadoxCwtConfigHandler.getConfigs(element).firstOrNull()
 				if(config != null && config.expression.type.isValueSetValueType()) {
 					return getValueSetValueDoc(element, originalElement)
 				}

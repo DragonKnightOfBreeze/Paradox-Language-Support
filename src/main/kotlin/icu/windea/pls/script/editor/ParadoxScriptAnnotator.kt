@@ -100,7 +100,7 @@ class ParadoxScriptAnnotator : Annotator {
         }
         
         val isKey = element is ParadoxScriptPropertyKey
-        val config = ParadoxCwtConfigHandler.resolveConfigs(element, !isKey, isKey).firstOrNull()
+        val config = ParadoxCwtConfigHandler.getConfigs(element, !isKey, isKey).firstOrNull()
         if(config != null) {
             annotateExpression(element, element.textRange, null, config, holder)
         }

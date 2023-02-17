@@ -29,7 +29,7 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 		//包括内联规则（例如alias，显示时使用特殊的别名图标）
 		//如果对应，也包括一些相关的规则，如modifierConfig
 		val isKey = location is ParadoxScriptPropertyKey
-		val configs = ParadoxCwtConfigHandler.resolveConfigs(location, true, isKey)
+		val configs = ParadoxCwtConfigHandler.getConfigs(location, true, isKey)
 		val targets = buildSet {
 			for(config in configs) {
 				config.pointer.element?.let { add(it) }

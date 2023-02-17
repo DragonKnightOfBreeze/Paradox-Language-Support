@@ -43,7 +43,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 				val definitionMemberInfo = element.definitionMemberInfo
 				if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
 				val matchType = CwtConfigMatchType.INSPECTION
-				val configs = ParadoxCwtConfigHandler.resolvePropertyConfigs(element, matchType = matchType)
+				val configs = ParadoxCwtConfigHandler.getPropertyConfigs(element, matchType = matchType)
 				val config = configs.firstOrNull()
 				if(config == null) {
 					//这里使用合并后的子规则，即使parentProperty可以精确匹配
@@ -85,11 +85,11 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 				val definitionMemberInfo = element.definitionMemberInfo
 				if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
 				val matchType = CwtConfigMatchType.INSPECTION
-				val configs = ParadoxCwtConfigHandler.resolveValueConfigs(element, matchType = matchType, orDefault = false)
+				val configs = ParadoxCwtConfigHandler.getValueConfigs(element, matchType = matchType, orDefault = false)
 				val config = configs.firstOrNull()
 				if(config == null) {
 					val expect = if(showExpectInfo) {
-						val allConfigs = ParadoxCwtConfigHandler.resolveValueConfigs(element, orDefault = true)
+						val allConfigs = ParadoxCwtConfigHandler.getValueConfigs(element, orDefault = true)
 						val allExpressions = if(allConfigs.isEmpty()) emptySet() else {
 							buildSet {
 								for(c in allConfigs) {

@@ -157,7 +157,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			ProgressManager.checkCanceled()
 			if(inspection.localeSet.isEmpty()) return
 			if(!inspection.checkForModifiers) return
-			val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return
+			val config = ParadoxCwtConfigHandler.getConfigs(element).firstOrNull() ?: return
 			val configGroup = config.info.configGroup
 			if(config.expression.type != CwtDataType.Modifier) return
 			val name = element.value

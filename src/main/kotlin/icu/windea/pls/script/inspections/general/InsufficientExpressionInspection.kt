@@ -29,7 +29,7 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
 				ProgressManager.checkCanceled()
 				//得到完全匹配的CWT规则
 				val isKey = element is ParadoxScriptPropertyKey
-				val config = ParadoxCwtConfigHandler.resolveConfigs(element, orDefault = false).firstOrNull() ?: return
+				val config = ParadoxCwtConfigHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return
 				val configExpression = config.expression
 				val dataType = configExpression.type
 				when {
