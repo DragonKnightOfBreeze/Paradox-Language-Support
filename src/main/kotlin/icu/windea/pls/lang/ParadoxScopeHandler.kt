@@ -116,7 +116,7 @@ object ParadoxScopeHandler {
 		
 		//child config can be "alias_name[X] = ..." and "alias[X:scope_field]" is valid
 		//or root config in config tree is "alias[X:xxx] = ..."
-		val configs = ParadoxCwtConfigHandler.resolveConfigs(element, allowDefinition = true)
+		val configs = ParadoxCwtConfigHandler.getConfigs(element, allowDefinition = true)
 		return configs.any { config ->
 			val configGroup = config.info.configGroup
 			isScopeContextSupportedAsRoot(config, configGroup) || isScopeContextSupportedAsChild(config, configGroup)
@@ -204,7 +204,7 @@ object ParadoxScopeHandler {
 		//should be a definition member
 		val parentMember = findParentMember(element) ?: return null
 		val parentScopeContext = getScopeContext(parentMember)
-		val configs = ParadoxCwtConfigHandler.resolveConfigs(element, allowDefinition = true)
+		val configs = ParadoxCwtConfigHandler.getConfigs(element, allowDefinition = true)
 		val config = configs.firstOrNull()
 		if(config == null) return null
 		if(config is CwtPropertyConfig && config.expression.type == CwtDataType.ScopeField) {

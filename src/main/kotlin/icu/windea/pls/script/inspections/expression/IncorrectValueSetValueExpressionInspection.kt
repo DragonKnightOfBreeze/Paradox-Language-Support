@@ -21,7 +21,7 @@ class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
-                val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return
+                val config = ParadoxCwtConfigHandler.getConfigs(element).firstOrNull() ?: return
                 val configGroup = config.info.configGroup
                 val dataType = config.expression.type
                 if(dataType.isValueSetValueType()) {

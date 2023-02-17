@@ -71,20 +71,20 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
 		val resolved = when(element) {
 			is ParadoxScriptPropertyKey -> {
-				val config = ParadoxCwtConfigHandler.resolvePropertyConfigs(element).firstOrNull()
+				val config = ParadoxCwtConfigHandler.getPropertyConfigs(element).firstOrNull()
 					?.takeIf { it.expression.type in keyExpressionTypes }
 					?: return true
 				CwtConfigHandler.resolveScriptExpression(element, null, config, config.expression, config.info.configGroup, true)
 			}
 			is ParadoxScriptString -> {
-				val config = ParadoxCwtConfigHandler.resolveValueConfigs(element).firstOrNull()
+				val config = ParadoxCwtConfigHandler.getValueConfigs(element).firstOrNull()
 					?.takeIf { it.expression.type in valueExpressionTypes }
 					?: return true
 				CwtConfigHandler.resolveScriptExpression(element, null, config, config.expression, config.info.configGroup, false)
 			}
 			//这也是需要判断的
 			is ParadoxScriptInt -> {
-				val config = ParadoxCwtConfigHandler.resolveValueConfigs(element).firstOrNull()
+				val config = ParadoxCwtConfigHandler.getValueConfigs(element).firstOrNull()
 					?.takeIf { it.expression.type in valueExpressionTypes }
 					?: return true
 				CwtConfigHandler.resolveScriptExpression(element, null, config, config.expression, config.info.configGroup, false)

@@ -77,7 +77,7 @@ class CwtLocalisationLocationExpression(
         } else if(propertyName != null) {
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
-            val config = ParadoxCwtConfigHandler.resolveValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
+            val config = ParadoxCwtConfigHandler.getValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
             if(config.expression.type !in validValueTypes) {
                 return ResolveResult("", null, PlsDocBundle.message("dynamic"))
             }
@@ -106,7 +106,7 @@ class CwtLocalisationLocationExpression(
         } else if(propertyName != null) {
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
-            val config = ParadoxCwtConfigHandler.resolveValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
+            val config = ParadoxCwtConfigHandler.getValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
             if(config.expression.type !in validValueTypes) {
                 return ResolveAllResult("", emptySet(), PlsDocBundle.message("dynamic"))
             }

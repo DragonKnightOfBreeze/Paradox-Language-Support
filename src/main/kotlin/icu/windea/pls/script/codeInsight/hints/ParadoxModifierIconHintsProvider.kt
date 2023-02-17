@@ -55,7 +55,7 @@ class ParadoxModifierIconHintsProvider: ParadoxScriptHintsProvider<Settings>() {
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
 		if(element is ParadoxScriptStringExpressionElement) {
 			//基于stub
-			val config = ParadoxCwtConfigHandler.resolveConfigs(element).firstOrNull() ?: return true
+			val config = ParadoxCwtConfigHandler.getConfigs(element).firstOrNull() ?: return true
 			val type = config.expression.type
 			if(type == CwtDataType.Modifier) {
 				val name = element.value

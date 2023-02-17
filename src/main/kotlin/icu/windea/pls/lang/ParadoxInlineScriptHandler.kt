@@ -50,7 +50,7 @@ object ParadoxInlineScriptHandler {
     
     @JvmStatic
     fun resolveInfo(element: ParadoxScriptPropertyKey, file: PsiFile = element.containingFile): ParadoxInlineScriptInfo? {
-        //这里不能调用ParadoxCwtConfigHandler.resolveConfigs，因为需要处理内联的情况，会导致StackOverFlow
+        //这里不能调用ParadoxCwtConfigHandler.getConfigs，因为需要处理内联的情况，会导致StackOverFlow
         
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
@@ -177,7 +177,7 @@ object ParadoxInlineScriptHandler {
                 element = e
             }
             ProgressManager.checkCanceled()
-            val eConfigs = ParadoxCwtConfigHandler.resolveConfigs(e)
+            val eConfigs = ParadoxCwtConfigHandler.getConfigs(e)
             if(eConfigs.isNotEmpty()) {
                 val configsToAdd = eConfigs.mapNotNull { it.parent }
                 if(configs.isEmpty()) {

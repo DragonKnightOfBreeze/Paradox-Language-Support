@@ -4,15 +4,10 @@ package icu.windea.pls.script.psi
 
 import com.intellij.lang.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.linker.*
-import icu.windea.pls.lang.model.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import java.awt.*
 
@@ -57,7 +52,7 @@ fun ParadoxScriptStringExpressionElement.isParameterAwareExpression(): Boolean {
  * 判断当前字符串表达式是否在顶层或者子句中或者作为属性的值，并且拥有唯一匹配的CWT规则。
  */
 fun ParadoxScriptExpressionElement.isValidExpression(matchType: Int = CwtConfigMatchType.DEFAULT): Boolean {
-	return ParadoxCwtConfigHandler.resolveConfigs(this, orDefault = false, matchType = matchType).size == 1
+	return ParadoxCwtConfigHandler.getConfigs(this, orDefault = false, matchType = matchType).size == 1
 }
 
 fun ASTNode.isParameterAwareExpression(): Boolean {

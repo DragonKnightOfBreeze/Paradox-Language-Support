@@ -20,7 +20,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
         }
         
         private fun visitScriptProperty(element: ParadoxScriptProperty) {
-            val configs = ParadoxCwtConfigHandler.resolveConfigs(element)
+            val configs = ParadoxCwtConfigHandler.getConfigs(element)
             val config = configs.firstOrNull()
             if(config == null) return
             val definitionInfo by lazy { element.findParentDefinition()?.definitionInfo }
