@@ -138,6 +138,7 @@ fun createModDependenciesPanel(project: Project, modSettings: ParadoxModSettings
             //TODO
         }
         .setRemoveActionUpdater updater@{
+            //不允许移除模组自身对应的模组依赖配置
             if(modSettings == null) return@updater true
             if(modSettings.modDirectory.isNullOrEmpty()) return@updater true
             val selectedRows = tableView.selectedRows
