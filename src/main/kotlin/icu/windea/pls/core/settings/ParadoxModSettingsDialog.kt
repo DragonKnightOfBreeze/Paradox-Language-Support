@@ -1,12 +1,12 @@
 package icu.windea.pls.core.settings
 
+import com.intellij.ide.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.openapi.vfs.*
 import com.intellij.ui.*
-import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.*
@@ -16,29 +16,26 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.listeners.*
+import icu.windea.pls.core.ui.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
+import java.awt.event.*
 import javax.swing.*
-import javax.swing.event.*
-import javax.swing.table.*
 
 
 class ParadoxModSettingsDialog(
     val project: Project,
-    val modDirectory: String,
+    val settings: ParadoxModSettingsState
 ) : DialogWrapper(project, true) {
-    val allModSettings = getAllModSettings()
-    val modSettings = allModSettings.settings.getValue(modDirectory)
-    val modDescriptorSettings = allModSettings.descriptorSettings.getValue(modDirectory)
+    val descriptorSettings = getAllModSettings().descriptorSettings.getValue(settings.modDirectory.orEmpty())
     
-    val oldGameType = modSettings.gameType ?: getSettings().defaultGameType
+    val oldGameType = settings.gameType ?: getSettings().defaultGameType
     
     val graph = PropertyGraph()
-    
-    val gameTypeProperty = graph.property(modSettings.gameType ?: getSettings().defaultGameType)
-        .apply { afterChange { modSettings.gameType = it } }
-    val gameDirectoryProperty = graph.property(modSettings.gameDirectory.orEmpty())
-        .apply { afterChange { modSettings.gameDirectory = it } }
+    val gameTypeProperty = graph.property(settings.gameType ?: getSettings().defaultGameType)
+        .apply { afterChange { settings.gameType = it } }
+    val gameDirectoryProperty = graph.property(settings.gameDirectory.orEmpty())
+        .apply { afterChange { settings.gameDirectory = it } }
     
     var gameType by gameTypeProperty
     var gameDirectory by gameDirectoryProperty
@@ -47,6 +44,7 @@ class ParadoxModSettingsDialog(
     
     init {
         title = PlsBundle.message("mod.settings")
+        handleModSettings()
         modDependenciesTableModel = ParadoxModDependenciesTableModel(this)
         init()
     }
@@ -71,33 +69,32 @@ class ParadoxModSettingsDialog(
                 //name
                 label(PlsBundle.message("mod.settings.name")).widthGroup("mod.settings.left")
                 textField()
-                    .text(modDescriptorSettings.name.orEmpty())
+                    .text(descriptorSettings.name.orEmpty())
                     .align(Align.FILL)
-                    .columns(32)
+                    .columns(36)
                     .enabled(false)
             }
             row {
                 //version
                 label(PlsBundle.message("mod.settings.version")).widthGroup("mod.settings.left")
                 textField()
-                    .text(modDescriptorSettings.version.orEmpty())
+                    .text(descriptorSettings.version.orEmpty())
                     .align(Align.FILL)
                     .columns(18)
                     .enabled(false)
-                    .visible(modDescriptorSettings.version.orEmpty().isNotEmpty())
+                    .visible(descriptorSettings.version.orEmpty().isNotEmpty())
                 //supportedVersion
                 label(PlsBundle.message("mod.settings.supportedVersion")).widthGroup("mod.settings.right")
                 textField()
-                    .text(modDescriptorSettings.supportedVersion.orEmpty())
+                    .text(descriptorSettings.supportedVersion.orEmpty())
                     .align(Align.FILL)
                     .columns(18)
                     .enabled(false)
-                    .visible(modDescriptorSettings.supportedVersion.orEmpty().isNotEmpty())
+                    .visible(descriptorSettings.supportedVersion.orEmpty().isNotEmpty())
             }
             row {
                 comment(PlsBundle.message("mod.settings.comment"))
             }
-            
             row {
                 //gameType
                 label(PlsBundle.message("mod.settings.gameType")).widthGroup("mod.settings.left")
@@ -105,7 +102,7 @@ class ParadoxModSettingsDialog(
                     .bindItem(gameTypeProperty)
                     .align(Align.FILL)
                     .columns(18)
-                    .onApply { modSettings.gameType = gameTypeProperty.get() } //set game type to non-default on apply
+                    .onApply { settings.gameType = gameTypeProperty.get() } //set game type to non-default on apply
                 //quickSelectGameDirectory
                 link(PlsBundle.message("mod.settings.quickSelectGameDirectory")) { quickSelectGameDirectory() }
             }
@@ -128,15 +125,15 @@ class ParadoxModSettingsDialog(
                     .withTitle(PlsBundle.message("mod.settings.modDirectory.title"))
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
-                    .text(modDirectory)
+                    .text(settings.modDirectory.orEmpty())
                     .align(Align.FILL)
                     .columns(36)
                     .enabled(false)
             }
             
             collapsibleGroup(PlsBundle.message("mod.settings.modDependencies"), false) {
-                row { 
-                    cell(createModDependenciesPanel())
+                row {
+                    cell(createModDependenciesPanel()).align(Align.CENTER)
                 }
             }
         }
@@ -145,23 +142,64 @@ class ParadoxModSettingsDialog(
     //com.intellij.openapi.roots.ui.configuration.classpath.ClasspathPanelImpl.createTableWithButtons
     
     private fun createModDependenciesPanel(): JPanel {
-        val tableView = object : TableView<ParadoxModDependencySettingsState>(modDependenciesTableModel) {
-            override fun editingStopped(e: ChangeEvent?) {
-                super.editingStopped(e)
-                repaint() // to update disabled cells background
-            }
-        }
-        tableView.setShowGrid(false)
-        tableView.cellSelectionEnabled = false
-        tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
-        tableView.selectionModel.setSelectionInterval(0, 0)
-        tableView.surrendersFocusOnKeystroke = true
-        //这里我们需要保证排序正确（基于表格中你的顺序以及order属性的值）
-        //TODO 始终将模组放到自身的模组依赖列表中，其排序可以调整
+        val tableView = createModDependenciesTableView()
+        
+        //这里我们需要保证排序正确（基于表格中你的顺序）
+        //始终将模组放到自身的模组依赖列表中，其排序可以调整
         val panel = ToolbarDecorator.createDecorator(tableView)
             //TODO
             .createPanel()
         return panel
+    }
+    
+    private fun createModDependenciesTableView(): TableView<ParadoxModDependencySettingsState> {
+        val tableModel = modDependenciesTableModel
+        val tableView = ParadoxModDependenciesTableView(tableModel)
+        tableView.setFixedColumnWidth(ParadoxModDependenciesTableModel.SelectedItem.columnIndex, ParadoxModDependenciesTableModel.SelectedItem.name)
+        //快速搜索
+        object : SpeedSearchBase<TableView<ParadoxModDependencySettingsState>>(tableView) {
+            override fun getSelectedIndex(): Int {
+                return tableView.selectedRow
+            }
+            
+            override fun getElementCount(): Int {
+                return tableModel.rowCount
+            }
+            
+            override fun getElementAt(viewIndex: Int): Any {
+                return tableModel.getItem(tableView.convertRowIndexToModel(viewIndex))
+            }
+            
+            override fun getElementText(element: Any): String {
+                val modDirectory = (element as ParadoxModDependencySettingsState).modDirectory.orEmpty()
+                val modDescriptorSettings = getAllModSettings().descriptorSettings.getValue(modDirectory)
+                return modDescriptorSettings.name.orEmpty()
+            }
+            
+            override fun selectElement(element: Any, selectedText: String) {
+                val count = tableModel.rowCount
+                for(row in 0 until count) {
+                    if(element == tableModel.getItem(row)) {
+                        val viewRow = tableView.convertRowIndexToView(row)
+                        tableView.selectionModel.setSelectionInterval(viewRow, viewRow)
+                        TableUtil.scrollSelectionToVisible(tableView)
+                        break
+                    }
+                }
+            }
+        }
+        //双击打开模组依赖信息对话框（仅显示，无法编辑）
+        object : DoubleClickListener() {
+            override fun onDoubleClick(event: MouseEvent): Boolean {
+                if(tableView.selectedRowCount != 1) return true
+                val selectedRow = tableView.selectedRow
+                val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
+                ParadoxModDependencySettingsDialog(project, item).show()
+                return true
+            }
+        }.installOn(tableView)
+        //TODO 右键弹出菜单，提供一些操作项
+        return tableView
     }
     
     private fun quickSelectGameDirectory() {
@@ -185,16 +223,23 @@ class ParadoxModSettingsDialog(
         return null
     }
     
+    private fun handleModSettings() {
+        //如果需要，加上缺失的模组自身的模组依赖配置
+        val modDependencies = settings.modDependencies
+        if(modDependencies.find { it.modDirectory == settings.modDirectory } == null) {
+            val newSettings = ParadoxModDependencySettingsState()
+            newSettings.modDirectory = settings.modDirectory
+            modDependencies.add(newSettings)
+        }
+    }
+    
     override fun doOKAction() {
         super.doOKAction()
-    
-        modSettings.modDependencies.clear()
-        modSettings.modDependencyList.associateByTo(modSettings.modDependencies) { it.modDirectory.orEmpty() }
         
         val messageBus = ApplicationManager.getApplication().messageBus
-        messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(modSettings)
-        if(oldGameType != modSettings.gameType) {
-            messageBus.syncPublisher(ParadoxModGameTypeListener.TOPIC).onChange(modSettings)
+        messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(settings)
+        if(oldGameType != settings.gameType) {
+            messageBus.syncPublisher(ParadoxModGameTypeListener.TOPIC).onChange(settings)
         }
     }
 }
@@ -202,22 +247,16 @@ class ParadoxModSettingsDialog(
 //com.intellij.openapi.roots.ui.configuration.classpath.ClasspathTableModel
 
 class ParadoxModDependenciesTableModel(
-    val dialog: ParadoxModSettingsDialog
+    dialog: ParadoxModSettingsDialog
 ) : ListTableModel<ParadoxModDependencySettingsState>() {
     init {
-        columnInfos = arrayOf(SelectedItem, OrderItem, NameItem, VersionItem)
-        items = dialog.modSettings.modDependencyList
-    }
-    
-    override fun exchangeRows(idx1: Int, idx2: Int) {
-        val item1 = items[idx1]
-        val item2 = items[idx2]
-        item1.order = idx2 + 1
-        item2.order = idx1 + 1
-        super.exchangeRows(idx1, idx2)
+        columnInfos = arrayOf(SelectedItem, NameItem, VersionItem)
+        items = dialog.settings.modDependencies
     }
     
     object SelectedItem : ColumnInfo<ParadoxModDependencySettingsState, Boolean>(PlsBundle.message("mod.settings.modDependencies.column.selected.name")) {
+        const val columnIndex = 0
+        
         override fun valueOf(item: ParadoxModDependencySettingsState): Boolean {
             return item.selected
         }
@@ -235,37 +274,9 @@ class ParadoxModDependenciesTableModel(
         }
     }
     
-    object OrderItem : ColumnInfo<ParadoxModDependencySettingsState, Int>(PlsBundle.message("mod.settings.modDependencies.column.order.name")) {
-        override fun valueOf(item: ParadoxModDependencySettingsState): Int {
-            return item.order
-        }
-        
-        override fun setValue(item: ParadoxModDependencySettingsState, value: Int) {
-            if(item.order == value) return
-            item.order = value
-            //TODO 重新排序
-        }
-        
-        override fun getColumnClass(): Class<*> {
-            return Int::class.java
-        }
-        
-        override fun getRenderer(item: ParadoxModDependencySettingsState): TableCellRenderer {
-            return DefaultTableCellRenderer()
-        }
-        
-        override fun getEditor(item: ParadoxModDependencySettingsState): TableCellEditor {
-            return DefaultCellEditor(object : JBTextField() {
-                override fun setText(t: String) {
-                    val v = t.trim()
-                    if(v.toIntOrNull() == null) return
-                    super.setText(t)
-                }
-            })
-        }
-    }
-    
     object NameItem : ColumnInfo<ParadoxModDependencySettingsState, String>(PlsBundle.message("mod.settings.modDependencies.column.name.name")) {
+        const val columnIndex = 1
+        
         override fun valueOf(item: ParadoxModDependencySettingsState): String {
             val descriptorSettings = getAllModSettings().descriptorSettings.getValue(item.modDirectory.orEmpty())
             return descriptorSettings.name.orEmpty()
@@ -273,9 +284,99 @@ class ParadoxModDependenciesTableModel(
     }
     
     object VersionItem : ColumnInfo<ParadoxModDependencySettingsState, String>(PlsBundle.message("mod.settings.modDependencies.column.version.name")) {
+        const val columnIndex = 2
+        
         override fun valueOf(item: ParadoxModDependencySettingsState): String {
             val descriptorSettings = getAllModSettings().descriptorSettings.getValue(item.modDirectory.orEmpty())
             return descriptorSettings.version.orEmpty()
         }
+    }
+}
+
+class ParadoxModDependenciesTableView(
+    tableModel: ParadoxModDependenciesTableModel
+) : TableView<ParadoxModDependencySettingsState>(tableModel) {
+    init {
+        setShowGrid(false)
+        cellSelectionEnabled = false
+        selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
+        selectionModel.setSelectionInterval(0, 0)
+        surrendersFocusOnKeystroke = true
+    }
+}
+
+class ParadoxModDependencySettingsDialog(
+    val project: Project,
+    val settings: ParadoxModDependencySettingsState
+) : DialogWrapper(project, true) {
+    val descriptorSettings = getAllModSettings().descriptorSettings.getValue(settings.modDirectory.orEmpty())
+    
+    val graph = PropertyGraph()
+    val gameTypeProperty = graph.property(descriptorSettings.gameType ?: getSettings().defaultGameType)
+        .apply { afterChange { descriptorSettings.gameType = it } }
+    
+    init {
+        title = PlsBundle.message("mod.dependency.settings")
+        init()
+    }
+    
+    override fun createCenterPanel(): DialogPanel {
+        return panel {
+            row {
+                //name
+                label(PlsBundle.message("mod.dependency.settings.name")).widthGroup("mod.dependency.settings.left")
+                textField()
+                    .text(descriptorSettings.name.orEmpty())
+                    .align(Align.FILL)
+                    .columns(32)
+                    .enabled(false)
+            }
+            row {
+                //version
+                label(PlsBundle.message("mod.dependency.settings.version")).widthGroup("mod.dependency.settings.left")
+                textField()
+                    .text(descriptorSettings.version.orEmpty())
+                    .align(Align.FILL)
+                    .columns(16)
+                    .enabled(false)
+                    .visible(descriptorSettings.version.orEmpty().isNotEmpty())
+                //supportedVersion
+                label(PlsBundle.message("mod.settings.supportedVersion")).widthGroup("mod.dependency.settings.right")
+                textField()
+                    .text(descriptorSettings.supportedVersion.orEmpty())
+                    .align(Align.FILL)
+                    .columns(16)
+                    .enabled(false)
+                    .visible(descriptorSettings.supportedVersion.orEmpty().isNotEmpty())
+            }
+            row {
+                comment(PlsBundle.message("mod.dependency.settings.comment"))
+            }
+            row {
+                //gameType
+                label(PlsBundle.message("mod.settings.gameType")).widthGroup("mod.dependency.settings.left")
+                comboBox(ParadoxGameType.valueList)
+                    .align(Align.FILL)
+                    .columns(16)
+                    .enabled(false)
+            }
+            row {
+                //modDirectory
+                label(PlsBundle.message("mod.settings.modDirectory")).widthGroup("mod.dependency.settings.left")
+                val descriptor = ParadoxRootDirectoryDescriptor()
+                    .withTitle(PlsBundle.message("mod.dependency.settings.modDirectory.title"))
+                    .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
+                textFieldWithBrowseButton(null, project, descriptor) { it.path }
+                    .text(settings.modDirectory.orEmpty())
+                    .align(Align.FILL)
+                    .columns(32)
+                    .enabled(false)
+            }
+        }
+    }
+    
+    override fun createDefaultActions() {
+        okAction.isEnabled = false
+        cancelAction.putValue(Action.NAME, IdeBundle.message("action.close"))
     }
 }

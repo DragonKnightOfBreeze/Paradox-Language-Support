@@ -37,10 +37,10 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
             return
         }
         if(modPaths.contains(modPath)) return
-        val settings = getAllModSettings().settings.get(modPath) ?: return
-        if(settings.gameType == null || settings.gameDirectory.isNullOrEmpty()) {
+        val modSettings = getAllModSettings().settings.get(modPath) ?: return
+        if(modSettings.gameType == null || modSettings.gameDirectory.isNullOrEmpty()) {
             val action = NotificationAction.createSimple(PlsBundle.message("mod.settings.notification.1.action.1")) {
-                val dialog = ParadoxModSettingsDialog(project, modPath)
+                val dialog = ParadoxModSettingsDialog(project, modSettings)
                 dialog.show()
             }
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
