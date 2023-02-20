@@ -33,6 +33,8 @@ class ParadoxModDependencyAddDialog(
         init()
     }
     
+    //TODO 可以选择添加到的位置：最先/最后/最后但在当前模组之前（默认选项）
+    
     override fun createCenterPanel(): JComponent {
         return panel {
             row {

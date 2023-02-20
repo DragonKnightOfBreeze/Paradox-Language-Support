@@ -117,7 +117,7 @@ class ParadoxModSettingsDialog(
             //modDependencies
             collapsibleGroup(PlsBundle.message("mod.settings.modDependencies"), false) {
                 row {
-                    cell(createModDependenciesPanel(project, settings))
+                    scrollCell(createModDependenciesPanel(project, settings))
                         .align(Align.FILL)
                 }.resizableRow()
             }.resizableRow()

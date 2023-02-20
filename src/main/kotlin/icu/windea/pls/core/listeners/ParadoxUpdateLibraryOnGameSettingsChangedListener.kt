@@ -1,6 +1,5 @@
 package icu.windea.pls.core.listeners
 
-import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
@@ -18,7 +17,7 @@ class ParadoxUpdateLibraryOnGameSettingsChangedListener : ParadoxGameSettingsLis
     override fun onAdd(gameSettings: ParadoxGameSettingsState) {
         val gameDirectory = gameSettings.gameDirectory ?: return
         val gameFile = gameDirectory.toVirtualFile(false) ?: return
-        doUpdate(gameFile)
+        doUpdateLibrary(gameFile)
     }
     
     //目前不考虑onRemove的情况
@@ -26,33 +25,18 @@ class ParadoxUpdateLibraryOnGameSettingsChangedListener : ParadoxGameSettingsLis
     override fun onChange(gameSettings: ParadoxGameSettingsState) {
         val gameDirectory = gameSettings.gameDirectory ?: return
         val gameFile = gameDirectory.toVirtualFile(false) ?: return
-        doUpdate(gameFile)
+        doUpdateLibrary(gameFile)
     }
     
     //org.jetbrains.kotlin.idea.core.script.ucache.ScriptClassRootsUpdater.doUpdate
     
-    @Suppress("UnstableApiUsage")
-    private fun doUpdate(gameFile: VirtualFile) {
+    private fun doUpdateLibrary(gameFile: VirtualFile) {
         for(project in ProjectManager.getInstance().openProjects) {
             if(project.isDisposed) continue
             val isInProject = ProjectFileIndex.getInstance(project).isInContent(gameFile)
             if(!isInProject) continue
             val paradoxLibrary = project.paradoxLibrary
-            val oldRoots = paradoxLibrary.roots
-            val newRoots = paradoxLibrary.computeRoots()
-            if(oldRoots == newRoots) continue
-            paradoxLibrary.roots = newRoots
-            runInEdt(ModalityState.NON_MODAL) {
-                runWriteAction {
-                    AdditionalLibraryRootsListener.fireAdditionalLibraryChanged(
-                        project,
-                        PlsBundle.message("library.name"),
-                        oldRoots,
-                        newRoots,
-                        PlsBundle.message("library.name")
-                    )
-                }
-            }
+            paradoxLibrary.refreshRoots()
         }
     }
 }

@@ -1,6 +1,7 @@
 package icu.windea.pls.core.settings
 
 import com.intellij.navigation.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
@@ -11,6 +12,30 @@ import javax.swing.*
 
 class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {
     @Volatile var roots: MutableSet<VirtualFile> = mutableSetOf()
+    
+    override fun getSourceRoots(): Collection<VirtualFile> {
+        return roots
+    }
+    
+    override fun isShowInExternalLibrariesNode(): Boolean {
+        return true
+    }
+    
+    override fun getIcon(unused: Boolean): Icon {
+        return PlsIcons.Library
+    }
+    
+    override fun getPresentableText(): String {
+        return PlsBundle.message("library.name")
+    }
+    
+    override fun equals(other: Any?): Boolean {
+        return this === other || (other is ParadoxLibrary && project == other.project)
+    }
+    
+    override fun hashCode(): Int {
+        return project.hashCode()
+    }
     
     fun computeRoots(): MutableSet<VirtualFile> {
         //这里仅需要收集不在项目中的游戏目录和模组目录
@@ -58,27 +83,23 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
         return newRoots
     }
     
-    override fun getSourceRoots(): Collection<VirtualFile> {
-        return roots
-    }
     
-    override fun isShowInExternalLibrariesNode(): Boolean {
-        return true
-    }
+    //org.jetbrains.kotlin.idea.core.script.ucache.ScriptClassRootsUpdater.doUpdate
     
-    override fun getIcon(unused: Boolean): Icon {
-        return PlsIcons.Library
-    }
-    
-    override fun getPresentableText(): String {
-        return PlsBundle.message("library.name")
-    }
-    
-    override fun equals(other: Any?): Boolean {
-        return this === other || (other is ParadoxLibrary && project == other.project)
-    }
-    
-    override fun hashCode(): Int {
-        return project.hashCode()
+    @Suppress("UnstableApiUsage")
+    fun refreshRoots() {
+        val oldRoots = roots
+        val newRoots = computeRoots()
+        if(oldRoots == newRoots) return
+        roots = newRoots
+        runWriteAction {
+            AdditionalLibraryRootsListener.fireAdditionalLibraryChanged(
+                project,
+                PlsBundle.message("library.name"),
+                oldRoots,
+                newRoots,
+                PlsBundle.message("library.name")
+            )
+        }
     }
 }
