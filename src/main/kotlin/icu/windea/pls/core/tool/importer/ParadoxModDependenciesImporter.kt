@@ -1,13 +1,17 @@
-package icu.windea.pls.core.tool.dependencies
+package icu.windea.pls.core.tool.importer
 
 import com.intellij.openapi.extensions.*
+import com.intellij.openapi.project.*
+import com.intellij.ui.table.*
+import icu.windea.pls.core.settings.*
+import icu.windea.pls.core.tool.*
 import javax.swing.*
 
 interface ParadoxModDependenciesImporter {
     val icon: Icon?
     val text: String
     
-    fun execute()
+    fun execute(project: Project, tableView: TableView<ParadoxModDependencySettingsState>, tableModel: ParadoxModDependenciesTableModel)
     
     companion object INSTANCE {
         @JvmField

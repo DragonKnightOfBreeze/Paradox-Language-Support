@@ -50,7 +50,8 @@ interface ParadoxModDependenciesToolbarActions {
         }
         
         override fun actionPerformed(e: AnActionEvent) {
-            JBPopupFactory.getInstance().createListPopup(ParadoxModDependenciesImportPopup()).showInBestPositionFor(e.dataContext)
+            val popup = ParadoxModDependenciesImportPopup(project, tableView, tableModel)
+            JBPopupFactory.getInstance().createListPopup(popup).showInBestPositionFor(e.dataContext)
         }
     }
     
@@ -70,7 +71,8 @@ interface ParadoxModDependenciesToolbarActions {
         
         override fun actionPerformed(e: AnActionEvent) {
             //导出全部，而非当前选中的行
-            JBPopupFactory.getInstance().createListPopup(ParadoxModDependenciesExportPopup()).showInBestPositionFor(e.dataContext)
+            val popup = ParadoxModDependenciesExportPopup(project, tableView, tableModel)
+            JBPopupFactory.getInstance().createListPopup(popup).showInBestPositionFor(e.dataContext)
         }
     }
 }
