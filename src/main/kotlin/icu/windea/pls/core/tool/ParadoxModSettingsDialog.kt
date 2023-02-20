@@ -25,10 +25,18 @@ class ParadoxModSettingsDialog(
     val graph = PropertyGraph()
     val gameTypeProperty = graph.property(settings.gameType ?: getSettings().defaultGameType)
         .apply { afterChange { settings.gameType = it } }
+    val gameVersionProperty = graph.property(settings.gameVersion.orEmpty())
+        .apply { afterChange { settings.gameVersion = it.takeIfNotEmpty() } }
     val gameDirectoryProperty = graph.property(settings.gameDirectory.orEmpty())
-        .apply { afterChange { settings.gameDirectory = it } }
+        .apply {
+            afterChange {
+                settings.gameDirectory = it.takeIfNotEmpty()
+                settings.gameVersion = getGameVersion()
+            }
+        }
     
     var gameType by gameTypeProperty
+    var gameVersion by gameVersionProperty
     var gameDirectory by gameDirectoryProperty
     
     init {
@@ -36,20 +44,6 @@ class ParadoxModSettingsDialog(
         handleModSettings()
         init()
     }
-    
-    //name (readonly)
-    //version (readonly) supportedVersion? (readonly)
-    //comment
-    
-    //game type (combobox)
-    //game directory (filepath text field)
-    //mod directory (filepath text field)
-    
-    //mod dependencies (foldable group)
-    //  mod dependencies table
-    //  actions: add (select mod directory & import from file), remove, move up, move down, edit
-    //  columns: order (int text field), ~~icon (thumbnail)~~, name (readonly), version (readonly), supportedVersion (readonly)
-    //  when add or edit a column: show edit dialog (+ mod directory)
     
     override fun createCenterPanel(): DialogPanel {
         return panel {
@@ -81,9 +75,6 @@ class ParadoxModSettingsDialog(
                     .visible(settings.supportedVersion.orEmpty().isNotEmpty())
             }
             row {
-                comment(PlsBundle.message("mod.settings.comment"))
-            }
-            row {
                 //gameType
                 label(PlsBundle.message("mod.settings.gameType")).widthGroup("mod.settings.left")
                 comboBox(ParadoxGameType.valueList)
@@ -91,8 +82,13 @@ class ParadoxModSettingsDialog(
                     .align(Align.FILL)
                     .columns(18)
                     .onApply { settings.gameType = gameTypeProperty.get() } //set game type to non-default on apply
-                //quickSelectGameDirectory
-                link(PlsBundle.message("mod.settings.quickSelectGameDirectory")) { quickSelectGameDirectory() }
+                //gameVersion
+                label(PlsBundle.message("mod.settings.gameVersion")).widthGroup("mod.settings.right")
+                textField()
+                    .bindText(gameVersionProperty)
+                    .align(Align.FILL)
+                    .columns(18)
+                    .enabled(false)
             }
             row {
                 //gameDirectory
@@ -107,6 +103,10 @@ class ParadoxModSettingsDialog(
                     .validationOnApply { validateGameDirectory() }
             }
             row {
+                //quickSelectGameDirectory
+                link(PlsBundle.message("mod.settings.quickSelectGameDirectory")) { quickSelectGameDirectory() }
+            }
+            row {
                 //modDirectory
                 label(PlsBundle.message("mod.settings.modDirectory")).widthGroup("mod.settings.left")
                 val descriptor = ParadoxRootDirectoryDescriptor()
@@ -119,17 +119,13 @@ class ParadoxModSettingsDialog(
                     .enabled(false)
             }
             
+            //modDependencies
             collapsibleGroup(PlsBundle.message("mod.settings.modDependencies"), false) {
                 row {
                     cell(createModDependenciesPanel(project, settings, settings.modDependencies)).align(Align.CENTER)
                 }
             }
         }
-    }
-    
-    private fun quickSelectGameDirectory() {
-        val targetPath = getSteamGamePath(gameType.gameSteamId, gameType.gameName) ?: return
-        gameDirectory = targetPath
     }
     
     private fun ValidationInfoBuilder.validateGameDirectory(): ValidationInfo? {
@@ -142,10 +138,23 @@ class ParadoxModSettingsDialog(
         val rootFile = VfsUtil.findFile(path, false)?.takeIf { it.exists() }
             ?: return error(PlsBundle.message("mod.settings.gameDirectory.error.2"))
         val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile)
-        if(rootInfo?.rootType != ParadoxRootType.Game) {
+        if(rootInfo !is ParadoxGameRootInfo) {
             return error(PlsBundle.message("mod.settings.gameDirectory.error.3", gameType.description))
         }
         return null
+    }
+    
+    private fun quickSelectGameDirectory() {
+        val targetPath = getSteamGamePath(gameType.gameSteamId, gameType.gameName) ?: return
+        gameDirectory = targetPath
+    }
+    
+    private fun getGameVersion(): String? {
+        val gameDirectory = gameDirectory.takeIfNotEmpty() ?: return null
+        val rootFile = gameDirectory.toVirtualFile(false)?.takeIf { it.exists() } ?: return null
+        val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile)
+        if(rootInfo !is ParadoxGameRootInfo) return null
+        return rootInfo.launcherSettingsInfo.rawVersion
     }
     
     private fun handleModSettings() {
@@ -164,8 +173,10 @@ class ParadoxModSettingsDialog(
         
         val messageBus = ApplicationManager.getApplication().messageBus
         messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(settings)
+        
         if(oldGameType != settings.gameType) {
             messageBus.syncPublisher(ParadoxModGameTypeListener.TOPIC).onChange(settings)
         }
     }
 }
+

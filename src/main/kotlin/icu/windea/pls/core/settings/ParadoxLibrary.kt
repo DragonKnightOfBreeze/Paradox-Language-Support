@@ -13,26 +13,45 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
     @Volatile var roots: MutableSet<VirtualFile> = mutableSetOf()
     
     fun computeRoots(): MutableSet<VirtualFile> {
+        val newPaths = mutableSetOf<String>()
         val newRoots = mutableSetOf<VirtualFile>()
         val projectFileIndex = ProjectFileIndex.getInstance(project)
         val allModSettings = getProfilesSettings()
         for(modSettings in allModSettings.modSettings.values) {
             val modDirectory = modSettings.modDirectory ?: continue
-            val modFile = modDirectory.toVirtualFile(true) ?: continue
+            val modFile = modDirectory.toVirtualFile(false) ?: continue
             if(!modFile.isValid) continue
             if(!projectFileIndex.isInContent(modFile)) continue
-            //newRoots.add(modFile) //unnecessary
             run {
                 val gameDirectory = modSettings.gameDirectory ?: return@run
-                val gameFile = gameDirectory.toVirtualFile(true) ?: return@run
+                if(newPaths.contains(gameDirectory)) return@run
+                val gameFile = gameDirectory.toVirtualFile(false) ?: return@run
                 if(!gameFile.isValid) return@run
+                if(projectFileIndex.isInContent(modFile)) return@run
                 newRoots.add(gameFile)
             }
             for(modDependencySettings in modSettings.modDependencies) {
                 val modDependencyDirectory = modDependencySettings.modDirectory ?: continue
+                if(newPaths.contains(modDependencyDirectory)) continue
                 if(modDependencyDirectory == modDirectory) continue //需要排除这种情况
-                val modDependencyFile = modDependencyDirectory.toVirtualFile(true) ?: continue
+                val modDependencyFile = modDependencyDirectory.toVirtualFile(false) ?: continue
                 if(!modDependencyFile.isValid) continue
+                if(projectFileIndex.isInContent(modDependencyFile)) continue
+                newRoots.add(modDependencyFile)
+            }
+        }
+        for(gameSettings in allModSettings.gameSettings.values) {
+            val gameDirectory = gameSettings.gameDirectory ?: continue
+            val gameFile = gameDirectory.toVirtualFile(false) ?: continue
+            if(!gameFile.isValid) continue
+            if(!projectFileIndex.isInContent(gameFile)) continue
+            for(modDependencySettings in gameSettings.modDependencies) {
+                val modDependencyDirectory = modDependencySettings.modDirectory ?: continue
+                if(newPaths.contains(modDependencyDirectory)) continue
+                if(modDependencyDirectory == gameDirectory) continue //需要排除这种情况
+                val modDependencyFile = modDependencyDirectory.toVirtualFile(false) ?: continue
+                if(!modDependencyFile.isValid) continue
+                if(projectFileIndex.isInContent(modDependencyFile)) continue
                 newRoots.add(modDependencyFile)
             }
         }

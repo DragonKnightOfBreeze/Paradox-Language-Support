@@ -100,11 +100,13 @@
   <applicationListeners>
     <listener class="icu.windea.pls.core.listeners.ParadoxRefreshOnDefaultGameTypeChangedListener"
               topic="icu.windea.pls.core.listeners.ParadoxDefaultGameTypeListener"/>
-    <listener class="icu.windea.pls.core.listeners.ParadoxUpdateLibraryOnModSettingsChangedListener"
-              topic="icu.windea.pls.core.listeners.ParadoxModSettingsListener"/>
     <listener class="icu.windea.pls.core.listeners.ParadoxRefreshOnModGameTypeChangedListener"
               topic="icu.windea.pls.core.listeners.ParadoxModGameTypeListener"/>
-    <listener class="icu.windea.pls.core.listeners.ParadoxUpdateModSettingsOnRootInfoChangedListener"
+    <listener class="icu.windea.pls.core.listeners.ParadoxUpdateLibraryOnGameSettingsChangedListener"
+              topic="icu.windea.pls.core.listeners.ParadoxGameSettingsListener"/>
+    <listener class="icu.windea.pls.core.listeners.ParadoxUpdateLibraryOnModSettingsChangedListener"
+              topic="icu.windea.pls.core.listeners.ParadoxModSettingsListener"/>
+    <listener class="icu.windea.pls.core.listeners.ParadoxUpdateSettingsOnRootInfoChangedListener"
               topic="icu.windea.pls.core.listeners.ParadoxRootInfoListener"/>
   </applicationListeners>
   
@@ -120,6 +122,12 @@
       <add-to-group group-id="ProjectViewPopupMenu"/>
     </group>
     
+    <action id="Pls.OpenGameSettings" class="icu.windea.pls.core.tool.actions.OpenGameSettingsAction"
+            icon="PlsIcons.Actions.GameSettings">
+      <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
+      <add-to-group group-id="Pls.Tools" anchor="first"/>
+      <add-to-group group-id="EditorContextBarMenu" anchor="first"/>
+    </action>
     <action id="Pls.OpenModSettings" class="icu.windea.pls.core.tool.actions.OpenModSettingsAction"
             icon="PlsIcons.Actions.ModSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>

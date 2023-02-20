@@ -14,16 +14,18 @@ class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
         if(node is PsiDirectoryNode) {
             val file = node.virtualFile ?: return
             val rootInfo = ParadoxCoreHandler.resolveRootInfo(file) ?: return
-            if(rootInfo is ParadoxModRootInfo) {
-                //在项目视图中为模组根目录显示特定图标和位置文本（模组的名称和版本信息）
-                //忽略存在locationString的情况
-                if(data.locationString != null) return
-                val icon = when(rootInfo.rootType) {
-                    ParadoxRootType.Game -> PlsIcons.GameDirectory
-                    ParadoxRootType.Mod -> PlsIcons.ModDirectory
+            //在项目视图中为模组或游戏根目录显示特定图标和位置文本（模组的名称和版本信息）
+            //忽略存在locationString的情况
+            if(data.locationString != null) return
+            when(rootInfo) {
+                is ParadoxGameRootInfo -> {
+                    data.setIcon(PlsIcons.GameDirectory)
+                    data.locationString = rootInfo.launcherSettingsInfo.qualifiedName
                 }
-                data.setIcon(icon)
-                data.locationString = rootInfo.descriptorInfo.qualifiedName
+                is ParadoxModRootInfo -> {
+                    data.setIcon(PlsIcons.ModDirectory)
+                    data.locationString = rootInfo.descriptorInfo.qualifiedName
+                }
             }
         }
     }

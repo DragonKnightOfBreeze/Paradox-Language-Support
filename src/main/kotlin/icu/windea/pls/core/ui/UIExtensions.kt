@@ -12,8 +12,6 @@ import javax.swing.table.*
 import javax.swing.text.*
 import kotlin.reflect.*
 
-val <T : DialogWrapper> T.dialog get() = this
-
 fun <T : JTextComponent> Cell<T>.bindText(prop: KMutableProperty0<String?>): Cell<T> {
     return bindText({ prop.get().orEmpty() }, { prop.set(it) })
 }

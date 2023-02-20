@@ -31,7 +31,7 @@ interface ParadoxModDependenciesToolbarActions {
         override fun actionPerformed(e: AnActionEvent) {
             val selectedRow = tableView.selectedRow
             val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
-            ParadoxModDependencySettingsDialog(project, item).show()
+            ParadoxModDependencySettingsDialog(project, item, tableView).show()
         }
     }
     

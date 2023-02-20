@@ -22,7 +22,7 @@ class ParadoxModDependenciesTableModel(
         items = modDependencies
     }
     
-    object SelectedItem : ColumnInfo<ParadoxModDependencySettingsState, Boolean>(PlsBundle.message("mod.settings.modDependencies.column.selected.name")) {
+    object SelectedItem : ColumnInfo<ParadoxModDependencySettingsState, Boolean>(PlsBundle.message("mod.dependencies.column.selected.name")) {
         const val columnIndex = 0
         
         override fun valueOf(item: ParadoxModDependencySettingsState): Boolean {
@@ -42,7 +42,7 @@ class ParadoxModDependenciesTableModel(
         }
     }
     
-    object NameItem : ColumnInfo<ParadoxModDependencySettingsState, String>(PlsBundle.message("mod.settings.modDependencies.column.name.name")) {
+    object NameItem : ColumnInfo<ParadoxModDependencySettingsState, String>(PlsBundle.message("mod.dependencies.column.name.name")) {
         const val columnIndex = 1
         
         private val _comparator = compareBy<ParadoxModDependencySettingsState> { item -> item.name.orEmpty() }
@@ -56,7 +56,7 @@ class ParadoxModDependenciesTableModel(
         }
     }
     
-    object VersionItem : ColumnInfo<ParadoxModDependencySettingsState, String>(PlsBundle.message("mod.settings.modDependencies.column.version.name")) {
+    object VersionItem : ColumnInfo<ParadoxModDependencySettingsState, String>(PlsBundle.message("mod.dependencies.column.version.name")) {
         const val columnIndex = 2
         
         private val _comparator = compareBy<ParadoxModDependencySettingsState> { item -> item.version.orEmpty() }
@@ -120,7 +120,7 @@ fun createModDependenciesPanel(project: Project, modSettings: ParadoxModSettings
             if(tableView.selectedRowCount != 1) return true
             val selectedRow = tableView.selectedRow
             val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
-            ParadoxModDependencySettingsDialog(project, item).show()
+            ParadoxModDependencySettingsDialog(project, item, tableView).show()
             return true
         }
     }.installOn(tableView)
@@ -133,9 +133,18 @@ fun createModDependenciesPanel(project: Project, modSettings: ParadoxModSettings
     //始终将模组放到自身的模组依赖列表中，其排序可以调整
     //add, remove, move up, move down, edit, import, export
     val panel = ToolbarDecorator.createDecorator(tableView)
-        .setAddAction { button ->
+        .setAddAction {
             //选择模组目录并添加作为依赖
-            //TODO
+            val selectedRows = tableView.selectedRows
+            val rows = selectedRows.map { tableView.convertRowIndexToModel(it) }
+            val row = rows.lastOrNull() ?: (tableView.rowCount - 1) //last selected model row or last model row
+            val dialog = ParadoxModDependencyAddDialog(project, tableView)
+            if(dialog.showAndGet()) {
+                val newItem = dialog.resultSettings
+                if(newItem != null) {
+                    tableModel.insertRow(row, newItem)
+                }
+            }
         }
         .setRemoveActionUpdater updater@{
             //不允许移除模组自身对应的模组依赖配置

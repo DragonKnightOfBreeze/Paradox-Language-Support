@@ -8,11 +8,13 @@ import icu.windea.pls.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.model.*
+import java.awt.*
 
 class ParadoxModDependencySettingsDialog(
     val project: Project,
-    val settings: ParadoxModDependencySettingsState
-) : DialogWrapper(project, true) {
+    val settings: ParadoxModDependencySettingsState,
+    parentComponent: Component? = null
+) : DialogWrapper(project, parentComponent, true, IdeModalityType.PROJECT) {
     val graph = PropertyGraph()
     val gameTypeProperty = graph.property(settings.gameType ?: getSettings().defaultGameType)
         .apply { afterChange { settings.gameType = it } }
@@ -30,7 +32,7 @@ class ParadoxModDependencySettingsDialog(
                 textField()
                     .text(settings.name.orEmpty())
                     .align(Align.FILL)
-                    .columns(32)
+                    .columns(36)
                     .enabled(false)
             }
             row {
@@ -47,12 +49,9 @@ class ParadoxModDependencySettingsDialog(
                 textField()
                     .text(settings.supportedVersion.orEmpty())
                     .align(Align.FILL)
-                    .columns(16)
+                    .columns(18)
                     .enabled(false)
                     .visible(settings.supportedVersion.orEmpty().isNotEmpty())
-            }
-            row {
-                comment(PlsBundle.message("mod.dependency.settings.comment"))
             }
             row {
                 //gameType

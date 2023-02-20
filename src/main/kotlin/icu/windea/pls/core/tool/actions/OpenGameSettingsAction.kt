@@ -1,5 +1,3 @@
-@file:Suppress("ComponentNotRegistered")
-
 package icu.windea.pls.core.tool.actions
 
 import com.intellij.ide.projectView.impl.nodes.*
@@ -12,14 +10,14 @@ import icu.windea.pls.core.tool.*
 import icu.windea.pls.lang.model.*
 
 /**
- * 打开模组配置。
- * 
- * * 当当前文件是项目中的模组文件或目录时启用。
- * 
- * @see icu.windea.pls.core.settings.ParadoxModSettingsState
- * @see icu.windea.pls.core.tool.ParadoxModSettingsDialog
+ * 打开游戏配置。
+ *
+ * * 当当前文件是项目中的游戏文件或目录时启用。
+ *
+ * @see icu.windea.pls.core.settings.ParadoxGameSettingsState
+ * @see icu.windea.pls.core.tool.ParadoxGameSettingsDialog
  */
-class OpenModSettingsAction: AnAction() {
+class OpenGameSettingsAction: AnAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }
@@ -31,8 +29,7 @@ class OpenModSettingsAction: AnAction() {
         //这里需要兼容直接从项目根目录右键打开菜单的情况
         val file = getFile(e)
         val fileInfo = file?.fileInfo ?: return
-        //不为游戏文件提供
-        if(fileInfo.rootInfo.rootType != ParadoxRootType.Mod) return
+        if(fileInfo.rootInfo.rootType != ParadoxRootType.Game) return
         //必须位于当前项目中
         val project = e.project ?: return
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
@@ -52,15 +49,13 @@ class OpenModSettingsAction: AnAction() {
         val file = getFile(e)
         val fileInfo = file?.fileInfo ?: return
         //不为游戏文件提供
-        if(fileInfo.rootInfo.rootType != ParadoxRootType.Mod) return
-        //必须位于当前项目中
+        if(fileInfo.rootInfo.rootType != ParadoxRootType.Game) return
         val project = e.project ?: return
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
         if(!isInProject) return
         val modPath = fileInfo.rootInfo.rootFile.path
-        val modSettings = getProfilesSettings().modSettings.get(modPath) ?: return
-        val dialog = ParadoxModSettingsDialog(project, modSettings)
+        val gameSettings = getProfilesSettings().gameSettings.get(modPath) ?: return
+        val dialog = ParadoxGameSettingsDialog(project, gameSettings)
         dialog.show()
     }
 }
-

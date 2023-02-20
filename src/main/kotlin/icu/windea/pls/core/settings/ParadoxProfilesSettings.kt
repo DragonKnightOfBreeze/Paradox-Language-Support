@@ -30,6 +30,7 @@ class ParadoxModDescriptorSettingsState : BaseState() {
 
 class ParadoxGameSettingsState : BaseState() {
     var gameType: ParadoxGameType? by enum()
+    var gameVersion: String? by string()
     var gameDirectory: String? by string()
     val modDependencies: MutableList<ParadoxModDependencySettingsState> by list() //需要保证排序和去重
 }
@@ -40,8 +41,9 @@ class ParadoxGameSettingsState : BaseState() {
  */
 class ParadoxModSettingsState : BaseState() {
     var gameType: ParadoxGameType? by enum()
-    var modDirectory: String? by string()
+    var gameVersion: String? by string()
     var gameDirectory: String? by string()
+    var modDirectory: String? by string()
     val modDependencies: MutableList<ParadoxModDependencySettingsState> by list() //需要保证排序和去重
     
     var name by getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())::name

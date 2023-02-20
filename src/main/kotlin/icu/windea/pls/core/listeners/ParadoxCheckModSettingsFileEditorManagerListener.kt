@@ -11,7 +11,7 @@ import icu.windea.pls.core.tool.*
 import icu.windea.pls.lang.model.*
 
 /**
- * 当打开项目中的模组文件时，检查模组的游戏类型和游戏目录是否已配置。如果未配置则弹出通知。
+ * 当打开项目中的模组文件时，检查模组的游戏目录是否已配置。如果未配置则弹出通知。
  */
 class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListener {
     companion object {
@@ -38,7 +38,7 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
         }
         if(modPaths.contains(modPath)) return
         val modSettings = getProfilesSettings().modSettings.get(modPath) ?: return
-        if(modSettings.gameType == null || modSettings.gameDirectory.isNullOrEmpty()) {
+        if(modSettings.gameDirectory.isNullOrEmpty()) {
             val action = NotificationAction.createSimple(PlsBundle.message("mod.settings.notification.1.action.1")) {
                 val dialog = ParadoxModSettingsDialog(project, modSettings)
                 dialog.show()
