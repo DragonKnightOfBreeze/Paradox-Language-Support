@@ -83,35 +83,11 @@ fun createModDependenciesPanel(project: Project, modSettings: ParadoxModSettings
     tableView.surrendersFocusOnKeystroke = true
     tableView.setFixedColumnWidth(ParadoxModDependenciesTableModel.SelectedItem.columnIndex, ParadoxModDependenciesTableModel.SelectedItem.name)
     //快速搜索
-    object : SpeedSearchBase<TableView<ParadoxModDependencySettingsState>>(tableView) {
-        override fun getSelectedIndex(): Int {
-            return tableView.selectedRow
-        }
-        
-        override fun getElementCount(): Int {
-            return tableModel.rowCount
-        }
-        
-        override fun getElementAt(viewIndex: Int): Any {
-            return tableModel.getItem(tableView.convertRowIndexToModel(viewIndex))
-        }
-        
-        override fun getElementText(element: Any): String {
-            val modDirectory = (element as ParadoxModDependencySettingsState).modDirectory.orEmpty()
+    object : TableViewSpeedSearch<ParadoxModDependencySettingsState>(tableView) {
+        override fun getItemText(element: ParadoxModDependencySettingsState): String? {
+            val modDirectory = element.modDirectory.orEmpty()
             val modDescriptorSettings = getProfilesSettings().modDescriptorSettings.getValue(modDirectory)
             return modDescriptorSettings.name.orEmpty()
-        }
-        
-        override fun selectElement(element: Any, selectedText: String) {
-            val count = tableModel.rowCount
-            for(row in 0 until count) {
-                if(element == tableModel.getItem(row)) {
-                    val viewRow = tableView.convertRowIndexToView(row)
-                    tableView.selectionModel.setSelectionInterval(viewRow, viewRow)
-                    TableUtil.scrollSelectionToVisible(tableView)
-                    break
-                }
-            }
         }
     }
     //双击打开模组依赖信息对话框

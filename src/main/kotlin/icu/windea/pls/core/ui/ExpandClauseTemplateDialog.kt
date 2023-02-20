@@ -1,13 +1,11 @@
 package icu.windea.pls.core.ui
 
-import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.*
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import java.awt.*
@@ -86,7 +84,12 @@ class ExpandClauseTemplateDialog(
         tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
         tableView.selectionModel.setSelectionInterval(0, 0)
         tableView.surrendersFocusOnKeystroke = true
-        
+        //快速搜索
+        object : TableViewSpeedSearch<ElementDescriptor>(tableView) {
+            override fun getItemText(element: ElementDescriptor): String {
+                return element.name
+            }
+        }
         val elementsList = ElementsListTable(tableView, elementsTableModel, disposable, context, this)
         //add, remove, move up, move down, duplicate
         val panel = ToolbarDecorator.createDecorator(elementsList.table)
