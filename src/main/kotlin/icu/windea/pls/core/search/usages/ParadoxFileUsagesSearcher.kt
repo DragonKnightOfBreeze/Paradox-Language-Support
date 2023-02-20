@@ -7,13 +7,11 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.lang.expression.*
 import kotlin.experimental.*
 
 /**
  * 文件（相对于游戏或模组根目录）的使用的查询。
- * @see CwtPathExpressionType
  */
 class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {

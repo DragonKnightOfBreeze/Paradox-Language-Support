@@ -31,7 +31,7 @@ class ParadoxModSettingsDialog(
         .apply {
             afterChange {
                 settings.gameDirectory = it.takeIfNotEmpty()
-                settings.gameVersion = getGameVersion()
+                settings.gameVersion = getGameVersionFromGameDirectory()
             }
         }
     
@@ -148,7 +148,7 @@ class ParadoxModSettingsDialog(
         gameDirectory = targetPath
     }
     
-    private fun getGameVersion(): String? {
+    private fun getGameVersionFromGameDirectory(): String? {
         val gameDirectory = gameDirectory.takeIfNotEmpty() ?: return null
         val rootFile = gameDirectory.toVirtualFile(false)?.takeIf { it.exists() } ?: return null
         val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile)

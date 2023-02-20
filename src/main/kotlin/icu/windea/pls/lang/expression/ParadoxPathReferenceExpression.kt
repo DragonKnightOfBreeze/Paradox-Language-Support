@@ -34,7 +34,7 @@ interface ParadoxPathReferenceExpression {
     fun extract(configExpression: CwtDataExpression, filePath: String, ignoreCase: Boolean = true): String?
     
     /**
-     * 解析指定的文件路径表达式，得到文件路径。
+     * 解析指定的文件路径表达式，得到文件路径。如果返回null则表示无法仅基于这些参数得到完整的文件路径。
      * @param configExpression 对应的CWT规则表达式。拥有数种写法的文件路径表达式。
      * @param pathReference 作为值的字符串。即脚本文件中使用的路径表达式。
      */

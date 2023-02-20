@@ -71,7 +71,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                             toolTipText = PlsBundle.message("settings.general.ignoredFileNames.tooltip")
                         }
                     expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
-                        .bindText({ settings.ignoredFileNames.orEmpty() }, { settings.ignoredFileNames = it })
+                        .bindText(settings::ignoredFileNames.toNonNullableProperty(""))
                         .comment(PlsBundle.message("settings.general.ignoredFileNames.comment"))
                         .align(Align.FILL)
                         .resizableColumn()
@@ -200,7 +200,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     label(PlsBundle.message("settings.generation.fileNamePrefix")).applyToComponent {
                         toolTipText = PlsBundle.message("settings.generation.fileNamePrefix.tooltip")
                     }
-                    textField().bindText(settings.generation::fileNamePrefix)
+                    textField().bindText(settings.generation::fileNamePrefix.toNonNullableProperty(""))
                 }
             }.visible(false) //TODO
         }
