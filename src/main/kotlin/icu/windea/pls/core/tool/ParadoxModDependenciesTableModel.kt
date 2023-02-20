@@ -22,6 +22,8 @@ class ParadoxModDependenciesTableModel(
         items = modDependencies
     }
     
+    //注意这里的排序并不会实际改变modDependencies中模组依赖的排序
+    
     object SelectedItem : ColumnInfo<ParadoxModDependencySettingsState, Boolean>(PlsBundle.message("mod.dependencies.column.selected.name")) {
         const val columnIndex = 0
         

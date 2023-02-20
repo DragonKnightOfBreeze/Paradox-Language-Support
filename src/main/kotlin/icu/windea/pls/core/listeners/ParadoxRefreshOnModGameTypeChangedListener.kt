@@ -19,6 +19,8 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
         modSettings.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) }
         modSettings.modDependencies.forEach { it.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) } }
         ParadoxCoreHandler.reparseFilesInRoot(modDirectories)
+        
+        //TODO 检查是否也需要强制刷新inlayHints
     }
     
     private fun refreshGameType(modDirectory: String, gameType: ParadoxGameType?) {
