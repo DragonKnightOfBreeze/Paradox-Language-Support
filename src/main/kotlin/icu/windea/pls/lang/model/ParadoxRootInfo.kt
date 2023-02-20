@@ -13,7 +13,6 @@ import java.nio.file.*
 sealed class ParadoxRootInfo {
     abstract val rootFile: VirtualFile
     abstract val gameRootFile: VirtualFile
-    abstract val rootType: ParadoxRootType
     abstract val gameType: ParadoxGameType
     
     abstract val rootPath: Path
@@ -32,7 +31,6 @@ sealed class ParadoxRootInfo {
 class ParadoxGameRootInfo(
     override val rootFile: VirtualFile,
     val launcherSettingsFile: VirtualFile,
-    override val rootType: ParadoxRootType,
     val launcherSettingsInfo: ParadoxLauncherSettingsInfo,
 ) : ParadoxRootInfo() {
     override val gameType: ParadoxGameType = doGetGameType()
@@ -43,7 +41,6 @@ class ParadoxGameRootInfo(
     }
     
     private fun doGetGameRootFile(): VirtualFile {
-        if(rootType != ParadoxRootType.Game) return rootFile
         val dlcPath = launcherSettingsInfo.dlcPath
         val path = launcherSettingsFile.toNioPath().parent.resolve(dlcPath).normalize().toAbsolutePath()
         return VfsUtil.findFile(path, true) ?: throw IllegalStateException()
@@ -78,7 +75,6 @@ class ParadoxLauncherSettingsInfo(
 class ParadoxModRootInfo(
     override val rootFile: VirtualFile,
     val descriptorFile: VirtualFile,
-    override val rootType: ParadoxRootType,
 ) : ParadoxRootInfo() {
     val descriptorInfo: ParadoxModDescriptorInfo get() = ParadoxCoreHandler.getDescriptorInfo(descriptorFile)
     

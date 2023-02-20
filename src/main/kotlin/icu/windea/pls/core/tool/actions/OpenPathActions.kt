@@ -24,11 +24,17 @@ abstract class OpenPathAction : DumbAwareAction() {
     override fun update(e: AnActionEvent) {
         val presentation = e.presentation
         presentation.isVisible = false
-        presentation.isEnabled = false 
+        presentation.isEnabled = false
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val fileInfo = virtualFile.fileInfo ?: return
         presentation.isVisible = isVisible(fileInfo)
         presentation.isEnabled = isEnabled(fileInfo)
+        if(presentation.isVisible) {
+            val targetPath = getTargetPath(fileInfo)
+            if(targetPath != null) {
+                presentation.description = templatePresentation.description + " (" + targetPath + ")"
+            }
+        }
     }
     
     override fun actionPerformed(e: AnActionEvent) {
@@ -43,32 +49,32 @@ abstract class OpenPathAction : DumbAwareAction() {
     
     protected open fun isVisible(fileInfo: ParadoxFileInfo): Boolean = true
     
-    protected open fun isEnabled(fileInfo: ParadoxFileInfo) : Boolean = true
+    protected open fun isEnabled(fileInfo: ParadoxFileInfo): Boolean = true
     
     protected abstract fun getTargetPath(fileInfo: ParadoxFileInfo): Path?
 }
 
-class OpenSteamPathAction: OpenPathAction() {
+class OpenSteamPathAction : OpenPathAction() {
     override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
         return getSteamPath()?.toPathOrNull()
     }
 }
 
-class OpenSteamGamePathAction: OpenPathAction() {
+class OpenSteamGamePathAction : OpenPathAction() {
     override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
         val gameType = fileInfo.rootInfo.gameType
         return getSteamGamePath(gameType.gameSteamId, gameType.gameName)?.toPathOrNull()
     }
 }
 
-class OpenSteamWorkshopPathAction: OpenPathAction() {
+class OpenSteamWorkshopPathAction : OpenPathAction() {
     override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
         val gameType = fileInfo.rootInfo.gameType
         return getSteamWorkshopPath(gameType.gameSteamId)?.toPathOrNull()
     }
 }
 
-class OpenGameDataPathAction: OpenPathAction() {
+class OpenGameDataPathAction : OpenPathAction() {
     override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
         val gameType = fileInfo.rootInfo.gameType
         return getGameDataPath(gameType.gameName)?.toPathOrNull()

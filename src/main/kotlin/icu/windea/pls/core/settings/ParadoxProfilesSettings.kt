@@ -53,9 +53,12 @@ class ParadoxModSettingsState : BaseState(), ParadoxGameOrModSettingsState {
     var modDirectory: String? by string()
     override val modDependencies: MutableList<ParadoxModDependencySettingsState> by list() //需要保证排序和去重
     
-    var name by getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())::name
-    var version by getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())::version
-    var supportedVersion by getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())::supportedVersion
+    val modDescriptorSettings: ParadoxModDescriptorSettingsState
+        get() = getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())
+    
+    var name by modDescriptorSettings::name
+    var version by modDescriptorSettings::version
+    var supportedVersion by modDescriptorSettings::supportedVersion
 }
 
 /**
@@ -69,8 +72,11 @@ class ParadoxModDependencySettingsState : BaseState() {
     var modDirectory: String? by string()
     var selected: Boolean by property(true)
     
-    var name by getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())::name
-    var version by getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())::version
-    var supportedVersion by getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())::supportedVersion
-    var gameType by getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())::gameType
+    val modDescriptorSettings: ParadoxModDescriptorSettingsState
+        get() = getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())
+    
+    var name by modDescriptorSettings::name
+    var version by modDescriptorSettings::version
+    var supportedVersion by modDescriptorSettings::supportedVersion
+    var gameType by modDescriptorSettings::gameType
 }

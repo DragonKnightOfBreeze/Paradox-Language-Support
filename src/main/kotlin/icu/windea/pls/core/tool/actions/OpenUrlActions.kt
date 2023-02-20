@@ -25,6 +25,12 @@ abstract class OpenUrlAction : DumbAwareAction(){
         val fileInfo = virtualFile.fileInfo ?: return
         presentation.isVisible = isVisible(fileInfo)
         presentation.isEnabled = isEnabled(fileInfo)
+        if(presentation.isVisible) {
+            val targetUrl = getTargetUrl(fileInfo)
+            if(targetUrl != null) {
+                presentation.description = templatePresentation.description + " (" + targetUrl + ")"
+            }
+        }
     }
     
     override fun actionPerformed(e: AnActionEvent) {
@@ -71,7 +77,7 @@ class OpenGameWorkshopPageOnSteamAction: OpenUrlAction() {
 
 class OpenModPageOnSteamWebsiteAction: OpenUrlAction() {
     override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
-        return fileInfo.rootInfo.rootType == ParadoxRootType.Mod
+        return fileInfo.rootInfo is ParadoxModRootInfo
     }
     
     override fun isEnabled(fileInfo: ParadoxFileInfo): Boolean {
@@ -90,7 +96,7 @@ class OpenModPageOnSteamWebsiteAction: OpenUrlAction() {
 
 class OpenModPageOnSteamAction: OpenUrlAction() {
     override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
-        return fileInfo.rootInfo.rootType == ParadoxRootType.Mod
+        return fileInfo.rootInfo is ParadoxModRootInfo
     }
     
     override fun isEnabled(fileInfo: ParadoxFileInfo): Boolean {

@@ -97,7 +97,7 @@ object ParadoxCoreHandler {
         // 尝试从此目录向下查找descriptor.mod
         val descriptorFile = rootFile.findChild(PlsConstants.descriptorFileName)
         if(descriptorFile != null) {
-            return ParadoxModRootInfo(rootFile, descriptorFile, ParadoxRootType.Mod)
+            return ParadoxModRootInfo(rootFile, descriptorFile)
         }
         
         // 尝试从此目录向下递归查找launcher-settings.json，如果找到，再根据"dlcPath"的值获取游戏文件的根目录
@@ -106,7 +106,7 @@ object ParadoxCoreHandler {
         if(launcherSettingsFile != null) {
             val launcherSettingsInfo = getLauncherSettingsInfo(launcherSettingsFile)
             if(launcherSettingsInfo == null) return null
-            return ParadoxGameRootInfo(rootFile, launcherSettingsFile, ParadoxRootType.Game, launcherSettingsInfo)
+            return ParadoxGameRootInfo(rootFile, launcherSettingsFile, launcherSettingsInfo)
         }
         
         return null

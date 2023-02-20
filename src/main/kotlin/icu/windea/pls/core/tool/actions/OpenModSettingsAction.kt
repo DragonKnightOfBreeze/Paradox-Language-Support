@@ -13,13 +13,13 @@ import icu.windea.pls.lang.model.*
 
 /**
  * 打开模组配置。
- * 
+ *
  * * 当当前文件是项目中的模组文件或目录时启用。
- * 
+ *
  * @see icu.windea.pls.core.settings.ParadoxModSettingsState
  * @see icu.windea.pls.core.tool.ParadoxModSettingsDialog
  */
-class OpenModSettingsAction: AnAction() {
+class OpenModSettingsAction : AnAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }
@@ -31,8 +31,7 @@ class OpenModSettingsAction: AnAction() {
         //这里需要兼容直接从项目根目录右键打开菜单的情况
         val file = getFile(e)
         val fileInfo = file?.fileInfo ?: return
-        //不为游戏文件提供
-        if(fileInfo.rootInfo.rootType != ParadoxRootType.Mod) return
+        if(fileInfo.rootInfo !is ParadoxModRootInfo) return
         //必须位于当前项目中
         val project = e.project ?: return
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
@@ -51,8 +50,7 @@ class OpenModSettingsAction: AnAction() {
         //这里需要兼容直接从项目根目录右键打开菜单的情况
         val file = getFile(e)
         val fileInfo = file?.fileInfo ?: return
-        //不为游戏文件提供
-        if(fileInfo.rootInfo.rootType != ParadoxRootType.Mod) return
+        if(fileInfo.rootInfo !is ParadoxModRootInfo) return
         //必须位于当前项目中
         val project = e.project ?: return
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)

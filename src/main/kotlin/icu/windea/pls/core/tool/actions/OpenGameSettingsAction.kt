@@ -17,7 +17,7 @@ import icu.windea.pls.lang.model.*
  * @see icu.windea.pls.core.settings.ParadoxGameSettingsState
  * @see icu.windea.pls.core.tool.ParadoxGameSettingsDialog
  */
-class OpenGameSettingsAction: AnAction() {
+class OpenGameSettingsAction : AnAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }
@@ -29,7 +29,7 @@ class OpenGameSettingsAction: AnAction() {
         //这里需要兼容直接从项目根目录右键打开菜单的情况
         val file = getFile(e)
         val fileInfo = file?.fileInfo ?: return
-        if(fileInfo.rootInfo.rootType != ParadoxRootType.Game) return
+        if(fileInfo.rootInfo !is ParadoxGameRootInfo) return
         //必须位于当前项目中
         val project = e.project ?: return
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
@@ -48,8 +48,7 @@ class OpenGameSettingsAction: AnAction() {
         //这里需要兼容直接从项目根目录右键打开菜单的情况
         val file = getFile(e)
         val fileInfo = file?.fileInfo ?: return
-        //不为游戏文件提供
-        if(fileInfo.rootInfo.rootType != ParadoxRootType.Game) return
+        if(fileInfo.rootInfo !is ParadoxGameRootInfo) return
         val project = e.project ?: return
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
         if(!isInProject) return
