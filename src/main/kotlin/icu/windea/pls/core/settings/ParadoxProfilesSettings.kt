@@ -28,23 +28,30 @@ class ParadoxModDescriptorSettingsState : BaseState() {
     var modDirectory: String? by string()
 }
 
-class ParadoxGameSettingsState : BaseState() {
-    var gameType: ParadoxGameType? by enum()
-    var gameVersion: String? by string()
-    var gameDirectory: String? by string()
-    val modDependencies: MutableList<ParadoxModDependencySettingsState> by list() //需要保证排序和去重
+interface ParadoxGameOrModSettingsState {
+    var gameType: ParadoxGameType?
+    var gameVersion: String?
+    var gameDirectory: String?
+    val modDependencies: MutableList<ParadoxModDependencySettingsState>
+}
+
+class ParadoxGameSettingsState : BaseState(), ParadoxGameOrModSettingsState {
+    override var gameType: ParadoxGameType? by enum()
+    override var gameVersion: String? by string()
+    override var gameDirectory: String? by string()
+    override val modDependencies: MutableList<ParadoxModDependencySettingsState> by list() //需要保证排序和去重
 }
 
 /**
  * 单个模组的配置。
  * @property modDependencies 模组依赖。不包括游戏目录和本模组。
  */
-class ParadoxModSettingsState : BaseState() {
-    var gameType: ParadoxGameType? by enum()
-    var gameVersion: String? by string()
-    var gameDirectory: String? by string()
+class ParadoxModSettingsState : BaseState(), ParadoxGameOrModSettingsState {
+    override var gameType: ParadoxGameType? by enum()
+    override var gameVersion: String? by string()
+    override var gameDirectory: String? by string()
     var modDirectory: String? by string()
-    val modDependencies: MutableList<ParadoxModDependencySettingsState> by list() //需要保证排序和去重
+    override val modDependencies: MutableList<ParadoxModDependencySettingsState> by list() //需要保证排序和去重
     
     var name by getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())::name
     var version by getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())::version

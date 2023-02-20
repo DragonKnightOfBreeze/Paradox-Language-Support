@@ -28,7 +28,7 @@ class ParadoxModDependencySettingsDialog(
         return panel {
             row {
                 //name
-                label(PlsBundle.message("mod.dependency.settings.name")).widthGroup("mod.dependency.settings.left")
+                label(PlsBundle.message("mod.dependency.settings.name")).widthGroup("left")
                 textField()
                     .text(settings.name.orEmpty())
                     .align(Align.FILL)
@@ -37,15 +37,14 @@ class ParadoxModDependencySettingsDialog(
             }
             row {
                 //version
-                label(PlsBundle.message("mod.dependency.settings.version")).widthGroup("mod.dependency.settings.left")
+                label(PlsBundle.message("mod.dependency.settings.version")).widthGroup("left")
                 textField()
                     .text(settings.version.orEmpty())
                     .align(Align.FILL)
-                    .columns(16)
+                    .columns(18)
                     .enabled(false)
-                    .visible(settings.version.orEmpty().isNotEmpty())
                 //supportedVersion
-                label(PlsBundle.message("mod.dependency.settings.supportedVersion")).widthGroup("mod.dependency.settings.right")
+                label(PlsBundle.message("mod.dependency.settings.supportedVersion")).widthGroup("right")
                 textField()
                     .text(settings.supportedVersion.orEmpty())
                     .align(Align.FILL)
@@ -55,22 +54,23 @@ class ParadoxModDependencySettingsDialog(
             }
             row {
                 //gameType
-                label(PlsBundle.message("mod.dependency.settings.gameType")).widthGroup("mod.dependency.settings.left")
+                label(PlsBundle.message("mod.dependency.settings.gameType")).widthGroup("left")
                 comboBox(ParadoxGameType.valueList)
+                    .bindItem(gameTypeProperty)
                     .align(Align.FILL)
-                    .columns(16)
+                    .columns(18)
                     .enabled(false)
             }
             row {
                 //modDirectory
-                label(PlsBundle.message("mod.dependency.settings.modDirectory")).widthGroup("mod.dependency.settings.left")
+                label(PlsBundle.message("mod.dependency.settings.modDirectory")).widthGroup("left")
                 val descriptor = ParadoxRootDirectoryDescriptor()
                     .withTitle(PlsBundle.message("mod.dependency.settings.modDirectory.title"))
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
                     .text(settings.modDirectory.orEmpty())
                     .align(Align.FILL)
-                    .columns(32)
+                    .columns(36)
                     .enabled(false)
             }
         }

@@ -28,14 +28,14 @@ class ParadoxGameSettingsDialog(
         return panel {
             row {
                 //gameType
-                label(PlsBundle.message("game.settings.gameType")).widthGroup("game.settings.left")
+                label(PlsBundle.message("game.settings.gameType")).widthGroup("left")
                 comboBox(ParadoxGameType.valueList)
                     .bindItem(gameTypeProperty)
                     .align(Align.FILL)
                     .columns(18)
                     .enabled(false)
                 //gameVersion
-                label(PlsBundle.message("game.settings.gameVersion")).widthGroup("game.settings.right")
+                label(PlsBundle.message("game.settings.gameVersion")).widthGroup("right")
                 textField()
                     .text(settings.gameVersion.orEmpty())
                     .align(Align.FILL)
@@ -44,7 +44,7 @@ class ParadoxGameSettingsDialog(
             }
             row {
                 //gameDirectory
-                label(PlsBundle.message("game.settings.gameDirectory")).widthGroup("game.settings.left")
+                label(PlsBundle.message("game.settings.gameDirectory")).widthGroup("left")
                 val descriptor = ParadoxRootDirectoryDescriptor()
                     .withTitle(PlsBundle.message("game.settings.gameDirectory.title"))
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
@@ -58,17 +58,18 @@ class ParadoxGameSettingsDialog(
             //modDependencies
             collapsibleGroup(PlsBundle.message("game.settings.modDependencies"), false) {
                 row {
-                    cell(createModDependenciesPanel(project, null, settings.modDependencies)).align(Align.CENTER)
+                    cell(createModDependenciesPanel(project, settings)).align(Align.CENTER)
                 }
             }
         }
     }
     
     override fun doOKAction() {
-        super.doOKAction()
         getProfilesSettings().updateSettings()
         
         val messageBus = ApplicationManager.getApplication().messageBus
         messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onChange(settings)
+        
+        super.doOKAction()
     }
 }

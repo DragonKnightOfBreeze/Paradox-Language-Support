@@ -13,6 +13,7 @@ import com.intellij.ui.layout.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.ui.*
 import icu.windea.pls.script.*
 
 class IntroduceGlobalScriptedVariableDialog(
@@ -54,7 +55,7 @@ class IntroduceGlobalScriptedVariableDialog(
 			//输入变量名
 			label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName")).widthGroup("left")
 			textField()
-				.bindText(dialog.variableNameProperty)
+				.bindText(variableNameProperty)
 				.align(Align.FILL)
 				.resizableColumn()
 				.focused()
@@ -65,7 +66,7 @@ class IntroduceGlobalScriptedVariableDialog(
 				//输入变量值
 				label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue")).widthGroup("left")
 				textField()
-					.bindText(dialog.variableValueProperty)
+					.bindText(variableValueProperty)
 					.align(Align.FILL)
 					.resizableColumn()
 					.focused()
@@ -129,19 +130,20 @@ class IntroduceGlobalScriptedVariableDialog(
 		} else if(!filePath.endsWith(".txt", true)) {
 			return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.3"))
 		}
-		val file = VfsUtil.findFile(filePath.toPath(), false)
+		val selectedFile = VfsUtil.findFile(filePath.toPath(), false)
 			?.takeIf { it.exists() }
 			?: return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.1"))
-		val entryPath = file.fileInfo?.entryPath?.path
+		val entryPath = selectedFile.fileInfo?.entryPath?.path
 		if(entryPath == null || !"common/scripted_variables".matchesPath(entryPath, acceptSelf = false)) {
 			return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.2"))
 		}
-		dialog.file = file
+		file = selectedFile
 		return null
 	}
 	
 	override fun doOKAction() {
 		RecentsManager.getInstance(project).registerRecentEntry(RECENT_KEYS, filePath)
+		
 		super.doOKAction()
 	}
 }

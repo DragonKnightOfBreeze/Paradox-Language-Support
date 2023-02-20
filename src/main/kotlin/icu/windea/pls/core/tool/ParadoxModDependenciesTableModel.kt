@@ -75,7 +75,8 @@ class ParadoxModDependenciesTableModel(
 
 //com.intellij.openapi.roots.ui.configuration.classpath.ClasspathPanelImpl.createTableWithButtons
 
-fun createModDependenciesPanel(project: Project, modSettings: ParadoxModSettingsState?, modDependencies: List<ParadoxModDependencySettingsState>): JPanel {
+fun createModDependenciesPanel(project: Project, settings: ParadoxGameOrModSettingsState): JPanel {
+    val modDependencies = settings.modDependencies
     val tableModel = ParadoxModDependenciesTableModel(modDependencies)
     val tableView = TableView(tableModel)
     tableView.setShowGrid(false)
@@ -86,7 +87,7 @@ fun createModDependenciesPanel(project: Project, modSettings: ParadoxModSettings
     tableView.setFixedColumnWidth(ParadoxModDependenciesTableModel.SelectedItem.columnIndex, ParadoxModDependenciesTableModel.SelectedItem.name)
     //快速搜索
     object : TableViewSpeedSearch<ParadoxModDependencySettingsState>(tableView) {
-        override fun getItemText(element: ParadoxModDependencySettingsState): String? {
+        override fun getItemText(element: ParadoxModDependencySettingsState): String {
             val modDirectory = element.modDirectory.orEmpty()
             val modDescriptorSettings = getProfilesSettings().modDescriptorSettings.getValue(modDirectory)
             return modDescriptorSettings.name.orEmpty()
@@ -116,7 +117,8 @@ fun createModDependenciesPanel(project: Project, modSettings: ParadoxModSettings
             val selectedRows = tableView.selectedRows
             val rows = selectedRows.map { tableView.convertRowIndexToModel(it) }
             val row = rows.lastOrNull() ?: (tableView.rowCount - 1) //last selected model row or last model row
-            val dialog = ParadoxModDependencyAddDialog(project, tableView)
+            val gameType = settings.gameType ?: getSettings().defaultGameType
+            val dialog = ParadoxModDependencyAddDialog(project, gameType, tableView)
             if(dialog.showAndGet()) {
                 val newItem = dialog.resultSettings
                 if(newItem != null) {
@@ -126,12 +128,12 @@ fun createModDependenciesPanel(project: Project, modSettings: ParadoxModSettings
         }
         .setRemoveActionUpdater updater@{
             //不允许移除模组自身对应的模组依赖配置
-            if(modSettings == null) return@updater true
-            if(modSettings.modDirectory.isNullOrEmpty()) return@updater true
+            if(settings !is ParadoxModSettingsState) return@updater true
+            if(settings.modDirectory.isNullOrEmpty()) return@updater true
             val selectedRows = tableView.selectedRows
             for(selectedRow in selectedRows) {
                 val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
-                if(item.modDirectory == modSettings.modDirectory) return@updater false
+                if(item.modDirectory == settings.modDirectory) return@updater false
             }
             true
         }

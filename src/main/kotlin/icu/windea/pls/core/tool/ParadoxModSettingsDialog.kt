@@ -49,7 +49,7 @@ class ParadoxModSettingsDialog(
         return panel {
             row {
                 //name
-                label(PlsBundle.message("mod.settings.name")).widthGroup("mod.settings.left")
+                label(PlsBundle.message("mod.settings.name")).widthGroup("left")
                 textField()
                     .text(settings.name.orEmpty())
                     .align(Align.FILL)
@@ -58,15 +58,14 @@ class ParadoxModSettingsDialog(
             }
             row {
                 //version
-                label(PlsBundle.message("mod.settings.version")).widthGroup("mod.settings.left")
+                label(PlsBundle.message("mod.settings.version")).widthGroup("left")
                 textField()
                     .text(settings.version.orEmpty())
                     .align(Align.FILL)
                     .columns(18)
                     .enabled(false)
-                    .visible(settings.version.orEmpty().isNotEmpty())
                 //supportedVersion
-                label(PlsBundle.message("mod.settings.supportedVersion")).widthGroup("mod.settings.right")
+                label(PlsBundle.message("mod.settings.supportedVersion")).widthGroup("right")
                 textField()
                     .text(settings.supportedVersion.orEmpty())
                     .align(Align.FILL)
@@ -76,14 +75,14 @@ class ParadoxModSettingsDialog(
             }
             row {
                 //gameType
-                label(PlsBundle.message("mod.settings.gameType")).widthGroup("mod.settings.left")
+                label(PlsBundle.message("mod.settings.gameType")).widthGroup("left")
                 comboBox(ParadoxGameType.valueList)
                     .bindItem(gameTypeProperty)
                     .align(Align.FILL)
                     .columns(18)
                     .onApply { settings.gameType = gameTypeProperty.get() } //set game type to non-default on apply
                 //gameVersion
-                label(PlsBundle.message("mod.settings.gameVersion")).widthGroup("mod.settings.right")
+                label(PlsBundle.message("mod.settings.gameVersion")).widthGroup("right")
                 textField()
                     .bindText(gameVersionProperty)
                     .align(Align.FILL)
@@ -92,7 +91,7 @@ class ParadoxModSettingsDialog(
             }
             row {
                 //gameDirectory
-                label(PlsBundle.message("mod.settings.gameDirectory")).widthGroup("mod.settings.left")
+                label(PlsBundle.message("mod.settings.gameDirectory")).widthGroup("left")
                 val descriptor = ParadoxRootDirectoryDescriptor()
                     .withTitle(PlsBundle.message("mod.settings.gameDirectory.title"))
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
@@ -108,7 +107,7 @@ class ParadoxModSettingsDialog(
             }
             row {
                 //modDirectory
-                label(PlsBundle.message("mod.settings.modDirectory")).widthGroup("mod.settings.left")
+                label(PlsBundle.message("mod.settings.modDirectory")).widthGroup("left")
                 val descriptor = ParadoxRootDirectoryDescriptor()
                     .withTitle(PlsBundle.message("mod.settings.modDirectory.title"))
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
@@ -122,7 +121,7 @@ class ParadoxModSettingsDialog(
             //modDependencies
             collapsibleGroup(PlsBundle.message("mod.settings.modDependencies"), false) {
                 row {
-                    cell(createModDependenciesPanel(project, settings, settings.modDependencies)).align(Align.CENTER)
+                    cell(createModDependenciesPanel(project, settings)).align(Align.CENTER)
                 }
             }
         }
@@ -168,7 +167,6 @@ class ParadoxModSettingsDialog(
     }
     
     override fun doOKAction() {
-        super.doOKAction()
         getProfilesSettings().updateSettings()
         
         val messageBus = ApplicationManager.getApplication().messageBus
@@ -177,6 +175,8 @@ class ParadoxModSettingsDialog(
         if(oldGameType != settings.gameType) {
             messageBus.syncPublisher(ParadoxModGameTypeListener.TOPIC).onChange(settings)
         }
+    
+        super.doOKAction()
     }
 }
 

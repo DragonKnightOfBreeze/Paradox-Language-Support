@@ -12,8 +12,8 @@ import icu.windea.pls.lang.model.*
 class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
     override fun onAdd(rootInfo: ParadoxRootInfo) {
         when(rootInfo) {
-            is ParadoxModRootInfo -> addModSettings(rootInfo)
             is ParadoxGameRootInfo -> addGameSettings(rootInfo)
+            is ParadoxModRootInfo -> addModSettings(rootInfo)
         }
     }
     
