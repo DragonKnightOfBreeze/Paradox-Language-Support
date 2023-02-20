@@ -17,7 +17,6 @@ class ParadoxModDependencySettingsDialog(
 ) : DialogWrapper(project, parentComponent, true, IdeModalityType.PROJECT) {
     val graph = PropertyGraph()
     val gameTypeProperty = graph.property(settings.gameType ?: getSettings().defaultGameType)
-        .apply { afterChange { settings.gameType = it } }
     
     init {
         title = PlsBundle.message("mod.dependency.settings")
@@ -32,7 +31,6 @@ class ParadoxModDependencySettingsDialog(
                 textField()
                     .text(settings.name.orEmpty())
                     .align(Align.FILL)
-                    .columns(36)
                     .enabled(false)
             }
             row {
@@ -40,14 +38,12 @@ class ParadoxModDependencySettingsDialog(
                 label(PlsBundle.message("mod.dependency.settings.version")).widthGroup("left")
                 textField()
                     .text(settings.version.orEmpty())
-                    .align(Align.FILL)
                     .columns(18)
                     .enabled(false)
                 //supportedVersion
                 label(PlsBundle.message("mod.dependency.settings.supportedVersion")).widthGroup("right")
                 textField()
                     .text(settings.supportedVersion.orEmpty())
-                    .align(Align.FILL)
                     .columns(18)
                     .enabled(false)
                     .visible(settings.supportedVersion.orEmpty().isNotEmpty())
@@ -57,7 +53,6 @@ class ParadoxModDependencySettingsDialog(
                 label(PlsBundle.message("mod.dependency.settings.gameType")).widthGroup("left")
                 comboBox(ParadoxGameType.valueList)
                     .bindItem(gameTypeProperty)
-                    .align(Align.FILL)
                     .columns(18)
                     .enabled(false)
             }
@@ -70,7 +65,6 @@ class ParadoxModDependencySettingsDialog(
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
                     .text(settings.modDirectory.orEmpty())
                     .align(Align.FILL)
-                    .columns(36)
                     .enabled(false)
             }
         }

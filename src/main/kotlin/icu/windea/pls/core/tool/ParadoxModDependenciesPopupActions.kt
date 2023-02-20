@@ -1,5 +1,6 @@
 package icu.windea.pls.core.tool
 
+import com.intellij.icons.*
 import com.intellij.ide.*
 import com.intellij.ide.actions.*
 import com.intellij.openapi.actionSystem.*
@@ -49,7 +50,7 @@ interface ParadoxModDependenciesPopupActions {
     class CopyModPathAction(
         private val tableView: TableView<ParadoxModDependencySettingsState>,
         private val tableModel: ParadoxModDependenciesTableModel
-    ) : DumbAwareAction() {
+    ) : DumbAwareAction(AllIcons.Actions.Copy) {
         init {
             templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.CopyModPath.text")
             templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.CopyModPath.description")

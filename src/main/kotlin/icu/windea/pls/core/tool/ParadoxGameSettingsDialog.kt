@@ -56,11 +56,13 @@ class ParadoxGameSettingsDialog(
             }
             
             //modDependencies
+            
             collapsibleGroup(PlsBundle.message("game.settings.modDependencies"), false) {
                 row {
-                    cell(createModDependenciesPanel(project, settings)).align(Align.CENTER)
-                }
-            }
+                    scrollCell(createModDependenciesPanel(project, settings))
+                        .align(Align.FILL)
+                }.resizableRow()
+            }.resizableRow()
         }
     }
     

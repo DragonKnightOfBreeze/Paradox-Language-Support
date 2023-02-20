@@ -83,6 +83,7 @@ fun createModDependenciesPanel(project: Project, settings: ParadoxGameOrModSetti
     tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
     tableView.selectionModel.setSelectionInterval(0, 0)
     tableView.surrendersFocusOnKeystroke = true
+    //调整列的宽度
     tableView.setFixedColumnWidth(ParadoxModDependenciesTableModel.SelectedItem.columnIndex, ParadoxModDependenciesTableModel.SelectedItem.name)
     //快速搜索
     object : TableViewSpeedSearch<ParadoxModDependencySettingsState>(tableView) {
@@ -112,18 +113,8 @@ fun createModDependenciesPanel(project: Project, settings: ParadoxGameOrModSetti
     //add, remove, move up, move down, edit, import, export
     val panel = ToolbarDecorator.createDecorator(tableView)
         .setAddAction {
-            //选择模组目录并添加作为依赖
-            val selectedRows = tableView.selectedRows
-            val rows = selectedRows.map { tableView.convertRowIndexToModel(it) }
-            val row = rows.lastOrNull() ?: (tableView.rowCount - 1) //last selected model row or last model row
-            val gameType = settings.gameType ?: getSettings().defaultGameType
-            val dialog = ParadoxModDependencyAddDialog(project, gameType, tableView)
-            if(dialog.showAndGet()) {
-                val newItem = dialog.resultSettings
-                if(newItem != null) {
-                    tableModel.insertRow(row, newItem)
-                }
-            }
+            val dialog = ParadoxModDependencyAddDialog(project, tableView, tableModel)
+            dialog.show()
         }
         .setRemoveActionUpdater updater@{
             //不允许移除模组自身对应的模组依赖配置

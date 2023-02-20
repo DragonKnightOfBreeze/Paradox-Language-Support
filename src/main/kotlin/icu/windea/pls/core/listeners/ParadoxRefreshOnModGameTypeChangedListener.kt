@@ -1,5 +1,6 @@
 package icu.windea.pls.core.listeners
 
+import com.intellij.openapi.application.*
 import icu.windea.pls.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.*
@@ -18,7 +19,7 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
         val modDirectories = mutableSetOf<String>()
         modSettings.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) }
         modSettings.modDependencies.forEach { it.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) } }
-        ParadoxCoreHandler.reparseFilesInRoot(modDirectories)
+        runWriteAction { ParadoxCoreHandler.reparseFilesInRoot(modDirectories) }
         
         //TODO 检查是否也需要强制刷新inlayHints
     }

@@ -25,7 +25,7 @@ interface ParadoxModDependenciesToolbarActions {
         }
         
         override fun update(e: AnActionEvent) {
-            e.presentation.isEnabled = tableView.selectedRowCount != 1
+            e.presentation.isEnabled = tableView.selectedRowCount == 1
         }
         
         override fun actionPerformed(e: AnActionEvent) {

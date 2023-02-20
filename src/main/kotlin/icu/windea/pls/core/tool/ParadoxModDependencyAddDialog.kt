@@ -7,28 +7,26 @@ import com.intellij.openapi.vfs.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.*
+import com.intellij.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
-import java.awt.*
 import javax.swing.*
 
 class ParadoxModDependencyAddDialog(
-    val project: Project,
-    gameType: ParadoxGameType,
-    parentComponent: Component? = null
-) : DialogWrapper(project, parentComponent, true, IdeModalityType.PROJECT) {
+    private val project: Project,
+    private val tableView: TableView<ParadoxModDependencySettingsState>,
+    private val tableModel: ParadoxModDependenciesTableModel,
+) : DialogWrapper(project, tableView, true, IdeModalityType.PROJECT) {
     val graph = PropertyGraph()
-    val gameTypeProperty = graph.property(gameType)
+    val gameTypeProperty = graph.property(tableModel.settings.gameType ?: getSettings().defaultGameType)
     val modDirectoryProperty = graph.property("")
     
     val gameType by gameTypeProperty
     val modDirectory by modDirectoryProperty
-    
-    var resultSettings: ParadoxModDependencySettingsState? = null
     
     init {
         title = PlsBundle.message("mod.dependency.add")
@@ -42,7 +40,6 @@ class ParadoxModDependencyAddDialog(
                 label(PlsBundle.message("mod.dependency.add.gameType")).widthGroup("left")
                 comboBox(ParadoxGameType.valueList)
                     .bindItem(gameTypeProperty)
-                    .align(Align.FILL)
                     .columns(18)
                     .enabled(false)
             }
@@ -55,7 +52,6 @@ class ParadoxModDependencyAddDialog(
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
                     .bindText(modDirectoryProperty)
                     .align(Align.FILL)
-                    .columns(36)
                     .validationOnApply { validateModDirectory() }
             }
         }
@@ -80,7 +76,11 @@ class ParadoxModDependencyAddDialog(
         settings.selected = true
         val editDialog = ParadoxModDependencySettingsDialog(project, settings, this.contentPanel)
         if(!editDialog.showAndGet()) return
-        resultSettings = settings
+        doAdd(settings)
         super.doOKAction()
+    }
+    
+    private fun doAdd(settings: ParadoxModDependencySettingsState) {
+        tableModel.addRow(settings)
     }
 }

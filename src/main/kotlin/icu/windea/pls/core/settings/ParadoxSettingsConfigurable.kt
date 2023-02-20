@@ -211,7 +211,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
         val fileNames = mutableSetOf<String>()
         fileNames += oldIgnoredFileNameSet
         fileNames += ignoredFileNameSet
-        ParadoxCoreHandler.reparseFilesByFileNames(fileNames)
+        runWriteAction { ParadoxCoreHandler.reparseFilesByFileNames(fileNames) }
     }
     
     private fun doRefreshInlayHints() {

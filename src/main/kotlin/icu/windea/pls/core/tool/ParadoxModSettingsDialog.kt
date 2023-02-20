@@ -31,7 +31,7 @@ class ParadoxModSettingsDialog(
         .apply {
             afterChange {
                 settings.gameDirectory = it.takeIfNotEmpty()
-                settings.gameVersion = getGameVersionFromGameDirectory()
+                gameVersion = getGameVersionFromGameDirectory().orEmpty()
             }
         }
     
@@ -53,7 +53,6 @@ class ParadoxModSettingsDialog(
                 textField()
                     .text(settings.name.orEmpty())
                     .align(Align.FILL)
-                    .columns(36)
                     .enabled(false)
             }
             row {
@@ -61,14 +60,12 @@ class ParadoxModSettingsDialog(
                 label(PlsBundle.message("mod.settings.version")).widthGroup("left")
                 textField()
                     .text(settings.version.orEmpty())
-                    .align(Align.FILL)
                     .columns(18)
                     .enabled(false)
                 //supportedVersion
                 label(PlsBundle.message("mod.settings.supportedVersion")).widthGroup("right")
                 textField()
                     .text(settings.supportedVersion.orEmpty())
-                    .align(Align.FILL)
                     .columns(18)
                     .enabled(false)
                     .visible(settings.supportedVersion.orEmpty().isNotEmpty())
@@ -78,14 +75,12 @@ class ParadoxModSettingsDialog(
                 label(PlsBundle.message("mod.settings.gameType")).widthGroup("left")
                 comboBox(ParadoxGameType.valueList)
                     .bindItem(gameTypeProperty)
-                    .align(Align.FILL)
                     .columns(18)
                     .onApply { settings.gameType = gameTypeProperty.get() } //set game type to non-default on apply
                 //gameVersion
                 label(PlsBundle.message("mod.settings.gameVersion")).widthGroup("right")
                 textField()
                     .bindText(gameVersionProperty)
-                    .align(Align.FILL)
                     .columns(18)
                     .enabled(false)
             }
@@ -98,7 +93,6 @@ class ParadoxModSettingsDialog(
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
                     .bindText(gameDirectoryProperty)
                     .align(Align.FILL)
-                    .columns(36)
                     .validationOnApply { validateGameDirectory() }
             }
             row {
@@ -114,14 +108,14 @@ class ParadoxModSettingsDialog(
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
                     .text(settings.modDirectory.orEmpty())
                     .align(Align.FILL)
-                    .columns(36)
                     .enabled(false)
             }
             
             //modDependencies
             collapsibleGroup(PlsBundle.message("mod.settings.modDependencies"), false) {
                 row {
-                    cell(createModDependenciesPanel(project, settings)).align(Align.CENTER)
+                    cell(createModDependenciesPanel(project, settings))
+                        .align(Align.FILL)
                 }
             }
         }

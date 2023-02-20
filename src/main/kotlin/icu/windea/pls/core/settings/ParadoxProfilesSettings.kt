@@ -56,9 +56,9 @@ class ParadoxModSettingsState : BaseState(), ParadoxGameOrModSettingsState {
     val modDescriptorSettings: ParadoxModDescriptorSettingsState
         get() = getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())
     
-    var name by modDescriptorSettings::name
-    var version by modDescriptorSettings::version
-    var supportedVersion by modDescriptorSettings::supportedVersion
+    val name: String? get() = modDescriptorSettings.name
+    val version: String? get() = modDescriptorSettings.version
+    val supportedVersion: String? get() = modDescriptorSettings.supportedVersion
 }
 
 /**
@@ -75,8 +75,8 @@ class ParadoxModDependencySettingsState : BaseState() {
     val modDescriptorSettings: ParadoxModDescriptorSettingsState
         get() = getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())
     
-    var name by modDescriptorSettings::name
-    var version by modDescriptorSettings::version
-    var supportedVersion by modDescriptorSettings::supportedVersion
-    var gameType by modDescriptorSettings::gameType
+    val name: String? get() = modDescriptorSettings.name
+    val version: String? get() = modDescriptorSettings.version
+    val supportedVersion: String? get() = modDescriptorSettings.supportedVersion
+    val gameType: ParadoxGameType? get() = modDescriptorSettings.gameType
 }

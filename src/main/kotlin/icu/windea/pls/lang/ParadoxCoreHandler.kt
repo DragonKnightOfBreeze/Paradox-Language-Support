@@ -13,6 +13,7 @@ import com.intellij.openapi.vfs.newvfs.impl.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
+import com.intellij.util.concurrency.annotations.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -231,16 +232,15 @@ object ParadoxCoreHandler {
             //ignore
         } finally {
             //要求重新索引
-            runWriteAction {
-                for(rootFilePath in rootFilePaths) {
-                    val path = rootFilePath.toPathOrNull() ?: continue
-                    val rootFile = VfsUtil.findFile(path, false) ?: continue
-                    FileBasedIndex.getInstance().requestReindex(rootFile)
-                }
+            for(rootFilePath in rootFilePaths) {
+                val path = rootFilePath.toPathOrNull() ?: continue
+                val rootFile = VfsUtil.findFile(path, false) ?: continue
+                FileBasedIndex.getInstance().requestReindex(rootFile)
             }
         }
     }
     
+    @RequiresWriteLock
     @JvmStatic
     fun reparseFilesByFileNames(fileNames: Set<String>) {
         //重新解析指定的根目录中的所有文件，包括非脚本非本地化文件
@@ -256,11 +256,9 @@ object ParadoxCoreHandler {
             if(e is ProcessCanceledException) throw e
             //ignore
         } finally {
-            runWriteAction {
-                //要求重新索引
-                for(file in files) {
-                    FileBasedIndex.getInstance().requestReindex(file)
-                }
+            //要求重新索引
+            for(file in files) {
+                FileBasedIndex.getInstance().requestReindex(file)
             }
         }
     }

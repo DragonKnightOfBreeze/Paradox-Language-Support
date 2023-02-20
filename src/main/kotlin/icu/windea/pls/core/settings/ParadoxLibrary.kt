@@ -13,6 +13,7 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
     @Volatile var roots: MutableSet<VirtualFile> = mutableSetOf()
     
     fun computeRoots(): MutableSet<VirtualFile> {
+        //这里仅需要收集不在项目中的游戏目录和模组目录
         val newPaths = mutableSetOf<String>()
         val newRoots = mutableSetOf<VirtualFile>()
         val projectFileIndex = ProjectFileIndex.getInstance(project)
@@ -27,7 +28,7 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
                 if(newPaths.contains(gameDirectory)) return@run
                 val gameFile = gameDirectory.toVirtualFile(false) ?: return@run
                 if(!gameFile.isValid) return@run
-                if(projectFileIndex.isInContent(modFile)) return@run
+                if(projectFileIndex.isInContent(gameFile)) return@run
                 newRoots.add(gameFile)
             }
             for(modDependencySettings in modSettings.modDependencies) {
@@ -48,7 +49,6 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
             for(modDependencySettings in gameSettings.modDependencies) {
                 val modDependencyDirectory = modDependencySettings.modDirectory ?: continue
                 if(newPaths.contains(modDependencyDirectory)) continue
-                if(modDependencyDirectory == gameDirectory) continue //需要排除这种情况
                 val modDependencyFile = modDependencyDirectory.toVirtualFile(false) ?: continue
                 if(!modDependencyFile.isValid) continue
                 if(projectFileIndex.isInContent(modDependencyFile)) continue
