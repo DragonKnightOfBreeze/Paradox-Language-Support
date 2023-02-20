@@ -30,6 +30,7 @@ class ParadoxModDependencySettingsDialog(
                 label(PlsBundle.message("mod.dependency.settings.name")).widthGroup("left")
                 textField()
                     .text(settings.name.orEmpty())
+                    .columns(36)
                     .align(Align.FILL)
                     .enabled(false)
             }
@@ -64,6 +65,7 @@ class ParadoxModDependencySettingsDialog(
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
                     .text(settings.modDirectory.orEmpty())
+                    .columns(36)
                     .align(Align.FILL)
                     .enabled(false)
             }

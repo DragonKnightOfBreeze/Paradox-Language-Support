@@ -103,16 +103,16 @@ class ElementsListTable(
             }
             
             private fun configureNameComboBox(nameComboBox: ComboBox<String>) {
-                nameComboBox.setMinimumAndPreferredWidth(200)
+                nameComboBox.setMinimumAndPreferredWidth(240)
                 nameComboBox.maximumRowCount = 20
             }
             
             private fun configureSeparatorComboBox(separatorComboBox: ComboBox<ParadoxSeparator>) {
-                separatorComboBox.setMinimumAndPreferredWidth(60)
+                separatorComboBox.setMinimumAndPreferredWidth(80)
             }
             
             private fun configureValueComboBox(valueComboBox: ComboBox<String>) {
-                valueComboBox.setMinimumAndPreferredWidth(200)
+                valueComboBox.setMinimumAndPreferredWidth(240)
                 valueComboBox.maximumRowCount = 20
             }
             

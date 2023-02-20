@@ -50,8 +50,8 @@ class ParadoxGameSettingsDialog(
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
                     .text(settings.gameDirectory.orEmpty())
-                    .align(Align.FILL)
                     .columns(36)
+                    .align(Align.FILL)
                     .enabled(false)
             }
             

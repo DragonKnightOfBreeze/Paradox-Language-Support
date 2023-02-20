@@ -51,6 +51,7 @@ class ParadoxModDependencyAddDialog(
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
                     .bindText(modDirectoryProperty)
+                    .columns(36)
                     .align(Align.FILL)
                     .validationOnApply { validateModDirectory() }
             }

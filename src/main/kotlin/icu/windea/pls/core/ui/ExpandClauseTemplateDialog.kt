@@ -80,7 +80,8 @@ class ExpandClauseTemplateDialog(
             }
         }
         tableView.setShowGrid(false)
-        tableView.cellSelectionEnabled = true
+        tableView.rowSelectionAllowed = true
+        tableView.columnSelectionAllowed = true
         tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
         tableView.selectionModel.setSelectionInterval(0, 0)
         tableView.surrendersFocusOnKeystroke = true

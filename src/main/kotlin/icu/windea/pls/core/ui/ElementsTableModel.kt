@@ -85,10 +85,6 @@ class ElementsTableModel(
 				is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparator.values())
 			}
 		}
-		
-		override fun getWidth(table: JTable): Int {
-			return table.getFontMetrics(table.font).stringWidth(name) + 8
-		}
 	}
 	
 	class ValueColumn(private val context: ElementDescriptorsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("ui.table.element.column.name.value")) {

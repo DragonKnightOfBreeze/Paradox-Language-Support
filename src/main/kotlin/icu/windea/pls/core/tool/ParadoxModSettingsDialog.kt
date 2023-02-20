@@ -52,6 +52,7 @@ class ParadoxModSettingsDialog(
                 label(PlsBundle.message("mod.settings.name")).widthGroup("left")
                 textField()
                     .text(settings.name.orEmpty())
+                    .columns(36)
                     .align(Align.FILL)
                     .enabled(false)
             }
@@ -92,6 +93,7 @@ class ParadoxModSettingsDialog(
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
                     .bindText(gameDirectoryProperty)
+                    .columns(36)
                     .align(Align.FILL)
                     .validationOnApply { validateGameDirectory() }
             }
@@ -107,6 +109,7 @@ class ParadoxModSettingsDialog(
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
                     .text(settings.modDirectory.orEmpty())
+                    .columns(36)
                     .align(Align.FILL)
                     .enabled(false)
             }
@@ -116,8 +119,8 @@ class ParadoxModSettingsDialog(
                 row {
                     cell(createModDependenciesPanel(project, settings))
                         .align(Align.FILL)
-                }
-            }
+                }.resizableRow()
+            }.resizableRow()
         }
     }
     
