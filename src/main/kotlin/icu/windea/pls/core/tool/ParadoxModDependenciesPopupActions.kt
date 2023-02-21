@@ -31,6 +31,16 @@ interface ParadoxModDependenciesPopupActions {
             return ActionUpdateThread.EDT
         }
         
+        override fun update(e: AnActionEvent) {
+            val presentation = e.presentation
+            if(presentation.isVisible) {
+                val targetPath = getTargetPath()
+                if(targetPath != null) {
+                    presentation.description = templatePresentation.description + " (" + targetPath + ")"
+                }
+            }
+        }
+        
         override fun actionPerformed(e: AnActionEvent) {
             val targetPath = getTargetPath() ?: return
             RevealFileAction.openDirectory(targetPath)
@@ -58,6 +68,16 @@ interface ParadoxModDependenciesPopupActions {
         
         override fun getActionUpdateThread(): ActionUpdateThread {
             return ActionUpdateThread.EDT
+        }
+        
+        override fun update(e: AnActionEvent) {
+            val presentation = e.presentation
+            if(presentation.isVisible) {
+                val targetPath = getTargetPath()
+                if(targetPath != null) {
+                    presentation.description = templatePresentation.description + " (" + targetPath + ")"
+                }
+            }
         }
         
         override fun actionPerformed(e: AnActionEvent) {
@@ -90,7 +110,14 @@ interface ParadoxModDependenciesPopupActions {
         }
         
         override fun update(e: AnActionEvent) {
-            e.presentation.isEnabled = getSteamId() != null
+            val presentation = e.presentation
+            presentation.isEnabled = getSteamId() != null
+            if(presentation.isVisible) {
+                val targetUrl = getTargetUrl()
+                if(targetUrl != null) {
+                    presentation.description = templatePresentation.description + " (" + targetUrl + ")"
+                }
+            }
         }
         
         override fun actionPerformed(e: AnActionEvent) {
@@ -128,7 +155,14 @@ interface ParadoxModDependenciesPopupActions {
         }
         
         override fun update(e: AnActionEvent) {
-            e.presentation.isEnabled = getSteamId() != null
+            val presentation = e.presentation
+            presentation.isEnabled = getSteamId() != null
+            if(presentation.isVisible) {
+                val targetUrl = getTargetUrl()
+                if(targetUrl != null) {
+                    presentation.description = templatePresentation.description + " (" + targetUrl + ")"
+                }
+            }
         }
         
         override fun actionPerformed(e: AnActionEvent) {
