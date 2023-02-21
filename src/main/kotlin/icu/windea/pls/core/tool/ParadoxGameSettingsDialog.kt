@@ -17,7 +17,8 @@ class ParadoxGameSettingsDialog(
 ) : DialogWrapper(project, true) {
     val graph = PropertyGraph()
     val gameTypeProperty = graph.property(settings.gameType ?: getSettings().defaultGameType)
-        .apply { afterChange { settings.gameType = it } }
+    
+    val modDependencies = settings.copyModDependencies()
     
     init {
         title = PlsBundle.message("game.settings")
@@ -59,7 +60,7 @@ class ParadoxGameSettingsDialog(
             
             collapsibleGroup(PlsBundle.message("game.settings.modDependencies"), false) {
                 row {
-                    scrollCell(createModDependenciesPanel(project, settings))
+                    scrollCell(createModDependenciesPanel(project, settings, modDependencies))
                         .align(Align.FILL)
                 }.resizableRow()
             }.resizableRow()
@@ -67,11 +68,18 @@ class ParadoxGameSettingsDialog(
     }
     
     override fun doOKAction() {
+        doOk()
+    }
+    
+    private fun doApply() {
+        settings.modDependencies = modDependencies
         getProfilesSettings().updateSettings()
+    }
+    
+    private fun doOk() {
+        doApply()
         
         val messageBus = ApplicationManager.getApplication().messageBus
         messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onChange(settings)
-        
-        super.doOKAction()
     }
 }

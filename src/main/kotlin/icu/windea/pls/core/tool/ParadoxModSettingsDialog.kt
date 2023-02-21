@@ -15,6 +15,7 @@ import icu.windea.pls.core.listeners.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
+import javax.swing.*
 
 class ParadoxModSettingsDialog(
     val project: Project,
@@ -24,20 +25,14 @@ class ParadoxModSettingsDialog(
     
     val graph = PropertyGraph()
     val gameTypeProperty = graph.property(settings.gameType ?: getSettings().defaultGameType)
-        .apply { afterChange { settings.gameType = it } }
     val gameVersionProperty = graph.property(settings.gameVersion.orEmpty())
-        .apply { afterChange { settings.gameVersion = it.takeIfNotEmpty() } }
+        .apply { dependsOn(gameDirectoryProperty) { getGameVersionFromGameDirectory().orEmpty() } }
     val gameDirectoryProperty = graph.property(settings.gameDirectory.orEmpty())
-        .apply {
-            afterChange {
-                settings.gameDirectory = it.takeIfNotEmpty()
-                gameVersion = getGameVersionFromGameDirectory().orEmpty()
-            }
-        }
     
     var gameType by gameTypeProperty
     var gameVersion by gameVersionProperty
     var gameDirectory by gameDirectoryProperty
+    val modDependencies = settings.copyModDependencies()
     
     init {
         title = PlsBundle.message("mod.settings")
@@ -117,7 +112,7 @@ class ParadoxModSettingsDialog(
             //modDependencies
             collapsibleGroup(PlsBundle.message("mod.settings.modDependencies"), false) {
                 row {
-                    scrollCell(createModDependenciesPanel(project, settings))
+                    scrollCell(createModDependenciesPanel(project, settings, modDependencies))
                         .align(Align.FILL)
                 }.resizableRow()
             }.resizableRow()
@@ -164,7 +159,20 @@ class ParadoxModSettingsDialog(
     }
     
     override fun doOKAction() {
+        doOk()
+        super.doOKAction()
+    }
+    
+    private fun doApply() {
+        settings.gameType = gameType
+        settings.gameVersion = gameVersion
+        settings.gameDirectory = gameDirectory
+        settings.modDependencies = modDependencies
         getProfilesSettings().updateSettings()
+    }
+    
+    private fun doOk() {
+        doApply()
         
         val messageBus = ApplicationManager.getApplication().messageBus
         messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(settings)
@@ -172,8 +180,6 @@ class ParadoxModSettingsDialog(
         if(oldGameType != settings.gameType) {
             messageBus.syncPublisher(ParadoxModGameTypeListener.TOPIC).onChange(settings)
         }
-    
-        super.doOKAction()
     }
 }
 

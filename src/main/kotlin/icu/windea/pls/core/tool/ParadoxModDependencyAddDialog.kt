@@ -57,6 +57,9 @@ class ParadoxModDependencyAddDialog(
                     .align(Align.FILL)
                     .validationOnApply { validateModDirectory() }
             }
+            row { 
+                
+            }
         }
     }
     

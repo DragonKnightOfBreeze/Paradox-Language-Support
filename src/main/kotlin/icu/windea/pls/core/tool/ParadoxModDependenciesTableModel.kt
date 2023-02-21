@@ -16,16 +16,17 @@ import javax.swing.*
 //com.intellij.openapi.roots.ui.configuration.classpath.ClasspathTableModel
 
 class ParadoxModDependenciesTableModel(
-    val settings: ParadoxGameOrModSettingsState
+    val settings: ParadoxGameOrModSettingsState,
+    modDependencies: MutableList<ParadoxModDependencySettingsState>
 ) : ListTableModel<ParadoxModDependencySettingsState>() {
     init {
         columnInfos = arrayOf(SelectedItem, NameItem, VersionItem)
-        items = settings.modDependencies
+        items = modDependencies
     }
     
     //注意这里的排序并不会实际改变modDependencies中模组依赖的排序
     
-    object SelectedItem : ColumnInfo<ParadoxModDependencySettingsState, Boolean>(PlsBundle.message("mod.dependencies.column.selected.name")) {
+    object SelectedItem : ColumnInfo<ParadoxModDependencySettingsState, Boolean>("      ") {
         const val columnIndex = 0
         
         override fun valueOf(item: ParadoxModDependencySettingsState): Boolean {
@@ -76,8 +77,8 @@ class ParadoxModDependenciesTableModel(
 
 //com.intellij.openapi.roots.ui.configuration.classpath.ClasspathPanelImpl.createTableWithButtons
 
-fun createModDependenciesPanel(project: Project, settings: ParadoxGameOrModSettingsState): JPanel {
-    val tableModel = ParadoxModDependenciesTableModel(settings)
+fun createModDependenciesPanel(project: Project, settings: ParadoxGameOrModSettingsState, modDependencies: MutableList<ParadoxModDependencySettingsState>): JPanel {
+    val tableModel = ParadoxModDependenciesTableModel(settings, modDependencies)
     val tableView = TableView(tableModel)
     tableView.setShowGrid(false)
     tableView.rowSelectionAllowed = true

@@ -32,14 +32,18 @@ interface ParadoxGameOrModSettingsState {
     var gameType: ParadoxGameType?
     var gameVersion: String?
     var gameDirectory: String?
-    val modDependencies: MutableList<ParadoxModDependencySettingsState>
+    var modDependencies: MutableList<ParadoxModDependencySettingsState>
+    
+    fun copyModDependencies(): MutableList<ParadoxModDependencySettingsState> {
+        return modDependencies.mapTo(mutableListOf()) { ParadoxModDependencySettingsState().apply { copyFrom(it) } }
+    }
 }
 
 class ParadoxGameSettingsState : BaseState(), ParadoxGameOrModSettingsState {
     override var gameType: ParadoxGameType? by enum()
     override var gameVersion: String? by string()
     override var gameDirectory: String? by string()
-    override val modDependencies: MutableList<ParadoxModDependencySettingsState> by list() //需要保证排序和去重
+    override var modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
 }
 
 /**
@@ -51,7 +55,7 @@ class ParadoxModSettingsState : BaseState(), ParadoxGameOrModSettingsState {
     override var gameVersion: String? by string()
     override var gameDirectory: String? by string()
     var modDirectory: String? by string()
-    override val modDependencies: MutableList<ParadoxModDependencySettingsState> by list() //需要保证排序和去重
+    override var modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
     
     val modDescriptorSettings: ParadoxModDescriptorSettingsState
         get() = getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())
