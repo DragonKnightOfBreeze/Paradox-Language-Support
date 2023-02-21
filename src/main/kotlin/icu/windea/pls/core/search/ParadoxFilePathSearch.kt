@@ -1,9 +1,7 @@
 package icu.windea.pls.core.search
 
 import com.intellij.openapi.extensions.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
-import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.expression.*
@@ -23,8 +21,6 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
 		val filePath: String?,
 		val configExpression: CwtDataExpression?,
 		val ignoreCase: Boolean,
-		val project: Project,
-		val scope: SearchScope,
 		override val selector: ChainedParadoxSelector<VirtualFile>
 	) : ParadoxSearchParameters<VirtualFile>
 	
@@ -39,13 +35,11 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
 		@JvmStatic
 		fun search(
 			filePath: String?,
-			project: Project,
 			configExpression: CwtDataExpression? = null,
 			ignoreCase: Boolean = true,
-			scope: SearchScope = GlobalSearchScope.allScope(project),
-			selector: ChainedParadoxSelector<VirtualFile> = nopSelector()
+			selector: ChainedParadoxSelector<VirtualFile>
 		): ParadoxQuery<VirtualFile, SearchParameters> {
-			return INSTANCE.createParadoxQuery(SearchParameters(filePath, configExpression, ignoreCase, project, scope, selector))
+			return INSTANCE.createParadoxQuery(SearchParameters(filePath, configExpression, ignoreCase, selector))
 		}
 		
 		/**
@@ -53,13 +47,11 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
 		 */
 		@JvmStatic
 		fun search(
-			project: Project,
 			configExpression: CwtDataExpression? = null,
 			ignoreCase: Boolean = true,
-			scope: SearchScope = GlobalSearchScope.allScope(project),
-			selector: ChainedParadoxSelector<VirtualFile> = nopSelector()
+			selector: ChainedParadoxSelector<VirtualFile>
 		): ParadoxQuery<VirtualFile, SearchParameters> {
-			return INSTANCE.createParadoxQuery(SearchParameters(null, configExpression, ignoreCase, project, scope, selector))
+			return INSTANCE.createParadoxQuery(SearchParameters(null, configExpression, ignoreCase, selector))
 		}
 	}
 }

@@ -1,8 +1,6 @@
 package icu.windea.pls.core.search
 
 import com.intellij.openapi.extensions.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.selector.chained.*
@@ -19,8 +17,6 @@ class ParadoxDefinitionSearch: ExtensibleQueryFactory<ParadoxScriptDefinitionEle
 	class SearchParameters(
 		val name: String?,
 		val typeExpression: String?,
-		val project: Project,
-		val scope: SearchScope,
 		override val selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>
 	) : ParadoxSearchParameters<ParadoxScriptDefinitionElement>
 	
@@ -35,11 +31,9 @@ class ParadoxDefinitionSearch: ExtensibleQueryFactory<ParadoxScriptDefinitionEle
 		fun search(
 			name: String,
 			typeExpression: String?,
-			project: Project,
-			scope: SearchScope = GlobalSearchScope.allScope(project),
-			selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement> = nopSelector()
+			selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>
 		): ParadoxQuery<ParadoxScriptDefinitionElement, SearchParameters> {
-			return INSTANCE.createParadoxQuery(SearchParameters(name, typeExpression, project, scope, selector))
+			return INSTANCE.createParadoxQuery(SearchParameters(name, typeExpression, selector))
 		}
 		
 		/**
@@ -48,11 +42,9 @@ class ParadoxDefinitionSearch: ExtensibleQueryFactory<ParadoxScriptDefinitionEle
 		@JvmStatic
 		fun search(
 			typeExpression: String?,
-			project: Project,
-			scope: SearchScope = GlobalSearchScope.allScope(project),
-			selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement> = nopSelector()
+			selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>
 		): ParadoxQuery<ParadoxScriptDefinitionElement, SearchParameters> {
-			return INSTANCE.createParadoxQuery(SearchParameters(null, typeExpression, project, scope, selector))
+			return INSTANCE.createParadoxQuery(SearchParameters(null, typeExpression, selector))
 		}
 	}
 }

@@ -40,8 +40,8 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(localisationCommand != null) return localisationCommand
 		
 		//尝试识别为<scripted_loc>
-		val selector = definitionSelector().gameType(gameType).preferRootFrom(element, exact)
-		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", project, selector = selector).find(exact)
+		val selector = definitionSelector(project).gameType(gameType).preferRootFrom(element, exact)
+		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", selector = selector).find(exact)
 		if(scriptedLoc != null) return scriptedLoc
 		
 		//尝试识别为预定义的value[variable] （忽略大小写）
@@ -49,8 +49,8 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(predefinedVariable != null) return predefinedVariable.pointer.element
 		
 		//尝试识别为value[variable]
-		val variableSelector = valueSetValueSelector().gameType(gameType).preferRootFrom(element, exact)
-		val variable = ParadoxValueSetValueSearch.search(name, "variable", project, selector = variableSelector).findFirst()
+		val variableSelector = valueSetValueSelector(project).gameType(gameType).preferRootFrom(element, exact)
+		val variable = ParadoxValueSetValueSearch.search(name, "variable", selector = variableSelector).findFirst()
 		if(variable != null) return ParadoxValueSetValueElement(element, name, "variable", project, gameType)
 		
 		return null
@@ -67,8 +67,8 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(localisationCommand != null) return localisationCommand.let { arrayOf(PsiElementResolveResult(it)) }
 		
 		//尝试识别为<scripted_loc>
-		val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-		val scriptedLocs = ParadoxDefinitionSearch.search(name, "scripted_loc", project, selector = selector).findAll()
+		val selector = definitionSelector(project).gameType(gameType).preferRootFrom(element)
+		val scriptedLocs = ParadoxDefinitionSearch.search(name, "scripted_loc", selector = selector).findAll()
 		if(scriptedLocs.isNotEmpty()) return scriptedLocs.mapToArray { PsiElementResolveResult(it) }
 		
 		//尝试识别为预定义的value[variable] （忽略大小写）
@@ -76,8 +76,8 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(predefinedVariable != null) return predefinedVariable.pointer.element?.let { arrayOf(PsiElementResolveResult(it)) } ?: ResolveResult.EMPTY_ARRAY
 		
 		//尝试识别为value[variable]
-		val variableSelector = valueSetValueSelector().gameType(gameType).preferRootFrom(element)
-		val variables = ParadoxValueSetValueSearch.search(name, "variable", project, selector = variableSelector).findAll()
+		val variableSelector = valueSetValueSelector(project).gameType(gameType).preferRootFrom(element)
+		val variables = ParadoxValueSetValueSearch.search(name, "variable", selector = variableSelector).findAll()
 		if(variables.isNotEmpty()) return variables.mapToArray { PsiElementResolveResult(ParadoxValueSetValueElement(element, name, "variable", project, gameType)) }
 		
 		return ResolveResult.EMPTY_ARRAY
@@ -94,8 +94,8 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(localisationCommand != null) return null //no highlight
 		
 		//尝试识别为<scripted_loc>
-		val selector = definitionSelector().gameType(gameType)
-		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", project, selector = selector).findFirst()
+		val selector = definitionSelector(project).gameType(gameType)
+		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", selector = selector).findFirst()
 		if(scriptedLoc != null) return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY //definition reference
 		
 		//尝试识别为预定义的value[variable] （忽略大小写）
@@ -103,8 +103,8 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(predefinedVariable != null) return ParadoxScriptAttributesKeys.VARIABLE_KEY
 		
 		//尝试识别为value[variable]
-		val variableSelector = valueSetValueSelector().gameType(gameType)
-		val variable = ParadoxValueSetValueSearch.search(name, "variable", project, selector = variableSelector).findFirst()
+		val variableSelector = valueSetValueSelector(project).gameType(gameType)
+		val variable = ParadoxValueSetValueSearch.search(name, "variable", selector = variableSelector).findFirst()
 		if(variable != null) return ParadoxScriptAttributesKeys.VARIABLE_KEY
 		
 		return null

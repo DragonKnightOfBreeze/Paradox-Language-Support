@@ -45,10 +45,10 @@ class ParadoxLocalisationCommandScopePsiReference(
 		if(predefinedEventTarget != null) return predefinedEventTarget.pointer.element
 		
 		//尝试识别为value[event_target]或value[global_event_target]
-		val selector = valueSetValueSelector().gameType(gameType).preferRootFrom(element, exact)
-		val eventTarget = ParadoxValueSetValueSearch.search(name, "event_target", project, selector = selector).findFirst()
+		val selector = valueSetValueSelector(project).gameType(gameType).preferRootFrom(element, exact)
+		val eventTarget = ParadoxValueSetValueSearch.search(name, "event_target", selector = selector).findFirst()
 		if(eventTarget != null) return ParadoxValueSetValueElement(element, name, "event_target", project, gameType)
-		val globalEventTarget = ParadoxValueSetValueSearch.search(name, "global_event_target", project, selector = selector).findFirst()
+		val globalEventTarget = ParadoxValueSetValueSearch.search(name, "global_event_target", selector = selector).findFirst()
 		if(globalEventTarget != null) return ParadoxValueSetValueElement(element, name, "global_event_target", project, gameType)
 		
 		return null
@@ -71,10 +71,10 @@ class ParadoxLocalisationCommandScopePsiReference(
 		if(predefinedEventTarget != null) return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
 		
 		//尝试识别为value[event_target]或value[global_event_target]
-		val selector = valueSetValueSelector().gameType(gameType)
-		val eventTarget = ParadoxValueSetValueSearch.search(name, "event_target", project, selector = selector).findFirst()
+		val selector = valueSetValueSelector(project).gameType(gameType)
+		val eventTarget = ParadoxValueSetValueSearch.search(name, "event_target", selector = selector).findFirst()
 		if(eventTarget != null) return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
-		val globalEventTarget = ParadoxValueSetValueSearch.search(name, "global_event_target", project, selector = selector).findFirst()
+		val globalEventTarget = ParadoxValueSetValueSearch.search(name, "global_event_target", selector = selector).findFirst()
 		if(globalEventTarget != null) return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
 		
 		return null

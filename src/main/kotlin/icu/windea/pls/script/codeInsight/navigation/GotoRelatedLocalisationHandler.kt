@@ -39,7 +39,7 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
                 runReadAction {
                     for((_, locationExpression) in localisationInfos) {
                         ProgressManager.checkCanceled()
-                        val selector = localisationSelector().gameTypeFrom(definition).preferRootFrom(definition).preferLocale(preferredParadoxLocale())
+                        val selector = localisationSelector(project).gameTypeFrom(definition).preferRootFrom(definition).preferLocale(preferredParadoxLocale())
                         val resolved = locationExpression.resolveAll(definitionInfo.name, definition, project, selector = selector) ?: continue
                         if(resolved.localisations.isNotEmpty()) {
                             targets.addAll(resolved.localisations)
@@ -59,15 +59,15 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
                 runReadAction {
                     val nameKeys = ParadoxModifierHandler.getModifierNameKeys(modifierElement.name, configGroup)
                     val localisations = nameKeys.firstNotNullOfOrNull {
-                        val selector = localisationSelector().gameType(gameType).preferRootFrom(element).preferLocale(preferredParadoxLocale())
-                        val result = ParadoxLocalisationSearch.search(it, project, selector = selector).findAll()
+                        val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element).preferLocale(preferredParadoxLocale())
+                        val result = ParadoxLocalisationSearch.search(it, selector = selector).findAll()
                         result.takeIfNotEmpty()
                     }
                     if(localisations != null) targets.addAll(localisations)
                     val descKeys = ParadoxModifierHandler.getModifierDescKeys(modifierElement.name, configGroup)
                     val descLocalisations = descKeys.firstNotNullOfOrNull {
-                        val selector = localisationSelector().gameType(gameType).preferRootFrom(element).preferLocale(preferredParadoxLocale())
-                        val result = ParadoxLocalisationSearch.search(it, project, selector = selector).findAll()
+                        val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element).preferLocale(preferredParadoxLocale())
+                        val result = ParadoxLocalisationSearch.search(it, selector = selector).findAll()
                         result.takeIfNotEmpty()
                     }
                     if(descLocalisations != null) targets.addAll(descLocalisations)

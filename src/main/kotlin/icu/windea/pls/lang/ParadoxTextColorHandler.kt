@@ -16,16 +16,16 @@ object ParadoxTextColorHandler {
 	 */
 	@JvmStatic
 	fun getInfos(gameType: ParadoxGameType, project: Project, context: Any? = null): List<ParadoxTextColorInfo> {
-		val selector = definitionSelector().gameType(gameType).preferRootFrom(context).distinctByName()
-		val definitions = ParadoxDefinitionSearch.search("textcolor", project, selector = selector).findAll()
+		val selector = definitionSelector(project).gameType(gameType).preferRootFrom(context).distinctByName()
+		val definitions = ParadoxDefinitionSearch.search("textcolor", selector = selector).findAll()
 		if(definitions.isEmpty()) return emptyList()
 		return definitions.mapNotNull { definition -> getInfoFromCache(definition) } //it.name == it.definitionInfo.name
 	}
 	
 	@JvmStatic
 	fun getInfo(name: String, gameType: ParadoxGameType, project: Project, context: Any? = null): ParadoxTextColorInfo? {
-		val selector = definitionSelector().gameType(gameType).preferRootFrom(context)
-		val definition = ParadoxDefinitionSearch.search(name, "textcolor", project, selector = selector).find() 
+		val selector = definitionSelector(project).gameType(gameType).preferRootFrom(context)
+		val definition = ParadoxDefinitionSearch.search(name, "textcolor", selector = selector).find() 
 		if(definition == null) return null
 		return getInfoFromCache(definition)
 	}

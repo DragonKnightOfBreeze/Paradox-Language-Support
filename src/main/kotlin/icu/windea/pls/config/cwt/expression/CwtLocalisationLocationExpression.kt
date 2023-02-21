@@ -72,7 +72,7 @@ class CwtLocalisationLocationExpression(
             if(definitionInfo.isAnonymous) return null
             
             val key = resolvePlaceholder(definitionInfo.name)!!
-            val localisation = ParadoxLocalisationSearch.search(key, project, selector = selector).find()
+            val localisation = ParadoxLocalisationSearch.search(key, selector = selector).find()
             return ResolveResult(key, localisation)
         } else if(propertyName != null) {
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
@@ -85,7 +85,7 @@ class CwtLocalisationLocationExpression(
                 return ResolveResult("", null, PlsDocBundle.message("inlined"))
             }
             val key = propertyValue.value
-            val localisation = ParadoxLocalisationSearch.search(key, project, selector = selector).find()
+            val localisation = ParadoxLocalisationSearch.search(key, selector = selector).find()
             return ResolveResult(key, localisation)
         } else {
             return null //不期望的结果
@@ -101,7 +101,7 @@ class CwtLocalisationLocationExpression(
     fun resolveAll(definitionName: String, definition: ParadoxScriptDefinitionElement, project: Project, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveAllResult? {
         if(placeholder != null) {
             val key = resolvePlaceholder(definitionName)!!
-            val localisations = ParadoxLocalisationSearch.search(key, project, selector = selector).findAll()
+            val localisations = ParadoxLocalisationSearch.search(key, selector = selector).findAll()
             return ResolveAllResult(key, localisations)
         } else if(propertyName != null) {
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
@@ -114,7 +114,7 @@ class CwtLocalisationLocationExpression(
                 return ResolveAllResult("", emptySet(), PlsDocBundle.message("inlined"))
             }
             val key = propertyValue.value
-            val localisations = ParadoxLocalisationSearch.search(key, project, selector = selector).findAll()
+            val localisations = ParadoxLocalisationSearch.search(key, selector = selector).findAll()
             return ResolveAllResult(key, localisations)
         } else {
             return null //不期望的结果

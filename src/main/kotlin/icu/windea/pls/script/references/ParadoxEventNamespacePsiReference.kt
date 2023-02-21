@@ -31,8 +31,8 @@ class ParadoxEventNamespacePsiReference(
 		val gameType = definitionInfo.gameType
 		val project = definitionInfo.project
 		val name = element.value.substringBefore('.')
-		val selector = definitionSelector().gameType(gameType).preferRootFrom(event)
-		val query = ParadoxDefinitionSearch.search(name, "event_namespace", project, selector = selector)
+		val selector = definitionSelector(project).gameType(gameType).preferRootFrom(event)
+		val query = ParadoxDefinitionSearch.search(name, "event_namespace", selector = selector)
 		val eventNamespace = query.find()
 		return eventNamespace
 	}
@@ -48,8 +48,8 @@ class ParadoxEventNamespacePsiReference(
 		val gameType = definitionInfo.gameType
 		val project = definitionInfo.project
 		val name = element.value.substringBefore('.')
-		val selector = definitionSelector().gameType(gameType).preferRootFrom(event)
-		val query = ParadoxDefinitionSearch.search(name, "event_namespace", project, selector = selector)
+		val selector = definitionSelector(project).gameType(gameType).preferRootFrom(event)
+		val query = ParadoxDefinitionSearch.search(name, "event_namespace", selector = selector)
 		val eventNamespaces = query.findAll()
 		result.addAll(eventNamespaces)
 		return result.mapToArray { PsiElementResolveResult(it) }

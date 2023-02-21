@@ -766,7 +766,7 @@ class CwtConfigGroupImpl(
 				"path_file" -> pathFile = prop.stringValue
 				"path_strict" -> pathStrict = prop.booleanValue ?: false
 				"start_from_root" -> startFromRoot = prop.booleanValue ?: false
-				"search_scope" -> searchScope = prop.stringValue
+				"search_scope_type" -> searchScope = prop.stringValue
 				"name" -> nameConfig = prop
 			}
 		}

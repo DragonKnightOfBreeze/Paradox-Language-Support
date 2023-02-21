@@ -28,10 +28,10 @@ class ParadoxScriptedVariablePsiReference(
 		val element = element
 		val name = element.name
 		val project = element.project
-		val selector = scriptedVariableSelector().gameTypeFrom(element).preferRootFrom(element, exact)
+		val selector = scriptedVariableSelector(project).gameTypeFrom(element).preferRootFrom(element, exact)
 		val localQuery = ParadoxLocalScriptedVariableSearch.search(name, element, selector = selector)
 		localQuery.findFirst()?.let { return it }
-		val globalQuery = ParadoxGlobalScriptedVariableSearch.search(name, project, selector = selector)
+		val globalQuery = ParadoxGlobalScriptedVariableSearch.search(name, selector = selector)
 		globalQuery.find(exact)?.let { return it }
 		return null
 	}
@@ -41,13 +41,13 @@ class ParadoxScriptedVariablePsiReference(
 		val result = SmartList<ParadoxScriptScriptedVariable>()
 		val name = element.name
 		val project = element.project
-		val selector = scriptedVariableSelector().gameTypeFrom(element).preferRootFrom(element)
+		val selector = scriptedVariableSelector(project).gameTypeFrom(element).preferRootFrom(element)
 		val localQuery = ParadoxLocalScriptedVariableSearch.search(name, element, selector = selector)
 		localQuery.processQuery {
 			result.add(it)
 			true
 		}
-		val globalQuery = ParadoxGlobalScriptedVariableSearch.search(name, project, selector = selector)
+		val globalQuery = ParadoxGlobalScriptedVariableSearch.search(name, selector = selector)
 		globalQuery.processQuery {
 			result.add(it)
 			true

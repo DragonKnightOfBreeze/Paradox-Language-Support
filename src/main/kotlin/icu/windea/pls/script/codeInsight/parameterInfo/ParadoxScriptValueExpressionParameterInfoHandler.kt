@@ -52,8 +52,8 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): ParadoxScriptStringExpressionElement? {
         val (targetElement, svName) = findTargetElement(context) ?: return null
         //合并所有可能的参数名
-        val selector = definitionSelector().gameTypeFrom(context.file).preferRootFrom(context.file)
-        val definitions = ParadoxDefinitionSearch.search(svName, "script_value", context.project, selector = selector).findAll()
+        val selector = definitionSelector(project).gameTypeFrom(context.file).preferRootFrom(context.file)
+        val definitions = ParadoxDefinitionSearch.search(svName, "script_value", selector = selector).findAll()
         if(definitions.isEmpty()) return null
         val parameterInfosMap = mutableMapOf<String, Collection<ParadoxParameterInfo>>()
         for(definition in definitions) {

@@ -137,8 +137,8 @@ object CwtConfigHandler {
         val configGroup = config.info.configGroup
         return when {
             config is CwtPropertyConfig -> {
-                config.inlineableConfig?.let { getEntryConfigs(it) } 
-					?: config.parent?.castOrNull<CwtPropertyConfig>()?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }
+                config.inlineableConfig?.let { getEntryConfigs(it) }
+                    ?: config.parent?.castOrNull<CwtPropertyConfig>()?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }
                     ?: config.toSingletonList()
             }
             config is CwtValueConfig && config.propertyConfig != null -> {
@@ -146,7 +146,7 @@ object CwtConfigHandler {
             }
             config is CwtValueConfig -> {
                 config.parent?.castOrNull<CwtPropertyConfig>()?.configs?.filter { it is CwtValueConfig }
-					?: config.toSingletonList()
+                    ?: config.toSingletonList()
             }
             config is CwtSingleAliasConfig -> {
                 config.config.toSingletonListOrEmpty()
@@ -255,8 +255,8 @@ object CwtConfigHandler {
                 if(isStatic) return true
                 if(isParameterAware) return true
                 if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
-                    val selector = localisationSelector().gameType(gameType)
-                    return ParadoxLocalisationSearch.search(expression.text, project, selector = selector).findFirst() != null
+                    val selector = localisationSelector(project).gameType(gameType)
+                    return ParadoxLocalisationSearch.search(expression.text, selector = selector).findFirst() != null
                 }
                 return true
             }
@@ -265,8 +265,8 @@ object CwtConfigHandler {
                 if(isStatic) return true
                 if(isParameterAware) return true
                 if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
-                    val selector = localisationSelector().gameType(gameType)
-                    return ParadoxSyncedLocalisationSearch.search(expression.text, project, selector = selector).findFirst() != null
+                    val selector = localisationSelector(project).gameType(gameType)
+                    return ParadoxSyncedLocalisationSearch.search(expression.text, selector = selector).findFirst() != null
                 }
                 return true
             }
@@ -276,8 +276,8 @@ object CwtConfigHandler {
                 if(isStatic) return true
                 if(isParameterAware) return true
                 if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
-                    val selector = localisationSelector().gameType(gameType)
-                    return ParadoxLocalisationSearch.search(expression.text, project, selector = selector).findFirst() != null
+                    val selector = localisationSelector(project).gameType(gameType)
+                    return ParadoxLocalisationSearch.search(expression.text, selector = selector).findFirst() != null
                 }
                 return true
             }
@@ -296,8 +296,8 @@ object CwtConfigHandler {
                 if(isParameterAware) return true
                 val typeExpression = configExpression.value ?: return false //invalid cwt config
                 if(BitUtil.isSet(matchType, CwtConfigMatchType.DEFINITION)) {
-                    val selector = definitionSelector().gameType(gameType)
-                    return ParadoxDefinitionSearch.search(expression.text, typeExpression, project, selector = selector).findFirst() != null
+                    val selector = definitionSelector(project).gameType(gameType)
+                    return ParadoxDefinitionSearch.search(expression.text, typeExpression, selector = selector).findFirst() != null
                 }
                 return true
             }
@@ -318,9 +318,9 @@ object CwtConfigHandler {
                 val complexEnumConfig = configGroup.complexEnums[enumName]
                 if(complexEnumConfig != null) {
                     if(BitUtil.isSet(matchType, CwtConfigMatchType.COMPLEX_ENUM_VALUE)) {
-                        val searchScope = complexEnumConfig.searchScope
-                        val selector = complexEnumValueSelector().gameType(gameType).withSearchScope(searchScope, element)
-                        val search = ParadoxComplexEnumValueSearch.search(name, enumName, project, selector = selector)
+                        val searchScope = complexEnumConfig.searchScopeType
+                        val selector = complexEnumValueSelector(project).gameType(gameType).withSearchScopeType(searchScope, element)
+                        val search = ParadoxComplexEnumValueSearch.search(name, enumName, selector)
                         return search.findFirst() != null
                     }
                 }
@@ -456,8 +456,8 @@ object CwtConfigHandler {
                     if(isParameterAware) return true
                     if(BitUtil.isSet(matchType, CwtConfigMatchType.FILE_PATH)) {
                         val pathReference = expression.text.normalizePath()
-                        val selector = fileSelector().gameType(gameType)
-                        return ParadoxFilePathSearch.search(pathReference, project, configExpression, selector = selector).findFirst() != null
+                        val selector = fileSelector(project).gameType(gameType)
+                        return ParadoxFilePathSearch.search(pathReference, configExpression, selector = selector).findFirst() != null
                     }
                     return true
                 }
@@ -805,8 +805,8 @@ object CwtConfigHandler {
             CwtDataType.Localisation -> {
                 val tailText = getScriptExpressionTailText(config)
                 //这里selector不需要指定去重
-                val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
-                ParadoxLocalisationSearch.processVariants(project, selector = selector) { localisation ->
+                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
+                ParadoxLocalisationSearch.processVariants(selector = selector) { localisation ->
                     val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
                     val typeFile = localisation.containingFile
                     val builder = ParadoxScriptExpressionLookupElementBuilder.create(localisation, name)
@@ -821,8 +821,8 @@ object CwtConfigHandler {
             CwtDataType.SyncedLocalisation -> {
                 val tailText = getScriptExpressionTailText(config)
                 //这里selector不需要指定去重
-                val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
-                ParadoxSyncedLocalisationSearch.processVariants(project, selector = selector) { syncedLocalisation ->
+                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
+                ParadoxSyncedLocalisationSearch.processVariants(selector = selector) { syncedLocalisation ->
                     val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
                     val typeFile = syncedLocalisation.containingFile
                     val builder = ParadoxScriptExpressionLookupElementBuilder.create(syncedLocalisation, name)
@@ -838,8 +838,8 @@ object CwtConfigHandler {
                 if(quoted) return
                 val tailText = getScriptExpressionTailText(config)
                 //这里selector不需要指定去重
-                val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
-                ParadoxLocalisationSearch.processVariants(project, selector = selector) { localisation ->
+                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
+                ParadoxLocalisationSearch.processVariants(selector = selector) { localisation ->
                     val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
                     val typeFile = localisation.containingFile
                     val builder = ParadoxScriptExpressionLookupElementBuilder.create(localisation, name)
@@ -855,8 +855,8 @@ object CwtConfigHandler {
             CwtDataType.Definition -> {
                 val typeExpression = configExpression.value ?: return
                 val tailText = getScriptExpressionTailText(config)
-                val selector = definitionSelector().gameType(gameType).preferRootFrom(contextElement).distinctByName()
-                ParadoxDefinitionSearch.search(typeExpression, project, selector = selector)
+                val selector = definitionSelector(project).gameType(gameType).preferRootFrom(contextElement).distinctByName()
+                ParadoxDefinitionSearch.search(typeExpression, selector = selector)
                     .processQuery { definition ->
                         val name = definition.definitionInfo?.name ?: return@processQuery true
                         val typeFile = definition.containingFile
@@ -907,20 +907,19 @@ object CwtConfigHandler {
                 if(complexEnumConfig != null) {
                     ProgressManager.checkCanceled()
                     val typeFile = complexEnumConfig.pointer.containingFile
-                    val searchScope = complexEnumConfig.searchScope
-                    val selector = complexEnumValueSelector().gameType(gameType).withSearchScope(searchScope, contextElement).preferRootFrom(contextElement).distinctByName()
+                    val searchScope = complexEnumConfig.searchScopeType
+                    val selector = complexEnumValueSelector(project).gameType(gameType).withSearchScopeType(searchScope, contextElement).preferRootFrom(contextElement).distinctByName()
                     
-                    ParadoxComplexEnumValueSearch.searchAll(enumName, project, selector = selector)
-                        .processQuery { complexEnum ->
-                            val name = complexEnum.value
-                            val builder = ParadoxScriptExpressionLookupElementBuilder.create(complexEnum, name)
-                                .withIcon(PlsIcons.ComplexEnumValue)
-                                .withTailText(tailText)
-                                .withTypeText(typeFile?.name)
-                                .withTypeIcon(typeFile?.icon)
-                            result.addScriptExpressionElement(context, builder)
-                            true
-                        }
+                    ParadoxComplexEnumValueSearch.searchAll(enumName, selector).processQuery { complexEnum ->
+                        val name = complexEnum.value
+                        val builder = ParadoxScriptExpressionLookupElementBuilder.create(complexEnum, name)
+                            .withIcon(PlsIcons.ComplexEnumValue)
+                            .withTailText(tailText)
+                            .withTypeText(typeFile?.name)
+                            .withTypeIcon(typeFile?.icon)
+                        result.addScriptExpressionElement(context, builder)
+                        true
+                    }
                 }
             }
             CwtDataType.Value, CwtDataType.ValueSet -> {
@@ -1018,10 +1017,10 @@ object CwtConfigHandler {
                         else -> emptySet()
                     }
                     //仅提示匹配file_extensions选项指定的扩展名的，如果存在
-                    val selector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
+                    val selector = fileSelector(project).gameType(gameType).preferRootFrom(contextElement)
                         .withFileExtensions(fileExtensions)
                         .distinctByFilePath()
-                    ParadoxFilePathSearch.search(project, configExpression, selector = selector)
+                    ParadoxFilePathSearch.search(configExpression, selector = selector)
                         .processQuery p@{ virtualFile ->
                             val file = virtualFile.toPsiFile<PsiFile>(project) ?: return@p true
                             val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
@@ -1340,10 +1339,10 @@ object CwtConfigHandler {
             ProgressManager.checkCanceled()
             val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
             val contextElement = contextElement
-            val selector = valueSetValueSelector().gameType(gameType)
+            val selector = valueSetValueSelector(project).gameType(gameType)
                 .notSamePosition(contextElement)
                 .distinctByValue()
-            val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, project, selector = selector)
+            val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, selector = selector)
             valueSetValueQuery.processQuery { valueSetValue ->
                 //去除后面的作用域信息
                 val name = ParadoxValueSetValueHandler.getName(valueSetValue) ?: return@processQuery true
@@ -1426,8 +1425,8 @@ object CwtConfigHandler {
     
     fun completeEventTarget(file: PsiFile, result: CompletionResultSet) {
         val project = file.project
-        val eventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
-        val eventTargetQuery = ParadoxValueSetValueSearch.search("event_target", project, selector = eventTargetSelector)
+        val eventTargetSelector = valueSetValueSelector(project).gameTypeFrom(file).preferRootFrom(file).distinctByValue()
+        val eventTargetQuery = ParadoxValueSetValueSearch.search("event_target", selector = eventTargetSelector)
         eventTargetQuery.processQuery { eventTarget ->
             val value = ParadoxValueSetValueHandler.getName(eventTarget.value) ?: return@processQuery true
             val icon = PlsIcons.ValueSetValue
@@ -1440,8 +1439,8 @@ object CwtConfigHandler {
             true
         }
         
-        val globalEventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
-        val globalEventTargetQuery = ParadoxValueSetValueSearch.search("global_event_target", project, selector = globalEventTargetSelector)
+        val globalEventTargetSelector = valueSetValueSelector(project).gameTypeFrom(file).preferRootFrom(file).distinctByValue()
+        val globalEventTargetQuery = ParadoxValueSetValueSearch.search("global_event_target", selector = globalEventTargetSelector)
         globalEventTargetQuery.processQuery { globalEventTarget ->
             val value = ParadoxValueSetValueHandler.getName(globalEventTarget) ?: return@processQuery true
             val icon = PlsIcons.ValueSetValue
@@ -1457,8 +1456,8 @@ object CwtConfigHandler {
     
     fun completeScriptedLoc(file: PsiFile, result: CompletionResultSet) {
         val project = file.project
-        val scriptedLocSelector = definitionSelector().gameTypeFrom(file).preferRootFrom(file).distinctByName()
-        val scriptedLocQuery = ParadoxDefinitionSearch.search("scripted_loc", project, selector = scriptedLocSelector)
+        val scriptedLocSelector = definitionSelector(project).gameTypeFrom(file).preferRootFrom(file).distinctByName()
+        val scriptedLocQuery = ParadoxDefinitionSearch.search("scripted_loc", selector = scriptedLocSelector)
         scriptedLocQuery.processQuery { scriptedLoc ->
             val name = scriptedLoc.definitionInfo?.name ?: return@processQuery true //不应该为空
             val icon = PlsIcons.Definition
@@ -1476,8 +1475,8 @@ object CwtConfigHandler {
     fun completeVariable(context: ProcessingContext, result: CompletionResultSet) {
         val file = context.originalFile.project
         val project = file
-        val variableSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
-        val variableQuery = ParadoxValueSetValueSearch.search("variable", project, selector = variableSelector)
+        val variableSelector = valueSetValueSelector(project).gameTypeFrom(file).preferRootFrom(file).distinctByValue()
+        val variableQuery = ParadoxValueSetValueSearch.search("variable", selector = variableSelector)
         variableQuery.processQuery { variable ->
             val value = ParadoxValueSetValueHandler.getName(variable) ?: return@processQuery true
             val icon = PlsIcons.Variable
@@ -1560,8 +1559,9 @@ object CwtConfigHandler {
         val namesToDistinct = mutableSetOf<String>()
         
         //整合查找到的所有SV
-        val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(contextElement)
-        ParadoxDefinitionSearch.search(svName, "script_value", configGroup.project, selector = selector).processQuery p@{ sv ->
+        val project = context.originalFile.project
+        val selector = definitionSelector(project).gameType(configGroup.gameType).preferRootFrom(contextElement)
+        ParadoxDefinitionSearch.search(svName, "script_value", selector = selector).processQuery p@{ sv ->
             ProgressManager.checkCanceled()
             val parameterContext = sv
             val parameterMap = parameterContext.parameters
@@ -1612,25 +1612,25 @@ object CwtConfigHandler {
             }
             CwtDataType.Localisation -> {
                 val name = expression
-                val selector = localisationSelector().gameType(gameType).preferRootFrom(element, exact).preferLocale(preferredParadoxLocale(), exact)
-                return ParadoxLocalisationSearch.search(name, project, selector = selector).find()
+                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element, exact).preferLocale(preferredParadoxLocale(), exact)
+                return ParadoxLocalisationSearch.search(name, selector = selector).find()
             }
             CwtDataType.SyncedLocalisation -> {
                 val name = expression
-                val selector = localisationSelector().gameType(gameType).preferRootFrom(element, exact).preferLocale(preferredParadoxLocale(), exact)
-                return ParadoxSyncedLocalisationSearch.search(name, project, selector = selector).find()
+                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element, exact).preferLocale(preferredParadoxLocale(), exact)
+                return ParadoxSyncedLocalisationSearch.search(name, selector = selector).find()
             }
             CwtDataType.InlineLocalisation -> {
                 if(element.text.isLeftQuoted()) return null //inline string
                 val name = expression
-                val selector = localisationSelector().gameType(gameType).preferRootFrom(element, exact).preferLocale(preferredParadoxLocale(), exact)
-                return ParadoxLocalisationSearch.search(name, project, selector = selector).find()
+                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element, exact).preferLocale(preferredParadoxLocale(), exact)
+                return ParadoxLocalisationSearch.search(name, selector = selector).find()
             }
             CwtDataType.StellarisNameFormat -> {
                 if(element.text.isLeftQuoted()) return null //specific expression
                 val name = expression
-                val selector = localisationSelector().gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
-                return ParadoxLocalisationSearch.search(name, project, selector = selector).find() //仅查找用户的语言区域或任意语言区域的
+                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
+                return ParadoxLocalisationSearch.search(name, selector = selector).find() //仅查找用户的语言区域或任意语言区域的
             }
             CwtDataType.AbsoluteFilePath -> {
                 val filePath = expression
@@ -1639,8 +1639,8 @@ object CwtConfigHandler {
             CwtDataType.Definition -> {
                 val name = expression
                 val typeExpression = configExpression.value ?: return null
-                val selector = definitionSelector().gameType(gameType).preferRootFrom(element, exact)
-                return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).find()
+                val selector = definitionSelector(project).gameType(gameType).preferRootFrom(element, exact)
+                return ParadoxDefinitionSearch.search(name, typeExpression, selector = selector).find()
             }
             CwtDataType.Enum -> {
                 val enumName = configExpression.value ?: return null
@@ -1663,9 +1663,9 @@ object CwtConfigHandler {
                 //尝试解析为复杂枚举
                 val complexEnumConfig = configGroup.complexEnums[enumName]
                 if(complexEnumConfig != null) {
-                    val searchScope = complexEnumConfig.searchScope
-                    val selector = complexEnumValueSelector().gameType(gameType).withSearchScope(searchScope, element).preferRootFrom(element, exact)
-                    return ParadoxComplexEnumValueSearch.search(name, enumName, project, selector = selector).find()
+                    val searchScope = complexEnumConfig.searchScopeType
+                    val selector = complexEnumValueSelector(project).gameType(gameType).withSearchScopeType(searchScope, element).preferRootFrom(element, exact)
+                    return ParadoxComplexEnumValueSearch.search(name, enumName, selector).find()
                 }
                 return null
             }
@@ -1722,8 +1722,8 @@ object CwtConfigHandler {
             else -> {
                 if(ParadoxPathReferenceExpression.get(configExpression) != null) {
                     val pathReference = expression.normalizePath()
-                    val selector = fileSelector().gameType(gameType).preferRootFrom(element)
-                    return ParadoxFilePathSearch.search(pathReference, project, configExpression, selector = selector).find()?.toPsiFile(project)
+                    val selector = fileSelector(project).gameType(gameType).preferRootFrom(element)
+                    return ParadoxFilePathSearch.search(pathReference, configExpression, selector = selector).find()?.toPsiFile(project)
                 }
                 if(config != null && configExpression is CwtKeyExpression) {
                     return config.resolved().pointer.element
@@ -1747,25 +1747,25 @@ object CwtConfigHandler {
             }
             CwtDataType.Localisation -> {
                 val name = expression
-                val selector = localisationSelector().gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
-                return ParadoxLocalisationSearch.search(name, project, selector = selector).findAll() //仅查找用户的语言区域或任意语言区域的
+                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
+                return ParadoxLocalisationSearch.search(name, selector = selector).findAll() //仅查找用户的语言区域或任意语言区域的
             }
             CwtDataType.SyncedLocalisation -> {
                 val name = expression
-                val selector = localisationSelector().gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
-                return ParadoxSyncedLocalisationSearch.search(name, project, selector = selector).findAll() //仅查找用户的语言区域或任意语言区域的
+                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
+                return ParadoxSyncedLocalisationSearch.search(name, selector = selector).findAll() //仅查找用户的语言区域或任意语言区域的
             }
             CwtDataType.InlineLocalisation -> {
                 if(element.text.isLeftQuoted()) return emptyList() //inline string
                 val name = expression
-                val selector = localisationSelector().gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
-                return ParadoxLocalisationSearch.search(name, project, selector = selector).findAll() //仅查找用户的语言区域或任意语言区域的
+                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
+                return ParadoxLocalisationSearch.search(name, selector = selector).findAll() //仅查找用户的语言区域或任意语言区域的
             }
             CwtDataType.StellarisNameFormat -> {
                 if(element.text.isLeftQuoted()) return emptyList() //specific expression
                 val name = expression
-                val selector = localisationSelector().gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
-                return ParadoxLocalisationSearch.search(name, project, selector = selector).findAll() //仅查找用户的语言区域或任意语言区域的
+                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
+                return ParadoxLocalisationSearch.search(name, selector = selector).findAll() //仅查找用户的语言区域或任意语言区域的
             }
             CwtDataType.AbsoluteFilePath -> {
                 val filePath = expression
@@ -1774,8 +1774,8 @@ object CwtConfigHandler {
             CwtDataType.Definition -> {
                 val name = expression
                 val typeExpression = configExpression.value ?: return emptyList()
-                val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-                return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).findAll()
+                val selector = definitionSelector(project).gameType(gameType).preferRootFrom(element)
+                return ParadoxDefinitionSearch.search(name, typeExpression, selector = selector).findAll()
             }
             CwtDataType.Enum -> {
                 val enumName = configExpression.value ?: return emptyList()
@@ -1799,9 +1799,9 @@ object CwtConfigHandler {
                 //尝试解析为复杂枚举
                 val complexEnumConfig = configGroup.complexEnums[enumName]
                 if(complexEnumConfig != null) {
-                    val searchScope = complexEnumConfig.searchScope
-                    val selector = complexEnumValueSelector().gameType(gameType).withSearchScope(searchScope, element).preferRootFrom(element)
-                    return ParadoxComplexEnumValueSearch.search(name, enumName, project, selector = selector).findAll()
+                    val searchScope = complexEnumConfig.searchScopeType
+                    val selector = complexEnumValueSelector(project).gameType(gameType).withSearchScopeType(searchScope, element).preferRootFrom(element)
+                    return ParadoxComplexEnumValueSearch.search(name, enumName, selector).findAll()
                 }
                 return emptyList()
             }
@@ -1859,8 +1859,8 @@ object CwtConfigHandler {
             else -> {
                 if(ParadoxPathReferenceExpression.get(configExpression) != null) {
                     val pathReference = expression.normalizePath()
-                    val selector = fileSelector().gameType(gameType).preferRootFrom(element)
-                    return ParadoxFilePathSearch.search(pathReference, project, configExpression, selector = selector).findAll().mapNotNull { it.toPsiFile(project) }
+                    val selector = fileSelector(project).gameType(gameType).preferRootFrom(element)
+                    return ParadoxFilePathSearch.search(pathReference, configExpression, selector = selector).findAll().mapNotNull { it.toPsiFile(project) }
                 }
                 if(config != null && configExpression is CwtKeyExpression) {
                     return config.resolved().pointer.element.toSingletonListOrEmpty()

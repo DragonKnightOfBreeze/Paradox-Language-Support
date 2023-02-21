@@ -9,7 +9,7 @@ import icu.windea.pls.cwt.psi.*
  * @property pathFile (property) path_file: string 路径下的文件名。
  * @property pathStrict (property) path_strict: boolean
  * @property startFromRoot (property) start_from_root: boolean
- * @property searchScope (property) search_scope: string 查询作用域，认为仅该作用域下的复杂枚举值是等同的。（目前支持：definition）
+ * @property searchScopeType (property) search_scope_type: string 查询作用域，认为仅该作用域下的复杂枚举值是等同的。（目前支持：definition）
  * @property nameConfig (property) name: block 描述如何获取枚举名。将`enum_name`对应的key/value作为枚举名。
  */
 data class CwtComplexEnumConfig(
@@ -20,7 +20,7 @@ data class CwtComplexEnumConfig(
     val pathFile: String?,
     val pathStrict: Boolean,
     val startFromRoot: Boolean,
-    val searchScope: String?,
+    val searchScopeType: String?,
     val nameConfig: CwtPropertyConfig
 ) : CwtConfig<CwtProperty> {
     /**

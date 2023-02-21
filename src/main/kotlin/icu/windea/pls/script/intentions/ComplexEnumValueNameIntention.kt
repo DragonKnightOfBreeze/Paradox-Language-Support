@@ -78,9 +78,9 @@ class ComplexEnumValueNameGotoImplementationsIntention : ComplexEnumValueNameInt
 	override fun doInvoke(element: ParadoxScriptStringExpressionElement, info: ParadoxComplexEnumValueInfo, config: CwtComplexEnumConfig, editor: Editor, project: Project) {
 		val gameType = info.gameType ?: return
 		val enumName = info.enumName
-		val searchScope = config.searchScope
-		val selector = complexEnumValueSelector().gameType(gameType).withSearchScope(searchScope, element)
-		val result = ParadoxComplexEnumValueSearch.search(info.name, info.enumName, project, selector = selector).findAll()
+		val searchScope = config.searchScopeType
+		val selector = complexEnumValueSelector(project).gameType(gameType).withSearchScopeType(searchScope, element)
+		val result = ParadoxComplexEnumValueSearch.search(info.name, info.enumName, selector).findAll()
 		if(result.isEmpty()) return
 		NavigationUtil.getPsiElementPopup(result.toTypedArray(), PlsBundle.message("script.intention.complexEnumValueName.gotoImplementations.title", enumName))
 			.showInBestPositionFor(editor)

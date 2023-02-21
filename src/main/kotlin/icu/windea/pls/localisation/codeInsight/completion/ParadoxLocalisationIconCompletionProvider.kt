@@ -24,8 +24,8 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
 		
 		//根据spriteName进行提示
 		ProgressManager.checkCanceled()
-		val spriteSelector = definitionSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile).distinctByName()
-		val spriteQuery = ParadoxDefinitionSearch.search("sprite|spriteType", project, selector = spriteSelector)
+		val spriteSelector = definitionSelector(project).gameTypeFrom(originalFile).preferRootFrom(originalFile).distinctByName()
+		val spriteQuery = ParadoxDefinitionSearch.search("sprite|spriteType", selector = spriteSelector)
 		spriteQuery.processQuery { sprite ->
 			val spriteName = sprite.definitionInfo?.name
 			val name = spriteName?.removePrefixOrNull("GFX_")?.removePrefix("text_")
@@ -37,9 +37,9 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
 		
 		//根据ddsFileName进行提示
 		ProgressManager.checkCanceled()
-		val fileSelector = fileSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile).distinctByFilePath()
+		val fileSelector = fileSelector(project).gameTypeFrom(originalFile).preferRootFrom(originalFile).distinctByFilePath()
 		val ddsFileExpression = CwtValueExpression.resolve("icon[gfx/interface/icons/]")
-		val ddsFileQuery = ParadoxFilePathSearch.search(project, ddsFileExpression, selector = fileSelector)
+		val ddsFileQuery = ParadoxFilePathSearch.search(ddsFileExpression, selector = fileSelector)
 		ddsFileQuery.processQuery { ddsFile ->
 			val name = ddsFile.nameWithoutExtension
 			val file = ddsFile.toPsiFile<PsiFile>(project)
@@ -51,9 +51,9 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
 		
 		//作为生成的图标处理（解析为其他类型的定义）
 		ProgressManager.checkCanceled()
-		val definitionSelector = definitionSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile).distinctByName()
+		val definitionSelector = definitionSelector(project).gameTypeFrom(originalFile).preferRootFrom(originalFile).distinctByName()
 		//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
-		val definitionQuery = ParadoxDefinitionSearch.search("job", project, selector = definitionSelector)
+		val definitionQuery = ParadoxDefinitionSearch.search("job", selector = definitionSelector)
 		definitionQuery.processQuery { definition ->
 			val jobName = definition.definitionInfo?.name ?: return@processQuery true
 			val name = "job_$jobName"

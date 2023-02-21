@@ -7,7 +7,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.script.psi.*
 import kotlin.experimental.*
 
@@ -32,8 +32,8 @@ class ParadoxComplexEnumValueUsagesSearcher : QueryExecutorBase<PsiReference, Re
 			//这里不能直接使用target.useScope，否则文件高亮会出现问题
 			var useScope = queryParameters.effectiveSearchScope
 			//需要特别处理指定了searchScope的情况
-			if(complexEnumConfig.searchScope != null) {
-				val globalSearchScope = ParadoxSearchScope(complexEnumConfig.searchScope).getGlobalSearchScope(target)
+			if(complexEnumConfig.searchScopeType != null) {
+				val globalSearchScope = ParadoxSearchScope(complexEnumConfig.searchScopeType).getGlobalSearchScope(target)
 				if(globalSearchScope != null) {
 					useScope = useScope.intersectWith(globalSearchScope)
 				}

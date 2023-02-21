@@ -22,13 +22,11 @@ class ParadoxScriptedVariableImplementationsSearch : QueryExecutor<PsiElement, D
         if(name.isEmpty()) return true
         val project = queryParameters.project
         DumbService.getInstance(project).runReadActionInSmartMode {
-            //使用全部作用域
-            val scope = GlobalSearchScope.allScope(project)
-            //val scope = GlobalSearchScopeUtil.toGlobalSearchScope(queryParameters.scope, project)
             //这里不进行排序
-            val selector = scriptedVariableSelector().gameTypeFrom(sourceElement)
+            val selector = scriptedVariableSelector(project).gameTypeFrom(sourceElement)
+                .withSearchScope(GlobalSearchScope.allScope(project)) ////使用全部作用域
             ParadoxLocalScriptedVariableSearch.search(name, sourceElement, selector = selector).forEach(consumer)
-            ParadoxGlobalScriptedVariableSearch.search(name, project, scope, selector = selector).forEach(consumer)
+            ParadoxGlobalScriptedVariableSearch.search(name, selector = selector).forEach(consumer)
         }
         return true
     }

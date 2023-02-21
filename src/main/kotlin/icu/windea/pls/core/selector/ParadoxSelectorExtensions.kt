@@ -11,6 +11,7 @@ import java.util.*
 tailrec fun selectGameType(from: Any?): ParadoxGameType? {
 	return when {
 		from == null -> null
+		from is ParadoxGameType -> from
 		from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
 		from is PsiFile -> from.fileInfo?.rootInfo?.gameType
 			?: ParadoxMagicCommentHandler.resolveFilePathComment(from)?.first
@@ -33,6 +34,16 @@ tailrec fun selectRootFile(from: Any?): VirtualFile? {
 		from is VirtualFile -> from.fileInfo?.let { it.rootInfo.gameRootFile }
 		from is PsiFile -> from.fileInfo?.let { it.rootInfo.gameRootFile }
 		from is PsiElement -> selectRootFile(from.parent)
+		else -> null
+	}
+}
+
+fun selectFile(from:Any?) :VirtualFile? {
+	return when {
+		from == null -> null
+		from is VirtualFile -> from
+		from is PsiFile -> from.virtualFile
+		from is PsiElement -> from.containingFile?.virtualFile
 		else -> null
 	}
 }

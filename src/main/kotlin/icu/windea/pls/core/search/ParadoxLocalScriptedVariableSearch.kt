@@ -32,7 +32,7 @@ class ParadoxLocalScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptS
 		fun search(
 			name: String,
 			context: PsiElement,
-			selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable> = nopSelector()
+			selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>
 		): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
 			return INSTANCE.createParadoxQuery(SearchParameters(name, context, selector))
 		}
@@ -43,7 +43,7 @@ class ParadoxLocalScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptS
 		@JvmStatic
 		fun search(
 			context: PsiElement,
-			selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable> = nopSelector()
+			selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>
 		): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
 			return INSTANCE.createParadoxQuery(SearchParameters(null, context, selector))
 		}

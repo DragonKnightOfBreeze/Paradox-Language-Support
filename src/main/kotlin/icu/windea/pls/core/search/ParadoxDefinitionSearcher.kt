@@ -8,7 +8,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.index.*
-import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
@@ -21,7 +20,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
 		val name = queryParameters.name
 		val typeExpression = queryParameters.typeExpression
 		val project = queryParameters.project
-		val scope = GlobalSearchScopeUtil.toGlobalSearchScope(queryParameters.scope, project)
+		val scope = queryParameters.selector.scope
 		if(typeExpression == null) {
 			if(name == null) {
 				//查找所有定义

@@ -40,10 +40,10 @@ class ParadoxLocalisationPropertyPsiReference(
 		getCwtConfig(project).core.localisationLocales.get(name)?.pointer?.element?.let { return it }
 		
 		//解析成localisation或者synced_localisation
-		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(locale)
+		val selector = localisationSelector(project).gameTypeFrom(file).preferRootFrom(file).preferLocale(locale)
 		return when(category) {
-			Localisation -> ParadoxLocalisationSearch.search(name, project, selector = selector).find()
-			SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, project, selector = selector).find()
+			Localisation -> ParadoxLocalisationSearch.search(name, selector = selector).find()
+			SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector = selector).find()
 		}
 	}
 	
@@ -58,10 +58,10 @@ class ParadoxLocalisationPropertyPsiReference(
 		getCwtConfig(project).core.localisationLocales.get(name)?.pointer?.element?.let { return arrayOf(PsiElementResolveResult(it)) }
 		
 		//解析成localisation或者synced_localisation
-		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(locale)
+		val selector = localisationSelector(project).gameTypeFrom(file).preferRootFrom(file).preferLocale(locale)
 		return when(category) {
-			Localisation -> ParadoxLocalisationSearch.search(name, project, selector = selector).findAll() //仅查找对应语言区域的
-			SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, project, selector = selector).findAll() //仅查找对应语言区域的
+			Localisation -> ParadoxLocalisationSearch.search(name, selector = selector).findAll() //仅查找对应语言区域的
+			SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector = selector).findAll() //仅查找对应语言区域的
 		}.mapToArray { PsiElementResolveResult(it) }
 	}
 }

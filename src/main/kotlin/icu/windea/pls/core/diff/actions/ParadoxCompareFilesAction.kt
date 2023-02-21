@@ -70,8 +70,8 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         val virtualFiles = Collections.synchronizedList(mutableListOf<VirtualFile>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
             runReadAction {
-                val selector = fileSelector().gameType(gameType)
-                val result = ParadoxFilePathSearch.search(path, project, selector = selector).findAll()
+                val selector = fileSelector(project).gameType(gameType)
+                val result = ParadoxFilePathSearch.search(path, selector = selector).findAll()
                 virtualFiles.addAll(result)
             }
         }, PlsBundle.message("diff.compare.files.collect.title"), true, project)

@@ -25,7 +25,7 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
 		//不提示predefined_parameter
 		
 		//提示localisation或者synced_localisation
-		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale()).distinctByName()
+		val selector = localisationSelector(project).gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale()).distinctByName()
 		val processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean = {
 			val name = it.name
 			val icon = it.icon
@@ -37,8 +37,8 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
 			true
 		}
 		when(category) {
-			ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.processVariants(project, selector = selector, processor = processor)
-			ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.processVariants(project, selector = selector, processor = processor)
+			ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.processVariants(selector = selector, processor = processor)
+			ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.processVariants(selector = selector, processor = processor)
 		}
 	}
 }

@@ -86,8 +86,8 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         val localisations = Collections.synchronizedList(mutableListOf<ParadoxLocalisationProperty>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
             runReadAction {
-                val selector = localisationSelector().gameTypeFrom(file)
-                val result = ParadoxLocalisationSearch.search(localisationName, project, selector = selector).findAll()
+                val selector = localisationSelector(project).gameTypeFrom(file)
+                val result = ParadoxLocalisationSearch.search(localisationName, selector = selector).findAll()
                 localisations.addAll(result)
             }
         }, PlsBundle.message("diff.compare.localisations.collect.title"), true, project)

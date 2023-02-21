@@ -171,13 +171,13 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		val gameType = configGroup.gameType ?: return
 		val nameKeys = ParadoxModifierHandler.getModifierNameKeys(name, configGroup)
 		val localisation = nameKeys.firstNotNullOfOrNull {
-			val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
-			ParadoxLocalisationSearch.search(it, configGroup.project, selector = selector).find()
+			val selector = localisationSelector(project).gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
+			ParadoxLocalisationSearch.search(it, selector = selector).find()
 		}
 		val descKeys = ParadoxModifierHandler.getModifierDescKeys(name, configGroup)
 		val descLocalisation = descKeys.firstNotNullOfOrNull {
-			val descSelector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
-			ParadoxLocalisationSearch.search(it, configGroup.project, selector = descSelector).find()
+			val descSelector = localisationSelector(project).gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
+			ParadoxLocalisationSearch.search(it, selector = descSelector).find()
 		}
 		//如果没找到的话，不要在文档中显示相关信息
 		if(localisation != null) {
@@ -209,8 +209,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		val gameType = configGroup.gameType ?: return
 		val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name, configGroup)
 		val (iconPath, iconFile) = iconPaths.firstNotNullOfOrNull {
-			val iconSelector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
-			it to ParadoxFilePathSearch.search(it, configGroup.project, selector = iconSelector).find()
+			val iconSelector = fileSelector(project).gameType(gameType).preferRootFrom(contextElement)
+			it to ParadoxFilePathSearch.search(it, selector = iconSelector).find()
 		} ?: (null to null)
 		//如果没找到的话，不要在文档中显示相关信息
 		if(iconPath != null && iconFile != null) {

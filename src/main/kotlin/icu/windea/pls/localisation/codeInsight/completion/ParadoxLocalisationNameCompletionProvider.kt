@@ -25,7 +25,7 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
 		
 		//提示localisation或者synced_localisation
 		//排除正在输入的那一个
-		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale())
+		val selector = localisationSelector(project).gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale())
 			.notSamePosition(element)
 			.distinctByName()
 		val processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean = processor@{
@@ -39,8 +39,8 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
 			true
 		}
 		when(category) {
-			ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.processVariants(project, selector = selector, processor = processor)
-			ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.processVariants(project, selector = selector, processor = processor)
+			ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.processVariants(selector = selector, processor = processor)
+			ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.processVariants(selector = selector, processor = processor)
 		}
 	}
 }

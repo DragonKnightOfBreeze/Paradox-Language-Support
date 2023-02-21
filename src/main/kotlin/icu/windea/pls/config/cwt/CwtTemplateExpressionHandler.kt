@@ -150,8 +150,8 @@ object CwtTemplateExpressionHandler {
             }
             CwtDataType.Definition -> {
                 val typeExpression = snippetExpression.value ?: return
-                val selector = definitionSelector().gameType(gameType).preferRootFrom(contextElement).distinctByName()
-                val definitionQuery = ParadoxDefinitionSearch.search(typeExpression, project, selector = selector)
+                val selector = definitionSelector(project).gameType(gameType).preferRootFrom(contextElement).distinctByName()
+                val definitionQuery = ParadoxDefinitionSearch.search(typeExpression, selector = selector)
                 definitionQuery.processQuery { definition ->
                     val name = definition.definitionInfo?.name ?: return@processQuery true
                     doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
@@ -175,10 +175,9 @@ object CwtTemplateExpressionHandler {
                 val complexEnumConfig = configGroup.complexEnums[enumName]
                 if(complexEnumConfig != null) {
                     ProgressManager.checkCanceled()
-                    val searchScope = complexEnumConfig.searchScope
-                    val selector = complexEnumValueSelector().gameType(gameType).withSearchScope(searchScope, contextElement).preferRootFrom(contextElement).distinctByName()
-                    val query = ParadoxComplexEnumValueSearch.searchAll(enumName, project, selector = selector)
-                    query.processQuery { complexEnum ->
+                    val searchScope = complexEnumConfig.searchScopeType
+                    val selector = complexEnumValueSelector(project).gameType(gameType).withSearchScopeType(searchScope, contextElement).preferRootFrom(contextElement).distinctByName()
+                    ParadoxComplexEnumValueSearch.searchAll(enumName, selector).processQuery { complexEnum ->
                         val name = complexEnum.value
                         doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                         true
@@ -196,10 +195,10 @@ object CwtTemplateExpressionHandler {
                     doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                 }
                 ProgressManager.checkCanceled()
-                val selector = valueSetValueSelector().gameType(gameType)
+                val selector = valueSetValueSelector(project).gameType(gameType)
                     .notSamePosition(contextElement)
                     .distinctByValue()
-                val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, project, selector = selector)
+                val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, selector = selector)
                 valueSetValueQuery.processQuery { valueSetValue ->
                     //去除后面的作用域信息
                     val name = ParadoxValueSetValueHandler.getName(valueSetValue) ?: return@processQuery true

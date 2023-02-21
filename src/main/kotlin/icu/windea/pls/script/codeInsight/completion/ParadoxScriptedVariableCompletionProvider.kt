@@ -17,10 +17,10 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
 		val element = parameters.position.parent
 		val file = parameters.originalFile
 		val project = file.project
-		val selector = scriptedVariableSelector().gameTypeFrom(file).preferRootFrom(file).distinctByName()
+		val selector = scriptedVariableSelector(project).gameTypeFrom(file).preferRootFrom(file).distinctByName()
 		val localQuery = ParadoxLocalScriptedVariableSearch.search(element, selector = selector)
 		localQuery.processQuery { processScriptedVariable(it, result) }
-		val globalQuery = ParadoxGlobalScriptedVariableSearch.search(project, selector = selector)
+		val globalQuery = ParadoxGlobalScriptedVariableSearch.search(selector = selector)
 		globalQuery.processQuery { processScriptedVariable(it, result) }
 	}
 	

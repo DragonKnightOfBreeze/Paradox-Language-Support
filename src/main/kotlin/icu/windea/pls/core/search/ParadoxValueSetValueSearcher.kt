@@ -1,7 +1,6 @@
 package icu.windea.pls.core.search
 
 import com.intellij.openapi.application.*
-import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
@@ -16,7 +15,7 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxScriptString, Para
 		val name = queryParameters.name
 		val valueSetName = queryParameters.valueSetName
 		val project = queryParameters.project
-		val scope = GlobalSearchScopeUtil.toGlobalSearchScope(queryParameters.scope, project)
+		val scope = queryParameters.selector.scope
 		ParadoxValueSetIndex.processAllElements(valueSetName, project, scope) {
 			if((name == null || matchesName(it, name))) {
 				consumer.process(it)

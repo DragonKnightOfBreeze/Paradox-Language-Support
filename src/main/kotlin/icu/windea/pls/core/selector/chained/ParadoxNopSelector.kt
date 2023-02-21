@@ -1,5 +1,7 @@
 package icu.windea.pls.core.selector.chained
 
-class ParadoxNopSelector<T>: ChainedParadoxSelector<T>()
+import com.intellij.openapi.project.*
 
-fun <T> nopSelector() = ParadoxNopSelector<T>()
+class ParadoxNopSelector<T>(project: Project): ChainedParadoxSelector<T>(project)
+
+fun <T> nopSelector(project: Project) = ParadoxNopSelector<T>(project)

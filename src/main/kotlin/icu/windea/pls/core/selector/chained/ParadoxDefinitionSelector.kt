@@ -1,11 +1,12 @@
 package icu.windea.pls.core.selector.chained
 
+import com.intellij.openapi.project.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxDefinitionSelector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>()
+class ParadoxDefinitionSelector(project: Project) : ChainedParadoxSelector<ParadoxScriptDefinitionElement>(project)
 
-fun definitionSelector() = ParadoxDefinitionSelector()
+fun definitionSelector(project: Project) = ParadoxDefinitionSelector(project)
 
 fun ParadoxDefinitionSelector.distinctByName() =
-	distinctBy { ParadoxDefinitionHandler.getName(it) }
+    distinctBy { ParadoxDefinitionHandler.getName(it) }

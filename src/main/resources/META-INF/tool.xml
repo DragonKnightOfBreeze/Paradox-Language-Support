@@ -5,5 +5,7 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
+    <paradoxModDependenciesImporter implementation="icu.windea.pls.core.tool.importer.ParadoxLauncherModListFileImporter"/>
+    <paradoxModDependenciesExporter implementation="icu.windea.pls.core.tool.exporter.ParadoxLauncherModListFileExporter"/>
   </extensions>
 </idea-plugin>

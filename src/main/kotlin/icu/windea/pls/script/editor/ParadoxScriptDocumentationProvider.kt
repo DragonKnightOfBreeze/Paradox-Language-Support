@@ -218,7 +218,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         val sectionKeys = mutableSetOf<String>()
         for((key, locationExpression, required) in localisationInfos) {
             if(sectionKeys.contains(key)) continue
-            val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
+            val selector = localisationSelector(project).gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
             val resolved = locationExpression.resolve(element, definitionInfo, project, selector = selector) ?: continue //发生意外，直接跳过
             if(resolved.message != null) {
                 map.put(key, resolved.message)

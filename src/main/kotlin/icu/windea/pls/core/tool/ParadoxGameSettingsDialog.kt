@@ -63,6 +63,9 @@ class ParadoxGameSettingsDialog(
                     scrollCell(createModDependenciesPanel(project, settings, modDependencies))
                         .align(Align.FILL)
                 }.resizableRow()
+                row { 
+                    comment(PlsBundle.message("mod.dependencies.comment.1"))
+                }
             }.resizableRow()
         }
     }

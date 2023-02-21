@@ -35,7 +35,7 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineM
 		val targets = mutableSetOf<ParadoxLocalisationProperty>() //这里需要考虑基于引用相等去重
 		var isFirst = true
 		for((key, locationExpression) in localisationInfos) {
-			val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
+			val selector = localisationSelector(project).gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
 			val resolved = locationExpression.resolveAll(definitionInfo.name, element, project, selector = selector) ?: continue
 			if(resolved.localisations.isNotEmpty()) {
 				targets.addAll(resolved.localisations)

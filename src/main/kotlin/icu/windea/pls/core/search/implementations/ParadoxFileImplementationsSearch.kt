@@ -23,12 +23,10 @@ class ParadoxFileImplementationsSearch : QueryExecutor<PsiElement, DefinitionsSc
         if(filePath == null || filePath.isEmpty()) return true
         val project = queryParameters.project
         DumbService.getInstance(project).runReadActionInSmartMode {
-            //使用全部作用域
-            val scope = GlobalSearchScope.allScope(project)
-            //val scope = GlobalSearchScopeUtil.toGlobalSearchScope(queryParameters.scope, project)
             //这里不进行排序
-            val selector = fileSelector().gameType(fileInfo.rootInfo.gameType)
-            ParadoxFilePathSearch.search(filePath.path, project, scope = scope, selector = selector).forEach(Processor {
+            val selector = fileSelector(project).gameType(fileInfo.rootInfo.gameType)
+                .withSearchScope(GlobalSearchScope.allScope(project)) ////使用全部作用域
+            ParadoxFilePathSearch.search(filePath.path, selector = selector).forEach(Processor {
                 consumer.process(it.toPsiFile<PsiFile>(project))
             })
         }

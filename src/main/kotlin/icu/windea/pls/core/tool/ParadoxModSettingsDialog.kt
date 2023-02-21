@@ -15,7 +15,6 @@ import icu.windea.pls.core.listeners.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
-import javax.swing.*
 
 class ParadoxModSettingsDialog(
     val project: Project,
@@ -115,6 +114,9 @@ class ParadoxModSettingsDialog(
                     scrollCell(createModDependenciesPanel(project, settings, modDependencies))
                         .align(Align.FILL)
                 }.resizableRow()
+                row {
+                    comment(PlsBundle.message("mod.dependencies.comment.1"))
+                }
             }.resizableRow()
         }
     }

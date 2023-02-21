@@ -2,10 +2,8 @@ package icu.windea.pls.core.search
 
 import com.intellij.openapi.extensions.*
 import com.intellij.openapi.project.*
-import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
@@ -21,8 +19,6 @@ class ParadoxLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisationPrope
 	 */
 	class SearchParameters(
 		val name: String?,
-		val project: Project,
-		val scope: SearchScope,
 		override val selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
 	) : ParadoxSearchParameters<ParadoxLocalisationProperty>
 	
@@ -36,11 +32,9 @@ class ParadoxLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisationPrope
 		@JvmStatic
 		fun search(
 			name: String,
-			project: Project,
-			scope: SearchScope = GlobalSearchScope.allScope(project),
-			selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
+			selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
 		): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
-			return INSTANCE.createParadoxQuery(SearchParameters(name, project, scope, selector))
+			return INSTANCE.createParadoxQuery(SearchParameters(name, selector))
 		}
 		
 		/**
@@ -48,28 +42,25 @@ class ParadoxLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisationPrope
 		 */
 		@JvmStatic
 		fun search(
-			project: Project,
-			scope: SearchScope = GlobalSearchScope.allScope(project),
-			selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
+			selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
 		): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
-			return INSTANCE.createParadoxQuery(SearchParameters(null, project, scope, selector))
+			return INSTANCE.createParadoxQuery(SearchParameters(null, selector))
 		}
 		
 		/**
 		 * 基于本地化名字索引，根据关键字和推断的语言区域遍历所有的本地化（localisation），并按照本地化的键进行去重。
-		 * @see preferredParadoxLocale
 		 */
 		@JvmStatic
 		fun processVariants(
-			project: Project,
-			scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-			selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector(),
+			selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
 			processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
 		): Boolean {
 			//如果索引未完成
+			val project = selector.project
 			if(DumbService.isDumb(project)) return true
 			
 			//保证返回结果的名字的唯一性
+			val scope = selector.scope
 			return ParadoxLocalisationNameIndex.processFirstElementByKeys(project, scope,
 				predicate = { element -> selector.selectAll(element) },
 				getDefaultValue = { selector.defaultValue },

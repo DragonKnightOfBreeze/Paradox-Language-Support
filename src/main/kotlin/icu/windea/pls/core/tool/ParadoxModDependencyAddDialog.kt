@@ -21,8 +21,10 @@ class ParadoxModDependencyAddDialog(
     private val tableView: TableView<ParadoxModDependencySettingsState>,
     private val tableModel: ParadoxModDependenciesTableModel,
 ) : DialogWrapper(project, tableView, true, IdeModalityType.PROJECT) {
+    val settings = tableModel.settings
+    
     val graph = PropertyGraph()
-    val gameTypeProperty = graph.property(tableModel.settings.gameType ?: getSettings().defaultGameType)
+    val gameTypeProperty = graph.property(settings.gameType ?: getSettings().defaultGameType)
     val modDirectoryProperty = graph.property("")
     
     val gameType by gameTypeProperty
@@ -32,8 +34,6 @@ class ParadoxModDependencyAddDialog(
         title = PlsBundle.message("mod.dependency.add")
         init()
     }
-    
-    //TODO 可以选择添加到的位置：最先/最后/最后但在当前模组之前（默认选项）
     
     override fun createCenterPanel(): JComponent {
         return panel {
@@ -57,9 +57,6 @@ class ParadoxModDependencyAddDialog(
                     .align(Align.FILL)
                     .validationOnApply { validateModDirectory() }
             }
-            row {
-                
-            }
         }
     }
     
@@ -70,19 +67,41 @@ class ParadoxModDependencyAddDialog(
             ?: return error(PlsBundle.message("mod.dependency.add.modDirectory.error.2"))
         val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile)
         if(rootInfo !is ParadoxModRootInfo) {
-            return error(PlsBundle.message("mod.dependency.add.modDirectory..error.3"))
+            return error(PlsBundle.message("mod.dependency.add.modDirectory.error.3"))
+        }
+        val currentModDirectory = settings.castOrNull<ParadoxModDependencySettingsState>()?.modDirectory
+        if(currentModDirectory != null && modDirectory == currentModDirectory) {
+            return error(PlsBundle.message("mod.dependency.add.modDirectory.error.4"))
         }
         return null
     }
     
     override fun doOKAction() {
         //这里点击确定按钮后会弹出模组依赖配置对话框，以便预览模组配置，再次点击确定按钮才会添加到模组依赖列表
-        val settings = ParadoxModDependencySettingsState()
-        settings.modDirectory = modDirectory
-        settings.selected = true
-        val editDialog = ParadoxModDependencySettingsDialog(project, settings, this.contentPanel)
+        val newSettings = ParadoxModDependencySettingsState()
+        newSettings.modDirectory = modDirectory
+        newSettings.selected = true
+        
+        val editDialog = ParadoxModDependencySettingsDialog(project, newSettings, this.contentPanel)
         if(!editDialog.showAndGet()) return
-        tableModel.addRow(settings)
+        
+        //如果最后一个模组依赖是当前模组自身，需要插入到它之前，否则直接添加到最后
+        if(isCurrentAtLast()) {
+            tableModel.addRow(newSettings)
+        } else {
+            tableModel.insertRow(tableModel.rowCount - 1, newSettings)
+        }
+        
         super.doOKAction()
+    }
+    
+    private fun isCurrentAtLast(): Boolean {
+        val rowCount = tableModel.rowCount
+        if(rowCount == 0) return false
+        val currentModDirectory = settings.castOrNull<ParadoxModDependencySettingsState>()?.modDirectory
+        if(currentModDirectory == null) return false
+        val lastRow = tableModel.getItem(rowCount - 1)
+        val lastModDirectory = lastRow.modDirectory
+        return currentModDirectory == lastModDirectory
     }
 }

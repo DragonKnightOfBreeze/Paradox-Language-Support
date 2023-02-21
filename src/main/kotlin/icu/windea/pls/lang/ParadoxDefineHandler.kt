@@ -26,9 +26,9 @@ object ParadoxDefineHandler {
         val gameType = selectGameType(contextElement) ?: return null
         ProgressManager.checkCanceled()
         try {
-            val selector = fileSelector().gameType(gameType).preferRootFrom(contextElement)
+            val selector = fileSelector(project).gameType(gameType).preferRootFrom(contextElement)
             var result: Any? = null
-            ParadoxFilePathSearch.search(project, definePathExpression, selector = selector)
+            ParadoxFilePathSearch.search(definePathExpression, selector = selector)
                 .processQuery {
                     val file = it.toPsiFile<ParadoxScriptFile>(project) ?: return@processQuery true
                     val defines = getDefinesFromFile(file)

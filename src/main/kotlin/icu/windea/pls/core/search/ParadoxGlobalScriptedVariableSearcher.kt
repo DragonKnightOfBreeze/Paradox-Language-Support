@@ -1,7 +1,6 @@
 package icu.windea.pls.core.search
 
 import com.intellij.openapi.application.*
-import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
@@ -13,7 +12,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxGlobalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxGlobalScriptedVariableSearch.SearchParameters>() {
 	override fun processQuery(queryParameters: ParadoxGlobalScriptedVariableSearch.SearchParameters, consumer: Processor<in ParadoxScriptScriptedVariable>) {
 		val project = queryParameters.project
-		val scope = GlobalSearchScopeUtil.toGlobalSearchScope(queryParameters.scope, project)
+		val scope = queryParameters.selector.scope
 		if(queryParameters.name == null) {
 			//查找所有封装变量
 			ParadoxScriptedVariableNameIndex.processAllElementsByKeys(project, scope) { _, it ->

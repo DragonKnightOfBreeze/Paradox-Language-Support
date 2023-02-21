@@ -29,8 +29,8 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
 		
 		val element = parameters.position
 		val project = parameters.originalFile.project
-		val selector = scriptedVariableSelector().gameTypeFrom(element).preferRootFrom(element).distinctByName()
-		val globalQuery = ParadoxGlobalScriptedVariableSearch.search(project, selector = selector)
+		val selector = scriptedVariableSelector(project).gameTypeFrom(element).preferRootFrom(element).distinctByName()
+		val globalQuery = ParadoxGlobalScriptedVariableSearch.search(selector = selector)
 		globalQuery.processQuery { processScriptedVariable(it, result) }
 	}
 	

@@ -93,7 +93,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 							if(nameToDistinct.contains(info.name + "@" + locale)) continue
 							if(info.primary && hasPrimaryLocales.contains(locale)) continue
 							//多个位置表达式无法解析时，使用第一个
-							val selector = localisationSelector().gameTypeFrom(definition).locale(locale)
+							val selector = localisationSelector(project).gameTypeFrom(definition).locale(locale)
 							val resolved = info.locationExpression.resolve(definition, definitionInfo, project, selector = selector)
 							if(resolved != null) {
 								if(resolved.message != null) continue //skip if it's dynamic or inlined
@@ -164,9 +164,9 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			val keys = ParadoxModifierHandler.getModifierNameKeys(name, configGroup)
 			val missingLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
 			for(locale in inspection.localeSet) {
-				val selector = localisationSelector().gameType(configGroup.gameType).locale(locale)
+				val selector = localisationSelector(project).gameType(configGroup.gameType).locale(locale)
 				val localisation = keys.firstNotNullOfOrNull {
-					ParadoxLocalisationSearch.search(it, configGroup.project, selector = selector).findFirst()
+					ParadoxLocalisationSearch.search(it, selector = selector).findFirst()
 				}
 				if(localisation == null) missingLocales.add(locale)
 			}

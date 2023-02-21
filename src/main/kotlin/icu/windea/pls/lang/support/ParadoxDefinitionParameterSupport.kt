@@ -72,8 +72,8 @@ class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val definitionType = configExpression.value ?: return false
         val definitionName = element.name
         val configGroup = config.info.configGroup
-        val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(element)
-        ParadoxDefinitionSearch.search(definitionName, definitionType, configGroup.project, selector = selector)
+        val selector = definitionSelector(project).gameType(configGroup.gameType).preferRootFrom(element)
+        ParadoxDefinitionSearch.search(definitionName, definitionType, selector = selector)
             .processQuery(processor)
         return true
     }
