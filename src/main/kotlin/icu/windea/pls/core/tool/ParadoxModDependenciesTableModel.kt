@@ -20,13 +20,13 @@ class ParadoxModDependenciesTableModel(
     modDependencies: MutableList<ParadoxModDependencySettingsState>
 ) : ListTableModel<ParadoxModDependencySettingsState>() {
     init {
-        columnInfos = arrayOf(SelectedItem, NameItem, VersionItem)
+        columnInfos = arrayOf(EnabledItem, NameItem, VersionItem)
         items = modDependencies
     }
     
     //注意这里的排序并不会实际改变modDependencies中模组依赖的排序
     
-    object SelectedItem : ColumnInfo<ParadoxModDependencySettingsState, Boolean>("      ") {
+    object EnabledItem : ColumnInfo<ParadoxModDependencySettingsState, Boolean>(PlsBundle.message("mod.dependencies.column.name.enabled")) {
         const val columnIndex = 0
         
         override fun valueOf(item: ParadoxModDependencySettingsState): Boolean {
@@ -88,7 +88,7 @@ fun createModDependenciesPanel(project: Project, settings: ParadoxGameOrModSetti
     tableView.selectionModel.setSelectionInterval(0, 0)
     tableView.surrendersFocusOnKeystroke = true
     //调整列的宽度
-    tableView.setFixedColumnWidth(ParadoxModDependenciesTableModel.SelectedItem.columnIndex, ParadoxModDependenciesTableModel.SelectedItem.name)
+    tableView.setFixedColumnWidth(ParadoxModDependenciesTableModel.EnabledItem.columnIndex, ParadoxModDependenciesTableModel.EnabledItem.name)
     tableView.tableHeader.columnModel.getColumn(ParadoxModDependenciesTableModel.NameItem.columnIndex).preferredWidth = 10000 // consume all available space
     tableView.setFixedColumnWidth(ParadoxModDependenciesTableModel.VersionItem.columnIndex, "x.y.zz      ")
     //快速搜索

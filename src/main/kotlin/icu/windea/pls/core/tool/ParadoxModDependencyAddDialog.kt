@@ -57,7 +57,7 @@ class ParadoxModDependencyAddDialog(
                     .align(Align.FILL)
                     .validationOnApply { validateModDirectory() }
             }
-            row { 
+            row {
                 
             }
         }
@@ -82,11 +82,7 @@ class ParadoxModDependencyAddDialog(
         settings.selected = true
         val editDialog = ParadoxModDependencySettingsDialog(project, settings, this.contentPanel)
         if(!editDialog.showAndGet()) return
-        doAdd(settings)
-        super.doOKAction()
-    }
-    
-    private fun doAdd(settings: ParadoxModDependencySettingsState) {
         tableModel.addRow(settings)
+        super.doOKAction()
     }
 }
