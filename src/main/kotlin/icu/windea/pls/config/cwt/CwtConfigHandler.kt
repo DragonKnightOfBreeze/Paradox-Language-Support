@@ -9,7 +9,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
@@ -319,9 +318,9 @@ object CwtConfigHandler {
                 if(complexEnumConfig != null) {
                     if(BitUtil.isSet(matchType, CwtConfigMatchType.COMPLEX_ENUM_VALUE)) {
                         val searchScope = complexEnumConfig.searchScopeType
-                        val selector = complexEnumValueSelector(project).gameType(gameType).withSearchScopeType(searchScope, element)
-                        val search = ParadoxComplexEnumValueSearch.search(name, enumName, selector)
-                        return search.findFirst() != null
+                        val selector = complexEnumValueSelector(project, element)
+                            .withSearchScopeType(searchScope, element)
+                        return ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
                     }
                 }
                 return false
@@ -908,8 +907,10 @@ object CwtConfigHandler {
                     ProgressManager.checkCanceled()
                     val typeFile = complexEnumConfig.pointer.containingFile
                     val searchScope = complexEnumConfig.searchScopeType
-                    val selector = complexEnumValueSelector(project).gameType(gameType).withSearchScopeType(searchScope, contextElement).preferRootFrom(contextElement).distinctByName()
-                    
+                    val selector = complexEnumValueSelector(project, contextElement)
+                        .withSearchScopeType(searchScope, contextElement)
+                        .preferSameRoot()
+                        .distinctByName()
                     ParadoxComplexEnumValueSearch.searchAll(enumName, selector).processQuery { complexEnum ->
                         val name = complexEnum.value
                         val builder = ParadoxScriptExpressionLookupElementBuilder.create(complexEnum, name)
@@ -1664,7 +1665,9 @@ object CwtConfigHandler {
                 val complexEnumConfig = configGroup.complexEnums[enumName]
                 if(complexEnumConfig != null) {
                     val searchScope = complexEnumConfig.searchScopeType
-                    val selector = complexEnumValueSelector(project).gameType(gameType).withSearchScopeType(searchScope, element).preferRootFrom(element, exact)
+                    val selector = complexEnumValueSelector(project, element)
+                        .withSearchScopeType(searchScope, element)
+                        .preferSameRoot(exact)
                     return ParadoxComplexEnumValueSearch.search(name, enumName, selector).find()
                 }
                 return null
@@ -1800,7 +1803,9 @@ object CwtConfigHandler {
                 val complexEnumConfig = configGroup.complexEnums[enumName]
                 if(complexEnumConfig != null) {
                     val searchScope = complexEnumConfig.searchScopeType
-                    val selector = complexEnumValueSelector(project).gameType(gameType).withSearchScopeType(searchScope, element).preferRootFrom(element)
+                    val selector = complexEnumValueSelector(project, element)
+                        .withSearchScopeType(searchScope, element)
+                        .preferSameRoot()
                     return ParadoxComplexEnumValueSearch.search(name, enumName, selector).findAll()
                 }
                 return emptyList()

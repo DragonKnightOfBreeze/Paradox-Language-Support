@@ -26,10 +26,9 @@ class ParadoxComplexEnumValueImplementationsSearch : QueryExecutor<PsiElement, D
 		val complexEnumValueInfo = runReadAction { sourceElement.complexEnumValueInfo }
 		if(complexEnumValueInfo == null) return true
 		val project = queryParameters.project
-		val gameType = complexEnumValueInfo.gameType ?: return true
 		DumbService.getInstance(project).runReadActionInSmartMode {
-			val selector = complexEnumValueSelector(project).gameType(gameType)
-				.withSearchScope(GlobalSearchScope.allScope(project)) ////使用全部作用域
+			val selector = complexEnumValueSelector(project, sourceElement)
+				.withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
 			ParadoxComplexEnumValueSearch.search(complexEnumValueInfo.name, complexEnumValueInfo.enumName, selector).forEach(consumer)
 		}
 		return true

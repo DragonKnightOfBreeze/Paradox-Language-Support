@@ -17,7 +17,9 @@ open class ChainedParadoxSelector<T>(
     val file = selectFile(context)
     val fileInfo = file?.fileInfo
     val rootInfo = fileInfo?.rootInfo
+    val rootFile = rootInfo?.rootFile 
     val gameType = rootInfo?.gameType
+    
     val settings = when {
         rootInfo is ParadoxGameRootInfo -> getProfilesSettings().gameSettings.get(rootInfo.rootFile.path)
         rootInfo is ParadoxModRootInfo -> getProfilesSettings().modSettings.get(rootInfo.rootFile.path)
@@ -95,8 +97,12 @@ open class ChainedParadoxSelector<T>(
 fun <S : ChainedParadoxSelector<T>, T> S.withSearchScope(scope: GlobalSearchScope) =
     apply { selectors += ParadoxWithSearchScopeSelector(scope) }
 
-fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.withSearchScopeType(searchScopeType: String?, context: T) =
+fun <S : ChainedParadoxSelector<T>, T: PsiElement> S.withSearchScopeType(searchScopeType: String?, context: PsiElement) =
     apply { if(searchScopeType != null) selectors += ParadoxWithSearchScopeTypeSelector(searchScopeType, context) }
+
+@JvmOverloads
+fun <S : ChainedParadoxSelector<T>, T> S.preferSameRoot(condition: Boolean = true) =
+    apply { if(condition && rootFile != null) selectors += ParadoxPreferSameRootFileSelector(rootFile) }
 
 fun <S : ChainedParadoxSelector<T>, T, K> S.distinctBy(keySelector: (T) -> K) =
     apply { selectors += ParadoxDistinctSelector(keySelector) }
@@ -124,18 +130,14 @@ fun <S : ChainedParadoxSelector<T>, T> S.rootFrom(from: Any?) =
 
 @JvmOverloads
 fun <S : ChainedParadoxSelector<T>, T> S.preferRoot(rootFile: VirtualFile?, condition: Boolean = true) =
-    apply { if(rootFile != null && condition) selectors += ParadoxPreferRootFileSelector(rootFile) }
+    apply { if(rootFile != null && condition) selectors += ParadoxPreferSameRootFileSelector(rootFile) }
 
 /**
  * @param from [VirtualFile] | [PsiFile] | [PsiElement]
  */
 @JvmOverloads
 fun <S : ChainedParadoxSelector<T>, T> S.preferRootFrom(from: Any?, condition: Boolean = true) =
-    apply { if(from != null && condition) selectors += ParadoxPreferRootFileSelector(from = from) }
+    apply { }
 
 fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.notSamePosition(element: PsiElement?) =
     filterBy { element == null || !element.isSamePosition(it) }
-
-
-val ChainedParadoxSelector<*>.gameType: ParadoxGameType?
-    get() = selectors.findIsInstance<ParadoxGameTypeSelector<*>>()?.gameType

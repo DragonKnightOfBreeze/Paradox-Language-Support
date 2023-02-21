@@ -25,16 +25,15 @@ class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, Defin
         val name = localisationInfo.name
         if(name.isEmpty()) return true
         val project = queryParameters.project
-        val gameType = localisationInfo.gameType ?: return true
         DumbService.getInstance(project).runReadActionInSmartMode {
             val category = localisationInfo.category
             //这里不需要也无法进行排序
-            //TODO 暂时限定语言区域
-            val selector = localisationSelector(project).gameType(gameType).preferRootFrom(sourceElement).preferLocale(preferredParadoxLocale())
-                .withSearchScope(GlobalSearchScope.allScope(project)) ////使用全部作用域
+            val selector = localisationSelector(project, sourceElement)
+                .preferLocale(preferredParadoxLocale()) //限定语言区域
+                .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
             val localisations = when(category) {
-                ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.search(name, selector = selector).findAll()
-                ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector = selector).findAll()
+                ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.search(name, selector).findAll()
+                ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll()
             }
             localisations.forEach {
                 consumer.process(it)

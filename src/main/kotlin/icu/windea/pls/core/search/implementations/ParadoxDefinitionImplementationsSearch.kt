@@ -27,11 +27,10 @@ class ParadoxDefinitionImplementationsSearch : QueryExecutor<PsiElement, Definit
         if(name.isEmpty()) return true
         val type = definitionInfo.type
         val project = queryParameters.project
-        val gameType = definitionInfo.gameType
         DumbService.getInstance(project).runReadActionInSmartMode {
             //这里不进行排序
-            val selector = definitionSelector(project).gameType(gameType)
-                .withSearchScope(GlobalSearchScope.allScope(project)) ////使用全部作用域
+            val selector = definitionSelector(project, sourceElement)
+                .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
             ParadoxDefinitionSearch.search(name, type, selector).forEach(consumer)
         }
         return true

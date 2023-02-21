@@ -176,7 +176,10 @@ object CwtTemplateExpressionHandler {
                 if(complexEnumConfig != null) {
                     ProgressManager.checkCanceled()
                     val searchScope = complexEnumConfig.searchScopeType
-                    val selector = complexEnumValueSelector(project).gameType(gameType).withSearchScopeType(searchScope, contextElement).preferRootFrom(contextElement).distinctByName()
+                    val selector = complexEnumValueSelector(project, contextElement)
+                        .withSearchScopeType(searchScope, contextElement)
+                        .preferSameRoot()
+                        .distinctByName()
                     ParadoxComplexEnumValueSearch.searchAll(enumName, selector).processQuery { complexEnum ->
                         val name = complexEnum.value
                         doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)

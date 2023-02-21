@@ -9,6 +9,63 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
+interface ParadoxSearchScopeAwareSelector<T> : ParadoxSelector<T> {
+    fun getGlobalSearchScope(): GlobalSearchScope?
+}
+
+class ParadoxWithSearchScopeSelector<T>(
+    val scope: GlobalSearchScope
+) : ParadoxSearchScopeAwareSelector<T> {
+    override fun getGlobalSearchScope(): GlobalSearchScope? {
+        return scope
+    }
+}
+
+class ParadoxWithSearchScopeTypeSelector<T : PsiElement>(
+    val searchScopeType: String,
+    val context: PsiElement
+) : ParadoxSearchScopeAwareSelector<T> {
+    private val root by lazy { findRoot(context) }
+    
+    override fun select(result: T): Boolean {
+        return root == null || root == findRoot(result)
+    }
+    
+    override fun selectAll(result: T): Boolean {
+        return select(result)
+    }
+    
+    fun findRoot(context: PsiElement): PsiElement? {
+        return when(searchScopeType) {
+            "definition" -> context.findParentDefinition()
+            else -> null
+        }
+    }
+    
+    override fun getGlobalSearchScope(): GlobalSearchScope? {
+        return when(searchScopeType) {
+            "definition" -> GlobalSearchScope.fileScope(context.containingFile) //限定在当前文件作用域
+            else -> null
+        }
+    }
+}
+
+class ParadoxPreferSameRootFileSelector<T>(
+    val rootFile: VirtualFile
+) : ParadoxSelector<T> {
+    override fun select(result: T): Boolean {
+        return rootFile == selectRootFile(result)
+    }
+    
+    override fun selectAll(result: T): Boolean {
+        return true
+    }
+    
+    override fun comparator(): Comparator<T> {
+        return complexCompareBy({ it }, { null }, { rootFile == selectRootFile(it) })
+    }
+}
+
 class ParadoxDistinctSelector<T, K>(
     val keySelector: (T) -> K
 ) : ParadoxSelector<T> {
@@ -59,66 +116,6 @@ class ParadoxRootFileSelector<T>(
     
     override fun selectAll(result: T): Boolean {
         return select(result)
-    }
-}
-
-class ParadoxPreferRootFileSelector<T>(
-    rootFile: VirtualFile? = null,
-    from: Any? = null
-) : ParadoxSelector<T> {
-    val rootFile by lazy { rootFile ?: selectRootFile(from) }
-    
-    override fun select(result: T): Boolean {
-        return rootFile == selectRootFile(result)
-    }
-    
-    override fun selectAll(result: T): Boolean {
-        return true
-    }
-    
-    override fun comparator(): Comparator<T> {
-        return complexCompareBy({ it }, { null }, { rootFile == selectRootFile(it) })
-    }
-}
-
-interface ParadoxSearchScopeAwareSelector<T> : ParadoxSelector<T> {
-    fun getGlobalSearchScope(): GlobalSearchScope?
-}
-
-class ParadoxWithSearchScopeSelector<T>(
-    val scope: GlobalSearchScope
-) : ParadoxSearchScopeAwareSelector<T> {
-    override fun getGlobalSearchScope(): GlobalSearchScope? {
-        return scope
-    }
-}
-
-class ParadoxWithSearchScopeTypeSelector<T : PsiElement>(
-    val searchScopeType: String,
-    val context: PsiElement
-) : ParadoxSearchScopeAwareSelector<T> {
-    private val root by lazy { findRoot(context) }
-    
-    override fun select(result: T): Boolean {
-        return root == null || root == findRoot(result)
-    }
-    
-    override fun selectAll(result: T): Boolean {
-        return select(result)
-    }
-    
-    fun findRoot(context: PsiElement): PsiElement? {
-        return when(searchScopeType) {
-            "definition" -> context.findParentDefinition()
-            else -> null
-        }
-    }
-    
-    override fun getGlobalSearchScope(): GlobalSearchScope? {
-        return when(searchScopeType) {
-            "definition" -> GlobalSearchScope.fileScope(context.containingFile) //限定在当前文件作用域
-            else -> null
-        }
     }
 }
 

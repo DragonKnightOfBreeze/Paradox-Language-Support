@@ -3,9 +3,9 @@ package icu.windea.pls.core.selector.chained
 import com.intellij.openapi.project.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptedVariableSelector(project: Project): ChainedParadoxSelector<ParadoxScriptScriptedVariable>(project)
+class ParadoxScriptedVariableSelector(project: Project, context: Any? = null): ChainedParadoxSelector<ParadoxScriptScriptedVariable>(project, context)
 
-fun scriptedVariableSelector(project: Project) = ParadoxScriptedVariableSelector(project)
+fun scriptedVariableSelector(project: Project, context: Any? = null) = ParadoxScriptedVariableSelector(project, context)
 
 fun ParadoxScriptedVariableSelector.distinctByName() =
 	distinctBy { it.name }

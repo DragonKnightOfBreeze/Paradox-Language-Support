@@ -4,9 +4,9 @@ import com.intellij.openapi.project.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxValueSetValueSelector(project: Project): ChainedParadoxSelector<ParadoxScriptString>(project)
+class ParadoxValueSetValueSelector(project: Project, context: Any? = null): ChainedParadoxSelector<ParadoxScriptString>(project, context)
 
-fun valueSetValueSelector(project: Project) = ParadoxValueSetValueSelector(project)
+fun valueSetValueSelector(project: Project, context: Any? = null) = ParadoxValueSetValueSelector(project, context)
 
 fun ParadoxValueSetValueSelector.declarationOnly() =
 	filterBy { !ParadoxValueSetValueHandler.getRead(it) }
