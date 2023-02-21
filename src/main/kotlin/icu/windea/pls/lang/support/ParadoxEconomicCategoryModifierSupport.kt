@@ -38,7 +38,8 @@ class ParadoxEconomicCategoryModifierSupport: ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
         val gameType = configGroup.gameType ?: return false
         if(!isGameTypeSupported(gameType)) return false
-        val selector = definitionSelector(project).gameType(gameType) 
+        val project = configGroup.project
+        val selector = definitionSelector(project, element) 
         var r = false
         ParadoxDefinitionSearch.search("economic_category", selector = selector)
             .processQuery p@{
@@ -60,7 +61,7 @@ class ParadoxEconomicCategoryModifierSupport: ParadoxModifierSupport {
         val project = configGroup.project
         var economicCategoryInfo: ParadoxEconomicCategoryInfo? = null
         var economicCategoryModifierInfo: ParadoxEconomicCategoryModifierInfo? = null
-        val selector = definitionSelector(project).gameType(gameType).preferRootFrom(element)
+        val selector = definitionSelector(project, element).preferSameRoot()
         ParadoxDefinitionSearch.search("economic_category", selector = selector)
             .processQuery p@{
                 val info = ParadoxEconomicCategoryHandler.getInfo(it) ?: return@p true
@@ -86,7 +87,8 @@ class ParadoxEconomicCategoryModifierSupport: ParadoxModifierSupport {
         val configGroup = configGroup
         val gameType = configGroup.gameType ?: return
         if(!isGameTypeSupported(gameType)) return
-        val selector = definitionSelector(project).gameType(gameType).preferRootFrom(element)
+        val project = configGroup.project
+        val selector = definitionSelector(project, element).preferSameRoot()
         ParadoxDefinitionSearch.search("economic_category", selector = selector)
             .processQuery p@{
                 val info = ParadoxEconomicCategoryHandler.getInfo(it) ?: return@p true
@@ -159,7 +161,8 @@ class ParadoxEconomicCategoryModifierSupport: ParadoxModifierSupport {
         if(!isGameTypeSupported(gameType)) return false
     
         val configGroup = definitionInfo.configGroup
-        val selector = definitionSelector(project).gameType(gameType).preferRootFrom(definition)
+        val project = configGroup.project
+        val selector = definitionSelector(project, definition).preferSameRoot()
         val economicCategory = ParadoxDefinitionSearch.search(definitionInfo.name, "economic_category", selector = selector)
             .findFirst()
             ?: return false

@@ -295,7 +295,7 @@ object CwtConfigHandler {
                 if(isParameterAware) return true
                 val typeExpression = configExpression.value ?: return false //invalid cwt config
                 if(BitUtil.isSet(matchType, CwtConfigMatchType.DEFINITION)) {
-                    val selector = definitionSelector(project).gameType(gameType)
+                    val selector = definitionSelector(project, element)
                     return ParadoxDefinitionSearch.search(expression.text, typeExpression, selector = selector).findFirst() != null
                 }
                 return true
@@ -854,7 +854,9 @@ object CwtConfigHandler {
             CwtDataType.Definition -> {
                 val typeExpression = configExpression.value ?: return
                 val tailText = getScriptExpressionTailText(config)
-                val selector = definitionSelector(project).gameType(gameType).preferRootFrom(contextElement).distinctByName()
+                val selector = definitionSelector(project, contextElement)
+                    .preferSameRoot()
+                    .distinctByName()
                 ParadoxDefinitionSearch.search(typeExpression, selector = selector)
                     .processQuery { definition ->
                         val name = definition.definitionInfo?.name ?: return@processQuery true
@@ -1457,7 +1459,9 @@ object CwtConfigHandler {
     
     fun completeScriptedLoc(file: PsiFile, result: CompletionResultSet) {
         val project = file.project
-        val scriptedLocSelector = definitionSelector(project).gameTypeFrom(file).preferRootFrom(file).distinctByName()
+        val scriptedLocSelector = definitionSelector(project, file)
+            .preferSameRoot()
+            .distinctByName()
         val scriptedLocQuery = ParadoxDefinitionSearch.search("scripted_loc", selector = scriptedLocSelector)
         scriptedLocQuery.processQuery { scriptedLoc ->
             val name = scriptedLoc.definitionInfo?.name ?: return@processQuery true //不应该为空
@@ -1560,8 +1564,9 @@ object CwtConfigHandler {
         val namesToDistinct = mutableSetOf<String>()
         
         //整合查找到的所有SV
-        val project = context.originalFile.project
-        val selector = definitionSelector(project).gameType(configGroup.gameType).preferRootFrom(contextElement)
+        val project = originalFile.project
+        val selector = definitionSelector(project, contextElement)
+            .preferSameRoot()
         ParadoxDefinitionSearch.search(svName, "script_value", selector = selector).processQuery p@{ sv ->
             ProgressManager.checkCanceled()
             val parameterContext = sv
@@ -1640,7 +1645,7 @@ object CwtConfigHandler {
             CwtDataType.Definition -> {
                 val name = expression
                 val typeExpression = configExpression.value ?: return null
-                val selector = definitionSelector(project).gameType(gameType).preferRootFrom(element, exact)
+                val selector = definitionSelector(project, element).preferSameRoot(exact)
                 return ParadoxDefinitionSearch.search(name, typeExpression, selector = selector).find()
             }
             CwtDataType.Enum -> {
@@ -1777,7 +1782,7 @@ object CwtConfigHandler {
             CwtDataType.Definition -> {
                 val name = expression
                 val typeExpression = configExpression.value ?: return emptyList()
-                val selector = definitionSelector(project).gameType(gameType).preferRootFrom(element)
+                val selector = definitionSelector(project, element).preferSameRoot()
                 return ParadoxDefinitionSearch.search(name, typeExpression, selector = selector).findAll()
             }
             CwtDataType.Enum -> {

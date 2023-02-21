@@ -150,7 +150,7 @@ object CwtTemplateExpressionHandler {
             }
             CwtDataType.Definition -> {
                 val typeExpression = snippetExpression.value ?: return
-                val selector = definitionSelector(project).gameType(gameType).preferRootFrom(contextElement).distinctByName()
+                val selector = definitionSelector(project, contextElement).preferSameRoot().distinctByName()
                 val definitionQuery = ParadoxDefinitionSearch.search(typeExpression, selector = selector)
                 definitionQuery.processQuery { definition ->
                     val name = definition.definitionInfo?.name ?: return@processQuery true

@@ -89,7 +89,7 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
         val definitions = Collections.synchronizedList(mutableListOf<ParadoxScriptDefinitionElement>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
             runReadAction {
-                val selector = definitionSelector(project).gameTypeFrom(file)
+                val selector = definitionSelector(project, file)
                 //pass main type only
                 val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector = selector).findAll()
                 definitions.addAll(result)

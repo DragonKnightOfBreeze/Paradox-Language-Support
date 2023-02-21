@@ -132,9 +132,8 @@ object ParadoxEconomicCategoryHandler {
     private fun getUseForAiBudgetFromParent(source: String, parent: String?, contextElement: ParadoxScriptProperty): Boolean {
         if(parent == null) return false // no parent > return false
         if(source == parent) return false //recursive parent > invalid, return false
-        val file = contextElement.containingFile ?: return false
-        val project = file.project
-        val selector = definitionSelector(project).gameTypeFrom(file).preferRootFrom(file)
+        val project = contextElement.project
+        val selector = definitionSelector(project, contextElement).preferSameRoot()
         return doGetUseForAiBudgetFromParent(source, parent, project, selector)
     }
     
@@ -149,7 +148,8 @@ object ParadoxEconomicCategoryHandler {
     }
     
     private fun getResources(contextElement: PsiElement): Set<String> {
-        val selector = definitionSelector(project).gameTypeFrom(contextElement)
+        val project = contextElement.project
+        val selector = definitionSelector(project, contextElement)
         return ParadoxDefinitionSearch.search("resource", selector = selector)
             .mapNotNullTo(mutableSetOf()) { it.name }  //it.name is ok
     }
