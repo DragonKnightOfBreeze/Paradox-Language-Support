@@ -1,4 +1,4 @@
-package icu.windea.pls.core.settings
+package icu.windea.pls.core
 
 import com.intellij.navigation.*
 import com.intellij.openapi.application.*
@@ -105,3 +105,4 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
         }
     }
 }
+

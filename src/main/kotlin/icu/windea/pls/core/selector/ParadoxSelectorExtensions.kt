@@ -2,6 +2,7 @@ package icu.windea.pls.core.selector
 
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
@@ -42,8 +43,7 @@ fun selectFile(from:Any?) :VirtualFile? {
 	return when {
 		from == null -> null
 		from is VirtualFile -> from
-		from is PsiFile -> from.virtualFile
-		from is PsiElement -> from.containingFile?.virtualFile
+		from is PsiElement -> PsiUtilCore.getVirtualFile(from)
 		else -> null
 	}
 }

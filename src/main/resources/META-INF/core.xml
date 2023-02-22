@@ -23,7 +23,8 @@
     <!--no configurable for all mod settings, but for single mod settings-->
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxProfilesSettings"/>
     
-    <additionalLibraryRootsProvider implementation="icu.windea.pls.core.settings.ParadoxLibraryProvider"/>
+    <additionalLibraryRootsProvider implementation="icu.windea.pls.core.ParadoxLibraryProvider"/>
+    <moduleRendererFactory implementation="icu.windea.pls.core.ParadoxModuleRenderFactory"/>
     
     <!--suppress PluginXmlValidity -->
     <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider"/>

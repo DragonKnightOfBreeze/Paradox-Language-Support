@@ -1,4 +1,4 @@
-package icu.windea.pls.core.settings
+package icu.windea.pls.core
 
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
