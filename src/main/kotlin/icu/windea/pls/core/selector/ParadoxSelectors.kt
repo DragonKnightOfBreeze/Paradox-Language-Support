@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -16,7 +16,7 @@ interface ParadoxSearchScopeAwareSelector<T> : ParadoxSelector<T> {
 class ParadoxWithSearchScopeSelector<T>(
     val scope: GlobalSearchScope
 ) : ParadoxSearchScopeAwareSelector<T> {
-    override fun getGlobalSearchScope(): GlobalSearchScope? {
+    override fun getGlobalSearchScope(): GlobalSearchScope {
         return scope
     }
 }
@@ -25,7 +25,9 @@ class ParadoxWithSearchScopeTypeSelector<T : PsiElement>(
     val searchScopeType: String,
     val context: PsiElement
 ) : ParadoxSearchScopeAwareSelector<T> {
-    private val root by lazy { findRoot(context) }
+    private val type = ParadoxSearchScopeType(searchScopeType)
+    
+    private val root by lazy { type.findRoot(context) }
     
     override fun select(result: T): Boolean {
         return root == null || root == findRoot(result)
@@ -36,17 +38,11 @@ class ParadoxWithSearchScopeTypeSelector<T : PsiElement>(
     }
     
     fun findRoot(context: PsiElement): PsiElement? {
-        return when(searchScopeType) {
-            "definition" -> context.findParentDefinition()
-            else -> null
-        }
+        return type.findRoot(context)
     }
     
     override fun getGlobalSearchScope(): GlobalSearchScope? {
-        return when(searchScopeType) {
-            "definition" -> GlobalSearchScope.fileScope(context.containingFile) //限定在当前文件作用域
-            else -> null
-        }
+        return type.getGlobalSearchScope(context)
     }
 }
 
@@ -86,36 +82,6 @@ class ParadoxFilterSelector<T>(
     
     override fun selectAll(result: T): Boolean {
         return predicate(result)
-    }
-}
-
-class ParadoxGameTypeSelector<T>(
-    gameType: ParadoxGameType? = null,
-    from: Any? = null
-) : ParadoxSelector<T> {
-    val gameType by lazy { gameType ?: selectGameType(from) }
-    
-    override fun select(result: T): Boolean {
-        return gameType == selectGameType(result)
-    }
-    
-    override fun selectAll(result: T): Boolean {
-        return select(result)
-    }
-}
-
-class ParadoxRootFileSelector<T>(
-    rootFile: VirtualFile? = null,
-    from: Any? = null
-) : ParadoxSelector<T> {
-    val rootFile by lazy { rootFile ?: selectRootFile(from) }
-    
-    override fun select(result: T): Boolean {
-        return rootFile == selectRootFile(result)
-    }
-    
-    override fun selectAll(result: T): Boolean {
-        return select(result)
     }
 }
 

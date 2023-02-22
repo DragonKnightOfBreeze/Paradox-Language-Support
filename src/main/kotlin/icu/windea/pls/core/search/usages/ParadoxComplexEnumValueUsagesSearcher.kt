@@ -33,7 +33,8 @@ class ParadoxComplexEnumValueUsagesSearcher : QueryExecutorBase<PsiReference, Re
 			var useScope = queryParameters.effectiveSearchScope
 			//需要特别处理指定了searchScope的情况
 			if(complexEnumConfig.searchScopeType != null) {
-				val globalSearchScope = ParadoxSearchScope(complexEnumConfig.searchScopeType).getGlobalSearchScope(target)
+				val type = ParadoxSearchScopeType(complexEnumConfig.searchScopeType)
+				val globalSearchScope = type.getGlobalSearchScope(target)
 				if(globalSearchScope != null) {
 					useScope = useScope.intersectWith(globalSearchScope)
 				}

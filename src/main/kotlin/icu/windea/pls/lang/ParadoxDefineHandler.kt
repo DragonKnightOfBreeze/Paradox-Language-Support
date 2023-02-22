@@ -26,7 +26,7 @@ object ParadoxDefineHandler {
         val gameType = selectGameType(contextElement) ?: return null
         ProgressManager.checkCanceled()
         try {
-            val selector = fileSelector(project).gameType(gameType).preferRootFrom(contextElement)
+            val selector = fileSelector(project, contextElement).preferSameRoot()
             var result: Any? = null
             ParadoxFilePathSearch.search(definePathExpression, selector = selector)
                 .processQuery {

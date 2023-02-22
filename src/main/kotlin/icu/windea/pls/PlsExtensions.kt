@@ -273,7 +273,7 @@ private fun resolveDefinitionLink(linkWithoutPrefix: String, sourceElement: PsiE
     val typeExpression = tokens.getOrNull(1) ?: return null
     val name = tokens.getOrNull(2) ?: return null
     val project = sourceElement.project
-    val selector = definitionSelector(project).gameType(gameType).preferRootFrom(sourceElement)
+    val selector = definitionSelector(project, sourceElement).preferSameRoot()
     return ParadoxDefinitionSearch.search(name, typeExpression, selector).find()
 }
 
@@ -284,7 +284,7 @@ private fun resolveLocalisationLink(linkWithoutPrefix: String, sourceElement: Ps
     val gameType = tokens.getOrNull(0)?.let { ParadoxGameType.resolve(it) } ?: return null
     val name = tokens.getOrNull(1) ?: return null
     val project = sourceElement.project
-    val selector = localisationSelector(project).gameType(gameType).preferRootFrom(sourceElement).preferLocale(sourceElement.localeConfig)
+    val selector = localisationSelector(project, sourceElement).preferSameRoot().preferLocale(sourceElement.localeConfig)
     return ParadoxLocalisationSearch.search(name, selector = selector).find()
 }
 
@@ -294,7 +294,7 @@ private fun resolveFilePathLink(linkWithoutPrefix: String, sourceElement: PsiEle
     val gameType = tokens.getOrNull(0)?.let { ParadoxGameType.resolve(it) } ?: return null
     val filePath = tokens.getOrNull(1) ?: return null
     val project = sourceElement.project
-    val selector = fileSelector(project).gameType(gameType).preferRootFrom(sourceElement)
+    val selector = fileSelector(project, sourceElement).preferSameRoot()
     return ParadoxFilePathSearch.search(filePath, selector = selector).find()
         ?.toPsiFile(project)
 }
@@ -340,7 +340,7 @@ fun StringBuilder.appendDefinitionLink(gameType: ParadoxGameType, name: String, 
     //如果name为空字符串，需要特殊处理
     if(name.isEmpty()) return append(PlsConstants.unresolvedString)
     //如果可以被解析为定义，则显示链接
-    val isResolved = resolved == true || (resolved == null && ParadoxDefinitionSearch.search(name, null, definitionSelector(context.project).gameTypeFrom(context)).findFirst() != null)
+    val isResolved = resolved == true || (resolved == null && ParadoxDefinitionSearch.search(name, null, definitionSelector(context.project, context)).findFirst() != null)
     if(isResolved) return appendPsiLink("$definitionLinkPrefix${gameType.id}/$typeExpression/$name", name)
     //否则显示未解析的链接
     return appendUnresolvedLink(name)
@@ -350,7 +350,7 @@ fun StringBuilder.appendLocalisationLink(gameType: ParadoxGameType, name: String
     //如果name为空字符串，需要特殊处理
     if(name.isEmpty()) return append(PlsConstants.unresolvedString)
     //如果可以被解析为本地化，则显示链接
-    val isResolved = resolved == true || resolved == null && ParadoxLocalisationSearch.search(name, selector = localisationSelector(context.project).gameTypeFrom(context)).findFirst() != null
+    val isResolved = resolved == true || resolved == null && ParadoxLocalisationSearch.search(name, localisationSelector(context.project, context)).findFirst() != null
     if(isResolved) return appendPsiLink("$localisationLinkPrefix${gameType.id}/$name", name)
     //否则显示未解析的链接
     return appendUnresolvedLink(name)
@@ -358,7 +358,7 @@ fun StringBuilder.appendLocalisationLink(gameType: ParadoxGameType, name: String
 
 fun StringBuilder.appendFilePathLink(text: String, gameType: ParadoxGameType, filePath: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
     //如果可以定位到绝对路径，则显示链接
-    val isResolved = resolved == true || resolved == null && ParadoxFilePathSearch.search(filePath, selector = fileSelector(context.project).gameTypeFrom(context)).findFirst() != null
+    val isResolved = resolved == true || resolved == null && ParadoxFilePathSearch.search(filePath, selector = fileSelector(context.project, context)).findFirst() != null
     if(isResolved) return appendPsiLink("$filePathLinkPrefix${gameType.id}/$filePath", text)
     //否则显示未解析的链接
     return appendUnresolvedLink(filePath)

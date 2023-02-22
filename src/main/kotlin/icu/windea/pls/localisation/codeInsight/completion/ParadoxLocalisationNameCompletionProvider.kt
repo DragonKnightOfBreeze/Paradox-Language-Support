@@ -25,7 +25,8 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
 		
 		//提示localisation或者synced_localisation
 		//排除正在输入的那一个
-		val selector = localisationSelector(project).gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale())
+		val selector = localisationSelector(project, file).preferSameRoot()
+			.preferLocale(preferredParadoxLocale())
 			.notSamePosition(element)
 			.distinctByName()
 		val processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean = processor@{

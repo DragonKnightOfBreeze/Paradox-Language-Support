@@ -198,7 +198,7 @@ object CwtTemplateExpressionHandler {
                     doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                 }
                 ProgressManager.checkCanceled()
-                val selector = valueSetValueSelector(project).gameType(gameType)
+                val selector = valueSetValueSelector(project, contextElement)
                     .notSamePosition(contextElement)
                     .distinctByValue()
                 val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, selector = selector)

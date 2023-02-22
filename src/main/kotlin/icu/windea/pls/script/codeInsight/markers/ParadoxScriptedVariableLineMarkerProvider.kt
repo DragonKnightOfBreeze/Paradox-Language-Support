@@ -9,7 +9,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.selector.chained.*
 import icu.windea.pls.script.psi.*
 
@@ -31,13 +30,12 @@ class ParadoxScriptedVariableLineMarkerProvider : RelatedItemLineMarkerProvider(
 			append(PlsDocBundle.message("prefix.scriptedVariable")).append(" <b>@").append(name.escapeXml().orAnonymous()).append("</b>")
 		}
 		val project = element.project
-		val gameType = selectGameType(element) ?: return
-		val selector = scriptedVariableSelector(project).gameType(gameType).preferRootFrom(element)
+		val selector = scriptedVariableSelector(project, element).preferSameRoot()
 		val targets = mutableSetOf<ParadoxScriptScriptedVariable>()
 		//这里一般来说只会带上当前封装变量自身
-		ParadoxLocalScriptedVariableSearch.search(name, element, selector = selector).findAll().let { targets.addAll(it) }
+		ParadoxLocalScriptedVariableSearch.search(name, element, selector).findAll().let { targets.addAll(it) }
 		//查找全局的
-		ParadoxGlobalScriptedVariableSearch.search(name, selector = selector).findAll().let { targets.addAll(it) }
+		ParadoxGlobalScriptedVariableSearch.search(name, selector).findAll().let { targets.addAll(it) }
 		if(targets.isEmpty()) return
 		val locationElement = element.scriptedVariableName.variableNameId
 		val lineMarkerInfo = createNavigationGutterIconBuilder(icon) { createGotoRelatedItem(targets) }

@@ -169,14 +169,15 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		ProgressManager.checkCanceled()
 		val contextElement = referenceElement
 		val gameType = configGroup.gameType ?: return
+		val project = configGroup.project
 		val nameKeys = ParadoxModifierHandler.getModifierNameKeys(name, configGroup)
 		val localisation = nameKeys.firstNotNullOfOrNull {
-			val selector = localisationSelector(project).gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
+			val selector = localisationSelector(project, contextElement).preferSameRoot().preferLocale(preferredParadoxLocale())
 			ParadoxLocalisationSearch.search(it, selector = selector).find()
 		}
 		val descKeys = ParadoxModifierHandler.getModifierDescKeys(name, configGroup)
 		val descLocalisation = descKeys.firstNotNullOfOrNull {
-			val descSelector = localisationSelector(project).gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
+			val descSelector = localisationSelector(project, contextElement).preferSameRoot().preferLocale(preferredParadoxLocale())
 			ParadoxLocalisationSearch.search(it, selector = descSelector).find()
 		}
 		//如果没找到的话，不要在文档中显示相关信息
@@ -207,9 +208,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		ProgressManager.checkCanceled()
 		val contextElement = referenceElement
 		val gameType = configGroup.gameType ?: return
+		val project = configGroup.project
 		val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name, configGroup)
 		val (iconPath, iconFile) = iconPaths.firstNotNullOfOrNull {
-			val iconSelector = fileSelector(project).gameType(gameType).preferRootFrom(contextElement)
+			val iconSelector = fileSelector(project, contextElement).preferSameRoot()
 			it to ParadoxFilePathSearch.search(it, selector = iconSelector).find()
 		} ?: (null to null)
 		//如果没找到的话，不要在文档中显示相关信息

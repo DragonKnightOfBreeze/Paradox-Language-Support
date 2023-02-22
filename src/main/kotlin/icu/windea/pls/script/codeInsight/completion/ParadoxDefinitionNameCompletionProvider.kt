@@ -43,7 +43,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 			context.put(PlsCompletionKeys.configKey, config)
 			context.put(PlsCompletionKeys.isKeyKey, isKey)
 			//排除正在输入的那一个
-			val selector = definitionSelector(project).gameTypeFrom(file).preferRootFrom(file)
+			val selector = definitionSelector(project, file).preferSameRoot()
 				.filterBy { rootKey == null || (it is ParadoxScriptProperty && it.name.equals(rootKey, true))}
 				.notSamePosition(currentElement)
 				.distinctByName()

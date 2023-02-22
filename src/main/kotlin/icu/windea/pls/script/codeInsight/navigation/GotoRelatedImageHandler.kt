@@ -58,7 +58,7 @@ class GotoRelatedImageHandler : GotoTargetHandler() {
                 runReadAction {
                     val iconPaths = ParadoxModifierHandler.getModifierIconPaths(modifierElement.name, configGroup)
                     val iconFiles = iconPaths.firstNotNullOfOrNull {
-                        val iconSelector = fileSelector(project).gameType(gameType).preferRootFrom(element)
+                        val iconSelector = fileSelector(project, element).preferSameRoot()
                         val result = ParadoxFilePathSearch.search(it, selector = iconSelector).findAll()
                         result.takeIfNotEmpty()
                     }

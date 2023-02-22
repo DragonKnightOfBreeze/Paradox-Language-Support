@@ -129,7 +129,7 @@ class ParadoxDefinitionInfo(
 		if(primaryLocalisationConfigs.isEmpty()) return null //没有或者CWT规则不完善
 		return runReadAction {
 			for(primaryLocalisationConfig in primaryLocalisationConfigs) {
-				val selector = localisationSelector(project).gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
+				val selector = localisationSelector(project, element).preferSameRoot().preferLocale(preferredParadoxLocale())
 				val resolved = primaryLocalisationConfig.locationExpression.resolve(element, this, configGroup.project, selector = selector) ?: continue
 				if(resolved.localisation != null)  return@runReadAction resolved.localisation
 			}

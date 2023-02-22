@@ -32,7 +32,7 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 				append("$category <b>").append(name).append("</b>")
 			}
 			val project = element.project
-			val selector = localisationSelector(project).gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
+			val selector = localisationSelector(project, element).preferSameRoot().preferLocale(preferredParadoxLocale())
 			val targets = when(category) {
 				Localisation -> ParadoxLocalisationSearch.search(name, selector = selector).findAll()
 				SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector = selector).findAll()

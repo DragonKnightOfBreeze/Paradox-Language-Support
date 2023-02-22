@@ -254,7 +254,7 @@ object CwtConfigHandler {
                 if(isStatic) return true
                 if(isParameterAware) return true
                 if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
-                    val selector = localisationSelector(project).gameType(gameType)
+                    val selector = localisationSelector(project, element)
                     return ParadoxLocalisationSearch.search(expression.text, selector = selector).findFirst() != null
                 }
                 return true
@@ -264,7 +264,7 @@ object CwtConfigHandler {
                 if(isStatic) return true
                 if(isParameterAware) return true
                 if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
-                    val selector = localisationSelector(project).gameType(gameType)
+                    val selector = localisationSelector(project, element)
                     return ParadoxSyncedLocalisationSearch.search(expression.text, selector = selector).findFirst() != null
                 }
                 return true
@@ -275,7 +275,7 @@ object CwtConfigHandler {
                 if(isStatic) return true
                 if(isParameterAware) return true
                 if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
-                    val selector = localisationSelector(project).gameType(gameType)
+                    val selector = localisationSelector(project, element)
                     return ParadoxLocalisationSearch.search(expression.text, selector = selector).findFirst() != null
                 }
                 return true
@@ -455,7 +455,7 @@ object CwtConfigHandler {
                     if(isParameterAware) return true
                     if(BitUtil.isSet(matchType, CwtConfigMatchType.FILE_PATH)) {
                         val pathReference = expression.text.normalizePath()
-                        val selector = fileSelector(project).gameType(gameType)
+                        val selector = fileSelector(project, element)
                         return ParadoxFilePathSearch.search(pathReference, configExpression, selector = selector).findFirst() != null
                     }
                     return true
@@ -804,7 +804,7 @@ object CwtConfigHandler {
             CwtDataType.Localisation -> {
                 val tailText = getScriptExpressionTailText(config)
                 //这里selector不需要指定去重
-                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
+                val selector = localisationSelector(project, contextElement).preferSameRoot().preferLocale(preferredParadoxLocale())
                 ParadoxLocalisationSearch.processVariants(selector = selector) { localisation ->
                     val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
                     val typeFile = localisation.containingFile
@@ -820,7 +820,7 @@ object CwtConfigHandler {
             CwtDataType.SyncedLocalisation -> {
                 val tailText = getScriptExpressionTailText(config)
                 //这里selector不需要指定去重
-                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
+                val selector = localisationSelector(project, contextElement).preferSameRoot().preferLocale(preferredParadoxLocale())
                 ParadoxSyncedLocalisationSearch.processVariants(selector = selector) { syncedLocalisation ->
                     val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
                     val typeFile = syncedLocalisation.containingFile
@@ -837,7 +837,7 @@ object CwtConfigHandler {
                 if(quoted) return
                 val tailText = getScriptExpressionTailText(config)
                 //这里selector不需要指定去重
-                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
+                val selector = localisationSelector(project, contextElement).preferSameRoot().preferLocale(preferredParadoxLocale())
                 ParadoxLocalisationSearch.processVariants(selector = selector) { localisation ->
                     val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
                     val typeFile = localisation.containingFile
@@ -1020,7 +1020,7 @@ object CwtConfigHandler {
                         else -> emptySet()
                     }
                     //仅提示匹配file_extensions选项指定的扩展名的，如果存在
-                    val selector = fileSelector(project).gameType(gameType).preferRootFrom(contextElement)
+                    val selector = fileSelector(project, contextElement).preferSameRoot()
                         .withFileExtensions(fileExtensions)
                         .distinctByFilePath()
                     ParadoxFilePathSearch.search(configExpression, selector = selector)
@@ -1342,7 +1342,7 @@ object CwtConfigHandler {
             ProgressManager.checkCanceled()
             val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
             val contextElement = contextElement
-            val selector = valueSetValueSelector(project).gameType(gameType)
+            val selector = valueSetValueSelector(project, contextElement)
                 .notSamePosition(contextElement)
                 .distinctByValue()
             val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, selector = selector)
@@ -1428,7 +1428,9 @@ object CwtConfigHandler {
     
     fun completeEventTarget(file: PsiFile, result: CompletionResultSet) {
         val project = file.project
-        val eventTargetSelector = valueSetValueSelector(project).gameTypeFrom(file).preferRootFrom(file).distinctByValue()
+        val eventTargetSelector = valueSetValueSelector(project, file)
+            .preferSameRoot()
+            .distinctByValue()
         val eventTargetQuery = ParadoxValueSetValueSearch.search("event_target", selector = eventTargetSelector)
         eventTargetQuery.processQuery { eventTarget ->
             val value = ParadoxValueSetValueHandler.getName(eventTarget.value) ?: return@processQuery true
@@ -1442,7 +1444,9 @@ object CwtConfigHandler {
             true
         }
         
-        val globalEventTargetSelector = valueSetValueSelector(project).gameTypeFrom(file).preferRootFrom(file).distinctByValue()
+        val globalEventTargetSelector = valueSetValueSelector(project, file)
+            .preferSameRoot()
+            .distinctByValue()
         val globalEventTargetQuery = ParadoxValueSetValueSearch.search("global_event_target", selector = globalEventTargetSelector)
         globalEventTargetQuery.processQuery { globalEventTarget ->
             val value = ParadoxValueSetValueHandler.getName(globalEventTarget) ?: return@processQuery true
@@ -1480,7 +1484,7 @@ object CwtConfigHandler {
     fun completeVariable(context: ProcessingContext, result: CompletionResultSet) {
         val file = context.originalFile.project
         val project = file
-        val variableSelector = valueSetValueSelector(project).gameTypeFrom(file).preferRootFrom(file).distinctByValue()
+        val variableSelector = valueSetValueSelector(project, file).preferSameRoot().distinctByValue()
         val variableQuery = ParadoxValueSetValueSearch.search("variable", selector = variableSelector)
         variableQuery.processQuery { variable ->
             val value = ParadoxValueSetValueHandler.getName(variable) ?: return@processQuery true
@@ -1618,24 +1622,24 @@ object CwtConfigHandler {
             }
             CwtDataType.Localisation -> {
                 val name = expression
-                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element, exact).preferLocale(preferredParadoxLocale(), exact)
+                val selector = localisationSelector(project, element).preferSameRoot(exact).preferLocale(preferredParadoxLocale(), exact)
                 return ParadoxLocalisationSearch.search(name, selector = selector).find()
             }
             CwtDataType.SyncedLocalisation -> {
                 val name = expression
-                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element, exact).preferLocale(preferredParadoxLocale(), exact)
+                val selector = localisationSelector(project, element).preferSameRoot(exact).preferLocale(preferredParadoxLocale(), exact)
                 return ParadoxSyncedLocalisationSearch.search(name, selector = selector).find()
             }
             CwtDataType.InlineLocalisation -> {
                 if(element.text.isLeftQuoted()) return null //inline string
                 val name = expression
-                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element, exact).preferLocale(preferredParadoxLocale(), exact)
+                val selector = localisationSelector(project, element).preferSameRoot(exact).preferLocale(preferredParadoxLocale(), exact)
                 return ParadoxLocalisationSearch.search(name, selector = selector).find()
             }
             CwtDataType.StellarisNameFormat -> {
                 if(element.text.isLeftQuoted()) return null //specific expression
                 val name = expression
-                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
+                val selector = localisationSelector(project, element).preferSameRoot(exact).preferLocale(preferredParadoxLocale(), exact)
                 return ParadoxLocalisationSearch.search(name, selector = selector).find() //仅查找用户的语言区域或任意语言区域的
             }
             CwtDataType.AbsoluteFilePath -> {
@@ -1730,7 +1734,7 @@ object CwtConfigHandler {
             else -> {
                 if(ParadoxPathReferenceExpression.get(configExpression) != null) {
                     val pathReference = expression.normalizePath()
-                    val selector = fileSelector(project).gameType(gameType).preferRootFrom(element)
+                    val selector = fileSelector(project, element).preferSameRoot()
                     return ParadoxFilePathSearch.search(pathReference, configExpression, selector = selector).find()?.toPsiFile(project)
                 }
                 if(config != null && configExpression is CwtKeyExpression) {
@@ -1755,24 +1759,24 @@ object CwtConfigHandler {
             }
             CwtDataType.Localisation -> {
                 val name = expression
-                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
+                val selector = localisationSelector(project, element).preferSameRoot() //不指定偏好的语言区域
                 return ParadoxLocalisationSearch.search(name, selector = selector).findAll() //仅查找用户的语言区域或任意语言区域的
             }
             CwtDataType.SyncedLocalisation -> {
                 val name = expression
-                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
+                val selector = localisationSelector(project, element).preferSameRoot() //不指定偏好的语言区域
                 return ParadoxSyncedLocalisationSearch.search(name, selector = selector).findAll() //仅查找用户的语言区域或任意语言区域的
             }
             CwtDataType.InlineLocalisation -> {
                 if(element.text.isLeftQuoted()) return emptyList() //inline string
                 val name = expression
-                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
+                val selector = localisationSelector(project, element).preferSameRoot() //不指定偏好的语言区域
                 return ParadoxLocalisationSearch.search(name, selector = selector).findAll() //仅查找用户的语言区域或任意语言区域的
             }
             CwtDataType.StellarisNameFormat -> {
                 if(element.text.isLeftQuoted()) return emptyList() //specific expression
                 val name = expression
-                val selector = localisationSelector(project).gameType(gameType).preferRootFrom(element) //不指定偏好的语言区域
+                val selector = localisationSelector(project, element).preferSameRoot() //不指定偏好的语言区域
                 return ParadoxLocalisationSearch.search(name, selector = selector).findAll() //仅查找用户的语言区域或任意语言区域的
             }
             CwtDataType.AbsoluteFilePath -> {
@@ -1869,7 +1873,7 @@ object CwtConfigHandler {
             else -> {
                 if(ParadoxPathReferenceExpression.get(configExpression) != null) {
                     val pathReference = expression.normalizePath()
-                    val selector = fileSelector(project).gameType(gameType).preferRootFrom(element)
+                    val selector = fileSelector(project, element).preferSameRoot()
                     return ParadoxFilePathSearch.search(pathReference, configExpression, selector = selector).findAll().mapNotNull { it.toPsiFile(project) }
                 }
                 if(config != null && configExpression is CwtKeyExpression) {

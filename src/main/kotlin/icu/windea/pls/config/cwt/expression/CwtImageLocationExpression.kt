@@ -88,7 +88,7 @@ class CwtImageLocationExpression(
 			
 			//假定这里的filePath以.dds结尾
 			val filePath = resolvePlaceholder(definitionInfo.name)!!
-			val selector = fileSelector(project).gameTypeFrom(definition).preferRootFrom(definition)
+			val selector = fileSelector(project, definition).preferSameRoot()
 			val file = ParadoxFilePathSearch.search(filePath, selector = selector).find()
 				?.toPsiFile<PsiFile>(project)
 			return ResolveResult(filePath, file, frame)
@@ -115,7 +115,7 @@ class CwtImageLocationExpression(
 				//由filePath解析为DDS文件
 				resolved is PsiFile && resolved.fileType == DdsFileType -> {
 					val filePath = resolved.fileInfo?.path?.path ?: return null
-					val selector = fileSelector(project).gameTypeFrom(definition).preferRootFrom(definition)
+					val selector = fileSelector(project, definition).preferSameRoot()
 					val file = ParadoxFilePathSearch.search(filePath, selector = selector).find()
 						?.toPsiFile<PsiFile>(project)
 					return ResolveResult(filePath, file, frameToUse)
@@ -151,7 +151,7 @@ class CwtImageLocationExpression(
 		if(placeholder != null) {
 			//假定这里的filePath以.dds结尾
 			val filePath = buildString { for(c in placeholder) if(c == '$') append(definitionInfo.name) else append(c) }
-			val selector = fileSelector(project).gameTypeFrom(definition).preferRootFrom(definition)
+			val selector = fileSelector(project, definition).preferSameRoot()
 			val files  = ParadoxFilePathSearch.search(filePath, selector = selector).findAll()
 				.mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
 			return ResolveAllResult(filePath, files, frame)
@@ -177,7 +177,7 @@ class CwtImageLocationExpression(
 				//由filePath解析为DDS文件
 				resolved is PsiFile && resolved.fileType == DdsFileType -> {
 					val filePath = resolved.fileInfo?.path?.path ?: return null
-					val selector = fileSelector(project).gameTypeFrom(definition).preferRootFrom(definition)
+					val selector = fileSelector(project, definition).preferSameRoot()
 					val files = ParadoxFilePathSearch.search(filePath, selector = selector).findAll()
 						.mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
 					return ResolveAllResult(filePath, files, frameToUse)

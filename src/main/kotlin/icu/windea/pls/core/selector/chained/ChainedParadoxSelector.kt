@@ -1,7 +1,6 @@
 package icu.windea.pls.core.selector.chained
 
 import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
@@ -17,7 +16,7 @@ open class ChainedParadoxSelector<T>(
     val file = selectFile(context)
     val fileInfo = file?.fileInfo
     val rootInfo = fileInfo?.rootInfo
-    val rootFile = rootInfo?.rootFile 
+    val rootFile = rootInfo?.rootFile
     val gameType = rootInfo?.gameType
     
     val settings = when {
@@ -97,7 +96,7 @@ open class ChainedParadoxSelector<T>(
 fun <S : ChainedParadoxSelector<T>, T> S.withSearchScope(scope: GlobalSearchScope) =
     apply { selectors += ParadoxWithSearchScopeSelector(scope) }
 
-fun <S : ChainedParadoxSelector<T>, T: PsiElement> S.withSearchScopeType(searchScopeType: String?, context: PsiElement) =
+fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.withSearchScopeType(searchScopeType: String?, context: PsiElement) =
     apply { if(searchScopeType != null) selectors += ParadoxWithSearchScopeTypeSelector(searchScopeType, context) }
 
 @JvmOverloads
@@ -109,35 +108,6 @@ fun <S : ChainedParadoxSelector<T>, T, K> S.distinctBy(keySelector: (T) -> K) =
 
 fun <S : ChainedParadoxSelector<T>, T> S.filterBy(predicate: (T) -> Boolean) =
     apply { selectors += ParadoxFilterSelector(predicate) }
-
-fun <S : ChainedParadoxSelector<T>, T> S.gameType(gameType: ParadoxGameType?) =
-    apply { if(gameType != null) selectors += ParadoxGameTypeSelector(gameType) }
-
-/**
- * @param from [VirtualFile] | [PsiFile] | [PsiElement]
- */
-fun <S : ChainedParadoxSelector<T>, T> S.gameTypeFrom(from: Any?) =
-    apply { if(from != null) selectors += ParadoxGameTypeSelector(from = from) }
-
-fun <S : ChainedParadoxSelector<T>, T> S.root(rootFile: VirtualFile?) =
-    apply { if(rootFile != null) selectors += ParadoxRootFileSelector(rootFile) }
-
-/**
- * @param from [VirtualFile] | [PsiFile] | [PsiElement]
- */
-fun <S : ChainedParadoxSelector<T>, T> S.rootFrom(from: Any?) =
-    apply { if(from != null) selectors += ParadoxRootFileSelector(from = from) }
-
-@JvmOverloads
-fun <S : ChainedParadoxSelector<T>, T> S.preferRoot(rootFile: VirtualFile?, condition: Boolean = true) =
-    apply { if(rootFile != null && condition) selectors += ParadoxPreferSameRootFileSelector(rootFile) }
-
-/**
- * @param from [VirtualFile] | [PsiFile] | [PsiElement]
- */
-@JvmOverloads
-fun <S : ChainedParadoxSelector<T>, T> S.preferRootFrom(from: Any?, condition: Boolean = true) =
-    apply { }
 
 fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.notSamePosition(element: PsiElement?) =
     filterBy { element == null || !element.isSamePosition(it) }

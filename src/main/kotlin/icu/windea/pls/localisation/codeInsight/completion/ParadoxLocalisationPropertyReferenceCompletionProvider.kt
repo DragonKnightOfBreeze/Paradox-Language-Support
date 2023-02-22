@@ -15,30 +15,33 @@ import icu.windea.pls.localisation.psi.*
  * 提供属性引用名字的代码补全。
  */
 class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvider<CompletionParameters>() {
-	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		//val offsetInParent = parameters.offset - parameters.position.textRange.startOffset
-		//val keyword = parameters.position.getKeyword(offsetInParent)
-		val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return
-		val category = ParadoxLocalisationCategory.resolve(file) ?: return
-		val project = parameters.originalFile.project
-		
-		//不提示predefined_parameter
-		
-		//提示localisation或者synced_localisation
-		val selector = localisationSelector(project).gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale()).distinctByName()
-		val processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean = {
-			val name = it.name
-			val icon = it.icon
-			val typeFile = it.containingFile
-			val lookupElement = LookupElementBuilder.create(it, name)
-				.withIcon(icon)
-				.withTypeText(typeFile.name, typeFile.icon, true)
-			result.addElement(lookupElement)
-			true
-		}
-		when(category) {
-			ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.processVariants(selector = selector, processor = processor)
-			ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.processVariants(selector = selector, processor = processor)
-		}
-	}
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+        //val offsetInParent = parameters.offset - parameters.position.textRange.startOffset
+        //val keyword = parameters.position.getKeyword(offsetInParent)
+        val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return
+        val category = ParadoxLocalisationCategory.resolve(file) ?: return
+        val project = parameters.originalFile.project
+        
+        //不提示predefined_parameter
+        
+        //提示localisation或者synced_localisation
+        val selector = localisationSelector(project, file)
+            .preferSameRoot()
+            .preferLocale(preferredParadoxLocale())
+            .distinctByName()
+        val processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean = {
+            val name = it.name
+            val icon = it.icon
+            val typeFile = it.containingFile
+            val lookupElement = LookupElementBuilder.create(it, name)
+                .withIcon(icon)
+                .withTypeText(typeFile.name, typeFile.icon, true)
+            result.addElement(lookupElement)
+            true
+        }
+        when(category) {
+            ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.processVariants(selector = selector, processor = processor)
+            ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.processVariants(selector = selector, processor = processor)
+        }
+    }
 }
