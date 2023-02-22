@@ -24,6 +24,7 @@ class ParadoxFromLauncherJsonImporter : ParadoxModDependenciesImporter {
     override fun execute(project: Project, tableView: TableView<ParadoxModDependencySettingsState>, tableModel: ParadoxModDependenciesTableModel) {
         val settings = tableModel.settings
         val gameType = settings.gameType.orDefault()
+        setDefaultSelected(gameType)
         val workshopDir = getSteamWorkshopPath(gameType.gameSteamId)
         if(workshopDir == null) {
             notifyWarning(settings, project, PlsBundle.message("mod.importer.launcherJson.error.3"))
@@ -32,7 +33,6 @@ class ParadoxFromLauncherJsonImporter : ParadoxModDependenciesImporter {
         val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor("json")
             .withTitle(PlsBundle.message("mod.importer.launcherJson.title"))
             .apply { putUserData(PlsDataKeys.gameTypeKey, gameType) }
-        setDefaultSelected(gameType)
         FileChooser.chooseFile(descriptor, project, tableView, defaultSelected) { file ->
             try {
                 val data = jsonMapper.readValue<ParadoxLauncherJson>(file.inputStream)
