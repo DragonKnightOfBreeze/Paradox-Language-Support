@@ -47,6 +47,7 @@ sealed class ParadoxGlobalSearchScope(
                     val gameDirectory = rootFile
                     val modDependencyDirectories = mutableSetOf<VirtualFile>()
                     for(modDependency in settings.modDependencies) {
+                        //要求模组依赖是启用的
                         if(modDependency.enabled) {
                             val modDependencyDirectory = modDependency.modDirectory?.toVirtualFile(false)
                             if(modDependencyDirectory != null) {
@@ -63,7 +64,8 @@ sealed class ParadoxGlobalSearchScope(
                     val gameDirectory = settings.gameDirectory?.toVirtualFile(false)
                     val modDependencyDirectories = mutableSetOf<VirtualFile>()
                     for(modDependency in settings.modDependencies) {
-                        if(modDependency.enabled) {
+                        //要求模组依赖是启用的，或者是当前模组自身
+                        if(modDependency.enabled || modDependency.modDirectory == modDirectory.path) {
                             val modDependencyDirectory = modDependency.modDirectory?.toVirtualFile(false)
                             if(modDependencyDirectory != null) {
                                 modDependencyDirectories.add(modDependencyDirectory)
