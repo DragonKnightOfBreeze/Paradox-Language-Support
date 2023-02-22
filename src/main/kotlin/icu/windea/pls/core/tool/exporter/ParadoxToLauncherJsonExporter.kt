@@ -1,6 +1,7 @@
 package icu.windea.pls.core.tool.exporter
 
 import com.intellij.notification.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.table.*
@@ -32,7 +33,9 @@ class ParadoxToLauncherJsonExporter : ParadoxModDependenciesExporter {
             ParadoxLauncherJson.Mod(name, s.enabled, i, steamId)
         }
         val json = ParadoxLauncherJson(gameType.id, mods, collectionName)
-        jsonMapper.writeValue(savedFile.getOutputStream(this), json)
+        runWriteAction {
+            jsonMapper.writeValue(savedFile.getOutputStream(this), json)
+        }
         val count = mods.size
         notify(settings, project, PlsBundle.message("mod.exporter.launcherJson.info", collectionName, count))
     }
