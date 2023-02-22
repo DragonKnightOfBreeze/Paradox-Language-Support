@@ -7,10 +7,10 @@ import icu.windea.pls.*
 
 @Suppress("UnstableApiUsage", "EqualsOrHashCode")
 class ParadoxModWithDependenciesScope(
+    project: Project,
     val modDirectory: VirtualFile,
     val gameDirectory: VirtualFile?,
-    val modDependencyDirectories: Set<VirtualFile>,
-    project: Project
+    val modDependencyDirectories: Set<VirtualFile>
 ) : ParadoxGlobalSearchScope(project) {
     override fun getDisplayName(): String {
         return PlsBundle.message("search.scope.mod.withDependencies", modDirectory.name)

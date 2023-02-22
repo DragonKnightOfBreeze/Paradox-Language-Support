@@ -6,6 +6,7 @@ import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.search.scopes.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.lang.model.*
 
@@ -26,7 +27,7 @@ open class ChainedParadoxSelector<T>(
     }
     
     val defaultScope: GlobalSearchScope by lazy {
-        GlobalSearchScope.allScope(project) //TODO 0.8.1
+        ParadoxGlobalSearchScope.fromFile(project, file, fileInfo)
     }
     val scope: GlobalSearchScope by lazy {
         selectors.findIsInstance<ParadoxSearchScopeAwareSelector<*>>()?.getGlobalSearchScope()

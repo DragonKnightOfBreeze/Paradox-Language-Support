@@ -9,8 +9,8 @@ import icu.windea.pls.core.collections.*
 
 @Suppress("UnstableApiUsage", "EqualsOrHashCode")
 class ParadoxGameScope(
-    val gameDirectory: VirtualFile,
-    project: Project
+    project: Project,
+    val gameDirectory: VirtualFile
 ) : ParadoxGlobalSearchScope(project) {
     override fun getDisplayName(): String {
         return PlsBundle.message("search.scope.game", gameDirectory.name)
