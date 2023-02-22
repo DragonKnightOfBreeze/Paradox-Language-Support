@@ -28,7 +28,7 @@ class ParadoxScriptedVariablePsiReference(
         val element = element
         val name = element.name
         val project = element.project
-        val selector = scriptedVariableSelector(project, element).preferSameRoot(exact)
+        val selector = scriptedVariableSelector(project, element).contextSensitive(exact)
         ParadoxLocalScriptedVariableSearch.search(name, element, selector).findFirst()?.let { return it }
         ParadoxGlobalScriptedVariableSearch.search(name, selector).find(exact)?.let { return it }
         return null
@@ -40,7 +40,7 @@ class ParadoxScriptedVariablePsiReference(
         val result = SmartList<ParadoxScriptScriptedVariable>()
         val name = element.name
         val project = element.project
-        val selector = scriptedVariableSelector(project, element).preferSameRoot()
+        val selector = scriptedVariableSelector(project, element).contextSensitive()
         ParadoxLocalScriptedVariableSearch.search(name, element, selector).processQuery {
             result.add(it)
             true

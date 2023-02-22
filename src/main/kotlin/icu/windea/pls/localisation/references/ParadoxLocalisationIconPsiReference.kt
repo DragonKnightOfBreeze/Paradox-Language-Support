@@ -46,15 +46,15 @@ class ParadoxLocalisationIconPsiReference(
 		val project = element.project
 		//尝试解析为spriteType
 		val textSpriteName = "GFX_text_$iconName"
-		val textSpriteSelector = definitionSelector(project, element).preferSameRoot(exact)
+		val textSpriteSelector = definitionSelector(project, element).contextSensitive(exact)
 		val textSprite = ParadoxDefinitionSearch.search(textSpriteName, "sprite|spriteType", textSpriteSelector).find(exact)
 		if(textSprite != null) return textSprite
 		val spriteName = "GFX_$iconName"
-		val spriteSelector = definitionSelector(project, element).preferSameRoot(exact)
+		val spriteSelector = definitionSelector(project, element).contextSensitive(exact)
 		val sprite = ParadoxDefinitionSearch.search(spriteName, "sprite|spriteType", spriteSelector).find(exact)
 		if(sprite != null) return sprite
 		//如果不能解析为spriteType，则尝试解析为gfx/interface/icons及其子目录中为相同名字的dds文件
-		val fileSelector = fileSelector(project, element).preferSameRoot(exact)
+		val fileSelector = fileSelector(project, element).contextSensitive(exact)
 		val ddsFileExpression = CwtValueExpression.resolve("icon[gfx/interface/icons/]")
 		val ddsFile = ParadoxFilePathSearch.search(iconName, ddsFileExpression, selector = fileSelector).find()
 		if(ddsFile != null) return ddsFile.toPsiFile(project)
@@ -62,7 +62,7 @@ class ParadoxLocalisationIconPsiReference(
 		//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
 		val jobName = iconName.removePrefixOrNull("job_")
 		if(jobName != null) {
-			val definitionSelector = definitionSelector(project, element).preferSameRoot(exact)
+			val definitionSelector = definitionSelector(project, element).contextSensitive(exact)
 			val jobDefinition = ParadoxDefinitionSearch.search(jobName, "job", definitionSelector).find(exact)
 			if(jobDefinition != null) return jobDefinition
 		}
@@ -75,15 +75,15 @@ class ParadoxLocalisationIconPsiReference(
 		val project = element.project
 		//尝试解析为spriteType
 		val textSpriteName = "GFX_text_$iconName"
-		val textSpriteSelector = definitionSelector(project, element).preferSameRoot()
+		val textSpriteSelector = definitionSelector(project, element).contextSensitive()
 		val textSprites = ParadoxDefinitionSearch.search(textSpriteName, "sprite|spriteType", textSpriteSelector).findAll()
 		if(textSprites.isNotEmpty()) return textSprites.mapToArray { PsiElementResolveResult(it) }
 		val spriteName = "GFX_$iconName"
-		val spriteSelector = definitionSelector(project, element).preferSameRoot()
+		val spriteSelector = definitionSelector(project, element).contextSensitive()
 		val sprites = ParadoxDefinitionSearch.search(spriteName, "sprite|spriteType", spriteSelector).findAll()
 		if(sprites.isNotEmpty()) return sprites.mapToArray { PsiElementResolveResult(it) }
 		//如果不能解析为spriteType，则尝试解析为gfx/interface/icons及其子目录中为相同名字的dds文件
-		val fileSelector = fileSelector(project, element).preferSameRoot()
+		val fileSelector = fileSelector(project, element).contextSensitive()
 		val ddsFileExpression = CwtValueExpression.resolve("icon[gfx/interface/icons/]")
 		val ddsFiles = ParadoxFilePathSearch.search(iconName, ddsFileExpression, selector = fileSelector).findAll()
 		if(ddsFiles.isNotEmpty()) return ddsFiles.mapNotNullTo(SmartList()) { it.toPsiFile(project) }.mapToArray { PsiElementResolveResult(it) }
@@ -91,7 +91,7 @@ class ParadoxLocalisationIconPsiReference(
 		//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
 		val jobName = iconName.removePrefixOrNull("job_")
 		if(jobName != null) {
-			val definitionSelector = definitionSelector(project, element).preferSameRoot()
+			val definitionSelector = definitionSelector(project, element).contextSensitive()
 			val jobDefinitions = ParadoxDefinitionSearch.search(jobName, "job", definitionSelector).findAll()
 			if(jobDefinitions.isNotEmpty()) return jobDefinitions.mapToArray { PsiElementResolveResult(it) }
 		}

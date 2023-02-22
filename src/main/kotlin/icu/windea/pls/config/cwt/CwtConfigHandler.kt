@@ -804,7 +804,7 @@ object CwtConfigHandler {
             CwtDataType.Localisation -> {
                 val tailText = getScriptExpressionTailText(config)
                 //这里selector不需要指定去重
-                val selector = localisationSelector(project, contextElement).preferSameRoot().preferLocale(preferredParadoxLocale())
+                val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale())
                 ParadoxLocalisationSearch.processVariants(selector = selector) { localisation ->
                     val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
                     val typeFile = localisation.containingFile
@@ -820,7 +820,7 @@ object CwtConfigHandler {
             CwtDataType.SyncedLocalisation -> {
                 val tailText = getScriptExpressionTailText(config)
                 //这里selector不需要指定去重
-                val selector = localisationSelector(project, contextElement).preferSameRoot().preferLocale(preferredParadoxLocale())
+                val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale())
                 ParadoxSyncedLocalisationSearch.processVariants(selector = selector) { syncedLocalisation ->
                     val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
                     val typeFile = syncedLocalisation.containingFile
@@ -837,7 +837,7 @@ object CwtConfigHandler {
                 if(quoted) return
                 val tailText = getScriptExpressionTailText(config)
                 //这里selector不需要指定去重
-                val selector = localisationSelector(project, contextElement).preferSameRoot().preferLocale(preferredParadoxLocale())
+                val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale())
                 ParadoxLocalisationSearch.processVariants(selector = selector) { localisation ->
                     val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
                     val typeFile = localisation.containingFile
@@ -855,7 +855,7 @@ object CwtConfigHandler {
                 val typeExpression = configExpression.value ?: return
                 val tailText = getScriptExpressionTailText(config)
                 val selector = definitionSelector(project, contextElement)
-                    .preferSameRoot()
+                    .contextSensitive()
                     .distinctByName()
                 ParadoxDefinitionSearch.search(typeExpression, selector)
                     .processQuery { definition ->
@@ -911,7 +911,7 @@ object CwtConfigHandler {
                     val searchScope = complexEnumConfig.searchScopeType
                     val selector = complexEnumValueSelector(project, contextElement)
                         .withSearchScopeType(searchScope, contextElement)
-                        .preferSameRoot()
+                        .contextSensitive()
                         .distinctByName()
                     ParadoxComplexEnumValueSearch.searchAll(enumName, selector).processQuery { complexEnum ->
                         val name = complexEnum.value
@@ -1020,7 +1020,7 @@ object CwtConfigHandler {
                         else -> emptySet()
                     }
                     //仅提示匹配file_extensions选项指定的扩展名的，如果存在
-                    val selector = fileSelector(project, contextElement).preferSameRoot()
+                    val selector = fileSelector(project, contextElement).contextSensitive()
                         .withFileExtensions(fileExtensions)
                         .distinctByFilePath()
                     ParadoxFilePathSearch.search(configExpression, selector = selector)
@@ -1429,7 +1429,7 @@ object CwtConfigHandler {
     fun completeEventTarget(file: PsiFile, result: CompletionResultSet) {
         val project = file.project
         val eventTargetSelector = valueSetValueSelector(project, file)
-            .preferSameRoot()
+            .contextSensitive()
             .distinctByValue()
         val eventTargetQuery = ParadoxValueSetValueSearch.search("event_target", eventTargetSelector)
         eventTargetQuery.processQuery { eventTarget ->
@@ -1445,7 +1445,7 @@ object CwtConfigHandler {
         }
         
         val globalEventTargetSelector = valueSetValueSelector(project, file)
-            .preferSameRoot()
+            .contextSensitive()
             .distinctByValue()
         val globalEventTargetQuery = ParadoxValueSetValueSearch.search("global_event_target", globalEventTargetSelector)
         globalEventTargetQuery.processQuery { globalEventTarget ->
@@ -1464,7 +1464,7 @@ object CwtConfigHandler {
     fun completeScriptedLoc(file: PsiFile, result: CompletionResultSet) {
         val project = file.project
         val scriptedLocSelector = definitionSelector(project, file)
-            .preferSameRoot()
+            .contextSensitive()
             .distinctByName()
         val scriptedLocQuery = ParadoxDefinitionSearch.search("scripted_loc", scriptedLocSelector)
         scriptedLocQuery.processQuery { scriptedLoc ->
@@ -1484,7 +1484,7 @@ object CwtConfigHandler {
     fun completeVariable(context: ProcessingContext, result: CompletionResultSet) {
         val file = context.originalFile.project
         val project = file
-        val variableSelector = valueSetValueSelector(project, file).preferSameRoot().distinctByValue()
+        val variableSelector = valueSetValueSelector(project, file).contextSensitive().distinctByValue()
         val variableQuery = ParadoxValueSetValueSearch.search("variable", variableSelector)
         variableQuery.processQuery { variable ->
             val value = ParadoxValueSetValueHandler.getName(variable) ?: return@processQuery true
@@ -1570,7 +1570,7 @@ object CwtConfigHandler {
         //整合查找到的所有SV
         val project = originalFile.project
         val selector = definitionSelector(project, contextElement)
-            .preferSameRoot()
+            .contextSensitive()
         ParadoxDefinitionSearch.search(svName, "script_value", selector).processQuery p@{ sv ->
             ProgressManager.checkCanceled()
             val parameterContext = sv
@@ -1622,24 +1622,24 @@ object CwtConfigHandler {
             }
             CwtDataType.Localisation -> {
                 val name = expression
-                val selector = localisationSelector(project, element).preferSameRoot(exact).preferLocale(preferredParadoxLocale(), exact)
+                val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(preferredParadoxLocale(), exact)
                 return ParadoxLocalisationSearch.search(name, selector).find()
             }
             CwtDataType.SyncedLocalisation -> {
                 val name = expression
-                val selector = localisationSelector(project, element).preferSameRoot(exact).preferLocale(preferredParadoxLocale(), exact)
+                val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(preferredParadoxLocale(), exact)
                 return ParadoxSyncedLocalisationSearch.search(name, selector).find()
             }
             CwtDataType.InlineLocalisation -> {
                 if(element.text.isLeftQuoted()) return null //inline string
                 val name = expression
-                val selector = localisationSelector(project, element).preferSameRoot(exact).preferLocale(preferredParadoxLocale(), exact)
+                val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(preferredParadoxLocale(), exact)
                 return ParadoxLocalisationSearch.search(name, selector).find()
             }
             CwtDataType.StellarisNameFormat -> {
                 if(element.text.isLeftQuoted()) return null //specific expression
                 val name = expression
-                val selector = localisationSelector(project, element).preferSameRoot(exact).preferLocale(preferredParadoxLocale(), exact)
+                val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(preferredParadoxLocale(), exact)
                 return ParadoxLocalisationSearch.search(name, selector).find() //仅查找用户的语言区域或任意语言区域的
             }
             CwtDataType.AbsoluteFilePath -> {
@@ -1649,7 +1649,7 @@ object CwtConfigHandler {
             CwtDataType.Definition -> {
                 val name = expression
                 val typeExpression = configExpression.value ?: return null
-                val selector = definitionSelector(project, element).preferSameRoot(exact)
+                val selector = definitionSelector(project, element).contextSensitive(exact)
                 return ParadoxDefinitionSearch.search(name, typeExpression, selector).find()
             }
             CwtDataType.Enum -> {
@@ -1676,7 +1676,7 @@ object CwtConfigHandler {
                     val searchScope = complexEnumConfig.searchScopeType
                     val selector = complexEnumValueSelector(project, element)
                         .withSearchScopeType(searchScope, element)
-                        .preferSameRoot(exact)
+                        .contextSensitive(exact)
                     return ParadoxComplexEnumValueSearch.search(name, enumName, selector).find()
                 }
                 return null
@@ -1734,7 +1734,7 @@ object CwtConfigHandler {
             else -> {
                 if(ParadoxPathReferenceExpression.get(configExpression) != null) {
                     val pathReference = expression.normalizePath()
-                    val selector = fileSelector(project, element).preferSameRoot()
+                    val selector = fileSelector(project, element).contextSensitive()
                     return ParadoxFilePathSearch.search(pathReference, configExpression, selector = selector).find()?.toPsiFile(project)
                 }
                 if(config != null && configExpression is CwtKeyExpression) {
@@ -1759,24 +1759,24 @@ object CwtConfigHandler {
             }
             CwtDataType.Localisation -> {
                 val name = expression
-                val selector = localisationSelector(project, element).preferSameRoot() //不指定偏好的语言区域
+                val selector = localisationSelector(project, element).contextSensitive() //不指定偏好的语言区域
                 return ParadoxLocalisationSearch.search(name, selector).findAll() //仅查找用户的语言区域或任意语言区域的
             }
             CwtDataType.SyncedLocalisation -> {
                 val name = expression
-                val selector = localisationSelector(project, element).preferSameRoot() //不指定偏好的语言区域
+                val selector = localisationSelector(project, element).contextSensitive() //不指定偏好的语言区域
                 return ParadoxSyncedLocalisationSearch.search(name, selector).findAll() //仅查找用户的语言区域或任意语言区域的
             }
             CwtDataType.InlineLocalisation -> {
                 if(element.text.isLeftQuoted()) return emptyList() //inline string
                 val name = expression
-                val selector = localisationSelector(project, element).preferSameRoot() //不指定偏好的语言区域
+                val selector = localisationSelector(project, element).contextSensitive() //不指定偏好的语言区域
                 return ParadoxLocalisationSearch.search(name, selector).findAll() //仅查找用户的语言区域或任意语言区域的
             }
             CwtDataType.StellarisNameFormat -> {
                 if(element.text.isLeftQuoted()) return emptyList() //specific expression
                 val name = expression
-                val selector = localisationSelector(project, element).preferSameRoot() //不指定偏好的语言区域
+                val selector = localisationSelector(project, element).contextSensitive() //不指定偏好的语言区域
                 return ParadoxLocalisationSearch.search(name, selector).findAll() //仅查找用户的语言区域或任意语言区域的
             }
             CwtDataType.AbsoluteFilePath -> {
@@ -1786,7 +1786,7 @@ object CwtConfigHandler {
             CwtDataType.Definition -> {
                 val name = expression
                 val typeExpression = configExpression.value ?: return emptyList()
-                val selector = definitionSelector(project, element).preferSameRoot()
+                val selector = definitionSelector(project, element).contextSensitive()
                 return ParadoxDefinitionSearch.search(name, typeExpression, selector).findAll()
             }
             CwtDataType.Enum -> {
@@ -1814,7 +1814,7 @@ object CwtConfigHandler {
                     val searchScope = complexEnumConfig.searchScopeType
                     val selector = complexEnumValueSelector(project, element)
                         .withSearchScopeType(searchScope, element)
-                        .preferSameRoot()
+                        .contextSensitive()
                     return ParadoxComplexEnumValueSearch.search(name, enumName, selector).findAll()
                 }
                 return emptyList()
@@ -1873,7 +1873,7 @@ object CwtConfigHandler {
             else -> {
                 if(ParadoxPathReferenceExpression.get(configExpression) != null) {
                     val pathReference = expression.normalizePath()
-                    val selector = fileSelector(project, element).preferSameRoot()
+                    val selector = fileSelector(project, element).contextSensitive()
                     return ParadoxFilePathSearch.search(pathReference, configExpression, selector = selector).findAll().mapNotNull { it.toPsiFile(project) }
                 }
                 if(config != null && configExpression is CwtKeyExpression) {

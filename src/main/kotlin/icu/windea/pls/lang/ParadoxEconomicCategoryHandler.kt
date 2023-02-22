@@ -133,7 +133,7 @@ object ParadoxEconomicCategoryHandler {
         if(parent == null) return false // no parent > return false
         if(source == parent) return false //recursive parent > invalid, return false
         val project = contextElement.project
-        val selector = definitionSelector(project, contextElement).preferSameRoot()
+        val selector = definitionSelector(project, contextElement).contextSensitive()
         return doGetUseForAiBudgetFromParent(source, parent, project, selector)
     }
     

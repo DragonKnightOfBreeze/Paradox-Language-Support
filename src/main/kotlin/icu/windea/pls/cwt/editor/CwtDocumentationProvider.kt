@@ -172,12 +172,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		val project = configGroup.project
 		val nameKeys = ParadoxModifierHandler.getModifierNameKeys(name, configGroup)
 		val localisation = nameKeys.firstNotNullOfOrNull {
-			val selector = localisationSelector(project, contextElement).preferSameRoot().preferLocale(preferredParadoxLocale())
+			val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale())
 			ParadoxLocalisationSearch.search(it, selector).find()
 		}
 		val descKeys = ParadoxModifierHandler.getModifierDescKeys(name, configGroup)
 		val descLocalisation = descKeys.firstNotNullOfOrNull {
-			val descSelector = localisationSelector(project, contextElement).preferSameRoot().preferLocale(preferredParadoxLocale())
+			val descSelector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale())
 			ParadoxLocalisationSearch.search(it, descSelector).find()
 		}
 		//如果没找到的话，不要在文档中显示相关信息
@@ -211,7 +211,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		val project = configGroup.project
 		val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name, configGroup)
 		val (iconPath, iconFile) = iconPaths.firstNotNullOfOrNull {
-			val iconSelector = fileSelector(project, contextElement).preferSameRoot()
+			val iconSelector = fileSelector(project, contextElement).contextSensitive()
 			it to ParadoxFilePathSearch.search(it, selector = iconSelector).find()
 		} ?: (null to null)
 		//如果没找到的话，不要在文档中显示相关信息

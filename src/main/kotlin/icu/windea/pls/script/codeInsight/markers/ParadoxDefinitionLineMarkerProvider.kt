@@ -32,7 +32,7 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 			append(PlsDocBundle.message("prefix.definition")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>: ").append(typeText)
 		}
 		val project = element.project
-		val selector = definitionSelector(project, element).preferSameRoot()
+		val selector = definitionSelector(project, element).contextSensitive()
 		val targets = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
 		if(targets.isEmpty()) return
 		val locationElement = element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! }

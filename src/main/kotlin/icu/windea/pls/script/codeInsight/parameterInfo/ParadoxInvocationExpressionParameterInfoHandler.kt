@@ -48,7 +48,7 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
         val definitionType = config.keyExpression.value ?: return null
         //合并所有可能的参数名
         val project = context.project
-        val selector = definitionSelector(project, context.file).preferSameRoot()
+        val selector = definitionSelector(project, context.file).contextSensitive()
         val definitions = ParadoxDefinitionSearch.search(definitionName, definitionType, selector).findAll()
         if(definitions.isEmpty()) return null
         val parameterInfosMap = mutableMapOf<String, Collection<ParadoxParameterInfo>>()

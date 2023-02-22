@@ -30,7 +30,7 @@ class ParadoxScriptedVariableLineMarkerProvider : RelatedItemLineMarkerProvider(
 			append(PlsDocBundle.message("prefix.scriptedVariable")).append(" <b>@").append(name.escapeXml().orAnonymous()).append("</b>")
 		}
 		val project = element.project
-		val selector = scriptedVariableSelector(project, element).preferSameRoot()
+		val selector = scriptedVariableSelector(project, element).contextSensitive()
 		val targets = mutableSetOf<ParadoxScriptScriptedVariable>()
 		//这里一般来说只会带上当前封装变量自身
 		ParadoxLocalScriptedVariableSearch.search(name, element, selector).findAll().let { targets.addAll(it) }

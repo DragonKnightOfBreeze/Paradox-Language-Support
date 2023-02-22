@@ -94,21 +94,39 @@ open class ChainedParadoxSelector<T>(
     }
 }
 
-fun <S : ChainedParadoxSelector<T>, T> S.withSearchScope(scope: GlobalSearchScope) =
-    apply { selectors += ParadoxWithSearchScopeSelector(scope) }
+fun <S : ChainedParadoxSelector<T>, T> S.withSearchScope(scope: GlobalSearchScope): S {
+    selectors += ParadoxWithSearchScopeSelector(scope)
+    return this
+}
 
-fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.withSearchScopeType(searchScopeType: String?, context: PsiElement) =
-    apply { if(searchScopeType != null) selectors += ParadoxWithSearchScopeTypeSelector(searchScopeType, context) }
+fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.withSearchScopeType(searchScopeType: String?, context: PsiElement): S {
+    if(searchScopeType != null) selectors += ParadoxWithSearchScopeTypeSelector(searchScopeType, context)
+    return this
+}
 
+/**
+ * 首先尝试选用同一根目录下的，然后尝试选用同一文件下的。
+ */
 @JvmOverloads
-fun <S : ChainedParadoxSelector<T>, T> S.preferSameRoot(condition: Boolean = true) =
-    apply { if(condition && rootFile != null) selectors += ParadoxPreferSameRootFileSelector(rootFile) }
+fun <S : ChainedParadoxSelector<T>, T> S.contextSensitive(condition: Boolean = true): S {
+    if(condition) {
+        if(rootFile != null) selectors += ParadoxPreferRootFileSelector(rootFile)
+        if(file != null) selectors += ParadoxPreferFileSelector(file)
+    }
+    return this
+}
 
-fun <S : ChainedParadoxSelector<T>, T, K> S.distinctBy(keySelector: (T) -> K) =
-    apply { selectors += ParadoxDistinctSelector(keySelector) }
+fun <S : ChainedParadoxSelector<T>, T, K> S.distinctBy(keySelector: (T) -> K): S {
+    selectors += ParadoxDistinctSelector(keySelector)
+    return this
+}
 
-fun <S : ChainedParadoxSelector<T>, T> S.filterBy(predicate: (T) -> Boolean) =
-    apply { selectors += ParadoxFilterSelector(predicate) }
+fun <S : ChainedParadoxSelector<T>, T> S.filterBy(predicate: (T) -> Boolean): S {
+    selectors += ParadoxFilterSelector(predicate)
+    return this
+}
 
-fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.notSamePosition(element: PsiElement?) =
+fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.notSamePosition(element: PsiElement?): S {
     filterBy { element == null || !element.isSamePosition(it) }
+    return this
+}

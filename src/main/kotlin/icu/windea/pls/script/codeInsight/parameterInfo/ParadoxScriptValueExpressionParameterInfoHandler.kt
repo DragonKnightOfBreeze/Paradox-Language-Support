@@ -53,7 +53,7 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
         val (targetElement, svName) = findTargetElement(context) ?: return null
         //合并所有可能的参数名
         val project = context.project
-        val selector = definitionSelector(project, context.file).preferSameRoot()
+        val selector = definitionSelector(project, context.file).contextSensitive()
         val definitions = ParadoxDefinitionSearch.search(svName, "script_value", selector).findAll()
         if(definitions.isEmpty()) return null
         val parameterInfosMap = mutableMapOf<String, Collection<ParadoxParameterInfo>>()

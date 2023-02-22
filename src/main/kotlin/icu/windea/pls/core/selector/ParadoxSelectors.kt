@@ -7,7 +7,6 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
 
 interface ParadoxSearchScopeAwareSelector<T> : ParadoxSelector<T> {
     fun getGlobalSearchScope(): GlobalSearchScope?
@@ -22,7 +21,7 @@ class ParadoxWithSearchScopeSelector<T>(
 }
 
 class ParadoxWithSearchScopeTypeSelector<T : PsiElement>(
-    val searchScopeType: String,
+    searchScopeType: String,
     val context: PsiElement
 ) : ParadoxSearchScopeAwareSelector<T> {
     private val type = ParadoxSearchScopeType(searchScopeType)
@@ -46,7 +45,23 @@ class ParadoxWithSearchScopeTypeSelector<T : PsiElement>(
     }
 }
 
-class ParadoxPreferSameRootFileSelector<T>(
+class ParadoxPreferFileSelector<T>(
+    val file: VirtualFile
+) : ParadoxSelector<T> {
+    override fun select(result: T): Boolean {
+        return file == selectFile(result)
+    }
+    
+    override fun selectAll(result: T): Boolean {
+        return true
+    }
+    
+    override fun comparator(): Comparator<T> {
+        return complexCompareBy({ it }, { null }, { file == selectFile(it) })
+    }
+}
+
+class ParadoxPreferRootFileSelector<T>(
     val rootFile: VirtualFile
 ) : ParadoxSelector<T> {
     override fun select(result: T): Boolean {

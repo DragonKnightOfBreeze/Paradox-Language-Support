@@ -269,7 +269,7 @@ private fun resolveDefinitionLink(linkWithoutPrefix: String, sourceElement: PsiE
     val typeExpression = tokens.getOrNull(1) ?: return null
     val name = tokens.getOrNull(2) ?: return null
     val project = sourceElement.project
-    val selector = definitionSelector(project, sourceElement).preferSameRoot()
+    val selector = definitionSelector(project, sourceElement).contextSensitive()
     return ParadoxDefinitionSearch.search(name, typeExpression, selector).find()
 }
 
@@ -280,7 +280,7 @@ private fun resolveLocalisationLink(linkWithoutPrefix: String, sourceElement: Ps
     val gameType = tokens.getOrNull(0)?.let { ParadoxGameType.resolve(it) } ?: return null
     val name = tokens.getOrNull(1) ?: return null
     val project = sourceElement.project
-    val selector = localisationSelector(project, sourceElement).preferSameRoot().preferLocale(sourceElement.localeConfig)
+    val selector = localisationSelector(project, sourceElement).contextSensitive().preferLocale(sourceElement.localeConfig)
     return ParadoxLocalisationSearch.search(name, selector).find()
 }
 
@@ -290,7 +290,7 @@ private fun resolveFilePathLink(linkWithoutPrefix: String, sourceElement: PsiEle
     val gameType = tokens.getOrNull(0)?.let { ParadoxGameType.resolve(it) } ?: return null
     val filePath = tokens.getOrNull(1) ?: return null
     val project = sourceElement.project
-    val selector = fileSelector(project, sourceElement).preferSameRoot()
+    val selector = fileSelector(project, sourceElement).contextSensitive()
     return ParadoxFilePathSearch.search(filePath, selector = selector).find()
         ?.toPsiFile(project)
 }

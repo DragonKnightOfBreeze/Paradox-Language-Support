@@ -61,7 +61,7 @@ class ParadoxEconomicCategoryModifierSupport: ParadoxModifierSupport {
         val project = configGroup.project
         var economicCategoryInfo: ParadoxEconomicCategoryInfo? = null
         var economicCategoryModifierInfo: ParadoxEconomicCategoryModifierInfo? = null
-        val selector = definitionSelector(project, element).preferSameRoot()
+        val selector = definitionSelector(project, element).contextSensitive()
         ParadoxDefinitionSearch.search("economic_category", selector)
             .processQuery p@{
                 val info = ParadoxEconomicCategoryHandler.getInfo(it) ?: return@p true
@@ -88,7 +88,7 @@ class ParadoxEconomicCategoryModifierSupport: ParadoxModifierSupport {
         val gameType = configGroup.gameType ?: return
         if(!isGameTypeSupported(gameType)) return
         val project = configGroup.project
-        val selector = definitionSelector(project, element).preferSameRoot()
+        val selector = definitionSelector(project, element).contextSensitive()
         ParadoxDefinitionSearch.search("economic_category", selector)
             .processQuery p@{
                 val info = ParadoxEconomicCategoryHandler.getInfo(it) ?: return@p true
@@ -162,7 +162,7 @@ class ParadoxEconomicCategoryModifierSupport: ParadoxModifierSupport {
     
         val configGroup = definitionInfo.configGroup
         val project = configGroup.project
-        val selector = definitionSelector(project, definition).preferSameRoot()
+        val selector = definitionSelector(project, definition).contextSensitive()
         val economicCategory = ParadoxDefinitionSearch.search(definitionInfo.name, "economic_category", selector)
             .findFirst()
             ?: return false

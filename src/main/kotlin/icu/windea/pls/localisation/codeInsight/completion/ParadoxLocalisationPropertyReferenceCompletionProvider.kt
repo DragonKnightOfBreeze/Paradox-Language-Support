@@ -26,7 +26,7 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
         
         //提示localisation或者synced_localisation
         val selector = localisationSelector(project, file)
-            .preferSameRoot()
+            .contextSensitive()
             .preferLocale(preferredParadoxLocale())
             .distinctByName()
         val processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean = {

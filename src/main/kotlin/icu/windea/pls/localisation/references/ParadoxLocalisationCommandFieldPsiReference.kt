@@ -41,7 +41,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(localisationCommand != null) return localisationCommand
 		
 		//尝试识别为<scripted_loc>
-		val selector = definitionSelector(project, element).preferSameRoot(exact)
+		val selector = definitionSelector(project, element).contextSensitive(exact)
 		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", selector).find(exact)
 		if(scriptedLoc != null) return scriptedLoc
 		
@@ -50,7 +50,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(predefinedVariable != null) return predefinedVariable.pointer.element
 		
 		//尝试识别为value[variable]
-		val variableSelector = valueSetValueSelector(project, element).preferSameRoot(exact)
+		val variableSelector = valueSetValueSelector(project, element).contextSensitive(exact)
 		val variable = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findFirst()
 		if(variable != null) return ParadoxValueSetValueElement(element, name, "variable", project, gameType)
 		
@@ -69,7 +69,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(localisationCommand != null) return localisationCommand.let { arrayOf(PsiElementResolveResult(it)) }
 		
 		//尝试识别为<scripted_loc>
-		val selector = definitionSelector(project, element).preferSameRoot()
+		val selector = definitionSelector(project, element).contextSensitive()
 		val scriptedLocs = ParadoxDefinitionSearch.search(name, "scripted_loc", selector).findAll()
 		if(scriptedLocs.isNotEmpty()) return scriptedLocs.mapToArray { PsiElementResolveResult(it) }
 		
@@ -78,7 +78,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(predefinedVariable != null) return predefinedVariable.pointer.element?.let { arrayOf(PsiElementResolveResult(it)) } ?: ResolveResult.EMPTY_ARRAY
 		
 		//尝试识别为value[variable]
-		val variableSelector = valueSetValueSelector(project, element).preferSameRoot()
+		val variableSelector = valueSetValueSelector(project, element).contextSensitive()
 		val variables = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findAll()
 		if(variables.isNotEmpty()) return variables.mapToArray { PsiElementResolveResult(ParadoxValueSetValueElement(element, name, "variable", project, gameType)) }
 		

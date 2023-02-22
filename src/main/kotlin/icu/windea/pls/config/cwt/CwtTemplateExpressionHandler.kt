@@ -150,7 +150,7 @@ object CwtTemplateExpressionHandler {
             }
             CwtDataType.Definition -> {
                 val typeExpression = snippetExpression.value ?: return
-                val selector = definitionSelector(project, contextElement).preferSameRoot().distinctByName()
+                val selector = definitionSelector(project, contextElement).contextSensitive().distinctByName()
                 val definitionQuery = ParadoxDefinitionSearch.search(typeExpression, selector)
                 definitionQuery.processQuery { definition ->
                     val name = definition.definitionInfo?.name ?: return@processQuery true
@@ -178,7 +178,7 @@ object CwtTemplateExpressionHandler {
                     val searchScope = complexEnumConfig.searchScopeType
                     val selector = complexEnumValueSelector(project, contextElement)
                         .withSearchScopeType(searchScope, contextElement)
-                        .preferSameRoot()
+                        .contextSensitive()
                         .distinctByName()
                     ParadoxComplexEnumValueSearch.searchAll(enumName, selector).processQuery { complexEnum ->
                         val name = complexEnum.value

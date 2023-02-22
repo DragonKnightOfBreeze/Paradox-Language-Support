@@ -39,7 +39,7 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
                 runReadAction {
                     for((_, locationExpression) in localisationInfos) {
                         ProgressManager.checkCanceled()
-                        val selector = localisationSelector(project, definition).preferSameRoot().preferLocale(preferredParadoxLocale())
+                        val selector = localisationSelector(project, definition).contextSensitive().preferLocale(preferredParadoxLocale())
                         val resolved = locationExpression.resolveAll(definitionInfo.name, definition, project, selector) ?: continue
                         if(resolved.localisations.isNotEmpty()) {
                             targets.addAll(resolved.localisations)
@@ -59,14 +59,14 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
                 runReadAction {
                     val nameKeys = ParadoxModifierHandler.getModifierNameKeys(modifierElement.name, configGroup)
                     val localisations = nameKeys.firstNotNullOfOrNull {
-                        val selector = localisationSelector(project, element).preferSameRoot().preferLocale(preferredParadoxLocale())
+                        val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
                         val result = ParadoxLocalisationSearch.search(it, selector).findAll()
                         result.takeIfNotEmpty()
                     }
                     if(localisations != null) targets.addAll(localisations)
                     val descKeys = ParadoxModifierHandler.getModifierDescKeys(modifierElement.name, configGroup)
                     val descLocalisations = descKeys.firstNotNullOfOrNull {
-                        val selector = localisationSelector(project, element).preferSameRoot().preferLocale(preferredParadoxLocale())
+                        val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
                         val result = ParadoxLocalisationSearch.search(it, selector).findAll()
                         result.takeIfNotEmpty()
                     }
