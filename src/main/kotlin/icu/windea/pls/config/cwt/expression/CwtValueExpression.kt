@@ -83,6 +83,11 @@ class CwtValueExpression private constructor(
 			expressionString == "filename" -> {
 				CwtValueExpression(expressionString, CwtDataType.FileName)
 			}
+			//EXTENDED BY PLS
+			expressionString.surroundsWith("filename[", "]") -> {
+				val value = expressionString.substring(9, expressionString.length - 1)
+				CwtValueExpression(expressionString, CwtDataType.FileName, value)
+			}
 			expressionString == "filepath" -> {
 				CwtValueExpression(expressionString, CwtDataType.FilePath)
 			}

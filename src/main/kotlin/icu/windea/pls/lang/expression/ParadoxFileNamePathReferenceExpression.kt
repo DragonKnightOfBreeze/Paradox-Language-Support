@@ -2,6 +2,7 @@ package icu.windea.pls.lang.expression
 
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 
 /**
@@ -18,11 +19,15 @@ class ParadoxFileNamePathReferenceExpression : ParadoxPathReferenceExpression {
     }
     
     override fun matches(queryParameters: ParadoxFilePathSearch.SearchParameters, filePath: String, ignoreCase: Boolean): Boolean {
-        //queryParameters.filePath -> fileName
-        //contextFile和filePath需要直接位于相同的目录下
-        val contextParentPath = queryParameters.selector.fileInfo?.path?.parent ?: return false //contextParent is required
-        val parentPath = filePath.substringBeforeLast('/')
-        return contextParentPath == parentPath
+        //expression为空 - filePath需要是文件名且该文件需要直接位于contextFile所在目录下 
+        //expression不为空 - filePath需要是文件名且该文件需要位于expression指定的目录（或其子目录）下
+        val expression = queryParameters.configExpression?.value
+        if(expression == null) {
+            val contextParentPath = queryParameters.selector.fileInfo?.path?.parent ?: return false //contextParent is required
+            val parentPath = filePath.substringBeforeLast('/')
+            return contextParentPath == parentPath
+        }
+        return expression.matchesPath(filePath, ignoreCase, strict = true)
     }
     
     override fun extract(configExpression: CwtDataExpression, filePath: String, ignoreCase: Boolean): String {
