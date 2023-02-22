@@ -2,7 +2,9 @@ package icu.windea.pls.localisation.ui.actions.styling
 
 import com.google.common.cache.*
 import com.intellij.openapi.actionSystem.*
+import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 
@@ -15,9 +17,9 @@ private val setColorActionCache = CacheBuilder.newBuilder()
 private fun doGetChildren(): List<AnAction> {
 	val textEditor = PlsThreadLocals.threadLocalTextEditorContainer.get() ?: return emptyList()
 	val project = textEditor.editor.project ?: return emptyList()
-	val file = textEditor.file
-	val gameType = file.fileInfo?.rootInfo?.gameType ?: return emptyList()
-	val colorConfigs = ParadoxTextColorHandler.getInfos(gameType, project, file)
+	val virtualFile = textEditor.file
+	val file = virtualFile.toPsiFile<PsiFile>(project) ?: return emptyList()
+	val colorConfigs = ParadoxTextColorHandler.getInfos(project, file)
 	if(colorConfigs.isEmpty()) return emptyList()
 	return colorConfigs.map { setColorActionCache.get(it) }
 }

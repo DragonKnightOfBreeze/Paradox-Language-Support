@@ -16,7 +16,7 @@ object ParadoxTextColorHandler {
      * 得到textcolor的对应颜色配置。
      */
     @JvmStatic
-    fun getInfos(gameType: ParadoxGameType, project: Project, contextElement: PsiElement): List<ParadoxTextColorInfo> {
+    fun getInfos(project: Project, contextElement: PsiElement): List<ParadoxTextColorInfo> {
         val selector = definitionSelector(project, contextElement).preferSameRoot().distinctByName()
         val definitions = ParadoxDefinitionSearch.search("textcolor", selector = selector).findAll()
         if(definitions.isEmpty()) return emptyList()
@@ -24,7 +24,7 @@ object ParadoxTextColorHandler {
     }
     
     @JvmStatic
-    fun getInfo(name: String, gameType: ParadoxGameType, project: Project, contextElement: PsiElement): ParadoxTextColorInfo? {
+    fun getInfo(name: String, project: Project, contextElement: PsiElement): ParadoxTextColorInfo? {
         val selector = definitionSelector(project, contextElement).preferSameRoot()
         val definition = ParadoxDefinitionSearch.search(name, "textcolor", selector = selector).find()
         if(definition == null) return null

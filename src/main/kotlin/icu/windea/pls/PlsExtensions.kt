@@ -156,17 +156,13 @@ val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorInfo?
     get() {
         //大写或小写字母，不限定位置
         val colorId = this.propertyReferenceParameter?.text?.find { it.isExactLetter() } ?: return null
-        val gameType = this.fileInfo?.rootInfo?.gameType //这里还是基于fileInfo获取gameType
-            ?: return null
-        return ParadoxTextColorHandler.getInfo(colorId.toString(), gameType, project, this)
+        return ParadoxTextColorHandler.getInfo(colorId.toString(), project, this)
     }
 
 val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorInfo?
     get() {
         val colorId = this.name ?: return null
-        val gameType = this.fileInfo?.rootInfo?.gameType //这里还是基于fileInfo获取gameType 
-            ?: return null
-        return ParadoxTextColorHandler.getInfo(colorId, gameType, project, this)
+        return ParadoxTextColorHandler.getInfo(colorId, project, this)
     }
 
 fun ParadoxScriptValue.isNullLike(): Boolean {
