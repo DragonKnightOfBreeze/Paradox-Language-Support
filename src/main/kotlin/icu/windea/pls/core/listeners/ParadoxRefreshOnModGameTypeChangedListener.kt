@@ -11,17 +11,16 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
         val gameType = modSettings.gameType
         
         //更新游戏类型信息缓存
-        modSettings.modDirectory?.let { modDirectory -> refreshGameType(modDirectory, gameType) }
+        modSettings.modDirectory = null
         modSettings.modDependencies.forEach { it.modDirectory?.let { modDirectory -> refreshGameType(modDirectory, gameType) } }
         getProfilesSettings().updateSettings()
         
         //重新解析文件
         val modDirectories = mutableSetOf<String>()
-        modSettings.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) }
         modSettings.modDependencies.forEach { it.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) } }
         runWriteAction { ParadoxCoreHandler.reparseFilesInRoot(modDirectories) }
         
-        //TODO 检查是否也需要强制刷新inlayHints
+        //检查是否也需要强制刷新inlayHints - 不需要
     }
     
     private fun refreshGameType(modDirectory: String, gameType: ParadoxGameType?) {

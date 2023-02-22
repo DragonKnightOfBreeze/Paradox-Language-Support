@@ -17,6 +17,6 @@ class ParadoxRefreshOnDefaultGameTypeChangedListener : ParadoxDefaultGameTypeLis
         }
         runWriteAction { ParadoxCoreHandler.reparseFilesInRoot(modDirectories) }
         
-        //TODO 检查是否也需要强制刷新inlayHints
+        //检查是否也需要强制刷新inlayHints - 不需要
     }
 }
