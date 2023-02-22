@@ -1,7 +1,6 @@
 package icu.windea.pls.core.search.scopes
 
 import com.intellij.model.*
-import com.intellij.openapi.module.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
@@ -22,14 +21,6 @@ class ParadoxModScope(
     
     override fun contains(file: VirtualFile): Boolean {
         return VfsUtilCore.isAncestor(modDirectory, file, false)
-    }
-    
-    override fun isSearchInModuleContent(aModule: Module): Boolean {
-        return true
-    }
-    
-    override fun isSearchInLibraries(): Boolean {
-        return true
     }
     
     override fun calcHashCode(): Int {

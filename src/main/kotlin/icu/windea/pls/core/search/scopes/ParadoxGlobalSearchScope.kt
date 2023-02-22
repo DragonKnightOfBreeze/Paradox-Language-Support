@@ -1,5 +1,6 @@
 package icu.windea.pls.core.search.scopes
 
+import com.intellij.openapi.module.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
@@ -9,7 +10,17 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
 
-sealed class ParadoxGlobalSearchScope(project: Project) : GlobalSearchScope(project) {
+sealed class ParadoxGlobalSearchScope(
+    project: Project
+) : GlobalSearchScope(project) {
+    override fun isSearchInModuleContent(aModule: Module): Boolean {
+        return true
+    }
+    
+    override fun isSearchInLibraries(): Boolean {
+        return true
+    }
+    
     companion object {
         @JvmStatic
         fun fromElement(element: PsiElement): GlobalSearchScope? {

@@ -13,7 +13,6 @@
   
   <extensions defaultExtensionNs="com.intellij">
     <!--override extensions-->
-    <!--<projectService serviceInterface="com.intellij.psi.impl.ResolveScopeManager" serviceImplementation="icu.windea.override.psi.impl.file.impl.ParadoxResolveScopeManager" overrides="true"/>-->
     <projectService serviceInterface="com.intellij.psi.search.PsiSearchHelper" serviceImplementation="icu.windea.override.psi.search.ParadoxPsiSearchHelper" overrides="true"/>
   </extensions>
   
