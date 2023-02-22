@@ -61,6 +61,7 @@ class ParadoxModDependencyAddDialog(
     }
     
     private fun ValidationInfoBuilder.validateModDirectory(): ValidationInfo? {
+        if(modDirectory.isEmpty()) return error(PlsBundle.message("mod.dependency.add.modDirectory.error.empty"))
         val path = modDirectory.toPathOrNull()
             ?: return error(PlsBundle.message("mod.dependency.add.modDirectory.error.1"))
         val rootFile = VfsUtil.findFile(path, false)?.takeIf { it.exists() }
@@ -77,6 +78,9 @@ class ParadoxModDependencyAddDialog(
     }
     
     override fun doOKAction() {
+        val modDirectory = modDirectory
+        if(!tableModel.modDependencyDirectories.add(modDirectory)) return //忽略重复添加的模组依赖
+        
         val newSettings = ParadoxModDependencySettingsState()
         newSettings.modDirectory = modDirectory
         newSettings.enabled = true

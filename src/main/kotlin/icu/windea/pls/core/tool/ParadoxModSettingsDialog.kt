@@ -130,6 +130,7 @@ class ParadoxModSettingsDialog(
         //* 路径合法
         //* 路径对应的目录存在
         //* 路径是游戏目录（可以查找到对应的launcher-settings.json）
+        if(gameDirectory.isEmpty()) return null //为空时跳过检查
         val path = gameDirectory.toPathOrNull()
             ?: return error(PlsBundle.message("mod.settings.gameDirectory.error.1"))
         val rootFile = VfsUtil.findFile(path, false)?.takeIf { it.exists() }
@@ -156,7 +157,6 @@ class ParadoxModSettingsDialog(
     
     private fun handleModSettings() {
         //如果需要，加上缺失的模组自身的模组依赖配置
-        val modDependencies = settings.modDependencies
         if(modDependencies.find { it.modDirectory == settings.modDirectory } == null) {
             val newSettings = ParadoxModDependencySettingsState()
             newSettings.modDirectory = settings.modDirectory

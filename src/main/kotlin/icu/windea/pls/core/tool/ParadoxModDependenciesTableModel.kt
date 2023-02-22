@@ -17,8 +17,10 @@ import javax.swing.*
 
 class ParadoxModDependenciesTableModel(
     val settings: ParadoxGameOrModSettingsState,
-    modDependencies: MutableList<ParadoxModDependencySettingsState>
+    val modDependencies: MutableList<ParadoxModDependencySettingsState>
 ) : ListTableModel<ParadoxModDependencySettingsState>() {
+    val modDependencyDirectories = modDependencies.mapTo(mutableSetOf()) { it.modDirectory.orEmpty() }
+    
     init {
         columnInfos = arrayOf(EnabledItem, NameItem, VersionItem, SupportedVersionItem)
         items = modDependencies
