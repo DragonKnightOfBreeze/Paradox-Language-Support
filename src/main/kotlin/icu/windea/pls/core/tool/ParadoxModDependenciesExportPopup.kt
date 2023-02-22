@@ -30,7 +30,7 @@ class ParadoxModDependenciesExportPopup(
         return true
     }
     
-    override fun onChosen(selectedValue: ParadoxModDependenciesExporter, finalChoice: Boolean): PopupStep<*> {
+    override fun onChosen(selectedValue: ParadoxModDependenciesExporter, finalChoice: Boolean): PopupStep<*>? {
         return doFinalStep { selectedValue.execute(project, tableView, tableModel) }
     }
 }
