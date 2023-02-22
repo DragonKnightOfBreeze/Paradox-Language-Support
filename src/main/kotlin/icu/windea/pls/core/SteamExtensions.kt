@@ -18,40 +18,40 @@ import java.util.concurrent.*
 private val steamPathCache = ConcurrentHashMap<String, String>()
 
 fun getSteamPath(): String? {
-    val result = steamPathCache.getOrPut("") { doGetSteamPath() }
+    val result = steamPathCache.getOrPut("") { doGetSteamPath() }.takeIfNotEmpty()
     return result
 }
 
-private fun doGetSteamPath(): String? {
+private fun doGetSteamPath(): String {
     try {
-        if(System.getProperty("os.name")?.contains("windows", true) != true) return null
+        if(System.getProperty("os.name")?.contains("windows", true) != true) return ""
         val command = "Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Wow6432Node\\Valve\\Steam' | Select-Object InstallPath | Format-Table -HideTableHeaders"
         val commandArray = arrayOf("powershell", "-command", command)
         val process = Runtime.getRuntime().exec(commandArray)
         process.waitFor()
-        return process.inputStream.reader().use { it.readText() }.trim().takeIfNotEmpty()
+        return process.inputStream.reader().use { it.readText() }.trim()
     } catch(e: Exception) {
-        return null
+        return ""
     }
 }
 
 fun getSteamGamePath(steamId: String, gameName: String): String? {
-    val result = steamPathCache.getOrPut(steamId) { doGetSteamGamePath(steamId) }
+    val result = steamPathCache.getOrPut(steamId) { doGetSteamGamePath(steamId) }.takeIfNotEmpty()
     if(result != null) return result
     //不准确，可以放在不同库目录下
     return getSteamPath()?.let { steamPath -> """$steamPath\steamapps\common\$gameName""" }
 }
 
-private fun doGetSteamGamePath(steamId: String): String? {
+private fun doGetSteamGamePath(steamId: String): String {
     try {
-        if(System.getProperty("os.name")?.contains("windows", true) != true) return null
+        if(System.getProperty("os.name")?.contains("windows", true) != true) return ""
         val command = "Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App ${steamId}' | Select-Object InstallLocation | Format-Table -HideTableHeaders"
         val commandArray = arrayOf("powershell", "-command", command)
         val process = Runtime.getRuntime().exec(commandArray)
         process.waitFor()
-        return process.inputStream.reader().use { it.readText() }.trim().takeIfNotEmpty()
+        return process.inputStream.reader().use { it.readText() }.trim()
     } catch(e: Exception) {
-        return null
+        return ""
     }
 }
 

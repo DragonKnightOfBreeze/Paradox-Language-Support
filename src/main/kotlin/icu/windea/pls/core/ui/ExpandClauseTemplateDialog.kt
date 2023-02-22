@@ -84,7 +84,6 @@ class ExpandClauseTemplateDialog(
         tableView.columnSelectionAllowed = true
         tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
         tableView.selectionModel.setSelectionInterval(0, 0)
-        tableView.surrendersFocusOnKeystroke = true
         //快速搜索
         object : TableViewSpeedSearch<ElementDescriptor>(tableView) {
             override fun getItemText(element: ElementDescriptor): String {

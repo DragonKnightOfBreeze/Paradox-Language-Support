@@ -77,13 +77,13 @@ class ParadoxModDependencyAddDialog(
     }
     
     override fun doOKAction() {
-        //这里点击确定按钮后会弹出模组依赖配置对话框，以便预览模组配置，再次点击确定按钮才会添加到模组依赖列表
         val newSettings = ParadoxModDependencySettingsState()
         newSettings.modDirectory = modDirectory
         newSettings.enabled = true
         
-        val editDialog = ParadoxModDependencySettingsDialog(project, newSettings, this.contentPanel)
-        if(!editDialog.showAndGet()) return
+        //点击确定按钮后会弹出模组依赖配置对话框，以便预览模组配置，再次点击确定按钮才会添加到模组依赖列表 - 目前不这样做
+        //val editDialog = ParadoxModDependencySettingsDialog(project, newSettings, this.contentPanel)
+        //if(!editDialog.showAndGet()) return
         
         //如果最后一个模组依赖是当前模组自身，需要插入到它之前，否则直接添加到最后
         if(isCurrentAtLast()) {

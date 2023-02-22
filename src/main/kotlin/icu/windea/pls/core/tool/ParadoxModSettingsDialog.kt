@@ -28,7 +28,7 @@ class ParadoxModSettingsDialog(
     val gameDirectoryProperty = graph.property(settings.gameDirectory.orEmpty())
     
     init {
-        gameVersionProperty.dependsOn(gameDirectoryProperty) { getGameVersionFromGameDirectory().orEmpty() }
+        gameVersionProperty.dependsOn(gameDirectoryProperty) { doGetGameVersionFromGameDirectory().orEmpty() }
     }
     
     var gameType by gameTypeProperty
@@ -97,6 +97,7 @@ class ParadoxModSettingsDialog(
             row {
                 //quickSelectGameDirectory
                 link(PlsBundle.message("mod.settings.quickSelectGameDirectory")) { quickSelectGameDirectory() }
+                    enabled(getSteamGamePath(gameType.gameSteamId, gameType.gameName) != null)
             }
             row {
                 //modDirectory
@@ -145,7 +146,7 @@ class ParadoxModSettingsDialog(
         gameDirectory = targetPath
     }
     
-    private fun getGameVersionFromGameDirectory(): String? {
+    private fun doGetGameVersionFromGameDirectory(): String? {
         val gameDirectory = gameDirectory.takeIfNotEmpty() ?: return null
         val rootFile = gameDirectory.toVirtualFile(false)?.takeIf { it.exists() } ?: return null
         val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile)

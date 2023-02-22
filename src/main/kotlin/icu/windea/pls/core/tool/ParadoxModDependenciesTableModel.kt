@@ -20,7 +20,7 @@ class ParadoxModDependenciesTableModel(
     modDependencies: MutableList<ParadoxModDependencySettingsState>
 ) : ListTableModel<ParadoxModDependencySettingsState>() {
     init {
-        columnInfos = arrayOf(EnabledItem, NameItem, VersionItem)
+        columnInfos = arrayOf(EnabledItem, NameItem, VersionItem, SupportedVersionItem)
         items = modDependencies
     }
     
@@ -73,6 +73,20 @@ class ParadoxModDependenciesTableModel(
             return _comparator
         }
     }
+    
+    object SupportedVersionItem : ColumnInfo<ParadoxModDependencySettingsState, String>(PlsBundle.message("mod.dependencies.column.supportedVersion.name")) {
+        const val columnIndex = 3
+        
+        private val _comparator = compareBy<ParadoxModDependencySettingsState> { item -> item.supportedVersion.orEmpty() }
+        
+        override fun valueOf(item: ParadoxModDependencySettingsState): String {
+            return item.supportedVersion.orEmpty()
+        }
+        
+        override fun getComparator(): Comparator<ParadoxModDependencySettingsState> {
+            return _comparator
+        }
+    }
 }
 
 //com.intellij.openapi.roots.ui.configuration.classpath.ClasspathPanelImpl.createTableWithButtons
@@ -86,11 +100,11 @@ fun createModDependenciesPanel(project: Project, settings: ParadoxGameOrModSetti
     tableView.intercellSpacing = Dimension(0, 0)
     tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
     tableView.selectionModel.setSelectionInterval(0, 0)
-    tableView.surrendersFocusOnKeystroke = true
     //调整列的宽度
     tableView.setFixedColumnWidth(ParadoxModDependenciesTableModel.EnabledItem.columnIndex, ParadoxModDependenciesTableModel.EnabledItem.name)
     tableView.tableHeader.columnModel.getColumn(ParadoxModDependenciesTableModel.NameItem.columnIndex).preferredWidth = 10000 // consume all available space
-    tableView.setFixedColumnWidth(ParadoxModDependenciesTableModel.VersionItem.columnIndex, "x.y.zz      ")
+    tableView.setFixedColumnWidth(ParadoxModDependenciesTableModel.VersionItem.columnIndex, ParadoxModDependenciesTableModel.VersionItem.name)
+    tableView.setFixedColumnWidth(ParadoxModDependenciesTableModel.SupportedVersionItem.columnIndex, ParadoxModDependenciesTableModel.SupportedVersionItem.name)
     //快速搜索
     object : TableViewSpeedSearch<ParadoxModDependencySettingsState>(tableView) {
         override fun getItemText(element: ParadoxModDependencySettingsState): String {
