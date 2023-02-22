@@ -57,7 +57,6 @@ class ParadoxGameSettingsDialog(
             }
             
             //modDependencies
-            
             collapsibleGroup(PlsBundle.message("game.settings.modDependencies"), false) {
                 row {
                     cell(createModDependenciesPanel(project, settings, modDependencies))

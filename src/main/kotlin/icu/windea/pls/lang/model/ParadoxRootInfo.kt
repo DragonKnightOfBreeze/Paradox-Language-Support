@@ -51,7 +51,11 @@ class ParadoxGameRootInfo(
     override val gameRootPath: Path = gameRootFile.toNioPath()
     
     override val qualifiedName: String
-        get() = "${gameType.description}@${launcherSettingsInfo.rawVersion}"
+        get() = buildString {
+            append(gameType.description)
+            append("@")
+            append(launcherSettingsInfo.rawVersion)
+        }
     override val isAvailable: Boolean
         get() = launcherSettingsFile.isValid
     
