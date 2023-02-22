@@ -28,7 +28,7 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
             gameSettings.gameVersion = launcherSettingsInfo.rawVersion
             gameSettings.gameDirectory = gameDirectory
             settings.gameSettings.put(gameDirectory, gameSettings)
-            //settings.updateSettings()
+            settings.updateSettings()
             
             ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onAdd(gameSettings)
         } else {
@@ -48,7 +48,7 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
             descriptorSettings = ParadoxModDescriptorSettingsState()
             syncModDescriptorSettings(descriptorSettings, descriptorInfo, rootInfo)
             settings.modDescriptorSettings.put(modDirectory, descriptorSettings)
-            //settings.updateSettings()
+            settings.updateSettings()
         }
         
         var modSettings = settings.modSettings.get(modDirectory)
@@ -57,7 +57,7 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
             modSettings.gameType = descriptorSettings.gameType
             modSettings.modDirectory = modDirectory
             settings.modSettings.put(modDirectory, modSettings)
-            //settings.updateSettings()
+            settings.updateSettings()
             
             ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onAdd(modSettings)
         }
