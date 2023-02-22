@@ -25,8 +25,11 @@ class ParadoxModSettingsDialog(
     val graph = PropertyGraph()
     val gameTypeProperty = graph.property(settings.gameType ?: getSettings().defaultGameType)
     val gameVersionProperty = graph.property(settings.gameVersion.orEmpty())
-        .apply { dependsOn(gameDirectoryProperty) { getGameVersionFromGameDirectory().orEmpty() } }
     val gameDirectoryProperty = graph.property(settings.gameDirectory.orEmpty())
+    
+    init {
+        gameVersionProperty.dependsOn(gameDirectoryProperty) { getGameVersionFromGameDirectory().orEmpty() }
+    }
     
     var gameType by gameTypeProperty
     var gameVersion by gameVersionProperty

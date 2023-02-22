@@ -30,11 +30,11 @@ class ParadoxModDependenciesTableModel(
         const val columnIndex = 0
         
         override fun valueOf(item: ParadoxModDependencySettingsState): Boolean {
-            return item.selected
+            return item.enabled
         }
         
         override fun setValue(item: ParadoxModDependencySettingsState, value: Boolean) {
-            item.selected = value
+            item.enabled = value
         }
         
         override fun isCellEditable(item: ParadoxModDependencySettingsState): Boolean {
@@ -110,6 +110,8 @@ fun createModDependenciesPanel(project: Project, settings: ParadoxGameOrModSetti
         }
     }.installOn(tableView)
     
+    val enableAllButton = ParadoxModDependenciesToolbarActions.EnableAllAction(project, tableView, tableModel)
+    val disableAllButton = ParadoxModDependenciesToolbarActions.DisableAllAction(project, tableView, tableModel)
     val editButton = ParadoxModDependenciesToolbarActions.EditAction(project, tableView, tableModel)
     val importButton = ParadoxModDependenciesToolbarActions.ImportAction(project, tableView, tableModel)
     val exportButton = ParadoxModDependenciesToolbarActions.ExportAction(project, tableView, tableModel)
@@ -133,6 +135,8 @@ fun createModDependenciesPanel(project: Project, settings: ParadoxGameOrModSetti
             }
             true
         }
+        .addExtraAction(enableAllButton)
+        .addExtraAction(disableAllButton)
         .addExtraAction(editButton)
         .addExtraAction(importButton)
         .addExtraAction(exportButton)
@@ -144,9 +148,12 @@ fun createModDependenciesPanel(project: Project, settings: ParadoxGameOrModSetti
     val actionGroup = DefaultActionGroup()
     actionGroup.addAction(addButton)
     actionGroup.addAction(removeButton)
+    actionGroup.addAction(enableAllButton)
+    actionGroup.addAction(disableAllButton)
     actionGroup.addAction(editButton)
     actionGroup.addAction(importButton)
     actionGroup.addAction(exportButton)
+    actionGroup.addSeparator()
     actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPathAction(tableView, tableModel))
     actionGroup.addAction(ParadoxModDependenciesPopupActions.CopyModPathAction(tableView, tableModel))
     actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPageOnSteamWebsiteAction(tableView, tableModel))

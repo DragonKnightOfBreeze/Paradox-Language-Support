@@ -70,11 +70,11 @@ class ParadoxModSettingsState : BaseState(), ParadoxGameOrModSettingsState {
  *
  * 始终将模组放到自身的模组依赖列表中，其排序可以调整。
  *
- * @property selected 用于以后的基于模组列表运行游戏的功能。
+ * @property enabled 用于以后的基于模组列表运行游戏的功能。
  */
 class ParadoxModDependencySettingsState : BaseState() {
     var modDirectory: String? by string()
-    var selected: Boolean by property(true)
+    var enabled: Boolean by property(true)
     
     val modDescriptorSettings: ParadoxModDescriptorSettingsState
         get() = getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())
