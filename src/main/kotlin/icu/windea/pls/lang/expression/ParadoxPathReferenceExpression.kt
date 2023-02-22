@@ -3,6 +3,7 @@ package icu.windea.pls.lang.expression
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.core.search.*
 
 /**
  * 路径引用表达式。
@@ -19,14 +20,12 @@ interface ParadoxPathReferenceExpression {
     /**
      * 判断是否可以直接匹配完整的文件路径。即路径引用表达式等同于文件路径。
      */
-    fun matchEntire(configExpression: CwtDataExpression): Boolean = false
+    fun matchEntire(queryParameters: ParadoxFilePathSearch.SearchParameters): Boolean
     
     /**
      * 判断指定的文件路径表达式是否匹配另一个相对于游戏或模组目录根路径的路径。
-     * @param configExpression 对应的CWT规则表达式。拥有数种写法的文件路径表达式。
-     * @param ignoreCase 匹配时是否需要忽略大小写。
      */
-    fun matches(configExpression: CwtDataExpression, filePath: String, ignoreCase: Boolean = true): Boolean
+    fun matches(queryParameters: ParadoxFilePathSearch.SearchParameters, filePath: String, ignoreCase: Boolean = true): Boolean
     
     /**
      * 根据指定的文件路径表达式，从精确路径中提取出需要的作为值的字符串。即脚本文件中使用的路径表达式。

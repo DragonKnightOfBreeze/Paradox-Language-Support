@@ -3,6 +3,7 @@ package icu.windea.pls.lang.expression
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.search.*
 
 /**
  * @see CwtDataType.FilePath
@@ -12,12 +13,12 @@ class ParadoxFilePathPathReferenceExpression : ParadoxPathReferenceExpression {
         return configExpression.type == CwtDataType.FilePath
     }
     
-    override fun matchEntire(configExpression: CwtDataExpression): Boolean {
-        return configExpression.value == null
+    override fun matchEntire(queryParameters: ParadoxFilePathSearch.SearchParameters): Boolean {
+        return queryParameters.configExpression?.value == null
     }
     
-    override fun matches(configExpression: CwtDataExpression, filePath: String, ignoreCase: Boolean): Boolean {
-        val expression = configExpression.value ?: return true
+    override fun matches(queryParameters: ParadoxFilePathSearch.SearchParameters, filePath: String, ignoreCase: Boolean): Boolean {
+        val expression = queryParameters.configExpression?.value ?: return true
         val index = expression.lastIndexOf(',') //","应当最多出现一次
         if(index == -1) {
             //匹配父路径

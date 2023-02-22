@@ -20,7 +20,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         val scope = queryParameters.selector.scope
         val name = ParadoxFilePathIndex.name
         val pathReferenceExpression = if(configExpression != null) ParadoxPathReferenceExpression.get(configExpression) else null
-        if(configExpression == null || pathReferenceExpression?.matchEntire(configExpression) == true) {
+        if(configExpression == null || pathReferenceExpression?.matchEntire(queryParameters) == true) {
             val keys = if(filePath != null) setOf(filePath) else FileBasedIndex.getInstance().getAllKeys(name, project)
             FileBasedIndex.getInstance().processFilesContainingAnyKey(name, keys, scope, null, null) { file ->
                 consumer.process(file)
@@ -31,7 +31,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         FileBasedIndex.getInstance().processAllKeys(name, p@{ path ->
             ProgressManager.checkCanceled()
             if(filePath != null && pathReferenceExpression.extract(configExpression, path, ignoreCase) != filePath) return@p true
-            if(!pathReferenceExpression.matches(configExpression, path, ignoreCase)) return@p true
+            if(!pathReferenceExpression.matches(queryParameters, path, ignoreCase)) return@p true
             val keys = setOf(path)
             FileBasedIndex.getInstance().processFilesContainingAnyKey(name, keys, scope, null, null) { file ->
                 consumer.process(file)
