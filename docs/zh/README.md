@@ -12,40 +12,43 @@ IDEA插件：Paradox语言支持。
 提供语法解析、引用解析、快速文档、代码导航、代码检查、代码补全、内嵌提示、动态模版、本地化文本渲染、DDS图片渲染等功能。
 
 支持CWT语言（`*.cwt`文件），
-提供语法解析、导航、文档等功能。
+提供语法解析、引用解析、快速文档、代码导航等功能。
 
 支持直接在IDE中查看DDS图片，提供必要的编辑器功能，如同IDE对普通图片的支持一样。
 
-通过在你的模组根文件夹下创建描述符文件`descriptor.mod`，以将其中匹配的文件识别为脚本文件或本地化文件。
+此插件会自动识别游戏目录（包含启动器配置文件`launcher-settings.json`）和模组目录（包含模组描述符文件`descriptor.mod`）中的脚本文件和本地化文件。
 
-通过在`项目结构`页面中将游戏目录或者第三方模组目录作为库添加到所属的项目或模块，以将其导入作为你的模组的依赖。
+此插件与 [CWTools](https://github.com/cwtools/cwtools-vscode) 共享规则文件（`*.cwt`），这些规则文件目前由插件内置，并经过一定的修改和扩展。
 
-通过配置页面`Settings > Languages & Frameworks > Paradox Language Support`（以及某些通用配置页面），可以变更插件的一些配置。
+通过由编辑器悬浮工具栏或右键菜单打开的游戏配置/模组配置对话框，可以更改游戏/模组的游戏类型、游戏目录、模组依赖等配置项。
 
-这个插件正在开发中，部分比较复杂的功能可能尚未实现，并且使用过程中可能会发生意外的BUG。
-如果需要使用这个插件尚未实现或者尚不完善的功能，
-请考虑使用 [VSCode](https://code.visualstudio.com) 及其插件 [CWTools](https://github.com/cwtools/cwtools-vscode) 。
+通过插件的配置页面`Settings > Languages & Frameworks > Paradox Language Support`以及某些IDE的通用配置页面，可以更改一些全局配置项。
 
-这个插件与 [CWTools](https://github.com/cwtools/cwtools-vscode) 共享规则文件（`*.cwt`），
-这些规则文件目前由插件内置，经过一定的修改和扩展。当插件发布新版本时，规则文件也会同步到最新版本。
+如果同时安装了 [Translation](https://github.com/YiiGuxing/TranslationPlugin) ，此插件可以提供一些[额外的功能](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md)。
 
-如果同时安装了 [Translation](https://github.com/YiiGuxing/TranslationPlugin) ，这个插件可以提供一些[额外的功能](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md)。
+此插件正在开发中，如果在使用过程中遇到问题，欢迎在Github上反馈。
+
+关于插件的功能和用法，请参阅 [参考文档](https://windea.icu/Paradox-Language-Support/#/zh/) （有待详细编写）。
 
 ![](../assets/images/script_file_preview_zh.png)
 
 ![](../assets/images/localisation_file_preview_zh.png)
 
-说明：
+## 快速开始
 
-* 在你的模组根文件夹下创建描述符文件`descriptor.mod`，即可提供语言支持。  
-* 在你的模组根文件夹下创建标记文件`.${gameType}`，即可指定游戏类型。（如`.stellaris`）  
-* 支持的游戏类型：ck2 / ck3 / eu4 / hoi4 / ir / stellaris / vic2。
-* 支持的P社游戏：Crusader Kings II（十字军之王 II） / Crusader Kings III（十字军之王 III） / Europa Universalis IV（欧陆风云 IV） / Hearts of Iron IV（钢铁雄心 IV） / Imperator: Rome（帝国：罗马） / Stellaris（群星） / Victoria II（维多利亚 II）。
+* 通过IDE打开你的模组根目录。（需要直接包含模组描述符文件`descriptor.mod`）
+* 打开模组描述符文件，点击位于编辑器右上角的悬浮工具栏中的模组配置按钮，配置模组的游戏类型、游戏目录和额外的模组依赖。
+* 等待IDE索引完成。（很快就好）
+* 开始你的模组编程之旅吧！
 
 提示：
 
-* 如果需要添加游戏目录以及第三方模组作为依赖，如同Java和Kotlin一样，将它们作为库添加到你的模组对应的项目模块即可。
-* 如果遇到某些有关索引的IDE问题，请尝试重新构建索引。（点击`File -> Invalidate Caches... -> Invalidate and Restart`）
+* 如果某段脚本无法被识别，通常有以下几种情况：
+    * 对应的CWT规则不存在（即这段脚本存在错误）
+    * 对应的CWT规则不完善（考虑在Github上反馈）
+    * 存在无法解析的引用（考虑配置对应的游戏目录或者模组依赖）
+* 如果IDE索引出现问题，或者发生了涉及IDE索引的报错，请尝试重建索引。
+  （点击`File -> Invalidate Caches... -> Invalidate and Restart`）
 
 ## 参考
 
