@@ -74,11 +74,11 @@ object ParadoxCoreHandler {
             logger.warn(e)
             null
         }
-        runCatching {
-            rootFile.putCopyableUserData(PlsKeys.rootInfoKey, resolvedRootInfo)
-        }
         if(resolvedRootInfo != null) {
             onAddRootInfo(resolvedRootInfo)
+        }
+        runCatching {
+            rootFile.putCopyableUserData(PlsKeys.rootInfoKey, resolvedRootInfo)
         }
         return resolvedRootInfo
     }

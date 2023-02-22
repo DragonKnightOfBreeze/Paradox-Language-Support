@@ -13,6 +13,6 @@ interface ParadoxGameSettingsListener {
     
     companion object {
         @Topic.AppLevel
-        val TOPIC = Topic.create("ParadoxGameSettingsListener", ParadoxGameSettingsListener::class.java)
+        val TOPIC = Topic(ParadoxGameSettingsListener::class.java, Topic.BroadcastDirection.NONE)
     }
 }

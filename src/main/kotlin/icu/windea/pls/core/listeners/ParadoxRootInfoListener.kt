@@ -13,6 +13,6 @@ interface ParadoxRootInfoListener {
     
     companion object {
         @Topic.AppLevel
-        val TOPIC = Topic.create("ParadoxRootInfoListener", ParadoxRootInfoListener::class.java)
+        val TOPIC = Topic(ParadoxRootInfoListener::class.java, Topic.BroadcastDirection.NONE, true)
     }
 }

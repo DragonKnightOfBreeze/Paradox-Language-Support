@@ -11,7 +11,7 @@ interface ParadoxModGameTypeListener {
     
     companion object {
         @Topic.AppLevel
-        val TOPIC = Topic.create("ParadoxModGameTypeListener", ParadoxModGameTypeListener::class.java)
+        val TOPIC = Topic(ParadoxModGameTypeListener::class.java, Topic.BroadcastDirection.NONE)
     }
 }
 

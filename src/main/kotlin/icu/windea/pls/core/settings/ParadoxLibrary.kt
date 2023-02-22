@@ -92,14 +92,16 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
         val newRoots = computeRoots()
         if(oldRoots == newRoots) return
         roots = newRoots
-        runWriteAction {
-            AdditionalLibraryRootsListener.fireAdditionalLibraryChanged(
-                project,
-                PlsBundle.message("library.name"),
-                oldRoots,
-                newRoots,
-                PlsBundle.message("library.name")
-            )
+        runInEdt(ModalityState.NON_MODAL) {
+            runWriteAction {
+                AdditionalLibraryRootsListener.fireAdditionalLibraryChanged(
+                    project,
+                    PlsBundle.message("library.name"),
+                    oldRoots,
+                    newRoots,
+                    PlsBundle.message("library.name")
+                )
+            }
         }
     }
 }
