@@ -9,6 +9,9 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 
 public class ParadoxScriptInlineMathAbsExpressionImpl extends ParadoxScriptInlineMathExpressionImpl implements ParadoxScriptInlineMathAbsExpression {
 
@@ -37,6 +40,24 @@ public class ParadoxScriptInlineMathAbsExpressionImpl extends ParadoxScriptInlin
   @Nullable
   public ParadoxScriptInlineMathFactor getInlineMathFactor() {
     return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathFactor.class);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
+    return ParadoxScriptPsiImplUtil.getResolveScope(this);
+  }
+
+  @Override
+  @NotNull
+  public SearchScope getUseScope() {
+    return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 
 }

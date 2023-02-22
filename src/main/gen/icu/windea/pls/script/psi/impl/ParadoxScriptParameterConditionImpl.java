@@ -10,7 +10,10 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
 public class ParadoxScriptParameterConditionImpl extends ASTWrapperPsiElement implements ParadoxScriptParameterCondition {
@@ -73,6 +76,24 @@ public class ParadoxScriptParameterConditionImpl extends ASTWrapperPsiElement im
   @NotNull
   public List<PsiElement> getComponents() {
     return ParadoxScriptPsiImplUtil.getComponents(this);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
+    return ParadoxScriptPsiImplUtil.getResolveScope(this);
+  }
+
+  @Override
+  @NotNull
+  public SearchScope getUseScope() {
+    return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 
 }

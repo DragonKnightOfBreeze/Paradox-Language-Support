@@ -9,6 +9,8 @@ import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.expression.ParadoxDataType;
 import javax.swing.Icon;
 
@@ -39,14 +41,20 @@ public interface ParadoxScriptPropertyKey extends NavigatablePsiElement, Paradox
   String getConfigExpression();
 
   @Nullable
-  ItemPresentation getPresentation();
-
-  boolean isEquivalentTo(@NotNull PsiElement another);
-
-  @Nullable
   PsiReference getReference();
 
   @NotNull
   PsiReference[] getReferences();
+
+  boolean isEquivalentTo(@NotNull PsiElement another);
+
+  @NotNull
+  ItemPresentation getPresentation();
+
+  @NotNull
+  GlobalSearchScope getResolveScope();
+
+  @NotNull
+  SearchScope getUseScope();
 
 }

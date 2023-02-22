@@ -18,6 +18,8 @@
     AT="@"
     PIPE="|"
   ]
+  
+  methods(".*")=[getPresentation getResolveScope getUseScope]
 }
 
 //规则定义可以忽略空白
@@ -55,7 +57,7 @@ property ::= property_key COLON property_number? property_value {
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
   methods=[
     getIcon getName setName getNameIdentifier getTextOffset getCategory getValue
-    getPresentation isEquivalentTo toString
+    isEquivalentTo toString
   ]
 }
 //https://stellaris.paradoxwikis.com/Localisation_modding

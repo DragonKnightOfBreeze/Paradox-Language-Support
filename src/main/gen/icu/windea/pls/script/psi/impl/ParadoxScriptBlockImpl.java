@@ -9,8 +9,11 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.expression.ParadoxDataType;
 import javax.swing.Icon;
 
@@ -111,6 +114,24 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   @NotNull
   public PsiReference[] getReferences() {
     return ParadoxScriptPsiImplUtil.getReferences(this);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
+    return ParadoxScriptPsiImplUtil.getResolveScope(this);
+  }
+
+  @Override
+  @NotNull
+  public SearchScope getUseScope() {
+    return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 
 }

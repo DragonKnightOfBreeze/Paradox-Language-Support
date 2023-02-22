@@ -6,7 +6,10 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
 import com.intellij.psi.ContributedReferenceHost;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.expression.ParadoxDataType;
 
 public interface ParadoxScriptInt extends ParadoxScriptValue, PsiLiteralValue, ContributedReferenceHost {
@@ -30,5 +33,14 @@ public interface ParadoxScriptInt extends ParadoxScriptValue, PsiLiteralValue, C
 
   @NotNull
   PsiReference[] getReferences();
+
+  @NotNull
+  ItemPresentation getPresentation();
+
+  @NotNull
+  GlobalSearchScope getResolveScope();
+
+  @NotNull
+  SearchScope getUseScope();
 
 }

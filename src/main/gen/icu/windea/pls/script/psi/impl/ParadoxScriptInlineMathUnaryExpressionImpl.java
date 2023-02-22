@@ -9,6 +9,9 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 
 public class ParadoxScriptInlineMathUnaryExpressionImpl extends ParadoxScriptInlineMathExpressionImpl implements ParadoxScriptInlineMathUnaryExpression {
 
@@ -43,6 +46,24 @@ public class ParadoxScriptInlineMathUnaryExpressionImpl extends ParadoxScriptInl
   @Nullable
   public ParadoxScriptInlineMathParExpression getInlineMathParExpression() {
     return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathParExpression.class);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
+    return ParadoxScriptPsiImplUtil.getResolveScope(this);
+  }
+
+  @Override
+  @NotNull
+  public SearchScope getUseScope() {
+    return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 
 }

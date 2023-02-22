@@ -10,6 +10,9 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 
 public abstract class ParadoxScriptInlineMathFactorImpl extends ASTWrapperPsiElement implements ParadoxScriptInlineMathFactor {
 
@@ -25,6 +28,24 @@ public abstract class ParadoxScriptInlineMathFactorImpl extends ASTWrapperPsiEle
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
+    return ParadoxScriptPsiImplUtil.getResolveScope(this);
+  }
+
+  @Override
+  @NotNull
+  public SearchScope getUseScope() {
+    return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 
 }

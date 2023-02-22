@@ -10,7 +10,10 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.localisation.psi.*;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.expression.ParadoxDataType;
 import icu.windea.pls.core.references.ParadoxScriptedVariablePsiReference;
 import javax.swing.Icon;
@@ -65,6 +68,24 @@ public class ParadoxLocalisationScriptedVariableReferenceImpl extends ASTWrapper
   @NotNull
   public String getExpression() {
     return ParadoxLocalisationPsiImplUtil.getExpression(this);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return ParadoxLocalisationPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
+    return ParadoxLocalisationPsiImplUtil.getResolveScope(this);
+  }
+
+  @Override
+  @NotNull
+  public SearchScope getUseScope() {
+    return ParadoxLocalisationPsiImplUtil.getUseScope(this);
   }
 
 }

@@ -8,6 +8,8 @@ import icu.windea.pls.core.psi.ParadoxTypedElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.expression.ParadoxDataType;
 import icu.windea.pls.lang.model.ParadoxParameterInfo;
 import java.util.Map;
@@ -59,9 +61,15 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   @NotNull
   Map<String, ParadoxParameterInfo> getParameters();
 
-  @Nullable
+  boolean isEquivalentTo(@NotNull PsiElement another);
+
+  @NotNull
   ItemPresentation getPresentation();
 
-  boolean isEquivalentTo(@NotNull PsiElement another);
+  @NotNull
+  GlobalSearchScope getResolveScope();
+
+  @NotNull
+  SearchScope getUseScope();
 
 }

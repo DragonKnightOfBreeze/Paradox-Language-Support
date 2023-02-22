@@ -12,6 +12,8 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationStub;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.lang.model.ParadoxLocalisationCategory;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
@@ -90,12 +92,6 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
   }
 
   @Override
-  @Nullable
-  public ItemPresentation getPresentation() {
-    return ParadoxLocalisationPsiImplUtil.getPresentation(this);
-  }
-
-  @Override
   public boolean isEquivalentTo(@NotNull PsiElement another) {
     return ParadoxLocalisationPsiImplUtil.isEquivalentTo(this, another);
   }
@@ -104,6 +100,24 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
   @NotNull
   public String toString() {
     return ParadoxLocalisationPsiImplUtil.toString(this);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return ParadoxLocalisationPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
+    return ParadoxLocalisationPsiImplUtil.getResolveScope(this);
+  }
+
+  @Override
+  @NotNull
+  public SearchScope getUseScope() {
+    return ParadoxLocalisationPsiImplUtil.getUseScope(this);
   }
 
 }

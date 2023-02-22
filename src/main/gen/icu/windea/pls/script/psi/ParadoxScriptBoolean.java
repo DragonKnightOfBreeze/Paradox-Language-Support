@@ -5,6 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.expression.ParadoxDataType;
 
 public interface ParadoxScriptBoolean extends ParadoxScriptValue, PsiLiteralValue {
@@ -13,5 +16,14 @@ public interface ParadoxScriptBoolean extends ParadoxScriptValue, PsiLiteralValu
 
   @NotNull
   ParadoxDataType getType();
+
+  @NotNull
+  ItemPresentation getPresentation();
+
+  @NotNull
+  GlobalSearchScope getResolveScope();
+
+  @NotNull
+  SearchScope getUseScope();
 
 }

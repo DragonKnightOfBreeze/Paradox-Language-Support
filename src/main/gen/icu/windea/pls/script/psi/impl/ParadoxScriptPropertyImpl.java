@@ -12,6 +12,8 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyStub;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.expression.ParadoxDataType;
 import icu.windea.pls.lang.model.ParadoxParameterInfo;
 import java.util.Map;
@@ -128,12 +130,6 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
-  @Nullable
-  public ItemPresentation getPresentation() {
-    return ParadoxScriptPsiImplUtil.getPresentation(this);
-  }
-
-  @Override
   public boolean isEquivalentTo(@NotNull PsiElement another) {
     return ParadoxScriptPsiImplUtil.isEquivalentTo(this, another);
   }
@@ -142,6 +138,24 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   @NotNull
   public String toString() {
     return ParadoxScriptPsiImplUtil.toString(this);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
+    return ParadoxScriptPsiImplUtil.getResolveScope(this);
+  }
+
+  @Override
+  @NotNull
+  public SearchScope getUseScope() {
+    return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 
 }

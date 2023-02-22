@@ -3,6 +3,7 @@ package icu.windea.pls.core.search.scopes
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
+import com.intellij.psi.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -10,6 +11,15 @@ import icu.windea.pls.lang.model.*
 
 sealed class ParadoxGlobalSearchScope(project: Project) : GlobalSearchScope(project) {
     companion object {
+        @JvmStatic
+        fun fromElement(element: PsiElement): GlobalSearchScope? {
+            val psiFile = element.containingFile?.originalFile ?: return null
+            val file = psiFile.virtualFile ?: return null
+            val project = psiFile.project
+            val fileInfo = file.fileInfo
+            return fromFile(project, file, fileInfo)
+        }
+        
         @JvmStatic
         fun fromFile(project: Project, file: VirtualFile?, fileInfo: ParadoxFileInfo?): GlobalSearchScope {
             if(file == null) return allScope(project)

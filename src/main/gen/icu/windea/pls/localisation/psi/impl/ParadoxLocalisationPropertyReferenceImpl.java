@@ -9,6 +9,9 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import icu.windea.pls.localisation.psi.*;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.localisation.references.ParadoxLocalisationPropertyPsiReference;
 
 public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationPropertyReference {
@@ -56,6 +59,24 @@ public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisatio
   @Nullable
   public ParadoxLocalisationPropertyPsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return ParadoxLocalisationPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
+    return ParadoxLocalisationPsiImplUtil.getResolveScope(this);
+  }
+
+  @Override
+  @NotNull
+  public SearchScope getUseScope() {
+    return ParadoxLocalisationPsiImplUtil.getUseScope(this);
   }
 
 }

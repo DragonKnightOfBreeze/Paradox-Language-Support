@@ -1,16 +1,18 @@
 {
-	parserClass="icu.windea.pls.script.psi.ParadoxScriptParser"
-	extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
-	psiClassPrefix="ParadoxScript"
-	psiImplClassSuffix="Impl"
-	psiPackage="icu.windea.pls.script.psi"
-	psiImplPackage="icu.windea.pls.script.psi.impl"
-	elementTypeHolderClass="icu.windea.pls.script.psi.ParadoxScriptElementTypes"
-	elementTypeClass="icu.windea.pls.script.psi.ParadoxScriptElementType"
-	tokenTypeClass="icu.windea.pls.script.psi.ParadoxScriptTokenType"
-    elementTypeFactory="icu.windea.pls.script.psi.ParadoxScriptElementTypeFactory.getElementType"
-	tokenTypeFactory="icu.windea.pls.script.psi.ParadoxScriptElementTypeFactory.getTokenType"
-	psiImplUtilClass="icu.windea.pls.script.psi.impl.ParadoxScriptPsiImplUtil"
+  parserClass="icu.windea.pls.script.psi.ParadoxScriptParser"
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+  psiClassPrefix="ParadoxScript"
+  psiImplClassSuffix="Impl"
+  psiPackage="icu.windea.pls.script.psi"
+  psiImplPackage="icu.windea.pls.script.psi.impl"
+  elementTypeHolderClass="icu.windea.pls.script.psi.ParadoxScriptElementTypes"
+  elementTypeClass="icu.windea.pls.script.psi.ParadoxScriptElementType"
+  tokenTypeClass="icu.windea.pls.script.psi.ParadoxScriptTokenType"
+  elementTypeFactory="icu.windea.pls.script.psi.ParadoxScriptElementTypeFactory.getElementType"
+  tokenTypeFactory="icu.windea.pls.script.psi.ParadoxScriptElementTypeFactory.getTokenType"
+  psiImplUtilClass="icu.windea.pls.script.psi.impl.ParadoxScriptPsiImplUtil"
+  
+  methods(".*")=[getPresentation getResolveScope getUseScope]
 }
 
 //忽略空白，在ParserDefinition里面定义PsiElement之间的空白类型
@@ -48,7 +50,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
     string=""
     getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue
     getType
-    getPresentation isEquivalentTo toString
+    isEquivalentTo toString
   ]
 }
 scripted_variable_name ::= AT SCRIPTED_VARIABLE_NAME_ID {
@@ -74,7 +76,7 @@ property ::= property_key property_separator property_value {
     getIcon getName setName getNameIdentifier getValue getDepth getBlock 
     getType getConfigExpression getExpression
     getPathName getOriginalPathName getParameters
-    getPresentation isEquivalentTo toString
+    isEquivalentTo toString
   ]
 }
 property_key ::= key_expr {
@@ -88,8 +90,7 @@ property_key ::= key_expr {
   methods=[
     getIcon getName getValue setValue
     getType getExpression getConfigExpression
-    getPresentation isEquivalentTo toString
-    getReference getReferences
+    getReference getReferences isEquivalentTo toString
   ]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
@@ -105,7 +106,6 @@ value ::= scripted_variable_reference | boolean | int | float | color | block | 
   methods=[
     getIcon getName getValue setValue
     getType getExpression getConfigExpression
-    getPresentation
   ]
 }
 scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_ID {
@@ -154,8 +154,7 @@ string ::= value_expr {
   methods=[
     getIcon getName getValue setValue getStringValue
     getType getExpression getConfigExpression
-    getPresentation isEquivalentTo toString
-    getReference getReferences
+    getReference getReferences isEquivalentTo toString
   ]
 }
 color ::= COLOR_TOKEN {
