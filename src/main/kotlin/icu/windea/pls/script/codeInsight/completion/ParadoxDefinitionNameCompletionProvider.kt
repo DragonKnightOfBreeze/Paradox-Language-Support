@@ -47,7 +47,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				.filterBy { rootKey == null || (it is ParadoxScriptProperty && it.name.equals(rootKey, true))}
 				.notSamePosition(currentElement)
 				.distinctByName()
-			val query = ParadoxDefinitionSearch.search(type, selector = selector)
+			val query = ParadoxDefinitionSearch.search(type, selector)
 			query.processQuery { processDefinition(context, result, it) }
 		}
 		

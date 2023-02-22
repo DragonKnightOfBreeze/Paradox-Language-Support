@@ -138,7 +138,7 @@ object ParadoxEconomicCategoryHandler {
     }
     
     private fun doGetUseForAiBudgetFromParent(source: String, parent: String, project: Project, selector: ParadoxDefinitionSelector): Boolean {
-        val parentElement = ParadoxDefinitionSearch.search(parent, "economic_category", selector = selector).find()
+        val parentElement = ParadoxDefinitionSearch.search(parent, "economic_category", selector).find()
         val newParent = parentElement?.findProperty("parent", inline = true)?.propertyValue?.stringValue()
         if(source == newParent) return false //recursive parent > invalid, return false
         if(parent == newParent) return false //recursive parent > invalid, return false
@@ -150,7 +150,7 @@ object ParadoxEconomicCategoryHandler {
     private fun getResources(contextElement: PsiElement): Set<String> {
         val project = contextElement.project
         val selector = definitionSelector(project, contextElement)
-        return ParadoxDefinitionSearch.search("resource", selector = selector)
+        return ParadoxDefinitionSearch.search("resource", selector)
             .mapNotNullTo(mutableSetOf()) { it.name }  //it.name is ok
     }
     

@@ -281,7 +281,7 @@ private fun resolveLocalisationLink(linkWithoutPrefix: String, sourceElement: Ps
     val name = tokens.getOrNull(1) ?: return null
     val project = sourceElement.project
     val selector = localisationSelector(project, sourceElement).preferSameRoot().preferLocale(sourceElement.localeConfig)
-    return ParadoxLocalisationSearch.search(name, selector = selector).find()
+    return ParadoxLocalisationSearch.search(name, selector).find()
 }
 
 private fun resolveFilePathLink(linkWithoutPrefix: String, sourceElement: PsiElement): PsiFile? {

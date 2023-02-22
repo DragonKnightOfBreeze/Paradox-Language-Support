@@ -53,8 +53,8 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         presentation.isVisible = true
         //val gameType = fileInfo.rootInfo.gameType
         //val path = fileInfo.path.path
-        //val selector = fileSelector().gameType(gameType)
-        //val multiple = ParadoxFilePathSearch.search(path, project, selector = selector).hasMultipleResults()
+        //val selector = fileSelector(project, file)
+        //val multiple = ParadoxFilePathSearch.search(path, project, selector).hasMultipleResults()
         //if(!multiple) return //忽略不存在重载/被重载的情况 - 出于性能原因，目前不在update方法中判断
         presentation.isEnabled = true
     }

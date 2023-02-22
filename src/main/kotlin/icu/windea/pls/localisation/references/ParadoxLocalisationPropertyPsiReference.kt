@@ -42,8 +42,8 @@ class ParadoxLocalisationPropertyPsiReference(
 		//解析成localisation或者synced_localisation
 		val selector = localisationSelector(project, file).preferSameRoot(exact).preferLocale(locale, exact)
 		return when(category) {
-			Localisation -> ParadoxLocalisationSearch.search(name, selector = selector).find()
-			SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector = selector).find()
+			Localisation -> ParadoxLocalisationSearch.search(name, selector).find()
+			SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector).find()
 		}
 	}
 	
@@ -60,8 +60,8 @@ class ParadoxLocalisationPropertyPsiReference(
 		//解析成localisation或者synced_localisation
 		val selector = localisationSelector(project, file).preferSameRoot().preferLocale(locale)
 		return when(category) {
-			Localisation -> ParadoxLocalisationSearch.search(name, selector = selector).findAll() //仅查找对应语言区域的
-			SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector = selector).findAll() //仅查找对应语言区域的
+			Localisation -> ParadoxLocalisationSearch.search(name, selector).findAll() //仅查找对应语言区域的
+			SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll() //仅查找对应语言区域的
 		}.mapToArray { PsiElementResolveResult(it) }
 	}
 }

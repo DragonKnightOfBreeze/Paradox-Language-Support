@@ -25,7 +25,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
 		//根据spriteName进行提示
 		ProgressManager.checkCanceled()
 		val spriteSelector = definitionSelector(project, originalFile).preferSameRoot().distinctByName()
-		val spriteQuery = ParadoxDefinitionSearch.search("sprite|spriteType", selector = spriteSelector)
+		val spriteQuery = ParadoxDefinitionSearch.search("sprite|spriteType", spriteSelector)
 		spriteQuery.processQuery { sprite ->
 			val spriteName = sprite.definitionInfo?.name
 			val name = spriteName?.removePrefixOrNull("GFX_")?.removePrefix("text_")
@@ -53,7 +53,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
 		ProgressManager.checkCanceled()
 		val definitionSelector = definitionSelector(project, originalFile).preferSameRoot().distinctByName()
 		//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
-		val definitionQuery = ParadoxDefinitionSearch.search("job", selector = definitionSelector)
+		val definitionQuery = ParadoxDefinitionSearch.search("job", definitionSelector)
 		definitionQuery.processQuery { definition ->
 			val jobName = definition.definitionInfo?.name ?: return@processQuery true
 			val name = "job_$jobName"

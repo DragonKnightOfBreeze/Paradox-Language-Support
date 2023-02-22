@@ -47,9 +47,9 @@ class ParadoxLocalisationCommandScopePsiReference(
 		
 		//尝试识别为value[event_target]或value[global_event_target]
 		val selector = valueSetValueSelector(project, element).preferSameRoot()
-		val eventTarget = ParadoxValueSetValueSearch.search(name, "event_target", selector = selector).findFirst()
+		val eventTarget = ParadoxValueSetValueSearch.search(name, "event_target", selector).findFirst()
 		if(eventTarget != null) return ParadoxValueSetValueElement(element, name, "event_target", project, gameType)
-		val globalEventTarget = ParadoxValueSetValueSearch.search(name, "global_event_target", selector = selector).findFirst()
+		val globalEventTarget = ParadoxValueSetValueSearch.search(name, "global_event_target", selector).findFirst()
 		if(globalEventTarget != null) return ParadoxValueSetValueElement(element, name, "global_event_target", project, gameType)
 		
 		return null
@@ -74,9 +74,9 @@ class ParadoxLocalisationCommandScopePsiReference(
 		
 		//尝试识别为value[event_target]或value[global_event_target]
 		val selector = valueSetValueSelector(project, element)
-		val eventTarget = ParadoxValueSetValueSearch.search(name, "event_target", selector = selector).findFirst()
+		val eventTarget = ParadoxValueSetValueSearch.search(name, "event_target", selector).findFirst()
 		if(eventTarget != null) return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
-		val globalEventTarget = ParadoxValueSetValueSearch.search(name, "global_event_target", selector = selector).findFirst()
+		val globalEventTarget = ParadoxValueSetValueSearch.search(name, "global_event_target", selector).findFirst()
 		if(globalEventTarget != null) return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
 		
 		return null

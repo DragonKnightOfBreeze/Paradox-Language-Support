@@ -69,8 +69,8 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return
         val definition = findElement(psiFile, offset) ?: return
         //val definitionInfo = definition.definitionInfo ?: return
-        //val selector = definitionSelector().gameTypeFrom(file)
-        //val multiple = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, project, selector = selector).hasMultipleResults()
+        //val selector = definitionSelector(project, file)
+        //val multiple = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, project, selector).hasMultipleResults()
         //if(!multiple) return //忽略不存在重载/被重载的情况 - 出于性能原因，目前不在update方法中判断
         presentation.isEnabled = true
     }
@@ -91,7 +91,7 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
             runReadAction {
                 val selector = definitionSelector(project, file)
                 //pass main type only
-                val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector = selector).findAll()
+                val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
                 definitions.addAll(result)
             }
         }, PlsBundle.message("diff.compare.definitions.collect.title"), true, project)

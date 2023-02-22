@@ -199,12 +199,12 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         val nameKeys = ParadoxModifierHandler.getModifierNameKeys(name, configGroup)
         val localisation = nameKeys.firstNotNullOfOrNull {
             val selector = localisationSelector(project, element).preferSameRoot().preferLocale(preferredParadoxLocale())
-            ParadoxLocalisationSearch.search(it, selector = selector).find()
+            ParadoxLocalisationSearch.search(it, selector).find()
         }
         val descKeys = ParadoxModifierHandler.getModifierDescKeys(name, configGroup)
         val descLocalisation = descKeys.firstNotNullOfOrNull {
             val descSelector = localisationSelector(project, element).preferSameRoot().preferLocale(preferredParadoxLocale())
-            ParadoxLocalisationSearch.search(it, selector = descSelector).find()
+            ParadoxLocalisationSearch.search(it, descSelector).find()
         }
         //如果没找到的话，不要在文档中显示相关信息
         if(localisation != null) {

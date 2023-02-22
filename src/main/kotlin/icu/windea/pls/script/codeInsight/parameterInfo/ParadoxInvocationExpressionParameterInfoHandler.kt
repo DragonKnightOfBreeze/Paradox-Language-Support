@@ -49,7 +49,7 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
         //合并所有可能的参数名
         val project = context.project
         val selector = definitionSelector(project, context.file).preferSameRoot()
-        val definitions = ParadoxDefinitionSearch.search(definitionName, definitionType, selector = selector).findAll()
+        val definitions = ParadoxDefinitionSearch.search(definitionName, definitionType, selector).findAll()
         if(definitions.isEmpty()) return null
         val parameterInfosMap = mutableMapOf<String, Collection<ParadoxParameterInfo>>()
         for(definition in definitions) {

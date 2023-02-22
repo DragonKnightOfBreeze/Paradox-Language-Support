@@ -40,7 +40,7 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
                     for((_, locationExpression) in localisationInfos) {
                         ProgressManager.checkCanceled()
                         val selector = localisationSelector(project, definition).preferSameRoot().preferLocale(preferredParadoxLocale())
-                        val resolved = locationExpression.resolveAll(definitionInfo.name, definition, project, selector = selector) ?: continue
+                        val resolved = locationExpression.resolveAll(definitionInfo.name, definition, project, selector) ?: continue
                         if(resolved.localisations.isNotEmpty()) {
                             targets.addAll(resolved.localisations)
                         }
@@ -60,14 +60,14 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
                     val nameKeys = ParadoxModifierHandler.getModifierNameKeys(modifierElement.name, configGroup)
                     val localisations = nameKeys.firstNotNullOfOrNull {
                         val selector = localisationSelector(project, element).preferSameRoot().preferLocale(preferredParadoxLocale())
-                        val result = ParadoxLocalisationSearch.search(it, selector = selector).findAll()
+                        val result = ParadoxLocalisationSearch.search(it, selector).findAll()
                         result.takeIfNotEmpty()
                     }
                     if(localisations != null) targets.addAll(localisations)
                     val descKeys = ParadoxModifierHandler.getModifierDescKeys(modifierElement.name, configGroup)
                     val descLocalisations = descKeys.firstNotNullOfOrNull {
                         val selector = localisationSelector(project, element).preferSameRoot().preferLocale(preferredParadoxLocale())
-                        val result = ParadoxLocalisationSearch.search(it, selector = selector).findAll()
+                        val result = ParadoxLocalisationSearch.search(it, selector).findAll()
                         result.takeIfNotEmpty()
                     }
                     if(descLocalisations != null) targets.addAll(descLocalisations)

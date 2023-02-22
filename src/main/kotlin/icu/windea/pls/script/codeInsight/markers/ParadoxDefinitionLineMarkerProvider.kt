@@ -33,7 +33,7 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		}
 		val project = element.project
 		val selector = definitionSelector(project, element).preferSameRoot()
-		val targets = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector = selector).findAll()
+		val targets = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
 		if(targets.isEmpty()) return
 		val locationElement = element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! }
 		val lineMarkerInfo = createNavigationGutterIconBuilder(icon) { createGotoRelatedItem(targets) }

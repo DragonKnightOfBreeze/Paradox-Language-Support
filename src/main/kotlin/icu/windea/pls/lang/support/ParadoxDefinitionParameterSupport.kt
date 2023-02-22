@@ -74,7 +74,7 @@ class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val configGroup = config.info.configGroup
         val project = configGroup.project
         val selector = definitionSelector(project, element).preferSameRoot()
-        ParadoxDefinitionSearch.search(definitionName, definitionType, selector = selector).processQuery(processor)
+        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQuery(processor)
         return true
     }
     

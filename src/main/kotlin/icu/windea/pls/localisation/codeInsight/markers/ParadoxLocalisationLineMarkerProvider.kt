@@ -34,8 +34,8 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 			val project = element.project
 			val selector = localisationSelector(project, element).preferSameRoot().preferLocale(preferredParadoxLocale())
 			val targets = when(category) {
-				Localisation -> ParadoxLocalisationSearch.search(name, selector = selector).findAll()
-				SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector = selector).findAll()
+				Localisation -> ParadoxLocalisationSearch.search(name, selector).findAll()
+				SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll()
 			}
 			if(targets.isEmpty()) return
 			val locationElement = element.propertyKey.propertyKeyId

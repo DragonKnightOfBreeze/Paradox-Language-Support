@@ -41,7 +41,7 @@ class ParadoxEconomicCategoryModifierSupport: ParadoxModifierSupport {
         val project = configGroup.project
         val selector = definitionSelector(project, element) 
         var r = false
-        ParadoxDefinitionSearch.search("economic_category", selector = selector)
+        ParadoxDefinitionSearch.search("economic_category", selector)
             .processQuery p@{
                 val info = ParadoxEconomicCategoryHandler.getInfo(it) ?: return@p true
                 for(modifierInfo in info.modifiers) {
@@ -62,7 +62,7 @@ class ParadoxEconomicCategoryModifierSupport: ParadoxModifierSupport {
         var economicCategoryInfo: ParadoxEconomicCategoryInfo? = null
         var economicCategoryModifierInfo: ParadoxEconomicCategoryModifierInfo? = null
         val selector = definitionSelector(project, element).preferSameRoot()
-        ParadoxDefinitionSearch.search("economic_category", selector = selector)
+        ParadoxDefinitionSearch.search("economic_category", selector)
             .processQuery p@{
                 val info = ParadoxEconomicCategoryHandler.getInfo(it) ?: return@p true
                 for(modifierInfo in info.modifiers) {
@@ -89,7 +89,7 @@ class ParadoxEconomicCategoryModifierSupport: ParadoxModifierSupport {
         if(!isGameTypeSupported(gameType)) return
         val project = configGroup.project
         val selector = definitionSelector(project, element).preferSameRoot()
-        ParadoxDefinitionSearch.search("economic_category", selector = selector)
+        ParadoxDefinitionSearch.search("economic_category", selector)
             .processQuery p@{
                 val info = ParadoxEconomicCategoryHandler.getInfo(it) ?: return@p true
                 
@@ -163,7 +163,7 @@ class ParadoxEconomicCategoryModifierSupport: ParadoxModifierSupport {
         val configGroup = definitionInfo.configGroup
         val project = configGroup.project
         val selector = definitionSelector(project, definition).preferSameRoot()
-        val economicCategory = ParadoxDefinitionSearch.search(definitionInfo.name, "economic_category", selector = selector)
+        val economicCategory = ParadoxDefinitionSearch.search(definitionInfo.name, "economic_category", selector)
             .findFirst()
             ?: return false
         val economicCategoryInfo = ParadoxEconomicCategoryHandler.getInfo(economicCategory) ?: return false

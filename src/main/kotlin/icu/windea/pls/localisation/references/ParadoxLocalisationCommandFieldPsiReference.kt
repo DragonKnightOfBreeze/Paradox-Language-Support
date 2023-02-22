@@ -42,7 +42,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		
 		//尝试识别为<scripted_loc>
 		val selector = definitionSelector(project, element).preferSameRoot(exact)
-		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", selector = selector).find(exact)
+		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", selector).find(exact)
 		if(scriptedLoc != null) return scriptedLoc
 		
 		//尝试识别为预定义的value[variable] （忽略大小写）
@@ -51,7 +51,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		
 		//尝试识别为value[variable]
 		val variableSelector = valueSetValueSelector(project, element).preferSameRoot(exact)
-		val variable = ParadoxValueSetValueSearch.search(name, "variable", selector = variableSelector).findFirst()
+		val variable = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findFirst()
 		if(variable != null) return ParadoxValueSetValueElement(element, name, "variable", project, gameType)
 		
 		return null
@@ -70,7 +70,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		
 		//尝试识别为<scripted_loc>
 		val selector = definitionSelector(project, element).preferSameRoot()
-		val scriptedLocs = ParadoxDefinitionSearch.search(name, "scripted_loc", selector = selector).findAll()
+		val scriptedLocs = ParadoxDefinitionSearch.search(name, "scripted_loc", selector).findAll()
 		if(scriptedLocs.isNotEmpty()) return scriptedLocs.mapToArray { PsiElementResolveResult(it) }
 		
 		//尝试识别为预定义的value[variable] （忽略大小写）
@@ -79,7 +79,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		
 		//尝试识别为value[variable]
 		val variableSelector = valueSetValueSelector(project, element).preferSameRoot()
-		val variables = ParadoxValueSetValueSearch.search(name, "variable", selector = variableSelector).findAll()
+		val variables = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findAll()
 		if(variables.isNotEmpty()) return variables.mapToArray { PsiElementResolveResult(ParadoxValueSetValueElement(element, name, "variable", project, gameType)) }
 		
 		return ResolveResult.EMPTY_ARRAY
@@ -98,7 +98,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		
 		//尝试识别为<scripted_loc>
 		val selector = definitionSelector(project, element)
-		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", selector = selector).findFirst()
+		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", selector).findFirst()
 		if(scriptedLoc != null) return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY //definition reference
 		
 		//尝试识别为预定义的value[variable] （忽略大小写）
@@ -107,7 +107,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		
 		//尝试识别为value[variable]
 		val variableSelector = valueSetValueSelector(project, element)
-		val variable = ParadoxValueSetValueSearch.search(name, "variable", selector = variableSelector).findFirst()
+		val variable = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findFirst()
 		if(variable != null) return ParadoxScriptAttributesKeys.VARIABLE_KEY
 		
 		return null

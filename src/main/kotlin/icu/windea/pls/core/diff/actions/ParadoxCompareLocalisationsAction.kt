@@ -69,8 +69,8 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return
         val localisation = findElement(psiFile, offset) ?: return
         //val localisationName = localisation.name
-        //val selector = localisationSelector().gameTypeFrom(file)
-        //val multiple = ParadoxLocalisationSearch.search(localisationName, project, selector = selector).hasMultipleResults()
+        //val selector = localisationSelector(project, file)
+        //val multiple = ParadoxLocalisationSearch.search(localisationName, project, selector).hasMultipleResults()
         //if(!multiple) return //忽略不存在重载/被重载的情况 - 出于性能原因，目前不在update方法中判断
         presentation.isEnabled = true
     }
@@ -87,7 +87,7 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
             runReadAction {
                 val selector = localisationSelector(project, file)
-                val result = ParadoxLocalisationSearch.search(localisationName, selector = selector).findAll()
+                val result = ParadoxLocalisationSearch.search(localisationName, selector).findAll()
                 localisations.addAll(result)
             }
         }, PlsBundle.message("diff.compare.localisations.collect.title"), true, project)
