@@ -27,7 +27,7 @@ class ParadoxFileNamePathReferenceExpression : ParadoxPathReferenceExpression {
             val parentPath = filePath.substringBeforeLast('/')
             return contextParentPath == parentPath
         }
-        return expression.matchesPath(filePath, ignoreCase, strict = true)
+        return expression.matchesPath(filePath, ignoreCase)
     }
     
     override fun extract(configExpression: CwtDataExpression, filePath: String, ignoreCase: Boolean): String {

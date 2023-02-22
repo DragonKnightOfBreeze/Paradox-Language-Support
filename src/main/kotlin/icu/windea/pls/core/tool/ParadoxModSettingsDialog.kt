@@ -97,7 +97,7 @@ class ParadoxModSettingsDialog(
             row {
                 //quickSelectGameDirectory
                 link(PlsBundle.message("mod.settings.quickSelectGameDirectory")) { quickSelectGameDirectory() }
-                    enabled(getSteamGamePath(gameType.gameSteamId, gameType.gameName) != null)
+                    visible(getSteamGamePath(gameType.gameSteamId, gameType.gameName) != null)
             }
             row {
                 //modDirectory
@@ -115,7 +115,7 @@ class ParadoxModSettingsDialog(
             //modDependencies
             collapsibleGroup(PlsBundle.message("mod.settings.modDependencies"), false) {
                 row {
-                    scrollCell(createModDependenciesPanel(project, settings, modDependencies))
+                    cell(createModDependenciesPanel(project, settings, modDependencies))
                         .align(Align.FILL)
                 }.resizableRow()
                 row {

@@ -99,7 +99,6 @@ fun createModDependenciesPanel(project: Project, settings: ParadoxGameOrModSetti
     tableView.columnSelectionAllowed = false
     tableView.intercellSpacing = Dimension(0, 0)
     tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
-    tableView.selectionModel.setSelectionInterval(0, 0)
     //调整列的宽度
     tableView.setFixedColumnWidth(ParadoxModDependenciesTableModel.EnabledItem.columnIndex, ParadoxModDependenciesTableModel.EnabledItem.name)
     tableView.tableHeader.columnModel.getColumn(ParadoxModDependenciesTableModel.NameItem.columnIndex).preferredWidth = 10000 // consume all available space
