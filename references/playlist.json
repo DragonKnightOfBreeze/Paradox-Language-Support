@@ -1,0 +1,7 @@
+{
+  "game": "stellaris",
+  "mods": [
+    {"displayName": "Cloud Wu's Chinese Localisation", "enabled": true, "position": 0, "steamId": "734129025"}
+  ],
+  "name": "真实宇宙"
+}

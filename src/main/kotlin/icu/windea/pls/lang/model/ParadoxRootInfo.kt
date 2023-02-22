@@ -101,7 +101,7 @@ class ParadoxModRootInfo(
         get() = buildString {
             append(gameType.description).append(" Mod: ")
             append(descriptorInfo.name)
-            if(descriptorInfo.version != null) append("@").append(descriptorInfo.version)
+            descriptorInfo.version?.let { version -> append("@").append(version) }
         }
     override val isAvailable: Boolean
         get() = descriptorFile.isValid

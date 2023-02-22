@@ -43,7 +43,7 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
                 dialog.show()
             }
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
-                PlsBundle.message("mod.settings.notification.1.title", rootInfo.qualifiedName),
+                modSettings.qualifiedName,
                 PlsBundle.message("mod.settings.notification.1.content"),
                 NotificationType.INFORMATION
             ).addAction(action).setImportant(true).notify(project)

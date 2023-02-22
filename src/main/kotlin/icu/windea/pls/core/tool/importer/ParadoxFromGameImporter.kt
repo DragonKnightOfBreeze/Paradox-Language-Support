@@ -1,16 +1,13 @@
-package icu.windea.pls.core.tool.exporter
+package icu.windea.pls.core.tool.importer
 
 import com.intellij.openapi.project.*
 import com.intellij.ui.table.*
+import icu.windea.pls.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.tool.*
-import javax.swing.*
 
-class ParadoxLauncherModListFileExporter : ParadoxModDependenciesExporter {
-    override val icon: Icon
-        get() = TODO("Not yet implemented")
-    override val text: String
-        get() = TODO("Not yet implemented")
+class ParadoxFromGameImporter : ParadoxModDependenciesImporter {
+    override val text: String = PlsBundle.message("mod.importer.game")
     
     override fun execute(project: Project, tableView: TableView<ParadoxModDependencySettingsState>, tableModel: ParadoxModDependenciesTableModel) {
         //TODO

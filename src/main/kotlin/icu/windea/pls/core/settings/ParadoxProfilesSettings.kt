@@ -34,6 +34,8 @@ interface ParadoxGameOrModSettingsState {
     var gameDirectory: String?
     var modDependencies: MutableList<ParadoxModDependencySettingsState>
     
+    val qualifiedName: String
+    
     fun copyModDependencies(): MutableList<ParadoxModDependencySettingsState> {
         return modDependencies.mapTo(mutableListOf()) { ParadoxModDependencySettingsState().apply { copyFrom(it) } }
     }
@@ -44,6 +46,13 @@ class ParadoxGameSettingsState : BaseState(), ParadoxGameOrModSettingsState {
     override var gameVersion: String? by string()
     override var gameDirectory: String? by string()
     override var modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
+    
+    override val qualifiedName: String
+        get() = buildString {
+            append(gameType.orDefault().description)
+            append("@")
+            append(gameVersion)
+        }
 }
 
 /**
@@ -63,6 +72,14 @@ class ParadoxModSettingsState : BaseState(), ParadoxGameOrModSettingsState {
     val name: String? get() = modDescriptorSettings.name
     val version: String? get() = modDescriptorSettings.version
     val supportedVersion: String? get() = modDescriptorSettings.supportedVersion
+    val remoteFileId: String? get() = modDescriptorSettings.remoteFileId
+    
+    override val qualifiedName: String
+        get() = buildString {
+            append(gameType.orDefault().description).append(" Mod: ")
+            append(name)
+            version?.let { version -> append("@").append(version) }
+        }
 }
 
 /**
@@ -82,5 +99,6 @@ class ParadoxModDependencySettingsState : BaseState() {
     val name: String? get() = modDescriptorSettings.name
     val version: String? get() = modDescriptorSettings.version
     val supportedVersion: String? get() = modDescriptorSettings.supportedVersion
+    val remoteFileId: String? get() = modDescriptorSettings.remoteFileId
     val gameType: ParadoxGameType? get() = modDescriptorSettings.gameType
 }

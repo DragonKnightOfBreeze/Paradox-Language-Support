@@ -82,30 +82,27 @@ class ParadoxModDependencyAddDialog(
         if(!tableModel.modDependencyDirectories.add(modDirectory)) return //忽略重复添加的模组依赖
         
         val newSettings = ParadoxModDependencySettingsState()
-        newSettings.modDirectory = modDirectory
         newSettings.enabled = true
+        newSettings.modDirectory = modDirectory
         
         //点击确定按钮后会弹出模组依赖配置对话框，以便预览模组配置，再次点击确定按钮才会添加到模组依赖列表 - 目前不这样做
         //val editDialog = ParadoxModDependencySettingsDialog(project, newSettings, this.contentPanel)
         //if(!editDialog.showAndGet()) return
         
         //如果最后一个模组依赖是当前模组自身，需要插入到它之前，否则直接添加到最后
-        if(isCurrentAtLast()) {
-            tableModel.addRow(newSettings)
-        } else {
-            tableModel.insertRow(tableModel.rowCount - 1, newSettings)
+        val rowCount = tableModel.rowCount
+        tableModel.addRow(newSettings)
+        fun ensureCurrentAtLast() {
+            if(rowCount == tableModel.rowCount) return 
+            val currentModDirectory = settings.castOrNull<ParadoxModDependencySettingsState>()?.modDirectory
+            if(currentModDirectory == null) return 
+            val lastRow = tableModel.getItem(rowCount - 1)
+            val lastModDirectory = lastRow.modDirectory
+            if(currentModDirectory != lastModDirectory) return
+            tableModel.removeRow(rowCount - 1)
+            tableModel.addRow(lastRow)
         }
         
         super.doOKAction()
-    }
-    
-    private fun isCurrentAtLast(): Boolean {
-        val rowCount = tableModel.rowCount
-        if(rowCount == 0) return false
-        val currentModDirectory = settings.castOrNull<ParadoxModDependencySettingsState>()?.modDirectory
-        if(currentModDirectory == null) return false
-        val lastRow = tableModel.getItem(rowCount - 1)
-        val lastModDirectory = lastRow.modDirectory
-        return currentModDirectory == lastModDirectory
     }
 }

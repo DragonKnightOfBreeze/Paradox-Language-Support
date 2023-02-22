@@ -8,7 +8,7 @@ import icu.windea.pls.core.tool.*
 import javax.swing.*
 
 interface ParadoxModDependenciesImporter {
-    val icon: Icon?
+    val icon: Icon? get() = null
     val text: String
     
     fun execute(project: Project, tableView: TableView<ParadoxModDependencySettingsState>, tableModel: ParadoxModDependenciesTableModel)
