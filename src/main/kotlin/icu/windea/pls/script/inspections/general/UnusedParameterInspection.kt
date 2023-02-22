@@ -93,9 +93,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
 			
 			private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
 				val message = PlsBundle.message("inspection.script.general.unusedParameter.description", name)
-				holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range,
-					ImportGameOrModDirectoryFix(element)
-				)
+				holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range)
 			}
 		}
 	}

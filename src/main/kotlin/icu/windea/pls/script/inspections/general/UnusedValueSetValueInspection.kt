@@ -9,7 +9,6 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 import javax.swing.*
@@ -79,9 +78,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 			
 			private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
 				val message = PlsBundle.message("inspection.script.general.unusedValueSetValue.description", name)
-				holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range,
-					ImportGameOrModDirectoryFix(element)
-				)
+				holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range)
 			}
 		}
 	}

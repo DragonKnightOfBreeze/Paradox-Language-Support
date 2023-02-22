@@ -75,9 +75,7 @@ class UnsetValueSetValueInspection : LocalInspectionTool() {
             
             private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
                 val message = PlsBundle.message("inspection.script.general.unsetValueSetValue.description", name)
-                holder.registerProblem(element, message, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, range,
-                    ImportGameOrModDirectoryFix(element)
-                )
+                holder.registerProblem(element, message, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, range)
             }
         }
     }

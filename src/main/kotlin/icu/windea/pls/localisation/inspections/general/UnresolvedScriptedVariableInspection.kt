@@ -38,8 +38,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 			if(element.reference.canResolve()) return
 			val variableName = element.name
 			val quickFixes = listOf(
-				IntroduceGlobalVariableFix(variableName, element),
-				ImportGameOrModDirectoryFix(element)
+				IntroduceGlobalVariableFix(variableName, element)
 			)
 			val message = PlsBundle.message("inspection.localisation.general.unresolvedScriptedVariable.description", element.name)
 			holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *quickFixes.toTypedArray())

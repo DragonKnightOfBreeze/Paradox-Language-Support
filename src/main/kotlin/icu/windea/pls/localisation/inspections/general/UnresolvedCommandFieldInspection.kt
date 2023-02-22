@@ -11,20 +11,18 @@ import icu.windea.pls.localisation.psi.*
  * 无法解析的命令字段的检查。
  */
 class UnresolvedCommandFieldInspection : LocalInspectionTool() {
-	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-		return Visitor(holder)
-	}
-	
-	private class Visitor(private val holder: ProblemsHolder) : ParadoxLocalisationVisitor() {
-		override fun visitCommandField(element: ParadoxLocalisationCommandField) {
-			ProgressManager.checkCanceled()
-			val location = element
-			val reference = element.reference
-			if(reference == null || reference.canResolve()) return
-			val name = element.name
-			holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unresolvedCommandField.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
-				ImportGameOrModDirectoryFix(location)
-			)
-		}
-	}
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return Visitor(holder)
+    }
+    
+    private class Visitor(private val holder: ProblemsHolder) : ParadoxLocalisationVisitor() {
+        override fun visitCommandField(element: ParadoxLocalisationCommandField) {
+            ProgressManager.checkCanceled()
+            val location = element
+            val reference = element.reference
+            if(reference == null || reference.canResolve()) return
+            val name = element.name
+            holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unresolvedCommandField.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+        }
+    }
 }

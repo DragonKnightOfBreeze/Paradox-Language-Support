@@ -43,9 +43,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 val file = filePath.toVirtualFile(false)
                 if(file != null) return
                 val message = PlsBundle.message("inspection.script.general.unresolvedPathReference.description.abs", filePath)
-                holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
-                    ImportGameOrModDirectoryFix(valueElement)
-                )
+                holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
                 return
             }
             val fileReferenceExpression = ParadoxPathReferenceExpression.get(configExpression)
@@ -56,9 +54,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 val selector = fileSelector(project, valueElement)
                 if(ParadoxFilePathSearch.search(pathReference, configExpression, selector = selector).findFirst() != null) return
                 val message = fileReferenceExpression.getUnresolvedMessage(configExpression, pathReference)
-                holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
-                    ImportGameOrModDirectoryFix(valueElement)
-                )
+                holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }
     }

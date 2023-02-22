@@ -3,7 +3,6 @@ package icu.windea.pls.core.expression.errors
 import com.intellij.codeInspection.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.core.quickfix.*
 
 interface ParadoxExpressionError {
 	val rangeInExpression: TextRange
@@ -12,6 +11,5 @@ interface ParadoxExpressionError {
 }
 
 fun ProblemsHolder.registerScriptExpressionError(element: PsiElement, error: ParadoxExpressionError) {
-	val fix = ImportGameOrModDirectoryFix(element)
-	registerProblem(element, error.description, error.highlightType, error.rangeInExpression, fix)
+	registerProblem(element, error.description, error.highlightType, error.rangeInExpression)
 }
