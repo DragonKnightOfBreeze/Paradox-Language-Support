@@ -20,19 +20,18 @@ interface ParadoxScriptMemberElementLinker {
     fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement?
     
     companion object INSTANCE {
-        @JvmStatic
-        val EP_NAME = ExtensionPointName.create<ParadoxScriptMemberElementLinker>("icu.windea.pls.paradoxScriptMemberElementLinker")
+        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxScriptMemberElementLinker>("icu.windea.pls.paradoxScriptMemberElementLinker")
         
         fun canLink(element: ParadoxScriptMemberElement): Boolean {
-            return EP_NAME.extensions.any { it.canLink(element) }
+            return EP_NAME.extensionList.any { it.canLink(element) }
         }
         
         fun linkElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
-            return EP_NAME.extensions.firstNotNullOfOrNull { it.linkElement(element) }
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.linkElement(element) }
         }
         
         fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
-            return EP_NAME.extensions.firstNotNullOfOrNull { it.inlineElement(element) }
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.inlineElement(element) }
         }
     }
 }

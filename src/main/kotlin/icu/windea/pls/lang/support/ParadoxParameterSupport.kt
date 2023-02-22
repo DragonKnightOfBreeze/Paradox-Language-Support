@@ -42,34 +42,34 @@ interface ParadoxParameterSupport {
     fun buildDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean = false
     
     companion object INSTANCE {
-        @JvmStatic val EP_NAME = ExtensionPointName.create<ParadoxParameterSupport>("icu.windea.pls.paradoxParameterSupport")
+        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxParameterSupport>("icu.windea.pls.paradoxParameterSupport")
         
         fun supports(context: ParadoxScriptDefinitionElement): Boolean {
-            return EP_NAME.extensions.any { it.supports(context) }
+            return EP_NAME.extensionList.any { it.supports(context) }
         }
         
         fun findContext(element: PsiElement, file: PsiFile? = null): ParadoxScriptDefinitionElement? {
-            return EP_NAME.extensions.firstNotNullOfOrNull { it.findContext(element, file) }
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.findContext(element, file) }
         }
         
         fun resolveParameter(name: String, element: PsiElement, file: PsiFile? = null): ParadoxParameterElement? {
-            return EP_NAME.extensions.firstNotNullOfOrNull { it.resolveParameterWithContext(name, element, file) }
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveParameterWithContext(name, element, file) }
         }
         
         fun resolveParameterWithContext(name: String, element: PsiElement, context: ParadoxScriptDefinitionElement): ParadoxParameterElement? {
-            return EP_NAME.extensions.firstNotNullOfOrNull { it.resolveParameter(name, element, context) }
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveParameter(name, element, context) }
         }
         
         fun resolveParameterFromInvocationExpression(name: String, element: ParadoxScriptProperty, config: CwtPropertyConfig): ParadoxParameterElement? {
-            return EP_NAME.extensions.firstNotNullOfOrNull { it.resolveParameterFromInvocationExpression(name, element, config) }
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveParameterFromInvocationExpression(name, element, config) }
         }
         
         fun processContextFromInvocationExpression(element: ParadoxScriptProperty, config: CwtPropertyConfig, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-            return EP_NAME.extensions.any { it.processContextFromInvocationExpression(element, config, processor) }
+            return EP_NAME.extensionList.any { it.processContextFromInvocationExpression(element, config, processor) }
         }
         
         fun getDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean {
-            return EP_NAME.extensions.any { it.buildDocumentationDefinition(element, builder) }
+            return EP_NAME.extensionList.any { it.buildDocumentationDefinition(element, builder) }
         }
     }
 }

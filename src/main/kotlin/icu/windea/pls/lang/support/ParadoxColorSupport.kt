@@ -18,16 +18,16 @@ interface ParadoxColorSupport {
     fun setColor(element: PsiElement, color: Color): Boolean
     
     companion object INSTANCE {
-        @JvmStatic val EP_NAME = ExtensionPointName.create<ParadoxColorSupport>("icu.windea.pls.paradoxColorSupport")
+        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxColorSupport>("icu.windea.pls.paradoxColorSupport")
     
         fun getColor(element: PsiElement): Color? {
-            return EP_NAME.extensions.firstNotNullOfOrNull {
+            return EP_NAME.extensionList.firstNotNullOfOrNull {
                 it.getColor(element)
             }
         }
     
         fun setColor(element: PsiElement, color: Color) {
-            EP_NAME.extensions.any {
+            EP_NAME.extensionList.any {
                 it.setColor(element, color)
             }
         }

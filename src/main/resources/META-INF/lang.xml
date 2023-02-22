@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensionPoints>
-    <extensionPoint qualifiedName="icu.windea.pls.paradoxPathReferenceExpression" interface="icu.windea.pls.lang.expression.ParadoxPathReferenceExpression"/>
+    <extensionPoint qualifiedName="icu.windea.pls.paradoxPathReferenceExpression" interface="icu.windea.pls.lang.expression.ParadoxPathReferenceExpression" dynamic="true"/>
     
     <extensionPoint qualifiedName="icu.windea.pls.paradoxScriptMemberElementLinker" interface="icu.windea.pls.lang.linker.ParadoxScriptMemberElementLinker" dynamic="true"/>
     

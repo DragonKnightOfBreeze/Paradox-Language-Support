@@ -102,6 +102,7 @@ class ParadoxModDependencyAddDialog(
             tableModel.removeRow(rowCount - 1)
             tableModel.addRow(lastRow)
         }
+        ensureCurrentAtLast()
         
         super.doOKAction()
     }

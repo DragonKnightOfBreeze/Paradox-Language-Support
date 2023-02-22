@@ -51,11 +51,10 @@ interface ParadoxPathReferenceExpression {
     fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String
     
     companion object INSTANCE {
-        @JvmStatic
-        val EP_NAME = ExtensionPointName.create<ParadoxPathReferenceExpression>("icu.windea.pls.paradoxPathReferenceExpression")
+        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxPathReferenceExpression>("icu.windea.pls.paradoxPathReferenceExpression")
         
         fun get(configExpression: CwtDataExpression): ParadoxPathReferenceExpression? {
-            return EP_NAME.extensions.find { it.supports(configExpression) }
+            return EP_NAME.extensionList.find { it.supports(configExpression) }
         }
     }
 }

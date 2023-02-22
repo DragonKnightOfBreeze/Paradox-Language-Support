@@ -1,7 +1,7 @@
 <idea-plugin>
   <extensionPoints>
-    <extensionPoint qualifiedName="icu.windea.pls.paradoxModDependenciesImporter" interface="icu.windea.pls.core.tool.importer.ParadoxModDependenciesImporter"/>
-    <extensionPoint qualifiedName="icu.windea.pls.paradoxModDependenciesExporter" interface="icu.windea.pls.core.tool.exporter.ParadoxModDependenciesExporter"/>
+    <extensionPoint qualifiedName="icu.windea.pls.paradoxModDependenciesImporter" interface="icu.windea.pls.core.tool.importer.ParadoxModDependenciesImporter" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.paradoxModDependenciesExporter" interface="icu.windea.pls.core.tool.exporter.ParadoxModDependenciesExporter" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">

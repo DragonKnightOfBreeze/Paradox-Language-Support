@@ -43,31 +43,30 @@ interface ParadoxModifierSupport {
     fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder) : Boolean = false
     
     companion object INSTANCE {
-        @JvmStatic
-        val EP_NAME = ExtensionPointName.create<ParadoxModifierSupport>("icu.windea.pls.paradoxModifierSupport")
+        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxModifierSupport>("icu.windea.pls.paradoxModifierSupport")
         
         fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
-            return EP_NAME.extensions.any { it.matchModifier(name, element, configGroup, matchType) }
+            return EP_NAME.extensionList.any { it.matchModifier(name, element, configGroup, matchType) }
         }
         
         fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
-            return EP_NAME.extensions.firstNotNullOfOrNull { it.resolveModifier(name, element, configGroup) }
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveModifier(name, element, configGroup) }
         }
     
         fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
-            EP_NAME.extensions.forEach { it.completeModifier(context, result, modifierNames) }
+            EP_NAME.extensionList.forEach { it.completeModifier(context, result, modifierNames) }
         }
     
         fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
-            return EP_NAME.extensions.firstNotNullOfOrNull { it.getModifierCategories(element) }
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.getModifierCategories(element) }
         }
         
         fun getDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean {
-            return EP_NAME.extensions.any { it.buildDocumentationDefinition(element, builder) }
+            return EP_NAME.extensionList.any { it.buildDocumentationDefinition(element, builder) }
         }
         
         fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder): Boolean{
-            return EP_NAME.extensions.any { it.buildDDocumentationDefinitionForDefinition(definition, definitionInfo, builder) }
+            return EP_NAME.extensionList.any { it.buildDDocumentationDefinitionForDefinition(definition, definitionInfo, builder) }
         }
     }
 }

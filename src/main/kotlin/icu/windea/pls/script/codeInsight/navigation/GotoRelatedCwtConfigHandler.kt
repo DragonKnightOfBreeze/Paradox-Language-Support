@@ -50,7 +50,7 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 						dataType == CwtDataType.Modifier -> {
 							//这里需要遍历所有解析器
 							configGroup.predefinedModifiers[name]?.pointer?.element?.let { add(it) }
-							ParadoxModifierSupport.EP_NAME.extensions.forEach { resolver ->
+							ParadoxModifierSupport.EP_NAME.extensionList.forEach { resolver ->
 								val modifierElement = resolver.resolveModifier(name, location, configGroup)
 								val configElement = modifierElement?.modifierConfig?.pointer?.element
 								configElement?.let { add(it) }
