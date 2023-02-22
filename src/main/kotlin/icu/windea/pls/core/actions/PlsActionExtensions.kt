@@ -5,4 +5,5 @@ import icu.windea.pls.core.*
 
 val AnActionEvent.editor by CommonDataKeys.EDITOR
 
+val AnActionEvent.gameType by PlsDataKeys.gameTypeKey
 val AnActionEvent.gameTypeProperty by PlsDataKeys.gameTypePropertyKey

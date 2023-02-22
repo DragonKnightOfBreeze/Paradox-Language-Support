@@ -94,7 +94,7 @@ class ParadoxModDependencyAddDialog(
         tableModel.addRow(newSettings)
         fun ensureCurrentAtLast() {
             if(rowCount == tableModel.rowCount) return 
-            val currentModDirectory = settings.castOrNull<ParadoxModDependencySettingsState>()?.modDirectory
+            val currentModDirectory = settings.castOrNull<ParadoxModSettingsState>()?.modDirectory
             if(currentModDirectory == null) return 
             val lastRow = tableModel.getItem(rowCount - 1)
             val lastModDirectory = lastRow.modDirectory

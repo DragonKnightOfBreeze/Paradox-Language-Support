@@ -9,6 +9,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.tool.*
 import icu.windea.pls.lang.*
@@ -30,6 +31,7 @@ class ParadoxFromLauncherJsonImporter : ParadoxModDependenciesImporter {
         }
         val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor("json")
             .withTitle(PlsBundle.message("mod.importer.launcherJson.title"))
+            .apply { putUserData(PlsDataKeys.gameTypeKey, gameType) }
         setDefaultSelected(gameType)
         FileChooser.chooseFile(descriptor, project, tableView, defaultSelected) { file ->
             try {
@@ -45,7 +47,8 @@ class ParadoxFromLauncherJsonImporter : ParadoxModDependenciesImporter {
                     val path = Path.of(workshopDir, mod.steamId)
                     if(!path.exists()) continue
                     val modDir = VfsUtil.findFile(path, false) ?: continue
-                    ParadoxCoreHandler.resolveRootInfo(modDir)
+                    val rootInfo = ParadoxCoreHandler.resolveRootInfo(modDir)
+                    if(rootInfo == null) continue //目前要求导入的模组目录下必须有模组描述符文件
                     val modPath = modDir.path
                     count++
                     if(tableModel.modDependencyDirectories.contains(modPath)) continue //忽略已有的
@@ -60,7 +63,7 @@ class ParadoxFromLauncherJsonImporter : ParadoxModDependenciesImporter {
                 tableModel.addRows(newSettingsList)
                 fun ensureCurrentAtLast() {
                     if(rowCount == tableModel.rowCount) return
-                    val currentModDirectory = settings.castOrNull<ParadoxModDependencySettingsState>()?.modDirectory
+                    val currentModDirectory = settings.castOrNull<ParadoxModSettingsState>()?.modDirectory
                     if(currentModDirectory == null) return
                     val lastRow = tableModel.getItem(rowCount - 1)
                     val lastModDirectory = lastRow.modDirectory
@@ -68,6 +71,7 @@ class ParadoxFromLauncherJsonImporter : ParadoxModDependenciesImporter {
                     tableModel.removeRow(rowCount - 1)
                     tableModel.addRow(lastRow)
                 }
+                ensureCurrentAtLast()
                 
                 notify(settings, project, PlsBundle.message("mod.importer.launcherJson.info", data.name, count))
             } catch(e: Exception) {
@@ -79,7 +83,7 @@ class ParadoxFromLauncherJsonImporter : ParadoxModDependenciesImporter {
     
     private fun setDefaultSelected(gameType: ParadoxGameType) {
         if(defaultSelected != null) return
-        val path = (getGameDataPath(gameType.name) + "/playlist").toPathOrNull() ?: return
+        val path = (getGameDataPath(gameType.name) + "/playlists").toPathOrNull() ?: return
         defaultSelected = VfsUtil.findFile(path, false)
     }
     

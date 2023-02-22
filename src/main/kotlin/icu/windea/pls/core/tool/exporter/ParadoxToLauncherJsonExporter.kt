@@ -6,6 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.tool.*
 import icu.windea.pls.lang.model.*
@@ -21,6 +22,7 @@ class ParadoxToLauncherJsonExporter : ParadoxModDependenciesExporter {
             "",
             "json"
         )
+            .apply { putUserData(PlsDataKeys.gameTypeKey, gameType) }
         val saved = FileChooserFactory.getInstance().createSaveFileDialog(descriptor, tableView).save("playlist.json")
         val savedFile = saved?.getVirtualFile(true) ?: return
         val collectionName = savedFile.nameWithoutExtension

@@ -64,7 +64,8 @@ class GotoSteamPathAction : GotoPathAction() {
     override var targetPath: Path? = null
     
     override fun setVisible(e: AnActionEvent): Boolean {
-        if(e.gameTypeProperty == null) return false
+        val gameType = e.gameTypeProperty?.get() ?: e.gameType
+        if(gameType == null) return false
         if(targetPath == null) {
             targetPath = getSteamPath()?.toPathOrNull()
         }
@@ -78,7 +79,7 @@ class GotoSteamGamePathAction : GotoPathAction() {
     override var targetPath: Path? = null
     
     override fun setVisible(e: AnActionEvent): Boolean {
-        val gameType = e.gameTypeProperty?.get()
+        val gameType = e.gameTypeProperty?.get() ?: e.gameType
         if(gameType == null) return false
         if(this.targetPath == null || this.gameType != gameType) {
             this.gameType = gameType
@@ -95,7 +96,7 @@ class GotoSteamWorkshopPathAction : GotoPathAction() {
     override val expand: Boolean = true
     
     override fun setVisible(e: AnActionEvent): Boolean {
-        val gameType = e.gameTypeProperty?.get()
+        val gameType = e.gameTypeProperty?.get() ?: e.gameType
         if(gameType == null) return false
         if(this.targetPath == null || this.gameType != gameType) {
             this.gameType = gameType
@@ -113,8 +114,8 @@ class GotoGameDataPathAction : GotoPathAction() {
     override val expand: Boolean = true
     
     override fun setVisible(e: AnActionEvent): Boolean {
-        val gameType = e.gameTypeProperty?.get()
-        if(gameType == null ) return false
+        val gameType = e.gameTypeProperty?.get() ?: e.gameType
+        if(gameType == null) return false
         if(this.targetPath == null || this.gameType != gameType) {
             this.gameType = gameType
             this.targetPath = getGameDataPath(gameType.gameName)?.toPathOrNull()
