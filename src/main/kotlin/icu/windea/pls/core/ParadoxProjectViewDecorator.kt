@@ -20,11 +20,11 @@ class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
             when(rootInfo) {
                 is ParadoxGameRootInfo -> {
                     data.setIcon(PlsIcons.GameDirectory)
-                    data.locationString = rootInfo.launcherSettingsInfo.qualifiedName
+                    data.locationString = rootInfo.qualifiedName
                 }
                 is ParadoxModRootInfo -> {
                     data.setIcon(PlsIcons.ModDirectory)
-                    data.locationString = rootInfo.descriptorInfo.qualifiedName
+                    data.locationString = rootInfo.qualifiedName
                 }
             }
         }

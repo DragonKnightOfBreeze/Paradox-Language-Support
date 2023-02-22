@@ -382,26 +382,11 @@ fun StringBuilder.appendImgTag(url: String, width: Int, height: Int, local: Bool
 
 fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilder {
     if(fileInfo != null) {
+        val rootInfo = fileInfo.rootInfo
         append("<span>")
         //描述符信息（模组名、版本等）
-        val rootInfo = fileInfo.rootInfo
-        val gameName = rootInfo.gameType.description
-        val prefix = when(fileInfo.rootInfo) {
-            is ParadoxGameRootInfo -> "Game"
-            is ParadoxModRootInfo -> "Mod"
-        }
-        append("[").append(gameName).append(" ").append(prefix)
-        when(rootInfo) {
-            is ParadoxGameRootInfo -> {
-                val info = rootInfo.launcherSettingsInfo
-                append("@").append(info.rawVersion.escapeXml())
-            }
-            is ParadoxModRootInfo -> {
-                val info = rootInfo.descriptorInfo
-                append(": ").append(info.name.escapeXml())
-                if(!info.version.isNullOrEmpty()) append("@").append(info.version.escapeXml())
-            }
-        }
+        append("[")
+        append(rootInfo.qualifiedName.escapeXml())
         append("]")
         grayed {
             val remoteFileId = (rootInfo as? ParadoxModRootInfo)?.descriptorInfo?.remoteFileId

@@ -24,7 +24,6 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
         val rootInfo = fileInfo.rootInfo
         val rootFile = rootInfo.rootFile
         if(rootInfo !is ParadoxModRootInfo) return
-        val descriptorInfo = rootInfo.descriptorInfo
         val modPaths = project.getOrPutUserData(modPathsKey) { mutableSetOf() }
         val modPath = rootFile.path
         if(!rootFile.isValid) {
@@ -44,7 +43,7 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
                 dialog.show()
             }
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
-                PlsBundle.message("mod.settings.notification.1.title", descriptorInfo.qualifiedName),
+                PlsBundle.message("mod.settings.notification.1.title", rootInfo.qualifiedName),
                 PlsBundle.message("mod.settings.notification.1.content"),
                 NotificationType.INFORMATION
             ).addAction(action).setImportant(true).notify(project)

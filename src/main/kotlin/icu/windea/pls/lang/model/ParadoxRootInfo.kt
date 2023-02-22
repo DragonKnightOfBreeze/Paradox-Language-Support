@@ -20,6 +20,7 @@ sealed class ParadoxRootInfo {
     
     val gameEntry: String? by lazy { rootPath.relativize(gameRootPath).toString().takeIfNotEmpty() }
     
+    abstract val qualifiedName: String
     abstract val isAvailable: Boolean
     
     companion object {
@@ -49,7 +50,10 @@ class ParadoxGameRootInfo(
     override val rootPath: Path = rootFile.toNioPath()
     override val gameRootPath: Path = gameRootFile.toNioPath()
     
-    override val isAvailable get() = launcherSettingsFile.isValid
+    override val qualifiedName: String
+        get() = "${gameType.description}@${launcherSettingsInfo.rawVersion}"
+    override val isAvailable: Boolean
+        get() = launcherSettingsFile.isValid
     
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxRootInfo && rootFile == other.rootFile
@@ -68,9 +72,7 @@ class ParadoxLauncherSettingsInfo(
     val dlcPath: String = "",
     val exePath: String,
     val exeArgs: List<String>
-) {
-    val qualifiedName = "Game@$rawVersion"
-}
+)
 
 class ParadoxModRootInfo(
     override val rootFile: VirtualFile,
@@ -91,7 +93,14 @@ class ParadoxModRootInfo(
     override val rootPath: Path = rootFile.toNioPath()
     override val gameRootPath: Path = rootPath
     
-    override val isAvailable get() = descriptorFile.isValid
+    override val qualifiedName: String
+        get() = buildString {
+            append(gameType.description).append(" Mod: ")
+            append(descriptorInfo.name)
+            if(descriptorInfo.version != null) append("@").append(descriptorInfo.version)
+        }
+    override val isAvailable: Boolean
+        get() = descriptorFile.isValid
     
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxRootInfo && rootFile == other.rootFile
@@ -110,9 +119,4 @@ class ParadoxModDescriptorInfo(
     val supportedVersion: String? = null,
     val remoteFileId: String? = null,
     val path: String? = null
-) {
-    val qualifiedName = buildString {
-        append(name)
-        if(version != null) append("@").append(version)
-    }
-}
+)

@@ -32,7 +32,7 @@ class ParadoxRootDirectoryDescriptor : FileChooserDescriptor(false, true, false,
         if(rootInfo != null && rootInfo.rootFile == file) {
             val comment = when(rootInfo) {
                 is ParadoxGameRootInfo -> null
-                is ParadoxModRootInfo -> " (" + rootInfo.descriptorInfo.qualifiedName + ")"
+                is ParadoxModRootInfo -> " (" + rootInfo.qualifiedName + ")"
             }
             return comment
         }
