@@ -19,7 +19,7 @@ class ParadoxIconPathReferenceExpression : ParadoxPathReferenceExpression {
     
     override fun matches(queryParameters: ParadoxFilePathSearch.SearchParameters, filePath: String, ignoreCase: Boolean): Boolean {
         val expression = queryParameters.configExpression?.value ?: return false
-        return expression.matchesPath(filePath, ignoreCase, strict = true) && filePath.endsWith(".dds", true)
+        return expression.matchesPath(filePath, ignoreCase) && filePath.endsWith(".dds", true)
     }
     
     override fun extract(configExpression: CwtDataExpression, filePath: String, ignoreCase: Boolean): String? {
