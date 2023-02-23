@@ -28,10 +28,10 @@ class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListe
         doUpdateLibrary(modFile)
     }
     
-    private fun doUpdateLibrary(modFile: VirtualFile) {
+    private fun doUpdateLibrary(root: VirtualFile) {
         for(project in ProjectManager.getInstance().openProjects) {
             if(project.isDisposed) continue
-            val isInProject = ProjectFileIndex.getInstance(project).isInContent(modFile)
+            val isInProject = ProjectFileIndex.getInstance(project).isInContent(root)
             if(!isInProject) continue
             val paradoxLibrary = project.paradoxLibrary
             paradoxLibrary.refreshRoots()

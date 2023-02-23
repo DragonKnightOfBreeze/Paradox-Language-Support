@@ -1,9 +1,6 @@
 package icu.windea.pls.core.listeners
 
 import com.intellij.openapi.application.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.roots.*
-import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.settings.*
@@ -37,9 +34,6 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
             ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onAdd(gameSettings)
         } else {
             gameSettings.gameVersion = launcherSettingsInfo.rawVersion
-    
-            //这里也需要更新库
-            doUpdateLibrary(gameFile)
         }
     }
     
@@ -68,21 +62,6 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
             settings.updateSettings()
             
             ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onAdd(modSettings)
-        } else {
-            //这里也需要更新库
-            doUpdateLibrary(modFile)
-        }
-    }
-    
-    //org.jetbrains.kotlin.idea.core.script.ucache.ScriptClassRootsUpdater.doUpdate
-    
-    private fun doUpdateLibrary(gameFile: VirtualFile) {
-        for(project in ProjectManager.getInstance().openProjects) {
-            if(project.isDisposed) continue
-            val isInProject = ProjectFileIndex.getInstance(project).isInContent(gameFile)
-            if(!isInProject) continue
-            val paradoxLibrary = project.paradoxLibrary
-            paradoxLibrary.refreshRoots()
         }
     }
     

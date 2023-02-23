@@ -86,6 +86,8 @@
     <iconDescriptionBundle resourceBundle="messages.PlsIconBundle"/>
     
     <vfs.asyncListener implementation="icu.windea.pls.core.listeners.ParadoxModificationTrackFileListener"/>
+    
+    <postStartupActivity implementation="icu.windea.pls.core.listeners.ParadoxUpdateLibraryOnProjectOpenedListener"/>
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls">
