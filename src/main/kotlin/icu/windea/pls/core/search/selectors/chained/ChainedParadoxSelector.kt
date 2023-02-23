@@ -51,7 +51,7 @@ open class ChainedParadoxSelector<T>(
             if(selectResult) finalDefaultValuePriority++
             finalSelectDefaultResult = finalSelectDefaultResult && (selectResult || selector.selectAll(result))
         }
-        if(finalSelectDefaultResult && defaultValuePriority < finalDefaultValuePriority) {
+        if(finalSelectDefaultResult && (defaultValuePriority == 0 || defaultValuePriority < finalDefaultValuePriority)) {
             defaultValue = result
             defaultValuePriority = finalDefaultValuePriority
         }
