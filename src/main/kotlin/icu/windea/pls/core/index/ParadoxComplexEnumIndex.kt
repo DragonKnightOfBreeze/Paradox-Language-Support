@@ -3,14 +3,16 @@ package icu.windea.pls.core.index
 import com.intellij.psi.stubs.*
 import icu.windea.pls.script.psi.*
 
-object ParadoxComplexEnumIndex: StringStubIndexExtension<ParadoxScriptStringExpressionElement>(){
-	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptStringExpressionElement>("paradox.complexEnum.index")
-	private const val version = 14 //0.7.13
-	private const val cacheSize = 256
-	
-	override fun getKey() = key
-	
-	override fun getVersion() = version
-	
-	override fun getCacheSize() = cacheSize
+class ParadoxComplexEnumIndex : StringStubIndexExtension<ParadoxScriptStringExpressionElement>() {
+    companion object {
+        @JvmField val KEY = StubIndexKey.createIndexKey<String, ParadoxScriptStringExpressionElement>("paradox.complexEnum.index")
+        private const val VERSION = 14 //0.7.13
+        private const val CACHE_SIZE = 256
+    }
+    
+    override fun getKey() = KEY
+    
+    override fun getVersion() = VERSION
+    
+    override fun getCacheSize() = CACHE_SIZE
 }
