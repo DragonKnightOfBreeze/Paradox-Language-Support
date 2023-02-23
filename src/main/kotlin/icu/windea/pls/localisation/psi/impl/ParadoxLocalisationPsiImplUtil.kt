@@ -127,7 +127,6 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun isEquivalentTo(element: ParadoxLocalisationProperty, another: PsiElement): Boolean {
         //name & category (localisation / synced_localisation) & gameType
-        //TODO should localisations with different locales be equivalent?
         return another is ParadoxLocalisationProperty
             && element.localisationInfo?.equals(another.localisationInfo) == true
     }

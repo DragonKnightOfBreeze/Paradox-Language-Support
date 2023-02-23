@@ -11,6 +11,7 @@ class ParadoxModWithDependenciesScope(
     val gameDirectory: VirtualFile?,
     val modDependencyDirectories: Set<VirtualFile>
 ) : ParadoxGlobalSearchScope(project) {
+    @Suppress("DialogTitleCapitalization")
     override fun getDisplayName(): String {
         return PlsBundle.message("search.scope.name.mod.withDependencies", modDirectory.name)
     }

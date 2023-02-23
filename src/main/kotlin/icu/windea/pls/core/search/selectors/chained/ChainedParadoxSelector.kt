@@ -111,7 +111,7 @@ fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.withSearchScopeType(search
 fun <S : ChainedParadoxSelector<T>, T> S.contextSensitive(condition: Boolean = true): S {
     if(condition) {
         if(rootFile != null) selectors += ParadoxPreferRootFileSelector(rootFile)
-        //if(file != null) selectors += ParadoxPreferFileSelector(file)
+        if(file != null) selectors += ParadoxPreferFileSelector(file)
     }
     return this
 }

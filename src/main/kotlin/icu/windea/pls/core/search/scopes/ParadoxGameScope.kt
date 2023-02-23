@@ -11,6 +11,7 @@ class ParadoxGameScope(
     project: Project,
     val gameDirectory: VirtualFile
 ) : ParadoxGlobalSearchScope(project) {
+    @Suppress("DialogTitleCapitalization")
     override fun getDisplayName(): String {
         return PlsBundle.message("search.scope.name.game", gameDirectory.name)
     }

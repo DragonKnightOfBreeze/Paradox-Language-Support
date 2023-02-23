@@ -10,6 +10,7 @@ import icu.windea.pls.*
 open class ParadoxFindUsagesOptions(project: Project) : PersistentFindUsagesOptions(project) {
     init {
         isUsages = true
+        isSearchForTextOccurrences = false
     }
     
     override fun setDefaults(project: Project) {
@@ -18,7 +19,7 @@ open class ParadoxFindUsagesOptions(project: Project) : PersistentFindUsagesOpti
     
     protected open fun setDefaults(properties: PropertiesComponent, prefix: String) {
         isUsages = properties.getBoolean(prefix + "isUsages", true)
-        isSearchForTextOccurrences = properties.getBoolean(prefix + "isSearchForTextOccurrences", true)
+        isSearchForTextOccurrences = properties.getBoolean(prefix + "isSearchForTextOccurrences", false)
     }
     
     override fun storeDefaults(project: Project) {
@@ -27,7 +28,7 @@ open class ParadoxFindUsagesOptions(project: Project) : PersistentFindUsagesOpti
     
     protected open fun storeDefaults(properties: PropertiesComponent, prefix: String) {
         properties.setValue(prefix + "isUsages", isUsages, true)
-        properties.setValue(prefix + "isSearchForTextOccurrences", isSearchForTextOccurrences, true)
+        properties.setValue(prefix + "isSearchForTextOccurrences", isSearchForTextOccurrences, false)
     }
     
     private fun findPrefix(): String {

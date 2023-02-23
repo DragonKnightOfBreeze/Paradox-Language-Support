@@ -19,7 +19,7 @@ class ParadoxFindLocalisationUsagesDialog(
     private val findOptions get() = myFindUsagesOptions as ParadoxLocalisationFindUsagesOptions
     
     private var cbUsages: StateRestoringCheckBox? = null
-    private var cbCrossLocales: StateRestoringCheckBox? = null
+    //private var cbCrossLocales: StateRestoringCheckBox? = null
     
     override fun calcFindUsagesOptions(options: FindUsagesOptions) {
         options as ParadoxLocalisationFindUsagesOptions
@@ -27,9 +27,9 @@ class ParadoxFindLocalisationUsagesDialog(
         if(isToChange(cbUsages)) {
             options.isUsages = isSelected(cbUsages)
         }
-        if(isToChange(cbCrossLocales)) {
-            options.isCrossLocales = isSelected(cbCrossLocales)
-        }
+        //if(isToChange(cbCrossLocales)) {
+        //    options.isCrossLocales = isSelected(cbCrossLocales)
+        //}
     }
     
     override fun createFindWhatPanel(): JPanel {
@@ -39,10 +39,10 @@ class ParadoxFindLocalisationUsagesDialog(
         return panel
     }
     
-    override fun addUsagesOptions(panel: JPanel) {
-        cbCrossLocales = addCheckboxToPanel(PlsBundle.message("find.options.crossLocales.checkbox"), findOptions.isCrossLocales, panel, true)
-        super.addUsagesOptions(panel)
-    }
+    //override fun addUsagesOptions(panel: JPanel) {
+    //    cbCrossLocales = addCheckboxToPanel(PlsBundle.message("find.options.crossLocales.checkbox"), findOptions.isCrossLocales, panel, true)
+    //    super.addUsagesOptions(panel)
+    //}
     
     override fun update() {
         if(myCbToSearchForTextOccurrences != null) {
@@ -52,7 +52,7 @@ class ParadoxFindLocalisationUsagesDialog(
                 myCbToSearchForTextOccurrences.makeUnselectable(false)
             }
         }
-        val hasSelected = isSelected(cbUsages) || isSelected(cbCrossLocales)
+        val hasSelected = isSelected(cbUsages)
         isOKActionEnabled = hasSelected
     }
 }
