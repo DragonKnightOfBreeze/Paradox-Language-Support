@@ -35,10 +35,6 @@ open class ParadoxFindUsagesDialog(
         super.init()
     }
     
-    override fun getPreferredFocusedComponent(): JComponent {
-        return cbUsages
-    }
-    
     override fun calcFindUsagesOptions(options: FindUsagesOptions) {
         options as ParadoxFindUsagesOptions
         super.calcFindUsagesOptions(options)
