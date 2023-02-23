@@ -41,11 +41,11 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 	
 	override fun indexStub(stub: ParadoxScriptStringStub, sink: IndexSink) {
 		stub.complexEnumValueInfo?.let { info ->
-			sink.occurrence(ParadoxComplexEnumIndex.key, info.enumName)
-			sink.occurrence(ParadoxComplexEnumValueIndex.key, info.name)
+			sink.occurrence(ParadoxComplexEnumIndex.KEY, info.enumName)
+			sink.occurrence(ParadoxComplexEnumValueIndex.KEY, info.name)
 		}
 		stub.valueSetValueInfo?.let { info -> 
-			sink.occurrence(ParadoxValueSetIndex.key, info.valueSetName)
+			sink.occurrence(ParadoxValueSetIndex.KEY, info.valueSetName)
 		}
 	}
 	

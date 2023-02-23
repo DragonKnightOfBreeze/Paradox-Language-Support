@@ -15,13 +15,13 @@ class ParadoxGlobalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScr
 		val scope = queryParameters.selector.scope
 		if(queryParameters.name == null) {
 			//查找所有封装变量
-			ParadoxScriptedVariableNameIndex.processAllElementsByKeys(project, scope) { _, it ->
+			ParadoxScriptedVariableNameIndex.KEY.processAllElementsByKeys(project, scope) { _, it ->
 				consumer.process(it)
 			}
 			return
 		}
 		//查找指定名字的封装变量
-		ParadoxScriptedVariableNameIndex.processAllElements(queryParameters.name, project, scope) {
+		ParadoxScriptedVariableNameIndex.KEY.processAllElements(queryParameters.name, project, scope) {
 			consumer.process(it)
 		}
 	}

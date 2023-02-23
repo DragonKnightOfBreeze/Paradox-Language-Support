@@ -8,7 +8,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.selectors.chained.*
-import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -62,7 +61,7 @@ class ParadoxLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisationPrope
 			
 			//保证返回结果的名字的唯一性
 			val scope = selector.scope
-			return ParadoxLocalisationNameIndex.processFirstElementByKeys(project, scope,
+			return ParadoxLocalisationNameIndex.KEY.processFirstElementByKeys(project, scope,
 				predicate = { element -> selector.selectAll(element) },
 				getDefaultValue = { selector.defaultValue },
 				resetDefaultValue = { selector.defaultValue = null },

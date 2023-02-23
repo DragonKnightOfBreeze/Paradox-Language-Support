@@ -24,12 +24,12 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
 		if(typeExpression == null) {
 			if(name == null) {
 				//查找所有定义
-				ParadoxDefinitionNameIndex.processAllElementsByKeys(project, scope) { _, it ->
+				ParadoxDefinitionNameIndex.KEY.processAllElementsByKeys(project, scope) { _, it ->
 					consumer.process(it)
 				}
 			} else {
 				//按照名字查找定义
-				ParadoxDefinitionNameIndex.processAllElements(name, project, scope) {
+				ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) {
 					consumer.process(it)
 				}
 			}
@@ -51,7 +51,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
 	private fun doProcessQueryByTypeExpression(typeExpression: String, project: Project, scope: GlobalSearchScope, name: String?, consumer: Processor<in ParadoxScriptDefinitionElement>) {
 		for(expression in typeExpression.split('|')) {
 			val (type, subtypes) = ParadoxDefinitionTypeExpression.resolve(expression)
-			ParadoxDefinitionTypeIndex.processAllElements(type, project, scope) {
+			ParadoxDefinitionTypeIndex.KEY.processAllElements(type, project, scope) {
 				if(name != null && !matchesName(it, name)) return@processAllElements true
 				if(subtypes.isNotEmpty() && !matchesSubtypes(it, subtypes)) return@processAllElements true
 				consumer.process(it)

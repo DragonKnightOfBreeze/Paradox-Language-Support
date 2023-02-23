@@ -32,8 +32,8 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
 	
 	override fun indexStub(stub: PsiFileStub<*>, sink: IndexSink) {
 		if(stub is ParadoxScriptFileStub) {
-			stub.name?.takeIfNotEmpty()?.let { name -> sink.occurrence(ParadoxDefinitionNameIndex.key, name) }
-			stub.type?.takeIfNotEmpty()?.let { type -> sink.occurrence(ParadoxDefinitionTypeIndex.key, type) }
+			stub.name?.takeIfNotEmpty()?.let { name -> sink.occurrence(ParadoxDefinitionNameIndex.KEY, name) }
+			stub.type?.takeIfNotEmpty()?.let { type -> sink.occurrence(ParadoxDefinitionTypeIndex.KEY, type) }
 		}
 		super.indexStub(stub, sink)
 	}

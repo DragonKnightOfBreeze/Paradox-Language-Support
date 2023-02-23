@@ -172,7 +172,7 @@ object ParadoxInlineScriptHandler {
         var element: ParadoxScriptPropertyKey? = null
         var hasConflict = false
         val configs: MutableList<CwtDataConfig<*>> = mutableListOf()
-        ParadoxInlineScriptIndex.processAllElements(expression, project, scope) { e ->
+        ParadoxInlineScriptIndex.KEY.processAllElements(expression, project, scope) { e ->
             if(element == null) {
                 element = e
             }

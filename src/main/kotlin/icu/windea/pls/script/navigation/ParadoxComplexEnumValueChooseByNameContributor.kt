@@ -15,11 +15,11 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxComplexEnumValueChooseByNameContributor : ChooseByNameContributorEx {
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
-        StubIndex.getInstance().processAllKeys(ParadoxComplexEnumValueIndex.key, processor, scope, filter)
+        StubIndex.getInstance().processAllKeys(ParadoxComplexEnumValueIndex.KEY, processor, scope, filter)
     }
     
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
         //这里显示的是property/value的图表，而非complexEnum的图标
-        StubIndex.getInstance().processElements(ParadoxComplexEnumValueIndex.key, name, parameters.project, parameters.searchScope, parameters.idFilter, ParadoxScriptStringExpressionElement::class.java, processor)
+        StubIndex.getInstance().processElements(ParadoxComplexEnumValueIndex.KEY, name, parameters.project, parameters.searchScope, parameters.idFilter, ParadoxScriptStringExpressionElement::class.java, processor)
     }
 }

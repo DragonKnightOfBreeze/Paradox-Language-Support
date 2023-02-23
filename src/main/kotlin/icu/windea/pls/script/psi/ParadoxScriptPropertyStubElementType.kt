@@ -47,8 +47,8 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 	
 	override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
 		//索引definition的name和type
-		stub.name?.takeIfNotEmpty()?.let { name -> sink.occurrence(ParadoxDefinitionNameIndex.key, name) }
-		stub.type?.takeIfNotEmpty()?.let { type -> sink.occurrence(ParadoxDefinitionTypeIndex.key, type) }
+		stub.name?.takeIfNotEmpty()?.let { name -> sink.occurrence(ParadoxDefinitionNameIndex.KEY, name) }
+		stub.type?.takeIfNotEmpty()?.let { type -> sink.occurrence(ParadoxDefinitionTypeIndex.KEY, type) }
 	}
 	
 	override fun serialize(stub: ParadoxScriptPropertyStub, dataStream: StubOutputStream) {

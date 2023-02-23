@@ -5,7 +5,6 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.*
-import icu.windea.pls.core.search.scopes.*
 import javax.swing.*
 
 //com.intellij.find.findUsages.FindClassUsagesDialog
@@ -23,17 +22,6 @@ open class ParadoxFindUsagesDialog(
     private val findOptions = findOptions
     private val isSingleFile = isSingleFile
     private lateinit var cbUsages: StateRestoringCheckBox
-    
-    override fun init() {
-        if(!isSingleFile) {
-            //全局查找使用时，如果可以获取，使用期望的查询作用域
-            val scopeToUse = ParadoxGlobalSearchScope.fromElement(element)
-            if(scopeToUse != null) {
-                findOptions.searchScope = scopeToUse
-            }
-        }
-        super.init()
-    }
     
     override fun calcFindUsagesOptions(options: FindUsagesOptions) {
         options as ParadoxFindUsagesOptions

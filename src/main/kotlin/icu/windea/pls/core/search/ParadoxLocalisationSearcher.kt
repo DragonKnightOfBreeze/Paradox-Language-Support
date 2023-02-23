@@ -14,12 +14,12 @@ class ParadoxLocalisationSearcher: QueryExecutorBase<ParadoxLocalisationProperty
 		val project = queryParameters.project
 		val scope = queryParameters.selector.scope
 		if(queryParameters.name == null) {
-			ParadoxLocalisationNameIndex.processAllElementsByKeys(project, scope) { _, it ->
+			ParadoxLocalisationNameIndex.KEY.processAllElementsByKeys(project, scope) { _, it ->
 				consumer.process(it)
 			}
 			return
 		}
-		ParadoxLocalisationNameIndex.processAllElements(queryParameters.name, project, scope) {
+		ParadoxLocalisationNameIndex.KEY.processAllElements(queryParameters.name, project, scope) {
 			consumer.process(it)
 		}
 	}

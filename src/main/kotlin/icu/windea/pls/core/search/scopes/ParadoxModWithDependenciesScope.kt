@@ -12,7 +12,7 @@ class ParadoxModWithDependenciesScope(
     val modDependencyDirectories: Set<VirtualFile>
 ) : ParadoxGlobalSearchScope(project) {
     override fun getDisplayName(): String {
-        return PlsBundle.message("search.scope.mod.withDependencies", modDirectory.name)
+        return PlsBundle.message("search.scope.name.mod.withDependencies", modDirectory.name)
     }
     
     override fun contains(file: VirtualFile): Boolean {

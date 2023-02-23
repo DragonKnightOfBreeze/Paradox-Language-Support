@@ -11,7 +11,7 @@ class ParadoxGameWithDependenciesScope(
     val modDependencyDirectories: Set<VirtualFile>
 ) : ParadoxGlobalSearchScope(project) {
     override fun getDisplayName(): String {
-        return PlsBundle.message("search.scope.game.withDependencies", gameDirectory.name)
+        return PlsBundle.message("search.scope.name.game.withDependencies", gameDirectory.name)
     }
     
     override fun compare(file1: VirtualFile, file2: VirtualFile): Int {

@@ -12,7 +12,7 @@ class ParadoxGameScope(
     val gameDirectory: VirtualFile
 ) : ParadoxGlobalSearchScope(project) {
     override fun getDisplayName(): String {
-        return PlsBundle.message("search.scope.game", gameDirectory.name)
+        return PlsBundle.message("search.scope.name.game", gameDirectory.name)
     }
     
     override fun getModelBranchesAffectingScope(): Collection<ModelBranch> {

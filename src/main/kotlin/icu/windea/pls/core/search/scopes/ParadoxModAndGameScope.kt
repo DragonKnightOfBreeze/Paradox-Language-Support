@@ -11,7 +11,7 @@ class ParadoxModAndGameScope(
     val gameDirectory: VirtualFile?
 ) : ParadoxGlobalSearchScope(project) {
     override fun getDisplayName(): String {
-        return PlsBundle.message("search.scope.modAndGame", modDirectory.name, gameDirectory?.name.toString())
+        return PlsBundle.message("search.scope.name.modAndGame", modDirectory.name, gameDirectory?.name.toString())
     }
     
     override fun contains(file: VirtualFile): Boolean {
