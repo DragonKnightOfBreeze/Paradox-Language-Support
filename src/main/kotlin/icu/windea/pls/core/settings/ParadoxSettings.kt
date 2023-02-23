@@ -19,13 +19,11 @@ class ParadoxSettings : SimplePersistentStateComponent<ParadoxSettingsState>(Par
  * @property defaultGameType 默认游戏类型。
  * @property preferredLocale 偏好的语言区域。
  * @property ignoredFileNames 需要忽略的文件名（不识别为脚本和本地化文件，逗号分隔，不区分大小写）
- * @property preferOverridden 是否优先使用重载后的引用。
  */
 class ParadoxSettingsState : BaseState() {
 	var defaultGameType: ParadoxGameType by enum(ParadoxGameType.Stellaris)
 	var preferredLocale by string("auto")
 	var ignoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
-	var preferOverridden: Boolean by property(true)
 	
 	@get:Tag("documentation")
 	var documentation by property(DocumentationState())

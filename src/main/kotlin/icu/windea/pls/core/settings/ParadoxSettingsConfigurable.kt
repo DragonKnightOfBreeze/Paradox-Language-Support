@@ -81,12 +81,6 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                             }
                         }
                 }
-                //preferOverridden
-                row {
-                    checkBox(PlsBundle.message("settings.general.preferOverridden"))
-                        .bindSelected(settings::preferOverridden)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.preferOverridden.tooltip") }
-                }
             }
             //documentation
             group(PlsBundle.message("settings.documentation")) {

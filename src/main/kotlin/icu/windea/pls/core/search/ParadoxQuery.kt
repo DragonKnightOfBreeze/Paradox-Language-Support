@@ -1,7 +1,6 @@
 package icu.windea.pls.core.search
 
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.core.search.selectors.chained.*
@@ -25,22 +24,11 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 	}
 	
 	fun find(exact: Boolean): T? {
-		return if(exact) find() else findFirst()
+		return findFirst()
 	}
 	
 	fun find(): T? {
-		val preferOverridden = getSettings().preferOverridden
-		val selector = searchParameters.selector
-		var result: T? = null
-		delegateProcessResults(original) {
-			if(selector.select(it)) {
-				result = it
-				preferOverridden
-			} else {
-				true
-			}
-		}
-		return result ?: selector.defaultValue
+		return find(true)
 	}
 	
 	override fun findFirst(): T? {
