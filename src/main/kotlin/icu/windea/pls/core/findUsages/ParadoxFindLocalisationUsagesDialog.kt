@@ -52,14 +52,6 @@ class ParadoxFindLocalisationUsagesDialog(
                 myCbToSearchForTextOccurrences.makeUnselectable(false)
             }
         }
-        if(cbCrossLocales != null) {
-            if(isSelected(cbUsages)) {
-                cbCrossLocales?.makeSelectable()
-                cbCrossLocales?.isSelected = true
-            } else {
-                cbCrossLocales?.makeUnselectable(false)
-            }
-        }
         val hasSelected = isSelected(cbUsages) || isSelected(cbCrossLocales)
         isOKActionEnabled = hasSelected
     }

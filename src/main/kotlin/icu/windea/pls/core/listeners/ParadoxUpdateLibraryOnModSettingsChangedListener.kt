@@ -8,7 +8,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.settings.*
 
 /**
- * 当更改模组配置后，更新库信息。
+ * 当更改模组配置后，刷新库信息。
  *
  * @see ParadoxLibrary
  * @see ParadoxLibraryProvider

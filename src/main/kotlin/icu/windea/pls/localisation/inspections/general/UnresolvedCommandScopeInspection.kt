@@ -4,7 +4,6 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -19,7 +18,8 @@ class UnresolvedCommandScopeInspection : LocalInspectionTool() {
         override fun visitCommandScope(element: ParadoxLocalisationCommandScope) {
             ProgressManager.checkCanceled()
             val location = element
-            if(element.reference.canResolve()) return
+            val reference = element.reference
+            if(reference.canResolve()) return
             val name = element.name
             holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unresolvedCommandScope.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
         }

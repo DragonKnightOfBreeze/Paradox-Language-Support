@@ -7,7 +7,6 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
@@ -31,8 +30,8 @@ class UnresolvedIconInspection : LocalInspectionTool() {
             ProgressManager.checkCanceled()
             val iconName = element.name ?: return
             if(iconName.matchesGlobFileName(inspection.ignoredIconNames, true)) return //忽略
-            val resolved = element.reference?.resolve()
-            if(resolved != null) return
+            val reference = element.reference
+            if(reference == null || reference.canResolve()) return
             val location = element.iconId ?: return
             holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unresolvedIcon.description", iconName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
         }

@@ -10,7 +10,6 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.refactoring.*
@@ -35,7 +34,8 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		
 		fun doVisitScriptedVariableReference(element: ParadoxScriptedVariableReference) {
 			ProgressManager.checkCanceled()
-			if(element.reference.canResolve()) return
+			val reference = element.reference
+			if(reference.canResolve()) return
 			val variableName = element.name
 			val quickFixes = listOf(
 				IntroduceGlobalVariableFix(variableName, element)
