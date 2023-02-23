@@ -8,7 +8,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.scopes.*
 import icu.windea.pls.core.search.selectors.*
-import icu.windea.pls.core.selectors.*
 import icu.windea.pls.lang.model.*
 
 open class ChainedParadoxSelector<T>(

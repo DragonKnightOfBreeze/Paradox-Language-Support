@@ -17,7 +17,6 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.search.scopes.*
 import icu.windea.pls.core.search.selectors.*
-import icu.windea.pls.core.selectors.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.support.*

@@ -5,7 +5,6 @@ import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.search.selectors.*
-import icu.windea.pls.core.selectors.*
 import icu.windea.pls.lang.model.*
 
 /**
