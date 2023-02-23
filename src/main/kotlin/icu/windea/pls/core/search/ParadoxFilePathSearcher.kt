@@ -18,7 +18,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         val ignoreCase = queryParameters.ignoreCase
         val project = queryParameters.project
         val scope = queryParameters.selector.scope
-        val name = ParadoxFilePathIndex.name
+        val name = ParadoxFilePathIndex.NAME
         val pathReferenceExpression = if(configExpression != null) ParadoxPathReferenceExpression.get(configExpression) else null
         if(configExpression == null || pathReferenceExpression?.matchEntire(queryParameters) == true) {
             val keys = if(filePath != null) setOf(filePath) else FileBasedIndex.getInstance().getAllKeys(name, project)

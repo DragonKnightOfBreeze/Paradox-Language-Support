@@ -9,7 +9,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.selector.chained.*
+import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*

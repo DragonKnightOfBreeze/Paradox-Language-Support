@@ -6,11 +6,13 @@ import com.intellij.util.io.*
 import icu.windea.pls.*
 import java.util.*
 
-object ParadoxFilePathIndex : ScalarIndexExtension<String>() {
-	private val name = ID.create<String, Void>("paradox.file.path.index")
+class ParadoxFilePathIndex : ScalarIndexExtension<String>() {
+	companion object {
+		@JvmField val NAME = ID.create<String, Void>("paradox.file.path.index")
+	}
 	
 	override fun getName(): ID<String, Void> {
-		return name
+		return NAME
 	}
 	
 	override fun getIndexer(): DataIndexer<String, Void, FileContent> {

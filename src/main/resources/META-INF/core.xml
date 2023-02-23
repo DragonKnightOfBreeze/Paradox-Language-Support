@@ -146,7 +146,17 @@
               icon="PlsIcons.Actions.GameDataDirectory"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
-    
+    <group id="Pls.CopyPath" popup="true">
+      <action id="Pls.CopyPath.CopySteamPath" class="icu.windea.pls.core.tool.actions.CopySteamPathAction"
+              icon="PlsIcons.Actions.SteamDirectory"/>
+      <action id="Pls.CopyPath.CopySteamGamePath" class="icu.windea.pls.core.tool.actions.CopySteamGamePathAction"
+              icon="PlsIcons.Actions.SteamGameDirectory"/>
+      <action id="Pls.CopyPath.CopySteamWorkshopPath" class="icu.windea.pls.core.tool.actions.CopySteamWorkshopPathAction"
+              icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
+      <action id="Pls.CopyPath.CopyGameDataPath" class="icu.windea.pls.core.tool.actions.CopyGameDataPathAction"
+              icon="PlsIcons.Actions.GameDataDirectory"/>
+      <add-to-group group-id="Pls.Tools"/>
+    </group>
     <group id="Pls.OpenUrl" popup="true">
       <action id="Pls.OpenUrl.OpenGameStorePageOnSteamWebsite" class="icu.windea.pls.core.tool.actions.OpenGameStorePageOnSteamWebsiteAction"
               icon="PlsIcons.Steam"/>

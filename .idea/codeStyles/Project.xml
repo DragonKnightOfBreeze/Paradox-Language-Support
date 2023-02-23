@@ -93,24 +93,6 @@
       <option name="FROM_EL_WRAP" value="0" />
       <option name="FROM_EL_COMMA" value="0" />
     </H2CodeStyleSettings>
-    <H2CodeStyleSettings version="6">
-      <option name="USE_GENERAL_STYLE" value="false" />
-      <option name="KEYWORD_CASE" value="1" />
-      <option name="TYPE_CASE" value="1" />
-      <option name="CUSTOM_TYPE_CASE" value="1" />
-      <option name="QUERY_SECTION_1ST_WORD_ALIGN" value="0" />
-      <option name="QUERY_EL_LINE" value="0" />
-      <option name="QUERY_IN_ONE_STRING" value="0" />
-      <option name="INSERT_COLLAPSE_MULTI_ROW_VALUES" value="true" />
-      <option name="SET_EL_WRAP" value="3" />
-      <option name="SET_ALIGN_EQUAL_SIGN" value="false" />
-      <option name="WITH_EL_WRAP" value="2" />
-      <option name="SELECT_EL_WRAP" value="3" />
-      <option name="SELECT_EL_COMMA" value="0" />
-      <option name="SELECT_ALIGN_AS" value="false" />
-      <option name="FROM_EL_WRAP" value="0" />
-      <option name="FROM_EL_COMMA" value="0" />
-    </H2CodeStyleSettings>
     <HSQLCodeStyleSettings version="6">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
@@ -2931,7 +2913,7 @@
       <option name="METHOD_CALL_CHAIN_WRAP" value="0" />
       <option name="ASSIGNMENT_WRAP" value="0" />
       <option name="METHOD_ANNOTATION_WRAP" value="1" />
-      <option name="FIELD_ANNOTATION_WRAP" value="1" />
+      <option name="FIELD_ANNOTATION_WRAP" value="0" />
       <option name="WRAP_ON_TYPING" value="0" />
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />

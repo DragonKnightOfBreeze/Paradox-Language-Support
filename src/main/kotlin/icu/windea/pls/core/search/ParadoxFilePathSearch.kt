@@ -5,7 +5,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.core.selector.chained.*
+import icu.windea.pls.core.search.selectors.chained.*
 
 /**
  * 文件路径的查询。
