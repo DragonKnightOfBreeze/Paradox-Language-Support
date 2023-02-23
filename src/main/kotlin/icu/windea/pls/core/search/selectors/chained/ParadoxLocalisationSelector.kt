@@ -1,8 +1,9 @@
-package icu.windea.pls.core.selector.chained
+package icu.windea.pls.core.search.selectors.chained
 
 import com.intellij.openapi.project.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.search.selectors.*
+import icu.windea.pls.core.selectors.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationSelector(project: Project, context: Any? = null) : ChainedParadoxSelector<ParadoxLocalisationProperty>(project, context)

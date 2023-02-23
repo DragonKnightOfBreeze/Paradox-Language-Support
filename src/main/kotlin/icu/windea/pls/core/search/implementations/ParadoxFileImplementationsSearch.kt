@@ -8,7 +8,8 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.selector.chained.*
+import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.selectors.chained.*
 
 /**
  * 文件的实现的查询。加入所有作用域内的同路径的文件。

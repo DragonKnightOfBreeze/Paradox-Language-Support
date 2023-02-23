@@ -1,4 +1,4 @@
-package icu.windea.pls.core.selector
+package icu.windea.pls.core.search.selectors
 
 /**
  * 用于指定如何选择需要查找的定义、本地化、文件等。

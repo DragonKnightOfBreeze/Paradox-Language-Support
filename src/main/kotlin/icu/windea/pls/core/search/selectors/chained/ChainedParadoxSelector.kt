@@ -1,4 +1,4 @@
-package icu.windea.pls.core.selector.chained
+package icu.windea.pls.core.search.selectors.chained
 
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
@@ -7,7 +7,8 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.scopes.*
-import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.search.selectors.*
+import icu.windea.pls.core.selectors.*
 import icu.windea.pls.lang.model.*
 
 open class ChainedParadoxSelector<T>(

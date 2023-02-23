@@ -9,7 +9,8 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.selector.chained.*
+import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.selectors.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*

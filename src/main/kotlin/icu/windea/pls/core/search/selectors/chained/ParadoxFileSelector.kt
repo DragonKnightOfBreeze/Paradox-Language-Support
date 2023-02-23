@@ -1,4 +1,4 @@
-package icu.windea.pls.core.selector.chained
+package icu.windea.pls.core.search.selectors.chained
 
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*

@@ -1,4 +1,4 @@
-package icu.windea.pls.core.selector
+package icu.windea.pls.core.search.selectors
 
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*

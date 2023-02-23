@@ -6,8 +6,10 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.selector.*
-import icu.windea.pls.core.selector.chained.*
+import icu.windea.pls.core.search.selectors.*
+import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.selectors.*
+import icu.windea.pls.core.selectors.chained.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
