@@ -46,6 +46,8 @@
     <typeDeclarationProvider implementation="icu.windea.pls.core.codeInsight.ParadoxTypeDeclarationProvider"/>
     <codeInsight.template.postfixTemplateProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.codeInsight.template.postfix.ParadoxPostfixTemplateProvider"/>
     
+    <findUsagesHandlerFactory implementation="icu.windea.pls.core.findUsages.ParadoxFindUsagesHandlerFactory"/>
+    
     <lang.documentationProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.editor.ParadoxDocumentationProvider"/>
     <lang.documentationProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.core.editor.ParadoxDocumentationProvider"/>
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxFoldingSettings"/>
@@ -66,6 +68,7 @@
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxSyncedLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxInlineScriptIndex"/>
     
+    <searchScopesProvider implementation="icu.windea.pls.core.search.ParadoxSearchScopeProvider"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxScriptedVariableImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxDefinitionImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxComplexEnumValueImplementationsSearch"/>

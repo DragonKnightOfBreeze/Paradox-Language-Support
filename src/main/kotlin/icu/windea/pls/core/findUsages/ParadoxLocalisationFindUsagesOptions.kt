@@ -2,10 +2,11 @@ package icu.windea.pls.core.findUsages
 
 import com.intellij.ide.util.*
 import com.intellij.openapi.project.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 
 class ParadoxLocalisationFindUsagesOptions(project: Project) : ParadoxFindUsagesOptions(project) {
-    @JvmField var isSearchForAllLocales = true
+    @JvmField var isCrossLocales = true
     
     init {
         isSearchForTextOccurrences = false
@@ -13,29 +14,32 @@ class ParadoxLocalisationFindUsagesOptions(project: Project) : ParadoxFindUsages
     
     override fun setDefaults(properties: PropertiesComponent, prefix: String) {
         super.setDefaults(properties, prefix)
-        isSearchForAllLocales = properties.getBoolean(prefix + "isSearchForAllLocales")
+        isCrossLocales = properties.getBoolean(prefix + "isCrossLocales")
     }
     
     override fun storeDefaults(properties: PropertiesComponent, prefix: String) {
         super.storeDefaults(properties, prefix)
-        properties.setValue(prefix + "isSearchForAllLocales", isSearchForAllLocales)
+        properties.setValue(prefix + "isCrossLocales", isCrossLocales)
     }
     
-    override fun addUsageTypes(to: MutableList<in String?>) {
-        super.addUsageTypes(to)
-        //TODO
+    override fun generateUsagesString(): String {
+        if(isCrossLocales) {
+            return PlsBundle.message("find.usages.panel.title.usages.crossLocales")
+        } else {
+            return super.generateUsagesString()
+        }
     }
     
     override fun equals(other: Any?): Boolean {
         if(this === other) return true
         if(!super.equals(other)) return false
         return other is ParadoxLocalisationFindUsagesOptions &&
-            isSearchForAllLocales == other.isSearchForTextOccurrences
+            isCrossLocales == other.isSearchForTextOccurrences
     }
     
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + isSearchForAllLocales.toInt()
+        result = 31 * result + isCrossLocales.toInt()
         return result
     }
 }

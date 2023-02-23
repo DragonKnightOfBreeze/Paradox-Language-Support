@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.model.*
 
 sealed class ParadoxGlobalSearchScope(
@@ -34,7 +35,7 @@ sealed class ParadoxGlobalSearchScope(
         @JvmStatic
         fun fromFile(project: Project, file: VirtualFile?, fileInfo: ParadoxFileInfo?): GlobalSearchScope {
             if(file == null) return allScope(project)
-            if(fileInfo == null) return fileScope(project, file)
+            if(fileInfo == null) return fileScope(project, file) //这种情况下不应当存在使用
             //如果文件不在项目中，改为使用allScope
             if(!ProjectFileIndex.getInstance(project).isInContent(file)) return allScope(project)
             val rootInfo = fileInfo.rootInfo
@@ -43,38 +44,35 @@ sealed class ParadoxGlobalSearchScope(
             when(rootInfo) {
                 is ParadoxGameRootInfo -> {
                     val settings = getProfilesSettings().gameSettings.get(path)
-                    if(settings == null) return fileScope(project, file)
+                    if(settings == null) return allScope(project)
                     val gameDirectory = rootFile
-                    val modDependencyDirectories = mutableSetOf<VirtualFile>()
-                    for(modDependency in settings.modDependencies) {
-                        //要求模组依赖是启用的
-                        if(modDependency.enabled) {
-                            val modDependencyDirectory = modDependency.modDirectory?.toVirtualFile(false)
-                            if(modDependencyDirectory != null) {
-                                modDependencyDirectories.add(modDependencyDirectory)
-                            }
-                        }
-                    }
+                    val modDependencyDirectories = getModDependencyDirectories(settings)
                     return ParadoxGameWithDependenciesScope(project, gameDirectory, modDependencyDirectories)
                 }
                 is ParadoxModRootInfo -> {
                     val settings = getProfilesSettings().modSettings.get(path)
-                    if(settings == null) return fileScope(project, file)
+                    if(settings == null) return allScope(project)
                     val modDirectory = rootFile
                     val gameDirectory = settings.gameDirectory?.toVirtualFile(false)
-                    val modDependencyDirectories = mutableSetOf<VirtualFile>()
-                    for(modDependency in settings.modDependencies) {
-                        //要求模组依赖是启用的，或者是当前模组自身
-                        if(modDependency.enabled || modDependency.modDirectory == modDirectory.path) {
-                            val modDependencyDirectory = modDependency.modDirectory?.toVirtualFile(false)
-                            if(modDependencyDirectory != null) {
-                                modDependencyDirectories.add(modDependencyDirectory)
-                            }
-                        }
-                    }
+                    val modDependencyDirectories = getModDependencyDirectories(settings, modDirectory)
                     return ParadoxModWithDependenciesScope(project, modDirectory, gameDirectory, modDependencyDirectories)
                 }
             }
+        }
+        
+        @JvmStatic
+        fun getModDependencyDirectories(settings: ParadoxGameOrModSettingsState, modDirectory: VirtualFile? = null): MutableSet<VirtualFile> {
+            val modDependencyDirectories = mutableSetOf<VirtualFile>()
+            for(modDependency in settings.modDependencies) {
+                //要求模组依赖是启用的，或者是当前模组自身
+                if(modDependency.enabled || (modDirectory != null && modDependency.modDirectory == modDirectory.path)) {
+                    val modDependencyDirectory = modDependency.modDirectory?.toVirtualFile(false)
+                    if(modDependencyDirectory != null) {
+                        modDependencyDirectories.add(modDependencyDirectory)
+                    }
+                }
+            }
+            return modDependencyDirectories
         }
     }
 }

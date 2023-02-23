@@ -7,10 +7,10 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxFindUsagesHandlerFactory(project: Project) : FindUsagesHandlerFactory(){
+class ParadoxFindUsagesHandlerFactory(project: Project) : FindUsagesHandlerFactory() {
     val findOptions = ParadoxFindUsagesOptions(project)
-    val definitionFindOptions = ParadoxDefinitionFindUsagesOptions(project)
-    val localisationFindOptions = ParadoxLocalisationFindUsagesOptions(project)
+    val findDefinitionOptions = ParadoxDefinitionFindUsagesOptions(project)
+    val findLocalisationOptions = ParadoxLocalisationFindUsagesOptions(project)
     
     override fun canFindUsages(element: PsiElement): Boolean {
         return element.language.isParadoxLanguage()
@@ -23,32 +23,10 @@ class ParadoxFindUsagesHandlerFactory(project: Project) : FindUsagesHandlerFacto
             }
             element is ParadoxLocalisationProperty && element.localisationInfo != null -> {
                 ParadoxLocalisationFindUsagesHandler(element, this)
-            } 
+            }
             else -> {
                 ParadoxFindUsagesHandler(element, this)
             }
         }
     }
-    
-}
-
-class ParadoxFindUsagesHandler(
-    element: PsiElement,
-    factory: ParadoxFindUsagesHandlerFactory
-) : FindUsagesHandler(element) {
-    
-}
-
-class ParadoxDefinitionFindUsagesHandler(
-    element: ParadoxScriptDefinitionElement,
-    factory: ParadoxFindUsagesHandlerFactory
-) : FindUsagesHandler(element) {
-    
-}
-
-class ParadoxLocalisationFindUsagesHandler(
-    element: ParadoxLocalisationProperty,
-    factory: ParadoxFindUsagesHandlerFactory
-) : FindUsagesHandler(element) {
-    
 }
