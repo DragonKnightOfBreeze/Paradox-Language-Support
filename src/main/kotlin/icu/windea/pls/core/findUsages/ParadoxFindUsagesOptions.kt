@@ -20,8 +20,8 @@ open class ParadoxFindUsagesOptions(project: Project) : PersistentFindUsagesOpti
     }
     
     protected open fun setDefaults(properties: PropertiesComponent, prefix: String) {
-        isSearchForTextOccurrences = properties.getBoolean(prefix + "isSearchForTextOccurrences", true)
         isUsages = properties.getBoolean(prefix + "isUsages", true)
+        isSearchForTextOccurrences = properties.getBoolean(prefix + "isSearchForTextOccurrences", true)
     }
     
     override fun storeDefaults(project: Project) {

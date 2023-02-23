@@ -479,6 +479,8 @@ fun Path.create(): Path {
 	return this
 }
 
+fun Boolean.toInt() = if(this) 1 else 0
+
 fun Boolean.toIntString() = if(this) "1" else "0"
 
 fun Any?.toStringOrEmpty() = this?.toString() ?: ""
