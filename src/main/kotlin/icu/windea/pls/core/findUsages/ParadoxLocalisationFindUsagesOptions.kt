@@ -34,7 +34,7 @@ class ParadoxLocalisationFindUsagesOptions(project: Project) : ParadoxFindUsages
         if(this === other) return true
         if(!super.equals(other)) return false
         return other is ParadoxLocalisationFindUsagesOptions &&
-            isCrossLocales == other.isSearchForTextOccurrences
+            isCrossLocales == other.isCrossLocales
     }
     
     override fun hashCode(): Int {

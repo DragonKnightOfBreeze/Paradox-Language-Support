@@ -1,6 +1,9 @@
 package icu.windea.pls.core.listeners
 
 import com.intellij.openapi.application.*
+import com.intellij.openapi.project.*
+import com.intellij.openapi.roots.*
+import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.settings.*
@@ -19,7 +22,8 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
     
     private fun addGameSettings(rootInfo: ParadoxGameRootInfo) {
         val settings = getProfilesSettings()
-        val gameDirectory = rootInfo.rootFile.path
+        val gameFile = rootInfo.rootFile
+        val gameDirectory = gameFile.path
         val launcherSettingsInfo = rootInfo.launcherSettingsInfo
         var gameSettings = settings.gameSettings.get(gameDirectory)
         if(gameSettings == null) {
@@ -33,12 +37,16 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
             ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onAdd(gameSettings)
         } else {
             gameSettings.gameVersion = launcherSettingsInfo.rawVersion
+    
+            //这里也需要更新库
+            doUpdateLibrary(gameFile)
         }
     }
     
     private fun addModSettings(rootInfo: ParadoxModRootInfo) {
         val settings = getProfilesSettings()
-        val modDirectory = rootInfo.rootFile.path
+        val modFile = rootInfo.rootFile
+        val modDirectory = modFile.path
         val descriptorInfo = rootInfo.descriptorInfo
         var descriptorSettings = settings.modDescriptorSettings.get(modDirectory)
         if(descriptorSettings != null) {
@@ -60,6 +68,21 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
             settings.updateSettings()
             
             ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onAdd(modSettings)
+        } else {
+            //这里也需要更新库
+            doUpdateLibrary(modFile)
+        }
+    }
+    
+    //org.jetbrains.kotlin.idea.core.script.ucache.ScriptClassRootsUpdater.doUpdate
+    
+    private fun doUpdateLibrary(gameFile: VirtualFile) {
+        for(project in ProjectManager.getInstance().openProjects) {
+            if(project.isDisposed) continue
+            val isInProject = ProjectFileIndex.getInstance(project).isInContent(gameFile)
+            if(!isInProject) continue
+            val paradoxLibrary = project.paradoxLibrary
+            paradoxLibrary.refreshRoots()
         }
     }
     

@@ -15,13 +15,10 @@ class ParadoxFindDefinitionUsagesDialog(
     mustOpenInNewTab: Boolean,
     isSingleFile: Boolean,
     handler: ParadoxDefinitionFindUsagesHandler
-): ParadoxFindUsagesDialog(element, project, findOptions, toShowInNewTab, mustOpenInNewTab, isSingleFile, handler) {
-    private val findOptions = findOptions
-    private lateinit var cbUsages: StateRestoringCheckBox
+) : ParadoxFindUsagesDialog(element, project, findOptions, toShowInNewTab, mustOpenInNewTab, isSingleFile, handler) {
+    private val findOptions get() = myFindUsagesOptions as ParadoxDefinitionFindUsagesOptions
     
-    override fun getPreferredFocusedComponent(): JComponent {
-        return cbUsages
-    }
+    private var cbUsages: StateRestoringCheckBox? = null
     
     override fun calcFindUsagesOptions(options: FindUsagesOptions) {
         options as ParadoxDefinitionFindUsagesOptions

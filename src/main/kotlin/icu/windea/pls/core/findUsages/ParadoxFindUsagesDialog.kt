@@ -18,10 +18,9 @@ open class ParadoxFindUsagesDialog(
     isSingleFile: Boolean,
     handler: ParadoxFindUsagesHandler
 ) : CommonFindUsagesDialog(element, project, findOptions, toShowInNewTab, mustOpenInNewTab, isSingleFile, handler) {
-    private val element = element
-    private val findOptions = findOptions
-    private val isSingleFile = isSingleFile
-    private lateinit var cbUsages: StateRestoringCheckBox
+    private val findOptions get() = myFindUsagesOptions as ParadoxFindUsagesOptions
+    
+    private var cbUsages: StateRestoringCheckBox? = null
     
     override fun calcFindUsagesOptions(options: FindUsagesOptions) {
         options as ParadoxFindUsagesOptions

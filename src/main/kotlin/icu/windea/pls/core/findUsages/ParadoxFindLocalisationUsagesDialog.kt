@@ -16,13 +16,10 @@ class ParadoxFindLocalisationUsagesDialog(
     isSingleFile: Boolean,
     handler: ParadoxLocalisationFindUsagesHandler
 ) : ParadoxFindUsagesDialog(element, project, findOptions, toShowInNewTab, mustOpenInNewTab, isSingleFile, handler) {
-    private val findOptions = findOptions
-    private lateinit var cbUsages: StateRestoringCheckBox
-    private lateinit var cbCrossLocales: StateRestoringCheckBox
+    private val findOptions get() = myFindUsagesOptions as ParadoxLocalisationFindUsagesOptions
     
-    override fun getPreferredFocusedComponent(): JComponent {
-        return cbUsages
-    }
+    private var cbUsages: StateRestoringCheckBox? = null
+    private var cbCrossLocales: StateRestoringCheckBox? = null
     
     override fun calcFindUsagesOptions(options: FindUsagesOptions) {
         options as ParadoxLocalisationFindUsagesOptions
@@ -50,11 +47,17 @@ class ParadoxFindLocalisationUsagesDialog(
     override fun update() {
         if(myCbToSearchForTextOccurrences != null) {
             if(isSelected(cbUsages)) {
-                cbCrossLocales.makeSelectable()
                 myCbToSearchForTextOccurrences.makeSelectable()
             } else {
-                cbCrossLocales.makeUnselectable(false)
                 myCbToSearchForTextOccurrences.makeUnselectable(false)
+            }
+        }
+        if(cbCrossLocales != null) {
+            if(isSelected(cbUsages)) {
+                cbCrossLocales?.makeSelectable()
+                cbCrossLocales?.isSelected = true
+            } else {
+                cbCrossLocales?.makeUnselectable(false)
             }
         }
         val hasSelected = isSelected(cbUsages) || isSelected(cbCrossLocales)

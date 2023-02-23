@@ -25,7 +25,7 @@ class ParadoxLocalisationFindUsagesHandler(
     
     override fun processElementUsages(element: PsiElement, processor: Processor<in UsageInfo>, options: FindUsagesOptions): Boolean {
         options as ParadoxLocalisationFindUsagesOptions
-        val finalProcessor = Processor<UsageInfo> p@{
+        return super.processElementUsages(element, p@{
             //如果不跨语言区域，忽略不同语言区域的本地化文件中的引用
             if(!options.isCrossLocales && locale != null) {
                 val refElement = it.element
@@ -34,7 +34,6 @@ class ParadoxLocalisationFindUsagesHandler(
                 }
             }
             processor.process(it)
-        }
-        return super.processElementUsages(element, finalProcessor, options)
+        }, options)
     }
 }
