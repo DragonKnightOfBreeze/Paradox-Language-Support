@@ -34,6 +34,7 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
             ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onAdd(gameSettings)
         } else {
             gameSettings.gameVersion = launcherSettingsInfo.rawVersion
+            settings.updateSettings()
         }
     }
     

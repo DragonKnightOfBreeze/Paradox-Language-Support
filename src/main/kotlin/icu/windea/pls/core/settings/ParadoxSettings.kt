@@ -12,6 +12,7 @@ import kotlin.properties.*
 /**
  * PLS设置。可以在设置页面`Settings > Languages & Frameworks > Paradox Language Support`中进行配置。
  */
+@Service(Service.Level.APP)
 @State(name = "ParadoxSettings", storages = [Storage("paradox-language-support.xml")])
 class ParadoxSettings : SimplePersistentStateComponent<ParadoxSettingsState>(ParadoxSettingsState())
 
@@ -25,8 +26,14 @@ class ParadoxSettingsState : BaseState() {
 	var preferredLocale by string("auto")
 	var ignoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
 	
-	@get:Tag("documentation")
+	@get:Property(surroundWithTag = false)
 	var documentation by property(DocumentationState())
+	@get:Property(surroundWithTag = false)
+	var completion by property(CompletionState())
+	@get:Property(surroundWithTag = false)
+	var inference by property(InferenceState())
+	@get:Property(surroundWithTag = false)
+	var generation by property(GenerationState())
 	
 	/**
 	 * @property renderLineComment 是否需要渲染之前的单行注释文本到文档中。
@@ -39,6 +46,7 @@ class ParadoxSettingsState : BaseState() {
 	 * @property showScopeContext 是否需要在文档中显示作用域上下文（如果支持且存在）。
 	 * @property showParameters 是否需要在文档中显示参数信息（如果支持且存在。）
 	 */
+	@Tag("documentation")
 	class DocumentationState : BaseState() {
 		var renderLineComment by property(false)
 		var renderRelatedLocalisationsForDefinitions by property(true)
@@ -51,9 +59,6 @@ class ParadoxSettingsState : BaseState() {
 		var showParameters by property(true)
 	}
 	
-	@get:Tag("completion")
-	var completion by property(CompletionState())
-	
 	/**
 	 * @property completeWithValue 进行代码补全时，如果可能，将会另外提供提示项，自动插入常量字符串或者花括号。
 	 * @property completeWithClauseTemplate 进行代码补全时，如果可能，将会另外提供提示项，自动插入从句内联模版。
@@ -61,6 +66,7 @@ class ParadoxSettingsState : BaseState() {
 	 * @property maxExpressionCountInOneLine 当插入从句内联模版时，当要插入的从句中的属性的个数不超过时，会把所有属性放到同一行。
 	 * @property completeOnlyScopeIsMatched 如果存在，是否仅提供匹配当前作用域的提示项。
 	 */
+	@Tag("completion")
 	class CompletionState : BaseState() {
 		var completeWithValue by property(true)
 		var completeWithClauseTemplate by property(true)
@@ -69,19 +75,15 @@ class ParadoxSettingsState : BaseState() {
 		var completeOnlyScopeIsMatched by property(true)
 	}
 	
-	@get:Tag("inference")
-	var inference by property(InferenceState())
-	
 	/**
 	 * @property inlineScriptLocation 是否推断内联脚本的使用位置，以便为内联脚本提供高级语言功能支持。
 	 */
+	@Tag("inference")
 	class InferenceState : BaseState() {
 		var inlineScriptLocation by property(true)
 	}
 	
-	@get:Tag("generation")
-	var generation by property(GenerationState())
-	
+	@Tag("generation")
 	class GenerationState : BaseState() {
 		var fileNamePrefix by string("000000_")
 	}

@@ -18,9 +18,6 @@
   
   <extensions defaultExtensionNs="com.intellij">
     <applicationConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
-    <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettings"/>
-    <!--no configurable for all mod settings, but for single mod settings-->
-    <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxProfilesSettings"/>
     
     <additionalLibraryRootsProvider implementation="icu.windea.pls.core.ParadoxLibraryProvider"/>
     <moduleRendererFactory implementation="icu.windea.pls.core.ParadoxModuleRenderFactory"/>

@@ -4,6 +4,7 @@ package icu.windea.pls.core.tool.actions
 
 import com.intellij.ide.projectView.impl.nodes.*
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
@@ -19,7 +20,7 @@ import icu.windea.pls.lang.model.*
  * @see icu.windea.pls.core.settings.ParadoxModSettingsState
  * @see icu.windea.pls.core.tool.ParadoxModSettingsDialog
  */
-class OpenModSettingsAction : AnAction() {
+class OpenModSettingsAction : DumbAwareAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }

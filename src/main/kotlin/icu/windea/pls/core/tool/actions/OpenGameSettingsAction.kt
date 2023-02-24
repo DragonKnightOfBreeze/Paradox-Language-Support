@@ -1,7 +1,10 @@
+@file:Suppress("ComponentNotRegistered")
+
 package icu.windea.pls.core.tool.actions
 
 import com.intellij.ide.projectView.impl.nodes.*
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
@@ -17,7 +20,7 @@ import icu.windea.pls.lang.model.*
  * @see icu.windea.pls.core.settings.ParadoxGameSettingsState
  * @see icu.windea.pls.core.tool.ParadoxGameSettingsDialog
  */
-class OpenGameSettingsAction : AnAction() {
+class OpenGameSettingsAction : DumbAwareAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }
