@@ -153,7 +153,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             appendFileInfoHeader(element.fileInfo)
             //加上定义信息
             append(PlsDocBundle.message("prefix.scriptedVariable")).append(" <b>@").append(name.escapeXml().orAnonymous()).append("</b>")
-            element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
+            val valueElement = element.scriptedVariableValue
+            when(valueElement) {
+                is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
+                is ParadoxScriptValue -> append(" = ").append(valueElement.value.escapeXml())
+            }
         }
     }
     
@@ -163,7 +167,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             appendFileInfoHeader(element.fileInfo)
             //加上定义信息
             append(PlsDocBundle.message("prefix.property")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-            element.propertyValue?.text?.let { value -> append(" = ").append(value.escapeXml()) }
+            val valueElement = element.propertyValue
+            when(valueElement) {
+                is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
+                is ParadoxScriptValue -> append(" = ").append(valueElement.value.escapeXml())
+            }
         }
     }
     
