@@ -14,9 +14,10 @@ version = "0.8.2"
 
 intellij {
 	pluginName.set("Paradox Language Support")
-	version.set("2022.3")
-	
+	type.set("IU")
+	version.set("2022.3.2")
 	plugins.add("com.intellij.platform.images")
+	plugins.add("com.intellij.diagram")
 	plugins.add("cn.yiiguxing.plugin.translate:3.4.0") //https://github.com/YiiGuxing/TranslationPlugin
 	
 	//reference
