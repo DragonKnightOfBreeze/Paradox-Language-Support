@@ -11,18 +11,18 @@ import javax.swing.*
 
 private fun getTitle() = PlsBundle.message("mod.dependencies.toolbar.action.import.popup.title")
 
-private fun getValues() = ParadoxModDependenciesImporter.EP_NAME.extensions
+private fun getValues() = ParadoxModImporter.EP_NAME.extensions
 
 class ParadoxModDependenciesImportPopup(
     private val project: Project,
     private val tableView: TableView<ParadoxModDependencySettingsState>,
     private val tableModel: ParadoxModDependenciesTableModel
-) : BaseListPopupStep<ParadoxModDependenciesImporter>(getTitle(), *getValues()) {
-    override fun getIconFor(value: ParadoxModDependenciesImporter): Icon? {
+) : BaseListPopupStep<ParadoxModImporter>(getTitle(), *getValues()) {
+    override fun getIconFor(value: ParadoxModImporter): Icon? {
         return value.icon
     }
     
-    override fun getTextFor(value: ParadoxModDependenciesImporter): String {
+    override fun getTextFor(value: ParadoxModImporter): String {
         return value.text
     }
     
@@ -30,7 +30,7 @@ class ParadoxModDependenciesImportPopup(
         return true
     }
     
-    override fun onChosen(selectedValue: ParadoxModDependenciesImporter, finalChoice: Boolean): PopupStep<*>? {
+    override fun onChosen(selectedValue: ParadoxModImporter, finalChoice: Boolean): PopupStep<*>? {
         return doFinalStep { selectedValue.execute(project, tableView, tableModel) }
     }
 }

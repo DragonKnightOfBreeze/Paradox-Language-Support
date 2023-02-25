@@ -1,15 +1,16 @@
 <idea-plugin>
   <extensionPoints>
-    <extensionPoint qualifiedName="icu.windea.pls.paradoxModDependenciesImporter" interface="icu.windea.pls.core.tool.importer.ParadoxModDependenciesImporter" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.paradoxModDependenciesExporter" interface="icu.windea.pls.core.tool.exporter.ParadoxModDependenciesExporter" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.paradoxModImporter" interface="icu.windea.pls.core.tool.importer.ParadoxModImporter" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.paradoxModExporter" interface="icu.windea.pls.core.tool.exporter.ParadoxModExporter" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
-    <!--<paradoxModDependenciesImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromGameImporter"/>-->
-    <!--<paradoxModDependenciesImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherImporter"/>-->
-    <!--<paradoxModDependenciesImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherBetaImporter"/>-->
-    <paradoxModDependenciesImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherJsonImporter"/>
-    
-    <paradoxModDependenciesExporter implementation="icu.windea.pls.core.tool.exporter.ParadoxToLauncherJsonExporter"/>
+    <paradoxModImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromGameImporter"/>
+    <!--<paradoxModImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherImporter"/>-->
+    <!--<paradoxModImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherBetaImporter"/>-->
+    <paradoxModImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherJsonV3Importer"/>
+
+    <paradoxModExporter implementation="icu.windea.pls.core.tool.exporter.ParadoxToLauncherJsonV2Exporter"/>
+    <paradoxModExporter implementation="icu.windea.pls.core.tool.exporter.ParadoxToLauncherJsonV3Exporter"/>
   </extensions>
 </idea-plugin>

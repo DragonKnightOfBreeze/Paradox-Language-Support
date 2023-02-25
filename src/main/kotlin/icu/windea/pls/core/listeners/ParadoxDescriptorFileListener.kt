@@ -3,7 +3,6 @@ package icu.windea.pls.core.listeners
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 
 /**
@@ -33,9 +32,7 @@ class ParadoxDescriptorFileListener : AsyncFileListener {
 					val settings = getProfilesSettings()
 					val modDescriptorSettings = settings.modDescriptorSettings.get(modDirectory)
 					if(modDescriptorSettings != null) {
-						modDescriptorSettings.name = descriptorInfo.name.takeIfNotEmpty() ?: PlsBundle.message("mod.name.unnamed")
-						modDescriptorSettings.version = descriptorInfo.version?.takeIfNotEmpty()
-						modDescriptorSettings.supportedVersion = descriptorInfo.supportedVersion?.takeIfNotEmpty()
+						modDescriptorSettings.fromDescriptorInfo(descriptorInfo)
 						settings.updateSettings()
 					}
 				}

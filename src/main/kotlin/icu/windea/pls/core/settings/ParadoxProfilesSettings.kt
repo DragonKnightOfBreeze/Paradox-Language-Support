@@ -3,6 +3,7 @@ package icu.windea.pls.core.settings
 import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
 
 @Service(Service.Level.APP)
@@ -30,11 +31,36 @@ class ParadoxProfilesSettingsState : BaseState() {
 class ParadoxModDescriptorSettingsState : BaseState() {
     var name: String? by string()
     var version: String? by string()
-    var picture: String? by string()
     var supportedVersion: String? by string()
-    var remoteFileId: String? by string()
+    var picture: String? by string()
+    var tags: MutableSet<String> by stringSet()
+    var remoteId: String? by string()
     var gameType: ParadoxGameType? by enum()
+    var source: ParadoxModSource by enum(ParadoxModSource.Local)
     var modDirectory: String? by string()
+    
+    fun fromDescriptorInfo(descriptorInfo: ParadoxModDescriptorInfo) {
+        name = descriptorInfo.name.takeIfNotEmpty() ?: PlsBundle.message("mod.name.unnamed")
+        version = descriptorInfo.version
+        supportedVersion = descriptorInfo.supportedVersion
+        picture = descriptorInfo.picture
+        tags = descriptorInfo.tags.orEmpty().toMutableSet()
+        remoteId = descriptorInfo.remoteFileId
+        if(remoteId != null) source = ParadoxModSource.Steam
+    }
+}
+
+interface ParadoxModDescriptorAwareSettingsState {
+    val modDescriptorSettings: ParadoxModDescriptorSettingsState
+    
+    val name get() = modDescriptorSettings.name
+    val version get() = modDescriptorSettings.version
+    val supportedVersion get() = modDescriptorSettings.supportedVersion
+    val picture get() = modDescriptorSettings.picture
+    val tags get() = modDescriptorSettings.tags
+    val remoteId get() = modDescriptorSettings.remoteId
+    val gameType get() = modDescriptorSettings.gameType
+    val source get() = modDescriptorSettings.source
 }
 
 interface ParadoxGameOrModSettingsState {
@@ -71,7 +97,7 @@ class ParadoxGameSettingsState : BaseState(), ParadoxGameOrModSettingsState {
  * @property modDependencies 模组依赖。不包括游戏目录和本模组。
  */
 @Tag("settings")
-class ParadoxModSettingsState : BaseState(), ParadoxGameOrModSettingsState {
+class ParadoxModSettingsState : BaseState(), ParadoxGameOrModSettingsState, ParadoxModDescriptorAwareSettingsState {
     override var gameType: ParadoxGameType? by enum()
     override var gameVersion: String? by string()
     override var gameDirectory: String? by string()
@@ -79,13 +105,8 @@ class ParadoxModSettingsState : BaseState(), ParadoxGameOrModSettingsState {
     @get:XCollection(style = XCollection.Style.v2)
     override var modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
     
-    val modDescriptorSettings: ParadoxModDescriptorSettingsState
+    override val modDescriptorSettings: ParadoxModDescriptorSettingsState
         get() = getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())
-    
-    val name: String? get() = modDescriptorSettings.name
-    val version: String? get() = modDescriptorSettings.version
-    val supportedVersion: String? get() = modDescriptorSettings.supportedVersion
-    val remoteFileId: String? get() = modDescriptorSettings.remoteFileId
     
     override val qualifiedName: String
         get() = buildString {
@@ -103,16 +124,10 @@ class ParadoxModSettingsState : BaseState(), ParadoxGameOrModSettingsState {
  * @property enabled 用于以后的基于模组列表运行游戏的功能。
  */
 @Tag("settings")
-class ParadoxModDependencySettingsState : BaseState() {
+class ParadoxModDependencySettingsState : BaseState(), ParadoxModDescriptorAwareSettingsState {
     var modDirectory: String? by string()
     var enabled: Boolean by property(true)
     
-    val modDescriptorSettings: ParadoxModDescriptorSettingsState
+    override val modDescriptorSettings: ParadoxModDescriptorSettingsState
         get() = getProfilesSettings().modDescriptorSettings.getValue(modDirectory.orEmpty())
-    
-    val name: String? get() = modDescriptorSettings.name
-    val version: String? get() = modDescriptorSettings.version
-    val supportedVersion: String? get() = modDescriptorSettings.supportedVersion
-    val remoteFileId: String? get() = modDescriptorSettings.remoteFileId
-    val gameType: ParadoxGameType? get() = modDescriptorSettings.gameType
 }

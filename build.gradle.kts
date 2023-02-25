@@ -45,6 +45,7 @@ dependencies {
 		exclude(module = "jackson-core")
 		exclude(module = "jackson-databind")
 	}
+	implementation("org.xerial:sqlite-jdbc:3.40.1.0")
 }
 
 sourceSets {

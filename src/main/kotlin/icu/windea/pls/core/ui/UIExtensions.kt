@@ -2,7 +2,6 @@ package icu.windea.pls.core.ui
 
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.keymap.*
-import com.intellij.openapi.ui.*
 import com.intellij.refactoring.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.scale.JBUIScale.scale

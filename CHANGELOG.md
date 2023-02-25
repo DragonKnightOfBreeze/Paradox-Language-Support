@@ -65,6 +65,7 @@
 
 * BUG修复
 * 完善Stellaris的CWT规则文件（检查游戏目录中的所有`.txt`文件）
+* 参考Irony Mod Manager的实现添加一些导入导出模组依赖的方式（忽略需要读取sqlite数据库的方式）
 
 ## 0.8.1
 

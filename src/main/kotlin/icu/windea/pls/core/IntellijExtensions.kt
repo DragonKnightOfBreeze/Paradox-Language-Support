@@ -43,6 +43,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 import it.unimi.dsi.fastutil.objects.*
 import java.io.*
+import java.nio.file.Path
 import java.util.*
 import javax.swing.*
 import javax.swing.text.*
@@ -269,8 +270,13 @@ inline fun Document.getCharToLineStart(offset: Int, skipWhitespaceOnly: Boolean 
 //	return destination
 //}
 
-fun String.toVirtualFile(refreshIfNeed: Boolean): VirtualFile?{
+fun String.toVirtualFile(refreshIfNeed: Boolean = false): VirtualFile? {
 	val path = this.toPathOrNull() ?: return null
+	return VfsUtil.findFile(path, refreshIfNeed)
+}
+
+fun Path.toVirtualFile(refreshIfNeed: Boolean = false): VirtualFile? {
+	val path = this
 	return VfsUtil.findFile(path, refreshIfNeed)
 }
 

@@ -133,7 +133,7 @@ interface ParadoxModDependenciesPopupActions {
         private fun getSteamId(): String? {
             val selectedRow = tableView.selectedRow
             val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
-            return getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteFileId
+            return getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteId
         }
     }
     
@@ -178,7 +178,7 @@ interface ParadoxModDependenciesPopupActions {
         private fun getSteamId(): String? {
             val selectedRow = tableView.selectedRow
             val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
-            return getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteFileId
+            return getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteId
         }
     }
 }

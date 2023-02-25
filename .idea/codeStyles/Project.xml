@@ -2924,8 +2924,6 @@
       <option name="SPACE_BEFORE_FOR_PARENTHESES" value="false" />
       <option name="SPACE_BEFORE_CATCH_PARENTHESES" value="false" />
       <option name="CALL_PARAMETERS_WRAP" value="0" />
-      <option name="CALL_PARAMETERS_LPAREN_ON_NEXT_LINE" value="false" />
-      <option name="CALL_PARAMETERS_RPAREN_ON_NEXT_LINE" value="false" />
       <option name="METHOD_PARAMETERS_WRAP" value="0" />
       <option name="EXTENDS_LIST_WRAP" value="0" />
       <option name="METHOD_CALL_CHAIN_WRAP" value="0" />

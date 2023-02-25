@@ -1,4 +1,4 @@
-package icu.windea.pls.core.tool.exporter
+package icu.windea.pls.core.tool.importer
 
 import com.intellij.openapi.extensions.*
 import com.intellij.openapi.project.*
@@ -7,13 +7,14 @@ import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.tool.*
 import javax.swing.*
 
-interface ParadoxModDependenciesExporter {
+interface ParadoxModImporter {
     val icon: Icon? get() = null
     val text: String
     
     fun execute(project: Project, tableView: TableView<ParadoxModDependencySettingsState>, tableModel: ParadoxModDependenciesTableModel)
     
     companion object INSTANCE {
-        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxModDependenciesExporter>("icu.windea.pls.paradoxModDependenciesExporter")
+        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxModImporter>("icu.windea.pls.paradoxModImporter")
     }
 }
+

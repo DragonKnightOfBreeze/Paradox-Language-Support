@@ -2,7 +2,6 @@ package icu.windea.pls.core.listeners
 
 import com.intellij.openapi.application.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.model.*
 
@@ -43,36 +42,29 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
         val modFile = rootInfo.rootFile
         val modDirectory = modFile.path
         val descriptorInfo = rootInfo.descriptorInfo
-        var descriptorSettings = settings.modDescriptorSettings.get(modDirectory)
-        if(descriptorSettings != null) {
-            syncModDescriptorSettings(descriptorSettings, descriptorInfo, rootInfo)
+        var modDescriptorSettings = settings.modDescriptorSettings.get(modDirectory)
+        if(modDescriptorSettings != null) {
+            modDescriptorSettings.fromDescriptorInfo(descriptorInfo)
+            modDescriptorSettings.modDirectory = rootInfo.rootFile.path
             settings.updateSettings()
         } else {
-            descriptorSettings = ParadoxModDescriptorSettingsState()
-            syncModDescriptorSettings(descriptorSettings, descriptorInfo, rootInfo)
-            settings.modDescriptorSettings.put(modDirectory, descriptorSettings)
+            modDescriptorSettings = ParadoxModDescriptorSettingsState()
+            modDescriptorSettings.fromDescriptorInfo(descriptorInfo)
+            modDescriptorSettings.modDirectory = rootInfo.rootFile.path
+            settings.modDescriptorSettings.put(modDirectory, modDescriptorSettings)
             settings.updateSettings()
         }
         
         var modSettings = settings.modSettings.get(modDirectory)
         if(modSettings == null) {
             modSettings = ParadoxModSettingsState()
-            modSettings.gameType = descriptorSettings.gameType
+            modSettings.gameType = modDescriptorSettings.gameType
             modSettings.modDirectory = modDirectory
             settings.modSettings.put(modDirectory, modSettings)
             settings.updateSettings()
             
             ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onAdd(modSettings)
         }
-    }
-    
-    private fun syncModDescriptorSettings(descriptorSettings: ParadoxModDescriptorSettingsState, descriptorInfo: ParadoxModDescriptorInfo, rootInfo: ParadoxRootInfo) {
-        descriptorSettings.name = descriptorInfo.name.takeIfNotEmpty() ?: PlsBundle.message("mod.name.unnamed")
-        descriptorSettings.version = descriptorInfo.version?.takeIfNotEmpty()
-        descriptorSettings.picture = descriptorInfo.version?.takeIfNotEmpty()
-        descriptorSettings.supportedVersion = descriptorInfo.supportedVersion?.takeIfNotEmpty()
-        descriptorSettings.remoteFileId = descriptorInfo.remoteFileId?.takeIfNotEmpty()
-        descriptorSettings.modDirectory = rootInfo.rootFile.path
     }
     
     override fun onRemove(rootInfo: ParadoxRootInfo) {

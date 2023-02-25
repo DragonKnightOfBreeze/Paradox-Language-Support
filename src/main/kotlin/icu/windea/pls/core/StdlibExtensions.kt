@@ -3,10 +3,12 @@
 package icu.windea.pls.core
 
 import com.google.common.cache.*
+import com.ibm.icu.text.*
 import com.intellij.util.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
 import java.io.*
+import java.math.*
 import java.net.*
 import java.nio.charset.*
 import java.nio.file.*

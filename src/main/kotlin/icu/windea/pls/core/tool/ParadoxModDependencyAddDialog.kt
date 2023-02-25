@@ -90,19 +90,11 @@ class ParadoxModDependencyAddDialog(
         //if(!editDialog.showAndGet()) return
         
         //如果最后一个模组依赖是当前模组自身，需要插入到它之前，否则直接添加到最后
-        val rowCount = tableModel.rowCount
-        tableModel.addRow(newSettings)
-        fun ensureCurrentAtLast() {
-            if(rowCount == tableModel.rowCount) return 
-            val currentModDirectory = settings.castOrNull<ParadoxModSettingsState>()?.modDirectory
-            if(currentModDirectory == null) return 
-            val lastRow = tableModel.getItem(rowCount - 1)
-            val lastModDirectory = lastRow.modDirectory
-            if(currentModDirectory != lastModDirectory) return
-            tableModel.removeRow(rowCount - 1)
-            tableModel.addRow(lastRow)
-        }
-        ensureCurrentAtLast()
+        val isCurrentAtLast = tableModel.isCurrentAtLast()
+        val position = if(isCurrentAtLast) tableModel.rowCount -1 else tableModel.rowCount
+        tableModel.insertRow(position, newSettings)
+        //选中刚刚添加的所有模组依赖
+        tableView.setRowSelectionInterval(position, position)
         
         super.doOKAction()
     }

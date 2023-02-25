@@ -6,6 +6,7 @@ import com.intellij.ui.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.tool.actions.*
 import icu.windea.pls.core.ui.*
@@ -24,6 +25,36 @@ class ParadoxModDependenciesTableModel(
     init {
         columnInfos = arrayOf(EnabledItem, NameItem, VersionItem, SupportedVersionItem)
         items = modDependencies
+    }
+    
+    fun isCurrentAtLast(): Boolean {
+        if(rowCount == 0) return false
+        val currentModDirectory = settings.castOrNull<ParadoxModSettingsState>()?.modDirectory
+        if(currentModDirectory == null) return false
+        val lastRow = getItem(rowCount - 1)
+        val lastModDirectory = lastRow.modDirectory
+        return currentModDirectory == lastModDirectory
+    }
+    
+    override fun removeRow(idx: Int) {
+        //不允许移除模组自身对应的模组依赖配置
+        if(!canRemoveRow(idx)) return
+        modDependencyDirectories.remove(getItem(idx).modDirectory.orEmpty())
+        super.removeRow(idx)
+    }
+    
+    fun canRemoveRow(idx: Int): Boolean {
+        if(settings !is ParadoxModSettingsState) return true
+        if(settings.modDirectory.isNullOrEmpty()) return true
+        val item = getItem(idx)
+        return item.modDirectory != settings.modDirectory
+    }
+    
+    fun insertRows(index: Int, items: Collection<ParadoxModDependencySettingsState>) {
+        modDependencies.addAll(index, items)
+        if(modDependencies.isNotEmpty()) {
+            fireTableRowsInserted(index - items.size, index - 1)
+        }
     }
     
     //注意这里的排序并不会实际改变modDependencies中模组依赖的排序
@@ -141,14 +172,8 @@ fun createModDependenciesPanel(project: Project, settings: ParadoxGameOrModSetti
         }
         .setRemoveActionUpdater updater@{
             //不允许移除模组自身对应的模组依赖配置
-            if(settings !is ParadoxModSettingsState) return@updater true
-            if(settings.modDirectory.isNullOrEmpty()) return@updater true
-            val selectedRows = tableView.selectedRows
-            for(selectedRow in selectedRows) {
-                val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
-                if(item.modDirectory == settings.modDirectory) return@updater false
-            }
-            true
+            val selectedRow = tableView.selectedRows.singleOrNull() ?: return@updater true
+            tableModel.canRemoveRow(tableView.convertRowIndexToModel(selectedRow))
         }
         .addExtraAction(enableAllButton)
         .addExtraAction(disableAllButton)

@@ -1,15 +1,19 @@
 package icu.windea.pls.core.tool.importer
 
-import com.intellij.openapi.project.*
-import com.intellij.ui.table.*
 import icu.windea.pls.*
-import icu.windea.pls.core.settings.*
-import icu.windea.pls.core.tool.*
+import java.nio.file.*
 
-class ParadoxFromLauncherBetaImporter : ParadoxModDependenciesImporter {
+private const val dbPath = "launcher-v2_openbeta.sqlite"
+
+/**
+ * 从Paradox启动器（Beta版）的Sqlite数据库中导入模组配置。
+ *
+ * See: [ParadoxLauncherImporterBeta.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Importers/ParadoxLauncherImporterBeta.cs)
+ */
+class ParadoxFromLauncherBetaImporter : ParadoxFromLauncherImporter() {
     override val text: String = PlsBundle.message("mod.importer.launcherBeta")
     
-    override fun execute(project: Project, tableView: TableView<ParadoxModDependencySettingsState>, tableModel: ParadoxModDependenciesTableModel) {
-        //TODO
+    override fun getDbPath(gameDataPath: Path): Path {
+        return gameDataPath.resolve(dbPath)
     }
 }
