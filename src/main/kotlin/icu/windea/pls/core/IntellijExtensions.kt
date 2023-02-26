@@ -39,11 +39,12 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 import it.unimi.dsi.fastutil.objects.*
 import java.io.*
-import java.nio.file.Path
+import java.nio.file.*
 import java.util.*
 import javax.swing.*
 import javax.swing.text.*
@@ -433,6 +434,14 @@ fun PsiFile.findAllElementsBetween(startOffset: Int, endOffset: Int, rootTransfo
 fun PsiReference.resolveSingle(): PsiElement? {
 	return if(this is PsiPolyVariantReference) {
 		this.multiResolve(false).firstNotNullOfOrNull { it.element }
+	} else {
+		this.resolve()
+	}
+}
+
+fun PsiReference.resolveFast(): PsiElement? {
+	return if(this is PsiNodeReference) {
+		this.resolve(false)
 	} else {
 		this.resolve()
 	}

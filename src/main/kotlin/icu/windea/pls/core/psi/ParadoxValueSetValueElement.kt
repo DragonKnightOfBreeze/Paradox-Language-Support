@@ -1,5 +1,6 @@
 package icu.windea.pls.core.psi
 
+import com.intellij.codeInsight.highlighting.*
 import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -19,10 +20,10 @@ class ParadoxValueSetValueElement(
     val valueSetNames: Set<String>,
     val gameType: ParadoxGameType,
     private val project: Project,
-    val read: Boolean
+    val readWriteAccess: ReadWriteAccessDetector.Access,
 ) : ParadoxFakePsiElement(parent) {
-    constructor(element: PsiElement, name: String, valueSetName: String, project: Project, gameType: ParadoxGameType, read: Boolean = true)
-        : this(element, name, setOf(valueSetName), gameType, project, read)
+    constructor(element: PsiElement, name: String, valueSetName: String, project: Project, gameType: ParadoxGameType, readWriteAccess: ReadWriteAccessDetector.Access)
+        : this(element, name, setOf(valueSetName), gameType, project, readWriteAccess)
     
     val valueSetName = valueSetNames.first()
     

@@ -1,5 +1,7 @@
 package icu.windea.pls.localisation.references
 
+import com.intellij.codeInsight.highlighting.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -7,8 +9,6 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.*
-import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.localisation.psi.*
@@ -50,9 +50,9 @@ class ParadoxLocalisationCommandScopePsiReference(
 		//尝试识别为value[event_target]或value[global_event_target]
 		val selector = valueSetValueSelector(project, element).contextSensitive()
 		val eventTarget = ParadoxValueSetValueSearch.search(name, "event_target", selector).findFirst()
-		if(eventTarget != null) return ParadoxValueSetValueElement(element, name, "event_target", project, gameType)
+		if(eventTarget != null) return ParadoxValueSetValueElement(element, name, "event_target", project, gameType, Access.Read)
 		val globalEventTarget = ParadoxValueSetValueSearch.search(name, "global_event_target", selector).findFirst()
-		if(globalEventTarget != null) return ParadoxValueSetValueElement(element, name, "global_event_target", project, gameType)
+		if(globalEventTarget != null) return ParadoxValueSetValueElement(element, name, "global_event_target", project, gameType, Access.Read)
 		
 		return null
 	}

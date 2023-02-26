@@ -1,5 +1,6 @@
 package icu.windea.pls.localisation.references
 
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -8,8 +9,6 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.*
-import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.localisation.psi.*
@@ -54,7 +53,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		//尝试识别为value[variable]
 		val variableSelector = valueSetValueSelector(project, element).contextSensitive(exact)
 		val variable = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findFirst()
-		if(variable != null) return ParadoxValueSetValueElement(element, name, "variable", project, gameType)
+		if(variable != null) return ParadoxValueSetValueElement(element, name, "variable", project, gameType, Access.Read)
 		
 		return null
 	}
@@ -82,7 +81,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		//尝试识别为value[variable]
 		val variableSelector = valueSetValueSelector(project, element).contextSensitive()
 		val variables = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findAll()
-		if(variables.isNotEmpty()) return variables.mapToArray { PsiElementResolveResult(ParadoxValueSetValueElement(element, name, "variable", project, gameType)) }
+		if(variables.isNotEmpty()) return variables.mapToArray { PsiElementResolveResult(ParadoxValueSetValueElement(element, name, "variable", project, gameType, Access.Read)) }
 		
 		return ResolveResult.EMPTY_ARRAY
 	}

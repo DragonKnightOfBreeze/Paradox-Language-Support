@@ -1,5 +1,7 @@
 package icu.windea.pls.script.inspections.general
 
+import com.intellij.codeInsight.highlighting.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
@@ -46,7 +48,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 				
 				val resolved = reference.resolve()
 				if(resolved !is ParadoxValueSetValueElement) return
-				if(!resolved.read) {
+				if(resolved.readWriteAccess == Access.Write) {
 					//当确定同一文件中某一名称的参数已被使用时，后续不需要再进行ReferencesSearch
 					val statusMap = session.getUserData(statusMapKey)!!
 					val used = statusMap[resolved]
@@ -54,9 +56,9 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 						ProgressManager.checkCanceled()
 						val r = ReferencesSearch.search(resolved).processQuery {
 							ProgressManager.checkCanceled()
-							val res = it.resolve()
+							val res = it.resolveFast()
 							ProgressManager.checkCanceled()
-							if(res is ParadoxValueSetValueElement && res.read) {
+							if(res is ParadoxValueSetValueElement && res.readWriteAccess == Access.Read) {
 								statusMap[resolved] = true
 								false
 							} else {
