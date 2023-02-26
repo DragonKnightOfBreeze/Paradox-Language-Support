@@ -4,6 +4,8 @@
 
 * [ ] 复杂表达式中的参数被高亮成了白色（为啥？）
 
+***
+
 一些可能过慢的代码检查：
 
 * `icu.windea.pls.script.inspections.general.MissingExpressionInspection`
@@ -15,6 +17,22 @@
 可能的原因：
 
 * `ReferencesSearch.search()`
+
+*** 
+
+支持本地化参数：
+
+```
+	modifier = {
+		description = ap_evolutionary_mastery_modifier_desc
+		description_parameters = {
+			POINTS = @ap_evolutionary_mastery_POINTS
+			COST_MULT = @ap_evolutionary_mastery_COST_MULT
+		}
+	}
+```
+
+traditions: inherit icon from parent original tradition if inherit_icon = yes
 
 ## 0.8.3
 
