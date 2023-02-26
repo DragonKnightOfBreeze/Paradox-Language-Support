@@ -8,7 +8,6 @@ import com.intellij.psi.search.searches.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 
@@ -52,6 +51,7 @@ class UnsetValueSetValueInspection : LocalInspectionTool() {
                             val r = ReferencesSearch.search(resolved).processQuery {
                                 ProgressManager.checkCanceled()
                                 val res = it.resolve()
+                                ProgressManager.checkCanceled()
                                 if(res is ParadoxValueSetValueElement && !res.read) {
                                     statusMap[resolved] = true
                                     false

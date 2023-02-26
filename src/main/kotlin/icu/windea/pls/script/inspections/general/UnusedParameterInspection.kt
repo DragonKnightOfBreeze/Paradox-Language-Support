@@ -51,8 +51,8 @@ class UnusedParameterInspection : LocalInspectionTool() {
 			}
 			
 			override fun visitElement(element: PsiElement) {
-				if(!shouldVisit(element)) return
 				ProgressManager.checkCanceled()
+				if(!shouldVisit(element)) return
 				
 				val references = element.references
 				for(reference in references) {
@@ -70,6 +70,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
 							val r = ReferencesSearch.search(resolved).processQuery {
 								ProgressManager.checkCanceled()
 								val res = it.resolve()
+								ProgressManager.checkCanceled()
 								if(res is ParadoxParameterElement && res.readWriteAccess == ReadWriteAccessDetector.Access.Read) {
 									statusMap[resolved] = true
 									false

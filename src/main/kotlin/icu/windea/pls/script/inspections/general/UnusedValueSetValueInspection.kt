@@ -35,9 +35,8 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 			}
 			
 			override fun visitElement(element: PsiElement) {
-				if(!shouldVisit(element)) return
-				
 				ProgressManager.checkCanceled()
+				if(!shouldVisit(element)) return
 				
 				//ignore definition names if necessary
 				if(ignoreDefinitionNames && element is ParadoxScriptString && element.isDefinitionName()) return
@@ -56,6 +55,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 						val r = ReferencesSearch.search(resolved).processQuery {
 							ProgressManager.checkCanceled()
 							val res = it.resolve()
+							ProgressManager.checkCanceled()
 							if(res is ParadoxValueSetValueElement && res.read) {
 								statusMap[resolved] = true
 								false

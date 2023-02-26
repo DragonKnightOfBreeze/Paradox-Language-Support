@@ -26,8 +26,6 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.core.search.selectors.chained.*
-import icu.windea.pls.core.search.selectors.*
-import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.model.*
@@ -173,6 +171,7 @@ object CwtConfigHandler {
         configGroup: CwtConfigGroup,
         matchType: Int = CwtConfigMatchType.DEFAULT
     ): Boolean {
+        ProgressManager.checkCanceled()
         val isStatic = BitUtil.isSet(matchType, CwtConfigMatchType.STATIC)
         val isNotExact = BitUtil.isSet(matchType, CwtConfigMatchType.NOT_EXACT)
         
@@ -182,7 +181,6 @@ object CwtConfigHandler {
         }
         
         val project = configGroup.project
-        val gameType = configGroup.gameType
         val isParameterAware = expression.type == ParadoxDataType.StringType && expression.text.isParameterAwareExpression()
         when(configExpression.type) {
             CwtDataType.Block -> {
@@ -774,11 +772,11 @@ object CwtConfigHandler {
     }
     
     fun completeScriptExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         val configExpression = config.expression ?: return@with
         val config = config
         val configGroup = configGroup
         val project = configGroup.project
-        val gameType = configGroup.gameType
         
         if(configExpression.isEmpty()) return
         if(quoted != true && keyword.isParameterAwareExpression()) return //排除带参数的情况
@@ -1047,6 +1045,7 @@ object CwtConfigHandler {
     }
     
     fun completeAliasName(aliasName: String, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         val config = config
         val configs = configs
         
@@ -1070,10 +1069,12 @@ object CwtConfigHandler {
     }
     
     fun completeModifier(context: ProcessingContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
         return ParadoxModifierHandler.completeModifier(context, result)
     }
     
     fun completeTemplateExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         val element = contextElement
         if(element !is ParadoxScriptStringExpressionElement) return
         val configExpression = context.config.expression ?: return
@@ -1093,6 +1094,7 @@ object CwtConfigHandler {
     }
     
     fun completeScopeFieldExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         //基于当前位置的代码补全
         if(quoted) return
         val textRange = TextRange.create(0, keyword.length)
@@ -1102,6 +1104,7 @@ object CwtConfigHandler {
     }
     
     fun completeValueFieldExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         //基于当前位置的代码补全
         if(quoted) return
         val textRange = TextRange.create(0, keyword.length)
@@ -1110,6 +1113,7 @@ object CwtConfigHandler {
     }
     
     fun completeVariableFieldExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         //基于当前位置的代码补全
         if(quoted) return
         val textRange = TextRange.create(0, keyword.length)
@@ -1118,6 +1122,7 @@ object CwtConfigHandler {
     }
     
     fun completeValueSetValueExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         //基于当前位置的代码补全
         if(quoted) return
         val textRange = TextRange.create(0, keyword.length)
@@ -1126,6 +1131,7 @@ object CwtConfigHandler {
     }
     
     fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         //总是提示，无论作用域是否匹配
         val systemLinkConfigs = configGroup.systemLinks
         for(systemLinkConfig in systemLinkConfigs.values) {
@@ -1144,6 +1150,7 @@ object CwtConfigHandler {
     }
     
     fun completeScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         val scopeContext = scopeContext
         
         val linkConfigs = configGroup.linksAsScopeNotData
@@ -1167,6 +1174,7 @@ object CwtConfigHandler {
     }
     
     fun completeScopeLinkPrefix(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         val scopeContext = scopeContext
         
         val linkConfigs = configGroup.linksAsScopeWithPrefix
@@ -1190,6 +1198,7 @@ object CwtConfigHandler {
     }
     
     fun completeScopeLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?, dataSourceNodeToCheck: ParadoxExpressionNode?): Unit = with(context) {
+        ProgressManager.checkCanceled()
         val config = config
         val configs = configs
         val scopeContext = scopeContext
@@ -1226,6 +1235,7 @@ object CwtConfigHandler {
     }
     
     fun completeValueLinkValue(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         val scopeContext = scopeContext
         
         val linkConfigs = configGroup.linksAsValueNotData
@@ -1250,6 +1260,7 @@ object CwtConfigHandler {
     }
     
     fun completeValueLinkPrefix(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         val scopeContext = scopeContext
         
         val linkConfigs = configGroup.linksAsValueWithPrefix
@@ -1272,6 +1283,7 @@ object CwtConfigHandler {
     }
     
     fun completeValueLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?, dataSourceNodeToCheck: ParadoxExpressionNode?, variableOnly: Boolean = false): Unit = with(context) {
+        ProgressManager.checkCanceled()
         val config = config
         val configs = configs
         val scopeContext = scopeContext
@@ -1313,6 +1325,7 @@ object CwtConfigHandler {
     }
     
     fun completeValueSetValue(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         val configs = configs
         if(configs != null && configs.isNotEmpty()) {
             for(config in configs) {
@@ -1327,7 +1340,6 @@ object CwtConfigHandler {
     }
     
     private fun doCompleteValueSetValue(context: ProcessingContext, result: CompletionResultSet, config: CwtConfig<*>): Unit = with(context) {
-        val gameType = this.configGroup.gameType
         val project = this.configGroup.project
         
         val configExpression = config.expression ?: return@with
@@ -1363,6 +1375,7 @@ object CwtConfigHandler {
     }
     
     fun completePredefinedValueSetValue(valueSetName: String, result: CompletionResultSet, context: ProcessingContext) = with(context) {
+        ProgressManager.checkCanceled()
         val configExpression = config.expression ?: return@with
         val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
         val valueConfig = configGroup.values[valueSetName] ?: return
@@ -1383,6 +1396,7 @@ object CwtConfigHandler {
     }
     
     fun completePredefinedLocalisationScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         val scopeContext = context.scopeContext
         
         val localisationLinks = configGroup.localisationLinks
@@ -1406,6 +1420,7 @@ object CwtConfigHandler {
     }
     
     fun completePredefinedLocalisationCommand(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         val scopeContext = context.scopeContext
         
         val localisationCommands = configGroup.localisationCommands
@@ -1429,6 +1444,7 @@ object CwtConfigHandler {
     }
     
     fun completeEventTarget(file: PsiFile, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
         val project = file.project
         val eventTargetSelector = valueSetValueSelector(project, file)
             .contextSensitive()
@@ -1464,6 +1480,7 @@ object CwtConfigHandler {
     }
     
     fun completeScriptedLoc(file: PsiFile, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
         val project = file.project
         val scriptedLocSelector = definitionSelector(project, file)
             .contextSensitive()
@@ -1484,6 +1501,7 @@ object CwtConfigHandler {
     }
     
     fun completeVariable(context: ProcessingContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
         val file = context.originalFile.project
         val project = file
         val variableSelector = valueSetValueSelector(project, file).contextSensitive().distinctByValue()
@@ -1502,6 +1520,7 @@ object CwtConfigHandler {
     }
     
     fun completeParameters(element: PsiElement, read: Boolean, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         //向上找到参数上下文
         val file = originalFile
         val parameterContext = ParadoxParameterSupport.findContext(element, file) ?: return
@@ -1522,6 +1541,7 @@ object CwtConfigHandler {
     }
     
     fun completeParametersForInvocationExpression(invocationExpressionElement: ParadoxScriptProperty, invocationExpressionConfig: CwtPropertyConfig, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         if(quoted) return //输入参数不允许用引号括起
         val contextElement = context.contextElement
         val block = invocationExpressionElement.block ?: return
@@ -1565,6 +1585,7 @@ object CwtConfigHandler {
     }
     
     fun completeParametersForScriptValueExpression(svName: String, parameterNames: Set<String>, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+        ProgressManager.checkCanceled()
         val existParameterNames = mutableSetOf<String>()
         existParameterNames.addAll(parameterNames)
         val namesToDistinct = mutableSetOf<String>()
@@ -1614,7 +1635,6 @@ object CwtConfigHandler {
         if(configExpression == null) return null
         
         val project = element.project
-        val gameType = configGroup.gameType ?: return null
         val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.value
         if(expression.isParameterAwareExpression()) return null //排除引用文本带参数的情况
         
@@ -1752,7 +1772,6 @@ object CwtConfigHandler {
         if(configExpression == null) return emptyList()
         
         val project = element.project
-        val gameType = configGroup.gameType ?: return emptyList()
         val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.value
         if(expression.isParameterAwareExpression()) return emptyList() //排除引用文本带参数的情况
         when(configExpression.type) {

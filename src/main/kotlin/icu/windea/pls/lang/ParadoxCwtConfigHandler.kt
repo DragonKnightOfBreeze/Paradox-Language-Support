@@ -1,5 +1,6 @@
 package icu.windea.pls.lang
 
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -130,6 +131,7 @@ object ParadoxCwtConfigHandler {
 						val definitionMemberInfo = property.definitionMemberInfo ?: return emptyList()
 						if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
 						
+						ProgressManager.checkCanceled()
 						val configs = definitionMemberInfo.getConfigs(matchType)
 						val configGroup = definitionMemberInfo.configGroup
 						buildList {
@@ -223,6 +225,7 @@ object ParadoxCwtConfigHandler {
 		for(childConfig in childConfigs) {
 			occurrenceMap.put(childConfig.expression, childConfig.toOccurrence(element, project))
 		}
+		ProgressManager.checkCanceled()
 		blockElement.processData p@{ data ->
 			val expression = when {
 				data is ParadoxScriptProperty -> ParadoxDataExpression.resolve(data.propertyKey)

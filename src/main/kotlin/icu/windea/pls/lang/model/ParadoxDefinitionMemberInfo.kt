@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.model
 
+import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*

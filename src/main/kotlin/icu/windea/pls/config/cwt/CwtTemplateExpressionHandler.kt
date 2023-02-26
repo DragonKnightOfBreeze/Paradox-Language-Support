@@ -134,7 +134,6 @@ object CwtTemplateExpressionHandler {
         builder: String
     ) {
         ProgressManager.checkCanceled()
-        val gameType = configGroup.gameType ?: return
         val project = configGroup.project
         if(index == configExpression.snippetExpressions.size) {
             if(builder.isNotEmpty()) {

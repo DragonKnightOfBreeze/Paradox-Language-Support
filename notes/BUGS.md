@@ -4,8 +4,6 @@
 
 * [ ] 复杂表达式中的参数被高亮成了白色（为啥？）
 
-## 0.8.2
-
 一些可能过慢的代码检查：
 
 * `icu.windea.pls.script.inspections.general.MissingExpressionInspection`
@@ -14,7 +12,11 @@
 * `icu.windea.pls.script.inspections.general.UnusedValueSetValueInspection`
 * `icu.windea.pls.script.inspections.general.UnsetValueSetValueInspection`
 
-其他：
+可能的原因：
+
+* `ReferencesSearch.search()`
+
+## 0.8.2
 
 * [ ] 无法对`value:`后的内容进行提示
 * [ ] `MissingParameterInspection` - 修正后不会清除警告

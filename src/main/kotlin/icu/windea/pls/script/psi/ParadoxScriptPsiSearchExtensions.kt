@@ -2,6 +2,7 @@
 
 package icu.windea.pls.script.psi
 
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -23,6 +24,7 @@ fun ParadoxScriptBlockElement.processData(
 ): Boolean {
     val target = this
     return target.processChild {
+        ProgressManager.checkCanceled()
         when {
             it is ParadoxScriptValue -> doProcessValueChild(it, conditional, inline, processor)
             it is ParadoxScriptProperty -> doProcessPropertyChild(it, conditional, inline, processor)
@@ -44,6 +46,7 @@ fun ParadoxScriptBlockElement.processProperty(
 ): Boolean {
     val target = this
     return target.processChild {
+        ProgressManager.checkCanceled()
         when {
             it is ParadoxScriptProperty -> doProcessPropertyChild(it, conditional, inline, processor)
             conditional && it is ParadoxScriptParameterCondition -> it.processProperty(processor)
@@ -64,6 +67,7 @@ fun ParadoxScriptBlockElement.processValue(
 ): Boolean {
     val target = this
     return target.processChild {
+        ProgressManager.checkCanceled()
         when {
             it is ParadoxScriptValue -> doProcessValueChild(it, conditional, inline, processor)
             conditional && it is ParadoxScriptParameterCondition -> it.processValue(processor)
@@ -111,6 +115,7 @@ private fun doProcessPropertyChild(it: ParadoxScriptProperty, conditional: Boole
  */
 inline fun ParadoxScriptParameterCondition.processData(processor: (ParadoxScriptMemberElement) -> Boolean): Boolean {
     return processChild {
+        ProgressManager.checkCanceled()
         when {
             it is ParadoxScriptValue -> processor(it)
             it is ParadoxScriptProperty -> processor(it)
@@ -124,6 +129,7 @@ inline fun ParadoxScriptParameterCondition.processData(processor: (ParadoxScript
  */
 inline fun ParadoxScriptParameterCondition.processProperty(processor: (ParadoxScriptProperty) -> Boolean): Boolean {
     return processChild {
+        ProgressManager.checkCanceled()
         when {
             it is ParadoxScriptProperty -> processor(it)
             else -> true
@@ -136,6 +142,7 @@ inline fun ParadoxScriptParameterCondition.processProperty(processor: (ParadoxSc
  */
 inline fun ParadoxScriptParameterCondition.processValue(processor: (ParadoxScriptValue) -> Boolean): Boolean {
     return processChild {
+        ProgressManager.checkCanceled()
         when {
             it is ParadoxScriptValue -> processor(it)
             else -> true
