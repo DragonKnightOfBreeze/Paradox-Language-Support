@@ -4,7 +4,6 @@ import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.impl.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
@@ -18,10 +17,10 @@ class ParadoxTemplateExpressionElement(
     parent: PsiElement,
     private val name: String,
     val configExpression: CwtTemplateExpression,
-    private val project: Project,
     val gameType: ParadoxGameType,
+    private val project: Project,
     val references: List<ParadoxInTemplateExpressionReference>,
-): RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
+) : ParadoxFakePsiElement(parent) {
     override fun getText(): String {
         return name
     }
@@ -66,20 +65,12 @@ class ParadoxTemplateExpressionElement(
         return false // false -> click to show usages
     }
     
-    override fun equals(other: Any?): Boolean {
+    override fun isEquivalentTo(other: PsiElement?): Boolean {
         return other is ParadoxTemplateExpressionElement &&
             name == other.name &&
             configExpression == other.configExpression &&
             project == other.project &&
             gameType == other.gameType
-    }
-    
-    override fun hashCode(): Int {
-        var result = name.hashCode()
-        result = 31 * result + configExpression.hashCode()
-        result = 31 * result + project.hashCode()
-        result = 31 * result + gameType.hashCode()
-        return result
     }
 }
 

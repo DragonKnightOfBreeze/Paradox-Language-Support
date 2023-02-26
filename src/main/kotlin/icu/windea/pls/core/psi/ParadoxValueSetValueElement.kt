@@ -4,7 +4,6 @@ import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.impl.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.navigation.*
@@ -18,12 +17,12 @@ class ParadoxValueSetValueElement(
     parent: PsiElement,
     private val name: String,
     val valueSetNames: Set<String>,
-    private val project: Project,
     val gameType: ParadoxGameType,
+    private val project: Project,
     val read: Boolean
-) : RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
+) : ParadoxFakePsiElement(parent) {
     constructor(element: PsiElement, name: String, valueSetName: String, project: Project, gameType: ParadoxGameType, read: Boolean = true)
-        : this(element, name, setOf(valueSetName), project, gameType, read)
+        : this(element, name, setOf(valueSetName), gameType, project, read)
     
     val valueSetName = valueSetNames.first()
     
@@ -76,13 +75,5 @@ class ParadoxValueSetValueElement(
             valueSetNames.any { it in other.valueSetNames } &&
             project == other.project &&
             gameType == other.gameType
-    }
-    
-    override fun equals(other: Any?): Boolean {
-        return other is ParadoxModifierElement && parent == other.parent
-    }
-    
-    override fun hashCode(): Int {
-        return parent.hashCode()
     }
 }

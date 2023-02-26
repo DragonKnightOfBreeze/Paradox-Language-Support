@@ -91,7 +91,7 @@ object CwtTemplateExpressionHandler {
         val gameType = configGroup.gameType ?: return null
         val references = resolveReferences(text, element, configExpression, configGroup)
         if(references.isEmpty()) return null
-        return ParadoxTemplateExpressionElement(element, text, configExpression, project, gameType, references)
+        return ParadoxTemplateExpressionElement(element, text, configExpression, gameType, project, references)
     }
     
     
