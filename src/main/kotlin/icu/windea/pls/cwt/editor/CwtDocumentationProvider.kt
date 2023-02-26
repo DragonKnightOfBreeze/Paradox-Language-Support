@@ -16,8 +16,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.core.search.selectors.chained.*
-import icu.windea.pls.core.search.selectors.*
-import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
@@ -412,11 +410,25 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				else -> break
 			}
 		}
-		val documentation = lines?.joinToString("<br>") { if(html) it else it.escapeXml() }
-		if(documentation != null) {
-			content {
-				append(documentation)
+		if(lines.isNullOrEmpty()) return
+		//如果CWT规则文件中的一行文档注释以`\`结束，则解析时不在这里换行
+		val documentation = buildString {
+			var isLineBreak = false
+			for(line in lines ) {
+				if(!isLineBreak) {
+					isLineBreak = true
+				} else {
+					append("<br>")
+				}
+				if(line.endsWith('\\')) {
+					isLineBreak = false
+				}
+				val l = line.trimEnd('\\')
+				if(html) append(l) else append(l.escapeXml())
 			}
+		}
+		content {
+			append(documentation)
 		}
 	}
 	
