@@ -8,7 +8,10 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.*
 
-fun completeForScopeExpressionNode(node: ParadoxScopeExpressionNode, context: ProcessingContext, result: CompletionResultSet) {
+/**
+ * @return 是否已经输入了前缀。
+ */
+fun completeForScopeExpressionNode(node: ParadoxScopeExpressionNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
     val offsetInParent = context.offsetInParent
     val nodeRange = node.rangeInExpression
     val linkFromDataNode = node.castOrNull<ParadoxScopeLinkFromDataExpressionNode>()
@@ -25,6 +28,7 @@ fun completeForScopeExpressionNode(node: ParadoxScopeExpressionNode, context: Pr
         context.put(PlsCompletionKeys.keywordKey, keywordToUse)
         val prefix = prefixNode.text
         CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
+        return true
     } else {
         val inFirstNode = dataSourceNode == null || dataSourceNode.nodes.isEmpty()
             || offsetInParent <= dataSourceNode.nodes.first().rangeInExpression.endOffset
@@ -37,10 +41,14 @@ fun completeForScopeExpressionNode(node: ParadoxScopeExpressionNode, context: Pr
             CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
         }
         CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
+        return false
     }
 }
 
-fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, context: ProcessingContext, result: CompletionResultSet) {
+/**
+ * @return 是否已经输入了前缀。
+ */
+fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
     val offsetInParent = context.offsetInParent
     val nodeRange = node.rangeInExpression
     val linkFromDataNode = node.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
@@ -56,8 +64,8 @@ fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, contex
         val resultToUse = result.withPrefixMatcher(keywordToUse)
         context.put(PlsCompletionKeys.keywordKey, keywordToUse)
         val prefix = prefixNode.text
-        CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
         CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
+        return true
     } else {
         val inFirstNode = dataSourceNode == null || dataSourceNode.nodes.isEmpty()
             || offsetInParent <= dataSourceNode.nodes.first().rangeInExpression.endOffset
@@ -65,14 +73,11 @@ fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, contex
         val resultToUse = result.withPrefixMatcher(keywordToUse)
         context.put(PlsCompletionKeys.keywordKey, keywordToUse)
         if(inFirstNode) {
-            CwtConfigHandler.completeSystemScope(context, resultToUse)
-            CwtConfigHandler.completeScope(context, resultToUse)
-            CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
             CwtConfigHandler.completeValueLinkValue(context, resultToUse)
             CwtConfigHandler.completeValueLinkPrefix(context, resultToUse)
         }
-        CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
         CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
+        return false
     }
 }
 
@@ -82,9 +87,5 @@ fun completeForVariableDataExpressionNode(node: ParadoxDataExpressionNode, conte
     val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
     val resultToUse = result.withPrefixMatcher(keywordToUse)
     context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-    CwtConfigHandler.completeSystemScope(context, resultToUse)
-    CwtConfigHandler.completeScope(context, resultToUse)
-    CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
-    CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, null, node)
     CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, null, node, variableOnly = true)
 }

@@ -1289,8 +1289,8 @@ object CwtConfigHandler {
         val scopeContext = scopeContext
         
         val linkConfigs = when {
-            prefix == null -> configGroup.linksAsScopeWithoutPrefix.values
-            else -> configGroup.linksAsScopeWithPrefix.values.filter { prefix == it.prefix }
+            prefix == null -> configGroup.linksAsValueWithoutPrefix.values
+            else -> configGroup.linksAsValueWithPrefix.values.filter { prefix == it.prefix }
         }
         
         if(dataSourceNodeToCheck is ParadoxValueSetValueExpression) {

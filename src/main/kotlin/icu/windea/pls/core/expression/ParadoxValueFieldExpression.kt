@@ -222,6 +222,9 @@ class ParadoxValueFieldExpressionImpl(
             } else if(node is ParadoxValueFieldExpressionNode) {
                 if(inRange) {
                     context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
+                    val scopeExpressionNode = ParadoxScopeExpressionNode.resolve(node.text, node.rangeInExpression, configGroup)
+                    val afterPrefix = completeForScopeExpressionNode(scopeExpressionNode, context, result)
+                    if(afterPrefix) break
                     completeForValueExpressionNode(node, context, result)
                     break
                 }

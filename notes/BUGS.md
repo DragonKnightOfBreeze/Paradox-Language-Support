@@ -18,8 +18,8 @@
 
 ## 0.8.2
 
-* [ ] 无法对`value:`后的内容进行提示
-* [ ] `MissingParameterInspection` - 修正后不会清除警告
+* [X] 无法对`value:`后的内容进行提示（已解决）
+* [X] ~~`MissingParameterInspection` - 修正后不会清除警告~~ （不再复现）
 
 ## 0.8.1
 

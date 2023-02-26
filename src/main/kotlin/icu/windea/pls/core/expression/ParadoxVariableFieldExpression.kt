@@ -172,6 +172,9 @@ class ParadoxVariableFieldExpressionImpl(
             } else if(node is ParadoxDataExpressionNode) {
                 if(inRange) {
                     context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
+                    val scopeExpressionNode = ParadoxScopeExpressionNode.resolve(node.text, node.rangeInExpression, configGroup)
+                    val afterPrefix = completeForScopeExpressionNode(scopeExpressionNode, context, result)
+                    if(afterPrefix) break
                     completeForVariableDataExpressionNode(node, context, result)
                     break
                 }
