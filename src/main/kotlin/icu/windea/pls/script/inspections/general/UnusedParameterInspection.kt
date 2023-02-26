@@ -68,6 +68,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
 						val isUsed = if(used == null) {
 							ProgressManager.checkCanceled()
 							val r = ReferencesSearch.search(resolved).processQuery {
+								ProgressManager.checkCanceled()
 								val res = it.resolve()
 								if(res is ParadoxParameterElement && res.readWriteAccess == ReadWriteAccessDetector.Access.Read) {
 									statusMap[resolved] = true

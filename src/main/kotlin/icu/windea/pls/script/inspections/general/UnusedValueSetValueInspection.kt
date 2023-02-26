@@ -54,6 +54,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 					val isUsed = if(used == null) {
 						ProgressManager.checkCanceled()
 						val r = ReferencesSearch.search(resolved).processQuery {
+							ProgressManager.checkCanceled()
 							val res = it.resolve()
 							if(res is ParadoxValueSetValueElement && res.read) {
 								statusMap[resolved] = true
