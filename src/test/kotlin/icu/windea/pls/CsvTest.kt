@@ -9,7 +9,7 @@ import java.io.*
 class CsvTest {
 	@Test
 	fun test(){
-		val file = File("cwt/cwtools-stellaris-config/config/Stellaris on_actions.csv")
+		val file = File("cwt/cwtools-stellaris-config/config/on_actions.csv")
 		val schemaFor = CsvSchema.builder()
 			.addColumn("key").addColumn("scopes").addColumn("event").addColumn("comment").build()
 			.withHeader()

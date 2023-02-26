@@ -92,9 +92,10 @@ class CwtConfigGroupImpl(
 			for(virtualFile in fileGroup.values) {
 				var result: Boolean
 				//val fileName = virtualFile.name
-				val extension = virtualFile.extension?.lowercase()
+				val fileName = virtualFile.name
+				val fileExtension = virtualFile.extension?.lowercase()
 				when {
-					extension == "cwt" -> {
+					fileExtension == "cwt" -> {
 						val file = virtualFile.toPsiFile<CwtFile>(project) ?: continue
 						val fileConfig =  CwtConfigResolver.resolve(file, info)
 						
@@ -107,7 +108,7 @@ class CwtConfigGroupImpl(
 						resolveCwtConfigInCwtFile(fileConfig)
 					}
 					//on_actions.csv
-					extension == "csv" -> {
+					fileName == "on_actions.csv" -> {
 						resolveOnActionConfigs(virtualFile)
 					}
 				}
