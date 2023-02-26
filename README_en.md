@@ -47,11 +47,12 @@ For features and usages of this plugin, please refer to the [Reference documenta
 
 ![](https://windea.icu/Paradox-Language-Support/assets/images/localisation_file_preview_en.png)
 
-## Quick Start
+# Quick Start
 
 * Open the root directory of your mod by IDE. (Should contain the mod descriptor file `descriptor.mod` directly)
-* Open the mod descriptor file, click the mod settings button in the editor's floating toolbar, configure game type, game directory and additional mod dependencies of your mod.
-* Wait for IDE's indexing to complete. (Get well soon)
+* Open the mod descriptor file, click the mod settings button in the editor's floating toolbar (or the editor's popup menu),
+  configure game type, game directory and additional mod dependencies of your mod.
+* Click OK to apply changed settings and then wait for IDE's indexing to complete. (Get well soon)
 * Start your mod programming journey.
 
 Tips:

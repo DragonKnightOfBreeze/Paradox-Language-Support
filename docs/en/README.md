@@ -37,27 +37,27 @@ this plugin could provide some [additional features](https://windea.icu/Paradox-
 
 This plugin is under development, if you encounter any problem during use, feel free to send feedback on Github.
 
-For features and usages of this plugin, please refer to the [Reference documentation](https://windea.icu/Paradox-Language-Support/#/en/) (To be written in detail).
-
 ![](../assets/images/script_file_preview_en.png)
 
 ![](../assets/images/localisation_file_preview_en.png)
 
-## Quick Start
+# Quick Start
 
 * Open the root directory of your mod by IDE. (Should contain the mod descriptor file `descriptor.mod` directly)
-* Open the mod descriptor file, click the mod settings button in the editor's floating toolbar, configure game type, game directory and additional mod dependencies of your mod.
-* Wait for IDE's indexing to complete. (Get well soon)
+* Open the mod descriptor file, click the mod settings button in the editor's floating toolbar (or the editor's popup menu),
+  configure game type, game directory and additional mod dependencies of your mod.
+* Click OK to apply changed settings and then wait for IDE's indexing to complete. (Get well soon)
 * Start your mod programming journey.
 
 Tips:
 
 * If a script snippet cannot be recognized, generally there are following situations:
-    * Corresponding CWT rule does not exist. (Indicates that this script snippet contains errors)
-    * Corresponding CWT rule is not perfect. (Consider sending fallback to me on Github)
-    * There are some unresolved references. (Consider configuring related game directory or mod dependencies)
+  * Corresponding CWT rule does not exist. (Indicates that this script snippet contains errors)
+  * Corresponding CWT rule is not perfect. (Consider sending fallback to me on Github)
+  * There are some unresolved references. (Consider configuring related game directory or mod dependencies)
 * If there is a problem with IDE's index or an error occurs involving IDE's index, please try to rebuild index.
   (Click `File -> Invalidate Caches... -> Invalidate and Restart`)
+
 
 ## Reference
 

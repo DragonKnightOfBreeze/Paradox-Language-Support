@@ -38,11 +38,11 @@ IDEA插件：Paradox语言支持。
 
 ![](https://windea.icu/Paradox-Language-Support/assets/images/localisation_file_preview_zh.png)
 
-## 快速开始
+## 使用
 
-* 通过IDE打开你的模组根目录。（或者它的父目录，模组根目录需要直接包含模组描述符文件`descriptor.mod`，也可以用来打开游戏目录）
-* 打开模组描述符文件，点击位于编辑器右上角的悬浮工具栏中的模组配置按钮，配置游戏类型、游戏目录和额外的模组依赖。
-* 等待IDE索引完成。（很快就好）
+* 通过IDE打开你的模组根目录。（需要直接包含模组描述符文件`descriptor.mod`）
+* 打开模组描述符文件，点击位于编辑器右上角的悬浮工具栏（或者编辑器右键菜单）中的模组配置按钮，配置模组的游戏类型、游戏目录和额外的模组依赖。
+* 点击确定按钮完成配置，然后等待IDE索引完成。（很快就好）
 * 开始你的模组编程之旅吧！
 
 提示：
@@ -51,7 +51,8 @@ IDEA插件：Paradox语言支持。
   * 对应的CWT规则不存在（即这段脚本存在错误）
   * 对应的CWT规则不完善（考虑在Github上反馈）
   * 存在无法解析的引用（考虑配置对应的游戏目录或者模组依赖）
-* 如果IDE索引出现问题，或者发生了涉及IDE索引的报错，请尝试重建索引。（点击`File -> Invalidate Caches... -> Invalidate and Restart`）
+* 如果IDE索引出现问题，或者发生了涉及IDE索引的报错，请尝试重建索引。
+  （点击`File -> Invalidate Caches... -> Invalidate and Restart`）
 
 ## 参考
 
