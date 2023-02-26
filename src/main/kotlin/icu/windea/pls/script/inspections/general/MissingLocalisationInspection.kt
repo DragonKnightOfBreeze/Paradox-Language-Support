@@ -59,7 +59,6 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         private val holder: ProblemsHolder
     ) : ParadoxScriptVisitor() {
         override fun visitFile(file: PsiFile) {
-            ProgressManager.checkCanceled()
             if(inspection.localeSet.isEmpty()) return
             if(!inspection.checkForDefinitions) return
             val scriptFile = file.castOrNull<ParadoxScriptFile>() ?: return
@@ -76,17 +75,18 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         }
         
         private fun visitDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
+            ProgressManager.checkCanceled()
             val project = definitionInfo.project
             val localisationInfos = definitionInfo.localisation
             if(localisationInfos.isEmpty()) return
             val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
-            ProgressManager.checkCanceled()
             val nameToDistinct = mutableSetOf<String>()
             val infoMap = mutableMapOf<String, Tuple3<ParadoxDefinitionRelatedLocalisationInfo, String?, CwtLocalisationLocaleConfig>>()
             //进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
             val hasPrimaryLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
             runReadAction {
                 for(info in localisationInfos) {
+                    ProgressManager.checkCanceled()
                     if(info.required || if(info.primary) inspection.checkPrimaryForDefinitions else inspection.checkOptionalForDefinitions) {
                         for(locale in inspection.localeSet) {
                             if(nameToDistinct.contains(info.name + "@" + locale)) continue

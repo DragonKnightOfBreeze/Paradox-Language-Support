@@ -30,8 +30,8 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 		if(properties.find { it.name.equals("namespace", true) } == null) return null //没有事件命名空间，不进行检查
 		val eventGroup: MutableMap<String, MutableList<ParadoxScriptProperty>> = mutableMapOf() //namespace - eventDefinitions
 		var nextNamespace = ""
-		ProgressManager.checkCanceled()
 		for(property in properties) {
+			ProgressManager.checkCanceled()
 			if(property.name.equals("namespace", true)) {
 				//如果值不是一个字符串，作为空字符串存到缓存中
 				val namespace = property.propertyValue?.castOrNull<ParadoxScriptString>()?.stringValue.orEmpty()
@@ -45,6 +45,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 		}
 		var holder: ProblemsHolder? = null
 		for((namespace, events) in eventGroup) {
+			ProgressManager.checkCanceled()
 			if(namespace.isEmpty()) continue
 			if(events.isEmpty()) continue
 			for(event in events) {

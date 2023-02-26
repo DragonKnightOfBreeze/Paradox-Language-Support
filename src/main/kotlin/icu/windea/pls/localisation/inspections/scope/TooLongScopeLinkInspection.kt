@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.inspections.scope
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
@@ -15,6 +16,7 @@ class TooLongScopeLinkInspection : LocalInspectionTool() {
 		}
 		
 		private fun visitCommand(element: ParadoxLocalisationCommand) {
+			ProgressManager.checkCanceled()
 			if(element.hasSyntaxError()) return //skip if any syntax error
 			var firstScope: ParadoxLocalisationCommandScope? = null
 			var lastScope: ParadoxLocalisationCommandScope? = null

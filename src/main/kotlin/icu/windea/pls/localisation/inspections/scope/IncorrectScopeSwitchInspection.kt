@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.inspections.scope
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
@@ -20,6 +21,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
         }
         
         private fun visitLocalisationCommandScope(element: ParadoxLocalisationCommandScope) {
+            ProgressManager.checkCanceled()
             val resolved = element.reference.resolve() ?: return
             when {
                 //system link or localisation scope

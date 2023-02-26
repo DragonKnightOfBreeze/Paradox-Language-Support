@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.inspections.scope
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
@@ -17,6 +18,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
 		}
 		
 		private fun visitLocalisationCommandField(element: ParadoxLocalisationCommandField) {
+			ProgressManager.checkCanceled()
 			val resolved = element.reference?.resolve() ?: return
 			when {
 				//predefined localisation command

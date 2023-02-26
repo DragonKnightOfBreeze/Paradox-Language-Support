@@ -30,7 +30,6 @@ class IncorrectEventNamespaceInspection  : LocalInspectionTool() {
 		val namespaceProperties = properties.filter { it.name.equals("namespace", true) }
 		if(namespaceProperties.isEmpty()) return null //没有事件命名空间，不进行检查
 		var holder: ProblemsHolder? = null
-		ProgressManager.checkCanceled()
 		for(namespaceProperty in namespaceProperties) {
 			ProgressManager.checkCanceled()
 			val namespacePropertyValue = namespaceProperty.propertyValue?.castOrNull<ParadoxScriptString>() ?: continue //事件ID不是字符串，另行检查

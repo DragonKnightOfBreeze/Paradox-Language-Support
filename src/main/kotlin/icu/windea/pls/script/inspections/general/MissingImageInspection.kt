@@ -38,7 +38,6 @@ class MissingImageInspection : LocalInspectionTool() {
         private val holder: ProblemsHolder
     ) : ParadoxScriptVisitor() {
         override fun visitFile(file: PsiFile) {
-            ProgressManager.checkCanceled()
             if(!inspection.checkForDefinitions) return
             val scriptFile = file.castOrNull<ParadoxScriptFile>() ?: return
             val definitionInfo = scriptFile.definitionInfo ?: return
@@ -53,17 +52,18 @@ class MissingImageInspection : LocalInspectionTool() {
         }
         
         private fun visitDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
+            ProgressManager.checkCanceled()
             val project = definitionInfo.project
             val imageInfos = definitionInfo.images
             if(imageInfos.isEmpty()) return
             val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
-            ProgressManager.checkCanceled()
             val nameToDistinct = mutableSetOf<String>()
             val infoMap = mutableMapOf<String, Tuple2<ParadoxDefinitionRelatedImageInfo, String?>>()
             //进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
             var hasPrimary = false
             runReadAction {
                 for(info in imageInfos) {
+                    ProgressManager.checkCanceled()
                     if(nameToDistinct.contains(info.name)) continue
                     if(info.primary && hasPrimary) continue
                     //多个位置表达式无法解析时，使用第一个

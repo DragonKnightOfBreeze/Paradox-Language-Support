@@ -37,6 +37,7 @@ class MissingParameterInspection : LocalInspectionTool() {
 			}
 			
 			private fun visitElementForInvocationExpression(element: ParadoxScriptProperty) {
+				ProgressManager.checkCanceled()
 				val configs = ParadoxCwtConfigHandler.getConfigs(element)
 				val config = configs.firstOrNull() as? CwtPropertyConfig ?: return
 				val condition = config.configs?.any { CwtConfigHandler.isParameter(it) } == true
@@ -49,6 +50,7 @@ class MissingParameterInspection : LocalInspectionTool() {
 					true
 				}
 				
+				ProgressManager.checkCanceled()
 				val requiredParameterNames = mutableSetOf<String>()
 				ParadoxParameterSupport.processContextFromInvocationExpression(element, config) p@{
 					val parameterMap = it.parameters
@@ -67,6 +69,7 @@ class MissingParameterInspection : LocalInspectionTool() {
 			}
 			
 			private fun visitElementForScriptValueExpression(element: ParadoxScriptString) {
+				ProgressManager.checkCanceled()
 				val value = element.text
 				if(value.isLeftQuoted()) return
 				if(!value.startsWith("value:")) return //快速判断
@@ -84,6 +87,7 @@ class MissingParameterInspection : LocalInspectionTool() {
 				val parameterNames = mutableSetOf<String>()
 				scriptValueExpression.parameterNodes.forEach { parameterNames.add(it.text) }
 				
+				ProgressManager.checkCanceled()
 				val requiredParameterNames = mutableSetOf<String>()
 				val sv = scriptValueExpressionNode.getReference(element)?.resolve() ?: return //ignore
 				if(sv !is ParadoxScriptProperty) return

@@ -48,6 +48,7 @@ class UnsetValueSetValueInspection : LocalInspectionTool() {
                         val statusMap = session.getUserData(statusMapKey)!!
                         val used = statusMap[resolved]
                         val isUsed = if(used == null) {
+                            ProgressManager.checkCanceled()
                             val r = ReferencesSearch.search(resolved).processQuery {
                                 val res = it.resolve()
                                 if(res is ParadoxValueSetValueElement && !res.read) {

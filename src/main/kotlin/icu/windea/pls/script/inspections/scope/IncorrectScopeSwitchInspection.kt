@@ -1,6 +1,7 @@
 package icu.windea.pls.script.inspections.scope
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
@@ -20,6 +21,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
         }
         
         private fun visitScriptProperty(element: ParadoxScriptProperty) {
+            ProgressManager.checkCanceled()
             val configs = ParadoxCwtConfigHandler.getConfigs(element)
             val config = configs.firstOrNull()
             if(config == null) return
