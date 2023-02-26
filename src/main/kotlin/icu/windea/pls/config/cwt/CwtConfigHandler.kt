@@ -412,6 +412,10 @@ object CwtConfigHandler {
                 //匹配预定义的modifier
                 return matchesModifier(element, expression.text, configGroup)
             }
+            CwtDataType.ShaderEffect -> {
+                //暂时作为一般的字符串处理
+                return expression.type.isStringType()
+            }
             CwtDataType.SingleAliasRight -> {
                 return false //不在这里处理
             }
@@ -562,6 +566,7 @@ object CwtConfigHandler {
             CwtDataType.VariableField -> 30
             CwtDataType.IntVariableField -> 30
             CwtDataType.Modifier -> 55 //lower than definition
+            CwtDataType.ShaderEffect -> 85 // (80,90)
             CwtDataType.SingleAliasRight -> 0 //不期望匹配到
             CwtDataType.AliasName -> 0 //不期望匹配到
             CwtDataType.AliasKeysField -> 0 //不期望匹配到

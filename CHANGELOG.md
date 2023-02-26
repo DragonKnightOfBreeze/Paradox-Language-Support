@@ -64,7 +64,10 @@
 ## 0.8.3
 
 * BUG修复
-* 完善Stellaris的CWT规则文件（检查游戏目录中的所有`.txt`文件）
+* 功能优化
+  * [ ] 完善Stellaris的CWT规则文件（检查游戏目录中的所有`.txt`文件）
+* 功能优化 - CWT规则支持
+  * [X] 添加扩展的CWT规则类型`$shader_effect`，对应`.shader`文件中的effect，暂时作为一般的字符串处理
 
 ## 0.8.2
 

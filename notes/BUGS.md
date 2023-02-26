@@ -16,6 +16,10 @@
 
 * `ReferencesSearch.search()`
 
+## 0.8.3
+
+* [ ] `int[-inf..inf]` - 允许这样的写法 
+
 ## 0.8.2
 
 * [X] 无法对`value:`后的内容进行提示（已解决）

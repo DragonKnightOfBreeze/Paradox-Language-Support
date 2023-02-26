@@ -161,6 +161,9 @@ class CwtValueExpression private constructor(
 				val value = expressionString.substring(19, expressionString.length - 1)
 				CwtValueExpression(expressionString, CwtDataType.IntVariableField, value)
 			}
+			expressionString == "\$shader_effect" -> {
+				CwtValueExpression(expressionString, CwtDataType.ShaderEffect)
+			}
 			expressionString.surroundsWith("single_alias_right[", "]") -> {
 				val value = expressionString.substring(19, expressionString.length - 1)
 				CwtValueExpression(expressionString, CwtDataType.SingleAliasRight, value)
