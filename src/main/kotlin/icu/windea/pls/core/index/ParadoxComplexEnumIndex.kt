@@ -6,7 +6,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxComplexEnumIndex : StringStubIndexExtension<ParadoxScriptStringExpressionElement>() {
     companion object {
         @JvmField val KEY = StubIndexKey.createIndexKey<String, ParadoxScriptStringExpressionElement>("paradox.complexEnum.index")
-        private const val VERSION = 14 //0.7.13
+        private const val VERSION = 15 //0.8.3
         private const val CACHE_SIZE = 256
     }
     
