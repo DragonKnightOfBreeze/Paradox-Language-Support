@@ -53,7 +53,7 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope) {
         if(from !== this && from != other.from) return false
         return true
     }
-    
+
     override fun hashCode(): Int {
         return Objects.hash(scope, root, prev, from)
     }

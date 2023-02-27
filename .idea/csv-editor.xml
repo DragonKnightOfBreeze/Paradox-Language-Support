@@ -3,6 +3,13 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="D:\Program Files\Steam\steamapps\common\Stellaris\common\component_templates\weapon_components.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value=";" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\cwt\cwtools-eu4-config\on_actions.csv">
           <value>
             <Attribute>

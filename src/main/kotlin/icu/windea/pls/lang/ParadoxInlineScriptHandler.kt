@@ -173,10 +173,10 @@ object ParadoxInlineScriptHandler {
         var hasConflict = false
         val configs: MutableList<CwtDataConfig<*>> = mutableListOf()
         ParadoxInlineScriptIndex.KEY.processAllElements(expression, project, scope) { e ->
+            ProgressManager.checkCanceled()
             if(element == null) {
                 element = e
             }
-            ProgressManager.checkCanceled()
             val eConfigs = ParadoxCwtConfigHandler.getConfigs(e)
             if(eConfigs.isNotEmpty()) {
                 val configsToAdd = eConfigs.mapNotNull { it.parent }

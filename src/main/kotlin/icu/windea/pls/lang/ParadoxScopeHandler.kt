@@ -204,15 +204,11 @@ object ParadoxScopeHandler {
                 ?: pushScope?.let { ParadoxScopeContext.resolve(it, it) }
                 ?: resolveAnyScopeContext()
             //如果推断得到的作用域上下文是确定的，则这里使用推断得到的
-            val inferredResult = ParadoxInferredScopeContextProvider.inferForDefinition(element, result)
-            when {
-                inferredResult.isEmpty() -> return result
-                inferredResult.size == 1 -> return inferredResult.single()
-                else -> {
-                    //TODO 0.8.3 标记推断的作用域存在冲突
-                    return result
-                } 
+            val inferred = ParadoxInferredScopeContextProvider.inferForDefinition(element, result)
+            if(inferred != null && !inferred.hasConflict) {
+                return inferred.scopeContext
             }
+            return result
         }
         
         //should be a definition member

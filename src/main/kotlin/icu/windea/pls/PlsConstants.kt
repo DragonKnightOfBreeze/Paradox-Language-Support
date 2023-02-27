@@ -115,7 +115,7 @@ object PlsKeys {
     val cachedInlineScriptInfoKey = Key.create<CachedValue<ParadoxInlineScriptInfo>>("paradox.cached.inlineScriptInfo")
     val cachedInlineScriptUsageInfoKey = Key.create<CachedValue<ParadoxInlineScriptUsageInfo>>("paradox.cached.inlineScriptUsageInfo")
     
-    val cachedInferredScopeContextsKey = Key.create<CachedValue<Set<ParadoxScopeContext>>>("paradox.cached.inferredScopeContexts")
+    val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfoKey")
     
     val cachedCwtConfigTypeKey = Key.create<CachedValue<CwtConfigType>>("paradox.cached.cwtConfigType")
     val cachedCwtConfigPathKey = Key.create<CachedValue<CwtConfigPath>>("paradox.cached.cwtConfigPath")

@@ -12,7 +12,7 @@ import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.model.*
 
 sealed class ParadoxGlobalSearchScope(
-    project: Project
+    project: Project?
 ) : GlobalSearchScope(project) {
     override fun isSearchInModuleContent(aModule: Module): Boolean {
         return true

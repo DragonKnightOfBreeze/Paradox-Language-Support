@@ -2,9 +2,11 @@ package icu.windea.pls.core.search.scopes
 
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
+import com.intellij.psi.search.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 
-@Suppress("UnstableApiUsage", "EqualsOrHashCode")
+@Suppress("EqualsOrHashCode")
 class ParadoxModAndGameScope(
     project: Project,
     val modDirectory: VirtualFile,
