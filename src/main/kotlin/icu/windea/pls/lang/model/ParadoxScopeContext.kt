@@ -2,6 +2,7 @@ package icu.windea.pls.lang.model
 
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.nodes.*
+import java.util.*
 
 class ParadoxScopeContext private constructor(val scope: ParadoxScope) {
     @Volatile var root: ParadoxScopeContext? = null
@@ -36,6 +37,25 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope) {
             from?.from?.from?.let { put("fromfromfrom", it.scope) }
             from?.from?.from?.from?.let { put("fromfromfromfrom", it.scope) }
         }
+    }
+    
+    @Suppress("SuspiciousEqualsCombination")
+    override fun equals(other: Any?): Boolean {
+        //note that root === this is possible
+        if(this === other) return true
+        if(other !is ParadoxScopeContext) return false
+        if(scope != other.scope) return false
+        if((root === this) xor (other.root === other)) return false
+        if(root !== this && root != other.root) return false
+        if((prev === this) xor (other.prev === other)) return false
+        if(prev !== this && prev != other.prev) return false
+        if((from === this) xor (other.from === other)) return false
+        if(from !== this && from != other.from) return false
+        return true
+    }
+    
+    override fun hashCode(): Int {
+        return Objects.hash(scope, root, prev, from)
     }
     
     fun copy(): ParadoxScopeContext {

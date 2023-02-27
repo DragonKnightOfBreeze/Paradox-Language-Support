@@ -1,5 +1,6 @@
 package icu.windea.pls.lang
 
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -172,11 +173,13 @@ object ParadoxScopeHandler {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
             val file = element.containingFile
             val value = resolveScopeContextOfDefinitionMember(element)
-            CachedValueProvider.Result.create(value, file)
+            val tracker = ParadoxModificationTrackerProvider.getInstance().DefinitionScopeContextInference
+            CachedValueProvider.Result.create(value, file, tracker)
         }
     }
     
     private fun resolveScopeContextOfDefinitionMember(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
+        ProgressManager.checkCanceled()
         //should be a definition
         val definitionInfo = element.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
         if(definitionInfo != null) {
@@ -202,7 +205,14 @@ object ParadoxScopeHandler {
                 ?: resolveAnyScopeContext()
             //如果推断得到的作用域上下文是确定的，则这里使用推断得到的
             val inferredResult = ParadoxInferredScopeContextProvider.inferForDefinition(element, result)
-            return inferredResult.singleOrNull() ?: result
+            when {
+                inferredResult.isEmpty() -> return result
+                inferredResult.size == 1 -> return inferredResult.single()
+                else -> {
+                    //TODO 0.8.3 标记推断的作用域存在冲突
+                    return result
+                } 
+            }
         }
         
         //should be a definition member
@@ -240,6 +250,7 @@ object ParadoxScopeHandler {
     
     private fun resolveScopeContextOfLocalisationCommandIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext {
         //TODO depends on usages
+        ProgressManager.checkCanceled()
         val prevElement = element.prevIdentifier
         val prevResolved = prevElement?.reference?.resolve()
         when {

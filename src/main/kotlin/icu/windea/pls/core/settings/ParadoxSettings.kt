@@ -77,10 +77,12 @@ class ParadoxSettingsState : BaseState() {
 	
 	/**
 	 * @property inlineScriptLocation 是否推断内联脚本的使用位置，以便为内联脚本提供高级语言功能支持。
+	 * @property eventScopeContext 是否基于使用处推断事件的作用域上下文。
 	 */
 	@Tag("inference")
 	class InferenceState : BaseState() {
 		var inlineScriptLocation by property(true)
+		var eventScopeContext by property(true)
 	}
 	
 	@Tag("generation")

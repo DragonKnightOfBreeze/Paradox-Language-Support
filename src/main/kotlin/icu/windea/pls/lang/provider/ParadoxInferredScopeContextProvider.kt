@@ -39,3 +39,4 @@ interface ParadoxInferredScopeContextProvider {
         }
     }
 }
+

@@ -17,6 +17,9 @@ class ParadoxModificationTrackerProvider {
     val InlineScript = SimpleModificationTracker()
     val Modifier = SimpleModificationTracker()
     
+    val DefinitionScopeContextInference = SimpleModificationTracker()
+    val LocalisationCommandScopeContextInference = SimpleModificationTracker()
+    
     companion object {
         @JvmStatic
         fun getInstance() = service<ParadoxModificationTrackerProvider>()
