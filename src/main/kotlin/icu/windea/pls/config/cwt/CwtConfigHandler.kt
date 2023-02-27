@@ -1613,11 +1613,20 @@ object CwtConfigHandler {
     }
     
     fun getScriptExpressionTailText(config: CwtConfig<*>?, withExpression: Boolean = true): String? {
-        if(config?.expression == null) return null
+        val configExpresson = config?.expression ?: return null
+        val fileName = config.resolved().pointer.containingFile?.name
         if(withExpression) {
-            return " by ${config.expression} in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
+            if(fileName != null) {
+                return " by $configExpression in $fileName"
+            } else {
+                return " by $configExpresson"
+            }
         } else {
-            return " in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
+            if(fileName != null) {
+                return " in $fileName"
+            } else {
+                return null
+            }
         }
     }
     //endregion
