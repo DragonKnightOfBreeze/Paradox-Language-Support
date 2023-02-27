@@ -3,7 +3,7 @@ package icu.windea.pls.lang.model
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.nodes.*
 
-class ParadoxScopeContext private constructor(val scopeId: String) {
+class ParadoxScopeContext private constructor(val scope: ParadoxScope) {
     @Volatile var root: ParadoxScopeContext? = null
     @Volatile var prev: ParadoxScopeContext? = null
     @Volatile var from: ParadoxScopeContext? = null
@@ -14,32 +14,32 @@ class ParadoxScopeContext private constructor(val scopeId: String) {
     
     val map by lazy {
         buildMap {
-            put("this", scopeId)
-            root?.let { put("root", it.scopeId) }
-            from?.let { put("from", it.scopeId) }
-            from?.from?.let { put("fromfrom", it.scopeId) }
-            from?.from?.from?.let { put("fromfromfrom", it.scopeId) }
-            from?.from?.from?.from?.let { put("fromfromfromfrom", it.scopeId) }
+            put("this", scope)
+            root?.let { put("root", it.scope) }
+            from?.let { put("from", it.scope) }
+            from?.from?.let { put("fromfrom", it.scope) }
+            from?.from?.from?.let { put("fromfromfrom", it.scope) }
+            from?.from?.from?.from?.let { put("fromfromfromfrom", it.scope) }
         }
     }
     
     val detailMap by lazy {
         buildMap {
-            put("this", scopeId)
-            root?.let { put("root", it.scopeId) }
-            prev?.let { put("prev", it.scopeId) }
-            prev?.prev?.let { put("prevprev", it.scopeId) }
-            prev?.prev?.prev?.let { put("prevprevprev", it.scopeId) }
-            prev?.prev?.prev?.prev?.let { put("prevprevprevprev", it.scopeId) }
-            from?.let { put("from", it.scopeId) }
-            from?.from?.let { put("fromfrom", it.scopeId) }
-            from?.from?.from?.let { put("fromfromfrom", it.scopeId) }
-            from?.from?.from?.from?.let { put("fromfromfromfrom", it.scopeId) }
+            put("this", scope)
+            root?.let { put("root", it.scope) }
+            prev?.let { put("prev", it.scope) }
+            prev?.prev?.let { put("prevprev", it.scope) }
+            prev?.prev?.prev?.let { put("prevprevprev", it.scope) }
+            prev?.prev?.prev?.prev?.let { put("prevprevprevprev", it.scope) }
+            from?.let { put("from", it.scope) }
+            from?.from?.let { put("fromfrom", it.scope) }
+            from?.from?.from?.let { put("fromfromfrom", it.scope) }
+            from?.from?.from?.from?.let { put("fromfromfromfrom", it.scope) }
         }
     }
     
     fun copy(): ParadoxScopeContext {
-        val result = ParadoxScopeContext(scopeId)
+        val result = ParadoxScopeContext(scope)
         result.root = root
         result.prev = prev
         result.from = from
@@ -50,7 +50,7 @@ class ParadoxScopeContext private constructor(val scopeId: String) {
     fun resolve(pushScope: String?): ParadoxScopeContext {
         //push_scope = null > transfer scope
         if(pushScope == null) return this
-        val result = ParadoxScopeContext(pushScope)
+        val result = ParadoxScopeContext(ParadoxScope.of(pushScope))
         result.prev = this
         result.root = this.root
         result.from = this.from
@@ -66,11 +66,11 @@ class ParadoxScopeContext private constructor(val scopeId: String) {
     
     companion object {
         fun resolve(thisScope: String): ParadoxScopeContext {
-            return ParadoxScopeContext(thisScope)
+            return ParadoxScopeContext(ParadoxScope.of(thisScope))
         }
         
         fun resolve(thisScope: String, rootScope: String? = null): ParadoxScopeContext {
-            val result = ParadoxScopeContext(thisScope)
+            val result = ParadoxScopeContext(ParadoxScope.of(thisScope))
             rootScope?.let {
                 val root = resolve(it)
                 root.root = root
@@ -86,7 +86,7 @@ class ParadoxScopeContext private constructor(val scopeId: String) {
             val fromFromScope = map.get("fromfrom")
             val fromFromFromScope = map.get("fromfromfrom")
             val fromFromFromFromScope = map.get("fromfromfromfrom")
-            val result = ParadoxScopeContext(thisScope)
+            val result = ParadoxScopeContext(ParadoxScope.of(thisScope))
             rootScope?.let {
                 val root = resolve(it)
                 root.root = root
@@ -104,10 +104,10 @@ class ParadoxScopeContext private constructor(val scopeId: String) {
                 val fromFromFrom = resolve(it)
                 result.from?.from?.from = fromFromFrom
             }
-			fromFromFromFromScope?.let {
-				val fromFromFromFrom = resolve(it)
-				result.from?.from?.from?.from = fromFromFromFrom
-			}
+            fromFromFromFromScope?.let {
+                val fromFromFromFrom = resolve(it)
+                result.from?.from?.from?.from = fromFromFromFrom
+            }
             return result
         }
     }

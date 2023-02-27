@@ -42,7 +42,7 @@ interface ParadoxParameterSupport {
     fun buildDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean = false
     
     companion object INSTANCE {
-        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxParameterSupport>("icu.windea.pls.paradoxParameterSupport")
+        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxParameterSupport>("icu.windea.pls.parameterSupport")
         
         fun supports(context: ParadoxScriptDefinitionElement): Boolean {
             return EP_NAME.extensionList.any { it.supports(context) }

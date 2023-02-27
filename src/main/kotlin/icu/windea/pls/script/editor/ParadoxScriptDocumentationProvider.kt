@@ -2,7 +2,6 @@
 
 package icu.windea.pls.script.editor
 
-import com.intellij.codeInsight.documentation.*
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*
@@ -290,9 +289,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     }
     
     private fun StringBuilder.addScopeContextForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
-        //进行代码提示时不应当显示作用域上下文信息
-        @Suppress("DEPRECATION")
-        if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
+        //进行代码提示时也显示作用域上下文信息
+        //@Suppress("DEPRECATION")
+        //if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
         
         val show = getSettings().documentation.showScopeContext
         if(!show) return
@@ -303,19 +302,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         val contextElement = element
         val gameType = definitionInfo.gameType
         val scopeContextText = buildString {
-            var appendSeparator = false
-            scopeContext.detailMap.forEach { (systemLink, scope) ->
-                if(appendSeparator) appendBr() else appendSeparator = true
-                appendCwtLink(systemLink, "${gameType.id}/system_links/$systemLink", contextElement)
-                append(" = ")
-                if(ParadoxScopeHandler.isFakeScopeId(scope)) {
-                    append(scope)
-                } else {
-                    appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
-                }
-            }
+            append("<code>")
+            ParadoxScopeHandler.buildScopeContextDoc(scopeContext, gameType, contextElement, this)
+            append("</code>")
         }
-        sections.put(PlsDocBundle.message("sectionTitle.scopeContext"), "<code>$scopeContextText</code>")
+        sections.put(PlsDocBundle.message("sectionTitle.scopeContext"), scopeContextText)
     }
     
     private fun StringBuilder.addParametersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {

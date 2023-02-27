@@ -34,7 +34,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                             val configGroup = config.info.configGroup
                             if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)) {
                                 val description = PlsBundle.message("inspection.localisation.scope.incorrectScopeSwitch.description.1",
-                                    element.name, supportedScopes.joinToString(), scopeContext.scopeId)
+                                    element.name, supportedScopes.joinToString(), scopeContext.scope.id)
                                 holder.registerProblem(element, description)
                             }
                         }

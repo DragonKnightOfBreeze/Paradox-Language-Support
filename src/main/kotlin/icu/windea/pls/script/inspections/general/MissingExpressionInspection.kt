@@ -9,8 +9,8 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.linker.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.lang.support.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -35,7 +35,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
             override fun visitFile(file: PsiFile) {
                 if(file !is ParadoxScriptFile) return
                 //忽略可能的脚本片段入口
-                if(ParadoxScriptMemberElementLinker.canLink(file)) return super.visitFile(file)
+                if(ParadoxScriptMemberElementInlineSupport.canLink(file)) return super.visitFile(file)
                 val configs = ParadoxCwtConfigHandler.getConfigs(file, allowDefinition = true)
                 doCheck(file, file, configs)
                 super.visitFile(file)
@@ -48,7 +48,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                 val property = element.parent
                     ?.castOrNull<ParadoxScriptProperty>()
                 //忽略可能的脚本片段入口
-                if(property != null && ParadoxScriptMemberElementLinker.canLink(property)) return
+                if(property != null && ParadoxScriptMemberElementInlineSupport.canLink(property)) return
                 val position = property?.propertyKey
                     ?.also { if(it.isParameterAwareExpression()) return }
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)

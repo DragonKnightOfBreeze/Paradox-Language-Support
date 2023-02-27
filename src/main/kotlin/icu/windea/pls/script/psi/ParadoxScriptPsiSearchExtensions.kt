@@ -8,8 +8,8 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.lang.linker.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.lang.support.*
 import icu.windea.pls.script.*
 
 /**
@@ -80,7 +80,7 @@ private fun doProcessValueChild(it: ParadoxScriptValue, conditional: Boolean, in
     val r = processor(it)
     if(!r) return false
     if(inline) {
-        val inlined = ParadoxScriptMemberElementLinker.inlineElement(it)
+        val inlined = ParadoxScriptMemberElementInlineSupport.inlineElement(it)
         if(inlined is ParadoxScriptDefinitionElement) {
             val block = inlined.block
             if(block != null) {
@@ -97,7 +97,7 @@ private fun doProcessPropertyChild(it: ParadoxScriptProperty, conditional: Boole
     val r = processor(it)
     if(!r) return false
     if(inline) {
-        val inlined = ParadoxScriptMemberElementLinker.inlineElement(it)
+        val inlined = ParadoxScriptMemberElementInlineSupport.inlineElement(it)
         if(inlined is ParadoxScriptDefinitionElement) {
             val block = inlined.block
             if(block != null) {
@@ -240,7 +240,7 @@ fun PsiElement.findParentDefinition(link: Boolean = false): ParadoxScriptDefinit
     var current: PsiElement = this
     while(current !is PsiFile) {
         if(link && current is ParadoxScriptMemberElement) {
-            val linked = ParadoxScriptMemberElementLinker.linkElement(current)
+            val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current)
             if(linked != null) {
                 current = linked.parent ?: break
                 continue
@@ -272,7 +272,7 @@ fun PsiElement.findParentProperty(
     }
     while(current !is PsiFile) {
         if(link && current is ParadoxScriptMemberElement) {
-            val linked = ParadoxScriptMemberElementLinker.linkElement(current)
+            val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current)
             if(linked != null) {
                 current = linked.parent ?: break
                 continue

@@ -9,6 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.selectors.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxScopeContextInfoHintsProvider.*
@@ -89,11 +90,15 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 		return psiSingleReference(smallText(scope)) { configGroup.systemLinks[scope]?.pointer?.element }
 	}
 	
-	private fun PresentationFactory.scopeLinkPresentation(scope: String, configGroup: CwtConfigGroup): InlayPresentation {
-		if(ParadoxScopeHandler.isFakeScopeId(scope)) {
-			return smallText(scope)
-		} else {
-			return psiSingleReference(smallText(scope)) { configGroup.scopeAliasMap[scope]?.pointer?.element }
+	private fun PresentationFactory.scopeLinkPresentation(scope: ParadoxScope, configGroup: CwtConfigGroup): InlayPresentation {
+		return when(scope) {
+			is ParadoxScope.AnyScope, is ParadoxScope.UnknownScope -> smallText(scope.id)
+			is ParadoxScope.Scope -> psiSingleReference(smallText(scope.id)) { getScopeElement(configGroup, scope) }
+			is ParadoxScope.InferredScope -> seq(psiSingleReference(smallText(scope.id)) { getScopeElement(configGroup, scope) }, smallText("?"))
 		}
+	}
+	
+	private fun getScopeElement(configGroup: CwtConfigGroup, scope: ParadoxScope): CwtProperty? {
+		return configGroup.scopeAliasMap[scope.id]?.pointer?.element
 	}
 }

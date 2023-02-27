@@ -29,7 +29,7 @@ class IncorrectScopeInspection: LocalInspectionTool() {
 				val propertyKey = element.propertyKey
 				val location = propertyKey
 				val description = PlsBundle.message("inspection.script.scope.incorrectScope.description.1",
-					propertyKey.expression, supportedScopes.joinToString(), parentScopeContext.scopeId)
+					propertyKey.expression, supportedScopes.joinToString(), parentScopeContext.scope.id)
 				holder.registerProblem(location, description)
 			}
 		}

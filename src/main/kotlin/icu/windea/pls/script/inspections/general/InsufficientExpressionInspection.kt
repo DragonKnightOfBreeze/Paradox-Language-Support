@@ -78,7 +78,7 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
 						val scopeContext = ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, parentScopeContext)
 						if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return
 						val expression = element.expression ?: return
-						val message = PlsBundle.message("inspection.script.general.insufficientExpression.description.5", expression, expectedScope, scopeContext.scopeId)
+						val message = PlsBundle.message("inspection.script.general.insufficientExpression.description.5", expression, expectedScope, scopeContext.scope.id)
 						holder.registerProblem(element, message)
 					}
 					dataType == CwtDataType.ScopeGroup -> {
@@ -93,7 +93,7 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
 						val scopeContext = ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, parentScopeContext)
 						if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return
 						val expression = element.expression ?: return
-						val message = PlsBundle.message("inspection.script.general.insufficientExpression.description.6", expression, expectedScopeGroup, scopeContext.scopeId)
+						val message = PlsBundle.message("inspection.script.general.insufficientExpression.description.6", expression, expectedScopeGroup, scopeContext.scope.id)
 						holder.registerProblem(element, message)
 					}
 					dataType == CwtDataType.IntValueField -> {

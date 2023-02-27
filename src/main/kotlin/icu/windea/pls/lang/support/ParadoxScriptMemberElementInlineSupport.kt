@@ -1,18 +1,18 @@
-package icu.windea.pls.lang.linker
+package icu.windea.pls.lang.support
 
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 处理需要内联的脚本内容或者处理脚本片段时，将指定的成员元素连接到另一个成员元素，
+ * 处理需要内联的脚本内容或者处理脚本片段时，将指定的成员元素内联为另一个成员元素，
  * 以便从另一个元素向上查找定义成员和定义，或者上下查找定义成员，或者获取需要的[ParadoxElementPath]。
  *
  * 注意连接前后的成员元素不会包括在查找结果内。
  *
  * @see ParadoxScriptMemberElement
  */
-interface ParadoxScriptMemberElementLinker {
+interface ParadoxScriptMemberElementInlineSupport {
     fun canLink(element: ParadoxScriptMemberElement): Boolean
     
     fun linkElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement?
@@ -20,7 +20,7 @@ interface ParadoxScriptMemberElementLinker {
     fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement?
     
     companion object INSTANCE {
-        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxScriptMemberElementLinker>("icu.windea.pls.paradoxScriptMemberElementLinker")
+        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxScriptMemberElementInlineSupport>("icu.windea.pls.scriptMemberElementInlineSupport")
         
         fun canLink(element: ParadoxScriptMemberElement): Boolean {
             return EP_NAME.extensionList.any { it.canLink(element) }

@@ -3,8 +3,8 @@ package icu.windea.pls.lang
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.linker.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.lang.support.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
@@ -60,7 +60,7 @@ object ParadoxElementPathHandler {
         var flag = allowDefinition
         while(current !is PsiDirectory) { //这里的上限应当是null或PsiDirectory，不能是PsiFile，因为它也可能是定义
             if(current is ParadoxScriptMemberElement) {
-                val linked = ParadoxScriptMemberElementLinker.linkElement(current)
+                val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current)
                 if(linked != null) {
                     current = linked.parent ?: break
                     continue

@@ -32,7 +32,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
 							if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)) {
 								val location = element
 								val description = PlsBundle.message("inspection.localisation.scope.incorrectScope.description.1",
-									element.name, supportedScopes.joinToString(), scopeContext.scopeId)
+									element.name, supportedScopes.joinToString(), scopeContext.scope.id)
 								holder.registerProblem(location, description)
 							}
 						}

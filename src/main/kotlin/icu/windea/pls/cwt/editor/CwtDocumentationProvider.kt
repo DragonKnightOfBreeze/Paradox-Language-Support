@@ -2,7 +2,6 @@
 
 package icu.windea.pls.cwt.editor
 
-import com.intellij.codeInsight.documentation.*
 import com.intellij.lang.documentation.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
@@ -324,38 +323,30 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getScopeText(scope: String, gameType: ParadoxGameType?, contextElement: PsiElement): String {
+	private fun getScopeText(scopeId: String, gameType: ParadoxGameType?, contextElement: PsiElement): String {
 		return buildString {
 			append("<code>")
-			if(ParadoxScopeHandler.isFakeScopeId(scope)) {
-				append(scope)
-			} else {
-				appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
-			}
+			ParadoxScopeHandler.buildScopeDoc(scopeId, gameType, contextElement, this)
 			append("</code>")
 		}
 	}
 	
-	private fun getScopesText(scopes: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
+	private fun getScopesText(scopeIds: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
 		return buildString {
 			var appendSeparator = false
 			append("<code>")
-			for(scope in scopes) {
+			for(scopeId in scopeIds) {
 				if(appendSeparator) append(", ") else appendSeparator = true
-				if(ParadoxScopeHandler.isFakeScopeId(scope)) {
-					append(scope)
-				} else {
-					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
-				}
+				ParadoxScopeHandler.buildScopeDoc(scopeId, gameType, contextElement, this)
 			}
 			append("</code>")
 		}
 	}
 	
 	private fun StringBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
-		//进行代码提示时不应当显示作用域上下文信息
-		@Suppress("DEPRECATION")
-		if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
+		//进行代码提示时也显示作用域上下文信息
+		//@Suppress("DEPRECATION")
+		//if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 		
 		val show = getSettings().documentation.showScopeContext
 		if(!show) return
@@ -365,23 +356,14 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		val scopeContext = ParadoxScopeHandler.getScopeContext(memberElement)
 		if(scopeContext == null) return
 		//TODO 如果作用域引用位于表达式中，应当使用那个位置的作用域上下文，但是目前实现不了，因为这里的referenceElement是整个scriptProperty
-		val scopeContextToUse = scopeContext
 		val contextElement = element
-		val gameType = configGroup.gameType
-		val scopeContextText = buildString {
-			var appendSeparator = false
-			scopeContextToUse.detailMap.forEach { (systemLink, scope) ->
-				if(appendSeparator) appendBr() else appendSeparator = true
-				appendCwtLink(systemLink, "${gameType.id}/system_links/$systemLink", contextElement)
-				append(" = ")
-				if(ParadoxScopeHandler.isFakeScopeId(scope)) {
-					append(scope)
-				} else {
-					appendCwtLink(scope, "${gameType.id}/scopes/$scope", contextElement)
-				}
-			}
+		val gameType = configGroup.gameType.orDefault()
+		val scopeContextText = buildString { 
+			append("<code>")
+			ParadoxScopeHandler.buildScopeContextDoc(scopeContext, gameType, contextElement, this)
+			append("</code>")
 		}
-		sections.put(PlsDocBundle.message("sectionTitle.scopeContext"), "<code>$scopeContextText</code>")
+		sections.put(PlsDocBundle.message("sectionTitle.scopeContext"), scopeContextText)
 	}
 	
 	private fun StringBuilder.buildDocumentationContent(element: PsiElement) {
