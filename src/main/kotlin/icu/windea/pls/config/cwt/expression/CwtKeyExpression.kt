@@ -27,7 +27,7 @@ class CwtKeyExpression private constructor(
 			expressionString.surroundsWith("int[", "]") -> {
 				val range = expressionString.substring(4, expressionString.length - 1)
 					.split("..", limit = 2)
-					.let { tupleOf(it.getOrNull(0)?.toIntOrNull() ?: 0, it.getOrNull(1)?.toIntOrNull()) }
+					.let { tupleOf(it.getOrNull(0)?.toIntOrNull(), it.getOrNull(1)?.toIntOrNull()) }
 				CwtKeyExpression(expressionString, CwtDataType.Int, null, range)
 			}
 			expressionString == "float" -> {
@@ -36,7 +36,7 @@ class CwtKeyExpression private constructor(
 			expressionString.surroundsWith("float[", "]") -> {
 				val range = expressionString.substring(6, expressionString.length - 1)
 					.split("..", limit = 2)
-					.let { tupleOf(it.getOrNull(0)?.toIntOrNull() ?: 0, it.getOrNull(1)?.toIntOrNull()) }
+					.let { tupleOf(it.getOrNull(0)?.toIntOrNull(), it.getOrNull(1)?.toIntOrNull()) }
 				CwtKeyExpression(expressionString, CwtDataType.Float, null, range)
 			}
 			expressionString == "scalar" -> {

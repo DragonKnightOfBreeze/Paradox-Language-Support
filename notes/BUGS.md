@@ -36,9 +36,10 @@ traditions: inherit icon from parent original tradition if inherit_icon = yes
 
 ## 0.8.3
 
-* [ ] `int[-inf..inf]` - 允许这样的写法 
+* [X] `int[-inf..inf]` - 允许这样的写法 
 * [ ] 无法快速查找event(通过event id)
 * [ ] 检查原版游戏文件 - PROCESSING：common/country_types
+* [ ] 更新`on_actions.csv`
 
 ## 0.8.2
 

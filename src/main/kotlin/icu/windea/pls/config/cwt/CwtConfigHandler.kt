@@ -202,9 +202,9 @@ object CwtConfigHandler {
                 //quoted number (e.g. "1") -> ok according to vanilla game files
                 if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) {
                     if(isNotExact) return true
-                    val (min, max) = configExpression.extraValue<Tuple2<Int, Int?>>() ?: return true
+                    val (min, max) = configExpression.extraValue<Tuple2<Int?, Int?>>() ?: return true
                     val value = expression.text.toIntOrNull() ?: return true
-                    return min <= value && (max == null || max >= value)
+                    return (min == null || min <= value) && (max == null || max >= value)
                 }
                 return false
             }
@@ -212,9 +212,9 @@ object CwtConfigHandler {
                 //quoted number (e.g. "1") -> ok according to vanilla game files
                 if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) {
                     if(isNotExact) return true
-                    val (min, max) = configExpression.extraValue<Tuple2<Float, Float?>>() ?: return true
+                    val (min, max) = configExpression.extraValue<Tuple2<Float?, Float?>>() ?: return true
                     val value = expression.text.toFloatOrNull() ?: return true
-                    return min <= value && (max == null || max >= value)
+                    return (min == null || min <= value) && (max == null || max >= value)
                 }
                 return false
             }
