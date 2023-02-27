@@ -9,7 +9,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 使用位置有冲突的内联脚本的检查。
+ * 检查内联脚本的使用位置是否存在冲突。
  */
 @WithGameType(ParadoxGameType.Stellaris)
 class ConflictingInlineScriptUsageInspection : LocalInspectionTool(){
@@ -23,11 +23,10 @@ class ConflictingInlineScriptUsageInspection : LocalInspectionTool(){
         val usageInfo = ParadoxInlineScriptHandler.getInlineScriptUsageInfo(file) ?: return null
         if(usageInfo.hasConflict) {
             val holder = ProblemsHolder(manager, file, isOnTheFly)
-            val description = PlsBundle.message("inspection.script.inference.conflictingInlineScriptUsage.description", inlineScriptExpression)
+            val description = PlsBundle.message("script.annotator.inlineScript.conflict", inlineScriptExpression)
             holder.registerProblem(file, description, GotoInlineScriptUsagesIntention())
             return holder.resultsArray
         }
         return null
     }
 }
-

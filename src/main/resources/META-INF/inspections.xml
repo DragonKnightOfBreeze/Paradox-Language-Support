@@ -188,6 +188,12 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.inference"
                      groupPathKey="inspection.script.inference.path"
                      implementationClass="icu.windea.pls.script.inspections.inference.ConflictingInlineScriptUsageInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingScopeContextInference"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.inference.conflictingScopeContextInference"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.inference"
+                     groupPathKey="inspection.script.inference.path"
+                     implementationClass="icu.windea.pls.script.inspections.inference.ConflictingScopeContextInferenceInspection"/>
     <!--endregion-->
     <!--endregion-->
     

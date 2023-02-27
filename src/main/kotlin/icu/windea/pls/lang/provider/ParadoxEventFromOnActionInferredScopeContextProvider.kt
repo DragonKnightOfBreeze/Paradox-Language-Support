@@ -19,8 +19,9 @@ class ParadoxEventFromOnActionInferredScopeContextProvider: ParadoxInferredScope
     override val type: ParadoxInferredScopeContextProvider.Type = ParadoxInferredScopeContextProvider.Type.Definition
     
     override fun infer(contextElement: PsiElement): ParadoxScopeContextInferenceInfo? {
-        ProgressManager.checkCanceled()
+        if(!getSettings().inference.eventScopeContext) return null
         if(contextElement !is ParadoxScriptProperty) return null
+        ProgressManager.checkCanceled()
         val definitionInfo = contextElement.definitionInfo ?: return null
         if(definitionInfo.type != "event") return null
         return getInferredScopeContext(contextElement)
@@ -35,6 +36,7 @@ class ParadoxEventFromOnActionInferredScopeContextProvider: ParadoxInferredScope
     }
     
     private fun resolveInferredScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
+        ProgressManager.checkCanceled()
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
         val project = configGroup.project
@@ -65,5 +67,15 @@ class ParadoxEventFromOnActionInferredScopeContextProvider: ParadoxInferredScope
             true
         }
         return ParadoxScopeContextInferenceInfo(scopeContext ?: return null, hasConflict)
+    }
+    
+    override fun getMessage(contextElement: PsiElement, info: ParadoxScopeContextInferenceInfo): String? {
+        val eventId = contextElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo?.name ?: return null
+        return PlsBundle.message("script.annotator.scopeContext.1", eventId)
+    }
+    
+    override fun getErrorMessage(contextElement: PsiElement, info: ParadoxScopeContextInferenceInfo): String? {
+        val eventId = contextElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo?.name ?: return null
+        return PlsBundle.message("script.annotator.scopeContext.1.conflict", eventId)
     }
 }
