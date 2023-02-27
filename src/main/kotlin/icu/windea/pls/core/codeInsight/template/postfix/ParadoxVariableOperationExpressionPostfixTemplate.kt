@@ -14,13 +14,15 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
+/**
+ * @see icu.windea.pls.script.codeInsight.completion.ParadoxVariableNameCompletionProvider
+ */
 class ParadoxVariableOperationExpressionPostfixTemplate(
 	setting: CwtPostfixTemplateSetting,
 	provider: PostfixTemplateProvider
 ): ParadoxExpressionEditablePostfixTemplate(setting, provider) {
 	companion object {
 		const val GROUP_NAME = "variable_operation_expressions"
-		
 	}
 	
 	override val groupName: String get() = GROUP_NAME
@@ -31,10 +33,10 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
 		val stringElement = context.parent?.castOrNull<ParadoxScriptValue>() ?: return emptyList()
 		if(!stringElement.isBlockValue()) return emptyList()
 		val parentProperty = stringElement.findParentProperty() ?: return emptyList()
-		val expression = ParadoxDataExpression.resolve(setting.id, false, true)
 		val configs = ParadoxCwtConfigHandler.getConfigs(parentProperty, allowDefinition = true)
 		if(configs.isEmpty()) return emptyList()
 		val configGroup = configs.first().info.configGroup
+		val expression = ParadoxDataExpression.resolve(setting.id, false, true)
 		val matched = configs.any { config ->
 			config.configs?.any { childConfig ->
 				childConfig is CwtPropertyConfig && CwtConfigHandler.matchesScriptExpression(context, expression, childConfig.keyExpression, childConfig, configGroup)

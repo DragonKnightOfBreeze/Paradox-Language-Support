@@ -7,7 +7,7 @@ import icu.windea.pls.lang.provider.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 检查作用域上下文的推断结果是否存在冲突。
+ * 检查作用域上下文的推断结果是否存在冲突。默认不启用。
  */
 class ConflictingScopeContextInferenceInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -21,7 +21,7 @@ class ConflictingScopeContextInferenceInspection : LocalInspectionTool() {
             private fun visitDefinition(element: ParadoxScriptProperty) {
                 val message = ParadoxInferredScopeContextProvider.getErrorMessageForDefinition(element)
                 if(message != null) {
-                    holder.registerProblem(element, message)
+                    holder.registerProblem(element.propertyKey, message)
                 }
             }
         }

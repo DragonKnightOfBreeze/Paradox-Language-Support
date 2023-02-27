@@ -6,9 +6,11 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.*
@@ -20,6 +22,8 @@ import icu.windea.pls.script.psi.*
 class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 	@Suppress("KotlinConstantConditions")
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+		if(!getSettings().completion.completeDefinitionNames) return
+		
 		val element = parameters.position.parent.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
 		
 		val file = parameters.originalFile

@@ -39,13 +39,17 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		//当用户可能正在输入一个scriptedVariable的名字时提示（除非用户也可能正在输入一个引用的名字）
 		val scriptedVariableNamePattern = psiElement()
 			.withElementType(SCRIPTED_VARIABLE_NAME_ID)
-		extend(null, scriptedVariableNamePattern, ParadoxScriptedVariableNameCompletionProvider())
+		extend(CompletionType.BASIC, scriptedVariableNamePattern, ParadoxScriptedVariableNameCompletionProvider())
 		
 		//当用户可能正在输入一个定义的名字时提示
 		val definitionNamePattern = psiElement()
 			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRINGS)
-		extend(null, definitionNamePattern, ParadoxDefinitionNameCompletionProvider())
+		extend(CompletionType.BASIC, definitionNamePattern, ParadoxDefinitionNameCompletionProvider())
 		
+		//当用户可能正在输入一个变量名时提示
+		val variableNamePattern = psiElement()
+			.withElementType(ParadoxScriptTokenSets.STRINGS)
+		extend(CompletionType.BASIC, variableNamePattern, ParadoxVariableNameCompletionProvider())
 	}
 	
 	override fun beforeCompletion(context: CompletionInitializationContext) {

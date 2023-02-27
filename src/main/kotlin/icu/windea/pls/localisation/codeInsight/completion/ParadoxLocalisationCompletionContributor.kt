@@ -32,12 +32,12 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		extend(null, commandFieldPattern, ParadoxLocalisationCommandFieldCompletionProvider())
 		
 		//当用户可能正在输入一个scriptedVariableReference的名字时提示
-		val scriptedVariableNamePattern = psiElement().withElementType(SCRIPTED_VARIABLE_REFERENCE_ID)
-		extend(null, scriptedVariableNamePattern, ParadoxScriptedVariableCompletionProvider())
+		val scriptedVariableReferencePattern = psiElement().withElementType(SCRIPTED_VARIABLE_REFERENCE_ID)
+		extend(null, scriptedVariableReferencePattern, ParadoxScriptedVariableCompletionProvider())
 		
 		//当用户可能正在输入一个localisation的名字时提示
-		val propertyKeyPattern = psiElement(PROPERTY_KEY_TOKEN)
-		extend(null, propertyKeyPattern, ParadoxLocalisationNameCompletionProvider())
+		val localisationNamePattern = psiElement(PROPERTY_KEY_TOKEN)
+		extend(CompletionType.BASIC, localisationNamePattern, ParadoxLocalisationNameCompletionProvider())
 	}
 	
 	override fun beforeCompletion(context: CompletionInitializationContext) {

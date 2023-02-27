@@ -219,19 +219,10 @@ object CwtConfigHandler {
                 return false
             }
             CwtDataType.Scalar -> {
-                //parameter value -> all no clause-like types are ok
-                val propertyConfig = when(config) {
-                    is CwtPropertyConfig -> config
-                    is CwtValueConfig -> config.propertyConfig
-                    else -> null
-                }
-                if(isParameter(propertyConfig)) {
-                    return !expression.type.isBlockLikeType()
-                }
-                
                 return when {
                     expression.isKey == true -> true //key -> ok
                     expression.type == ParadoxDataType.ParameterType -> true //parameter -> ok
+                    expression.type == ParadoxDataType.BooleanType -> true //boolean -> sadly, also ok for compatibility
                     expression.type == ParadoxDataType.IntType -> true //number -> ok according to vanilla game files
                     expression.type == ParadoxDataType.FloatType -> true //number -> ok according to vanilla game files
                     expression.type.isStringType() -> true //unquoted/quoted string -> ok

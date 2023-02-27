@@ -16,6 +16,8 @@ import icu.windea.pls.localisation.psi.*
  */
 class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+		if(!getSettings().completion.completeLocalisationNames) return
+		
 		val element = parameters.position.parent?.parent as? ParadoxLocalisationProperty ?: return
 		//val offsetInParent = parameters.offset - element.textRange.startOffset
 		//val keyword = element.getKeyword(offsetInParent)

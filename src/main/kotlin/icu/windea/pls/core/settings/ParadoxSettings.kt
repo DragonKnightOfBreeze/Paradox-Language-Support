@@ -60,17 +60,20 @@ class ParadoxSettingsState : BaseState() {
 	}
 	
 	/**
+	 * @property completeVariableNames 进行代码补全时，是否需要在效果的子句中提示变量名。
 	 * @property completeWithValue 进行代码补全时，如果可能，将会另外提供提示项，自动插入常量字符串或者花括号。
 	 * @property completeWithClauseTemplate 进行代码补全时，如果可能，将会另外提供提示项，自动插入从句内联模版。
-	 * @property preferCompleteWithClauseTemplate 是否将基于从句内联模版的提示项放到前面。
 	 * @property maxExpressionCountInOneLine 当插入从句内联模版时，当要插入的从句中的属性的个数不超过时，会把所有属性放到同一行。
 	 * @property completeOnlyScopeIsMatched 如果存在，是否仅提供匹配当前作用域的提示项。
 	 */
 	@Tag("completion")
 	class CompletionState : BaseState() {
+		var completeScriptedVariableNames by property(true)
+		var completeDefinitionNames by property(true)
+		var completeLocalisationNames by property(true)
+		var completeVariableNames by property(true)
 		var completeWithValue by property(true)
 		var completeWithClauseTemplate by property(true)
-		var preferCompleteWithClauseTemplate by property(true)
 		var maxExpressionCountInOneLine by property(2)
 		var completeOnlyScopeIsMatched by property(true)
 	}

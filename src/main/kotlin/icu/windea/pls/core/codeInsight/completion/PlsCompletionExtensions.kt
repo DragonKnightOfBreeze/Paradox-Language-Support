@@ -95,8 +95,7 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 			val lookupElement1 = LookupElementBuilder.create("")
 				.withPresentableText(tailText1)
 			addScriptExpressionElementWithClauseTemplate(context, lookupElement1, entryConfigs) {
-				val offset = if(getSettings().completion.preferCompleteWithClauseTemplate) 1.0 else -1.0 
-				withPriority(PlsCompletionPriorities.keywordPriority, offset) //under "{...}"
+				withPriority(PlsCompletionPriorities.keywordPriority) //under "{...}"
 			}
 		}
 	}
@@ -201,8 +200,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 			}
 			val lookupElement1 = lookupElement.withTailText(tailText1)
 			addScriptExpressionElementWithClauseTemplate(context, lookupElement1, entryConfigs) {
-				val offset = if(getSettings().completion.preferCompleteWithClauseTemplate) 1.0 else -1.0
-				withPriority(priority, offset)
+				withPriority(priority)
 			}
 		}
 	}
@@ -281,7 +279,6 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 	callback: LookupElementBuilder.() -> LookupElement = { this }
 ) {
 	//如果补全位置所在的子句为空或者都不精确匹配，显示对话框时默认列出的属性/值应该有数种情况，因此这里需要传入entryConfigs
-	val entryConfig = entryConfigs.firstOrNull() ?: return
 	
 	//目前默认列出并且仅允许选择直接的作为常量字符串的key（不包括通过alias内联的常量字符串）
 	val file = context.originalFile ?: return

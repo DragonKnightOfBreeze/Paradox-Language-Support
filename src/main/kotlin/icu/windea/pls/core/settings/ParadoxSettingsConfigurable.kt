@@ -83,7 +83,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 }
             }
             //documentation
-            group(PlsBundle.message("settings.documentation")) {
+            collapsibleGroup(PlsBundle.message("settings.documentation")) {
                 //renderLineComment
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderLineComment"))
@@ -140,7 +140,27 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 }
             }
             //completion
-            group(PlsBundle.message("settings.completion")) {
+            collapsibleGroup(PlsBundle.message("settings.completion")) {
+                //completeScriptedVariableNames
+                row {
+                    checkBox(PlsBundle.message("settings.completion.completeScriptedVariableNames"))
+                        .bindSelected(settings.completion::completeScriptedVariableNames)
+                }
+                //completeDefinitionNames
+                row {
+                    checkBox(PlsBundle.message("settings.completion.completeDefinitionNames"))
+                        .bindSelected(settings.completion::completeDefinitionNames)
+                }
+                //completeLocalisationNames
+                row {
+                    checkBox(PlsBundle.message("settings.completion.completeLocalisationNames"))
+                        .bindSelected(settings.completion::completeLocalisationNames)
+                }
+                //completeVariableNames
+                row {
+                    checkBox(PlsBundle.message("settings.completion.completeVariableNames"))
+                        .bindSelected(settings.completion::completeVariableNames)
+                }
                 //completeWithValue
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeWithValue"))
@@ -164,21 +184,15 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         intTextField(0..10).bindIntText(settings.completion::maxExpressionCountInOneLine)
                     }
                 }.enabledIf(completeWithClauseTemplateCb.selected)
-                //preferCompleteWithClauseTemplate
-                row {
-                    checkBox(PlsBundle.message("settings.completion.preferCompleteWithClauseTemplate"))
-                        .bindSelected(settings.completion::preferCompleteWithClauseTemplate)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.completion.preferCompleteWithClauseTemplate.tooltip") }
-                }.enabledIf(completeWithClauseTemplateCb.selected)
                 //completeOnlyScopeIsMatched
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeOnlyScopeIsMatched"))
                         .bindSelected(settings.completion::completeOnlyScopeIsMatched)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeOnlyScopeIsMatched.tooltip") }
                 }
-            }
+            }.apply { expanded = true }
             //inference
-            group(PlsBundle.message("settings.inference")) {
+            collapsibleGroup(PlsBundle.message("settings.inference")) {
                 //inlineScriptLocation
                 row {
                     checkBox(PlsBundle.message("settings.inference.inlineScriptLocation"))
@@ -193,9 +207,9 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContext.tooltip") }
                         .onApply { ParadoxModificationTrackerProvider.getInstance().DefinitionScopeContextInference.incModificationCount() }
                 }
-            }
+            }.apply { expanded = true }
             //generation
-            group(PlsBundle.message("settings.generation")) {
+            collapsibleGroup(PlsBundle.message("settings.generation")) {
                 //fileNamePrefix
                 row {
                     label(PlsBundle.message("settings.generation.fileNamePrefix")).applyToComponent {
@@ -203,7 +217,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     }
                     textField().bindText(settings.generation::fileNamePrefix.toNonNullableProperty(""))
                 }
-            }.visible(false) //TODO
+            }.apply { expanded = true }.visible(false) //TODO
         }
     }
     
