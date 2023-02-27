@@ -61,7 +61,9 @@ class ParadoxEventFromOnActionInferredScopeContextProvider: ParadoxInferredScope
                         hasConflict = true
                         return@p false
                     }
-                    scopeContext = sc
+                    val inferred = sc.copy()
+                    inferred.from = inferred.from?.copyAsInferred()
+                    scopeContext = inferred
                 }
             }
             true

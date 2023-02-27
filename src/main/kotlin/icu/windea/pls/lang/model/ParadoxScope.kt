@@ -20,7 +20,7 @@ sealed class ParadoxScope private constructor(val id: String) {
     class Scope(id: String) : ParadoxScope(id)
     class InferredScope(id: String) : ParadoxScope(id) {
         override fun toString(): String {
-            return "$id?"
+            return "$id!"
         }
     }
     

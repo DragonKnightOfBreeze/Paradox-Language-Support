@@ -11,6 +11,7 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope) {
     @Volatile var from: ParadoxScopeContext? = null
     @Volatile var parent: ParadoxScopeContext? = null //scope context before scope switch, not 'prev'
     
+    @Volatile var isInferred: Boolean = false
     //scope context list of scope field expression nodes
     @Volatile var scopeFieldInfo: List<Tuple2<ParadoxScopeExpressionNode, ParadoxScopeContext>>? = null
     
@@ -54,7 +55,7 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope) {
         if(from !== this && from != other.from) return false
         return true
     }
-
+    
     override fun hashCode(): Int {
         return Objects.hash(scope, root, prev, from)
     }
@@ -64,6 +65,15 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope) {
         result.root = root
         result.prev = prev
         result.from = from
+        result.parent = parent
+        return result
+    }
+    
+    fun copyAsInferred(): ParadoxScopeContext {
+        val result = ParadoxScopeContext(ParadoxScope.inferred(scope.id))
+        result.root = if(root === this) result else root?.copyAsInferred()
+        result.prev = if(prev === this) result else prev?.copyAsInferred()
+        result.from = if(from === this) result else from?.copyAsInferred()
         result.parent = parent
         return result
     }

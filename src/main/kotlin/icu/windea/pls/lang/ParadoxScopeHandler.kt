@@ -406,10 +406,10 @@ object ParadoxScopeHandler {
                 if(appendSeparator) appendBr() else appendSeparator = true
                 appendCwtLink(systemLink, "${gameType.id}/system_links/$systemLink", contextElement)
                 append(" = ")
-                if(isFakeScopeId(scope.id)) {
-                    append(scope)
-                } else {
-                    appendCwtLink(scope.id, "${gameType.id}/scopes/$scope", contextElement)
+                when {
+                    isFakeScopeId(scope.id) -> append(scope)
+                    scope is ParadoxScope.InferredScope -> appendCwtLink(scope.id, "${gameType.id}/scopes/${scope.id}", contextElement).append("!") 
+                    else -> appendCwtLink(scope.id, "${gameType.id}/scopes/${scope.id}", contextElement)
                 }
             }
         }

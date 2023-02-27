@@ -91,10 +91,10 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 	}
 	
 	private fun PresentationFactory.scopeLinkPresentation(scope: ParadoxScope, configGroup: CwtConfigGroup): InlayPresentation {
-		return when(scope) {
-			is ParadoxScope.AnyScope, is ParadoxScope.UnknownScope -> smallText(scope.id)
-			is ParadoxScope.Scope -> psiSingleReference(smallText(scope.id)) { getScopeElement(configGroup, scope) }
-			is ParadoxScope.InferredScope -> seq(psiSingleReference(smallText(scope.id)) { getScopeElement(configGroup, scope) }, smallText("?"))
+		return when {
+			ParadoxScopeHandler.isFakeScopeId(scope.id) -> smallText(scope.id)
+			scope is ParadoxScope.InferredScope -> seq(psiSingleReference(smallText(scope.id)) { getScopeElement(configGroup, scope) }, smallText("!"))
+			else -> psiSingleReference(smallText(scope.id)) { getScopeElement(configGroup, scope) }
 		}
 	}
 	
