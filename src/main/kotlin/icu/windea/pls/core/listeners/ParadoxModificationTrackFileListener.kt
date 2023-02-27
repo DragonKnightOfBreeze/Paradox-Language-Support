@@ -2,8 +2,8 @@ package icu.windea.pls.core.listeners
 
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.script.*
 
 /**
@@ -28,25 +28,33 @@ class ParadoxModificationTrackFileListener : AsyncFileListener {
 			private fun onChange(files: MutableSet<VirtualFile>) {
 				//这才是正确的做法，如此简单！
 				var trackScriptFile = true
+				var trackOnAction = true
 				var trackInlineScript = true
 				var trackModifier = true
 				var count = 0
+				val total = 4
 				val provider = ParadoxModificationTrackerProvider.getInstance()
 				for(file in files) {
 					if(file.fileType == ParadoxScriptFileType) {
+						val fileInfo = file.fileInfo ?: continue
+						val filePath = fileInfo.path.path
 						if(trackScriptFile) {
 							trackScriptFile = false
 							count++
 							provider.ScriptFile.incModificationCount()
 						}
-						val isInlineScriptFile = ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null
-						if(isInlineScriptFile) {
+						if(trackOnAction && "common/on_actions".matchesPath(filePath)) {
+							trackOnAction = false
+							count++
+							provider.OnAction.incModificationCount()
+						}
+						if("common/inline_scripts".matchesPath(filePath)) {
 							if(trackInlineScript) {
 								trackInlineScript = false
 								count++
 								provider.InlineScript.incModificationCount()
 							}
-						} else {
+						} else if("common".matchesPath(filePath)) {
 							if(trackModifier) {
 								trackModifier = false
 								count++
@@ -54,7 +62,7 @@ class ParadoxModificationTrackFileListener : AsyncFileListener {
 							}
 						}
 					}
-					if(count == 3) break
+					if(count == total) break
 				}
 			}
 		}

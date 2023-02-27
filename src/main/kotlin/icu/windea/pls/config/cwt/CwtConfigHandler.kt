@@ -471,6 +471,7 @@ object CwtConfigHandler {
     
     private fun matchesScriptExpressionInBlock(block: ParadoxScriptBlock, configsInBlock: List<CwtConfig<*>>, configGroup: CwtConfigGroup): Boolean {
         //简单判断：如果block中包含configsInBlock声明的必须的任意propertyKey（作为常量字符串，忽略大小写），则认为匹配
+        //TODO 不同的子句规则可以拥有部分相同的propertyKey
         val propertyKeys = caseInsensitiveStringSet()
         configsInBlock.forEach {
             if(it is CwtPropertyConfig && it.keyExpression.type == CwtDataType.Constant && it.cardinality.isRequired()) {

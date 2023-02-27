@@ -27,12 +27,12 @@ object ParadoxCwtConfigHandler {
 	
 	@JvmStatic
 	fun getPropertyConfigs(element: PsiElement, allowDefinition: Boolean = false, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtPropertyConfig> {
-		return resolveConfigs(element, CwtPropertyConfig::class.java, allowDefinition, orDefault, matchType)
+		return getConfigsFromCache(element, CwtPropertyConfig::class.java, allowDefinition, orDefault, matchType)
 	}
 	
 	@JvmStatic
 	fun getValueConfigs(element: PsiElement, allowDefinition: Boolean = true, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtValueConfig> {
-		return resolveConfigs(element, CwtValueConfig::class.java, allowDefinition, orDefault, matchType)
+		return getConfigsFromCache(element, CwtValueConfig::class.java, allowDefinition, orDefault, matchType)
 	}
 	
 	private fun <T: CwtConfig<*>> getConfigsFromCache(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {

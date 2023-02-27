@@ -27,5 +27,7 @@
     
     <modifierSupport implementation="icu.windea.pls.lang.support.ParadoxTemplateModifierSupport"/>
     <modifierSupport implementation="icu.windea.pls.lang.support.ParadoxEconomicCategoryModifierSupport"/>
+    
+    <inferredScopeContextProvider implementation="icu.windea.pls.lang.provider.ParadoxEventFromOnActionInferredScopeContextProvider"/>
   </extensions>
 </idea-plugin>

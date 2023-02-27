@@ -70,7 +70,7 @@ object ParadoxScopeHandler {
         if(thisScope == unknownScopeId) return true
         if(thisScope == scopeToMatch) return true
         val scopeConfig = configGroup.scopeAliasMap[thisScope]
-        if(scopeConfig != null) return scopeConfig.aliases.any { it == scopeToMatch }
+        if(scopeConfig != null && scopeConfig.aliases.any { it == scopeToMatch }) return true
         return false
     }
     
@@ -93,8 +93,12 @@ object ParadoxScopeHandler {
         if(thisScope == null) return true
         if(thisScope == anyScopeId) return true
         if(thisScope == unknownScopeId) return true
-        val scopeGroupConfig = configGroup.scopeGroups[scopeGroupToMatch]
-        if(scopeGroupConfig != null) return scopeGroupConfig.values.any { thisScope == it }
+        val scopeGroupConfig = configGroup.scopeGroups[scopeGroupToMatch] ?: return false
+        for(scopeToMatch in scopeGroupConfig.values) {
+            if(thisScope == scopeToMatch) return true
+            val scopeConfig = configGroup.scopeAliasMap[thisScope]
+            if(scopeConfig != null && scopeConfig.aliases.any { it == scopeToMatch }) return true
+        }
         return false //cwt config error
     }
     
@@ -312,7 +316,7 @@ object ParadoxScopeHandler {
             }
             is ParadoxSystemLinkExpressionNode -> {
                 resolveScopeContextBySystemLinkNode(scopeNode, inputScopeContext)
-                    ?: resolveUnknownScopeContext(inputScopeContext)
+                    ?: resolveUnknownScopeContext(inputScopeContext, scopeNode.config.baseId.equals("from", true))
             }
             //error
             is ParadoxErrorScopeExpressionNode -> resolveUnknownScopeContext(inputScopeContext)
@@ -374,8 +378,14 @@ object ParadoxScopeHandler {
     }
     
     @JvmStatic
-    fun resolveUnknownScopeContext(inputScopeContext: ParadoxScopeContext? = null): ParadoxScopeContext {
-        return inputScopeContext?.resolve(unknownScopeId) ?: ParadoxScopeContext.resolve(unknownScopeId)
+    fun resolveUnknownScopeContext(inputScopeContext: ParadoxScopeContext? = null, from: Boolean = false): ParadoxScopeContext {
+        if(inputScopeContext == null) return ParadoxScopeContext.resolve(unknownScopeId)
+        val resolved = inputScopeContext.resolve(unknownScopeId)
+        if(from) {
+            resolved.root = null
+            resolved.prev = null
+        }
+        return resolved
     }
     
     @JvmStatic

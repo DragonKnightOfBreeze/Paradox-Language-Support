@@ -1,16 +1,19 @@
 package icu.windea.pls.script.inspections.general
 
-import com.intellij.codeInsight.highlighting.*
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
+import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.search.scopes.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 import javax.swing.*
@@ -21,13 +24,17 @@ import javax.swing.*
  * 例如，有`set_flag = xxx`但没有`has_flag = xxx`。
  */
 class UnusedValueSetValueInspection : LocalInspectionTool() {
-	//may be slow for ReferencesSearch
-	
 	companion object {
 		private val statusMapKey = Key.create<MutableMap<ParadoxValueSetValueElement, Boolean>>("paradox.statusMap")
 	}
 	
 	@JvmField var ignoreDefinitionNames = true
+	
+	//may be slow for ReferencesSearch
+	
+	override fun runForWholeFile(): Boolean {
+		return true
+	}
 	
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
 		session.putUserData(statusMapKey, ConcurrentHashMap())
@@ -45,8 +52,8 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 				//may only resolve to single ParadoxValueSetValueElement (set-flag expression)
 				val reference = element.reference ?: return
 				if(!reference.canResolveValueSetValue()) return
-				
 				val resolved = reference.resolve()
+				ProgressManager.checkCanceled()
 				if(resolved !is ParadoxValueSetValueElement) return
 				if(resolved.readWriteAccess == Access.Write) {
 					//当确定同一文件中某一名称的参数已被使用时，后续不需要再进行ReferencesSearch
@@ -54,7 +61,10 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 					val used = statusMap[resolved]
 					val isUsed = if(used == null) {
 						ProgressManager.checkCanceled()
-						val r = ReferencesSearch.search(resolved).processQuery {
+						//optimize search scope
+						val searchScope = GlobalSearchScope.allScope(PsiUtilCore.getProjectInReadAction(element))
+							.withFileType(ParadoxScriptFileType)
+						val r = ReferencesSearch.search(resolved, searchScope).processQuery {
 							ProgressManager.checkCanceled()
 							val res = it.resolveFast()
 							ProgressManager.checkCanceled()

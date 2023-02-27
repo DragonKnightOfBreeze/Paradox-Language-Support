@@ -2,6 +2,7 @@ package icu.windea.pls.lang.model
 
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.nodes.*
+import icu.windea.pls.lang.*
 import java.util.*
 
 class ParadoxScopeContext private constructor(val scope: ParadoxScope) {
@@ -80,6 +81,10 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope) {
     
     fun resolve(scopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val result = scopeContext.copy()
+        if(result.scope.id == ParadoxScopeHandler.unknownScopeId) {
+            result.root = null
+            result.prev = null
+        }
         result.parent = this
         return result
     }

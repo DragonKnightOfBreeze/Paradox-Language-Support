@@ -76,7 +76,7 @@ fun PsiReference.canResolveParameter(): Boolean {
         is ParadoxParameterPsiReference -> true
         is ParadoxArgumentPsiReference -> true
         is ParadoxScriptValueParameterExpressionNode.Reference -> true
-        is ParadoxLocalisationProperty -> true //can, but not supported yet
+        //is ParadoxLocalisationProperty -> true //can, but not supported yet
         else -> false
     }
 }

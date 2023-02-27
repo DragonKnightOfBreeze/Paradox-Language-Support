@@ -14,6 +14,7 @@ class ParadoxModificationTrackerProvider {
     //其实可以区分游戏类型，但是一般情况下不需要这么做
     
     val ScriptFile = SimpleModificationTracker()
+    val OnAction = SimpleModificationTracker()
     val InlineScript = SimpleModificationTracker()
     val Modifier = SimpleModificationTracker()
     
