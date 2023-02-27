@@ -70,14 +70,14 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
 			if(memberElement != null && ParadoxScopeHandler.isScopeContextSupported(memberElement)) {
 				val scopeContext = ParadoxScopeHandler.getScopeContext(memberElement)
 				if(scopeContext != null) {
-					val text = scopeContext.map.entries.joinToString("\n") { (key, value) -> "$key = $value" }
+					val text = scopeContext.detailMap.entries.joinToString("\n") { (key, value) -> "$key = $value" }
 					add(makeHtmlRow(PlsDocBundle.message("title.scopeContext"), text))
 				}
 			}
 			if(element is ParadoxLocalisationCommandIdentifier) {
 				val scopeContext = ParadoxScopeHandler.getScopeContext(element)
 				if(scopeContext != null) {
-					val text = scopeContext.map.entries.joinToString("\n") { (key, value) -> "$key = $value" }
+					val text = scopeContext.detailMap.entries.joinToString("\n") { (key, value) -> "$key = $value" }
 					add(makeHtmlRow(PlsDocBundle.message("title.scopeContext"), text))
 				}
 			}

@@ -60,7 +60,7 @@ object ParadoxScopeHandler {
 	
 	@JvmStatic
 	fun matchesScope(scopeContext: ParadoxScopeContext?, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {
-		val thisScope = scopeContext?.thisScope
+		val thisScope = scopeContext?.scopeId
 		if(thisScope == null) return true
 		if(scopeToMatch == anyScopeId) return true
 		if(thisScope == anyScopeId) return true
@@ -73,7 +73,7 @@ object ParadoxScopeHandler {
 	
 	@JvmStatic
 	fun matchesScope(scopeContext: ParadoxScopeContext?, scopesToMatch: Set<String>?, configGroup: CwtConfigGroup): Boolean {
-		val thisScope = scopeContext?.thisScope
+		val thisScope = scopeContext?.scopeId
 		if(thisScope == null) return true
 		if(scopesToMatch == null || scopesToMatch.isEmpty() || scopesToMatch == anyScopeIdSet) return true
 		if(thisScope == anyScopeId) return true
@@ -86,7 +86,7 @@ object ParadoxScopeHandler {
 	
 	@JvmStatic
 	fun matchesScopeGroup(scopeContext: ParadoxScopeContext?, scopeGroupToMatch: String, configGroup: CwtConfigGroup): Boolean {
-		val thisScope = scopeContext?.thisScope
+		val thisScope = scopeContext?.scopeId
 		if(thisScope == null) return true
 		if(thisScope == anyScopeId) return true
 		if(thisScope == unknownScopeId) return true
@@ -250,7 +250,7 @@ object ParadoxScopeHandler {
 							if(config.outputScope == null) {
 								return resolveAnyScopeContext()
 							}
-							return ParadoxScopeContext.resolve(config.outputScope)
+							return ParadoxScopeContext.resolve(config.outputScope, anyScopeId)
 						}
 						return prevScopeContext.resolve(config.outputScope)
 					}
@@ -351,7 +351,7 @@ object ParadoxScopeHandler {
 			id == "From" -> inputScopeContext.from
 			id == "FromFrom" -> inputScopeContext.from?.from
 			id == "FromFromFrom" -> inputScopeContext.from?.from?.from
-			id == "FromFromFromFrom" -> inputScopeContext.from?.from?.from
+			id == "FromFromFromFrom" -> inputScopeContext.from?.from?.from?.from
 			else -> null
 		} ?: return null
 		return inputScopeContext.resolve(systemLinkContext)

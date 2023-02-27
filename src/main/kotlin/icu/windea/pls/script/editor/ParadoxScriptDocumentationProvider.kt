@@ -304,7 +304,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         val gameType = definitionInfo.gameType
         val scopeContextText = buildString {
             var appendSeparator = false
-            scopeContext.map.forEach { (systemLink, scope) ->
+            scopeContext.detailMap.forEach { (systemLink, scope) ->
                 if(appendSeparator) appendBr() else appendSeparator = true
                 appendCwtLink(systemLink, "${gameType.id}/system_links/$systemLink", contextElement)
                 append(" = ")

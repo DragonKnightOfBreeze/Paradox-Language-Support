@@ -41,7 +41,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                             val configGroup = config.info.configGroup
                             if(!ParadoxScopeHandler.matchesScope(parentScopeContext, inputScopes, configGroup)) {
                                 val description = PlsBundle.message("inspection.script.scope.incorrectScopeSwitch.description.1",
-                                    scopeNode.text, inputScopes.joinToString(), parentScopeContext.thisScope)
+                                    scopeNode.text, inputScopes.joinToString(), parentScopeContext.scopeId)
                                 holder.registerProblem(propertyKey, rangeInExpression, description)
                             }
                         }
@@ -53,7 +53,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                         //check when root parent scope context is not from event, scripted_trigger or scripted_effect
                         is ParadoxSystemLinkExpressionNode -> {
                             if(!checkForSystemLink) continue
-                            if(scopeContext.thisScope == ParadoxScopeHandler.unknownScopeId) {
+                            if(scopeContext.scopeId == ParadoxScopeHandler.unknownScopeId) {
                                 val definitionType = definitionInfo?.type ?: continue
                                 if(config.info.configGroup.definitionTypesSkipCheckSystemLink.contains(definitionType)) continue
                                 val description = PlsBundle.message("inspection.script.scope.incorrectScopeSwitch.description.3",
