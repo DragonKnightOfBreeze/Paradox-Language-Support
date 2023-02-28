@@ -74,6 +74,7 @@
   * [X] 在`alias_name[effect]`匹配的子句中可以配置直接提示变量名（与后缀补全配套使用，直接输入并不合法）
 * 功能优化 - CWT规则支持
   * [X] 添加扩展的CWT规则类型`$shader_effect`，对应`.shader`文件中的effect，暂时作为一般的字符串处理
+  * [ ] 由基于`on_actions.csv`获取`on_action`的事件类型、作用域上下文、文档等信息之外，改为基于`on_actions.cwt`获取
 
 ## 0.8.2
 
