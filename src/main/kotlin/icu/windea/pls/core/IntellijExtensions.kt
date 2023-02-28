@@ -42,10 +42,12 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
+import it.unimi.dsi.fastutil.*
 import it.unimi.dsi.fastutil.objects.*
 import java.io.*
 import java.nio.file.*
 import java.util.*
+import java.util.Arrays
 import javax.swing.*
 import javax.swing.text.*
 import kotlin.reflect.*
@@ -59,16 +61,24 @@ fun String.unquotedTextRange(): TextRange {
 	return TextRange.create(startOffset, endOffset)
 }
 
-@Suppress("UnstableApiUsage")
-fun caseInsensitiveStringSet(): MutableSet<@CaseInsensitive String> {
-	//com.intellij.util.containers.CollectionFactory.createCaseInsensitiveStringSet()
-	return ObjectLinkedOpenCustomHashSet(FastUtilHashingStrategies.getCaseInsensitiveStringStrategy())
+object CaseInsensitiveStringHashingStrategy : Hash.Strategy<String?> {
+	override fun hashCode(s: String?): Int {
+		return if(s == null) 0 else StringUtilRt.stringHashCodeInsensitive(s)
+	}
+	
+	override fun equals(s1: String?, s2: String?): Boolean {
+		return s1 === s2 || s1 != null && s1.equals(s2, ignoreCase = true)
+	}
 }
 
-@Suppress("UnstableApiUsage")
+fun caseInsensitiveStringSet(): MutableSet<@CaseInsensitive String> {
+	//com.intellij.util.containers.CollectionFactory.createCaseInsensitiveStringSet()
+	return ObjectLinkedOpenCustomHashSet(CaseInsensitiveStringHashingStrategy)
+}
+
 fun <V> caseInsensitiveStringKeyMap(): MutableMap<@CaseInsensitive String, V> {
 	//com.intellij.util.containers.createCaseInsensitiveStringMap()
-	return Object2ObjectLinkedOpenCustomHashMap(FastUtilHashingStrategies.getCaseInsensitiveStringStrategy())
+	return Object2ObjectLinkedOpenCustomHashMap(CaseInsensitiveStringHashingStrategy)
 }
 //endregion
 

@@ -10,7 +10,7 @@
 
   <depends>com.intellij.modules.lang</depends>
   <depends>com.intellij.platform.images</depends>
-  <depends optional="true" config-file="diagrams.xml">com.intellij.diagram</depends>
+  <depends optional="true" config-file="icu-windea.pls-diagram.xml">com.intellij.diagram</depends>
   <depends optional="true" config-file="icu.windea.pls-translation.xml">cn.yiiguxing.plugin.translate</depends>
   
   <resource-bundle>messages.PlsBundle</resource-bundle>

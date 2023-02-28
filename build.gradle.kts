@@ -17,8 +17,11 @@ intellij {
 	type.set("IU")
 	version.set("2022.3.2")
 	plugins.add("com.intellij.platform.images")
+	
+	//optional
 	plugins.add("com.intellij.diagram")
-	plugins.add("cn.yiiguxing.plugin.translate:3.4.0") //https://github.com/YiiGuxing/TranslationPlugin
+	//optional
+	plugins.add("cn.yiiguxing.plugin.translate:3.4.1") //https://github.com/YiiGuxing/TranslationPlugin
 	
 	//reference
 	plugins.add("markdown")
