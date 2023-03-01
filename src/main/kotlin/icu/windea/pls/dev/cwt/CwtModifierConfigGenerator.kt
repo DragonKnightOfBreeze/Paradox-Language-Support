@@ -1,4 +1,4 @@
-package icu.windea.pls.dev.cwt.generator
+package icu.windea.pls.dev.cwt
 
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*

@@ -1,6 +1,5 @@
-package icu.windea.pls.tool.cwt
+package icu.windea.pls.dev.cwt
 
-import icu.windea.pls.dev.cwt.generator.*
 import icu.windea.pls.lang.model.*
 import org.junit.*
 
