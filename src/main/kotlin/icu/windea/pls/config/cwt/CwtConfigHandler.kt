@@ -158,6 +158,38 @@ object CwtConfigHandler {
             }
         }
     }
+    
+    val inBlockKeysKey = Key.create<Set<String>>("cwt.config.inBlockKeys")
+    
+    fun getInBlockKeys(config: CwtDataConfig<*>): Set<String> {
+        return config.getOrPutUserData(inBlockKeysKey) {
+            val keys = caseInsensitiveStringSet()
+            config.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.add(it.key) }
+            when(config) {
+                is CwtPropertyConfig -> {
+                    val propertyConfig = config
+                    propertyConfig.parent?.configs?.forEach { c ->
+                        if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c !== propertyConfig) {
+                            c.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
+                        }
+                    }
+                }
+                is CwtValueConfig -> {
+                    val propertyConfig = config.propertyConfig
+                    propertyConfig?.parent?.configs?.forEach { c ->
+                        if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c !== propertyConfig) {
+                            c.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
+                        }
+                    }
+                }
+            }
+            return keys
+        }
+    }
+    
+    private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
+        return config.keyExpression.type == CwtDataType.Constant && config.cardinality.isRequired()
+    }
     //endregion
     
     //region Matches Methods
@@ -192,8 +224,8 @@ object CwtConfigHandler {
                     element is ParadoxScriptBlock -> element
                     else -> null
                 } ?: return false
-                val configsInBlock = config?.castOrNull<CwtDataConfig<*>>()?.configs ?: return true
-                return matchesScriptExpressionInBlock(block, configsInBlock, configGroup)
+                if(config !is CwtDataConfig) return true
+                return matchesScriptExpressionInBlock(block, config, configGroup)
             }
             CwtDataType.Bool -> {
                 return expression.type.isBooleanType()
@@ -460,15 +492,10 @@ object CwtConfigHandler {
         }
     }
     
-    private fun matchesScriptExpressionInBlock(block: ParadoxScriptBlock, configsInBlock: List<CwtConfig<*>>, configGroup: CwtConfigGroup): Boolean {
+    private fun matchesScriptExpressionInBlock(block: ParadoxScriptBlock, config: CwtDataConfig<*>, configGroup: CwtConfigGroup): Boolean {
         //简单判断：如果block中包含configsInBlock声明的必须的任意propertyKey（作为常量字符串，忽略大小写），则认为匹配
-        //TODO 不同的子句规则可以拥有部分相同的propertyKey
-        val propertyKeys = caseInsensitiveStringSet()
-        configsInBlock.forEach {
-            if(it is CwtPropertyConfig && it.keyExpression.type == CwtDataType.Constant && it.cardinality.isRequired()) {
-                propertyKeys.add(it.key)
-            }
-        }
+        //注意：不同的子句规则可以拥有部分相同的propertyKey
+        val propertyKeys = getInBlockKeys(config)
         var result = false
         block.processData(conditional = true, inline = true) {
             if(it is ParadoxScriptProperty && it.name in propertyKeys) {
