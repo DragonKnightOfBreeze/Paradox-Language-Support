@@ -18,6 +18,8 @@
 * BUG修复
   * [ ] 基本修复：[Support for HoI4 is almost completely broken #10](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/10)
 * 功能优化
+  * [ ] 将获取作用域上下文的代码提取成扩展点
+  * [ ] 改为基于语言注入功能（`Language Injection`）支持脚本文件中的各种复杂表达式以及本地化命令表达式
   * [ ] 对任何带有作用域上下文的声明或使用（也包括CWT规则），统一提示作用域上下文
   * [ ] 更加完善的DIFF支持 - 比较时也显示内联提示，比较定义和本地化时也提供高级语言功能（低层实现：创建临时文件并进行比较）
   * [ ] 在判断子类型时兼容`category = <deposit_category.blocker>`这样的表达式（这意味着进行索引时需要使用索引后的数据，IDEA似乎无法实现？）
@@ -72,10 +74,10 @@
   * [X] 优化作用域上下文的解析逻辑，在快速文档和类型信息中也显示prev系列作用域
   * [X] 在进行代码提示时就预测并提示作用域上下文
   * [X] 基于事件的调用处（on_action）推断事件的作用域上下文，如果存在冲突，则转而给出警告（默认不启用）
-  * [X] 在`alias_name[effect]`匹配的子句中可以配置直接提示变量名（与后缀补全配套使用，直接输入并不合法）
+  * [X] 在`alias_name[effect]`匹配的子句中可以配置直接提示变量名（与后缀补全配套使用，直接输入并不合法，默认启用）
 * 功能优化 - CWT规则支持
   * [X] 添加扩展的CWT规则类型`$shader_effect`，对应`.shader`文件中的effect，暂时作为一般的字符串处理
-  * [ ] 由基于`on_actions.csv`获取`on_action`的事件类型、作用域上下文、文档等信息之外，改为基于`on_actions.cwt`获取
+  * [X] 由基于`on_actions.csv`获取`on_action`的事件类型、作用域上下文、文档等信息，改为基于`on_actions.cwt`获取
 
 ## 0.8.2
 

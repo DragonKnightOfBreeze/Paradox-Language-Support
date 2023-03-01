@@ -19,7 +19,7 @@ import icu.windea.pls.script.references.*
 class ParadoxEventFromOnActionInferredScopeContextProvider: ParadoxInferredScopeContextProvider {
     override val type: ParadoxInferredScopeContextProvider.Type = ParadoxInferredScopeContextProvider.Type.Definition
     
-    override fun infer(contextElement: PsiElement): ParadoxScopeContextInferenceInfo? {
+    override fun getScopeContext(contextElement: PsiElement): ParadoxScopeContextInferenceInfo? {
         if(!getSettings().inference.eventScopeContext) return null
         if(contextElement !is ParadoxScriptProperty) return null
         ProgressManager.checkCanceled()

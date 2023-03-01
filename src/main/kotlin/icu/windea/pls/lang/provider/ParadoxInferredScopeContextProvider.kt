@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.lang.model.*
 
 /**
- * 用于支持推断的作用域上下文。
+ * 用于提供推断的作用域上下文。
  */
 interface ParadoxInferredScopeContextProvider {
     enum class Type {
@@ -19,9 +19,9 @@ interface ParadoxInferredScopeContextProvider {
     /**
      * 推断作用域。
      * @param contextElement 上下文PSI元素。
-     * @return 推断得到的所有可能的作用域上下文。如果为空则表示无法推断。
+     * @return 推断得到的作用域上下文信息。
      */
-    fun infer(contextElement: PsiElement): ParadoxScopeContextInferenceInfo?
+    fun getScopeContext(contextElement: PsiElement): ParadoxScopeContextInferenceInfo?
     
     /**
      * 当推断结果不存在冲突时要显示的消息。
@@ -40,7 +40,7 @@ interface ParadoxInferredScopeContextProvider {
         fun inferForDefinition(contextElement: PsiElement): ParadoxScopeContextInferenceInfo? {
             for(extension in EP_NAME.extensions) {
                 if(extension.type == Type.Definition) {
-                    val info = extension.infer(contextElement)
+                    val info = extension.getScopeContext(contextElement)
                     if(info != null) return info
                 }
             }
@@ -51,7 +51,7 @@ interface ParadoxInferredScopeContextProvider {
         fun getErrorMessageForDefinition(contextElement: PsiElement): String? {
             for(extension in EP_NAME.extensions) {
                 if(extension.type == Type.Definition) {
-                    val info = extension.infer(contextElement)
+                    val info = extension.getScopeContext(contextElement)
                     if(info != null && info.hasConflict) return extension.getErrorMessage(contextElement, info)
                 }
             }
@@ -62,7 +62,7 @@ interface ParadoxInferredScopeContextProvider {
         fun getMessageForDefinition(contextElement: PsiElement): String? {
             for(extension in EP_NAME.extensions) {
                 if(extension.type == Type.Definition) {
-                    val info = extension.infer(contextElement)
+                    val info = extension.getScopeContext(contextElement)
                     if(info != null && info.hasConflict) return extension.getMessage(contextElement, info)
                 }
             }
