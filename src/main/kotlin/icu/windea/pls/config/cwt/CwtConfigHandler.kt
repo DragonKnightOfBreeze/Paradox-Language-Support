@@ -747,7 +747,10 @@ object CwtConfigHandler {
             }
             val config = when {
                 typeToUse == null -> null
-                else -> configGroup.declarations[typeToUse]?.getMergedConfig(context.contextElement, null, subtypesToUse)
+                else -> {
+                    val configContext = CwtConfigContext(context.contextElement, null, typeToUse, subtypesToUse, configGroup)
+                    configGroup.declarations[typeToUse]?.getMergedConfig(configContext)
+                }
             }
             val element = config?.pointer?.element
             val icon = if(config != null) PlsIcons.Definition else PlsIcons.Property

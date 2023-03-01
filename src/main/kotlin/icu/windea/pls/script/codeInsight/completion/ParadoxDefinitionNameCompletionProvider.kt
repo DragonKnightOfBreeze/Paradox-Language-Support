@@ -62,14 +62,14 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				val gameType = fileInfo.rootInfo.gameType
 				val configGroup = getCwtConfig(project).getValue(gameType)
 				val path = fileInfo.entryPath //这里使用entryPath
-				val definitionElement = element.findParentProperty() ?: return
 				val elementPath = ParadoxElementPathHandler.getFromFile(element, PlsConstants.maxDefinitionDepth) ?: return
 				for(typeConfig in configGroup.types.values) {
 					if(typeConfig.nameField != null) continue
 					if(ParadoxDefinitionHandler.matchesTypeWithUnknownDeclaration(typeConfig, path, elementPath, null)) {
 						val type = typeConfig.name
 						//需要考虑不指定子类型的情况
-						val config = configGroup.declarations[type]?.getMergedConfig(element, null, null) ?: continue
+						val configContext = CwtConfigContext(element, null, type, null, configGroup)
+						val config = configGroup.declarations[type]?.getMergedConfig(configContext) ?: continue
 						doAddCompletions(type, config, true, element, null)
 					}
 				}

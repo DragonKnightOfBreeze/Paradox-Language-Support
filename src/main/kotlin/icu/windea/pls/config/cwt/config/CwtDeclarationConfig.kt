@@ -3,6 +3,7 @@ package icu.windea.pls.config.cwt.config
 import com.google.common.cache.*
 import com.intellij.psi.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.expression.replacer.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
@@ -19,14 +20,13 @@ data class CwtDeclarationConfig(
     /**
      * 得到根据子类型列表进行合并后的配置。
      */
-    fun getMergedConfig(contextElement: PsiElement, name: String?, subtypes: List<String>?): CwtPropertyConfig {
+    fun getMergedConfig(configContext: CwtConfigContext): CwtPropertyConfig {
         //定义的值不为代码块的情况
         if(!propertyConfig.isBlock) return propertyConfig
         
-        val type = this.name
-        val configGroup = info.configGroup
+        val (_, name, type, subtypes) = configContext
         val cacheKey = buildString {
-            if(CwtConfigExpressionHandler.shouldHandle(contextElement, name, type, subtypes, configGroup)) {
+            if(CwtConfigExpressionReplacer.shouldReplace(configContext)) {
                 append(name).append(" ")
             }
             append(type).append(" ")
@@ -38,7 +38,7 @@ data class CwtDeclarationConfig(
         }
         return mergedConfigCache.getOrPut(cacheKey) {
             propertyConfig.copy(
-                configs = propertyConfig.configs?.flatMap { it.deepMergeConfigs(contextElement, name, type, subtypes, configGroup) }
+                configs = propertyConfig.configs?.flatMap { it.deepMergeConfigs(configContext) }
             )
         }
     }

@@ -1,14 +1,16 @@
 <idea-plugin>
   <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.configExpressionReplacer" interface="icu.windea.pls.config.cwt.expression.replacer.CwtConfigExpressionReplacer" dynamic="true"/>
+    
     <extensionPoint qualifiedName="icu.windea.pls.pathReferenceExpression" interface="icu.windea.pls.lang.expression.ParadoxPathReferenceExpression" dynamic="true"/>
-    
     <extensionPoint qualifiedName="icu.windea.pls.scriptMemberElementInlineSupport" interface="icu.windea.pls.lang.support.ParadoxScriptMemberElementInlineSupport" dynamic="true"/>
-    
     <extensionPoint qualifiedName="icu.windea.pls.colorSupport" interface="icu.windea.pls.lang.support.ParadoxColorSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.parameterSupport" interface="icu.windea.pls.lang.support.ParadoxParameterSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modifierSupport" interface="icu.windea.pls.lang.support.ParadoxModifierSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.inferredScopeContextProvider" interface="icu.windea.pls.lang.provider.ParadoxInferredScopeContextProvider" dynamic="true"/>
     
-    <extensionPoint qualifiedName="icu.windea.pls.inferredScopeContextProvider" interface="icu.windea.pls.lang.provider.ParadoxInferredScopeContextProvider"/>
+    <extensionPoint qualifiedName="icu.windea.pls.modImporter" interface="icu.windea.pls.core.tool.importer.ParadoxModImporter" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.modExporter" interface="icu.windea.pls.core.tool.exporter.ParadoxModExporter" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
@@ -29,5 +31,13 @@
     <modifierSupport implementation="icu.windea.pls.lang.support.ParadoxEconomicCategoryModifierSupport"/>
     
     <inferredScopeContextProvider implementation="icu.windea.pls.lang.provider.ParadoxEventFromOnActionInferredScopeContextProvider"/>
+    
+    <modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromGameImporter"/>
+    <!--<modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherImporter"/>-->
+    <!--<modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherBetaImporter"/>-->
+    <modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherJsonV3Importer"/>
+
+    <modExporter implementation="icu.windea.pls.core.tool.exporter.ParadoxToLauncherJsonV2Exporter"/>
+    <modExporter implementation="icu.windea.pls.core.tool.exporter.ParadoxToLauncherJsonV3Exporter"/>
   </extensions>
 </idea-plugin>

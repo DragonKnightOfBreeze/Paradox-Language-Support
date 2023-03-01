@@ -7,6 +7,7 @@ import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.cwt.expression.CwtDataType.*
+import icu.windea.pls.config.cwt.expression.replacer.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
@@ -52,10 +53,10 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 	/**
 	 * 深拷贝 + 根据定义的名字、类型、子类型进行合并。
 	 */
-	fun deepMergeConfigs(contextElement: PsiElement, name: String?, type: String, subtypes: List<String>?, configGroup: CwtConfigGroup): List<CwtDataConfig<*>> {
+	fun deepMergeConfigs(configContext: CwtConfigContext): List<CwtDataConfig<*>> {
 		val mergedConfigs: MutableList<CwtDataConfig<*>>? = if(configs != null) SmartList() else null
 		configs?.forEach { config ->
-			val childConfigList = config.deepMergeConfigs(contextElement, name, type, subtypes, configGroup)
+			val childConfigList = config.deepMergeConfigs(configContext)
 			if(childConfigList.isNotEmpty()) {
 				for(childConfig in childConfigList) {
 					mergedConfigs?.add(childConfig)
@@ -64,18 +65,18 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 		}
 		when(this) {
 			is CwtValueConfig -> {
-				val valueExpression = CwtConfigExpressionHandler.handle(contextElement, value, name, type, subtypes, configGroup)
+				val valueExpression = CwtConfigExpressionReplacer.doReplace(value, configContext) ?: value
 				val mergedConfig = copy(value = valueExpression, configs = mergedConfigs)
 				return mergedConfig.also { parent = it.parent }.toSingletonList()
 			}
 			is CwtPropertyConfig -> {
 				val subtypeName = key.removeSurroundingOrNull("subtype[", "]")
 				if(subtypeName == null) {
-					val keyExpression = CwtConfigExpressionHandler.handle(contextElement, key, name, type, subtypes, configGroup)
-					val valueExpression = CwtConfigExpressionHandler.handle(contextElement, value, name, type, subtypes, configGroup)
+					val keyExpression = CwtConfigExpressionReplacer.doReplace(key, configContext) ?: key
+					val valueExpression = CwtConfigExpressionReplacer.doReplace(value, configContext) ?: value
 					val mergedConfig = copy(key = keyExpression, value = valueExpression, configs = mergedConfigs)
 					return mergedConfig.also { parent = it.parent }.toSingletonList()
-				} else if(matchesDefinitionSubtypeExpression(subtypeName, subtypes)) {
+				} else if(matchesDefinitionSubtypeExpression(subtypeName, configContext.definitionSubtypes)) {
 					return mergedConfigs.orEmpty()
 				} else {
 					return emptyList()
