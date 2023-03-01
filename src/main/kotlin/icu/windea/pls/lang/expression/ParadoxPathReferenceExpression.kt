@@ -15,8 +15,6 @@ import icu.windea.pls.core.search.*
 interface ParadoxPathReferenceExpression {
     fun supports(configExpression: CwtDataExpression): Boolean
     
-    //TODO 匹配方法传入完整的ParadoxFilePathSearch.SearchParameters
-    
     /**
      * 判断是否可以直接匹配完整的文件路径。即路径引用表达式等同于文件路径。
      */

@@ -12,6 +12,7 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.support.*
 import icu.windea.pls.script.psi.*
@@ -342,34 +343,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     }
     
     private fun StringBuilder.buildDocumentationContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-        //尝试从类型规则或者子类型规则得到文档文本
-        definitionInfo.typeConfig.let {
-            val documentation = it.config.documentation?.takeIfNotEmpty()
+        ParadoxDefinitionExtendedDocumentationProvider.EP_NAME.extensionList.forEach { 
+            val documentation = it.getDocumentation(element, definitionInfo)?.takeIfNotEmpty()
             if(documentation != null) {
                 content { append(documentation) }
             }
-        }
-        definitionInfo.subtypeConfigs.forEach {
-            val documentation = it.config.documentation?.takeIfNotEmpty()
-            if(documentation != null) {
-                content { append(documentation) }
-            }
-        }
-        
-        //如果是on_action，加上从on_actions.csv中得到的文档文本（comment）
-        if(definitionInfo.type == "on_action") {
-            val config = definitionInfo.configGroup.onActions.getByTemplate(definitionInfo.name, element, definitionInfo.configGroup)
-            val comment = config?.config?.documentation?.takeIfNotEmpty()
-            if(comment != null) {
-                content { append(comment) }
-            }
-        }
-        
-        //加上扩展的文档文本
-        val documentation = PlsDocumentationBundle.message(definitionInfo.name, definitionInfo.type, definitionInfo.gameType)
-            ?.takeIfNotEmpty()
-        if(documentation != null) {
-            content { append(documentation) }
         }
     }
     
