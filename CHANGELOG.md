@@ -19,6 +19,7 @@
   * [ ] 基本修复：[Support for HoI4 is almost completely broken #10](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/10)
 * 功能优化
   * [ ] 将获取作用域上下文的代码提取成扩展点
+  * [ ] 有些地方获取的作用域是可能的（`from = country?`）
   * [ ] 改为基于语言注入功能（`Language Injection`）支持脚本文件中的各种复杂表达式以及本地化命令表达式
   * [ ] 对任何带有作用域上下文的声明或使用（也包括CWT规则），统一提示作用域上下文
   * [ ] 更加完善的DIFF支持 - 比较时也显示内联提示，比较定义和本地化时也提供高级语言功能（低层实现：创建临时文件并进行比较）

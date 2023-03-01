@@ -417,7 +417,7 @@ class CwtConfigGroupImpl(
 					}
 				}
 				//找到配置文件中的顶级的key为"modifier_categories"的属性，然后解析它的子属性，添加到modifierCategories中
-				fileConfig.key == "modifier_categories" && key == "modifier_categories" -> {
+				key == "modifier_categories" -> {
 					val props = property.properties ?: continue
 					for(prop in props) {
 						val modifierCategoryName = prop.key
@@ -426,7 +426,7 @@ class CwtConfigGroupImpl(
 					}
 				}
 				//找到配置文件中的顶级的key为"modifiers"的属性，然后解析它的子属性，添加到modifiers中
-				fileConfig.key == "modifiers" && key == "modifiers" -> {
+				key == "modifiers" -> {
 					val props = property.properties ?: continue
 					for(prop in props) {
 						val modifierName = prop.key
@@ -441,7 +441,7 @@ class CwtConfigGroupImpl(
 					}
 				}
 				//找到配置文件中的顶级的key为"scopes"的属性，然后解析它的子属性，添加到scopes中
-				fileConfig.key == "scopes" && key == "scopes" -> {
+				key == "scopes" -> {
 					val props = property.properties ?: continue
 					for(prop in props) {
 						val scopeName = prop.key
@@ -453,7 +453,7 @@ class CwtConfigGroupImpl(
 					}
 				}
 				//找到配置文件中的顶级的key为"scope_groups"的属性，然后解析它的子属性，添加到scopeGroups中
-				fileConfig.key == "scopes" && key == "scope_groups" -> {
+				key == "scope_groups" -> {
 					val props = property.properties ?: continue
 					for(prop in props) {
 						val scopeGroupName = prop.key
@@ -461,7 +461,7 @@ class CwtConfigGroupImpl(
 						scopeGroups[scopeGroupName] = scopeGroupConfig
 					}
 				}
-				fileConfig.key == "on_actions" && key == "on_actions" -> {
+				key == "on_actions" -> {
 					val props = property.properties ?: continue
 					for(prop in props) {
 						val onActionName = prop.key
