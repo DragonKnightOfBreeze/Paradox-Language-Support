@@ -2,11 +2,13 @@ package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.*
 
-data class CwtLocalisationCommandConfig(
+data class CwtOnActionConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigGroupInfo,
+	val config: CwtPropertyConfig,
 	val name: String,
-	val supportedScopes: Set<String>
-) : CwtConfig<CwtProperty>
+	val eventType: String
+): CwtConfig<CwtProperty> {
+	val scopeContext get() = config.replaceScopes
+}

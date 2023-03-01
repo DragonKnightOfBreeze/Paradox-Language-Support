@@ -169,12 +169,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		val contextElement = referenceElement
 		val gameType = configGroup.gameType ?: return
 		val project = configGroup.project
-		val nameKeys = ParadoxModifierHandler.getModifierNameKeys(name, configGroup)
+		val nameKeys = ParadoxModifierHandler.getModifierNameKeys(name)
 		val localisation = nameKeys.firstNotNullOfOrNull {
 			val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale())
 			ParadoxLocalisationSearch.search(it, selector).find()
 		}
-		val descKeys = ParadoxModifierHandler.getModifierDescKeys(name, configGroup)
+		val descKeys = ParadoxModifierHandler.getModifierDescKeys(name)
 		val descLocalisation = descKeys.firstNotNullOfOrNull {
 			val descSelector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale())
 			ParadoxLocalisationSearch.search(it, descSelector).find()
@@ -208,7 +208,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		val contextElement = referenceElement
 		val gameType = configGroup.gameType ?: return
 		val project = configGroup.project
-		val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name, configGroup)
+		val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name)
 		val (iconPath, iconFile) = iconPaths.firstNotNullOfOrNull {
 			val iconSelector = fileSelector(project, contextElement).contextSensitive()
 			it to ParadoxFilePathSearch.search(it, selector = iconSelector).find()

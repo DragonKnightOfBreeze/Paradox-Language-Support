@@ -6,6 +6,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.scopes.*
 import icu.windea.pls.lang.model.*
@@ -54,9 +55,10 @@ class ParadoxEventFromOnActionInferredScopeContextProvider: ParadoxInferredScope
             when {
                 refDefinitionInfo.type == "on_action" -> {
                     //check on_action is valid and event type is valid
-                    val onActionInfo = configGroup.onActions[refDefinitionInfo.name] ?: return@p true //missing
-                    if(!definitionInfo.subtypes.contains(onActionInfo.event)) return@p true //invalid
-                    val sc = onActionInfo.scopeContext ?: return@p true
+                    val config = configGroup.onActions.getByTemplate(refDefinition.name, definition, configGroup)
+                        ?: return@p true //missing
+                    if(!definitionInfo.subtypes.contains(config.eventType)) return@p true //invalid
+                    val sc = config.scopeContext ?: return@p true
                     if(scopeContext != null && sc != scopeContext) {
                         hasConflict = true
                         return@p false

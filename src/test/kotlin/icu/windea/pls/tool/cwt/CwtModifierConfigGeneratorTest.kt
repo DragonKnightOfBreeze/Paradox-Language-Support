@@ -1,8 +1,6 @@
 package icu.windea.pls.tool.cwt
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.fileEditor.*
-import com.intellij.testFramework.fixtures.*
+import icu.windea.pls.dev.cwt.generator.*
 import icu.windea.pls.lang.model.*
 import org.junit.*
 

@@ -190,16 +190,17 @@ object ParadoxScopeHandler {
             val configGroup = definitionInfo.configGroup
             //on_action
             if(definitionInfo.type == "on_action") {
-                val result = configGroup.onActions[definitionInfo.name]?.scopeContext
+                val config = configGroup.onActions.getByTemplate(definitionInfo.name, element, configGroup)
+                val result = config?.scopeContext
                 if(result != null) return result //直接使用来自csv或者cwt文件中的作用域信息
             }
             val declarationConfig = definitionInfo.declarationConfig?.propertyConfig ?: return null
             val subtypeConfigs = definitionInfo.subtypeConfigs
             val typeConfig = definitionInfo.typeConfig
-            val replaceScopeOnType = subtypeConfigs.firstNotNullOfOrNull { it.config.replaceScope }
-                ?: typeConfig.config.replaceScope
+            val replaceScopeOnType = subtypeConfigs.firstNotNullOfOrNull { it.config.replaceScopes }
+                ?: typeConfig.config.replaceScopes
             val replaceScope = replaceScopeOnType
-                ?: declarationConfig.replaceScope
+                ?: declarationConfig.replaceScopes
             val pushScopeOnType = (subtypeConfigs.firstNotNullOfOrNull { it.config.pushScope }
                 ?: typeConfig.config.pushScope)
             val pushScope = pushScopeOnType
@@ -232,7 +233,7 @@ object ParadoxScopeHandler {
             return result
         } else {
             val resolvedConfig = config.resolved()
-            val replaceScope = resolvedConfig.replaceScope ?: parentScopeContext ?: return null
+            val replaceScope = resolvedConfig.replaceScopes ?: parentScopeContext ?: return null
             val pushScope = resolvedConfig.pushScope
             val result = replaceScope.resolve(pushScope)
             return result

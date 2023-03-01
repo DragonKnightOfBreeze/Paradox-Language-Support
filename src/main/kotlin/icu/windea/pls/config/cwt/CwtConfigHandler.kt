@@ -745,7 +745,10 @@ object CwtConfigHandler {
                 typeConfigToUse == null || tuples.isEmpty() -> null
                 else -> tuples.mapNotNull { it.second }.ifEmpty { null }?.distinctBy { it.name }?.map { it.name }
             }
-            val config = if(typeToUse == null) null else configGroup.declarations[typeToUse]?.getMergedConfig(subtypesToUse, null)
+            val config = when {
+                typeToUse == null -> null
+                else -> configGroup.declarations[typeToUse]?.getMergedConfig(context.contextElement, null, subtypesToUse)
+            }
             val element = config?.pointer?.element
             val icon = if(config != null) PlsIcons.Definition else PlsIcons.Property
             val tailText = if(tuples.isEmpty()) null
@@ -1613,13 +1616,13 @@ object CwtConfigHandler {
     }
     
     fun getScriptExpressionTailText(config: CwtConfig<*>?, withExpression: Boolean = true): String? {
-        val configExpresson = config?.expression ?: return null
+        val configExpression = config?.expression ?: return null
         val fileName = config.resolved().pointer.containingFile?.name
         if(withExpression) {
             if(fileName != null) {
                 return " by $configExpression in $fileName"
             } else {
-                return " by $configExpresson"
+                return " by $configExpression"
             }
         } else {
             if(fileName != null) {

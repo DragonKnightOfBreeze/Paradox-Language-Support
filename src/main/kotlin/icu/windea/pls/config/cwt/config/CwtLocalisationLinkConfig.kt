@@ -17,7 +17,4 @@ data class CwtLocalisationLinkConfig(
 	val desc: String? = null,
 	val inputScopes: Set<String>,
 	val outputScope: String?
-) : CwtConfig<CwtProperty> {
-	val inputAnyScope get() = inputScopes == ParadoxScopeHandler.anyScopeIdSet
-	val outputAnyScope get() = outputScope == ParadoxScopeHandler.anyScopeId
-}
+) : CwtConfig<CwtProperty>

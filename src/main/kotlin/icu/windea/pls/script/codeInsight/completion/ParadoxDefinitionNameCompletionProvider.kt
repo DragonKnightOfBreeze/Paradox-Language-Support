@@ -6,11 +6,9 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.*
@@ -71,7 +69,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 					if(ParadoxDefinitionHandler.matchesTypeWithUnknownDeclaration(typeConfig, path, elementPath, null)) {
 						val type = typeConfig.name
 						//需要考虑不指定子类型的情况
-						val config = configGroup.declarations[type]?.getMergedConfig(null, null) ?: continue
+						val config = configGroup.declarations[type]?.getMergedConfig(element, null, null) ?: continue
 						doAddCompletions(type, config, true, element, null)
 					}
 				}

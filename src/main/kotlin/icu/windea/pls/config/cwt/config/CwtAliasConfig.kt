@@ -20,8 +20,6 @@ data class CwtAliasConfig(
     
     val supportedScopes get() = config.supportedScopes
     
-    val supportAnyScope get() = config.supportAnyScope
-    
     val outputScope get() = config.pushScope
 }
 

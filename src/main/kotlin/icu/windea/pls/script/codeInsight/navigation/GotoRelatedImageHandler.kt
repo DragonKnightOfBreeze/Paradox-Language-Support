@@ -56,7 +56,7 @@ class GotoRelatedImageHandler : GotoTargetHandler() {
             val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
             val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
                 runReadAction {
-                    val iconPaths = ParadoxModifierHandler.getModifierIconPaths(modifierElement.name, configGroup)
+                    val iconPaths = ParadoxModifierHandler.getModifierIconPaths(modifierElement.name)
                     val iconFiles = iconPaths.firstNotNullOfOrNull {
                         val iconSelector = fileSelector(project, element).contextSensitive()
                         val result = ParadoxFilePathSearch.search(it, selector = iconSelector).findAll()

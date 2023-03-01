@@ -52,10 +52,10 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 	/**
 	 * 深拷贝 + 根据定义的名字、类型、子类型进行合并。
 	 */
-	fun deepMergeConfigs(name: String?, type: String, subtypes: List<String>?, configGroup: CwtConfigGroup): List<CwtDataConfig<*>> {
+	fun deepMergeConfigs(contextElement: PsiElement, name: String?, type: String, subtypes: List<String>?, configGroup: CwtConfigGroup): List<CwtDataConfig<*>> {
 		val mergedConfigs: MutableList<CwtDataConfig<*>>? = if(configs != null) SmartList() else null
 		configs?.forEach { config ->
-			val childConfigList = config.deepMergeConfigs(name, type, subtypes, configGroup)
+			val childConfigList = config.deepMergeConfigs(contextElement, name, type, subtypes, configGroup)
 			if(childConfigList.isNotEmpty()) {
 				for(childConfig in childConfigList) {
 					mergedConfigs?.add(childConfig)
@@ -64,15 +64,15 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 		}
 		when(this) {
 			is CwtValueConfig -> {
-				val valueExpression = CwtConfigExpressionHandler.handle(value, name, type, subtypes, configGroup)
+				val valueExpression = CwtConfigExpressionHandler.handle(contextElement, value, name, type, subtypes, configGroup)
 				val mergedConfig = copy(value = valueExpression, configs = mergedConfigs)
 				return mergedConfig.also { parent = it.parent }.toSingletonList()
 			}
 			is CwtPropertyConfig -> {
 				val subtypeName = key.removeSurroundingOrNull("subtype[", "]")
 				if(subtypeName == null) {
-					val keyExpression = CwtConfigExpressionHandler.handle(key, name, type, subtypes, configGroup)
-					val valueExpression = CwtConfigExpressionHandler.handle(value, name, type, subtypes, configGroup)
+					val keyExpression = CwtConfigExpressionHandler.handle(contextElement, key, name, type, subtypes, configGroup)
+					val valueExpression = CwtConfigExpressionHandler.handle(contextElement, value, name, type, subtypes, configGroup)
 					val mergedConfig = copy(key = keyExpression, value = valueExpression, configs = mergedConfigs)
 					return mergedConfig.also { parent = it.parent }.toSingletonList()
 				} else if(matchesDefinitionSubtypeExpression(subtypeName, subtypes)) {
@@ -113,7 +113,7 @@ object CwtDataConfigKeys {
 	val cardinalityMinDefine = Key.create<String?>("paradox.cwtDataConfig.cardinalityMinDefine")
 	val cardinalityMaxDefine = Key.create<String?>("paradox.cwtDataConfig.cardinalityMaxDefine")
 	val hasScopeOption = Key.create<Boolean>("paradox.cwtDataConfig.hasScopeOption")
-	val replaceScope = Key.create<ParadoxScopeContext?>("paradox.cwtDataConfig.replaceScope")
+	val replaceScopes = Key.create<ParadoxScopeContext?>("paradox.cwtDataConfig.replaceScopes")
 	val pushScope = Key.create<String?>("paradox.cwtDataConfig.pushScope")
 	val supportedScopes = Key.create<Set<String>>("paradox.cwtDataConfig.supportedScopes")
 }
@@ -158,7 +158,7 @@ val CwtDataConfig<*>.hasScopeOption get() = getOrPutUserData(CwtDataConfigKeys.h
 // * a config expression in declaration config (include root expression, e.g. "army = { ... }")
 // * a type config (e.g. "type[xxx] = { ... }")
 // * a subtype config (e.g. "subtype[xxx] = { ... }")
-val CwtDataConfig<*>.replaceScope get() = getOrPutUserData(CwtDataConfigKeys.replaceScope) action@{
+val CwtDataConfig<*>.replaceScopes get() = getOrPutUserData(CwtDataConfigKeys.replaceScopes) action@{
 	val option = options?.find { it.key == "replace_scope" || it.key == "replace_scopes" }
 	if(option == null) return@action null
 	val options = option.options ?: return@action null
@@ -182,4 +182,3 @@ val CwtDataConfig<*>.supportedScopes get() = getOrPutUserData(CwtDataConfigKeys.
 		option?.optionValues?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
 	}.ifEmpty { ParadoxScopeHandler.anyScopeIdSet }
 }
-val CwtDataConfig<*>.supportAnyScope get() = supportedScopes == ParadoxScopeHandler.anyScopeIdSet

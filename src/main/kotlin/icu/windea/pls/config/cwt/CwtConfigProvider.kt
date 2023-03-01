@@ -25,7 +25,8 @@ class CwtConfigProvider(
 		private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
 		
 		private const val cwtConfigPath = "/config/cwt"
-		private val configFileExtensions = arrayOf("cwt", "csv")
+		//private val configFileExtensions = arrayOf("cwt", "csv")
+		private val configFileExtensions = arrayOf("cwt")
 	}
 	
 	val configGroups: CwtConfigGroups = initConfigGroups()

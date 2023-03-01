@@ -57,14 +57,14 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
             val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
             val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
                 runReadAction {
-                    val nameKeys = ParadoxModifierHandler.getModifierNameKeys(modifierElement.name, configGroup)
+                    val nameKeys = ParadoxModifierHandler.getModifierNameKeys(modifierElement.name)
                     val localisations = nameKeys.firstNotNullOfOrNull {
                         val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
                         val result = ParadoxLocalisationSearch.search(it, selector).findAll()
                         result.takeIfNotEmpty()
                     }
                     if(localisations != null) targets.addAll(localisations)
-                    val descKeys = ParadoxModifierHandler.getModifierDescKeys(modifierElement.name, configGroup)
+                    val descKeys = ParadoxModifierHandler.getModifierDescKeys(modifierElement.name)
                     val descLocalisations = descKeys.firstNotNullOfOrNull {
                         val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
                         val result = ParadoxLocalisationSearch.search(it, selector).findAll()

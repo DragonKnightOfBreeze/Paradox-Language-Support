@@ -19,14 +19,14 @@ data class CwtDeclarationConfig(
     /**
      * 得到根据子类型列表进行合并后的配置。
      */
-    fun getMergedConfig(subtypes: List<String>?, name: String?): CwtPropertyConfig {
+    fun getMergedConfig(contextElement: PsiElement, name: String?, subtypes: List<String>?): CwtPropertyConfig {
         //定义的值不为代码块的情况
         if(!propertyConfig.isBlock) return propertyConfig
         
         val type = this.name
         val configGroup = info.configGroup
         val cacheKey = buildString {
-            if(CwtConfigExpressionHandler.shouldHandle(name, type, subtypes, configGroup)) {
+            if(CwtConfigExpressionHandler.shouldHandle(contextElement, name, type, subtypes, configGroup)) {
                 append(name).append(" ")
             }
             append(type).append(" ")
@@ -38,7 +38,7 @@ data class CwtDeclarationConfig(
         }
         return mergedConfigCache.getOrPut(cacheKey) {
             propertyConfig.copy(
-                configs = propertyConfig.configs?.flatMap { it.deepMergeConfigs(name, type, subtypes, configGroup) }
+                configs = propertyConfig.configs?.flatMap { it.deepMergeConfigs(contextElement, name, type, subtypes, configGroup) }
             )
         }
     }

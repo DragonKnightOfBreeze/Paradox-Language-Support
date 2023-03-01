@@ -61,7 +61,7 @@ class ParadoxModifierIconHintsProvider: ParadoxScriptHintsProvider<Settings>() {
 				val name = element.value
 				val configGroup = config.info.configGroup
 				val project = configGroup.project
-				val iconPaths =  ParadoxModifierHandler.getModifierIconPaths(name, configGroup)
+				val iconPaths =  ParadoxModifierHandler.getModifierIconPaths(name)
 				val iconFile = iconPaths.firstNotNullOfOrNull {
 					val iconSelector = fileSelector(project, element).contextSensitive()
 					ParadoxFilePathSearch.search(it, selector = iconSelector).find()

@@ -21,8 +21,6 @@ interface CwtConfigGroup {
 	val localisationLocalesByCode: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
 	val localisationPredefinedParameters: Map<String, CwtLocalisationPredefinedParameterConfig> //EXTENDED BY PLS
 	
-	val onActions: Map<String, ParadoxOnActionInfo>
-	
 	val folders: Set<String>
 	
 	val types: Map<String, CwtTypeConfig>
@@ -46,13 +44,14 @@ interface CwtConfigGroup {
 	val linksAsValueNotData: Map<@CaseInsensitive String, CwtLinkConfig>
 	val linksAsValueWithPrefix: Map<@CaseInsensitive String, CwtLinkConfig>
 	val linksAsValueWithoutPrefix: Map<@CaseInsensitive String, CwtLinkConfig>
+	
 	val localisationLinks: Map<@CaseInsensitive String, CwtLocalisationLinkConfig>
 	val localisationCommands: Map<@CaseInsensitive String, CwtLocalisationCommandConfig>
 	
-	val modifierCategories: Map<String, CwtModifierCategoryConfig>
 	val scopes: Map<@CaseInsensitive String, CwtScopeConfig>
 	val scopeAliasMap: Map<@CaseInsensitive String, CwtScopeConfig>
 	val scopeGroups: Map<String, CwtScopeGroupConfig>
+	
 	//同名的single_alias可以有多个
 	val singleAliases: Map<String, CwtSingleAliasConfig>
 	//同名的alias可以有多个
@@ -60,7 +59,11 @@ interface CwtConfigGroup {
 	//inline_script
 	val inlineConfigGroup: Map<String, List<CwtInlineConfig>>
 	
-	//key: lowercase
+	// key: scalar / template_expression
+	val onActions: Map<String, CwtOnActionConfig>
+	
+	val modifierCategories: Map<String, CwtModifierCategoryConfig>
+	// key: scalar / template_expression
 	val modifiers: Map<@CaseInsensitive String, CwtModifierConfig>
 	val predefinedModifiers: Map<@CaseInsensitive String, CwtModifierConfig>
 	val generatedModifiers: Map<@CaseInsensitive String, CwtModifierConfig>

@@ -29,9 +29,6 @@ data class CwtLinkConfig(
 	val inputScopes: Set<String>,
 	val outputScope: String?
 ) : CwtConfig<CwtProperty> {
-	val inputAnyScope get() = inputScopes == ParadoxScopeHandler.anyScopeIdSet
-	val outputAnyScope get() = outputScope == ParadoxScopeHandler.anyScopeId
-	
 	override val expression get() = dataSource
 }
 

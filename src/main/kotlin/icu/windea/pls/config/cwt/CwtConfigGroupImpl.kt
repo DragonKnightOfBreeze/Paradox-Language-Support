@@ -32,8 +32,6 @@ class CwtConfigGroupImpl(
 	override val localisationLocalesByCode: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
 	override val localisationPredefinedParameters: MutableMap<String, CwtLocalisationPredefinedParameterConfig> = mutableMapOf()
 	
-	override val onActions: MutableMap<String, ParadoxOnActionInfo> = mutableMapOf()
-	
 	override val folders: MutableSet<String> = mutableSetOf()
 	
 	override val types: MutableMap<String, CwtTypeConfig> = mutableMapOf()
@@ -65,14 +63,18 @@ class CwtConfigGroupImpl(
 	
 	override val localisationLinks: MutableMap<@CaseInsensitive String, CwtLocalisationLinkConfig> = caseInsensitiveStringKeyMap()
 	override val localisationCommands: MutableMap<@CaseInsensitive String, CwtLocalisationCommandConfig> = caseInsensitiveStringKeyMap()
-	override val modifierCategories: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
+	
 	override val scopes: MutableMap<@CaseInsensitive String, CwtScopeConfig> = caseInsensitiveStringKeyMap()
 	override val scopeAliasMap: MutableMap<@CaseInsensitive String, CwtScopeConfig> = caseInsensitiveStringKeyMap()
 	override val scopeGroups: MutableMap<String, CwtScopeGroupConfig> = mutableMapOf()
+	
 	override val singleAliases: MutableMap<String, CwtSingleAliasConfig> = mutableMapOf()
 	override val aliasGroups: MutableMap<String, MutableMap<String, MutableList<CwtAliasConfig>>> = mutableMapOf()
 	override val inlineConfigGroup: MutableMap<String, MutableList<CwtInlineConfig>> = mutableMapOf()
 	
+	override val onActions: MutableMap<String, CwtOnActionConfig> = mutableMapOf()
+	
+	override val modifierCategories: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
 	override val modifiers: MutableMap<@CaseInsensitive String, CwtModifierConfig> = caseInsensitiveStringKeyMap()
 	override val generatedModifiers: Map<@CaseInsensitive String, CwtModifierConfig> by lazy {
 		//put xxx_<xxx>_xxx before xxx_<xxx>
@@ -92,7 +94,6 @@ class CwtConfigGroupImpl(
 			for(virtualFile in fileGroup.values) {
 				var result: Boolean
 				//val fileName = virtualFile.name
-				val fileName = virtualFile.name
 				val fileExtension = virtualFile.extension?.lowercase()
 				when {
 					fileExtension == "cwt" -> {
@@ -106,10 +107,6 @@ class CwtConfigGroupImpl(
 						if(!result) continue
 						
 						resolveCwtConfigInCwtFile(fileConfig)
-					}
-					//on_actions.csv
-					fileName == "on_actions.csv" -> {
-						resolveOnActionConfigs(virtualFile)
 					}
 				}
 			}
@@ -183,20 +180,6 @@ class CwtConfigGroupImpl(
 			val contextExpression = if(aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression else CwtKeyExpression.resolve(aliasSubName)
 			if(contextExpression.type == CwtDataType.Definition && contextExpression.value != null) {
 				definitionTypesSupportParameters.add(contextExpression.value)
-			}
-		}
-	}
-	
-	//解析CSV
-	
-	private fun resolveOnActionConfigs(virtualFile: VirtualFile) {
-		virtualFile.inputStream.bufferedReader().use {
-			val data = csvMapper.readerFor(ParadoxOnActionInfo::class.java).with(ParadoxOnActionInfo.schema)
-				.readValues<ParadoxOnActionInfo>(virtualFile.inputStream.bufferedReader())
-			data.forEach { config ->
-				if(config.key.isNotEmpty()) {
-					onActions.put(config.key, config)
-				}
 			}
 		}
 	}
@@ -434,7 +417,7 @@ class CwtConfigGroupImpl(
 					}
 				}
 				//找到配置文件中的顶级的key为"modifier_categories"的属性，然后解析它的子属性，添加到modifierCategories中
-				key == "modifier_categories" -> {
+				fileConfig.key == "modifier_categories" && key == "modifier_categories" -> {
 					val props = property.properties ?: continue
 					for(prop in props) {
 						val modifierCategoryName = prop.key
@@ -443,7 +426,7 @@ class CwtConfigGroupImpl(
 					}
 				}
 				//找到配置文件中的顶级的key为"modifiers"的属性，然后解析它的子属性，添加到modifiers中
-				key == "modifiers" -> {
+				fileConfig.key == "modifiers" && key == "modifiers" -> {
 					val props = property.properties ?: continue
 					for(prop in props) {
 						val modifierName = prop.key
@@ -458,7 +441,7 @@ class CwtConfigGroupImpl(
 					}
 				}
 				//找到配置文件中的顶级的key为"scopes"的属性，然后解析它的子属性，添加到scopes中
-				key == "scopes" -> {
+				fileConfig.key == "scopes" && key == "scopes" -> {
 					val props = property.properties ?: continue
 					for(prop in props) {
 						val scopeName = prop.key
@@ -470,12 +453,20 @@ class CwtConfigGroupImpl(
 					}
 				}
 				//找到配置文件中的顶级的key为"scope_groups"的属性，然后解析它的子属性，添加到scopeGroups中
-				key == "scope_groups" -> {
+				fileConfig.key == "scopes" && key == "scope_groups" -> {
 					val props = property.properties ?: continue
 					for(prop in props) {
 						val scopeGroupName = prop.key
 						val scopeGroupConfig = resolveScopeGroupConfig(prop, scopeGroupName) ?: continue
 						scopeGroups[scopeGroupName] = scopeGroupConfig
+					}
+				}
+				fileConfig.key == "on_actions" && key == "on_actions" -> {
+					val props = property.properties ?: continue
+					for(prop in props) {
+						val onActionName = prop.key
+						val onActionConfig = resolveOnActionConfig(prop, onActionName) ?: continue
+						onActions[onActionName] = onActionConfig
 					}
 				}
 				else -> {
@@ -880,6 +871,13 @@ class CwtConfigGroupImpl(
 			valueConfigMap.put(propertyConfigValue.value, propertyConfigValue)
 		}
 		return CwtScopeGroupConfig(pointer, info, name, values, valueConfigMap)
+	}
+	
+	private fun resolveOnActionConfig(propertyConfig: CwtPropertyConfig, name: String) : CwtOnActionConfig? {
+		val pointer = propertyConfig.pointer
+		val info = propertyConfig.info
+		val eventType = propertyConfig.stringValue ?: return null
+		return CwtOnActionConfig(pointer, info, propertyConfig, name, eventType)
 	}
 	
 	private fun resolveSingleAliasConfig(propertyConfig: CwtPropertyConfig, name: String): CwtSingleAliasConfig {

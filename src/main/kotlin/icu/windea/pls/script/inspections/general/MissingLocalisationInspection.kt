@@ -159,7 +159,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             if(config.expression.type != CwtDataType.Modifier) return
             val project = configGroup.project
             val name = element.value
-            val keys = ParadoxModifierHandler.getModifierNameKeys(name, configGroup)
+            val keys = ParadoxModifierHandler.getModifierNameKeys(name)
             val missingLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
             for(locale in inspection.localeSet) {
                 val selector = localisationSelector(project, element).locale(locale)

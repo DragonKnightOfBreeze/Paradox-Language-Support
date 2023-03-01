@@ -20,6 +20,7 @@ data class CwtModifierConfig(
 	val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
 	
 	val template = CwtTemplateExpression.resolve(name)
+	
 	val supportedScopes: Set<String> by lazy {
 		if(categoryConfigMap.isNotEmpty()) {
 			categoryConfigMap.getSupportedScopes()

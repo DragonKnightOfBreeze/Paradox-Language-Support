@@ -195,12 +195,12 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         ProgressManager.checkCanceled()
         val gameType = element.gameType
         val project = configGroup.project
-        val nameKeys = ParadoxModifierHandler.getModifierNameKeys(name, configGroup)
+        val nameKeys = ParadoxModifierHandler.getModifierNameKeys(name)
         val localisation = nameKeys.firstNotNullOfOrNull {
             val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
             ParadoxLocalisationSearch.search(it, selector).find()
         }
-        val descKeys = ParadoxModifierHandler.getModifierDescKeys(name, configGroup)
+        val descKeys = ParadoxModifierHandler.getModifierDescKeys(name)
         val descLocalisation = descKeys.firstNotNullOfOrNull {
             val descSelector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
             ParadoxLocalisationSearch.search(it, descSelector).find()
@@ -238,7 +238,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         ProgressManager.checkCanceled()
         val gameType = element.gameType
         val project = configGroup.project
-        val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name, configGroup)
+        val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name)
         val (iconPath, iconFile) = iconPaths.firstNotNullOfOrNull {
             val iconSelector = fileSelector(project, element).contextSensitive()
             it to ParadoxFilePathSearch.search(it, selector = iconSelector).find()

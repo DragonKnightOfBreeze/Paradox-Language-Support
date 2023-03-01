@@ -67,7 +67,7 @@ class ParadoxModifierLocalizedNameHintsProvider: ParadoxScriptHintsProvider<Sett
 				val name = element.value
 				val configGroup = config.info.configGroup
 				val project = configGroup.project
-				val keys = ParadoxModifierHandler.getModifierNameKeys(name, configGroup)
+				val keys = ParadoxModifierHandler.getModifierNameKeys(name)
 				val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
 				val localisation = keys.firstNotNullOfOrNull {
 					ParadoxLocalisationSearch.search(it, selector).find()

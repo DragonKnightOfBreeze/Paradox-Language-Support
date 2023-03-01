@@ -127,7 +127,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             //images, localisations
             val sectionsList = List(4) { mutableMapOf<String, String>() }
             buildDefinitionDefinition(element, definitionInfo, sectionsList)
-            buildDocumentationContent(definitionInfo)
+            buildDocumentationContent(element, definitionInfo)
             buildLineCommentContent(element)
             buildSections(sectionsList)
         }
@@ -333,14 +333,15 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         //有些游戏类型直接通过CWT文件指定了事件类型，而非CSV文件，忽略这种情况
         val configGroup = definitionInfo.configGroup
         val gameType = configGroup.gameType
-        val event = configGroup.onActions[definitionInfo.name]?.event
-        if(event == null) return
+        val config = definitionInfo.configGroup.onActions.getByTemplate(definitionInfo.name, element, definitionInfo.configGroup)
+        if(config == null) return
+        val eventType = config.eventType
         appendBr()
-        val typeLink = "${gameType.id}/types/event/${event}"
-        append(PlsDocBundle.message("prefix.eventType")).append(" ").appendCwtLink(event, typeLink)
+        val typeLink = "${gameType.id}/types/event/$eventType"
+        append(PlsDocBundle.message("prefix.eventType")).append(" ").appendCwtLink(eventType, typeLink)
     }
     
-    private fun StringBuilder.buildDocumentationContent(definitionInfo: ParadoxDefinitionInfo) {
+    private fun StringBuilder.buildDocumentationContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
         //尝试从类型规则或者子类型规则得到文档文本
         definitionInfo.typeConfig.let {
             val documentation = it.config.documentation?.takeIfNotEmpty()
@@ -357,8 +358,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         
         //如果是on_action，加上从on_actions.csv中得到的文档文本（comment）
         if(definitionInfo.type == "on_action") {
-            val comment = definitionInfo.configGroup.onActions[definitionInfo.name]?.comment
-                ?.takeIfNotEmpty()
+            val config = definitionInfo.configGroup.onActions.getByTemplate(definitionInfo.name, element, definitionInfo.configGroup)
+            val comment = config?.config?.documentation?.takeIfNotEmpty()
             if(comment != null) {
                 content { append(comment) }
             }
