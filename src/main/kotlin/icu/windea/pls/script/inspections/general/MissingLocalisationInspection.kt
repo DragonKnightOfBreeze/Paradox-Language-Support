@@ -164,10 +164,14 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             lateinit var checkForDefinitionsCb: Cell<JBCheckBox>
-            row {
+            row { 
                 label(PlsBundle.message("inspection.script.general.missingLocalisation.option.locales"))
-                cell(createLocaleTableModel(locales))
-                    .align(Align.FILL)
+            }
+            indent {
+                row {
+                    cell(createLocaleTableModel(locales))
+                        .align(Align.FILL)
+                }
             }
             row {
                 checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.forPreferredLocale"))

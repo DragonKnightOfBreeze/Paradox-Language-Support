@@ -28,5 +28,6 @@ fun JBTable.setFixedColumnWidth(columnIndex: Int, sampleText: String) {
     val width = fontMetrics.stringWidth(" $sampleText ") + scale(4)
     column.preferredWidth = width
     column.minWidth = width
+    column.maxWidth = width
     column.resizable = false
 }

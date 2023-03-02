@@ -1,5 +1,7 @@
 package icu.windea.pls.core.ui
 
+import com.intellij.ui.*
+import com.intellij.ui.components.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
@@ -31,6 +33,14 @@ class ParadoxLocaleTableModel(
                 tableModel.locales.remove(item)
             }
         }
+    
+        override fun isCellEditable(item: String?): Boolean {
+            return true
+        }
+    
+        override fun getColumnClass(): Class<*> {
+            return Boolean::class.java
+        }
     }
     
     class LocaleItem : ColumnInfo<String, String>(name) {
@@ -46,7 +56,7 @@ class ParadoxLocaleTableModel(
     }
 }
 
-fun createLocaleTableModel(locales: MutableSet<String>): JTable {
+fun createLocaleTableModel(locales: MutableSet<String>): JPanel {
     val tableModel = ParadoxLocaleTableModel(locales)
     val tableView = TableView(tableModel)
     tableView.setShowGrid(false)
@@ -54,7 +64,14 @@ fun createLocaleTableModel(locales: MutableSet<String>): JTable {
     tableView.columnSelectionAllowed = false
     tableView.intercellSpacing = Dimension(0, 0)
     tableView.selectionModel.selectionMode = ListSelectionModel.SINGLE_SELECTION
-    tableView.minimumSize.height = 100
-    tableView.preferredSize.height = 100
-    return tableView
+    tableView.setFixedColumnWidth(ParadoxLocaleTableModel.SelectedItem.columnIndex, "   ")
+    val scrollPane = JBScrollPane(tableView)
+    scrollPane.border = JBUI.Borders.empty()
+    scrollPane.viewportBorder = JBUI.Borders.empty()
+    scrollPane.preferredSize = Dimension(240, 120)
+    scrollPane.minimumSize = Dimension(240, 120)
+    val panel = JPanel(BorderLayout())
+    panel.add(scrollPane, BorderLayout.CENTER)
+    panel.border = IdeBorderFactory.createBorder()
+    return panel
 }
