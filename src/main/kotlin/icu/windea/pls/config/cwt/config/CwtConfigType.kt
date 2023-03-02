@@ -25,6 +25,10 @@ enum class CwtConfigType(
 	ValueSet("value") {
 		override val prefix get() = PlsDocBundle.message("prefix.valueSet")
 	},
+	OnAction("on action") {
+		override val prefix get() = PlsDocBundle.message("prefix.onAction")
+		override val icon get() = PlsIcons.OnAction
+	},
 	SingleAlias("single alias") {
 		override val prefix get() = PlsDocBundle.message("prefix.singleAlias")
 		override val icon get() =  PlsIcons.Alias

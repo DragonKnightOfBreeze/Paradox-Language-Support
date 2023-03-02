@@ -59,6 +59,9 @@ object CwtConfigTypeHandler {
 			path.matchesAntPath("values/value[*]") -> {
 				CwtConfigType.ValueSet
 			}
+			fileKey == "on_actions" && path.matchesAntPath("on_actions/*") -> {
+				CwtConfigType.OnAction
+			}
 			path.matchesAntPath("single_alias[*]") -> {
 				CwtConfigType.SingleAlias
 			}

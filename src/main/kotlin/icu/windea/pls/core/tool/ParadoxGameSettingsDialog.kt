@@ -71,6 +71,7 @@ class ParadoxGameSettingsDialog(
     
     override fun doOKAction() {
         doOk()
+        super.doOKAction()
     }
     
     private fun doApply() {

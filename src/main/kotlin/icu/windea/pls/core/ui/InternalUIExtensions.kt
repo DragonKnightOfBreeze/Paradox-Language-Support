@@ -7,10 +7,10 @@ import icu.windea.pls.core.collections.*
 internal fun getLocalesToSelect(existingLocales: List<CwtLocalisationLocaleConfig>, locale: CwtLocalisationLocaleConfig?): List<CwtLocalisationLocaleConfig> {
 	//置顶偏好的语言区域
 	val preferredLocale = preferredParadoxLocale()
-	val locales = getCwtConfig().core.localisationLocales.values
+	val allLocaleConfigs = getCwtConfig().core.localisationLocales
 	return if(existingLocales.isEmpty()) {
-		locales.pinned { it == preferredLocale }
+		allLocaleConfigs.values.pinned { it == preferredLocale }
 	} else {
-		locales.filter { it == locale || it !in existingLocales }.pinned { it == preferredLocale }
+		allLocaleConfigs.values.filter { it == locale || it !in existingLocales }.pinned { it == preferredLocale }
 	}
 }

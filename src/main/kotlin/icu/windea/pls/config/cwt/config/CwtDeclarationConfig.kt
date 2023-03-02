@@ -3,7 +3,6 @@ package icu.windea.pls.config.cwt.config
 import com.google.common.cache.*
 import com.intellij.psi.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.expression.replacer.*
 import icu.windea.pls.config.cwt.replacer.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*

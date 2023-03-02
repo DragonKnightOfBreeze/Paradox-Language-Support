@@ -113,7 +113,7 @@ tasks {
 		cwtConfigDirs.forEach { (cwtConfigDir, toDir) ->
 			from("$rootDir/cwt/$cwtConfigDir") {
 				includeEmptyDirs = false
-				include("*.cwt", "*.csv", "LICENSE", "*.md")
+				include("**/*.cwt", "**/*.csv", "**/LICENSE", "**/*.md")
 				//打平/config子目录中的文件
 				eachFile {
 					val i = path.indexOf("/config", ignoreCase = true)

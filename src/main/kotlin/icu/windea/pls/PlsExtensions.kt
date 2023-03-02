@@ -27,6 +27,7 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
 import java.lang.Integer.*
+import java.util.*
 
 //region Misc Extensions
 fun getDefaultProject() = ProjectManager.getInstance().defaultProject
@@ -297,6 +298,25 @@ private fun resolveFilePathLink(linkWithoutPrefix: String, sourceElement: PsiEle
 //endregion
 
 //region Documentation Extensions
+fun getDocumentation(documentationLines: List<String>?, html: Boolean): String? {
+    if(documentationLines.isNullOrEmpty()) return null
+    return buildString {
+        var isLineBreak = false
+        for(line in documentationLines) {
+            if(!isLineBreak) {
+                isLineBreak = true
+            } else {
+                append("<br>")
+            }
+            if(line.endsWith('\\')) {
+                isLineBreak = false
+            }
+            val l = line.trimEnd('\\')
+            if(html) append(l) else append(l.escapeXml())
+        }
+    }
+}
+
 fun StringBuilder.appendIf(condition: Boolean, text: String): StringBuilder {
     if(condition) append(text)
     return this

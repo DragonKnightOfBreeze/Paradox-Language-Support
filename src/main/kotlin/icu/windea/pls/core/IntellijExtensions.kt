@@ -35,6 +35,7 @@ import com.intellij.util.*
 import com.intellij.util.containers.*
 import com.intellij.util.xmlb.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*
@@ -832,22 +833,22 @@ inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.processFirstEleme
 //endregion
 
 //region Xml Converters
-class RegexIgnoreCaseConverter : Converter<Regex>() {
-	override fun fromString(value: String): Regex {
-		return value.toRegex(RegexOption.IGNORE_CASE)
-	}
-	
-	override fun toString(t: Regex): String {
-		return t.pattern
-	}
-}
-
 class CommaDelimitedStringListConverter : Converter<List<String>>() {
 	override fun fromString(value: String): List<String> {
 		return value.toCommaDelimitedStringList()
 	}
 	
 	override fun toString(value: List<String>): String {
+		return value.toCommaDelimitedString()
+	}
+}
+
+class CommaDelimitedStringSetConverter : Converter<Set<String>>() {
+	override fun fromString(value: String): Set<String> {
+		return value.toCommaDelimitedStringSet()
+	}
+	
+	override fun toString(value: Set<String>): String {
 		return value.toCommaDelimitedString()
 	}
 }

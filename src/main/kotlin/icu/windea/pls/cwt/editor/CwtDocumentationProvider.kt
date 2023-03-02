@@ -370,7 +370,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildDocumentationContent(element: PsiElement) {
 		//渲染文档注释（可能需要作为HTML）
 		var current: PsiElement = element
-		var lines: LinkedList<String>? = null
+		var documentationLines: LinkedList<String>? = null
 		var html = false
 		while(true) {
 			current = current.prevSibling ?: break
@@ -378,38 +378,26 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				current is CwtDocumentationComment -> {
 					val documentationText = current.documentationText
 					if(documentationText != null) {
-						if(lines == null) lines = LinkedList()
+						if(documentationLines == null) documentationLines = LinkedList()
 						val docText = documentationText.text.trimStart('#').trim() //这里接受HTML
-						lines.addFirst(docText)
+						documentationLines.addFirst(docText)
 					}
 				}
 				current is CwtOptionComment -> {
-					val option = current.option ?: continue
-					when {
-						option.name == "format" && option.value == "html" -> html = true
+					val option = current.option
+					if(option != null) {
+						when {
+							option.name == "format" && option.value == "html" -> html = true
+						}
 					}
 				}
 				current is PsiWhiteSpace || current is PsiComment -> continue
 				else -> break
 			}
 		}
-		if(lines.isNullOrEmpty()) return
+		if(documentationLines.isNullOrEmpty()) return
 		//如果CWT规则文件中的一行文档注释以`\`结束，则解析时不在这里换行
-		val documentation = buildString {
-			var isLineBreak = false
-			for(line in lines ) {
-				if(!isLineBreak) {
-					isLineBreak = true
-				} else {
-					append("<br>")
-				}
-				if(line.endsWith('\\')) {
-					isLineBreak = false
-				}
-				val l = line.trimEnd('\\')
-				if(html) append(l) else append(l.escapeXml())
-			}
-		}
+		val documentation = getDocumentation(documentationLines, html)
 		content {
 			append(documentation)
 		}

@@ -3,6 +3,7 @@ package icu.windea.pls.config.cwt
 import com.intellij.openapi.diagnostic.*
 import com.intellij.psi.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
@@ -44,6 +45,7 @@ object CwtConfigResolver {
 		var stringValue: String? = null
 		var configs: List<CwtDataConfig<*>>? = null
 		var documentationLines: LinkedList<String>? = null
+		var html = false
 		var options: LinkedList<CwtOptionConfig>? = null
 		var optionValues: LinkedList<CwtOptionValueConfig>? = null
 		val separatorType = property.separatorType
@@ -77,12 +79,16 @@ object CwtConfigResolver {
 					val documentationText = current.documentationText
 					if(documentationText != null) {
 						if(documentationLines == null) documentationLines = LinkedList()
-						documentationLines.addFirst(documentationText.text)
+						val docText = documentationText.text.trimStart('#').trim() //这里接受HTML
+						documentationLines.addFirst(docText)
 					}
 				}
 				current is CwtOptionComment -> {
 					val option = current.option
 					if(option != null) {
+						when {
+							option.name == "format" && option.value == "html" -> html = true
+						}
 						if(options == null) options = LinkedList()
 						val resolvedOption = resolveOption(option, file, fileConfig)
 						if(resolvedOption != null) options.addFirst(resolvedOption)
@@ -99,7 +105,7 @@ object CwtConfigResolver {
 				else -> break
 			}
 		}
-		val documentation = documentationLines?.joinToString("\n")
+		val documentation = getDocumentation(documentationLines, html)
 		
 		val config = CwtPropertyConfig(
 			pointer, fileConfig.info, key, propertyValue.value,
@@ -120,6 +126,7 @@ object CwtConfigResolver {
 		var stringValue: String? = null
 		var configs: List<CwtDataConfig<*>>? = null
 		var documentationLines: LinkedList<String>? = null
+		var html = false
 		var options: LinkedList<CwtOptionConfig>? = null
 		var optionValues: LinkedList<CwtOptionValueConfig>? = null
 		
@@ -153,12 +160,16 @@ object CwtConfigResolver {
 					val documentationText = current.documentationText
 					if(documentationText != null) {
 						if(documentationLines == null) documentationLines = LinkedList()
-						documentationLines.addFirst(documentationText.text)
+						val docText = documentationText.text.trimStart('#').trim() //这里接受HTML
+						documentationLines.addFirst(docText)
 					}
 				}
 				current is CwtOptionComment -> {
 					val option = current.option
 					if(option != null) {
+						when {
+							option.name == "format" && option.value == "html" -> html = true
+						}
 						if(options == null) options = LinkedList()
 						val resolvedOption = resolveOption(option, file, fileConfig)
 						if(resolvedOption != null) options.addFirst(resolvedOption)
@@ -175,7 +186,7 @@ object CwtConfigResolver {
 				else -> break
 			}
 		}
-		val documentation = documentationLines?.joinToString("\n")
+		val documentation = getDocumentation(documentationLines, html)
 		
 		val config = CwtValueConfig(
 			pointer, fileConfig.info, value.value,
