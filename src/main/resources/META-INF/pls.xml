@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensionPoints>
-    <extensionPoint qualifiedName="icu.windea.pls.configExpressionReplacer" interface="icu.windea.pls.config.cwt.expression.replacer.CwtConfigExpressionReplacer" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.configExpressionReplacer" interface="icu.windea.pls.config.cwt.replacer.CwtConfigExpressionReplacer" dynamic="true"/>
     
     <extensionPoint qualifiedName="icu.windea.pls.definitionExtendedDocumentationProvider" interface="icu.windea.pls.lang.documentation.ParadoxDefinitionExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.pathReferenceExpression" interface="icu.windea.pls.lang.expression.ParadoxPathReferenceExpression" dynamic="true"/>
@@ -15,7 +15,7 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
-    <configExpressionReplacer implementation="icu.windea.pls.config.cwt.expression.replacer.CwtOnActionConfigExpressionReplacer"/>
+    <configExpressionReplacer implementation="icu.windea.pls.config.cwt.replacer.CwtOnActionConfigExpressionReplacer"/>
     
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.lang.documentation.ParadoxOnActionExtendedDocumentationProvider"/>
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.lang.documentation.ParadoxBaseDefinitionExtendedDocumentationProvider"/>

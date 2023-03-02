@@ -1,4 +1,4 @@
-package icu.windea.pls.config.cwt.expression.replacer
+package icu.windea.pls.config.cwt.replacer
 
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.config.cwt.config.*

@@ -1,4 +1,4 @@
-package icu.windea.pls.config.cwt.expression.replacer
+package icu.windea.pls.config.cwt.replacer
 
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*

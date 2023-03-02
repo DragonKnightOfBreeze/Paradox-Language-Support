@@ -8,6 +8,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.cwt.expression.CwtDataType.*
 import icu.windea.pls.config.cwt.expression.replacer.*
+import icu.windea.pls.config.cwt.replacer.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
