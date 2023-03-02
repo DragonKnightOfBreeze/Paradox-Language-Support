@@ -1,11 +1,11 @@
 package icu.windea.pls.core.ui
 
-import com.intellij.openapi.project.*
 import com.intellij.ui.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
+import java.awt.*
 import javax.swing.*
 import javax.swing.table.*
 
@@ -46,11 +46,14 @@ class ParadoxLocaleTableModel(
     }
 }
 
-fun createLocaleTableModel(project: Project, locales: MutableList<CwtLocalisationLocaleConfig>): JPanel {
+fun createLocaleTableModel(locales: MutableList<CwtLocalisationLocaleConfig>): JPanel {
     val tableModel = ParadoxLocaleTableModel(locales)
     val tableView = TableView(tableModel)
     tableView.setShowGrid(false)
-    //TODO
+    tableView.rowSelectionAllowed = true
+    tableView.columnSelectionAllowed = false
+    tableView.intercellSpacing = Dimension(0, 0)
+    tableView.selectionModel.selectionMode = ListSelectionModel.SINGLE_SELECTION
     val panel = ToolbarDecorator.createDecorator(tableView)
         .disableUpDownActions()
         .createPanel()

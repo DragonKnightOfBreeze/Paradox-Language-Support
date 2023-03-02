@@ -1,15 +1,11 @@
 package icu.windea.pls.script.inspections.general
 
 import com.intellij.codeInspection.*
-import com.intellij.codeInspection.ui.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
-import com.intellij.ui.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.builder.Cell
-import com.intellij.util.ui.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
@@ -22,7 +18,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
-import javax.swing.event.*
 
 /**
  * 缺失的本地化的检查。
@@ -35,7 +30,7 @@ import javax.swing.event.*
  */
 class MissingLocalisationInspection : LocalInspectionTool() {
     @OptionTag(converter = CommaDelimitedStringListConverter::class)
-    @JvmField var locales = listOf("l_english")
+    @JvmField var locales = setOf("l_english")
     @JvmField var checkForDefinitions = true
     @JvmField var checkPrimaryLocale = true
     @JvmField var checkPrimaryForDefinitions = false
@@ -45,9 +40,6 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     private val localeList by lazy {
         val allLocales = getCwtConfig().core.localisationLocales
         locales.mapNotNullTo(mutableListOf()) { allLocales.get(it) }
-    }
-    private val localeSet by lazy {
-        localeList.toMutableSet()
     }
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -59,7 +51,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         private val holder: ProblemsHolder
     ) : ParadoxScriptVisitor() {
         override fun visitFile(file: PsiFile) {
-            if(inspection.localeSet.isEmpty()) return
+            if(inspection.locales.isEmpty()) return
             if(!inspection.checkForDefinitions) return
             val scriptFile = file.castOrNull<ParadoxScriptFile>() ?: return
             val definitionInfo = scriptFile.definitionInfo ?: return
@@ -68,7 +60,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         
         override fun visitProperty(property: ParadoxScriptProperty) {
             ProgressManager.checkCanceled()
-            if(inspection.localeSet.isEmpty()) return
+            if(inspection.locales.isEmpty()) return
             if(!inspection.checkForDefinitions) return
             val definitionInfo = property.definitionInfo ?: return
             visitDefinition(property, definitionInfo)
@@ -88,7 +80,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 for(info in localisationInfos) {
                     ProgressManager.checkCanceled()
                     if(info.required || if(info.primary) inspection.checkPrimaryForDefinitions else inspection.checkOptionalForDefinitions) {
-                        for(locale in inspection.localeSet) {
+                        for(locale in inspection.localeList) {
                             if(nameToDistinct.contains(info.name + "@" + locale)) continue
                             if(info.primary && hasPrimaryLocales.contains(locale)) continue
                             //多个位置表达式无法解析时，使用第一个
@@ -152,7 +144,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         
         private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
             ProgressManager.checkCanceled()
-            if(inspection.localeSet.isEmpty()) return
+            if(inspection.locales.isEmpty()) return
             if(!inspection.checkForModifiers) return
             val config = ParadoxCwtConfigHandler.getConfigs(element).firstOrNull() ?: return
             val configGroup = config.info.configGroup
@@ -161,7 +153,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             val name = element.value
             val keys = ParadoxModifierHandler.getModifierNameKeys(name)
             val missingLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
-            for(locale in inspection.localeSet) {
+            for(locale in inspection.localeList) {
                 val selector = localisationSelector(project, element).locale(locale)
                 val localisation = keys.firstNotNullOfOrNull {
                     ParadoxLocalisationSearch.search(it, selector).findFirst()
@@ -180,9 +172,8 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                cell(LocaleTableModel(localeList))
+                cell(createLocaleTableModel(localeList))
                     .align(Align.FILL)
-                    .resizableColumn()
             }
             row {
                 checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.forPreferredLocale"))
@@ -216,56 +207,6 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     .bindSelected(::checkForModifiers)
                     .actionListener { _, component -> checkForModifiers = component.isSelected }
             }
-        }
-    }
-    
-    //com.intellij.codeInspection.suspiciousNameCombination.SuspiciousNameCombinationInspection.NameGroupsPanel
-    
-    private inner class LocaleTableModel(
-        locales: List<CwtLocalisationLocaleConfig>
-    ) : AddEditDeleteListPanel<CwtLocalisationLocaleConfig>(PlsBundle.message("inspection.script.general.missingLocalisation.option.locales"), locales) {
-        init {
-            minimumSize = InspectionOptionsPanel.getMinimumListSize()
-            preferredSize = JBUI.size(150, 110) //3行选项的高度
-            myListModel.addListDataListener(object : ListDataListener {
-                override fun intervalAdded(e: ListDataEvent?) {
-                    saveChanges()
-                }
-                
-                override fun intervalRemoved(e: ListDataEvent?) {
-                    saveChanges()
-                }
-                
-                override fun contentsChanged(e: ListDataEvent?) {
-                    saveChanges()
-                }
-            })
-        }
-        
-        private fun saveChanges() {
-            val newLocales = mutableListOf<String>()
-            localeList.clear()
-            localeSet.clear()
-            for(i in 0 until myListModel.size) {
-                myListModel.getElementAt(i)?.let {
-                    newLocales.add(it.id)
-                    localeList.add(it)
-                    localeSet.add(it)
-                }
-            }
-            locales = newLocales
-        }
-        
-        override fun findItemToAdd(): CwtLocalisationLocaleConfig? {
-            val dialog = ParadoxLocaleDialog(null, localeList)
-            if(dialog.showAndGet()) return dialog.locale
-            return null
-        }
-        
-        override fun editSelectedItem(item: CwtLocalisationLocaleConfig?): CwtLocalisationLocaleConfig? {
-            val dialog = ParadoxLocaleDialog(item, localeList)
-            if(dialog.showAndGet()) return dialog.locale
-            return item
         }
     }
     

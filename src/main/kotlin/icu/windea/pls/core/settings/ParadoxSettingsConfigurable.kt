@@ -49,7 +49,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent {
                             toolTipText = PlsBundle.message("settings.general.preferredLocale.tooltip")
                         }
-                    comboBox(settings.locales,
+                    comboBox(settings.localeList,
                         listCellRenderer { value, _, _ ->
                             if(value == "auto") {
                                 text = PlsBundle.message("settings.general.preferredLocale.auto")

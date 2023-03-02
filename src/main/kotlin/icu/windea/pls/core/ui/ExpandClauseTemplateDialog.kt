@@ -89,13 +89,14 @@ class ExpandClauseTemplateDialog(
                 return element.name
             }
         }
-        val elementsList = ElementsListTable(tableView, elementsTableModel, disposable, context, this)
+        val listTable = ElementsListTable(tableView, elementsTableModel, disposable, context, this)
+        val table = listTable.table
         //add, remove, move up, move down, duplicate
-        val panel = ToolbarDecorator.createDecorator(elementsList.table)
-            .addExtraAction(ElementsToolbarActions.DuplicateAction(elementsList))
+        val panel = ToolbarDecorator.createDecorator(table)
+            .addExtraAction(ElementsToolbarActions.DuplicateAction(listTable))
             .letIf(multipleGroup) {
-                it.addExtraAction(ElementsToolbarActions.SwitchToPrevAction(elementsList))
-                it.addExtraAction(ElementsToolbarActions.SwitchToNextAction(elementsList))
+                it.addExtraAction(ElementsToolbarActions.SwitchToPrevAction(listTable))
+                it.addExtraAction(ElementsToolbarActions.SwitchToNextAction(listTable))
             }
             .createPanel()
         panel.preferredSize = Dimension(panel.preferredSize.width, 540)

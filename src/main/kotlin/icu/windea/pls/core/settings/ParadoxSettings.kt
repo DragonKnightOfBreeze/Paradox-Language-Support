@@ -95,7 +95,7 @@ class ParadoxSettingsState : BaseState() {
 	
 	val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet().orEmpty() }
 	
-	val locales by lazy {
+	val localeList by lazy {
 		buildList {
 			add("auto")
 			addAll(getCwtConfig().core.localisationLocalesNoDefault.keys)
