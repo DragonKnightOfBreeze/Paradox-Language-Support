@@ -1,9 +1,12 @@
 package icu.windea.pls.extension.diagram
 
 import com.intellij.diagram.*
-import com.intellij.diagram.extras.*
+import com.intellij.diagram.extras.custom.*
 import com.intellij.diagram.presentation.*
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.graph.*
+import com.intellij.openapi.graph.layout.*
+import com.intellij.openapi.graph.settings.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
@@ -63,14 +66,14 @@ class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
     class ElementManager : AbstractDiagramElementManager<PsiElement>() {
         override fun findInDataContext(context: DataContext): PsiElement? {
             //rootFile
-            val project = context.getData(CommonDataKeys.PROJECT) ?: return null
             val file = context.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
+            val project = context.getData(CommonDataKeys.PROJECT) ?: return null
             val rootFile = file.fileInfo?.rootInfo?.rootFile ?: return null
-            return rootFile.toPsiFile(project)
+            return rootFile.toPsiDirectory(project)
         }
         
         override fun isAcceptableAsNode(o: Any?): Boolean {
-            return o is ParadoxScriptProperty
+            return o is PsiDirectory || o is ParadoxScriptProperty
         }
         
         override fun getEditorTitle(element: PsiElement?, additionalElements: MutableCollection<PsiElement>): String? {
@@ -80,24 +83,36 @@ class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
         }
         
         override fun getElementTitle(element: PsiElement): String? {
-            if(element !is ParadoxScriptProperty) return null
-            return ParadoxTechTreeHandler.getName(element)
+            return when(element) {
+                is PsiDirectory -> element.name
+                is ParadoxScriptProperty -> ParadoxTechnologyHandler.getName(element)
+                else -> null
+            }
         }
         
         override fun getItemName(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder): SimpleColoredText? {
-            if(nodeElement !is ParadoxScriptProperty) return null
-            val name = nodeElement.definitionInfo?.name.orAnonymous()
-            return SimpleColoredText(name, DEFAULT_TITLE_ATTR)
+            return when(nodeElement) {
+                is PsiDirectory -> SimpleColoredText(nodeElement.name, DEFAULT_TITLE_ATTR)
+                is ParadoxScriptProperty -> {
+                    val name = ParadoxTechnologyHandler.getName(nodeElement)
+                    SimpleColoredText(name, DEFAULT_TITLE_ATTR)
+                }
+                else -> null
+            }
         }
         
         override fun getNodeItems(nodeElement: PsiElement?, builder: DiagramBuilder): Array<Any> {
-            if(nodeElement !is ParadoxScriptProperty) return emptyArray()
-            val result = mutableListOf<ParadoxScriptProperty>()
-            nodeElement.block?.processProperty(conditional = true, inline = true) {
-                if(it.name.lowercase() in ITEM_PROP_KEYS) result.add(it)
-                true
+            return when(nodeElement) {
+                is ParadoxScriptProperty -> {
+                    val result = mutableListOf<ParadoxScriptProperty>()
+                    nodeElement.block?.processProperty(conditional = true, inline = true) {
+                        if(it.name.lowercase() in ITEM_PROP_KEYS) result.add(it)
+                        true
+                    }
+                    result.toTypedArray()
+                }
+                else -> emptyArray()
             }
-            return result.toTypedArray()
         }
         
         override fun getItemType(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): SimpleColoredText {
@@ -124,9 +139,9 @@ class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
             return rootPath
         }
         
-        override fun resolveElementByFQN(s: String, project: Project): PsiFile? {
-            return try{
-                s.toVirtualFile()?.toPsiFile(project)
+        override fun resolveElementByFQN(s: String, project: Project): PsiDirectory? {
+            return try {
+                s.toVirtualFile()?.toPsiDirectory(project)
             } catch(e: Exception) {
                 null
             }
@@ -139,7 +154,18 @@ class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
         }
     }
     
-    class Extras : DiagramExtras<PsiElement>()
+    class Extras : CommonDiagramExtras<PsiElement>() {
+        //com.intellij.diagram.extras.DiagramExtras.getCustomLayouter
+        
+        override fun getCustomLayouter(settings: GraphSettings, project: Project?): Layouter {
+            val layouter = GraphManager.getGraphManager().createHierarchicGroupLayouter()
+            layouter.orientationLayouter = GraphManager.getGraphManager().createOrientationLayouter(LayoutOrientation.LEFT_TO_RIGHT)
+            layouter.minimalNodeDistance = 20.0
+            layouter.minimalLayerDistance = 50.0
+            layouter.layerer = GraphManager.getGraphManager().createBFSLayerer()
+            return layouter
+        }
+    }
     
     class Node(
         technology: ParadoxScriptProperty,
@@ -148,7 +174,7 @@ class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
         override fun getTooltip(): String? {
             val element = identifyingElement
             if(element !is ParadoxScriptProperty) return null
-            return ParadoxTechTreeHandler.getName(element)
+            return ParadoxTechnologyHandler.getName(element)
         }
     }
     
@@ -185,6 +211,8 @@ class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
         }
         
         override fun refreshDataModel() {
+            _nodes.clear()
+            _edges.clear()
             val selector = definitionSelector(project, file).contextSensitive().distinctByName()
             val technologies = ParadoxDefinitionSearch.search("technology", selector).findAll()
             if(technologies.isEmpty()) return
@@ -194,12 +222,12 @@ class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
                 if(technology !is ParadoxScriptProperty) continue
                 val node = Node(technology, provider)
                 nodeMap.put(technology, node)
-                techMap.put(ParadoxTechTreeHandler.getName(technology), technology)
+                techMap.put(ParadoxTechnologyHandler.getName(technology), technology)
                 _nodes.add(node)
             }
             for(technology in technologies) {
                 if(technology !is ParadoxScriptProperty) continue
-                val prerequisites = ParadoxTechTreeHandler.getPrerequisites(technology)
+                val prerequisites = ParadoxTechnologyHandler.getPrerequisites(technology)
                 if(prerequisites.isEmpty()) continue
                 for(prerequisite in prerequisites) {
                     val source = nodeMap.get(technology) ?: continue

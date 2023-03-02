@@ -297,6 +297,11 @@ inline fun <reified T : PsiFile> VirtualFile.toPsiFile(project: Project): T? {
 	return PsiManager.getInstance(project).findFile(this) as? T
 }
 
+/** 将VirtualFile转化为指定类型的PsiDirectory。 */
+inline fun VirtualFile.toPsiDirectory(project: Project): PsiDirectory? {
+	return PsiManager.getInstance(project).findDirectory(this)
+}
+
 /** 得到当前VirtualFile相对于指定的VirtualFile的路径。去除作为前缀的"/"。 */
 fun VirtualFile.relativePathTo(other: VirtualFile): String {
 	return this.path.removePrefix(other.path).trimStart('/')
