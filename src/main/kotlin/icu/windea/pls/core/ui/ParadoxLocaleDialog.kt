@@ -5,7 +5,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 
-class SelectParadoxLocaleDialog(
+class ParadoxLocaleDialog(
 	locale: CwtLocalisationLocaleConfig? = null,
 	existingLocales: List<CwtLocalisationLocaleConfig> = emptyList(),
 	private val localesToSelect: List<CwtLocalisationLocaleConfig> = getLocalesToSelect(existingLocales, locale)

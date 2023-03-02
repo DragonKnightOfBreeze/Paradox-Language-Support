@@ -114,7 +114,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             if(infoMap.isNotEmpty()) {
                 //显示为WEAK_WARNING，且缺失多个时，每个算作一个问题
                 for((info, key, locale) in infoMap.values) {
-                    val message = getMessage(info, key, locale) ?: continue
+                    val message = getMessage(info, key, locale)
                     holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING)
                 }
             }
@@ -257,13 +257,13 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         }
         
         override fun findItemToAdd(): CwtLocalisationLocaleConfig? {
-            val dialog = SelectParadoxLocaleDialog(null, localeList)
+            val dialog = ParadoxLocaleDialog(null, localeList)
             if(dialog.showAndGet()) return dialog.locale
             return null
         }
         
         override fun editSelectedItem(item: CwtLocalisationLocaleConfig?): CwtLocalisationLocaleConfig? {
-            val dialog = SelectParadoxLocaleDialog(item, localeList)
+            val dialog = ParadoxLocaleDialog(item, localeList)
             if(dialog.showAndGet()) return dialog.locale
             return item
         }

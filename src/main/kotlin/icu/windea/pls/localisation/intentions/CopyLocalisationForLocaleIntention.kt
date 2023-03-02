@@ -130,7 +130,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 			).notify(project)
 		}
 		
-		val localePopup = SelectParadoxLocalePopup(preferredParadoxLocale(), onChosen = onChosen)
+		val localePopup = ParadoxLocalePopup(preferredParadoxLocale(), onChosen = onChosen)
 		JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
 	}
 	

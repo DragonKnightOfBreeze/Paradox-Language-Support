@@ -5,7 +5,7 @@ import com.intellij.openapi.ui.popup.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 
-class SelectParadoxLocalePopup(
+class ParadoxLocalePopup(
 	locale: CwtLocalisationLocaleConfig? = null,
 	existingLocales: List<CwtLocalisationLocaleConfig> = emptyList(),
 	localesToSelect: List<CwtLocalisationLocaleConfig> = getLocalesToSelect(existingLocales, locale),
