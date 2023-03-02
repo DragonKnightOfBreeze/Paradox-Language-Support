@@ -10,61 +10,49 @@ import icu.windea.pls.script.*
  * 监听文件以跟踪更改。
  */
 class ParadoxModificationTrackFileListener : AsyncFileListener {
-	override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier {
-		return object : AsyncFileListener.ChangeApplier {
-			override fun afterVfsChange() {
-				val files = mutableSetOf<VirtualFile>()
-				for(event in events) {
-					when {
-						event is VFileContentChangeEvent -> files.add(event.file)
-						event is VFileCreateEvent -> files.add(event.parent)
-						event is VFileDeleteEvent -> files.add(event.file)
-						event is VFileMoveEvent -> files.add(event.file)
-					}
-				}
-				onChange(files)
-			}
-			
-			private fun onChange(files: MutableSet<VirtualFile>) {
-				//这才是正确的做法，如此简单！
-				var trackScriptFile = true
-				var trackOnAction = true
-				var trackInlineScript = true
-				var trackModifier = true
-				var count = 0
-				val total = 4
-				val provider = ParadoxModificationTrackerProvider.getInstance()
-				for(file in files) {
-					if(file.fileType == ParadoxScriptFileType) {
-						val fileInfo = file.fileInfo ?: continue
-						val filePath = fileInfo.path.path
-						if(trackScriptFile) {
-							trackScriptFile = false
-							count++
-							provider.ScriptFile.incModificationCount()
-						}
-						if(trackOnAction && "common/on_actions".matchesPath(filePath)) {
-							trackOnAction = false
-							count++
-							provider.OnAction.incModificationCount()
-						}
-						if("common/inline_scripts".matchesPath(filePath)) {
-							if(trackInlineScript) {
-								trackInlineScript = false
-								count++
-								provider.InlineScript.incModificationCount()
-							}
-						} else if("common".matchesPath(filePath)) {
-							if(trackModifier) {
-								trackModifier = false
-								count++
-								provider.Modifier.incModificationCount()
-							}
-						}
-					}
-					if(count == total) break
-				}
-			}
-		}
-	}
+    override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier {
+        return object : AsyncFileListener.ChangeApplier {
+            override fun afterVfsChange() {
+                val files = mutableSetOf<VirtualFile>()
+                for(event in events) {
+                    when {
+                        event is VFileContentChangeEvent -> files.add(event.file)
+                        event is VFileCreateEvent -> files.add(event.parent)
+                        event is VFileDeleteEvent -> files.add(event.file)
+                        event is VFileMoveEvent -> files.add(event.file)
+                    }
+                }
+                onChange(files)
+            }
+            
+            private fun onChange(files: MutableSet<VirtualFile>) {
+                //这才是正确的做法，如此简单！
+                val provider = ParadoxModificationTrackerProvider.getInstance()
+                for(file in files) {
+                    if(file.fileType == ParadoxScriptFileType) {
+                        val fileInfo = file.fileInfo ?: continue
+                        val filePath = fileInfo.path.path
+                        provider.ScriptFile.incModificationCount()
+                        if("common".matchesPath(filePath) && !"common/inline_scripts".matchesPath(filePath)) {
+                            provider.Modifier.incModificationCount()
+                        }
+                        when {
+                            "common/technologies".matchesPath(filePath) -> {
+                                provider.Technologies.incModificationCount()
+                            }
+                            "common/inline_scripts".matchesPath(filePath) -> {
+                                provider.InlineScripts.incModificationCount()
+                            }
+                            "common/on_actions".matchesPath(filePath) -> {
+                                provider.OnActions.incModificationCount()
+                            }
+                            "events".matchesPath(filePath) -> {
+                                provider.Events.incModificationCount()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

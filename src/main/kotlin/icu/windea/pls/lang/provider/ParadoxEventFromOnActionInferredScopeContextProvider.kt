@@ -31,7 +31,7 @@ class ParadoxEventFromOnActionInferredScopeContextProvider: ParadoxInferredScope
     private fun getInferredScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
         return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedScopeContextInferenceInfoKey) {
             val value = resolveInferredScopeContext(definition)
-            val tracker = ParadoxModificationTrackerProvider.getInstance().OnAction
+            val tracker = ParadoxModificationTrackerProvider.getInstance().OnActions
             CachedValueProvider.Result.create(value, tracker)
         }
     }

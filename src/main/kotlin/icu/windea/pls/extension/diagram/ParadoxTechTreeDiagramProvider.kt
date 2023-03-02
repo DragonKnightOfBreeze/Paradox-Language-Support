@@ -1,0 +1,244 @@
+package icu.windea.pls.extension.diagram
+
+import com.intellij.diagram.*
+import com.intellij.diagram.extras.*
+import com.intellij.diagram.presentation.*
+import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
+import com.intellij.openapi.vfs.*
+import com.intellij.psi.*
+import com.intellij.ui.*
+import com.intellij.util.PlatformIcons
+import icons.*
+import icu.windea.pls.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.search.*
+import icu.windea.pls.core.search.selectors.*
+import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.*
+import org.intellij.grammar.generator.*
+import javax.swing.*
+
+class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
+    companion object {
+        val CAT_PROPERTIES = DiagramCategory(PlsBundle.lazyMessage("diagram.techTree.category.properties"), PlatformIcons.PROPERTY_ICON, true, false)
+        val CATEGORIES = arrayOf(CAT_PROPERTIES)
+        //val CAT_TIER = DiagramCategory(PlsBundle.lazyMessage("diagram.techTree.category.tier"), PlatformIcons.PROPERTY_ICON, true, false)
+        //val CAT_CATEGORY = DiagramCategory(PlsBundle.lazyMessage("diagram.techTree.category.category"), PlatformIcons.PROPERTY_ICON, true, false)
+        //val CAT_AREA = DiagramCategory(PlsBundle.lazyMessage("diagram.techTree.category.area"), PlatformIcons.PROPERTY_ICON, true, false)
+        //val CATEGORIES = arrayOf(CAT_TIER, CAT_CATEGORY, CAT_AREA)
+        val ITEM_PROP_KEYS = arrayOf(
+            "icon",
+            "tier", "category", "area",
+            "cost", "cost_per_level", "levels",
+            "is_rare", "is_dangerous"
+        )
+        
+        val REL_UNLOCK = object : DiagramRelationshipInfoAdapter("UNLOCK", DiagramLineType.SOLID, PlsBundle.message("diagram.techTree.rel.unlock")) {
+            override fun getTargetArrow() = DELTA
+        }
+    }
+    
+    class NodeContentManager : AbstractDiagramNodeContentManager() {
+        override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?): Boolean {
+            //if(builder != null && nodeElement is ParadoxScriptProperty && nodeElement.definitionInfo?.type == "technology") {
+            //    return when(category) {
+            //        CAT_TIER -> item is ParadoxScriptProperty && item.name.equals("tier", true)
+            //        CAT_CATEGORY -> item is ParadoxScriptProperty && item.name.equals("category", true)
+            //        CAT_AREA -> item is ParadoxScriptProperty && item.name.equals("area", true)
+            //        else -> null
+            //    }
+            //}
+            //return false
+            return true
+        }
+        
+        override fun getContentCategories(): Array<DiagramCategory> {
+            return CATEGORIES
+        }
+    }
+    
+    class ElementManager : AbstractDiagramElementManager<PsiElement>() {
+        override fun findInDataContext(context: DataContext): PsiElement? {
+            //rootFile
+            val project = context.getData(CommonDataKeys.PROJECT) ?: return null
+            val file = context.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
+            val rootFile = file.fileInfo?.rootInfo?.rootFile ?: return null
+            return rootFile.toPsiFile(project)
+        }
+        
+        override fun isAcceptableAsNode(o: Any?): Boolean {
+            return o is ParadoxScriptProperty
+        }
+        
+        override fun getEditorTitle(element: PsiElement?, additionalElements: MutableCollection<PsiElement>): String? {
+            if(element == null) return null
+            val gameType = selectGameType(element) ?: return null //unexpected
+            return PlsBundle.message("diagram.techTree.editorTitle", gameType.description)
+        }
+        
+        override fun getElementTitle(element: PsiElement): String? {
+            if(element !is ParadoxScriptProperty) return null
+            return ParadoxTechTreeHandler.getName(element)
+        }
+        
+        override fun getItemName(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder): SimpleColoredText? {
+            if(nodeElement !is ParadoxScriptProperty) return null
+            val name = nodeElement.definitionInfo?.name.orAnonymous()
+            return SimpleColoredText(name, DEFAULT_TITLE_ATTR)
+        }
+        
+        override fun getNodeItems(nodeElement: PsiElement?, builder: DiagramBuilder): Array<Any> {
+            if(nodeElement !is ParadoxScriptProperty) return emptyArray()
+            val result = mutableListOf<ParadoxScriptProperty>()
+            nodeElement.block?.processProperty(conditional = true, inline = true) {
+                if(it.name.lowercase() in ITEM_PROP_KEYS) result.add(it)
+                true
+            }
+            return result.toTypedArray()
+        }
+        
+        override fun getItemType(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): SimpleColoredText {
+            val text = RuleGraphHelper.getCardinalityText(RuleGraphHelper.Cardinality.REQUIRED)
+            return SimpleColoredText(text, SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES)
+        }
+        
+        override fun getItemIcon(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): Icon {
+            return PlsIcons.Property
+        }
+        
+        override fun getNodeTooltip(element: PsiElement?): String? {
+            return null
+        }
+    }
+    
+    class VfsResolver : DiagramVfsResolver<PsiElement> {
+        //based on rootFile
+        
+        override fun getQualifiedName(element: PsiElement?): String? {
+            if(element == null) return null
+            val rootInfo = element.fileInfo?.rootInfo ?: return null
+            val rootPath = rootInfo.rootFile.path
+            return rootPath
+        }
+        
+        override fun resolveElementByFQN(s: String, project: Project): PsiFile? {
+            return try{
+                s.toVirtualFile()?.toPsiFile(project)
+            } catch(e: Exception) {
+                null
+            }
+        }
+    }
+    
+    class RelationshipManager : DiagramRelationshipManager<PsiElement> {
+        override fun getDependencyInfo(s: PsiElement?, t: PsiElement?, category: DiagramCategory?): DiagramRelationshipInfo? {
+            return null
+        }
+    }
+    
+    class Extras : DiagramExtras<PsiElement>()
+    
+    class Node(
+        technology: ParadoxScriptProperty,
+        provider: ParadoxTechTreeDiagramProvider
+    ) : PsiDiagramNode<PsiElement>(technology, provider) {
+        override fun getTooltip(): String? {
+            val element = identifyingElement
+            if(element !is ParadoxScriptProperty) return null
+            return ParadoxTechTreeHandler.getName(element)
+        }
+    }
+    
+    class Edge(
+        source: Node,
+        target: Node,
+        relationship: DiagramRelationshipInfo = REL_UNLOCK
+    ) : DiagramEdgeBase<PsiElement>(source, target, relationship)
+    
+    class DataModel(
+        project: Project,
+        val file: VirtualFile?,
+        val provider: ParadoxTechTreeDiagramProvider
+    ) : DiagramDataModel<PsiElement>(project, provider), ModificationTracker {
+        val _nodes = mutableSetOf<DiagramNode<PsiElement>>()
+        val _edges = mutableSetOf<DiagramEdge<PsiElement>>()
+        
+        override fun getNodes() = _nodes
+        
+        override fun getEdges() = _edges
+        
+        override fun getNodeName(node: DiagramNode<PsiElement>) = node.tooltip.orAnonymous()
+        
+        override fun addElement(p0: PsiElement?) = null
+        
+        override fun getModificationTracker() = this
+        
+        override fun getModificationCount(): Long {
+            return ParadoxModificationTrackerProvider.getInstance().Technologies.modificationCount
+        }
+        
+        override fun dispose() {
+            
+        }
+        
+        override fun refreshDataModel() {
+            val selector = definitionSelector(project, file).contextSensitive().distinctByName()
+            val technologies = ParadoxDefinitionSearch.search("technology", selector).findAll()
+            if(technologies.isEmpty()) return
+            val nodeMap = mutableMapOf<ParadoxScriptProperty, Node>()
+            val techMap = mutableMapOf<String, ParadoxScriptProperty>()
+            for(technology in technologies) {
+                if(technology !is ParadoxScriptProperty) continue
+                val node = Node(technology, provider)
+                nodeMap.put(technology, node)
+                techMap.put(ParadoxTechTreeHandler.getName(technology), technology)
+                _nodes.add(node)
+            }
+            for(technology in technologies) {
+                if(technology !is ParadoxScriptProperty) continue
+                val prerequisites = ParadoxTechTreeHandler.getPrerequisites(technology)
+                if(prerequisites.isEmpty()) continue
+                for(prerequisite in prerequisites) {
+                    val source = nodeMap.get(technology) ?: continue
+                    val target = techMap.get(prerequisite)?.let { nodeMap.get(it) } ?: continue
+                    val edge = Edge(source, target)
+                    _edges.add(edge)
+                }
+            }
+        }
+    }
+    
+    val _elementManager = ElementManager()
+    val _vfsResolver = VfsResolver()
+    val _relationshipManager = RelationshipManager()
+    val _extras = Extras()
+    
+    init {
+        _elementManager.setUmlProvider(this)
+    }
+    
+    override fun getID() = "Paradox.TechTree"
+    
+    override fun createVisibilityManager() = emptyDiagramVisibilityManager
+    
+    override fun createNodeContentManager() = NodeContentManager()
+    
+    override fun getElementManager() = _elementManager
+    
+    override fun getVfsResolver() = _vfsResolver
+    
+    override fun getRelationshipManager() = _relationshipManager
+    
+    override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
+    
+    override fun getExtras() = _extras
+    
+    override fun getAllContentCategories() = CATEGORIES
+    
+    override fun getActionName(isPopup: Boolean) = PlsBundle.message("diagram.techTree.actionName")
+    
+    override fun getPresentableName() = PlsBundle.message("diagram.techTree.name")
+}

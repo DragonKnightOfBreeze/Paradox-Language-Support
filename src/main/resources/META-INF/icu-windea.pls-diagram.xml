@@ -1,5 +1,5 @@
 <idea-plugin>
-  <extensions defaultExtensionNs="icu.windea.pls">
-    
+  <extensions defaultExtensionNs="com.intellij.diagram">
+    <Provider implementation="icu.windea.pls.extension.diagram.ParadoxTechTreeDiagramProvider"/>
   </extensions>
 </idea-plugin>

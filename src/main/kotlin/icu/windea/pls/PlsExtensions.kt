@@ -266,7 +266,6 @@ private fun resolveDefinitionLink(linkWithoutPrefix: String, sourceElement: PsiE
     ProgressManager.checkCanceled()
     val tokens = linkWithoutPrefix.split('/')
     if(tokens.size > 3) return null
-    val gameType = tokens.getOrNull(0)?.let { ParadoxGameType.resolve(it) } ?: return null
     val typeExpression = tokens.getOrNull(1) ?: return null
     val name = tokens.getOrNull(2) ?: return null
     val project = sourceElement.project
@@ -278,7 +277,6 @@ private fun resolveLocalisationLink(linkWithoutPrefix: String, sourceElement: Ps
     ProgressManager.checkCanceled()
     val tokens = linkWithoutPrefix.split('/')
     if(tokens.size > 2) return null
-    val gameType = tokens.getOrNull(0)?.let { ParadoxGameType.resolve(it) } ?: return null
     val name = tokens.getOrNull(1) ?: return null
     val project = sourceElement.project
     val selector = localisationSelector(project, sourceElement).contextSensitive().preferLocale(sourceElement.localeConfig)
@@ -288,7 +286,6 @@ private fun resolveLocalisationLink(linkWithoutPrefix: String, sourceElement: Ps
 private fun resolveFilePathLink(linkWithoutPrefix: String, sourceElement: PsiElement): PsiFile? {
     ProgressManager.checkCanceled()
     val tokens = linkWithoutPrefix.split('/', limit = 2)
-    val gameType = tokens.getOrNull(0)?.let { ParadoxGameType.resolve(it) } ?: return null
     val filePath = tokens.getOrNull(1) ?: return null
     val project = sourceElement.project
     val selector = fileSelector(project, sourceElement).contextSensitive()

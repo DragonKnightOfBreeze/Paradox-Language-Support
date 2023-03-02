@@ -238,7 +238,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
     
     private fun doRefreshInlineScripts() {
         //重新解析inline script文件
-        ParadoxModificationTrackerProvider.getInstance().InlineScript.incModificationCount()
+        ParadoxModificationTrackerProvider.getInstance().InlineScripts.incModificationCount()
         //刷新inline script文件的内嵌提示
         ParadoxCoreHandler.refreshInlayHints { file, _ ->
             ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null
