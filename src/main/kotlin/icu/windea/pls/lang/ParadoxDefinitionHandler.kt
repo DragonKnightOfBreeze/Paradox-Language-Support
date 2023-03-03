@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_PARAMETER")
-
 package icu.windea.pls.lang
 
 import com.intellij.openapi.progress.*
@@ -17,7 +15,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 用于处理定义信息。
+ * 用于处理定义。
  * 
  * @see ParadoxScriptDefinitionElement
  * @see ParadoxDefinitionInfo
@@ -460,7 +458,7 @@ object ParadoxDefinitionHandler {
 	
 	@JvmStatic
 	fun getSubtypes(element: ParadoxScriptDefinitionElement): List<String>? {
-		return runCatching { element.getStub() }.getOrNull()?.subtypes ?: element.definitionInfo?.subtypes
+		return element.definitionInfo?.subtypes
 	}
 	
 	@JvmStatic
@@ -469,7 +467,7 @@ object ParadoxDefinitionHandler {
 		//	val option = config.options?.find { it.key == "prefix" }
 		//	return option?.stringValue.orEmpty()
 		//}
-		var prefix = ""
+		var prefix: String
 		typeConfig.subtypes.values.forEach { subtypeConfig ->
 			val config = subtypeConfig.config
 			prefix = config.getOrPutUserData(definitionNamePrefixKey) {

@@ -18,7 +18,6 @@
 * BUG修复
   * [ ] 基本修复：[Support for HoI4 is almost completely broken #10](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/10)
 * 功能优化
-  * [ ] 定义的subtype可能需要通过访问索引获取，不能在索引时就获取 
   * [ ] 将获取作用域上下文的代码提取成扩展点
   * [ ] 有些地方获取的作用域是可能的（`from = country?`）
   * [ ] 改为基于语言注入功能（`Language Injection`）支持脚本文件中的各种复杂表达式以及本地化命令表达式
@@ -72,6 +71,7 @@
 * BUG修复
 * 功能优化
   * 完善Stellaris的CWT规则文件（检查游戏目录中的所有脚本文件） - 更新中
+  * [X] 定义的subtype可能需要通过访问索引获取，不能在索引时就获取
   * [X] 如果CWT规则文件中的一行文档注释以`\`结束，则解析时不在这里换行
   * [X] 优化作用域上下文的解析逻辑，在快速文档和类型信息中也显示prev系列作用域
   * [X] 在进行代码提示时就预测并提示作用域上下文

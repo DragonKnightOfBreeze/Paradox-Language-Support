@@ -42,7 +42,6 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
 		if(stub is ParadoxScriptFileStub) {
 			dataStream.writeName(stub.name)
 			dataStream.writeName(stub.type)
-			dataStream.writeName(stub.subtypes?.toCommaDelimitedString())
 			dataStream.writeName(stub.gameType?.id)
 		}
 		super.serialize(stub, dataStream)
@@ -51,9 +50,8 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): PsiFileStub<*> {
 		val name = dataStream.readNameString()
 		val type = dataStream.readNameString()
-		val subtypes = dataStream.readNameString()?.toCommaDelimitedStringList()
 		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
-		return ParadoxScriptFileStubImpl(null, name, type, subtypes, gameType)
+		return ParadoxScriptFileStubImpl(null, name, type, gameType)
 	}
 	
 	class Builder : DefaultStubBuilder() {
@@ -62,9 +60,8 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
 			val definitionInfo = psiFile.definitionInfo?.takeIf { it.isGlobal }
 			val name = definitionInfo?.name
 			val type = definitionInfo?.type
-			val subtypes = definitionInfo?.subtypes
 			val gameType = definitionInfo?.gameType
-			return ParadoxScriptFileStubImpl(psiFile, name, type, subtypes, gameType)
+			return ParadoxScriptFileStubImpl(psiFile, name, type, gameType)
 		}
 		
 		override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {

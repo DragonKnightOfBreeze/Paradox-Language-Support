@@ -8,12 +8,11 @@ class ParadoxScriptPropertyStubImpl(
 	parent: StubElement<*>,
 	override val name: String?,
 	override val type: String?,
-	override val subtypes: List<String>?,
 	override val rootKey: String?,
 	override val gameType: ParadoxGameType?
 ) : StubBase<ParadoxScriptProperty>(parent, ParadoxScriptStubElementTypes.PROPERTY), ParadoxScriptPropertyStub {
 	override fun toString(): String {
-		return "ParadoxScriptPropertyStub(name=$name, type=$type, subtypes=$subtypes, rootKey=$rootKey, gameType=$gameType)"
+		return "ParadoxScriptPropertyStub(name=$name, type=$type, rootKey=$rootKey, gameType=$gameType)"
 	}
 }
 

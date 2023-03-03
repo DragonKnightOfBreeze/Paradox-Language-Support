@@ -10,7 +10,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 用于处理定义成员信息。
+ * 用于处理定义成员。
  * 
  * @see ParadoxScriptMemberElement
  * @see ParadoxDefinitionMemberInfo
