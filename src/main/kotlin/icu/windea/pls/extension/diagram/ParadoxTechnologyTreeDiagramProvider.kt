@@ -16,21 +16,19 @@ import com.intellij.util.PlatformIcons
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.*
-import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import org.intellij.grammar.generator.*
 import javax.swing.*
 
-class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
+class ParadoxTechnologyTreeDiagramProvider : DiagramProvider<PsiElement>() {
     companion object {
-        val CAT_PROPERTIES = DiagramCategory(PlsBundle.lazyMessage("diagram.techTree.category.properties"), PlatformIcons.PROPERTY_ICON, true, false)
+        val CAT_PROPERTIES = DiagramCategory(PlsBundle.lazyMessage("diagram.technologyTree.category.properties"), PlatformIcons.PROPERTY_ICON, true, false)
         val CATEGORIES = arrayOf(CAT_PROPERTIES)
-        //val CAT_TIER = DiagramCategory(PlsBundle.lazyMessage("diagram.techTree.category.tier"), PlatformIcons.PROPERTY_ICON, true, false)
-        //val CAT_CATEGORY = DiagramCategory(PlsBundle.lazyMessage("diagram.techTree.category.category"), PlatformIcons.PROPERTY_ICON, true, false)
-        //val CAT_AREA = DiagramCategory(PlsBundle.lazyMessage("diagram.techTree.category.area"), PlatformIcons.PROPERTY_ICON, true, false)
+        //val CAT_TIER = DiagramCategory(PlsBundle.lazyMessage("diagram.technologyTree.category.tier"), PlatformIcons.PROPERTY_ICON, true, false)
+        //val CAT_CATEGORY = DiagramCategory(PlsBundle.lazyMessage("diagram.technologyTree.category.category"), PlatformIcons.PROPERTY_ICON, true, false)
+        //val CAT_AREA = DiagramCategory(PlsBundle.lazyMessage("diagram.technologyTree.category.area"), PlatformIcons.PROPERTY_ICON, true, false)
         //val CATEGORIES = arrayOf(CAT_TIER, CAT_CATEGORY, CAT_AREA)
         val ITEM_PROP_KEYS = arrayOf(
             "icon",
@@ -39,7 +37,7 @@ class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
             "is_rare", "is_dangerous"
         )
         
-        val REL_UNLOCK = object : DiagramRelationshipInfoAdapter("UNLOCK", DiagramLineType.SOLID, PlsBundle.message("diagram.techTree.rel.unlock")) {
+        val REL_UNLOCK = object : DiagramRelationshipInfoAdapter("UNLOCK", DiagramLineType.SOLID, PlsBundle.message("diagram.technologyTree.rel.unlock")) {
             override fun getTargetArrow() = DELTA
         }
     }
@@ -79,7 +77,7 @@ class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
         override fun getEditorTitle(element: PsiElement?, additionalElements: MutableCollection<PsiElement>): String? {
             if(element == null) return null
             val gameType = selectGameType(element) ?: return null //unexpected
-            return PlsBundle.message("diagram.techTree.editorTitle", gameType.description)
+            return PlsBundle.message("diagram.technologyTree.editorTitle", gameType.description)
         }
         
         override fun getElementTitle(element: PsiElement): String? {
@@ -115,7 +113,8 @@ class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
             }
         }
         
-        override fun getItemType(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): SimpleColoredText {
+        override fun getItemType(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): SimpleColoredText? {
+            if(nodeItem == null) return null
             val text = RuleGraphHelper.getCardinalityText(RuleGraphHelper.Cardinality.REQUIRED)
             return SimpleColoredText(text, SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES)
         }
@@ -154,9 +153,11 @@ class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
         }
     }
     
+    //class Extras : DiagramExtras<PsiElement>()
+    
     class Extras : CommonDiagramExtras<PsiElement>() {
         //com.intellij.diagram.extras.DiagramExtras.getCustomLayouter
-        
+
         override fun getCustomLayouter(settings: GraphSettings, project: Project?): Layouter {
             val layouter = GraphManager.getGraphManager().createHierarchicGroupLayouter()
             layouter.orientationLayouter = GraphManager.getGraphManager().createOrientationLayouter(LayoutOrientation.LEFT_TO_RIGHT)
@@ -169,7 +170,7 @@ class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
     
     class Node(
         technology: ParadoxScriptProperty,
-        provider: ParadoxTechTreeDiagramProvider
+        provider: ParadoxTechnologyTreeDiagramProvider
     ) : PsiDiagramNode<PsiElement>(technology, provider) {
         override fun getTooltip(): String? {
             val element = identifyingElement
@@ -186,8 +187,8 @@ class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
     
     class DataModel(
         project: Project,
-        val file: VirtualFile?,
-        val provider: ParadoxTechTreeDiagramProvider
+        val file: VirtualFile?, //umlFile
+        val provider: ParadoxTechnologyTreeDiagramProvider
     ) : DiagramDataModel<PsiElement>(project, provider), ModificationTracker {
         val _nodes = mutableSetOf<DiagramNode<PsiElement>>()
         val _edges = mutableSetOf<DiagramEdge<PsiElement>>()
@@ -198,7 +199,7 @@ class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
         
         override fun getNodeName(node: DiagramNode<PsiElement>) = node.tooltip.orAnonymous()
         
-        override fun addElement(p0: PsiElement?) = null
+        override fun addElement(element: PsiElement?) = null
         
         override fun getModificationTracker() = this
         
@@ -213,20 +214,18 @@ class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
         override fun refreshDataModel() {
             _nodes.clear()
             _edges.clear()
-            val selector = definitionSelector(project, file).contextSensitive().distinctByName()
-            val technologies = ParadoxDefinitionSearch.search("technology", selector).findAll()
+            val originalFile = file?.getUserData(DiagramDataKeys.ORIGINAL_ELEMENT)
+            val technologies = ParadoxTechnologyHandler.getTechnologies(project, originalFile)
             if(technologies.isEmpty()) return
             val nodeMap = mutableMapOf<ParadoxScriptProperty, Node>()
             val techMap = mutableMapOf<String, ParadoxScriptProperty>()
             for(technology in technologies) {
-                if(technology !is ParadoxScriptProperty) continue
                 val node = Node(technology, provider)
                 nodeMap.put(technology, node)
                 techMap.put(ParadoxTechnologyHandler.getName(technology), technology)
                 _nodes.add(node)
             }
             for(technology in technologies) {
-                if(technology !is ParadoxScriptProperty) continue
                 val prerequisites = ParadoxTechnologyHandler.getPrerequisites(technology)
                 if(prerequisites.isEmpty()) continue
                 for(prerequisite in prerequisites) {
@@ -266,7 +265,7 @@ class ParadoxTechTreeDiagramProvider : DiagramProvider<PsiElement>() {
     
     override fun getAllContentCategories() = CATEGORIES
     
-    override fun getActionName(isPopup: Boolean) = PlsBundle.message("diagram.techTree.actionName")
+    override fun getActionName(isPopup: Boolean) = PlsBundle.message("diagram.technologyTree.actionName")
     
-    override fun getPresentableName() = PlsBundle.message("diagram.techTree.name")
+    override fun getPresentableName() = PlsBundle.message("diagram.technologyTree.name")
 }

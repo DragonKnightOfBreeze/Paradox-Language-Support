@@ -357,8 +357,7 @@ object ParadoxDefinitionHandler {
 				//匹配值
 				propertyConfig.stringValue != null -> {
 					val expression = ParadoxDataExpression.resolve(propValue)
-					val matchType = getMatchTypePossibleStatic(configGroup)
-					return CwtConfigHandler.matchesScriptExpression(propValue, expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchType)
+					return CwtConfigHandler.matchesScriptExpression(propValue, expression, propertyConfig.valueExpression, propertyConfig, configGroup)
 				}
 				//匹配single_alias
 				CwtConfigHandler.isSingleAlias(propertyConfig) -> {
@@ -392,9 +391,8 @@ object ParadoxDefinitionHandler {
 		for(propertyElement in propertyElements) {
 			val keyElement = propertyElement.propertyKey
 			val expression = ParadoxDataExpression.resolve(keyElement)
-			val matchType = getMatchTypePossibleStatic(configGroup)
 			val propConfigs = propertyConfigs.filter {
-				CwtConfigHandler.matchesScriptExpression(keyElement, expression, it.keyExpression, it, configGroup, matchType)
+				CwtConfigHandler.matchesScriptExpression(keyElement, expression, it.keyExpression, it, configGroup)
 			}
 			//如果没有匹配的规则则忽略
 			if(propConfigs.isNotEmpty()) {
@@ -420,9 +418,8 @@ object ParadoxDefinitionHandler {
 		for(value in valueElements) {
 			//如果没有匹配的规则则认为不匹配
 			val expression = ParadoxDataExpression.resolve(value)
-			val matchType = getMatchTypePossibleStatic(configGroup)
 			val matched = valueConfigs.any { valueConfig ->
-				val matched = CwtConfigHandler.matchesScriptExpression(value, expression, valueConfig.valueExpression, valueConfig, configGroup, matchType)
+				val matched = CwtConfigHandler.matchesScriptExpression(value, expression, valueConfig.valueExpression, valueConfig, configGroup)
 				if(matched) minMap.compute(valueConfig.value) { _, v -> if(v == null) 1 else v - 1 }
 				matched
 			}
@@ -449,11 +446,6 @@ object ParadoxDefinitionHandler {
 		return aliases.any { alias ->
 			doMatchProperty(propertyElement, alias.config, configGroup)
 		}
-	}
-	
-	private fun getMatchTypePossibleStatic(configGroup: CwtConfigGroup): Int {
-		return CwtConfigMatchType.STATIC
-		//return if(DumbService.isDumbAware(configGroup.project)) CwtConfigMatchType.STATIC else CwtConfigMatchType.ALL
 	}
 	
 	@JvmStatic

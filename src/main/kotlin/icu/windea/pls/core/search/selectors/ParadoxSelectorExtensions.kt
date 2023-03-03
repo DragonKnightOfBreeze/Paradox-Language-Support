@@ -14,6 +14,7 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
 		from == null -> null
 		from is ParadoxGameType -> from
 		from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
+		from is PsiDirectory -> from.fileInfo?.rootInfo?.gameType
 		from is PsiFile -> from.fileInfo?.rootInfo?.gameType
 			?: ParadoxMagicCommentHandler.resolveFilePathComment(from)?.first
 		from is ParadoxScriptScriptedVariable -> runCatching { from.stub }.getOrNull()?.gameType
@@ -33,6 +34,7 @@ tailrec fun selectRootFile(from: Any?): VirtualFile? {
 	return when {
 		from == null -> null
 		from is VirtualFile -> from.fileInfo?.let { it.rootInfo.gameRootFile }
+		from is PsiDirectory -> from.fileInfo?.let { it.rootInfo.gameRootFile }
 		from is PsiFile -> from.fileInfo?.let { it.rootInfo.gameRootFile }
 		from is PsiElement -> selectRootFile(from.parent)
 		else -> null

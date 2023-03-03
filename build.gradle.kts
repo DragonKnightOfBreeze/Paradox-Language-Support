@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.*
 import org.jetbrains.kotlin.utils.*
 
 plugins {
+	id("idea")
 	id("org.jetbrains.kotlin.jvm") version "1.7.22"
 	id("org.jetbrains.intellij") version "1.11.0"
 	id("org.jetbrains.grammarkit") version "2022.3"
@@ -19,14 +20,14 @@ intellij {
 	plugins.add("com.intellij.platform.images")
 	
 	//optional
-	plugins.add("com.intellij.diagram")
+	plugins.add("uml")
 	//optional
 	plugins.add("cn.yiiguxing.plugin.translate:3.4.1") //https://github.com/YiiGuxing/TranslationPlugin
 	
 	//reference
 	plugins.add("markdown")
 	plugins.add("properties")
-	plugins.add("com.intellij.java")
+	plugins.add("java")
 	plugins.add("org.jetbrains.kotlin")
 }
  
@@ -35,9 +36,9 @@ grammarKit {
 }
 
 repositories {
-	//maven("https://maven.aliyun.com/nexus/content/groups/public")
-	mavenCentral()
 	maven("https://www.jetbrains.com/intellij-repository/releases")
+	mavenCentral()
+	//maven("https://maven.aliyun.com/nexus/content/groups/public")
 }
 
 dependencies {

@@ -18,6 +18,7 @@
 * BUG修复
   * [ ] 基本修复：[Support for HoI4 is almost completely broken #10](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/10)
 * 功能优化
+  * [ ] 定义的subtype可能需要通过访问索引获取，不能在索引时就获取 
   * [ ] 将获取作用域上下文的代码提取成扩展点
   * [ ] 有些地方获取的作用域是可能的（`from = country?`）
   * [ ] 改为基于语言注入功能（`Language Injection`）支持脚本文件中的各种复杂表达式以及本地化命令表达式

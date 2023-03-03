@@ -133,7 +133,7 @@ val PsiElement.localeConfig: CwtLocalisationLocaleConfig?
 
 val VirtualFile.fileInfo: ParadoxFileInfo?
     get() = ParadoxCoreHandler.getFileInfo(this)
-val PsiFile.fileInfo: ParadoxFileInfo?
+val PsiFileSystemItem.fileInfo: ParadoxFileInfo?
     get() = ParadoxCoreHandler.getFileInfo(this)
 val PsiElement.fileInfo: ParadoxFileInfo?
     get() = ParadoxCoreHandler.getFileInfo(this)

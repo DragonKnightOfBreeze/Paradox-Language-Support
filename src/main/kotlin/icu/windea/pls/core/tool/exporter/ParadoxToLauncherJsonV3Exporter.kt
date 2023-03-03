@@ -18,7 +18,7 @@ private const val defaultSavedName = "playlist.json"
 /**
  * 导出模组配置到启动器JSON配置文件。（>= 2021.10）
  *
- * * See: [ParadoxLauncherExporter202110.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/ParadoxLauncherExporter202110.cs)
+ * See: [ParadoxLauncherExporter202110.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/ParadoxLauncherExporter202110.cs)
  */
 class ParadoxToLauncherJsonV3Exporter : ParadoxModExporter {
     var defaultSelected: VirtualFile? = null

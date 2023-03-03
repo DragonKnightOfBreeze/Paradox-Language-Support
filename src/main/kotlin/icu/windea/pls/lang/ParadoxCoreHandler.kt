@@ -48,8 +48,12 @@ object ParadoxCoreHandler {
     }
     
     @JvmStatic
-    fun getFileInfo(file: PsiFile): ParadoxFileInfo? {
-        return file.originalFile.virtualFile?.let { getFileInfo(it) }
+    fun getFileInfo(file: PsiFileSystemItem): ParadoxFileInfo? {
+        val originalFile = when {
+            file is PsiFile -> file.originalFile
+            else -> file.originalElement?.castOrNull<PsiFileSystemItem>() ?: file
+        }
+        return originalFile.virtualFile?.let { getFileInfo(it) }
     }
     
     @JvmStatic
@@ -184,7 +188,7 @@ object ParadoxCoreHandler {
     fun resolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
         if(file is StubVirtualFile || !file.isValid) return null
         val name = file.name
-        var currentFile: VirtualFile? = file.parent
+        var currentFile: VirtualFile? = file
         while(currentFile != null) {
             val rootInfo = resolveRootInfo(currentFile)
             if(rootInfo != null) {
