@@ -458,6 +458,7 @@ object ParadoxDefinitionHandler {
 	
 	@JvmStatic
 	fun getSubtypes(element: ParadoxScriptDefinitionElement): List<String>? {
+		//定义的subtype可能需要通过访问索引获取，不能在索引时就获取
 		return element.definitionInfo?.subtypes
 	}
 	
