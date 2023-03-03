@@ -12,6 +12,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import com.intellij.util.concurrency.annotations.*
 import com.intellij.util.indexing.*
@@ -48,17 +49,10 @@ object ParadoxCoreHandler {
     }
     
     @JvmStatic
-    fun getFileInfo(file: PsiFileSystemItem): ParadoxFileInfo? {
-        val originalFile = when {
-            file is PsiFile -> file.originalFile
-            else -> file.originalElement?.castOrNull<PsiFileSystemItem>() ?: file
-        }
-        return originalFile.virtualFile?.let { getFileInfo(it) }
-    }
-    
-    @JvmStatic
     fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
-        return element.containingFile?.let { getFileInfo(it) }
+        val file = PsiUtilCore.getVirtualFile(element)
+        if(file == null) return null
+        return getFileInfo(file)
     }
     
     @JvmStatic

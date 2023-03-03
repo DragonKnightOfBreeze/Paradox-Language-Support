@@ -19,7 +19,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
-import org.intellij.grammar.generator.*
 import javax.swing.*
 
 class ParadoxTechnologyTreeDiagramProvider : DiagramProvider<PsiElement>() {
@@ -88,21 +87,14 @@ class ParadoxTechnologyTreeDiagramProvider : DiagramProvider<PsiElement>() {
             }
         }
         
-        override fun getItemName(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder): SimpleColoredText? {
-            return when(nodeElement) {
-                is PsiDirectory -> SimpleColoredText(nodeElement.name, DEFAULT_TITLE_ATTR)
-                is ParadoxScriptProperty -> {
-                    val name = ParadoxTechnologyHandler.getName(nodeElement)
-                    SimpleColoredText(name, DEFAULT_TITLE_ATTR)
-                }
-                else -> null
-            }
+        override fun getNodeTooltip(element: PsiElement?): String? {
+            return null
         }
         
         override fun getNodeItems(nodeElement: PsiElement?, builder: DiagramBuilder): Array<Any> {
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
-                    val result = mutableListOf<ParadoxScriptProperty>()
+                    val result = sortedSetOf<ParadoxScriptProperty>(compareBy { ITEM_PROP_KEYS.indexOf(it.name.lowercase()) })
                     nodeElement.block?.processProperty(conditional = true, inline = true) {
                         if(it.name.lowercase() in ITEM_PROP_KEYS) result.add(it)
                         true
@@ -113,17 +105,23 @@ class ParadoxTechnologyTreeDiagramProvider : DiagramProvider<PsiElement>() {
             }
         }
         
-        override fun getItemType(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): SimpleColoredText? {
-            if(nodeItem == null) return null
-            val text = RuleGraphHelper.getCardinalityText(RuleGraphHelper.Cardinality.REQUIRED)
-            return SimpleColoredText(text, SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES)
-        }
-        
         override fun getItemIcon(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): Icon {
             return PlsIcons.Property
         }
         
-        override fun getNodeTooltip(element: PsiElement?): String? {
+        override fun getItemName(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder): SimpleColoredText? {
+            return when(nodeItem) {
+                is ParadoxScriptProperty -> {
+                    val name = nodeItem.name.lowercase()
+                    val value = nodeItem.propertyValue?.stringValue()?.quoteIfNecessary()
+                    val text = "$name = $value"
+                    SimpleColoredText(text, DEFAULT_TEXT_ATTR)
+                }
+                else -> null
+            }
+        }
+        
+        override fun getItemType(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): SimpleColoredText? {
             return null
         }
     }
