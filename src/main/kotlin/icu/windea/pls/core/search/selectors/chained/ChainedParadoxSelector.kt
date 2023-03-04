@@ -12,12 +12,13 @@ import icu.windea.pls.lang.model.*
 
 open class ChainedParadoxSelector<T>(
     val project: Project,
-    val context: Any? = null
+    val context: Any? = null,
 ) : ParadoxSelector<T> {
     val file = selectFile(context)
     val fileInfo = file?.fileInfo
     val rootInfo = fileInfo?.rootInfo
     val rootFile = rootInfo?.rootFile
+    
     val gameType = rootInfo?.gameType
     
     val settings = when {
@@ -71,7 +72,7 @@ open class ChainedParadoxSelector<T>(
     
     private fun matchesGameType(result: T): Boolean {
         //某些情况下，可以直接认为游戏类型是匹配的
-        if(scope === defaultScope) return true
+        if(scope is ParadoxGlobalSearchScope) return true
         
         return gameType == null || gameType == selectGameType(result)
     }
@@ -92,6 +93,11 @@ open class ChainedParadoxSelector<T>(
             if(a == b) 0 else 1
         }
     }
+}
+
+fun <S: ChainedParadoxSelector<T>, T> S.withGameType(gameType: ParadoxGameType): S{
+    selectors += ParadoxWithGameTypeSelector(gameType)
+    return this
 }
 
 fun <S : ChainedParadoxSelector<T>, T> S.withSearchScope(scope: GlobalSearchScope): S {

@@ -14,14 +14,13 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
-import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
 import java.lang.invoke.*
 
 @WithGameType(ParadoxGameType.Stellaris)
-object ParadoxEconomicCategoryHandler {
+object StellarisEconomicCategoryHandler {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
     val modifierCategoriesKey = Key.create<Set<String>>("paradox.economicCategory.modifierCategories")
@@ -30,11 +29,11 @@ object ParadoxEconomicCategoryHandler {
      * 输入[definition]的定义类型应当保证是`economic_category`。
      */
     @JvmStatic
-    fun getInfo(definition: ParadoxScriptDefinitionElement): ParadoxEconomicCategoryInfo? {
+    fun getInfo(definition: ParadoxScriptDefinitionElement): StellarisEconomicCategoryInfo? {
         return getInfoFromCache(definition)
     }
     
-    private fun getInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxEconomicCategoryInfo? {
+    private fun getInfoFromCache(definition: ParadoxScriptDefinitionElement): StellarisEconomicCategoryInfo? {
         if(definition !is ParadoxScriptProperty) return null
         return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedEconomicCategoryInfoKey) {
             val value = resolveInfo(definition)
@@ -42,7 +41,7 @@ object ParadoxEconomicCategoryHandler {
         }
     }
     
-    private fun resolveInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
+    private fun resolveInfo(definition: ParadoxScriptProperty): StellarisEconomicCategoryInfo? {
         //这种写法可能存在一定性能问题，但是问题不大
         //兼容继承的mult修饰符
         try {
@@ -51,7 +50,7 @@ object ParadoxEconomicCategoryHandler {
             val parent = data.getData("parent")?.value?.stringValue()
             val useForAiBudget = data.getData("use_for_ai_budget")?.value?.booleanValue()
                 ?: getUseForAiBudgetFromParent(name, parent, definition)
-            val modifiers = mutableSetOf<ParadoxEconomicCategoryModifierInfo>()
+            val modifiers = mutableSetOf<StellarisEconomicCategoryModifierInfo>()
             val modifierCategory = data.getData("modifier_category")?.value?.stringValue()
             
             val resources = getResources(definition)
@@ -74,7 +73,7 @@ object ParadoxEconomicCategoryHandler {
             
             fun addModifier(key: String, category: String, type: String, triggered: Boolean, useParentIcon: Boolean) {
                 fun addModifier(modifierName: String, resource: String?) {
-                    modifiers.add(ParadoxEconomicCategoryModifierInfo(modifierName, resource, triggered, useParentIcon))
+                    modifiers.add(StellarisEconomicCategoryModifierInfo(modifierName, resource, triggered, useParentIcon))
                 }
                 
                 if(useForAiBudget && triggered) {
@@ -122,7 +121,7 @@ object ParadoxEconomicCategoryHandler {
                 }
             }
             
-            return ParadoxEconomicCategoryInfo(name, parent, useForAiBudget, modifiers, modifierCategory)
+            return StellarisEconomicCategoryInfo(name, parent, useForAiBudget, modifiers, modifierCategory)
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
             logger.error(e)
@@ -156,12 +155,12 @@ object ParadoxEconomicCategoryHandler {
             .mapNotNullTo(mutableSetOf()) { it.name }  //it.name is ok
     }
     
-    private fun resolveTriggeredModifier(data: ParadoxScriptData): ParadoxTriggeredModifierInfo? {
+    private fun resolveTriggeredModifier(data: ParadoxScriptData): StellarisTriggeredModifierInfo? {
         //key, modifier_types, use_parent_icon
         val key = data.getData("key")?.value?.stringValue() ?: return null
         val useParentIcon = data.getData("use_parent_icon")?.value?.booleanValue() ?: false
         val modifierTypes = data.getAllData("modifier_types").mapNotNull { it.value?.stringValue() }.takeIfNotEmpty() ?: return null
-        return ParadoxTriggeredModifierInfo(key, useParentIcon, modifierTypes)
+        return StellarisTriggeredModifierInfo(key, useParentIcon, modifierTypes)
     }
     
     @JvmStatic

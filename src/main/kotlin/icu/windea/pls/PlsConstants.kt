@@ -111,7 +111,7 @@ object PlsKeys {
     
     val cachedModifierElementKey = Key.create<CachedValue<ParadoxModifierElement>>("paradox.cached.modifierElement")
     
-    val cachedEconomicCategoryInfoKey = Key.create<CachedValue<ParadoxEconomicCategoryInfo>>("paradox.cached.economicCategoryInfo")
+    val cachedEconomicCategoryInfoKey = Key.create<CachedValue<StellarisEconomicCategoryInfo>>("paradox.cached.economicCategoryInfo")
     val cachedInlineScriptInfoKey = Key.create<CachedValue<ParadoxInlineScriptInfo>>("paradox.cached.inlineScriptInfo")
     val cachedInlineScriptUsageInfoKey = Key.create<CachedValue<ParadoxInlineScriptUsageInfo>>("paradox.cached.inlineScriptUsageInfo")
     
@@ -129,4 +129,6 @@ object PlsKeys {
     val scopeMismatchedKey = Key.create<Boolean>("paradox.scopeMismatched")
     
     val parameterRangesKey = Key.create<List<TextRange>>("paradox.parameterRanges")
+    
+    val iconFrame = Key.create<Int>("paradox.icon.frame")
 }

@@ -6,9 +6,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 
-/**
- * Paradox脚本文件的数据的值的解析器。
- */
 @Suppress("unused")
 object ParadoxScriptDataValueResolver {
     /**

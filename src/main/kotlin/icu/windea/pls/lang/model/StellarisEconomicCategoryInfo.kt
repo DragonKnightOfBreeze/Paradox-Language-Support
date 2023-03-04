@@ -6,23 +6,23 @@ import icu.windea.pls.core.annotations.*
  * @property modifierCategory modifier_category属性的值，并非modifier_categories.cwt中已定义的值
  */
 @WithGameType(ParadoxGameType.Stellaris)
-data class ParadoxEconomicCategoryInfo(
+data class StellarisEconomicCategoryInfo(
     val name: String,
     val parent: String? = null,
     val useForAiBudget: Boolean = false,
-    val modifiers: Set<ParadoxEconomicCategoryModifierInfo> = emptySet(),
+    val modifiers: Set<StellarisEconomicCategoryModifierInfo> = emptySet(),
     val modifierCategory: String? = null,
 )
 
 @WithGameType(ParadoxGameType.Stellaris)
-data class ParadoxEconomicCategoryModifierInfo(
+data class StellarisEconomicCategoryModifierInfo(
     val name: String,
     val resource: String?,
     val triggered: Boolean = false,
     val useParentIcon: Boolean = false,
 ) {
     override fun equals(other: Any?): Boolean {
-        return this === other || (other is ParadoxEconomicCategoryInfo && name == other.name)
+        return this === other || (other is StellarisEconomicCategoryInfo && name == other.name)
     }
     
     override fun hashCode(): Int {
@@ -31,7 +31,7 @@ data class ParadoxEconomicCategoryModifierInfo(
 }
 
 @WithGameType(ParadoxGameType.Stellaris)
-data class ParadoxTriggeredModifierInfo(
+data class StellarisTriggeredModifierInfo(
     val key: String,
     val useParentIcon: Boolean = false,
     val modifierTypes: List<String>

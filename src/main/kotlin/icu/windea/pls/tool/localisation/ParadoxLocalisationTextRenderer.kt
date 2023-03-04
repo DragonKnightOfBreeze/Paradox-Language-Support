@@ -10,9 +10,6 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 
-/**
- * 本地化文本的渲染器。
- */
 @Suppress("unused")
 object ParadoxLocalisationTextRenderer {
 	fun render(element: ParadoxLocalisationProperty): String {

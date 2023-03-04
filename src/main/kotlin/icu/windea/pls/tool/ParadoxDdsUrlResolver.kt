@@ -9,7 +9,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
-import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
@@ -83,7 +82,7 @@ object ParadoxDdsUrlResolver {
     private fun doResolveByDefinition(definition: ParadoxScriptDefinitionElement, frame: Int, definitionInfo: ParadoxDefinitionInfo): String? {
         //兼容definition不是sprite的情况
         val resolved = runReadAction {
-            definitionInfo.primaryImageConfigs.firstNotNullOfOrNull {
+            definitionInfo.primaryImages.firstNotNullOfOrNull {
                 it.locationExpression.resolve(definition, definitionInfo, definitionInfo.project)
             }
         } ?: return null

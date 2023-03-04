@@ -1,5 +1,12 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij.diagram">
-    <Provider implementation="icu.windea.pls.extension.diagram.ParadoxTechnologyTreeDiagramProvider"/>
+    <Provider implementation="icu.windea.pls.extension.diagram.StellarisTechnologyTreeDiagramProvider"/>
   </extensions>
+  
+  <actions>
+    <reference id="Pls.Script.GotoGroup">
+      <add-to-group group-id="Uml.SourceActionsGroup.GoTo" relative-to-action="GotoRelated" anchor="after"/>
+      <add-to-group group-id="Uml.NodeCellEditorPopup.GoTo" relative-to-action="GotoRelated" anchor="after"/>
+    </reference>
+  </actions>
 </idea-plugin>

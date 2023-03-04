@@ -4,11 +4,8 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 
-/**
- * Paradox本地化文件的数据解析器。
- */
 @Suppress("unused")
-object ParadoxLocalisationDataResolver {
+object ParadoxLocalisationDataValueResolver {
 	/**
 	 * 解析本地化文件的数据。跳过不合法的[PsiElement]。如果有重复的[ParadoxLocalisationProperty]，使用最后一个。
 	 */

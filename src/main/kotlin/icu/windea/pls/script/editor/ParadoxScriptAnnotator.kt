@@ -66,7 +66,7 @@ class ParadoxScriptAnnotator : Annotator {
         if(nameField != null) {
             //如果存在，高亮定义名对应的字符串（可能还有其他高亮）（这里不能使用PSI链接）
             val propertyElement = element.findProperty(nameField) //不处理内联的情况
-            val nameElement = propertyElement?.value<ParadoxScriptString>()
+            val nameElement = propertyElement?.propertyValue<ParadoxScriptString>()
             if(nameElement != null) {
                 val nameString = definitionInfo.name.escapeXml().orAnonymous()
                 val typesString = definitionInfo.typesText

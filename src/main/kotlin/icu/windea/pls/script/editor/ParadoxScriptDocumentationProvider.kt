@@ -218,7 +218,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     }
     
     private fun StringBuilder.addRelatedLocalisationsForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
-        val localisationInfos = definitionInfo.localisation
+        val localisationInfos = definitionInfo.localisations
         if(localisationInfos.isEmpty()) return
         val render = getSettings().documentation.renderRelatedLocalisationsForDefinitions
         val project = element.project

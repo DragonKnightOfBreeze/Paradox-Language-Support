@@ -220,7 +220,7 @@ object CwtConfigHandler {
                 if(expression.type != ParadoxDataType.BlockType) return false
                 if(isNotExact) return true //非精确匹配 - 直接使用第一个
                 val block = when {
-                    element is ParadoxScriptProperty -> element.value()
+                    element is ParadoxScriptProperty -> element.propertyValue()
                     element is ParadoxScriptBlock -> element
                     else -> null
                 } ?: return false

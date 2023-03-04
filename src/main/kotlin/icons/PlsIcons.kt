@@ -63,6 +63,7 @@ object PlsIcons {
 	@JvmField val OnAction = loadIcon("/icons/onAction.svg") 
 	@JvmField val EventNamespace = loadIcon("/icons/eventNamespace.svg")
 	@JvmField val EventId = loadIcon("/icons/eventId.svg")
+	@JvmField val Image = loadIcon("/icons/image.svg")
 	
 	@JvmStatic fun Definition(type: String) = when(type) {
 		"event" -> EventId

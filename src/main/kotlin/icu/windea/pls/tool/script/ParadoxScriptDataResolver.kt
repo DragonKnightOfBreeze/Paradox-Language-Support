@@ -5,9 +5,6 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
-/**
- * Paradox脚本文件的数据解析器。
- */
 @Suppress("unused")
 object ParadoxScriptDataResolver {
 	/**

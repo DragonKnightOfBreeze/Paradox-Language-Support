@@ -22,7 +22,7 @@ class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters
 		if(event !is ParadoxScriptProperty) return
 		
 		//仅提示脚本文件中向上查找到的那个合法的事件命名空间
-		val eventNamespace = ParadoxEventHandler.getEventNamespace(event) ?: return //skip
+		val eventNamespace = ParadoxEventHandler.getMatchedEventNamespace(event) ?: return //skip
 		val name = eventNamespace.value ?: return
 		val typeFile = eventNamespace.containingFile
 		val lookupElement = LookupElementBuilder.create(eventNamespace, name)

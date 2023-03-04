@@ -9,7 +9,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.search.selectors.chained.*
-import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -25,7 +24,7 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineM
 		//何时显示装订线图标：element是definition，且definitionInfo.localisation不为空，且计算得到的keys不为空
 		if(element !is ParadoxScriptProperty) return
 		val definitionInfo = element.definitionInfo ?: return
-		val localisationInfos = definitionInfo.localisation
+		val localisationInfos = definitionInfo.localisations
 		if(localisationInfos.isEmpty()) return
 		
 		//显示在提示中 & 可导航：去重后的一组本地化的键名，不包括没有对应的本地化的项，按解析顺序排序

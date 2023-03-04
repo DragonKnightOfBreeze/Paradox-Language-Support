@@ -45,7 +45,7 @@ class ParadoxDefinitionInfo(
 		val nameField = typeConfig.nameField
 		if(nameField != null) {
 			val nameProperty = element.findProperty(nameField) //不处理内联的情况
-			return@lazy nameProperty?.value<ParadoxScriptString>()?.stringValue.orEmpty()
+			return@lazy nameProperty?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
 		}
 		//否则直接返回rootKey
 		rootKey
@@ -72,7 +72,7 @@ class ParadoxDefinitionInfo(
 		types.joinToString(", ")
 	}
 	
-	val localisation: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
+	val localisations: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
 		val mergedLocalisationConfig = typeConfig.localisation?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
 		val result = SmartList<ParadoxDefinitionRelatedLocalisationInfo>()
 		//从已有的cwt规则
@@ -110,11 +110,11 @@ class ParadoxDefinitionInfo(
 		configGroup.declarations.get(type)?.getMergedConfig(configContext)
 	}
 	
-	val primaryLocalisationConfigs: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
-		localisation.filter { it.primary || it.inferIsPrimary() }
+	val primaryLocalisations: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
+		localisations.filter { it.primary || it.inferIsPrimary() }
 	}
 	
-	val primaryImageConfigs: List<ParadoxDefinitionRelatedImageInfo> by lazy {
+	val primaryImages: List<ParadoxDefinitionRelatedImageInfo> by lazy {
 		images.filter { it.primary || it.inferIsPrimary() }
 	}
 	
@@ -127,9 +127,9 @@ class ParadoxDefinitionInfo(
 	val project get() = configGroup.project
 	
 	fun resolvePrimaryLocalisation(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
-		if(primaryLocalisationConfigs.isEmpty()) return null //没有或者CWT规则不完善
+		if(primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
 		return runReadAction {
-			for(primaryLocalisationConfig in primaryLocalisationConfigs) {
+			for(primaryLocalisationConfig in primaryLocalisations) {
 				val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
 				val resolved = primaryLocalisationConfig.locationExpression.resolve(element, this, configGroup.project, selector) ?: continue
 				if(resolved.localisation != null)  return@runReadAction resolved.localisation

@@ -9,6 +9,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.parameterSupport" interface="icu.windea.pls.lang.support.ParadoxParameterSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modifierSupport" interface="icu.windea.pls.lang.support.ParadoxModifierSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inferredScopeContextProvider" interface="icu.windea.pls.lang.provider.ParadoxInferredScopeContextProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.definitionPresentationProvider" interface="icu.windea.pls.lang.presentation.ParadoxDefinitionPresentationProvider" dynamic="true"/>
     
     <extensionPoint qualifiedName="icu.windea.pls.modImporter" interface="icu.windea.pls.core.tool.importer.ParadoxModImporter" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modExporter" interface="icu.windea.pls.core.tool.exporter.ParadoxModExporter" dynamic="true"/>
@@ -34,9 +35,11 @@
     <parameterSupport implementation="icu.windea.pls.lang.support.ParadoxInlineScriptParameterSupport"/>
     
     <modifierSupport implementation="icu.windea.pls.lang.support.ParadoxTemplateModifierSupport"/>
-    <modifierSupport implementation="icu.windea.pls.lang.support.ParadoxEconomicCategoryModifierSupport"/>
+    <modifierSupport implementation="icu.windea.pls.lang.support.StellarisEconomicCategoryModifierSupport"/>
     
     <inferredScopeContextProvider implementation="icu.windea.pls.lang.provider.ParadoxEventFromOnActionInferredScopeContextProvider"/>
+    
+    <definitionPresentationProvider implementation="icu.windea.pls.lang.presentation.StellarisTechnologyPresentationProvider"/>
     
     <modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromGameImporter"/>
     <!--<modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherImporter"/>-->

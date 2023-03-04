@@ -6,7 +6,20 @@ import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.search.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
+
+class ParadoxWithGameTypeSelector<T>(
+    val gameType: ParadoxGameType
+) : ParadoxSelector<T> {
+    override fun select(result: T): Boolean {
+        return selectGameType(result) == gameType
+    }
+    
+    override fun selectAll(result: T): Boolean {
+        return selectGameType(result) == gameType
+    }
+}
 
 interface ParadoxSearchScopeAwareSelector<T> : ParadoxSelector<T> {
     fun getGlobalSearchScope(): GlobalSearchScope?

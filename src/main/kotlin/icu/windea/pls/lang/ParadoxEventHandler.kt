@@ -1,6 +1,9 @@
 package icu.windea.pls.lang
 
+import com.intellij.openapi.project.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.search.*
+import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxEventHandler {
@@ -22,11 +25,32 @@ object ParadoxEventHandler {
 		return no.isNotEmpty() && no.all { it.isExactDigit() }
 	}
 	
+	@JvmStatic
+	fun getEvents(project: Project, context: Any?): Set<ParadoxScriptProperty> {
+		val selector = definitionSelector(project, context).contextSensitive().distinctByName()
+		val technologies = mutableSetOf<ParadoxScriptProperty>()
+		ParadoxDefinitionSearch.search("event", selector).processQuery {
+			if(it is ParadoxScriptProperty) technologies.add(it)
+			true
+		}
+		return technologies
+	}
+	
+	@JvmStatic
+	fun getEventName(element: ParadoxScriptProperty): String {
+		return element.name // = element.definitionInfo.name
+	}
+	
+	@JvmStatic
+	fun getEventNamespace(element: ParadoxScriptProperty): String {
+		return getEventName(element).substringBefore(".") //enough
+	}
+	
 	/**
 	 * 得到event的需要匹配的namespace。
 	 */
 	@JvmStatic
-	fun getEventNamespace(event: ParadoxScriptProperty): ParadoxScriptProperty? {
+	fun getMatchedEventNamespace(event: ParadoxScriptProperty): ParadoxScriptProperty? {
 		var current = event.prevSibling ?: return null
 		while(true) {
 			if(current is ParadoxScriptProperty && current.name.equals("namespace", true)) {

@@ -60,7 +60,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             private fun visitDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
                 ProgressManager.checkCanceled()
                 val project = definitionInfo.project
-                val localisationInfos = definitionInfo.localisation
+                val localisationInfos = definitionInfo.localisations
                 if(localisationInfos.isEmpty()) return
                 val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
                 val nameToDistinct = mutableSetOf<String>()

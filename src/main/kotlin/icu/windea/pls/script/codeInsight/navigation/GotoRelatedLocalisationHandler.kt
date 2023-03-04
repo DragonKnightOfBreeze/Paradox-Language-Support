@@ -31,7 +31,7 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
         if(element.isDefinitionRootKeyOrName()) {
             val definition = element.findParentDefinition() ?: return null
             val definitionInfo = definition.definitionInfo ?: return null
-            val localisationInfos = definitionInfo.localisation
+            val localisationInfos = definitionInfo.localisations
             if(localisationInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
             val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
             val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({

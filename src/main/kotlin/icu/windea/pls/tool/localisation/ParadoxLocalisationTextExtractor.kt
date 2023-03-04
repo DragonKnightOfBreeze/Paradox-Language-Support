@@ -3,9 +3,6 @@ package icu.windea.pls.tool.localisation
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 
-/**
- * 本地化文本的提取器。
- */
 @Suppress("unused", "UNUSED_PARAMETER")
 object ParadoxLocalisationTextExtractor {
 	fun extract(element: ParadoxLocalisationProperty): String {

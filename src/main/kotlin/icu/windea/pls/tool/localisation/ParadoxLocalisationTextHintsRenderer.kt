@@ -14,9 +14,6 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import java.util.concurrent.atomic.*
 
-/**
- * 本地化文本的内嵌提示渲染器。
- */
 @Suppress("unused", "UnstableApiUsage", "UNUSED_PARAMETER")
 object ParadoxLocalisationTextHintsRenderer {
 	/**
