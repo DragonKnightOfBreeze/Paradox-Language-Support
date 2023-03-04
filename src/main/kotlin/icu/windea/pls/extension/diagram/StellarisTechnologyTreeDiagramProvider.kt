@@ -30,7 +30,11 @@ import icu.windea.pls.tool.script.*
 import javax.swing.*
 
 /**
- * 提供群星的科技树图表。可以选择显示科技卡、关键属性，可以按类型、级别、分类、领域过滤要显示的科技。
+ * 提供群星的科技树图表。
+ * * 可以配置是否显示UI表示（科技卡图标）、本地化名字（科技名）、图标、关键属性。
+ * * 可以按类型、级别、分类、领域过滤要显示的科技。
+ * * 可以按作用域过滤要显示的科技。（例如，仅限原版科技，仅限当前模组的科技）
+ * * 支持任何通用的图表操作。（例如，导出为图片）
  */
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
