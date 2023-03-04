@@ -227,7 +227,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
         //com.intellij.diagram.extras.DiagramExtras.getCustomLayouter
         
         override fun getAdditionalDiagramSettings(): Array<out DiagramConfigGroup> {
-            val settings  = buildList {
+            val settings = buildList {
                 DiagramConfigGroup(PlsBundle.message("diagram.stellaris.technologyTree.settings.type")).apply {
                     addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.type.start"), true))
                     addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.type.rare"), true))
@@ -349,7 +349,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
                 }
             }
         }
-    
+        
         private fun shouldShow(technology: ParadoxScriptProperty, settings: Array<out DiagramConfigGroup>, configuration: DiagramConfiguration): Boolean {
             for(setting in settings) {
                 when(setting.name) {
@@ -385,31 +385,22 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
                         val v = technology.findProperty("tier", inline = true)
                             ?.propertyValue?.stringValue() ?: return false
                         val configName = PlsBundle.message("diagram.stellaris.technologyTree.settings.tier.option", v)
-                        for(config in setting.elements) {
-                            val enabled = configuration.isEnabledByDefault(provider, config.name)
-                            if(enabled) continue
-                            return config.name != configName
-                        }
+                        val enabled = configuration.isEnabledByDefault(provider, configName)
+                        return enabled
                     }
-                    PlsBundle.message("diagram.stellaris.technologyTree.settings.area") ->{
+                    PlsBundle.message("diagram.stellaris.technologyTree.settings.area") -> {
                         val v = technology.findProperty("area", inline = true)
                             ?.propertyValue?.stringValue() ?: return false
                         val configName = PlsBundle.message("diagram.stellaris.technologyTree.settings.area.option", v)
-                        for(config in setting.elements) {
-                            val enabled = configuration.isEnabledByDefault(provider, config.name)
-                            if(enabled) continue
-                            return config.name != configName
-                        }
+                        val enabled = configuration.isEnabledByDefault(provider, configName)
+                        return enabled
                     }
-                    PlsBundle.message("diagram.stellaris.technologyTree.settings.category") ->{
+                    PlsBundle.message("diagram.stellaris.technologyTree.settings.category") -> {
                         val v = technology.findProperty("category", inline = true)
                             ?.valueList?.mapNotNullTo(mutableSetOf()) { it.stringValue() }.orEmpty()
                         val configNames = v.map { PlsBundle.message("diagram.stellaris.technologyTree.settings.category", it) }
-                        for(config in setting.elements) {
-                            val enabled = configuration.isEnabledByDefault(provider, config.name)
-                            if(enabled) continue
-                            return config.name !in configNames
-                        }
+                        val enabled = configNames.all { configName -> configuration.isEnabledByDefault(provider, configName) }
+                        return enabled
                     }
                 }
             }
