@@ -74,10 +74,10 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
     companion object {
         val CAT_TYPE = DiagramCategory(PlsBundle.lazyMessage("diagram.stellaris.technologyTree.category.type"), PlsIcons.Type, true, false)
         val CAT_PROPERTIES = DiagramCategory(PlsBundle.lazyMessage("diagram.stellaris.technologyTree.category.properties"), PlsIcons.Property, true, false)
-        val CAT_PRESENTATION = DiagramCategory(PlsBundle.lazyMessage("diagram.stellaris.technologyTree.category.presentation"), PlsIcons.Presentation, false, false)
         val CAT_NAME = DiagramCategory(PlsBundle.lazyMessage("diagram.stellaris.technologyTree.category.name"), PlsIcons.Localisation, false, false)
         val CAT_ICON = DiagramCategory(PlsBundle.lazyMessage("diagram.stellaris.technologyTree.category.icon"), PlsIcons.Image, false, false)
-        val CATEGORIES = arrayOf(CAT_TYPE, CAT_PROPERTIES, CAT_PRESENTATION, CAT_NAME, CAT_ICON)
+        val CAT_PRESENTATION = DiagramCategory(PlsBundle.lazyMessage("diagram.stellaris.technologyTree.category.presentation"), PlsIcons.Presentation, false, false)
+        val CATEGORIES = arrayOf(CAT_TYPE, CAT_PROPERTIES, CAT_NAME, CAT_ICON, CAT_PRESENTATION)
         val ITEM_PROP_KEYS = arrayOf(
             "icon",
             "tier", "area", "category",
@@ -152,15 +152,15 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     val result = mutableListOf<Any>()
-                    val typeElement = nodeElement.definitionInfo?.typeConfig //should not be null
+                    val typeElement = nodeElement.definitionInfo?.typeConfig?.pointer?.element //should not be null
                     if(typeElement != null) result.add(typeElement)
                     val properties = getProperties(nodeElement)
                     result.addAll(properties)
-                    result.add(nodeElement)
                     val name = StellarisTechnologyHandler.getLocalizedName(nodeElement)
                     if(name != null) result.add(name)
                     val icon = StellarisTechnologyHandler.getIconFile(nodeElement)
                     if(icon != null) result.add(icon)
+                    result.add(nodeElement)
                     result.toTypedArray()
                 }
                 else -> emptyArray()
@@ -311,8 +311,8 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
         override fun getCustomLayouter(settings: GraphSettings, project: Project?): Layouter {
             val layouter = GraphManager.getGraphManager().createHierarchicGroupLayouter()
             layouter.orientationLayouter = GraphManager.getGraphManager().createOrientationLayouter(LayoutOrientation.LEFT_TO_RIGHT)
-            layouter.minimalNodeDistance = 40.0
-            layouter.minimalEdgeDistance = 40.0
+            layouter.minimalNodeDistance = 20.0
+            layouter.minimalEdgeDistance = 20.0
             layouter.layerer = GraphManager.getGraphManager().createBFSLayerer()
             return layouter
         }

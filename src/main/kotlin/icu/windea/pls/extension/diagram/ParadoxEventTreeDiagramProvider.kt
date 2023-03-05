@@ -153,7 +153,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     val result = mutableListOf<Any>()
-                    val typeElement = nodeElement.definitionInfo?.typeConfig //should not be null
+                    val typeElement = nodeElement.definitionInfo?.typeConfig?.pointer?.element //should not be null
                     if(typeElement != null) result.add(typeElement)
                     val properties = getProperties(nodeElement)
                     result.addAll(properties)
@@ -283,8 +283,8 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         override fun getCustomLayouter(settings: GraphSettings, project: Project?): Layouter {
             val layouter = GraphManager.getGraphManager().createHierarchicGroupLayouter()
             layouter.orientationLayouter = GraphManager.getGraphManager().createOrientationLayouter(LayoutOrientation.LEFT_TO_RIGHT)
-            layouter.minimalNodeDistance = 40.0
-            layouter.minimalEdgeDistance = 40.0
+            layouter.minimalNodeDistance = 20.0
+            layouter.minimalEdgeDistance = 20.0
             layouter.layerer = GraphManager.getGraphManager().createBFSLayerer()
             return layouter
         }
