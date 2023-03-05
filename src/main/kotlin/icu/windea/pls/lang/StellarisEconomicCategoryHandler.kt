@@ -23,7 +23,7 @@ import java.lang.invoke.*
 object StellarisEconomicCategoryHandler {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
-    val modifierCategoriesKey = Key.create<Set<String>>("paradox.economicCategory.modifierCategories")
+    val modifierCategoriesKey = Key.create<Set<String>>("stellaris.economicCategory.modifierCategories")
     
     /**
      * 输入[definition]的定义类型应当保证是`economic_category`。

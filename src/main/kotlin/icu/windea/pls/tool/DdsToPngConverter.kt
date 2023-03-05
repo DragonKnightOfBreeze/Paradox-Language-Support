@@ -67,7 +67,7 @@ object DdsToPngConverter {
 			val fileName = if(index == -1) ddsAbsPath else ddsAbsPath.substring(index + 1)
 			val uuid = if(parent.isEmpty()) "" else parent.toUUID().toString() //得到基于DDS文件所在目录的UUID
 			val frameText = if(frame > 0) "@$frame" else ""
-			return PlsPaths.imagesDirectoryPath.resolve("external/$uuid.$fileName$frameText.png") //直接在包括扩展名的DDS文件名后面加上".png"
+			return PlsPaths.imagesDirectoryPath.resolve("_external/$uuid.$fileName$frameText.png") //直接在包括扩展名的DDS文件名后面加上".png"
 		}
 	}
 	

@@ -1,0 +1,33 @@
+package icu.windea.pls.lang.presentation
+
+import com.intellij.openapi.util.*
+import com.intellij.psi.*
+import icu.windea.pls.*
+import icu.windea.pls.core.*
+import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
+import javax.swing.*
+
+object ParadoxPresentationHandler {
+    @JvmStatic
+    fun getIcon(ddsFile: PsiFile): Icon? {
+        val iconFile = ddsFile.virtualFile ?: return null
+        val iconUrl = ParadoxDdsUrlResolver.resolveByFile(iconFile)
+        return IconLoader.findIcon(iconUrl.toFileUrl())
+    }
+    
+    @JvmStatic
+    fun getIcon(definition: ParadoxScriptDefinitionElement): Icon? {
+        val ddsFile = definition.definitionInfo?.resolvePrimaryImage(definition) ?: return null
+        val iconFile = ddsFile.virtualFile ?: return null
+        val iconUrl = ParadoxDdsUrlResolver.resolveByFile(iconFile)
+        return IconLoader.findIcon(iconUrl.toFileUrl())
+    }
+    
+    @JvmStatic
+    fun getIcon(definition: ParadoxScriptDefinitionElement, ddsFile: PsiFile): Icon? {
+        val iconFile = ddsFile.virtualFile ?: return null
+        val iconUrl = ParadoxDdsUrlResolver.resolveByFile(iconFile, definition.getUserData(PlsKeys.iconFrame) ?: 0)
+        return IconLoader.findIcon(iconUrl.toFileUrl())
+    }
+}

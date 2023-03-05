@@ -8,6 +8,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
@@ -51,31 +52,17 @@ object StellarisTechnologyHandler {
     }
     
     @JvmStatic
-    fun isStartTechnology(element: ParadoxScriptProperty): Boolean {
-        val definitionInfo = element.definitionInfo ?: return false
-        return definitionInfo.type == "technology" && definitionInfo.subtypes.contains("start_tech")
-    }
-    
-    @JvmStatic
     fun getName(element: ParadoxScriptProperty): String {
         return element.name // = element.definitionInfo.name
     }
     
     @JvmStatic
-    fun getIconFile(definition: ParadoxScriptProperty): PsiFile? {
-        val definitionInfo = definition.definitionInfo ?: return null
-        return definitionInfo.primaryImages.firstNotNullOfOrNull block@{
-            val resolved = it.locationExpression.resolve(definition, definitionInfo, definitionInfo.project)
-            if(resolved == null) return@block null
-            definition.putUserData(PlsKeys.iconFrame, resolved.frame)
-            resolved.file
-        }
+    fun getLocalizedName(definition: ParadoxScriptProperty): ParadoxLocalisationProperty? {
+        return definition.definitionInfo?.resolvePrimaryLocalisation(definition)
     }
     
     @JvmStatic
-    fun getPrerequisites(element: ParadoxScriptProperty): Set<String> {
-        return element.findProperty("prerequisites", inline = true)?.valueList
-            ?.mapNotNullTo(mutableSetOf()) { it.stringValue() }
-            .orEmpty()
+    fun getIconFile(definition: ParadoxScriptProperty): PsiFile? {
+        return definition.definitionInfo?.resolvePrimaryImage(definition)
     }
 }

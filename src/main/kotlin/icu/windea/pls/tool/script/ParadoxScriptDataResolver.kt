@@ -19,19 +19,19 @@ object ParadoxScriptDataResolver {
 	fun resolveBlock(element: ParadoxScriptBlockElement, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData {
 		val value = element as? ParadoxScriptBlock
 		val children: MutableList<ParadoxScriptData> = SmartList()
-		element.processData(conditional, inline) p@{ e -> 
+		element.processData(conditional, inline) p@{ e ->
 			when{
 				e is ParadoxScriptValue -> resolveValue(e).let{ children.add(it) }
 				e is ParadoxScriptProperty -> resolveProperty(e)?.let{ children.add(it) }
 			}
 			true
 		}
-		return ParadoxScriptData(null, value, children)
+		return ParadoxScriptDataImpl(null, value, children)
 	}
 	
 	fun resolveValue(element: ParadoxScriptValue, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData {
 		if(element is ParadoxScriptBlock) return resolveBlock(element, conditional, inline)
-		return ParadoxScriptData(null, element, null)
+		return ParadoxScriptDataImpl(null, element, null)
 	}
 	
 	fun resolveProperty(element: ParadoxScriptProperty, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData? {
@@ -43,6 +43,6 @@ object ParadoxScriptDataResolver {
 			propertyValue is ParadoxScriptBlock -> resolveBlock(propertyValue, conditional, inline).children
 			else -> null
 		}
-		return ParadoxScriptData(propertyKey, propertyValue, children)
+		return ParadoxScriptDataImpl(propertyKey, propertyValue, children)
 	}
 }

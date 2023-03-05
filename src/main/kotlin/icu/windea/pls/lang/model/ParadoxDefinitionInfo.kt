@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.model
 
-import com.intellij.openapi.application.*
+import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
@@ -21,131 +21,141 @@ import java.util.*
  * @property incomplete 此定义的声明是否不完整。
  */
 class ParadoxDefinitionInfo(
-	val rootKey: String,
-	val typeConfig: CwtTypeConfig,
-	val gameType: ParadoxGameType,
-	val configGroup: CwtConfigGroup,
-	element: ParadoxScriptDefinitionElement, //直接传入element
+    val rootKey: String,
+    val typeConfig: CwtTypeConfig,
+    val gameType: ParadoxGameType,
+    val configGroup: CwtConfigGroup,
+    element: ParadoxScriptDefinitionElement, //直接传入element
 ) {
-	enum class SourceType { Default, Stub, PathComment, TypeComment }
-	
-	var sourceType: SourceType = SourceType.Default
-	
-	val incomplete = element is ParadoxScriptProperty && element.propertyValue == null
-	
-	val type: String = typeConfig.name
-	
-	//NOTE 部分属性需要使用懒加载
-	
-	val name: String by lazy {
-		//name_from_file = yes -> 返回文件名（不包含扩展名）
-		val nameFromFileConfig = typeConfig.nameFromFile
-		if(nameFromFileConfig) return@lazy element.containingFile.name.substringBeforeLast('.')
-		//name_field = xxx -> 返回对应名字（xxx）的property的stringValue，如果不存在则返回空字符串
-		val nameField = typeConfig.nameField
-		if(nameField != null) {
-			val nameProperty = element.findProperty(nameField) //不处理内联的情况
-			return@lazy nameProperty?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
+    enum class SourceType { Default, Stub, PathComment, TypeComment }
+    
+    var sourceType: SourceType = SourceType.Default
+    
+    val incomplete = element is ParadoxScriptProperty && element.propertyValue == null
+    
+    val type: String = typeConfig.name
+    
+    //NOTE 部分属性需要使用懒加载
+    
+    val name: String by lazy {
+        //name_from_file = yes -> 返回文件名（不包含扩展名）
+        val nameFromFileConfig = typeConfig.nameFromFile
+        if(nameFromFileConfig) return@lazy element.containingFile.name.substringBeforeLast('.')
+        //name_field = xxx -> 返回对应名字（xxx）的property的stringValue，如果不存在则返回空字符串
+        val nameField = typeConfig.nameField
+        if(nameField != null) {
+            val nameProperty = element.findProperty(nameField) //不处理内联的情况
+            return@lazy nameProperty?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
+        }
+        //否则直接返回rootKey
+        rootKey
+    }
+    
+    val subtypes: List<String> by lazy {
+        subtypeConfigs.map { it.name }
+    }
+    
+    val subtypeConfigs: List<CwtSubtypeConfig> by lazy {
+        val subtypesConfig = typeConfig.subtypes
+        val result = SmartList<CwtSubtypeConfig>()
+        for(subtypeConfig in subtypesConfig.values) {
+            if(ParadoxDefinitionHandler.matchesSubtype(element, subtypeConfig, rootKey, configGroup, result)) result.add(subtypeConfig)
+        }
+        result
+    }
+    
+    val types: List<String> by lazy {
+        mutableListOf(type).apply { addAll(subtypes) }
+    }
+    
+    val typesText: String by lazy {
+        types.joinToString(", ")
+    }
+    
+    val localisations: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
+        val mergedLocalisationConfig = typeConfig.localisation?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
+        val result = SmartList<ParadoxDefinitionRelatedLocalisationInfo>()
+        //从已有的cwt规则
+        for(config in mergedLocalisationConfig) {
+            val locationExpression = CwtLocalisationLocationExpression.resolve(config.value)
+            val info = ParadoxDefinitionRelatedLocalisationInfo(config.key, locationExpression, config.required, config.primary)
+            result.add(info)
+        }
+        result
+    }
+    
+    val images: List<ParadoxDefinitionRelatedImageInfo> by lazy {
+        val mergedImagesConfig = typeConfig.images?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
+        val result = SmartList<ParadoxDefinitionRelatedImageInfo>()
+        //从已有的cwt规则
+        for(config in mergedImagesConfig) {
+            val locationExpression = CwtImageLocationExpression.resolve(config.value)
+            val info = ParadoxDefinitionRelatedImageInfo(config.key, locationExpression, config.required, config.primary)
+            result.add(info)
+        }
+        result
+    }
+    
+    val modifiers: List<ParadoxDefinitionModifierInfo> by lazy {
+        buildList {
+            configGroup.typeToModifiersMap.get(type)?.forEach { (_, v) -> add(ParadoxDefinitionModifierInfo(v.template.extract(name), v)) }
+            for(subtype in subtypes) {
+                configGroup.typeToModifiersMap.get("$type.$subtype")?.forEach { (_, v) -> add(ParadoxDefinitionModifierInfo(v.template.extract(name), v)) }
+            }
+        }
+    }
+    
+    val declaration: CwtPropertyConfig? by lazy {
+        val configContext = CwtConfigContext(element, name, type, subtypes, configGroup)
+        configGroup.declarations.get(type)?.getMergedConfig(configContext)
+    }
+    
+    val primaryLocalisations: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
+        localisations.filter { it.primary || it.inferIsPrimary() }
+    }
+    
+    val primaryImages: List<ParadoxDefinitionRelatedImageInfo> by lazy {
+        images.filter { it.primary || it.inferIsPrimary() }
+    }
+    
+    val localisationConfig get() = typeConfig.localisation
+    
+    val imagesConfig get() = typeConfig.images
+    
+    val declarationConfig get() = configGroup.declarations.get(type)
+    
+    val project get() = configGroup.project
+    
+    fun resolvePrimaryLocalisation(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
+        if(primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
+        for(primaryLocalisation in primaryLocalisations) {
+            val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
+            val resolved = primaryLocalisation.locationExpression.resolve(element, this, project, selector) 
+			if(resolved?.localisation == null) continue
+            return resolved.localisation
+        }
+        return null
+    }
+    
+    fun resolvePrimaryImage(definition: ParadoxScriptDefinitionElement): PsiFile? {
+        if(primaryImages.isEmpty()) return null //没有或者CWT规则不完善
+		for(primaryImage in primaryImages) {
+			val resolved = primaryImage.locationExpression.resolve(definition, this, project)
+			if(resolved?.file == null) continue
+			definition.putUserData(PlsKeys.iconFrame, resolved.frame)
+			return resolved.file
 		}
-		//否则直接返回rootKey
-		rootKey
-	}
-	
-	val subtypes: List<String> by lazy {
-		subtypeConfigs.map { it.name }
-	}
-	
-	val subtypeConfigs: List<CwtSubtypeConfig> by lazy {
-		val subtypesConfig = typeConfig.subtypes
-		val result = SmartList<CwtSubtypeConfig>()
-		for(subtypeConfig in subtypesConfig.values) {
-			if(ParadoxDefinitionHandler.matchesSubtype(element, subtypeConfig, rootKey, configGroup, result)) result.add(subtypeConfig)
-		}
-		result
-	}
-	
-	val types: List<String> by lazy {
-		mutableListOf(type).apply { addAll(subtypes) }
-	}
-	
-	val typesText: String by lazy {
-		types.joinToString(", ")
-	}
-	
-	val localisations: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
-		val mergedLocalisationConfig = typeConfig.localisation?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
-		val result = SmartList<ParadoxDefinitionRelatedLocalisationInfo>()
-		//从已有的cwt规则
-		for(config in mergedLocalisationConfig) {
-			val locationExpression = CwtLocalisationLocationExpression.resolve(config.value)
-			val info = ParadoxDefinitionRelatedLocalisationInfo(config.key, locationExpression, config.required, config.primary)
-			result.add(info)
-		}
-		result
-	}
-	
-	val images: List<ParadoxDefinitionRelatedImageInfo> by lazy {
-		val mergedImagesConfig = typeConfig.images?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
-		val result = SmartList<ParadoxDefinitionRelatedImageInfo>()
-		//从已有的cwt规则
-		for(config in mergedImagesConfig) {
-			val locationExpression = CwtImageLocationExpression.resolve(config.value)
-			val info = ParadoxDefinitionRelatedImageInfo(config.key, locationExpression, config.required, config.primary)
-			result.add(info)
-		}
-		result
-	}
-	
-	val modifiers: List<ParadoxDefinitionModifierInfo> by lazy { 
-		buildList {
-			configGroup.typeToModifiersMap.get(type)?.forEach { (_, v) -> add(ParadoxDefinitionModifierInfo(v.template.extract(name), v)) }
-			for(subtype in subtypes) {
-				configGroup.typeToModifiersMap.get("$type.$subtype")?.forEach { (_, v) -> add(ParadoxDefinitionModifierInfo(v.template.extract(name), v)) }
-			}
-		}
-	}
-	
-	val declaration: CwtPropertyConfig? by lazy {
-		val configContext = CwtConfigContext(element, name, type, subtypes, configGroup)
-		configGroup.declarations.get(type)?.getMergedConfig(configContext)
-	}
-	
-	val primaryLocalisations: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
-		localisations.filter { it.primary || it.inferIsPrimary() }
-	}
-	
-	val primaryImages: List<ParadoxDefinitionRelatedImageInfo> by lazy {
-		images.filter { it.primary || it.inferIsPrimary() }
-	}
-	
-	val localisationConfig get() = typeConfig.localisation
-	
-	val imagesConfig get() = typeConfig.images
-	
-	val declarationConfig get() = configGroup.declarations.get(type)
-	
-	val project get() = configGroup.project
-	
-	fun resolvePrimaryLocalisation(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
-		if(primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
-		return runReadAction {
-			for(primaryLocalisationConfig in primaryLocalisations) {
-				val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
-				val resolved = primaryLocalisationConfig.locationExpression.resolve(element, this, configGroup.project, selector) ?: continue
-				if(resolved.localisation != null)  return@runReadAction resolved.localisation
-			}
-			null
-		}
-	}
-	
-	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxDefinitionInfo
-			&& name == other.name && typesText == other.typesText && gameType == other.gameType
-	}
-	
-	override fun hashCode(): Int {
-		return Objects.hash(name, typesText, gameType)
-	}
+		return null
+    }
+    
+    override fun equals(other: Any?): Boolean {
+        return this === other || other is ParadoxDefinitionInfo
+            && name == other.name && typesText == other.typesText && gameType == other.gameType
+    }
+    
+    override fun hashCode(): Int {
+        return Objects.hash(name, typesText, gameType)
+    }
 }
 
 /**
@@ -160,10 +170,10 @@ val ParadoxDefinitionInfo.isAnonymous: Boolean get() = name.isEmpty()
 
 @InferMethod
 private fun ParadoxDefinitionRelatedLocalisationInfo.inferIsPrimary(): Boolean {
-	return name.equals("name", true) || name.equals("title", true)
+    return name.equals("name", true) || name.equals("title", true)
 }
 
 @InferMethod
 private fun ParadoxDefinitionRelatedImageInfo.inferIsPrimary(): Boolean {
-	return name.equals("icon", true)
+    return name.equals("icon", true)
 }
