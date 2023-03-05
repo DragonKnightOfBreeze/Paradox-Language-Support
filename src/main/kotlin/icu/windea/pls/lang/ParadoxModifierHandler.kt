@@ -1,6 +1,7 @@
 package icu.windea.pls.lang
 
 import com.intellij.codeInsight.completion.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
@@ -16,6 +17,8 @@ import icu.windea.pls.lang.support.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxModifierHandler {
+	val cachedModifierElementKey = Key.create<CachedValue<ParadoxModifierElement>>("paradox.cached.modifierElement")
+	
 	//可通过运行游戏后输出的modifiers.log判断到底会生成哪些修正
 	//修正会由特定的定义类型生成
 	//对于Stellaris：修正会由经济类型（economic_category）的声明生成

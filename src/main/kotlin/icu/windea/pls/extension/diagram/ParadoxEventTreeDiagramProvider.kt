@@ -28,6 +28,7 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import icu.windea.pls.tool.localisation.*
 import icu.windea.pls.tool.script.*
+import java.awt.*
 import javax.swing.*
 
 /**
@@ -76,7 +77,13 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             "hide_window", "is_triggered_only", "major", "diplomatic"
         )
         
-        val REL_INVOKE = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID, PlsBundle.message("diagram.paradox.eventTree.rel.invokes")) {
+        val REL_INVOKE = object : DiagramRelationshipInfoAdapter("INVOKE", DiagramLineType.SOLID) {
+            override fun getTargetArrow() = DELTA
+        }
+        val REL_INVOKE_IMMEDIATE = object : DiagramRelationshipInfoAdapter("INVOKE_IMMEDIATE", DiagramLineType.SOLID, PlsBundle.message("diagram.paradox.eventTree.rel.invokeImmediate")) {
+            override fun getTargetArrow() = DELTA
+        }
+        val REL_INVOKE_AFTER = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID, PlsBundle.message("diagram.paradox.eventTree.rel.invokeAfter")) {
             override fun getTargetArrow() = DELTA
         }
     }
@@ -278,10 +285,13 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
     class Edge(
         source: Node,
         target: Node,
-        relationship: DiagramRelationshipInfo = REL_INVOKE
-    ) : DiagramEdgeBase<PsiElement>(source, target, relationship)
+        relationship: DiagramRelationshipInfo = REL_INVOKE,
+        private val anchorColor: Color? = null,
+    ) : DiagramEdgeBase<PsiElement>(source, target, relationship) {
+        override fun getAnchorColor() = anchorColor
+    }
     
-     class DataModel(
+    class DataModel(
         project: Project,
         val file: VirtualFile?, //umlFile
         val provider: ParadoxEventTreeDiagramProvider
@@ -317,23 +327,34 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             val events = ParadoxEventHandler.getEvents(project, originalFile)
             if(events.isEmpty()) return
             val nodeMap = mutableMapOf<ParadoxScriptProperty, Node>()
-            val techMap = mutableMapOf<String, ParadoxScriptProperty>()
+            val eventMap = mutableMapOf<String, ParadoxScriptProperty>()
             for(event in events) {
                 ProgressManager.checkCanceled()
                 if(!shouldShow(event, settings, configuration)) continue
                 val node = Node(event, provider)
                 nodeMap.put(event, node)
-                techMap.put(ParadoxEventHandler.getName(event), event)
+                eventMap.put(ParadoxEventHandler.getName(event), event)
                 _nodes.add(node)
             }
             for(event in events) {
                 ProgressManager.checkCanceled()
                 val invocations = ParadoxEventHandler.getInvocations(event)
                 if(invocations.isEmpty()) continue
-                for(invocation in invocations) {
+                for((invocation, invocationType) in invocations) {
+                    ProgressManager.checkCanceled()
                     val source = nodeMap.get(event) ?: continue
-                    val target = techMap.get(invocation)?.let { nodeMap.get(it) } ?: continue
-                    val edge = Edge(source, target)
+                    val target = eventMap.get(invocation)?.let { nodeMap.get(it) } ?: continue
+                    val relationship = when(invocationType) {
+                        ParadoxEventHandler.InvocationType.All -> REL_INVOKE
+                        ParadoxEventHandler.InvocationType.Immediate -> REL_INVOKE_IMMEDIATE
+                        ParadoxEventHandler.InvocationType.After -> REL_INVOKE_AFTER
+                    }
+                    val anchorColor = when(invocationType) {
+                        ParadoxEventHandler.InvocationType.All -> null
+                        ParadoxEventHandler.InvocationType.Immediate -> Color.RED
+                        ParadoxEventHandler.InvocationType.After -> Color.BLUE
+                    }
+                    val edge = Edge(source, target, relationship, anchorColor)
                     _edges.add(edge)
                 }
             }

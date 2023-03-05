@@ -23,6 +23,7 @@ import java.lang.invoke.*
 object StellarisEconomicCategoryHandler {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
+    val cachedEconomicCategoryInfoKey = Key.create<CachedValue<StellarisEconomicCategoryInfo>>("paradox.cached.economicCategoryInfo")
     val modifierCategoriesKey = Key.create<Set<String>>("stellaris.economicCategory.modifierCategories")
     
     /**
@@ -35,7 +36,7 @@ object StellarisEconomicCategoryHandler {
     
     private fun getInfoFromCache(definition: ParadoxScriptDefinitionElement): StellarisEconomicCategoryInfo? {
         if(definition !is ParadoxScriptProperty) return null
-        return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedEconomicCategoryInfoKey) {
+        return CachedValuesManager.getCachedValue(definition, cachedEconomicCategoryInfoKey) {
             val value = resolveInfo(definition)
             CachedValueProvider.Result.create(value, definition)
         }

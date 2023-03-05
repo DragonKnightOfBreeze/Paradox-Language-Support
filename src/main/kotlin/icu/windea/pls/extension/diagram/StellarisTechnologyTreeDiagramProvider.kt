@@ -83,7 +83,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
             "start_tech", "is_rare", "is_dangerous"
         )
         
-        val REL_PREREQUISITE = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID, PlsBundle.message("diagram.stellaris.technologyTree.rel.prerequisite")) {
+        val REL_PREREQUISITE = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID) {
             override fun getTargetArrow() = DELTA
         }
     }

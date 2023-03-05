@@ -1,13 +1,15 @@
 package icu.windea.pls.config.cwt
 
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.cwt.psi.*
 import java.util.*
 
 object CwtConfigPathHandler {
+	val cachedCwtConfigPathKey = Key.create<CachedValue<CwtConfigPath>>("paradox.cached.cwtConfigPath")
+	
 	@JvmStatic
 	fun get(element: PsiElement): CwtConfigPath? {
 		if(element is CwtFile) return EmptyCwtConfigPath
@@ -16,7 +18,7 @@ object CwtConfigPathHandler {
 	}
 	
 	private fun getFromCache(element: PsiElement): CwtConfigPath? {
-		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedCwtConfigPathKey) {
+		return CachedValuesManager.getCachedValue(element, cachedCwtConfigPathKey) {
 			val value = resolve(element)
 			CachedValueProvider.Result.create(value, element)
 		}

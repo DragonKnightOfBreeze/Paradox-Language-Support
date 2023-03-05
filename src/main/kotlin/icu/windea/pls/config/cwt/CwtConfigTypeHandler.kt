@@ -1,13 +1,15 @@
 package icu.windea.pls.config.cwt
 
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
 object CwtConfigTypeHandler {
+	val cachedCwtConfigTypeKey = Key.create<CachedValue<CwtConfigType>>("paradox.cached.cwtConfigType")
+	
 	@JvmStatic
 	fun get(element: PsiElement): CwtConfigType? {
 		if(element !is CwtProperty && element !is CwtValue) return null
@@ -15,7 +17,7 @@ object CwtConfigTypeHandler {
 	}
 	
 	private fun getFromCache(element: PsiElement): CwtConfigType? {
-		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedCwtConfigTypeKey) {
+		return CachedValuesManager.getCachedValue(element, cachedCwtConfigTypeKey) {
 			val file = element.containingFile
 			val value = when(element) {
 				is CwtProperty -> resolve(element, file)
@@ -109,7 +111,7 @@ object CwtConfigTypeHandler {
 	}
 	
 	private fun resolve(element: CwtValue, file: PsiFile): CwtConfigType? {
-		val fileKey = file.name.substringBefore('.')
+		//val fileKey = file.name.substringBefore('.')
 		val configPath = element.configPath
 		if(configPath == null || configPath.isEmpty()) return null
 		val path = configPath.path

@@ -2,6 +2,7 @@ package icu.windea.pls.lang
 
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
@@ -26,6 +27,9 @@ object ParadoxInlineScriptHandler {
     const val inlineScriptDirPath = "common/inline_scripts"
     val inlineScriptPathExpression =  CwtValueExpression.resolve("filepath[common/inline_scripts/,.txt]")
     
+    val cachedInlineScriptInfoKey = Key.create<CachedValue<ParadoxInlineScriptInfo>>("paradox.cached.inlineScriptInfo")
+    val cachedInlineScriptUsageInfoKey = Key.create<CachedValue<ParadoxInlineScriptUsageInfo>>("paradox.cached.inlineScriptUsageInfo")
+    
     fun isGameTypeSupported(gameType: ParadoxGameType): Boolean {
         return gameType == ParadoxGameType.Stellaris
     }
@@ -40,7 +44,7 @@ object ParadoxInlineScriptHandler {
     }
     
     private fun getInfoFromCache(element: ParadoxScriptPropertyKey): ParadoxInlineScriptInfo? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedInlineScriptInfoKey) {
+        return CachedValuesManager.getCachedValue(element, cachedInlineScriptInfoKey) {
             val file = element.containingFile
             val value = resolveInfo(element, file)
             //invalidated on file modification
@@ -148,14 +152,14 @@ object ParadoxInlineScriptHandler {
         val usageInfo = getUsageInfoFromCache(file) ?: return null
         //处理缓存对应的锚点属性已经不存在的情况
         if(usageInfo.pointer.element == null) {
-            file.putUserData(PlsKeys.cachedInlineScriptUsageInfoKey, null)
+            file.putUserData(cachedInlineScriptUsageInfoKey, null)
             return getUsageInfoFromCache(file)
         }
         return usageInfo
     }
     
     private fun getUsageInfoFromCache(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
-        return CachedValuesManager.getCachedValue(file, PlsKeys.cachedInlineScriptUsageInfoKey) {
+        return CachedValuesManager.getCachedValue(file, cachedInlineScriptUsageInfoKey) {
             val value = doGetInlineScriptUsageInfo(file)
             val tracker = ParadoxModificationTrackerProvider.getInstance().InlineScripts
             CachedValueProvider.Result.create(value, tracker)

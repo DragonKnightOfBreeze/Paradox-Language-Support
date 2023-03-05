@@ -25,7 +25,7 @@ class ParadoxScriptDataImpl(
     }
     
     override fun getData(path: String): ParadoxScriptData? {
-        val pathList = path.trimStart('/').split('/')
+        val pathList = path.trimStart('/').lowercase().split('/')
         var current: ParadoxScriptData? = this
         for(p in pathList) {
             val k = if(p == "-") null else p
@@ -36,7 +36,7 @@ class ParadoxScriptDataImpl(
     }
     
     override fun getAllData(path: String): List<ParadoxScriptData> {
-        val pathList = path.trimStart('/').split('/')
+        val pathList = path.trimStart('/').lowercase().split('/')
         var result: List<ParadoxScriptData> = listOf(this)
         for(p in pathList) {
             val k = if(p == "-") null else p
