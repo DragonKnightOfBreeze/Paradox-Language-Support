@@ -19,7 +19,7 @@ class ParadoxComplexEnumValueChooseByNameContributor : ChooseByNameContributorEx
     }
     
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
-        //这里显示的是property/value的图标，而非complexEnum的图标
+        //NOTE 这里显示的是property/value的图标，而非complexEnum的图标，需要考虑优化
         StubIndex.getInstance().processElements(ParadoxComplexEnumValueIndex.KEY, name, parameters.project, parameters.searchScope, parameters.idFilter, ParadoxScriptStringExpressionElement::class.java, processor)
     }
 }

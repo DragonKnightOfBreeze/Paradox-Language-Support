@@ -38,9 +38,10 @@ traditions: inherit icon from parent original tradition if inherit_icon = yes
 
 * [X] `int[-inf..inf]` - 允许这样的写法 
 * [X] 更新`on_actions.cwt`
-* [ ] 科技树图标 - item排序不正确，为啥？
+* [ ] 科技树图表 - item排序不正确，为啥？
+* [ ] 事件树图表 - 生成过慢
 * [ ] 检查原版游戏文件 - PROCESSING：common/country_types
-* [ ] 无法快速查找event（通过event id）
+* [ ] 无法快速查找event（通过event id）（以及其他任何definitionName不为rootKey的定义，应当如此）
 
 ## 0.8.2
 

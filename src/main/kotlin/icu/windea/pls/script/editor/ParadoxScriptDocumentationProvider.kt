@@ -227,7 +227,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         for((key, locationExpression, required) in localisationInfos) {
             if(sectionKeys.contains(key)) continue
             val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
-            val resolved = locationExpression.resolve(element, definitionInfo, project, selector) ?: continue //发生意外，直接跳过
+            val resolved = locationExpression.resolve(element, definitionInfo, selector) ?: continue //发生意外，直接跳过
             if(resolved.message != null) {
                 map.put(key, resolved.message)
             } else if(resolved.localisation != null) {

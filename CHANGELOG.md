@@ -82,8 +82,8 @@
   * [X] 添加扩展的CWT规则类型`$shader_effect`，对应`.shader`文件中的effect，暂时作为一般的字符串处理
   * [X] 由基于`on_actions.csv`获取`on_action`的事件类型、作用域上下文、文档等信息，改为基于`on_actions.cwt`获取
 * 新增功能
-  * [X] 初步支持生成科技树图表（通过项目视图或者编辑器的右键菜单中的`Diagrams > Show Diagram...`打开）
-  * [X] 初步支持生成事件树图表（通过项目视图或者编辑器的右键菜单中的`Diagrams > Show Diagram...`打开）
+  * [X] 初步支持生成科技树图表（通过项目视图或者编辑器的右键菜单中的`Diagrams > Show Diagram...`打开，需要专业版IDE）
+  * [X] 初步支持生成事件树图表（通过项目视图或者编辑器的右键菜单中的`Diagrams > Show Diagram...`打开，需要专业版IDE）
 
 ## 0.8.2
 

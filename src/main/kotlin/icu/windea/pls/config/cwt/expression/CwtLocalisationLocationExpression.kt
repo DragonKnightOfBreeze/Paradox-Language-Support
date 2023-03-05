@@ -1,7 +1,6 @@
 package icu.windea.pls.config.cwt.expression
 
 import com.google.common.cache.*
-import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
@@ -66,7 +65,7 @@ class CwtLocalisationLocationExpression(
     /**
      * @return (localisationKey, localisation, message)
      */
-    fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, project: Project, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveResult? {
+    fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveResult? {
         if(placeholder != null) {
             //如果定义是匿名的，则直接忽略
             if(definitionInfo.isAnonymous) return null
@@ -98,7 +97,7 @@ class CwtLocalisationLocationExpression(
         val message: String? = null
     )
     
-    fun resolveAll(definitionName: String, definition: ParadoxScriptDefinitionElement, project: Project, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveAllResult? {
+    fun resolveAll(definitionName: String, definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveAllResult? {
         if(placeholder != null) {
             val key = resolvePlaceholder(definitionName)!!
             val localisations = ParadoxLocalisationSearch.search(key, selector).findAll()

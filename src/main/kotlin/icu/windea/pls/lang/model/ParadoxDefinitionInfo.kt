@@ -130,7 +130,7 @@ class ParadoxDefinitionInfo(
         if(primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
         for(primaryLocalisation in primaryLocalisations) {
             val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
-            val resolved = primaryLocalisation.locationExpression.resolve(element, this, project, selector)
+            val resolved = primaryLocalisation.locationExpression.resolve(element, this, selector)
             if(resolved?.key == null) continue
             return resolved.key
         }
@@ -141,7 +141,7 @@ class ParadoxDefinitionInfo(
         if(primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
         for(primaryLocalisation in primaryLocalisations) {
             val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
-            val resolved = primaryLocalisation.locationExpression.resolve(element, this, project, selector)
+            val resolved = primaryLocalisation.locationExpression.resolve(element, this, selector)
             val localisation = resolved?.localisation
             if(localisation == null) continue
             return localisation

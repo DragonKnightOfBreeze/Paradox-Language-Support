@@ -76,7 +76,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                                 if(info.primary && hasPrimaryLocales.contains(locale)) continue
                                 //多个位置表达式无法解析时，使用第一个
                                 val selector = localisationSelector(project, definition).locale(locale)
-                                val resolved = info.locationExpression.resolve(definition, definitionInfo, project, selector)
+                                val resolved = info.locationExpression.resolve(definition, definitionInfo, selector)
                                 if(resolved != null) {
                                     if(resolved.message != null) continue //skip if it's dynamic or inlined
                                     if(resolved.localisation == null) {
