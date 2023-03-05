@@ -76,14 +76,14 @@ object ParadoxLocalisationTextHintsRenderer {
 	private fun PresentationFactory.renderEscapeTo(element: ParadoxLocalisationEscape, editor: Editor, builder: MutableList<InlayPresentation>, context: Context): Boolean {
 		//使用原始文本（内嵌注释不能换行，这时直接截断）
 		val elementText = element.text
-		when {
+		val text = when {
 			elementText == "\\n" -> return false
 			elementText == "\\r" -> return false
-			else -> {
-				builder.add(truncatedSmallText(elementText, context))
-				return continueProcess(context)
-			}
+			elementText == "\\t" -> "\t"
+			else -> elementText
 		}
+		builder.add(truncatedSmallText(text, context))
+		return continueProcess(context)
 	}
 	
 	private fun PresentationFactory.renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, editor: Editor, builder: MutableList<InlayPresentation>, context: Context): Boolean {

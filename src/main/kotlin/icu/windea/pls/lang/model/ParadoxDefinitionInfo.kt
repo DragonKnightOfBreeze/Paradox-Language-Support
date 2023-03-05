@@ -126,13 +126,25 @@ class ParadoxDefinitionInfo(
     
     val project get() = configGroup.project
     
+    fun resolvePrimaryLocalisationName(element: ParadoxScriptDefinitionElement): String? {
+        if(primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
+        for(primaryLocalisation in primaryLocalisations) {
+            val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
+            val resolved = primaryLocalisation.locationExpression.resolve(element, this, project, selector)
+            if(resolved?.key == null) continue
+            return resolved.key
+        }
+        return null
+    }
+    
     fun resolvePrimaryLocalisation(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
         if(primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
         for(primaryLocalisation in primaryLocalisations) {
             val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
-            val resolved = primaryLocalisation.locationExpression.resolve(element, this, project, selector) 
-			if(resolved?.localisation == null) continue
-            return resolved.localisation
+            val resolved = primaryLocalisation.locationExpression.resolve(element, this, project, selector)
+            val localisation = resolved?.localisation
+            if(localisation == null) continue
+            return localisation
         }
         return null
     }
@@ -141,9 +153,10 @@ class ParadoxDefinitionInfo(
         if(primaryImages.isEmpty()) return null //没有或者CWT规则不完善
 		for(primaryImage in primaryImages) {
 			val resolved = primaryImage.locationExpression.resolve(definition, this, project)
-			if(resolved?.file == null) continue
+            val file = resolved?.file
+            if(file == null) continue
 			definition.putUserData(PlsKeys.iconFrame, resolved.frame)
-			return resolved.file
+			return file
 		}
 		return null
     }

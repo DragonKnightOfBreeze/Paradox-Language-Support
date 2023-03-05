@@ -16,7 +16,6 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.ui.*
-import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -148,7 +147,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     val result = mutableListOf<Any>()
-                    //result.add(nodeElement) //TODO
+                    result.add(nodeElement)
                     val name = StellarisTechnologyHandler.getLocalizedName(nodeElement)
                     if(name != null) result.add(name)
                     val icon = StellarisTechnologyHandler.getIconFile(nodeElement)
@@ -180,10 +179,13 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
                                 val presentation = ParadoxDefinitionPresentationProvider.EP_NAME.extensionList
                                     .findIsInstance<StellarisTechnologyPresentationProvider>()
                                     ?.getPresentation(nodeItem, nodeItem.definitionInfo!!)
-                                presentation?.let { IconUtil.createImageIcon(it) }
+                                presentation?.toIcon()
                             } else {
                                 PlsIcons.Property
                             }
+                        }
+                        nodeItem is ParadoxLocalisationProperty -> {
+                            ParadoxLocalisationTextUIRender.renderImage(nodeItem)?.toIcon()
                         }
                         nodeItem is PsiFile -> {
                             val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrame) ?: 0)
@@ -219,9 +221,6 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
                                 result
                             }
                         }
-                        nodeItem is ParadoxLocalisationProperty -> {
-                            ParadoxLocalisationTextUIRender.render(nodeItem) 
-                        }
                         else -> null
                     }
                 }
@@ -231,6 +230,12 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
         
         override fun getItemType(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): SimpleColoredText? {
             return null
+        }
+        
+        @Suppress("RedundantOverride")
+        override fun getItemDocOwner(element: Any?, builder: DiagramBuilder): PsiElement? {
+            //property -> No documentation found -> ok
+            return super.getItemDocOwner(element, builder)
         }
     }
     
@@ -289,8 +294,8 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
         override fun getCustomLayouter(settings: GraphSettings, project: Project?): Layouter {
             val layouter = GraphManager.getGraphManager().createHierarchicGroupLayouter()
             layouter.orientationLayouter = GraphManager.getGraphManager().createOrientationLayouter(LayoutOrientation.LEFT_TO_RIGHT)
-            layouter.minimalNodeDistance = 20.0
-            layouter.minimalEdgeDistance = 40.0
+            layouter.minimalNodeDistance = 40.0
+            layouter.minimalEdgeDistance = 20.0
             layouter.layerer = GraphManager.getGraphManager().createBFSLayerer()
             return layouter
         }

@@ -1,5 +1,4 @@
 <!-- Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file. -->
-<!-- From plugin: Markdown -->
-<svg width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" clip-rule="evenodd" d="M11 1H1V11H11V1ZM5.38775 7.25679L3.85714 5.20452L1.71429 8.2727H10.2857L7.53061 4.18179L5.38775 7.25679Z" fill="#6E6E6E" transform=""/>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <path fill="#6E6E6E" fill-rule="evenodd" d="M2,2 L14,2 L14,14 L2,14 L2,2 Z M5.42857143,7.04545455 L2.85714286,10.7272727 L13.1428571,10.7272727 L9.83673469,5.81818182 L7.26530612,9.50818182 L5.42857143,7.04545455 Z"/>
 </svg>

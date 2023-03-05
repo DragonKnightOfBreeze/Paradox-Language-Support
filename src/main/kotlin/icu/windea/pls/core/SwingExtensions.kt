@@ -9,6 +9,14 @@ fun Icon.resize(width: Int, height: Int): Icon {
     return IconUtil.toSize(this, width, height)
 }
 
+fun Image.toIcon(): Icon {
+    return IconUtil.createImageIcon(this)
+}
+
+fun Icon.toImage(): Image {
+    return IconUtil.toImage(this)
+}
+
 fun Color.toHex(withAlpha: Boolean = true) = ColorUtil.toHex(this, withAlpha)
 
 operator fun Color.component1() = red

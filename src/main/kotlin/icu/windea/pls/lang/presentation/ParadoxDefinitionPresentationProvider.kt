@@ -6,7 +6,7 @@ import icu.windea.pls.script.psi.*
 import java.awt.*
 
 /**
- * 用户绘制定义对应的UI表示。例如，科技卡图片。
+ * 用于绘制定义对应的UI表示。
  */
 interface ParadoxDefinitionPresentationProvider {
     fun getPresentation(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Image?

@@ -6,9 +6,22 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
+import icu.windea.pls.tool.localisation.*
+import java.awt.*
 import javax.swing.*
 
 object ParadoxPresentationHandler {
+    @JvmStatic
+    fun getName(definition: ParadoxScriptProperty): Image? {
+        val definitionInfo = definition.definitionInfo ?: return null
+        val localizedName = definitionInfo.resolvePrimaryLocalisation(definition)
+        if(localizedName == null) {
+            val locName = definitionInfo.resolvePrimaryLocalisationName(definition) ?: return null
+            return ParadoxLocalisationTextUIRender.renderImage(locName)
+        }
+        return ParadoxLocalisationTextUIRender.renderImage(localizedName)
+    }
+    
     @JvmStatic
     fun getIcon(ddsFile: PsiFile): Icon? {
         val iconFile = ddsFile.virtualFile ?: return null
