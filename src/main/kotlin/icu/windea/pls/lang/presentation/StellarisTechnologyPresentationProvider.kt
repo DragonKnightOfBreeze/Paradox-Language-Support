@@ -71,13 +71,12 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
                 
                 g as Graphics2D
                 g.color = backgroundColor //设置背景色
-                g.drawRect(0, 0, 452, 97)//填充背景色
+                g.fillRect(0, 0, 452, 97)//填充背景色
                 g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON) //抗锯齿
-                
                 g.drawImage(backgroundIcon.toImage(), 0, 0, 452, 96, this)
                 g.drawImage(bottomLineIcon.toImage(), 0, 96, 452, 1, this)
-                g.drawImage(name, 2, 2, this)
-                g.drawImage(cost, 452 - 2 - cost.getWidth(this), 2, this)
+                g.drawImage(name, 6, 2, this)
+                g.drawImage(cost, 452 - 6 - cost.getWidth(this), 2, this)
                 g.drawImage(icon.toImage(), 4, 32, 52, 52, this) // (60 - 52) / 2, 20 + ((76 - 52) / 2)
                 if(categoryIcon != null) {
                     g.drawImage(categoryIcon.toImage(), 452 - 6 - categoryIcon.iconWidth, 26, 30, 30, this) //452 - 6 - width, 20 + 6

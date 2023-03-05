@@ -41,7 +41,8 @@
     <inferredScopeContextProvider implementation="icu.windea.pls.lang.provider.ParadoxEventFromOnActionInferredScopeContextProvider"/>
     
     <definitionPresentationProvider implementation="icu.windea.pls.lang.presentation.StellarisTechnologyPresentationProvider"/>
-    
+
+    <definitionDataProvider implementation="icu.windea.pls.lang.data.ParadoxEventDataProvider"/>/
     <definitionDataProvider implementation="icu.windea.pls.lang.data.StellarisTechnologyDataProvider"/>/
     
     <modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromGameImporter"/>

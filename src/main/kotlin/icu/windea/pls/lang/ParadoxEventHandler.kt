@@ -1,9 +1,12 @@
 package icu.windea.pls.lang
 
 import com.intellij.openapi.project.*
+import com.intellij.psi.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxEventHandler {
@@ -37,20 +40,20 @@ object ParadoxEventHandler {
 	}
 	
 	@JvmStatic
-	fun getEventName(element: ParadoxScriptProperty): String {
+	fun getName(element: ParadoxScriptProperty): String {
 		return element.name // = element.definitionInfo.name
 	}
 	
 	@JvmStatic
-	fun getEventNamespace(element: ParadoxScriptProperty): String {
-		return getEventName(element).substringBefore(".") //enough
+	fun getNamespace(element: ParadoxScriptProperty): String {
+		return getName(element).substringBefore(".") //enough
 	}
 	
 	/**
 	 * 得到event的需要匹配的namespace。
 	 */
 	@JvmStatic
-	fun getMatchedEventNamespace(event: ParadoxScriptProperty): ParadoxScriptProperty? {
+	fun getMatchedNamespace(event: ParadoxScriptProperty): ParadoxScriptProperty? {
 		var current = event.prevSibling ?: return null
 		while(true) {
 			if(current is ParadoxScriptProperty && current.name.equals("namespace", true)) {
@@ -62,5 +65,23 @@ object ParadoxEventHandler {
 			}
 			current = current.prevSibling ?: return null
 		}
+	}
+	
+	@JvmStatic
+	fun getLocalizedName(definition: ParadoxScriptProperty): ParadoxLocalisationProperty? {
+		return definition.definitionInfo?.resolvePrimaryLocalisation(definition)
+	}
+	
+	@JvmStatic
+	fun getIconFile(definition: ParadoxScriptProperty): PsiFile? {
+		return definition.definitionInfo?.resolvePrimaryImage(definition)
+	}
+	
+	/**
+	 * 得到指定事件可能调用的所有事件。
+	 */
+	@JvmStatic
+	fun getInvocations(definition: ParadoxScriptProperty): Set<String> {
+		return emptySet() //TODO
 	}
 }

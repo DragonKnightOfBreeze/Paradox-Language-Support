@@ -7,6 +7,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -64,5 +65,15 @@ object StellarisTechnologyHandler {
     @JvmStatic
     fun getIconFile(definition: ParadoxScriptProperty): PsiFile? {
         return definition.definitionInfo?.resolvePrimaryImage(definition)
+    }
+    
+    /**
+     * 得到指定科技的所有前置科技。
+     */
+    @JvmStatic
+    fun getPrerequisites(definition: ParadoxScriptProperty): Set<String> {
+        val data = definition.getData<StellarisTechnologyDataProvider.Data>() ?: return emptySet()
+        val prerequisites = data.prerequisites
+        return prerequisites
     }
 }

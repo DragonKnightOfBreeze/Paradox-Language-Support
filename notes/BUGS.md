@@ -38,6 +38,7 @@ traditions: inherit icon from parent original tradition if inherit_icon = yes
 
 * [X] `int[-inf..inf]` - 允许这样的写法 
 * [X] 更新`on_actions.cwt`
+* [ ] 科技树图标 - item排序不正确，为啥？
 * [ ] 检查原版游戏文件 - PROCESSING：common/country_types
 * [ ] 无法快速查找event（通过event id）
 
