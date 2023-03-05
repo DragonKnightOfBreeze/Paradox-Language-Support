@@ -1,6 +1,7 @@
 package icu.windea.pls.tool.localisation
 
 import com.intellij.codeInsight.documentation.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
@@ -20,6 +21,7 @@ object ParadoxLocalisationTextRenderer {
 		val richTextList = element.propertyValue?.richTextList
 		if(richTextList == null || richTextList.isEmpty()) return
 		for(richText in richTextList) {
+			ProgressManager.checkCanceled()
 			renderTo(richText, builder)
 		}
 	}
@@ -105,6 +107,7 @@ object ParadoxLocalisationTextRenderer {
 		val colorHex = element.colorConfig?.color?.toHex()
 		if(colorHex != null) builder.append("<span style=\"color: #").append(colorHex).append("\">")
 		for(richText in richTextList) {
+			ProgressManager.checkCanceled()
 			renderTo(richText, builder)
 		}
 		if(colorHex != null) builder.append("</span>")

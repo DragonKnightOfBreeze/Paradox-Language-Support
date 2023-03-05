@@ -16,6 +16,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.ui.*
+import com.intellij.util.concurrency.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -29,6 +30,7 @@ import icu.windea.pls.tool.*
 import icu.windea.pls.tool.localisation.*
 import icu.windea.pls.tool.script.*
 import java.awt.*
+import java.util.concurrent.*
 import javax.swing.*
 
 /**
@@ -131,6 +133,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         }
         
         override fun getElementTitle(element: PsiElement): String? {
+            ProgressManager.checkCanceled()
             return when(element) {
                 is PsiDirectory -> element.name
                 is ParadoxScriptProperty -> ParadoxEventHandler.getName(element)
@@ -143,18 +146,21 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         }
         
         override fun getNodeItems(nodeElement: PsiElement?, builder: DiagramBuilder): Array<Any> {
-            return when(nodeElement) {
-                is ParadoxScriptProperty -> {
-                    val result = mutableListOf<Any>()
-                    val name = ParadoxEventHandler.getLocalizedName(nodeElement)
-                    if(name != null) result.add(name)
-                    val icon = ParadoxEventHandler.getIconFile(nodeElement)
-                    if(icon != null) result.add(icon)
-                    val properties = getProperties(nodeElement)
-                    result.addAll(properties)
-                    result.toTypedArray()
+            ProgressManager.checkCanceled()
+            return withMeasureMillis("getNodeItems ") {
+                when(nodeElement) {
+                    is ParadoxScriptProperty -> {
+                        val result = mutableListOf<Any>()
+                        val name = withMeasureMillis("getNodeItems@1 ", true) { ParadoxEventHandler.getLocalizedName(nodeElement) }
+                        if(name != null) result.add(name)
+                        val icon = withMeasureMillis("getNodeItems@2 ", true) { ParadoxEventHandler.getIconFile(nodeElement) }
+                        if(icon != null) result.add(icon)
+                        val properties = withMeasureMillis("getNodeItems@3 ", true) { getProperties(nodeElement) }
+                        result.addAll(properties)
+                        result.toTypedArray()
+                    }
+                    else -> emptyArray()
                 }
-                else -> emptyArray()
             }
         }
         
@@ -168,58 +174,64 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         }
         
         override fun getItemIcon(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): Icon? {
-            return when(nodeElement) {
-                is ParadoxScriptProperty -> {
-                    when {
-                        nodeItem is ParadoxScriptProperty -> {
-                            val definitionInfo = nodeItem.definitionInfo
-                            if(definitionInfo != null) {
-                                null
-                            } else {
-                                PlsIcons.Property
+            ProgressManager.checkCanceled()
+            return withMeasureMillis("getItemIcon ") {
+                when(nodeElement) {
+                    is ParadoxScriptProperty -> {
+                        when {
+                            nodeItem is ParadoxScriptProperty -> {
+                                val definitionInfo = nodeItem.definitionInfo
+                                if(definitionInfo != null) {
+                                    null
+                                } else {
+                                    PlsIcons.Property
+                                }
                             }
-                        }
-                        nodeItem is ParadoxLocalisationProperty -> {
-                            ParadoxLocalisationTextUIRender.renderImage(nodeItem)?.toIcon()
-                        }
-                        nodeItem is PsiFile -> {
-                            val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrame) ?: 0)
-                            if(iconUrl.isNotEmpty()) {
-                                IconLoader.findIcon(iconUrl.toFileUrl())
-                            } else {
-                                null
+                            nodeItem is ParadoxLocalisationProperty -> {
+                                ParadoxLocalisationTextUIRender.renderImage(nodeItem)?.toIcon()
                             }
+                            nodeItem is PsiFile -> {
+                                val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrame) ?: 0)
+                                if(iconUrl.isNotEmpty()) {
+                                    IconLoader.findIcon(iconUrl.toFileUrl())
+                                } else {
+                                    null
+                                }
+                            }
+                            else -> null
                         }
-                        else -> null
                     }
+                    else -> null
                 }
-                else -> null
             }
         }
         
         override fun getItemName(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder): SimpleColoredText? {
-            return when(nodeElement) {
-                is ParadoxScriptProperty -> {
-                    when {
-                        nodeItem is ParadoxScriptProperty -> {
-                            val definitionInfo = nodeItem.definitionInfo
-                            if(definitionInfo != null) {
-                                null
-                            } else {
-                                val rendered = runReadAction { ParadoxScriptTextRender.render(nodeItem, renderInBlock = true) }
-                                val result = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
-                                val propertyValue = nodeItem.propertyValue
-                                if(propertyValue is ParadoxScriptScriptedVariableReference) {
-                                    val sv = propertyValue.text
-                                    result.append(" by $sv", SimpleTextAttributes.GRAYED_ATTRIBUTES)
+            ProgressManager.checkCanceled()
+            return withMeasureMillis("getItemName ") {
+                when(nodeElement) {
+                    is ParadoxScriptProperty -> {
+                        when {
+                            nodeItem is ParadoxScriptProperty -> {
+                                val definitionInfo = nodeItem.definitionInfo
+                                if(definitionInfo != null) {
+                                    null
+                                } else {
+                                    val rendered = ParadoxScriptTextRender.render(nodeItem, renderInBlock = true)
+                                    val result = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
+                                    val propertyValue = nodeItem.propertyValue
+                                    if(propertyValue is ParadoxScriptScriptedVariableReference) {
+                                        val sv = propertyValue.text
+                                        result.append(" by $sv", SimpleTextAttributes.GRAYED_ATTRIBUTES)
+                                    }
+                                    result
                                 }
-                                result
                             }
+                            else -> null
                         }
-                        else -> null
                     }
+                    else -> null
                 }
-                else -> null
             }
         }
         
@@ -246,7 +258,9 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         //com.intellij.diagram.extras.DiagramExtras.getCustomLayouter
         
         override fun createNodeComponent(node: DiagramNode<PsiElement>, builder: DiagramBuilder, nodeRealizer: NodeRealizer, wrapper: JPanel): JComponent {
-            return super.createNodeComponent(node, builder, nodeRealizer, wrapper)
+            return runReadAction {
+                super.createNodeComponent(node, builder, nodeRealizer, wrapper)
+            }
         }
         
         override fun getAdditionalDiagramSettings(): Array<out DiagramConfigGroup> {

@@ -94,6 +94,8 @@ object ParadoxInlineScriptHandler {
     
     @JvmStatic
     fun getInlineScript(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptFile? {
+        if(DumbService.isDumb(project)) return null //NOTE 防止重入索引
+        
         val filePath = getInlineScriptFilePath(expression)
         val selector = fileSelector(project, contextElement).contextSensitive()
         val query = ParadoxFilePathSearch.search(filePath, selector = selector)
@@ -102,6 +104,8 @@ object ParadoxInlineScriptHandler {
     
     @JvmStatic
     fun processInlineScript(expression: String, contextElement: PsiElement, project: Project, processor: (ParadoxScriptFile) -> Boolean): Boolean {
+        if(DumbService.isDumb(project)) return true //NOTE 防止重入索引
+        
         val filePath = getInlineScriptFilePath(expression)
         val selector = fileSelector(project, contextElement).contextSensitive()
         val query = ParadoxFilePathSearch.search(filePath, selector = selector)

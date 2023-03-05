@@ -2,6 +2,7 @@
 
 package icu.windea.pls.core
 
+import ai.grazie.utils.*
 import com.google.common.cache.*
 import com.ibm.icu.text.*
 import com.intellij.util.*
@@ -17,8 +18,7 @@ import kotlin.contracts.*
 import kotlin.math.*
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun pass() {
-}
+inline fun pass() {}
 
 @OptIn(ExperimentalContracts::class)
 inline fun <T : R, R> T.letIf(condition: Boolean, block: (T) -> R): R {
@@ -35,6 +35,15 @@ inline fun <T : R, R> T.letUnless(condition: Boolean, block: (T) -> R): R {
 	}
 	return if(!condition) block(this) else this
 }
+
+inline fun <T> withMeasureMillis(prefix: String = "", enable: Boolean = false , action: () -> T): T {
+	if(!enable) return action()
+	val start = System.currentTimeMillis()
+	val result = action()
+	val end = System.currentTimeMillis()
+	println(prefix + (end - start))
+	return result
+} 
 
 fun Number.format(digits: Int): String {
 	val power = 10.0.pow(abs(digits))

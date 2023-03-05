@@ -132,6 +132,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
         }
         
         override fun getElementTitle(element: PsiElement): String? {
+            ProgressManager.checkCanceled()
             return when(element) {
                 is PsiDirectory -> element.name
                 is ParadoxScriptProperty -> StellarisTechnologyHandler.getName(element)
@@ -144,6 +145,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
         }
         
         override fun getNodeItems(nodeElement: PsiElement?, builder: DiagramBuilder): Array<Any> {
+            ProgressManager.checkCanceled()
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     val result = mutableListOf<Any>()
@@ -170,22 +172,23 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
         }
         
         override fun getItemIcon(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): Icon? {
+            ProgressManager.checkCanceled()
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     when {
                         nodeItem is ParadoxScriptProperty -> {
                             val definitionInfo = nodeItem.definitionInfo
                             if(definitionInfo != null) {
-                                val presentation = ParadoxDefinitionPresentationProvider.EP_NAME.extensionList
-                                    .findIsInstance<StellarisTechnologyPresentationProvider>()
-                                    ?.getPresentation(nodeItem, nodeItem.definitionInfo!!)
-                                presentation?.toIcon()
+                                    val presentation = ParadoxDefinitionPresentationProvider.EP_NAME.extensionList
+                                        .findIsInstance<StellarisTechnologyPresentationProvider>()
+                                        ?.getPresentation(nodeItem, nodeItem.definitionInfo!!)
+                                    presentation?.toIcon()
                             } else {
                                 PlsIcons.Property
                             }
                         }
                         nodeItem is ParadoxLocalisationProperty -> {
-                            ParadoxLocalisationTextUIRender.renderImage(nodeItem)?.toIcon()
+                                ParadoxLocalisationTextUIRender.renderImage(nodeItem)?.toIcon()
                         }
                         nodeItem is PsiFile -> {
                             val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrame) ?: 0)
@@ -203,6 +206,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
         }
         
         override fun getItemName(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder): SimpleColoredText? {
+            ProgressManager.checkCanceled()
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     when {
@@ -211,14 +215,14 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
                             if(definitionInfo != null) {
                                 null
                             } else {
-                                val rendered = runReadAction { ParadoxScriptTextRender.render(nodeItem, renderInBlock = true) }
-                                val result = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
-                                val propertyValue = nodeItem.propertyValue
-                                if(propertyValue is ParadoxScriptScriptedVariableReference) {
-                                    val sv = propertyValue.text
-                                    result.append(" by $sv", SimpleTextAttributes.GRAYED_ATTRIBUTES)
-                                }
-                                result
+                                    val rendered = ParadoxScriptTextRender.render(nodeItem, renderInBlock = true)
+                                    val result = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
+                                    val propertyValue = nodeItem.propertyValue
+                                    if(propertyValue is ParadoxScriptScriptedVariableReference) {
+                                        val sv = propertyValue.text
+                                        result.append(" by $sv", SimpleTextAttributes.GRAYED_ATTRIBUTES)
+                                    }
+                                    result
                             }
                         }
                         else -> null
@@ -249,9 +253,11 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
     
     class Extras : CommonDiagramExtras<PsiElement>() {
         //com.intellij.diagram.extras.DiagramExtras.getCustomLayouter
-    
+        
         override fun createNodeComponent(node: DiagramNode<PsiElement>, builder: DiagramBuilder, nodeRealizer: NodeRealizer, wrapper: JPanel): JComponent {
-            return super.createNodeComponent(node, builder, nodeRealizer, wrapper)
+            return runReadAction {
+                super.createNodeComponent(node, builder, nodeRealizer, wrapper)
+            }
         }
         
         override fun getAdditionalDiagramSettings(): Array<out DiagramConfigGroup> {
