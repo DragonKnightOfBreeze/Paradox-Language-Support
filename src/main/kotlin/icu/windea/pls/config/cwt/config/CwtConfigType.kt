@@ -12,9 +12,11 @@ enum class CwtConfigType(
 ) {
 	Type("type") {
 		override val prefix get() = PlsDocBundle.message("prefix.type")
+		override val icon get() = PlsIcons.Type
 	},
 	Subtype("subtype") {
 		override val prefix get() = PlsDocBundle.message("prefix.subtype")
+		override val icon get() = PlsIcons.Type
 	},
 	Enum("enum") {
 		override val prefix get() = PlsDocBundle.message("prefix.enum")

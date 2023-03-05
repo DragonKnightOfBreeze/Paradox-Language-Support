@@ -21,6 +21,7 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.selectors.*
+import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.presentation.*
@@ -70,10 +71,11 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
     override fun getAllContentCategories() = CATEGORIES
     
     companion object {
+        val CAT_TYPE = DiagramCategory(PlsBundle.lazyMessage("diagram.paradox.eventTree.category.type"), PlsIcons.Type, true, false)
         val CAT_PROPERTIES = DiagramCategory(PlsBundle.lazyMessage("diagram.paradox.eventTree.category.properties"), PlsIcons.Property, true, false)
         val CAT_TITLE = DiagramCategory(PlsBundle.lazyMessage("diagram.paradox.eventTree.category.title"), PlsIcons.Localisation, false, false)
         val CAT_PICTURE = DiagramCategory(PlsBundle.lazyMessage("diagram.paradox.eventTree.category.picture"), PlsIcons.Image, false, false)
-        val CATEGORIES = arrayOf(CAT_PROPERTIES, CAT_TITLE, CAT_PICTURE)
+        val CATEGORIES = arrayOf(CAT_TYPE, CAT_PROPERTIES, CAT_TITLE, CAT_PICTURE)
         val ITEM_PROP_KEYS = arrayOf(
             "picture",
             "hide_window", "is_triggered_only", "major", "diplomatic"
@@ -93,6 +95,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
     class NodeContentManager : AbstractDiagramNodeContentManager() {
         override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?): Boolean {
             return when {
+                item is CwtProperty -> category == CAT_TYPE
                 item is ParadoxScriptProperty -> {
                     val definitionInfo = item.definitionInfo
                     if(definitionInfo != null) {
@@ -150,6 +153,8 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     val result = mutableListOf<Any>()
+                    val typeElement = nodeElement.definitionInfo?.typeConfig //should not be null
+                    if(typeElement != null) result.add(typeElement)
                     val properties = getProperties(nodeElement)
                     result.addAll(properties)
                     val name = ParadoxEventHandler.getLocalizedName(nodeElement)
@@ -176,6 +181,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     when {
+                        nodeItem is CwtProperty -> PlsIcons.Type
                         nodeItem is ParadoxScriptProperty -> {
                             val definitionInfo = nodeItem.definitionInfo
                             if(definitionInfo != null) {
@@ -207,6 +213,11 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     when {
+                        nodeItem is CwtProperty -> {
+                            val typesText = nodeElement.definitionInfo?.typesText ?: return null
+                            val result = SimpleColoredText(typesText, DEFAULT_TEXT_ATTR)
+                            result
+                        }
                         nodeItem is ParadoxScriptProperty -> {
                             val definitionInfo = nodeItem.definitionInfo
                             if(definitionInfo != null) {

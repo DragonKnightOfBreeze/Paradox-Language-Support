@@ -39,7 +39,7 @@ traditions: inherit icon from parent original tradition if inherit_icon = yes
 * [X] `int[-inf..inf]` - 允许这样的写法 
 * [X] 更新`on_actions.cwt`
 * [ ] 科技树图表 - item排序不正确，为啥？
-* [ ] 事件树图表 - 生成过慢
+* [ ] 事件树图表 - 生成过慢 - 指定名字查询本地化索引最慢可能需要400ms+
 * [ ] 检查原版游戏文件 - PROCESSING：common/country_types
 * [ ] 无法快速查找event（通过event id）（以及其他任何definitionName不为rootKey的定义，应当如此）
 

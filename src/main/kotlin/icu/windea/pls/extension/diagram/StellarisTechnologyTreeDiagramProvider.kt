@@ -22,6 +22,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.selectors.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.model.*
@@ -71,11 +72,12 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
     override fun getAllContentCategories() = CATEGORIES
     
     companion object {
+        val CAT_TYPE = DiagramCategory(PlsBundle.lazyMessage("diagram.stellaris.technologyTree.category.type"), PlsIcons.Type, true, false)
         val CAT_PROPERTIES = DiagramCategory(PlsBundle.lazyMessage("diagram.stellaris.technologyTree.category.properties"), PlsIcons.Property, true, false)
         val CAT_PRESENTATION = DiagramCategory(PlsBundle.lazyMessage("diagram.stellaris.technologyTree.category.presentation"), PlsIcons.Presentation, false, false)
         val CAT_NAME = DiagramCategory(PlsBundle.lazyMessage("diagram.stellaris.technologyTree.category.name"), PlsIcons.Localisation, false, false)
         val CAT_ICON = DiagramCategory(PlsBundle.lazyMessage("diagram.stellaris.technologyTree.category.icon"), PlsIcons.Image, false, false)
-        val CATEGORIES = arrayOf(CAT_PROPERTIES, CAT_PRESENTATION, CAT_NAME, CAT_ICON)
+        val CATEGORIES = arrayOf(CAT_TYPE, CAT_PROPERTIES, CAT_PRESENTATION, CAT_NAME, CAT_ICON)
         val ITEM_PROP_KEYS = arrayOf(
             "icon",
             "tier", "area", "category",
@@ -91,6 +93,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
     class NodeContentManager : AbstractDiagramNodeContentManager() {
         override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?): Boolean {
             return when {
+                item is CwtProperty -> category == ParadoxEventTreeDiagramProvider.CAT_TYPE
                 item is ParadoxScriptProperty -> {
                     val definitionInfo = item.definitionInfo
                     if(definitionInfo != null) {
@@ -149,6 +152,8 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     val result = mutableListOf<Any>()
+                    val typeElement = nodeElement.definitionInfo?.typeConfig //should not be null
+                    if(typeElement != null) result.add(typeElement)
                     val properties = getProperties(nodeElement)
                     result.addAll(properties)
                     result.add(nodeElement)
@@ -176,6 +181,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     when {
+                        nodeItem is CwtProperty -> PlsIcons.Type
                         nodeItem is ParadoxScriptProperty -> {
                             val definitionInfo = nodeItem.definitionInfo
                             if(definitionInfo != null) {
@@ -210,6 +216,11 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     when {
+                        nodeItem is CwtProperty -> {
+                            val typesText = nodeElement.definitionInfo?.typesText ?: return null
+                            val result = SimpleColoredText(typesText, DEFAULT_TEXT_ATTR)
+                            result
+                        }
                         nodeItem is ParadoxScriptProperty -> {
                             val definitionInfo = nodeItem.definitionInfo
                             if(definitionInfo != null) {
