@@ -36,7 +36,7 @@ inline fun <T : R, R> T.letUnless(condition: Boolean, block: (T) -> R): R {
 	return if(!condition) block(this) else this
 }
 
-inline fun <T> withMeasureMillis(prefix: String = "", enable: Boolean = false , action: () -> T): T {
+inline fun <T> withMeasureMillis(prefix: String = "", enable: Boolean = true , action: () -> T): T {
 	if(!enable) return action()
 	val start = System.currentTimeMillis()
 	val result = action()

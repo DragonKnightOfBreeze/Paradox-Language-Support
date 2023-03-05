@@ -70,10 +70,10 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
     override fun getAllContentCategories() = CATEGORIES
     
     companion object {
+        val CAT_PROPERTIES = DiagramCategory(PlsBundle.lazyMessage("diagram.paradox.eventTree.category.properties"), PlsIcons.Property, true, false)
         val CAT_TITLE = DiagramCategory(PlsBundle.lazyMessage("diagram.paradox.eventTree.category.title"), PlsIcons.Localisation, false, false)
         val CAT_PICTURE = DiagramCategory(PlsBundle.lazyMessage("diagram.paradox.eventTree.category.picture"), PlsIcons.Image, false, false)
-        val CAT_PROPERTIES = DiagramCategory(PlsBundle.lazyMessage("diagram.paradox.eventTree.category.properties"), PlsIcons.Property, true, false)
-        val CATEGORIES = arrayOf(CAT_TITLE, CAT_PICTURE, CAT_PROPERTIES)
+        val CATEGORIES = arrayOf(CAT_PROPERTIES, CAT_TITLE, CAT_PICTURE)
         val ITEM_PROP_KEYS = arrayOf(
             "picture",
             "hide_window", "is_triggered_only", "major", "diplomatic"
@@ -150,13 +150,12 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     val result = mutableListOf<Any>()
-                    //FIXME 下面这行最慢可能需要400+ms，而群星事件有5000+
+                    val properties = getProperties(nodeElement)
+                    result.addAll(properties)
                     val name = ParadoxEventHandler.getLocalizedName(nodeElement)
                     if(name != null) result.add(name)
                     val icon = ParadoxEventHandler.getIconFile(nodeElement)
                     if(icon != null) result.add(icon)
-                    val properties = getProperties(nodeElement)
-                    result.addAll(properties)
                     result.toTypedArray()
                 }
                 else -> emptyArray()

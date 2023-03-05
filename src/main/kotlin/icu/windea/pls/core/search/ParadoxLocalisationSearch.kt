@@ -26,6 +26,8 @@ class ParadoxLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisationPrope
 		@JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxLocalisationProperty, SearchParameters>>("icu.windea.pls.paradoxLocalisationSearch")
 		@JvmField val INSTANCE = ParadoxLocalisationSearch()
 		
+		//FIXME 指定名字的查询最慢可能需要400+ms
+		
 		/**
 		 *  @see icu.windea.pls.core.search.ParadoxLocalisationSearch.SearchParameters
 		 */

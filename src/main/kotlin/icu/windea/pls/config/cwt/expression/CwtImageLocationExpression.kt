@@ -94,7 +94,6 @@ class CwtImageLocationExpression(
 			return ResolveResult(filePath, file, frame)
 		} else if(propertyName != null) {
 			//propertyName可以为空字符串，这时直接查找定义的字符串类型的值（如果存在）
-			//dynamic -> returns ("", null, 0)
 			val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
 			val propertyValue = property.propertyValue ?: return null
 			val config = ParadoxCwtConfigHandler.getValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null

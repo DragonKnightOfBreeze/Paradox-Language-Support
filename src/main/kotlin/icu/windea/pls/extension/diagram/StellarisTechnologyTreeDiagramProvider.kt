@@ -71,11 +71,11 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
     override fun getAllContentCategories() = CATEGORIES
     
     companion object {
+        val CAT_PROPERTIES = DiagramCategory(PlsBundle.lazyMessage("diagram.stellaris.technologyTree.category.properties"), PlsIcons.Property, true, false)
         val CAT_PRESENTATION = DiagramCategory(PlsBundle.lazyMessage("diagram.stellaris.technologyTree.category.presentation"), PlsIcons.Presentation, false, false)
         val CAT_NAME = DiagramCategory(PlsBundle.lazyMessage("diagram.stellaris.technologyTree.category.name"), PlsIcons.Localisation, false, false)
         val CAT_ICON = DiagramCategory(PlsBundle.lazyMessage("diagram.stellaris.technologyTree.category.icon"), PlsIcons.Image, false, false)
-        val CAT_PROPERTIES = DiagramCategory(PlsBundle.lazyMessage("diagram.stellaris.technologyTree.category.properties"), PlsIcons.Property, true, false)
-        val CATEGORIES = arrayOf(CAT_PRESENTATION, CAT_NAME, CAT_ICON, CAT_PROPERTIES)
+        val CATEGORIES = arrayOf(CAT_PROPERTIES, CAT_PRESENTATION, CAT_NAME, CAT_ICON)
         val ITEM_PROP_KEYS = arrayOf(
             "icon",
             "tier", "area", "category",
@@ -149,13 +149,13 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     val result = mutableListOf<Any>()
+                    val properties = getProperties(nodeElement)
+                    result.addAll(properties)
                     result.add(nodeElement)
                     val name = StellarisTechnologyHandler.getLocalizedName(nodeElement)
                     if(name != null) result.add(name)
                     val icon = StellarisTechnologyHandler.getIconFile(nodeElement)
                     if(icon != null) result.add(icon)
-                    val properties = getProperties(nodeElement)
-                    result.addAll(properties)
                     result.toTypedArray()
                 }
                 else -> emptyArray()
