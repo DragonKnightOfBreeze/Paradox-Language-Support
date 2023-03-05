@@ -359,6 +359,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
             val originalFile = file?.getUserData(DiagramDataKeys.ORIGINAL_ELEMENT)
             val technologies = StellarisTechnologyHandler.getTechnologies(project, originalFile)
             if(technologies.isEmpty()) return
+            //群星原版科技有400+
             val nodeMap = mutableMapOf<ParadoxScriptProperty, Node>()
             val techMap = mutableMapOf<String, ParadoxScriptProperty>()
             for(technology in technologies) {

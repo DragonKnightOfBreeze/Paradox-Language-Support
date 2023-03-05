@@ -147,20 +147,19 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         
         override fun getNodeItems(nodeElement: PsiElement?, builder: DiagramBuilder): Array<Any> {
             ProgressManager.checkCanceled()
-            return withMeasureMillis("getNodeItems ") {
-                when(nodeElement) {
-                    is ParadoxScriptProperty -> {
-                        val result = mutableListOf<Any>()
-                        val name = withMeasureMillis("getNodeItems@1 ", true) { ParadoxEventHandler.getLocalizedName(nodeElement) }
-                        if(name != null) result.add(name)
-                        val icon = withMeasureMillis("getNodeItems@2 ", true) { ParadoxEventHandler.getIconFile(nodeElement) }
-                        if(icon != null) result.add(icon)
-                        val properties = withMeasureMillis("getNodeItems@3 ", true) { getProperties(nodeElement) }
-                        result.addAll(properties)
-                        result.toTypedArray()
-                    }
-                    else -> emptyArray()
+            return when(nodeElement) {
+                is ParadoxScriptProperty -> {
+                    val result = mutableListOf<Any>()
+                    //FIXME 下面这行最慢可能需要400+ms，而群星事件有5000+
+                    val name = ParadoxEventHandler.getLocalizedName(nodeElement)
+                    if(name != null) result.add(name)
+                    val icon = ParadoxEventHandler.getIconFile(nodeElement)
+                    if(icon != null) result.add(icon)
+                    val properties = getProperties(nodeElement)
+                    result.addAll(properties)
+                    result.toTypedArray()
                 }
+                else -> emptyArray()
             }
         }
         
@@ -175,63 +174,59 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         
         override fun getItemIcon(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): Icon? {
             ProgressManager.checkCanceled()
-            return withMeasureMillis("getItemIcon ") {
-                when(nodeElement) {
-                    is ParadoxScriptProperty -> {
-                        when {
-                            nodeItem is ParadoxScriptProperty -> {
-                                val definitionInfo = nodeItem.definitionInfo
-                                if(definitionInfo != null) {
-                                    null
-                                } else {
-                                    PlsIcons.Property
-                                }
+            return when(nodeElement) {
+                is ParadoxScriptProperty -> {
+                    when {
+                        nodeItem is ParadoxScriptProperty -> {
+                            val definitionInfo = nodeItem.definitionInfo
+                            if(definitionInfo != null) {
+                                null
+                            } else {
+                                PlsIcons.Property
                             }
-                            nodeItem is ParadoxLocalisationProperty -> {
-                                ParadoxLocalisationTextUIRender.renderImage(nodeItem)?.toIcon()
-                            }
-                            nodeItem is PsiFile -> {
-                                val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrame) ?: 0)
-                                if(iconUrl.isNotEmpty()) {
-                                    IconLoader.findIcon(iconUrl.toFileUrl())
-                                } else {
-                                    null
-                                }
-                            }
-                            else -> null
                         }
+                        nodeItem is ParadoxLocalisationProperty -> {
+                            ParadoxLocalisationTextUIRender.renderImage(nodeItem)?.toIcon()
+                        }
+                        nodeItem is PsiFile -> {
+                            val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrame) ?: 0)
+                            if(iconUrl.isNotEmpty()) {
+                                IconLoader.findIcon(iconUrl.toFileUrl())
+                            } else {
+                                null
+                            }
+                        }
+                        else -> null
                     }
-                    else -> null
                 }
+                else -> null
             }
         }
         
         override fun getItemName(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder): SimpleColoredText? {
             ProgressManager.checkCanceled()
-            return withMeasureMillis("getItemName ") {
-                when(nodeElement) {
-                    is ParadoxScriptProperty -> {
-                        when {
-                            nodeItem is ParadoxScriptProperty -> {
-                                val definitionInfo = nodeItem.definitionInfo
-                                if(definitionInfo != null) {
-                                    null
-                                } else {
-                                    val rendered = ParadoxScriptTextRender.render(nodeItem, renderInBlock = true)
-                                    val result = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
-                                    val propertyValue = nodeItem.propertyValue
-                                    if(propertyValue is ParadoxScriptScriptedVariableReference) {
-                                        val sv = propertyValue.text
-                                        result.append(" by $sv", SimpleTextAttributes.GRAYED_ATTRIBUTES)
-                                    }
-                                    result
+            return when(nodeElement) {
+                is ParadoxScriptProperty -> {
+                    when {
+                        nodeItem is ParadoxScriptProperty -> {
+                            val definitionInfo = nodeItem.definitionInfo
+                            if(definitionInfo != null) {
+                                null
+                            } else {
+                                val rendered = ParadoxScriptTextRender.render(nodeItem, renderInBlock = true)
+                                val result = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
+                                val propertyValue = nodeItem.propertyValue
+                                if(propertyValue is ParadoxScriptScriptedVariableReference) {
+                                    val sv = propertyValue.text
+                                    result.append(" by $sv", SimpleTextAttributes.GRAYED_ATTRIBUTES)
                                 }
+                                result
                             }
-                            else -> null
                         }
+                        else -> null
                     }
-                    else -> null
                 }
+                else -> null
             }
         }
         
@@ -340,6 +335,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             val originalFile = file?.getUserData(DiagramDataKeys.ORIGINAL_ELEMENT)
             val events = ParadoxEventHandler.getEvents(project, originalFile)
             if(events.isEmpty()) return
+            //群星原版事件有5000+
             val nodeMap = mutableMapOf<ParadoxScriptProperty, Node>()
             val eventMap = mutableMapOf<String, ParadoxScriptProperty>()
             for(event in events) {
