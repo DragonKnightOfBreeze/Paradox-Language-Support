@@ -1,54 +1,6 @@
 package icu.windea.pls.core.search.selectors
 
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.model.*
-import icu.windea.pls.script.psi.*
 import java.util.*
-
-tailrec fun selectGameType(from: Any?): ParadoxGameType? {
-	return when {
-		from == null -> null
-		from is ParadoxGameType -> from
-		from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
-		from is PsiDirectory -> from.fileInfo?.rootInfo?.gameType
-		from is PsiFile -> from.fileInfo?.rootInfo?.gameType
-			?: ParadoxMagicCommentHandler.resolveFilePathComment(from)?.first
-		from is ParadoxScriptScriptedVariable -> runCatching { from.stub }.getOrNull()?.gameType
-			?: selectGameType(from.parent)
-		from is ParadoxScriptDefinitionElement -> runCatching { from.getStub() }.getOrNull()?.gameType
-			?: from.definitionInfo?.gameType
-			?: ParadoxMagicCommentHandler.resolveDefinitionTypeComment(from)?.first //这个如果合法的话会被上一个选择逻辑覆盖
-			?: selectGameType(from.parent)
-		from is ParadoxScriptStringExpressionElement -> runCatching { from.stub?.gameType }.getOrNull()
-			?: selectGameType(from.parent)
-		from is PsiElement -> selectGameType(from.parent)
-		else -> null
-	}
-}
-
-tailrec fun selectRootFile(from: Any?): VirtualFile? {
-	return when {
-		from == null -> null
-		from is VirtualFile -> from.fileInfo?.let { it.rootInfo.gameRootFile }
-		from is PsiDirectory -> from.fileInfo?.let { it.rootInfo.gameRootFile }
-		from is PsiFile -> from.fileInfo?.let { it.rootInfo.gameRootFile }
-		from is PsiElement -> selectRootFile(from.parent)
-		else -> null
-	}
-}
-
-fun selectFile(from:Any?) :VirtualFile? {
-	return when {
-		from == null -> null
-		from is VirtualFile -> from
-		from is PsiElement -> PsiUtilCore.getVirtualFile(from)
-		else -> null
-	}
-}
 
 //以下排序方法仅适用于ParadoxSelector，其他用途需要确认是否正确生效
 
@@ -63,7 +15,7 @@ inline fun <T, R, C : Comparable<C>> complexCompareByDescending(
 	crossinline selector: (T) -> R?,
 	crossinline comparableSelector: (R) -> C? = { null },
 	crossinline pinPredicate: (R) -> Boolean = { false }
-): java.util.Comparator<T> {
+): Comparator<T> {
 	return Comparator<T> { a, b ->
 		val a1 = selector(a)
 		val b1 = selector(b)
@@ -93,7 +45,7 @@ inline fun <T, R, C : Comparable<C>> complexCompareBy(
 	crossinline selector: (T) -> R?,
 	crossinline comparableSelector: (R) -> C? = { null },
 	crossinline pinPredicate: (R) -> Boolean = { false }
-): java.util.Comparator<T> {
+): Comparator<T> {
 	return Comparator { a, b ->
 		val a1 = selector(a)
 		val b1 = selector(b)

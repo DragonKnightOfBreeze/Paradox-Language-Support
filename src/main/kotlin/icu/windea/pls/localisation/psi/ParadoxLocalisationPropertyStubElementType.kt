@@ -5,6 +5,7 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.impl.*
@@ -25,8 +26,9 @@ object ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLoca
 		val localisationInfo = psi.localisationInfo
 		val name = localisationInfo?.name
 		val category = localisationInfo?.category.orDefault()
+		val locale = selectLocale(psi)?.id
 		val gameType = localisationInfo?.gameType
-		return ParadoxLocalisationStubImpl(parentStub, name, category, gameType)
+		return ParadoxLocalisationStubImpl(parentStub, name, category, locale, gameType)
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -48,13 +50,15 @@ object ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLoca
 	override fun serialize(stub: ParadoxLocalisationStub, dataStream: StubOutputStream) {
 		dataStream.writeName(stub.name)
 		dataStream.writeBoolean(stub.category.flag)
+		dataStream.writeName(stub.locale)
 		dataStream.writeName(stub.gameType?.id)
 	}
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxLocalisationStub {
 		val key = dataStream.readNameString().orEmpty()
 		val category = ParadoxLocalisationCategory.resolve(dataStream.readBoolean())
+		val locale = dataStream.readNameString()
 		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
-		return ParadoxLocalisationStubImpl(parentStub, key, category, gameType)
+		return ParadoxLocalisationStubImpl(parentStub, key, category, locale, gameType)
 	}
 }

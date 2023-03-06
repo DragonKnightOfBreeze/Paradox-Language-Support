@@ -9,6 +9,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
@@ -17,7 +18,6 @@ import icu.windea.pls.core.references.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.core.settings.*
-import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
@@ -27,7 +27,6 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
 import java.lang.Integer.*
-import java.util.*
 
 //region Misc Extensions
 fun getDefaultProject() = ProjectManager.getInstance().defaultProject
@@ -95,37 +94,72 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
 }
 //endregion
 
-//region PsiElement Extensions
-fun PsiElement.useAllUseScope(): Boolean {
-    if(this is PsiFile) {
-        if(this.fileInfo != null) return true
+//region Select Extensions
+tailrec fun selectGameType(from: Any?): ParadoxGameType? {
+    when {
+        from == null -> return null
+        from is ParadoxGameType -> return from
+        from is VirtualFile -> return from.fileInfo?.rootInfo?.gameType
+        from is PsiDirectory -> return from.fileInfo?.rootInfo?.gameType
+        from is PsiFile -> return from.fileInfo?.rootInfo?.gameType
+            ?: ParadoxMagicCommentHandler.resolveFilePathComment(from)?.first
+        from is ParadoxScriptScriptedVariable -> return runCatching { from.stub }.getOrNull()?.gameType
+            ?: selectGameType(from.parent)
+        from is ParadoxScriptDefinitionElement -> return runCatching { from.getStub() }.getOrNull()?.gameType
+            ?: from.definitionInfo?.gameType
+            ?: ParadoxMagicCommentHandler.resolveDefinitionTypeComment(from)?.first //这个如果合法的话会被上一个选择逻辑覆盖
+            ?: selectGameType(from.parent)
+        from is ParadoxScriptStringExpressionElement -> return runCatching { from.stub}.getOrNull()?.gameType
+            ?: selectGameType(from.parent)
+        from is PsiElement -> return selectGameType(from.parent)
     }
-    val language = this.language
-    return language == CwtLanguage || language == ParadoxScriptLanguage || language == ParadoxLocalisationLanguage
+    return null
 }
 
+tailrec fun selectRootFile(from: Any?): VirtualFile? {
+    when {
+        from == null -> return null
+        from is VirtualFile -> return from.fileInfo?.let { it.rootInfo.gameRootFile }
+        from is PsiDirectory -> return from.fileInfo?.let { it.rootInfo.gameRootFile }
+        from is PsiFile -> return from.fileInfo?.let { it.rootInfo.gameRootFile }
+        from is PsiElement -> return selectRootFile(from.parent)
+    }
+    return null
+}
+
+fun selectFile(from:Any?) :VirtualFile? {
+    when {
+        from == null -> return null
+        from is VirtualFile -> return from
+        from is PsiElement -> return PsiUtilCore.getVirtualFile(from)
+        else -> return null
+    }
+}
+
+tailrec fun selectLocale(from: Any?) : CwtLocalisationLocaleConfig? {
+    when {
+        from == null -> return null
+        from is CwtLocalisationLocaleConfig -> return from
+        from is ParadoxLocalisationLocale -> return from.name
+            .let { getCwtConfig(from.project).core.localisationLocales.get(it) } //这里需要传入project
+        from is ParadoxLocalisationProperty -> return runCatching { from.stub}.getOrNull()?.locale
+            ?.let { getCwtConfig().core.localisationLocales.get(it) } //这里不需要传入project
+            ?: selectLocale(from.parent)
+        from is ParadoxLocalisationFile -> return selectLocale(from.locale)
+        from is ParadoxLocalisationPropertyList -> return selectLocale(from.locale)
+        from is PsiFile -> return preferredParadoxLocale()
+        from is PsiElement && from.language == ParadoxLocalisationLanguage -> return selectLocale(from.parent)
+    }
+    return preferredParadoxLocale()
+}
+//endregion
+
+//region PsiElement Extensions
 val Project.paradoxLibrary: ParadoxLibrary
     get() {
         return this.getOrPutUserData(PlsKeys.libraryKey) {
             ParadoxLibrary(this)
         }
-    }
-
-val PsiElement.localeConfig: CwtLocalisationLocaleConfig?
-    get() {
-        if(this.language == ParadoxLocalisationLanguage) {
-            var current = this
-            while(true) {
-                when {
-                    current is ParadoxLocalisationFile -> return current.locale?.localeConfig
-                    current is PsiFile -> return preferredParadoxLocale() //不期望的结果
-                    current is ParadoxLocalisationPropertyList -> return current.locale.localeConfig
-                    current is ParadoxLocalisationLocale -> return current.localeConfig
-                }
-                current = current.parent ?: break
-            }
-        }
-        return preferredParadoxLocale()
     }
 
 //注意：不要更改直接调用CachedValuesManager.getCachedValue(...)的那个顶级方法（静态方法）的方法声明，IDE内部会进行检查
@@ -148,8 +182,8 @@ val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
 val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo?
     get() = ParadoxComplexEnumValueHandler.getInfo(this)
 
-val ParadoxLocalisationLocale.localeConfig: CwtLocalisationLocaleConfig?
-    get() = getCwtConfig(project).core.localisationLocales.get(name)
+val PsiElement.localeConfig: CwtLocalisationLocaleConfig?
+    get() = selectLocale(this)
 
 val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorInfo?
     get() {
@@ -176,7 +210,7 @@ fun ParadoxScriptValue.isNullLike(): Boolean {
 }
 //endregion
 
-//region Psi Link Extensions
+//region Documentation Extensions
 private const val cwtLinkPrefix = "#cwt/"
 private const val definitionLinkPrefix = "#definition/"
 private const val localisationLinkPrefix = "#localisation/"
@@ -290,9 +324,7 @@ private fun resolveFilePathLink(linkWithoutPrefix: String, sourceElement: PsiEle
     return ParadoxFilePathSearch.search(filePath, selector = selector).find()
         ?.toPsiFile(project)
 }
-//endregion
 
-//region Documentation Extensions
 fun getDocumentation(documentationLines: List<String>?, html: Boolean): String? {
     if(documentationLines.isNullOrEmpty()) return null
     return buildString {
