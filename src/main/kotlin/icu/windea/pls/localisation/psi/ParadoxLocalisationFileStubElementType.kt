@@ -2,14 +2,13 @@ package icu.windea.pls.localisation.psi
 
 import com.intellij.lang.*
 import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
-object ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub<*>>(ParadoxLocalisationLanguage) {
+object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxLocalisationLanguage) {
     private const val externalId = "paradoxLocalisation.file"
     private const val stubVersion = 8 //0.7.13
     
@@ -17,7 +16,7 @@ object ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub
     
     override fun getStubVersion() = stubVersion
     
-    override fun getBuilder(): StubBuilder {
+    override fun getBuilder(): LightStubBuilder {
         return Builder()
     }
     
@@ -25,14 +24,27 @@ object ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub
         return ParadoxCoreHandler.shouldIndexFile(file)
     }
     
-    class Builder : DefaultStubBuilder() {
+    class Builder : LightStubBuilder() {
         override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {
             //仅包括propertyList和property
+            val type = node.elementType
             return when {
-                node.elementType == LOCALE -> true
-                node.elementType == PROPERTY_LIST -> false
-                node.elementType == PROPERTY -> false
+                type == LOCALE -> true
+                type == PROPERTY_LIST -> false
+                type == PROPERTY -> false
                 parent.elementType == PROPERTY -> true
+                else -> true
+            }
+        }
+        
+        override fun skipChildProcessingWhenBuildingStubs(tree: LighterAST, parent: LighterASTNode, node: LighterASTNode): Boolean {
+            //仅包括propertyList和property
+            val type = node.tokenType
+            return when {
+                type == LOCALE -> true
+                type == PROPERTY_LIST -> false
+                type == PROPERTY -> false
+                parent.tokenType == PROPERTY -> true
                 else -> true
             }
         }

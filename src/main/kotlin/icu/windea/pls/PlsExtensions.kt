@@ -6,6 +6,7 @@ import com.intellij.codeInsight.documentation.*
 import com.intellij.extapi.psi.*
 import com.intellij.lang.*
 import com.intellij.openapi.components.*
+import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
@@ -69,6 +70,8 @@ infix fun String.compareGameVersion(otherVersion: String): Int {
     return 0
 }
 
+fun FileType.isParadoxFileType() = this == ParadoxScriptFileType || this == ParadoxLocalisationFileType
+
 fun Language.isParadoxLanguage() = this.isKindOf(ParadoxScriptLanguage) || this.isKindOf(ParadoxLocalisationLanguage)
 
 fun PsiReference.canResolveParameter(): Boolean {
@@ -92,6 +95,20 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
         is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
         else -> false
     }
+}
+//endregion
+
+//region Debug Extensions
+val isDebug = System.getProperty("pls.is.debug").toBoolean()
+
+inline fun <T> withMeasureMillis(prefix: String, enable: Boolean = true , action: () -> T): T {
+    if(!isDebug || !enable) return action()
+    val start = System.currentTimeMillis()
+    val result = action()
+    val end = System.currentTimeMillis()
+    val millis = end - start
+    println("$prefix $millis")
+    return result
 }
 //endregion
 

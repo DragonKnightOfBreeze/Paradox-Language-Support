@@ -22,9 +22,9 @@ object ParadoxScriptPropertyKeyStubElementType : IStubElementType<ParadoxScriptP
     }
     
     override fun createStub(psi: ParadoxScriptPropertyKey, parentStub: StubElement<*>): ParadoxScriptPropertyKeyStub {
-        val file = psi.containingFile
-        val gameType = file.fileInfo?.rootInfo?.gameType
-        val complexEnumInfo = ParadoxComplexEnumValueHandler.resolveInfo(psi)
+        val file = parentStub.psi.containingFile
+        val gameType = selectGameType(file)
+        val complexEnumInfo = ParadoxComplexEnumValueHandler.resolveInfo(psi, file)
         val inlineScriptInfo = ParadoxInlineScriptHandler.resolveInfo(psi, file)
         return ParadoxScriptPropertyKeyStubImpl(parentStub, complexEnumInfo, inlineScriptInfo, gameType)
     }

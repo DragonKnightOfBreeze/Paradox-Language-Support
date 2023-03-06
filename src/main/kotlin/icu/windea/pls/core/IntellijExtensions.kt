@@ -692,6 +692,11 @@ fun getLineCommentDocText(element: PsiElement): String? {
 //endregion
 
 //region Index Extensions
+fun CharTable.internNode(node: LighterASTNode?): CharSequence? {
+	if(node !is LighterASTTokenNode) return null
+	return this.intern(node.text).toString()
+}
+
 inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.existsElement(
 	key: K,
 	project: Project,

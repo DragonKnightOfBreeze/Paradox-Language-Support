@@ -33,16 +33,6 @@ inline fun <T : R, R> T.letUnless(condition: Boolean, block: (T) -> R): R {
 	return if(!condition) block(this) else this
 }
 
-inline fun <T> withMeasureMillis(prefix: String, enable: Boolean = true , action: () -> T): T {
-	if(!enable) return action()
-	val start = System.currentTimeMillis()
-	val result = action()
-	val end = System.currentTimeMillis()
-	val millis = end - start
-	println("$prefix $millis")
-	return result
-} 
-
 fun Number.format(digits: Int): String {
 	val power = 10.0.pow(abs(digits))
 	return when {

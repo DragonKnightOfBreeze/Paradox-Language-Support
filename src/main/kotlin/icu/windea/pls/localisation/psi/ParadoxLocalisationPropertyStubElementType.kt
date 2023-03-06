@@ -1,16 +1,16 @@
 package icu.windea.pls.localisation.psi
 
 import com.intellij.lang.*
+import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
-import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.impl.*
 
-object ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLocalisationStub, ParadoxLocalisationProperty>(
+object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<ParadoxLocalisationStub, ParadoxLocalisationProperty>(
 	"PROPERTY",
 	ParadoxLocalisationLanguage
 ) {
@@ -23,18 +23,35 @@ object ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLoca
 	}
 	
 	override fun createStub(psi: ParadoxLocalisationProperty, parentStub: StubElement<*>): ParadoxLocalisationStub {
-		val localisationInfo = psi.localisationInfo
-		val name = localisationInfo?.name
-		val category = localisationInfo?.category.orDefault()
-		val locale = selectLocale(psi)?.id
-		val gameType = localisationInfo?.gameType
+		val file = parentStub.psi.containingFile
+		val name = psi.name
+		val category = ParadoxLocalisationCategory.resolve(file).orDefault()
+		val locale = selectLocale(file)?.id
+		val gameType = selectGameType(file)
+		return ParadoxLocalisationStubImpl(parentStub, name, category, locale, gameType)
+	}
+	
+	override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationStub {
+		val file = parentStub.psi.containingFile
+		val nameNode = LightTreeUtil.firstChildOfType(tree, node, ParadoxLocalisationElementTypes.PROPERTY_KEY)
+		val nameTokenNode = LightTreeUtil.firstChildOfType(tree, nameNode, ParadoxLocalisationElementTypes.PROPERTY_KEY_TOKEN)
+		val name = tree.charTable.internNode(nameTokenNode).toStringOrEmpty()
+		val category = ParadoxLocalisationCategory.resolve(file).orDefault()
+		val locale = selectLocale(file)?.id
+		val gameType = selectGameType(file)
 		return ParadoxLocalisationStubImpl(parentStub, name, category, locale, gameType)
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
 		//仅当是localisation或localisation_synced时才创建索引
 		val element = node.psi as? ParadoxLocalisationProperty ?: return false
-		return element.localisationInfo != null
+		return ParadoxLocalisationCategory.resolve(element) != null
+	}
+	
+	override fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
+		//仅当是localisation或localisation_synced时才创建索引
+		val file = parentStub.psi?.containingFile?.virtualFile ?: return false
+		return ParadoxLocalisationCategory.resolve(file) != null
 	}
 	
 	override fun indexStub(stub: ParadoxLocalisationStub, sink: IndexSink) {

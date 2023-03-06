@@ -23,8 +23,8 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 	}
 	
 	override fun createStub(psi: ParadoxScriptString, parentStub: StubElement<*>): ParadoxScriptStringStub {
-		val file = psi.containingFile
-		val gameType = file.fileInfo?.rootInfo?.gameType
+		val file = parentStub.psi.containingFile
+		val gameType = selectGameType(file)
 		val complexEnumInfo = ParadoxComplexEnumValueHandler.resolveInfo(psi, file)
 		val valueSetInfo = if(complexEnumInfo != null) null else ParadoxValueSetValueHandler.resolveInfo(psi)
 		return ParadoxScriptStringStubImpl(parentStub, complexEnumInfo, valueSetInfo, gameType)
