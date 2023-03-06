@@ -1,7 +1,6 @@
-package icu.windea.pls.extension.diagram
+package icu.windea.pls.extension.diagram.provider
 
 import com.intellij.diagram.*
-import com.intellij.diagram.components.DiagramNodeContainer
 import com.intellij.diagram.extras.custom.*
 import com.intellij.diagram.presentation.*
 import com.intellij.diagram.settings.*
@@ -23,6 +22,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.presentation.*
@@ -119,7 +119,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         }
     }
     
-    class ElementManager : AbstractDiagramElementManager<PsiElement>() {
+    class ElementManager : DiagramElementManagerEx<PsiElement>() {
         override fun findInDataContext(context: DataContext): PsiElement? {
             //rootFile
             val file = context.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
@@ -179,6 +179,21 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             }
             return properties
         }
+    
+        override fun getItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder): JComponent? {
+            ProgressManager.checkCanceled()
+            return when(nodeElement) {
+                is ParadoxScriptProperty -> {
+                    when {
+                        nodeItem is ParadoxLocalisationProperty -> {
+                            ParadoxLocalisationTextUIRender.render(nodeItem)
+                        }
+                        else -> null
+                    }
+                }
+                else -> null
+            }
+        }
         
         override fun getItemIcon(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): Icon? {
             ProgressManager.checkCanceled()
@@ -194,9 +209,9 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
                                 PlsIcons.Property
                             }
                         }
-                        nodeItem is ParadoxLocalisationProperty -> {
-                            ParadoxLocalisationTextUIRender.renderImage(nodeItem)?.toIcon()
-                        }
+                        //nodeItem is ParadoxLocalisationProperty -> {
+                        //    ParadoxLocalisationTextUIRender.renderImage(nodeItem)?.toIcon()
+                        //}
                         nodeItem is PsiFile -> {
                             val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrame) ?: 0)
                             if(iconUrl.isNotEmpty()) {
@@ -247,6 +262,8 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         override fun getItemType(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): SimpleColoredText? {
             return null
         }
+        
+        
         
         @Suppress("RedundantOverride")
         override fun getItemDocOwner(element: Any?, builder: DiagramBuilder): PsiElement? {
@@ -393,9 +410,14 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
     
     //class Extras : DiagramExtras<PsiElement>()
     
-    class Extras : CommonDiagramExtras<PsiElement>() {
-        override fun createNodeComponent(node: DiagramNode<PsiElement>, builder: DiagramBuilder, nodeRealizer: NodeRealizer, wrapper: JPanel): JComponent {
-            return super.createNodeComponent(node, builder, nodeRealizer, wrapper)
+    class Extras : DiagramExtrasEx() {
+        override fun getCustomLayouter(settings: GraphSettings, project: Project?): Layouter {
+            val layouter = GraphManager.getGraphManager().createHierarchicGroupLayouter()
+            layouter.orientationLayouter = GraphManager.getGraphManager().createOrientationLayouter(LayoutOrientation.LEFT_TO_RIGHT)
+            layouter.layerer = GraphManager.getGraphManager().createBFSLayerer()
+            layouter.minimalNodeDistance = 20.0
+            layouter.minimalEdgeDistance = 40.0
+            return layouter
         }
         
         override fun getAdditionalDiagramSettings(): Array<out DiagramConfigGroup> {
@@ -409,15 +431,6 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
                 }.also { add(it) }
             }
             return settings.toTypedArray()
-        }
-        
-        override fun getCustomLayouter(settings: GraphSettings, project: Project?): Layouter {
-            val layouter = GraphManager.getGraphManager().createHierarchicGroupLayouter()
-            layouter.orientationLayouter = GraphManager.getGraphManager().createOrientationLayouter(LayoutOrientation.LEFT_TO_RIGHT)
-            layouter.layerer = GraphManager.getGraphManager().createBFSLayerer()
-            layouter.minimalNodeDistance = 20.0
-            layouter.minimalEdgeDistance = 40.0
-            return layouter
         }
     }
 }

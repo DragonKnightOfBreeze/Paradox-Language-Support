@@ -1,4 +1,4 @@
-package icu.windea.pls.extension.diagram
+package icu.windea.pls.extension.diagram.provider
 
 import com.intellij.diagram.*
 import com.intellij.psi.*
