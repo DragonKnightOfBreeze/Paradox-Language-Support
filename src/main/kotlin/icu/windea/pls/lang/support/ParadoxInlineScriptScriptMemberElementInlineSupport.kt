@@ -26,7 +26,7 @@ class ParadoxInlineScriptScriptMemberElementInlineSupport : ParadoxScriptMemberE
     
     override fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
         if(element !is ParadoxScriptProperty) return null
-        val name = element.name
+        val name = element.name.lowercase()
         if(name != "inline_script") return null
         val definitionMemberInfo = element.definitionMemberInfo
         if(definitionMemberInfo == null) return null

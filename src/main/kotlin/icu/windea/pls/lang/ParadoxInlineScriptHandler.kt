@@ -59,12 +59,12 @@ object ParadoxInlineScriptHandler {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         if(!isGameTypeSupported(gameType)) return null
-        val value = element.value
-        if(value != "inline_script") return null
+        val name = element.name.lowercase()
+        if(name != "inline_script") return null
         val matchType = CwtConfigMatchType.STATIC
         val project = file.project
         val configGroup = getCwtConfig(project).getValue(gameType)
-        val inlineConfigs = configGroup.inlineConfigGroup[value] ?: return null
+        val inlineConfigs = configGroup.inlineConfigGroup[name] ?: return null
         val propertyValue = element.propertyValue ?: return null
         //TODO 更加准确的匹配，目前没必要
         val inlineConfig = inlineConfigs.find {
