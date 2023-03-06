@@ -3,6 +3,7 @@
 package icu.windea.pls
 
 import com.intellij.codeInsight.documentation.*
+import com.intellij.extapi.psi.*
 import com.intellij.lang.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.*
@@ -95,62 +96,62 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
 //endregion
 
 //region Select Extensions
+tailrec fun selectRootFile(from: Any?): VirtualFile? {
+    return when {
+        from == null -> null
+        from is VirtualFile -> from.fileInfo?.let { it.rootInfo.gameRootFile }
+        from is PsiDirectory -> from.fileInfo?.let { it.rootInfo.gameRootFile }
+        from is PsiElement -> selectRootFile(PsiUtilCore.getVirtualFile(from))
+        else -> null
+    }
+}
+
+fun selectFile(from: Any?): VirtualFile? {
+    return when {
+        from == null -> null
+        from is VirtualFile -> from
+        from is PsiElement -> PsiUtilCore.getVirtualFile(from)
+        else -> null
+    }
+}
+
 tailrec fun selectGameType(from: Any?): ParadoxGameType? {
-    when {
-        from == null -> return null
-        from is ParadoxGameType -> return from
-        from is VirtualFile -> return from.fileInfo?.rootInfo?.gameType
-        from is PsiDirectory -> return from.fileInfo?.rootInfo?.gameType
-        from is PsiFile -> return from.fileInfo?.rootInfo?.gameType
+    return when {
+        from == null -> null
+        from is ParadoxGameType -> from
+        from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
+        from is PsiDirectory -> from.fileInfo?.rootInfo?.gameType
+        from is PsiFile -> from.fileInfo?.rootInfo?.gameType
             ?: ParadoxMagicCommentHandler.resolveFilePathComment(from)?.first
-        from is ParadoxScriptScriptedVariable -> return runCatching { from.stub }.getOrNull()?.gameType
-            ?: selectGameType(from.parent)
-        from is ParadoxScriptDefinitionElement -> return runCatching { from.getStub() }.getOrNull()?.gameType
+        from is ParadoxScriptScriptedVariable -> runCatching { from.stub }.getOrNull()?.gameType
+            ?: selectGameType(from.containingFile) //直接转到containingFile，避免不必要的文件解析
+        from is ParadoxScriptDefinitionElement -> runCatching { from.getStub() }.getOrNull()?.gameType
             ?: from.definitionInfo?.gameType
             ?: ParadoxMagicCommentHandler.resolveDefinitionTypeComment(from)?.first //这个如果合法的话会被上一个选择逻辑覆盖
-            ?: selectGameType(from.parent)
-        from is ParadoxScriptStringExpressionElement -> return runCatching { from.stub}.getOrNull()?.gameType
-            ?: selectGameType(from.parent)
-        from is PsiElement -> return selectGameType(from.parent)
-    }
-    return null
-}
-
-tailrec fun selectRootFile(from: Any?): VirtualFile? {
-    when {
-        from == null -> return null
-        from is VirtualFile -> return from.fileInfo?.let { it.rootInfo.gameRootFile }
-        from is PsiDirectory -> return from.fileInfo?.let { it.rootInfo.gameRootFile }
-        from is PsiFile -> return from.fileInfo?.let { it.rootInfo.gameRootFile }
-        from is PsiElement -> return selectRootFile(from.parent)
-    }
-    return null
-}
-
-fun selectFile(from:Any?) :VirtualFile? {
-    when {
-        from == null -> return null
-        from is VirtualFile -> return from
-        from is PsiElement -> return PsiUtilCore.getVirtualFile(from)
-        else -> return null
+            ?: selectGameType(from.containingFile) //直接转到containingFile，避免不必要的文件解析
+        from is ParadoxScriptStringExpressionElement -> runCatching { from.stub }.getOrNull()?.gameType
+            ?: selectGameType(from.containingFile) //直接转到containingFile，避免不必要的文件解析
+        from is StubBasedPsiElementBase<*> -> selectGameType(from.containingFile) //直接转到containingFile，避免不必要的文件解析
+        from is PsiElement -> selectGameType(from.parent)
+        else -> null
     }
 }
 
-tailrec fun selectLocale(from: Any?) : CwtLocalisationLocaleConfig? {
-    when {
-        from == null -> return null
-        from is CwtLocalisationLocaleConfig -> return from
-        from is ParadoxLocalisationLocale -> return from.name
+tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
+    return when {
+        from == null -> null
+        from is CwtLocalisationLocaleConfig -> from
+        from is ParadoxLocalisationFile -> selectLocale(from.locale)
+        from is ParadoxLocalisationPropertyList -> selectLocale(from.locale)
+        from is ParadoxLocalisationLocale -> from.name
             .let { getCwtConfig(from.project).core.localisationLocales.get(it) } //这里需要传入project
-        from is ParadoxLocalisationProperty -> return runCatching { from.stub}.getOrNull()?.locale
+        from is ParadoxLocalisationProperty -> runCatching { from.stub }.getOrNull()?.locale
             ?.let { getCwtConfig().core.localisationLocales.get(it) } //这里不需要传入project
-            ?: selectLocale(from.parent)
-        from is ParadoxLocalisationFile -> return selectLocale(from.locale)
-        from is ParadoxLocalisationPropertyList -> return selectLocale(from.locale)
-        from is PsiFile -> return preferredParadoxLocale()
-        from is PsiElement && from.language == ParadoxLocalisationLanguage -> return selectLocale(from.parent)
+            ?: selectLocale(from.containingFile) //直接转到containingFile，避免不必要的文件解析
+        from is StubBasedPsiElementBase<*> && from.language == ParadoxLocalisationLanguage -> selectLocale(from.containingFile) //直接转到containingFile，避免不必要的文件解析
+        from is PsiElement && from.language == ParadoxLocalisationLanguage -> selectLocale(from.parent)
+        else -> preferredParadoxLocale()
     }
-    return preferredParadoxLocale()
 }
 //endregion
 

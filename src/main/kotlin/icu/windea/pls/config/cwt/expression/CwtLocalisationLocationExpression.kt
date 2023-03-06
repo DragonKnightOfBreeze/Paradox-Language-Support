@@ -85,8 +85,8 @@ class CwtLocalisationLocationExpression(
                 return ResolveResult("", null, PlsDocBundle.message("inlined"))
             }
             val key = propertyValue.value
-            //0~400+ms
-            val localisation = ParadoxLocalisationSearch.search(key, selector).find()
+            //0~94ms
+            val localisation = withMeasureMillis("loc ") { ParadoxLocalisationSearch.search(key, selector).find() }
             return ResolveResult(key, localisation)
         } else {
             return null //不期望的结果
