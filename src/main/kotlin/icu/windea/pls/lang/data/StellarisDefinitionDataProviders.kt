@@ -8,7 +8,7 @@ import icu.windea.pls.tool.script.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisTechnologyDataProvider : ParadoxDefinitionDataProvider<StellarisTechnologyDataProvider.Data> {
-    class Data(data: ParadoxScriptData) {
+    class Data(data: ParadoxScriptData): ParadoxDefinitionData {
         val icon: String? by data.get("icon")
         val tier: String? by data.get("tier")
         val area: String? by data.get("area")
@@ -19,8 +19,8 @@ class StellarisTechnologyDataProvider : ParadoxDefinitionDataProvider<StellarisT
         val levels: Int? by data.get("levels")
         
         val start_tech: Boolean by data.get("start_tech", false)
-        val is_rare: Boolean by data.get("start_tech", false)
-        val is_dangerous: Boolean by data.get("start_tech", false)
+        val is_rare: Boolean by data.get("is_rare", false)
+        val is_dangerous: Boolean by data.get("is_dangerous", false)
         
         val gateway: String? by data.get("gateway")
         val prerequisites: Set<String> by data.get("prerequisites", emptySet()) 

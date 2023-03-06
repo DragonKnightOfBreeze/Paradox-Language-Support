@@ -5,7 +5,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.tool.script.*
 
 class ParadoxEventDataProvider : ParadoxDefinitionDataProvider<ParadoxEventDataProvider.Data> {
-    class Data(data: ParadoxScriptData) {
+    class Data(data: ParadoxScriptData) : ParadoxDefinitionData{
         val picture: String? by data.get("picture")
         val hide_window : Boolean by data.get("hide_window", false)
         val is_triggered_only: Boolean by data.get("is_triggered_only", false)

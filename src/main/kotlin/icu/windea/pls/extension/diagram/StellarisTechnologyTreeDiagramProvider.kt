@@ -16,6 +16,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.ui.*
+import com.intellij.util.concurrency.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -32,6 +33,8 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import icu.windea.pls.tool.localisation.*
 import icu.windea.pls.tool.script.*
+import java.awt.*
+import java.util.concurrent.*
 import javax.swing.*
 
 /**
@@ -43,8 +46,10 @@ import javax.swing.*
  */
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
+    val _vfsResolver = ParadoxRootVfsResolver(presentableName)
     val _elementManager = ElementManager()
     val _relationshipManager = RelationshipManager()
+    val _colorManager = ColorManager()
     val _extras = Extras()
     
     init {
@@ -61,9 +66,13 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
     
     override fun createNodeContentManager() = NodeContentManager()
     
+    override fun getVfsResolver() = _vfsResolver
+    
     override fun getElementManager() = _elementManager
     
     override fun getRelationshipManager() = _relationshipManager
+    
+    override fun getColorManager() = _colorManager
     
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
     
@@ -88,9 +97,15 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
         val REL_PREREQUISITE = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID) {
             override fun getTargetArrow() = DELTA
         }
+        val REL_REPEAT_CACHE = ConcurrentHashMap<String, DiagramRelationshipInfoAdapter>()
+        fun REL_REPEAT(label: String) = REL_REPEAT_CACHE.getOrPut(label) {
+            object : DiagramRelationshipInfoAdapter("REPEAT", DiagramLineType.DOTTED, label) {
+                override fun getTargetArrow() = DELTA
+            }
+        }
     }
     
-    class NodeContentManager : AbstractDiagramNodeContentManager() {
+    class NodeContentManager : OrderedDiagramNodeContentManager() {
         override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?): Boolean {
             return when {
                 item is CwtProperty -> category == ParadoxEventTreeDiagramProvider.CAT_TYPE
@@ -185,16 +200,16 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
                         nodeItem is ParadoxScriptProperty -> {
                             val definitionInfo = nodeItem.definitionInfo
                             if(definitionInfo != null) {
-                                    val presentation = ParadoxDefinitionPresentationProvider.EP_NAME.extensionList
-                                        .findIsInstance<StellarisTechnologyPresentationProvider>()
-                                        ?.getPresentation(nodeItem, nodeItem.definitionInfo!!)
-                                    presentation?.toIcon()
+                                val presentation = ParadoxDefinitionPresentationProvider.EP_NAME.extensionList
+                                    .findIsInstance<StellarisTechnologyPresentationProvider>()
+                                    ?.getPresentation(nodeItem, nodeItem.definitionInfo!!)
+                                presentation?.toIcon()
                             } else {
                                 PlsIcons.Property
                             }
                         }
                         nodeItem is ParadoxLocalisationProperty -> {
-                                ParadoxLocalisationTextUIRender.renderImage(nodeItem)?.toIcon()
+                            ParadoxLocalisationTextUIRender.renderImage(nodeItem)?.toIcon()
                         }
                         nodeItem is PsiFile -> {
                             val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrame) ?: 0)
@@ -226,14 +241,14 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
                             if(definitionInfo != null) {
                                 null
                             } else {
-                                    val rendered = ParadoxScriptTextRender.render(nodeItem, renderInBlock = true)
-                                    val result = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
-                                    val propertyValue = nodeItem.propertyValue
-                                    if(propertyValue is ParadoxScriptScriptedVariableReference) {
-                                        val sv = propertyValue.text
-                                        result.append(" by $sv", SimpleTextAttributes.GRAYED_ATTRIBUTES)
-                                    }
-                                    result
+                                val rendered = ParadoxScriptTextRender.render(nodeItem, renderInBlock = true)
+                                val result = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
+                                val propertyValue = nodeItem.propertyValue
+                                if(propertyValue is ParadoxScriptScriptedVariableReference) {
+                                    val sv = propertyValue.text
+                                    result.append(" by $sv", SimpleTextAttributes.GRAYED_ATTRIBUTES)
+                                }
+                                result
                             }
                         }
                         else -> null
@@ -260,67 +275,33 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
         }
     }
     
-    //class Extras : DiagramExtras<PsiElement>()
-    
-    class Extras : CommonDiagramExtras<PsiElement>() {
-        //com.intellij.diagram.extras.DiagramExtras.getCustomLayouter
-        
-        override fun createNodeComponent(node: DiagramNode<PsiElement>, builder: DiagramBuilder, nodeRealizer: NodeRealizer, wrapper: JPanel): JComponent {
-            return runReadAction {
-                super.createNodeComponent(node, builder, nodeRealizer, wrapper)
-            }
+    class ColorManager : DiagramColorManagerBase() {
+        override fun getNodeBorderColor(builder: DiagramBuilder, node: DiagramNode<*>?, isSelected: Boolean): Color {
+            //基于科技领域和类型
+            if(node !is Node) return super.getNodeBorderColor(builder, node, isSelected)
+            return doGetNodeBorderColor(node) ?: super.getNodeBorderColor(builder, node, isSelected)
         }
         
-        override fun getAdditionalDiagramSettings(): Array<out DiagramConfigGroup> {
-            val settings = buildList {
-                DiagramConfigGroup(PlsBundle.message("diagram.stellaris.technologyTree.settings.type")).apply {
-                    addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.type.start"), true))
-                    addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.type.rare"), true))
-                    addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.type.dangerous"), true))
-                    addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.type.repeatable"), true))
-                }.also { add(it) }
-                //NOTE tier和category应当是动态获取的
-                //NOTE 这里我们无法直接获得project，因此暂且合并所有已打开的项目
-                //NOTE 这里的设置名不能包含本地化名字，因为这里的设置名同时也作为设置的ID
-                DiagramConfigGroup(PlsBundle.message("diagram.stellaris.technologyTree.settings.tier")).apply {
-                    val tiers = ProjectManager.getInstance().openProjects.flatMap { project ->
-                        StellarisTechnologyHandler.getTechnologyTiers(project, null)
-                    }
-                    tiers.forEach {
-                        addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.tier.option", it.name), true))
-                    }
-                }.also { add(it) }
-                DiagramConfigGroup(PlsBundle.message("diagram.stellaris.technologyTree.settings.area")).apply {
-                    val areas = StellarisTechnologyHandler.getResearchAreas()
-                    areas.forEach {
-                        addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.area.option", it), true))
-                    }
-                }.also { add(it) }
-                DiagramConfigGroup(PlsBundle.message("diagram.stellaris.technologyTree.settings.category")).apply {
-                    val categories = ProjectManager.getInstance().openProjects.flatMap { project ->
-                        StellarisTechnologyHandler.getTechnologyCategories(project, null)
-                    }
-                    categories.forEach {
-                        addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.category.option", it.name), true))
-                    }
-                }.also { add(it) }
+        private fun doGetNodeBorderColor(node: Node): Color? {
+            //这里使用的颜色是来自灰机wiki的特殊字体颜色
+            //https://qunxing.huijiwiki.com/wiki/%E7%A7%91%E6%8A%80
+            val data = node.data ?: return null
+            return when {
+                data.is_dangerous && data.is_rare -> ColorUtil.fromHex("#e8514f")
+                data.is_dangerous -> ColorUtil.fromHex("#e8514f")
+                data.is_rare -> ColorUtil.fromHex("#9743c4")
+                data.area == "physics" -> ColorUtil.fromHex("#2370af")
+                data.area == "society" -> ColorUtil.fromHex("#47a05f")
+                data.area == "engineering" -> ColorUtil.fromHex("#fbaa29")
+                else -> null
             }
-            return settings.toTypedArray()
-        }
-        
-        override fun getCustomLayouter(settings: GraphSettings, project: Project?): Layouter {
-            val layouter = GraphManager.getGraphManager().createHierarchicGroupLayouter()
-            layouter.orientationLayouter = GraphManager.getGraphManager().createOrientationLayouter(LayoutOrientation.LEFT_TO_RIGHT)
-            layouter.minimalNodeDistance = 20.0
-            layouter.minimalEdgeDistance = 20.0
-            layouter.layerer = GraphManager.getGraphManager().createBFSLayerer()
-            return layouter
         }
     }
     
     class Node(
         technology: ParadoxScriptProperty,
-        provider: StellarisTechnologyTreeDiagramProvider
+        provider: StellarisTechnologyTreeDiagramProvider,
+        val data: StellarisTechnologyDataProvider.Data? = null,
     ) : PsiDiagramNode<PsiElement>(technology, provider) {
         override fun getTooltip(): String? {
             val element = identifyingElement
@@ -332,7 +313,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
     class Edge(
         source: Node,
         target: Node,
-        relationship: DiagramRelationshipInfo = REL_PREREQUISITE
+        relationship: DiagramRelationshipInfo
     ) : DiagramEdgeBase<PsiElement>(source, target, relationship)
     
     class DataModel(
@@ -375,48 +356,59 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
             val techMap = mutableMapOf<String, ParadoxScriptProperty>()
             for(technology in technologies) {
                 ProgressManager.checkCanceled()
-                if(!shouldShow(technology, settings, configuration)) continue
-                val node = Node(technology, provider)
+                val data = technology.getData<StellarisTechnologyDataProvider.Data>()
+                if(data != null && !shouldShow(data, settings, configuration)) continue
+                val node = Node(technology, provider, data)
                 nodeMap.put(technology, node)
                 techMap.put(StellarisTechnologyHandler.getName(technology), technology)
                 _nodes.add(node)
             }
             for(technology in technologies) {
                 ProgressManager.checkCanceled()
-                val prerequisites = StellarisTechnologyHandler.getPrerequisites(technology)
-                if(prerequisites.isEmpty()) continue
-                for(prerequisite in prerequisites) {
-                    val source = techMap.get(prerequisite)?.let { nodeMap.get(it) } ?: continue
-                    val target = nodeMap.get(technology) ?: continue
-                    val edge = Edge(source, target)
+                val data = technology.getData<StellarisTechnologyDataProvider.Data>() ?: continue
+                //循环科技 ..> 循环科技
+                val levels = data.levels
+                if(levels != null) {
+                    val label = if(levels <= 0) "max level: inf" else "max level: $levels"
+                    val node = nodeMap.get(technology) ?: continue
+                    val edge = Edge(node, node, REL_REPEAT(label))
                     _edges.add(edge)
+                }
+                //前置 --> 科技
+                val prerequisites = data.prerequisites
+                if(prerequisites.isNotEmpty()) {
+                    for(prerequisite in prerequisites) {
+                        val source = techMap.get(prerequisite)?.let { nodeMap.get(it) } ?: continue
+                        val target = nodeMap.get(technology) ?: continue
+                        val edge = Edge(source, target, REL_PREREQUISITE)
+                        _edges.add(edge)
+                    }
                 }
             }
         }
         
-        private fun shouldShow(technology: ParadoxScriptProperty, settings: Array<out DiagramConfigGroup>, configuration: DiagramConfiguration): Boolean {
-            val data = technology.getData<StellarisTechnologyDataProvider.Data>() ?: return true
+        private fun shouldShow(data: StellarisTechnologyDataProvider.Data, settings: Array<out DiagramConfigGroup>, configuration: DiagramConfiguration): Boolean {
+            //对于每组配置，只要其中任意一个配置匹配即可
             for(setting in settings) {
                 when(setting.name) {
                     PlsBundle.message("diagram.stellaris.technologyTree.settings.type") -> {
-                        for(config in setting.elements) {
-                            val enabled = configuration.isEnabledByDefault(provider, config.name)
-                            if(enabled) continue
+                        val start = data.start_tech
+                        val rare = data.is_rare
+                        val dangerous = data.is_dangerous
+                        val repeatable = data.levels != null
+                        val other = !start && !rare && !dangerous && !repeatable
+                        val enabled = setting.elements.any { config ->
+                            val e = configuration.isEnabledByDefault(provider, config.name)
                             when(config.name) {
-                                PlsBundle.message("diagram.stellaris.technologyTree.settings.type.start") -> {
-                                    if(data.start_tech) return false
-                                }
-                                PlsBundle.message("diagram.stellaris.technologyTree.settings.type.rare") -> {
-                                    if(data.is_rare) return false
-                                }
-                                PlsBundle.message("diagram.stellaris.technologyTree.settings.type.dangerous") -> {
-                                    if(data.is_dangerous) return false
-                                }
-                                PlsBundle.message("diagram.stellaris.technologyTree.settings.type.repeatable") -> {
-                                    if(data.levels != null) return false
-                                }
+                                PlsBundle.message("diagram.stellaris.technologyTree.settings.type.start") -> if(start) e else false
+                                PlsBundle.message("diagram.stellaris.technologyTree.settings.type.rare") -> if(rare) e else false
+                                PlsBundle.message("diagram.stellaris.technologyTree.settings.type.dangerous") -> if(dangerous) e else false
+                                PlsBundle.message("diagram.stellaris.technologyTree.settings.type.repeatable") -> if(repeatable) e else false
+                                PlsBundle.message("diagram.stellaris.technologyTree.settings.type.other") -> if(other) e else false
+                                else -> false
                             }
                         }
+                        if(!enabled) return false
                     }
                     PlsBundle.message("diagram.stellaris.technologyTree.settings.tier") -> {
                         val v = data.tier ?: return false
@@ -433,12 +425,67 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
                     PlsBundle.message("diagram.stellaris.technologyTree.settings.category") -> {
                         val v = data.category.orEmpty()
                         val configNames = v.map { PlsBundle.message("diagram.stellaris.technologyTree.settings.category.option", it) }
-                        val enabled = configNames.all { configName -> configuration.isEnabledByDefault(provider, configName) }
+                        val enabled = configNames.any { configName -> configuration.isEnabledByDefault(provider, configName) }
                         if(!enabled) return false
                     }
                 }
             }
             return true
+        }
+    }
+    
+    //class Extras : DiagramExtras<PsiElement>()
+    
+    class Extras : CommonDiagramExtras<PsiElement>() {
+        override fun createNodeComponent(node: DiagramNode<PsiElement>, builder: DiagramBuilder, nodeRealizer: NodeRealizer, wrapper: JPanel): JComponent {
+            return super.createNodeComponent(node, builder, nodeRealizer, wrapper)
+        }
+        
+        override fun getAdditionalDiagramSettings(): Array<out DiagramConfigGroup> {
+            val settings = buildList {
+                DiagramConfigGroup(PlsBundle.message("diagram.stellaris.technologyTree.settings.type")).apply {
+                    addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.type.start"), true))
+                    addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.type.rare"), true))
+                    addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.type.dangerous"), true))
+                    addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.type.repeatable"), true))
+                    addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.type.other"), true))
+                }.also { add(it) }
+                //NOTE tier和category应当是动态获取的
+                //NOTE 这里我们无法直接获得project，因此暂且合并所有已打开的项目
+                //NOTE 这里的设置名不能包含本地化名字，因为这里的设置名同时也作为设置的ID
+                DiagramConfigGroup(PlsBundle.message("diagram.stellaris.technologyTree.settings.tier")).apply {
+                    val tiers = ProjectManager.getInstance().openProjects.flatMap { project ->
+                        StellarisTechnologyHandler.getTechnologyTiers(project, null)
+                    }
+                    tiers.forEach {
+                        addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.tier.option", it.name), true))
+                    }
+                }.also { add(it) }
+                DiagramConfigGroup(PlsBundle.message("diagram.stellaris.technologyTree.settings.area")).apply {
+                    val areas = StellarisTechnologyHandler.getResearchAreas()
+                    areas.forEach {
+                        addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.area.option", it), true))
+                    }
+                }.also { add(it) }
+                DiagramConfigGroup(PlsBundle.message("diagram.stellaris.technologyTree.settings.category")).apply {
+                    val categories = ProjectManager.getInstance().openProjects.flatMap { project ->
+                        StellarisTechnologyHandler.getTechnologyCategories(project, null)
+                    }
+                    categories.forEach {
+                        addElement(DiagramConfigElement(PlsBundle.message("diagram.stellaris.technologyTree.settings.category.option", it.name), true))
+                    }
+                }.also { add(it) }
+            }
+            return settings.toTypedArray()
+        }
+        
+        override fun getCustomLayouter(settings: GraphSettings, project: Project?): Layouter {
+            val layouter = GraphManager.getGraphManager().createHierarchicGroupLayouter()
+            layouter.orientationLayouter = GraphManager.getGraphManager().createOrientationLayouter(LayoutOrientation.LEFT_TO_RIGHT)
+            layouter.layerer = GraphManager.getGraphManager().createBFSLayerer()
+            layouter.minimalNodeDistance = 20.0
+            layouter.minimalEdgeDistance = 40.0
+            return layouter
         }
     }
 }

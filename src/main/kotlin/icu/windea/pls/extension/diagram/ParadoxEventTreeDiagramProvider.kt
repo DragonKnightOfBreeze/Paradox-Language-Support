@@ -1,6 +1,7 @@
 package icu.windea.pls.extension.diagram
 
 import com.intellij.diagram.*
+import com.intellij.diagram.components.DiagramNodeContainer
 import com.intellij.diagram.extras.custom.*
 import com.intellij.diagram.presentation.*
 import com.intellij.diagram.settings.*
@@ -21,7 +22,7 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.selectors.*
-import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.presentation.*
@@ -42,6 +43,7 @@ import javax.swing.*
  * * 支持任何通用的图表操作。（例如，导出为图片）
  */
 class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
+    val _vfsResolver = ParadoxRootVfsResolver(presentableName)
     val _elementManager = ElementManager()
     val _relationshipManager = RelationshipManager()
     val _extras = Extras()
@@ -59,6 +61,8 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
     override fun createScopeManager(project: Project) = null //TODO
     
     override fun createNodeContentManager() = NodeContentManager()
+    
+    override fun getVfsResolver() = _vfsResolver
     
     override fun getElementManager() = _elementManager
     
@@ -92,7 +96,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         }
     }
     
-    class NodeContentManager : AbstractDiagramNodeContentManager() {
+    class NodeContentManager : OrderedDiagramNodeContentManager() {
         override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?): Boolean {
             return when {
                 item is CwtProperty -> category == CAT_TYPE
@@ -257,42 +261,27 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         }
     }
     
-    //class Extras : DiagramExtras<PsiElement>()
-    
-    class Extras : CommonDiagramExtras<PsiElement>() {
-        //com.intellij.diagram.extras.DiagramExtras.getCustomLayouter
-        
-        override fun createNodeComponent(node: DiagramNode<PsiElement>, builder: DiagramBuilder, nodeRealizer: NodeRealizer, wrapper: JPanel): JComponent {
-            return runReadAction {
-                super.createNodeComponent(node, builder, nodeRealizer, wrapper)
-            }
+    class ColorManager : DiagramColorManagerBase() {
+        override fun getEdgeColor(builder: DiagramBuilder, edge: DiagramEdge<*>): Color {
+            if(edge !is Edge) return super.getEdgeColor(builder, edge)
+            //基于调用类型
+            return doGetEdgeColor(edge) ?: super.getEdgeColor(builder, edge)
         }
         
-        override fun getAdditionalDiagramSettings(): Array<out DiagramConfigGroup> {
-            val settings = buildList {
-                DiagramConfigGroup(PlsBundle.message("diagram.paradox.eventTree.settings.type")).apply {
-                    addElement(DiagramConfigElement(PlsBundle.message("diagram.paradox.eventTree.settings.type.hidden"), true))
-                    addElement(DiagramConfigElement(PlsBundle.message("diagram.paradox.eventTree.settings.type.triggered"), true))
-                    addElement(DiagramConfigElement(PlsBundle.message("diagram.paradox.eventTree.settings.type.major"), true))
-                    addElement(DiagramConfigElement(PlsBundle.message("diagram.paradox.eventTree.settings.type.diplomatic"), true))
-                }.also { add(it) }
+        private fun doGetEdgeColor(edge: Edge): Color? {
+            val invocationType = edge.invocationType
+            return when(invocationType) {
+                ParadoxEventHandler.InvocationType.All -> null
+                ParadoxEventHandler.InvocationType.Immediate -> Color.RED
+                ParadoxEventHandler.InvocationType.After -> Color.BLUE
             }
-            return settings.toTypedArray()
-        }
-        
-        override fun getCustomLayouter(settings: GraphSettings, project: Project?): Layouter {
-            val layouter = GraphManager.getGraphManager().createHierarchicGroupLayouter()
-            layouter.orientationLayouter = GraphManager.getGraphManager().createOrientationLayouter(LayoutOrientation.LEFT_TO_RIGHT)
-            layouter.minimalNodeDistance = 20.0
-            layouter.minimalEdgeDistance = 20.0
-            layouter.layerer = GraphManager.getGraphManager().createBFSLayerer()
-            return layouter
         }
     }
     
     class Node(
         event: ParadoxScriptProperty,
-        provider: ParadoxEventTreeDiagramProvider
+        provider: ParadoxEventTreeDiagramProvider,
+        val data: ParadoxEventDataProvider.Data?
     ) : PsiDiagramNode<PsiElement>(event, provider) {
         override fun getTooltip(): String? {
             val element = identifyingElement
@@ -305,10 +294,8 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         source: Node,
         target: Node,
         relationship: DiagramRelationshipInfo = REL_INVOKE,
-        private val anchorColor: Color? = null,
-    ) : DiagramEdgeBase<PsiElement>(source, target, relationship) {
-        override fun getAnchorColor() = anchorColor
-    }
+        val invocationType: ParadoxEventHandler.InvocationType,
+    ) : DiagramEdgeBase<PsiElement>(source, target, relationship)
     
     class DataModel(
         project: Project,
@@ -350,8 +337,9 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             val eventMap = mutableMapOf<String, ParadoxScriptProperty>()
             for(event in events) {
                 ProgressManager.checkCanceled()
-                if(!shouldShow(event, settings, configuration)) continue
-                val node = Node(event, provider)
+                val data = event.getData<ParadoxEventDataProvider.Data>()
+                if(data != null && !shouldShow(data, settings, configuration)) continue
+                val node = Node(event, provider, data)
                 nodeMap.put(event, node)
                 eventMap.put(ParadoxEventHandler.getName(event), event)
                 _nodes.add(node)
@@ -369,44 +357,67 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
                         ParadoxEventHandler.InvocationType.Immediate -> REL_INVOKE_IMMEDIATE
                         ParadoxEventHandler.InvocationType.After -> REL_INVOKE_AFTER
                     }
-                    val anchorColor = when(invocationType) {
-                        ParadoxEventHandler.InvocationType.All -> null
-                        ParadoxEventHandler.InvocationType.Immediate -> Color.RED
-                        ParadoxEventHandler.InvocationType.After -> Color.BLUE
-                    }
-                    val edge = Edge(source, target, relationship, anchorColor)
+                    val edge = Edge(source, target, relationship, invocationType)
                     _edges.add(edge)
                 }
             }
         }
         
-        private fun shouldShow(event: ParadoxScriptProperty, settings: Array<out DiagramConfigGroup>, configuration: DiagramConfiguration): Boolean {
-            val data = event.getData<ParadoxEventDataProvider.Data>() ?: return true
+        private fun shouldShow(data: ParadoxEventDataProvider.Data, settings: Array<out DiagramConfigGroup>, configuration: DiagramConfiguration): Boolean {
             for(setting in settings) {
                 when(setting.name) {
                     PlsBundle.message("diagram.paradox.eventTree.settings.type") -> {
-                        for(config in setting.elements) {
-                            val enabled = configuration.isEnabledByDefault(provider, config.name)
-                            if(enabled) continue
+                        val hidden = data.hide_window
+                        val triggered = data.is_triggered_only
+                        val major = data.major
+                        val diplomatic = data.diplomatic
+                        val other = !hidden && !triggered && !major && !diplomatic
+                        val enabled = setting.elements.any { config ->
+                            val e = configuration.isEnabledByDefault(provider, config.name)
                             when(config.name) {
-                                PlsBundle.message("diagram.paradox.eventTree.settings.type.hidden") -> {
-                                    if(data.hide_window) return false
-                                }
-                                PlsBundle.message("diagram.paradox.eventTree.settings.type.triggered") -> {
-                                    if(data.is_triggered_only) return false
-                                }
-                                PlsBundle.message("diagram.paradox.eventTree.settings.type.major") -> {
-                                    if(data.major) return false
-                                }
-                                PlsBundle.message("diagram.paradox.eventTree.settings.type.diplomatic") -> {
-                                    if(data.diplomatic) return false
-                                }
+                                PlsBundle.message("diagram.paradox.eventTree.settings.type.hidden") -> if(hidden) e else false
+                                PlsBundle.message("diagram.paradox.eventTree.settings.type.triggered") -> if(triggered) e else false
+                                PlsBundle.message("diagram.paradox.eventTree.settings.type.major") -> if(major) e else false
+                                PlsBundle.message("diagram.paradox.eventTree.settings.type.diplomatic") -> if(diplomatic) e else false
+                                PlsBundle.message("diagram.paradox.eventTree.settings.type.other") -> if(other) e else false
+                                else -> false
                             }
                         }
+                        if(!enabled) return false
                     }
                 }
             }
             return true
+        }
+    }
+    
+    //class Extras : DiagramExtras<PsiElement>()
+    
+    class Extras : CommonDiagramExtras<PsiElement>() {
+        override fun createNodeComponent(node: DiagramNode<PsiElement>, builder: DiagramBuilder, nodeRealizer: NodeRealizer, wrapper: JPanel): JComponent {
+            return super.createNodeComponent(node, builder, nodeRealizer, wrapper)
+        }
+        
+        override fun getAdditionalDiagramSettings(): Array<out DiagramConfigGroup> {
+            val settings = buildList {
+                DiagramConfigGroup(PlsBundle.message("diagram.paradox.eventTree.settings.type")).apply {
+                    addElement(DiagramConfigElement(PlsBundle.message("diagram.paradox.eventTree.settings.type.hidden"), true))
+                    addElement(DiagramConfigElement(PlsBundle.message("diagram.paradox.eventTree.settings.type.triggered"), true))
+                    addElement(DiagramConfigElement(PlsBundle.message("diagram.paradox.eventTree.settings.type.major"), true))
+                    addElement(DiagramConfigElement(PlsBundle.message("diagram.paradox.eventTree.settings.type.diplomatic"), true))
+                    addElement(DiagramConfigElement(PlsBundle.message("diagram.paradox.eventTree.settings.type.other"), true))
+                }.also { add(it) }
+            }
+            return settings.toTypedArray()
+        }
+        
+        override fun getCustomLayouter(settings: GraphSettings, project: Project?): Layouter {
+            val layouter = GraphManager.getGraphManager().createHierarchicGroupLayouter()
+            layouter.orientationLayouter = GraphManager.getGraphManager().createOrientationLayouter(LayoutOrientation.LEFT_TO_RIGHT)
+            layouter.layerer = GraphManager.getGraphManager().createBFSLayerer()
+            layouter.minimalNodeDistance = 20.0
+            layouter.minimalEdgeDistance = 40.0
+            return layouter
         }
     }
 }

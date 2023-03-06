@@ -6,7 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 
-object ParadoxRootVfsResolver : DiagramVfsResolver<PsiElement> {
+class ParadoxRootVfsResolver(private val name: String) : DiagramVfsResolver<PsiElement> {
     //based on rootFile
     
     override fun getQualifiedName(element: PsiElement?): String? {
@@ -17,8 +17,9 @@ object ParadoxRootVfsResolver : DiagramVfsResolver<PsiElement> {
     }
     
     override fun resolveElementByFQN(s: String, project: Project): PsiDirectory? {
+        val rootPath = s
         return try {
-            s.toVirtualFile()?.toPsiDirectory(project)
+            rootPath.toVirtualFile()?.toPsiDirectory(project)
         } catch(e: Exception) {
             null
         }

@@ -15,7 +15,7 @@ import icu.windea.pls.tool.script.*
  *
  * 需要解析封装变量，不需要判断是否合法。兼容需要内联的情况。
  */
-interface ParadoxDefinitionDataProvider<T> {
+interface ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
     val definitionType: String
     val dataType: Class<T>
     val gameType: ParadoxGameType? get() = null
@@ -49,7 +49,7 @@ interface ParadoxDefinitionDataProvider<T> {
             }
         }
         
-        fun <T> getInstance(dataType: Class<T>): ParadoxDefinitionDataProvider<T>? {
+        fun <T : ParadoxDefinitionData> getInstance(dataType: Class<T>): ParadoxDefinitionDataProvider<T>? {
             return EP_NAME.extensionList.find {
                 it.dataType == dataType
             }?.castOrNull()
@@ -60,6 +60,6 @@ interface ParadoxDefinitionDataProvider<T> {
 /**
  * 获取定义的指定类型的数据。
  */
-inline fun <reified T> ParadoxScriptDefinitionElement.getData(): T? {
+inline fun <reified T : ParadoxDefinitionData> ParadoxScriptDefinitionElement.getData(): T? {
     return ParadoxDefinitionDataProvider.getInstance(T::class.java)?.getData(this)
 }
