@@ -2,14 +2,11 @@
 
 package icu.windea.pls.core
 
-import ai.grazie.utils.*
 import com.google.common.cache.*
-import com.ibm.icu.text.*
 import com.intellij.util.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
 import java.io.*
-import java.math.*
 import java.net.*
 import java.nio.charset.*
 import java.nio.file.*
@@ -36,12 +33,13 @@ inline fun <T : R, R> T.letUnless(condition: Boolean, block: (T) -> R): R {
 	return if(!condition) block(this) else this
 }
 
-inline fun <T> withMeasureMillis(prefix: String = "", enable: Boolean = true , action: () -> T): T {
+inline fun <T> withMeasureMillis(prefix: String, enable: Boolean = true , action: () -> T): T {
 	if(!enable) return action()
 	val start = System.currentTimeMillis()
 	val result = action()
 	val end = System.currentTimeMillis()
-	println(prefix + (end - start))
+	val millis = end - start
+	println("$prefix $millis")
 	return result
 } 
 
