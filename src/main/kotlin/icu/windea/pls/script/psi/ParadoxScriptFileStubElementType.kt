@@ -76,16 +76,15 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
 		}
 	}
 	
-	override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
-		//这里需要基于上下文来解析本地化文本的语法
-		val fileInfo = psi.fileInfo
-		val project = psi.project
-		val language = ParadoxScriptLanguage
-		val context = ParadoxScriptParsingContext(project, fileInfo)
-		val lexer = ParadoxScriptLexerAdapter(context)
-		val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, lexer, language, chameleon.chars)
-		val parser = ParadoxScriptParser()
-		val node = parser.parse(this, builder)
-		return node.firstChildNode
-	}
+	//override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
+	//	val fileInfo = psi.fileInfo
+	//	val project = psi.project
+	//	val language = ParadoxScriptLanguage
+	//	val context = ParadoxScriptParsingContext(project, fileInfo)
+	//	val lexer = ParadoxScriptLexerAdapter(context)
+	//	val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, lexer, language, chameleon.chars)
+	//	val parser = ParadoxScriptParser()
+	//	val node = parser.parse(this, builder)
+	//	return node.firstChildNode
+	//}
 }

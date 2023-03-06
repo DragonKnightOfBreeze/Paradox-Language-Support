@@ -2,7 +2,9 @@ package icu.windea.pls.localisation.psi
 
 import com.intellij.lexer.*
 
-class ParadoxLocalisationLexerAdapter(
-	context: ParadoxLocalisationParsingContext? = null
-): FlexAdapter(ParadoxLocalisationLexer(context))
+class ParadoxLocalisationLexerAdapter : FlexAdapter(ParadoxLocalisationLexer())
+
+//class ParadoxLocalisationLexerAdapter(
+//	context: ParadoxLocalisationParsingContext? = null
+//): FlexAdapter(ParadoxLocalisationLexer(context))
 

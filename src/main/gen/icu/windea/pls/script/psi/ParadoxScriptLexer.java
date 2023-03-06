@@ -486,7 +486,7 @@ public class ParadoxScriptLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-	private ParadoxScriptParsingContext context;
+	//private ParadoxScriptParsingContext context;
 
     private int depth = 0;
     private boolean inWildcardKey = false;
@@ -500,10 +500,10 @@ public class ParadoxScriptLexer implements FlexLexer {
         this((java.io.Reader)null);
     }
 	
-	public ParadoxScriptLexer(ParadoxScriptParsingContext context) {
-		this((java.io.Reader)null);
-		this.context = context;
-	}
+	//public ParadoxScriptLexer(ParadoxScriptParsingContext context) {
+	//	this((java.io.Reader)null);
+	//	this.context = context;
+	//}
     
     private void beginNextState(){
 		if(inParameterCondition){

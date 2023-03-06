@@ -5,8 +5,8 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 
 class ParadoxLocalisationSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
-	override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?): ParadoxLocalisationSyntaxHighlighter {
-		return ParadoxLocalisationSyntaxHighlighter(project, virtualFile)
-	}
+    override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?): ParadoxLocalisationSyntaxHighlighter {
+        return ParadoxLocalisationSyntaxHighlighter(project, virtualFile)
+    }
 }
 

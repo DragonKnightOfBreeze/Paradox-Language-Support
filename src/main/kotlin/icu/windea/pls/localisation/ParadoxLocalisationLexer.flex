@@ -42,7 +42,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %state WAITING_CHECK_RIGHT_QUOTE
 
 %{	
-	private ParadoxLocalisationParsingContext context;
+	//private ParadoxLocalisationParsingContext context;
 
     private boolean noIndent = true;
     private int depth = 0;
@@ -53,10 +53,10 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         this((java.io.Reader)null);
     }
 	
-	public ParadoxLocalisationLexer(ParadoxLocalisationParsingContext context) {
-        this((java.io.Reader)null);
-    	this.context = context;
-    }
+	//public ParadoxLocalisationLexer(ParadoxLocalisationParsingContext context) {
+    //    this((java.io.Reader)null);
+    //	this.context = context;
+    //}
 	
     private void increaseDepth(){
 	    depth++;
@@ -179,7 +179,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
  		        return LOCALE_ID;
 			} else {
 				yybegin(WAITING_PROPERTY_COLON);
-				if(context != null) context.setCurrentKey(yytext().toString());
+				//if(context != null) context.setCurrentKey(yytext().toString());
 				return PROPERTY_KEY_TOKEN;
 			}
  	    }
@@ -190,7 +190,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
   //{LOCALE_ID} {yybegin(WAITING_LOCALE_COLON); return LOCALE_ID; }
   {PROPERTY_KEY_TOKEN} {
     yybegin(WAITING_PROPERTY_COLON);
-    if(context != null) context.setCurrentKey(yytext().toString());
+    //if(context != null) context.setCurrentKey(yytext().toString());
     return PROPERTY_KEY_TOKEN;
   }
 }

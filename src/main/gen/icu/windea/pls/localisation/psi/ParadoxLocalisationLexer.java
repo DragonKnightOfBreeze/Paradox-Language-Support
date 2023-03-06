@@ -338,7 +338,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-	private ParadoxLocalisationParsingContext context;
+	//private ParadoxLocalisationParsingContext context;
 
     private boolean noIndent = true;
     private int depth = 0;
@@ -349,10 +349,10 @@ public class ParadoxLocalisationLexer implements FlexLexer {
         this((java.io.Reader)null);
     }
 	
-	public ParadoxLocalisationLexer(ParadoxLocalisationParsingContext context) {
-        this((java.io.Reader)null);
-    	this.context = context;
-    }
+	//public ParadoxLocalisationLexer(ParadoxLocalisationParsingContext context) {
+    //    this((java.io.Reader)null);
+    //	this.context = context;
+    //}
 	
     private void increaseDepth(){
 	    depth++;
@@ -684,7 +684,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
           case 56: break;
           case 5: 
             { yybegin(WAITING_PROPERTY_COLON);
-    if(context != null) context.setCurrentKey(yytext().toString());
+    //if(context != null) context.setCurrentKey(yytext().toString());
     return PROPERTY_KEY_TOKEN;
             } 
             // fall through
@@ -991,7 +991,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
  		        return LOCALE_ID;
 			} else {
 				yybegin(WAITING_PROPERTY_COLON);
-				if(context != null) context.setCurrentKey(yytext().toString());
+				//if(context != null) context.setCurrentKey(yytext().toString());
 				return PROPERTY_KEY_TOKEN;
 			}
  	    }
