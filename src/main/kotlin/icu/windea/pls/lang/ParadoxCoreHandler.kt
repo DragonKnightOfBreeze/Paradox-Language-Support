@@ -50,8 +50,7 @@ object ParadoxCoreHandler {
     
     @JvmStatic
     fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
-        val file = PsiUtilCore.getVirtualFile(element)
-        if(file == null) return null
+        val file = selectFile(element) ?: return null
         return getFileInfo(file)
     }
     
