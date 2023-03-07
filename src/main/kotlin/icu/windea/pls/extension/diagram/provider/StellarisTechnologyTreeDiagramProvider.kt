@@ -189,7 +189,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
         override fun handleItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder, itemComponent: DiagramNodeItemComponentEx) {
             ProgressManager.checkCanceled()
             if(itemComponent.components.size == 3) {
-                itemComponent.remove(0)
+                itemComponent.remove(2)
             }
             when(nodeElement) {
                 is ParadoxScriptProperty -> {
@@ -198,7 +198,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
                             //渲染科技的名字
                             val name = ParadoxLocalisationTextUIRender.render(nodeItem)
                             if(name != null) {
-                                itemComponent.add(name, 0) //should be no layout
+                                itemComponent.add(name) //no layout
                             }
                         }
                         nodeItem is PsiFile -> {
@@ -207,7 +207,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
                             if(iconUrl.isNotEmpty()) {
                                 val icon = IconLoader.findIcon(iconUrl.toFileUrl())
                                 if(icon != null) {
-                                    itemComponent.add(icon.toLabel(), 0) //should be no layout 
+                                    itemComponent.add(icon.toLabel()) //no layout 
                                 }
                             }
                         }
@@ -217,7 +217,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
                             if(definitionInfo != null) {
                                 val presentation = ParadoxDefinitionPresentationProvider.getPresentation(nodeItem, definitionInfo)
                                 if(presentation != null) {
-                                    itemComponent.add(presentation, 0) //should be no layout
+                                    itemComponent.add(presentation) //no layout
                                 }
                             }
                         }

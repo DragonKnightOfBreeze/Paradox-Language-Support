@@ -176,7 +176,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         override fun handleItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder, itemComponent: DiagramNodeItemComponentEx) {
             ProgressManager.checkCanceled()
             if(itemComponent.components.size == 3) {
-                itemComponent.remove(0)
+                itemComponent.remove(2)
             }
             when(nodeElement) {
                 is ParadoxScriptProperty -> {
@@ -185,7 +185,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
                             //渲染事件标题
                             val name = ParadoxLocalisationTextUIRender.render(nodeItem)
                             if(name != null) {
-                                itemComponent.add(name, 0) //should be no layout
+                                itemComponent.add(name) //no layout
                             }
                         }
                         nodeItem is PsiFile -> {
@@ -194,7 +194,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
                             if(iconUrl.isNotEmpty()) {
                                 val icon = IconLoader.findIcon(iconUrl.toFileUrl())
                                 if(icon != null) {
-                                    itemComponent.add(icon.toLabel(), 0) //should be no layout 
+                                    itemComponent.add(icon.toLabel()) //no layout 
                                 }
                             }
                         }
