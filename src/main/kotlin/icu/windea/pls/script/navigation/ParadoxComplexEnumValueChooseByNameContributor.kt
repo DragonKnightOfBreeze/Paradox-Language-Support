@@ -6,6 +6,7 @@ import com.intellij.psi.stubs.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 //com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
@@ -19,7 +20,10 @@ class ParadoxComplexEnumValueChooseByNameContributor : ChooseByNameContributorEx
     }
     
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
-        //NOTE 这里显示的是property/value的图标，而非complexEnum的图标，需要考虑优化
-        StubIndex.getInstance().processElements(ParadoxComplexEnumValueIndex.KEY, name, parameters.project, parameters.searchScope, parameters.idFilter, ParadoxScriptStringExpressionElement::class.java, processor)
+        val key = ParadoxComplexEnumValueIndex.KEY
+        val type = ParadoxScriptStringExpressionElement::class.java
+        StubIndex.getInstance().processElements(key, name, parameters.project, parameters.searchScope, parameters.idFilter, type) {
+            processor.process(ParadoxComplexEnumValueNavigationElement(it))
+        }
     }
 }

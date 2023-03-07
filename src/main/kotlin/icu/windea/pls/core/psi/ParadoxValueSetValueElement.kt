@@ -29,8 +29,9 @@ class ParadoxValueSetValueElement(
     
     val valueSetNamesText = valueSetNames.joinToString(" | ")
     
-    override fun getText(): String {
-        return name
+    override fun getIcon(): Icon {
+        val valueSetName = valueSetNames.first() //first is ok
+        return PlsIcons.ValueSetValue(valueSetName)
     }
     
     override fun getName(): String {
@@ -41,9 +42,8 @@ class ParadoxValueSetValueElement(
         return PlsBundle.message("script.description.valueSetValue")
     }
     
-    override fun getIcon(): Icon {
-        val valueSetName = valueSetNames.first() //first is ok
-        return PlsIcons.ValueSetValue(valueSetName)
+    override fun getText(): String {
+        return name
     }
     
     override fun getTextRange(): TextRange? {

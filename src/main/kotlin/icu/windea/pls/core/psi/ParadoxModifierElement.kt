@@ -25,8 +25,8 @@ class ParadoxModifierElement(
     val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxFakePsiElement(parent) {
-    override fun getText(): String {
-        return name
+    override fun getIcon(): Icon {
+        return PlsIcons.Modifier
     }
     
     override fun getName(): String {
@@ -41,8 +41,8 @@ class ParadoxModifierElement(
         return PlsBundle.message("script.description.modifier")
     }
     
-    override fun getIcon(): Icon {
-        return PlsIcons.Modifier
+    override fun getText(): String {
+        return name
     }
     
     override fun getTextRange(): TextRange? {
