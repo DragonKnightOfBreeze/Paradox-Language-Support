@@ -20,7 +20,11 @@ fun Icon.toImage(): Image {
 }
 
 fun Icon.toLabel(): JLabel {
-    return JLabel("", this, SwingConstants.LEADING)
+    val label = JLabel("", this, SwingConstants.LEADING)
+    label.border = JBUI.Borders.empty()
+    label.size = label.preferredSize
+    label.isOpaque = false
+    return label
 }
 
 fun JComponent.toImage(width: Int = this.width, height: Int = this.height, type: Int = BufferedImage.TYPE_INT_ARGB_PRE): Image {
