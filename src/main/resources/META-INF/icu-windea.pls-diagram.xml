@@ -1,7 +1,7 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij.diagram">
-    <Provider implementation="icu.windea.pls.extension.diagram.ParadoxEventTreeDiagramProvider"/>
-    <Provider implementation="icu.windea.pls.extension.diagram.StellarisTechnologyTreeDiagramProvider"/>
+    <Provider implementation="icu.windea.pls.extension.diagram.provider.ParadoxEventTreeDiagramProvider"/>
+    <Provider implementation="icu.windea.pls.extension.diagram.provider.StellarisTechnologyTreeDiagramProvider"/>
   </extensions>
   
   <actions>
