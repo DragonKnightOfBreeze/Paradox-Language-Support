@@ -22,6 +22,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
+import icu.windea.pls.lang.data.ParadoxEventDataProvider.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
@@ -289,7 +290,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
     class Node(
         event: ParadoxScriptProperty,
         provider: ParadoxEventTreeDiagramProvider,
-        val data: ParadoxEventDataProvider.Data?
+        val data: Data?
     ) : PsiDiagramNode<PsiElement>(event, provider) {
         override fun getTooltip(): String? {
             val element = identifyingElement
@@ -349,7 +350,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             val eventMap = mutableMapOf<String, ParadoxScriptProperty>()
             for(event in events) {
                 ProgressManager.checkCanceled()
-                val data = event.getData<ParadoxEventDataProvider.Data>()
+                val data = event.getData<Data>()
                 if(data != null && !shouldShow(data, settings, configuration)) continue
                 val node = Node(event, provider, data)
                 nodeMap.put(event, node)
@@ -376,7 +377,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             }
         }
         
-        private fun shouldShow(data: ParadoxEventDataProvider.Data, settings: Array<out DiagramConfigGroup>, configuration: DiagramConfiguration): Boolean {
+        private fun shouldShow(data: Data, settings: Array<out DiagramConfigGroup>, configuration: DiagramConfiguration): Boolean {
             for(setting in settings) {
                 when(setting.name) {
                     PlsBundle.message("diagram.paradox.eventTree.settings.type") -> {

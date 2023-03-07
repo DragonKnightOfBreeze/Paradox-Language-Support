@@ -25,6 +25,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
+import icu.windea.pls.lang.data.StellarisTechnologyDataProvider.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.presentation.*
 import icu.windea.pls.localisation.psi.*
@@ -316,7 +317,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
     class Node(
         technology: ParadoxScriptProperty,
         provider: StellarisTechnologyTreeDiagramProvider,
-        val data: StellarisTechnologyDataProvider.Data? = null,
+        val data: Data? = null,
     ) : PsiDiagramNode<PsiElement>(technology, provider) {
         override fun getTooltip(): String? {
             val element = identifyingElement
@@ -375,7 +376,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
             val techMap = mutableMapOf<String, ParadoxScriptProperty>()
             for(technology in technologies) {
                 ProgressManager.checkCanceled()
-                val data = technology.getData<StellarisTechnologyDataProvider.Data>()
+                val data = technology.getData<Data>()
                 if(data != null && !shouldShow(data, settings, configuration)) continue
                 val node = Node(technology, provider, data)
                 nodeMap.put(technology, node)
@@ -384,7 +385,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
             }
             for(technology in technologies) {
                 ProgressManager.checkCanceled()
-                val data = technology.getData<StellarisTechnologyDataProvider.Data>() ?: continue
+                val data = technology.getData<Data>() ?: continue
                 //循环科技 ..> 循环科技
                 val levels = data.levels
                 if(levels != null) {
@@ -406,7 +407,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
             }
         }
         
-        private fun shouldShow(data: StellarisTechnologyDataProvider.Data, settings: Array<out DiagramConfigGroup>, configuration: DiagramConfiguration): Boolean {
+        private fun shouldShow(data: Data, settings: Array<out DiagramConfigGroup>, configuration: DiagramConfiguration): Boolean {
             //对于每组配置，只要其中任意一个配置匹配即可
             for(setting in settings) {
                 when(setting.name) {
