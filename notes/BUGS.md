@@ -34,13 +34,16 @@
 
 traditions: inherit icon from parent original tradition if inherit_icon = yes
 
+## PROCESSING
+
+* [ ] 检查原版游戏文件 - PROCESSING：common/country_types
+
 ## 0.8.3
 
 * [X] `int[-inf..inf]` - 允许这样的写法 
 * [X] 更新`on_actions.cwt`
 * [X] 科技树图表 - item排序不正确 - 改为基于其category在contentCategories中的顺序进行排序
 * [X] 事件树图表 - 生成过慢 - 指定名字查询本地化索引最慢可能需要400ms+ - 优化后需要0~5ms
-* [ ] 检查原版游戏文件 - PROCESSING：common/country_types
 * [X] 无法快速查找event（通过event id）（以及其他任何definitionName不为rootKey的定义，应当如此） - 已解决，需要使用`FakeElement`
 
 ## 0.8.2
