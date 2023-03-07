@@ -26,9 +26,9 @@ object ParadoxLocalisationTextUIRender {
             append("</span>")
             append("</html>")
         }
-       label.border = JBUI.Borders.empty()
-       label.size = label.preferredSize
-       label.isOpaque = false
+        label.border = JBUI.Borders.empty()
+        label.size = label.preferredSize
+        label.isOpaque = false
         return label
     }
     

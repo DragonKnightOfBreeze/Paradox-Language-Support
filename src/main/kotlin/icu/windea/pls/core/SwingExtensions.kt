@@ -15,6 +15,14 @@ fun Image.toIcon(): Icon {
     return IconUtil.createImageIcon(this)
 }
 
+fun Icon.toLabel(): JLabel {
+    val label = JLabel("", this, SwingConstants.LEADING) //left align
+    label.border = JBUI.Borders.empty()
+    label.size = label.preferredSize
+    label.isOpaque = false
+    return label
+}
+
 fun Icon.toImage(): Image {
     return IconUtil.toImage(this)
 }
@@ -23,6 +31,11 @@ fun Component.toImage(width: Int = this.width, height: Int = this.height, type: 
     val image = UIUtil.createImage(this, width, height, type)
     UIUtil.useSafely(image.graphics) { this.paint(it) }
     return image
+}
+
+fun <T : Component> T.withLocation(x: Int, y: Int): T {
+    setLocation(x, y)
+    return this
 }
 
 fun Color.toHex(withAlpha: Boolean = true) = ColorUtil.toHex(this, withAlpha)

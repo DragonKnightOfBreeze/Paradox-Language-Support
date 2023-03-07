@@ -176,16 +176,26 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         override fun handleItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder, itemComponent: DiagramNodeItemComponentEx) {
             ProgressManager.checkCanceled()
             if(itemComponent.components.size == 3) {
-                itemComponent.remove(2)
+                itemComponent.remove(0)
             }
             when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     when {
                         nodeItem is ParadoxLocalisationProperty -> {
-                            //渲染本地化名字
+                            //渲染事件标题
                             val name = ParadoxLocalisationTextUIRender.render(nodeItem)
                             if(name != null) {
-                                itemComponent.add(name)
+                                itemComponent.add(name, 0) //should be no layout
+                            }
+                        }
+                        nodeItem is PsiFile -> {
+                            //渲染事件图片
+                            val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrame) ?: 0)
+                            if(iconUrl.isNotEmpty()) {
+                                val icon = IconLoader.findIcon(iconUrl.toFileUrl())
+                                if(icon != null) {
+                                    itemComponent.add(icon.toLabel(), 0) //should be no layout 
+                                }
                             }
                         }
                     }
@@ -202,22 +212,8 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
                         nodeItem is CwtProperty -> PlsIcons.Type
                         nodeItem is ParadoxScriptProperty -> {
                             val definitionInfo = nodeItem.definitionInfo
-                            if(definitionInfo != null) {
-                                null
-                            } else {
-                                PlsIcons.Property
-                            }
-                        }
-                        //nodeItem is ParadoxLocalisationProperty -> {
-                        //    ParadoxLocalisationTextUIRender.renderImage(nodeItem)?.toIcon()
-                        //}
-                        nodeItem is PsiFile -> {
-                            val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrame) ?: 0)
-                            if(iconUrl.isNotEmpty()) {
-                                IconLoader.findIcon(iconUrl.toFileUrl())
-                            } else {
-                                null
-                            }
+                            if(definitionInfo != null) return null
+                            PlsIcons.Property
                         }
                         else -> null
                     }
