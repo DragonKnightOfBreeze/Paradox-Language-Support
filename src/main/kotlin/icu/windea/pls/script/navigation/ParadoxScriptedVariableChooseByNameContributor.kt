@@ -19,8 +19,9 @@ class ParadoxScriptedVariableChooseByNameContributor : ChooseByNameContributorEx
     }
     
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
-        val key = ParadoxScriptedVariableNameIndex.KEY
-        val type = ParadoxScriptScriptedVariable::class.java
-        StubIndex.getInstance().processElements(key, name, parameters.project, parameters.searchScope, parameters.idFilter, type, processor)
+        StubIndex.getInstance().processElements(
+            ParadoxScriptedVariableNameIndex.KEY, name, parameters.project, parameters.searchScope, parameters.idFilter,
+            ParadoxScriptScriptedVariable::class.java, processor
+        )
     }
 }

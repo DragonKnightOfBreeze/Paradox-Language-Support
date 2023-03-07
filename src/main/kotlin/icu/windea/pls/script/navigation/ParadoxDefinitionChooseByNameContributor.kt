@@ -20,9 +20,10 @@ class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
     }
     
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
-        val key = ParadoxDefinitionNameIndex.KEY
-        val type = ParadoxScriptDefinitionElement::class.java
-        StubIndex.getInstance().processElements(key, name, parameters.project, parameters.searchScope, parameters.idFilter, type) {
+        StubIndex.getInstance().processElements(
+            ParadoxDefinitionNameIndex.KEY, name, parameters.project, parameters.searchScope, parameters.idFilter,
+            ParadoxScriptDefinitionElement::class.java
+        ) {
             processor.process(ParadoxDefinitionNavigationElement(it))
         }
     }
