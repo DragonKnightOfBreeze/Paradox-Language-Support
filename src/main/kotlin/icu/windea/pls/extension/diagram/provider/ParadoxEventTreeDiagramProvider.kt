@@ -1,14 +1,12 @@
 package icu.windea.pls.extension.diagram.provider
 
 import com.intellij.diagram.*
-import com.intellij.diagram.extras.custom.*
 import com.intellij.diagram.presentation.*
 import com.intellij.diagram.settings.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.graph.*
 import com.intellij.openapi.graph.layout.*
 import com.intellij.openapi.graph.settings.*
-import com.intellij.openapi.graph.view.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -174,20 +172,26 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             }
             return properties
         }
-    
-        override fun getItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder): JComponent? {
+        
+        override fun handleItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder, itemComponent: DiagramNodeItemComponentEx) {
             ProgressManager.checkCanceled()
-            return when(nodeElement) {
+            if(itemComponent.components.size == 3) {
+                itemComponent.remove(2)
+            }
+            when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     when {
                         nodeItem is ParadoxLocalisationProperty -> {
-                            ParadoxLocalisationTextUIRender.render(nodeItem)
+                            //渲染本地化名字
+                            val name = ParadoxLocalisationTextUIRender.render(nodeItem)
+                            if(name != null) {
+                                itemComponent.add(name)
+                            }
                         }
-                        else -> null
                     }
                 }
-                else -> null
             }
+            itemComponent.size = itemComponent.preferredSize
         }
         
         override fun getItemIcon(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): Icon? {

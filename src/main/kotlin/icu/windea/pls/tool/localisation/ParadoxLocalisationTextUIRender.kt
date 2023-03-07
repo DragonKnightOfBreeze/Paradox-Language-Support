@@ -10,7 +10,7 @@ import java.awt.*
 import java.awt.image.*
 import javax.swing.*
 
-@Suppress("unused", "UNUSED_PARAMETER")
+@Suppress("unused")
 object ParadoxLocalisationTextUIRender {
     private val defaultTextAttributes = SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, Color.WHITE)
     
@@ -69,9 +69,7 @@ object ParadoxLocalisationTextUIRender {
     
     fun renderImage(text: String, colorId: String, contextElement: PsiElement): Image? {
         val label = render(text, colorId, contextElement) ?: return null
-        val image = UIUtil.createImage(label, label.width, label.height, BufferedImage.TYPE_INT_ARGB_PRE)
-        UIUtil.useSafely(image.graphics) { label.paint(it) }
-        return image
+        return label.toImage()
     }
     
     fun render(element: ParadoxLocalisationProperty): JLabel? {
@@ -93,8 +91,6 @@ object ParadoxLocalisationTextUIRender {
     
     fun renderImage(element: ParadoxLocalisationProperty): Image? {
         val label = render(element) ?: return null
-        val image = UIUtil.createImage(label, label.width, label.height, BufferedImage.TYPE_INT_ARGB_PRE)
-        UIUtil.useSafely(image.graphics) { label.paint(it) }
-        return image
+        return label.toImage()
     }
 }

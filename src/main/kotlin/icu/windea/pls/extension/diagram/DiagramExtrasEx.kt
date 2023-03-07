@@ -33,17 +33,7 @@ class DiagramNodeItemComponentEx: DiagramNodeItemComponent() {
         val elementManager = builder.provider.elementManager as DiagramElementManager<Any>
         if(elementManager is DiagramElementManagerEx) {
             val nodeElement = node.identifyingElement
-            val component = elementManager.getItemComponent(nodeElement, element, builder)
-            if(component == null) {
-                if(components.size == 3) {
-                    remove(0)
-                }
-            } else {
-                if(components.size == 3) {
-                    remove(0)
-                }
-                add(component, "West", 0)
-            }
+            elementManager.handleItemComponent(nodeElement, element, builder, this)
         }
     }
 }
