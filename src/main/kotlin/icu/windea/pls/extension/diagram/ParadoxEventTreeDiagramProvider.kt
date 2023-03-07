@@ -1,12 +1,10 @@
 package icu.windea.pls.extension.diagram
 
 import com.intellij.diagram.*
-import com.intellij.diagram.components.DiagramNodeContainer
 import com.intellij.diagram.extras.custom.*
 import com.intellij.diagram.presentation.*
 import com.intellij.diagram.settings.*
 import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.application.*
 import com.intellij.openapi.graph.*
 import com.intellij.openapi.graph.layout.*
 import com.intellij.openapi.graph.settings.*
@@ -17,22 +15,18 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.ui.*
-import com.intellij.util.concurrency.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
-import icu.windea.pls.lang.presentation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import icu.windea.pls.tool.localisation.*
 import icu.windea.pls.tool.script.*
 import java.awt.*
-import java.util.concurrent.*
 import javax.swing.*
 
 /**
@@ -324,6 +318,10 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         }
         
         override fun refreshDataModel() {
+            doRefreshDataModel()
+        }
+        
+        private fun doRefreshDataModel() {
             ProgressManager.checkCanceled()
             val settings = provider.extras.additionalDiagramSettings
             val configuration = DiagramConfiguration.getInstance()
@@ -348,6 +346,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
                 ProgressManager.checkCanceled()
                 val invocations = ParadoxEventHandler.getInvocations(event)
                 if(invocations.isEmpty()) continue
+                //事件 --> 调用的事件
                 for((invocation, invocationType) in invocations) {
                     ProgressManager.checkCanceled()
                     val source = nodeMap.get(event) ?: continue

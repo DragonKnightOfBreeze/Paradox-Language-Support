@@ -7,7 +7,7 @@ class ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptDefinit
 	companion object {
 		@JvmField val KEY = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.type.index")
 		private const val VERSION = 15 //0.8.3
-		private const val CACHE_SIZE = 2 * 1024
+		private const val CACHE_SIZE = 1024 //180+ in stellaris@3.6
 	}
 	
 	override fun getKey() = KEY

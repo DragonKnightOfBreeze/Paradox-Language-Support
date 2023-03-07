@@ -7,7 +7,7 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
     companion object {
         @JvmField val KEY = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
         private const val VERSION = 15 //0.8.3
-        private const val CACHE_SIZE = 100 * 1024
+        private const val CACHE_SIZE = 100 * 1024 //98000+ in stellaris@3.6
     }
     
     override fun getKey() = KEY
