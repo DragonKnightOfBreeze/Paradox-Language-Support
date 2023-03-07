@@ -11,10 +11,6 @@ private val myItemComponentField by lazy { DiagramNodeBodyComponent::class.java.
 private val myLeftField by lazy { DiagramNodeItemComponent::class.java.getDeclaredField("myLeft").apply { trySetAccessible() } }
 
 abstract class DiagramExtrasEx: CommonDiagramExtras<PsiElement>() {
-    //com.intellij.diagram.components.DiagramNodeContainer
-    //com.intellij.diagram.components.DiagramNodeBodyComponent
-    //com.intellij.diagram.components.DiagramNodeItemComponent
-    
     override fun createNodeComponent(node: DiagramNode<PsiElement>, builder: DiagramBuilder, nodeRealizer: NodeRealizer, wrapper: JPanel): JComponent {
         //允许添加自定义的组件
         val component = super.createNodeComponent(node, builder, nodeRealizer, wrapper)
@@ -26,7 +22,17 @@ abstract class DiagramExtrasEx: CommonDiagramExtras<PsiElement>() {
     }
 }
 
+//com.intellij.diagram.components.DiagramNodeContainer
+//com.intellij.diagram.components.DiagramNodeBodyComponent
+//com.intellij.diagram.components.DiagramNodeItemComponent
+
 class DiagramNodeItemComponentEx: DiagramNodeItemComponent() {
+    private val panel = JPanel()
+    
+    init {
+        this.add(panel)
+    }
+    
     @Suppress("UNCHECKED_CAST")
     override fun setUp(owner: DiagramNodeBodyComponent, builder: DiagramBuilder, node: DiagramNode<Any>, element: Any?, selected: Boolean) {
         super.setUp(owner, builder, node, element, selected)
@@ -34,15 +40,10 @@ class DiagramNodeItemComponentEx: DiagramNodeItemComponent() {
         if(elementManager is DiagramElementManagerEx) {
             val nodeElement = node.identifyingElement
             val component = elementManager.getItemComponent(nodeElement, element, builder)
-            if(component == null) {
-                if(components.size == 3) {
-                    remove(0)
-                }
+            if(component != null) {
+                panel.add(component)
             } else {
-                if(components.size == 3) {
-                    remove(0)
-                }
-                add(component, "West", 0)
+                panel.removeAll()
             }
         }
     }

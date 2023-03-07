@@ -196,7 +196,22 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
                 is ParadoxScriptProperty -> {
                     when {
                         nodeItem is ParadoxLocalisationProperty -> {
+                            //科技的名字
                             ParadoxLocalisationTextUIRender.render(nodeItem)
+                        }
+                        nodeItem is PsiFile -> {
+                            //科技的图标
+                            val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrame) ?: 0)
+                            if(iconUrl.isEmpty()) return null
+                            val icon = IconLoader.findIcon(iconUrl.toFileUrl())
+                            icon?.toLabel()
+                        }
+                        nodeItem is ParadoxScriptProperty -> {
+                            //科技树
+                            val definitionInfo = nodeItem.definitionInfo
+                            if(definitionInfo == null) return null
+                            val presentation = ParadoxDefinitionPresentationProvider.getPresentation(nodeItem, definitionInfo)
+                            presentation
                         }
                         else -> null
                     }
@@ -214,23 +229,9 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxDiagramProvider() {
                         nodeItem is ParadoxScriptProperty -> {
                             val definitionInfo = nodeItem.definitionInfo
                             if(definitionInfo != null) {
-                                val presentation = ParadoxDefinitionPresentationProvider.EP_NAME.extensionList
-                                    .findIsInstance<StellarisTechnologyPresentationProvider>()
-                                    ?.getPresentation(nodeItem, nodeItem.definitionInfo!!)
-                                presentation?.toIcon()
+                                null
                             } else {
                                 PlsIcons.Property
-                            }
-                        }
-                        //nodeItem is ParadoxLocalisationProperty -> {
-                        //    ParadoxLocalisationTextUIRender.renderImage(nodeItem)?.toIcon()
-                        //}
-                        nodeItem is PsiFile -> {
-                            val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrame) ?: 0)
-                            if(iconUrl.isNotEmpty()) {
-                                IconLoader.findIcon(iconUrl.toFileUrl())
-                            } else {
-                                null
                             }
                         }
                         else -> null

@@ -7,19 +7,18 @@ import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import icu.windea.pls.tool.localisation.*
-import java.awt.*
 import javax.swing.*
 
 object ParadoxPresentationHandler {
     @JvmStatic
-    fun getName(definition: ParadoxScriptProperty): Image? {
+    fun getNameLabel(definition: ParadoxScriptDefinitionElement): JLabel? {
         val definitionInfo = definition.definitionInfo ?: return null
         val localizedName = definitionInfo.resolvePrimaryLocalisation(definition)
         if(localizedName == null) {
             val locName = definitionInfo.resolvePrimaryLocalisationName(definition) ?: return null
-            return ParadoxLocalisationTextUIRender.renderImage(locName)
+            return ParadoxLocalisationTextUIRender.render(locName)
         }
-        return ParadoxLocalisationTextUIRender.renderImage(localizedName)
+        return ParadoxLocalisationTextUIRender.render(localizedName)
     }
     
     @JvmStatic

@@ -174,14 +174,22 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             }
             return properties
         }
-    
+        
         override fun getItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder): JComponent? {
             ProgressManager.checkCanceled()
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     when {
                         nodeItem is ParadoxLocalisationProperty -> {
+                            //事件标题
                             ParadoxLocalisationTextUIRender.render(nodeItem)
+                        }
+                        nodeItem is PsiFile -> {
+                            //事件图片
+                            val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrame) ?: 0)
+                            if(iconUrl.isEmpty()) return null
+                            val icon = IconLoader.findIcon(iconUrl.toFileUrl())
+                            icon?.toLabel()
                         }
                         else -> null
                     }
@@ -202,17 +210,6 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
                                 null
                             } else {
                                 PlsIcons.Property
-                            }
-                        }
-                        //nodeItem is ParadoxLocalisationProperty -> {
-                        //    ParadoxLocalisationTextUIRender.renderImage(nodeItem)?.toIcon()
-                        //}
-                        nodeItem is PsiFile -> {
-                            val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrame) ?: 0)
-                            if(iconUrl.isNotEmpty()) {
-                                IconLoader.findIcon(iconUrl.toFileUrl())
-                            } else {
-                                null
                             }
                         }
                         else -> null
@@ -257,7 +254,6 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         override fun getItemType(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): SimpleColoredText? {
             return null
         }
-        
         
         
         @Suppress("RedundantOverride")
