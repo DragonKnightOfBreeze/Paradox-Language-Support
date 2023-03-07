@@ -175,9 +175,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         
         override fun handleItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder, itemComponent: DiagramNodeItemComponentEx) {
             ProgressManager.checkCanceled()
-            if(itemComponent.components.size == 3) {
-                itemComponent.remove(2)
-            }
+            var handled = false
             when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     when {
@@ -185,7 +183,9 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
                             //渲染事件标题
                             val name = ParadoxLocalisationTextUIRender.render(nodeItem)
                             if(name != null) {
+                                itemComponent.removeAll()
                                 itemComponent.add(name) //no layout
+                                handled = true
                             }
                         }
                         nodeItem is PsiFile -> {
@@ -194,13 +194,16 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
                             if(iconUrl.isNotEmpty()) {
                                 val icon = IconLoader.findIcon(iconUrl.toFileUrl())
                                 if(icon != null) {
+                                    itemComponent.removeAll()
                                     itemComponent.add(icon.toLabel()) //no layout 
+                                    handled = true
                                 }
                             }
                         }
                     }
                 }
             }
+            if(!handled) itemComponent.reset()
             itemComponent.size = itemComponent.preferredSize
         }
         
@@ -257,7 +260,6 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         override fun getItemType(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): SimpleColoredText? {
             return null
         }
-        
         
         
         @Suppress("RedundantOverride")
