@@ -1,12 +1,14 @@
 package icu.windea.pls.extension.diagram.provider
 
 import com.intellij.diagram.*
+import com.intellij.diagram.extras.custom.*
 import com.intellij.diagram.presentation.*
 import com.intellij.diagram.settings.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.graph.*
 import com.intellij.openapi.graph.layout.*
 import com.intellij.openapi.graph.settings.*
+import com.intellij.openapi.graph.view.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -20,6 +22,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
+import icu.windea.pls.lang.data.ParadoxEventDataProvider.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
@@ -47,9 +50,9 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
     
     override fun getID() = "Paradox.EventTree"
     
-    override fun getPresentableName() = PlsBundle.message("diagram.paradox.eventTree.name")
+    override fun getPresentableName() = PlsDiagramBundle.message("paradox.eventTree.name")
     
-    override fun getActionName(isPopup: Boolean) = PlsBundle.message("diagram.paradox.eventTree.actionName")
+    override fun getActionName(isPopup: Boolean) = PlsDiagramBundle.message("paradox.eventTree.actionName")
     
     override fun createScopeManager(project: Project) = null //TODO
     
@@ -68,10 +71,10 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
     override fun getAllContentCategories() = CATEGORIES
     
     companion object {
-        val CAT_TYPE = DiagramCategory(PlsBundle.lazyMessage("diagram.paradox.eventTree.category.type"), PlsIcons.Type, true, false)
-        val CAT_PROPERTIES = DiagramCategory(PlsBundle.lazyMessage("diagram.paradox.eventTree.category.properties"), PlsIcons.Property, true, false)
-        val CAT_TITLE = DiagramCategory(PlsBundle.lazyMessage("diagram.paradox.eventTree.category.title"), PlsIcons.Localisation, false, false)
-        val CAT_PICTURE = DiagramCategory(PlsBundle.lazyMessage("diagram.paradox.eventTree.category.picture"), PlsIcons.Image, false, false)
+        val CAT_TYPE = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.eventTree.category.type"), PlsIcons.Type, true, false)
+        val CAT_PROPERTIES = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.eventTree.category.properties"), PlsIcons.Property, true, false)
+        val CAT_TITLE = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.eventTree.category.title"), PlsIcons.Localisation, false, false)
+        val CAT_PICTURE = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.eventTree.category.picture"), PlsIcons.Image, false, false)
         val CATEGORIES = arrayOf(CAT_TYPE, CAT_PROPERTIES, CAT_TITLE, CAT_PICTURE)
         val ITEM_PROP_KEYS = arrayOf(
             "picture",
@@ -81,10 +84,10 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         val REL_INVOKE = object : DiagramRelationshipInfoAdapter("INVOKE", DiagramLineType.SOLID) {
             override fun getTargetArrow() = DELTA
         }
-        val REL_INVOKE_IMMEDIATE = object : DiagramRelationshipInfoAdapter("INVOKE_IMMEDIATE", DiagramLineType.SOLID, PlsBundle.message("diagram.paradox.eventTree.rel.invokeImmediate")) {
+        val REL_INVOKE_IMMEDIATE = object : DiagramRelationshipInfoAdapter("INVOKE_IMMEDIATE", DiagramLineType.SOLID, PlsDiagramBundle.message("paradox.eventTree.rel.invokeImmediate")) {
             override fun getTargetArrow() = DELTA
         }
-        val REL_INVOKE_AFTER = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID, PlsBundle.message("diagram.paradox.eventTree.rel.invokeAfter")) {
+        val REL_INVOKE_AFTER = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID, PlsDiagramBundle.message("paradox.eventTree.rel.invokeAfter")) {
             override fun getTargetArrow() = DELTA
         }
     }
@@ -129,7 +132,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         override fun getEditorTitle(element: PsiElement?, additionalElements: MutableCollection<PsiElement>): String? {
             if(element == null) return null
             val gameType = selectGameType(element) ?: return null //unexpected
-            return PlsBundle.message("diagram.paradox.eventTree.editorTitle", gameType.description)
+            return PlsDiagramBundle.message("paradox.eventTree.editorTitle", gameType.description)
         }
         
         override fun getElementTitle(element: PsiElement): String? {
@@ -173,38 +176,27 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             return properties
         }
         
-        override fun handleItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder, itemComponent: DiagramNodeItemComponentEx) {
+        override fun getItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder): JComponent? {
             ProgressManager.checkCanceled()
-            var handled = false
-            when(nodeElement) {
+            return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     when {
                         nodeItem is ParadoxLocalisationProperty -> {
-                            //渲染事件标题
-                            val name = ParadoxLocalisationTextUIRender.render(nodeItem)
-                            if(name != null) {
-                                itemComponent.removeAll()
-                                itemComponent.add(name) //no layout
-                                handled = true
-                            }
+                            //事件标题
+                            ParadoxLocalisationTextUIRender.render(nodeItem)
                         }
                         nodeItem is PsiFile -> {
-                            //渲染事件图片
+                            //事件图片
                             val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrame) ?: 0)
-                            if(iconUrl.isNotEmpty()) {
-                                val icon = IconLoader.findIcon(iconUrl.toFileUrl())
-                                if(icon != null) {
-                                    itemComponent.removeAll()
-                                    itemComponent.add(icon.toLabel()) //no layout 
-                                    handled = true
-                                }
-                            }
+                            if(iconUrl.isEmpty()) return null
+                            val icon = IconLoader.findIcon(iconUrl.toFileUrl())
+                            icon?.toLabel()
                         }
+                        else -> null
                     }
                 }
+                else -> null
             }
-            if(!handled) itemComponent.reset()
-            itemComponent.size = itemComponent.preferredSize
         }
         
         override fun getItemIcon(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): Icon? {
@@ -215,8 +207,11 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
                         nodeItem is CwtProperty -> PlsIcons.Type
                         nodeItem is ParadoxScriptProperty -> {
                             val definitionInfo = nodeItem.definitionInfo
-                            if(definitionInfo != null) return null
-                            PlsIcons.Property
+                            if(definitionInfo != null) {
+                                null
+                            } else {
+                                PlsIcons.Property
+                            }
                         }
                         else -> null
                     }
@@ -295,7 +290,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
     class Node(
         event: ParadoxScriptProperty,
         provider: ParadoxEventTreeDiagramProvider,
-        val data: ParadoxEventDataProvider.Data?
+        val data: Data?
     ) : PsiDiagramNode<PsiElement>(event, provider) {
         override fun getTooltip(): String? {
             val element = identifyingElement
@@ -355,7 +350,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             val eventMap = mutableMapOf<String, ParadoxScriptProperty>()
             for(event in events) {
                 ProgressManager.checkCanceled()
-                val data = event.getData<ParadoxEventDataProvider.Data>()
+                val data = event.getData<Data>()
                 if(data != null && !shouldShow(data, settings, configuration)) continue
                 val node = Node(event, provider, data)
                 nodeMap.put(event, node)
@@ -382,10 +377,10 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             }
         }
         
-        private fun shouldShow(data: ParadoxEventDataProvider.Data, settings: Array<out DiagramConfigGroup>, configuration: DiagramConfiguration): Boolean {
+        private fun shouldShow(data: Data, settings: Array<out DiagramConfigGroup>, configuration: DiagramConfiguration): Boolean {
             for(setting in settings) {
                 when(setting.name) {
-                    PlsBundle.message("diagram.paradox.eventTree.settings.type") -> {
+                    PlsDiagramBundle.message("paradox.eventTree.settings.type") -> {
                         val hidden = data.hide_window
                         val triggered = data.is_triggered_only
                         val major = data.major
@@ -394,11 +389,11 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
                         val enabled = setting.elements.any { config ->
                             val e = configuration.isEnabledByDefault(provider, config.name)
                             when(config.name) {
-                                PlsBundle.message("diagram.paradox.eventTree.settings.type.hidden") -> if(hidden) e else false
-                                PlsBundle.message("diagram.paradox.eventTree.settings.type.triggered") -> if(triggered) e else false
-                                PlsBundle.message("diagram.paradox.eventTree.settings.type.major") -> if(major) e else false
-                                PlsBundle.message("diagram.paradox.eventTree.settings.type.diplomatic") -> if(diplomatic) e else false
-                                PlsBundle.message("diagram.paradox.eventTree.settings.type.other") -> if(other) e else false
+                                PlsDiagramBundle.message("paradox.eventTree.settings.type.hidden") -> if(hidden) e else false
+                                PlsDiagramBundle.message("paradox.eventTree.settings.type.triggered") -> if(triggered) e else false
+                                PlsDiagramBundle.message("paradox.eventTree.settings.type.major") -> if(major) e else false
+                                PlsDiagramBundle.message("paradox.eventTree.settings.type.diplomatic") -> if(diplomatic) e else false
+                                PlsDiagramBundle.message("paradox.eventTree.settings.type.other") -> if(other) e else false
                                 else -> false
                             }
                         }
@@ -424,12 +419,12 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         
         override fun getAdditionalDiagramSettings(): Array<out DiagramConfigGroup> {
             val settings = buildList {
-                DiagramConfigGroup(PlsBundle.message("diagram.paradox.eventTree.settings.type")).apply {
-                    addElement(DiagramConfigElement(PlsBundle.message("diagram.paradox.eventTree.settings.type.hidden"), true))
-                    addElement(DiagramConfigElement(PlsBundle.message("diagram.paradox.eventTree.settings.type.triggered"), true))
-                    addElement(DiagramConfigElement(PlsBundle.message("diagram.paradox.eventTree.settings.type.major"), true))
-                    addElement(DiagramConfigElement(PlsBundle.message("diagram.paradox.eventTree.settings.type.diplomatic"), true))
-                    addElement(DiagramConfigElement(PlsBundle.message("diagram.paradox.eventTree.settings.type.other"), true))
+                DiagramConfigGroup(PlsDiagramBundle.message("paradox.eventTree.settings.type")).apply {
+                    addElement(DiagramConfigElement(PlsDiagramBundle.message("paradox.eventTree.settings.type.hidden"), true))
+                    addElement(DiagramConfigElement(PlsDiagramBundle.message("paradox.eventTree.settings.type.triggered"), true))
+                    addElement(DiagramConfigElement(PlsDiagramBundle.message("paradox.eventTree.settings.type.major"), true))
+                    addElement(DiagramConfigElement(PlsDiagramBundle.message("paradox.eventTree.settings.type.diplomatic"), true))
+                    addElement(DiagramConfigElement(PlsDiagramBundle.message("paradox.eventTree.settings.type.other"), true))
                 }.also { add(it) }
             }
             return settings.toTypedArray()

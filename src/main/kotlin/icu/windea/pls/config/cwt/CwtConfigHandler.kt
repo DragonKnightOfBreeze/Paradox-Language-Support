@@ -24,7 +24,6 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
@@ -254,9 +253,9 @@ object CwtConfigHandler {
                 return when {
                     expression.isKey == true -> true //key -> ok
                     expression.type == ParadoxDataType.ParameterType -> true //parameter -> ok
-                    expression.type == ParadoxDataType.BooleanType -> true //boolean -> sadly, also ok for compatibility
-                    expression.type == ParadoxDataType.IntType -> true //number -> ok according to vanilla game files
-                    expression.type == ParadoxDataType.FloatType -> true //number -> ok according to vanilla game files
+                    expression.type.isBooleanType()  -> true //boolean -> sadly, also ok for compatibility
+                    expression.type.isIntType()-> true //number -> ok according to vanilla game files
+                    expression.type.isFloatType() -> true //number -> ok according to vanilla game files
                     expression.type.isStringType() -> true //unquoted/quoted string -> ok
                     else -> false
                 }

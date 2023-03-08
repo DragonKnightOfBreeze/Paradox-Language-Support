@@ -31,6 +31,7 @@ object StellarisEconomicCategoryHandler {
      */
     @JvmStatic
     fun getInfo(definition: ParadoxScriptDefinitionElement): StellarisEconomicCategoryInfo? {
+        ProgressManager.checkCanceled()
         return getInfoFromCache(definition)
     }
     

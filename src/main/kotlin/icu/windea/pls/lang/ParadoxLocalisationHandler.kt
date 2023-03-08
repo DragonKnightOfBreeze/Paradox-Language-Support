@@ -1,5 +1,6 @@
 package icu.windea.pls.lang
 
+import com.intellij.openapi.progress.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.model.*
@@ -11,6 +12,7 @@ import icu.windea.pls.localisation.psi.*
 object ParadoxLocalisationHandler {
 	@JvmStatic
 	fun getInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
+		ProgressManager.checkCanceled()
 		return getInfoFromCache(element)
 	}
 	

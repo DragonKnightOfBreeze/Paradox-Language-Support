@@ -13,12 +13,15 @@ import icu.windea.pls.script.psi.*
 /**
  * 用于让`Navigate | Class or Navigate | Symbol`可以查找到匹配名字的封装变量。
  */
-class ParadoxScriptedVariableChooseByNameContributor: ChooseByNameContributorEx {
-	override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
-		StubIndex.getInstance().processAllKeys(ParadoxScriptedVariableNameIndex.KEY, processor, scope, filter)
-	}
-	
-	override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
-		StubIndex.getInstance().processElements(ParadoxScriptedVariableNameIndex.KEY, name, parameters.project, parameters.searchScope, parameters.idFilter, ParadoxScriptScriptedVariable::class.java, processor)
-	}
+class ParadoxScriptedVariableChooseByNameContributor : ChooseByNameContributorEx {
+    override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
+        StubIndex.getInstance().processAllKeys(ParadoxScriptedVariableNameIndex.KEY, processor, scope, filter)
+    }
+    
+    override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
+        StubIndex.getInstance().processElements(
+            ParadoxScriptedVariableNameIndex.KEY, name, parameters.project, parameters.searchScope, parameters.idFilter,
+            ParadoxScriptScriptedVariable::class.java, processor
+        )
+    }
 }

@@ -10,6 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
@@ -30,17 +31,17 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             is ParadoxScriptProperty -> getPropertyInfo(element)
             //进行代码提示时，这里是有效的代码
             is ParadoxScriptStringExpressionElement -> {
-                //only for complex enum value reference
-                val referenceElement = getReferenceElement(originalElement)
-                if(referenceElement != null && referenceElement !== element) {
-                    val complexEnumValueInfo = element.complexEnumValueInfo
-                    if(complexEnumValueInfo != null) return generateComplexEnumValueInfo(element, complexEnumValueInfo)
+                val complexEnumValueInfo = element.complexEnumValueInfo
+                if(complexEnumValueInfo != null) {
+                    return generateComplexEnumValueInfo(element, complexEnumValueInfo)
                 }
                 if(element is ParadoxScriptPropertyKey) {
-                    return getQuickNavigateInfo(element.parent, null)
+                    return getQuickNavigateInfo(element.parent, originalElement)
                 }
                 null
             }
+            is ParadoxDefinitionNavigationElement -> getQuickNavigateInfo(element.parent, originalElement)
+            is ParadoxComplexEnumValueNavigationElement -> getQuickNavigateInfo(element.parent, originalElement)
             else -> null
         }
     }
@@ -69,7 +70,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun generateComplexEnumValueInfo(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo): String {
+    private fun generateComplexEnumValueInfo(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo): String {
         return buildString {
             buildComplexEnumValueDefinition(element, complexEnumValueInfo)
         }
@@ -86,18 +87,19 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         return when(element) {
             is ParadoxScriptScriptedVariable -> getScriptedVariableDoc(element)
             is ParadoxScriptProperty -> getPropertyDoc(element)
+            //进行代码提示时，这里是有效的代码
             is ParadoxScriptStringExpressionElement -> {
-                //only for complex enum value reference
-                val referenceElement = getReferenceElement(originalElement)
-                if(referenceElement != null && referenceElement !== element) {
-                    val complexEnumValueInfo = element.complexEnumValueInfo
-                    if(complexEnumValueInfo != null) return generateComplexEnumValueDoc(element, complexEnumValueInfo)
+                val complexEnumValueInfo = element.complexEnumValueInfo
+                if(complexEnumValueInfo != null) {
+                    return generateComplexEnumValueDoc(element, complexEnumValueInfo)
                 }
                 if(element is ParadoxScriptPropertyKey) {
-                    return generateDoc(element.parent, null)
+                    return generateDoc(element.parent, originalElement)
                 }
                 null
             }
+            is ParadoxDefinitionNavigationElement -> generateDoc(element.parent, originalElement)
+            is ParadoxComplexEnumValueNavigationElement -> generateDoc(element.parent, originalElement)
             else -> null
         }
     }
@@ -134,7 +136,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun generateComplexEnumValueDoc(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo): String {
+    private fun generateComplexEnumValueDoc(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo): String {
         return buildString {
             buildComplexEnumValueDefinition(element, complexEnumValueInfo)
         }
@@ -343,7 +345,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     }
     
     private fun StringBuilder.buildDocumentationContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-        ParadoxDefinitionExtendedDocumentationProvider.EP_NAME.extensionList.forEach { 
+        ParadoxDefinitionExtendedDocumentationProvider.EP_NAME.extensionList.forEach {
             val documentation = it.getDocumentation(element, definitionInfo)?.takeIfNotEmpty()
             if(documentation != null) {
                 content { append(documentation) }
@@ -351,7 +353,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun StringBuilder.buildComplexEnumValueDefinition(element: PsiElement, complexEnumValueInfo: icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo) {
+    private fun StringBuilder.buildComplexEnumValueDefinition(element: PsiElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
         definition {
             //加上文件信息
             appendFileInfoHeader(element.fileInfo)

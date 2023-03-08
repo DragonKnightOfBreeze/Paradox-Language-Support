@@ -116,9 +116,10 @@ inline fun <T> withMeasureMillis(prefix: String, enable: Boolean = true , action
 tailrec fun selectRootFile(from: Any?): VirtualFile? {
     return when {
         from == null -> null
-        from is VirtualFile -> from.fileInfo?.let { it.rootInfo.gameRootFile }
-        from is PsiDirectory -> from.fileInfo?.let { it.rootInfo.gameRootFile }
-        from is PsiElement -> selectRootFile(PsiUtilCore.getVirtualFile(from))
+        from is VirtualFile -> from.fileInfo?.rootInfo?.gameRootFile
+        from is PsiDirectory -> from.fileInfo?.rootInfo?.gameRootFile
+        from is PsiFile -> from.originalFile.fileInfo?.rootInfo?.gameRootFile
+        from is PsiElement -> selectRootFile(from.containingFile)
         else -> null
     }
 }
@@ -127,7 +128,9 @@ fun selectFile(from: Any?): VirtualFile? {
     return when {
         from == null -> null
         from is VirtualFile -> from
-        from is PsiElement -> PsiUtilCore.getVirtualFile(from)
+        from is PsiDirectory -> from.virtualFile
+        from is PsiFile -> from.originalFile.virtualFile
+        from is PsiElement -> selectFile(from.containingFile)
         else -> null
     }
 }

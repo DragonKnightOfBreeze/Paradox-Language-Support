@@ -27,8 +27,8 @@ class ParadoxParameterElement(
     val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxFakePsiElement(parent) {
-    override fun getText(): String {
-        return name
+    override fun getIcon(): Icon {
+        return PlsIcons.Parameter
     }
     
     override fun getName(): String {
@@ -39,8 +39,8 @@ class ParadoxParameterElement(
         return PlsBundle.message("script.description.parameter")
     }
     
-    override fun getIcon(): Icon {
-        return PlsIcons.Parameter
+    override fun getText(): String {
+        return name
     }
     
     override fun getTextRange(): TextRange? {

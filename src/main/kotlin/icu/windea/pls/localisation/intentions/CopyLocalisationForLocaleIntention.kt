@@ -16,6 +16,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.extension.translation.*
 import icu.windea.pls.localisation.*
@@ -29,6 +30,7 @@ import java.awt.datatransfer.*
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
+@WithExtension("cn.yiiguxing.plugin.translate")
 class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 	override fun getPriority() = PriorityAction.Priority.HIGH
 	
@@ -81,10 +83,10 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 				if(sourceLang == targetLang) return@map element.text
 				
 				val key = element.name
-				val indicatorTitle = PlsBundle.message("indicator.translate.title", key, targetLocale)
+				val indicatorTitle = PlsTranslationBundle.message("indicator.translate.title", key, targetLocale)
 				val progressIndicator = BackgroundableProcessIndicator(project, indicatorTitle, null, "", true)
-				progressIndicator.text = PlsBundle.message("indicator.translate.text1", key)
-				progressIndicator.text2 = PlsBundle.message("indicator.translate.text2", text) //不过滤任何字符
+				progressIndicator.text = PlsTranslationBundle.message("indicator.translate.text1", key)
+				progressIndicator.text2 = PlsTranslationBundle.message("indicator.translate.text2", text) //不过滤任何字符
 				progressIndicator.addStateDelegate(ProcessIndicatorDelegate(progressIndicator))
 				
 				val snippets = element.toTranslatableStringSnippets() ?: return@map element.text
@@ -112,8 +114,8 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 			if(failedKeys.isNotEmpty()) {
 				val failedKeysText = failedKeys.take(PlsConstants.keysTruncateLimit).joinToString { "'<code>$it</code>'" } + if(failedKeys.size > PlsConstants.keysTruncateLimit) ", ..." else ""
 				TranslationNotifications.showTranslationErrorNotification(project,
-					PlsBundle.message("notification.translate.failed.title"),
-					PlsBundle.message("notification.translate.failed.content", failedKeysText, targetLocale),
+					PlsTranslationBundle.message("notification.translate.failed.title"),
+					PlsTranslationBundle.message("notification.translate.failed.content", failedKeysText, targetLocale),
 					throwableList.first() // first only
 				)
 			}

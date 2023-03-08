@@ -14,6 +14,8 @@ import icu.windea.pls.tool.script.*
  * 这里直接获取的应当是未加工过的必要的数据。
  *
  * 需要解析封装变量，不需要判断是否合法。兼容需要内联的情况。
+ * 
+ * @see ParadoxDefinitionData
  */
 interface ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
     val definitionType: String

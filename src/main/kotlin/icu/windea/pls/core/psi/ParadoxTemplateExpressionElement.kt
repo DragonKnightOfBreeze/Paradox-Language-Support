@@ -21,8 +21,8 @@ class ParadoxTemplateExpressionElement(
     private val project: Project,
     val references: List<ParadoxInTemplateExpressionReference>,
 ) : ParadoxFakePsiElement(parent) {
-    override fun getText(): String {
-        return name
+    override fun getIcon(): Icon {
+        return PlsIcons.TemplateExpression
     }
     
     override fun getName(): String {
@@ -37,8 +37,8 @@ class ParadoxTemplateExpressionElement(
         return PlsBundle.message("script.description.templateExpression")
     }
     
-    override fun getIcon(): Icon {
-        return PlsIcons.TemplateExpression
+    override fun getText(): String {
+        return name
     }
     
     override fun getTextRange(): TextRange? {

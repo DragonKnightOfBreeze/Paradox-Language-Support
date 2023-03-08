@@ -36,7 +36,6 @@ object ParadoxInlineScriptHandler {
     
     @JvmStatic
     fun getInfo(element: ParadoxScriptPropertyKey): ParadoxInlineScriptInfo? {
-        //注意：element.stub可能会导致ProcessCanceledException
         ProgressManager.checkCanceled()
         if(!element.isExpression()) return null
         element.stub?.inlineScriptInfo?.let { return it }

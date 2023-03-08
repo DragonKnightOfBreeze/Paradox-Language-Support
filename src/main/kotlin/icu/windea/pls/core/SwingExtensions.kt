@@ -15,26 +15,26 @@ fun Image.toIcon(): Icon {
     return IconUtil.createImageIcon(this)
 }
 
+fun Icon.toImage(): Image {
+    return IconUtil.toImage(this)
+}
+
 fun Icon.toLabel(): JLabel {
-    val label = JLabel("", this, SwingConstants.LEADING) //left align
+    val label = JLabel("", this, SwingConstants.LEADING)
     label.border = JBUI.Borders.empty()
     label.size = label.preferredSize
     label.isOpaque = false
     return label
 }
 
-fun Icon.toImage(): Image {
-    return IconUtil.toImage(this)
-}
-
-fun Component.toImage(width: Int = this.width, height: Int = this.height, type: Int = BufferedImage.TYPE_INT_ARGB_PRE): Image {
+fun JComponent.toImage(width: Int = this.width, height: Int = this.height, type: Int = BufferedImage.TYPE_INT_ARGB_PRE): Image {
     val image = UIUtil.createImage(this, width, height, type)
     UIUtil.useSafely(image.graphics) { this.paint(it) }
     return image
 }
 
-fun <T : Component> T.withLocation(x: Int, y: Int): T {
-    setLocation(x, y)
+fun <T : JComponent> T.withLocation(x: Int, y: Int): T {
+    this.setLocation(x, y)
     return this
 }
 

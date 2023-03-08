@@ -19,7 +19,6 @@ import icu.windea.pls.script.psi.*
 object ParadoxComplexEnumValueHandler {
 	@JvmStatic
 	fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
-		//注意：element.stub可能会导致ProcessCanceledException
 		ProgressManager.checkCanceled()
 		if(!element.isExpression()) return null
 		element.stub?.complexEnumValueInfo?.let { return it }
