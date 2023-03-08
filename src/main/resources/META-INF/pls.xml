@@ -25,6 +25,8 @@
     <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxFilePathReferenceExpressionSupport"/>
     <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxFileNameReferenceExpressionSupport"/>
     
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptBlockExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptBoolExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptLocalisationExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptSyncedLocalisationExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptInlineLocalisationExpressionSupport"/>

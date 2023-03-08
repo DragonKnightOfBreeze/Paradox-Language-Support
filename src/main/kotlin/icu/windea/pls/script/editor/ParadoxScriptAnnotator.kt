@@ -113,7 +113,7 @@ class ParadoxScriptAnnotator : Annotator {
                 if(elementText.surroundsWith('$', '$')) return //整个是参数的情况，不需要进行高亮
                 if(elementText.contains('$')) setParameterRanges(element) //缓存参数文本范围
             }
-            annotateExpression(element, null, config, holder)
+            annotateExpression(element, null, holder, config)
         }
         
         //高亮枚举值对应的表达式
@@ -136,13 +136,13 @@ class ParadoxScriptAnnotator : Annotator {
     private fun annotateExpression(
         element: ParadoxScriptExpressionElement,
         rangeInElement: TextRange?,
-        config: CwtConfig<*>,
-        holder: AnnotationHolder
+        holder: AnnotationHolder,
+        config: CwtConfig<*>
     ) {
         val configExpression = config.expression ?: return
         val expression = rangeInElement?.substring(element.text) ?: element.value
         
-        ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expression, config, holder)
+        ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expression, holder, config)
         
         when {
             configExpression.type.isValueSetValueType() -> {
@@ -160,7 +160,7 @@ class ParadoxScriptAnnotator : Annotator {
                 val isKey = element is ParadoxScriptPropertyKey
                 val textRange = TextRange.create(0, expression.length)
                 val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(expression, textRange, config, configGroup, isKey) ?: return
-                annotateComplexExpression(element, valueSetValueExpression, config, holder)
+                annotateComplexExpression(element, valueSetValueExpression, holder, config)
             }
             configExpression.type.isScopeFieldType()-> {
                 if(expression.isLeftQuoted()) return
@@ -168,7 +168,7 @@ class ParadoxScriptAnnotator : Annotator {
                 val isKey = element is ParadoxScriptPropertyKey
                 val textRange = TextRange.create(0, expression.length)
                 val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression, textRange, configGroup, isKey) ?: return
-                annotateComplexExpression(element, scopeFieldExpression, config, holder)
+                annotateComplexExpression(element, scopeFieldExpression, holder, config)
             }
             configExpression.type.isValueFieldType()-> {
                 if(expression.isLeftQuoted()) return
@@ -176,7 +176,7 @@ class ParadoxScriptAnnotator : Annotator {
                 val isKey = element is ParadoxScriptPropertyKey
                 val textRange = TextRange.create(0, expression.length)
                 val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression, textRange, configGroup, isKey) ?: return
-                annotateComplexExpression(element, valueFieldExpression, config, holder)
+                annotateComplexExpression(element, valueFieldExpression, holder, config)
             }
             configExpression.type.isVariableFieldType() -> {
                 if(expression.isLeftQuoted()) return
@@ -184,18 +184,18 @@ class ParadoxScriptAnnotator : Annotator {
                 val isKey = element is ParadoxScriptPropertyKey
                 val textRange = TextRange.create(0, expression.length)
                 val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression, textRange, configGroup, isKey) ?: return
-                annotateComplexExpression(element, variableFieldExpression, config, holder)
+                annotateComplexExpression(element, variableFieldExpression, holder, config)
             }
             else -> return
         }
     }
     
-    private fun annotateComplexExpression(element: ParadoxScriptExpressionElement, expression: ParadoxComplexExpression, config: CwtConfig<*>, holder: AnnotationHolder) {
+    private fun annotateComplexExpression(element: ParadoxScriptExpressionElement, expression: ParadoxComplexExpression, holder: AnnotationHolder, config: CwtConfig<*>) {
         if(element !is ParadoxScriptStringExpressionElement) return
-        doAnnotateComplexExpression(element, expression, config, holder)
+        doAnnotateComplexExpression(element, expression, holder, config)
     }
     
-    private fun doAnnotateComplexExpression(element: ParadoxScriptStringExpressionElement, expressionNode: ParadoxExpressionNode, config: CwtConfig<*>, holder: AnnotationHolder) {
+    private fun doAnnotateComplexExpression(element: ParadoxScriptStringExpressionElement, expressionNode: ParadoxExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>) {
         val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRangeAfterUnquote.startOffset)
         val attributesKey = expressionNode.getAttributesKey()
         
@@ -208,17 +208,17 @@ class ParadoxScriptAnnotator : Annotator {
         }
         val attributesKeyConfig = expressionNode.getAttributesKeyConfig(element)
         if(attributesKeyConfig != null) {
-            annotateExpression(element, expressionNode.rangeInExpression, attributesKeyConfig, holder)
+            annotateExpression(element, expressionNode.rangeInExpression, holder, attributesKeyConfig)
         }
         if(expressionNode.nodes.isNotEmpty()) {
             for(node in expressionNode.nodes) {
-                doAnnotateComplexExpression(element, node, config, holder)
+                doAnnotateComplexExpression(element, node, holder, config)
             }
         }
     }
     
-    private fun doHighlightScriptExpression(element: ParadoxScriptExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder, skipParameters: Boolean = true) {
-        if(!skipParameters || element !is ParadoxScriptStringExpressionElement) {
+    private fun doHighlightScriptExpression(element: ParadoxScriptExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
+        if(element !is ParadoxScriptStringExpressionElement) {
             holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
             return
         }
