@@ -4,8 +4,10 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.lang.annotation.*
 import com.intellij.openapi.extensions.*
 import com.intellij.openapi.util.*
+import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -18,6 +20,14 @@ abstract class ParadoxScriptExpressionSupport {
     
     open fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         
+    }
+    
+    open fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String,  config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+        return null
+    }
+    
+    open fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
+        return resolve(element, rangeInElement, expression, config, isKey, false).toSingletonSetOrEmpty()
     }
     
     open fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
@@ -37,6 +47,26 @@ abstract class ParadoxScriptExpressionSupport {
                     it.annotate(element, rangeInElement, expression, holder, config)
                 }
             }
+        }
+        
+        fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String,  config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+            EP_NAME.extensionList.forEach {
+                if(it.supports(config)) {
+                    val result = it.resolve(element, rangeInElement, expression, config, isKey, exact)
+                    if(result != null) return result
+                }
+            }
+            return null
+        }
+        
+        fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String,  config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
+            EP_NAME.extensionList.forEach {
+                if(it.supports(config)) {
+                    val result = it.multiResolve(element, rangeInElement, expression, config, isKey)
+                    if(result.isNotEmpty()) return result
+                }
+            }
+            return emptySet()
         }
         
         fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
