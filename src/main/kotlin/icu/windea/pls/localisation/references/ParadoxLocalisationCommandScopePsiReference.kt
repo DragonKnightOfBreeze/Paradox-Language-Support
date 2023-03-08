@@ -1,16 +1,14 @@
 package icu.windea.pls.localisation.references
 
-import com.intellij.codeInsight.highlighting.*
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.highlighter.*
 
@@ -38,9 +36,9 @@ class ParadoxLocalisationCommandScopePsiReference(
 		
 		//尝试识别为system_link或者localisation_scope
 		val configGroup = getCwtConfig(project).get(gameType) ?: return null
-		val systemLink = CwtConfigHandler.resolvePredefinedScope(name, configGroup)
+		val systemLink = ParadoxConfigHandler.resolvePredefinedScope(name, configGroup)
 		if(systemLink != null) return systemLink
-		val localisationScope = CwtConfigHandler.resolvePredefinedLocalisationScope(name, configGroup)
+		val localisationScope = ParadoxConfigHandler.resolvePredefinedLocalisationScope(name, configGroup)
 		if(localisationScope != null) return localisationScope
 		
 		//尝试识别为预定义的value[event_target] （忽略大小写）
@@ -65,9 +63,9 @@ class ParadoxLocalisationCommandScopePsiReference(
 		
 		//尝试被识别为预定义的localisation_command
 		val configGroup = getCwtConfig(project).get(gameType) ?: return null
-		val systemLink = CwtConfigHandler.resolvePredefinedScope(name, configGroup)
+		val systemLink = ParadoxConfigHandler.resolvePredefinedScope(name, configGroup)
 		if(systemLink != null) return ParadoxScriptAttributesKeys.SYSTEM_LINK_KEY
-		val localisationScope = CwtConfigHandler.resolvePredefinedLocalisationScope(name, configGroup)
+		val localisationScope = ParadoxConfigHandler.resolvePredefinedLocalisationScope(name, configGroup)
 		if(localisationScope != null) return ParadoxScriptAttributesKeys.SCOPE_KEY
 		
 		//尝试识别为预定义的value[event_target] （忽略大小写）

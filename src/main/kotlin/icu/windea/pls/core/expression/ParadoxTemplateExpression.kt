@@ -2,8 +2,8 @@ package icu.windea.pls.core.expression
 
 import com.intellij.openapi.util.*
 import com.intellij.util.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.ParadoxTemplateExpression.*
 import icu.windea.pls.core.expression.nodes.*

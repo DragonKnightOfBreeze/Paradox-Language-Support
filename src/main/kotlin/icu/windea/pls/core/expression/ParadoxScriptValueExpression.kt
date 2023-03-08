@@ -4,13 +4,14 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.ParadoxScriptValueExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.highlighter.*
 
 /**
@@ -116,7 +117,7 @@ class ParadoxScriptValueExpressionImpl(
 					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
 					val config = context.config
 					context.put(PlsCompletionKeys.configKey, this.config)
-					CwtConfigHandler.completeScriptExpression(context, resultToUse)
+					ParadoxConfigHandler.completeScriptExpression(context, resultToUse)
 					context.put(PlsCompletionKeys.configKey, config)
 				}
 			} else if(node is ParadoxScriptValueParameterExpressionNode) {
@@ -124,7 +125,7 @@ class ParadoxScriptValueExpressionImpl(
 					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
 					val resultToUse = result.withPrefixMatcher(keywordToUse)
 					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-					CwtConfigHandler.completeParametersForScriptValueExpression(scriptValueName, parameterNames, context, resultToUse)
+					ParadoxConfigHandler.completeParametersForScriptValueExpression(scriptValueName, parameterNames, context, resultToUse)
 				}
 			}
 		}

@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
@@ -33,7 +33,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
         override fun visitString(valueElement: ParadoxScriptString) {
             ProgressManager.checkCanceled()
             //match or single
-            val valueConfig = ParadoxCwtConfigHandler.getValueConfigs(valueElement).firstOrNull() ?: return
+            val valueConfig = ParadoxConfigHandler.getValueConfigs(valueElement).firstOrNull() ?: return
             val configExpression = valueConfig.valueExpression
             val project = valueElement.project
             val location = valueElement

@@ -2,7 +2,7 @@ package icu.windea.pls.lang.parameter
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 

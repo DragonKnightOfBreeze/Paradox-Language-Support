@@ -3,7 +3,6 @@ package icu.windea.pls.core.codeInsight.highlight
 import com.intellij.psi.*
 import com.intellij.usages.*
 import com.intellij.usages.impl.rules.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
@@ -22,11 +21,11 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
 		//TODO
 		return when {
 			element is ParadoxScriptStringExpressionElement -> {
-				val config = ParadoxCwtConfigHandler.getConfigs(element).firstOrNull() ?: return null
+				val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return null
 				val configExpression = config.expression
 				val type = configExpression.type
 				//in invocation expression
-				if(CwtConfigHandler.isParameter(config)) {
+				if(ParadoxConfigHandler.isParameter(config)) {
 					return ParadoxUsageType.PARAMETER_REFERENCE_4
 				}
 				//in script value expression

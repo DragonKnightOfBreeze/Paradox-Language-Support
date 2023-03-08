@@ -6,7 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.config.cwt.config.CwtSeparator;
+import icu.windea.pls.config.config.CwtSeparator;
 import javax.swing.Icon;
 
 public interface CwtProperty extends CwtNamedElement {

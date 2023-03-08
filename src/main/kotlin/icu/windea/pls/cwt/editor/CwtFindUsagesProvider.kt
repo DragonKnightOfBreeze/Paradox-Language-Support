@@ -6,7 +6,7 @@ import com.intellij.lang.findUsages.*
 import com.intellij.psi.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {

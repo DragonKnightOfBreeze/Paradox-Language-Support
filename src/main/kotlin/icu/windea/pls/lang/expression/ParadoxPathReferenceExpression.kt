@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.expression
 
 import com.intellij.openapi.extensions.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.*
 

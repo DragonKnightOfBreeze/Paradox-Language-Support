@@ -5,9 +5,9 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
@@ -123,7 +123,7 @@ object ParadoxScopeHandler {
         
         //child config can be "alias_name[X] = ..." and "alias[X:scope_field]" is valid
         //or root config in config tree is "alias[X:xxx] = ..."
-        val configs = ParadoxCwtConfigHandler.getConfigs(element, allowDefinition = true)
+        val configs = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)
         return configs.any { config ->
             val configGroup = config.info.configGroup
             isScopeContextSupportedAsRoot(config, configGroup) || isScopeContextSupportedAsChild(config, configGroup)
@@ -219,7 +219,7 @@ object ParadoxScopeHandler {
         //should be a definition member
         val parentMember = findParentMember(element) ?: return null
         val parentScopeContext = getScopeContext(parentMember)
-        val configs = ParadoxCwtConfigHandler.getConfigs(element, allowDefinition = true)
+        val configs = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)
         val config = configs.firstOrNull()
         if(config == null) return null
         if(config is CwtPropertyConfig && config.expression.type == CwtDataType.ScopeField) {

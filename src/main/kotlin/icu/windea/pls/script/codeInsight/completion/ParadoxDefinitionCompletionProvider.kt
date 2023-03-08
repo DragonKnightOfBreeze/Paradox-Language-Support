@@ -4,9 +4,9 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -45,7 +45,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 			val memberElement = if(blockElement is ParadoxScriptBlock) blockElement else blockElement?.parent as? ParadoxScriptFile
 			if(memberElement != null) {
 				//进行提示
-				CwtConfigHandler.addValueCompletions(memberElement, context, resultToUse)
+				ParadoxConfigHandler.addValueCompletions(memberElement, context, resultToUse)
 			}
 		}
 		if(mayBeKey) {
@@ -53,7 +53,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 			val definitionElement = element.findParentProperty(fromParentBlock = true) 
 			if(definitionElement != null) {
 				//进行提示
-				CwtConfigHandler.addKeyCompletions(definitionElement, context, resultToUse)
+				ParadoxConfigHandler.addKeyCompletions(definitionElement, context, resultToUse)
 			}
 		}
 		if(mayBePropertyValue) {
@@ -65,7 +65,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 				try {
 					definitionElement.putUserData(PlsKeys.isIncompleteKey, incomplete)
 					//进行提示
-					CwtConfigHandler.addPropertyValueCompletions(definitionElement, context, resultToUse)
+					ParadoxConfigHandler.addPropertyValueCompletions(definitionElement, context, resultToUse)
 				} finally {
 					definitionElement.putUserData(PlsKeys.isIncompleteKey, null)
 				}

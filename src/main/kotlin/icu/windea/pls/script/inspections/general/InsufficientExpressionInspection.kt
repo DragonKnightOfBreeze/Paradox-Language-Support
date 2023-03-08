@@ -6,7 +6,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
@@ -29,7 +29,7 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
                 ProgressManager.checkCanceled()
                 //得到完全匹配的CWT规则
                 val isKey = element is ParadoxScriptPropertyKey
-                val config = ParadoxCwtConfigHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return
+                val config = ParadoxConfigHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return
                 val configExpression = config.expression
                 val dataType = configExpression.type
                 when {

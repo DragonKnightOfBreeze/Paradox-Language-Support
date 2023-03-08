@@ -3,7 +3,7 @@ package icu.windea.pls.core.expression.nodes
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.script.psi.*
 

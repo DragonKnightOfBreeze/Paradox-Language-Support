@@ -28,7 +28,7 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
         val text = targetElement.text
         if(text.isLeftQuoted()) return null
         if(!text.contains("value:") || !text.contains('|')) return null //快速判断
-        val configs = ParadoxCwtConfigHandler.getConfigs(targetElement, false, false)
+        val configs = ParadoxConfigHandler.getConfigs(targetElement, false, false)
         val config = configs.firstOrNull() ?: return null
         val dataType = config.expression.type
         if(!dataType.isValueFieldType()) return null

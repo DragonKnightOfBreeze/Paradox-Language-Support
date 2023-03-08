@@ -3,10 +3,10 @@ package icu.windea.pls.script.references
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -41,12 +41,12 @@ class ParadoxScriptExpressionPsiReference(
 	
 	override fun resolve(exact: Boolean): PsiElement? {
 		//根据对应的expression进行解析
-		return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey, exact = exact)
+		return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey, exact = exact)
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 		//根据对应的expression进行解析
-		return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
+		return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
 			.mapToArray { PsiElementResolveResult(it) }
 	}
 }

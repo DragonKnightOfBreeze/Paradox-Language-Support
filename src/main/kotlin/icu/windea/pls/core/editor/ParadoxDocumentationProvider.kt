@@ -8,8 +8,8 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
@@ -44,7 +44,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
             is ParadoxValueSetValueElement -> getValueSetValueInfo(element, originalElement)
             is ParadoxScriptStringExpressionElement -> {
                 //TODO 直接基于ParadoxValueSetValueElement进行索引，从而下面的代码不再需要
-                val config = ParadoxCwtConfigHandler.getConfigs(element).firstOrNull()
+                val config = ParadoxConfigHandler.getConfigs(element).firstOrNull()
                 if(config != null && config.expression.type.isValueSetValueType()) {
                     return getValueSetValueInfo(element, originalElement)
                 }
@@ -93,7 +93,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
             //is ParadoxParameter -> getParameterDoc(element, originalElement)
             is ParadoxValueSetValueElement -> getValueSetValueDoc(element, originalElement)
             is ParadoxScriptStringExpressionElement -> {
-                val config = ParadoxCwtConfigHandler.getConfigs(element).firstOrNull()
+                val config = ParadoxConfigHandler.getConfigs(element).firstOrNull()
                 if(config != null && config.expression.type.isValueSetValueType()) {
                     return getValueSetValueDoc(element, originalElement)
                 }

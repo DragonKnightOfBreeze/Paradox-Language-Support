@@ -5,8 +5,8 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.inline.*
@@ -36,7 +36,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                 if(file !is ParadoxScriptFile) return
                 //忽略可能的脚本片段入口
                 if(ParadoxScriptMemberElementInlineSupport.canLink(file)) return super.visitFile(file)
-                val configs = ParadoxCwtConfigHandler.getConfigs(file, allowDefinition = true)
+                val configs = ParadoxConfigHandler.getConfigs(file, allowDefinition = true)
                 doCheck(file, file, configs)
                 super.visitFile(file)
             }
@@ -53,13 +53,13 @@ class MissingExpressionInspection : LocalInspectionTool() {
                     ?.also { if(it.isParameterAwareExpression()) return }
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
-                val configs = ParadoxCwtConfigHandler.getConfigs(element, allowDefinition = true)
+                val configs = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)
                 doCheck(element, position, configs)
             }
     
             private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement, configs: List<CwtDataConfig<*>>) {
                 if(skipCheck(element, configs)) return
-                val occurrenceMap = ParadoxCwtConfigHandler.getChildOccurrenceMap(element, configs)
+                val occurrenceMap = ParadoxConfigHandler.getChildOccurrenceMap(element, configs)
                 if(occurrenceMap.isEmpty()) return
                 occurrenceMap.forEach { (configExpression, occurrence) ->
                     val r = doCheckOccurrence(element, position, occurrence, configExpression)

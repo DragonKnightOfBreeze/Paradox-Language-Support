@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.model
 
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.expression.*
 
 data class ParadoxDefinitionRelatedImageInfo(
 	val name: String,

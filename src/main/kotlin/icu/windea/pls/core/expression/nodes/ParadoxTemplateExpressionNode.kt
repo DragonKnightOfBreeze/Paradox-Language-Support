@@ -3,12 +3,13 @@ package icu.windea.pls.core.expression.nodes
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxTemplateExpressionNode(
@@ -56,12 +57,12 @@ class ParadoxTemplateExpressionNode(
 		
 		override fun resolve(exact: Boolean): PsiElement? {
 			val element = element
-			return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, null, configExpression, configGroup, exact = exact)
+			return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, null, configExpression, configGroup, exact = exact)
 		}
 		
 		override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 			val element = element
-			return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, null, configExpression, configGroup)
+			return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, null, configExpression, configGroup)
 				.mapToArray { PsiElementResolveResult(it) }
 		}
 	}

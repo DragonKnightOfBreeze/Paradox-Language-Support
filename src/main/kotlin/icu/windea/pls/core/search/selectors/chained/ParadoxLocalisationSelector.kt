@@ -1,7 +1,7 @@
 package icu.windea.pls.core.search.selectors.chained
 
 import com.intellij.openapi.project.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.localisation.psi.*
 

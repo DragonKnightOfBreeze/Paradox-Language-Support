@@ -5,12 +5,11 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.highlighter.*
 
@@ -38,7 +37,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		
 		//尝试识别为预定义的localisation_command
-		val localisationCommand = CwtConfigHandler.resolvePredefinedLocalisationCommand(name, configGroup)
+		val localisationCommand = ParadoxConfigHandler.resolvePredefinedLocalisationCommand(name, configGroup)
 		if(localisationCommand != null) return localisationCommand
 		
 		//尝试识别为<scripted_loc>
@@ -66,7 +65,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		
 		//尝试识别为预定义的localisation_command
-		val localisationCommand = CwtConfigHandler.resolvePredefinedLocalisationCommand(name, configGroup)
+		val localisationCommand = ParadoxConfigHandler.resolvePredefinedLocalisationCommand(name, configGroup)
 		if(localisationCommand != null) return localisationCommand.let { arrayOf(PsiElementResolveResult(it)) }
 		
 		//尝试识别为<scripted_loc>
@@ -94,7 +93,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		
 		//尝试识别为预定义的localisation_command
-		val localisationCommand = CwtConfigHandler.resolvePredefinedLocalisationCommand(name, configGroup)
+		val localisationCommand = ParadoxConfigHandler.resolvePredefinedLocalisationCommand(name, configGroup)
 		if(localisationCommand != null) return null //no highlight
 		
 		//尝试识别为<scripted_loc>

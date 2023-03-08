@@ -2,8 +2,6 @@ package icu.windea.pls.lang.presentation
 
 import com.intellij.openapi.diagnostic.*
 import com.intellij.ui.*
-import com.intellij.util.ui.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.search.*
@@ -15,7 +13,6 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*
 import java.awt.*
-import java.awt.image.*
 import javax.swing.*
 
 /**

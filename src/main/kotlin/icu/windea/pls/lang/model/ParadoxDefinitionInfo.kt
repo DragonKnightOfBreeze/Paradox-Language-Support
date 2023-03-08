@@ -3,9 +3,9 @@ package icu.windea.pls.lang.model
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.*

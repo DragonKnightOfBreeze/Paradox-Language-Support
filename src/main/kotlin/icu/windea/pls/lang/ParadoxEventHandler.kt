@@ -6,8 +6,8 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
@@ -119,7 +119,7 @@ object ParadoxEventHandler {
                     ProgressManager.checkCanceled()
                     val value = element.value
                     if(value.count { it == '.' } != 1) return //事件ID应当包含一个点号，这里用来提高性能
-                    val configs = ParadoxCwtConfigHandler.getConfigs(element)
+                    val configs = ParadoxConfigHandler.getConfigs(element)
                     val isEventConfig = configs.any { isEventConfig(it) }
                     if(isEventConfig) {
                         result.compute(value) { _, t ->

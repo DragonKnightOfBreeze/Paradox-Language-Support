@@ -13,11 +13,11 @@ import com.intellij.ui.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.ui.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -89,7 +89,7 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
 	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
 	val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
 	if(completeWithClauseTemplate) {
-		val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
+		val entryConfigs = ParadoxConfigHandler.getEntryConfigs(config)
 		if(entryConfigs.isNotEmpty()) {
 			val tailText1 = "{ <generate via template> }"
 			val lookupElement1 = LookupElementBuilder.create("")
@@ -192,7 +192,7 @@ fun CompletionResultSet.addScriptExpressionElement(
 	//进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
 	val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
 	if(isKey && isBlock && completeWithClauseTemplate) {
-		val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
+		val entryConfigs = ParadoxConfigHandler.getEntryConfigs(config)
 		if(entryConfigs.isNotEmpty()) {
 			val tailText1 = buildString {
 				append(" = { <generate via template> }")
@@ -298,7 +298,7 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 		hasRemainList.add(hasRemain)
 	}
 	if(constantConfigGroupList.isEmpty()) return
-	val propertyName = CwtConfigHandler.getEntryName(context.config)
+	val propertyName = ParadoxConfigHandler.getEntryName(context.config)
 	
 	val resultLookupElement = builder.withInsertHandler { c, _ ->
 		if(context.isKey == true) {

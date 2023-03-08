@@ -6,7 +6,7 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 用于绘制定义对应的UI表示。
+ * 用于绘制定义的UI表示。
  */
 interface ParadoxDefinitionPresentationProvider {
     fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean

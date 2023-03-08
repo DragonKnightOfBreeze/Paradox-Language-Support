@@ -11,7 +11,7 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import icu.windea.pls.cwt.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.config.cwt.config.CwtSeparator;
+import icu.windea.pls.config.config.CwtSeparator;
 import javax.swing.Icon;
 
 public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty {

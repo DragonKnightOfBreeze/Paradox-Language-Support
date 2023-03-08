@@ -2,7 +2,7 @@ package icu.windea.pls.lang.model
 
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.config.*
 
 data class ParadoxComplexEnumValueInfo(
 	val name: String,

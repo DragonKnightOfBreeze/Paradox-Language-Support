@@ -7,8 +7,7 @@ import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceLocalizedNameHintsProvider.*
@@ -71,23 +70,23 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
 		val resolved = when(element) {
 			is ParadoxScriptPropertyKey -> {
-				val config = ParadoxCwtConfigHandler.getPropertyConfigs(element).firstOrNull()
+				val config = ParadoxConfigHandler.getPropertyConfigs(element).firstOrNull()
 					?.takeIf { it.expression.type in keyExpressionTypes }
 					?: return true
-				CwtConfigHandler.resolveScriptExpression(element, null, config, config.expression, config.info.configGroup, true)
+				ParadoxConfigHandler.resolveScriptExpression(element, null, config, config.expression, config.info.configGroup, true)
 			}
 			is ParadoxScriptString -> {
-				val config = ParadoxCwtConfigHandler.getValueConfigs(element).firstOrNull()
+				val config = ParadoxConfigHandler.getValueConfigs(element).firstOrNull()
 					?.takeIf { it.expression.type in valueExpressionTypes }
 					?: return true
-				CwtConfigHandler.resolveScriptExpression(element, null, config, config.expression, config.info.configGroup, false)
+				ParadoxConfigHandler.resolveScriptExpression(element, null, config, config.expression, config.info.configGroup, false)
 			}
 			//这也是需要判断的
 			is ParadoxScriptInt -> {
-				val config = ParadoxCwtConfigHandler.getValueConfigs(element).firstOrNull()
+				val config = ParadoxConfigHandler.getValueConfigs(element).firstOrNull()
 					?.takeIf { it.expression.type in valueExpressionTypes }
 					?: return true
-				CwtConfigHandler.resolveScriptExpression(element, null, config, config.expression, config.info.configGroup, false)
+				ParadoxConfigHandler.resolveScriptExpression(element, null, config, config.expression, config.info.configGroup, false)
 			}
 			else -> return true
 		}

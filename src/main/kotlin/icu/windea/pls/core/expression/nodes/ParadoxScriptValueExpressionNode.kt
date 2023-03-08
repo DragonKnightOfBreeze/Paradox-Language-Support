@@ -4,11 +4,12 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
@@ -61,11 +62,11 @@ class ParadoxScriptValueExpressionNode(
 		}
 		
 		override fun resolve(exact: Boolean): PsiElement? {
-			return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, configGroup, exact = exact)
+			return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, configGroup, exact = exact)
 		}
 		
 		override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-			return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, configGroup)
+			return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, configGroup)
 				.mapToArray { PsiElementResolveResult(it) }
 		}
 	}

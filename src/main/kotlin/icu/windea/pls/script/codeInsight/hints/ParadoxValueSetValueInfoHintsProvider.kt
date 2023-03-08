@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
@@ -27,7 +27,7 @@ class ParadoxValueSetValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSetti
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
 		if(element is ParadoxScriptStringExpressionElement) {
-			val config = ParadoxCwtConfigHandler.getConfigs(element).firstOrNull() ?: return true
+			val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return true
 			val type = config.expression.type
 			if(type == CwtDataType.Value || type == CwtDataType.ValueSet) {
 				val valueSetName = config.expression.value ?: return true

@@ -3,12 +3,12 @@ package icu.windea.pls.core.expression.nodes
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxDataExpressionNode (
@@ -19,7 +19,7 @@ class ParadoxDataExpressionNode (
 	override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
 		if(text.isParameterAwareExpression()) return null
 		return linkConfigs.find { linkConfig ->
-			CwtConfigHandler.resolveScriptExpression(element, rangeInExpression, linkConfig, linkConfig.expression, linkConfig.info.configGroup, exact = false) != null
+			ParadoxConfigHandler.resolveScriptExpression(element, rangeInExpression, linkConfig, linkConfig.expression, linkConfig.info.configGroup, exact = false) != null
 		} ?: linkConfigs.firstOrNull()
 	}
 	
@@ -64,7 +64,7 @@ class ParadoxDataExpressionNode (
 		override fun resolve(exact: Boolean): PsiElement? {
 			val element = element
 			return linkConfigs.firstNotNullOfOrNull { linkConfig ->
-				val resolved = CwtConfigHandler.resolveScriptExpression(element, rangeInElement, linkConfig, linkConfig.expression, linkConfig.info.configGroup, exact = exact)
+				val resolved = ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, linkConfig, linkConfig.expression, linkConfig.info.configGroup, exact = exact)
 					?: return@firstNotNullOfOrNull null
 				resolved
 			}
@@ -73,7 +73,7 @@ class ParadoxDataExpressionNode (
 		override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 			val element = element
 			return linkConfigs.flatMap { linkConfig ->
-				val resolved = CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, linkConfig, configExpression = linkConfig.expression, linkConfig.info.configGroup)
+				val resolved = ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, linkConfig, configExpression = linkConfig.expression, linkConfig.info.configGroup)
 				resolved
 			}.mapToArray { PsiElementResolveResult(it) }
 		}

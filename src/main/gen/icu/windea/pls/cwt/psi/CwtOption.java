@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.config.cwt.config.CwtSeparator;
+import icu.windea.pls.config.config.CwtSeparator;
 import javax.swing.Icon;
 
 public interface CwtOption extends CwtNamedElement {

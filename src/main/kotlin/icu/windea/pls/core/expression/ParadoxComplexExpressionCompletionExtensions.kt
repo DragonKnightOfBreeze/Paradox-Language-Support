@@ -2,7 +2,6 @@ package icu.windea.pls.core.expression
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.util.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.nodes.*
@@ -27,7 +26,7 @@ fun completeForScopeExpressionNode(node: ParadoxScopeExpressionNode, context: Pr
         val resultToUse = result.withPrefixMatcher(keywordToUse)
         context.put(PlsCompletionKeys.keywordKey, keywordToUse)
         val prefix = prefixNode.text
-        CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
+        ParadoxConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
         return true
     } else {
         val inFirstNode = dataSourceNode == null || dataSourceNode.nodes.isEmpty()
@@ -36,11 +35,11 @@ fun completeForScopeExpressionNode(node: ParadoxScopeExpressionNode, context: Pr
         val resultToUse = result.withPrefixMatcher(keywordToUse)
         context.put(PlsCompletionKeys.keywordKey, keywordToUse)
         if(inFirstNode) {
-            CwtConfigHandler.completeSystemScope(context, resultToUse)
-            CwtConfigHandler.completeScope(context, resultToUse)
-            CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
+            ParadoxConfigHandler.completeSystemScope(context, resultToUse)
+            ParadoxConfigHandler.completeScope(context, resultToUse)
+            ParadoxConfigHandler.completeScopeLinkPrefix(context, resultToUse)
         }
-        CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
+        ParadoxConfigHandler.completeScopeLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
         return false
     }
 }
@@ -64,7 +63,7 @@ fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, contex
         val resultToUse = result.withPrefixMatcher(keywordToUse)
         context.put(PlsCompletionKeys.keywordKey, keywordToUse)
         val prefix = prefixNode.text
-        CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
+        ParadoxConfigHandler.completeValueLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
         return true
     } else {
         val inFirstNode = dataSourceNode == null || dataSourceNode.nodes.isEmpty()
@@ -73,10 +72,10 @@ fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, contex
         val resultToUse = result.withPrefixMatcher(keywordToUse)
         context.put(PlsCompletionKeys.keywordKey, keywordToUse)
         if(inFirstNode) {
-            CwtConfigHandler.completeValueLinkValue(context, resultToUse)
-            CwtConfigHandler.completeValueLinkPrefix(context, resultToUse)
+            ParadoxConfigHandler.completeValueLinkValue(context, resultToUse)
+            ParadoxConfigHandler.completeValueLinkPrefix(context, resultToUse)
         }
-        CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
+        ParadoxConfigHandler.completeValueLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
         return false
     }
 }
@@ -87,5 +86,5 @@ fun completeForVariableDataExpressionNode(node: ParadoxDataExpressionNode, conte
     val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
     val resultToUse = result.withPrefixMatcher(keywordToUse)
     context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-    CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, null, node, variableOnly = true)
+    ParadoxConfigHandler.completeValueLinkDataSource(context, resultToUse, null, node, variableOnly = true)
 }

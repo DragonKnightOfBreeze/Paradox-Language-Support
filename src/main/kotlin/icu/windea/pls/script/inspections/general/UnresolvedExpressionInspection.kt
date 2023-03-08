@@ -5,9 +5,8 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -43,7 +42,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val definitionMemberInfo = element.definitionMemberInfo
                 if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
                 val matchType = CwtConfigMatchType.INSPECTION
-                val configs = ParadoxCwtConfigHandler.getPropertyConfigs(element, matchType = matchType)
+                val configs = ParadoxConfigHandler.getPropertyConfigs(element, matchType = matchType)
                 val config = configs.firstOrNull()
                 if(config == null) {
                     //这里使用合并后的子规则，即使parentProperty可以精确匹配
@@ -84,11 +83,11 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val definitionMemberInfo = element.definitionMemberInfo
                 if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
                 val matchType = CwtConfigMatchType.INSPECTION
-                val configs = ParadoxCwtConfigHandler.getValueConfigs(element, matchType = matchType, orDefault = false)
+                val configs = ParadoxConfigHandler.getValueConfigs(element, matchType = matchType, orDefault = false)
                 val config = configs.firstOrNull()
                 if(config == null) {
                     val expect = if(showExpectInfo) {
-                        val allConfigs = ParadoxCwtConfigHandler.getValueConfigs(element, orDefault = true)
+                        val allConfigs = ParadoxConfigHandler.getValueConfigs(element, orDefault = true)
                         val allExpressions = if(allConfigs.isEmpty()) emptySet() else {
                             buildSet {
                                 for(c in allConfigs) {

@@ -4,14 +4,15 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.ParadoxValueSetValueExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.highlighter.*
 
 /**
@@ -107,7 +108,7 @@ class ParadoxValueSetValueExpressionImpl(
 					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
 					val resultToUse = result.withPrefixMatcher(keywordToUse)
 					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-					CwtConfigHandler.completeValueSetValue(context, resultToUse)
+					ParadoxConfigHandler.completeValueSetValue(context, resultToUse)
 					break
 				}
 			} else if(node is ParadoxScopeFieldExpression) {

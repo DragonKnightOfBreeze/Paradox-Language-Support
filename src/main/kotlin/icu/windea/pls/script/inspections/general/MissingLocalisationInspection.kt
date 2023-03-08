@@ -8,8 +8,8 @@ import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
@@ -137,7 +137,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 ProgressManager.checkCanceled()
                 if(localeConfigs.isEmpty()) return
                 if(!checkForModifiers) return
-                val config = ParadoxCwtConfigHandler.getConfigs(element).firstOrNull() ?: return
+                val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
                 val configGroup = config.info.configGroup
                 if(config.expression.type != CwtDataType.Modifier) return
                 val project = configGroup.project

@@ -2,9 +2,9 @@ package icu.windea.pls.lang
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.openapi.progress.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.model.*
@@ -21,7 +21,7 @@ object ParadoxValueSetValueHandler {
         val matchType = CwtConfigMatchType.STATIC
         //only accept "value[x]" or "value_set[x]", rather than "scope_field" or "value_field"
         //so, e.g., if there is only an expression "event_target:target", "target" will not be shown during code completion
-        val config = ParadoxCwtConfigHandler.getValueConfigs(element, true, true, matchType)
+        val config = ParadoxConfigHandler.getValueConfigs(element, true, true, matchType)
             .firstOrNull {
                 val type = it.expression.type
                 type == CwtDataType.Value || type == CwtDataType.ValueSet
@@ -54,7 +54,7 @@ object ParadoxValueSetValueHandler {
         val stub = runCatching { element.stub }.getOrNull()
         stub?.valueSetValueInfo?.read
             ?.let { return it }
-        val config = ParadoxCwtConfigHandler.getConfigs(element).firstOrNull() ?: return true
+        val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return true
         return config.expression.type == CwtDataType.Value
     }
     

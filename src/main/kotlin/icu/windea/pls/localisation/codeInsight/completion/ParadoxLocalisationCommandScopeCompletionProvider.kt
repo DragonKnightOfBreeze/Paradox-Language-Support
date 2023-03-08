@@ -4,7 +4,6 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.lang.*
@@ -32,11 +31,11 @@ class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<Com
 		context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeHandler.getScopeContext(element))
 		
 		//提示scope
-		CwtConfigHandler.completeSystemScope(context, result)
-		CwtConfigHandler.completePredefinedLocalisationScope(context, result)
+		ParadoxConfigHandler.completeSystemScope(context, result)
+		ParadoxConfigHandler.completePredefinedLocalisationScope(context, result)
 		
 		ProgressManager.checkCanceled()
 		//提示value[event_target]和value[global_event_target]
-		CwtConfigHandler.completeEventTarget(file, result)
+		ParadoxConfigHandler.completeEventTarget(file, result)
 	}
 }

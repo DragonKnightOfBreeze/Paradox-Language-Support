@@ -6,10 +6,9 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.setting.*
+import icu.windea.pls.config.setting.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
@@ -38,7 +37,7 @@ abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
 			}
 			
 			private fun visitProperty(element: ParadoxScriptProperty) {
-				val configs = ParadoxCwtConfigHandler.getPropertyConfigs(element, orDefault = false)
+				val configs = ParadoxConfigHandler.getPropertyConfigs(element, orDefault = false)
 				if(configs.isEmpty()) return  //must match
 				val propertyKey = element.name
 				val setting = settings.get(propertyKey) ?: return

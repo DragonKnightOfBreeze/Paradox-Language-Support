@@ -1,6 +1,6 @@
 package icu.windea.pls.core.expression.nodes
 
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.config.*
 
 sealed interface ParadoxLinkPrefixExpressionNode: ParadoxExpressionNode {
 	val linkConfigs: List<CwtLinkConfig>

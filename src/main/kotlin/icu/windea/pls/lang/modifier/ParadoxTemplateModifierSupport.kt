@@ -7,9 +7,9 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -64,7 +64,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
             
-            val tailText = CwtConfigHandler.getScriptExpressionTailText(modifierConfig.config, withExpression = true)
+            val tailText = ParadoxConfigHandler.getScriptExpressionTailText(modifierConfig.config, withExpression = true)
             val template = modifierConfig.template
             if(template.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile

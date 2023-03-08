@@ -9,9 +9,9 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import com.intellij.util.text.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
@@ -100,7 +100,7 @@ class ParadoxScriptAnnotator : Annotator {
         }
         
         val isKey = element is ParadoxScriptPropertyKey
-        val config = ParadoxCwtConfigHandler.getConfigs(element, !isKey, isKey).firstOrNull()
+        val config = ParadoxConfigHandler.getConfigs(element, !isKey, isKey).firstOrNull()
         if(config != null) {
             annotateExpression(element, element.textRange, null, config, holder)
         }
@@ -194,7 +194,7 @@ class ParadoxScriptAnnotator : Annotator {
                 if(text.isParameterAwareExpression()) return
                 val enumName = configExpression.value ?: return
                 val attributesKey = when {
-                    enumName == CwtConfigHandler.paramsEnumName -> Keys.ARGUMENT_KEY
+                    enumName == ParadoxConfigHandler.paramsEnumName -> Keys.ARGUMENT_KEY
                     configGroup.enums[enumName] != null -> Keys.ENUM_VALUE_KEY
                     configGroup.complexEnums[enumName] != null -> Keys.COMPLEX_ENUM_VALUE_KEY
                     else -> Keys.ENUM_VALUE_KEY
@@ -243,7 +243,7 @@ class ParadoxScriptAnnotator : Annotator {
                 if(text.isParameterAwareExpression()) return
                 val aliasName = configExpression.value ?: return
                 val aliasMap = configGroup.aliasGroups.get(aliasName) ?: return
-                val aliasSubName = CwtConfigHandler.getAliasSubName(element, text, false, aliasName, configGroup) ?: return
+                val aliasSubName = ParadoxConfigHandler.getAliasSubName(element, text, false, aliasName, configGroup) ?: return
                 val aliasConfig = aliasMap[aliasSubName]?.first() ?: return
                 annotateExpression(element, range, rangeInElement, aliasConfig, holder)
             }

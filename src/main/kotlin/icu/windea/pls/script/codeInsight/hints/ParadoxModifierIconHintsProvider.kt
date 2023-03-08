@@ -7,7 +7,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
@@ -55,7 +55,7 @@ class ParadoxModifierIconHintsProvider: ParadoxScriptHintsProvider<Settings>() {
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
 		if(element is ParadoxScriptStringExpressionElement) {
 			//基于stub
-			val config = ParadoxCwtConfigHandler.getConfigs(element).firstOrNull() ?: return true
+			val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return true
 			val type = config.expression.type
 			if(type == CwtDataType.Modifier) {
 				val name = element.value

@@ -4,7 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
@@ -18,7 +18,7 @@ class IncorrectScopeInspection: LocalInspectionTool() {
 		
 		private fun visitMemberElement(element: ParadoxScriptProperty) {
 			ProgressManager.checkCanceled()
-			val configs = ParadoxCwtConfigHandler.getConfigs(element)
+			val configs = ParadoxConfigHandler.getConfigs(element)
 			val config = configs.firstOrNull() ?: return
 			if(!ParadoxScopeHandler.isScopeContextSupported(element)) return
 			val parentMember = ParadoxScopeHandler.findParentMember(element) ?: return

@@ -6,8 +6,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
@@ -38,9 +37,9 @@ class MissingParameterInspection : LocalInspectionTool() {
 			
 			private fun visitElementForInvocationExpression(element: ParadoxScriptProperty) {
 				ProgressManager.checkCanceled()
-				val configs = ParadoxCwtConfigHandler.getConfigs(element)
+				val configs = ParadoxConfigHandler.getConfigs(element)
 				val config = configs.firstOrNull() as? CwtPropertyConfig ?: return
-				val condition = config.configs?.any { CwtConfigHandler.isParameter(it) } == true
+				val condition = config.configs?.any { ParadoxConfigHandler.isParameter(it) } == true
 				if(!condition) return
 				
 				val parameterNames = mutableSetOf<String>()
@@ -73,7 +72,7 @@ class MissingParameterInspection : LocalInspectionTool() {
 				val value = element.text
 				if(value.isLeftQuoted()) return
 				if(!value.startsWith("value:")) return //快速判断
-				val config = ParadoxCwtConfigHandler.getConfigs(element).firstOrNull() ?: return
+				val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
 				val configGroup = config.info.configGroup
 				val dataType = config.expression.type
 				if(!dataType.isValueFieldType()) return

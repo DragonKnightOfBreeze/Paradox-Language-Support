@@ -3,7 +3,7 @@ package icu.windea.pls.core.expression
 import com.intellij.codeInsight.completion.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*

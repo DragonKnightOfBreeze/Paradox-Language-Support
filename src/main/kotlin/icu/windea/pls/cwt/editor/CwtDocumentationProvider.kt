@@ -9,11 +9,10 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
@@ -428,7 +427,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getConfigGroup(element: PsiElement, originalElement: PsiElement?, project: Project): CwtConfigGroup? {
 		val gameType = selectGameType(originalElement?.takeIf { it.language.isParadoxLanguage() })
 		val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
-			?: CwtConfigHandler.getConfigGroupFromCwt(element, project)
+			?: ParadoxConfigHandler.getConfigGroupFromCwt(element, project)
 		return configGroup
 	}
 }

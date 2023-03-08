@@ -2,8 +2,8 @@ package icu.windea.pls.core.expression.nodes
 
 import com.intellij.openapi.util.*
 import com.intellij.util.*
-import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.highlighter.*
 

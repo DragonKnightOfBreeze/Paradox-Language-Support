@@ -5,8 +5,8 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
@@ -22,7 +22,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
         
         private fun visitScriptProperty(element: ParadoxScriptProperty) {
             ProgressManager.checkCanceled()
-            val configs = ParadoxCwtConfigHandler.getConfigs(element)
+            val configs = ParadoxConfigHandler.getConfigs(element)
             val config = configs.firstOrNull()
             if(config == null) return
             val definitionInfo by lazy { element.findParentDefinition()?.definitionInfo }

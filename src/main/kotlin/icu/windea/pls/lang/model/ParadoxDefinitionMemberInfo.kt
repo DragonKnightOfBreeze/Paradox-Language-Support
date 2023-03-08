@@ -2,10 +2,11 @@ package icu.windea.pls.lang.model
 
 import com.intellij.openapi.progress.*
 import com.intellij.util.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 
@@ -67,7 +68,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
         for(parentConfig in result) {
             //处理内联规则
             if(!isInlined && isKey && parentConfig is CwtPropertyConfig) {
-                isInlined = CwtConfigHandler.inlineConfigAsChild(key, isQuoted, parentConfig, configGroup, nextResult)
+                isInlined = ParadoxConfigHandler.inlineConfigAsChild(key, isQuoted, parentConfig, configGroup, nextResult)
                 if(isInlined) continue
             }
             
@@ -75,8 +76,8 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
             if(configs.isNullOrEmpty()) continue
             for(config in configs) {
                 if(isKey && config is CwtPropertyConfig) {
-                    if(CwtConfigHandler.matchesScriptExpression(element, expression, config.keyExpression, config, configGroup, matchType)) {
-                        CwtConfigHandler.inlineConfig(element, key, isQuoted, config, configGroup, nextResult, matchType)
+                    if(ParadoxConfigHandler.matchesScriptExpression(element, expression, config.keyExpression, config, configGroup, matchType)) {
+                        ParadoxConfigHandler.inlineConfig(element, key, isQuoted, config, configGroup, nextResult, matchType)
                     }
                 } else if(!isKey && config is CwtValueConfig) {
                     nextResult.add(config)
@@ -86,7 +87,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
         
         //如果存在可以静态匹配（CwtConfigMatchType.STATIC）的规则，则仅选用可以静态匹配的规则
         result = nextResult
-            .filter { CwtConfigHandler.matchesScriptExpression(element, expression, it.expression, it, configGroup, CwtConfigMatchType.STATIC) }
+            .filter { ParadoxConfigHandler.matchesScriptExpression(element, expression, it.expression, it, configGroup, CwtConfigMatchType.STATIC) }
             .ifEmpty { nextResult }
     }
     

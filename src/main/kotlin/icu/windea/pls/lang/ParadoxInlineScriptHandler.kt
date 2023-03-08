@@ -8,9 +8,8 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.expression.*
@@ -53,7 +52,7 @@ object ParadoxInlineScriptHandler {
     
     @JvmStatic
     fun resolveInfo(element: ParadoxScriptPropertyKey, file: PsiFile = element.containingFile): ParadoxInlineScriptInfo? {
-        //这里不能调用ParadoxCwtConfigHandler.getConfigs，因为需要处理内联的情况，会导致StackOverFlow
+        //这里不能调用ParadoxConfigHandler.getConfigs，因为需要处理内联的情况，会导致StackOverFlow
         
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
@@ -68,7 +67,7 @@ object ParadoxInlineScriptHandler {
         //TODO 更加准确的匹配，目前没必要
         val inlineConfig = inlineConfigs.find {
             val expression = ParadoxDataExpression.resolve(propertyValue)
-            CwtConfigHandler.matchesScriptExpression(propertyValue, expression, it.config.valueExpression, it.config, configGroup, matchType)
+            ParadoxConfigHandler.matchesScriptExpression(propertyValue, expression, it.config.valueExpression, it.config, configGroup, matchType)
         }
         if(inlineConfig == null) return null
         val expression = getExpressionFromInlineConfig(propertyValue, inlineConfig) ?: return null
@@ -184,7 +183,7 @@ object ParadoxInlineScriptHandler {
             if(element == null) {
                 element = e
             }
-            val eConfigs = ParadoxCwtConfigHandler.getConfigs(e)
+            val eConfigs = ParadoxConfigHandler.getConfigs(e)
             if(eConfigs.isNotEmpty()) {
                 val configsToAdd = eConfigs.mapNotNull { it.parent }
                 if(configs.isEmpty()) {

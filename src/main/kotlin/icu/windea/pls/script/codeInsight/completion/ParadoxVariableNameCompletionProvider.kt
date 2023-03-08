@@ -3,8 +3,8 @@ package icu.windea.pls.script.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.lang.*
@@ -38,7 +38,7 @@ class ParadoxVariableNameCompletionProvider: CompletionProvider<CompletionParame
 		val stringElement = element
 		if(!stringElement.isBlockValue()) return
 		val parentProperty = stringElement.findParentProperty() ?: return
-		val configs = ParadoxCwtConfigHandler.getConfigs(parentProperty, allowDefinition = true)
+		val configs = ParadoxConfigHandler.getConfigs(parentProperty, allowDefinition = true)
 		if(configs.isEmpty()) return
 		val configGroup = configs.first().info.configGroup
 		context.put(PlsCompletionKeys.configGroupKey, configGroup)
@@ -50,6 +50,6 @@ class ParadoxVariableNameCompletionProvider: CompletionProvider<CompletionParame
 		if(!matched) return
 		val mockConfig = CwtValueConfig(emptyPointer(), configGroup.info, "value[variable]")
 		context.put(PlsCompletionKeys.configKey, mockConfig)
-        CwtConfigHandler.completeValueSetValueExpression(context, result)
+        ParadoxConfigHandler.completeValueSetValueExpression(context, result)
 	}
 }

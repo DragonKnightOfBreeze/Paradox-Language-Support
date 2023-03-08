@@ -3,8 +3,7 @@ package icu.windea.pls.script.codeInsight.parameterInfo
 import com.intellij.lang.parameterInfo.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.*
@@ -30,7 +29,7 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
                     ?.getConfigs()
                     ?.any { config ->
                         config is CwtPropertyConfig && config.properties?.any { prop ->
-                            prop.keyExpression.let { CwtConfigHandler.isParameter(prop) }
+                            prop.keyExpression.let { ParadoxConfigHandler.isParameter(prop) }
                         } ?: false
                     } ?: false
             }
@@ -44,7 +43,7 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): ParadoxScriptProperty? {
         val targetElement = findTargetElement(context) ?: return null
         val definitionName = targetElement.name
-        val config = ParadoxCwtConfigHandler.getPropertyConfigs(targetElement).firstOrNull() ?: return null
+        val config = ParadoxConfigHandler.getPropertyConfigs(targetElement).firstOrNull() ?: return null
         val definitionType = config.keyExpression.value ?: return null
         //合并所有可能的参数名
         val project = context.project
