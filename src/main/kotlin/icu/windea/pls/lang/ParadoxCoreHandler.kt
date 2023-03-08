@@ -12,7 +12,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
-import com.intellij.psi.util.*
 import com.intellij.util.*
 import com.intellij.util.concurrency.annotations.*
 import com.intellij.util.indexing.*

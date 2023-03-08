@@ -1,6 +1,5 @@
 package icu.windea.pls.script.navigation
 
-import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.lang.model.*

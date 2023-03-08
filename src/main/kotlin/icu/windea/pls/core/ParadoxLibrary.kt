@@ -7,7 +7,6 @@ import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import javax.swing.*
 
 class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {

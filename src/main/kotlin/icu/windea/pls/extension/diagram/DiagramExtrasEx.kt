@@ -6,7 +6,6 @@ import com.intellij.diagram.extras.custom.*
 import com.intellij.openapi.graph.view.*
 import com.intellij.psi.*
 import com.intellij.ui.*
-import com.intellij.util.ui.JBUI.*
 import icu.windea.pls.core.*
 import java.awt.*
 import javax.swing.*

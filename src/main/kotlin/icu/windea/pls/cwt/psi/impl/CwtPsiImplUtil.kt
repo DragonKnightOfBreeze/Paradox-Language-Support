@@ -14,8 +14,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.navigation.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
-import icu.windea.pls.localisation.navigation.*
-import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")

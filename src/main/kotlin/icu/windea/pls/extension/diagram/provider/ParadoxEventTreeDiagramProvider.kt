@@ -1,14 +1,12 @@
 package icu.windea.pls.extension.diagram.provider
 
 import com.intellij.diagram.*
-import com.intellij.diagram.extras.custom.*
 import com.intellij.diagram.presentation.*
 import com.intellij.diagram.settings.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.graph.*
 import com.intellij.openapi.graph.layout.*
 import com.intellij.openapi.graph.settings.*
-import com.intellij.openapi.graph.view.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
