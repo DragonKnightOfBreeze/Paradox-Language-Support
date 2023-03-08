@@ -3,8 +3,8 @@ package icu.windea.pls.lang
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.inline.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.lang.support.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 

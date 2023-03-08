@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.provider
+package icu.windea.pls.lang.scope
 
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*

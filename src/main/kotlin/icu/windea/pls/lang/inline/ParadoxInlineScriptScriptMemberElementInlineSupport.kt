@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.support
+package icu.windea.pls.lang.inline
 
 import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*

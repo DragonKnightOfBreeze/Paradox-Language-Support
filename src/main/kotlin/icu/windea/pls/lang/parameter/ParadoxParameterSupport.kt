@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.support
+package icu.windea.pls.lang.parameter
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*

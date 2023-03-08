@@ -9,8 +9,8 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.inline.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.lang.support.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 

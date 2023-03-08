@@ -15,7 +15,7 @@ import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.lang.provider.*
+import icu.windea.pls.lang.scope.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 

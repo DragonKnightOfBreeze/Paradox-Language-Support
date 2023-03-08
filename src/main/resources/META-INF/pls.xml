@@ -4,11 +4,11 @@
     
     <extensionPoint qualifiedName="icu.windea.pls.definitionExtendedDocumentationProvider" interface="icu.windea.pls.lang.documentation.ParadoxDefinitionExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.pathReferenceExpression" interface="icu.windea.pls.lang.expression.ParadoxPathReferenceExpression" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.scriptMemberElementInlineSupport" interface="icu.windea.pls.lang.support.ParadoxScriptMemberElementInlineSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.colorSupport" interface="icu.windea.pls.lang.support.ParadoxColorSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.parameterSupport" interface="icu.windea.pls.lang.support.ParadoxParameterSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.modifierSupport" interface="icu.windea.pls.lang.support.ParadoxModifierSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.inferredScopeContextProvider" interface="icu.windea.pls.lang.provider.ParadoxInferredScopeContextProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.scriptMemberElementInlineSupport" interface="icu.windea.pls.lang.inline.ParadoxScriptMemberElementInlineSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.colorSupport" interface="icu.windea.pls.lang.color.ParadoxColorSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.parameterSupport" interface="icu.windea.pls.lang.parameter.ParadoxParameterSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.modifierSupport" interface="icu.windea.pls.lang.modifier.ParadoxModifierSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.inferredScopeContextProvider" interface="icu.windea.pls.lang.scope.ParadoxInferredScopeContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionPresentationProvider" interface="icu.windea.pls.lang.presentation.ParadoxDefinitionPresentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionDataProvider" interface="icu.windea.pls.lang.data.ParadoxDefinitionDataProvider" dynamic="true"/>
     
@@ -26,19 +26,19 @@
     <pathReferenceExpression implementation="icu.windea.pls.lang.expression.ParadoxFilePathPathReferenceExpression"/>
     <pathReferenceExpression implementation="icu.windea.pls.lang.expression.ParadoxFileNamePathReferenceExpression"/>
     
-    <scriptMemberElementInlineSupport implementation="icu.windea.pls.lang.support.ParadoxInlineScriptScriptMemberElementInlineSupport"/>
+    <scriptMemberElementInlineSupport implementation="icu.windea.pls.lang.inline.ParadoxInlineScriptScriptMemberElementInlineSupport"/>
     
-    <colorSupport implementation="icu.windea.pls.lang.support.ParadoxScriptColorColorSupport"/>
-    <colorSupport implementation="icu.windea.pls.lang.support.ParadoxScriptBlockColorSupport"/>
-    <colorSupport implementation="icu.windea.pls.lang.support.ParadoxScriptStringColorSupport"/>
+    <colorSupport implementation="icu.windea.pls.lang.color.ParadoxScriptColorColorSupport"/>
+    <colorSupport implementation="icu.windea.pls.lang.color.ParadoxScriptBlockColorSupport"/>
+    <colorSupport implementation="icu.windea.pls.lang.color.ParadoxScriptStringColorSupport"/>
     
-    <parameterSupport implementation="icu.windea.pls.lang.support.ParadoxDefinitionParameterSupport"/>
-    <parameterSupport implementation="icu.windea.pls.lang.support.ParadoxInlineScriptParameterSupport"/>
+    <parameterSupport implementation="icu.windea.pls.lang.parameter.ParadoxDefinitionParameterSupport"/>
+    <parameterSupport implementation="icu.windea.pls.lang.parameter.ParadoxInlineScriptParameterSupport"/>
     
-    <modifierSupport implementation="icu.windea.pls.lang.support.ParadoxTemplateModifierSupport"/>
-    <modifierSupport implementation="icu.windea.pls.lang.support.StellarisEconomicCategoryModifierSupport"/>
+    <modifierSupport implementation="icu.windea.pls.lang.modifier.ParadoxTemplateModifierSupport"/>
+    <modifierSupport implementation="icu.windea.pls.lang.modifier.StellarisEconomicCategoryModifierSupport"/>
     
-    <inferredScopeContextProvider implementation="icu.windea.pls.lang.provider.ParadoxEventFromOnActionInferredScopeContextProvider"/>
+    <inferredScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxEventFromOnActionInferredScopeContextProvider"/>
     
     <definitionPresentationProvider implementation="icu.windea.pls.lang.presentation.StellarisTechnologyPresentationProvider"/>
 

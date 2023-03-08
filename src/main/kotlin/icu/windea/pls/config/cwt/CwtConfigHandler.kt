@@ -28,7 +28,7 @@ import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.lang.support.*
+import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 

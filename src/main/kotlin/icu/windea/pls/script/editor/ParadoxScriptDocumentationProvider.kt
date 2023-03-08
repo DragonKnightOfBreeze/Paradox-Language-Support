@@ -15,7 +15,7 @@ import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.lang.support.*
+import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import icu.windea.pls.tool.localisation.*

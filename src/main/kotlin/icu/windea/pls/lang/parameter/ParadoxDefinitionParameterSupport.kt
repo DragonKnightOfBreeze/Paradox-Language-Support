@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.support
+package icu.windea.pls.lang.parameter
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.util.*

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.support
+package icu.windea.pls.lang.modifier
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.progress.*

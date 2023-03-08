@@ -16,10 +16,10 @@ import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.search.scopes.*
-import icu.windea.pls.core.search.selectors.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.color.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.lang.support.*
+import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
