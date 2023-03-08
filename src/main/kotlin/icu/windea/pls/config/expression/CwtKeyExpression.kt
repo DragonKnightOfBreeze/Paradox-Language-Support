@@ -60,7 +60,7 @@ class CwtKeyExpression private constructor(
 			}
 			expressionString.surroundsWith("enum[", "]") -> {
 				val value = expressionString.substring(5, expressionString.length - 1)
-				CwtKeyExpression(expressionString, CwtDataType.Enum, value)
+				CwtKeyExpression(expressionString, CwtDataType.EnumValue, value)
 			}
 			expressionString.surroundsWith("value[", "]") -> {
 				val value = expressionString.substring(6, expressionString.length - 1)
@@ -91,7 +91,7 @@ class CwtKeyExpression private constructor(
 				CwtKeyExpression(expressionString, CwtDataType.AliasName, value)
 			}
 			CwtTemplateExpression.resolve(expressionString).isNotEmpty() -> {
-				CwtKeyExpression(expressionString, CwtDataType.TemplateExpression)
+				CwtKeyExpression(expressionString, CwtDataType.Template)
 			}
 			expressionString.endsWith(']') -> {
 				CwtKeyExpression(expressionString, CwtDataType.Other)

@@ -45,14 +45,14 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
                 return
             }
-            val fileReferenceExpression = ParadoxPathReferenceExpression.get(configExpression)
-            if(fileReferenceExpression != null) {
+            val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
+            if(pathReferenceExpressionSupport != null) {
                 val pathReference = valueElement.value.normalizePath()
-                val fileName = fileReferenceExpression.resolveFileName(configExpression, pathReference)
+                val fileName = pathReferenceExpressionSupport.resolveFileName(configExpression, pathReference)
                 if(fileName.matchesGlobFileName(inspection.ignoredFileNames, true)) return
                 val selector = fileSelector(project, valueElement)
                 if(ParadoxFilePathSearch.search(pathReference, configExpression, selector = selector).findFirst() != null) return
-                val message = fileReferenceExpression.getUnresolvedMessage(configExpression, pathReference)
+                val message = pathReferenceExpressionSupport.getUnresolvedMessage(configExpression, pathReference)
                 holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }

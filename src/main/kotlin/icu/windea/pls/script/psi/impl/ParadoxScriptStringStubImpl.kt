@@ -6,7 +6,7 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptStringStubImpl(
 	parent: StubElement<*>,
-	override val complexEnumValueInfo: icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo?,
+	override val complexEnumValueInfo: ParadoxComplexEnumValueInfo?,
 	override val valueSetValueInfo: ParadoxValueSetValueInfo?,
 	override val gameType: ParadoxGameType?
 ) : StubBase<ParadoxScriptString>(parent, ParadoxScriptStubElementTypes.STRING), ParadoxScriptStringStub {

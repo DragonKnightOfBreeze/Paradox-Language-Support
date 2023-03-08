@@ -40,7 +40,7 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 					val name = location.value 
 					val dataType = config.expression.type
 					when {
-						dataType == CwtDataType.Enum -> {
+						dataType == CwtDataType.EnumValue -> {
 							configGroup.enums[name]?.pointer?.element?.let { add(it) }
 							configGroup.complexEnums[name]?.pointer?.element?.let { add(it) }
 						}

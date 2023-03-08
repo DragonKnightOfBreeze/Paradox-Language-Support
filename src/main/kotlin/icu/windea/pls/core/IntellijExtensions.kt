@@ -381,6 +381,20 @@ fun PsiElement.hasSyntaxError(): Boolean {
 	return this.lastChild is PsiErrorElement
 }
 
+val PsiElement.textRangeAfterUnquote: TextRange
+	get() {
+		val text = this.text
+		val leftQuoted = text.isLeftQuoted()
+		val rightQuoted = text.isRightQuoted()
+		val textRange = this.textRange
+		return when {
+			leftQuoted && rightQuoted -> TextRange.create(textRange.startOffset + 1, textRange.endOffset - 1)
+			leftQuoted -> TextRange.create(textRange.startOffset + 1, textRange.endOffset)
+			rightQuoted -> TextRange.create(textRange.startOffset, textRange.endOffset - 1)
+			else -> textRange
+		}
+	}
+
 /**
  * @param forward 查找偏移之前还是之后的PSI元素，默认为null，表示同时考虑。
  */

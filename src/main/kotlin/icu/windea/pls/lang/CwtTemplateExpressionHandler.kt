@@ -157,7 +157,7 @@ object CwtTemplateExpressionHandler {
                     true
                 }
             }
-            CwtDataType.Enum -> {
+            CwtDataType.EnumValue -> {
                 val enumName = snippetExpression.value ?: return
                 //提示简单枚举
                 val enumConfig = configGroup.enums[enumName]

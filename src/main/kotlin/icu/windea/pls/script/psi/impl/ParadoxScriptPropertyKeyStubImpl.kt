@@ -6,7 +6,7 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptPropertyKeyStubImpl(
 	parent: StubElement<*>,
-	override val complexEnumValueInfo: icu.windea.pls.lang.model.ParadoxComplexEnumValueInfo?,
+	override val complexEnumValueInfo: ParadoxComplexEnumValueInfo?,
 	override val inlineScriptInfo: ParadoxInlineScriptInfo?,
 	override val gameType: ParadoxGameType?
 ) : StubBase<ParadoxScriptPropertyKey>(parent, ParadoxScriptStubElementTypes.PROPERTY_KEY), ParadoxScriptPropertyKeyStub {

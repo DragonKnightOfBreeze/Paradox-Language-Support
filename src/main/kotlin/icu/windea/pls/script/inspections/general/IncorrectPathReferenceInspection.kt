@@ -4,6 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
@@ -22,7 +23,8 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
                 val config = ParadoxConfigHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return
                 val configExpression = config.expression
                 val dataType = configExpression.type
-                if(!dataType.isFilePathType()) return
+                if(dataType == CwtDataType.AbsoluteFilePath) return
+                if(!dataType.isPathReferenceType()) return
                 val fileExtensions = ParadoxFilePathHandler.getFileExtensionOptionValues(config)
                 if(fileExtensions.isEmpty()) return
                 val value = element.value

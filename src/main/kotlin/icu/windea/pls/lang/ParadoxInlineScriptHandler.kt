@@ -117,8 +117,7 @@ object ParadoxInlineScriptHandler {
     @JvmStatic
     fun getInlineScriptFilePath(pathReference: String): String? {
         val configExpression = inlineScriptPathExpression
-        val pathReferenceExpression = ParadoxPathReferenceExpression.get(configExpression) ?: return null
-        return pathReferenceExpression.resolvePath(configExpression, pathReference.normalizePath())
+        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.resolvePath(configExpression, pathReference.normalizePath())
     }
     
     @JvmStatic
@@ -141,8 +140,7 @@ object ParadoxInlineScriptHandler {
     private fun doGetInlineScriptExpression(fileInfo: ParadoxFileInfo): String? {
         val filePath = fileInfo.path.path
         val configExpression = inlineScriptPathExpression
-        val pathReferenceExpression = ParadoxPathReferenceExpression.get(configExpression) ?: return null
-        return pathReferenceExpression.extract(configExpression, filePath)?.takeIfNotEmpty()
+        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.extract(configExpression, filePath)?.takeIfNotEmpty()
     }
     
     /**

@@ -113,7 +113,7 @@ class CwtValueExpression private constructor(
 			}
 			expressionString.surroundsWith("enum[", "]") -> {
 				val value = expressionString.substring(5, expressionString.length - 1)
-				CwtValueExpression(expressionString, CwtDataType.Enum, value)
+				CwtValueExpression(expressionString, CwtDataType.EnumValue, value)
 			}
 			expressionString == "scope_field" -> {
 				CwtValueExpression(expressionString, CwtDataType.ScopeField)
@@ -177,7 +177,7 @@ class CwtValueExpression private constructor(
 				CwtValueExpression(expressionString, CwtDataType.AliasMatchLeft, value)
 			}
 			CwtTemplateExpression.resolve(expressionString).isNotEmpty() -> {
-				CwtValueExpression(expressionString, CwtDataType.TemplateExpression)
+				CwtValueExpression(expressionString, CwtDataType.Template)
 			}
 			expressionString.endsWith(']') -> {
 				CwtValueExpression(expressionString, CwtDataType.Other)

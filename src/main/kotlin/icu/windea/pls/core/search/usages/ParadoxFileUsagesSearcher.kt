@@ -26,7 +26,7 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
         val configGroup = getCwtConfig(project).getValue(gameType)
         val extraWords = mutableSetOf<String>()
         configGroup.info.filePathExpressions.forEach { configExpression ->
-            ParadoxPathReferenceExpression.get(configExpression)
+            ParadoxPathReferenceExpressionSupport.get(configExpression)
                 ?.extract(configExpression, filePath)
                 ?.let { extraWords.add(it) }
         }

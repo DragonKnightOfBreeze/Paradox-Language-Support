@@ -215,7 +215,7 @@ private fun getIconToUse(icon: Icon?, config: CwtConfig<*>): Icon? {
 		is CwtAliasConfig -> {
 			val aliasConfig = config
 			val type = aliasConfig.expression.type
-			if(!type.isGeneratorType()) return icon
+			if(!type.isConstantLikeType()) return icon
 			val aliasName = aliasConfig.name
 			return when {
 				aliasName == "modifier" -> PlsIcons.Modifier

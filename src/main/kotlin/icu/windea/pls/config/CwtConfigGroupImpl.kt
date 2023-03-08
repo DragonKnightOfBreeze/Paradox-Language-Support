@@ -484,7 +484,7 @@ class CwtConfigGroupImpl(
 						val (aliasName, aliasSubName) = aliasNamePair
 						val aliasConfig = resolveAliasConfig(property, aliasName, aliasSubName)
 						//目前不这样处理
-						//if(aliasConfig.name == "modifier" && aliasConfig.expression.type.isGeneratorType()) {
+						//if(aliasConfig.name == "modifier" && aliasConfig.expression.type.isConstantLikeType()) {
 						//	val modifierConfig = resolveModifierConfigFromAliasConfig(aliasConfig)
 						//	modifiers.put(modifierConfig.name, modifierConfig)
 						//	continue

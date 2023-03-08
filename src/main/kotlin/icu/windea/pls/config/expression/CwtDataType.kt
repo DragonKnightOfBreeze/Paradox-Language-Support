@@ -22,7 +22,7 @@ enum class CwtDataType {
     //EXTENDED BY PLS
     FileName,
     Definition,
-    Enum,
+    EnumValue,
     Value,
     ValueSet,
     ScopeField,
@@ -37,7 +37,7 @@ enum class CwtDataType {
     AliasName,
     AliasKeysField,
     AliasMatchLeft,
-    TemplateExpression,
+    Template,
     Constant,
     Other,
     @WithGameType(ParadoxGameType.Stellaris)
@@ -53,7 +53,7 @@ enum class CwtDataType {
         || this == ValueField || this == IntValueField
         || this == VariableField || this == IntVariableField
     
-    fun isFilePathType() = this == AbsoluteFilePath
+    fun isPathReferenceType() = this == AbsoluteFilePath
         || this == FileName || this == FilePath || this == Icon
     
     fun isScopeFieldType() = this == ScopeField || this == Scope || this == ScopeGroup
@@ -64,5 +64,5 @@ enum class CwtDataType {
     
     fun isValueSetValueType() = this == Value || this == ValueSet
     
-    fun isGeneratorType() = this == Constant || this == TemplateExpression
+    fun isConstantLikeType() = this == Constant || this == Template
 }

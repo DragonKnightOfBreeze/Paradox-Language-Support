@@ -134,7 +134,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                                 appendCwtLink(t, subtypeLink)
                             }
                         }
-                        CwtDataType.Enum -> {
+                        CwtDataType.EnumValue -> {
                             val enumValueName = reference.name
                             val enumName = configExpression.value!!
                             append(PlsDocBundle.message("generatedFromEnumValue"))

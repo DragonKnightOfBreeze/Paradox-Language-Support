@@ -14,7 +14,7 @@ data class CwtConfigGroupInfo(
     val filePathExpressions = mutableSetOf<CwtDataExpression>()
     
     /**
-     * @see CwtDataType.TemplateExpression
+     * @see CwtDataType.Template
      * @see CwtTemplateExpression
      */
     val templateExpressions = mutableMapOf<CwtDataExpression, MutableList<CwtTemplateExpression>>()
@@ -32,14 +32,14 @@ data class CwtConfigGroupInfo(
             CwtDataType.Icon -> {
                 configExpression.value?.let { filePathExpressions.add(configExpression) }
             }
-            CwtDataType.TemplateExpression -> {
+            CwtDataType.Template -> {
                 val templateExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
                 for(referenceExpression in templateExpression.referenceExpressions) {
                     templateExpressions.getOrPut(referenceExpression) { SmartList() }
                         .add(templateExpression)
                 }
             }
-            CwtDataType.Enum -> {
+            CwtDataType.EnumValue -> {
                 if(configExpression.value == ParadoxConfigHandler.paramsEnumName && config is CwtPropertyConfig) {
                     parameterConfigs.add(config)
                 }

@@ -46,7 +46,7 @@ object ParadoxConfigHandler {
     fun isParameter(config: CwtDataConfig<*>?): Boolean {
         if(config !is CwtPropertyConfig) return false
         val keyExpression = config.keyExpression
-        return keyExpression.type == CwtDataType.Enum && keyExpression.value == paramsEnumName
+        return keyExpression.type == CwtDataType.EnumValue && keyExpression.value == paramsEnumName
     }
     
     fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
@@ -59,7 +59,7 @@ object ParadoxConfigHandler {
     }
     
     fun isComplexEnum(config: CwtDataConfig<*>): Boolean {
-        return config.expression.type == CwtDataType.Enum
+        return config.expression.type == CwtDataType.EnumValue
             && config.expression.value?.let { config.info.configGroup.complexEnums[it] } != null
     }
     
@@ -324,7 +324,7 @@ object ParadoxConfigHandler {
                 }
                 return true
             }
-            CwtDataType.Enum -> {
+            CwtDataType.EnumValue -> {
                 //if(!expression.type.isStringType()) return false
                 if(!isStatic && isParameterAware) return true
                 val name = expression.text
@@ -456,7 +456,7 @@ object ParadoxConfigHandler {
             CwtDataType.AliasMatchLeft -> {
                 return false //不在这里处理
             }
-            CwtDataType.TemplateExpression -> {
+            CwtDataType.Template -> {
                 if(!expression.type.isStringType()) return false
                 //允许用引号括起
                 if(isStatic) return true
@@ -476,8 +476,8 @@ object ParadoxConfigHandler {
                 return true
             }
             else -> {
-                val pathReferenceExpression = ParadoxPathReferenceExpression.get(configExpression)
-                if(pathReferenceExpression != null) {
+                val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
+                if(pathReferenceExpressionSupport != null) {
                     if(!expression.type.isStringType()) return false
                     if(isStatic) return true
                     if(isParameterAware) return true
@@ -569,7 +569,7 @@ object ParadoxConfigHandler {
             CwtDataType.FilePath -> 70
             CwtDataType.FileName -> 70
             CwtDataType.Definition -> 60
-            CwtDataType.Enum -> {
+            CwtDataType.EnumValue -> {
                 val enumName = configExpression.value ?: return 0 //不期望匹配到
                 if(enumName == paramsEnumName) return 10
                 if(configGroup.enums.containsKey(enumName)) return 80
@@ -591,7 +591,7 @@ object ParadoxConfigHandler {
             CwtDataType.AliasName -> 0 //不期望匹配到
             CwtDataType.AliasKeysField -> 0 //不期望匹配到
             CwtDataType.AliasMatchLeft -> 0 //不期望匹配到
-            CwtDataType.TemplateExpression -> 65
+            CwtDataType.Template -> 65
             CwtDataType.Constant -> 100
             CwtDataType.Other -> 0 //不期望匹配到
         }
@@ -901,7 +901,7 @@ object ParadoxConfigHandler {
                         true
                     }
             }
-            CwtDataType.Enum -> {
+            CwtDataType.EnumValue -> {
                 val enumName = configExpression.value ?: return
                 //提示参数名（仅限key）
                 if(isKey == true && enumName == paramsEnumName && config is CwtPropertyConfig) {
@@ -1009,7 +1009,7 @@ object ParadoxConfigHandler {
             }
             //意味着aliasSubName是嵌入值，如modifier的名字
             CwtDataType.AliasMatchLeft -> pass()
-            CwtDataType.TemplateExpression -> {
+            CwtDataType.Template -> {
                 completeTemplateExpression(context, result)
             }
             CwtDataType.Constant -> {
@@ -1043,8 +1043,8 @@ object ParadoxConfigHandler {
                 result.addScriptExpressionElement(context, builder)
             }
             else -> {
-                val pathReferenceExpression = ParadoxPathReferenceExpression.get(configExpression)
-                if(pathReferenceExpression != null) {
+                val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
+                if(pathReferenceExpressionSupport != null) {
                     val tailText = getScriptExpressionTailText(config)
                     val fileExtensions = when(config) {
                         is CwtDataConfig<*> -> ParadoxFilePathHandler.getFileExtensionOptionValues(config)
@@ -1058,7 +1058,7 @@ object ParadoxConfigHandler {
                         .processQuery p@{ virtualFile ->
                             val file = virtualFile.toPsiFile<PsiFile>(project) ?: return@p true
                             val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
-                            val name = pathReferenceExpression.extract(configExpression, filePath) ?: return@p true
+                            val name = pathReferenceExpressionSupport.extract(configExpression, filePath) ?: return@p true
                             val builder = ParadoxScriptExpressionLookupElementBuilder.create(file, name)
                                 .withIcon(PlsIcons.PathReference)
                                 .withTailText(tailText)
@@ -1714,7 +1714,7 @@ object ParadoxConfigHandler {
                 val selector = definitionSelector(project, element).contextSensitive(exact)
                 return ParadoxDefinitionSearch.search(name, typeExpression, selector).find()
             }
-            CwtDataType.Enum -> {
+            CwtDataType.EnumValue -> {
                 val enumName = configExpression.value ?: return null
                 val name = expression
                 //尝试解析为参数名
@@ -1783,7 +1783,7 @@ object ParadoxConfigHandler {
             }
             //意味着aliasSubName是嵌入值，如modifier的名字
             CwtDataType.AliasMatchLeft -> return null
-            CwtDataType.TemplateExpression -> {
+            CwtDataType.Template -> {
                 return resolveTemplateExpression(element, expression, configExpression, configGroup)
             }
             CwtDataType.Constant -> {
@@ -1794,7 +1794,7 @@ object ParadoxConfigHandler {
                 }
             }
             else -> {
-                if(ParadoxPathReferenceExpression.get(configExpression) != null) {
+                if(ParadoxPathReferenceExpressionSupport.get(configExpression) != null) {
                     val pathReference = expression.normalizePath()
                     val selector = fileSelector(project, element).contextSensitive()
                     return ParadoxFilePathSearch.search(pathReference, configExpression, selector = selector).find()?.toPsiFile(project)
@@ -1850,7 +1850,7 @@ object ParadoxConfigHandler {
                 val selector = definitionSelector(project, element).contextSensitive()
                 return ParadoxDefinitionSearch.search(name, typeExpression, selector).findAll()
             }
-            CwtDataType.Enum -> {
+            CwtDataType.EnumValue -> {
                 val enumName = configExpression.value ?: return emptyList()
                 val name = expression
                 //尝试解析为参数名
@@ -1920,7 +1920,7 @@ object ParadoxConfigHandler {
             }
             //意味着aliasSubName是嵌入值，如modifier的名字
             CwtDataType.AliasMatchLeft -> return emptyList()
-            CwtDataType.TemplateExpression -> {
+            CwtDataType.Template -> {
                 //不在这里处理，参见：ParadoxTemplateExpression
                 return emptyList()
             }
@@ -1932,7 +1932,7 @@ object ParadoxConfigHandler {
                 }
             }
             else -> {
-                if(ParadoxPathReferenceExpression.get(configExpression) != null) {
+                if(ParadoxPathReferenceExpressionSupport.get(configExpression) != null) {
                     val pathReference = expression.normalizePath()
                     val selector = fileSelector(project, element).contextSensitive()
                     return ParadoxFilePathSearch.search(pathReference, configExpression, selector = selector).findAll().mapNotNull { it.toPsiFile(project) }
@@ -2115,7 +2115,7 @@ object ParadoxConfigHandler {
                     //精确匹配
                     for(config in configs) {
                         if(config !is CwtPropertyConfig) continue
-                        if(ParadoxConfigHandler.matchesScriptExpression(memberElement, expression, config.valueExpression, config, configGroup, matchType)) {
+                        if(matchesScriptExpression(memberElement, expression, config.valueExpression, config, configGroup, matchType)) {
                             add(config)
                         }
                     }
@@ -2126,7 +2126,7 @@ object ParadoxConfigHandler {
                             if(config !is CwtPropertyConfig) continue
                             val configExpression = config.valueExpression
                             if(!ParadoxConfigHandler.requireNotExactMatch(configExpression)) continue
-                            if(ParadoxConfigHandler.matchesScriptExpression(memberElement, expression, configExpression, config, configGroup, newMatchType)) {
+                            if(matchesScriptExpression(memberElement, expression, configExpression, config, configGroup, newMatchType)) {
                                 add(config)
                             }
                         }
@@ -2159,7 +2159,7 @@ object ParadoxConfigHandler {
                             for(config in configs) {
                                 if(config !is CwtPropertyConfig) continue
                                 val valueConfig = config.valueConfig ?:  continue
-                                if(ParadoxConfigHandler.matchesScriptExpression(valueElement, expression, valueConfig.expression, config, configGroup, matchType)) {
+                                if(matchesScriptExpression(valueElement, expression, valueConfig.expression, config, configGroup, matchType)) {
                                     add(valueConfig)
                                 }
                             }
@@ -2171,7 +2171,7 @@ object ParadoxConfigHandler {
                                     val valueConfig = config.valueConfig ?:  continue
                                     val configExpression = valueConfig.expression
                                     if(!ParadoxConfigHandler.requireNotExactMatch(configExpression)) continue
-                                    if(ParadoxConfigHandler.matchesScriptExpression(valueElement, expression, configExpression, config, configGroup, newMatchType)) {
+                                    if(matchesScriptExpression(valueElement, expression, configExpression, config, configGroup, newMatchType)) {
                                         add(valueConfig)
                                     }
                                 }
@@ -2194,7 +2194,7 @@ object ParadoxConfigHandler {
                             for(childConfig in childConfigs) {
                                 if(childConfig !is CwtValueConfig) continue
                                 //精确匹配
-                                if(ParadoxConfigHandler.matchesScriptExpression(valueElement, expression, childConfig.valueExpression, childConfig, configGroup, matchType)) {
+                                if(matchesScriptExpression(valueElement, expression, childConfig.valueExpression, childConfig, configGroup, matchType)) {
                                     add(childConfig)
                                 }
                             }
@@ -2205,7 +2205,7 @@ object ParadoxConfigHandler {
                                     if(childConfig !is CwtValueConfig) continue
                                     val configExpression = childConfig.valueExpression
                                     if(!ParadoxConfigHandler.requireNotExactMatch(configExpression)) continue
-                                    if(ParadoxConfigHandler.matchesScriptExpression(valueElement, expression, configExpression, childConfig, configGroup, newMatchType)) {
+                                    if(matchesScriptExpression(valueElement, expression, configExpression, childConfig, configGroup, newMatchType)) {
                                         add(childConfig)
                                     }
                                 }
@@ -2261,7 +2261,7 @@ object ParadoxConfigHandler {
             val matched = childConfigs.find { childConfig ->
                 if(childConfig is CwtPropertyConfig && data !is ParadoxScriptProperty) return@find false
                 if(childConfig is CwtValueConfig && data !is ParadoxScriptValue) return@find false
-                ParadoxConfigHandler.matchesScriptExpression(data, expression, childConfig.expression, childConfig, configGroup)
+                matchesScriptExpression(data, expression, childConfig.expression, childConfig, configGroup)
             }
             if(matched == null) return@p  true
             val occurrence = occurrenceMap[matched.expression]
