@@ -42,7 +42,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
     override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
         val configGroup = config.info.configGroup
         val project = configGroup.project
-        val selector = localisationSelector(project, element).contextSensitive() //不指定偏好的语言区域
+        val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
         return ParadoxLocalisationSearch.search(expression, selector).findAll()
     }
     
@@ -88,7 +88,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
     override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
         val configGroup = config.info.configGroup
         val project = configGroup.project
-        val selector = localisationSelector(project, element).contextSensitive() //不指定偏好的语言区域
+        val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
         return ParadoxSyncedLocalisationSearch.search(expression, selector).findAll()
     }
     
@@ -137,7 +137,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         if(element.text.isLeftQuoted()) return emptySet() //specific expression
         val configGroup = config.info.configGroup
         val project = configGroup.project
-        val selector = localisationSelector(project, element).contextSensitive() //不指定偏好的语言区域
+        val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
         return ParadoxLocalisationSearch.search(expression, selector).findAll()
     }
     
