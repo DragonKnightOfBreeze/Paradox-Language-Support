@@ -315,22 +315,23 @@ private val keywordDelimiters = charArrayOf('.', '_')
 /**
  * 判断指定的关键词是否匹配当前字符串。
  */
+@Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN") 
 fun String.matchesKeyword(keyword: String): Boolean {
+    if(keyword.isEmpty()) return true
+    
     //IDEA低层如何匹配关键词：
     //com.intellij.codeInsight.completion.PrefixMatcher.prefixMatches(java.lang.String)
     
-    //这里如何匹配关键词：按顺序包含所有字符，被跳过的子字符串必须以'.','_'结尾，忽略大小写
-    if(keyword.isEmpty()) return true
+    //这里如何匹配关键词：按顺序包含所有字符，忽略大小写
     var index = -1
-    var lastIndex = -2
-    for(c in keyword) {
-        index = indexOf(c, index + 1, true)
-        when {
-            index == -1 -> return false
-            c !in keywordDelimiters && index != 0 && lastIndex != index - 1 && this[index - 1] !in keywordDelimiters -> return false
-        }
-        lastIndex = index
+    for(i in 0 until keyword.length) {
+        val c = keyword[i]
+        var nextIndex = (this as java.lang.String).indexOf(c.lowercaseChar().code, index+ 1)
+        if(nextIndex == -1) nextIndex = (this as java.lang.String).indexOf(c.uppercaseChar().code, index + 1)
+        if(nextIndex == -1) return false
+        index = nextIndex
     }
+    
     return true
 }
 

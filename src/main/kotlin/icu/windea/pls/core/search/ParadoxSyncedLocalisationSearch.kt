@@ -52,6 +52,7 @@ class ParadoxSyncedLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisatio
 		 */
 		@JvmStatic
 		fun processVariants(
+			keyword: String,
 			selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
 			processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
 		): Boolean {
@@ -63,6 +64,7 @@ class ParadoxSyncedLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisatio
 			val scope = selector.scope
 			return ParadoxLocalisationNameIndex.KEY.processFirstElementByKeys(project, scope,
 				predicate = { element -> selector.select(element) },
+				keyPredicate = { key -> key.matchesKeyword(keyword) },
 				getDefaultValue = { selector.defaultValue },
 				resetDefaultValue = { selector.defaultValue = null },
 				processor = processor

@@ -54,6 +54,7 @@ class ParadoxLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisationPrope
 		 */
 		@JvmStatic
 		fun processVariants(
+			keyword: String,
 			selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
 			processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
 		): Boolean {
@@ -64,6 +65,7 @@ class ParadoxLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisationPrope
 			//保证返回结果的名字的唯一性
 			val scope = selector.scope
 			return ParadoxLocalisationNameIndex.KEY.processFirstElementByKeys(project, scope,
+				keyPredicate = { key -> key.matchesKeyword(keyword) },
 				predicate = { element -> selector.select(element) },
 				getDefaultValue = { selector.defaultValue },
 				resetDefaultValue = { selector.defaultValue = null },

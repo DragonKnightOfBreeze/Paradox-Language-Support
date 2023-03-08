@@ -822,7 +822,6 @@ inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.processFirstEleme
 	project: Project,
 	scope: GlobalSearchScope,
 	cancelable: Boolean = true,
-	maxSize: Int = 0,
 	crossinline keyPredicate: (key: K) -> Boolean = { true },
 	crossinline predicate: (T) -> Boolean = { true },
 	crossinline getDefaultValue: () -> T? = { null },
@@ -831,24 +830,25 @@ inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.processFirstEleme
 ): Boolean {
 	if(DumbService.isDumb(project)) return true
 	
-	var size = 0
 	var value: T?
-	return StubIndex.getInstance().processAllKeys(this, project) { key ->
+	return StubIndex.getInstance().processAllKeys(this, project) p@{ key ->
 		if(cancelable) ProgressManager.checkCanceled()
 		if(keyPredicate(key)) {
 			value = null
 			resetDefaultValue()
-			StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
-				if(predicate(element)) {
-					value = element
-					return@processElements false
+			withMeasureMillis("selector") {
+				StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
+					if(predicate(element)) {
+						value = element
+						return@processElements false
+					}
+					true
 				}
-				true
 			}
 			val finalValue = value ?: getDefaultValue()
 			if(finalValue != null) {
 				val result = ProcessEntry.processor(finalValue)
-				if(result && maxSize > 0 && ++size == maxSize) return@processAllKeys false
+				if(!result) return@p false
 			}
 		}
 		true

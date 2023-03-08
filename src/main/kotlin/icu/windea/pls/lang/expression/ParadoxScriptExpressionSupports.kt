@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.lang.annotation.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
+import com.intellij.patterns.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
@@ -47,13 +48,18 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
     }
     
     override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+        val keyword = context.keyword
+        
+        //因为这里的提示结果可能有上千条，按照输入的关键字过滤结果，关键字变更时重新提示
+        result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
+        
         val configGroup = config.info.configGroup
         val project = configGroup.project
         val contextElement = context.contextElement
         val tailText = ParadoxConfigHandler.getScriptExpressionTailText(config)
         //这里selector不需要指定去重
         val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale())
-        ParadoxLocalisationSearch.processVariants(selector = selector) { localisation ->
+        ParadoxLocalisationSearch.processVariants(keyword, selector) { localisation ->
             val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = localisation.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(localisation, name)
@@ -93,13 +99,18 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
     }
     
     override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+        val keyword = context.keyword
+        
+        //因为这里的提示结果可能有上千条，按照输入的关键字过滤结果，关键字变更时重新提示
+        result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
+        
         val configGroup = config.info.configGroup
         val project = configGroup.project
         val contextElement = context.contextElement
         val tailText = ParadoxConfigHandler.getScriptExpressionTailText(config)
         //这里selector不需要指定去重
         val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale())
-        ParadoxSyncedLocalisationSearch.processVariants(selector = selector) { syncedLocalisation ->
+        ParadoxSyncedLocalisationSearch.processVariants(keyword, selector) { syncedLocalisation ->
             val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = syncedLocalisation.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(syncedLocalisation, name)
@@ -143,13 +154,18 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
     
     override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
         if(context.quoted) return
+        val keyword = context.keyword
+        
+        //因为这里的提示结果可能有上千条，按照输入的关键字过滤结果，关键字变更时重新提示
+        result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
+        
         val configGroup = config.info.configGroup
         val project = configGroup.project
         val contextElement = context.contextElement
         val tailText = ParadoxConfigHandler.getScriptExpressionTailText(config)
         //这里selector不需要指定去重
         val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale())
-        ParadoxLocalisationSearch.processVariants(selector = selector) { localisation ->
+        ParadoxLocalisationSearch.processVariants(keyword, selector) { localisation ->
             val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = localisation.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(localisation, name)
