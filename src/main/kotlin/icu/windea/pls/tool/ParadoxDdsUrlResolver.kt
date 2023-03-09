@@ -119,7 +119,7 @@ object ParadoxDdsUrlResolver {
     }
     
     private fun doResolveByFilePath(filePath: String, project: Project, frame: Int): String? {
-        val file = ParadoxFilePathSearch.search(filePath, selector = nopSelector(project)).find() ?: return null
+        val file = ParadoxFilePathSearch.search(filePath, null, nopSelector(project)).find() ?: return null
         return doResolveByFile(file, frame)
     }
     

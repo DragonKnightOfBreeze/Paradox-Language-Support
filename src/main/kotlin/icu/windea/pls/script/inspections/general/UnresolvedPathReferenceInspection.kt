@@ -51,7 +51,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 val fileName = pathReferenceExpressionSupport.resolveFileName(configExpression, pathReference)
                 if(fileName.matchesGlobFileName(inspection.ignoredFileNames, true)) return
                 val selector = fileSelector(project, valueElement)
-                if(ParadoxFilePathSearch.search(pathReference, configExpression, selector = selector).findFirst() != null) return
+                if(ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null) return
                 val message = pathReferenceExpressionSupport.getUnresolvedMessage(configExpression, pathReference)
                 holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }

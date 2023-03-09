@@ -484,7 +484,7 @@ object ParadoxConfigHandler {
                     if(BitUtil.isSet(matchType, CwtConfigMatchType.FILE_PATH)) {
                         val pathReference = expression.text.normalizePath()
                         val selector = fileSelector(project, element)
-                        return ParadoxFilePathSearch.search(pathReference, configExpression, selector = selector).findFirst() != null
+                        return ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null
                     }
                     return true
                 }

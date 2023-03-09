@@ -135,7 +135,7 @@ class MissingImageInspection : LocalInspectionTool() {
             val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name)
             val iconFile = iconPaths.firstNotNullOfOrNull {
                 val iconSelector = fileSelector(project, element)
-                ParadoxFilePathSearch.search(it, selector = iconSelector).find()
+                ParadoxFilePathSearch.search(it, null, iconSelector).find()
             }
             if(iconFile == null) {
                 val message = PlsBundle.message("inspection.script.general.missingImage.description.4", name)

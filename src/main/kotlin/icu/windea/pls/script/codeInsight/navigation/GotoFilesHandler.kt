@@ -14,20 +14,21 @@ import icu.windea.pls.core.search.selectors.chained.*
 import java.util.*
 
 @Suppress("DialogTitleCapitalization")
-class GotoFilesHandler: GotoTargetHandler() {
+class GotoFilesHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
         return "navigation.goto.paradoxFiles"
     }
     
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
         val project = file.project
-        if(file.fileInfo == null) return null
+        val fileInfo = file.fileInfo ?: return null
+        val path = fileInfo.path.path
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
         val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
             //need read action here
             runReadAction {
                 val selector = fileSelector(project, file).contextSensitive()
-                val resolved = ParadoxFilePathSearch.search(file.name, selector = selector).findAll()
+                val resolved = ParadoxFilePathSearch.search(path, null, selector, ignoreLocale = true).findAll()
                 resolved.forEach { targets.add(it.toPsiFile(project)) }
             }
         }, PlsBundle.message("script.goto.files.search", file.name), true, project)

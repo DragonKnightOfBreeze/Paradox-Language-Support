@@ -71,7 +71,7 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
             runReadAction {
                 val selector = fileSelector(project, file).contextSensitive()
-                val result = ParadoxFilePathSearch.search(path, selector = selector).findAll()
+                val result = ParadoxFilePathSearch.search(path, null, selector).findAll()
                 virtualFiles.addAll(result)
             }
         }, PlsBundle.message("diff.compare.files.collect.title"), true, project)

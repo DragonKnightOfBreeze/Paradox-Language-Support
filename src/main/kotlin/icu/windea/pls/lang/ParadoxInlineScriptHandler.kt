@@ -24,7 +24,7 @@ import icu.windea.pls.script.psi.*
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxInlineScriptHandler {
     const val inlineScriptDirPath = "common/inline_scripts"
-    val inlineScriptPathExpression =  CwtValueExpression.resolve("filepath[common/inline_scripts/,.txt]")
+    val inlineScriptPathExpression = CwtValueExpression.resolve("filepath[common/inline_scripts/,.txt]")
     
     val cachedInlineScriptInfoKey = Key.create<CachedValue<ParadoxInlineScriptInfo>>("paradox.cached.inlineScriptInfo")
     val cachedInlineScriptUsageInfoKey = Key.create<CachedValue<ParadoxInlineScriptUsageInfo>>("paradox.cached.inlineScriptUsageInfo")
@@ -75,7 +75,7 @@ object ParadoxInlineScriptHandler {
     }
     
     private fun getExpressionLocation(it: CwtDataConfig<*>): String? {
-        return it.options?.find { it.key == "inline_script_expression" }?.stringValue 
+        return it.options?.find { it.key == "inline_script_expression" }?.stringValue
     }
     
     @JvmStatic
@@ -96,7 +96,7 @@ object ParadoxInlineScriptHandler {
         
         val filePath = getInlineScriptFilePath(expression)
         val selector = fileSelector(project, contextElement).contextSensitive()
-        val query = ParadoxFilePathSearch.search(filePath, selector = selector)
+        val query = ParadoxFilePathSearch.search(filePath, null, selector)
         return query.find()?.toPsiFile(project)
     }
     
@@ -106,7 +106,7 @@ object ParadoxInlineScriptHandler {
         
         val filePath = getInlineScriptFilePath(expression)
         val selector = fileSelector(project, contextElement).contextSensitive()
-        val query = ParadoxFilePathSearch.search(filePath, selector = selector)
+        val query = ParadoxFilePathSearch.search(filePath, null, selector)
         return query.processQuery {
             val file = it.toPsiFile<ParadoxScriptFile>(project)
             if(file != null) processor(file)

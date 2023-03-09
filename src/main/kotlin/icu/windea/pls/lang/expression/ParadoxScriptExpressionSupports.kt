@@ -249,7 +249,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
             //if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
             val pathReference = expression.normalizePath()
             val selector = fileSelector(project, element).contextSensitive()
-            return ParadoxFilePathSearch.search(pathReference, configExpression, selector = selector).find()?.toPsiFile(project)
+            return ParadoxFilePathSearch.search(pathReference, configExpression,  selector).find()?.toPsiFile(project)
         }
     }
     
@@ -263,7 +263,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
             //if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
             val pathReference = expression.normalizePath()
             val selector = fileSelector(project, element).contextSensitive()
-            return ParadoxFilePathSearch.search(pathReference, configExpression, selector = selector).findAll().mapNotNull { it.toPsiFile(project) }
+            return ParadoxFilePathSearch.search(pathReference, configExpression, selector).findAll().mapNotNull { it.toPsiFile(project) }
         }
     }
     
@@ -283,7 +283,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
             val selector = fileSelector(project, contextElement).contextSensitive()
                 .withFileExtensions(fileExtensions)
                 .distinctByFilePath()
-            ParadoxFilePathSearch.search(configExpression, selector = selector)
+            ParadoxFilePathSearch.search(configExpression, selector)
                 .processQuery p@{ virtualFile ->
                     val file = virtualFile.toPsiFile<PsiFile>(project) ?: return@p true
                     val filePath = virtualFile.fileInfo?.path?.path ?: return@p true

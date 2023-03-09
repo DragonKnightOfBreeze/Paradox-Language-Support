@@ -56,7 +56,7 @@ class ParadoxLocalisationIconPsiReference(
 		//如果不能解析为spriteType，则尝试解析为gfx/interface/icons及其子目录中为相同名字的dds文件
 		val fileSelector = fileSelector(project, element).contextSensitive(exact)
 		val ddsFileExpression = CwtValueExpression.resolve("icon[gfx/interface/icons/]")
-		val ddsFile = ParadoxFilePathSearch.search(iconName, ddsFileExpression, selector = fileSelector).find(exact)
+		val ddsFile = ParadoxFilePathSearch.search(iconName, ddsFileExpression, fileSelector).find(exact)
 		if(ddsFile != null) return ddsFile.toPsiFile(project)
 		//如果上述方式都无法解析，则作为生成的图标处理（解析为其他类型的定义）
 		//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
@@ -85,7 +85,7 @@ class ParadoxLocalisationIconPsiReference(
 		//如果不能解析为spriteType，则尝试解析为gfx/interface/icons及其子目录中为相同名字的dds文件
 		val fileSelector = fileSelector(project, element).contextSensitive()
 		val ddsFileExpression = CwtValueExpression.resolve("icon[gfx/interface/icons/]")
-		val ddsFiles = ParadoxFilePathSearch.search(iconName, ddsFileExpression, selector = fileSelector).findAll()
+		val ddsFiles = ParadoxFilePathSearch.search(iconName, ddsFileExpression, fileSelector).findAll()
 		if(ddsFiles.isNotEmpty()) return ddsFiles.mapNotNullTo(SmartList()) { it.toPsiFile(project) }.mapToArray { PsiElementResolveResult(it) }
 		//如果上述方式都无法解析，则作为生成的图标处理（解析为其他类型的定义）
 		//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性

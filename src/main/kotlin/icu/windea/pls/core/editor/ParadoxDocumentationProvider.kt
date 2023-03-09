@@ -242,7 +242,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name)
         val (iconPath, iconFile) = iconPaths.firstNotNullOfOrNull {
             val iconSelector = fileSelector(project, element).contextSensitive()
-            it to ParadoxFilePathSearch.search(it, selector = iconSelector).find()
+            it to ParadoxFilePathSearch.search(it, null, iconSelector).find()
         } ?: (null to null)
         //如果没找到的话，不要在文档中显示相关信息
         if(iconPath != null && iconFile != null) {

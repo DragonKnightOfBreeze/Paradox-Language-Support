@@ -101,7 +101,7 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
 //region Debug Extensions
 val isDebug = System.getProperty("pls.is.debug").toBoolean()
 
-inline fun <T> withMeasureMillis(prefix: String, enable: Boolean = true , action: () -> T): T {
+inline fun <T> withMeasureMillis(prefix: String, enable: Boolean = true, action: () -> T): T {
     if(!isDebug || !enable) return action()
     val start = System.currentTimeMillis()
     val result = action()
@@ -342,7 +342,7 @@ private fun resolveFilePathLink(linkWithoutPrefix: String, sourceElement: PsiEle
     val filePath = tokens.getOrNull(1) ?: return null
     val project = sourceElement.project
     val selector = fileSelector(project, sourceElement).contextSensitive()
-    return ParadoxFilePathSearch.search(filePath, selector = selector).find()
+    return ParadoxFilePathSearch.search(filePath, null, selector).find()
         ?.toPsiFile(project)
 }
 
@@ -422,7 +422,7 @@ fun StringBuilder.appendLocalisationLink(gameType: ParadoxGameType, name: String
 
 fun StringBuilder.appendFilePathLink(text: String, gameType: ParadoxGameType, filePath: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
     //如果可以定位到绝对路径，则显示链接
-    val isResolved = resolved == true || resolved == null && ParadoxFilePathSearch.search(filePath, selector = fileSelector(context.project, context)).findFirst() != null
+    val isResolved = resolved == true || resolved == null && ParadoxFilePathSearch.search(filePath, null, fileSelector(context.project, context)).findFirst() != null
     if(isResolved) return appendPsiLink("$filePathLinkPrefix${gameType.id}/$filePath", text)
     //否则显示未解析的链接
     return appendUnresolvedLink(filePath)
