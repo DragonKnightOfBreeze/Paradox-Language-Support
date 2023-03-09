@@ -138,45 +138,5 @@
         <add-to-group group-id="IntroduceActionsGroup" anchor="after" relative-to-action="Pls.Script.IntroduceLocalScriptedVariable"/>
       </action>
     </group>
-    <group id="Pls.Script.GotoGroup">
-      <action id="Pls.Script.GotoFiles" class="icu.windea.pls.script.codeInsight.navigation.GotoFilesAction">
-        <keyboard-shortcut first-keystroke="control ctrl alt shift o" keymap="$default"/>
-        <override-text place="MainMenu"/>
-        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
-      </action>
-      <action id="Pls.Script.GotoDefinitions" class="icu.windea.pls.script.codeInsight.navigation.GotoDefinitionsAction">
-        <keyboard-shortcut first-keystroke="control alt shift o" keymap="$default"/>
-        <keyboard-shortcut first-keystroke="control alt shift p" keymap="$default"/>
-        <mouse-shortcut keymap="$default" keystroke="control alt shift button1"/>
-        <override-text place="MainMenu"/>
-        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
-      </action>
-      <action id="Pls.Script.GotoLocalisations" class="icu.windea.pls.script.codeInsight.navigation.GotoLocalisationsAction">
-        <keyboard-shortcut first-keystroke="control alt shift o" keymap="$default"/>
-        <mouse-shortcut keymap="$default" keystroke="control alt shift button1"/>
-        <override-text place="MainMenu"/>
-        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
-      </action>
-      <action id="Pls.Script.GotoRelatedLocalisations" class="icu.windea.pls.script.codeInsight.navigation.GotoRelatedLocalisationsAction">
-        <keyboard-shortcut first-keystroke="alt shift p" keymap="$default"/>
-        <mouse-shortcut keymap="$default" keystroke="alt shift button1"/>
-        <override-text place="MainMenu"/>
-        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
-      </action>
-      <action id="Pls.Script.GotoRelatedImages" class="icu.windea.pls.script.codeInsight.navigation.GotoRelatedImagesAction">
-        <keyboard-shortcut first-keystroke="control alt shift p" keymap="$default"/>
-        <mouse-shortcut keymap="$default" keystroke="control alt shift button1"/>
-        <override-text place="MainMenu"/>
-        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
-      </action>
-      <action id="Pls.Script.GotoRelatedCwtConfigs" class="icu.windea.pls.script.codeInsight.navigation.GotoRelatedCwtConfigsAction">
-        <keyboard-shortcut first-keystroke="alt p" keymap="$default"/>
-        <mouse-shortcut keymap="$default" keystroke="alt button1"/>
-        <override-text place="MainMenu"/>
-        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
-      </action>
-      <add-to-group group-id="GoToCodeGroup" relative-to-action="GotoRelated" anchor="after"/>
-      <add-to-group group-id="EditorPopupMenu.GoTo" relative-to-action="GotoRelated" anchor="after"/>
-    </group>
   </actions>
 </idea-plugin>

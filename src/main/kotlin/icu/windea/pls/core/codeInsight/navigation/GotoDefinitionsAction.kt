@@ -1,4 +1,4 @@
-package icu.windea.pls.script.codeInsight.navigation
+package icu.windea.pls.core.codeInsight.navigation
 
 import com.intellij.codeInsight.*
 import com.intellij.codeInsight.actions.*
@@ -7,15 +7,16 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 导航到定义成员对应的CWT规则的动作。
+ * 导航到当前定义的包括自身在内的相同名称且相同主要类型的定义。
  */
-class GotoRelatedCwtConfigsAction : BaseCodeInsightAction() {
-	private val handler = GotoRelatedCwtConfigsHandler()
+class GotoDefinitionsAction : BaseCodeInsightAction() {
+	private val handler = GotoDefinitionsHandler()
 	
 	override fun getHandler(): CodeInsightActionHandler {
 		return handler
@@ -27,8 +28,7 @@ class GotoRelatedCwtConfigsAction : BaseCodeInsightAction() {
 	
 	override fun update(event: AnActionEvent) {
 		//当选中的文件是脚本文件时显示
-		//当光标位置的元素是定义的rootKey或者定义成员时显示
-		//在PSI中向上查找，定义中的任何key/value，key可以是定义的rootKey，value可以不是string
+		//当选中的文件是定义或者光标位置的元素是定义的rootKey或者作为名字的字符串时启用
 		val presentation = event.presentation
 		presentation.isEnabledAndVisible = false
 		val project = event.project
@@ -37,19 +37,25 @@ class GotoRelatedCwtConfigsAction : BaseCodeInsightAction() {
 		val file = PsiUtilBase.getPsiFileInEditor(editor, project)
 		if(file !is ParadoxScriptFile) return
 		presentation.isVisible = true
-		val offset = editor.caretModel.offset
-		val element = findElement(file, offset)
-		if(element == null) {
-			presentation.isEnabled = false
+		if(file.definitionInfo != null) {
+			presentation.isEnabled = true
 			return
 		}
-		val definition = element.findParentDefinition()
-		presentation.isEnabled = definition != null
+		val offset = editor.caretModel.offset
+		val element = findElement(file, offset)
+		val isEnabled = when {
+			element == null -> false
+			element.isDefinitionRootKeyOrName() -> true
+			else -> false
+		}
+		presentation.isEnabled = isEnabled
 	}
 	
-	private fun findElement(file: PsiFile, offset: Int): PsiElement? {
+	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
+		//direct parent
 		return file.findElementAt(offset) {
-			it.parentOfTypes(ParadoxScriptPropertyKey::class, ParadoxScriptValue::class)
+			it.parent as? ParadoxScriptStringExpressionElement
 		}?.takeIf { it.isExpression() }
 	}
 }
+

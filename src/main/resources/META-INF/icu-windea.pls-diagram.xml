@@ -5,7 +5,7 @@
   </extensions>
   
   <actions>
-    <reference id="Pls.Script.GotoGroup">
+    <reference id="Pls.GotoGroup">
       <add-to-group group-id="Uml.SourceActionsGroup.GoTo" relative-to-action="GotoRelated" anchor="after"/>
       <add-to-group group-id="Uml.NodeCellEditorPopup.GoTo" relative-to-action="GotoRelated" anchor="after"/>
     </reference>
