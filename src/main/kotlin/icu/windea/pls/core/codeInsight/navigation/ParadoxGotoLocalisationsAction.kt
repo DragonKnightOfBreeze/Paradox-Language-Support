@@ -15,7 +15,7 @@ import icu.windea.pls.localisation.psi.*
 /**
  * 导航到当前本地化的包括自身在内的相同名称的本地化。
  */
-class GotoLocalisationsAction : BaseCodeInsightAction() {
+class ParadoxGotoLocalisationsAction : BaseCodeInsightAction() {
 	private val handler = GotoLocalisationsHandler()
 	
 	override fun getHandler(): CodeInsightActionHandler {

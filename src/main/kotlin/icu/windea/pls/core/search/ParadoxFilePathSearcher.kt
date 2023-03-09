@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
+import icu.windea.pls.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.expression.*
 
@@ -22,7 +23,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         val pathReferenceExpressionSupport = if(configExpression != null) ParadoxPathReferenceExpressionSupport.get(configExpression) else null
         if(configExpression == null || pathReferenceExpressionSupport?.matchEntire(queryParameters) == true) {
             val keys = if(filePath != null) {
-                setOf(filePath)
+                getFilePaths(filePath, queryParameters)
             } else {
                 FileBasedIndex.getInstance().getAllKeys(name, project)
             }
@@ -42,5 +43,38 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
             }
             true
         }, scope, null)
+    }
+    
+    private fun getFilePaths(filePath: String, queryParameters: ParadoxFilePathSearch.SearchParameters): Set<String> {
+        if(queryParameters.ignoreLocale) {
+            return getFilePathsIgnoreLocale(filePath) ?: setOf(filePath)
+        } else {
+            return setOf(filePath)
+        }
+    }
+    
+    private fun getFilePathsIgnoreLocale(filePath: String): Set<String>? {
+        if(!filePath.endsWith(".yml", true)) return null //仅限本地化文件
+        val localeStrings = getCwtConfig().core.localisationLocales.keys.mapTo(mutableSetOf()) { it.removePrefix("l_") }
+        var index = 0
+        var usedLocaleString: String? = null
+        for(localeString in localeStrings) {
+            val nextIndex = filePath.indexOf(localeString, index)
+            if(nextIndex == -1) continue
+            index = nextIndex + localeString.length
+            if(usedLocaleString != localeString) {
+                if(usedLocaleString != null) {
+                    //类似将l_english.yml放到l_simp_chinese目录下的情况，此时直接不作处理
+                    return null
+                } else {
+                    usedLocaleString = localeString
+                }
+            }
+        }
+        if(usedLocaleString == null) return null
+        val result = mutableSetOf<String>()
+        result.add(filePath)
+        localeStrings.forEach { result.add(filePath.replace(usedLocaleString, it)) }
+        return result
     }
 }

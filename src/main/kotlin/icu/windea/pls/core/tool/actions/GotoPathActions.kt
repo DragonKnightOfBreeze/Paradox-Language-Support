@@ -15,7 +15,7 @@ import java.nio.file.*
 /**
  * 用于在文件选择页面中跳转到一个路径。
  */
-abstract class GotoPathAction : FileChooserAction(), LightEditCompatible {
+abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
     abstract val targetPath: Path?
     
     open val expand: Boolean = false
@@ -60,7 +60,7 @@ abstract class GotoPathAction : FileChooserAction(), LightEditCompatible {
     }
 }
 
-class GotoSteamPathAction : GotoPathAction() {
+class GoToSteamPathAction : GoToPathAction() {
     override var targetPath: Path? = null
     
     override fun setVisible(e: AnActionEvent): Boolean {
@@ -73,7 +73,7 @@ class GotoSteamPathAction : GotoPathAction() {
     }
 }
 
-class GotoSteamGamePathAction : GotoPathAction() {
+class GoToSteamGamePathAction : GoToPathAction() {
     private var gameType: ParadoxGameType? = null
     
     override var targetPath: Path? = null
@@ -89,7 +89,7 @@ class GotoSteamGamePathAction : GotoPathAction() {
     }
 }
 
-class GotoSteamWorkshopPathAction : GotoPathAction() {
+class GoToSteamWorkshopPathAction : GoToPathAction() {
     private var gameType: ParadoxGameType? = null
     
     override var targetPath: Path? = null
@@ -107,7 +107,7 @@ class GotoSteamWorkshopPathAction : GotoPathAction() {
 }
 
 
-class GotoGameDataPathAction : GotoPathAction() {
+class GoToGameDataPathAction : GoToPathAction() {
     private var gameType: ParadoxGameType? = null
     
     override var targetPath: Path? = null

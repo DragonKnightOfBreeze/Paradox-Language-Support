@@ -9,9 +9,9 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 
 /**
- * 导航到当前文件的包括自身在内的相同路径的文件。
+ * 导航到当前文件的包括自身在内的相同路径的文件。如果是本地化文件的话也忽略路径中的语言区域。
  */
-class GotoFilesAction : BaseCodeInsightAction() {
+class ParadoxGotoFilesAction : BaseCodeInsightAction() {
 	private val handler = GotoFilesHandler()
 	
 	override fun getHandler(): CodeInsightActionHandler {

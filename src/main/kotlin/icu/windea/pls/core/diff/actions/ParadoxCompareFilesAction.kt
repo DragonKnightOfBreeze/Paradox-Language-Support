@@ -27,7 +27,7 @@ import java.util.*
 import javax.swing.*
 
 /**
- * 将当前文件与包括当前文件的只读副本在内的相同路径的文件进行DIFF。
+ * 将当前文件与包括当前文件的只读副本在内的相同路径的文件进行DIFF。如果是本地化文件的话也忽略路径中的语言区域。
  *
  * * 当当前文件是模组或游戏文件时显示并启用。
  * * 忽略直接位于游戏或模组入口目录下的文件。
@@ -71,7 +71,7 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
             runReadAction {
                 val selector = fileSelector(project, file).contextSensitive()
-                val result = ParadoxFilePathSearch.search(path, null, selector).findAll()
+                val result = ParadoxFilePathSearch.search(path, null, selector, ignoreLocale = true).findAll()
                 virtualFiles.addAll(result)
             }
         }, PlsBundle.message("diff.compare.files.collect.title"), true, project)

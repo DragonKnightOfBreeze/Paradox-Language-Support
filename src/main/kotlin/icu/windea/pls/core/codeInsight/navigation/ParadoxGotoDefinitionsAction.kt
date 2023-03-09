@@ -10,14 +10,13 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 导航到当前定义/修正的相关本地化的动作。
+ * 导航到当前定义的包括自身在内的相同名称且相同主要类型的定义。
  */
-class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
-	private val handler = GotoRelatedLocalisationsHandler()
+class ParadoxGotoDefinitionsAction : BaseCodeInsightAction() {
+	private val handler = GotoDefinitionsHandler()
 	
 	override fun getHandler(): CodeInsightActionHandler {
 		return handler
@@ -30,7 +29,6 @@ class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
 	override fun update(event: AnActionEvent) {
 		//当选中的文件是脚本文件时显示
 		//当选中的文件是定义或者光标位置的元素是定义的rootKey或者作为名字的字符串时启用
-		//当光标位置的元素是修正的引用时启用
 		val presentation = event.presentation
 		presentation.isEnabledAndVisible = false
 		val project = event.project
@@ -48,7 +46,6 @@ class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
 		val isEnabled = when {
 			element == null -> false
 			element.isDefinitionRootKeyOrName() -> true
-			ParadoxModifierHandler.resolveModifier(element) != null -> true
 			else -> false
 		}
 		presentation.isEnabled = isEnabled
