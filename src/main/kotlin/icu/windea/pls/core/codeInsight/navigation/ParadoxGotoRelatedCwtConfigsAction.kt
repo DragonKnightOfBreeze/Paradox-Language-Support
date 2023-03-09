@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.*
  * 导航到定义成员对应的CWT规则的动作。
  */
 class ParadoxGotoRelatedCwtConfigsAction : BaseCodeInsightAction() {
-	private val handler = GotoRelatedCwtConfigsHandler()
+	private val handler = ParadoxGotoRelatedCwtConfigsHandler()
 	
 	override fun getHandler(): CodeInsightActionHandler {
 		return handler

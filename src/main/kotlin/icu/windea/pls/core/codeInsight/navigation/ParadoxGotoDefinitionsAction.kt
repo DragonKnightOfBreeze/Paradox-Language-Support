@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.*
  * 导航到当前定义的包括自身在内的相同名称且相同主要类型的定义。
  */
 class ParadoxGotoDefinitionsAction : BaseCodeInsightAction() {
-	private val handler = GotoDefinitionsHandler()
+	private val handler = ParadoxGotoDefinitionsHandler()
 	
 	override fun getHandler(): CodeInsightActionHandler {
 		return handler

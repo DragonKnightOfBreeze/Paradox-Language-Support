@@ -193,20 +193,17 @@
 
     <group id="Pls.GotoGroup">
       <action id="Pls.ParadoxGoToFiles" class="icu.windea.pls.core.codeInsight.navigation.ParadoxGotoFilesAction">
-        <keyboard-shortcut first-keystroke="control ctrl alt shift o" keymap="$default"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt f"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
       <action id="Pls.ParadoxGoToDefinitions" class="icu.windea.pls.core.codeInsight.navigation.ParadoxGotoDefinitionsAction">
-        <keyboard-shortcut first-keystroke="control alt shift o" keymap="$default"/>
-        <keyboard-shortcut first-keystroke="control alt shift p" keymap="$default"/>
-        <mouse-shortcut keymap="$default" keystroke="control alt shift button1"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt o"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
       <action id="Pls.ParadoxGoToLocalisations" class="icu.windea.pls.core.codeInsight.navigation.ParadoxGotoLocalisationsAction">
-        <keyboard-shortcut first-keystroke="control alt shift o" keymap="$default"/>
-        <mouse-shortcut keymap="$default" keystroke="control alt shift button1"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt o"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
@@ -235,15 +232,15 @@
     <group id="Pls.Diff">
       <action id="Pls.Diff.ParadoxCompareFiles" class="icu.windea.pls.core.diff.actions.ParadoxCompareFilesAction"
               icon="AllIcons.Actions.Diff">
-        <keyboard-shortcut keymap="$default" first-keystroke="control alt f"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="control shift alt f"/>
       </action>
       <action id="Pls.Diff.ParadoxCompareDefinitions" class="icu.windea.pls.core.diff.actions.ParadoxCompareDefinitionsAction"
               icon="AllIcons.Actions.Diff">
-        <keyboard-shortcut keymap="$default" first-keystroke="control alt d"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="control shift alt o"/>
       </action>
       <action id="Pls.Diff.ParadoxCompareLocalisations" class="icu.windea.pls.core.diff.actions.ParadoxCompareLocalisationsAction"
               icon="AllIcons.Actions.Diff">
-        <keyboard-shortcut keymap="$default" first-keystroke="control alt l"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="control shift alt o"/>
       </action>
       <add-to-group group-id="EditorContextBarMenu" anchor="last"/>
     </group>

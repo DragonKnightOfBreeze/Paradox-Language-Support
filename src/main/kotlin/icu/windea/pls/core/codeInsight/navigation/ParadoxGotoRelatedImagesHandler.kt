@@ -19,7 +19,7 @@ import java.util.*
 //com.intellij.testIntegration.GotoTestOrCodeHandler
 
 @Suppress("DialogTitleCapitalization")
-class GotoRelatedImagesHandler : GotoTargetHandler() {
+class ParadoxGotoRelatedImagesHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
         return "navigation.goto.paradoxRelatedImages"
     }

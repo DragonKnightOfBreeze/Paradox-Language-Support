@@ -19,7 +19,7 @@ import java.util.*
 //com.intellij.testIntegration.GotoTestOrCodeHandler
 
 @Suppress("DialogTitleCapitalization")
-class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
+class ParadoxGotoRelatedLocalisationsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
         return "navigation.goto.paradoxRelatedLocalisations"
     }

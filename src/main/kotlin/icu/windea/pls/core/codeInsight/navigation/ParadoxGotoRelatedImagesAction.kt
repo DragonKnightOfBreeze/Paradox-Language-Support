@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.*
  * 导航到当前定义/修正的相关图片的动作。
  */
 class ParadoxGotoRelatedImagesAction : BaseCodeInsightAction() {
-	private val handler = GotoRelatedImagesHandler()
+	private val handler = ParadoxGotoRelatedImagesHandler()
 	
 	override fun getHandler(): CodeInsightActionHandler {
 		return handler
