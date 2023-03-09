@@ -1,4 +1,4 @@
-package icu.windea.pls.script.codeInsight.navigation
+package icu.windea.pls.core.codeInsight.navigation
 
 import com.intellij.codeInsight.navigation.*
 import com.intellij.openapi.application.*
@@ -19,9 +19,9 @@ import java.util.*
 //com.intellij.testIntegration.GotoTestOrCodeHandler
 
 @Suppress("DialogTitleCapitalization")
-class GotoRelatedImagesHandler : GotoTargetHandler() {
+class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
-        return "navigation.goto.paradoxRelatedImages"
+        return "navigation.goto.paradoxRelatedLocalisations"
     }
     
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
@@ -31,38 +31,47 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
         if(element.isDefinitionRootKeyOrName()) {
             val definition = element.findParentDefinition() ?: return null
             val definitionInfo = definition.definitionInfo ?: return null
-            val imageInfos = definitionInfo.images
-            if(imageInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
+            val localisationInfos = definitionInfo.localisations
+            if(localisationInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
             val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
             val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
                 //need read action here
                 runReadAction {
-                    for((_, locationExpression) in imageInfos) {
+                    for((_, locationExpression) in localisationInfos) {
                         ProgressManager.checkCanceled()
-                        val resolved = locationExpression.resolveAll(definition, definitionInfo, project) ?: continue
-                        if(resolved.files.isNotEmpty()) {
-                            targets.addAll(resolved.files)
+                        val selector = localisationSelector(project, definition).contextSensitive().preferLocale(preferredParadoxLocale())
+                        val resolved = locationExpression.resolveAll(definitionInfo.name, definition, selector) ?: continue
+                        if(resolved.localisations.isNotEmpty()) {
+                            targets.addAll(resolved.localisations)
                         }
                     }
                 }
-            }, PlsBundle.message("script.goto.relatedImages.search.1", definitionInfo.name), true, project)
+            }, PlsBundle.message("script.goto.relatedLocalisations.search.1", definitionInfo.name), true, project)
             if(!runResult) return null
             return GotoData(definition, targets.toTypedArray(), emptyList())
         }
         val modifierElement = ParadoxModifierHandler.resolveModifier(element)
         if(modifierElement != null) {
+            val gameType = modifierElement.gameType
             val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
             val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
                 runReadAction {
-                    val iconPaths = ParadoxModifierHandler.getModifierIconPaths(modifierElement.name)
-                    val iconFiles = iconPaths.firstNotNullOfOrNull {
-                        val iconSelector = fileSelector(project, element).contextSensitive()
-                        val result = ParadoxFilePathSearch.search(it, null, iconSelector).findAll()
+                    val nameKeys = ParadoxModifierHandler.getModifierNameKeys(modifierElement.name)
+                    val localisations = nameKeys.firstNotNullOfOrNull {
+                        val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
+                        val result = ParadoxLocalisationSearch.search(it, selector).findAll()
                         result.takeIfNotEmpty()
                     }
-                    if(iconFiles != null) targets.addAll(targets)
+                    if(localisations != null) targets.addAll(localisations)
+                    val descKeys = ParadoxModifierHandler.getModifierDescKeys(modifierElement.name)
+                    val descLocalisations = descKeys.firstNotNullOfOrNull {
+                        val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
+                        val result = ParadoxLocalisationSearch.search(it, selector).findAll()
+                        result.takeIfNotEmpty()
+                    }
+                    if(descLocalisations != null) targets.addAll(descLocalisations)
                 }
-            }, PlsBundle.message("script.goto.relatedImages.search.2", modifierElement.name), true, project)
+            }, PlsBundle.message("script.goto.relatedLocalisations.search.2", modifierElement.name), true, project)
             if(!runResult) return null
             return GotoData(element, targets.toTypedArray(), emptyList())
         }
@@ -84,34 +93,34 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
         val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
         if(definitionInfo != null) {
             val definitionName = definitionInfo.name.orAnonymous()
-            return PlsBundle.message("script.goto.relatedImages.chooseTitle.1", definitionName.escapeXml())
+            return PlsBundle.message("script.goto.relatedLocalisations.chooseTitle.1", definitionName.escapeXml())
         }
         val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()?.let { ParadoxModifierHandler.resolveModifier(it) }
         if(modifierElement != null) {
             val modifierName = modifierElement.name
-            return PlsBundle.message("script.goto.relatedImages.chooseTitle.2", modifierName.escapeXml())
+            return PlsBundle.message("script.goto.relatedLocalisations.chooseTitle.2", modifierName.escapeXml())
         }
         val sourceName = sourceElement.text.unquote()
-        return PlsBundle.message("script.goto.relatedImages.chooseTitle.0", sourceName.escapeXml())
+        return PlsBundle.message("script.goto.relatedLocalisations.chooseTitle.0", sourceName.escapeXml())
     }
     
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
         if(definitionInfo != null) {
             val definitionName = definitionInfo.name.orAnonymous()
-            return PlsBundle.message("script.goto.relatedImages.findUsagesTitle.1", definitionName.escapeXml())
+            return PlsBundle.message("script.goto.relatedLocalisations.findUsagesTitle.1", definitionName.escapeXml())
         }
         val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()?.let { ParadoxModifierHandler.resolveModifier(it) }
         if(modifierElement != null) {
             val modifierName = modifierElement.name
-            return PlsBundle.message("script.goto.relatedImages.findUsagesTitle.2", modifierName.escapeXml())
+            return PlsBundle.message("script.goto.relatedLocalisations.findUsagesTitle.2", modifierName.escapeXml())
         }
         val sourceName = sourceElement.text.unquote()
-        return PlsBundle.message("script.goto.relatedImages.findUsagesTitle.0", sourceName.escapeXml())
+        return PlsBundle.message("script.goto.relatedLocalisations.findUsagesTitle.0", sourceName.escapeXml())
     }
     
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.relatedImages.notFoundMessage")
+        return PlsBundle.message("script.goto.relatedLocalisations.notFoundMessage")
     }
     
     override fun navigateToElement(descriptor: Navigatable) {

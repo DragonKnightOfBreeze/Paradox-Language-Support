@@ -1,4 +1,4 @@
-package icu.windea.pls.script.codeInsight.navigation
+package icu.windea.pls.core.codeInsight.navigation
 
 import com.intellij.codeInsight.navigation.*
 import com.intellij.openapi.editor.*
