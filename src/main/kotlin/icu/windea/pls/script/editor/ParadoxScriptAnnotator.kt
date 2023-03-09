@@ -196,19 +196,19 @@ class ParadoxScriptAnnotator : Annotator {
     }
     
     private fun doAnnotateComplexExpression(element: ParadoxScriptStringExpressionElement, expressionNode: ParadoxExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>) {
-        val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRangeAfterUnquote.startOffset)
         val attributesKey = expressionNode.getAttributesKey()
-        
         if(attributesKey != null) {
             if(expressionNode is ParadoxTokenExpressionNode) {
                 //override default highlight by highlighter (property key or string)
                 holder.newSilentAnnotation(INFORMATION).textAttributes(HighlighterColors.TEXT).create()
             }
+            val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRangeAfterUnquote.startOffset)
             doHighlightScriptExpression(element, rangeToAnnotate, attributesKey, holder)
         }
         val attributesKeyConfig = expressionNode.getAttributesKeyConfig(element)
         if(attributesKeyConfig != null) {
-            annotateExpression(element, expressionNode.rangeInExpression, holder, attributesKeyConfig)
+            val rangeInElement = expressionNode.rangeInExpression.shiftRight(if(element.text.isLeftQuoted()) 1 else 0)
+            annotateExpression(element, rangeInElement, holder, attributesKeyConfig)
         }
         if(expressionNode.nodes.isNotEmpty()) {
             for(node in expressionNode.nodes) {
