@@ -1,17 +1,16 @@
 <p>Support for Paradox Language.</p>
 <p>Support Paradox script language (mainly <code>*.txt</code> files) and localisation language (<code>*.yml</code> files),
-provide features such as syntax parsing, reference resolving, quick documentation code navigation, code inspection,
+provide features such as syntax parsing, reference resolving, quick documentation, code navigation, code inspection,
 inlay hints, live template,
 localisation text rendering and DDS image rendering.</p>
 <p>Support cwt language (<code>*.cwt</code> files),
 provide features such as syntax parsing, reference resolving, quick documentation and code navigation.</p>
 <p>Support DDS image viewing in IDE, and provide necessary editor features, as common image support by IDE.</p>
 <p>This plugin automatically recognizes script files and localization files in game directories (containing the launcher configuration file <code>launcher-settings.json</code>) and mod directories (containing the mod descriptor file <code>description.mod</code>).</p>
-<p>This plugin shares rule files (<code>*.cwt</code>) with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>,
+<p>This plugin shares rule files (<code>*.cwt</code>) with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>.
 These rule files are build-in provided by this plugin, with some modifications and extensions.</p>
 <p>By game / mod settings dialog opened from editor&#39;s floating toolbar or popup menu,
 you can change game type, game directory and mod dependencies of that game / mod.</p>
-<p>You can change the game type, game directory, dependency and other configuration items of the game module through the Game Configuration module configuration dialog box opened by the editor floating toolbar or the right click menu.</p>
 <p>By plugin&#39;s settings page <code>Settings &gt; Languages &amp; Frameworks &gt; Paradox Language Support</code>
 and some IDE&#39;s general settings page,
 you can change some global settings.</p>

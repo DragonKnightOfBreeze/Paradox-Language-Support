@@ -13,7 +13,7 @@
 IDEA Plugin: Support for Paradox Language.
 
 Support Paradox script language (mainly `*.txt` files) and localisation language (`*.yml` files),
-provide features such as syntax parsing, reference resolving, quick documentation code navigation, code inspection,
+provide features such as syntax parsing, reference resolving, quick documentation, code navigation, code inspection,
 inlay hints, live template,
 localisation text rendering and DDS image rendering.
 
@@ -24,13 +24,11 @@ Support DDS image viewing in IDE, and provide necessary editor features, as comm
 
 This plugin automatically recognizes script files and localization files in game directories (containing the launcher configuration file `launcher-settings.json`) and mod directories (containing the mod descriptor file `description.mod`).
 
-This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode),
+This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode).
 These rule files are build-in provided by this plugin, with some modifications and extensions.
 
 By game / mod settings dialog opened from editor's floating toolbar or popup menu,
 you can change game type, game directory and mod dependencies of that game / mod.
-
-You can change the game type, game directory, dependency and other configuration items of the game module through the Game Configuration module configuration dialog box opened by the editor floating toolbar or the right click menu.
 
 By plugin's settings page `Settings > Languages & Frameworks > Paradox Language Support`
 and some IDE's general settings page,

@@ -1,12 +1,17 @@
 package icu.windea.pls.script.codeInsight.navigation
 
 import com.intellij.codeInsight.navigation.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.pom.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.search.*
+import icu.windea.pls.core.search.selectors.chained.*
+import java.util.*
 
 @Suppress("DialogTitleCapitalization")
 class GotoFilesHandler: GotoTargetHandler() {
@@ -14,8 +19,20 @@ class GotoFilesHandler: GotoTargetHandler() {
         return "navigation.goto.paradoxFiles"
     }
     
-    override fun getSourceAndTargetElements(editor: Editor?, file: PsiFile?): GotoData? {
-        TODO("Not yet implemented")
+    override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
+        val project = file.project
+        if(file.fileInfo == null) return null
+        val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
+        val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
+            //need read action here
+            runReadAction {
+                val selector = fileSelector(project, file).contextSensitive()
+                val resolved = ParadoxFilePathSearch.search(file.name, selector = selector).findAll()
+                resolved.forEach { targets.add(it.toPsiFile(project)) }
+            }
+        }, PlsBundle.message("script.goto.files.search", file.name), true, project)
+        if(!runResult) return null
+        return GotoData(file, targets.toTypedArray(), emptyList())
     }
     
     override fun shouldSortTargets(): Boolean {
