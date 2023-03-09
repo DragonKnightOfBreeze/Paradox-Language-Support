@@ -62,7 +62,7 @@ class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     
     private fun getReadWriteAccess(element: PsiElement) = when {
         element is ParadoxParameter -> ReadWriteAccessDetector.Access.Read
-        element is ParadoxArgument -> ReadWriteAccessDetector.Access.Write
+        element is ParadoxArgument -> ReadWriteAccessDetector.Access.Read
         else -> ReadWriteAccessDetector.Access.ReadWrite
     }
     
