@@ -43,12 +43,6 @@ object ParadoxConfigHandler {
     //region Common Methods
     const val paramsEnumName = "scripted_effect_params"
     
-    fun isParameter(config: CwtDataConfig<*>?): Boolean {
-        if(config !is CwtPropertyConfig) return false
-        val keyExpression = config.keyExpression
-        return keyExpression.type == CwtDataType.EnumValue && keyExpression.value == paramsEnumName
-    }
-    
     fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
         return propertyConfig.keyExpression.type == CwtDataType.AliasName
             && propertyConfig.valueExpression.type == CwtDataType.AliasMatchLeft
@@ -329,8 +323,6 @@ object ParadoxConfigHandler {
                 if(!isStatic && isParameterAware) return true
                 val name = expression.text
                 val enumName = configExpression.value ?: return false //invalid cwt config
-                //匹配参数名（即使对应的定义声明中不存在对应名字的参数，也总是匹配）
-                if(!isStatic && expression.isKey == true && enumName == paramsEnumName) return true
                 //匹配简单枚举
                 val enumConfig = configGroup.enums[enumName]
                 if(enumConfig != null) {
@@ -435,6 +427,10 @@ object ParadoxConfigHandler {
                 if(!isStatic && isParameterAware) return true
                 //匹配预定义的modifier
                 return matchesModifier(element, expression.text, configGroup)
+            }
+            CwtDataType.Parameter -> {
+                //匹配参数名（即使对应的定义声明中不存在对应名字的参数，也总是匹配）
+                return true
             }
             CwtDataType.ShaderEffect -> {
                 //暂时作为一般的字符串处理
@@ -571,7 +567,6 @@ object ParadoxConfigHandler {
             CwtDataType.Definition -> 60
             CwtDataType.EnumValue -> {
                 val enumName = configExpression.value ?: return 0 //不期望匹配到
-                if(enumName == paramsEnumName) return 10
                 if(configGroup.enums.containsKey(enumName)) return 80
                 if(configGroup.complexEnums.containsKey(enumName)) return 45
                 return 0 //不期望匹配到，规则有误！
@@ -586,6 +581,7 @@ object ParadoxConfigHandler {
             CwtDataType.VariableField -> 30
             CwtDataType.IntVariableField -> 30
             CwtDataType.Modifier -> 55 //lower than definition
+            CwtDataType.Parameter -> 10
             CwtDataType.ShaderEffect -> 85 // (80,90)
             CwtDataType.SingleAliasRight -> 0 //不期望匹配到
             CwtDataType.AliasName -> 0 //不期望匹配到

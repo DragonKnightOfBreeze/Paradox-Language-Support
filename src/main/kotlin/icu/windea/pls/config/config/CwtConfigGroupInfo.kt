@@ -4,7 +4,6 @@ import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 
 data class CwtConfigGroupInfo(
     val groupName: String
@@ -22,7 +21,7 @@ data class CwtConfigGroupInfo(
     val aliasNamesSupportScope = mutableSetOf<String>()
     
     //enum[scripted_effect_params] = xxx
-    val parameterConfigs = mutableListOf<CwtPropertyConfig>() 
+    val parameterConfigs = mutableListOf<CwtDataConfig<*>>()
     
     fun acceptConfigExpression(configExpression: CwtDataExpression, config: CwtConfig<*>?) {
         when(configExpression.type) {
@@ -39,8 +38,8 @@ data class CwtConfigGroupInfo(
                         .add(templateExpression)
                 }
             }
-            CwtDataType.EnumValue -> {
-                if(configExpression.value == ParadoxConfigHandler.paramsEnumName && config is CwtPropertyConfig) {
+            CwtDataType.Parameter -> {
+                if(config is CwtPropertyConfig) {
                     parameterConfigs.add(config)
                 }
             }

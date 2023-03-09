@@ -30,7 +30,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if(expression.isParameterAwareExpression()) return
         val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
-        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRangeAfterUnquote 
+        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRangeAfterUnquote
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
     
@@ -254,7 +254,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
             //if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
             val pathReference = expression.normalizePath()
             val selector = fileSelector(project, element).contextSensitive()
-            return ParadoxFilePathSearch.search(pathReference, configExpression,  selector).find()?.toPsiFile(project)
+            return ParadoxFilePathSearch.search(pathReference, configExpression, selector).find()?.toPsiFile(project)
         }
     }
     
@@ -315,7 +315,6 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
         val configGroup = config.info.configGroup
         val enumName = config.expression?.value ?: return
         val attributesKey = when {
-            enumName == ParadoxConfigHandler.paramsEnumName -> ParadoxScriptAttributesKeys.ARGUMENT_KEY
             configGroup.enums[enumName] != null -> ParadoxScriptAttributesKeys.ENUM_VALUE_KEY
             configGroup.complexEnums[enumName] != null -> ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE_KEY
             else -> ParadoxScriptAttributesKeys.ENUM_VALUE_KEY
@@ -328,16 +327,6 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
         val enumName = config.expression?.value ?: return null
         val configGroup = config.info.configGroup
         val project = configGroup.project
-        //尝试解析为参数名
-        if(isKey == true && enumName == ParadoxConfigHandler.paramsEnumName && config is CwtPropertyConfig) {
-            val invocationExpression = element.findParentProperty(fromParentBlock = true)
-                ?.castOrNull<ParadoxScriptProperty>()
-                ?: return null
-            val invocationExpressionConfig = config.parent
-                ?.castOrNull<CwtPropertyConfig>()
-                ?: return null
-            return ParadoxParameterSupport.resolveParameterFromInvocationExpression(expression, invocationExpression, invocationExpressionConfig)
-        }
         //尝试解析为简单枚举
         val enumConfig = configGroup.enums[enumName]
         if(enumConfig != null) {
@@ -360,17 +349,6 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
         val configGroup = config.info.configGroup
         val project = configGroup.project
         val name = expression
-        //尝试解析为参数名
-        if(isKey == true && enumName == ParadoxConfigHandler.paramsEnumName && config is CwtPropertyConfig) {
-            val invocationExpression = element.findParentProperty(fromParentBlock = true)
-                ?.castOrNull<ParadoxScriptProperty>()
-                ?: return emptySet()
-            val invocationExpressionConfig = config.parent
-                ?.castOrNull<CwtPropertyConfig>()
-                ?: return emptySet()
-            return ParadoxParameterSupport.resolveParameterFromInvocationExpression(name, invocationExpression, invocationExpressionConfig)
-                .toSingletonListOrEmpty()
-        }
         //尝试解析为简单枚举
         val enumConfig = configGroup.enums[enumName]
         if(enumConfig != null) {
@@ -393,14 +371,6 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
         val configGroup = config.info.configGroup
         val project = configGroup.project
         val contextElement = context.contextElement
-        //提示参数名（仅限key）
-        if(context.isKey == true && enumName == ParadoxConfigHandler.paramsEnumName && config is CwtPropertyConfig) {
-            ProgressManager.checkCanceled()
-            val invocationExpressionElement = contextElement.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return
-            val invocationExpressionConfig = config.parent as? CwtPropertyConfig ?: return
-            ParadoxConfigHandler.completeParametersForInvocationExpression(invocationExpressionElement, invocationExpressionConfig, context, result)
-            return
-        }
         val tailText = ParadoxConfigHandler.getScriptExpressionTailText(config)
         //提示简单枚举
         val enumConfig = configGroup.enums[enumName]
@@ -467,6 +437,61 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport() 
     override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
         //提示预定义的modifier
         ParadoxConfigHandler.completeModifier(context, result)
+    }
+}
+
+class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport() {
+    override fun supports(config: CwtConfig<*>): Boolean {
+        return config.expression?.type == CwtDataType.Parameter
+    }
+    
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+        if(expression.isParameterAwareExpression()) return
+        val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT_KEY
+        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRangeAfterUnquote
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+    }
+    
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+        //尝试解析为参数名（仅限key）
+        if(isKey == true && config is CwtPropertyConfig) {
+            val invocationExpression = element.findParentProperty(fromParentBlock = true)
+                ?.castOrNull<ParadoxScriptProperty>()
+                ?: return null
+            val invocationExpressionConfig = config.parent
+                ?.castOrNull<CwtPropertyConfig>()
+                ?: return null
+            return ParadoxParameterSupport.resolveParameterFromInvocationExpression(expression, invocationExpression, invocationExpressionConfig)
+        }
+        return null
+    }
+    
+    override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
+        val name = expression
+        //尝试解析为参数名（仅限key）
+        if(isKey == true && config is CwtPropertyConfig) {
+            val invocationExpression = element.findParentProperty(fromParentBlock = true)
+                ?.castOrNull<ParadoxScriptProperty>()
+                ?: return emptySet()
+            val invocationExpressionConfig = config.parent
+                ?.castOrNull<CwtPropertyConfig>()
+                ?: return emptySet()
+            return ParadoxParameterSupport.resolveParameterFromInvocationExpression(name, invocationExpression, invocationExpressionConfig)
+                .toSingletonListOrEmpty()
+        }
+        return emptySet()
+    }
+    
+    override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+        val contextElement = context.contextElement
+        //提示参数名（仅限key）
+        if(context.isKey == true && config is CwtPropertyConfig) {
+            ProgressManager.checkCanceled()
+            val invocationExpressionElement = contextElement.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return
+            val invocationExpressionConfig = config.parent as? CwtPropertyConfig ?: return
+            ParadoxConfigHandler.completeParametersForInvocationExpression(invocationExpressionElement, invocationExpressionConfig, context, result)
+            return
+        }
     }
 }
 

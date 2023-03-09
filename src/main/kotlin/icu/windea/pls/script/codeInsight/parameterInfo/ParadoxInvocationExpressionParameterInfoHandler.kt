@@ -4,6 +4,7 @@ import com.intellij.lang.parameterInfo.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.*
@@ -29,7 +30,7 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
                     ?.getConfigs()
                     ?.any { config ->
                         config is CwtPropertyConfig && config.properties?.any { prop ->
-                            prop.keyExpression.let { ParadoxConfigHandler.isParameter(prop) }
+                            prop.keyExpression.let { prop.expression.type == CwtDataType.Parameter }
                         } ?: false
                     } ?: false
             }

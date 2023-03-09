@@ -33,6 +33,7 @@ enum class CwtDataType {
     VariableField,
     IntVariableField,
     Modifier, //<modifier>
+    Parameter, //enum[scripted_effect_params]
     SingleAliasRight,
     AliasName,
     AliasKeysField,
