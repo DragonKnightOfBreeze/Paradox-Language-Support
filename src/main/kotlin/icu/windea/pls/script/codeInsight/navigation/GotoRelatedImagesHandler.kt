@@ -19,9 +19,9 @@ import java.util.*
 //com.intellij.testIntegration.GotoTestOrCodeHandler
 
 @Suppress("DialogTitleCapitalization")
-class GotoRelatedImageHandler : GotoTargetHandler() {
+class GotoRelatedImagesHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
-        return "navigation.goto.paradoxRelatedImage"
+        return "navigation.goto.paradoxRelatedImages"
     }
     
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
@@ -45,14 +45,12 @@ class GotoRelatedImageHandler : GotoTargetHandler() {
                         }
                     }
                 }
-            }, PlsBundle.message("script.goto.relatedImage.search.1", definitionInfo.name), true, project)
+            }, PlsBundle.message("script.goto.relatedImages.search.1", definitionInfo.name), true, project)
             if(!runResult) return null
             return GotoData(definition, targets.toTypedArray(), emptyList())
         }
         val modifierElement = ParadoxModifierHandler.resolveModifier(element)
         if(modifierElement != null) {
-            val gameType = modifierElement.gameType
-            val configGroup = getCwtConfig(project).getValue(gameType)
             val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
             val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
                 runReadAction {
@@ -64,7 +62,7 @@ class GotoRelatedImageHandler : GotoTargetHandler() {
                     }
                     if(iconFiles != null) targets.addAll(targets)
                 }
-            }, PlsBundle.message("script.goto.relatedImage.search.2", modifierElement.name), true, project)
+            }, PlsBundle.message("script.goto.relatedImages.search.2", modifierElement.name), true, project)
             if(!runResult) return null
             return GotoData(element, targets.toTypedArray(), emptyList())
         }
@@ -86,38 +84,34 @@ class GotoRelatedImageHandler : GotoTargetHandler() {
         val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
         if(definitionInfo != null) {
             val definitionName = definitionInfo.name.orAnonymous()
-            return PlsBundle.message("script.goto.relatedImage.chooseTitle.1", definitionName.escapeXml())
+            return PlsBundle.message("script.goto.relatedImages.chooseTitle.1", definitionName.escapeXml())
         }
         val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()?.let { ParadoxModifierHandler.resolveModifier(it) }
         if(modifierElement != null) {
             val modifierName = modifierElement.name
-            return PlsBundle.message("script.goto.relatedImage.chooseTitle.2", modifierName.escapeXml())
+            return PlsBundle.message("script.goto.relatedImages.chooseTitle.2", modifierName.escapeXml())
         }
         val sourceName = sourceElement.text.unquote()
-        return PlsBundle.message("script.goto.relatedImage.chooseTitle.0", sourceName.escapeXml())
+        return PlsBundle.message("script.goto.relatedImages.chooseTitle.0", sourceName.escapeXml())
     }
     
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
         if(definitionInfo != null) {
             val definitionName = definitionInfo.name.orAnonymous()
-            return PlsBundle.message("script.goto.relatedImage.findUsagesTitle.1", definitionName.escapeXml())
+            return PlsBundle.message("script.goto.relatedImages.findUsagesTitle.1", definitionName.escapeXml())
         }
         val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()?.let { ParadoxModifierHandler.resolveModifier(it) }
         if(modifierElement != null) {
             val modifierName = modifierElement.name
-            return PlsBundle.message("script.goto.relatedImage.findUsagesTitle.2", modifierName.escapeXml())
+            return PlsBundle.message("script.goto.relatedImages.findUsagesTitle.2", modifierName.escapeXml())
         }
         val sourceName = sourceElement.text.unquote()
-        return PlsBundle.message("script.goto.relatedImage.findUsagesTitle.0", sourceName.escapeXml())
+        return PlsBundle.message("script.goto.relatedImages.findUsagesTitle.0", sourceName.escapeXml())
     }
     
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.relatedImage.notFoundMessage")
-    }
-    
-    override fun useEditorFont(): Boolean {
-        return false
+        return PlsBundle.message("script.goto.relatedImages.notFoundMessage")
     }
     
     override fun navigateToElement(descriptor: Navigatable) {

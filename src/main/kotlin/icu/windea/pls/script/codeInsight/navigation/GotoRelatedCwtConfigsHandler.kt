@@ -17,9 +17,9 @@ import icu.windea.pls.script.psi.*
 //com.intellij.testIntegration.GotoTestOrCodeHandler
 
 @Suppress("DialogTitleCapitalization")
-class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
+class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
 	override fun getFeatureUsedKey(): String {
-		return "navigation.goto.paradoxRelatedCwtConfig"
+		return "navigation.goto.paradoxRelatedCwtConfigs"
 	}
 	
 	override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
@@ -76,20 +76,16 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 	
 	override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
 		val expression = sourceElement.castOrNull<ParadoxTypedElement>()?.expression ?: PlsConstants.unknownString
-		return PlsBundle.message("script.goto.relatedCwtConfig.chooseTitle", expression.escapeXml())
+		return PlsBundle.message("script.goto.relatedCwtConfigs.chooseTitle", expression.escapeXml())
 	}
 	
 	override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
 		val expression = sourceElement.castOrNull<ParadoxTypedElement>()?.expression ?: PlsConstants.unknownString
-		return PlsBundle.message("script.goto.relatedCwtConfig.findUsagesTitle", expression)
+		return PlsBundle.message("script.goto.relatedCwtConfigs.findUsagesTitle", expression)
 	}
 	
 	override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-		return PlsBundle.message("script.goto.relatedCwtConfig.notFoundMessage")
-	}
-	
-	override fun useEditorFont(): Boolean {
-		return false
+		return PlsBundle.message("script.goto.relatedCwtConfigs.notFoundMessage")
 	}
 	
 	override fun navigateToElement(descriptor: Navigatable) {

@@ -14,8 +14,8 @@ import icu.windea.pls.script.psi.*
 /**
  * 导航到定义成员对应的CWT规则的动作。
  */
-class GotoRelatedCwtConfigAction : BaseCodeInsightAction() {
-	private val handler = GotoRelatedCwtConfigHandler()
+class GotoRelatedCwtConfigsAction : BaseCodeInsightAction() {
+	private val handler = GotoRelatedCwtConfigsHandler()
 	
 	override fun getHandler(): CodeInsightActionHandler {
 		return handler

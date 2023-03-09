@@ -14,10 +14,10 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 导航到定义/修正的相关本地化的动作。
+ * 导航到当前定义/修正的相关图片的动作。
  */
-class GotoRelatedLocalisationAction : BaseCodeInsightAction() {
-	private val handler = GotoRelatedLocalisationHandler()
+class GotoRelatedImagesAction : BaseCodeInsightAction() {
+	private val handler = GotoRelatedImagesHandler()
 	
 	override fun getHandler(): CodeInsightActionHandler {
 		return handler
@@ -30,7 +30,6 @@ class GotoRelatedLocalisationAction : BaseCodeInsightAction() {
 	override fun update(event: AnActionEvent) {
 		//当选中的文件是脚本文件时显示
 		//当选中的文件是定义或者光标位置的元素是定义的rootKey或者作为名字的字符串时启用
-		//当光标位置的元素是修正的引用时启用
 		val presentation = event.presentation
 		presentation.isEnabledAndVisible = false
 		val project = event.project

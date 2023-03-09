@@ -19,9 +19,9 @@ import java.util.*
 //com.intellij.testIntegration.GotoTestOrCodeHandler
 
 @Suppress("DialogTitleCapitalization")
-class GotoRelatedLocalisationHandler : GotoTargetHandler() {
+class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
-        return "navigation.goto.paradoxRelatedLocalisation"
+        return "navigation.goto.paradoxRelatedLocalisations"
     }
     
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
@@ -46,14 +46,13 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
                         }
                     }
                 }
-            }, PlsBundle.message("script.goto.relatedLocalisation.search.1", definitionInfo.name), true, project)
+            }, PlsBundle.message("script.goto.relatedLocalisations.search.1", definitionInfo.name), true, project)
             if(!runResult) return null
             return GotoData(definition, targets.toTypedArray(), emptyList())
         }
         val modifierElement = ParadoxModifierHandler.resolveModifier(element)
         if(modifierElement != null) {
             val gameType = modifierElement.gameType
-            val configGroup = getCwtConfig(project).getValue(gameType)
             val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
             val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
                 runReadAction {
@@ -72,7 +71,7 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
                     }
                     if(descLocalisations != null) targets.addAll(descLocalisations)
                 }
-            }, PlsBundle.message("script.goto.relatedLocalisation.search.2", modifierElement.name), true, project)
+            }, PlsBundle.message("script.goto.relatedLocalisations.search.2", modifierElement.name), true, project)
             if(!runResult) return null
             return GotoData(element, targets.toTypedArray(), emptyList())
         }
@@ -94,38 +93,34 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
         val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
         if(definitionInfo != null) {
             val definitionName = definitionInfo.name.orAnonymous()
-            return PlsBundle.message("script.goto.relatedLocalisation.chooseTitle.1", definitionName.escapeXml())
+            return PlsBundle.message("script.goto.relatedLocalisations.chooseTitle.1", definitionName.escapeXml())
         }
         val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()?.let { ParadoxModifierHandler.resolveModifier(it) }
         if(modifierElement != null) {
             val modifierName = modifierElement.name
-            return PlsBundle.message("script.goto.relatedLocalisation.chooseTitle.2", modifierName.escapeXml())
+            return PlsBundle.message("script.goto.relatedLocalisations.chooseTitle.2", modifierName.escapeXml())
         }
         val sourceName = sourceElement.text.unquote()
-        return PlsBundle.message("script.goto.relatedLocalisation.chooseTitle.0", sourceName.escapeXml())
+        return PlsBundle.message("script.goto.relatedLocalisations.chooseTitle.0", sourceName.escapeXml())
     }
     
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
         if(definitionInfo != null) {
             val definitionName = definitionInfo.name.orAnonymous()
-            return PlsBundle.message("script.goto.relatedLocalisation.findUsagesTitle.1", definitionName.escapeXml())
+            return PlsBundle.message("script.goto.relatedLocalisations.findUsagesTitle.1", definitionName.escapeXml())
         }
         val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()?.let { ParadoxModifierHandler.resolveModifier(it) }
         if(modifierElement != null) {
             val modifierName = modifierElement.name
-            return PlsBundle.message("script.goto.relatedLocalisation.findUsagesTitle.2", modifierName.escapeXml())
+            return PlsBundle.message("script.goto.relatedLocalisations.findUsagesTitle.2", modifierName.escapeXml())
         }
         val sourceName = sourceElement.text.unquote()
-        return PlsBundle.message("script.goto.relatedLocalisation.findUsagesTitle.0", sourceName.escapeXml())
+        return PlsBundle.message("script.goto.relatedLocalisations.findUsagesTitle.0", sourceName.escapeXml())
     }
     
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.relatedLocalisation.notFoundMessage")
-    }
-    
-    override fun useEditorFont(): Boolean {
-        return false
+        return PlsBundle.message("script.goto.relatedLocalisations.notFoundMessage")
     }
     
     override fun navigateToElement(descriptor: Navigatable) {
