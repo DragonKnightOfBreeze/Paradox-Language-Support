@@ -20,6 +20,8 @@ object ParadoxElementPathHandler {
     @JvmStatic
     fun getFromFile(element: PsiElement, maxDepth: Int = -1): ParadoxElementPath? {
         if(element is ParadoxScriptFile) return EmptyParadoxElementPath
+        val injectedElementPath = element.getUserData(PlsKeys.injectedElementPathKey)
+        if(injectedElementPath != null) return injectedElementPath
         return resolveFromFile(element, maxDepth)
     }
     

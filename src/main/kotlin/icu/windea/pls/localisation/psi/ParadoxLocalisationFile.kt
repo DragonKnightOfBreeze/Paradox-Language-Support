@@ -15,11 +15,11 @@ class ParadoxLocalisationFile(
 	val propertyLists: List<ParadoxLocalisationPropertyList>
 		get() = findChildrenByClass(ParadoxLocalisationPropertyList::class.java).toList()
 	
-	val locale: ParadoxLocalisationLocale?
-		get() = propertyLists.firstOrNull()?.locale
+	val propertyList: ParadoxLocalisationPropertyList?
+		get() = propertyLists.singleOrNull()
 	
 	val properties: List<ParadoxLocalisationProperty>
-		get() = propertyLists.firstOrNull()?.propertyList ?: emptyList()
+		get() = propertyLists.singleOrNull()?.propertyList ?: emptyList()
 	
 	fun getLocaleIdFromFileName(): String?  {
 		if(!name.endsWith(".yml", true)) return null

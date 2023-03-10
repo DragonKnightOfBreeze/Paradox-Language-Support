@@ -11,7 +11,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
@@ -161,8 +160,8 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
     return when {
         from == null -> null
         from is CwtLocalisationLocaleConfig -> from
-        from is ParadoxLocalisationFile -> selectLocale(from.locale)
-        from is ParadoxLocalisationPropertyList -> selectLocale(from.locale)
+        from is ParadoxLocalisationFile -> from.getUserData(PlsKeys.injectedLocaleConfigKey) //尝试获取嵌入的语言区域
+            ?: selectLocale(from.propertyLists.singleOrNull()?.locale) //尝试获取文件中声明的唯一的语言区域
         from is ParadoxLocalisationLocale -> from.name
             .let { getCwtConfig(from.project).core.localisationLocales.get(it) } //这里需要传入project
         from is ParadoxLocalisationProperty -> runCatching { from.stub }.getOrNull()?.locale
