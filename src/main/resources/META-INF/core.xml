@@ -191,6 +191,12 @@
       <add-to-group group-id="FileChooserToolbar" anchor="last"/>
     </group>
 
+    <group id="Pls.GenerateGroup">
+      <action id="Pls.GenerateLocalisations" class="icu.windea.pls.core.codeInsight.generation.GenerateLocalisationsAction"/>
+      <action id="Pls.GenerateLocalisationsInFile" class="icu.windea.pls.core.codeInsight.generation.GenerateLocalisationsInFileAction"/>
+      <add-to-group group-id="GenerateGroup" anchor="last"/>
+    </group>
+    
     <group id="Pls.GotoGroup">
       <action id="Pls.ParadoxGoToFiles" class="icu.windea.pls.core.codeInsight.navigation.ParadoxGotoFilesAction">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt f"/>

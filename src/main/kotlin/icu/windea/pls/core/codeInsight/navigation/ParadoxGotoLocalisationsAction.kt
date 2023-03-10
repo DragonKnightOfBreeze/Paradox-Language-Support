@@ -23,7 +23,7 @@ class ParadoxGotoLocalisationsAction : BaseCodeInsightAction() {
 	}
 	
 	override fun isValidForFile(project: Project, editor: Editor, file: PsiFile): Boolean {
-		return file is ParadoxLocalisationFile
+		return file is ParadoxLocalisationFile && file.fileInfo != null
 	}
 	
 	override fun update(event: AnActionEvent) {

@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.script.psi.*
@@ -22,7 +23,7 @@ class ParadoxGotoRelatedCwtConfigsAction : BaseCodeInsightAction() {
 	}
 	
 	override fun isValidForFile(project: Project, editor: Editor, file: PsiFile): Boolean {
-		return file is ParadoxScriptFile
+		return file is ParadoxScriptFile && file.fileInfo != null
 	}
 	
 	override fun update(event: AnActionEvent) {

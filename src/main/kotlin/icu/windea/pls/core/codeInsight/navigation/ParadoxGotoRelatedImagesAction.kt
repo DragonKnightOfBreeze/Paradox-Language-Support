@@ -24,7 +24,7 @@ class ParadoxGotoRelatedImagesAction : BaseCodeInsightAction() {
 	}
 	
 	override fun isValidForFile(project: Project, editor: Editor, file: PsiFile): Boolean {
-		return file is ParadoxScriptFile
+		return file is ParadoxScriptFile && file.fileInfo != null
 	}
 	
 	override fun update(event: AnActionEvent) {

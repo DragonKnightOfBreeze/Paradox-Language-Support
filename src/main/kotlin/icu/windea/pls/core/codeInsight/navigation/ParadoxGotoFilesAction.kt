@@ -22,7 +22,5 @@ class ParadoxGotoFilesAction : BaseCodeInsightAction() {
 		return file.fileInfo != null
 	}
 	
-	override fun update(event: AnActionEvent) {
-		//当选中的文件位于游戏或模组根目录下显示和启用
-	}
+	//当选中的文件位于游戏或模组根目录下显示和启用
 }

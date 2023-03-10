@@ -1,7 +1,8 @@
-package icu.windea.pls.core.codeInsight.navigation
+package icu.windea.pls.core.codeInsight.generation
 
 import com.intellij.codeInsight.*
 import com.intellij.codeInsight.actions.*
+import com.intellij.codeInsight.generation.actions.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
@@ -10,14 +11,13 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 导航到当前定义/修正的相关本地化的动作。
+ * 生成当前定义的所有（缺失的）本地化。
  */
-class ParadoxGotoRelatedLocalisationsAction : BaseCodeInsightAction() {
-    private val handler = ParadoxGotoRelatedLocalisationsHandler()
+class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopupTemplateInjector {
+    private val handler = GenerateLocalisationsHandler()
     
     override fun getHandler(): CodeInsightActionHandler {
         return handler
@@ -30,7 +30,6 @@ class ParadoxGotoRelatedLocalisationsAction : BaseCodeInsightAction() {
     override fun update(event: AnActionEvent) {
         //当选中的文件是脚本文件时显示
         //当选中的文件是定义或者光标位置的元素是定义的rootKey或者作为名字的字符串时启用
-        //当光标位置的元素是修正的引用时启用
         val presentation = event.presentation
         presentation.isEnabledAndVisible = false
         val project = event.project
@@ -48,7 +47,6 @@ class ParadoxGotoRelatedLocalisationsAction : BaseCodeInsightAction() {
         val isEnabled = when {
             element == null -> false
             element.isDefinitionRootKeyOrName() -> true
-            ParadoxModifierHandler.resolveModifier(element) != null -> true
             else -> false
         }
         presentation.isEnabled = isEnabled
@@ -60,5 +58,8 @@ class ParadoxGotoRelatedLocalisationsAction : BaseCodeInsightAction() {
             it.parent as? ParadoxScriptStringExpressionElement
         }?.takeIf { it.isExpression() }
     }
+    
+    override fun createEditTemplateAction(dataContext: DataContext?): AnAction? {
+        return null
+    }
 }
-
