@@ -15,6 +15,7 @@ import icu.windea.pls.script.psi.*
 import java.util.*
 
 /**
+ * @property elementPath 相对于所属文件的定义成员路径。
  * @property name 定义的名字。如果是空字符串，则表示定义是匿名的。（注意：不一定与定义的顶级键名相同，例如，可能来自某个属性的值）
  * @property rootKey 定义的顶级键名。（注意：不一定是定义的名字）
  * @property sourceType 此定义信息来自哪种解析方式。
@@ -23,6 +24,7 @@ import java.util.*
 class ParadoxDefinitionInfo(
     val rootKey: String,
     val typeConfig: CwtTypeConfig,
+    val elementPath: ParadoxElementPath,
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
     element: ParadoxScriptDefinitionElement, //直接传入element

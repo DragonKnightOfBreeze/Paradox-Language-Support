@@ -28,6 +28,7 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.tool.*
 import java.awt.*
 import java.util.*
 import javax.swing.*
@@ -153,6 +154,20 @@ class ParadoxCompareLocalisationsAction : ParadoxShowDiffAction() {
     }
     
     private fun createContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, localisation: ParadoxLocalisationProperty): DocumentContent {
+        return createTempContent(contentFactory, project, documentContent, localisation)
+            ?: createFragment(contentFactory, project, documentContent, localisation)
+    }
+    
+    private fun createTempContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, localisation: ParadoxLocalisationProperty): DocumentContent? {
+        //创建临时文件
+        val text = localisation.text
+        val fileInfo = documentContent.highlightFile?.fileInfo ?: return null
+        val tempFile = runWriteAction { ParadoxFileManager.createTempFile(text, fileInfo) } ?: return null
+        tempFile.putUserData(PlsKeys.injectedLocaleConfigKey, localisation.localeConfig)
+        return contentFactory.createDocument(project, tempFile)
+    }
+    
+    private fun createFragment(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, localisation: ParadoxLocalisationProperty): DocumentContent {
         return contentFactory.createFragment(project, documentContent, localisation.textRange)
     }
     

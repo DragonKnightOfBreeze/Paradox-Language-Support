@@ -8,5 +8,6 @@ interface ParadoxScriptDefinitionElementStub<T : ParadoxScriptDefinitionElement>
 	val type: String?
 	//val subtypes: List<String>? //可能需要通过访问索引获取，不能在索引时就获取
 	val rootKey: String?
+	val elementPath: ParadoxElementPath
 	val gameType: ParadoxGameType?
 }
