@@ -35,7 +35,7 @@ import javax.swing.*
  * * TODO 按照覆盖顺序进行排序。
  */
 @Suppress("ComponentNotRegistered", "UNUSED_VARIABLE")
-class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
+class CompareFilesAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
         return e.getData(CommonDataKeys.VIRTUAL_FILE)
             ?: e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)?.singleOrNull()

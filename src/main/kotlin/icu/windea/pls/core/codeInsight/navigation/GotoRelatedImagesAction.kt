@@ -10,13 +10,14 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 导航到当前定义的包括自身在内的相同名称且相同主要类型的定义。
+ * 导航到当前定义/修正的相关图片的动作。
  */
-class ParadoxGotoDefinitionsAction : BaseCodeInsightAction() {
-	private val handler = ParadoxGotoDefinitionsHandler()
+class GotoRelatedImagesAction : BaseCodeInsightAction() {
+	private val handler = ParadoxGotoRelatedImagesHandler()
 	
 	override fun getHandler(): CodeInsightActionHandler {
 		return handler
@@ -46,6 +47,7 @@ class ParadoxGotoDefinitionsAction : BaseCodeInsightAction() {
 		val isEnabled = when {
 			element == null -> false
 			element.isDefinitionRootKeyOrName() -> true
+			ParadoxModifierHandler.resolveModifier(element) != null -> true
 			else -> false
 		}
 		presentation.isEnabled = isEnabled
@@ -58,4 +60,3 @@ class ParadoxGotoDefinitionsAction : BaseCodeInsightAction() {
 		}?.takeIf { it.isExpression() }
 	}
 }
-

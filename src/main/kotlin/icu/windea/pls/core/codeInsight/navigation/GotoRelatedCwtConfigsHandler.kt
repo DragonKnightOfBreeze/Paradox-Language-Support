@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.*
 //com.intellij.testIntegration.GotoTestOrCodeHandler
 
 @Suppress("DialogTitleCapitalization")
-class ParadoxGotoRelatedCwtConfigsHandler : GotoTargetHandler() {
+class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
 	override fun getFeatureUsedKey(): String {
 		return "navigation.goto.paradoxRelatedCwtConfigs"
 	}

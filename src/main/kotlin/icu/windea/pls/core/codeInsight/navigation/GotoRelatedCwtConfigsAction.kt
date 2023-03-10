@@ -10,47 +10,47 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.psi.*
 
 /**
- * 导航到当前本地化的包括自身在内的相同名称的本地化。
+ * 导航到定义成员对应的CWT规则的动作。
  */
-class ParadoxGotoLocalisationsAction : BaseCodeInsightAction() {
-	private val handler = ParadoxGotoLocalisationsHandler()
+class GotoRelatedCwtConfigsAction : BaseCodeInsightAction() {
+	private val handler = GotoRelatedCwtConfigsHandler()
 	
 	override fun getHandler(): CodeInsightActionHandler {
 		return handler
 	}
 	
 	override fun isValidForFile(project: Project, editor: Editor, file: PsiFile): Boolean {
-		return file is ParadoxLocalisationFile && file.fileInfo != null
+		return file is ParadoxScriptFile && file.fileInfo != null
 	}
 	
 	override fun update(event: AnActionEvent) {
-		//当选中的文件是本地化文件时显示
-		//当光标位置的元素本地化的名字时启用
+		//当选中的文件是脚本文件时显示
+		//当光标位置的元素是定义的rootKey或者定义成员时显示
+		//在PSI中向上查找，定义中的任何key/value，key可以是定义的rootKey，value可以不是string
 		val presentation = event.presentation
 		presentation.isEnabledAndVisible = false
 		val project = event.project
 		val editor = event.editor
 		if(editor == null || project == null) return
 		val file = PsiUtilBase.getPsiFileInEditor(editor, project)
-		if(file !is ParadoxLocalisationFile) return
+		if(file !is ParadoxScriptFile) return
 		presentation.isVisible = true
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset)
-		val isEnabled = when {
-			element == null -> false
-			element.parent.castOrNull<ParadoxLocalisationProperty>()?.localisationInfo != null -> true
-			else -> false
+		if(element == null) {
+			presentation.isEnabled = false
+			return
 		}
-		presentation.isEnabled = isEnabled
+		val definition = element.findParentDefinition()
+		presentation.isEnabled = definition != null
 	}
 	
-	private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationPropertyKey? {
-		//direct parent
+	private fun findElement(file: PsiFile, offset: Int): PsiElement? {
 		return file.findElementAt(offset) {
-			it.parent as? ParadoxLocalisationPropertyKey
-		}
+			it.parentOfTypes(ParadoxScriptPropertyKey::class, ParadoxScriptValue::class)
+		}?.takeIf { it.isExpression() }
 	}
 }

@@ -198,34 +198,34 @@
     </group>
     
     <group id="Pls.GotoGroup">
-      <action id="Pls.ParadoxGoToFiles" class="icu.windea.pls.core.codeInsight.navigation.ParadoxGotoFilesAction">
+      <action id="Pls.GoToFiles" class="icu.windea.pls.core.codeInsight.navigation.GotoFilesAction">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt f"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
-      <action id="Pls.ParadoxGoToDefinitions" class="icu.windea.pls.core.codeInsight.navigation.ParadoxGotoDefinitionsAction">
+      <action id="Pls.GoToDefinitions" class="icu.windea.pls.core.codeInsight.navigation.GotoDefinitionsAction">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt o"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
-      <action id="Pls.ParadoxGoToLocalisations" class="icu.windea.pls.core.codeInsight.navigation.ParadoxGotoLocalisationsAction">
+      <action id="Pls.GoToLocalisations" class="icu.windea.pls.core.codeInsight.navigation.GotoLocalisationsAction">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt o"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
-      <action id="Pls.ParadoxGoToRelatedLocalisations" class="icu.windea.pls.core.codeInsight.navigation.ParadoxGotoRelatedLocalisationsAction">
+      <action id="Pls.GoToRelatedLocalisations" class="icu.windea.pls.core.codeInsight.navigation.GotoRelatedLocalisationsAction">
         <keyboard-shortcut first-keystroke="alt shift p" keymap="$default"/>
         <mouse-shortcut keymap="$default" keystroke="alt shift button1"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
-      <action id="Pls.ParadoxGoToRelatedImages" class="icu.windea.pls.core.codeInsight.navigation.ParadoxGotoRelatedImagesAction">
+      <action id="Pls.GoToRelatedImages" class="icu.windea.pls.core.codeInsight.navigation.GotoRelatedImagesAction">
         <keyboard-shortcut first-keystroke="control alt shift p" keymap="$default"/>
         <mouse-shortcut keymap="$default" keystroke="control alt shift button1"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
-      <action id="Pls.ParadoxGoToRelatedCwtConfigs" class="icu.windea.pls.core.codeInsight.navigation.ParadoxGotoRelatedCwtConfigsAction">
+      <action id="Pls.GoToRelatedCwtConfigs" class="icu.windea.pls.core.codeInsight.navigation.GotoRelatedCwtConfigsAction">
         <keyboard-shortcut first-keystroke="alt p" keymap="$default"/>
         <mouse-shortcut keymap="$default" keystroke="alt button1"/>
         <override-text place="MainMenu"/>
@@ -236,15 +236,15 @@
     </group>
 
     <group id="Pls.Diff">
-      <action id="Pls.Diff.ParadoxCompareFiles" class="icu.windea.pls.core.diff.actions.ParadoxCompareFilesAction"
+      <action id="Pls.Diff.CompareFiles" class="icu.windea.pls.core.diff.actions.CompareFilesAction"
               icon="AllIcons.Actions.Diff">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift alt f"/>
       </action>
-      <action id="Pls.Diff.ParadoxCompareDefinitions" class="icu.windea.pls.core.diff.actions.ParadoxCompareDefinitionsAction"
+      <action id="Pls.Diff.CompareDefinitions" class="icu.windea.pls.core.diff.actions.CompareDefinitionsAction"
               icon="AllIcons.Actions.Diff">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift alt o"/>
       </action>
-      <action id="Pls.Diff.ParadoxCompareLocalisations" class="icu.windea.pls.core.diff.actions.ParadoxCompareLocalisationsAction"
+      <action id="Pls.Diff.CompareLocalisations" class="icu.windea.pls.core.diff.actions.CompareLocalisationsAction"
               icon="AllIcons.Actions.Diff">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift alt o"/>
       </action>

@@ -16,8 +16,8 @@ import icu.windea.pls.script.psi.*
 /**
  * 导航到当前定义/修正的相关本地化的动作。
  */
-class ParadoxGotoRelatedLocalisationsAction : BaseCodeInsightAction() {
-    private val handler = ParadoxGotoRelatedLocalisationsHandler()
+class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
+    private val handler = GotoRelatedLocalisationsHandler()
     
     override fun getHandler(): CodeInsightActionHandler {
         return handler
