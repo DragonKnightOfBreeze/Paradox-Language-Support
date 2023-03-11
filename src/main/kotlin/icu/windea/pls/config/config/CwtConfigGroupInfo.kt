@@ -20,7 +20,7 @@ data class CwtConfigGroupInfo(
     
     val aliasNamesSupportScope = mutableSetOf<String>()
     
-    //enum[scripted_effect_params] = xxx
+    //$parameter = xxx
     val parameterConfigs = mutableListOf<CwtDataConfig<*>>()
     
     fun acceptConfigExpression(configExpression: CwtDataExpression, config: CwtConfig<*>?) {

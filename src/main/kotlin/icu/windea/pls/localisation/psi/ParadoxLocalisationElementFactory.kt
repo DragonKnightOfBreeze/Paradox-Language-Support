@@ -18,12 +18,12 @@ object ParadoxLocalisationElementFactory {
 	
 	@JvmStatic
 	fun createLocale(project: Project, locale: String): ParadoxLocalisationLocale {
-		return createDummyFile(project, "$locale:\n").locale!!
+		return createDummyFile(project, "$locale:\n").propertyList?.locale!!
 	}
 
 	@JvmStatic
 	fun createProperty(project: Project, key: String, value: String): ParadoxLocalisationProperty {
-		return createDummyFile(project, "l_english:\n$key:0 \"$value\"").properties.first()
+		return createDummyFile(project, "l_english:\n$key:0 \"$value\"").propertyList?.propertyList?.first()!!
 	}
 
 	@JvmStatic

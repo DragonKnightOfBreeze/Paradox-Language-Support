@@ -44,7 +44,9 @@ object ParadoxCoreHandler {
     
     @JvmStatic
     fun getFileInfo(virtualFile: VirtualFile): ParadoxFileInfo? {
-        return virtualFile.getCopyableUserData(PlsKeys.fileInfoKey)
+        val injectedFileInfo = virtualFile.getUserData(PlsKeys.injectedFileInfoKey)
+        if(injectedFileInfo != null) return injectedFileInfo;
+        return virtualFile.getUserData(PlsKeys.fileInfoKey)
     }
     
     @JvmStatic
@@ -53,10 +55,13 @@ object ParadoxCoreHandler {
         return getFileInfo(file)
     }
     
+    /**
+     * 在获取rootInfo和fileInfo之前，如果未解析，需要先解析。
+     */
     @JvmStatic
     fun resolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         if(!rootFile.isDirectory) return null
-        val rootInfo = rootFile.getCopyableUserData(PlsKeys.rootInfoKey)
+        val rootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
         if(rootInfo != null && rootInfo.isAvailable) {
             return rootInfo
         }
@@ -74,7 +79,7 @@ object ParadoxCoreHandler {
             onAddRootInfo(resolvedRootInfo)
         }
         runCatching {
-            rootFile.putCopyableUserData(PlsKeys.rootInfoKey, resolvedRootInfo)
+            rootFile.putUserData(PlsKeys.rootInfoKey, resolvedRootInfo)
         }
         return resolvedRootInfo
     }
@@ -189,18 +194,18 @@ object ParadoxCoreHandler {
                 val path = ParadoxPath.resolve(filePath)
                 val entryPath = resolveEntryPath(path, rootInfo)
                 val fileType = ParadoxFileType.resolve(file, rootInfo.gameType, entryPath)
-                val cachedFileInfo = file.getCopyableUserData(PlsKeys.fileInfoKey)
+                val cachedFileInfo = file.getUserData(PlsKeys.fileInfoKey)
                 if(cachedFileInfo != null && cachedFileInfo.path == path && cachedFileInfo.entryPath == entryPath
                     && cachedFileInfo.fileType == fileType && cachedFileInfo.rootInfo == rootInfo) {
                     return cachedFileInfo
                 }
                 val fileInfo = ParadoxFileInfo(name, path, entryPath, fileType, rootInfo)
-                runCatching { file.putCopyableUserData(PlsKeys.fileInfoKey, fileInfo) }
+                runCatching { file.putUserData(PlsKeys.fileInfoKey, fileInfo) }
                 return fileInfo
             }
             currentFile = currentFile.parent
         }
-        runCatching { file.putCopyableUserData(PlsKeys.fileInfoKey, null) }
+        runCatching { file.putUserData(PlsKeys.fileInfoKey, null) }
         return null
     }
     

@@ -103,7 +103,7 @@ class CwtValueExpression private constructor(
 				val value = expressionString.substring(1, expressionString.length - 1)
 				CwtValueExpression(expressionString, CwtDataType.Definition, value)
 			}
-			expressionString == "enum[scripted_effect_params]" -> {
+			expressionString == "\$parameter" -> {
 				CwtValueExpression(expressionString, CwtDataType.Parameter)
 			}
 			expressionString.surroundsWith("value[", "]") -> {

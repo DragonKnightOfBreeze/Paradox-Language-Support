@@ -23,7 +23,7 @@ object ParadoxFileManager {
             val path = diffDirPath.resolve(fileName)
             Files.writeString(path, text)
             val tempFile = VfsUtil.findFile(path, true) ?: return null
-            tempFile.putUserData(PlsKeys.fileInfoKey, fileInfo)
+            tempFile.putUserData(PlsKeys.injectedFileInfoKey, fileInfo)
             return tempFile
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
@@ -43,8 +43,8 @@ object ParadoxFileManager {
             Files.createDirectories(diffDirPath)
             val diffDirFile = VfsUtil.findFile(diffDirPath, false) ?: return null
             val tempFile = VfsUtil.copyFile(ParadoxFileManager, file, diffDirFile, fileName)
-            tempFile.putUserData(PlsKeys.fileInfoKey, file.fileInfo)
-            tempFile.putUserData(PlsKeys.fileTypeKey, file.fileType)
+            tempFile.putUserData(PlsKeys.injectedFileInfoKey, file.fileInfo)
+            tempFile.putUserData(PlsKeys.injectedFileTypeKey, file.fileType)
             return tempFile
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e

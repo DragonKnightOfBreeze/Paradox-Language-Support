@@ -35,7 +35,7 @@ import javax.swing.*
  * * TODO 按照覆盖顺序进行排序。
  */
 @Suppress("ComponentNotRegistered", "UNUSED_VARIABLE")
-class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
+class CompareFilesAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
         return e.getData(CommonDataKeys.VIRTUAL_FILE)
             ?: e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)?.singleOrNull()
@@ -116,7 +116,7 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
                     isSameFile -> {
                         isCurrent = true
                         readonly = true
-                        createCopiedContent(contentFactory, project, file)
+                        createTempContent(contentFactory, project, file)
                     }
                     else -> {
                         createContent(contentFactory, project, otherFile)
@@ -146,7 +146,7 @@ class ParadoxCompareFilesAction : ParadoxShowDiffAction() {
         return contentFactory.createDocument(project, file)
     }
     
-    private fun createCopiedContent(contentFactory: DiffContentFactory, project: Project, file: VirtualFile): DocumentContent? {
+    private fun createTempContent(contentFactory: DiffContentFactory, project: Project, file: VirtualFile): DocumentContent? {
         //创建临时文件作为只读副本
         val tempFile = runWriteAction { ParadoxFileManager.createTempFile(file) } ?: return null
         return contentFactory.createDocument(project, tempFile)

@@ -10,52 +10,47 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.localisation.psi.*
 
 /**
- * 导航到当前定义的包括自身在内的相同名称且相同主要类型的定义。
+ * 导航到当前本地化的包括自身在内的相同名称的本地化。
  */
-class ParadoxGotoDefinitionsAction : BaseCodeInsightAction() {
-	private val handler = ParadoxGotoDefinitionsHandler()
+class GotoLocalisationsAction : BaseCodeInsightAction() {
+	private val handler = GotoLocalisationsHandler()
 	
 	override fun getHandler(): CodeInsightActionHandler {
 		return handler
 	}
 	
 	override fun isValidForFile(project: Project, editor: Editor, file: PsiFile): Boolean {
-		return file is ParadoxScriptFile
+		return file is ParadoxLocalisationFile && file.fileInfo != null
 	}
 	
 	override fun update(event: AnActionEvent) {
-		//当选中的文件是脚本文件时显示
-		//当选中的文件是定义或者光标位置的元素是定义的rootKey或者作为名字的字符串时启用
+		//当选中的文件是本地化文件时显示
+		//当光标位置的元素本地化的名字时启用
 		val presentation = event.presentation
 		presentation.isEnabledAndVisible = false
 		val project = event.project
 		val editor = event.editor
 		if(editor == null || project == null) return
 		val file = PsiUtilBase.getPsiFileInEditor(editor, project)
-		if(file !is ParadoxScriptFile) return
+		if(file !is ParadoxLocalisationFile) return
 		presentation.isVisible = true
-		if(file.definitionInfo != null) {
-			presentation.isEnabled = true
-			return
-		}
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset)
 		val isEnabled = when {
 			element == null -> false
-			element.isDefinitionRootKeyOrName() -> true
+			element.parent.castOrNull<ParadoxLocalisationProperty>()?.localisationInfo != null -> true
 			else -> false
 		}
 		presentation.isEnabled = isEnabled
 	}
 	
-	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
+	private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationPropertyKey? {
 		//direct parent
 		return file.findElementAt(offset) {
-			it.parent as? ParadoxScriptStringExpressionElement
-		}?.takeIf { it.isExpression() }
+			it.parent as? ParadoxLocalisationPropertyKey
+		}
 	}
 }
-

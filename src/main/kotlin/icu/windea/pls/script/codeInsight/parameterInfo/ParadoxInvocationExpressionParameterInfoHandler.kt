@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.*
  * 显示调用子句中的参数信息（如果支持）。
  */
 class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<ParadoxScriptProperty, Set<ParadoxParameterInfo>> {
-    //向上找第一个scriptProperty，直到其作为子节点的scriptProperty可以匹配enum[scripted_effect_params]
+    //向上找第一个scriptProperty，直到其作为子节点的scriptProperty可以匹配$parameter
     
     private fun findTargetElement(context: ParameterInfoContext): ParadoxScriptProperty? {
         val element = context.file.findElementAt(context.offset) ?: return null

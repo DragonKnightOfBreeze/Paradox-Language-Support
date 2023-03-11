@@ -14,7 +14,7 @@ import icu.windea.pls.core.search.selectors.chained.*
 import java.util.*
 
 @Suppress("DialogTitleCapitalization")
-class ParadoxGotoFilesHandler : GotoTargetHandler() {
+class GotoFilesHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
         return "navigation.goto.paradoxFiles"
     }

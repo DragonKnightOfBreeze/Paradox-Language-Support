@@ -34,8 +34,9 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 		val name = definitionInfo?.name
 		val type = definitionInfo?.type
 		val rootKey = definitionInfo?.rootKey
+		val elementPath = definitionInfo?.elementPath ?: EmptyParadoxElementPath
 		val gameType = definitionInfo?.gameType
-		return ParadoxScriptPropertyStubImpl(parentStub, name, type, rootKey, gameType)
+		return ParadoxScriptPropertyStubImpl(parentStub, name, type, rootKey, elementPath, gameType)
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -54,6 +55,7 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 		dataStream.writeName(stub.name)
 		dataStream.writeName(stub.type)
 		dataStream.writeName(stub.rootKey)
+		dataStream.writeName(stub.elementPath.path)
 		dataStream.writeName(stub.gameType?.id)
 	}
 	
@@ -61,7 +63,8 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 		val name = dataStream.readNameString()
 		val type = dataStream.readNameString()
 		val rootKey = dataStream.readNameString()
+		val elementPath = dataStream.readNameString().orEmpty().let { ParadoxElementPath.resolve(it) }
 		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
-		return ParadoxScriptPropertyStubImpl(parentStub, name, type, rootKey, gameType)
+		return ParadoxScriptPropertyStubImpl(parentStub, name, type, rootKey, elementPath, gameType)
 	}
 }

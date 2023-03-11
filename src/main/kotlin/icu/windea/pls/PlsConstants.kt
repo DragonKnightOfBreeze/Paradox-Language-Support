@@ -92,8 +92,12 @@ object PlsKeys {
     val libraryKey = Key.create<ParadoxLibrary>("paradox.library")
     val rootInfoKey = Key.create<ParadoxRootInfo>("paradox.rootInfo")
     val fileInfoKey = Key.create<ParadoxFileInfo>("paradox.fileInfo")
-    val fileTypeKey = Key.create<FileType>("paradox.fileType")
-    val localeConfigKey = Key.create<CwtLocalisationLocaleConfig>("paradox.localeConfig")
+    
+    val injectedFileInfoKey = Key.create<ParadoxFileInfo>("paradox.injected.fileInfo") //用于为临时文件嵌入文件信息
+    val injectedFileTypeKey = Key.create<FileType>("paradox.injected.fileType") //用于为临时文件嵌入IDE文件类型
+    val injectedLocaleConfigKey = Key.create<CwtLocalisationLocaleConfig>("paradox.injected.localeConfig") //用于为脚本文件嵌入语言区域
+    val injectedElementPathKey = Key.create<ParadoxElementPath>("paradox.injected.elementPath") //用于为脚本元素嵌入元素路径（相对于脚本文件）
+    val injectedElementPathPrefixKey = Key.create<ParadoxElementPath>("paradox.injected.elementPathPrefix") //用于为脚本文件嵌入元素路径前缀
     
     val launcherSettingsInfoKey = Key.create<ParadoxLauncherSettingsInfo>("paradox.launcherSettingsInfo")
     val descriptorInfoKey = Key.create<ParadoxModDescriptorInfo>("paradox.descriptorInfo")
@@ -102,7 +106,6 @@ object PlsKeys {
     val cachedDefinitionMemberInfoKey = Key.create<CachedValue<ParadoxDefinitionMemberInfo>>("paradox.cached.definitionMemberInfo")
     val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("paradox.cached.localisationInfo")
     val cachedComplexEnumValueInfoKey = Key.create<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cached.complexEnumValueInfo")
-    val cachedElementPathKey = Key.create<CachedValue<ParadoxElementPath>>("paradox.cached.elementPath")
     val cachedConfigsMapKey = Key.create<CachedValue<MutableMap<String, List<CwtConfig<*>>>>>("paradox.cached.configsMap")
     val cachedScopeContextKey = Key.create<CachedValue<ParadoxScopeContext>>("paradox.cached.scopeContext")
     val cachedTextColorInfoKey = Key.create<CachedValue<ParadoxTextColorInfo>>("paradox.cached.textColorInfo")

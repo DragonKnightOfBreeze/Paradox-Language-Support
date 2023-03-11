@@ -58,7 +58,7 @@ class CwtKeyExpression private constructor(
 				val value = expressionString.substring(1, expressionString.length - 1)
 				CwtKeyExpression(expressionString, CwtDataType.Definition, value)
 			}
-			expressionString == "enum[scripted_effect_params]" -> {
+			expressionString == "\$parameter" -> {
 				CwtKeyExpression(expressionString, CwtDataType.Parameter)
 			}
 			expressionString.surroundsWith("enum[", "]") -> {

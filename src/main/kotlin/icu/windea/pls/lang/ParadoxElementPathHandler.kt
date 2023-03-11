@@ -19,7 +19,6 @@ object ParadoxElementPathHandler {
      */
     @JvmStatic
     fun getFromFile(element: PsiElement, maxDepth: Int = -1): ParadoxElementPath? {
-        if(element is ParadoxScriptFile) return EmptyParadoxElementPath
         return resolveFromFile(element, maxDepth)
     }
     
@@ -41,6 +40,12 @@ object ParadoxElementPathHandler {
             //如果发现深度超出指定的最大深度，则直接返回null
             if(maxDepth != -1 && maxDepth < depth) return null
             current = current.parent ?: break
+        }
+        if(current is PsiFile) {
+            val elementPathPrefix = current.getUserData(PlsKeys.injectedElementPathPrefixKey)
+            if(elementPathPrefix != null && elementPathPrefix.isNotEmpty()) {
+                originalSubPaths.addAll(0, elementPathPrefix.subPaths)
+            }
         }
         return ParadoxElementPath.resolve(originalSubPaths)
     }

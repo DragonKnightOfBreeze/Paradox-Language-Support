@@ -11,7 +11,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
@@ -142,12 +141,10 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
         from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
         from is PsiDirectory -> from.fileInfo?.rootInfo?.gameType
         from is PsiFile -> from.fileInfo?.rootInfo?.gameType
-            ?: ParadoxMagicCommentHandler.resolveFilePathComment(from)?.first
         from is ParadoxScriptScriptedVariable -> runCatching { from.stub }.getOrNull()?.gameType
             ?: selectGameType(from.containingFile) //直接转到containingFile，避免不必要的文件解析
         from is ParadoxScriptDefinitionElement -> runCatching { from.getStub() }.getOrNull()?.gameType
             ?: from.definitionInfo?.gameType
-            ?: ParadoxMagicCommentHandler.resolveDefinitionTypeComment(from)?.first //这个如果合法的话会被上一个选择逻辑覆盖
             ?: selectGameType(from.containingFile) //直接转到containingFile，避免不必要的文件解析
         from is ParadoxScriptStringExpressionElement -> runCatching { from.stub }.getOrNull()?.gameType
             ?: selectGameType(from.containingFile) //直接转到containingFile，避免不必要的文件解析
@@ -161,8 +158,9 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
     return when {
         from == null -> null
         from is CwtLocalisationLocaleConfig -> from
-        from is ParadoxLocalisationFile -> selectLocale(from.locale)
-        from is ParadoxLocalisationPropertyList -> selectLocale(from.locale)
+        from is VirtualFile -> from.getUserData(PlsKeys.injectedLocaleConfigKey)
+        from is ParadoxLocalisationFile -> from.virtualFile?.getUserData(PlsKeys.injectedLocaleConfigKey)
+            ?: selectLocale(from.propertyLists.singleOrNull()?.locale) //尝试获取文件中声明的唯一的语言区域
         from is ParadoxLocalisationLocale -> from.name
             .let { getCwtConfig(from.project).core.localisationLocales.get(it) } //这里需要传入project
         from is ParadoxLocalisationProperty -> runCatching { from.stub }.getOrNull()?.locale

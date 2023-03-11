@@ -28,6 +28,7 @@ import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
 import java.awt.*
 import java.util.*
 import javax.swing.*
@@ -42,7 +43,7 @@ import javax.swing.*
  * * TODO 按照覆盖顺序进行排序。
  */
 @Suppress("ComponentNotRegistered", "UNUSED_VARIABLE")
-class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
+class CompareDefinitionsAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
         return e.getData(CommonDataKeys.VIRTUAL_FILE)
     }
@@ -155,6 +156,20 @@ class ParadoxCompareDefinitionsAction : ParadoxShowDiffAction() {
     }
     
     private fun createContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptDefinitionElement): DocumentContent {
+        return createTempContent(contentFactory, project, documentContent, definition)
+            ?: createFragment(contentFactory, project, documentContent, definition)
+    }
+    
+    private fun createTempContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptDefinitionElement): DocumentContent? {
+        //创建临时文件
+        val text = definition.text
+        val fileInfo = documentContent.highlightFile?.fileInfo ?: return null
+        val tempFile = runWriteAction { ParadoxFileManager.createTempFile(text, fileInfo) } ?: return null
+        tempFile.putUserData(PlsKeys.injectedElementPathPrefixKey, definition.definitionInfo?.elementPath)
+        return contentFactory.createDocument(project, tempFile)
+    }
+    
+    private fun createFragment(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptDefinitionElement): DocumentContent {
         return contentFactory.createFragment(project, documentContent, definition.textRange)
     }
     
