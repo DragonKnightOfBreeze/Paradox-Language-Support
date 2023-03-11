@@ -13,9 +13,12 @@ import icu.windea.pls.localisation.psi.*
  */
 class ParadoxLocalisationColorCompletionProvider : CompletionProvider<CompletionParameters>() {
 	private val insertHandler = InsertHandler<LookupElement> { context, _ ->
-		val editor = context.editor
-		val offset = editor.caretModel.offset
-		editor.document.deleteString(offset, offset + 1)
+		//delete existing colorId after press enter
+		if(context.completionChar == '\n' || context.completionChar == '\r') {
+			val editor = context.editor
+			val offset = editor.caretModel.offset
+			editor.document.deleteString(offset, offset + 1)
+		}
 	}
 	
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
@@ -35,7 +38,6 @@ class ParadoxLocalisationColorCompletionProvider : CompletionProvider<Completion
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.letIf(originalColorId != null) {
-					//delete existing colorId
 					it.withInsertHandler(insertHandler)
 				}
 			lookupElements.add(lookupElement)

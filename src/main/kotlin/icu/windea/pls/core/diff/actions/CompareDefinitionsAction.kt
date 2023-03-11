@@ -35,7 +35,7 @@ import javax.swing.*
 
 /**
  * 将当前定义与包括当前本地化的只读副本在内的相同名称且相同主要类型的定义进行DIFF。
- * 
+ *
  * * 当当前文件是模组或游戏文件且是脚本文件时显示。
  * * 当前鼠标位置位于定义声明中时启用。
  * * 忽略直接位于游戏或模组入口目录下的文件。
@@ -103,7 +103,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             ).notify(project)
             return null
         }
-    
+        
         val editor = e.editor
         val contentFactory = DiffContentFactory.getInstance()
         
@@ -165,7 +165,11 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val text = definition.text
         val fileInfo = documentContent.highlightFile?.fileInfo ?: return null
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(text, fileInfo) } ?: return null
-        tempFile.putUserData(PlsKeys.injectedElementPathPrefixKey, definition.definitionInfo?.elementPath)
+        val elementPath = definition.definitionInfo?.elementPath
+        if(elementPath != null && elementPath.length > 1) {
+            val elementPathPrefix = ParadoxElementPath.resolve(elementPath.subPaths.dropLast(1))
+            tempFile.putUserData(PlsKeys.injectedElementPathPrefixKey, elementPathPrefix)
+        }
         return contentFactory.createDocument(project, tempFile)
     }
     

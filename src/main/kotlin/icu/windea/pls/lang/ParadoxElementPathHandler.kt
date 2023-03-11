@@ -10,7 +10,7 @@ import java.util.*
 
 /**
  * 用于处理元素路径。
- * 
+ *
  * @see ParadoxElementPath
  */
 object ParadoxElementPathHandler {
@@ -42,7 +42,8 @@ object ParadoxElementPathHandler {
             current = current.parent ?: break
         }
         if(current is PsiFile) {
-            val elementPathPrefix = current.getUserData(PlsKeys.injectedElementPathPrefixKey)
+            val virtualFile = selectFile(current)
+            val elementPathPrefix = virtualFile?.getUserData(PlsKeys.injectedElementPathPrefixKey)
             if(elementPathPrefix != null && elementPathPrefix.isNotEmpty()) {
                 originalSubPaths.addAll(0, elementPathPrefix.subPaths)
             }

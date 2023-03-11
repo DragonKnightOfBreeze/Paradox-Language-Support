@@ -148,7 +148,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
     
     private fun createTempContent(contentFactory: DiffContentFactory, project: Project, file: VirtualFile): DocumentContent? {
         //创建临时文件作为只读副本
-        val tempFile = runWriteAction { ParadoxFileManager.createLightFile(file) } ?: return null
+        val tempFile = runWriteAction { ParadoxFileManager.createLightFile(file) }
         return contentFactory.createDocument(project, tempFile)
     }
     

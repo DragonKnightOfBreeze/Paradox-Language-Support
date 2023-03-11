@@ -164,7 +164,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val file = localisation.containingFile ?: return null
         val localeConfig = localisation.localeConfig ?: preferredParadoxLocale() ?: return null
         val text =  buildString { 
-            append(localeConfig.text).append(":\n")
+            append(localeConfig.id).append(":\n")
             val indentSize = CodeStyle.getIndentOptions(file).INDENT_SIZE
             append(" ".repeat(indentSize))
             append(localisation.text)
