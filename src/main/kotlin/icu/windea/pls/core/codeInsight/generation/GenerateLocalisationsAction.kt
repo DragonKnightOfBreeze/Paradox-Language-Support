@@ -28,7 +28,7 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
     }
     
     override fun update(event: AnActionEvent) {
-        //当选中的文件是脚本文件时显示
+        //当选中的文件是脚本文件时不显示 - 目前不认为存在相关本地化
         //当选中的文件是定义或者光标位置的元素是定义的rootKey或者作为名字的字符串时启用
         val presentation = event.presentation
         presentation.isEnabledAndVisible = false
@@ -38,10 +38,6 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
         val file = PsiUtilBase.getPsiFileInEditor(editor, project)
         if(file !is ParadoxScriptFile) return
         presentation.isVisible = true
-        if(file.definitionInfo != null) {
-            presentation.isEnabled = true
-            return
-        }
         val offset = editor.caretModel.offset
         val element = findElement(file, offset)
         val isEnabled = when {

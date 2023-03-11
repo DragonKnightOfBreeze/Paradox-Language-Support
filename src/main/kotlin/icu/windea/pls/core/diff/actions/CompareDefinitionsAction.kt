@@ -164,7 +164,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         //创建临时文件
         val text = definition.text
         val fileInfo = documentContent.highlightFile?.fileInfo ?: return null
-        val tempFile = runWriteAction { ParadoxFileManager.createLightFile(text, fileInfo) } ?: return null
+        val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), text, fileInfo) } ?: return null
         val elementPath = definition.definitionInfo?.elementPath
         if(elementPath != null && elementPath.length > 1) {
             val elementPathPrefix = ParadoxElementPath.resolve(elementPath.subPaths.dropLast(1))

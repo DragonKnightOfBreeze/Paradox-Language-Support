@@ -170,7 +170,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             append(localisation.text)
         }
         val fileInfo = documentContent.highlightFile?.fileInfo ?: return null
-        val tempFile = runWriteAction { ParadoxFileManager.createLightFile(text, fileInfo) } ?: return null
+        val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), text, fileInfo) } ?: return null
         tempFile.putUserData(PlsKeys.injectedLocaleConfigKey, localeConfig)
         return contentFactory.createDocument(project, tempFile)
     }

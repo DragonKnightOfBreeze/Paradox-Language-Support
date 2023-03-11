@@ -19,6 +19,8 @@ object ParadoxGenerator {
     //TODO
     
     fun generateLocalisations(context: GenerateLocalisationsContext, project: Project, editor: Editor, file: PsiFile) {
+        if(context.localisationNames.isEmpty()) return //do nothing
+        
         val name = "generated localisations of definition ${context.definitionName}"
         val localeConfig = preferredParadoxLocale() ?: return //unexpected
         val text = buildString {
@@ -33,6 +35,8 @@ object ParadoxGenerator {
     }
     
     fun generateLocalisationsInFile(context: GenerateLocalisationsInFileContext, project: Project, editor: Editor, file: PsiFile) {
+        if(context.contextList.all { it.localisationNames.isEmpty() }) return //do nothing
+        
         val name = "generated localisations of file ${context.fileName}"
         val localeConfig = preferredParadoxLocale() ?: return //unexpected
         val text = buildString {

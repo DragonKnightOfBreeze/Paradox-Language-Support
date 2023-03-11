@@ -16,27 +16,6 @@ object ParadoxFileManager {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
     /**
-     * 基于指定的文本和文件信息创建一个临时文件。
-     */
-    @Deprecated("Use createLightFile()")
-    @JvmStatic
-    fun createTempFile(text: String, fileInfo: ParadoxFileInfo): VirtualFile? {
-        try {
-            val diffDirPath = PlsPaths.tmpDirectoryPath
-            val fileName = UUID.randomUUID().toString()
-            val path = diffDirPath.resolve(fileName)
-            Files.writeString(path, text)
-            val tempFile = VfsUtil.findFile(path, true) ?: return null
-            tempFile.putUserData(PlsKeys.injectedFileInfoKey, fileInfo)
-            return tempFile
-        } catch(e: Exception) {
-            if(e is ProcessCanceledException) throw e
-            logger.error(e.message, e)
-            return null
-        }
-    }
-    
-    /**
      * 基于指定的虚拟文件创建一个临时文件。
      */
     @Deprecated("Use createLightFile()")
@@ -60,24 +39,43 @@ object ParadoxFileManager {
     /**
      * 基于指定的文本和文件信息创建一个临时文件。
      */
+    @Deprecated("Use createLightFile()")
     @JvmStatic
-    fun createLightFile(text: CharSequence, fileInfo: ParadoxFileInfo): VirtualFile? {
-        val name = fileInfo.name
-        val lightFile = LightVirtualFile(name, text)
-        lightFile.putUserData(PlsKeys.injectedFileInfoKey, fileInfo)
-        return lightFile
+    fun createTempFile(text: String, fileInfo: ParadoxFileInfo): VirtualFile? {
+        try {
+            val diffDirPath = PlsPaths.tmpDirectoryPath
+            val fileName = UUID.randomUUID().toString()
+            val path = diffDirPath.resolve(fileName)
+            Files.writeString(path, text)
+            val tempFile = VfsUtil.findFile(path, true) ?: return null
+            tempFile.putUserData(PlsKeys.injectedFileInfoKey, fileInfo)
+            return tempFile
+        } catch(e: Exception) {
+            if(e is ProcessCanceledException) throw e
+            logger.error(e.message, e)
+            return null
+        }
     }
     
     /**
      * 基于指定的虚拟文件创建一个临时文件。
      */
     @JvmStatic
-    fun createLightFile(file: VirtualFile): VirtualFile {
+    fun createLightFile(name: String, file: VirtualFile): VirtualFile {
         val document = FileDocumentManager.getInstance().getDocument(file) ?: throw IllegalStateException()
-        val name = file.name
         val text = document.charsSequence
         val lightFile = LightVirtualFile(name, text)
         lightFile.putUserData(PlsKeys.injectedFileInfoKey, file.fileInfo)
+        return lightFile
+    }
+    
+    /**
+     * 基于指定的文本和文件信息创建一个临时文件。
+     */
+    @JvmStatic
+    fun createLightFile(name: String, text: CharSequence, fileInfo: ParadoxFileInfo): VirtualFile {
+        val lightFile = LightVirtualFile(name, text)
+        lightFile.putUserData(PlsKeys.injectedFileInfoKey, fileInfo)
         return lightFile
     }
     
