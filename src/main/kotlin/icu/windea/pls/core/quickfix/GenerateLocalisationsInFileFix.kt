@@ -10,19 +10,19 @@ import icu.windea.pls.core.codeInsight.generation.*
 import icu.windea.pls.script.psi.*
 
 class GenerateLocalisationsInFileFix(
-    private val localisationNames: Set<String>,
-    private val fileName: String,
+    private val context: GenerateLocalisationsInFileContext,
     element: ParadoxScriptDefinitionElement
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH
     
-    override fun getText() = PlsBundle.message("inspection.script.general.missingLocalisation.quickfix.2", fileName)
+    override fun getText() = PlsBundle.message("inspection.script.general.missingLocalisation.quickfix.2", context.fileName)
     
     override fun getFamilyName() = text
     
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if(editor == null) return
         val handler = GenerateLocalisationsInFileHandler()
+        file.putUserData(PlsKeys.generateLocalisationsInFileContextKey, context)
         return handler.invoke(project, editor, file)
     }
     

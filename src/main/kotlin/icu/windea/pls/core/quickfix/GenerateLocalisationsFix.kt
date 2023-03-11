@@ -10,13 +10,12 @@ import icu.windea.pls.core.codeInsight.generation.*
 import icu.windea.pls.script.psi.*
 
 class GenerateLocalisationsFix(
-    private val localisationNames: Set<String>,
-    private val definitionName: String,
+    private val context: GenerateLocalisationsContext,
     element: ParadoxScriptDefinitionElement
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH
     
-    override fun getText() = PlsBundle.message("inspection.script.general.missingLocalisation.quickfix.1", definitionName)
+    override fun getText() = PlsBundle.message("inspection.script.general.missingLocalisation.quickfix.1", context.definitionName)
     
     override fun getFamilyName() = text
     
@@ -24,6 +23,7 @@ class GenerateLocalisationsFix(
         if(editor == null) return
         if(startElement !is ParadoxScriptDefinitionElement) return
         val handler = GenerateLocalisationsHandler()
+        file.putUserData(PlsKeys.generateLocalisationsContextKey, context)
         return handler.invoke(project, editor, file)
     }
     

@@ -11,6 +11,8 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.codeInsight.generation.*
+import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.core.ui.*
@@ -39,16 +41,21 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val allLocaleConfigs = getCwtConfig().core.localisationLocales
-        val localeConfigs = locales.mapNotNullTo(mutableSetOf())  { allLocaleConfigs.get(it) } 
+        val localeConfigs = locales.mapNotNullTo(mutableSetOf()) { allLocaleConfigs.get(it) }
         return object : ParadoxScriptVisitor() {
+            @Volatile
+            lateinit var inFileContext: GenerateLocalisationsInFileContext
+            
             override fun visitFile(file: PsiFile) {
+                inFileContext = GenerateLocalisationsInFileContext(file.name, mutableListOf())
+                
                 if(localeConfigs.isEmpty()) return
                 if(!checkForDefinitions) return
                 val scriptFile = file.castOrNull<ParadoxScriptFile>() ?: return
                 val definitionInfo = scriptFile.definitionInfo ?: return
                 visitDefinition(scriptFile, definitionInfo)
             }
-        
+            
             override fun visitProperty(property: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
                 if(localeConfigs.isEmpty()) return
@@ -56,7 +63,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 val definitionInfo = property.definitionInfo ?: return
                 visitDefinition(property, definitionInfo)
             }
-        
+            
             private fun visitDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
                 ProgressManager.checkCanceled()
                 val project = definitionInfo.project
@@ -64,7 +71,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 if(localisationInfos.isEmpty()) return
                 val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
                 val nameToDistinct = mutableSetOf<String>()
-                val infoMap = mutableMapOf<String, Tuple3<ParadoxDefinitionRelatedLocalisationInfo, String?, CwtLocalisationLocaleConfig>>()
+                val infoMap = mutableMapOf<String, Info>()
                 //进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
                 val hasPrimaryLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
                 runReadAction {
@@ -80,7 +87,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                                 if(resolved != null) {
                                     if(resolved.message != null) continue //skip if it's dynamic or inlined
                                     if(resolved.localisation == null) {
-                                        infoMap.putIfAbsent(info.name + "@" + locale, tupleOf(info, resolved.key, locale))
+                                        infoMap.putIfAbsent(info.name + "@" + locale, Info(info, resolved.key, locale))
                                     } else {
                                         infoMap.remove(info.name + "@" + locale)
                                         nameToDistinct.add(info.name + "@" + locale)
@@ -88,21 +95,36 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                                     }
                                 } else if(info.locationExpression.propertyName != null) {
                                     //从定义的属性推断，例如，#name
-                                    infoMap.putIfAbsent(info.name + "@" + locale, tupleOf(info, null, locale))
+                                    infoMap.putIfAbsent(info.name + "@" + locale, Info(info, null, locale))
                                 }
                             }
                         }
                     }
                 }
+                
                 if(infoMap.isNotEmpty()) {
+                    //添加快速修复
+                    val fixes = getFixes(definition, definitionInfo, infoMap).toTypedArray()
+                    
                     //显示为WEAK_WARNING，且缺失多个时，每个算作一个问题
                     for((info, key, locale) in infoMap.values) {
                         val message = getMessage(info, key, locale)
-                        holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING)
+                        holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING, *fixes)
                     }
                 }
             }
-        
+            
+            private fun getFixes(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, infoMap: Map<String, Info>): List<LocalQuickFix> {
+                return buildList {
+                    val context = GenerateLocalisationsContext(definitionInfo.name, infoMap.mapNotNullTo(mutableSetOf()) { it.key })
+                    add(GenerateLocalisationsFix(context, definition))
+                    
+                    val inFileContext = inFileContext
+                    inFileContext.contextList.add(context)
+                    add(GenerateLocalisationsInFileFix(inFileContext, definition))
+                }
+            }
+            
             private fun getMessage(info: ParadoxDefinitionRelatedLocalisationInfo, key: String?, locale: CwtLocalisationLocaleConfig): String {
                 val expression = info.locationExpression
                 val propertyName = expression.propertyName
@@ -124,15 +146,15 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     }
                 }
             }
-        
+            
             override fun visitPropertyKey(element: ParadoxScriptPropertyKey) {
                 visitStringExpressionElement(element)
             }
-        
+            
             override fun visitString(element: ParadoxScriptString) {
                 visitStringExpressionElement(element)
             }
-        
+            
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
                 if(localeConfigs.isEmpty()) return
@@ -164,7 +186,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             lateinit var checkForDefinitionsCb: Cell<JBCheckBox>
-            row { 
+            row {
                 label(PlsBundle.message("inspection.script.general.missingLocalisation.option.locales"))
             }
             indent {
@@ -207,18 +229,9 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         }
     }
     
-    //private class GenerateMissingLocalisationFix(
-    //	private val keys: Set<String>,
-    //	element: ParadoxScriptDefinitionElement
-    //): LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction{
-    //	override fun getText() = PlsBundle.message("inspection.script.definition.inspection.missingRelatedLocalisation.quickfix.1")
-    //	
-    //	override fun getFamilyName() = text
-    //	
-    //	override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-    //		//TODO
-    //	}
-    //	
-    //	override fun availableInBatchMode() = false
-    //}
+    data class Info(
+        val info: ParadoxDefinitionRelatedLocalisationInfo,
+        val key: String?,
+        val locale: CwtLocalisationLocaleConfig
+    )
 }

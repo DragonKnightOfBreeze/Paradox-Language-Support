@@ -58,7 +58,7 @@ class MissingImageInspection : LocalInspectionTool() {
             if(imageInfos.isEmpty()) return
             val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
             val nameToDistinct = mutableSetOf<String>()
-            val infoMap = mutableMapOf<String, Tuple2<ParadoxDefinitionRelatedImageInfo, String?>>()
+            val infoMap = mutableMapOf<String, Info>()
             //进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
             var hasPrimary = false
             runReadAction {
@@ -72,7 +72,7 @@ class MissingImageInspection : LocalInspectionTool() {
                         if(resolved != null) {
                             if(resolved.message != null) continue //skip if it's dynamic
                             if(resolved.file == null) {
-                                infoMap.putIfAbsent(info.name, tupleOf(info, resolved.filePath))
+                                infoMap.putIfAbsent(info.name, Info(info, resolved.filePath))
                             } else {
                                 infoMap.remove(info.name)
                                 nameToDistinct.add(info.name)
@@ -80,7 +80,7 @@ class MissingImageInspection : LocalInspectionTool() {
                             }
                         } else if(info.locationExpression.placeholder == null) {
                             //从定义的属性推断，例如，#name
-                            infoMap.putIfAbsent(info.name, tupleOf(info, null))
+                            infoMap.putIfAbsent(info.name, Info(info, null))
                         }
                     }
                 }
@@ -174,4 +174,9 @@ class MissingImageInspection : LocalInspectionTool() {
             }
         }
     }
+    
+    data class Info(
+        val info: ParadoxDefinitionRelatedImageInfo,
+        val key: String?
+    )
 }
