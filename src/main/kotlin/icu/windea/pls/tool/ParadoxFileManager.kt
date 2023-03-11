@@ -4,9 +4,12 @@ import com.intellij.lang.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
+import com.intellij.psi.*
 import com.intellij.testFramework.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
 import java.lang.invoke.*
 import java.nio.file.*
@@ -61,9 +64,9 @@ object ParadoxFileManager {
      * 基于指定的虚拟文件创建一个临时文件。
      */
     @JvmStatic
-    fun createLightFile(name: String, file: VirtualFile): VirtualFile {
-        val document = FileDocumentManager.getInstance().getDocument(file) ?: throw IllegalStateException()
-        val text = document.charsSequence
+    fun createLightFile(name: String, file: VirtualFile, project: Project): VirtualFile {
+        //为了兼容不同的lineSeparator，这里不能直接使用document.charSequence
+        val text = file.toPsiFile<PsiFile>(project)?.text ?: throw IllegalStateException()
         val lightFile = LightVirtualFile(name, text)
         lightFile.putUserData(PlsKeys.injectedFileInfoKey, file.fileInfo)
         return lightFile
@@ -83,5 +86,10 @@ object ParadoxFileManager {
     fun createLightFile(name: String, text: CharSequence, language: Language): VirtualFile {
         val lightFile = LightVirtualFile(name, language, text)
         return lightFile
+    }
+    
+    @JvmStatic
+    fun isLightFile(file: VirtualFile): Boolean {
+        return file is LightVirtualFile
     }
 }

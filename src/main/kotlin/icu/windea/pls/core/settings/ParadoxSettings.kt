@@ -31,9 +31,9 @@ class ParadoxSettingsState : BaseState() {
 	@get:Property(surroundWithTag = false)
 	var completion by property(CompletionState())
 	@get:Property(surroundWithTag = false)
-	var inference by property(InferenceState())
-	@get:Property(surroundWithTag = false)
 	var generation by property(GenerationState())
+	@get:Property(surroundWithTag = false)
+	var inference by property(InferenceState())
 	
 	/**
 	 * @property renderLineComment 是否需要渲染之前的单行注释文本到文档中。
@@ -79,6 +79,17 @@ class ParadoxSettingsState : BaseState() {
 	}
 	
 	/**
+	 * @property localisationTextGenerationStrategy 生成本地化时如何生成本地化文本。
+	 * @property localisationText 生成北戴河时如果使用特定文本填充本地化文本，这个特定文本是什么。
+	 */
+	@Tag("generation")
+	class GenerationState : BaseState() {
+		var localisationTextGenerationStrategy by enum(LocalisationTextGenerationStrategy.SpecificText)
+		var localisationText by string("REPLACE_ME")
+		var fileNamePrefix by string("000000_")
+	}
+	
+	/**
 	 * @property inlineScriptLocation 是否推断内联脚本的使用位置，以便为内联脚本提供高级语言功能支持。
 	 * @property eventScopeContext 是否基于使用处推断事件的作用域上下文。
 	 */
@@ -86,11 +97,6 @@ class ParadoxSettingsState : BaseState() {
 	class InferenceState : BaseState() {
 		var inlineScriptLocation by property(true)
 		var eventScopeContext by property(true)
-	}
-	
-	@Tag("generation")
-	class GenerationState : BaseState() {
-		var fileNamePrefix by string("000000_")
 	}
 	
 	val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet().orEmpty() }
@@ -101,4 +107,9 @@ class ParadoxSettingsState : BaseState() {
 			addAll(getCwtConfig().core.localisationLocalesNoDefault.keys)
 		}
 	}
+}
+
+enum class LocalisationTextGenerationStrategy {
+	EmptyText,
+	SpecificText
 }

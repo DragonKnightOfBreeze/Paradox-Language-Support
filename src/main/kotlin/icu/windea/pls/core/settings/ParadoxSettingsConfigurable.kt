@@ -190,7 +190,31 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.completion::completeOnlyScopeIsMatched)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeOnlyScopeIsMatched.tooltip") }
                 }
-            }.apply { expanded = true }
+            }
+            //generation
+            collapsibleGroup(PlsBundle.message("settings.generation")) {
+                lateinit var specificTextRbCell : Cell<JBRadioButton>
+                
+                @Suppress("DialogTitleCapitalization")
+                buttonsGroup(PlsBundle.message("settings.generation.localisationTextGenerationStrategy")) {
+                    row {
+                        radioButton(PlsBundle.message("settings.generation.localisationTextGenerationStrategy.0"), LocalisationTextGenerationStrategy.EmptyText)
+                        radioButton(PlsBundle.message("settings.generation.localisationTextGenerationStrategy.1"), LocalisationTextGenerationStrategy.SpecificText)
+                            .apply { specificTextRbCell = this }
+                    }
+                }.bind(settings.generation::localisationTextGenerationStrategy)
+                //localisationText
+                row {
+                    label(PlsBundle.message("settings.generation.localisationText"))
+                    textField().bindText(settings.generation::localisationText.toNonNullableProperty(""))
+                        .enabledIf(specificTextRbCell.selected)
+                }
+                //fileNamePrefix
+                row {
+                    label(PlsBundle.message("settings.generation.fileNamePrefix"))
+                    textField().bindText(settings.generation::fileNamePrefix.toNonNullableProperty(""))
+                }.visible(false)
+            }
             //inference
             collapsibleGroup(PlsBundle.message("settings.inference")) {
                 //inlineScriptLocation
@@ -207,17 +231,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContext.tooltip") }
                         .onApply { ParadoxModificationTrackerProvider.getInstance().DefinitionScopeContextInference.incModificationCount() }
                 }
-            }.apply { expanded = true }
-            //generation
-            collapsibleGroup(PlsBundle.message("settings.generation")) {
-                //fileNamePrefix
-                row {
-                    label(PlsBundle.message("settings.generation.fileNamePrefix")).applyToComponent {
-                        toolTipText = PlsBundle.message("settings.generation.fileNamePrefix.tooltip")
-                    }
-                    textField().bindText(settings.generation::fileNamePrefix.toNonNullableProperty(""))
-                }
-            }.apply { expanded = true }.visible(false) //TODO
+            }
         }
     }
     
