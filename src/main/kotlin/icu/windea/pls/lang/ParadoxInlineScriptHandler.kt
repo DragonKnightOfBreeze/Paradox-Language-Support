@@ -81,10 +81,6 @@ object ParadoxInlineScriptHandler {
     @JvmStatic
     fun getExpressionFromInlineConfig(propertyValue: ParadoxScriptValue, inlineConfig: CwtInlineConfig): String? {
         if(inlineConfig.name != "inline_script") return null
-        if(inlineConfig.config.configs == null) {
-            //inline_script = $
-            return 
-        }
         val expressionLocation = getExpressionLocation(inlineConfig.config) ?: return null
         val expressionElement = if(expressionLocation.isEmpty()) {
             propertyValue.castOrNull<ParadoxScriptString>()
