@@ -68,12 +68,12 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
         val colorArgs = getColorArgs(element)
         if(colorType == null || colorArgs == null) return
         if(colorArgs.size != 3 && colorArgs.size != 4) return //中断操作
-        val shouldBeRgba = color.alpha != 255 || colorArgs.size == 4
+        val addAlpha = color.alpha != 255 || colorArgs.size == 4
         val newText = when(colorType) {
             "rgb" -> {
                 val (r, g, b, a) = color
                 when {
-                    shouldBeRgba -> "{ $r $g $b $a }"
+                    addAlpha -> "{ $r $g $b $a }"
                     else -> "{ $r $g $b }"
                 }
             }
@@ -81,7 +81,7 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
                 val (r, g, b, a) = color
                 val (h, s, v) = Color.RGBtoHSB(r, g, b, null)
                 when {
-                    shouldBeRgba -> "{ ${h.asFloat()} ${s.asFloat()} ${v.asFloat()} ${(a / 255f).asFloat()} }"
+                    addAlpha -> "{ ${h.asFloat()} ${s.asFloat()} ${v.asFloat()} ${(a / 255f).asFloat()} }"
                     else -> "{ ${h.asFloat()} ${s.asFloat()} ${v.asFloat()} }"
                 }
             }
@@ -100,5 +100,5 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
         //documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
     
-    fun Number.asFloat() = this.format(4)
+    fun Number.asFloat() = this.format(-4)
 }
