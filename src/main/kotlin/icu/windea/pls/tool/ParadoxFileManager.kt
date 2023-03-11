@@ -1,5 +1,6 @@
 package icu.windea.pls.tool
 
+import com.intellij.lang.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.progress.*
@@ -60,7 +61,7 @@ object ParadoxFileManager {
      * 基于指定的文本和文件信息创建一个临时文件。
      */
     @JvmStatic
-    fun createLightFile(text: String, fileInfo: ParadoxFileInfo): VirtualFile? {
+    fun createLightFile(text: CharSequence, fileInfo: ParadoxFileInfo): VirtualFile? {
         val name = fileInfo.name
         val lightFile = LightVirtualFile(name, text)
         lightFile.putUserData(PlsKeys.injectedFileInfoKey, fileInfo)
@@ -77,6 +78,12 @@ object ParadoxFileManager {
         val text = document.charsSequence
         val lightFile = LightVirtualFile(name, text)
         lightFile.putUserData(PlsKeys.injectedFileInfoKey, file.fileInfo)
+        return lightFile
+    }
+    
+    @JvmStatic
+    fun createLightFile(name: String, text: CharSequence, language: Language): VirtualFile {
+        val lightFile = LightVirtualFile(name, language, text)
         return lightFile
     }
 }

@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.psi.*
 
 class GenerateLocalisationsHandler : CodeInsightActionHandler {
     override fun invoke(project: Project, editor: Editor, file: PsiFile) {
@@ -13,7 +14,7 @@ class GenerateLocalisationsHandler : CodeInsightActionHandler {
             ?: getDefaultContext(project, editor, file)
             ?: return
         file.putUserData(contextKey, null)
-        //TODO
+        ParadoxGenerator.generateLocalisations(context)
     }
     
     private fun getDefaultContext(project: Project, editor: Editor, file: PsiFile): GenerateLocalisationsContext? {

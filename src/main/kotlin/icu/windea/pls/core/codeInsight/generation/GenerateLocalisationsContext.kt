@@ -3,6 +3,7 @@
 package icu.windea.pls.core.codeInsight.generation
 
 import com.intellij.openapi.util.*
+import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 
 data class GenerateLocalisationsContext(
