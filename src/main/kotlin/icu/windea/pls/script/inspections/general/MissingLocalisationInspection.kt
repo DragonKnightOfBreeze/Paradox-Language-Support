@@ -42,22 +42,25 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val allLocaleConfigs = getCwtConfig().core.localisationLocales
         val localeConfigs = locales.mapNotNullTo(mutableSetOf()) { allLocaleConfigs.get(it) }
-        return object : ParadoxScriptVisitor() {
-            @Volatile
-            lateinit var inFileContext: GenerateLocalisationsInFileContext
-            
-            override fun visitFile(file: PsiFile) {
-                inFileContext = GenerateLocalisationsInFileContext(file.name, mutableListOf())
-                
-                if(localeConfigs.isEmpty()) return
-                if(!checkForDefinitions) return
-                val scriptFile = file.castOrNull<ParadoxScriptFile>() ?: return
-                val definitionInfo = scriptFile.definitionInfo ?: return
-                visitDefinition(scriptFile, definitionInfo)
+        return object : PsiElementVisitor() {
+            var inFileContext: GenerateLocalisationsInFileContext? = null
+    
+            override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
+                when(element) {
+                    is ParadoxScriptDefinitionElement -> {
+                        if(!checkForDefinitions) return
+                        val definitionInfo = element.definitionInfo ?: return
+                        visitDefinition(element, definitionInfo)
+                    }
+                    is ParadoxScriptStringExpressionElement -> {
+                        if(!checkForModifiers) return
+                        visitStringExpressionElement(element)
+                    }
+                }
             }
             
-            override fun visitProperty(property: ParadoxScriptProperty) {
-                ProgressManager.checkCanceled()
+            private fun visitProperty(property: ParadoxScriptProperty) {
                 if(localeConfigs.isEmpty()) return
                 if(!checkForDefinitions) return
                 val definitionInfo = property.definitionInfo ?: return
@@ -116,10 +119,13 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             
             private fun getFixes(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, infoMap: Map<String, Info>): List<LocalQuickFix> {
                 return buildList {
-                    val context = GenerateLocalisationsContext(definitionInfo.name, infoMap.mapNotNullTo(mutableSetOf()) { it.key })
+                    val context = GenerateLocalisationsContext(definitionInfo.name, infoMap.mapNotNullTo(mutableSetOf()) { it.value.key })
                     add(GenerateLocalisationsFix(context, definition))
-                    
-                    val inFileContext = inFileContext
+                    if(inFileContext == null) {
+                        val fileName = definition.containingFile.name
+                        inFileContext = GenerateLocalisationsInFileContext(fileName, mutableListOf())
+                    }
+                    val inFileContext = inFileContext!!
                     inFileContext.contextList.add(context)
                     add(GenerateLocalisationsInFileFix(inFileContext, definition))
                 }
@@ -147,16 +153,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 }
             }
             
-            override fun visitPropertyKey(element: ParadoxScriptPropertyKey) {
-                visitStringExpressionElement(element)
-            }
-            
-            override fun visitString(element: ParadoxScriptString) {
-                visitStringExpressionElement(element)
-            }
-            
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                ProgressManager.checkCanceled()
                 if(localeConfigs.isEmpty()) return
                 if(!checkForModifiers) return
                 val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return

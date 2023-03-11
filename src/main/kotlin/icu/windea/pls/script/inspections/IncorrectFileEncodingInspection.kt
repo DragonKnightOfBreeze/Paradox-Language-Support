@@ -21,8 +21,8 @@ import icu.windea.pls.localisation.psi.*
  *
  * 提供快速修复：
  * * 改为正确的文件编码
- *
- * 注意：[icu.windea.pls.core.ParadoxFileTypeOverrider]会尝试自动修正文件的BOM。
+ * 
+ * @see icu.windea.pls.core.ParadoxUtf8BomOptionProvider
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {

@@ -36,6 +36,8 @@ class GotoLocalisationsAction : BaseCodeInsightAction() {
 		if(editor == null || project == null) return
 		val file = PsiUtilBase.getPsiFileInEditor(editor, project)
 		if(file !is ParadoxLocalisationFile) return
+		val fileInfo = file.fileInfo ?: return
+		if(fileInfo.entryPath.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
 		presentation.isVisible = true
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset)

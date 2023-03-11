@@ -36,6 +36,8 @@ class GotoDefinitionsAction : BaseCodeInsightAction() {
 		if(editor == null || project == null) return
 		val file = PsiUtilBase.getPsiFileInEditor(editor, project)
 		if(file !is ParadoxScriptFile) return
+		val fileInfo = file.fileInfo ?: return
+		if(fileInfo.entryPath.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
 		presentation.isVisible = true
 		if(file.definitionInfo != null) {
 			presentation.isEnabled = true
