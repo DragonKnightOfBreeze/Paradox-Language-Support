@@ -58,10 +58,13 @@ class ParadoxDefinitionInfo(
     }
     
     val subtypeConfigs: List<CwtSubtypeConfig> by lazy {
+        //正在索引时不要尝试匹配子类型
         val subtypesConfig = typeConfig.subtypes
         val result = SmartList<CwtSubtypeConfig>()
         for(subtypeConfig in subtypesConfig.values) {
-            if(ParadoxDefinitionHandler.matchesSubtype(element, subtypeConfig, rootKey, configGroup, result)) result.add(subtypeConfig)
+            if(ParadoxDefinitionHandler.matchesSubtype(element, subtypeConfig, rootKey, configGroup, result)) {
+                result.add(subtypeConfig)
+            }
         }
         result
     }
@@ -153,14 +156,14 @@ class ParadoxDefinitionInfo(
     
     fun resolvePrimaryImage(definition: ParadoxScriptDefinitionElement): PsiFile? {
         if(primaryImages.isEmpty()) return null //没有或者CWT规则不完善
-		for(primaryImage in primaryImages) {
-			val resolved = primaryImage.locationExpression.resolve(definition, this, project)
+        for(primaryImage in primaryImages) {
+            val resolved = primaryImage.locationExpression.resolve(definition, this, project)
             val file = resolved?.file
             if(file == null) continue
-			definition.putUserData(PlsKeys.iconFrame, resolved.frame)
-			return file
-		}
-		return null
+            definition.putUserData(PlsKeys.iconFrame, resolved.frame)
+            return file
+        }
+        return null
     }
     
     override fun equals(other: Any?): Boolean {

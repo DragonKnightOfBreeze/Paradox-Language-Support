@@ -334,7 +334,8 @@ object ParadoxDefinitionHandler {
 				//匹配值
 				propertyConfig.stringValue != null -> {
 					val expression = ParadoxDataExpression.resolve(propValue)
-					return ParadoxConfigHandler.matchesScriptExpression(propValue, expression, propertyConfig.valueExpression, propertyConfig, configGroup)
+					val matchType = getMatchType(configGroup)
+					return ParadoxConfigHandler.matchesScriptExpression(propValue, expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchType)
 				}
 				//匹配single_alias
 				ParadoxConfigHandler.isSingleAlias(propertyConfig) -> {
@@ -369,7 +370,8 @@ object ParadoxDefinitionHandler {
 			val keyElement = propertyElement.propertyKey
 			val expression = ParadoxDataExpression.resolve(keyElement)
 			val propConfigs = propertyConfigs.filter {
-				ParadoxConfigHandler.matchesScriptExpression(keyElement, expression, it.keyExpression, it, configGroup)
+				val matchType = getMatchType(configGroup)
+				ParadoxConfigHandler.matchesScriptExpression(keyElement, expression, it.keyExpression, it, configGroup, matchType)
 			}
 			//如果没有匹配的规则则忽略
 			if(propConfigs.isNotEmpty()) {
@@ -388,7 +390,6 @@ object ParadoxDefinitionHandler {
 	private fun doMatchValues(valueElements: List<ParadoxScriptValue>, valueConfigs: List<CwtValueConfig>, configGroup: CwtConfigGroup): Boolean {
 		if(valueConfigs.isEmpty()) return true
 		if(valueElements.isEmpty()) return false
-		
 		//要求其中所有的value的值在最终都会小于等于指定值
 		val minMap = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { it.cardinality?.min ?: 1 }) //默认为1
 		
@@ -396,7 +397,8 @@ object ParadoxDefinitionHandler {
 			//如果没有匹配的规则则认为不匹配
 			val expression = ParadoxDataExpression.resolve(value)
 			val matched = valueConfigs.any { valueConfig ->
-				val matched = ParadoxConfigHandler.matchesScriptExpression(value, expression, valueConfig.valueExpression, valueConfig, configGroup)
+				val matchType = getMatchType(configGroup)
+				val matched = ParadoxConfigHandler.matchesScriptExpression(value, expression, valueConfig.valueExpression, valueConfig, configGroup, matchType)
 				if(matched) minMap.compute(valueConfig.value) { _, v -> if(v == null) 1 else v - 1 }
 				matched
 			}
@@ -404,6 +406,11 @@ object ParadoxDefinitionHandler {
 		}
 		
 		return minMap.values.any { it <= 0 }
+	}
+	
+	private fun getMatchType(configGroup: CwtConfigGroup): Int {
+		//需要兼容正在索引的情况
+		return if(DumbService.isDumb(configGroup.project)) CwtConfigMatchType.STATIC else CwtConfigMatchType.DEFAULT
 	}
 	
 	private fun doMatchSingleAlias(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
