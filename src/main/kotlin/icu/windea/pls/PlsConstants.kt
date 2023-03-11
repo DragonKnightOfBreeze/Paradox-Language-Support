@@ -2,7 +2,6 @@ package icu.windea.pls
 
 import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
 import icons.*
@@ -94,7 +93,7 @@ object PlsKeys {
     val fileInfoKey = Key.create<ParadoxFileInfo>("paradox.fileInfo")
     
     val injectedFileInfoKey = Key.create<ParadoxFileInfo>("paradox.injected.fileInfo") //用于为临时文件嵌入文件信息
-    val injectedFileTypeKey = Key.create<FileType>("paradox.injected.fileType") //用于为临时文件嵌入IDE文件类型
+    //val injectedFileTypeKey = Key.create<ParadoxFileType>("paradox.injected.fileType") //用于为临时文件嵌入I文件类型
     val injectedLocaleConfigKey = Key.create<CwtLocalisationLocaleConfig>("paradox.injected.localeConfig") //用于为脚本文件嵌入语言区域
     val injectedElementPathKey = Key.create<ParadoxElementPath>("paradox.injected.elementPath") //用于为脚本元素嵌入元素路径（相对于脚本文件）
     val injectedElementPathPrefixKey = Key.create<ParadoxElementPath>("paradox.injected.elementPathPrefix") //用于为脚本文件嵌入元素路径前缀

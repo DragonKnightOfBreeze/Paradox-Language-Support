@@ -183,6 +183,9 @@ object ParadoxCoreHandler {
     
     @JvmStatic
     fun resolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
+        val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfoKey)
+        if(injectedFileInfo != null) return injectedFileInfo
+        
         if(file is StubVirtualFile || !file.isValid) return null
         val name = file.name
         var currentFile: VirtualFile? = file

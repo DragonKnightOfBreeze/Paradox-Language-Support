@@ -11,7 +11,6 @@ enum class ParadoxFileType(
 	Directory("directory", "Directory"),
 	ParadoxScript("paradoxScript", "Paradox Script File"),
 	ParadoxLocalisation("paradoxLocalisation", "Paradox Localisation File"),
-	Dds("dds", "Dds File"),
 	Other("other", "Other File");
 	
 	override fun toString(): String {
@@ -27,7 +26,6 @@ enum class ParadoxFileType(
 				fileName == PlsConstants.descriptorFileName -> ParadoxScript
 				path.canBeScriptFilePath() && fileExtension in PlsConstants.scriptFileExtensions && !isIgnored(fileName) && isInFolders(gameType, path) -> ParadoxScript
 				path.canBeLocalisationFilePath() && fileExtension in PlsConstants.localisationFileExtensions && !isIgnored(fileName) -> ParadoxLocalisation
-				fileExtension in PlsConstants.ddsFileExtensions -> Dds
 				else -> Other
 			}
 		}

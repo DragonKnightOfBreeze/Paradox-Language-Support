@@ -1,8 +1,10 @@
 package icu.windea.pls.tool
 
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
+import com.intellij.testFramework.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.model.*
 import java.lang.invoke.*
@@ -13,8 +15,9 @@ object ParadoxFileManager {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
     /**
-     * 基于指定的文件信息和模版创建一个临时文件。
+     * 基于指定的文本和文件信息创建一个临时文件。
      */
+    @Deprecated("Use createLightFile()")
     @JvmStatic
     fun createTempFile(text: String, fileInfo: ParadoxFileInfo): VirtualFile? {
         try {
@@ -33,8 +36,9 @@ object ParadoxFileManager {
     }
     
     /**
-     * 基于指定的文件信息和模版创建一个临时文件。
+     * 基于指定的虚拟文件创建一个临时文件。
      */
+    @Deprecated("Use createLightFile()")
     @JvmStatic
     fun createTempFile(file: VirtualFile): VirtualFile? {
         try {
@@ -44,12 +48,35 @@ object ParadoxFileManager {
             val diffDirFile = VfsUtil.findFile(diffDirPath, false) ?: return null
             val tempFile = VfsUtil.copyFile(ParadoxFileManager, file, diffDirFile, fileName)
             tempFile.putUserData(PlsKeys.injectedFileInfoKey, file.fileInfo)
-            tempFile.putUserData(PlsKeys.injectedFileTypeKey, file.fileType)
             return tempFile
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
             logger.error(e.message, e)
             return null
         }
+    }
+    
+    /**
+     * 基于指定的文本和文件信息创建一个临时文件。
+     */
+    @JvmStatic
+    fun createLightFile(text: String, fileInfo: ParadoxFileInfo): VirtualFile? {
+        val name = fileInfo.name
+        val lightFile = LightVirtualFile(name, text)
+        lightFile.putUserData(PlsKeys.injectedFileInfoKey, fileInfo)
+        return lightFile
+    }
+    
+    /**
+     * 基于指定的虚拟文件创建一个临时文件。
+     */
+    @JvmStatic
+    fun createLightFile(file: VirtualFile): VirtualFile {
+        val document = FileDocumentManager.getInstance().getDocument(file) ?: throw IllegalStateException()
+        val name = file.name
+        val text = document.charsSequence
+        val lightFile = LightVirtualFile(name, text)
+        lightFile.putUserData(PlsKeys.injectedFileInfoKey, file.fileInfo)
+        return lightFile
     }
 }

@@ -1,5 +1,6 @@
 package icu.windea.pls.core.diff.actions
 
+import com.intellij.application.options.*
 import com.intellij.diff.*
 import com.intellij.diff.actions.impl.*
 import com.intellij.diff.chains.*
@@ -160,10 +161,17 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
     
     private fun createTempContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, localisation: ParadoxLocalisationProperty): DocumentContent? {
         //创建临时文件
-        val text = localisation.text
+        val file = localisation.containingFile ?: return null
+        val localeConfig = localisation.localeConfig ?: preferredParadoxLocale() ?: return null
+        val text =  buildString { 
+            append(localeConfig.text).append(":\n")
+            val indentSize = CodeStyle.getIndentOptions(file).INDENT_SIZE
+            append(" ".repeat(indentSize))
+            append(localisation.text)
+        }
         val fileInfo = documentContent.highlightFile?.fileInfo ?: return null
-        val tempFile = runWriteAction { ParadoxFileManager.createTempFile(text, fileInfo) } ?: return null
-        tempFile.putUserData(PlsKeys.injectedLocaleConfigKey, localisation.localeConfig)
+        val tempFile = runWriteAction { ParadoxFileManager.createLightFile(text, fileInfo) } ?: return null
+        tempFile.putUserData(PlsKeys.injectedLocaleConfigKey, localeConfig)
         return contentFactory.createDocument(project, tempFile)
     }
     

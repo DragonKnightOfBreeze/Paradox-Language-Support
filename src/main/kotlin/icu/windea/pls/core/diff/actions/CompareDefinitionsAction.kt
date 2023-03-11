@@ -164,7 +164,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         //创建临时文件
         val text = definition.text
         val fileInfo = documentContent.highlightFile?.fileInfo ?: return null
-        val tempFile = runWriteAction { ParadoxFileManager.createTempFile(text, fileInfo) } ?: return null
+        val tempFile = runWriteAction { ParadoxFileManager.createLightFile(text, fileInfo) } ?: return null
         tempFile.putUserData(PlsKeys.injectedElementPathPrefixKey, definition.definitionInfo?.elementPath)
         return contentFactory.createDocument(project, tempFile)
     }
