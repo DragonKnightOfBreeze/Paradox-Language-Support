@@ -40,8 +40,8 @@ fun getProfilesSettings() = service<ParadoxProfilesSettings>().state
 
 fun getCwtConfig(project: Project = getTheOnlyOpenOrDefaultProject()) = project.service<CwtConfigProvider>().configGroups
 
-fun preferredParadoxLocale(): CwtLocalisationLocaleConfig? {
-    val primaryLocale = getSettings().preferredLocale.orEmpty()
+fun getLocale(locale: String): CwtLocalisationLocaleConfig {
+    val primaryLocale = locale
     if(primaryLocale.isNotEmpty() && primaryLocale != "auto") {
         val locales = getCwtConfig().core.localisationLocales
         val usedLocale = locales.get(primaryLocale)
@@ -50,7 +50,12 @@ fun preferredParadoxLocale(): CwtLocalisationLocaleConfig? {
     //基于OS得到对应的语言区域，或者使用英文
     val userLanguage = System.getProperty("user.language") ?: "en"
     val localesByCode = getCwtConfig().core.localisationLocalesByCode
-    return localesByCode.get(userLanguage) ?: localesByCode.get("en")
+    return localesByCode.get(userLanguage) ?: localesByCode.get("en") ?: throw IllegalStateException()
+}
+
+fun preferredParadoxLocale(): CwtLocalisationLocaleConfig {
+    val primaryLocale = getSettings().preferredLocale.orEmpty()
+    return getLocale(primaryLocale)
 }
 
 /**

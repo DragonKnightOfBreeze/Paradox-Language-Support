@@ -80,12 +80,14 @@ class ParadoxSettingsState : BaseState() {
 	
 	/**
 	 * @property localisationTextGenerationStrategy 生成本地化时如何生成本地化文本。
-	 * @property localisationText 生成北戴河时如果使用特定文本填充本地化文本，这个特定文本是什么。
+	 * @property localisationText 生成本地化时如果使用特定文本填充本地化文本，这个特定文本是什么。
+	 * @property localisationTextLocale 生成本地化时如果基于特定语言区域的已有本地化文本，这个特定语言区域是什么。
 	 */
 	@Tag("generation")
 	class GenerationState : BaseState() {
 		var localisationTextGenerationStrategy by enum(LocalisationTextGenerationStrategy.SpecificText)
 		var localisationText by string("REPLACE_ME")
+		var localisationTextLocale by string("auto")
 		var fileNamePrefix by string("000000_")
 	}
 	
@@ -111,5 +113,6 @@ class ParadoxSettingsState : BaseState() {
 
 enum class LocalisationTextGenerationStrategy {
 	EmptyText,
-	SpecificText
+	SpecificText,
+	FromLocale
 }

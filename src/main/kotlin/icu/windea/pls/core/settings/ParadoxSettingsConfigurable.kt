@@ -6,6 +6,7 @@ import com.intellij.openapi.ui.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
+import com.intellij.ui.dsl.builder.Row
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
@@ -49,14 +50,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent {
                             toolTipText = PlsBundle.message("settings.general.preferredLocale.tooltip")
                         }
-                    comboBox(settings.localeList,
-                        listCellRenderer { value, _, _ ->
-                            if(value == "auto") {
-                                text = PlsBundle.message("settings.general.preferredLocale.auto")
-                            } else {
-                                text = getCwtConfig().core.localisationLocales.getValue(value).description
-                            }
-                        })
+                    localeComboBox(settings)
                         .bindItem(settings::preferredLocale.toNullableProperty())
                         .onApply {
                             if(oldPreferredLocale != settings.preferredLocale) {
@@ -193,22 +187,28 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
             }
             //generation
             collapsibleGroup(PlsBundle.message("settings.generation")) {
-                lateinit var specificTextRbCell : Cell<JBRadioButton>
                 
                 @Suppress("DialogTitleCapitalization")
                 buttonsGroup(PlsBundle.message("settings.generation.localisationTextGenerationStrategy")) {
                     row {
                         radioButton(PlsBundle.message("settings.generation.localisationTextGenerationStrategy.0"), LocalisationTextGenerationStrategy.EmptyText)
+                    }
+                    row {
+                        lateinit var rbCell: Cell<JBRadioButton>
                         radioButton(PlsBundle.message("settings.generation.localisationTextGenerationStrategy.1"), LocalisationTextGenerationStrategy.SpecificText)
-                            .apply { specificTextRbCell = this }
+                            .apply { rbCell = this }
+                        textField().bindText(settings.generation::localisationText.toNonNullableProperty(""))
+                            .enabledIf(rbCell.selected)
+                    }
+                    row {
+                        lateinit var rbCell: Cell<JBRadioButton>
+                        radioButton(PlsBundle.message("settings.generation.localisationTextGenerationStrategy.2"), LocalisationTextGenerationStrategy.FromLocale)
+                            .apply { rbCell = this }
+                        localeComboBox(settings)
+                            .bindItem(settings.generation::localisationTextLocale.toNullableProperty())
+                            .enabledIf(rbCell.selected)
                     }
                 }.bind(settings.generation::localisationTextGenerationStrategy)
-                //localisationText
-                row {
-                    label(PlsBundle.message("settings.generation.localisationText"))
-                    textField().bindText(settings.generation::localisationText.toNonNullableProperty(""))
-                        .enabledIf(specificTextRbCell.selected)
-                }
                 //fileNamePrefix
                 row {
                     label(PlsBundle.message("settings.generation.fileNamePrefix"))
@@ -234,6 +234,15 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
             }
         }
     }
+    
+    private fun Row.localeComboBox(settings: ParadoxSettingsState) =
+        comboBox(settings.localeList, listCellRenderer { value, _, _ ->
+            if(value == "auto") {
+                text = PlsBundle.message("locale.auto")
+            } else {
+                text = getCwtConfig().core.localisationLocales.getValue(value).description
+            }
+        })
     
     private fun doReparseFilesByFileNames(ignoredFileNameSet: Set<String>, oldIgnoredFileNameSet: Set<String>) {
         //设置中的被忽略文件名被更改时，需要重新解析相关文件
