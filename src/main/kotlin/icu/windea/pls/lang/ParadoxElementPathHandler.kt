@@ -43,9 +43,9 @@ object ParadoxElementPathHandler {
         }
         if(current is PsiFile) {
             val virtualFile = selectFile(current)
-            val elementPathPrefix = virtualFile?.getUserData(PlsKeys.injectedElementPathPrefixKey)
-            if(elementPathPrefix != null && elementPathPrefix.isNotEmpty()) {
-                originalSubPaths.addAll(0, elementPathPrefix.subPaths)
+            val injectedElementPathPrefix = virtualFile?.getUserData(PlsKeys.injectedElementPathPrefixKey)
+            if(injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
+                originalSubPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
         }
         return ParadoxElementPath.resolve(originalSubPaths)
