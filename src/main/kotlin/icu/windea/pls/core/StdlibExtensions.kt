@@ -183,11 +183,30 @@ fun Char.isExactDigit(): Boolean {
 }
 
 fun Char.isExactIdentifierChar(): Boolean {
-    return this == '_' || this == '$' || this.isExactLetter() || this.isExactDigit()
+    return this == '_' || this.isExactLetter() || this.isExactDigit()
 }
 
-fun String.isExactIdentifier(): Boolean {
-    return this.all { it.isExactIdentifierChar() }
+fun String.isExactIdentifier(vararg extraChars: Char): Boolean {
+    return this.all { it.isExactIdentifierChar() || it in extraChars }
+}
+
+fun String.isExactParameterAwareIdentifier(vararg extraChars: Char): Boolean {
+    var isParameter = false
+    for(c in this) {
+        when {
+            c == '$' -> {
+                isParameter = !isParameter
+            }
+            isParameter -> {}
+            c.isExactIdentifierChar() || c in extraChars -> {}
+            else -> return false
+        }
+    }
+    return true
+}
+
+fun String.isParameterAwareExpression(): Boolean {
+    return !this.isLeftQuoted() && this.any { it == '$' }
 }
 
 fun String.isLeftQuoted(): Boolean {
@@ -315,7 +334,7 @@ private val keywordDelimiters = charArrayOf('.', '_')
 /**
  * 判断指定的关键词是否匹配当前字符串。
  */
-@Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN") 
+@Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 fun String.matchesKeyword(keyword: String): Boolean {
     if(keyword.isEmpty()) return true
     
@@ -326,7 +345,7 @@ fun String.matchesKeyword(keyword: String): Boolean {
     var index = -1
     for(i in 0 until keyword.length) {
         val c = keyword[i]
-        var nextIndex = (this as java.lang.String).indexOf(c.lowercaseChar().code, index+ 1)
+        var nextIndex = (this as java.lang.String).indexOf(c.lowercaseChar().code, index + 1)
         if(nextIndex == -1) nextIndex = (this as java.lang.String).indexOf(c.uppercaseChar().code, index + 1)
         if(nextIndex == -1) return false
         index = nextIndex

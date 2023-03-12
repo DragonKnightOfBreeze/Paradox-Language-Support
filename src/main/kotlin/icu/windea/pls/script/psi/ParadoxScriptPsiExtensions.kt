@@ -59,10 +59,6 @@ fun ASTNode.isParameterAwareExpression(): Boolean {
 	return !this.processChild { it.elementType != PARAMETER }
 }
 
-fun String.isParameterAwareExpression(): Boolean {
-	return !this.isLeftQuoted() && this.any { it == '$' }
-}
-
 fun PsiElement.isExpressionOrMemberContext(): Boolean {
 	return this is ParadoxScriptDefinitionElement || this is ParadoxScriptBlockElement || this is ParadoxScriptParameterCondition
 }

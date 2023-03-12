@@ -779,7 +779,7 @@ class CwtConfigGroupImpl(
 		val props = propertyConfig.properties ?: return null
 		for(prop in props) {
 			when(prop.key) {
-				"desc" -> desc = prop.stringValue?.takeUnless { it.all { c -> c.isExactIdentifierChar() } }?.trim()?.trim() //排除占位码 & 去除首尾空白
+				"desc" -> desc = prop.stringValue?.trim() //去除首尾空白
 				"from_data" -> fromData = prop.booleanValue ?: false
 				"type" -> type = prop.stringValue
 				"data_source" -> dataSource = prop.valueExpression //TODO 实际上也可能是data（可重复），但是目前只有一处
@@ -803,7 +803,7 @@ class CwtConfigGroupImpl(
 		val props = propertyConfig.properties ?: return null
 		for(prop in props) {
 			when(prop.key) {
-				"desc" -> desc = prop.stringValue?.takeUnless { it.all { c -> c.isExactIdentifierChar() } }?.trim() //排除占位码 & 去除首尾空白
+				"desc" -> desc = prop.stringValue?.trim() //排除占位码 & 去除首尾空白
 				"input_scopes" -> inputScopes = buildSet {
 					prop.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
 					prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
