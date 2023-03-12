@@ -229,6 +229,12 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.localisation"
                      groupPathKey="inspection.localisation.path"
                      implementationClass="icu.windea.pls.localisation.inspections.MultipleLocalesInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationMissingLocale"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.localisation.missingLocale"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation"
+                     groupPathKey="inspection.localisation.path"
+                     implementationClass="icu.windea.pls.localisation.inspections.MissingLocaleInspection"/>
     <!--endregion-->
     <!--region Paradox localisation/General-->
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedIcon"

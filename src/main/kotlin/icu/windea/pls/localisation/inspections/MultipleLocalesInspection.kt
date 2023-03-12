@@ -11,7 +11,7 @@ import icu.windea.pls.tool.*
 import javax.swing.*
 
 /**
- * （同一文件中）多个语言区域的检查。
+ * 检查本地化文件中是否包含多个语言区域声明。
  *
  * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。默认为"languages.yml"。
  */

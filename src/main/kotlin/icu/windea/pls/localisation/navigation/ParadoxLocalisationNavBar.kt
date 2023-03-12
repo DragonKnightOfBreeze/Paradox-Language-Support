@@ -20,7 +20,7 @@ class ParadoxLocalisationNavBar : StructureAwareNavBarModelExtension() {
 	
 	override fun getPresentableText(o: Any?): String? {
 		return when {
-			o is ParadoxLocalisationPropertyList -> o.locale.name
+			o is ParadoxLocalisationPropertyList -> o.locale?.name.orAnonymous()
 			o is ParadoxLocalisationProperty -> o.name
 			else -> null
 		}

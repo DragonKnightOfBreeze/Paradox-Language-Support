@@ -292,14 +292,13 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // COMMENT * locale property_item *
+  // COMMENT * locale? property_item *
   public static boolean property_list(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_list")) return false;
-    if (!nextTokenIs(b, "<property list>", COMMENT, LOCALE_ID)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, PROPERTY_LIST, "<property list>");
     r = property_list_0(b, l + 1);
-    r = r && locale(b, l + 1);
+    r = r && property_list_1(b, l + 1);
     p = r; // pin = 2
     r = r && property_list_2(b, l + 1);
     exit_section_(b, l, m, r, p, null);
@@ -314,6 +313,13 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
       if (!consumeToken(b, COMMENT)) break;
       if (!empty_element_parsed_guard_(b, "property_list_0", c)) break;
     }
+    return true;
+  }
+
+  // locale?
+  private static boolean property_list_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_list_1")) return false;
+    locale(b, l + 1);
     return true;
   }
 

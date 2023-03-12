@@ -9,6 +9,6 @@ import icu.windea.pls.localisation.psi.*
  */
 class ParadoxLocalisationDeclarationRangeHandler: DeclarationRangeHandler<ParadoxLocalisationPropertyList> {
 	override fun getDeclarationRange(container: ParadoxLocalisationPropertyList): TextRange? {
-		return container.locale.textRange
+		return container.locale?.textRange
 	}
 }

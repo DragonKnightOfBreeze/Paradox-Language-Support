@@ -33,9 +33,9 @@ public class ParadoxLocalisationPropertyListImpl extends ASTWrapperPsiElement im
   }
 
   @Override
-  @NotNull
+  @Nullable
   public ParadoxLocalisationLocale getLocale() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxLocalisationLocale.class));
+    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationLocale.class);
   }
 
   @Override

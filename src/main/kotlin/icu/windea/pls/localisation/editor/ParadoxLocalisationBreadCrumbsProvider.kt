@@ -3,6 +3,7 @@ package icu.windea.pls.localisation.editor
 import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.ui.breadcrumbs.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 
@@ -22,7 +23,7 @@ class ParadoxLocalisationBreadCrumbsProvider : BreadcrumbsProvider {
 	override fun getElementInfo(element: PsiElement): String {
 		return when(element) {
 			is ParadoxLocalisationLocale -> element.name
-			is ParadoxLocalisationPropertyList -> element.locale.name
+			is ParadoxLocalisationPropertyList -> element.locale?.name.orAnonymous()
 			is ParadoxLocalisationProperty -> element.name
 			else -> throw InternalError()
 		}

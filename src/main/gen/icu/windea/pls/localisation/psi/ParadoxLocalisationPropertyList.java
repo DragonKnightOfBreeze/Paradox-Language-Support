@@ -13,7 +13,7 @@ import javax.swing.Icon;
 
 public interface ParadoxLocalisationPropertyList extends PsiListLikeElement {
 
-  @NotNull
+  @Nullable
   ParadoxLocalisationLocale getLocale();
 
   @NotNull
