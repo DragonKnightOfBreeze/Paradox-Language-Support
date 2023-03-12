@@ -10,6 +10,7 @@ import com.intellij.notification.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
+import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
@@ -19,6 +20,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.actions.*
+import icu.windea.pls.core.diff.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.tool.*
@@ -146,10 +148,12 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         return contentFactory.createDocument(project, file)
     }
     
-    private fun createTempContent(contentFactory: DiffContentFactory, project: Project, file: VirtualFile): DocumentContent? {
+    @Suppress("UNUSED_PARAMETER")
+    private fun createTempContent(contentFactory: DiffContentFactory, project: Project, file: VirtualFile): DocumentContent {
         //创建临时文件作为只读副本
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), file, project) }
-        return contentFactory.createDocument(project, tempFile)
+        val document = runReadAction { FileDocumentManager.getInstance().getDocument(tempFile) }!!
+        return FileDocumentReadonlyContent(project, document, tempFile, file)
     }
     
     private fun getWindowsTitle(file: VirtualFile): String? {

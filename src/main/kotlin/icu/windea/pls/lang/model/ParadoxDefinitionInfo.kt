@@ -160,7 +160,7 @@ class ParadoxDefinitionInfo(
             val resolved = primaryImage.locationExpression.resolve(definition, this, project)
             val file = resolved?.file
             if(file == null) continue
-            definition.putUserData(PlsKeys.iconFrame, resolved.frame)
+            definition.putUserData(PlsKeys.iconFrameKey, resolved.frame)
             return file
         }
         return null

@@ -124,5 +124,5 @@ object PlsKeys {
     
     val parameterRangesKey = Key.create<List<TextRange>>("paradox.parameterRanges")
     
-    val iconFrame = Key.create<Int>("paradox.icon.frame")
+    val iconFrameKey = Key.create<Int>("paradox.icon.frame")
 }
