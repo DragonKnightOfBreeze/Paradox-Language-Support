@@ -23,6 +23,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
+import icu.windea.pls.core.diff.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.model.*
@@ -160,17 +161,19 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             ?: createFragment(contentFactory, project, documentContent, definition)
     }
     
+    @Suppress("UNUSED_PARAMETER")
     private fun createTempContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptDefinitionElement): DocumentContent? {
         //创建临时文件
         val text = definition.text
         val fileInfo = documentContent.highlightFile?.fileInfo ?: return null
-        val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), text, fileInfo) } ?: return null
+        val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), text, fileInfo) }
         val elementPath = definition.definitionInfo?.elementPath
         if(elementPath != null && elementPath.length > 1) {
             val elementPathPrefix = ParadoxElementPath.resolve(elementPath.subPaths.dropLast(1))
             tempFile.putUserData(PlsKeys.injectedElementPathPrefixKey, elementPathPrefix)
         }
-        return contentFactory.createDocument(project, tempFile)
+        //return contentFactory.createDocument(project, tempFile)
+        return FileDocumentFragmentContent(project, documentContent, definition.textRange, tempFile)
     }
     
     private fun createFragment(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptDefinitionElement): DocumentContent {
