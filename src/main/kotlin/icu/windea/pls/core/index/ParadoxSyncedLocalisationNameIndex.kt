@@ -6,7 +6,7 @@ import icu.windea.pls.localisation.psi.*
 class ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
     companion object {
         @JvmField val KEY = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
-        private const val VERSION = 15 //0.8.3
+        private const val VERSION = 16 //0.9.0
         private const val CACHE_SIZE = 2 * 1024
     }
     
