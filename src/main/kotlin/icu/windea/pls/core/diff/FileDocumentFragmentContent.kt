@@ -3,6 +3,7 @@ package icu.windea.pls.core.diff
 import com.intellij.diff.contents.*
 import com.intellij.diff.util.*
 import com.intellij.openapi.application.*
+import com.intellij.openapi.command.undo.*
 import com.intellij.openapi.diff.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.event.*
@@ -28,7 +29,7 @@ class FileDocumentFragmentContent(
     private val file: VirtualFile,
     private val highlightFile: VirtualFile? = null
 ) : DocumentContentBase(project, original.document), FileContent {
-    private val document = ReadAction.compute<Document?, RuntimeException> { FileDocumentManager.getInstance().getDocument(file) }
+    private val document = runReadAction { FileDocumentManager.getInstance().getDocument(file) }!!
     
     private val original = original
     private val rangeMarker: RangeMarker
@@ -44,6 +45,7 @@ class FileDocumentFragmentContent(
         //document2.putUserData(UndoManager.ORIGINAL_DOCUMENT, document1)
         
         val document2 = document
+        document2.putUserData(UndoManager.ORIGINAL_DOCUMENT, document1)
         
         mySynchronizer = MyDocumentsSynchronizer(project, rangeMarker, document1, document2)
         

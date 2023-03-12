@@ -30,11 +30,14 @@
 
 root ::= property_list *
 //locale之前可以添加注释，wiki中的说明有误
-property_list ::= COMMENT * locale? property_item * {
-  pin=2
+property_list ::= COMMENT * (property_item_list_with_locale | property_item_list) {
   implements="com.intellij.psi.PsiListLikeElement"
   methods=[getIcon getComponents]
 }
+private property_item_list_with_locale ::= locale property_item * {
+  pin=1
+}
+private property_item_list ::= property_item +
 private property_item ::= COMMENT | property {
   recoverWhile="#auto"
 }

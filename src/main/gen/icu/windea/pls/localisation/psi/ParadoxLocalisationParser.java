@@ -280,6 +280,48 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // property_item +
+  static boolean property_item_list(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_item_list")) return false;
+    if (!nextTokenIs(b, "", COMMENT, PROPERTY_KEY_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = property_item(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!property_item(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "property_item_list", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // locale property_item *
+  static boolean property_item_list_with_locale(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_item_list_with_locale")) return false;
+    if (!nextTokenIs(b, LOCALE_ID)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = locale(b, l + 1);
+    p = r; // pin = 1
+    r = r && property_item_list_with_locale_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // property_item *
+  private static boolean property_item_list_with_locale_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_item_list_with_locale_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!property_item(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "property_item_list_with_locale_1", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
   // PROPERTY_KEY_TOKEN
   public static boolean property_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_key")) return false;
@@ -292,17 +334,15 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // COMMENT * locale? property_item *
+  // COMMENT * (property_item_list_with_locale | property_item_list)
   public static boolean property_list(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_list")) return false;
-    boolean r, p;
+    boolean r;
     Marker m = enter_section_(b, l, _NONE_, PROPERTY_LIST, "<property list>");
     r = property_list_0(b, l + 1);
     r = r && property_list_1(b, l + 1);
-    p = r; // pin = 2
-    r = r && property_list_2(b, l + 1);
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   // COMMENT *
@@ -316,22 +356,13 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // locale?
+  // property_item_list_with_locale | property_item_list
   private static boolean property_list_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_list_1")) return false;
-    locale(b, l + 1);
-    return true;
-  }
-
-  // property_item *
-  private static boolean property_list_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_list_2")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!property_item(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "property_list_2", c)) break;
-    }
-    return true;
+    boolean r;
+    r = property_item_list_with_locale(b, l + 1);
+    if (!r) r = property_item_list(b, l + 1);
+    return r;
   }
 
   /* ********************************************************** */
