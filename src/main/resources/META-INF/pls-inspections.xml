@@ -162,24 +162,30 @@
                      implementationClass="icu.windea.pls.script.inspections.expression.IncorrectValueSetValueExpressionInspection"/>
     <!--endregion-->
     <!--region Paradox script/Events-->
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingEventNamespace"
-                     enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.event.missingEventNamespace"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.event"
-                     groupPathKey="inspection.script.event.path"
-                     implementationClass="icu.windea.pls.script.inspections.event.MissingEventNamespaceInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectEventNamespace"
-                     enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.event.incorrectEventNamespace"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.event"
-                     groupPathKey="inspection.script.event.path"
-                     implementationClass="icu.windea.pls.script.inspections.event.IncorrectEventNamespaceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectEventId"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.event.incorrectEventId"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.event"
                      groupPathKey="inspection.script.event.path"
                      implementationClass="icu.windea.pls.script.inspections.event.IncorrectEventIdInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectEventNamespace"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.event.incorrectEventNamespace"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.event"
+                     groupPathKey="inspection.script.event.path"
+                     implementationClass="icu.windea.pls.script.inspections.event.IncorrectEventNamespaceInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingEventNamespace"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.event.missingEventNamespace"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.event"
+                     groupPathKey="inspection.script.event.path"
+                     implementationClass="icu.windea.pls.script.inspections.event.MissingEventNamespaceInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMismatchedEventId"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.event.mismatchedEventId"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.event"
+                     groupPathKey="inspection.script.event.path"
+                     implementationClass="icu.windea.pls.script.inspections.event.MsmatchedEventIdInspection"/>
     <!--endregion-->
     <!--region Smart inference-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingInlineScriptUsage"

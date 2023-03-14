@@ -99,6 +99,9 @@ class CwtValueExpression private constructor(
 				val value = expressionString.substring(5, expressionString.length - 1)
 				CwtValueExpression(expressionString, CwtDataType.Icon, value)
 			}
+			expressionString == "<modifier>" -> {
+				CwtValueExpression(expressionString, CwtDataType.Modifier)
+			}
 			expressionString.surroundsWith('<', '>') -> {
 				val value = expressionString.substring(1, expressionString.length - 1)
 				CwtValueExpression(expressionString, CwtDataType.Definition, value)

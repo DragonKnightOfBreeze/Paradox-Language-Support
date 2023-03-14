@@ -51,6 +51,30 @@ class CwtKeyExpression private constructor(
 			expressionString == "localisation_inline" -> {
 				CwtKeyExpression(expressionString, CwtDataType.InlineLocalisation)
 			}
+			//EXTENDED BY PLS
+			expressionString == "abs_filepath" -> {
+				CwtKeyExpression(expressionString, CwtDataType.AbsoluteFilePath)
+			}
+			//EXTENDED BY PLS
+			expressionString == "filename" -> {
+				CwtKeyExpression(expressionString, CwtDataType.FileName)
+			}
+			//EXTENDED BY PLS
+			expressionString.surroundsWith("filename[", "]") -> {
+				val value = expressionString.substring(9, expressionString.length - 1)
+				CwtKeyExpression(expressionString, CwtDataType.FileName, value)
+			}
+			expressionString == "filepath" -> {
+				CwtKeyExpression(expressionString, CwtDataType.FilePath)
+			}
+			expressionString.surroundsWith("filepath[", "]") -> {
+				val value = expressionString.substring(9, expressionString.length - 1)
+				CwtKeyExpression(expressionString, CwtDataType.FilePath, value)
+			}
+			expressionString.surroundsWith("icon[", "]") -> {
+				val value = expressionString.substring(5, expressionString.length - 1)
+				CwtKeyExpression(expressionString, CwtDataType.Icon, value)
+			}
 			expressionString == "<modifier>" -> {
 				CwtKeyExpression(expressionString, CwtDataType.Modifier)
 			}
