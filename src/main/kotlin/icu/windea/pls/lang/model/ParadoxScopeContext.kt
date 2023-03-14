@@ -9,7 +9,9 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope) {
     @Volatile var root: ParadoxScopeContext? = null
     @Volatile var prev: ParadoxScopeContext? = null
     @Volatile var from: ParadoxScopeContext? = null
-    @Volatile var parent: ParadoxScopeContext? = null //scope context before scope switch, not 'prev'
+    
+    //scope context before scope switch
+    @Volatile var parent: ParadoxScopeContext? = null
     
     @Volatile var isInferred: Boolean = false
     //scope context list of scope field expression nodes
@@ -82,18 +84,19 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope) {
         //push_scope = null > transfer scope
         if(pushScope == null) return this
         val result = ParadoxScopeContext(ParadoxScope.of(pushScope))
-        result.prev = this
         result.root = this.root
+        result.prev = this
         result.from = this.from
         result.parent = this
         return result
     }
     
-    fun resolve(scopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    fun resolve(scopeContext: ParadoxScopeContext, isFrom: Boolean = false): ParadoxScopeContext {
         val result = scopeContext.copy()
-        if(result.scope.id == ParadoxScopeHandler.unknownScopeId) {
-            result.root = null
-            result.prev = null
+        result.root = this.root
+        result.prev = this
+        if(!isFrom) {
+            result.from = this.from
         }
         result.parent = this
         return result

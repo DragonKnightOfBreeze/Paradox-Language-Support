@@ -36,9 +36,9 @@ data class CwtDeclarationConfig(
             }
         }
         return mergedConfigCache.getOrPut(cacheKey) {
-            propertyConfig.copy(
-                configs = propertyConfig.configs?.flatMap { it.deepMergeConfigs(configContext) }
-            )
+            val configs = propertyConfig.configs?.flatMap { it.deepMergeConfigs(configContext) }
+            propertyConfig.copy(configs = configs)
+            //here propertyConfig.parent should be null
         }
     }
 }

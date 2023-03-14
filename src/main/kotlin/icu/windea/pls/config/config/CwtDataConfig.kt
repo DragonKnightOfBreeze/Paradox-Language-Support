@@ -44,9 +44,9 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 	fun deepCopyConfigs(): List<CwtDataConfig<*>>? {
 		return configs?.map { config ->
 			when(config) {
-				is CwtPropertyConfig -> config.copy(configs = config.deepCopyConfigs())
-				is CwtValueConfig -> config.copy(configs = config.deepCopyConfigs())
-			}.also { it.parent = this }
+				is CwtPropertyConfig -> config.copy(configs = config.deepCopyConfigs()).also { it.parent = config.parent }
+				is CwtValueConfig -> config.copy(configs = config.deepCopyConfigs()).also { it.parent = config.parent }
+			}
 		}
 	}
 	
@@ -66,16 +66,16 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 		when(this) {
 			is CwtValueConfig -> {
 				val valueExpression = CwtConfigExpressionReplacer.doReplace(value, configContext) ?: value
-				val mergedConfig = copy(value = valueExpression, configs = mergedConfigs)
-				return mergedConfig.also { parent = it.parent }.toSingletonList()
+				val mergedConfig = copy(value = valueExpression, configs = mergedConfigs).also { it.parent = parent }
+				return mergedConfig.toSingletonList()
 			}
 			is CwtPropertyConfig -> {
 				val subtypeName = key.removeSurroundingOrNull("subtype[", "]")
 				if(subtypeName == null) {
 					val keyExpression = CwtConfigExpressionReplacer.doReplace(key, configContext) ?: key
 					val valueExpression = CwtConfigExpressionReplacer.doReplace(value, configContext) ?: value
-					val mergedConfig = copy(key = keyExpression, value = valueExpression, configs = mergedConfigs)
-					return mergedConfig.also { parent = it.parent }.toSingletonList()
+					val mergedConfig = copy(key = keyExpression, value = valueExpression, configs = mergedConfigs).also { parent = it.parent }
+					return mergedConfig.toSingletonList()
 				} else if(matchesDefinitionSubtypeExpression(subtypeName, configContext.definitionSubtypes)) {
 					return mergedConfigs.orEmpty()
 				} else {

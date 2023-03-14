@@ -43,10 +43,6 @@ traditions: inherit icon from parent original tradition if inherit_icon = yes
 * `root.owner`之后的`prev`，得到的作用域并不是`root`之后的作用域，而是`root`来自的作用域
 
 ```
-set_leader = event_target:missing_archaeologist
-```
-
-```
 name = {
 	trigger = { is_gestalt = no }
 	text = leviathans.125.z1

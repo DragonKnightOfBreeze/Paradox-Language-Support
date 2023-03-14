@@ -167,7 +167,7 @@ class ParadoxVariableFieldExpressionImpl(
                     completeForScopeExpressionNode(node, context, result)
                     break
                 } else {
-                    val inExpression = i == 0
+                    val inExpression = i != 0
                     scopeContextInExpression = ParadoxScopeHandler.resolveScopeContext(node, scopeContextInExpression, inExpression)
                 }
             } else if(node is ParadoxDataExpressionNode) {

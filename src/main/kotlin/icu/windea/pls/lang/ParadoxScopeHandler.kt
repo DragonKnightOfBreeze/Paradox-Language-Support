@@ -293,7 +293,7 @@ object ParadoxScopeHandler {
         var result = inputScopeContext
         val resolved = mutableListOf<Tuple2<ParadoxScopeExpressionNode, ParadoxScopeContext>>()
         for((i, scopeNode) in scopeNodes.withIndex()) {
-            val inExpression = i == 0
+            val inExpression = i != 0
             result = resolveScopeContext(scopeNode, result, inExpression)
             resolved.add(scopeNode to result)
             if(scopeNode is ParadoxErrorScopeExpressionNode) break
@@ -352,15 +352,16 @@ object ParadoxScopeHandler {
     }
     
     private fun resolveScopeContextBySystemLink(systemLink: CwtSystemLinkConfig, inputScopeContext: ParadoxScopeContext, inExpresson: Boolean): ParadoxScopeContext? {
-        val id = systemLink.id
         fun ParadoxScopeContext.prev(): ParadoxScopeContext? {
             if(inExpresson) return prev
             return scopeFieldInfo?.first()?.second?.prev ?: prev
         }
-        
+    
+        val id = systemLink.id
+        val baseId = systemLink.baseId
         val systemLinkContext = when {
             id == "This" -> inputScopeContext
-            id == "Root" -> inputScopeContext.root
+            id == "Root" ->  inputScopeContext.root
             id == "Prev" -> inputScopeContext.prev()
             id == "PrevPrev" -> inputScopeContext.prev()?.prev()
             id == "PrevPrevPrev" -> inputScopeContext.prev()?.prev()?.prev()
@@ -371,7 +372,8 @@ object ParadoxScopeHandler {
             id == "FromFromFromFrom" -> inputScopeContext.from?.from?.from?.from
             else -> null
         } ?: return null
-        return inputScopeContext.resolve(systemLinkContext)
+        val isFrom = baseId == "From"
+        return inputScopeContext.resolve(systemLinkContext, isFrom)
     }
     
     @JvmStatic
