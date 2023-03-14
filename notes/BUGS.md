@@ -40,6 +40,8 @@ traditions: inherit icon from parent original tradition if inherit_icon = yes
 
 ## 0.9.1
 
+* `root.owner`之后的`prev`，得到的作用域不是`root`之后的作用域
+
 ```
 set_leader = event_target:missing_archaeologist
 ```
