@@ -154,7 +154,7 @@ class ParadoxVariableFieldExpressionImpl(
         
         var scopeContextInExpression = scopeContext
         val offsetInParent = context.offsetInParent
-        for(node in nodes) {
+        for((i, node) in nodes.withIndex()) {
             val nodeRange = node.rangeInExpression
             val inRange = offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset
             if(!inRange) {
@@ -167,7 +167,8 @@ class ParadoxVariableFieldExpressionImpl(
                     completeForScopeExpressionNode(node, context, result)
                     break
                 } else {
-                    scopeContextInExpression = ParadoxScopeHandler.resolveScopeContext(node, scopeContextInExpression)
+                    val inExpression = i == 0
+                    scopeContextInExpression = ParadoxScopeHandler.resolveScopeContext(node, scopeContextInExpression, inExpression)
                 }
             } else if(node is ParadoxDataExpressionNode) {
                 if(inRange) {
