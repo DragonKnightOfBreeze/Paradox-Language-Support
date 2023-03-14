@@ -16,17 +16,14 @@ import icu.windea.pls.script.psi.*
  * 不充分的表达式的检查。
  */
 class InsufficientExpressionInspection : LocalInspectionTool() {
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if(file !is ParadoxScriptFile) return null
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
-        file.accept(object : PsiRecursiveElementWalkingVisitor() {
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
                 if(element is ParadoxScriptExpressionElement) visitExpressionElement(element)
-                if(element.isExpressionOrMemberContext()) super.visitElement(element)
             }
             
             private fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
-                ProgressManager.checkCanceled()
                 //得到完全匹配的CWT规则
                 val isKey = element is ParadoxScriptPropertyKey
                 val config = ParadoxConfigHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return
@@ -48,14 +45,14 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
                     dataType == CwtDataType.Float -> {
                         val expression = element.expression ?: return
                         val (min, max) = configExpression.extraValue<Tuple2<Float?, Float?>>() ?: return
-						val min0 = min ?: Float.MIN_VALUE
-						val max0 = max ?: Float.MAX_VALUE
-						val value = element.floatValue() ?: return
-						if(value !in min0..max0) {
-							val min1 = min?.toString() ?: "-inf"
-							val max1 = max?.toString() ?: "inf"
-							holder.registerProblem(element, PlsBundle.message("inspection.script.general.insufficientExpression.description.1", expression, min1, max1, value))
-						}
+                        val min0 = min ?: Float.MIN_VALUE
+                        val max0 = max ?: Float.MAX_VALUE
+                        val value = element.floatValue() ?: return
+                        if(value !in min0..max0) {
+                            val min1 = min?.toString() ?: "-inf"
+                            val max1 = max?.toString() ?: "inf"
+                            holder.registerProblem(element, PlsBundle.message("inspection.script.general.insufficientExpression.description.1", expression, min1, max1, value))
+                        }
                     }
                     dataType == CwtDataType.ColorField -> {
                         val expression = element.expression ?: return
@@ -105,8 +102,7 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
                     else -> pass()
                 }
             }
-        })
-        return holder.resultsArray
+        }
     }
 }
 

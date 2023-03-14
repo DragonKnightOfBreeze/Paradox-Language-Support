@@ -9,15 +9,14 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 检查事件ID与事件所属的命名空间是否匹配。
+ * 检查事件脚本文件中的事件ID与事件所属的命名空间是否匹配。
  */
 class MsmatchedEventIdInspection : LocalInspectionTool() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         //仅检查事件脚本文件
-        if(file !is ParadoxScriptFile) return null
-        val fileInfo = file.fileInfo ?: return null
-        if(!"events".matchesPath(fileInfo.entryPath.path, acceptSelf = false)) return null
+        if(!isEventScriptFile(file)) return null
         
+        file as ParadoxScriptFile
         val rootBlock = file.block ?: return null
         val properties = rootBlock.propertyList
         if(properties.isEmpty()) return null //空文件，不进行检查
@@ -56,5 +55,11 @@ class MsmatchedEventIdInspection : LocalInspectionTool() {
             }
         }
         return holder.resultsArray
+    }
+    
+    private fun isEventScriptFile(file: PsiFile): Boolean {
+        if(file !is ParadoxScriptFile) return false
+        val fileInfo = file.fileInfo ?: return false
+        return "events".matchesPath(fileInfo.entryPath.path, acceptSelf = false)
     }
 }

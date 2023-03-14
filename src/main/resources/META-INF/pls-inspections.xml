@@ -1,5 +1,7 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
+    <lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass=""/>
+    
     <!--region Paradox script-->
     <!--region Paradox script/Basic-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateScriptedVariables"
@@ -187,7 +189,7 @@
                      groupPathKey="inspection.script.event.path"
                      implementationClass="icu.windea.pls.script.inspections.event.MsmatchedEventIdInspection"/>
     <!--endregion-->
-    <!--region Smart inference-->
+    <!--region Paradox script/Smart inference-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingInlineScriptUsage"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.inference.conflictingInlineScriptUsage"

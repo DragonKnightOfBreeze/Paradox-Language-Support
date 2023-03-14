@@ -20,6 +20,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     @JvmField var checkPropertyValue = true
     @JvmField var checkValue = true
     
+    //目前直接在文件级别检查，因为某些地方可能需要逃过检查
+    
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if(file !is ParadoxScriptFile) return null
         val holder = ProblemsHolder(manager, file, isOnTheFly)

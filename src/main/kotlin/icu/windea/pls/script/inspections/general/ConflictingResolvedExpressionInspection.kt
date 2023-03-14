@@ -12,14 +12,12 @@ import icu.windea.pls.script.psi.*
 /**
  * 对应的CWT规则有多个且存在冲突的表达式的检测。
  */
-class ConflictingResolvedExpressionInspection: LocalInspectionTool() {
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if(file !is ParadoxScriptFile) return null
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
-        file.accept(object : PsiRecursiveElementWalkingVisitor() {
+class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
                 if(element is ParadoxScriptBlock) visitBlock(element)
-                if(element.isExpressionOrMemberContext()) super.visitElement(element)
             }
             
             private fun visitBlock(element: ParadoxScriptBlock) {
@@ -46,7 +44,7 @@ class ConflictingResolvedExpressionInspection: LocalInspectionTool() {
                 }
                 holder.registerProblem(position, description)
             }
-    
+            
             private fun skipCheck(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Boolean {
                 //子句不为空且可以精确匹配多个子句规则时，适用此检查
                 if(configs.isEmpty()) return true
@@ -55,7 +53,6 @@ class ConflictingResolvedExpressionInspection: LocalInspectionTool() {
                 if(element is ParadoxScriptBlock && element.isEmpty) return true
                 return false
             }
-        })
-        return holder.resultsArray
+        }
     }
 }

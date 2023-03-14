@@ -23,26 +23,22 @@ class TooManyExpressionInspection : LocalInspectionTool() {
     @JvmField var firstOnly = false
     @JvmField var firstOnlyOnFile = true
     
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if(file !is ParadoxScriptFile) return null
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
-        file.accept(object : PsiRecursiveElementWalkingVisitor() {
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
                 if(element is ParadoxScriptBlock) visitBlock(element)
-                if(element.isExpressionOrMemberContext()) super.visitElement(element)
             }
-            
+    
             override fun visitFile(file: PsiFile) {
                 if(file !is ParadoxScriptFile) return
                 //忽略可能的脚本片段入口
                 if(ParadoxScriptMemberElementInlineSupport.canLink(file)) return super.visitFile(file)
                 val configs = ParadoxConfigHandler.getConfigs(file, allowDefinition = true)
                 doCheck(file, file, configs)
-                super.visitFile(file)
             }
-            
+    
             private fun visitBlock(element: ParadoxScriptBlock) {
-                ProgressManager.checkCanceled()
                 //skip checking property if its property key may contain parameters
                 //position: (in property) property key / (standalone) left curly brace
                 val property = element.parent
@@ -56,7 +52,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 val configs = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)
                 doCheck(element, position, configs)
             }
-            
+    
             private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement, configs: List<CwtDataConfig<*>>) {
                 if(skipCheck(element, configs)) return
                 val occurrenceMap = ParadoxConfigHandler.getChildOccurrenceMap(element, configs)
@@ -75,7 +71,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 if(element is ParadoxScriptBlock && element.isEmpty) return false
                 return true
             }
-            
+    
             private fun doCheckOccurrence(element: ParadoxScriptMemberElement, position: PsiElement, occurrence: Occurrence, configExpression: CwtDataExpression): Boolean {
                 val (actual, _, max) = occurrence
                 if(max != null && actual > max) {
@@ -105,8 +101,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 }
                 return true
             }
-        })
-        return holder.resultsArray
+        }
     }
     
     override fun createOptionsPanel(): JComponent {

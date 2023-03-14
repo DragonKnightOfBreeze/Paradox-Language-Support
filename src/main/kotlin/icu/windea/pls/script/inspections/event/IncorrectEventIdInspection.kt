@@ -11,14 +11,11 @@ import icu.windea.pls.script.psi.*
  * 检查是否ID的格式是否合法。
  */
 class IncorrectEventIdInspection : LocalInspectionTool() {
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         //仅检查事件脚本文件
-        if(file !is ParadoxScriptFile) return null
-        val fileInfo = file.fileInfo ?: return null
-        if(!"events".matchesPath(fileInfo.entryPath.path, acceptSelf = false)) return null
+        if(isEventScriptFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
         
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
-        file.accept(object : PsiRecursiveElementWalkingVisitor() {
+        return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 if(element is ParadoxScriptProperty) visitDefinition(element)
                 if(element.isExpressionOrMemberContext()) super.visitElement(element)
@@ -34,7 +31,12 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
                 if(nameElement == null) return //忽略
                 holder.registerProblem(nameElement, PlsBundle.message("inspection.script.event.incorrectEventId.description", eventId))
             }
-        })
-        return holder.resultsArray
+        }
+    }
+    
+    private fun isEventScriptFile(file: PsiFile): Boolean {
+        if(file !is ParadoxScriptFile) return false
+        val fileInfo = file.fileInfo ?: return false
+        return "events".matchesPath(fileInfo.entryPath.path, acceptSelf = false)
     }
 }

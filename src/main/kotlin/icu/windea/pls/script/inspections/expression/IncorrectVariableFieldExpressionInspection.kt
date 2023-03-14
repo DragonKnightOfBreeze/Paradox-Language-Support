@@ -19,13 +19,11 @@ import javax.swing.*
 class IncorrectVariableFieldExpressionInspection : LocalInspectionTool() {
     @JvmField var reportsUnresolvedDs = true
     
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if(file !is ParadoxScriptFile) return null
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
-        file.accept(object : PsiRecursiveElementWalkingVisitor() {
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
                 if(element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
-                if(element.isExpressionOrMemberContext()) super.visitElement(element)
             }
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
@@ -61,8 +59,7 @@ class IncorrectVariableFieldExpressionInspection : LocalInspectionTool() {
                 if(reportsUnresolvedDs && error is ParadoxUnresolvedValueLinkDataSourceExpressionError) return
                 holder.registerScriptExpressionError(element, error)
             }
-        })
-        return holder.resultsArray
+        }
     }
     
     override fun createOptionsPanel(): JComponent {

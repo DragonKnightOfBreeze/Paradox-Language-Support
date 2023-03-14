@@ -21,17 +21,14 @@ import javax.swing.*
 class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
     @JvmField var reportsUnresolvedDs = true
     
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if(file !is ParadoxScriptFile) return null
-        val holder = ProblemsHolder(manager, file, isOnTheFly)
-        file.accept(object : PsiRecursiveElementWalkingVisitor() {
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                if(element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
-                if(element.isExpressionOrMemberContext()) super.visitElement(element)
-            }
-            
-            private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
+                if(element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
+            }
+        
+            private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 if(element.text.isLeftQuoted()) return //忽略
                 val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
                 val configGroup = config.info.configGroup
@@ -45,7 +42,7 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
                     handleErrors(element, valueFieldExpression)
                 }
             }
-            
+        
             private fun handleErrors(element: ParadoxScriptStringExpressionElement, valueFieldExpression: ParadoxValueFieldExpression) {
                 valueFieldExpression.validate().forEach { error ->
                     handleError(element, error)
@@ -58,13 +55,12 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
                     true
                 }
             }
-            
+        
             private fun handleError(element: ParadoxScriptStringExpressionElement, error: ParadoxExpressionError) {
                 if(reportsUnresolvedDs && error is ParadoxUnresolvedValueLinkDataSourceExpressionError) return
                 holder.registerScriptExpressionError(element, error)
             }
-        })
-        return holder.resultsArray
+        }
     }
     
     override fun createOptionsPanel(): JComponent {

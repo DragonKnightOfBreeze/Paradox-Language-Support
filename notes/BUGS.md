@@ -46,6 +46,13 @@ traditions: inherit icon from parent original tradition if inherit_icon = yes
 set_leader = event_target:missing_archaeologist
 ```
 
+```
+name = {
+	trigger = { is_gestalt = no }
+	text = leviathans.125.z1
+}
+```
+
 ## 0.8.3
 
 * [X] `int[-inf..inf]` - 允许这样的写法 
