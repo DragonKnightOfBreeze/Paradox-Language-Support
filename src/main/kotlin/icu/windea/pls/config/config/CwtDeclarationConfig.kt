@@ -30,7 +30,7 @@ data class CwtDeclarationConfig(
             }
             append(type).append(" ")
             if(subtypes != null) {
-                append(subtypes.joinToString(","))
+                append(subtypes.sorted().joinToString(","))
             } else {
                 append("*")
             }

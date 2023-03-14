@@ -74,7 +74,7 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 				if(subtypeName == null) {
 					val keyExpression = CwtConfigExpressionReplacer.doReplace(key, configContext) ?: key
 					val valueExpression = CwtConfigExpressionReplacer.doReplace(value, configContext) ?: value
-					val mergedConfig = copy(key = keyExpression, value = valueExpression, configs = mergedConfigs).also { parent = it.parent }
+					val mergedConfig = copy(key = keyExpression, value = valueExpression, configs = mergedConfigs).also { it.parent = parent }
 					return mergedConfig.toSingletonList()
 				} else if(matchesDefinitionSubtypeExpression(subtypeName, configContext.definitionSubtypes)) {
 					return mergedConfigs.orEmpty()

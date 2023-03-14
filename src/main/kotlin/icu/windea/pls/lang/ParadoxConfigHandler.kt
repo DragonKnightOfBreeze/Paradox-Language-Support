@@ -164,7 +164,7 @@ object ParadoxConfigHandler {
                 is CwtPropertyConfig -> {
                     val propertyConfig = config
                     propertyConfig.parent?.configs?.forEach { c ->
-                        if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c !== propertyConfig) {
+                        if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
                             c.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
                         }
                     }
@@ -172,7 +172,7 @@ object ParadoxConfigHandler {
                 is CwtValueConfig -> {
                     val propertyConfig = config.propertyConfig
                     propertyConfig?.parent?.configs?.forEach { c ->
-                        if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c !== propertyConfig) {
+                        if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
                             c.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
                         }
                     }
