@@ -29,7 +29,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
                 if(fileExtensions.isEmpty()) return
                 val value = element.value
                 if(fileExtensions.any { value.endsWith(it, true) }) return
-                val extensionsString = fileExtensions.joinToString(" / ")
+                val extensionsString = fileExtensions.joinToString()
                 val message = PlsBundle.message("inspection.script.general.incorrectPathReference.description.1", value, extensionsString)
                 holder.registerProblem(element, message)
             }

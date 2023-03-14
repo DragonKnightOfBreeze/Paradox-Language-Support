@@ -39,18 +39,18 @@ object ParadoxValueSetValueHandler {
     @JvmStatic
     fun getName(element: ParadoxScriptString): String? {
         val stub = runCatching { element.stub }.getOrNull()
-        val name = stub?.valueSetValueInfo?.name ?: getName(element.value)
-        return name?.takeIfNotEmpty()
+        return stub?.valueSetValueInfo?.name?.takeIfNotEmpty() 
+            ?: getName(element.value)
     }
     
     @JvmStatic
     fun getName(expression: String): String? {
         //exclude if name contains invalid chars
-        return expression.substringBefore('@').takeIf { it.isExactIdentifier() }
+        return expression.substringBefore('@').takeIf { it.isExactIdentifier() }?.takeIfNotEmpty()
     }
     
     @JvmStatic
-    fun getRead(element: ParadoxScriptString): Boolean {
+    fun isDeclaration(element: ParadoxScriptString): Boolean {
         val stub = runCatching { element.stub }.getOrNull()
         stub?.valueSetValueInfo?.read
             ?.let { return it }

@@ -38,6 +38,12 @@ traditions: inherit icon from parent original tradition if inherit_icon = yes
 
 * [ ] 检查原版游戏文件 - PROCESSING：common/country_types
 
+## 0.9.1
+
+```
+set_leader = event_target:missing_archaeologist
+```
+
 ## 0.8.3
 
 * [X] `int[-inf..inf]` - 允许这样的写法 

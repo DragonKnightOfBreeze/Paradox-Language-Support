@@ -9,7 +9,7 @@ class ParadoxValueSetValueSelector(project: Project, context: Any? = null): Chai
 fun valueSetValueSelector(project: Project, context: Any? = null) = ParadoxValueSetValueSelector(project, context)
 
 fun ParadoxValueSetValueSelector.declarationOnly() =
-	filterBy { !ParadoxValueSetValueHandler.getRead(it) }
+	filterBy { !ParadoxValueSetValueHandler.isDeclaration(it) }
 
 fun ParadoxValueSetValueSelector.distinctByValue() =
 	distinctBy { ParadoxValueSetValueHandler.getName(it) }

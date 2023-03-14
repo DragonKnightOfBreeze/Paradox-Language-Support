@@ -345,13 +345,15 @@ object ParadoxConfigHandler {
                 if(!expression.type.isStringType()) return false
                 if(isStatic) return true
                 if(isParameterAware) return true
-                return true //任意字符串即可，不需要进一步匹配
+                //"@"之前的字符串即valueSetValue的名字必须合法
+                return ParadoxValueSetValueHandler.getName(expression.text) != null
             }
             CwtDataType.ValueSet -> {
                 if(!expression.type.isStringType()) return false
                 if(isStatic) return true
                 if(isParameterAware) return true
-                return true //任意字符串即可，不需要进一步匹配
+                //"@"之前的字符串即valueSetValue的名字必须合法
+                return ParadoxValueSetValueHandler.getName(expression.text) != null
             }
             CwtDataType.ScopeField, CwtDataType.Scope, CwtDataType.ScopeGroup -> {
                 if(expression.quoted) return false //不允许用引号括起
@@ -556,31 +558,35 @@ object ParadoxConfigHandler {
             CwtDataType.ColorField -> 90
             CwtDataType.PercentageField -> 90
             CwtDataType.DateField -> 90
-            CwtDataType.Localisation -> 50
-            CwtDataType.SyncedLocalisation -> 50
-            CwtDataType.InlineLocalisation -> 50
-            CwtDataType.StellarisNameFormat -> 50
+            CwtDataType.Localisation -> 60
+            CwtDataType.SyncedLocalisation -> 60
+            CwtDataType.InlineLocalisation -> 60
+            CwtDataType.StellarisNameFormat -> 60
             CwtDataType.AbsoluteFilePath -> 70
             CwtDataType.Icon -> 70
             CwtDataType.FilePath -> 70
             CwtDataType.FileName -> 70
-            CwtDataType.Definition -> 60
+            CwtDataType.Definition -> 70
             CwtDataType.EnumValue -> {
                 val enumName = configExpression.value ?: return 0 //不期望匹配到
                 if(configGroup.enums.containsKey(enumName)) return 80
                 if(configGroup.complexEnums.containsKey(enumName)) return 45
                 return 0 //不期望匹配到，规则有误！
             }
-            CwtDataType.Value -> 40
+            CwtDataType.Value ->  {
+                val valueSetName = configExpression.value ?: return 0 //不期望匹配到
+                if(configGroup.values.containsKey(valueSetName)) return 80
+                return 40
+            }
             CwtDataType.ValueSet -> 40
-            CwtDataType.ScopeField -> 30
-            CwtDataType.Scope -> 30
-            CwtDataType.ScopeGroup -> 30
-            CwtDataType.ValueField -> 30
-            CwtDataType.IntValueField -> 30
-            CwtDataType.VariableField -> 30
-            CwtDataType.IntVariableField -> 30
-            CwtDataType.Modifier -> 55 //lower than definition
+            CwtDataType.ScopeField -> 50
+            CwtDataType.Scope -> 50
+            CwtDataType.ScopeGroup -> 50
+            CwtDataType.ValueField -> 45
+            CwtDataType.IntValueField -> 45
+            CwtDataType.VariableField -> 45
+            CwtDataType.IntVariableField -> 45
+            CwtDataType.Modifier -> 65 //lower than definition
             CwtDataType.Parameter -> 10
             CwtDataType.ShaderEffect -> 85 // (80,90)
             CwtDataType.SingleAliasRight -> 0 //不期望匹配到
