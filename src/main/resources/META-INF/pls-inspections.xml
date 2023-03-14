@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass=""/>
+    <lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.inspections.CwtConfigAwareInspectionSupressor"/>
     
     <!--region Paradox script-->
     <!--region Paradox script/Basic-->
