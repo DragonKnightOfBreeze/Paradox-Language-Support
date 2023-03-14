@@ -288,17 +288,13 @@ object ParadoxScopeHandler {
     }
     
     @JvmStatic
-    fun resolveScopeContext(systemLink: CwtSystemLinkConfig, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
-        return resolveScopeContextBySystemLink(systemLink, inputScopeContext)
-    }
-    
-    @JvmStatic
     fun resolveScopeContext(scopeFieldExpression: ParadoxScopeFieldExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val scopeNodes = scopeFieldExpression.scopeNodes
         var result = inputScopeContext
         val resolved = mutableListOf<Tuple2<ParadoxScopeExpressionNode, ParadoxScopeContext>>()
-        for(scopeNode in scopeNodes) {
-            result = resolveScopeContext(scopeNode, result)
+        for((i, scopeNode) in scopeNodes.withIndex()) {
+            val inExpression = i == 0
+            result = resolveScopeContext(scopeNode, result, inExpression)
             resolved.add(scopeNode to result)
             if(scopeNode is ParadoxErrorScopeExpressionNode) break
         }
@@ -307,16 +303,16 @@ object ParadoxScopeHandler {
     }
     
     @JvmStatic
-    fun resolveScopeContext(scopeNode: ParadoxScopeExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    fun resolveScopeContext(scopeNode: ParadoxScopeExpressionNode, inputScopeContext: ParadoxScopeContext, inExpresson: Boolean): ParadoxScopeContext {
         return when(scopeNode) {
             is ParadoxScopeLinkExpressionNode -> {
-                resolveScopeByScopeLinkNode(scopeNode, inputScopeContext)
+                resolveScopeByScopeLinkNode(scopeNode, inputScopeContext, inExpresson)
             }
             is ParadoxScopeLinkFromDataExpressionNode -> {
-                resolveScopeByScopeLinkFromDataNode(scopeNode, inputScopeContext)
+                resolveScopeByScopeLinkFromDataNode(scopeNode, inputScopeContext, inExpresson)
             }
             is ParadoxSystemLinkExpressionNode -> {
-                resolveScopeContextBySystemLinkNode(scopeNode, inputScopeContext)
+                resolveScopeContextBySystemLinkNode(scopeNode, inputScopeContext, inExpresson)
                     ?: resolveUnknownScopeContext(inputScopeContext, scopeNode.config.baseId.equals("from", true))
             }
             //error
@@ -331,12 +327,12 @@ object ParadoxScopeHandler {
         return inputScopeContext.resolve(linkConfig.outputScope)
     }
     
-    private fun resolveScopeByScopeLinkNode(node: ParadoxScopeLinkExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    private fun resolveScopeByScopeLinkNode(node: ParadoxScopeLinkExpressionNode, inputScopeContext: ParadoxScopeContext, inExpresson: Boolean): ParadoxScopeContext {
         val outputScope = node.config.outputScope
         return inputScopeContext.resolve(outputScope)
     }
     
-    private fun resolveScopeByScopeLinkFromDataNode(node: ParadoxScopeLinkFromDataExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    private fun resolveScopeByScopeLinkFromDataNode(node: ParadoxScopeLinkFromDataExpressionNode, inputScopeContext: ParadoxScopeContext, inExpresson: Boolean): ParadoxScopeContext {
         val linkConfig = node.linkConfigs.firstOrNull() // first is ok
         if(linkConfig == null) return inputScopeContext //unexpected
         if(linkConfig.outputScope == null && linkConfig.expression?.type?.isScopeFieldType() == true) {
@@ -344,26 +340,31 @@ object ParadoxScopeHandler {
             //hidden:event_target:xxx = {...}
             val nestedNode = node.dataSourceNode.nodes.findIsInstance<ParadoxScopeLinkExpressionNode>()
             if(nestedNode != null) {
-                return resolveScopeContext(nestedNode, inputScopeContext)
+                return resolveScopeContext(nestedNode, inputScopeContext, inExpresson)
             }
         }
         return inputScopeContext.resolve(linkConfig.outputScope)
     }
     
-    private fun resolveScopeContextBySystemLinkNode(node: ParadoxSystemLinkExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
+    private fun resolveScopeContextBySystemLinkNode(node: ParadoxSystemLinkExpressionNode, inputScopeContext: ParadoxScopeContext, inExpresson: Boolean): ParadoxScopeContext? {
         val systemLinkConfig = node.config
-        return resolveScopeContextBySystemLink(systemLinkConfig, inputScopeContext)
+        return resolveScopeContextBySystemLink(systemLinkConfig, inputScopeContext, inExpresson)
     }
     
-    private fun resolveScopeContextBySystemLink(systemLink: CwtSystemLinkConfig, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
+    private fun resolveScopeContextBySystemLink(systemLink: CwtSystemLinkConfig, inputScopeContext: ParadoxScopeContext, inExpresson: Boolean): ParadoxScopeContext? {
         val id = systemLink.id
+        fun ParadoxScopeContext.prev(): ParadoxScopeContext? {
+            if(inExpresson) return prev
+            return scopeFieldInfo?.first()?.second?.prev ?: prev
+        }
+        
         val systemLinkContext = when {
             id == "This" -> inputScopeContext
             id == "Root" -> inputScopeContext.root
-            id == "Prev" -> inputScopeContext.prev
-            id == "PrevPrev" -> inputScopeContext.prev?.prev
-            id == "PrevPrevPrev" -> inputScopeContext.prev?.prev?.prev
-            id == "PrevPrevPrevPrev" -> inputScopeContext.prev?.prev?.prev?.prev
+            id == "Prev" -> inputScopeContext.prev()
+            id == "PrevPrev" -> inputScopeContext.prev()?.prev()
+            id == "PrevPrevPrev" -> inputScopeContext.prev()?.prev()?.prev()
+            id == "PrevPrevPrevPrev" -> inputScopeContext.prev()?.prev()?.prev()?.prev()
             id == "From" -> inputScopeContext.from
             id == "FromFrom" -> inputScopeContext.from?.from
             id == "FromFromFrom" -> inputScopeContext.from?.from?.from
@@ -409,7 +410,7 @@ object ParadoxScopeHandler {
                 append(" = ")
                 when {
                     isFakeScopeId(scope.id) -> append(scope)
-                    scope is ParadoxScope.InferredScope -> appendCwtLink(scope.id, "${gameType.id}/scopes/${scope.id}", contextElement).append("!") 
+                    scope is ParadoxScope.InferredScope -> appendCwtLink(scope.id, "${gameType.id}/scopes/${scope.id}", contextElement).append("!")
                     else -> appendCwtLink(scope.id, "${gameType.id}/scopes/${scope.id}", contextElement)
                 }
             }
