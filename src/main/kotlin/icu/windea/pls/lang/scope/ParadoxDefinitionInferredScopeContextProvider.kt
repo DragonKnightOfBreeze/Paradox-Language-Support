@@ -27,7 +27,6 @@ interface ParadoxDefinitionInferredScopeContextProvider {
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxDefinitionInferredScopeContextProvider>("icu.windea.pls.definitionInferredScopeContextProvider")
         
-        @JvmStatic
         fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
             for(extension in EP_NAME.extensions) {
                 val info = extension.getScopeContext(definition, definitionInfo)
@@ -36,7 +35,6 @@ interface ParadoxDefinitionInferredScopeContextProvider {
             return null
         }
         
-        @JvmStatic
         fun getErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
             for(extension in EP_NAME.extensions) {
                 val info = extension.getScopeContext(definition, definitionInfo)
@@ -45,7 +43,6 @@ interface ParadoxDefinitionInferredScopeContextProvider {
             return null
         }
         
-        @JvmStatic
         fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
             for(extension in EP_NAME.extensions) {
                 val info = extension.getScopeContext(definition, definitionInfo)

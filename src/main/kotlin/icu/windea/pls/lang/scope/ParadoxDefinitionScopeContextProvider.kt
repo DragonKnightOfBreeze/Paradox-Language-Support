@@ -14,7 +14,6 @@ interface ParadoxDefinitionScopeContextProvider {
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxDefinitionScopeContextProvider>("icu.windea.pls.definitionScopeContextProvider")
         
-        @JvmStatic
         fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
             for(extension in EP_NAME.extensions) {
                 val scopeContext = extension.getScopeContext(definition, definitionInfo)
