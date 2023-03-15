@@ -38,16 +38,15 @@ traditions: inherit icon from parent original tradition if inherit_icon = yes
 
 * [ ] 检查原版游戏文件 - PROCESSING：common/country_types
 
+## 0.9.2
+
+```
+hidden:fromfrom = { has_resource = { type = volatile_motes amount > 0 } }
+```
+
 ## 0.9.1
 
 * `root.owner`之后的`prev`，得到的作用域并不是`root`之后的作用域，而是`root`来自的作用域
-
-```
-name = {
-	trigger = { is_gestalt = no }
-	text = leviathans.125.z1
-}
-```
 
 ## 0.8.3
 
