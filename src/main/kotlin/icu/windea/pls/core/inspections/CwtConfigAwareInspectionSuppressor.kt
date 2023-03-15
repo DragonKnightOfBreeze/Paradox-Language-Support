@@ -1,4 +1,4 @@
-package icu.windea.pls.script.inspections
+package icu.windea.pls.core.inspections
 
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
@@ -12,9 +12,11 @@ import icu.windea.pls.script.psi.*
 /**
  * 基于CWT规则过滤代码检查。
  */
-class CwtConfigAwareInspectionSupressor : InspectionSuppressor {
+class CwtConfigAwareInspectionSuppressor : InspectionSuppressor {
     //UnresolvedExpressionInspection - 从定义级别向下检查
     //<others> - 一般从成员级别或表达式级别直接检查，需要一定的兼容性处理
+    
+    //TODO 验证是否可以生效
     
     override fun isSuppressedFor(element: PsiElement, toolId: String): Boolean {
         val definitionInfo = element.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
