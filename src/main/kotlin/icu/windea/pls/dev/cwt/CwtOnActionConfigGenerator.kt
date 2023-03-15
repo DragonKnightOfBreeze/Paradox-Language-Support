@@ -41,8 +41,6 @@ class CwtOnActionConfigGenerator(
         }
     } 
     
-    
-    
     fun generate() {
         val csvFile = File(csvPath)
         val cwtFile = File(cwtPath)
