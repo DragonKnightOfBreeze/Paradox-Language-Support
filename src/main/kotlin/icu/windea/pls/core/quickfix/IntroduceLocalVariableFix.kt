@@ -29,6 +29,7 @@ class IntroduceLocalVariableFix(
 			val newVariable = ParadoxScriptIntroducer.introduceLocalScriptedVariable(variableName, "0", parentDefinitionOrFile, project)
 			
 			val document = PsiDocumentManager.getInstance(project).getDocument(file)
+			val DDDD = PsiDocumentManager.getInstance(project).getDocument(file)
 			if(document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) //提交文档更改
 			if(editor != null) {
 				//光标移到newVariableValue的结束位置并选中

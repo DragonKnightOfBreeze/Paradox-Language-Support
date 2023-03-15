@@ -22,6 +22,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 用于处理作用域。
  */
+@Suppress("UNUSED_PARAMETER")
 object ParadoxScopeHandler {
     const val maxScopeLinkSize = 5
     

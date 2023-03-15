@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package icu.windea.pls.script.usages
 
 import com.intellij.navigation.*
@@ -30,15 +32,25 @@ class ParadoxDefinitionFileStructureGroupRuleProvider : FileStructureGroupRulePr
 }
 
 //com.intellij.usages.impl.rules.MethodGroupingRule
+//org.jetbrains.kotlin.idea.findUsages.KotlinDeclarationGroupingRule
 
 class DefinitionUsageGroupingRule(
 	private val usageViewSettings: UsageViewSettings
 ) : SingleParentUsageGroupingRule() {
+	private fun getDefinition(usage: Usage, targets: Array<out UsageTarget>): ParadoxScriptDefinitionElement? {
+		var element = usage.castOrNull<PsiElementUsage>()?.element ?: return null
+		if(element.containingFile !is ParadoxScriptFile) return null
+		if(element is ParadoxScriptFile) {
+			val offset = usage.castOrNull<UsageInfo2UsageAdapter>()?.usageInfo?.navigationOffset
+			if(offset != null) {
+				element = element.findElementAt(offset) ?: element
+			}
+		}
+		return element.findParentDefinition()
+	}
+	
 	override fun getParentGroupFor(usage: Usage, targets: Array<out UsageTarget>): UsageGroup? {
-		if(usage !is PsiElementUsage) return null
-		val element = usage.element
-		if(element.language != ParadoxScriptLanguage) return null
-		val definition = element.findParentDefinition() ?: return null
+		val definition = getDefinition(usage, targets) ?: return null
 		val definitionInfo = definition.definitionInfo ?: return null
 		return DefinitionUsageGroup(definition, definitionInfo, usageViewSettings)
 	}
