@@ -70,6 +70,8 @@
 
 * BUG修复
 * 代码优化
+* 更新Stellaris的基于script_documentation日志的CWT规则文件到最新游戏版本3.7.2
+* 完善Stellaris的CWT规则文件（检查游戏目录中的所有脚本文件） - 更新中
 
 ## 0.9.0
 
