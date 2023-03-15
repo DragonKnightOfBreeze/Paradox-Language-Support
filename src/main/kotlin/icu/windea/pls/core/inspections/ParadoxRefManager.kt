@@ -67,7 +67,7 @@ class ParadoxRefManager(
         if(entity is RefFile) {
             //按目录分组时显示相对于游戏或模组根目录的路径
             val fileInfo = entity.psiElement.containingFile?.fileInfo ?: return null
-            return fileInfo.path.path
+            return fileInfo.path.parent
         }
         return null
     }
