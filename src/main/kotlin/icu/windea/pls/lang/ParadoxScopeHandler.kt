@@ -187,33 +187,17 @@ object ParadoxScopeHandler {
         //should be a definition
         val definitionInfo = element.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
         if(definitionInfo != null) {
-            val configGroup = definitionInfo.configGroup
-            //on_action
-            if(definitionInfo.type == "on_action") {
-                val config = configGroup.onActions.getByTemplate(definitionInfo.name, element, configGroup)
-                val result = config?.scopeContext
-                if(result != null) return result //直接使用来自csv或者cwt文件中的作用域信息
-            }
-            val declarationConfig = definitionInfo.declarationConfig?.propertyConfig ?: return null
-            val subtypeConfigs = definitionInfo.subtypeConfigs
-            val typeConfig = definitionInfo.typeConfig
-            val replaceScopeOnType = subtypeConfigs.firstNotNullOfOrNull { it.config.replaceScopes }
-                ?: typeConfig.config.replaceScopes
-            val replaceScope = replaceScopeOnType
-                ?: declarationConfig.replaceScopes
-            val pushScopeOnType = (subtypeConfigs.firstNotNullOfOrNull { it.config.pushScope }
-                ?: typeConfig.config.pushScope)
-            val pushScope = pushScopeOnType
-                ?: declarationConfig.pushScope
-            val result = replaceScope?.resolve(pushScope)
-                ?: pushScope?.let { ParadoxScopeContext.resolve(it, it) }
-                ?: resolveAnyScopeContext()
-            //如果推断得到的作用域上下文是确定的，则这里使用推断得到的
-            val inferred = ParadoxInferredScopeContextProvider.inferForDefinition(element)
-            if(inferred != null && !inferred.hasConflict) {
-                return inferred.scopeContext
-            }
-            return result
+            element as ParadoxScriptDefinitionElement
+            
+            //如果推断得到的作用域上下文是确定的，则有限使用推断得到的
+            val inferenceInfo = ParadoxDefinitionInferredScopeContextProvider.getScopeContext(element, definitionInfo)
+            if(inferenceInfo != null && !inferenceInfo.hasConflict) return inferenceInfo.scopeContext
+            
+            //使用提供的作用域上下文
+            val providedScopeContext = ParadoxDefinitionScopeContextProvider.getScopeContext(element, definitionInfo)
+            if(providedScopeContext != null) return providedScopeContext
+            
+            return resolveAnyScopeContext()
         }
         
         //should be a definition member

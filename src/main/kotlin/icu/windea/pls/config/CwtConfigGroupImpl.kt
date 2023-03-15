@@ -72,6 +72,7 @@ class CwtConfigGroupImpl(
 	override val aliasGroups: MutableMap<String, MutableMap<String, MutableList<CwtAliasConfig>>> = mutableMapOf()
 	override val inlineConfigGroup: MutableMap<String, MutableList<CwtInlineConfig>> = mutableMapOf()
 	
+	override val gameRules: MutableMap<String, CwtGameRuleConfig> = mutableMapOf()
 	override val onActions: MutableMap<String, CwtOnActionConfig> = mutableMapOf()
 	
 	override val modifierCategories: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
@@ -154,17 +155,17 @@ class CwtConfigGroupImpl(
 		//其它的随后加入
 	)
 	override val definitionTypesSupportScope: MutableSet<String> = mutableSetOf(
-		"game_rule",
 		"scripted_effect",
 		"scripted_trigger",
+		"game_rule",
 		"on_action", //也支持，其中调用的事件的类型要匹配
 	)
 	override val definitionTypesSkipCheckSystemLink: MutableSet<String> = mutableSetOf(
 		"event",
-		"game_rule",
 		"scripted_trigger",
 		"scripted_effect",
 		"script_value",
+		"game_rule",
 	)
 	override val definitionTypesSupportParameters: MutableSet<String> = mutableSetOf(
 		"script_value", //SV也支持参数
@@ -460,6 +461,14 @@ class CwtConfigGroupImpl(
 						val scopeGroupName = prop.key
 						val scopeGroupConfig = resolveScopeGroupConfig(prop, scopeGroupName) ?: continue
 						scopeGroups[scopeGroupName] = scopeGroupConfig
+					}
+				}
+				fileKey == "game_rules" && key == "game_rules" -> {
+					val props = property.properties ?: continue
+					for(prop in props) {
+						val onActionName = prop.key
+						val onActionConfig = resolveGameRuleConfig(prop, onActionName) ?: continue
+						gameRules[onActionName] = onActionConfig
 					}
 				}
 				fileKey == "on_actions" && key == "on_actions" -> {
@@ -872,6 +881,12 @@ class CwtConfigGroupImpl(
 			valueConfigMap.put(propertyConfigValue.value, propertyConfigValue)
 		}
 		return CwtScopeGroupConfig(pointer, info, name, values, valueConfigMap)
+	}
+	
+	private fun resolveGameRuleConfig(propertyConfig: CwtPropertyConfig, name: String) : CwtGameRuleConfig? {
+		val pointer = propertyConfig.pointer
+		val info = propertyConfig.info
+		return CwtGameRuleConfig(pointer, info, propertyConfig, name)
 	}
 	
 	private fun resolveOnActionConfig(propertyConfig: CwtPropertyConfig, name: String) : CwtOnActionConfig? {

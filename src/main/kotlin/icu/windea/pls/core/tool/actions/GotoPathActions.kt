@@ -106,7 +106,6 @@ class GoToSteamWorkshopPathAction : GoToPathAction() {
     }
 }
 
-
 class GoToGameDataPathAction : GoToPathAction() {
     private var gameType: ParadoxGameType? = null
     

@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.scope
 
 import com.intellij.openapi.progress.*
-import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.psi.util.*
@@ -16,16 +15,12 @@ import icu.windea.pls.script.references.*
 /**
  * 如果事件在某个`on_action`中被调用，则将其from作用域设为此`on_action`的from作用域，fromfrom作用域也这样处理，依此类推。
  */
-class ParadoxEventFromOnActionInferredScopeContextProvider: ParadoxInferredScopeContextProvider {
-    override val type: ParadoxInferredScopeContextProvider.Type = ParadoxInferredScopeContextProvider.Type.Definition
-    
-    override fun getScopeContext(contextElement: PsiElement): ParadoxScopeContextInferenceInfo? {
+class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
+    override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if(!getSettings().inference.eventScopeContext) return null
-        if(contextElement !is ParadoxScriptProperty) return null
         ProgressManager.checkCanceled()
-        val definitionInfo = contextElement.definitionInfo ?: return null
         if(definitionInfo.type != "event") return null
-        return getInferredScopeContext(contextElement)
+        return getInferredScopeContext(definition)
     }
     
     private fun getInferredScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
@@ -73,13 +68,13 @@ class ParadoxEventFromOnActionInferredScopeContextProvider: ParadoxInferredScope
         return ParadoxScopeContextInferenceInfo(scopeContext ?: return null, hasConflict)
     }
     
-    override fun getMessage(contextElement: PsiElement, info: ParadoxScopeContextInferenceInfo): String? {
-        val eventId = contextElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo?.name ?: return null
+    override fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
+        val eventId = definitionInfo.name
         return PlsBundle.message("script.annotator.scopeContext.1", eventId)
     }
     
-    override fun getErrorMessage(contextElement: PsiElement, info: ParadoxScopeContextInferenceInfo): String? {
-        val eventId = contextElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo?.name ?: return null
+    override fun getErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
+        val eventId = definitionInfo.name
         return PlsBundle.message("script.annotator.scopeContext.1.conflict", eventId)
     }
 }

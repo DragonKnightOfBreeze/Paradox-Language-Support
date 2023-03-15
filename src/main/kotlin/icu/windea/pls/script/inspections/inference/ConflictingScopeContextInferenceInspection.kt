@@ -3,6 +3,7 @@ package icu.windea.pls.script.inspections.inference
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.script.psi.*
 
@@ -11,17 +12,21 @@ import icu.windea.pls.script.psi.*
  */
 class ConflictingScopeContextInferenceInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        return object :PsiElementVisitor() {
+        return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 when {
-                    element is ParadoxScriptProperty && element.definitionInfo != null -> visitDefinition(element)
+                    element is ParadoxScriptDefinitionElement -> {
+                        val definitionInfo = element.definitionInfo
+                        if(definitionInfo != null) visitDefinition(element, definitionInfo)
+                    }
                 }
             }
-    
-            private fun visitDefinition(element: ParadoxScriptProperty) {
-                val message = ParadoxInferredScopeContextProvider.getErrorMessageForDefinition(element)
+            
+            private fun visitDefinition(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
+                val message = ParadoxDefinitionInferredScopeContextProvider.getErrorMessage(element, definitionInfo)
                 if(message != null) {
-                    holder.registerProblem(element.propertyKey, message)
+                    val location = if(element is ParadoxScriptProperty) element.propertyKey else element
+                    holder.registerProblem(location, message)
                 }
             }
         }

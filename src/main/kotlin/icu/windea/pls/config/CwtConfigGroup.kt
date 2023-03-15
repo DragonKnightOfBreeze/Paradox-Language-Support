@@ -59,6 +59,8 @@ interface CwtConfigGroup {
 	//inline_script
 	val inlineConfigGroup: Map<String, List<CwtInlineConfig>>
 	
+	// key: scalar
+	val gameRules: Map<String, CwtGameRuleConfig>
 	// key: scalar / template_expression
 	val onActions: Map<String, CwtOnActionConfig>
 	
