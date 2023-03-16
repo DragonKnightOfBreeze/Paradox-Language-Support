@@ -20,9 +20,6 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 	//才有可能将所在目录（以及子目录）下的文件识别为Paradox本地化文件和脚本文件
 	
 	override fun getOverriddenFileType(file: VirtualFile): FileType? {
-		//val injectedFileType = file.getUserData(PlsKeys.injectedFileTypeKey)
-		//if(injectedFileType != null) return doGetFileType(injectedFileType)
-		
 		val fileInfo = ParadoxCoreHandler.resolveFileInfo(file)
 		val fileType = fileInfo?.fileType
 		if(fileType != null) return doGetFileType(fileType)

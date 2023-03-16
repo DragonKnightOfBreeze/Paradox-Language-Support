@@ -61,6 +61,7 @@ class ParadoxModDependencyAddDialog(
     }
     
     private fun ValidationInfoBuilder.validateModDirectory(): ValidationInfo? {
+        val modDirectory = modDirectory.normalizeAbsolutePath()
         if(modDirectory.isEmpty()) return error(PlsBundle.message("mod.dependency.add.modDirectory.error.empty"))
         val path = modDirectory.toPathOrNull()
             ?: return error(PlsBundle.message("mod.dependency.add.modDirectory.error.1"))

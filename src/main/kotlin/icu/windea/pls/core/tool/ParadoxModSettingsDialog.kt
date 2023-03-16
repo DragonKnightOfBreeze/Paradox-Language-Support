@@ -130,6 +130,7 @@ class ParadoxModSettingsDialog(
         //* 路径合法
         //* 路径对应的目录存在
         //* 路径是游戏目录（可以查找到对应的launcher-settings.json）
+        val gameDirectory = gameDirectory.normalizeAbsolutePath()
         if(gameDirectory.isEmpty()) return null //为空时跳过检查
         val path = gameDirectory.toPathOrNull()
             ?: return error(PlsBundle.message("mod.settings.gameDirectory.error.1"))
