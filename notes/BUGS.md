@@ -40,13 +40,11 @@ traditions: inherit icon from parent original tradition if inherit_icon = yes
 
 ## 0.9.2
 
-```
-hidden:fromfrom = { has_resource = { type = volatile_motes amount > 0 } }
-```
+* [ ] 自定义折叠（`region...endregion`）无法正确折叠文本
 
 ## 0.9.1
 
-* `root.owner`之后的`prev`，得到的作用域并不是`root`之后的作用域，而是`root`来自的作用域
+* [X] `root.owner`之后的`prev`，得到的作用域并非`root`之后的作用域，而应当是`root`来自的作用域
 
 ## 0.8.3
 
