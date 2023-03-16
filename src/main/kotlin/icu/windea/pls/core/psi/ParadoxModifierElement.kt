@@ -11,6 +11,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.modifier.*
+import java.util.*
 import javax.swing.*
 
 /**
@@ -69,10 +70,15 @@ class ParadoxModifierElement(
         return false // false -> click to show usages
     }
     
-    override fun isEquivalentTo(other: PsiElement?): Boolean {
+    override fun equals(other: Any?): Boolean {
         return other is ParadoxModifierElement &&
+            parent == other.parent &&
             name == other.name &&
             project == other.project &&
             gameType == other.gameType
+    }
+    
+    override fun hashCode(): Int {
+        return Objects.hash(parent, name, project, gameType)
     }
 }

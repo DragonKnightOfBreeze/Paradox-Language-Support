@@ -10,6 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.modifier.*
+import java.util.*
 import javax.swing.*
 
 /**
@@ -67,11 +68,16 @@ class ParadoxParameterElement(
         return false // false -> click to show usages
     }
     
-    override fun isEquivalentTo(other: PsiElement?): Boolean {
+    override fun equals(other: Any?): Boolean {
         return other is ParadoxParameterElement &&
+            parent == other.parent &&
             name == other.name &&
             contextName == other.contextName &&
             project == other.project &&
             gameType == other.gameType
+    }
+    
+    override fun hashCode(): Int {
+        return Objects.hash(parent, name, contextName, project, gameType)
     }
 }

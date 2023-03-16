@@ -9,6 +9,7 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.lang.model.*
+import java.util.*
 import javax.swing.*
 
 /**
@@ -70,11 +71,16 @@ class ParadoxValueSetValueElement(
         return false // false -> click to show usages
     }
     
-    override fun isEquivalentTo(other: PsiElement?): Boolean {
+    override fun equals(other: Any?): Boolean {
         return other is ParadoxValueSetValueElement &&
+            parent == other.parent &&
             name == other.name &&
             valueSetNames.any { it in other.valueSetNames } &&
             project == other.project &&
             gameType == other.gameType
+    }
+    
+    override fun hashCode(): Int {
+        return Objects.hash(parent, name, project, gameType)
     }
 }

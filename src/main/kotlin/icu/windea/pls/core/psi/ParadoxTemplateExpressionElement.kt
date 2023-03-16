@@ -11,6 +11,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.lang.model.*
+import java.util.*
 import javax.swing.*
 
 class ParadoxTemplateExpressionElement(
@@ -65,12 +66,17 @@ class ParadoxTemplateExpressionElement(
         return false // false -> click to show usages
     }
     
-    override fun isEquivalentTo(other: PsiElement?): Boolean {
+    override fun equals(other: Any?): Boolean {
         return other is ParadoxTemplateExpressionElement &&
+            parent == other.parent &&
             name == other.name &&
             configExpression == other.configExpression &&
             project == other.project &&
             gameType == other.gameType
+    }
+    
+    override fun hashCode(): Int {
+        return Objects.hash(parent, name, configExpression, project, gameType)
     }
 }
 
