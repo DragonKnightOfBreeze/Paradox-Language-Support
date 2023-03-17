@@ -9,7 +9,7 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.lang.modifier.*
+import icu.windea.pls.lang.parameter.*
 import java.util.*
 import javax.swing.*
 
@@ -70,7 +70,6 @@ class ParadoxParameterElement(
     
     override fun equals(other: Any?): Boolean {
         return other is ParadoxParameterElement &&
-            parent == other.parent &&
             name == other.name &&
             contextName == other.contextName &&
             project == other.project &&
@@ -78,6 +77,6 @@ class ParadoxParameterElement(
     }
     
     override fun hashCode(): Int {
-        return Objects.hash(parent, name, contextName, project, gameType)
+        return Objects.hash(name, contextName, project, gameType)
     }
 }
