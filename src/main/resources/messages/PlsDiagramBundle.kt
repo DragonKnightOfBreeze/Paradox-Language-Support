@@ -1,4 +1,0 @@
-package messages
-
-class PlsDiagramBundle {
-}
