@@ -13,13 +13,4 @@ abstract class ParadoxFakePsiElement(parent: PsiElement): RenameableFakePsiEleme
     override fun getUseScope(): SearchScope {
         return ParadoxGlobalSearchScope.fromElement(this) ?: super.getUseScope()
     }
-    
-    override fun equals(other: Any?): Boolean {
-        if(other == null) return false
-        return this === other || (this.javaClass == other.javaClass && parent == (other as ParadoxFakePsiElement).parent)
-    }
-    
-    override fun hashCode(): Int {
-        return parent.hashCode()
-    }
 }

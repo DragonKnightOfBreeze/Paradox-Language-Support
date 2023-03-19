@@ -72,13 +72,12 @@ class ParadoxModifierElement(
     
     override fun equals(other: Any?): Boolean {
         return other is ParadoxModifierElement &&
-            parent == other.parent &&
             name == other.name &&
             project == other.project &&
             gameType == other.gameType
     }
     
     override fun hashCode(): Int {
-        return Objects.hash(parent, name, project, gameType)
+        return Objects.hash(name, project, gameType)
     }
 }

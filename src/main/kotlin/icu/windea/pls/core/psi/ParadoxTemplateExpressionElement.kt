@@ -68,7 +68,6 @@ class ParadoxTemplateExpressionElement(
     
     override fun equals(other: Any?): Boolean {
         return other is ParadoxTemplateExpressionElement &&
-            parent == other.parent &&
             name == other.name &&
             configExpression == other.configExpression &&
             project == other.project &&
@@ -76,7 +75,7 @@ class ParadoxTemplateExpressionElement(
     }
     
     override fun hashCode(): Int {
-        return Objects.hash(parent, name, configExpression, project, gameType)
+        return Objects.hash(name, configExpression, project, gameType)
     }
 }
 

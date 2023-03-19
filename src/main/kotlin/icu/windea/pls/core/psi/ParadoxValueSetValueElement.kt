@@ -73,7 +73,6 @@ class ParadoxValueSetValueElement(
     
     override fun equals(other: Any?): Boolean {
         return other is ParadoxValueSetValueElement &&
-            parent == other.parent &&
             name == other.name &&
             valueSetNames.any { it in other.valueSetNames } &&
             project == other.project &&
@@ -81,6 +80,6 @@ class ParadoxValueSetValueElement(
     }
     
     override fun hashCode(): Int {
-        return Objects.hash(parent, name, project, gameType)
+        return Objects.hash(name, project, gameType)
     }
 }

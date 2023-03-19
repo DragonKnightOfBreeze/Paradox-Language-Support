@@ -1,3 +1,6 @@
+modules.xml
+*.iml
+
 tmp
 cwt/cwtools-*-config
 local.properties
