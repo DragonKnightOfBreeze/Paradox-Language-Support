@@ -16,9 +16,9 @@ import javax.swing.*
  * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。
  */
 class MissingLocaleInspection : LocalInspectionTool() {
-	@JvmField var ignoredFileNames = ""
-	
-	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
+    @JvmField var ignoredFileNames = ""
+    
+    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
         if(file !is ParadoxLocalisationFile) return null //不期望的结果
         if(ParadoxFileManager.isLightFile(file.virtualFile)) return null //不检查临时文件
         if(file.name.matchesGlobFileName(ignoredFileNames, true)) return null //忽略
@@ -26,14 +26,13 @@ class MissingLocaleInspection : LocalInspectionTool() {
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         holder.registerProblem(file, PlsBundle.message("inspection.localisation.missingLocale.description"))
         return holder.resultsArray
-	}
-	
-	override fun createOptionsPanel(): JComponent {
-		return panel {
+    }
+    
+    override fun createOptionsPanel(): JComponent {
+        return panel {
             row {
-                label(PlsBundle.message("inspection.localisation.missingLocale.option.ignoredFileNames")).applyToComponent {
-                    toolTipText = PlsBundle.message("inspection.localisation.missingLocale.option.ignoredFileNames.tooltip")
-                }
+                label(PlsBundle.message("inspection.localisation.missingLocale.option.ignoredFileNames"))
+                    .applyToComponent { toolTipText = PlsBundle.message("inspection.localisation.missingLocale.option.ignoredFileNames.tooltip") }
             }
             row {
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
@@ -50,5 +49,5 @@ class MissingLocaleInspection : LocalInspectionTool() {
                     .resizableColumn()
             }
         }
-	}
+    }
 }

@@ -17,7 +17,7 @@ import javax.swing.*
 
 /**
  * 无法解析的路径引用的检查。
- * * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。默认为"*.lua"。
+ * * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。
  */
 class UnresolvedPathReferenceInspection : LocalInspectionTool() {
     @JvmField var ignoredFileNames = "*.lua"
@@ -62,9 +62,11 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
         return panel {
             row {
                 label(PlsBundle.message("inspection.script.general.unresolvedPathReference.option.ignoredFileNames"))
+                    .applyToComponent { toolTipText = PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames.tooltip") }
             }
             row {
-                textField().bindText(::ignoredFileNames)
+                expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
+                    .bindText(::ignoredFileNames)
                     .applyToComponent {
                         whenTextChanged {
                             val document = it.document

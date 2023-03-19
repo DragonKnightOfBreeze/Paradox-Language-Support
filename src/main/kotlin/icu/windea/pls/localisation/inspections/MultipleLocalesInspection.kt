@@ -31,9 +31,8 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 	override fun createOptionsPanel(): JComponent {
 		return panel {
 			row {
-				label(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames")).applyToComponent { 
-					toolTipText = PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames.tooltip")
-				}
+				label(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames"))
+					.applyToComponent { toolTipText = PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames.tooltip") }
 			}
 			row {
 				expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
