@@ -514,6 +514,15 @@ object ParadoxConfigHandler {
     ): Boolean {
         val aliasSubName = getAliasSubName(element, expression.text, expression.quoted, aliasName, configGroup, matchType) ?: return false
         val configExpression = CwtKeyExpression.resolve(aliasSubName)
+        run {
+            val isNotExact = BitUtil.isSet(matchType, CwtConfigMatchType.NOT_EXACT)
+            if(!isNotExact) {
+                val expectedScope = configGroup.aliasGroups.get(aliasName)?.get(aliasSubName)?.singleOrNull()?.supportedScopes ?: return@run
+                val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@run
+                val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return@run
+                if(!ParadoxScopeHandler.matchesScope(parentScopeContext, expectedScope, configGroup)) return false
+            }
+        }
         return matchesScriptExpression(element, expression, configExpression, null, configGroup, matchType)
     }
     

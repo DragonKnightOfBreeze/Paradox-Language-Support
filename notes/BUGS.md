@@ -40,6 +40,8 @@
 
 ## 0.9.2
 
+* [ ] 对于value必要时也要显示scopeContext
+* [ ] 对于`alias_keys_field[xxx]`进行匹配、提示、解析时也要匹配scopeContext
 * [ ] 自定义折叠（`region...endregion`）无法正确折叠文本
 
 ## 0.9.1

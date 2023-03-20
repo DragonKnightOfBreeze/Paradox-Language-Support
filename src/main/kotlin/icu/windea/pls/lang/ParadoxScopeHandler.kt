@@ -132,7 +132,6 @@ object ParadoxScopeHandler {
     }
     
     private fun isScopeContextSupportedAsRoot(config: CwtDataConfig<*>, configGroup: CwtConfigGroup): Boolean {
-        if(config !is CwtPropertyConfig) return false
         val properties = config.properties ?: return false
         return properties.any {
             val aliasName = when {
@@ -152,6 +151,8 @@ object ParadoxScopeHandler {
                     val aliasName = inlineableConfig.name
                     if(aliasName in configGroup.aliasNamesSupportScope) return true
                 }
+            } else if(currentConfig is CwtValueConfig) {
+                currentConfig = currentConfig.propertyConfig ?: currentConfig
             }
             currentConfig = currentConfig.parent ?: break
         }
@@ -341,12 +342,12 @@ object ParadoxScopeHandler {
             if(inExpression) return prev
             return scopeFieldInfo?.first()?.second?.prev ?: prev
         }
-    
+        
         val id = systemLink.id
         val baseId = systemLink.baseId
         val systemLinkContext = when {
             id == "This" -> inputScopeContext
-            id == "Root" ->  inputScopeContext.root
+            id == "Root" -> inputScopeContext.root
             id == "Prev" -> inputScopeContext.prev()
             id == "PrevPrev" -> inputScopeContext.prev()?.prev()
             id == "PrevPrevPrev" -> inputScopeContext.prev()?.prev()?.prev()
