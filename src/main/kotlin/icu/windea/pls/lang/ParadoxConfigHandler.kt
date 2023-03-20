@@ -888,25 +888,6 @@ object ParadoxConfigHandler {
         for(aliasConfigs in aliasGroup.values) {
             //aliasConfigs的名字是相同的 
             val aliasConfig = aliasConfigs.firstOrNull() ?: continue
-    
-            if(scopeMatched) {
-                //这里需要排序supportedScope为any而scopeContext不为any的情况
-                val scopeContext = scopeContext
-                val supportedScopes =  when {
-                    config is CwtPropertyConfig -> config.supportedScopes
-                    config is CwtAliasConfig ->  config.supportedScopes
-                    config is CwtLinkConfig -> config.inputScopes
-                    else -> null
-                }
-                val scopeMatched = when {
-                    config.expression?.type != CwtDataType.AliasKeysField -> true
-                    supportedScopes == ParadoxScopeHandler.anyScopeIdSet && scopeContext.scope.id != ParadoxScopeHandler.anyScopeId -> false
-                    else -> true
-                }
-                if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
-                put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
-            }
-            
             //aliasSubName是一个表达式
             if(isKey == true) {
                 context.put(PlsCompletionKeys.configKey, aliasConfig)
