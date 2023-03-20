@@ -127,7 +127,10 @@ object ParadoxScopeHandler {
         val configs = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)
         return configs.any { config ->
             val configGroup = config.info.configGroup
-            isScopeContextSupportedAsRoot(config, configGroup) || isScopeContextSupportedAsChild(config, configGroup)
+            if(config.expression.type == CwtDataType.AliasKeysField) return@any true
+            if(isScopeContextSupportedAsRoot(config, configGroup)) return@any true
+            if(isScopeContextSupportedAsChild(config, configGroup)) return@any true
+            false
         }
     }
     

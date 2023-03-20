@@ -514,15 +514,6 @@ object ParadoxConfigHandler {
     ): Boolean {
         val aliasSubName = getAliasSubName(element, expression.text, expression.quoted, aliasName, configGroup, matchType) ?: return false
         val configExpression = CwtKeyExpression.resolve(aliasSubName)
-        run {
-            val isNotExact = BitUtil.isSet(matchType, CwtConfigMatchType.NOT_EXACT)
-            if(!isNotExact) {
-                val expectedScope = configGroup.aliasGroups.get(aliasName)?.get(aliasSubName)?.singleOrNull()?.supportedScopes ?: return@run
-                val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@run
-                val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return@run
-                if(!ParadoxScopeHandler.matchesScope(parentScopeContext, expectedScope, configGroup)) return false
-            }
-        }
         return matchesScriptExpression(element, expression, configExpression, null, configGroup, matchType)
     }
     
@@ -670,6 +661,7 @@ object ParadoxConfigHandler {
         
         context.put(PlsCompletionKeys.isKeyKey, false)
         context.put(PlsCompletionKeys.configGroupKey, configGroup)
+        context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeHandler.getScopeContext(memberElement))
         
         for(config in configs) {
             if(shouldComplete(config, occurrenceMap)) {
@@ -679,6 +671,7 @@ object ParadoxConfigHandler {
         }
         
         context.put(PlsCompletionKeys.configKey, null)
+        context.put(PlsCompletionKeys.configsKey, null)
         return
     }
     

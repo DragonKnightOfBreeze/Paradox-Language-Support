@@ -35,4 +35,8 @@ class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 			collectDescriptorsRecursively(child, document, descriptors)
 		}
 	}
+	
+	override fun isCustomFoldingCandidate(node: ASTNode): Boolean {
+		return node.elementType == COMMENT
+	}
 }

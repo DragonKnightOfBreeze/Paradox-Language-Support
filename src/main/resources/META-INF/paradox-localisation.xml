@@ -10,6 +10,7 @@
     <lang.braceMatcher language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationBraceMatcher"/>
     <lang.commenter language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationCommenter"/>
     <breadcrumbsInfoProvider implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationBreadCrumbsProvider"/>
+    <lang.foldingBuilder language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.folding.ParadoxLocalisationFoldingBuilder"/>
     <lang.quoteHandler language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationQuoteHandler"/>
     <lang.documentationProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationDocumentationProvider"/>
     <lang.findUsagesProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationFindUsagesProvider"/>
