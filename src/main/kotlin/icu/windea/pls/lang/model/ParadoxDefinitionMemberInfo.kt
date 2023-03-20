@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.model
 
-import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
@@ -84,11 +84,12 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
                 }
             }
         }
-        
-        //如果存在可以静态匹配（CwtConfigMatchType.STATIC）的规则，则仅选用可以静态匹配的规则
         result = nextResult
-            .filter { ParadoxConfigHandler.matchesScriptExpression(element, expression, it.expression, it, configGroup, CwtConfigMatchType.STATIC) }
-            .ifEmpty { nextResult }
+        
+        //如过结果不唯一且结果中存在按常量字符串匹配的规则，则仅选用那个规则
+        if(result.size > 1) {
+            result = result.filter { it.expression.type == CwtDataType.Constant }.ifEmpty { result }
+        }
     }
     
     return result.sortedByPriority(configGroup) { it.expression }
