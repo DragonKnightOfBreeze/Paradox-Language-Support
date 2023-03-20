@@ -46,7 +46,7 @@ object ParadoxValueSetValueHandler {
     @JvmStatic
     fun getName(expression: String): String? {
         //exclude if name contains invalid chars
-        return expression.substringBefore('@').takeIf { it.isExactIdentifier() }?.takeIfNotEmpty()
+        return expression.substringBefore('@').takeIf { it.isExactIdentifier('.') }?.takeIfNotEmpty()
     }
     
     @JvmStatic
