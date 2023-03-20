@@ -816,16 +816,21 @@ object ParadoxConfigHandler {
         if(!quoted && keyword.isParameterAwareExpression()) return //排除带参数的情况
         
         //匹配作用域
-        val scopeContext = scopeContext
-        val scopeMatched = when {
-            scopeContext == null -> true
-            config is CwtPropertyConfig -> ParadoxScopeHandler.matchesScope(scopeContext, config.supportedScopes, configGroup)
-            config is CwtAliasConfig -> ParadoxScopeHandler.matchesScope(scopeContext, config.supportedScopes, configGroup)
-            config is CwtLinkConfig -> ParadoxScopeHandler.matchesScope(scopeContext, config.inputScopes, configGroup)
-            else -> true
+        if(scopeMatched) {
+            val scopeContext = scopeContext
+            val supportedScopes =  when {
+                config is CwtPropertyConfig -> config.supportedScopes
+                config is CwtAliasConfig ->  config.supportedScopes
+                config is CwtLinkConfig -> config.inputScopes
+                else -> null
+            }
+            val scopeMatched = when {
+                scopeContext == null -> true
+                else -> ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)
+            }
+            if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return
+            put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
         }
-        if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return
-        put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
         
         ParadoxScriptExpressionSupport.complete(config, context, result)
         
@@ -883,6 +888,24 @@ object ParadoxConfigHandler {
         for(aliasConfigs in aliasGroup.values) {
             //aliasConfigs的名字是相同的 
             val aliasConfig = aliasConfigs.firstOrNull() ?: continue
+    
+            if(scopeMatched) {
+                //这里需要排序supportedScope为any而scopeContext不为any的情况
+                val scopeContext = scopeContext
+                val supportedScopes =  when {
+                    config is CwtPropertyConfig -> config.supportedScopes
+                    config is CwtAliasConfig ->  config.supportedScopes
+                    config is CwtLinkConfig -> config.inputScopes
+                    else -> null
+                }
+                val scopeMatched = when {
+                    config.expression?.type != CwtDataType.AliasKeysField -> true
+                    supportedScopes == ParadoxScopeHandler.anyScopeIdSet && scopeContext.scope.id != ParadoxScopeHandler.anyScopeId -> false
+                    else -> true
+                }
+                if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+                put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
+            }
             
             //aliasSubName是一个表达式
             if(isKey == true) {
