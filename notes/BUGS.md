@@ -34,7 +34,7 @@
 
 ## PROCESSING
 
-* [ ] 检查原版游戏文件 - PROCESSING：common/edits
+* [ ] 检查原版游戏文件 - PROCESSING：common/script_values
 * [ ] 支持传统中的图标继承（`traditions: inherit icon from parent original tradition if inherit_icon = yes`）
 * [ ] 支持事件继承
 
