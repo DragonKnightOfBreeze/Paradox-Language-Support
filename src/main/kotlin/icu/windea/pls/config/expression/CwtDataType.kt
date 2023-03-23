@@ -40,6 +40,7 @@ enum class CwtDataType {
     AliasMatchLeft,
     Template,
     Constant,
+    Any,
     Other,
     @WithGameType(ParadoxGameType.Stellaris)
     StellarisNameFormat,

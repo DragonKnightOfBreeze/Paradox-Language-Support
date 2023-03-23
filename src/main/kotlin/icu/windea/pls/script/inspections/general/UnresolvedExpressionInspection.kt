@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
@@ -118,6 +119,10 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                             }
                             holder.registerProblem(element, message)
                             //skip checking children
+                            return false
+                        }
+                        if(config.expression.type == CwtDataType.Any) {
+                            //any规则不需要再向下检查
                             return false
                         }
                         return true

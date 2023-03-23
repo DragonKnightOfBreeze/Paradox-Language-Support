@@ -185,6 +185,9 @@ class CwtValueExpression private constructor(
             CwtTemplateExpression.resolve(expressionString).isNotEmpty() -> {
                 CwtValueExpression(expressionString, CwtDataType.Template)
             }
+            expressionString == "\$any" -> {
+                CwtValueExpression(expressionString, CwtDataType.Any)
+            }
             expressionString.endsWith(']') -> {
                 CwtValueExpression(expressionString, CwtDataType.Other)
             }

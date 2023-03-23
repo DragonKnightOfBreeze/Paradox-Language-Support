@@ -120,6 +120,9 @@ class CwtKeyExpression private constructor(
             CwtTemplateExpression.resolve(expressionString).isNotEmpty() -> {
                 CwtKeyExpression(expressionString, CwtDataType.Template)
             }
+            expressionString == "\$any" -> {
+                CwtKeyExpression(expressionString, CwtDataType.Any)
+            }
             expressionString.endsWith(']') -> {
                 CwtKeyExpression(expressionString, CwtDataType.Other)
             }

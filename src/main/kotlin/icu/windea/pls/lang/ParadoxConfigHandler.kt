@@ -470,8 +470,11 @@ object ParadoxConfigHandler {
                 }
                 return expression.text.equals(value, true) //忽略大小写
             }
-            CwtDataType.Other -> {
+            CwtDataType.Any -> {
                 return true
+            }
+            CwtDataType.Other -> {
+                return false
             }
             else -> {
                 val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
@@ -595,6 +598,7 @@ object ParadoxConfigHandler {
             CwtDataType.AliasMatchLeft -> 0 //不期望匹配到
             CwtDataType.Template -> 65
             CwtDataType.Constant -> 100
+            CwtDataType.Any -> 1
             CwtDataType.Other -> 0 //不期望匹配到
         }
     }
