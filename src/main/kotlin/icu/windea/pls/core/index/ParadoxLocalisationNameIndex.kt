@@ -6,7 +6,7 @@ import icu.windea.pls.localisation.psi.*
 class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
     companion object {
         @JvmField val KEY = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
-        private const val VERSION = 16 //0.9.0
+        private const val VERSION = 17 //0.9.2
         private const val CACHE_SIZE = 100 * 1024 //98000+ in stellaris@3.6
     }
     

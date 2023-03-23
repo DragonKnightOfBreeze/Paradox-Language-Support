@@ -6,7 +6,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxInlineScriptIndex: StringStubIndexExtension<ParadoxScriptPropertyKey>(){
 	companion object {
 		@JvmField val KEY = StubIndexKey.createIndexKey<String, ParadoxScriptPropertyKey>("paradox.inlineScript.index")
-		private const val VERSION = 16 //0.9.0
+		private const val VERSION = 17 //0.9.2
 		private const val CACHE_SIZE = 2 * 1024
 	}
 	
