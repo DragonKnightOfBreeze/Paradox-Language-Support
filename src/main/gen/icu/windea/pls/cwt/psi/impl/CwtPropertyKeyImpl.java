@@ -12,6 +12,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.cwt.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
 public class CwtPropertyKeyImpl extends ASTWrapperPsiElement implements CwtPropertyKey {
@@ -58,6 +59,12 @@ public class CwtPropertyKeyImpl extends ASTWrapperPsiElement implements CwtPrope
   @NotNull
   public ItemPresentation getPresentation() {
     return CwtPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
+  public SearchScope getUseScope() {
+    return CwtPsiImplUtil.getUseScope(this);
   }
 
 }

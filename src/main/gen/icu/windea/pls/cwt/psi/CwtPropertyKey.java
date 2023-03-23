@@ -8,6 +8,7 @@ import com.intellij.psi.PsiLiteralValue;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
 public interface CwtPropertyKey extends PsiLiteralValue, NavigatablePsiElement {
@@ -26,5 +27,8 @@ public interface CwtPropertyKey extends PsiLiteralValue, NavigatablePsiElement {
 
   @NotNull
   ItemPresentation getPresentation();
+
+  @NotNull
+  SearchScope getUseScope();
 
 }

@@ -42,6 +42,7 @@
 
 * [X] 对于value必要时也要显示scopeContext
 * [X] 对于`alias_keys_field[xxx]`进行匹配、提示、解析时也要匹配scopeContext
+* [X] 修复无法查找CWT规则的引用的问题
 * [ ] 自定义折叠（`region...endregion`）无法正确折叠文本
 
 ## 0.9.1

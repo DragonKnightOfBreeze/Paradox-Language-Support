@@ -11,6 +11,7 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import icu.windea.pls.cwt.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.config.config.CwtSeparator;
 import javax.swing.Icon;
 
@@ -82,6 +83,12 @@ public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty 
   @NotNull
   public ItemPresentation getPresentation() {
     return CwtPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
+  public SearchScope getUseScope() {
+    return CwtPsiImplUtil.getUseScope(this);
   }
 
 }

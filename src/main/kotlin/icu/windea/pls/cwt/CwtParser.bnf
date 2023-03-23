@@ -57,11 +57,11 @@ property ::= property_key property_separator value {
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
   methods=[
     propertyKey="property_key" propertyValue="value"
-    getIcon getName setName getNameIdentifier getValue getSeparatorType getPresentation
+    getIcon getName setName getNameIdentifier getValue getSeparatorType getPresentation getUseScope
   ]
 }
 property_key ::= PROPERTY_KEY_TOKEN {
-  methods=[getIcon getName getValue setValue getPresentation]
+  methods=[getIcon getName getValue setValue getPresentation getUseScope]
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "com.intellij.psi.NavigatablePsiElement"
@@ -73,7 +73,7 @@ value ::= boolean | int | float | string | block {
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
   ]
-  methods=[getIcon getName getValue setValue getPresentation]
+  methods=[getIcon getName getValue setValue getPresentation getUseScope]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value

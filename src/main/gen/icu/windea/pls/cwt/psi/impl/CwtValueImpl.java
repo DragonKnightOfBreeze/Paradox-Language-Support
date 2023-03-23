@@ -12,6 +12,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.cwt.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
 public abstract class CwtValueImpl extends ASTWrapperPsiElement implements CwtValue {
@@ -58,6 +59,12 @@ public abstract class CwtValueImpl extends ASTWrapperPsiElement implements CwtVa
   @NotNull
   public ItemPresentation getPresentation() {
     return CwtPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
+  public SearchScope getUseScope() {
+    return CwtPsiImplUtil.getUseScope(this);
   }
 
 }
