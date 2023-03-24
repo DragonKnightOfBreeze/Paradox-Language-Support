@@ -449,23 +449,21 @@ object ParadoxDefinitionHandler {
 	}
 	
 	@JvmStatic
-	fun getDefinitionNamePrefixOption(typeConfig: CwtTypeConfig) : String {
+	fun getDefinitionNamePrefixOption(definitionInfo: ParadoxDefinitionInfo): String {
 		//return config.getOrPutUserData(definitionNamePrefixKey) {
 		//	val option = config.options?.find { it.key == "prefix" }
 		//	return option?.stringValue.orEmpty()
 		//}
-		var prefix: String
-		typeConfig.subtypes.values.forEach { subtypeConfig ->
+		definitionInfo.subtypeConfigs.forEach { subtypeConfig ->
 			val config = subtypeConfig.config
-			prefix = config.getOrPutUserData(definitionNamePrefixKey) {
+			val prefix = config.getOrPutUserData(definitionNamePrefixKey) {
 				val option = config.options?.find { it.key == "prefix" }
 				return option?.stringValue.orEmpty()
 			}
 			if(prefix.isNotEmpty()) return prefix
 		}
-		val config = typeConfig.config
-		prefix = config.getOrPutUserData(definitionNamePrefixKey) {
-			val option = config.options?.find { it.key == "prefix" }
+		val prefix = definitionInfo.typeConfig.config.getOrPutUserData(definitionNamePrefixKey) {
+			val option = definitionInfo.typeConfig.config.options?.find { it.key == "prefix" }
 			return option?.stringValue.orEmpty()
 		}
 		return prefix

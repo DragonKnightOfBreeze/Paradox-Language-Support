@@ -30,7 +30,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                     val description = PlsBundle.message("inspection.script.scope.incorrectScope.description.1",
                         propertyKey.expression, supportedScopes.joinToString(), parentScopeContext.scope.id)
                     holder.registerProblem(propertyKey, description)
-                } else if(element is ParadoxScriptString) {
+                } else if(element is ParadoxScriptString && config.expression.type == CwtDataType.AliasKeysField) {
                     val description = PlsBundle.message("inspection.script.scope.incorrectScope.description.2",
                         element.expression, supportedScopes.joinToString(), parentScopeContext.scope.id)
                     holder.registerProblem(element, description)

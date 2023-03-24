@@ -188,7 +188,7 @@ object ParadoxInlineScriptHandler {
                     configs.addAll(configsToAdd)
                     true
                 } else {
-                    if(configsToAdd.any { configs.contains(it) }) {
+                    if(configsToAdd.any { c1 -> configs.any { c2 -> c1.pointer == c2.pointer } }) {
                         true
                     } else {
                         hasConflict = true

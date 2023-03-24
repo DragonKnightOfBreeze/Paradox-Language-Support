@@ -25,7 +25,7 @@ class IncorrectDefinitionNameInspection : LocalInspectionTool() {
                 if(definitionInfo.typeConfig.nameField != null && element is ParadoxScriptPropertyKey) return
                 //开始检查（如果定义是匿名的，这里不直接跳过）
                 val definitionName = definitionInfo.name
-                val prefix = ParadoxDefinitionHandler.getDefinitionNamePrefixOption(definitionInfo.typeConfig)
+                val prefix = ParadoxDefinitionHandler.getDefinitionNamePrefixOption(definitionInfo)
                 if(prefix.isEmpty()) return
                 if(definitionName.startsWith(prefix)) return
                 val message = PlsBundle.message("inspection.script.general.incorrectDefinitionName.description.1", definitionName, prefix)
