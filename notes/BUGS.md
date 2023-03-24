@@ -32,17 +32,23 @@
 	}
 ```
 
-## PROCESSING
+疑难杂症：
 
-* [ ] 检查原版游戏文件 - PROCESSING：common/script_values
 * [ ] 支持传统中的图标继承（`traditions: inherit icon from parent original tradition if inherit_icon = yes`）
 * [ ] 支持事件继承
+* [ ] 支持`complex_trigger_modifier`中的`trigger`和`trigger_scope`，后者作为前者的scope
+
+## PROCESSING
+
+* [ ] 检查原版游戏文件 - PROCESSING：common/situations
 
 ## 0.9.2
 
 * [X] 对于value必要时也要显示scopeContext
 * [X] 对于`alias_keys_field[xxx]`进行匹配、提示、解析时也要匹配scopeContext
 * [X] 修复无法查找CWT规则的引用的问题
+* [ ] 脚本参数名是忽略大小写的
+* [ ] scopeContext应当可以跨内联向下传递
 * [ ] 自定义折叠（`region...endregion`）无法正确折叠文本
 
 ## 0.9.1
