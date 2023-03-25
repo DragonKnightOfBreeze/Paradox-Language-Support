@@ -551,6 +551,7 @@ abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpress
             is CwtValueExpression -> ParadoxScriptAttributesKeys.STRING_KEY
         }
         val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRangeAfterUnquote
+        if(range.isEmpty) return
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
     
