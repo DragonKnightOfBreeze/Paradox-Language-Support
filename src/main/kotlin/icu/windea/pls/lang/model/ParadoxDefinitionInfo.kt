@@ -22,8 +22,10 @@ import java.util.*
  * @property incomplete 此定义的声明是否不完整。
  */
 class ParadoxDefinitionInfo(
+    name0: String?, // null -> lazy get
     val rootKey: String,
     val typeConfig: CwtTypeConfig,
+    subtypeConfigs0: List<CwtSubtypeConfig>?, // null -> lazy get
     val elementPath: ParadoxElementPath,
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
@@ -40,6 +42,8 @@ class ParadoxDefinitionInfo(
     //NOTE 部分属性需要使用懒加载
     
     val name: String by lazy {
+        if(name0 != null) return@lazy name0
+        
         //name_from_file = yes -> 返回文件名（不包含扩展名）
         val nameFromFileConfig = typeConfig.nameFromFile
         if(nameFromFileConfig) return@lazy element.containingFile.name.substringBeforeLast('.')
@@ -58,6 +62,8 @@ class ParadoxDefinitionInfo(
     }
     
     val subtypeConfigs: List<CwtSubtypeConfig> by lazy {
+        if(subtypeConfigs0 != null) return@lazy subtypeConfigs0
+        
         //正在索引时不要尝试匹配子类型
         val subtypesConfig = typeConfig.subtypes
         val result = SmartList<CwtSubtypeConfig>()

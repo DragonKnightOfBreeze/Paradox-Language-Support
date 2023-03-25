@@ -214,13 +214,8 @@ object ParadoxConfigHandler {
                 if(expression.isKey != false) return false
                 if(expression.type != ParadoxDataType.BlockType) return false
                 if(isNotExact) return true //非精确匹配 - 直接使用第一个
-                val block = when {
-                    element is ParadoxScriptProperty -> element.propertyValue()
-                    element is ParadoxScriptBlock -> element
-                    else -> null
-                } ?: return false
                 if(config !is CwtDataConfig) return true
-                return matchesScriptExpressionInBlock(block, config, configGroup)
+                return matchesScriptExpressionInBlock(element, config, configGroup)
             }
             CwtDataType.Bool -> {
                 return expression.type.isBooleanType()
@@ -494,18 +489,22 @@ object ParadoxConfigHandler {
         }
     }
     
-    private fun matchesScriptExpressionInBlock(block: ParadoxScriptBlock, config: CwtDataConfig<*>, configGroup: CwtConfigGroup): Boolean {
+    private fun matchesScriptExpressionInBlock(element: PsiElement, config: CwtDataConfig<*>, configGroup: CwtConfigGroup): Boolean {
+        val block = when {
+            element is ParadoxScriptProperty -> element.propertyValue()
+            element is ParadoxScriptBlock -> element
+            else -> null
+        } ?: return false
         //简单判断：如果block中包含configsInBlock声明的必须的任意propertyKey（作为常量字符串，忽略大小写），则认为匹配
         //注意：不同的子句规则可以拥有部分相同的propertyKey
-        val propertyKeys = getInBlockKeys(config)
-        var result = false
+        val keys = getInBlockKeys(config)
+        if(keys.isEmpty()) return true
+        val actualKeys = mutableSetOf<String>()
         block.processData(conditional = true, inline = true) {
-            if(it is ParadoxScriptProperty && it.name in propertyKeys) {
-                result = true
-            }
+            if(it is ParadoxScriptProperty) actualKeys.add(it.name)
             true
         }
-        return result
+        return actualKeys.any { it in keys }
     }
     
     fun matchesAliasName(
@@ -576,7 +575,7 @@ object ParadoxConfigHandler {
                 if(configGroup.complexEnums.containsKey(enumName)) return 45
                 return 0 //不期望匹配到，规则有误！
             }
-            CwtDataType.Value ->  {
+            CwtDataType.Value -> {
                 val valueSetName = configExpression.value ?: return 0 //不期望匹配到
                 if(configGroup.values.containsKey(valueSetName)) return 80
                 return 40
@@ -628,7 +627,8 @@ object ParadoxConfigHandler {
         
         val configGroup = definitionMemberInfo.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val parentConfigs = getConfigs(definitionElement, allowDefinition = true)
+        val matchType = CwtConfigMatchType.DEFAULT or CwtConfigMatchType.NOT_EXACT
+        val parentConfigs = getConfigs(definitionElement, allowDefinition = true, matchType = matchType)
         val configs = parentConfigs.flatMap { it.properties.orEmpty() }
         if(configs.isEmpty()) return
         val occurrenceMap = getChildOccurrenceMap(definitionElement, parentConfigs)
@@ -658,7 +658,8 @@ object ParadoxConfigHandler {
         
         val configGroup = definitionMemberInfo.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val parentConfigs = getConfigs(memberElement, allowDefinition = true)
+        val matchType = CwtConfigMatchType.DEFAULT or CwtConfigMatchType.NOT_EXACT
+        val parentConfigs = getConfigs(memberElement, allowDefinition = true, matchType = matchType)
         val configs = parentConfigs.flatMap { it.values.orEmpty() }
         if(configs.isEmpty()) return
         val occurrenceMap = getChildOccurrenceMap(memberElement, parentConfigs)
@@ -822,9 +823,9 @@ object ParadoxConfigHandler {
         //匹配作用域
         if(scopeMatched) {
             val scopeContext = scopeContext
-            val supportedScopes =  when {
+            val supportedScopes = when {
                 config is CwtPropertyConfig -> config.supportedScopes
-                config is CwtAliasConfig ->  config.supportedScopes
+                config is CwtAliasConfig -> config.supportedScopes
                 config is CwtLinkConfig -> config.inputScopes
                 else -> null
             }
@@ -1669,7 +1670,7 @@ object ParadoxConfigHandler {
         return getConfigsFromCache(element, CwtValueConfig::class.java, allowDefinition, orDefault, matchType)
     }
     
-    private fun <T : CwtConfig<*>> getConfigsFromCache(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
+    private fun <T : CwtDataConfig<*>> getConfigsFromCache(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
         val configsMap = getConfigsMapFromCache(element) ?: return emptyList()
         val key = buildString {
             when(configType) {
@@ -1696,9 +1697,9 @@ object ParadoxConfigHandler {
         }
     }
     
-    private fun <T : CwtConfig<*>> resolveConfigs(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
+    private fun <T : CwtDataConfig<*>> resolveConfigs(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
         //当输入的元素是key或property时，输入的规则类型必须是property
-        return when(configType) {
+        val result = when(configType) {
             CwtPropertyConfig::class.java -> {
                 val memberElement = when {
                     element is ParadoxScriptDefinitionElement -> element
@@ -1713,7 +1714,7 @@ object ParadoxConfigHandler {
                 }
                 val definitionMemberInfo = memberElement.definitionMemberInfo ?: return emptyList()
                 if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
-                
+            
                 //如果无法匹配value，则取第一个
                 val configs = definitionMemberInfo.getConfigs(matchType)
                 val configGroup = definitionMemberInfo.configGroup
@@ -1722,7 +1723,7 @@ object ParadoxConfigHandler {
                     if(expression == null) {
                         for(config in configs) {
                             if(config !is CwtPropertyConfig) continue
-                            add(config)
+                            this.add(config)
                         }
                         return@buildList
                     }
@@ -1730,7 +1731,7 @@ object ParadoxConfigHandler {
                     for(config in configs) {
                         if(config !is CwtPropertyConfig) continue
                         if(matchesScriptExpression(memberElement, expression, config.valueExpression, config, configGroup, matchType)) {
-                            add(config)
+                            this.add(config)
                         }
                     }
                     //精确匹配无结果 - 不精确匹配
@@ -1741,13 +1742,13 @@ object ParadoxConfigHandler {
                             val configExpression = config.valueExpression
                             if(!requireNotExactMatch(configExpression)) continue
                             if(matchesScriptExpression(memberElement, expression, configExpression, config, configGroup, newMatchType)) {
-                                add(config)
+                                this.add(config)
                             }
                         }
                     }
                     //仍然无结果 - 判断是否使用默认值
                     if(orDefault && isEmpty()) {
-                        configs.forEach { it.castOrNull<CwtPropertyConfig>()?.let { c -> add(c) } }
+                        configs.forEach { it.castOrNull<CwtPropertyConfig>()?.let<CwtPropertyConfig, Unit> { c -> this.add(c) } }
                     }
                 } as List<T>
             }
@@ -1764,7 +1765,7 @@ object ParadoxConfigHandler {
                         val property = parent
                         val definitionMemberInfo = property.definitionMemberInfo ?: return emptyList()
                         if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
-                        
+                    
                         ProgressManager.checkCanceled()
                         val configs = definitionMemberInfo.getConfigs(matchType)
                         val configGroup = definitionMemberInfo.configGroup
@@ -1774,7 +1775,7 @@ object ParadoxConfigHandler {
                                 if(config !is CwtPropertyConfig) continue
                                 val valueConfig = config.valueConfig ?: continue
                                 if(matchesScriptExpression(valueElement, expression, valueConfig.expression, config, configGroup, matchType)) {
-                                    add(valueConfig)
+                                    this.add(valueConfig)
                                 }
                             }
                             //精确匹配无结果 - 不精确匹配
@@ -1786,13 +1787,13 @@ object ParadoxConfigHandler {
                                     val configExpression = valueConfig.expression
                                     if(!requireNotExactMatch(configExpression)) continue
                                     if(matchesScriptExpression(valueElement, expression, configExpression, config, configGroup, newMatchType)) {
-                                        add(valueConfig)
+                                        this.add(valueConfig)
                                     }
                                 }
                             }
                             //仍然无结果 - 判断是否使用默认值
                             if(orDefault && isEmpty()) {
-                                configs.forEach { it.castOrNull<CwtPropertyConfig>()?.valueConfig?.let { c -> add(c) } }
+                                configs.forEach { it.castOrNull<CwtPropertyConfig>()?.valueConfig?.let<CwtValueConfig, Unit> { c -> this.add(c) } }
                             }
                         } as List<T>
                     }
@@ -1800,7 +1801,7 @@ object ParadoxConfigHandler {
                     is ParadoxScriptBlockElement -> {
                         val property = parent.parent as? ParadoxScriptDefinitionElement ?: return emptyList()
                         val definitionMemberInfo = property.definitionMemberInfo ?: return emptyList()
-                        
+                    
                         val childConfigs = definitionMemberInfo.getChildConfigs(matchType)
                         if(childConfigs.isEmpty()) return emptyList()
                         val configGroup = definitionMemberInfo.configGroup
@@ -1809,7 +1810,7 @@ object ParadoxConfigHandler {
                                 if(childConfig !is CwtValueConfig) continue
                                 //精确匹配
                                 if(matchesScriptExpression(valueElement, expression, childConfig.valueExpression, childConfig, configGroup, matchType)) {
-                                    add(childConfig)
+                                    this.add(childConfig)
                                 }
                             }
                             //精确匹配无结果 - 不精确匹配
@@ -1820,13 +1821,13 @@ object ParadoxConfigHandler {
                                     val configExpression = childConfig.valueExpression
                                     if(!requireNotExactMatch(configExpression)) continue
                                     if(matchesScriptExpression(valueElement, expression, configExpression, childConfig, configGroup, newMatchType)) {
-                                        add(childConfig)
+                                        this.add(childConfig)
                                     }
                                 }
                             }
                             //仍然无结果 - 判断是否使用默认值
                             if(orDefault && isEmpty()) {
-                                childConfigs.singleOrNull { it is CwtValueConfig }?.let { add(it) }
+                                childConfigs.singleOrNull { it is CwtValueConfig }?.let { this.add(it) }
                             }
                         } as List<T>
                     }
@@ -1835,6 +1836,9 @@ object ParadoxConfigHandler {
             }
             else -> throw UnsupportedOperationException()
         }
+        ////如果得到的规则有多个且全是block规则，按照子句中的规则个数，将多的排在前面
+        //if(result.size > 1 && result.all { it.configs != null }) return result.sortedByDescending { it.configs?.size ?: 0 }
+        return result
     }
     
     //DONE 兼容需要考虑内联的情况（如内联脚本）

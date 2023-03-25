@@ -33,9 +33,11 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 		val definitionInfo = psi.definitionInfo?.takeIf { it.isGlobal }
 		val name = definitionInfo?.name
 		val type = definitionInfo?.type
+		//val subtypes = definitionInfo?.subtypes
 		val rootKey = definitionInfo?.rootKey
 		val elementPath = definitionInfo?.elementPath ?: EmptyParadoxElementPath
 		val gameType = definitionInfo?.gameType
+		//return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
 		return ParadoxScriptPropertyStubImpl(parentStub, name, type, rootKey, elementPath, gameType)
 	}
 	
@@ -54,6 +56,7 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 	override fun serialize(stub: ParadoxScriptPropertyStub, dataStream: StubOutputStream) {
 		dataStream.writeName(stub.name)
 		dataStream.writeName(stub.type)
+		//dataStream.writeName(stub.subtypes?.toCommaDelimitedString())
 		dataStream.writeName(stub.rootKey)
 		dataStream.writeName(stub.elementPath.path)
 		dataStream.writeName(stub.gameType?.id)
@@ -62,9 +65,11 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
 		val name = dataStream.readNameString()
 		val type = dataStream.readNameString()
+		//val subtypes = dataStream.readNameString()?.toCommaDelimitedStringList()
 		val rootKey = dataStream.readNameString()
 		val elementPath = dataStream.readNameString().orEmpty().let { ParadoxElementPath.resolve(it) }
 		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
+		//return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
 		return ParadoxScriptPropertyStubImpl(parentStub, name, type, rootKey, elementPath, gameType)
 	}
 }

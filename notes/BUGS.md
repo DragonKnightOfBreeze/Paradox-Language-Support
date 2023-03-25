@@ -34,7 +34,8 @@
 
 疑难杂症：
 
-* [ ] 正确匹配子句为空以及子句不为空的`resources = {...}`
+* [ ] ~~`utility_component_template`定义声明完全无法解析？为啥啊？~~（没有复现）
+* [X] 正确匹配子句为空以及子句不为空的`resources = {...}`
 * [ ] 脚本参数名是忽略大小写的
 * [ ] scopeContext应当可以跨内联向下传递
 * [ ] 自定义折叠（`region...endregion`）无法正确折叠文本

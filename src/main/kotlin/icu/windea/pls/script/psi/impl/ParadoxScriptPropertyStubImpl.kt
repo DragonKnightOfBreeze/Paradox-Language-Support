@@ -8,6 +8,7 @@ class ParadoxScriptPropertyStubImpl(
 	parent: StubElement<*>,
 	override val name: String?,
 	override val type: String?,
+	//override val subtypes: List<String>?,
 	override val rootKey: String?,
 	override val elementPath: ParadoxElementPath,
 	override val gameType: ParadoxGameType?

@@ -12,6 +12,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 对应的CWT规则有多个且存在冲突的表达式的检测。
  */
+@Suppress("UNUSED_PARAMETER")
 class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
@@ -46,12 +47,24 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
             }
             
             private fun skipCheck(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Boolean {
-                //子句不为空且可以精确匹配多个子句规则时，适用此检查
+                //子句可以精确匹配多个子句规则时，适用此检查
                 if(configs.isEmpty()) return true
                 if(configs.size == 1) return true
-                if(element is ParadoxScriptFile && element.block?.isEmpty == true) return true
-                if(element is ParadoxScriptBlock && element.isEmpty) return true
+                val configsToCheck = filterConfigs(element, configs)
+                if(configsToCheck.size == 1) return true
                 return false
+            }
+    
+            private fun filterConfigs(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): List<CwtDataConfig<*>> {
+                //如果存在规则，规则的子句中的所有key和value都可以分别被另一个规则的子句中的所有key和value包含，则仅使用这些规则
+                val configsToCheck = configs.filter { config ->
+                    val childConfigs = config.configs
+                    childConfigs != null && configs.any { config0 ->
+                        val childConfigs0 = config0.configs
+                        config0 != config && childConfigs0 != null && childConfigs0.containsAll(childConfigs)
+                    }
+                }
+                return configsToCheck.ifEmpty { configs }
             }
         }
     }

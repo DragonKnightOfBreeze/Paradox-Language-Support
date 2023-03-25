@@ -66,14 +66,18 @@ object ParadoxDefinitionHandler {
 	}
 	
 	private fun resolveInfoByStub(element: ParadoxScriptDefinitionElement, stub: ParadoxScriptDefinitionElementStub<out ParadoxScriptDefinitionElement>, project: Project): ParadoxDefinitionInfo? {
-		val elementPath = stub.elementPath
-		val gameType = stub.gameType
-		val type = stub.type
-		val rootKey = stub.rootKey
-		if(gameType == null || type == null || rootKey == null) return null
+		val gameType = stub.gameType ?: return null
 		val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-		return doResolveInfoWithKnownType(element, type, rootKey, elementPath, configGroup)
-			?.apply { sourceType = ParadoxDefinitionInfo.SourceType.Stub }
+		val name = stub.name
+		val type = stub.type ?: return null
+		val typeConfig = configGroup.types[type] ?: return null
+		//val subtypes = stub.subtypes
+		//val subtypeConfigs = subtypes?.mapNotNull { typeConfig.subtypes[it] }
+		val subtypeConfigs = null
+		val rootKey = stub.rootKey ?: return null
+		val elementPath = stub.elementPath
+		return ParadoxDefinitionInfo(name, rootKey, typeConfig, subtypeConfigs, elementPath, gameType, configGroup, element)
+			.apply { sourceType = ParadoxDefinitionInfo.SourceType.Stub }
 	}
 	
 	private fun doResolveInfo(element: ParadoxScriptDefinitionElement, rootKey: String, path: ParadoxPath, elementPath: ParadoxElementPath, configGroup: CwtConfigGroup): ParadoxDefinitionInfo? {
@@ -82,18 +86,8 @@ object ParadoxDefinitionHandler {
 			ProgressManager.checkCanceled()
 			if(matchesType(element, typeConfig, path, elementPath, rootKey, configGroup)) {
 				//需要懒加载
-				return ParadoxDefinitionInfo(rootKey, typeConfig, elementPath, gameType, configGroup, element)
+				return ParadoxDefinitionInfo(null, rootKey, typeConfig, null, elementPath, gameType, configGroup, element)
 			}
-		}
-		return null
-	}
-	
-	private fun doResolveInfoWithKnownType(element: ParadoxScriptDefinitionElement, type: String, rootKey: String, elementPath: ParadoxElementPath, configGroup: CwtConfigGroup): ParadoxDefinitionInfo? {
-		val gameType = configGroup.gameType ?: return null
-		val typeConfig = configGroup.types[type] ?: return null
-		//仍然要求匹配rootKey
-		if(matchesTypeWithKnownType(typeConfig, rootKey)) {
-			return ParadoxDefinitionInfo(rootKey, typeConfig, elementPath, gameType, configGroup, element)
 		}
 		return null
 	}
