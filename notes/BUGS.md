@@ -36,10 +36,10 @@
 
 * [ ] ~~`utility_component_template`定义声明完全无法解析？为啥啊？~~（没有复现）
 * [X] 正确匹配子句为空以及子句不为空的`resources = {...}`
+* [X] 自定义折叠（`region...endregion`）有时无法正确折叠文本
 * [ ] 本地化图标的读写引用高亮再次失效
 * [ ] 脚本参数名是忽略大小写的
 * [ ] scopeContext应当可以跨内联向下传递
-* [ ] 自定义折叠（`region...endregion`）无法正确折叠文本 - 解析器有问题
 * [ ] `enum[feature_flags]` - 这个存在相关的本地化
 * [ ] 支持传统中的图标继承（`traditions: inherit icon from parent original tradition if inherit_icon = yes`）
 * [ ] 支持事件继承

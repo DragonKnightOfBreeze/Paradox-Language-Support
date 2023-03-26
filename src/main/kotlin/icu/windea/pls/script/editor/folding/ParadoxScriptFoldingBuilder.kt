@@ -52,6 +52,10 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         }
     }
     
+    override fun isCustomFoldingRoot(node: ASTNode): Boolean {
+        return node.elementType == ParadoxScriptParserDefinition.FILE
+    }
+    
     override fun isCustomFoldingCandidate(node: ASTNode): Boolean {
         return node.elementType == COMMENT
     }

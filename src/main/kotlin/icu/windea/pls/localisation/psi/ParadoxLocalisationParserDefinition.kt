@@ -7,13 +7,17 @@ import com.intellij.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 class ParadoxLocalisationParserDefinition : ParserDefinition {
+	companion object {
+		val FILE = ParadoxLocalisationStubElementTypes.FILE
+	}
+	
 	override fun getWhitespaceTokens() = ParadoxLocalisationTokenSets. WHITE_SPACES
 	
 	override fun getCommentTokens() = ParadoxLocalisationTokenSets.COMMENTS
 	
 	override fun getStringLiteralElements() = ParadoxLocalisationTokenSets.STRING_LITERALS
 	
-	override fun getFileNodeType() = ParadoxLocalisationStubElementTypes.FILE
+	override fun getFileNodeType() = FILE
 	
 	override fun createFile(viewProvider: FileViewProvider): ParadoxLocalisationFile {
 		return ParadoxLocalisationFile(viewProvider)

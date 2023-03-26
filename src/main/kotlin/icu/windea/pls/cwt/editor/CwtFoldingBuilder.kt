@@ -7,6 +7,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
@@ -34,6 +35,10 @@ class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 		for(child in children) {
 			collectDescriptorsRecursively(child, document, descriptors)
 		}
+	}
+	
+	override fun isCustomFoldingRoot(node: ASTNode): Boolean {
+		return node.elementType == CwtParserDefinition.FILE
 	}
 	
 	override fun isCustomFoldingCandidate(node: ASTNode): Boolean {
