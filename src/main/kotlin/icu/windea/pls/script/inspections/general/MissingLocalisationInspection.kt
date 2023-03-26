@@ -24,7 +24,7 @@ import javax.swing.*
 /**
  * 缺失的本地化的检查。
  * @property locales 要检查的语言区域。默认检查英文。
- * @property checkPrimaryLocale 是否同样检查主要的语言区域。默认为true。
+ * @property checkPreferredLocale 是否同样检查主要的语言区域。默认为true。
  * @property checkForDefinitions 是否检查定义。默认为true。
  * @property checkPrimaryForDefinitions 是否同样检查定义的主要的相关本地化，默认为true。
  * @property checkOptionalForDefinitions 是否同样检查定义的可选的相关本地化，默认为false。
@@ -34,7 +34,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     @OptionTag(converter = CommaDelimitedStringSetConverter::class)
     @JvmField var locales = mutableSetOf<String>()
     @JvmField var checkForDefinitions = true
-    @JvmField var checkPrimaryLocale = true
+    @JvmField var checkPreferredLocale = true
     @JvmField var checkPrimaryForDefinitions = false
     @JvmField var checkOptionalForDefinitions = false
     @JvmField var checkForModifiers = false
@@ -42,6 +42,9 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val allLocaleConfigs = getCwtConfig().core.localisationLocales
         val localeConfigs = locales.mapNotNullTo(mutableSetOf()) { allLocaleConfigs.get(it) }
+        if(checkPreferredLocale) {
+            localeConfigs.add(preferredParadoxLocale())
+        }
         return object : PsiElementVisitor() {
             var inFileContext: GenerateLocalisationsInFileContext? = null
     
@@ -194,9 +197,9 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             row {
                 checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.forPreferredLocale"))
-                    .bindSelected(::checkPrimaryLocale)
-                    .applyToComponent { toolTipText = PlsBundle.message("inspection.script.general.missingLocalisation.option.forPrimaryLocale.tooltip") }
-                    .actionListener { _, component -> checkPrimaryLocale = component.isSelected }
+                    .bindSelected(::checkPreferredLocale)
+                    .applyToComponent { toolTipText = PlsBundle.message("inspection.script.general.missingLocalisation.option.forPreferredLocale.tooltip") }
+                    .actionListener { _, component -> checkPreferredLocale = component.isSelected }
             }
             row {
                 checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForDefinitions"))
