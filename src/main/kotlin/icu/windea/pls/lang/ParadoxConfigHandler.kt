@@ -588,7 +588,7 @@ object ParadoxConfigHandler {
             CwtDataType.IntValueField -> 45
             CwtDataType.VariableField -> 45
             CwtDataType.IntVariableField -> 45
-            CwtDataType.Modifier -> 65 //lower than definition
+            CwtDataType.Modifier -> 75 //higher than definition
             CwtDataType.Parameter -> 10
             CwtDataType.ShaderEffect -> 85 // (80,90)
             CwtDataType.SingleAliasRight -> 0 //不期望匹配到
