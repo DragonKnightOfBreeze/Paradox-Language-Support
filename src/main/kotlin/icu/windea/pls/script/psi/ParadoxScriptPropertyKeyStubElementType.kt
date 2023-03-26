@@ -25,8 +25,9 @@ object ParadoxScriptPropertyKeyStubElementType : IStubElementType<ParadoxScriptP
         val file = parentStub.psi.containingFile
         val gameType = selectGameType(file)
         val complexEnumInfo = ParadoxComplexEnumValueHandler.resolveInfo(psi, file)
+        val valueSetInfo =  ParadoxValueSetValueHandler.resolveInfo(psi)
         val inlineScriptInfo = ParadoxInlineScriptHandler.resolveInfo(psi, file)
-        return ParadoxScriptPropertyKeyStubImpl(parentStub, complexEnumInfo, inlineScriptInfo, gameType)
+        return ParadoxScriptPropertyKeyStubImpl(parentStub, complexEnumInfo, valueSetInfo, inlineScriptInfo, gameType)
     }
     
     override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -40,6 +41,10 @@ object ParadoxScriptPropertyKeyStubElementType : IStubElementType<ParadoxScriptP
             sink.occurrence(ParadoxComplexEnumIndex.KEY, info.enumName)
             sink.occurrence(ParadoxComplexEnumValueIndex.KEY, info.name)
         }
+        stub.valueSetValueInfo?.let { info ->
+            sink.occurrence(ParadoxValueSetIndex.KEY, info.valueSetName)
+            sink.occurrence(ParadoxValueSetValueIndex.KEY, info.name)
+        }
         stub.inlineScriptInfo?.let { info ->
             sink.occurrence(ParadoxInlineScriptIndex.KEY, info.expression)
         }
@@ -48,9 +53,13 @@ object ParadoxScriptPropertyKeyStubElementType : IStubElementType<ParadoxScriptP
     override fun serialize(stub: ParadoxScriptPropertyKeyStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.gameType?.id)
         val complexEnumValueInfo = stub.complexEnumValueInfo
+        val valueSetValueInfo = stub.valueSetValueInfo
         val inlineScriptInfo = stub.inlineScriptInfo
         dataStream.writeName(complexEnumValueInfo?.name)
         dataStream.writeName(complexEnumValueInfo?.enumName)
+        dataStream.writeName(valueSetValueInfo?.name)
+        dataStream.writeName(valueSetValueInfo?.valueSetName)
+        dataStream.writeBoolean(valueSetValueInfo?.read ?: false)
         dataStream.writeName(inlineScriptInfo?.expression)
     }
     
@@ -61,10 +70,16 @@ object ParadoxScriptPropertyKeyStubElementType : IStubElementType<ParadoxScriptP
             val enumName = dataStream.readNameString().orEmpty()
             ParadoxComplexEnumValueInfo(name, enumName, gameType)
         }
+        val valueSetValueInfo = run {
+            val name = dataStream.readNameString().orEmpty()
+            val valueSetName = dataStream.readNameString().orEmpty()
+            val read = dataStream.readBoolean()
+            ParadoxValueSetValueInfo(name, valueSetName, gameType, read)
+        }
         val inlineScriptInfo = run {
             val expression = dataStream.readNameString().orEmpty()
             ParadoxInlineScriptInfo(expression, gameType)
         }
-        return ParadoxScriptPropertyKeyStubImpl(parentStub, complexEnumValueInfo, inlineScriptInfo, gameType)
+        return ParadoxScriptPropertyKeyStubImpl(parentStub, complexEnumValueInfo, valueSetValueInfo, inlineScriptInfo, gameType)
     }
 }

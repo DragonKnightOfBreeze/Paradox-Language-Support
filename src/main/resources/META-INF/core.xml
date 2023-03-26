@@ -61,6 +61,7 @@
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxComplexEnumIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxComplexEnumValueIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxValueSetIndex"/>
+    <stubIndex implementation="icu.windea.pls.core.index.ParadoxValueSetValueIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxSyncedLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxInlineScriptIndex"/>

@@ -3,11 +3,11 @@ package icu.windea.pls.core.index
 import com.intellij.psi.stubs.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxValueSetIndex : StringStubIndexExtension<ParadoxScriptString>() {
+class ParadoxValueSetValueIndex : StringStubIndexExtension<ParadoxScriptString>() {
     companion object {
-        @JvmField val KEY = StubIndexKey.createIndexKey<String, ParadoxScriptString>("paradox.valueSet.index")
+        @JvmField val KEY = StubIndexKey.createIndexKey<String, ParadoxScriptString>("paradox.valueSetValue.index")
         private const val VERSION = 17 //0.9.2
-        private const val CACHE_SIZE = 256 //29 in stellaris@3.6
+        private const val CACHE_SIZE = 2048
     }
     
     override fun getKey() = KEY
@@ -16,4 +16,3 @@ class ParadoxValueSetIndex : StringStubIndexExtension<ParadoxScriptString>() {
     
     override fun getCacheSize() = CACHE_SIZE
 }
-

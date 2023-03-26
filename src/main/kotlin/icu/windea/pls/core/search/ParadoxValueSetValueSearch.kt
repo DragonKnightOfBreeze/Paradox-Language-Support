@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 值集值的查询。（不涉及CWT规则文件中预定义的值）
  */
-class ParadoxValueSetValueSearch : ExtensibleQueryFactory<ParadoxScriptString, ParadoxValueSetValueSearch.SearchParameters>(EP_NAME) {
+class ParadoxValueSetValueSearch : ExtensibleQueryFactory<ParadoxScriptStringExpressionElement, ParadoxValueSetValueSearch.SearchParameters>(EP_NAME) {
     /**
      * @property name 名字。
      * @property valueSetName 值集的名字。
@@ -17,11 +17,11 @@ class ParadoxValueSetValueSearch : ExtensibleQueryFactory<ParadoxScriptString, P
     class SearchParameters(
         val name: String?,
         val valueSetName: String,
-        override val selector: ChainedParadoxSelector<ParadoxScriptString>
-    ) : ParadoxSearchParameters<ParadoxScriptString>
+        override val selector: ChainedParadoxSelector<ParadoxScriptStringExpressionElement>
+    ) : ParadoxSearchParameters<ParadoxScriptStringExpressionElement>
     
     companion object {
-        @JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxScriptString, SearchParameters>>("icu.windea.pls.paradoxValueSetValuesSearch")
+        @JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxScriptStringExpressionElement, SearchParameters>>("icu.windea.pls.paradoxValueSetValuesSearch")
         @JvmField val INSTANCE = ParadoxValueSetValueSearch()
         
         /**
@@ -31,8 +31,8 @@ class ParadoxValueSetValueSearch : ExtensibleQueryFactory<ParadoxScriptString, P
         fun search(
             name: String,
             valueSetName: String,
-            selector: ChainedParadoxSelector<ParadoxScriptString>
-        ): ParadoxQuery<ParadoxScriptString, SearchParameters> {
+            selector: ChainedParadoxSelector<ParadoxScriptStringExpressionElement>
+        ): ParadoxQuery<ParadoxScriptStringExpressionElement, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, valueSetName, selector))
         }
         
@@ -42,8 +42,8 @@ class ParadoxValueSetValueSearch : ExtensibleQueryFactory<ParadoxScriptString, P
         @JvmStatic
         fun search(
             valueSetName: String,
-            selector: ChainedParadoxSelector<ParadoxScriptString>
-        ): ParadoxQuery<ParadoxScriptString, SearchParameters> {
+            selector: ChainedParadoxSelector<ParadoxScriptStringExpressionElement>
+        ): ParadoxQuery<ParadoxScriptStringExpressionElement, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(null, valueSetName, selector))
         }
     }

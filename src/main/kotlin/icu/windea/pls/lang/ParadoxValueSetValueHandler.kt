@@ -21,7 +21,7 @@ object ParadoxValueSetValueHandler {
         val matchType = CwtConfigMatchType.STATIC
         //only accept "value[x]" or "value_set[x]", rather than "scope_field" or "value_field"
         //so, e.g., if there is only an expression "event_target:target", "target" will not be shown during code completion
-        val config = ParadoxConfigHandler.getValueConfigs(element, true, true, matchType)
+        val config = ParadoxConfigHandler.getConfigs(element, orDefault = true, matchType = matchType)
             .firstOrNull {
                 val type = it.expression.type
                 type == CwtDataType.Value || type == CwtDataType.ValueSet
@@ -37,9 +37,9 @@ object ParadoxValueSetValueHandler {
     }
     
     @JvmStatic
-    fun getName(element: ParadoxScriptString): String? {
+    fun getName(element: ParadoxScriptStringExpressionElement): String? {
         val stub = runCatching { element.stub }.getOrNull()
-        return stub?.valueSetValueInfo?.name?.takeIfNotEmpty() 
+        return stub?.valueSetValueInfo?.name?.takeIfNotEmpty()
             ?: getName(element.value)
     }
     
@@ -50,7 +50,7 @@ object ParadoxValueSetValueHandler {
     }
     
     @JvmStatic
-    fun isDeclaration(element: ParadoxScriptString): Boolean {
+    fun isDeclaration(element: ParadoxScriptStringExpressionElement): Boolean {
         val stub = runCatching { element.stub }.getOrNull()
         stub?.valueSetValueInfo?.read
             ?.let { return it }

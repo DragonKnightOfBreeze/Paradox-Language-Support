@@ -26,7 +26,7 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 		val file = parentStub.psi.containingFile
 		val gameType = selectGameType(file)
 		val complexEnumInfo = ParadoxComplexEnumValueHandler.resolveInfo(psi, file)
-		val valueSetInfo = if(complexEnumInfo != null) null else ParadoxValueSetValueHandler.resolveInfo(psi)
+		val valueSetInfo = ParadoxValueSetValueHandler.resolveInfo(psi)
 		return ParadoxScriptStringStubImpl(parentStub, complexEnumInfo, valueSetInfo, gameType)
 	}
 	
@@ -46,6 +46,7 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 		}
 		stub.valueSetValueInfo?.let { info -> 
 			sink.occurrence(ParadoxValueSetIndex.KEY, info.valueSetName)
+			sink.occurrence(ParadoxValueSetValueIndex.KEY, info.name)
 		}
 	}
 	
