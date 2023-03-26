@@ -71,8 +71,9 @@
 * BUG修复
 * 代码优化
 * 完善Stellaris的CWT规则文件（检查游戏目录中的所有脚本文件） - 更新中
-* 提供对Stellaris的`scripted_effect`的修正分类和支持的作用域的支持（涉及快速文档、代码补全等功能） *
-* 优化对本地化文本的渲染 - 如果可以解析，渲染解析后的封装变量（`scripted_variable`）的值 *
+* 提供对Stellaris的`scripted_effect`的修正分类和支持的作用域的支持（涉及快速文档、代码补全等功能）
+* 优化对本地化文本的渲染 - 如果可以解析，渲染解析后的封装变量（`scripted_variable`）的值
+* 优化为valueSetValue编制索引的代码逻辑
 
 ## 0.9.2
 

@@ -16,12 +16,9 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxScriptStringExpres
         val valueSetName = queryParameters.valueSetName
         val project = queryParameters.project
         val scope = queryParameters.selector.scope
-        ParadoxValueSetValueIndex.KEY.processAllElements(valueSetName, project, scope) {
-            if(matchesName(it, name)) {
-                consumer.process(it)
-            } else {
-                true
-            }
+        ParadoxValueSetIndex.KEY.processAllElements(valueSetName, project, scope) {
+            if(name != null && !matchesName(it, name)) return@processAllElements true
+            consumer.process(it)
         }
     }
     

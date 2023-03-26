@@ -19,7 +19,8 @@ object ParadoxValueSetValueHandler {
         
         ProgressManager.checkCanceled()
         val matchType = CwtConfigMatchType.STATIC
-        //only accept "value[x]" or "value_set[x]", rather than "scope_field" or "value_field"
+        //only accept "value[x]" or "value_set[x]"
+        //rather than "scope_field" or "value_field" or in localisation commands
         //so, e.g., if there is only an expression "event_target:target", "target" will not be shown during code completion
         val config = ParadoxConfigHandler.getConfigs(element, orDefault = true, matchType = matchType)
             .firstOrNull {

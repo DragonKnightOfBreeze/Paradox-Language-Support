@@ -3,9 +3,9 @@ package icu.windea.pls.core.index
 import com.intellij.psi.stubs.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxValueSetIndex : StringStubIndexExtension<ParadoxScriptString>() {
+class ParadoxValueSetIndex : StringStubIndexExtension<ParadoxScriptStringExpressionElement>() {
     companion object {
-        @JvmField val KEY = StubIndexKey.createIndexKey<String, ParadoxScriptString>("paradox.valueSet.index")
+        @JvmField val KEY = StubIndexKey.createIndexKey<String, ParadoxScriptStringExpressionElement>("paradox.valueSet.index")
         private const val VERSION = 17 //0.9.2
         private const val CACHE_SIZE = 256 //29 in stellaris@3.6
     }

@@ -88,16 +88,18 @@ object ParadoxConfigHandler {
                 CwtDataType.AliasMatchLeft -> {
                     val aliasName = valueExpression.value ?: return@run
                     val aliasGroup = configGroup.aliasGroups[aliasName] ?: return@run
-                    val aliasSubName = getAliasSubName(element, key, isQuoted, aliasName, configGroup, matchType) ?: return@run
-                    val aliases = aliasGroup[aliasSubName] ?: return@run
-                    for(alias in aliases) {
-                        var inlinedConfig = config.inlineFromAliasConfig(alias)
-                        if(inlinedConfig.valueExpression.type == CwtDataType.SingleAliasRight) {
-                            val singleAliasName = inlinedConfig.valueExpression.value ?: return@run
-                            val singleAlias = configGroup.singleAliases[singleAliasName] ?: return@run
-                            inlinedConfig = inlinedConfig.inlineFromSingleAliasConfig(singleAlias)
+                    val aliasSubNames = getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchType)
+                    for(aliasSubName in aliasSubNames) {
+                        val aliases = aliasGroup[aliasSubName] ?: continue
+                        for(alias in aliases) {
+                            var inlinedConfig = config.inlineFromAliasConfig(alias)
+                            if(inlinedConfig.valueExpression.type == CwtDataType.SingleAliasRight) {
+                                val singleAliasName = inlinedConfig.valueExpression.value ?: continue
+                                val singleAlias = configGroup.singleAliases[singleAliasName] ?: continue
+                                inlinedConfig = inlinedConfig.inlineFromSingleAliasConfig(singleAlias)
+                            }
+                            result.add(inlinedConfig)
                         }
-                        result.add(inlinedConfig)
                     }
                     return
                 }
@@ -534,6 +536,16 @@ object ParadoxConfigHandler {
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
         val expression = ParadoxDataExpression.resolve(key, quoted, true)
         return keys.find {
+            matchesScriptExpression(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchType)
+        }
+    }
+    
+    fun getAliasSubNames(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.DEFAULT): List<String> {
+        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
+        if(constKey != null) return listOf(constKey)
+        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptyList()
+        val expression = ParadoxDataExpression.resolve(key, quoted, true)
+        return keys.filter {
             matchesScriptExpression(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchType)
         }
     }
@@ -1707,9 +1719,9 @@ object ParadoxConfigHandler {
                     else -> throw UnsupportedOperationException()
                 }
                 val expression = when {
-                    element is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxDataExpression.resolve(it) }
+                    element is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxDataExpression.resolve(it, matchType) }
                     element is ParadoxScriptFile -> BlockParadoxDataExpression
-                    element is ParadoxScriptPropertyKey -> element.propertyValue?.let { ParadoxDataExpression.resolve(it) }
+                    element is ParadoxScriptPropertyKey -> element.propertyValue?.let { ParadoxDataExpression.resolve(it, matchType) }
                     else -> throw UnsupportedOperationException()
                 }
                 val definitionMemberInfo = memberElement.definitionMemberInfo ?: return emptyList()
@@ -1757,7 +1769,7 @@ object ParadoxConfigHandler {
                     element is ParadoxScriptValue -> element
                     else -> throw UnsupportedOperationException()
                 }
-                val expression = ParadoxDataExpression.resolve(valueElement)
+                val expression = ParadoxDataExpression.resolve(valueElement, matchType)
                 val parent = element.parent
                 when(parent) {
                     //如果value是property的value

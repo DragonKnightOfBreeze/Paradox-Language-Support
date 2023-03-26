@@ -12,6 +12,7 @@ import com.intellij.lang.documentation.*
 import com.intellij.navigation.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
+import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.keymap.*
@@ -42,6 +43,7 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import it.unimi.dsi.fastutil.*
 import it.unimi.dsi.fastutil.objects.*
@@ -52,6 +54,8 @@ import java.util.Arrays
 import javax.swing.*
 import javax.swing.text.*
 import kotlin.reflect.*
+
+val logger = Logger.getInstance("icu.windea.pls.core.IntellijExtensionsKt")
 
 //region RT Extensions
 fun String.unquotedTextRange(): TextRange {
@@ -711,76 +715,76 @@ fun CharTable.internNode(node: LighterASTNode?): CharSequence? {
 	return this.intern(node.text).toString()
 }
 
-inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.existsElement(
-	key: K,
-	project: Project,
-	scope: GlobalSearchScope
-): Boolean {
-	if(DumbService.isDumb(project)) return false
-	
-	var result = false
-	StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) {
-		result = true
-		return@processElements false
-	}
-	return result
-}
+//inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.existsElement(
+//	key: K,
+//	project: Project,
+//	scope: GlobalSearchScope
+//): Boolean {
+//	if(DumbService.isDumb(project)) return false
+//	
+//	var result = false
+//	StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) {
+//		result = true
+//		return@processElements false
+//	}
+//	return result
+//}
 
-inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.existsElement(
-	key: K,
-	project: Project,
-	scope: GlobalSearchScope,
-	crossinline predicate: (element: T) -> Boolean
-): Boolean {
-	if(DumbService.isDumb(project)) return false
-	
-	var result = false
-	StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
-		if(predicate(element)) {
-			result = true
-			return@processElements false
-		}
-		true
-	}
-	return result
-}
+//inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.existsElement(
+//	key: K,
+//	project: Project,
+//	scope: GlobalSearchScope,
+//	crossinline predicate: (element: T) -> Boolean
+//): Boolean {
+//	if(DumbService.isDumb(project)) return false
+//	
+//	var result = false
+//	StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
+//		if(predicate(element)) {
+//			result = true
+//			return@processElements false
+//		}
+//		true
+//	}
+//	return result
+//}
 
-inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.findFirstElement(
-	key: K,
-	project: Project,
-	scope: GlobalSearchScope,
-	crossinline predicate: (element: T) -> Boolean = { true }
-): T? {
-	if(DumbService.isDumb(project)) return null
-	
-	var result: T? = null
-	StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
-		if(predicate(element)) {
-			result = element
-			return@processElements false
-		}
-		true
-	}
-	return result
-}
+//inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.findFirstElement(
+//	key: K,
+//	project: Project,
+//	scope: GlobalSearchScope,
+//	crossinline predicate: (element: T) -> Boolean = { true }
+//): T? {
+//	if(DumbService.isDumb(project)) return null
+//	
+//	var result: T? = null
+//	StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
+//		if(predicate(element)) {
+//			result = element
+//			return@processElements false
+//		}
+//		true
+//	}
+//	return result
+//}
 
-inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.findLastElement(
-	key: K,
-	project: Project,
-	scope: GlobalSearchScope,
-	crossinline predicate: (element: T) -> Boolean = { true }
-): T? {
-	if(DumbService.isDumb(project)) return null
-	
-	var result: T? = null
-	StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
-		if(predicate(element)) {
-			result = element
-		}
-		true
-	}
-	return result
-}
+//inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.findLastElement(
+//	key: K,
+//	project: Project,
+//	scope: GlobalSearchScope,
+//	crossinline predicate: (element: T) -> Boolean = { true }
+//): T? {
+//	if(DumbService.isDumb(project)) return null
+//	
+//	var result: T? = null
+//	StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
+//		if(predicate(element)) {
+//			result = element
+//		}
+//		true
+//	}
+//	return result
+//}
 
 inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElements(
 	key: K,
@@ -791,9 +795,15 @@ inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElement
 ): Boolean {
 	if(DumbService.isDumb(project)) return true
 	
-	return StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
-		if(cancelable) ProgressManager.checkCanceled()
-		action(element)
+	try {
+		return StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
+			if(cancelable) ProgressManager.checkCanceled()
+			action(element)
+		}
+	} catch(e: Exception) {
+		if(e is ProcessCanceledException) throw e
+		logger.error(e)
+		return true
 	}
 }
 
@@ -806,15 +816,21 @@ inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElement
 ): Boolean {
 	if(DumbService.isDumb(project)) return true
 	
-	return StubIndex.getInstance().processAllKeys(this, project) { key ->
-		if(cancelable) ProgressManager.checkCanceled()
-		if(keyPredicate(key)) {
-			StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
-				if(cancelable) ProgressManager.checkCanceled()
-				action(key, element)
+	try {
+		return StubIndex.getInstance().processAllKeys(this, project) { key ->
+			if(cancelable) ProgressManager.checkCanceled()
+			if(keyPredicate(key)) {
+				StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
+					if(cancelable) ProgressManager.checkCanceled()
+					action(key, element)
+				}
 			}
+			true
 		}
-		true
+	} catch(e: Exception) {
+		if(e is ProcessCanceledException) throw e
+		logger.error(e)
+		return true
 	}
 }
 
@@ -831,27 +847,33 @@ inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.processFirstEleme
 	if(DumbService.isDumb(project)) return true
 	
 	var value: T?
-	return StubIndex.getInstance().processAllKeys(this, project) p@{ key ->
-		if(cancelable) ProgressManager.checkCanceled()
-		if(keyPredicate(key)) {
-			value = null
-			resetDefaultValue()
-			withMeasureMillis("selector") {
-				StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
-					if(predicate(element)) {
-						value = element
-						return@processElements false
+	try {
+		return StubIndex.getInstance().processAllKeys(this, project) p@{ key ->
+			if(cancelable) ProgressManager.checkCanceled()
+			if(keyPredicate(key)) {
+				value = null
+				resetDefaultValue()
+				withMeasureMillis("selector") {
+					StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
+						if(predicate(element)) {
+							value = element
+							return@processElements false
+						}
+						true
 					}
-					true
+				}
+				val finalValue = value ?: getDefaultValue()
+				if(finalValue != null) {
+					val result = ProcessEntry.processor(finalValue)
+					if(!result) return@p false
 				}
 			}
-			val finalValue = value ?: getDefaultValue()
-			if(finalValue != null) {
-				val result = ProcessEntry.processor(finalValue)
-				if(!result) return@p false
-			}
+			true
 		}
-		true
+	} catch(e: Exception) {
+		if(e is ProcessCanceledException) throw e
+		logger.error(e)
+		return true
 	}
 }
 //endregion

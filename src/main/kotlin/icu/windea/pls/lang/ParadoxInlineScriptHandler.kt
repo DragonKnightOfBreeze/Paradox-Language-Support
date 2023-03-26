@@ -53,20 +53,22 @@ object ParadoxInlineScriptHandler {
     @JvmStatic
     fun resolveInfo(element: ParadoxScriptPropertyKey, file: PsiFile = element.containingFile): ParadoxInlineScriptInfo? {
         //这里不能调用ParadoxConfigHandler.getConfigs，因为需要处理内联的情况，会导致StackOverFlow
+    
+        //NOTE 不能直接使用DEFAULT，否则可能导致异常
+        val matchType = CwtConfigMatchType.STATIC
         
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         if(!isGameTypeSupported(gameType)) return null
         val name = element.name.lowercase()
         if(name != "inline_script") return null
-        val matchType = CwtConfigMatchType.STATIC
         val project = file.project
         val configGroup = getCwtConfig(project).getValue(gameType)
         val inlineConfigs = configGroup.inlineConfigGroup[name] ?: return null
         val propertyValue = element.propertyValue ?: return null
         //TODO 更加准确的匹配，目前没必要
         val inlineConfig = inlineConfigs.find {
-            val expression = ParadoxDataExpression.resolve(propertyValue)
+            val expression = ParadoxDataExpression.resolve(propertyValue, matchType)
             ParadoxConfigHandler.matchesScriptExpression(propertyValue, expression, it.config.valueExpression, it.config, configGroup, matchType)
         }
         if(inlineConfig == null) return null
