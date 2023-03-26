@@ -303,7 +303,7 @@ public final class ParadoxLowLevelSearchUtil {
     
     if (index > 0) {
       char c = text.charAt(index - 1);
-      if(c != '£') {
+      if(c != 163) { //'£'
         if(Character.isJavaIdentifierPart(c) && c != '$') {
           if(!searcher.isHandleEscapeSequences() || index < 2 || StringUtil.isEscapedBackslash(text, 0, index - 2)) { //escape sequence
             return false;
@@ -317,7 +317,7 @@ public final class ParadoxLowLevelSearchUtil {
     final int patternLength = searcher.getPattern().length();
     if (index + patternLength < text.length()) {
       char c = text.charAt(index + patternLength);
-      if(c != '£') {
+      if(c != 163) { //'£'
         return !Character.isJavaIdentifierPart(c) || c == '$';
       }
     }
