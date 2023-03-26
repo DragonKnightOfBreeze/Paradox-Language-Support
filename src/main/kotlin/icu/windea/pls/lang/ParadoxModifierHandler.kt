@@ -49,15 +49,6 @@ object ParadoxModifierHandler {
 	
 	@JvmStatic
 	fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
-		//当任何可能包含生成源的脚本文件发生变化时清空缓存 - 应当兼容name和configGroup的变化
-		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedModifierElementKey) {
-			val value = doResolveModifier(name, element, configGroup)
-			val tracker = ParadoxModificationTrackerProvider.getInstance().Modifier
-			CachedValueProvider.Result.create(value, tracker)
-		}
-	}
-	
-	private fun doResolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
 		//尝试解析为生成的修正
 		val generatedModifier = ParadoxModifierSupport.resolveModifier(name, element, configGroup)
 		if(generatedModifier != null) return generatedModifier
