@@ -18,7 +18,9 @@ class ParadoxDefinitionMemberInfo(
     val gameType: ParadoxGameType,
     val definitionInfo: ParadoxDefinitionInfo,
     val configGroup: CwtConfigGroup,
-    val element: ParadoxScriptMemberElement //直接作为属性的话可能会有些问题，不过这个缓存会在所在脚本文件变更时被清除，应当问题不大
+    val element: ParadoxScriptMemberElement
+    //element直接作为属性的话可能会有些问题，不过这个缓存会在所在脚本文件变更时被清除，应当问题不大
+    //element不能转为SmartPsiElementPointer然后作为属性，这会导致与ParadoxDefinitionInfo.element引发递归异常
 ) {
     val isDefinition = element is ParadoxScriptDefinitionElement && elementPath.isEmpty()
     val isParameterAware = elementPath.isParameterAware
@@ -48,7 +50,7 @@ class ParadoxDefinitionMemberInfo(
 private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMemberInfo: ParadoxDefinitionMemberInfo, matchType: Int): List<CwtDataConfig<*>> {
     val element = definitionMemberInfo.element
     //基于keyExpression，valueExpression可能不同
-    val declaration = definitionInfo.declaration ?: return emptyList()
+    val declaration = definitionInfo.getDeclaration(matchType) ?: return emptyList()
     //如果路径中可能待遇参数，则不进行解析
     val elementPath = definitionMemberInfo.elementPath
     if(elementPath.isParameterAware) return emptyList()
@@ -100,14 +102,15 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
  */
 private fun doGetChildConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMemberInfo: ParadoxDefinitionMemberInfo, matchType: Int): List<CwtDataConfig<*>> {
     //基于上一级keyExpression，keyExpression一定唯一
-    if(definitionInfo.declaration?.configs.isNullOrEmpty()) return emptyList()
+    val declaration = definitionInfo.getDeclaration(matchType) ?: return emptyList()
+    if(declaration.configs.isNullOrEmpty()) return emptyList()
     //如果路径中可能待遇参数，则不进行解析
     val elementPath = definitionMemberInfo.elementPath
     if(elementPath.isParameterAware) return emptyList()
     //parentPath可以对应property或者value
     return when {
         //这里的属性路径可以为空，这时得到的就是顶级属性列表（定义的代码块类型的值中的属性列表）
-        elementPath.isEmpty() -> definitionInfo.declaration?.configs.orEmpty()
+        elementPath.isEmpty() -> declaration.configs
         else -> {
             //打平propertyConfigs中的每一个properties
             val configs = doGetConfigs(definitionInfo, definitionMemberInfo, matchType)

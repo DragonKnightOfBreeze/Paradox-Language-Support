@@ -13,9 +13,9 @@ object ParadoxPresentationHandler {
     @JvmStatic
     fun getNameLabel(definition: ParadoxScriptDefinitionElement): JLabel? {
         val definitionInfo = definition.definitionInfo ?: return null
-        val localizedName = definitionInfo.resolvePrimaryLocalisation(definition)
+        val localizedName = definitionInfo.resolvePrimaryLocalisation()
         if(localizedName == null) {
-            val locName = definitionInfo.resolvePrimaryLocalisationName(definition) ?: return null
+            val locName = definitionInfo.resolvePrimaryLocalisationName() ?: return null
             return ParadoxLocalisationTextUIRender.render(locName)
         }
         return ParadoxLocalisationTextUIRender.render(localizedName)
@@ -30,7 +30,7 @@ object ParadoxPresentationHandler {
     
     @JvmStatic
     fun getIcon(definition: ParadoxScriptDefinitionElement): Icon? {
-        val ddsFile = definition.definitionInfo?.resolvePrimaryImage(definition) ?: return null
+        val ddsFile = definition.definitionInfo?.resolvePrimaryImage() ?: return null
         val iconFile = ddsFile.virtualFile ?: return null
         val iconUrl = ParadoxDdsUrlResolver.resolveByFile(iconFile)
         return IconLoader.findIcon(iconUrl.toFileUrl())

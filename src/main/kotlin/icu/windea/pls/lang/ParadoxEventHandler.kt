@@ -88,12 +88,12 @@ object ParadoxEventHandler {
     
     @JvmStatic
     fun getLocalizedName(definition: ParadoxScriptProperty): ParadoxLocalisationProperty? {
-        return definition.definitionInfo?.resolvePrimaryLocalisation(definition)
+        return definition.definitionInfo?.resolvePrimaryLocalisation()
     }
     
     @JvmStatic
     fun getIconFile(definition: ParadoxScriptProperty): PsiFile? {
-        return definition.definitionInfo?.resolvePrimaryImage(definition)
+        return definition.definitionInfo?.resolvePrimaryImage()
     }
     
     /**

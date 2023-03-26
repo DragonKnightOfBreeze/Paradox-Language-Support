@@ -25,11 +25,12 @@ class ParadoxDefinitionInfo(
     name0: String?, // null -> lazy get
     val rootKey: String,
     val typeConfig: CwtTypeConfig,
-    subtypeConfigs0: List<CwtSubtypeConfig>?, // null -> lazy get
     val elementPath: ParadoxElementPath,
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
-    element: ParadoxScriptDefinitionElement, //直接传入element
+    val element: ParadoxScriptDefinitionElement,
+    //element直接作为属性的话可能会有些问题，不过这个缓存会在所在脚本文件变更时被清除，应当问题不大
+    //element不能转为SmartPsiElementPointer然后作为属性，这会导致与ParadoxDefinitionMemberSInfo.element引发递归异常
 ) {
     enum class SourceType { Default, Stub, PathComment, TypeComment }
     
@@ -62,17 +63,8 @@ class ParadoxDefinitionInfo(
     }
     
     val subtypeConfigs: List<CwtSubtypeConfig> by lazy {
-        if(subtypeConfigs0 != null) return@lazy subtypeConfigs0
-        
         //正在索引时不要尝试匹配子类型
-        val subtypesConfig = typeConfig.subtypes
-        val result = SmartList<CwtSubtypeConfig>()
-        for(subtypeConfig in subtypesConfig.values) {
-            if(ParadoxDefinitionHandler.matchesSubtype(element, subtypeConfig, rootKey, configGroup, result)) {
-                result.add(subtypeConfig)
-            }
-        }
-        result
+        doGetSubtypeConfigs(CwtConfigMatchType.DEFAULT)
     }
     
     val types: List<String> by lazy {
@@ -81,6 +73,10 @@ class ParadoxDefinitionInfo(
     
     val typesText: String by lazy {
         types.joinToString(", ")
+    }
+    
+    val declaration: CwtPropertyConfig? by lazy {
+        doGetDeclaration(CwtConfigMatchType.DEFAULT)
     }
     
     val localisations: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
@@ -116,11 +112,6 @@ class ParadoxDefinitionInfo(
         }
     }
     
-    val declaration: CwtPropertyConfig? by lazy {
-        val configContext = CwtConfigContext(element, name, type, subtypes, configGroup)
-        configGroup.declarations.get(type)?.getMergedConfig(configContext)
-    }
-    
     val primaryLocalisations: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
         localisations.filter { it.primary || it.inferIsPrimary() }
     }
@@ -137,7 +128,35 @@ class ParadoxDefinitionInfo(
     
     val project get() = configGroup.project
     
-    fun resolvePrimaryLocalisationName(element: ParadoxScriptDefinitionElement): String? {
+    
+    fun getSubtypeConfigs(matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtSubtypeConfig> {
+        if(matchType == CwtConfigMatchType.DEFAULT) return subtypeConfigs
+        return doGetSubtypeConfigs(matchType)
+    }
+    
+    private fun doGetSubtypeConfigs(matchType: Int): SmartList<CwtSubtypeConfig> {
+        val subtypesConfig = typeConfig.subtypes
+        val result = SmartList<CwtSubtypeConfig>()
+        for(subtypeConfig in subtypesConfig.values) {
+            if(ParadoxDefinitionHandler.matchesSubtype(element, subtypeConfig, rootKey, configGroup, result, matchType)) {
+                result.add(subtypeConfig)
+            }
+        }
+        return result
+    }
+    
+    fun getDeclaration(matchType: Int = CwtConfigMatchType.DEFAULT): CwtPropertyConfig? {
+        if(matchType == CwtConfigMatchType.DEFAULT) return declaration
+        return doGetDeclaration(matchType)
+    }
+    
+    private fun doGetDeclaration(matchType: Int): CwtPropertyConfig? {
+        val subtypes = getSubtypeConfigs(matchType).map { it.name }
+        val configContext = CwtConfigContext(element, name, type, subtypes, configGroup)
+        return configGroup.declarations.get(type)?.getMergedConfig(configContext)
+    }
+    
+    fun resolvePrimaryLocalisationName(): String? {
         if(primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
         for(primaryLocalisation in primaryLocalisations) {
             val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
@@ -148,7 +167,7 @@ class ParadoxDefinitionInfo(
         return null
     }
     
-    fun resolvePrimaryLocalisation(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
+    fun resolvePrimaryLocalisation(): ParadoxLocalisationProperty? {
         if(primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
         for(primaryLocalisation in primaryLocalisations) {
             val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
@@ -160,13 +179,13 @@ class ParadoxDefinitionInfo(
         return null
     }
     
-    fun resolvePrimaryImage(definition: ParadoxScriptDefinitionElement): PsiFile? {
+    fun resolvePrimaryImage(): PsiFile? {
         if(primaryImages.isEmpty()) return null //没有或者CWT规则不完善
         for(primaryImage in primaryImages) {
-            val resolved = primaryImage.locationExpression.resolve(definition, this, project)
+            val resolved = primaryImage.locationExpression.resolve(element, this, project)
             val file = resolved?.file
             if(file == null) continue
-            definition.putUserData(PlsKeys.iconFrameKey, resolved.frame)
+            element.putUserData(PlsKeys.iconFrameKey, resolved.frame)
             return file
         }
         return null
