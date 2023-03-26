@@ -208,6 +208,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             //加上生成的修正的信息
             addGeneratedModifiersForDefinition(element, definitionInfo)
             
+            //加上修饰符分类和作用域信息（如果支持）
+            addModifierScopeForDefinition(element, definitionInfo, sectionsList?.get(0))
+            
             //加上作用域上下文信息（如果支持）
             addScopeContextForDefinition(element, definitionInfo, sectionsList?.get(0))
             
@@ -289,6 +292,24 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     
     private fun StringBuilder.addGeneratedModifiersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
         ParadoxModifierSupport.buildDDocumentationDefinitionForDefinition(element, definitionInfo, this)
+    }
+    
+    private fun StringBuilder.addModifierScopeForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
+        //即使是在CWT文件中，如果可以推断得到CWT规则组，也显示作用域信息
+        if(!getSettings().documentation.showScopes) return
+        
+        if(sections != null) {
+            val modifierCategories = ParadoxDefinitionModifierProvider.getModifierCategories(element, definitionInfo) ?: return
+            val gameType = definitionInfo.gameType
+            val contextElement = element
+            val categoryNames = modifierCategories.keys
+            if(categoryNames.isNotEmpty()) {
+                sections.put(PlsDocBundle.message("sectionTitle.categories"), ParadoxModifierHandler.getCategoriesText(categoryNames, gameType, contextElement))
+            }
+            
+            val supportedScopes = modifierCategories.getSupportedScopes()
+            sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), ParadoxModifierHandler.getScopesText(supportedScopes, gameType, contextElement))
+        }
     }
     
     private fun StringBuilder.addScopeContextForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {

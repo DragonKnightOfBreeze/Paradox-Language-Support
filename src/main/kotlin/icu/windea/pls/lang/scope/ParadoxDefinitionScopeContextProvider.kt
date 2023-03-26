@@ -23,3 +23,4 @@ interface ParadoxDefinitionScopeContextProvider {
         }
     }
 }
+

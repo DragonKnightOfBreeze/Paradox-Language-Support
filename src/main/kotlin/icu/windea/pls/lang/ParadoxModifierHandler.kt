@@ -12,6 +12,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.script.psi.*
 
@@ -115,6 +116,13 @@ object ParadoxModifierHandler {
 		}
 	}
 	
+	@JvmStatic
+	fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
+		val modifierCategories = ParadoxModifierSupport.getModifierCategories(element)
+		if(modifierCategories != null) return modifierCategories
+		return element.modifierConfig?.categoryConfigMap
+	}
+	
 	//TODO 检查修正的相关本地化和图标到底是如何确定的
 	
 	@JvmStatic
@@ -142,6 +150,40 @@ object ParadoxModifierHandler {
 		//gfx/interface/icons/modifiers/mod_$.dds
 		return buildList {
 			add("gfx/interface/icons/modifiers/mod_${modifierName}.dds")
+		}
+	}
+	
+	//documentation helper methods
+	
+	fun getCategoriesText(categories: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
+		return buildString {
+			var appendSeparator = false
+			append("<code>")
+			for(category in categories) {
+				if(appendSeparator) append(", ") else appendSeparator = true
+				appendCwtLink(category, "${gameType.id}/modifier_categories/$category", contextElement)
+			}
+			append("</code>")
+		}
+	}
+	
+	fun getScopeText(scopeId: String, gameType: ParadoxGameType?, contextElement: PsiElement): String {
+		return buildString {
+			append("<code>")
+			ParadoxScopeHandler.buildScopeDoc(scopeId, gameType, contextElement, this)
+			append("</code>")
+		}
+	}
+	
+	fun getScopesText(scopeIds: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
+		return buildString {
+			var appendSeparator = false
+			append("<code>")
+			for(scopeId in scopeIds) {
+				if(appendSeparator) append(", ") else appendSeparator = true
+				ParadoxScopeHandler.buildScopeDoc(scopeId, gameType, contextElement, this)
+			}
+			append("</code>")
 		}
 	}
 }

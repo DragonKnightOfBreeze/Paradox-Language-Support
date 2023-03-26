@@ -6,6 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
@@ -31,6 +32,7 @@ object StellarisEconomicCategoryHandler {
     @JvmStatic
     fun getInfo(definition: ParadoxScriptDefinitionElement): StellarisEconomicCategoryInfo? {
         ProgressManager.checkCanceled()
+        if(selectGameType(definition) != ParadoxGameType.Stellaris) return null
         return getInfoFromCache(definition)
     }
     
@@ -184,3 +186,4 @@ object StellarisEconomicCategoryHandler {
         }
     }
 }
+

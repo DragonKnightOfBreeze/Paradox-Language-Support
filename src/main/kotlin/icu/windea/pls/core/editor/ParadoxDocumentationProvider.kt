@@ -268,48 +268,16 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         if(!getSettings().documentation.showScopes) return
         
         if(sections != null) {
-            val modifierCategories = ParadoxModifierSupport.getModifierCategories(element) ?: return
+            val modifierCategories = ParadoxModifierHandler.getModifierCategories(element) ?: return
             val gameType = configGroup.gameType
             val contextElement = element
             val categoryNames = modifierCategories.keys
             if(categoryNames.isNotEmpty()) {
-                sections.put(PlsDocBundle.message("sectionTitle.categories"), getCategoriesText(categoryNames, gameType, contextElement))
+                sections.put(PlsDocBundle.message("sectionTitle.categories"), ParadoxModifierHandler.getCategoriesText(categoryNames, gameType, contextElement))
             }
             
             val supportedScopes = modifierCategories.getSupportedScopes()
-            sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
-        }
-    }
-    
-    private fun getCategoriesText(categories: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
-        return buildString {
-            var appendSeparator = false
-            append("<code>")
-            for(category in categories) {
-                if(appendSeparator) append(", ") else appendSeparator = true
-                appendCwtLink(category, "${gameType.id}/modifier_categories/$category", contextElement)
-            }
-            append("</code>")
-        }
-    }
-    
-    private fun getScopeText(scopeId: String, gameType: ParadoxGameType?, contextElement: PsiElement): String {
-        return buildString {
-            append("<code>")
-            ParadoxScopeHandler.buildScopeDoc(scopeId, gameType, contextElement, this)
-            append("</code>")
-        }
-    }
-    
-    private fun getScopesText(scopeIds: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
-        return buildString {
-            var appendSeparator = false
-            append("<code>")
-            for(scopeId in scopeIds) {
-                if(appendSeparator) append(", ") else appendSeparator = true
-                ParadoxScopeHandler.buildScopeDoc(scopeId, gameType, contextElement, this)
-            }
-            append("</code>")
+            sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), ParadoxModifierHandler.getScopesText(supportedScopes, gameType, contextElement))
         }
     }
     

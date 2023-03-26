@@ -19,6 +19,7 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.parameter.*
+import icu.windea.pls.lang.scope.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
@@ -211,6 +212,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport(
     }
     
     override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+        val scopeContext = context.scopeContext
         val typeExpression = config.expression?.value ?: return
         val configGroup = config.info.configGroup
         val project = configGroup.project
@@ -218,14 +220,22 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport(
         val tailText = ParadoxConfigHandler.getScriptExpressionTailText(config)
         val selector = definitionSelector(project, contextElement).contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search(typeExpression, selector)
-            .processQuery { definition ->
-                val name = definition.definitionInfo?.name ?: return@processQuery true
+            .processQuery p@{ definition ->
+                val definitionInfo = definition.definitionInfo ?: return@p true
+                
+                //排除不匹配可能存在的supported_scopes的情况
+                val supportedScopes = ParadoxDefinitionSupportedScopesProvider.getSupportedScopes(definition, definitionInfo)
+                val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)
+                if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return@p true
+    
+                val name = definitionInfo.name
                 val typeFile = definition.containingFile
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(definition, name)
                     .withIcon(PlsIcons.Definition)
                     .withTailText(tailText)
                     .withTypeText(typeFile.name)
                     .withTypeIcon(typeFile.icon)
+                    .withScopeMatched(scopeMatched)
                 result.addScriptExpressionElement(context, builder)
                 true
             }
