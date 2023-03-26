@@ -130,6 +130,8 @@ class DdsEditorImpl(
 	
 	fun propertyChanged(event: VirtualFilePropertyEvent) {
 		if(file == event.file) {
+			doInvalidateDdsFile(file)
+			
 			// Change document
 			file.refresh(true, false) {
 				if(file.fileType == DdsFileType) {
@@ -141,17 +143,15 @@ class DdsEditorImpl(
 					editorManager.closeFile(file)
 				}
 			}
-			
-			doInvalidateDdsFile(file)
 		}
 	}
 	
 	fun contentsChanged(event: VirtualFileEvent) {
 		if(file == event.file) {
+			doInvalidateDdsFile(file)
+			
 			// Change document
 			refreshFile()
-			
-			doInvalidateDdsFile(file)
 		}
 	}
 	
