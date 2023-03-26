@@ -13,103 +13,107 @@ import icu.windea.pls.tool.*
 
 @Suppress("unused")
 object ParadoxLocalisationTextRenderer {
-	fun render(element: ParadoxLocalisationProperty): String {
-		return buildString { renderTo(element, this) }
-	}
-	
-	fun renderTo(element: ParadoxLocalisationProperty, builder: StringBuilder) {
-		val richTextList = element.propertyValue?.richTextList
-		if(richTextList == null || richTextList.isEmpty()) return
-		for(richText in richTextList) {
-			ProgressManager.checkCanceled()
-			renderTo(richText, builder)
-		}
-	}
-	
-	private fun renderTo(element: ParadoxLocalisationRichText, builder: StringBuilder) {
-		when(element) {
-			is ParadoxLocalisationString -> renderStringTo(element, builder)
-			is ParadoxLocalisationEscape -> renderEscapeTo(element, builder)
-			is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, builder)
-			is ParadoxLocalisationIcon -> renderIconTo(element, builder)
-			is ParadoxLocalisationCommand -> renderCodeTo(element, builder)
-			is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, builder)
-		}
-	}
-	
-	private fun renderStringTo(element: ParadoxLocalisationString, builder: StringBuilder) {
-		builder.append(element.text.escapeXml())
-	}
-	
-	private fun renderEscapeTo(element: ParadoxLocalisationEscape, builder: StringBuilder) {
-		val elementText = element.text
-		when {
-			elementText == "\\n" -> builder.append("<br>\n")
-			elementText == "\\r" -> builder.append("<br>\r")
-			elementText == "\\t" -> builder.append("&emsp;")
-			elementText.length > 1 -> builder.append(elementText[1])
-		}
-	}
-	
-	private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, builder: StringBuilder) {
-		val reference = element.reference
-		val colorHex = element.colorConfig?.color?.toHex()
-		if(reference != null) {
-			val resolved = reference.resolve()
-			if(resolved is ParadoxLocalisationProperty) {
-				if(colorHex != null) builder.append("<span style=\"color: #").append(colorHex).append("\">")
-				renderTo(resolved, builder)
-				if(colorHex != null) builder.append("</span>")
-				return
-			} else if(resolved is CwtProperty){
-				builder.append(resolved.value)
-				return
-			}
-		}
-		//如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，否则保留颜色码
-		if(colorHex != null) {
-			builder.append("<code style=\"color: ").append(colorHex).append("\">").append(element.text).append("</code>")
-		} else {
-			builder.append("<code>").append(element.text).append("</code>")
-		}
-	}
-	
-	private fun renderIconTo(element: ParadoxLocalisationIcon, builder: StringBuilder) {
-		val resolved = element.reference?.resolve() 
-		val iconFrame = element.frame
-		val iconUrl = when {
-			resolved is ParadoxScriptDefinitionElement -> ParadoxDdsUrlResolver.resolveByDefinition(resolved, iconFrame, defaultToUnknown = true)
-			resolved is PsiFile -> ParadoxDdsUrlResolver.resolveByFile(resolved.virtualFile, iconFrame, defaultToUnknown = true)
-			else -> DdsToPngConverter.getUnknownPngPath()
-		}
-		if(iconUrl.isNotEmpty()) {
-			//找不到图标的话就直接跳过
-			val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return
-			//基于文档的字体大小缩放图标，直到图标宽度等于字体宽度
-			val docFontSize = DocumentationComponent.getQuickDocFontSize().size //基于这个得到的图标大小并不完美……
-			val iconWidth = icon.iconWidth
-			val iconHeight = icon.iconHeight
-			val usedWidth = docFontSize * iconWidth / iconHeight
-			val usedHeight = docFontSize
-			builder.appendImgTag(iconUrl, usedWidth, usedHeight)
-		}
-	}
-	
-	private fun renderCodeTo(element: ParadoxLocalisationCommand, builder: StringBuilder) {
-		//使用原始文本
-		builder.append("<code>").append(element.text).append("</code>")
-	}
-	
-	private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, builder: StringBuilder) {
-		//如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
-		val richTextList = element.richTextList
-		if(richTextList.isEmpty()) return
-		val colorHex = element.colorConfig?.color?.toHex()
-		if(colorHex != null) builder.append("<span style=\"color: #").append(colorHex).append("\">")
-		for(richText in richTextList) {
-			ProgressManager.checkCanceled()
-			renderTo(richText, builder)
-		}
-		if(colorHex != null) builder.append("</span>")
-	}
+    fun render(element: ParadoxLocalisationProperty): String {
+        return buildString { renderTo(element, this) }
+    }
+    
+    fun renderTo(element: ParadoxLocalisationProperty, builder: StringBuilder) {
+        val richTextList = element.propertyValue?.richTextList
+        if(richTextList == null || richTextList.isEmpty()) return
+        for(richText in richTextList) {
+            ProgressManager.checkCanceled()
+            renderTo(richText, builder)
+        }
+    }
+    
+    private fun renderTo(element: ParadoxLocalisationRichText, builder: StringBuilder) {
+        when(element) {
+            is ParadoxLocalisationString -> renderStringTo(element, builder)
+            is ParadoxLocalisationEscape -> renderEscapeTo(element, builder)
+            is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, builder)
+            is ParadoxLocalisationIcon -> renderIconTo(element, builder)
+            is ParadoxLocalisationCommand -> renderCodeTo(element, builder)
+            is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, builder)
+        }
+    }
+    
+    private fun renderStringTo(element: ParadoxLocalisationString, builder: StringBuilder) {
+        builder.append(element.text.escapeXml())
+    }
+    
+    private fun renderEscapeTo(element: ParadoxLocalisationEscape, builder: StringBuilder) {
+        val elementText = element.text
+        when {
+            elementText == "\\n" -> builder.append("<br>\n")
+            elementText == "\\r" -> builder.append("<br>\r")
+            elementText == "\\t" -> builder.append("&emsp;")
+            elementText.length > 1 -> builder.append(elementText[1])
+        }
+    }
+    
+    private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, builder: StringBuilder) {
+        //如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，否则保留颜色码
+        val colorHex = element.colorConfig?.color?.toHex()
+        if(colorHex != null) {
+            builder.append("<span style=\"color: >").append(colorHex).append("\">")
+        }
+        val resolved = element.reference?.resolve()
+            ?: element.scriptedVariableReference?.reference?.resolve()
+        when {
+            resolved is ParadoxLocalisationProperty -> {
+                renderTo(resolved, builder)
+            }
+            resolved is CwtProperty -> {
+                builder.append(resolved.value)
+            }
+            resolved is ParadoxScriptScriptedVariable && resolved.value != null -> {
+                builder.append(resolved.value)
+            }
+            else -> {
+                builder.append("<code>").append(element.text).append("</code>")
+            }
+        }
+        if(colorHex != null) {
+            builder.append("</span>")
+        }
+    }
+    
+    private fun renderIconTo(element: ParadoxLocalisationIcon, builder: StringBuilder) {
+        val resolved = element.reference?.resolve()
+        val iconFrame = element.frame
+        val iconUrl = when {
+            resolved is ParadoxScriptDefinitionElement -> ParadoxDdsUrlResolver.resolveByDefinition(resolved, iconFrame, defaultToUnknown = true)
+            resolved is PsiFile -> ParadoxDdsUrlResolver.resolveByFile(resolved.virtualFile, iconFrame, defaultToUnknown = true)
+            else -> DdsToPngConverter.getUnknownPngPath()
+        }
+        if(iconUrl.isNotEmpty()) {
+            //找不到图标的话就直接跳过
+            val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return
+            //基于文档的字体大小缩放图标，直到图标宽度等于字体宽度
+            val docFontSize = DocumentationComponent.getQuickDocFontSize().size //基于这个得到的图标大小并不完美……
+            val iconWidth = icon.iconWidth
+            val iconHeight = icon.iconHeight
+            val usedWidth = docFontSize * iconWidth / iconHeight
+            val usedHeight = docFontSize
+            builder.appendImgTag(iconUrl, usedWidth, usedHeight)
+        }
+    }
+    
+    private fun renderCodeTo(element: ParadoxLocalisationCommand, builder: StringBuilder) {
+        //使用原始文本
+        builder.append("<code>").append(element.text).append("</code>")
+    }
+    
+    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, builder: StringBuilder) {
+        //如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
+        val richTextList = element.richTextList
+        if(richTextList.isEmpty()) return
+        val colorHex = element.colorConfig?.color?.toHex()
+        if(colorHex != null) builder.append("<span style=\"color: #").append(colorHex).append("\">")
+        for(richText in richTextList) {
+            ProgressManager.checkCanceled()
+            renderTo(richText, builder)
+        }
+        if(colorHex != null) builder.append("</span>")
+    }
 }
