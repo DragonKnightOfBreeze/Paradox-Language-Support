@@ -16,11 +16,11 @@ import icu.windea.pls.cwt.psi.*
  * @property nameFromFile (property) name_from_file: boolean
  * @property typePerFile (property) type_per_file: boolean
  * @property typeKeyFilter (property) type_key_filter: boolean
+ * @property typeKeyRegex (option) type_key_regex: string
+ * @property startsWith (option) starts_with: string
  * @property unique (property) unique: boolean
  * @property severity (property) severity: string:severity
  * @property skipRootKey (property*) skip_root_key: string | string[]
- * @property typeKeyFilter (option) type_key_filter: string | string[]
- * @property startsWith (option) starts_with: string
  * @property graphRelatedTypes (option) graph_related_types: graphRelatedType[]
  * @property subtypes (property*) subtype[?]: subtypeInfo
  * @property localisation (property*) localisation: localisationInfo
@@ -43,6 +43,7 @@ data class CwtTypeConfig(
 	val severity: String? = null,
 	val skipRootKey: List<List<@CaseInsensitive String>>? = null,
 	val typeKeyFilter: ReversibleSet<@CaseInsensitive String>? = null,
+	val typeKeyRegex: Regex? = null,
 	val startsWith: @CaseInsensitive String? = null,
 	val graphRelatedTypes: Set<String>? = null,
 	val subtypes: Map<String, CwtSubtypeConfig> = emptyMap(),

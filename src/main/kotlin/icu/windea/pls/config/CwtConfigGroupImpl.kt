@@ -537,6 +537,7 @@ class CwtConfigGroupImpl(
 		var severity: String? = null
 		var skipRootKey: MutableList<List<String>>? = null
 		var typeKeyFilter: ReversibleSet<String>? = null
+		var typeKeyRegex: Regex? = null
 		var startsWith: String? = null
 		var graphRelatedTypes: Set<String>? = null
 		val subtypes: MutableMap<String, CwtSubtypeConfig> = mutableMapOf()
@@ -651,6 +652,9 @@ class CwtConfigGroupImpl(
 						val notReversed = option.separatorType == CwtSeparator.EQUAL
 						typeKeyFilter = set.toReversibleSet(notReversed)
 					}
+					"type_key_regex" -> {
+						typeKeyRegex = option.stringValue?.toRegex(RegexOption.IGNORE_CASE)
+					}
 					"starts_with" -> startsWith = option.stringValue ?: continue //忽略大小写
 					"graph_related_types" -> {
 						graphRelatedTypes = option.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue }
@@ -664,13 +668,15 @@ class CwtConfigGroupImpl(
 			name, baseType,
 			path, pathStrict, pathFile, pathExtension,
 			nameField, nameFromFile, typePerFile, unique, severity, skipRootKey,
-			typeKeyFilter, startsWith, graphRelatedTypes, subtypes,
+			typeKeyFilter, typeKeyRegex, startsWith, 
+			graphRelatedTypes, subtypes,
 			localisation, images
 		)
 	}
 	
 	private fun resolveSubtypeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtSubtypeConfig {
 		var typeKeyFilter: ReversibleSet<String>? = null
+		var typeKeyRegex: Regex? = null
 		var pushScope: String? = null
 		var startsWith: String? = null
 		var displayName: String? = null
@@ -693,8 +699,11 @@ class CwtConfigGroupImpl(
 						val notReversed = option.separatorType == CwtSeparator.EQUAL
 						typeKeyFilter = set.toReversibleSet(notReversed)
 					}
-					"push_scope" -> pushScope = option.stringValue ?: continue
+					"type_key_regex" -> {
+						typeKeyRegex = option.stringValue?.toRegex(RegexOption.IGNORE_CASE)
+					}
 					"starts_with" -> startsWith = option.stringValue ?: continue //忽略大小写
+					"push_scope" -> pushScope = option.stringValue ?: continue
 					"display_name" -> displayName = option.stringValue ?: continue
 					"abbreviation" -> abbreviation = option.stringValue ?: continue
 					"only_if_not" -> onlyIfNot = option.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue } ?: continue
@@ -703,7 +712,8 @@ class CwtConfigGroupImpl(
 		}
 		return CwtSubtypeConfig(
 			propertyConfig.pointer, propertyConfig.info, propertyConfig,
-			name, typeKeyFilter, pushScope, startsWith, displayName, abbreviation, onlyIfNot
+			name, typeKeyFilter, typeKeyRegex, startsWith,
+			pushScope, displayName, abbreviation, onlyIfNot
 		)
 	}
 	

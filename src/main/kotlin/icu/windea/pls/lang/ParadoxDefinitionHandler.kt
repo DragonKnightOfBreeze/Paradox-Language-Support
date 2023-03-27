@@ -144,6 +144,12 @@ object ParadoxDefinitionHandler {
 			val result = rootKey.startsWith(startsWithConfig, false)
 			if(!result) return false
 		}
+		//如果type_key_regex存在，则要求type_key匹配
+		val typeKeyRegexConfig = typeConfig.typeKeyRegex
+		if(typeKeyRegexConfig != null) {
+			val result = typeKeyRegexConfig.matches(rootKey)
+			if(!result) return false
+		}
 		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
 		val typeKeyFilterConfig = typeConfig.typeKeyFilter
 		if(!typeKeyFilterConfig.isNullOrEmpty()) {
@@ -181,6 +187,12 @@ object ParadoxDefinitionHandler {
 		val startsWithConfig = typeConfig.startsWith
 		if(!startsWithConfig.isNullOrEmpty()) {
 			val result = rootKey.startsWith(startsWithConfig, false)
+			if(!result) return false
+		}
+		//如果type_key_regex存在，则要求type_key匹配
+		val typeKeyRegexConfig = typeConfig.typeKeyRegex
+		if(typeKeyRegexConfig != null) {
+			val result = typeKeyRegexConfig.matches(rootKey)
 			if(!result) return false
 		}
 		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
@@ -249,6 +261,12 @@ object ParadoxDefinitionHandler {
 				val result = rootKey.startsWith(startsWithConfig, false)
 				if(!result) return false
 			}
+			//如果type_key_regex存在，则要求type_key匹配
+			val typeKeyRegexConfig = typeConfig.typeKeyRegex
+			if(typeKeyRegexConfig != null) {
+				val result = typeKeyRegexConfig.matches(rootKey)
+				if(!result) return false
+			}
 			//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
 			val typeKeyFilterConfig = typeConfig.typeKeyFilter
 			if(!typeKeyFilterConfig.isNullOrEmpty()) {
@@ -286,6 +304,12 @@ object ParadoxDefinitionHandler {
 		val startsWithConfig = subtypeConfig.startsWith
 		if(!startsWithConfig.isNullOrEmpty()) {
 			val result = rootKey.startsWith(startsWithConfig, false)
+			if(!result) return false
+		}
+		//如果type_key_regex存在，则要求type_key匹配
+		val typeKeyRegexConfig = subtypeConfig.typeKeyRegex
+		if(typeKeyRegexConfig != null) {
+			val result = typeKeyRegexConfig.matches(rootKey)
 			if(!result) return false
 		}
 		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
