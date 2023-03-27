@@ -49,7 +49,7 @@ interface ParadoxElementPath : Iterable<Tuple3<String, Boolean, Boolean>> {
         
         fun resolve(originalSubPaths: List<String>): ParadoxElementPath {
             val path = originalSubPaths.joinToString("/") {
-                if(it.contains('/') && !it.isLeftQuoted()) {
+                if(it.contains('/')) {
                     it.quote()
                 } else {
                     it
