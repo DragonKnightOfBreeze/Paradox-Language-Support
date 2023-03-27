@@ -27,7 +27,7 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
         val extraWords = mutableSetOf<String>()
         configGroup.info.filePathExpressions.forEach { configExpression ->
             ParadoxPathReferenceExpressionSupport.get(configExpression)
-                ?.extract(configExpression, filePath)
+                ?.extract(configExpression, target, filePath)
                 ?.let { extraWords.add(it) }
         }
         if(extraWords.isEmpty()) return

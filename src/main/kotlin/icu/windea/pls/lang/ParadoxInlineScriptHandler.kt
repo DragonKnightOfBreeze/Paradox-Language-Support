@@ -142,7 +142,7 @@ object ParadoxInlineScriptHandler {
     private fun doGetInlineScriptExpression(fileInfo: ParadoxFileInfo): String? {
         val filePath = fileInfo.path.path
         val configExpression = inlineScriptPathExpression
-        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.extract(configExpression, filePath)?.takeIfNotEmpty()
+        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.extract(configExpression, null, filePath)?.takeIfNotEmpty()
     }
     
     /**

@@ -3,9 +3,11 @@ package icu.windea.pls.core.search
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
+import com.intellij.psi.PsiFile
 import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.expression.*
 
@@ -20,8 +22,9 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         val project = queryParameters.project
         val scope = queryParameters.selector.scope
         val name = ParadoxFilePathIndex.NAME
+        val contextElement = queryParameters.selector.file?.toPsiFile<PsiFile>(project)
         val pathReferenceExpressionSupport = if(configExpression != null) ParadoxPathReferenceExpressionSupport.get(configExpression) else null
-        if(configExpression == null || pathReferenceExpressionSupport?.matchEntire(queryParameters) == true) {
+        if(configExpression == null || pathReferenceExpressionSupport?.matchEntire(configExpression, contextElement) == true) {
             val keys = if(filePath != null) {
                 getFilePaths(filePath, queryParameters)
             } else {
@@ -35,8 +38,8 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         if(pathReferenceExpressionSupport == null) return
         FileBasedIndex.getInstance().processAllKeys(name, p@{ path ->
             ProgressManager.checkCanceled()
-            if(filePath != null && pathReferenceExpressionSupport.extract(configExpression, path, ignoreCase) != filePath) return@p true
-            if(!pathReferenceExpressionSupport.matches(queryParameters, path, ignoreCase)) return@p true
+            if(filePath != null && pathReferenceExpressionSupport.extract(configExpression, contextElement, path, ignoreCase) != filePath) return@p true
+            if(!pathReferenceExpressionSupport.matches(configExpression, contextElement, path, ignoreCase)) return@p true
             val keys = setOf(path)
             FileBasedIndex.getInstance().processFilesContainingAnyKey(name, keys, scope, null, null) { file ->
                 consumer.process(file)

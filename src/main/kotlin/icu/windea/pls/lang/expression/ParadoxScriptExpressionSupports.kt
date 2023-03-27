@@ -287,6 +287,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         val configGroup = config.info.configGroup
         val project = configGroup.project
         val contextElement = context.contextElement
+        val contextFile = context.originalFile
         val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
         if(pathReferenceExpressionSupport != null) {
             val tailText = ParadoxConfigHandler.getScriptExpressionTailText(config)
@@ -302,7 +303,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
                 .processQuery p@{ virtualFile ->
                     val file = virtualFile.toPsiFile<PsiFile>(project) ?: return@p true
                     val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
-                    val name = pathReferenceExpressionSupport.extract(configExpression, filePath) ?: return@p true
+                    val name = pathReferenceExpressionSupport.extract(configExpression, contextFile, filePath) ?: return@p true
                     val builder = ParadoxScriptExpressionLookupElementBuilder.create(file, name)
                         .withIcon(PlsIcons.PathReference)
                         .withTailText(tailText)
