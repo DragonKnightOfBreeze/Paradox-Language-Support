@@ -20,7 +20,7 @@ import javax.swing.*
  * * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。
  */
 class UnresolvedPathReferenceInspection : LocalInspectionTool() {
-    @JvmField var ignoredFileNames = "*.lua"
+    @JvmField var ignoredFileNames = "*.lua;*.tga"
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return Visitor(this, holder)

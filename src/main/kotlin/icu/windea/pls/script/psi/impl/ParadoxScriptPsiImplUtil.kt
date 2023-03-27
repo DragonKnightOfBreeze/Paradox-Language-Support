@@ -379,11 +379,12 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getExpression(element: ParadoxScriptScriptedVariableReference): String {
-        return buildString {
-            append(element.text)
-            val expression = element.referenceValue?.expression
-            if(expression != null) append("(= ").append(expression).append(")")
-        }
+        return element.text
+        //return buildString {
+        //    append(element.text)
+        //    val expression = element.referenceValue?.expression
+        //    if(expression != null) append("(= ").append(expression).append(")")
+        //}
     }
     //endregion
     
