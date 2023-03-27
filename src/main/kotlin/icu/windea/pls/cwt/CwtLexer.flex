@@ -59,12 +59,12 @@ DOCUMENTATION_COMMENT_START=###
 CHECK_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?({WHITE_SPACE})?((=)|(\!=)|(<>))
 CHECK_OPTION_KEY=({OPTION_KEY_TOKEN})?({WHITE_SPACE})?((=)|(\!=)|(<>))
 
-PROPERTY_KEY_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\"?)
-OPTION_KEY_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\"?)
+PROPERTY_KEY_TOKEN=([^#={}\s\"][^#={}\s]*)|(\"([^\"\\\r\n]|\\.)*\"?)
+OPTION_KEY_TOKEN=([^#={}\s\"][^#={}\s]*)|(\"([^\"\\\r\n]|\\.)*\"?)
 BOOLEAN_TOKEN=(yes)|(no)
-INT_TOKEN=[+-]?[0-9]+) //leading zero is permitted
-FLOAT_TOKEN=[+-]?[0-9]+)(\.[0-9]+) //leading zero is permitted
-STRING_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\"?)
+INT_TOKEN=[+-]?[0-9]+ //leading zero is permitted
+FLOAT_TOKEN=[+-]?[0-9]+(\.[0-9]+) //leading zero is permitted
+STRING_TOKEN=([^#={}\s\"][^#={}\s]*)|(\"([^\"\\\r\n]|\\.)*\"?)
 TOP_STRING_TOKEN=([^\s])|([^={}\s][^={}\r\n]*[^={}\s]) //顶级的optionValue可以包含空格
 DOCUMENTATION_TOKEN=[^\s][^\r\n]*
 

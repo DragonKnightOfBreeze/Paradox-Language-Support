@@ -133,8 +133,8 @@ CHECK_PROPERTY_KEY=({WILDCARD_KEY_TOKEN}|{QUOTED_PROPERTY_KEY_TOKEN})\s*[!=<>]
 SCRIPTED_VARIABLE_ID=[a-zA-Z_][a-zA-Z0-9_]*
 PARAMETER_ID=[a-zA-Z_][a-zA-Z0-9_]*
 
-WILDCARD_KEY_TOKEN=[^#@={}\[\]\s\"][^={}\[\]\s]*
-PROPERTY_KEY_TOKEN=[^#@$={}\[\]\s\"][^$={}\[\]\s]*
+WILDCARD_KEY_TOKEN=[^#@={}\[\]\s\"][^#={}\[\]\s]*
+PROPERTY_KEY_TOKEN=[^#@$={}\[\]\s\"][^#$={}\[\]\s]*
 PROPERTY_KEY_TOKEN_WITH_SUFFIX={PROPERTY_KEY_TOKEN}[$]?
 QUOTED_PROPERTY_KEY_TOKEN=\"([^\"(\r\n\\]|\\.)*?\"?
 
@@ -145,9 +145,9 @@ FLOAT_NUMBER_TOKEN=[0-9]+(\.[0-9]+) //leading zero is permitted
 FLOAT_TOKEN=[+-]?{FLOAT_NUMBER_TOKEN}
 COLOR_TOKEN=(rgb|hsv)[ \t]*\{[\d.\s&&[^\r\n]]*}
 
-WILDCARD_VALUE_TOKEN=[^#@={}\[\]\s\"][^={}\[\]\s\"]*
+WILDCARD_VALUE_TOKEN=[^#@={}\[\]\s\"][^#={}\[\]\s\"]*
 STRING_TOKEN_WITH_SUFFIX={STRING_TOKEN}[$]?
-STRING_TOKEN=[^#@$={}\[\]\s\"][^$={}\[\]\s\"]*
+STRING_TOKEN=[^#@$={}\[\]\s\"][^#$={}\[\]\s\"]*
 QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
 
 %%
