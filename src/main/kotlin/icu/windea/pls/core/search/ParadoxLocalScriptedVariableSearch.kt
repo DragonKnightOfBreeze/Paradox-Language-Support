@@ -17,7 +17,6 @@ class ParadoxLocalScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptS
 	 */
 	class SearchParameters(
 		val name: String?,
-		val context: PsiElement,
 		override val selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>
 	) : ParadoxSearchParameters<ParadoxScriptScriptedVariable>
 	
@@ -31,10 +30,9 @@ class ParadoxLocalScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptS
 		@JvmStatic
 		fun search(
 			name: String,
-			context: PsiElement,
 			selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>
 		): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
-			return INSTANCE.createParadoxQuery(SearchParameters(name, context, selector))
+			return INSTANCE.createParadoxQuery(SearchParameters(name, selector))
 		}
 		
 		/**
@@ -42,10 +40,9 @@ class ParadoxLocalScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptS
 		 */
 		@JvmStatic
 		fun search(
-			context: PsiElement,
 			selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>
 		): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
-			return INSTANCE.createParadoxQuery(SearchParameters(null, context, selector))
+			return INSTANCE.createParadoxQuery(SearchParameters(null, selector))
 		}
 	}
 }

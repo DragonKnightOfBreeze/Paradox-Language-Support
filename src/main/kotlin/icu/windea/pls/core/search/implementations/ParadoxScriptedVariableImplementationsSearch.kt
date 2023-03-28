@@ -25,7 +25,7 @@ class ParadoxScriptedVariableImplementationsSearch : QueryExecutor<PsiElement, D
             //这里不进行排序
             val selector = scriptedVariableSelector(project, sourceElement)
                 .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
-            ParadoxLocalScriptedVariableSearch.search(name, sourceElement, selector).forEach(consumer)
+            ParadoxLocalScriptedVariableSearch.search(name, selector).forEach(consumer)
             ParadoxGlobalScriptedVariableSearch.search(name, selector).forEach(consumer)
         }
         return true

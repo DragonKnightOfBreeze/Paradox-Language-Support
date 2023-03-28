@@ -29,7 +29,7 @@ class ParadoxScriptedVariablePsiReference(
         val name = element.name
         val project = element.project
         val selector = scriptedVariableSelector(project, element).contextSensitive(exact)
-        ParadoxLocalScriptedVariableSearch.search(name, element, selector).findFirst()?.let { return it }
+        ParadoxLocalScriptedVariableSearch.search(name, selector).findFirst()?.let { return it }
         ParadoxGlobalScriptedVariableSearch.search(name, selector).find(exact)?.let { return it }
         return null
     }
@@ -41,7 +41,7 @@ class ParadoxScriptedVariablePsiReference(
         val name = element.name
         val project = element.project
         val selector = scriptedVariableSelector(project, element).contextSensitive()
-        ParadoxLocalScriptedVariableSearch.search(name, element, selector).processQuery {
+        ParadoxLocalScriptedVariableSearch.search(name, selector).processQuery {
             result.add(it)
             true
         }

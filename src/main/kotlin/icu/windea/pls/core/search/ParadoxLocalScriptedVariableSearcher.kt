@@ -3,6 +3,7 @@ package icu.windea.pls.core.search
 import com.intellij.openapi.application.*
 import com.intellij.psi.*
 import com.intellij.util.*
+import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -10,20 +11,29 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxLocalScriptedVariableSearch.SearchParameters>() {
 	override fun processQuery(queryParameters: ParadoxLocalScriptedVariableSearch.SearchParameters, consumer: Processor<in ParadoxScriptScriptedVariable>) {
-		//在当前脚本文件中递归向上向前查找（包括上下文元素自身）
-		val context = queryParameters.context
-		var current: PsiElement = context
-		while(current !is PsiFile) {
-			var prevSibling : PsiElement? = current
-			while(prevSibling != null) {
-				if(prevSibling is ParadoxScriptScriptedVariable) {
-					if(queryParameters.name == null || queryParameters.name == prevSibling.name) {
-						if(!consumer.process(prevSibling)) return
-					}
+		//查找在使用处之前声明的封装本地变量
+		val selector = queryParameters.selector
+		val file = selector.file ?: return
+		val fileInfo = selector.fileInfo ?: return
+		if("common/scripted_variables".matchesPath(fileInfo.path.path)) return
+		val psiFile = file.toPsiFile<ParadoxScriptFile>(selector.project) ?: return
+		psiFile.accept(object : PsiRecursiveElementWalkingVisitor() {
+			override fun visitElement(element: PsiElement) {
+				val result = when(element) {
+					is ParadoxScriptScriptedVariable -> visitScriptedVariable(element)
+					else -> true
 				}
-				prevSibling = prevSibling.prevSibling
+				if(!result) return
+				if(element == selector.context) return //到使用处为止
+				if(element.isExpressionOrMemberContext()) super.visitElement(element)
 			}
-			current = current.parent ?: break
-		}
+			
+			private fun visitScriptedVariable(element: ParadoxScriptScriptedVariable): Boolean {
+				if(queryParameters.name == null || queryParameters.name == element.name) {
+					if(!consumer.process(element)) return false
+				}
+				return true
+			}
+		})
 	}
 }
