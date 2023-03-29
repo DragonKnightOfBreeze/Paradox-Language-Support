@@ -1,6 +1,7 @@
 package icu.windea.pls.core.tool
 
 import com.intellij.openapi.fileChooser.*
+import com.intellij.openapi.ui.*
 import com.intellij.openapi.vfs.*
 import icons.*
 import icu.windea.pls.lang.*
@@ -11,8 +12,10 @@ import javax.swing.*
  * 打开文件选择对话框选择游戏目录和模组目录时，为模组文件夹显示特定的图标和备注（模组的名称和版本信息）
  * @see icu.windea.pls.core.ParadoxProjectViewDecorator
  */
-class ParadoxRootDirectoryDescriptor : FileChooserDescriptor(false, true, false, false, false, false) {
+class ParadoxRootDirectoryDescriptor : FileChooserDescriptor(false, true, false, false, false, false)  {
     //这里需要先解析rootInfo
+    
+    //NOTE 2023.1开始以下的方法重载已不生效，暂时没有好的解决方法在选择模组目录时提示模组信息（模组目录的名字可能只是一个steamId）
     
     override fun getIcon(file: VirtualFile): Icon {
         val rootInfo = ParadoxCoreHandler.resolveRootInfo(file)

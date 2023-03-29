@@ -4,6 +4,7 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
+import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDescriptor
 import com.intellij.openapi.vfs.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.panel
@@ -87,6 +88,7 @@ class ParadoxModSettingsDialog(
                 label(PlsBundle.message("mod.settings.gameDirectory")).widthGroup("left")
                 val descriptor = ParadoxRootDirectoryDescriptor()
                     .withTitle(PlsBundle.message("mod.settings.gameDirectory.title"))
+                    .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
                     .bindText(gameDirectoryProperty)
@@ -104,6 +106,7 @@ class ParadoxModSettingsDialog(
                 label(PlsBundle.message("mod.settings.modDirectory")).widthGroup("left")
                 val descriptor = ParadoxRootDirectoryDescriptor()
                     .withTitle(PlsBundle.message("mod.settings.modDirectory.title"))
+                    .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
                     .text(settings.modDirectory.orEmpty())

@@ -3,6 +3,7 @@ package icu.windea.pls.core.tool
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
+import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDescriptor
 import com.intellij.openapi.vfs.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.panel
@@ -50,6 +51,7 @@ class ParadoxModDependencyAddDialog(
                 label(PlsBundle.message("mod.dependency.add.modDirectory")).widthGroup("left")
                 val descriptor = ParadoxRootDirectoryDescriptor()
                     .withTitle(PlsBundle.message("mod.dependency.add.modDirectory.title"))
+                    .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
                     .bindText(modDirectoryProperty)

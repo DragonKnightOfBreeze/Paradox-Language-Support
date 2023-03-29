@@ -19,13 +19,11 @@ import javax.swing.*
 class ParadoxModDependenciesTableModel(
     val settings: ParadoxGameOrModSettingsState,
     val modDependencies: MutableList<ParadoxModDependencySettingsState>
-) : ListTableModel<ParadoxModDependencySettingsState>() {
+) : ListTableModel<ParadoxModDependencySettingsState>(
+    arrayOf(EnabledItem, NameItem, VersionItem, SupportedVersionItem),
+    modDependencies
+), EditableModel {
     val modDependencyDirectories = modDependencies.mapTo(mutableSetOf()) { it.modDirectory.orEmpty() }
-    
-    init {
-        columnInfos = arrayOf(EnabledItem, NameItem, VersionItem, SupportedVersionItem)
-        items = modDependencies
-    }
     
     fun isCurrentAtLast(): Boolean {
         if(rowCount == 0) return false

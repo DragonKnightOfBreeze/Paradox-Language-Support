@@ -10,27 +10,25 @@ import javax.swing.*
 
 class ParadoxLocaleTableModel(
     val locales: MutableSet<String>
-) : ListTableModel<String>() {
-    init {
-        columnInfos = arrayOf(SelectedItem(this), LocaleItem())
-        items = getCwtConfig().core.localisationLocalesNoDefault.keys.toList()
-    }
-    
-    class SelectedItem(val tableModel: ParadoxLocaleTableModel) : ColumnInfo<String, Boolean>(name) {
+) : ListTableModel<String>(
+    arrayOf(SelectedItem(locales), LocaleItem()),
+    getCwtConfig().core.localisationLocalesNoDefault.keys.toList(),
+) {
+    class SelectedItem(val locales: MutableSet<String>) : ColumnInfo<String, Boolean>(name) {
         companion object {
             const val columnIndex = 0
             const val name = ""
         }
         
         override fun valueOf(item: String): Boolean {
-            return item in tableModel.locales
+            return item in locales
         }
     
         override fun setValue(item: String, value: Boolean) {
             if(value) {
-                tableModel.locales.add(item)
+                locales.add(item)
             } else {
-                tableModel.locales.remove(item)
+                locales.remove(item)
             }
         }
     

@@ -12,12 +12,10 @@ import javax.swing.table.*
 
 class ElementsTableModel(
     val context: ElementDescriptorsContext
-) : ListTableModel<ElementDescriptor>(), EditableModel {
-    init {
-        columnInfos = arrayOf(NameColumn(context), SeparatorColumn(context), ValueColumn(context))
-        items = context.descriptorsInfo.resultDescriptors
-    }
-    
+) : ListTableModel<ElementDescriptor>(
+    arrayOf(NameColumn(context), SeparatorColumn(context), ValueColumn(context)),
+    context.descriptorsInfo.resultDescriptors,
+), EditableModel {
     override fun addRow() {
         addRow(PropertyDescriptor())
     }
