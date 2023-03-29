@@ -316,7 +316,6 @@ object ParadoxConfigHandler {
                 return true
             }
             CwtDataType.EnumValue -> {
-                //if(!expression.type.isStringType()) return false
                 if(!isStatic && isParameterAware) return true
                 val name = expression.text
                 val enumName = configExpression.value ?: return false //invalid cwt config
@@ -423,7 +422,8 @@ object ParadoxConfigHandler {
                 return variableFieldExpression != null
             }
             CwtDataType.Modifier -> {
-                if(!isStatic && isParameterAware) return true
+                if(isStatic) return true
+                if(isParameterAware) return true
                 //匹配预定义的modifier
                 return matchesModifier(element, expression.text, configGroup)
             }
