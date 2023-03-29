@@ -1,5 +1,6 @@
 package icu.windea.pls.core.listeners
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
@@ -33,7 +34,7 @@ class ParadoxUpdateLibraryOnGameSettingsChangedListener : ParadoxGameSettingsLis
     private fun doUpdateLibrary(gameFile: VirtualFile) {
         for(project in ProjectManager.getInstance().openProjects) {
             if(project.isDisposed) continue
-            val isInProject = ProjectFileIndex.getInstance(project).isInContent(gameFile)
+            val isInProject = runReadAction { ProjectFileIndex.getInstance(project).isInContent(gameFile) }
             if(!isInProject) continue
             val paradoxLibrary = project.paradoxLibrary
             paradoxLibrary.refreshRoots()

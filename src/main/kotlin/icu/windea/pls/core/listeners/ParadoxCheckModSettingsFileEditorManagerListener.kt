@@ -1,6 +1,7 @@
 package icu.windea.pls.core.listeners
 
 import com.intellij.notification.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.util.*
@@ -30,7 +31,7 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
             modPaths.remove(modPath)
             return
         }
-        val isInProject = ProjectFileIndex.getInstance(project).isInContent(rootFile)
+        val isInProject = runReadAction { ProjectFileIndex.getInstance(project).isInContent(rootFile) }
         if(!isInProject) {
             modPaths.remove(modPath)
             return
