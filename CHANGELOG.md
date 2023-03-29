@@ -69,6 +69,7 @@
 ## 0.9.4
 
 * 优化索引时的规则匹配逻辑
+* 修复：[只能读取动态肖像而不能读取静态肖像 #13](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/13) *
 
 ## 0.9.3
 
