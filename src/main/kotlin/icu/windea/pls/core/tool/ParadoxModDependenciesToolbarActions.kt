@@ -5,7 +5,6 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.ui.table.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.settings.*
 
@@ -70,7 +69,7 @@ interface ParadoxModDependenciesToolbarActions {
         private val project: Project,
         private val tableView: TableView<ParadoxModDependencySettingsState>,
         private val tableModel: ParadoxModDependenciesTableModel
-    ) : AnAction(IconUtil.getEditIcon()) {
+    ) : AnAction(AllIcons.Actions.Edit) {
         init {
             templatePresentation.text = PlsBundle.message("mod.dependencies.toolbar.action.edit")
             shortcutSet = CustomShortcutSet.fromString("ENTER")

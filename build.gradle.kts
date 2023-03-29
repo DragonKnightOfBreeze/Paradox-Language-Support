@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.utils.*
 
 plugins {
 	id("idea")
-	id("org.jetbrains.kotlin.jvm") version "1.7.22"
+	id("org.jetbrains.kotlin.jvm") version "1.8.10"
 	id("org.jetbrains.intellij") version "1.11.0"
 	id("org.jetbrains.grammarkit") version "2022.3"
 	id("org.jetbrains.changelog") version "2.0.0"
@@ -16,7 +16,7 @@ version = "0.9.4"
 intellij {
 	pluginName.set("Paradox Language Support")
 	type.set("IU")
-	version.set("2022.3.2")
+	version.set("2023.1")
 	plugins.add("com.intellij.platform.images")
 	
 	//optional
@@ -127,7 +127,7 @@ tasks {
 		}
 	}
 	patchPluginXml {
-		sinceBuild.set("223")
+		sinceBuild.set("231")
 		untilBuild.set("")
 		val descriptionText = projectDir.resolve("DESCRIPTION.md").readText()
 		pluginDescription.set(descriptionText)
