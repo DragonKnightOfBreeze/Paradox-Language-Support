@@ -95,7 +95,6 @@
     <paradoxLocalisationSearch implementation="icu.windea.pls.core.search.ParadoxLocalisationSearcher"/>
     <paradoxSyncedLocalisationSearch implementation="icu.windea.pls.core.search.ParadoxSyncedLocalisationSearcher"/>
     <paradoxFilePathSearch implementation="icu.windea.pls.core.search.ParadoxFilePathSearcher"/>
-
     <paradoxComplexEnumValueSearch implementation="icu.windea.pls.core.search.ParadoxComplexEnumValueSearcher"/>
     <paradoxValueSetValuesSearch implementation="icu.windea.pls.core.search.ParadoxValueSetValueSearcher"/>
   </extensions>
