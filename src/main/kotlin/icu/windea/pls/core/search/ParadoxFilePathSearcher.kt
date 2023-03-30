@@ -31,6 +31,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 FileBasedIndex.getInstance().getAllKeys(name, project)
             }
             FileBasedIndex.getInstance().processFilesContainingAnyKey(name, keys, scope, null, null) { file ->
+                ProgressManager.checkCanceled()
                 consumer.process(file)
             }
             return
