@@ -3,7 +3,6 @@ package icu.windea.pls.core.actions
 import com.intellij.ide.actions.CreateDirectoryCompletionContributor
 import com.intellij.ide.actions.CreateDirectoryCompletionContributor.*
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.project.DumbService
 import com.intellij.psi.*
 import com.intellij.util.Processor
 import com.intellij.util.indexing.*
@@ -31,18 +30,20 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
     
     override fun getVariants(directory: PsiDirectory): Collection<Variant> {
         val fileInfo = directory.fileInfo ?: return emptySet()
-        val path = fileInfo.entryPath.path //use entryPath here
-        val pathPrefix = if(path.isEmpty()) "" else path + "/"
+        val contextPath = fileInfo.entryPath.path //use entryPath here
+        val contextGameType = fileInfo.rootInfo.gameType
+        val pathPrefix = if(contextPath.isEmpty()) "" else contextPath + "/"
         val result = sortedSetOf<String>()
-        if(path.isEmpty()) {
+        if(contextPath.isEmpty()) {
             result.addAll(defaultVariants)
         }
         val project = directory.project
         val name = ParadoxFilePathIndex.NAME
-        FileBasedIndex.getInstance().processAllKeys(name, Processor {
+        FileBasedIndex.getInstance().processAllKeys(name, p@{ (path, gameType) ->
             ProgressManager.checkCanceled()
-            var p = it
-            p = p.removePrefixOrNull(pathPrefix)
+            if(contextGameType != gameType) return@p true
+            
+            var p = path.removePrefixOrNull(pathPrefix)
             if(p != null && p.isNotEmpty()) {
                 if(isParadoxFile(p)) {
                     p = p.substringBeforeLast('/', "")
