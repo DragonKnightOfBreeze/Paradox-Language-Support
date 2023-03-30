@@ -472,7 +472,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport()
         val invocationExpressionConfig = config.parent
             ?.castOrNull<CwtPropertyConfig>()
             ?: return null
-        return ParadoxParameterSupport.resolveParameterFromInvocationExpression(expression, invocationExpression, invocationExpressionConfig)
+        return ParadoxParameterSupport.resolveArgument(expression, invocationExpression, invocationExpressionConfig)
     }
     
     override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
@@ -486,7 +486,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport()
     }
 }
 
-class ParadoxScriptLLocalisationParameterExpressionSupport : ParadoxScriptExpressionSupport() {
+class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpressionSupport() {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataType.LocalisationParameter
     }
@@ -501,14 +501,7 @@ class ParadoxScriptLLocalisationParameterExpressionSupport : ParadoxScriptExpres
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         //尝试解析为本地化参数名（仅限key）
         if(isKey != true || config !is CwtPropertyConfig) return null
-        //val invocationExpression = element.findParentProperty(fromParentBlock = true)
-        //    ?.castOrNull<ParadoxScriptProperty>()
-        //    ?: return null
-        //val invocationExpressionConfig = config.parent
-        //    ?.castOrNull<CwtPropertyConfig>()
-        //    ?: return null
-        //return ParadoxParameterSupport.resolveParameterFromInvocationExpression(expression, invocationExpression, invocationExpressionConfig)
-        return null
+        return ParadoxLocalisationParameterSupport.resolveArgument(element, config)
     }
     
     override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {

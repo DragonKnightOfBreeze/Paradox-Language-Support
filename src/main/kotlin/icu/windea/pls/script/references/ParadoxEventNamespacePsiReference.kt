@@ -44,7 +44,6 @@ class ParadoxEventNamespacePsiReference(
 		val preferredEventNamespace = ParadoxEventHandler.getMatchedNamespace(event)
 		if(preferredEventNamespace != null) result.add(preferredEventNamespace)
 		
-		val gameType = definitionInfo.gameType
 		val project = definitionInfo.project
 		val name = element.value.substringBefore('.')
 		val selector = definitionSelector(project, event).contextSensitive()

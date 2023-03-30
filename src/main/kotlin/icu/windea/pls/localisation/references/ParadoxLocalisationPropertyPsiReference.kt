@@ -9,6 +9,7 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.model.ParadoxLocalisationCategory.*
+import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -30,11 +31,15 @@ class ParadoxLocalisationPropertyPsiReference(
 	}
 	
 	override fun resolve(exact: Boolean): PsiElement? {
+		val element = element
 		val file = element.containingFile as? ParadoxLocalisationFile ?: return null
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return null
 		val locale = file.localeConfig
 		val name = element.name
 		val project = element.project
+		
+		//尝试解析成parameter
+		ParadoxLocalisationParameterSupport.resolveParameter(element)?.let { return it }
 		
 		//尝试解析成predefined_parameter
 		getCwtConfig(project).core.localisationLocales.get(name)?.pointer?.element?.let { return it }
@@ -48,11 +53,15 @@ class ParadoxLocalisationPropertyPsiReference(
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+		val element = element
 		val file = element.containingFile as? ParadoxLocalisationFile ?: return emptyArray()
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return emptyArray()
 		val locale = file.localeConfig
 		val name = element.name
 		val project = element.project
+		
+		//尝试解析成parameter
+		ParadoxLocalisationParameterSupport.resolveParameter(element)?.let { return arrayOf(PsiElementResolveResult(it)) }
 		
 		//尝试解析成predefined_parameter
 		getCwtConfig(project).core.localisationLocales.get(name)?.pointer?.element?.let { return arrayOf(PsiElementResolveResult(it)) }

@@ -71,7 +71,6 @@ abstract class ParadoxScriptTemplateContextType(presentableName: String) : Templ
         override fun doIsInContext(templateActionContext: TemplateActionContext): Boolean {
             val file = templateActionContext.file.originalFile
             val startOffset = templateActionContext.startOffset
-            val endOffset = templateActionContext.endOffset
             val start = file.findElementAt(startOffset) ?: return false
             if(start.elementType == ParadoxScriptElementTypes.INLINE_MATH_START) return false
             val startElement = start.parentOfType<ParadoxScriptInlineMath>()

@@ -3,6 +3,7 @@ package icu.windea.pls.script.inspections.general
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.codeInspection.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -77,8 +78,9 @@ class UnusedParameterInspection : LocalInspectionTool() {
                         val isUsed = if(used == null) {
                             ProgressManager.checkCanceled()
                             //optimize search scope
-                            val searchScope = GlobalSearchScope.allScope(PsiUtilCore.getProjectInReadAction(element))
-                                .withFileType(ParadoxScriptFileType)
+                            val searchScope = runReadAction { ParadoxGlobalSearchScope.fromElement(element) }
+                                ?.withFileType(ParadoxScriptFileType)
+                                ?: return
                             val r = ReferencesSearch.search(resolved, searchScope).processQuery {
                                 ProgressManager.checkCanceled()
                                 val res = it.resolveFast()
