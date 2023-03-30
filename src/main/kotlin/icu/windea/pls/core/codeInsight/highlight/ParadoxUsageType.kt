@@ -15,6 +15,7 @@ object ParadoxUsageType {
 	val PARAMETER_REFERENCE_3 = UsageType { PlsBundle.message("usageType.parameterReference.3") }
 	val PARAMETER_REFERENCE_4 = UsageType { PlsBundle.message("usageType.parameterReference.4") }
 	val PARAMETER_REFERENCE_5 = UsageType { PlsBundle.message("usageType.parameterReference.5") }
+	val PARAMETER_REFERENCE_6 = UsageType { PlsBundle.message("usageType.parameterReference.6") }
 	
 	val LOCALISATION_REFERENCE = UsageType { PlsBundle.message("usageType.localisationReference") }
 	val LOCALISATION_ICON = UsageType { PlsBundle.message("usageType.localisationIcon") }
