@@ -4,6 +4,7 @@ import com.intellij.codeInsight.highlighting.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
@@ -40,5 +41,22 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
         return ParadoxParameterElement(element, parameterName, contextName, localisationName, readWriteAccess, gameType, project)
+    }
+    
+    override fun buildDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {
+        if(!element.contextKey.startsWith("localisation#")) return false
+        
+        //不加上文件信息
+        
+        //加上名字
+        val name = element.name
+        append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        
+        //加上所属本地化信息
+        val gameType = element.gameType
+        appendBr().appendIndent()
+        append(PlsDocBundle.message("ofLocalisation")).append(" ")
+        appendLocalisationLink(gameType, element.contextName, element)
+        return true
     }
 }

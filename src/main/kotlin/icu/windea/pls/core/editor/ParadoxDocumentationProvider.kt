@@ -141,6 +141,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         val name = element.name
         definition {
             val r = ParadoxParameterSupport.getDocumentationDefinition(element, this)
+                || ParadoxLocalisationParameterSupport.getDocumentationDefinition(element, this)
             if(!r) {
                 //显示默认的快速文档
                 append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")

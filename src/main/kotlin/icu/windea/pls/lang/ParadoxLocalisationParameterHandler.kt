@@ -34,7 +34,7 @@ object ParadoxLocalisationParameterHandler {
     private fun doGetParameters(element: ParadoxLocalisationProperty): Set<String>? {
         val result = mutableSetOf<String>()
         val searchScope = runReadAction { ParadoxGlobalSearchScope.fromElement(element) }
-            ?.withFileType(ParadoxScriptFileType)
+            ?.withFileTypes(ParadoxScriptFileType)
             ?: return null
         ProgressManager.getInstance().runProcess({
             ReferencesSearch.search(element, searchScope).processQuery p@{ reference ->

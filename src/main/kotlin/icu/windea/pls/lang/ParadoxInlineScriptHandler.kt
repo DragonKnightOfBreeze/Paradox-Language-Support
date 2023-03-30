@@ -176,7 +176,7 @@ object ParadoxInlineScriptHandler {
         val expression = getInlineScriptExpression(file) ?: return null
         val project = file.project
         val searchScope = runReadAction { ParadoxGlobalSearchScope.fromElement(file) }
-            ?.withFileType(ParadoxScriptFileType)
+            ?.withFileTypes(ParadoxScriptFileType)
             ?: return null
         var element: ParadoxScriptPropertyKey? = null
         var hasConflict = false

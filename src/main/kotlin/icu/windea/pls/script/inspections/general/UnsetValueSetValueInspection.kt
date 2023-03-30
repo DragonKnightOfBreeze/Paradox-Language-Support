@@ -6,13 +6,12 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scopes.*
+import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
@@ -60,7 +59,7 @@ class UnsetValueSetValueInspection : LocalInspectionTool(){
                             ProgressManager.checkCanceled()
                             //optimize search scope
                             val searchScope = runReadAction { ParadoxGlobalSearchScope.fromElement(element) }
-                                ?.withFileType(ParadoxScriptFileType)
+                                ?.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
                                 ?: return
                             val r = ReferencesSearch.search(resolved, searchScope).processQuery {
                                 ProgressManager.checkCanceled()

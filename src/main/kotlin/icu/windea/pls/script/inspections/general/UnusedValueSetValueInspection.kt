@@ -12,6 +12,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scopes.*
+import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
@@ -62,7 +63,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
                         ProgressManager.checkCanceled()
                         //optimize search scope
                         val searchScope = runReadAction { ParadoxGlobalSearchScope.fromElement(element) }
-                            ?.withFileType(ParadoxScriptFileType)
+                            ?.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
 							?: return
                         val r = ReferencesSearch.search(resolved, searchScope).processQuery {
                             ProgressManager.checkCanceled()

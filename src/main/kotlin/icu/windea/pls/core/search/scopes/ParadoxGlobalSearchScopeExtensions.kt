@@ -7,6 +7,6 @@ fun GlobalSearchScope.withFilePath(filePath: String, fileExtension: String? = nu
     return ParadoxWithFilePathScope(this, filePath, fileExtension)
 }
 
-fun GlobalSearchScope.withFileType(vararg fileTypes: FileType): GlobalSearchScope {
+fun GlobalSearchScope.withFileTypes(vararg fileTypes: FileType): GlobalSearchScope {
     return GlobalSearchScope.getScopeRestrictedByFileTypes(this, *fileTypes)
 }
