@@ -70,6 +70,7 @@
     <refactoring.inlineHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptInlineHandler"/>
     <fileIconProvider implementation="icu.windea.pls.core.ParadoxFileIconProvider"/>
     <lang.surroundDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.surroundWith.ParadoxScriptSurroundDescriptor"/>
+    <lang.unwrapDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.unwrap.ParadoxScriptUnwrapDescriptor"/>
     
     <intentionAction>
       <language>PARADOX_SCRIPT</language>

@@ -23,7 +23,6 @@ import icu.windea.pls.script.psi.*
  * ```
  */
 class ParadoxScriptParameterConditionSurrounder: Surrounder {
-	@Suppress("DialogTitleCapitalization")
 	override fun getTemplateDescription(): String {
 		return PlsBundle.message("script.surroundWith.parameterCondition.description")
 	}
