@@ -56,6 +56,7 @@
     <lang.foldingBuilder language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.core.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
     
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFilePathIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxDirectoryFilePathIndex"/>
     
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxScriptedVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionNameIndex"/>

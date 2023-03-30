@@ -11,7 +11,9 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
 
 /**
- * 在游戏目录或模组根目录下创建目录时，可以提示目录名称
+ * 在游戏目录或模组根目录下创建目录时，可以提示目录名称。
+ * 
+ * @see icu.windea.pls.core.index.ParadoxDirectoryFilePathIndex
  */
 class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionContributor {
     val defaultVariants = setOf(
@@ -38,34 +40,22 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
             result.addAll(defaultVariants)
         }
         val project = directory.project
-        val name = ParadoxFilePathIndex.NAME
+        //为了优化性能，使用另外的ParadoxDirectoryFilePathIndex而非ParadoxFilePathIndex
+        val name = ParadoxDirectoryFilePathIndex.NAME
         FileBasedIndex.getInstance().processAllKeys(name, p@{ (path, gameType) ->
             ProgressManager.checkCanceled()
             if(contextGameType != gameType) return@p true
             
             var p = path.removePrefixOrNull(pathPrefix)
             if(p != null && p.isNotEmpty()) {
-                if(isParadoxFile(p)) {
-                    p = p.substringBeforeLast('/', "")
-                    if(p.isNotEmpty()) {
-                        result.add(p)
-                    }
-                }
+                result.add(p)
             }
             true
         }, project)
         return result.map { it.toVariant() }
     }
     
-    private fun isParadoxFile(path: String): Boolean {
-        val extension = path.substringAfterLast('.')
-        if(extension.isEmpty()) return false
-        return extension in PlsConstants.scriptFileExtensions
-            || extension in PlsConstants.localisationFileExtensions
-            || extension in PlsConstants.ddsFileExtensions
-            || extension == "png"
-            || extension == "tga"
-    }
+
     
     private fun String.toVariant() = Variant(this, null)
 }
