@@ -15,54 +15,60 @@ import javax.swing.*
 class IncorrectScopeSwitchInspection : LocalInspectionTool() {
     private var checkForSystemLink = false
     
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = object : PsiElementVisitor() {
-        override fun visitElement(element: PsiElement) {
-            if(element is ParadoxScriptProperty) visitScriptProperty(element)
-        }
-        
-        private fun visitScriptProperty(element: ParadoxScriptProperty) {
-            ProgressManager.checkCanceled()
-            val configs = ParadoxConfigHandler.getConfigs(element)
-            val config = configs.firstOrNull()
-            if(config == null) return
-            val definitionInfo by lazy { element.findParentDefinition()?.definitionInfo }
-            if(config is CwtPropertyConfig && config.expression.type == CwtDataType.ScopeField) {
-                val resultScopeContext = ParadoxScopeHandler.getScopeContext(element)
-                if(resultScopeContext == null) return
-                val scopeFieldInfo = resultScopeContext.scopeFieldInfo
-                if(scopeFieldInfo.isNullOrEmpty()) return
-                val propertyKey = element.propertyKey
-                for((scopeNode, scopeContext) in scopeFieldInfo) {
-                    val rangeInExpression = scopeNode.rangeInExpression
-                    when(scopeNode) {
-                        is ParadoxScopeLinkExpressionNode -> {
-                            val parentScopeContext = scopeContext.parent ?: continue
-                            val inputScopes = scopeNode.config.inputScopes
-                            val configGroup = config.info.configGroup
-                            if(!ParadoxScopeHandler.matchesScope(parentScopeContext, inputScopes, configGroup)) {
-                                val description = PlsBundle.message("inspection.script.scope.incorrectScopeSwitch.description.1",
-                                    scopeNode.text, inputScopes.joinToString(), parentScopeContext.scope.id)
-                                holder.registerProblem(propertyKey, rangeInExpression, description)
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : PsiElementVisitor() {
+            override fun visitElement(element: PsiElement) {
+                if(element is ParadoxScriptProperty) visitScriptProperty(element)
+            }
+            
+            private fun visitScriptProperty(element: ParadoxScriptProperty) {
+                ProgressManager.checkCanceled()
+                val configs = ParadoxConfigHandler.getConfigs(element)
+                val config = configs.firstOrNull()
+                if(config == null) return
+                val definitionInfo by lazy { element.findParentDefinition()?.definitionInfo }
+                if(config is CwtPropertyConfig && config.expression.type == CwtDataType.ScopeField) {
+                    val resultScopeContext = ParadoxScopeHandler.getScopeContext(element)
+                    if(resultScopeContext == null) return
+                    val scopeFieldInfo = resultScopeContext.scopeFieldInfo
+                    if(scopeFieldInfo.isNullOrEmpty()) return
+                    val propertyKey = element.propertyKey
+                    for((scopeNode, scopeContext) in scopeFieldInfo) {
+                        val rangeInExpression = scopeNode.rangeInExpression
+                        when(scopeNode) {
+                            is ParadoxScopeLinkExpressionNode -> {
+                                val parentScopeContext = scopeContext.parent ?: continue
+                                val inputScopes = scopeNode.config.inputScopes
+                                val configGroup = config.info.configGroup
+                                if(!ParadoxScopeHandler.matchesScope(parentScopeContext, inputScopes, configGroup)) {
+                                    val description = PlsBundle.message(
+                                        "inspection.script.scope.incorrectScopeSwitch.description.1",
+                                        scopeNode.text, inputScopes.joinToString(), parentScopeContext.scope.id
+                                    )
+                                    holder.registerProblem(propertyKey, rangeInExpression, description)
+                                }
                             }
-                        }
-                        //TODO 'event_target:xxx', not supported now
-                        is ParadoxScopeLinkFromDataExpressionNode -> {
-                            
-                        }
-                        //TODO may depends on usages
-                        //check when root parent scope context is not from event, scripted_trigger or scripted_effect
-                        is ParadoxSystemLinkExpressionNode -> {
-                            if(!checkForSystemLink) continue
-                            if(scopeContext.scope.id == ParadoxScopeHandler.unknownScopeId) {
-                                val definitionType = definitionInfo?.type ?: continue
-                                if(config.info.configGroup.definitionTypesSkipCheckSystemLink.contains(definitionType)) continue
-                                val description = PlsBundle.message("inspection.script.scope.incorrectScopeSwitch.description.3",
-                                    scopeNode.text)
-                                holder.registerProblem(propertyKey, rangeInExpression, description)
+                            //TODO 'event_target:xxx', not supported now
+                            is ParadoxScopeLinkFromDataExpressionNode -> {
+                                
                             }
+                            //TODO may depends on usages
+                            //check when root parent scope context is not from event, scripted_trigger or scripted_effect
+                            is ParadoxSystemLinkExpressionNode -> {
+                                if(!checkForSystemLink) continue
+                                if(scopeContext.scope.id == ParadoxScopeHandler.unknownScopeId) {
+                                    val definitionType = definitionInfo?.type ?: continue
+                                    if(config.info.configGroup.definitionTypesSkipCheckSystemLink.contains(definitionType)) continue
+                                    val description = PlsBundle.message(
+                                        "inspection.script.scope.incorrectScopeSwitch.description.3",
+                                        scopeNode.text
+                                    )
+                                    holder.registerProblem(propertyKey, rangeInExpression, description)
+                                }
+                            }
+                            //error
+                            is ParadoxErrorScopeExpressionNode -> break
                         }
-                        //error
-                        is ParadoxErrorScopeExpressionNode -> break
                     }
                 }
             }

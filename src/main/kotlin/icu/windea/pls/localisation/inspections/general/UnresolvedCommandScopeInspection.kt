@@ -11,17 +11,19 @@ import icu.windea.pls.localisation.psi.*
  */
 class UnresolvedCommandScopeInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        return Visitor(holder)
-    }
-    
-    private class Visitor(private val holder: ProblemsHolder) : ParadoxLocalisationVisitor() {
-        override fun visitCommandScope(element: ParadoxLocalisationCommandScope) {
-            ProgressManager.checkCanceled()
-            val location = element
-            val reference = element.reference
-            if(reference.canResolve()) return
-            val name = element.name
-            holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unresolvedCommandScope.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+        return object : PsiElementVisitor() {
+            override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
+                if(element is ParadoxLocalisationCommandScope) visitCommandScope(element)
+            }
+            
+            private fun visitCommandScope(element: ParadoxLocalisationCommandScope) {
+                val location = element
+                val reference = element.reference
+                if(reference.canResolve()) return
+                val name = element.name
+                holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unresolvedCommandScope.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+            }
         }
     }
 }

@@ -210,12 +210,6 @@
     
     <!--region Paradox localisation-->
     <!--region Paradox localisation/Basic-->
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedLocale"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.localisation.unsupportedLocale"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation"
-                     groupPathKey="inspection.localisation.path"
-                     implementationClass="icu.windea.pls.localisation.inspections.UnsupportedLocaleInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationDuplicateProperties"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.localisation.duplicateProperties"
@@ -234,20 +228,26 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.localisation"
                      groupPathKey="inspection.localisation.path"
                      implementationClass="icu.windea.pls.localisation.inspections.IncorrectFileEncodingInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationMultipleLocales"
-                     enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.localisation.multipleLocales"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation"
-                     groupPathKey="inspection.localisation.path"
-                     implementationClass="icu.windea.pls.localisation.inspections.MultipleLocalesInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationMissingLocale"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.localisation.missingLocale"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation"
-                     groupPathKey="inspection.localisation.path"
-                     implementationClass="icu.windea.pls.localisation.inspections.MissingLocaleInspection"/>
     <!--endregion-->
     <!--region Paradox localisation/General-->
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationMultipleLocales"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.localisation.general.multipleLocales"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation"
+                     groupPathKey="inspection.localisation.path"
+                     implementationClass="icu.windea.pls.localisation.inspections.general.MultipleLocalesInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationMissingLocale"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.localisation.general.missingLocale"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation"
+                     groupPathKey="inspection.localisation.path"
+                     implementationClass="icu.windea.pls.localisation.inspections.general.MissingLocaleInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedLocale"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.localisation.general.unsupportedLocale"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation"
+                     groupPathKey="inspection.localisation.path"
+                     implementationClass="icu.windea.pls.localisation.inspections.general.UnsupportedLocaleInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedIcon"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="inspection.localisation.general.unresolvedIcon"

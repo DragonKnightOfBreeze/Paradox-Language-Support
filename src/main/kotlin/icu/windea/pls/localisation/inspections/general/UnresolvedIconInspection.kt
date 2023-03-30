@@ -15,25 +15,24 @@ import javax.swing.*
  *
  * @property ignoredIconNames （配置项）需要忽略的图标名的模式。使用GLOB模式。忽略大小写。默认为"mod_.*"，以忽略生成的修饰符对应的图标。
  */
-class   UnresolvedIconInspection : LocalInspectionTool() {
+class UnresolvedIconInspection : LocalInspectionTool() {
     @JvmField var ignoredIconNames = ""
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        return Visitor(this, holder)
-    }
-    
-    private class Visitor(
-        private val inspection: UnresolvedIconInspection,
-        private val holder: ProblemsHolder
-    ) : ParadoxLocalisationVisitor() {
-        override fun visitIcon(element: ParadoxLocalisationIcon) {
-            ProgressManager.checkCanceled()
-            val iconName = element.name ?: return
-            if(iconName.matchesGlobFileName(inspection.ignoredIconNames, true)) return //忽略
-            val reference = element.reference
-            if(reference == null || reference.canResolve()) return
-            val location = element.iconId ?: return
-            holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unresolvedIcon.description", iconName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+        return object : PsiElementVisitor() {
+            override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
+                if(element is ParadoxLocalisationIcon) visitIcon(element)
+            }
+            
+            private fun visitIcon(element: ParadoxLocalisationIcon) {
+                val iconName = element.name ?: return
+                if(iconName.matchesGlobFileName(ignoredIconNames, true)) return //忽略
+                val reference = element.reference
+                if(reference == null || reference.canResolve()) return
+                val location = element.iconId ?: return
+                holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unresolvedIcon.description", iconName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+            }
         }
     }
     

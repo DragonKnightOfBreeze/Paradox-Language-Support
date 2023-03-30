@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.inspections
+package icu.windea.pls.localisation.inspections.general
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.observable.util.*
@@ -24,15 +24,15 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 		if(file.name.matchesGlobFileName(ignoredFileNames, true)) return null //忽略
 		if(file.propertyLists.size <= 1) return null //不存在多个语言区域，忽略
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		holder.registerProblem(file, PlsBundle.message("inspection.localisation.multipleLocales.description"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+		holder.registerProblem(file, PlsBundle.message("inspection.localisation.general.multipleLocales.description"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
 		return holder.resultsArray
 	}
 	
 	override fun createOptionsPanel(): JComponent {
 		return panel {
 			row {
-				label(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames"))
-					.applyToComponent { toolTipText = PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames.tooltip") }
+				label(PlsBundle.message("inspection.localisation.general.multipleLocales.option.ignoredFileNames"))
+					.applyToComponent { toolTipText = PlsBundle.message("inspection.localisation.general.multipleLocales.option.ignoredFileNames.tooltip") }
 			}
 			row {
 				expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
@@ -44,7 +44,7 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 							if(text != ignoredFileNames) ignoredFileNames = text
 						}
 					}
-					.comment(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames.comment"))
+					.comment(PlsBundle.message("inspection.localisation.general.multipleLocales.option.ignoredFileNames.comment"))
 					.align(Align.FILL)
 					.resizableColumn()
 			}

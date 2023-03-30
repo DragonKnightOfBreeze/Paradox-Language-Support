@@ -4,6 +4,7 @@ import com.intellij.codeInsight.intention.preview.*
 import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*

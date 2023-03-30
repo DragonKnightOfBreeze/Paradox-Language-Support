@@ -2,10 +2,12 @@ package icu.windea.pls.core.inspections
 
 import com.intellij.codeInsight.daemon.impl.actions.*
 import com.intellij.codeInspection.*
+import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
+import org.intellij.grammar.*
 
 //com.intellij.lang.properties.codeInspection.PropertiesInspectionSuppressor
 //org.intellij.grammar.inspection.BnfInspectionSuppressor
@@ -42,6 +44,14 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
         override fun getCommentsFor(container: PsiElement): List<PsiElement>? {
             return getCommentsForSuppression(container).toList()
         }
+        
+        override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
+            if(container is PsiFile) {
+                val text = SuppressionUtilCore.SUPPRESS_INSPECTIONS_TAG_NAME + " " + myID
+                val comment = SuppressionUtil.createComment(project, text, BnfLanguage.INSTANCE)
+                container.addAfter(comment, null)
+            }
+        }
     }
     
     private class SupressForPropertyFix(
@@ -53,6 +63,10 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
         
         override fun getCommentsFor(container: PsiElement): List<PsiElement>? {
             return getCommentsForSuppression(container).toList()
+        }
+        
+        override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
+            super.createSuppression(project, element, container)
         }
     }
 }

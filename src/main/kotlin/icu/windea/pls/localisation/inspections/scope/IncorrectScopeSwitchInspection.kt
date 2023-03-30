@@ -15,51 +15,55 @@ import javax.swing.*
 class IncorrectScopeSwitchInspection : LocalInspectionTool() {
     private var checkForSystemLink = false
     
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = object : PsiElementVisitor() {
-        override fun visitElement(element: PsiElement) {
-            if(element is ParadoxLocalisationCommandScope) visitLocalisationCommandScope(element)
-        }
-        
-        private fun visitLocalisationCommandScope(element: ParadoxLocalisationCommandScope) {
-            ProgressManager.checkCanceled()
-            val resolved = element.reference.resolve() ?: return
-            when {
-                //system link or localisation scope
-                resolved is CwtProperty -> {
-                    val config = resolved.getUserData(PlsKeys.cwtConfigKey)
-                    when(config) {
-                        is CwtLocalisationLinkConfig -> {
-                            val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
-                            val supportedScopes = config.inputScopes
-                            val configGroup = config.info.configGroup
-                            if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)) {
-                                val description = PlsBundle.message("inspection.localisation.scope.incorrectScopeSwitch.description.1",
-                                    element.name, supportedScopes.joinToString(), scopeContext.scope.id)
-                                holder.registerProblem(element, description)
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : PsiElementVisitor() {
+            override fun visitElement(element: PsiElement) {
+                if(element is ParadoxLocalisationCommandScope) visitLocalisationCommandScope(element)
+            }
+            
+            private fun visitLocalisationCommandScope(element: ParadoxLocalisationCommandScope) {
+                ProgressManager.checkCanceled()
+                val resolved = element.reference.resolve() ?: return
+                when {
+                    //system link or localisation scope
+                    resolved is CwtProperty -> {
+                        val config = resolved.getUserData(PlsKeys.cwtConfigKey)
+                        when(config) {
+                            is CwtLocalisationLinkConfig -> {
+                                val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
+                                val supportedScopes = config.inputScopes
+                                val configGroup = config.info.configGroup
+                                if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)) {
+                                    val description = PlsBundle.message(
+                                        "inspection.localisation.scope.incorrectScopeSwitch.description.1",
+                                        element.name, supportedScopes.joinToString(), scopeContext.scope.id
+                                    )
+                                    holder.registerProblem(element, description)
+                                }
+                            }
+                            
+                            //TODO depends on usages, cannot check now
+                            //is CwtSystemLinkConfig -> {
+                            // if(!checkForSystemLink) return
+                            //	val scopeContext = ParadoxScopeHandler.getScopeContext(element, file) ?: return
+                            //	val resolvedScope = ParadoxScopeHandler.resolveScopeBySystemLink(config, scopeContext)
+                            //	if(resolvedScope == null) {
+                            //		val location = element
+                            //		val description = PlsBundle.message("inspection.localisation.scope.incorrectScopeSwitch.description.3",
+                            //			element.name)
+                            //		holder.registerProblem(location, description)
+                            //	}
+                            //}
+                            //predefined event target - no scope info in cwt files yet
+                            is CwtValueConfig -> {
+                                return
                             }
                         }
-        
-                        //TODO depends on usages, cannot check now
-                        //is CwtSystemLinkConfig -> {
-                        // if(!checkForSystemLink) return
-                        //	val scopeContext = ParadoxScopeHandler.getScopeContext(element, file) ?: return
-                        //	val resolvedScope = ParadoxScopeHandler.resolveScopeBySystemLink(config, scopeContext)
-                        //	if(resolvedScope == null) {
-                        //		val location = element
-                        //		val description = PlsBundle.message("inspection.localisation.scope.incorrectScopeSwitch.description.3",
-                        //			element.name)
-                        //		holder.registerProblem(location, description)
-                        //	}
-                        //}
-                        //predefined event target - no scope info in cwt files yet
-                        is CwtValueConfig -> {
-                            return
-                        }
                     }
-                }
-                //TODO event target or global event target - not supported yet
-                resolved is ParadoxValueSetValueElement -> {
-                    return
+                    //TODO event target or global event target - not supported yet
+                    resolved is ParadoxValueSetValueElement -> {
+                        return
+                    }
                 }
             }
         }

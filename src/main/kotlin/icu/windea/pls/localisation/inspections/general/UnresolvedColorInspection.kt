@@ -11,17 +11,19 @@ import icu.windea.pls.localisation.psi.*
  */
 class UnresolvedColorInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        return Visitor(holder)
-    }
-    
-    private class Visitor(private val holder: ProblemsHolder) : ParadoxLocalisationVisitor() {
-        override fun visitColorfulText(element: ParadoxLocalisationColorfulText) {
-            ProgressManager.checkCanceled()
-            val location = element.colorId ?: return
-            val reference = element.reference
-            if(reference == null || reference.canResolve()) return
-            val name = element.name ?: return
-            holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unresolvedColor.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+        return object : PsiElementVisitor() {
+            override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
+                if(element is ParadoxLocalisationColorfulText) visitColorfulText(element)
+            }
+            
+            private fun visitColorfulText(element: ParadoxLocalisationColorfulText) {
+                val location = element.colorId ?: return
+                val reference = element.reference
+                if(reference == null || reference.canResolve()) return
+                val name = element.name ?: return
+                holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unresolvedColor.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+            }
         }
     }
 }
