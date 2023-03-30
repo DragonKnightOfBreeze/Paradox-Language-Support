@@ -2,9 +2,7 @@ package icu.windea.pls.localisation.editor
 
 import com.intellij.lang.annotation.*
 import com.intellij.lang.annotation.HighlightSeverity.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
@@ -46,9 +44,9 @@ class ParadoxLocalisationAnnotator : Annotator {
 		if(colorConfig != null) {
 			val location = element.propertyReferenceParameter
 			if(location != null) {
-				val startOffset = location.startOffset
+				val range = location.textRange
 				val attributesKey = Keys.getColorKey(colorConfig.color) ?: return
-				holder.newSilentAnnotation(INFORMATION).range(TextRange(startOffset, startOffset + 1)).textAttributes(attributesKey).create()
+				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 		}
 	}
