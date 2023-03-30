@@ -140,7 +140,8 @@ class ParadoxScriptAnnotator : Annotator {
         config: CwtConfig<*>
     ) {
         val configExpression = config.expression ?: return
-        val expression = rangeInElement?.substring(element.text) ?: element.value
+        val text = element.text
+        val expression = rangeInElement?.substring(text) ?: element.value
         
         ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expression, holder, config)
         
@@ -153,7 +154,7 @@ class ParadoxScriptAnnotator : Annotator {
                         "variable" -> Keys.VARIABLE_KEY
                         else -> Keys.VALUE_SET_VALUE_KEY
                     }
-                    doHighlightScriptExpression(element, element.textRangeAfterUnquote, attributesKey, holder)
+                    doHighlightScriptExpression(element, element.textRange.unquote(text), attributesKey, holder)
                     return
                 }
                 val configGroup = config.info.configGroup
@@ -202,7 +203,7 @@ class ParadoxScriptAnnotator : Annotator {
                 //override default highlight by highlighter (property key or string)
                 holder.newSilentAnnotation(INFORMATION).textAttributes(HighlighterColors.TEXT).create()
             }
-            val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRangeAfterUnquote.startOffset)
+            val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRange.unquote(element.text).startOffset)
             doHighlightScriptExpression(element, rangeToAnnotate, attributesKey, holder)
         }
         val attributesKeyConfig = expressionNode.getAttributesKeyConfig(element)

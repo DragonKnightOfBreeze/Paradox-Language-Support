@@ -36,52 +36,76 @@ object ParadoxLocalisationParameterHandler {
         val searchScope = runReadAction { ParadoxGlobalSearchScope.fromElement(element) }
             ?.withFileType(ParadoxScriptFileType)
             ?: return null
-        ReferencesSearch.search(element, searchScope).processQuery p@{ reference ->
-            ProgressManager.checkCanceled()
-            val localisationReferenceElement = reference.element
-            if(localisationReferenceElement is ParadoxScriptString) {
-                val valueConfigs = ParadoxConfigHandler.getValueConfigs(localisationReferenceElement)
-                val valueConfig = valueConfigs.firstOrNull() ?: return@p true
-                val config = valueConfig.propertyConfig ?: return@p true
-                val parameterConfig = config.parent?.configs?.find { isParameterConfig(element, it) } ?: return@p true
-                val parameterPropertyElements = findProperties(localisationReferenceElement, parameterConfig)
-                for(parameterPropertyElement in parameterPropertyElements) {
-                    result.add(parameterPropertyElement.name)
+        ProgressManager.getInstance().runProcess({
+            ReferencesSearch.search(element, searchScope).processQuery p@{ reference ->
+                ProgressManager.checkCanceled()
+                val localisationReferenceElement = reference.element
+                if(localisationReferenceElement is ParadoxScriptString) {
+                    val valueConfigs = ParadoxConfigHandler.getValueConfigs(localisationReferenceElement)
+                    val valueConfig = valueConfigs.firstOrNull() ?: return@p true
+                    val config = valueConfig.propertyConfig ?: return@p true
+                    val parameterPropertyElements = findParameterPropertiesFromLocalisationProperty(localisationReferenceElement, config)
+                    for(parameterPropertyElement in parameterPropertyElements) {
+                        result.add(parameterPropertyElement.name)
+                    }
                 }
+                true
+            }
+        }, EmptyProgressIndicator())
+        return result
+    }
+    
+    @JvmStatic
+    fun getLocalisationReferenceElement(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): ParadoxScriptString? {
+        val localisationReferencePropertyElement = findLocalisationPropertyFromParameterProperty(element, config)
+        return localisationReferencePropertyElement?.propertyValue?.castOrNull()
+    }
+    
+    private fun findParameterPropertiesFromLocalisationProperty(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): List<ParadoxScriptProperty> {
+        val configToUse = config.parent?.configs?.firstNotNullOfOrNull { c -> c.configs?.find { isParameterConfig(element, it) } }
+        if(configToUse == null) return emptyList()
+        val context = element.findParentProperty(fromParentBlock = true)
+            ?.castOrNull<ParadoxScriptProperty>()
+            ?: return emptyList()
+        val result = mutableListOf<ParadoxScriptProperty>()
+        context.block?.processProperty p@{ p ->
+            p.block?.processProperty pp@{ pp ->
+                if(isMatchedProperty(pp, configToUse)) {
+                    result.add(pp)
+                }
+                true
             }
             true
         }
         return result
     }
     
-    @JvmStatic
-    fun getLocalisationReferenceElement(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): ParadoxScriptString? {
-        val localisationConfig = config.parent?.configs?.find { isLocalisationConfig(element, it) }
-        if(localisationConfig == null) return null
-        val localisationReferencePropertyElement = findProperty(element, localisationConfig)
-        return localisationReferencePropertyElement?.propertyValue?.castOrNull()
-    }
-    
-    private fun findProperties(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): List<ParadoxScriptProperty> {
-        val result = mutableListOf<ParadoxScriptProperty>()
-        element.siblings(forward = true, withSelf = false).mapNotNullTo(result) { doFindProperty(it, config) }
-        element.siblings(forward = false, withSelf = false).mapNotNullTo(result) { doFindProperty(it, config) }
+    private fun findLocalisationPropertyFromParameterProperty(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): ParadoxScriptProperty? {
+        val configToUse = config.parent?.parent?.configs?.find { isLocalisationConfig(element, it) }
+        if(configToUse == null) return null
+        val context = element.findParentProperty(fromParentBlock = true)
+            ?.findParentProperty(fromParentBlock = true)
+            ?.castOrNull<ParadoxScriptProperty>()
+            ?: return null
+        var result: ParadoxScriptProperty? = null
+        context.block?.processProperty p@{ p ->
+            if(isMatchedProperty(p, configToUse)) {
+                result = p
+                return@p false
+            }
+            true
+        }
         return result
     }
     
-    private fun findProperty(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): ParadoxScriptProperty? {
-        return (element.siblings(forward = true, withSelf = false).firstNotNullOfOrNull { doFindProperty(it, config) }
-            ?: element.siblings(forward = false, withSelf = false).firstNotNullOfOrNull { doFindProperty(it, config) })
-    }
-    
-    private fun doFindProperty(element: PsiElement, config: CwtDataConfig<*>): ParadoxScriptProperty? {
+    private fun isMatchedProperty(element: PsiElement, config: CwtDataConfig<*>): Boolean {
         if(element is ParadoxScriptProperty) {
             val configs = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)
             if(configs.any { it pointerEquals config }) {
-                return element
+                return true
             }
         }
-        return null
+        return false
     }
     
     private fun isLocalisationConfig(element: PsiElement, config: CwtDataConfig<*>): Boolean {
@@ -92,7 +116,7 @@ object ParadoxLocalisationParameterHandler {
     
     private fun isParameterConfig(element: PsiElement, config: CwtDataConfig<*>): Boolean {
         if(config !is CwtPropertyConfig) return false
-        val dataType = config.valueExpression.type
+        val dataType = config.keyExpression.type
         return dataType == CwtDataType.LocalisationParameter
     }
 }

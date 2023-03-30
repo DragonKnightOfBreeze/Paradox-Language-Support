@@ -25,7 +25,7 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 		if(config != null) {
 			val textRange = when {
 				element is ParadoxScriptBlock -> TextRange.create(0, 1) //left curly brace
-				else -> TextRange.create(0, text.length) //whole text, including possible quotes
+				else -> TextRange.create(0, text.length).unquote(text) //unquoted text
 			}
 			val configExpression = config.expression
 			when(configExpression.type) {

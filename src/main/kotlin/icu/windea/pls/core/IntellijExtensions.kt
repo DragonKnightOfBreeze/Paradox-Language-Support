@@ -85,15 +85,25 @@ fun <V> caseInsensitiveStringKeyMap(): MutableMap<@CaseInsensitive String, V> {
 	//com.intellij.util.containers.createCaseInsensitiveStringMap()
 	return Object2ObjectLinkedOpenCustomHashMap(CaseInsensitiveStringHashingStrategy)
 }
-//endregion
 
-//region JRT Extensions
 fun String.compareToIgnoreCase(other: String): Int {
 	return String.CASE_INSENSITIVE_ORDER.compare(this, other)
 }
 //endregion
 
 //region Misc Extensions
+fun TextRange.unquote(text: String): TextRange {
+	val leftQuoted = text.isLeftQuoted()
+	val rightQuoted = text.isRightQuoted()
+	val textRange = this
+	return when {
+		leftQuoted && rightQuoted -> TextRange.create(textRange.startOffset + 1, textRange.endOffset - 1)
+		leftQuoted -> TextRange.create(textRange.startOffset + 1, textRange.endOffset)
+		rightQuoted -> TextRange.create(textRange.startOffset, textRange.endOffset - 1)
+		else -> textRange
+	}
+}
+
 //com.intellij.refactoring.actions.BaseRefactoringAction.findRefactoringTargetInEditor
 fun DataContext.findElement(): PsiElement? {
 	var element = this.getData(CommonDataKeys.PSI_ELEMENT)
@@ -384,20 +394,6 @@ fun ASTNode.isEndOfLine(): Boolean {
 fun PsiElement.hasSyntaxError(): Boolean {
 	return this.lastChild is PsiErrorElement
 }
-
-val PsiElement.textRangeAfterUnquote: TextRange
-	get() {
-		val text = this.text
-		val leftQuoted = text.isLeftQuoted()
-		val rightQuoted = text.isRightQuoted()
-		val textRange = this.textRange
-		return when {
-			leftQuoted && rightQuoted -> TextRange.create(textRange.startOffset + 1, textRange.endOffset - 1)
-			leftQuoted -> TextRange.create(textRange.startOffset + 1, textRange.endOffset)
-			rightQuoted -> TextRange.create(textRange.startOffset, textRange.endOffset - 1)
-			else -> textRange
-		}
-	}
 
 /**
  * @param forward 查找偏移之前还是之后的PSI元素，默认为null，表示同时考虑。

@@ -31,7 +31,8 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if(expression.isParameterAwareExpression()) return
         val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
-        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRangeAfterUnquote
+        val textRange = element.textRange
+        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
     
@@ -83,7 +84,8 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if(expression.isParameterAwareExpression()) return
         val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
-        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRangeAfterUnquote
+        val textRange = element.textRange
+        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
     
@@ -136,7 +138,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         if(expression.isLeftQuoted()) return
         if(expression.isParameterAwareExpression()) return
         val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
-        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRangeAfterUnquote
+        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRange.unquote(element.text)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
     
@@ -191,7 +193,8 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport(
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if(expression.isParameterAwareExpression()) return
         val attributesKey = ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRangeAfterUnquote
+        val textRange = element.textRange
+        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
     
@@ -250,7 +253,8 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if(expression.isParameterAwareExpression()) return
         val attributesKey = ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
-        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRangeAfterUnquote
+        val textRange = element.textRange
+        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
     
@@ -330,7 +334,8 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
             configGroup.complexEnums[enumName] != null -> ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE_KEY
             else -> ParadoxScriptAttributesKeys.ENUM_VALUE_KEY
         }
-        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRangeAfterUnquote
+        val textRange = element.textRange
+        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
     
@@ -436,7 +441,8 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport() 
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if(expression.isParameterAwareExpression()) return
         val attributesKey = ParadoxScriptAttributesKeys.MODIFIER_KEY
-        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRangeAfterUnquote
+        val textRange = element.textRange
+        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
     
@@ -459,7 +465,8 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport()
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if(expression.isParameterAwareExpression()) return
         val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT_KEY
-        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRangeAfterUnquote
+        val textRange = element.textRange
+        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
     
@@ -494,7 +501,8 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if(expression.isParameterAwareExpression()) return
         val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT_KEY
-        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRangeAfterUnquote
+        val textRange = element.textRange
+        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
     
@@ -564,7 +572,8 @@ abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpress
             is CwtKeyExpression -> ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY
             is CwtValueExpression -> ParadoxScriptAttributesKeys.STRING_KEY
         }
-        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRangeAfterUnquote
+        val textRange = element.textRange
+        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         if(range.isEmpty) return
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
@@ -580,7 +589,8 @@ abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpress
             aliasName == "effect" -> ParadoxScriptAttributesKeys.EFFECT_KEY
             else -> return false
         }
-        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRangeAfterUnquote
+        val textRange = element.textRange
+        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
         return true
     }
