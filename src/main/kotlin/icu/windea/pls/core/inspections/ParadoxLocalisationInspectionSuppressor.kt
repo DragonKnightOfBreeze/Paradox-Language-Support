@@ -6,8 +6,8 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
-import org.intellij.grammar.*
 
 //com.intellij.lang.properties.codeInspection.PropertiesInspectionSuppressor
 //org.intellij.grammar.inspection.BnfInspectionSuppressor
@@ -28,17 +28,24 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
         if(element == null) return SuppressQuickFix.EMPTY_ARRAY
         return buildList {
             val fileName = element.containingFile?.name
-            if(fileName != null) add(SupressForFileFix(toolId, fileName))
-            add(SupressForPropertyFix(toolId))
+            if(fileName != null) {
+                add(SuppressForFileFix(SuppressionUtil.ALL, fileName))
+                add(SuppressForFileFix(toolId, fileName))
+            }
+            add(SuppressForPropertyFix(toolId))
         }.toTypedArray()
     }
     
-    private class SupressForFileFix(
+    private class SuppressForFileFix(
         private val toolId: String,
         private val fileName: String
     ) : SuppressByCommentFix(toolId, ParadoxLocalisationFile::class.java) {
         override fun getText(): String {
-            return PlsBundle.message("localisation.supress.for.file", fileName)
+            if(toolId == SuppressionUtil.ALL) {
+                return PlsBundle.message("localisation.supress.for.file.all", fileName)
+            } else {
+                return PlsBundle.message("localisation.supress.for.file", fileName)
+            }
         }
         
         override fun getCommentsFor(container: PsiElement): List<PsiElement>? {
@@ -48,13 +55,13 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
             if(container is PsiFile) {
                 val text = SuppressionUtilCore.SUPPRESS_INSPECTIONS_TAG_NAME + " " + myID
-                val comment = SuppressionUtil.createComment(project, text, BnfLanguage.INSTANCE)
+                val comment = SuppressionUtil.createComment(project, text, ParadoxLocalisationLanguage)
                 container.addAfter(comment, null)
             }
         }
     }
     
-    private class SupressForPropertyFix(
+    private class SuppressForPropertyFix(
         private val toolId: String
     ) : SuppressByCommentFix(toolId, ParadoxLocalisationProperty::class.java) {
         override fun getText(): String {

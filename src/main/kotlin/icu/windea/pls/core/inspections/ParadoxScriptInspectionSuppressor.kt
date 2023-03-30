@@ -6,8 +6,8 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
-import org.intellij.grammar.*
 
 /**
  * 基于特定位置的特定注释过滤代码检查。
@@ -30,7 +30,8 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         return buildList {
             val fileName = element.containingFile?.name
             if(fileName != null) {
-                add(SupressForFileFix(toolId, fileName))
+                add(SuppressForFileFix(SuppressionUtil.ALL, fileName))
+                add(SuppressForFileFix(toolId, fileName))
             }
             var current: PsiElement? = element
             var level = 1
@@ -39,21 +40,26 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
                 if(current != null) {
                     val definitionName = current.definitionInfo?.name
                     if(definitionName != null) {
-                        add(SupressForDefinitionFix(toolId, definitionName, level))
+                        add(SuppressForDefinitionFix(toolId, definitionName, level))
                         level++
                     }
+                    current = current.parent
                 }
             }
-            add(SupressForExpressionFix(toolId))
+            add(SuppressForExpressionFix(toolId))
         }.toTypedArray()
     }
     
-    private class SupressForFileFix(
+    private class SuppressForFileFix(
         private val toolId: String,
         private val fileName: String
     ) : SuppressByCommentFix(toolId, ParadoxScriptFile::class.java) {
         override fun getText(): String {
-            return PlsBundle.message("script.supress.for.file", fileName)
+            if(toolId == SuppressionUtil.ALL) {
+                return PlsBundle.message("script.supress.for.file.all", fileName)
+            } else {
+                return PlsBundle.message("script.supress.for.file", fileName)
+            }
         }
         
         override fun getCommentsFor(container: PsiElement): MutableList<out PsiElement>? {
@@ -63,13 +69,13 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
             if(container is PsiFile) {
                 val text = SuppressionUtilCore.SUPPRESS_INSPECTIONS_TAG_NAME + " " + myID
-                val comment = SuppressionUtil.createComment(project, text, BnfLanguage.INSTANCE)
+                val comment = SuppressionUtil.createComment(project, text, ParadoxScriptLanguage)
                 container.addAfter(comment, null)
             }
         }
     }
     
-    private class SupressForDefinitionFix(
+    private class SuppressForDefinitionFix(
         private val toolId: String,
         private val definitionName: String,
         private val depth: Int,
@@ -85,6 +91,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
             var current: PsiElement = context
             for(i in 1..depth) {
                 current = current.findParentDefinition() as? ParadoxScriptProperty ?: return null
+                current = current.parent
             }
             return current
         }
@@ -98,7 +105,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         }
     }
     
-    private class SupressForExpressionFix(
+    private class SuppressForExpressionFix(
         private val toolId: String
     ) : SuppressByCommentFix(toolId, ParadoxScriptMemberElement::class.java) {
         //here just call scriptMemberElement (property / value) "expression"
