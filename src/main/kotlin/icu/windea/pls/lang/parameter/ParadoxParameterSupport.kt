@@ -60,7 +60,7 @@ interface ParadoxParameterSupport {
             return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveParameter(name, element, context) }
         }
         
-        fun resolveParameterFromInvocationExpression(name: String, element: ParadoxScriptProperty, config: CwtPropertyConfig): ParadoxParameterElement? {
+        fun resolveArgument(name: String, element: ParadoxScriptProperty, config: CwtPropertyConfig): ParadoxParameterElement? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveParameterFromInvocationExpression(name, element, config) }
         }
         

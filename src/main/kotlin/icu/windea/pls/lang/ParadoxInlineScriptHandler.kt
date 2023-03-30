@@ -1,11 +1,11 @@
 package icu.windea.pls.lang
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
@@ -15,6 +15,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.*
+import icu.windea.pls.core.search.scopes.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.model.*
@@ -174,11 +175,13 @@ object ParadoxInlineScriptHandler {
         if(!isGameTypeSupported(gameType)) return null
         val expression = getInlineScriptExpression(file) ?: return null
         val project = file.project
-        val scope = GlobalSearchScope.allScope(project)
+        val searchScope = runReadAction { ParadoxGlobalSearchScope.fromElement(file) }
+            ?.withFileType(ParadoxScriptFileType)
+            ?: return null
         var element: ParadoxScriptPropertyKey? = null
         var hasConflict = false
         val configs: MutableList<CwtDataConfig<*>> = mutableListOf()
-        ParadoxInlineScriptIndex.KEY.processAllElements(expression, project, scope) { e ->
+        ParadoxInlineScriptIndex.KEY.processAllElements(expression, project, searchScope) { e ->
             ProgressManager.checkCanceled()
             if(element == null) {
                 element = e

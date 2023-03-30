@@ -2,12 +2,11 @@ package icu.windea.pls.script.inspections.general
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.codeInspection.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
-import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -24,89 +23,90 @@ import javax.swing.*
  * 例如，有`set_flag = xxx`但没有`has_flag = xxx`。
  */
 class UnusedValueSetValueInspection : LocalInspectionTool() {
-	companion object {
-		private val statusMapKey = Key.create<MutableMap<ParadoxValueSetValueElement, Boolean>>("paradox.statusMap")
-	}
-	
-	@JvmField var ignoreDefinitionNames = true
-	
-	//may be slow for ReferencesSearch
-	
-	override fun runForWholeFile(): Boolean {
-		return true
-	}
-	
-	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
-		session.putUserData(statusMapKey, ConcurrentHashMap())
-		return object : PsiElementVisitor() {
-			private fun shouldVisit(element: PsiElement): Boolean {
-				return (element is ParadoxScriptStringExpressionElement && !element.isParameterAwareExpression())
-			}
-			
-			override fun visitElement(element: PsiElement) {
-				ProgressManager.checkCanceled()
-				if(!shouldVisit(element)) return
-				
-				//ignore definition names if necessary
-				if(ignoreDefinitionNames && element is ParadoxScriptString && element.isDefinitionName()) return
-				//may only resolve to single ParadoxValueSetValueElement (set-flag expression)
-				val reference = element.reference ?: return
-				if(!reference.canResolveValueSetValue()) return
-				val resolved = reference.resolve()
-				ProgressManager.checkCanceled()
-				if(resolved !is ParadoxValueSetValueElement) return
-				if(resolved.readWriteAccess == Access.Write) {
-					//当确定同一文件中某一名称的参数已被使用时，后续不需要再进行ReferencesSearch
-					val statusMap = session.getUserData(statusMapKey)!!
-					val used = statusMap[resolved]
-					val isUsed = if(used == null) {
-						ProgressManager.checkCanceled()
-						//optimize search scope
-						val searchScope = GlobalSearchScope.allScope(PsiUtilCore.getProjectInReadAction(element))
-							.withFileType(ParadoxScriptFileType)
-						val r = ReferencesSearch.search(resolved, searchScope).processQuery {
-							ProgressManager.checkCanceled()
-							val res = it.resolveFast()
-							ProgressManager.checkCanceled()
-							if(res is ParadoxValueSetValueElement && res.readWriteAccess == Access.Read) {
-								statusMap[resolved] = true
-								false
-							} else {
-								true
-							}
-						}
-						if(r) {
-							statusMap[resolved] = false
-							false
-						} else {
-							true
-						}
-					} else {
-						used
-					}
-					if(!isUsed) {
-						registerProblem(element, resolved.name, reference.rangeInElement)
-					}
-				}
-			}
-			
-			private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
-				val message = PlsBundle.message("inspection.script.general.unusedValueSetValue.description", name)
-				holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range)
-			}
-		}
-	}
-	
-	override fun createOptionsPanel(): JComponent {
-		return panel {
-			//ignoreDefinitionNames
-			row {
-				checkBox(PlsBundle.message("inspection.script.general.unusedValueSetValue.option.ignoreDefinitionNames"))
-					.bindSelected(::ignoreDefinitionNames)
-					.applyToComponent { toolTipText = PlsBundle.message("inspection.script.general.unusedValueSetValue.option.ignoreDefinitionNames.tooltip") }
-					.actionListener { _, component -> ignoreDefinitionNames = component.isSelected }
-			}
-		}
-	}
+    companion object {
+        private val statusMapKey = Key.create<MutableMap<ParadoxValueSetValueElement, Boolean>>("paradox.statusMap")
+    }
+    
+    @JvmField var ignoreDefinitionNames = true
+    
+    //may be slow for ReferencesSearch
+    
+    override fun runForWholeFile(): Boolean {
+        return true
+    }
+    
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
+        session.putUserData(statusMapKey, ConcurrentHashMap())
+        return object : PsiElementVisitor() {
+            private fun shouldVisit(element: PsiElement): Boolean {
+                return (element is ParadoxScriptStringExpressionElement && !element.isParameterAwareExpression())
+            }
+            
+            override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
+                if(!shouldVisit(element)) return
+                
+                //ignore definition names if necessary
+                if(ignoreDefinitionNames && element is ParadoxScriptString && element.isDefinitionName()) return
+                //may only resolve to single ParadoxValueSetValueElement (set-flag expression)
+                val reference = element.reference ?: return
+                if(!reference.canResolveValueSetValue()) return
+                val resolved = reference.resolve()
+                ProgressManager.checkCanceled()
+                if(resolved !is ParadoxValueSetValueElement) return
+                if(resolved.readWriteAccess == Access.Write) {
+                    //当确定同一文件中某一名称的参数已被使用时，后续不需要再进行ReferencesSearch
+                    val statusMap = session.getUserData(statusMapKey)!!
+                    val used = statusMap[resolved]
+                    val isUsed = if(used == null) {
+                        ProgressManager.checkCanceled()
+                        //optimize search scope
+                        val searchScope = runReadAction { ParadoxGlobalSearchScope.fromElement(element) }
+                            ?.withFileType(ParadoxScriptFileType)
+							?: return
+                        val r = ReferencesSearch.search(resolved, searchScope).processQuery {
+                            ProgressManager.checkCanceled()
+                            val res = it.resolveFast()
+                            ProgressManager.checkCanceled()
+                            if(res is ParadoxValueSetValueElement && res.readWriteAccess == Access.Read) {
+                                statusMap[resolved] = true
+                                false
+                            } else {
+                                true
+                            }
+                        }
+                        if(r) {
+                            statusMap[resolved] = false
+                            false
+                        } else {
+                            true
+                        }
+                    } else {
+                        used
+                    }
+                    if(!isUsed) {
+                        registerProblem(element, resolved.name, reference.rangeInElement)
+                    }
+                }
+            }
+            
+            private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
+                val message = PlsBundle.message("inspection.script.general.unusedValueSetValue.description", name)
+                holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range)
+            }
+        }
+    }
+    
+    override fun createOptionsPanel(): JComponent {
+        return panel {
+            //ignoreDefinitionNames
+            row {
+                checkBox(PlsBundle.message("inspection.script.general.unusedValueSetValue.option.ignoreDefinitionNames"))
+                    .bindSelected(::ignoreDefinitionNames)
+                    .applyToComponent { toolTipText = PlsBundle.message("inspection.script.general.unusedValueSetValue.option.ignoreDefinitionNames.tooltip") }
+                    .actionListener { _, component -> ignoreDefinitionNames = component.isSelected }
+            }
+        }
+    }
 }
 

@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.scope
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
-import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -35,12 +35,12 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
         ProgressManager.checkCanceled()
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
-        val project = configGroup.project
         var scopeContext: ParadoxScopeContext? = null
         var hasConflict = false
         //optimize search scope
-        val searchScope = GlobalSearchScope.allScope(project)
-            .withFilePath("common/on_actions", "txt")
+        val searchScope = runReadAction { ParadoxGlobalSearchScope.fromElement(definition) }
+            ?.withFilePath("common/on_actions", "txt")
+            ?: return null
         ReferencesSearch.search(definition, searchScope).processQuery p@{ ref ->
             ProgressManager.checkCanceled()
             //should be
