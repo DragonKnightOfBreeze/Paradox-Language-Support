@@ -43,6 +43,8 @@
     <typeDeclarationProvider implementation="icu.windea.pls.core.codeInsight.ParadoxTypeDeclarationProvider"/>
     <codeInsight.template.postfixTemplateProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.codeInsight.template.postfix.ParadoxPostfixTemplateProvider"/>
     
+    <createDirectoryCompletionContributor implementation="icu.windea.pls.core.actions.ParadoxCreateDirectoryCompletionContributor"/>
+    
     <findUsagesHandlerFactory implementation="icu.windea.pls.core.findUsages.ParadoxFindUsagesHandlerFactory"/>
     
     <lang.documentationProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.editor.ParadoxDocumentationProvider"/>
