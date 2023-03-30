@@ -40,6 +40,7 @@ class MissingParameterInspection : LocalInspectionTool() {
                 ProgressManager.checkCanceled()
                 val configs = ParadoxConfigHandler.getConfigs(element)
                 val config = configs.firstOrNull() as? CwtPropertyConfig ?: return
+                //NOTE 不兼容本地化参数（CwtDataType.LocalisationParameter），因为那个引用也可能实际上对应一个缺失的本地化的名字
                 val condition = config.configs?.any { it.expression.type == CwtDataType.Parameter } == true
                 if(!condition) return
                 

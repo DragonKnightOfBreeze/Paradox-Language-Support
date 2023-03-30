@@ -39,6 +39,7 @@
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptEnumValueExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptModifierExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptParameterExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptLocalisationParameterExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptAliasNameExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptConstantExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptTemplateExpressionSupport"/>

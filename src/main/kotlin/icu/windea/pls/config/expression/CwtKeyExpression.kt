@@ -82,8 +82,13 @@ class CwtKeyExpression private constructor(
                 val value = expressionString.substring(1, expressionString.length - 1)
                 CwtKeyExpression(expressionString, CwtDataType.Definition, value)
             }
+            //EXTENDED BY PLS
             expressionString == "\$parameter" -> {
                 CwtKeyExpression(expressionString, CwtDataType.Parameter)
+            }
+            //EXTENDED BY PLS
+            expressionString == "\$localisation_parameter" -> {
+                CwtKeyExpression(expressionString, CwtDataType.LocalisationParameter)
             }
             expressionString.surroundsWith("enum[", "]") -> {
                 val value = expressionString.substring(5, expressionString.length - 1)

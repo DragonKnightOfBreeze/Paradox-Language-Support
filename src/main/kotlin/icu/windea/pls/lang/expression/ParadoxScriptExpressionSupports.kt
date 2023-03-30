@@ -465,44 +465,54 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport()
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         //尝试解析为参数名（仅限key）
-        if(isKey == true && config is CwtPropertyConfig) {
-            val invocationExpression = element.findParentProperty(fromParentBlock = true)
-                ?.castOrNull<ParadoxScriptProperty>()
-                ?: return null
-            val invocationExpressionConfig = config.parent
-                ?.castOrNull<CwtPropertyConfig>()
-                ?: return null
-            return ParadoxParameterSupport.resolveParameterFromInvocationExpression(expression, invocationExpression, invocationExpressionConfig)
-        }
-        return null
-    }
-    
-    override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
-        val name = expression
-        //尝试解析为参数名（仅限key）
-        if(isKey == true && config is CwtPropertyConfig) {
-            val invocationExpression = element.findParentProperty(fromParentBlock = true)
-                ?.castOrNull<ParadoxScriptProperty>()
-                ?: return emptySet()
-            val invocationExpressionConfig = config.parent
-                ?.castOrNull<CwtPropertyConfig>()
-                ?: return emptySet()
-            return ParadoxParameterSupport.resolveParameterFromInvocationExpression(name, invocationExpression, invocationExpressionConfig)
-                .toSingletonListOrEmpty()
-        }
-        return emptySet()
+        if(isKey != true || config !is CwtPropertyConfig) return null
+        val invocationExpression = element.findParentProperty(fromParentBlock = true)
+            ?.castOrNull<ParadoxScriptProperty>()
+            ?: return null
+        val invocationExpressionConfig = config.parent
+            ?.castOrNull<CwtPropertyConfig>()
+            ?: return null
+        return ParadoxParameterSupport.resolveParameterFromInvocationExpression(expression, invocationExpression, invocationExpressionConfig)
     }
     
     override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
         val contextElement = context.contextElement
         //提示参数名（仅限key）
-        if(context.isKey == true && config is CwtPropertyConfig) {
-            ProgressManager.checkCanceled()
-            val invocationExpressionElement = contextElement.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return
-            val invocationExpressionConfig = config.parent as? CwtPropertyConfig ?: return
-            ParadoxConfigHandler.completeParametersForInvocationExpression(invocationExpressionElement, invocationExpressionConfig, context, result)
-            return
-        }
+        if(context.isKey != true || config !is CwtPropertyConfig) return
+        ProgressManager.checkCanceled()
+        val invocationExpressionElement = contextElement.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return
+        val invocationExpressionConfig = config.parent as? CwtPropertyConfig ?: return
+        ParadoxConfigHandler.completeParametersForInvocationExpression(invocationExpressionElement, invocationExpressionConfig, context, result)
+    }
+}
+
+class ParadoxScriptLLocalisationParameterExpressionSupport : ParadoxScriptExpressionSupport() {
+    override fun supports(config: CwtConfig<*>): Boolean {
+        return config.expression?.type == CwtDataType.LocalisationParameter
+    }
+    
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+        if(expression.isParameterAwareExpression()) return
+        val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT_KEY
+        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRangeAfterUnquote
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+    }
+    
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+        //尝试解析为本地化参数名（仅限key）
+        if(isKey != true || config !is CwtPropertyConfig) return null
+        //val invocationExpression = element.findParentProperty(fromParentBlock = true)
+        //    ?.castOrNull<ParadoxScriptProperty>()
+        //    ?: return null
+        //val invocationExpressionConfig = config.parent
+        //    ?.castOrNull<CwtPropertyConfig>()
+        //    ?: return null
+        //return ParadoxParameterSupport.resolveParameterFromInvocationExpression(expression, invocationExpression, invocationExpressionConfig)
+        return null
+    }
+    
+    override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+        //NOTE 不兼容本地化参数（CwtDataType.LocalisationParameter），因为那个引用也可能实际上对应一个缺失的本地化的名字
     }
 }
 

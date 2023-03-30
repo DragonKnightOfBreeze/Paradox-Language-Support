@@ -106,8 +106,13 @@ class CwtValueExpression private constructor(
                 val value = expressionString.substring(1, expressionString.length - 1)
                 CwtValueExpression(expressionString, CwtDataType.Definition, value)
             }
+            //EXTENDED BY PLS
             expressionString == "\$parameter" -> {
                 CwtValueExpression(expressionString, CwtDataType.Parameter)
+            }
+            //EXTENDED BY PLS
+            expressionString == "\$localisation_parameter" -> {
+                CwtValueExpression(expressionString, CwtDataType.LocalisationParameter)
             }
             expressionString.surroundsWith("value[", "]") -> {
                 val value = expressionString.substring(6, expressionString.length - 1)

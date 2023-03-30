@@ -81,6 +81,9 @@ fun ParadoxDataType.isNumberType() = this == ParadoxDataType.UnknownType || this
 
 fun ParadoxDataType.isStringType() = this == ParadoxDataType.UnknownType || this == ParadoxDataType.StringType || this == ParadoxDataType.ParameterType
 
+fun ParadoxDataType.isStringLikeType() = this == ParadoxDataType.UnknownType || this == ParadoxDataType.StringType || this == ParadoxDataType.ParameterType
+	|| this == ParadoxDataType.IntType || this == ParadoxDataType.FloatType
+
 fun ParadoxDataType.isColorType() = this == ParadoxDataType.ColorType
 
 fun ParadoxDataType.isBlockLikeType() = this == ParadoxDataType.BlockType || this == ParadoxDataType.ColorType || this == ParadoxDataType.InlineMathType

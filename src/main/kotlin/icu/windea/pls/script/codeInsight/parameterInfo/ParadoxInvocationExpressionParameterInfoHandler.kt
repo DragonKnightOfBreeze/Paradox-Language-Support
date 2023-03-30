@@ -30,6 +30,7 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
                     ?.getConfigs()
                     ?.any { config ->
                         config is CwtPropertyConfig && config.properties?.any { prop ->
+                            //NOTE 不兼容本地化参数（CwtDataType.LocalisationParameter），因为那个引用也可能实际上对应一个缺失的本地化的名字
                             prop.keyExpression.let { prop.expression.type == CwtDataType.Parameter }
                         } ?: false
                     } ?: false

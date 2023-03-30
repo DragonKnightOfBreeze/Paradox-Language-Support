@@ -428,12 +428,16 @@ object ParadoxConfigHandler {
                 return matchesModifier(element, expression.text, configGroup)
             }
             CwtDataType.Parameter -> {
-                //匹配参数名（即使对应的定义声明中不存在对应名字的参数，也总是匹配）
-                return true
+                //匹配参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
+                return expression.type.isStringLikeType()
+            }
+            CwtDataType.LocalisationParameter -> {
+                //匹配本地化参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
+                return expression.type.isStringLikeType()
             }
             CwtDataType.ShaderEffect -> {
                 //暂时作为一般的字符串处理
-                return expression.type.isStringType()
+                return expression.type.isStringLikeType()
             }
             CwtDataType.SingleAliasRight -> {
                 return false //不在这里处理
@@ -452,7 +456,7 @@ object ParadoxConfigHandler {
                 return false //不在这里处理
             }
             CwtDataType.Template -> {
-                if(!expression.type.isStringType()) return false
+                if(!expression.type.isStringLikeType()) return false
                 //允许用引号括起
                 if(isStatic) return true
                 if(isParameterAware) return true
@@ -602,6 +606,7 @@ object ParadoxConfigHandler {
             CwtDataType.IntVariableField -> 45
             CwtDataType.Modifier -> 75 //higher than definition
             CwtDataType.Parameter -> 10
+            CwtDataType.LocalisationParameter -> 10
             CwtDataType.ShaderEffect -> 85 // (80,90)
             CwtDataType.SingleAliasRight -> 0 //不期望匹配到
             CwtDataType.AliasName -> 0 //不期望匹配到

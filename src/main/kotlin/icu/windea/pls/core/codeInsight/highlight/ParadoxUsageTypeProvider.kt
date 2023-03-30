@@ -36,6 +36,10 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
                         return ParadoxUsageType.PARAMETER_REFERENCE_5
                     }
                 }
+                //in invocation expression (for localisation parameters)
+                if(config.expression.type == CwtDataType.LocalisationParameter) {
+                    return ParadoxUsageType.PARAMETER_REFERENCE_4
+                }
                 ParadoxUsageType.FROM_CONFIG_EXPRESSION(configExpression)
             }
             
