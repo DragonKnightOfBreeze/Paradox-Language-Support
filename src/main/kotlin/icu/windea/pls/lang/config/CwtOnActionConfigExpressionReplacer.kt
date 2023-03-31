@@ -10,11 +10,11 @@ class CwtOnActionConfigExpressionReplacer : CwtConfigExpressionReplacer {
     //如果definitionType是on_action且configExpression是<event>，需要基于on_actions.cwt加上具体的事件类型。
     
     override fun shouldReplace(configContext: CwtConfigContext): Boolean {
-        val (contextElement, name, type, _, configGroup) = configContext
+        val (contextElement, name, type, _, configGroup, matchType) = configContext
         when {
             type == "on_action" -> {
                 if(name == null) return false
-                val config = configGroup.onActions.getByTemplate(name, contextElement, configGroup)
+                val config = configGroup.onActions.getByTemplate(name, contextElement, configGroup, matchType)
                 return config != null
             }
         }
@@ -22,12 +22,12 @@ class CwtOnActionConfigExpressionReplacer : CwtConfigExpressionReplacer {
     }
     
     override fun doReplace(configExpression: String, configContext: CwtConfigContext): String? {
-        val (contextElement, name, type, _, configGroup) = configContext
+        val (contextElement, name, type, _, configGroup, matchType) = configContext
         when {
             type == "on_action" -> {
                 if(name == null) return null
                 if(configExpression == "<event>") {
-                    val config = configGroup.onActions.getByTemplate(name, contextElement, configGroup)
+                    val config = configGroup.onActions.getByTemplate(name, contextElement, configGroup, matchType)
                     if(config == null) return null
                     val eventType = config.eventType
                     return "<event.${eventType}>"

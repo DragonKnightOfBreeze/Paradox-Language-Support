@@ -8,5 +8,6 @@ data class CwtConfigContext(
     val definitionName: String?,
     val definitionType: String,
     val definitionSubtypes: List<String>?,
-    val configGroup: CwtConfigGroup
+    val configGroup: CwtConfigGroup,
+    val matchType: Int = CwtConfigMatchType.DEFAULT
 )

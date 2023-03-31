@@ -23,7 +23,7 @@ data class CwtDeclarationConfig(
         //定义的值不为代码块的情况
         if(!propertyConfig.isBlock) return propertyConfig
         
-        val (_, name, type, subtypes) = configContext
+        val (_, name, type, subtypes, _, matchType) = configContext
         val cacheKey = buildString {
             if(CwtConfigExpressionReplacer.shouldReplace(configContext)) {
                 append(name).append(" ")
@@ -34,6 +34,7 @@ data class CwtDeclarationConfig(
             } else {
                 append("*")
             }
+            append("#").append(matchType)
         }
         return mergedConfigCache.getOrPut(cacheKey) {
             val configs = propertyConfig.configs?.flatMap { it.deepMergeConfigs(configContext) }
