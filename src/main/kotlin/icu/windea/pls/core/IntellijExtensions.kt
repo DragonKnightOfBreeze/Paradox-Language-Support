@@ -255,6 +255,7 @@ fun Document.isAtLineEnd(offset:Int, skipWhitespace: Boolean = false): Boolean {
 	val lineEndOffset = DocumentUtil.getLineEndOffset(offset, this)
 	val charsSequence = charsSequence
 	for(i in offset..lineEndOffset) {
+		if(i >= charsSequence.length) return true
 		val c = charsSequence[i]
 		if(!c.isWhitespace()) {
 			return false
