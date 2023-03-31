@@ -36,7 +36,7 @@ import javax.swing.*
  * * 可以用于比较二进制文件。（如DDS图片）
  * * TODO 按照覆盖顺序进行排序。
  */
-@Suppress("ComponentNotRegistered", "UNUSED_VARIABLE")
+@Suppress("ComponentNotRegistered", "UNUSED_VARIABLE", "DEPRECATION")
 class CompareFilesAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
         return e.getData(CommonDataKeys.VIRTUAL_FILE)
@@ -84,7 +84,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
             ).notify(project)
             return null
         }
-    
+        
         val editor = e.editor
         val contentFactory = DiffContentFactory.getInstance()
         
@@ -158,14 +158,14 @@ class CompareFilesAction : ParadoxShowDiffAction() {
     
     private fun getWindowsTitle(file: VirtualFile): String? {
         val fileInfo = file.fileInfo ?: return null
-        return PlsBundle.message("diff.compare.files.dialog.title", fileInfo.path, fileInfo.rootInfo.gameRootPath)
+        return PlsBundle.message("diff.compare.files.dialog.title", fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
     }
     
     private fun getContentTitle(file: VirtualFile, original: Boolean = false): String? {
         val fileInfo = file.fileInfo ?: return null
         return when {
-            original -> PlsBundle.message("diff.compare.files.originalContent.title", fileInfo.path, fileInfo.rootInfo.gameRootPath)
-            else -> PlsBundle.message("diff.compare.files.content.title", fileInfo.path, fileInfo.rootInfo.gameRootPath)
+            original -> PlsBundle.message("diff.compare.files.originalContent.title", fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
+            else -> PlsBundle.message("diff.compare.files.content.title", fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
         }
     }
     
@@ -190,7 +190,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
-            return PlsBundle.message("diff.compare.files.popup.name", fileInfo.path, fileInfo.rootInfo.gameRootPath)
+            return PlsBundle.message("diff.compare.files.popup.name", fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
         }
     }
     

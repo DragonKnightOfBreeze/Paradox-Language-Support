@@ -5,7 +5,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
@@ -30,16 +29,14 @@ object ParadoxValueSetValueHandler {
     }
     
     private fun resolveInfo(element: ParadoxScriptStringExpressionElement): ParadoxValueSetValueInfo? {
-        if(!element.isExpression()) return null
-        //排除带参数的情况
-        if(element.isParameterAwareExpression()) return null
-        
-        ProgressManager.checkCanceled()
-        val matchType = CwtConfigMatchType.STATIC
         //only accept "value[x]" or "value_set[x]"
         //rather than "scope_field" or "value_field" or in localisation commands
         //so, e.g., if there is only an expression "event_target:target", "target" will not be shown during code completion
-        val config = ParadoxConfigHandler.getConfigs(element, orDefault = true, matchType = matchType)
+        
+        ProgressManager.checkCanceled()
+        if(!element.isExpression()) return null
+        if(element.isParameterAwareExpression()) return null //排除带参数的情况
+        val config = ParadoxConfigHandler.getConfigs(element, orDefault = true)
             .firstOrNull {
                 val type = it.expression.type
                 type == CwtDataType.Value || type == CwtDataType.ValueSet

@@ -43,7 +43,7 @@ import javax.swing.*
  * * 可以用于比较二进制文件。（如DDS图片）
  * * TODO 按照覆盖顺序进行排序。
  */
-@Suppress("ComponentNotRegistered", "UNUSED_VARIABLE")
+@Suppress("ComponentNotRegistered", "UNUSED_VARIABLE", "DEPRECATION")
 class CompareDefinitionsAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
         return e.getData(CommonDataKeys.VIRTUAL_FILE)
@@ -183,15 +183,15 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     private fun getWindowsTitle(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         val file = definition.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
-        return PlsBundle.message("diff.compare.definitions.dialog.title", definitionInfo.name, definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.gameRootPath)
+        return PlsBundle.message("diff.compare.definitions.dialog.title", definitionInfo.name, definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
     }
     
     private fun getContentTitle(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, original: Boolean = false): String? {
         val file = definition.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
         return when {
-            original -> PlsBundle.message("diff.compare.definitions.originalContent.title", definitionInfo.name, definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.gameRootPath)
-            else -> PlsBundle.message("diff.compare.definitions.content.title", definitionInfo.name, definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.gameRootPath)
+            original -> PlsBundle.message("diff.compare.definitions.originalContent.title", definitionInfo.name, definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
+            else -> PlsBundle.message("diff.compare.definitions.content.title", definitionInfo.name, definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
         }
     }
     
@@ -217,7 +217,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
-            return PlsBundle.message("diff.compare.definitions.popup.name", otherDefinitionInfo.name, otherDefinitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.gameRootPath)
+            return PlsBundle.message("diff.compare.definitions.popup.name", otherDefinitionInfo.name, otherDefinitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
         }
     }
     

@@ -1,6 +1,5 @@
 package icu.windea.pls.core.diff.actions
 
-import com.intellij.application.options.*
 import com.intellij.diff.*
 import com.intellij.diff.actions.impl.*
 import com.intellij.diff.chains.*
@@ -44,7 +43,7 @@ import javax.swing.*
  * * 可以用于比较二进制文件。（如DDS图片）
  * * TODO 按照覆盖顺序进行排序。
  */
-@Suppress("ComponentNotRegistered", "UNUSED_VARIABLE")
+@Suppress("ComponentNotRegistered", "UNUSED_VARIABLE", "DEPRECATION")
 class CompareLocalisationsAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
         return e.getData(CommonDataKeys.VIRTUAL_FILE)
@@ -181,7 +180,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val name = localisation.name
         val file = localisation.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
-        return PlsBundle.message("diff.compare.localisations.dialog.title", name, fileInfo.path, fileInfo.rootInfo.gameRootPath)
+        return PlsBundle.message("diff.compare.localisations.dialog.title", name, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
     }
     
     private fun getContentTitle(localisation: ParadoxLocalisationProperty, original: Boolean = false): String? {
@@ -189,8 +188,8 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val file = localisation.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
         return when {
-            original -> PlsBundle.message("diff.compare.localisations.originalContent.title", name, fileInfo.path, fileInfo.rootInfo.gameRootPath)
-            else -> PlsBundle.message("diff.compare.localisations.content.title", name, fileInfo.path, fileInfo.rootInfo.gameRootPath)
+            original -> PlsBundle.message("diff.compare.localisations.originalContent.title", name, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
+            else -> PlsBundle.message("diff.compare.localisations.content.title", name, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
         }
     }
     
@@ -217,7 +216,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
-            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, locale, fileInfo.path, fileInfo.rootInfo.gameRootPath)
+            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, locale, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
         }
     }
     
