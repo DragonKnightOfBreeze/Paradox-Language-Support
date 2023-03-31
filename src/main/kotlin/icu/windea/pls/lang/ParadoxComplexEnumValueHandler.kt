@@ -72,6 +72,8 @@ object ParadoxComplexEnumValueHandler {
 		return null
 	}
 	
+	//这里匹配时需要兼容内联的情况
+	
 	@JvmStatic
 	fun matchesComplexEnumByPath(complexEnum: CwtComplexEnumConfig, path: ParadoxPath): Boolean {
 		return complexEnum.path.any {

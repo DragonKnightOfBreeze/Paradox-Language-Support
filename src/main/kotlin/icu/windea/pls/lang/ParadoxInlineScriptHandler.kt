@@ -54,7 +54,7 @@ object ParadoxInlineScriptHandler {
     @JvmStatic
     fun resolveInfo(element: ParadoxScriptPropertyKey, file: PsiFile = element.containingFile): ParadoxInlineScriptInfo? {
         //这里不能调用ParadoxConfigHandler.getConfigs，因为需要处理内联的情况，会导致StackOverFlow
-    
+        
         //NOTE 不能直接使用DEFAULT，否则可能导致异常
         val matchType = CwtConfigMatchType.STATIC
         
@@ -97,6 +97,10 @@ object ParadoxInlineScriptHandler {
     fun getInlineScript(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptFile? {
         if(DumbService.isDumb(project)) return null //NOTE 防止重入索引
         
+        return runReadAction { doGetInlineScript(expression, project, contextElement) }
+    }
+    
+    private fun doGetInlineScript(expression: String, project: Project, contextElement: PsiElement): ParadoxScriptFile? {
         val filePath = getInlineScriptFilePath(expression)
         val selector = fileSelector(project, contextElement).contextSensitive()
         val query = ParadoxFilePathSearch.search(filePath, null, selector)
@@ -107,6 +111,10 @@ object ParadoxInlineScriptHandler {
     fun processInlineScript(expression: String, contextElement: PsiElement, project: Project, processor: (ParadoxScriptFile) -> Boolean): Boolean {
         if(DumbService.isDumb(project)) return true //NOTE 防止重入索引
         
+        return runReadAction { doProcessInlineScript(expression, project, contextElement, processor) }
+    }
+    
+    private fun doProcessInlineScript(expression: String, project: Project, contextElement: PsiElement, processor: (ParadoxScriptFile) -> Boolean): Boolean {
         val filePath = getInlineScriptFilePath(expression)
         val selector = fileSelector(project, contextElement).contextSensitive()
         val query = ParadoxFilePathSearch.search(filePath, null, selector)
@@ -163,7 +171,7 @@ object ParadoxInlineScriptHandler {
     
     private fun getUsageInfoFromCache(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
         return CachedValuesManager.getCachedValue(file, cachedInlineScriptUsageInfoKey) {
-            val value = doGetInlineScriptUsageInfo(file)
+            val value = runReadAction { doGetInlineScriptUsageInfo(file) }
             val tracker = ParadoxModificationTrackerProvider.getInstance().InlineScripts
             CachedValueProvider.Result.create(value, tracker)
         }
@@ -175,7 +183,7 @@ object ParadoxInlineScriptHandler {
         if(!isGameTypeSupported(gameType)) return null
         val expression = getInlineScriptExpression(file) ?: return null
         val project = file.project
-        val searchScope = runReadAction { ParadoxGlobalSearchScope.fromElement(file) }
+        val searchScope = ParadoxGlobalSearchScope.fromElement(file)
             ?.withFileTypes(ParadoxScriptFileType)
             ?: return null
         var element: ParadoxScriptPropertyKey? = null

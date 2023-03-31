@@ -73,7 +73,7 @@ object ParadoxDefinitionHandler {
 		val typeConfig = configGroup.types[type] ?: return null
 		//val subtypes = stub.subtypes
 		//val subtypeConfigs = subtypes?.mapNotNull { typeConfig.subtypes[it] }
-		val subtypeConfigs = null
+		//val subtypeConfigs = null
 		val rootKey = stub.rootKey ?: return null
 		val elementPath = stub.elementPath
 		return ParadoxDefinitionInfo(name, rootKey, typeConfig, elementPath, gameType, configGroup, element)
@@ -285,6 +285,8 @@ object ParadoxDefinitionHandler {
 		return true
 	}
 	
+	//这里匹配时需要兼容内联的情况
+	
 	@JvmStatic
 	fun matchesSubtype(
 		element: ParadoxScriptDefinitionElement,
@@ -325,16 +327,15 @@ object ParadoxDefinitionHandler {
 	
 	private fun doMatchDefinition(definitionElement: ParadoxScriptDefinitionElement, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.DEFAULT): Boolean {
 		val childValueConfigs = propertyConfig.values.orEmpty()
+		val blockElement = definitionElement.block
 		if(childValueConfigs.isNotEmpty()) {
 			//匹配值列表
-			val values = definitionElement.valueList
-			if(!doMatchValues(values, childValueConfigs, configGroup, matchType)) return false //继续匹配
+			if(!doMatchValues(blockElement, childValueConfigs, configGroup, matchType)) return false //继续匹配
 		}
 		val childPropertyConfigs = propertyConfig.properties.orEmpty()
 		if(childPropertyConfigs.isNotEmpty()) {
 			//匹配属性列表
-			val properties = definitionElement.propertyList
-			if(!doMatchProperties(properties, childPropertyConfigs, configGroup, matchType)) return false //继续匹配
+			if(!doMatchProperties(blockElement, childPropertyConfigs, configGroup, matchType)) return false //继续匹配
 		}
 		return true
 	}
@@ -364,27 +365,26 @@ object ParadoxDefinitionHandler {
 					return doMatchAlias(propertyElement, propertyConfig, configGroup, matchType)
 				}
 				propertyConfig.configs.orEmpty().isNotEmpty() -> {
+					val blockElement = propertyElement.block
 					//匹配值列表
-					val values = propertyElement.valueList
-					if(!doMatchValues(values, propertyConfig.values.orEmpty(), configGroup, matchType)) return false
+					if(!doMatchValues(blockElement, propertyConfig.values.orEmpty(), configGroup, matchType)) return false
 					//匹配属性列表
-					val props = propertyElement.propertyList
-					if(!doMatchProperties(props, propertyConfig.properties.orEmpty(), configGroup, matchType)) return false
+					if(!doMatchProperties(blockElement, propertyConfig.properties.orEmpty(), configGroup, matchType)) return false
 				}
 			}
 		}
 		return true
 	}
 	
-	private fun doMatchProperties(propertyElements: List<ParadoxScriptProperty>, propertyConfigs: List<CwtPropertyConfig>, configGroup: CwtConfigGroup, matchType: Int): Boolean {
+	private fun doMatchProperties(blockElement: ParadoxScriptBlockElement?, propertyConfigs: List<CwtPropertyConfig>, configGroup: CwtConfigGroup, matchType: Int): Boolean {
 		if(propertyConfigs.isEmpty()) return true
-		if(propertyElements.isEmpty()) return false
+		if(blockElement == null) return false
 		
 		//要求其中所有的value的值在最终都会小于等于指定值
 		val minMap = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { it.cardinality?.min ?: 1 }) //默认为1
 		
 		//注意：propConfig.key可能有重复，这种情况下只要有其中一个匹配即可
-		for(propertyElement in propertyElements) {
+		val matched = blockElement.processProperty(inline = true) { propertyElement ->
 			val keyElement = propertyElement.propertyKey
 			val expression = ParadoxDataExpression.resolve(keyElement, matchType)
 			val propConfigs = propertyConfigs.filter {
@@ -397,29 +397,34 @@ object ParadoxDefinitionHandler {
 					if(matched) minMap.compute(propConfig.key) { _, v -> if(v == null) 1 else v - 1 }
 					matched
 				}
-				if(!matched) return false
+				matched
+			} else {
+				true
 			}
 		}
-		
+		if(!matched) return false
+			
 		return minMap.values.any { it <= 0 }
 	}
 	
-	private fun doMatchValues(valueElements: List<ParadoxScriptValue>, valueConfigs: List<CwtValueConfig>, configGroup: CwtConfigGroup, matchType: Int): Boolean {
+	private fun doMatchValues(blockElement: ParadoxScriptBlockElement?, valueConfigs: List<CwtValueConfig>, configGroup: CwtConfigGroup, matchType: Int): Boolean {
 		if(valueConfigs.isEmpty()) return true
-		if(valueElements.isEmpty()) return false
+		if(blockElement == null) return false
 		//要求其中所有的value的值在最终都会小于等于指定值
 		val minMap = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { it.cardinality?.min ?: 1 }) //默认为1
 		
-		for(value in valueElements) {
-			//如果没有匹配的规则则认为不匹配
-			val expression = ParadoxDataExpression.resolve(value, matchType)
+		val matched = blockElement.processValue(inline = true) { valueElement ->
+			//如果没有匹配的规则则忽略
+			val expression = ParadoxDataExpression.resolve(valueElement, matchType)
+			
 			val matched = valueConfigs.any { valueConfig ->
-				val matched = ParadoxConfigHandler.matchesScriptExpression(value, expression, valueConfig.valueExpression, valueConfig, configGroup, matchType)
+				val matched = ParadoxConfigHandler.matchesScriptExpression(valueElement, expression, valueConfig.valueExpression, valueConfig, configGroup, matchType)
 				if(matched) minMap.compute(valueConfig.value) { _, v -> if(v == null) 1 else v - 1 }
 				matched
 			}
-			if(!matched) return false
+			matched
 		}
+		if(!matched) return false
 		
 		return minMap.values.any { it <= 0 }
 	}
