@@ -115,7 +115,7 @@ class CwtConfigGroupImpl(
 	}
 	
 	init {
-		bindMissingLocalisationLinks()
+		bindLinksToLocalisationLinks()
 	}
 	
 	override val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig> = initModifierCategoryIdMap()
@@ -943,13 +943,11 @@ class CwtConfigGroupImpl(
 	
 	//绑定CWT配置
 	
-	private fun bindMissingLocalisationLinks() {
-		if(localisationLinks.isEmpty()) {
-			for((key, linkConfig) in linksAsScopeNotData) {
-				val localisationLinkConfig = CwtLocalisationLinkConfig(linkConfig.pointer, linkConfig.info, linkConfig.config,
-					linkConfig.name, linkConfig.desc, linkConfig.inputScopes, linkConfig.outputScope)
-				localisationLinks.put(key, localisationLinkConfig)
-			}
+	private fun bindLinksToLocalisationLinks() {
+		for((key, linkConfig) in linksAsScopeNotData) {
+			val localisationLinkConfig = CwtLocalisationLinkConfig(linkConfig.pointer, linkConfig.info, linkConfig.config,
+				linkConfig.name, linkConfig.desc, linkConfig.inputScopes, linkConfig.outputScope)
+			localisationLinks.put(key, localisationLinkConfig)
 		}
 	}
 	

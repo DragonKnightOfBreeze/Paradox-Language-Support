@@ -1196,7 +1196,8 @@ object ParadoxConfigHandler {
     }
     
     private fun doCompleteValueSetValue(context: ProcessingContext, result: CompletionResultSet, config: CwtConfig<*>): Unit = with(context) {
-        val project = this.configGroup.project
+        val keyword = context.keyword
+        val project = configGroup.project
         
         val configExpression = config.expression ?: return@with
         val valueSetName = configExpression.value ?: return@with
@@ -1211,17 +1212,15 @@ object ParadoxConfigHandler {
         run {
             ProgressManager.checkCanceled()
             val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
-            val contextElement = contextElement
             val selector = valueSetValueSelector(project, contextElement)
-                .notSamePosition(contextElement)
-                .distinctByValue()
             val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, selector)
-            valueSetValueQuery.processQuery { valueSetValue ->
+            valueSetValueQuery.processQuery p@{ info ->
+                if(info.name == keyword) return@p true //排除和当前输入的同名的
+                val element = ParadoxValueSetValueElement(contextElement, info, project)
                 //去除后面的作用域信息
-                val name = ParadoxValueSetValueHandler.getName(valueSetValue) ?: return@processQuery true
                 val icon = PlsIcons.ValueSetValue(valueSetName)
                 //不显示typeText
-                val builder = ParadoxScriptExpressionLookupElementBuilder.create(valueSetValue, name)
+                val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, info.name)
                     .withIcon(icon)
                     .withTailText(tailText)
                 result.addScriptExpressionElement(context, builder)
@@ -1299,18 +1298,20 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeEventTarget(file: PsiFile, result: CompletionResultSet) {
+    fun completeEventTarget(context: ProcessingContext, result: CompletionResultSet) = with(context) {
         ProgressManager.checkCanceled()
+        val contextElement = contextElement
+        val keyword = keyword
+        val file = originalFile
         val project = file.project
-        val eventTargetSelector = valueSetValueSelector(project, file)
-            .contextSensitive()
-            .distinctByValue()
+        val eventTargetSelector = valueSetValueSelector(project, file).contextSensitive()
         val eventTargetQuery = ParadoxValueSetValueSearch.search("event_target", eventTargetSelector)
-        eventTargetQuery.processQuery { eventTarget ->
-            val value = ParadoxValueSetValueHandler.getName(eventTarget.value) ?: return@processQuery true
+        eventTargetQuery.processQuery p@{ info ->
+            if(info.name == keyword) return@p true //排除和当前输入的同名的
+            val element = ParadoxValueSetValueElement(contextElement, info, project)
             val icon = PlsIcons.ValueSetValue
             val tailText = " from value[event_target]"
-            val lookupElement = LookupElementBuilder.create(eventTarget, value)
+            val lookupElement = LookupElementBuilder.create(element, info.name)
                 .withIcon(icon)
                 .withTailText(tailText, true)
                 .withCaseSensitivity(false) //忽略大小写
@@ -1318,15 +1319,14 @@ object ParadoxConfigHandler {
             true
         }
         
-        val globalEventTargetSelector = valueSetValueSelector(project, file)
-            .contextSensitive()
-            .distinctByValue()
+        val globalEventTargetSelector = valueSetValueSelector(project, file).contextSensitive()
         val globalEventTargetQuery = ParadoxValueSetValueSearch.search("global_event_target", globalEventTargetSelector)
-        globalEventTargetQuery.processQuery { globalEventTarget ->
-            val value = ParadoxValueSetValueHandler.getName(globalEventTarget) ?: return@processQuery true
+        globalEventTargetQuery.processQuery p@{ info ->
+            if(info.name == keyword) return@p true //排除和当前输入的同名的
+            val element = ParadoxValueSetValueElement(contextElement, info, project)
             val icon = PlsIcons.ValueSetValue
             val tailText = " from value[global_event_target]"
-            val lookupElement = LookupElementBuilder.create(globalEventTarget, value)
+            val lookupElement = LookupElementBuilder.create(element, info.name)
                 .withIcon(icon)
                 .withTailText(tailText, true)
                 .withCaseSensitivity(false) //忽略大小写
@@ -1335,8 +1335,9 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeScriptedLoc(file: PsiFile, result: CompletionResultSet) {
+    fun completeScriptedLoc(context: ProcessingContext, result: CompletionResultSet) = with(context) {
         ProgressManager.checkCanceled()
+        val file = originalFile
         val project = file.project
         val scriptedLocSelector = definitionSelector(project, file)
             .contextSensitive()
@@ -1358,15 +1359,18 @@ object ParadoxConfigHandler {
     
     fun completeVariable(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val file = context.originalFile.project
-        val project = file
-        val variableSelector = valueSetValueSelector(project, file).contextSensitive().distinctByValue()
+        val contextElement = context.contextElement
+        val keyword = context.keyword
+        val file = context.originalFile
+        val project = file.project
+        val variableSelector = valueSetValueSelector(project, file).contextSensitive()
         val variableQuery = ParadoxValueSetValueSearch.search("variable", variableSelector)
-        variableQuery.processQuery { variable ->
-            val value = ParadoxValueSetValueHandler.getName(variable) ?: return@processQuery true
+        variableQuery.processQuery p@{ info ->
+            if(info.name == keyword) return@p true //排除和当前输入的同名的
+            val element = ParadoxValueSetValueElement(contextElement, info, project)
             val icon = PlsIcons.Variable
             val tailText = " from variables"
-            val lookupElement = LookupElementBuilder.create(variable, value)
+            val lookupElement = LookupElementBuilder.create(element, info.name)
                 .withIcon(icon)
                 .withTailText(tailText, true)
                 .withCaseSensitivity(false) //忽略大小写
@@ -1731,7 +1735,7 @@ object ParadoxConfigHandler {
                 }
                 val definitionMemberInfo = memberElement.definitionMemberInfo ?: return emptyList()
                 if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
-            
+                
                 //如果无法匹配value，则取第一个
                 val configs = definitionMemberInfo.getConfigs(matchType)
                 val configGroup = definitionMemberInfo.configGroup
@@ -1782,7 +1786,7 @@ object ParadoxConfigHandler {
                         val property = parent
                         val definitionMemberInfo = property.definitionMemberInfo ?: return emptyList()
                         if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
-                    
+                        
                         ProgressManager.checkCanceled()
                         val configs = definitionMemberInfo.getConfigs(matchType)
                         val configGroup = definitionMemberInfo.configGroup
@@ -1818,7 +1822,7 @@ object ParadoxConfigHandler {
                     is ParadoxScriptBlockElement -> {
                         val property = parent.parent as? ParadoxScriptDefinitionElement ?: return emptyList()
                         val definitionMemberInfo = property.definitionMemberInfo ?: return emptyList()
-                    
+                        
                         val childConfigs = definitionMemberInfo.getChildConfigs(matchType)
                         if(childConfigs.isEmpty()) return emptyList()
                         val configGroup = definitionMemberInfo.configGroup

@@ -203,13 +203,10 @@ object CwtTemplateExpressionHandler {
                 }
                 ProgressManager.checkCanceled()
                 val selector = valueSetValueSelector(project, contextElement)
-                    .notSamePosition(contextElement)
-                    .distinctByValue()
                 val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, selector)
-                valueSetValueQuery.processQuery { valueSetValue ->
+                valueSetValueQuery.processQuery { info ->
                     //去除后面的作用域信息
-                    val name = ParadoxValueSetValueHandler.getName(valueSetValue) ?: return@processQuery true
-                    doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
+                    doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + info.name)
                     true
                 }
             }

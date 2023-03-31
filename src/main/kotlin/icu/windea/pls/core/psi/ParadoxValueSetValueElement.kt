@@ -20,11 +20,14 @@ class ParadoxValueSetValueElement(
     private val name: String,
     val valueSetNames: Set<String>,
     val gameType: ParadoxGameType,
-    private val project: Project,
     val readWriteAccess: ReadWriteAccessDetector.Access,
+    private val project: Project,
 ) : ParadoxFakePsiElement(parent) {
-    constructor(element: PsiElement, name: String, valueSetName: String, project: Project, gameType: ParadoxGameType, readWriteAccess: ReadWriteAccessDetector.Access)
-        : this(element, name, setOf(valueSetName), gameType, project, readWriteAccess)
+    constructor(parent: PsiElement, name: String, valueSetName: String, gameType: ParadoxGameType, readWriteAccess: ReadWriteAccessDetector.Access, project: Project)
+        : this(parent, name, setOf(valueSetName), gameType, readWriteAccess, project)
+    
+    constructor(parent: PsiElement, info: ParadoxValueSetValueInfo, project: Project) 
+        : this(parent, info.name, info.valueSetName, info.gameType, info.readWriteAccess, project)
     
     val valueSetName = valueSetNames.first()
     

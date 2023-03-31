@@ -26,8 +26,7 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 		val file = parentStub.psi.containingFile
 		val gameType = selectGameType(file)
 		val complexEnumInfo = ParadoxComplexEnumValueHandler.resolveInfo(psi, file)
-		val valueSetValueInfo = ParadoxValueSetValueHandler.resolveInfo(psi)
-		return ParadoxScriptStringStubImpl(parentStub, complexEnumInfo, valueSetValueInfo, gameType)
+		return ParadoxScriptStringStubImpl(parentStub, complexEnumInfo, gameType)
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -44,21 +43,13 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 			sink.occurrence(ParadoxComplexEnumIndex.KEY, info.enumName)
 			sink.occurrence(ParadoxComplexEnumValueIndex.KEY, info.name)
 		}
-		stub.valueSetValueInfo?.let { info -> 
-			sink.occurrence(ParadoxValueSetIndex.KEY, info.valueSetName)
-			sink.occurrence(ParadoxValueSetValueIndex.KEY, info.name)
-		}
 	}
 	
 	override fun serialize(stub: ParadoxScriptStringStub, dataStream: StubOutputStream) {
 		dataStream.writeName(stub.gameType?.id)
 		val complexEnumValueInfo = stub.complexEnumValueInfo
-		val valueSetValueInfo = stub.valueSetValueInfo
 		dataStream.writeName(complexEnumValueInfo?.name)
 		dataStream.writeName(complexEnumValueInfo?.enumName)
-		dataStream.writeName(valueSetValueInfo?.name)
-		dataStream.writeName(valueSetValueInfo?.valueSetName)
-		dataStream.writeBoolean(valueSetValueInfo?.read ?: false)
 	}
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptStringStub {
@@ -68,12 +59,6 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 			val enumName = dataStream.readNameString().orEmpty()
 			ParadoxComplexEnumValueInfo(name, enumName, gameType)
 		}
-		val valueSetValueInfo = run {
-			val name = dataStream.readNameString().orEmpty()
-			val valueSetName = dataStream.readNameString().orEmpty()
-			val read = dataStream.readBoolean()
-			ParadoxValueSetValueInfo(name, valueSetName, gameType, read)
-		}
-		return ParadoxScriptStringStubImpl(parentStub, complexEnumValueInfo, valueSetValueInfo, gameType)
+		return ParadoxScriptStringStubImpl(parentStub, complexEnumValueInfo, gameType)
 	}
 }

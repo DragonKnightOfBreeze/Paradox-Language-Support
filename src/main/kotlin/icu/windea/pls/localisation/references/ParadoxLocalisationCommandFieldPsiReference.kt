@@ -52,7 +52,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		//尝试识别为value[variable]
 		val variableSelector = valueSetValueSelector(project, element).contextSensitive(exact)
 		val variable = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findFirst()
-		if(variable != null) return ParadoxValueSetValueElement(element, name, "variable", project, gameType, Access.Read)
+		if(variable != null) return ParadoxValueSetValueElement(element, name, "variable", gameType, Access.Read, project)
 		
 		return null
 	}
@@ -80,7 +80,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		//尝试识别为value[variable]
 		val variableSelector = valueSetValueSelector(project, element).contextSensitive()
 		val variables = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findAll()
-		if(variables.isNotEmpty()) return variables.mapToArray { PsiElementResolveResult(ParadoxValueSetValueElement(element, name, "variable", project, gameType, Access.Read)) }
+		if(variables.isNotEmpty()) return variables.mapToArray { PsiElementResolveResult(ParadoxValueSetValueElement(element, name, "variable", gameType, Access.Read, project)) }
 		
 		return ResolveResult.EMPTY_ARRAY
 	}

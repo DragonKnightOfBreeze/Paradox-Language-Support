@@ -49,7 +49,6 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     }
     
                     private fun visitProperty(element: ParadoxScriptProperty): Boolean {
-                        ProgressManager.checkCanceled()
                         val shouldCheck = checkPropertyKey
                         if(!shouldCheck) return true
                         //skip checking property if property key may contain parameters

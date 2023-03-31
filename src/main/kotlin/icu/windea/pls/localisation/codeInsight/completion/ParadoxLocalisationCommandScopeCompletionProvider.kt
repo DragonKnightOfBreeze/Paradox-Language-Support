@@ -36,6 +36,6 @@ class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<Com
 		
 		ProgressManager.checkCanceled()
 		//提示value[event_target]和value[global_event_target]
-		ParadoxConfigHandler.completeEventTarget(file, result)
+		ParadoxConfigHandler.completeEventTarget(context, result)
 	}
 }

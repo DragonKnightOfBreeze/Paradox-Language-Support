@@ -44,6 +44,7 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
                 val modDependencyDirectories = ParadoxGlobalSearchScope.getModDependencyDirectories(settings, modDirectory)
                 val result = mutableListOf<SearchScope>()
                 result.add(ParadoxModScope(project, modDirectory))
+                if(gameDirectory != null) result.add(ParadoxGameScope(project, gameDirectory))
                 result.add(ParadoxModAndGameScope(project, modDirectory, gameDirectory))
                 result.add(ParadoxModWithDependenciesScope(project, modDirectory, gameDirectory, modDependencyDirectories))
                 return result

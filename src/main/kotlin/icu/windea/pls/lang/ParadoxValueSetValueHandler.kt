@@ -2,6 +2,8 @@ package icu.windea.pls.lang
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.openapi.progress.*
+import com.intellij.psi.util.*
+import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
@@ -12,7 +14,22 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxValueSetValueHandler {
     @JvmStatic
-    fun resolveInfo(element: ParadoxScriptStringExpressionElement): ParadoxValueSetValueInfo? {
+    fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxValueSetValueInfo? {
+        ProgressManager.checkCanceled()
+        if(!element.isExpression()) return null
+        return getInfoFromCache(element)
+    }
+    
+    private fun getInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxValueSetValueInfo? {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedValueSetValueInfoKey) {
+            val file = element.containingFile
+            val value = resolveInfo(element)
+            //invalidated on file modification
+            CachedValueProvider.Result.create(value, file)
+        }
+    }
+    
+    private fun resolveInfo(element: ParadoxScriptStringExpressionElement): ParadoxValueSetValueInfo? {
         if(!element.isExpression()) return null
         //排除带参数的情况
         if(element.isParameterAwareExpression()) return null
@@ -32,16 +49,9 @@ object ParadoxValueSetValueHandler {
         val name = getName(element.value) ?: return null
         val valueSetName = config.expression.value?.takeIfNotEmpty() ?: return null
         val configGroup = config.info.configGroup
-        val gameType = configGroup.gameType
-        val read = config.expression.type == CwtDataType.Value
-        return ParadoxValueSetValueInfo(name, valueSetName, gameType, read)
-    }
-    
-    @JvmStatic
-    fun getName(element: ParadoxScriptStringExpressionElement): String? {
-        val stub = runCatching { element.stub }.getOrNull()
-        return stub?.valueSetValueInfo?.name?.takeIfNotEmpty()
-            ?: getName(element.value)
+        val gameType = configGroup.gameType ?: return null
+        val readWriteAccess = getReadWriteAccess(config.expression)
+        return ParadoxValueSetValueInfo(name, valueSetName, gameType, readWriteAccess)
     }
     
     @JvmStatic
@@ -51,12 +61,8 @@ object ParadoxValueSetValueHandler {
     }
     
     @JvmStatic
-    fun isDeclaration(element: ParadoxScriptStringExpressionElement): Boolean {
-        val stub = runCatching { element.stub }.getOrNull()
-        stub?.valueSetValueInfo?.read
-            ?.let { return it }
-        val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return true
-        return config.expression.type == CwtDataType.Value
+    fun isDeclaration(info: ParadoxValueSetValueInfo): Boolean {
+        return info.readWriteAccess == Access.Write
     }
     
     @JvmStatic
@@ -65,7 +71,7 @@ object ParadoxValueSetValueHandler {
         if(element !is ParadoxScriptStringExpressionElement) return null
         val readWriteAccess = getReadWriteAccess(configExpression)
         val valueSetName = configExpression.value ?: return null
-        return ParadoxValueSetValueElement(element, name, valueSetName, configGroup.project, gameType, readWriteAccess)
+        return ParadoxValueSetValueElement(element, name, valueSetName, gameType, readWriteAccess, configGroup.project)
     }
     
     @JvmStatic
@@ -75,7 +81,7 @@ object ParadoxValueSetValueHandler {
         val configExpression = configExpressions.firstOrNull() ?: return null
         val readWriteAccess = getReadWriteAccess(configExpression)
         val valueSetNames = configExpressions.mapNotNullTo(mutableSetOf()) { it.value }
-        return ParadoxValueSetValueElement(element, name, valueSetNames, gameType, configGroup.project, readWriteAccess)
+        return ParadoxValueSetValueElement(element, name, valueSetNames, gameType, readWriteAccess, configGroup.project)
     }
     
     private fun getReadWriteAccess(configExpression: CwtDataExpression): Access {
