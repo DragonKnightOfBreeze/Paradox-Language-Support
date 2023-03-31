@@ -1,5 +1,6 @@
 package icu.windea.pls.localisation.ui.floating
 
+import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInsight.hint.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
@@ -10,7 +11,9 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.*
 import icu.windea.pls.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.localisation.ui.actions.styling.*
 import java.awt.*
 import java.awt.event.*
@@ -118,11 +121,18 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 		if(selectionStart == selectionEnd) return false
 		//忽略跨行的情况
 		if(textEditor.editor.document.getLineNumber(selectionStart) != textEditor.editor.document.getLineNumber(selectionEnd)) return false
-		val elementAtStart = PsiUtilCore.getElementAtOffset(file, selectionStart)
-		val elementAtEnd = PsiUtilCore.getElementAtOffset(file, selectionEnd - 1)
-		//开始位置和结束位置（之前）的PSI元素类型必须是string_token
-		return elementAtStart.elementType.let { it == STRING_TOKEN || it == COLORFUL_TEXT_START || it == COLOR_ID }
-			&& elementAtEnd.elementType.let { it == STRING_TOKEN || it == COLORFUL_TEXT_END }
+		val elementAtStart = file.findElementAt(selectionStart)
+		val elementAtEnd = file.findElementAt(selectionEnd - 1)
+		//开始位置和结束位置向上能查找到同一个ParadoxLocalisationPropertyValue，且选择文本的范围在引号之间
+		if(elementAtStart == null || elementAtEnd == null) return false
+		val propertyValueAtStart = elementAtStart.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
+		val propertyValueAtEnd = elementAtStart.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
+		if(propertyValueAtStart !== propertyValueAtEnd) return false
+		val propertyValue = propertyValueAtStart
+		val textRange = propertyValue.textRange
+		val start = if(propertyValue.firstChild.elementType == LEFT_QUOTE) textRange.startOffset + 1 else textRange.startOffset
+		val end = if(propertyValue.lastChild.elementType == RIGHT_QUOTE) textRange.startOffset - 1 else textRange.startOffset
+		return selectionStart >= start && selectionEnd <= end
 	}
 	
 	private fun getHintPosition(hint: LightweightHint): Point {
