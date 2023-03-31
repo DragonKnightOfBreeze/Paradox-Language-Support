@@ -15,14 +15,13 @@ import icu.windea.pls.script.psi.*
 @WithGameType(ParadoxGameType.Stellaris)
 object StellarisTechnologyHandler {
     @JvmStatic
-    fun getTechnologies(project: Project, context: Any?): Set<ParadoxScriptProperty> {
-        val selector = definitionSelector(project, context).withGameType(ParadoxGameType.Stellaris).contextSensitive().distinctByName()
-        val technologies = mutableSetOf<ParadoxScriptProperty>()
+    fun getTechnologies(selector: ParadoxDefinitionSelector): Set<ParadoxScriptProperty> {
+        val result = mutableSetOf<ParadoxScriptProperty>()
         ParadoxDefinitionSearch.search("technology", selector).processQuery {
-            if(it is ParadoxScriptProperty) technologies.add(it)
+            if(it is ParadoxScriptProperty) result.add(it)
             true
         }
-        return technologies
+        return result
     }
     
     @JvmStatic

@@ -3,7 +3,6 @@ package icu.windea.pls.extension.diagram.provider
 import com.intellij.diagram.*
 import com.intellij.diagram.presentation.*
 import com.intellij.diagram.settings.*
-import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.graph.*
 import com.intellij.openapi.graph.layout.*
 import com.intellij.openapi.graph.settings.*
@@ -16,11 +15,13 @@ import com.intellij.ui.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.data.ParadoxEventDataProvider.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
@@ -36,21 +37,15 @@ import javax.swing.*
  * * TODO 可以按作用域过滤要显示的科技。（例如，仅限原版，仅限当前模组）
  * * 支持任何通用的图表操作。（例如，导出为图片）
  */
-class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
-    val _vfsResolver = ParadoxRootVfsResolver(presentableName)
-    val _elementManager = ElementManager()
+class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : ParadoxDiagramProvider(gameType) {
+    val _vfsResolver = ParadoxRootVfsResolver()
+    val _elementManager = ElementManager(this)
     val _relationshipManager = RelationshipManager()
     val _extras = Extras()
     
-    init {
-        _elementManager.setUmlProvider(this)
-    }
+    override fun getID() = gameType.name + ".EventTree"
     
-    override fun getID() = "Paradox.EventTree"
-    
-    override fun getPresentableName() = PlsDiagramBundle.message("paradox.eventTree.name")
-    
-    override fun getActionName(isPopup: Boolean) = PlsDiagramBundle.message("paradox.eventTree.actionName")
+    override fun getPresentableName() = PlsDiagramBundle.message("paradox.eventTree.name", gameType)
     
     override fun createScopeManager(project: Project) = null //TODO
     
@@ -113,16 +108,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
         }
     }
     
-    class ElementManager : DiagramElementManagerEx<PsiElement>() {
-        override fun findInDataContext(context: DataContext): PsiElement? {
-            //rootFile
-            val file = context.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
-            val project = context.getData(CommonDataKeys.PROJECT) ?: return null
-            val rootInfo = file.fileInfo?.rootInfo ?: return null
-            val rootFile = rootInfo.rootFile
-            return rootFile.toPsiDirectory(project)
-        }
-        
+    class ElementManager(provider: ParadoxDiagramProvider) : ParadoxDiagramElementManager(provider) {
         override fun isAcceptableAsNode(o: Any?): Boolean {
             return o is PsiDirectory || o is ParadoxScriptProperty
         }
@@ -254,7 +240,6 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             return null
         }
         
-        
         @Suppress("RedundantOverride")
         override fun getItemDocOwner(element: Any?, builder: DiagramBuilder): PsiElement? {
             //property -> No documentation found -> ok
@@ -287,8 +272,8 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
     
     class Node(
         event: ParadoxScriptProperty,
-        provider: ParadoxEventTreeDiagramProvider,
-        val data: Data?
+        val data: Data?,
+        provider: ParadoxEventTreeDiagramProvider
     ) : PsiDiagramNode<PsiElement>(event, provider) {
         override fun getTooltip(): String? {
             val element = identifyingElement
@@ -311,6 +296,8 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
     ) : DiagramDataModel<PsiElement>(project, provider), ModificationTracker {
         val _nodes = mutableSetOf<DiagramNode<PsiElement>>()
         val _edges = mutableSetOf<DiagramEdge<PsiElement>>()
+        
+        val gameType get() = provider.gameType
         
         override fun getNodes() = _nodes
         
@@ -341,7 +328,8 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
             _nodes.clear()
             _edges.clear()
             val originalFile = file?.getUserData(DiagramDataKeys.ORIGINAL_ELEMENT)
-            val events = ParadoxEventHandler.getEvents(project, originalFile)
+            val selector = definitionSelector(project, originalFile).withGameType(gameType).contextSensitive().distinctByName()
+            val events = ParadoxEventHandler.getEvents(selector)
             if(events.isEmpty()) return
             //群星原版事件有5000+
             val nodeMap = mutableMapOf<ParadoxScriptProperty, Node>()
@@ -350,7 +338,7 @@ class ParadoxEventTreeDiagramProvider : ParadoxDiagramProvider() {
                 ProgressManager.checkCanceled()
                 val data = event.getData<Data>()
                 if(data != null && !shouldShow(data, settings, configuration)) continue
-                val node = Node(event, provider, data)
+                val node = Node(event, data, provider)
                 nodeMap.put(event, node)
                 eventMap.put(ParadoxEventHandler.getName(event), event)
                 _nodes.add(node)

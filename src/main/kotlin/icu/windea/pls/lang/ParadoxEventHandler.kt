@@ -48,14 +48,13 @@ object ParadoxEventHandler {
     }
     
     @JvmStatic
-    fun getEvents(project: Project, context: Any?): Set<ParadoxScriptProperty> {
-        val selector = definitionSelector(project, context).contextSensitive().distinctByName()
-        val technologies = mutableSetOf<ParadoxScriptProperty>()
+    fun getEvents(selector: ParadoxDefinitionSelector): Set<ParadoxScriptProperty> {
+        val result = mutableSetOf<ParadoxScriptProperty>()
         ParadoxDefinitionSearch.search("event", selector).processQuery {
-            if(it is ParadoxScriptProperty) technologies.add(it)
+            if(it is ParadoxScriptProperty) result.add(it)
             true
         }
-        return technologies
+        return result
     }
     
     @JvmStatic

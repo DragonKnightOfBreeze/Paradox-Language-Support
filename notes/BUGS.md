@@ -18,19 +18,7 @@
 
 * `ReferencesSearch.search()`
 
-*** 
-
-支持本地化参数：
-
-```
-	modifier = {
-		description = ap_evolutionary_mastery_modifier_desc
-		description_parameters = {
-			POINTS = @ap_evolutionary_mastery_POINTS
-			COST_MULT = @ap_evolutionary_mastery_COST_MULT
-		}
-	}
-```
+***
 
 ```
 # 无法提示move和moving
@@ -39,7 +27,7 @@ propagate_state = { "move" = "moving" }
 
 疑难杂症：
 
-* [ ] ~~`utility_component_template`定义声明完全无法解析？为啥啊？~~（没有复现）
+* [X] ~~`utility_component_template`定义声明完全无法解析？为啥啊？~~（没有复现）
 * [X] ~~本地化图标的读写引用高亮再次失效~~（生成的`ParadoxLowLevelSearchUtil.class`文件不对）
 * [ ] 脚本参数名是忽略大小写的
 * [ ] scopeContext应当可以跨内联向下传递
