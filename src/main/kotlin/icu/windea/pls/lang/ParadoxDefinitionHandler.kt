@@ -285,7 +285,7 @@ object ParadoxDefinitionHandler {
 		return true
 	}
 	
-	//这里匹配时需要兼容内联的情况
+	//TODO 这里匹配时需要兼容内联的情况，但是这样的话调用ParadoxValueSetValueHandler.resolveInfo()时可能会导致IDE卡死
 	
 	@JvmStatic
 	fun matchesSubtype(
@@ -384,7 +384,7 @@ object ParadoxDefinitionHandler {
 		val minMap = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { it.cardinality?.min ?: 1 }) //默认为1
 		
 		//注意：propConfig.key可能有重复，这种情况下只要有其中一个匹配即可
-		val matched = blockElement.processProperty(inline = true) { propertyElement ->
+		val matched = blockElement.processProperty { propertyElement ->
 			val keyElement = propertyElement.propertyKey
 			val expression = ParadoxDataExpression.resolve(keyElement, matchType)
 			val propConfigs = propertyConfigs.filter {
@@ -413,7 +413,7 @@ object ParadoxDefinitionHandler {
 		//要求其中所有的value的值在最终都会小于等于指定值
 		val minMap = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { it.cardinality?.min ?: 1 }) //默认为1
 		
-		val matched = blockElement.processValue(inline = true) { valueElement ->
+		val matched = blockElement.processValue { valueElement ->
 			//如果没有匹配的规则则忽略
 			val expression = ParadoxDataExpression.resolve(valueElement, matchType)
 			
