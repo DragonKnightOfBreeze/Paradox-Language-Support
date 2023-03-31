@@ -22,11 +22,13 @@ fun isSuppressedInComment(element: PsiElement, toolId: String): Boolean {
 
 fun getCommentsForSuppression(element: PsiElement): Sequence<PsiElement> {
     return if(element is PsiFile) {
-        element.firstChild.siblings(forward = true, withSelf = true)
+        val context = element.firstChild ?: return emptySequence()
+        context.siblings(forward = true, withSelf = true)
             .takeWhile { it is PsiWhiteSpace || it is PsiComment }
             .filter { it is PsiComment }
     } else {
-        element.siblings(forward = false, withSelf = false)
+        val context = element
+        context.siblings(forward = false, withSelf = false)
             .takeWhile { it is PsiWhiteSpace || it is PsiComment }
             .filter { it is PsiComment }
     }

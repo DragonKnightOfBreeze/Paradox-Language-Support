@@ -3,7 +3,7 @@ package icu.windea.pls.core.search
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
-import com.intellij.psi.PsiFile
+import com.intellij.psi.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
@@ -25,6 +25,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         val name = ParadoxFilePathIndex.NAME
         val contextElement = queryParameters.selector.file?.toPsiFile<PsiFile>(project)
         val pathReferenceExpressionSupport = if(configExpression != null) ParadoxPathReferenceExpressionSupport.get(configExpression) else null
+        ProgressManager.checkCanceled()
         if(configExpression == null || pathReferenceExpressionSupport?.matchEntire(configExpression, contextElement) == true) {
             val keys = if(filePath != null) {
                 getFilePathInfos(filePath, queryParameters)
