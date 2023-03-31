@@ -17,9 +17,11 @@ class ParadoxModificationTrackerProvider {
     val Modifier = SimpleModificationTracker()
     
     val Technologies = SimpleModificationTracker()
-    val InlineScripts = SimpleModificationTracker()
     val OnActions = SimpleModificationTracker()
     val Events = SimpleModificationTracker()
+    
+    val ScriptedVariables = SimpleModificationTracker()
+    val InlineScripts = SimpleModificationTracker()
     
     val DefinitionScopeContextInference = SimpleModificationTracker()
     val LocalisationCommandScopeContextInference = SimpleModificationTracker()

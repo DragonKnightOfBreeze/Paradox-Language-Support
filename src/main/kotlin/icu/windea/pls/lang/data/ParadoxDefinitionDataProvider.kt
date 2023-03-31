@@ -26,7 +26,10 @@ interface ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
     fun getData(definition: ParadoxScriptDefinitionElement): T? {
         return CachedValuesManager.getCachedValue(definition, cachedDataKey) {
             val value = doGetData(definition)
-            CachedValueProvider.Result.create(value, definition)
+            //这里需要追踪全局的scriptedVariable以及inlineScript的更改
+            val tracker1 = ParadoxModificationTrackerProvider.getInstance().ScriptedVariables
+            val tracker2 = ParadoxModificationTrackerProvider.getInstance().InlineScripts
+            CachedValueProvider.Result.create(value, definition, tracker1, tracker2)
         }
     }
     

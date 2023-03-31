@@ -40,14 +40,17 @@ class ParadoxModificationTrackFileListener : AsyncFileListener {
                             "common/technologies".matchesPath(filePath) -> {
                                 provider.Technologies.incModificationCount()
                             }
-                            "common/inline_scripts".matchesPath(filePath) -> {
-                                provider.InlineScripts.incModificationCount()
-                            }
                             "common/on_actions".matchesPath(filePath) -> {
                                 provider.OnActions.incModificationCount()
                             }
                             "events".matchesPath(filePath) -> {
                                 provider.Events.incModificationCount()
+                            }
+                            "common/scripted_variables".matchesPath(filePath) -> {
+                                provider.ScriptedVariables.incModificationCount()
+                            }
+                            "common/inline_scripts".matchesPath(filePath) -> {
+                                provider.InlineScripts.incModificationCount()
                             }
                         }
                     }
