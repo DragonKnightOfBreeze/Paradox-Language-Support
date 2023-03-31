@@ -46,6 +46,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
             if(!pathReferenceExpressionSupport.matches(configExpression, contextElement, path, ignoreCase)) return@p true
             val keys = setOf(ParadoxFilePathInfo(path, gameType))
             FileBasedIndex.getInstance().processFilesContainingAnyKey(name, keys, scope, null, null) { file ->
+                ProgressManager.checkCanceled()
                 consumer.process(file)
             }
             true
