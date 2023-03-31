@@ -653,8 +653,9 @@ object ParadoxScriptPsiImplUtil {
         return element.findChildrenOfType { isParameterConditionComponent(it) }
     }
     
-    private fun isParameterConditionComponent(element: PsiElement): Boolean {
+    private fun isBlockComponent(element: PsiElement): Boolean {
         return element is ParadoxScriptScriptedVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
+            || element is ParadoxScriptParameterCondition
     }
     //endregion
     
