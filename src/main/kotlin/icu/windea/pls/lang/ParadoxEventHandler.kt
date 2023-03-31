@@ -15,30 +15,24 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxEventHandler {
-    enum class InvocationType {
-        All, Immediate, After
-    }
+    enum class InvocationType { All, Immediate, After }
     
     val cachedEventInvocationsKey = Key.create<CachedValue<Map<String, InvocationType>>>("paradox.cached.event.invocations")
     
-    @JvmStatic
     fun isValidEventNamespace(eventNamespace: String): Boolean {
         if(eventNamespace.isEmpty()) return false
         return eventNamespace.isExactIdentifier()
     }
     
-    @JvmStatic
     fun isValidEventId(eventId: String): Boolean {
         if(eventId.isEmpty()) return false
-        val dotIndex = eventId.indexOf('.') 
+        val dotIndex = eventId.indexOf('.')
         if(dotIndex == -1) return false
         val prefix = eventId.substring(0, dotIndex)
         val no = eventId.substring(dotIndex + 1)
         return prefix.isNotEmpty() && prefix.isExactIdentifier() && no.isNotEmpty() && no.isExactIdentifier()
     }
     
-    
-    @JvmStatic
     fun isMatchedEventId(eventId: String, eventNamespace: String): Boolean {
         val dotIndex = eventId.indexOf('.')
         if(dotIndex == -1) return true //忽略
@@ -62,7 +56,6 @@ object ParadoxEventHandler {
         return element.definitionInfo?.name.orAnonymous()
     }
     
-    @JvmStatic
     fun getNamespace(element: ParadoxScriptProperty): String {
         return getName(element).substringBefore(".") //enough
     }
@@ -70,7 +63,6 @@ object ParadoxEventHandler {
     /**
      * 得到event的需要匹配的namespace。
      */
-    @JvmStatic
     fun getMatchedNamespace(event: ParadoxScriptProperty): ParadoxScriptProperty? {
         var current = event.prevSibling ?: return null
         while(true) {
@@ -85,12 +77,10 @@ object ParadoxEventHandler {
         }
     }
     
-    @JvmStatic
     fun getLocalizedName(definition: ParadoxScriptProperty): ParadoxLocalisationProperty? {
         return definition.definitionInfo?.resolvePrimaryLocalisation()
     }
     
-    @JvmStatic
     fun getIconFile(definition: ParadoxScriptProperty): PsiFile? {
         return definition.definitionInfo?.resolvePrimaryImage()
     }
@@ -98,7 +88,6 @@ object ParadoxEventHandler {
     /**
      * 得到指定事件可能调用的所有事件。
      */
-    @JvmStatic
     fun getInvocations(definition: ParadoxScriptProperty): Map<String, InvocationType> {
         return CachedValuesManager.getCachedValue(definition, cachedEventInvocationsKey) {
             val value = doGetInvocations(definition)

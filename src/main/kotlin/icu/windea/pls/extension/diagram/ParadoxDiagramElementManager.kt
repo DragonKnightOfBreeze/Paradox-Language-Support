@@ -7,11 +7,9 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.extension.diagram.provider.*
 
-abstract class ParadoxDiagramElementManager(val provider: ParadoxDiagramProvider): DiagramElementManagerEx<PsiElement>() {
-    override fun getProvider(): DiagramProvider<PsiElement>? {
-        return provider
-    }
-    
+abstract class ParadoxDiagramElementManager(
+    val provider: ParadoxDiagramProvider
+): DiagramElementManagerEx<PsiElement>() {
     override fun findInDataContext(context: DataContext): PsiElement? {
         //rootFile
         val file = context.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
