@@ -16,6 +16,10 @@ class ParadoxFilePathIndex : ScalarIndexExtension<ParadoxFilePathInfo>() {
         return NAME
     }
     
+    override fun getVersion(): Int {
+        return 4 + (if(Registry.`is`("indexing.paradox.file.path.over.vfs")) 0xff else 0)
+    }
+    
     override fun getIndexer(): DataIndexer<ParadoxFilePathInfo, Void, FileContent> {
         return DataIndexer { inputData ->
             val fileInfo = inputData.file.fileInfo ?: return@DataIndexer emptyMap()
@@ -28,10 +32,6 @@ class ParadoxFilePathIndex : ScalarIndexExtension<ParadoxFilePathInfo>() {
     
     override fun getKeyDescriptor(): KeyDescriptor<ParadoxFilePathInfo> {
         return ParadoxFilePathKeyDescriptor
-    }
-    
-    override fun getVersion(): Int {
-        return 4 + (if(Registry.`is`("indexing.paradox.file.path.over.vfs")) 0xff else 0)
     }
     
     override fun getInputFilter(): FileBasedIndex.InputFilter {

@@ -336,7 +336,7 @@ object ParadoxConfigHandler {
                         return ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
                     }
                 }
-                //complexEnuMValue的值必须合法
+                //complexEnumValue的值必须合法
                 return ParadoxComplexEnumValueHandler.getName(expression.text) != null
             }
             CwtDataType.Value -> {

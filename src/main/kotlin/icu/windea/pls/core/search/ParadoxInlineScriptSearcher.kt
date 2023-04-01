@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
+import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
@@ -23,15 +24,15 @@ class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptInfo, P
         val gameType = selector.gameType
         val scope = queryParameters.selector.scope
         
-        //快速遍历
         FileTypeIndex.processFiles(ParadoxScriptFileType, p@{ file ->
             ProgressManager.checkCanceled()
             if(file.fileInfo == null) return@p true
             if(ParadoxFileManager.isLightFile(file)) return@p true
-            val psiFile = file.toPsiFile<PsiFile>(project) ?: return@p true
-            val inlineScripts = ParadoxInlineScriptIndex.getData(psiFile).inlineScripts[expression]
+            val inlineScripts = FileBasedIndex.getInstance().getFileData(ParadoxInlineScriptIndex.NAME, file, project).get(expression)
             if(inlineScripts.isNullOrEmpty()) return@p true
+            val psiFile = file.toPsiFile<PsiFile>(project) ?: return@p true
             for(info in inlineScripts) {
+                ProgressManager.checkCanceled()
                 if(gameType == info.gameType) {
                     info.withFile(psiFile) { consumer.process(info) }
                 }

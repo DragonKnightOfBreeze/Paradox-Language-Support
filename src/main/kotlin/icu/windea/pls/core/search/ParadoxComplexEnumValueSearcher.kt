@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
+import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
@@ -30,8 +31,8 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
 			ProgressManager.checkCanceled()
 			if(file.fileInfo == null) return@p true
 			if(ParadoxFileManager.isLightFile(file)) return@p true
+			val complexEnumValues = FileBasedIndex.getInstance().getFileData(ParadoxComplexEnumValueIndex.NAME, file, project).get(enumName) ?: return@p true
 			val psiFile = file.toPsiFile<PsiFile>(project) ?: return@p true
-			val complexEnumValues = ParadoxComplexEnumValueIndex.getData(psiFile).complexEnumValues[enumName] ?: return@p true
 			if(name == null) {
 				for(info in complexEnumValues.values) {
 					if(gameType == info.gameType && namesToDistinct.add(info.name)) {
