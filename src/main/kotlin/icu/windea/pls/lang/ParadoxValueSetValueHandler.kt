@@ -41,10 +41,10 @@ object ParadoxValueSetValueHandler {
             }
             ?: return null
         if(config.expression.type != CwtDataType.Value && config.expression.type != CwtDataType.ValueSet) return null
-        val name = getName(element.value) ?: return null
-        val valueSetName = config.expression.value?.takeIfNotEmpty() ?: return null
         val configGroup = config.info.configGroup
         val gameType = configGroup.gameType ?: return null
+        val name = getName(element.value) ?: return null
+        val valueSetName = config.expression.value?.takeIfNotEmpty() ?: return null
         val readWriteAccess = getReadWriteAccess(config.expression)
         return ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, gameType)
     }

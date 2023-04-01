@@ -324,31 +324,24 @@ object ParadoxConfigHandler {
                 if(enumConfig != null) {
                     return name in enumConfig.values
                 }
-                if(isStatic) return true
                 //匹配复杂枚举
-                val complexEnumConfig = configGroup.complexEnums[enumName]
-                if(complexEnumConfig != null) {
-                    if(BitUtil.isSet(matchType, CwtConfigMatchType.COMPLEX_ENUM_VALUE)) {
-                        val searchScope = complexEnumConfig.searchScopeType
-                        val selector = complexEnumValueSelector(project, element)
-                            //.withSearchScopeType(searchScope, element)
-                        return ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
-                    }
-                }
-                return false
+                if(!expression.type.isStringType()) return false
+                if(isStatic) return true
+                //complexEnuMValue的值必须合法
+                return ParadoxComplexEnumValueHandler.getName(expression.text) != null
             }
             CwtDataType.Value -> {
                 if(!expression.type.isStringType()) return false
                 if(isStatic) return true
                 if(isParameterAware) return true
-                //"@"之前的字符串即valueSetValue的名字必须合法
+                //valueSetValue的值必须合法
                 return ParadoxValueSetValueHandler.getName(expression.text) != null
             }
             CwtDataType.ValueSet -> {
                 if(!expression.type.isStringType()) return false
                 if(isStatic) return true
                 if(isParameterAware) return true
-                //"@"之前的字符串即valueSetValue的名字必须合法
+                //valueSetValue的值必须合法
                 return ParadoxValueSetValueHandler.getName(expression.text) != null
             }
             CwtDataType.ScopeField, CwtDataType.Scope, CwtDataType.ScopeGroup -> {
