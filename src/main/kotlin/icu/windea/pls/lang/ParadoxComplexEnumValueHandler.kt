@@ -218,8 +218,7 @@ object ParadoxComplexEnumValueHandler {
     
     @JvmStatic
     fun getName(expression: String): String? {
-        //exclude if name contains invalid chars
-        return expression.takeIf { it.isExactIdentifier('.') }?.takeIfNotEmpty()
+        return expression.takeIfNotEmpty()
     }
     
     //@JvmStatic

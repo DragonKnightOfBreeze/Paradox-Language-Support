@@ -13,10 +13,12 @@ object ParadoxInlineScriptIndex {
     class Data(
         val inlineScriptList: MutableList<ParadoxInlineScriptInfo> = mutableListOf()
     ) {
-        val inlineScripts = buildMap<String, List<ParadoxInlineScriptInfo>> {
-            for(info in inlineScriptList) {
-                val list = getOrPut(info.expression) { mutableListOf() } as MutableList
-                list.add(info)
+        val inlineScripts by lazy {
+            buildMap<String, List<ParadoxInlineScriptInfo>> {
+                for(info in inlineScriptList) {
+                    val list = getOrPut(info.expression) { mutableListOf() } as MutableList
+                    list.add(info)
+                }
             }
         }
     }

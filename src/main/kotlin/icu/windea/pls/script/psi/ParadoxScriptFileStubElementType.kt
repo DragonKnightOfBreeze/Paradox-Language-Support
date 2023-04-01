@@ -97,9 +97,11 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
         //    //需要包括scripted_variable, property, key/string (作为：complexEnum, valueSetValue)
         //    val type = node.tokenType
         //    return when {
-        //        type == PARAMETER || type == PARAMETER_CONDITION -> true
-        //        type == INLINE_MATH || type == INLINE_MATH_PARAMETER -> true
-        //        type == BOOLEAN || type == INT || type == FLOAT || type == COLOR -> true
+        //        type == SCRIPTED_VARIABLE -> false
+        //        type == PROPERTY -> false
+        //        type == BLOCK -> false
+        //        parentType == PROPERTY -> type != BLOCK
+        //        parentType == BLOCK -> type != PROPERTY
         //        else -> false
         //    }
         //}

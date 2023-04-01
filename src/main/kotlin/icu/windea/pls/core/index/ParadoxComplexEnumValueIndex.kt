@@ -14,10 +14,12 @@ object ParadoxComplexEnumValueIndex {
     class Data(
         val complexEnumValueList: MutableList<ParadoxComplexEnumValueInfo> = mutableListOf()
     ) {
-        val complexEnumValues = buildMap<String, Map<String, ParadoxComplexEnumValueInfo>> {
-            for(info in complexEnumValueList) {
-                val map = getOrPut(info.enumName) { mutableMapOf() } as MutableMap
-                map.putIfAbsent(info.name, info)
+        val complexEnumValues by lazy {
+            buildMap<String, Map<String, ParadoxComplexEnumValueInfo>> {
+                for(info in complexEnumValueList) {
+                    val map = getOrPut(info.enumName) { mutableMapOf() } as MutableMap
+                    map.putIfAbsent(info.name, info)
+                }
             }
         }
     }

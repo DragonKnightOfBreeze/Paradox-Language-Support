@@ -50,8 +50,8 @@ class ParadoxScriptValueParameterExpressionNode (
 			//NOTE 这里目前不使用 icu.windea.pls.config.support.ParadoxParameterSupport
 			val element = element
 			val name = parameterName
-			val contextKey = "definition@script_value"
 			val definitionName = scriptValueName
+			val contextKey = "definition@$definitionName: script_value"
 			val definitionTypes = listOf("script_value")
 			val readWriteAccess = ReadWriteAccessDetector.Access.Write
 			val gameType = configGroup.gameType ?: return null

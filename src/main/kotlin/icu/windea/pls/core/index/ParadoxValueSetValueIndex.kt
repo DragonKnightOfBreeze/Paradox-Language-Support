@@ -14,10 +14,12 @@ object ParadoxValueSetValueIndex {
     class Data(
         val valueSetValueList: MutableList<ParadoxValueSetValueInfo> = mutableListOf()
     ) {
-        val valueSetValues = buildMap<String, Map<String, ParadoxValueSetValueInfo>> {
-            for(info in valueSetValueList) {
-                val map = getOrPut(info.valueSetName) { mutableMapOf() } as MutableMap
-                map.putIfAbsent(info.name, info)
+        val valueSetValues by lazy {
+            buildMap<String, Map<String, ParadoxValueSetValueInfo>> {
+                for(info in valueSetValueList) {
+                    val map = getOrPut(info.valueSetName) { mutableMapOf() } as MutableMap
+                    map.putIfAbsent(info.name, info)
+                }
             }
         }
     }
