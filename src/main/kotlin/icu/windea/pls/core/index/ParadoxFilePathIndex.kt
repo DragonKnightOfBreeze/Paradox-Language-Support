@@ -3,34 +3,31 @@ package icu.windea.pls.core.index
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.model.*
 import java.util.*
 
-class ParadoxFilePathIndex : ScalarIndexExtension<ParadoxFilePathInfo>() {
+class ParadoxFilePathIndex : ScalarIndexExtension<String>() {
     companion object {
-        @JvmField val NAME = ID.create<ParadoxFilePathInfo, Void>("paradox.file.path.index")
+        @JvmField val NAME = ID.create<String, Void>("paradox.file.path.index")
     }
     
-    override fun getName(): ID<ParadoxFilePathInfo, Void> {
+    override fun getName(): ID<String, Void> {
         return NAME
     }
     
     override fun getVersion(): Int {
-        return 5 //0.9.6
+        return 6 //0.9.6
     }
     
-    override fun getIndexer(): DataIndexer<ParadoxFilePathInfo, Void, FileContent> {
+    override fun getIndexer(): DataIndexer<String, Void, FileContent> {
         return DataIndexer { inputData ->
             val fileInfo = inputData.file.fileInfo ?: return@DataIndexer emptyMap()
             val path = fileInfo.path.path
-            val gameType = fileInfo.rootInfo.gameType
-            val info = ParadoxFilePathInfo(path, gameType)
-            Collections.singletonMap<ParadoxFilePathInfo, Void>(info, null)
+            Collections.singletonMap<String, Void>(path, null)
         }
     }
     
-    override fun getKeyDescriptor(): KeyDescriptor<ParadoxFilePathInfo> {
-        return ParadoxFilePathKeyDescriptor
+    override fun getKeyDescriptor(): KeyDescriptor<String> {
+        return EnumeratorStringDescriptor.INSTANCE
     }
     
     override fun getInputFilter(): FileBasedIndex.InputFilter {

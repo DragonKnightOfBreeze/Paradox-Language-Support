@@ -1,10 +1,9 @@
 package icu.windea.pls.core.actions
 
-import com.intellij.ide.actions.CreateDirectoryCompletionContributor
+import com.intellij.ide.actions.*
 import com.intellij.ide.actions.CreateDirectoryCompletionContributor.*
-import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
-import com.intellij.util.Processor
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -34,7 +33,7 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
         val fileInfo = directory.fileInfo ?: return emptySet()
         val contextPath = fileInfo.entryPath.path //use entryPath here
         val contextGameType = fileInfo.rootInfo.gameType
-        val pathPrefix = if(contextPath.isEmpty()) "" else contextPath + "/"
+        val pathPrefix = if(contextPath.isEmpty()) "" else "$contextPath/"
         val result = sortedSetOf<String>()
         if(contextPath.isEmpty()) {
             result.addAll(defaultVariants)
@@ -46,7 +45,7 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
             ProgressManager.checkCanceled()
             if(contextGameType != gameType) return@p true
             
-            var p = path.removePrefixOrNull(pathPrefix)
+            val p = path.removePrefixOrNull(pathPrefix)
             if(p != null && p.isNotEmpty()) {
                 result.add(p)
             }

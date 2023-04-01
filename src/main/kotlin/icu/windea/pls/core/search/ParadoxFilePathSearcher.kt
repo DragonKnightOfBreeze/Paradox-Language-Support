@@ -10,7 +10,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.model.*
 
 /**
  * 文件路径的查询器。
@@ -23,6 +22,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         val project = queryParameters.project
         val scope = queryParameters.selector.scope
         val name = ParadoxFilePathIndex.NAME
+        val gameType = queryParameters.selector.gameType
         val contextElement = queryParameters.selector.file?.toPsiFile<PsiFile>(project)
         val pathReferenceExpressionSupport = if(configExpression != null) ParadoxPathReferenceExpressionSupport.get(configExpression) else null
         ProgressManager.checkCanceled()
@@ -30,40 +30,39 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
             val keys = if(filePath != null) {
                 getFilePathInfos(filePath, queryParameters)
             } else {
-                FileBasedIndex.getInstance().getAllKeys(name, project).filter { it.gameType == queryParameters.selector.gameType }
+                FileBasedIndex.getInstance().getAllKeys(name, project)
             }
             FileBasedIndex.getInstance().processFilesContainingAnyKey(name, keys, scope, null, null) p@{ file ->
                 ProgressManager.checkCanceled()
+                if(gameType != null && gameType != selectGameType(file)) return@p true
                 consumer.process(file)
             }
             return
         }
         if(pathReferenceExpressionSupport == null) return
-        FileBasedIndex.getInstance().processAllKeys(name, p@{ (path, gameType) ->
+        FileBasedIndex.getInstance().processAllKeys(name, p@{ path ->
             ProgressManager.checkCanceled()
-            if(gameType != queryParameters.selector.gameType) return@p true
             if(filePath != null && pathReferenceExpressionSupport.extract(configExpression, contextElement, path, ignoreCase) != filePath) return@p true
             if(!pathReferenceExpressionSupport.matches(configExpression, contextElement, path, ignoreCase)) return@p true
-            val keys = setOf(ParadoxFilePathInfo(path, gameType))
-            FileBasedIndex.getInstance().processFilesContainingAnyKey(name, keys, scope, null, null) { file ->
+            val keys = setOf(path)
+            FileBasedIndex.getInstance().processFilesContainingAnyKey(name, keys, scope, null, null) pp@{ file ->
                 ProgressManager.checkCanceled()
+                if(gameType != null && gameType != selectGameType(file)) return@pp true
                 consumer.process(file)
             }
             true
         }, scope, null)
     }
     
-    private fun getFilePathInfos(filePath: String, queryParameters: ParadoxFilePathSearch.SearchParameters): Set<ParadoxFilePathInfo> {
-        val gameType = queryParameters.selector.gameType.orDefault()
+    private fun getFilePathInfos(filePath: String, queryParameters: ParadoxFilePathSearch.SearchParameters): Set<String> {
         if(queryParameters.ignoreLocale) {
-            return getFilePathsIgnoreLocale(filePath, queryParameters) ?: setOf(ParadoxFilePathInfo(filePath, gameType))
+            return getFilePathsIgnoreLocale(filePath) ?: setOf(filePath)
         } else {
-            return setOf(ParadoxFilePathInfo(filePath, gameType))
+            return setOf(filePath)
         }
     }
     
-    private fun getFilePathsIgnoreLocale(filePath: String, queryParameters: ParadoxFilePathSearch.SearchParameters): Set<ParadoxFilePathInfo>? {
-        val gameType = queryParameters.selector.gameType.orDefault()
+    private fun getFilePathsIgnoreLocale(filePath: String): Set<String>? {
         if(!filePath.endsWith(".yml", true)) return null //仅限本地化文件
         val localeStrings = getCwtConfig().core.localisationLocales.keys.mapTo(mutableSetOf()) { it.removePrefix("l_") }
         var index = 0
@@ -82,9 +81,9 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
             }
         }
         if(usedLocaleString == null) return null
-        val result = mutableSetOf<ParadoxFilePathInfo>()
-        result.add(ParadoxFilePathInfo(filePath, gameType))
-        localeStrings.forEach { result.add(ParadoxFilePathInfo(filePath.replace(usedLocaleString, it), gameType)) }
+        val result = mutableSetOf<String>()
+        result.add(filePath)
+        localeStrings.forEach { result.add(filePath.replace(usedLocaleString, it)) }
         return result
     }
 }
