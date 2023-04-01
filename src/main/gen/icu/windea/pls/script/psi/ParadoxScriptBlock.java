@@ -22,9 +22,6 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlo
   List<ParadoxScriptScriptedVariable> getScriptedVariableList();
 
   @NotNull
-  List<ParadoxScriptString> getStringList();
-
-  @NotNull
   Icon getIcon(@IconFlags int flags);
 
   @NotNull

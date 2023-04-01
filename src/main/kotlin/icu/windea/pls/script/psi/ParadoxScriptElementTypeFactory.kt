@@ -12,7 +12,6 @@ object ParadoxScriptElementTypeFactory {
 			"SCRIPTED_VARIABLE" -> ParadoxScriptStubElementTypes.SCRIPTED_VARIABLE
 			"PROPERTY" -> ParadoxScriptStubElementTypes.PROPERTY
 			"PROPERTY_KEY" -> ParadoxScriptStubElementTypes.PROPERTY_KEY
-			"STRING" -> ParadoxScriptStubElementTypes.STRING
 			else -> ParadoxScriptElementType(debugName)
 		}
 	}

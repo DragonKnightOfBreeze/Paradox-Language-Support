@@ -8,5 +8,4 @@ class ParadoxValueSetValueSelector(project: Project, context: Any? = null): Chai
 
 fun valueSetValueSelector(project: Project, context: Any? = null) = ParadoxValueSetValueSelector(project, context)
 
-fun ParadoxValueSetValueSelector.declarationOnly() =
-	filterBy { !ParadoxValueSetValueHandler.isDeclaration(it) }
+fun ParadoxValueSetValueSelector.declarationOnly() = filterBy { !ParadoxValueSetValueHandler.isDeclaration(it) }

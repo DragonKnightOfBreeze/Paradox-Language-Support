@@ -23,7 +23,7 @@ class FileDocumentReadonlyContent(
         return original.charset
     }
     
-    override fun hasBom(): Boolean? {
+    override fun hasBom(): Boolean {
         return original.bom != null
     }
 }

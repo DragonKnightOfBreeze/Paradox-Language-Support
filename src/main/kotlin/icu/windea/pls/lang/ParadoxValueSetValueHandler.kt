@@ -16,6 +16,7 @@ object ParadoxValueSetValueHandler {
     fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxValueSetValueInfo? {
         ProgressManager.checkCanceled()
         if(!element.isExpression()) return null
+        if(element.isParameterAwareExpression()) return null //排除带参数的情况
         return getInfoFromCache(element)
     }
     
@@ -32,10 +33,7 @@ object ParadoxValueSetValueHandler {
         //only accept "value[x]" or "value_set[x]"
         //rather than "scope_field" or "value_field" or in localisation commands
         //so, e.g., if there is only an expression "event_target:target", "target" will not be shown during code completion
-        
         ProgressManager.checkCanceled()
-        if(!element.isExpression()) return null
-        if(element.isParameterAwareExpression()) return null //排除带参数的情况
         val config = ParadoxConfigHandler.getConfigs(element, orDefault = true)
             .firstOrNull {
                 val type = it.expression.type
@@ -48,7 +46,7 @@ object ParadoxValueSetValueHandler {
         val configGroup = config.info.configGroup
         val gameType = configGroup.gameType ?: return null
         val readWriteAccess = getReadWriteAccess(config.expression)
-        return ParadoxValueSetValueInfo(name, valueSetName, gameType, readWriteAccess)
+        return ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, gameType)
     }
     
     @JvmStatic
@@ -68,7 +66,7 @@ object ParadoxValueSetValueHandler {
         if(element !is ParadoxScriptStringExpressionElement) return null
         val readWriteAccess = getReadWriteAccess(configExpression)
         val valueSetName = configExpression.value ?: return null
-        return ParadoxValueSetValueElement(element, name, valueSetName, gameType, readWriteAccess, configGroup.project)
+        return ParadoxValueSetValueElement(element, name, valueSetName, readWriteAccess, gameType, configGroup.project)
     }
     
     @JvmStatic
@@ -78,7 +76,7 @@ object ParadoxValueSetValueHandler {
         val configExpression = configExpressions.firstOrNull() ?: return null
         val readWriteAccess = getReadWriteAccess(configExpression)
         val valueSetNames = configExpressions.mapNotNullTo(mutableSetOf()) { it.value }
-        return ParadoxValueSetValueElement(element, name, valueSetNames, gameType, readWriteAccess, configGroup.project)
+        return ParadoxValueSetValueElement(element, name, valueSetNames, readWriteAccess, gameType, configGroup.project)
     }
     
     private fun getReadWriteAccess(configExpression: CwtDataExpression): Access {

@@ -40,7 +40,8 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     create_token_set_(INLINE_MATH_ABS_EXPRESSION, INLINE_MATH_BI_EXPRESSION, INLINE_MATH_EXPRESSION, INLINE_MATH_PAR_EXPRESSION,
       INLINE_MATH_UNARY_EXPRESSION),
     create_token_set_(BLOCK, BOOLEAN, COLOR, FLOAT,
-      INLINE_MATH, INT, SCRIPTED_VARIABLE_REFERENCE, VALUE),
+      INLINE_MATH, INT, SCRIPTED_VARIABLE_REFERENCE, STRING,
+      VALUE),
   };
 
   /* ********************************************************** */
@@ -790,7 +791,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // scripted_variable_reference | boolean | int | float | color | block | inline_math
+  // scripted_variable_reference | boolean | int | float | string | color | block | inline_math
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
@@ -799,6 +800,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = boolean_$(b, l + 1);
     if (!r) r = int_$(b, l + 1);
     if (!r) r = float_$(b, l + 1);
+    if (!r) r = string(b, l + 1);
     if (!r) r = color(b, l + 1);
     if (!r) r = block(b, l + 1);
     if (!r) r = inline_math(b, l + 1);

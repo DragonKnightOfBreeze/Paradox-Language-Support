@@ -14,12 +14,27 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 	override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
 		val gameType = selectGameType(element) ?: return PsiReference.EMPTY_ARRAY
 		val configGroup = getCwtConfig(element.project).getValue(gameType)
+		val project = configGroup.project
 		val text = element.text
+		val isKey = element is ParadoxScriptPropertyKey
 		
 		//尝试兼容可能包含参数的情况
 		//if(text.isParameterAwareExpression()) return PsiReference.EMPTY_ARRAY
 		
-		val isKey = element is ParadoxScriptPropertyKey
+		//尝试解析为复杂枚举值声明
+		if(element is ParadoxScriptStringExpressionElement) {
+			val complexEnumValueInfo = ParadoxComplexEnumValueHandler.getInfo(element)
+			if(complexEnumValueInfo != null) {
+				val config = complexEnumValueInfo.getConfig(project)
+				if(config != null) {
+					val textRange = TextRange.create(0, text.length).unquote(text) //unquoted text
+					val reference = ParadoxComplexEnumValuePsiReference(element, textRange, complexEnumValueInfo, project)
+					return arrayOf(reference)
+				}
+			}
+		}
+		
+		//尝试基于规则进行解析
 		val configs = ParadoxConfigHandler.getConfigs(element, !isKey, isKey)
 		val config = configs.firstOrNull()
 		if(config != null) {

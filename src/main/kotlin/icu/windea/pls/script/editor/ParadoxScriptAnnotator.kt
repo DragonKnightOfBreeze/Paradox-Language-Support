@@ -80,13 +80,9 @@ class ParadoxScriptAnnotator : Annotator {
     }
     
     private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
-        //高亮复杂枚举名对应的字符串（可能还有其他高亮）（这里不能使用PSI链接）
-        val nameString = complexEnumValueInfo.name.escapeXml().orAnonymous()
-        val enumNameString = complexEnumValueInfo.enumName
-        val tooltip = PlsBundle.message("script.annotator.complexEnumValueName", nameString, enumNameString)
+        //高亮复杂枚举值声明对应的表达式
         holder.newSilentAnnotation(INFORMATION).range(element)
-            .tooltip(tooltip)
-            .textAttributes(Keys.COMPLEX_ENUM_VALUE_NAME_KEY)
+            .textAttributes(Keys.COMPLEX_ENUM_VALUE_KEY)
             .create()
     }
     
@@ -96,12 +92,22 @@ class ParadoxScriptAnnotator : Annotator {
             checkLiteralElement(element, holder)
         }
         
+        //高亮复杂枚举值声明
+        if(element is ParadoxScriptStringExpressionElement) {
+            val complexEnumValueInfo = element.complexEnumValueInfo
+            if(complexEnumValueInfo != null) {
+                annotateComplexEnumValue(element, holder, complexEnumValueInfo)
+                return
+            }
+        }
+        
         val isKey = element is ParadoxScriptPropertyKey
         val config = ParadoxConfigHandler.getConfigs(element, !isKey, isKey).firstOrNull()
         if(config != null) {
             //高亮特殊标签
             if(config is CwtValueConfig && config.isTagConfig) {
                 holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(Keys.TAG_KEY).create()
+                return
             }
             //如果不是字符串，除非是定义引用，否则不作高亮
             if(element !is ParadoxScriptStringExpressionElement && config.expression.type != CwtDataType.Definition) {
@@ -114,14 +120,6 @@ class ParadoxScriptAnnotator : Annotator {
                 if(elementText.contains('$')) setParameterRanges(element) //缓存参数文本范围
             }
             annotateExpression(element, null, holder, config)
-        }
-        
-        //高亮枚举值对应的表达式
-        if(element is ParadoxScriptStringExpressionElement) {
-            val complexEnumValueInfo = element.complexEnumValueInfo
-            if(complexEnumValueInfo != null) {
-                annotateComplexEnumValue(element, holder, complexEnumValueInfo)
-            }
         }
     }
     

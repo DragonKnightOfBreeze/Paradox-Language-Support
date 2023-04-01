@@ -22,11 +22,6 @@
       <option name="BACKGROUND" value="223C23"/>
     </value>
   </option>
-  <option name="PARADOX_SCRIPT.COMPLEX_ENUM_VALUE_NAME">
-    <value>
-      <option name="BACKGROUND" value="223C23"/>
-    </value>
-  </option>
   <option name="PARADOX_SCRIPT.DEFINITION_REFERENCE">
     <value>
       <option name="FOREGROUND" value="9876AA"/>

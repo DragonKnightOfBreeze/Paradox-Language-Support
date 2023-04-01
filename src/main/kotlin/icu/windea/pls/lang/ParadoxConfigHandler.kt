@@ -331,7 +331,7 @@ object ParadoxConfigHandler {
                     if(BitUtil.isSet(matchType, CwtConfigMatchType.COMPLEX_ENUM_VALUE)) {
                         val searchScope = complexEnumConfig.searchScopeType
                         val selector = complexEnumValueSelector(project, element)
-                            .withSearchScopeType(searchScope, element)
+                            //.withSearchScopeType(searchScope, element)
                         return ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
                     }
                 }

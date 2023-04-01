@@ -1,14 +1,11 @@
 package icu.windea.pls.script.psi.impl
 
 import com.intellij.lang.*
-import com.intellij.psi.stubs.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.psi.*
 
 @Suppress("ABSTRACT_MEMBER_NOT_IMPLEMENTED")
 class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {
-	constructor(stub: ParadoxScriptStringStub, type: IStubElementType<*,*>): super(stub, type)
-	
 	constructor(node: ASTNode) : super(node)
 	
 	@Volatile private var _value: String? = null

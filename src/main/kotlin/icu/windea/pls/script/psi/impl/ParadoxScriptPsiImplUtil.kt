@@ -653,7 +653,7 @@ object ParadoxScriptPsiImplUtil {
         return element.findChildrenOfType { isParameterConditionComponent(it) }
     }
     
-    private fun isBlockComponent(element: PsiElement): Boolean {
+    private fun isParameterConditionComponent(element: PsiElement): Boolean {
         return element is ParadoxScriptScriptedVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
             || element is ParadoxScriptParameterCondition
     }
@@ -830,23 +830,6 @@ object ParadoxScriptPsiImplUtil {
             }
         })
         return result
-    }
-    //endregion
-    
-    //region ParadoxScriptStringExpressionElement
-    @JvmStatic
-    fun getPresentation(element: ParadoxScriptStringExpressionElement): ItemPresentation {
-        val complexEnumValueInfo = element.complexEnumValueInfo
-        if(complexEnumValueInfo != null) return ParadoxComplexEnumValuePresentation(element, complexEnumValueInfo)
-        return BaseParadoxItemPresentation(element)
-    }
-    
-    @JvmStatic
-    fun isEquivalentTo(element: ParadoxScriptStringExpressionElement, another: PsiElement): Boolean {
-        //for complexEnumValueName: name & enumName & gameType
-        //for others: never
-        return another is ParadoxScriptStringExpressionElement
-            && element.complexEnumValueInfo?.equals(another.complexEnumValueInfo) == true
     }
     //endregion
     

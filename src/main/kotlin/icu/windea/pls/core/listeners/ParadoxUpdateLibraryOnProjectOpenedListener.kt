@@ -7,8 +7,8 @@ import icu.windea.pls.*
 /**
  * 项目启动时刷新库信息。
  */
-class ParadoxUpdateLibraryOnProjectOpenedListener: StartupActivity {
-    override fun runActivity(project: Project) {
+class ParadoxUpdateLibraryOnProjectOpenedListener: ProjectActivity {
+    override suspend fun execute(project: Project) {
         val paradoxLibrary = project.paradoxLibrary
         paradoxLibrary.refreshRoots()
     }

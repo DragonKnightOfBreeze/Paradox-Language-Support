@@ -6,6 +6,5 @@ interface ParadoxScriptStubElementTypes {
 		@JvmField val SCRIPTED_VARIABLE = ParadoxScriptScriptedVariableStubElementType
 		@JvmField val PROPERTY = ParadoxScriptPropertyStubElementType
 		@JvmField val PROPERTY_KEY = ParadoxScriptPropertyKeyStubElementType
-		@JvmField val STRING = ParadoxScriptStringStubElementType
 	}
 }

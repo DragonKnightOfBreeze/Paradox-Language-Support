@@ -2,6 +2,7 @@
 
 package icu.windea.pls.lang
 
+import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -21,7 +22,7 @@ object ParadoxComplexEnumValueHandler {
 	fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
 		ProgressManager.checkCanceled()
 		if(!element.isExpression()) return null
-		element.stub?.complexEnumValueInfo?.let { return it }
+		if(element.isParameterAwareExpression()) return null //排除带参数的情况
 		return getInfoFromCache(element)
 	}
 	
@@ -34,38 +35,25 @@ object ParadoxComplexEnumValueHandler {
 		}
 	}
 	
-	@JvmStatic
-	fun resolveInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile = element.containingFile): ParadoxComplexEnumValueInfo? {
-		//排除带参数的情况
-		if(element.isParameterAwareExpression()) return null
-		
-		val project = file.project
-		
-		//首先尝试直接基于stub进行解析
-		val stub = runCatching { element.stub }.getOrNull()
-		if(stub != null) {
-			return resolveByStub(element, stub)
-		}
-		
+	private fun resolveInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile = element.containingFile): ParadoxComplexEnumValueInfo? {
 		ProgressManager.checkCanceled()
+		val project = file.project
 		val fileInfo = file.fileInfo ?: return null
 		val path = fileInfo.entryPath //这里使用entryPath
 		val gameType = fileInfo.rootInfo.gameType
 		val configGroup = getCwtConfig(project).getValue(gameType)
-		return doResolve(element, path, configGroup)
+		return doResolveInfo(element, path, configGroup)
 	}
 	
-	private fun resolveByStub(element: ParadoxScriptStringExpressionElement, stub: ParadoxScriptStringExpressionElementStub<*>): ParadoxComplexEnumValueInfo? {
-		return stub.complexEnumValueInfo
-	}
-	
-	private fun doResolve(element: ParadoxScriptStringExpressionElement, path: ParadoxPath, configGroup: CwtConfigGroup): ParadoxComplexEnumValueInfo? {
+	private fun doResolveInfo(element: ParadoxScriptStringExpressionElement, path: ParadoxPath, configGroup: CwtConfigGroup): ParadoxComplexEnumValueInfo? {
 		for(complexEnumConfig in configGroup.complexEnums.values) {
 			if(matchesComplexEnumByPath(complexEnumConfig, path)) {
 				if(matchesComplexEnum(complexEnumConfig, element)) {
 					val name = element.value
 					val enumName = complexEnumConfig.name
-					return ParadoxComplexEnumValueInfo(name, enumName, configGroup.gameType)
+					val gameType = configGroup.gameType ?: return null
+					val readWriteAccess = ReadWriteAccessDetector.Access.Write //write (declaration)
+					return ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, gameType)
 				}
 			}
 		}
@@ -226,12 +214,5 @@ object ParadoxComplexEnumValueHandler {
 		return parents(false).find {
 			it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockValue())
 		}
-	}
-	
-	@JvmStatic
-	fun getName(element: ParadoxScriptStringExpressionElement): String? {
-		val stub     = runCatching { element.stub }.getOrNull()
-		val name = stub?.complexEnumValueInfo?.name ?: element.value
-		return name.takeIfNotEmpty()
 	}
 }

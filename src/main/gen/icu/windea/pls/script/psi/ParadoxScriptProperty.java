@@ -23,6 +23,10 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   @Nullable
   ParadoxScriptValue getPropertyValue();
 
+  //WARNING: string(...) is skipped
+  //matching string(ParadoxScriptProperty, ...)
+  //methods are not found in ParadoxScriptPsiImplUtil
+
   @NotNull
   Icon getIcon(@IconFlags int flags);
 

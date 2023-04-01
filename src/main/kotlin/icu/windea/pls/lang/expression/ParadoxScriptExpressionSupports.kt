@@ -15,6 +15,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.*
@@ -353,33 +354,12 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
         if(complexEnumConfig != null) {
             val searchScope = complexEnumConfig.searchScopeType
             val selector = complexEnumValueSelector(project, element)
-                .withSearchScopeType(searchScope, element)
+                //.withSearchScopeType(searchScope, element)
                 .contextSensitive(exact)
-            return ParadoxComplexEnumValueSearch.search(expression, enumName, selector).find()
+            val info = ParadoxComplexEnumValueSearch.search(expression, enumName, selector).findFirst()
+            if(info != null) return ParadoxComplexEnumValueElement(element, info, project)
         }
         return null
-    }
-    
-    override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
-        val enumName = config.expression?.value ?: return emptySet()
-        val configGroup = config.info.configGroup
-        val project = configGroup.project
-        val name = expression
-        //尝试解析为简单枚举
-        val enumConfig = configGroup.enums[enumName]
-        if(enumConfig != null) {
-            return ParadoxConfigHandler.resolvePredefinedEnumValue(element, name, enumName, configGroup).toSingletonListOrEmpty()
-        }
-        //尝试解析为复杂枚举
-        val complexEnumConfig = configGroup.complexEnums[enumName]
-        if(complexEnumConfig != null) {
-            val searchScope = complexEnumConfig.searchScopeType
-            val selector = complexEnumValueSelector(project, element)
-                .withSearchScopeType(searchScope, element)
-                .contextSensitive()
-            return ParadoxComplexEnumValueSearch.search(name, enumName, selector).findAll()
-        }
-        return emptySet()
     }
     
     override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
@@ -416,12 +396,12 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
             val typeFile = complexEnumConfig.pointer.containingFile
             val searchScope = complexEnumConfig.searchScopeType
             val selector = complexEnumValueSelector(project, contextElement)
-                .withSearchScopeType(searchScope, contextElement)
+                //.withSearchScopeType(searchScope, contextElement)
                 .contextSensitive()
-                .distinctByName()
-            ParadoxComplexEnumValueSearch.searchAll(enumName, selector).processQuery { complexEnum ->
-                val name = complexEnum.value
-                val builder = ParadoxScriptExpressionLookupElementBuilder.create(complexEnum, name)
+            ParadoxComplexEnumValueSearch.search(enumName, selector).processQuery { info ->
+                val name = info.name
+                val element = ParadoxComplexEnumValueElement(contextElement, info, project)
+                val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
                     .withIcon(PlsIcons.ComplexEnumValue)
                     .withTailText(tailText)
                     .withTypeText(typeFile?.name)

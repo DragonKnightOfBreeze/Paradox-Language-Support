@@ -5,7 +5,7 @@ import com.intellij.codeInsight.highlighting.*
 data class ParadoxValueSetValueInfo(
 	val name: String,
 	val valueSetName: String,
-	val gameType: ParadoxGameType,
-	val readWriteAccess: ReadWriteAccessDetector.Access
+	val readWriteAccess: ReadWriteAccessDetector.Access,
+	val gameType: ParadoxGameType
 	//TODO 保存作用域信息
 )

@@ -101,6 +101,16 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
         else -> false
     }
 }
+
+fun PsiReference.canResolveComplexEnumValue(): Boolean {
+    return when(this) {
+        is ParadoxScriptExpressionPsiReference -> true
+        is ParadoxDataExpressionNode.Reference -> true
+        is ParadoxTemplateExpressionNode.Reference -> true
+        is ParadoxComplexEnumValuePsiReference -> true
+        else -> false
+    }
+}
 //endregion
 
 //region Debug Extensions

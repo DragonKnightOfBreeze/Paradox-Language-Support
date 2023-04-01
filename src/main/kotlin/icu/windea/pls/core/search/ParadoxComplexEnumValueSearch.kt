@@ -4,12 +4,12 @@ import com.intellij.openapi.extensions.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.search.selectors.chained.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.lang.model.*
 
 /**
  * 复杂枚举的查询。
  */
-class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxScriptStringExpressionElement, ParadoxComplexEnumValueSearch.SearchParameters>(EP_NAME) {
+class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxComplexEnumValueInfo, ParadoxComplexEnumValueSearch.SearchParameters>(EP_NAME) {
 	/**
 	 * @property name 名字。
 	 * @property enumName 枚举的名字。
@@ -17,11 +17,11 @@ class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxScriptString
 	class SearchParameters(
 		val name: String?,
 		val enumName: String,
-		override val selector: ChainedParadoxSelector<ParadoxScriptStringExpressionElement>
-	) : ParadoxSearchParameters<ParadoxScriptStringExpressionElement>
+		override val selector: ChainedParadoxSelector<ParadoxComplexEnumValueInfo>
+	) : ParadoxSearchParameters<ParadoxComplexEnumValueInfo>
 	
 	companion object {
-		@JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxScriptStringExpressionElement, SearchParameters>>("icu.windea.pls.paradoxComplexEnumValueSearch")
+		@JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxComplexEnumValueInfo, SearchParameters>>("icu.windea.pls.paradoxComplexEnumValueSearch")
 		@JvmField val INSTANCE = ParadoxComplexEnumValueSearch()
 		
 		/**
@@ -31,8 +31,8 @@ class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxScriptString
 		fun search(
 			name: String,
 			enumName: String,
-			selector: ChainedParadoxSelector<ParadoxScriptStringExpressionElement>
-		): ParadoxQuery<ParadoxScriptStringExpressionElement, SearchParameters> {
+			selector: ChainedParadoxSelector<ParadoxComplexEnumValueInfo>
+		): ParadoxQuery<ParadoxComplexEnumValueInfo, SearchParameters> {
 			return INSTANCE.createParadoxQuery(SearchParameters(name, enumName, selector))
 		}
 		
@@ -40,10 +40,10 @@ class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxScriptString
 		 * @see icu.windea.pls.core.search.ParadoxComplexEnumValueSearch.SearchParameters
 		 */
 		@JvmStatic
-		fun searchAll(
+		fun search(
 			enumName: String,
-			selector: ChainedParadoxSelector<ParadoxScriptStringExpressionElement>
-		): ParadoxQuery<ParadoxScriptStringExpressionElement, SearchParameters> {
+			selector: ChainedParadoxSelector<ParadoxComplexEnumValueInfo>
+		): ParadoxQuery<ParadoxComplexEnumValueInfo, SearchParameters> {
 			return INSTANCE.createParadoxQuery(SearchParameters(null, enumName, selector))
 		}
 	}

@@ -19,15 +19,15 @@ class ParadoxValueSetValueElement(
     parent: PsiElement,
     private val name: String,
     val valueSetNames: Set<String>,
-    val gameType: ParadoxGameType,
     val readWriteAccess: ReadWriteAccessDetector.Access,
+    val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxFakePsiElement(parent) {
-    constructor(parent: PsiElement, name: String, valueSetName: String, gameType: ParadoxGameType, readWriteAccess: ReadWriteAccessDetector.Access, project: Project)
-        : this(parent, name, setOf(valueSetName), gameType, readWriteAccess, project)
+    constructor(parent: PsiElement, name: String, valueSetName: String, readWriteAccess: ReadWriteAccessDetector.Access, gameType: ParadoxGameType, project: Project)
+        : this(parent, name, setOf(valueSetName), readWriteAccess, gameType, project)
     
-    constructor(parent: PsiElement, info: ParadoxValueSetValueInfo, project: Project) 
-        : this(parent, info.name, info.valueSetName, info.gameType, info.readWriteAccess, project)
+    constructor(parent: PsiElement, info: ParadoxValueSetValueInfo, project: Project)
+        : this(parent, info.name, info.valueSetName, info.readWriteAccess, info.gameType, project)
     
     val valueSetName = valueSetNames.first()
     
@@ -43,7 +43,11 @@ class ParadoxValueSetValueElement(
     }
     
     override fun getTypeName(): String {
-        return PlsBundle.message("script.description.valueSetValue")
+        val valueSetName = valueSetNames.first() //first is ok
+        return when(valueSetName) {
+            "variable" -> PlsBundle.message("script.description.variable")
+            else -> PlsBundle.message("script.description.valueSetValue")
+        }
     }
     
     override fun getText(): String {

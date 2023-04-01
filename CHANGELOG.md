@@ -60,9 +60,11 @@
 ## 0.9.6
 
 * 优化与BUG修复
-* [X] 优化值集值（`valueSetValue`，如，`event_target`和`variable`）的索引
 * [X] 优化何时才会为本地化文件显示悬浮工具栏的判定
 * [X] 兼容嵌套的内联脚本调用
+* [X] 优化值集值（`valueSetValue`，如，`event_target`和`variable`）的索引
+* [X] 优化复杂枚举值（`complexEnumValue`，如`policy_flag`）的索引
+* [X] 不再可以通过`Navigate | Class or Navigate | Symbol`快速查找匹配名字的复杂枚举值
 * [ ] 实现类型层次（`Navigate >Type Hierachy`），用于基于枚举名列出枚举值、基于值集名列出值集值、基于定义类型列出定义，并且可以配置作用域
 * [ ] 完善对图表的支持 - 支持通过作用域过滤显示结果，提供另外的更加详细的配置页面（需要专业版IDE）
 

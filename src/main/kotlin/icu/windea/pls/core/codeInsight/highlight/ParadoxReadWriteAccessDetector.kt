@@ -19,6 +19,7 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
 		return when {
 			element is ParadoxParameterElement -> true
 			element is ParadoxValueSetValueElement -> true
+			element is ParadoxComplexEnumValueElement -> true
 			else -> false
 		}
 	}
@@ -27,6 +28,7 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
 		return when {
 			element is ParadoxParameterElement -> true
 			element is ParadoxValueSetValueElement -> true
+			element is ParadoxComplexEnumValueElement -> true
 			else -> false
 		}
 	}
@@ -34,12 +36,16 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
 	override fun getReferenceAccess(referencedElement: PsiElement, reference: PsiReference): Access {
 		if(reference.canResolveParameter()) {
 			val resolved = reference.resolveSingle()?.castOrNull<ParadoxParameterElement>()
-			if(resolved != null) return resolved.getAccess()
+			if(resolved != null) return resolved.readWriteAccess
 		}
 		if(reference.canResolveValueSetValue()) {
 			val resolved = reference.resolveSingle()?.castOrNull<ParadoxValueSetValueElement>()
-			if(resolved != null) return resolved.getAccess()
-		} 
+			if(resolved != null) return resolved.readWriteAccess
+		}
+		if(reference.canResolveComplexEnumValue()) {
+			val resolved = reference.resolveSingle()?.castOrNull<ParadoxComplexEnumValueElement>()
+			if(resolved != null) return resolved.readWriteAccess
+		}
 		return Access.ReadWrite
 	}
 	
@@ -50,17 +56,18 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
 			ProgressManager.checkCanceled()
 			if(reference.canResolveParameter()) {
 				val resolved = reference.resolveSingle()?.castOrNull<ParadoxParameterElement>()
-				if(resolved != null) return resolved.getAccess()
+				if(resolved != null) return resolved.readWriteAccess
 			}
 			if(reference.canResolveValueSetValue()) {
 				val resolved = reference.resolveSingle()?.castOrNull<ParadoxValueSetValueElement>()
-				if(resolved != null) return resolved.getAccess()
+				if(resolved != null) return resolved.readWriteAccess
+			}
+			if(reference.canResolveComplexEnumValue()) {
+				val resolved = reference.resolveSingle()?.castOrNull<ParadoxComplexEnumValueElement>()
+				if(resolved != null) return resolved.readWriteAccess
 			}
 		}
 		return Access.ReadWrite
 	}
 	
-	private fun ParadoxValueSetValueElement.getAccess() = readWriteAccess
-	
-	private fun ParadoxParameterElement.getAccess() = readWriteAccess
 }

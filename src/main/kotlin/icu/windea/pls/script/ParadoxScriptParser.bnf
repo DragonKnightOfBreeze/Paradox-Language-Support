@@ -90,14 +90,14 @@ property_key ::= key_expr {
   methods=[
     getIcon getName getValue setValue
     getType getExpression getConfigExpression
-    getReference getReferences isEquivalentTo toString
+    getReference getReferences toString
   ]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
 private property_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
 //(property) value related
-value ::= scripted_variable_reference | boolean | int | float | color | block | inline_math {
+value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math {
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
@@ -126,7 +126,6 @@ int ::= INT_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
-    "com.intellij.psi.PsiLiteralValue"
     "com.intellij.psi.ContributedReferenceHost"
   ]
   methods=[
@@ -138,23 +137,20 @@ float ::= FLOAT_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
-    "com.intellij.psi.PsiLiteralValue"
     "com.intellij.psi.ContributedReferenceHost"
   ]
   methods=[getName getValue setValue getFloatValue getType]
 }
 string ::= value_expr {
-  extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
-  stubClass="icu.windea.pls.script.psi.ParadoxScriptStringStub"
+  extends=value
   implements=[
-    //"com.intellij.psi.PsiLiteralValue"
-    "icu.windea.pls.script.psi.ParadoxScriptValue"
+    "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
   ]
   methods=[
     getIcon getName getValue setValue getStringValue
     getType getExpression getConfigExpression
-    getReference getReferences isEquivalentTo toString
+    getReference getReferences toString
   ]
 }
 color ::= COLOR_TOKEN {

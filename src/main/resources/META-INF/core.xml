@@ -61,8 +61,6 @@
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxScriptedVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionNameIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionTypeIndex"/>
-    <stubIndex implementation="icu.windea.pls.core.index.ParadoxComplexEnumIndex"/>
-    <stubIndex implementation="icu.windea.pls.core.index.ParadoxComplexEnumValueIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxSyncedLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxInlineScriptIndex"/>
@@ -70,12 +68,10 @@
     <searchScopesProvider implementation="icu.windea.pls.core.search.ParadoxSearchScopeProvider"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxScriptedVariableImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxDefinitionImplementationsSearch"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxComplexEnumValueImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxLocalisationImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxFileImplementationsSearch"/>
     
     <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxDefinitionUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxComplexEnumValueUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxLocalisationUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.core.search.usages.CwtConfigUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxFileUsagesSearcher"/>

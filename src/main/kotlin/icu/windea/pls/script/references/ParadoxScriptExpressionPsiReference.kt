@@ -21,8 +21,8 @@ class ParadoxScriptExpressionPsiReference(
 	override fun handleElementRename(newElementName: String): PsiElement {
 		val element = element
 		return when {
-			element is ParadoxScriptStringExpressionElement -> element.setValue(newElementName)
-			element is ParadoxScriptInt -> element.setValue(newElementName)
+			element is ParadoxScriptStringExpressionElement -> element.setValue(rangeInElement.replace(element.value, newElementName))
+			element is ParadoxScriptInt -> element.setValue(rangeInElement.replace(element.value, newElementName))
 			else -> throw IncorrectOperationException()
 		}
 	}

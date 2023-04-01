@@ -22,26 +22,12 @@ import icu.windea.pls.tool.localisation.*
 
 @Suppress("UnusedReceiverParameter")
 class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
-    //do not provide special documentations for definition name and complex enum value name declarations,
-    //for the expression represents a definition name or complex enum value name, can also be a localisation reference, etc.
-    
     override fun getQuickNavigateInfo(element: PsiElement, originalElement: PsiElement?): String? {
         return when(element) {
             is ParadoxScriptScriptedVariable -> getScriptedVariableInfo(element)
             is ParadoxScriptProperty -> getPropertyInfo(element)
-            //进行代码提示时，这里是有效的代码
-            is ParadoxScriptStringExpressionElement -> {
-                val complexEnumValueInfo = element.complexEnumValueInfo
-                if(complexEnumValueInfo != null) {
-                    return generateComplexEnumValueInfo(element, complexEnumValueInfo)
-                }
-                if(element is ParadoxScriptPropertyKey) {
-                    return getQuickNavigateInfo(element.parent, originalElement)
-                }
-                null
-            }
+            is ParadoxScriptPropertyKey -> getQuickNavigateInfo(element.parent, originalElement)
             is ParadoxDefinitionNavigationElement -> getQuickNavigateInfo(element.parent, originalElement)
-            is ParadoxComplexEnumValueNavigationElement -> getQuickNavigateInfo(element.parent, originalElement)
             else -> null
         }
     }
@@ -70,36 +56,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun generateComplexEnumValueInfo(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo): String {
-        return buildString {
-            buildComplexEnumValueDefinition(element, complexEnumValueInfo)
-        }
-    }
-    
-    //private fun getComplexEnumValueInfo(element: ParadoxScriptStringExpressionElement, config: CwtDataConfig<*>): String {
-    //	return buildString {
-    //		val configGroup = config.info.configGroup
-    //		buildComplexEnumValueDefinition(element.value, config.expression.value.orEmpty(), configGroup)
-    //	}
-    //}
-    
     override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {
         return when(element) {
             is ParadoxScriptScriptedVariable -> getScriptedVariableDoc(element)
             is ParadoxScriptProperty -> getPropertyDoc(element)
-            //进行代码提示时，这里是有效的代码
-            is ParadoxScriptStringExpressionElement -> {
-                val complexEnumValueInfo = element.complexEnumValueInfo
-                if(complexEnumValueInfo != null) {
-                    return generateComplexEnumValueDoc(element, complexEnumValueInfo)
-                }
-                if(element is ParadoxScriptPropertyKey) {
-                    return generateDoc(element.parent, originalElement)
-                }
-                null
-            }
+            is ParadoxScriptPropertyKey -> generateDoc(element.parent, originalElement)
             is ParadoxDefinitionNavigationElement -> generateDoc(element.parent, originalElement)
-            is ParadoxComplexEnumValueNavigationElement -> generateDoc(element.parent, originalElement)
             else -> null
         }
     }
@@ -133,19 +95,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             buildDocumentationContent(element, definitionInfo)
             buildLineCommentContent(element)
             buildSections(sectionsList)
-        }
-    }
-    
-    private fun generateComplexEnumValueDoc(element: ParadoxScriptStringExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo): String {
-        return buildString {
-            buildComplexEnumValueDefinition(element, complexEnumValueInfo)
-        }
-    }
-    
-    private fun getComplexEnumValueDoc(element: ParadoxScriptStringExpressionElement, config: CwtDataConfig<*>): String {
-        return buildString {
-            val configGroup = config.info.configGroup
-            buildComplexEnumValueDefinition(element.value, config.expression.value.orEmpty(), configGroup)
         }
     }
     
@@ -370,46 +319,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             val documentation = it.getDocumentation(element, definitionInfo)?.takeIfNotEmpty()
             if(documentation != null) {
                 content { append(documentation) }
-            }
-        }
-    }
-    
-    private fun StringBuilder.buildComplexEnumValueDefinition(element: PsiElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
-        definition {
-            //加上文件信息
-            appendFileInfoHeader(element.fileInfo)
-            //加上复杂枚举值信息
-            val name = complexEnumValueInfo.name
-            val enumName = complexEnumValueInfo.enumName
-            append(PlsDocBundle.message("prefix.complexEnumValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-            if(enumName.isNotEmpty()) {
-                val gameType = complexEnumValueInfo.gameType.orDefault()
-                val configGroup = getCwtConfig(element.project).getValue(gameType)
-                val complexEnumConfig = configGroup.complexEnums[enumName]
-                if(complexEnumConfig != null) {
-                    val typeLink = "${gameType.id}/complex_enums/${enumName}"
-                    append(": ").appendCwtLink(enumName, typeLink)
-                } else {
-                    append(": ").append(enumName)
-                }
-            }
-        }
-    }
-    
-    private fun StringBuilder.buildComplexEnumValueDefinition(name: String, enumName: String, configGroup: CwtConfigGroup) {
-        definition {
-            //不加上文件信息
-            //加上复杂枚举值信息
-            append(PlsDocBundle.message("prefix.complexEnumValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-            if(enumName.isNotEmpty()) {
-                val gameType = configGroup.gameType
-                val complexEnumConfig = configGroup.complexEnums[enumName]
-                if(complexEnumConfig != null) {
-                    val typeLink = "${gameType.id}/complex_enums/${enumName}"
-                    append(": ").appendCwtLink(enumName, typeLink)
-                } else {
-                    append(": ").append(enumName)
-                }
             }
         }
     }

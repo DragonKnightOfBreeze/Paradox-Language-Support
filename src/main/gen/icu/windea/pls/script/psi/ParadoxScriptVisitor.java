@@ -33,7 +33,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitFloat(@NotNull ParadoxScriptFloat o) {
     visitValue(o);
     // visitPsiLiteralValue(o);
-    // visitPsiLiteralValue(o);
     // visitContributedReferenceHost(o);
   }
 
@@ -83,7 +82,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitInt(@NotNull ParadoxScriptInt o) {
     visitValue(o);
-    // visitPsiLiteralValue(o);
     // visitPsiLiteralValue(o);
     // visitContributedReferenceHost(o);
   }
@@ -135,6 +133,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitString(@NotNull ParadoxScriptString o) {
     visitValue(o);
+    // visitPsiLiteralValue(o);
     // visitStringExpressionElement(o);
   }
 

@@ -57,7 +57,6 @@
     <codeStyleSettingsProvider implementation="icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.script.codeStyle.ParadoxScriptLanguageCodeStyleSettingsProvider"/>
     <gotoSymbolContributor implementation="icu.windea.pls.script.navigation.ParadoxDefinitionChooseByNameContributor"/>
-    <gotoSymbolContributor implementation="icu.windea.pls.script.navigation.ParadoxComplexEnumValueChooseByNameContributor"/>
     <gotoSymbolContributor implementation="icu.windea.pls.script.navigation.ParadoxScriptedVariableChooseByNameContributor"/>
     <navbar implementation="icu.windea.pls.script.navigation.ParadoxScriptNavBar"/>
     <lang.psiStructureViewFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>
@@ -89,24 +88,6 @@
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>script.intention.category</categoryKey>
       <className>icu.windea.pls.script.intentions.DefinitionNameGotoTypeDeclarationIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>script.intention.category</categoryKey>
-      <className>icu.windea.pls.script.intentions.ComplexEnumValueNameFindUsagesIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>script.intention.category</categoryKey>
-      <className>icu.windea.pls.script.intentions.ComplexEnumValueNameGotoImplementationsIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>script.intention.category</categoryKey>
-      <className>icu.windea.pls.script.intentions.ComplexEnumValueNameGotoTypeDeclarationIntention</className>
     </intentionAction>
 
     <intentionAction>

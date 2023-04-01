@@ -20,6 +20,11 @@ class ParadoxScriptExpressionLookupElementBuilder(
 	
 	companion object {
 		@JvmStatic
+		fun create(lookupString: String): ParadoxScriptExpressionLookupElementBuilder {
+			return ParadoxScriptExpressionLookupElementBuilder(null, lookupString)
+		}
+		
+		@JvmStatic
 		fun create(element: PsiElement?, lookupString: String): ParadoxScriptExpressionLookupElementBuilder {
 			return ParadoxScriptExpressionLookupElementBuilder(element, lookupString)
 		}

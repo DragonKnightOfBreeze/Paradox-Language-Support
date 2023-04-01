@@ -24,7 +24,7 @@ settings = {
 <DEFINITION>some_definition</DEFINITION> = {
 	<TAG>tag_name</TAG>
 	name = <DEFINITION_NAME>definition_name</DEFINITION_NAME>
-	key = <COMPLEX_ENUM_VALUE_NAME>complex_enum_value</COMPLEX_ENUM_VALUE_NAME>
+	key = <COMPLEX_ENUM_VALUE>complex_enum_value</COMPLEX_ENUM_VALUE>
 	key = <DEFINITION_REFERENCE>definition_reference</DEFINITION_REFERENCE>
 	key = <LOCALISATION_REFERENCE>localisation_reference</LOCALISATION_REFERENCE>
 	key = <SYNCED_LOCALISATION_REFERENCE>synced_localisation_reference</SYNCED_LOCALISATION_REFERENCE>

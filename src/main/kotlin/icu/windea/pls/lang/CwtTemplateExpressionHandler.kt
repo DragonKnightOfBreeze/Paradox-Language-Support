@@ -175,17 +175,16 @@ object CwtTemplateExpressionHandler {
                         doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                     }
                 }
-                //提示复杂枚举
+                //提示复杂枚举值
                 val complexEnumConfig = configGroup.complexEnums[enumName]
                 if(complexEnumConfig != null) {
                     ProgressManager.checkCanceled()
                     val searchScope = complexEnumConfig.searchScopeType
                     val selector = complexEnumValueSelector(project, contextElement)
-                        .withSearchScopeType(searchScope, contextElement)
+                        //.withSearchScopeType(searchScope, contextElement)
                         .contextSensitive()
-                        .distinctByName()
-                    ParadoxComplexEnumValueSearch.searchAll(enumName, selector).processQuery { complexEnum ->
-                        val name = complexEnum.value
+                    ParadoxComplexEnumValueSearch.search(enumName, selector).processQuery { info ->
+                        val name = info.name
                         doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                         true
                     }

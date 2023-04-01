@@ -8,7 +8,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import icu.windea.pls.script.psi.ParadoxScriptStringStub;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
@@ -17,18 +16,14 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.expression.ParadoxDataType;
 import javax.swing.Icon;
-import com.intellij.psi.stubs.IStubElementType;
 
-public class ParadoxScriptStringImpl extends ParadoxScriptStubElementImpl<ParadoxScriptStringStub> implements ParadoxScriptString {
-
-  public ParadoxScriptStringImpl(@NotNull ParadoxScriptStringStub stub, @Nullable IStubElementType<?, ?> type) {
-    super(stub, type);
-  }
+public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements ParadoxScriptString {
 
   public ParadoxScriptStringImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
     visitor.visitString(this);
   }
@@ -103,11 +98,6 @@ public class ParadoxScriptStringImpl extends ParadoxScriptStubElementImpl<Parado
   @NotNull
   public PsiReference[] getReferences() {
     return ParadoxScriptPsiImplUtil.getReferences(this);
-  }
-
-  @Override
-  public boolean isEquivalentTo(@NotNull PsiElement another) {
-    return ParadoxScriptPsiImplUtil.isEquivalentTo(this, another);
   }
 
   @Override

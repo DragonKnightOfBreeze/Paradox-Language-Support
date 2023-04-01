@@ -9,27 +9,25 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.lang.parameter.*
 import java.util.*
 import javax.swing.*
 
 /**
- * 定义的参数并不存在一个真正意义上的声明处，用这个模拟。
- *
- * @property contextKey 用于判断参数是否同名并且拥有相同的上下文。
- * @see ParadoxParameterSupport
+ * 复杂枚举值其实也不存在一个真正意义上的声明处，用这个模拟。（通过complexEnum规则匹配到的那些是可以同名的）
  */
-class ParadoxParameterElement(
+class ParadoxComplexEnumValueElement(
     parent: PsiElement,
     private val name: String,
-    val contextName: String,
-    val contextKey: String,
+    val enumName: String,
     val readWriteAccess: ReadWriteAccessDetector.Access,
     val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxFakePsiElement(parent) {
+    constructor(parent: PsiElement, info: ParadoxComplexEnumValueInfo, project: Project)
+        : this(parent, info.name, info.enumName, info.readWriteAccess, info.gameType, project)
+    
     override fun getIcon(): Icon {
-        return PlsIcons.Parameter
+        return PlsIcons.ComplexEnumValue
     }
     
     override fun getName(): String {
@@ -37,7 +35,7 @@ class ParadoxParameterElement(
     }
     
     override fun getTypeName(): String {
-        return PlsBundle.message("script.description.parameter")
+        return PlsBundle.message("script.description.complexEnumValue")
     }
     
     override fun getText(): String {
@@ -53,7 +51,7 @@ class ParadoxParameterElement(
     }
     
     override fun getPresentation(): ItemPresentation {
-        return ParadoxParameterElementPresentation(this)
+        return ParadoxComplexEnumValueElementPresentation(this)
     }
     
     override fun getProject(): Project {
@@ -69,14 +67,14 @@ class ParadoxParameterElement(
     }
     
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxParameterElement &&
+        return other is ParadoxComplexEnumValueElement &&
             name == other.name &&
-            contextKey == other.contextKey &&
+            enumName == other.enumName &&
             project == other.project &&
             gameType == other.gameType
     }
     
     override fun hashCode(): Int {
-        return Objects.hash(name, contextKey, project, gameType)
+        return Objects.hash(name, enumName, project, gameType)
     }
 }

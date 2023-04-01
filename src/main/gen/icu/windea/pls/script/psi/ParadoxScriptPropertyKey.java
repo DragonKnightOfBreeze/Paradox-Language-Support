@@ -46,8 +46,6 @@ public interface ParadoxScriptPropertyKey extends NavigatablePsiElement, Paradox
   @NotNull
   PsiReference[] getReferences();
 
-  boolean isEquivalentTo(@NotNull PsiElement another);
-
   @NotNull
   ItemPresentation getPresentation();
 
