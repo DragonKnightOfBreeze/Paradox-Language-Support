@@ -18,7 +18,7 @@ import icu.windea.pls.tool.*
 class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValueInfo, ParadoxComplexEnumValueSearch.SearchParameters>() {
 	override fun processQuery(queryParameters: ParadoxComplexEnumValueSearch.SearchParameters, consumer: Processor<in ParadoxComplexEnumValueInfo>) {
 		val name = queryParameters.name
-		val valueSetName = queryParameters.enumName
+		val enumName = queryParameters.enumName
 		val project = queryParameters.project
 		val selector = queryParameters.selector
 		val gameType = selector.gameType
@@ -31,7 +31,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
 			if(file.fileInfo == null) return@p true
 			if(ParadoxFileManager.isLightFile(file)) return@p true
 			val psiFile = file.toPsiFile<PsiFile>(project) ?: return@p true
-			val complexEnumValues = ParadoxScriptExpressionIndex.getData(psiFile).complexEnumValues[valueSetName] ?: return@p true
+			val complexEnumValues = ParadoxScriptExpressionIndex.getData(psiFile).complexEnumValues[enumName] ?: return@p true
 			if(name == null) {
 				for(info in complexEnumValues.values) {
 					if(gameType == info.gameType && namesToDistinct.add(info.name)) {

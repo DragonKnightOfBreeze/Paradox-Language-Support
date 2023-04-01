@@ -57,10 +57,10 @@ object ParadoxValueSetValueHandler {
         return expression.substringBefore('@').takeIf { it.isExactIdentifier('.') }?.takeIfNotEmpty()
     }
     
-    @JvmStatic
-    fun isDeclaration(info: ParadoxValueSetValueInfo): Boolean {
-        return info.readWriteAccess == Access.Write
-    }
+    //@JvmStatic
+    //fun isDeclaration(info: ParadoxValueSetValueInfo): Boolean {
+    //    return info.readWriteAccess == Access.Write
+    //}
     
     @JvmStatic
     fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxValueSetValueElement? {

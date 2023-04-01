@@ -2,7 +2,7 @@
 
 package icu.windea.pls.lang
 
-import com.intellij.codeInsight.highlighting.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -52,7 +52,7 @@ object ParadoxComplexEnumValueHandler {
                 if(matchesComplexEnum(complexEnumConfig, element)) {
                     val name = getName(element.value) ?: continue
                     val enumName = complexEnumConfig.name
-                    val readWriteAccess = ReadWriteAccessDetector.Access.Write //write (declaration)
+                    val readWriteAccess = Access.Write //write (declaration)
                     return ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, gameType)
                 }
             }
@@ -222,4 +222,8 @@ object ParadoxComplexEnumValueHandler {
         return expression.takeIf { it.isExactIdentifier('.') }?.takeIfNotEmpty()
     }
     
+    //@JvmStatic
+    //fun isDeclaration(info: ParadoxComplexEnumValueInfo): Boolean {
+    //    return info.readWriteAccess == Access.Write
+    //}
 }

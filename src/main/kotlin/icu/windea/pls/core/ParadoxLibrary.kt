@@ -88,7 +88,7 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
     @Suppress("UnstableApiUsage")
     fun refreshRoots() {
         val oldRoots = roots
-        val newRoots = computeRoots()
+        val newRoots = runReadAction { computeRoots() }
         if(oldRoots == newRoots) return
         roots = newRoots
         runInEdt(ModalityState.NON_MODAL) {

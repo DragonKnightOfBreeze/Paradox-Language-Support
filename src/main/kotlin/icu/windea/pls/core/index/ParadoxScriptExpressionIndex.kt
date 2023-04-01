@@ -40,14 +40,14 @@ object ParadoxScriptExpressionIndex {
             DataInputOutputUtil.writeSeq(storage, value.valueSetValueList) {
                 IOUtil.writeUTF(storage, it.name)
                 IOUtil.writeUTF(storage, it.valueSetName)
-                storage.writeByte(it.gameType.toByte())
                 storage.writeByte(it.readWriteAccess.toByte())
+                storage.writeByte(it.gameType.toByte())
             }
             DataInputOutputUtil.writeSeq(storage, value.complexEnumValueList) {
                 IOUtil.writeUTF(storage, it.name)
                 IOUtil.writeUTF(storage, it.enumName)
-                storage.writeByte(it.gameType.toByte())
                 storage.writeByte(it.readWriteAccess.toByte())
+                storage.writeByte(it.gameType.toByte())
             }
         }
         
