@@ -1753,6 +1753,7 @@ object ParadoxConfigHandler {
                     //精确匹配
                     for(config in configs) {
                         if(config !is CwtPropertyConfig) continue
+                        ProgressManager.checkCanceled()
                         if(matchesScriptExpression(memberElement, expression, config.valueExpression, config, configGroup, matchType)) {
                             this.add(config)
                         }
@@ -1762,6 +1763,7 @@ object ParadoxConfigHandler {
                         val newMatchType = matchType or CwtConfigMatchType.NOT_EXACT
                         for(config in configs) {
                             if(config !is CwtPropertyConfig) continue
+                            ProgressManager.checkCanceled()
                             val configExpression = config.valueExpression
                             if(!requireNotExactMatch(configExpression)) continue
                             if(matchesScriptExpression(memberElement, expression, configExpression, config, configGroup, newMatchType)) {
@@ -1796,6 +1798,7 @@ object ParadoxConfigHandler {
                             //精确匹配
                             for(config in configs) {
                                 if(config !is CwtPropertyConfig) continue
+                                ProgressManager.checkCanceled()
                                 val valueConfig = config.valueConfig ?: continue
                                 if(matchesScriptExpression(valueElement, expression, valueConfig.expression, config, configGroup, matchType)) {
                                     this.add(valueConfig)
@@ -1806,6 +1809,7 @@ object ParadoxConfigHandler {
                                 val newMatchType = matchType or CwtConfigMatchType.NOT_EXACT
                                 for(config in configs) {
                                     if(config !is CwtPropertyConfig) continue
+                                    ProgressManager.checkCanceled()
                                     val valueConfig = config.valueConfig ?: continue
                                     val configExpression = valueConfig.expression
                                     if(!requireNotExactMatch(configExpression)) continue
@@ -1831,6 +1835,7 @@ object ParadoxConfigHandler {
                         buildList {
                             for(childConfig in childConfigs) {
                                 if(childConfig !is CwtValueConfig) continue
+                                ProgressManager.checkCanceled()
                                 //精确匹配
                                 if(matchesScriptExpression(valueElement, expression, childConfig.valueExpression, childConfig, configGroup, matchType)) {
                                     this.add(childConfig)
@@ -1841,6 +1846,7 @@ object ParadoxConfigHandler {
                                 val newMatchType = matchType or CwtConfigMatchType.NOT_EXACT
                                 for(childConfig in childConfigs) {
                                     if(childConfig !is CwtValueConfig) continue
+                                    ProgressManager.checkCanceled()
                                     val configExpression = childConfig.valueExpression
                                     if(!requireNotExactMatch(configExpression)) continue
                                     if(matchesScriptExpression(valueElement, expression, configExpression, childConfig, configGroup, newMatchType)) {

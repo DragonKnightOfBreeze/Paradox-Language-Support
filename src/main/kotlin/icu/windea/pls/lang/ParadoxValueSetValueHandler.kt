@@ -23,6 +23,7 @@ object ParadoxValueSetValueHandler {
     
     private fun getInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxValueSetValueInfo? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedValueSetValueInfoKey) {
+            ProgressManager.checkCanceled()
             val file = element.containingFile
             val value = resolveInfo(element)
             //invalidated on file modification
@@ -34,7 +35,6 @@ object ParadoxValueSetValueHandler {
         //only accept "value[x]" or "value_set[x]"
         //rather than "scope_field" or "value_field" or in localisation commands
         //so, e.g., if there is only an expression "event_target:target", "target" will not be shown during code completion
-        ProgressManager.checkCanceled()
         val matchType = CwtConfigMatchType.STATIC //这里需要静态匹配，不能访问索引
         val config = ParadoxConfigHandler.getConfigs(element, orDefault = true, matchType = matchType)
             .firstOrNull {
