@@ -5,7 +5,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
-import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
@@ -31,7 +30,8 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
             ProgressManager.checkCanceled()
             if(file.fileInfo == null) return@p true
             if(ParadoxFileManager.isLightFile(file)) return@p true
-            val valueSetValues = FileBasedIndex.getInstance().getFileData(ParadoxValueSetValueIndex.NAME, file, project).get(valueSetName) ?: return@p true
+            val valueSetValues = ParadoxValueSetValueIndex.getData(valueSetName, file, project)
+            if(valueSetValues.isNullOrEmpty()) return@p true
             val psiFile = file.toPsiFile<PsiFile>(project) ?: return@p true
             if(name == null) {
                 for(info in valueSetValues.values) {

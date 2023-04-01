@@ -58,9 +58,9 @@
     
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFilePathIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxDirectoryFilePathIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxInlineScriptIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxValueSetValueIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxComplexEnumValueIndex"/>
-    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxInlineScriptIndex"/>
     
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxScriptedVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionNameIndex"/>

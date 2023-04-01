@@ -1,6 +1,8 @@
 package icu.windea.pls.core.index
 
 import com.intellij.codeInsight.highlighting.*
+import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
@@ -16,6 +18,10 @@ class ParadoxValueSetValueIndex : FileBasedIndexExtension<String, Map<String, Pa
     companion object {
         @JvmField val NAME = ID.create<String, Map<String, ParadoxValueSetValueInfo>>("paradox.valueSetValue.index")
         private const val VERSION = 1
+        
+        fun getData(valueSetName: String, file: VirtualFile, project: Project): Map<String, ParadoxValueSetValueInfo>? {
+            return FileBasedIndex.getInstance().getFileData(NAME, file, project).get(valueSetName)
+        }
     }
     
     override fun getName(): ID<String, Map<String, ParadoxValueSetValueInfo>> {

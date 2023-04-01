@@ -1,5 +1,7 @@
 package icu.windea.pls.core.index
 
+import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
@@ -15,6 +17,10 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxInlineScriptInfo>>("paradox.inlineScript.index")
         private const val VERSION = 1
+        
+        fun getData(expression: String, file: VirtualFile, project: Project): List<ParadoxInlineScriptInfo>? {
+            return FileBasedIndex.getInstance().getFileData(NAME, file, project).get(expression)
+        }
     }
     
     override fun getName(): ID<String, List<ParadoxInlineScriptInfo>> {
@@ -50,7 +56,7 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
     }
     
     override fun getValueExternalizer(): DataExternalizer<List<ParadoxInlineScriptInfo>> {
-        return object :DataExternalizer<List<ParadoxInlineScriptInfo>> {
+        return object : DataExternalizer<List<ParadoxInlineScriptInfo>> {
             override fun save(storage: DataOutput, value: List<ParadoxInlineScriptInfo>) {
                 DataInputOutputUtil.writeSeq(storage, value) {
                     IOUtil.writeUTF(storage, it.expression)

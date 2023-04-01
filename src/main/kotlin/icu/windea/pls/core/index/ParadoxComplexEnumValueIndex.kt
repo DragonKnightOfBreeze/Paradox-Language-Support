@@ -1,6 +1,8 @@
 package icu.windea.pls.core.index
 
 import com.intellij.codeInsight.highlighting.*
+import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
@@ -16,6 +18,10 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, Map<String,
     companion object {
         @JvmField val NAME = ID.create<String, Map<String, ParadoxComplexEnumValueInfo>>("paradox.complexEnumValue.index")
         private const val VERSION = 1
+        
+        fun getData(enumName: String, file: VirtualFile, project: Project): Map<String, ParadoxComplexEnumValueInfo>? {
+            return FileBasedIndex.getInstance().getFileData(NAME, file, project).get(enumName)
+        }
     }
     
     override fun getName(): ID<String, Map<String, ParadoxComplexEnumValueInfo>> {
