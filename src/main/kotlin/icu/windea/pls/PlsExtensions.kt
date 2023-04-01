@@ -164,8 +164,6 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
         from is ParadoxScriptDefinitionElement -> runCatching { from.getStub() }.getOrNull()?.gameType
             ?: from.definitionInfo?.gameType
             ?: selectGameType(from.containingFile) //直接转到containingFile，避免不必要的文件解析
-        from is ParadoxScriptStringExpressionElement -> runCatching { from.stub }.getOrNull()?.gameType
-            ?: selectGameType(from.containingFile) //直接转到containingFile，避免不必要的文件解析
         from is StubBasedPsiElementBase<*> -> selectGameType(from.containingFile) //直接转到containingFile，避免不必要的文件解析
         from is PsiElement -> selectGameType(from.parent)
         from is ParadoxScriptExpressionIndex.Data -> selectGameType(from.file)
