@@ -35,13 +35,13 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
 			if(name == null) {
 				for(info in complexEnumValues.values) {
 					if(gameType == info.gameType && namesToDistinct.add(info.name)) {
-						consumer.process(info)
+						info.withFile(psiFile) { consumer.process(info) }
 					}
 				}
 			} else {
 				val info = complexEnumValues[name] ?: return@p true
 				if(gameType == info.gameType && namesToDistinct.add(info.name)) {
-					consumer.process(info)
+					info.withFile(psiFile) { consumer.process(info) }
 				}
 			}
 			true

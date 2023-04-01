@@ -18,6 +18,7 @@ object ParadoxScriptExpressionIndex {
     class Data(
         val valueSetValueList: List<ParadoxValueSetValueInfo> = listOf(),
         val complexEnumValueList: List<ParadoxComplexEnumValueInfo> = listOf(),
+        val inlineScriptList: List<ParadoxInlineScriptInfo> = listOf(),
     ) {
         var file: PsiFile? = null
         
@@ -31,6 +32,12 @@ object ParadoxScriptExpressionIndex {
             for(info in complexEnumValueList) {
                 val map = getOrPut(info.enumName) { mutableMapOf() } as MutableMap
                 map.putIfAbsent(info.name, info)
+            }
+        }
+        val inlineScripts = buildMap<String, List<ParadoxInlineScriptInfo>> {
+            for(info in inlineScriptList) {
+                val list = getOrPut(info.expression) { mutableListOf() } as MutableList
+                list.add(info)
             }
         }
     }
@@ -47,6 +54,11 @@ object ParadoxScriptExpressionIndex {
                 IOUtil.writeUTF(storage, it.name)
                 IOUtil.writeUTF(storage, it.enumName)
                 storage.writeByte(it.readWriteAccess.toByte())
+                storage.writeByte(it.gameType.toByte())
+            }
+            DataInputOutputUtil.writeSeq(storage, value.inlineScriptList) {
+                IOUtil.writeUTF(storage, it.expression)
+                storage.writeInt(it.offset)
                 storage.writeByte(it.gameType.toByte())
             }
         }
@@ -66,7 +78,13 @@ object ParadoxScriptExpressionIndex {
                 val gameType = storage.readByte().toGameType()
                 ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, gameType)
             }
-            return Data(valueSetValueInfos, complexEnumValueInfos)
+            val inlineScriptInfos = DataInputOutputUtil.readSeq(storage) {
+                val expression = IOUtil.readUTF(storage)
+                val offset = storage.readInt()
+                val gameType = storage.readByte().toGameType()
+                ParadoxInlineScriptInfo(expression, offset, gameType)
+            }
+            return Data(valueSetValueInfos, complexEnumValueInfos, inlineScriptInfos)
         }
         
         private fun ReadWriteAccessDetector.Access.toByte() = this.ordinal
@@ -82,30 +100,34 @@ object ParadoxScriptExpressionIndex {
         private fun Byte.toGameType() = ParadoxGameType.values[this.toInt()]
     }
     
-    private const val id = "ParadoxScriptExpressionIndexData"
-    private const val version = 2 //0.9.6
+    private const val id = "paradox.script.expression.index"
+    private const val version = 3 //0.9.6
     
     private val gist: PsiFileGist<Data> = GistManager.getInstance().newPsiFileGist(id, version, valueExternalizer) builder@{ file ->
         if(file !is ParadoxScriptFile) return@builder Data()
         if(file.fileInfo == null) return@builder Data()
         val valueSetValueInfos = mutableListOf<ParadoxValueSetValueInfo>()
         val complexEnumValueInfos = mutableListOf<ParadoxComplexEnumValueInfo>()
+        val inlineScriptInfos = mutableListOf<ParadoxInlineScriptInfo>()
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if(element is ParadoxScriptExpressionElement) visitScriptExpression(element)
-                if(element is ParadoxScriptStringExpressionElement) visitStringScriptExpression(element)
+                if(element is ParadoxScriptProperty) visitProperty(element)
+                if(element is ParadoxScriptExpressionElement) visitExpression(element)
+                if(element is ParadoxScriptStringExpressionElement) visitStringExpression(element)
                 if(element.isExpressionOrMemberContext()) super.visitElement(element)
             }
             
-            private fun visitScriptExpression(element: ParadoxScriptExpressionElement) {
+            private fun visitProperty(element: ParadoxScriptProperty) {
+                ParadoxInlineScriptHandler.getInfo(element)?.let { inlineScriptInfos.add(it) }
+            }
+            
+            private fun visitExpression(element: ParadoxScriptExpressionElement) {
                 
             }
             
-            private fun visitStringScriptExpression(element: ParadoxScriptStringExpressionElement) {
-                val valueSetValueInfo = ParadoxValueSetValueHandler.getInfo(element)
-                if(valueSetValueInfo != null) valueSetValueInfos.add(valueSetValueInfo)
-                val complexEnumValueInfo = ParadoxComplexEnumValueHandler.getInfo(element)
-                if(complexEnumValueInfo != null) complexEnumValueInfos.add(complexEnumValueInfo)
+            private fun visitStringExpression(element: ParadoxScriptStringExpressionElement) {
+                ParadoxValueSetValueHandler.getInfo(element)?.let { valueSetValueInfos.add(it) }
+                ParadoxComplexEnumValueHandler.getInfo(element)?.let { complexEnumValueInfos.add(it) }
             }
         })
         Data(valueSetValueInfos, complexEnumValueInfos)

@@ -80,11 +80,8 @@ property ::= property_key property_separator property_value {
   ]
 }
 property_key ::= key_expr {
-  extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
-  stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKeyStub"
   implements=[
-    //"com.intellij.psi.PsiLiteralValue"
-    "com.intellij.psi.NavigatablePsiElement"
+    "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
   ] 
   methods=[

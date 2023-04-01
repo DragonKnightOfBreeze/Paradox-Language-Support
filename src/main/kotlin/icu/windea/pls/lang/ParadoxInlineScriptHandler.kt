@@ -13,9 +13,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.scopes.*
 import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.model.*
@@ -24,7 +22,8 @@ import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxInlineScriptHandler {
-    const val inlineScriptDirPath = "common/inline_scripts"
+    private const val inlineScriptName = "inline_script"
+    
     val inlineScriptPathExpression = CwtValueExpression.resolve("filepath[common/inline_scripts/,.txt]")
     
     val cachedInlineScriptInfoKey = Key.create<CachedValue<ParadoxInlineScriptInfo>>("paradox.cached.inlineScriptInfo")
@@ -35,14 +34,14 @@ object ParadoxInlineScriptHandler {
     }
     
     @JvmStatic
-    fun getInfo(element: ParadoxScriptPropertyKey): ParadoxInlineScriptInfo? {
+    fun getInfo(element: ParadoxScriptProperty): ParadoxInlineScriptInfo? {
         ProgressManager.checkCanceled()
-        if(!element.isExpression()) return null
-        element.stub?.inlineScriptInfo?.let { return it }
+        val name = element.name
+        if(name.lowercase() != inlineScriptName) return null
         return getInfoFromCache(element)
     }
     
-    private fun getInfoFromCache(element: ParadoxScriptPropertyKey): ParadoxInlineScriptInfo? {
+    private fun getInfoFromCache(element: ParadoxScriptProperty): ParadoxInlineScriptInfo? {
         return CachedValuesManager.getCachedValue(element, cachedInlineScriptInfoKey) {
             val file = element.containingFile
             val value = resolveInfo(element, file)
@@ -52,29 +51,27 @@ object ParadoxInlineScriptHandler {
     }
     
     @JvmStatic
-    fun resolveInfo(element: ParadoxScriptPropertyKey, file: PsiFile = element.containingFile): ParadoxInlineScriptInfo? {
-        //这里不能调用ParadoxConfigHandler.getConfigs，因为需要处理内联的情况，会导致StackOverFlow
-        
-        //NOTE 不能直接使用DEFAULT，否则可能导致异常
-        val matchType = CwtConfigMatchType.STATIC
+    fun resolveInfo(element: ParadoxScriptProperty, file: PsiFile = element.containingFile): ParadoxInlineScriptInfo? {
+        //这里不能调用ParadoxConfigHandler.getConfigs，因为需要处理内联的情况，会导致StackOverflow
         
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         if(!isGameTypeSupported(gameType)) return null
-        val name = element.name.lowercase()
-        if(name != "inline_script") return null
+        
+        val matchType = CwtConfigMatchType.STATIC //这里需要静态匹配，不能访问索引
         val project = file.project
         val configGroup = getCwtConfig(project).getValue(gameType)
-        val inlineConfigs = configGroup.inlineConfigGroup[name] ?: return null
+        val inlineConfigs = configGroup.inlineConfigGroup[inlineScriptName] ?: return null
         val propertyValue = element.propertyValue ?: return null
-        //TODO 更加准确的匹配，目前没必要
         val inlineConfig = inlineConfigs.find {
             val expression = ParadoxDataExpression.resolve(propertyValue, matchType)
             ParadoxConfigHandler.matchesScriptExpression(propertyValue, expression, it.config.valueExpression, it.config, configGroup, matchType)
         }
         if(inlineConfig == null) return null
         val expression = getExpressionFromInlineConfig(propertyValue, inlineConfig) ?: return null
-        return ParadoxInlineScriptInfo(expression, gameType)
+        if(expression.isParameterAwareExpression()) return null
+        val offset = element.node.startOffset
+        return ParadoxInlineScriptInfo(expression, offset, gameType)
     }
     
     private fun getExpressionLocation(it: CwtDataConfig<*>): String? {
@@ -83,7 +80,7 @@ object ParadoxInlineScriptHandler {
     
     @JvmStatic
     fun getExpressionFromInlineConfig(propertyValue: ParadoxScriptValue, inlineConfig: CwtInlineConfig): String? {
-        if(inlineConfig.name != "inline_script") return null
+        if(inlineConfig.name != inlineScriptName) return null
         val expressionLocation = getExpressionLocation(inlineConfig.config) ?: return null
         val expressionElement = if(expressionLocation.isEmpty()) {
             propertyValue.castOrNull<ParadoxScriptString>()
@@ -172,7 +169,7 @@ object ParadoxInlineScriptHandler {
     private fun getUsageInfoFromCache(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
         return CachedValuesManager.getCachedValue(file, cachedInlineScriptUsageInfoKey) {
             val value = runReadAction { doGetInlineScriptUsageInfo(file) }
-            val tracker = ParadoxModificationTrackerProvider.getInstance().InlineScripts
+            val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFile
             CachedValueProvider.Result.create(value, tracker)
         }
     }
@@ -183,17 +180,19 @@ object ParadoxInlineScriptHandler {
         if(!isGameTypeSupported(gameType)) return null
         val expression = getInlineScriptExpression(file) ?: return null
         val project = file.project
-        val searchScope = ParadoxGlobalSearchScope.fromElement(file)
-            ?.withFileTypes(ParadoxScriptFileType)
-            ?: return null
-        var element: ParadoxScriptPropertyKey? = null
+        var element: ParadoxScriptProperty? = null
         var hasConflict = false
         val configs: MutableList<CwtDataConfig<*>> = mutableListOf()
-        ParadoxInlineScriptIndex.KEY.processAllElements(expression, project, searchScope) { e ->
+        val selector = inlineScriptSelector(project, file)
+        ParadoxInlineScriptSearch.search(expression, selector).processQuery p@{ info ->
             ProgressManager.checkCanceled()
+            val e = info.file?.findElementAt(info.offset) ?: return@p true
+            val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p true
+            if(p.name.lowercase() != inlineScriptName) return@p true
             if(element == null) {
-                element = e
+                element = p
             }
+            //检查内联脚本定义所在的规则的上下文是否匹配
             val eConfigs = ParadoxConfigHandler.getConfigs(e)
             if(eConfigs.isNotEmpty()) {
                 val configsToAdd = eConfigs.mapNotNull { it.parent }
@@ -213,7 +212,7 @@ object ParadoxInlineScriptHandler {
                 true
             }
         }
-        val usageElement = element?.parent as? ParadoxScriptProperty ?: return null
+        val usageElement = element ?: return null
         return ParadoxInlineScriptUsageInfo(usageElement.createPointer(), hasConflict)
     }
 }

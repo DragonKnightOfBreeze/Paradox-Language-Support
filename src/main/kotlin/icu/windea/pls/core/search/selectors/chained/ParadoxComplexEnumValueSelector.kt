@@ -8,3 +8,4 @@ class ParadoxComplexEnumValueSelector(project: Project, context: Any? = null) : 
 fun complexEnumValueSelector(project: Project, context: Any? = null) = ParadoxComplexEnumValueSelector(project, context)
 
 //fun ParadoxComplexEnumValueSelector.declarationOnly() = filterBy { ParadoxComplexEnumValueHandler.isDeclaration(it) }
+
