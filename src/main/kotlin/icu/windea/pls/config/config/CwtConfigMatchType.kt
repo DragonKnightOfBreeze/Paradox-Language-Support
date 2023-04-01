@@ -35,11 +35,11 @@ object CwtConfigMatchType {
 	const val LOCALISATION = 0x10
 	
 	/**
-	 * 需要访问脚本表达式索引。
-	 * @see icu.windea.pls.core.index.ParadoxScriptExpressionIndex
+	 * 需要访问复杂枚举值索引。
+	 * @see icu.windea.pls.core.index.ParadoxComplexEnumValueIndex
 	 */
-	const val SCRIPT_EXPRESSION = 0x20
+	const val COMPLEX_ENUM_VALUE = 0x20
 	
-	const val DEFAULT  = FILE_PATH or DEFINITION or LOCALISATION or SCRIPT_EXPRESSION
-	const val INSPECTION = DEFINITION or LOCALISATION or SCRIPT_EXPRESSION
+	const val DEFAULT  = FILE_PATH or DEFINITION or LOCALISATION or COMPLEX_ENUM_VALUE
+	const val INSPECTION = DEFINITION or LOCALISATION or COMPLEX_ENUM_VALUE
 }

@@ -29,7 +29,7 @@ class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptInfo, P
             if(file.fileInfo == null) return@p true
             if(ParadoxFileManager.isLightFile(file)) return@p true
             val psiFile = file.toPsiFile<PsiFile>(project) ?: return@p true
-            val inlineScripts = ParadoxScriptExpressionIndex.getData(psiFile).inlineScripts[expression]
+            val inlineScripts = ParadoxInlineScriptIndex.getData(psiFile).inlineScripts[expression]
             if(inlineScripts.isNullOrEmpty()) return@p true
             for(info in inlineScripts) {
                 if(gameType == info.gameType) {

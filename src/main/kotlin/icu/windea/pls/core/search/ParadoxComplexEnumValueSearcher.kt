@@ -31,7 +31,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
 			if(file.fileInfo == null) return@p true
 			if(ParadoxFileManager.isLightFile(file)) return@p true
 			val psiFile = file.toPsiFile<PsiFile>(project) ?: return@p true
-			val complexEnumValues = ParadoxScriptExpressionIndex.getData(psiFile).complexEnumValues[enumName] ?: return@p true
+			val complexEnumValues = ParadoxComplexEnumValueIndex.getData(psiFile).complexEnumValues[enumName] ?: return@p true
 			if(name == null) {
 				for(info in complexEnumValues.values) {
 					if(gameType == info.gameType && namesToDistinct.add(info.name)) {

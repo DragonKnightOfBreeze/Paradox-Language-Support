@@ -31,7 +31,7 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
             if(file.fileInfo == null) return@p true
             if(ParadoxFileManager.isLightFile(file)) return@p true
             val psiFile = file.toPsiFile<PsiFile>(project) ?: return@p true
-            val valueSetValues = ParadoxScriptExpressionIndex.getData(psiFile).valueSetValues[valueSetName] ?: return@p true
+            val valueSetValues = ParadoxValueSetValueIndex.getData(psiFile).valueSetValues[valueSetName] ?: return@p true
             if(name == null) {
                 for(info in valueSetValues.values) {
                     if(gameType == info.gameType && namesToDistinct.add(info.name)) {

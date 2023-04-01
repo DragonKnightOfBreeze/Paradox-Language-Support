@@ -327,7 +327,7 @@ object ParadoxConfigHandler {
                 //匹配复杂枚举
                 if(!expression.type.isStringType()) return false
                 if(isStatic) return true
-                if(BitUtil.isSet(matchType, CwtConfigMatchType.SCRIPT_EXPRESSION)) {
+                if(BitUtil.isSet(matchType, CwtConfigMatchType.COMPLEX_ENUM_VALUE)) {
                     val complexEnumConfig = configGroup.complexEnums[enumName]
                     if(complexEnumConfig != null) {
                         val searchScope = complexEnumConfig.searchScopeType

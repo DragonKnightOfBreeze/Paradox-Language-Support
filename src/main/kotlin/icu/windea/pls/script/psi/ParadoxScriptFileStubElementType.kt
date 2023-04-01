@@ -84,7 +84,7 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
             val type = node.elementType
             val parentType = parent.elementType
             return when {
-                type == SCRIPTED_VARIABLE -> true
+                type == SCRIPTED_VARIABLE -> false
                 type == PROPERTY -> false
                 type == BLOCK -> false
                 parentType == PROPERTY -> type != BLOCK
