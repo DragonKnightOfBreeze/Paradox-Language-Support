@@ -15,7 +15,6 @@ import icu.windea.pls.script.psi.*
 object ParadoxValueSetValueHandler {
     @JvmStatic
     fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxValueSetValueInfo? {
-        ProgressManager.checkCanceled()
         if(!element.isExpression()) return null
         if(element.isParameterAwareExpression()) return null //排除带参数的情况
         return getInfoFromCache(element)

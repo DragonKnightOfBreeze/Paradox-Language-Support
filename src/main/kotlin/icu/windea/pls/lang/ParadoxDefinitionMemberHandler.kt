@@ -18,12 +18,12 @@ import icu.windea.pls.script.psi.*
 object ParadoxDefinitionMemberHandler {
     @JvmStatic
     fun getInfo(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
-        ProgressManager.checkCanceled()
         return getInfoFromCache(element)
     }
     
     private fun getInfoFromCache(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionMemberInfoKey) {
+            ProgressManager.checkCanceled()
             val file = element.containingFile
             val value = resolveInfoDownUp(element)
             //TODO 需要确定最合适的依赖项

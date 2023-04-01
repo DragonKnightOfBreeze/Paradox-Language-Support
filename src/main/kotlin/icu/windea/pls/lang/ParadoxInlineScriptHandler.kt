@@ -35,7 +35,6 @@ object ParadoxInlineScriptHandler {
     
     @JvmStatic
     fun getInfo(element: ParadoxScriptProperty): ParadoxInlineScriptInfo? {
-        ProgressManager.checkCanceled()
         val name = element.name
         if(name.lowercase() != inlineScriptName) return null
         return getInfoFromCache(element)
@@ -43,6 +42,7 @@ object ParadoxInlineScriptHandler {
     
     private fun getInfoFromCache(element: ParadoxScriptProperty): ParadoxInlineScriptInfo? {
         return CachedValuesManager.getCachedValue(element, cachedInlineScriptInfoKey) {
+            ProgressManager.checkCanceled()
             val file = element.containingFile
             val value = resolveInfo(element, file)
             //invalidated on file modification
@@ -168,9 +168,10 @@ object ParadoxInlineScriptHandler {
     
     private fun getUsageInfoFromCache(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
         return CachedValuesManager.getCachedValue(file, cachedInlineScriptUsageInfoKey) {
+            ProgressManager.checkCanceled()
             val value = runReadAction { doGetInlineScriptUsageInfo(file) }
             val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFile
-            CachedValueProvider.Result.create(value, file, tracker)
+            CachedValueProvider.Result.create(value, tracker)
         }
     }
     
@@ -193,7 +194,7 @@ object ParadoxInlineScriptHandler {
                 element = p
             }
             //检查内联脚本定义所在的规则的上下文是否匹配
-            val eConfigs = ParadoxConfigHandler.getConfigs(e)
+            val eConfigs = ParadoxConfigHandler.getConfigs(p)
             if(eConfigs.isNotEmpty()) {
                 val configsToAdd = eConfigs.mapNotNull { it.parent }
                 if(configs.isEmpty()) {
