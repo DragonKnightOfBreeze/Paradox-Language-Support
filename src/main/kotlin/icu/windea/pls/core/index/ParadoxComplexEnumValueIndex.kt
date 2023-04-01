@@ -63,7 +63,7 @@ object ParadoxComplexEnumValueIndex {
     
     private val gist: PsiFileGist<Data> = GistManager.getInstance().newPsiFileGist(id, version, valueExternalizer) builder@{ file ->
         if(file !is ParadoxScriptFile) return@builder Data()
-        if(file.fileInfo == null) return@builder Data()
+        if(!matchesPath(file)) return@builder Data()
         val data = Data()
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -74,6 +74,18 @@ object ParadoxComplexEnumValueIndex {
             }
         })
         data
+    }
+    
+    private fun matchesPath(file: PsiFile): Boolean {
+        val project = file.project
+        val fileInfo = file.fileInfo ?: return false
+        val gameType = fileInfo.rootInfo.gameType
+        val path = fileInfo.entryPath //这里使用entryPath
+        val configs = getCwtConfig(project).getValue(gameType).complexEnums
+        for(config in configs.values) {
+            if(ParadoxComplexEnumValueHandler.matchesComplexEnumByPath(config, path)) return true
+        }
+        return false
     }
     
     fun getData(enumName: String, file: PsiFile): Map<String, ParadoxComplexEnumValueInfo>? {
