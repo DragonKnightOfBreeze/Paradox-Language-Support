@@ -1,6 +1,7 @@
 package icu.windea.pls.core.index
 
 import com.intellij.codeInsight.highlighting.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.util.gist.*
 import com.intellij.util.io.*
@@ -62,6 +63,7 @@ object ParadoxComplexEnumValueIndex {
     private const val version = 1 //0.9.6
     
     private val gist: PsiFileGist<Data> = GistManager.getInstance().newPsiFileGist(id, version, valueExternalizer) builder@{ file ->
+        ProgressManager.checkCanceled()
         if(file !is ParadoxScriptFile) return@builder Data()
         if(!matchesPath(file)) return@builder Data()
         val data = Data()
