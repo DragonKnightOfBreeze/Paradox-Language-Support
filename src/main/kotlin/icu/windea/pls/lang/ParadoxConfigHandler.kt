@@ -333,7 +333,11 @@ object ParadoxConfigHandler {
                         val searchScope = complexEnumConfig.searchScopeType
                         val selector = complexEnumValueSelector(project, element)
                             //.withSearchScopeType(searchScope, element)
-                        return ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
+                        val complexEnumValueInfo = ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst()
+                        if(complexEnumValueInfo == null) {
+                            println()
+                        }
+                        return complexEnumValueInfo != null
                     }
                 }
                 //complexEnumValue的值必须合法
