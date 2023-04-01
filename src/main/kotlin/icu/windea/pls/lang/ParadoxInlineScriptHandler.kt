@@ -170,7 +170,7 @@ object ParadoxInlineScriptHandler {
         return CachedValuesManager.getCachedValue(file, cachedInlineScriptUsageInfoKey) {
             val value = runReadAction { doGetInlineScriptUsageInfo(file) }
             val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFile
-            CachedValueProvider.Result.create(value, tracker)
+            CachedValueProvider.Result.create(value, file, tracker)
         }
     }
     
