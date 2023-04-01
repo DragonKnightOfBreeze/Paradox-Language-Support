@@ -74,6 +74,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         return when(element) {
             is ParadoxParameterElement -> getParameterDoc(element, originalElement)
             is ParadoxValueSetValueElement -> getValueSetValueDoc(element, originalElement)
+            is ParadoxComplexEnumValueElement -> getComplexEnumValueDoc(element, originalElement)
             is ParadoxModifierElement -> getModifierDoc(element, originalElement)
             else -> null
         }

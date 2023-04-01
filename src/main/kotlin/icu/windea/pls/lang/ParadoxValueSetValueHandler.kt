@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
@@ -34,7 +35,8 @@ object ParadoxValueSetValueHandler {
         //rather than "scope_field" or "value_field" or in localisation commands
         //so, e.g., if there is only an expression "event_target:target", "target" will not be shown during code completion
         ProgressManager.checkCanceled()
-        val config = ParadoxConfigHandler.getConfigs(element, orDefault = true)
+        val matchType = CwtConfigMatchType.STATIC //这里需要静态匹配，不能访问索引
+        val config = ParadoxConfigHandler.getConfigs(element, orDefault = true, matchType = matchType)
             .firstOrNull {
                 val type = it.expression.type
                 type == CwtDataType.Value || type == CwtDataType.ValueSet

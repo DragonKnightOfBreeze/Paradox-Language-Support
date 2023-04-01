@@ -327,6 +327,15 @@ object ParadoxConfigHandler {
                 //匹配复杂枚举
                 if(!expression.type.isStringType()) return false
                 if(isStatic) return true
+                if(BitUtil.isSet(matchType, CwtConfigMatchType.SCRIPT_EXPRESSION)) {
+                    val complexEnumConfig = configGroup.complexEnums[enumName]
+                    if(complexEnumConfig != null) {
+                        val searchScope = complexEnumConfig.searchScopeType
+                        val selector = complexEnumValueSelector(project, element)
+                        //.withSearchScopeType(searchScope, element)
+                        return ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
+                    }
+                }
                 //complexEnuMValue的值必须合法
                 return ParadoxComplexEnumValueHandler.getName(expression.text) != null
             }
