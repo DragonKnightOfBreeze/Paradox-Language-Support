@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.expression
 
 import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.lang.annotation.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
@@ -357,7 +358,10 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
                 //.withSearchScopeType(searchScope, element)
                 .contextSensitive(exact)
             val info = ParadoxComplexEnumValueSearch.search(expression, enumName, selector).findFirst()
-            if(info != null) return ParadoxComplexEnumValueElement(element, info, project)
+            if(info != null) {
+                val readWriteAccess = ReadWriteAccessDetector.Access.Read //usage
+                return ParadoxComplexEnumValueElement(element, info.name, info.enumName, readWriteAccess, info.gameType, project)
+            }
         }
         return null
     }

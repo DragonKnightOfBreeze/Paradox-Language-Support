@@ -1,6 +1,5 @@
 package icu.windea.pls.script.references
 
-import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -19,7 +18,6 @@ class ParadoxComplexEnumValuePsiReference(
     }
     
     override fun resolve(): PsiElement {
-        val readWriteAccess = ReadWriteAccessDetector.Access.Write //declaration
-        return ParadoxComplexEnumValueElement(element, info.name, info.enumName, readWriteAccess, info.gameType, project)
+        return ParadoxComplexEnumValueElement(element, info, project)
     }
 }
