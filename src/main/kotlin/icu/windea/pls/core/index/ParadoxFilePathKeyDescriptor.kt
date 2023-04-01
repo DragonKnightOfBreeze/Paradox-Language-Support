@@ -15,12 +15,16 @@ object ParadoxFilePathKeyDescriptor : KeyDescriptor<ParadoxFilePathInfo> {
     
     override fun save(storage: DataOutput, value: ParadoxFilePathInfo) {
         IOUtil.writeUTF(storage, value.path)
-        IOUtil.writeUTF(storage, value.gameType.id)
+        storage.writeByte(value.gameType.toByte())
     }
     
     override fun read(storage: DataInput): ParadoxFilePathInfo {
         val path = IOUtil.readUTF(storage)
-        val gameType = IOUtil.readUTF(storage).let { ParadoxGameType.resolve(it) }.orDefault()
+        val gameType = storage.readByte().toGameType()
         return ParadoxFilePathInfo(path, gameType)
     }
+    
+    private fun ParadoxGameType.toByte() = this.ordinal
+    
+    private fun Byte.toGameType() = ParadoxGameType.values[this.toInt()]
 }

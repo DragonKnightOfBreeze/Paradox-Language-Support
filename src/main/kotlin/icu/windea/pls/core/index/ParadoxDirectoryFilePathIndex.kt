@@ -1,6 +1,5 @@
 package icu.windea.pls.core.index
 
-import com.intellij.openapi.util.registry.*
 import com.intellij.openapi.vfs.*
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
@@ -18,7 +17,7 @@ class ParadoxDirectoryFilePathIndex : ScalarIndexExtension<ParadoxFilePathInfo>(
     }
     
     override fun getVersion(): Int {
-        return 4 + (if(Registry.`is`("indexing.paradox.file.path.over.vfs")) 0xff else 0)
+        return 5 //0.9.6
     }
     
     override fun getIndexer(): DataIndexer<ParadoxFilePathInfo, Void, FileContent> {
