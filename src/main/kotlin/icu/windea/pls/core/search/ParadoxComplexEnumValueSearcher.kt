@@ -30,9 +30,9 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
             ProgressManager.checkCanceled()
             if(file.fileInfo == null) return@p true
             if(ParadoxFileManager.isLightFile(file)) return@p true
-            val complexEnumValues = ParadoxComplexEnumValueIndex.getData(enumName, file, project)
-            if(complexEnumValues.isNullOrEmpty()) return@p true
             val psiFile = file.toPsiFile<PsiFile>(project) ?: return@p true
+            val complexEnumValues = ParadoxComplexEnumValueIndex.getData(enumName, psiFile)
+            if(complexEnumValues.isNullOrEmpty()) return@p true
             if(name == null) {
                 for(info in complexEnumValues.values) {
                     if(gameType == info.gameType && namesToDistinct.add(info.name)) {
