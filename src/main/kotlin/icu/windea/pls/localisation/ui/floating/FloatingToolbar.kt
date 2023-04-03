@@ -1,6 +1,5 @@
 package icu.windea.pls.localisation.ui.floating
 
-import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInsight.hint.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
@@ -11,9 +10,8 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.*
 import icu.windea.pls.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.localisation.ui.actions.styling.*
 import java.awt.*
 import java.awt.event.*

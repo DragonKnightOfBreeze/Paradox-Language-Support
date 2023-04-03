@@ -59,7 +59,9 @@
 
 ## 0.9.7
 
-* [ ] 实现类型层次（`Navigate > Type Hierachy`） - 用于基于枚举名列出枚举值、基于值集名列出值集值、基于定义类型列出定义，并且可以配置作用域
+* [X] 修复：[群星文本颜色插件失效（没有弹出选框），同时报错 #15](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/15)
+* [X] 实现内嵌提示以提示复杂枚举值的信息（枚举名，如`policy_flag`，默认启用）
+* [ ] 实现类型层级（`Navigate > Type Hierachy`） - 用于基于定义类型列出定义，并且可以指定作用域
 * [ ] 完善对图表的支持 - 支持通过作用域过滤显示结果，提供另外的更加详细的配置页面（需要专业版IDE）
 
 ## 0.9.6
