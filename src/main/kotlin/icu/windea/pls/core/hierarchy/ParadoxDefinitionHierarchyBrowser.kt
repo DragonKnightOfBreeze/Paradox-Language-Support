@@ -9,6 +9,7 @@ import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
+import java.text.*
 import java.util.function.*
 import javax.swing.*
 
@@ -56,13 +57,27 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
         return null
     }
     
+    override fun getContentDisplayName(typeName: String, element: PsiElement): String? {
+        val definitionInfo = element.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return null
+        val type = definitionInfo.type
+        return MessageFormat.format(typeName, type)
+    }
+    
     override fun getElementFromDescriptor(descriptor: HierarchyNodeDescriptor): PsiElement? {
         if(descriptor !is ParadoxDefinitionHierarchyNodeDescriptor) return null
         return descriptor.psiElement
     }
     
+    override fun getPreviousOccurenceActionName(): String {
+        return prevOccurenceActionNameImpl
+    }
+    
     override fun getPrevOccurenceActionNameImpl(): String {
         return PlsBundle.message("hierarchy.definition.prev.occurrence.name")
+    }
+    
+    override fun getNextOccurenceActionName(): String {
+        return nextOccurenceActionNameImpl
     }
     
     override fun getNextOccurenceActionNameImpl(): String {
@@ -70,7 +85,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
     }
     
     override fun isApplicableElement(element: PsiElement): Boolean {
-        return element is ParadoxScriptDefinitionElement && element.definitionInfo != null
+        return element is ParadoxScriptDefinitionElement
     }
     
     override fun getComparator(): Comparator<NodeDescriptor<*>> {

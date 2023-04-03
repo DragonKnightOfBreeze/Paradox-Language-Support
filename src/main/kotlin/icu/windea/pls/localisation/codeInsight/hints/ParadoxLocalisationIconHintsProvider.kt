@@ -50,19 +50,18 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
 	//icu.windea.pls.tool.localisation.ParadoxLocalisationTextHintsRenderer.renderIconTo
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-		val result = continueCollect(element)
 		if(element is ParadoxLocalisationIcon) {
-			val resolved = element.reference?.resolve() ?: return result
+			val resolved = element.reference?.resolve() ?: return true
 			val iconUrl = when {
 				resolved is ParadoxScriptDefinitionElement -> ParadoxDdsUrlResolver.resolveByDefinition(resolved, defaultToUnknown = false)
 				resolved is PsiFile -> ParadoxDdsUrlResolver.resolveByFile(resolved.virtualFile, defaultToUnknown = false)
-				else -> return result
+				else -> return true
 			}
 			if(iconUrl.isNotEmpty()) {
 				//忽略异常
 				runCatching {
 					//找不到图标的话就直接跳过
-					val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return result
+					val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
 					//基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
 					if(icon.iconHeight <= settings.iconHeightLimit) {
 						//点击可以导航到声明处（定义或DDS）
@@ -74,15 +73,6 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
 				}
 			}
 		}
-		return result
-	}
-	
-	private fun continueCollect(element: PsiElement): Boolean {
-		return element is ParadoxLocalisationFile
-			|| element is ParadoxLocalisationPropertyList 
-			|| element is ParadoxLocalisationProperty 
-			|| element is ParadoxLocalisationPropertyValue
-			|| element is ParadoxLocalisationColorfulText
-			|| element is ParadoxLocalisationIcon
+		return true
 	}
 }

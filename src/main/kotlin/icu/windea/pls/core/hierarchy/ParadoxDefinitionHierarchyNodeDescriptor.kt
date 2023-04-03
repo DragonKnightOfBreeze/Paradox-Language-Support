@@ -19,8 +19,14 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
     project: Project,
     parentDescriptor: HierarchyNodeDescriptor?,
     element: PsiElement,
-    isBase: Boolean
+    isBase: Boolean,
+    val name: String,
+    val type: Type
 ) : HierarchyNodeDescriptor(project, parentDescriptor, element, isBase) {
+    enum class Type {
+        Type, Subtype,NoSubtype, Definition
+    }
+    
     companion object {
         @JvmStatic
         fun getLocationAttributes(): TextAttributes? {
@@ -42,20 +48,25 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         val nameAttributes = if(myColor != null) TextAttributes(myColor, null, null, null, Font.PLAIN) else null
         when(element) {
             is CwtProperty -> {
-                val typeName = element.name.substringIn("[", "]")
-                myHighlightedText.ending.addText(typeName, nameAttributes)
-                val fileName = element.containingFile?.name
-                if(fileName != null) {
-                    val location = " ($fileName)"
-                    myHighlightedText.ending.addText(location, getLocationAttributes())
+                if(type == Type.NoSubtype) {
+                    val name = PlsBundle.message("hierarchy.definition.descriptor.noSubtype")
+                    myHighlightedText.ending.addText(name, getLocationAttributes())
+                } else {
+                    val typeName = element.name.substringIn("[", "]")
+                    myHighlightedText.ending.addText(typeName, nameAttributes)
+                    val fileName = element.containingFile?.name
+                    if(fileName != null) {
+                        val location = " " + PlsBundle.message("hierarchy.definition.descriptor.type.location", fileName)
+                        myHighlightedText.ending.addText(location, getLocationAttributes())
+                    }
                 }
             }
             is ParadoxScriptDefinitionElement -> {
-                val definitionName = element.definitionInfo?.name.orAnonymous()
-                myHighlightedText.ending.addText(definitionName, nameAttributes)
+                val name = element.definitionInfo?.name.orAnonymous()
+                myHighlightedText.ending.addText(name, nameAttributes)
                 val fileInfo = element.fileInfo
                 if(fileInfo != null) {
-                    val location = PlsBundle.message("location.path.of.qualified.name", fileInfo.path.path, fileInfo.rootInfo.qualifiedName)
+                    val location = " " + PlsBundle.message("hierarchy.definition.descriptor.definition.location", fileInfo.path.path, fileInfo.rootInfo.qualifiedName)
                     myHighlightedText.ending.addText(location, getLocationAttributes())
                 }
             }

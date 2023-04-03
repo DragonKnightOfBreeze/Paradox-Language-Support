@@ -24,6 +24,9 @@ abstract class ParadoxScriptHintsProvider<T : Any> : InlayHintsProvider<T> {
 		}
 	}
 	
+	/**
+	 * 这里需要尽可能返回true，并不是注释所说的“返回false的话就不遍历子节点”。
+	 */
 	override fun getCollectorFor(file: PsiFile, editor: Editor, settings: T, sink: InlayHintsSink): InlayHintsCollector? {
 		if(file.fileInfo == null) return null // skip it
 		return object : FactoryInlayHintsCollector(editor) {

@@ -30,7 +30,7 @@ class ParadoxDefinitionHierarchyProvider : HierarchyProvider {
         val fileInfo = file.fileInfo ?: return null
         if(fileInfo.entryPath.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
         val offset = editor.caretModel.offset
-        val definition = findElement(file, offset)
+        val definition = findElement(file, offset) ?: return null
         return definition
     }
     
@@ -39,6 +39,7 @@ class ParadoxDefinitionHierarchyProvider : HierarchyProvider {
     }
     
     override fun browserActivated(hierarchyBrowser: HierarchyBrowser) {
-        
+        hierarchyBrowser as ParadoxDefinitionHierarchyBrowser
+        hierarchyBrowser.changeView(ParadoxDefinitionHierarchyBrowser.getDefinitionHierarchyType1())
     }
 }

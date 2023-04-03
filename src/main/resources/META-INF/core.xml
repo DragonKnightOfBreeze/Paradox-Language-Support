@@ -252,7 +252,6 @@
       <add-to-group group-id="EditorContextBarMenu" anchor="last"/>
     </group>
     <group id="Pls.Diff.WithSeparator">
-      <separator/>
       <reference ref="Pls.Diff"/>
       <add-to-group group-id="CompareActions" relative-to-action="CompareClipboardWithSelection" anchor="after"/>
       <add-to-group group-id="EditorPopupMenu" relative-to-action="CompareClipboardWithSelection" anchor="after"/>

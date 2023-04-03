@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.hierarchy.ParadoxDefinitionHierarchyNodeDescriptor.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selectors.chained.*
 
@@ -18,41 +19,60 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
     typeElement: PsiElement,
     val typeConfig: CwtTypeConfig,
     val withSubtypes: Boolean,
-) : HierarchyTreeStructure(project, ParadoxDefinitionHierarchyNodeDescriptor(project, null, typeElement, true)) {
+) : HierarchyTreeStructure(project, ParadoxDefinitionHierarchyNodeDescriptor(project, null, typeElement, true, typeConfig.name, Type.Type)) {
     private val elementPointer = element.createPointer()
     
-    override fun buildChildren(descriptor: HierarchyNodeDescriptor): Array<out Any> {
+    override fun buildChildren(descriptor: HierarchyNodeDescriptor): Array<out HierarchyNodeDescriptor> {
         descriptor as ParadoxDefinitionHierarchyNodeDescriptor
-        val descriptors = mutableListOf<HierarchyNodeDescriptor>()
-        val type = typeConfig.name
-        val contextElement = elementPointer.element
-        val selector = definitionSelector(myProject, contextElement)
-        val definitions = ParadoxDefinitionSearch.search(type, selector).findAll()
-        if(withSubtypes) {
-            val definitionsWithInfo = definitions.mapNotNull { definition ->
-                val definitionInfo = definition.definitionInfo ?: return@mapNotNull null
-                definition to definitionInfo
-            }
-            typeConfig.subtypes.forEach { (_, subtypeConfig) ->
-                val subtypeElement = subtypeConfig.pointer.element ?: return@forEach
-                val subtypeDescriptor = ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, subtypeElement, false)
-                descriptors.add(subtypeDescriptor)
-                definitionsWithInfo.forEach { (definition, definitionInfo) ->
-                    if(definitionInfo.subtypes.contains(subtypeConfig.name)) {
-                        descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, subtypeDescriptor, definition, false))
+        return when(descriptor.type) {
+            Type.Type -> {
+                if(withSubtypes) {
+                    val descriptors = mutableListOf<HierarchyNodeDescriptor>()
+                    typeConfig.subtypes.forEach { (_, subtypeConfig) ->
+                        val subtypeElement = subtypeConfig.pointer.element ?: return@forEach
+                        descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, subtypeElement, false, subtypeConfig.name, Type.Subtype))
                     }
+                    val typeElement = descriptor.psiElement
+                    if(typeElement != null) {
+                        descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, typeElement, false, "", Type.NoSubtype))
+                    }
+                    descriptors.toTypedArray()
+                } else {
+                    val descriptors = mutableListOf<HierarchyNodeDescriptor>()
+                    val type = typeConfig.name
+                    val contextElement = elementPointer.element
+                    val selector = definitionSelector(myProject, contextElement)
+                    val definitions = ParadoxDefinitionSearch.search(type, selector).findAll()
+                    definitions.forEach { definition ->
+                        descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, definition, false, "", Type.Definition))
+                    }
+                    descriptors.toTypedArray()
                 }
             }
-            definitionsWithInfo.forEach { (definition, definitionInfo) ->
-                if(definitionInfo.subtypes.isEmpty()) {
-                    descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, definition, false))
+            Type.Subtype -> {
+                val descriptors = mutableListOf<HierarchyNodeDescriptor>()
+                val type = "${typeConfig.name}.${descriptor.name}"
+                val contextElement = elementPointer.element
+                val selector = definitionSelector(myProject, contextElement)
+                val definitions = ParadoxDefinitionSearch.search(type, selector).findAll()
+                definitions.forEach { definition ->
+                    descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, definition, false, "", Type.Definition))
                 }
+                return descriptors.toTypedArray()
             }
-        } else {
-            definitions.forEach { definition ->
-                descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, definition, false))
+            Type.NoSubtype -> {
+                val descriptors = mutableListOf<HierarchyNodeDescriptor>()
+                val type = typeConfig.name
+                val contextElement = elementPointer.element
+                val selector = definitionSelector(myProject, contextElement)
+                val definitions = ParadoxDefinitionSearch.search(type, selector).findAll()
+                definitions.forEach { definition ->
+                    if(definition.definitionInfo?.subtypes?.isEmpty() != true) return@forEach
+                    descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, definition, false, "", Type.Definition))
+                }
+                descriptors.toTypedArray()
             }
+            Type.Definition -> HierarchyNodeDescriptor.EMPTY_ARRAY
         }
-        return descriptors.toTypedArray()
     }
 }
