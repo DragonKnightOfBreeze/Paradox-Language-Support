@@ -11,7 +11,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 值集值值的内嵌提示（值的类型即值集的名字）。
+ * 值集值的内嵌提示（值的类型即值集的名字）。
  */
 @Suppress("UnstableApiUsage")
 class ParadoxValueSetValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
@@ -31,7 +31,7 @@ class ParadoxValueSetValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSetti
 			val type = config.expression.type
 			if(type == CwtDataType.Value || type == CwtDataType.ValueSet) {
 				val valueSetName = config.expression.value ?: return true
-				val presentation = collectDefinition(valueSetName)
+				val presentation = collectInfo(valueSetName)
 				val finalPresentation = presentation.toFinalPresentation(this, file.project)
 				val endOffset = element.endOffset
 				sink.addInlineElement(endOffset, true, finalPresentation, false)
@@ -40,7 +40,8 @@ class ParadoxValueSetValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSetti
 		return true
 	}
 	
-	private fun PresentationFactory.collectDefinition(valueSetName: String): InlayPresentation {
+	private fun PresentationFactory.collectInfo(valueSetName: String): InlayPresentation {
 		return smallText(": $valueSetName")
 	}
 }
+
