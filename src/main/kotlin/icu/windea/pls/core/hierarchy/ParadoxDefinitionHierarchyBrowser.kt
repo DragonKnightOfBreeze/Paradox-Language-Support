@@ -9,13 +9,16 @@ import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
+import java.util.function.*
 import javax.swing.*
 
 @Suppress("DialogTitleCapitalization")
 class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) : HierarchyBrowserBaseEx(project, element) {
     companion object {
-        const val definitionHierarchyType1 = "definition1"
-        const val definitionHierarchyType2 = "definition2"
+        @Suppress("InvalidBundleOrProperty")
+        fun getDefinitionHierarchyType1() = PlsBundle.message("title.hierarchy.definition.1")
+        @Suppress("InvalidBundleOrProperty")
+        fun getDefinitionHierarchyType2() = PlsBundle.message("title.hierarchy.definition.2")
     }
     
     override fun createTrees(trees: MutableMap<in String, in JTree>) {
@@ -25,21 +28,21 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
     private fun createTreeAndSetupCommonActions(trees: MutableMap<in String, in JTree>, groupId: String) {
         val tree1 = createTree(true)
         PopupHandler.installPopupMenu(tree1, groupId, ActionPlaces.TYPE_HIERARCHY_VIEW_POPUP)
-        trees.put(definitionHierarchyType1, tree1)
+        trees.put(getDefinitionHierarchyType1(), tree1)
         val tree2 = createTree(true)
         PopupHandler.installPopupMenu(tree1, groupId, ActionPlaces.TYPE_HIERARCHY_VIEW_POPUP)
-        trees.put(definitionHierarchyType2, tree2)
+        trees.put(getDefinitionHierarchyType2(), tree2)
     }
     
     override fun createHierarchyTreeStructure(type: String, psiElement: PsiElement): HierarchyTreeStructure? {
         return when(type) {
-            definitionHierarchyType1 -> {
+            getDefinitionHierarchyType1() -> {
                 val definitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return null
                 val typeConfig = definitionInfo.typeConfig
                 val typeElement = typeConfig.pointer.element ?: return null
                 ParadoxDefinitionTypeHierarchyTreeStructure(myProject, psiElement, typeElement, typeConfig, false)
             }
-            definitionHierarchyType2 -> {
+            getDefinitionHierarchyType2() -> {
                 val definitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return null
                 val typeConfig = definitionInfo.typeConfig
                 val typeElement = typeConfig.pointer.element ?: return null
@@ -75,8 +78,25 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
         return if(state != null && state.SORT_ALPHABETICALLY) AlphaComparator.INSTANCE else SourceComparator.INSTANCE
     }
     
+    override fun getPresentableNameMap(): MutableMap<String, Supplier<String>> {
+        val map = mutableMapOf<String, Supplier<String>>()
+        map.put(getDefinitionHierarchyType1()) { getDefinitionHierarchyType1() }
+        map.put(getDefinitionHierarchyType2()) { getDefinitionHierarchyType2() }
+        return map
+    }
+    
+    override fun prependActions(actionGroup: DefaultActionGroup) {
+        actionGroup.add(ViewDefinitionHierarchy1Action())
+        actionGroup.add(ViewDefinitionHierarchy2Action())
+        actionGroup.add(AlphaSortAction())
+    }
+    
     override fun getActionPlace(): String {
         return ActionPlaces.TYPE_HIERARCHY_VIEW_TOOLBAR
+    }
+    
+    override fun getActionUpdateThread(): ActionUpdateThread {
+        return ActionUpdateThread.BGT
     }
 }
 

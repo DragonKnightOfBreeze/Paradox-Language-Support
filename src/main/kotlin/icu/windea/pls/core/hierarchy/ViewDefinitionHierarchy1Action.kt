@@ -11,7 +11,7 @@ class ViewDefinitionHierarchy1Action: ChangeHierarchyViewActionBase(
     PlsIcons.Hierarchy.Definition
 ) {
     override fun getTypeName(): String {
-        return ParadoxDefinitionHierarchyBrowser.definitionHierarchyType1
+        return ParadoxDefinitionHierarchyBrowser.getDefinitionHierarchyType1()
     }
     
     override fun update(event: AnActionEvent) {
