@@ -104,6 +104,10 @@ object PlsIcons {
 		@JvmField val ComplexEnumValue = loadIcon("icons/gutter/complexEnumValue.svg")
 	}
 	
+	object Hierarchy {
+		@JvmField val Definition = AllIcons.Hierarchy.Subtypes
+	}
+	
 	@JvmStatic fun loadIcon(path: String): Icon {
 		return IconManager.getInstance().getIcon(path, PlsIcons::class.java)
 	}

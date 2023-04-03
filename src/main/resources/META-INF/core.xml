@@ -257,6 +257,16 @@
       <add-to-group group-id="CompareActions" relative-to-action="CompareClipboardWithSelection" anchor="after"/>
       <add-to-group group-id="EditorPopupMenu" relative-to-action="CompareClipboardWithSelection" anchor="after"/>
       <add-to-group group-id="ProjectViewPopupMenu" relative-to-action="CompareFileWithEditor" anchor="after"/>
+      <add-to-group group-id="HierarchyPopupMenu.Common" relative-to-action="CompareFileWithEditor" anchor="after"/>
+    </group>
+    
+    <action id="Pls.TypeHierarchy.Definition1" class="icu.windea.pls.core.hierarchy.ViewDefinitionHierarchy1Action"/>
+    <action id="Pls.TypeHierarchy.Definition2" class="icu.windea.pls.core.hierarchy.ViewDefinitionHierarchy2Action"/>
+    
+    <group id="Pls.TypeHierarchyPopupMenu">
+      <reference ref="Pls.TypeHierarchy.Definition1"/>
+      <reference ref="Pls.TypeHierarchy.Definition2"/>
+      <add-to-group group-id="TypeHierarchyPopupMenu" anchor="first"/>
     </group>
   </actions>
 </idea-plugin>
