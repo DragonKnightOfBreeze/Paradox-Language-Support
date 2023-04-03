@@ -112,7 +112,7 @@ object PlsKeys {
     val cachedColorKey = Key.create<CachedValue<Color>>("paradox.cached.color")
     val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfoKey")
     
-    //用于解析引用为CWT元素后，写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）
+    //用于将CWT规则临时写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）
     val cwtConfigKey = Key.create<CwtConfig<*>>("paradox.cwtConfig")
     
     //用于在进行代码补全时标记一个property的propertyValue未填写

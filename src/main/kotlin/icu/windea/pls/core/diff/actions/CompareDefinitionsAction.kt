@@ -40,7 +40,6 @@ import javax.swing.*
  * * 当当前文件是模组或游戏文件且是脚本文件时显示。
  * * 当前鼠标位置位于定义声明中时启用。
  * * 忽略直接位于游戏或模组入口目录下的文件。
- * * 可以用于比较二进制文件。（如DDS图片）
  * * TODO 按照覆盖顺序进行排序。
  */
 @Suppress("ComponentNotRegistered", "UNUSED_VARIABLE", "DEPRECATION")
@@ -60,14 +59,15 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
+        val project = e.project ?: return
+        val editor = e.editor ?: return
         val file = findFile(e) ?: return
         if(file.isDirectory) return
         if(file.fileType != ParadoxScriptFileType) return
         val fileInfo = file.fileInfo ?: return
         if(fileInfo.entryPath.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
         presentation.isVisible = true
-        val project = e.project ?: return
-        val offset = e.editor?.caretModel?.offset ?: return
+        val offset = editor.caretModel.offset
         val psiFile = file.toPsiFile<PsiFile>(project) ?: return
         val definition = findElement(psiFile, offset) ?: return
         //val definitionInfo = definition.definitionInfo ?: return
