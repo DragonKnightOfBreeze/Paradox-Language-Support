@@ -37,15 +37,23 @@ import javax.swing.*
 /**
  * 将当前本地化与包括当前本地化的只读副本在内的相同名称的本地化进行DIFF。
  *
- * * 当当前文件是模组或游戏文件且是本地化文件时显示。
- * * 当前鼠标位置位于本地化声明中时启用。
+ * * 当当前文件（或者通过视图等选中的文件）是模组或游戏文件且是本地化文件时显示。
+ * * 当前鼠标位置位于本地化声明中（或者通过视图等选中本地化）时启用。
  * * 忽略直接位于游戏或模组入口目录下的文件。
  * * TODO 按照覆盖顺序进行排序。
  */
-@Suppress("ComponentNotRegistered", "UNUSED_VARIABLE", "DEPRECATION")
+@Suppress("ComponentNotRegistered", "DEPRECATION")
 class CompareLocalisationsAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
-        return e.getData(CommonDataKeys.VIRTUAL_FILE)
+        val file =  e.getData(CommonDataKeys.VIRTUAL_FILE)
+            ?: return null
+        if(file.isDirectory) return null
+        if(file.fileType != ParadoxLocalisationFileType) return null
+        val fileInfo = file.fileInfo ?: return null
+        if(fileInfo.entryPath.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
+        //val gameType = fileInfo.rootInfo.gameType
+        //val path = fileInfo.path.path
+        return file
     }
     
     private fun findElement(psiFile: PsiFile, offset: Int): ParadoxLocalisationProperty? {
@@ -55,26 +63,29 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             ?.castOrNull()
     }
     
+    private fun findFastElement(e: AnActionEvent): ParadoxLocalisationProperty? {
+        return e.getData(CommonDataKeys.PSI_ELEMENT) as? ParadoxLocalisationProperty?
+    }
+    
     override fun update(e: AnActionEvent) {
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
-        val project = e.project ?: return
-        val editor = e.editor ?: return
-        val file = findFile(e) ?: return
-        if(file.isDirectory) return
-        if(file.fileType != ParadoxLocalisationFileType) return
-        val fileInfo = file.fileInfo ?: return
-        if(fileInfo.entryPath.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
-        presentation.isVisible = true
-        val offset = editor.caretModel.offset
-        val psiFile = file.toPsiFile<PsiFile>(project) ?: return
-        val localisation = findElement(psiFile, offset) ?: return
+        var localisation = findFastElement(e)
+        if(localisation == null) {
+            val project = e.project ?: return
+            val file = findFile(e) ?: return
+            presentation.isVisible = true
+            val editor = e.editor ?: return
+            val offset = editor.caretModel.offset
+            val psiFile = file.toPsiFile<PsiFile>(project) ?: return
+            localisation = findElement(psiFile, offset) ?: return
+        }
         //val localisationName = localisation.name
         //val selector = localisationSelector(project, file)
         //val multiple = ParadoxLocalisationSearch.search(localisationName, project, selector).hasMultipleResults()
         //if(!multiple) return //忽略不存在重载/被重载的情况 - 出于性能原因，目前不在update方法中判断
-        presentation.isEnabled = true
+        presentation.isEnabledAndVisible = true
     }
     
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {

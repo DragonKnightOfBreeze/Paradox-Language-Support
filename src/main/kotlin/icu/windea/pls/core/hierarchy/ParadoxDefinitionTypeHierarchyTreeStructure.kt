@@ -19,7 +19,7 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
     typeElement: PsiElement,
     val typeConfig: CwtTypeConfig,
     val withSubtypes: Boolean,
-) : HierarchyTreeStructure(project, ParadoxDefinitionHierarchyNodeDescriptor(project, null, typeElement, true, typeConfig.name, Type.Type)) {
+) : HierarchyTreeStructure(project, ParadoxDefinitionHierarchyNodeDescriptor(project, null, typeElement, false, typeConfig.name, Type.Type)) {
     private val elementPointer = element.createPointer()
     
     override fun buildChildren(descriptor: HierarchyNodeDescriptor): Array<out HierarchyNodeDescriptor> {
@@ -43,8 +43,10 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
                     val contextElement = elementPointer.element
                     val selector = definitionSelector(myProject, contextElement)
                     val definitions = ParadoxDefinitionSearch.search(type, selector).findAll()
+                    val element = elementPointer.element
                     definitions.forEach { definition ->
-                        descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, definition, false, "", Type.Definition))
+                        val isBase = element != null && element isSamePosition definition
+                        descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, definition, isBase, "", Type.Definition))
                     }
                     descriptors.toTypedArray()
                 }
@@ -55,8 +57,10 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
                 val contextElement = elementPointer.element
                 val selector = definitionSelector(myProject, contextElement)
                 val definitions = ParadoxDefinitionSearch.search(type, selector).findAll()
+                val element = elementPointer.element
                 definitions.forEach { definition ->
-                    descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, definition, false, "", Type.Definition))
+                    val isBase = element != null && element isSamePosition definition
+                    descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, definition, isBase, "", Type.Definition))
                 }
                 return descriptors.toTypedArray()
             }
@@ -66,9 +70,11 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
                 val contextElement = elementPointer.element
                 val selector = definitionSelector(myProject, contextElement)
                 val definitions = ParadoxDefinitionSearch.search(type, selector).findAll()
+                val element = elementPointer.element
                 definitions.forEach { definition ->
                     if(definition.definitionInfo?.subtypes?.isEmpty() != true) return@forEach
-                    descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, definition, false, "", Type.Definition))
+                    val isBase = element != null && element isSamePosition definition
+                    descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, definition, isBase, "", Type.Definition))
                 }
                 descriptors.toTypedArray()
             }

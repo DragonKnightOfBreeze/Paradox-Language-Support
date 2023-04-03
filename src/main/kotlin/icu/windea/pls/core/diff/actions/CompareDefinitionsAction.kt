@@ -37,15 +37,23 @@ import javax.swing.*
 /**
  * 将当前定义与包括当前本地化的只读副本在内的相同名称且相同主要类型的定义进行DIFF。
  *
- * * 当当前文件是模组或游戏文件且是脚本文件时显示。
- * * 当前鼠标位置位于定义声明中时启用。
+ * * 当当前文件（或者通过视图等选中的文件）是模组或游戏文件且是脚本文件时显示。
+ * * 当前鼠标位置位于定义声明中（或者通过视图等选中定义）时启用。
  * * 忽略直接位于游戏或模组入口目录下的文件。
  * * TODO 按照覆盖顺序进行排序。
  */
-@Suppress("ComponentNotRegistered", "UNUSED_VARIABLE", "DEPRECATION")
+@Suppress("ComponentNotRegistered", "DEPRECATION")
 class CompareDefinitionsAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
-        return e.getData(CommonDataKeys.VIRTUAL_FILE)
+        val file =  e.getData(CommonDataKeys.VIRTUAL_FILE)
+            ?: return null
+        if(file.isDirectory) return null
+        if(file.fileType != ParadoxScriptFileType) return null
+        val fileInfo = file.fileInfo ?: return null
+        if(fileInfo.entryPath.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
+        //val gameType = fileInfo.rootInfo.gameType
+        //val path = fileInfo.path.path
+        return file
     }
     
     private fun findElement(psiFile: PsiFile, offset: Int): ParadoxScriptDefinitionElement? {
@@ -55,26 +63,29 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             ?.castOrNull()
     }
     
+    private fun findFastElement(e: AnActionEvent): ParadoxScriptDefinitionElement? {
+        return e.getData(CommonDataKeys.PSI_ELEMENT) as? ParadoxScriptDefinitionElement?
+    }
+    
     override fun update(e: AnActionEvent) {
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
-        val project = e.project ?: return
-        val editor = e.editor ?: return
-        val file = findFile(e) ?: return
-        if(file.isDirectory) return
-        if(file.fileType != ParadoxScriptFileType) return
-        val fileInfo = file.fileInfo ?: return
-        if(fileInfo.entryPath.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
-        presentation.isVisible = true
-        val offset = editor.caretModel.offset
-        val psiFile = file.toPsiFile<PsiFile>(project) ?: return
-        val definition = findElement(psiFile, offset) ?: return
+        var definition = findFastElement(e)
+        if(definition == null) {
+            val project = e.project ?: return
+            val file = findFile(e) ?: return
+            presentation.isVisible = true
+            val editor = e.editor ?: return
+            val offset = editor.caretModel.offset
+            val psiFile = file.toPsiFile<PsiFile>(project) ?: return
+            definition = findElement(psiFile, offset) ?: return
+        }
         //val definitionInfo = definition.definitionInfo ?: return
         //val selector = definitionSelector(project, file)
         //val multiple = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, project, selector).hasMultipleResults()
         //if(!multiple) return //忽略不存在重载/被重载的情况 - 出于性能原因，目前不在update方法中判断
-        presentation.isEnabled = true
+        presentation.isEnabledAndVisible = true
     }
     
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
