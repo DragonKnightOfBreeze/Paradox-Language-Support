@@ -62,14 +62,14 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 			
 			val gameType = selectGameType(file) ?: return true
 			val configGroup = getCwtConfig(file.project).getValue(gameType)
-			val presentation = collectScopeContext(scopeContext, configGroup)
+			val presentation = doCollect(scopeContext, configGroup)
 			val finalPresentation = presentation.toFinalPresentation(this, file.project)
 			sink.addInlineElement(offset, true, finalPresentation, true)
 		}
 		return true
 	}
 	
-	private fun PresentationFactory.collectScopeContext(scopeInfo: ParadoxScopeContext, configGroup: CwtConfigGroup): InlayPresentation {
+	private fun PresentationFactory.doCollect(scopeInfo: ParadoxScopeContext, configGroup: CwtConfigGroup): InlayPresentation {
 		val presentations = mutableListOf<InlayPresentation>()
 		var appendSeparator = false
 		scopeInfo.map.forEach { (key, value) ->

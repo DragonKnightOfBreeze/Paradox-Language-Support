@@ -27,7 +27,7 @@ class ParadoxScriptedVariableReferenceInfoHintsProvider : ParadoxScriptHintsProv
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
 		if(element is ParadoxScriptScriptedVariableReference) {
 			val referenceValue = element.referenceValue ?: return true //不检查值的类型
-			val presentation = collectValue(referenceValue) ?: return true
+			val presentation = doCollect(referenceValue) ?: return true
 			val finalPresentation = presentation.toFinalPresentation(this, file.project)
 			val endOffset = element.endOffset
 			sink.addInlineElement(endOffset, true, finalPresentation, false)
@@ -35,7 +35,7 @@ class ParadoxScriptedVariableReferenceInfoHintsProvider : ParadoxScriptHintsProv
 		return true
 	}
 	
-	private fun PresentationFactory.collectValue(value: ParadoxScriptValue): InlayPresentation? {
+	private fun PresentationFactory.doCollect(value: ParadoxScriptValue): InlayPresentation? {
 		val v = value.value
 		if(v.isEmpty()) return null
 		return smallText(v)

@@ -59,29 +59,28 @@ class ParadoxModifierLocalizedNameHintsProvider: ParadoxScriptHintsProvider<Sett
 	}
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-		if(element is ParadoxScriptStringExpressionElement) {
-			//基于stub
-			val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return true
-			val type = config.expression.type
-			if(type == CwtDataType.Modifier) {
-				val name = element.value
-				val configGroup = config.info.configGroup
-				val project = configGroup.project
-				val keys = ParadoxModifierHandler.getModifierNameKeys(name)
-				val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
-				val localisation = keys.firstNotNullOfOrNull {
-					ParadoxLocalisationSearch.search(it, selector).find()
-				} ?: return true
-				val presentation = collectLocalisation(localisation, editor, settings)
-				val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
-				val endOffset = element.endOffset
-				sink.addInlineElement(endOffset, true, finalPresentation, false)
-			}
+		if(element !is ParadoxScriptStringExpressionElement) return true
+		if(!element.isExpression()) return true
+		val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return true
+		val type = config.expression.type
+		if(type == CwtDataType.Modifier) {
+			val name = element.value
+			val configGroup = config.info.configGroup
+			val project = configGroup.project
+			val keys = ParadoxModifierHandler.getModifierNameKeys(name)
+			val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
+			val localisation = keys.firstNotNullOfOrNull {
+				ParadoxLocalisationSearch.search(it, selector).find()
+			} ?: return true
+			val presentation = doCollect(localisation, editor, settings)
+			val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
+			val endOffset = element.endOffset
+			sink.addInlineElement(endOffset, true, finalPresentation, false)
 		}
 		return true
 	}
 	
-	private fun PresentationFactory.collectLocalisation(localisation: ParadoxLocalisationProperty, editor: Editor, settings: Settings): InlayPresentation? {
+	private fun PresentationFactory.doCollect(localisation: ParadoxLocalisationProperty, editor: Editor, settings: Settings): InlayPresentation? {
 		return ParadoxLocalisationTextHintsRenderer.render(localisation, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
 	}
 }

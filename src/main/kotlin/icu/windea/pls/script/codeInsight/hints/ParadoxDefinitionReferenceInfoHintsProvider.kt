@@ -17,74 +17,58 @@ import icu.windea.pls.script.psi.*
  */
 @Suppress("UnstableApiUsage")
 class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
-	companion object {
-		private val settingsKey: SettingsKey<NoSettings> = SettingsKey("ParadoxDefinitionReferenceInfoHintsSettingsKey")
-		private val keyExpressionTypes: Array<CwtDataType> = arrayOf(
-			CwtDataType.Definition,
-			CwtDataType.AliasName, //需要兼容alias
-			CwtDataType.AliasKeysField //需要兼容alias
-		)
-		private val valueExpressionTypes: Array<CwtDataType> = arrayOf(
-			CwtDataType.Definition,
-			CwtDataType.SingleAliasRight, //需要兼容single_alias
-			CwtDataType.AliasKeysField, //需要兼容alias
-			CwtDataType.AliasMatchLeft //需要兼容alias
-		)
-	}
-	
-	override val name: String get() = PlsBundle.message("script.hints.definitionReferenceInfo")
-	override val description: String get() = PlsBundle.message("script.hints.definitionReferenceInfo.description")
-	override val key: SettingsKey<NoSettings> get() = settingsKey
-	
-	override fun createSettings() = NoSettings()
-	
-	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
-		val resolved = when(element) {
-			is ParadoxScriptPropertyKey -> {
-				val config = ParadoxConfigHandler.getPropertyConfigs(element).firstOrNull()
-					?.takeIf { it.expression.type in keyExpressionTypes }
-					?: return true
-				ParadoxConfigHandler.resolveScriptExpression(element, null, config, config.expression, config.info.configGroup, true)
-			}
-			is ParadoxScriptString -> {
-				val config = ParadoxConfigHandler.getValueConfigs(element).firstOrNull()
-					?.takeIf { it.expression.type in valueExpressionTypes }
-					?: return true
-				ParadoxConfigHandler.resolveScriptExpression(element, null, config, config.expression, config.info.configGroup, false)
-			}
-			//这也是需要判断的
-			is ParadoxScriptInt -> {
-				val config = ParadoxConfigHandler.getValueConfigs(element).firstOrNull()
-					?.takeIf { it.expression.type in valueExpressionTypes }
-					?: return true
-				ParadoxConfigHandler.resolveScriptExpression(element, null, config, config.expression, config.info.configGroup, false)
-			}
-			else -> return true
-		}
-		if(resolved is ParadoxScriptDefinitionElement) {
-			val definitionInfo = resolved.definitionInfo
-			if(definitionInfo != null) {
-				val presentation = collectDefinition(definitionInfo)
-				val finalPresentation = presentation.toFinalPresentation(this, file.project)
-				val endOffset = element.endOffset
-				sink.addInlineElement(endOffset, true, finalPresentation, false)
-			}
-		}
-		return true
-	}
-	
-	private fun PresentationFactory.collectDefinition(definitionInfo: ParadoxDefinitionInfo): InlayPresentation {
-		val presentations: MutableList<InlayPresentation> = SmartList()
-		//省略definitionName
-		presentations.add(smallText(": "))
-		val typeConfig = definitionInfo.typeConfig
-		presentations.add(psiSingleReference(smallText(typeConfig.name)) { typeConfig.pointer.element })
-		val subtypeConfigs = definitionInfo.subtypeConfigs
-		for(subtypeConfig in subtypeConfigs) {
-			presentations.add(smallText(", "))
-			presentations.add(psiSingleReference(smallText(subtypeConfig.name)) { subtypeConfig.pointer.element })
-		}
-		return SequencePresentation(presentations)
-	}
+    companion object {
+        private val settingsKey: SettingsKey<NoSettings> = SettingsKey("ParadoxDefinitionReferenceInfoHintsSettingsKey")
+        private val expressionTypes: Array<CwtDataType> = arrayOf(
+            CwtDataType.Definition,
+            CwtDataType.AliasName, //需要兼容alias
+            CwtDataType.AliasKeysField, //需要兼容alias
+            CwtDataType.AliasMatchLeft, //需要兼容alias
+            CwtDataType.SingleAliasRight, //需要兼容single_alias
+        )
+    }
+    
+    override val name: String get() = PlsBundle.message("script.hints.definitionReferenceInfo")
+    override val description: String get() = PlsBundle.message("script.hints.definitionReferenceInfo.description")
+    override val key: SettingsKey<NoSettings> get() = settingsKey
+    
+    override fun createSettings() = NoSettings()
+    
+    override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
+        //这里需要兼容 ParadoxScriptInt
+        if(element !is ParadoxScriptExpressionElement) return true
+        if(element !is ParadoxScriptStringExpressionElement && element !is ParadoxScriptInt) return true
+        if(!element.isExpression()) return true
+        val config = ParadoxConfigHandler.getConfigs(element).firstOrNull()
+            ?.takeIf { it.expression.type in expressionTypes }
+            ?: return true
+        val configGroup = config.info.configGroup
+        val isKey = element is ParadoxScriptPropertyKey
+        val resolved = ParadoxConfigHandler.resolveScriptExpression(element, null, config, config.expression, configGroup, isKey)
+        if(resolved is ParadoxScriptDefinitionElement) {
+            val definitionInfo = resolved.definitionInfo
+            if(definitionInfo != null) {
+                val presentation = doCollect(definitionInfo)
+                val finalPresentation = presentation.toFinalPresentation(this, file.project)
+                val endOffset = element.endOffset
+                sink.addInlineElement(endOffset, true, finalPresentation, false)
+            }
+        }
+        return true
+    }
+    
+    private fun PresentationFactory.doCollect(definitionInfo: ParadoxDefinitionInfo): InlayPresentation {
+        val presentations: MutableList<InlayPresentation> = SmartList()
+        //省略definitionName
+        presentations.add(smallText(": "))
+        val typeConfig = definitionInfo.typeConfig
+        presentations.add(psiSingleReference(smallText(typeConfig.name)) { typeConfig.pointer.element })
+        val subtypeConfigs = definitionInfo.subtypeConfigs
+        for(subtypeConfig in subtypeConfigs) {
+            presentations.add(smallText(", "))
+            presentations.add(psiSingleReference(smallText(subtypeConfig.name)) { subtypeConfig.pointer.element })
+        }
+        return SequencePresentation(presentations)
+    }
 }
 

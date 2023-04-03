@@ -26,21 +26,21 @@ class ParadoxValueSetValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSetti
 	override fun createSettings() = NoSettings()
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
-		if(element is ParadoxScriptStringExpressionElement) {
-			val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return true
-			val type = config.expression.type
-			if(type == CwtDataType.Value || type == CwtDataType.ValueSet) {
-				val valueSetName = config.expression.value ?: return true
-				val presentation = collectInfo(valueSetName)
-				val finalPresentation = presentation.toFinalPresentation(this, file.project)
-				val endOffset = element.endOffset
-				sink.addInlineElement(endOffset, true, finalPresentation, false)
-			}
+		if(element !is ParadoxScriptStringExpressionElement) return true
+		if(!element.isExpression()) return true
+		val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return true
+		val type = config.expression.type
+		if(type == CwtDataType.Value || type == CwtDataType.ValueSet) {
+			val valueSetName = config.expression.value ?: return true
+			val presentation = doCollect(valueSetName)
+			val finalPresentation = presentation.toFinalPresentation(this, file.project)
+			val endOffset = element.endOffset
+			sink.addInlineElement(endOffset, true, finalPresentation, false)
 		}
 		return true
 	}
 	
-	private fun PresentationFactory.collectInfo(valueSetName: String): InlayPresentation {
+	private fun PresentationFactory.doCollect(valueSetName: String): InlayPresentation {
 		return smallText(": $valueSetName")
 	}
 }

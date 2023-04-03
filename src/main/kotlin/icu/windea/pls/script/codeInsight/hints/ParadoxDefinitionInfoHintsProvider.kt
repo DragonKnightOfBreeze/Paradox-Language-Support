@@ -29,7 +29,7 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings
 		if(element is ParadoxScriptProperty) {
 			val definitionInfo = element.definitionInfo
 			if(definitionInfo != null) {
-				val presentation = collectDefinition(definitionInfo)
+				val presentation = doCollect(definitionInfo)
 				val finalPresentation = presentation.toFinalPresentation(this, file.project)
 				val endOffset = element.propertyKey.endOffset
 				sink.addInlineElement(endOffset, true, finalPresentation, false)
@@ -38,7 +38,7 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings
 		return true
 	}
 	
-	private fun PresentationFactory.collectDefinition(definitionInfo: ParadoxDefinitionInfo): InlayPresentation {
+	private fun PresentationFactory.doCollect(definitionInfo: ParadoxDefinitionInfo): InlayPresentation {
 		val presentations: MutableList<InlayPresentation> = SmartList()
 		val name = definitionInfo.name
 		//如果definitionName和rootKey相同，则省略definitionName
