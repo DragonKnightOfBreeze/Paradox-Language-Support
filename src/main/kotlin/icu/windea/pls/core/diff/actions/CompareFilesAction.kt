@@ -26,6 +26,7 @@ import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.tool.*
 import java.awt.*
 import java.util.*
+import java.util.stream.*
 import javax.swing.*
 
 /**
@@ -74,10 +75,11 @@ class CompareFilesAction : ParadoxShowDiffAction() {
             runReadAction {
                 val selector = fileSelector(project, file).contextSensitive()
                 val result = ParadoxFilePathSearch.search(path, null, selector, ignoreLocale = true).findAll()
-                virtualFiles.addAll(result)
+                // 排除文件自身
+                virtualFiles.addAll(result.stream().filter{!Objects.equals(it.path, file.path)}.collect(Collectors.toSet()))
             }
         }, PlsBundle.message("diff.compare.files.collect.title"), true, project)
-        if(virtualFiles.size <= 1) {
+        if(virtualFiles.size == 0) {
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
                 PlsBundle.message("diff.compare.files.content.title.info.1"),
                 NotificationType.INFORMATION
