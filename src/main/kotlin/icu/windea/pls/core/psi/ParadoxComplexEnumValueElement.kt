@@ -75,7 +75,7 @@ class ParadoxComplexEnumValueElement(
             enumName == other.enumName &&
             project == other.project &&
             gameType == other.gameType &&
-            searchScopeType.findRoot(project, parent) == other.searchScopeType.findRoot(project, parent) 
+            searchScopeType.findRoot(project, parent) == other.searchScopeType.findRoot(other.project, other.parent) 
     }
     
     override fun hashCode(): Int {
