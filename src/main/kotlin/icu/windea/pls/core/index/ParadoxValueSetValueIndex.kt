@@ -13,6 +13,7 @@ import java.io.*
 
 object ParadoxValueSetValueIndex {
     class Data(
+        val marker: Boolean = true,
         val valueSetValueList: MutableList<ParadoxValueSetValueInfo> = mutableListOf()
     ) {
         val valueSetValues by lazy {
@@ -27,6 +28,7 @@ object ParadoxValueSetValueIndex {
     
     private val valueExternalizer: DataExternalizer<Data> = object : DataExternalizer<Data> {
         override fun save(storage: DataOutput, value: Data) {
+            storage.writeBoolean(value.marker)
             DataInputOutputUtil.writeSeq(storage, value.valueSetValueList) {
                 IOUtil.writeUTF(storage, it.name)
                 IOUtil.writeUTF(storage, it.valueSetName)
@@ -36,6 +38,7 @@ object ParadoxValueSetValueIndex {
         }
         
         override fun read(storage: DataInput): Data {
+            val marker = storage.readBoolean()
             val valueSetValueInfos = DataInputOutputUtil.readSeq(storage) {
                 val name = IOUtil.readUTF(storage)
                 val valueSetName = IOUtil.readUTF(storage)
@@ -43,7 +46,7 @@ object ParadoxValueSetValueIndex {
                 val gameType = storage.readByte().toGameType()
                 ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, gameType)
             }
-            return Data(valueSetValueInfos)
+            return Data(marker, valueSetValueInfos)
         }
         
         private fun ReadWriteAccessDetector.Access.toByte() = this.ordinal
@@ -60,11 +63,12 @@ object ParadoxValueSetValueIndex {
     }
     
     private const val id = "paradox.valueSetValue.index"
-    private const val version = 1 //0.9.6
+    private const val version = 2 //0.9.7
     
     private val gist: PsiFileGist<Data> = GistManager.getInstance().newPsiFileGist(id, version, valueExternalizer) builder@{ file ->
         ProgressManager.checkCanceled()
         if(file !is ParadoxScriptFile) return@builder Data()
+        if(file.fileInfo == null) return@builder Data()
         val data = Data()
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -160,7 +164,7 @@ object ParadoxValueSetValueIndex {
 //    }
 //    
 //    override fun getInputFilter(): FileBasedIndex.InputFilter {
-//        return FileBasedIndex.InputFilter { it.fileInfo != null && !ParadoxFileManager.isLightFile(it) && it.fileType == ParadoxScriptFileType }
+//        return FileBasedIndex.InputFilter { it.fileType == ParadoxScriptFileType && it.fileInfo != null }
 //    }
 //    
 //    override fun dependsOnFileContent(): Boolean {

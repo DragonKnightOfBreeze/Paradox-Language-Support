@@ -13,6 +13,7 @@ import java.io.*
 
 object ParadoxComplexEnumValueIndex {
     class Data(
+        val marker: Boolean = true,
         val complexEnumValueList: MutableList<ParadoxComplexEnumValueInfo> = mutableListOf()
     ) {
         val complexEnumValues by lazy {
@@ -27,6 +28,7 @@ object ParadoxComplexEnumValueIndex {
     
     private val valueExternalizer: DataExternalizer<Data> = object : DataExternalizer<Data> {
         override fun save(storage: DataOutput, value: Data) {
+            storage.writeBoolean(value.marker)
             DataInputOutputUtil.writeSeq(storage, value.complexEnumValueList) {
                 IOUtil.writeUTF(storage, it.name)
                 IOUtil.writeUTF(storage, it.enumName)
@@ -36,6 +38,7 @@ object ParadoxComplexEnumValueIndex {
         }
         
         override fun read(storage: DataInput): Data {
+            val marker = storage.readBoolean()
             val complexEnumValueInfos = DataInputOutputUtil.readSeq(storage) {
                 val name = IOUtil.readUTF(storage)
                 val enumName = IOUtil.readUTF(storage)
@@ -43,7 +46,7 @@ object ParadoxComplexEnumValueIndex {
                 val gameType = storage.readByte().toGameType()
                 ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, gameType)
             }
-            return Data(complexEnumValueInfos)
+            return Data(marker, complexEnumValueInfos)
         }
         
         private fun ReadWriteAccessDetector.Access.toByte() = this.ordinal
@@ -60,11 +63,12 @@ object ParadoxComplexEnumValueIndex {
     }
     
     private const val id = "paradox.complexEnumValue.index"
-    private const val version = 1 //0.9.6
+    private const val version = 2 //0.9.7
     
     private val gist: PsiFileGist<Data> = GistManager.getInstance().newPsiFileGist(id, version, valueExternalizer) builder@{ file ->
         ProgressManager.checkCanceled()
         if(file !is ParadoxScriptFile) return@builder Data()
+        if(file.fileInfo == null) return@builder Data()
         if(!matchesPath(file)) return@builder Data()
         val data = Data()
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
@@ -173,7 +177,7 @@ object ParadoxComplexEnumValueIndex {
 //    }
 //    
 //    override fun getInputFilter(): FileBasedIndex.InputFilter {
-//        return FileBasedIndex.InputFilter { it.fileInfo != null && !ParadoxFileManager.isLightFile(it) && it.fileType == ParadoxScriptFileType }
+//        return FileBasedIndex.InputFilter { it.fileType == ParadoxScriptFileType && it.fileInfo != null }
 //    }
 //    
 //    override fun dependsOnFileContent(): Boolean {
