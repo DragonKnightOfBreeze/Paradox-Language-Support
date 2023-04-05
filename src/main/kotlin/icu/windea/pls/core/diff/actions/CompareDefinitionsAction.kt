@@ -45,7 +45,7 @@ import javax.swing.*
 @Suppress("ComponentNotRegistered", "DEPRECATION")
 class CompareDefinitionsAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
-        val file =  e.getData(CommonDataKeys.VIRTUAL_FILE)
+        val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
             ?: return null
         if(file.isDirectory) return null
         if(file.fileType != ParadoxScriptFileType) return null
@@ -68,6 +68,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     }
     
     override fun update(e: AnActionEvent) {
+        //出于性能原因，目前不在update方法中判断是否不存在重载/被重载的情况
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
@@ -79,25 +80,25 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             val editor = e.editor ?: return
             val offset = editor.caretModel.offset
             val psiFile = file.toPsiFile<PsiFile>(project) ?: return
-            definition = findElement(psiFile, offset) ?: return
+            definition = findElement(psiFile, offset)
         }
-        //val definitionInfo = definition.definitionInfo ?: return
-        //val selector = definitionSelector(project, file)
-        //val multiple = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, project, selector).hasMultipleResults()
-        //if(!multiple) return //忽略不存在重载/被重载的情况 - 出于性能原因，目前不在update方法中判断
-        presentation.isEnabledAndVisible = true
+        presentation.isEnabledAndVisible = definition != null
     }
     
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
-        val project = e.project ?: return null
-        val file = findFile(e) ?: return null
-        //if(file.isDirectory) return null
-        if(file.fileType != ParadoxScriptFileType) return null
-        //val fileInfo = file.fileInfo ?: return
-        //if(fileInfo.entryPath.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
-        val offset = e.editor?.caretModel?.offset ?: return null
-        val psiFile = file.toPsiFile<PsiFile>(project) ?: return null
-        val definition = findElement(psiFile, offset) ?: return null
+        var definition = findFastElement(e)
+        if(definition == null) {
+            val project = e.project ?: return null
+            val file = findFile(e) ?: return null
+            val editor = e.editor ?: return null
+            val offset = editor.caretModel.offset
+            val psiFile = file.toPsiFile<PsiFile>(project) ?: return null
+            definition = findElement(psiFile, offset)
+        }
+        if(definition == null) return null
+        val psiFile = definition.containingFile
+        val file = psiFile.virtualFile
+        val project = psiFile.project
         val definitionInfo = definition.definitionInfo ?: return null
         val definitions = Collections.synchronizedList(mutableListOf<ParadoxScriptDefinitionElement>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
@@ -242,12 +243,13 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         }
         
         override fun createPopup(e: AnActionEvent): JBPopup {
-            return JBPopupFactory.getInstance().createListPopup(Popup(e))
+            return JBPopupFactory.getInstance().createListPopup(Popup())
         }
         
-        private inner class Popup(
-            val e: AnActionEvent
-        ) : BaseListPopupStep<DiffRequestProducer>(PlsBundle.message("diff.compare.definitions.popup.title"), chain.requests) {
+        private inner class Popup : BaseListPopupStep<DiffRequestProducer>(
+            PlsBundle.message("diff.compare.definitions.popup.title"),
+            chain.requests
+        ) {
             init {
                 defaultOptionIndex = defaultSelection
             }

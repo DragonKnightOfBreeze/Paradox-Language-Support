@@ -51,25 +51,17 @@ class CompareFilesAction : ParadoxShowDiffAction() {
     }
     
     override fun update(e: AnActionEvent) {
+        //出于性能原因，目前不在update方法中判断是否不存在重载/被重载的情况
         val presentation = e.presentation
         presentation.isEnabledAndVisible = false
-        val project = e.project ?: return
         val file = findFile(e)
-        presentation.isVisible = true
-        //val selector = fileSelector(project, file)
-        //val multiple = ParadoxFilePathSearch.search(path, project, selector).hasMultipleResults()
-        //if(!multiple) return //忽略不存在重载/被重载的情况 - 出于性能原因，目前不在update方法中判断
-        presentation.isEnabled = true
+        presentation.isEnabledAndVisible = file != null
     }
     
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
         val project = e.project ?: return null
         val file = findFile(e) ?: return null
-        //if(file.isDirectory) return null
-        val fileInfo = file.fileInfo ?: return null
-        //if(fileInfo.entryPath.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
-        val gameType = fileInfo.rootInfo.gameType
-        val path = fileInfo.path.path
+        val path = file.fileInfo?.path?.path ?: return null
         val virtualFiles = Collections.synchronizedList(mutableListOf<VirtualFile>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
             runReadAction {
@@ -205,12 +197,13 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         }
         
         override fun createPopup(e: AnActionEvent): JBPopup {
-            return JBPopupFactory.getInstance().createListPopup(Popup(e))
+            return JBPopupFactory.getInstance().createListPopup(Popup())
         }
         
-        private inner class Popup(
-            val e: AnActionEvent
-        ) : BaseListPopupStep<DiffRequestProducer>(PlsBundle.message("diff.compare.files.popup.title"), chain.requests) {
+        private inner class Popup : BaseListPopupStep<DiffRequestProducer>(
+            PlsBundle.message("diff.compare.files.popup.title"),
+            chain.requests
+        ) {
             init {
                 defaultOptionIndex = defaultSelection
             }

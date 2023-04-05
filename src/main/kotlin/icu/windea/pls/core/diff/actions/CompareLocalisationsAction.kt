@@ -68,6 +68,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
     }
     
     override fun update(e: AnActionEvent) {
+        //出于性能原因，目前不在update方法中判断是否不存在重载/被重载的情况
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
@@ -79,22 +80,25 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             val editor = e.editor ?: return
             val offset = editor.caretModel.offset
             val psiFile = file.toPsiFile<PsiFile>(project) ?: return
-            localisation = findElement(psiFile, offset) ?: return
+            localisation = findElement(psiFile, offset)
         }
-        //val localisationName = localisation.name
-        //val selector = localisationSelector(project, file)
-        //val multiple = ParadoxLocalisationSearch.search(localisationName, project, selector).hasMultipleResults()
-        //if(!multiple) return //忽略不存在重载/被重载的情况 - 出于性能原因，目前不在update方法中判断
-        presentation.isEnabledAndVisible = true
+        presentation.isEnabledAndVisible = localisation != null
     }
     
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
-        val project = e.project ?: return null
-        val file = findFile(e) ?: return null
-        if(file.fileType != ParadoxLocalisationFileType) return null
-        val offset = e.editor?.caretModel?.offset ?: return null
-        val psiFile = file.toPsiFile<PsiFile>(project) ?: return null
-        val localisation = findElement(psiFile, offset) ?: return null
+        var localisation = findFastElement(e)
+        if(localisation == null) {
+            val project = e.project ?: return null
+            val file = findFile(e) ?: return null
+            val editor = e.editor ?: return null
+            val offset = editor.caretModel.offset
+            val psiFile = file.toPsiFile<PsiFile>(project) ?: return null
+            localisation = findElement(psiFile, offset)
+        }
+        if(localisation == null) return null
+        val psiFile = localisation.containingFile
+        val file = psiFile.virtualFile
+        val project = psiFile.project
         val localisationName = localisation.name
         val localisations = Collections.synchronizedList(mutableListOf<ParadoxLocalisationProperty>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
@@ -173,9 +177,9 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
     @Suppress("UNUSED_PARAMETER")
     private fun createTempContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, localisation: ParadoxLocalisationProperty): DocumentContent? {
         //创建临时文件
-        val file = localisation.containingFile ?: return null
-        val localeConfig = localisation.localeConfig ?: preferredParadoxLocale()
+        //val file = localisation.containingFile ?: return null
         val fileInfo = documentContent.highlightFile?.fileInfo ?: return null
+        val localeConfig = localisation.localeConfig ?: preferredParadoxLocale()
         val text = localisation.text
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), text, fileInfo) }
         tempFile.putUserData(PlsKeys.injectedLocaleConfigKey, localeConfig)
@@ -241,12 +245,13 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         }
         
         override fun createPopup(e: AnActionEvent): JBPopup {
-            return JBPopupFactory.getInstance().createListPopup(Popup(e))
+            return JBPopupFactory.getInstance().createListPopup(Popup())
         }
         
-        private inner class Popup(
-            val e: AnActionEvent
-        ) : BaseListPopupStep<DiffRequestProducer>(PlsBundle.message("diff.compare.localisations.popup.title"), chain.requests) {
+        private inner class Popup : BaseListPopupStep<DiffRequestProducer>(
+            PlsBundle.message("diff.compare.localisations.popup.title"),
+            chain.requests
+        ) {
             init {
                 defaultOptionIndex = defaultSelection
             }
