@@ -58,7 +58,9 @@ class ParadoxWithSearchScopeTypeSelector<T>(
             context is PsiElement -> type.findRoot(project, context)
             context is ParadoxScriptExpressionInfo -> {
                 val element = context.file?.findElementAt(context.elementOffset)
-                element?.parentOfType<ParadoxScriptExpressionElement>()
+                val expressionElement = element?.parentOfType<ParadoxScriptExpressionElement>()
+                if(expressionElement == null) return null
+                type.findRoot(project, expressionElement)
             }
             else -> null
         }
