@@ -7,7 +7,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.search.scopes.*
+import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
@@ -38,7 +38,7 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
         var scopeContext: ParadoxScopeContext? = null
         var hasConflict = false
         //optimize search scope
-        val searchScope = runReadAction { ParadoxGlobalSearchScope.fromElement(definition) }
+        val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?.withFilePath("common/on_actions", "txt")
             ?: return null
         ReferencesSearch.search(definition, searchScope).processQuery p@{ ref ->

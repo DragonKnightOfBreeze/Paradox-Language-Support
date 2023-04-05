@@ -8,7 +8,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.hierarchy.ParadoxDefinitionHierarchyNodeDescriptor.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 
 /**
  * @property withSubtypes 是否在层级树中显示定义的子类型。
@@ -41,7 +41,7 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
                     val descriptors = mutableListOf<HierarchyNodeDescriptor>()
                     val type = typeConfig.name
                     val contextElement = elementPointer.element
-                    val selector = definitionSelector(myProject, contextElement)
+                    val selector = definitionSelector(myProject, contextElement).withSearchScopeType(getScopeType())
                     val definitions = ParadoxDefinitionSearch.search(type, selector).findAll()
                     val element = elementPointer.element
                     definitions.forEach { definition ->
@@ -55,7 +55,7 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
                 val descriptors = mutableListOf<HierarchyNodeDescriptor>()
                 val type = "${typeConfig.name}.${descriptor.name}"
                 val contextElement = elementPointer.element
-                val selector = definitionSelector(myProject, contextElement)
+                val selector = definitionSelector(myProject, contextElement).withSearchScopeType(getScopeType())
                 val definitions = ParadoxDefinitionSearch.search(type, selector).findAll()
                 val element = elementPointer.element
                 definitions.forEach { definition ->
@@ -68,7 +68,7 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
                 val descriptors = mutableListOf<HierarchyNodeDescriptor>()
                 val type = typeConfig.name
                 val contextElement = elementPointer.element
-                val selector = definitionSelector(myProject, contextElement)
+                val selector = definitionSelector(myProject, contextElement).withSearchScopeType(getScopeType())
                 val definitions = ParadoxDefinitionSearch.search(type, selector).findAll()
                 val element = elementPointer.element
                 definitions.forEach { definition ->
@@ -80,5 +80,9 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
             }
             Type.Definition -> HierarchyNodeDescriptor.EMPTY_ARRAY
         }
+    }
+    
+    private fun getScopeType(): String {
+        return ParadoxHierarchyBrowserSettings.getInstance(myProject).scopeType
     }
 }

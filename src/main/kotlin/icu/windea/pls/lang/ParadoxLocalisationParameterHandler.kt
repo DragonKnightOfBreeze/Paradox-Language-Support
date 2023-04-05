@@ -9,7 +9,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.search.scopes.*
+import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
@@ -33,7 +33,7 @@ object ParadoxLocalisationParameterHandler {
     
     private fun doGetParameters(element: ParadoxLocalisationProperty): Set<String>? {
         val result = mutableSetOf<String>()
-        val searchScope = runReadAction { ParadoxGlobalSearchScope.fromElement(element) }
+        val searchScope = runReadAction { ParadoxSearchScope.fromElement(element) }
             ?.withFileTypes(ParadoxScriptFileType)
             ?: return null
         ProgressManager.getInstance().runProcess({

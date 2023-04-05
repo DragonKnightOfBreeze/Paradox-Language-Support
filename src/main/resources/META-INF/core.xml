@@ -54,6 +54,7 @@
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
     <lang.foldingBuilder language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.core.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
     
+    <projectService serviceImplementation="icu.windea.pls.core.hierarchy.ParadoxHierarchyBrowserSettings"/>
     <typeHierarchyProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.hierarchy.ParadoxDefinitionHierarchyProvider"/>
     
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFilePathIndex"/>
@@ -69,15 +70,15 @@
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxSyncedLocalisationNameIndex"/>
     
     <searchScopesProvider implementation="icu.windea.pls.core.search.ParadoxSearchScopeProvider"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxScriptedVariableImplementationsSearch"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxDefinitionImplementationsSearch"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxLocalisationImplementationsSearch"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxFileImplementationsSearch"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxScriptedVariableImplementationsSearch"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxDefinitionImplementationsSearch"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxLocalisationImplementationsSearch"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxFileImplementationsSearch"/>
     
-    <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxDefinitionUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxLocalisationUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.core.search.usages.CwtConfigUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxFileUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.core.search.usage.ParadoxDefinitionUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.core.search.usage.ParadoxLocalisationUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.core.search.usage.CwtConfigUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.core.search.usage.ParadoxFileUsagesSearcher"/>
     
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
     

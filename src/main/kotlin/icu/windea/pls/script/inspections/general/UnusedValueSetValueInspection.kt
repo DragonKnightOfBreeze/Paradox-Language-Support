@@ -11,7 +11,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.search.scopes.*
+import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
@@ -62,7 +62,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
                     val isUsed = if(used == null) {
                         ProgressManager.checkCanceled()
                         //optimize search scope
-                        val searchScope = runReadAction { ParadoxGlobalSearchScope.fromElement(element) }
+                        val searchScope = runReadAction { ParadoxSearchScope.fromElement(element) }
                             ?.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
 							?: return
                         val r = ReferencesSearch.search(resolved, searchScope).processQuery {

@@ -2,7 +2,6 @@ package icu.windea.pls.extension.diagram.provider
 
 import com.intellij.diagram.*
 import com.intellij.diagram.presentation.*
-import com.intellij.diagram.settings.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -12,7 +11,7 @@ import com.intellij.ui.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.extras.*
@@ -25,7 +24,6 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import icu.windea.pls.tool.localisation.*
 import icu.windea.pls.tool.script.*
-import java.awt.*
 import java.util.concurrent.*
 import javax.swing.*
 

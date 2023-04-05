@@ -2,8 +2,8 @@ package icu.windea.pls.core.search
 
 import com.intellij.util.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.search.selectors.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.core.search.selector.chained.*
 import java.util.concurrent.atomic.*
 
 /**

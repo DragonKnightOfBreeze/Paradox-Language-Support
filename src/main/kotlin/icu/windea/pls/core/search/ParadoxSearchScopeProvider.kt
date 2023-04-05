@@ -6,7 +6,7 @@ import com.intellij.openapi.roots.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.search.scopes.*
+import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.model.*
 
 /**
@@ -30,10 +30,10 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
                 val settings = getProfilesSettings().gameSettings.get(rootFile.path)
                 if(settings == null) return emptyList()
                 val gameDirectory = rootFile
-                val modDependencyDirectories = ParadoxGlobalSearchScope.getModDependencyDirectories(settings)
+                val modDependencyDirectories = ParadoxSearchScope.getDependencyDirectories(settings)
                 val result = mutableListOf<SearchScope>()
-                result.add(ParadoxGameScope(project, rootFile))
-                result.add(ParadoxGameWithDependenciesScope(project, gameDirectory, modDependencyDirectories))
+                result.add(ParadoxGameSearchScope(project, rootFile))
+                result.add(ParadoxGameWithDependenciesSearchScope(project, gameDirectory, modDependencyDirectories))
                 return result
             }
             rootInfo is ParadoxModRootInfo -> {
@@ -41,12 +41,12 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
                 if(settings == null) return emptyList()
                 val modDirectory = rootFile
                 val gameDirectory = settings.gameDirectory?.toVirtualFile(false)
-                val modDependencyDirectories = ParadoxGlobalSearchScope.getModDependencyDirectories(settings, modDirectory)
+                val modDependencyDirectories = ParadoxSearchScope.getDependencyDirectories(settings, modDirectory)
                 val result = mutableListOf<SearchScope>()
-                result.add(ParadoxModScope(project, modDirectory))
-                if(gameDirectory != null) result.add(ParadoxGameScope(project, gameDirectory))
-                result.add(ParadoxModAndGameScope(project, modDirectory, gameDirectory))
-                result.add(ParadoxModWithDependenciesScope(project, modDirectory, gameDirectory, modDependencyDirectories))
+                result.add(ParadoxModSearchScope(project, modDirectory))
+                if(gameDirectory != null) result.add(ParadoxGameSearchScope(project, gameDirectory))
+                result.add(ParadoxModAndGameSearchScope(project, modDirectory, gameDirectory))
+                result.add(ParadoxModWithDependenciesSearchScope(project, modDirectory, gameDirectory, modDependencyDirectories))
                 return result
             }
         }

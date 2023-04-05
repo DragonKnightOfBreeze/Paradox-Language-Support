@@ -6,7 +6,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.model.ParadoxLocalisationCategory.*
 import icu.windea.pls.lang.parameter.*

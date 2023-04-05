@@ -4,6 +4,7 @@ import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.actionSystem.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.core.hierarchy.*
 
 class ViewDefinitionHierarchy1Action: ChangeHierarchyViewActionBase(
     PlsBundle.message("action.view.definition.hierarchy.1"),

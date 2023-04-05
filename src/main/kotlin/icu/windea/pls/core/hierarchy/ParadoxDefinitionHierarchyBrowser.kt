@@ -1,14 +1,20 @@
 package icu.windea.pls.core.hierarchy
 
+import com.intellij.ide.*
 import com.intellij.ide.hierarchy.*
 import com.intellij.ide.util.treeView.*
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ex.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.ui.*
+import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.script.psi.*
+import java.awt.*
 import java.text.*
 import java.util.function.*
 import javax.swing.*
@@ -104,6 +110,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
         actionGroup.add(ViewDefinitionHierarchy1Action())
         actionGroup.add(ViewDefinitionHierarchy2Action())
         actionGroup.add(AlphaSortAction())
+        actionGroup.add(ChangeScopeAction())
     }
     
     override fun getActionPlace(): String {
@@ -112,6 +119,55 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
     
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
+    }
+    
+    //com.intellij.ide.hierarchy.HierarchyBrowserBaseEx.ChangeScopeAction
+    
+    inner class ChangeScopeAction : ComboBoxAction() {
+        override fun getActionUpdateThread(): ActionUpdateThread {
+            return ActionUpdateThread.EDT
+        }
+        
+        override fun update(e: AnActionEvent) {
+            val presentation = e.presentation
+            val project = e.project ?: return
+            val scopeType = ParadoxHierarchyBrowserSettings.getInstance(project).scopeType
+            presentation.text = ParadoxSearchScopeTypes.get(scopeType).text
+        }
+        
+        override fun createPopupActionGroup(button: JComponent, dataContext: DataContext): DefaultActionGroup {
+            val project = myProject
+            val element = hierarchyBase
+            val group = DefaultActionGroup()
+            for(scopeType in ParadoxSearchScopeTypes.getScopeTypes(project, element)) {
+                group.add(MenuAction(scopeType))
+            }
+            return group
+        }
+        
+        override fun createCustomComponent(presentation: Presentation, place: String): JComponent {
+            val panel = JPanel(GridBagLayout())
+            panel.add(
+                JLabel(IdeBundle.message("label.scope")),
+                GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, JBUI.insetsLeft(5), 0, 0)
+            )
+            panel.add(
+                super.createCustomComponent(presentation, place),
+                GridBagConstraints(1, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, JBUI.emptyInsets(), 0, 0)
+            )
+            return panel
+        }
+        
+        private inner class MenuAction(val scopeType: ParadoxSearchScopeType) : AnAction(scopeType.text) {
+            override fun actionPerformed(e: AnActionEvent) {
+                val project = e.project ?: return
+                ParadoxHierarchyBrowserSettings.getInstance(project).scopeType = scopeType.id
+                
+                // invokeLater is called to update state of button before long tree building operation
+                // scope is kept per type so other builders don't need to be refreshed
+                ApplicationManager.getApplication().invokeLater({ doRefresh(true) }) { isDisposed }
+            }
+        }
     }
 }
 

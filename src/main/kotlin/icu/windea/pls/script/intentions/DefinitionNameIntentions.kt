@@ -12,7 +12,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
@@ -53,7 +53,7 @@ abstract class DefinitionNameIntention : IntentionAction, PriorityAction, Iconab
 
 /**
  * 为表示定义名称的字符串提供查找使用的功能的意向。
- * @see icu.windea.pls.core.search.usages.ParadoxDefinitionUsagesSearcher
+ * @see icu.windea.pls.core.search.usage.ParadoxDefinitionUsagesSearcher
  */
 class DefinitionNameFindUsagesIntention : DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.findUsages")
@@ -65,7 +65,7 @@ class DefinitionNameFindUsagesIntention : DefinitionNameIntention() {
 
 /**
  * 为表示定义名称的字符串提供导航到实现的功能的意向。
- * @see icu.windea.pls.core.search.implementations.ParadoxDefinitionImplementationsSearch
+ * @see icu.windea.pls.core.search.implementation.ParadoxDefinitionImplementationsSearch
  */
 class DefinitionNameGotoImplementationsIntention: DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.gotoImplementations")
