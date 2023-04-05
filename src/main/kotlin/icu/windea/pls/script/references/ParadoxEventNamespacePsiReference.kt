@@ -31,12 +31,11 @@ class ParadoxEventNamespacePsiReference(
 		val project = definitionInfo.project
 		val name = element.value.substringBefore('.')
 		val selector = definitionSelector(project, event).contextSensitive()
-		val query = ParadoxDefinitionSearch.search(name, "event_namespace", selector)
-		val eventNamespace = query.find()
+		val eventNamespace = ParadoxDefinitionSearch.search(name, "event_namespace", selector).find()
 		return eventNamespace
 	}
 	
-	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {		
+	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 		val element = element
 		val event = event.element ?: return ResolveResult.EMPTY_ARRAY
 		val definitionInfo = event.definitionInfo ?: return ResolveResult.EMPTY_ARRAY
@@ -47,8 +46,7 @@ class ParadoxEventNamespacePsiReference(
 		val project = definitionInfo.project
 		val name = element.value.substringBefore('.')
 		val selector = definitionSelector(project, event).contextSensitive()
-		val query = ParadoxDefinitionSearch.search(name, "event_namespace", selector)
-		val eventNamespaces = query.findAll()
+		val eventNamespaces = ParadoxDefinitionSearch.search(name, "event_namespace", selector).findAll()
 		result.addAll(eventNamespaces)
 		return result.mapToArray { PsiElementResolveResult(it) }
 	}

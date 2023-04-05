@@ -46,11 +46,10 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 			context.put(PlsCompletionKeys.isKeyKey, isKey)
 			//排除正在输入的那一个
 			val selector = definitionSelector(project, file).contextSensitive()
-				.filterBy { rootKey == null || (it is ParadoxScriptProperty && it.name.equals(rootKey, true))}
+				.filterBy { rootKey == null || (it is ParadoxScriptProperty && it.name.equals(rootKey, true)) }
 				.notSamePosition(currentElement)
 				.distinctByName()
-			val query = ParadoxDefinitionSearch.search(type, selector)
-			query.processQuery { processDefinition(context, result, it) }
+			ParadoxDefinitionSearch.search(type, selector).processQuery { processDefinition(context, result, it) }
 		}
 		
 		when {

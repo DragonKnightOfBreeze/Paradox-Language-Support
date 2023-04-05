@@ -9,3 +9,4 @@ fun complexEnumValueSelector(project: Project, context: Any? = null) = ParadoxCo
 
 //fun ParadoxComplexEnumValueSelector.declarationOnly() = filterBy { ParadoxComplexEnumValueHandler.isDeclaration(it) }
 
+fun ParadoxComplexEnumValueSelector.distinctByName() = distinctBy { it.name }

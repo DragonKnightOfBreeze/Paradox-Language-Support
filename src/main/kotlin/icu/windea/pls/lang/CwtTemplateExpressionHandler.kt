@@ -155,8 +155,7 @@ object CwtTemplateExpressionHandler {
             CwtDataType.Definition -> {
                 val typeExpression = snippetExpression.value ?: return
                 val selector = definitionSelector(project, contextElement).contextSensitive().distinctByName()
-                val definitionQuery = ParadoxDefinitionSearch.search(typeExpression, selector)
-                definitionQuery.processQuery { definition ->
+                ParadoxDefinitionSearch.search(typeExpression, selector).processQuery { definition ->
                     val name = definition.definitionInfo?.name ?: return@processQuery true
                     doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                     true
@@ -183,6 +182,7 @@ object CwtTemplateExpressionHandler {
                     val selector = complexEnumValueSelector(project, contextElement)
                         //.withSearchScopeType(searchScope, contextElement)
                         .contextSensitive()
+                        .distinctByName()
                     ParadoxComplexEnumValueSearch.search(enumName, selector).processQuery { info ->
                         val name = info.name
                         doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
@@ -201,9 +201,8 @@ object CwtTemplateExpressionHandler {
                     doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                 }
                 ProgressManager.checkCanceled()
-                val selector = valueSetValueSelector(project, contextElement)
-                val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, selector)
-                valueSetValueQuery.processQuery { info ->
+                val selector = valueSetValueSelector(project, contextElement).distinctByName()
+                ParadoxValueSetValueSearch.search(valueSetName, selector).processQuery { info ->
                     //去除后面的作用域信息
                     doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + info.name)
                     true
