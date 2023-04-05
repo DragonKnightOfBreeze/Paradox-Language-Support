@@ -2,12 +2,16 @@ package icu.windea.pls.core.index
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.gist.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
@@ -25,6 +29,8 @@ object ParadoxValueSetValueIndex {
             }
         }
     }
+    
+    val EmptyData = Data(true, mutableListOf())
     
     private val valueExternalizer: DataExternalizer<Data> = object : DataExternalizer<Data> {
         override fun save(storage: DataOutput, value: Data) {
@@ -65,14 +71,17 @@ object ParadoxValueSetValueIndex {
     }
     
     private const val id = "paradox.valueSetValue.index"
-    private const val version = 3 //0.9.7
+    private const val version = 4 //0.9.7
     
-    private val gist: PsiFileGist<Data> = GistManager.getInstance().newPsiFileGist(id, version, valueExternalizer) builder@{ file ->
+    //这里不能使用PsiFileGist，否则可能会出现应当可以解析但有时无法解析的情况
+    
+    private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(id, version, valueExternalizer) builder@{ project, file ->
         ProgressManager.checkCanceled()
-        if(file !is ParadoxScriptFile) return@builder Data()
-        if(file.fileInfo == null) return@builder Data()
+        if(file.fileType != ParadoxScriptFileType) return@builder EmptyData
+        if(file.fileInfo == null) return@builder EmptyData
+        val psiFile = file.toPsiFile<ParadoxScriptFile>(project) ?: return@builder EmptyData
         val data = Data()
-        file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+        psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if(element is ParadoxScriptStringExpressionElement) {
                     ParadoxValueSetValueHandler.getInfo(element)?.let { data.valueSetValueList.add(it) }
@@ -83,8 +92,8 @@ object ParadoxValueSetValueIndex {
         data
     }
     
-    fun getData(valueSetName: String, file: PsiFile): Map<String, ParadoxValueSetValueInfo>? {
-        return gist.getFileData(file).valueSetValues[valueSetName]
+    fun getData(valueSetName: String, file: VirtualFile, project: Project): Map<String, ParadoxValueSetValueInfo>? {
+        return gist.getFileData(project, file).valueSetValues[valueSetName]
     }
 }
 
