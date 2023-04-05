@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
 object ParadoxSearchScopeTypes {
     private val map = mutableMapOf<String, ParadoxSearchScopeType>()
     
-    fun get(id: String) = map.get(id) ?: All
+    fun get(id: String?) = if(id != null) map.get(id) ?: All else All
     
     fun getScopeTypes(project: Project, context: PsiElement?): List<ParadoxSearchScopeType> {
         return doGetScopeTypes(project, context) ?: listOf(All)
