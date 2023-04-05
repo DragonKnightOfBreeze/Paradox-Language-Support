@@ -10,6 +10,40 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxSearchScopeTypes {
+    private val map = mutableMapOf<String, ParadoxSearchScopeType>()
+    
+    fun get(id: String) = map.get(id) ?: All
+    
+    fun getScopeTypes(project: Project, context: PsiElement?): List<ParadoxSearchScopeType> {
+        return doGetScopeTypes(project, context) ?: listOf(All)
+    }
+    
+    private fun doGetScopeTypes(project: Project, context: PsiElement?): List<ParadoxSearchScopeType>? {
+        if(context == null) return null
+        val result = mutableListOf<ParadoxSearchScopeType>()
+        val file = context.containingFile
+        val fileInfo = file.fileInfo ?: return null
+        result.add(File)
+        if(ProjectFileIndex.getInstance(project).isInContent(file.virtualFile)) {
+            val rootInfo = fileInfo.rootInfo
+            when(rootInfo) {
+                is ParadoxModRootInfo -> {
+                    result.add(Mod)
+                    result.add(ModAndGame)
+                    result.add(ModWithDependencies)
+                }
+                is ParadoxGameRootInfo -> {
+                    result.add(Game)
+                    result.add(GameWithDependencies)
+                }
+            }
+        }
+        result.add(All)
+        return result
+    }
+    
+    //scope types
+    
     val Definition = object : ParadoxSearchScopeType("definition", PlsBundle.message("search.scope.type.name.definition")) {
         override fun findRoot(project: Project, context: PsiElement): PsiElement? {
             return context.findParentDefinition()
@@ -59,36 +93,4 @@ object ParadoxSearchScopeTypes {
     val All = object : ParadoxSearchScopeType("all", PlsBundle.message("search.scope.type.name.all")) {
         
     }.also { map.put(it.id, it) }
-    
-    private val map = mutableMapOf<String, ParadoxSearchScopeType>()
-    
-    fun get(id: String) = map.get(id) ?: All
-    
-    fun getScopeTypes(project: Project, context: PsiElement?): List<ParadoxSearchScopeType> {
-        return doGetScopeTypes(project, context) ?: listOf(All)
-    }
-    
-    private fun doGetScopeTypes(project: Project, context: PsiElement?): List<ParadoxSearchScopeType>? {
-        if(context == null) return null
-        val result = mutableListOf<ParadoxSearchScopeType>()
-        val file = context.containingFile
-        val fileInfo = file.fileInfo ?: return null
-        result.add(File)
-        if(ProjectFileIndex.getInstance(project).isInContent(file.virtualFile)) {
-            val rootInfo = fileInfo.rootInfo
-            when(rootInfo) {
-                is ParadoxModRootInfo -> {
-                    result.add(Mod)
-                    result.add(ModAndGame)
-                    result.add(ModWithDependencies)
-                }
-                is ParadoxGameRootInfo -> {
-                    result.add(Game)
-                    result.add(GameWithDependencies)
-                }
-            }
-        }
-        result.add(All)
-        return result
-    }
 }
