@@ -18,12 +18,12 @@ class ParadoxLocalisationImplementationTextSelectioner: ImplementationTextSelect
 				findTextStartOffsetIncludeComment(element) { it.parent is ParadoxScriptRootBlock }
 			}
 			else -> {
-				element.textRange.startOffset
+				element.startOffset
 			}
 		}
 	}
 	
 	override fun getTextEndOffset(element: PsiElement): Int {
-		return element.textRange.endOffset
+		return element.endOffset
 	}
 }

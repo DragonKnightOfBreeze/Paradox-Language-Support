@@ -15,7 +15,7 @@ import icu.windea.pls.localisation.psi.*
 class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val element = parameters.position.parent.castOrNull<ParadoxLocalisationCommandIdentifier>() ?: return
-		val offsetInParent = parameters.offset - element.textRange.startOffset
+		val offsetInParent = parameters.offset - element.startOffset
 		val keyword = element.getKeyword(offsetInParent)
 		val file = parameters.originalFile
 		val project = file.project

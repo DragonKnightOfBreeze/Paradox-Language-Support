@@ -140,7 +140,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         if(expression.isLeftQuoted()) return
         if(expression.isParameterAwareExpression()) return
         val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
-        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRange.unquote(element.text)
+        val range = rangeInElement?.shiftRight(element.startOffset) ?: element.textRange.unquote(element.text)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
     

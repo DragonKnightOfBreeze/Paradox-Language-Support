@@ -9,7 +9,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.refactoring.*
@@ -18,7 +17,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 声明本地封装变量的重构。
  */
-class ParadoxScriptIntroduceLocalScriptedVariableHandler() : ContextAwareRefactoringActionHandler() {
+class ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandler() {
 	override fun isAvailable(editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return false

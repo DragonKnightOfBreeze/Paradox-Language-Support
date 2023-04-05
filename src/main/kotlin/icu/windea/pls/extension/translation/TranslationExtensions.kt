@@ -4,6 +4,7 @@ package icu.windea.pls.extension.translation
 
 import cn.yiiguxing.plugin.translate.trans.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 
 fun CwtLocalisationLocaleConfig.toLang(): Lang? {
@@ -25,9 +26,9 @@ fun CwtLocalisationLocaleConfig.toLang(): Lang? {
 fun ParadoxLocalisationProperty.toTranslatableStringSnippets(): TranslatableStringSnippets? {
 	try {
 		val propertyValue = this.propertyValue ?: return null
-		val start = textRange.startOffset
-		val quoteStart = propertyValue.textRange.startOffset // _"
-		val quoteEnd = propertyValue.textRange.endOffset // "_
+		val start = startOffset
+		val quoteStart = propertyValue.startOffset // _"
+		val quoteEnd = propertyValue.endOffset // "_
 		if(quoteEnd - quoteStart < 2) return null
 		val snippets = mutableListOf<TranslatableStringSnippet>()
 		val text = text

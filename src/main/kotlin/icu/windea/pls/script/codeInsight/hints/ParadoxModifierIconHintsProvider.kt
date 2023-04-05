@@ -77,7 +77,7 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
                         //点击可以导航到声明处（DDS）
                         val presentation = psiSingleReference(smallScaledIcon(icon)) { iconFile.toPsiFile(project) }
                         val finalPresentation = presentation.toFinalPresentation(this, file.project, smaller = true)
-                        val endOffset = element.textRange.endOffset
+                        val endOffset = element.endOffset
                         sink.addInlineElement(endOffset, true, finalPresentation, false)
                     }
                 }

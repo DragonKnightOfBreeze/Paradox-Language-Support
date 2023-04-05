@@ -44,7 +44,7 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
         val argStartIndex = firstParameterNode.rangeInExpression.startOffset
         
         //要求光标位置在SV表达式中的参数部分中
-        if(offset - targetElement.textRange.startOffset < argStartIndex) return null
+        if(offset - targetElement.startOffset < argStartIndex) return null
         
         return targetElement to scriptValueExpressionNode.text
     }
@@ -95,6 +95,6 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
     }
     
     override fun showParameterInfo(element: ParadoxScriptStringExpressionElement, context: CreateParameterInfoContext) {
-        context.showHint(element, element.textRange.startOffset + 1, this)
+        context.showHint(element, element.startOffset + 1, this)
     }
 }

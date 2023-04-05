@@ -489,7 +489,7 @@ fun PsiReference.resolveFast(): PsiElement? {
 infix fun PsiElement?.isSamePosition(other: PsiElement?): Boolean {
     if(this == null || other == null) return false
     if(this == other) return true
-    return textRange.startOffset == other.textRange.startOffset
+    return startOffset == other.startOffset
         && containingFile.originalFile.virtualFile == other.containingFile.originalFile.virtualFile
 }
 
@@ -686,8 +686,8 @@ inline fun findTextStartOffsetIncludeComment(element: PsiElement, findUpPredicat
             else -> break
         }
     }
-    if(comment != null) return comment.textRange.startOffset
-    return target.textRange.startOffset
+    if(comment != null) return comment.startOffset
+    return target.startOffset
 }
 
 fun getLineCommentDocText(element: PsiElement): String? {

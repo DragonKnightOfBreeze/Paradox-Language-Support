@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider.*
@@ -76,7 +77,7 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
             if(localisationInfo != null) {
                 val presentation = doCollect(resolved, editor, settings)
                 val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
-                val endOffset = element.textRange.endOffset
+                val endOffset = element.endOffset
                 sink.addInlineElement(endOffset, true, finalPresentation, false)
             }
         }
