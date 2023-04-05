@@ -83,6 +83,6 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
     }
     
     private fun getScopeType(): String {
-        return ParadoxHierarchyBrowserSettings.getInstance(myProject).scopeType
+        return ParadoxHierarchyBrowserSettings.getInstance(myProject).scopeTypes.get(ParadoxHierarchyBrowserSettings.DEFINITION) ?: "all"
     }
 }

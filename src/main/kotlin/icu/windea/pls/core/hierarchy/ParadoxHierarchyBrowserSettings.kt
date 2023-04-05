@@ -3,10 +3,12 @@ package icu.windea.pls.core.hierarchy
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.util.xmlb.*
+import com.intellij.util.xmlb.annotations.*
 
 @State(name = "ParadoxHierarchyBrowserSettings", storages = [Storage(StoragePathMacros.WORKSPACE_FILE)])
 class ParadoxHierarchyBrowserSettings: PersistentStateComponent<ParadoxHierarchyBrowserSettings> {
-    var scopeType: String = "all"
+    @XMap
+    var scopeTypes: MutableMap<String, String> = mutableMapOf()
     
     override fun getState() = this
     
@@ -15,5 +17,7 @@ class ParadoxHierarchyBrowserSettings: PersistentStateComponent<ParadoxHierarchy
     companion object {
         @JvmStatic
         fun getInstance(project: Project) = project.service<ParadoxHierarchyBrowserSettings>()
+        
+        const val DEFINITION = "DEFINITION"
     }
 }

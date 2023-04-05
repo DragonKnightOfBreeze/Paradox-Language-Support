@@ -130,8 +130,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
         
         override fun update(e: AnActionEvent) {
             val presentation = e.presentation
-            val project = e.project ?: return
-            val scopeType = ParadoxHierarchyBrowserSettings.getInstance(project).scopeType
+            val scopeType = getScopeType()
             presentation.text = ParadoxSearchScopeTypes.get(scopeType).text
         }
         
@@ -160,14 +159,21 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
         
         private inner class MenuAction(val scopeType: ParadoxSearchScopeType) : AnAction(scopeType.text) {
             override fun actionPerformed(e: AnActionEvent) {
-                val project = e.project ?: return
-                ParadoxHierarchyBrowserSettings.getInstance(project).scopeType = scopeType.id
+                setScopeType(scopeType.id)
                 
                 // invokeLater is called to update state of button before long tree building operation
                 // scope is kept per type so other builders don't need to be refreshed
                 ApplicationManager.getApplication().invokeLater({ doRefresh(true) }) { isDisposed }
             }
         }
+    }
+    
+    private fun getScopeType(): String {
+        return ParadoxHierarchyBrowserSettings.getInstance(myProject).scopeTypes.get(ParadoxHierarchyBrowserSettings.DEFINITION) ?: "all"
+    }
+    
+    private fun setScopeType(scopeType: String) {
+        ParadoxHierarchyBrowserSettings.getInstance(myProject).scopeTypes.put(ParadoxHierarchyBrowserSettings.DEFINITION, scopeType)
     }
 }
 
