@@ -4,11 +4,13 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.psi.*
 
 class ParadoxWithGameTypeSelector<T>(
     val gameType: ParadoxGameType
@@ -34,7 +36,7 @@ class ParadoxWithSearchScopeSelector<T>(
     }
 }
 
-class ParadoxWithSearchScopeTypeSelector<T : PsiElement>(
+class ParadoxWithSearchScopeTypeSelector<T>(
     searchScopeType: String,
     val project: Project,
     val context: PsiElement,
@@ -51,8 +53,15 @@ class ParadoxWithSearchScopeTypeSelector<T : PsiElement>(
         return select(result)
     }
     
-    fun findRoot(context: PsiElement): PsiElement? {
-        return type.findRoot(project, context)
+    fun findRoot(context: Any?): PsiElement? {
+        return when {
+            context is PsiElement -> type.findRoot(project, context)
+            context is ParadoxScriptExpressionInfo -> {
+                val element = context.file?.findElementAt(context.elementOffset)
+                element?.parentOfType<ParadoxScriptExpressionElement>()
+            }
+            else -> null
+        }
     }
     
     override fun getGlobalSearchScope(): GlobalSearchScope? {

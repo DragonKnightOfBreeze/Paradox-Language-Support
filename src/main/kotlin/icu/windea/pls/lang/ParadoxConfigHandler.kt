@@ -332,7 +332,7 @@ object ParadoxConfigHandler {
                     if(complexEnumConfig != null) {
                         val searchScope = complexEnumConfig.searchScopeType
                         val selector = complexEnumValueSelector(project, element)
-                            //.withSearchScopeType(searchScope, element)
+                            .withSearchScopeType(searchScope)
                         val complexEnumValueInfo = ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst()
                         if(complexEnumValueInfo == null) {
                             println()

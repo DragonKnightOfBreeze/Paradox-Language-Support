@@ -355,7 +355,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
         if(complexEnumConfig != null) {
             val searchScope = complexEnumConfig.searchScopeType
             val selector = complexEnumValueSelector(project, element)
-                //.withSearchScopeType(searchScope, element)
+                .withSearchScopeType(searchScope)
                 .contextSensitive(exact)
             val info = ParadoxComplexEnumValueSearch.search(expression, enumName, selector).findFirst()
             if(info != null) {
@@ -400,7 +400,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
             val typeFile = complexEnumConfig.pointer.containingFile
             val searchScope = complexEnumConfig.searchScopeType
             val selector = complexEnumValueSelector(project, contextElement)
-                //.withSearchScopeType(searchScope, contextElement)
+                .withSearchScopeType(searchScope)
                 .contextSensitive()
                 .distinctByName()
             ParadoxComplexEnumValueSearch.search(enumName, selector).processQuery { info ->

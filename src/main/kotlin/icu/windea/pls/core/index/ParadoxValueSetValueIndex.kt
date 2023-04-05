@@ -33,6 +33,7 @@ object ParadoxValueSetValueIndex {
                 IOUtil.writeUTF(storage, it.name)
                 IOUtil.writeUTF(storage, it.valueSetName)
                 storage.writeByte(it.readWriteAccess.toByte())
+                storage.writeInt(it.elementOffset)
                 storage.writeByte(it.gameType.toByte())
             }
         }
@@ -43,8 +44,9 @@ object ParadoxValueSetValueIndex {
                 val name = IOUtil.readUTF(storage)
                 val valueSetName = IOUtil.readUTF(storage)
                 val readWriteAccess = storage.readByte().toReadWriteAccess()
+                val elementOffset = storage.readInt()
                 val gameType = storage.readByte().toGameType()
-                ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, gameType)
+                ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, elementOffset, gameType)
             }
             return Data(marker, valueSetValueInfos)
         }
@@ -63,7 +65,7 @@ object ParadoxValueSetValueIndex {
     }
     
     private const val id = "paradox.valueSetValue.index"
-    private const val version = 2 //0.9.7
+    private const val version = 3 //0.9.7
     
     private val gist: PsiFileGist<Data> = GistManager.getInstance().newPsiFileGist(id, version, valueExternalizer) builder@{ file ->
         ProgressManager.checkCanceled()

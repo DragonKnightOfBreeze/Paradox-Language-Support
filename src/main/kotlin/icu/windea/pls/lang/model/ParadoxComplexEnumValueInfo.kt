@@ -10,6 +10,7 @@ data class ParadoxComplexEnumValueInfo(
     val name: String,
     val enumName: String,
     val readWriteAccess: ReadWriteAccessDetector.Access,
+    override val elementOffset: Int,
     override val gameType: ParadoxGameType
 ) : ParadoxScriptExpressionInfo {
     override var file: PsiFile? = null

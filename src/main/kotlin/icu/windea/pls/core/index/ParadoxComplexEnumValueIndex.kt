@@ -33,6 +33,7 @@ object ParadoxComplexEnumValueIndex {
                 IOUtil.writeUTF(storage, it.name)
                 IOUtil.writeUTF(storage, it.enumName)
                 storage.writeByte(it.readWriteAccess.toByte())
+                storage.writeInt(it.elementOffset)
                 storage.writeByte(it.gameType.toByte())
             }
         }
@@ -43,8 +44,9 @@ object ParadoxComplexEnumValueIndex {
                 val name = IOUtil.readUTF(storage)
                 val enumName = IOUtil.readUTF(storage)
                 val readWriteAccess = storage.readByte().toReadWriteAccess()
+                val elementOffset = storage.readInt()
                 val gameType = storage.readByte().toGameType()
-                ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, gameType)
+                ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, elementOffset, gameType)
             }
             return Data(marker, complexEnumValueInfos)
         }
@@ -63,7 +65,7 @@ object ParadoxComplexEnumValueIndex {
     }
     
     private const val id = "paradox.complexEnumValue.index"
-    private const val version = 2 //0.9.7
+    private const val version = 3 //0.9.7
     
     private val gist: PsiFileGist<Data> = GistManager.getInstance().newPsiFileGist(id, version, valueExternalizer) builder@{ file ->
         ProgressManager.checkCanceled()

@@ -180,7 +180,7 @@ object CwtTemplateExpressionHandler {
                     ProgressManager.checkCanceled()
                     val searchScope = complexEnumConfig.searchScopeType
                     val selector = complexEnumValueSelector(project, contextElement)
-                        //.withSearchScopeType(searchScope, contextElement)
+                        .withSearchScopeType(searchScope)
                         .contextSensitive()
                         .distinctByName()
                     ParadoxComplexEnumValueSearch.search(enumName, selector).processQuery { info ->

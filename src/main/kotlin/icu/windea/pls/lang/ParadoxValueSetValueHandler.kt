@@ -46,8 +46,9 @@ object ParadoxValueSetValueHandler {
         val gameType = configGroup.gameType ?: return null
         val name = getName(element.value) ?: return null
         val valueSetName = config.expression.value?.takeIfNotEmpty() ?: return null
+        val elementOffset = element.startOffset
         val readWriteAccess = getReadWriteAccess(config.expression)
-        return ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, gameType)
+        return ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, elementOffset, gameType)
     }
     
     @JvmStatic
