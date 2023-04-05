@@ -24,16 +24,20 @@ object ParadoxSearchScopeTypes {
         val file = context.containingFile
         val fileInfo = file.fileInfo ?: return null
         result.add(File)
-        if(ProjectFileIndex.getInstance(project).isInContent(file.virtualFile)) {
-            val rootInfo = fileInfo.rootInfo
-            when(rootInfo) {
-                is ParadoxModRootInfo -> {
-                    result.add(Mod)
+        val isInProject = ProjectFileIndex.getInstance(project).isInContent(file.virtualFile)
+        val rootInfo = fileInfo.rootInfo
+        when(rootInfo) {
+            is ParadoxModRootInfo -> {
+                result.add(Mod)
+                if(isInProject) {
+                    result.add(Game)
                     result.add(ModAndGame)
                     result.add(ModWithDependencies)
                 }
-                is ParadoxGameRootInfo -> {
-                    result.add(Game)
+            }
+            is ParadoxGameRootInfo -> {
+                result.add(Game)
+                if(isInProject) {
                     result.add(GameWithDependencies)
                 }
             }

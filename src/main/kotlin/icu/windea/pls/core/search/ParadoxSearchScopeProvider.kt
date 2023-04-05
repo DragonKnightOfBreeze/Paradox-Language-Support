@@ -22,7 +22,6 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
         val fileInfo = file?.fileInfo
         if(fileInfo == null) return emptyList()
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
-        if(!isInProject) return emptyList() //不在项目中 - 不提供
         val rootInfo = fileInfo.rootInfo
         val rootFile = rootInfo.rootFile
         when {
@@ -33,7 +32,9 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
                 val modDependencyDirectories = ParadoxSearchScope.getDependencyDirectories(settings)
                 val result = mutableListOf<SearchScope>()
                 result.add(ParadoxGameSearchScope(project, rootFile))
-                result.add(ParadoxGameWithDependenciesSearchScope(project, gameDirectory, modDependencyDirectories))
+                if(isInProject) {
+                    result.add(ParadoxGameWithDependenciesSearchScope(project, gameDirectory, modDependencyDirectories))
+                }
                 return result
             }
             rootInfo is ParadoxModRootInfo -> {
@@ -44,9 +45,11 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
                 val modDependencyDirectories = ParadoxSearchScope.getDependencyDirectories(settings, modDirectory)
                 val result = mutableListOf<SearchScope>()
                 result.add(ParadoxModSearchScope(project, modDirectory))
-                if(gameDirectory != null) result.add(ParadoxGameSearchScope(project, gameDirectory))
-                result.add(ParadoxModAndGameSearchScope(project, modDirectory, gameDirectory))
-                result.add(ParadoxModWithDependenciesSearchScope(project, modDirectory, gameDirectory, modDependencyDirectories))
+                if(isInProject) {
+                    result.add(ParadoxGameSearchScope(project, gameDirectory))
+                    result.add(ParadoxModAndGameSearchScope(project, modDirectory, gameDirectory))
+                    result.add(ParadoxModWithDependenciesSearchScope(project, modDirectory, gameDirectory, modDependencyDirectories))
+                }
                 return result
             }
         }
