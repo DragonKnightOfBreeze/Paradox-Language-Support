@@ -5,6 +5,8 @@ import com.intellij.diff.chains.*
 import com.intellij.diff.util.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.*
+import icu.windea.pls.core.settings.*
 
 //com.intellij.diff.actions.BaseShowDiffAction
 
@@ -29,4 +31,13 @@ abstract class ParadoxShowDiffAction : AnAction() {
     }
     
     protected abstract fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain?
+    
+    protected fun getDefaultIndex(producers: List<DiffRequestProducer>, currentIndex: Int): Int {
+        val defaultDiffGroup = getSettings().others.defaultDiffGroup
+        return when(defaultDiffGroup) {
+            DiffGroupStrategy.VsCopy -> currentIndex
+            DiffGroupStrategy.First -> 0
+            DiffGroupStrategy.Last -> producers.lastIndex
+        }
+    }
 }

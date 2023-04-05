@@ -117,6 +117,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             return null
         }
         
+        val editor = e.editor
         val contentFactory = DiffContentFactory.getInstance()
         
         val windowTitle = getWindowsTitle(localisation) ?: return null
@@ -125,7 +126,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val content = createContent(contentFactory, project, documentContent, localisation)
         
         var index = 0
-        var defaultIndex = 0
+        var currentIndex = 0
         val producers = runReadAction {
             localisations.mapNotNull { otherLocalisation ->
                 val otherPsiFile = otherLocalisation.containingFile ?: return@mapNotNull null
@@ -151,22 +152,21 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
                         createContent(contentFactory, project, otherDocumentContent, otherLocalisation)
                     }
                 }
-                if(isCurrent) defaultIndex = index
+                if(isCurrent) currentIndex = index
                 if(readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
                 index++
                 val icon = otherLocalisation.icon
                 val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
+                //窗口定位到当前光标位置
+                if(editor != null) {
+                    val currentLine = editor.caretModel.logicalPosition.line
+                    request.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.LEFT, currentLine))
+                }
                 MyRequestProducer(request, otherLocalisation.name, locale, otherFile, icon, isCurrent)
             }
         }
-        val chain = MyDiffRequestChain(producers, defaultIndex)
-        //如果打开了编辑器，窗口定位到当前光标位置
-        val editor = e.editor
-        if(editor != null) {
-            val currentLine = editor.caretModel.logicalPosition.line
-            chain.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.RIGHT, currentLine))
-        }
-        return chain
+        val defaultIndex = getDefaultIndex(producers, currentIndex)
+        return MyDiffRequestChain(producers, defaultIndex)
     }
     
     private fun createContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, localisation: ParadoxLocalisationProperty): DocumentContent {

@@ -126,7 +126,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val content = createContent(contentFactory, project, documentContent, definition)
         
         var index = 0
-        var defaultIndex = 0
+        var currentIndex = 0
         val producers = runReadAction {
             definitions.mapNotNull { otherDefinition ->
                 val otherDefinitionInfo = otherDefinition.definitionInfo ?: return@mapNotNull null
@@ -152,7 +152,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
                         createContent(contentFactory, project, otherDocumentContent, otherDefinition)
                     }
                 }
-                if(isCurrent) defaultIndex = index
+                if(isCurrent) currentIndex = index
                 if(readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
                 index++
                 val icon = otherDefinition.icon
@@ -165,6 +165,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
                 MyRequestProducer(request, otherDefinitionInfo, otherFile, icon, isCurrent)
             }
         }
+        val defaultIndex = getDefaultIndex(producers, currentIndex)
         return MyDiffRequestChain(producers, defaultIndex)
     }
     
