@@ -15,6 +15,7 @@ import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.extras.*
+import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.model.*
@@ -70,8 +71,6 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
     
     override fun getPresentableName() = PlsDiagramBundle.message("paradox.technologyTree.name", gameType)
     
-    override fun createScopeManager(project: Project) = null //TODO
-    
     override fun createNodeContentManager() = NodeContentManager()
     
     override fun getVfsResolver() = _vfsResolver
@@ -87,6 +86,8 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
     override fun getExtras() = _extras
     
     override fun getAllContentCategories() = CATEGORIES
+    
+    override abstract fun getDiagramSettings(): ParadoxTechlonogyTreeDiagramSettings<*>?
     
     class NodeContentManager : OrderedDiagramNodeContentManager() {
         override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?): Boolean {

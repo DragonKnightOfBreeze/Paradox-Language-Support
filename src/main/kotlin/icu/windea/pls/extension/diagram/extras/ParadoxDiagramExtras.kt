@@ -1,5 +1,6 @@
 package icu.windea.pls.extension.diagram.extras
 
+import com.intellij.diagram.actions.*
 import com.intellij.diagram.settings.*
 import com.intellij.openapi.graph.*
 import com.intellij.openapi.graph.layout.*
@@ -21,5 +22,9 @@ abstract class ParadoxDiagramExtras(
     
     override fun getAdditionalDiagramSettings(): Array<out DiagramConfigGroup> {
         return provider.getAdditionalDiagramSettings()
+    }
+    
+    override fun getToolbarActionsProvider(): DiagramToolbarActionsProvider {
+        return super.getToolbarActionsProvider()
     }
 }

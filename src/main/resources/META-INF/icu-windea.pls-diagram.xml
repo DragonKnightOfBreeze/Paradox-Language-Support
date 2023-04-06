@@ -1,4 +1,9 @@
 <idea-plugin>
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationService serviceImplementation="icu.windea.pls.extension.diagram.settings.StellarisEventTreeDiagramSettings"/>
+    <applicationService serviceImplementation="icu.windea.pls.extension.diagram.settings.StellarisTechnologyTreeDiagramSettings"/>
+  </extensions>
+  
   <extensions defaultExtensionNs="com.intellij.diagram">
     <Provider implementation="icu.windea.pls.extension.diagram.provider.StellarisEventTreeDiagramProvider"/>
     <Provider implementation="icu.windea.pls.extension.diagram.provider.StellarisTechnologyTreeDiagramProvider"/>
@@ -9,5 +14,8 @@
       <add-to-group group-id="Uml.SourceActionsGroup.GoTo" relative-to-action="GotoRelated" anchor="after"/>
       <add-to-group group-id="Uml.NodeCellEditorPopup.GoTo" relative-to-action="GotoRelated" anchor="after"/>
     </reference>
+    <action id="Pls.Diagram.OpenSettings" class="icu.windea.pls.extension.diagram.actions.ParadoxDiagramOpenSettingsAction" icon="AllIcons.General.GearPlain">
+      <add-to-group group-id="Diagram.DefaultGraphToolbar" relative-to-action="Diagram.OpenSettings" anchor="after"/>
+    </action>
   </actions>
 </idea-plugin>

@@ -21,6 +21,7 @@ class StellarisTechnologyDataProvider : ParadoxDefinitionDataProvider<StellarisT
         val start_tech: Boolean by data.get("start_tech", false)
         val is_rare: Boolean by data.get("is_rare", false)
         val is_dangerous: Boolean by data.get("is_dangerous", false)
+        val is_insight: Boolean by data.get("is_insight", false)
         
         val gateway: String? by data.get("gateway")
         val prerequisites: Set<String> by data.get("prerequisites", emptySet()) 

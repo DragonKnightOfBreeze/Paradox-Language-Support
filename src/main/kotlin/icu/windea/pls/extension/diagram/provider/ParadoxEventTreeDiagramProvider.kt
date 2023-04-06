@@ -16,6 +16,7 @@ import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.extras.*
+import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
@@ -57,11 +58,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     private val _relationshipManager = RelationshipManager()
     private val _extras = Extras(this)
     
-    override fun getID() = gameType.name + ".EventTree"
-    
     override fun getPresentableName() = PlsDiagramBundle.message("paradox.eventTree.name", gameType)
-    
-    override fun createScopeManager(project: Project) = null //TODO
     
     override fun createNodeContentManager() = NodeContentManager()
     
@@ -76,6 +73,8 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     override fun getExtras() = _extras
     
     override fun getAllContentCategories() = CATEGORIES
+    
+    override abstract fun getDiagramSettings(): ParadoxEventTreeDiagramSettings<*>?
     
     class NodeContentManager : OrderedDiagramNodeContentManager() {
         override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?): Boolean {
