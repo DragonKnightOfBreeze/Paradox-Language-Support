@@ -1,6 +1,5 @@
 package icu.windea.pls.extension.diagram.provider
 
-import com.intellij.diagram.settings.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.extension.diagram.*
@@ -26,9 +25,9 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
     
     override fun getDiagramSettings() = service<StellarisEventTreeDiagramSettings>()
     
-    override fun showNode(element: ParadoxScriptDefinitionElement): Boolean {
-        if(element !is ParadoxScriptProperty) return false
-        val data = element.getData<ParadoxEventDataProvider.Data>()
+    override fun showNode(definition: ParadoxScriptDefinitionElement): Boolean {
+        if(definition !is ParadoxScriptProperty) return false
+        val data = definition.getData<ParadoxEventDataProvider.Data>()
         if(data == null) return true
         val settings = getDiagramSettings().state
         

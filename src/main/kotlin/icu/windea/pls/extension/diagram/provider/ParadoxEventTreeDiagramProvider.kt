@@ -54,7 +54,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         }
     }
     
-    private val _vfsResolver = ParadoxRootVfsResolver()
     private val _elementManager = ElementManager(this)
     private val _relationshipManager = RelationshipManager()
     private val _extras = Extras(this)
@@ -62,8 +61,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     override fun getPresentableName() = PlsDiagramBundle.message("paradox.eventTree.name", gameType)
     
     override fun createNodeContentManager() = NodeContentManager()
-    
-    override fun getVfsResolver() = _vfsResolver
     
     override fun getElementManager() = _elementManager
     
@@ -303,10 +300,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         }
         
         override fun refreshDataModel() {
-            doRefreshDataModel()
-        }
-        
-        private fun doRefreshDataModel() {
             provider as ParadoxEventTreeDiagramProvider
             
             ProgressManager.checkCanceled()

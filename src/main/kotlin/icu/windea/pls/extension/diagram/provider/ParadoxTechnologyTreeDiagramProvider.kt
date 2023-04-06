@@ -12,6 +12,7 @@ import com.intellij.ui.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.extension.diagram.*
@@ -62,10 +63,8 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
         }
     }
     
-    private val _vfsResolver = ParadoxRootVfsResolver()
     private val _elementManager = ElementManager(this)
     private val _relationshipManager = RelationshipManager()
-    private val _colorManager = ColorManager()
     private val _extras = Extras(this)
     
     override fun getID() = gameType.name + ".TechnologyTree"
@@ -74,13 +73,9 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
     
     override fun createNodeContentManager() = NodeContentManager()
     
-    override fun getVfsResolver() = _vfsResolver
-    
     override fun getElementManager() = _elementManager
     
     override fun getRelationshipManager() = _relationshipManager
-    
-    override fun getColorManager() = _colorManager
     
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
     
@@ -268,8 +263,6 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
         }
     }
     
-    open class ColorManager : DiagramColorManagerBase()
-    
     class Node(
         element: ParadoxScriptProperty,
         provider: ParadoxDefinitionDiagramProvider
@@ -285,14 +278,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
         project: Project,
         file: VirtualFile?, //umlFile
         provider: ParadoxTechnologyTreeDiagramProvider
-    ) : ParadoxDiagramDataModel(project, file, provider) {
-        private val _nodes = mutableSetOf<DiagramNode<PsiElement>>()
-        private val _edges = mutableSetOf<DiagramEdge<PsiElement>>()
-        
-        override fun getNodes() = _nodes
-        
-        override fun getEdges() = _edges
-        
+    ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
         override fun getNodeName(node: DiagramNode<PsiElement>) = node.tooltip.orAnonymous()
         
         override fun addElement(element: PsiElement?) = null
@@ -308,24 +294,12 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
         }
         
         override fun refreshDataModel() {
-            doRefreshDataModel()
-        }
-        
-        private fun doRefreshDataModel() {
             provider as ParadoxTechnologyTreeDiagramProvider
             
             ProgressManager.checkCanceled()
-            _nodes.clear()
-            _edges.clear()
-            val searchScope = scopeManager?.currentScope?.let { GlobalSearchScopes.filterScope(project, it) }
-            val searchScopeType = provider.getDiagramSettings()?.state?.scopeType
-            val selector = definitionSelector(project, originalFile)
-                .withGameType(gameType)
-                .withSearchScope(searchScope)
-                .withSearchScopeType(searchScopeType)
-                .contextSensitive()
-                .distinctByName()
-            val technologies = ParadoxTechnologyHandler.getTechnologies(selector)
+            nodes.clear()
+            edges.clear()
+            val technologies = getDefinitions("technology")
             if(technologies.isEmpty()) return
             //群星原版科技有400+
             val nodeMap = mutableMapOf<ParadoxScriptProperty, Node>()
@@ -337,7 +311,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
                 provider.handleNode(node)
                 nodeMap.put(technology, node)
                 techMap.put(ParadoxTechnologyHandler.getName(technology), technology)
-                _nodes.add(node)
+                nodes.add(node)
             }
             for(technology in technologies) {
                 ProgressManager.checkCanceled()
@@ -348,7 +322,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
                     val label = if(levels <= 0) "max level: inf" else "max level: $levels"
                     val node = nodeMap.get(technology) ?: continue
                     val edge = Edge(node, node, REL_REPEAT(label))
-                    _edges.add(edge)
+                    edges.add(edge)
                 }
                 //前置 --> 科技
                 val prerequisites = data.prerequisites
@@ -357,7 +331,8 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
                         val source = techMap.get(prerequisite)?.let { nodeMap.get(it) } ?: continue
                         val target = nodeMap.get(technology) ?: continue
                         val edge = Edge(source, target, REL_PREREQUISITE)
-                        _edges.add(edge)
+                        provider.handleEdge(edge)
+                        edges.add(edge)
                     }
                 }
             }

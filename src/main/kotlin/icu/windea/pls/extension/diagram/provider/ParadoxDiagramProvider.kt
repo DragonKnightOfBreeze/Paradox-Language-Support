@@ -6,6 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import icu.windea.pls.core.search.scope.type.*
+import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.model.*
 
@@ -14,6 +15,11 @@ abstract class ParadoxDiagramProvider(
 ) : DiagramProvider<PsiElement>() {
     companion object {
         private val EmptyDiagramVisibilityManager: DiagramVisibilityManager = EmptyDiagramVisibilityManager()
+        private val VfsResolver = ParadoxRootVfsResolver()
+    }
+    
+    override fun getVfsResolver(): DiagramVfsResolver<PsiElement> {
+        return VfsResolver
     }
     
     override fun createVisibilityManager(): DiagramVisibilityManager {

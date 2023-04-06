@@ -1,16 +1,12 @@
 package icu.windea.pls.extension.diagram.provider
 
 import com.intellij.diagram.*
-import com.intellij.diagram.settings.*
 import com.intellij.openapi.components.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
-import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
@@ -40,9 +36,9 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
     
     override fun getDiagramSettings() = service<StellarisTechlonogyTreeDiagramSettings>()
     
-    override fun showNode(element: ParadoxScriptDefinitionElement): Boolean {
-        if(element !is ParadoxScriptProperty) return false
-        val data = element.getData<StellarisTechnologyDataProvider.Data>()
+    override fun showNode(definition: ParadoxScriptDefinitionElement): Boolean {
+        if(definition !is ParadoxScriptProperty) return false
+        val data = definition.getData<StellarisTechnologyDataProvider.Data>()
         if(data == null) return true
         val settings = getDiagramSettings().state
         
@@ -86,7 +82,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
         putDefinitionData(node, nodeDataKey)
     }
     
-    class ColorManager : ParadoxTechnologyTreeDiagramProvider.ColorManager() {
+    class ColorManager : DiagramColorManagerBase() {
         override fun getNodeBorderColor(builder: DiagramBuilder, node: DiagramNode<*>?, isSelected: Boolean): Color {
             //基于科技领域和类型
             if(node !is Node) return super.getNodeBorderColor(builder, node, isSelected)
