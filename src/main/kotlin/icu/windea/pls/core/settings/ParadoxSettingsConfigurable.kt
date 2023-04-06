@@ -229,13 +229,17 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 }
             }
             //others
-            collapsibleGroup("settings.others") {
+            collapsibleGroup(PlsBundle.message("settings.others")) {
                 @Suppress("DialogTitleCapitalization")
                 //defaultDiffGroup
                 buttonsGroup(PlsBundle.message("settings.others.defaultDiffGroup")) {
                     row {
                         radioButton(PlsBundle.message("settings.others.defaultDiffGroup.0"), DiffGroupStrategy.VsCopy)
+                    }
+                    row {
                         radioButton(PlsBundle.message("settings.others.defaultDiffGroup.1"), DiffGroupStrategy.First)
+                    }
+                    row {
                         radioButton(PlsBundle.message("settings.others.defaultDiffGroup.2"), DiffGroupStrategy.Last)
                     }
                 }.bind(settings.others::defaultDiffGroup)

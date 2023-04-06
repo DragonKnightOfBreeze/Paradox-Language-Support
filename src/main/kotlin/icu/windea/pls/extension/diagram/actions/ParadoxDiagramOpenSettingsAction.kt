@@ -7,7 +7,9 @@ import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.*
 import icu.windea.pls.extension.diagram.settings.*
 
-class ParadoxDiagramOpenSettingsAction: DiagramAction() {
+//com.intellij.uml.core.actions.DiagramOpenSettingsAction
+
+class ParadoxDiagramOpenSettingsAction: DiagramAction(PlsDiagramBundle.message("action.openSettings.name"), null, null) {
     override fun getActionName(): String {
         return PlsDiagramBundle.message("action.openSettings.name")
     }
