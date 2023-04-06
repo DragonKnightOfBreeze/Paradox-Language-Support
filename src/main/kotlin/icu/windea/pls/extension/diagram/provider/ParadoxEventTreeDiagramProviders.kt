@@ -49,8 +49,4 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
         }
         return true
     }
-    
-    override fun handleNode(node: ParadoxDefinitionDiagramNode) {
-        putDefinitionData(node, nodeDataKey)
-    }
 }

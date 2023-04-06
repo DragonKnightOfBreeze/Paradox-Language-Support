@@ -11,8 +11,23 @@ abstract class ParadoxDiagramDataModel(
     project: Project,
     val file: VirtualFile?,
     val provider: ParadoxDiagramProvider,
-): DiagramDataModel<PsiElement>(project, provider), ModificationTracker  {
+): DiagramDataModel<PsiElement>(project, provider)  {
     val gameType get() = provider.gameType
     
     val originalFile get() = file?.getUserData(DiagramDataKeys.ORIGINAL_ELEMENT) as? VirtualFile?
+    
+    private val _nodes = mutableSetOf<ParadoxDiagramNode>()
+    private val _edges = mutableSetOf<ParadoxDiagramEdge>()
+    
+    override fun getNodes() = _nodes
+    
+    override fun getEdges() = _edges
+    
+    override fun getModificationTracker(): ModificationTracker {
+        return provider.getModificationTracker()
+    }
+    
+    override open fun refreshDataModel() {
+        provider.refreshDataModel(this)
+    }
 }

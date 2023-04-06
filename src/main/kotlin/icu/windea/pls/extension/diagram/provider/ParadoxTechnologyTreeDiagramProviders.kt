@@ -78,7 +78,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
         return true
     }
     
-    override fun handleNode(node: ParadoxDefinitionDiagramNode) {
+    override fun handleNode(node: ParadoxDefinitionDiagramProvider.Node) {
         putDefinitionData(node, nodeDataKey)
     }
     

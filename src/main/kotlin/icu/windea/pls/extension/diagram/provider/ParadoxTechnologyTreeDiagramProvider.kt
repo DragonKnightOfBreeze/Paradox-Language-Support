@@ -266,13 +266,13 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
     class Node(
         element: ParadoxScriptProperty,
         provider: ParadoxDefinitionDiagramProvider
-    ) : ParadoxDefinitionDiagramNode(element, provider) 
+    ) : ParadoxDefinitionDiagramProvider.Node(element, provider) 
     
     class Edge(
         source: Node,
         target: Node,
         relationship: DiagramRelationshipInfo
-    ) : ParadoxDefinitionDiagramEdge(source, target, relationship)
+    ) : ParadoxDefinitionDiagramProvider.Edge(source, target, relationship)
     
     class DataModel(
         project: Project,

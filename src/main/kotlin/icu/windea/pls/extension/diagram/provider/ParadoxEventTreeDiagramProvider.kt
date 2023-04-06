@@ -56,7 +56,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     
     private val _elementManager = ElementManager(this)
     private val _relationshipManager = RelationshipManager()
-    private val _extras = Extras(this)
     
     override fun getPresentableName() = PlsDiagramBundle.message("paradox.eventTree.name", gameType)
     
@@ -65,10 +64,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     override fun getElementManager() = _elementManager
     
     override fun getRelationshipManager() = _relationshipManager
-    
-    override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
-    
-    override fun getExtras() = _extras
     
     override fun getAllContentCategories() = CATEGORIES
     
@@ -264,93 +259,18 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     class Node(
         element: ParadoxScriptProperty,
         provider: ParadoxDefinitionDiagramProvider
-    ) : ParadoxDefinitionDiagramNode(element, provider)
+    ) : ParadoxDefinitionDiagramProvider.Node(element, provider)
     
     class Edge(
         source: Node,
         target: Node,
         relationship: DiagramRelationshipInfo = REL_INVOKE,
         val invocationType: ParadoxEventHandler.InvocationType,
-    ) : ParadoxDefinitionDiagramEdge(source, target, relationship)
+    ) : ParadoxDefinitionDiagramProvider.Edge(source, target, relationship)
     
-    class DataModel(
-        project: Project,
-        file: VirtualFile?, //umlFile
-        provider: ParadoxEventTreeDiagramProvider
-    ) : ParadoxDiagramDataModel(project, file, provider) {
-        private val _nodes = mutableSetOf<DiagramNode<PsiElement>>()
-        private val _edges = mutableSetOf<DiagramEdge<PsiElement>>()
-        
-        override fun getNodes() = _nodes
-        
-        override fun getEdges() = _edges
-        
-        override fun getNodeName(node: DiagramNode<PsiElement>) = node.tooltip.orAnonymous()
-        
-        override fun addElement(element: PsiElement?) = null
-        
-        override fun getModificationTracker() = this
-        
-        override fun getModificationCount(): Long {
-            return ParadoxModificationTrackerProvider.getInstance().Events.modificationCount
-        }
-        
-        override fun dispose() {
-            
-        }
-        
-        override fun refreshDataModel() {
-            provider as ParadoxEventTreeDiagramProvider
-            
-            ProgressManager.checkCanceled()
-            _nodes.clear()
-            _edges.clear()
-            val searchScope = scopeManager?.currentScope?.let { GlobalSearchScopes.filterScope(project, it) }
-            val searchScopeType = provider.getDiagramSettings()?.state?.scopeType
-            val selector = definitionSelector(project, originalFile)
-                .withGameType(gameType)
-                .withSearchScope(searchScope)
-                .withSearchScopeType(searchScopeType)
-                .contextSensitive()
-                .distinctByName()
-            val events = mutableSetOf<ParadoxScriptProperty>()
-            ParadoxDefinitionSearch.search("event", selector).processQuery {
-                if(it is ParadoxScriptProperty) events.add(it)
-                true
-            }
-            if(events.isEmpty()) return
-            //群星原版事件有5000+
-            val nodeMap = mutableMapOf<ParadoxScriptProperty, Node>()
-            val eventMap = mutableMapOf<String, ParadoxScriptProperty>()
-            for(event in events) {
-                ProgressManager.checkCanceled()
-                if(!provider.showNode(event)) continue
-                val node = Node(event, provider)
-                provider.handleNode(node)
-                nodeMap.put(event, node)
-                eventMap.put(ParadoxEventHandler.getName(event), event)
-                _nodes.add(node)
-            }
-            for(event in events) {
-                ProgressManager.checkCanceled()
-                val invocations = ParadoxEventHandler.getInvocations(event)
-                if(invocations.isEmpty()) continue
-                //事件 --> 调用的事件
-                for((invocation, invocationType) in invocations) {
-                    ProgressManager.checkCanceled()
-                    val source = nodeMap.get(event) ?: continue
-                    val target = eventMap.get(invocation)?.let { nodeMap.get(it) } ?: continue
-                    val relationship = when(invocationType) {
-                        ParadoxEventHandler.InvocationType.All -> REL_INVOKE
-                        ParadoxEventHandler.InvocationType.Immediate -> REL_INVOKE_IMMEDIATE
-                        ParadoxEventHandler.InvocationType.After -> REL_INVOKE_AFTER
-                    }
-                    val edge = Edge(source, target, relationship, invocationType)
-                    _edges.add(edge)
-                }
-            }
-        }
+    override fun getDefinitionType() = "event"
+    
+    override fun getModificationTracker(): ModificationTracker {
+        return ParadoxModificationTrackerProvider.getInstance().Events
     }
-    
-    class Extras(provider: ParadoxDiagramProvider) : ParadoxDiagramExtras(provider)
 }

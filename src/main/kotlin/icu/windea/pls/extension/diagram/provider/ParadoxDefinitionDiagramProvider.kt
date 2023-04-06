@@ -1,5 +1,6 @@
 package icu.windea.pls.extension.diagram.provider
 
+import com.intellij.diagram.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -18,66 +19,53 @@ import icu.windea.pls.script.psi.*
 abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : ParadoxDiagramProvider(gameType) {
     abstract fun getItemPropertyKeys(): Array<String>
     
-    abstract class DataModel(
-        project: Project,
-        file: VirtualFile?, //umlFile
-        provider: ParadoxDefinitionDiagramProvider
-    ): ParadoxDiagramDataModel(project, file, provider) {
-        private val _nodes = mutableSetOf<ParadoxDefinitionDiagramNode>()
-        private val _edges = mutableSetOf<ParadoxDefinitionDiagramEdge>()
-        
-        override fun getNodes() = _nodes
-        
-        override fun getEdges() = _edges
-        
-        abstract fun getDefinitionType(): String
-        
-        fun getDefinitions(typeExpression: String): Set<ParadoxScriptDefinitionElement> {
-            val searchScope = scopeManager?.currentScope?.let { GlobalSearchScopes.filterScope(project, it) }
-            val searchScopeType = provider.getDiagramSettings()?.state?.scopeType
-            val selector = definitionSelector(project, originalFile)
-                .withGameType(gameType)
-                .withSearchScope(searchScope)
-                .withSearchScopeType(searchScopeType)
-                .contextSensitive()
-                .distinctByName()
-            return ParadoxDefinitionSearch.search(typeExpression, selector).findAll()
+    abstract fun getDefinitionType(): String
+    
+    override fun refreshDataModel(dataModel: ParadoxDiagramDataModel) {
+        super.refreshDataModel(dataModel)
+        val definitions = getDefinitions(dataModel, getDefinitionType())
+        if(definitions.isEmpty()) return
+        refreshDataModel(dataModel, definitions)
+    }
+    
+    abstract fun refreshDataModel(dataModel: ParadoxDiagramDataModel, definitions: Set<ParadoxScriptDefinitionElement>)
+    
+    protected fun getDefinitions(dataModel: ParadoxDiagramDataModel, typeExpression: String): Set<ParadoxScriptDefinitionElement> {
+        val searchScope = dataModel.scopeManager?.currentScope?.let { GlobalSearchScopes.filterScope(dataModel.project, it) }
+        val searchScopeType = getDiagramSettings()?.state?.scopeType
+        val selector = definitionSelector(dataModel.project, dataModel.originalFile)
+            .withGameType(gameType)
+            .withSearchScope(searchScope)
+            .withSearchScopeType(searchScopeType)
+            .contextSensitive()
+            .distinctByName()
+        return ParadoxDefinitionSearch.search(typeExpression, selector).findAll()
+    }
+    
+    protected inline fun <reified T : ParadoxDefinitionData> putDefinitionData(node: Node, key: Key<T>) {
+        val element = node.identifyingElement
+        if(element !is ParadoxScriptProperty) return
+        val data = element.getData<T>()
+        node.putUserData(key, data)
+    }
+    
+    open class Edge(
+        override val source: ParadoxDefinitionDiagramProvider.Node,
+        override val target: ParadoxDefinitionDiagramProvider.Node,
+        relationship: DiagramRelationshipInfo
+    ) : ParadoxDiagramEdge(source, target, relationship)
+    
+    
+    open class Node(
+        element: ParadoxScriptDefinitionElement,
+        override val provider: ParadoxDefinitionDiagramProvider
+    ) : ParadoxDiagramNode(element, provider) {
+        override fun getIdentifyingElement(): ParadoxScriptDefinitionElement {
+            return super.getIdentifyingElement() as ParadoxScriptDefinitionElement
         }
         
-        abstract fun showNode(definition: ParadoxScriptDefinitionElement): Boolean
-        
-        abstract fun createNode(definition: ParadoxScriptDefinitionElement): ParadoxDefinitionDiagramNode
-        
-        abstract fun createEdges(definitionMap: Map<String, ParadoxScriptDefinitionElement>, nodeMap: Map<ParadoxScriptDefinitionElement, ParadoxDefinitionDiagramNode>): Set<ParadoxDefinitionDiagramEdge>
-        
-        inline fun <reified T : ParadoxDefinitionData> putDefinitionData(node: ParadoxDefinitionDiagramNode, key: Key<T>) {
-            val element = node.identifyingElement
-            if(element !is ParadoxScriptProperty) return
-            val data = element.getData<T>()
-            node.putUserData(key, data)
-        }
-        
-        override fun refreshDataModel() {
-            provider as ParadoxDefinitionDiagramProvider
-            
-            ProgressManager.checkCanceled()
-            nodes.clear()
-            edges.clear()
-            val definitions = getDefinitions(getDefinitionType())
-            if(definitions.isEmpty()) return
-            val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, ParadoxDefinitionDiagramNode>()
-            val definitionMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
-            for(definition in definitions) {
-                ProgressManager.checkCanceled()
-                if(!showNode(definition)) continue
-                val node = createNode(definition)
-                nodeMap.put(definition, node)
-                val definitionName = definition.definitionInfo?.name.orAnonymous()
-                definitionMap.put(definitionName, definition)
-                nodes.add(node)
-            }
-            val createdEdges = createEdges(definitionMap, nodeMap)
-            edges.addAll(createdEdges)
+        override open fun getTooltip(): String? {
+            return identifyingElement.definitionInfo?.name
         }
     }
 }

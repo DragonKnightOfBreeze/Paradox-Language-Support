@@ -12,7 +12,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.extension.diagram.actions.*
 import icu.windea.pls.extension.diagram.provider.*
 
-abstract class ParadoxDiagramExtras(
+open class ParadoxDiagramExtras(
     val provider: ParadoxDiagramProvider
 ) : DiagramExtrasEx() {
     override fun getCustomLayouter(settings: GraphSettings, project: Project?): Layouter {
