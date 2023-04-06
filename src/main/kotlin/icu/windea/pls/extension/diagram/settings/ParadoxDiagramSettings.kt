@@ -2,4 +2,8 @@ package icu.windea.pls.extension.diagram.settings
 
 import com.intellij.openapi.components.*
 
-abstract class ParadoxDiagramSettings<T: BaseState>(initialState: T) : SimplePersistentStateComponent<T>(initialState)
+abstract class ParadoxDiagramSettings<T: ParadoxDiagramSettings.State>(initialState: T) : SimplePersistentStateComponent<T>(initialState) {
+    abstract class State: BaseState() {
+        abstract var scopeType: String?
+    }
+}

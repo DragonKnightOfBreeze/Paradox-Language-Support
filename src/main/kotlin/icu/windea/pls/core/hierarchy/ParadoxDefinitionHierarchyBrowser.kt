@@ -110,7 +110,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
         actionGroup.add(ViewDefinitionHierarchy1Action())
         actionGroup.add(ViewDefinitionHierarchy2Action())
         actionGroup.add(AlphaSortAction())
-        actionGroup.add(ChangeScopeAction())
+        actionGroup.add(ChangeScopeTypeAction())
     }
     
     override fun getActionPlace(): String {
@@ -123,7 +123,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
     
     //com.intellij.ide.hierarchy.HierarchyBrowserBaseEx.ChangeScopeAction
     
-    inner class ChangeScopeAction : ComboBoxAction() {
+    inner class ChangeScopeTypeAction : ComboBoxAction() {
         override fun getActionUpdateThread(): ActionUpdateThread {
             return ActionUpdateThread.EDT
         }
@@ -147,7 +147,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
         override fun createCustomComponent(presentation: Presentation, place: String): JComponent {
             val panel = JPanel(GridBagLayout())
             panel.add(
-                JLabel(IdeBundle.message("label.scope")),
+                JLabel(PlsBundle.message("label.scopeType")),
                 GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, JBUI.insetsLeft(5), 0, 0)
             )
             panel.add(

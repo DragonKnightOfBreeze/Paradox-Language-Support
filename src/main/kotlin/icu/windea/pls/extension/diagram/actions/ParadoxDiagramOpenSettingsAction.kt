@@ -1,11 +1,10 @@
 package icu.windea.pls.extension.diagram.actions
 
-import com.intellij.diagram.DiagramAction
+import com.intellij.diagram.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.options.*
-import com.intellij.openapi.project.DumbAware
-import icu.windea.pls.*
 import icu.windea.pls.extension.diagram.*
+import icu.windea.pls.extension.diagram.provider.*
 import icu.windea.pls.extension.diagram.settings.*
 
 class ParadoxDiagramOpenSettingsAction: DiagramAction() {
@@ -14,10 +13,13 @@ class ParadoxDiagramOpenSettingsAction: DiagramAction() {
     }
     
     override fun update(e: AnActionEvent) {
-        super.update(e)
+        val builder = e.getData(DiagramDataKeys.BUILDER)
+        val provider = builder?.provider
+        e.presentation.isEnabledAndVisible = provider is ParadoxDiagramProvider
     }
     
     override fun perform(e: AnActionEvent) {
         ShowSettingsUtil.getInstance().showSettingsDialog(getEventProject(e), ParadoxDiagramSettingsConfigurable::class.java)
     }
 }
+
