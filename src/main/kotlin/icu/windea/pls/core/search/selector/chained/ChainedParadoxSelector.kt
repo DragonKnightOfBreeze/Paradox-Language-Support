@@ -5,7 +5,6 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.model.*
@@ -30,9 +29,14 @@ open class ChainedParadoxSelector<T>(
     val defaultScope: GlobalSearchScope by lazy {
         ParadoxSearchScope.fromFile(project, file, fileInfo)
     }
+    
     val scope: GlobalSearchScope by lazy {
-        selectors.findIsInstance<ParadoxSearchScopeAwareSelector<*>>()?.getGlobalSearchScope()
-            ?: defaultScope
+        val selectorScopes = selectors.filterIsInstance<ParadoxSearchScopeAwareSelector<*>>().mapNotNull { it.getGlobalSearchScope() }
+        when {
+            selectorScopes.isEmpty() -> defaultScope
+            selectorScopes.size == 1 -> selectorScopes[0]
+            else -> selectorScopes.reduce { a, b -> a.intersectWith(b) }
+        }
     }
     
     val selectors = mutableListOf<ParadoxSelector<T>>()
@@ -95,13 +99,13 @@ open class ChainedParadoxSelector<T>(
     }
 }
 
-fun <S: ChainedParadoxSelector<T>, T> S.withGameType(gameType: ParadoxGameType): S{
+fun <S : ChainedParadoxSelector<T>, T> S.withGameType(gameType: ParadoxGameType): S {
     selectors += ParadoxWithGameTypeSelector(gameType)
     return this
 }
 
-fun <S : ChainedParadoxSelector<T>, T> S.withSearchScope(scope: GlobalSearchScope): S {
-    selectors += ParadoxWithSearchScopeSelector(scope)
+fun <S : ChainedParadoxSelector<T>, T> S.withSearchScope(searchScope: GlobalSearchScope?): S {
+    if(searchScope != null) selectors += ParadoxWithSearchScopeSelector(searchScope)
     return this
 }
 

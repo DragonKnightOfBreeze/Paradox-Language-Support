@@ -29,10 +29,10 @@ interface ParadoxSearchScopeAwareSelector<T> : ParadoxSelector<T> {
 }
 
 class ParadoxWithSearchScopeSelector<T>(
-    val scope: GlobalSearchScope
+    val searchScope: GlobalSearchScope
 ) : ParadoxSearchScopeAwareSelector<T> {
     override fun getGlobalSearchScope(): GlobalSearchScope {
-        return scope
+        return searchScope
     }
 }
 
@@ -41,9 +41,9 @@ class ParadoxWithSearchScopeTypeSelector<T>(
     val project: Project,
     val context: PsiElement,
 ) : ParadoxSearchScopeAwareSelector<T> {
-    private val type = ParadoxSearchScopeTypes.get(searchScopeType)
+    private val searchScopeType = ParadoxSearchScopeTypes.get(searchScopeType)
     
-    private val root by lazy { type.findRoot(project, context) }
+    private val root by lazy { this.searchScopeType.findRoot(project, context) }
     
     override fun select(result: T): Boolean {
         return root == null || root == findRoot(result)
@@ -55,19 +55,19 @@ class ParadoxWithSearchScopeTypeSelector<T>(
     
     fun findRoot(context: Any?): PsiElement? {
         return when {
-            context is PsiElement -> type.findRoot(project, context)
+            context is PsiElement -> searchScopeType.findRoot(project, context)
             context is ParadoxScriptExpressionInfo -> {
                 val element = context.file?.findElementAt(context.elementOffset)
                 val expressionElement = element?.parentOfType<ParadoxScriptExpressionElement>()
                 if(expressionElement == null) return null
-                type.findRoot(project, expressionElement)
+                searchScopeType.findRoot(project, expressionElement)
             }
             else -> null
         }
     }
     
     override fun getGlobalSearchScope(): GlobalSearchScope? {
-        return type.getGlobalSearchScope(project, context)
+        return searchScopeType.getGlobalSearchScope(project, context)
     }
 }
 

@@ -7,6 +7,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import com.intellij.psi.search.GlobalSearchScopes
 import com.intellij.ui.*
 import icons.*
 import icu.windea.pls.*
@@ -277,9 +278,9 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     
     class DataModel(
         project: Project,
-        val file: VirtualFile?, //umlFile
+        file: VirtualFile?, //umlFile
         provider: ParadoxEventTreeDiagramProvider
-    ) : ParadoxDiagramDataModel(project, provider) {
+    ) : ParadoxDiagramDataModel(project, file, provider) {
         private val _nodes = mutableSetOf<DiagramNode<PsiElement>>()
         private val _edges = mutableSetOf<DiagramEdge<PsiElement>>()
         
@@ -311,8 +312,14 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             ProgressManager.checkCanceled()
             _nodes.clear()
             _edges.clear()
-            val originalFile = file?.getUserData(DiagramDataKeys.ORIGINAL_ELEMENT)
-            val selector = definitionSelector(project, originalFile).withGameType(gameType).contextSensitive().distinctByName()
+            val searchScope = scopeManager?.currentScope?.let { GlobalSearchScopes.filterScope(project, it) }
+            val searchScopeType = provider.getDiagramSettings()?.state?.scopeType
+            val selector = definitionSelector(project, originalFile)
+                .withGameType(gameType)
+                .withSearchScope(searchScope)
+                .withSearchScopeType(searchScopeType)
+                .contextSensitive()
+                .distinctByName()
             val events = mutableSetOf<ParadoxScriptProperty>()
             ParadoxDefinitionSearch.search("event", selector).processQuery {
                 if(it is ParadoxScriptProperty) events.add(it)

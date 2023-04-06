@@ -4,7 +4,10 @@ import com.intellij.diagram.DiagramBuilder
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.*
+import com.intellij.psi.PsiFile
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.*
 
@@ -17,18 +20,17 @@ class ParadoxDiagramScopeTypesActionGroup(
         templatePresentation.icon = AllIcons.General.Filter
     }
     
-    override fun update(e: AnActionEvent) {
-        val provider = builder.provider
-        if(provider !is ParadoxDiagramProvider) return
-        val scopeTypes = provider.getScopeTypes()
-        e.presentation.isEnabledAndVisible = !scopeTypes.isNullOrEmpty()
-    }
-    
     override fun getChildren(e: AnActionEvent?): Array<AnAction> {
         val provider = builder.provider
-        if(provider !is ParadoxDiagramProvider) return AnAction.EMPTY_ARRAY
-        val scopeTypes = provider.getScopeTypes()
-        if(scopeTypes.isNullOrEmpty()) return AnAction.EMPTY_ARRAY
+        if(provider !is ParadoxDiagramProvider) return getDefaultChildren()
+        val project = builder.project
+        val context = (builder.dataModel as ParadoxDiagramDataModel).originalFile?.toPsiFile<PsiFile>(project)
+        val scopeTypes = provider.getScopeTypes(project, context)
+        if(scopeTypes.isNullOrEmpty()) return getDefaultChildren()
         return scopeTypes.mapToArray { ParadoxDiagramChangeScopeTypeAction(it, builder) }
+    }
+    
+    private fun getDefaultChildren(): Array<AnAction> {
+        return arrayOf(ParadoxDiagramChangeScopeTypeAction(ParadoxSearchScopeTypes.All, builder))
     }
 }

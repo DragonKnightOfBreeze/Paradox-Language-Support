@@ -3,6 +3,7 @@ package icu.windea.pls.extension.diagram.provider
 import com.intellij.diagram.*
 import com.intellij.diagram.settings.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.extension.diagram.settings.*
@@ -27,8 +28,8 @@ abstract class ParadoxDiagramProvider(
         return DiagramConfigGroup.EMPTY
     }
     
-    open fun getScopeTypes(): List<ParadoxSearchScopeType>? {
-        return null
+    open fun getScopeTypes(project: Project, context: PsiElement?): List<ParadoxSearchScopeType>? {
+        return ParadoxSearchScopeTypes.getScopeTypes(project, context)
     }
     
     open fun getDiagramSettings(): ParadoxDiagramSettings<*>? {
