@@ -11,27 +11,17 @@ import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 object StellarisTechnologyHandler : ParadoxTechnologyHandler() {
-    fun getTechnologyTiers(project: Project, context: Any?): Set<ParadoxScriptProperty> {
+    fun getTechnologyTiers(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
         val selector = definitionSelector(project, context).withGameType(ParadoxGameType.Stellaris).contextSensitive().distinctByName()
-        val technologies = mutableSetOf<ParadoxScriptProperty>()
-        ParadoxDefinitionSearch.search("technology_tier", selector).processQuery {
-            if(it is ParadoxScriptProperty) technologies.add(it)
-            true
-        }
-        return technologies
+        return ParadoxDefinitionSearch.search("technology_tier", selector).findAll()
     }
     
     fun getResearchAreas(): Set<String> {
         return getCwtConfig().stellaris.enums.get("research_areas")?.values.orEmpty()
     }
     
-    fun getTechnologyCategories(project: Project, context: Any?): Set<ParadoxScriptProperty> {
+    fun getTechnologyCategories(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
         val selector = definitionSelector(project, context).withGameType(ParadoxGameType.Stellaris).contextSensitive().distinctByName()
-        val technologies = mutableSetOf<ParadoxScriptProperty>()
-        ParadoxDefinitionSearch.search("technology_category", selector).processQuery {
-            if(it is ParadoxScriptProperty) technologies.add(it)
-            true
-        }
-        return technologies
+        return ParadoxDefinitionSearch.search("technology_category", selector).findAll()
     }
 }

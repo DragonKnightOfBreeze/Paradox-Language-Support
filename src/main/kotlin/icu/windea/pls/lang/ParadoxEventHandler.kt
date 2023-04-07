@@ -40,29 +40,22 @@ object ParadoxEventHandler {
         return prefix == eventNamespace
     }
     
-    @JvmStatic
-    fun getEvents(selector: ParadoxDefinitionSelector): Set<ParadoxScriptProperty> {
-        val result = mutableSetOf<ParadoxScriptProperty>()
-        ParadoxDefinitionSearch.search("event", selector).processQuery {
-            if(it is ParadoxScriptProperty) result.add(it)
-            true
-        }
-        return result
+    fun getEvents(selector: ParadoxDefinitionSelector): Set<ParadoxScriptDefinitionElement> {
+        return ParadoxDefinitionSearch.search("events", selector).findAll()
     }
     
-    @JvmStatic
-    fun getName(element: ParadoxScriptProperty): String {
+    fun getName(element: ParadoxScriptDefinitionElement): String {
         return element.definitionInfo?.name.orAnonymous()
     }
     
-    fun getNamespace(element: ParadoxScriptProperty): String {
+    fun getNamespace(element: ParadoxScriptDefinitionElement): String {
         return getName(element).substringBefore(".") //enough
     }
     
     /**
      * 得到event的需要匹配的namespace。
      */
-    fun getMatchedNamespace(event: ParadoxScriptProperty): ParadoxScriptProperty? {
+    fun getMatchedNamespace(event: ParadoxScriptDefinitionElement): ParadoxScriptProperty? {
         var current = event.prevSibling ?: return null
         while(true) {
             if(current is ParadoxScriptProperty && current.name.equals("namespace", true)) {
@@ -76,25 +69,25 @@ object ParadoxEventHandler {
         }
     }
     
-    fun getLocalizedName(definition: ParadoxScriptProperty): ParadoxLocalisationProperty? {
+    fun getLocalizedName(definition: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
         return definition.definitionInfo?.resolvePrimaryLocalisation()
     }
     
-    fun getIconFile(definition: ParadoxScriptProperty): PsiFile? {
+    fun getIconFile(definition: ParadoxScriptDefinitionElement): PsiFile? {
         return definition.definitionInfo?.resolvePrimaryImage()
     }
     
     /**
      * 得到指定事件可能调用的所有事件。
      */
-    fun getInvocations(definition: ParadoxScriptProperty): Map<String, InvocationType> {
+    fun getInvocations(definition: ParadoxScriptDefinitionElement): Map<String, InvocationType> {
         return CachedValuesManager.getCachedValue(definition, cachedEventInvocationsKey) {
             val value = doGetInvocations(definition)
             CachedValueProvider.Result(value, definition)
         }
     }
     
-    private fun doGetInvocations(definition: ParadoxScriptProperty): Map<String, InvocationType> {
+    private fun doGetInvocations(definition: ParadoxScriptDefinitionElement): Map<String, InvocationType> {
         val result = mutableMapOf<String, InvocationType>()
         definition.block?.processProperty p@{ prop ->
             ProgressManager.checkCanceled()

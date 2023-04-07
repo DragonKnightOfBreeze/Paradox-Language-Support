@@ -55,7 +55,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     }
     
     private val _elementManager = ElementManager(this)
-    private val _relationshipManager = RelationshipManager()
     
     override fun getPresentableName() = PlsDiagramBundle.message("paradox.eventTree.name", gameType)
     
@@ -63,7 +62,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     
     override fun getElementManager() = _elementManager
     
-    override fun getRelationshipManager() = _relationshipManager
+    override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
     
     override fun getAllContentCategories() = CATEGORIES
     
@@ -233,12 +232,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         }
     }
     
-    class RelationshipManager : DiagramRelationshipManager<PsiElement> {
-        override fun getDependencyInfo(s: PsiElement?, t: PsiElement?, category: DiagramCategory?): DiagramRelationshipInfo? {
-            return null
-        }
-    }
-    
     open class ColorManager : DiagramColorManagerBase() {
         override fun getEdgeColor(builder: DiagramBuilder, edge: DiagramEdge<*>): Color {
             if(edge !is Edge) return super.getEdgeColor(builder, edge)
@@ -257,7 +250,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     }
     
     class Node(
-        element: ParadoxScriptProperty,
+        element: ParadoxScriptDefinitionElement,
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDefinitionDiagramProvider.Node(element, provider)
     
@@ -268,9 +261,11 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         val invocationType: ParadoxEventHandler.InvocationType,
     ) : ParadoxDefinitionDiagramProvider.Edge(source, target, relationship)
     
-    override fun getDefinitionType() = "event"
-    
-    override fun getModificationTracker(): ModificationTracker {
-        return ParadoxModificationTrackerProvider.getInstance().Events
+    open class DataModel(
+        project: Project,
+        file: VirtualFile?, //umlFile
+        provider: ParadoxDefinitionDiagramProvider
+    ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
+        override fun getModificationTracker() = ParadoxModificationTrackerProvider.getInstance().Events
     }
 }

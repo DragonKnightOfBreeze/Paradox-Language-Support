@@ -64,8 +64,6 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
     }
     
     private val _elementManager = ElementManager(this)
-    private val _relationshipManager = RelationshipManager()
-    private val _extras = Extras(this)
     
     override fun getID() = gameType.name + ".TechnologyTree"
     
@@ -75,11 +73,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
     
     override fun getElementManager() = _elementManager
     
-    override fun getRelationshipManager() = _relationshipManager
-    
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
-    
-    override fun getExtras() = _extras
     
     override fun getAllContentCategories() = CATEGORIES
     
@@ -257,16 +251,10 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
         }
     }
     
-    class RelationshipManager : DiagramRelationshipManager<PsiElement> {
-        override fun getDependencyInfo(s: PsiElement?, t: PsiElement?, category: DiagramCategory?): DiagramRelationshipInfo? {
-            return null
-        }
-    }
-    
     class Node(
-        element: ParadoxScriptProperty,
+        element: ParadoxScriptDefinitionElement,
         provider: ParadoxDefinitionDiagramProvider
-    ) : ParadoxDefinitionDiagramProvider.Node(element, provider) 
+    ) : ParadoxDefinitionDiagramProvider.Node(element, provider)
     
     class Edge(
         source: Node,
@@ -274,70 +262,11 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
         relationship: DiagramRelationshipInfo
     ) : ParadoxDefinitionDiagramProvider.Edge(source, target, relationship)
     
-    class DataModel(
+    open class DataModel(
         project: Project,
         file: VirtualFile?, //umlFile
-        provider: ParadoxTechnologyTreeDiagramProvider
+        provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
-        override fun getNodeName(node: DiagramNode<PsiElement>) = node.tooltip.orAnonymous()
-        
-        override fun addElement(element: PsiElement?) = null
-        
-        override fun getModificationTracker() = this
-        
-        override fun getModificationCount(): Long {
-            return ParadoxModificationTrackerProvider.getInstance().Technologies.modificationCount
-        }
-        
-        override fun dispose() {
-            
-        }
-        
-        override fun refreshDataModel() {
-            provider as ParadoxTechnologyTreeDiagramProvider
-            
-            ProgressManager.checkCanceled()
-            nodes.clear()
-            edges.clear()
-            val technologies = getDefinitions("technology")
-            if(technologies.isEmpty()) return
-            //群星原版科技有400+
-            val nodeMap = mutableMapOf<ParadoxScriptProperty, Node>()
-            val techMap = mutableMapOf<String, ParadoxScriptProperty>()
-            for(technology in technologies) {
-                ProgressManager.checkCanceled()
-                if(!provider.showNode(technology)) continue
-                val node = Node(technology, provider)
-                provider.handleNode(node)
-                nodeMap.put(technology, node)
-                techMap.put(ParadoxTechnologyHandler.getName(technology), technology)
-                nodes.add(node)
-            }
-            for(technology in technologies) {
-                ProgressManager.checkCanceled()
-                val data = technology.getData<StellarisTechnologyDataProvider.Data>() ?: continue
-                //循环科技 ..> 循环科技
-                val levels = data.levels
-                if(levels != null) {
-                    val label = if(levels <= 0) "max level: inf" else "max level: $levels"
-                    val node = nodeMap.get(technology) ?: continue
-                    val edge = Edge(node, node, REL_REPEAT(label))
-                    edges.add(edge)
-                }
-                //前置 --> 科技
-                val prerequisites = data.prerequisites
-                if(prerequisites.isNotEmpty()) {
-                    for(prerequisite in prerequisites) {
-                        val source = techMap.get(prerequisite)?.let { nodeMap.get(it) } ?: continue
-                        val target = nodeMap.get(technology) ?: continue
-                        val edge = Edge(source, target, REL_PREREQUISITE)
-                        provider.handleEdge(edge)
-                        edges.add(edge)
-                    }
-                }
-            }
-        }
+        override fun getModificationTracker() = ParadoxModificationTrackerProvider.getInstance().Technologies
     }
-    
-    class Extras(provider: ParadoxDiagramProvider) : ParadoxDiagramExtras(provider)
 }

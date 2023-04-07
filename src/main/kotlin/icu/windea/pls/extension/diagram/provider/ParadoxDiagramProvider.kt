@@ -22,7 +22,8 @@ abstract class ParadoxDiagramProvider(
         private val VfsResolver = ParadoxRootVfsResolver()
     }
     
-    val _extra = ParadoxDiagramExtras(this)
+    private val _relationshipManager = ParadoxRelationshipManager()
+    private val _extra = ParadoxDiagramExtras(this)
     
     override fun getVfsResolver(): DiagramVfsResolver<PsiElement> {
         return VfsResolver
@@ -36,16 +37,12 @@ abstract class ParadoxDiagramProvider(
         return DiagramPsiScopeManager(project)
     }
     
-    override fun getExtras(): DiagramExtras<PsiElement> {
-        return _extra
+    override fun getRelationshipManager(): DiagramRelationshipManager<PsiElement> {
+        return _relationshipManager
     }
     
-    abstract fun getModificationTracker(): ModificationTracker
-    
-    open fun refreshDataModel(dataModel: ParadoxDiagramDataModel) {
-        ProgressManager.checkCanceled()
-        dataModel.nodes.clear()
-        dataModel.edges.clear()
+    override fun getExtras(): DiagramExtras<PsiElement> {
+        return _extra
     }
     
     open fun getAdditionalDiagramSettings(): Array<out DiagramConfigGroup> {

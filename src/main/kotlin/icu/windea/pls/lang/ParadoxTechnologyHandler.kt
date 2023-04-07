@@ -12,31 +12,26 @@ import icu.windea.pls.script.psi.*
 open class ParadoxTechnologyHandler {
     companion object INSTANCE: ParadoxTechnologyHandler()
     
-    fun getTechnologies(selector: ParadoxDefinitionSelector): Set<ParadoxScriptProperty> {
-        val result = mutableSetOf<ParadoxScriptProperty>()
-        ParadoxDefinitionSearch.search("technology", selector).processQuery {
-            if(it is ParadoxScriptProperty) result.add(it)
-            true
-        }
-        return result
+    fun getTechnologies(selector: ParadoxDefinitionSelector): Set<ParadoxScriptDefinitionElement> {
+        return ParadoxDefinitionSearch.search("technology", selector).findAll()
     }
     
-    fun getName(element: ParadoxScriptProperty): String {
+    fun getName(element: ParadoxScriptDefinitionElement): String {
         return element.name // = element.definitionInfo.name
     }
     
-    fun getLocalizedName(definition: ParadoxScriptProperty): ParadoxLocalisationProperty? {
+    fun getLocalizedName(definition: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
         return definition.definitionInfo?.resolvePrimaryLocalisation()
     }
     
-    fun getIconFile(definition: ParadoxScriptProperty): PsiFile? {
+    fun getIconFile(definition: ParadoxScriptDefinitionElement): PsiFile? {
         return definition.definitionInfo?.resolvePrimaryImage()
     }
     
     /**
      * 得到指定科技的所有前置科技。
      */
-    fun getPrerequisites(definition: ParadoxScriptProperty): Set<String> {
+    fun getPrerequisites(definition: ParadoxScriptDefinitionElement): Set<String> {
         val data = definition.getData<StellarisTechnologyDataProvider.Data>() ?: return emptySet()
         val prerequisites = data.prerequisites
         return prerequisites

@@ -5,6 +5,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
+import icu.windea.pls.core.*
 import icu.windea.pls.extension.diagram.provider.*
 
 abstract class ParadoxDiagramDataModel(
@@ -23,11 +24,11 @@ abstract class ParadoxDiagramDataModel(
     
     override fun getEdges() = _edges
     
-    override fun getModificationTracker(): ModificationTracker {
-        return provider.getModificationTracker()
-    }
+    override fun getNodeName(node: DiagramNode<PsiElement>) = node.tooltip.orAnonymous()
     
-    override open fun refreshDataModel() {
-        provider.refreshDataModel(this)
+    override fun addElement(element: PsiElement?) = null
+    
+    override fun dispose() {
+        
     }
 }
