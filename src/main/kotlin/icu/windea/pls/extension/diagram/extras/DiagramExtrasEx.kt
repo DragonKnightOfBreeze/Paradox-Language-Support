@@ -6,9 +6,11 @@ import com.intellij.diagram.extras.custom.*
 import com.intellij.openapi.graph.view.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.extension.diagram.components.*
 import javax.swing.*
 
+@TrickyApi
 abstract class DiagramExtrasEx : CommonDiagramExtras<PsiElement>() {
     override fun createNodeComponent(node: DiagramNode<PsiElement>, builder: DiagramBuilder, nodeRealizer: NodeRealizer, wrapper: JPanel): JComponent {
         //允许添加自定义的组件

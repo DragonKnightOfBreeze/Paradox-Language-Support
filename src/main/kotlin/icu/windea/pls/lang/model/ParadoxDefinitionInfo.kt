@@ -211,12 +211,12 @@ val ParadoxDefinitionInfo.isGlobal: Boolean get() = sourceType != SourceType.Pat
  */
 val ParadoxDefinitionInfo.isAnonymous: Boolean get() = name.isEmpty()
 
-@InferMethod
+@InferApi
 private fun ParadoxDefinitionRelatedLocalisationInfo.inferIsPrimary(): Boolean {
     return name.equals("name", true) || name.equals("title", true)
 }
 
-@InferMethod
+@InferApi
 private fun ParadoxDefinitionRelatedImageInfo.inferIsPrimary(): Boolean {
     return name.equals("icon", true)
 }

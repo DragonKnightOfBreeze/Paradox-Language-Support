@@ -5,10 +5,8 @@ import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
-import com.intellij.util.ui.ThreeStateCheckBox
 import com.intellij.util.ui.ThreeStateCheckBox.State.*
 import com.intellij.util.xmlb.annotations.*
-import com.intellij.util.xmlb.annotations.Transient
 import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.ui.*
@@ -22,7 +20,7 @@ import icu.windea.pls.lang.model.*
 @State(name = "ParadoxDiagramSettings.Stellaris.TechnologyTree", storages = [Storage("paradox-language-support.xml")])
 class StellarisTechnologyTreeDiagramSettings(
     val project: Project
-) : ParadoxTechnologyTreeDiagramSettings<StellarisTechnologyTreeDiagramSettings.State>(StellarisTechnologyTreeDiagramSettings.State()) {
+) : ParadoxTechnologyTreeDiagramSettings<StellarisTechnologyTreeDiagramSettings.State>(State()) {
     companion object {
         const val ID = "settings.language.pls.diagram.Stellaris.TechnologyTree"
     }
@@ -30,7 +28,13 @@ class StellarisTechnologyTreeDiagramSettings(
     override val id: String = ID
     override val configurableClass: Class<out Configurable> = StellarisTechnologyTreeDiagramSettingsConfigurable::class.java
     
-    class State() : ParadoxDiagramSettings.State() {
+    init {
+        state.project = project
+    }
+    
+    class State : ParadoxDiagramSettings.State() {
+        lateinit var project: Project
+        
         override var scopeType by string()
         
         @get:XMap
@@ -42,11 +46,6 @@ class StellarisTechnologyTreeDiagramSettings(
         @get:XMap
         var category by linkedMap<String, Boolean>()
         
-        var typeState by type.toThreeStateProperty()
-        var tierState by tier.toThreeStateProperty()
-        var areaState by area.toThreeStateProperty()
-        var categoryState by category.toThreeStateProperty()
-        
         val typeSettings = TypeSettings()
         
         inner class TypeSettings {
@@ -57,16 +56,16 @@ class StellarisTechnologyTreeDiagramSettings(
             val repeatable = type.getOrPut("repeatable") { true }
             val other = type.getOrPut("other") { true }
         }
-    }
-    
-    override fun initSettings() {
-        //it.name is ok here
-        val tiers = StellarisTechnologyHandler.getTechnologyTiers(project, null)
-        tiers.forEach { state.tier.putIfAbsent(it.name, true) }
-        val areas = StellarisTechnologyHandler.getResearchAreas()
-        areas.forEach { state.area.putIfAbsent(it, true) }
-        val categories = StellarisTechnologyHandler.getTechnologyCategories(project, null)
-        categories.forEach { state.category.putIfAbsent(it.name, true) }
-        super.initSettings()
+        
+        override fun initSettings() {
+            //it.name is ok here
+            val tiers = StellarisTechnologyHandler.getTechnologyTiers(project, null)
+            tiers.forEach { tier.putIfAbsent(it.name, true) }
+            val areas = StellarisTechnologyHandler.getResearchAreas()
+            areas.forEach { area.putIfAbsent(it, true) }
+            val categories = StellarisTechnologyHandler.getTechnologyCategories(project, null)
+            categories.forEach { category.putIfAbsent(it.name, true) }
+            super.initSettings()
+        }
     }
 }

@@ -1,7 +1,7 @@
 package icu.windea.pls.extension.diagram.settings
 
 import com.intellij.openapi.components.*
-import com.intellij.openapi.options.Configurable
+import com.intellij.openapi.options.*
 
 abstract class ParadoxDiagramSettings<T: ParadoxDiagramSettings.State>(initialState: T) : SimplePersistentStateComponent<T>(initialState) {
     abstract val id: String
@@ -11,9 +11,9 @@ abstract class ParadoxDiagramSettings<T: ParadoxDiagramSettings.State>(initialSt
         abstract var scopeType: String?
         
         fun updateSettings() = incrementModificationCount()
-    }
-    
-    open fun initSettings() {
-        state.updateSettings()
+        
+        open fun initSettings() {
+            updateSettings()
+        }
     }
 }

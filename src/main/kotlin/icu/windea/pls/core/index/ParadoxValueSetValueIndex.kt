@@ -15,6 +15,9 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
+//这里应当使用Gist，因为可能需要在索引中访问其他索引
+//这里不能使用PsiFileGist，否则可能会出现应当可以解析但有时无法解析的情况
+
 object ParadoxValueSetValueIndex {
     class Data(
         val marker: Boolean = true,
@@ -72,8 +75,6 @@ object ParadoxValueSetValueIndex {
     
     private const val id = "paradox.valueSetValue.index"
     private const val version = 4 //0.9.7
-    
-    //这里不能使用PsiFileGist，否则可能会出现应当可以解析但有时无法解析的情况
     
     private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(id, version, valueExternalizer) builder@{ project, file ->
         ProgressManager.checkCanceled()

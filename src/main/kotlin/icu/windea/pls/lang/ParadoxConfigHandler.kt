@@ -60,7 +60,7 @@ object ParadoxConfigHandler {
     /**
      * 从CWT规则元素推断得到对应的CWT规则组。
      */
-    @InferMethod
+    @InferApi
     fun getConfigGroupFromCwt(from: PsiElement, project: Project): CwtConfigGroup? {
         val file = from.containingFile ?: return null
         val virtualFile = file.virtualFile ?: return null

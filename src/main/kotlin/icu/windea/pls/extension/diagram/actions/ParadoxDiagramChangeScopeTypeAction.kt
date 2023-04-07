@@ -49,7 +49,7 @@ class ParadoxDiagramChangeScopeTypeAction(
         val project = builder.project
         val provider = builder.provider
         if(provider !is ParadoxDiagramProvider) return
-        var settings = provider.getDiagramSettings(project)?.state ?: return
+        val settings = provider.getDiagramSettings(project)?.state ?: return
         settings.scopeType = scopeType.id
         DiagramUpdateService.getInstance().requestDataModelRefreshPreservingLayout(builder).runAsync()
     }

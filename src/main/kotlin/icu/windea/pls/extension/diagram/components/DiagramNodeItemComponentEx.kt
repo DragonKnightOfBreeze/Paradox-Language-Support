@@ -4,6 +4,7 @@ import com.intellij.diagram.*
 import com.intellij.diagram.components.*
 import com.intellij.ui.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.extension.diagram.*
 import java.awt.*
 
@@ -11,6 +12,7 @@ import java.awt.*
 //com.intellij.diagram.components.DiagramNodeBodyComponent
 //com.intellij.diagram.components.DiagramNodeItemComponent
 
+@TrickyApi
 class DiagramNodeItemComponentEx : DiagramNodeItemComponent() {
     private var useComponent = false
     

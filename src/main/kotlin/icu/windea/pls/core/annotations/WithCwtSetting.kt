@@ -4,7 +4,7 @@ import icu.windea.pls.config.setting.*
 import kotlin.reflect.*
 
 /**
- * 注明此功能基于指定的CWT配置实现。
+ * 注明此功能基于指定的CWT配置实现。区别于一般的CWT规则。
  * @property fileName CWT配置文件的文件名。
  * @property settingClass 对应的CWT配置类。
  */
