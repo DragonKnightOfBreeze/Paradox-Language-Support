@@ -34,6 +34,10 @@ class ParadoxDiagramChangeScopeTypeAction(
         return if(selected) SELECTED_ICON else DESELECTED_ICON
     }
     
+    override fun getActionUpdateThread(): ActionUpdateThread {
+        return ActionUpdateThread.BGT
+    }
+    
     override fun update(e: AnActionEvent) {
         val builder = e.getData(DiagramDataKeys.BUILDER)
         val provider = builder?.provider

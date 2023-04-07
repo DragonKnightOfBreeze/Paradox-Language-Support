@@ -38,60 +38,76 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
             row {
                 label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
             }
-            row {
-                cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.type")))
-                    .applyToComponent { isThirdStateEnabled = false }
-                    .bindState(typeState)
-            }.customize(JBVerticalGaps())
+            if(settings.type.isNotEmpty()) {
+                row {
+                    cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.type")))
+                        .applyToComponent { isThirdStateEnabled = false }
+                        .bindState(typeState)
+                        .customize(JBGaps(3, 0, 3, 0))
+                }
+            }
             indent {
                 settings.type.keys.forEach {
                     row {
                         checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.type.${it}"))
                             .bindSelected(settings.type.toMutableProperty(it, true))
                             .actionListener { _, _ -> typeState.set(settings.typeState) }
-                    }.customize(JBVerticalGaps())
+                            .customize(JBGaps(3, 0, 3, 0))
+                    }
                 }
             }
-            row {
-                cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.tier")))
-                    .applyToComponent { isThirdStateEnabled = false }
-                    .bindState(tierState)
-            }.customize(JBVerticalGaps())
+            if(settings.tier.isNotEmpty()) {
+                row {
+                    cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.tier")))
+                        .applyToComponent { isThirdStateEnabled = false }
+                        .bindState(tierState)
+                        .customize(JBGaps(3, 0, 3, 0))
+                }
+            }
             indent {
                 settings.tier.keys.forEach {
                     row {
                         checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.tier.option", it))
                             .bindSelected(settings.tier.toMutableProperty(it, true))
                             .actionListener { _, _ -> tierState.set(settings.tierState) }
-                    }.customize(JBVerticalGaps())
+                            .customize(JBGaps(3, 0, 3, 0))
+                    }
                 }
             }
-            row {
-                cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.area")))
-                    .applyToComponent { isThirdStateEnabled = false }
-                    .bindState(areaState)
-            }.customize(JBVerticalGaps())
+            if(settings.area.isNotEmpty()) {
+                row {
+                    cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.area")))
+                        .applyToComponent { isThirdStateEnabled = false }
+                        .bindState(areaState)
+                        .customize(JBGaps(3, 0, 3, 0))
+                }
+            }
             indent {
                 settings.area.keys.forEach {
                     row {
                         checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.area.option", it))
                             .bindSelected(settings.area.toMutableProperty(it, true))
                             .actionListener { _, _ -> areaState.set(settings.areaState) }
-                    }.customize(JBVerticalGaps())
+                            .customize(JBGaps(3, 0, 3, 0))
+                    }
                 }
             }
-            row {
-                cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.category")))
-                    .applyToComponent { isThirdStateEnabled = false }
-                    .bindState(categoryState)
-            }.customize(JBVerticalGaps())
+            if(settings.category.isNotEmpty()) {
+                row {
+                    cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.category")))
+                        .applyToComponent { isThirdStateEnabled = false }
+                        .bindState(categoryState)
+                        .customize(JBGaps(3, 0, 3, 0))
+                }
+            }
             indent {
                 settings.category.keys.forEach {
                     row {
                         checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.category.option", it))
                             .bindSelected(settings.category.toMutableProperty(it, true))
                             .actionListener { _, _ -> categoryState.set(settings.categoryState) }
-                    }.customize(JBVerticalGaps())
+                            .customize(JBGaps(3, 0, 3, 0))
+                    }
                 }
             }
         }

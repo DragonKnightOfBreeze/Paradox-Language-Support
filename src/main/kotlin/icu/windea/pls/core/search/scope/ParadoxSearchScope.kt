@@ -58,8 +58,8 @@ sealed class ParadoxSearchScope(
         
         @JvmStatic
         fun modScope(project: Project, context: PsiElement): GlobalSearchScope {
-            val file = context.containingFile
-            if(!ProjectFileIndex.getInstance(project).isInContent(file.virtualFile)) return EMPTY_SCOPE //use empty scope here
+            val file = selectFile(context) ?: return EMPTY_SCOPE
+            if(!ProjectFileIndex.getInstance(project).isInContent(file)) return EMPTY_SCOPE //use empty scope here
             val fileInfo = file.fileInfo
             val rootInfo = fileInfo?.rootInfo
             val modDirectory = rootInfo?.castOrNull<ParadoxModRootInfo>()?.rootFile
@@ -68,8 +68,8 @@ sealed class ParadoxSearchScope(
         
         @JvmStatic
         fun gameScope(project: Project, context: PsiElement): GlobalSearchScope {
-            val file = context.containingFile
-            if(!ProjectFileIndex.getInstance(project).isInContent(file.virtualFile)) return EMPTY_SCOPE //use empty scope here
+            val file = selectFile(context) ?: return EMPTY_SCOPE
+            if(!ProjectFileIndex.getInstance(project).isInContent(file)) return EMPTY_SCOPE //use empty scope here
             val fileInfo = file.fileInfo
             val rootInfo = fileInfo?.rootInfo
             val gameDirectory = rootInfo?.castOrNull<ParadoxGameRootInfo>()?.rootFile
@@ -78,8 +78,8 @@ sealed class ParadoxSearchScope(
         
         @JvmStatic
         fun modAndGameScope(project: Project, context: PsiElement): GlobalSearchScope {
-            val file = context.containingFile
-            if(!ProjectFileIndex.getInstance(project).isInContent(file.virtualFile)) return EMPTY_SCOPE //use empty scope here
+            val file = selectFile(context) ?: return EMPTY_SCOPE
+            if(!ProjectFileIndex.getInstance(project).isInContent(file)) return EMPTY_SCOPE //use empty scope here
             val fileInfo = file.fileInfo
             val rootInfo = fileInfo?.rootInfo
             when(rootInfo) {
@@ -99,8 +99,8 @@ sealed class ParadoxSearchScope(
         
         @JvmStatic
         fun modWithDependenciesScope(project: Project, context: PsiElement): GlobalSearchScope {
-            val file = context.containingFile
-            if(!ProjectFileIndex.getInstance(project).isInContent(file.virtualFile)) return EMPTY_SCOPE //use empty scope here
+            val file = selectFile(context) ?: return EMPTY_SCOPE
+            if(!ProjectFileIndex.getInstance(project).isInContent(file)) return EMPTY_SCOPE //use empty scope here
             val fileInfo = file.fileInfo
             val rootInfo = fileInfo?.rootInfo
             val modDirectory = rootInfo?.castOrNull<ParadoxModRootInfo>()?.rootFile
@@ -113,8 +113,8 @@ sealed class ParadoxSearchScope(
         
         @JvmStatic
         fun gameWithDependenciesScope(project: Project, context: PsiElement): GlobalSearchScope {
-            val file = context.containingFile
-            if(!ProjectFileIndex.getInstance(project).isInContent(file.virtualFile)) return EMPTY_SCOPE //use empty scope here
+            val file = selectFile(context) ?: return EMPTY_SCOPE
+            if(!ProjectFileIndex.getInstance(project).isInContent(file)) return EMPTY_SCOPE //use empty scope here
             val fileInfo = file.fileInfo
             val rootInfo = fileInfo?.rootInfo
             val gameDirectory = rootInfo?.castOrNull<ParadoxGameRootInfo>()?.rootFile

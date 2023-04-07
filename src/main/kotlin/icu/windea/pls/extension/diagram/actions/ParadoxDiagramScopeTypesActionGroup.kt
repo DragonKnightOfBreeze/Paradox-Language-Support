@@ -20,11 +20,15 @@ class ParadoxDiagramScopeTypesActionGroup(
         templatePresentation.icon = AllIcons.General.Filter
     }
     
+    override fun getActionUpdateThread(): ActionUpdateThread {
+        return ActionUpdateThread.BGT
+    }
+    
     override fun getChildren(e: AnActionEvent?): Array<AnAction> {
         val provider = builder.provider
         if(provider !is ParadoxDiagramProvider) return getDefaultChildren()
         val project = builder.project
-        val context = (builder.dataModel as ParadoxDiagramDataModel).originalFile?.toPsiFile<PsiFile>(project)
+        val context = (builder.dataModel as ParadoxDiagramDataModel).originalFile
         val scopeTypes = provider.getScopeTypes(project, context)
         if(scopeTypes.isNullOrEmpty()) return getDefaultChildren()
         return scopeTypes.mapToArray { ParadoxDiagramChangeScopeTypeAction(it, builder) }

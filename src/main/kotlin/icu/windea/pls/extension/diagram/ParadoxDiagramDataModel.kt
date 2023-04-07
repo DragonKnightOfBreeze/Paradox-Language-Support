@@ -15,7 +15,8 @@ abstract class ParadoxDiagramDataModel(
 ): DiagramDataModel<PsiElement>(project, provider)  {
     val gameType get() = provider.gameType
     
-    val originalFile get() = file?.getUserData(DiagramDataKeys.ORIGINAL_ELEMENT) as? VirtualFile?
+    //rootFile - PsiFileSystemItem
+    val originalFile get() = file?.getUserData(DiagramDataKeys.ORIGINAL_ELEMENT) as? PsiFileSystemItem
     
     private val _nodes = mutableSetOf<ParadoxDiagramNode>()
     private val _edges = mutableSetOf<ParadoxDiagramEdge>()

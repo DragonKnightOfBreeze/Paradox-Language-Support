@@ -26,6 +26,7 @@ class StellarisEventTreeDiagramSettings(
     }
     
     override val id: String = ID
+    override val configurableClass: Class<out Configurable> = StellarisEventTreeDiagramSettingsConfigurable::class.java
     
     class State() : ParadoxDiagramSettings.State() {
         override var scopeType by string()

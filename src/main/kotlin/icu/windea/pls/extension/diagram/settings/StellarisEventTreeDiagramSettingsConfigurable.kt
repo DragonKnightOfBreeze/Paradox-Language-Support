@@ -34,18 +34,22 @@ class StellarisEventTreeDiagramSettingsConfigurable(
             row {
                 label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
             }
-            row {
-                cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.eventTree.settings.type")))
-                    .applyToComponent { isThirdStateEnabled = false }
-                    .bindState(typeState)
-            }.customize(JBVerticalGaps())
+            if(settings.type.isNotEmpty()) {
+                row {
+                    cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.eventTree.settings.type")))
+                        .applyToComponent { isThirdStateEnabled = false }
+                        .bindState(typeState)
+                        .customize(JBGaps(3, 0, 3, 0))
+                }
+            }
             indent {
                 settings.type.keys.forEach {
                     row {
                         checkBox(PlsDiagramBundle.message("stellaris.eventTree.settings.type.${it}"))
                             .bindSelected(settings.type.toMutableProperty(it, true))
                             .actionListener { _, _ -> typeState.set(settings.typeState) }
-                    }.customize(JBVerticalGaps())
+                            .customize(JBGaps(3, 0, 3, 0))
+                    }
                 }
             }
         }

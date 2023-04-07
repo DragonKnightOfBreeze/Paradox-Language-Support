@@ -1,10 +1,14 @@
 package icu.windea.pls.extension.diagram.settings
 
+import com.intellij.application.options.colors.*
 import com.intellij.diagram.*
+import com.intellij.ide.*
 import com.intellij.openapi.options.*
+import com.intellij.openapi.options.ex.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.*
+import com.intellij.ui.SettingsUtil
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
@@ -28,7 +32,14 @@ class ParadoxDiagramSettingsConfigurable(
                 indent {
                     row {
                         cell(ActionLink(text) {
-                            ShowSettingsUtil.getInstance().showSettingsDialog(null, settings.id)
+                            //com.intellij.codeInsight.actions.ReaderModeSettingsListener.Companion.goToEditorReaderMode
+                            DataManager.getInstance().dataContextFromFocusAsync.onSuccess { context ->
+                                context?.let { dataContext ->
+                                    Settings.KEY.getData(dataContext)?.let { 
+                                        it.select(it.find(settings.id))
+                                    }
+                                }
+                            }
                         })
                     }
                 }

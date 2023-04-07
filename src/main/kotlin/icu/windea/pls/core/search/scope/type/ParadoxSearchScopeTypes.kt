@@ -19,14 +19,15 @@ object ParadoxSearchScopeTypes {
     }
     
     private fun doGetScopeTypes(project: Project, context: PsiElement?): List<ParadoxSearchScopeType>? {
+        //context: PsiDirectory | PsiFile | PsiElement | null
         if(context == null) return null
-        val result = mutableListOf<ParadoxSearchScopeType>()
-        val file = context.containingFile
+        val file = selectFile(context) ?: return null
         val fileInfo = file.fileInfo ?: return null
+        val result = mutableListOf<ParadoxSearchScopeType>()
         if(file.fileType.isParadoxFileType()) {
             result.add(File)
         }
-        val isInProject = ProjectFileIndex.getInstance(project).isInContent(file.virtualFile)
+        val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
         val rootInfo = fileInfo.rootInfo
         when(rootInfo) {
             is ParadoxModRootInfo -> {

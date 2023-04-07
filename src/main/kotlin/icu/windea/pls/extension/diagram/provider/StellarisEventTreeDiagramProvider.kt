@@ -71,7 +71,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
             ProgressManager.checkCanceled()
             nodes.clear()
             edges.clear()
-            val events = getDefinitions("events")
+            val events = getDefinitions("event")
             if(events.isEmpty()) return
             //群星原版事件有5000+
             val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()
