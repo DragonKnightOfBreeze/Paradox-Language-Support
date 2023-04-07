@@ -56,12 +56,5 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
                 .distinctByName()
             return ParadoxDefinitionSearch.search(typeExpression, selector).findAll()
         }
-        
-        protected inline fun <reified T : ParadoxDefinitionData> putDefinitionData(node: Node, key: Key<T>) {
-            val element = node.identifyingElement
-            if(element !is ParadoxScriptProperty) return
-            val data = element.getData<T>()
-            node.putUserData(key, data)
-        }
     }
 }

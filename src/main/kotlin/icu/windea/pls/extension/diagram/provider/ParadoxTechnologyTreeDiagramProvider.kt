@@ -77,7 +77,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
     
     override fun getAllContentCategories() = CATEGORIES
     
-    override abstract fun getDiagramSettings(): ParadoxTechlonogyTreeDiagramSettings<*>?
+    override abstract fun getDiagramSettings(): ParadoxTechnologyTreeDiagramSettings<*>?
     
     class NodeContentManager : OrderedDiagramNodeContentManager() {
         override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?): Boolean {
@@ -250,17 +250,6 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
             return super.getItemDocOwner(element, builder)
         }
     }
-    
-    class Node(
-        element: ParadoxScriptDefinitionElement,
-        provider: ParadoxDefinitionDiagramProvider
-    ) : ParadoxDefinitionDiagramProvider.Node(element, provider)
-    
-    class Edge(
-        source: Node,
-        target: Node,
-        relationship: DiagramRelationshipInfo
-    ) : ParadoxDefinitionDiagramProvider.Edge(source, target, relationship)
     
     open class DataModel(
         project: Project,

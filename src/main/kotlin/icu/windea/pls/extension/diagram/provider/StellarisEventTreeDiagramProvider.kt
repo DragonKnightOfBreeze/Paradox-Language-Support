@@ -7,36 +7,56 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selector.chained.*
-import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
+import java.awt.*
 
 class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Stellaris) {
     companion object {
         const val ID = "Stellaris.EventTree"
-        val nodeDataKey = Key.create<ParadoxEventDataProvider.Data>("paradox.eventTree.node.data")
+        
+        val ITEM_PROPERTY_KEYS = arrayOf(
+            "picture",
+            "hide_window", "is_triggered_only", "major", "diplomatic"
+        )
+        
+        val nodeDataKey = Key.create<ParadoxEventDataProvider.Data>("stellaris.eventTree.node.data")
+        val invocationTypeKey = Key.create<ParadoxEventHandler.InvocationType>("stellaris.eventTree.edge.invocationType")
     }
     
-    private val _itemPropertyKeys = arrayOf(
-        "picture",
-        "hide_window", "is_triggered_only", "major", "diplomatic"
-    )
+    private val _colorManager = ColorManager()
     
     override fun getID() = ID
     
+    override fun getColorManager() = _colorManager
+    
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
     
-    override fun getItemPropertyKeys() = _itemPropertyKeys
+    override fun getItemPropertyKeys() = ITEM_PROPERTY_KEYS
     
     override fun getDiagramSettings() = service<StellarisEventTreeDiagramSettings>()
+    
+    class ColorManager : DiagramColorManagerBase() {
+        override fun getEdgeColor(builder: DiagramBuilder, edge: DiagramEdge<*>): Color {
+            if(edge !is Edge) return super.getEdgeColor(builder, edge)
+            //基于调用类型
+            return doGetEdgeColor(edge) ?: super.getEdgeColor(builder, edge)
+        }
+        
+        private fun doGetEdgeColor(edge: Edge): Color? {
+            val invocationType = edge.getUserData(invocationTypeKey) ?: return null
+            return when(invocationType) {
+                ParadoxEventHandler.InvocationType.All -> null
+                ParadoxEventHandler.InvocationType.Immediate -> Color.RED
+                ParadoxEventHandler.InvocationType.After -> Color.BLUE
+            }
+        }
+    }
     
     class DataModel(
         project: Project,
@@ -58,7 +78,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
                 ProgressManager.checkCanceled()
                 if(!showNode(event)) continue
                 val node = Node(event, provider)
-                putDefinitionData(node, nodeDataKey)
+                node.putUserData(nodeDataKey, event.getData())
                 nodeMap.put(event, node)
                 val name = event.definitionInfo?.name.orAnonymous()
                 eventMap.put(name, event)
@@ -78,7 +98,8 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
                         ParadoxEventHandler.InvocationType.Immediate -> REL_INVOKE_IMMEDIATE
                         ParadoxEventHandler.InvocationType.After -> REL_INVOKE_AFTER
                     }
-                    val edge = Edge(source, target, relationship, invocationType)
+                    val edge = Edge(source, target, relationship)
+                    edge.putUserData(invocationTypeKey, invocationType)
                     edges.add(edge)
                 }
             }

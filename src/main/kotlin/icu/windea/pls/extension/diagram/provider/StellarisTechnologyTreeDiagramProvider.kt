@@ -11,9 +11,7 @@ import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
@@ -23,17 +21,18 @@ import java.awt.*
 class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvider(ParadoxGameType.Stellaris) {
     companion object {
         const val ID = "Stellaris.TechnologyTree"
-        val nodeDataKey = Key.create<StellarisTechnologyDataProvider.Data>("paradox.technologyTree.node.data")
+        
+        val ITEM_PROPERTY_KEYS = arrayOf(
+            "icon",
+            "tier", "area", "category",
+            "cost", "cost_per_level", "levels",
+            "start_tech", "is_rare", "is_dangerous"
+        )
+        
+        val nodeDataKey = Key.create<StellarisTechnologyDataProvider.Data>("stellaris.technologyTree.node.data")
     }
     
     private val _colorManager = ColorManager()
-    
-    private val _itemPropertyKeys = arrayOf(
-        "icon",
-        "tier", "area", "category",
-        "cost", "cost_per_level", "levels",
-        "start_tech", "is_rare", "is_dangerous"
-    )
     
     override fun getID() = ID
     
@@ -41,9 +40,9 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
     
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
     
-    override fun getItemPropertyKeys() = _itemPropertyKeys
+    override fun getItemPropertyKeys() = ITEM_PROPERTY_KEYS
     
-    override fun getDiagramSettings() = service<StellarisTechlonogyTreeDiagramSettings>()
+    override fun getDiagramSettings() = service<StellarisTechnologyTreeDiagramSettings>()
     
     class ColorManager : DiagramColorManagerBase() {
         override fun getNodeBorderColor(builder: DiagramBuilder, node: DiagramNode<*>?, isSelected: Boolean): Color {
@@ -88,7 +87,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
                 ProgressManager.checkCanceled()
                 if(!showNode(technology)) continue
                 val node = Node(technology, provider)
-                putDefinitionData(node, nodeDataKey)
+                node.putUserData(nodeDataKey, technology.getData())
                 nodeMap.put(technology, node)
                 val name = technology.definitionInfo?.name.orAnonymous()
                 techMap.put(name, technology)

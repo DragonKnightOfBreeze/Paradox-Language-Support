@@ -232,35 +232,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         }
     }
     
-    open class ColorManager : DiagramColorManagerBase() {
-        override fun getEdgeColor(builder: DiagramBuilder, edge: DiagramEdge<*>): Color {
-            if(edge !is Edge) return super.getEdgeColor(builder, edge)
-            //基于调用类型
-            return doGetEdgeColor(edge) ?: super.getEdgeColor(builder, edge)
-        }
-        
-        private fun doGetEdgeColor(edge: Edge): Color? {
-            val invocationType = edge.invocationType
-            return when(invocationType) {
-                ParadoxEventHandler.InvocationType.All -> null
-                ParadoxEventHandler.InvocationType.Immediate -> Color.RED
-                ParadoxEventHandler.InvocationType.After -> Color.BLUE
-            }
-        }
-    }
-    
-    class Node(
-        element: ParadoxScriptDefinitionElement,
-        provider: ParadoxDefinitionDiagramProvider
-    ) : ParadoxDefinitionDiagramProvider.Node(element, provider)
-    
-    class Edge(
-        source: Node,
-        target: Node,
-        relationship: DiagramRelationshipInfo = REL_INVOKE,
-        val invocationType: ParadoxEventHandler.InvocationType,
-    ) : ParadoxDefinitionDiagramProvider.Edge(source, target, relationship)
-    
     open class DataModel(
         project: Project,
         file: VirtualFile?, //umlFile
