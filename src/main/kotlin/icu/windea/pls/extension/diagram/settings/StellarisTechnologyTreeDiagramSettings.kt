@@ -9,11 +9,15 @@ import com.intellij.util.ui.ThreeStateCheckBox.State.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.search.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.tool.localisation.*
+import javax.swing.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 @Service(Service.Level.PROJECT)
@@ -48,6 +52,9 @@ class StellarisTechnologyTreeDiagramSettings(
         
         val typeSettings = TypeSettings()
         
+        val areaNames = mutableMapOf<String, String?>()
+        val categoryNames = mutableMapOf<String, String?>()
+        
         inner class TypeSettings {
             val start = type.getOrPut("start") { true }
             val rare = type.getOrPut("rare") { true }
@@ -60,11 +67,19 @@ class StellarisTechnologyTreeDiagramSettings(
         override fun initSettings() {
             //it.name is ok here
             val tiers = StellarisTechnologyHandler.getTechnologyTiers(project, null)
-            tiers.forEach { tier.putIfAbsent(it.name, true) }
+            tiers.forEach {
+                tier.putIfAbsent(it.name, true)
+            }
             val areas = StellarisTechnologyHandler.getResearchAreas()
-            areas.forEach { area.putIfAbsent(it, true) }
+            areas.forEach {
+                area.putIfAbsent(it, true)
+                areaNames.put(it, ParadoxPresentationHandler.getText(it, project))
+            }
             val categories = StellarisTechnologyHandler.getTechnologyCategories(project, null)
-            categories.forEach { category.putIfAbsent(it.name, true) }
+            categories.forEach {
+                category.putIfAbsent(it.name, true)
+                categoryNames.put(it.name, ParadoxPresentationHandler.getNameText(it))
+            }
             super.initSettings()
         }
     }

@@ -7,19 +7,14 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.psi.search.*
 import com.intellij.ui.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.extension.diagram.extras.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.presentation.*
 import icu.windea.pls.localisation.psi.*
@@ -164,7 +159,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
                     when {
                         nodeItem is ParadoxLocalisationProperty -> {
                             //科技的名字
-                            ParadoxLocalisationTextUIRender.render(nodeItem)
+                            ParadoxLocalisationTextUIRenderer.render(nodeItem)
                         }
                         nodeItem is PsiFile -> {
                             //科技的图标

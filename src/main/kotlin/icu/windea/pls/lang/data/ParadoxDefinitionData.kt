@@ -11,5 +11,5 @@ interface ParadoxDefinitionData
  * 获取定义的指定类型的数据。
  */
 inline fun <reified T : ParadoxDefinitionData> ParadoxScriptDefinitionElement.getData(): T? {
-    return ParadoxDefinitionDataProvider.getInstance(T::class.java)?.getData(this)
+    return ParadoxDefinitionDataProvider.getData(T::class.java, this)
 }

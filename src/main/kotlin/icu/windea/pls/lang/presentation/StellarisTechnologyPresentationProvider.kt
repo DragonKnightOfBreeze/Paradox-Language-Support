@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.presentation
 
-import com.intellij.openapi.diagnostic.*
 import com.intellij.ui.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
@@ -23,42 +22,32 @@ import javax.swing.*
 class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationProvider {
     val backgroundColor = Gray._34
     
-    //GFX_technology_unknown 52*52
-    //GFX_technology_xxx 52*52
-    
-    //GFX_bottom_line_physics 533*1
-    //GFX_bottom_line_society 533*1
-    //GFX_bottom_line_engineering 533*1
-    
-    //背景
-    //GFX_tech_entry_physics_bg 452*96
-    //GFX_tech_entry_society_bg 452*96
-    //GFX_tech_entry_engineering_bg 452*96
-    //GFX_tech_entry_rare_bg 452*96
-    //GFX_tech_entry_dangerous_bg 452*96
-    //GFX_tech_entry_dangerous_rare_bg 452*96
-    
-    //突破图标
-    //GFX_tech_gateway 24*24
-    
-    //标题 - 左上 - 白色
-    //费用 - 右上 - 绿色
-    
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
-        if(definition !is ParadoxScriptProperty) return false
         return definitionInfo.gameType == ParadoxGameType.Stellaris && definitionInfo.type == "technology"
     }
     
     override fun getPresentation(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): JComponent? {
-        return try {
-            doGetPresentation(definition, definitionInfo)
-        } catch(e: Exception) {
-            thisLogger().warn(e)
-            null
-        }
-    }
-    
-    private fun doGetPresentation(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): JComponent? {
+        //GFX_technology_unknown 52*52
+        //GFX_technology_xxx 52*52
+        
+        //GFX_bottom_line_physics 533*1
+        //GFX_bottom_line_society 533*1
+        //GFX_bottom_line_engineering 533*1
+        
+        //背景
+        //GFX_tech_entry_physics_bg 452*96
+        //GFX_tech_entry_society_bg 452*96
+        //GFX_tech_entry_engineering_bg 452*96
+        //GFX_tech_entry_rare_bg 452*96
+        //GFX_tech_entry_dangerous_bg 452*96
+        //GFX_tech_entry_dangerous_rare_bg 452*96
+        
+        //突破图标
+        //GFX_tech_gateway 24*24
+        
+        //标题 - 左上 - 白色
+        //费用 - 右上 - 绿色
+        
         val data = definition.getData<Data>() ?: return null
         val backgroundIcon = getBackgroundIcon(definition, definitionInfo, data) ?: return null
         val bottomLineIcon = getBottomLineIcon(definition, definitionInfo, data) ?: return null
@@ -89,12 +78,12 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
     }
     
     private fun getNameLabel(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: Data): JLabel? {
-        return ParadoxPresentationHandler.getNameLabel(definition)
+        return ParadoxPresentationHandler.getNameLabel(definition, "#fff")
     }
     
     private fun getCostLabel(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: Data): JLabel? {
         val cost = definition.getData<Data>()?.cost ?: 0
-        return ParadoxLocalisationTextUIRender.render(cost.toString(), "G", definition) //Green
+        return ParadoxLocalisationTextUIRenderer.render(cost.toString(), "G", definitionInfo.project, definition) //Green
     }
     
     private fun getIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: Data): Icon? {

@@ -36,10 +36,10 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                         .also { cb = it }
                 }
                 indent {
-                    settings.type.keys.forEach {
+                    settings.type.keys.forEach { key ->
                         row {
-                            checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.type.${it}"))
-                                .bindSelected(settings.type.toMutableProperty(it, true))
+                            checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.type.${key}"))
+                                .bindSelected(settings.type.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
                                 .customize(JBGaps(3, 0, 3, 0))
                         }
@@ -55,10 +55,10 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                         .also { cb = it }
                 }
                 indent {
-                    settings.tier.keys.forEach {
+                    settings.tier.keys.forEach { key ->
                         row {
-                            checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.tier.option", it))
-                                .bindSelected(settings.tier.toMutableProperty(it, true))
+                            checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.tier.option", key))
+                                .bindSelected(settings.tier.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
                                 .customize(JBGaps(3, 0, 3, 0))
                         }
@@ -74,12 +74,14 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                         .also { cb = it }
                 }
                 indent {
-                    settings.area.keys.forEach {
+                    settings.area.keys.forEach { key ->
                         row {
-                            checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.area.option", it))
-                                .bindSelected(settings.area.toMutableProperty(it, true))
+                            checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.area.option", key))
+                                .bindSelected(settings.area.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
                                 .customize(JBGaps(3, 0, 3, 0))
+                            //add localized name as comment
+                            settings.areaNames.get(key)?.let { comment(it) }
                         }
                     }
                 }
@@ -93,12 +95,14 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                         .also { cb = it }
                 }
                 indent {
-                    settings.category.keys.forEach {
+                    settings.category.keys.forEach { key ->
                         row {
-                            checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.category.option", it))
-                                .bindSelected(settings.category.toMutableProperty(it, true))
+                            checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.category.option", key))
+                                .bindSelected(settings.category.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
                                 .customize(JBGaps(3, 0, 3, 0))
+                            //add localized name as comment
+                            settings.categoryNames.get(key)?.let { comment(it) }
                         }
                     }
                 }

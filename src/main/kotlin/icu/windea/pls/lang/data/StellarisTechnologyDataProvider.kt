@@ -4,6 +4,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
 
 @WithGameType(ParadoxGameType.Stellaris)
@@ -15,7 +16,7 @@ class StellarisTechnologyDataProvider : ParadoxDefinitionDataProvider<StellarisT
         val category: Set<String>? by data.get("category")
     
         val cost: Int? by data.get("cost")
-        val cost_per_level: Int? by data.get("cost_per_level")
+        //val cost_per_level: Int? by data.get("cost_per_level")
         val levels: Int? by data.get("levels")
         
         val start_tech: Boolean by data.get("start_tech", false)
@@ -27,10 +28,12 @@ class StellarisTechnologyDataProvider : ParadoxDefinitionDataProvider<StellarisT
         val prerequisites: Set<String> by data.get("prerequisites", emptySet()) 
     }
     
-    override val definitionType = "technology"
     override val dataType = Data::class.java
-    override val gameType = ParadoxGameType.Stellaris
     override val cachedDataKey = Key.create<CachedValue<Data>>("stellaris.data.cached.technology")
+    
+    override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
+        return definitionInfo.gameType == ParadoxGameType.Stellaris && definitionInfo.type == "technology"
+    }
     
     override fun doGetData(data: ParadoxScriptData) = Data(data)
 }

@@ -7,16 +7,12 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.psi.search.GlobalSearchScopes
 import com.intellij.ui.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.extension.diagram.extras.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
@@ -25,7 +21,6 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import icu.windea.pls.tool.localisation.*
 import icu.windea.pls.tool.script.*
-import java.awt.*
 import javax.swing.*
 
 /**
@@ -152,7 +147,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                     when {
                         nodeItem is ParadoxLocalisationProperty -> {
                             //事件标题
-                            ParadoxLocalisationTextUIRender.render(nodeItem)
+                            ParadoxLocalisationTextUIRenderer.render(nodeItem)
                         }
                         nodeItem is PsiFile -> {
                             //事件图片

@@ -36,10 +36,10 @@ class StellarisEventTreeDiagramSettingsConfigurable(
                         .also { cb = it }
                 }
                 indent {
-                    settings.type.keys.forEach {
+                    settings.type.keys.forEach { key ->
                         row {
-                            checkBox(PlsDiagramBundle.message("stellaris.eventTree.settings.type.${it}"))
-                                .bindSelected(settings.type.toMutableProperty(it, true))
+                            checkBox(PlsDiagramBundle.message("stellaris.eventTree.settings.type.${key}"))
+                                .bindSelected(settings.type.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
                                 .customize(JBGaps(3, 0, 3, 0))
                         }

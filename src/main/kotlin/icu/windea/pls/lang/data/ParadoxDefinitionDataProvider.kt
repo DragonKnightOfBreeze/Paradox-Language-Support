@@ -3,6 +3,7 @@ package icu.windea.pls.lang.data
 import com.intellij.openapi.extensions.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
@@ -14,14 +15,14 @@ import icu.windea.pls.tool.script.*
  * 这里直接获取的应当是未加工过的必要的数据。
  *
  * 需要解析封装变量，不需要判断是否合法。兼容需要内联的情况。
- * 
+ *
  * @see ParadoxDefinitionData
  */
 interface ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
-    val definitionType: String
     val dataType: Class<T>
-    val gameType: ParadoxGameType? get() = null
     val cachedDataKey: Key<CachedValue<T>>
+    
+    fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
     
     fun getData(definition: ParadoxScriptDefinitionElement): T? {
         return CachedValuesManager.getCachedValue(definition, cachedDataKey) {
@@ -48,16 +49,14 @@ interface ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxDefinitionDataProvider<*>>("icu.windea.pls.definitionDataProvider")
         
-        fun getInstance(definitionType: String, gameType: ParadoxGameType? = null): ParadoxDefinitionDataProvider<*>? {
-            return EP_NAME.extensionList.find {
-                it.definitionType == definitionType && (it.gameType == null || it.gameType == gameType)
+        @Suppress("UNCHECKED_CAST")
+        fun <T : ParadoxDefinitionData> getData(dataType: Class<T>, definition: ParadoxScriptDefinitionElement): T? {
+            return EP_NAME.extensionList.firstNotNullOfOrNull p@{
+                if(it.dataType != dataType) return@p null
+                val definitionInfo = definition.definitionInfo ?: return@p null
+                if(!it.supports(definition, definitionInfo)) return@p null
+                it.getData(definition) as? T?
             }
-        }
-        
-        fun <T : ParadoxDefinitionData> getInstance(dataType: Class<T>): ParadoxDefinitionDataProvider<T>? {
-            return EP_NAME.extensionList.find {
-                it.dataType == dataType
-            }?.castOrNull()
         }
     }
 }
