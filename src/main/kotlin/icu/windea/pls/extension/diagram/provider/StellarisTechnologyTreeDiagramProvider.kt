@@ -42,7 +42,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
     
     override fun getItemPropertyKeys() = ITEM_PROPERTY_KEYS
     
-    override fun getDiagramSettings() = service<StellarisTechnologyTreeDiagramSettings>()
+    override fun getDiagramSettings(project: Project) = project.service<StellarisTechnologyTreeDiagramSettings>()
     
     class ColorManager : DiagramColorManagerBase() {
         override fun getNodeBorderColor(builder: DiagramBuilder, node: DiagramNode<*>?, isSelected: Boolean): Color {
@@ -123,7 +123,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
             if(definition !is ParadoxScriptProperty) return false
             val data = definition.getData<StellarisTechnologyDataProvider.Data>()
             if(data == null) return true
-            val settings = provider.getDiagramSettings().state
+            val settings = provider.getDiagramSettings(project).state
             
             val start = data.start_tech
             val rare = data.is_rare

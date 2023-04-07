@@ -15,17 +15,17 @@ class ParadoxDiagramOpenSettingsAction: DiagramAction(PlsDiagramBundle.message("
     }
     
     override fun update(e: AnActionEvent) {
-        val builder = e.getData(DiagramDataKeys.BUILDER)
-        val provider = builder?.provider
+        val builder = e.getData(DiagramDataKeys.BUILDER) ?: return
+        val provider = builder.provider
         e.presentation.isEnabledAndVisible = provider is ParadoxDiagramProvider
     }
     
     override fun perform(e: AnActionEvent) {
-        val builder = e.getData(DiagramDataKeys.BUILDER)
-        val provider = builder?.provider
+        val builder = e.getData(DiagramDataKeys.BUILDER) ?: return
+        val project = builder.project
+        val provider = builder.provider
         if(provider !is ParadoxDiagramProvider) return
-        val project = e.project
-        val settingsId = provider.getDiagramSettings()?.id ?: return
+        val settingsId = provider.getDiagramSettings(project)?.id ?: return
         ShowSettingsUtil.getInstance().showSettingsDialog(project, settingsId)
     }
 }

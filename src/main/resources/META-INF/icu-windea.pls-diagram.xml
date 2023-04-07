@@ -1,19 +1,14 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <applicationService
-        serviceImplementation="icu.windea.pls.extension.diagram.settings.StellarisEventTreeDiagramSettings"/>
-    <applicationService
-        serviceImplementation="icu.windea.pls.extension.diagram.settings.StellarisTechnologyTreeDiagramSettings"/>
-
-    <applicationConfigurable
+    <projectConfigurable
         id="settings.language.pls.diagram"
         parentId="settings.language.pls"
         instance="icu.windea.pls.extension.diagram.settings.ParadoxDiagramSettingsConfigurable"/>
-    <applicationConfigurable
+    <projectConfigurable
         id="settings.language.pls.diagram.Stellaris.EventTree"
         parentId="settings.language.pls.diagram"
         instance="icu.windea.pls.extension.diagram.settings.StellarisEventTreeDiagramSettingsConfigurable"/>
-    <applicationConfigurable
+    <projectConfigurable
         id="settings.language.pls.diagram.Stellaris.TechnologyTree"
         parentId="settings.language.pls.diagram"
         instance="icu.windea.pls.extension.diagram.settings.StellarisTechnologyTreeDiagramSettingsConfigurable"/>

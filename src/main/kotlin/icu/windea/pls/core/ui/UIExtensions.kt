@@ -36,7 +36,7 @@ fun MutableMap<*, Boolean>.toThreeStateProperty() = object : ReadWriteProperty<A
 
 fun <K, V> MutableMap<K, V>.toMutableProperty(key: K, defaultValue: V): MutableProperty<V> {
     return MutableProperty({
-        get(key) ?: defaultValue
+        getOrPut(key) { defaultValue }
     }, {
         put(key, it)
     })

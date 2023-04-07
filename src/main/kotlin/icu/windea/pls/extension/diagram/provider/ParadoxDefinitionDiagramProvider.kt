@@ -47,7 +47,7 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
     ): ParadoxDiagramDataModel(project, file, provider)  {
         protected fun getDefinitions(typeExpression: String): Set<ParadoxScriptDefinitionElement> {
             val searchScope = scopeManager?.currentScope?.let { GlobalSearchScopes.filterScope(project, it) }
-            val searchScopeType = provider.getDiagramSettings()?.state?.scopeType
+            val searchScopeType = provider.getDiagramSettings(project)?.state?.scopeType
             val selector = definitionSelector(project, originalFile)
                 .withGameType(gameType)
                 .withSearchScope(searchScope)

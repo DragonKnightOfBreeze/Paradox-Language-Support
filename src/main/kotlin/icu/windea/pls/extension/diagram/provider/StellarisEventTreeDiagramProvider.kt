@@ -41,7 +41,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
     
     override fun getItemPropertyKeys() = ITEM_PROPERTY_KEYS
     
-    override fun getDiagramSettings() = service<StellarisEventTreeDiagramSettings>()
+    override fun getDiagramSettings(project: Project) = project.service<StellarisEventTreeDiagramSettings>()
     
     class ColorManager : DiagramColorManagerBase() {
         override fun getEdgeColor(builder: DiagramBuilder, edge: DiagramEdge<*>): Color {
@@ -113,7 +113,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
             if(definition !is ParadoxScriptProperty) return false
             val data = definition.getData<StellarisEventDataProvider.Data>()
             if(data == null) return true
-            val settings = provider.getDiagramSettings().state
+            val settings = provider.getDiagramSettings(project).state
             
             val hidden = data.hide_window
             val triggered = data.is_triggered_only

@@ -53,7 +53,7 @@ abstract class ParadoxDiagramProvider(
         return ParadoxSearchScopeTypes.getScopeTypes(project, context)
     }
     
-    open fun getDiagramSettings(): ParadoxDiagramSettings<*>? {
+    open fun getDiagramSettings(project: Project): ParadoxDiagramSettings<*>? {
         return null
     }
 }

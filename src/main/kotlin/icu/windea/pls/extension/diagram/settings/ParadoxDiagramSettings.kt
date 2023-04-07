@@ -10,4 +10,8 @@ abstract class ParadoxDiagramSettings<T: ParadoxDiagramSettings.State>(initialSt
         
         fun updateSettings() = incrementModificationCount()
     }
+    
+    open fun initSettings() {
+        state.updateSettings()
+    }
 }

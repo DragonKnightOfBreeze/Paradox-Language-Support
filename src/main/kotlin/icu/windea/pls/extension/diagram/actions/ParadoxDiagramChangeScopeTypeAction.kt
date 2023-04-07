@@ -25,9 +25,10 @@ class ParadoxDiagramChangeScopeTypeAction(
     }
     
     private fun getActionIcon(): Icon {
+        val project = builder.project
         val provider = builder.provider
         if(provider !is ParadoxDiagramProvider) return DESELECTED_ICON
-        var settings = provider.getDiagramSettings()?.state ?: return DESELECTED_ICON
+        var settings = provider.getDiagramSettings(project)?.state ?: return DESELECTED_ICON
         val currentScopeType = settings.scopeType
         val selected = ParadoxSearchScopeTypes.get(currentScopeType).id == scopeType.id
         return if(selected) SELECTED_ICON else DESELECTED_ICON
@@ -41,9 +42,10 @@ class ParadoxDiagramChangeScopeTypeAction(
     }
     
     override fun perform(e: AnActionEvent) {
+        val project = builder.project
         val provider = builder.provider
         if(provider !is ParadoxDiagramProvider) return
-        var settings = provider.getDiagramSettings()?.state ?: return
+        var settings = provider.getDiagramSettings(project)?.state ?: return
         settings.scopeType = scopeType.id
         DiagramUpdateService.getInstance().requestDataModelRefreshPreservingLayout(builder).runAsync()
     }
