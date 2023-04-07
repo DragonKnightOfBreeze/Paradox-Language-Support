@@ -13,7 +13,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 
-class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"), "settings.language.pls"), SearchableConfigurable {
+class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
     override fun getId() = "settings.language.pls"
     
     @Suppress("DialogTitleCapitalization")
@@ -23,11 +23,11 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
         val oldPreferredLocale = settings.preferredLocale
         val oldIgnoredFileNameSet = settings.ignoredFileNameSet
         return panel {
-            //generic
+            //general
             group(PlsBundle.message("settings.general")) {
                 //defaultGameType
                 row {
-                    label(PlsBundle.message("settings.general.defaultGameType")).widthGroup("generic")
+                    label(PlsBundle.message("settings.general.defaultGameType")).widthGroup("general")
                         .applyToComponent {
                             toolTipText = PlsBundle.message("settings.general.defaultGameType.tooltip")
                         }
@@ -43,7 +43,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 }
                 //preferredLocale
                 row {
-                    label(PlsBundle.message("settings.general.preferredLocale")).widthGroup("generic")
+                    label(PlsBundle.message("settings.general.preferredLocale")).widthGroup("general")
                         .applyToComponent {
                             toolTipText = PlsBundle.message("settings.general.preferredLocale.tooltip")
                         }
@@ -57,7 +57,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 }
                 //ignoredFileNames
                 row {
-                    label(PlsBundle.message("settings.general.ignoredFileNames")).widthGroup("generic")
+                    label(PlsBundle.message("settings.general.ignoredFileNames")).widthGroup("general")
                         .applyToComponent {
                             toolTipText = PlsBundle.message("settings.general.ignoredFileNames.tooltip")
                         }

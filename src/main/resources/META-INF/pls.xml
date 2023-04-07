@@ -71,7 +71,7 @@
 
     <definitionSupportedScopesProvider implementation="icu.windea.pls.lang.scope.StellarisScriptedModifierSupportedScopesProvider"/>
     
-    <definitionDataProvider implementation="icu.windea.pls.lang.data.ParadoxEventDataProvider"/>
+    <definitionDataProvider implementation="icu.windea.pls.lang.data.StellarisEventDataProvider"/>
     <definitionDataProvider implementation="icu.windea.pls.lang.data.StellarisTechnologyDataProvider"/>
     
     <modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromGameImporter"/>

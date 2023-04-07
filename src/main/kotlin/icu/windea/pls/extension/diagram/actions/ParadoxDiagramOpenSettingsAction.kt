@@ -21,7 +21,12 @@ class ParadoxDiagramOpenSettingsAction: DiagramAction(PlsDiagramBundle.message("
     }
     
     override fun perform(e: AnActionEvent) {
-        ShowSettingsUtil.getInstance().showSettingsDialog(getEventProject(e), ParadoxDiagramSettingsConfigurable::class.java)
+        val builder = e.getData(DiagramDataKeys.BUILDER)
+        val provider = builder?.provider
+        if(provider !is ParadoxDiagramProvider) return
+        val project = e.project
+        val settingsId = provider.getDiagramSettings()?.id ?: return
+        ShowSettingsUtil.getInstance().showSettingsDialog(project, settingsId)
     }
 }
 

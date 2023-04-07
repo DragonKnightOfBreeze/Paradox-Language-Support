@@ -9,6 +9,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
@@ -16,6 +17,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
 
+@WithGameType(ParadoxGameType.Stellaris)
 class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Stellaris) {
     companion object {
         const val ID = "Stellaris.EventTree"
@@ -25,7 +27,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
             "hide_window", "is_triggered_only", "major", "diplomatic"
         )
         
-        val nodeDataKey = Key.create<ParadoxEventDataProvider.Data>("stellaris.eventTree.node.data")
+        val nodeDataKey = Key.create<StellarisEventDataProvider.Data>("stellaris.eventTree.node.data")
         val invocationTypeKey = Key.create<ParadoxEventHandler.InvocationType>("stellaris.eventTree.edge.invocationType")
     }
     
@@ -109,7 +111,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
             provider as StellarisEventTreeDiagramProvider
             
             if(definition !is ParadoxScriptProperty) return false
-            val data = definition.getData<ParadoxEventDataProvider.Data>()
+            val data = definition.getData<StellarisEventDataProvider.Data>()
             if(data == null) return true
             val settings = provider.getDiagramSettings().state
             
@@ -120,7 +122,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
             val other = !hidden && !triggered && !major && !diplomatic
             
             //对于每组配置，只要其中任意一个配置匹配即可
-            with(settings.type) {
+            with(settings.typeSettings) {
                 var enabled = false
                 if(hidden) enabled = enabled || this.hidden
                 if(triggered) enabled = enabled || this.triggered

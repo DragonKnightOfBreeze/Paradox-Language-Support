@@ -133,7 +133,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
             val other = !start && !rare && !dangerous && !insight && !repeatable
             
             //对于每组配置，只要其中任意一个配置匹配即可
-            with(settings.type) {
+            with(settings.typeSettings) {
                 var enabled = false
                 if(start) enabled = enabled || this.start
                 if(rare) enabled = enabled || this.rare
