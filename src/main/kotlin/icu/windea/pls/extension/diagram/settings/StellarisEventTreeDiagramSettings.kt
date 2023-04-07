@@ -27,13 +27,7 @@ class StellarisEventTreeDiagramSettings(
     override val id: String = ID
     override val configurableClass: Class<out Configurable> = StellarisEventTreeDiagramSettingsConfigurable::class.java
     
-    init {
-        state.project = project
-    }
-    
     class State : ParadoxDiagramSettings.State() {
-        lateinit var project: Project
-        
         override var scopeType by string()
         
         @get:XMap

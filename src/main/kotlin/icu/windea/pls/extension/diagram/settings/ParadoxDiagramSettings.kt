@@ -11,9 +11,9 @@ abstract class ParadoxDiagramSettings<T: ParadoxDiagramSettings.State>(initialSt
         abstract var scopeType: String?
         
         fun updateSettings() = incrementModificationCount()
-        
-        open fun initSettings() {
-            updateSettings()
-        }
+    }
+    
+    open fun initSettings() {
+        state.updateSettings()
     }
 }

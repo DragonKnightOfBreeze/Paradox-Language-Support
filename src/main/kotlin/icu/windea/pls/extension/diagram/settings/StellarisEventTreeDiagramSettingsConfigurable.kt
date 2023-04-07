@@ -16,12 +16,16 @@ import icu.windea.pls.lang.model.*
 class StellarisEventTreeDiagramSettingsConfigurable(
     val project: Project
 ) : BoundConfigurable(PlsDiagramBundle.message("paradox.eventTree.name", ParadoxGameType.Stellaris)), SearchableConfigurable {
-    val settings = project.service<StellarisEventTreeDiagramSettings>().state
-    
     override fun getId() = StellarisEventTreeDiagramSettings.ID
     
+    val settings = project.service<StellarisEventTreeDiagramSettings>().state
+    
+    fun initSettings() {
+        project.service<StellarisEventTreeDiagramSettings>().initSettings()
+    }
+    
     override fun createPanel(): DialogPanel {
-        settings.initSettings()
+        initSettings()
         
         return panel {
             row {

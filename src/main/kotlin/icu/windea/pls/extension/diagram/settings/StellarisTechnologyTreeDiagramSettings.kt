@@ -32,13 +32,7 @@ class StellarisTechnologyTreeDiagramSettings(
     override val id: String = ID
     override val configurableClass: Class<out Configurable> = StellarisTechnologyTreeDiagramSettingsConfigurable::class.java
     
-    init {
-        state.project = project
-    }
-    
     class State : ParadoxDiagramSettings.State() {
-        lateinit var project: Project
-        
         override var scopeType by string()
         
         @get:XMap
@@ -63,24 +57,24 @@ class StellarisTechnologyTreeDiagramSettings(
             val repeatable = type.getOrPut("repeatable") { true }
             val other = type.getOrPut("other") { true }
         }
-        
-        override fun initSettings() {
-            //it.name is ok here
-            val tiers = StellarisTechnologyHandler.getTechnologyTiers(project, null)
-            tiers.forEach {
-                tier.putIfAbsent(it.name, true)
-            }
-            val areas = StellarisTechnologyHandler.getResearchAreas()
-            areas.forEach {
-                area.putIfAbsent(it, true)
-                areaNames.put(it, ParadoxPresentationHandler.getText(it, project))
-            }
-            val categories = StellarisTechnologyHandler.getTechnologyCategories(project, null)
-            categories.forEach {
-                category.putIfAbsent(it.name, true)
-                categoryNames.put(it.name, ParadoxPresentationHandler.getNameText(it))
-            }
-            super.initSettings()
+    }
+    
+    override fun initSettings() {
+        //it.name is ok here
+        val tiers = StellarisTechnologyHandler.getTechnologyTiers(project, null)
+        tiers.forEach {
+            state.tier.putIfAbsent(it.name, true)
         }
+        val areas = StellarisTechnologyHandler.getResearchAreas()
+        areas.forEach {
+            state.area.putIfAbsent(it, true)
+            state.areaNames.put(it, ParadoxPresentationHandler.getText(it.uppercase(), project))
+        }
+        val categories = StellarisTechnologyHandler.getTechnologyCategories(project, null)
+        categories.forEach {
+            state.category.putIfAbsent(it.name, true)
+            state.categoryNames.put(it.name, ParadoxPresentationHandler.getNameText(it))
+        }
+        super.initSettings()
     }
 }

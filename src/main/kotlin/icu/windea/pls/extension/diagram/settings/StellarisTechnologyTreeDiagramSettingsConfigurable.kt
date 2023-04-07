@@ -16,12 +16,16 @@ import icu.windea.pls.lang.model.*
 class StellarisTechnologyTreeDiagramSettingsConfigurable(
     val project: Project
 ) : BoundConfigurable(PlsDiagramBundle.message("paradox.technologyTree.name", ParadoxGameType.Stellaris)), SearchableConfigurable {
-    val settings = project.service<StellarisTechnologyTreeDiagramSettings>().state
-    
     override fun getId() = StellarisTechnologyTreeDiagramSettings.ID
     
+    val settings = project.service<StellarisTechnologyTreeDiagramSettings>().state
+    
+    fun initSettings() {
+        project.service<StellarisTechnologyTreeDiagramSettings>().initSettings()
+    }
+    
     override fun createPanel(): DialogPanel {
-        settings.initSettings()
+        initSettings()
         
         return panel {
             row {
@@ -80,6 +84,7 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                                 .bindSelected(settings.area.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
                                 .customize(JBGaps(3, 0, 3, 0))
+                                .gap(RightGap.SMALL)
                             //add localized name as comment
                             settings.areaNames.get(key)?.let { comment(it) }
                         }
@@ -101,6 +106,7 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                                 .bindSelected(settings.category.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
                                 .customize(JBGaps(3, 0, 3, 0))
+                                .gap(RightGap.SMALL)
                             //add localized name as comment
                             settings.categoryNames.get(key)?.let { comment(it) }
                         }
