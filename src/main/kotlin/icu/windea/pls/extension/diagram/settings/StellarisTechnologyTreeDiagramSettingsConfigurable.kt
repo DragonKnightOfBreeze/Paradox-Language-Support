@@ -1,5 +1,6 @@
 package icu.windea.pls.extension.diagram.settings
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
@@ -11,10 +12,12 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.model.*
+import kotlinx.coroutines.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisTechnologyTreeDiagramSettingsConfigurable(
-    val project: Project
+    val project: Project,
+    val coroutineScope: CoroutineScope
 ) : BoundConfigurable(PlsDiagramBundle.message("paradox.technologyTree.name", ParadoxGameType.Stellaris)), SearchableConfigurable {
     override fun getId() = StellarisTechnologyTreeDiagramSettings.ID
     
@@ -32,7 +35,7 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                 label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
             }
             if(settings.type.isNotEmpty()) {
-                lateinit var cb : Cell<ThreeStateCheckBox>
+                lateinit var cb: Cell<ThreeStateCheckBox>
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.type")))
                         .applyToComponent { isThirdStateEnabled = false }
@@ -51,7 +54,7 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                 }
             }
             if(settings.tier.isNotEmpty()) {
-                lateinit var cb : Cell<ThreeStateCheckBox>
+                lateinit var cb: Cell<ThreeStateCheckBox>
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.tier")))
                         .applyToComponent { isThirdStateEnabled = false }
@@ -70,7 +73,7 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                 }
             }
             if(settings.area.isNotEmpty()) {
-                lateinit var cb : Cell<ThreeStateCheckBox>
+                lateinit var cb: Cell<ThreeStateCheckBox>
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.area")))
                         .applyToComponent { isThirdStateEnabled = false }
@@ -84,21 +87,23 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                                 .bindSelected(settings.area.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
                                 .customize(JBGaps(3, 0, 3, 0))
-                                .gap(RightGap.SMALL)
-                            //add localized name as comment
-                            settings.areaNames.get(key)?.let { comment(it) }
+                            //add localized name as comment lazily
+                            settings.areaNames.get(key)?.let { p ->
+                                comment("").customize(JBGaps(3, 16, 3, 0))
+                                    .applyToComponent { coroutineScope.launch { text = readAction(p) } }
+                            }
                         }
                     }
                 }
             }
             if(settings.category.isNotEmpty()) {
-                lateinit var cb : Cell<ThreeStateCheckBox>
+                lateinit var cb: Cell<ThreeStateCheckBox>
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.category")))
                         .applyToComponent { isThirdStateEnabled = false }
                         .customize(JBGaps(3, 0, 3, 0))
                         .also { cb = it }
-                }
+                }.customize(JBVerticalGaps(3, 3))
                 indent {
                     settings.category.keys.forEach { key ->
                         row {
@@ -106,9 +111,11 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                                 .bindSelected(settings.category.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
                                 .customize(JBGaps(3, 0, 3, 0))
-                                .gap(RightGap.SMALL)
-                            //add localized name as comment
-                            settings.categoryNames.get(key)?.let { comment(it) }
+                            //add localized name as comment lazily
+                            settings.categoryNames.get(key)?.let { p ->
+                                comment("").customize(JBGaps(3, 16, 3, 0))
+                                    .applyToComponent { coroutineScope.launch { text = readAction(p) } }
+                            }
                         }
                     }
                 }

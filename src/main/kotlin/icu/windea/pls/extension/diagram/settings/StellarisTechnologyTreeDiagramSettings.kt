@@ -1,7 +1,9 @@
 package icu.windea.pls.extension.diagram.settings
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.options.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
@@ -46,8 +48,8 @@ class StellarisTechnologyTreeDiagramSettings(
         
         val typeSettings = TypeSettings()
         
-        val areaNames = mutableMapOf<String, String?>()
-        val categoryNames = mutableMapOf<String, String?>()
+        val areaNames = mutableMapOf<String, () -> String?>()
+        val categoryNames = mutableMapOf<String, () -> String?>()
         
         inner class TypeSettings {
             val start = type.getOrPut("start") { true }
@@ -62,19 +64,13 @@ class StellarisTechnologyTreeDiagramSettings(
     override fun initSettings() {
         //it.name is ok here
         val tiers = StellarisTechnologyHandler.getTechnologyTiers(project, null)
-        tiers.forEach {
-            state.tier.putIfAbsent(it.name, true)
-        }
+        tiers.forEach { state.tier.putIfAbsent(it.name, true) }
         val areas = StellarisTechnologyHandler.getResearchAreas()
-        areas.forEach {
-            state.area.putIfAbsent(it, true)
-            state.areaNames.put(it, ParadoxPresentationHandler.getText(it.uppercase(), project))
-        }
+        areas.forEach { state.area.putIfAbsent(it, true) }
         val categories = StellarisTechnologyHandler.getTechnologyCategories(project, null)
-        categories.forEach {
-            state.category.putIfAbsent(it.name, true)
-            state.categoryNames.put(it.name, ParadoxPresentationHandler.getNameText(it))
-        }
+        categories.forEach { state.category.putIfAbsent(it.name, true) }
+        areas.forEach { state.areaNames.put(it) { ParadoxPresentationHandler.getText(it.uppercase(), project) } }
+        categories.forEach { state.categoryNames.put(it.name) { ParadoxPresentationHandler.getNameText(it) } }
         super.initSettings()
     }
 }
