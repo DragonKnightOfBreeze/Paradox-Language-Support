@@ -128,7 +128,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
                 if(triggered) enabled = enabled || this.triggered
                 if(major) enabled = enabled || this.major
                 if(diplomatic) enabled = enabled || this.diplomatic
-                if(other) enabled = enabled || this.other
+                if(other) enabled = this.other
                 if(!enabled) return false
             }
             return true

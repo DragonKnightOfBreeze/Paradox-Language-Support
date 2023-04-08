@@ -124,12 +124,12 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 		//开始位置和结束位置向上能查找到同一个ParadoxLocalisationPropertyValue，且选择文本的范围在引号之间
 		if(elementAtStart == null || elementAtEnd == null) return false
 		val propertyValueAtStart = elementAtStart.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
-		val propertyValueAtEnd = elementAtStart.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
+		val propertyValueAtEnd = elementAtEnd.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
 		if(propertyValueAtStart !== propertyValueAtEnd) return false
 		val propertyValue = propertyValueAtStart
 		val textRange = propertyValue.textRange
 		val start = if(propertyValue.firstChild.elementType == LEFT_QUOTE) textRange.startOffset + 1 else textRange.startOffset
-		val end = if(propertyValue.lastChild.elementType == RIGHT_QUOTE) textRange.startOffset - 1 else textRange.startOffset
+		val end = if(propertyValue.lastChild.elementType == RIGHT_QUOTE) textRange.endOffset - 1 else textRange.endOffset
 		return selectionStart >= start && selectionEnd <= end
 	}
 	

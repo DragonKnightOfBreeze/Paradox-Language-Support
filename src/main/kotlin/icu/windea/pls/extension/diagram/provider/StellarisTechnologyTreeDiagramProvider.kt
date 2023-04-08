@@ -140,7 +140,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
                 if(dangerous) enabled = enabled || this.dangerous
                 if(insight) enabled = enabled || this.insight
                 if(repeatable) enabled = enabled || this.repeatable
-                if(other) enabled = enabled || this.other
+                if(other) enabled = this.other
                 if(!enabled) return false
             }
             with(settings.tier) {
