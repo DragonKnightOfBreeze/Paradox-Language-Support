@@ -3,10 +3,7 @@ package icu.windea.pls.extension.diagram.provider
 import com.intellij.diagram.*
 import com.intellij.diagram.extras.*
 import com.intellij.diagram.settings.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.extension.diagram.*
@@ -22,8 +19,8 @@ abstract class ParadoxDiagramProvider(
         private val VfsResolver = ParadoxRootVfsResolver()
     }
     
-    private val _relationshipManager = ParadoxRelationshipManager()
-    private val _extra = ParadoxDiagramExtras(this)
+    private val _relationshipManager by lazy { ParadoxRelationshipManager() }
+    private val _extra by lazy { ParadoxDiagramExtras(this) }
     
     override fun getVfsResolver(): DiagramVfsResolver<PsiElement> {
         return VfsResolver

@@ -11,6 +11,7 @@ import com.intellij.util.ui.ThreeStateCheckBox.State.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.core.ui.*
@@ -52,13 +53,14 @@ class StellarisTechnologyTreeDiagramSettings(
         val areaNames = mutableMapOf<String, () -> String?>()
         val categoryNames = mutableMapOf<String, () -> String?>()
         
+        fun a(){}
+        
         inner class TypeSettings {
-            val start = type.getOrPut("start") { true }
-            val rare = type.getOrPut("rare") { true }
-            val dangerous = type.getOrPut("dangerous") { true }
-            val insight = type.getOrPut("insight") { true }
-            val repeatable = type.getOrPut("repeatable") { true }
-            val other = type.getOrPut("other") { true }
+            val start by type withDefault true
+            val rare by type withDefault true
+            val dangerous by type withDefault true
+            val insight by type withDefault true
+            val repeatable by type withDefault true
         }
     }
     

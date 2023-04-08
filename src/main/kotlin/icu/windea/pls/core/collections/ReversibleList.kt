@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.core.collections
 
 data class ReversibleList<T>(val list: List<T>, val notReversed: Boolean) : List<T> by list {

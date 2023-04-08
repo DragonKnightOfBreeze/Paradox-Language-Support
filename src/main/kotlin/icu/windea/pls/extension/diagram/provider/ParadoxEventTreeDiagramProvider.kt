@@ -38,7 +38,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         val CAT_PICTURE = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.eventTree.category.picture"), PlsIcons.Image, false, false)
         val CATEGORIES = arrayOf(CAT_TYPE, CAT_PROPERTIES, CAT_TITLE, CAT_PICTURE)
         
-        val REL_INVOKE = object : DiagramRelationshipInfoAdapter("INVOKE", DiagramLineType.SOLID) {
+        val REL_INVOKE = object : DiagramRelationshipInfoAdapter("INVOKE", DiagramLineType.SOLID, PlsDiagramBundle.message("paradox.eventTree.rel.invoke")) {
             override fun getTargetArrow() = DELTA
         }
     }

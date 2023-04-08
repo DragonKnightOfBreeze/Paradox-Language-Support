@@ -9,6 +9,7 @@ import com.intellij.util.ui.ThreeStateCheckBox.State.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.*
@@ -40,10 +41,10 @@ class StellarisEventTreeDiagramSettings(
         val typeSettings = TypeSettings()
         
         inner class TypeSettings {
-            val hidden = type.getOrPut("hidden") { true }
-            val triggered = type.getOrPut("triggered") { true }
-            val major = type.getOrPut("major") { true }
-            val diplomatic = type.getOrPut("diplomatic") { true }
+            val hidden by type withDefault true
+            val triggered by type withDefault true
+            val major by type withDefault true
+            val diplomatic by type withDefault true
         }
     }
     

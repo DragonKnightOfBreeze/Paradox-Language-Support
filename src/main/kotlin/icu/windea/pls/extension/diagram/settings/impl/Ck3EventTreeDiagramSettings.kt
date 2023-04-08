@@ -5,9 +5,11 @@ import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
+import kotlin.collections.withDefault
 
 @WithGameType(ParadoxGameType.Ck3)
 @Service(Service.Level.PROJECT)
@@ -33,7 +35,7 @@ class Ck3EventTreeDiagramSettings(
         val typeSettings = TypeSettings()
         
         inner class TypeSettings {
-            val hidden = type.getOrPut("hidden") { true }
+            val hidden  by type withDefault true
         }
     }
     

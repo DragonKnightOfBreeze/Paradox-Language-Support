@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.core.collections
 
 data class ReversibleSet<T>(val set: Set<T>, val notReversed: Boolean) : Set<T> by set {

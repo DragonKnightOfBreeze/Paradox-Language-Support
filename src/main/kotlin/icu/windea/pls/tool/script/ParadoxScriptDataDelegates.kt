@@ -18,9 +18,9 @@ operator fun <T> ParadoxScriptData.get(path: String, defaultValue: T): ParadoxSc
     return ParadoxScriptDataWrapper(this.getData(path), defaultValue)
 }
 
-private val _propertyValuesKey = Key.create<MutableMap<KProperty<*>, Any?>>("paradox.data.property.values")
+private val myPropertyValuesKey = Key.create<MutableMap<KProperty<*>, Any?>>("paradox.data.property.values")
 
-val ParadoxScriptData.Keys.propertyValuesKey get() = _propertyValuesKey
+val ParadoxScriptData.Keys.propertyValuesKey get() = myPropertyValuesKey
 
 inline operator fun <reified T> ParadoxScriptDataWrapper<T>.getValue(thisRef: Any, property: KProperty<*>): T {
     if(delegate == null) return defaultValue

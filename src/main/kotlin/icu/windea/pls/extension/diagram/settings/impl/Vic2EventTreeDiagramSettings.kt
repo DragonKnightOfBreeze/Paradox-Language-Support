@@ -5,9 +5,11 @@ import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
+import kotlin.collections.withDefault
 
 @WithGameType(ParadoxGameType.Vic2)
 @Service(Service.Level.PROJECT)
@@ -33,8 +35,8 @@ class Vic2EventTreeDiagramSettings(
         val typeSettings = TypeSettings()
         
         inner class TypeSettings {
-            val triggered = type.getOrPut("triggered") { true }
-            val major = type.getOrPut("major") { true }
+            val triggered  by type withDefault true
+            val major  by type withDefault true
         }
     }
     
