@@ -1,4 +1,4 @@
-package icu.windea.pls.extension.diagram.settings
+package icu.windea.pls.extension.diagram.settings.impl
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.options.*
@@ -44,6 +44,25 @@ class StellarisEventTreeDiagramSettingsConfigurable(
                         row {
                             checkBox(PlsDiagramBundle.message("stellaris.eventTree.settings.type.${key}"))
                                 .bindSelected(settings.type.toMutableProperty(key, true))
+                                .threeStateCheckBox(cb)
+                                .customize(JBGaps(3, 0, 3, 0))
+                        }
+                    }
+                }
+            }
+            if(settings.eventType.isNotEmpty()) {
+                lateinit var cb : Cell<ThreeStateCheckBox>
+                row {
+                    cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.eventTree.settings.eventType")))
+                        .applyToComponent { isThirdStateEnabled = false }
+                        .customize(JBGaps(3, 0, 3, 0))
+                        .also { cb = it }
+                }
+                indent {
+                    settings.eventType.keys.forEach { key ->
+                        row {
+                            checkBox(PlsDiagramBundle.message("stellaris.eventTree.settings.eventType.option", key))
+                                .bindSelected(settings.eventType.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
                                 .customize(JBGaps(3, 0, 3, 0))
                         }

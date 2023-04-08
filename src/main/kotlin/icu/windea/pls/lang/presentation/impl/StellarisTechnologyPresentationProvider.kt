@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.presentation
+package icu.windea.pls.lang.presentation.impl
 
 import com.intellij.ui.*
 import icu.windea.pls.core.*
@@ -7,8 +7,9 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
-import icu.windea.pls.lang.data.StellarisTechnologyDataProvider.*
+import icu.windea.pls.lang.data.impl.StellarisTechnologyDataProvider.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.lang.presentation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*
 import java.awt.*
@@ -17,8 +18,8 @@ import javax.swing.*
 /**
  * 提供科技的UI表示（科技卡）。
  */
-@WithGameType(ParadoxGameType.Stellaris)
 @Suppress("UNUSED_PARAMETER")
+@WithGameType(ParadoxGameType.Stellaris)
 class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationProvider {
     val backgroundColor = Gray._34
     
@@ -98,10 +99,11 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
     
     private fun getBackgroundIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: Data): Icon? {
         val area = data.area ?: return null
+        val types = definitionInfo.subtypes
         val spriteName = when {
-            data.is_rare && data.is_dangerous -> "GFX_tech_entry_dangerous_rare_bg"
-            data.is_rare -> "GFX_tech_entry_rare_bg"
-            data.is_dangerous -> "GFX_tech_entry_dangerous_bg"
+            types.contains("dangerous") && types.contains("rare") -> "GFX_tech_entry_dangerous_rare_bg"
+            types.contains("dangerous") -> "GFX_tech_entry_dangerous_bg"
+            types.contains("rare") -> "GFX_tech_entry_rare_bg"
             else -> "GFX_tech_entry_${area}_bg"
         }
         val selector = definitionSelector(definitionInfo.project, definition).contextSensitive()

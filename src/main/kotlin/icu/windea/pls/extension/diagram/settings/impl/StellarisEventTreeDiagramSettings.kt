@@ -1,4 +1,4 @@
-package icu.windea.pls.extension.diagram.settings
+package icu.windea.pls.extension.diagram.settings.impl
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.options.*
@@ -12,6 +12,8 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.*
+import icu.windea.pls.extension.diagram.settings.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 
 @WithGameType(ParadoxGameType.Stellaris)
@@ -21,7 +23,7 @@ class StellarisEventTreeDiagramSettings(
     val project: Project
 ) : ParadoxEventTreeDiagramSettings<StellarisEventTreeDiagramSettings.State>(State()) {
     companion object {
-        const val ID = "settings.language.pls.diagram.Stellaris.EventTree"
+        const val ID = "pls.diagram.Stellaris.EventTree"
     }
     
     override val id: String = ID
@@ -32,6 +34,8 @@ class StellarisEventTreeDiagramSettings(
         
         @get:XMap
         var type by linkedMap<String, Boolean>()
+        @get:XMap
+        var eventType by linkedMap<String, Boolean>()
         
         val typeSettings = TypeSettings()
         
@@ -40,8 +44,12 @@ class StellarisEventTreeDiagramSettings(
             val triggered = type.getOrPut("triggered") { true }
             val major = type.getOrPut("major") { true }
             val diplomatic = type.getOrPut("diplomatic") { true }
-            val other = type.getOrPut("other") { true }
         }
+    }
+    
+    override fun initSettings() {
+        val eventTypes = ParadoxEventHandler.getEventTypes(project, ParadoxGameType.Stellaris)
+        eventTypes.forEach { state.eventType.putIfAbsent(it, true) }
     }
 }
 

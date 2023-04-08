@@ -1,4 +1,4 @@
-package icu.windea.pls.extension.diagram.provider
+package icu.windea.pls.extension.diagram.provider.impl
 
 import com.intellij.diagram.*
 import com.intellij.openapi.components.*
@@ -10,9 +10,12 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.extension.diagram.settings.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.extension.diagram.provider.*
+import icu.windea.pls.extension.diagram.settings.impl.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
+import icu.windea.pls.lang.data.impl.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
@@ -22,10 +25,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
     companion object {
         const val ID = "Stellaris.EventTree"
         
-        val ITEM_PROPERTY_KEYS = arrayOf(
-            "picture",
-            "hide_window", "is_triggered_only", "major", "diplomatic"
-        )
+        val ITEM_PROPERTY_KEYS = arrayOf("picture")
         
         val nodeDataKey = Key.create<StellarisEventDataProvider.Data>("stellaris.eventTree.node.data")
         val invocationTypeKey = Key.create<ParadoxEventHandler.InvocationType>("stellaris.eventTree.edge.invocationType")
@@ -110,25 +110,22 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
         private fun showNode(definition: ParadoxScriptDefinitionElement): Boolean {
             provider as StellarisEventTreeDiagramProvider
             
-            if(definition !is ParadoxScriptProperty) return false
-            val data = definition.getData<StellarisEventDataProvider.Data>()
-            if(data == null) return true
+            val definitionInfo = definition.definitionInfo ?: return false
             val settings = provider.getDiagramSettings(project).state
-            
-            val hidden = data.hide_window
-            val triggered = data.is_triggered_only
-            val major = data.major
-            val diplomatic = data.diplomatic
-            val other = !hidden && !triggered && !major && !diplomatic
             
             //对于每组配置，只要其中任意一个配置匹配即可
             with(settings.typeSettings) {
+                val v = definitionInfo.subtypes.takeIfNotEmpty() ?: return@with
                 var enabled = false
-                if(hidden) enabled = enabled || this.hidden
-                if(triggered) enabled = enabled || this.triggered
-                if(major) enabled = enabled || this.major
-                if(diplomatic) enabled = enabled || this.diplomatic
-                if(other) enabled = this.other
+                if(v.contains("hidden")) enabled = enabled || this.hidden
+                if(v.contains("triggered")) enabled = enabled || this.triggered
+                if(v.contains("major")) enabled = enabled || this.major
+                if(v.contains("diplomatic")) enabled = enabled || this.diplomatic
+                if(!enabled) return false
+            }
+            with(settings.eventType) {
+                val v = definitionInfo.subtypes.takeIfNotEmpty() ?: return@with
+                val enabled = v.any { this[it] ?: false }
                 if(!enabled) return false
             }
             return true

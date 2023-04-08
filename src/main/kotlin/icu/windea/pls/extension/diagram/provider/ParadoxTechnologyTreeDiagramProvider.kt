@@ -40,13 +40,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
         val CAT_ICON = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.icon"), PlsIcons.Image, false, false)
         val CAT_PRESENTATION = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.presentation"), PlsIcons.Presentation, false, false)
         val CATEGORIES = arrayOf(CAT_TYPE, CAT_PROPERTIES, CAT_NAME, CAT_ICON, CAT_PRESENTATION)
-        val ITEM_PROP_KEYS = arrayOf(
-            "icon",
-            "tier", "area", "category",
-            "cost", "cost_per_level", "levels",
-            "start_tech", "is_rare", "is_dangerous"
-        )
-        
+  
         val REL_PREREQUISITE = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID) {
             override fun getTargetArrow() = DELTA
         }
@@ -58,10 +52,11 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
         }
     }
     
-    private val _elementManager = ElementManager(this)
+    private val _elementManager by lazy { ElementManager(this) }
     
     override fun getID() = gameType.name + ".TechnologyTree"
     
+    @Suppress("DialogTitleCapitalization")
     override fun getPresentableName() = PlsDiagramBundle.message("paradox.technologyTree.name", gameType)
     
     override fun createNodeContentManager() = NodeContentManager()
@@ -72,7 +67,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
     
     override fun getAllContentCategories() = CATEGORIES
     
-    override abstract fun getDiagramSettings(project: Project): ParadoxTechnologyTreeDiagramSettings<*>?
+    abstract override fun getDiagramSettings(project: Project): ParadoxTechnologyTreeDiagramSettings<*>?
     
     class NodeContentManager : OrderedDiagramNodeContentManager() {
         override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?): Boolean {

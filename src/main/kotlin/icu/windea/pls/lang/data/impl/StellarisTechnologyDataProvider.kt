@@ -1,12 +1,14 @@
-package icu.windea.pls.lang.data
+package icu.windea.pls.lang.data.impl
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
 
+@Suppress("unused")
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisTechnologyDataProvider : ParadoxDefinitionDataProvider<StellarisTechnologyDataProvider.Data> {
     class Data(data: ParadoxScriptData): ParadoxDefinitionData {
@@ -16,13 +18,13 @@ class StellarisTechnologyDataProvider : ParadoxDefinitionDataProvider<StellarisT
         val category: Set<String>? by data.get("category")
     
         val cost: Int? by data.get("cost")
-        //val cost_per_level: Int? by data.get("cost_per_level")
+        val cost_per_level: Int? by data.get("cost_per_level")
         val levels: Int? by data.get("levels")
         
-        val start_tech: Boolean by data.get("start_tech", false)
-        val is_rare: Boolean by data.get("is_rare", false)
-        val is_dangerous: Boolean by data.get("is_dangerous", false)
-        val is_insight: Boolean by data.get("is_insight", false)
+        //val start_tech: Boolean by data.get("start_tech", false)
+        //val is_rare: Boolean by data.get("is_rare", false)
+        //val is_dangerous: Boolean by data.get("is_dangerous", false)
+        //val is_insight: Boolean by data.get("is_insight", false)
         
         val gateway: String? by data.get("gateway")
         val prerequisites: Set<String> by data.get("prerequisites", emptySet()) 

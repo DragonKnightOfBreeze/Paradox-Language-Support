@@ -1,4 +1,4 @@
-package icu.windea.pls.extension.diagram.provider
+package icu.windea.pls.extension.diagram.provider.impl
 
 import com.intellij.diagram.*
 import com.intellij.openapi.components.*
@@ -11,8 +11,11 @@ import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.extension.diagram.settings.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.extension.diagram.provider.*
+import icu.windea.pls.extension.diagram.settings.impl.*
 import icu.windea.pls.lang.data.*
+import icu.windea.pls.lang.data.impl.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
@@ -22,12 +25,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
     companion object {
         const val ID = "Stellaris.TechnologyTree"
         
-        val ITEM_PROPERTY_KEYS = arrayOf(
-            "icon",
-            "tier", "area", "category",
-            "cost", "cost_per_level", "levels",
-            "start_tech", "is_rare", "is_dangerous"
-        )
+        val ITEM_PROPERTY_KEYS = arrayOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels",)
         
         val nodeDataKey = Key.create<StellarisTechnologyDataProvider.Data>("stellaris.technologyTree.node.data")
     }
@@ -55,10 +53,12 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
             //这里使用的颜色是来自灰机wiki的特殊字体颜色
             //https://qunxing.huijiwiki.com/wiki/%E7%A7%91%E6%8A%80
             val data = node.getUserData(nodeDataKey) ?: return null
+            val definitionInfo = node.definitionInfo ?: return null
+            val types = definitionInfo.subtypes
             return when {
-                data.is_dangerous && data.is_rare -> ColorUtil.fromHex("#e8514f")
-                data.is_dangerous -> ColorUtil.fromHex("#e8514f")
-                data.is_rare -> ColorUtil.fromHex("#9743c4")
+                types.contains("dangerous") && types.contains("rare") -> ColorUtil.fromHex("#e8514f")
+                types.contains("dangerous") -> ColorUtil.fromHex("#e8514f")
+                types.contains("rare") -> ColorUtil.fromHex("#9743c4")
                 data.area == "physics" -> ColorUtil.fromHex("#2370af")
                 data.area == "society" -> ColorUtil.fromHex("#47a05f")
                 data.area == "engineering" -> ColorUtil.fromHex("#fbaa29")
@@ -120,27 +120,19 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
         private fun showNode(definition: ParadoxScriptDefinitionElement): Boolean {
             provider as StellarisTechnologyTreeDiagramProvider
             
-            if(definition !is ParadoxScriptProperty) return false
-            val data = definition.getData<StellarisTechnologyDataProvider.Data>()
-            if(data == null) return true
+            val definitionInfo = definition.definitionInfo ?: return false
+            val data = definition.getData<StellarisTechnologyDataProvider.Data>() ?: return false
             val settings = provider.getDiagramSettings(project).state
-            
-            val start = data.start_tech
-            val rare = data.is_rare
-            val dangerous = data.is_dangerous
-            val insight = data.is_insight
-            val repeatable = data.levels != null
-            val other = !start && !rare && !dangerous && !insight && !repeatable
             
             //对于每组配置，只要其中任意一个配置匹配即可
             with(settings.typeSettings) {
+                val v = definitionInfo.subtypes.takeIfNotEmpty() ?: return@with
                 var enabled = false
-                if(start) enabled = enabled || this.start
-                if(rare) enabled = enabled || this.rare
-                if(dangerous) enabled = enabled || this.dangerous
-                if(insight) enabled = enabled || this.insight
-                if(repeatable) enabled = enabled || this.repeatable
-                if(other) enabled = this.other
+                if(v.contains("start")) enabled = enabled || this.start
+                if(v.contains("rare")) enabled = enabled || this.rare
+                if(v.contains("dangerous")) enabled = enabled || this.dangerous
+                if(v.contains("insight")) enabled = enabled || this.insight
+                if(v.contains("repeatable")) enabled = enabled || this.repeatable
                 if(!enabled) return false
             }
             with(settings.tier) {
@@ -154,8 +146,8 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
                 if(!enabled) return false
             }
             with(settings.category) {
-                val v = data.category ?: return@with
-                val enabled = v.any { this[it] ?: true }
+                val v = data.category.takeIfNotEmpty() ?: return@with
+                val enabled = v.any { this[it] ?: false }
                 if(!enabled) return false
             }
             return true

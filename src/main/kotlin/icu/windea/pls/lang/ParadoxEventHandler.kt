@@ -1,6 +1,7 @@
 package icu.windea.pls.lang
 
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -10,6 +11,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -17,6 +19,7 @@ object ParadoxEventHandler {
     enum class InvocationType { All, Immediate, After }
     
     val cachedEventInvocationsKey = Key.create<CachedValue<Map<String, InvocationType>>>("paradox.cached.event.invocations")
+    val eventTypesKey = Key.create<List<String>>("paradox.event.types")
     
     fun isValidEventNamespace(eventNamespace: String): Boolean {
         if(eventNamespace.isEmpty()) return false
@@ -127,5 +130,13 @@ object ParadoxEventHandler {
             true
         }
         return result
+    }
+    
+    fun getEventTypes(project: Project, gameType: ParadoxGameType): List<String> {
+        val eventConfig = getCwtConfig(project).getValue(gameType).types["event"] ?: return emptyList()
+        return eventConfig.config.getOrPutUserData(eventTypesKey) {
+            //subtypes, ends with "_event"
+            eventConfig.subtypes.keys.filter { it.endsWith("_event") }
+        }
     }
 }

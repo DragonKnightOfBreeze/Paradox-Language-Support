@@ -18,7 +18,7 @@ import icu.windea.pls.extension.diagram.provider.*
 class ParadoxDiagramSettingsConfigurable(
     val project: Project
 ) : BoundConfigurable(PlsDiagramBundle.message("settings.diagram")), SearchableConfigurable {
-    override fun getId() = "settings.language.pls.diagram"
+    override fun getId() = "pls.diagram"
     
     override fun createPanel(): DialogPanel {
         return panel {

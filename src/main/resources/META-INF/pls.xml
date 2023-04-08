@@ -67,12 +67,20 @@
     
     <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxEventFromOnActionInferredScopeContextProvider"/>
     
-    <definitionPresentationProvider implementation="icu.windea.pls.lang.presentation.StellarisTechnologyPresentationProvider"/>
+    <definitionPresentationProvider implementation="icu.windea.pls.lang.presentation.impl.StellarisTechnologyPresentationProvider"/>
 
     <definitionSupportedScopesProvider implementation="icu.windea.pls.lang.scope.StellarisScriptedModifierSupportedScopesProvider"/>
     
-    <definitionDataProvider implementation="icu.windea.pls.lang.data.StellarisEventDataProvider"/>
-    <definitionDataProvider implementation="icu.windea.pls.lang.data.StellarisTechnologyDataProvider"/>
+    <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.StellarisEventDataProvider"/>
+    <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.StellarisTechnologyDataProvider"/>
+    <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.StellarisEventDataProvider"/>
+    <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.Ck2EventDataProvider"/>
+    <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.Ck3EventDataProvider"/>
+    <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.Eu4EventDataProvider"/>
+    <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.Hoi4EventDataProvider"/>
+    <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.IrEventDataProvider"/>
+    <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.Vic2EventDataProvider"/>
+    <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.Vic3EventDataProvider"/>
     
     <modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromGameImporter"/>
     <!--<modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherImporter"/>-->

@@ -49,8 +49,9 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         }
     }
     
-    private val _elementManager = ElementManager(this)
+    private val _elementManager by lazy { ElementManager(this) }
     
+    @Suppress("DialogTitleCapitalization")
     override fun getPresentableName() = PlsDiagramBundle.message("paradox.eventTree.name", gameType)
     
     override fun createNodeContentManager() = NodeContentManager()
@@ -61,7 +62,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     
     override fun getAllContentCategories() = CATEGORIES
     
-    override abstract fun getDiagramSettings(project: Project): ParadoxEventTreeDiagramSettings<*>?
+    abstract override fun getDiagramSettings(project: Project): ParadoxEventTreeDiagramSettings<*>?
     
     class NodeContentManager : OrderedDiagramNodeContentManager() {
         override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?): Boolean {

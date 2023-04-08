@@ -14,7 +14,7 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
-    override fun getId() = "settings.language.pls"
+    override fun getId() = "pls"
     
     @Suppress("DialogTitleCapitalization")
     override fun createPanel(): DialogPanel {

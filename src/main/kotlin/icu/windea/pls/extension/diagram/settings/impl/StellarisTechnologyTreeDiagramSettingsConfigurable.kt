@@ -1,4 +1,4 @@
-package icu.windea.pls.extension.diagram.settings
+package icu.windea.pls.extension.diagram.settings.impl
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
@@ -128,3 +128,4 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
         settings.updateSettings()
     }
 }
+

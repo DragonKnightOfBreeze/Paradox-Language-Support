@@ -1,4 +1,4 @@
-package icu.windea.pls.extension.diagram.settings
+package icu.windea.pls.extension.diagram.settings.impl
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
@@ -16,6 +16,7 @@ import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.*
+import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.tool.localisation.*
@@ -28,7 +29,7 @@ class StellarisTechnologyTreeDiagramSettings(
     val project: Project
 ) : ParadoxTechnologyTreeDiagramSettings<StellarisTechnologyTreeDiagramSettings.State>(State()) {
     companion object {
-        const val ID = "settings.language.pls.diagram.Stellaris.TechnologyTree"
+        const val ID = "pls.diagram.Stellaris.TechnologyTree"
     }
     
     override val id: String = ID
