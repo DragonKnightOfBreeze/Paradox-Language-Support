@@ -42,12 +42,8 @@ class Eu4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
         file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
-        override fun refreshDataModel() {
+        override fun updateDataModel(indicator: ProgressIndicator?) {
             provider as Eu4EventTreeDiagramProvider
-            
-            ProgressManager.checkCanceled()
-            nodes.clear()
-            edges.clear()
             val events = getDefinitions("event")
             if(events.isEmpty()) return
             //群星原版事件有5000+

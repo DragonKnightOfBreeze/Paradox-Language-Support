@@ -42,12 +42,8 @@ class Vic3EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
         file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
-        override fun refreshDataModel() {
+        override fun updateDataModel(indicator: ProgressIndicator?) {
             provider as Vic3EventTreeDiagramProvider
-            
-            ProgressManager.checkCanceled()
-            nodes.clear()
-            edges.clear()
             val events = getDefinitions("event")
             if(events.isEmpty()) return
             //群星原版事件有5000+

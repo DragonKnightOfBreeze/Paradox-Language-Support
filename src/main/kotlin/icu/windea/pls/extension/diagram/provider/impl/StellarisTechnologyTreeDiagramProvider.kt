@@ -72,12 +72,8 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
         file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxTechnologyTreeDiagramProvider.DataModel(project, file, provider) {
-        override fun refreshDataModel() {
+        override fun updateDataModel(indicator: ProgressIndicator?) {
             provider as StellarisTechnologyTreeDiagramProvider
-            
-            ProgressManager.checkCanceled()
-            nodes.clear()
-            edges.clear()
             val technologies = getDefinitions("technology")
             if(technologies.isEmpty()) return
             //群星原版科技有400+

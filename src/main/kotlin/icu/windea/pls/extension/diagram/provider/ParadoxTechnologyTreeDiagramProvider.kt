@@ -63,7 +63,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
     
     override fun getElementManager() = _elementManager
     
-    override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
+    abstract override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) : DataModel
     
     override fun getAllContentCategories() = CATEGORIES
     
@@ -241,7 +241,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
         }
     }
     
-    open class DataModel(
+    abstract class DataModel(
         project: Project,
         file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider

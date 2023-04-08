@@ -61,6 +61,7 @@
 
 * [X] 完善对图表的支持 - 支持通过作用域过滤显示结果，提供另外的更加详细的配置页面（需要专业版IDE）
 * [X] 为Stellaris以外的蠢驴游戏提供标准的事件树图表支持
+* [X] 构建图表时可取消
 * [X] 修复：[stellaris颜色模板还是没法用 #18](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/18)
 
 ## 0.9.7
