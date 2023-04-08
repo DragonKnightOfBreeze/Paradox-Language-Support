@@ -16,9 +16,7 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxEventHandler {
-    enum class InvocationType { All, Immediate, After }
-    
-    val cachedEventInvocationsKey = Key.create<CachedValue<Map<String, InvocationType>>>("paradox.cached.event.invocations")
+    val cachedEventInvocationsKey = Key.create<CachedValue<Set<String>>>("paradox.cached.event.invocations")
     val eventTypesKey = Key.create<List<String>>("paradox.event.types")
     
     fun isValidEventNamespace(eventNamespace: String): Boolean {
@@ -82,60 +80,50 @@ object ParadoxEventHandler {
     
     /**
      * 得到指定事件可能调用的所有事件。
+     *
+     * TODO 兼容内联和事件继承的情况。
      */
-    fun getInvocations(definition: ParadoxScriptDefinitionElement): Map<String, InvocationType> {
+    fun getInvocations(definition: ParadoxScriptDefinitionElement): Set<String> {
         return CachedValuesManager.getCachedValue(definition, cachedEventInvocationsKey) {
             val value = doGetInvocations(definition)
             CachedValueProvider.Result(value, definition)
         }
     }
     
-    private fun doGetInvocations(definition: ParadoxScriptDefinitionElement): Map<String, InvocationType> {
-        val result = mutableMapOf<String, InvocationType>()
-        definition.block?.processProperty p@{ prop ->
-            ProgressManager.checkCanceled()
-            val propName = prop.name.lowercase()
-            val invocationType = when(propName) {
-                "immediate" -> InvocationType.Immediate
-                "after" -> InvocationType.After
-                else -> return@p true
+    private fun doGetInvocations(definition: ParadoxScriptDefinitionElement): Set<String> {
+        val result = mutableSetOf<String>()
+        definition.block?.acceptChildren(object : PsiRecursiveElementVisitor() {
+            override fun visitElement(element: PsiElement) {
+                if(element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
+                if(element.isExpressionOrMemberContext()) super.visitElement(element)
             }
-            prop.block?.acceptChildren(object : PsiRecursiveElementVisitor() {
-                override fun visitElement(element: PsiElement) {
-                    if(element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
-                    if(element.isExpressionOrMemberContext()) super.visitElement(element)
+            
+            private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
+                ProgressManager.checkCanceled()
+                val value = element.value
+                if(result.contains(value)) return
+                if(!isValidEventId(value)) return //排除非法的事件ID
+                val configs = ParadoxConfigHandler.getConfigs(element)
+                val isEventConfig = configs.any { isEventConfig(it) }
+                if(isEventConfig) {
+                    result.add(value)
                 }
-                
-                private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                    ProgressManager.checkCanceled()
-                    val value = element.value
-                    if(value.count { it == '.' } != 1) return //事件ID应当包含一个点号，这里用来提高性能
-                    val configs = ParadoxConfigHandler.getConfigs(element)
-                    val isEventConfig = configs.any { isEventConfig(it) }
-                    if(isEventConfig) {
-                        result.compute(value) { _, t ->
-                            when {
-                                t == null || t == invocationType -> invocationType
-                                else -> InvocationType.All
-                            }
-                        }
-                    }
-                }
-                
-                private fun isEventConfig(config: CwtDataConfig<*>): Boolean {
-                    return config.expression.type == CwtDataType.Definition
-                        && config.expression.value?.substringBefore('.') == "event"
-                }
-            })
-            true
-        }
+            }
+            
+            private fun isEventConfig(config: CwtDataConfig<*>): Boolean {
+                return config.expression.type == CwtDataType.Definition
+                    && config.expression.value?.substringBefore('.') == "event"
+            }
+        })
         return result
     }
     
+    /**
+     * 得到指定事件的所有事件类型（以"_event"结尾的定义的子类型，拥有特定的作用域，一般拥有特定的type或者rootKey）。
+     */
     fun getEventTypes(project: Project, gameType: ParadoxGameType): List<String> {
         val eventConfig = getCwtConfig(project).getValue(gameType).types["event"] ?: return emptyList()
         return eventConfig.config.getOrPutUserData(eventTypesKey) {
-            //subtypes, ends with "_event"
             eventConfig.subtypes.keys.filter { it.endsWith("_event") }
         }
     }

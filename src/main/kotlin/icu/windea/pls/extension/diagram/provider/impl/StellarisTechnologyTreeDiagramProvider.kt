@@ -25,7 +25,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
     companion object {
         const val ID = "Stellaris.TechnologyTree"
         
-        val ITEM_PROPERTY_KEYS = arrayOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels",)
+        val ITEM_PROPERTY_KEYS = arrayOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels")
         
         val nodeDataKey = Key.create<StellarisTechnologyDataProvider.Data>("stellaris.technologyTree.node.data")
     }

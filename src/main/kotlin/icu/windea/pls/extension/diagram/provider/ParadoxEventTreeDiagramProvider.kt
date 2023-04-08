@@ -41,12 +41,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         val REL_INVOKE = object : DiagramRelationshipInfoAdapter("INVOKE", DiagramLineType.SOLID) {
             override fun getTargetArrow() = DELTA
         }
-        val REL_INVOKE_IMMEDIATE = object : DiagramRelationshipInfoAdapter("INVOKE_IMMEDIATE", DiagramLineType.SOLID, PlsDiagramBundle.message("paradox.eventTree.rel.invokeImmediate")) {
-            override fun getTargetArrow() = DELTA
-        }
-        val REL_INVOKE_AFTER = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID, PlsDiagramBundle.message("paradox.eventTree.rel.invokeAfter")) {
-            override fun getTargetArrow() = DELTA
-        }
     }
     
     private val _elementManager by lazy { ElementManager(this) }

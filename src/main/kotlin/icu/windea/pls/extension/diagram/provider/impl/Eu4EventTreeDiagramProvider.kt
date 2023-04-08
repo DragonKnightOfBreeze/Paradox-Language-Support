@@ -19,14 +19,14 @@ import icu.windea.pls.lang.data.impl.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
-@WithGameType(ParadoxGameType.Stellaris)
-class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Stellaris) {
+@WithGameType(ParadoxGameType.Eu4)
+class Eu4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Eu4) {
     companion object {
-        const val ID = "Stellaris.EventTree"
+        const val ID = "Eu4.EventTree"
         
         val ITEM_PROPERTY_KEYS = arrayOf("picture")
         
-        val nodeDataKey = Key.create<StellarisEventDataProvider.Data>("stellaris.eventTree.node.data")
+        val nodeDataKey = Key.create<Eu4EventDataProvider.Data>("eu4.eventTree.node.data")
     }
     
     override fun getID() = ID
@@ -35,7 +35,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
     
     override fun getItemPropertyKeys() = ITEM_PROPERTY_KEYS
     
-    override fun getDiagramSettings(project: Project) = project.service<StellarisEventTreeDiagramSettings>()
+    override fun getDiagramSettings(project: Project) = project.service<Eu4EventTreeDiagramSettings>()
     
     class DataModel(
         project: Project,
@@ -43,7 +43,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
         override fun refreshDataModel() {
-            provider as StellarisEventTreeDiagramProvider
+            provider as Eu4EventTreeDiagramProvider
             
             ProgressManager.checkCanceled()
             nodes.clear()
@@ -79,7 +79,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
         }
         
         private fun showNode(definition: ParadoxScriptDefinitionElement): Boolean {
-            provider as StellarisEventTreeDiagramProvider
+            provider as Eu4EventTreeDiagramProvider
             
             val definitionInfo = definition.definitionInfo ?: return false
             val settings = provider.getDiagramSettings(project).state
@@ -90,8 +90,6 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
                 var enabled = false
                 if(v.contains("hidden")) enabled = enabled || this.hidden
                 if(v.contains("triggered")) enabled = enabled || this.triggered
-                if(v.contains("major")) enabled = enabled || this.major
-                if(v.contains("diplomatic")) enabled = enabled || this.diplomatic
                 if(!enabled) return false
             }
             with(settings.eventType) {
