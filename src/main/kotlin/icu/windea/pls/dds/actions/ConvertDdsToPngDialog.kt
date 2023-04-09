@@ -15,7 +15,7 @@ import com.intellij.ui.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.core.ui.*
+import icu.windea.pls.core.*
 
 //com.intellij.refactoring.copy.CopyFilesOrDirectoriesDialog
 

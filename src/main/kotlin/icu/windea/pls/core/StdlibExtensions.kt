@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "NOTHING_TO_INLINE")
 
 package icu.windea.pls.core
 
@@ -14,9 +14,7 @@ import java.util.*
 import kotlin.contracts.*
 import kotlin.math.*
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun pass() {
-}
+inline fun pass() {}
 
 @OptIn(ExperimentalContracts::class)
 inline fun <T : R, R> T.letIf(condition: Boolean, block: (T) -> R): R {

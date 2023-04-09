@@ -48,7 +48,7 @@ class DdsEditorImpl(
 			return
 		}
 		try {
-			val imageProvider = file.getImageProvider()
+			val imageProvider = file.getDdsImageProvider()
 			if(imageProvider == null) {
 				editorUI.setImageProvider(null, null)
 				return

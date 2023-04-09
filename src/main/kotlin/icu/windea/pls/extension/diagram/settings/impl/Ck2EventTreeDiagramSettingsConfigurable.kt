@@ -7,8 +7,8 @@ import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.ui.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.ui.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.model.*
 

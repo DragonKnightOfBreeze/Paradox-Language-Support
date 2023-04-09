@@ -5,6 +5,7 @@ import com.intellij.ui.components.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import java.awt.*
 import javax.swing.*
 
