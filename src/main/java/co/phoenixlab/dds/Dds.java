@@ -96,6 +96,7 @@ public class Dds implements DdsReadable {
             header10 = new DdsHeaderDxt10();
             header10.read(byteChannel);
         }
+        //https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/19
         int sz = Math.max(calculateCompressedDataSize(), calculateDataSize());
         buf = ByteBuffer.allocate(sz);
         bdata = new byte[sz];
