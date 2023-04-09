@@ -96,12 +96,7 @@ public class Dds implements DdsReadable {
             header10 = new DdsHeaderDxt10();
             header10.read(byteChannel);
         }
-        int sz;
-        if (header.getDwFlags().contains(DdsHeader.Flags.DDSD_LINEARSIZE)) {
-            sz = calculateCompressedDataSize();
-        } else {
-            sz = calculateDataSize();
-        }
+        int sz = Math.max(calculateCompressedDataSize(), calculateDataSize());
         buf = ByteBuffer.allocate(sz);
         bdata = new byte[sz];
         //noinspection StatementWithEmptyBody
