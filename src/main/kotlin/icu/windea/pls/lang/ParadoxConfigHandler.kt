@@ -25,7 +25,7 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.parameter.*
@@ -60,7 +60,7 @@ object ParadoxConfigHandler {
     /**
      * 从CWT规则元素推断得到对应的CWT规则组。
      */
-    @InferMethod
+    @InferApi
     fun getConfigGroupFromCwt(from: PsiElement, project: Project): CwtConfigGroup? {
         val file = from.containingFile ?: return null
         val virtualFile = file.virtualFile ?: return null
@@ -332,7 +332,7 @@ object ParadoxConfigHandler {
                     if(complexEnumConfig != null) {
                         val searchScope = complexEnumConfig.searchScopeType
                         val selector = complexEnumValueSelector(project, element)
-                            //.withSearchScopeType(searchScope, element)
+                            .withSearchScopeType(searchScope)
                         val complexEnumValueInfo = ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst()
                         if(complexEnumValueInfo == null) {
                             println()
@@ -1218,9 +1218,8 @@ object ParadoxConfigHandler {
         run {
             ProgressManager.checkCanceled()
             val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
-            val selector = valueSetValueSelector(project, contextElement)
-            val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, selector)
-            valueSetValueQuery.processQuery p@{ info ->
+            val selector = valueSetValueSelector(project, contextElement).distinctByName()
+            ParadoxValueSetValueSearch.search(valueSetName, selector).processQuery p@{ info ->
                 if(info.name == keyword) return@p true //排除和当前输入的同名的
                 val element = ParadoxValueSetValueElement(contextElement, info, project)
                 //去除后面的作用域信息
@@ -1310,9 +1309,8 @@ object ParadoxConfigHandler {
         val keyword = keyword
         val file = originalFile
         val project = file.project
-        val eventTargetSelector = valueSetValueSelector(project, file).contextSensitive()
-        val eventTargetQuery = ParadoxValueSetValueSearch.search("event_target", eventTargetSelector)
-        eventTargetQuery.processQuery p@{ info ->
+        val eventTargetSelector = valueSetValueSelector(project, file).contextSensitive().distinctByName()
+        ParadoxValueSetValueSearch.search("event_target", eventTargetSelector).processQuery p@{ info ->
             if(info.name == keyword) return@p true //排除和当前输入的同名的
             val element = ParadoxValueSetValueElement(contextElement, info, project)
             val icon = PlsIcons.ValueSetValue
@@ -1325,9 +1323,8 @@ object ParadoxConfigHandler {
             true
         }
         
-        val globalEventTargetSelector = valueSetValueSelector(project, file).contextSensitive()
-        val globalEventTargetQuery = ParadoxValueSetValueSearch.search("global_event_target", globalEventTargetSelector)
-        globalEventTargetQuery.processQuery p@{ info ->
+        val globalEventTargetSelector = valueSetValueSelector(project, file).contextSensitive().distinctByName()
+        ParadoxValueSetValueSearch.search("global_event_target", globalEventTargetSelector).processQuery p@{ info ->
             if(info.name == keyword) return@p true //排除和当前输入的同名的
             val element = ParadoxValueSetValueElement(contextElement, info, project)
             val icon = PlsIcons.ValueSetValue
@@ -1345,11 +1342,8 @@ object ParadoxConfigHandler {
         ProgressManager.checkCanceled()
         val file = originalFile
         val project = file.project
-        val scriptedLocSelector = definitionSelector(project, file)
-            .contextSensitive()
-            .distinctByName()
-        val scriptedLocQuery = ParadoxDefinitionSearch.search("scripted_loc", scriptedLocSelector)
-        scriptedLocQuery.processQuery { scriptedLoc ->
+        val scriptedLocSelector = definitionSelector(project, file).contextSensitive().distinctByName()
+        ParadoxDefinitionSearch.search("scripted_loc", scriptedLocSelector).processQuery { scriptedLoc ->
             val name = scriptedLoc.definitionInfo?.name ?: return@processQuery true //不应该为空
             val icon = PlsIcons.Definition
             val tailText = " from <scripted_loc>"
@@ -1369,9 +1363,8 @@ object ParadoxConfigHandler {
         val keyword = context.keyword
         val file = context.originalFile
         val project = file.project
-        val variableSelector = valueSetValueSelector(project, file).contextSensitive()
-        val variableQuery = ParadoxValueSetValueSearch.search("variable", variableSelector)
-        variableQuery.processQuery p@{ info ->
+        val variableSelector = valueSetValueSelector(project, file).contextSensitive().distinctByName()
+        ParadoxValueSetValueSearch.search("variable", variableSelector).processQuery p@{ info ->
             if(info.name == keyword) return@p true //排除和当前输入的同名的
             val element = ParadoxValueSetValueElement(contextElement, info, project)
             val icon = PlsIcons.Variable

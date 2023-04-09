@@ -1,0 +1,56 @@
+package icu.windea.pls.extension.diagram.actions
+
+import com.intellij.diagram.*
+import com.intellij.diagram.util.*
+import com.intellij.openapi.actionSystem.*
+import com.intellij.uml.core.actions.visibility.*
+import icu.windea.pls.core.search.scope.type.*
+import icu.windea.pls.extension.diagram.*
+import icu.windea.pls.extension.diagram.provider.*
+import javax.swing.*
+
+//com.intellij.uml.core.actions.scopes.UmlChangeScopeAction
+
+class ParadoxDiagramChangeScopeTypeAction(
+    val scopeType: ParadoxSearchScopeType,
+    val builder: DiagramBuilder
+): DiagramAction(scopeType.text, null, null) {
+    companion object {
+        private val SELECTED_ICON = SelectedVisibilityIcon()
+        private val DESELECTED_ICON = DeselectedVisibilityIcon()
+    }
+    
+    override fun getActionName(): String {
+        return PlsDiagramBundle.message("action.changeScopeType.name", scopeType.text)
+    }
+    
+    private fun getActionIcon(): Icon {
+        val project = builder.project
+        val provider = builder.provider
+        if(provider !is ParadoxDiagramProvider) return DESELECTED_ICON
+        var settings = provider.getDiagramSettings(project)?.state ?: return DESELECTED_ICON
+        val currentScopeType = settings.scopeType
+        val selected = ParadoxSearchScopeTypes.get(currentScopeType).id == scopeType.id
+        return if(selected) SELECTED_ICON else DESELECTED_ICON
+    }
+    
+    override fun getActionUpdateThread(): ActionUpdateThread {
+        return ActionUpdateThread.BGT
+    }
+    
+    override fun update(e: AnActionEvent) {
+        val builder = e.getData(DiagramDataKeys.BUILDER)
+        val provider = builder?.provider
+        e.presentation.isEnabledAndVisible = provider is ParadoxDiagramProvider
+        e.presentation.icon = getActionIcon()
+    }
+    
+    override fun perform(e: AnActionEvent) {
+        val project = builder.project
+        val provider = builder.provider
+        if(provider !is ParadoxDiagramProvider) return
+        val settings = provider.getDiagramSettings(project)?.state ?: return
+        settings.scopeType = scopeType.id
+        DiagramUpdateService.getInstance().requestDataModelRefreshPreservingLayout(builder).runAsync()
+    }
+}

@@ -2,17 +2,25 @@ package icu.windea.pls.core.index
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.gist.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
+//这里应当使用Gist，因为可能需要在索引中访问其他索引
+//这里不能使用PsiFileGist，否则可能会出现应当可以解析但有时无法解析的情况
+
 object ParadoxValueSetValueIndex {
     class Data(
+        val marker: Boolean = true,
         val valueSetValueList: MutableList<ParadoxValueSetValueInfo> = mutableListOf()
     ) {
         val valueSetValues by lazy {
@@ -25,25 +33,31 @@ object ParadoxValueSetValueIndex {
         }
     }
     
+    val EmptyData = Data(true, mutableListOf())
+    
     private val valueExternalizer: DataExternalizer<Data> = object : DataExternalizer<Data> {
         override fun save(storage: DataOutput, value: Data) {
+            storage.writeBoolean(value.marker)
             DataInputOutputUtil.writeSeq(storage, value.valueSetValueList) {
                 IOUtil.writeUTF(storage, it.name)
                 IOUtil.writeUTF(storage, it.valueSetName)
                 storage.writeByte(it.readWriteAccess.toByte())
+                storage.writeInt(it.elementOffset)
                 storage.writeByte(it.gameType.toByte())
             }
         }
         
         override fun read(storage: DataInput): Data {
+            val marker = storage.readBoolean()
             val valueSetValueInfos = DataInputOutputUtil.readSeq(storage) {
                 val name = IOUtil.readUTF(storage)
                 val valueSetName = IOUtil.readUTF(storage)
                 val readWriteAccess = storage.readByte().toReadWriteAccess()
+                val elementOffset = storage.readInt()
                 val gameType = storage.readByte().toGameType()
-                ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, gameType)
+                ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, elementOffset, gameType)
             }
-            return Data(valueSetValueInfos)
+            return Data(marker, valueSetValueInfos)
         }
         
         private fun ReadWriteAccessDetector.Access.toByte() = this.ordinal
@@ -60,13 +74,15 @@ object ParadoxValueSetValueIndex {
     }
     
     private const val id = "paradox.valueSetValue.index"
-    private const val version = 1 //0.9.6
+    private const val version = 4 //0.9.7
     
-    private val gist: PsiFileGist<Data> = GistManager.getInstance().newPsiFileGist(id, version, valueExternalizer) builder@{ file ->
+    private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(id, version, valueExternalizer) builder@{ project, file ->
         ProgressManager.checkCanceled()
-        if(file !is ParadoxScriptFile) return@builder Data()
+        if(file.fileType != ParadoxScriptFileType) return@builder EmptyData
+        if(file.fileInfo == null) return@builder EmptyData
+        val psiFile = file.toPsiFile<ParadoxScriptFile>(project) ?: return@builder EmptyData
         val data = Data()
-        file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+        psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if(element is ParadoxScriptStringExpressionElement) {
                     ParadoxValueSetValueHandler.getInfo(element)?.let { data.valueSetValueList.add(it) }
@@ -77,8 +93,8 @@ object ParadoxValueSetValueIndex {
         data
     }
     
-    fun getData(valueSetName: String, file: PsiFile): Map<String, ParadoxValueSetValueInfo>? {
-        return gist.getFileData(file).valueSetValues[valueSetName]
+    fun getData(valueSetName: String, file: VirtualFile, project: Project): Map<String, ParadoxValueSetValueInfo>? {
+        return gist.getFileData(project, file).valueSetValues[valueSetName]
     }
 }
 
@@ -160,7 +176,7 @@ object ParadoxValueSetValueIndex {
 //    }
 //    
 //    override fun getInputFilter(): FileBasedIndex.InputFilter {
-//        return FileBasedIndex.InputFilter { it.fileInfo != null && !ParadoxFileManager.isLightFile(it) && it.fileType == ParadoxScriptFileType }
+//        return FileBasedIndex.InputFilter { it.fileType == ParadoxScriptFileType && it.fileInfo != null }
 //    }
 //    
 //    override fun dependsOnFileContent(): Boolean {

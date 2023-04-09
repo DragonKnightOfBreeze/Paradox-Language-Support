@@ -11,11 +11,9 @@ import com.intellij.ui.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.extension.diagram.extras.*
+import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
@@ -23,7 +21,6 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import icu.windea.pls.tool.localisation.*
 import icu.windea.pls.tool.script.*
-import java.awt.*
 import javax.swing.*
 
 /**
@@ -41,41 +38,25 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         val CAT_PICTURE = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.eventTree.category.picture"), PlsIcons.Image, false, false)
         val CATEGORIES = arrayOf(CAT_TYPE, CAT_PROPERTIES, CAT_TITLE, CAT_PICTURE)
         
-        val REL_INVOKE = object : DiagramRelationshipInfoAdapter("INVOKE", DiagramLineType.SOLID) {
-            override fun getTargetArrow() = DELTA
-        }
-        val REL_INVOKE_IMMEDIATE = object : DiagramRelationshipInfoAdapter("INVOKE_IMMEDIATE", DiagramLineType.SOLID, PlsDiagramBundle.message("paradox.eventTree.rel.invokeImmediate")) {
-            override fun getTargetArrow() = DELTA
-        }
-        val REL_INVOKE_AFTER = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID, PlsDiagramBundle.message("paradox.eventTree.rel.invokeAfter")) {
+        val REL_INVOKE = object : DiagramRelationshipInfoAdapter("INVOKE", DiagramLineType.SOLID, PlsDiagramBundle.message("paradox.eventTree.rel.invoke")) {
             override fun getTargetArrow() = DELTA
         }
     }
     
-    private val _vfsResolver = ParadoxRootVfsResolver()
-    private val _elementManager = ElementManager(this)
-    private val _relationshipManager = RelationshipManager()
-    private val _extras = Extras(this)
+    private val _elementManager by lazy { ElementManager(this) }
     
-    override fun getID() = gameType.name + ".EventTree"
-    
+    @Suppress("DialogTitleCapitalization")
     override fun getPresentableName() = PlsDiagramBundle.message("paradox.eventTree.name", gameType)
-    
-    override fun createScopeManager(project: Project) = null //TODO
     
     override fun createNodeContentManager() = NodeContentManager()
     
-    override fun getVfsResolver() = _vfsResolver
-    
     override fun getElementManager() = _elementManager
     
-    override fun getRelationshipManager() = _relationshipManager
-    
-    override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
-    
-    override fun getExtras() = _extras
+    abstract override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) : DataModel
     
     override fun getAllContentCategories() = CATEGORIES
+    
+    abstract override fun getDiagramSettings(project: Project): ParadoxEventTreeDiagramSettings<*>?
     
     class NodeContentManager : OrderedDiagramNodeContentManager() {
         override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?): Boolean {
@@ -161,7 +142,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                     when {
                         nodeItem is ParadoxLocalisationProperty -> {
                             //事件标题
-                            ParadoxLocalisationTextUIRender.render(nodeItem)
+                            ParadoxLocalisationTextUIRenderer.render(nodeItem)
                         }
                         nodeItem is PsiFile -> {
                             //事件图片
@@ -241,117 +222,11 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         }
     }
     
-    class RelationshipManager : DiagramRelationshipManager<PsiElement> {
-        override fun getDependencyInfo(s: PsiElement?, t: PsiElement?, category: DiagramCategory?): DiagramRelationshipInfo? {
-            return null
-        }
-    }
-    
-    open class ColorManager : DiagramColorManagerBase() {
-        override fun getEdgeColor(builder: DiagramBuilder, edge: DiagramEdge<*>): Color {
-            if(edge !is Edge) return super.getEdgeColor(builder, edge)
-            //基于调用类型
-            return doGetEdgeColor(edge) ?: super.getEdgeColor(builder, edge)
-        }
-        
-        private fun doGetEdgeColor(edge: Edge): Color? {
-            val invocationType = edge.invocationType
-            return when(invocationType) {
-                ParadoxEventHandler.InvocationType.All -> null
-                ParadoxEventHandler.InvocationType.Immediate -> Color.RED
-                ParadoxEventHandler.InvocationType.After -> Color.BLUE
-            }
-        }
-    }
-    
-    class Node(
-        element: ParadoxScriptProperty,
-        provider: ParadoxDefinitionDiagramProvider
-    ) : ParadoxDefinitionDiagramNode(element, provider)
-    
-    class Edge(
-        source: Node,
-        target: Node,
-        relationship: DiagramRelationshipInfo = REL_INVOKE,
-        val invocationType: ParadoxEventHandler.InvocationType,
-    ) : ParadoxDefinitionDiagramEdge(source, target, relationship)
-    
-    class DataModel(
+    abstract class DataModel(
         project: Project,
-        val file: VirtualFile?, //umlFile
-        provider: ParadoxEventTreeDiagramProvider
-    ) : ParadoxDiagramDataModel(project, provider) {
-        private val _nodes = mutableSetOf<DiagramNode<PsiElement>>()
-        private val _edges = mutableSetOf<DiagramEdge<PsiElement>>()
-        
-        override fun getNodes() = _nodes
-        
-        override fun getEdges() = _edges
-        
-        override fun getNodeName(node: DiagramNode<PsiElement>) = node.tooltip.orAnonymous()
-        
-        override fun addElement(element: PsiElement?) = null
-        
-        override fun getModificationTracker() = this
-        
-        override fun getModificationCount(): Long {
-            return ParadoxModificationTrackerProvider.getInstance().Events.modificationCount
-        }
-        
-        override fun dispose() {
-            
-        }
-        
-        override fun refreshDataModel() {
-            doRefreshDataModel()
-        }
-        
-        private fun doRefreshDataModel() {
-            provider as ParadoxEventTreeDiagramProvider
-            
-            ProgressManager.checkCanceled()
-            _nodes.clear()
-            _edges.clear()
-            val originalFile = file?.getUserData(DiagramDataKeys.ORIGINAL_ELEMENT)
-            val selector = definitionSelector(project, originalFile).withGameType(gameType).contextSensitive().distinctByName()
-            val events = mutableSetOf<ParadoxScriptProperty>()
-            ParadoxDefinitionSearch.search("event", selector).processQuery {
-                if(it is ParadoxScriptProperty) events.add(it)
-                true
-            }
-            if(events.isEmpty()) return
-            //群星原版事件有5000+
-            val nodeMap = mutableMapOf<ParadoxScriptProperty, Node>()
-            val eventMap = mutableMapOf<String, ParadoxScriptProperty>()
-            for(event in events) {
-                ProgressManager.checkCanceled()
-                if(!provider.showNode(event)) continue
-                val node = Node(event, provider)
-                provider.handleNode(node)
-                nodeMap.put(event, node)
-                eventMap.put(ParadoxEventHandler.getName(event), event)
-                _nodes.add(node)
-            }
-            for(event in events) {
-                ProgressManager.checkCanceled()
-                val invocations = ParadoxEventHandler.getInvocations(event)
-                if(invocations.isEmpty()) continue
-                //事件 --> 调用的事件
-                for((invocation, invocationType) in invocations) {
-                    ProgressManager.checkCanceled()
-                    val source = nodeMap.get(event) ?: continue
-                    val target = eventMap.get(invocation)?.let { nodeMap.get(it) } ?: continue
-                    val relationship = when(invocationType) {
-                        ParadoxEventHandler.InvocationType.All -> REL_INVOKE
-                        ParadoxEventHandler.InvocationType.Immediate -> REL_INVOKE_IMMEDIATE
-                        ParadoxEventHandler.InvocationType.After -> REL_INVOKE_AFTER
-                    }
-                    val edge = Edge(source, target, relationship, invocationType)
-                    _edges.add(edge)
-                }
-            }
-        }
+        file: VirtualFile?, //umlFile   
+        provider: ParadoxDefinitionDiagramProvider
+    ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
+        override fun getModificationTracker() = ParadoxModificationTrackerProvider.getInstance().Events
     }
-    
-    class Extras(provider: ParadoxDiagramProvider) : ParadoxDiagramExtras(provider)
 }

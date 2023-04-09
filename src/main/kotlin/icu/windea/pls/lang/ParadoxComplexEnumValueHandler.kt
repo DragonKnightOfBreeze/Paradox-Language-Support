@@ -53,7 +53,8 @@ object ParadoxComplexEnumValueHandler {
                     val name = getName(element.value) ?: continue
                     val enumName = complexEnumConfig.name
                     val readWriteAccess = Access.Write //write (declaration)
-                    return ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, gameType)
+                    val elementOffset = element.startOffset
+                    return ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, elementOffset, gameType)
                 }
             }
         }

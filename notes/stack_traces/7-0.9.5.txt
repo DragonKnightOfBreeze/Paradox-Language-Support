@@ -3,7 +3,7 @@ com.intellij.serviceContainer.AlreadyDisposedException: Cannot create com.intell
 	at com.intellij.serviceContainer.ComponentManagerImpl.doGetService(ComponentManagerImpl.kt:736)
 	at com.intellij.serviceContainer.ComponentManagerImpl.getService(ComponentManagerImpl.kt:670)
 	at com.intellij.openapi.roots.ProjectFileIndex.getInstance(ProjectFileIndex.java:38)
-	at icu.windea.pls.core.search.scopes.ParadoxGlobalSearchScope$Companion.fromFile(ParadoxGlobalSearchScope.kt:40)
+	at icu.windea.pls.core.search.scopes.ParadoxSearchScope$Companion.fromFile(ParadoxSearchScope.kt:40)
 	at icu.windea.pls.core.search.selectors.chained.ChainedParadoxSelector$defaultScope$2.invoke(ChainedParadoxSelector.kt:31)
 	at icu.windea.pls.core.search.selectors.chained.ChainedParadoxSelector$defaultScope$2.invoke(ChainedParadoxSelector.kt:30)
 	at kotlin.SynchronizedLazyImpl.getValue(LazyJVM.kt:74)

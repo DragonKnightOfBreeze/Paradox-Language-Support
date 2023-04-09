@@ -22,7 +22,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.diff.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.tool.*
 import java.awt.*
 import java.util.*
@@ -31,44 +31,37 @@ import javax.swing.*
 /**
  * 将当前文件与包括当前文件的只读副本在内的相同路径的文件进行DIFF。如果是本地化文件的话也忽略路径中的语言区域。
  *
- * * 当当前文件是模组或游戏文件时显示并启用。
+ * * 当当前文件（或者通过视图等选中的文件）是模组或游戏文件时显示并启用。
  * * 忽略直接位于游戏或模组入口目录下的文件。
  * * 可以用于比较二进制文件。（如DDS图片）
  * * TODO 按照覆盖顺序进行排序。
  */
-@Suppress("ComponentNotRegistered", "UNUSED_VARIABLE", "DEPRECATION")
+@Suppress("ComponentNotRegistered", "DEPRECATION")
 class CompareFilesAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
-        return e.getData(CommonDataKeys.VIRTUAL_FILE)
-            ?: e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)?.singleOrNull()
+        val file = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)?.singleOrNull()
+            ?: e.getData(CommonDataKeys.VIRTUAL_FILE)
+            ?: return null
+        if(file.isDirectory) return null
+        val fileInfo = file.fileInfo ?: return null
+        if(fileInfo.entryPath.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
+        //val gameType = fileInfo.rootInfo.gameType
+        //val path = fileInfo.path.path
+        return file
     }
     
     override fun update(e: AnActionEvent) {
+        //出于性能原因，目前不在update方法中判断是否不存在重载/被重载的情况
         val presentation = e.presentation
-        presentation.isVisible = false
-        presentation.isEnabled = false
-        val project = e.project ?: return
-        val file = findFile(e) ?: return
-        if(file.isDirectory) return
-        val fileInfo = file.fileInfo ?: return
-        if(fileInfo.entryPath.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
-        presentation.isVisible = true
-        //val gameType = fileInfo.rootInfo.gameType
-        //val path = fileInfo.path.path
-        //val selector = fileSelector(project, file)
-        //val multiple = ParadoxFilePathSearch.search(path, project, selector).hasMultipleResults()
-        //if(!multiple) return //忽略不存在重载/被重载的情况 - 出于性能原因，目前不在update方法中判断
-        presentation.isEnabled = true
+        presentation.isEnabledAndVisible = false
+        val file = findFile(e)
+        presentation.isEnabledAndVisible = file != null
     }
     
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
         val project = e.project ?: return null
         val file = findFile(e) ?: return null
-        //if(file.isDirectory) return null
-        val fileInfo = file.fileInfo ?: return null
-        //if(fileInfo.entryPath.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
-        val gameType = fileInfo.rootInfo.gameType
-        val path = fileInfo.path.path
+        val path = file.fileInfo?.path?.path ?: return null
         val virtualFiles = Collections.synchronizedList(mutableListOf<VirtualFile>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
             runReadAction {
@@ -98,7 +91,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         if(binary) content.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
         
         var index = 0
-        var defaultIndex = 0
+        var currentIndex = 0
         val producers = runReadAction {
             virtualFiles.mapNotNull { otherFile ->
                 if(file.fileType != otherFile.fileType) return@mapNotNull null
@@ -124,7 +117,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
                         createContent(contentFactory, project, otherFile)
                     }
                 } ?: return@mapNotNull null
-                if(isCurrent) defaultIndex = index
+                if(isCurrent) currentIndex = index
                 if(readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
                 index++
                 val icon = otherFile.fileType.icon
@@ -137,6 +130,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
                 MyRequestProducer(request, otherFile, icon, isCurrent)
             }
         }
+        val defaultIndex = getDefaultIndex(producers, currentIndex)
         return MyDiffRequestChain(producers, defaultIndex)
     }
     
@@ -204,12 +198,13 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         }
         
         override fun createPopup(e: AnActionEvent): JBPopup {
-            return JBPopupFactory.getInstance().createListPopup(Popup(e))
+            return JBPopupFactory.getInstance().createListPopup(Popup())
         }
         
-        private inner class Popup(
-            val e: AnActionEvent
-        ) : BaseListPopupStep<DiffRequestProducer>(PlsBundle.message("diff.compare.files.popup.title"), chain.requests) {
+        private inner class Popup : BaseListPopupStep<DiffRequestProducer>(
+            PlsBundle.message("diff.compare.files.popup.title"),
+            chain.requests
+        ) {
             init {
                 defaultOptionIndex = defaultSelection
             }

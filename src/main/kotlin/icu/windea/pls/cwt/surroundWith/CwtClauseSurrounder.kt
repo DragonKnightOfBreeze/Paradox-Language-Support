@@ -7,6 +7,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.codeStyle.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
 /**
@@ -36,7 +37,7 @@ class CwtClauseSurrounder : Surrounder {
         if(elements.isEmpty()) return null
         val firstElement = elements.first()
         val lastElement = elements.last()
-        val replacedRange = TextRange.create(firstElement.textRange.startOffset, lastElement.textRange.endOffset)
+        val replacedRange = TextRange.create(firstElement.startOffset, lastElement.endOffset)
         val replacedText = replacedRange.substring(firstElement.containingFile.text)
         if(firstElement != lastElement) {
             firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
@@ -44,7 +45,7 @@ class CwtClauseSurrounder : Surrounder {
         var newElement = CwtElementFactory.createValue(project, "{\n${replacedText}\n}")
         newElement = firstElement.replace(newElement) as CwtBlock
         newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as CwtBlock
-        val endOffset = newElement.textRange.endOffset
+        val endOffset = newElement.endOffset
         return TextRange.create(endOffset, endOffset)
     }
 }

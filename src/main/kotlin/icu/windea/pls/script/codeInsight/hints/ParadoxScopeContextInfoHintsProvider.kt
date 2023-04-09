@@ -51,7 +51,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 		//show only for properties with clause value, and left curly brace should be at end of line
 		val block = element.propertyValue as? ParadoxScriptBlock ?: return true
 		val leftCurlyBrace = block.findChild(ParadoxScriptElementTypes.LEFT_BRACE) ?: return true
-		val offset = leftCurlyBrace.textRange.endOffset
+		val offset = leftCurlyBrace.endOffset
 		val isAtLineEnd = editor.document.isAtLineEnd(offset, true)
 		if(!isAtLineEnd) return true //仅当作为子句开始的左花括号位于行尾时，才显示此内嵌提示
 		if(!ParadoxScopeHandler.isScopeContextSupported(element)) return true
@@ -62,14 +62,14 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 			
 			val gameType = selectGameType(file) ?: return true
 			val configGroup = getCwtConfig(file.project).getValue(gameType)
-			val presentation = collectScopeContext(scopeContext, configGroup)
+			val presentation = doCollect(scopeContext, configGroup)
 			val finalPresentation = presentation.toFinalPresentation(this, file.project)
 			sink.addInlineElement(offset, true, finalPresentation, true)
 		}
 		return true
 	}
 	
-	private fun PresentationFactory.collectScopeContext(scopeInfo: ParadoxScopeContext, configGroup: CwtConfigGroup): InlayPresentation {
+	private fun PresentationFactory.doCollect(scopeInfo: ParadoxScopeContext, configGroup: CwtConfigGroup): InlayPresentation {
 		val presentations = mutableListOf<InlayPresentation>()
 		var appendSeparator = false
 		scopeInfo.map.forEach { (key, value) ->

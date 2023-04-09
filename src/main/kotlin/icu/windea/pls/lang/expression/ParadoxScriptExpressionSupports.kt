@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.expression
 
 import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import com.intellij.codeInsight.highlighting.*
 import com.intellij.lang.annotation.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
@@ -18,7 +18,7 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.lang.scope.*
@@ -140,7 +140,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         if(expression.isLeftQuoted()) return
         if(expression.isParameterAwareExpression()) return
         val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
-        val range = rangeInElement?.shiftRight(element.textRange.startOffset) ?: element.textRange.unquote(element.text)
+        val range = rangeInElement?.shiftRight(element.startOffset) ?: element.textRange.unquote(element.text)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
     }
     
@@ -355,7 +355,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
         if(complexEnumConfig != null) {
             val searchScope = complexEnumConfig.searchScopeType
             val selector = complexEnumValueSelector(project, element)
-                //.withSearchScopeType(searchScope, element)
+                .withSearchScopeType(searchScope)
                 .contextSensitive(exact)
             val info = ParadoxComplexEnumValueSearch.search(expression, enumName, selector).findFirst()
             if(info != null) {
@@ -400,8 +400,9 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
             val typeFile = complexEnumConfig.pointer.containingFile
             val searchScope = complexEnumConfig.searchScopeType
             val selector = complexEnumValueSelector(project, contextElement)
-                //.withSearchScopeType(searchScope, contextElement)
+                .withSearchScopeType(searchScope)
                 .contextSensitive()
+                .distinctByName()
             ParadoxComplexEnumValueSearch.search(enumName, selector).processQuery { info ->
                 val name = info.name
                 val element = ParadoxComplexEnumValueElement(contextElement, info, project)

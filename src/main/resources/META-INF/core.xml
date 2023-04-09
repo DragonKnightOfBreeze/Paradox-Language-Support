@@ -18,7 +18,7 @@
   </extensions>
   
   <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
+    <applicationConfigurable id="pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
     
     <additionalLibraryRootsProvider implementation="icu.windea.pls.core.ParadoxLibraryProvider"/>
     <moduleRendererFactory implementation="icu.windea.pls.core.ParadoxModuleRenderFactory"/>
@@ -54,6 +54,9 @@
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
     <lang.foldingBuilder language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.core.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
     
+    <projectService serviceImplementation="icu.windea.pls.core.hierarchy.ParadoxHierarchyBrowserSettings"/>
+    <typeHierarchyProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.hierarchy.ParadoxDefinitionHierarchyProvider"/>
+    
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFilePathIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxDirectoryFilePathIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxInlineScriptIndex"/>
@@ -67,15 +70,15 @@
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxSyncedLocalisationNameIndex"/>
     
     <searchScopesProvider implementation="icu.windea.pls.core.search.ParadoxSearchScopeProvider"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxScriptedVariableImplementationsSearch"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxDefinitionImplementationsSearch"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxLocalisationImplementationsSearch"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxFileImplementationsSearch"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxScriptedVariableImplementationsSearch"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxDefinitionImplementationsSearch"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxLocalisationImplementationsSearch"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxFileImplementationsSearch"/>
     
-    <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxDefinitionUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxLocalisationUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.core.search.usages.CwtConfigUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxFileUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.core.search.usage.ParadoxDefinitionUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.core.search.usage.ParadoxLocalisationUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.core.search.usage.CwtConfigUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.core.search.usage.ParadoxFileUsagesSearcher"/>
     
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
     
@@ -250,11 +253,20 @@
       <add-to-group group-id="EditorContextBarMenu" anchor="last"/>
     </group>
     <group id="Pls.Diff.WithSeparator">
-      <separator/>
       <reference ref="Pls.Diff"/>
       <add-to-group group-id="CompareActions" relative-to-action="CompareClipboardWithSelection" anchor="after"/>
       <add-to-group group-id="EditorPopupMenu" relative-to-action="CompareClipboardWithSelection" anchor="after"/>
       <add-to-group group-id="ProjectViewPopupMenu" relative-to-action="CompareFileWithEditor" anchor="after"/>
+      <add-to-group group-id="HierarchyPopupMenu.Common" relative-to-action="CompareFileWithEditor" anchor="after"/>
+    </group>
+    
+    <action id="Pls.TypeHierarchy.Definition1" class="icu.windea.pls.core.hierarchy.ViewDefinitionHierarchy1Action"/>
+    <action id="Pls.TypeHierarchy.Definition2" class="icu.windea.pls.core.hierarchy.ViewDefinitionHierarchy2Action"/>
+    
+    <group id="Pls.TypeHierarchyPopupMenu">
+      <reference ref="Pls.TypeHierarchy.Definition1"/>
+      <reference ref="Pls.TypeHierarchy.Definition2"/>
+      <add-to-group group-id="TypeHierarchyPopupMenu" anchor="first"/>
     </group>
   </actions>
 </idea-plugin>

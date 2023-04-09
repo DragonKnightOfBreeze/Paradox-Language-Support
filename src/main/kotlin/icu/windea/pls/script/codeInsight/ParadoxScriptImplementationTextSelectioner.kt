@@ -28,7 +28,7 @@ class ParadoxScriptImplementationTextSelectioner : ImplementationTextSelectioner
 				findTextStartOffsetIncludeComment(element) { it.parent is ParadoxScriptRootBlock }
 			}
 			else -> {
-				element.textRange.startOffset
+				element.startOffset
 			}
 		}
 	}
@@ -40,10 +40,10 @@ class ParadoxScriptImplementationTextSelectioner : ImplementationTextSelectioner
 				val parent = element.parent
 				val isDefinition = parent?.castOrNull<ParadoxScriptProperty>()?.definitionInfo != null
 				if(isDefinition) return getTextEndOffset(parent)
-				element.textRange.endOffset
+				element.endOffset
 			}
 			else -> {
-				element.textRange.endOffset
+				element.endOffset
 			}
 		}
 	}

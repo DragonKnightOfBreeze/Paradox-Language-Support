@@ -2,6 +2,7 @@ package icu.windea.pls.script.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.util.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
@@ -20,7 +21,7 @@ class ParadoxParameterCompletionProvider : CompletionProvider<CompletionParamete
 			else -> return
 		}
 		
-		val offsetInParent = parameters.offset - tokenElement.textRange.startOffset
+		val offsetInParent = parameters.offset - tokenElement.startOffset
 		val keyword = tokenElement.getKeyword(offsetInParent)
 		
 		context.put(PlsCompletionKeys.originalFileKey, parameters.originalFile)

@@ -3,7 +3,7 @@ package icu.windea.pls.core.search
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.model.*
 
 /**

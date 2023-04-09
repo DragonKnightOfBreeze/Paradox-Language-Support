@@ -6,7 +6,7 @@ import com.intellij.openapi.roots.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.search.scopes.*
+import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.model.*
 
 /**
@@ -22,7 +22,6 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
         val fileInfo = file?.fileInfo
         if(fileInfo == null) return emptyList()
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
-        if(!isInProject) return emptyList() //不在项目中 - 不提供
         val rootInfo = fileInfo.rootInfo
         val rootFile = rootInfo.rootFile
         when {
@@ -30,10 +29,12 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
                 val settings = getProfilesSettings().gameSettings.get(rootFile.path)
                 if(settings == null) return emptyList()
                 val gameDirectory = rootFile
-                val modDependencyDirectories = ParadoxGlobalSearchScope.getModDependencyDirectories(settings)
+                val modDependencyDirectories = ParadoxSearchScope.getDependencyDirectories(settings)
                 val result = mutableListOf<SearchScope>()
-                result.add(ParadoxGameScope(project, rootFile))
-                result.add(ParadoxGameWithDependenciesScope(project, gameDirectory, modDependencyDirectories))
+                result.add(ParadoxGameSearchScope(project, rootFile))
+                if(isInProject) {
+                    result.add(ParadoxGameWithDependenciesSearchScope(project, gameDirectory, modDependencyDirectories))
+                }
                 return result
             }
             rootInfo is ParadoxModRootInfo -> {
@@ -41,12 +42,14 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
                 if(settings == null) return emptyList()
                 val modDirectory = rootFile
                 val gameDirectory = settings.gameDirectory?.toVirtualFile(false)
-                val modDependencyDirectories = ParadoxGlobalSearchScope.getModDependencyDirectories(settings, modDirectory)
+                val modDependencyDirectories = ParadoxSearchScope.getDependencyDirectories(settings, modDirectory)
                 val result = mutableListOf<SearchScope>()
-                result.add(ParadoxModScope(project, modDirectory))
-                if(gameDirectory != null) result.add(ParadoxGameScope(project, gameDirectory))
-                result.add(ParadoxModAndGameScope(project, modDirectory, gameDirectory))
-                result.add(ParadoxModWithDependenciesScope(project, modDirectory, gameDirectory, modDependencyDirectories))
+                result.add(ParadoxModSearchScope(project, modDirectory))
+                if(isInProject) {
+                    result.add(ParadoxGameSearchScope(project, gameDirectory))
+                    result.add(ParadoxModAndGameSearchScope(project, modDirectory, gameDirectory))
+                    result.add(ParadoxModWithDependenciesSearchScope(project, modDirectory, gameDirectory, modDependencyDirectories))
+                }
                 return result
             }
         }

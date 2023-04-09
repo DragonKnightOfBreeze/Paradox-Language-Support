@@ -21,7 +21,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 		val file = parameters.originalFile
 		val quoted = element.text.isLeftQuoted()
 		val rightQuoted = element.text.isRightQuoted()
-		val offsetInParent = parameters.offset - element.textRange.startOffset
+		val offsetInParent = parameters.offset - element.startOffset
 		val keyword = element.getKeyword(offsetInParent)
 		
 		context.put(PlsCompletionKeys.completionTypeKey, parameters.completionType)

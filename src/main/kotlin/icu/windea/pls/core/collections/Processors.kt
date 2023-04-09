@@ -1,4 +1,4 @@
-@file:Suppress("UnusedReceiverParameter")
+@file:Suppress("unused")
 
 package icu.windea.pls.core.collections
 

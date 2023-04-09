@@ -4,6 +4,7 @@ import com.intellij.diagram.*
 import com.intellij.diagram.components.*
 import com.intellij.ui.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.extension.diagram.*
 import java.awt.*
 
@@ -11,9 +12,7 @@ import java.awt.*
 //com.intellij.diagram.components.DiagramNodeBodyComponent
 //com.intellij.diagram.components.DiagramNodeItemComponent
 
-private val myLeftField by lazy { DiagramNodeItemComponent::class.java.getDeclaredField("myLeft").apply { trySetAccessible() } }
-private val myRightField by lazy { DiagramNodeItemComponent::class.java.getDeclaredField("myRight").apply { trySetAccessible() } }
-
+@TrickyApi
 class DiagramNodeItemComponentEx : DiagramNodeItemComponent() {
     private var useComponent = false
     
@@ -26,8 +25,8 @@ class DiagramNodeItemComponentEx : DiagramNodeItemComponent() {
         val right = object : SimpleColoredComponent() {
             override fun getPreferredSize() = super.getPreferredSize().alsoIf(useComponent) { it.width = 0 }
         }
-        myLeftField.set(this, left)
-        myRightField.set(this, right)
+        this.setFieldValue<DiagramNodeItemComponent>("myLeft", left)
+        this.setFieldValue<DiagramNodeItemComponent>("myRight", right)
         removeAll()
         add(left, BorderLayout.WEST)
         add(right, BorderLayout.EAST)

@@ -24,7 +24,7 @@ class ParadoxLocalisationSmartEnterProcessor: SmartEnterProcessorWithFixers() {
 				.parent.castOrNull<ParadoxLocalisationPropertyKey>()
 				//.parentOfType<ParadoxLocalisationPropertyKey>()
 				?: return
-			val endOffset = element.textRange.endOffset
+			val endOffset = element.endOffset
 			if(caretOffset != endOffset){
 				editor.document.deleteString(caretOffset, endOffset)
 			}

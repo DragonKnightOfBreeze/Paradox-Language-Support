@@ -10,7 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxModifierIconHintsProvider.*
 import icu.windea.pls.script.psi.*
@@ -53,33 +53,32 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
     //icu.windea.pls.tool.localisation.ParadoxLocalisationTextHintsRenderer.renderIconTo
     
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-        if(element is ParadoxScriptStringExpressionElement) {
-            //基于stub
-            val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return true
-            val type = config.expression.type
-            if(type == CwtDataType.Modifier) {
-                val name = element.value
-                val configGroup = config.info.configGroup
-                val project = configGroup.project
-                val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name)
-                val iconFile = iconPaths.firstNotNullOfOrNull {
-                    val iconSelector = fileSelector(project, element).contextSensitive()
-                    ParadoxFilePathSearch.search(it, null, iconSelector).find()
-                } ?: return true
-                val iconUrl = ParadoxDdsUrlResolver.resolveByFile(iconFile, defaultToUnknown = false)
-                if(iconUrl.isNotEmpty()) {
-                    //忽略异常
-                    runCatching {
-                        //找不到图标的话就直接跳过
-                        val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
-                        //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-                        if(icon.iconHeight <= settings.iconHeightLimit) {
-                            //点击可以导航到声明处（DDS）
-                            val presentation = psiSingleReference(smallScaledIcon(icon)) { iconFile.toPsiFile(project) }
-                            val finalPresentation = presentation.toFinalPresentation(this, file.project, smaller = true)
-                            val endOffset = element.textRange.endOffset
-                            sink.addInlineElement(endOffset, true, finalPresentation, false)
-                        }
+        if(element !is ParadoxScriptStringExpressionElement) return true
+        if(!element.isExpression()) return true
+        val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return true
+        val type = config.expression.type
+        if(type == CwtDataType.Modifier) {
+            val name = element.value
+            val configGroup = config.info.configGroup
+            val project = configGroup.project
+            val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name)
+            val iconFile = iconPaths.firstNotNullOfOrNull {
+                val iconSelector = fileSelector(project, element).contextSensitive()
+                ParadoxFilePathSearch.search(it, null, iconSelector).find()
+            } ?: return true
+            val iconUrl = ParadoxDdsUrlResolver.resolveByFile(iconFile, defaultToUnknown = false)
+            if(iconUrl.isNotEmpty()) {
+                //忽略异常
+                runCatching {
+                    //找不到图标的话就直接跳过
+                    val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
+                    //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
+                    if(icon.iconHeight <= settings.iconHeightLimit) {
+                        //点击可以导航到声明处（DDS）
+                        val presentation = psiSingleReference(smallScaledIcon(icon)) { iconFile.toPsiFile(project) }
+                        val finalPresentation = presentation.toFinalPresentation(this, file.project, smaller = true)
+                        val endOffset = element.endOffset
+                        sink.addInlineElement(endOffset, true, finalPresentation, false)
                     }
                 }
             }

@@ -6,7 +6,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.refactoring.*
@@ -24,7 +23,6 @@ class ParadoxScriptIntroduceGlobalScriptedVariableHandler : ContextAwareRefactor
 		return element.findParentDefinition()?.castOrNull<ParadoxScriptProperty>() != null
 	}
 	
-	@Suppress("UnstableApiUsage")
 	override fun invokeAction(project: Project, editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
 		val virtualFile = file.virtualFile ?: return false
 		val offset = editor.caretModel.offset

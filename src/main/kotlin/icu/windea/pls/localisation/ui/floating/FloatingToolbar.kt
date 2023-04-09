@@ -1,6 +1,5 @@
 package icu.windea.pls.localisation.ui.floating
 
-import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInsight.hint.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
@@ -11,9 +10,8 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.*
 import icu.windea.pls.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.localisation.ui.actions.styling.*
 import java.awt.*
 import java.awt.event.*
@@ -126,12 +124,12 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 		//开始位置和结束位置向上能查找到同一个ParadoxLocalisationPropertyValue，且选择文本的范围在引号之间
 		if(elementAtStart == null || elementAtEnd == null) return false
 		val propertyValueAtStart = elementAtStart.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
-		val propertyValueAtEnd = elementAtStart.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
+		val propertyValueAtEnd = elementAtEnd.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
 		if(propertyValueAtStart !== propertyValueAtEnd) return false
 		val propertyValue = propertyValueAtStart
 		val textRange = propertyValue.textRange
 		val start = if(propertyValue.firstChild.elementType == LEFT_QUOTE) textRange.startOffset + 1 else textRange.startOffset
-		val end = if(propertyValue.lastChild.elementType == RIGHT_QUOTE) textRange.startOffset - 1 else textRange.startOffset
+		val end = if(propertyValue.lastChild.elementType == RIGHT_QUOTE) textRange.endOffset - 1 else textRange.endOffset
 		return selectionStart >= start && selectionEnd <= end
 	}
 	

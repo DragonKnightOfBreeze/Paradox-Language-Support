@@ -10,7 +10,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
@@ -28,7 +28,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 		val project = file.project
 		val quoted = element.text.isLeftQuoted()
 		val rightQuoted = element.text.isRightQuoted()
-		val offsetInParent = parameters.offset - element.textRange.startOffset
+		val offsetInParent = parameters.offset - element.startOffset
 		val keyword = element.getKeyword(offsetInParent)
 		
 		context.put(PlsCompletionKeys.completionTypeKey, parameters.completionType)
@@ -46,11 +46,10 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 			context.put(PlsCompletionKeys.isKeyKey, isKey)
 			//排除正在输入的那一个
 			val selector = definitionSelector(project, file).contextSensitive()
-				.filterBy { rootKey == null || (it is ParadoxScriptProperty && it.name.equals(rootKey, true))}
+				.filterBy { rootKey == null || (it is ParadoxScriptProperty && it.name.equals(rootKey, true)) }
 				.notSamePosition(currentElement)
 				.distinctByName()
-			val query = ParadoxDefinitionSearch.search(type, selector)
-			query.processQuery { processDefinition(context, result, it) }
+			ParadoxDefinitionSearch.search(type, selector).processQuery { processDefinition(context, result, it) }
 		}
 		
 		when {

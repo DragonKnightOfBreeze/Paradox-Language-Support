@@ -36,6 +36,18 @@ propagate_state = { "move" = "moving" }
 * [ ] 支持事件继承
 * [ ] 支持`complex_trigger_modifier`中的`trigger`和`trigger_scope`，后者作为前者的scope
 
+## 0.9.8
+
+* [X] 为Stellaris以外的蠢驴游戏提供标准的事件树图表支持
+
+```
+事件调用类型 
+immediate - stellaris, vic2, vic3, ir
+after - stellaris, ir
+option - stellaris, ir, vic2, vic3
+abort_effect - stellaris
+```
+
 ## 0.9.3
 
 * [X] 正确匹配子句为空以及子句不为空的`resources = {...}`

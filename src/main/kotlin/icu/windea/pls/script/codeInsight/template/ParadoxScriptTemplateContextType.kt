@@ -3,6 +3,7 @@ package icu.windea.pls.script.codeInsight.template
 import com.intellij.codeInsight.template.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
@@ -28,8 +29,8 @@ abstract class ParadoxScriptTemplateContextType(presentableName: String) : Templ
             val start = file.findElementAt(startOffset) ?: return false
             val startElement = start.parents(withSelf = false)
                 .find {
-                    if(it is ParadoxScriptInlineMath && it.textRange.startOffset != startOffset) return false
-                    if(it is ParadoxScriptParameterConditionExpression && it.textRange.startOffset != startOffset) return false
+                    if(it is ParadoxScriptInlineMath && it.startOffset != startOffset) return false
+                    if(it is ParadoxScriptParameterConditionExpression && it.startOffset != startOffset) return false
                     it is ParadoxScriptMemberElement
                 }
             return startElement != null
@@ -43,8 +44,8 @@ abstract class ParadoxScriptTemplateContextType(presentableName: String) : Templ
             val start = file.findElementAt(startOffset) ?: return false
             val startElement = start.parents(withSelf = false)
                 .find {
-                    if(it is ParadoxScriptInlineMath && it.textRange.startOffset != startOffset) return false
-                    if(it is ParadoxScriptParameterConditionExpression && it.textRange.startOffset != startOffset) return false
+                    if(it is ParadoxScriptInlineMath && it.startOffset != startOffset) return false
+                    if(it is ParadoxScriptParameterConditionExpression && it.startOffset != startOffset) return false
                     it is ParadoxScriptPropertyKey
                 }
             return startElement != null
@@ -59,8 +60,8 @@ abstract class ParadoxScriptTemplateContextType(presentableName: String) : Templ
             val startElement = start.parents(withSelf = false)
                 .find {
                     if(it is ParadoxScriptPropertyKey) return false
-                    if(it is ParadoxScriptInlineMath && it.textRange.startOffset != startOffset) return false
-                    if(it is ParadoxScriptParameterConditionExpression && it.textRange.startOffset != startOffset) return false
+                    if(it is ParadoxScriptInlineMath && it.startOffset != startOffset) return false
+                    if(it is ParadoxScriptParameterConditionExpression && it.startOffset != startOffset) return false
                     it is ParadoxScriptValue
                 }
             return startElement != null

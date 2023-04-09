@@ -8,7 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.highlighter.*
@@ -66,7 +66,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		
 		//尝试识别为预定义的localisation_command
 		val localisationCommand = ParadoxConfigHandler.resolvePredefinedLocalisationCommand(name, configGroup)
-		if(localisationCommand != null) return localisationCommand.let { arrayOf(PsiElementResolveResult(it)) }
+		if(localisationCommand != null) return arrayOf(PsiElementResolveResult(localisationCommand))
 		
 		//尝试识别为<scripted_loc>
 		val selector = definitionSelector(project, element).contextSensitive()
@@ -79,8 +79,8 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		
 		//尝试识别为value[variable]
 		val variableSelector = valueSetValueSelector(project, element).contextSensitive()
-		val variables = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findAll()
-		if(variables.isNotEmpty()) return variables.mapToArray { PsiElementResolveResult(ParadoxValueSetValueElement(element, name, "variable", Access.Read, gameType, project)) }
+		val variable = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findFirst()
+		if(variable != null) return arrayOf(PsiElementResolveResult(ParadoxValueSetValueElement(element, name, "variable", Access.Read, gameType, project)))
 		
 		return ResolveResult.EMPTY_ARRAY
 	}

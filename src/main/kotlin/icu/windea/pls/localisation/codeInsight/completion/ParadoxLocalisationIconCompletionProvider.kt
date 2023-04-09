@@ -10,7 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -25,8 +25,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
 		//根据spriteName进行提示
 		ProgressManager.checkCanceled()
 		val spriteSelector = definitionSelector(project, originalFile).contextSensitive().distinctByName()
-		val spriteQuery = ParadoxDefinitionSearch.search("sprite|spriteType", spriteSelector)
-		spriteQuery.processQuery { sprite ->
+		ParadoxDefinitionSearch.search("sprite|spriteType", spriteSelector).processQuery { sprite ->
 			val spriteName = sprite.definitionInfo?.name
 			val name = spriteName?.removePrefixOrNull("GFX_")?.removePrefix("text_")
 			if(name != null && namesToDistinct.add(name)) {
@@ -39,8 +38,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
 		ProgressManager.checkCanceled()
 		val fileSelector = fileSelector(project, originalFile).contextSensitive().distinctByFilePath()
 		val ddsFileExpression = CwtValueExpression.resolve("icon[gfx/interface/icons/]")
-		val ddsFileQuery = ParadoxFilePathSearch.search(ddsFileExpression, fileSelector)
-		ddsFileQuery.processQuery { ddsFile ->
+		ParadoxFilePathSearch.search(ddsFileExpression, fileSelector).processQuery { ddsFile ->
 			val name = ddsFile.nameWithoutExtension
 			val file = ddsFile.toPsiFile<PsiFile>(project)
 			if(file != null && namesToDistinct.add(name)) {
@@ -53,8 +51,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
 		ProgressManager.checkCanceled()
 		val definitionSelector = definitionSelector(project, originalFile).contextSensitive().distinctByName()
 		//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
-		val definitionQuery = ParadoxDefinitionSearch.search("job", definitionSelector)
-		definitionQuery.processQuery { definition ->
+		ParadoxDefinitionSearch.search("job", definitionSelector).processQuery { definition ->
 			val jobName = definition.definitionInfo?.name ?: return@processQuery true
 			val name = "job_$jobName"
 			if(namesToDistinct.add(name)) {

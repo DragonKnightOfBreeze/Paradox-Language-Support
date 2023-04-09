@@ -14,7 +14,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
@@ -50,8 +50,7 @@ object ParadoxInlineScriptHandler {
         }
     }
     
-    @JvmStatic
-    fun resolveInfo(element: ParadoxScriptProperty, file: PsiFile = element.containingFile): ParadoxInlineScriptInfo? {
+    private fun resolveInfo(element: ParadoxScriptProperty, file: PsiFile = element.containingFile): ParadoxInlineScriptInfo? {
         //这里不能调用ParadoxConfigHandler.getConfigs，因为需要处理内联的情况，会导致StackOverflow
         
         val fileInfo = file.fileInfo ?: return null
@@ -70,8 +69,8 @@ object ParadoxInlineScriptHandler {
         if(inlineConfig == null) return null
         val expression = getExpressionFromInlineConfig(propertyValue, inlineConfig) ?: return null
         if(expression.isParameterAwareExpression()) return null
-        val offset = element.node.startOffset
-        return ParadoxInlineScriptInfo(expression, offset, gameType)
+        val elementOffset = element.startOffset
+        return ParadoxInlineScriptInfo(expression, elementOffset, gameType)
     }
     
     private fun getExpressionLocation(it: CwtDataConfig<*>): String? {
@@ -100,8 +99,7 @@ object ParadoxInlineScriptHandler {
     private fun doGetInlineScript(expression: String, project: Project, contextElement: PsiElement): ParadoxScriptFile? {
         val filePath = getInlineScriptFilePath(expression)
         val selector = fileSelector(project, contextElement).contextSensitive()
-        val query = ParadoxFilePathSearch.search(filePath, null, selector)
-        return query.find()?.toPsiFile(project)
+        return ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)
     }
     
     @JvmStatic
@@ -114,8 +112,7 @@ object ParadoxInlineScriptHandler {
     private fun doProcessInlineScript(expression: String, project: Project, contextElement: PsiElement, processor: (ParadoxScriptFile) -> Boolean): Boolean {
         val filePath = getInlineScriptFilePath(expression)
         val selector = fileSelector(project, contextElement).contextSensitive()
-        val query = ParadoxFilePathSearch.search(filePath, null, selector)
-        return query.processQuery {
+        return ParadoxFilePathSearch.search(filePath, null, selector).processQuery {
             val file = it.toPsiFile<ParadoxScriptFile>(project)
             if(file != null) processor(file)
             true
@@ -187,7 +184,7 @@ object ParadoxInlineScriptHandler {
         val selector = inlineScriptSelector(project, file)
         ParadoxInlineScriptSearch.search(expression, selector).processQuery p@{ info ->
             ProgressManager.checkCanceled()
-            val e = info.file?.findElementAt(info.offset) ?: return@p true
+            val e = info.file?.findElementAt(info.elementOffset) ?: return@p true
             val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p true
             if(p.name.lowercase() != inlineScriptName) return@p true
             if(element == null) {

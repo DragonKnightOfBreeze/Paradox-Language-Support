@@ -16,7 +16,7 @@ import java.io.*
 class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInlineScriptInfo>>() {
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxInlineScriptInfo>>("paradox.inlineScript.index")
-        private const val VERSION = 1
+        private const val VERSION = 2 //0.9.7
         
         fun getData(expression: String, file: VirtualFile, project: Project): List<ParadoxInlineScriptInfo>? {
             return FileBasedIndex.getInstance().getFileData(NAME, file, project).get(expression)
@@ -60,7 +60,7 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
             override fun save(storage: DataOutput, value: List<ParadoxInlineScriptInfo>) {
                 DataInputOutputUtil.writeSeq(storage, value) {
                     IOUtil.writeUTF(storage, it.expression)
-                    storage.writeInt(it.offset)
+                    storage.writeInt(it.elementOffset)
                     storage.writeByte(it.gameType.toByte())
                 }
             }
@@ -68,9 +68,9 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
             override fun read(storage: DataInput): List<ParadoxInlineScriptInfo> {
                 return DataInputOutputUtil.readSeq(storage) {
                     val expression = IOUtil.readUTF(storage)
-                    val offset = storage.readInt()
+                    val elementOffset = storage.readInt()
                     val gameType = storage.readByte().toGameType()
-                    ParadoxInlineScriptInfo(expression, offset, gameType)
+                    ParadoxInlineScriptInfo(expression, elementOffset, gameType)
                 }
             }
             
@@ -81,7 +81,7 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
     }
     
     override fun getInputFilter(): FileBasedIndex.InputFilter {
-        return FileBasedIndex.InputFilter { it.fileInfo != null && !ParadoxFileManager.isLightFile(it) && it.fileType == ParadoxScriptFileType }
+        return FileBasedIndex.InputFilter { it.fileType == ParadoxScriptFileType && it.fileInfo != null && !ParadoxFileManager.isLightFile(it) }
     }
     
     override fun dependsOnFileContent(): Boolean {

@@ -7,7 +7,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.ParadoxDefinitionInfo.*
 import icu.windea.pls.localisation.psi.*
@@ -211,12 +211,12 @@ val ParadoxDefinitionInfo.isGlobal: Boolean get() = sourceType != SourceType.Pat
  */
 val ParadoxDefinitionInfo.isAnonymous: Boolean get() = name.isEmpty()
 
-@InferMethod
+@InferApi
 private fun ParadoxDefinitionRelatedLocalisationInfo.inferIsPrimary(): Boolean {
     return name.equals("name", true) || name.equals("title", true)
 }
 
-@InferMethod
+@InferApi
 private fun ParadoxDefinitionRelatedImageInfo.inferIsPrimary(): Boolean {
     return name.equals("icon", true)
 }

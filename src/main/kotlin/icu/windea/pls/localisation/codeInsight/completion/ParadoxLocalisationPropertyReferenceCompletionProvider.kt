@@ -9,7 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 
@@ -18,7 +18,7 @@ import icu.windea.pls.localisation.psi.*
  */
 class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val offsetInParent = parameters.offset - parameters.position.textRange.startOffset
+        val offsetInParent = parameters.offset - parameters.position.startOffset
         val keyword = parameters.position.getKeyword(offsetInParent)
         val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return
         val category = ParadoxLocalisationCategory.resolve(file) ?: return

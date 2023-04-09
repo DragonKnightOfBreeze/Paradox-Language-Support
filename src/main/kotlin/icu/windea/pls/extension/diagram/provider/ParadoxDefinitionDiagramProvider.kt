@@ -1,30 +1,56 @@
 package icu.windea.pls.extension.diagram.provider
 
-import com.intellij.openapi.util.*
+import com.intellij.diagram.*
+import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
+import com.intellij.psi.search.*
+import icu.windea.pls.*
+import icu.windea.pls.core.search.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : ParadoxDiagramProvider(gameType) {
     abstract fun getItemPropertyKeys(): Array<String>
     
-    open fun showNode(element: ParadoxScriptDefinitionElement): Boolean {
-        return true
-    }
+    open class Edge(
+        override val source: Node,
+        override val target: Node,
+        relationship: DiagramRelationshipInfo
+    ) : ParadoxDiagramEdge(source, target, relationship)
     
-    open fun handleNode(node: ParadoxDefinitionDiagramNode) {
+    
+    open class Node(
+        element: ParadoxScriptDefinitionElement,
+        override val provider: ParadoxDefinitionDiagramProvider
+    ) : ParadoxDiagramNode(element, provider) {
+        val definitionInfo get() = identifyingElement.definitionInfo
         
-    }
-    
-    open fun handleEdge(edge: ParadoxDefinitionDiagramEdge) {
+        override fun getIdentifyingElement(): ParadoxScriptDefinitionElement {
+            return super.getIdentifyingElement() as ParadoxScriptDefinitionElement
+        }
         
+        override fun getTooltip(): String? {
+            return definitionInfo?.name
+        }
     }
     
-    inline fun <reified T : ParadoxDefinitionData> putDefinitionData(node: ParadoxDefinitionDiagramNode, key: Key<T>) {
-        val element = node.identifyingElement
-        if(element !is ParadoxScriptProperty) return
-        val data = element.getData<T>()
-        node.putUserData(key, data)
+    abstract class DataModel(
+        project: Project,
+        file: VirtualFile?,
+        provider: ParadoxDiagramProvider,
+    ): ParadoxDiagramDataModel(project, file, provider)  {
+        protected fun getDefinitions(typeExpression: String): Set<ParadoxScriptDefinitionElement> {
+            val searchScope = scopeManager?.currentScope?.let { GlobalSearchScopes.filterScope(project, it) }
+            val searchScopeType = provider.getDiagramSettings(project)?.state?.scopeType
+            val selector = definitionSelector(project, originalFile)
+                .withGameType(gameType)
+                .withSearchScope(searchScope)
+                .withSearchScopeType(searchScopeType)
+                .contextSensitive()
+                .distinctByName()
+            return ParadoxDefinitionSearch.search(typeExpression, selector).findAll()
+        }
     }
 }

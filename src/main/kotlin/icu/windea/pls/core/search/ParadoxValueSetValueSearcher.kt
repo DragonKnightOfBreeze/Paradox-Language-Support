@@ -24,24 +24,22 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
         val gameType = selector.gameType
         val scope = queryParameters.selector.scope
         
-        //快速遍历
-        val namesToDistinct = mutableSetOf<String>()
         FileTypeIndex.processFiles(ParadoxScriptFileType, p@{ file ->
             ProgressManager.checkCanceled()
             if(file.fileInfo == null) return@p true
             if(ParadoxFileManager.isLightFile(file)) return@p true
+            val valueSetValues = ParadoxValueSetValueIndex.getData(valueSetName, file, project)
             val psiFile = file.toPsiFile<PsiFile>(project) ?: return@p true
-            val valueSetValues = ParadoxValueSetValueIndex.getData(valueSetName, psiFile)
             if(valueSetValues.isNullOrEmpty()) return@p true
             if(name == null) {
                 for(info in valueSetValues.values) {
-                    if(gameType == info.gameType && namesToDistinct.add(info.name)) {
+                    if(gameType == info.gameType) {
                         info.withFile(psiFile) { consumer.process(info) }
                     }
                 }
             } else {
                 val info = valueSetValues[name] ?: return@p true
-                if(gameType == info.gameType && namesToDistinct.add(info.name)) {
+                if(gameType == info.gameType) {
                     info.withFile(psiFile) { consumer.process(info) }
                 }
             }

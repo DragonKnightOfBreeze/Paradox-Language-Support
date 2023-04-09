@@ -8,11 +8,7 @@ open class ParadoxDiagramNode(
     element: PsiElement,
     open val provider: ParadoxDiagramProvider
 ): PsiDiagramNode<PsiElement>(element, provider) {
-    override fun getIdentifyingElement(): PsiElement {
-        return super.getIdentifyingElement()
-    }
-    
-    override open fun getTooltip(): String? {
+    override fun getTooltip(): String? {
         return null
     }
 }

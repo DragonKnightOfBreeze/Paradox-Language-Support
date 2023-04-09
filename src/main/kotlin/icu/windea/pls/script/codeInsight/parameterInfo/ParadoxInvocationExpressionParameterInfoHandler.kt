@@ -5,8 +5,9 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
@@ -91,6 +92,6 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
     }
     
     override fun showParameterInfo(element: ParadoxScriptProperty, context: CreateParameterInfoContext) {
-        context.showHint(element, element.textRange.startOffset + 1, this)
+        context.showHint(element, element.startOffset + 1, this)
     }
 }

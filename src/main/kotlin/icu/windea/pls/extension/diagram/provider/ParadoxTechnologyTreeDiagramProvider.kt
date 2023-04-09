@@ -2,7 +2,6 @@ package icu.windea.pls.extension.diagram.provider
 
 import com.intellij.diagram.*
 import com.intellij.diagram.presentation.*
-import com.intellij.diagram.settings.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -12,12 +11,10 @@ import com.intellij.ui.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.search.selectors.chained.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.extension.diagram.extras.*
+import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.presentation.*
 import icu.windea.pls.localisation.psi.*
@@ -25,7 +22,6 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import icu.windea.pls.tool.localisation.*
 import icu.windea.pls.tool.script.*
-import java.awt.*
 import java.util.concurrent.*
 import javax.swing.*
 
@@ -44,13 +40,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
         val CAT_ICON = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.icon"), PlsIcons.Image, false, false)
         val CAT_PRESENTATION = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.presentation"), PlsIcons.Presentation, false, false)
         val CATEGORIES = arrayOf(CAT_TYPE, CAT_PROPERTIES, CAT_NAME, CAT_ICON, CAT_PRESENTATION)
-        val ITEM_PROP_KEYS = arrayOf(
-            "icon",
-            "tier", "area", "category",
-            "cost", "cost_per_level", "levels",
-            "start_tech", "is_rare", "is_dangerous"
-        )
-        
+  
         val REL_PREREQUISITE = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID) {
             override fun getTargetArrow() = DELTA
         }
@@ -62,33 +52,22 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
         }
     }
     
-    private val _vfsResolver = ParadoxRootVfsResolver()
-    private val _elementManager = ElementManager(this)
-    private val _relationshipManager = RelationshipManager()
-    private val _colorManager = ColorManager()
-    private val _extras = Extras(this)
+    private val _elementManager by lazy { ElementManager(this) }
     
     override fun getID() = gameType.name + ".TechnologyTree"
     
+    @Suppress("DialogTitleCapitalization")
     override fun getPresentableName() = PlsDiagramBundle.message("paradox.technologyTree.name", gameType)
-    
-    override fun createScopeManager(project: Project) = null //TODO
     
     override fun createNodeContentManager() = NodeContentManager()
     
-    override fun getVfsResolver() = _vfsResolver
-    
     override fun getElementManager() = _elementManager
     
-    override fun getRelationshipManager() = _relationshipManager
-    
-    override fun getColorManager() = _colorManager
-    
-    override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
-    
-    override fun getExtras() = _extras
+    abstract override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) : DataModel
     
     override fun getAllContentCategories() = CATEGORIES
+    
+    abstract override fun getDiagramSettings(project: Project): ParadoxTechnologyTreeDiagramSettings<*>?
     
     class NodeContentManager : OrderedDiagramNodeContentManager() {
         override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?): Boolean {
@@ -175,7 +154,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
                     when {
                         nodeItem is ParadoxLocalisationProperty -> {
                             //科技的名字
-                            ParadoxLocalisationTextUIRender.render(nodeItem)
+                            ParadoxLocalisationTextUIRenderer.render(nodeItem)
                         }
                         nodeItem is PsiFile -> {
                             //科技的图标
@@ -262,101 +241,11 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
         }
     }
     
-    class RelationshipManager : DiagramRelationshipManager<PsiElement> {
-        override fun getDependencyInfo(s: PsiElement?, t: PsiElement?, category: DiagramCategory?): DiagramRelationshipInfo? {
-            return null
-        }
-    }
-    
-    open class ColorManager : DiagramColorManagerBase()
-    
-    class Node(
-        element: ParadoxScriptProperty,
-        provider: ParadoxDefinitionDiagramProvider
-    ) : ParadoxDefinitionDiagramNode(element, provider) 
-    
-    class Edge(
-        source: Node,
-        target: Node,
-        relationship: DiagramRelationshipInfo
-    ) : ParadoxDefinitionDiagramEdge(source, target, relationship)
-    
-    class DataModel(
+    abstract class DataModel(
         project: Project,
-        val file: VirtualFile?, //umlFile
-        provider: ParadoxTechnologyTreeDiagramProvider
-    ) : ParadoxDiagramDataModel(project, provider) {
-        private val _nodes = mutableSetOf<DiagramNode<PsiElement>>()
-        private val _edges = mutableSetOf<DiagramEdge<PsiElement>>()
-        
-        override fun getNodes() = _nodes
-        
-        override fun getEdges() = _edges
-        
-        override fun getNodeName(node: DiagramNode<PsiElement>) = node.tooltip.orAnonymous()
-        
-        override fun addElement(element: PsiElement?) = null
-        
-        override fun getModificationTracker() = this
-        
-        override fun getModificationCount(): Long {
-            return ParadoxModificationTrackerProvider.getInstance().Technologies.modificationCount
-        }
-        
-        override fun dispose() {
-            
-        }
-        
-        override fun refreshDataModel() {
-            doRefreshDataModel()
-        }
-        
-        private fun doRefreshDataModel() {
-            provider as ParadoxTechnologyTreeDiagramProvider
-            
-            ProgressManager.checkCanceled()
-            _nodes.clear()
-            _edges.clear()
-            val originalFile = file?.getUserData(DiagramDataKeys.ORIGINAL_ELEMENT)
-            val selector = definitionSelector(project, originalFile).withGameType(gameType).contextSensitive().distinctByName()
-            val technologies = ParadoxTechnologyHandler.getTechnologies(selector)
-            if(technologies.isEmpty()) return
-            //群星原版科技有400+
-            val nodeMap = mutableMapOf<ParadoxScriptProperty, Node>()
-            val techMap = mutableMapOf<String, ParadoxScriptProperty>()
-            for(technology in technologies) {
-                ProgressManager.checkCanceled()
-                if(!provider.showNode(technology)) continue
-                val node = Node(technology, provider)
-                provider.handleNode(node)
-                nodeMap.put(technology, node)
-                techMap.put(ParadoxTechnologyHandler.getName(technology), technology)
-                _nodes.add(node)
-            }
-            for(technology in technologies) {
-                ProgressManager.checkCanceled()
-                val data = technology.getData<StellarisTechnologyDataProvider.Data>() ?: continue
-                //循环科技 ..> 循环科技
-                val levels = data.levels
-                if(levels != null) {
-                    val label = if(levels <= 0) "max level: inf" else "max level: $levels"
-                    val node = nodeMap.get(technology) ?: continue
-                    val edge = Edge(node, node, REL_REPEAT(label))
-                    _edges.add(edge)
-                }
-                //前置 --> 科技
-                val prerequisites = data.prerequisites
-                if(prerequisites.isNotEmpty()) {
-                    for(prerequisite in prerequisites) {
-                        val source = techMap.get(prerequisite)?.let { nodeMap.get(it) } ?: continue
-                        val target = nodeMap.get(technology) ?: continue
-                        val edge = Edge(source, target, REL_PREREQUISITE)
-                        _edges.add(edge)
-                    }
-                }
-            }
-        }
+        file: VirtualFile?, //umlFile
+        provider: ParadoxDefinitionDiagramProvider
+    ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
+        override fun getModificationTracker() = ParadoxModificationTrackerProvider.getInstance().Technologies
     }
-    
-    class Extras(provider: ParadoxDiagramProvider) : ParadoxDiagramExtras(provider)
 }

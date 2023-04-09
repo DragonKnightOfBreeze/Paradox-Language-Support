@@ -57,6 +57,22 @@
   * [ ] 将获取作用域上下文的代码提取成扩展点
   * [ ] 对任何带有作用域上下文的声明或引用（包括CWT规则的引用），统一提示作用域上下文
 
+## 0.9.8
+
+* [X] 完善对图表的支持 - 支持通过作用域过滤显示结果，提供另外的更加详细的配置页面（需要专业版IDE）
+* [X] 为Stellaris以外的蠢驴游戏提供标准的事件树图表支持
+* [X] 构建图表时可取消
+* [X] 修复：[stellaris颜色模板还是没法用 #18](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/18)
+
+## 0.9.7
+
+* [X] 修复：[群星文本颜色插件失效（没有弹出选框），同时报错 #15](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/15)
+* [X] 实现内嵌提示以提示复杂枚举值的信息（枚举名，如`policy_flag`，默认启用）
+* [X] 实现类型层级（`Navigate > Type Hierarchy`） - 用于基于定义类型列出定义（光标位置在定义声明中时，此功能可用）
+* [X] 完善对类型层次的支持 - 支持通过作用域过滤显示结果
+* [X] 优化索引，重新索引后，对于复杂枚举值（如`policy_flag`）和值集值（如`variable`），应当不会再出现应当可以解析但有时无法解析的情况了
+* [X] 可以在插件配置页面中配置进行DIFF时，初始打开的初始打开的DIFF分组。默认初始打开VS副本的DIFF分组
+
 ## 0.9.6
 
 * 优化与BUG修复
@@ -65,8 +81,7 @@
 * [X] 优化值集值（`valueSetValue`，如，`event_target`和`variable`）的索引
 * [X] 优化复杂枚举值（`complexEnumValue`，如`policy_flag`）的索引
 * [X] 不再可以通过`Navigate | Class or Navigate | Symbol`快速查找匹配名字的复杂枚举值
-* [ ] 实现类型层次（`Navigate > Type Hierachy`），用于基于枚举名列出枚举值、基于值集名列出值集值、基于定义类型列出定义，并且可以配置作用域
-* [ ] 完善对图表的支持 - 支持通过作用域过滤显示结果，提供另外的更加详细的配置页面（需要专业版IDE）
+* [X] 优化索引，现在应该不会报错`Indexing process should not rely on non-indexed file data`了
 
 ## 0.9.5
 

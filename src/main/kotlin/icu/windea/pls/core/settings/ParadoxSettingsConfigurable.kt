@@ -5,10 +5,6 @@ import com.intellij.openapi.options.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.builder.Cell
-import com.intellij.ui.dsl.builder.Row
-import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.layout.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.listeners.*
@@ -17,20 +13,21 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 
-class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"), "settings.language.pls"), SearchableConfigurable {
-    override fun getId() = "settings.language.pls"
+class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
+    override fun getId() = "pls"
     
+    @Suppress("DialogTitleCapitalization")
     override fun createPanel(): DialogPanel {
         val settings = getSettings()
         val oldDefaultGameType = settings.defaultGameType
         val oldPreferredLocale = settings.preferredLocale
         val oldIgnoredFileNameSet = settings.ignoredFileNameSet
         return panel {
-            //generic
+            //general
             group(PlsBundle.message("settings.general")) {
                 //defaultGameType
                 row {
-                    label(PlsBundle.message("settings.general.defaultGameType")).widthGroup("generic")
+                    label(PlsBundle.message("settings.general.defaultGameType")).widthGroup("general")
                         .applyToComponent {
                             toolTipText = PlsBundle.message("settings.general.defaultGameType.tooltip")
                         }
@@ -46,7 +43,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 }
                 //preferredLocale
                 row {
-                    label(PlsBundle.message("settings.general.preferredLocale")).widthGroup("generic")
+                    label(PlsBundle.message("settings.general.preferredLocale")).widthGroup("general")
                         .applyToComponent {
                             toolTipText = PlsBundle.message("settings.general.preferredLocale.tooltip")
                         }
@@ -60,7 +57,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 }
                 //ignoredFileNames
                 row {
-                    label(PlsBundle.message("settings.general.ignoredFileNames")).widthGroup("generic")
+                    label(PlsBundle.message("settings.general.ignoredFileNames")).widthGroup("general")
                         .applyToComponent {
                             toolTipText = PlsBundle.message("settings.general.ignoredFileNames.tooltip")
                         }
@@ -187,7 +184,6 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
             }
             //generation
             collapsibleGroup(PlsBundle.message("settings.generation")) {
-                
                 @Suppress("DialogTitleCapitalization")
                 buttonsGroup(PlsBundle.message("settings.generation.localisationTextGenerationStrategy")) {
                     row {
@@ -232,11 +228,27 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .onApply { ParadoxModificationTrackerProvider.getInstance().DefinitionScopeContextInference.incModificationCount() }
                 }
             }
+            //others
+            collapsibleGroup(PlsBundle.message("settings.others")) {
+                @Suppress("DialogTitleCapitalization")
+                //defaultDiffGroup
+                buttonsGroup(PlsBundle.message("settings.others.defaultDiffGroup")) {
+                    row {
+                        radioButton(PlsBundle.message("settings.others.defaultDiffGroup.0"), DiffGroupStrategy.VsCopy)
+                    }
+                    row {
+                        radioButton(PlsBundle.message("settings.others.defaultDiffGroup.1"), DiffGroupStrategy.First)
+                    }
+                    row {
+                        radioButton(PlsBundle.message("settings.others.defaultDiffGroup.2"), DiffGroupStrategy.Last)
+                    }
+                }.bind(settings.others::defaultDiffGroup)
+            }
         }
     }
     
     private fun Row.localeComboBox(settings: ParadoxSettingsState) =
-        comboBox(settings.localeList, listCellRenderer { value, _, _ ->
+        this.comboBox(settings.localeList, listCellRenderer { value ->
             if(value == "auto") {
                 text = PlsBundle.message("locale.auto")
             } else {

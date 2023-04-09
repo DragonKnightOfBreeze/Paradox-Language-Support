@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.core.collections
 
 data class ReversibleMap<K, V>(val map: Map<K, V>, val notReversed: Boolean = false) : Map<K, V> by map {

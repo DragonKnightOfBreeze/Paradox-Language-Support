@@ -15,7 +15,7 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
-import icu.windea.pls.core.search.scopes.*
+import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.color.*
 import icu.windea.pls.lang.model.*
@@ -850,11 +850,11 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getResolveScope(element: PsiElement): GlobalSearchScope {
-        return ParadoxGlobalSearchScope.fromElement(element) ?: ResolveScopeManager.getElementResolveScope(element)
+        return ParadoxSearchScope.fromElement(element) ?: ResolveScopeManager.getElementResolveScope(element)
     }
     
     @JvmStatic
     fun getUseScope(element: PsiElement): SearchScope {
-        return ParadoxGlobalSearchScope.fromElement(element) ?: ResolveScopeManager.getElementUseScope(element)
+        return ParadoxSearchScope.fromElement(element) ?: ResolveScopeManager.getElementUseScope(element)
     }
 }

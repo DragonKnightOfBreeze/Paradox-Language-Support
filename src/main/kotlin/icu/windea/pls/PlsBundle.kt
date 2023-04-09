@@ -6,6 +6,7 @@ import org.jetbrains.annotations.*
 @NonNls
 private const val BUNDLE = "messages.PlsBundle"
 
+@Suppress("unused")
 object PlsBundle : DynamicBundle(BUNDLE) {
 	@Nls
 	@JvmStatic

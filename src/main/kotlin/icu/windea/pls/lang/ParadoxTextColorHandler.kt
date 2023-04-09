@@ -6,7 +6,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selectors.chained.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
@@ -15,7 +15,7 @@ object ParadoxTextColorHandler {
      * 得到textcolor的对应颜色配置。
      */
     @JvmStatic
-    fun getInfos(project: Project, contextElement: PsiElement): List<ParadoxTextColorInfo> {
+    fun getInfos(project: Project, contextElement: PsiElement? = null): List<ParadoxTextColorInfo> {
         val selector = definitionSelector(project, contextElement).contextSensitive().distinctByName()
         val definitions = ParadoxDefinitionSearch.search("textcolor", selector).findAll()
         if(definitions.isEmpty()) return emptyList()
@@ -23,7 +23,7 @@ object ParadoxTextColorHandler {
     }
     
     @JvmStatic
-    fun getInfo(name: String, project: Project, contextElement: PsiElement): ParadoxTextColorInfo? {
+    fun getInfo(name: String, project: Project, contextElement: PsiElement? = null): ParadoxTextColorInfo? {
         val selector = definitionSelector(project, contextElement).contextSensitive()
         val definition = ParadoxDefinitionSearch.search(name, "textcolor", selector).find()
         if(definition == null) return null

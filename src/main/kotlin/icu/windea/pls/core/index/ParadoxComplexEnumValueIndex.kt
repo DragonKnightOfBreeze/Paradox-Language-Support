@@ -2,17 +2,25 @@ package icu.windea.pls.core.index
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.gist.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
+//这里应当使用Gist，因为可能需要在索引中访问其他索引
+//这里不能使用PsiFileGist，否则可能会出现应当可以解析但有时无法解析的情况
+
 object ParadoxComplexEnumValueIndex {
     class Data(
+        val marker: Boolean = true,
         val complexEnumValueList: MutableList<ParadoxComplexEnumValueInfo> = mutableListOf()
     ) {
         val complexEnumValues by lazy {
@@ -25,25 +33,31 @@ object ParadoxComplexEnumValueIndex {
         }
     }
     
+    val EmptyData = Data(true, mutableListOf())
+    
     private val valueExternalizer: DataExternalizer<Data> = object : DataExternalizer<Data> {
         override fun save(storage: DataOutput, value: Data) {
+            storage.writeBoolean(value.marker)
             DataInputOutputUtil.writeSeq(storage, value.complexEnumValueList) {
                 IOUtil.writeUTF(storage, it.name)
                 IOUtil.writeUTF(storage, it.enumName)
                 storage.writeByte(it.readWriteAccess.toByte())
+                storage.writeInt(it.elementOffset)
                 storage.writeByte(it.gameType.toByte())
             }
         }
         
         override fun read(storage: DataInput): Data {
+            val marker = storage.readBoolean()
             val complexEnumValueInfos = DataInputOutputUtil.readSeq(storage) {
                 val name = IOUtil.readUTF(storage)
                 val enumName = IOUtil.readUTF(storage)
                 val readWriteAccess = storage.readByte().toReadWriteAccess()
+                val elementOffset = storage.readInt()
                 val gameType = storage.readByte().toGameType()
-                ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, gameType)
+                ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, elementOffset, gameType)
             }
-            return Data(complexEnumValueInfos)
+            return Data(marker, complexEnumValueInfos)
         }
         
         private fun ReadWriteAccessDetector.Access.toByte() = this.ordinal
@@ -60,14 +74,16 @@ object ParadoxComplexEnumValueIndex {
     }
     
     private const val id = "paradox.complexEnumValue.index"
-    private const val version = 1 //0.9.6
+    private const val version = 4 //0.9.7
     
-    private val gist: PsiFileGist<Data> = GistManager.getInstance().newPsiFileGist(id, version, valueExternalizer) builder@{ file ->
+    private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(id, version, valueExternalizer) builder@{ project, file ->
         ProgressManager.checkCanceled()
-        if(file !is ParadoxScriptFile) return@builder Data()
-        if(!matchesPath(file)) return@builder Data()
+        if(file.fileType != ParadoxScriptFileType) return@builder EmptyData
+        if(file.fileInfo == null) return@builder EmptyData
+        if(!matchesPath(file, project)) return@builder EmptyData
+        val psiFile = file.toPsiFile<ParadoxScriptFile>(project) ?: return@builder EmptyData
         val data = Data()
-        file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+        psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if(element is ParadoxScriptStringExpressionElement) {
                     ParadoxComplexEnumValueHandler.getInfo(element)?.let { data.complexEnumValueList.add(it) }
@@ -78,8 +94,7 @@ object ParadoxComplexEnumValueIndex {
         data
     }
     
-    private fun matchesPath(file: PsiFile): Boolean {
-        val project = file.project
+    private fun matchesPath(file: VirtualFile, project: Project): Boolean {
         val fileInfo = file.fileInfo ?: return false
         val gameType = fileInfo.rootInfo.gameType
         val path = fileInfo.entryPath //这里使用entryPath
@@ -90,8 +105,8 @@ object ParadoxComplexEnumValueIndex {
         return false
     }
     
-    fun getData(enumName: String, file: PsiFile): Map<String, ParadoxComplexEnumValueInfo>? {
-        return gist.getFileData(file).complexEnumValues[enumName]
+    fun getData(enumName: String, file: VirtualFile, project: Project): Map<String, ParadoxComplexEnumValueInfo>? {
+        return gist.getFileData(project, file).complexEnumValues[enumName]
     }
 }
 
@@ -173,7 +188,7 @@ object ParadoxComplexEnumValueIndex {
 //    }
 //    
 //    override fun getInputFilter(): FileBasedIndex.InputFilter {
-//        return FileBasedIndex.InputFilter { it.fileInfo != null && !ParadoxFileManager.isLightFile(it) && it.fileType == ParadoxScriptFileType }
+//        return FileBasedIndex.InputFilter { it.fileType == ParadoxScriptFileType && it.fileInfo != null }
 //    }
 //    
 //    override fun dependsOnFileContent(): Boolean {
