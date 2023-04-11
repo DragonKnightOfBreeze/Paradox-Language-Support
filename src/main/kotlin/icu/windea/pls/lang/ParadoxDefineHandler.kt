@@ -20,7 +20,6 @@ object ParadoxDefineHandler {
     val definePathExpression = CwtValueExpression.resolve("filepath[common/defines/,.txt]")
     
     @Suppress("UNCHECKED_CAST")
-    @JvmStatic
     fun <T> getDefineValue(contextElement: PsiElement, project: Project, path: String, type: Class<T>): T? {
         val gameType = selectGameType(contextElement) ?: return null
         ProgressManager.checkCanceled()

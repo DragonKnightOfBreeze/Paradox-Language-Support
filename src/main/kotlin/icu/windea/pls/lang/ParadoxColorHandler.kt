@@ -17,12 +17,10 @@ object ParadoxColorHandler {
     // hsv { $h $s $v $a }
     // h,s,v,a - int[0..255] or float[0.0..1.0]
     
-    @JvmStatic
     fun getColor(hex: String): Color {
         return ColorUtil.fromHex(hex)
     }
     
-    @JvmStatic
     fun getColor(colorType: String, colorArgs: List<String>): Color? {
         when(colorType) {
             "rgb" -> {
@@ -41,7 +39,6 @@ object ParadoxColorHandler {
         }
     }
     
-    @JvmStatic
     fun getRgbColor(colorArgs: List<String>): Color? {
         val r = colorArgs.get(0).toInt().takeIf { it in 0..255 } ?: return null
         val g = colorArgs.get(1).toInt().takeIf { it in 0..255 } ?: return null
@@ -51,7 +48,6 @@ object ParadoxColorHandler {
         return color
     }
     
-    @JvmStatic
     fun getHsvColor(colorArgs: List<String>): Color? {
         val h = colorArgs.get(0).toFloat().takeIf { it in 0f..1f } ?: return null
         val s = colorArgs.get(1).toFloat().takeIf { it in 0f..1f } ?: return null
@@ -62,7 +58,6 @@ object ParadoxColorHandler {
         return color
     }
     
-    @JvmStatic
     fun getColorType(element: PsiElement): String? {
         val configToGetOption = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)
             .firstOrNull()

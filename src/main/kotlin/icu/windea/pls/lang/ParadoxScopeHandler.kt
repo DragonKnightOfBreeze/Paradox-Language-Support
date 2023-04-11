@@ -35,7 +35,6 @@ object ParadoxScopeHandler {
     /**
      * 得到作用域的ID（全小写+下划线）。
      */
-    @JvmStatic
     fun getScopeId(scope: String): String {
         val scopeId = scope.lowercase().replace(' ', '_')
         //"all" scope are always resolved as "any" scope
@@ -46,7 +45,6 @@ object ParadoxScopeHandler {
     /**
      * 得到作用域的名字。
      */
-    @JvmStatic
     fun getScopeName(scope: String, configGroup: CwtConfigGroup): String {
         //handle "any" and "all" scope 
         if(scope.equals(anyScopeId, true)) return "Any"
@@ -57,12 +55,10 @@ object ParadoxScopeHandler {
             ?: scope.toCapitalizedWords()
     }
     
-    @JvmStatic
     fun isFakeScopeId(scopeId: String): Boolean {
         return scopeId == unknownScopeId || scopeId == anyScopeId || scopeId == allScopeId
     }
     
-    @JvmStatic
     fun matchesScope(scopeContext: ParadoxScopeContext?, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {
         val thisScope = scopeContext?.scope?.id
         if(thisScope == null) return true
@@ -75,7 +71,6 @@ object ParadoxScopeHandler {
         return false
     }
     
-    @JvmStatic
     fun matchesScope(scopeContext: ParadoxScopeContext?, scopesToMatch: Set<String>?, configGroup: CwtConfigGroup): Boolean {
         val thisScope = scopeContext?.scope?.id
         if(thisScope == null) return true
@@ -88,7 +83,6 @@ object ParadoxScopeHandler {
         return false
     }
     
-    @JvmStatic
     fun matchesScopeGroup(scopeContext: ParadoxScopeContext?, scopeGroupToMatch: String, configGroup: CwtConfigGroup): Boolean {
         val thisScope = scopeContext?.scope?.id
         if(thisScope == null) return true
@@ -103,14 +97,12 @@ object ParadoxScopeHandler {
         return false //cwt config error
     }
     
-    @JvmStatic
     fun findParentMember(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
         return element.parents(withSelf = false)
             .find { it is ParadoxScriptDefinitionElement || (it is ParadoxScriptBlock && it.isBlockValue()) }
             .castOrNull<ParadoxScriptMemberElement>()
     }
     
-    @JvmStatic
     fun isScopeContextSupported(element: ParadoxScriptMemberElement): Boolean {
         //some definitions, such as on_action, also support scope context on definition level
         if(element is ParadoxScriptDefinitionElement) {
@@ -162,7 +154,6 @@ object ParadoxScopeHandler {
         return false
     }
     
-    @JvmStatic
     fun isScopeContextChanged(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeContext): Boolean {
         //does not have scope context > changed always
         val parentMember = findParentMember(element)
@@ -177,7 +168,6 @@ object ParadoxScopeHandler {
     /**
      * 注意，如果输入的是值为子句的属性，这里得到的会是子句中的作用域上下文，而非此属性所在子句中的作用域上下文。
      */
-    @JvmStatic
     fun getScopeContext(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
             val file = element.containingFile
@@ -229,7 +219,6 @@ object ParadoxScopeHandler {
         }
     }
     
-    @JvmStatic
     fun getScopeContext(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
             val file = element.containingFile
@@ -276,7 +265,6 @@ object ParadoxScopeHandler {
         return resolveUnknownScopeContext()
     }
     
-    @JvmStatic
     fun resolveScopeContext(scopeFieldExpression: ParadoxScopeFieldExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val scopeNodes = scopeFieldExpression.scopeNodes
         var result = inputScopeContext
@@ -291,7 +279,6 @@ object ParadoxScopeHandler {
         return result
     }
     
-    @JvmStatic
     fun resolveScopeContext(scopeNode: ParadoxScopeExpressionNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext {
         return when(scopeNode) {
             is ParadoxScopeLinkExpressionNode -> {
@@ -309,7 +296,6 @@ object ParadoxScopeHandler {
         }
     }
     
-    @JvmStatic
     fun resolveScopeContext(node: ParadoxLinkPrefixExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val linkConfig = node.linkConfigs.firstOrNull() // first is ok
         if(linkConfig == null) return inputScopeContext //unexpected
@@ -365,12 +351,10 @@ object ParadoxScopeHandler {
         return inputScopeContext.resolve(systemLinkContext, isFrom)
     }
     
-    @JvmStatic
     fun resolveAnyScopeContext(): ParadoxScopeContext {
         return ParadoxScopeContext.resolve(anyScopeId, anyScopeId)
     }
     
-    @JvmStatic
     fun resolveUnknownScopeContext(inputScopeContext: ParadoxScopeContext? = null, from: Boolean = false): ParadoxScopeContext {
         if(inputScopeContext == null) return ParadoxScopeContext.resolve(unknownScopeId)
         val resolved = inputScopeContext.resolve(unknownScopeId)
@@ -381,7 +365,6 @@ object ParadoxScopeHandler {
         return resolved
     }
     
-    @JvmStatic
     fun buildScopeDoc(scopeId: String, gameType: ParadoxGameType?, contextElement: PsiElement, builder: StringBuilder) {
         with(builder) {
             when {
@@ -391,7 +374,6 @@ object ParadoxScopeHandler {
         }
     }
     
-    @JvmStatic
     fun buildScopeContextDoc(scopeContext: ParadoxScopeContext, gameType: ParadoxGameType, contextElement: PsiElement, builder: StringBuilder) {
         with(builder) {
             var appendSeparator = false

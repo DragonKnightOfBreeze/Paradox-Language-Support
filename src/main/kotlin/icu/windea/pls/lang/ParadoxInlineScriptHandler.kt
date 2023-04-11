@@ -33,7 +33,6 @@ object ParadoxInlineScriptHandler {
         return gameType == ParadoxGameType.Stellaris
     }
     
-    @JvmStatic
     fun getInfo(element: ParadoxScriptProperty): ParadoxInlineScriptInfo? {
         val name = element.name
         if(name.lowercase() != inlineScriptName) return null
@@ -77,7 +76,6 @@ object ParadoxInlineScriptHandler {
         return it.options?.find { it.key == "inline_script_expression" }?.stringValue
     }
     
-    @JvmStatic
     fun getExpressionFromInlineConfig(propertyValue: ParadoxScriptValue, inlineConfig: CwtInlineConfig): String? {
         if(inlineConfig.name != inlineScriptName) return null
         val expressionLocation = getExpressionLocation(inlineConfig.config) ?: return null
@@ -89,7 +87,6 @@ object ParadoxInlineScriptHandler {
         return expressionElement?.stringValue()
     }
     
-    @JvmStatic
     fun getInlineScript(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptFile? {
         if(DumbService.isDumb(project)) return null //NOTE 防止重入索引
         
@@ -102,7 +99,6 @@ object ParadoxInlineScriptHandler {
         return ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)
     }
     
-    @JvmStatic
     fun processInlineScript(expression: String, contextElement: PsiElement, project: Project, processor: (ParadoxScriptFile) -> Boolean): Boolean {
         if(DumbService.isDumb(project)) return true //NOTE 防止重入索引
         
@@ -119,13 +115,11 @@ object ParadoxInlineScriptHandler {
         }
     }
     
-    @JvmStatic
     fun getInlineScriptFilePath(pathReference: String): String? {
         val configExpression = inlineScriptPathExpression
         return ParadoxPathReferenceExpressionSupport.get(configExpression)?.resolvePath(configExpression, pathReference.normalizePath())
     }
     
-    @JvmStatic
     fun getInlineScriptExpression(file: VirtualFile): String? {
         if(file.fileType != ParadoxScriptFileType) return null
         val fileInfo = file.fileInfo ?: return null
@@ -134,7 +128,6 @@ object ParadoxInlineScriptHandler {
         return doGetInlineScriptExpression(fileInfo)
     }
     
-    @JvmStatic
     fun getInlineScriptExpression(file: ParadoxScriptFile): String? {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
@@ -151,7 +144,6 @@ object ParadoxInlineScriptHandler {
     /**
      * 得到内联脚本的使用位置对应的属性信息，包括是否存在冲突等。
      */
-    @JvmStatic
     fun getInlineScriptUsageInfo(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
         ProgressManager.checkCanceled()
         val usageInfo = getUsageInfoFromCache(file) ?: return null

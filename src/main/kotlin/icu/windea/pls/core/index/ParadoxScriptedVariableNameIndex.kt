@@ -6,7 +6,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScriptScriptedVariable>() {
     companion object {
         @JvmField val KEY = StubIndexKey.createIndexKey<String, ParadoxScriptScriptedVariable>("paradox.scriptedVariable.name.index")
-        private const val VERSION = 17 //0.9.2
+        private const val VERSION = 18 //0.9.9
         private const val CACHE_SIZE = 2 * 1024 //700+ in stellaris@3.6
     }
     

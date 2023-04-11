@@ -1,16 +1,17 @@
 package icu.windea.pls.localisation.psi
 
 import com.intellij.lang.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxLocalisationLanguage) {
     private const val externalId = "paradoxLocalisation.file"
-    private const val stubVersion = 11 //0.9.3
+    private const val stubVersion = 15 //0.9.9
     
     override fun getExternalId() = externalId
     
@@ -21,7 +22,17 @@ object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFil
     }
     
     override fun shouldBuildStubFor(file: VirtualFile): Boolean {
-        return ParadoxCoreHandler.shouldIndexFile(file)
+        try {
+            //仅索引有根目录的文件
+            val fileInfo = file.fileInfo ?: return false
+            val path = fileInfo.entryPath
+            //要求不直接在根目录
+            if(path.isEmpty()) return false
+            return true
+        } catch(e: Exception) {
+            if(e is ProcessCanceledException) throw e
+            return false
+        }
     }
     
     class Builder : LightStubBuilder() {

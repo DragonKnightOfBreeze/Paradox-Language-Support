@@ -1670,7 +1670,6 @@ object ParadoxConfigHandler {
     //endregion
     
     //region Get Methods
-    @JvmStatic
     fun getConfigs(element: PsiElement, allowDefinition: Boolean = element is ParadoxScriptValue, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtDataConfig<*>> {
         return when {
             element is ParadoxScriptDefinitionElement -> getPropertyConfigs(element, allowDefinition, orDefault, matchType)
@@ -1680,12 +1679,10 @@ object ParadoxConfigHandler {
         }
     }
     
-    @JvmStatic
     fun getPropertyConfigs(element: PsiElement, allowDefinition: Boolean = false, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtPropertyConfig> {
         return getConfigsFromCache(element, CwtPropertyConfig::class.java, allowDefinition, orDefault, matchType)
     }
     
-    @JvmStatic
     fun getValueConfigs(element: PsiElement, allowDefinition: Boolean = true, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtValueConfig> {
         return getConfigsFromCache(element, CwtValueConfig::class.java, allowDefinition, orDefault, matchType)
     }
@@ -1873,7 +1870,6 @@ object ParadoxConfigHandler {
     /**
      * 得到指定的[element]的作为值的子句中的子属性/值的出现次数信息。（先合并子规则）
      */
-    @JvmStatic
     fun getChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Map<CwtDataExpression, Occurrence> {
         if(configs.isEmpty()) return emptyMap()
         val configGroup = configs.first().info.configGroup

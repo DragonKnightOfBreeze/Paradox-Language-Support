@@ -18,7 +18,6 @@ import icu.windea.pls.script.psi.*
  * 用于处理复杂枚举信息。
  */
 object ParadoxComplexEnumValueHandler {
-    @JvmStatic
     fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
         if(!element.isExpression()) return null
         if(element.isParameterAwareExpression()) return null //排除带参数的情况
@@ -63,7 +62,6 @@ object ParadoxComplexEnumValueHandler {
     
     //这里匹配时需要兼容内联的情况
     
-    @JvmStatic
     fun matchesComplexEnumByPath(complexEnum: CwtComplexEnumConfig, path: ParadoxPath): Boolean {
         return complexEnum.path.any {
             (complexEnum.pathFile == null || complexEnum.pathFile == path.fileName)
@@ -71,7 +69,6 @@ object ParadoxComplexEnumValueHandler {
         }
     }
     
-    @JvmStatic
     fun matchesComplexEnum(complexEnumConfig: CwtComplexEnumConfig, element: ParadoxScriptStringExpressionElement): Boolean {
         for(enumNameConfig in complexEnumConfig.enumNameConfigs) {
             ProgressManager.checkCanceled()
@@ -222,12 +219,10 @@ object ParadoxComplexEnumValueHandler {
         }
     }
     
-    @JvmStatic
     fun getName(expression: String): String? {
         return expression.takeIfNotEmpty()
     }
     
-    //@JvmStatic
     //fun isDeclaration(info: ParadoxComplexEnumValueInfo): Boolean {
     //    return info.readWriteAccess == Access.Write
     //}

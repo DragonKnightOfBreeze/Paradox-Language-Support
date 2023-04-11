@@ -13,7 +13,6 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxValueSetValueHandler {
-    @JvmStatic
     fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxValueSetValueInfo? {
         if(!element.isExpression()) return null
         if(element.isParameterAwareExpression()) return null //排除带参数的情况
@@ -51,18 +50,15 @@ object ParadoxValueSetValueHandler {
         return ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, elementOffset, gameType)
     }
     
-    @JvmStatic
     fun getName(expression: String): String? {
         //exclude if name contains invalid chars
         return expression.substringBefore('@').takeIf { it.isExactIdentifier('.') }?.takeIfNotEmpty()
     }
     
-    //@JvmStatic
     //fun isDeclaration(info: ParadoxValueSetValueInfo): Boolean {
     //    return info.readWriteAccess == Access.Write
     //}
     
-    @JvmStatic
     fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxValueSetValueElement? {
         val gameType = configGroup.gameType ?: return null
         if(element !is ParadoxScriptStringExpressionElement) return null
@@ -71,7 +67,6 @@ object ParadoxValueSetValueHandler {
         return ParadoxValueSetValueElement(element, name, valueSetName, readWriteAccess, gameType, configGroup.project)
     }
     
-    @JvmStatic
     fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, configExpressions: Iterable<CwtDataExpression>, configGroup: CwtConfigGroup): ParadoxValueSetValueElement? {
         val gameType = configGroup.gameType ?: return null
         if(element !is ParadoxScriptStringExpressionElement) return null

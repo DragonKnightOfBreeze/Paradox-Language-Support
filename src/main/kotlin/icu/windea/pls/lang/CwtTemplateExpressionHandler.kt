@@ -18,7 +18,6 @@ import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.script.psi.*
 
 object CwtTemplateExpressionHandler {
-    @JvmStatic
     fun extract(expression: CwtTemplateExpression, referenceName: String): String {
         if(expression.referenceExpressions.size != 1) throw IllegalStateException()
         return buildString {
@@ -31,7 +30,6 @@ object CwtTemplateExpressionHandler {
         }
     }
     
-    @JvmStatic
     fun extract(templateExpression: CwtTemplateExpression, referenceNames: Map<CwtDataExpression, String>): String {
         if(templateExpression.referenceExpressions.size != referenceNames.size) throw IllegalStateException()
         return buildString {
@@ -62,7 +60,6 @@ object CwtTemplateExpressionHandler {
         }.toRegex(RegexOption.IGNORE_CASE)
     }
     
-    @JvmStatic
     fun matches(text: String, element: PsiElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.DEFAULT): Boolean {
         val snippetExpressions = configExpression.snippetExpressions
         if(snippetExpressions.isEmpty()) return false
@@ -89,7 +86,6 @@ object CwtTemplateExpressionHandler {
         return true
     }
     
-    @JvmStatic
     fun resolve(text: String, element: ParadoxScriptStringExpressionElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
         //需要保证里面的每个引用都能解析
         val project = configGroup.project
@@ -99,8 +95,6 @@ object CwtTemplateExpressionHandler {
         return ParadoxTemplateExpressionElement(element, text, configExpression, gameType, project, references)
     }
     
-    
-    @JvmStatic
     fun resolveReferences(text: String, element: ParadoxScriptStringExpressionElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): List<ParadoxInTemplateExpressionReference> {
         val snippetExpressions = configExpression.snippetExpressions
         if(snippetExpressions.isEmpty()) return emptyList()
@@ -125,7 +119,6 @@ object CwtTemplateExpressionHandler {
         return references
     }
     
-    @JvmStatic
     fun processResolveResult(contextElement: PsiElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, processor: Processor<String>) {
         doProcessResolveResult(contextElement, configExpression, configGroup, processor, 0, "")
     }

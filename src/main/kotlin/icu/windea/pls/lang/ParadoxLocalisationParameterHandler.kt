@@ -18,7 +18,6 @@ import icu.windea.pls.script.psi.*
 object ParadoxLocalisationParameterHandler {
     val cachedParameterNamesKey = Key.create<CachedValue<Set<String>>>("paradox.localisation.property.cached.parameterNames")
     
-    @JvmStatic
     fun getParameterNames(element: ParadoxLocalisationProperty): Set<String> {
         return getParameterNamesFromCache(element)
     }
@@ -55,7 +54,6 @@ object ParadoxLocalisationParameterHandler {
         return result
     }
     
-    @JvmStatic
     fun getLocalisationReferenceElement(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): ParadoxScriptString? {
         val localisationReferencePropertyElement = findLocalisationPropertyFromParameterProperty(element, config)
         return localisationReferencePropertyElement?.propertyValue?.castOrNull()

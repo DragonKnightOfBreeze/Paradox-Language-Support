@@ -17,13 +17,10 @@ import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxModifierHandler {
-	val cachedModifierElementKey = Key.create<CachedValue<ParadoxModifierElement>>("paradox.cached.modifierElement")
-	
 	//可通过运行游戏后输出的modifiers.log判断到底会生成哪些修正
 	//修正会由特定的定义类型生成
 	//对于Stellaris：修正会由经济类型（economic_category）的声明生成
 	
-	@JvmStatic
 	fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.DEFAULT): Boolean {
 		//先判断是否存在对应的预定义的非生成的修正
 		if(matchesPredefinedModifier(name, configGroup)) return true
@@ -31,14 +28,12 @@ object ParadoxModifierHandler {
 		return ParadoxModifierSupport.matchModifier(name, element, configGroup, matchType)
 	}
 	
-	@JvmStatic
 	fun matchesPredefinedModifier(name: String, configGroup: CwtConfigGroup): Boolean {
 		val predefinedModifierConfig = configGroup.predefinedModifiers[name]
 		if(predefinedModifierConfig != null) return true
 		return false
 	}
 	
-	@JvmStatic
 	fun resolveModifier(element: ParadoxScriptStringExpressionElement) : ParadoxModifierElement? {
 		val name = element.value
 		val gameType = selectGameType(element) ?: return null
@@ -47,7 +42,6 @@ object ParadoxModifierHandler {
 		return resolveModifier(name, element, configGroup)
 	}
 	
-	@JvmStatic
 	fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
 		//尝试解析为生成的修正
 		val generatedModifier = ParadoxModifierSupport.resolveModifier(name, element, configGroup)
@@ -56,7 +50,6 @@ object ParadoxModifierHandler {
 		return resolvePredefinedModifier(name, element, configGroup)
 	}
 	
-	@JvmStatic
 	fun resolvePredefinedModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
 		val predefinedModifierConfig = configGroup.predefinedModifiers[name]
 		if(predefinedModifierConfig == null) return null
@@ -65,7 +58,6 @@ object ParadoxModifierHandler {
 		return ParadoxModifierElement(element, name, predefinedModifierConfig, gameType, project)
 	}
 	
-	@JvmStatic
 	fun completeModifier(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
 		val element = contextElement
 		if(element !is ParadoxScriptStringExpressionElement) return
@@ -76,7 +68,6 @@ object ParadoxModifierHandler {
 		completePredefinedModifier(context, result, modifierNames)
 	}
 	
-	@JvmStatic
 	fun completePredefinedModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>): Unit = with(context) {
 		val element = contextElement
 		if(element !is ParadoxScriptStringExpressionElement) return
@@ -107,7 +98,6 @@ object ParadoxModifierHandler {
 		}
 	}
 	
-	@JvmStatic
 	fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
 		val modifierCategories = ParadoxModifierSupport.getModifierCategories(element)
 		if(modifierCategories != null) return modifierCategories
@@ -116,7 +106,6 @@ object ParadoxModifierHandler {
 	
 	//TODO 检查修正的相关本地化和图标到底是如何确定的
 	
-	@JvmStatic
 	fun getModifierNameKeys(modifierName: String): List<String> {
 		//mod_$, ALL_UPPER_CASE is ok.
 		return buildList {
@@ -126,7 +115,6 @@ object ParadoxModifierHandler {
 		}
 	}
 	
-	@JvmStatic
 	fun getModifierDescKeys(modifierName: String): List<String> {
 		//mod_$_desc, ALL_UPPER_CASE is ok.
 		return buildList {
@@ -136,7 +124,6 @@ object ParadoxModifierHandler {
 		}
 	}
 	
-	@JvmStatic
 	fun getModifierIconPaths(modifierName: String): List<String> {
 		//gfx/interface/icons/modifiers/mod_$.dds
 		return buildList {

@@ -26,6 +26,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
 import com.intellij.psi.*
 import com.intellij.psi.codeStyle.*
+import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
@@ -712,9 +713,17 @@ fun getLineCommentDocText(element: PsiElement): String? {
 //endregion
 
 //region Index Extensions
-fun CharTable.internNode(node: LighterASTNode?): CharSequence? {
-    if(node !is LighterASTTokenNode) return null
-    return this.intern(node.text).toString()
+fun LighterASTNode.firstChild(tree: LighterAST, type: IElementType): LighterASTNode? {
+    return LightTreeUtil.firstChildOfType(tree, this, type)
+}
+
+fun LighterASTNode.firstChild(tree: LighterAST, types: TokenSet): LighterASTNode? {
+    return LightTreeUtil.firstChildOfType(tree, this, types)
+}
+
+fun LighterASTNode.internNode(tree: LighterAST): CharSequence? {
+    if(this !is LighterASTTokenNode) return null
+    return tree.charTable.intern(this.text).toString()
 }
 
 //inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.existsElement(

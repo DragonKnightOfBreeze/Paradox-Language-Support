@@ -17,7 +17,6 @@ object ParadoxElementPathHandler {
     /**
      * 解析指定定义相对于所属文件的属性路径。
      */
-    @JvmStatic
     fun getFromFile(element: PsiElement, maxDepth: Int = -1): ParadoxElementPath? {
         return resolveFromFile(element, maxDepth)
     }
@@ -54,7 +53,6 @@ object ParadoxElementPathHandler {
     /**
      * 解析指定元素相对于所属定义的属性路径。
      */
-    @JvmStatic
     fun getFromDefinitionWithDefinition(element: PsiElement, allowDefinition: Boolean): Tuple2<ParadoxElementPath, ParadoxScriptDefinitionElement>? {
         return resolveFromDefinitionWithDefinition(element, allowDefinition)
     }

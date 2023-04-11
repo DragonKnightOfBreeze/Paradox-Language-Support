@@ -29,7 +29,6 @@ object StellarisEconomicCategoryHandler {
     /**
      * 输入[definition]的定义类型应当保证是`economic_category`。
      */
-    @JvmStatic
     fun getInfo(definition: ParadoxScriptDefinitionElement): StellarisEconomicCategoryInfo? {
         ProgressManager.checkCanceled()
         if(selectGameType(definition) != ParadoxGameType.Stellaris) return null
@@ -166,7 +165,6 @@ object StellarisEconomicCategoryHandler {
         return StellarisTriggeredModifierInfo(key, useParentIcon, modifierTypes)
     }
     
-    @JvmStatic
     fun resolveModifierCategory(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
         val finalValue = value ?: "economic_unit" //default to economic_unit
         val enumConfig = configGroup.enums.getValue("scripted_modifier_categories")
@@ -177,7 +175,6 @@ object StellarisEconomicCategoryHandler {
         return keys.associateWith { modifierCategories.getValue(it) }
     }
     
-    @JvmStatic
     fun getModifierCategoryOptionValues(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
         val valueConfig = enumConfig.valueConfigMap.getValue(finalValue)
         return valueConfig.getOrPutUserData(modifierCategoriesKey) {

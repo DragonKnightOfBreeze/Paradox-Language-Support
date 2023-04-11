@@ -7,9 +7,8 @@ import icu.windea.pls.core.collections.*
 import kotlin.collections.mapNotNullTo
 
 object ParadoxFilePathHandler {
-    @JvmStatic val fileExtensionsKey = Key.create<Set<String>>("paradox.filePath.fileExtensions")
+    val fileExtensionsKey = Key.create<Set<String>>("paradox.filePath.fileExtensions")
     
-    @JvmStatic
     fun getFileExtensionOptionValues(config: CwtDataConfig<*>) : Set<String> {
         return config.getOrPutUserData(fileExtensionsKey) {
             val option = config.options?.find { it.key == "file_extensions" }

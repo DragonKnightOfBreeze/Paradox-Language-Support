@@ -13,7 +13,6 @@ object CwtConfigHandler {
     //region Config Path Methods
     val cachedCwtConfigPathKey = Key.create<CachedValue<CwtConfigPath>>("paradox.cached.cwtConfigPath")
     
-    @JvmStatic
     fun get(element: PsiElement): CwtConfigPath? {
         if(element is CwtFile) return EmptyCwtConfigPath
         if(element !is CwtProperty && element !is CwtValue) return null
@@ -52,7 +51,6 @@ object CwtConfigHandler {
     //region Config Type Methods
     val cachedCwtConfigTypeKey = Key.create<CachedValue<CwtConfigType>>("paradox.cached.cwtConfigType")
     
-    @JvmStatic
     fun getConfigType(element: PsiElement): CwtConfigType? {
         if(element !is CwtProperty && element !is CwtValue) return null
         return getConfigTypeFromCache(element)

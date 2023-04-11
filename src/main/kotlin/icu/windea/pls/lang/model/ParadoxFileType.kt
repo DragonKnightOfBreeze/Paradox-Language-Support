@@ -2,7 +2,6 @@ package icu.windea.pls.lang.model
 
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 
 enum class ParadoxFileType(
 	val id: String,
@@ -18,13 +17,13 @@ enum class ParadoxFileType(
 	}
 	
 	companion object {
-		fun resolve(file: VirtualFile, gameType: ParadoxGameType, path: ParadoxPath): ParadoxFileType {
+		fun resolve(file: VirtualFile, path: ParadoxPath): ParadoxFileType {
 			if(file.isDirectory) return Directory
 			val fileName = file.name
 			val fileExtension = file.extension?.lowercase() ?: return Other
 			return when {
 				fileName == PlsConstants.descriptorFileName -> ParadoxScript
-				path.canBeScriptFilePath() && fileExtension in PlsConstants.scriptFileExtensions && !isIgnored(fileName) && isInFolders(gameType, path) -> ParadoxScript
+				path.canBeScriptFilePath() && fileExtension in PlsConstants.scriptFileExtensions && !isIgnored(fileName) -> ParadoxScript
 				path.canBeLocalisationFilePath() && fileExtension in PlsConstants.localisationFileExtensions && !isIgnored(fileName) -> ParadoxLocalisation
 				else -> Other
 			}
@@ -34,10 +33,11 @@ enum class ParadoxFileType(
 			return getSettings().ignoredFileNameSet.contains(fileName.lowercase())
 		}
 		
-		private fun isInFolders(gameType: ParadoxGameType, path: ParadoxPath): Boolean {
-			if(path.parent.isEmpty()) return false
-			val folders = getCwtConfig(getDefaultProject()).get(gameType)?.folders
-			return folders.isNullOrEmpty() || folders.any { it.matchesPath(path.parent) }
-		}
+		//忽略CWT规则文件folders.cwt
+		//private fun isInFolders(gameType: ParadoxGameType, path: ParadoxPath): Boolean {
+		//	if(path.parent.isEmpty()) return false
+		//	val folders = getCwtConfig(getDefaultProject()).get(gameType)?.folders
+		//	return folders.isNullOrEmpty() || folders.any { it.matchesPath(path.parent) }
+		//}
 	}
 }

@@ -26,30 +26,12 @@ import java.lang.invoke.*
 object ParadoxCoreHandler {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
-    fun shouldIndexFile(virtualFile: VirtualFile): Boolean {
-        try {
-            //仅索引有根目录的文件
-            val fileInfo = virtualFile.fileInfo ?: return false
-            val path = fileInfo.path.path
-            //不索引内联脚本文件
-            if("common/inline_scripts".matchesPath(path)) {
-                return false
-            }
-            return true
-        } catch(e: Exception) {
-            if(e is ProcessCanceledException) throw e
-            return false
-        }
-    }
-    
-    @JvmStatic
     fun getFileInfo(virtualFile: VirtualFile): ParadoxFileInfo? {
         val injectedFileInfo = virtualFile.getUserData(PlsKeys.injectedFileInfoKey)
         if(injectedFileInfo != null) return injectedFileInfo;
         return virtualFile.getUserData(PlsKeys.fileInfoKey)
     }
     
-    @JvmStatic
     fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
         val file = selectFile(element) ?: return null
         return getFileInfo(file)
@@ -58,7 +40,6 @@ object ParadoxCoreHandler {
     /**
      * 在获取rootInfo和fileInfo之前，如果未解析，需要先解析。
      */
-    @JvmStatic
     fun resolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         if(!rootFile.isDirectory) return null
         val rootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
@@ -181,7 +162,6 @@ object ParadoxCoreHandler {
         return ParadoxModDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
     }
     
-    @JvmStatic
     fun resolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
         val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfoKey)
         if(injectedFileInfo != null) return injectedFileInfo
@@ -196,7 +176,7 @@ object ParadoxCoreHandler {
                 val filePath = file.path.removePrefix(rootInfo.rootFile.path).trimStart('/')
                 val path = ParadoxPath.resolve(filePath)
                 val entryPath = resolveEntryPath(path, rootInfo)
-                val fileType = ParadoxFileType.resolve(file, rootInfo.gameType, entryPath)
+                val fileType = ParadoxFileType.resolve(file, entryPath)
                 val cachedFileInfo = file.getUserData(PlsKeys.fileInfoKey)
                 if(cachedFileInfo != null && cachedFileInfo.path == path && cachedFileInfo.entryPath == entryPath
                     && cachedFileInfo.fileType == fileType && cachedFileInfo.rootInfo == rootInfo) {
@@ -225,8 +205,6 @@ object ParadoxCoreHandler {
         return path
     }
     
-    
-    @JvmStatic
     fun reparseFilesInRoot(rootFilePaths: Set<String>) {
         //重新解析指定的根目录中的所有文件，包括非脚本非本地化文件
         try {
@@ -245,7 +223,6 @@ object ParadoxCoreHandler {
     }
     
     @RequiresWriteLock
-    @JvmStatic
     fun reparseFilesByFileNames(fileNames: Set<String>) {
         //重新解析指定的根目录中的所有文件，包括非脚本非本地化文件
         val files = mutableSetOf<VirtualFile>()

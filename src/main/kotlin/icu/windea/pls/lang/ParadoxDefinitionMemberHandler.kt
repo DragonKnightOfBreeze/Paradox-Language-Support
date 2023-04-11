@@ -16,7 +16,6 @@ import icu.windea.pls.script.psi.*
  * @see ParadoxDefinitionMemberInfo
  */
 object ParadoxDefinitionMemberHandler {
-    @JvmStatic
     fun getInfo(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
         return getInfoFromCache(element)
     }
@@ -33,12 +32,10 @@ object ParadoxDefinitionMemberHandler {
         }
     }
     
-    //@JvmStatic
     //fun resolveInfoUpDown(element: LighterASTNode): ParadoxDefinitionMemberInfo? {
     //	TODO()
     //}
     
-    @JvmStatic
     fun resolveInfoDownUp(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
         //element: ParadoxScriptPropertyKey | ParadoxScriptValue
         //这里输入的element本身可以是定义，这时elementPath会是空字符串
