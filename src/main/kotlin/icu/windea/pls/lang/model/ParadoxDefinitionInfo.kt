@@ -32,7 +32,7 @@ class ParadoxDefinitionInfo(
     //element直接作为属性的话可能会有些问题，不过这个缓存会在所在脚本文件变更时被清除，应当问题不大
     //element不能转为SmartPsiElementPointer然后作为属性，这会导致与ParadoxDefinitionMemberSInfo.element引发递归异常
 ) {
-    enum class SourceType { Default, Stub, PathComment, TypeComment }
+    enum class SourceType { Default, Stub }
     
     var sourceType: SourceType = SourceType.Default
     
@@ -200,11 +200,6 @@ class ParadoxDefinitionInfo(
         return Objects.hash(name, typesText, gameType)
     }
 }
-
-/**
- * 对应的定义是否需要进行索引和检查。
- */
-val ParadoxDefinitionInfo.isGlobal: Boolean get() = sourceType != SourceType.PathComment && sourceType != SourceType.TypeComment
 
 /**
  * 对应的定义是否是匿名的。

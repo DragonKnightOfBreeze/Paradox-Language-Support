@@ -80,6 +80,7 @@ object ParadoxValueSetValueIndex {
         ProgressManager.checkCanceled()
         if(file.fileType != ParadoxScriptFileType) return@builder EmptyData
         if(file.fileInfo == null) return@builder EmptyData
+        
         val psiFile = file.toPsiFile<ParadoxScriptFile>(project) ?: return@builder EmptyData
         val data = Data()
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {

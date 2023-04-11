@@ -81,7 +81,12 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
     }
     
     override fun getInputFilter(): FileBasedIndex.InputFilter {
-        return FileBasedIndex.InputFilter { it.fileType == ParadoxScriptFileType && it.fileInfo != null && !ParadoxFileManager.isLightFile(it) }
+        return FileBasedIndex.InputFilter filter@{ file ->
+            if(file.fileType != ParadoxScriptFileType) return@filter false
+            if(file.fileInfo == null) return@filter false
+            if(ParadoxFileManager.isLightFile(file)) return@filter false //不索引临时文件
+            true
+        }
     }
     
     override fun dependsOnFileContent(): Boolean {

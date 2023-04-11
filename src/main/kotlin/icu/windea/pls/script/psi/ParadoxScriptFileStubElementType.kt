@@ -60,7 +60,7 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
     class Builder : DefaultStubBuilder() {
         override fun createStubForFile(file: PsiFile): StubElement<*> {
             val psiFile = file as? ParadoxScriptFile ?: return super.createStubForFile(file)
-            val definitionInfo = psiFile.definitionInfo?.takeIf { it.isGlobal }
+            val definitionInfo = psiFile.definitionInfo
             val name = definitionInfo?.name
             val type = definitionInfo?.type
             //val subtypes = definitionInfo?.subtypes
