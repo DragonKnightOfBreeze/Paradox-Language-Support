@@ -27,7 +27,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
 	override val groupName: String get() = GROUP_NAME
 	
 	override fun getExpressions(context: PsiElement, document: Document, offset: Int): List<PsiElement> {
-		if(!ParadoxScriptTokenSets.VARIABLE_VALUES.contains(context.elementType)) return emptyList()
+		if(!ParadoxScriptTokenSets.VARIABLE_VALUE_TOKENS.contains(context.elementType)) return emptyList()
 		ProgressManager.checkCanceled()
 		val stringElement = context.parent?.castOrNull<ParadoxScriptValue>() ?: return emptyList()
 		if(!stringElement.isBlockValue()) return emptyList()

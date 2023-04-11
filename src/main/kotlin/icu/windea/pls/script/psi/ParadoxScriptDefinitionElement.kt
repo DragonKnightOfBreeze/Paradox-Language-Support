@@ -17,9 +17,6 @@ interface ParadoxScriptDefinitionElement : ParadoxScriptNamedElement, ParadoxScr
     
     override fun getNameIdentifier(): PsiElement? = null
     
-    val pathName: String
-    val originalPathName: String
-    
     val block: ParadoxScriptBlockElement?
     val variableList: List<ParadoxScriptScriptedVariable>
         get() {

@@ -14,17 +14,17 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		
 		//当用户可能正在输入一个scriptedVariableReference的名字时提示
 		val scriptedVariableReferencePattern = psiElement()
-			.withElementType(ParadoxScriptTokenSets.SCRIPTED_VARIABLE_REFERENCES)
+			.withElementType(ParadoxScriptTokenSets.SCRIPTED_VARIABLE_REFERENCE_TOKENS)
 		extend(null, scriptedVariableReferencePattern, ParadoxScriptedVariableCompletionProvider())
 		
 		//当用户可能正在输入一个propertyKey或string时提示
 		val definitionPattern = psiElement()
-			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRINGS)
+			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
 		extend(null, definitionPattern, ParadoxDefinitionCompletionProvider())
 		
 		//当用户可能正在输入一个eventId时提示
 		val eventIdPattern = psiElement()
-			.withElementType(ParadoxScriptTokenSets.STRINGS)
+			.withElementType(ParadoxScriptTokenSets.STRING_TOKENS)
 			.withParent(psiElement(ParadoxScriptString::class.java)
 				.withParent(psiElement(ParadoxScriptProperty::class.java)
 					.withParent(psiElement(ParadoxScriptBlock::class.java)
@@ -33,7 +33,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		
 		//当用户可能正在输入一个parameter的名字时提示
 		val parameterPattern = psiElement()
-			.withElementType(ParadoxScriptTokenSets.PARAMETER_OR_ARGUMENTS)
+			.withElementType(ParadoxScriptTokenSets.PARAMETER_OR_ARGUMENT_TOKENS)
 		extend(null, parameterPattern, ParadoxParameterCompletionProvider())
 		
 		//当用户可能正在输入一个scriptedVariable的名字时提示（除非用户也可能正在输入一个引用的名字）
@@ -43,12 +43,12 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		
 		//当用户可能正在输入一个定义的名字时提示
 		val definitionNamePattern = psiElement()
-			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRINGS)
+			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
 		extend(CompletionType.BASIC, definitionNamePattern, ParadoxDefinitionNameCompletionProvider())
 		
 		//当用户可能正在输入一个变量名时提示
 		val variableNamePattern = psiElement()
-			.withElementType(ParadoxScriptTokenSets.STRINGS)
+			.withElementType(ParadoxScriptTokenSets.STRING_TOKENS)
 		extend(CompletionType.BASIC, variableNamePattern, ParadoxVariableNameCompletionProvider())
 	}
 	

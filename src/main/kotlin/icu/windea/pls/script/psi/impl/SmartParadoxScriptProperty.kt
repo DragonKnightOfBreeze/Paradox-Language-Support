@@ -14,8 +14,6 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 	@Volatile private var _name: String? = null
 	@Volatile private var _value: String? = null
 	@Volatile private var _valueType: ParadoxDataType? = null
-	@Volatile private var _pathName: String? = null
-	@Volatile private var _originalPathName: String? = null
 	@Volatile private var _parameters: Map<String, ParadoxParameterInfo>? = null
 	
 	override fun getName(): String {
@@ -29,12 +27,6 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 	override val type: ParadoxDataType?
 		get() = _valueType ?: super.type.also { _valueType = it }
 	
-	override val pathName: String?
-		get() = _pathName ?: super.pathName.also { _pathName = it }
-	
-	override val originalPathName: String
-		get() = _originalPathName ?: super.originalPathName.also { _originalPathName = it }
-	
 	override val parameters: Map<String, ParadoxParameterInfo>
 		get() = _parameters ?: super.parameters.also { _parameters = it }
 	
@@ -42,8 +34,6 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 		_name = null
 		_value = null
 		_valueType = null
-		_pathName = null
-		_originalPathName = null
 		_parameters = null
 		super.subtreeChanged()
 	}

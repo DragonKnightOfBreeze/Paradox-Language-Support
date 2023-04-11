@@ -6,10 +6,10 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.model.ParadoxDefinitionInfo.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import java.util.*
@@ -43,16 +43,17 @@ class ParadoxDefinitionInfo(
     //NOTE 部分属性需要使用懒加载
     
     val name: String by lazy {
+        //NOTE 这里不处理内联的情况
         if(name0 != null) return@lazy name0
         
-        //name_from_file = yes -> 返回文件名（不包含扩展名）
+        //name_from_file = yes -> 返回不包含扩展名的文件名，即rootKey
         val nameFromFileConfig = typeConfig.nameFromFile
-        if(nameFromFileConfig) return@lazy element.containingFile.name.substringBeforeLast('.')
-        //name_field = xxx -> 返回对应名字（xxx）的property的stringValue，如果不存在则返回空字符串
+        if(nameFromFileConfig) return@lazy rootKey
+        //name_field = xxx -> 返回对应名字（xxx）的property的stringValue，如果不存在则为匿名
         val nameField = typeConfig.nameField
         if(nameField != null) {
-            val nameProperty = element.findProperty(nameField) //不处理内联的情况
-            return@lazy nameProperty?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
+            val nameProperty = element.findProperty(nameField)
+            return@lazy nameProperty?.propertyValue<ParadoxScriptString>()?.stringValue.orAnonymous()
         }
         //否则直接返回rootKey
         rootKey

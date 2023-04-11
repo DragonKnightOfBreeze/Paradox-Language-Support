@@ -16,19 +16,22 @@ object ParadoxScriptedVariableHandler {
     //stub methods
     
     fun createStub(psi: ParadoxScriptScriptedVariable, parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub? {
-        val file = selectFile(parentStub.psi) ?: return null
+        val file = selectFile(psi) ?: return null
+        val gameType = selectGameType(file) ?: return null
         val name = psi.name
-        val gameType = selectGameType(file)
         return ParadoxScriptScriptedVariableStubImpl(parentStub, name, gameType)
     }
     
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub? {
-        val file = selectFile(parentStub.psi) ?: return null
-        val name = node.firstChild(tree, SCRIPTED_VARIABLE_NAME)
-            ?.firstChild(tree, SCRIPTED_VARIABLE_NAME_ID)
-            ?.internNode(tree)?.toString() ?: return null
-        val gameType = selectGameType(file)
+        val psi = parentStub.psi
+        val file = selectFile(psi) ?: return null
+        val gameType = selectGameType(file) ?: return null
+        val name = getNameFromNode(node, tree) ?: return null
         return ParadoxScriptScriptedVariableStubImpl(parentStub, name, gameType)
+    }
+    
+    private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {
+        return node.firstChild(tree, SCRIPTED_VARIABLE_NAME)?.firstChild(tree, SCRIPTED_VARIABLE_NAME_ID)?.internNode(tree)?.toString()
     }
     
     fun shouldCreateStub(node: ASTNode): Boolean {

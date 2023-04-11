@@ -1,11 +1,14 @@
 package icu.windea.pls.lang
 
+import com.intellij.lang.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.inline.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import java.util.*
 
 /**
@@ -28,7 +31,9 @@ object ParadoxElementPathHandler {
         while(current !is PsiFile) {
             when {
                 current is ParadoxScriptProperty -> {
-                    originalSubPaths.addFirst(current.originalPathName) //这里需要使用原始文本
+                    val p = current.propertyKey.text
+                    if(p.isParameterAwareExpression()) return null
+                    originalSubPaths.addFirst(p)
                     depth++
                 }
                 current is ParadoxScriptValue && current.isBlockValue() -> {
@@ -43,6 +48,45 @@ object ParadoxElementPathHandler {
         if(current is PsiFile) {
             val virtualFile = selectFile(current)
             val injectedElementPathPrefix = virtualFile?.getUserData(PlsKeys.injectedElementPathPrefixKey)
+            if(injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
+                originalSubPaths.addAll(0, injectedElementPathPrefix.subPaths)
+            }
+        }
+        return ParadoxElementPath.resolve(originalSubPaths)
+    }
+    
+    /**
+     * 解析指定定义相对于所属文件的属性路径。
+     */
+    fun getFromFile(node: LighterASTNode, tree: LighterAST, file: VirtualFile, maxDepth: Int = -1): ParadoxElementPath? {
+        return resolveFromFile(node, tree, file, maxDepth)
+    }
+    
+    private fun resolveFromFile(node: LighterASTNode, tree: LighterAST, file: VirtualFile, maxDepth: Int): ParadoxElementPath? {
+        var current: LighterASTNode = node
+        var depth = 0
+        val originalSubPaths = LinkedList<String>()
+        while(current !is PsiFile) {
+            when {
+                current.tokenType == PROPERTY -> {
+                    val p = node.firstChild(tree, PROPERTY_KEY)
+                        ?.firstChild(tree, PROPERTY_KEY_TOKEN)
+                        ?.internNode(tree)?.toString() ?: return null
+                    originalSubPaths.addFirst(p)
+                    depth++
+                }
+                ParadoxScriptTokenSets.VALUES.contains(current.tokenType) && tree.getParent(current)?.tokenType == BLOCK -> {
+                    originalSubPaths.addFirst("-")
+                    depth++
+                }
+            }
+            //如果发现深度超出指定的最大深度，则直接返回null
+            if(maxDepth != -1 && maxDepth < depth) return null
+            current = tree.getParent(current) ?: break
+        }
+        if(current.tokenType == ParadoxScriptStubElementTypes.FILE) {
+            val virtualFile = file
+            val injectedElementPathPrefix = virtualFile.getUserData(PlsKeys.injectedElementPathPrefixKey)
             if(injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
                 originalSubPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
@@ -82,7 +126,12 @@ object ParadoxElementPathHandler {
                     } else {
                         flag = true
                     }
-                    originalSubPaths.addFirst(current.originalPathName) //这里需要使用原始文本
+                    val p = when{
+                        current is ParadoxScriptProperty -> current.propertyKey.text
+                        current is ParadoxScriptFile -> current.name.substringBeforeLast('.')
+                        else -> current.name
+                    }
+                    originalSubPaths.addFirst(p)
                 }
                 current is ParadoxScriptValue && current.isBlockValue() -> {
                     originalSubPaths.addFirst("-")

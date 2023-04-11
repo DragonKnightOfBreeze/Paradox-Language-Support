@@ -51,23 +51,26 @@ object ParadoxLocalisationHandler {
     //stub methods
     
     fun createStub(psi: ParadoxLocalisationProperty, parentStub: StubElement<*>): ParadoxLocalisationStub? {
-        val file = selectFile(parentStub.psi) ?: return null
+        val file = selectFile(psi) ?: return null
+        val gameType = selectGameType(file) ?: return null
         val name = psi.name
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
         val locale = selectLocale(file)?.id
-        val gameType = selectGameType(file)
         return ParadoxLocalisationStubImpl(parentStub, name, category, locale, gameType)
     }
     
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationStub? {
-        val file = selectFile(parentStub.psi) ?: return null
-        val name = node.firstChild(tree, PROPERTY_KEY)
-            ?.firstChild(tree, PROPERTY_KEY_TOKEN)
-            ?.internNode(tree)?.toString() ?: return null
+        val psi = parentStub.psi
+        val file = selectFile(psi) ?: return null
+        val gameType = selectGameType(file) ?: return null
+        val name = getNameFromNode(node, tree) ?: return null
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
         val locale = selectLocale(file)?.id
-        val gameType = selectGameType(file)
         return ParadoxLocalisationStubImpl(parentStub, name, category, locale, gameType)
+    }
+    
+    private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {
+        return node.firstChild(tree, PROPERTY_KEY)?.firstChild(tree, PROPERTY_KEY_TOKEN)?.internNode(tree)?.toString()
     }
     
     fun shouldCreateStub(node: ASTNode): Boolean {

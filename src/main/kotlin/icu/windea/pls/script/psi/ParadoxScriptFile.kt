@@ -17,8 +17,6 @@ class ParadoxScriptFile(
 ) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxScriptDefinitionElement {
 	@Volatile private var _parameterMap: Map<String, ParadoxParameterInfo>? = null
 	
-	override val pathName get() = name.let { name -> name.substringBeforeLast(".", name) }
-	override val originalPathName get() = name.let { name -> name.substringBeforeLast(".", name) }
 	override val parameters: Map<String, ParadoxParameterInfo>
 		get() = _parameterMap ?: doGetParameters().also { _parameterMap = it }
 	

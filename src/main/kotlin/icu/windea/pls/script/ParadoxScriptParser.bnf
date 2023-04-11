@@ -75,7 +75,7 @@ property ::= property_key property_separator property_value {
     string=""
     getIcon getName setName getNameIdentifier getValue getDepth getBlock 
     getType getConfigExpression getExpression
-    getPathName getOriginalPathName getParameters
+    getParameters
     isEquivalentTo toString
   ]
 }

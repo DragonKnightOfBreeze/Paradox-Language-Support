@@ -29,7 +29,7 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
         
         private fun visitProperty(element: ParadoxScriptProperty) {
             ProgressManager.checkCanceled()
-            val comparisonToken = element.findChild(ParadoxScriptTokenSets.COMPARISONS) ?: return
+            val comparisonToken = element.findChild(ParadoxScriptTokenSets.COMPARISON_TOKENS) ?: return
             val propertyKey = element.propertyKey
             if(mayKeyRepresentNumber(propertyKey)) return
             val propertyValue = element.propertyValue ?: return

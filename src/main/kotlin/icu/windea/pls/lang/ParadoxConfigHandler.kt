@@ -841,7 +841,7 @@ object ParadoxConfigHandler {
         val configGroup = configGroup
         
         if(configExpression.isEmpty()) return
-        if(!quoted && keyword.isParameterAwareExpression()) return //排除带参数的情况
+        if(!quoted && keyword.isParameterAwareExpression()) return //排除可能带参数的情况
         
         //匹配作用域
         if(scopeMatched) {

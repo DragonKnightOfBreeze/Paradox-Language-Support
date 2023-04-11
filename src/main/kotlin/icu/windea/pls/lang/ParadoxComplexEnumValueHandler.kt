@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.*
 object ParadoxComplexEnumValueHandler {
     fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
         if(!element.isExpression()) return null
-        if(element.isParameterAwareExpression()) return null //排除带参数的情况
+        if(element.isParameterAwareExpression()) return null //排除可能带参数的情况
         return getInfoFromCache(element)
     }
     

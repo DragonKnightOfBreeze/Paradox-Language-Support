@@ -270,16 +270,6 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getPathName(element: ParadoxScriptProperty): String? {
-        return element.propertyKey.text
-    }
-    
-    @JvmStatic
-    fun getOriginalPathName(element: ParadoxScriptProperty): String {
-        return element.propertyKey.value
-    }
-    
-    @JvmStatic
     fun getPresentation(element: ParadoxScriptProperty): ItemPresentation {
         val definitionInfo = element.definitionInfo
         if(definitionInfo != null) return ParadoxDefinitionPresentation(element, definitionInfo)

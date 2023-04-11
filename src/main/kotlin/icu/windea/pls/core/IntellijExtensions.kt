@@ -721,6 +721,15 @@ fun LighterASTNode.firstChild(tree: LighterAST, types: TokenSet): LighterASTNode
     return LightTreeUtil.firstChildOfType(tree, this, types)
 }
 
+inline fun LighterASTNode.firstChild(tree: LighterAST, predicate: (LighterASTNode) -> Boolean): LighterASTNode? {
+    val children = tree.getChildren(this)
+    for(i in children.indices) {
+        val child = children[i]
+        if(predicate(child)) return child
+    }
+    return null
+}
+
 fun LighterASTNode.internNode(tree: LighterAST): CharSequence? {
     if(this !is LighterASTTokenNode) return null
     return tree.charTable.intern(this.text).toString()

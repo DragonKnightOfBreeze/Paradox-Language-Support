@@ -112,18 +112,6 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
-  @Nullable
-  public String getPathName() {
-    return ParadoxScriptPsiImplUtil.getPathName(this);
-  }
-
-  @Override
-  @NotNull
-  public String getOriginalPathName() {
-    return ParadoxScriptPsiImplUtil.getOriginalPathName(this);
-  }
-
-  @Override
   @NotNull
   public Map<String, ParadoxParameterInfo> getParameters() {
     return ParadoxScriptPsiImplUtil.getParameters(this);

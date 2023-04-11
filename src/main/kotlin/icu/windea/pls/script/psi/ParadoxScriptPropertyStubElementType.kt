@@ -42,7 +42,7 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
     
     override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
         //索引definition的name和type
-        if(stub.name.isNotEmpty() && stub.type.isNotEmpty()) {
+        if(stub.name.isNotEmpty() && stub.type.isNotEmpty() && stub.gameType != null) {
             sink.occurrence(ParadoxDefinitionNameIndex.KEY, stub.name)
             sink.occurrence(ParadoxDefinitionTypeIndex.KEY, stub.type)
         }

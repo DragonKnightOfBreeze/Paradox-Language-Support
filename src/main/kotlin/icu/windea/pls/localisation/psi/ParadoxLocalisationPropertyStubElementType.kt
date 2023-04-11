@@ -42,7 +42,7 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
     
     override fun indexStub(stub: ParadoxLocalisationStub, sink: IndexSink) {
         //根据分类索引localisation和localisation_synced的name
-        if(stub.name.isNotEmpty()) {
+        if(stub.name.isNotEmpty() && stub.gameType != null) {
             when(stub.category) {
                 ParadoxLocalisationCategory.Localisation -> sink.occurrence(ParadoxLocalisationNameIndex.KEY, stub.name)
                 ParadoxLocalisationCategory.SyncedLocalisation -> sink.occurrence(ParadoxSyncedLocalisationNameIndex.KEY, stub.name)

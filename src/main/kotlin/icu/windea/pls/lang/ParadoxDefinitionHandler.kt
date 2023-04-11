@@ -15,6 +15,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
 
 /**
@@ -47,8 +48,8 @@ object ParadoxDefinitionHandler {
     }
     
     private fun resolveInfo(element: ParadoxScriptDefinitionElement, file: PsiFile = element.containingFile): ParadoxDefinitionInfo? {
-        //排除带参数的情况
-        if(element is ParadoxScriptProperty && element.propertyKey.isParameterAwareExpression()) return null
+        val rootKey = element.name.let { if(element is ParadoxScriptFile) it.substringBeforeLast('.') else it } //如果是文件名，不要包含扩展名
+        if(element is ParadoxScriptProperty && rootKey.isParameterAwareExpression()) return null //排除可能带参数的情况
         
         ProgressManager.checkCanceled()
         val project = file.project
@@ -60,12 +61,18 @@ object ParadoxDefinitionHandler {
         }
         
         val fileInfo = file.fileInfo ?: return null
-        val elementPath = ParadoxElementPathHandler.getFromFile(element, PlsConstants.maxDefinitionDepth) ?: return null
-        val rootKey = element.pathName //如果是文件名，不要包含扩展名
         val path = fileInfo.entryPath //这里使用entryPath
+        val elementPath = ParadoxElementPathHandler.getFromFile(element, PlsConstants.maxDefinitionDepth) ?: return null
         val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
         val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-        return doResolveInfo(element, rootKey, path, elementPath, configGroup)
+        for(typeConfig in configGroup.types.values) {
+            ProgressManager.checkCanceled()
+            if(matchesType(element, typeConfig, path, elementPath, rootKey, configGroup)) {
+                //需要懒加载
+                return ParadoxDefinitionInfo(null, rootKey, typeConfig, elementPath, gameType, configGroup, element)
+            }
+        }
+        return null
     }
     
     private fun resolveInfoByStub(element: ParadoxScriptDefinitionElement, stub: ParadoxScriptDefinitionElementStub<out ParadoxScriptDefinitionElement>, project: Project): ParadoxDefinitionInfo? {
@@ -80,18 +87,6 @@ object ParadoxDefinitionHandler {
         val elementPath = stub.elementPath
         return ParadoxDefinitionInfo(name, rootKey, typeConfig, elementPath, gameType, configGroup, element)
             .apply { sourceType = ParadoxDefinitionInfo.SourceType.Stub }
-    }
-    
-    private fun doResolveInfo(element: ParadoxScriptDefinitionElement, rootKey: String, path: ParadoxPath, elementPath: ParadoxElementPath, configGroup: CwtConfigGroup): ParadoxDefinitionInfo? {
-        val gameType = configGroup.gameType ?: return null
-        for(typeConfig in configGroup.types.values) {
-            ProgressManager.checkCanceled()
-            if(matchesType(element, typeConfig, path, elementPath, rootKey, configGroup)) {
-                //需要懒加载
-                return ParadoxDefinitionInfo(null, rootKey, typeConfig, elementPath, gameType, configGroup, element)
-            }
-        }
-        return null
     }
     
     fun matchesType(
@@ -169,8 +164,95 @@ object ParadoxDefinitionHandler {
         //判断element的propertyValue是否需要是block
         val declarationConfig = configGroup.declarations[typeConfig.name]?.propertyConfig
         //当进行代码补全时需要特殊处理
-        val isBlock = if(element.getUserData(PlsKeys.isIncompleteKey) == true) null
-        else element.castOrNull<ParadoxScriptProperty>()?.propertyValue?.let { it is ParadoxScriptBlock }
+        val isBlock = when {
+            element.getUserData(PlsKeys.isIncompleteKey) == true -> null
+            else -> element.castOrNull<ParadoxScriptProperty>()?.propertyValue?.let { it is ParadoxScriptBlock }
+        }
+        if(declarationConfig != null && isBlock != null) {
+            val isBlockConfig = declarationConfig.valueExpression.type == CwtDataType.Block
+            if(isBlockConfig != isBlock) return false
+        }
+        
+        return true
+    }
+    
+    fun matchesType(
+        node: LighterASTNode,
+        tree: LighterAST,
+        typeConfig: CwtTypeConfig,
+        path: ParadoxPath,
+        elementPath: ParadoxElementPath,
+        rootKey: String,
+        configGroup: CwtConfigGroup
+    ): Boolean {
+        //判断element是否需要是scriptFile还是scriptProperty
+        val nameFromFileConfig = typeConfig.nameFromFile
+        if(nameFromFileConfig) {
+            if(node.tokenType != ParadoxScriptStubElementTypes.FILE) return false
+        } else {
+            if(node.tokenType != PROPERTY) return false
+        }
+        
+        //判断path是否匹配
+        val pathConfig = typeConfig.path ?: return false
+        val pathStrictConfig = typeConfig.pathStrict
+        if(pathStrictConfig) {
+            if(pathConfig != path.parent) return false
+        } else {
+            if(!pathConfig.matchesPath(path.parent)) return false
+        }
+        //判断path_name是否匹配
+        val pathFileConfig = typeConfig.pathFile //String?
+        if(pathFileConfig != null) {
+            if(pathFileConfig != path.fileName) return false
+        }
+        //判断path_extension是否匹配（默认为".txt"，CWT文件中可能未填写，此时直接留空）
+        val pathExtensionConfig = typeConfig.pathExtension //String?
+        if(pathExtensionConfig != null) {
+            if(pathExtensionConfig != "." + path.fileExtension) return false
+        }
+        
+        //如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
+        //skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
+        //skip_root_key可以重复（其中之一匹配即可）
+        val skipRootKeyConfig = typeConfig.skipRootKey
+        if(skipRootKeyConfig.isNullOrEmpty()) {
+            if(elementPath.length > 1) return false
+        } else {
+            val result = skipRootKeyConfig.any { elementPath.matchEntire(it, useParentPath = true) }
+            if(!result) return false
+        }
+        //如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
+        val startsWithConfig = typeConfig.startsWith
+        if(!startsWithConfig.isNullOrEmpty()) {
+            val result = rootKey.startsWith(startsWithConfig, false)
+            if(!result) return false
+        }
+        //如果type_key_regex存在，则要求type_key匹配
+        val typeKeyRegexConfig = typeConfig.typeKeyRegex
+        if(typeKeyRegexConfig != null) {
+            val result = typeKeyRegexConfig.matches(rootKey)
+            if(!result) return false
+        }
+        //如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
+        val typeKeyFilterConfig = typeConfig.typeKeyFilter
+        if(!typeKeyFilterConfig.isNullOrEmpty()) {
+            val result = typeKeyFilterConfig.contains(rootKey)
+            if(!result) return false
+        }
+        //如果name_field存在，则要求type_key必须是指定的所有type_key之一，或者没有任何指定的type_key
+        val nameFieldConfig = typeConfig.nameField
+        if(nameFieldConfig != null) {
+            val result = (typeConfig.typeKeyFilter == null && typeConfig.subtypes.values.all { it.typeKeyFilter == null })
+                || typeConfig.typeKeyFilter?.set?.contains(rootKey) == true
+                || typeConfig.subtypes.values.any { it.typeKeyFilter?.set?.contains(rootKey) == true }
+            if(!result) return false
+        }
+        
+        //判断element的propertyValue是否需要是block
+        val declarationConfig = configGroup.declarations[typeConfig.name]?.propertyConfig
+        //当进行代码补全时需要特殊处理
+        val isBlock = node.firstChild(tree, ParadoxScriptTokenSets.VALUES)?.let { it.tokenType == BLOCK }
         if(declarationConfig != null && isBlock != null) {
             val isBlockConfig = declarationConfig.valueExpression.type == CwtDataType.Block
             if(isBlockConfig != isBlock) return false
@@ -283,8 +365,6 @@ object ParadoxDefinitionHandler {
         
         return true
     }
-    
-    //TODO 这里匹配时需要兼容内联的情况，但是这样的话调用ParadoxValueSetValueHandler.resolveInfo()时可能会导致IDE卡死
     
     fun matchesSubtype(
         element: ParadoxScriptDefinitionElement,
@@ -481,6 +561,7 @@ object ParadoxDefinitionHandler {
     
     //stub methods
     fun createStubForFile(file: PsiFile, tree: LighterAST): StubElement<*>? {
+        //这里使用scriptProperty.definitionInfo.name而非scriptProperty.name
         val psiFile = file as? ParadoxScriptFile ?: return null
         val definitionInfo = psiFile.definitionInfo ?: return null
         val name = definitionInfo.name
@@ -505,7 +586,47 @@ object ParadoxDefinitionHandler {
     }
     
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptPropertyStub? {
-        TODO("Not yet implemented")
+        val rootKey = getNameFromNode(node, tree) ?: return null
+        if(rootKey.isParameterAwareExpression()) return null //排除可能带参数的情况
+        val psi = parentStub.psi
+        val psiFile = psi.containingFile
+        val project = psiFile.project
+        val file = selectFile(psi) ?: return null
+        val fileInfo = file.fileInfo ?: return null
+        val gameType = selectGameType(file) ?: return null
+        val path = fileInfo.entryPath //这里使用entryPath
+        val elementPath = ParadoxElementPathHandler.getFromFile(node, tree, file, PlsConstants.maxDefinitionDepth) ?: return null
+        val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
+        for(typeConfig in configGroup.types.values) {
+            ProgressManager.checkCanceled()
+            if(matchesType(node, tree, typeConfig, path, elementPath, rootKey, configGroup)) {
+                //NOTE 这里不处理内联的情况
+                val name = when {
+                    typeConfig.nameFromFile -> rootKey
+                    typeConfig.nameField == "" -> {
+                        getValueFromNode(node, tree).orAnonymous()
+                    }
+                    typeConfig.nameField != null -> {
+                        node.firstChild(tree, BLOCK)
+                            ?.firstChild(tree) { it.tokenType == PROPERTY && getNameFromNode(it, tree)?.equals(typeConfig.nameField, true) == true }
+                            ?.let { getValueFromNode(it, tree) }
+                            .orAnonymous()
+                    }
+                    else -> rootKey
+                }
+                val type = typeConfig.name
+                return ParadoxScriptPropertyStubImpl(parentStub, name, type, rootKey, elementPath, gameType)
+            }
+        }
+        return null
+    }
+    
+    private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {
+        return node.firstChild(tree, PROPERTY_KEY)?.firstChild(tree, ParadoxScriptTokenSets.PROPERTY_KEY_TOKENS)?.internNode(tree)?.toString()?.unquote()
+    }
+    
+    private fun getValueFromNode(node: LighterASTNode, tree: LighterAST): String? {
+        return node.firstChild(tree, STRING)?.firstChild(tree, ParadoxScriptTokenSets.STRING_TOKENS)?.internNode(tree)?.toString()?.unquote()
     }
     
     fun shouldCreateStub(node: ASTNode): Boolean {

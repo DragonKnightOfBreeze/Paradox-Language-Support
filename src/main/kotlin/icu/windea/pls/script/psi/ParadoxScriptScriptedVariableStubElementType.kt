@@ -42,7 +42,7 @@ object ParadoxScriptScriptedVariableStubElementType : ILightStubElementType<Para
     
     override fun indexStub(stub: ParadoxScriptScriptedVariableStub, sink: IndexSink) {
         //索引scripted_variable的name
-        if(stub.name.isNotEmpty()) {
+        if(stub.name.isNotEmpty() && stub.gameType != null) {
             sink.occurrence(ParadoxScriptedVariableNameIndex.KEY, stub.name)
         }
     }
