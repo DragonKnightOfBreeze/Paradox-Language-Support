@@ -18,7 +18,7 @@ class GenerateLocalisationsHandler : CodeInsightActionHandler {
             ?: getDefaultContext(project, editor, file)
             ?: return
         file.putUserData(contextKey, null)
-        ParadoxGenerator.generateLocalisations(context, project, editor, file)
+        ParadoxPsiGenerator.generateLocalisations(context, project, editor, file)
     }
     
     private fun getDefaultContext(project: Project, editor: Editor, file: PsiFile): GenerateLocalisationsContext? {
@@ -28,11 +28,9 @@ class GenerateLocalisationsHandler : CodeInsightActionHandler {
         val definitionInfo = definition.definitionInfo ?: return null
         return getDefaultContext(definitionInfo)
     }
+    
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
-        //direct parent
-        return file.findElementAt(offset) {
-            it.parent as? ParadoxScriptStringExpressionElement
-        }?.takeIf { it.isExpression() }
+        return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
     }
     
     companion object {

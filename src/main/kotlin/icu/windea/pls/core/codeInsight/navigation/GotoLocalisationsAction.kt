@@ -8,8 +8,8 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -27,8 +27,6 @@ class GotoLocalisationsAction : BaseCodeInsightAction() {
 	}
 	
 	override fun update(event: AnActionEvent) {
-		//当选中的文件是本地化文件时显示
-		//当光标位置的元素本地化的名字时启用
 		val presentation = event.presentation
 		presentation.isEnabledAndVisible = false
 		val project = event.project
@@ -40,19 +38,11 @@ class GotoLocalisationsAction : BaseCodeInsightAction() {
 		if(fileInfo.entryPath.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
 		presentation.isVisible = true
 		val offset = editor.caretModel.offset
-		val element = findElement(file, offset)
-		val isEnabled = when {
-			element == null -> false
-			element.parent.castOrNull<ParadoxLocalisationProperty>()?.localisationInfo != null -> true
-			else -> false
-		}
-		presentation.isEnabled = isEnabled
+		val localisation = findElement(file, offset)
+		presentation.isEnabledAndVisible = localisation != null
 	}
 	
-	private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationPropertyKey? {
-		//direct parent
-		return file.findElementAt(offset) {
-			it.parent as? ParadoxLocalisationPropertyKey
-		}
+	private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
+		return ParadoxPsiFinder.findLocalisation(file, offset)
 	}
 }

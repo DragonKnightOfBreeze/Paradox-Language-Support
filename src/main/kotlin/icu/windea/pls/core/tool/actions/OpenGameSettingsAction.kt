@@ -12,13 +12,12 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.listeners.*
 import icu.windea.pls.core.tool.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 
 /**
  * 打开游戏配置。
  *
- * * 当当前文件是项目中的游戏文件或目录时启用。
+ * * 当前文件是项目中的游戏文件或目录时启用。
  *
  * @see icu.windea.pls.core.settings.ParadoxGameSettingsState
  * @see icu.windea.pls.core.tool.ParadoxGameSettingsDialog

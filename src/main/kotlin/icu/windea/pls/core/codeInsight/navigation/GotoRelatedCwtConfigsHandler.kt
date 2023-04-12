@@ -5,7 +5,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.pom.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
@@ -64,10 +63,8 @@ class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
 		return GotoData(location, targets.toTypedArray(), emptyList())
 	}
 	
-	private fun findElement(file: PsiFile, offset: Int): PsiElement? {
-		return file.findElementAt(offset) {
-			it.parentOfTypes(ParadoxScriptPropertyKey::class, ParadoxScriptValue::class)
-		}?.takeIf { it.isExpression() }
+	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
+		return ParadoxPsiFinder.findScriptExpression(file, offset)
 	}
 	
 	override fun shouldSortTargets(): Boolean {

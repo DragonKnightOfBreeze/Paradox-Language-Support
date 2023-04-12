@@ -1,11 +1,12 @@
-package icu.windea.pls.script.psi
+package icu.windea.pls.core.psi
 
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.script.psi.*
 
-object ParadoxScriptIntroducer {
+object ParadoxPsiIntroducer {
 	/**
 	 * 在所属定义之前另起一行（跳过注释和空白），声明指定名字和值的封装变量。
 	 */

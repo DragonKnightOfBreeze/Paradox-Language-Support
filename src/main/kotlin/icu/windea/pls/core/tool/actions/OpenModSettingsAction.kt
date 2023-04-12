@@ -17,7 +17,7 @@ import icu.windea.pls.lang.model.*
 /**
  * 打开模组配置。
  *
- * * 当当前文件是项目中的模组文件或目录时启用。
+ * * 当前文件是项目中的模组文件或目录时启用。
  *
  * @see icu.windea.pls.core.settings.ParadoxModSettingsState
  * @see icu.windea.pls.core.tool.ParadoxModSettingsDialog

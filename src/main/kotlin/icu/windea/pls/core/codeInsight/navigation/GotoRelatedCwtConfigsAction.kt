@@ -8,8 +8,8 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -27,8 +27,6 @@ class GotoRelatedCwtConfigsAction : BaseCodeInsightAction() {
 	}
 	
 	override fun update(event: AnActionEvent) {
-		//当选中的文件是脚本文件时显示
-		//当光标位置的元素是定义的rootKey或者定义成员时显示
 		//在PSI中向上查找，定义中的任何key/value，key可以是定义的rootKey，value可以不是string
 		val presentation = event.presentation
 		presentation.isEnabledAndVisible = false
@@ -41,16 +39,14 @@ class GotoRelatedCwtConfigsAction : BaseCodeInsightAction() {
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset)
 		if(element == null) {
-			presentation.isEnabled = false
+			presentation.isEnabledAndVisible = false
 			return
 		}
 		val definition = element.findParentDefinition()
-		presentation.isEnabled = definition != null
+		presentation.isEnabledAndVisible = definition != null
 	}
 	
-	private fun findElement(file: PsiFile, offset: Int): PsiElement? {
-		return file.findElementAt(offset) {
-			it.parentOfTypes(ParadoxScriptPropertyKey::class, ParadoxScriptValue::class)
-		}?.takeIf { it.isExpression() }
+	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
+		return ParadoxPsiFinder.findScriptExpression(file, offset)
 	}
 }

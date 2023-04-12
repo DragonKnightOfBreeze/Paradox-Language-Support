@@ -11,6 +11,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.refactoring.*
 import icu.windea.pls.script.psi.*
 
@@ -44,7 +45,7 @@ class ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactori
 			
 			//声明对应名字的封装变量，以内联模版的方式编辑变量名
 			val variableValue = element.text
-			val newVariable = ParadoxScriptIntroducer.introduceLocalScriptedVariable(name, variableValue, parentDefinition, project)
+			val newVariable = ParadoxPsiIntroducer.introduceLocalScriptedVariable(name, variableValue, parentDefinition, project)
 			PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document) //提交文档更改
 			
 			val startAction = StartMarkAction.start(editor, project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"))

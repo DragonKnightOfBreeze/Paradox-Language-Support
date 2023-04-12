@@ -10,6 +10,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
@@ -52,7 +53,6 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
         }
         val modifierElement = ParadoxModifierHandler.resolveModifier(element)
         if(modifierElement != null) {
-            val gameType = modifierElement.gameType
             val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
             val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
                 runReadAction {
@@ -79,10 +79,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
     }
     
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
-        //direct parent
-        return file.findElementAt(offset) {
-            it.parent as? ParadoxScriptStringExpressionElement
-        }?.takeIf { it.isExpression() }
+        return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
     }
     
     override fun shouldSortTargets(): Boolean {

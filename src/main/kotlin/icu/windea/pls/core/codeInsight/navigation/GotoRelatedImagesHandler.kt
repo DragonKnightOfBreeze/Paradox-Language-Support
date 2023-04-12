@@ -10,6 +10,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
@@ -19,7 +20,7 @@ import java.util.*
 //com.intellij.testIntegration.GotoTestOrCodeHandler
 
 @Suppress("DialogTitleCapitalization")
-class ParadoxGotoRelatedImagesHandler : GotoTargetHandler() {
+class GotoRelatedImagesHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
         return "navigation.goto.paradoxRelatedImages"
     }
@@ -70,10 +71,7 @@ class ParadoxGotoRelatedImagesHandler : GotoTargetHandler() {
     }
     
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
-        //direct parent
-        return file.findElementAt(offset) {
-            it.parent as? ParadoxScriptStringExpressionElement
-        }?.takeIf { it.isExpression() }
+        return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
     }
     
     override fun shouldSortTargets(): Boolean {

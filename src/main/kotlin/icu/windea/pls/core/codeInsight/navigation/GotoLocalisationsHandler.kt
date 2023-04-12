@@ -7,9 +7,9 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.pom.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.localisation.psi.*
@@ -41,9 +41,7 @@ class GotoLocalisationsHandler: GotoTargetHandler() {
     }
     
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return file.findElementAt(offset) {
-            it.parentOfType<ParadoxLocalisationProperty>()
-        }
+        return ParadoxPsiFinder.findLocalisation(file, offset)
     }
     
     override fun shouldSortTargets(): Boolean {

@@ -11,6 +11,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.model.*
@@ -41,7 +42,7 @@ abstract class DefinitionNameIntention : IntentionAction, PriorityAction, Iconab
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptString? {
-		return file.findElementAt(offset) { it.parent as? ParadoxScriptString }
+		return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
 	}
 	
 	abstract fun doInvoke(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project)

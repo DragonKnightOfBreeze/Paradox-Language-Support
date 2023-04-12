@@ -26,7 +26,7 @@ class IntroduceLocalVariableFix(
 			//声明对应名字的封装变量，默认值给0
 			val element = startElement
 			val parentDefinitionOrFile = element.findParentDefinition() ?: element.containingFile as? ParadoxScriptFile ?: return@Runnable
-			val newVariable = ParadoxScriptIntroducer.introduceLocalScriptedVariable(variableName, "0", parentDefinitionOrFile, project)
+			val newVariable = ParadoxPsiIntroducer.introduceLocalScriptedVariable(variableName, "0", parentDefinitionOrFile, project)
 			
 			val document = PsiDocumentManager.getInstance(project).getDocument(file)
 			val DDDD = PsiDocumentManager.getInstance(project).getDocument(file)

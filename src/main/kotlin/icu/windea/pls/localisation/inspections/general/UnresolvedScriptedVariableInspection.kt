@@ -65,7 +65,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
             val variableValue = dialog.variableValue
             val targetFile = dialog.file.toPsiFile<ParadoxScriptFile>(project) ?: return //不期望的结果
             val command = Runnable {
-                ParadoxScriptIntroducer.introduceGlobalScriptedVariable(variableNameToUse, variableValue, targetFile, project)
+                ParadoxPsiIntroducer.introduceGlobalScriptedVariable(variableNameToUse, variableValue, targetFile, project)
                 
                 val targetDocument = PsiDocumentManager.getInstance(project).getDocument(targetFile)
                 if(targetDocument != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(targetDocument) //提交文档更改

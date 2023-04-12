@@ -18,13 +18,13 @@ import com.intellij.openapi.ui.popup.util.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.diff.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.localisation.*
@@ -37,8 +37,6 @@ import javax.swing.*
 /**
  * 将当前本地化与包括当前本地化的只读副本在内的相同名称的本地化进行DIFF。
  *
- * * 当当前文件（或者通过视图等选中的文件）是模组或游戏文件且是本地化文件时显示。
- * * 当前鼠标位置位于本地化声明中（或者通过视图等选中本地化）时启用。
  * * 忽略直接位于游戏或模组入口目录下的文件。
  * * TODO 按照覆盖顺序进行排序。
  */
@@ -56,15 +54,14 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         return file
     }
     
-    private fun findElement(psiFile: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return psiFile.findElementAt(offset)
-            ?.parents(withSelf = false)
-            ?.find { it is ParadoxLocalisationProperty && it.localisationInfo != null }
-            ?.castOrNull()
+    private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
+        return ParadoxPsiFinder.findLocalisation(file, offset)
     }
     
     private fun findFastElement(e: AnActionEvent): ParadoxLocalisationProperty? {
-        return e.getData(CommonDataKeys.PSI_ELEMENT) as? ParadoxLocalisationProperty?
+        val element = e.getData(CommonDataKeys.PSI_ELEMENT)
+        if(element is ParadoxLocalisationProperty && element.localisationInfo != null) return element
+        return null
     }
     
     override fun update(e: AnActionEvent) {

@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.refactoring.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
@@ -49,7 +50,7 @@ class ParadoxScriptIntroduceGlobalScriptedVariableHandler : ContextAwareRefactor
 			if(document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) //提交文档更改
 			
 			//在指定的文件中声明对应的封装变量
-			ParadoxScriptIntroducer.introduceGlobalScriptedVariable(variableName, variableValue, targetFile, project)
+			ParadoxPsiIntroducer.introduceGlobalScriptedVariable(variableName, variableValue, targetFile, project)
 			val targetDocument = PsiDocumentManager.getInstance(project).getDocument(targetFile)
 			if(targetDocument != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(targetDocument) //提交文档更改
 			

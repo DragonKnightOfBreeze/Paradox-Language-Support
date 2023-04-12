@@ -5,9 +5,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 @Suppress("UNUSED_PARAMETER")
@@ -18,7 +16,7 @@ class GenerateLocalisationsInFileHandler : CodeInsightActionHandler {
             ?: getDefaultContext(project, editor, file)
             ?: return
         file.putUserData(contextKey, null)
-        ParadoxGenerator.generateLocalisationsInFile(context, project, editor, file)
+        ParadoxPsiGenerator.generateLocalisationsInFile(context, project, editor, file)
     }
     
     private fun getDefaultContext(project: Project, editor: Editor, file: PsiFile): GenerateLocalisationsInFileContext? {

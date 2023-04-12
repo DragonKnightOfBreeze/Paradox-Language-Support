@@ -11,6 +11,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -28,8 +29,6 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
     }
     
     override fun update(event: AnActionEvent) {
-        //当选中的文件是脚本文件时不显示 - 目前不认为存在相关本地化
-        //当选中的文件是定义或者光标位置的元素是定义的rootKey或者作为名字的字符串时启用
         val presentation = event.presentation
         presentation.isEnabledAndVisible = false
         val project = event.project
@@ -49,10 +48,7 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
     }
     
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
-        //direct parent
-        return file.findElementAt(offset) {
-            it.parent as? ParadoxScriptStringExpressionElement
-        }?.takeIf { it.isExpression() }
+        return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
     }
     
     override fun createEditTemplateAction(dataContext: DataContext?): AnAction? {

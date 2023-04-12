@@ -17,7 +17,7 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.tool.*
 
 @Suppress("UNUSED_PARAMETER")
-object ParadoxGenerator {
+object ParadoxPsiGenerator {
     fun generateLocalisations(context: GenerateLocalisationsContext, project: Project, editor: Editor, file: PsiFile) {
         if(context.localisationNames.isEmpty()) return noLocalisations(project)
         
