@@ -16,7 +16,6 @@ class ParadoxCallerHierarchyTreeStructure(
     psiElement: PsiElement
 ) : HierarchyTreeStructure(project, ParadoxCallHierarchyNodeDescriptor(project, null, psiElement, true)) {
     override fun buildChildren(descriptor: HierarchyNodeDescriptor): Array<out HierarchyNodeDescriptor> {
-        //兼容向上内联的情况
         descriptor as ParadoxCallHierarchyNodeDescriptor
         val element = descriptor.psiElement ?: return HierarchyNodeDescriptor.EMPTY_ARRAY
         val scopeType = getScopeType()
@@ -27,6 +26,7 @@ class ParadoxCallerHierarchyTreeStructure(
                 ReferencesSearch.search(element, scope).processQuery {
                     val referenceElement = it.element
                     if(referenceElement.language == ParadoxScriptLanguage) {
+                        //兼容向上内联的情况
                         val definition = referenceElement.findParentDefinition(link = true)
                         if(definition != null) {
                             descriptors.add(ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, definition, false))
@@ -41,6 +41,7 @@ class ParadoxCallerHierarchyTreeStructure(
                 ReferencesSearch.search(element, scope).processQuery {
                     val referenceElement = it.element
                     if(referenceElement.language == ParadoxScriptLanguage) {
+                        //兼容向上内联的情况
                         val definition = referenceElement.findParentDefinition(link = true)
                         if(definition != null) {
                             descriptors.add(ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, definition, false))
