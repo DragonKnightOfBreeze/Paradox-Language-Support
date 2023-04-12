@@ -1,18 +1,17 @@
-package icu.windea.pls.core.hierarchy
+package icu.windea.pls.core.hierarchy.type
 
 import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.actionSystem.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.core.hierarchy.*
 
-class ViewDefinitionHierarchy2Action: ChangeHierarchyViewActionBase(
-    PlsBundle.message("action.view.definition.hierarchy.2"),
-    PlsBundle.message("action.description.view.definition.hierarchy.2"),
+class ViewDefinitionHierarchyWithSubtypesAction: ChangeHierarchyViewActionBase(
+    PlsBundle.message("action.view.definition.hierarchy.with.subtypes"),
+    PlsBundle.message("action.description.view.definition.hierarchy.with.subtypes"),
     PlsIcons.Hierarchy.Definition
 ) {
     override fun getTypeName(): String {
-        return ParadoxDefinitionHierarchyBrowser.getDefinitionHierarchyType2()
+        return ParadoxDefinitionHierarchyBrowser.getDefinitionHierarchyTypeWithSubtypes()
     }
     
     override fun update(event: AnActionEvent) {

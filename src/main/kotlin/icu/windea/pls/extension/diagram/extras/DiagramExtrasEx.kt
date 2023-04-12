@@ -17,7 +17,7 @@ abstract class DiagramExtrasEx : CommonDiagramExtras<PsiElement>() {
         val component = super.createNodeComponent(node, builder, nodeRealizer, wrapper)
         if(component is DiagramNodeContainer) {
             val nodeBodyComponent = component.nodeBodyComponent
-            nodeBodyComponent.setFieldValue("myItemComponent", DiagramNodeItemComponentEx())
+            nodeBodyComponent.member("myItemComponent", DiagramNodeItemComponentEx())
         }
         return component
     }

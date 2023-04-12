@@ -1,4 +1,4 @@
-package icu.windea.pls.core.hierarchy
+package icu.windea.pls.core.hierarchy.type
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
@@ -19,5 +19,6 @@ class ParadoxHierarchyBrowserSettings: PersistentStateComponent<ParadoxHierarchy
         fun getInstance(project: Project) = project.service<ParadoxHierarchyBrowserSettings>()
         
         const val DEFINITION = "DEFINITION"
+        const val CALL = "CALL"
     }
 }

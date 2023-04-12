@@ -1,29 +1,40 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE")
+@file:Suppress("unused")
 
 package icu.windea.pls.core
 
-inline fun Any.getFieldValue(fieldName: String): Any? {
-    val field = this::class.java.getDeclaredField(fieldName)
-    field.trySetAccessible()
-    return field.get(this)
+import kotlin.reflect.*
+import kotlin.reflect.full.*
+import kotlin.reflect.jvm.*
+
+inline fun <reified T : Any> T.member(memberName: String): Any? {
+    val member = T::class.declaredMemberProperties.find { it.name == memberName } ?: return null
+    member.isAccessible = true
+    return member.get(this)
 }
 
-@JvmName("getFieldValueOf")
-inline fun <reified T : Any> Any.getFieldValue(fieldName: String): Any? {
-    val field = T::class.java.getDeclaredField(fieldName)
-    field.trySetAccessible()
-    return field.get(this)
+inline fun <reified T : Any> T.member(memberName: String, value: Any?) {
+    val member = T::class.declaredMemberProperties.find { it.name == memberName } ?: return
+    if(member !is KMutableProperty1) return
+    @Suppress("UNCHECKED_CAST")
+    member as KMutableProperty1<T,  in Any?>
+    member.isAccessible = true
+    member.set(this, value)
 }
 
-inline fun Any.setFieldValue(fieldName: String, value: Any?) {
-    val field = this::class.java.getDeclaredField(fieldName)
-    field.trySetAccessible()
-    field.set(this, value)
+inline fun <reified T : Any> T.function(functionName: String, vararg args: Any?): FunctionsHolder {
+    val functions = T::class.declaredMemberFunctions.filter { it.name == functionName && it.parameters.size == args.size }
+    return FunctionsHolder(functions)
 }
 
-@JvmName("setFieldValueOf")
-inline fun <reified T : Any> Any.setFieldValue(fieldName: String, value: Any?) {
-    val field = T::class.java.getDeclaredField(fieldName)
-    field.trySetAccessible()
-    field.set(this, value)
+class FunctionsHolder(private val functions: List<KFunction<*>>) {
+    operator fun invoke(vararg args: Any?): Any? {
+        for(function in functions) {
+            try {
+                return function.call(*args)
+            } catch(e: Throwable) {
+                //ignore
+            }
+        }
+        return null
+    }
 }

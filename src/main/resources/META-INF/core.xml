@@ -1,12 +1,13 @@
 <idea-plugin>
   <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.paradoxLanguage" beanClass="icu.windea.pls.core.ParadoxMetaLanguage$ParadoxLanguageEP" dynamic="true"/>
+    
     <extensionPoint qualifiedName="icu.windea.pls.paradoxLocalScriptedVariableSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.paradoxGlobalScriptedVariableSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.paradoxDefinitionSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.paradoxLocalisationSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.paradoxSyncedLocalisationSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.paradoxFilePathSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
-
     <extensionPoint qualifiedName="icu.windea.pls.paradoxValueSetValueSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.paradoxComplexEnumValueSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.paradoxInlineScriptSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
@@ -15,6 +16,11 @@
   <extensions defaultExtensionNs="com.intellij">
     <!--override extensions-->
     <projectService serviceInterface="com.intellij.psi.search.PsiSearchHelper" serviceImplementation="icu.windea.override.psi.search.ParadoxPsiSearchHelper" overrides="true"/>
+  </extensions>
+  
+  <extensions defaultExtensionNs="icu.windea.pls">
+    <paradoxLanguage language="PARADOX_SCRIPT"/>
+    <paradoxLanguage language="PARADOX_LOCALISATION"/>
   </extensions>
   
   <extensions defaultExtensionNs="com.intellij">
@@ -37,8 +43,7 @@
     <qualifiedNameProvider implementation="icu.windea.pls.core.ParadoxQualifiedNameProvider"/>
     <readWriteAccessDetector implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxReadWriteAccessDetector"/>
     <usageTypeProvider implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxUsageTypeProvider"/>
-    <codeInsight.typeInfo language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.codeInsight.ParadoxTypeProvider"/>
-    <codeInsight.typeInfo language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.core.codeInsight.ParadoxTypeProvider"/>
+    <codeInsight.typeInfo language="PARADOX" implementationClass="icu.windea.pls.core.codeInsight.ParadoxTypeProvider"/>
     <typeDeclarationProvider implementation="icu.windea.pls.core.codeInsight.ParadoxTypeDeclarationProvider"/>
     <codeInsight.template.postfixTemplateProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.codeInsight.template.postfix.ParadoxPostfixTemplateProvider"/>
     
@@ -46,16 +51,15 @@
     
     <findUsagesHandlerFactory implementation="icu.windea.pls.core.findUsages.ParadoxFindUsagesHandlerFactory"/>
     
-    <lang.documentationProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.editor.ParadoxDocumentationProvider"/>
-    <lang.documentationProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.core.editor.ParadoxDocumentationProvider"/>
+    <lang.documentationProvider language="PARADOX" implementationClass="icu.windea.pls.core.editor.ParadoxDocumentationProvider"/>
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxFoldingSettings"/>
     <codeFoldingOptionsProvider instance="icu.windea.pls.core.editor.folding.ParadoxFoldingOptionsProvider"/>
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.editor.folding.ParadoxVariableOperationExpressionFoldingBuilder"/>
-    <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
-    <lang.foldingBuilder language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.core.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
+    <lang.foldingBuilder language="PARADOX" implementationClass="icu.windea.pls.core.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
     
-    <projectService serviceImplementation="icu.windea.pls.core.hierarchy.ParadoxHierarchyBrowserSettings"/>
-    <typeHierarchyProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.hierarchy.ParadoxDefinitionHierarchyProvider"/>
+    <projectService serviceImplementation="icu.windea.pls.core.hierarchy.type.ParadoxHierarchyBrowserSettings"/>
+    <typeHierarchyProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.hierarchy.type.ParadoxDefinitionHierarchyProvider"/>
+    <callHierarchyProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.hierarchy.call.ParadoxCallHierarchyProvider"/>
     
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFilePathIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxDirectoryFilePathIndex"/>
@@ -260,8 +264,8 @@
       <add-to-group group-id="HierarchyPopupMenu.Common" relative-to-action="CompareFileWithEditor" anchor="after"/>
     </group>
     
-    <action id="Pls.TypeHierarchy.Definition1" class="icu.windea.pls.core.hierarchy.ViewDefinitionHierarchy1Action"/>
-    <action id="Pls.TypeHierarchy.Definition2" class="icu.windea.pls.core.hierarchy.ViewDefinitionHierarchy2Action"/>
+    <action id="Pls.TypeHierarchy.Definition1" class="icu.windea.pls.core.hierarchy.type.ViewDefinitionHierarchyAction"/>
+    <action id="Pls.TypeHierarchy.Definition2" class="icu.windea.pls.core.hierarchy.type.ViewDefinitionHierarchyWithSubtypesAction"/>
     
     <group id="Pls.TypeHierarchyPopupMenu">
       <reference ref="Pls.TypeHierarchy.Definition1"/>

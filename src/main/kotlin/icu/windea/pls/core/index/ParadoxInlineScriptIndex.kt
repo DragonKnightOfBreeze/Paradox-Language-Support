@@ -16,7 +16,7 @@ import java.io.*
 class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInlineScriptInfo>>() {
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxInlineScriptInfo>>("paradox.inlineScript.index")
-        private const val 18 //0.9.9
+        private const val VERSION = 18 //0.9.9
         
         fun getData(expression: String, file: VirtualFile, project: Project): List<ParadoxInlineScriptInfo>? {
             return FileBasedIndex.getInstance().getFileData(NAME, file, project).get(expression)

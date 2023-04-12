@@ -1,4 +1,4 @@
-package icu.windea.pls.core.hierarchy
+package icu.windea.pls.core.hierarchy.type
 
 import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.project.*
@@ -6,7 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.hierarchy.ParadoxDefinitionHierarchyNodeDescriptor.*
+import icu.windea.pls.core.hierarchy.type.ParadoxDefinitionHierarchyNodeDescriptor.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 

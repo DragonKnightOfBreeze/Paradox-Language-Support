@@ -60,7 +60,7 @@ object ParadoxComplexEnumValueHandler {
         return null
     }
     
-    //这里匹配时需要兼容内联的情况
+    //NOTE 这里匹配时并不兼容向下内联的情况
     
     fun matchesComplexEnumByPath(complexEnum: CwtComplexEnumConfig, path: ParadoxPath): Boolean {
         return complexEnum.path.any {

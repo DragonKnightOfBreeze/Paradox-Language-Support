@@ -1,4 +1,4 @@
-package icu.windea.pls.core.hierarchy
+package icu.windea.pls.core.hierarchy.type
 
 import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.editor.markup.*
@@ -62,13 +62,14 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
                 }
             }
             is ParadoxScriptDefinitionElement -> {
-                val name = element.definitionInfo?.name.orAnonymous()
+                val definitionInfo = element.definitionInfo ?: return invalidElement()
+                val fileInfo = element.fileInfo  ?: return invalidElement()
+                val name = definitionInfo.name.orAnonymous()
                 myHighlightedText.ending.addText(name, nameAttributes)
-                val fileInfo = element.fileInfo
-                if(fileInfo != null) {
-                    val location = " " + PlsBundle.message("hierarchy.definition.descriptor.definition.location", fileInfo.path.path, fileInfo.rootInfo.qualifiedName)
-                    myHighlightedText.ending.addText(location, getLocationAttributes())
-                }
+                val path = fileInfo.path.path
+                val qualifiedName = fileInfo.rootInfo.qualifiedName
+                val location = " " + PlsBundle.message("hierarchy.definition.descriptor.definition.location", path, qualifiedName)
+                myHighlightedText.ending.addText(location, getLocationAttributes())
             }
         }
         myName = myHighlightedText.text

@@ -1,4 +1,4 @@
-package icu.windea.pls.core.hierarchy
+package icu.windea.pls.core.hierarchy.type
 
 import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.actionSystem.*
@@ -31,6 +31,6 @@ class ParadoxDefinitionHierarchyProvider : HierarchyProvider {
     
     override fun browserActivated(hierarchyBrowser: HierarchyBrowser) {
         hierarchyBrowser as ParadoxDefinitionHierarchyBrowser
-        hierarchyBrowser.changeView(ParadoxDefinitionHierarchyBrowser.getDefinitionHierarchyType1())
+        hierarchyBrowser.changeView(ParadoxDefinitionHierarchyBrowser.getDefinitionHierarchyType())
     }
 }
