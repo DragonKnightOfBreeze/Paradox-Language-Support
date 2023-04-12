@@ -13,15 +13,14 @@ import icu.windea.pls.script.psi.*
 object ParadoxPsiFinder {
     fun findDefinition(file: PsiFile, offset: Int): ParadoxScriptDefinitionElement? {
         return file.findElementAt(offset) t@{
-            it.parentsOfType<ParadoxScriptDefinitionElement>(true)
-                .find { p -> p.definitionInfo != null }
-        }?.castOrNull<ParadoxScriptDefinitionElement?>()
+            it.parents(false).find p@{ p -> p is ParadoxScriptDefinitionElement && p.definitionInfo != null }
+        }?.castOrNull()
     }
     
     fun findLocalisation(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
         return file.findElementAt(offset) t@{
-            it.parentOfType<ParadoxLocalisationProperty>()
-        }?.takeIf { it.localisationInfo != null }
+            it.parents(false).find p@{ p -> p is ParadoxLocalisationProperty && p.localisationInfo != null }
+        }?.castOrNull()
     }
     
     fun findScriptExpression(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {

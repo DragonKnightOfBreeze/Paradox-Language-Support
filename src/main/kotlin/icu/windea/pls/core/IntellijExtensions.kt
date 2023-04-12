@@ -406,9 +406,11 @@ fun PsiElement.hasSyntaxError(): Boolean {
  * @param forward 查找偏移之前还是之后的PSI元素，默认为null，表示同时考虑。
  */
 fun <T : PsiElement> PsiFile.findElementAt(offset: Int, forward: Boolean? = null, transform: (element: PsiElement) -> T?): T? {
+    var element0: PsiElement? = null
     if(forward != false) {
         val element = findElementAt(offset)
         if(element != null) {
+            element0 = element
             val result = transform(element)
             if(result != null) {
                 return result
@@ -417,7 +419,7 @@ fun <T : PsiElement> PsiFile.findElementAt(offset: Int, forward: Boolean? = null
     }
     if(forward != true && offset > 0) {
         val leftElement = findElementAt(offset - 1)
-        if(leftElement != null) {
+        if(leftElement != null && leftElement !== element0) {
             val leftResult = transform(leftElement)
             if(leftResult != null) {
                 return leftResult

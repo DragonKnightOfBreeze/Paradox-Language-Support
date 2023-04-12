@@ -15,7 +15,6 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.nodes.*
-import icu.windea.pls.core.index.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
@@ -78,6 +77,24 @@ infix fun String.compareGameVersion(otherVersion: String): Int {
 fun FileType.isParadoxFileType() = this == ParadoxScriptFileType || this == ParadoxLocalisationFileType
 
 fun Language.isParadoxLanguage() = this.isKindOf(ParadoxScriptLanguage) || this.isKindOf(ParadoxLocalisationLanguage)
+
+fun PsiReference.canResolveDefinition(): Boolean {
+    return when(this) {
+        is ParadoxScriptExpressionPsiReference -> true
+        is ParadoxDataExpressionNode.Reference -> true
+        is ParadoxTemplateExpressionNode.Reference -> true
+        is ParadoxLocalisationCommandFieldPsiReference -> true //<scripted_loc>
+        else -> false
+    }
+}
+
+fun PsiReference.canResolveLocalisation(): Boolean {
+    return when(this) {
+        is ParadoxScriptExpressionPsiReference -> true
+        is ParadoxTemplateExpressionNode.Reference -> true
+        else -> false
+    }
+}
 
 fun PsiReference.canResolveParameter(): Boolean {
     return when(this) {
