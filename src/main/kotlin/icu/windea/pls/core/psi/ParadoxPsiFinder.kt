@@ -13,8 +13,9 @@ import icu.windea.pls.script.psi.*
 object ParadoxPsiFinder {
     fun findDefinition(file: PsiFile, offset: Int): ParadoxScriptDefinitionElement? {
         return file.findElementAt(offset) t@{
-            it.parents(true).find { p -> p is ParadoxScriptDefinitionElement && p.definitionInfo != null }
-        }?.castOrNull()
+            it.parentsOfType<ParadoxScriptDefinitionElement>(true)
+                .find { p -> p.definitionInfo != null }
+        }?.castOrNull<ParadoxScriptDefinitionElement?>()
     }
     
     fun findLocalisation(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
@@ -27,7 +28,7 @@ object ParadoxPsiFinder {
         return file.findElementAt(offset) {
             it.parentOfType<ParadoxScriptExpressionElement>(false)
         }?.takeIf { it.isExpression() }
-    } 
+    }
     
     fun findLocalisationColorfulText(file: PsiFile, offset: Int, fromNameToken: Boolean = false): ParadoxLocalisationColorfulText? {
         return file.findElementAt(offset) t@{
