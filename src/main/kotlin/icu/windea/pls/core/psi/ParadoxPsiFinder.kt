@@ -8,7 +8,7 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 用于基于指定的PSI文件和偏移查找符合条件的目标PSI元素以及它的引用。
+ * 用于基于指定的PSI文件和偏移查找符合条件的目标PSI元素（可能也包括从引用查找）。
  */
 object ParadoxPsiFinder {
     fun findDefinition(file: PsiFile, offset: Int): ParadoxScriptDefinitionElement? {
