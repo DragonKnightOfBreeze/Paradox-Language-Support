@@ -18,12 +18,9 @@
     <projectService serviceInterface="com.intellij.psi.search.PsiSearchHelper" serviceImplementation="icu.windea.override.psi.search.ParadoxPsiSearchHelper" overrides="true"/>
   </extensions>
   
-  <extensions defaultExtensionNs="icu.windea.pls">
-    <paradoxLanguage language="PARADOX_SCRIPT"/>
-    <paradoxLanguage language="PARADOX_LOCALISATION"/>
-  </extensions>
-  
   <extensions defaultExtensionNs="com.intellij">
+    <metaLanguage implementation="icu.windea.pls.core.ParadoxMetaLanguage"/>
+    
     <applicationConfigurable id="pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
     
     <additionalLibraryRootsProvider implementation="icu.windea.pls.core.ParadoxLibraryProvider"/>
@@ -93,6 +90,11 @@
     <vfs.asyncListener implementation="icu.windea.pls.core.listeners.ParadoxModificationTrackFileListener"/>
     
     <postStartupActivity implementation="icu.windea.pls.core.listeners.ParadoxUpdateLibraryOnProjectOpenedListener"/>
+  </extensions>
+
+  <extensions defaultExtensionNs="icu.windea.pls">
+    <paradoxLanguage language="PARADOX_SCRIPT"/>
+    <paradoxLanguage language="PARADOX_LOCALISATION"/>
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls">

@@ -16,7 +16,6 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxCallHierarchyProvider : HierarchyProvider {
     override fun getTarget(dataContext: DataContext): PsiElement? {
-        val data = dataContext.getData(CommonDataKeys.PROJECT) ?: return null
         val element = dataContext.getData(CommonDataKeys.PSI_ELEMENT) ?: return null
         //定义
         if(element is ParadoxScriptDefinitionElement && element.definitionInfo != null) return element

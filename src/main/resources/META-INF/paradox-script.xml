@@ -109,7 +109,7 @@
     <additionalTextAttributes scheme="High contrast" file="colorSchemes/ParadoxScriptHighContrast.xml"/>
     <additionalTextAttributes scheme="IntelliJ Light" file="colorSchemes/ParadoxScriptIntellijLight.xml"/>
   </extensions>
-
+  
   <actions>
     <group id="Pls.Script.RefactoringGroup" popup="false">
       <action id="Pls.Script.IntroduceLocalScriptedVariable" class="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceLocalScriptedVariableAction">
