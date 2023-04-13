@@ -57,7 +57,9 @@
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.editor.folding.ParadoxVariableOperationExpressionFoldingBuilder"/>
     <lang.foldingBuilder language="PARADOX" implementationClass="icu.windea.pls.core.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
     
-    <projectService serviceImplementation="icu.windea.pls.core.hierarchy.ParadoxHierarchyBrowserSettings"/>
+    <projectService serviceImplementation="icu.windea.pls.core.hierarchy.type.ParadoxDefinitionHierarchyBrowserSettings"/>
+    <projectService serviceImplementation="icu.windea.pls.core.hierarchy.call.ParadoxCallHierarchyBrowserSettings"/>
+    
     <typeHierarchyProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.hierarchy.type.ParadoxDefinitionHierarchyProvider"/>
     <callHierarchyProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.hierarchy.call.ParadoxCallHierarchyProvider"/>
     

@@ -15,7 +15,10 @@ import javax.swing.*
 
 //com.intellij.ide.hierarchy.HierarchyBrowserBaseEx.ChangeScopeAction
 
-class ChangeScopeTypeAction(val provider: HierarchyBrowserBaseEx, val id: String) : ComboBoxAction() {
+class ChangeScopeTypeAction(
+    val provider: HierarchyBrowserBaseEx,
+    val settings: ParadoxHierarchyBrowserSettings
+) : ComboBoxAction() {
     val project = provider.member("myProject") as Project
     
     override fun getActionUpdateThread(): ActionUpdateThread {
@@ -24,7 +27,7 @@ class ChangeScopeTypeAction(val provider: HierarchyBrowserBaseEx, val id: String
     
     override fun update(e: AnActionEvent) {
         val presentation = e.presentation
-        val scopeType = getScopeType()
+        val scopeType = settings.scopeType
         presentation.text = ParadoxSearchScopeTypes.get(scopeType).text
     }
     
@@ -52,20 +55,11 @@ class ChangeScopeTypeAction(val provider: HierarchyBrowserBaseEx, val id: String
     
     private inner class MenuAction(val scopeType: ParadoxSearchScopeType) : AnAction(scopeType.text) {
         override fun actionPerformed(e: AnActionEvent) {
-            setScopeType(scopeType.id)
-            setScopeType(scopeType.id)
+            settings.scopeType = scopeType.id
             
             // invokeLater is called to update state of button before long tree building operation
             // scope is kept per type so other builders don't need to be refreshed
             ApplicationManager.getApplication().invokeLater({ provider.function("doRefresh")(true) }) { provider.isDisposed }
         }
-    }
-    
-    private fun getScopeType(): String {
-        return ParadoxHierarchyBrowserSettings.getInstance(project).scopeTypes.get(ParadoxHierarchyBrowserSettings.DEFINITION) ?: "all"
-    }
-    
-    private fun setScopeType(scopeType: String) {
-        ParadoxHierarchyBrowserSettings.getInstance(project).scopeTypes.put(ParadoxHierarchyBrowserSettings.DEFINITION, scopeType)
     }
 }

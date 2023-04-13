@@ -16,7 +16,7 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
         actionGroup.add(ViewCallerHierarchyAction())
         actionGroup.add(ViewCalleeHierarchyAction())
         actionGroup.add(AlphaSortAction())
-        actionGroup.add(ChangeScopeTypeAction(this, ParadoxHierarchyBrowserSettings.CALL))
+        actionGroup.add(ChangeScopeTypeAction(this, getSettings()))
     }
     
     override fun createTrees(trees: MutableMap<in String, in JTree>) {
@@ -56,6 +56,8 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
     override fun getComparator(): Comparator<NodeDescriptor<*>> {
         return ParadoxHierarchyHandler.getComparator(myProject)
     }
+    
+    private fun getSettings() = ParadoxCallHierarchyBrowserSettings.getInstance(myProject)
     
     private class BaseOnThisMethodAction : CallHierarchyBrowserBase.BaseOnThisMethodAction()
 }

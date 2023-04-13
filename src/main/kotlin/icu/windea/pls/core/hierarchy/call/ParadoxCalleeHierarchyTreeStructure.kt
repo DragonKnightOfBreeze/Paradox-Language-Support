@@ -4,7 +4,7 @@ import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.hierarchy.*
+import icu.windea.pls.core.hierarchy.type.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.lang.inline.*
@@ -28,7 +28,7 @@ class ParadoxCalleeHierarchyTreeStructure(
     }
     
     private fun processElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
-        val scopeType = getScopeType()
+        val scopeType = getSettings().scopeType
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
         element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -72,7 +72,5 @@ class ParadoxCalleeHierarchyTreeStructure(
         })
     }
     
-    private fun getScopeType(): String {
-        return ParadoxHierarchyBrowserSettings.getInstance(myProject).scopeTypes.get(ParadoxHierarchyBrowserSettings.CALL) ?: "all"
-    }
+    private fun getSettings() = ParadoxCallHierarchyBrowserSettings.getInstance(myProject)
 }
