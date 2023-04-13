@@ -1,6 +1,6 @@
 package icu.windea.pls.core.ui
 
-class ElementDescriptorsInfo(
+class ElementsInfo(
 	val descriptors: List<ElementDescriptor>,
 	val hasRemain: Boolean
 ) {

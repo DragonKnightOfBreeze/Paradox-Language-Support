@@ -16,7 +16,7 @@ class ElementsListTable(
     val elementsTable: TableView<ElementDescriptor>,
     val elementsTableModel: ElementsTableModel,
     val disposable: Disposable,
-    val context: ElementDescriptorsContext,
+    val context: ElementsContext,
     val dialog: DialogWithValidation
 ) : JBListTable(elementsTable, disposable) {
     val _rowRenderer = object : EditorTextFieldJBTableRowRenderer(context.project, ParadoxScriptLanguage, disposable) {

@@ -9,7 +9,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.tool.actions.*
-import icu.windea.pls.core.ui.*
 import java.awt.*
 import java.awt.event.*
 import javax.swing.*
@@ -118,84 +117,87 @@ class ParadoxModDependenciesTableModel(
             return _comparator
         }
     }
-}
-
-//com.intellij.openapi.roots.ui.configuration.classpath.ClasspathPanelImpl.createTableWithButtons
-
-fun createModDependenciesPanel(project: Project, settings: ParadoxGameOrModSettingsState, modDependencies: MutableList<ParadoxModDependencySettingsState>): JPanel {
-    val tableModel = ParadoxModDependenciesTableModel(settings, modDependencies)
-    val tableView = TableView(tableModel)
-    tableView.setShowGrid(false)
-    tableView.rowSelectionAllowed = true
-    tableView.columnSelectionAllowed = false
-    tableView.intercellSpacing = Dimension(0, 0)
-    tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
-    //调整列的宽度
-    tableView.setFixedColumnWidth(ParadoxModDependenciesTableModel.EnabledItem.columnIndex, ParadoxModDependenciesTableModel.EnabledItem.name)
-    tableView.tableHeader.columnModel.getColumn(ParadoxModDependenciesTableModel.NameItem.columnIndex).preferredWidth = 10000 // consume all available space
-    tableView.setFixedColumnWidth(ParadoxModDependenciesTableModel.VersionItem.columnIndex, ParadoxModDependenciesTableModel.VersionItem.name)
-    tableView.setFixedColumnWidth(ParadoxModDependenciesTableModel.SupportedVersionItem.columnIndex, ParadoxModDependenciesTableModel.SupportedVersionItem.name)
-    //快速搜索
-    object : TableViewSpeedSearch<ParadoxModDependencySettingsState>(tableView) {
-        override fun getItemText(element: ParadoxModDependencySettingsState): String {
-            val modDirectory = element.modDirectory.orEmpty()
-            val modDescriptorSettings = getProfilesSettings().modDescriptorSettings.getValue(modDirectory)
-            return modDescriptorSettings.name.orEmpty()
+    
+    companion object {
+        //com.intellij.openapi.roots.ui.configuration.classpath.ClasspathPanelImpl.createTableWithButtons
+        
+        @JvmStatic
+        fun createPanel(project: Project, settings: ParadoxGameOrModSettingsState, modDependencies: MutableList<ParadoxModDependencySettingsState>): JPanel {
+            val tableModel = ParadoxModDependenciesTableModel(settings, modDependencies)
+            val tableView = TableView(tableModel)
+            tableView.setShowGrid(false)
+            tableView.rowSelectionAllowed = true
+            tableView.columnSelectionAllowed = false
+            tableView.intercellSpacing = Dimension(0, 0)
+            tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
+            //调整列的宽度
+            tableView.setFixedColumnWidth(EnabledItem.columnIndex, EnabledItem.name)
+            tableView.tableHeader.columnModel.getColumn(NameItem.columnIndex).preferredWidth = 10000 // consume all available space
+            tableView.setFixedColumnWidth(VersionItem.columnIndex, VersionItem.name)
+            tableView.setFixedColumnWidth(SupportedVersionItem.columnIndex, SupportedVersionItem.name)
+            //快速搜索
+            object : TableViewSpeedSearch<ParadoxModDependencySettingsState>(tableView) {
+                override fun getItemText(element: ParadoxModDependencySettingsState): String {
+                    val modDirectory = element.modDirectory.orEmpty()
+                    val modDescriptorSettings = getProfilesSettings().modDescriptorSettings.getValue(modDirectory)
+                    return modDescriptorSettings.name.orEmpty()
+                }
+            }
+            //双击打开模组依赖信息对话框
+            object : DoubleClickListener() {
+                override fun onDoubleClick(event: MouseEvent): Boolean {
+                    if(tableView.selectedRowCount != 1) return true
+                    val selectedRow = tableView.selectedRow
+                    val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
+                    ParadoxModDependencySettingsDialog(project, item, tableView).show()
+                    return true
+                }
+            }.installOn(tableView)
+            
+            val enableAllButton = ParadoxModDependenciesToolbarActions.EnableAllAction(project, tableView, tableModel)
+            val disableAllButton = ParadoxModDependenciesToolbarActions.DisableAllAction(project, tableView, tableModel)
+            val editButton = ParadoxModDependenciesToolbarActions.EditAction(project, tableView, tableModel)
+            val importButton = ParadoxModDependenciesToolbarActions.ImportAction(project, tableView, tableModel)
+            val exportButton = ParadoxModDependenciesToolbarActions.ExportAction(project, tableView, tableModel)
+            
+            //这里我们需要保证排序正确（基于表格中你的顺序）
+            //始终将模组放到自身的模组依赖列表中，其排序可以调整
+            //add, remove, move up, move down, edit, import, export
+            val panel = ToolbarDecorator.createDecorator(tableView)
+                .setAddAction {
+                    val dialog = ParadoxModDependencyAddDialog(project, tableView, tableModel)
+                    dialog.show()
+                }
+                .setRemoveActionUpdater updater@{
+                    //不允许移除模组自身对应的模组依赖配置
+                    val selectedRow = tableView.selectedRows.singleOrNull() ?: return@updater true
+                    tableModel.canRemoveRow(tableView.convertRowIndexToModel(selectedRow))
+                }
+                .addExtraAction(enableAllButton)
+                .addExtraAction(disableAllButton)
+                .addExtraAction(editButton)
+                .addExtraAction(importButton)
+                .addExtraAction(exportButton)
+                .createPanel()
+            val addButton = ToolbarDecorator.findAddButton(panel)!!
+            val removeButton = ToolbarDecorator.findRemoveButton(panel)!!
+            
+            //右键弹出菜单，提供一些操作项
+            val actionGroup = DefaultActionGroup()
+            actionGroup.addAction(addButton)
+            actionGroup.addAction(removeButton)
+            actionGroup.addAction(enableAllButton)
+            actionGroup.addAction(disableAllButton)
+            actionGroup.addAction(editButton)
+            actionGroup.addAction(importButton)
+            actionGroup.addAction(exportButton)
+            actionGroup.addSeparator()
+            actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPathAction(tableView, tableModel))
+            actionGroup.addAction(ParadoxModDependenciesPopupActions.CopyModPathAction(tableView, tableModel))
+            actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPageOnSteamWebsiteAction(tableView, tableModel))
+            actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPageOnSteamAction(tableView, tableModel))
+            PopupHandler.installPopupMenu(tableView, actionGroup, PlsToolsActions.MOD_DEPENDENCIES_POPUP)
+            return panel
         }
     }
-    //双击打开模组依赖信息对话框
-    object : DoubleClickListener() {
-        override fun onDoubleClick(event: MouseEvent): Boolean {
-            if(tableView.selectedRowCount != 1) return true
-            val selectedRow = tableView.selectedRow
-            val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
-            ParadoxModDependencySettingsDialog(project, item, tableView).show()
-            return true
-        }
-    }.installOn(tableView)
-    
-    val enableAllButton = ParadoxModDependenciesToolbarActions.EnableAllAction(project, tableView, tableModel)
-    val disableAllButton = ParadoxModDependenciesToolbarActions.DisableAllAction(project, tableView, tableModel)
-    val editButton = ParadoxModDependenciesToolbarActions.EditAction(project, tableView, tableModel)
-    val importButton = ParadoxModDependenciesToolbarActions.ImportAction(project, tableView, tableModel)
-    val exportButton = ParadoxModDependenciesToolbarActions.ExportAction(project, tableView, tableModel)
-    
-    //这里我们需要保证排序正确（基于表格中你的顺序）
-    //始终将模组放到自身的模组依赖列表中，其排序可以调整
-    //add, remove, move up, move down, edit, import, export
-    val panel = ToolbarDecorator.createDecorator(tableView)
-        .setAddAction {
-            val dialog = ParadoxModDependencyAddDialog(project, tableView, tableModel)
-            dialog.show()
-        }
-        .setRemoveActionUpdater updater@{
-            //不允许移除模组自身对应的模组依赖配置
-            val selectedRow = tableView.selectedRows.singleOrNull() ?: return@updater true
-            tableModel.canRemoveRow(tableView.convertRowIndexToModel(selectedRow))
-        }
-        .addExtraAction(enableAllButton)
-        .addExtraAction(disableAllButton)
-        .addExtraAction(editButton)
-        .addExtraAction(importButton)
-        .addExtraAction(exportButton)
-        .createPanel()
-    val addButton = ToolbarDecorator.findAddButton(panel)!!
-    val removeButton = ToolbarDecorator.findRemoveButton(panel)!!
-    
-    //右键弹出菜单，提供一些操作项
-    val actionGroup = DefaultActionGroup()
-    actionGroup.addAction(addButton)
-    actionGroup.addAction(removeButton)
-    actionGroup.addAction(enableAllButton)
-    actionGroup.addAction(disableAllButton)
-    actionGroup.addAction(editButton)
-    actionGroup.addAction(importButton)
-    actionGroup.addAction(exportButton)
-    actionGroup.addSeparator()
-    actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPathAction(tableView, tableModel))
-    actionGroup.addAction(ParadoxModDependenciesPopupActions.CopyModPathAction(tableView, tableModel))
-    actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPageOnSteamWebsiteAction(tableView, tableModel))
-    actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPageOnSteamAction(tableView, tableModel))
-    PopupHandler.installPopupMenu(tableView, actionGroup, PlsToolsActions.MOD_DEPENDENCIES_POPUP)
-    return panel
 }

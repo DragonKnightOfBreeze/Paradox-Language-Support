@@ -313,9 +313,9 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
 			val descriptorsInfoList = constantConfigGroupList.indices.map { i ->
 				val descriptors = getDescriptors(constantConfigGroupList[i])
 				val hasRemain = hasRemainList[i]
-				ElementDescriptorsInfo(descriptors, hasRemain)
+				ElementsInfo(descriptors, hasRemain)
 			}
-			val descriptorsContext = ElementDescriptorsContext(project, editor, propertyName, descriptorsInfoList)
+			val descriptorsContext = ElementsContext(project, editor, propertyName, descriptorsInfoList)
 			
 			val dialog = ExpandClauseTemplateDialog(project, editor, descriptorsContext)
 			if(!dialog.showAndGet()) return@Runnable

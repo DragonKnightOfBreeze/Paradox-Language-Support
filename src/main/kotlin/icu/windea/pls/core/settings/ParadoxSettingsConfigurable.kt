@@ -8,6 +8,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.listeners.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
@@ -237,8 +238,19 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 }
                 //showDefinitionsInCallHierarchy
                 row {
+                    lateinit var cbCell: Cell<JBCheckBox>
                     checkBox(PlsBundle.message("settings.hierarchy.showDefinitionsInCallHierarchy"))
                         .bindSelected(settings.hierarchy::showDefinitionsInCallHierarchy)
+                        .apply { cbCell = this }
+                    
+                    var list = settings.hierarchy.definitionTypeBindingsInCallHierarchy.toMutableEntryList()
+                    var resultList: MutableList<Entry<String, String>>? = null
+                    link(PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings")) {
+                        val dialog = ParadoxConfigureDefinitionTypeBindingsInCallHierarchyDialog(list)
+                        if(dialog.showAndGet()) resultList = dialog.resultList
+                    }.enabledIf(cbCell.selected)
+                        .onApply { resultList?.let { settings.hierarchy.definitionTypeBindingsInCallHierarchy = it.toMutableMap() } }
+                        .onReset { list = settings.hierarchy.definitionTypeBindingsInCallHierarchy.toMutableEntryList() }
                 }
                 //showLocalisationsInCallHierarchy
                 row {

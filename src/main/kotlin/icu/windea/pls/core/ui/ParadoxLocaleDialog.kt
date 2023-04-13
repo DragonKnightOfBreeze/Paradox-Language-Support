@@ -6,20 +6,20 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 
 class ParadoxLocaleDialog(
-	locale: CwtLocalisationLocaleConfig? = null,
-	existingLocales: List<CwtLocalisationLocaleConfig> = emptyList(),
-	private val localesToSelect: List<CwtLocalisationLocaleConfig> = getLocalesToSelect(existingLocales, locale)
+    locale: CwtLocalisationLocaleConfig? = null,
+    existingLocales: List<CwtLocalisationLocaleConfig> = emptyList(),
+    private val localesToSelect: List<CwtLocalisationLocaleConfig> = getLocalesToSelect(existingLocales, locale)
 ) : DialogWrapper(null, false) {
-	var locale = locale ?: localesToSelect.firstOrNull()
-	
-	init {
-		title = PlsBundle.message("ui.dialog.selectParadoxLocale.title")
-		init()
-	}
-	
-	override fun createCenterPanel() = panel {
-		row {
-			comboBox(localesToSelect).bindItem(::locale.toNullableProperty()).focused()
-		}
-	}
+    var locale = locale ?: localesToSelect.firstOrNull()
+    
+    init {
+        title = PlsBundle.message("ui.dialog.selectParadoxLocale.title")
+        init()
+    }
+    
+    override fun createCenterPanel() = panel {
+        row {
+            comboBox(localesToSelect).bindItem(::locale.toNullableProperty()).focused()
+        }
+    }
 }

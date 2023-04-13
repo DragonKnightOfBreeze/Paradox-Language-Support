@@ -110,6 +110,7 @@ class ParadoxSettingsState : BaseState() {
         var showScriptedVariablesInCallHierarchy by property(true)
         var showDefinitionsInCallHierarchy by property(true)
         var showLocalisationsInCallHierarchy by property(true)
+        var definitionTypeBindingsInCallHierarchy by map<String, String>()
     }
     
     /**

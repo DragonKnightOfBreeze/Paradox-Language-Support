@@ -11,7 +11,7 @@ import javax.swing.table.*
 //com.intellij.refactoring.changeSignature.ParameterTableModelBase
 
 class ElementsTableModel(
-    val context: ElementDescriptorsContext
+    val context: ElementsContext
 ) : ListTableModel<ElementDescriptor>(
     arrayOf(NameColumn(context), SeparatorColumn(context), ValueColumn(context)),
     context.descriptorsInfo.resultDescriptors,
@@ -20,7 +20,7 @@ class ElementsTableModel(
         addRow(PropertyDescriptor())
     }
     
-    class NameColumn(private val context: ElementDescriptorsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("ui.table.element.column.name.name")) {
+    class NameColumn(private val context: ElementsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("ui.table.element.column.name.name")) {
         override fun isCellEditable(item: ElementDescriptor): Boolean {
             return true
         }
@@ -51,7 +51,7 @@ class ElementsTableModel(
         }
     }
     
-    class SeparatorColumn(private val context: ElementDescriptorsContext) : ColumnInfo<ElementDescriptor, ParadoxSeparator>(PlsBundle.message("ui.table.element.column.name.separator")) {
+    class SeparatorColumn(private val context: ElementsContext) : ColumnInfo<ElementDescriptor, ParadoxSeparator>(PlsBundle.message("ui.table.element.column.name.separator")) {
         override fun isCellEditable(item: ElementDescriptor): Boolean {
             return item is PropertyDescriptor
         }
@@ -85,7 +85,7 @@ class ElementsTableModel(
         }
     }
     
-    class ValueColumn(private val context: ElementDescriptorsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("ui.table.element.column.name.value")) {
+    class ValueColumn(private val context: ElementsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("ui.table.element.column.name.value")) {
         override fun isCellEditable(item: ElementDescriptor): Boolean {
             return item is PropertyDescriptor
         }

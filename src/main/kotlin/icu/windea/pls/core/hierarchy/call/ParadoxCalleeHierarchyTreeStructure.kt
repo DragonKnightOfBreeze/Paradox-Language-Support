@@ -8,7 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.lang.inline.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
@@ -76,8 +76,8 @@ class ParadoxCalleeHierarchyTreeStructure(
                     descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
                 } else if(resolved is ParadoxLocalisationProperty) {
                     if(!getSettings().hierarchy.showLocalisationsInCallHierarchy) return //不显示
-                    val localiationInfo = resolved.localisationInfo ?: return
-                    val key = "l:${localiationInfo.name}"
+                    val localisationInfo = resolved.localisationInfo ?: return
+                    val key = "l:${localisationInfo.name}"
                     if(descriptors.containsKey(key)) return //去重
                     val resolvedFile = selectFile(resolved)
                     if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) return

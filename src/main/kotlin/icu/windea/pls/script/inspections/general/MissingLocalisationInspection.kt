@@ -191,7 +191,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             indent {
                 row {
-                    cell(createLocaleTableModel(locales))
+                    cell(ParadoxLocaleTableModel.createLocaleTableModel(locales))
                         .align(Align.FILL)
                 }
             }

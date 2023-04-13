@@ -22,7 +22,7 @@ import javax.swing.event.*
 class ExpandClauseTemplateDialog(
     val project: Project,
     val editor: Editor,
-    val context: ElementDescriptorsContext
+    val context: ElementsContext
 ) : DialogWithValidation(project) {
     var elementsTableModel: ElementsTableModel
     

@@ -24,7 +24,7 @@ class ParadoxLocaleTableModel(
         override fun valueOf(item: String): Boolean {
             return item in locales
         }
-    
+        
         override fun setValue(item: String, value: Boolean) {
             if(value) {
                 locales.add(item)
@@ -32,11 +32,11 @@ class ParadoxLocaleTableModel(
                 locales.remove(item)
             }
         }
-    
+        
         override fun isCellEditable(item: String?): Boolean {
             return true
         }
-    
+        
         override fun getColumnClass(): Class<*> {
             return Boolean::class.java
         }
@@ -53,24 +53,34 @@ class ParadoxLocaleTableModel(
             return item
         }
     }
-}
-
-fun createLocaleTableModel(locales: MutableSet<String>): JPanel {
-    val tableModel = ParadoxLocaleTableModel(locales)
-    val tableView = TableView(tableModel)
-    tableView.setShowGrid(false)
-    tableView.rowSelectionAllowed = true
-    tableView.columnSelectionAllowed = false
-    tableView.intercellSpacing = Dimension(0, 0)
-    tableView.selectionModel.selectionMode = ListSelectionModel.SINGLE_SELECTION
-    tableView.setFixedColumnWidth(ParadoxLocaleTableModel.SelectedItem.columnIndex, "   ")
-    val scrollPane = JBScrollPane(tableView)
-    scrollPane.border = JBUI.Borders.empty()
-    scrollPane.viewportBorder = JBUI.Borders.empty()
-    scrollPane.preferredSize = Dimension(240, 120)
-    scrollPane.minimumSize = Dimension(240, 120)
-    val panel = JPanel(BorderLayout())
-    panel.add(scrollPane, BorderLayout.CENTER)
-    panel.border = IdeBorderFactory.createBorder()
-    return panel
+    
+    companion object {
+        @JvmStatic
+        fun createPanel(locales: MutableSet<String>): JPanel {
+            val tableModel = ParadoxLocaleTableModel(locales)
+            val tableView = TableView(tableModel)
+            tableView.setShowGrid(false)
+            tableView.rowSelectionAllowed = true
+            tableView.columnSelectionAllowed = false
+            tableView.intercellSpacing = Dimension(0, 0)
+            tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
+            tableView.setFixedColumnWidth(SelectedItem.columnIndex, "   ")
+            //快速搜索
+            object : TableViewSpeedSearch<String>(tableView) {
+                override fun getItemText(element: String): String {
+                    return element
+                }
+            }
+            //垂直滚动
+            val scrollPane = JBScrollPane(tableView)
+            scrollPane.border = JBUI.Borders.empty()
+            scrollPane.viewportBorder = JBUI.Borders.empty()
+            scrollPane.preferredSize = Dimension(240, 120)
+            scrollPane.minimumSize = Dimension(240, 120)
+            val panel = JPanel(BorderLayout())
+            panel.add(scrollPane, BorderLayout.CENTER)
+            panel.border = IdeBorderFactory.createBorder()
+            return panel
+        }
+    }
 }
