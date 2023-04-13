@@ -12,8 +12,10 @@ class EntryListTableModel<K, V>(
     val keyName: String,
     val valueName: String,
     val keyGetter: (K) -> String,
+    val keySetter: (String) -> K,
     val valueGetter: (V) -> String,
     val valueSetter: (String) -> V,
+    val valueAdder: () -> Entry<K, V>,
 ) : ListTableModel<Entry<K, V>>(
     arrayOf(
         object : ColumnInfo<Entry<K, V>, String>("") {
@@ -23,6 +25,14 @@ class EntryListTableModel<K, V>(
             
             override fun valueOf(item: Entry<K, V>): String {
                 return keyGetter(item.key)
+            }
+            
+            override fun setValue(item: Entry<K, V>, value: String) {
+                item.key = keySetter(value)
+            }
+            
+            override fun isCellEditable(item: Entry<K, V>?): Boolean {
+                return true
             }
         },
         object : ColumnInfo<Entry<K, V>, String>("") {
@@ -45,8 +55,8 @@ class EntryListTableModel<K, V>(
     ),
     list
 ) {
-    override fun addRow(item: Entry<K, V>?) {
-        super.addRow(item)
+    override fun addRow() {
+        addRow(valueAdder())
     }
     
     companion object {
@@ -57,7 +67,7 @@ class EntryListTableModel<K, V>(
             valueName: String,
             customizer: (ToolbarDecorator) -> Unit = {}
         ): JPanel {
-            return createMapPanel(list, keyName, valueName, { it }, { it }, { it }, customizer)
+            return createMapPanel(list, keyName, valueName, { it }, { it }, { it }, { it }, { Entry("", "") }, customizer)
         }
         
         @JvmStatic
@@ -66,11 +76,13 @@ class EntryListTableModel<K, V>(
             keyName: String,
             valueName: String,
             keyGetter: (K) -> String,
+            keySetter: (String) -> K,
             valueGetter: (V) -> String,
             valueSetter: (String) -> V,
+            valueAdder: () -> Entry<K, V>,
             customizer: (ToolbarDecorator) -> Unit = {}
         ): JPanel {
-            val tableModel = EntryListTableModel(list, keyName, valueName, keyGetter, valueGetter, valueSetter)
+            val tableModel = EntryListTableModel(list, keyName, valueName, keyGetter, keySetter, valueGetter, valueSetter, valueAdder)
             val tableView = TableView(tableModel)
             tableView.setShowGrid(false)
             tableView.rowSelectionAllowed = true

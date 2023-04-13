@@ -1,8 +1,8 @@
 package icu.windea.pls.core.util
 
-data class Entry<out K, out V>(
-    val key: K,
-    val value: V
+data class Entry<K, V>(
+    var key: K,
+    var value: V
 )
 
 fun <K, V> List<Entry<K, V>>.toMap() = this.associateBy({ it.key }, { it.value })
