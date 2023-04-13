@@ -32,6 +32,9 @@ class ParadoxCallerHierarchyTreeStructure(
             element is ParadoxScriptDefinitionElement -> {
                 searchElement(element, descriptor, descriptors)
             }
+            element is ParadoxLocalisationProperty -> {
+                searchElement(element, descriptor, descriptors)
+            }
         }
         return descriptors.values.toTypedArray()
     }

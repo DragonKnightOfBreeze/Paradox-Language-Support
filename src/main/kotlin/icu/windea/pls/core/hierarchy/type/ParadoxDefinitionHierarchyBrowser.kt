@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.hierarchy.*
 import icu.windea.pls.script.psi.*
 import java.text.*
@@ -25,11 +26,11 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
     
     override fun createTrees(trees: MutableMap<in String, in JTree>) {
         val tree1 = createTree(true)
-        PopupHandler.installPopupMenu(tree1, IdeActions.GROUP_TYPE_HIERARCHY_POPUP, ActionPlaces.TYPE_HIERARCHY_VIEW_POPUP)
+        PopupHandler.installPopupMenu(tree1, PlsActions.DefinitionHierarchyPopupMenu, ActionPlaces.TYPE_HIERARCHY_VIEW_POPUP)
         trees.put(getDefinitionHierarchyType(), tree1)
         
         val tree2 = createTree(true)
-        PopupHandler.installPopupMenu(tree1, IdeActions.GROUP_TYPE_HIERARCHY_POPUP, ActionPlaces.TYPE_HIERARCHY_VIEW_POPUP)
+        PopupHandler.installPopupMenu(tree1, PlsActions.DefinitionHierarchyPopupMenu, ActionPlaces.TYPE_HIERARCHY_VIEW_POPUP)
         trees.put(getDefinitionHierarchyTypeWithSubtypes(), tree2)
     }
     

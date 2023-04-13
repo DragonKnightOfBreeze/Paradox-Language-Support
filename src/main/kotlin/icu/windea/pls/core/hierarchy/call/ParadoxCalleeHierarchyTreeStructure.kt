@@ -26,6 +26,9 @@ class ParadoxCalleeHierarchyTreeStructure(
             element is ParadoxScriptDefinitionElement -> {
                 processElement(element, descriptor, descriptors)
             }
+            element is ParadoxLocalisationProperty -> {
+                processElement(element, descriptor, descriptors)
+            }
         }
         return descriptors.values.toTypedArray()
     }
@@ -43,47 +46,54 @@ class ParadoxCalleeHierarchyTreeStructure(
                         return
                     }
                 }
-                if(element is ParadoxScriptedVariableReference) {
-                    addDescriptor(element)
-                }
-                if(element is ParadoxScriptExpressionElement && element.isExpression()) {
-                    addDescriptor(element)
+                when {
+                    element is ParadoxScriptedVariableReference -> {
+                        addDescriptor(element) //scripted_variable
+                    }
+                    element is ParadoxScriptExpressionElement && element.isExpression() -> {
+                        addDescriptor(element)
+                    }
+                    element is ParadoxLocalisationPropertyReference -> {
+                        addDescriptor(element) //localisation
+                    }
+                    element is ParadoxLocalisationCommandField -> {
+                        addDescriptor(element) //<scripted_loc>
+                    }
                 }
                 if(element.isExpressionOrMemberContext()) super.visitElement(element)
             }
             
-            private fun addDescriptor(element: ParadoxScriptedVariableReference) {
-                if(!getSettings().hierarchy.showScriptedVariablesInCallHierarchy) return //不显示
-                ProgressManager.checkCanceled()
-                val resolved = element.reference.resolve()
-                if(resolved != null) {
-                    val key = "v:${resolved.name}"
-                    if(descriptors.containsKey(key)) return //去重
-                    val resolvedFile = selectFile(resolved)
-                    if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) return
-                    descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
-                }
-            }
-            
-            private fun addDescriptor(element: ParadoxScriptExpressionElement) {
+            private fun addDescriptor(element: PsiElement) {
                 ProgressManager.checkCanceled()
                 val resolved = element.reference?.resolve()
-                if(resolved is ParadoxScriptDefinitionElement) {
-                    if(!getSettings().hierarchy.showDefinitionsInCallHierarchy) return //不显示
-                    val definitionInfo = resolved.definitionInfo ?: return
-                    val key = "d:${definitionInfo.name}: ${definitionInfo.type}"
-                    if(descriptors.containsKey(key)) return //去重
-                    val resolvedFile = selectFile(resolved)
-                    if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) return
-                    descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
-                } else if(resolved is ParadoxLocalisationProperty) {
-                    if(!getSettings().hierarchy.showLocalisationsInCallHierarchy) return //不显示
-                    val localisationInfo = resolved.localisationInfo ?: return
-                    val key = "l:${localisationInfo.name}"
-                    if(descriptors.containsKey(key)) return //去重
-                    val resolvedFile = selectFile(resolved)
-                    if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) return
-                    descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
+                when(resolved) {
+                    is ParadoxScriptScriptedVariable -> {
+                        if(!getSettings().hierarchy.showScriptedVariablesInCallHierarchy) return //不显示
+                        val key = "v:${resolved.name}"
+                        if(descriptors.containsKey(key)) return //去重
+                        val resolvedFile = selectFile(resolved)
+                        if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) return
+                        descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
+                    }
+                    is ParadoxScriptDefinitionElement -> {
+                        if(!getSettings().hierarchy.showDefinitionsInCallHierarchy) return //不显示
+                        val definitionInfo = resolved.definitionInfo ?: return
+                        if(!getSettings().hierarchy.showDefinitionsInCallHierarchy(rootDefinitionInfo, definitionInfo)) return //不显示
+                        val key = "d:${definitionInfo.name}: ${definitionInfo.type}"
+                        if(descriptors.containsKey(key)) return //去重
+                        val resolvedFile = selectFile(resolved)
+                        if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) return
+                        descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
+                    }
+                    is ParadoxLocalisationProperty -> {
+                        if(!getSettings().hierarchy.showLocalisationsInCallHierarchy) return //不显示
+                        val localisationInfo = resolved.localisationInfo ?: return
+                        val key = "l:${localisationInfo.name}"
+                        if(descriptors.containsKey(key)) return //去重
+                        val resolvedFile = selectFile(resolved)
+                        if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) return
+                        descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
+                    }
                 }
             }
         })

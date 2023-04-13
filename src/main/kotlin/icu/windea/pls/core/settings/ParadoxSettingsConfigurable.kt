@@ -243,14 +243,17 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.hierarchy::showDefinitionsInCallHierarchy)
                         .apply { cbCell = this }
                     
-                    var list = settings.hierarchy.definitionTypeBindingsInCallHierarchy.toMutableEntryList()
-                    var resultList: MutableList<Entry<String, String>>? = null
+                    val defaultList = settings.hierarchy.definitionTypeBindingsInCallHierarchy.toMutableEntryList()
+                    var list = defaultList.toMutableList()
                     link(PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings")) {
                         val dialog = ParadoxConfigureDefinitionTypeBindingsInCallHierarchyDialog(list)
-                        if(dialog.showAndGet()) resultList = dialog.resultList
+                        if(dialog.showAndGet()) {
+                            list = dialog.resultList
+                        }
                     }.enabledIf(cbCell.selected)
-                        .onApply { resultList?.let { settings.hierarchy.definitionTypeBindingsInCallHierarchy = it.toMutableMap() } }
-                        .onReset { list = settings.hierarchy.definitionTypeBindingsInCallHierarchy.toMutableEntryList() }
+                        .onApply { list.let { settings.hierarchy.definitionTypeBindingsInCallHierarchy = it.toMutableMap() } }
+                        .onReset { list = defaultList }
+                        .onIsModified { list != defaultList }
                 }
                 //showLocalisationsInCallHierarchy
                 row {

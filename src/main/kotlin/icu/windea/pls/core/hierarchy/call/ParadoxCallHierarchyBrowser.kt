@@ -8,8 +8,10 @@ import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.hierarchy.*
 import icu.windea.pls.core.hierarchy.type.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import java.text.*
 import javax.swing.*
@@ -24,13 +26,13 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
     
     override fun createTrees(trees: MutableMap<in String, in JTree>) {
         val tree1 = createTree(false)
-        PopupHandler.installPopupMenu(tree1, IdeActions.GROUP_CALL_HIERARCHY_POPUP, ActionPlaces.CALL_HIERARCHY_VIEW_POPUP)
+        PopupHandler.installPopupMenu(tree1, PlsActions.CallHierarchyPopupMenu, ActionPlaces.CALL_HIERARCHY_VIEW_POPUP)
         val baseOnThisMethodAction = BaseOnThisMethodAction()
         baseOnThisMethodAction.registerCustomShortcutSet(ActionManager.getInstance().getAction(IdeActions.ACTION_CALL_HIERARCHY).shortcutSet, tree1)
         trees.put(getCalleeType(), tree1)
         
         val tree2 = createTree(false)
-        PopupHandler.installPopupMenu(tree2, IdeActions.GROUP_CALL_HIERARCHY_POPUP, ActionPlaces.CALL_HIERARCHY_VIEW_POPUP)
+        PopupHandler.installPopupMenu(tree2, PlsActions.CallHierarchyPopupMenu, ActionPlaces.CALL_HIERARCHY_VIEW_POPUP)
         baseOnThisMethodAction.registerCustomShortcutSet(ActionManager.getInstance().getAction(IdeActions.ACTION_CALL_HIERARCHY).shortcutSet, tree2)
         trees.put(getCallerType(), tree2)
     }
@@ -39,6 +41,7 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
         val name = when {
             element is ParadoxScriptScriptedVariable -> element.name
             element is ParadoxScriptDefinitionElement -> element.definitionInfo?.name.orAnonymous()
+            element is ParadoxLocalisationProperty -> element.localisationInfo?.name.orAnonymous()
             else -> return null
         }
         return MessageFormat.format(typeName, name)

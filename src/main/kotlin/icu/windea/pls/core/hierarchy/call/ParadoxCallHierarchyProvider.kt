@@ -4,6 +4,7 @@ import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 //com.intellij.ide.hierarchy.call.JavaCallHierarchyProvider
@@ -21,6 +22,8 @@ class ParadoxCallHierarchyProvider : HierarchyProvider {
         if(element is ParadoxScriptDefinitionElement && element.definitionInfo != null) return element
         //封装变量
         if(element is ParadoxScriptScriptedVariable) return element
+        //本地化
+        if(element is ParadoxLocalisationProperty && element.localisationInfo != null) return element
         return null
     }
     
