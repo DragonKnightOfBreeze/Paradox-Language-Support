@@ -4,7 +4,6 @@ import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.hierarchy.type.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.lang.inline.*
@@ -28,7 +27,7 @@ class ParadoxCalleeHierarchyTreeStructure(
     }
     
     private fun processElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
-        val scopeType = getSettings().scopeType
+        val scopeType = getHierarchySettings().scopeType
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
         element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -50,27 +49,31 @@ class ParadoxCalleeHierarchyTreeStructure(
             }
             
             private fun addDescriptor(element: ParadoxScriptedVariableReference) {
+                if(!getSettings().hierarchy.showScriptedVariablesInCallHierarchy) return //不显示
                 val resolved = element.reference.resolve()
-                if(resolved == null) return
-                val key = resolved.name
-                if(descriptors.containsKey(key)) return //去重
-                val resolvedFile = selectFile(resolved)
-                if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) return
-                descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
+                if(resolved != null) {
+                    val key = resolved.name
+                    if(descriptors.containsKey(key)) return //去重
+                    val resolvedFile = selectFile(resolved)
+                    if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) return
+                    descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
+                }
             }
             
             private fun addDescriptor(element: ParadoxScriptExpressionElement) {
-                val resolved = element.reference?.resolve() as? ParadoxScriptDefinitionElement
-                if(resolved == null) return
-                val definitionInfo = resolved.definitionInfo ?: return
-                val key = definitionInfo.name + ": " + definitionInfo.type
-                if(descriptors.containsKey(key)) return //去重
-                val resolvedFile = selectFile(resolved)
-                if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) return
-                descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
+                val resolved = element.reference?.resolve()
+                if(resolved is ParadoxScriptDefinitionElement) {
+                    if(!getSettings().hierarchy.showDefinitionsInCallHierarchy) return //不显示
+                    val definitionInfo = resolved.definitionInfo ?: return
+                    val key = definitionInfo.name + ": " + definitionInfo.type
+                    if(descriptors.containsKey(key)) return //去重
+                    val resolvedFile = selectFile(resolved)
+                    if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) return
+                    descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
+                }
             }
         })
     }
     
-    private fun getSettings() = ParadoxCallHierarchyBrowserSettings.getInstance(myProject)
+    private fun getHierarchySettings() = ParadoxCallHierarchyBrowserSettings.getInstance(myProject)
 }

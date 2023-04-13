@@ -8,8 +8,6 @@ import icu.windea.pls.core.hierarchy.*
 @State(name = "ParadoxCallHierarchyBrowserSettings", storages = [Storage(StoragePathMacros.WORKSPACE_FILE)])
 class ParadoxCallHierarchyBrowserSettings : PersistentStateComponent<ParadoxCallHierarchyBrowserSettings>, ParadoxHierarchyBrowserSettings {
     override var scopeType: String = "all"
-    var showScriptedVariables: Boolean = true
-    var showDefinitions: Boolean = true
     
     override fun getState() = this
     

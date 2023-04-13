@@ -35,6 +35,8 @@ class ParadoxSettingsState : BaseState() {
     @get:Property(surroundWithTag = false)
     var inference by property(InferenceState())
     @get:Property(surroundWithTag = false)
+    var hierarchy by property(HierarchyState())
+    @get:Property(surroundWithTag = false)
     var others by property(OthersState())
     
     /**
@@ -101,6 +103,12 @@ class ParadoxSettingsState : BaseState() {
     class InferenceState : BaseState() {
         var inlineScriptLocation by property(true)
         var eventScopeContext by property(true)
+    }
+    
+    @Tag("hierarchy")
+    class HierarchyState: BaseState() {
+        var showScriptedVariablesInCallHierarchy by property(true)
+        var showDefinitionsInCallHierarchy by property(true)
     }
     
     /**

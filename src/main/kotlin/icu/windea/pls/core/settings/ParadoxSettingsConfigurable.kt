@@ -228,6 +228,19 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .onApply { ParadoxModificationTrackerProvider.getInstance().DefinitionScopeContextInference.incModificationCount() }
                 }
             }
+            //hierarchy
+            collapsibleGroup(PlsBundle.message("settings.hierarchy")) {
+                //showScriptedVariablesInCallHierarchy
+                row {
+                    checkBox(PlsBundle.message("settings.hierarchy.showScriptedVariablesInCallHierarchy"))
+                        .bindSelected(settings.hierarchy::showScriptedVariablesInCallHierarchy)
+                }
+                //showDefinitionsInCallHierarchy
+                row {
+                    checkBox(PlsBundle.message("settings.hierarchy.showDefinitionsInCallHierarchy"))
+                        .bindSelected(settings.hierarchy::showDefinitionsInCallHierarchy)
+                }
+            }
             //others
             collapsibleGroup(PlsBundle.message("settings.others")) {
                 @Suppress("DialogTitleCapitalization")

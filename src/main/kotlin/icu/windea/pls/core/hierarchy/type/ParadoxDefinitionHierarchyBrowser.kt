@@ -93,7 +93,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
         actionGroup.add(ViewDefinitionHierarchyAction())
         actionGroup.add(ViewDefinitionHierarchyWithSubtypesAction())
         actionGroup.add(AlphaSortAction())
-        actionGroup.add(ChangeScopeTypeAction(this, getSettings()))
+        actionGroup.add(ChangeScopeTypeAction(this, getHierarchySettings()))
     }
     
     override fun getPreviousOccurenceActionName(): String {
@@ -112,6 +112,6 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
         return PlsBundle.message("hierarchy.definition.next.occurrence.name")
     }
     
-    private fun getSettings() = ParadoxDefinitionHierarchyBrowserSettings.getInstance(myProject)
+    private fun getHierarchySettings() = ParadoxDefinitionHierarchyBrowserSettings.getInstance(myProject)
 }
 
