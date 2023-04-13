@@ -69,7 +69,7 @@ object ParadoxElementPathHandler {
         while(current !is PsiFile) {
             when {
                 current.tokenType == PROPERTY -> {
-                    val p = node.firstChild(tree, PROPERTY_KEY)
+                    val p = current.firstChild(tree, PROPERTY_KEY)
                         ?.firstChild(tree, PROPERTY_KEY_TOKEN)
                         ?.internNode(tree)?.toString() ?: return null
                     originalSubPaths.addFirst(p)

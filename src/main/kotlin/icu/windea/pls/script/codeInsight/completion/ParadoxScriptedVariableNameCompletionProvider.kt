@@ -21,10 +21,7 @@ class ParadoxScriptedVariableNameCompletionProvider: CompletionProvider<Completi
 		val element = parameters.position.parent
 		val file = parameters.originalFile
 		val project = file.project
-		val selector = scriptedVariableSelector(project, file)
-			.contextSensitive()
-			.notSamePosition(element)
-			.distinctByName()
+		val selector = scriptedVariableSelector(project, element).contextSensitive().notSamePosition(element).distinctByName()
 		ParadoxGlobalScriptedVariableSearch.search(selector).processQuery { processScriptedVariable(it, result) }
 	}
 	

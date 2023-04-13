@@ -3,6 +3,7 @@ package icu.windea.pls.localisation.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
@@ -25,8 +26,6 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
 	}
 	
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		//同时需要同时查找当前文件中的和全局的
-		
 		val element = parameters.position
 		val project = parameters.originalFile.project
 		val selector = scriptedVariableSelector(project, element).contextSensitive().distinctByName()
@@ -34,6 +33,7 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
 	}
 	
 	private fun processScriptedVariable(it: ParadoxScriptScriptedVariable, result: CompletionResultSet): Boolean {
+		ProgressManager.checkCanceled()
 		val name = it.name
 		val icon = it.icon
 		val typeFile = it.containingFile

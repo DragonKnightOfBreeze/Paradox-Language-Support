@@ -17,14 +17,14 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
 		val fileInfo = selector.fileInfo ?: return
 		if("common/scripted_variables".matchesPath(fileInfo.path.path)) return
 		val psiFile = file.toPsiFile<ParadoxScriptFile>(selector.project) ?: return
-		psiFile.accept(object : PsiRecursiveElementWalkingVisitor() {
+		psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
 			override fun visitElement(element: PsiElement) {
 				val result = when(element) {
 					is ParadoxScriptScriptedVariable -> visitScriptedVariable(element)
 					else -> true
 				}
 				if(!result) return
-				if(element == selector.context) return //到使用处为止
+				if(element === selector.context) return //到使用处为止
 				if(element.isExpressionOrMemberContext()) super.visitElement(element)
 			}
 			
