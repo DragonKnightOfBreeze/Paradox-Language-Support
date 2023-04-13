@@ -36,6 +36,12 @@ propagate_state = { "move" = "moving" }
 * [ ] 支持事件继承
 * [ ] 支持`complex_trigger_modifier`中的`trigger`和`trigger_scope`，后者作为前者的scope
 
+## 0.9.9
+
+* [ ] 无法索引需要skipRootKey的定义
+* [ ] 无法代码补全本地封装变量
+* [ ] 调用层次应当支持配置要查询的定义类型
+
 ## 0.9.3
 
 * [X] 正确匹配子句为空以及子句不为空的`resources = {...}`

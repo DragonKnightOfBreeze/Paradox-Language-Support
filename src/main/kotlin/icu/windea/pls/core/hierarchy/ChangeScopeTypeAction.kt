@@ -19,7 +19,7 @@ class ChangeScopeTypeAction(
     val provider: HierarchyBrowserBaseEx,
     val settings: ParadoxHierarchyBrowserSettings
 ) : ComboBoxAction() {
-    val project = provider.member("myProject") as Project
+    val project = provider.member<HierarchyBrowserBase>("myProject") as Project
     
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.EDT

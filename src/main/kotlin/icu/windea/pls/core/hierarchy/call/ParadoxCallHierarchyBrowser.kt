@@ -6,9 +6,12 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.ui.*
+import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.hierarchy.*
 import icu.windea.pls.core.hierarchy.type.*
 import icu.windea.pls.script.psi.*
+import java.text.*
 import javax.swing.*
 
 class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHierarchyBrowserBase(project, target) {
@@ -30,6 +33,15 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
         PopupHandler.installPopupMenu(tree2, IdeActions.GROUP_CALL_HIERARCHY_POPUP, ActionPlaces.CALL_HIERARCHY_VIEW_POPUP)
         baseOnThisMethodAction.registerCustomShortcutSet(ActionManager.getInstance().getAction(IdeActions.ACTION_CALL_HIERARCHY).shortcutSet, tree2)
         trees.put(getCallerType(), tree2)
+    }
+    
+    override fun getContentDisplayName(typeName: String, element: PsiElement): String? {
+        val name = when {
+            element is ParadoxScriptScriptedVariable -> element.name
+            element is ParadoxScriptDefinitionElement -> element.definitionInfo?.name.orAnonymous()
+            else -> return null
+        }
+        return MessageFormat.format(typeName, name)
     }
     
     override fun getElementFromDescriptor(descriptor: HierarchyNodeDescriptor): PsiElement? {
