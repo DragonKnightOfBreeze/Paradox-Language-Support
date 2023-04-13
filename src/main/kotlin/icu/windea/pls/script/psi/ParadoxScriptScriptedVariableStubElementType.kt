@@ -53,7 +53,7 @@ object ParadoxScriptScriptedVariableStubElementType : ILightStubElementType<Para
     }
     
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub {
-        val name = dataStream.readNameString()
+        val name = dataStream.readNameString().orEmpty()
         val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
         return ParadoxScriptScriptedVariableStubImpl(parentStub, name, gameType)
     }
