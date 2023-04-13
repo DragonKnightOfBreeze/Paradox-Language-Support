@@ -4,7 +4,7 @@ import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.hierarchy.type.*
+import icu.windea.pls.core.hierarchy.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.lang.inline.*
@@ -14,21 +14,20 @@ import java.util.*
 class ParadoxCalleeHierarchyTreeStructure(
     project: Project,
     psiElement: PsiElement
-) : HierarchyTreeStructure(project, ParadoxCallHierarchyNodeDescriptor(project, null, psiElement, true)) {
+) : HierarchyTreeStructure(project, ParadoxCallHierarchyNodeDescriptor(project, null, psiElement, true, false)) {
     override fun buildChildren(descriptor: HierarchyNodeDescriptor): Array<out HierarchyNodeDescriptor> {
         descriptor as ParadoxCallHierarchyNodeDescriptor
         val element = descriptor.psiElement ?: return HierarchyNodeDescriptor.EMPTY_ARRAY
+        val descriptors = mutableMapOf<String, ParadoxCallHierarchyNodeDescriptor>()
         when {
             element is ParadoxScriptDefinitionElement -> {
-                val descriptors = mutableListOf<ParadoxCallHierarchyNodeDescriptor>()
                 processElement(element, descriptor, descriptors)
-                return descriptors.toTypedArray()
             }
         }
-        return HierarchyNodeDescriptor.EMPTY_ARRAY
+        return descriptors.values.toTypedArray()
     }
     
-    private fun processElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableList<ParadoxCallHierarchyNodeDescriptor>) {
+    private fun processElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
         val scopeType = getScopeType()
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
         element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
@@ -41,30 +40,34 @@ class ParadoxCalleeHierarchyTreeStructure(
                         return
                     }
                 }
-                if(element is ParadoxScriptExpressionElement && element.isExpression()) {
+                if(element is ParadoxScriptedVariableReference) {
                     addDescriptor(element)
                 }
-                if(element is ParadoxScriptedVariableReference) {
+                if(element is ParadoxScriptExpressionElement && element.isExpression()) {
                     addDescriptor(element)
                 }
                 if(element.isExpressionOrMemberContext()) super.visitElement(element)
             }
             
-            private fun addDescriptor(element: ParadoxScriptExpressionElement) {
-                val resolved = element.reference?.resolve() as? ParadoxScriptDefinitionElement
-                if(resolved == null) return
-                if(resolved.definitionInfo == null) return
-                val resolvedFile = selectFile(resolved)
-                if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) return
-                descriptors.add(ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false))
-            }
-            
             private fun addDescriptor(element: ParadoxScriptedVariableReference) {
                 val resolved = element.reference.resolve()
                 if(resolved == null) return
+                val key = resolved.name
+                if(descriptors.containsKey(key)) return //去重
                 val resolvedFile = selectFile(resolved)
                 if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) return
-                descriptors.add(ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false))
+                descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
+            }
+            
+            private fun addDescriptor(element: ParadoxScriptExpressionElement) {
+                val resolved = element.reference?.resolve() as? ParadoxScriptDefinitionElement
+                if(resolved == null) return
+                val definitionInfo = resolved.definitionInfo ?: return
+                val key = definitionInfo.name + ": " + definitionInfo.type
+                if(descriptors.containsKey(key)) return //去重
+                val resolvedFile = selectFile(resolved)
+                if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) return
+                descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
             }
         })
     }

@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.hierarchy.*
 import icu.windea.pls.core.hierarchy.type.ParadoxDefinitionHierarchyNodeDescriptor.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*

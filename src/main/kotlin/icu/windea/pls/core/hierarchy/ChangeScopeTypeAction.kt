@@ -9,7 +9,6 @@ import com.intellij.psi.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.hierarchy.type.*
 import icu.windea.pls.core.search.scope.type.*
 import java.awt.*
 import javax.swing.*
@@ -53,6 +52,7 @@ class ChangeScopeTypeAction(val provider: HierarchyBrowserBaseEx, val id: String
     
     private inner class MenuAction(val scopeType: ParadoxSearchScopeType) : AnAction(scopeType.text) {
         override fun actionPerformed(e: AnActionEvent) {
+            setScopeType(scopeType.id)
             setScopeType(scopeType.id)
             
             // invokeLater is called to update state of button before long tree building operation

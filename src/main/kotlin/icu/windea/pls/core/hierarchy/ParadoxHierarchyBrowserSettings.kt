@@ -1,4 +1,4 @@
-package icu.windea.pls.core.hierarchy.type
+package icu.windea.pls.core.hierarchy
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
@@ -9,6 +9,8 @@ import com.intellij.util.xmlb.annotations.*
 class ParadoxHierarchyBrowserSettings: PersistentStateComponent<ParadoxHierarchyBrowserSettings> {
     @XMap
     var scopeTypes: MutableMap<String, String> = mutableMapOf()
+    @XMap
+    var nodeTypes: MutableMap<String, String> = mutableMapOf()
     
     override fun getState() = this
     
