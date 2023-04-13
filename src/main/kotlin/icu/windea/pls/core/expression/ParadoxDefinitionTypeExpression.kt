@@ -2,6 +2,7 @@ package icu.windea.pls.core.expression
 
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.ParadoxDefinitionTypeExpression.*
+import icu.windea.pls.lang.model.*
 
 /**
  * 示例：
@@ -17,6 +18,14 @@ class ParadoxDefinitionTypeExpression(
 ): AbstractExpression(expressionString) {
 	operator fun component1() = type
 	operator fun component2() = subtypes
+	
+	fun matches(type: String, subtypes: List<String>): Boolean {
+		return type == this.type && subtypes.containsAll(this.subtypes)
+	}
+	
+	fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean {
+		return definitionInfo.type == this.type && definitionInfo.subtypes.containsAll(this.subtypes)
+	}
 	
 	companion object Resolver
 }

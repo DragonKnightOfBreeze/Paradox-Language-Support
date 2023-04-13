@@ -8,14 +8,16 @@ import icu.windea.pls.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.lang.inline.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
 class ParadoxCalleeHierarchyTreeStructure(
     project: Project,
-    psiElement: PsiElement
-) : HierarchyTreeStructure(project, ParadoxCallHierarchyNodeDescriptor(project, null, psiElement, true, false)) {
+    element: PsiElement,
+    val rootDefinitionInfo: ParadoxDefinitionInfo?
+) : HierarchyTreeStructure(project, ParadoxCallHierarchyNodeDescriptor(project, null, element, true, false)) {
     override fun buildChildren(descriptor: HierarchyNodeDescriptor): Array<out HierarchyNodeDescriptor> {
         descriptor as ParadoxCallHierarchyNodeDescriptor
         val element = descriptor.psiElement ?: return HierarchyNodeDescriptor.EMPTY_ARRAY

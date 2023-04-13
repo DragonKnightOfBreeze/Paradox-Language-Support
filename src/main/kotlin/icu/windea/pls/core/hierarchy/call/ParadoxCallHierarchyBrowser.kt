@@ -56,10 +56,12 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
     override fun createHierarchyTreeStructure(type: String, psiElement: PsiElement): HierarchyTreeStructure? {
         return when(type) {
             getCallerType() -> {
-                ParadoxCallerHierarchyTreeStructure(myProject, psiElement)
+                val definitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
+                ParadoxCallerHierarchyTreeStructure(myProject, psiElement, definitionInfo)
             }
             getCalleeType() -> {
-                ParadoxCalleeHierarchyTreeStructure(myProject, psiElement)
+                val definitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
+                ParadoxCalleeHierarchyTreeStructure(myProject, psiElement, definitionInfo)
             }
             else -> null
         }

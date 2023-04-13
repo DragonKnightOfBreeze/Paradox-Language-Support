@@ -4,6 +4,7 @@ import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
@@ -106,11 +107,20 @@ class ParadoxSettingsState : BaseState() {
     }
     
     @Tag("hierarchy")
-    class HierarchyState: BaseState() {
+    class HierarchyState : BaseState() {
         var showScriptedVariablesInCallHierarchy by property(true)
         var showDefinitionsInCallHierarchy by property(true)
         var showLocalisationsInCallHierarchy by property(true)
         var definitionTypeBindingsInCallHierarchy by map<String, String>()
+        
+        fun showDefinitionsInCallHierarchy(rootDefinitionInfo: ParadoxDefinitionInfo?, definitionInfo: ParadoxDefinitionInfo?): Boolean {
+            if(rootDefinitionInfo == null || definitionInfo == null) return true 
+            return definitionTypeBindingsInCallHierarchy.any { (k, v) ->
+                !ParadoxDefinitionTypeExpression.resolve(k).matches(rootDefinitionInfo) || v.toCommaDelimitedStringSet().any { e ->
+                    ParadoxDefinitionTypeExpression.resolve(e).matches(definitionInfo)
+                }
+            }
+        }
     }
     
     /**
