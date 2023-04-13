@@ -240,6 +240,11 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.hierarchy.showDefinitionsInCallHierarchy"))
                         .bindSelected(settings.hierarchy::showDefinitionsInCallHierarchy)
                 }
+                //showLocalisationsInCallHierarchy
+                row {
+                    checkBox(PlsBundle.message("settings.hierarchy.showLocalisationsInCallHierarchy"))
+                        .bindSelected(settings.hierarchy::showLocalisationsInCallHierarchy)
+                }
             }
             //others
             collapsibleGroup(PlsBundle.message("settings.others")) {

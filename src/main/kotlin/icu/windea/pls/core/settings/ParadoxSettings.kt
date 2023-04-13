@@ -109,6 +109,7 @@ class ParadoxSettingsState : BaseState() {
     class HierarchyState: BaseState() {
         var showScriptedVariablesInCallHierarchy by property(true)
         var showDefinitionsInCallHierarchy by property(true)
+        var showLocalisationsInCallHierarchy by property(true)
     }
     
     /**

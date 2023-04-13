@@ -60,7 +60,7 @@
 ## 0.9.9
 
 * [X] 优化基于脚本文件的StubIndex（统一使用`ILightStubElementType`） *
-* [X] 实现调用层级（`Navigate > Call Hierarchy`） - 用于基于指定定义列出它所调用或者调用它的那些定义/封装变量（可以递归列出） *
+* [X] 实现调用层级（`Navigate > Call Hierarchy`） - 用于递归列出封装变量/定义/本地化的调用或者被调用关系 *
 
 待验证：
 

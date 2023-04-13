@@ -15,6 +15,7 @@ import com.intellij.psi.util.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.*
 import java.awt.*
 
@@ -68,6 +69,15 @@ class ParadoxCallHierarchyNodeDescriptor(
                 val path = fileInfo.path.path
                 val qualifiedName = fileInfo.rootInfo.qualifiedName
                 val location = " " + PlsBundle.message("hierarchy.call.descriptor.definition.location", type, path, qualifiedName)
+                myHighlightedText.ending.addText(location, getLocationAttributes())
+            }
+            is ParadoxLocalisationProperty -> {
+                val fileInfo = element.fileInfo ?: return invalidElement()
+                val name = element.name.orAnonymous()
+                myHighlightedText.ending.addText(name, nameAttributes)
+                val path = fileInfo.path.path
+                val qualifiedName = fileInfo.rootInfo.qualifiedName
+                val location = " " + PlsBundle.message("hierarchy.call.descriptor.localisation.location", path, qualifiedName)
                 myHighlightedText.ending.addText(location, getLocationAttributes())
             }
         }
