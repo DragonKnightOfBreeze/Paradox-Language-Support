@@ -26,10 +26,10 @@ class ParadoxConfigureDefinitionTypeBindingsInCallHierarchyDialog(
                     .align(Align.FILL)
             }.resizableRow()
             row {
-                comment(PlsBundle.message("ui.comment.definitionTypeExpression"))
+                comment(PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings.comment.1"))
             }
             row {
-                comment(PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings.comment.1"))
+                comment(PlsBundle.message("ui.comment.definitionTypeExpression"))
             }
         }
     }

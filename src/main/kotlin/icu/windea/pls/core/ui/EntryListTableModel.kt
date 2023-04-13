@@ -37,7 +37,7 @@ class EntryListTableModel<K, V>(
         },
         object : ColumnInfo<Entry<K, V>, String>("") {
             override fun getName(): String {
-                return keyName
+                return valueName
             }
             
             override fun valueOf(item: Entry<K, V>): String {
