@@ -31,7 +31,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
         trees.put(getDefinitionHierarchyType(), tree1)
         
         val tree2 = createTree(true)
-        PopupHandler.installPopupMenu(tree1, PlsActions.DefinitionHierarchyPopupMenu, ActionPlaces.TYPE_HIERARCHY_VIEW_POPUP)
+        PopupHandler.installPopupMenu(tree2, PlsActions.DefinitionHierarchyPopupMenu, ActionPlaces.TYPE_HIERARCHY_VIEW_POPUP)
         trees.put(getDefinitionHierarchyTypeWithSubtypes(), tree2)
     }
     
@@ -64,7 +64,6 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
     }
     
     override fun getElementFromDescriptor(descriptor: HierarchyNodeDescriptor): PsiElement? {
-        if(descriptor !is ParadoxDefinitionHierarchyNodeDescriptor) return null
         return descriptor.psiElement
     }
     

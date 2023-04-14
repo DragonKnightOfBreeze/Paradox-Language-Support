@@ -10,7 +10,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.hierarchy.*
-import icu.windea.pls.core.hierarchy.type.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import java.text.*
@@ -48,7 +47,6 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
     }
     
     override fun getElementFromDescriptor(descriptor: HierarchyNodeDescriptor): PsiElement? {
-        if(descriptor !is ParadoxDefinitionHierarchyNodeDescriptor) return null
         return descriptor.psiElement
     }
     
