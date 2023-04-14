@@ -15,7 +15,7 @@ import com.intellij.psi.util.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
 
@@ -117,14 +117,11 @@ class ParadoxCallHierarchyNodeDescriptor(
             val highlighters = mutableListOf<RangeHighlighter>()
             for(psiReference in references) {
                 val eachElement = psiReference.element
-                val eachMethodCall = eachElement.parent
-                if(eachMethodCall != null) {
-                    val textRange = eachMethodCall.textRange
-                    highlightManager.addRangeHighlight(
-                        editor, textRange.startOffset, textRange.endOffset,
-                        EditorColors.SEARCH_RESULT_ATTRIBUTES, false, highlighters
-                    )
-                }
+                val textRange = eachElement.textRange
+                highlightManager.addRangeHighlight(
+                    editor, textRange.startOffset, textRange.endOffset,
+                    EditorColors.SEARCH_RESULT_ATTRIBUTES, false, highlighters
+                )
             }
         }
     }
