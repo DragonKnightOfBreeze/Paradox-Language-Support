@@ -16,6 +16,8 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
+//com.intellij.ide.hierarchy.call.CallerMethodsTreeStructure
+
 class ParadoxCallerHierarchyTreeStructure(
     project: Project,
     element: PsiElement,
@@ -41,7 +43,8 @@ class ParadoxCallerHierarchyTreeStructure(
     
     private fun searchElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
         val scopeType = getHierarchySettings().scopeType
-        val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element) ?: GlobalSearchScope.allScope(myProject)
+        val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
+            ?: GlobalSearchScope.allScope(myProject)
         ReferencesSearch.search(element, scope).processQuery { reference ->
             ProgressManager.checkCanceled()
             val referenceElement = reference.element
@@ -81,13 +84,13 @@ class ParadoxCallerHierarchyTreeStructure(
         if(localisation != null && localisationInfo != null) {
             ProgressManager.checkCanceled()
             val key = "l:${localisationInfo.name}"
-            synchronized(descriptors) {
-                val d = descriptors.getOrPut(key) { ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, localisation, false, true) }
-                if(d.references.isNotEmpty() && !d.references.contains(reference)) {
-                    d.usageCount++
-                }
-                d.references.add(reference)
+            //synchronized is used in CallerMethodsTreeStructure for descriptor map
+            //to optimize performance, no synchronized here and it should be ok
+            val d = descriptors.getOrPut(key) { ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, localisation, false, true) }
+            if(d.references.isNotEmpty() && !d.references.contains(reference)) {
+                d.usageCount++
             }
+            d.references.add(reference)
         }
     }
     

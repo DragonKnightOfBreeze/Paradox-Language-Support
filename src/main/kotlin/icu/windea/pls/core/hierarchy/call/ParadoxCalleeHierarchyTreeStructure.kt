@@ -13,6 +13,8 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
+//com.intellij.ide.hierarchy.call.CallerMethodsTreeStructure
+
 class ParadoxCalleeHierarchyTreeStructure(
     project: Project,
     element: PsiElement,
@@ -37,6 +39,8 @@ class ParadoxCalleeHierarchyTreeStructure(
         val scopeType = getHierarchySettings().scopeType
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
         element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+            var visit = false
+            
             override fun visitElement(element: PsiElement) {
                 //兼容向下内联的情况
                 if(element is ParadoxScriptMemberElement) {
@@ -60,7 +64,12 @@ class ParadoxCalleeHierarchyTreeStructure(
                         addDescriptor(element) //<scripted_loc>
                     }
                 }
-                if(element.isExpressionOrMemberContext()) super.visitElement(element)
+                if(element is ParadoxScriptInlineMath) visit = true
+                if(element.isExpressionOrMemberContext() || visit) super.visitElement(element)
+            }
+            
+            override fun elementFinished(element: PsiElement?) {
+                if(element is ParadoxScriptInlineMath) visit = false
             }
             
             private fun addDescriptor(element: PsiElement) {
@@ -74,7 +83,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                     canResolve = canResolve || (reference.canResolveLocalisation() && getSettings().hierarchy.showLocalisationsInCallHierarchy)
                     if(!canResolve) continue
                     
-                    val resolved = element.reference?.resolve()
+                    val resolved = reference.resolve()
                     when(resolved) {
                         is ParadoxScriptScriptedVariable -> {
                             if(!getSettings().hierarchy.showScriptedVariablesInCallHierarchy) continue //不显示
