@@ -53,7 +53,7 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
     }
     
     override fun isApplicableElement(element: PsiElement): Boolean {
-        return element is ParadoxScriptDefinitionElement || element is ParadoxScriptScriptedVariable
+        return element is ParadoxScriptScriptedVariable || element is ParadoxScriptDefinitionElement || element is ParadoxLocalisationProperty
     }
     
     override fun createHierarchyTreeStructure(type: String, psiElement: PsiElement): HierarchyTreeStructure? {

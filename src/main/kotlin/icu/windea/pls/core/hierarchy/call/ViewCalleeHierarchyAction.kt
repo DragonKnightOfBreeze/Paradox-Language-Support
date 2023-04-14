@@ -13,10 +13,4 @@ class ViewCalleeHierarchyAction: ChangeHierarchyViewActionBase(
     override fun getTypeName(): String {
         return CallHierarchyBrowserBase.getCalleeType()
     }
-    
-    override fun update(event: AnActionEvent) {
-        super.update(event)
-        val browser = getHierarchyBrowser(event.dataContext)
-        event.presentation.isEnabled = browser != null
-    }
 }

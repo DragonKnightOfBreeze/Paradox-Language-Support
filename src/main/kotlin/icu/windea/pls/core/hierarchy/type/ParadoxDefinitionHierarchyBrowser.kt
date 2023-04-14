@@ -10,6 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.hierarchy.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
 import java.text.*
 import java.util.function.*
@@ -53,7 +54,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
     }
     
     override fun isApplicableElement(element: PsiElement): Boolean {
-        return element is ParadoxScriptDefinitionElement
+        return element is CwtProperty || element is ParadoxScriptDefinitionElement
     }
     
     override fun getContentDisplayName(typeName: String, element: PsiElement): String? {
