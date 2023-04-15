@@ -97,7 +97,7 @@ class CwtImageLocationExpression(
             val propertyValue = property.propertyValue ?: return null
             val config = ParadoxConfigHandler.getValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
             if(config.expression.type !in validValueTypes) {
-                return ResolveResult("", null, 0, PlsDocBundle.message("dynamic"))
+                return ResolveResult("", null, 0, PlsBundle.message("dynamic"))
             }
             val key = propertyValue.value
             if(definitionInfo.name.equals(key, true)) return null //防止出现SOF
@@ -159,7 +159,7 @@ class CwtImageLocationExpression(
             val propertyValue = property.propertyValue ?: return null
             val config = ParadoxConfigHandler.getValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
             if(config.expression.type !in validValueTypes) {
-                return ResolveAllResult("", emptySet(), 0, PlsDocBundle.message("dynamic"))
+                return ResolveAllResult("", emptySet(), 0, PlsBundle.message("dynamic"))
             }
             val key = propertyValue.value
             if(definitionInfo.name.equals(key, true)) return null //防止出现SOF

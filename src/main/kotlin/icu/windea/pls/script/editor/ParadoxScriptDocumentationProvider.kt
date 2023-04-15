@@ -103,7 +103,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             //加上文件信息
             appendFileInfoHeader(element.fileInfo)
             //加上定义信息
-            append(PlsDocBundle.message("prefix.scriptedVariable")).append(" <b>@").append(name.escapeXml().orAnonymous()).append("</b>")
+            append(PlsBundle.message("prefix.scriptedVariable")).append(" <b>@").append(name.escapeXml().orAnonymous()).append("</b>")
             val valueElement = element.scriptedVariableValue
             when(valueElement) {
                 is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
@@ -117,7 +117,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             //加上文件信息
             appendFileInfoHeader(element.fileInfo)
             //加上定义信息
-            append(PlsDocBundle.message("prefix.property")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+            append(PlsBundle.message("prefix.property")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
             val valueElement = element.propertyValue
             when(valueElement) {
                 is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
@@ -146,7 +146,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
                     }
                 }
             }
-            append(PlsDocBundle.message("prefix.definition")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>: ").append(typeLinkText)
+            append(PlsBundle.message("prefix.definition")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>: ").append(typeLinkText)
             
             //加上相关本地化信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
             addRelatedLocalisationsForDefinition(element, definitionInfo, sectionsList?.get(2))
@@ -200,7 +200,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         }
         for((key, value) in map) {
             appendBr()
-            append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ")
+            append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
             append(key).append(" = ").append(value)
         }
     }
@@ -234,7 +234,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         }
         for((key, value) in map) {
             appendBr()
-            append(PlsDocBundle.message("prefix.relatedImage")).append(" ")
+            append(PlsBundle.message("prefix.relatedImage")).append(" ")
             append(key).append(" = ").append(value)
         }
     }
@@ -253,11 +253,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             val contextElement = element
             val categoryNames = modifierCategories.keys
             if(categoryNames.isNotEmpty()) {
-                sections.put(PlsDocBundle.message("sectionTitle.categories"), ParadoxModifierHandler.getCategoriesText(categoryNames, gameType, contextElement))
+                sections.put(PlsBundle.message("sectionTitle.categories"), ParadoxModifierHandler.getCategoriesText(categoryNames, gameType, contextElement))
             }
             
             val supportedScopes = modifierCategories.getSupportedScopes()
-            sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), ParadoxModifierHandler.getScopesText(supportedScopes, gameType, contextElement))
+            sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxModifierHandler.getScopesText(supportedScopes, gameType, contextElement))
         }
     }
     
@@ -279,7 +279,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             ParadoxScopeHandler.buildScopeContextDoc(scopeContext, gameType, contextElement, this)
             append("</code>")
         }
-        sections.put(PlsDocBundle.message("sectionTitle.scopeContext"), scopeContextText)
+        sections.put(PlsBundle.message("sectionTitle.scopeContext"), scopeContextText)
     }
     
     private fun StringBuilder.addParametersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
@@ -298,7 +298,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
                 append("</code>")
             }
         }
-        sections.put(PlsDocBundle.message("sectionTitle.parameters"), parametersText)
+        sections.put(PlsBundle.message("sectionTitle.parameters"), parametersText)
     }
     
     private fun StringBuilder.addEventTypeForOnAction(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
@@ -311,7 +311,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         val eventType = config.eventType
         appendBr()
         val typeLink = "${gameType.id}/types/event/$eventType"
-        append(PlsDocBundle.message("prefix.eventType")).append(" ").appendCwtLink(eventType, typeLink)
+        append(PlsBundle.message("prefix.eventType")).append(" ").appendCwtLink(eventType, typeLink)
     }
     
     private fun StringBuilder.buildDocumentationContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {

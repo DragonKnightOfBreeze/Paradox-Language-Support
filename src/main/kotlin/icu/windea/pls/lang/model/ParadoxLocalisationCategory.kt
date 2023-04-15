@@ -10,8 +10,8 @@ enum class ParadoxLocalisationCategory(
 	val text: String,
 	val flag: Boolean
 ) {
-	Localisation("localisation", PlsDocBundle.message("prefix.localisation"), true),
-	SyncedLocalisation("localisation_synced", PlsDocBundle.message("prefix.localisationSynced"), false);
+	Localisation("localisation", PlsBundle.message("prefix.localisation"), true),
+	SyncedLocalisation("localisation_synced", PlsBundle.message("prefix.localisationSynced"), false);
 	
 	override fun toString(): String {
 		return text

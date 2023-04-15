@@ -27,7 +27,7 @@ class ParadoxScriptedVariableLineMarkerProvider : RelatedItemLineMarkerProvider(
 		
 		val icon = PlsIcons.Gutter.ScriptedVariable
 		val tooltip = buildString {
-			append(PlsDocBundle.message("prefix.scriptedVariable")).append(" <b>@").append(name.escapeXml().orAnonymous()).append("</b>")
+			append(PlsBundle.message("prefix.scriptedVariable")).append(" <b>@").append(name.escapeXml().orAnonymous()).append("</b>")
 		}
 		val project = element.project
 		val selector = scriptedVariableSelector(project, element).contextSensitive()

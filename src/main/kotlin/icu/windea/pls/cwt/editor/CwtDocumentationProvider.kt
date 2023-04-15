@@ -117,8 +117,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             val byName = if(shortName == name) null else name
             val prefix = when {
                 configType?.isReference == true -> configType.prefix
-                referenceElement is ParadoxScriptPropertyKey -> PlsDocBundle.message("prefix.definitionProperty")
-                referenceElement is ParadoxScriptValue -> PlsDocBundle.message("prefix.definitionValue")
+                referenceElement is ParadoxScriptPropertyKey -> PlsBundle.message("prefix.definitionProperty")
+                referenceElement is ParadoxScriptValue -> PlsBundle.message("prefix.definitionValue")
                 else -> configType?.prefix
             }
             val typeCategory = configType?.category
@@ -181,12 +181,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         //如果没找到的话，不要在文档中显示相关信息
         if(localisation != null) {
             appendBr()
-            append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ")
+            append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
             append("Name = ").appendLocalisationLink(gameType, localisation.name, contextElement, resolved = true)
         }
         if(descLocalisation != null) {
             appendBr()
-            append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ")
+            append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
             append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, contextElement, resolved = true)
         }
         if(sections != null && render) {
@@ -215,7 +215,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         //如果没找到的话，不要在文档中显示相关信息
         if(iconPath != null && iconFile != null) {
             appendBr()
-            append(PlsDocBundle.message("prefix.relatedImage")).append(" ")
+            append(PlsBundle.message("prefix.relatedImage")).append(" ")
             append("Icon = ").appendFilePathLink(iconPath, gameType, iconPath, contextElement, resolved = true)
         }
         if(sections != null && render) {
@@ -244,10 +244,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
                 }
                 if(sections != null) {
                     val inputScopes = linkConfig.inputScopes
-                    sections.put(PlsDocBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
+                    sections.put(PlsBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
                     
                     val outputScope = linkConfig.outputScope
-                    if(outputScope != null) sections.put(PlsDocBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
+                    if(outputScope != null) sections.put(PlsBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
                 }
             }
             CwtConfigType.LocalisationLink -> {
@@ -258,10 +258,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
                 }
                 if(sections != null) {
                     val inputScopes = linkConfig.inputScopes
-                    sections.put(PlsDocBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
+                    sections.put(PlsBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
                     
                     val outputScope = linkConfig.outputScope
-                    if(outputScope != null) sections.put(PlsDocBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
+                    if(outputScope != null) sections.put(PlsBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
                 }
             }
             CwtConfigType.Modifier -> {
@@ -269,25 +269,25 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
                 if(sections != null) {
                     val categoryNames = modifierConfig.categoryConfigMap.keys
                     if(categoryNames.isNotEmpty()) {
-                        sections.put(PlsDocBundle.message("sectionTitle.categories"), getCategoriesText(categoryNames, gameType, contextElement))
+                        sections.put(PlsBundle.message("sectionTitle.categories"), getCategoriesText(categoryNames, gameType, contextElement))
                     }
                     
                     val supportedScopes = modifierConfig.supportedScopes
-                    sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
+                    sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
                 }
             }
             CwtConfigType.ModifierCategory -> {
                 val modifierCategoryConfig = configGroup.modifierCategories[name] ?: return
                 if(sections != null) {
                     val supportedScopes = modifierCategoryConfig.supportedScopes
-                    sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
+                    sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
                 }
             }
             CwtConfigType.LocalisationCommand -> {
                 val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
                 if(sections != null) {
                     val supportedScopes = localisationCommandConfig.supportedScopes
-                    sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
+                    sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
                 }
             }
             CwtConfigType.Alias, CwtConfigType.Trigger, CwtConfigType.Effect -> {
@@ -300,10 +300,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
                 if(aliasConfig.name !in configGroup.aliasNamesSupportScope) return
                 if(sections != null) {
                     val supportedScopes = aliasConfig.supportedScopes
-                    sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
+                    sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
                     
                     val outputScope = aliasConfig.outputScope
-                    if(outputScope != null) sections.put(PlsDocBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
+                    if(outputScope != null) sections.put(PlsBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
                 }
             }
             else -> pass()
@@ -363,7 +363,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             ParadoxScopeHandler.buildScopeContextDoc(scopeContext, gameType, contextElement, this)
             append("</code>")
         }
-        sections.put(PlsDocBundle.message("sectionTitle.scopeContext"), scopeContextText)
+        sections.put(PlsBundle.message("sectionTitle.scopeContext"), scopeContextText)
     }
     
     private fun StringBuilder.buildDocumentationContent(element: PsiElement) {

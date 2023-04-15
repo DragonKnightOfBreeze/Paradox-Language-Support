@@ -75,7 +75,7 @@ class ParadoxInvocationExpressionParameterInfoHandler : ParameterInfoHandler<Par
         //PARAM1, PARAM2, ...
         //不高亮特定的参数
         var isFirst = true
-        val text = if(parameterInfos.isEmpty()) PlsDocBundle.message("noParameters") else buildString {
+        val text = if(parameterInfos.isEmpty()) PlsBundle.message("noParameters") else buildString {
             for(info in parameterInfos) {
                 if(isFirst) isFirst = false else append(", ")
                 append(info.name)

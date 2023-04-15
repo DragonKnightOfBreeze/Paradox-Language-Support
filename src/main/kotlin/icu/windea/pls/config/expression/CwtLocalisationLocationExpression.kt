@@ -79,10 +79,10 @@ class CwtLocalisationLocationExpression(
             //0~5ms
             val config = ParadoxConfigHandler.getValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
             if(config.expression.type !in validValueTypes) {
-                return ResolveResult("", null, PlsDocBundle.message("dynamic"))
+                return ResolveResult("", null, PlsBundle.message("dynamic"))
             }
             if(config.expression.type == CwtDataType.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
-                return ResolveResult("", null, PlsDocBundle.message("inlined"))
+                return ResolveResult("", null, PlsBundle.message("inlined"))
             }
             val key = propertyValue.value
             //0~5ms
@@ -109,10 +109,10 @@ class CwtLocalisationLocationExpression(
             val propertyValue = property.propertyValue ?: return null
             val config = ParadoxConfigHandler.getValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
             if(config.expression.type !in validValueTypes) {
-                return ResolveAllResult("", emptySet(), PlsDocBundle.message("dynamic"))
+                return ResolveAllResult("", emptySet(), PlsBundle.message("dynamic"))
             }
             if(config.expression.type == CwtDataType.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
-                return ResolveAllResult("", emptySet(), PlsDocBundle.message("inlined"))
+                return ResolveAllResult("", emptySet(), PlsBundle.message("inlined"))
             }
             val key = propertyValue.value
             val localisations = ParadoxLocalisationSearch.search(key, selector).findAll()

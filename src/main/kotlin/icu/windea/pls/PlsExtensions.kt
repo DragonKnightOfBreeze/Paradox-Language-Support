@@ -294,53 +294,53 @@ private fun resolveCwtLink(linkWithoutPrefix: String, sourceElement: PsiElement)
             val subtypeName = tokens.getOrNull(3)
             val config = when {
                 name == null -> null
-                subtypeName == null -> getCwtConfig(project).getValue(gameType).types[name]
-                else -> getCwtConfig(project).getValue(gameType).types.getValue(name).subtypes[subtypeName]
+                subtypeName == null -> getCwtConfig(project).get(gameType).types[name]
+                else -> getCwtConfig(project).get(gameType).types.getValue(name).subtypes[subtypeName]
             } ?: return null
             return config.pointer.element
         }
         "enums" -> {
             val name = tokens.getOrNull(2) ?: return null
             val valueName = tokens.getOrNull(3)
-            val config = getCwtConfig(project).getValue(gameType).enums[name] ?: return null
+            val config = getCwtConfig(project).get(gameType).enums[name] ?: return null
             if(valueName == null) return config.pointer.element
             return config.valueConfigMap.get(valueName)?.pointer?.element
         }
         "complex_enums" -> {
             val name = tokens.getOrNull(2) ?: return null
-            val config = getCwtConfig(project).getValue(gameType).complexEnums[name] ?: return null
+            val config = getCwtConfig(project).get(gameType).complexEnums[name] ?: return null
             return config.pointer.element
         }
         "values" -> {
             val name = tokens.getOrNull(2) ?: return null
             val valueName = tokens.getOrNull(3)
-            val config = getCwtConfig(project).getValue(gameType).values[name] ?: return null
+            val config = getCwtConfig(project).get(gameType).values[name] ?: return null
             if(valueName == null) return config.pointer.element
             return config.valueConfigMap.get(valueName)?.pointer?.element
         }
         "scopes" -> {
             val name = tokens.getOrNull(2) ?: return null
-            val config = getCwtConfig(project).getValue(gameType).scopeAliasMap[name] ?: return null
+            val config = getCwtConfig(project).get(gameType).scopeAliasMap[name] ?: return null
             return config.pointer.element
         }
         "system_links" -> {
             val name = tokens.getOrNull(2) ?: return null
-            val config = getCwtConfig(project).getValue(gameType).systemLinks[name] ?: return null
+            val config = getCwtConfig(project).get(gameType).systemLinks[name] ?: return null
             return config.pointer.element
         }
         "links" -> {
             val name = tokens.getOrNull(2) ?: return null
-            val config = getCwtConfig(project).getValue(gameType).links[name] ?: return null
+            val config = getCwtConfig(project).get(gameType).links[name] ?: return null
             return config.pointer.element
         }
         "modifier_categories" -> {
             val name = tokens.getOrNull(2) ?: return null
-            val config = getCwtConfig(project).getValue(gameType).modifierCategories[name] ?: return null
+            val config = getCwtConfig(project).get(gameType).modifierCategories[name] ?: return null
             return config.pointer.element
         }
         "modifiers" -> {
             val name = tokens.getOrNull(2) ?: return null
-            val config = getCwtConfig(project).getValue(gameType).modifiers[name] ?: return null
+            val config = getCwtConfig(project).get(gameType).modifiers[name] ?: return null
             return config.pointer.element
         }
         else -> null
@@ -492,19 +492,19 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilde
             val remoteFileId = (rootInfo as? ParadoxModRootInfo)?.descriptorInfo?.remoteFileId
             //remoteFileId（暂不显示）
             //if(remoteFileId != null) {
-            //	append(" ").append(PlsDocBundle.message("name.core.remoteFileId")).append(": ").append(remoteFileId).append(" )
+            //	append(" ").append(PlsBundle.message("name.core.remoteFileId")).append(": ").append(remoteFileId).append(" )
             //}
             //相关链接
             //通过这种方式获取需要的url，使用rootPath而非gameRootPath
             val rootUri = fileInfo.rootInfo.rootPath.toUri().toString()
             append(" ")
-            appendLink(rootUri, PlsDocBundle.message("text.localLinkLabel"))
+            appendLink(rootUri, PlsBundle.message("text.localLinkLabel"))
             if(remoteFileId != null) {
                 append(" | ")
-                appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsDocBundle.message("text.steamLinkLabel"))
+                appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsBundle.message("text.steamLinkLabel"))
                 appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
                 append(" | ")
-                appendLink(getSteamWorkshopLink(remoteFileId), PlsDocBundle.message("text.steamWebsiteLinkLabel")) //自带外部链接图标
+                appendLink(getSteamWorkshopLink(remoteFileId), PlsBundle.message("text.steamWebsiteLinkLabel")) //自带外部链接图标
             }
         }
         append("</span>")

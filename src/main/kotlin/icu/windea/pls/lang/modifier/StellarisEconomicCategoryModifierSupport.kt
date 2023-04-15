@@ -137,20 +137,20 @@ class StellarisEconomicCategoryModifierSupport: ParadoxModifierSupport {
         
         //加上名字
         val name = element.name
-        append(PlsDocBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        append(PlsBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         //加上经济类型信息
         appendBr().appendIndent()
-        append(PlsDocBundle.message("generatedFromEconomicCategory"))
+        append(PlsBundle.message("generatedFromEconomicCategory"))
         append(" ")
         appendDefinitionLink(gameType, economicCategoryInfo.name, "economic_category", element)
         if(modifierInfo.resource != null) {
             appendBr().appendIndent()
-            append(PlsDocBundle.message("generatedFromResource"))
+            append(PlsBundle.message("generatedFromResource"))
             append(" ")
             appendDefinitionLink(gameType, modifierInfo.resource, "resource", element)
         } else {
             appendBr().appendIndent()
-            append(PlsDocBundle.message("forAiBudget"))
+            append(PlsBundle.message("forAiBudget"))
         }
         
         return true
@@ -169,19 +169,19 @@ class StellarisEconomicCategoryModifierSupport: ParadoxModifierSupport {
         val economicCategoryInfo = StellarisEconomicCategoryHandler.getInfo(economicCategory) ?: return false
         for(modifierInfo in economicCategoryInfo.modifiers) {
             appendBr()
-            append(PlsDocBundle.message("prefix.generatedModifier")).append(" ")
+            append(PlsBundle.message("prefix.generatedModifier")).append(" ")
             append(modifierInfo.name)
             if(modifierInfo.resource != null) {
                 grayed {
                     append(" ")
-                    append(PlsDocBundle.message("fromResource"))
+                    append(PlsBundle.message("fromResource"))
                     append(" ")
                     appendDefinitionLink(gameType, modifierInfo.resource, "resource", definition)
                 }
             } else {
                 grayed {
                     append(" ")
-                    append(PlsDocBundle.message("forAiBudget"))
+                    append(PlsBundle.message("forAiBudget"))
                 }
             }
         }

@@ -55,30 +55,30 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
 	override fun getAdvancedInformationHint(element: ParadoxTypedElement): String {
 		val children = buildList {
 			element.definitionType?.let { type ->
-				add(makeHtmlRow(PlsDocBundle.message("title.definitionType"), type))
+				add(makeHtmlRow(PlsBundle.message("title.definitionType"), type))
 			}
 			element.type?.let { expressionType ->
-				add(makeHtmlRow(PlsDocBundle.message("title.type"), expressionType.text))
+				add(makeHtmlRow(PlsBundle.message("title.type"), expressionType.text))
 			}
 			element.expression?.let { expression ->
-				add(makeHtmlRow(PlsDocBundle.message("title.expression"), expression))
+				add(makeHtmlRow(PlsBundle.message("title.expression"), expression))
 			}
 			element.configExpression?.let { configExpression ->
-				add(makeHtmlRow(PlsDocBundle.message("title.configExpression"), configExpression))
+				add(makeHtmlRow(PlsBundle.message("title.configExpression"), configExpression))
 			}
 			val memberElement = getMemberElement(element)
 			if(memberElement != null && ParadoxScopeHandler.isScopeContextSupported(memberElement)) {
 				val scopeContext = ParadoxScopeHandler.getScopeContext(memberElement)
 				if(scopeContext != null) {
 					val text = scopeContext.detailMap.entries.joinToString("\n") { (key, value) -> "$key = $value" }
-					add(makeHtmlRow(PlsDocBundle.message("title.scopeContext"), text))
+					add(makeHtmlRow(PlsBundle.message("title.scopeContext"), text))
 				}
 			}
 			if(element is ParadoxLocalisationCommandIdentifier) {
 				val scopeContext = ParadoxScopeHandler.getScopeContext(element)
 				if(scopeContext != null) {
 					val text = scopeContext.detailMap.entries.joinToString("\n") { (key, value) -> "$key = $value" }
-					add(makeHtmlRow(PlsDocBundle.message("title.scopeContext"), text))
+					add(makeHtmlRow(PlsBundle.message("title.scopeContext"), text))
 				}
 			}
 		}

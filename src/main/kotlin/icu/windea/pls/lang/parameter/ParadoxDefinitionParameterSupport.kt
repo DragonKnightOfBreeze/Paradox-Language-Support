@@ -87,12 +87,12 @@ class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         
         //加上名字
         val name = element.name
-        append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         
         //加上所属定义信息
         val gameType = element.gameType
         appendBr().appendIndent()
-        append(PlsDocBundle.message("ofDefinition")).append(" ")
+        append(PlsBundle.message("ofDefinition")).append(" ")
         appendDefinitionLink(gameType, definitionName, definitionType.first(), element)
         append(": ")
         

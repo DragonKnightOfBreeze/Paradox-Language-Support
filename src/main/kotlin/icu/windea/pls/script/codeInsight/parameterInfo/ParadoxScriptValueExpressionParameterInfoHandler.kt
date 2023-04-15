@@ -78,7 +78,7 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
         //PARAM1, PARAM2, ...
         //不高亮特定的参数
         var isFirst = true
-        val text = if(infos.isEmpty()) PlsDocBundle.message("noParameters") else buildString {
+        val text = if(infos.isEmpty()) PlsBundle.message("noParameters") else buildString {
             for(info in infos) {
                 if(isFirst) isFirst = false else append(", ")
                 append(info.name)

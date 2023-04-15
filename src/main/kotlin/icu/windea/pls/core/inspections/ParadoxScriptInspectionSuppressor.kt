@@ -56,9 +56,9 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
     ) : SuppressByCommentFix(toolId, ParadoxScriptFile::class.java) {
         override fun getText(): String {
             if(toolId == SuppressionUtil.ALL) {
-                return PlsBundle.message("script.supress.for.file.all", fileName)
+                return PlsBundle.message("script.suppress.for.file.all", fileName)
             } else {
-                return PlsBundle.message("script.supress.for.file", fileName)
+                return PlsBundle.message("script.suppress.for.file", fileName)
             }
         }
         
@@ -83,7 +83,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         //definiton here should be a property, not file
         
         override fun getText(): String {
-            return PlsBundle.message("script.supress.for.definition", definitionName)
+            return PlsBundle.message("script.suppress.for.definition", definitionName)
         }
         
         override fun getContainer(context: PsiElement?): PsiElement? {
@@ -111,7 +111,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         //here just call scriptMemberElement (property / value) "expression"
         
         override fun getText(): String {
-            return PlsBundle.message("script.supress.for.expression")
+            return PlsBundle.message("script.suppress.for.expression")
         }
         
         override fun getContainer(context: PsiElement?): PsiElement? {

@@ -118,7 +118,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
                 || ParadoxLocalisationParameterSupport.getDocumentationDefinition(element, this)
             if(!r) {
                 //显示默认的快速文档
-                append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+                append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
             }
         }
     }
@@ -129,7 +129,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         val gameType = element.gameType
         val configGroup = getCwtConfig(element.project).getValue(gameType)
         definition {
-            append(PlsDocBundle.message("prefix.valueSetValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+            append(PlsBundle.message("prefix.valueSetValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
             append(": ")
             var appendSeparator = false
             for(valueSetName in valueSetNames) {
@@ -151,7 +151,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
             val enumName = element.enumName
             val gameType = element.gameType
             val configGroup = getCwtConfig(element.project).getValue(gameType)
-            append(PlsDocBundle.message("prefix.complexEnumValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+            append(PlsBundle.message("prefix.complexEnumValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
             val complexEnumConfig = configGroup.complexEnums[enumName]
             if(complexEnumConfig != null) {
                 val typeLink = "${gameType.id}/complex_enums/${enumName}"
@@ -168,7 +168,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
             val r = ParadoxModifierSupport.getDocumentationDefinition(element, this)
             if(!r) {
                 //显示默认的快速文档
-                append(PlsDocBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+                append(PlsBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
             }
             
             val configGroup = getCwtConfig(element.project).getValue(element.gameType)
@@ -203,12 +203,12 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         //如果没找到的话，不要在文档中显示相关信息
         if(localisation != null) {
             appendBr()
-            append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ")
+            append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
             append("Name = ").appendLocalisationLink(gameType, localisation.name, element, resolved = true)
         }
         if(descLocalisation != null) {
             appendBr()
-            append(PlsDocBundle.message("prefix.relatedLocalisation")).append(" ")
+            append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
             append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, element, resolved = true)
         }
         if(sections != null && render) {
@@ -241,7 +241,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         //如果没找到的话，不要在文档中显示相关信息
         if(iconPath != null && iconFile != null) {
             appendBr()
-            append(PlsDocBundle.message("prefix.relatedImage")).append(" ")
+            append(PlsBundle.message("prefix.relatedImage")).append(" ")
             append("Icon = ").appendFilePathLink(iconPath, gameType, iconPath, element, resolved = true)
         }
         if(sections != null && render) {
@@ -267,11 +267,11 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
             val contextElement = element
             val categoryNames = modifierCategories.keys
             if(categoryNames.isNotEmpty()) {
-                sections.put(PlsDocBundle.message("sectionTitle.categories"), ParadoxModifierHandler.getCategoriesText(categoryNames, gameType, contextElement))
+                sections.put(PlsBundle.message("sectionTitle.categories"), ParadoxModifierHandler.getCategoriesText(categoryNames, gameType, contextElement))
             }
             
             val supportedScopes = modifierCategories.getSupportedScopes()
-            sections.put(PlsDocBundle.message("sectionTitle.supportedScopes"), ParadoxModifierHandler.getScopesText(supportedScopes, gameType, contextElement))
+            sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxModifierHandler.getScopesText(supportedScopes, gameType, contextElement))
         }
     }
     
@@ -300,7 +300,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
             ParadoxScopeHandler.buildScopeContextDoc(scopeContext, gameType, contextElement, this)
             append("</code>")
         }
-        sections.put(PlsDocBundle.message("sectionTitle.scopeContext"), scopeContextText)
+        sections.put(PlsBundle.message("sectionTitle.scopeContext"), scopeContextText)
     }
     
     private fun StringBuilder.buildSections(sectionsList: List<Map<String, String>>) {

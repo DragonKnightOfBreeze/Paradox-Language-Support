@@ -50,12 +50,12 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         
         //加上名字
         val name = element.name
-        append(PlsDocBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         
         //加上所属本地化信息
         val gameType = element.gameType
         appendBr().appendIndent()
-        append(PlsDocBundle.message("ofLocalisation")).append(" ")
+        append(PlsBundle.message("ofLocalisation")).append(" ")
         appendLocalisationLink(gameType, element.contextName, element)
         return true
     }

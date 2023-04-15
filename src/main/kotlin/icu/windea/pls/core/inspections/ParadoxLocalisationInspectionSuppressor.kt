@@ -42,9 +42,9 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
     ) : SuppressByCommentFix(toolId, ParadoxLocalisationFile::class.java) {
         override fun getText(): String {
             if(toolId == SuppressionUtil.ALL) {
-                return PlsBundle.message("localisation.supress.for.file.all", fileName)
+                return PlsBundle.message("localisation.suppress.for.file.all", fileName)
             } else {
-                return PlsBundle.message("localisation.supress.for.file", fileName)
+                return PlsBundle.message("localisation.suppress.for.file", fileName)
             }
         }
         
@@ -65,7 +65,7 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
         private val toolId: String
     ) : SuppressByCommentFix(toolId, ParadoxLocalisationProperty::class.java) {
         override fun getText(): String {
-            return PlsBundle.message("localisation.supress.for.property")
+            return PlsBundle.message("localisation.suppress.for.property")
         }
         
         override fun getCommentsFor(container: PsiElement): List<PsiElement>? {
