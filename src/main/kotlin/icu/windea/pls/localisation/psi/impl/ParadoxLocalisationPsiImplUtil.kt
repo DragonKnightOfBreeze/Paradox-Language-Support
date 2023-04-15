@@ -118,6 +118,19 @@ object ParadoxLocalisationPsiImplUtil {
     }
     
     @JvmStatic
+    fun setValue(element: ParadoxLocalisationProperty, value: String): PsiElement {
+        val valueElement = element.propertyValue
+        if(valueElement == null) {
+            val newElement = ParadoxLocalisationElementFactory.createProperty(element.project, element.name, value)
+            return element.replace(newElement)
+        } else {
+            val newValueElement = ParadoxLocalisationElementFactory.createPropertyValue(element.project, value)
+            valueElement.replace(newValueElement)
+            return element
+        }
+    }
+    
+    @JvmStatic
     fun getPresentation(element: ParadoxLocalisationProperty): ItemPresentation {
         val localisationInfo = element.localisationInfo
         if(localisationInfo != null) return ParadoxLocalisationPresentation(element)

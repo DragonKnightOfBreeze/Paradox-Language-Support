@@ -40,6 +40,9 @@ public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedEle
   @Nullable
   String getValue();
 
+  @NotNull
+  PsiElement setValue(@NotNull String value);
+
   boolean isEquivalentTo(@NotNull PsiElement another);
 
   @NotNull

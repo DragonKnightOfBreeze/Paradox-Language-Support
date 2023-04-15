@@ -18,6 +18,7 @@ interface CwtConfigGroup {
 	val systemLinks: Map<@CaseInsensitive String, CwtSystemLinkConfig> //EXTENDED BY PLS
 	val localisationLocales: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
 	val localisationLocalesNoDefault: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
+	val localisationLocalesNoDefaultNoPrefix: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
 	val localisationLocalesByCode: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
 	val localisationPredefinedParameters: Map<String, CwtLocalisationPredefinedParameterConfig> //EXTENDED BY PLS
 	

@@ -10,6 +10,4 @@ data class GenerateLocalisationsInFileContext(
     val contextList: MutableList<GenerateLocalisationsContext>
 )
 
-private val _generateLocalisationsInFileContextKey = Key.create<GenerateLocalisationsInFileContext>("paradox.generateLocalisationInFileContext")
-
-val PlsKeys.generateLocalisationsInFileContextKey get() = _generateLocalisationsInFileContextKey
+val PlsKeys.generateLocalisationsInFileContextKey by lazy { Key.create<GenerateLocalisationsInFileContext>("paradox.generateLocalisationInFileContext") }

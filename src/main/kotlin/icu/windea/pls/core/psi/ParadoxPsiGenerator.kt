@@ -94,9 +94,7 @@ object ParadoxPsiGenerator {
         val strategy = generationSettings.localisationTextGenerationStrategy
         val text = when(strategy) {
             LocalisationTextGenerationStrategy.EmptyText -> ""
-            LocalisationTextGenerationStrategy.SpecificText -> {
-                generationSettings.localisationText.orEmpty()
-            }
+            LocalisationTextGenerationStrategy.SpecificText -> generationSettings.localisationText.orEmpty()
             LocalisationTextGenerationStrategy.FromLocale -> {
                 //使用对应语言区域的文本，如果不存在，以及其他任何意外，直接使用空字符串
                 val locale = getLocale(generationSettings.localisationTextLocale.orEmpty())

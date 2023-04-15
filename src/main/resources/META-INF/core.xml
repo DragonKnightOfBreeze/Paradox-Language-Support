@@ -148,25 +148,17 @@
     </action>
     
     <group id="Pls.OpenPath" popup="true">
-      <action id="Pls.OpenPath.OpenSteamPath" class="icu.windea.pls.core.tool.actions.OpenSteamPathAction"
-              icon="PlsIcons.Actions.SteamDirectory"/>
-      <action id="Pls.OpenPath.OpenSteamGamePath" class="icu.windea.pls.core.tool.actions.OpenSteamGamePathAction"
-              icon="PlsIcons.Actions.SteamGameDirectory"/>
-      <action id="Pls.OpenPath.OpenSteamWorkshopPath" class="icu.windea.pls.core.tool.actions.OpenSteamWorkshopPathAction"
-              icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
-      <action id="Pls.OpenPath.OpenGameDataPath" class="icu.windea.pls.core.tool.actions.OpenGameDataPathAction"
-              icon="PlsIcons.Actions.GameDataDirectory"/>
+      <action id="Pls.OpenPath.OpenSteamPath" class="icu.windea.pls.core.tool.actions.OpenSteamPathAction"/>
+      <action id="Pls.OpenPath.OpenSteamGamePath" class="icu.windea.pls.core.tool.actions.OpenSteamGamePathAction"/>
+      <action id="Pls.OpenPath.OpenSteamWorkshopPath" class="icu.windea.pls.core.tool.actions.OpenSteamWorkshopPathAction"/>
+      <action id="Pls.OpenPath.OpenGameDataPath" class="icu.windea.pls.core.tool.actions.OpenGameDataPathAction"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.CopyPath" popup="true">
-      <action id="Pls.CopyPath.CopySteamPath" class="icu.windea.pls.core.tool.actions.CopySteamPathAction"
-              icon="PlsIcons.Actions.SteamDirectory"/>
-      <action id="Pls.CopyPath.CopySteamGamePath" class="icu.windea.pls.core.tool.actions.CopySteamGamePathAction"
-              icon="PlsIcons.Actions.SteamGameDirectory"/>
-      <action id="Pls.CopyPath.CopySteamWorkshopPath" class="icu.windea.pls.core.tool.actions.CopySteamWorkshopPathAction"
-              icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
-      <action id="Pls.CopyPath.CopyGameDataPath" class="icu.windea.pls.core.tool.actions.CopyGameDataPathAction"
-              icon="PlsIcons.Actions.GameDataDirectory"/>
+      <action id="Pls.CopyPath.CopySteamPath" class="icu.windea.pls.core.tool.actions.CopySteamPathAction"/>
+      <action id="Pls.CopyPath.CopySteamGamePath" class="icu.windea.pls.core.tool.actions.CopySteamGamePathAction"/>
+      <action id="Pls.CopyPath.CopySteamWorkshopPath" class="icu.windea.pls.core.tool.actions.CopySteamWorkshopPathAction"/>
+      <action id="Pls.CopyPath.CopyGameDataPath" class="icu.windea.pls.core.tool.actions.CopyGameDataPathAction"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.OpenUrl" popup="true">
@@ -199,6 +191,11 @@
       <separator/>
       <reference ref="Pls.GotoPath"/>
       <add-to-group group-id="FileChooserToolbar" anchor="last"/>
+    </group>
+    
+    <group id="Pls.Generate" popup="true">
+      <action id="Pls.Generate.GenerateLocalisationFile" class="icu.windea.pls.core.tool.actions.GenerateLocalisationFileAction"/>
+      <add-to-group group-id="Pls.Tools"/>
     </group>
 
     <group id="Pls.GenerateGroup">

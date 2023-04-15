@@ -60,7 +60,7 @@ property ::= property_key COLON property_number? property_value {
   stubClass="icu.windea.pls.localisation.psi.ParadoxLocalisationStub"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
   methods=[
-    getIcon getName setName getNameIdentifier getTextOffset getCategory getValue
+    getIcon getName setName getNameIdentifier getTextOffset getCategory getValue setValue
     isEquivalentTo toString
   ]
 }
