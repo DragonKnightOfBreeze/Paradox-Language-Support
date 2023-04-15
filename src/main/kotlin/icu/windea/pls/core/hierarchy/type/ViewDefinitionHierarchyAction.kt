@@ -13,10 +13,4 @@ class ViewDefinitionHierarchyAction: ChangeHierarchyViewActionBase(
     override fun getTypeName(): String {
         return ParadoxDefinitionHierarchyBrowser.getDefinitionHierarchyType()
     }
-    
-    override fun update(event: AnActionEvent) {
-        super.update(event)
-        val browser = getHierarchyBrowser(event.dataContext)
-        event.presentation.isEnabled = browser != null
-    }
 }

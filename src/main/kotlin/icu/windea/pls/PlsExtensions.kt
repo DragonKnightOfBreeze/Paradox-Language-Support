@@ -78,6 +78,13 @@ fun FileType.isParadoxFileType() = this == ParadoxScriptFileType || this == Para
 
 fun Language.isParadoxLanguage() = this.isKindOf(ParadoxScriptLanguage) || this.isKindOf(ParadoxLocalisationLanguage)
 
+fun PsiReference.canResolveScriptedVariable(): Boolean {
+    return when(this) {
+        is ParadoxScriptedVariablePsiReference -> true
+        else -> false
+    }
+}
+
 fun PsiReference.canResolveDefinition(): Boolean {
     return when(this) {
         is ParadoxScriptExpressionPsiReference -> true
@@ -91,7 +98,7 @@ fun PsiReference.canResolveDefinition(): Boolean {
 fun PsiReference.canResolveLocalisation(): Boolean {
     return when(this) {
         is ParadoxScriptExpressionPsiReference -> true
-        is ParadoxTemplateExpressionNode.Reference -> true
+        is ParadoxLocalisationPropertyPsiReference -> true
         else -> false
     }
 }

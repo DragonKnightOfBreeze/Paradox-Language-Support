@@ -114,11 +114,13 @@ class ParadoxSettingsState : BaseState() {
         var definitionTypeBindingsInCallHierarchy by map<String, String>()
         
         fun showDefinitionsInCallHierarchy(rootDefinitionInfo: ParadoxDefinitionInfo?, definitionInfo: ParadoxDefinitionInfo?): Boolean {
-            if(rootDefinitionInfo == null || definitionInfo == null) return true 
-            return definitionTypeBindingsInCallHierarchy.any { (k, v) ->
-                !ParadoxDefinitionTypeExpression.resolve(k).matches(rootDefinitionInfo) || v.toCommaDelimitedStringSet().any { e ->
-                    ParadoxDefinitionTypeExpression.resolve(e).matches(definitionInfo)
-                }
+            if(rootDefinitionInfo == null || definitionInfo == null) return true
+            val bindings = definitionTypeBindingsInCallHierarchy
+            if(bindings.isEmpty()) return true
+            val matchedBindings = bindings.filterKeys { k -> ParadoxDefinitionTypeExpression.resolve(k).matches(rootDefinitionInfo) }
+            if(matchedBindings.isEmpty()) return true
+            return matchedBindings.values.any { v ->
+                v.toCommaDelimitedStringSet().any { e -> ParadoxDefinitionTypeExpression.resolve(e).matches(definitionInfo) }
             }
         }
     }
