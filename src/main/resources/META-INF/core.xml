@@ -128,7 +128,7 @@
   </projectListeners>
   
   <actions>
-    <group id="Pls.Tools" popup="true">
+    <group id="Pls.Tools" popup="true" class="icu.windea.pls.core.tool.actions.PlsToolsActionGroup">
       <add-to-group group-id="ToolsMenu"/>
       <add-to-group group-id="EditorPopupMenu"/>
       <add-to-group group-id="ProjectViewPopupMenu"/>

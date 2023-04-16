@@ -127,7 +127,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         val name = element.name
         val valueSetNames = element.valueSetNames
         val gameType = element.gameType
-        val configGroup = getCwtConfig(element.project).getValue(gameType)
+        val configGroup = getCwtConfig(element.project).get(gameType)
         definition {
             append(PlsBundle.message("prefix.valueSetValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
             append(": ")
@@ -150,7 +150,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
             val name = element.name
             val enumName = element.enumName
             val gameType = element.gameType
-            val configGroup = getCwtConfig(element.project).getValue(gameType)
+            val configGroup = getCwtConfig(element.project).get(gameType)
             append(PlsBundle.message("prefix.complexEnumValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
             val complexEnumConfig = configGroup.complexEnums[enumName]
             if(complexEnumConfig != null) {
@@ -171,7 +171,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
                 append(PlsBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
             }
             
-            val configGroup = getCwtConfig(element.project).getValue(element.gameType)
+            val configGroup = getCwtConfig(element.project).get(element.gameType)
             addModifierRelatedLocalisations(element, name, configGroup, sectionsList?.get(2))
             
             addModifierIcon(element, name, configGroup, sectionsList?.get(1))

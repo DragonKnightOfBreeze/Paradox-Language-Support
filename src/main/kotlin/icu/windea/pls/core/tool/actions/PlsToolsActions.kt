@@ -7,3 +7,4 @@ object PlsToolsActions {
     //places
     const val MOD_DEPENDENCIES_POPUP = "ParadoxModDependenciesPopup"
 }
+
