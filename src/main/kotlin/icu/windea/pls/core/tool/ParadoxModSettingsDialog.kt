@@ -86,7 +86,7 @@ class ParadoxModSettingsDialog(
             row {
                 //gameDirectory
                 label(PlsBundle.message("mod.settings.gameDirectory")).widthGroup("left")
-                val descriptor = ParadoxRootDirectoryDescriptor()
+                val descriptor = ParadoxDirectoryDescriptor()
                     .withTitle(PlsBundle.message("mod.settings.gameDirectory.title"))
                     .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
@@ -104,7 +104,7 @@ class ParadoxModSettingsDialog(
             row {
                 //modDirectory
                 label(PlsBundle.message("mod.settings.modDirectory")).widthGroup("left")
-                val descriptor = ParadoxRootDirectoryDescriptor()
+                val descriptor = ParadoxDirectoryDescriptor()
                     .withTitle(PlsBundle.message("mod.settings.modDirectory.title"))
                     .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }

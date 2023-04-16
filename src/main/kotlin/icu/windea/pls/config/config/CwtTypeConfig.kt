@@ -6,7 +6,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 
 /**
- * @property block (property) block: boolean
  * @property baseType (property) path: string
  * @property path (property) path: string/path
  * @property pathStrict (property) path_strict: boolean

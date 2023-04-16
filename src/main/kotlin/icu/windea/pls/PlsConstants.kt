@@ -11,6 +11,7 @@ import icu.windea.pls.lang.model.*
 import java.awt.*
 
 object PlsConstants {
+    val pluginId = "icu.windea.pls"
     val locationClass = PlsIcons::class.java
     
     val cwtColorSettingsDemoText = "/demoText/Cwt.colorSettings.txt".toClasspathUrl().readText()

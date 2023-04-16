@@ -50,7 +50,11 @@ dependencies {
 		exclude(module = "jackson-core")
 		exclude(module = "jackson-databind")
 	}
+	//Sqlite
 	//implementation("org.xerial:sqlite-jdbc:3.40.1.0")
+	//javassist
+	//implementation("javassist:javassist:3.12.1.GA")
+	implementation("org.javassist:javassist:3.29.2-GA")
 }
 
 sourceSets {

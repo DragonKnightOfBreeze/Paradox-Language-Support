@@ -7,7 +7,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 
 /**
- * @see icu.windea.pls.core.settings.ParadoxRootDirectoryDescriptor
+ * @see icu.windea.pls.core.inject.FileRenderInjector
  */
 class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
     override fun decorate(node: ProjectViewNode<*>, data: PresentationData) {

@@ -24,14 +24,13 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.IntPredicate;
 
+//本地化图标引用在查找使用时会被IDE低层代码跳过，需要重写以下方法：
+//icu.windea.override.psi.search.ParadoxLowLevelSearchUtil.checkJavaIdentifier
+
 //com.intellij.psi.impl.search.LowLevelSearchUtil
+
 //@formatter:off
 
-/**
- * 本地化图标引用在查找使用时会被IDE低层代码跳过，需要重写以下方法：
- * <p>
- * {@link #checkJavaIdentifier(CharSequence, StringSearcher, int)}
- */
 @SuppressWarnings("ALL")
 public final class ParadoxLowLevelSearchUtil {
   private static final Logger LOG = Logger.getInstance(ParadoxLowLevelSearchUtil.class);

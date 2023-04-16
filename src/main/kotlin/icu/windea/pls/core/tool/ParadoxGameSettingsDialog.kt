@@ -47,7 +47,7 @@ class ParadoxGameSettingsDialog(
             row {
                 //gameDirectory
                 label(PlsBundle.message("game.settings.gameDirectory")).widthGroup("left")
-                val descriptor = ParadoxRootDirectoryDescriptor()
+                val descriptor = ParadoxDirectoryDescriptor()
                     .withTitle(PlsBundle.message("game.settings.gameDirectory.title"))
                     .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }

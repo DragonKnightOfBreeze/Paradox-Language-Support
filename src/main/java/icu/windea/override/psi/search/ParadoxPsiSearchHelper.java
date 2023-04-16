@@ -40,6 +40,7 @@ import java.util.concurrent.atomic.*;
 import java.util.stream.*;
 
 //com.intellij.psi.impl.search.PsiSearchHelperImpl
+
 //@formatter:off
 
 @SuppressWarnings("ALL")

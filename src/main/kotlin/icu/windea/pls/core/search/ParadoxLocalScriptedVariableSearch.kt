@@ -1,7 +1,6 @@
 package icu.windea.pls.core.search
 
 import com.intellij.openapi.extensions.*
-import com.intellij.psi.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.search.selector.chained.*
@@ -13,7 +12,6 @@ import icu.windea.pls.script.psi.*
 class ParadoxLocalScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScriptedVariable, ParadoxLocalScriptedVariableSearch.SearchParameters>(EP_NAME) {
 	/**
 	 * @property name 变量的名字，不以"@"开始。
-	 * @property context 需要从哪个[PsiElement]开始，在整个脚本文件内，向上查找。
 	 */
 	class SearchParameters(
 		val name: String?,
