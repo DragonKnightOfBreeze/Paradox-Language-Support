@@ -61,7 +61,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 			if(settings.showOnlyIfScopeIsChanged && !ParadoxScopeHandler.isScopeContextChanged(element, scopeContext)) return true
 			
 			val gameType = selectGameType(file) ?: return true
-			val configGroup = getCwtConfig(file.project).getValue(gameType)
+			val configGroup = getCwtConfig(file.project).get(gameType)
 			val presentation = doCollect(scopeContext, configGroup)
 			val finalPresentation = presentation.toFinalPresentation(this, file.project)
 			sink.addInlineElement(offset, true, finalPresentation, true)

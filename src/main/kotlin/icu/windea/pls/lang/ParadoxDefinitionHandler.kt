@@ -64,7 +64,7 @@ object ParadoxDefinitionHandler {
         val path = fileInfo.entryPath //这里使用entryPath
         val elementPath = ParadoxElementPathHandler.getFromFile(element, PlsConstants.maxDefinitionDepth) ?: return null
         val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
-        val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
+        val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
         for(typeConfig in configGroup.types.values) {
             ProgressManager.checkCanceled()
             if(matchesType(element, typeConfig, path, elementPath, rootKey, configGroup)) {
@@ -77,7 +77,7 @@ object ParadoxDefinitionHandler {
     
     private fun resolveInfoByStub(element: ParadoxScriptDefinitionElement, stub: ParadoxScriptDefinitionElementStub<out ParadoxScriptDefinitionElement>, project: Project): ParadoxDefinitionInfo? {
         val gameType = stub.gameType ?: return null
-        val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
+        val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
         val name = stub.name.takeIfNotEmpty() ?: return null
         val type = stub.type.takeIfNotEmpty() ?: return null
         val typeConfig = configGroup.types[type] ?: return null
@@ -596,7 +596,7 @@ object ParadoxDefinitionHandler {
         val gameType = selectGameType(file) ?: return null
         val path = fileInfo.entryPath //这里使用entryPath
         val elementPath = ParadoxElementPathHandler.getFromFile(node, tree, file, PlsConstants.maxDefinitionDepth) ?: return null
-        val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
+        val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
         for(typeConfig in configGroup.types.values) {
             ProgressManager.checkCanceled()
             if(matchesType(node, tree, typeConfig, path, elementPath, rootKey, configGroup)) {

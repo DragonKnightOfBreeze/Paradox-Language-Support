@@ -24,7 +24,7 @@ abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
 		if(!root.language.isKindOf(ParadoxScriptLanguage)) return FoldingDescriptor.EMPTY
 		val project = root.project
 		val gameType = selectGameType(root) ?: return FoldingDescriptor.EMPTY
-		val configGroup = getCwtConfig(project).getValue(gameType)
+		val configGroup = getCwtConfig(project).get(gameType)
 		val foldingSettings = configGroup.foldingSettings
 		if(foldingSettings.isEmpty()) return FoldingDescriptor.EMPTY
 		val settings = foldingSettings.get(getGroupName()) ?: return FoldingDescriptor.EMPTY

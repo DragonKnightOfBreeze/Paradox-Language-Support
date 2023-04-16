@@ -16,7 +16,7 @@ data class ParadoxComplexEnumValueInfo(
     override var file: PsiFile? = null
     
     fun getConfig(project: Project): CwtComplexEnumConfig? {
-        return getCwtConfig(project).getValue(gameType).complexEnums[enumName]
+        return getCwtConfig(project).get(gameType).complexEnums[enumName]
     }
 }
 

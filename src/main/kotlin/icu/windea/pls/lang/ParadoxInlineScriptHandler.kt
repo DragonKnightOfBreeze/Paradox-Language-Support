@@ -58,7 +58,7 @@ object ParadoxInlineScriptHandler {
         
         val matchType = CwtConfigMatchType.STATIC //这里需要静态匹配，不能访问索引
         val project = file.project
-        val configGroup = getCwtConfig(project).getValue(gameType)
+        val configGroup = getCwtConfig(project).get(gameType)
         val inlineConfigs = configGroup.inlineConfigGroup[inlineScriptName] ?: return null
         val propertyValue = element.propertyValue ?: return null
         val inlineConfig = inlineConfigs.find {

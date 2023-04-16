@@ -27,7 +27,7 @@ class ParadoxComplexEnumValueElement(
     constructor(parent: PsiElement, info: ParadoxComplexEnumValueInfo, project: Project)
         : this(parent, info.name, info.enumName, info.readWriteAccess, info.gameType, project)
     
-    val searchScopeType = ParadoxSearchScopeTypes.get(getCwtConfig(project).getValue(gameType).complexEnums.get(enumName)?.searchScopeType)
+    val searchScopeType = ParadoxSearchScopeTypes.get(getCwtConfig(project).get(gameType).complexEnums.get(enumName)?.searchScopeType)
     
     override fun getIcon(): Icon {
         return PlsIcons.ComplexEnumValue

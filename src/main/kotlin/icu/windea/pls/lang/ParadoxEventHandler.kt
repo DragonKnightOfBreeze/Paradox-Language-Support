@@ -122,7 +122,7 @@ object ParadoxEventHandler {
      * 得到指定事件的所有事件类型（以"_event"结尾的定义的子类型，拥有特定的作用域，一般拥有特定的type或者rootKey）。
      */
     fun getEventTypes(project: Project, gameType: ParadoxGameType): List<String> {
-        val eventConfig = getCwtConfig(project).getValue(gameType).types["event"] ?: return emptyList()
+        val eventConfig = getCwtConfig(project).get(gameType).types["event"] ?: return emptyList()
         return eventConfig.config.getOrPutUserData(eventTypesKey) {
             eventConfig.subtypes.keys.filter { it.endsWith("_event") }
         }

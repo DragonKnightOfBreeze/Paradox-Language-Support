@@ -631,7 +631,7 @@ object ParadoxConfigHandler {
         val originalFile = context.originalFile
         val project = originalFile.project
         val gameType = selectGameType(originalFile) ?: return
-        val configGroup = getCwtConfig(project).getValue(gameType)
+        val configGroup = getCwtConfig(project).get(gameType)
         val elementPath = ParadoxElementPathHandler.getFromFile(definitionElement, PlsConstants.maxDefinitionDepth) ?: return
         
         context.put(PlsCompletionKeys.isKeyKey, true)

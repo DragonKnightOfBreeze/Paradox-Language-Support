@@ -99,7 +99,7 @@ object ParadoxComplexEnumValueIndex {
         val fileInfo = file.fileInfo ?: return false
         val gameType = fileInfo.rootInfo.gameType
         val path = fileInfo.entryPath //这里使用entryPath
-        val configs = getCwtConfig(project).getValue(gameType).complexEnums
+        val configs = getCwtConfig(project).get(gameType).complexEnums
         for(config in configs.values) {
             if(ParadoxComplexEnumValueHandler.matchesComplexEnumByPath(config, path)) return true
         }
