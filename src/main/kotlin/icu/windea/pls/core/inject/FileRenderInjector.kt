@@ -15,7 +15,6 @@ import javassist.*
  */
 class FileRenderInjector: CodeInjector {
     override fun inject(pool: ClassPool) {
-        val baseClass = FileNode::class.java
         val targetClassName = "com.intellij.openapi.fileChooser.tree.FileRenderer"
         val injectorClassName = javaClass.name
         //pool.appendClassPath(ClassClassPath(baseClass))
@@ -29,6 +28,7 @@ class FileRenderInjector: CodeInjector {
                 //ClassLoader cl = com.intellij.ide.plugins.PluginManager.getInstance().findEnabledPlugin(pid).getClassLoader();
                 //$injectorClassName t = ($injectorClassName) Class.forName("$injectorClassName", false, cl).newInstance();
                 ////$injectorClassName t = ($injectorClassName) cl.loadClass("$injectorClassName").newInstance();
+                $injectorClassName t = new $injectorClassName();
                 //t.customize($$);
             } catch(Throwable e) {
                 throw new IllegalStateException(e);

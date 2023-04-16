@@ -10,6 +10,7 @@ class JavassistTest {
         //--add-opens java.base/java.lang=ALL-UNNAMED
         
         val pool = ClassPool.getDefault()
+        pool.importPackage("icu.windea.pls")
         val classPathList = System.getProperty("java.class.path")
         val separator = if(System.getProperty("os.name")?.contains("linux") == true) ':' else ';'
         classPathList.split(separator).forEach {
@@ -17,7 +18,7 @@ class JavassistTest {
         }
         val weaponClass = pool.get("icu.windea.pls.Weapon")
         val attackMethod = weaponClass.getDeclaredMethod("attack")
-        attackMethod.setBody("{icu.windea.pls.JavassistTest.hack();}")
+        attackMethod.setBody("{ new JavassistTest().hack();}")
         weaponClass.toClass()
         
         val weapon = Weapon()
@@ -41,7 +42,7 @@ class JavassistTest {
         }
         val weaponClass = pool.get("icu.windea.pls.Weapon")
         val attackMethod = weaponClass.getDeclaredMethod("attack")
-        attackMethod.setBody("{icu.windea.pls.JavassistTest.hack();}")
+        attackMethod.setBody("{icu.windea.pls.JavassistTest().hack();}")
         weaponClass.toClass()
         
         val weapon = Weapon()
@@ -65,18 +66,15 @@ class JavassistTest {
         }
         val weaponClass = pool.get("icu.windea.pls.Weapon")
         val attackMethod = weaponClass.getDeclaredMethod("attack")
-        attackMethod.setBody("{icu.windea.pls.JavassistTest.hack();}")
+        attackMethod.setBody("{icu.windea.pls.JavassistTest().hack();}")
         weaponClass.toClass()
         
         val weapon = Weapon()
         weapon.attack()
     }
     
-    companion object {
-        @JvmStatic
-        fun hack() {
-            println("attack!!!")
-        }
+    fun hack() {
+        println("attack!!!")
     }
 }
 
