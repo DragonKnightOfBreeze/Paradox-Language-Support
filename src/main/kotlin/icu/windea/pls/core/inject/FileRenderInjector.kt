@@ -15,7 +15,6 @@ import javassist.*
  */
 class FileRenderInjector: CodeInjector {
     override fun inject(pool: ClassPool) {
-        val baseClass = FileNode::class.java
         val targetClassName = "com.intellij.openapi.fileChooser.tree.FileRenderer"
         val injectorClassName = javaClass.name
         //pool.appendClassPath(ClassClassPath(baseClass))
@@ -24,12 +23,11 @@ class FileRenderInjector: CodeInjector {
         val code = """
         {
             try {
-                System.out.println(11111);
-                //com.intellij.openapi.extensions.PluginId pid = com.intellij.openapi.extensions.PluginId.getId("${PlsConstants.pluginId}");
-                //ClassLoader cl = com.intellij.ide.plugins.PluginManager.getInstance().findEnabledPlugin(pid).getClassLoader();
+                com.intellij.openapi.extensions.PluginId pid = com.intellij.openapi.extensions.PluginId.getId("${PlsConstants.pluginId}");
+                ClassLoader cl = com.intellij.ide.plugins.PluginManager.getInstance().findEnabledPlugin(pid).getClassLoader();
                 //$injectorClassName t = ($injectorClassName) Class.forName("$injectorClassName", false, cl).newInstance();
-                ////$injectorClassName t = ($injectorClassName) cl.loadClass("$injectorClassName").newInstance();
-                //t.customize($$);
+                $injectorClassName t = ($injectorClassName) cl.loadClass("$injectorClassName").newInstance();
+                t.customize($$);
             } catch(Throwable e) {
                 throw new IllegalStateException(e);
             }
