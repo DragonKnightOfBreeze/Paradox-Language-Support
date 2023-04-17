@@ -1,6 +1,7 @@
 package icu.windea.pls.core.search
 
 import com.intellij.openapi.application.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
@@ -17,10 +18,14 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionElement, ParadoxDefinitionSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxDefinitionSearch.SearchParameters, consumer: Processor<in ParadoxScriptDefinitionElement>) {
+        ProgressManager.checkCanceled()
+        val scope = queryParameters.selector.scope
+        if(SearchScope.isEmptyScope(scope)) return
+        
         val name = queryParameters.name
         val typeExpression = queryParameters.typeExpression
         val project = queryParameters.project
-        val scope = queryParameters.selector.scope
+        
         if(typeExpression == null) {
             if(name == null) {
                 //查找所有定义

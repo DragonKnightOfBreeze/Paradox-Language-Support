@@ -38,7 +38,6 @@ object ParadoxLocalisationParameterHandler {
             ?: return null
         ProgressManager.getInstance().runProcess({
             ReferencesSearch.search(element, searchScope).processQueryAsync p@{ reference ->
-                ProgressManager.checkCanceled()
                 val localisationReferenceElement = reference.element
                 if(localisationReferenceElement is ParadoxScriptString) {
                     val valueConfigs = ParadoxConfigHandler.getValueConfigs(localisationReferenceElement)

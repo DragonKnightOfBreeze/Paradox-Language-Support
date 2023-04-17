@@ -39,9 +39,9 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val gameType = configGroup.gameType ?: return false
         if(!isGameTypeSupported(gameType)) return false
         val project = configGroup.project
-        val selector = definitionSelector(project, element)
+        val selector = definitionSelector(project, element).distinctByName()
         var r = false
-        ParadoxDefinitionSearch.search("economic_category", selector).processQuery p@{
+        ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{
             val info = StellarisEconomicCategoryHandler.getInfo(it) ?: return@p true
             for(modifierInfo in info.modifiers) {
                 if(modifierInfo.name == name) {
@@ -60,8 +60,8 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val project = configGroup.project
         var economicCategoryInfo: StellarisEconomicCategoryInfo? = null
         var economicCategoryModifierInfo: StellarisEconomicCategoryModifierInfo? = null
-        val selector = definitionSelector(project, element).contextSensitive()
-        ParadoxDefinitionSearch.search("economic_category", selector).processQuery p@{
+        val selector = definitionSelector(project, element).contextSensitive().distinctByName()
+        ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{
             val info = StellarisEconomicCategoryHandler.getInfo(it) ?: return@p true
             for(modifierInfo in info.modifiers) {
                 if(modifierInfo.name == name) {

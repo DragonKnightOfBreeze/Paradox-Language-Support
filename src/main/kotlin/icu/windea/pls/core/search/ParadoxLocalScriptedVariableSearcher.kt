@@ -1,7 +1,9 @@
 package icu.windea.pls.core.search
 
 import com.intellij.openapi.application.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
@@ -11,6 +13,8 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxLocalScriptedVariableSearch.SearchParameters>() {
 	override fun processQuery(queryParameters: ParadoxLocalScriptedVariableSearch.SearchParameters, consumer: Processor<in ParadoxScriptScriptedVariable>) {
+		ProgressManager.checkCanceled()
+		
 		//查找在使用处之前声明的封装本地变量
 		val selector = queryParameters.selector
 		val file = selector.file ?: return

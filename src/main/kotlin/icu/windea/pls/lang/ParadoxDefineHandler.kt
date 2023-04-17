@@ -26,7 +26,7 @@ object ParadoxDefineHandler {
         try {
             val selector = fileSelector(project, contextElement).contextSensitive()
             var result: Any? = null
-            ParadoxFilePathSearch.search(definePathExpression, selector).processQuery p@{
+            ParadoxFilePathSearch.search(definePathExpression, selector).processQueryAsync p@{
                 val file = it.toPsiFile<ParadoxScriptFile>(project) ?: return@p true
                 val defines = getDefinesFromFile(file)
                 val defineValue = defines.getOrPut(path) {

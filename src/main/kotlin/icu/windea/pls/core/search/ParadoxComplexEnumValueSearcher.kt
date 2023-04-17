@@ -17,12 +17,15 @@ import icu.windea.pls.tool.*
  */
 class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValueInfo, ParadoxComplexEnumValueSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxComplexEnumValueSearch.SearchParameters, consumer: Processor<in ParadoxComplexEnumValueInfo>) {
+        ProgressManager.checkCanceled()
+        val scope = queryParameters.selector.scope
+        if(SearchScope.isEmptyScope(scope)) return
+        
         val name = queryParameters.name
         val enumName = queryParameters.enumName
         val project = queryParameters.project
         val selector = queryParameters.selector
         val gameType = selector.gameType
-        val scope = queryParameters.selector.scope
         
         FileTypeIndex.processFiles(ParadoxScriptFileType, p@{ file ->
             ProgressManager.checkCanceled()

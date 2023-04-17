@@ -1453,7 +1453,6 @@ object ParadoxConfigHandler {
         val project = originalFile.project
         val selector = definitionSelector(project, contextElement).contextSensitive()
         ParadoxDefinitionSearch.search(svName, "script_value", selector).processQueryAsync p@{ sv ->
-            ProgressManager.checkCanceled()
             val parameterContext = sv
             val parameterMap = parameterContext.parameters
             if(parameterMap.isEmpty()) return@p true
