@@ -930,9 +930,9 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeModifier(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeModifier(context: ProcessingContext, result: CompletionResultSet) = with(context) {
         ProgressManager.checkCanceled()
-        return ParadoxModifierHandler.completeModifier(context, result)
+        ParadoxModifierHandler.completeModifier(context, result)
     }
     
     fun completeTemplateExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
@@ -1357,11 +1357,11 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeVariable(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeVariable(context: ProcessingContext, result: CompletionResultSet) = with(context) {
         ProgressManager.checkCanceled()
-        val contextElement = context.contextElement
-        val keyword = context.keyword
-        val file = context.originalFile
+        val contextElement = contextElement
+        val keyword = keyword
+        val file = originalFile
         val project = file.project
         val variableSelector = valueSetValueSelector(project, file).contextSensitive().distinctByName()
         ParadoxValueSetValueSearch.search("variable", variableSelector).processQueryAsync p@{ info ->

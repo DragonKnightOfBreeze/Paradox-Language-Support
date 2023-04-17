@@ -3,6 +3,7 @@ package icu.windea.pls.script.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.patterns.PlatformPatterns.*
 import icu.windea.pls.*
+import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -15,12 +16,12 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		//当用户可能正在输入一个scriptedVariableReference的名字时提示
 		val scriptedVariableReferencePattern = psiElement()
 			.withElementType(ParadoxScriptTokenSets.SCRIPTED_VARIABLE_REFERENCE_TOKENS)
-		extend(null, scriptedVariableReferencePattern, ParadoxScriptedVariableCompletionProvider())
+		extend(scriptedVariableReferencePattern, ParadoxScriptedVariableCompletionProvider())
 		
 		//当用户可能正在输入一个propertyKey或string时提示
 		val definitionPattern = psiElement()
 			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
-		extend(null, definitionPattern, ParadoxDefinitionCompletionProvider())
+		extend(definitionPattern, ParadoxDefinitionCompletionProvider())
 		
 		//当用户可能正在输入一个eventId时提示
 		val eventIdPattern = psiElement()
@@ -29,12 +30,12 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 				.withParent(psiElement(ParadoxScriptProperty::class.java)
 					.withParent(psiElement(ParadoxScriptBlock::class.java)
 						.withParent(psiElement(ParadoxScriptProperty::class.java)))))
-		extend(null, eventIdPattern, ParadoxEventIdCompletionProvider())
+		extend(eventIdPattern, ParadoxEventIdCompletionProvider())
 		
 		//当用户可能正在输入一个parameter的名字时提示
 		val parameterPattern = psiElement()
 			.withElementType(ParadoxScriptTokenSets.PARAMETER_OR_ARGUMENT_TOKENS)
-		extend(null, parameterPattern, ParadoxParameterCompletionProvider())
+		extend(parameterPattern, ParadoxParameterCompletionProvider())
 		
 		//当用户可能正在输入一个scriptedVariable的名字时提示（除非用户也可能正在输入一个引用的名字）
 		val scriptedVariableNamePattern = psiElement()

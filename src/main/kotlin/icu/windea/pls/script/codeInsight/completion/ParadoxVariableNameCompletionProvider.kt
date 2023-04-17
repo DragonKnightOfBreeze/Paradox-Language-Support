@@ -15,42 +15,42 @@ import icu.windea.pls.script.psi.*
  * 提供变量名的代码补全。（在`alias_name[effect]`匹配的子句中）
  * @see icu.windea.pls.core.codeInsight.template.postfix.ParadoxVariableOperationExpressionPostfixTemplate
  */
-class ParadoxVariableNameCompletionProvider: CompletionProvider<CompletionParameters>() {
-	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		if(!getSettings().completion.completeVariableNames) return
-		
-		val element = parameters.position.parent.castOrNull<ParadoxScriptString>() ?: return
-		
-		val file = parameters.originalFile
-		val quoted = element.text.isLeftQuoted()
-		val rightQuoted = element.text.isRightQuoted()
-		val offsetInParent = parameters.offset - element.startOffset
-		val keyword = element.getKeyword(offsetInParent)
-		
-		context.put(PlsCompletionKeys.completionTypeKey, parameters.completionType)
-		context.put(PlsCompletionKeys.contextElementKey, element)
-		context.put(PlsCompletionKeys.originalFileKey, file)
-		context.put(PlsCompletionKeys.quotedKey, quoted)
-		context.put(PlsCompletionKeys.rightQuotedKey, rightQuoted)
-		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
-		context.put(PlsCompletionKeys.keywordKey, keyword)
-		context.put(PlsCompletionKeys.completionIdsKey, mutableSetOf<String>().synced())
-		
-		val stringElement = element
-		if(!stringElement.isBlockValue()) return
-		val parentProperty = stringElement.findParentProperty() ?: return
-		val configs = ParadoxConfigHandler.getConfigs(parentProperty, allowDefinition = true)
-		if(configs.isEmpty()) return
-		val configGroup = configs.first().info.configGroup
-		context.put(PlsCompletionKeys.configGroupKey, configGroup)
-		val matched = configs.any { config ->
-			config.configs?.any { childConfig ->
-				childConfig is CwtPropertyConfig && childConfig.key == "alias_name[effect]"
-			} ?: false
-		}
-		if(!matched) return
-		val mockConfig = CwtValueConfig(emptyPointer(), configGroup.info, "value[variable]")
-		context.put(PlsCompletionKeys.configKey, mockConfig)
+class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParameters>() {
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+        if(!getSettings().completion.completeVariableNames) return
+        
+        val element = parameters.position.parent.castOrNull<ParadoxScriptString>() ?: return
+        
+        val file = parameters.originalFile
+        val quoted = element.text.isLeftQuoted()
+        val rightQuoted = element.text.isRightQuoted()
+        val offsetInParent = parameters.offset - element.startOffset
+        val keyword = element.getKeyword(offsetInParent)
+        
+        context.put(PlsCompletionKeys.completionIdsKey, mutableSetOf<String>().synced())
+        context.put(PlsCompletionKeys.parametersKey, parameters)
+        context.put(PlsCompletionKeys.contextElementKey, element)
+        context.put(PlsCompletionKeys.originalFileKey, file)
+        context.put(PlsCompletionKeys.quotedKey, quoted)
+        context.put(PlsCompletionKeys.rightQuotedKey, rightQuoted)
+        context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
+        context.put(PlsCompletionKeys.keywordKey, keyword)
+        
+        val stringElement = element
+        if(!stringElement.isBlockValue()) return
+        val parentProperty = stringElement.findParentProperty() ?: return
+        val configs = ParadoxConfigHandler.getConfigs(parentProperty, allowDefinition = true)
+        if(configs.isEmpty()) return
+        val configGroup = configs.first().info.configGroup
+        context.put(PlsCompletionKeys.configGroupKey, configGroup)
+        val matched = configs.any { config ->
+            config.configs?.any { childConfig ->
+                childConfig is CwtPropertyConfig && childConfig.key == "alias_name[effect]"
+            } ?: false
+        }
+        if(!matched) return
+        val mockConfig = CwtValueConfig(emptyPointer(), configGroup.info, "value[variable]")
+        context.put(PlsCompletionKeys.configKey, mockConfig)
         ParadoxConfigHandler.completeValueSetValueExpression(context, result)
-	}
+    }
 }

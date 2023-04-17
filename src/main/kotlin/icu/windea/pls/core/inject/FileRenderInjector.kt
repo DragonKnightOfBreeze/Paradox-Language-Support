@@ -4,37 +4,39 @@ import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileChooser.tree.*
 import com.intellij.openapi.vfs.*
 import com.intellij.ui.*
-import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import javassist.*
 
 /**
  * 渲染文件节点时，为游戏或模组根目录提供提供额外的信息文本。
- * 
+ *
  * @see icu.windea.pls.core.ParadoxProjectViewDecorator
  */
-class FileRenderInjector: CodeInjector {
+class FileRenderInjector : CodeInjector {
+    override val id: String = "FileRenderInjector"
+    
     override fun inject(pool: ClassPool) {
+        pool.importPackage("java.util")
+        pool.importPackage("com.intellij.openapi.application")
+        pool.importPackage("com.intellij.openapi.util")
+        pool.importPackage("icu.windea.pls.core.inject")
+        
         val targetClassName = "com.intellij.openapi.fileChooser.tree.FileRenderer"
         val targetClass = pool.get(targetClassName)
-        val injectorClassName = javaClass.name
-        val injectClass = pool.get(injectorClassName)
         val customizeMethod = targetClass.getDeclaredMethod("customize")
         val code = """
         {
-            try {
-                com.intellij.openapi.extensions.PluginId pid = com.intellij.openapi.extensions.PluginId.getId("${PlsConstants.pluginId}");
-                $injectorClassName t = new $injectorClassName();
-                t.customize($$);
-            } catch(Throwable e) {
-                throw new IllegalStateException(e);
-            }
+            com.intellij.openapi.util.Key key = com.intellij.openapi.util.Key.findKeyByName("PLS_CODE_INJECTORS");
+            if(key == null) return;
+            Map<String, CodeInjector> codeInjectors = ((Map<String, CodeInjector>) ApplicationManager.getApplication().getUserData(key));
+            CodeInjector injector = codeInjectors.get("${id}");
+            if(injector == null) return;
+            injector.customize($$);
         }
         """.trimIndent()
         customizeMethod.insertAfter(code)
         targetClass.toClass()
         targetClass.detach()
-        injectClass.detach()
     }
     
     //com.intellij.openapi.fileChooser.tree.FileRenderer.customize

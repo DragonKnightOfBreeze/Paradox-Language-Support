@@ -1,5 +1,7 @@
 package icu.windea.pls.core.inject
 
+import com.intellij.openapi.application.*
+import com.intellij.openapi.util.*
 import javassist.*
 
 /**
@@ -8,21 +10,36 @@ import javassist.*
  * @see CodeInjector
  */
 class CodeInjectorService {
-    val statusMap = mutableMapOf<CodeInjector, Boolean>()
-    
-    init {
-        doInject()
+    companion object {
+        val codeInjectorsKey = Key.create<Map<String, CodeInjector>>("PLS_CODE_INJECTORS")
     }
     
-    fun doInject() {
+    val injectors = mutableMapOf<String, CodeInjector>()
+    val statusMap = mutableMapOf<String, Boolean>()
+    
+    init {
+        prepareInject()
+        inject()
+    }
+    
+    fun prepareInject() {
+        val application = ApplicationManager.getApplication()
+        if(application.getUserData(codeInjectorsKey) == null) {
+            application.putUserData(codeInjectorsKey, injectors)
+        }
+    }
+    
+    fun inject() {
         //这里不应当有任何报错
         val pool by lazy { getPool() }
-        CodeInjector.EP_NAME.extensionList.forEach { codeInjector ->
-            if(statusMap.get(codeInjector) != true) {
-                synchronized(codeInjector) {
-                    if(statusMap.get(codeInjector) != true) {
-                        codeInjector.inject(pool)
-                        statusMap.put(codeInjector, true)
+        CodeInjector.EP_NAME.extensionList.forEach { injector ->
+            val id = injector.id
+            injectors.put(id, injector)
+            if(statusMap.get(id) != true) {
+                synchronized(injector) {
+                    if(statusMap.get(id) != true) {
+                        injector.inject(pool)
+                        statusMap.put(id, true)
                     }
                 }
             }

@@ -7,6 +7,8 @@ import javassist.*
  * 用于在运行时动态修改第三方代码。
  */
 interface CodeInjector {
+    val id: String
+    
     fun inject(pool: ClassPool)
     
     companion object {
