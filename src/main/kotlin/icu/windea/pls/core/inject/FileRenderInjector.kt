@@ -15,23 +15,39 @@ import javassist.*
 class FileRenderInjector : CodeInjector {
     override val id: String = "FileRenderInjector"
     
+    @JvmField val methods = javaClass.methods.filter { 
+        it.isAnnotationPresent(InjectMethod::class.java)
+    }
+    
     override fun inject(pool: ClassPool) {
         pool.importPackage("java.util")
+        pool.importPackage("java.lang.reflect")
         pool.importPackage("com.intellij.openapi.application")
         pool.importPackage("com.intellij.openapi.util")
-        pool.importPackage("icu.windea.pls.core.inject")
         
         val targetClassName = "com.intellij.openapi.fileChooser.tree.FileRenderer"
         val targetClass = pool.get(targetClassName)
         val customizeMethod = targetClass.getDeclaredMethod("customize")
+        val d = "$"
         val code = """
         {
-            com.intellij.openapi.util.Key key = com.intellij.openapi.util.Key.findKeyByName("PLS_CODE_INJECTORS");
-            if(key == null) return;
-            Map<String, CodeInjector> codeInjectors = ((Map<String, CodeInjector>) ApplicationManager.getApplication().getUserData(key));
-            CodeInjector injector = codeInjectors.get("${id}");
-            if(injector == null) return;
-            injector.customize($$);
+            try {
+                com.intellij.openapi.util.Key key = com.intellij.openapi.util.Key.findKeyByName("PLS_CODE_INJECTORS");
+                if(key == null) { return; }
+                Map codeInjectors = (Map) ApplicationManager.getApplication().getUserData(key);
+                Object injector = codeInjectors.get("${id}");
+                if(injector == null) { return; }
+                Class injectorClass = injector.getClass();
+                Object[] args = ${d}args;
+                System.out.println(Arrays.toString(args));
+                Field methodsField = injectorClass.getDeclaredField("methods");
+                List methods = (List) methodsField.get(injector);
+                Method method = (Method) methods.get(0);
+                System.out.println(method.getName());
+                method.invoke(injector, args);
+            } catch(Throwable e) {
+                throw e;
+            }
         }
         """.trimIndent()
         customizeMethod.insertAfter(code)

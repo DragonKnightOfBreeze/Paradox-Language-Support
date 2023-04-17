@@ -47,6 +47,7 @@ fun CompletionContributor.extend(place: ElementPattern<out PsiElement>, provider
 	extend(CompletionType.SMART, place, provider)
 }
 
+//TODO 这个方法存在问题，不要使用
 inline fun completeAsync(parameters: CompletionParameters, crossinline action: () -> Unit) {
 	ProgressManager.checkCanceled()
 	val indicator = parameters.process as? Disposable
