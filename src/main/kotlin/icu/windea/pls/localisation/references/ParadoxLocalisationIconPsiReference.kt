@@ -47,11 +47,11 @@ class ParadoxLocalisationIconPsiReference(
 		//尝试解析为spriteType
 		val textSpriteName = "GFX_text_$iconName"
 		val textSpriteSelector = definitionSelector(project, element).contextSensitive(exact)
-		val textSprite = ParadoxDefinitionSearch.search(textSpriteName, "sprite|spriteType", textSpriteSelector).find(exact)
+		val textSprite = ParadoxDefinitionSearch.search(textSpriteName, "sprite", textSpriteSelector).find(exact)
 		if(textSprite != null) return textSprite
 		val spriteName = "GFX_$iconName"	
 		val spriteSelector = definitionSelector(project, element).contextSensitive(exact)
-		val sprite = ParadoxDefinitionSearch.search(spriteName, "sprite|spriteType", spriteSelector).find(exact)
+		val sprite = ParadoxDefinitionSearch.search(spriteName, "sprite", spriteSelector).find(exact)
 		if(sprite != null) return sprite
 		//如果不能解析为spriteType，则尝试解析为gfx/interface/icons及其子目录中为相同名字的dds文件
 		val fileSelector = fileSelector(project, element).contextSensitive(exact)
@@ -76,11 +76,11 @@ class ParadoxLocalisationIconPsiReference(
 		//尝试解析为spriteType
 		val textSpriteName = "GFX_text_$iconName"
 		val textSpriteSelector = definitionSelector(project, element).contextSensitive()
-		val textSprites = ParadoxDefinitionSearch.search(textSpriteName, "sprite|spriteType", textSpriteSelector).findAll()
+		val textSprites = ParadoxDefinitionSearch.search(textSpriteName, "sprite", textSpriteSelector).findAll()
 		if(textSprites.isNotEmpty()) return textSprites.mapToArray { PsiElementResolveResult(it) }
 		val spriteName = "GFX_$iconName"
 		val spriteSelector = definitionSelector(project, element).contextSensitive()
-		val sprites = ParadoxDefinitionSearch.search(spriteName, "sprite|spriteType", spriteSelector).findAll()
+		val sprites = ParadoxDefinitionSearch.search(spriteName, "sprite", spriteSelector).findAll()
 		if(sprites.isNotEmpty()) return sprites.mapToArray { PsiElementResolveResult(it) }
 		//如果不能解析为spriteType，则尝试解析为gfx/interface/icons及其子目录中为相同名字的dds文件
 		val fileSelector = fileSelector(project, element).contextSensitive()

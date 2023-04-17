@@ -7,6 +7,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
@@ -33,7 +34,7 @@ class ParadoxVariableNameCompletionProvider: CompletionProvider<CompletionParame
 		context.put(PlsCompletionKeys.rightQuotedKey, rightQuoted)
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
-		context.put(PlsCompletionKeys.completionIdsKey, mutableSetOf())
+		context.put(PlsCompletionKeys.completionIdsKey, mutableSetOf<String>().synced())
 		
 		val stringElement = element
 		if(!stringElement.isBlockValue()) return

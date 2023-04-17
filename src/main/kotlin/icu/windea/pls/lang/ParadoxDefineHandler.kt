@@ -26,22 +26,21 @@ object ParadoxDefineHandler {
         try {
             val selector = fileSelector(project, contextElement).contextSensitive()
             var result: Any? = null
-            ParadoxFilePathSearch.search(definePathExpression, selector)
-                .processQuery {
-                    val file = it.toPsiFile<ParadoxScriptFile>(project) ?: return@processQuery true
-                    val defines = getDefinesFromFile(file)
-                    val defineValue = defines.getOrPut(path) {
-                        val property = file.findByPath<ParadoxScriptProperty>(path, ignoreCase = false) ?: return@getOrPut null
-                        val propertyValue = property.propertyValue ?: return@getOrPut null
-                        ParadoxScriptDataValueResolver.resolveValue(propertyValue, conditional = false)
-                    }
-                    if(defineValue != null) {
-                        result = defineValue
-                        false
-                    } else {
-                        true
-                    }
+            ParadoxFilePathSearch.search(definePathExpression, selector).processQuery p@{
+                val file = it.toPsiFile<ParadoxScriptFile>(project) ?: return@p true
+                val defines = getDefinesFromFile(file)
+                val defineValue = defines.getOrPut(path) {
+                    val property = file.findByPath<ParadoxScriptProperty>(path, ignoreCase = false) ?: return@getOrPut null
+                    val propertyValue = property.propertyValue ?: return@getOrPut null
+                    ParadoxScriptDataValueResolver.resolveValue(propertyValue, conditional = false)
                 }
+                if(defineValue != null) {
+                    result = defineValue
+                    false
+                } else {
+                    true
+                }
+            }
             return result as T?
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e

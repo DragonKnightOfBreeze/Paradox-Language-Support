@@ -224,26 +224,25 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport(
         val contextElement = context.contextElement
         val tailText = ParadoxConfigHandler.getScriptExpressionTailText(config)
         val selector = definitionSelector(project, contextElement).contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search(typeExpression, selector)
-            .processQuery p@{ definition ->
-                val definitionInfo = definition.definitionInfo ?: return@p true
-                
-                //排除不匹配可能存在的supported_scopes的情况
-                val supportedScopes = ParadoxDefinitionSupportedScopesProvider.getSupportedScopes(definition, definitionInfo)
-                val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)
-                if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return@p true
-    
-                val name = definitionInfo.name
-                val typeFile = definition.containingFile
-                val builder = ParadoxScriptExpressionLookupElementBuilder.create(definition, name)
-                    .withIcon(PlsIcons.Definition)
-                    .withTailText(tailText)
-                    .withTypeText(typeFile.name)
-                    .withTypeIcon(typeFile.icon)
-                    .withScopeMatched(scopeMatched)
-                result.addScriptExpressionElement(context, builder)
-                true
-            }
+        ParadoxDefinitionSearch.search(typeExpression, selector).processQueryAsync p@{ definition ->
+            val definitionInfo = definition.definitionInfo ?: return@p true
+            
+            //排除不匹配可能存在的supported_scopes的情况
+            val supportedScopes = ParadoxDefinitionSupportedScopesProvider.getSupportedScopes(definition, definitionInfo)
+            val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)
+            if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return@p true
+            
+            val name = definitionInfo.name
+            val typeFile = definition.containingFile
+            val builder = ParadoxScriptExpressionLookupElementBuilder.create(definition, name)
+                .withIcon(PlsIcons.Definition)
+                .withTailText(tailText)
+                .withTypeText(typeFile.name)
+                .withTypeIcon(typeFile.icon)
+                .withScopeMatched(scopeMatched)
+            result.addScriptExpressionElement(context, builder)
+            true
+        }
     }
 }
 
@@ -305,19 +304,18 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
             val selector = fileSelector(project, contextElement).contextSensitive()
                 .withFileExtensions(fileExtensions)
                 .distinctByFilePath()
-            ParadoxFilePathSearch.search(configExpression, selector)
-                .processQuery p@{ virtualFile ->
-                    val file = virtualFile.toPsiFile<PsiFile>(project) ?: return@p true
-                    val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
-                    val name = pathReferenceExpressionSupport.extract(configExpression, contextFile, filePath) ?: return@p true
-                    val builder = ParadoxScriptExpressionLookupElementBuilder.create(file, name)
-                        .withIcon(PlsIcons.PathReference)
-                        .withTailText(tailText)
-                        .withTypeText(file.name)
-                        .withTypeIcon(file.icon)
-                    result.addScriptExpressionElement(context, builder)
-                    true
-                }
+            ParadoxFilePathSearch.search(configExpression, selector).processQueryAsync p@{ virtualFile ->
+                val file = virtualFile.toPsiFile<PsiFile>(project) ?: return@p true
+                val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
+                val name = pathReferenceExpressionSupport.extract(configExpression, contextFile, filePath) ?: return@p true
+                val builder = ParadoxScriptExpressionLookupElementBuilder.create(file, name)
+                    .withIcon(PlsIcons.PathReference)
+                    .withTailText(tailText)
+                    .withTypeText(file.name)
+                    .withTypeIcon(file.icon)
+                result.addScriptExpressionElement(context, builder)
+                true
+            }
         }
     }
 }
@@ -403,7 +401,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
                 .withSearchScopeType(searchScope)
                 .contextSensitive()
                 .distinctByName()
-            ParadoxComplexEnumValueSearch.search(enumName, selector).processQuery { info ->
+            ParadoxComplexEnumValueSearch.search(enumName, selector).processQueryAsync { info ->
                 val name = info.name
                 val element = ParadoxComplexEnumValueElement(contextElement, info, project)
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)

@@ -4,11 +4,11 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.expression.CwtDataType.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.model.*
@@ -70,16 +70,19 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 				return mergedConfig.toSingletonList()
 			}
 			is CwtPropertyConfig -> {
-				val subtypeName = key.removeSurroundingOrNull("subtype[", "]")
-				if(subtypeName == null) {
+				val subtypeExpression = key.removeSurroundingOrNull("subtype[", "]")
+				if(subtypeExpression == null) {
 					val keyExpression = CwtConfigExpressionReplacer.doReplace(key, configContext) ?: key
 					val valueExpression = CwtConfigExpressionReplacer.doReplace(value, configContext) ?: value
 					val mergedConfig = copy(key = keyExpression, value = valueExpression, configs = mergedConfigs).also { it.parent = parent }
 					return mergedConfig.toSingletonList()
-				} else if(matchesDefinitionSubtypeExpression(subtypeName, configContext.definitionSubtypes)) {
-					return mergedConfigs.orEmpty()
 				} else {
-					return emptyList()
+					val subtypes = configContext.definitionSubtypes
+					if(subtypes == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)){
+						return mergedConfigs.orEmpty()
+					} else {
+						return emptyList()
+					}
 				}
 			}
 		}

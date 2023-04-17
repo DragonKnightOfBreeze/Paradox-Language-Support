@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.cwt.psi.*
 
 data class CwtTypeLocalisationConfig(
@@ -22,7 +23,7 @@ data class CwtTypeLocalisationConfig(
 		return mergedConfigCache.getOrPut(cacheKey){
 			val result = SmartList<CwtLocationConfig>()
 			for((subtypeExpression, locationConfig) in configs) {
-				if(subtypeExpression == null || matchesDefinitionSubtypeExpression(subtypeExpression, subtypes)) {
+				if(subtypeExpression == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
 					result.add(locationConfig)
 				}
 			}

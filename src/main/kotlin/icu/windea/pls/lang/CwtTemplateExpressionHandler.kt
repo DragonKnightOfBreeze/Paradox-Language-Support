@@ -148,8 +148,8 @@ object CwtTemplateExpressionHandler {
             CwtDataType.Definition -> {
                 val typeExpression = snippetExpression.value ?: return
                 val selector = definitionSelector(project, contextElement).contextSensitive().distinctByName()
-                ParadoxDefinitionSearch.search(typeExpression, selector).processQuery { definition ->
-                    val name = definition.definitionInfo?.name ?: return@processQuery true
+                ParadoxDefinitionSearch.search(typeExpression, selector).processQueryAsync p@{ definition ->
+                    val name = definition.definitionInfo?.name ?: return@p true
                     doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                     true
                 }
@@ -176,7 +176,7 @@ object CwtTemplateExpressionHandler {
                         .withSearchScopeType(searchScope)
                         .contextSensitive()
                         .distinctByName()
-                    ParadoxComplexEnumValueSearch.search(enumName, selector).processQuery { info ->
+                    ParadoxComplexEnumValueSearch.search(enumName, selector).processQueryAsync p@{ info ->
                         val name = info.name
                         doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                         true
@@ -195,7 +195,7 @@ object CwtTemplateExpressionHandler {
                 }
                 ProgressManager.checkCanceled()
                 val selector = valueSetValueSelector(project, contextElement).distinctByName()
-                ParadoxValueSetValueSearch.search(valueSetName, selector).processQuery { info ->
+                ParadoxValueSetValueSearch.search(valueSetName, selector).processQueryAsync p@{ info ->
                     //去除后面的作用域信息
                     doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + info.name)
                     true

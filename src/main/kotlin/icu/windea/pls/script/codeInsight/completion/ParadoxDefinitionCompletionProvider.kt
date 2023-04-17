@@ -6,6 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
@@ -31,7 +32,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 		context.put(PlsCompletionKeys.rightQuotedKey, rightQuoted)
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
-		context.put(PlsCompletionKeys.completionIdsKey, mutableSetOf())
+		context.put(PlsCompletionKeys.completionIdsKey, mutableSetOf<String>().synced())
 		
 		val resultToUse = result.withPrefixMatcher(keyword)
 		

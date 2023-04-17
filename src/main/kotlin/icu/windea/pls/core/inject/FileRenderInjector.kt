@@ -16,17 +16,15 @@ import javassist.*
 class FileRenderInjector: CodeInjector {
     override fun inject(pool: ClassPool) {
         val targetClassName = "com.intellij.openapi.fileChooser.tree.FileRenderer"
+        val targetClass = pool.get(targetClassName)
         val injectorClassName = javaClass.name
-        //pool.appendClassPath(ClassClassPath(baseClass))
-        val clazz = pool.get(targetClassName)
-        val customizeMethod = clazz.getDeclaredMethod("customize")
+        val injectClass = pool.get(injectorClassName)
+        val customizeMethod = targetClass.getDeclaredMethod("customize")
         val code = """
         {
             try {
                 com.intellij.openapi.extensions.PluginId pid = com.intellij.openapi.extensions.PluginId.getId("${PlsConstants.pluginId}");
-                ClassLoader cl = com.intellij.ide.plugins.PluginManager.getInstance().findEnabledPlugin(pid).getClassLoader();
-                //$injectorClassName t = ($injectorClassName) Class.forName("$injectorClassName", false, cl).newInstance();
-                $injectorClassName t = ($injectorClassName) cl.loadClass("$injectorClassName").newInstance();
+                $injectorClassName t = new $injectorClassName();
                 t.customize($$);
             } catch(Throwable e) {
                 throw new IllegalStateException(e);
@@ -34,8 +32,9 @@ class FileRenderInjector: CodeInjector {
         }
         """.trimIndent()
         customizeMethod.insertAfter(code)
-        clazz.toClass()
-        clazz.detach()
+        targetClass.toClass()
+        targetClass.detach()
+        injectClass.detach()
     }
     
     //com.intellij.openapi.fileChooser.tree.FileRenderer.customize

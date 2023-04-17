@@ -20,7 +20,7 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 		val file = parameters.originalFile
 		val project = file.project
 		val gameType = file.fileInfo?.rootInfo?.gameType ?: return
-		val configGroup = getCwtConfig(project).get(gameType) ?: return
+		val configGroup = getCwtConfig(project).get(gameType)
 		
 		context.put(PlsCompletionKeys.completionTypeKey, parameters.completionType)
 		context.put(PlsCompletionKeys.originalFileKey, file)
