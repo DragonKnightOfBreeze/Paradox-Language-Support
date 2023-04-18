@@ -34,10 +34,6 @@ import javax.swing.*
  * @property forScriptValueExpressions 是否对SV表达式进行检查。（`some_prop = value:some_sv|PARAM|value|`）
  */
 class UnusedParameterInspection : LocalInspectionTool() {
-    companion object {
-        private val statusMapKey = Key.create<MutableMap<ParadoxParameterElement, Boolean>>("paradox.statusMap")
-    }
-    
     @JvmField var forParameterConditionExpressions = true
     @JvmField var forInvocationExpressions = true
     @JvmField var forScriptValueExpressions = true
@@ -49,8 +45,9 @@ class UnusedParameterInspection : LocalInspectionTool() {
     }
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
-        session.putUserData(statusMapKey, ConcurrentHashMap())
         return object : PsiElementVisitor() {
+            val statusMap = mutableMapOf<PsiElement, Boolean>() //it's unnecessary to make it synced
+            
             private fun shouldVisit(element: PsiElement): Boolean {
                 //ignore with parameters situation
                 //propertyKey -> can only be invocation expression
@@ -74,7 +71,6 @@ class UnusedParameterInspection : LocalInspectionTool() {
                     if(resolved !is ParadoxParameterElement) continue
                     if(resolved.readWriteAccess == Access.Write) {
                         //当确定同一文件中某一名称的参数已被使用时，后续不需要再进行ReferencesSearch
-                        val statusMap = session.getUserData(statusMapKey)!!
                         val used = statusMap[resolved]
                         val isUsed = if(used == null) {
                             ProgressManager.checkCanceled()
@@ -82,7 +78,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
                             val searchScope = runReadAction { ParadoxSearchScope.fromElement(element) }
                                 ?.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
                                 ?: return
-                            val r = ReferencesSearch.search(resolved, searchScope).processQuery {
+                            val r = ReferencesSearch.search(resolved, searchScope).processQueryAsync p@{
                                 ProgressManager.checkCanceled()
                                 val res = it.resolveFast()
                                 ProgressManager.checkCanceled()

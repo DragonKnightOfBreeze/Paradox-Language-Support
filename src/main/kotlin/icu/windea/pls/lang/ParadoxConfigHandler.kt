@@ -930,9 +930,9 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeModifier(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeModifier(context: ProcessingContext, result: CompletionResultSet) = with(context) {
         ProgressManager.checkCanceled()
-        return ParadoxModifierHandler.completeModifier(context, result)
+        ParadoxModifierHandler.completeModifier(context, result)
     }
     
     fun completeTemplateExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
@@ -1219,7 +1219,7 @@ object ParadoxConfigHandler {
             ProgressManager.checkCanceled()
             val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
             val selector = valueSetValueSelector(project, contextElement).distinctByName()
-            ParadoxValueSetValueSearch.search(valueSetName, selector).processQuery p@{ info ->
+            ParadoxValueSetValueSearch.search(valueSetName, selector).processQueryAsync p@{ info ->
                 if(info.name == keyword) return@p true //排除和当前输入的同名的
                 val element = ParadoxValueSetValueElement(contextElement, info, project)
                 //去除后面的作用域信息
@@ -1310,7 +1310,7 @@ object ParadoxConfigHandler {
         val file = originalFile
         val project = file.project
         val eventTargetSelector = valueSetValueSelector(project, file).contextSensitive().distinctByName()
-        ParadoxValueSetValueSearch.search("event_target", eventTargetSelector).processQuery p@{ info ->
+        ParadoxValueSetValueSearch.search("event_target", eventTargetSelector).processQueryAsync p@{ info ->
             if(info.name == keyword) return@p true //排除和当前输入的同名的
             val element = ParadoxValueSetValueElement(contextElement, info, project)
             val icon = PlsIcons.ValueSetValue
@@ -1324,7 +1324,7 @@ object ParadoxConfigHandler {
         }
         
         val globalEventTargetSelector = valueSetValueSelector(project, file).contextSensitive().distinctByName()
-        ParadoxValueSetValueSearch.search("global_event_target", globalEventTargetSelector).processQuery p@{ info ->
+        ParadoxValueSetValueSearch.search("global_event_target", globalEventTargetSelector).processQueryAsync p@{ info ->
             if(info.name == keyword) return@p true //排除和当前输入的同名的
             val element = ParadoxValueSetValueElement(contextElement, info, project)
             val icon = PlsIcons.ValueSetValue
@@ -1343,8 +1343,8 @@ object ParadoxConfigHandler {
         val file = originalFile
         val project = file.project
         val scriptedLocSelector = definitionSelector(project, file).contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search("scripted_loc", scriptedLocSelector).processQuery { scriptedLoc ->
-            val name = scriptedLoc.definitionInfo?.name ?: return@processQuery true //不应该为空
+        ParadoxDefinitionSearch.search("scripted_loc", scriptedLocSelector).processQueryAsync p@{ scriptedLoc ->
+            val name = scriptedLoc.definitionInfo?.name ?: return@p true //不应该为空
             val icon = PlsIcons.Definition
             val tailText = " from <scripted_loc>"
             val typeFile = scriptedLoc.containingFile
@@ -1357,14 +1357,14 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeVariable(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeVariable(context: ProcessingContext, result: CompletionResultSet) = with(context) {
         ProgressManager.checkCanceled()
-        val contextElement = context.contextElement
-        val keyword = context.keyword
-        val file = context.originalFile
+        val contextElement = contextElement
+        val keyword = keyword
+        val file = originalFile
         val project = file.project
         val variableSelector = valueSetValueSelector(project, file).contextSensitive().distinctByName()
-        ParadoxValueSetValueSearch.search("variable", variableSelector).processQuery p@{ info ->
+        ParadoxValueSetValueSearch.search("variable", variableSelector).processQueryAsync p@{ info ->
             if(info.name == keyword) return@p true //排除和当前输入的同名的
             val element = ParadoxValueSetValueElement(contextElement, info, project)
             val icon = PlsIcons.Variable
@@ -1404,14 +1404,14 @@ object ParadoxConfigHandler {
         if(quoted) return //输入参数不允许用引号括起
         val contextElement = context.contextElement
         val block = invocationExpressionElement.block ?: return
-        val existParameterNames = mutableSetOf<String>()
+        val existParameterNames = mutableSetOf<String>().synced()
         block.processProperty {
             val propertyKey = it.propertyKey
             val name = if(contextElement == propertyKey) propertyKey.getKeyword(context.offsetInParent) else propertyKey.name
             existParameterNames.add(name)
             true
         }
-        val namesToDistinct = mutableSetOf<String>()
+        val namesToDistinct = mutableSetOf<String>().synced()
         
         //整合查找到的所有参数上下文
         val insertSeparator = contextElement !is ParadoxScriptPropertyKey
@@ -1445,16 +1445,14 @@ object ParadoxConfigHandler {
     
     fun completeParametersForScriptValueExpression(svName: String, parameterNames: Set<String>, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
         ProgressManager.checkCanceled()
-        val existParameterNames = mutableSetOf<String>()
+        val existParameterNames = mutableSetOf<String>().synced()
         existParameterNames.addAll(parameterNames)
-        val namesToDistinct = mutableSetOf<String>()
+        val namesToDistinct = mutableSetOf<String>().synced()
         
         //整合查找到的所有SV
         val project = originalFile.project
-        val selector = definitionSelector(project, contextElement)
-            .contextSensitive()
-        ParadoxDefinitionSearch.search(svName, "script_value", selector).processQuery p@{ sv ->
-            ProgressManager.checkCanceled()
+        val selector = definitionSelector(project, contextElement).contextSensitive()
+        ParadoxDefinitionSearch.search(svName, "script_value", selector).processQueryAsync p@{ sv ->
             val parameterContext = sv
             val parameterMap = parameterContext.parameters
             if(parameterMap.isEmpty()) return@p true

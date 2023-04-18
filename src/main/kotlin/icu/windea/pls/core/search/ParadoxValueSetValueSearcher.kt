@@ -17,12 +17,15 @@ import icu.windea.pls.tool.*
  */
 class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo, ParadoxValueSetValueSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxValueSetValueSearch.SearchParameters, consumer: Processor<in ParadoxValueSetValueInfo>) {
+        ProgressManager.checkCanceled()
+        val scope = queryParameters.selector.scope
+        if(SearchScope.isEmptyScope(scope)) return
+        
         val name = queryParameters.name
         val valueSetName = queryParameters.valueSetName
         val project = queryParameters.project
         val selector = queryParameters.selector
         val gameType = selector.gameType
-        val scope = queryParameters.selector.scope
         
         FileTypeIndex.processFiles(ParadoxScriptFileType, p@{ file ->
             ProgressManager.checkCanceled()

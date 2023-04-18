@@ -41,11 +41,11 @@ class ParadoxScriptedVariablePsiReference(
         val name = element.name
         val project = element.project
         val selector = scriptedVariableSelector(project, element).contextSensitive()
-        ParadoxLocalScriptedVariableSearch.search(name, selector).processQuery {
+        ParadoxLocalScriptedVariableSearch.search(name, selector).processQueryAsync {
             result.add(it)
             true
         }
-        ParadoxGlobalScriptedVariableSearch.search(name, selector).processQuery {
+        ParadoxGlobalScriptedVariableSearch.search(name, selector).processQueryAsync {
             result.add(it)
             true
         }

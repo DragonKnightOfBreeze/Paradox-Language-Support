@@ -14,7 +14,6 @@ import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
-import java.util.concurrent.*
 
 /**
  * 值集值值（`some_flag`）被使用但未被设置的检查。
@@ -22,10 +21,6 @@ import java.util.concurrent.*
  * 例如，有`has_flag = xxx`但没有`set_flag = xxx`。
  */
 class UnsetValueSetValueInspection : LocalInspectionTool(){
-    companion object {
-        private val statusMapKey = Key.create<MutableMap<ParadoxValueSetValueElement, Boolean>>("paradox.statusMap")
-    }
-    
     //may be slow for ReferencesSearch
     
     override fun runForWholeFile(): Boolean {
@@ -33,8 +28,9 @@ class UnsetValueSetValueInspection : LocalInspectionTool(){
     }
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
-        session.putUserData(statusMapKey, ConcurrentHashMap())
         return object : PsiElementVisitor() {
+            val statusMap = mutableMapOf<PsiElement, Boolean>() //it's unnecessary to make it synced
+            
             private fun shouldVisit(element: PsiElement): Boolean {
                 //ignore with parameters situation
                 return (element is ParadoxScriptStringExpressionElement && !element.isParameterAwareExpression())
@@ -53,7 +49,6 @@ class UnsetValueSetValueInspection : LocalInspectionTool(){
                     if(resolved !is ParadoxValueSetValueElement) continue
                     if(resolved.readWriteAccess == Access.Read) {
                         //当确定同一文件中某一名称的参数已被使用时，后续不需要再进行ReferencesSearch
-                        val statusMap = session.getUserData(statusMapKey)!!
                         val used = statusMap[resolved]
                         val isUsed = if(used == null) {
                             ProgressManager.checkCanceled()
@@ -61,7 +56,7 @@ class UnsetValueSetValueInspection : LocalInspectionTool(){
                             val searchScope = runReadAction { ParadoxSearchScope.fromElement(element) }
                                 ?.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
                                 ?: return
-                            val r = ReferencesSearch.search(resolved, searchScope).processQuery {
+                            val r = ReferencesSearch.search(resolved, searchScope).processQueryAsync p@{
                                 ProgressManager.checkCanceled()
                                 val res = it.resolveFast()
                                 ProgressManager.checkCanceled()

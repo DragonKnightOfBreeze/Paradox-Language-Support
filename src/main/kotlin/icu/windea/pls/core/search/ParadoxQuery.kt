@@ -19,16 +19,28 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 	private val original: Query<T>,
 	private val searchParameters: P
 ) : AbstractQuery<T>() {
+	var parallel = false
+	
 	override fun processResults(consumer: Processor<in T>): Boolean {
-		return delegateProcessResults(original, CommonProcessors.UniqueProcessor(consumer))
+		val processor = CommonProcessors.UniqueProcessor(consumer)
+		if(parallel) {
+			return delegateProcessResults(original, processor)
+		} else {
+			val lock = ObjectUtils.sentinel("AbstractQuery lock")
+			return delegateProcessResults(original) {
+				synchronized(lock) {
+					processor.process(it)
+				}
+			}
+		}
 	}
 	
 	fun find(exact: Boolean): T? {
-		return findFirst()
+		return if(exact) find() else findFirst()
 	}
 	
 	fun find(): T? {
-		return find(true)
+		return findFirst() //TODO
 	}
 	
 	override fun findFirst(): T? {
@@ -83,7 +95,12 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 			true
 		}
 		return flag.get()
-	} 
+	}
+	
+	override fun allowParallelProcessing(): Query<T> {
+		parallel = true
+		return this
+	}
 	
 	override fun toString(): String {
 		return "ParadoxQuery: $original"

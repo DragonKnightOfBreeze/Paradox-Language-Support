@@ -163,7 +163,7 @@ command_identifier ::= {
   ]
   methods=[getPrevIdentifier getNextIdentifier]
 }
-command_scope ::= COMMAND_SCOPE_ID{
+command_scope ::= COMMAND_SCOPE_ID {
   extends=command_identifier
   methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getExpression getConfigExpression]
 }

@@ -9,6 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
@@ -18,7 +19,6 @@ import icu.windea.pls.script.psi.*
  * 提供定义的名字的代码补全。
  */
 class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionParameters>() {
-	@Suppress("KotlinConstantConditions")
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		if(!getSettings().completion.completeDefinitionNames) return
 		
@@ -31,14 +31,14 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 		val offsetInParent = parameters.offset - element.startOffset
 		val keyword = element.getKeyword(offsetInParent)
 		
-		context.put(PlsCompletionKeys.completionTypeKey, parameters.completionType)
+		context.put(PlsCompletionKeys.completionIdsKey, mutableSetOf<String>().synced())
+		context.put(PlsCompletionKeys.parametersKey, parameters)
 		context.put(PlsCompletionKeys.contextElementKey, element)
 		context.put(PlsCompletionKeys.originalFileKey, file)
 		context.put(PlsCompletionKeys.quotedKey, quoted)
 		context.put(PlsCompletionKeys.rightQuotedKey, rightQuoted)
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
-		context.put(PlsCompletionKeys.completionIdsKey, mutableSetOf())
 		
 		fun doAddCompletions(type: String, config: CwtPropertyConfig, isKey: Boolean?, currentElement: PsiElement, rootKey: String?) {
 			ProgressManager.checkCanceled()
@@ -49,7 +49,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				.filterBy { rootKey == null || (it is ParadoxScriptProperty && it.name.equals(rootKey, true)) }
 				.notSamePosition(currentElement)
 				.distinctByName()
-			ParadoxDefinitionSearch.search(type, selector).processQuery { processDefinition(context, result, it) }
+			ParadoxDefinitionSearch.search(type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
 		}
 		
 		when {

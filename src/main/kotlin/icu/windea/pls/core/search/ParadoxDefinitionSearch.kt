@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxDefinitionSearch: ExtensibleQueryFactory<ParadoxScriptDefinitionElement, ParadoxDefinitionSearch.SearchParameters>(EP_NAME) {
 	/**
 	 * @property name 定义的名字。
-	 * @property typeExpression 定义的类型表达式。示例：`event` `civic_or_origin.civic` `sprite|spriteType`
+	 * @property typeExpression 定义的类型表达式。示例：`event` `civic_or_origin.civic` `sprite`
 	 */
 	class SearchParameters(
 		val name: String?,

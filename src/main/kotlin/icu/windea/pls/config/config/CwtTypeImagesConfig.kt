@@ -3,8 +3,8 @@ package icu.windea.pls.config.config
 import com.google.common.cache.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.cwt.psi.*
 
 data class CwtTypeImagesConfig(
@@ -22,7 +22,7 @@ data class CwtTypeImagesConfig(
 		return mergesConfigCache.getOrPut(cacheKey){
 			val result = SmartList<CwtLocationConfig>()
 			for((subtypeExpression, locationConfig) in configs) {
-				if(subtypeExpression == null || matchesDefinitionSubtypeExpression(subtypeExpression, subtypes)) {
+				if(subtypeExpression == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
 					result.add(locationConfig)
 				}
 			}

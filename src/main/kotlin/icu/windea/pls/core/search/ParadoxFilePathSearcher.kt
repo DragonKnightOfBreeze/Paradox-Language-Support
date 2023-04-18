@@ -4,6 +4,7 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import com.intellij.psi.search.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
@@ -16,14 +17,18 @@ import icu.windea.pls.lang.expression.*
  */
 class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxFilePathSearch.SearchParameters, consumer: Processor<in VirtualFile>) {
+        ProgressManager.checkCanceled()
+        val scope = queryParameters.selector.scope
+        if(SearchScope.isEmptyScope(scope)) return
+        
         val filePath = queryParameters.filePath?.trimEnd('/')
         val configExpression = queryParameters.configExpression
         val ignoreCase = queryParameters.ignoreCase
         val project = queryParameters.project
-        val scope = queryParameters.selector.scope
         val name = ParadoxFilePathIndex.NAME
         val gameType = queryParameters.selector.gameType
         val contextElement = queryParameters.selector.file?.toPsiFile<PsiFile>(project)
+        
         val pathReferenceExpressionSupport = if(configExpression != null) ParadoxPathReferenceExpressionSupport.get(configExpression) else null
         ProgressManager.checkCanceled()
         if(configExpression == null || pathReferenceExpressionSupport?.matchEntire(configExpression, contextElement) == true) {

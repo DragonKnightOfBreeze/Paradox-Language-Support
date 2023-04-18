@@ -8,8 +8,8 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.model.*
 
 object PlsCompletionKeys {
-	val completionTypeKey = Key.create<CompletionType>("paradoxCompletion.completionType")
 	val completionIdsKey = Key.create<MutableSet<String>>("paradoxCompletion.completionIds")
+	val parametersKey = Key.create<CompletionParameters>("paradoxCompletion.parameters")
 	val contextElementKey = Key.create<PsiElement>("paradoxCompletion.contextElement")
 	val originalFileKey = Key.create<PsiFile>("paradoxCompletion.originalFile")
 	val quotedKey = Key.create<Boolean>("paradoxCompletion.quoted")

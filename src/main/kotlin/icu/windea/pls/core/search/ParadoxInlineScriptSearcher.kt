@@ -17,11 +17,14 @@ import icu.windea.pls.tool.*
  */
 class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptInfo, ParadoxInlineScriptSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxInlineScriptSearch.SearchParameters, consumer: Processor<in ParadoxInlineScriptInfo>) {
+        ProgressManager.checkCanceled()
+        val scope = queryParameters.selector.scope
+        if(SearchScope.isEmptyScope(scope)) return
+        
         val expression = queryParameters.expression
         val project = queryParameters.project
         val selector = queryParameters.selector
         val gameType = selector.gameType
-        val scope = queryParameters.selector.scope
         
         FileTypeIndex.processFiles(ParadoxScriptFileType, p@{ file ->
             ProgressManager.checkCanceled()

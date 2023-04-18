@@ -3,6 +3,7 @@
 package icu.windea.pls.core.collections
 
 import icu.windea.pls.core.*
+import java.util.*
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun <T, C: Collection<T>> C?.takeIfNotEmpty() = this?.takeIf { it.isNotEmpty() }
@@ -24,6 +25,12 @@ fun <T> Collection<T>.toSetOrThis(): Set<T> {
 fun <T> List<T>.asMutable() = this as MutableList<T>
 
 fun <T> Set<T>.asMutable() = this as MutableSet<T>
+
+fun <T> MutableList<T>.synced(): MutableList<T> = Collections.synchronizedList(this)
+
+fun <T> MutableSet<T>.synced(): MutableSet<T> = Collections.synchronizedSet(this)
+
+fun <K,V> MutableMap<K,V>.synced(): MutableMap<K,V> = Collections.synchronizedMap(this)
 
 inline fun <reified T> Sequence<T>.toArray() = this.toList().toTypedArray()
 

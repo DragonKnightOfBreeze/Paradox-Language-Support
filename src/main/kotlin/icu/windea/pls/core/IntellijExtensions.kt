@@ -148,6 +148,10 @@ inline fun <T> Query<T>.processQuery(consumer: Processor<in T>): Boolean {
     return forEach(consumer)
 }
 
+inline fun <T> Query<T>.processQueryAsync(consumer: Processor<in T>): Boolean {
+    return allowParallelProcessing().forEach(consumer)
+}
+
 inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, action: () -> T): T {
     val data = this.getUserData(key)
     if(data != null) return data

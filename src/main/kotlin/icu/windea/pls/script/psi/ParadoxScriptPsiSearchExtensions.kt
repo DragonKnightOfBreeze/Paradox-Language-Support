@@ -207,7 +207,7 @@ inline fun <reified T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.f
     return findByPath(targetType, path, ignoreCase, conditional, inline)
 }
 
-fun < T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
+fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
     targetType: Class<T>,
     path: String,
     ignoreCase: Boolean,
@@ -326,15 +326,7 @@ fun ParadoxScriptMemberElement.findParentByPath(
         val result = current.findParentProperty(null, link = link) ?: return null
         val definitionInfo = result.definitionInfo ?: return null
         if(definitionType.isNotEmpty()) {
-            var match = false
-            for(expression in definitionType.split('|')) {
-                val (type, subtypes) = ParadoxDefinitionTypeExpression.resolve(expression)
-                if(definitionInfo.type == type && (subtypes.isEmpty() || definitionInfo.subtypes.containsAll(subtypes))) {
-                    match = true
-                    break
-                }
-            }
-            if(!match) return null
+            if(!ParadoxDefinitionTypeExpression.resolve(definitionType).matches(definitionInfo)) return null
         }
         return result
     }
