@@ -1,4 +1,4 @@
-package icu.windea.pls.core.inject
+package icu.windea.pls.inject
 
 import com.intellij.openapi.extensions.*
 import javassist.*

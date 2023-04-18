@@ -1,6 +1,6 @@
-package icu.windea.pls.core.inject
+package icu.windea.pls.inject
 
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.FUNCTION)
-annotation class InjectMethod
+annotation class Inject

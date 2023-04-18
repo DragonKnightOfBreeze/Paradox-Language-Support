@@ -15,6 +15,7 @@
   
   <resource-bundle>messages.PlsBundle</resource-bundle>
 
+  <xi:include href="/META-INF/inject.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/core.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/cwt.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/dds.xml" xpointer="xpointer(/idea-plugin/*)"/>

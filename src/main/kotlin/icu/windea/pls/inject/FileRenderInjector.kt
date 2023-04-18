@@ -1,4 +1,4 @@
-package icu.windea.pls.core.inject
+package icu.windea.pls.inject
 
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileChooser.tree.*
@@ -41,7 +41,7 @@ class FileRenderInjector: CodeInjector {
     //com.intellij.openapi.fileChooser.tree.FileRenderer.customize
     
     @Suppress("UNUSED_PARAMETER")
-    @InjectMethod
+    @Inject
     fun customize(renderer: SimpleColoredComponent, value: Any, selected: Boolean, focused: Boolean) {
         try {
             val file = when {

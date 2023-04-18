@@ -1,0 +1,17 @@
+<idea-plugin>
+  <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.codeInjector" interface="icu.windea.pls.core.inject.CodeInjector"/>
+  </extensionPoints>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!--suppress PluginXmlValidity -->
+    <applicationService serviceImplementation="icu.windea.pls.inject.CodeInjectorService" preload="true"/>
+
+    <!--override extensions-->
+    <projectService serviceInterface="com.intellij.psi.search.PsiSearchHelper" serviceImplementation="icu.windea.override.psi.search.ParadoxPsiSearchHelper" overrides="true"/>
+  </extensions>
+  
+  <extensions defaultExtensionNs="icu.windea.pls">
+    <codeInjector implementation="icu.windea.pls.inject.FileRenderInjector"/>
+  </extensions>
+</idea-plugin>
