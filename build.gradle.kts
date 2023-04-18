@@ -52,9 +52,8 @@ dependencies {
 	}
 	//Sqlite
 	//implementation("org.xerial:sqlite-jdbc:3.40.1.0")
-	//javassist
-	//implementation("javassist:javassist:3.12.1.GA")
-	implementation("org.javassist:javassist:3.29.2-GA")
+	//Byte Buddy
+	implementation("net.bytebuddy:byte-buddy:1.14.2")
 }
 
 sourceSets {
@@ -118,7 +117,7 @@ tasks {
 		cwtConfigDirs.forEach { (cwtConfigDir, toDir) ->
 			from("$rootDir/cwt/$cwtConfigDir") {
 				includeEmptyDirs = false
-				include("**/*.cwt", "**/*.csv", "**/LICENSE", "**/*.md")
+				include("**/*.cwt", "**/LICENSE", "**/*.md")
 				//打平/config子目录中的文件
 				eachFile {
 					val i = path.indexOf("/config", ignoreCase = true)

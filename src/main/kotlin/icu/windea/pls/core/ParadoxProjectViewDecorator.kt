@@ -7,7 +7,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 
 /**
- * @see icu.windea.pls.core.inject.FileRenderInjector
+ * 在项目视图中为游戏或模组根目录提供提供特定的图标和信息文本。
  */
 class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
     override fun decorate(node: ProjectViewNode<*>, data: PresentationData) {

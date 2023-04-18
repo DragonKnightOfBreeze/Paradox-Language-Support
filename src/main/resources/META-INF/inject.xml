@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensionPoints>
-    <extensionPoint qualifiedName="icu.windea.pls.codeInjector" interface="icu.windea.pls.core.inject.CodeInjector"/>
+    <extensionPoint qualifiedName="icu.windea.pls.codeInjector" interface="icu.windea.pls.inject.CodeInjector"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
