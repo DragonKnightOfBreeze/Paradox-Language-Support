@@ -7,7 +7,6 @@ import icu.windea.pls.core.*
 import javassist.*
 import java.lang.reflect.*
 import java.util.*
-import kotlin.reflect.*
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.*
 
@@ -78,13 +77,15 @@ class CodeInjectorService : UserDataHolderBase() {
         val injectTargetName = injectTarget.value
         val injectMethods = mutableMapOf<String, Method>()
         val injectMethodInfos = mutableMapOf<String, InjectMethodInfo>()
-        val memberFunctions = codeInjector::class.declaredMemberFunctions
-        for(memberFunction in memberFunctions) {
-            val inject = memberFunction.findAnnotation<Inject>() ?: continue
-            val method = memberFunction.javaMethod ?: continue
+        val functions = codeInjector::class.declaredFunctions
+        for(function in functions) {
+            val inject = function.findAnnotation<Inject>() ?: continue
+            val method = function.javaMethod ?: continue
             val uuid = UUID.randomUUID().toString()
             injectMethods.put(uuid, method)
-            injectMethodInfos.put(uuid, InjectMethodInfo(inject.pointer))
+            val hasReceiver = function.extensionReceiverParameter != null
+            val injectMethodInfo = InjectMethodInfo(inject.pointer, hasReceiver)
+            injectMethodInfos.put(uuid, injectMethodInfo)
         }
         if(injectMethods.isEmpty()) {
             thisLogger().warn("Code inject ${codeInjector.id} has no inject methods")
@@ -100,14 +101,14 @@ class CodeInjectorService : UserDataHolderBase() {
         val codeInjector = getUserData(codeInjectorsKey)?.get(codeInjectorId) ?: throw IllegalStateException()
         val codeInjectorInfo = codeInjector.getUserData(codeInjectorInfoKey) ?: throw IllegalStateException()
         val injectMethod = codeInjectorInfo.injectMethods[methodId] ?: throw IllegalStateException()
-        //val injectMethodInfo = codeInjectorInfo.injectMethodInfos[methodUuid] ?: throw IllegalStateException()
+        val injectMethodInfo = codeInjectorInfo.injectMethodInfos[methodId] ?: throw IllegalStateException()
         val actualArgsSize = injectMethod.parameterCount
         val finalArgs = when(actualArgsSize) {
             args.size -> args
             else -> {
                 @Suppress("RemoveExplicitTypeArguments")
                 buildList<Any?> {
-                    if(injectMethod.kotlinFunction?.parameters?.firstOrNull()?.kind == KParameter.Kind.EXTENSION_RECEIVER) {
+                    if(injectMethodInfo.hasReceiver) {
                         add(target)
                     }
                     addAll(args)
