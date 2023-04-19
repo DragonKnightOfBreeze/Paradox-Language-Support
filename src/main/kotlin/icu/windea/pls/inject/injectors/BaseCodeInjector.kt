@@ -19,14 +19,17 @@ abstract class BaseCodeInjector : CodeInjector() {
         val injectTargetName = codeInjectorInfo.injectTargetName
         val targetClass = classPool.get(injectTargetName)
         codeInjectorInfo.injectMethods.forEach { (methodId, injectMethod) ->
-            val customizeMethod = findCtMethod(targetClass, injectMethod)
-            if(customizeMethod == null) {
+            val targetMethod = findCtMethod(targetClass, injectMethod)
+            if(targetMethod == null) {
                 thisLogger().warn("Inject method ${injectMethod.name} cannot be applied to any methods of ${targetClass.name}")
                 return@forEach
             }
             val injectMethodInfo = codeInjectorInfo.injectMethodInfos.get(methodId) ?: throw IllegalStateException()
             
-            val targetArg = if(Modifier.isStatic(customizeMethod.modifiers)) "null" else "$0"
+            targetClass.addField(CtField.make("private static volatile UserDataHolder __codeInjectorService__ = null;", targetClass))
+            targetClass.addField(CtField.make("private static volatile Method __invokeInjectMethodMethod__ = null;", targetClass))
+            
+            val targetArg = if(Modifier.isStatic(targetMethod.modifiers)) "null" else "$0"
             val returnTypeArg = if(injectMethodInfo.pointer == Inject.Pointer.BODY || injectMethodInfo.pointer == Inject.Pointer.BEFORE) "null" else "\$_"
             
             val args = "\"$id\", \"$methodId\", \$args, $targetArg, $returnTypeArg"
@@ -34,10 +37,11 @@ abstract class BaseCodeInjector : CodeInjector() {
             val code = """
             {
                 try {
-                    UserDataHolder __codeInjectorService__ = (UserDataHolder) ApplicationManager.getApplication().getUserData(Key.findKeyByName("CODE_INJECTOR_SERVICE_BY_WINDEA"));
-                    Method __invokeInjectMethodMethod__ = (Method) __codeInjectorService__.getUserData(Key.findKeyByName("INVOKE_METHOD_BY_WINDEA"));
-                    Object __result__ = __invokeInjectMethodMethod__.invoke(__codeInjectorService__, new Object[] { $args });
-                    return (${'$'}r) __result__;
+                    if(__codeInjectorService__ == null || __invokeInjectMethodMethod__ == null) { 
+                        __codeInjectorService__ = (UserDataHolder) ApplicationManager.getApplication().getUserData(Key.findKeyByName("CODE_INJECTOR_SERVICE_BY_WINDEA"));
+                        __invokeInjectMethodMethod__ = (Method) __codeInjectorService__.getUserData(Key.findKeyByName("INVOKE_METHOD_BY_WINDEA"));
+                    }
+                    return (${'$'}r) __invokeInjectMethodMethod__.invoke(__codeInjectorService__, new Object[] { $args });
                 } catch(Throwable e) {
                     throw e;
                 }
@@ -45,10 +49,10 @@ abstract class BaseCodeInjector : CodeInjector() {
             """.trimIndent()
             
             when(injectMethodInfo.pointer) {
-                Inject.Pointer.BODY -> customizeMethod.setBody(code)
-                Inject.Pointer.BEFORE -> customizeMethod.insertBefore(code)
-                Inject.Pointer.AFTER -> customizeMethod.insertAfter(code, false, customizeMethod.declaringClass.isKotlin)
-                Inject.Pointer.AFTER_FINALLY -> customizeMethod.insertAfter(code, true, customizeMethod.declaringClass.isKotlin)
+                Inject.Pointer.BODY -> targetMethod.setBody(code)
+                Inject.Pointer.BEFORE -> targetMethod.insertBefore(code)
+                Inject.Pointer.AFTER -> targetMethod.insertAfter(code, false, targetMethod.declaringClass.isKotlin)
+                Inject.Pointer.AFTER_FINALLY -> targetMethod.insertAfter(code, true, targetMethod.declaringClass.isKotlin)
             }
         }
         targetClass.toClass()

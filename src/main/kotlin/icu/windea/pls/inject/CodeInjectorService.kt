@@ -95,6 +95,7 @@ class CodeInjectorService : UserDataHolderBase() {
         codeInjector.putUserData(codeInjectorInfoKey, codeInjectorInfo)
     }
     
+    @Suppress("unused")
     fun invokeInjectMethod(codeInjectorId: String, methodId: String, args: Array<out Any?>, target: Any?, returnValue: Any?): Any? {
         //如果注入方法是一个扩展方法，则传递target到接收者参数（目标方法是一个静态方法时，target的值为null）
         //如果注入方法拥有除了以上情况以外的额外参数，则传递returnValue到第1个额外参数（目标方法没有返回值时，returnValue的值为null）
