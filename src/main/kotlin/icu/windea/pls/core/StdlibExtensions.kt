@@ -13,6 +13,7 @@ import java.nio.file.*
 import java.util.*
 import kotlin.contracts.*
 import kotlin.math.*
+import kotlin.reflect.*
 
 inline fun pass() {}
 
@@ -596,3 +597,11 @@ inline val <T : Enum<T>> Class<T>.sharedEnumConstants get() = enumValuesCache[th
 //fun <T> Result<T>.getOrThrow(predicate: (Throwable) -> Boolean): T? {
 //	return this.onFailure { if(predicate(it)) throw it }.getOrNull()
 //}
+
+inline fun <V, T> withPropertyValue(property: KMutableProperty0<V>, value: V, action: () -> T): T {
+    val oldValue = property.get()
+    property.set(value)
+    val result = action()
+    property.set(oldValue)
+    return result
+}

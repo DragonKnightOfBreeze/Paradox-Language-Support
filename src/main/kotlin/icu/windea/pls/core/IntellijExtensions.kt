@@ -57,8 +57,6 @@ import javax.swing.*
 import javax.swing.text.*
 import kotlin.reflect.*
 
-val logger = Logger.getInstance("icu.windea.pls.core.IntellijExtensionsKt")
-
 //region RT Extensions
 fun String.unquotedTextRange(): TextRange {
     val leftQuoted = this.isLeftQuoted()
@@ -156,8 +154,12 @@ inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, action: () -> T): T 
     val data = this.getUserData(key)
     if(data != null) return data
     val newValue = action()
-    if(newValue != null) this.putUserData(key, newValue)
+    if(newValue != null) putUserData(key, newValue)
     return newValue
+}
+
+inline fun <T> UserDataHolder.putUserDataIfAbsent(key: Key<T>, value: T) {
+    if(getUserData(key) == null) putUserData(key, value)
 }
 
 operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? = thisRef.getUserData(this)
@@ -821,15 +823,9 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElemen
 ): Boolean {
     if(DumbService.isDumb(project)) return true
     
-    try {
-        return StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
-            if(cancelable) ProgressManager.checkCanceled()
-            action(element)
-        }
-    } catch(e: Exception) {
-        if(e is ProcessCanceledException) throw e
-        logger.error(e)
-        return true
+    return StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
+        if(cancelable) ProgressManager.checkCanceled()
+        action(element)
     }
 }
 
@@ -842,21 +838,15 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElemen
 ): Boolean {
     if(DumbService.isDumb(project)) return true
     
-    try {
-        return StubIndex.getInstance().processAllKeys(this, project) { key ->
-            if(cancelable) ProgressManager.checkCanceled()
-            if(keyPredicate(key)) {
-                StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
-                    if(cancelable) ProgressManager.checkCanceled()
-                    action(key, element)
-                }
+    return StubIndex.getInstance().processAllKeys(this, project) { key ->
+        if(cancelable) ProgressManager.checkCanceled()
+        if(keyPredicate(key)) {
+            StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
+                if(cancelable) ProgressManager.checkCanceled()
+                action(key, element)
             }
-            true
         }
-    } catch(e: Exception) {
-        if(e is ProcessCanceledException) throw e
-        logger.error(e)
-        return true
+        true
     }
 }
 
@@ -873,33 +863,27 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processFirstElem
     if(DumbService.isDumb(project)) return true
     
     var value: T?
-    try {
-        return StubIndex.getInstance().processAllKeys(this, project) p@{ key ->
-            if(cancelable) ProgressManager.checkCanceled()
-            if(keyPredicate(key)) {
-                value = null
-                resetDefaultValue()
-                withMeasureMillis("selector") {
-                    StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
-                        if(predicate(element)) {
-                            value = element
-                            return@processElements false
-                        }
-                        true
+    return StubIndex.getInstance().processAllKeys(this, project) p@{ key ->
+        if(cancelable) ProgressManager.checkCanceled()
+        if(keyPredicate(key)) {
+            value = null
+            resetDefaultValue()
+            withMeasureMillis("selector") {
+                StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
+                    if(predicate(element)) {
+                        value = element
+                        return@processElements false
                     }
-                }
-                val finalValue = value ?: getDefaultValue()
-                if(finalValue != null) {
-                    val result = ProcessEntry.processor(finalValue)
-                    if(!result) return@p false
+                    true
                 }
             }
-            true
+            val finalValue = value ?: getDefaultValue()
+            if(finalValue != null) {
+                val result = ProcessEntry.processor(finalValue)
+                if(!result) return@p false
+            }
         }
-    } catch(e: Exception) {
-        if(e is ProcessCanceledException) throw e
-        logger.error(e)
-        return true
+        true
     }
 }
 //endregion

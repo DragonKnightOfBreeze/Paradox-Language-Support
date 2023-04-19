@@ -12,6 +12,6 @@
   </extensions>
   
   <extensions defaultExtensionNs="icu.windea.pls">
-    <codeInjector implementation="icu.windea.pls.inject.FileRenderInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
   </extensions>
 </idea-plugin>
