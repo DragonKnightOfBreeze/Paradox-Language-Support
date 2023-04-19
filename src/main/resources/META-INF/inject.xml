@@ -8,10 +8,11 @@
     <applicationService serviceImplementation="icu.windea.pls.inject.CodeInjectorService" preload="true"/>
 
     <!--override extensions-->
-    <projectService serviceInterface="com.intellij.psi.search.PsiSearchHelper" serviceImplementation="icu.windea.override.psi.search.ParadoxPsiSearchHelper" overrides="true"/>
+    <!--<projectService serviceInterface="com.intellij.psi.search.PsiSearchHelper" serviceImplementation="icu.windea.override.psi.search.ParadoxPsiSearchHelper" overrides="true"/>-->
   </extensions>
   
   <extensions defaultExtensionNs="icu.windea.pls">
     <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.LowLevelSearchUtilCodeInjector"/>
   </extensions>
 </idea-plugin>

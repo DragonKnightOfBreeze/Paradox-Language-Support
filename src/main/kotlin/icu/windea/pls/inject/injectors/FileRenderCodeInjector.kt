@@ -10,13 +10,13 @@ import icu.windea.pls.lang.*
 /**
  * 渲染文件节点时，为游戏或模组根目录提供提供额外的信息文本。
  */
-@Suppress("UNUSED_PARAMETER")
 @InjectTarget("com.intellij.openapi.fileChooser.tree.FileRenderer")
 class FileRenderCodeInjector : BaseCodeInjector() {
     //com.intellij.openapi.fileChooser.tree.FileRenderer
     //com.intellij.openapi.fileChooser.tree.FileRenderer.customize
     
     @Inject(Inject.Pointer.AFTER)
+    @Suppress("UNUSED_PARAMETER")
     fun Any.customize(renderer: SimpleColoredComponent, value: Any, selected: Boolean, focused: Boolean) {
         try {
             val file = when {

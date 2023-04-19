@@ -3,6 +3,7 @@ package icu.windea.pls.inject.injectors
 import com.intellij.openapi.diagnostic.*
 import icu.windea.pls.inject.*
 import javassist.*
+import javassist.Modifier
 import java.lang.reflect.*
 
 abstract class BaseCodeInjector : CodeInjector() {
@@ -25,17 +26,18 @@ abstract class BaseCodeInjector : CodeInjector() {
             }
             val injectMethodInfo = codeInjectorInfo.injectMethodInfos.get(methodId) ?: throw IllegalStateException()
             
-            val args = when(injectMethodInfo.pointer) {
-                Inject.Pointer.BODY, Inject.Pointer.BEFORE -> "\"$id\", \"${methodId}\", \$args, $0, null"
-                else -> "\"$id\", \"$methodId\", \$args, $0, \$_"
-            }
+            val targetArg = if(Modifier.isStatic(customizeMethod.modifiers)) "null" else "$0"
+            val returnTypeArg = if(injectMethodInfo.pointer == Inject.Pointer.BODY || injectMethodInfo.pointer == Inject.Pointer.BEFORE) "null" else "\$_"
+            
+            val args = "\"$id\", \"$methodId\", \$args, $targetArg, $returnTypeArg"
             javaClass.declaredMethods
             val code = """
             {
                 try {
                     UserDataHolder __codeInjectorService__ = (UserDataHolder) ApplicationManager.getApplication().getUserData(Key.findKeyByName("CODE_INJECTOR_SERVICE_BY_WINDEA"));
                     Method __invokeInjectMethodMethod__ = (Method) __codeInjectorService__.getUserData(Key.findKeyByName("INVOKE_METHOD_BY_WINDEA"));
-                    return __invokeInjectMethodMethod__.invoke(__codeInjectorService__, new Object[] { $args });
+                    Object __result__ = __invokeInjectMethodMethod__.invoke(__codeInjectorService__, new Object[] { $args });
+                    return (${'$'}r) __result__;
                 } catch(Throwable e) {
                     throw e;
                 }

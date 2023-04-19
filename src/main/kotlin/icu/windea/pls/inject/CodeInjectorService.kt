@@ -95,9 +95,9 @@ class CodeInjectorService : UserDataHolderBase() {
         codeInjector.putUserData(codeInjectorInfoKey, codeInjectorInfo)
     }
     
-    fun invokeInjectMethod(codeInjectorId: String, methodId: String, args: Array<out Any?>, target: Any, returnValue: Any?): Any? {
-        //如果注入方法是一个扩展方法，传递target到接收者参数
-        //如果注入方法拥有除了以上情况以外的额外参数，传递returnValue到第1个额外参数
+    fun invokeInjectMethod(codeInjectorId: String, methodId: String, args: Array<out Any?>, target: Any?, returnValue: Any?): Any? {
+        //如果注入方法是一个扩展方法，则传递target到接收者参数（目标方法是一个静态方法时，target的值为null）
+        //如果注入方法拥有除了以上情况以外的额外参数，则传递returnValue到第1个额外参数（目标方法没有返回值时，returnValue的值为null）
         val codeInjector = getUserData(codeInjectorsKey)?.get(codeInjectorId) ?: throw IllegalStateException()
         val codeInjectorInfo = codeInjector.getUserData(codeInjectorInfoKey) ?: throw IllegalStateException()
         val injectMethod = codeInjectorInfo.injectMethods[methodId] ?: throw IllegalStateException()
