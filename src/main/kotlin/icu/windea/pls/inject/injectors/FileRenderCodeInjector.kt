@@ -12,7 +12,7 @@ import icu.windea.pls.lang.*
  */
 @Suppress("UNUSED_PARAMETER")
 @InjectTarget("com.intellij.openapi.fileChooser.tree.FileRenderer")
-class FileRenderCodeInjector : CodeInjectorBase() {
+class FileRenderCodeInjector : BaseCodeInjector() {
     //com.intellij.openapi.fileChooser.tree.FileRenderer
     //com.intellij.openapi.fileChooser.tree.FileRenderer.customize
     

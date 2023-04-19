@@ -1,10 +1,11 @@
-package icu.windea.pls.inject
+package icu.windea.pls.inject.injectors
 
 import com.intellij.openapi.diagnostic.*
+import icu.windea.pls.inject.*
 import javassist.*
 import java.lang.reflect.*
 
-abstract class CodeInjectorBase : CodeInjector() {
+abstract class BaseCodeInjector : CodeInjector() {
     override fun inject() {
         val classPool = getUserData(CodeInjectorService.classPoolKey) ?: return
         val codeInjectorInfo = getUserData(CodeInjectorService.codeInjectorInfoKey) ?: return
