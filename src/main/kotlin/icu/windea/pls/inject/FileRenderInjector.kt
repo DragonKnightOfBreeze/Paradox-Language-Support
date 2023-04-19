@@ -6,9 +6,11 @@ import com.intellij.openapi.vfs.*
 import com.intellij.ui.*
 import icu.windea.pls.lang.*
 import net.bytebuddy.*
+import net.bytebuddy.dynamic.*
 import net.bytebuddy.dynamic.loading.*
 import net.bytebuddy.implementation.*
 import net.bytebuddy.matcher.*
+import net.bytebuddy.pool.*
 
 /**
  * 渲染文件节点时，为游戏或模组根目录提供提供额外的信息文本。
@@ -18,13 +20,28 @@ class FileRenderInjector : CodeInjector {
     //com.intellij.openapi.fileChooser.tree.FileRenderer.customize
     
     override fun inject() {
-        val targetClass = FileRenderer::class.java
+        //val ideClassLoader = Application::class.java.classLoader
+        val classLoader = javaClass.classLoader
+        val type = TypePool.Default.of(classLoader).describe("com.intellij.openapi.fileChooser.tree.FileRenderer").resolve()
+        val classFileLocator = ClassFileLocator.ForClassLoader.of(classLoader)
+        val method = javaClass.methods.find { it.name == "customize" }!!
         ByteBuddy()
-            .rebase(targetClass)
+            .redefine<Any>(type, classFileLocator)
             .method(ElementMatchers.named("customize"))
-            .intercept(MethodCall.invokeSuper().withAllArguments().andThen(MethodDelegation.to(this)))
+            .intercept(MethodDelegation.to(this))
             .make()
-            .load(targetClass.classLoader, ClassReloadingStrategy.fromInstalledAgent())
+            .load(classLoader, ClassLoadingStrategy.Default.INJECTION)
+        
+        //val method = javaClass.methods.find { it.name == "customize" }!!
+        //val targetClass = FileRenderer::class.java
+        //val classLoader = targetClass.classLoader
+        //ByteBuddy()
+        //    .with(Implementation.Context.Disabled.Factory.INSTANCE)
+        //    .redefine(targetClass)
+        //    .method(ElementMatchers.named("customize"))
+        //    .intercept(MethodCall.invoke(method).on(this).withThis().withAllArguments())
+        //    .make()
+        //    .load(classLoader, ClassReloadingStrategy.fromInstalledAgent())
     }
     
     @Inject
