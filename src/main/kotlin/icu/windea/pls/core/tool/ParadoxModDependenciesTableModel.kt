@@ -154,20 +154,18 @@ class ParadoxModDependenciesTableModel(
                 }
             }.installOn(tableView)
             
+            val addButtonRunnable = ParadoxModDependenciesToolbarActions.AddAction(project, tableView, tableModel)
             val enableAllButton = ParadoxModDependenciesToolbarActions.EnableAllAction(project, tableView, tableModel)
             val disableAllButton = ParadoxModDependenciesToolbarActions.DisableAllAction(project, tableView, tableModel)
             val editButton = ParadoxModDependenciesToolbarActions.EditAction(project, tableView, tableModel)
             val importButton = ParadoxModDependenciesToolbarActions.ImportAction(project, tableView, tableModel)
             val exportButton = ParadoxModDependenciesToolbarActions.ExportAction(project, tableView, tableModel)
             
-            //这里我们需要保证排序正确（基于表格中你的顺序）
+            //这里我们需要保证排序正确（基于表格中的顺序）
             //始终将模组放到自身的模组依赖列表中，其排序可以调整
             //add, remove, move up, move down, edit, import, export
             val panel = ToolbarDecorator.createDecorator(tableView)
-                .setAddAction {
-                    val dialog = ParadoxModDependencyAddDialog(project, tableView, tableModel)
-                    dialog.show()
-                }
+                .setAddAction(addButtonRunnable)
                 .setRemoveActionUpdater updater@{
                     //不允许移除模组自身对应的模组依赖配置
                     val selectedRow = tableView.selectedRows.singleOrNull() ?: return@updater true

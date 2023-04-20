@@ -1,6 +1,7 @@
 package icu.windea.pls.core.tool.exporter
 
 import com.intellij.openapi.application.*
+import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
@@ -45,26 +46,31 @@ class ParadoxToLauncherJsonV2Exporter : ParadoxModExporter {
             .apply { putUserData(PlsDataKeys.gameTypeKey, gameType) }
         val saved = FileChooserFactory.getInstance().createSaveFileDialog(descriptor, tableView).save(defaultSavedName)
         val savedFile = saved?.getVirtualFile(true) ?: return
-        //使用正在编辑的模组依赖
-        //不导出本地模组
-        val validModDependencies = tableModel.modDependencies.filter { it.source != ParadoxModSource.Local }
-        val json = ParadoxLauncherJsonV2(
-            game = gameType.id,
-            mods = validModDependencies.mapIndexed t@{ i, s ->
-                ParadoxLauncherJsonV2.Mod(
-                    displayName = s.name.orEmpty(),
-                    enabled = s.enabled,
-                    position = (i + 1 + pos).toString(10).padStart(10, '0'),
-                    steamId = s.remoteId?.takeIf { s.source == ParadoxModSource.Steam },
-                    pdxId = s.remoteId?.takeIf { s.source == ParadoxModSource.Paradox },
-                )
-            },
-            name = savedFile.nameWithoutExtension,
-        )
-        runWriteAction {
-            jsonMapper.writeValue(savedFile.getOutputStream(this), json)
+        
+        try {//使用正在编辑的模组依赖
+            //不导出本地模组
+            val validModDependencies = tableModel.modDependencies.filter { it.source != ParadoxModSource.Local }
+            val json = ParadoxLauncherJsonV2(
+                game = gameType.id,
+                mods = validModDependencies.mapIndexed t@{ i, s ->
+                    ParadoxLauncherJsonV2.Mod(
+                        displayName = s.name.orEmpty(),
+                        enabled = s.enabled,
+                        position = (i + 1 + pos).toString(10).padStart(10, '0'),
+                        steamId = s.remoteId?.takeIf { s.source == ParadoxModSource.Steam },
+                        pdxId = s.remoteId?.takeIf { s.source == ParadoxModSource.Paradox },
+                    )
+                },
+                name = savedFile.nameWithoutExtension,
+            )
+            runWriteAction {
+                jsonMapper.writeValue(savedFile.getOutputStream(this), json)
+            }
+            val count = validModDependencies.size
+            notify(settings, project, PlsBundle.message("mod.exporter.info", savedFile.nameWithoutExtension, count))
+        } catch(e: Exception) {
+            thisLogger().info(e)
+            notifyWarning(settings, project, PlsBundle.message("mod.exporter.error"))
         }
-        val count = validModDependencies.size
-        notify(settings, project, PlsBundle.message("mod.exporter.info", savedFile.nameWithoutExtension, count))
     }
 }

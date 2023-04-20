@@ -2,20 +2,70 @@ package icu.windea.pls.core.tool
 
 import com.intellij.icons.*
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
+import com.intellij.ui.*
 import com.intellij.ui.table.*
 import icu.windea.pls.*
+import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.settings.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 
 interface ParadoxModDependenciesToolbarActions {
+    class AddAction(
+        private val project: Project,
+        private val tableView: TableView<ParadoxModDependencySettingsState>,
+        private val tableModel: ParadoxModDependenciesTableModel
+    ) : AnActionButtonRunnable {
+        override fun run(e: AnActionButton) {
+            //添加模组依赖时可以多选
+            val settings = tableModel.settings
+            val gameType = settings.gameType.orDefault()
+            val descriptor = ParadoxDirectoryDescriptor(chooseMultiple = true)
+                .withTitle(PlsBundle.message("mod.dependencies.add.title"))
+                .apply { putUserData(PlsDataKeys.gameTypeKey, gameType) }
+            FileChooser.chooseFiles(descriptor, project, tableView, null) { files ->
+                try {
+                    var count = 0
+                    val newSettingsList = mutableListOf<ParadoxModDependencySettingsState>()
+                    for(file in files) {
+                        val rootInfo = ParadoxCoreHandler.resolveRootInfo(file)
+                        if(rootInfo == null) continue //NOTE 目前要求这里的模组目录下必须有模组描述符文件
+                        val modPath = file.path
+                        count++
+                        if(!tableModel.modDependencyDirectories.add(modPath)) continue //忽略已有的
+                        val newSettings = ParadoxModDependencySettingsState()
+                        newSettings.enabled = true
+                        newSettings.modDirectory = modPath
+                        newSettingsList.add(newSettings)
+                    }
+                    
+                    //如果最后一个模组依赖是当前模组自身，需要插入到它之前，否则直接添加到最后
+                    val isCurrentAtLast = tableModel.isCurrentAtLast()
+                    val position = if(isCurrentAtLast) tableModel.rowCount - 1 else tableModel.rowCount
+                    tableModel.insertRows(position, newSettingsList)
+                    //选中刚刚添加的所有模组依赖
+                    tableView.setRowSelectionInterval(position, position + newSettingsList.size - 1)
+                    
+                    notify(settings, project, PlsBundle.message("mod.dependencies.add.info", count))
+                } catch(e: Exception) {
+                    thisLogger().info(e)
+                    notifyWarning(settings, project, PlsBundle.message("mod.dependencies.add.error"))
+                }
+            }
+        }
+    }
+    
     class EnableAllAction(
         private val project: Project,
         private val tableView: TableView<ParadoxModDependencySettingsState>,
         private val tableModel: ParadoxModDependenciesTableModel
     ) : AnAction(AllIcons.Actions.Selectall) {
         init {
-            templatePresentation.text = PlsBundle.message("mod.dependencies.toolbar.action.enableAl")
+            templatePresentation.text = PlsBundle.message("mod.dependencies.toolbar.action.enableAll")
         }
         
         override fun getActionUpdateThread(): ActionUpdateThread {
