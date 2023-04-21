@@ -34,5 +34,9 @@
             icon="AllIcons.General.GearPlain">
       <add-to-group group-id="Diagram.DefaultGraphToolbar" relative-to-action="Diagram.OpenSettings" anchor="after"/>
     </action>
+    <reference id="UML.Group">
+      <add-to-group group-id="Pls.DefinitionHierarchyPopupMenu"/>
+      <add-to-group group-id="Pls.CallHierarchyPopupMenu"/>
+    </reference>
   </actions>
 </idea-plugin>

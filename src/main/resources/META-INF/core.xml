@@ -267,7 +267,6 @@
       <reference ref="Pls.TypeHierarchy.Definition1"/>
       <reference ref="Pls.TypeHierarchy.Definition2"/>
       <reference ref="HierarchyPopupMenu.Common"/>
-      <reference ref="UML.Group"/>
     </group>
     <group id="Pls.CallHierarchyPopupMenu">
       <reference ref="CallHierarchy.BaseOnThisMethod"/>
