@@ -1,4 +1,6 @@
-package icu.windea.pls.core.util
+@file:Suppress("PackageDirectoryMismatch")
+
+package icu.windea.pls.core
 
 data class Entry<K, V>(
     var key: K,

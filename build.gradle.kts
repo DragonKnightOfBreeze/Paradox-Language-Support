@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "icu.windea"
-version = "0.9.10"
+version = "0.9.11"
 
 intellij {
 	pluginName.set("Paradox Language Support")
@@ -59,6 +59,8 @@ dependencies {
 	
 	//Byte Buddy
 	testImplementation("net.bytebuddy:byte-buddy:1.14.2")
+	//Javassist
+	testImplementation("org.javassist:javassist:3.29.2-GA")
 }
 
 sourceSets {

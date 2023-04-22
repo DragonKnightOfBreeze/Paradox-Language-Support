@@ -23,15 +23,22 @@ import icu.windea.pls.lang.model.*
 class ParadoxDefinitionSubtypeExpression(
 	expressionString: String
 ): AbstractExpression(expressionString) {
-	companion object Resolver
+	val subtypes: List<ReversibleValue<String>>
+	
+	init {
+	    subtypes = expressionString.split('&').map { ReversibleValue(it) }
+	}
 	
 	fun matches(subtypes: Collection<String>): Boolean {
-		return true //TODO 0.9.10
+		//目前仅支持"!"和"&"的组合
+		return this.subtypes.all { t -> t.where { subtypes.contains(it) } }
 	}
 	
 	fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean {
 		return matches(definitionInfo.subtypes)
 	}
+	
+	companion object Resolver
 }
 
 fun Resolver.resolve(expressionString: String): ParadoxDefinitionSubtypeExpression {

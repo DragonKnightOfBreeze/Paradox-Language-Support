@@ -34,7 +34,7 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
             .contextSensitive()
             .preferLocale(preferredParadoxLocale())
             .distinctByName()
-        val processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean = {
+        val processor: (ParadoxLocalisationProperty) -> Boolean = {
             val name = it.name
             val icon = it.icon
             val typeFile = it.containingFile

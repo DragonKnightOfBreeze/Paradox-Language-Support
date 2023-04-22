@@ -36,7 +36,7 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
 			.preferLocale(preferredParadoxLocale())
 			.notSamePosition(element)
 			.distinctByName()
-		val processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean = processor@{
+		val processor: (ParadoxLocalisationProperty) -> Boolean = processor@{
 			val name = it.name
 			val icon = it.icon
 			val typeFile = it.containingFile

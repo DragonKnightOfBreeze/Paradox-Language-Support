@@ -538,7 +538,7 @@ class CwtConfigGroupImpl(
 		var unique = false
 		var severity: String? = null
 		var skipRootKey: MutableList<List<String>>? = null
-		var typeKeyFilter: ReversibleSet<String>? = null
+		var typeKeyFilter: ReversibleValue<Set<String>>? = null
 		var typeKeyRegex: Regex? = null
 		var startsWith: String? = null
 		var graphRelatedTypes: Set<String>? = null
@@ -652,7 +652,8 @@ class CwtConfigGroupImpl(
 						if(value != null) set.add(value)
 						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
 						val notReversed = option.separatorType == CwtSeparator.EQUAL
-						typeKeyFilter = set.toReversibleSet(notReversed)
+						val o = option.separatorType == CwtSeparator.EQUAL
+						typeKeyFilter = set.toSet() reverseIf o
 					}
 					"type_key_regex" -> {
 						typeKeyRegex = option.stringValue?.toRegex(RegexOption.IGNORE_CASE)
@@ -677,7 +678,7 @@ class CwtConfigGroupImpl(
 	}
 	
 	private fun resolveSubtypeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtSubtypeConfig {
-		var typeKeyFilter: ReversibleSet<String>? = null
+		var typeKeyFilter: ReversibleValue<Set<String>>? = null
 		var typeKeyRegex: Regex? = null
 		var pushScope: String? = null
 		var startsWith: String? = null
@@ -698,8 +699,8 @@ class CwtConfigGroupImpl(
 						val set = caseInsensitiveStringSet() //忽略大小写
 						if(value != null) set.add(value)
 						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
-						val notReversed = option.separatorType == CwtSeparator.EQUAL
-						typeKeyFilter = set.toReversibleSet(notReversed)
+						val o = option.separatorType == CwtSeparator.EQUAL
+						typeKeyFilter = set.toSet() reverseIf o
 					}
 					"type_key_regex" -> {
 						typeKeyRegex = option.stringValue?.toRegex(RegexOption.IGNORE_CASE)

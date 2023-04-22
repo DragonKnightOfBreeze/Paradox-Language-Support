@@ -372,10 +372,10 @@ fun <T : ASTNode> T.takeUnless(elementType: IElementType): T? {
     return takeUnless { it.elementType == elementType }
 }
 
-inline fun ASTNode.processChild(processor: ProcessEntry.(ASTNode) -> Boolean): Boolean {
+inline fun ASTNode.processChild(processor: (ASTNode) -> Boolean): Boolean {
     var child: ASTNode? = this.firstChildNode
     while(child != null) {
-        val result = ProcessEntry.processor(child)
+        val result = processor(child)
         if(!result) return false
         child = child.treeNext
     }
@@ -526,11 +526,11 @@ fun PsiElement.findChildren(tokenSet: TokenSet): List<PsiElement> {
     return findChildrenOfType { it.elementType in tokenSet }
 }
 
-inline fun PsiElement.processChild(forward: Boolean = true, processor: ProcessEntry.(PsiElement) -> Boolean): Boolean {
+inline fun PsiElement.processChild(forward: Boolean = true, processor: (PsiElement) -> Boolean): Boolean {
     //不会忽略某些特定类型的子元素
     var child: PsiElement? = if(forward) this.firstChild else this.lastChild
     while(child != null) {
-        val result = ProcessEntry.processor(child)
+        val result = processor(child)
         if(!result) return false
         child = if(forward) child.nextSibling else child.prevSibling
     }
@@ -559,12 +559,12 @@ inline fun PsiElement.forEachChild(forward: Boolean = true, action: (PsiElement)
     }
 }
 
-inline fun <reified T : PsiElement> PsiElement.processChildrenOfType(forward: Boolean = true, processor: ProcessEntry.(T) -> Boolean): Boolean {
+inline fun <reified T : PsiElement> PsiElement.processChildrenOfType(forward: Boolean = true, processor: (T) -> Boolean): Boolean {
     //不会忽略某些特定类型的子元素
     var child: PsiElement? = if(forward) this.firstChild else this.lastChild
     while(child != null) {
         if(child is T) {
-            val result = ProcessEntry.processor(child)
+            val result = processor(child)
             if(!result) return false
         }
         child = if(forward) child.nextSibling else child.prevSibling
@@ -858,7 +858,7 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processFirstElem
     crossinline predicate: (T) -> Boolean = { true },
     crossinline getDefaultValue: () -> T? = { null },
     crossinline resetDefaultValue: () -> Unit = {},
-    crossinline processor: ProcessEntry.(element: T) -> Boolean
+    crossinline processor: (element: T) -> Boolean
 ): Boolean {
     if(DumbService.isDumb(project)) return true
     
@@ -879,7 +879,7 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processFirstElem
             }
             val finalValue = value ?: getDefaultValue()
             if(finalValue != null) {
-                val result = ProcessEntry.processor(finalValue)
+                val result = processor(finalValue)
                 if(!result) return@p false
             }
         }

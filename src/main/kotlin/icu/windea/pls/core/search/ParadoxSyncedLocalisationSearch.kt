@@ -54,7 +54,7 @@ class ParadoxSyncedLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisatio
 		fun processVariants(
 			keyword: String,
 			selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
-			processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
+			processor: (ParadoxLocalisationProperty) -> Boolean
 		): Boolean {
 			//如果索引未完成
 			val project = selector.project

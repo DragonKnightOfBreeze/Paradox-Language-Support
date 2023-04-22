@@ -163,3 +163,19 @@ inline fun <T> Iterable<T>.pinnedLast(predicate: (T) -> Boolean): List<T> {
 	if(elementToPin != null) result.add(elementToPin)
 	return result
 }
+
+fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
+	for(e in this) {
+		val result = processor(e)
+		if(!result) return false
+	}
+	return true
+}
+
+fun <K, V> Map<K, V>.process(processor: (Map.Entry<K, V>) -> Boolean): Boolean {
+	for(entry in this) {
+		val result = processor(entry)
+		if(!result) return false
+	}
+	return true
+}

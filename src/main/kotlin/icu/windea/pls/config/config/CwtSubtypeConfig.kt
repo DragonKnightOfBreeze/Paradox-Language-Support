@@ -1,8 +1,8 @@
 package icu.windea.pls.config.config
 
 import com.intellij.psi.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 
 /**
@@ -19,7 +19,7 @@ data class CwtSubtypeConfig(
 	override val info: CwtConfigGroupInfo,
 	val config: CwtPropertyConfig,
 	val name: String,
-	val typeKeyFilter: ReversibleSet<@CaseInsensitive String>? = null,
+	val typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>? = null,
 	val typeKeyRegex: Regex? = null,
 	val startsWith: @CaseInsensitive String? = null,
 	val pushScope: String? = null,

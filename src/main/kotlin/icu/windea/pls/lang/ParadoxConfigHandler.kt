@@ -767,11 +767,11 @@ object ParadoxConfigHandler {
                 val skipRootKeyConfig = typeConfig.skipRootKey
                 if(skipRootKeyConfig == null || skipRootKeyConfig.isEmpty()) {
                     if(elementPath.isEmpty()) {
-                        typeConfig.typeKeyFilter?.takeIf { it.notReversed }?.forEach {
+                        typeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
                             infoMap.getOrPut(it) { SmartList() }.add(typeConfig to null)
                         }
                         typeConfig.subtypes.values.forEach { subtypeConfig ->
-                            subtypeConfig.typeKeyFilter?.takeIf { it.notReversed }?.forEach {
+                            subtypeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
                                 infoMap.getOrPut(it) { SmartList() }.add(typeConfig to subtypeConfig)
                             }
                         }
@@ -780,11 +780,11 @@ object ParadoxConfigHandler {
                     for(skipConfig in skipRootKeyConfig) {
                         val relative = elementPath.relativeTo(skipConfig) ?: continue
                         if(relative.isEmpty()) {
-                            typeConfig.typeKeyFilter?.takeIf { it.notReversed }?.forEach {
+                            typeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
                                 infoMap.getOrPut(it) { SmartList() }.add(typeConfig to null)
                             }
                             typeConfig.subtypes.values.forEach { subtypeConfig ->
-                                subtypeConfig.typeKeyFilter?.takeIf { it.notReversed }?.forEach {
+                                subtypeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
                                     infoMap.getOrPut(it) { SmartList() }.add(typeConfig to subtypeConfig)
                                 }
                             }

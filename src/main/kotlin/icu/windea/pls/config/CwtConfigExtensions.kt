@@ -14,21 +14,21 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
-inline fun CwtDataConfig<*>.processParent(processor: ProcessEntry.(CwtDataConfig<*>) -> Boolean): Boolean {
+inline fun CwtDataConfig<*>.processParent(processor: (CwtDataConfig<*>) -> Boolean): Boolean {
     var parent = this.parent
     while(parent != null) {
-        val result = ProcessEntry.processor(parent)
+        val result = processor(parent)
         if(!result) return false
         parent = parent.parent
     }
     return true
 }
 
-inline fun CwtDataConfig<*>.processParentProperty(processor: ProcessEntry.(CwtPropertyConfig) -> Boolean): Boolean {
+inline fun CwtDataConfig<*>.processParentProperty(processor: (CwtPropertyConfig) -> Boolean): Boolean {
     var parent = this.parent
     while(parent != null) {
         if(parent is CwtPropertyConfig) {
-            val result = ProcessEntry.processor(parent)
+            val result = processor(parent)
             if(!result) return false
         }
         parent = parent.parent
@@ -36,12 +36,12 @@ inline fun CwtDataConfig<*>.processParentProperty(processor: ProcessEntry.(CwtPr
     return true
 }
 
-fun CwtDataConfig<*>.processDescendants(processor: ProcessEntry.(CwtDataConfig<*>) -> Boolean): Boolean {
+fun CwtDataConfig<*>.processDescendants(processor: (CwtDataConfig<*>) -> Boolean): Boolean {
     return doProcessDescendants(processor)
 }
 
-private fun CwtDataConfig<*>.doProcessDescendants(processor: ProcessEntry.(CwtDataConfig<*>) -> Boolean): Boolean {
-    ProcessEntry.processor(this).also { if(!it) return false }
+private fun CwtDataConfig<*>.doProcessDescendants(processor: (CwtDataConfig<*>) -> Boolean): Boolean {
+    processor(this).also { if(!it) return false }
     this.properties?.process { it.doProcessDescendants(processor) }?.also { if(!it) return false }
     this.values?.process { it.doProcessDescendants(processor) }?.also { if(!it) return false }
     return true

@@ -148,16 +148,14 @@ object ParadoxDefinitionHandler {
         }
         //如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
         val typeKeyFilterConfig = typeConfig.typeKeyFilter
-        if(!typeKeyFilterConfig.isNullOrEmpty()) {
-            val result = typeKeyFilterConfig.contains(rootKey)
-            if(!result) return false
+        if(typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
+            val filterResult = typeKeyFilterConfig.where { it.contains(rootKey) }
+            if(!filterResult) return false
         }
-        //如果name_field存在，则要求type_key必须是指定的所有type_key之一，或者没有任何指定的type_key
+        //如果name_field存在，则要求root_key必须是由type_key_filter指定的所有可能的root_key之一，或者没有指定任何root_key
         val nameFieldConfig = typeConfig.nameField
         if(nameFieldConfig != null) {
-            val result = (typeConfig.typeKeyFilter == null && typeConfig.subtypes.values.all { it.typeKeyFilter == null })
-                || typeConfig.typeKeyFilter?.set?.contains(rootKey) == true
-                || typeConfig.subtypes.values.any { it.typeKeyFilter?.set?.contains(rootKey) == true }
+            val result = typeConfig.possibleRootKeys.isEmpty() || typeConfig.possibleRootKeys.contains(rootKey)
             if(!result) return false
         }
         
@@ -236,16 +234,14 @@ object ParadoxDefinitionHandler {
         }
         //如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
         val typeKeyFilterConfig = typeConfig.typeKeyFilter
-        if(!typeKeyFilterConfig.isNullOrEmpty()) {
-            val result = typeKeyFilterConfig.contains(rootKey)
-            if(!result) return false
+        if(typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
+            val filterResult = typeKeyFilterConfig.where { it.contains(rootKey) }
+            if(!filterResult) return false
         }
-        //如果name_field存在，则要求type_key必须是指定的所有type_key之一，或者没有任何指定的type_key
+        //如果name_field存在，则要求root_key必须是由type_key_filter指定的所有可能的root_key之一，或者没有指定任何root_key
         val nameFieldConfig = typeConfig.nameField
         if(nameFieldConfig != null) {
-            val result = (typeConfig.typeKeyFilter == null && typeConfig.subtypes.values.all { it.typeKeyFilter == null })
-                || typeConfig.typeKeyFilter?.set?.contains(rootKey) == true
-                || typeConfig.subtypes.values.any { it.typeKeyFilter?.set?.contains(rootKey) == true }
+            val result = typeConfig.possibleRootKeys.isEmpty() || typeConfig.possibleRootKeys.contains(rootKey)
             if(!result) return false
         }
         
@@ -258,38 +254,6 @@ object ParadoxDefinitionHandler {
             if(isBlockConfig != isBlock) return false
         }
         
-        return true
-    }
-    
-    fun matchesTypeWithKnownType(
-        typeConfig: CwtTypeConfig,
-        rootKey: String
-    ): Boolean {
-        //如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
-        val startsWithConfig = typeConfig.startsWith
-        if(!startsWithConfig.isNullOrEmpty()) {
-            val result = rootKey.startsWith(startsWithConfig, false)
-            if(!result) return false
-        }
-        //如果type_key_regex存在，则要求type_key匹配
-        val typeKeyRegexConfig = typeConfig.typeKeyRegex
-        if(typeKeyRegexConfig != null) {
-            val result = typeKeyRegexConfig.matches(rootKey)
-            if(!result) return false
-        }
-        //如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
-        val typeKeyFilterConfig = typeConfig.typeKeyFilter
-        if(!typeKeyFilterConfig.isNullOrEmpty()) {
-            val filterResult = typeKeyFilterConfig.contains(rootKey)
-            if(!filterResult) return false
-        }
-        //如果name_field存在，则要求type_key必须是指定的所有type_key之一
-        val nameFieldConfig = typeConfig.nameField
-        if(nameFieldConfig != null) {
-            val result = typeConfig.typeKeyFilter?.set?.contains(rootKey) == true
-                || typeConfig.subtypes.values.any { subtypeConfig -> subtypeConfig.typeKeyFilter?.set?.contains(rootKey) == true }
-            if(!result) return false
-        }
         return true
     }
     
@@ -350,15 +314,14 @@ object ParadoxDefinitionHandler {
             }
             //如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
             val typeKeyFilterConfig = typeConfig.typeKeyFilter
-            if(!typeKeyFilterConfig.isNullOrEmpty()) {
-                val filterResult = typeKeyFilterConfig.contains(rootKey)
+            if(typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
+                val filterResult = typeKeyFilterConfig.where { it.contains(rootKey) }
                 if(!filterResult) return false
             }
-            //如果name_field存在，则要求type_key必须是指定的所有type_key之一
+            //如果name_field存在，则要求root_key必须是由type_key_filter指定的所有可能的root_key之一，或者没有指定任何root_key
             val nameFieldConfig = typeConfig.nameField
             if(nameFieldConfig != null) {
-                val result = typeConfig.typeKeyFilter?.set?.contains(rootKey) == true
-                    || typeConfig.subtypes.values.any { subtypeConfig -> subtypeConfig.typeKeyFilter?.set?.contains(rootKey) == true }
+                val result = typeConfig.possibleRootKeys.isEmpty() || typeConfig.possibleRootKeys.contains(rootKey)
                 if(!result) return false
             }
         }
@@ -394,8 +357,8 @@ object ParadoxDefinitionHandler {
         }
         //如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
         val typeKeyFilterConfig = subtypeConfig.typeKeyFilter
-        if(!typeKeyFilterConfig.isNullOrEmpty()) {
-            val filterResult = typeKeyFilterConfig.contains(rootKey)
+        if(typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
+            val filterResult = typeKeyFilterConfig.where { it.contains(rootKey) }
             if(!filterResult) return false
         }
         //根据config对property进行内容匹配

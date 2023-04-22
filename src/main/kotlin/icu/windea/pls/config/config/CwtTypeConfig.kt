@@ -1,8 +1,8 @@
 package icu.windea.pls.config.config
 
 import com.intellij.psi.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 
 /**
@@ -41,11 +41,16 @@ data class CwtTypeConfig(
 	val unique: Boolean = false,
 	val severity: String? = null,
 	val skipRootKey: List<List<@CaseInsensitive String>>? = null,
-	val typeKeyFilter: ReversibleSet<@CaseInsensitive String>? = null,
+	val typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>? = null,
 	val typeKeyRegex: Regex? = null,
 	val startsWith: @CaseInsensitive String? = null,
 	val graphRelatedTypes: Set<String>? = null,
 	val subtypes: Map<String, CwtSubtypeConfig> = emptyMap(),
 	val localisation: CwtTypeLocalisationConfig? = null,
 	val images: CwtTypeImagesConfig? = null
-) : CwtConfig<CwtProperty>
+) : CwtConfig<CwtProperty> {
+	val possibleRootKeys = buildSet { 
+		typeKeyFilter?.takeIfTrue()?.let { addAll(it) }
+		subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeIfTrue()?.let { addAll(it) } }
+	} 
+}
