@@ -66,6 +66,7 @@
 * [X] 实现操作（`Action`） - 从指定的本地化文件生成其他语言区域的本地化文件
 * [X] 选择文件或目录时，为游戏或模组根目录提供额外的信息文本
 * [X] 添加模组依赖时，可以一次性添加多个（例如从Steam创意工坊目录下一次性添加多个）
+* [X] 修复：[群星，新建目录 #21](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/21)
 
 ## 0.9.9
 
