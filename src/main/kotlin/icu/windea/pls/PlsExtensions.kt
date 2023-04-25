@@ -90,7 +90,7 @@ fun PsiReference.canResolveDefinition(): Boolean {
         is ParadoxScriptExpressionPsiReference -> true
         is ParadoxDataExpressionNode.Reference -> true
         is ParadoxTemplateExpressionNode.Reference -> true
-        is ParadoxLocalisationCommandFieldPsiReference -> true //<scripted_loc>
+        //is ParadoxLocalisationCommandFieldPsiReference -> true //<scripted_loc>
         else -> false
     }
 }
@@ -120,8 +120,8 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
         is ParadoxValueSetValueExpressionNode.Reference -> true
         is ParadoxDataExpressionNode.Reference -> true
         is ParadoxTemplateExpressionNode.Reference -> true
-        is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
-        is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
+        //is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
+        //is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
         else -> false
     }
 }

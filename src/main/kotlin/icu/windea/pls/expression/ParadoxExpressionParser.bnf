@@ -1,0 +1,20 @@
+{
+  parserClass="icu.windea.pls.expression.psi.ParadoxExpressionParser"
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+  psiClassPrefix="ParadoxExpression"
+  psiImplClassSuffix="Impl"
+  psiPackage="icu.windea.pls.expression.psi"
+  psiImplPackage="icu.windea.pls.expression.psi.impl"
+  elementTypeHolderClass="icu.windea.pls.expression.psi.ParadoxExpressionElementTypes"
+  elementTypeClass="icu.windea.pls.expression.psi.ParadoxExpressionElementType"
+  tokenTypeClass="icu.windea.pls.expression.psi.ParadoxExpressionTokenType"
+  elementTypeFactory="icu.windea.pls.expression.psi.ParadoxExpressionElementTypeFactory.getElementType"
+  tokenTypeFactory="icu.windea.pls.expression.psi.ParadoxExpressionElementTypeFactory.getTokenType"
+  psiImplUtilClass="icu.windea.pls.expression.psi.impl.ParadoxExpressionPsiImplUtil"
+  
+  methods(".*")=[getPresentation getResolveScope getUseScope]
+}
+
+root ::= EXPRESSION_PREFIX string
+
+string ::= EXPRESSION_TOKEN

@@ -74,13 +74,13 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
 					add(makeHtmlRow(PlsBundle.message("title.scopeContext"), text))
 				}
 			}
-			if(element is ParadoxLocalisationCommandIdentifier) {
-				val scopeContext = ParadoxScopeHandler.getScopeContext(element)
-				if(scopeContext != null) {
-					val text = scopeContext.detailMap.entries.joinToString("\n") { (key, value) -> "$key = $value" }
-					add(makeHtmlRow(PlsBundle.message("title.scopeContext"), text))
-				}
-			}
+			//if(element is ParadoxLocalisationCommandIdentifier) {
+			//	val scopeContext = ParadoxScopeHandler.getScopeContext(element)
+			//	if(scopeContext != null) {
+			//		val text = scopeContext.detailMap.entries.joinToString("\n") { (key, value) -> "$key = $value" }
+			//		add(makeHtmlRow(PlsBundle.message("title.scopeContext"), text))
+			//	}
+			//}
 		}
 		return HtmlChunk.tag("table").children(children).toString()
 	}

@@ -10,8 +10,8 @@ import com.intellij.psi.search.SearchScope;
 
 public interface ParadoxLocalisationCommand extends ParadoxLocalisationRichText {
 
-  @NotNull
-  List<ParadoxLocalisationCommandIdentifier> getCommandIdentifierList();
+  @Nullable
+  ParadoxLocalisationCommandExpression getCommandExpression();
 
   @NotNull
   ItemPresentation getPresentation();

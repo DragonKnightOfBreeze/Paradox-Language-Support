@@ -49,6 +49,8 @@
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.editor.folding.ParadoxVariableOperationExpressionFoldingBuilder"/>
     <lang.foldingBuilder language="PARADOX" implementationClass="icu.windea.pls.core.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
     
+    <languageInjectionContributor language="PARADOX" implementationClass="icu.windea.pls.core.psi.ParadoxLanguageInjectionContributor"/>
+    
     <projectService serviceImplementation="icu.windea.pls.core.hierarchy.type.ParadoxDefinitionHierarchyBrowserSettings"/>
     <projectService serviceImplementation="icu.windea.pls.core.hierarchy.call.ParadoxCallHierarchyBrowserSettings"/>
     
@@ -85,11 +87,6 @@
     <vfs.asyncListener implementation="icu.windea.pls.core.listeners.ParadoxModificationTrackFileListener"/>
     
     <postStartupActivity implementation="icu.windea.pls.core.listeners.ParadoxUpdateLibraryOnProjectOpenedListener"/>
-  </extensions>
-
-  <extensions defaultExtensionNs="icu.windea.pls">
-    <paradoxLanguage language="PARADOX_SCRIPT"/>
-    <paradoxLanguage language="PARADOX_LOCALISATION"/>
   </extensions>
   
   <extensions defaultExtensionNs="icu.windea.pls">

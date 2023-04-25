@@ -1,21 +1,14 @@
 // This is a generated file. Not intended for manual editing.
-package icu.windea.pls.localisation.psi;
+package icu.windea.pls.expression.psi;
 
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import icu.windea.pls.core.psi.ParadoxTypedElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxLocalisationCommandIdentifier extends ParadoxTypedElement {
-
-  @Nullable
-  ParadoxLocalisationCommandScope getPrevIdentifier();
-
-  @Nullable
-  ParadoxLocalisationCommandIdentifier getNextIdentifier();
+public interface ParadoxExpressionString extends PsiElement {
 
   @NotNull
   ItemPresentation getPresentation();

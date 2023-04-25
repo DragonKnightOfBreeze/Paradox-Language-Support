@@ -31,9 +31,9 @@ public class ParadoxLocalisationCommandImpl extends ParadoxLocalisationRichTextI
   }
 
   @Override
-  @NotNull
-  public List<ParadoxLocalisationCommandIdentifier> getCommandIdentifierList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationCommandIdentifier.class);
+  @Nullable
+  public ParadoxLocalisationCommandExpression getCommandExpression() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationCommandExpression.class);
   }
 
   @Override

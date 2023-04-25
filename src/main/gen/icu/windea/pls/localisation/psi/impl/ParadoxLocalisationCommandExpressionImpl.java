@@ -14,14 +14,14 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public class ParadoxLocalisationCommandIdentifierImpl extends ASTWrapperPsiElement implements ParadoxLocalisationCommandIdentifier {
+public class ParadoxLocalisationCommandExpressionImpl extends ASTWrapperPsiElement implements ParadoxLocalisationCommandExpression {
 
-  public ParadoxLocalisationCommandIdentifierImpl(@NotNull ASTNode node) {
+  public ParadoxLocalisationCommandExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
-    visitor.visitCommandIdentifier(this);
+    visitor.visitCommandExpression(this);
   }
 
   @Override
@@ -31,15 +31,9 @@ public class ParadoxLocalisationCommandIdentifierImpl extends ASTWrapperPsiEleme
   }
 
   @Override
-  @Nullable
-  public ParadoxLocalisationCommandScope getPrevIdentifier() {
-    return ParadoxLocalisationPsiImplUtil.getPrevIdentifier(this);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxLocalisationCommandIdentifier getNextIdentifier() {
-    return ParadoxLocalisationPsiImplUtil.getNextIdentifier(this);
+  @NotNull
+  public List<ParadoxLocalisationPropertyReference> getPropertyReferenceList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationPropertyReference.class);
   }
 
   @Override

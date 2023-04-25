@@ -4,15 +4,16 @@ package icu.windea.pls.localisation.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import icu.windea.pls.core.psi.ParadoxComplexExpressionElement;
 import com.intellij.psi.NavigatablePsiElement;
 import icu.windea.pls.core.psi.ParadoxScriptedVariableReference;
-import icu.windea.pls.core.psi.ParadoxTypedElement;
 import com.intellij.psi.PsiListLikeElement;
 
 public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitColorfulText(@NotNull ParadoxLocalisationColorfulText o) {
     visitRichText(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitCommand(@NotNull ParadoxLocalisationCommand o) {
@@ -20,16 +21,8 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     // visitRichText(o);
   }
 
-  public void visitCommandField(@NotNull ParadoxLocalisationCommandField o) {
-    visitCommandIdentifier(o);
-  }
-
-  public void visitCommandIdentifier(@NotNull ParadoxLocalisationCommandIdentifier o) {
-    visitParadoxTypedElement(o);
-  }
-
-  public void visitCommandScope(@NotNull ParadoxLocalisationCommandScope o) {
-    visitCommandIdentifier(o);
+  public void visitCommandExpression(@NotNull ParadoxLocalisationCommandExpression o) {
+    visitParadoxComplexExpressionElement(o);
   }
 
   public void visitEscape(@NotNull ParadoxLocalisationEscape o) {
@@ -86,11 +79,11 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitParadoxScriptedVariableReference(@NotNull ParadoxScriptedVariableReference o) {
+  public void visitParadoxComplexExpressionElement(@NotNull ParadoxComplexExpressionElement o) {
     visitElement(o);
   }
 
-  public void visitParadoxTypedElement(@NotNull ParadoxTypedElement o) {
+  public void visitParadoxScriptedVariableReference(@NotNull ParadoxScriptedVariableReference o) {
     visitElement(o);
   }
 

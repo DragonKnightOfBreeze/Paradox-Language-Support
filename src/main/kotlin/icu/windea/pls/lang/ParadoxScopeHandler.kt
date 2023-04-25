@@ -12,11 +12,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
-import icu.windea.pls.core.psi.*
-import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.scope.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -219,51 +216,51 @@ object ParadoxScopeHandler {
         }
     }
     
-    fun getScopeContext(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
-            val file = element.containingFile
-            val value = resolveScopeContextOfLocalisationCommandIdentifier(element)
-            CachedValueProvider.Result.create(value, file)
-        }
-    }
-    
-    private fun resolveScopeContextOfLocalisationCommandIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext {
-        //TODO depends on usages
-        ProgressManager.checkCanceled()
-        val prevElement = element.prevIdentifier
-        val prevResolved = prevElement?.reference?.resolve()
-        when {
-            //system link or localisation scope
-            prevResolved is CwtProperty -> {
-                val config = prevResolved.getUserData(PlsKeys.cwtConfigKey)
-                when(config) {
-                    is CwtLocalisationLinkConfig -> {
-                        val prevPrevElement = prevElement.prevIdentifier
-                        val prevScopeContext = if(prevPrevElement != null) getScopeContext(prevPrevElement) else null
-                        if(prevScopeContext == null) {
-                            if(config.outputScope == null) {
-                                return resolveAnyScopeContext()
-                            }
-                            return ParadoxScopeContext.resolve(config.outputScope, anyScopeId)
-                        }
-                        return prevScopeContext.resolve(config.outputScope)
-                    }
-                    is CwtSystemLinkConfig -> {
-                        return resolveAnyScopeContext()
-                    }
-                    //predefined event target - no scope info in cwt files yet
-                    is CwtValueConfig -> {
-                        return resolveAnyScopeContext()
-                    }
-                }
-            }
-            //TODO event target or global event target - not supported yet
-            prevResolved is ParadoxValueSetValueElement -> {
-                return resolveAnyScopeContext()
-            }
-        }
-        return resolveUnknownScopeContext()
-    }
+    //fun getScopeContext(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext? {
+    //    return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
+    //        val file = element.containingFile
+    //        val value = resolveScopeContextOfLocalisationCommandIdentifier(element)
+    //        CachedValueProvider.Result.create(value, file)
+    //    }
+    //}
+    //
+    //private fun resolveScopeContextOfLocalisationCommandIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext {
+    //    //TODO depends on usages
+    //    ProgressManager.checkCanceled()
+    //    val prevElement = element.prevIdentifier
+    //    val prevResolved = prevElement?.reference?.resolve()
+    //    when {
+    //        //system link or localisation scope
+    //        prevResolved is CwtProperty -> {
+    //            val config = prevResolved.getUserData(PlsKeys.cwtConfigKey)
+    //            when(config) {
+    //                is CwtLocalisationLinkConfig -> {
+    //                    val prevPrevElement = prevElement.prevIdentifier
+    //                    val prevScopeContext = if(prevPrevElement != null) getScopeContext(prevPrevElement) else null
+    //                    if(prevScopeContext == null) {
+    //                        if(config.outputScope == null) {
+    //                            return resolveAnyScopeContext()
+    //                        }
+    //                        return ParadoxScopeContext.resolve(config.outputScope, anyScopeId)
+    //                    }
+    //                    return prevScopeContext.resolve(config.outputScope)
+    //                }
+    //                is CwtSystemLinkConfig -> {
+    //                    return resolveAnyScopeContext()
+    //                }
+    //                //predefined event target - no scope info in cwt files yet
+    //                is CwtValueConfig -> {
+    //                    return resolveAnyScopeContext()
+    //                }
+    //            }
+    //        }
+    //        //TODO event target or global event target - not supported yet
+    //        prevResolved is ParadoxValueSetValueElement -> {
+    //            return resolveAnyScopeContext()
+    //        }
+    //    }
+    //    return resolveUnknownScopeContext()
+    //}
     
     fun resolveScopeContext(scopeFieldExpression: ParadoxScopeFieldExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val scopeNodes = scopeFieldExpression.scopeNodes

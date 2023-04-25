@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package icu.windea.pls.localisation.highlighter
 
 import com.google.common.cache.*
@@ -23,8 +21,7 @@ object ParadoxLocalisationAttributesKeys {
 	@JvmField val PROPERTY_REFERENCE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.PROPERTY_REFERENCE", KEYWORD)
 	@JvmField val PROPERTY_REFERENCE_PARAMETER_KEY = createTextAttributesKey("PARADOX_LOCALISATION.PROPERTY_REFERENCE_PARAMETER", KEYWORD)
 	@JvmField val ICON_KEY = createTextAttributesKey("PARADOX_LOCALISATION.ICON", IDENTIFIER) //#5C8AE6
-	@JvmField val COMMAND_SCOPE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COMMAND_SCOPE", IDENTIFIER)
-	@JvmField val COMMAND_FIELD_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COMMAND_FIELD", IDENTIFIER)
+	@JvmField val COMMAND_TOKEN_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COMMAND_TOKEN", IDENTIFIER)
 	@JvmField val COLOR_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COLOR", IDENTIFIER)
 	@JvmField val VALID_ESCAPE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.VALID_ESCAPE", VALID_STRING_ESCAPE)
 	@JvmField val INVALID_ESCAPE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.INVALID_ESCAPE", INVALID_STRING_ESCAPE)
@@ -33,6 +30,7 @@ object ParadoxLocalisationAttributesKeys {
 	@JvmField val LOCALISATION_KEY = createTextAttributesKey("PARADOX_LOCALISATION.LOCALISATION", PROPERTY_KEY_KEY) //underscored
 	@JvmField val SYNCED_LOCALISATION_KEY = createTextAttributesKey("PARADOX_LOCALISATION.SYNCED_LOCALISATION", PROPERTY_KEY_KEY) //underscored
 	
+	@Suppress("DEPRECATION")
 	private val colorKeyCache = CacheBuilder.newBuilder().buildCache { color: Color ->
 		createTextAttributesKey("PARADOX_LOCALISATION.COLOR_${color.rgb}", IDENTIFIER.defaultAttributes.clone().apply {
 			foregroundColor = color
@@ -44,6 +42,7 @@ object ParadoxLocalisationAttributesKeys {
 		return colorKeyCache.get(color)
 	}
 	
+	@Suppress("DEPRECATION")
 	private val colorOnlyKeyCache = CacheBuilder.newBuilder().buildCache { color: Color ->
 		createTextAttributesKey("PARADOX_LOCALISATION.COLOR_${color.rgb}", TextAttributes().apply {
 			foregroundColor = color

@@ -53,8 +53,8 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
             element is ParadoxLocalisationPropertyReference -> ParadoxUsageType.LOCALISATION_REFERENCE
             element is ParadoxLocalisationIcon -> ParadoxUsageType.LOCALISATION_ICON
             element is ParadoxLocalisationColorfulText -> ParadoxUsageType.LOCALISATION_COLOR
-            element is ParadoxLocalisationCommandScope -> ParadoxUsageType.LOCALISATION_COMMAND_SCOPE
-            element is ParadoxLocalisationCommandField -> ParadoxUsageType.LOCALISATION_COMMAND_FIELD
+            //element is ParadoxLocalisationCommandScope -> ParadoxUsageType.LOCALISATION_COMMAND_SCOPE
+            //element is ParadoxLocalisationCommandField -> ParadoxUsageType.LOCALISATION_COMMAND_FIELD
             else -> null
         }
     }

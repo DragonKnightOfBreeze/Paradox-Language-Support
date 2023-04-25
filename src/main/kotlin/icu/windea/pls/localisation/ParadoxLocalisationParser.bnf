@@ -140,6 +140,9 @@ private icon_frame ::= ICON_FRAME | property_reference //can be property referen
 colorful_text ::= COLORFUL_TEXT_START COLOR_ID colorful_text_item [COLORFUL_TEXT_END]{
   pin=1
   extends=rich_text
+  implements=[
+    "com.intellij.psi.NavigatablePsiElement"  
+  ]
   methods=[getName setName getReference]
 }
 private colorful_text_item ::= rich_text *
@@ -152,22 +155,9 @@ command ::= COMMAND_START command_expression? COMMAND_END{
   extends=rich_text
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationRichText"
 }
-private command_expression ::= (command_scope DOT)* command_field {
+command_expression ::= COMMAND_TOKEN? (property_reference COMMAND_TOKEN?)+ {
   pin=1
-}
-//noinspection BnfUnusedRule
-command_identifier ::= {
-  implements="icu.windea.pls.core.psi.ParadoxTypedElement"
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"  
+    "icu.windea.pls.core.psi.ParadoxComplexExpressionElement"
   ]
-  methods=[getPrevIdentifier getNextIdentifier]
-}
-command_scope ::= COMMAND_SCOPE_ID {
-  extends=command_identifier
-  methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getExpression getConfigExpression]
-}
-command_field ::= COMMAND_FIELD_ID | property_reference { //can be property reference (resolved as parameter)
-  extends=command_identifier
-  methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getExpression getConfigExpression]
 }

@@ -14,8 +14,8 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			is ParadoxLocalisationProperty -> getPropertyInfo(element)
 			is ParadoxLocalisationLocale -> getLocaleConfig(element)
 			is ParadoxLocalisationIcon -> getIconInfo(element)
-			is ParadoxLocalisationCommandScope -> getCommandScopeInfo(element)
-			is ParadoxLocalisationCommandField -> getCommandFieldInfo(element)
+			//is ParadoxLocalisationCommandScope -> getCommandScopeInfo(element)
+			//is ParadoxLocalisationCommandField -> getCommandFieldInfo(element)
 			is ParadoxLocalisationColorfulText -> getColorConfig(element)
 			else -> null
 		}
@@ -50,19 +50,19 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getCommandScopeInfo(element: ParadoxLocalisationCommandScope): String {
-		val name = element.name
-		return buildString {
-			buildCommandScopeDefinition(name)
-		}
-	}
+	//private fun getCommandScopeInfo(element: ParadoxLocalisationCommandScope): String {
+	//	val name = element.name
+	//	return buildString {
+	//		buildCommandScopeDefinition(name)
+	//	}
+	//}
 	
-	private fun getCommandFieldInfo(element: ParadoxLocalisationCommandField): String {
-		val name = element.name
-		return buildString {
-			buildCommandFieldDefinition(name)
-		}
-	}
+	//private fun getCommandFieldInfo(element: ParadoxLocalisationCommandField): String {
+	//	val name = element.name
+	//	return buildString {
+	//		buildCommandFieldDefinition(name)
+	//	}
+	//}
 	
 	private fun getColorConfig(element: ParadoxLocalisationColorfulText): String? {
 		val name = element.name ?: return null
@@ -76,8 +76,8 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			is ParadoxLocalisationProperty -> getPropertyDoc(element)
 			is ParadoxLocalisationLocale -> getLocaleDoc(element)
 			is ParadoxLocalisationIcon -> getIconDoc(element)
-			is ParadoxLocalisationCommandScope -> getCommandScopeDoc(element)
-			is ParadoxLocalisationCommandField -> getCommandFieldDoc(element)
+			//is ParadoxLocalisationCommandScope -> getCommandScopeDoc(element)
+			//is ParadoxLocalisationCommandField -> getCommandFieldDoc(element)
 			is ParadoxLocalisationColorfulText -> getColorDoc(element)
 			else -> null
 		}
@@ -114,19 +114,19 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getCommandScopeDoc(element: ParadoxLocalisationCommandScope): String {
-		val name = element.name
-		return buildString {
-			buildCommandScopeDefinition(name)
-		}
-	}
-	
-	private fun getCommandFieldDoc(element: ParadoxLocalisationCommandField): String {
-		val name = element.name
-		return buildString {
-			buildCommandFieldDefinition(name)
-		}
-	}
+	//private fun getCommandScopeDoc(element: ParadoxLocalisationCommandScope): String {
+	//	val name = element.name
+	//	return buildString {
+	//		buildCommandScopeDefinition(name)
+	//	}
+	//}
+	//
+	//private fun getCommandFieldDoc(element: ParadoxLocalisationCommandField): String {
+	//	val name = element.name
+	//	return buildString {
+	//		buildCommandFieldDefinition(name)
+	//	}
+	//}
 	
 	private fun getColorDoc(element: ParadoxLocalisationColorfulText): String? {
 		val name = element.name ?: return null

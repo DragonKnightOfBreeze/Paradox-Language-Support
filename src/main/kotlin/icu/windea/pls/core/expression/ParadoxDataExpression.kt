@@ -7,8 +7,11 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.ParadoxDataExpression.*
 import icu.windea.pls.script.psi.*
 
-interface ParadoxDataExpression : ParadoxExpression {
+interface ParadoxDataExpression : Expression {
+	val text: String
 	val type: ParadoxDataType
+	val quoted: Boolean
+	val isKey: Boolean?
 	
 	companion object Resolver
 }

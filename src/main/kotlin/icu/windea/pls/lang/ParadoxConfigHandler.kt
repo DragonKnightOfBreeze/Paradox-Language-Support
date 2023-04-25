@@ -41,8 +41,6 @@ import java.util.concurrent.*
 @Suppress("UNCHECKED_CAST")
 object ParadoxConfigHandler {
     //region Common Methods
-    const val paramsEnumName = "scripted_effect_params"
-    
     fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
         return propertyConfig.keyExpression.type == CwtDataType.AliasName
             && propertyConfig.valueExpression.type == CwtDataType.AliasMatchLeft

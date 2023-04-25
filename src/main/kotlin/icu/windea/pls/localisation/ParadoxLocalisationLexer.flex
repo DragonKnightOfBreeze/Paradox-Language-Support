@@ -31,7 +31,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %state WAITING_ICON_ID_FINISHED
 %state WAITING_ICON_FRAME
 %state WAITING_ICON_FRAME_FINISHED
-%state WAITING_COMMAND_SCOPE_OR_FIELD
+%state WAITING_COMMAND_EXPRESSION
 %state WAITING_COLOR_ID
 %state WAITING_COLORFUL_TEXT
 
@@ -83,7 +83,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
 	
 	private enum ReferenceLocation {
-		NORMAL, ICON, ICON_FRAME, COMMAND;
+		NORMAL, ICON, ICON_FRAME, COMMAND_EXPRESSION;
 	}
     
     private int nextStateForPropertyReference(){
@@ -91,7 +91,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 			case NORMAL -> nextStateForText();
 			case ICON -> WAITING_ICON_ID_FINISHED;
 			case ICON_FRAME -> WAITING_ICON_FRAME_FINISHED;
-			case COMMAND -> WAITING_COMMAND_SCOPE_OR_FIELD;
+			case COMMAND_EXPRESSION -> WAITING_COMMAND_EXPRESSION;
 		};
     }
     
@@ -153,8 +153,7 @@ STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
 //[owner.MakeScope.Var('adventure_artifact_location').Title.GetHolder.GetCulture.GetNameNoTooltip]
 //[Artifact.GetOwner.Custom('ArtifactPrefixGenericAfterCreation')|U]
 CHECK_COMMAND_START=\[[a-zA-Z0-9_:@()'.|\s&&[^\r\n]]*.?
-COMMAND_SCOPE_ID_WITH_SUFFIX=[^\r\n.\[\]]+\.
-COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
+COMMAND_TOKEN=[^$£§\[\]\r\n]+
 
 %%
 
@@ -351,7 +350,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
     boolean isCommandStart = isCommandStart();
     yypushback(yylength()-1);
     if(isCommandStart){
-	    yybegin(WAITING_COMMAND_SCOPE_OR_FIELD);
+	    yybegin(WAITING_COMMAND_EXPRESSION);
 	    return COMMAND_START;
     } else {
 	    yybegin(nextStateForText());
@@ -359,17 +358,15 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
     }
   }
 }
-<WAITING_COMMAND_SCOPE_OR_FIELD>{
+<WAITING_COMMAND_EXPRESSION>{
   {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "]" {yybegin(nextStateForCommand()); return COMMAND_END;}
-  "$" {referenceLocation=ReferenceLocation.COMMAND; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);}
+  "$" {referenceLocation=ReferenceLocation.COMMAND_EXPRESSION; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
-  "." {yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return DOT;}
-  {COMMAND_SCOPE_ID_WITH_SUFFIX} {yypushback(1); return COMMAND_SCOPE_ID;}
-  {COMMAND_FIELD_ID_WITH_SUFFIX} {yypushback(1); return COMMAND_FIELD_ID;}
+  {COMMAND_TOKEN} {yypushback(1); return COMMAND_TOKEN;}
 }
 
 //colorful text rules

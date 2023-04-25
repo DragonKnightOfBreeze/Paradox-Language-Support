@@ -60,9 +60,9 @@ class ParadoxCalleeHierarchyTreeStructure(
                     element is ParadoxLocalisationPropertyReference -> {
                         addDescriptor(element) //localisation
                     }
-                    element is ParadoxLocalisationCommandField -> {
-                        addDescriptor(element) //<scripted_loc>
-                    }
+                    //element is ParadoxLocalisationCommandField -> {
+                    //    addDescriptor(element) //<scripted_loc>
+                    //}
                 }
                 if(element is ParadoxScriptInlineMath) visit = true
                 if(element.isExpressionOrMemberContext() || visit) super.visitElement(element)

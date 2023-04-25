@@ -288,122 +288,122 @@ object ParadoxLocalisationPsiImplUtil {
     }
     //endregion
     
-    //region ParadoxLocalisationCommandIdentifier
-    @JvmStatic
-    fun getPrevIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxLocalisationCommandScope? {
-        var separator = element.prevSibling ?: return null
-        if(separator.elementType == TokenType.WHITE_SPACE) separator = separator.prevSibling ?: return null
-        if(separator.elementType != DOT) return null
-        var prev = separator.prevSibling ?: return null
-        if(prev.elementType == TokenType.WHITE_SPACE) prev = prev.prevSibling ?: return null
-        if(prev !is ParadoxLocalisationCommandScope) return null
-        return prev
-    }
-    
-    @JvmStatic
-    fun getNextIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxLocalisationCommandIdentifier? {
-        var separator = element.nextSibling ?: return null
-        if(separator.elementType == TokenType.WHITE_SPACE) separator = separator.nextSibling ?: return null
-        if(separator.elementType != DOT) return null
-        var next = separator.nextSibling ?: return null
-        if(next.elementType == TokenType.WHITE_SPACE) next = next.nextSibling ?: return null
-        if(next !is ParadoxLocalisationCommandIdentifier) return null
-        return next
-    }
-    //endregion
-    
-    //region ParadoxLocalisationCommandScope
-    @JvmStatic
-    fun getIcon(element: ParadoxLocalisationCommandScope, @IconFlags flags: Int): Icon {
-        return PlsIcons.LocalisationCommandScope
-    }
-    
-    @JvmStatic
-    fun getName(element: ParadoxLocalisationCommandScope): String {
-        return element.commandScopeId.text.trim()
-    }
-    
-    @JvmStatic
-    fun setName(element: ParadoxLocalisationCommandScope, name: String): ParadoxLocalisationCommandScope {
-        val nameElement = element.commandScopeId
-        val newNameElement = ParadoxLocalisationElementFactory.createCommandScope(element.project, name).commandScopeId
-        nameElement.replace(newNameElement)
-        return element
-    }
-    
-    @JvmStatic
-    fun getReference(element: ParadoxLocalisationCommandScope): ParadoxLocalisationCommandScopePsiReference {
-        val rangeInElement = element.commandScopeId.textRangeInParent
-        return ParadoxLocalisationCommandScopePsiReference(element, rangeInElement)
-    }
-    
-    @JvmStatic
-    fun getExpression(element: ParadoxLocalisationCommandScope): String {
-        return element.name
-    }
-    
-    @JvmStatic
-    fun getConfigExpression(element: ParadoxLocalisationCommandScope): String? {
-        val resolved = element.reference.resolve()
-        val config = resolved?.getUserData(PlsKeys.cwtConfigKey)
-        return when {
-            config is CwtLocalisationLinkConfig -> "localisation scope"
-            config is CwtSystemLinkConfig -> "system link"
-            resolved is ParadoxValueSetValueElement -> {
-                val valueSetName = resolved.valueSetName
-                when {
-                    valueSetName == "event_target" -> "value[event_target]"
-                    valueSetName == "global_event_target" -> "value[global_event_target]"
-                    else -> null
-                }
-            }
-            else -> null
-        }
-    }
-    //endregion
-    
-    //region ParadoxLocalisationCommandField
-    @JvmStatic
-    fun getIcon(element: ParadoxLocalisationCommandField, @IconFlags flags: Int): Icon {
-        return PlsIcons.LocalisationCommandField
-    }
-    
-    @JvmStatic
-    fun getName(element: ParadoxLocalisationCommandField): String {
-        return element.commandFieldId?.text?.trim().orEmpty() //不应该为null
-    }
-    
-    @JvmStatic
-    fun setName(element: ParadoxLocalisationCommandField, name: String): ParadoxLocalisationCommandField {
-        val nameElement = element.commandFieldId ?: throw IncorrectOperationException() //不支持重命名
-        val newNameElement = ParadoxLocalisationElementFactory.createCommandField(element.project, name).commandFieldId!!
-        nameElement.replace(newNameElement)
-        return element
-    }
-    
-    @JvmStatic
-    fun getReference(element: ParadoxLocalisationCommandField): ParadoxLocalisationCommandFieldPsiReference? {
-        val rangeInElement = element.commandFieldId?.textRangeInParent ?: return null
-        return ParadoxLocalisationCommandFieldPsiReference(element, rangeInElement)
-    }
-    
-    @JvmStatic
-    fun getExpression(element: ParadoxLocalisationCommandField): String {
-        return element.name
-    }
-    
-    @JvmStatic
-    fun getConfigExpression(element: ParadoxLocalisationCommandField): String? {
-        val resolved = element.reference?.resolve()
-        val config = resolved?.getUserData(PlsKeys.cwtConfigKey)
-        return when {
-            config is CwtLocalisationCommandConfig -> "localisation command"
-            resolved is ParadoxScriptProperty -> "<scripted_loc>"
-            resolved is ParadoxValueSetValueElement -> "value[variable]"
-            else -> null
-        }
-    }
-    //endregion
+    ////region ParadoxLocalisationCommandIdentifier
+    //@JvmStatic
+    //fun getPrevIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxLocalisationCommandScope? {
+    //    var separator = element.prevSibling ?: return null
+    //    if(separator.elementType == TokenType.WHITE_SPACE) separator = separator.prevSibling ?: return null
+    //    if(separator.elementType != DOT) return null
+    //    var prev = separator.prevSibling ?: return null
+    //    if(prev.elementType == TokenType.WHITE_SPACE) prev = prev.prevSibling ?: return null
+    //    if(prev !is ParadoxLocalisationCommandScope) return null
+    //    return prev
+    //}
+    //
+    //@JvmStatic
+    //fun getNextIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxLocalisationCommandIdentifier? {
+    //    var separator = element.nextSibling ?: return null
+    //    if(separator.elementType == TokenType.WHITE_SPACE) separator = separator.nextSibling ?: return null
+    //    if(separator.elementType != DOT) return null
+    //    var next = separator.nextSibling ?: return null
+    //    if(next.elementType == TokenType.WHITE_SPACE) next = next.nextSibling ?: return null
+    //    if(next !is ParadoxLocalisationCommandIdentifier) return null
+    //    return next
+    //}
+    ////endregion
+    //
+    ////region ParadoxLocalisationCommandScope
+    //@JvmStatic
+    //fun getIcon(element: ParadoxLocalisationCommandScope, @IconFlags flags: Int): Icon {
+    //    return PlsIcons.LocalisationCommandScope
+    //}
+    //
+    //@JvmStatic
+    //fun getName(element: ParadoxLocalisationCommandScope): String {
+    //    return element.commandScopeId.text.trim()
+    //}
+    //
+    //@JvmStatic
+    //fun setName(element: ParadoxLocalisationCommandScope, name: String): ParadoxLocalisationCommandScope {
+    //    val nameElement = element.commandScopeId
+    //    val newNameElement = ParadoxLocalisationElementFactory.createCommandScope(element.project, name).commandScopeId
+    //    nameElement.replace(newNameElement)
+    //    return element
+    //}
+    //
+    //@JvmStatic
+    //fun getReference(element: ParadoxLocalisationCommandScope): ParadoxLocalisationCommandScopePsiReference {
+    //    val rangeInElement = element.commandScopeId.textRangeInParent
+    //    return ParadoxLocalisationCommandScopePsiReference(element, rangeInElement)
+    //}
+    //
+    //@JvmStatic
+    //fun getExpression(element: ParadoxLocalisationCommandScope): String {
+    //    return element.name
+    //}
+    //
+    //@JvmStatic
+    //fun getConfigExpression(element: ParadoxLocalisationCommandScope): String? {
+    //    val resolved = element.reference.resolve()
+    //    val config = resolved?.getUserData(PlsKeys.cwtConfigKey)
+    //    return when {
+    //        config is CwtLocalisationLinkConfig -> "localisation scope"
+    //        config is CwtSystemLinkConfig -> "system link"
+    //        resolved is ParadoxValueSetValueElement -> {
+    //            val valueSetName = resolved.valueSetName
+    //            when {
+    //                valueSetName == "event_target" -> "value[event_target]"
+    //                valueSetName == "global_event_target" -> "value[global_event_target]"
+    //                else -> null
+    //            }
+    //        }
+    //        else -> null
+    //    }
+    //}
+    ////endregion
+    //
+    ////region ParadoxLocalisationCommandField
+    //@JvmStatic
+    //fun getIcon(element: ParadoxLocalisationCommandField, @IconFlags flags: Int): Icon {
+    //    return PlsIcons.LocalisationCommandField
+    //}
+    //
+    //@JvmStatic
+    //fun getName(element: ParadoxLocalisationCommandField): String {
+    //    return element.commandFieldId?.text?.trim().orEmpty() //不应该为null
+    //}
+    //
+    //@JvmStatic
+    //fun setName(element: ParadoxLocalisationCommandField, name: String): ParadoxLocalisationCommandField {
+    //    val nameElement = element.commandFieldId ?: throw IncorrectOperationException() //不支持重命名
+    //    val newNameElement = ParadoxLocalisationElementFactory.createCommandField(element.project, name).commandFieldId!!
+    //    nameElement.replace(newNameElement)
+    //    return element
+    //}
+    //
+    //@JvmStatic
+    //fun getReference(element: ParadoxLocalisationCommandField): ParadoxLocalisationCommandFieldPsiReference? {
+    //    val rangeInElement = element.commandFieldId?.textRangeInParent ?: return null
+    //    return ParadoxLocalisationCommandFieldPsiReference(element, rangeInElement)
+    //}
+    //
+    //@JvmStatic
+    //fun getExpression(element: ParadoxLocalisationCommandField): String {
+    //    return element.name
+    //}
+    //
+    //@JvmStatic
+    //fun getConfigExpression(element: ParadoxLocalisationCommandField): String? {
+    //    val resolved = element.reference?.resolve()
+    //    val config = resolved?.getUserData(PlsKeys.cwtConfigKey)
+    //    return when {
+    //        config is CwtLocalisationCommandConfig -> "localisation command"
+    //        resolved is ParadoxScriptProperty -> "<scripted_loc>"
+    //        resolved is ParadoxValueSetValueElement -> "value[variable]"
+    //        else -> null
+    //    }
+    //}
+    ////endregion
     
     @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {
