@@ -8,6 +8,7 @@ import com.intellij.psi.tree.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import icu.windea.pls.tool.*
 
 object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxLocalisationLanguage) {
     private const val externalId = "paradoxLocalisation.file"
@@ -23,6 +24,8 @@ object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFil
     
     override fun shouldBuildStubFor(file: VirtualFile): Boolean {
         try {
+            //不索引内存中的文件
+            if(ParadoxFileManager.isLightFile(file)) return false
             //仅索引有根目录的文件
             val fileInfo = file.fileInfo ?: return false
             val path = fileInfo.entryPath

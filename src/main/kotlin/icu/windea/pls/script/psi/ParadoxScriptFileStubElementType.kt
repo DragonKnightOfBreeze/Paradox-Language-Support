@@ -14,6 +14,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
+import icu.windea.pls.tool.*
 
 object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
     private const val externalId = "paradoxScript.file"
@@ -29,6 +30,8 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
     
     override fun shouldBuildStubFor(file: VirtualFile): Boolean {
         try {
+            //不索引内存中的文件
+            if(ParadoxFileManager.isLightFile(file)) return false
             //仅索引有根目录的文件
             val fileInfo = file.fileInfo ?: return false
             val path = fileInfo.entryPath
