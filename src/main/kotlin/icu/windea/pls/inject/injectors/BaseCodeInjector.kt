@@ -24,7 +24,7 @@ abstract class BaseCodeInjector : CodeInjector() {
         codeInjectorInfo.injectMethods.forEach { (methodId, injectMethod) ->
             val targetMethod = findCtMethod(targetClass, injectMethod)
             if(targetMethod == null) {
-                thisLogger().warn("Inject method ${injectMethod.name} cannot be applied to any methods of ${targetClass.name}")
+                thisLogger().warn("Inject method ${injectMethod.name} cannot be applied to any method of ${targetClass.name}")
                 return@forEach
             }
             val injectMethodInfo = codeInjectorInfo.injectMethodInfos.get(methodId) ?: throw IllegalStateException()
@@ -43,7 +43,7 @@ abstract class BaseCodeInjector : CodeInjector() {
             val targetArg = if(Modifier.isStatic(targetMethod.modifiers)) "null" else "$0"
             val returnValueArg = if(injectMethodInfo.pointer == Inject.Pointer.AFTER || injectMethodInfo.pointer == Inject.Pointer.AFTER_FINALLY) "\$_" else  "null"
             
-            val args = "new Object[] { \"$id\", \"$methodId\", \$args, $targetArg, $returnValueArg }"
+            val args = "new Object[] { \"$id\", \"$methodId\", \$args, (\$w) $targetArg, (\$w) $returnValueArg }"
             val code = "return (\$r) __invokeInjectMethodMethod__.invoke(__codeInjectorService__, $args);"
             when(injectMethodInfo.pointer) {
                 Inject.Pointer.BODY -> targetMethod.setBody(code)
