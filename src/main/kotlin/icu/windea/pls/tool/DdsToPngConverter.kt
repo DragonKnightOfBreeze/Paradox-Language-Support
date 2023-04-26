@@ -9,6 +9,8 @@ import java.lang.invoke.*
 import java.nio.file.*
 import kotlin.io.path.*
 
+//TODO 考虑重构以便更轻松地查找生成的PNG图片……
+
 /**
  * DDS文件到PNG文件的转化器。
  *
@@ -56,18 +58,24 @@ object DdsToPngConverter {
 	
 	private fun doGetRelatedPngPath(absPath: String, relPath: String?, frame: Int): Path {
 		if(relPath != null) {
-			//路径：~/.pls/images/${uuid}/${relPath}.png
-			val uuid = absPath.removeSuffix(relPath).toUUID().toString() //得到基于游戏或模组目录的绝对路径的UUID
+			//路径：~/.pls/images/${relPathWithoutExtension}@${frame}@${uuid}.png
+			//UUID：基于游戏或模组目录的绝对路径
+			val relPathWithoutExtension = relPath.substringBeforeLast('.')
+			val uuid = absPath.removeSuffix(relPath).trim('/').toUUID().toString()
 			val frameText = if(frame > 0) "@$frame" else ""
-			return PlsPaths.imagesDirectoryPath.resolve("$uuid/$relPath$frameText.png") //直接在包括扩展名的DDS文件名后面加上".png"
+			val finalPath = "${relPathWithoutExtension}${frameText}@${uuid}.png"
+			return PlsPaths.imagesDirectoryPath.resolve(finalPath) 
 		} else {
-			//路径：~/.pls/images/external/${uuid}/${ddsFileName}.png
+			//路径：~/.pls/images/_external/{fileNameWithoutExtension}@${frame}@${uuid}.png
+			//UUID：基于DDS文件所在目录
 			val index = absPath.lastIndexOf('/')
 			val parent = if(index == -1) "" else absPath.substring(0, index)
 			val fileName = if(index == -1) absPath else absPath.substring(index + 1)
-			val uuid = if(parent.isEmpty()) "" else parent.toUUID().toString() //得到基于DDS文件所在目录的UUID
+			val fileNameWithoutExtension = fileName.substringBeforeLast('.')
+			val uuid = if(parent.isEmpty()) "" else parent.toUUID().toString() 
 			val frameText = if(frame > 0) "@$frame" else ""
-			return PlsPaths.imagesDirectoryPath.resolve("_external/$uuid.$fileName$frameText.png") //直接在包括扩展名的DDS文件名后面加上".png"
+			val finalPath = "_external/${fileNameWithoutExtension}${frameText}@${uuid}.png"
+			return PlsPaths.imagesDirectoryPath.resolve(finalPath)
 		}
 	}
 	

@@ -1,6 +1,5 @@
 package icu.windea.pls
 
-import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
@@ -11,7 +10,6 @@ import icu.windea.pls.lang.model.*
 import java.awt.*
 
 object PlsConstants {
-    val pluginId = "icu.windea.pls"
     val locationClass = PlsIcons::class.java
     
     val cwtColorSettingsDemoText = "/demoText/Cwt.colorSettings.txt".toClasspathUrl().readText()
@@ -25,7 +23,7 @@ object PlsConstants {
     
     const val dummyIdentifier = "windea"
     
-    val eraseMarker = TextAttributes()
+    //val eraseMarker = TextAttributes()
     
     val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
     
@@ -36,12 +34,10 @@ object PlsConstants {
     const val launcherSettingsFileName = "launcher-settings.json"
     const val descriptorFileName = "descriptor.mod"
     
-    val separatorChars = charArrayOf('=', '<', '>', '!')
+    //val separatorChars = charArrayOf('=', '<', '>', '!')
     
     const val ellipsis = "..."
-    const val commentFolder = "#..."
-    const val parameterFolder = "$...$"
-    const val stringTemplateFolder = "..."
+    //const val commentFolder = "#..."
     const val blockFolder = "{...}"
     fun parameterConditionFolder(expression: String) = "[[$expression]...]"
     const val inlineMathFolder = "@[...]"
@@ -95,7 +91,7 @@ object PlsKeys {
     val injectedFileInfoKey = Key.create<ParadoxFileInfo>("paradox.injected.fileInfo") //用于为临时文件（VirtualFile）嵌入文件信息
     //val injectedFileTypeKey = Key.create<ParadoxFileType>("paradox.injected.fileType") //用于为临时文件（VirtualFile）嵌入文件类型
     val injectedLocaleConfigKey = Key.create<CwtLocalisationLocaleConfig>("paradox.injected.localeConfig") //用于为脚本文件（VirtualFile）嵌入语言区域
-    val injectedElementPathKey = Key.create<ParadoxElementPath>("paradox.injected.elementPath") //用于为脚本元素（VirtualFile）嵌入元素路径（相对于脚本文件）
+    //val injectedElementPathKey = Key.create<ParadoxElementPath>("paradox.injected.elementPath") //用于为脚本元素（VirtualFile）嵌入元素路径（相对于脚本文件）
     val injectedElementPathPrefixKey = Key.create<ParadoxElementPath>("paradox.injected.elementPathPrefix") //用于为脚本文件（VirtualFile）嵌入元素路径前缀
     
     val launcherSettingsInfoKey = Key.create<ParadoxLauncherSettingsInfo>("paradox.launcherSettingsInfo")
