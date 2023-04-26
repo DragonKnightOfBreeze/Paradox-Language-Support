@@ -22,7 +22,7 @@ class DdsFileListener : AsyncFileListener {
 					}
 				}
 				for(file in files) {
-					doInvalidateDdsFile(file)
+					invalidateDdsFile(file)
 				}
 			}
 		}

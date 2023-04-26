@@ -30,9 +30,9 @@ abstract class BaseCodeInjector : CodeInjector() {
             targetClass.addField(CtField.make("private static volatile Method __invokeInjectMethodMethod__ = null;", targetClass))
             
             val targetArg = if(Modifier.isStatic(targetMethod.modifiers)) "null" else "$0"
-            val returnTypeArg = if(injectMethodInfo.pointer == Inject.Pointer.BODY || injectMethodInfo.pointer == Inject.Pointer.BEFORE) "null" else "\$_"
+            val returnValueArg = if(injectMethodInfo.pointer == Inject.Pointer.AFTER || injectMethodInfo.pointer == Inject.Pointer.AFTER_FINALLY) "\$_" else  "null"
             
-            val args = "\"$id\", \"$methodId\", \$args, $targetArg, $returnTypeArg"
+            val args = "\"$id\", \"$methodId\", \$args, $targetArg, $returnValueArg"
             javaClass.declaredMethods
             val code = """
             {
@@ -47,7 +47,6 @@ abstract class BaseCodeInjector : CodeInjector() {
                 }
             }
             """.trimIndent()
-            
             when(injectMethodInfo.pointer) {
                 Inject.Pointer.BODY -> targetMethod.setBody(code)
                 Inject.Pointer.BEFORE -> targetMethod.insertBefore(code)

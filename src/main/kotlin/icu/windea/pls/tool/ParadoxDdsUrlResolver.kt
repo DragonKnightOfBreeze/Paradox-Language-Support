@@ -115,7 +115,7 @@ object ParadoxDdsUrlResolver {
         } else {
             file.toNioPath().absolutePathString()
         }
-        return DdsToPngConverter.convert(ddsAbsPath, ddsRelPath, frame)
+        return DdsConverter.convertUrl(ddsAbsPath, ddsRelPath, frame)
     }
     
     private fun doResolveByFilePath(filePath: String, project: Project, frame: Int): String? {
@@ -124,7 +124,7 @@ object ParadoxDdsUrlResolver {
     }
     
     private fun getDefaultUrl(defaultToUnknown: Boolean): String {
-        return if(defaultToUnknown) DdsToPngConverter.getUnknownPngPath() else ""
+        return if(defaultToUnknown) DdsConverter.getUnknownPngUrl() else ""
     }
     
     fun getPngFile(file: VirtualFile, frame: Int = 0): VirtualFile? {

@@ -9,6 +9,7 @@ import com.intellij.openapi.vfs.newvfs.*
 import icu.windea.pls.dds.*
 import org.intellij.images.editor.*
 import org.intellij.images.thumbnail.actionSystem.*
+import org.intellij.images.vfs.*
 import java.awt.*
 import javax.swing.*
 
@@ -48,7 +49,8 @@ class DdsEditorImpl(
 			return
 		}
 		try {
-			val imageProvider = file.getDdsImageProvider()
+			//org.intellij.images.vfs.IfsUtil.refresh
+			val imageProvider = IfsUtil.getImageProvider(file)
 			if(imageProvider == null) {
 				editorUI.setImageProvider(null, null)
 				return
@@ -130,7 +132,7 @@ class DdsEditorImpl(
 	
 	fun propertyChanged(event: VirtualFilePropertyEvent) {
 		if(file == event.file) {
-			doInvalidateDdsFile(file)
+			invalidateDdsFile(file)
 			
 			// Change document
 			file.refresh(true, false) {
@@ -148,7 +150,7 @@ class DdsEditorImpl(
 	
 	fun contentsChanged(event: VirtualFileEvent) {
 		if(file == event.file) {
-			doInvalidateDdsFile(file)
+			invalidateDdsFile(file)
 			
 			// Change document
 			refreshFile()

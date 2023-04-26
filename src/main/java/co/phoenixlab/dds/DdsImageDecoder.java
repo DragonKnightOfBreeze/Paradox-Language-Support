@@ -149,6 +149,17 @@ public class DdsImageDecoder {
         return byteArrayOutputStream.toByteArray();
     }
 
+    public byte[] convertToPNG(Dds dds, int frame) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try {
+            convertToPNG(dds, byteArrayOutputStream, frame);
+        } catch (IOException e) {
+            //  Impossible
+        }
+
+        return byteArrayOutputStream.toByteArray();
+    }
+
     public void convertToPNG(Dds dds, OutputStream outputStream) throws IOException {
         convertToPNG(dds, outputStream, "");
     }

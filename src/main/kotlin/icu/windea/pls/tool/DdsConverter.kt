@@ -3,24 +3,22 @@ package icu.windea.pls.tool
 import co.phoenixlab.dds.*
 import com.google.common.cache.*
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import java.lang.invoke.*
 import java.nio.file.*
 import kotlin.io.path.*
 
-//TODO 考虑重构以便更轻松地查找生成的PNG图片……
-
 /**
- * DDS文件到PNG文件的转化器。
- *
  * 基于[DDS4J](https://github.com/vincentzhang96/DDS4J)。
  */
 @Suppress("unused")
-object DdsToPngConverter {
+object DdsConverter {
 	private val logger =  Logger.getInstance(MethodHandles.lookup().lookupClass())
 	
 	private val ddsImageDecoder: DdsImageDecoder by lazy { DdsImageDecoder() }
+	
 	private val ddsCache: Cache<String, Path> by lazy { CacheBuilder.newBuilder().buildCache() } //absPath - pngAbsPath
 	private val externalDdsCache: Cache<String, Path> by lazy { CacheBuilder.newBuilder().buildCache() } //absPath - pngAbsPath
 	
@@ -30,7 +28,7 @@ object DdsToPngConverter {
 	 * @param relPath DDS文件相对于游戏或模组根路径的路径（如果可以获取）。
 	 * @param frame 帧数，用于切割DDS图片。默认为0表示不切割。
 	 */
-	fun convert(absPath: String, relPath: String? = null, frame: Int = 0): String? {
+	fun convertUrl(absPath: String, relPath: String? = null, frame: Int = 0): String? {
 		try {
 			//如果存在基于DDS文件绝对路径的缓存数据，则使用缓存的PNG文件绝对路径
 			val pngAbsPath = getPngAbsPath(absPath.replace('\\', '/'), relPath, frame)
@@ -99,7 +97,7 @@ object DdsToPngConverter {
 	 * @param absPath DDS文件的绝对路径。
 	 * @param frame 帧数，用于切割DDS图片。默认为0表示不切割。
 	 */
-	fun invalidate(absPath: String, frame: Int = 0) {
+	fun invalidateUrl(absPath: String, frame: Int = 0) {
 		val cacheKey = getCacheKey(absPath.replace('\\', '/'), frame)
 		ddsCache.invalidate(cacheKey)
 		externalDdsCache.invalidate(cacheKey)
@@ -113,12 +111,18 @@ object DdsToPngConverter {
 		}
 	}
 	
-	fun getUnknownPngPath(): String {
+	fun getUnknownPngUrl(): String {
 		if(PlsPaths.unknownPngPath.notExists()) {
 			PlsPaths.unknownPngClasspathUrl.openStream().use { inputStream ->
 				Files.copy(inputStream, PlsPaths.unknownPngPath) //将jar包中的unknown.png复制到~/.pls/images中
 			}
 		}
 		return PlsPaths.unknownPngPath.toString()
+	}
+	
+	fun convertBytes(file: VirtualFile): ByteArray? {
+		val dds = Dds()
+		dds.read(file.inputStream)
+		return ddsImageDecoder.convertToPNG(dds)
 	}
 }
