@@ -108,7 +108,7 @@ object ParadoxDdsUrlResolver {
         if(file.fileType != DdsFileType) return null
         //如果可以得到相对于游戏或模组根路径的文件路径，则使用绝对根路径+相对路径定位，否则直接使用绝对路径
         val fileInfo = file.fileInfo
-        val rootPath = fileInfo?.let { it.rootInfo.gameRootPath }
+        val rootPath = fileInfo?.rootInfo?.gameRootPath
         val ddsRelPath = fileInfo?.path?.path
         val ddsAbsPath = if(rootPath != null && ddsRelPath != null) {
             rootPath.absolutePathString() + "/" + ddsRelPath

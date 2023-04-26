@@ -10,8 +10,8 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.refactoring.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
 
 /**
  * 声明全局封装变量的重构。
@@ -34,7 +34,7 @@ class ParadoxScriptIntroduceGlobalScriptedVariableHandler : ContextAwareRefactor
 		editor.selectionModel.setSelection(element.startOffset, element.endOffset)
 		
 		//打开对话框
-		val scriptedVariablesDirectory = ParadoxFileLocator.getScriptedVariablesDirectory(virtualFile) ?: return true //不期望的结果
+		val scriptedVariablesDirectory = ParadoxFileHandler.getScriptedVariablesDirectory(virtualFile) ?: return true //不期望的结果
 		val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, PlsConstants.defaultScriptedVariableName)
 		if(!dialog.showAndGet()) return true //取消
 		

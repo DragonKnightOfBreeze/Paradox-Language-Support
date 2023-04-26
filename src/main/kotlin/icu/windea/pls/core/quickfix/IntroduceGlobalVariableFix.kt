@@ -9,9 +9,9 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.refactoring.*
-import icu.windea.pls.tool.*
 
 class IntroduceGlobalVariableFix(
 	private val variableName: String,
@@ -26,7 +26,7 @@ class IntroduceGlobalVariableFix(
 	override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 		//打开对话框
 		val virtualFile = file.virtualFile ?: return
-		val scriptedVariablesDirectory = ParadoxFileLocator.getScriptedVariablesDirectory(virtualFile) ?: return //不期望的结果
+		val scriptedVariablesDirectory = ParadoxFileHandler.getScriptedVariablesDirectory(virtualFile) ?: return //不期望的结果
 		val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, variableName, "0")
 		if(!dialog.showAndGet()) return //取消
 		
