@@ -9,6 +9,7 @@ import icu.windea.pls.inject.*
 import icu.windea.pls.tool.*
 import org.intellij.images.editor.*
 import org.intellij.images.vfs.*
+import java.io.*
 import javax.imageio.*
 
 /**
@@ -17,6 +18,8 @@ import javax.imageio.*
 @InjectTarget("org.intellij.images.vfs.IfsUtil", pluginId = "com.intellij.platform.images")
 @Suppress("UNCHECKED_CAST")
 class IfsUtilCodeInjector : BaseCodeInjector() {
+    //即使目标DDS文件不存在于本地（例如来自Git提交记录），也可以正常渲染
+    
     //org.intellij.images.vfs.IfsUtil
     //org.intellij.images.vfs.IfsUtil.refresh
     
@@ -39,7 +42,8 @@ class IfsUtilCodeInjector : BaseCodeInjector() {
                 file.putUserData(IMAGE_PROVIDER_REF_KEY, null)
                 
                 //convert dds bytes to png bytes
-                val inputStream = DdsConverter.convertBytes(file) ?: return false
+                val bytes = DdsConverter.convertBytes(file) ?: return false
+                val inputStream = ByteArrayInputStream(bytes)
                 val imageInputStream = ImageIO.createImageInputStream(inputStream)
                 imageInputStream.use {
                     val imageReaders = ImageIO.getImageReadersByFormatName("png")
