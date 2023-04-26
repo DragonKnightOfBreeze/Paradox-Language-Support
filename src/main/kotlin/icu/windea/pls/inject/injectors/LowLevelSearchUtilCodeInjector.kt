@@ -13,7 +13,7 @@ class LowLevelSearchUtilCodeInjector: BaseCodeInjector(){
     //com.intellij.psi.impl.search.LowLevelSearchUtil.checkJavaIdentifier
     
     //rewrite this method to compatible with Paradox localisation icon references (e.g. "£unity£")
-    @Inject(Inject.Pointer.BODY)
+    @Inject
     fun checkJavaIdentifier(text: CharSequence, searcher: StringSearcher, index: Int): Boolean {
         if(!searcher.isJavaIdentifier) {
             return true

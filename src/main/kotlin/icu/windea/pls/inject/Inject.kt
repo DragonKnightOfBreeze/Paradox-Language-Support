@@ -7,7 +7,7 @@ package icu.windea.pls.inject
 @MustBeDocumented
 @Target(AnnotationTarget.FUNCTION)
 annotation class Inject(
-    val pointer: Pointer
+    val pointer: Pointer = Pointer.BODY
 ) {
     enum class Pointer {
         BODY, BEFORE, AFTER, AFTER_FINALLY

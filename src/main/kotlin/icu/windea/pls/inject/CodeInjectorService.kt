@@ -75,6 +75,7 @@ class CodeInjectorService : UserDataHolderBase() {
             return
         }
         val injectTargetName = injectTarget.value
+        val injectPluginId = injectTarget.pluginId
         val injectMethods = mutableMapOf<String, Method>()
         val injectMethodInfos = mutableMapOf<String, InjectMethodInfo>()
         val functions = codeInjector::class.declaredFunctions
@@ -91,7 +92,7 @@ class CodeInjectorService : UserDataHolderBase() {
             thisLogger().warn("Code inject ${codeInjector.id} has no inject methods")
             return
         }
-        val codeInjectorInfo = CodeInjectorInfo(codeInjector, injectTargetName, injectMethods, injectMethodInfos)
+        val codeInjectorInfo = CodeInjectorInfo(codeInjector, injectTargetName, injectPluginId, injectMethods, injectMethodInfos)
         codeInjector.putUserData(codeInjectorInfoKey, codeInjectorInfo)
     }
     

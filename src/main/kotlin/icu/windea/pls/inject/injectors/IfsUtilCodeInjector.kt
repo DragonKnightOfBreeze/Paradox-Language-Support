@@ -14,19 +14,19 @@ import javax.imageio.*
 /**
  * 用于支持直接在IDE的编辑器中渲染DDS图片。
  */
-@InjectTarget("org.intellij.images.vfs.IfsUtil")
+@InjectTarget("org.intellij.images.vfs.IfsUtil", pluginId = "com.intellij.platform.images")
 @Suppress("UNCHECKED_CAST")
 class IfsUtilCodeInjector : BaseCodeInjector() {
     //org.intellij.images.vfs.IfsUtil
     //org.intellij.images.vfs.IfsUtil.refresh
     
     companion object {
-        val TIME_MODIFICATION_STAMP_KEY by lazy { staticProperty<IfsUtil>("TIME_MODIFICATION_STAMP_KEY") as Key<Pair<Long, Long>> }
+        val TIME_MODIFICATION_STAMP_KEY by lazy { staticProperty<IfsUtil>("TIME_MODIFICATION_STAMP_KEY") as Key<Pair<Long?, Long?>> }
         val FORMAT_KEY by lazy { staticProperty<IfsUtil>("FORMAT_KEY") as Key<String> }
         val IMAGE_PROVIDER_REF_KEY by lazy { staticProperty<IfsUtil>("IMAGE_PROVIDER_REF_KEY") as Key<SoftReference<ImageDocument.ScaledImageProvider>> }
     }
     
-    @Inject(Inject.Pointer.BODY)
+    @Inject(Inject.Pointer.AFTER)
     fun refresh(file: VirtualFile, returnValue: Boolean): Boolean {
         if(returnValue) return true
         if(file.fileType != DdsFileType) return false

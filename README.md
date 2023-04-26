@@ -6,9 +6,9 @@
 
 [中文参考文档](https://windea.icu/Paradox-Language-Support/#/zh/) | [English Reference Documentation](https://windea.icu/Paradox-Language-Support/#/en/)
 
-[Github](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)
-
-[Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)
+[GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
+[Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
+QQ群：653824651
 
 IDEA插件：Paradox语言支持。
 

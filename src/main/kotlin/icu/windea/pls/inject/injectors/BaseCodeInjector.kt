@@ -1,6 +1,8 @@
 package icu.windea.pls.inject.injectors
 
+import com.intellij.ide.plugins.*
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.extensions.*
 import icu.windea.pls.inject.*
 import javassist.*
 import javassist.Modifier
@@ -33,7 +35,6 @@ abstract class BaseCodeInjector : CodeInjector() {
             val returnValueArg = if(injectMethodInfo.pointer == Inject.Pointer.AFTER || injectMethodInfo.pointer == Inject.Pointer.AFTER_FINALLY) "\$_" else  "null"
             
             val args = "\"$id\", \"$methodId\", \$args, $targetArg, $returnValueArg"
-            javaClass.declaredMethods
             val code = """
             {
                 try {
@@ -54,7 +55,15 @@ abstract class BaseCodeInjector : CodeInjector() {
                 Inject.Pointer.AFTER_FINALLY -> targetMethod.insertAfter(code, true, targetMethod.declaringClass.isKotlin)
             }
         }
-        targetClass.toClass()
+        val injectPluginId = codeInjectorInfo.injectPluginId
+        if(injectPluginId.isEmpty()) {
+            targetClass.toClass()
+        } else {
+            val pluginClassLoader = runCatching {
+                PluginManager.getInstance().findEnabledPlugin(PluginId.findId(injectPluginId)!!)!!.pluginClassLoader
+            }.getOrElse { PluginDescriptor::class.java.classLoader }
+            targetClass.toClass(pluginClassLoader, null)
+        }
         targetClass.detach()
     }
     

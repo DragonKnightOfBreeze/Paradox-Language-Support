@@ -2,9 +2,9 @@
 
 ## 概述
 
-[Github](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)
-
-[Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)
+[GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
+[Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
+QQ群：653824651
 
 IDEA插件：Paradox语言支持。
 

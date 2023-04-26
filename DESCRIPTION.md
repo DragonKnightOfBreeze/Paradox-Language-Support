@@ -44,3 +44,6 @@ this plugin could provide some <a href="https://windea.icu/Paradox-Language-Supp
 <p>
   <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">Github</a>
 </p>
+<p>
+  QQ群：653824651
+</p>
