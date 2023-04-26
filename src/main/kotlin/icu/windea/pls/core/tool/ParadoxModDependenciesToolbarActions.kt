@@ -32,7 +32,7 @@ interface ParadoxModDependenciesToolbarActions {
                     var count = 0
                     val newSettingsList = mutableListOf<ParadoxModDependencySettingsState>()
                     for(file in files) {
-                        val rootInfo = ParadoxCoreHandler.resolveRootInfo(file)
+                        val rootInfo = ParadoxCoreHandler.getRootInfo(file)
                         if(rootInfo == null) continue //NOTE 目前要求这里的模组目录下必须有模组描述符文件
                         val modPath = file.path
                         count++

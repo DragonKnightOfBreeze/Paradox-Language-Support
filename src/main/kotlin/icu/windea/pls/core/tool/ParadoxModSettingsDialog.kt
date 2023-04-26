@@ -139,7 +139,7 @@ class ParadoxModSettingsDialog(
             ?: return error(PlsBundle.message("mod.settings.gameDirectory.error.1"))
         val rootFile = VfsUtil.findFile(path, false)?.takeIf { it.exists() }
             ?: return error(PlsBundle.message("mod.settings.gameDirectory.error.2"))
-        val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile)
+        val rootInfo = ParadoxCoreHandler.getRootInfo(rootFile)
         if(rootInfo !is ParadoxGameRootInfo) {
             return error(PlsBundle.message("mod.settings.gameDirectory.error.3", gameType.description))
         }
@@ -154,7 +154,7 @@ class ParadoxModSettingsDialog(
     private fun doGetGameVersionFromGameDirectory(): String? {
         val gameDirectory = gameDirectory.takeIfNotEmpty() ?: return null
         val rootFile = gameDirectory.toVirtualFile(false)?.takeIf { it.exists() } ?: return null
-        val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile)
+        val rootInfo = ParadoxCoreHandler.getRootInfo(rootFile)
         if(rootInfo !is ParadoxGameRootInfo) return null
         return rootInfo.launcherSettingsInfo.rawVersion
     }

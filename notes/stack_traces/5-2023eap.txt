@@ -5,7 +5,7 @@ java.lang.RuntimeException: Cannot invoke (class=ParadoxUpdateSettingsOnRootInfo
 	at com.intellij.util.messages.impl.MessagePublisher.invoke(MessageBusImpl.kt:442)
 	at jdk.proxy11/jdk.proxy11.$Proxy104.onAdd(Unknown Source)
 	at icu.windea.pls.lang.ParadoxCoreHandler.onAddRootInfo(ParadoxCoreHandler.kt:87)
-	at icu.windea.pls.lang.ParadoxCoreHandler.resolveRootInfo(ParadoxCoreHandler.kt:78)
+	at icu.windea.pls.lang.ParadoxCoreHandler.getRootInfo(ParadoxCoreHandler.kt:78)
 	at icu.windea.pls.lang.ParadoxCoreHandler.resolveFileInfo(ParadoxCoreHandler.kt:189)
 	at icu.windea.pls.core.ParadoxFileTypeOverrider.getOverriddenFileType(ParadoxFileTypeOverrider.kt:25)
 	at com.intellij.openapi.fileTypes.impl.FileTypeManagerImpl.lambda$getFileTypeByFile$16(FileTypeManagerImpl.java:745)

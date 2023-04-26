@@ -3,7 +3,6 @@ package icu.windea.pls.lang.model
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import java.nio.file.*
 
 /**
@@ -32,7 +31,7 @@ sealed class ParadoxRootInfo {
 class ParadoxGameRootInfo(
     override val rootFile: VirtualFile,
     val launcherSettingsFile: VirtualFile,
-    val launcherSettingsInfo: ParadoxLauncherSettingsInfo,
+    var launcherSettingsInfo: ParadoxLauncherSettingsInfo
 ) : ParadoxRootInfo() {
     override val gameType: ParadoxGameType = doGetGameType()
     override val gameRootFile: VirtualFile = doGetGameRootFile()
@@ -81,8 +80,8 @@ class ParadoxLauncherSettingsInfo(
 class ParadoxModRootInfo(
     override val rootFile: VirtualFile,
     val descriptorFile: VirtualFile,
+    var descriptorInfo: ParadoxModDescriptorInfo
 ) : ParadoxRootInfo() {
-    val descriptorInfo: ParadoxModDescriptorInfo get() = ParadoxCoreHandler.getDescriptorInfo(descriptorFile)
     
     override val gameType: ParadoxGameType get() = doGetGameType()
     override val gameRootFile: VirtualFile get() = rootFile

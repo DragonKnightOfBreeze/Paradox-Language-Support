@@ -38,14 +38,13 @@ propagate_state = { "move" = "moving" }
 
 ## 0.9.12
 
-* [ ] 兼容在VCS提交记录中正常查看脚本文件、本地化文件、DDS图片，并且如果可能，基于本地版本提供高级语言功能
+* [X] 兼容在VCS提交记录中正常查看脚本文件、本地化文件、DDS图片，并且如果可能，基于本地版本提供高级语言功能
 
 ```
-com.intellij.diff.contents.FileContentImpl.FileContentImpl(com.intellij.openapi.project.Project, com.intellij.openapi.vfs.VirtualFile, com.intellij.openapi.vfs.VirtualFile)
-com.intellij.diff.contents.FileDocumentContentImpl.FileDocumentContentImpl(com.intellij.openapi.project.Project, com.intellij.openapi.editor.Document, com.intellij.openapi.vfs.VirtualFile, com.intellij.openapi.vfs.VirtualFile)
-com.intellij.diff.DiffContentFactoryImpl.DocumentContentBuilderImpl.build
-
-//通过代码注入器注入injectedFileInfo？
+优化解析rootInfo的逻辑
+com.intellij.ide.IconProvider
+com.intellij.ide.FileIconProvider
+com.intellij.openapi.vcs.changes.FilePathIconProvider
 ```
 
 * [ ] 如果可能，直接在IDE编辑器中渲染DDS图片，而不是基于缓存的PNG图片

@@ -46,10 +46,10 @@ class ParadoxFromGameImporter : ParadoxModImporter {
                 val descriptorPath = gameDataPath.resolve(mod)
                 if(!descriptorPath.exists()) continue
                 val descriptorFile = descriptorPath.toVirtualFile(true) ?: continue
-                val descriptorInfo = ParadoxCoreHandler.getDescriptorInfo(descriptorFile)
+                val descriptorInfo = ParadoxCoreHandler.getDescriptorInfo(descriptorFile) ?: continue
                 val modPath = descriptorInfo.path ?: continue
                 val modDir = modPath.toVirtualFile() ?: continue
-                val rootInfo = ParadoxCoreHandler.resolveRootInfo(modDir)
+                val rootInfo = ParadoxCoreHandler.getRootInfo(modDir)
                 if(rootInfo == null) continue //NOTE 目前要求这里的模组目录下必须有模组描述符文件
                 count++
                 if(!tableModel.modDependencyDirectories.add(modPath)) continue //忽略已有的

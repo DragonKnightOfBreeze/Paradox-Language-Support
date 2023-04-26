@@ -69,6 +69,7 @@
     <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceGlobalScriptedVariableHandler"/>
     <refactoring.inlineHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptInlineHandler"/>
     <fileIconProvider implementation="icu.windea.pls.core.ParadoxFileIconProvider"/>
+    <openapi.vcs.changes.ui.filePathIconProvider implementation="icu.windea.pls.core.ParadoxFilePathIconProvider"/>
     <lang.surroundDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.surroundWith.ParadoxScriptSurroundDescriptor"/>
     <lang.unwrapDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.unwrap.ParadoxScriptUnwrapDescriptor"/>
     
