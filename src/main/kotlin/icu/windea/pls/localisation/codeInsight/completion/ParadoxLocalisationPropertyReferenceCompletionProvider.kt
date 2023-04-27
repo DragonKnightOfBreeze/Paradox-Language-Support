@@ -2,12 +2,12 @@ package icu.windea.pls.localisation.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.openapi.progress.*
 import com.intellij.patterns.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.model.*
@@ -35,6 +35,7 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
             .preferLocale(preferredParadoxLocale())
             .distinctByName()
         val processor: (ParadoxLocalisationProperty) -> Boolean = {
+            ProgressManager.checkCanceled()
             val name = it.name
             val icon = it.icon
             val typeFile = it.containingFile

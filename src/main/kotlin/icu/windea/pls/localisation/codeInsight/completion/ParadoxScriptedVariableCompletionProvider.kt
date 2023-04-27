@@ -14,8 +14,8 @@ import icu.windea.pls.script.psi.*
  * 提供封装变量引用的名字的代码补全。
  */
 class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionParameters>() {
+	//因为只能在$...$引用中出现，如果后面没有"$"，需要自动补充，并将光标移到补充"$"之前
 	private val insertHandler = InsertHandler<LookupElement> { context, _ ->
-		//因为只能在$...$引用中出现，如果后面没有"$"，需要自动补充，并将光标移到补充"$"之前
 		val editor = context.editor
 		val caretModel = editor.caretModel
 		val suffixChar = editor.document.charsSequence.getOrNull(caretModel.offset)

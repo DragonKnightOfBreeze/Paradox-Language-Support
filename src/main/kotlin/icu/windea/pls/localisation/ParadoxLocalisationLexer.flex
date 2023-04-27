@@ -165,7 +165,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
   {WHITE_SPACE} {noIndent=false; return WHITE_SPACE; } //继续解析
   {COMMENT} {return COMMENT; } //这里可以有注释
   {CHECK_LOCALE_ID} { //同一本地化文件中是可以有多个locale的，这是为了兼容localisation/languages.yml
-	//locale应该在之后的冒号和换行符之间没有任何字符或者只有空白字符
+	//locale之后的冒号和换行符之间应当没有任何字符或者只有空白字符
     int length = yylength();
     int i = length - 2;
     while(i >= 0){

@@ -818,13 +818,12 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElemen
     key: K,
     project: Project,
     scope: GlobalSearchScope,
-    cancelable: Boolean = true,
     crossinline action: (T) -> Boolean
 ): Boolean {
     if(DumbService.isDumb(project)) return true
     
     return StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
-        if(cancelable) ProgressManager.checkCanceled()
+        ProgressManager.checkCanceled()
         action(element)
     }
 }
@@ -832,17 +831,16 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElemen
 inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElementsByKeys(
     project: Project,
     scope: GlobalSearchScope,
-    cancelable: Boolean = true,
     crossinline keyPredicate: (key: K) -> Boolean = { true },
     crossinline action: (key: K, element: T) -> Boolean
 ): Boolean {
     if(DumbService.isDumb(project)) return true
     
     return StubIndex.getInstance().processAllKeys(this, project) { key ->
-        if(cancelable) ProgressManager.checkCanceled()
+        ProgressManager.checkCanceled()
         if(keyPredicate(key)) {
             StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
-                if(cancelable) ProgressManager.checkCanceled()
+                ProgressManager.checkCanceled()
                 action(key, element)
             }
         }
@@ -853,7 +851,6 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElemen
 inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processFirstElementByKeys(
     project: Project,
     scope: GlobalSearchScope,
-    cancelable: Boolean = true,
     crossinline keyPredicate: (key: K) -> Boolean = { true },
     crossinline predicate: (T) -> Boolean = { true },
     crossinline getDefaultValue: () -> T? = { null },
@@ -864,18 +861,17 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processFirstElem
     
     var value: T?
     return StubIndex.getInstance().processAllKeys(this, project) p@{ key ->
-        if(cancelable) ProgressManager.checkCanceled()
+        ProgressManager.checkCanceled()
         if(keyPredicate(key)) {
             value = null
             resetDefaultValue()
-            withMeasureMillis("selector") {
-                StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
-                    if(predicate(element)) {
-                        value = element
-                        return@processElements false
-                    }
-                    true
+            StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
+                ProgressManager.checkCanceled()
+                if(predicate(element)) {
+                    value = element
+                    return@processElements false
                 }
+                true
             }
             val finalValue = value ?: getDefaultValue()
             if(finalValue != null) {

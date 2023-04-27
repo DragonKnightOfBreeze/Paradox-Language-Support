@@ -181,6 +181,10 @@ fun String.containsBlankLine(): Boolean {
     return false
 }
 
+fun Char.isExactLineBreak(): Boolean {
+    return this == '\n' || this == '\r'
+}
+
 fun Char.isExactLetter(): Boolean {
     return this in 'a'..'z' || this in 'A'..'Z'
 }
