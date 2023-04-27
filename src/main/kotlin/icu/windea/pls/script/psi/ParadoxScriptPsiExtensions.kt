@@ -1,5 +1,3 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package icu.windea.pls.script.psi
 
 import com.intellij.lang.*
@@ -45,7 +43,8 @@ fun ParadoxScriptExpressionElement.isExpression(): Boolean {
 }
 
 fun ParadoxScriptStringExpressionElement.isParameterizedExpression(): Boolean {
-	return !this.text.isLeftQuoted() && this.textContains('$')
+	val text = this.text
+	return !text.isLeftQuoted() && text.contains('$')
 }
 
 /**
