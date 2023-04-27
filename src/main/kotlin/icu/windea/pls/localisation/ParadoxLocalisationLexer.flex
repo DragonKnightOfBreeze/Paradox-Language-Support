@@ -120,12 +120,12 @@ WHITE_SPACE=[\s&&[^\r\n]]+
 COMMENT=#[^\r\n]*
 END_OF_LINE_COMMENT=#[^\"\r\n]* //行尾注释不能包含双引号，否则会有解析冲突
 
-CHECK_LOCALE_ID=[a-z_]+:\s*?[\r\n]?
 CHECK_PROPERTY_REFERENCE_START=\$([a-zA-Z0-9_.\-'@]?|{CHECK_COMMAND_START})
 CHECK_ICON_START=£.?
 CHECK_COLORFUL_TEXT_START=§.?
 CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 
+LOCALE_ID=[a-z_]+
 NUMBER=\d+
 PROPERTY_KEY_CHAR=[a-zA-Z0-9_.\-']
 PROPERTY_KEY_TOKEN={PROPERTY_KEY_CHAR}+
@@ -155,23 +155,19 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
   {EOL} { return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; } //继续解析
   {COMMENT} {return COMMENT; } //这里可以有注释
-  {CHECK_LOCALE_ID} {
+  ^ {LOCALE_ID} ":" \s* $ {
 	//本地化文件中可以没有，或者有多个locale - 主要是为了兼容localisation/languages.yml
 	//locale之前必须没有任何缩进
 	//locale之后的冒号和换行符之间应当没有任何字符或者只有空白字符
+	//采用最简单的实现方式，尽管JFlex手册中说 "^" "$" 性能不佳
 	int n = 1;
 	int l = yylength();
 	while(Character.isWhitespace(yycharat(l - n))) {
 		n++;
 	}
 	yypushback(n);
-	if(zzAtBOL) {
-        yybegin(WAITING_LOCALE_COLON);
-        return LOCALE_ID;
-	} else {
-		yybegin(WAITING_PROPERTY_COLON);
-		return PROPERTY_KEY_TOKEN;
-	}
+    yybegin(WAITING_LOCALE_COLON);
+    return LOCALE_ID;
   }
   {PROPERTY_KEY_TOKEN} {
     yybegin(WAITING_PROPERTY_COLON);
