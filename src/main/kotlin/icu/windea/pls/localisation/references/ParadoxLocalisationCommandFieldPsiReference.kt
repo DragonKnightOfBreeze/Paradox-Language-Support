@@ -49,7 +49,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		val predefinedVariable = configGroup.values.get("variable")?.valueConfigMap?.get(name)
 		if(predefinedVariable != null) return predefinedVariable.pointer.element
 		
-		//尝试识别为value[variable]
+		//尝试识别为value[variable]（需要预先在脚本文件中使用到）
 		val variableSelector = valueSetValueSelector(project, element).contextSensitive(exact)
 		val variable = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findFirst()
 		if(variable != null) return ParadoxValueSetValueElement(element, name, "variable", Access.Read, gameType, project)
@@ -77,7 +77,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		val predefinedVariable = configGroup.values.get("variable")?.valueConfigMap?.get(name)
 		if(predefinedVariable != null) return predefinedVariable.pointer.element?.let { arrayOf(PsiElementResolveResult(it)) } ?: ResolveResult.EMPTY_ARRAY
 		
-		//尝试识别为value[variable]
+		//尝试识别为value[variable]（需要预先在脚本文件中使用到）
 		val variableSelector = valueSetValueSelector(project, element).contextSensitive()
 		val variable = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findFirst()
 		if(variable != null) return arrayOf(PsiElementResolveResult(ParadoxValueSetValueElement(element, name, "variable", Access.Read, gameType, project)))

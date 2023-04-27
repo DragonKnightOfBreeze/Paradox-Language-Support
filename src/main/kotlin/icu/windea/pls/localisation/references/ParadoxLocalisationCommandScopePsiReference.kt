@@ -45,7 +45,7 @@ class ParadoxLocalisationCommandScopePsiReference(
 		val predefinedEventTarget = configGroup.values.get("event_target")?.valueConfigMap?.get(name)
 		if(predefinedEventTarget != null) return predefinedEventTarget.pointer.element
 		
-		//尝试识别为value[event_target]或value[global_event_target]
+		//尝试识别为value[event_target]或value[global_event_target]（需要预先在脚本文件中使用到）
 		val selector = valueSetValueSelector(project, element).contextSensitive()
 		val eventTarget = ParadoxValueSetValueSearch.search(name, "event_target", selector).findFirst()
 		if(eventTarget != null) return ParadoxValueSetValueElement(element, name, "event_target", Access.Read, gameType, project)
