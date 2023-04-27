@@ -121,8 +121,10 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 		if(textEditor.editor.document.getLineNumber(selectionStart) != textEditor.editor.document.getLineNumber(selectionEnd)) return false
 		val elementAtStart = file.findElementAt(selectionStart)
 		val elementAtEnd = file.findElementAt(selectionEnd - 1)
-		//开始位置和结束位置向上能查找到同一个ParadoxLocalisationPropertyValue，且选择文本的范围在引号之间
+		//开始位置和结束位置的左边或右边是STRING_TOKEN，向上能查找到同一个ParadoxLocalisationPropertyValue，且选择文本的范围在引号之间
 		if(elementAtStart == null || elementAtEnd == null) return false
+		if(elementAtStart.elementType != STRING_TOKEN && elementAtStart.prevSibling.elementType != STRING_TOKEN) return false
+		if(elementAtEnd.elementType != STRING_TOKEN && elementAtEnd.nextSibling.elementType != STRING_TOKEN) return false
 		val propertyValueAtStart = elementAtStart.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
 		val propertyValueAtEnd = elementAtEnd.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
 		if(propertyValueAtStart !== propertyValueAtEnd) return false
