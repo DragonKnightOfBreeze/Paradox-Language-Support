@@ -12,7 +12,7 @@ import icu.windea.pls.tool.*
 
 object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxLocalisationLanguage) {
     private const val externalId = "paradoxLocalisation.file"
-    private const val stubVersion = 15 //0.9.9
+    private const val stubVersion = 16 //0.9.14
     
     override fun getExternalId() = externalId
     
@@ -63,16 +63,4 @@ object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFil
             }
         }
     }
-    
-    //override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
-    //	val fileInfo = psi.fileInfo
-    //	val project = psi.project
-    //	val language = ParadoxLocalisationLanguage
-    //	val context = ParadoxLocalisationParsingContext(project, fileInfo)
-    //	val lexer = ParadoxLocalisationLexerAdapter(context)
-    //	val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, lexer, language, chameleon.chars)
-    //	val parser = ParadoxLocalisationParser()
-    //	val node = parser.parse(this, builder)
-    //	return node.firstChildNode
-    //}
 }

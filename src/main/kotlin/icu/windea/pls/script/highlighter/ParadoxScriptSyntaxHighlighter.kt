@@ -66,10 +66,4 @@ class ParadoxScriptSyntaxHighlighter(
 	override fun getHighlightingLexer(): ParadoxScriptLexerAdapter {
 		return ParadoxScriptLexerAdapter()
 	}
-	
-	//override fun getHighlightingLexer(): ParadoxScriptLexerAdapter {
-	//	val fileInfo = virtualFile?.fileInfo
-	//	val context = ParadoxScriptParsingContext(project, fileInfo)
-	//	return ParadoxScriptLexerAdapter(context)
-	//}
 }

@@ -42,21 +42,16 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %state WAITING_CHECK_RIGHT_QUOTE
 
 %{	
-	//private ParadoxLocalisationParsingContext context;
-
-    private boolean noIndent = true;
+	private ParadoxLocalisationLexerContext context;
+  
     private int depth = 0;
     private CommandLocation commandLocation = CommandLocation.NORMAL;
     private ReferenceLocation referenceLocation = ReferenceLocation.NORMAL;
     
     public ParadoxLocalisationLexer() {
         this((java.io.Reader)null);
+		this.context = new ParadoxLocalisationLexerContext(this);
     }
-	
-	//public ParadoxLocalisationLexer(ParadoxLocalisationParsingContext context) {
-    //    this((java.io.Reader)null);
-    //	this.context = context;
-    //}
 	
     private void increaseDepth(){
 	    depth++;
@@ -161,66 +156,58 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
 //core rules
 
 <YYINITIAL> {
-  {EOL} {noIndent=true; return WHITE_SPACE; }
-  {WHITE_SPACE} {noIndent=false; return WHITE_SPACE; } //继续解析
+  {EOL} { return WHITE_SPACE; }
+  {WHITE_SPACE} {return WHITE_SPACE; } //继续解析
   {COMMENT} {return COMMENT; } //这里可以有注释
   {CHECK_LOCALE_ID} { //同一本地化文件中是可以有多个locale的，这是为了兼容localisation/languages.yml
 	//locale之后的冒号和换行符之间应当没有任何字符或者只有空白字符
-    int length = yylength();
-    int i = length - 2;
-    while(i >= 0){
- 	    char c = yycharat(i);
- 	    if(c == ':') {
- 		    int pushback = length - i;
-			yypushback(pushback);
-			//locale之前必须没有任何缩进
-			if(noIndent){
- 		        yybegin(WAITING_LOCALE_COLON);
- 		        return LOCALE_ID;
-			} else {
-				yybegin(WAITING_PROPERTY_COLON);
-				//if(context != null) context.setCurrentKey(yytext().toString());
-				return PROPERTY_KEY_TOKEN;
-			}
- 	    }
- 	    i--;
-    }
-    return BAD_CHARACTER; //不期望的结果
+	int n = 1;
+	int l = yylength();
+	while(!Character.isWhitespace(yycharat(l - n))) {
+		n++;
+	}
+	yypushback(n);
+	//locale之前必须没有任何缩进
+	if(zzAtBOL) {
+        yybegin(WAITING_LOCALE_COLON);
+        return LOCALE_ID;
+	} else {
+		yybegin(WAITING_PROPERTY_COLON);
+		return PROPERTY_KEY_TOKEN;
+	}
   }
-  //{LOCALE_ID} {yybegin(WAITING_LOCALE_COLON); return LOCALE_ID; }
   {PROPERTY_KEY_TOKEN} {
     yybegin(WAITING_PROPERTY_COLON);
-    //if(context != null) context.setCurrentKey(yytext().toString());
     return PROPERTY_KEY_TOKEN;
   }
 }
 <WAITING_LOCALE_COLON>{
-  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; }
   ":" {yybegin(WAITING_LOCALE_END); return COLON; }
 }
 <WAITING_LOCALE_END>{
-  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; }
   {END_OF_LINE_COMMENT} {return COMMENT; }
 }
 <WAITING_PROPERTY_COLON>{
-  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE;}
   ":" {yybegin(WAITING_PROPERTY_NUMBER); return COLON; }
 }
 <WAITING_PROPERTY_NUMBER>{
-  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {yybegin(WAITING_PROPERTY_VALUE); return WHITE_SPACE;}
   {NUMBER} {yybegin(WAITING_PROPERTY_VALUE); return PROPERTY_NUMBER;}
 }
 <WAITING_PROPERTY_VALUE> {
-  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE;}
   \" {yybegin(WAITING_RICH_TEXT); return LEFT_QUOTE; }
 }
 <WAITING_RICH_TEXT>{
-  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);}
   "£" {yypushback(yylength()); yybegin(CHECKING_ICON_START);}
@@ -251,7 +238,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
   }
 }
 <WAITING_PROPERTY_REFERENCE>{
-  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; } 
+  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; } 
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE;}
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
@@ -271,7 +258,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
   {PROPERTY_REFERENCE_PARAMETER_TOKEN} {return PROPERTY_REFERENCE_PARAMETER_TOKEN;}
 }
 <WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME>{
-   {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+   {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
    {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
    \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
@@ -301,7 +288,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
   }
 }
 <WAITING_ICON>{
-  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "£" {yybegin(nextStateForText()); return ICON_END;}
@@ -313,7 +300,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
   {ICON_ID} {yybegin(WAITING_ICON_ID_FINISHED); return ICON_ID;}
 }
 <WAITING_ICON_ID_FINISHED>{
-  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "£" {yybegin(nextStateForText()); return ICON_END;}
@@ -322,7 +309,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
 }
 <WAITING_ICON_FRAME>{
-  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {referenceLocation=ReferenceLocation.ICON_FRAME; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);}
@@ -332,7 +319,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
   {ICON_FRAME} {yybegin(WAITING_ICON_FRAME_FINISHED); return ICON_FRAME;}
 }
 <WAITING_ICON_FRAME_FINISHED>{
-   {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+   {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
    {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
    \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
    "£" {yybegin(nextStateForText()); return ICON_END;}
@@ -360,7 +347,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
   }
 }
 <WAITING_COMMAND_SCOPE_OR_FIELD>{
-  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "]" {yybegin(nextStateForCommand()); return COMMAND_END;}
@@ -392,7 +379,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
   }
 }
 <WAITING_COLOR_ID>{
-  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {yybegin(WAITING_COLORFUL_TEXT); return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
@@ -401,7 +388,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
   [^] {yypushback(yylength()); yybegin(WAITING_COLORFUL_TEXT); } //提高兼容性
 }
 <WAITING_COLORFUL_TEXT>{
-  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);}
   "£" {yypushback(yylength()); yybegin(CHECKING_ICON_START);}
@@ -411,7 +398,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
 }
 
 <WAITING_PROPERTY_END>{
-  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; } //继续解析
   {END_OF_LINE_COMMENT} {return COMMENT; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}

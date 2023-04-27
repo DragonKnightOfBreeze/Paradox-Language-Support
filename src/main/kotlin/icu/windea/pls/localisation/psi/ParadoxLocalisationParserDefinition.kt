@@ -5,7 +5,6 @@ import com.intellij.lang.ParserDefinition.SpaceRequirements.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.script.psi.*
 
 class ParadoxLocalisationParserDefinition : ParserDefinition {
     companion object {
@@ -35,12 +34,6 @@ class ParadoxLocalisationParserDefinition : ParserDefinition {
     override fun createLexer(project: Project?): ParadoxLocalisationLexerAdapter {
         return ParadoxLocalisationLexerAdapter()
     }
-    
-    //fun createLexer(virtualFile: VirtualFile, project: Project?): ParadoxLocalisationLexerAdapter {
-    //	val fileInfo = virtualFile.fileInfo
-    //	val context = ParadoxLocalisationParsingContext(project, fileInfo)
-    //	return ParadoxLocalisationLexerAdapter(context)
-    //}
     
     override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): ParserDefinition.SpaceRequirements {
         val leftType = left?.elementType

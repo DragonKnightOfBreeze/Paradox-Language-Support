@@ -18,7 +18,7 @@ import icu.windea.pls.tool.*
 
 object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
     private const val externalId = "paradoxScript.file"
-    private const val stubVersion = 15 //0.9.9
+    private const val stubVersion = 16 //0.9.14
     
     override fun getExternalId() = externalId
     
@@ -122,16 +122,4 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
             return false
         }
     }
-    
-    //override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
-    //	val fileInfo = psi.fileInfo
-    //	val project = psi.project
-    //	val language = ParadoxScriptLanguage
-    //	val context = ParadoxScriptParsingContext(project, fileInfo)
-    //	val lexer = ParadoxScriptLexerAdapter(context)
-    //	val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, lexer, language, chameleon.chars)
-    //	val parser = ParadoxScriptParser()
-    //	val node = parser.parse(this, builder)
-    //	return node.firstChildNode
-    //}
 }

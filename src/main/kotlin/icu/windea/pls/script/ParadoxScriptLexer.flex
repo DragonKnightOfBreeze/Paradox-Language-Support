@@ -40,7 +40,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %state WAITING_INLINE_MATH
 
 %{
-	//private ParadoxScriptParsingContext context;
+	private ParadoxScriptLexerContext context;
 
     private int depth = 0;
     private boolean inWildcardKey = false;
@@ -52,12 +52,8 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     
     public ParadoxScriptLexer() {
         this((java.io.Reader)null);
+		this.context = new ParadoxScriptLexerContext(this);
     }
-	
-	//public ParadoxScriptLexer(ParadoxScriptParsingContext context) {
-	//	this((java.io.Reader)null);
-	//	this.context = context;
-	//}
     
     private void beginNextState(){
 		if(inParameterCondition){
