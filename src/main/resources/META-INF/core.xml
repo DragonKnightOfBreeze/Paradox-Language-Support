@@ -36,6 +36,7 @@
     <readWriteAccessDetector implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxReadWriteAccessDetector"/>
     <usageTypeProvider implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxUsageTypeProvider"/>
     <codeInsight.typeInfo language="PARADOX" implementationClass="icu.windea.pls.core.codeInsight.ParadoxTypeProvider"/>
+    <codeInsight.containerProvider implementation="icu.windea.pls.core.codeInsight.ParadoxContainerProvider"/>
     <typeDeclarationProvider implementation="icu.windea.pls.core.codeInsight.ParadoxTypeDeclarationProvider"/>
     <codeInsight.template.postfixTemplateProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.codeInsight.template.postfix.ParadoxPostfixTemplateProvider"/>
     
