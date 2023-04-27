@@ -56,6 +56,11 @@ IDEA插件：Paradox语言支持。
 
 ## 参考
 
+参考手册：
+
+* [IntelliJ Platform SDK | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html)
+* [JFlex - manual](https://www.jflex.de/manual.html)
+
 工具和插件：
 
 * [cwtools/cwtools](https://github.com/cwtools/cwtools)

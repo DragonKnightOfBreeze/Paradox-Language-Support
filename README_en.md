@@ -63,6 +63,11 @@ Tips:
 
 ## Reference
 
+Reference manual:
+
+* [IntelliJ Platform SDK | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html)
+* [JFlex - manual](https://www.jflex.de/manual.html)
+
 Tools and plugins:
 
 * [cwtools/cwtools](https://github.com/cwtools/cwtools)
