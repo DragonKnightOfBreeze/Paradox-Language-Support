@@ -54,7 +54,7 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 				true
 			}
 		}
-		return result ?: selector.defaultValue
+		return result ?: selector.defaultValue()
 	}
 	
 	override fun findAll(): Set<T> {

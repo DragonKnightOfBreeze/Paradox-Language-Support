@@ -1,12 +1,11 @@
 package icu.windea.pls.core.search.selector.chained
 
 import com.intellij.openapi.project.*
-import com.intellij.psi.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.model.*
 
 open class ChainedParadoxSelector<T>(
@@ -20,7 +19,7 @@ open class ChainedParadoxSelector<T>(
     
     val gameType = rootInfo?.gameType
     
-    val settings = when {
+    val settings: ParadoxGameOrModSettingsState? = when {
         rootInfo is ParadoxGameRootInfo -> getProfilesSettings().gameSettings.get(rootInfo.rootFile.path)
         rootInfo is ParadoxModRootInfo -> getProfilesSettings().modSettings.get(rootInfo.rootFile.path)
         else -> null
@@ -41,8 +40,9 @@ open class ChainedParadoxSelector<T>(
     
     val selectors = mutableListOf<ParadoxSelector<T>>()
     
-    var defaultValue: T? = null
-    var defaultValuePriority = 0
+    private var defaultValue: T? = null
+    private var defaultValuePriority = 0
+    private var defaultValueLock = Any()
     
     override fun select(result: T): Boolean {
         if(!matchesGameType(result)) return false
@@ -56,9 +56,15 @@ open class ChainedParadoxSelector<T>(
             if(selectResult) finalDefaultValuePriority++
             finalSelectDefaultResult = finalSelectDefaultResult && (selectResult || selector.selectAll(result))
         }
-        if(finalSelectDefaultResult && (defaultValuePriority == 0 || defaultValuePriority < finalDefaultValuePriority)) {
-            defaultValue = result
-            defaultValuePriority = finalDefaultValuePriority
+        if(finalSelectDefaultResult) {
+            if(defaultValuePriority == 0 || defaultValuePriority < finalDefaultValuePriority) {
+                synchronized(defaultValueLock) {
+                    if(defaultValuePriority == 0 || defaultValuePriority < finalDefaultValuePriority) {
+                        defaultValue = result
+                        defaultValuePriority = finalDefaultValuePriority
+                    }
+                }
+            }
         }
         return finalSelectResult
     }
@@ -72,13 +78,6 @@ open class ChainedParadoxSelector<T>(
             finalSelectAllResult = finalSelectAllResult && selectAllResult
         }
         return finalSelectAllResult
-    }
-    
-    private fun matchesGameType(result: T): Boolean {
-        //某些情况下，可以直接认为游戏类型是匹配的
-        if(scope is ParadoxSearchScope) return true
-        
-        return gameType == null || gameType == selectGameType(result)
     }
     
     override fun comparator(): Comparator<T>? {
@@ -97,46 +96,21 @@ open class ChainedParadoxSelector<T>(
             if(a == b) 0 else 1
         }
     }
-}
-
-fun <S : ChainedParadoxSelector<T>, T> S.withGameType(gameType: ParadoxGameType): S {
-    selectors += ParadoxWithGameTypeSelector(gameType)
-    return this
-}
-
-fun <S : ChainedParadoxSelector<T>, T> S.withSearchScope(searchScope: GlobalSearchScope?): S {
-    if(searchScope != null) selectors += ParadoxWithSearchScopeSelector(searchScope)
-    return this
-}
-
-fun <S : ChainedParadoxSelector<T>, T> S.withSearchScopeType(searchScopeType: String?): S {
-    if(searchScopeType != null && context is PsiElement) selectors += ParadoxWithSearchScopeTypeSelector(searchScopeType, project, context)
-    return this
-}
-
-/**
- * 首先尝试选用同一根目录下的，然后尝试选用同一文件下的。
- */
-@JvmOverloads
-fun <S : ChainedParadoxSelector<T>, T> S.contextSensitive(condition: Boolean = true): S {
-    if(condition) {
-        if(rootFile != null) selectors += ParadoxPreferRootFileSelector(rootFile)
-        if(file != null) selectors += ParadoxPreferFileSelector(file)
+    
+    fun defaultValue() : T? {
+        return defaultValue
     }
-    return this
+    
+    fun resetDefaultValue() {
+        defaultValue = null
+        defaultValuePriority = 0
+    }
+    
+    fun matchesGameType(result: T): Boolean {
+        //某些情况下，可以直接认为游戏类型是匹配的
+        if(scope is ParadoxSearchScope) return true
+        
+        return gameType == null || gameType == selectGameType(result)
+    }
 }
 
-fun <S : ChainedParadoxSelector<T>, T, K> S.distinctBy(keySelector: (T) -> K): S {
-    selectors += ParadoxDistinctSelector(keySelector)
-    return this
-}
-
-fun <S : ChainedParadoxSelector<T>, T> S.filterBy(predicate: (T) -> Boolean): S {
-    selectors += ParadoxFilterSelector(predicate)
-    return this
-}
-
-fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.notSamePosition(element: PsiElement?): S {
-    filterBy { element == null || !element.isSamePosition(it) }
-    return this
-}

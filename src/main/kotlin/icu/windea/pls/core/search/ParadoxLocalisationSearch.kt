@@ -62,8 +62,8 @@ class ParadoxLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisationPrope
 			return ParadoxLocalisationNameIndex.KEY.processFirstElementByKeys(project, scope,
 				keyPredicate = { key -> key.matchesKeyword(keyword) },
 				predicate = { element -> selector.select(element) },
-				getDefaultValue = { selector.defaultValue },
-				resetDefaultValue = { selector.defaultValue = null },
+				getDefaultValue = { selector.defaultValue() },
+				resetDefaultValue = { selector.resetDefaultValue() },
 				processor = processor
 			)
 		}

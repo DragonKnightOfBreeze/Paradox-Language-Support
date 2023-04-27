@@ -62,8 +62,9 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         val project = configGroup.project
         val contextElement = context.contextElement
         val tailText = ParadoxConfigHandler.getScriptExpressionTailText(config)
-        //这里selector不需要指定去重
-        val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale())
+        val selector = localisationSelector(project, contextElement).contextSensitive()
+            .preferLocale(preferredParadoxLocale())
+            //.distinctByName() //这里selector不需要指定去重
         ParadoxLocalisationSearch.processVariants(keyword, selector) { localisation ->
             val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = localisation.containingFile
@@ -171,8 +172,9 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         val project = configGroup.project
         val contextElement = context.contextElement
         val tailText = ParadoxConfigHandler.getScriptExpressionTailText(config)
-        //这里selector不需要指定去重
-        val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale())
+        val selector = localisationSelector(project, contextElement).contextSensitive()
+            .preferLocale(preferredParadoxLocale())
+            //.distinctByName() //这里selector不需要指定去重
         ParadoxLocalisationSearch.processVariants(keyword, selector) { localisation ->
             val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = localisation.containingFile

@@ -126,11 +126,11 @@ BLANK=\s+
 COMMENT=#[^\r\n]*
 
 //判断接下来是变量名还是变量引用
-CHECK_SCRIPTED_VARIABLE={SCRIPTED_VARIABLE_ID}(\s*=)?
+CHECK_SCRIPTED_VARIABLE={SCRIPTED_VARIABLE_NAME_TOKEN}(\s*=)?
 //判断接下来是否是属性的键
 CHECK_PROPERTY_KEY=({WILDCARD_KEY_TOKEN}|{QUOTED_PROPERTY_KEY_TOKEN})\s*[!=<>]
 
-SCRIPTED_VARIABLE_ID=[a-zA-Z_][a-zA-Z0-9_]*
+SCRIPTED_VARIABLE_NAME_TOKEN=[a-zA-Z_][a-zA-Z0-9_]*
 PARAMETER_ID=[a-zA-Z_][a-zA-Z0-9_]*
 
 WILDCARD_KEY_TOKEN=[^#@={}\[\]\s\"][^#={}\[\]\s]*
@@ -208,7 +208,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
-  {SCRIPTED_VARIABLE_ID} {return SCRIPTED_VARIABLE_NAME_ID;}
+  {SCRIPTED_VARIABLE_NAME_TOKEN} {return SCRIPTED_VARIABLE_NAME_ID;}
   "=" {yybegin(WAITING_SCRIPTED_VARIABLE_VALUE); return EQUAL_SIGN;}
 }
 <WAITING_SCRIPTED_VARIABLE_VALUE> {
@@ -237,7 +237,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
-  {SCRIPTED_VARIABLE_ID} {yybegin(WAITING_PROPERTY_END); return SCRIPTED_VARIABLE_REFERENCE_ID;}
+  {SCRIPTED_VARIABLE_NAME_TOKEN} {yybegin(WAITING_PROPERTY_END); return SCRIPTED_VARIABLE_REFERENCE_ID;}
 }
 
 <WAITING_PROPERTY_KEY> {
@@ -440,7 +440,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   "$" {yybegin(WAITING_PARAMETER); return PARAMETER_START;}
   {INT_NUMBER_TOKEN} {return INT_NUMBER_TOKEN;}
   {FLOAT_NUMBER_TOKEN} {return FLOAT_NUMBER_TOKEN;}
-  {SCRIPTED_VARIABLE_ID} {return INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID;}
+  {SCRIPTED_VARIABLE_NAME_TOKEN} {return INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID;}
   "]" {exitInlineMath(); beginNextState(); return INLINE_MATH_END;}
 }
 
