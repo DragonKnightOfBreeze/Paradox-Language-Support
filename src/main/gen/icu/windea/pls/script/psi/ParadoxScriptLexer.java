@@ -559,8 +559,6 @@ public class ParadoxScriptLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-	private ParadoxScriptLexerContext context;
-
     private int depth = 0;
     private boolean inWildcardKey = false;
     private boolean inWildcardValue = false;
@@ -571,7 +569,6 @@ public class ParadoxScriptLexer implements FlexLexer {
     
     public ParadoxScriptLexer() {
         this((java.io.Reader)null);
-		this.context = new ParadoxScriptLexerContext(this);
     }
     
     private void beginNextState(){

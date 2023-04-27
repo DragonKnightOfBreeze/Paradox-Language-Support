@@ -42,15 +42,12 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %state WAITING_CHECK_RIGHT_QUOTE
 
 %{	
-	private ParadoxLocalisationLexerContext context;
-  
     private int depth = 0;
     private CommandLocation commandLocation = CommandLocation.NORMAL;
     private ReferenceLocation referenceLocation = ReferenceLocation.NORMAL;
     
     public ParadoxLocalisationLexer() {
         this((java.io.Reader)null);
-		this.context = new ParadoxLocalisationLexerContext(this);
     }
 	
     private void increaseDepth(){
@@ -118,19 +115,18 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %}
 
 EOL=\s*\R
-//BLANK=\s+
+BLANK=\s+
 WHITE_SPACE=[\s&&[^\r\n]]+
 COMMENT=#[^\r\n]*
 END_OF_LINE_COMMENT=#[^\"\r\n]* //行尾注释不能包含双引号，否则会有解析冲突
 
-CHECK_LOCALE_ID=[a-z_]+:\s*[\r\n]
+CHECK_LOCALE_ID=[a-z_]+:\s*?[\r\n]?
 CHECK_PROPERTY_REFERENCE_START=\$([a-zA-Z0-9_.\-'@]?|{CHECK_COMMAND_START})
 CHECK_ICON_START=£.?
 CHECK_COLORFUL_TEXT_START=§.?
 CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 
 NUMBER=\d+
-//LOCALE_ID=[a-z_]+
 PROPERTY_KEY_CHAR=[a-zA-Z0-9_.\-']
 PROPERTY_KEY_TOKEN={PROPERTY_KEY_CHAR}+
 VALID_ESCAPE_TOKEN=\\[rnt\"$£§]
@@ -159,15 +155,16 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
   {EOL} { return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; } //继续解析
   {COMMENT} {return COMMENT; } //这里可以有注释
-  {CHECK_LOCALE_ID} { //同一本地化文件中是可以有多个locale的，这是为了兼容localisation/languages.yml
+  {CHECK_LOCALE_ID} {
+	//本地化文件中可以没有，或者有多个locale - 主要是为了兼容localisation/languages.yml
+	//locale之前必须没有任何缩进
 	//locale之后的冒号和换行符之间应当没有任何字符或者只有空白字符
 	int n = 1;
 	int l = yylength();
-	while(!Character.isWhitespace(yycharat(l - n))) {
+	while(Character.isWhitespace(yycharat(l - n))) {
 		n++;
 	}
 	yypushback(n);
-	//locale之前必须没有任何缩进
 	if(zzAtBOL) {
         yybegin(WAITING_LOCALE_COLON);
         return LOCALE_ID;

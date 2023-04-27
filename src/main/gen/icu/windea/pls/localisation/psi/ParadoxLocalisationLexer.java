@@ -151,12 +151,12 @@ public class ParadoxLocalisationLexer implements FlexLexer {
     "\1\31\1\32\1\33\1\34\1\35\1\36\1\37\1\1"+
     "\1\2\1\5\1\13\1\40\1\41\1\42\1\20\1\43"+
     "\1\44\1\5\1\45\1\20\1\46\1\47\1\50\1\51"+
-    "\1\52\3\0\1\53\1\54\1\55\1\56\1\0\1\57"+
-    "\1\60\1\56\1\61\2\46\1\47\1\50\1\51\1\52"+
-    "\1\62";
+    "\1\52\1\0\1\53\1\0\1\54\1\55\1\56\1\57"+
+    "\1\0\1\60\1\61\1\57\1\62\2\46\1\47\1\50"+
+    "\1\51\1\52";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[101];
+    int [] result = new int[100];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -193,10 +193,10 @@ public class ParadoxLocalisationLexer implements FlexLexer {
     "\0\u027e\0\u0570\0\u0570\0\u027e\0\u058d\0\u05aa\0\u05c7\0\u05e4"+
     "\0\u0601\0\u061e\0\u02b8\0\u063b\0\u0349\0\u027e\0\u027e\0\u027e"+
     "\0\u027e\0\u0519\0\u027e\0\u027e\0\u0519\0\u027e\0\u027e\0\u0658"+
-    "\0\u027e\0\u027e\0\u027e\0\u027e\0\u063b";
+    "\0\u027e\0\u027e\0\u027e\0\u027e";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[101];
+    int [] result = new int[100];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -274,9 +274,9 @@ public class ParadoxLocalisationLexer implements FlexLexer {
     "\3\137\5\0\2\141\2\0\30\141\1\0\1\142\1\120"+
     "\1\0\1\120\4\142\2\120\1\142\1\120\1\142\5\120"+
     "\3\142\4\120\3\142\1\0\2\143\2\0\30\143\1\0"+
-    "\2\122\1\0\2\122\1\144\27\122\1\0\1\124\1\145"+
-    "\1\124\31\0\1\137\1\140\1\0\1\140\4\137\2\140"+
-    "\1\137\1\140\1\137\5\140\3\137\4\140\3\137\1\0";
+    "\2\122\1\0\2\122\1\144\27\122\1\0\3\124\31\0"+
+    "\1\137\1\140\1\0\1\140\4\137\2\140\1\137\1\140"+
+    "\1\137\5\140\3\137\4\140\3\137\1\0";
 
   private static int [] zzUnpacktrans() {
     int [] result = new int[1653];
@@ -320,11 +320,11 @@ public class ParadoxLocalisationLexer implements FlexLexer {
     "\26\0\1\11\10\1\1\11\1\1\1\11\3\1\2\11"+
     "\3\1\1\11\2\1\1\11\3\1\1\11\1\1\3\11"+
     "\3\1\1\11\1\1\4\11\6\1\2\11\1\1\1\11"+
-    "\2\1\1\11\6\1\3\0\4\11\1\0\2\11\1\1"+
-    "\2\11\1\1\4\11\1\1";
+    "\2\1\1\11\6\1\1\0\1\1\1\0\4\11\1\0"+
+    "\2\11\1\1\2\11\1\1\4\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[101];
+    int [] result = new int[100];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -392,15 +392,12 @@ public class ParadoxLocalisationLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-	private ParadoxLocalisationLexerContext context;
-  
     private int depth = 0;
     private CommandLocation commandLocation = CommandLocation.NORMAL;
     private ReferenceLocation referenceLocation = ReferenceLocation.NORMAL;
     
     public ParadoxLocalisationLexer() {
         this((java.io.Reader)null);
-		this.context = new ParadoxLocalisationLexerContext(this);
     }
 	
     private void increaseDepth(){
@@ -976,50 +973,15 @@ public class ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 92: break;
           case 43:
-            { return DOUBLE_LEFT_BRACKET;
-            }
-          // fall through
-          case 93: break;
-          case 44:
-            { return INVALID_ESCAPE_TOKEN;
-            }
-          // fall through
-          case 94: break;
-          case 45:
-            { return VALID_ESCAPE_TOKEN;
-            }
-          // fall through
-          case 95: break;
-          case 46:
-            { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;
-            }
-          // fall through
-          case 96: break;
-          case 47:
-            { yypushback(1); return COMMAND_SCOPE_ID;
-            }
-          // fall through
-          case 97: break;
-          case 48:
-            { yypushback(1); return COMMAND_FIELD_ID;
-            }
-          // fall through
-          case 98: break;
-          case 49:
-            { decreaseDepth(); decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;
-            }
-          // fall through
-          case 99: break;
-          case 50:
-            { //同一本地化文件中是可以有多个locale的，这是为了兼容localisation/languages.yml
+            { //本地化文件中可以没有，或者有多个locale - 主要是为了兼容localisation/languages.yml
+	//locale之前必须没有任何缩进
 	//locale之后的冒号和换行符之间应当没有任何字符或者只有空白字符
 	int n = 1;
 	int l = yylength();
-	while(!Character.isWhitespace(yycharat(l - n))) {
+	while(Character.isWhitespace(yycharat(l - n))) {
 		n++;
 	}
 	yypushback(n);
-	//locale之前必须没有任何缩进
 	if(zzAtBOL) {
         yybegin(WAITING_LOCALE_COLON);
         return LOCALE_ID;
@@ -1027,6 +989,41 @@ public class ParadoxLocalisationLexer implements FlexLexer {
 		yybegin(WAITING_PROPERTY_COLON);
 		return PROPERTY_KEY_TOKEN;
 	}
+            }
+          // fall through
+          case 93: break;
+          case 44:
+            { return DOUBLE_LEFT_BRACKET;
+            }
+          // fall through
+          case 94: break;
+          case 45:
+            { return INVALID_ESCAPE_TOKEN;
+            }
+          // fall through
+          case 95: break;
+          case 46:
+            { return VALID_ESCAPE_TOKEN;
+            }
+          // fall through
+          case 96: break;
+          case 47:
+            { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;
+            }
+          // fall through
+          case 97: break;
+          case 48:
+            { yypushback(1); return COMMAND_SCOPE_ID;
+            }
+          // fall through
+          case 98: break;
+          case 49:
+            { yypushback(1); return COMMAND_FIELD_ID;
+            }
+          // fall through
+          case 99: break;
+          case 50:
+            { decreaseDepth(); decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;
             }
           // fall through
           case 100: break;
