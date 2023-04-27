@@ -1,11 +1,9 @@
 package icu.windea.pls.core.search
 
 import com.intellij.openapi.extensions.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.localisation.psi.*
@@ -25,8 +23,6 @@ class ParadoxLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisationPrope
 	companion object {
 		@JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxLocalisationProperty, SearchParameters>>("icu.windea.pls.paradoxLocalisationSearch")
 		@JvmField val INSTANCE = ParadoxLocalisationSearch()
-		
-		//FIXME 指定名字的查询最慢可能需要400+ms
 		
 		/**
 		 *  @see icu.windea.pls.core.search.ParadoxLocalisationSearch.SearchParameters
@@ -58,11 +54,8 @@ class ParadoxLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisationPrope
 			selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
 			processor: (ParadoxLocalisationProperty) -> Boolean
 		): Boolean {
-			//如果索引未完成
-			val project = selector.project
-			if(DumbService.isDumb(project)) return true
-			
 			//保证返回结果的名字的唯一性
+			val project = selector.project
 			val scope = selector.scope
 			return ParadoxLocalisationNameIndex.KEY.processFirstElementByKeys(project, scope,
 				keyPredicate = { key -> key.matchesKeyword(keyword) },
