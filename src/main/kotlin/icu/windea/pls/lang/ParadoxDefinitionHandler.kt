@@ -137,7 +137,7 @@ object ParadoxDefinitionHandler {
         //如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
         val startsWithConfig = typeConfig.startsWith
         if(!startsWithConfig.isNullOrEmpty()) {
-            val result = rootKey.startsWith(startsWithConfig, false)
+            val result = rootKey.startsWith(startsWithConfig, true)
             if(!result) return false
         }
         //如果type_key_regex存在，则要求type_key匹配
@@ -223,7 +223,7 @@ object ParadoxDefinitionHandler {
         //如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
         val startsWithConfig = typeConfig.startsWith
         if(!startsWithConfig.isNullOrEmpty()) {
-            val result = rootKey.startsWith(startsWithConfig, false)
+            val result = rootKey.startsWith(startsWithConfig, true)
             if(!result) return false
         }
         //如果type_key_regex存在，则要求type_key匹配
@@ -303,7 +303,7 @@ object ParadoxDefinitionHandler {
             //如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
             val startsWithConfig = typeConfig.startsWith
             if(!startsWithConfig.isNullOrEmpty()) {
-                val result = rootKey.startsWith(startsWithConfig, false)
+                val result = rootKey.startsWith(startsWithConfig, true)
                 if(!result) return false
             }
             //如果type_key_regex存在，则要求type_key匹配

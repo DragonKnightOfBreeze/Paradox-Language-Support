@@ -49,7 +49,7 @@ data class CwtTypeConfig(
 	val localisation: CwtTypeLocalisationConfig? = null,
 	val images: CwtTypeImagesConfig? = null
 ) : CwtConfig<CwtProperty> {
-	val possibleRootKeys = buildSet { 
+	val possibleRootKeys = caseInsensitiveStringSet().apply { 
 		typeKeyFilter?.takeIfTrue()?.let { addAll(it) }
 		subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeIfTrue()?.let { addAll(it) } }
 	} 

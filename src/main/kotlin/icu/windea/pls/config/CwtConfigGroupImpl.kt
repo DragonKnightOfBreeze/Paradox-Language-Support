@@ -653,7 +653,7 @@ class CwtConfigGroupImpl(
 						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
 						val notReversed = option.separatorType == CwtSeparator.EQUAL
 						val o = option.separatorType == CwtSeparator.EQUAL
-						typeKeyFilter = set.toSet() reverseIf o
+						typeKeyFilter = set reverseIf o
 					}
 					"type_key_regex" -> {
 						typeKeyRegex = option.stringValue?.toRegex(RegexOption.IGNORE_CASE)
@@ -700,7 +700,7 @@ class CwtConfigGroupImpl(
 						if(value != null) set.add(value)
 						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
 						val o = option.separatorType == CwtSeparator.EQUAL
-						typeKeyFilter = set.toSet() reverseIf o
+						typeKeyFilter = set reverseIf o
 					}
 					"type_key_regex" -> {
 						typeKeyRegex = option.stringValue?.toRegex(RegexOption.IGNORE_CASE)
