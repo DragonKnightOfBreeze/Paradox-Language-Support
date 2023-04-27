@@ -6,8 +6,6 @@ import icu.windea.pls.*
 import icu.windea.pls.lang.model.*
 
 /**
- * UTF8 BOM选项提供器。
- *
  * 基于文件后缀名以及相对于游戏或模组根目录的路径，判断创建新的Paradox脚本文件或Paradox本地化文件时，是否需要添加BOM。
  */
 class ParadoxUtf8BomOptionProvider : Utf8BomOptionProvider {

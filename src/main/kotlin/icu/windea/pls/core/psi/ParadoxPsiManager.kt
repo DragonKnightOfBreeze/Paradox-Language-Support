@@ -31,7 +31,7 @@ object ParadoxPsiManager {
                         if(nextNextElementType != TokenType.WHITE_SPACE) return false
                     }
                 }
-                return false
+                return true
             }
             elementType == ParadoxLocalisationElementTypes.LOCALE_ID -> {
                 return true
