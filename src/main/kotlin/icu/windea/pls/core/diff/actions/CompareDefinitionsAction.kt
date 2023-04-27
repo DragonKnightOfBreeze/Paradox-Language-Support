@@ -65,6 +65,12 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     }
     
     override fun update(e: AnActionEvent) {
+        //基于插件设置判断是否需要显示在编辑器悬浮工具栏中
+        if(e.place == ActionPlaces.CONTEXT_TOOLBAR && !getSettings().others.showEditorFloatingToolbar) {
+            e.presentation.isEnabledAndVisible = false
+            return
+        }
+        
         //出于性能原因，目前不在update方法中判断是否不存在重载/被重载的情况
         val presentation = e.presentation
         presentation.isVisible = false

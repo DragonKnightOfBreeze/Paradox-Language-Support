@@ -129,6 +129,7 @@ class ParadoxSettingsState : BaseState() {
      */
     @Tag("others")
     class OthersState : BaseState() {
+        var showEditorFloatingToolbar by property(true)
         var defaultDiffGroup by enum(DiffGroupStrategy.VsCopy)
     }
     

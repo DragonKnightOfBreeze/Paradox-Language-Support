@@ -262,6 +262,11 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
             }
             //others
             collapsibleGroup(PlsBundle.message("settings.others")) {
+                //showEditorFloatingToolbar
+                row {
+                    checkBox(PlsBundle.message("settings.others.showEditorFloatingToolbar"))
+                        .bindSelected(settings.others::showEditorFloatingToolbar)
+                }
                 @Suppress("DialogTitleCapitalization")
                 //defaultDiffGroup
                 buttonsGroup(PlsBundle.message("settings.others.defaultDiffGroup")) {

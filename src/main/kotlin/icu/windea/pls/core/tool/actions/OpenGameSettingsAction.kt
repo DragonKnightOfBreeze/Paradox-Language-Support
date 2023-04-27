@@ -28,6 +28,12 @@ class OpenGameSettingsAction : DumbAwareAction() {
     }
     
     override fun update(e: AnActionEvent) {
+        //基于插件设置判断是否需要显示在编辑器悬浮工具栏中
+        if(e.place == ActionPlaces.CONTEXT_TOOLBAR && !getSettings().others.showEditorFloatingToolbar) {
+            e.presentation.isEnabledAndVisible = false
+            return
+        }
+        
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
