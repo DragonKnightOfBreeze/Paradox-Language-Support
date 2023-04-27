@@ -17,6 +17,8 @@ class ParadoxScriptedVariableNameCompletionProvider: CompletionProvider<Completi
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		if(!getSettings().completion.completeScriptedVariableNames) return
 		
+		//这里不需要查找本地的封装变量（即当前文件中声明的封装变量）
+		
 		//查找全局的
 		val element = parameters.position.parent
 		val file = parameters.originalFile
