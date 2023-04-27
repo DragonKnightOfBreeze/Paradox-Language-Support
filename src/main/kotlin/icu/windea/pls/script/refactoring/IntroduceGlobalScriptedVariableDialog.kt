@@ -13,7 +13,6 @@ import com.intellij.ui.layout.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.ui.*
 import icu.windea.pls.script.*
 
 class IntroduceGlobalScriptedVariableDialog(
@@ -133,7 +132,7 @@ class IntroduceGlobalScriptedVariableDialog(
 		val selectedFile = VfsUtil.findFile(filePath.toPath(), false)
 			?.takeIf { it.exists() }
 			?: return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.1"))
-		val entryPath = selectedFile.fileInfo?.entryPath?.path
+		val entryPath = selectedFile.fileInfo?.pathToEntry?.path
 		if(entryPath == null || !"common/scripted_variables".matchesPath(entryPath, acceptSelf = false)) {
 			return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.2"))
 		}

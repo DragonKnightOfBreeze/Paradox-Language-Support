@@ -31,9 +31,9 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
                 val gameDirectory = rootFile
                 val modDependencyDirectories = ParadoxSearchScope.getDependencyDirectories(settings)
                 val result = mutableListOf<SearchScope>()
-                result.add(ParadoxGameSearchScope(project, rootFile))
+                result.add(ParadoxGameSearchScope(project, file, rootFile))
                 if(isInProject) {
-                    result.add(ParadoxGameWithDependenciesSearchScope(project, gameDirectory, modDependencyDirectories))
+                    result.add(ParadoxGameWithDependenciesSearchScope(project, file, gameDirectory, modDependencyDirectories,))
                 }
                 return result
             }
@@ -44,11 +44,11 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
                 val gameDirectory = settings.gameDirectory?.toVirtualFile(false)
                 val modDependencyDirectories = ParadoxSearchScope.getDependencyDirectories(settings, modDirectory)
                 val result = mutableListOf<SearchScope>()
-                result.add(ParadoxModSearchScope(project, modDirectory))
+                result.add(ParadoxModSearchScope(project, file, modDirectory))
                 if(isInProject) {
-                    result.add(ParadoxGameSearchScope(project, gameDirectory))
-                    result.add(ParadoxModAndGameSearchScope(project, modDirectory, gameDirectory))
-                    result.add(ParadoxModWithDependenciesSearchScope(project, modDirectory, gameDirectory, modDependencyDirectories))
+                    result.add(ParadoxGameSearchScope(project, file, gameDirectory))
+                    result.add(ParadoxModAndGameSearchScope(project, file, modDirectory, gameDirectory))
+                    result.add(ParadoxModWithDependenciesSearchScope(project, file, modDirectory, gameDirectory, modDependencyDirectories))
                 }
                 return result
             }

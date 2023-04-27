@@ -33,7 +33,7 @@ sealed class ParadoxSearchScope(
         }
         
         @JvmStatic
-        fun fromFile(project: Project, file: VirtualFile?, fileInfo: ParadoxFileInfo?): GlobalSearchScope {
+        fun fromFile(project: Project, file: VirtualFile?, fileInfo: ParadoxFileInfo? = file?.fileInfo): GlobalSearchScope {
             if(file == null) return allScope(project)
             if(fileInfo == null) return allScope(project) //use all scope here
             //如果文件不在项目中，改为使用allScope
@@ -43,15 +43,15 @@ sealed class ParadoxSearchScope(
                 is ParadoxGameRootInfo -> {
                     val gameDirectory = rootInfo.rootFile
                     val settings = getProfilesSettings().gameSettings.get(gameDirectory.path)
-                    val dependencyDirectories =  getDependencyDirectories(settings)
-                    return ParadoxGameWithDependenciesSearchScope(project, gameDirectory, dependencyDirectories)
+                    val dependencyDirectories = getDependencyDirectories(settings)
+                    return ParadoxGameWithDependenciesSearchScope(project, file, gameDirectory, dependencyDirectories)
                 }
                 is ParadoxModRootInfo -> {
                     val modDirectory = rootInfo.rootFile
                     val settings = getProfilesSettings().modSettings.get(modDirectory.path)
                     val gameDirectory = settings?.gameDirectory?.toVirtualFile(false)
                     val dependencyDirectories = getDependencyDirectories(settings, modDirectory)
-                    return ParadoxModWithDependenciesSearchScope(project, modDirectory, gameDirectory, dependencyDirectories)
+                    return ParadoxModWithDependenciesSearchScope(project, file, modDirectory, gameDirectory, dependencyDirectories)
                 }
             }
         }
@@ -63,7 +63,7 @@ sealed class ParadoxSearchScope(
             val fileInfo = file.fileInfo
             val rootInfo = fileInfo?.rootInfo
             val modDirectory = rootInfo?.castOrNull<ParadoxModRootInfo>()?.rootFile
-            return ParadoxModSearchScope(project, modDirectory)
+            return ParadoxModSearchScope(project, file, modDirectory)
         }
         
         @JvmStatic
@@ -73,7 +73,7 @@ sealed class ParadoxSearchScope(
             val fileInfo = file.fileInfo
             val rootInfo = fileInfo?.rootInfo
             val gameDirectory = rootInfo?.castOrNull<ParadoxGameRootInfo>()?.rootFile
-            return ParadoxGameSearchScope(project, gameDirectory)
+            return ParadoxGameSearchScope(project, file, gameDirectory)
         }
         
         @JvmStatic
@@ -85,14 +85,14 @@ sealed class ParadoxSearchScope(
             when(rootInfo) {
                 is ParadoxGameRootInfo -> {
                     val gameDirectory = rootInfo.rootFile
-                    return ParadoxModAndGameSearchScope(project, null, gameDirectory)
+                    return ParadoxModAndGameSearchScope(project, file, null, gameDirectory)
                 }
                 is ParadoxModRootInfo -> {
                     val modDirectory = rootInfo.rootFile
-                    return ParadoxModAndGameSearchScope(project, modDirectory, null)
+                    return ParadoxModAndGameSearchScope(project, file, modDirectory, null)
                 }
                 else -> {
-                    return ParadoxModAndGameSearchScope(project, null, null)
+                    return ParadoxModAndGameSearchScope(project, file, null, null)
                 }
             }
         }
@@ -104,11 +104,11 @@ sealed class ParadoxSearchScope(
             val fileInfo = file.fileInfo
             val rootInfo = fileInfo?.rootInfo
             val modDirectory = rootInfo?.castOrNull<ParadoxModRootInfo>()?.rootFile
-            if(modDirectory == null) return ParadoxModWithDependenciesSearchScope(project, null, null, emptySet())
+            if(modDirectory == null) return ParadoxModWithDependenciesSearchScope(project, file, null, null, emptySet())
             val settings = getProfilesSettings().gameSettings.get(modDirectory.path)
             val gameDirectory = settings?.gameDirectory?.toVirtualFile(false)
-            val dependencyDirectories =  getDependencyDirectories(settings)
-            return ParadoxModWithDependenciesSearchScope(project, modDirectory, gameDirectory, dependencyDirectories)
+            val dependencyDirectories = getDependencyDirectories(settings)
+            return ParadoxModWithDependenciesSearchScope(project, file, modDirectory, gameDirectory, dependencyDirectories)
         }
         
         @JvmStatic
@@ -118,10 +118,10 @@ sealed class ParadoxSearchScope(
             val fileInfo = file.fileInfo
             val rootInfo = fileInfo?.rootInfo
             val gameDirectory = rootInfo?.castOrNull<ParadoxGameRootInfo>()?.rootFile
-            if(gameDirectory == null) return ParadoxGameWithDependenciesSearchScope(project, null, emptySet())
+            if(gameDirectory == null) return ParadoxGameWithDependenciesSearchScope(project, file, null, emptySet())
             val settings = getProfilesSettings().modSettings.get(gameDirectory.path)
             val dependencyDirectories = getDependencyDirectories(settings)
-            return ParadoxGameWithDependenciesSearchScope(project, gameDirectory, dependencyDirectories)
+            return ParadoxGameWithDependenciesSearchScope(project, file, gameDirectory, dependencyDirectories)
         }
         
         @JvmStatic

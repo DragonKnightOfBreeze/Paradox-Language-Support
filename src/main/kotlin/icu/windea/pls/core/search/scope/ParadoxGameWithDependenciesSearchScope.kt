@@ -3,12 +3,14 @@ package icu.windea.pls.core.search.scope
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
+import icu.windea.pls.lang.*
 
 @Suppress("EqualsOrHashCode")
 class ParadoxGameWithDependenciesSearchScope(
     project: Project,
+    val contextFile: VirtualFile?,
     val gameDirectory: VirtualFile?,
-    val dependencyDirectories: Set<VirtualFile>
+    val dependencyDirectories: Set<VirtualFile>,
 ) : ParadoxSearchScope(project) {
     @Suppress("DialogTitleCapitalization")
     override fun getDisplayName(): String {
@@ -16,6 +18,7 @@ class ParadoxGameWithDependenciesSearchScope(
     }
     
     override fun contains(file: VirtualFile): Boolean {
+        if(!ParadoxFileHandler.canReference(contextFile, file)) return false //判断上下文文件能否引用另一个文件中的内容
         return (gameDirectory != null && VfsUtilCore.isAncestor(gameDirectory, file, false))
             || VfsUtilCore.isUnder(file, dependencyDirectories)
     }
@@ -45,6 +48,7 @@ class ParadoxGameWithDependenciesSearchScope(
     override fun equals(other: Any?): Boolean {
         if(this === other) return true
         return other is ParadoxGameWithDependenciesSearchScope
+            && contextFile == other.contextFile
             && gameDirectory == other.gameDirectory
             && dependencyDirectories == other.dependencyDirectories
     }

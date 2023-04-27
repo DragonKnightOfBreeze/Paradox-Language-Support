@@ -3,10 +3,12 @@ package icu.windea.pls.core.search.scope
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
+import icu.windea.pls.lang.*
 
 @Suppress("EqualsOrHashCode")
 class ParadoxModAndGameSearchScope(
     project: Project,
+    val contextFile: VirtualFile?,
     val modDirectory: VirtualFile?,
     val gameDirectory: VirtualFile?
 ) : ParadoxSearchScope(project) {
@@ -16,6 +18,7 @@ class ParadoxModAndGameSearchScope(
     }
     
     override fun contains(file: VirtualFile): Boolean {
+        if(!ParadoxFileHandler.canReference(contextFile, file)) return false //判断上下文文件能否引用另一个文件中的内容
         return (modDirectory != null && VfsUtilCore.isAncestor(modDirectory, file, false))
             || (gameDirectory != null && VfsUtilCore.isAncestor(gameDirectory, file, false))
     }
@@ -45,6 +48,7 @@ class ParadoxModAndGameSearchScope(
     override fun equals(other: Any?): Boolean {
         if(this === other) return true
         return other is ParadoxModAndGameSearchScope
+            && contextFile == other.contextFile
             && modDirectory == other.modDirectory
             && gameDirectory == other.gameDirectory
     }

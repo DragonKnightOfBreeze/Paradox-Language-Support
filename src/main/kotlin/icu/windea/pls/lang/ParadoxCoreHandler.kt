@@ -157,7 +157,7 @@ object ParadoxCoreHandler {
     
     fun getFileInfo(virtualFile: VirtualFile): ParadoxFileInfo? {
         val injectedFileInfo = virtualFile.getUserData(PlsKeys.injectedFileInfoKey)
-        if(injectedFileInfo != null) return injectedFileInfo;
+        if(injectedFileInfo != null) return injectedFileInfo
         return virtualFile.getUserData(PlsKeys.fileInfoKey)
     }
     
@@ -183,14 +183,15 @@ object ParadoxCoreHandler {
             if(rootInfo != null) {
                 //filePath.relative(rootPath)
                 val path = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimStart('/'))
-                val entryPath = resolveEntryPath(path, rootInfo)
-                val fileType = ParadoxFileType.resolve(file, entryPath)
+                val entry = resolveEntry(path, rootInfo)
+                val pathToEntry = if(entry == null) path else ParadoxPath.resolve(path.path.removePrefix("$entry/"))
+                val fileType = ParadoxFileType.resolve(file, pathToEntry)
                 val cachedFileInfo = file.getUserData(PlsKeys.fileInfoKey)
-                if(cachedFileInfo != null && cachedFileInfo.path == path && cachedFileInfo.entryPath == entryPath
+                if(cachedFileInfo != null && cachedFileInfo.path == path && cachedFileInfo.pathToEntry == pathToEntry
                     && cachedFileInfo.fileType == fileType && cachedFileInfo.rootInfo == rootInfo) {
                     return cachedFileInfo
                 }
-                val fileInfo = ParadoxFileInfo(fileName, path, entryPath, fileType, rootInfo)
+                val fileInfo = ParadoxFileInfo(fileName, path, entry, pathToEntry, fileType, rootInfo)
                 runCatching { file.putUserData(PlsKeys.fileInfoKey, fileInfo) }
                 return fileInfo
             }
@@ -211,9 +212,10 @@ object ParadoxCoreHandler {
             if(rootInfo != null) {
                 //filePath.relative(rootPath)
                 val path = ParadoxPath.resolve(filePath.path.removePrefix(rootInfo.rootFile.path).trimStart('/'))
-                val entryPath = resolveEntryPath(path, rootInfo)
-                val fileType = ParadoxFileType.resolve(filePath, entryPath)
-                val fileInfo = ParadoxFileInfo(fileName, path, entryPath, fileType, rootInfo)
+                val entry = resolveEntry(path, rootInfo)
+                val pathToEntry = if(entry == null) path else ParadoxPath.resolve(path.path.removePrefix("$entry/"))
+                val fileType = ParadoxFileType.resolve(filePath, pathToEntry)
+                val fileInfo = ParadoxFileInfo(fileName, path, entry, pathToEntry, fileType, rootInfo)
                 return fileInfo
             }
             currentFilePath = currentFilePath.parent ?: break
@@ -222,17 +224,18 @@ object ParadoxCoreHandler {
         return null
     }
     
-    private fun resolveEntryPath(path: ParadoxPath, rootInfo: ParadoxRootInfo): ParadoxPath {
+    private fun resolveEntry(path: ParadoxPath, rootInfo: ParadoxRootInfo): String? {
+        if(rootInfo is ParadoxModRootInfo) return null
         val filePath = path.path
         rootInfo.gameEntry?.let { entry ->
-            if(entry == filePath) return EmptyParadoxPath
-            filePath.removePrefixOrNull("$entry/")?.let { return ParadoxPath.resolve(it) }
+            if(entry == filePath) return null
+            if(filePath.contains("$entry/")) return entry
         }
         rootInfo.gameType.entries.forEach { entry ->
-            if(entry == filePath) return EmptyParadoxPath
-            filePath.removePrefixOrNull("$entry/")?.let { return ParadoxPath.resolve(it) }
+            if(entry == filePath) return null
+            if(filePath.contains("$entry/")) return entry
         }
-        return path
+        return null
     }
     
     @RequiresWriteLock

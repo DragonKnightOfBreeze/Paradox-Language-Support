@@ -19,7 +19,7 @@ class ParadoxDefinitionHierarchyProvider : HierarchyProvider {
         val file = PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
         if(file !is ParadoxScriptFile) return null
         val fileInfo = file.fileInfo ?: return null
-        if(fileInfo.entryPath.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
+        if(fileInfo.pathToEntry.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
         val offset = editor.caretModel.offset
         val definition = ParadoxPsiFinder.findDefinition(file, offset) ?: return null
         return definition

@@ -28,7 +28,7 @@ object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFil
             if(ParadoxFileManager.isLightFile(file)) return false
             //仅索引有根目录的文件
             val fileInfo = file.fileInfo ?: return false
-            val path = fileInfo.entryPath
+            val path = fileInfo.pathToEntry
             //要求不直接在根目录
             if(path.isEmpty()) return false
             return true

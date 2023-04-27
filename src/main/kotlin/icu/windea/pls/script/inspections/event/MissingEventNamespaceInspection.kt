@@ -4,7 +4,6 @@ import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.codeInsight.generation.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -29,6 +28,6 @@ class MissingEventNamespaceInspection : LocalInspectionTool() {
     private fun isEventScriptFile(file: PsiFile): Boolean {
         if(file !is ParadoxScriptFile) return false
         val fileInfo = file.fileInfo ?: return false
-        return "events".matchesPath(fileInfo.entryPath.path, acceptSelf = false)
+        return "events".matchesPath(fileInfo.pathToEntry.path, acceptSelf = false)
     }
 }

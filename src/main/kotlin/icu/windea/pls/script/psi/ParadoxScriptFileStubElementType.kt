@@ -34,7 +34,7 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
             if(ParadoxFileManager.isLightFile(file)) return false
             //仅索引有根目录的文件
             val fileInfo = file.fileInfo ?: return false
-            val path = fileInfo.entryPath
+            val path = fileInfo.pathToEntry
             //要求不直接在根目录
             if(path.isEmpty()) return false
             //不索引内联脚本文件

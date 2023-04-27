@@ -5,11 +5,13 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.*
 
 @Suppress("UnstableApiUsage", "EqualsOrHashCode")
 class ParadoxModSearchScope(
     project: Project,
-    val modDirectory: VirtualFile?
+    val contextFile: VirtualFile?,
+    val modDirectory: VirtualFile?,
 ) : ParadoxSearchScope(project) {
     @Suppress("DialogTitleCapitalization")
     override fun getDisplayName(): String {
@@ -22,6 +24,7 @@ class ParadoxModSearchScope(
     }
     
     override fun contains(file: VirtualFile): Boolean {
+        if(!ParadoxFileHandler.canReference(contextFile, file)) return false //判断上下文文件能否引用另一个文件中的内容
         return modDirectory != null && VfsUtilCore.isAncestor(modDirectory, file, false)
     }
     
@@ -31,7 +34,9 @@ class ParadoxModSearchScope(
     
     override fun equals(other: Any?): Boolean {
         if(this === other) return true
-        return other is ParadoxModSearchScope && modDirectory == other.modDirectory
+        return other is ParadoxModSearchScope
+            && contextFile == other.contextFile
+            && modDirectory == other.modDirectory
     }
     
     override fun toString(): String {

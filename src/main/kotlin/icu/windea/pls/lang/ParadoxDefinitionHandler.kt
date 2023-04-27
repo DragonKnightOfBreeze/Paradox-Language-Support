@@ -61,7 +61,7 @@ object ParadoxDefinitionHandler {
         }
         
         val fileInfo = file.fileInfo ?: return null
-        val path = fileInfo.entryPath //这里使用entryPath
+        val path = fileInfo.pathToEntry //这里使用entryPath
         val elementPath = ParadoxElementPathHandler.getFromFile(element, PlsConstants.maxDefinitionDepth) ?: return null
         val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
         val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
@@ -557,7 +557,7 @@ object ParadoxDefinitionHandler {
         val file = selectFile(psi) ?: return null
         val fileInfo = file.fileInfo ?: return null
         val gameType = selectGameType(file) ?: return null
-        val path = fileInfo.entryPath //这里使用entryPath
+        val path = fileInfo.pathToEntry //这里使用entryPath
         val elementPath = ParadoxElementPathHandler.getFromFile(node, tree, file, PlsConstants.maxDefinitionDepth) ?: return null
         val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
         for(typeConfig in configGroup.types.values) {

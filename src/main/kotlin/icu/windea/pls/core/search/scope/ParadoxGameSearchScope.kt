@@ -5,10 +5,12 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.*
 
 @Suppress("UnstableApiUsage", "EqualsOrHashCode")
 class ParadoxGameSearchScope(
     project: Project,
+    val contextFile: VirtualFile?,
     val gameDirectory: VirtualFile?
 ) : ParadoxSearchScope(project) {
     @Suppress("DialogTitleCapitalization")
@@ -22,6 +24,7 @@ class ParadoxGameSearchScope(
     }
     
     override fun contains(file: VirtualFile): Boolean {
+        if(!ParadoxFileHandler.canReference(contextFile, file)) return false //判断上下文文件能否引用另一个文件中的内容
         return gameDirectory != null && VfsUtilCore.isAncestor(gameDirectory, file, false)
     }
     
@@ -31,7 +34,9 @@ class ParadoxGameSearchScope(
     
     override fun equals(other: Any?): Boolean {
         if(this === other) return true
-        return other is ParadoxGameSearchScope && gameDirectory == other.gameDirectory
+        return other is ParadoxGameSearchScope
+            && contextFile == other.contextFile
+            && gameDirectory == other.gameDirectory
     }
     
     override fun toString(): String {

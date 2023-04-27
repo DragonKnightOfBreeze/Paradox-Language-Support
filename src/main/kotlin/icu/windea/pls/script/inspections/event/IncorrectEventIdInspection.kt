@@ -37,6 +37,6 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
     private fun isEventScriptFile(file: PsiFile): Boolean {
         if(file !is ParadoxScriptFile) return false
         val fileInfo = file.fileInfo ?: return false
-        return "events".matchesPath(fileInfo.entryPath.path, acceptSelf = false)
+        return "events".matchesPath(fileInfo.pathToEntry.path, acceptSelf = false)
     }
 }
