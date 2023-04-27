@@ -46,7 +46,7 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
             if(contextGameType != gameType) return@p true
             
             val p = path.removePrefixOrNull(pathPrefix)
-            if(p != null && p.isNotEmpty()) {
+            if(!p.isNullOrEmpty()) {
                 result.add(p)
             }
             true

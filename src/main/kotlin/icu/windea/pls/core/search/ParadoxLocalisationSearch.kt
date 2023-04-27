@@ -47,6 +47,8 @@ class ParadoxLocalisationSearch: ExtensibleQueryFactory<ParadoxLocalisationPrope
 		
 		/**
 		 * 基于本地化名字索引，根据关键字和推断的语言区域遍历所有的本地化（localisation），并按照本地化的键进行去重。
+		 * 
+		 * 优化代码提示时会用到此方法。
 		 */
 		@JvmStatic
 		fun processVariants(

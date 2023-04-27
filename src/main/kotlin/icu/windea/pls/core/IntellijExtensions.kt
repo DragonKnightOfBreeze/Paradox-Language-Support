@@ -836,7 +836,7 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElemen
 ): Boolean {
     if(DumbService.isDumb(project)) return true
     
-    return StubIndex.getInstance().processAllKeys(this, project) { key ->
+    return StubIndex.getInstance().processAllKeys(this, p@{ key ->
         ProgressManager.checkCanceled()
         if(keyPredicate(key)) {
             StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
@@ -845,7 +845,7 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElemen
             }
         }
         true
-    }
+    }, scope)
 }
 
 inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processFirstElementByKeys(
@@ -860,7 +860,7 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processFirstElem
     if(DumbService.isDumb(project)) return true
     
     var value: T?
-    return StubIndex.getInstance().processAllKeys(this, project) p@{ key ->
+    return StubIndex.getInstance().processAllKeys(this, p@{ key ->
         ProgressManager.checkCanceled()
         if(keyPredicate(key)) {
             value = null
@@ -880,7 +880,7 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processFirstElem
             }
         }
         true
-    }
+    }, scope)
 }
 //endregion
 

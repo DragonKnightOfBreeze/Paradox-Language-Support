@@ -9,7 +9,7 @@ object ParadoxPsiManager {
     /**
      * 判断当前位置应当是一个[ParadoxLocalisationLocale]，还是一个[ParadoxLocalisationPropertyKey]。
      *
-     * 优化代码提示时会用到。
+     * 优化代码提示时会用到此方法。
      */
     fun isLocalisationLocaleLike(element: PsiElement): Boolean {
         val elementType = element.elementType
