@@ -22,14 +22,14 @@ class ParadoxScriptValueExpressionNode(
 ) : ParadoxExpressionNode {
 	override fun getAttributesKey(): TextAttributesKey? {
 		if(text.isEmpty()) return null
-		if(text.isParameterAwareExpression()) return null
+		if(text.isParameterizedExpression()) return null
 		return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 	}
 	
 	override fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxExpressionError? {
 		if(nodes.isNotEmpty()) return null
 		if(text.isEmpty()) return null
-		if(text.isParameterAwareExpression()) return null
+		if(text.isParameterizedExpression()) return null
 		val reference = getReference(element)
 		if(reference == null || reference.canResolve()) return null
 		return ParadoxUnresolvedScriptValueExpressionError(rangeInExpression, PlsBundle.message("script.expression.unresolvedScriptValue", text))
@@ -37,7 +37,7 @@ class ParadoxScriptValueExpressionNode(
 	
 	override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
 		if(text.isEmpty()) return null
-		if(text.isParameterAwareExpression()) return null
+		if(text.isParameterizedExpression()) return null
 		return Reference(element, rangeInExpression, text, config, configGroup)
 	}
 	

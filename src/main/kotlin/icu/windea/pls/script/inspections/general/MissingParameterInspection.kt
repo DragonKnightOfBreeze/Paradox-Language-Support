@@ -29,7 +29,7 @@ class MissingParameterInspection : LocalInspectionTool() {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if(forInvocationExpressions && element is ParadoxScriptProperty && !element.name.isParameterAwareExpression()) {
+                if(forInvocationExpressions && element is ParadoxScriptProperty && !element.name.isParameterizedExpression()) {
                     visitElementForInvocationExpression(element)
                 } else if(forScriptValueExpressions && element is ParadoxScriptString) {
                     visitElementForScriptValueExpression(element)

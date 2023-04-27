@@ -201,7 +201,7 @@ fun String.isExactIdentifier(vararg extraChars: Char): Boolean {
     return this.all { it.isExactIdentifierChar() || it in extraChars }
 }
 
-fun String.isExactParameterAwareIdentifier(vararg extraChars: Char): Boolean {
+fun String.isExactParameterizedIdentifier(vararg extraChars: Char): Boolean {
     var isParameter = false
     for(c in this) {
         when {
@@ -216,7 +216,7 @@ fun String.isExactParameterAwareIdentifier(vararg extraChars: Char): Boolean {
     return true
 }
 
-fun String.isParameterAwareExpression(): Boolean {
+fun String.isParameterizedExpression(): Boolean {
     return !this.isLeftQuoted() && this.any { it == '$' }
 }
 

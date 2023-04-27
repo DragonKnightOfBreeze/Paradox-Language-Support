@@ -44,7 +44,7 @@ fun ParadoxScriptExpressionElement.isExpression(): Boolean {
 	}
 }
 
-fun ParadoxScriptStringExpressionElement.isParameterAwareExpression(): Boolean {
+fun ParadoxScriptStringExpressionElement.isParameterizedExpression(): Boolean {
 	return !this.text.isLeftQuoted() && this.textContains('$')
 }
 
@@ -55,7 +55,7 @@ fun ParadoxScriptExpressionElement.isValidExpression(matchType: Int = CwtConfigM
 	return ParadoxConfigHandler.getConfigs(this, orDefault = false, matchType = matchType).size == 1
 }
 
-fun ASTNode.isParameterAwareExpression(): Boolean {
+fun ASTNode.isParameterizedExpression(): Boolean {
 	return !this.processChild { it.elementType != PARAMETER }
 }
 

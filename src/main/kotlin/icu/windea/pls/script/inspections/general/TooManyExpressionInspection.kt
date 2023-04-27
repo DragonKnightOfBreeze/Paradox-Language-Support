@@ -46,7 +46,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 //忽略可能的脚本片段入口
                 if(property != null && ParadoxScriptMemberElementInlineSupport.canLink(property)) return
                 val position = property?.propertyKey
-                    ?.also { if(it.isParameterAwareExpression()) return }
+                    ?.also { if(it.isParameterizedExpression()) return }
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
                 val configs = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)

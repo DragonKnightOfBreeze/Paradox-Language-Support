@@ -17,7 +17,7 @@ class IncorrectDefinitionNameInspection : LocalInspectionTool() {
             private fun visitExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
                 //忽略可能包含参数的表达式
-                if(element.isParameterAwareExpression()) return
+                if(element.isParameterizedExpression()) return
                 //仅适用于作为定义名的key或value
                 if(!element.isDefinitionRootKeyOrName()) return
                 val definition = element.findParentDefinition() ?: return

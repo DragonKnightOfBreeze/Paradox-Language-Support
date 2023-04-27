@@ -224,7 +224,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getNameIdentifier(element: ParadoxScriptProperty): PsiElement? {
-        return if(!element.propertyKey.isParameterAwareExpression()) element.firstChild else null
+        return if(!element.propertyKey.isParameterizedExpression()) element.firstChild else null
     }
     
     @JvmStatic

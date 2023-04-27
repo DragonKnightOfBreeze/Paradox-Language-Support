@@ -49,7 +49,7 @@ class QuoteIdentifierIntention : IntentionAction, PriorityAction {
 	
 	fun canQuote(element: PsiElement) : Boolean{
 		val text = element.text
-		return !text.isLeftQuoted() && !text.isRightQuoted() && !text.isParameterAwareExpression()
+		return !text.isLeftQuoted() && !text.isRightQuoted() && !text.isParameterizedExpression()
 	}
 	
 	override fun startInWriteAction() = true
@@ -94,7 +94,7 @@ class UnquoteIdentifierIntention : IntentionAction, PriorityAction {
 	fun canUnquote(element: PsiElement) : Boolean{
 		val text = element.text
 		return (text.isLeftQuoted() || text.isRightQuoted()) && text.unquote()
-			.let { t -> !t.containsBlank() && !t.isParameterAwareExpression() }
+			.let { t -> !t.containsBlank() && !t.isParameterizedExpression() }
 	}
 	
 	override fun startInWriteAction() = true

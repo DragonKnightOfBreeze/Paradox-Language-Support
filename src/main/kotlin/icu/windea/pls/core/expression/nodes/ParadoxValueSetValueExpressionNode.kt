@@ -18,7 +18,7 @@ class ParadoxValueSetValueExpressionNode(
 	val configGroup: CwtConfigGroup
 ) : ParadoxExpressionNode {
 	override fun getAttributesKey(): TextAttributesKey? {
-		if(text.isParameterAwareExpression()) return null
+		if(text.isParameterizedExpression()) return null
 		val expression = configs.first().expression!! //first is ok
 		val valueSetName = expression.value ?: return null
 		return when(valueSetName) {
@@ -28,7 +28,7 @@ class ParadoxValueSetValueExpressionNode(
 	}
 	
 	override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
-		if(text.isParameterAwareExpression()) return null
+		if(text.isParameterizedExpression()) return null
 		return Reference(element, rangeInExpression, text, configs, configGroup)
 	}
 	

@@ -15,14 +15,14 @@ import icu.windea.pls.script.psi.*
  * * `foo/-` - 对应所属文件或定义中名为"foo"的属性的值（代码块）中，任意的值
  *
  * @property path 使用"/"分割的路径（保留括起的双引号）。
- * @property isParameterAware 路径中是否带有参数（即使无法解析或者语法错误）。
+ * @property isParameterized 路径中是否带有参数（即使无法解析或者语法错误）。
  */
 interface ParadoxElementPath : Iterable<Tuple3<String, Boolean, Boolean>> {
     val path: String
     val subPaths: List<String>
     val subPathInfos: List<Tuple3<String, Boolean, Boolean>> //(unquotedSubPath, quoted, isKey)
     val length: Int
-    val isParameterAware: Boolean
+    val isParameterized: Boolean
     
     fun isEmpty(): Boolean = length == 0
     
@@ -97,7 +97,7 @@ class ParadoxElementPathImpl(
     override val subPathInfos: List<Tuple3<String, Boolean, Boolean>> = subPaths.map {
         tupleOf(it.unquote(), it.isLeftQuoted(), it != "-")
     }
-    override val isParameterAware = length != 0 && this.subPaths.any { it.isParameterAwareExpression() }
+    override val isParameterized = length != 0 && this.subPaths.any { it.isParameterizedExpression() }
     
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxElementPath && path == other.path
@@ -117,7 +117,7 @@ object EmptyParadoxElementPath : ParadoxElementPath {
     override val subPaths: List<String> = emptyList()
     override val subPathInfos: List<Tuple3<String, Boolean, Boolean>> = emptyList()
     override val length: Int = 0
-    override val isParameterAware: Boolean = false
+    override val isParameterized: Boolean = false
     
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxElementPath && path == other.path

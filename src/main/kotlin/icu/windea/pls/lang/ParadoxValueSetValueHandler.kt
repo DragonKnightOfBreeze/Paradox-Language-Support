@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.*
 object ParadoxValueSetValueHandler {
     fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxValueSetValueInfo? {
         if(!element.isExpression()) return null
-        if(element.isParameterAwareExpression()) return null //排除可能带参数的情况
+        if(element.isParameterizedExpression()) return null //排除可能带参数的情况
         return getInfoFromCache(element)
     }
     

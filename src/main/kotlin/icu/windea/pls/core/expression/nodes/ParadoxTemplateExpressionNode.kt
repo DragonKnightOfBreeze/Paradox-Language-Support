@@ -21,13 +21,13 @@ class ParadoxTemplateExpressionNode(
 ) : ParadoxExpressionNode {
 	override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
 		if(configExpression == null) return null
-		if(text.isParameterAwareExpression()) return null
+		if(text.isParameterizedExpression()) return null
 		return Reference(element, rangeInExpression, configExpression, configGroup)
 	}
 	
 	override fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxExpressionError? {
 		if(configExpression == null) return null
-		if(text.isParameterAwareExpression()) return null
+		if(text.isParameterizedExpression()) return null
 		//排除可解析的情况
 		val reference = getReference(element)
 		if(reference == null || reference.canResolve()) return null

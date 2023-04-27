@@ -210,7 +210,7 @@ object ParadoxConfigHandler {
         }
         
         val project = configGroup.project
-        val isParameterAware = expression.type == ParadoxDataType.StringType && expression.text.isParameterAwareExpression()
+        val isParameterized = expression.type == ParadoxDataType.StringType && expression.text.isParameterizedExpression()
         when(configExpression.type) {
             CwtDataType.Block -> {
                 if(expression.isKey != false) return false
@@ -267,7 +267,7 @@ object ParadoxConfigHandler {
             CwtDataType.Localisation -> {
                 if(!expression.type.isStringType()) return false
                 if(isStatic) return true
-                if(isParameterAware) return true
+                if(isParameterized) return true
                 if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
                     val selector = localisationSelector(project, element)
                     return ParadoxLocalisationSearch.search(expression.text, selector).findFirst() != null
@@ -277,7 +277,7 @@ object ParadoxConfigHandler {
             CwtDataType.SyncedLocalisation -> {
                 if(!expression.type.isStringType()) return false
                 if(isStatic) return true
-                if(isParameterAware) return true
+                if(isParameterized) return true
                 if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
                     val selector = localisationSelector(project, element)
                     return ParadoxSyncedLocalisationSearch.search(expression.text, selector).findFirst() != null
@@ -288,7 +288,7 @@ object ParadoxConfigHandler {
                 if(!expression.type.isStringType()) return false
                 if(expression.quoted) return true //"quoted_string" -> any string
                 if(isStatic) return true
-                if(isParameterAware) return true
+                if(isParameterized) return true
                 if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
                     val selector = localisationSelector(project, element)
                     return ParadoxLocalisationSearch.search(expression.text, selector).findFirst() != null
@@ -307,7 +307,7 @@ object ParadoxConfigHandler {
                 //注意这里可能是一个整数，例如，对于<technology_tier>
                 if(!expression.type.isStringType() && expression.type != ParadoxDataType.IntType) return false
                 if(isStatic) return true
-                if(isParameterAware) return true
+                if(isParameterized) return true
                 val typeExpression = configExpression.value ?: return false //invalid cwt config
                 if(BitUtil.isSet(matchType, CwtConfigMatchType.DEFINITION)) {
                     val selector = definitionSelector(project, element)
@@ -316,7 +316,7 @@ object ParadoxConfigHandler {
                 return true
             }
             CwtDataType.EnumValue -> {
-                if(!isStatic && isParameterAware) return true
+                if(!isStatic && isParameterized) return true
                 val name = expression.text
                 val enumName = configExpression.value ?: return false //invalid cwt config
                 //匹配简单枚举
@@ -346,21 +346,21 @@ object ParadoxConfigHandler {
             CwtDataType.Value -> {
                 if(!expression.type.isStringType()) return false
                 if(isStatic) return true
-                if(isParameterAware) return true
+                if(isParameterized) return true
                 //valueSetValue的值必须合法
                 return ParadoxValueSetValueHandler.getName(expression.text) != null
             }
             CwtDataType.ValueSet -> {
                 if(!expression.type.isStringType()) return false
                 if(isStatic) return true
-                if(isParameterAware) return true
+                if(isParameterized) return true
                 //valueSetValue的值必须合法
                 return ParadoxValueSetValueHandler.getName(expression.text) != null
             }
             CwtDataType.ScopeField, CwtDataType.Scope, CwtDataType.ScopeGroup -> {
                 if(expression.quoted) return false //不允许用引号括起
                 if(isStatic) return true
-                if(isParameterAware) return true
+                if(isParameterized) return true
                 val textRange = TextRange.create(0, expression.text.length)
                 val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
                 if(scopeFieldExpression == null) return false
@@ -391,7 +391,7 @@ object ParadoxConfigHandler {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
                 if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) return true
                 if(isStatic) return true
-                if(isParameterAware) return true
+                if(isParameterized) return true
                 if(expression.quoted) return false //接下来的匹配不允许用引号括起
                 val textRange = TextRange.create(0, expression.text.length)
                 val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
@@ -401,7 +401,7 @@ object ParadoxConfigHandler {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
                 if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
                 if(isStatic) return true
-                if(isParameterAware) return true
+                if(isParameterized) return true
                 if(expression.quoted) return false //接下来的匹配不允许用引号括起
                 val textRange = TextRange.create(0, expression.text.length)
                 val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
@@ -411,7 +411,7 @@ object ParadoxConfigHandler {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
                 if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) return true
                 if(isStatic) return true
-                if(isParameterAware) return true
+                if(isParameterized) return true
                 if(expression.quoted) return false //接下来的匹配不允许用引号括起
                 val textRange = TextRange.create(0, expression.text.length)
                 val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
@@ -421,7 +421,7 @@ object ParadoxConfigHandler {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
                 if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
                 if(isStatic) return true
-                if(isParameterAware) return true
+                if(isParameterized) return true
                 if(expression.quoted) return false //接下来的匹配不允许用引号括起
                 val textRange = TextRange.create(0, expression.text.length)
                 val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
@@ -429,7 +429,7 @@ object ParadoxConfigHandler {
             }
             CwtDataType.Modifier -> {
                 if(isStatic) return true
-                if(isParameterAware) return true
+                if(isParameterized) return true
                 //匹配预定义的modifier
                 return matchesModifier(element, expression.text, configGroup)
             }
@@ -449,12 +449,12 @@ object ParadoxConfigHandler {
                 return false //不在这里处理
             }
             CwtDataType.AliasKeysField -> {
-                if(!isStatic && isParameterAware) return true
+                if(!isStatic && isParameterized) return true
                 val aliasName = configExpression.value ?: return false
                 return matchesAliasName(element, expression, aliasName, configGroup, matchType)
             }
             CwtDataType.AliasName -> {
-                if(!isStatic && isParameterAware) return true
+                if(!isStatic && isParameterized) return true
                 val aliasName = configExpression.value ?: return false
                 return matchesAliasName(element, expression, aliasName, configGroup, matchType)
             }
@@ -465,7 +465,7 @@ object ParadoxConfigHandler {
                 if(!expression.type.isStringLikeType()) return false
                 //允许用引号括起
                 if(isStatic) return true
-                if(isParameterAware) return true
+                if(isParameterized) return true
                 return matchesTemplateExpression(element, expression, configExpression, configGroup)
             }
             CwtDataType.Constant -> {
@@ -488,7 +488,7 @@ object ParadoxConfigHandler {
                 if(pathReferenceExpressionSupport != null) {
                     if(!expression.type.isStringType()) return false
                     if(isStatic) return true
-                    if(isParameterAware) return true
+                    if(isParameterized) return true
                     if(BitUtil.isSet(matchType, CwtConfigMatchType.FILE_PATH)) {
                         val pathReference = expression.text.normalizePath()
                         val selector = fileSelector(project, element)
@@ -841,7 +841,7 @@ object ParadoxConfigHandler {
         val configGroup = configGroup
         
         if(configExpression.isEmpty()) return
-        if(!quoted && keyword.isParameterAwareExpression()) return //排除可能带参数的情况
+        if(!quoted && keyword.isParameterizedExpression()) return //排除可能带参数的情况
         
         //匹配作用域
         if(scopeMatched) {
@@ -1501,7 +1501,7 @@ object ParadoxConfigHandler {
         if(configExpression == null) return null
         
         val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.value
-        if(expression.isParameterAwareExpression()) return null //排除引用文本带参数的情况
+        if(expression.isParameterizedExpression()) return null //排除引用文本带参数的情况
         
         if(config != null) {
             val result = ParadoxScriptExpressionSupport.resolve(element, rangeInElement, expression, config, isKey, exact)
@@ -1542,7 +1542,7 @@ object ParadoxConfigHandler {
         if(configExpression == null) return emptyList()
         
         val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.value
-        if(expression.isParameterAwareExpression()) return emptyList() //排除引用文本带参数的情况
+        if(expression.isParameterizedExpression()) return emptyList() //排除引用文本带参数的情况
         
         if(config != null) {
             val result = ParadoxScriptExpressionSupport.multiResolve(element, rangeInElement, expression, config, isKey)
@@ -1890,9 +1890,9 @@ object ParadoxConfigHandler {
                 data is ParadoxScriptValue -> ParadoxDataExpression.resolve(data)
                 else -> return@p true
             }
-            val isParameterAware = expression.type == ParadoxDataType.StringType && expression.text.isParameterAwareExpression()
+            val isParameterized = expression.type == ParadoxDataType.StringType && expression.text.isParameterizedExpression()
             //may contain parameter -> can't and should not get occurrences
-            if(isParameterAware) {
+            if(isParameterized) {
                 occurrenceMap.clear()
                 return@p true
             }

@@ -18,21 +18,21 @@ class ParadoxDataExpressionNode (
 	val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxExpressionNode {
 	override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
-		if(text.isParameterAwareExpression()) return null
+		if(text.isParameterizedExpression()) return null
 		return linkConfigs.find { linkConfig ->
 			ParadoxConfigHandler.resolveScriptExpression(element, rangeInExpression, linkConfig, linkConfig.expression, linkConfig.info.configGroup, exact = false) != null
 		} ?: linkConfigs.firstOrNull()
 	}
 	
 	override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
-		if(text.isParameterAwareExpression()) return null
+		if(text.isParameterizedExpression()) return null
 		return Reference(element, rangeInExpression, linkConfigs)
 	}
 	
 	override fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxExpressionError? {
 		if(nodes.isNotEmpty()) return null
 		if(text.isEmpty()) return null
-		if(text.isParameterAwareExpression()) return null
+		if(text.isParameterizedExpression()) return null
 		//忽略是valueSetValue的情况
 		if(linkConfigs.any { it.dataSource?.type == CwtDataType.Value }) return null
 		val expect = linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()

@@ -36,7 +36,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
             val statusMap = mutableMapOf<PsiElement, Boolean>() //it's unnecessary to make it synced
             
             private fun shouldVisit(element: PsiElement): Boolean {
-                return (element is ParadoxScriptStringExpressionElement && !element.isParameterAwareExpression())
+                return (element is ParadoxScriptStringExpressionElement && !element.isParameterizedExpression())
             }
             
             override fun visitElement(element: PsiElement) {

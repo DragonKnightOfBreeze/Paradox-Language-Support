@@ -19,7 +19,7 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 		val isKey = element is ParadoxScriptPropertyKey
 		
 		//尝试兼容可能包含参数的情况
-		//if(text.isParameterAwareExpression()) return PsiReference.EMPTY_ARRAY
+		//if(text.isParameterizedExpression()) return PsiReference.EMPTY_ARRAY
 		
 		//尝试解析为复杂枚举值声明
 		if(element is ParadoxScriptStringExpressionElement) {

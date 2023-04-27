@@ -32,7 +32,7 @@ object ParadoxElementPathHandler {
             when {
                 current is ParadoxScriptProperty -> {
                     val p = current.propertyKey.text
-                    if(p.isParameterAwareExpression()) return null
+                    if(p.isParameterizedExpression()) return null
                     originalSubPaths.addFirst(p)
                     depth++
                 }

@@ -52,7 +52,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         val shouldCheck = checkPropertyKey
                         if(!shouldCheck) return true
                         //skip checking property if property key may contain parameters
-                        if(element.propertyKey.isParameterAwareExpression()) return false
+                        if(element.propertyKey.isParameterizedExpression()) return false
                         val definitionMemberInfo = element.definitionMemberInfo
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
                         val matchType = CwtConfigMatchType.INSPECTION
@@ -93,7 +93,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         }
                         if(!shouldCheck) return true
                         //skip checking value if it may contain parameters
-                        if(element is ParadoxScriptString && element.isParameterAwareExpression()) return false
+                        if(element is ParadoxScriptString && element.isParameterizedExpression()) return false
                         val definitionMemberInfo = element.definitionMemberInfo
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
                         val matchType = CwtConfigMatchType.INSPECTION

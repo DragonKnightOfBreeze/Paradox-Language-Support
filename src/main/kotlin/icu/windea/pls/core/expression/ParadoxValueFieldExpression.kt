@@ -192,7 +192,7 @@ class ParadoxValueFieldExpressionImpl(
     }
     
     private fun isValid(node: ParadoxExpressionNode): Boolean {
-        return node.text.isExactParameterAwareIdentifier()
+        return node.text.isExactParameterizedIdentifier()
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {

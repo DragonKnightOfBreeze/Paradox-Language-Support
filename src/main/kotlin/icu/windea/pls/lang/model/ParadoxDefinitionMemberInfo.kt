@@ -23,7 +23,7 @@ class ParadoxDefinitionMemberInfo(
     //element不能转为SmartPsiElementPointer然后作为属性，这会导致与ParadoxDefinitionInfo.element引发递归异常
 ) {
     val isDefinition = element is ParadoxScriptDefinitionElement && elementPath.isEmpty()
-    val isParameterAware = elementPath.isParameterAware
+    val isParameterized = elementPath.isParameterized
     
     private val cache: MutableMap<String, List<CwtDataConfig<*>>> = ConcurrentHashMap()
     
@@ -53,7 +53,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
     val declaration = definitionInfo.getDeclaration(matchType) ?: return emptyList()
     //如果路径中可能待遇参数，则不进行解析
     val elementPath = definitionMemberInfo.elementPath
-    if(elementPath.isParameterAware) return emptyList()
+    if(elementPath.isParameterized) return emptyList()
     val configGroup = definitionMemberInfo.configGroup
     
     var result: List<CwtDataConfig<*>> = declaration.toSingletonList()
@@ -106,7 +106,7 @@ private fun doGetChildConfigs(definitionInfo: ParadoxDefinitionInfo, definitionM
     if(declaration.configs.isNullOrEmpty()) return emptyList()
     //如果路径中可能待遇参数，则不进行解析
     val elementPath = definitionMemberInfo.elementPath
-    if(elementPath.isParameterAware) return emptyList()
+    if(elementPath.isParameterized) return emptyList()
     //parentPath可以对应property或者value
     return when {
         //这里的属性路径可以为空，这时得到的就是顶级属性列表（定义的代码块类型的值中的属性列表）

@@ -85,8 +85,8 @@ class ParadoxValueSetValueExpressionImpl(
 	
 	private fun isValid(node: ParadoxExpressionNode): Boolean {
 		return when(node){
-			is ParadoxValueSetValueExpressionNode -> node.text.isExactParameterAwareIdentifier('.') //兼容点号
-			else -> node.text.isExactParameterAwareIdentifier()
+			is ParadoxValueSetValueExpressionNode -> node.text.isExactParameterizedIdentifier('.') //兼容点号
+			else -> node.text.isExactParameterizedIdentifier()
 		}
 	}
 	

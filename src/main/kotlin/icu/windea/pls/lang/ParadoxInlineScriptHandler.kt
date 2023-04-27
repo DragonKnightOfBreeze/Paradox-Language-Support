@@ -67,7 +67,7 @@ object ParadoxInlineScriptHandler {
         }
         if(inlineConfig == null) return null
         val expression = getExpressionFromInlineConfig(propertyValue, inlineConfig) ?: return null
-        if(expression.isParameterAwareExpression()) return null
+        if(expression.isParameterizedExpression()) return null
         val elementOffset = element.startOffset
         return ParadoxInlineScriptInfo(expression, elementOffset, gameType)
     }
