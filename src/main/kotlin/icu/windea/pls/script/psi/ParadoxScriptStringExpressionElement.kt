@@ -6,7 +6,7 @@ import com.intellij.psi.*
  * @see ParadoxScriptPropertyKey
  * @see ParadoxScriptString
  */
-interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement, PsiLiteralValue, ContributedReferenceHost, NavigatablePsiElement {
+interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement, ContributedReferenceHost {
     override val value: String
     
     override fun setValue(value: String): ParadoxScriptStringExpressionElement

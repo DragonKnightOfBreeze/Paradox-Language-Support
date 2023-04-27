@@ -13,3 +13,4 @@ interface ParadoxTypedElement : PsiElement {
 	val expression: String? get() = null
 	val configExpression: String? get() = null
 }
+

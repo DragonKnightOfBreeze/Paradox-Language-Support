@@ -20,7 +20,7 @@
 //即使idea提示不需要转义，一些字符在regexp中仍然需要转义
 
 //TODO 区分不同游戏类型对应的parser和lexer
-//DONE 分隔符可以是比较运算符
+//分隔符可以是比较运算符
 
 root ::= root_block ?
 root_block ::= root_block_item + {
@@ -54,6 +54,9 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
   ]
 }
 scripted_variable_name ::= AT SCRIPTED_VARIABLE_NAME_ID {
+  implements=[
+    "icu.windea.pls.core.psi.ParadoxParameterizedElement"
+  ]
   methods=[getName]
 }
 private scripted_variable_separator ::= EQUAL_SIGN
@@ -83,6 +86,7 @@ property_key ::= key_expr {
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
+    "icu.windea.pls.core.psi.ParadoxParameterizedElement"
   ] 
   methods=[
     getIcon getName getValue setValue
@@ -109,6 +113,7 @@ scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_ID {
   extends=value
   implements=[
     "icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
+    "icu.windea.pls.core.psi.ParadoxParameterizedElement"
   ]
   methods=[getIcon getName setName getReference getType getExpression]
 }
@@ -143,6 +148,7 @@ string ::= value_expr {
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
+    "icu.windea.pls.core.psi.ParadoxParameterizedElement"
   ]
   methods=[
     getIcon getName getValue setValue getStringValue
@@ -207,6 +213,8 @@ parameter ::= PARAMETER_START PARAMETER_ID [PIPE parameter_value] PARAMETER_END 
 }
 private parameter_value ::= BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
 
+//parameter condition rules
+
 //parameter condition
 //should in definition declaration (script_value / scripted_effect / scripted_trigger)
 //currently nested parameter_condition is not supported
@@ -228,6 +236,8 @@ parameter_condition_parameter ::= ARGUMENT_ID {
   methods=[getIcon getName setName getTextOffset getReference]
 }
 private parameter_condition_item ::= COMMENT | property | value
+
+// inline math rules
 
 //inline math
 //should in definition declaration
@@ -278,7 +288,10 @@ inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
 }
 inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID { //without prefix "@"
   extends=inline_math_factor
-  implements="icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
+  implements=[
+    "icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
+    "icu.windea.pls.core.psi.ParadoxParameterizedElement"
+  ]
   methods=[getIcon getName setName getReference getType getExpression]
 }
 inline_math_parameter ::= PARAMETER_START PARAMETER_ID [PIPE inline_math_parameter_value] PARAMETER_END {

@@ -33,7 +33,6 @@ root ::= property_list *
 property_list ::= COMMENT * (property_item_list_with_locale | property_item_list) {
   implements="com.intellij.psi.PsiListLikeElement"
   methods=[getIcon getComponents]
-  
 }
 private property_item_list_with_locale ::= locale property_item * {
   pin=1

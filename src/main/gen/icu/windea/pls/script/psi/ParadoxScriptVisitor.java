@@ -1,17 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
+import com.intellij.psi.*;
+import icu.windea.pls.core.psi.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLiteralValue;
-import icu.windea.pls.core.psi.ParadoxTypedElement;
-import icu.windea.pls.core.psi.ParadoxScriptedVariableReference;
-import com.intellij.psi.ContributedReferenceHost;
-import icu.windea.pls.core.psi.ParadoxParameter;
-import com.intellij.psi.PsiListLikeElement;
-import com.intellij.psi.NavigatablePsiElement;
-import icu.windea.pls.core.psi.ParadoxArgument;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
 
@@ -74,6 +66,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitInlineMathScriptedVariableReference(@NotNull ParadoxScriptInlineMathScriptedVariableReference o) {
     visitInlineMathFactor(o);
     // visitedVariableReference(o);
+    // visitParadoxParameterizedElement(o);
   }
 
   public void visitInlineMathUnaryExpression(@NotNull ParadoxScriptInlineMathUnaryExpression o) {
@@ -111,6 +104,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitPropertyKey(@NotNull ParadoxScriptPropertyKey o) {
     visitPsiLiteralValue(o);
     // visitStringExpressionElement(o);
+    // visitParadoxParameterizedElement(o);
   }
 
   public void visitRootBlock(@NotNull ParadoxScriptRootBlock o) {
@@ -123,18 +117,20 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitScriptedVariableName(@NotNull ParadoxScriptScriptedVariableName o) {
-    visitPsiElement(o);
+    visitParadoxParameterizedElement(o);
   }
 
   public void visitScriptedVariableReference(@NotNull ParadoxScriptScriptedVariableReference o) {
     visitValue(o);
     // visitedVariableReference(o);
+    // visitParadoxParameterizedElement(o);
   }
 
   public void visitString(@NotNull ParadoxScriptString o) {
     visitValue(o);
     // visitPsiLiteralValue(o);
     // visitStringExpressionElement(o);
+    // visitParadoxParameterizedElement(o);
   }
 
   public void visitValue(@NotNull ParadoxScriptValue o) {
@@ -160,6 +156,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitParadoxParameter(@NotNull ParadoxParameter o) {
+    visitElement(o);
+  }
+
+  public void visitParadoxParameterizedElement(@NotNull ParadoxParameterizedElement o) {
     visitElement(o);
   }
 
