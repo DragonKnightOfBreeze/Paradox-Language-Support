@@ -56,6 +56,13 @@
   * [ ] 将获取作用域上下文的代码提取成扩展点
   * [ ] 对任何带有作用域上下文的声明或引用（包括CWT规则的引用），统一提示作用域上下文
   * [ ] 参照Irony Mod Manager的实现，实现扩展点以在查询时，如果有必要，按照覆盖顺序排序封装变量/定义/本地化
+* 添加代码检查，基于下列规则检查脚本文件中是否存在可能的BUG
+  * 归类为：`UnsupportedOperationInspection` 
+  * scripted_trigger/scripted_effect不能递归调用
+  * scripted_trigger/scripted_effect的调用层数最大只能有5层
+  * 内联数学表达式（inline_math）在每个scripted_trigger/scripted_effect中最多只能使用1次
+  * 对于valueSetValue，只能通过后缀的`@xxx`切换flag和event_target的作用域
+  * 不能在asset文件中使用scripted_variable和inline_math
 
 ## 0.9.15
 

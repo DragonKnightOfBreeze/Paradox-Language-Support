@@ -9,8 +9,3 @@ data class CodeInjectorInfo(
     val injectMethods: Map<String, Method>,
     val injectMethodInfos: Map<String, InjectMethodInfo>
 )
-
-data class InjectMethodInfo(
-    val pointer: Inject.Pointer,
-    val hasReceiver: Boolean
-)
