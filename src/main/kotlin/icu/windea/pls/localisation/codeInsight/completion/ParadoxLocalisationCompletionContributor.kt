@@ -33,7 +33,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		extend(commandFieldPattern, ParadoxLocalisationCommandFieldCompletionProvider())
 		
 		//当用户可能正在输入一个scriptedVariableReference的名字时提示
-		val scriptedVariableReferencePattern = psiElement().withElementType(SCRIPTED_VARIABLE_REFERENCE_ID)
+		val scriptedVariableReferencePattern = psiElement().withElementType(SCRIPTED_VARIABLE_REFERENCE_TOKEN)
 		extend(scriptedVariableReferencePattern, ParadoxScriptedVariableCompletionProvider())
 		
 		//当用户可能正在输入一个localisation的名字时提示

@@ -29,12 +29,11 @@ class ParadoxLocalisationIconPsiReference(
 	element: ParadoxLocalisationIcon,
 	rangeInElement: TextRange
 ) : PsiPolyVariantReferenceBase<ParadoxLocalisationIcon>(element, rangeInElement), PsiNodeReference {
+	val project by lazy { element.project }
+	
 	override fun handleElementRename(newElementName: String): PsiElement {
 		return element.setName(newElementName)
 	}
-	
-	//TODO 研究生成的图标究竟是个啥逻辑
-	//也许可以来自游戏启动时生成的modifier，即：mod_$modifierName？
 	
 	override fun resolve(): PsiElement? {
 		return resolve(true)
@@ -43,7 +42,6 @@ class ParadoxLocalisationIconPsiReference(
 	override fun resolve(exact: Boolean): PsiElement? {
 		//根据spriteName和ddsFileName进行解析
 		val iconName = element.name ?: return null
-		val project = element.project
 		//尝试解析为spriteType
 		val textSpriteName = "GFX_text_$iconName"
 		val textSpriteSelector = definitionSelector(project, element).contextSensitive(exact)
@@ -72,7 +70,6 @@ class ParadoxLocalisationIconPsiReference(
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 		//根据spriteName和ddsFileName进行解析
 		val iconName = element.name ?: return ResolveResult.EMPTY_ARRAY
-		val project = element.project
 		//尝试解析为spriteType
 		val textSpriteName = "GFX_text_$iconName"
 		val textSpriteSelector = definitionSelector(project, element).contextSensitive()

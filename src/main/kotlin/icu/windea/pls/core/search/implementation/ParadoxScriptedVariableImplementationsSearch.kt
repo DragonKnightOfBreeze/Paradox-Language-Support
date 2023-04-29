@@ -19,7 +19,7 @@ class ParadoxScriptedVariableImplementationsSearch : QueryExecutor<PsiElement, D
         val sourceElement = queryParameters.element
         if(sourceElement !is ParadoxScriptScriptedVariable) return true
         val name = runReadAction { sourceElement.name }
-        if(name.isEmpty()) return true
+        if(name.isNullOrEmpty()) return true
         val project = queryParameters.project
         DumbService.getInstance(project).runReadActionInSmartMode {
             //这里不进行排序

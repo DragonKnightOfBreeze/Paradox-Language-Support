@@ -259,7 +259,7 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
   "|" {yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE;}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
-  {SCRIPTED_VARIABLE_ID} {return SCRIPTED_VARIABLE_REFERENCE_ID;}
+  {SCRIPTED_VARIABLE_ID} {return SCRIPTED_VARIABLE_REFERENCE_TOKEN;}
 }
 
 //icon rules

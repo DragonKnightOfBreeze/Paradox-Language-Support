@@ -112,7 +112,7 @@ private property_reference_parameter ::= PROPERTY_REFERENCE_PARAMETER_TOKEN //TO
 //scripted variable reference rules
 
 //scripted variable reference
-scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_ID {
+scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_TOKEN {
   implements=[
     "icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
   ]

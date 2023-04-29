@@ -28,13 +28,13 @@ public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement
   @NotNull
   Icon getIcon(@IconFlags int flags);
 
-  @NotNull
+  @Nullable
   String getName();
 
   @NotNull
   ParadoxScriptScriptedVariable setName(@NotNull String name);
 
-  @NotNull
+  @Nullable
   PsiElement getNameIdentifier();
 
   int getTextOffset();

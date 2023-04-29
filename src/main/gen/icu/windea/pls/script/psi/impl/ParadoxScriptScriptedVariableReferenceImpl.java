@@ -36,12 +36,18 @@ public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptVal
 
   @Override
   @NotNull
+  public List<ParadoxScriptParameter> getParameterList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameter.class);
+  }
+
+  @Override
+  @NotNull
   public Icon getIcon(@IconFlags int flags) {
     return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  @NotNull
+  @Nullable
   public String getName() {
     return ParadoxScriptPsiImplUtil.getName(this);
   }
@@ -53,7 +59,7 @@ public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptVal
   }
 
   @Override
-  @NotNull
+  @Nullable
   public ParadoxScriptedVariablePsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }

@@ -23,7 +23,7 @@ class ParadoxScriptedVariableLineMarkerProvider : RelatedItemLineMarkerProvider(
 	override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
 		//何时显示装订线图标：element是scriptedVariable
 		if(element !is ParadoxScriptScriptedVariable) return
-		val name = element.name
+		val name = element.name ?: return
 		
 		val icon = PlsIcons.Gutter.ScriptedVariable
 		val tooltip = buildString {
@@ -37,7 +37,7 @@ class ParadoxScriptedVariableLineMarkerProvider : RelatedItemLineMarkerProvider(
 		//查找全局的
 		ParadoxGlobalScriptedVariableSearch.search(name, selector).findAll().let { targets.addAll(it) }
 		if(targets.isEmpty()) return
-		val locationElement = element.scriptedVariableName.variableNameId
+		val locationElement = element.scriptedVariableName.variableNameId ?: return
 		val lineMarkerInfo = createNavigationGutterIconBuilder(icon) { createGotoRelatedItem(targets) }
 			.setTooltipText(tooltip)
 			.setPopupTitle(PlsBundle.message("script.gutterIcon.scriptedVariable.title"))

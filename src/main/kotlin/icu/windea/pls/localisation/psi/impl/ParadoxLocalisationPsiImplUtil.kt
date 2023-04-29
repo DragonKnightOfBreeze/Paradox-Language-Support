@@ -203,8 +203,8 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxLocalisationScriptedVariableReference, name: String): ParadoxLocalisationScriptedVariableReference {
         // 不包含作为前缀的"@"
-        val nameElement = element.variableReferenceId
-        val newNameElement = ParadoxScriptElementFactory.createVariableReference(element.project, name).variableReferenceId
+        val nameElement = element.variableReferenceId 
+        val newNameElement = ParadoxLocalisationElementFactory.createScriptedVariableReference(element.project, name).variableReferenceId!!
         nameElement.replace(newNameElement)
         return element
     }

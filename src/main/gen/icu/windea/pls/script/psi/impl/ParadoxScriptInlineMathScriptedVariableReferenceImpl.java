@@ -41,7 +41,7 @@ public class ParadoxScriptInlineMathScriptedVariableReferenceImpl extends Parado
   }
 
   @Override
-  @NotNull
+  @Nullable
   public String getName() {
     return ParadoxScriptPsiImplUtil.getName(this);
   }
@@ -53,7 +53,7 @@ public class ParadoxScriptInlineMathScriptedVariableReferenceImpl extends Parado
   }
 
   @Override
-  @NotNull
+  @Nullable
   public ParadoxScriptedVariablePsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }

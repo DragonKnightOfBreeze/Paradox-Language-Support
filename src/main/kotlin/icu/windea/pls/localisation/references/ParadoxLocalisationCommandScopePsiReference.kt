@@ -19,6 +19,8 @@ class ParadoxLocalisationCommandScopePsiReference(
 	element: ParadoxLocalisationCommandScope,
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxLocalisationCommandScope>(element, rangeInElement), PsiNodeReference {
+	val project by lazy { element.project }
+	
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//重命名当前元素
 		return element.setName(newElementName)
@@ -31,11 +33,10 @@ class ParadoxLocalisationCommandScopePsiReference(
 	override fun resolve(exact: Boolean): PsiElement? {
 		val element = element
 		val name = element.name
-		val project = element.project
 		val gameType = selectGameType(element) ?: return null
 		
 		//尝试识别为system_link或者localisation_scope
-		val configGroup = getCwtConfig(project).get(gameType) ?: return null
+		val configGroup = getCwtConfig(project).get(gameType)
 		val systemLink = ParadoxConfigHandler.resolvePredefinedScope(name, configGroup)
 		if(systemLink != null) return systemLink
 		val localisationScope = ParadoxConfigHandler.resolvePredefinedLocalisationScope(name, configGroup)
@@ -58,11 +59,10 @@ class ParadoxLocalisationCommandScopePsiReference(
 	override fun getTextAttributesKey(): TextAttributesKey? {
 		val element = element
 		val name = element.name
-		val project = element.project
 		val gameType = selectGameType(element) ?: return null
 		
 		//尝试被识别为预定义的localisation_command
-		val configGroup = getCwtConfig(project).get(gameType) ?: return null
+		val configGroup = getCwtConfig(project).get(gameType)
 		val systemLink = ParadoxConfigHandler.resolvePredefinedScope(name, configGroup)
 		if(systemLink != null) return ParadoxScriptAttributesKeys.SYSTEM_LINK_KEY
 		val localisationScope = ParadoxConfigHandler.resolvePredefinedLocalisationScope(name, configGroup)

@@ -19,6 +19,8 @@ class ParadoxLocalisationPropertyPsiReference(
 	element: ParadoxLocalisationPropertyReference,
 	rangeInElement: TextRange
 ) : PsiPolyVariantReferenceBase<ParadoxLocalisationPropertyReference>(element, rangeInElement), PsiNodeReference {
+	val project by lazy { element.project }
+	
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//TODO 重命名关联的definition
 		return element.setName(newElementName)
@@ -36,7 +38,6 @@ class ParadoxLocalisationPropertyPsiReference(
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return null
 		val locale = file.localeConfig
 		val name = element.name
-		val project = element.project
 		
 		//尝试解析成parameter
 		ParadoxLocalisationParameterSupport.resolveParameter(element)?.let { return it }
@@ -58,7 +59,6 @@ class ParadoxLocalisationPropertyPsiReference(
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return emptyArray()
 		val locale = file.localeConfig
 		val name = element.name
-		val project = element.project
 		
 		//尝试解析成parameter
 		ParadoxLocalisationParameterSupport.resolveParameter(element)?.let { return arrayOf(PsiElementResolveResult(it)) }

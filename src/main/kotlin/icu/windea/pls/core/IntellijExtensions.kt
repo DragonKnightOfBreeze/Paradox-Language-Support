@@ -1,4 +1,4 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE")
+@file:Suppress("unused")
 
 package icu.windea.pls.core
 
@@ -142,10 +142,12 @@ fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiE
     return NavigationGutterIconBuilder.create(icon, DEFAULT_PSI_CONVERTOR, gotoRelatedItemProvider)
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun <T> Query<T>.processQuery(consumer: Processor<in T>): Boolean {
     return forEach(consumer)
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun <T> Query<T>.processQueryAsync(consumer: Processor<in T>): Boolean {
     return allowParallelProcessing().forEach(consumer)
 }
@@ -158,6 +160,7 @@ inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, action: () -> T): T 
     return newValue
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun <T> UserDataHolder.putUserDataIfAbsent(key: Key<T>, value: T) {
     if(getUserData(key) == null) putUserData(key, value)
 }
@@ -321,6 +324,7 @@ inline fun <reified T : PsiFile> VirtualFile.toPsiFile(project: Project): T? {
 }
 
 /** 将VirtualFile转化为指定类型的PsiDirectory。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun VirtualFile.toPsiDirectory(project: Project): PsiDirectory? {
     return PsiManager.getInstance(project).findDirectory(this)
 }
@@ -363,7 +367,7 @@ fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
 
 //endregion
 
-//region AstNode Extensions
+//region ASTNode Extensions
 fun <T : ASTNode> T.takeIf(elementType: IElementType): T? {
     return takeIf { it.elementType == elementType }
 }
@@ -396,6 +400,55 @@ fun ASTNode.isStartOfLine(): Boolean {
 
 fun ASTNode.isEndOfLine(): Boolean {
     return treeNext?.let { it.elementType == TokenType.WHITE_SPACE && it.text.containsLineBreak() } ?: false
+}
+
+fun ASTNode.firstChild(type: IElementType): ASTNode? {
+    var child: ASTNode? = this.firstChildNode
+    while(child != null) {
+        if(child.elementType == type) return child
+        child = child.treeNext
+    }
+    return null
+}
+
+fun ASTNode.firstChild(types: TokenSet): ASTNode? {
+    var child: ASTNode? = this.firstChildNode
+    while(child != null) {
+        if(child.elementType in types) return child
+        child = child.treeNext
+    }
+    return null
+}
+
+fun ASTNode.firstChild(predicate: (ASTNode) -> Boolean): ASTNode? {
+    var child: ASTNode? = this.firstChildNode
+    while(child != null) {
+        if(predicate(child)) return child
+        child = child.treeNext
+    }
+    return null
+}
+
+fun LighterASTNode.firstChild(tree: LighterAST, type: IElementType): LighterASTNode? {
+    return LightTreeUtil.firstChildOfType(tree, this, type)
+}
+
+fun LighterASTNode.firstChild(tree: LighterAST, types: TokenSet): LighterASTNode? {
+    return LightTreeUtil.firstChildOfType(tree, this, types)
+}
+
+inline fun LighterASTNode.firstChild(tree: LighterAST, predicate: (LighterASTNode) -> Boolean): LighterASTNode? {
+    val children = tree.getChildren(this)
+    for(i in children.indices) {
+        val child = children[i]
+        if(predicate(child)) return child
+    }
+    return null
+}
+
+fun LighterASTNode.internNode(tree: LighterAST): CharSequence? {
+    if(this !is LighterASTTokenNode) return null
+    return tree.charTable.intern(this.text).toString()
 }
 //endregion
 
@@ -721,28 +774,6 @@ fun getLineCommentDocText(element: PsiElement): String? {
 //endregion
 
 //region Index Extensions
-fun LighterASTNode.firstChild(tree: LighterAST, type: IElementType): LighterASTNode? {
-    return LightTreeUtil.firstChildOfType(tree, this, type)
-}
-
-fun LighterASTNode.firstChild(tree: LighterAST, types: TokenSet): LighterASTNode? {
-    return LightTreeUtil.firstChildOfType(tree, this, types)
-}
-
-inline fun LighterASTNode.firstChild(tree: LighterAST, predicate: (LighterASTNode) -> Boolean): LighterASTNode? {
-    val children = tree.getChildren(this)
-    for(i in children.indices) {
-        val child = children[i]
-        if(predicate(child)) return child
-    }
-    return null
-}
-
-fun LighterASTNode.internNode(tree: LighterAST): CharSequence? {
-    if(this !is LighterASTTokenNode) return null
-    return tree.charTable.intern(this.text).toString()
-}
-
 //inline fun <K: Any, reified T : PsiElement> StubIndexKey<K, T>.existsElement(
 //	key: K,
 //	project: Project,

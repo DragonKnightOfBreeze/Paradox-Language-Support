@@ -53,7 +53,8 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
     isEquivalentTo toString
   ]
 }
-scripted_variable_name ::= AT SCRIPTED_VARIABLE_NAME_ID {
+scripted_variable_name ::= AT (SCRIPTED_VARIABLE_NAME_TOKEN | parameter) + {
+  pin=1;
   implements=[
     "icu.windea.pls.core.psi.ParadoxParameterizedElement"
   ]
@@ -109,7 +110,7 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
     getType getExpression getConfigExpression
   ]
 }
-scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_ID {
+scripted_variable_reference ::= AT (SCRIPTED_VARIABLE_REFERENCE_TOKEN | parameter) + {
   extends=value
   implements=[
     "icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
@@ -203,7 +204,7 @@ private value_literal_expr ::= STRING_TOKEN | QUOTED_STRING_TOKEN
 //parameter
 //should in definition declaration (script_value / scripted_effect / scripted_trigger)
 //currently cannot be surround with double quotes
-parameter ::= PARAMETER_START PARAMETER_ID [PIPE parameter_value] PARAMETER_END {
+parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE parameter_value] PARAMETER_END {
   pin=1
   recoverWhile="#auto"
   implements=[
@@ -286,7 +287,7 @@ inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
   ]
   methods=[getValue getType getExpression]
 }
-inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_ID { //without prefix "@"
+inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN { //without prefix "@"
   extends=inline_math_factor
   implements=[
     "icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
@@ -294,7 +295,7 @@ inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERE
   ]
   methods=[getIcon getName setName getReference getType getExpression]
 }
-inline_math_parameter ::= PARAMETER_START PARAMETER_ID [PIPE inline_math_parameter_value] PARAMETER_END {
+inline_math_parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE inline_math_parameter_value] PARAMETER_END {
   extends=inline_math_factor
   pin=1
   implements="icu.windea.pls.core.psi.ParadoxParameter"

@@ -34,7 +34,7 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
 	
 	private fun processScriptedVariable(it: ParadoxScriptScriptedVariable, result: CompletionResultSet): Boolean {
 		ProgressManager.checkCanceled()
-		val name = it.name
+		val name = it.name ?: return true
 		val icon = it.icon
 		val typeFile = it.containingFile
 		val lookupElement = LookupElementBuilder.create(it, name).withIcon(icon)

@@ -41,7 +41,6 @@ class ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactori
 			//用封装属性引用（variableReference）替换当前位置的int或float
 			var newVariableReference = ParadoxScriptElementFactory.createVariableReference(project, name)
 			newVariableReference = element.parent.replace(newVariableReference).cast()
-			val variableReferenceId = newVariableReference.variableReferenceId
 			
 			//声明对应名字的封装变量，以内联模版的方式编辑变量名
 			val variableValue = element.text
@@ -50,9 +49,9 @@ class ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactori
 			
 			val startAction = StartMarkAction.start(editor, project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"))
 			val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(file)
-			val variableNameId = newVariable.scriptedVariableName.variableNameId
-			templateBuilder.replaceElement(variableNameId, "variableName", TextExpression(variableNameId.text), true)
-			templateBuilder.replaceElement(variableReferenceId, "variableReference", "variableName", false)
+			val variableName = newVariable.scriptedVariableName
+			templateBuilder.replaceElement(variableName, "variableName", TextExpression(variableName.text), true)
+			templateBuilder.replaceElement(newVariableReference, "variableReference", "variableName", false)
 			val caretMarker = editor.document.createRangeMarker(0, editor.caretModel.offset)
 			caretMarker.isGreedyToRight = true
 			editor.caretModel.moveToOffset(0)

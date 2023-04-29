@@ -506,13 +506,13 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // AT SCRIPTED_VARIABLE_REFERENCE_ID
+  // AT SCRIPTED_VARIABLE_REFERENCE_TOKEN
   public static boolean scripted_variable_reference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "scripted_variable_reference")) return false;
     if (!nextTokenIs(b, AT)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, AT, SCRIPTED_VARIABLE_REFERENCE_ID);
+    r = consumeTokens(b, 0, AT, SCRIPTED_VARIABLE_REFERENCE_TOKEN);
     exit_section_(b, m, SCRIPTED_VARIABLE_REFERENCE, r);
     return r;
   }

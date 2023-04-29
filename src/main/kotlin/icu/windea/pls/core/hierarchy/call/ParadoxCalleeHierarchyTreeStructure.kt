@@ -39,7 +39,7 @@ class ParadoxCalleeHierarchyTreeStructure(
         val scopeType = getHierarchySettings().scopeType
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
         element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
-            var visit = false
+            var inInlineMath = false
             
             override fun visitElement(element: PsiElement) {
                 //兼容向下内联的情况
@@ -64,12 +64,18 @@ class ParadoxCalleeHierarchyTreeStructure(
                         addDescriptor(element) //<scripted_loc>
                     }
                 }
-                if(element is ParadoxScriptInlineMath) visit = true
-                if(element.isExpressionOrMemberContext() || visit) super.visitElement(element)
+                if(element is ParadoxScriptInlineMath) {
+                    inInlineMath = true
+                }
+                if(inInlineMath || element.isExpressionOrMemberContext()) {
+                    super.visitElement(element)
+                }
             }
             
             override fun elementFinished(element: PsiElement?) {
-                if(element is ParadoxScriptInlineMath) visit = false
+                if(element is ParadoxScriptInlineMath) {
+                    inInlineMath = false
+                }
             }
             
             private fun addDescriptor(element: PsiElement) {

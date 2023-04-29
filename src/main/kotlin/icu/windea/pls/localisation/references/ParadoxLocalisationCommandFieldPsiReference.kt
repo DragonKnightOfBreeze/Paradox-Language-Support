@@ -20,6 +20,8 @@ class ParadoxLocalisationCommandFieldPsiReference(
 	element: ParadoxLocalisationCommandField,
 	rangeInElement: TextRange
 ) : PsiPolyVariantReferenceBase<ParadoxLocalisationCommandField>(element, rangeInElement), PsiNodeReference {
+	val project by lazy { element.project }
+	
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//重命名当前元素
 		return element.setName(newElementName)
@@ -32,7 +34,6 @@ class ParadoxLocalisationCommandFieldPsiReference(
 	override fun resolve(exact: Boolean): PsiElement? {
 		val element = element
 		val name = element.name
-		val project = element.project
 		val gameType = selectGameType(element) ?: return null
 		val configGroup = getCwtConfig(project).get(gameType)
 		
@@ -60,7 +61,6 @@ class ParadoxLocalisationCommandFieldPsiReference(
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 		val element = element
 		val name = element.name
-		val project = element.project
 		val gameType = selectGameType(element) ?: return ResolveResult.EMPTY_ARRAY
 		val configGroup = getCwtConfig(project).get(gameType)
 		
@@ -88,7 +88,6 @@ class ParadoxLocalisationCommandFieldPsiReference(
 	override fun getTextAttributesKey(): TextAttributesKey? {
 		val element = element
 		val name = element.name
-		val project = element.project
 		val gameType = selectGameType(element) ?: return null
 		val configGroup = getCwtConfig(project).get(gameType)
 		

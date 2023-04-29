@@ -3,6 +3,7 @@ package icu.windea.pls.script.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -17,6 +18,10 @@ class ParadoxScriptedVariableNameCompletionProvider: CompletionProvider<Completi
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		if(!getSettings().completion.completeScriptedVariableNames) return
 		
+		//名字不能带有参数
+		if(parameters.position.prevSibling.elementType == ParadoxScriptElementTypes.PARAMETER) return
+		if(parameters.position.nextSibling.elementType == ParadoxScriptElementTypes.PARAMETER) return
+		
 		//这里不需要查找本地的封装变量（即当前文件中声明的封装变量）
 		
 		//查找全局的
@@ -30,7 +35,7 @@ class ParadoxScriptedVariableNameCompletionProvider: CompletionProvider<Completi
 	private fun processScriptedVariable(scriptedVariable: ParadoxScriptScriptedVariable, result: CompletionResultSet): Boolean {
 		//不自动插入后面的等号
 		ProgressManager.checkCanceled()
-		val name = scriptedVariable.name
+		val name = scriptedVariable.name ?: return true
 		val icon = scriptedVariable.icon
 		val tailText = scriptedVariable.value?.let { " = $it" }
 		val typeFile = scriptedVariable.containingFile

@@ -2,6 +2,7 @@ package icu.windea.pls.script.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
@@ -13,6 +14,10 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+        //名字不能带有参数
+        if(parameters.position.prevSibling.elementType == ParadoxScriptElementTypes.PARAMETER) return
+        if(parameters.position.nextSibling.elementType == ParadoxScriptElementTypes.PARAMETER) return
+        
         //同时需要同时查找当前文件中的和全局的
         val element = parameters.position.parent
         val file = parameters.originalFile
@@ -23,7 +28,7 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
     }
     
     private fun processScriptedVariable(scriptedVariable: ParadoxScriptScriptedVariable, result: CompletionResultSet): Boolean {
-        val name = scriptedVariable.name
+        val name = scriptedVariable.name ?: return true
         val icon = scriptedVariable.icon
         val tailText = scriptedVariable.value?.let { " = $it" }
         val typeFile = scriptedVariable.containingFile

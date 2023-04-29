@@ -32,8 +32,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun getScriptedVariableInfo(element: ParadoxScriptScriptedVariable): String {
-        val name = element.name
+    private fun getScriptedVariableInfo(element: ParadoxScriptScriptedVariable): String? {
+        val name = element.name ?: return null
         return buildString {
             buildScriptedVariableDefinition(element, name)
         }
@@ -66,8 +66,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun getScriptedVariableDoc(element: ParadoxScriptScriptedVariable): String {
-        val name = element.name
+    private fun getScriptedVariableDoc(element: ParadoxScriptScriptedVariable): String? {
+        val name = element.name ?: return null
         return buildString {
             buildScriptedVariableDefinition(element, name)
             buildLineCommentContent(element)

@@ -862,7 +862,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 74: break;
           case 24:
-            { return SCRIPTED_VARIABLE_REFERENCE_ID;
+            { return SCRIPTED_VARIABLE_REFERENCE_TOKEN;
             }
           // fall through
           case 75: break;

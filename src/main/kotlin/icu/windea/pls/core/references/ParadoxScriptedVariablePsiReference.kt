@@ -14,6 +14,8 @@ class ParadoxScriptedVariablePsiReference(
     element: ParadoxScriptedVariableReference,
     rangeInElement: TextRange
 ) : PsiPolyVariantReferenceBase<ParadoxScriptedVariableReference>(element, rangeInElement), PsiNodeReference {
+    val project by lazy { element.project }
+    
     override fun handleElementRename(newElementName: String): PsiElement {
         //重命名当前元素
         return element.setName(newElementName)
@@ -26,8 +28,7 @@ class ParadoxScriptedVariablePsiReference(
     override fun resolve(exact: Boolean): ParadoxScriptScriptedVariable? {
         //首先尝试从当前文件中查找引用，然后从全局范围中查找引用
         val element = element
-        val name = element.name
-        val project = element.project
+        val name = element.name ?: return null
         val selector = scriptedVariableSelector(project, element).contextSensitive(exact)
         ParadoxLocalScriptedVariableSearch.search(name, selector).findFirst()?.let { return it }
         ParadoxGlobalScriptedVariableSearch.search(name, selector).find(exact)?.let { return it }
@@ -37,9 +38,8 @@ class ParadoxScriptedVariablePsiReference(
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
         //首先尝试从当前文件中查找引用，然后从全局范围中查找引用
         val element = element
+        val name = element.name ?: return ResolveResult.EMPTY_ARRAY
         val result = SmartList<ParadoxScriptScriptedVariable>()
-        val name = element.name
-        val project = element.project
         val selector = scriptedVariableSelector(project, element).contextSensitive()
         ParadoxLocalScriptedVariableSearch.search(name, selector).processQueryAsync {
             result.add(it)

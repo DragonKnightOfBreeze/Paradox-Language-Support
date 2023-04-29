@@ -52,7 +52,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType PROPERTY_REFERENCE_PARAMETER_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_PARAMETER_TOKEN");
   IElementType PROPERTY_REFERENCE_START = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_START");
   IElementType RIGHT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_QUOTE");
-  IElementType SCRIPTED_VARIABLE_REFERENCE_ID = ParadoxLocalisationElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_ID");
+  IElementType SCRIPTED_VARIABLE_REFERENCE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_TOKEN");
   IElementType STRING_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("STRING_TOKEN");
   IElementType VALID_ESCAPE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("VALID_ESCAPE_TOKEN");
 
