@@ -164,7 +164,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {INT_TOKEN} {yybegin(WAITING_PROPERTY_END); return INT_TOKEN;}
   {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_END); return FLOAT_TOKEN;}
   {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}
-  {WILDCARD_VALUE_TOKEN} { enterWildcardValue(); yypushback(yylength()); yybegin(WAITING_WILDCARD_VALUE);}
+  {WILDCARD_VALUE_TOKEN} { yypushback(yylength()); yybegin(WAITING_WILDCARD_VALUE);}
   {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return QUOTED_STRING_TOKEN;}
 }
 
@@ -269,7 +269,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {INT_TOKEN} {yybegin(WAITING_PROPERTY_END); return INT_TOKEN;}
   {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_END); return FLOAT_TOKEN;}
   {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}
-  {WILDCARD_VALUE_TOKEN} { enterWildcardValue(); yypushback(yylength()); yybegin(WAITING_WILDCARD_VALUE);}
+  {WILDCARD_VALUE_TOKEN} { yypushback(yylength()); yybegin(WAITING_WILDCARD_VALUE);}
   {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return QUOTED_STRING_TOKEN;}
 }
 <WAITING_PROPERTY_VALUE>{
@@ -294,7 +294,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {INT_TOKEN} {yybegin(WAITING_PROPERTY_END); return INT_TOKEN;}
   {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_END);; return FLOAT_TOKEN;}
   {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}
-  {WILDCARD_VALUE_TOKEN} { enterWildcardValue(); yypushback(yylength()); yybegin(WAITING_WILDCARD_VALUE);}
+  {WILDCARD_VALUE_TOKEN} { yypushback(yylength()); yybegin(WAITING_WILDCARD_VALUE);}
   {QUOTED_STRING_TOKEN} {beginNextState(); return QUOTED_STRING_TOKEN;}
 }
 <WAITING_PROPERTY_END> {
@@ -417,7 +417,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   {INT_TOKEN} {yybegin(WAITING_PROPERTY_END); return INT_TOKEN;}
   {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_END); return FLOAT_TOKEN;}
   {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}
-  {WILDCARD_VALUE_TOKEN} { enterWildcardValue(); yypushback(yylength()); yybegin(WAITING_WILDCARD_VALUE);}
+  {WILDCARD_VALUE_TOKEN} { yypushback(yylength()); yybegin(WAITING_WILDCARD_VALUE);}
   {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return QUOTED_STRING_TOKEN;}
 }
 <WAITING_PARAMETER_CONDITION_EXPRESSION>{
