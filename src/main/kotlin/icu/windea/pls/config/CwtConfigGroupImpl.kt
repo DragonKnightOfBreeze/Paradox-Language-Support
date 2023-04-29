@@ -363,6 +363,7 @@ class CwtConfigGroupImpl(
 				key == "enums" -> {
 					val props = property.properties ?: continue
 					for(prop in props) {
+						//TODO enumName may be a template expression (e.g. xxx_<xxx>)
 						val enumName = prop.key.removeSurroundingOrNull("enum[", "]")
 						if(!enumName.isNullOrEmpty()) {
 							val enumConfig = resolveEnumConfig(prop, enumName) ?: continue
@@ -469,7 +470,7 @@ class CwtConfigGroupImpl(
 					val props = property.properties ?: continue
 					for(prop in props) {
 						val onActionName = prop.key
-						val onActionConfig = resolveGameRuleConfig(prop, onActionName) ?: continue
+						val onActionConfig = resolveGameRuleConfig(prop, onActionName)
 						gameRules[onActionName] = onActionConfig
 					}
 				}
@@ -651,7 +652,6 @@ class CwtConfigGroupImpl(
 						val set = caseInsensitiveStringSet() //忽略大小写
 						if(value != null) set.add(value)
 						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
-						val notReversed = option.separatorType == CwtSeparator.EQUAL
 						val o = option.separatorType == CwtSeparator.EQUAL
 						typeKeyFilter = set reverseIf o
 					}
@@ -896,7 +896,7 @@ class CwtConfigGroupImpl(
 		return CwtScopeGroupConfig(pointer, info, name, values, valueConfigMap)
 	}
 	
-	private fun resolveGameRuleConfig(propertyConfig: CwtPropertyConfig, name: String) : CwtGameRuleConfig? {
+	private fun resolveGameRuleConfig(propertyConfig: CwtPropertyConfig, name: String) : CwtGameRuleConfig {
 		val pointer = propertyConfig.pointer
 		val info = propertyConfig.info
 		return CwtGameRuleConfig(pointer, info, propertyConfig, name)

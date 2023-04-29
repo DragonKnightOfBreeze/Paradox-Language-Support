@@ -37,7 +37,7 @@ object ParadoxComplexEnumValueHandler {
     private fun resolveInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile = element.containingFile): ParadoxComplexEnumValueInfo? {
         val project = file.project
         val fileInfo = file.fileInfo ?: return null
-        val path = fileInfo.pathToEntry //这里使用entryPath
+        val path = fileInfo.pathToEntry //这里使用pathToEntry
         val gameType = fileInfo.rootInfo.gameType
         val configGroup = getCwtConfig(project).get(gameType)
         return doResolveInfo(element, path, configGroup)

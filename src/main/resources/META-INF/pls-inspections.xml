@@ -120,7 +120,15 @@
                      groupPathKey="inspection.script.general.path"
                      implementationClass="icu.windea.pls.script.inspections.general.IncorrectPathReferenceInspection"/>
     <!--endregion-->
-    <!--region Paradox script/Scope Issues-->
+    <!--region Paradox script/Possible Bugs-->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedParameter"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.script.bug.unsupportedParameter"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
+                     groupPathKey="inspection.script.bug.path"
+                     implementationClass="icu.windea.pls.script.inspections.bug.UnsupportedParameterInspection"/>
+    <!--endregion-->
+    <!--region Paradox script/Scope issues-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScope"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.scope.incorrectScope"

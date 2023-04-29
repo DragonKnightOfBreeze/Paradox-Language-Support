@@ -42,8 +42,8 @@ object ParadoxScriptedVariableHandler {
         val parentType = node.treeParent.elementType
         if(parentType != ROOT_BLOCK) return false
         val file = selectFile(node.psi) ?: return false
-        val entryPath = file.fileInfo?.pathToEntry?.path ?: return false
-        return "common/scripted_variables".matchesPath(entryPath, acceptSelf = false)
+        val pathToEntry = file.fileInfo?.pathToEntry?.path ?: return false
+        return "common/scripted_variables".matchesPath(pathToEntry, acceptSelf = false)
     }
     
     fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
@@ -53,7 +53,7 @@ object ParadoxScriptedVariableHandler {
         val parentType = tree.getParent(node)?.tokenType
         if(parentType != ROOT_BLOCK) return false
         val file = selectFile(parentStub.psi) ?: return false
-        val entryPath = file.fileInfo?.pathToEntry?.path ?: return false
-        return "common/scripted_variables".matchesPath(entryPath, acceptSelf = false)
+        val pathToEntry = file.fileInfo?.pathToEntry?.path ?: return false
+        return "common/scripted_variables".matchesPath(pathToEntry, acceptSelf = false)
     }
 }

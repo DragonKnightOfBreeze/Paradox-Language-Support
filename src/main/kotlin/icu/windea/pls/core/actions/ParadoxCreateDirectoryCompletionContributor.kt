@@ -31,7 +31,7 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
     
     override fun getVariants(directory: PsiDirectory): Collection<Variant> {
         val fileInfo = directory.fileInfo ?: return emptySet()
-        val contextPath = fileInfo.pathToEntry.path //use entryPath here
+        val contextPath = fileInfo.pathToEntry.path //use pathToEntry here
         val contextGameType = fileInfo.rootInfo.gameType
         val pathPrefix = if(contextPath.isEmpty()) "" else "$contextPath/"
         val result = sortedSetOf<String>()

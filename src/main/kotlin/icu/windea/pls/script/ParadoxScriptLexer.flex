@@ -107,8 +107,8 @@ WHITE_SPACE=[\s&&[^\r\n]]+
 BLANK=\s+
 COMMENT=#[^\r\n]*
 
-//判断接下来是变量名还是变量引用
-CHECK_SCRIPTED_VARIABLE={SCRIPTED_VARIABLE_NAME_TOKEN}(\s*=)?
+//判断接下来是变量还是变量引用的名字
+CHECK_SCRIPTED_VARIABLE=[^#@={}\[\]\s\"]+(\s*=)?
 //判断接下来是否是属性的键
 CHECK_PROPERTY_KEY=({WILDCARD_KEY_TOKEN}|{QUOTED_PROPERTY_KEY_TOKEN})\s*[!=<>]
 
@@ -149,7 +149,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   "!="|"<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
   //出于语法兼容性考虑，这里允许内联数学表达式
   "@["|"@\\[" {yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
-  //这里必定是variable_name
+  //认为这里必定是variable_name
   "@" {yybegin(WAITING_SCRIPTED_VARIABLE_NAME); return AT;}
   {CHECK_PROPERTY_KEY} {
 	  if(yycharat(0) == '"'){
@@ -174,15 +174,20 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "]" {inParameterCondition = false; beginNextState(); return RIGHT_BRACKET;}
+  "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
+  "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
+  ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
+  "<=" {yybegin(WAITING_PROPERTY_VALUE); return LE_SIGN;}
+  ">=" {yybegin(WAITING_PROPERTY_VALUE); return GE_SIGN;}
+  "!="|"<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
   {CHECK_SCRIPTED_VARIABLE} {
-    //如果匹配到的文本以等号结尾，则将空白之前的文本解析为SCRIPTED_VARIABLE_NAME_TOKEN，否则将整个匹配文本解析为VARIABLE_REFERENCE_ID
+    //如果匹配到的文本以等号结尾，则作为scriptedVariable进行解析，否则作为scriptedVariableReference解析
 	if(yycharat(yylength() -1) == '='){
-	  pushbackUntilBeforeBlank(1);
+	  yypushback(yylength());
 	  yybegin(WAITING_SCRIPTED_VARIABLE_NAME);
-	  return SCRIPTED_VARIABLE_NAME_TOKEN;
 	} else {
-	  yybegin(WAITING_PROPERTY_END);
-      return SCRIPTED_VARIABLE_REFERENCE_TOKEN;
+	  yypushback(yylength());
+	  yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME);
 	}
   }
 }
@@ -199,6 +204,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
 	  return SCRIPTED_VARIABLE_NAME_TOKEN;
   }
   "$" {
+	  inScriptedVariableName = true;
 	  parameterPosition = ParameterPosition.SCRIPTED_VARIABLE_NAME; 
 	  yybegin(WAITING_PARAMETER);
 	  return PARAMETER_START;
@@ -236,6 +242,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
 	  return SCRIPTED_VARIABLE_REFERENCE_TOKEN;
   }
   "$" {
+	  inScriptedVariableName = true;
 	  parameterPosition = ParameterPosition.SCRIPTED_VARIABLE_REFERENCE_NAME; 
 	  yybegin(WAITING_PARAMETER);
 	  return PARAMETER_START;
@@ -449,7 +456,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   "*" {yybegin(WAITING_INLINE_MATH); return TIMES_SIGN;}
   "/" {yybegin(WAITING_INLINE_MATH); return DIV_SIGN;}
   "%" {yybegin(WAITING_INLINE_MATH); return MOD_SIGN;}
-  "$" {parameterPosition=ParameterPosition.INLINE_MATH; yybegin(WAITING_PARAMETER); return PARAMETER_START;}
+  "$" { parameterPosition=ParameterPosition.INLINE_MATH; yybegin(WAITING_PARAMETER); return PARAMETER_START;}
   "]" { beginNextState(); return INLINE_MATH_END;}
   {INT_NUMBER_TOKEN} {return INT_NUMBER_TOKEN;}
   {FLOAT_NUMBER_TOKEN} {return FLOAT_NUMBER_TOKEN;}

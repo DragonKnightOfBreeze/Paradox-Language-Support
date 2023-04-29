@@ -364,7 +364,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getType(element: ParadoxScriptScriptedVariableReference): ParadoxDataType {
-        return element.reference.resolve()?.type ?: ParadoxDataType.UnknownType
+        return element.reference?.resolve()?.type ?: ParadoxDataType.UnknownType
     }
     
     @JvmStatic
@@ -741,7 +741,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getType(element: ParadoxScriptInlineMathScriptedVariableReference): ParadoxDataType {
-        return element.reference.resolve()?.type ?: ParadoxDataType.UnknownType
+        return element.reference?.resolve()?.type ?: ParadoxDataType.UnknownType
     }
     
     @JvmStatic
