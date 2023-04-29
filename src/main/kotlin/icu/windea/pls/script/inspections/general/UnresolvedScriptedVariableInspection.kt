@@ -1,6 +1,7 @@
 package icu.windea.pls.script.inspections.general
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.psi.*
@@ -18,7 +19,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
 		return object : PsiElementVisitor() {
 			override fun visitElement(element: PsiElement) {
-				super.visitElement(element)
+				ProgressManager.checkCanceled()
 				if(element is ParadoxScriptedVariableReference) visitScriptedVariableReference(element)
 			}
 			

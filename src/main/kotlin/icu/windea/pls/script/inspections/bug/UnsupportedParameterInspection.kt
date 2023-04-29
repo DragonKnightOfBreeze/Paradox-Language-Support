@@ -1,6 +1,7 @@
 package icu.windea.pls.script.inspections.bug
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.psi.*
@@ -12,6 +13,7 @@ class UnsupportedParameterInspection: LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
                 if(element is ParadoxParameter || element is ParadoxArgument) {
                     val resolved = element.reference?.resolve()
                     if(resolved == null) {
