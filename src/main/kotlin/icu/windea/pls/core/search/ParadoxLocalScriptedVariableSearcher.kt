@@ -3,7 +3,6 @@ package icu.windea.pls.core.search
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
-import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
@@ -19,7 +18,7 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
 		val selector = queryParameters.selector
 		val file = selector.file ?: return
 		val fileInfo = selector.fileInfo ?: return
-		if("common/scripted_variables".matchesPath(fileInfo.path.path)) return
+		if("common/scripted_variables".matchesPath(fileInfo.pathToEntry.path)) return
 		val psiFile = file.toPsiFile<ParadoxScriptFile>(selector.project) ?: return
 		psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
 			override fun visitElement(element: PsiElement) {

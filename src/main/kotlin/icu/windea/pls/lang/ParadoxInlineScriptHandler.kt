@@ -34,8 +34,8 @@ object ParadoxInlineScriptHandler {
     }
     
     fun getInfo(element: ParadoxScriptProperty): ParadoxInlineScriptInfo? {
-        val name = element.name
-        if(name.lowercase() != inlineScriptName) return null
+        val name = element.name.lowercase()
+        if(name != inlineScriptName) return null
         return getInfoFromCache(element)
     }
     
@@ -137,7 +137,7 @@ object ParadoxInlineScriptHandler {
     }
     
     private fun doGetInlineScriptExpression(fileInfo: ParadoxFileInfo): String? {
-        val filePath = fileInfo.path.path
+        val filePath = fileInfo.pathToEntry.path
         val configExpression = inlineScriptPathExpression
         return ParadoxPathReferenceExpressionSupport.get(configExpression)?.extract(configExpression, null, filePath)?.takeIfNotEmpty()
     }

@@ -9,14 +9,14 @@ object ParadoxFileHandler {
     
     fun scriptedVariablesFileName(prefix: String) = "${prefix}scripted_variables.txt"
     
-    fun getRootFile(context: VirtualFile): VirtualFile? {
-        return context.fileInfo?.rootInfo?.gameRootFile
-    }
-    
     fun getScriptedVariablesDirectory(context: VirtualFile): VirtualFile? {
         val root = getRootFile(context) ?: return null
         VfsUtil.createDirectoryIfMissing(root, scriptedVariablesPath)
         return root.findFileByRelativePath(scriptedVariablesPath)
+    }
+    
+    fun getRootFile(context: VirtualFile): VirtualFile? {
+        return context.fileInfo?.rootInfo?.gameRootFile
     }
     
     fun getGeneratedFileName(directory: VirtualFile): VirtualFile? {

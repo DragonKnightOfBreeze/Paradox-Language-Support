@@ -29,14 +29,11 @@ class ParadoxInlineScriptScriptMemberElementInlineSupport : ParadoxScriptMemberE
     
     override fun inlineElement(element: ParadoxScriptMemberElement, inlineStack: Deque<String>): ParadoxScriptMemberElement? {
         if(element !is ParadoxScriptProperty) return null
-        val name = element.name.lowercase()
-        if(name != "inline_script") return null
-        val definitionMemberInfo = element.definitionMemberInfo
-        if(definitionMemberInfo == null) return null
-        //这时就可以确定这个element确实匹配规则inline[inline_script]了
         val info = ParadoxInlineScriptHandler.getInfo(element) ?: return null
         val expression = info.expression
         if(!inlineStack.offerLast(expression)) return null //递归嵌套内联，为了避免SOE，这里直接返回null
+        val definitionMemberInfo = element.definitionMemberInfo
+        if(definitionMemberInfo == null) return null
         val project = definitionMemberInfo.configGroup.project
         return ParadoxInlineScriptHandler.getInlineScript(expression, element, project)
     }
