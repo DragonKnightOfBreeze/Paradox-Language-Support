@@ -37,7 +37,7 @@ object ParadoxScriptedVariableHandler {
     
     fun shouldCreateStub(node: ASTNode): Boolean {
         //仅当不带参数时才创建stub
-        if(node.findChildByType(PARAMETER) != null) return false
+        if(node.findChildByType(KEY_PARAMETER) != null) return false
         //仅当是全局的scripted_variable时才创建stub
         val parentType = node.treeParent.elementType
         if(parentType != ROOT_BLOCK) return false
@@ -48,7 +48,7 @@ object ParadoxScriptedVariableHandler {
     
     fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
         //仅当不带参数时才创建stub
-        if(node.firstChild(tree, PARAMETER) != null) return false
+        if(node.firstChild(tree, KEY_PARAMETER) != null) return false
         //仅当是全局的scripted_variable时才创建stub
         val parentType = tree.getParent(node)?.tokenType
         if(parentType != ROOT_BLOCK) return false

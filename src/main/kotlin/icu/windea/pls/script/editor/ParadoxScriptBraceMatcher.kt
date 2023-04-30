@@ -9,7 +9,9 @@ class ParadoxScriptBraceMatcher : PairedBraceMatcher {
 	companion object {
 		private val bracePairs = arrayOf(
 			BracePair(LEFT_BRACE, RIGHT_BRACE, true),
-			BracePair(PARAMETER_START, PARAMETER_END, false),
+			BracePair(KEY_PARAMETER_START, KEY_PARAMETER_END, false),
+			BracePair(VALUE_PARAMETER_START, VALUE_PARAMETER_END, false),
+			BracePair(INLINE_MATH_PARAMETER_START, INLINE_MATH_PARAMETER_END, false),
 			BracePair(LEFT_BRACKET, RIGHT_BRACKET, false), //cannot be structural
 			BracePair(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET, false), //cannot be structural
 			BracePair(INLINE_MATH_START, INLINE_MATH_END, true),

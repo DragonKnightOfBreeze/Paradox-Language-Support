@@ -47,7 +47,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
             element is ParadoxScriptInlineMathScriptedVariableReference -> ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_2
             element is ParadoxLocalisationScriptedVariableReference -> ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_3
             
-            element is ParadoxScriptParameter -> ParadoxUsageType.PARAMETER_REFERENCE_1
+            element is ParadoxScriptKeyParameter || element is ParadoxScriptValueParameter -> ParadoxUsageType.PARAMETER_REFERENCE_1
             element is ParadoxScriptInlineMathParameter -> ParadoxUsageType.PARAMETER_REFERENCE_2
             element is ParadoxScriptParameterConditionParameter -> ParadoxUsageType.PARAMETER_REFERENCE_3
             element is ParadoxLocalisationPropertyReference -> ParadoxUsageType.LOCALISATION_REFERENCE

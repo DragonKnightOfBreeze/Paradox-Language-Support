@@ -307,16 +307,16 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PARAMETER_START INLINE_MATH_PARAMETER_TOKEN [PIPE inline_math_parameter_value] PARAMETER_END
+  // INLINE_MATH_PARAMETER_START INLINE_MATH_PARAMETER_TOKEN [PIPE inline_math_parameter_value] INLINE_MATH_PARAMETER_END
   public static boolean inline_math_parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_parameter")) return false;
-    if (!nextTokenIs(b, PARAMETER_START)) return false;
+    if (!nextTokenIs(b, INLINE_MATH_PARAMETER_START)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, INLINE_MATH_PARAMETER, null);
-    r = consumeTokens(b, 1, PARAMETER_START, INLINE_MATH_PARAMETER_TOKEN);
+    r = consumeTokens(b, 1, INLINE_MATH_PARAMETER_START, INLINE_MATH_PARAMETER_TOKEN);
     p = r; // pin = 1
     r = r && report_error_(b, inline_math_parameter_2(b, l + 1));
-    r = p && consumeToken(b, PARAMETER_END) && r;
+    r = p && consumeToken(b, INLINE_MATH_PARAMETER_END) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
@@ -411,15 +411,15 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PARAMETER_START KEY_PARAMETER_TOKEN [PIPE parameter_value] PARAMETER_END
+  // KEY_PARAMETER_START KEY_PARAMETER_TOKEN [PIPE parameter_value] KEY_PARAMETER_END
   public static boolean key_parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "key_parameter")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, KEY_PARAMETER, "<key parameter>");
-    r = consumeTokens(b, 1, PARAMETER_START, KEY_PARAMETER_TOKEN);
+    r = consumeTokens(b, 1, KEY_PARAMETER_START, KEY_PARAMETER_TOKEN);
     p = r; // pin = 1
     r = r && report_error_(b, key_parameter_2(b, l + 1));
-    r = p && consumeToken(b, PARAMETER_END) && r;
+    r = p && consumeToken(b, KEY_PARAMETER_END) && r;
     exit_section_(b, l, m, r, p, key_parameter_auto_recover_);
     return r || p;
   }
@@ -846,15 +846,15 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PARAMETER_START VALUE_PARAMETER_TOKEN [PIPE parameter_value] PARAMETER_END
+  // VALUE_PARAMETER_START VALUE_PARAMETER_TOKEN [PIPE parameter_value] VALUE_PARAMETER_END
   public static boolean value_parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_parameter")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, VALUE_PARAMETER, "<value parameter>");
-    r = consumeTokens(b, 1, PARAMETER_START, VALUE_PARAMETER_TOKEN);
+    r = consumeTokens(b, 1, VALUE_PARAMETER_START, VALUE_PARAMETER_TOKEN);
     p = r; // pin = 1
     r = r && report_error_(b, value_parameter_2(b, l + 1));
-    r = p && consumeToken(b, PARAMETER_END) && r;
+    r = p && consumeToken(b, VALUE_PARAMETER_END) && r;
     exit_section_(b, l, m, r, p, value_parameter_auto_recover_);
     return r || p;
   }
@@ -878,24 +878,25 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   static final Parser block_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
-    COLOR_TOKEN, COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, LEFT_BRACE,
-    LEFT_BRACKET, PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, RIGHT_BRACE, RIGHT_BRACKET, STRING_TOKEN);
+    COLOR_TOKEN, COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, KEY_PARAMETER_START,
+    LEFT_BRACE, LEFT_BRACKET, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, RIGHT_BRACE,
+    RIGHT_BRACKET, STRING_TOKEN, VALUE_PARAMETER_START);
   static final Parser block_item_auto_recover_ = block_auto_recover_;
   static final Parser inline_math_auto_recover_ = block_auto_recover_;
   static final Parser key_parameter_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
     COLOR_TOKEN, COMMENT, EQUAL_SIGN, FLOAT_TOKEN, GE_SIGN, GT_SIGN,
-    INLINE_MATH_START, INT_TOKEN, LEFT_BRACE, LEFT_BRACKET, LE_SIGN, LT_SIGN,
-    NOT_EQUAL_SIGN, PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, RIGHT_BRACE,
-    RIGHT_BRACKET, SCRIPTED_VARIABLE_NAME_TOKEN, STRING_TOKEN);
+    INLINE_MATH_START, INT_TOKEN, KEY_PARAMETER_START, LEFT_BRACE, LEFT_BRACKET, LE_SIGN,
+    LT_SIGN, NOT_EQUAL_SIGN, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, RIGHT_BRACE,
+    RIGHT_BRACKET, SCRIPTED_VARIABLE_NAME_TOKEN, STRING_TOKEN, VALUE_PARAMETER_START);
   static final Parser parameter_condition_auto_recover_ = block_auto_recover_;
   static final Parser parameter_condition_expr_auto_recover_ = block_auto_recover_;
   static final Parser property_auto_recover_ = block_auto_recover_;
   static final Parser root_block_item_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
-    COLOR_TOKEN, COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, LEFT_BRACE,
-    PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, STRING_TOKEN);
+    COLOR_TOKEN, COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, KEY_PARAMETER_START,
+    LEFT_BRACE, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, STRING_TOKEN, VALUE_PARAMETER_START);
   static final Parser scripted_variable_auto_recover_ = block_auto_recover_;
   static final Parser value_parameter_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
-    COLOR_TOKEN, COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, LEFT_BRACE,
-    LEFT_BRACKET, PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, RIGHT_BRACE,
-    RIGHT_BRACKET, SCRIPTED_VARIABLE_REFERENCE_TOKEN, STRING_TOKEN);
+    COLOR_TOKEN, COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, KEY_PARAMETER_START,
+    LEFT_BRACE, LEFT_BRACKET, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, RIGHT_BRACE,
+    RIGHT_BRACKET, SCRIPTED_VARIABLE_REFERENCE_TOKEN, STRING_TOKEN, VALUE_PARAMETER_START);
 }

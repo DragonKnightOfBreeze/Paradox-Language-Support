@@ -1,12 +1,10 @@
 package icu.windea.pls.script.psi
 
-import com.intellij.lang.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import java.awt.*
 
 inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.propertyValue(): T? {
@@ -43,7 +41,7 @@ fun ParadoxScriptExpressionElement.isExpression(): Boolean {
 }
 
 fun ParadoxScriptStringExpressionElement.isParameterizedExpression(): Boolean {
-	val text = this.text
+	val text = this.text //check cached text, rather than children
 	return !text.isLeftQuoted() && text.contains('$')
 }
 
@@ -52,10 +50,6 @@ fun ParadoxScriptStringExpressionElement.isParameterizedExpression(): Boolean {
  */
 fun ParadoxScriptExpressionElement.isValidExpression(matchType: Int = CwtConfigMatchType.DEFAULT): Boolean {
 	return ParadoxConfigHandler.getConfigs(this, orDefault = false, matchType = matchType).size == 1
-}
-
-fun ASTNode.isParameterizedExpression(): Boolean {
-	return !this.processChild { it.elementType != PARAMETER }
 }
 
 fun PsiElement.isExpressionOrMemberContext(): Boolean {

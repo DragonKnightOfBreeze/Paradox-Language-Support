@@ -49,11 +49,15 @@ public interface ParadoxScriptElementTypes {
   IElementType GE_SIGN = ParadoxScriptElementTypeFactory.getTokenType("GE_SIGN");
   IElementType GT_SIGN = ParadoxScriptElementTypeFactory.getTokenType("GT_SIGN");
   IElementType INLINE_MATH_END = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_END");
+  IElementType INLINE_MATH_PARAMETER_END = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_PARAMETER_END");
+  IElementType INLINE_MATH_PARAMETER_START = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_PARAMETER_START");
   IElementType INLINE_MATH_PARAMETER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_PARAMETER_TOKEN");
   IElementType INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN");
   IElementType INLINE_MATH_START = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_START");
   IElementType INT_NUMBER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("INT_NUMBER_TOKEN");
   IElementType INT_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("INT_TOKEN");
+  IElementType KEY_PARAMETER_END = ParadoxScriptElementTypeFactory.getTokenType("KEY_PARAMETER_END");
+  IElementType KEY_PARAMETER_START = ParadoxScriptElementTypeFactory.getTokenType("KEY_PARAMETER_START");
   IElementType KEY_PARAMETER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("KEY_PARAMETER_TOKEN");
   IElementType LABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LABS_SIGN");
   IElementType LEFT_BRACE = ParadoxScriptElementTypeFactory.getTokenType("LEFT_BRACE");
@@ -67,8 +71,6 @@ public interface ParadoxScriptElementTypes {
   IElementType NESTED_RIGHT_BRACKET = ParadoxScriptElementTypeFactory.getTokenType("NESTED_RIGHT_BRACKET");
   IElementType NOT_EQUAL_SIGN = ParadoxScriptElementTypeFactory.getTokenType("NOT_EQUAL_SIGN");
   IElementType NOT_SIGN = ParadoxScriptElementTypeFactory.getTokenType("NOT_SIGN");
-  IElementType PARAMETER_END = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_END");
-  IElementType PARAMETER_START = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_START");
   IElementType PIPE = ParadoxScriptElementTypeFactory.getTokenType("PIPE");
   IElementType PLUS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("PLUS_SIGN");
   IElementType PROPERTY_KEY_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("PROPERTY_KEY_TOKEN");
@@ -82,6 +84,8 @@ public interface ParadoxScriptElementTypes {
   IElementType SCRIPTED_VARIABLE_REFERENCE_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_TOKEN");
   IElementType STRING_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("STRING_TOKEN");
   IElementType TIMES_SIGN = ParadoxScriptElementTypeFactory.getTokenType("TIMES_SIGN");
+  IElementType VALUE_PARAMETER_END = ParadoxScriptElementTypeFactory.getTokenType("VALUE_PARAMETER_END");
+  IElementType VALUE_PARAMETER_START = ParadoxScriptElementTypeFactory.getTokenType("VALUE_PARAMETER_START");
   IElementType VALUE_PARAMETER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("VALUE_PARAMETER_TOKEN");
 
   class Factory {

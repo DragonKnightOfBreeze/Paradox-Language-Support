@@ -1,7 +1,6 @@
 package icu.windea.pls.script.psi.impl
 
 import com.intellij.lang.*
-import com.intellij.psi.stubs.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.psi.*
 
@@ -10,7 +9,8 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 	constructor(node: ASTNode) : super(node)
 	
 	@Volatile private var _value: String? = null
-	@Volatile private var _valueType: ParadoxDataType? = null
+	@Volatile private var _type: ParadoxDataType? = null
+	@Volatile private var _text: String? = null
 	
 	override var value: String
 		@get:JvmName("getValue")
@@ -20,11 +20,16 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 		set(value) { setValue(value) }
 	
 	override val type: ParadoxDataType
-		get() = _valueType ?: super.type.also { _valueType = it }
+		get() = _type ?: super.type.also { _type = it }
+	
+	override fun getText(): String {
+		return _text ?: super.getText().also { _text = it }
+	}
 	
 	override fun subtreeChanged() {
 		_value = null
-		_valueType = null
+		_type = null
+		_text = null
 		super.subtreeChanged()
 	}
 }

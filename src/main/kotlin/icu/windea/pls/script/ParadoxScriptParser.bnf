@@ -268,7 +268,7 @@ inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERE
 }
 
 //parameter rules
-key_parameter ::= PARAMETER_START KEY_PARAMETER_TOKEN [PIPE parameter_value] PARAMETER_END {
+key_parameter ::= KEY_PARAMETER_START KEY_PARAMETER_TOKEN [PIPE parameter_value] KEY_PARAMETER_END {
   pin=1
   recoverWhile="#auto"
   implements=[
@@ -276,7 +276,7 @@ key_parameter ::= PARAMETER_START KEY_PARAMETER_TOKEN [PIPE parameter_value] PAR
   ]
   methods=[getIcon getName setName getValue getTextOffset getDefaultValue getReference]
 }
-value_parameter ::= PARAMETER_START VALUE_PARAMETER_TOKEN [PIPE parameter_value] PARAMETER_END {
+value_parameter ::= VALUE_PARAMETER_START VALUE_PARAMETER_TOKEN [PIPE parameter_value] VALUE_PARAMETER_END {
   pin=1
   recoverWhile="#auto"
   implements=[
@@ -285,7 +285,7 @@ value_parameter ::= PARAMETER_START VALUE_PARAMETER_TOKEN [PIPE parameter_value]
   methods=[getIcon getName setName getValue getTextOffset getDefaultValue getReference]
 }
 private parameter_value ::= BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
-inline_math_parameter ::= PARAMETER_START INLINE_MATH_PARAMETER_TOKEN [PIPE inline_math_parameter_value] PARAMETER_END {
+inline_math_parameter ::= INLINE_MATH_PARAMETER_START INLINE_MATH_PARAMETER_TOKEN [PIPE inline_math_parameter_value] INLINE_MATH_PARAMETER_END {
   extends=inline_math_factor
   pin=1
   implements="icu.windea.pls.core.psi.ParadoxParameter"

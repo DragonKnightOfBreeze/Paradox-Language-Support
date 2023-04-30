@@ -593,10 +593,14 @@ object ParadoxDefinitionHandler {
     }
     
     fun shouldCreateStub(node: ASTNode): Boolean {
-        return true //just true
+        //仅当不带参数时才创建stub
+        if(node.findChildByType(KEY_PARAMETER) != null) return false
+        return true
     }
     
     fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
-        return true //just true
+        //仅当不带参数时才创建stub
+        if(node.firstChild(tree, KEY_PARAMETER) != null) return false
+        return true
     }
 }

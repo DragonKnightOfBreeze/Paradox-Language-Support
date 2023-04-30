@@ -14,6 +14,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.model.*
@@ -79,7 +80,7 @@ class ParadoxScriptAnnotator : Annotator {
         }
     }
     
-    private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
+    private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
         //高亮复杂枚举值声明对应的表达式
         holder.newSilentAnnotation(INFORMATION).range(element)
             .textAttributes(Keys.COMPLEX_ENUM_VALUE_KEY)
@@ -96,7 +97,7 @@ class ParadoxScriptAnnotator : Annotator {
         if(element is ParadoxScriptStringExpressionElement) {
             val complexEnumValueInfo = element.complexEnumValueInfo
             if(complexEnumValueInfo != null) {
-                annotateComplexEnumValue(element, holder, complexEnumValueInfo)
+                annotateComplexEnumValue(element, holder)
                 return
             }
         }
@@ -238,7 +239,7 @@ class ParadoxScriptAnnotator : Annotator {
     private fun setParameterRanges(element: ParadoxScriptStringExpressionElement) {
         var parameterRanges: SmartList<TextRange>? = null
         element.processChild { parameter ->
-            if(parameter is ParadoxScriptParameter) {
+            if(parameter is ParadoxParameter) {
                 if(parameterRanges == null) parameterRanges = SmartList()
                 parameterRanges?.add(parameter.textRange)
             }

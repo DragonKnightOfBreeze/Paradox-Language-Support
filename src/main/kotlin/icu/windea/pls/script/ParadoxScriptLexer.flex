@@ -24,9 +24,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %state WAITING_PROPERTY_VALUE
 
 %state WAITING_KEY
-%state WAITING_KEY_END
 %state WAITING_STRING
-%state WAITING_STRING_END
 
 %state WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME
 
@@ -80,9 +78,41 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 	    } else if(parameterPosition == ParameterPosition.INLINE_MATH) {
             yybegin(WAITING_INLINE_MATH);
         } else {
-            beginNextState();
+            beginNextState(); //unexpected
         }
 		parameterPosition = ParameterPosition.NONE;
+    }
+	
+	private IElementType getParameterStart() {
+    	if(parameterPosition == ParameterPosition.SCRIPTED_VARIABLE_NAME) {
+            return KEY_PARAMETER_START;
+        } else if(parameterPosition == ParameterPosition.SCRIPTED_VARIABLE_REFERENCE_NAME) {
+            return VALUE_PARAMETER_START;
+        } else if(parameterPosition == ParameterPosition.KEY){
+            return KEY_PARAMETER_START;
+        } else if(parameterPosition == ParameterPosition.STRING){
+            return VALUE_PARAMETER_START;
+        } else if(parameterPosition == ParameterPosition.INLINE_MATH) {
+            return INLINE_MATH_PARAMETER_START;
+        } else {
+            return VALUE_PARAMETER_START; //unexpected
+        }
+    }
+	
+	private IElementType getParameterEnd() {
+    	if(parameterPosition == ParameterPosition.SCRIPTED_VARIABLE_NAME) {
+            return KEY_PARAMETER_END;
+        } else if(parameterPosition == ParameterPosition.SCRIPTED_VARIABLE_REFERENCE_NAME) {
+            return VALUE_PARAMETER_END;
+        } else if(parameterPosition == ParameterPosition.KEY){
+            return KEY_PARAMETER_END;
+        } else if(parameterPosition == ParameterPosition.STRING){
+            return VALUE_PARAMETER_END;
+        } else if(parameterPosition == ParameterPosition.INLINE_MATH) {
+            return INLINE_MATH_PARAMETER_END;
+        } else {
+            return VALUE_PARAMETER_START; //unexpected
+        }
     }
 	
 	private IElementType getParameterToken() {
@@ -225,7 +255,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   "$" {
 	  parameterPosition = ParameterPosition.SCRIPTED_VARIABLE_NAME; 
 	  yybegin(WAITING_PARAMETER);
-	  return PARAMETER_START;
+	  return getParameterStart();
   }
   {SCRIPTED_VARIABLE_NAME_TOKEN} {
 	  return SCRIPTED_VARIABLE_NAME_TOKEN;
@@ -260,7 +290,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   "$" {
 	  parameterPosition = ParameterPosition.SCRIPTED_VARIABLE_REFERENCE_NAME; 
 	  yybegin(WAITING_PARAMETER);
-	  return PARAMETER_START;
+	  return getParameterStart();
   }
   {SCRIPTED_VARIABLE_NAME_TOKEN} {
 	  return SCRIPTED_VARIABLE_REFERENCE_TOKEN;
@@ -369,25 +399,12 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
 	  keyStarted=true;
       parameterPosition = ParameterPosition.KEY;
 	  yybegin(WAITING_PARAMETER); 
-	  return PARAMETER_START;
+	  return getParameterStart();
   }
   {PROPERTY_KEY_TOKEN} {
 	  keyStarted=true;
       return PROPERTY_KEY_TOKEN;
   }
-}
-<WAITING_KEY_END>{
-  {BLANK} {return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
-  "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
-  "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
-  ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
-  "<=" {yybegin(WAITING_PROPERTY_VALUE); return LE_SIGN;}
-  ">=" {yybegin(WAITING_PROPERTY_VALUE); return GE_SIGN;}
-  "!="|"<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
 }
 
 <WAITING_STRING>{
@@ -406,7 +423,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
 	  valueStarted=true;
       parameterPosition = ParameterPosition.STRING;
 	  yybegin(WAITING_PARAMETER); 
-	  return PARAMETER_START;
+	  return getParameterStart();
   }
   {STRING_TOKEN} {
 	  valueStarted=true;
@@ -421,7 +438,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   "|" {yybegin(WAITING_PARAMETER_DEFAULT_VALUE); return PIPE;}
-  "$" {beginNextStateForParameter(); return PARAMETER_END;}
+  "$" {beginNextStateForParameter(); return getParameterEnd();}
   {PARAMETER_TOKEN} { return getParameterToken(); }
 }
 <WAITING_PARAMETER_DEFAULT_VALUE>{
@@ -430,7 +447,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "]" {inParameterCondition = false; beginNextState(); return RIGHT_BRACKET;}
-  "$" {beginNextStateForParameter(); return PARAMETER_END;}
+  "$" {beginNextStateForParameter(); return getParameterEnd();}
   {BOOLEAN_TOKEN} { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return BOOLEAN_TOKEN;}
   {INT_TOKEN} {yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return INT_TOKEN;}
   {FLOAT_TOKEN} {yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END);; return FLOAT_TOKEN;}
@@ -442,7 +459,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "]" {inParameterCondition = false; beginNextState(); return RIGHT_BRACKET;}
-  "$" {beginNextStateForParameter(); return PARAMETER_END;}
+  "$" {beginNextStateForParameter(); return getParameterEnd();}
 }
 
 <WAITING_PARAMETER_CONDITION>{
@@ -513,7 +530,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   "*" {yybegin(WAITING_INLINE_MATH); return TIMES_SIGN;}
   "/" {yybegin(WAITING_INLINE_MATH); return DIV_SIGN;}
   "%" {yybegin(WAITING_INLINE_MATH); return MOD_SIGN;}
-  "$" { parameterPosition=ParameterPosition.INLINE_MATH; yybegin(WAITING_PARAMETER); return PARAMETER_START;}
+  "$" { parameterPosition=ParameterPosition.INLINE_MATH; yybegin(WAITING_PARAMETER); return getParameterStart();}
   "]" { beginNextState(); return INLINE_MATH_END;}
   {INT_NUMBER_TOKEN} {return INT_NUMBER_TOKEN;}
   {FLOAT_NUMBER_TOKEN} {return FLOAT_NUMBER_TOKEN;}
