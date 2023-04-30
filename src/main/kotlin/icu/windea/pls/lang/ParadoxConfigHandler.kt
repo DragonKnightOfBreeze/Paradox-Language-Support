@@ -1220,6 +1220,7 @@ object ParadoxConfigHandler {
             val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
             val selector = valueSetValueSelector(project, contextElement).distinctByName()
             ParadoxValueSetValueSearch.search(valueSetName, selector).processQueryAsync p@{ info ->
+                ProgressManager.checkCanceled()
                 if(info.name == keyword) return@p true //排除和当前输入的同名的
                 val element = ParadoxValueSetValueElement(contextElement, info, project)
                 //去除后面的作用域信息
@@ -1311,6 +1312,7 @@ object ParadoxConfigHandler {
         val project = file.project
         val eventTargetSelector = valueSetValueSelector(project, file).contextSensitive().distinctByName()
         ParadoxValueSetValueSearch.search("event_target", eventTargetSelector).processQueryAsync p@{ info ->
+            ProgressManager.checkCanceled()
             if(info.name == keyword) return@p true //排除和当前输入的同名的
             val element = ParadoxValueSetValueElement(contextElement, info, project)
             val icon = PlsIcons.ValueSetValue
@@ -1325,6 +1327,7 @@ object ParadoxConfigHandler {
         
         val globalEventTargetSelector = valueSetValueSelector(project, file).contextSensitive().distinctByName()
         ParadoxValueSetValueSearch.search("global_event_target", globalEventTargetSelector).processQueryAsync p@{ info ->
+            ProgressManager.checkCanceled()
             if(info.name == keyword) return@p true //排除和当前输入的同名的
             val element = ParadoxValueSetValueElement(contextElement, info, project)
             val icon = PlsIcons.ValueSetValue
@@ -1344,6 +1347,7 @@ object ParadoxConfigHandler {
         val project = file.project
         val scriptedLocSelector = definitionSelector(project, file).contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search("scripted_loc", scriptedLocSelector).processQueryAsync p@{ scriptedLoc ->
+            ProgressManager.checkCanceled()
             val name = scriptedLoc.definitionInfo?.name ?: return@p true //不应该为空
             val icon = PlsIcons.Definition
             val tailText = " from <scripted_loc>"
@@ -1365,6 +1369,7 @@ object ParadoxConfigHandler {
         val project = file.project
         val variableSelector = valueSetValueSelector(project, file).contextSensitive().distinctByName()
         ParadoxValueSetValueSearch.search("variable", variableSelector).processQueryAsync p@{ info ->
+            ProgressManager.checkCanceled()
             if(info.name == keyword) return@p true //排除和当前输入的同名的
             val element = ParadoxValueSetValueElement(contextElement, info, project)
             val icon = PlsIcons.Variable
@@ -1453,6 +1458,7 @@ object ParadoxConfigHandler {
         val project = originalFile.project
         val selector = definitionSelector(project, contextElement).contextSensitive()
         ParadoxDefinitionSearch.search(svName, "script_value", selector).processQueryAsync p@{ sv ->
+            ProgressManager.checkCanceled()
             val parameterContext = sv
             val parameterMap = parameterContext.parameters
             if(parameterMap.isEmpty()) return@p true

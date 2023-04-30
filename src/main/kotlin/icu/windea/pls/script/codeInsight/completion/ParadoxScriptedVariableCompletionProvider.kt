@@ -2,6 +2,7 @@ package icu.windea.pls.script.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
@@ -28,6 +29,7 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
     }
     
     private fun processScriptedVariable(scriptedVariable: ParadoxScriptScriptedVariable, result: CompletionResultSet): Boolean {
+        ProgressManager.checkCanceled()
         val name = scriptedVariable.name ?: return true
         val icon = scriptedVariable.icon
         val tailText = scriptedVariable.value?.let { " = $it" }

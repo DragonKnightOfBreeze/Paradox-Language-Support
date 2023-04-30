@@ -54,6 +54,7 @@ class MissingParameterInspection : LocalInspectionTool() {
                 ProgressManager.checkCanceled()
                 val requiredParameterNames = mutableSetOf<String>()
                 ParadoxParameterSupport.processContextFromInvocationExpression(element, config) p@{
+                    ProgressManager.checkCanceled()
                     val parameterMap = it.parameters
                     if(parameterMap.isNotEmpty()) {
                         parameterMap.forEach { (name, parameterInfo) ->

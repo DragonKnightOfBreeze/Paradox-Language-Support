@@ -46,6 +46,7 @@ class ParadoxCallerHierarchyTreeStructure(
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
             ?: GlobalSearchScope.allScope(myProject)
         ReferencesSearch.search(element, scope).processQueryAsync { reference ->
+            ProgressManager.checkCanceled()
             val referenceElement = reference.element
             if(referenceElement.language == ParadoxScriptLanguage) {
                 processScriptReferenceElement(reference, referenceElement, descriptor, descriptors)

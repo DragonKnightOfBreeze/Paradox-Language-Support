@@ -42,6 +42,7 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
             ?.withFilePath("common/on_actions", "txt")
             ?: return null
         ReferencesSearch.search(definition, searchScope).processQueryAsync p@{ ref ->
+            ProgressManager.checkCanceled()
             //should be
             if(ref !is ParadoxScriptExpressionPsiReference) return@p true
             val refDefinition = ref.element.findParentDefinition() ?: return@p true

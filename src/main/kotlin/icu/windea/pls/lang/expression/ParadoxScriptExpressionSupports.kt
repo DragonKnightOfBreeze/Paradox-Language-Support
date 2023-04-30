@@ -227,6 +227,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport(
         val tailText = ParadoxConfigHandler.getScriptExpressionTailText(config)
         val selector = definitionSelector(project, contextElement).contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search(typeExpression, selector).processQueryAsync p@{ definition ->
+            ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
             
             //排除不匹配可能存在的supported_scopes的情况
@@ -307,6 +308,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
                 .withFileExtensions(fileExtensions)
                 .distinctByFilePath()
             ParadoxFilePathSearch.search(configExpression, selector).processQueryAsync p@{ virtualFile ->
+                ProgressManager.checkCanceled()
                 val file = virtualFile.toPsiFile<PsiFile>(project) ?: return@p true
                 val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
                 val name = pathReferenceExpressionSupport.extract(configExpression, contextFile, filePath) ?: return@p true
@@ -404,6 +406,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
                 .contextSensitive()
                 .distinctByName()
             ParadoxComplexEnumValueSearch.search(enumName, selector).processQueryAsync { info ->
+                ProgressManager.checkCanceled()
                 val name = info.name
                 val element = ParadoxComplexEnumValueElement(contextElement, info, project)
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)

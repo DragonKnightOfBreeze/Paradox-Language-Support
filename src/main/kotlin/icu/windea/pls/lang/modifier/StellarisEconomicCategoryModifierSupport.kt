@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.modifier
 
 import com.intellij.codeInsight.completion.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
@@ -42,6 +43,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val selector = definitionSelector(project, element).distinctByName()
         var r = false
         ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{
+            ProgressManager.checkCanceled()
             val info = StellarisEconomicCategoryHandler.getInfo(it) ?: return@p true
             for(modifierInfo in info.modifiers) {
                 if(modifierInfo.name == name) {
@@ -62,6 +64,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         var economicCategoryModifierInfo: StellarisEconomicCategoryModifierInfo? = null
         val selector = definitionSelector(project, element).contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{
+            ProgressManager.checkCanceled()
             val info = StellarisEconomicCategoryHandler.getInfo(it) ?: return@p true
             for(modifierInfo in info.modifiers) {
                 if(modifierInfo.name == name) {
@@ -88,8 +91,8 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val project = configGroup.project
         val selector = definitionSelector(project, element).contextSensitive()
         ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{
+            ProgressManager.checkCanceled()
             val info = StellarisEconomicCategoryHandler.getInfo(it) ?: return@p true
-            
             //排除不匹配modifier的supported_scopes的情况
             val modifierCategories = StellarisEconomicCategoryHandler.resolveModifierCategory(info.modifierCategory, configGroup)
             val supportedScopes = modifierCategories.getSupportedScopes()
