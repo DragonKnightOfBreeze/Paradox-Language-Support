@@ -411,78 +411,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // key_parameter_aware_expr | key_literal_expr
-  static boolean key_expr(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "key_expr")) return false;
-    boolean r;
-    r = key_parameter_aware_expr(b, l + 1);
-    if (!r) r = key_literal_expr(b, l + 1);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // PROPERTY_KEY_TOKEN | QUOTED_PROPERTY_KEY_TOKEN
-  static boolean key_literal_expr(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "key_literal_expr")) return false;
-    if (!nextTokenIs(b, "", PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN)) return false;
-    boolean r;
-    r = consumeToken(b, PROPERTY_KEY_TOKEN);
-    if (!r) r = consumeToken(b, QUOTED_PROPERTY_KEY_TOKEN);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // KEY_STRING_SNIPPET? parameter (KEY_STRING_SNIPPET parameter)* KEY_STRING_SNIPPET?
-  static boolean key_parameter_aware_expr(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "key_parameter_aware_expr")) return false;
-    if (!nextTokenIs(b, "", KEY_STRING_SNIPPET, PARAMETER_START)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = key_parameter_aware_expr_0(b, l + 1);
-    r = r && parameter(b, l + 1);
-    r = r && key_parameter_aware_expr_2(b, l + 1);
-    r = r && key_parameter_aware_expr_3(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // KEY_STRING_SNIPPET?
-  private static boolean key_parameter_aware_expr_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "key_parameter_aware_expr_0")) return false;
-    consumeToken(b, KEY_STRING_SNIPPET);
-    return true;
-  }
-
-  // (KEY_STRING_SNIPPET parameter)*
-  private static boolean key_parameter_aware_expr_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "key_parameter_aware_expr_2")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!key_parameter_aware_expr_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "key_parameter_aware_expr_2", c)) break;
-    }
-    return true;
-  }
-
-  // KEY_STRING_SNIPPET parameter
-  private static boolean key_parameter_aware_expr_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "key_parameter_aware_expr_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, KEY_STRING_SNIPPET);
-    r = r && parameter(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // KEY_STRING_SNIPPET?
-  private static boolean key_parameter_aware_expr_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "key_parameter_aware_expr_3")) return false;
-    consumeToken(b, KEY_STRING_SNIPPET);
-    return true;
-  }
-
-  /* ********************************************************** */
   // PARAMETER_START PARAMETER_TOKEN [PIPE parameter_value] PARAMETER_END
   public static boolean parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter")) return false;
@@ -626,13 +554,40 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // key_expr
+  // QUOTED_PROPERTY_KEY_TOKEN | (PROPERTY_KEY_TOKEN | parameter) +
   public static boolean property_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_key")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, PROPERTY_KEY, "<property key>");
-    r = key_expr(b, l + 1);
+    r = consumeToken(b, QUOTED_PROPERTY_KEY_TOKEN);
+    if (!r) r = property_key_1(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // (PROPERTY_KEY_TOKEN | parameter) +
+  private static boolean property_key_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_key_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = property_key_1_0(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!property_key_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "property_key_1", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // PROPERTY_KEY_TOKEN | parameter
+  private static boolean property_key_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_key_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, PROPERTY_KEY_TOKEN);
+    if (!r) r = parameter(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -835,13 +790,40 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // value_expr
+  // QUOTED_STRING_TOKEN | (STRING_TOKEN | parameter) +
   public static boolean string(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, STRING, "<string>");
-    r = value_expr(b, l + 1);
+    r = consumeToken(b, QUOTED_STRING_TOKEN);
+    if (!r) r = string_1(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // (STRING_TOKEN | parameter) +
+  private static boolean string_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "string_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = string_1_0(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!string_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "string_1", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // STRING_TOKEN | parameter
+  private static boolean string_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "string_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, STRING_TOKEN);
+    if (!r) r = parameter(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -863,94 +845,21 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  /* ********************************************************** */
-  // value_parameter_aware_expr | value_literal_expr
-  static boolean value_expr(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_expr")) return false;
-    boolean r;
-    r = value_parameter_aware_expr(b, l + 1);
-    if (!r) r = value_literal_expr(b, l + 1);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // STRING_TOKEN | QUOTED_STRING_TOKEN
-  static boolean value_literal_expr(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_literal_expr")) return false;
-    if (!nextTokenIs(b, "", QUOTED_STRING_TOKEN, STRING_TOKEN)) return false;
-    boolean r;
-    r = consumeToken(b, STRING_TOKEN);
-    if (!r) r = consumeToken(b, QUOTED_STRING_TOKEN);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // VALUE_STRING_SNIPPET? parameter (VALUE_STRING_SNIPPET parameter)* VALUE_STRING_SNIPPET?
-  static boolean value_parameter_aware_expr(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_parameter_aware_expr")) return false;
-    if (!nextTokenIs(b, "", PARAMETER_START, VALUE_STRING_SNIPPET)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = value_parameter_aware_expr_0(b, l + 1);
-    r = r && parameter(b, l + 1);
-    r = r && value_parameter_aware_expr_2(b, l + 1);
-    r = r && value_parameter_aware_expr_3(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // VALUE_STRING_SNIPPET?
-  private static boolean value_parameter_aware_expr_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_parameter_aware_expr_0")) return false;
-    consumeToken(b, VALUE_STRING_SNIPPET);
-    return true;
-  }
-
-  // (VALUE_STRING_SNIPPET parameter)*
-  private static boolean value_parameter_aware_expr_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_parameter_aware_expr_2")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!value_parameter_aware_expr_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "value_parameter_aware_expr_2", c)) break;
-    }
-    return true;
-  }
-
-  // VALUE_STRING_SNIPPET parameter
-  private static boolean value_parameter_aware_expr_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_parameter_aware_expr_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, VALUE_STRING_SNIPPET);
-    r = r && parameter(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // VALUE_STRING_SNIPPET?
-  private static boolean value_parameter_aware_expr_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_parameter_aware_expr_3")) return false;
-    consumeToken(b, VALUE_STRING_SNIPPET);
-    return true;
-  }
-
   static final Parser block_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
-    COLOR_TOKEN, COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, KEY_STRING_SNIPPET,
-    LEFT_BRACE, LEFT_BRACKET, PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN,
-    RIGHT_BRACE, RIGHT_BRACKET, STRING_TOKEN, VALUE_STRING_SNIPPET);
+    COLOR_TOKEN, COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, LEFT_BRACE,
+    LEFT_BRACKET, PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, RIGHT_BRACE, RIGHT_BRACKET, STRING_TOKEN);
   static final Parser block_item_auto_recover_ = block_auto_recover_;
   static final Parser inline_math_auto_recover_ = block_auto_recover_;
   static final Parser parameter_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
     COLOR_TOKEN, COMMENT, EQUAL_SIGN, FLOAT_TOKEN, GE_SIGN, GT_SIGN,
-    INLINE_MATH_START, INT_TOKEN, KEY_STRING_SNIPPET, LEFT_BRACE, LEFT_BRACKET, LE_SIGN,
-    LT_SIGN, NOT_EQUAL_SIGN, PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN,
-    RIGHT_BRACE, RIGHT_BRACKET, SCRIPTED_VARIABLE_NAME_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN, STRING_TOKEN, VALUE_STRING_SNIPPET);
+    INLINE_MATH_START, INT_TOKEN, LEFT_BRACE, LEFT_BRACKET, LE_SIGN, LT_SIGN,
+    NOT_EQUAL_SIGN, PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, RIGHT_BRACE,
+    RIGHT_BRACKET, SCRIPTED_VARIABLE_NAME_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN, STRING_TOKEN);
   static final Parser parameter_condition_auto_recover_ = block_auto_recover_;
   static final Parser parameter_condition_expr_auto_recover_ = block_auto_recover_;
   static final Parser property_auto_recover_ = block_auto_recover_;
   static final Parser root_block_item_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
-    COLOR_TOKEN, COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, KEY_STRING_SNIPPET,
-    LEFT_BRACE, PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, STRING_TOKEN, VALUE_STRING_SNIPPET);
+    COLOR_TOKEN, COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, LEFT_BRACE,
+    PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, STRING_TOKEN);
   static final Parser scripted_variable_auto_recover_ = block_auto_recover_;
 }

@@ -19,7 +19,6 @@
 //regex必须定向到token，而非rule
 //即使idea提示不需要转义，一些字符在regexp中仍然需要转义
 
-//TODO 区分不同游戏类型对应的parser和lexer
 //分隔符可以是比较运算符
 
 root ::= root_block ?
@@ -35,7 +34,6 @@ private root_block_item ::= COMMENT | root_block_value | property | scripted_var
 private root_block_value ::= boolean | int | float | string | color | block | inline_math
 
 //scripted_variable
-//should outside of definition declaration
 scripted_variable ::= scripted_variable_name scripted_variable_separator scripted_variable_value {
   pin=1
   recoverWhile="#auto"
@@ -83,7 +81,7 @@ property ::= property_key property_separator property_value {
     isEquivalentTo toString
   ]
 }
-property_key ::= key_expr {
+property_key ::= (QUOTED_PROPERTY_KEY_TOKEN | (PROPERTY_KEY_TOKEN | parameter) +) {
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
@@ -98,7 +96,7 @@ property_key ::= key_expr {
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
 private property_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
-//(property) value related
+//value related
 value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math {
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
@@ -144,7 +142,7 @@ float ::= FLOAT_TOKEN {
   ]
   methods=[getName getValue setValue getFloatValue getType]
 }
-string ::= value_expr {
+string ::= (QUOTED_STRING_TOKEN | (STRING_TOKEN | parameter) +) {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
@@ -180,18 +178,6 @@ private block_item ::= COMMENT | property | block_value | parameter_condition | 
   recoverWhile="#auto"
 }
 private block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
-
-//key & value expressions
-
-//key expressions  (various situations)
-private key_expr ::= key_parameter_aware_expr | key_literal_expr
-private key_parameter_aware_expr ::= KEY_STRING_SNIPPET? parameter (KEY_STRING_SNIPPET parameter)* KEY_STRING_SNIPPET?
-private key_literal_expr ::= PROPERTY_KEY_TOKEN | QUOTED_PROPERTY_KEY_TOKEN
-
-//value expressions (various situations)
-private value_expr ::= value_parameter_aware_expr | value_literal_expr
-private value_parameter_aware_expr ::= VALUE_STRING_SNIPPET? parameter (VALUE_STRING_SNIPPET parameter)* VALUE_STRING_SNIPPET?
-private value_literal_expr ::= STRING_TOKEN | QUOTED_STRING_TOKEN
 
 //advanced script syntax
 //see: common/scripted_effects/99_advanced_documentation.txt

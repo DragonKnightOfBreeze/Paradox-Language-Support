@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 val ParadoxScriptScriptedVariableName.variableNameId: PsiElement? get() = firstChild?.nextSibling?.takeIf { it.nextSibling == null && it.elementType == SCRIPTED_VARIABLE_NAME_TOKEN }
 
-val ParadoxScriptPropertyKey.propertyKeyId: PsiElement? get() = findChild(PROPERTY_KEY_TOKEN)
+val ParadoxScriptPropertyKey.propertyKeyId: PsiElement? get() = firstChild?.nextSibling?.takeIf { it.nextSibling == null && it.elementType == PROPERTY_KEY_TOKEN }
 
 val ParadoxScriptPropertyKey.quotedPropertyKeyId: PsiElement? get() = findChild(QUOTED_PROPERTY_KEY_TOKEN)
 

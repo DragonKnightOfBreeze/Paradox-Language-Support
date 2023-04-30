@@ -53,14 +53,16 @@ class ParadoxScriptParserDefinition : ParserDefinition {
             leftType == PARAMETER_END && isParameterAwareToken(rightType) -> MUST_NOT
             rightType == PARAMETER_START && isParameterAwareToken(leftType) -> MUST_NOT
             leftType == PARAMETER_START || rightType == PARAMETER_END -> MUST_NOT
-            leftType == KEY_STRING_SNIPPET || rightType == KEY_STRING_SNIPPET -> MUST_NOT
-            leftType == VALUE_STRING_SNIPPET || rightType == VALUE_STRING_SNIPPET -> MUST_NOT
             leftType == PIPE || rightType == PIPE -> MUST_NOT
             else -> MAY
         }
     }
     
     private fun isParameterAwareToken(type: IElementType?) : Boolean {
-        return type == SCRIPTED_VARIABLE_NAME_TOKEN || type == SCRIPTED_VARIABLE_REFERENCE_TOKEN || type == INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN
+        return type == SCRIPTED_VARIABLE_NAME_TOKEN
+            || type == SCRIPTED_VARIABLE_REFERENCE_TOKEN
+            || type == INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN
+            || type == PROPERTY_KEY_TOKEN
+            || type == STRING_TOKEN
     }
 }

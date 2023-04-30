@@ -15,10 +15,6 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        //名字不能带有参数
-        if(parameters.position.prevSibling.elementType == ParadoxScriptElementTypes.PARAMETER) return
-        if(parameters.position.nextSibling.elementType == ParadoxScriptElementTypes.PARAMETER) return
-        
         //同时需要同时查找当前文件中的和全局的
         val element = parameters.position.parent
         val file = parameters.originalFile

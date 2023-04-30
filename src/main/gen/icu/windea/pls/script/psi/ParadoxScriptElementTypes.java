@@ -52,7 +52,6 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_START = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_START");
   IElementType INT_NUMBER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("INT_NUMBER_TOKEN");
   IElementType INT_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("INT_TOKEN");
-  IElementType KEY_STRING_SNIPPET = ParadoxScriptElementTypeFactory.getTokenType("KEY_STRING_SNIPPET");
   IElementType LABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LABS_SIGN");
   IElementType LEFT_BRACE = ParadoxScriptElementTypeFactory.getTokenType("LEFT_BRACE");
   IElementType LEFT_BRACKET = ParadoxScriptElementTypeFactory.getTokenType("LEFT_BRACKET");
@@ -81,7 +80,6 @@ public interface ParadoxScriptElementTypes {
   IElementType SCRIPTED_VARIABLE_REFERENCE_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_TOKEN");
   IElementType STRING_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("STRING_TOKEN");
   IElementType TIMES_SIGN = ParadoxScriptElementTypeFactory.getTokenType("TIMES_SIGN");
-  IElementType VALUE_STRING_SNIPPET = ParadoxScriptElementTypeFactory.getTokenType("VALUE_STRING_SNIPPET");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
