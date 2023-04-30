@@ -32,8 +32,8 @@ public class ParadoxScriptScriptedVariableNameImpl extends ASTWrapperPsiElement 
 
   @Override
   @NotNull
-  public List<ParadoxScriptKeyParameter> getKeyParameterList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptKeyParameter.class);
+  public List<ParadoxScriptParameter> getParameterList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameter.class);
   }
 
   @Override

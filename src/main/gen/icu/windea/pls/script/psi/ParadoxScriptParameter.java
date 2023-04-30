@@ -12,7 +12,7 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.references.ParadoxParameterPsiReference;
 import javax.swing.Icon;
 
-public interface ParadoxScriptKeyParameter extends ParadoxParameter {
+public interface ParadoxScriptParameter extends ParadoxParameter {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
@@ -21,7 +21,7 @@ public interface ParadoxScriptKeyParameter extends ParadoxParameter {
   String getName();
 
   @NotNull
-  ParadoxScriptKeyParameter setName(@NotNull String name);
+  ParadoxScriptParameter setName(@NotNull String name);
 
   @Nullable
   String getValue();

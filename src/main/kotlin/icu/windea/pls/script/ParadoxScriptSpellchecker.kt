@@ -14,13 +14,14 @@ class ParadoxScriptSpellchecker : SpellcheckingStrategy() {
 	
 	override fun getTokenizer(element: PsiElement): Tokenizer<*> {
 		return when(element.elementType) {
-			SCRIPTED_VARIABLE_NAME_TOKEN -> compactTextTokenizer
+			SCRIPTED_VARIABLE_NAME_TOKEN -> textTokenizer
+			SCRIPTED_VARIABLE_REFERENCE_TOKEN -> textTokenizer
+			QUOTED_PROPERTY_KEY_TOKEN -> textTokenizer
 			PROPERTY_KEY_TOKEN -> compactTextTokenizer
-			SCRIPTED_VARIABLE_REFERENCE_TOKEN -> emptyTokenizer
-			QUOTED_STRING_TOKEN -> compactTextTokenizer
-			STRING_TOKEN -> compactTextTokenizer
-			ARGUMENT_ID -> textTokenizer
-			KEY_PARAMETER_TOKEN, VALUE_PARAMETER_TOKEN, INLINE_MATH_PARAMETER_TOKEN -> textTokenizer
+			QUOTED_STRING_TOKEN -> textTokenizer
+			STRING_TOKEN, STRING_SNIPPET -> compactTextTokenizer
+			ARGUMENT_TOKEN -> textTokenizer
+			PARAMETER_TOKEN-> textTokenizer
 			COMMENT -> textTokenizer
 			else -> emptyTokenizer
 		}

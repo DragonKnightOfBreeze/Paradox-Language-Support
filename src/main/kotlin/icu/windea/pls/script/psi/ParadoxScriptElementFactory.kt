@@ -84,13 +84,8 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
-	fun createKeyParameter(project: Project, name: String): ParadoxScriptKeyParameter {
-		return createPropertyKey(project, "a\$$name\$").findChild()!!
-	}
-	
-	@JvmStatic
-	fun createValueParameter(project: Project, name: String): ParadoxScriptValueParameter {
-		return createValue(project, "a\$$name\$").findChild()!!
+	fun createParameter(project: Project, name: String): ParadoxScriptParameter {
+		return createValue(project, "\$$name\$").findChild()!!
 	}
 	
 	@JvmStatic

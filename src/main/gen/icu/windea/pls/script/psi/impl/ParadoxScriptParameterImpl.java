@@ -17,14 +17,14 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.references.ParadoxParameterPsiReference;
 import javax.swing.Icon;
 
-public class ParadoxScriptValueParameterImpl extends ASTWrapperPsiElement implements ParadoxScriptValueParameter {
+public class ParadoxScriptParameterImpl extends ASTWrapperPsiElement implements ParadoxScriptParameter {
 
-  public ParadoxScriptValueParameterImpl(@NotNull ASTNode node) {
+  public ParadoxScriptParameterImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitValueParameter(this);
+    visitor.visitParameter(this);
   }
 
   @Override
@@ -47,7 +47,7 @@ public class ParadoxScriptValueParameterImpl extends ASTWrapperPsiElement implem
 
   @Override
   @NotNull
-  public ParadoxScriptValueParameter setName(@NotNull String name) {
+  public ParadoxScriptParameter setName(@NotNull String name) {
     return ParadoxScriptPsiImplUtil.setName(this, name);
   }
 

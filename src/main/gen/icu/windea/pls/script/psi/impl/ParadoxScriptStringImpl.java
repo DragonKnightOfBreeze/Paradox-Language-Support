@@ -36,8 +36,8 @@ public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements P
 
   @Override
   @NotNull
-  public List<ParadoxScriptValueParameter> getValueParameterList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValueParameter.class);
+  public List<ParadoxScriptParameter> getParameterList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameter.class);
   }
 
   @Override

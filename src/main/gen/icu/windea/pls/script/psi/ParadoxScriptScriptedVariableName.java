@@ -12,7 +12,7 @@ import com.intellij.psi.search.SearchScope;
 public interface ParadoxScriptScriptedVariableName extends ParadoxParameterizedElement {
 
   @NotNull
-  List<ParadoxScriptKeyParameter> getKeyParameterList();
+  List<ParadoxScriptParameter> getParameterList();
 
   @NotNull
   String getName();

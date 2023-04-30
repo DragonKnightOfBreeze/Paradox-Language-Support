@@ -6,19 +6,16 @@ import icu.windea.pls.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import org.jetbrains.kotlin.idea.completion.*
 
 class ParadoxScriptCompletionContributor : CompletionContributor() {
 	init {
 		//当用户可能正在输入一个关键字（布尔值或子句）时提示
 		val keywordPattern = psiElement(STRING_TOKEN)
-			.andNot(psiElement().beforeLeaf("$").or(psiElement().afterLeaf("$")))
 		extend(CompletionType.BASIC, keywordPattern, ParadoxKeywordCompletionProvider())
 		
 		//当用户可能正在输入一个scriptedVariableReference的名字时提示
 		val scriptedVariableReferencePattern = psiElement()
 			.withElementType(ParadoxScriptTokenSets.SCRIPTED_VARIABLE_REFERENCE_TOKENS)
-			.andNot(psiElement().beforeLeaf("$").or(psiElement().afterLeaf("$")))
 		extend(scriptedVariableReferencePattern, ParadoxScriptedVariableCompletionProvider())
 		
 		//当用户可能正在输入一个propertyKey或string时提示
@@ -29,7 +26,6 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		//当用户可能正在输入一个eventId时提示
 		val eventIdPattern = psiElement()
 			.withElementType(ParadoxScriptTokenSets.STRING_TOKENS)
-			.andNot(psiElement().beforeLeaf("$").or(psiElement().afterLeaf("$")))
 			.withParent(psiElement(ParadoxScriptString::class.java)
 				.withParent(psiElement(ParadoxScriptProperty::class.java)
 					.withParent(psiElement(ParadoxScriptBlock::class.java)
@@ -44,19 +40,16 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		//当用户可能正在输入一个scriptedVariable的名字时提示（除非用户也可能正在输入一个引用的名字）
 		val scriptedVariableNamePattern = psiElement()
 			.withElementType(SCRIPTED_VARIABLE_NAME_TOKEN)
-			.andNot(psiElement().beforeLeaf("$").or(psiElement().afterLeaf("$")))
 		extend(CompletionType.BASIC, scriptedVariableNamePattern, ParadoxScriptedVariableNameCompletionProvider())
 		
 		//当用户可能正在输入一个定义的名字时提示
 		val definitionNamePattern = psiElement()
 			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
-			.andNot(psiElement().beforeLeaf("$").or(psiElement().afterLeaf("$")))
 		extend(CompletionType.BASIC, definitionNamePattern, ParadoxDefinitionNameCompletionProvider())
 		
 		//当用户可能正在输入一个变量名时提示
 		val variableNamePattern = psiElement()
 			.withElementType(ParadoxScriptTokenSets.STRING_TOKENS)
-			.andNot(psiElement().beforeLeaf("$").or(psiElement().afterLeaf("$")))
 		extend(CompletionType.BASIC, variableNamePattern, ParadoxVariableNameCompletionProvider())
 	}
 	
