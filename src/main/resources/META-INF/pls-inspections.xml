@@ -139,7 +139,7 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
                      groupPathKey="inspection.script.bug.path"
                      implementationClass="icu.windea.pls.script.inspections.bug.UnsupportedInlineMathUsageInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedInlineMathUsage"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedInlineScriptUsage"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="inspection.script.bug.unsupportedInlineScriptUsage"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
