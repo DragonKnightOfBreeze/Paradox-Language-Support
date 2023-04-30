@@ -21,10 +21,6 @@ public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement
   @Nullable
   ParadoxScriptValue getScriptedVariableValue();
 
-  //WARNING: string(...) is skipped
-  //matching string(ParadoxScriptScriptedVariable, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
-
   @NotNull
   Icon getIcon(@IconFlags int flags);
 

@@ -23,6 +23,9 @@ public interface ParadoxScriptParameterConditionParameter extends ParadoxArgumen
   @NotNull
   ParadoxScriptParameterConditionParameter setName(@NotNull String name);
 
+  @NotNull
+  String getValue();
+
   int getTextOffset();
 
   @NotNull

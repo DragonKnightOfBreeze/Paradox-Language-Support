@@ -79,21 +79,21 @@ object ParadoxScriptPsiImplUtil {
         // 不包含作为前缀的"@"
         ProgressManager.checkCanceled()
         element.stub?.name?.let { return it }
-        return element.scriptedVariableName.variableNameId?.text ?: return null
+        return element.scriptedVariableName.name
     }
     
     @JvmStatic
     fun setName(element: ParadoxScriptScriptedVariable, name: String): ParadoxScriptScriptedVariable {
         // 不包含作为前缀的"@"
-        val nameElement = element.scriptedVariableName.variableNameId ?: throw IncorrectOperationException()
-        val newNameElement = ParadoxScriptElementFactory.createVariableName(element.project, name).variableNameId!!
+        val nameElement = element.scriptedVariableName.idElement ?: throw IncorrectOperationException()
+        val newNameElement = ParadoxScriptElementFactory.createVariableName(element.project, name).idElement!!
         nameElement.replace(newNameElement)
         return element
     }
     
     @JvmStatic
     fun getNameIdentifier(element: ParadoxScriptScriptedVariable): PsiElement? {
-        return element.scriptedVariableName.variableNameId
+        return element.scriptedVariableName.idElement
     }
     
     @JvmStatic
@@ -137,9 +137,14 @@ object ParadoxScriptPsiImplUtil {
     
     //region ParadoxScriptScriptedVariableName
     @JvmStatic
-    fun getName(element: ParadoxScriptScriptedVariableName): String? {
+    fun getName(element: ParadoxScriptScriptedVariableName): String {
         // 不包含作为前缀的"@"
-        return element.variableNameId?.text
+        return element.text.removePrefix("@")
+    }
+    
+    @JvmStatic
+    fun getValue(element: ParadoxScriptScriptedVariableName): String {
+        return element.name
     }
     //endregion
     
@@ -151,25 +156,25 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getName(element: ParadoxScriptParameter): String? {
-        return element.parameterId?.text
+        return element.idElement?.text
     }
     
     @JvmStatic
     fun setName(element: ParadoxScriptParameter, name: String): ParadoxScriptParameter {
-        val nameElement = element.parameterId ?: throw IncorrectOperationException()
-        val newNameElement = ParadoxScriptElementFactory.createParameter(element.project, name).parameterId!!
+        val nameElement = element.idElement ?: throw IncorrectOperationException()
+        val newNameElement = ParadoxScriptElementFactory.createParameter(element.project, name).idElement!!
         nameElement.replace(newNameElement)
         return element
     }
     
     @JvmStatic
-    fun getTextOffset(element: ParadoxScriptParameter): Int {
-        return element.node.startOffset + 1
+    fun getValue(element: ParadoxScriptParameter): String? {
+        return element.name
     }
     
     @JvmStatic
-    fun getValue(element: ParadoxScriptParameter): String {
-        return element.text
+    fun getTextOffset(element: ParadoxScriptParameter): Int {
+        return element.node.startOffset + 1
     }
     
     @JvmStatic
@@ -179,7 +184,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getReference(element: ParadoxScriptParameter): ParadoxParameterPsiReference? {
-        val nameElement = element.parameterId ?: return null
+        val nameElement = element.idElement ?: return null
         return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
     }
     //endregion
@@ -197,7 +202,7 @@ object ParadoxScriptPsiImplUtil {
         //注意：这里需要得到element.stub.rootKey，而非element.stub.name，因为这里需要的是PSI元素的名字而非定义的名字
         ProgressManager.checkCanceled()
         element.stub?.rootKey?.let { return it }
-        return element.propertyKey.text.unquote()
+        return element.propertyKey.name
     }
     
     @JvmStatic
@@ -224,7 +229,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getNameIdentifier(element: ParadoxScriptProperty): PsiElement? {
-        return if(!element.propertyKey.isParameterizedExpression()) element.firstChild else null
+        return element.propertyKey.idElement
     }
     
     @JvmStatic
@@ -342,23 +347,27 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getName(element: ParadoxScriptScriptedVariableReference): String? {
-        // 不包含作为前缀的"@"
-        return element.variableReferenceId?.text
+    fun getName(element: ParadoxScriptScriptedVariableReference): String {
+        return element.text.removePrefix("@")
+    }
+    
+    @JvmStatic
+    fun getValue(element: ParadoxScriptScriptedVariableReference): String {
+        return element.name
     }
     
     @JvmStatic
     fun setName(element: ParadoxScriptScriptedVariableReference, name: String): ParadoxScriptScriptedVariableReference {
         // 不包含作为前缀的"@"
-        val nameElement = element.variableReferenceId ?: throw IncorrectOperationException()
-        val newNameElement = ParadoxScriptElementFactory.createVariableReference(element.project, name).variableReferenceId!!
+        val nameElement = element.idElement ?: throw IncorrectOperationException()
+        val newNameElement = ParadoxScriptElementFactory.createVariableReference(element.project, name).idElement!!
         nameElement.replace(newNameElement)
         return element
     }
     
     @JvmStatic
     fun getReference(element: ParadoxScriptScriptedVariableReference): ParadoxScriptedVariablePsiReference? {
-        val rangeInElement = element.variableReferenceId?.textRangeInParent ?: return null
+        val rangeInElement = element.idElement?.textRangeInParent ?: return null
         return ParadoxScriptedVariablePsiReference(element, rangeInElement)
     }
     
@@ -657,15 +666,20 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getName(element: ParadoxScriptParameterConditionParameter): String {
-        return element.parameterId.text
+        return element.idElement.text
     }
     
     @JvmStatic
     fun setName(element: ParadoxScriptParameterConditionParameter, name: String): ParadoxScriptParameterConditionParameter {
-        val nameElement = element.parameterId
-        val newNameElement = ParadoxScriptElementFactory.createParameterConditionParameter(element.project, name).parameterId
+        val nameElement = element.idElement
+        val newNameElement = ParadoxScriptElementFactory.createParameterConditionParameter(element.project, name).idElement
         nameElement.replace(newNameElement)
         return element
+    }
+    
+    @JvmStatic
+    fun getValue(element: ParadoxScriptParameterConditionParameter): String {
+        return element.name
     }
     
     @JvmStatic
@@ -675,7 +689,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getReference(element: ParadoxScriptParameterConditionParameter): ParadoxArgumentPsiReference {
-        val nameElement = element.parameterId
+        val nameElement = element.idElement
         return ParadoxArgumentPsiReference(element, nameElement.textRangeInParent)
     }
     //endregion
@@ -722,20 +736,25 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getName(element: ParadoxScriptInlineMathScriptedVariableReference): String? {
-        return element.variableReferenceId?.text
+        return element.idElement?.text
     }
     
     @JvmStatic
     fun setName(element: ParadoxScriptInlineMathScriptedVariableReference, name: String): ParadoxScriptInlineMathScriptedVariableReference {
-        val nameElement = element.variableReferenceId?: throw IncorrectOperationException() 
-        val newNameElement = ParadoxScriptElementFactory.createInlineMathVariableReference(element.project, name).variableReferenceId!!
+        val nameElement = element.idElement?: throw IncorrectOperationException()
+        val newNameElement = ParadoxScriptElementFactory.createInlineMathVariableReference(element.project, name).idElement!!
         nameElement.replace(newNameElement)
         return element
     }
     
     @JvmStatic
+    fun getValue(element: ParadoxScriptInlineMathScriptedVariableReference): String? {
+        return element.name
+    }
+    
+    @JvmStatic
     fun getReference(element: ParadoxScriptInlineMathScriptedVariableReference): ParadoxScriptedVariablePsiReference? {
-        val rangeInElement = element.variableReferenceId?.textRangeInParent ?: return null
+        val rangeInElement = element.idElement?.textRangeInParent ?: return null
         return ParadoxScriptedVariablePsiReference(element, rangeInElement)
     }
     
@@ -758,15 +777,20 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getName(element: ParadoxScriptInlineMathParameter): String? {
-        return element.parameterId?.text
+        return element.idElement?.text
     }
     
     @JvmStatic
     fun setName(element: ParadoxScriptInlineMathParameter, name: String): ParadoxScriptInlineMathParameter {
-        val nameElement = element.parameterId ?: throw IncorrectOperationException()
-        val newNameElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, name).parameterId!!
+        val nameElement = element.idElement ?: throw IncorrectOperationException()
+        val newNameElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, name).idElement!!
         nameElement.replace(newNameElement)
         return element
+    }
+    
+    @JvmStatic
+    fun getValue(element: ParadoxScriptInlineMathParameter): String? {
+        return element.name
     }
     
     @JvmStatic
@@ -781,7 +805,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getReference(element: ParadoxScriptInlineMathParameter): ParadoxParameterPsiReference? {
-        val nameElement = element.parameterId ?: return null
+        val nameElement = element.idElement ?: return null
         return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
     }
     //endregion

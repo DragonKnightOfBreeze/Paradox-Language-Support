@@ -47,7 +47,7 @@ public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptVal
   }
 
   @Override
-  @Nullable
+  @NotNull
   public String getName() {
     return ParadoxScriptPsiImplUtil.getName(this);
   }
@@ -56,6 +56,12 @@ public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptVal
   @NotNull
   public ParadoxScriptScriptedVariableReference setName(@NotNull String name) {
     return ParadoxScriptPsiImplUtil.setName(this, name);
+  }
+
+  @Override
+  @NotNull
+  public String getValue() {
+    return ParadoxScriptPsiImplUtil.getValue(this);
   }
 
   @Override

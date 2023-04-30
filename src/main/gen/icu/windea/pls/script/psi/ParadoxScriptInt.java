@@ -20,9 +20,6 @@ public interface ParadoxScriptInt extends ParadoxScriptValue, PsiLiteralValue, C
   @NotNull
   String getValue();
 
-  @NotNull
-  ParadoxScriptValue setValue(@NotNull String name);
-
   int getIntValue();
 
   @NotNull

@@ -23,6 +23,9 @@ public interface ParadoxScriptInlineMathParameter extends ParadoxScriptInlineMat
   @NotNull
   ParadoxScriptInlineMathParameter setName(@NotNull String name);
 
+  @Nullable
+  String getValue();
+
   int getTextOffset();
 
   @Nullable

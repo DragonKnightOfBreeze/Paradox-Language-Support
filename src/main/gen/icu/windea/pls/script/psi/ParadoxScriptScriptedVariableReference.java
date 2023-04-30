@@ -22,11 +22,14 @@ public interface ParadoxScriptScriptedVariableReference extends ParadoxScriptVal
   @NotNull
   Icon getIcon(@IconFlags int flags);
 
-  @Nullable
+  @NotNull
   String getName();
 
   @NotNull
   ParadoxScriptScriptedVariableReference setName(@NotNull String name);
+
+  @NotNull
+  String getValue();
 
   @Nullable
   ParadoxScriptedVariablePsiReference getReference();

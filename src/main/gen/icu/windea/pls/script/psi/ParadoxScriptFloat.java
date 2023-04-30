@@ -19,9 +19,6 @@ public interface ParadoxScriptFloat extends ParadoxScriptValue, PsiLiteralValue,
   @NotNull
   String getValue();
 
-  @NotNull
-  ParadoxScriptValue setValue(@NotNull String name);
-
   float getFloatValue();
 
   @NotNull

@@ -1410,9 +1410,9 @@ object ParadoxConfigHandler {
         val contextElement = context.contextElement
         val block = invocationExpressionElement.block ?: return
         val existParameterNames = mutableSetOf<String>().synced()
-        block.processProperty {
+        block.processProperty p@{
             val propertyKey = it.propertyKey
-            val name = if(contextElement == propertyKey) propertyKey.getKeyword(context.offsetInParent) else propertyKey.name
+            val name = if(contextElement == propertyKey) propertyKey.getKeyword(context.offsetInParent) else propertyKey.name ?: return@p true
             existParameterNames.add(name)
             true
         }
@@ -1506,7 +1506,7 @@ object ParadoxConfigHandler {
         ProgressManager.checkCanceled()
         if(configExpression == null) return null
         
-        val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.value
+        val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.text.unquote()
         if(expression.isParameterizedExpression()) return null //排除引用文本带参数的情况
         
         if(config != null) {
@@ -1547,7 +1547,7 @@ object ParadoxConfigHandler {
         ProgressManager.checkCanceled()
         if(configExpression == null) return emptyList()
         
-        val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.value
+        val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.text.unquote()
         if(expression.isParameterizedExpression()) return emptyList() //排除引用文本带参数的情况
         
         if(config != null) {

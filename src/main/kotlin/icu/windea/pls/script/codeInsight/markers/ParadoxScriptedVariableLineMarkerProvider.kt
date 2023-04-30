@@ -37,7 +37,7 @@ class ParadoxScriptedVariableLineMarkerProvider : RelatedItemLineMarkerProvider(
 		//查找全局的
 		ParadoxGlobalScriptedVariableSearch.search(name, selector).findAll().let { targets.addAll(it) }
 		if(targets.isEmpty()) return
-		val locationElement = element.scriptedVariableName.variableNameId ?: return
+		val locationElement = element.scriptedVariableName.idElement ?: return
 		val lineMarkerInfo = createNavigationGutterIconBuilder(icon) { createGotoRelatedItem(targets) }
 			.setTooltipText(tooltip)
 			.setPopupTitle(PlsBundle.message("script.gutterIcon.scriptedVariable.title"))

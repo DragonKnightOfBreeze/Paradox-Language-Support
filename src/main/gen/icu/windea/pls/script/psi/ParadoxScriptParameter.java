@@ -23,10 +23,10 @@ public interface ParadoxScriptParameter extends ParadoxParameter {
   @NotNull
   ParadoxScriptParameter setName(@NotNull String name);
 
-  int getTextOffset();
-
-  @NotNull
+  @Nullable
   String getValue();
+
+  int getTextOffset();
 
   @Nullable
   String getDefaultValue();

@@ -14,8 +14,11 @@ public interface ParadoxScriptScriptedVariableName extends ParadoxParameterizedE
   @NotNull
   List<ParadoxScriptParameter> getParameterList();
 
-  @Nullable
+  @NotNull
   String getName();
+
+  @NotNull
+  String getValue();
 
   @NotNull
   ItemPresentation getPresentation();

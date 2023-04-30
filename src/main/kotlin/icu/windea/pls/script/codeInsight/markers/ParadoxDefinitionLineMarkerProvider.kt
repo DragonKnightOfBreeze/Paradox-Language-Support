@@ -23,6 +23,7 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
 		//何时显示装订线图标：element是definition
 		if(element !is ParadoxScriptProperty) return
+		val locationElement = element.propertyKey.idElement ?: return
 		val definitionInfo = element.definitionInfo ?: return
 		
 		val icon = PlsIcons.Gutter.Definition
@@ -35,7 +36,6 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		val selector = definitionSelector(project, element).contextSensitive()
 		val targets = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
 		if(targets.isEmpty()) return
-		val locationElement = element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! }
 		val lineMarkerInfo = createNavigationGutterIconBuilder(icon) { createGotoRelatedItem(targets) }
 			.setTooltipText(tooltip)
 			.setPopupTitle(PlsBundle.message("script.gutterIcon.definition.title"))

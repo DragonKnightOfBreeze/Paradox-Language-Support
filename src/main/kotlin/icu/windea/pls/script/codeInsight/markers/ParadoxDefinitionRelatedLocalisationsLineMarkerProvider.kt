@@ -23,6 +23,7 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineM
 	override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
 		//何时显示装订线图标：element是definition，且definitionInfo.localisation不为空，且计算得到的keys不为空
 		if(element !is ParadoxScriptProperty) return
+		val locationElement = element.propertyKey.idElement ?: return
 		val definitionInfo = element.definitionInfo ?: return
 		val localisationInfos = definitionInfo.localisations
 		if(localisationInfos.isEmpty()) return
@@ -50,7 +51,6 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineM
 		}
 		if(keys.isEmpty()) return
 		if(targets.isEmpty()) return
-		val locationElement = element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! }
 		val tooltip = tooltipBuilder.toString()
 		val lineMarkerInfo = createNavigationGutterIconBuilder(icon) { createGotoRelatedItem(targets) }
 			.setTooltipText(tooltip)

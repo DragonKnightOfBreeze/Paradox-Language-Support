@@ -2,14 +2,13 @@ package icu.windea.pls.script.codeInsight.unwrap
 
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxScriptUnwrappers {
     class ParadoxScriptScriptedVariableRemover(key: String) : ParadoxScriptRemover(key) {
         override fun getName(e: PsiElement): String {
             return when(e) {
-                is ParadoxScriptScriptedVariable -> e.text.removePrefix("@")
+                is ParadoxScriptScriptedVariable -> e.name ?: PlsConstants.unresolvedString
                 else -> ""
             }
         }
@@ -22,7 +21,7 @@ object ParadoxScriptUnwrappers {
     class ParadoxScriptPropertyRemover(key: String) : ParadoxScriptRemover(key) {
         override fun getName(e: PsiElement): String {
             return when(e) {
-                is ParadoxScriptProperty -> e.text.unquote()
+                is ParadoxScriptProperty -> e.name
                 else -> ""
             }
         }
@@ -35,8 +34,7 @@ object ParadoxScriptUnwrappers {
     class ParadoxScriptValueRemover(key: String) : ParadoxScriptRemover(key) {
         override fun getName(e: PsiElement): String {
             return when(e) {
-                is ParadoxScriptString -> e.text.unquote()
-                is ParadoxScriptValue -> e.value
+                is ParadoxScriptValue -> e.name
                 else -> ""
             }
         }
