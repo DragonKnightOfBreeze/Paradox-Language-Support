@@ -4,21 +4,35 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import icu.windea.pls.core.psi.ParadoxParameterizedElement;
+import icu.windea.pls.core.psi.ParadoxParameter;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.core.references.ParadoxParameterPsiReference;
+import javax.swing.Icon;
 
-public interface ParadoxScriptScriptedVariableName extends ParadoxParameterizedElement {
+public interface ParadoxScriptValueParameter extends ParadoxParameter {
 
   @NotNull
-  List<ParadoxScriptKeyParameter> getKeyParameterList();
+  Icon getIcon(@IconFlags int flags);
 
-  @NotNull
+  @Nullable
   String getName();
 
   @NotNull
+  ParadoxScriptValueParameter setName(@NotNull String name);
+
+  @Nullable
   String getValue();
+
+  int getTextOffset();
+
+  @Nullable
+  String getDefaultValue();
+
+  @Nullable
+  ParadoxParameterPsiReference getReference();
 
   @NotNull
   ItemPresentation getPresentation();

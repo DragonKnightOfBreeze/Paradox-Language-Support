@@ -641,6 +641,22 @@ public class ParadoxScriptLexer implements FlexLexer {
 		parameterPosition = ParameterPosition.NONE;
     }
 	
+	private IElementType getParameterToken() {
+		if(parameterPosition == ParameterPosition.SCRIPTED_VARIABLE_NAME) {
+            return KEY_PARAMETER_TOKEN;
+        } else if(parameterPosition == ParameterPosition.SCRIPTED_VARIABLE_REFERENCE_NAME) {
+            return VALUE_PARAMETER_TOKEN;
+        } else if(parameterPosition == ParameterPosition.KEY){
+            return KEY_PARAMETER_TOKEN;
+        } else if(parameterPosition == ParameterPosition.STRING){
+            return VALUE_PARAMETER_TOKEN;
+        } else if(parameterPosition == ParameterPosition.INLINE_MATH) {
+            return INLINE_MATH_PARAMETER_TOKEN;
+        } else {
+            return VALUE_PARAMETER_TOKEN; //unexpected
+        }
+	}
+	
     private void pushbackUntilBeforeBlank(int from){
         //回退到末尾可能出现的空白之前
         int length = yylength();
@@ -1100,7 +1116,7 @@ public class ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 104: break;
           case 35:
-            { return PARAMETER_TOKEN;
+            { return getParameterToken();
             }
           // fall through
           case 105: break;

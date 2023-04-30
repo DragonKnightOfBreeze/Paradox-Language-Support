@@ -8,24 +8,23 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.core.expression.ParadoxDataType;
-import icu.windea.pls.core.references.ParadoxScriptedVariablePsiReference;
+import icu.windea.pls.core.references.ParadoxParameterPsiReference;
 import javax.swing.Icon;
 
-public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptValueImpl implements ParadoxScriptScriptedVariableReference {
+public class ParadoxScriptKeyParameterImpl extends ASTWrapperPsiElement implements ParadoxScriptKeyParameter {
 
-  public ParadoxScriptScriptedVariableReferenceImpl(@NotNull ASTNode node) {
+  public ParadoxScriptKeyParameterImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitScriptedVariableReference(this);
+    visitor.visitKeyParameter(this);
   }
 
   @Override
@@ -36,50 +35,43 @@ public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptVal
 
   @Override
   @NotNull
-  public List<ParadoxScriptValueParameter> getValueParameterList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValueParameter.class);
-  }
-
-  @Override
-  @NotNull
   public Icon getIcon(@IconFlags int flags) {
     return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  @NotNull
+  @Nullable
   public String getName() {
     return ParadoxScriptPsiImplUtil.getName(this);
   }
 
   @Override
   @NotNull
-  public ParadoxScriptScriptedVariableReference setName(@NotNull String name) {
+  public ParadoxScriptKeyParameter setName(@NotNull String name) {
     return ParadoxScriptPsiImplUtil.setName(this, name);
   }
 
   @Override
-  @NotNull
+  @Nullable
   public String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
   }
 
   @Override
+  public int getTextOffset() {
+    return ParadoxScriptPsiImplUtil.getTextOffset(this);
+  }
+
+  @Override
   @Nullable
-  public ParadoxScriptedVariablePsiReference getReference() {
+  public String getDefaultValue() {
+    return ParadoxScriptPsiImplUtil.getDefaultValue(this);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxParameterPsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
-  }
-
-  @Override
-  @NotNull
-  public ParadoxDataType getType() {
-    return ParadoxScriptPsiImplUtil.getType(this);
-  }
-
-  @Override
-  @NotNull
-  public String getExpression() {
-    return ParadoxScriptPsiImplUtil.getExpression(this);
   }
 
   @Override

@@ -148,47 +148,6 @@ object ParadoxScriptPsiImplUtil {
     }
     //endregion
     
-    //region ParadoxScriptParameter
-    @JvmStatic
-    fun getIcon(element: ParadoxScriptParameter, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Parameter
-    }
-    
-    @JvmStatic
-    fun getName(element: ParadoxScriptParameter): String? {
-        return element.idElement?.text
-    }
-    
-    @JvmStatic
-    fun setName(element: ParadoxScriptParameter, name: String): ParadoxScriptParameter {
-        val nameElement = element.idElement ?: throw IncorrectOperationException()
-        val newNameElement = ParadoxScriptElementFactory.createParameter(element.project, name).idElement!!
-        nameElement.replace(newNameElement)
-        return element
-    }
-    
-    @JvmStatic
-    fun getValue(element: ParadoxScriptParameter): String? {
-        return element.name
-    }
-    
-    @JvmStatic
-    fun getTextOffset(element: ParadoxScriptParameter): Int {
-        return element.node.startOffset + 1
-    }
-    
-    @JvmStatic
-    fun getDefaultValue(element: ParadoxScriptParameter): String? {
-        return element.defaultValueToken?.text
-    }
-    
-    @JvmStatic
-    fun getReference(element: ParadoxScriptParameter): ParadoxParameterPsiReference? {
-        val nameElement = element.idElement ?: return null
-        return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
-    }
-    //endregion
-    
     //region ParadoxScriptProperty
     @JvmStatic
     fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
@@ -766,6 +725,88 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getExpression(element: ParadoxScriptInlineMathScriptedVariableReference): String {
         return element.text
+    }
+    //endregion
+    
+    //region ParadoxScriptKeyParameter
+    @JvmStatic
+    fun getIcon(element: ParadoxScriptKeyParameter, @Iconable.IconFlags flags: Int): Icon {
+        return PlsIcons.Parameter
+    }
+    
+    @JvmStatic
+    fun getName(element: ParadoxScriptKeyParameter): String? {
+        return element.idElement?.text
+    }
+    
+    @JvmStatic
+    fun setName(element: ParadoxScriptKeyParameter, name: String): ParadoxScriptKeyParameter {
+        val nameElement = element.idElement ?: throw IncorrectOperationException()
+        val newNameElement = ParadoxScriptElementFactory.createKeyParameter(element.project, name).idElement!!
+        nameElement.replace(newNameElement)
+        return element
+    }
+    
+    @JvmStatic
+    fun getValue(element: ParadoxScriptKeyParameter): String? {
+        return element.name
+    }
+    
+    @JvmStatic
+    fun getTextOffset(element: ParadoxScriptKeyParameter): Int {
+        return element.node.startOffset + 1
+    }
+    
+    @JvmStatic
+    fun getDefaultValue(element: ParadoxScriptKeyParameter): String? {
+        return element.defaultValueToken?.text
+    }
+    
+    @JvmStatic
+    fun getReference(element: ParadoxScriptKeyParameter): ParadoxParameterPsiReference? {
+        val nameElement = element.idElement ?: return null
+        return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
+    }
+    //endregion
+    
+    //region ParadoxScriptValueParameter
+    @JvmStatic
+    fun getIcon(element: ParadoxScriptValueParameter, @Iconable.IconFlags flags: Int): Icon {
+        return PlsIcons.Parameter
+    }
+    
+    @JvmStatic
+    fun getName(element: ParadoxScriptValueParameter): String? {
+        return element.idElement?.text
+    }
+    
+    @JvmStatic
+    fun setName(element: ParadoxScriptValueParameter, name: String): ParadoxScriptValueParameter {
+        val nameElement = element.idElement ?: throw IncorrectOperationException()
+        val newNameElement = ParadoxScriptElementFactory.createKeyParameter(element.project, name).idElement!!
+        nameElement.replace(newNameElement)
+        return element
+    }
+    
+    @JvmStatic
+    fun getValue(element: ParadoxScriptValueParameter): String? {
+        return element.name
+    }
+    
+    @JvmStatic
+    fun getTextOffset(element: ParadoxScriptValueParameter): Int {
+        return element.node.startOffset + 1
+    }
+    
+    @JvmStatic
+    fun getDefaultValue(element: ParadoxScriptValueParameter): String? {
+        return element.defaultValueToken?.text
+    }
+    
+    @JvmStatic
+    fun getReference(element: ParadoxScriptValueParameter): ParadoxParameterPsiReference? {
+        val nameElement = element.idElement ?: return null
+        return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
     }
     //endregion
     

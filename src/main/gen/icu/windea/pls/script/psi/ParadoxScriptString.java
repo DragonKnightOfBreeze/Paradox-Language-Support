@@ -17,7 +17,7 @@ import javax.swing.Icon;
 public interface ParadoxScriptString extends ParadoxScriptValue, PsiLiteralValue, ParadoxScriptStringExpressionElement, ParadoxParameterizedElement {
 
   @NotNull
-  List<ParadoxScriptParameter> getParameterList();
+  List<ParadoxScriptValueParameter> getValueParameterList();
 
   @NotNull
   Icon getIcon(@IconFlags int flags);

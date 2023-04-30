@@ -85,6 +85,22 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 		parameterPosition = ParameterPosition.NONE;
     }
 	
+	private IElementType getParameterToken() {
+		if(parameterPosition == ParameterPosition.SCRIPTED_VARIABLE_NAME) {
+            return KEY_PARAMETER_TOKEN;
+        } else if(parameterPosition == ParameterPosition.SCRIPTED_VARIABLE_REFERENCE_NAME) {
+            return VALUE_PARAMETER_TOKEN;
+        } else if(parameterPosition == ParameterPosition.KEY){
+            return KEY_PARAMETER_TOKEN;
+        } else if(parameterPosition == ParameterPosition.STRING){
+            return VALUE_PARAMETER_TOKEN;
+        } else if(parameterPosition == ParameterPosition.INLINE_MATH) {
+            return INLINE_MATH_PARAMETER_TOKEN;
+        } else {
+            return VALUE_PARAMETER_TOKEN; //unexpected
+        }
+	}
+	
     private void pushbackUntilBeforeBlank(int from){
         //回退到末尾可能出现的空白之前
         int length = yylength();
@@ -406,7 +422,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   "|" {yybegin(WAITING_PARAMETER_DEFAULT_VALUE); return PIPE;}
   "$" {beginNextStateForParameter(); return PARAMETER_END;}
-  {PARAMETER_TOKEN} {return PARAMETER_TOKEN;}
+  {PARAMETER_TOKEN} { return getParameterToken(); }
 }
 <WAITING_PARAMETER_DEFAULT_VALUE>{
   {BLANK} {return WHITE_SPACE;}
@@ -475,7 +491,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "!" {return NOT_SIGN;}
   "]" {inParameterCondition=true; yybegin(WAITING_PARAMETER_CONDITION); return NESTED_RIGHT_BRACKET;}
-  {PARAMETER_TOKEN} {return ARGUMENT_ID;}
+  {PARAMETER_TOKEN} { return ARGUMENT_ID; }
 }
 
 <WAITING_INLINE_MATH>{

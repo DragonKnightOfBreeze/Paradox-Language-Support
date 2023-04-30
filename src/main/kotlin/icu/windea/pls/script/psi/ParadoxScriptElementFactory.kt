@@ -58,22 +58,6 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
-	fun createInlineMath(project: Project, expression: String): ParadoxScriptInlineMath {
-		return createValue(project, "@[$expression]").cast()
-	}
-	
-	@JvmStatic
-	fun createInlineMathVariableReference(project: Project, name: String): ParadoxScriptInlineMathScriptedVariableReference {
-		return createInlineMath(project, name).findChild()!!
-	}
-	
-	@JvmStatic
-	fun createParameter(project: Project, name: String): ParadoxScriptParameter {
-		val text = "$$name$"
-		return createRootBlock(project, text).findChild<ParadoxScriptString>()!!.findChild()!!
-	}
-	
-	@JvmStatic
 	fun createParameterCondition(project: Project, expression: String, itemsText: String): ParadoxScriptParameterCondition {
 		val text = "a = { [[$expression] $itemsText ] }"
 		return createRootBlock(project, text)
@@ -87,6 +71,26 @@ object ParadoxScriptElementFactory {
 		return createParameterCondition(project, name, "a")
 			.findChild<ParadoxScriptParameterConditionExpression>()!!
 			.findChild()!!
+	}
+	
+	@JvmStatic
+	fun createInlineMath(project: Project, expression: String): ParadoxScriptInlineMath {
+		return createValue(project, "@[$expression]").cast()
+	}
+	
+	@JvmStatic
+	fun createInlineMathVariableReference(project: Project, name: String): ParadoxScriptInlineMathScriptedVariableReference {
+		return createInlineMath(project, name).findChild()!!
+	}
+	
+	@JvmStatic
+	fun createKeyParameter(project: Project, name: String): ParadoxScriptKeyParameter {
+		return createPropertyKey(project, "a\$$name\$").findChild()!!
+	}
+	
+	@JvmStatic
+	fun createValueParameter(project: Project, name: String): ParadoxScriptValueParameter {
+		return createValue(project, "a\$$name\$").findChild()!!
 	}
 	
 	@JvmStatic
