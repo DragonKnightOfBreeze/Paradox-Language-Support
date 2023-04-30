@@ -9,7 +9,7 @@ import icu.windea.pls.core.psi.*
 /**
  * （对于脚本文件）检查是否在不支持的地方使用了参数。
  */
-class UnsupportedParameterInspection: LocalInspectionTool() {
+class UnsupportedParameterUsageInspection: LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -17,10 +17,11 @@ class UnsupportedParameterInspection: LocalInspectionTool() {
                 if(element is ParadoxParameter || element is ParadoxArgument) {
                     val resolved = element.reference?.resolve()
                     if(resolved == null) {
-                        holder.registerProblem(element, PlsBundle.message("inspection.script.bug.unsupportedParameter.description"))
+                        holder.registerProblem(element, PlsBundle.message("inspection.script.bug.unsupportedParameterUsage.description.1"))
                     }
                 }
             }
         }
     }
 }
+
