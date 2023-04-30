@@ -264,6 +264,7 @@ QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
   //出于语法兼容性考虑，这里允许内联数学表达式
   "@["|"@\\[" { yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
   "@" {yybegin(WAITING_SCRIPTED_VARIABLE); return AT;}
+  "[" {inParameterCondition=true; yybegin(WAITING_PARAMETER_CONDITION); return LEFT_BRACKET;}
   {CHECK_PROPERTY_KEY} {
  	  if(yycharat(0) == '"'){
 		  pushbackUntilBeforeBlank(1);
