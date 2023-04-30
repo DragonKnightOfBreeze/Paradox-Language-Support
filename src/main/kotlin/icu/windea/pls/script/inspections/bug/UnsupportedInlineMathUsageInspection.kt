@@ -71,7 +71,7 @@ class UnsupportedInlineMathUsageInspection: LocalInspectionTool() {
     //        
     //        doBuildVisitor("scripted_trigger", PlsBundle.message("inspection.script.bug.unsupportedInlineMathUsage.description.2"))
     //            ?.let { return it }
-    //        doBuildVisitor("scripted_effect", PlsBundle.message("inspection.script.bug.unsupportedInlineMathUsage.description.2"))
+    //        doBuildVisitor("scripted_effect", PlsBundle.message("inspection.script.bug.unsupportedInlineMathUsage.description.3"))
     //            ?.let { return it }
     //    }
     //}
