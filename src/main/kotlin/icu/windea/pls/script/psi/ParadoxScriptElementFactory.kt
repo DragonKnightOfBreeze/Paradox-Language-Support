@@ -21,13 +21,13 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
-	fun createVariable(project: Project, name: String, value: String): ParadoxScriptScriptedVariable {
+	fun createScriptedVariable(project: Project, name: String, value: String): ParadoxScriptScriptedVariable {
 		return createRootBlock(project, "@$name=$value").findChild()!!
 	}
 	
 	@JvmStatic
-	fun createVariableName(project: Project, name: String): ParadoxScriptScriptedVariableName {
-		return createVariable(project, name, "0").findChild()!!
+	fun createScriptedVariableName(project: Project, name: String): ParadoxScriptScriptedVariableName {
+		return createScriptedVariable(project, name, "0").findChild()!!
 	}
 	
 	@JvmStatic

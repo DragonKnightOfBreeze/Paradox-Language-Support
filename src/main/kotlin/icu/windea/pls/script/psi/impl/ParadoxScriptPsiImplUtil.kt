@@ -86,7 +86,7 @@ object ParadoxScriptPsiImplUtil {
     fun setName(element: ParadoxScriptScriptedVariable, name: String): ParadoxScriptScriptedVariable {
         // 不包含作为前缀的"@"
         val nameElement = element.scriptedVariableName.idElement ?: throw IncorrectOperationException()
-        val newNameElement = ParadoxScriptElementFactory.createVariableName(element.project, name).idElement!!
+        val newNameElement = ParadoxScriptElementFactory.createScriptedVariableName(element.project, name).idElement!!
         nameElement.replace(newNameElement)
         return element
     }
