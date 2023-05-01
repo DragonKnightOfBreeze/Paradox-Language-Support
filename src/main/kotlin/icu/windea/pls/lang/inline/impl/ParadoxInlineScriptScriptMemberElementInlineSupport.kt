@@ -1,9 +1,10 @@
-package icu.windea.pls.lang.inline
+package icu.windea.pls.lang.inline.impl
 
 import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.ParadoxInlineScriptHandler.getInlineScriptExpression
+import icu.windea.pls.lang.inline.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import java.util.*

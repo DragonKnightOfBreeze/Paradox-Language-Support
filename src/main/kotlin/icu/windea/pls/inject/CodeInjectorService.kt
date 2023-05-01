@@ -77,7 +77,7 @@ class CodeInjectorService : UserDataHolderBase() {
         val injectTargetName = injectTarget.value
         val injectPluginId = injectTarget.pluginId
         val injectMethods = mutableMapOf<String, Method>()
-        val injectMethodInfos = mutableMapOf<String, InjectMethodInfo>()
+        val injectMethodInfos = mutableMapOf<String, CodeInjectorInfo.MethodInfo>()
         val functions = codeInjector::class.declaredFunctions
         for(function in functions) {
             val inject = function.findAnnotation<Inject>() ?: continue
@@ -85,7 +85,7 @@ class CodeInjectorService : UserDataHolderBase() {
             val uuid = UUID.randomUUID().toString()
             injectMethods.put(uuid, method)
             val hasReceiver = function.extensionReceiverParameter != null
-            val injectMethodInfo = InjectMethodInfo(inject.pointer, hasReceiver)
+            val injectMethodInfo = CodeInjectorInfo.MethodInfo(inject.pointer, hasReceiver)
             injectMethodInfos.put(uuid, injectMethodInfo)
         }
         if(injectMethods.isEmpty()) {

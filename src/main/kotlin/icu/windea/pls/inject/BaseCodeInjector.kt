@@ -1,9 +1,8 @@
-package icu.windea.pls.inject.injectors
+package icu.windea.pls.inject
 
 import com.intellij.ide.plugins.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.extensions.*
-import icu.windea.pls.inject.*
 import javassist.*
 import javassist.Modifier
 import java.lang.reflect.*
@@ -39,12 +38,22 @@ abstract class BaseCodeInjector : CodeInjector() {
                 targetClass.addField(CtField.make(f2, targetClass))
                 addFields = false
             }
-                
+            
             val targetArg = if(Modifier.isStatic(targetMethod.modifiers)) "null" else "$0"
-            val returnValueArg = if(injectMethodInfo.pointer == Inject.Pointer.AFTER || injectMethodInfo.pointer == Inject.Pointer.AFTER_FINALLY) "\$_" else  "null"
+            val returnValueArg = if(injectMethodInfo.pointer == Inject.Pointer.AFTER || injectMethodInfo.pointer == Inject.Pointer.AFTER_FINALLY) "\$_" else "null"
             
             val args = "new Object[] { \"$id\", \"$methodId\", \$args, (\$w) $targetArg, (\$w) $returnValueArg }"
-            val code = "return (\$r) __invokeInjectMethodMethod__.invoke(__codeInjectorService__, $args);"
+            val expr = "(\$r) __invokeInjectMethodMethod__.invoke(__codeInjectorService__, $args)"
+            val code = if(injectMethodInfo.pointer != Inject.Pointer.BEFORE) "return $expr;" else """
+            {
+                try {
+                    return $expr;
+                } catch(InvocationTargetException __e__) {
+                    if(!__e__.getCause().getClass().getName().equals("icu.windea.pls.inject.ContinueInvocationException")) throw __e__;
+                }
+            }
+            """.trimIndent()
+            
             when(injectMethodInfo.pointer) {
                 Inject.Pointer.BODY -> targetMethod.setBody(code)
                 Inject.Pointer.BEFORE -> targetMethod.insertBefore(code)

@@ -273,6 +273,7 @@ inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERE
 //parameter rules
 
 //这里需要通过代码注入进行特殊处理（parameter之前是空白的话，中断解析）
+//icu.windea.pls.inject.injectors.ParadoxScriptParserInjector.parameter
 parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE parameter_value] PARAMETER_END {
   pin=1
   recoverWhile="#auto"

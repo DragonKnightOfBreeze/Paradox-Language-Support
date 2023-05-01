@@ -7,5 +7,10 @@ data class CodeInjectorInfo(
     val injectTargetName: String,
     val injectPluginId: String,
     val injectMethods: Map<String, Method>,
-    val injectMethodInfos: Map<String, InjectMethodInfo>
-)
+    val injectMethodInfos: Map<String, MethodInfo>
+) {
+    data class MethodInfo(
+        val pointer: Inject.Pointer,
+        val hasReceiver: Boolean
+    )
+}
