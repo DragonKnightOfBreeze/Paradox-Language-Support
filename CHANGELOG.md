@@ -57,7 +57,6 @@
   * [ ] 对任何带有作用域上下文的声明或引用（包括CWT规则的引用），统一提示作用域上下文
   * [ ] 参照Irony Mod Manager的实现，实现扩展点以在查询时，如果有必要，按照覆盖顺序排序封装变量/定义/本地化
 * 添加代码检查，基于下列规则检查脚本文件中是否存在可能的BUG
-  * 归类为：`UnsupportedOperationInspection` 
   * scripted_trigger/scripted_effect不能递归调用
   * scripted_trigger/scripted_effect的调用层数最大只能有5层
   * 内联数学表达式（inline_math）在每个scripted_trigger/scripted_effect中最多只能使用1次
