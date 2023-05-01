@@ -9,7 +9,6 @@
   </extensions>
   
   <extensions defaultExtensionNs="icu.windea.pls">
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptParserInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.LowLevelSearchUtilCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.IfsUtilCodeInjector"/>

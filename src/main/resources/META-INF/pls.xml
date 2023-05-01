@@ -45,7 +45,7 @@
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptConstantExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptTemplateExpressionSupport"/>
     
-    <scriptMemberElementInlineSupport implementation="icu.windea.pls.lang.inline.ParadoxInlineScriptScriptMemberElementInlineSupport"/>
+    <scriptMemberElementInlineSupport implementation="icu.windea.pls.lang.inline.impl.ParadoxInlineScriptScriptMemberElementInlineSupport"/>
     
     <colorSupport implementation="icu.windea.pls.lang.color.impl.ParadoxScriptColorColorSupport"/>
     <colorSupport implementation="icu.windea.pls.lang.color.impl.ParadoxScriptBlockColorSupport"/>

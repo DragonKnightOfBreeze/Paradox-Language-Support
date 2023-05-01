@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
-import icu.windea.pls.core.psi.ParadoxParameterizedElement;
+import icu.windea.pls.core.psi.ParadoxParameterAwareElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
@@ -14,7 +14,7 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.expression.ParadoxDataType;
 import javax.swing.Icon;
 
-public interface ParadoxScriptPropertyKey extends PsiLiteralValue, ParadoxScriptStringExpressionElement, ParadoxParameterizedElement {
+public interface ParadoxScriptPropertyKey extends PsiLiteralValue, ParadoxScriptStringExpressionElement, ParadoxParameterAwareElement {
 
   @NotNull
   List<ParadoxScriptParameter> getParameterList();

@@ -49,7 +49,7 @@ abstract class BaseCodeInjector : CodeInjector() {
                 try {
                     return $expr;
                 } catch(InvocationTargetException __e__) {
-                    if(!__e__.getCause().getClass().getName().equals("icu.windea.pls.inject.ContinueInvocationException")) throw __e__;
+                    if(!__e__.getCause().getCause().getClass().getName().equals("icu.windea.pls.inject.ContinueInvocationException")) throw __e__;
                 }
             }
             """.trimIndent()
@@ -79,5 +79,13 @@ abstract class BaseCodeInjector : CodeInjector() {
             .filter { it.parameterTypes.size <= method.parameterCount }.also { if(it.size == 1) return it[0] }
             .filter { it.parameterTypes.withIndex().all { (i, p) -> p.name == method.parameters[i].name } }.also { if(it.size == 1) return it[0] }
             .firstOrNull()
+    }
+    
+    companion object {
+        private val CONTINUE_INVOCATION = ContinueInvocationException()
+    }
+    
+    protected fun continueInvocation(): Nothing {
+        throw CONTINUE_INVOCATION
     }
 }
