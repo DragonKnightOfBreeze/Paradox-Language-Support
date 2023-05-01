@@ -70,14 +70,14 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // COMMENT | property | block_value | parameter_condition | scripted_variable
+  // COMMENT | block_value | property | parameter_condition | scripted_variable
   static boolean block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block_item")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
     r = consumeToken(b, COMMENT);
-    if (!r) r = property(b, l + 1);
     if (!r) r = block_value(b, l + 1);
+    if (!r) r = property(b, l + 1);
     if (!r) r = parameter_condition(b, l + 1);
     if (!r) r = scripted_variable(b, l + 1);
     exit_section_(b, l, m, r, false, block_item_auto_recover_);
@@ -506,14 +506,14 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // COMMENT | property | value
+  // COMMENT | parameter_condition_value | property
   static boolean parameter_condition_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_condition_item")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMENT);
+    if (!r) r = parameter_condition_value(b, l + 1);
     if (!r) r = property(b, l + 1);
-    if (!r) r = value(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -527,6 +527,24 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, ARGUMENT_TOKEN);
     exit_section_(b, m, PARAMETER_CONDITION_PARAMETER, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // scripted_variable_reference | boolean | int | float | string | color | block | inline_math
+  static boolean parameter_condition_value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_condition_value")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = scripted_variable_reference(b, l + 1);
+    if (!r) r = boolean_$(b, l + 1);
+    if (!r) r = int_$(b, l + 1);
+    if (!r) r = float_$(b, l + 1);
+    if (!r) r = string(b, l + 1);
+    if (!r) r = color(b, l + 1);
+    if (!r) r = block(b, l + 1);
+    if (!r) r = inline_math(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 

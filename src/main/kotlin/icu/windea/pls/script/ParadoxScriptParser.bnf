@@ -172,7 +172,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
     getReference getReferences
   ]
 }
-private block_item ::= COMMENT | property | block_value | parameter_condition | scripted_variable {
+private block_item ::= COMMENT | block_value | property | parameter_condition | scripted_variable {
   recoverWhile="#auto"
 }
 private block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
@@ -207,7 +207,8 @@ parameter_condition_parameter ::= ARGUMENT_TOKEN {
   implements="icu.windea.pls.core.psi.ParadoxArgument"
   methods=[getIcon getName setName getValue getTextOffset getReference]
 }
-private parameter_condition_item ::= COMMENT | property | value
+private parameter_condition_item ::= COMMENT | parameter_condition_value | property
+private parameter_condition_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
 // inline math rules
 
@@ -279,6 +280,10 @@ parameter ::= PARAMETER_START <<doParameter>> PARAMETER_TOKEN [PIPE parameter_va
   ]
   methods=[getIcon getName setName getValue getTextOffset getDefaultValue getReference]
 }
+private parameter_value ::= BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
+
+//这里需要特殊处理解析逻辑
+//icu.windea.pls.script.psi.ParadoxScriptParserUtil.doInlineMathParameter
 inline_math_parameter ::= PARAMETER_START <<doInlineMathParameter>>  PARAMETER_TOKEN [PIPE inline_math_parameter_value] PARAMETER_END {
   extends=inline_math_factor
   pin=2
@@ -286,6 +291,4 @@ inline_math_parameter ::= PARAMETER_START <<doInlineMathParameter>>  PARAMETER_T
   implements="icu.windea.pls.core.psi.ParadoxParameter"
   methods=[getIcon getName setName getValue getTextOffset getDefaultValue getReference]
 }
-
-private parameter_value ::= BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
 private inline_math_parameter_value ::= INT_TOKEN | FLOAT_TOKEN
