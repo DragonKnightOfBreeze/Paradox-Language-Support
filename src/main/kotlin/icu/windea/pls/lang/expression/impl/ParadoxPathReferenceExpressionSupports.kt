@@ -1,10 +1,10 @@
-package icu.windea.pls.lang.expression
+package icu.windea.pls.lang.expression.impl
 
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.search.*
+import icu.windea.pls.lang.expression.*
 
 /**
  * @see CwtDataType.Icon

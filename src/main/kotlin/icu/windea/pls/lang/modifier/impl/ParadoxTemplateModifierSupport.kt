@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.modifier
+package icu.windea.pls.lang.modifier.impl
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.progress.*
@@ -17,6 +17,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.script.psi.*
 
 /**

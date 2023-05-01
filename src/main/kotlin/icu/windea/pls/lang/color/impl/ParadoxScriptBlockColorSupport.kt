@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.color
+package icu.windea.pls.lang.color.impl
 
 import com.intellij.openapi.command.*
 import com.intellij.openapi.progress.*
@@ -8,6 +8,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.color.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
 

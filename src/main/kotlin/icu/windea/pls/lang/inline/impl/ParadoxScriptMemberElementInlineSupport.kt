@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inline
+package icu.windea.pls.lang.inline.impl
 
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.lang.model.*

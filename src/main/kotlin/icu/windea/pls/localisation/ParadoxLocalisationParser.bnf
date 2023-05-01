@@ -13,12 +13,12 @@
   elementTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypeFactory.getElementType"
   tokenTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypeFactory.getTokenType"
   psiImplUtilClass="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPsiImplUtil"
+  parserUtilClass="icu.windea.pls.localisation.psi.ParadoxLocalisationParserUtil"
   tokens=[
     COLON=":"
     AT="@"
     PIPE="|"
   ]
-  
   methods(".*")=[getPresentation getResolveScope getUseScope]
 }
 

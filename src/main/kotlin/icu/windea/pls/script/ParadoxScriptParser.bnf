@@ -1,4 +1,7 @@
 {
+  parserImports=[
+      "static com.intellij.lang.WhitespacesBinders.*"
+  ]
   parserClass="icu.windea.pls.script.psi.ParadoxScriptParser"
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
   psiClassPrefix="ParadoxScript"
@@ -11,7 +14,7 @@
   elementTypeFactory="icu.windea.pls.script.psi.ParadoxScriptElementTypeFactory.getElementType"
   tokenTypeFactory="icu.windea.pls.script.psi.ParadoxScriptElementTypeFactory.getTokenType"
   psiImplUtilClass="icu.windea.pls.script.psi.impl.ParadoxScriptPsiImplUtil"
-  
+  parserUtilClass="icu.windea.pls.script.psi.ParadoxScriptParserUtil"
   methods(".*")=[getPresentation getResolveScope getUseScope]
 }
 
@@ -268,6 +271,8 @@ inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERE
 }
 
 //parameter rules
+
+//这里需要通过代码注入进行特殊处理（parameter之前是空白的话，中断解析）
 parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE parameter_value] PARAMETER_END {
   pin=1
   recoverWhile="#auto"
@@ -276,11 +281,12 @@ parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE parameter_value] PARAMETER_E
   ]
   methods=[getIcon getName setName getValue getTextOffset getDefaultValue getReference]
 }
-private parameter_value ::= BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
 inline_math_parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE inline_math_parameter_value] PARAMETER_END {
   extends=inline_math_factor
   pin=1
   implements="icu.windea.pls.core.psi.ParadoxParameter"
   methods=[getIcon getName setName getValue getTextOffset getDefaultValue getReference]
 }
+
+private parameter_value ::= BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
 private inline_math_parameter_value ::= INT_TOKEN | FLOAT_TOKEN

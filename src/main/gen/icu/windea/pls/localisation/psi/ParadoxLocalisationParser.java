@@ -4,7 +4,7 @@ package icu.windea.pls.localisation.psi;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
+import static icu.windea.pls.localisation.psi.ParadoxLocalisationParserUtil.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.tree.TokenSet;

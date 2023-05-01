@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.scope
+package icu.windea.pls.lang.scope.impl
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
@@ -9,6 +9,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.lang.scope.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
 

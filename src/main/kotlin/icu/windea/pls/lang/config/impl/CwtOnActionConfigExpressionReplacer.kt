@@ -1,7 +1,8 @@
-package icu.windea.pls.lang.config
+package icu.windea.pls.lang.config.impl
 
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.lang.config.*
 
 /**
  * 替换on_action声明规则中的事件引用规则表达式。

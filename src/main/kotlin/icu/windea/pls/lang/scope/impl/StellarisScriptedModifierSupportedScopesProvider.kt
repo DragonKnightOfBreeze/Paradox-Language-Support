@@ -1,9 +1,10 @@
-package icu.windea.pls.lang.scope
+package icu.windea.pls.lang.scope.impl
 
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.lang.scope.*
 import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)

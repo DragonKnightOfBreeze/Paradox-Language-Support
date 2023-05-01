@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.parameter
+package icu.windea.pls.lang.parameter.impl
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.util.*
@@ -10,6 +10,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)

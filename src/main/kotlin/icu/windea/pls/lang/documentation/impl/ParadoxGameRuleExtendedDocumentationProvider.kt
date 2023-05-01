@@ -1,6 +1,7 @@
-package icu.windea.pls.lang.documentation
+package icu.windea.pls.lang.documentation.impl
 
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 

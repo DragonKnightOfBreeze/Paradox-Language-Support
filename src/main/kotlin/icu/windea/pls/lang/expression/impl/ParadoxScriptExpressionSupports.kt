@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.expression
+package icu.windea.pls.lang.expression.impl
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.highlighting.*
@@ -20,6 +20,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.script.highlighter.*
@@ -519,7 +520,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport()
         val aliasMap = configGroup.aliasGroups.get(aliasName) ?: return
         val aliasSubName = ParadoxConfigHandler.getAliasSubName(element, expression, false, aliasName, configGroup) ?: return
         val aliasConfig = aliasMap[aliasSubName]?.first() ?: return
-        ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expression, holder, aliasConfig)
+        INSTANCE.annotate(element, rangeInElement, expression, holder, aliasConfig)
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
