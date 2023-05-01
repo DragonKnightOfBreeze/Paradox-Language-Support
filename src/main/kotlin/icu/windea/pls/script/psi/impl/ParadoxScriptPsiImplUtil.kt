@@ -74,7 +74,7 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getName(element: ParadoxScriptScriptedVariable): String? {
+    fun getName(element: ParadoxScriptScriptedVariable): String {
         //注意：element.stub可能会导致ProcessCanceledException
         // 不包含作为前缀的"@"
         ProgressManager.checkCanceled()
@@ -828,14 +828,14 @@ object ParadoxScriptPsiImplUtil {
             
             private fun visitParadoxArgument(element: ParadoxArgument) {
                 ProgressManager.checkCanceled()
-                val name = element.name
+                val name = element.name ?: return
                 conditionalParameterNames.add(name)
                 //不需要继续向下遍历
             }
             
             private fun visitParadoxParameter(element: ParadoxParameter) {
                 ProgressManager.checkCanceled()
-                val name = element.name
+                val name = element.name ?: return
                 val info = result.getOrPut(name) { ParadoxParameterInfo(name) }
                 info.pointers.add(element.createPointer(file))
                 if(element.defaultValueToken != null) conditionalParameterNames.add(name)
