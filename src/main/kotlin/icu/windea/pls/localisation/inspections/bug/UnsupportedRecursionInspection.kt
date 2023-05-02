@@ -49,8 +49,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
             
             private fun doRecursiveVisit(element: ParadoxLocalisationProperty) {
                 ProgressManager.checkCanceled()
-                
-                val resolvedMap = mutableSetOf<String>()
+                val resolvedNames = mutableSetOf<String>()
                 element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
                     override fun visitElement(e: PsiElement) {
                         if(e is ParadoxLocalisationPropertyReference) visitPropertyReference(e)
@@ -60,11 +59,12 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                     private fun visitPropertyReference(e: ParadoxLocalisationPropertyReference) {
                         //对于相同的语言区域
                         ProgressManager.checkCanceled()
-                        if(resolvedMap.contains(e.name)) return //不需要重复解析引用
+                        val name = e.name
+                        if(resolvedNames.contains(name)) return //不需要重复解析引用
                         val resolved = e.reference?.resolve()
                         if(resolved !is ParadoxLocalisationProperty) return
                         val resolvedName = resolved.name
-                        resolvedMap.add(resolvedName)
+                        resolvedNames.add(resolvedName)
                         if(guardStack.contains(resolvedName)) throw RecursionException(e, resolved, resolvedName)
                         guardStack.addLast(resolvedName)
                         doRecursiveVisit(resolved)

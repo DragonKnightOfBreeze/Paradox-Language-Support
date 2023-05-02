@@ -7,6 +7,8 @@ import com.intellij.psi.*
  * @see ParadoxScriptString
  */
 interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement, ContributedReferenceHost {
+    override fun getName(): String
+    
     override val value: String
     
     override fun setValue(value: String): ParadoxScriptStringExpressionElement

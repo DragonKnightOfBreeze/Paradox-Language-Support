@@ -9,6 +9,8 @@ import icu.windea.pls.core.psi.*
  * @see ParadoxScriptValue
  */
 interface ParadoxScriptExpressionElement: ParadoxTypedElement, NavigatablePsiElement {
+	override fun getName(): String
+	
 	val value: String
 	
 	fun setValue(value: String): ParadoxScriptExpressionElement

@@ -55,6 +55,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
             
             private fun doRecursiveVisit(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
                 ProgressManager.checkCanceled()
+                val resolvedNames = mutableSetOf<String>()
                 element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
                     override fun visitElement(e: PsiElement) {
                         if(e is ParadoxScriptStringExpressionElement) visitStringExpressionElement(e)
@@ -64,7 +65,9 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                     private fun visitStringExpressionElement(e: ParadoxScriptStringExpressionElement) {
                         //为了优化性能，这里不直接解析引用
                         //认为scripted_trigger/scripted_effect不能在各种复杂表达式中使用，并且名字必须是合法的标识符
-                        if(!e.value.isExactIdentifier()) return
+                        val name = e.name
+                        if(!name.isExactIdentifier()) return
+                        if(resolvedNames.contains(name)) return //不需要重复解析引用
                         val isKey = e is ParadoxScriptPropertyKey
                         val configs = ParadoxConfigHandler.getConfigs(e, !isKey, isKey)
                         val config = configs.firstOrNull() ?: return
@@ -78,6 +81,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                         val resolvedInfo = resolved.definitionInfo ?: return
                         if(resolvedInfo.type != definitionInfo.type) return
                         val resolvedName = resolvedInfo.name
+                        resolvedNames.add(resolvedName)
                         if(guardStack.contains(resolvedName)) throw RecursionException(e, resolved, resolvedName)
                         guardStack.addLast(resolvedName)
                         doRecursiveVisit(resolved, definitionInfo)
