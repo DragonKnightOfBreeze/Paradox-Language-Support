@@ -70,7 +70,7 @@ class ParadoxLocalisationCommandScopePsiReference(
 	
 	override fun getAttributesKey(): TextAttributesKey? {
 		val element = element
-		val name = element.name
+		val name = rangeInElement.substring(element.text)
 		val gameType = selectGameType(element) ?: return null
 		val configGroup = getCwtConfig(project).get(gameType)
 		
