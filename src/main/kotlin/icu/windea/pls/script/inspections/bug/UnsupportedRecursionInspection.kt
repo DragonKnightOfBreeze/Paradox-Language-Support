@@ -62,11 +62,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                     }
                     
                     private fun visitStringExpressionElement(e: ParadoxScriptStringExpressionElement) {
-                        ProgressManager.checkCanceled()
-                        
                         //为了优化性能，这里不直接解析引用
                         //认为scripted_trigger/scripted_effect不能在各种复杂表达式中使用，并且名字必须是合法的标识符
-                        
                         if(!e.value.isExactIdentifier()) return
                         val isKey = e is ParadoxScriptPropertyKey
                         val configs = ParadoxConfigHandler.getConfigs(e, !isKey, isKey)

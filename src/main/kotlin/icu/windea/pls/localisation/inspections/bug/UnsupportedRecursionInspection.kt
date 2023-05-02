@@ -56,22 +56,15 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                     }
                     
                     private fun visitPropertyReference(e: ParadoxLocalisationPropertyReference) {
+                        //对于相同的语言区域
                         ProgressManager.checkCanceled()
-                        
-                        //对于所有语言区域
-                        
-                        val resolveResults = e.reference?.multiResolve(false)
-                        if(resolveResults.isNullOrEmpty()) return
-                        resolveResults.forEach { resolveResult -> 
-                            ProgressManager.checkCanceled()
-                            val resolved = resolveResult.element
-                            if(resolved !is ParadoxLocalisationProperty) return@forEach
-                            val resolvedName = resolved.name
-                            if(guardStack.contains(resolvedName)) throw RecursionException(e, resolved, resolvedName)
-                            guardStack.add(resolvedName)
-                            doRecursiveVisit(resolved, guardStack)
-                            guardStack.removeLast()
-                        }
+                        val resolved = e.reference?.resolve()
+                        if(resolved !is ParadoxLocalisationProperty) return
+                        val resolvedName = resolved.name
+                        if(guardStack.contains(resolvedName)) throw RecursionException(e, resolved, resolvedName)
+                        guardStack.add(resolvedName)
+                        doRecursiveVisit(resolved, guardStack)
+                        guardStack.removeLast()
                     }
                 })
             }
