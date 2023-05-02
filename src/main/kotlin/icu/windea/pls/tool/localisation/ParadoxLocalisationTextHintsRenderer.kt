@@ -100,11 +100,14 @@ object ParadoxLocalisationTextHintsRenderer {
                     //infinite recursion, do not render context
                     truncatedSmallText(element.text, context)
                 } else {
-                    val presentations: MutableList<InlayPresentation> = SmartList()
                     context.guardStack.addLast(resolvedName)
+                    val oldBuilder = context.builder
+                    context.builder = SmartList()
                     renderTo(resolved , context)
                     context.guardStack.removeLast()
-                    presentations.mergePresentation()
+                    val newBuilder = context.builder
+                    context.builder = oldBuilder
+                    newBuilder.mergePresentation()
                 }
             }
             resolved is CwtProperty -> {
@@ -162,7 +165,7 @@ object ParadoxLocalisationTextHintsRenderer {
         if(richTextList.isEmpty()) return true
         val colorConfig = element.colorConfig
         val textAttributesKey = if(colorConfig != null) ParadoxLocalisationAttributesKeys.getColorOnlyKey(colorConfig.color) else null
-        val builder = context.builder
+        val oldBuilder = context.builder
         context.builder = SmartList()
         var continueProcess = true
         for(richText in richTextList) {
@@ -173,9 +176,10 @@ object ParadoxLocalisationTextHintsRenderer {
                 break
             }
         }
-        val presentation = context.builder.mergePresentation() ?: return true
+        val newBuilder = context.builder
+        context.builder = oldBuilder
+        val presentation = newBuilder.mergePresentation() ?: return true
         val finalPresentation = if(textAttributesKey != null) WithAttributesPresentation(presentation, textAttributesKey, context.editor) else presentation
-        context.builder = builder
         context.builder.add(finalPresentation)
         return continueProcess
     }

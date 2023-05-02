@@ -86,6 +86,9 @@ object ParadoxValueSetValueIndex {
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if(element is ParadoxScriptStringExpressionElement) {
+                    if(element.name.orEmpty().contains("landgrab_planet")) {
+                        println()
+                    }
                     ParadoxValueSetValueHandler.getInfo(element)?.let { data.valueSetValueList.add(it) }
                 }
                 if(element.isExpressionOrMemberContext()) super.visitElement(element)
