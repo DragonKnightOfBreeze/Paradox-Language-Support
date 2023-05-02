@@ -54,6 +54,12 @@ IDEA插件：Paradox语言支持。
 * 如果IDE索引出现问题，或者发生了涉及IDE索引的报错，请尝试重建索引。
   （点击`File -> Invalidate Caches... -> Invalidate and Restart`）
 
+## FAQ
+
+Q：为什么推荐使用Intellij IDEA + 此插件，而不是VSCode + CWTools？
+
+A：因为IDEA强大而可爱，而我是它（她）的狂热粉丝！（双重意义上的）
+
 ## 参考
 
 参考手册：

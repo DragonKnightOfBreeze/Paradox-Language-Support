@@ -61,6 +61,12 @@ Tips:
 * If there is a problem with IDE's index or an error occurs involving IDE's index, please try to rebuild index.
   (Click `File -> Invalidate Caches... -> Invalidate and Restart`)
 
+## FAQ
+
+Q: Why is Intellij IDEA + this plugin, instead of VSCode + CWTools?
+
+A: Because IDEA is powerful and lovely, and I am its (her) fervent fan! (with a double meaning)
+
 ## Reference
 
 Reference manual:
