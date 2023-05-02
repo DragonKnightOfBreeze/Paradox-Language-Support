@@ -11,5 +11,5 @@ data class ParadoxValueSetValueInfo(
     override val gameType: ParadoxGameType
     //TODO 保存作用域信息
 ): ParadoxScriptExpressionInfo {
-    override var file: PsiFile? = null
+    @Volatile override var file: PsiFile? = null
 }

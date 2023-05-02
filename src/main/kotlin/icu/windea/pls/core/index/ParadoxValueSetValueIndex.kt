@@ -74,7 +74,7 @@ object ParadoxValueSetValueIndex {
     }
     
     private const val id = "paradox.valueSetValue.index"
-    private const val version = 4 //0.9.7
+    private const val version = 5 //0.9.15
     
     private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(id, version, valueExternalizer) builder@{ project, file ->
         ProgressManager.checkCanceled()
@@ -86,10 +86,7 @@ object ParadoxValueSetValueIndex {
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if(element is ParadoxScriptStringExpressionElement) {
-                    if(element.name.orEmpty().contains("landgrab_planet")) {
-                        println()
-                    }
-                    ParadoxValueSetValueHandler.getInfo(element)?.let { data.valueSetValueList.add(it) }
+                    ParadoxValueSetValueHandler.getInfos(element)?.let { data.valueSetValueList.addAll(it) }
                 }
                 if(element.isExpressionOrMemberContext()) super.visitElement(element)
             }

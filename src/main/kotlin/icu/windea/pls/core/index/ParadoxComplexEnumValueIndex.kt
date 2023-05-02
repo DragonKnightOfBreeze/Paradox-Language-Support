@@ -74,7 +74,7 @@ object ParadoxComplexEnumValueIndex {
     }
     
     private const val id = "paradox.complexEnumValue.index"
-    private const val version = 4 //0.9.7
+    private const val version = 5 //0.9.15
     
     private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(id, version, valueExternalizer) builder@{ project, file ->
         ProgressManager.checkCanceled()
