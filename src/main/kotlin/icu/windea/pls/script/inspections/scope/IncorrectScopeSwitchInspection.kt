@@ -48,7 +48,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                     holder.registerProblem(propertyKey, rangeInExpression, description)
                                 }
                             }
-                            //TODO 'event_target:xxx', not supported now
+                            //TODO 'event_target:xxx', not supported yet
                             is ParadoxScopeLinkFromDataExpressionNode -> {
                                 
                             }
