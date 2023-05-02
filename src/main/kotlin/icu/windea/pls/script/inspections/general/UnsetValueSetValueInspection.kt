@@ -10,6 +10,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.localisation.*
@@ -21,6 +22,7 @@ import icu.windea.pls.script.psi.*
  *
  * 例如，有`has_flag = xxx`但没有`set_flag = xxx`。
  */
+@SlowApi
 class UnsetValueSetValueInspection : LocalInspectionTool(){
     //may be slow for ReferencesSearch
     
@@ -56,7 +58,7 @@ class UnsetValueSetValueInspection : LocalInspectionTool(){
                     ProgressManager.checkCanceled()
                     if(resolved !is ParadoxValueSetValueElement) continue
                     if(resolved.readWriteAccess == Access.Read) {
-                        //当确定同一文件中某一名称的参数已被使用时，后续不需要再进行ReferencesSearch
+                        //当确定已被使用时，后续不需要再进行ReferencesSearch
                         val used = statusMap[resolved]
                         val isUsed = if(used == null) {
                             ProgressManager.checkCanceled()

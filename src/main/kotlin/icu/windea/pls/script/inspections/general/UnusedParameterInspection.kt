@@ -14,6 +14,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.search.scope.*
@@ -33,6 +34,7 @@ import javax.swing.*
  * @property forInvocationExpressions 是否对调用表达式进行检查。（`some_effect = {PARAM = some_value}`）
  * @property forScriptValueExpressions 是否对SV表达式进行检查。（`some_prop = value:some_sv|PARAM|value|`）
  */
+@SlowApi
 class UnusedParameterInspection : LocalInspectionTool() {
     @JvmField var forParameterConditionExpressions = true
     @JvmField var forInvocationExpressions = true
@@ -77,7 +79,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
                     ProgressManager.checkCanceled()
                     if(resolved !is ParadoxParameterElement) continue
                     if(resolved.readWriteAccess == Access.Write) {
-                        //当确定同一文件中某一名称的参数已被使用时，后续不需要再进行ReferencesSearch
+                        //当确定已被使用时，后续不需要再进行ReferencesSearch
                         val used = statusMap[resolved]
                         val isUsed = if(used == null) {
                             ProgressManager.checkCanceled()

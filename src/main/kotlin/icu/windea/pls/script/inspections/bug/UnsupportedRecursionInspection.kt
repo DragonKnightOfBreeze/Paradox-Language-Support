@@ -9,6 +9,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
@@ -17,6 +18,7 @@ import java.util.*
 /**
  * （对于脚本文件）检查是否存在不支持的递归。例如，递归调用scripted_trigger/scripted_effect。
  */
+@SlowApi
 class UnsupportedRecursionInspection : LocalInspectionTool() {
     //目前仅做检查即可，不需要显示递归的装订线图标
     //在定义声明级别进行此项检查
