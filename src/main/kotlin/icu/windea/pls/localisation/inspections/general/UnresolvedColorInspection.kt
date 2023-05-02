@@ -20,7 +20,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
             private fun visitColorfulText(element: ParadoxLocalisationColorfulText) {
                 val location = element.colorId ?: return
                 val reference = element.reference
-                if(reference == null || reference.canResolve()) return
+                if(reference == null || reference.resolve() != null) return
                 val name = element.name ?: return
                 holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unresolvedColor.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }

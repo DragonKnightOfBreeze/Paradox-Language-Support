@@ -88,8 +88,8 @@ fun PsiReference.canResolveScriptedVariable(): Boolean {
 fun PsiReference.canResolveDefinition(): Boolean {
     return when(this) {
         is ParadoxScriptExpressionPsiReference -> true
+        is ParadoxInTemplateExpressionReference -> true
         is ParadoxDataExpressionNode.Reference -> true
-        is ParadoxTemplateExpressionNode.Reference -> true
         is ParadoxLocalisationCommandFieldPsiReference -> true //<scripted_loc>
         else -> false
     }
@@ -117,9 +117,9 @@ fun PsiReference.canResolveParameter(): Boolean {
 fun PsiReference.canResolveValueSetValue(): Boolean {
     return when(this) {
         is ParadoxScriptExpressionPsiReference -> true
+        is ParadoxInTemplateExpressionReference -> true
         is ParadoxValueSetValueExpressionNode.Reference -> true
         is ParadoxDataExpressionNode.Reference -> true
-        is ParadoxTemplateExpressionNode.Reference -> true
         is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
         is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
         else -> false
@@ -129,8 +129,8 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
 fun PsiReference.canResolveComplexEnumValue(): Boolean {
     return when(this) {
         is ParadoxScriptExpressionPsiReference -> true
+        is ParadoxInTemplateExpressionReference -> true
         is ParadoxDataExpressionNode.Reference -> true
-        is ParadoxTemplateExpressionNode.Reference -> true
         is ParadoxComplexEnumValuePsiReference -> true
         else -> false
     }

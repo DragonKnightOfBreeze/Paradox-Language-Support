@@ -20,7 +20,7 @@ class UnresolvedCommandFieldInspection : LocalInspectionTool() {
             private fun visitCommandField(element: ParadoxLocalisationCommandField) {
                 val location = element
                 val reference = element.reference
-                if(reference == null || reference.canResolve()) return
+                if(reference == null || reference.resolve() != null) return
                 val name = element.name
                 holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unresolvedCommandField.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }

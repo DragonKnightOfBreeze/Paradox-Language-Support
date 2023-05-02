@@ -531,15 +531,7 @@ fun PsiFile.findAllElementsBetween(startOffset: Int, endOffset: Int, rootTransfo
 
 fun PsiReference.resolveFirst(): PsiElement? {
     return if(this is PsiPolyVariantReference) {
-        this.multiResolve(false).firstNotNullOfOrNull { it.element }
-    } else {
-        this.resolve()
-    }
-}
-
-fun PsiReference.resolveFast(): PsiElement? {
-    return if(this is PsiNodeReference) {
-        this.resolve(false)
+        this.resolve() ?: this.multiResolve(false).firstNotNullOfOrNull { it.element }
     } else {
         this.resolve()
     }

@@ -4,6 +4,7 @@ import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.resolve.*
 import icu.windea.pls.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
@@ -18,7 +19,7 @@ import icu.windea.pls.script.highlighter.*
 class ParadoxLocalisationCommandScopePsiReference(
 	element: ParadoxLocalisationCommandScope,
 	rangeInElement: TextRange
-) : PsiReferenceBase<ParadoxLocalisationCommandScope>(element, rangeInElement), PsiNodeReference {
+) : PsiReferenceBase<ParadoxLocalisationCommandScope>(element, rangeInElement), AttributesKeyAware {
 	val project by lazy { element.project }
 	
 	override fun handleElementRename(newElementName: String): PsiElement {
@@ -26,11 +27,13 @@ class ParadoxLocalisationCommandScopePsiReference(
 		return element.setName(newElementName)
 	}
 	
+	//缓存解析结果以优化性能
+	
 	override fun resolve(): PsiElement? {
-		return resolve(true)
+		return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
 	}
 	
-	override fun resolve(exact: Boolean): PsiElement? {
+	private fun doResolve(): PsiElement? {
 		val element = element
 		val name = element.name
 		val gameType = selectGameType(element) ?: return null
@@ -56,7 +59,7 @@ class ParadoxLocalisationCommandScopePsiReference(
 		return null
 	}
 	
-	override fun getTextAttributesKey(): TextAttributesKey? {
+	override fun getAttributesKey(): TextAttributesKey? {
 		val element = element
 		val name = element.name
 		val gameType = selectGameType(element) ?: return null
@@ -80,5 +83,11 @@ class ParadoxLocalisationCommandScopePsiReference(
 		if(globalEventTarget != null) return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
 		
 		return null
+	}
+	
+	private object Resolver: ResolveCache.AbstractResolver<ParadoxLocalisationCommandScopePsiReference, PsiElement> {
+		override fun resolve(ref: ParadoxLocalisationCommandScopePsiReference, incompleteCode: Boolean): PsiElement? {
+			return ref.doResolve()
+		}
 	}
 }

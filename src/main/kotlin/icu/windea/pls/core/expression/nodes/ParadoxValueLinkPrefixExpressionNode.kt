@@ -34,7 +34,7 @@ class ParadoxValueLinkPrefixExpressionNode (
 			throw IncorrectOperationException() //不允许重命名
 		}
 		
-		override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
+		override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
 			return linkConfigs.mapNotNull { it.pointer.element }.mapToArray { PsiElementResolveResult(it) }
 		}
 	}

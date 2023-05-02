@@ -3,13 +3,13 @@ package icu.windea.pls.core.expression.nodes
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.resolve.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.errors.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
@@ -31,7 +31,7 @@ class ParadoxScriptValueExpressionNode(
 		if(text.isEmpty()) return null
 		if(text.isParameterizedExpression()) return null
 		val reference = getReference(element)
-		if(reference == null || reference.canResolve()) return null
+		if(reference == null || reference.resolveFirst() != null) return null
 		return ParadoxUnresolvedScriptValueExpressionError(rangeInExpression, PlsBundle.message("script.expression.unresolvedScriptValue", text))
 	}
 	
@@ -53,22 +53,42 @@ class ParadoxScriptValueExpressionNode(
 		val name: String,
 		val config: CwtConfig<*>,
 		val configGroup: CwtConfigGroup
-	) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), PsiNodeReference {
+	) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+		val project = configGroup.project
+		
 		override fun handleElementRename(newElementName: String): PsiElement {
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
 		}
 		
+		//缓存解析结果以优化性能
+		
 		override fun resolve(): PsiElement? {
-			return resolve(true)
+			return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
 		}
 		
-		override fun resolve(exact: Boolean): PsiElement? {
-			return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, configGroup, exact = exact)
+		private fun doResolve(): PsiElement? {
+			return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, configGroup)
 		}
 		
-		override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
+		override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+			return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
+		}
+		
+		private fun doMultiResolve(): Array<out ResolveResult> {
 			return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, configGroup)
 				.mapToArray { PsiElementResolveResult(it) }
+		}
+		
+		private object Resolver: ResolveCache.AbstractResolver<Reference, PsiElement> {
+			override fun resolve(ref: Reference, incompleteCode: Boolean): PsiElement? {
+				return ref.doResolve()
+			}
+		}
+		
+		private object MultiResolver: ResolveCache.PolyVariantResolver<Reference> {
+			override fun resolve(ref: Reference, incompleteCode: Boolean): Array<out ResolveResult> {
+				return ref.doMultiResolve()
+			}
 		}
 	}
 }

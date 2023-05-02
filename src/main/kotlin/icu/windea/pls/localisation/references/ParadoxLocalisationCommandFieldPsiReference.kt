@@ -4,6 +4,7 @@ import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.resolve.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
@@ -19,7 +20,7 @@ import icu.windea.pls.script.highlighter.*
 class ParadoxLocalisationCommandFieldPsiReference(
 	element: ParadoxLocalisationCommandField,
 	rangeInElement: TextRange
-) : PsiPolyVariantReferenceBase<ParadoxLocalisationCommandField>(element, rangeInElement), PsiNodeReference {
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationCommandField>(element, rangeInElement), AttributesKeyAware {
 	val project by lazy { element.project }
 	
 	override fun handleElementRename(newElementName: String): PsiElement {
@@ -27,11 +28,13 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		return element.setName(newElementName)
 	}
 	
+	//缓存解析结果以优化性能
+	
 	override fun resolve(): PsiElement? {
-		return resolve(true)
+		return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
 	}
 	
-	override fun resolve(exact: Boolean): PsiElement? {
+	private fun doResolve(): PsiElement? {
 		val element = element
 		val name = element.name
 		val gameType = selectGameType(element) ?: return null
@@ -42,8 +45,8 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(localisationCommand != null) return localisationCommand
 		
 		//尝试识别为<scripted_loc>
-		val selector = definitionSelector(project, element).contextSensitive(exact)
-		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", selector).find(exact)
+		val selector = definitionSelector(project, element).contextSensitive()
+		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", selector).find()
 		if(scriptedLoc != null) return scriptedLoc
 		
 		//尝试识别为预定义的value[variable] （忽略大小写）
@@ -51,14 +54,18 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(predefinedVariable != null) return predefinedVariable.pointer.element
 		
 		//尝试识别为value[variable]（需要预先在脚本文件中使用到）
-		val variableSelector = valueSetValueSelector(project, element).contextSensitive(exact)
+		val variableSelector = valueSetValueSelector(project, element).contextSensitive()
 		val variable = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findFirst()
 		if(variable != null) return ParadoxValueSetValueElement(element, name, "variable", Access.Read, gameType, project)
 		
 		return null
 	}
 	
-	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
+	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+		return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
+	}
+	
+	private fun doMultiResolve(): Array<out ResolveResult> {
 		val element = element
 		val name = element.name
 		val gameType = selectGameType(element) ?: return ResolveResult.EMPTY_ARRAY
@@ -85,7 +92,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		return ResolveResult.EMPTY_ARRAY
 	}
 	
-	override fun getTextAttributesKey(): TextAttributesKey? {
+	override fun getAttributesKey(): TextAttributesKey? {
 		val element = element
 		val name = element.name
 		val gameType = selectGameType(element) ?: return null
@@ -110,5 +117,17 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(variable != null) return ParadoxScriptAttributesKeys.VARIABLE_KEY
 		
 		return null
+	}
+	
+	private object Resolver: ResolveCache.AbstractResolver<ParadoxLocalisationCommandFieldPsiReference, PsiElement> {
+		override fun resolve(ref: ParadoxLocalisationCommandFieldPsiReference, incompleteCode: Boolean): PsiElement? {
+			return ref.doResolve()
+		}
+	}
+	
+	private object MultiResolver: ResolveCache.PolyVariantResolver<ParadoxLocalisationCommandFieldPsiReference> {
+		override fun resolve(ref: ParadoxLocalisationCommandFieldPsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
+			return ref.doMultiResolve()
+		}
 	}
 }

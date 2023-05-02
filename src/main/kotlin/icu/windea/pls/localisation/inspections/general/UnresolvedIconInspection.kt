@@ -29,7 +29,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
                 val iconName = element.name ?: return
                 if(iconName.matchesGlobFileName(ignoredIconNames, true)) return //忽略
                 val reference = element.reference
-                if(reference == null || reference.canResolve()) return
+                if(reference == null || reference.resolve() != null) return
                 val location = element.iconId ?: return
                 holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unresolvedIcon.description", iconName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }

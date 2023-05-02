@@ -33,7 +33,7 @@ class ParadoxScopeLinkPrefixExpressionNode (
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
 		}
 		
-		override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
+		override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
 			return linkConfigs.mapNotNull { it.pointer.element }.mapToArray { PsiElementResolveResult(it) }
 		}
 	}

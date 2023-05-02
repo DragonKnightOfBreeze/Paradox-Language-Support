@@ -35,7 +35,7 @@ class ParadoxEventNamespacePsiReference(
 		return eventNamespace
 	}
 	
-	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
+	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
 		val element = element
 		val event = event.element ?: return ResolveResult.EMPTY_ARRAY
 		//val definitionInfo = event.definitionInfo ?: return ResolveResult.EMPTY_ARRAY

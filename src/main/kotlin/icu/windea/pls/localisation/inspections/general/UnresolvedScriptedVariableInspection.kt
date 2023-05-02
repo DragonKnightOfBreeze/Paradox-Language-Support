@@ -32,7 +32,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
             
             private fun visitScriptedVariableReference(element: ParadoxLocalisationScriptedVariableReference) {
                 val reference = element.reference
-                if(reference.canResolve()) return
+                if(reference.resolve() != null) return
                 val variableName = element.name
                 val quickFixes = listOf(
                     IntroduceGlobalVariableFix(variableName, element)

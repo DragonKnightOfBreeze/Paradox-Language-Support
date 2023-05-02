@@ -84,7 +84,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
                             val searchScope = searchScope ?: GlobalSearchScope.allScope(holder.project)
                             val r = ReferencesSearch.search(resolved, searchScope).processQueryAsync p@{
                                 ProgressManager.checkCanceled()
-                                val res = it.resolveFast()
+                                val res = it.resolve()
                                 ProgressManager.checkCanceled()
                                 if(res is ParadoxParameterElement && res.readWriteAccess == Access.Read) {
                                     statusMap[resolved] = true

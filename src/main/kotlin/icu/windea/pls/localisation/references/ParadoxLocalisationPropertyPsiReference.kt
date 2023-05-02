@@ -2,9 +2,9 @@ package icu.windea.pls.localisation.references
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.resolve.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.model.*
@@ -18,7 +18,7 @@ import icu.windea.pls.localisation.psi.*
 class ParadoxLocalisationPropertyPsiReference(
 	element: ParadoxLocalisationPropertyReference,
 	rangeInElement: TextRange
-) : PsiPolyVariantReferenceBase<ParadoxLocalisationPropertyReference>(element, rangeInElement), PsiNodeReference {
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationPropertyReference>(element, rangeInElement) {
 	val project by lazy { element.project }
 	
 	override fun handleElementRename(newElementName: String): PsiElement {
@@ -26,13 +26,13 @@ class ParadoxLocalisationPropertyPsiReference(
 		return element.setName(newElementName)
 	}
 	
-	//TODO may be resolved to localisation / parameter / system statistics in GUI elements 
+	//缓存解析结果以优化性能
 	
 	override fun resolve(): PsiElement? {
-		return resolve(true)
+		return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
 	}
 	
-	override fun resolve(exact: Boolean): PsiElement? {
+	private fun doResolve(): PsiElement? {
 		val element = element
 		val file = element.containingFile as? ParadoxLocalisationFile ?: return null
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return null
@@ -46,7 +46,7 @@ class ParadoxLocalisationPropertyPsiReference(
 		getCwtConfig(project).core.localisationLocales.get(name)?.pointer?.element?.let { return it }
 		
 		//解析成localisation或者synced_localisation
-		val selector = localisationSelector(project, file).contextSensitive(exact).preferLocale(locale, exact)
+		val selector = localisationSelector(project, file).contextSensitive().preferLocale(locale)
 		return when(category) {
 			Localisation -> ParadoxLocalisationSearch.search(name, selector).find()
 			SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector).find()
@@ -54,6 +54,10 @@ class ParadoxLocalisationPropertyPsiReference(
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+		return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
+	}
+	
+	private fun doMultiResolve(): Array<out ResolveResult> {
 		val element = element
 		val file = element.containingFile as? ParadoxLocalisationFile ?: return emptyArray()
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return emptyArray()
@@ -72,6 +76,18 @@ class ParadoxLocalisationPropertyPsiReference(
 			Localisation -> ParadoxLocalisationSearch.search(name, selector).findAll() //查找所有语言区域的
 			SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll() //查找所有语言区域的
 		}.mapToArray { PsiElementResolveResult(it) }
+	}
+	
+	private object Resolver: ResolveCache.AbstractResolver<ParadoxLocalisationPropertyPsiReference, PsiElement> {
+		override fun resolve(ref: ParadoxLocalisationPropertyPsiReference, incompleteCode: Boolean): PsiElement? {
+			return ref.doResolve()
+		}
+	}
+	
+	private object MultiResolver: ResolveCache.PolyVariantResolver<ParadoxLocalisationPropertyPsiReference> {
+		override fun resolve(ref: ParadoxLocalisationPropertyPsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
+			return ref.doMultiResolve()
+		}
 	}
 }
 

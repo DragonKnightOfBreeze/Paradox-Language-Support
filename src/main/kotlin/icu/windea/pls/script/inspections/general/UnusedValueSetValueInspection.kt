@@ -56,7 +56,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
                 //may only resolve to single ParadoxValueSetValueElement (set-flag expression)
                 val reference = element.reference ?: return
                 if(!reference.canResolveValueSetValue()) return
-                val resolved = reference.resolve()
+                val resolved = reference.resolveFirst()
                 ProgressManager.checkCanceled()
                 if(resolved !is ParadoxValueSetValueElement) return
                 if(resolved.readWriteAccess == Access.Write) {
@@ -67,7 +67,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
                         val searchScope = searchScope ?: GlobalSearchScope.allScope(holder.project)
                         val r = ReferencesSearch.search(resolved, searchScope).processQueryAsync p@{
                             ProgressManager.checkCanceled()
-                            val res = it.resolveFast()
+                            val res = it.resolve()
                             ProgressManager.checkCanceled()
                             if(res is ParadoxValueSetValueElement && res.readWriteAccess == Access.Read) {
                                 statusMap[resolved] = true

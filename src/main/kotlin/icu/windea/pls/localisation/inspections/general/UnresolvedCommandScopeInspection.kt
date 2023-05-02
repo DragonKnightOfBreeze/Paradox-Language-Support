@@ -20,7 +20,7 @@ class UnresolvedCommandScopeInspection : LocalInspectionTool() {
             private fun visitCommandScope(element: ParadoxLocalisationCommandScope) {
                 val location = element
                 val reference = element.reference
-                if(reference.canResolve()) return
+                if(reference.resolve() != null) return
                 val name = element.name
                 holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unresolvedCommandScope.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
