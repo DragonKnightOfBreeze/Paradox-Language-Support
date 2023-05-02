@@ -22,7 +22,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     //在定义声明级别进行此项检查
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if(!isScriptFileToInspect(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        if(!isFileToInspect(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
         
         //TODO 仍然需要优化性能 - 考虑缓存堆栈信息？
         
@@ -47,7 +47,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                     //如果原本会发生StackOverflow,这里会抛出StackOverflowPreventedException
                     doRecursiveVisit(element, definitionInfo, guardStack)
                 } catch(e: RecursionException) {
-                    if(e.definitionInfo.name == definitionInfo.name) {
+                    if(e.resolvedName == definitionInfo.name) {
                         registerProblem(element, definitionInfo, e.recursion)
                     }
                 }
@@ -63,8 +63,10 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                     
                     private fun visitStringExpressionElement(e: ParadoxScriptStringExpressionElement) {
                         ProgressManager.checkCanceled()
+                        
                         //为了优化性能，这里不直接解析引用
                         //认为scripted_trigger/scripted_effect不能在各种复杂表达式中使用，并且名字必须是合法的标识符
+                        
                         if(!e.value.isExactIdentifier()) return
                         val isKey = e is ParadoxScriptPropertyKey
                         val configs = ParadoxConfigHandler.getConfigs(e, !isKey, isKey)
@@ -78,8 +80,9 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                         if(resolved !is ParadoxScriptDefinitionElement) return
                         val resolvedInfo = resolved.definitionInfo ?: return
                         if(resolvedInfo.type != definitionInfo.type) return
-                        if(guardStack.contains(resolvedInfo.name)) throw RecursionException(e, resolved, resolvedInfo)
-                        guardStack.add(resolvedInfo.name)
+                        val resolvedName = resolvedInfo.name
+                        if(guardStack.contains(resolvedName)) throw RecursionException(e, resolved, resolvedName)
+                        guardStack.add(resolvedName)
                         doRecursiveVisit(resolved, definitionInfo, guardStack)
                         guardStack.removeLast()
                     }
@@ -98,7 +101,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
         }
     }
     
-    private fun isScriptFileToInspect(file: PsiFile): Boolean {
+    private fun isFileToInspect(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         val filePath = fileInfo.pathToEntry
         return "txt" == filePath.fileExtension && ("common/scripted_triggers".matchesPath(filePath.path) || "common/scripted_effects".matchesPath(filePath.path))
@@ -132,7 +135,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     
     private class RecursionException(
         val recursion: PsiElement,
-        val definition: ParadoxScriptDefinitionElement,
-        val definitionInfo: ParadoxDefinitionInfo
+        val resolved: ParadoxScriptDefinitionElement,
+        val resolvedName: String,
     ): RuntimeException()
 }

@@ -311,6 +311,14 @@
                      groupPathKey="inspection.localisation.general.path"
                      implementationClass="icu.windea.pls.localisation.inspections.general.UnresolvedScriptedVariableInspection"/>
     <!--endregion-->
+    <!--region Paradox localisation/Possible bugs-->
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedRecursion"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.localisation.bug.unsupportedRecursion"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
+                     groupPathKey="inspection.localisation.bug.path"
+                     implementationClass="icu.windea.pls.localisation.inspections.bug.UnsupportedRecursionInspection"/>
+    <!--endregion-->
     <!--region Paradox localisation/Scope issues-->
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectScope"
                      enabledByDefault="true" level="WARNING"

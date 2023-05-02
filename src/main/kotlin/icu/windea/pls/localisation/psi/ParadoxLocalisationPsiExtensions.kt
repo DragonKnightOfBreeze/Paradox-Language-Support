@@ -67,3 +67,7 @@ fun findLocalisationPropertiesBetween(start: PsiElement, end: PsiElement?): List
 	}
 	return emptyList()
 }
+
+fun PsiElement.isRichTextContext(): Boolean {
+	return this is ParadoxLocalisationPropertyValue || this is ParadoxLocalisationColorfulText
+}
