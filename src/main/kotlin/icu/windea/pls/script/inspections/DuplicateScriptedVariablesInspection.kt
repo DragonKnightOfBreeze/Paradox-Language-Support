@@ -1,7 +1,6 @@
 package icu.windea.pls.script.inspections
 
 import com.intellij.codeInsight.intention.preview.*
-import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
@@ -33,9 +32,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 			override fun visitElement(element: PsiElement) {
 				if(element is ParadoxScriptScriptedVariable) {
 					val name = element.name
-					if(name != null) {
-						variableGroup.getOrPut(name) { SmartList() }.add(element)
-					}
+					variableGroup.getOrPut(name) { SmartList() }.add(element)
 					return
 				}
 				if(element is ParadoxScriptInlineMath) {
@@ -87,13 +84,28 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 				val iterator = pointers.iterator()
 				val next = iterator.next().element
 				val toNavigate = if(next != startElement) next else iterator.next().element
-				if(toNavigate != null) NavigationUtil.activateFileWithPsiElement(toNavigate)
+				if(toNavigate != null) navigateTo(editor, toNavigate)
 			} else {
 				val allElements = pointers.mapNotNull { it.element }.filter { it !== startElement }
-				val popup = Popup(allElements, key, editor)
-				JBPopupFactory.getInstance().createListPopup(popup).showInBestPositionFor(editor)
+				JBPopupFactory.getInstance().createListPopup(object : BaseListPopupStep<ParadoxScriptScriptedVariable>(PlsBundle.message("inspection.script.duplicateScriptedVariables.quickFix.1.popup.header", key), allElements) {
+					override fun getIconFor(value: ParadoxScriptScriptedVariable) = value.icon
+					
+					override fun getTextFor(value: ParadoxScriptScriptedVariable) =
+						PlsBundle.message("inspection.script.duplicateScriptedVariables.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+					
+					override fun getDefaultOptionIndex(): Int = 0
+					
+					override fun isSpeedSearchEnabled(): Boolean = true
+					
+					override fun onChosen(selectedValue: ParadoxScriptScriptedVariable, finalChoice: Boolean): PopupStep<*>? {
+						navigateTo(editor, selectedValue)
+						return PopupStep.FINAL_CHOICE
+					}
+				}).showInBestPositionFor(editor)
 			}
 		}
+		
+		override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor) = IntentionPreviewInfo.EMPTY
 		
 		override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
 		
@@ -101,24 +113,9 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 		
 		override fun availableInBatchMode() = false
 		
-		private class Popup(
-			values: List<ParadoxScriptScriptedVariable>,
-			private val key: String,
-			private val editor: Editor
-		) : BaseListPopupStep<ParadoxScriptScriptedVariable>(PlsBundle.message("inspection.script.duplicateScriptedVariables.quickFix.1.popup.header", key), values) {
-			override fun getIconFor(value: ParadoxScriptScriptedVariable) = value.icon
-			
-			override fun getTextFor(value: ParadoxScriptScriptedVariable) =
-				PlsBundle.message("inspection.script.duplicateScriptedVariables.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
-			
-			override fun getDefaultOptionIndex(): Int = 0
-			
-			override fun isSpeedSearchEnabled(): Boolean = true
-			
-			override fun onChosen(selectedValue: ParadoxScriptScriptedVariable, finalChoice: Boolean): PopupStep<*>? {
-				NavigationUtil.activateFileWithPsiElement(selectedValue)
-				return PopupStep.FINAL_CHOICE
-			}
+		private fun navigateTo(editor: Editor, toNavigate: PsiElement) {
+			editor.caretModel.moveToOffset(toNavigate.textOffset)
+			editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
 		}
 	}
 }

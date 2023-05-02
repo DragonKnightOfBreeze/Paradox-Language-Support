@@ -1,7 +1,6 @@
 package icu.windea.pls.script.inspections.bug
 
 import com.intellij.codeInsight.intention.preview.*
-import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
@@ -49,7 +48,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                     doRecursiveVisit(element, definitionInfo, guardStack)
                 } catch(e: RecursionException) {
                     if(e.definitionInfo.name == definitionInfo.name) {
-                        registerProblem(element, definitionInfo, e.definition)
+                        registerProblem(element, definitionInfo, e.recursion)
                     }
                 }
             }
@@ -79,7 +78,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                         if(resolved !is ParadoxScriptDefinitionElement) return
                         val resolvedInfo = resolved.definitionInfo ?: return
                         if(resolvedInfo.type != definitionInfo.type) return
-                        if(guardStack.contains(resolvedInfo.name)) throw RecursionException(resolved, resolvedInfo)
+                        if(guardStack.contains(resolvedInfo.name)) throw RecursionException(e, resolved, resolvedInfo)
                         guardStack.add(resolvedInfo.name)
                         doRecursiveVisit(resolved, definitionInfo, guardStack)
                         guardStack.removeLast()
@@ -87,14 +86,14 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 })
             }
             
-            private fun registerProblem(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, resolvedDefinition: ParadoxScriptDefinitionElement) {
+            private fun registerProblem(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, recursion: PsiElement) {
                 val message = when {
                     definitionInfo.type == "scripted_trigger" -> PlsBundle.message("inspection.script.bug.unsupportedRecursion.description.1")
                     definitionInfo.type == "scripted_effect" -> PlsBundle.message("inspection.script.bug.unsupportedRecursion.description.2")
                     else -> return
                 }
                 val location = if(element is ParadoxScriptProperty) element.propertyKey else element
-                holder.registerProblem(location, message, NavigateToRecursionFix(resolvedDefinition))
+                holder.registerProblem(location, message, NavigateToRecursionFix(recursion))
             }
         }
     }
@@ -106,7 +105,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     }
     
     private class NavigateToRecursionFix(
-        target: ParadoxScriptDefinitionElement,
+        target: PsiElement,
     ) : LocalQuickFixAndIntentionActionOnPsiElement(target) {
         override fun getText() = PlsBundle.message("inspection.script.bug.unsupportedRecursion.quickFix.1")
         
@@ -114,17 +113,25 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
         
         override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
             if(editor == null) return
-            NavigationUtil.activateFileWithPsiElement(startElement)
+            navigateTo(editor, startElement)
         }
+        
+        override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor) = IntentionPreviewInfo.EMPTY
         
         override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
         
         override fun startInWriteAction() = false
         
         override fun availableInBatchMode() = false
+        
+        private fun navigateTo(editor: Editor, toNavigate: PsiElement) {
+            editor.caretModel.moveToOffset(toNavigate.textOffset)
+            editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
+        }
     }
     
     private class RecursionException(
+        val recursion: PsiElement,
         val definition: ParadoxScriptDefinitionElement,
         val definitionInfo: ParadoxDefinitionInfo
     ): RuntimeException()
