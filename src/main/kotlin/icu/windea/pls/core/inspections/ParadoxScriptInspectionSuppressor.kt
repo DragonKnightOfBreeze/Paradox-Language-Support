@@ -62,7 +62,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
             }
         }
         
-        override fun getCommentsFor(container: PsiElement): MutableList<out PsiElement>? {
+        override fun getCommentsFor(container: PsiElement): MutableList<out PsiElement> {
             return getCommentsForSuppression(container).toMutableList()
         }
         
@@ -80,7 +80,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         private val definitionName: String,
         private val depth: Int,
     ) : SuppressByCommentFix(toolId, ParadoxScriptProperty::class.java) {
-        //definiton here should be a property, not file
+        //definition here should be a property, not file
         
         override fun getText(): String {
             return PlsBundle.message("script.suppress.for.definition", definitionName)
@@ -96,7 +96,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
             return current
         }
         
-        override fun getCommentsFor(container: PsiElement): List<PsiElement>? {
+        override fun getCommentsFor(container: PsiElement): List<PsiElement> {
             return getCommentsForSuppression(container).toList()
         }
         

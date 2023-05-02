@@ -48,7 +48,7 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
             }
         }
         
-        override fun getCommentsFor(container: PsiElement): List<PsiElement>? {
+        override fun getCommentsFor(container: PsiElement): List<PsiElement> {
             return getCommentsForSuppression(container).toList()
         }
         
@@ -68,7 +68,7 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
             return PlsBundle.message("localisation.suppress.for.property")
         }
         
-        override fun getCommentsFor(container: PsiElement): List<PsiElement>? {
+        override fun getCommentsFor(container: PsiElement): List<PsiElement> {
             return getCommentsForSuppression(container).toList()
         }
         

@@ -28,5 +28,4 @@ class ParadoxInspectionExtensionsFactory: InspectionExtensionsFactory() {
     override fun getSuppressedInspectionIdsIn(element: PsiElement): String? {
         return SuppressManager.getInstance().getSuppressedInspectionIdsIn(element)
     }
-    
 }
