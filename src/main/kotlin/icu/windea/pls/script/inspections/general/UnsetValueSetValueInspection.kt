@@ -52,7 +52,7 @@ class UnsetValueSetValueInspection : LocalInspectionTool(){
                 for(reference in references) {
                     ProgressManager.checkCanceled()
                     if(!reference.canResolveValueSetValue()) continue
-                    val resolved = reference.resolveSingle()
+                    val resolved = reference.resolveFirst()
                     ProgressManager.checkCanceled()
                     if(resolved !is ParadoxValueSetValueElement) continue
                     if(resolved.readWriteAccess == Access.Read) {

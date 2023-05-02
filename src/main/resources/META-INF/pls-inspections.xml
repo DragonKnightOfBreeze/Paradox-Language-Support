@@ -122,29 +122,35 @@
     <!--endregion-->
     <!--region Paradox script/Possible Bugs-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedParameterUsage"
-                     enabledByDefault="true" level="ERROR"
+                     enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.bug.unsupportedParameterUsage"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
                      groupPathKey="inspection.script.bug.path"
                      implementationClass="icu.windea.pls.script.inspections.bug.UnsupportedParameterUsageInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedScriptedVariableUsage"
-                     enabledByDefault="true" level="ERROR"
+                     enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.bug.unsupportedScriptedVariableUsage"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
                      groupPathKey="inspection.script.bug.path"
                      implementationClass="icu.windea.pls.script.inspections.bug.UnsupportedScriptedVariableUsageInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedInlineMathUsage"
-                     enabledByDefault="true" level="ERROR"
+                     enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.bug.unsupportedInlineMathUsage"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
                      groupPathKey="inspection.script.bug.path"
                      implementationClass="icu.windea.pls.script.inspections.bug.UnsupportedInlineMathUsageInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedInlineScriptUsage"
-                     enabledByDefault="true" level="ERROR"
+                     enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.bug.unsupportedInlineScriptUsage"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
                      groupPathKey="inspection.script.bug.path"
                      implementationClass="icu.windea.pls.script.inspections.bug.UnsupportedInlineScriptUsageInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedRecursion"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.bug.unsupportedRecursion"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
+                     groupPathKey="inspection.script.bug.path"
+                     implementationClass="icu.windea.pls.script.inspections.bug.UnsupportedRecursionInspection"/>
     <!--endregion-->
     <!--region Paradox script/Scope issues-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScope"

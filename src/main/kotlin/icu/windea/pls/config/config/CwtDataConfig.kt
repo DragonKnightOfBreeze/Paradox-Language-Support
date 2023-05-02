@@ -111,6 +111,10 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 	}
 }
 
+fun CwtDataConfig<*>.findOption(key: String): CwtOptionConfig? = options?.find { it.key == key }
+
+fun CwtDataConfig<*>.findOptions(key: String): List<CwtOptionConfig> = options?.filter { it.key == key }.orEmpty()
+
 object CwtDataConfigKeys {
 	val path = Key.create<String>("paradox.cwtDataConfig.path")
 	val cardinality = Key.create<CwtCardinalityExpression?>("paradox.cwtDataConfig.cardinality")

@@ -35,15 +35,15 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
 	
 	override fun getReferenceAccess(referencedElement: PsiElement, reference: PsiReference): Access {
 		if(reference.canResolveParameter()) {
-			val resolved = reference.resolveSingle()?.castOrNull<ParadoxParameterElement>()
+			val resolved = reference.resolveFirst()?.castOrNull<ParadoxParameterElement>()
 			if(resolved != null) return resolved.readWriteAccess
 		}
 		if(reference.canResolveValueSetValue()) {
-			val resolved = reference.resolveSingle()?.castOrNull<ParadoxValueSetValueElement>()
+			val resolved = reference.resolveFirst()?.castOrNull<ParadoxValueSetValueElement>()
 			if(resolved != null) return resolved.readWriteAccess
 		}
 		if(reference.canResolveComplexEnumValue()) {
-			val resolved = reference.resolveSingle()?.castOrNull<ParadoxComplexEnumValueElement>()
+			val resolved = reference.resolveFirst()?.castOrNull<ParadoxComplexEnumValueElement>()
 			if(resolved != null) return resolved.readWriteAccess
 		}
 		return Access.ReadWrite
@@ -55,15 +55,15 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
 		for(reference in expression.references) {
 			ProgressManager.checkCanceled()
 			if(reference.canResolveParameter()) {
-				val resolved = reference.resolveSingle()?.castOrNull<ParadoxParameterElement>()
+				val resolved = reference.resolveFirst()?.castOrNull<ParadoxParameterElement>()
 				if(resolved != null) return resolved.readWriteAccess
 			}
 			if(reference.canResolveValueSetValue()) {
-				val resolved = reference.resolveSingle()?.castOrNull<ParadoxValueSetValueElement>()
+				val resolved = reference.resolveFirst()?.castOrNull<ParadoxValueSetValueElement>()
 				if(resolved != null) return resolved.readWriteAccess
 			}
 			if(reference.canResolveComplexEnumValue()) {
-				val resolved = reference.resolveSingle()?.castOrNull<ParadoxComplexEnumValueElement>()
+				val resolved = reference.resolveFirst()?.castOrNull<ParadoxComplexEnumValueElement>()
 				if(resolved != null) return resolved.readWriteAccess
 			}
 		}

@@ -47,7 +47,7 @@ com.intellij.ide.FileIconProvider
 com.intellij.openapi.vcs.changes.FilePathIconProvider
 ```
 
-* [ ] 如果可能，直接在IDE编辑器中渲染DDS图片，而不是基于缓存的PNG图片
+* [X] 如果可能，直接在IDE编辑器中渲染DDS图片，而不是基于缓存的PNG图片
 
 ## 0.9.9
 

@@ -26,8 +26,8 @@ class MissingEventNamespaceInspection : LocalInspectionTool() {
     }
     
     private fun isEventScriptFile(file: PsiFile): Boolean {
-        if(file !is ParadoxScriptFile) return false
         val fileInfo = file.fileInfo ?: return false
-        return "events".matchesPath(fileInfo.pathToEntry.path, acceptSelf = false)
+        val filePath = fileInfo.pathToEntry
+        return "txt" == filePath.fileExtension && "events".matchesPath(filePath.path)
     }
 }

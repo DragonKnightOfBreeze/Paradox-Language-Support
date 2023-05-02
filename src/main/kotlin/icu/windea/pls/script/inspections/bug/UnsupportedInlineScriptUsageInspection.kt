@@ -28,3 +28,4 @@ class UnsupportedInlineScriptUsageInspection: LocalInspectionTool() {
         return PsiElementVisitor.EMPTY_VISITOR
     }
 }
+

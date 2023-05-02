@@ -73,7 +73,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
                 for(reference in references) {
                     ProgressManager.checkCanceled()
                     if(!reference.canResolveParameter()) continue
-                    val resolved = reference.resolveSingle()
+                    val resolved = reference.resolveFirst()
                     ProgressManager.checkCanceled()
                     if(resolved !is ParadoxParameterElement) continue
                     if(resolved.readWriteAccess == Access.Write) {
