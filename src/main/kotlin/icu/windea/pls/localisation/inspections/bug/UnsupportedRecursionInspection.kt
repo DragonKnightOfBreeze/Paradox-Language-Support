@@ -21,7 +21,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         if(!isFileToInspect(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
         
-        //TODO 仍然需要优化性能 - 考虑缓存堆栈信息？
+        val guardStack = LinkedList<String>()
         
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -34,12 +34,10 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
             }
             
             private fun visitLocalisation(element: ParadoxLocalisationProperty, name: String) {
-                //防止StackOverflow
-                val guardStack = LinkedList<String>()
+                guardStack.clear()
                 guardStack.add(name)
                 try {
-                    //如果原本会发生StackOverflow,这里会抛出StackOverflowPreventedException
-                    doRecursiveVisit(element, guardStack)
+                    doRecursiveVisit(element)
                 } catch(e: RecursionException) {
                     if(e.resolvedName == name) {
                         registerProblem(element, e.recursion)
@@ -47,8 +45,10 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 }
             }
             
-            private fun doRecursiveVisit(element: ParadoxLocalisationProperty, guardStack: LinkedList<String>) {
+            private fun doRecursiveVisit(element: ParadoxLocalisationProperty) {
                 ProgressManager.checkCanceled()
+                
+                val resolvedMap = mutableSetOf<String>()
                 element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
                     override fun visitElement(e: PsiElement) {
                         if(e is ParadoxLocalisationPropertyReference) visitPropertyReference(e)
@@ -58,12 +58,14 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                     private fun visitPropertyReference(e: ParadoxLocalisationPropertyReference) {
                         //对于相同的语言区域
                         ProgressManager.checkCanceled()
+                        if(resolvedMap.contains(e.name)) return //不需要重复解析引用
                         val resolved = e.reference?.resolve()
                         if(resolved !is ParadoxLocalisationProperty) return
                         val resolvedName = resolved.name
+                        resolvedMap.add(resolvedName)
                         if(guardStack.contains(resolvedName)) throw RecursionException(e, resolved, resolvedName)
-                        guardStack.add(resolvedName)
-                        doRecursiveVisit(resolved, guardStack)
+                        guardStack.addLast(resolvedName)
+                        doRecursiveVisit(resolved)
                         guardStack.removeLast()
                     }
                 })

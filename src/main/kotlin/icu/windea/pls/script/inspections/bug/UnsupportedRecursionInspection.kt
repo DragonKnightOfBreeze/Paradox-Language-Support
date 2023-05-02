@@ -24,7 +24,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         if(!isFileToInspect(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
         
-        //TODO 仍然需要优化性能 - 考虑缓存堆栈信息？
+        val guardStack = LinkedList<String>()
         
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -40,12 +40,10 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
             }
             
             private fun visitDefinition(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
-                //防止StackOverflow
-                val guardStack = LinkedList<String>()
+                guardStack.clear()
                 guardStack.add(definitionInfo.name)
                 try {
-                    //如果原本会发生StackOverflow,这里会抛出StackOverflowPreventedException
-                    doRecursiveVisit(element, definitionInfo, guardStack)
+                    doRecursiveVisit(element, definitionInfo)
                 } catch(e: RecursionException) {
                     if(e.resolvedName == definitionInfo.name) {
                         registerProblem(element, definitionInfo, e.recursion)
@@ -53,7 +51,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 }
             }
             
-            private fun doRecursiveVisit(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, guardStack: LinkedList<String>) {
+            private fun doRecursiveVisit(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
                 ProgressManager.checkCanceled()
                 element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
                     override fun visitElement(e: PsiElement) {
@@ -79,8 +77,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                         if(resolvedInfo.type != definitionInfo.type) return
                         val resolvedName = resolvedInfo.name
                         if(guardStack.contains(resolvedName)) throw RecursionException(e, resolved, resolvedName)
-                        guardStack.add(resolvedName)
-                        doRecursiveVisit(resolved, definitionInfo, guardStack)
+                        guardStack.addLast(resolvedName)
+                        doRecursiveVisit(resolved, definitionInfo)
                         guardStack.removeLast()
                     }
                 })
