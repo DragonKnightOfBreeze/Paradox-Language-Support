@@ -45,6 +45,10 @@ object ParadoxValueSetValueHandler {
         
         val isKey = element is ParadoxScriptPropertyKey
         
+        if(element.text.contains("freeport_country")) {
+            println()
+        }
+        
         val matchType = CwtConfigMatchType.STATIC //这里需要静态匹配
         val configs = ParadoxConfigHandler.getConfigs(element, orDefault = true, matchType = matchType)
         if(configs.isEmpty()) return null
@@ -93,7 +97,7 @@ object ParadoxValueSetValueHandler {
                     val references = variableFieldExpression.getReferences(element)
                     return references.mapNotNullTo(SmartList()) { reference -> resolveReferenceToInfo(reference) }
                 }
-                else -> return null
+                else -> pass() //continue to check next config
             }
         }
         return null
