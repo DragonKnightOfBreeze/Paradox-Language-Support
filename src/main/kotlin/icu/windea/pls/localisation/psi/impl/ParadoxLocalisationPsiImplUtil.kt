@@ -2,6 +2,7 @@ package icu.windea.pls.localisation.psi.impl
 
 import com.intellij.navigation.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.util.*
 import com.intellij.openapi.util.Iconable.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.*
@@ -333,8 +334,15 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getReference(element: ParadoxLocalisationCommandScope): ParadoxLocalisationCommandScopePsiReference {
-        val rangeInElement = element.commandScopeId.textRangeInParent
-        return ParadoxLocalisationCommandScopePsiReference(element, rangeInElement)
+        val idElement = element.commandScopeId
+        val rangeInElement = idElement.textRangeInParent
+        //兼容"event_target:"前缀
+        val text = idElement.text
+        val prefix = ParadoxLocalisationCommandScopePsiReference.EVENT_TARGET_PREFIX
+        if(text.startsWith(prefix)) {
+            return ParadoxLocalisationCommandScopePsiReference(element, rangeInElement.let { TextRange.create(it.startOffset + prefix.length, it.endOffset) }, prefix)
+        }
+        return ParadoxLocalisationCommandScopePsiReference(element, rangeInElement, null)
     }
     
     @JvmStatic
