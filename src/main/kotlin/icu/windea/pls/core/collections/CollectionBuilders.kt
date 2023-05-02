@@ -8,6 +8,10 @@ fun <T> MutableSet(comparator: Comparator<T>? = null): MutableSet<T> {
 	return if(comparator == null) mutableSetOf() else TreeSet(comparator)
 }
 
+inline fun <reified T: Enum<T>> enumSetOf(vararg values: T) : EnumSet<T> {
+	return EnumSet.noneOf(T::class.java).apply { values.forEach { add(it) } }
+}
+
 inline fun <reified T> T.toSingletonArray(): Array<T> {
 	return arrayOf(this)
 }

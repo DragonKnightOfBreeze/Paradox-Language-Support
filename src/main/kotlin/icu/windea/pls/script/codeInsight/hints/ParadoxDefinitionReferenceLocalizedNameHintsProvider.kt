@@ -8,11 +8,13 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*
+import java.util.*
 import javax.swing.*
 
 /**
@@ -22,7 +24,7 @@ import javax.swing.*
 class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     companion object {
         private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxDefinitionReferenceLocalizedNameHintsSettingsKey")
-        private val expressionTypes: Array<CwtDataType> = arrayOf(
+        private val expressionTypes: EnumSet<CwtDataType> = enumSetOf(
             CwtDataType.Definition,
             CwtDataType.AliasName, //需要兼容alias
             CwtDataType.AliasKeysField, //需要兼容alias

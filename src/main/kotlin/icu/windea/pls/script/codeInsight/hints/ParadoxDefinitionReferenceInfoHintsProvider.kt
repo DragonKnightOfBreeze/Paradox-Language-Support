@@ -8,9 +8,11 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
+import java.util.*
 
 /**
  * 定义引用信息的内嵌提示（对应定义的名字和类型、本地化名字）。
@@ -19,7 +21,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
     companion object {
         private val settingsKey: SettingsKey<NoSettings> = SettingsKey("ParadoxDefinitionReferenceInfoHintsSettingsKey")
-        private val expressionTypes: Array<CwtDataType> = arrayOf(
+        private val expressionTypes: EnumSet<CwtDataType> = enumSetOf(
             CwtDataType.Definition,
             CwtDataType.AliasName, //需要兼容alias
             CwtDataType.AliasKeysField, //需要兼容alias

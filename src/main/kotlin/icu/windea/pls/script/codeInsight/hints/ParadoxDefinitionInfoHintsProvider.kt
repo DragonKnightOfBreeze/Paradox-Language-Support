@@ -29,6 +29,9 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings
 		if(element is ParadoxScriptProperty) {
 			val definitionInfo = element.definitionInfo
 			if(definitionInfo != null) {
+				//忽略类似event_namespace这样定义的值不是子句的定义
+				if(definitionInfo.declarationConfig?.propertyConfig?.isBlock == false) return true
+				
 				val presentation = doCollect(definitionInfo)
 				val finalPresentation = presentation.toFinalPresentation(this, file.project)
 				val endOffset = element.propertyKey.endOffset

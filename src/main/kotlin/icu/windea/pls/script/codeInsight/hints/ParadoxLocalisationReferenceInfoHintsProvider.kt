@@ -8,11 +8,13 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*
+import java.util.*
 import javax.swing.*
 
 /**
@@ -22,7 +24,7 @@ import javax.swing.*
 class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     companion object {
         private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxLocalisationReferenceInfoHintsSettingsKey")
-        private val expressionTypes: Array<CwtDataType> = arrayOf(
+        private val expressionTypes: EnumSet<CwtDataType> = enumSetOf(
             CwtDataType.Localisation,
             CwtDataType.InlineLocalisation,
             CwtDataType.SyncedLocalisation,
