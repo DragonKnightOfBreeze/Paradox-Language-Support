@@ -1,6 +1,7 @@
 <idea-plugin>
   <extensionPoints>
     <extensionPoint qualifiedName="icu.windea.pls.configExpressionReplacer" interface="icu.windea.pls.lang.config.CwtConfigExpressionReplacer" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.documentationElementLinkProvider" interface="icu.windea.pls.lang.documentation.DocumentationElementLinkProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionExtendedDocumentationProvider" interface="icu.windea.pls.lang.documentation.ParadoxDefinitionExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionSupport" interface="icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.pathReferenceExpressionSupport"  interface="icu.windea.pls.lang.expression.ParadoxPathReferenceExpressionSupport" dynamic="true"/>
@@ -15,13 +16,17 @@
     <extensionPoint qualifiedName="icu.windea.pls.definitionSupportedScopesProvider" interface="icu.windea.pls.lang.scope.ParadoxDefinitionSupportedScopesProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionPresentationProvider" interface="icu.windea.pls.lang.presentation.ParadoxDefinitionPresentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionDataProvider" interface="icu.windea.pls.lang.data.ParadoxDefinitionDataProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.linkProvider" interface="icu.windea.pls.lang.link.PsiElementLinkProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modImporter" interface="icu.windea.pls.core.tool.importer.ParadoxModImporter" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modExporter" interface="icu.windea.pls.core.tool.exporter.ParadoxModExporter" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
     <configExpressionReplacer implementation="icu.windea.pls.lang.config.impl.CwtOnActionConfigExpressionReplacer"/>
+    
+    <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.CwtConfigLinkProvider"/>
+    <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxDefinitionLinkProvider"/>
+    <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxLocalisationLinkProvider"/>
+    <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxFilePathLinkProvider"/>
     
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxBaseDefinitionExtendedDocumentationProvider" order="last"/>
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxOnActionExtendedDocumentationProvider"/>
@@ -82,11 +87,6 @@
     <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.IrEventDataProvider"/>
     <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.Vic2EventDataProvider"/>
     <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.Vic3EventDataProvider"/>
-    
-    <linkProvider implementation="icu.windea.pls.lang.link.impl.CwtConfigLinkProvider"/>
-    <linkProvider implementation="icu.windea.pls.lang.link.impl.ParadoxDefinitionLinkProvider"/>
-    <linkProvider implementation="icu.windea.pls.lang.link.impl.ParadoxLocalisationLinkProvider"/>
-    <linkProvider implementation="icu.windea.pls.lang.link.impl.ParadoxFilePathLinkProvider"/>
     
     <modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromGameImporter"/>
     <!--<modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherImporter"/>-->

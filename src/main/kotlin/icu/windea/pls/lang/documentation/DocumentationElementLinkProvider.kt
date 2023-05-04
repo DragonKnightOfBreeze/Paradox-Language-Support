@@ -1,19 +1,19 @@
-package icu.windea.pls.lang.link
+package icu.windea.pls.lang.documentation
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 
 /**
- * 提供对快速文档链接的支持，用于点击跳转到对应的定义/本地化等。（以后也许也能用在快速文档以外的其他地方）
+ * 提供对快速文档链接的支持，用于点击跳转到对应的定义/本地化等。
  */
-interface PsiElementLinkProvider {
+interface DocumentationElementLinkProvider {
     val linkPrefix: String
     
     fun resolveLink(shortLink: String, contextElement: PsiElement): PsiElement?
     
     companion object INSTANCE {
-        @JvmField val EP_NAME = ExtensionPointName.create<PsiElementLinkProvider>("icu.windea.pls.linkProvider")
+        @JvmField val EP_NAME = ExtensionPointName.create<DocumentationElementLinkProvider>("icu.windea.pls.documentationElementLinkProvider")
         
         fun resolveLink(link: String, contextElement: PsiElement): PsiElement? {
             EP_NAME.extensionList.forEach {

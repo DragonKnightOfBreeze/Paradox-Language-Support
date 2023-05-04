@@ -15,7 +15,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.link.*
+import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.lang.parameter.*
@@ -32,7 +32,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
     
     override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
         if(link == null || context == null) return null
-        return PsiElementLinkProvider.resolveLink(link, context)
+        return DocumentationElementLinkProvider.resolveLink(link, context)
     }
     
     //这里为RenameableFakePsiElement，也就是那些实际上没有声明处的PsiElement，提供快速文档

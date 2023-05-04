@@ -17,6 +17,8 @@ import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.documentation.*
+import icu.windea.pls.lang.documentation.impl.*
 import icu.windea.pls.lang.link.*
 import icu.windea.pls.lang.link.impl.*
 import icu.windea.pls.lang.model.*
@@ -311,7 +313,7 @@ fun StringBuilder.appendCwtLink(shortLink: String, linkText: String, context: Ps
     val linkPrefix = CwtConfigLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix$shortLink".escapeXml()
     val finalLinkText = linkText.escapeXml()
-    if(context != null && PsiElementLinkProvider.resolveLink(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    if(context != null && DocumentationElementLinkProvider.resolveLink(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }
 
@@ -320,7 +322,7 @@ fun StringBuilder.appendDefinitionLink(gameType: ParadoxGameType, name: String, 
     val linkPrefix = ParadoxDefinitionLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix${gameType.id}/$typeExpression/$name".escapeXml()
     val finalLinkText = name.escapeXml()
-    if(context != null && PsiElementLinkProvider.resolveLink(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    if(context != null && DocumentationElementLinkProvider.resolveLink(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }
 
@@ -329,7 +331,7 @@ fun StringBuilder.appendLocalisationLink(gameType: ParadoxGameType, name: String
     val linkPrefix = ParadoxLocalisationLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix${gameType.id}/$name".escapeXml()
     val finalLinkText = name.escapeXml()
-    if(context != null && PsiElementLinkProvider.resolveLink(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    if(context != null && DocumentationElementLinkProvider.resolveLink(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }
 
@@ -338,7 +340,7 @@ fun StringBuilder.appendFilePathLink(gameType: ParadoxGameType, filePath: String
     val linkPrefix = ParadoxFilePathLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix${gameType.id}/$filePath".escapeXml()
     val finalLinkText = linkText.escapeXml()
-    if(context != null && PsiElementLinkProvider.resolveLink(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    if(context != null && DocumentationElementLinkProvider.resolveLink(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }
 

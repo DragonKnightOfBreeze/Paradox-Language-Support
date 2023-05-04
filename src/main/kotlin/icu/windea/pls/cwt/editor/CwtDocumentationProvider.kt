@@ -16,7 +16,7 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.link.*
+import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
@@ -31,7 +31,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
     
     override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
         if(link == null || context == null) return null
-        return PsiElementLinkProvider.resolveLink(link, context)
+        return DocumentationElementLinkProvider.resolveLink(link, context)
     }
     
     override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
