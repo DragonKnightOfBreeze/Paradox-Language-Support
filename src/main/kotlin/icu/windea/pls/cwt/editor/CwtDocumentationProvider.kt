@@ -31,7 +31,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
     
     override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
         if(link == null || context == null) return null
-        return DocumentationElementLinkProvider.resolveLink(link, context)
+        return DocumentationElementLinkProvider.resolve(link, context)
     }
     
     override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
@@ -135,7 +135,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
                     //在脚本文件中显示为链接
                     if(configGroup != null) {
                         val gameType = configGroup.gameType
-                        val typeLink = "${gameType.id}/${typeCategory}/${typeName}"
+                        val typeLink = "${gameType.linkToken}${typeCategory}/${typeName}"
                         append(": ").appendCwtLink(typeLink, typeName, typeElement)
                     } else {
                         append(": ").append(typeName)
@@ -317,7 +317,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             append("<code>")
             for(category in categories) {
                 if(appendSeparator) append(", ") else appendSeparator = true
-                appendCwtLink("${gameType.id}/modifier_categories/$category", category, contextElement)
+                appendCwtLink("${gameType.linkToken}modifier_categories/$category", category, contextElement)
             }
             append("</code>")
         }

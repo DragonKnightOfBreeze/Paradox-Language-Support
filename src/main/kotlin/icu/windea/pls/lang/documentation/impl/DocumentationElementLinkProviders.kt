@@ -7,27 +7,29 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.documentation.*
+import icu.windea.pls.lang.model.*
 
 class CwtConfigLinkProvider : DocumentationElementLinkProvider {
-    //e.g. #cwt/stellaris/types/civic_or_origin/civic
+    // e.g.
+    // cwt:stellaris:types/civic_or_origin/civic
     
     companion object {
-        const val LINK_PREFIX = "#cwt/"
+        const val LINK_PREFIX = "cwt:"
     }
     
     override val linkPrefix = LINK_PREFIX
     
-    override fun resolveLink(shortLink: String, contextElement: PsiElement): PsiElement? {
+    override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
-        val tokens = shortLink.split('/')
-        if(tokens.size > 4) return null
-        val gameType = tokens.getOrNull(0) ?: return null
-        val category = tokens.getOrNull(1) ?: return null
-        val project = contextElement.project
+        val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
+        val tokens = remain.split('/')
+        val category = tokens.getOrNull(0) ?: return null
         return when(category) {
             "types" -> {
-                val name = tokens.getOrNull(2)
-                val subtypeName = tokens.getOrNull(3)
+                if(tokens.isEmpty() || tokens.size > 3) return null
+                val project = contextElement.project
+                val name = tokens.getOrNull(1)
+                val subtypeName = tokens.getOrNull(2)
                 val config = when {
                     name == null -> null
                     subtypeName == null -> getCwtConfig(project).get(gameType).types[name]
@@ -35,112 +37,160 @@ class CwtConfigLinkProvider : DocumentationElementLinkProvider {
                 } ?: return null
                 return config.pointer.element
             }
+            "values" -> {
+                if(tokens.isEmpty() || tokens.size > 3) return null
+                val project = contextElement.project
+                val name = tokens.getOrNull(1) ?: return null
+                val valueName = tokens.getOrNull(2)
+                val config = getCwtConfig(project).get(gameType).values[name] ?: return null
+                if(valueName == null) return config.pointer.element
+                return config.valueConfigMap.get(valueName)?.pointer?.element
+            }
             "enums" -> {
-                val name = tokens.getOrNull(2) ?: return null
-                val valueName = tokens.getOrNull(3)
+                if(tokens.isEmpty() || tokens.size > 3) return null
+                val project = contextElement.project
+                val name = tokens.getOrNull(1) ?: return null
+                val valueName = tokens.getOrNull(2)
                 val config = getCwtConfig(project).get(gameType).enums[name] ?: return null
                 if(valueName == null) return config.pointer.element
                 return config.valueConfigMap.get(valueName)?.pointer?.element
             }
             "complex_enums" -> {
-                val name = tokens.getOrNull(2) ?: return null
+                if(tokens.isEmpty() || tokens.size > 2) return null
+                val project = contextElement.project
+                val name = tokens.getOrNull(1) ?: return null
                 val config = getCwtConfig(project).get(gameType).complexEnums[name] ?: return null
                 return config.pointer.element
             }
-            "values" -> {
-                val name = tokens.getOrNull(2) ?: return null
-                val valueName = tokens.getOrNull(3)
-                val config = getCwtConfig(project).get(gameType).values[name] ?: return null
-                if(valueName == null) return config.pointer.element
-                return config.valueConfigMap.get(valueName)?.pointer?.element
-            }
             "scopes" -> {
-                val name = tokens.getOrNull(2) ?: return null
+                if(tokens.isEmpty() || tokens.size > 2) return null
+                val project = contextElement.project
+                val name = tokens.getOrNull(1) ?: return null
                 val config = getCwtConfig(project).get(gameType).scopeAliasMap[name] ?: return null
                 return config.pointer.element
             }
             "system_links" -> {
-                val name = tokens.getOrNull(2) ?: return null
+                if(tokens.isEmpty() || tokens.size > 2) return null
+                val project = contextElement.project
+                val name = tokens.getOrNull(1) ?: return null
                 val config = getCwtConfig(project).get(gameType).systemLinks[name] ?: return null
                 return config.pointer.element
             }
             "links" -> {
-                val name = tokens.getOrNull(2) ?: return null
+                if(tokens.isEmpty() || tokens.size > 2) return null
+                val project = contextElement.project
+                val name = tokens.getOrNull(1) ?: return null
                 val config = getCwtConfig(project).get(gameType).links[name] ?: return null
                 return config.pointer.element
             }
             "modifier_categories" -> {
-                val name = tokens.getOrNull(2) ?: return null
+                if(tokens.isEmpty() || tokens.size > 2) return null
+                val project = contextElement.project
+                val name = tokens.getOrNull(1) ?: return null
                 val config = getCwtConfig(project).get(gameType).modifierCategories[name] ?: return null
                 return config.pointer.element
             }
             "modifiers" -> {
-                val name = tokens.getOrNull(2) ?: return null
+                if(tokens.isEmpty() || tokens.size > 2) return null
+                val project = contextElement.project
+                val name = tokens.getOrNull(1) ?: return null
                 val config = getCwtConfig(project).get(gameType).modifiers[name] ?: return null
                 return config.pointer.element
             }
             else -> null
         }
     }
+    
+    override fun getUnresolvedMessage(link: String): String {
+        return PlsBundle.message("path.reference.unresolved.1", link)
+    }
 }
 
 class ParadoxDefinitionLinkProvider : DocumentationElementLinkProvider {
-    //e.g. #definition/stellaris/civic_or_origin.origin/origin_default
+    // e.g.
+    // pdx-def:origin_default
+    // pdx-def:civic_or_origin.origin/origin_default
+    // pdx-def:stellaris:civic_or_origin.origin/origin_default
     
     companion object {
-        const val LINK_PREFIX = "#definition/"
+        const val LINK_PREFIX = "pdx-def:"
     }
     
     override val linkPrefix = LINK_PREFIX
     
-    override fun resolveLink(shortLink: String, contextElement: PsiElement): PsiElement? {
+    override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
-        val tokens = shortLink.split('/')
-        if(tokens.size > 3) return null
-        val typeExpression = tokens.getOrNull(1) ?: return null
-        val name = tokens.getOrNull(2) ?: return null
+        val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
+        val tokens = remain.split('/')
+        if(tokens.isEmpty() || tokens.size > 2) return null
+        val typeExpression = if(tokens.size == 2) tokens.getOrNull(0) else null
+        val name = if(tokens.size == 2) tokens.getOrNull(1) else tokens.getOrNull(0)
+        if(name == null) return null
         val project = contextElement.project
         val selector = definitionSelector(project, contextElement).contextSensitive()
+            .withGameType(gameType)
         return ParadoxDefinitionSearch.search(name, typeExpression, selector).find()
+    }
+    
+    override fun getUnresolvedMessage(link: String): String {
+        return PlsBundle.message("path.reference.unresolved.2", link)
     }
 }
 
 class ParadoxLocalisationLinkProvider : DocumentationElementLinkProvider {
-    //e.g. #localisation/stellaris/KEY
+    // e.g.
+    // pdx-loc:KEY
+    // pdx-loc:stellaris:KEY
     
     companion object {
-        const val LINK_PREFIX = "#localisation/"
+        const val LINK_PREFIX = "pdx-loc:"
     }
     
     override val linkPrefix = LINK_PREFIX
     
-    override fun resolveLink(shortLink: String, contextElement: PsiElement): PsiElement? {
+    override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
-        val tokens = shortLink.split('/')
-        if(tokens.size > 2) return null
-        val name = tokens.getOrNull(1) ?: return null
+        val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
+        val name = remain
         val project = contextElement.project
         val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(contextElement.localeConfig)
+            .withGameType(gameType)
         return ParadoxLocalisationSearch.search(name, selector).find()
+    }
+    
+    override fun getUnresolvedMessage(link: String): String {
+        return PlsBundle.message("path.reference.unresolved.3", link)
     }
 }
 
 class ParadoxFilePathLinkProvider: DocumentationElementLinkProvider {
-    //e.g. #path/stellaris/path
+    // e.g. 
+    // pdx-path:path
+    // pdx-path:stellaris:path
     
     companion object {
-        const val LINK_PREFIX = "#path/"
+        const val LINK_PREFIX = "pdx-path:"
     }
     
     override val linkPrefix = LINK_PREFIX
     
-    override fun resolveLink(shortLink: String, contextElement: PsiElement): PsiElement? {
+    override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
-        val tokens = shortLink.split('/', limit = 2)
-        val filePath = tokens.getOrNull(1) ?: return null
+        val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
+        val filePath = remain
         val project = contextElement.project
         val selector = fileSelector(project, contextElement).contextSensitive()
-        return ParadoxFilePathSearch.search(filePath, null, selector).find()
-            ?.toPsiFile(project)
+            .withGameType(gameType)
+        return ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)
     }
+    
+    override fun getUnresolvedMessage(link: String): String {
+        return PlsBundle.message("path.reference.unresolved.4", link)
+    }
+}
+
+private fun getGameTypeAndRemain(shortLink: String): Tuple2<ParadoxGameType?, String> {
+    val i = shortLink.indexOf(':')
+    if(i == -1) return null to shortLink
+    return shortLink.substring(0, i).let { ParadoxGameType.resolve(it) } to shortLink.substring(i + 1)
 }

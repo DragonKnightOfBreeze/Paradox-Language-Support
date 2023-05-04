@@ -32,7 +32,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
     
     override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
         if(link == null || context == null) return null
-        return DocumentationElementLinkProvider.resolveLink(link, context)
+        return DocumentationElementLinkProvider.resolve(link, context)
     }
     
     //这里为RenameableFakePsiElement，也就是那些实际上没有声明处的PsiElement，提供快速文档
@@ -137,7 +137,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
                 if(appendSeparator) append(" | ") else appendSeparator = true
                 val valueConfig = configGroup.values[valueSetName]
                 if(valueConfig != null) {
-                    val typeLink = "${gameType.id}/values/${valueSetName}"
+                    val typeLink = "${gameType.linkToken}values/${valueSetName}"
                     appendCwtLink(typeLink, valueSetName)
                 } else {
                     append(valueSetName)
@@ -155,7 +155,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
             append(PlsBundle.message("prefix.complexEnumValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
             val complexEnumConfig = configGroup.complexEnums[enumName]
             if(complexEnumConfig != null) {
-                val typeLink = "${gameType.id}/complex_enums/${enumName}"
+                val typeLink = "${gameType.linkToken}complex_enums/${enumName}"
                 append(": ").appendCwtLink(typeLink, enumName)
             } else {
                 append(": ").append(enumName)

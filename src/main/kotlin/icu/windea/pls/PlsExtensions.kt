@@ -19,8 +19,6 @@ import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.documentation.impl.*
-import icu.windea.pls.lang.link.*
-import icu.windea.pls.lang.link.impl.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
@@ -313,34 +311,34 @@ fun StringBuilder.appendCwtLink(shortLink: String, linkText: String, context: Ps
     val linkPrefix = CwtConfigLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix$shortLink".escapeXml()
     val finalLinkText = linkText.escapeXml()
-    if(context != null && DocumentationElementLinkProvider.resolveLink(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    if(context != null && DocumentationElementLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }
 
 fun StringBuilder.appendDefinitionLink(gameType: ParadoxGameType, name: String, typeExpression: String, context: PsiElement? = null): StringBuilder {
     //如果context不为null切链接无法被解析，则显示未解析的链接
     val linkPrefix = ParadoxDefinitionLinkProvider.LINK_PREFIX
-    val finalLink = "$linkPrefix${gameType.id}/$typeExpression/$name".escapeXml()
+    val finalLink = "$linkPrefix${gameType.linkToken}$typeExpression/$name".escapeXml()
     val finalLinkText = name.escapeXml()
-    if(context != null && DocumentationElementLinkProvider.resolveLink(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    if(context != null && DocumentationElementLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }
 
 fun StringBuilder.appendLocalisationLink(gameType: ParadoxGameType, name: String, context: PsiElement? = null): StringBuilder {
     //如果context不为null切链接无法被解析，则显示未解析的链接
     val linkPrefix = ParadoxLocalisationLinkProvider.LINK_PREFIX
-    val finalLink = "$linkPrefix${gameType.id}/$name".escapeXml()
+    val finalLink = "$linkPrefix${gameType.linkToken}$name".escapeXml()
     val finalLinkText = name.escapeXml()
-    if(context != null && DocumentationElementLinkProvider.resolveLink(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    if(context != null && DocumentationElementLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }
 
 fun StringBuilder.appendFilePathLink(gameType: ParadoxGameType, filePath: String, linkText: String, context: PsiElement? = null): StringBuilder {
     //如果context不为null切链接无法被解析，则显示未解析的链接
     val linkPrefix = ParadoxFilePathLinkProvider.LINK_PREFIX
-    val finalLink = "$linkPrefix${gameType.id}/$filePath".escapeXml()
+    val finalLink = "$linkPrefix${gameType.linkToken}$filePath".escapeXml()
     val finalLinkText = linkText.escapeXml()
-    if(context != null && DocumentationElementLinkProvider.resolveLink(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    if(context != null && DocumentationElementLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }
 

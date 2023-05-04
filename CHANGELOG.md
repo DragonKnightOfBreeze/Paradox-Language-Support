@@ -67,6 +67,7 @@
 
 * [X] 修复引用了枚举的模版规则表达式无法被正常解析的问题（如`enum[component_tag]_weapon_damage_mult`）
 * [X] 提取扩展点提供对快速文档链接的支持，用于点击跳转到对应的定义/本地化等
+* [X] 可以在html/markdown中通过特定的超链接引用和跳转到指定的定义/本地化等（参见：`DocumentationElementLinkProviders.kt`）
 * [ ] 尝试推断脚本参数对应的CWT规则，并且如果推断结果是唯一且确定的，应用高级语言功能以及代码检查
 
 ## 0.9.15

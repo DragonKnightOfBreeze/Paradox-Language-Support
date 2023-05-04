@@ -6,8 +6,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.model.*
 
-fun <S : ChainedParadoxSelector<T>, T> S.withGameType(gameType: ParadoxGameType): S {
-    selectors += ParadoxWithGameTypeSelector(gameType)
+fun <S : ChainedParadoxSelector<T>, T> S.withGameType(gameType: ParadoxGameType?): S {
+    if(gameType != null) selectors += ParadoxWithGameTypeSelector(gameType)
     return this
 }
 

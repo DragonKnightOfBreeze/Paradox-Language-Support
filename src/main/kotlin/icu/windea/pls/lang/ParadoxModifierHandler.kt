@@ -137,7 +137,7 @@ object ParadoxModifierHandler {
 			append("<code>")
 			for(category in categories) {
 				if(appendSeparator) append(", ") else appendSeparator = true
-				appendCwtLink("${gameType.id}/modifier_categories/$category", category, contextElement)
+				appendCwtLink("${gameType.linkToken}modifier_categories/$category", category, contextElement)
 			}
 			append("</code>")
 		}
