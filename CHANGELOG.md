@@ -66,10 +66,19 @@
 ## 0.9.16
 
 * [X] 修复引用了枚举的模版规则表达式无法被正常解析的问题（如`enum[component_tag]_weapon_damage_mult`）
-* [X] 提取扩展点提供对快速文档链接的支持，用于点击跳转到对应的定义/本地化等
-* [X] 也可以在html/markdown等文件中通过特定的超链接，引用和跳转到指定的定义/本地化等（参见：`DocumentationElementLinkProviders.kt`）
-* [ ] 也可以在html/markdown等文件中通过DDS文件路径或者特定的超链接，渲染DDS图片或者本地化（参见：`DocumentationElementLinkProviders.kt`）
+* [X] 提取扩展点提供对快速文档链接的支持，用于点击跳转到对应的定义/本地化等（参见：`DocumentationElementLinkProviders.kt`）
+* [X] 快速文档链接也能作为html/markdown等文件中的超链接使用，从而引用和跳转到指定的定义/本地化等
+* [ ] DDS文件路径以及符合条件的快速文档链接也能作为html/markdown等文件中的图片超链接使用，从而渲染DDS图片和本地化
 * [ ] 尝试推断脚本参数对应的CWT规则，并且如果推断结果是唯一且确定的，应用高级语言功能以及代码检查
+
+以下是一些（图片）超链接的例子：
+
+```
+* [some_scripted_variable](pdx-sv:some_scripted_variable)
+* [origin_default](pdx-def:origin_default)
+* [origin_default](pdx-loc:origin_default)
+* [gfx/interface/icons/origins/origins_default.dds](pdx-path:gfx/interface/icons/origins/origins_default.dds)
+```
 
 ## 0.9.15
 
