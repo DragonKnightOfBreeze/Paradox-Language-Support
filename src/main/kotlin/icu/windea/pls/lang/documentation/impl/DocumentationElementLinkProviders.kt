@@ -102,7 +102,33 @@ class CwtConfigLinkProvider : DocumentationElementLinkProvider {
     }
     
     override fun getUnresolvedMessage(link: String): String {
-        return PlsBundle.message("path.reference.unresolved.1", link)
+        return PlsBundle.message("path.reference.unresolved.cwt", link)
+    }
+}
+
+class ParadoxScriptedVariableLinkProvider : DocumentationElementLinkProvider {
+    // e.g.
+    // pdx-sv:some_sv
+    // pdx-sv:stellaris:some_sv
+    
+    companion object {
+        const val LINK_PREFIX = "pdx-sv:"
+    }
+    
+    override val linkPrefix = LINK_PREFIX
+    
+    override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
+        ProgressManager.checkCanceled()
+        val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
+        val name = remain
+        val project = contextElement.project
+        val selector = scriptedVariableSelector(project, contextElement).contextSensitive()
+            .withGameType(gameType)
+        return ParadoxGlobalScriptedVariableSearch.search(name, selector).find() //global scripted variable only
+    }
+    
+    override fun getUnresolvedMessage(link: String): String {
+        return PlsBundle.message("path.reference.unresolved.sv", link)
     }
 }
 
@@ -133,7 +159,7 @@ class ParadoxDefinitionLinkProvider : DocumentationElementLinkProvider {
     }
     
     override fun getUnresolvedMessage(link: String): String {
-        return PlsBundle.message("path.reference.unresolved.2", link)
+        return PlsBundle.message("path.reference.unresolved.def", link)
     }
 }
 
@@ -159,7 +185,7 @@ class ParadoxLocalisationLinkProvider : DocumentationElementLinkProvider {
     }
     
     override fun getUnresolvedMessage(link: String): String {
-        return PlsBundle.message("path.reference.unresolved.3", link)
+        return PlsBundle.message("path.reference.unresolved.loc", link)
     }
 }
 
@@ -185,7 +211,7 @@ class ParadoxFilePathLinkProvider: DocumentationElementLinkProvider {
     }
     
     override fun getUnresolvedMessage(link: String): String {
-        return PlsBundle.message("path.reference.unresolved.4", link)
+        return PlsBundle.message("path.reference.unresolved.path", link)
     }
 }
 

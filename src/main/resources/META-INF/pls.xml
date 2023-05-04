@@ -25,6 +25,7 @@
     
     <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.CwtConfigLinkProvider"/>
     <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxDefinitionLinkProvider"/>
+    <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxScriptedVariableLinkProvider"/>
     <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxLocalisationLinkProvider"/>
     <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxFilePathLinkProvider"/>
     

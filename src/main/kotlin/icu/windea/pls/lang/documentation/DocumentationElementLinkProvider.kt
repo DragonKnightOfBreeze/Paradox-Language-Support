@@ -40,7 +40,7 @@ interface DocumentationElementLinkProvider {
                     if(result != null) return result
                 }
             }
-            return PlsBundle.message("path.reference.unresolved.0", link)
+            return PlsBundle.message("path.reference.unresolved", link)
         }
     }
 }
