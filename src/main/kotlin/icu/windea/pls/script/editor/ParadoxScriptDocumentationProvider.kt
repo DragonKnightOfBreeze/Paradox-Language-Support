@@ -136,13 +136,13 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
                 val gameType = definitionInfo.gameType
                 val typeConfig = definitionInfo.typeConfig
                 val typeLink = "${gameType.id}/types/${typeConfig.name}"
-                appendCwtLink(typeConfig.name, typeLink)
+                appendCwtLink(typeLink, typeConfig.name)
                 val subtypeConfigs = definitionInfo.subtypeConfigs
                 if(subtypeConfigs.isNotEmpty()) {
                     for(subtypeConfig in subtypeConfigs) {
                         append(", ")
                         val subtypeLink = "$typeLink/${subtypeConfig.name}"
-                        appendCwtLink(subtypeConfig.name, subtypeLink)
+                        appendCwtLink(subtypeLink, subtypeConfig.name)
                     }
                 }
             }
@@ -185,7 +185,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             if(resolved.message != null) {
                 map.put(key, resolved.message)
             } else if(resolved.localisation != null) {
-                map.put(key, buildString { appendLocalisationLink(definitionInfo.gameType, resolved.key, element, resolved = true) })
+                map.put(key, buildString { appendLocalisationLink(definitionInfo.gameType, resolved.key, element) })
             } else if(required) {
                 map.putIfAbsent(key, resolved.key)
             }
@@ -218,7 +218,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             if(resolved.message != null) {
                 map.putIfAbsent(key, resolved.message)
             } else if(resolved.file != null) {
-                map.put(key, buildString { appendFilePathLink(resolved.filePath, definitionInfo.gameType, resolved.filePath, element, resolved = true) })
+                map.put(key, buildString { appendFilePathLink(definitionInfo.gameType, resolved.filePath, resolved.filePath, element) })
             } else if(required) {
                 map.putIfAbsent(key, resolved.filePath)
             }
@@ -311,7 +311,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         val eventType = config.eventType
         appendBr()
         val typeLink = "${gameType.id}/types/event/$eventType"
-        append(PlsBundle.message("prefix.eventType")).append(" ").appendCwtLink(eventType, typeLink)
+        append(PlsBundle.message("prefix.eventType")).append(" ").appendCwtLink(typeLink, eventType)
     }
     
     private fun StringBuilder.buildDocumentationContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {

@@ -99,12 +99,12 @@ class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         
         val type = definitionType.first()
         val typeLink = "${gameType.id}/types/${type}"
-        appendCwtLink(type, typeLink)
+        appendCwtLink(typeLink, type)
         for((index, t) in definitionType.withIndex()) {
             if(index == 0) continue
             append(", ")
             val subtypeLink = "$typeLink/${t}"
-            appendCwtLink(t, subtypeLink)
+            appendCwtLink(subtypeLink, t)
         }
         return true
     }

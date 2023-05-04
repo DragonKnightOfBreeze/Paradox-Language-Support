@@ -86,7 +86,7 @@ class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val gameType = element.gameType
         appendBr().appendIndent()
         append(PlsBundle.message("ofInlineScript")).append(" ")
-        appendFilePathLink(inlineScriptExpression, gameType, filePath, element, true)
+        appendFilePathLink(gameType, filePath, inlineScriptExpression, element)
         return true
     }
 }

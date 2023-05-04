@@ -16,6 +16,7 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.link.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
@@ -30,7 +31,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
     
     override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
         if(link == null || context == null) return null
-        return resolveLink(link, context)
+        return PsiElementLinkProvider.resolveLink(link, context)
     }
     
     override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
@@ -135,7 +136,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
                     if(configGroup != null) {
                         val gameType = configGroup.gameType
                         val typeLink = "${gameType.id}/${typeCategory}/${typeName}"
-                        append(": ").appendCwtLink(typeName, typeLink, typeElement)
+                        append(": ").appendCwtLink(typeLink, typeName, typeElement)
                     } else {
                         append(": ").append(typeName)
                     }
@@ -182,12 +183,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         if(localisation != null) {
             appendBr()
             append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
-            append("Name = ").appendLocalisationLink(gameType, localisation.name, contextElement, resolved = true)
+            append("Name = ").appendLocalisationLink(gameType, localisation.name, contextElement)
         }
         if(descLocalisation != null) {
             appendBr()
             append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
-            append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, contextElement, resolved = true)
+            append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, contextElement)
         }
         if(sections != null && render) {
             if(localisation != null) {
@@ -216,7 +217,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         if(iconPath != null && iconFile != null) {
             appendBr()
             append(PlsBundle.message("prefix.relatedImage")).append(" ")
-            append("Icon = ").appendFilePathLink(iconPath, gameType, iconPath, contextElement, resolved = true)
+            append("Icon = ").appendFilePathLink(gameType, iconPath, iconPath, contextElement)
         }
         if(sections != null && render) {
             if(iconFile != null) {
@@ -316,7 +317,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             append("<code>")
             for(category in categories) {
                 if(appendSeparator) append(", ") else appendSeparator = true
-                appendCwtLink(category, "${gameType.id}/modifier_categories/$category", contextElement)
+                appendCwtLink("${gameType.id}/modifier_categories/$category", category, contextElement)
             }
             append("</code>")
         }

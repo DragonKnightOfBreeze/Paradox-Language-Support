@@ -15,6 +15,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.link.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.lang.parameter.*
@@ -31,7 +32,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
     
     override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
         if(link == null || context == null) return null
-        return resolveLink(link, context)
+        return PsiElementLinkProvider.resolveLink(link, context)
     }
     
     //这里为RenameableFakePsiElement，也就是那些实际上没有声明处的PsiElement，提供快速文档
@@ -137,7 +138,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
                 val valueConfig = configGroup.values[valueSetName]
                 if(valueConfig != null) {
                     val typeLink = "${gameType.id}/values/${valueSetName}"
-                    appendCwtLink(valueSetName, typeLink)
+                    appendCwtLink(typeLink, valueSetName)
                 } else {
                     append(valueSetName)
                 }
@@ -155,7 +156,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
             val complexEnumConfig = configGroup.complexEnums[enumName]
             if(complexEnumConfig != null) {
                 val typeLink = "${gameType.id}/complex_enums/${enumName}"
-                append(": ").appendCwtLink(enumName, typeLink)
+                append(": ").appendCwtLink(typeLink, enumName)
             } else {
                 append(": ").append(enumName)
             }
@@ -204,12 +205,12 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         if(localisation != null) {
             appendBr()
             append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
-            append("Name = ").appendLocalisationLink(gameType, localisation.name, element, resolved = true)
+            append("Name = ").appendLocalisationLink(gameType, localisation.name, element)
         }
         if(descLocalisation != null) {
             appendBr()
             append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
-            append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, element, resolved = true)
+            append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, element)
         }
         if(sections != null && render) {
             if(localisation != null) {
@@ -242,7 +243,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         if(iconPath != null && iconFile != null) {
             appendBr()
             append(PlsBundle.message("prefix.relatedImage")).append(" ")
-            append("Icon = ").appendFilePathLink(iconPath, gameType, iconPath, element, resolved = true)
+            append("Icon = ").appendFilePathLink(gameType, iconPath, iconPath, element)
         }
         if(sections != null && render) {
             if(iconFile != null) {

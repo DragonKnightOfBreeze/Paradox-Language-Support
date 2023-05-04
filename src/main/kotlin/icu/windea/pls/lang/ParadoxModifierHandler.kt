@@ -1,9 +1,7 @@
 package icu.windea.pls.lang
 
 import com.intellij.codeInsight.completion.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
@@ -139,7 +137,7 @@ object ParadoxModifierHandler {
 			append("<code>")
 			for(category in categories) {
 				if(appendSeparator) append(", ") else appendSeparator = true
-				appendCwtLink(category, "${gameType.id}/modifier_categories/$category", contextElement)
+				appendCwtLink("${gameType.id}/modifier_categories/$category", category, contextElement)
 			}
 			append("</code>")
 		}

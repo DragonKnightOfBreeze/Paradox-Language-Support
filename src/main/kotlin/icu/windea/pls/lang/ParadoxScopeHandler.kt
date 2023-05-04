@@ -369,7 +369,7 @@ object ParadoxScopeHandler {
         with(builder) {
             when {
                 isFakeScopeId(scopeId) -> append(scopeId)
-                else -> appendCwtLink(scopeId, "${gameType.id}/scopes/$scopeId", contextElement)
+                else -> appendCwtLink("${gameType.id}/scopes/$scopeId", scopeId, contextElement)
             }
         }
     }
@@ -379,12 +379,12 @@ object ParadoxScopeHandler {
             var appendSeparator = false
             scopeContext.detailMap.forEach { (systemLink, scope) ->
                 if(appendSeparator) appendBr() else appendSeparator = true
-                appendCwtLink(systemLink, "${gameType.id}/system_links/$systemLink", contextElement)
+                appendCwtLink("${gameType.id}/system_links/$systemLink", systemLink, contextElement)
                 append(" = ")
                 when {
                     isFakeScopeId(scope.id) -> append(scope)
-                    scope is ParadoxScope.InferredScope -> appendCwtLink(scope.id, "${gameType.id}/scopes/${scope.id}", contextElement).append("!")
-                    else -> appendCwtLink(scope.id, "${gameType.id}/scopes/${scope.id}", contextElement)
+                    scope is ParadoxScope.InferredScope -> appendCwtLink("${gameType.id}/scopes/${scope.id}", scope.id, contextElement).append("!")
+                    else -> appendCwtLink("${gameType.id}/scopes/${scope.id}", scope.id, contextElement)
                 }
             }
         }

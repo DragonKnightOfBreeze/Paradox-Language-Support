@@ -108,7 +108,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             
             appendBr().appendIndent()
             append(PlsBundle.message("byTemplate")).append(" ")
-            appendCwtLink(templateString, "${gameType.id}/modifiers/$templateString")
+            appendCwtLink("${gameType.id}/modifiers/$templateString", templateString)
             
             //加上生成源信息
             if(references.isNotEmpty()) {
@@ -127,12 +127,12 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             
                             val type = definitionTypes.first()
                             val typeLink = "${gameType.id}/types/${type}"
-                            appendCwtLink(type, typeLink)
+                            appendCwtLink(typeLink, type)
                             for((index, t) in definitionTypes.withIndex()) {
                                 if(index == 0) continue
                                 append(", ")
                                 val subtypeLink = "$typeLink/${t}"
-                                appendCwtLink(t, subtypeLink)
+                                appendCwtLink(subtypeLink, t)
                             }
                         }
                         CwtDataType.EnumValue -> {
@@ -141,13 +141,13 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             append(PlsBundle.message("generatedFromEnumValue"))
                             append(" ")
                             if(configGroup.enums.containsKey(enumName)) {
-                                appendCwtLink(enumName, "${gameType.id}/enums/${enumName}/${enumValueName}", element)
+                                appendCwtLink("${gameType.id}/enums/${enumName}/${enumValueName}", enumName, element)
                                 append(": ")
-                                appendCwtLink(enumName, "${gameType.id}/enums/${enumName}", element)
+                                appendCwtLink("${gameType.id}/enums/${enumName}", enumName, element)
                             } else if(configGroup.complexEnums.containsKey(enumName)) {
                                 append(enumValueName.escapeXml())
                                 append(": ")
-                                appendCwtLink(enumName, "${gameType.id}/complex_enums/${enumName}", element)
+                                appendCwtLink("${gameType.id}/complex_enums/${enumName}", enumName, element)
                             } else {
                                 //unexpected
                                 append(enumValueName.escapeXml())
@@ -160,9 +160,9 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             val valueName = configExpression.value!!
                             append(PlsBundle.message("generatedFromValueSetValue"))
                             if(configGroup.values.containsKey(valueName)) {
-                                appendCwtLink(valueName, "${gameType.id}/values/${valueSetName}/${valueName}", element)
+                                appendCwtLink("${gameType.id}/values/${valueSetName}/${valueName}", valueName, element)
                                 append(": ")
-                                appendCwtLink(valueName, "${gameType.id}/values/${valueSetName}", element)
+                                appendCwtLink("${gameType.id}/values/${valueSetName}", valueName, element)
                             } else {
                                 append(valueName.escapeXml())
                                 append(": ")
@@ -191,7 +191,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                 append(" ")
                 val key = modifier.config.name
                 val gameType = definitionInfo.gameType
-                appendCwtLink(key, "${gameType.id}/modifiers/${key}")
+                appendCwtLink("${gameType.id}/modifiers/${key}", key)
             }
         }
         return true
