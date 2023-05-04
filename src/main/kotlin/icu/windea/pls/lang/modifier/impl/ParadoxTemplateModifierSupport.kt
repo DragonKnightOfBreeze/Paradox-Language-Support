@@ -119,7 +119,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                         CwtDataType.Definition -> {
                             val definitionName = reference.name
                             val definitionType = configExpression.value!!
-                            val definitionTypes = definitionType.split('.', limit = 2)
+                            val definitionTypes = definitionType.split('.')
                             append(PlsBundle.message("generatedFromDefinition"))
                             append(" ")
                             appendDefinitionLink(gameType, definitionName, definitionType, element)

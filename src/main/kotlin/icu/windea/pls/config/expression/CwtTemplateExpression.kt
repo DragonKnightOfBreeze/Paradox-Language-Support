@@ -30,9 +30,9 @@ class CwtTemplateExpression(
 					var i1: Int = -1
 					var i2: Int = -1
 					while(true) {
-						i1 = expressionString.indexOf('[')
+						i1 = expressionString.indexOf('[', startIndex)
 						if(i1 != -1) {
-							//预先排除
+							//预先排除 - 应当直接使用enum[xxx]
 							if(expressionString.contains("complex_enum[")) return EmptyExpression
 							
 							i1 = expressionString.indexOf("enum[", startIndex)
