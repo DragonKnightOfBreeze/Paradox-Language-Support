@@ -7,7 +7,8 @@ import icu.windea.pls.*
 /**
  * 提供对快速文档链接的支持，用于点击跳转到对应的定义/本地化等。
  * 
- * 也提供将其作为html/markdown等文件中的超链接的支持，同样可以点击跳转到对应的定义/本地化等。
+ * 这里可以解析的快速文档链接，也可以作为html/markdown等文件中的超链接使用。
+ * 如果能够直接或间接解析为一个DDS文件，或者能够解析为一个本地化，也可以作为html/markdown等文件中的图片超链接使用。
  */
 interface DocumentationElementLinkProvider {
     val linkPrefix: String

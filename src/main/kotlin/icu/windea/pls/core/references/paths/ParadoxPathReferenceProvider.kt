@@ -6,7 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.lang.documentation.*
 
 /**
- * 用于支持通过超链接（html、markdown等）跳转到指定的定义、本地化等。
+ * 用于支持在html/markdown等文件中通过特定的超链接引用和跳转到指定的定义/本地化等。
  * 
  * @see icu.windea.pls.lang.documentation.DocumentationElementLinkProvider
  */
