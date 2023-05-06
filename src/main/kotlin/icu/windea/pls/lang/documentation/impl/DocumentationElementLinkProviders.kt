@@ -1,13 +1,18 @@
 package icu.windea.pls.lang.documentation.impl
 
+import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.psi.*
 
 class CwtConfigLinkProvider : DocumentationElementLinkProvider {
     // e.g.
@@ -83,6 +88,20 @@ class CwtConfigLinkProvider : DocumentationElementLinkProvider {
                 val config = getCwtConfig(project).get(gameType).links[name] ?: return null
                 return config.pointer.element
             }
+            "localisation_links" -> {
+                if(tokens.isEmpty() || tokens.size > 2) return null
+                val project = contextElement.project
+                val name = tokens.getOrNull(1) ?: return null
+                val config = getCwtConfig(project).get(gameType).localisationLinks[name] ?: return null
+                return config.pointer.element
+            }
+            "localisation_commands" -> {
+                if(tokens.isEmpty() || tokens.size > 2) return null
+                val project = contextElement.project
+                val name = tokens.getOrNull(1) ?: return null
+                val config = getCwtConfig(project).get(gameType).localisationCommands[name] ?: return null
+                return config.pointer.element
+            }
             "modifier_categories" -> {
                 if(tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
@@ -103,6 +122,43 @@ class CwtConfigLinkProvider : DocumentationElementLinkProvider {
     
     override fun getUnresolvedMessage(link: String): String {
         return PlsBundle.message("path.reference.unresolved.cwt", link)
+    }
+    
+    override fun create(builder: StringBuilder, element: PsiElement, plainLink: Boolean): Boolean {
+        if(element !is CwtProperty && element !is CwtValue) return false
+        val config = element.getUserData(PlsKeys.cwtConfigKey) ?: return false //retrieve config from user data
+        //这里目前仅支持可能用到的那些
+        when {
+            config is CwtSystemLinkConfig -> {
+                val gameType = config.info.configGroup.gameType
+                val name = config.name
+                val link = "${linkPrefix}${gameType.linkToken}system_links/${name}"
+                DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
+                return true
+            }
+            config is CwtLinkConfig -> {
+                val gameType = config.info.configGroup.gameType
+                val name = config.name
+                val link = "${linkPrefix}${gameType.linkToken}links/${name}"
+                DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
+                return true
+            }
+            config is CwtLocalisationLinkConfig -> {
+                val gameType = config.info.configGroup.gameType
+                val name = config.name
+                val link = "${linkPrefix}${gameType.linkToken}localisation_links/${name}"
+                DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
+                return true
+            }
+            config is CwtLocalisationCommandConfig -> {
+                val gameType = config.info.configGroup.gameType
+                val name = config.name
+                val link = "${linkPrefix}${gameType.linkToken}localisation_commands/${name}"
+                DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
+                return true
+            }
+            else -> return false
+        }
     }
 }
 
@@ -129,6 +185,15 @@ class ParadoxScriptedVariableLinkProvider : DocumentationElementLinkProvider {
     
     override fun getUnresolvedMessage(link: String): String {
         return PlsBundle.message("path.reference.unresolved.sv", link)
+    }
+    
+    override fun create(builder: StringBuilder, element: PsiElement, plainLink: Boolean): Boolean {
+        if(element !is ParadoxScriptScriptedVariable) return false
+        val gameType = selectGameType(element)
+        val name = element.name
+        val link = "${linkPrefix}${gameType.linkToken}${name}"
+        DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
+        return true
     }
 }
 
@@ -161,6 +226,18 @@ class ParadoxDefinitionLinkProvider : DocumentationElementLinkProvider {
     override fun getUnresolvedMessage(link: String): String {
         return PlsBundle.message("path.reference.unresolved.def", link)
     }
+    
+    override fun create(builder: StringBuilder, element: PsiElement, plainLink: Boolean): Boolean {
+        if(element !is ParadoxScriptDefinitionElement) return false
+        val definitionInfo = element.definitionInfo ?: return false
+        val gameType = definitionInfo.gameType
+        val name = definitionInfo.name
+        if(name == PlsConstants.anonymousString) return false //ignore anonymous definitions
+        val typesText = definitionInfo.types.joinToString(".")
+        val link = "${linkPrefix}${gameType.linkToken}${typesText}/${name}"
+        DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
+        return true
+    }
 }
 
 class ParadoxLocalisationLinkProvider : DocumentationElementLinkProvider {
@@ -187,6 +264,17 @@ class ParadoxLocalisationLinkProvider : DocumentationElementLinkProvider {
     override fun getUnresolvedMessage(link: String): String {
         return PlsBundle.message("path.reference.unresolved.loc", link)
     }
+    
+    override fun create(builder: StringBuilder, element: PsiElement, plainLink: Boolean): Boolean {
+        if(element !is ParadoxLocalisationProperty) return false
+        val localisationInfo = element.localisationInfo ?: return false
+        if(localisationInfo.category != ParadoxLocalisationCategory.Localisation) return false
+        val name = localisationInfo.name
+        val gameType = localisationInfo.gameType
+        val link = "${linkPrefix}${gameType.linkToken}${name}"
+        DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
+        return true
+    }
 }
 
 class ParadoxFilePathLinkProvider: DocumentationElementLinkProvider {
@@ -212,6 +300,10 @@ class ParadoxFilePathLinkProvider: DocumentationElementLinkProvider {
     
     override fun getUnresolvedMessage(link: String): String {
         return PlsBundle.message("path.reference.unresolved.path", link)
+    }
+    
+    override fun create(builder: StringBuilder, element: PsiElement, plainLink: Boolean): Boolean {
+        return false //unsupported since unnecessary
     }
 }
 

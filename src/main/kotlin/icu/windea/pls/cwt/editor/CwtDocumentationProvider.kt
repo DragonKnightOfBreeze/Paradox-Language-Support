@@ -6,7 +6,6 @@ import com.intellij.lang.documentation.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
@@ -192,11 +191,11 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         }
         if(sections != null && render) {
             if(localisation != null) {
-                val richText = ParadoxLocalisationTextRenderer.render(localisation)
+                val richText = ParadoxLocalisationTextHtmlRenderer.render(localisation, forDoc = true)
                 sections.put("Name", richText)
             }
             if(descLocalisation != null) {
-                val richText = ParadoxLocalisationTextRenderer.render(descLocalisation)
+                val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation, forDoc = true)
                 sections.put("Desc", richText)
             }
         }
@@ -410,18 +409,6 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
                     section(key, value)
                 }
             }
-        }
-    }
-    
-    private fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
-        val element = when {
-            originalElement == null -> return null
-            originalElement.elementType == TokenType.WHITE_SPACE -> originalElement.prevSibling ?: return null
-            else -> originalElement
-        }
-        return when {
-            element is LeafPsiElement -> element.parent
-            else -> element
         }
     }
     

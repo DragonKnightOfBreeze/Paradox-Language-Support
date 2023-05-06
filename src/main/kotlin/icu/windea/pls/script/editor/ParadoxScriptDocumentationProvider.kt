@@ -4,8 +4,6 @@ package icu.windea.pls.script.editor
 
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
-import com.intellij.psi.impl.source.tree.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -193,7 +191,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
                 sectionKeys.add(key)
                 if(render && sections != null) {
                     //加上渲染后的相关本地化文本
-                    val richText = ParadoxLocalisationTextRenderer.render(resolved.localisation)
+                    val richText = ParadoxLocalisationTextHtmlRenderer.render(resolved.localisation, forDoc = true)
                     sections.put(key.toCapitalizedWords(), richText)
                 }
             }
@@ -341,18 +339,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
                     section(key, value)
                 }
             }
-        }
-    }
-    
-    private fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
-        val element = when {
-            originalElement == null -> return null
-            originalElement.elementType == TokenType.WHITE_SPACE -> originalElement.prevSibling ?: return null
-            else -> originalElement
-        }
-        return when {
-            element is LeafPsiElement -> element.parent
-            else -> element
         }
     }
 }

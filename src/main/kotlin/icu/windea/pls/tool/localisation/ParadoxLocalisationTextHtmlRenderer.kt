@@ -7,26 +7,27 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import java.util.*
 
 @Suppress("unused")
-object ParadoxLocalisationTextRenderer {
+object ParadoxLocalisationTextHtmlRenderer {
     class Context {
         val builder = StringBuilder()
         val guardStack = LinkedList<String>() //防止StackOverflow
     }
     
-    fun render(element: ParadoxLocalisationProperty): String {
+    fun render(element: ParadoxLocalisationProperty, forDoc: Boolean = false): String {
         val context = Context()
         context.guardStack.addLast(element.name)
         renderTo(element, context)
         return context.builder.toString()
     }
     
-    fun renderTo(element: ParadoxLocalisationProperty, context: Context) {
+    private fun renderTo(element: ParadoxLocalisationProperty, context: Context) {
         val richTextList = element.propertyValue?.richTextList
         if(richTextList == null || richTextList.isEmpty()) return
         for(richText in richTextList) {
@@ -73,7 +74,7 @@ object ParadoxLocalisationTextRenderer {
                 val resolvedName = resolved.name
                 if(context.guardStack.contains(resolvedName)) {
                     //infinite recursion, do not render context
-                    context.builder.append("<code>").append(element.text).append("</code>")
+                    context.builder.append("<code>").append(element.text.escapeXml()).append("</code>")
                 } else {
                     context.guardStack.addLast(resolvedName)
                     renderTo(resolved, context)
@@ -81,13 +82,13 @@ object ParadoxLocalisationTextRenderer {
                 }
             }
             resolved is CwtProperty -> {
-                context.builder.append(resolved.value)
+                context.builder.append(resolved.value?.escapeXml() ?: PlsConstants.unresolvedString)
             }
             resolved is ParadoxScriptScriptedVariable && resolved.value != null -> {
-                context.builder.append(resolved.value)
+                context.builder.append(resolved.value?.escapeXml() ?: PlsConstants.unresolvedString)
             }
             else -> {
-                context.builder.append("<code>").append(element.text).append("</code>")
+                context.builder.append("<code>").append(element.text.escapeXml()).append("</code>")
             }
         }
         if(colorHex != null) {
@@ -118,8 +119,11 @@ object ParadoxLocalisationTextRenderer {
     }
     
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
-        //使用原始文本
-        context.builder.append("<code>").append(element.text).append("</code>")
+        //直接显示原始文本
+        //（仅限快速文档）点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc），但不显示为超链接
+        context.builder.append("<code>")
+        DocumentationElementLinkProvider.getElementText(context.builder, element, plainLink = true)
+        context.builder.append("</code>")
     }
     
     private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context) {

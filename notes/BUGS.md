@@ -6,24 +6,12 @@
 
 ***
 
-一些可能过慢的代码检查：
-
-* `icu.windea.pls.script.inspections.general.MissingExpressionInspection`
-* `icu.windea.pls.script.inspections.general.TooManyExpressionInspection`
-* `icu.windea.pls.script.inspections.general.UnusedParameterInspection`
-* `icu.windea.pls.script.inspections.general.UnusedValueSetValueInspection`
-* `icu.windea.pls.script.inspections.general.UnsetValueSetValueInspection`
-
-可能的原因：
-
-* `ReferencesSearch.search()`
-
-***
-
 ```
 # 无法提示move和moving
 propagate_state = { "move" = "moving" }
 ```
+
+***
 
 疑难杂症：
 

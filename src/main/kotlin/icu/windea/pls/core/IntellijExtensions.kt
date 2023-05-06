@@ -763,6 +763,18 @@ fun getLineCommentDocText(element: PsiElement): String? {
     }
     return lines?.joinToString("<br>")
 }
+
+fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
+    val element = when {
+        originalElement == null -> return null
+        originalElement.elementType == TokenType.WHITE_SPACE -> originalElement.prevSibling ?: return null
+        else -> originalElement
+    }
+    return when {
+        element is LeafPsiElement -> element.parent
+        else -> element
+    }
+}
 //endregion
 
 //region Index Extensions

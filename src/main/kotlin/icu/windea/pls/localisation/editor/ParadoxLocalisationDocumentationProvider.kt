@@ -157,7 +157,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	private fun StringBuilder.buildLocalisationSections(element: ParadoxLocalisationProperty) {
 		//加上渲染后的本地化文本
 		if(!getSettings().documentation.renderLocalisationForLocalisations) return
-		val richText = ParadoxLocalisationTextRenderer.render(element)
+		val richText = ParadoxLocalisationTextHtmlRenderer.render(element, forDoc = true)
 		if(richText.isNotEmpty()) {
 			sections {
 				section(PlsBundle.message("sectionTitle.text"), richText)

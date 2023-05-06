@@ -17,7 +17,7 @@ import java.util.*
 import java.util.concurrent.atomic.*
 
 @Suppress("UnstableApiUsage")
-object ParadoxLocalisationTextHintsRenderer {
+object ParadoxLocalisationTextInlayRenderer {
     /**
      * 如果[truncateLimit]小于等于0，则仅渲染首行文本。
      */

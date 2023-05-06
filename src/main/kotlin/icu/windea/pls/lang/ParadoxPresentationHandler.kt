@@ -21,17 +21,17 @@ object ParadoxPresentationHandler {
             val locName = definitionInfo.resolvePrimaryLocalisationName() ?: return null
             return locName
         }
-        return ParadoxLocalisationTextRenderer.render(localizedName)
+        return ParadoxLocalisationTextHtmlRenderer.render(localizedName)
     }
     
     fun getText(localisation: ParadoxLocalisationProperty): String {
-        return ParadoxLocalisationTextRenderer.render(localisation)
+        return ParadoxLocalisationTextHtmlRenderer.render(localisation)
     }
     
     fun getText(localisationKey: String, project: Project, contextElement: PsiElement? = null): String? {
         val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale())
         val localisation = ParadoxLocalisationSearch.search(localisationKey, selector).find() ?: return null
-        return ParadoxLocalisationTextRenderer.render(localisation)
+        return ParadoxLocalisationTextHtmlRenderer.render(localisation)
     }
     
     fun getNameLabel(definition: ParadoxScriptDefinitionElement, colorHex: String? = null): JLabel? {

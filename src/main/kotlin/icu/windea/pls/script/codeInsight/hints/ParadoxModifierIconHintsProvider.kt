@@ -50,7 +50,7 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
         }
     }
     
-    //icu.windea.pls.tool.localisation.ParadoxLocalisationTextHintsRenderer.renderIconTo
+    //icu.windea.pls.tool.localisation.ParadoxLocalisationTextInlayRenderer.renderIconTo
     
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
         if(element !is ParadoxScriptStringExpressionElement) return true

@@ -13,7 +13,7 @@ object ParadoxLocalisationTextUIRenderer {
     //com.intellij.openapi.actionSystem.impl.ActionToolbarImpl.paintToImage
     
     fun render(element: ParadoxLocalisationProperty, colorHex: String? = null): JLabel? {
-        val text = ParadoxLocalisationTextRenderer.render(element)
+        val text = ParadoxLocalisationTextHtmlRenderer.render(element)
         if(text.isEmpty()) return null
         val label = JLabel()
         label.text = buildString {
