@@ -35,6 +35,9 @@ class ParadoxLocalisationCommandScopePsiReference(
 	//缓存解析结果以优化性能
 	
 	override fun resolve(): PsiElement? {
+		if(PlsThreadLocals.defaultResolveToValueSetValue.get()) {
+			return doResolve()
+		}
 		return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
 	}
 	
@@ -58,6 +61,9 @@ class ParadoxLocalisationCommandScopePsiReference(
 			if(predefinedEventTarget != null) return predefinedEventTarget.pointer.element
 			
 			//尝试识别为value[event_target]或value[global_event_target]（需要预先在脚本文件中使用到）
+			if(PlsThreadLocals.defaultResolveToValueSetValue.get()) {
+				return ParadoxValueSetValueElement(element, name, "event_target", Access.Read, gameType, project)
+			}
 			val selector = valueSetValueSelector(project, element).contextSensitive()
 			val eventTarget = ParadoxValueSetValueSearch.search(name, "event_target", selector).findFirst()
 			if(eventTarget != null) return ParadoxValueSetValueElement(element, name, "event_target", Access.Read, gameType, project)
@@ -89,6 +95,9 @@ class ParadoxLocalisationCommandScopePsiReference(
 			if(predefinedEventTarget != null) return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
 			
 			//尝试识别为value[event_target]或value[global_event_target]
+			if(PlsThreadLocals.defaultResolveToValueSetValue.get()) {
+				return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
+			}
 			val selector = valueSetValueSelector(project, element)
 			val eventTarget = ParadoxValueSetValueSearch.search(name, "event_target", selector).findFirst()
 			if(eventTarget != null) return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY

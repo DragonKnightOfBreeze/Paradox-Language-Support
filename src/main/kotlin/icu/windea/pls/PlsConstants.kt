@@ -80,7 +80,8 @@ object PlsPatterns {
 }
 
 object PlsThreadLocals {
-    val threadLocalTextEditorContainer = ThreadLocal<TextEditor?>()
+    val textEditor = ThreadLocal<TextEditor?>()
+    val defaultResolveToValueSetValue = ThreadLocal.withInitial { false } //用于优化性能，默认直接将一些引用解析为valueSetValue
 }
 
 object PlsKeys {

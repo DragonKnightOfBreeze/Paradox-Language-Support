@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.localisation.psi.*
@@ -158,11 +159,11 @@ object ParadoxLocalisationTextInlayRenderer {
     }
     
     private fun PresentationFactory.renderCommandTo(element: ParadoxLocalisationCommand, context: Context): Boolean {
-        //直接显示命令文本
+        //直接显示命令文本，适用对应的颜色高亮
         //点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc）
         element.forEachChild { e ->
             ProgressManager.checkCanceled()
-            getElementPresentation(context.builder, e, this)
+            getElementPresentation(context.builder, e, this, context.editor)
         }
         return continueProcess(context)
     }
@@ -217,7 +218,19 @@ object ParadoxLocalisationTextInlayRenderer {
         return context.truncateLimit <= 0 || context.truncateRemain.get() >= 0
     }
     
-    fun getElementPresentation(builder: MutableList<InlayPresentation>, element: PsiElement, factory: PresentationFactory) {
+    fun getElementPresentation(builder: MutableList<InlayPresentation>, element: PsiElement, factory: PresentationFactory, editor: Editor) {
+        //这里默认直接解析成对应的valueSetValue，从而快速完成渲染
+        try {
+            PlsThreadLocals.defaultResolveToValueSetValue.set(true)
+            doGetElementPresentation(builder, element, factory, editor)
+        } finally {
+            PlsThreadLocals.defaultResolveToValueSetValue.set(false)
+        }
+        doGetElementPresentation(builder, element, factory, editor)
+    }
+    
+    @Suppress("UnstableApiUsage")
+    private fun doGetElementPresentation(builder: MutableList<InlayPresentation>, element: PsiElement, factory: PresentationFactory, editor: Editor) {
         val text = element.text
         val references = element.references
         if(references.isEmpty()) {
@@ -232,7 +245,11 @@ object ParadoxLocalisationTextInlayRenderer {
                 builder.add(factory.smallText(text.substring(i, startOffset)))
             }
             i = reference.rangeInElement.endOffset
-            builder.add(factory.psiSingleReference(factory.smallText(reference.rangeInElement.substring(text))) { reference.resolve() })
+            val attributesKey = reference.castOrNull<AttributesKeyAware>()?.getAttributesKey() ?: DefaultLanguageHighlighterColors.IDENTIFIER
+            var presentation = factory.smallText(reference.rangeInElement.substring(text))
+            presentation = WithAttributesPresentation(presentation, attributesKey, editor, WithAttributesPresentation.AttributesFlags().withSkipBackground(true))
+            presentation = factory.psiSingleReference(presentation) { reference.resolve() }
+            builder.add(presentation)
         }
         val endOffset = references.last().rangeInElement.endOffset
         if(endOffset != text.length) {

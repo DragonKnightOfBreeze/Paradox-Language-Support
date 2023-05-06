@@ -15,7 +15,7 @@ private val setColorActionCache = CacheBuilder.newBuilder()
 	.build(CacheLoader.from<ParadoxTextColorInfo, SetColorAction> { SetColorAction(it) })
 
 private fun doGetChildren(): List<AnAction> {
-	val textEditor = PlsThreadLocals.threadLocalTextEditorContainer.get() ?: return emptyList()
+	val textEditor = PlsThreadLocals.textEditor.get() ?: return emptyList()
 	val project = textEditor.editor.project ?: return emptyList()
 	val virtualFile = textEditor.file
 	val file = virtualFile.toPsiFile<PsiFile>(project) ?: return emptyList()

@@ -1,11 +1,15 @@
 package icu.windea.pls.tool.localisation
 
 import com.intellij.codeInsight.documentation.*
+import com.intellij.lang.documentation.*
+import com.intellij.openapi.editor.*
+import com.intellij.openapi.editor.richcopy.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.localisation.psi.*
@@ -125,7 +129,7 @@ object ParadoxLocalisationTextHtmlRenderer {
     }
     
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
-        //直接显示命令文本
+        //直接显示命令文本，适用对应的颜色高亮
         //（仅限快速文档）点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc），但不显示为超链接
         context.builder.append("<code>")
         if(context.forDoc) {
@@ -160,6 +164,17 @@ object ParadoxLocalisationTextHtmlRenderer {
      * 获取嵌入PSI链接的PSI元素的HTML文本。
      */
     fun getElementText(builder: StringBuilder, element: PsiElement, plainLink: Boolean = true) {
+        //这里默认直接解析成对应的valueSetValue，从而快速完成渲染
+        try {
+            PlsThreadLocals.defaultResolveToValueSetValue.set(true)
+            doGetElementText(builder, element, plainLink)
+        } finally {
+            PlsThreadLocals.defaultResolveToValueSetValue.set(false)
+        }
+    }
+    
+    @Suppress("UnstableApiUsage")
+    private fun doGetElementText(builder: StringBuilder, element: PsiElement, plainLink: Boolean) {
         val text = element.text
         val references = element.references
         if(references.isEmpty()) {
@@ -174,19 +189,20 @@ object ParadoxLocalisationTextHtmlRenderer {
                 builder.append(text.substring(i, startOffset))
             }
             i = reference.rangeInElement.endOffset
+            val attributesKey = reference.castOrNull<AttributesKeyAware>()?.getAttributesKey() ?: DefaultLanguageHighlighterColors.IDENTIFIER
+            val highlightingSaturation = DocumentationSettings.getHighlightingSaturation(true)
             val resolved = reference.resolve()
             if(resolved == null) {
-                builder.append(reference.rangeInElement.substring(text))
+                val s = reference.rangeInElement.substring(text)
+                HtmlSyntaxInfoUtil.appendStyledSpan(builder, attributesKey, s, highlightingSaturation)
                 continue
             }
             val link = DocumentationElementLinkProvider.create(resolved, plainLink)
             if(link != null) {
-                //以普通文本的风格显示
-                builder.append("<span style=\"color: inherit\">")
-                builder.append(link)
-                builder.append("</span>")
+                HtmlSyntaxInfoUtil.appendStyledSpan(builder, attributesKey, link, highlightingSaturation)
             } else {
-                builder.append(reference.rangeInElement.substring(text))
+                val s = reference.rangeInElement.substring(text)
+                HtmlSyntaxInfoUtil.appendStyledSpan(builder, attributesKey, s, highlightingSaturation)
             }
         }
         val endOffset = references.last().rangeInElement.endOffset
