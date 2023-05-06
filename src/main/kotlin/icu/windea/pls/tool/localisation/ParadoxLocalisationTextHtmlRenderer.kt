@@ -130,7 +130,8 @@ object ParadoxLocalisationTextHtmlRenderer {
         context.builder.append("<code>")
         if(context.forDoc) {
             element.forEachChild { e ->
-                getElementText(context.builder, e, plainLink = true)
+                ProgressManager.checkCanceled()
+                getElementText(context.builder, e)
             }
         } else {
             context.builder.append(element.text)
@@ -158,7 +159,7 @@ object ParadoxLocalisationTextHtmlRenderer {
     /**
      * 获取嵌入PSI链接的PSI元素的HTML文本。
      */
-    fun getElementText(builder: StringBuilder, element: PsiElement, plainLink: Boolean = false) {
+    fun getElementText(builder: StringBuilder, element: PsiElement, plainLink: Boolean = true) {
         val text = element.text
         val references = element.references
         if(references.isEmpty()) {
@@ -167,6 +168,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         }
         var i = 0
         for(reference in references) {
+            ProgressManager.checkCanceled()
             val startOffset = reference.rangeInElement.startOffset
             if(startOffset != i) {
                 builder.append(text.substring(i, startOffset))
@@ -177,8 +179,13 @@ object ParadoxLocalisationTextHtmlRenderer {
                 builder.append(reference.rangeInElement.substring(text))
                 continue
             }
-            val r = DocumentationElementLinkProvider.EP_NAME.extensionList.any { it.create(builder, resolved, plainLink) }
-            if(!r) {
+            val link = DocumentationElementLinkProvider.create(resolved, plainLink)
+            if(link != null) {
+                //以普通文本的风格显示
+                builder.append("<span style=\"color: inherit\">")
+                builder.append(link)
+                builder.append("</span>")
+            } else {
                 builder.append(reference.rangeInElement.substring(text))
             }
         }

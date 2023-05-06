@@ -145,10 +145,12 @@ object ParadoxLocalisationTextInlayRenderer {
                 val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
                 if(icon.iconHeight <= context.iconHeightLimit) {
                     //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-                    context.builder.add(smallScaledIcon(icon))
+                    val presentation = psiSingleReference(smallScaledIcon(icon)) { resolved }
+                    context.builder.add(presentation)
                 } else {
                     val unknownIcon = IconLoader.findIcon(PlsPaths.unknownPngUrl) ?: return true
-                    context.builder.add(smallScaledIcon(unknownIcon))
+                    val presentation = psiSingleReference(smallScaledIcon(unknownIcon)) { resolved }
+                    context.builder.add(presentation)
                 }
             }
         }
@@ -159,6 +161,7 @@ object ParadoxLocalisationTextInlayRenderer {
         //直接显示命令文本
         //点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc）
         element.forEachChild { e ->
+            ProgressManager.checkCanceled()
             getElementPresentation(context.builder, e, this)
         }
         return continueProcess(context)
@@ -223,6 +226,7 @@ object ParadoxLocalisationTextInlayRenderer {
         }
         var i = 0
         for(reference in references) {
+            ProgressManager.checkCanceled()
             val startOffset = reference.rangeInElement.startOffset
             if(startOffset != i) {
                 builder.add(factory.smallText(text.substring(i, startOffset)))

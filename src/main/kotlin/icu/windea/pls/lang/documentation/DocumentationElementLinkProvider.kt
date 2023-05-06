@@ -3,7 +3,6 @@ package icu.windea.pls.lang.documentation
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 
 /**
  * 提供对快速文档链接的支持，用于点击跳转到对应的定义/本地化等。
@@ -21,7 +20,7 @@ interface DocumentationElementLinkProvider {
     
     fun getUnresolvedMessage(link: String): String? = null
     
-    fun create(builder: StringBuilder, element: PsiElement, plainLink: Boolean = false): Boolean
+    fun create(element: PsiElement, plainLink: Boolean = true): String? = null
     
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<DocumentationElementLinkProvider>("icu.windea.pls.documentationElementLinkProvider")
@@ -48,6 +47,10 @@ interface DocumentationElementLinkProvider {
                 }
             }
             return PlsBundle.message("path.reference.unresolved", link)
+        }
+        
+        fun create(element: PsiElement, plainLink: Boolean = true): String? {
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.create(element, plainLink) }
         }
     }
 }
