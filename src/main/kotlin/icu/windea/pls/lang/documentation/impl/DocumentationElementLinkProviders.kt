@@ -124,7 +124,7 @@ class CwtConfigLinkProvider : DocumentationElementLinkProvider {
         return PlsBundle.message("path.reference.unresolved.cwt", link)
     }
     
-    override fun create( element: PsiElement, plainLink: Boolean): String? {
+    override fun create(element: PsiElement, plainLink: Boolean): String? {
         if(element !is CwtProperty && element !is CwtValue) return null
         val config = element.getUserData(PlsKeys.cwtConfigKey) ?: return null //retrieve config from user data
         //这里目前仅支持可能用到的那些

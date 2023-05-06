@@ -79,7 +79,7 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
     }
     
     private fun getNameLabel(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: Data): JLabel? {
-        return ParadoxPresentationHandler.getNameLabel(definition, "#fff")
+        return ParadoxPresentationHandler.getNameLabel(definition, Color.WHITE)
     }
     
     private fun getCostLabel(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: Data): JLabel? {

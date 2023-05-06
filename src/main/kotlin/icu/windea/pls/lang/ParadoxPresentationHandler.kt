@@ -11,6 +11,7 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import icu.windea.pls.tool.localisation.*
+import java.awt.*
 import javax.swing.*
 
 object ParadoxPresentationHandler {
@@ -34,18 +35,18 @@ object ParadoxPresentationHandler {
         return ParadoxLocalisationTextHtmlRenderer.render(localisation)
     }
     
-    fun getNameLabel(definition: ParadoxScriptDefinitionElement, colorHex: String? = null): JLabel? {
+    fun getNameLabel(definition: ParadoxScriptDefinitionElement, color: Color? = null): JLabel? {
         val definitionInfo = definition.definitionInfo ?: return null
         val localizedName = definitionInfo.resolvePrimaryLocalisation()
         if(localizedName == null) {
             val locName = definitionInfo.resolvePrimaryLocalisationName() ?: return null
-            return ParadoxLocalisationTextUIRenderer.render(locName, colorHex)
+            return ParadoxLocalisationTextUIRenderer.render(locName, color)
         }
-        return ParadoxLocalisationTextUIRenderer.render(localizedName, colorHex)
+        return ParadoxLocalisationTextUIRenderer.render(localizedName, color)
     }
     
-    fun getLabel(localisation: ParadoxLocalisationProperty, colorHex: String? = null): JLabel? {
-        return ParadoxLocalisationTextUIRenderer.render(localisation, colorHex)
+    fun getLabel(localisation: ParadoxLocalisationProperty, color: Color? = null): JLabel? {
+        return ParadoxLocalisationTextUIRenderer.render(localisation, color)
     }
     
     fun getLabel(localisationKey: String, project: Project, contextElement: PsiElement? = null): JLabel? {

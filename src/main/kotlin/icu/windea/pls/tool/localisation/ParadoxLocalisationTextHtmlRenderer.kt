@@ -1,37 +1,38 @@
 package icu.windea.pls.tool.localisation
 
 import com.intellij.codeInsight.documentation.*
-import com.intellij.lang.documentation.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.editor.richcopy.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
+import java.awt.*
 import java.util.*
+import javax.swing.*
 
 @Suppress("unused")
 object ParadoxLocalisationTextHtmlRenderer {
     class Context(
         var builder: StringBuilder
     ) {
+        var color: Color? = null
         var forDoc: Boolean = false
         val guardStack = LinkedList<String>() //防止StackOverflow
+        val colorStack = LinkedList<Color>()
     }
     
-    fun render(element: ParadoxLocalisationProperty, forDoc: Boolean = false): String {
-        return buildString { renderTo(this, element, forDoc) }
+    fun render(element: ParadoxLocalisationProperty, color: Color? = null, forDoc: Boolean = false): String {
+        return buildString { renderTo(this, element, color, forDoc) }
     }
     
-    fun renderTo(builder: StringBuilder, element: ParadoxLocalisationProperty, forDoc: Boolean = false) {
+    fun renderTo(builder: StringBuilder, element: ParadoxLocalisationProperty, color: Color? = null, forDoc: Boolean = false) {
         val context = Context(builder)
+        context.color = color
         context.forDoc = forDoc
         context.guardStack.addLast(element.name)
         renderTo(element, context)
@@ -40,10 +41,18 @@ object ParadoxLocalisationTextHtmlRenderer {
     private fun renderTo(element: ParadoxLocalisationProperty, context: Context) {
         val richTextList = element.propertyValue?.richTextList
         if(richTextList == null || richTextList.isEmpty()) return
+        val color = context.color
+        if(color != null) {
+            context.colorStack.addLast(color)
+            context.builder.append("<span color=\"").append(color.toHex()).append("\">")
+        } else {
+            context.builder.append("<span>")
+        }
         for(richText in richTextList) {
             ProgressManager.checkCanceled()
             renderTo(richText, context)
         }
+        context.builder.append("</span>")
     }
     
     private fun renderTo(element: ParadoxLocalisationRichText, context: Context) {
@@ -73,9 +82,9 @@ object ParadoxLocalisationTextHtmlRenderer {
     
     private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {
         //如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，否则保留颜色码
-        val colorHex = element.colorConfig?.color?.toHex()
-        if(colorHex != null) {
-            context.builder.append("<span style=\"color: >").append(colorHex).append("\">")
+        val color = element.colorConfig?.color
+        if(color != null) {
+            context.builder.append("<span style=\"color: >").append(color.toHex()).append("\">")
         }
         val resolved = element.reference?.resolve()
             ?: element.scriptedVariableReference?.reference?.resolve()
@@ -101,7 +110,7 @@ object ParadoxLocalisationTextHtmlRenderer {
                 context.builder.append("<code>").append(element.text.escapeXml()).append("</code>")
             }
         }
-        if(colorHex != null) {
+        if(color != null) {
             context.builder.append("</span>")
         }
     }
@@ -135,7 +144,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         if(context.forDoc) {
             element.forEachChild { e ->
                 ProgressManager.checkCanceled()
-                getElementText(context.builder, e)
+                getElementText(e, context)
             }
         } else {
             context.builder.append(element.text)
@@ -147,15 +156,17 @@ object ParadoxLocalisationTextHtmlRenderer {
         //如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if(richTextList.isEmpty()) return
-        val colorHex = element.colorConfig?.color?.toHex()
-        if(colorHex != null) {
-            context.builder.append("<span style=\"color: #").append(colorHex).append("\">")
+        val color = element.colorConfig?.color
+        if(color != null) {
+            context.colorStack.addLast(color)
+            context.builder.append("<span style=\"color: #").append(color.toHex()).append("\">")
         }
         for(richText in richTextList) {
             ProgressManager.checkCanceled()
             renderTo(richText, context)
         }
-        if(colorHex != null) {
+        if(color != null) {
+            context.colorStack.removeLast()
             context.builder.append("</span>")
         }
     }
@@ -163,22 +174,23 @@ object ParadoxLocalisationTextHtmlRenderer {
     /**
      * 获取嵌入PSI链接的PSI元素的HTML文本。
      */
-    fun getElementText(builder: StringBuilder, element: PsiElement, plainLink: Boolean = true) {
+    fun getElementText(element: PsiElement, context: Context) {
         //这里默认直接解析成对应的valueSetValue，从而快速完成渲染
         try {
             PlsThreadLocals.defaultResolveToValueSetValue.set(true)
-            doGetElementText(builder, element, plainLink)
+            doGetElementText(element, context)
         } finally {
             PlsThreadLocals.defaultResolveToValueSetValue.set(false)
         }
     }
     
-    @Suppress("UnstableApiUsage")
-    private fun doGetElementText(builder: StringBuilder, element: PsiElement, plainLink: Boolean) {
+    private fun doGetElementText(element: PsiElement, context: Context) {
+        val defaultColor = UIManager.getColor("EditorPane.foreground")
+        
         val text = element.text
         val references = element.references
         if(references.isEmpty()) {
-            builder.append(text.escapeXml())
+            context.builder.append(text.escapeXml())
             return
         }
         var i = 0
@@ -186,28 +198,36 @@ object ParadoxLocalisationTextHtmlRenderer {
             ProgressManager.checkCanceled()
             val startOffset = reference.rangeInElement.startOffset
             if(startOffset != i) {
-                builder.append(text.substring(i, startOffset))
+                val s = text.substring(i, startOffset)
+                context.builder.append(s.escapeXml())
             }
             i = reference.rangeInElement.endOffset
-            val attributesKey = reference.castOrNull<AttributesKeyAware>()?.getAttributesKey() ?: DefaultLanguageHighlighterColors.IDENTIFIER
-            val highlightingSaturation = DocumentationSettings.getHighlightingSaturation(true)
             val resolved = reference.resolve()
             if(resolved == null) {
                 val s = reference.rangeInElement.substring(text)
-                HtmlSyntaxInfoUtil.appendStyledSpan(builder, attributesKey, s, highlightingSaturation)
+                context.builder.append(s.escapeXml())
                 continue
             }
-            val link = DocumentationElementLinkProvider.create(resolved, plainLink)
+            val link = DocumentationElementLinkProvider.create(resolved)
             if(link != null) {
-                HtmlSyntaxInfoUtil.appendStyledSpan(builder, attributesKey, link, highlightingSaturation)
+                //如果没有颜色，这里需要使用文档的默认前景色，以显示为普通文本
+                val useDefaultColor = context.colorStack.isEmpty()
+                if(useDefaultColor) {
+                    context.builder.append("<span style=\"color: #").append(defaultColor.toHex()).append("\">")
+                }
+                context.builder.append(link)
+                if(useDefaultColor) {
+                    context.builder.append("</span>")
+                }
             } else {
                 val s = reference.rangeInElement.substring(text)
-                HtmlSyntaxInfoUtil.appendStyledSpan(builder, attributesKey, s, highlightingSaturation)
+                context.builder.append(s.escapeXml())
             }
         }
         val endOffset = references.last().rangeInElement.endOffset
         if(endOffset != text.length) {
-            builder.append(text.substring(endOffset))
+            val s = text.substring(endOffset)
+            context.builder.append(s.escapeXml())
         }
     }
 }
