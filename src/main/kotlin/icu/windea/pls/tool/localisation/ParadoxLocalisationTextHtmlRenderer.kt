@@ -15,16 +15,22 @@ import java.util.*
 
 @Suppress("unused")
 object ParadoxLocalisationTextHtmlRenderer {
-    class Context {
-        val builder = StringBuilder()
+    class Context(
+        var builder: StringBuilder
+    ) {
+        var forDoc: Boolean = false
         val guardStack = LinkedList<String>() //防止StackOverflow
     }
     
     fun render(element: ParadoxLocalisationProperty, forDoc: Boolean = false): String {
-        val context = Context()
+        return buildString { renderTo(this, element, forDoc) }
+    }
+    
+    fun renderTo(builder: StringBuilder, element: ParadoxLocalisationProperty, forDoc: Boolean = false) {
+        val context = Context(builder)
+        context.forDoc = forDoc
         context.guardStack.addLast(element.name)
         renderTo(element, context)
-        return context.builder.toString()
     }
     
     private fun renderTo(element: ParadoxLocalisationProperty, context: Context) {
@@ -119,10 +125,16 @@ object ParadoxLocalisationTextHtmlRenderer {
     }
     
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
-        //直接显示原始文本
+        //直接显示命令文本
         //（仅限快速文档）点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc），但不显示为超链接
         context.builder.append("<code>")
-        DocumentationElementLinkProvider.getElementText(context.builder, element, plainLink = true)
+        if(context.forDoc) {
+            element.forEachChild { e ->
+                getElementText(context.builder, e, plainLink = true)
+            }
+        } else {
+            context.builder.append(element.text)
+        }
         context.builder.append("</code>")
     }
     
@@ -140,6 +152,39 @@ object ParadoxLocalisationTextHtmlRenderer {
         }
         if(colorHex != null) {
             context.builder.append("</span>")
+        }
+    }
+    
+    /**
+     * 获取嵌入PSI链接的PSI元素的HTML文本。
+     */
+    fun getElementText(builder: StringBuilder, element: PsiElement, plainLink: Boolean = false) {
+        val text = element.text
+        val references = element.references
+        if(references.isEmpty()) {
+            builder.append(text.escapeXml())
+            return
+        }
+        var i = 0
+        for(reference in references) {
+            val startOffset = reference.rangeInElement.startOffset
+            if(startOffset != i) {
+                builder.append(text.substring(i, startOffset))
+            }
+            i = reference.rangeInElement.endOffset
+            val resolved = reference.resolve()
+            if(resolved == null) {
+                builder.append(reference.rangeInElement.substring(text))
+                continue
+            }
+            val r = DocumentationElementLinkProvider.EP_NAME.extensionList.any { it.create(builder, resolved, plainLink) }
+            if(!r) {
+                builder.append(reference.rangeInElement.substring(text))
+            }
+        }
+        val endOffset = references.last().rangeInElement.endOffset
+        if(endOffset != text.length) {
+            builder.append(text.substring(endOffset))
         }
     }
 }

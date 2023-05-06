@@ -49,45 +49,5 @@ interface DocumentationElementLinkProvider {
             }
             return PlsBundle.message("path.reference.unresolved", link)
         }
-        
-        /**
-         * 获取嵌入PSI链接的PSI元素的HTML文本。
-         */
-        fun getElementText(referenceElement: PsiElement, plainLink: Boolean = false): String {
-            return buildString { getElementText(this, referenceElement, plainLink) }
-        }
-        
-        /**
-         * 获取嵌入PSI链接的PSI元素的HTML文本。
-         */
-        fun getElementText(builder: StringBuilder, element: PsiElement, plainLink: Boolean = false) {
-            val text = element.text
-            val references = element.references
-            if(references.isEmpty()) {
-                builder.append(text.escapeXml())
-                return
-            }
-            var i = 0
-            for(reference in references) {
-                val startOffset = reference.rangeInElement.startOffset
-                if(startOffset != i) {
-                    builder.append(text.substring(i, startOffset))
-                }
-                i = reference.rangeInElement.endOffset
-                val resolved = reference.resolve()
-                if(resolved == null) {
-                    builder.append(reference.rangeInElement.substring(text))
-                    continue
-                }
-                val r = EP_NAME.extensionList.any { it.create(builder, resolved, plainLink) }
-                if(!r) {
-                    builder.append(reference.rangeInElement.substring(text))
-                }
-            }
-            val endOffset = references.last().rangeInElement.endOffset
-            if(endOffset != text.length) {
-                builder.append(text.substring(endOffset))
-            }
-        }
     }
 }

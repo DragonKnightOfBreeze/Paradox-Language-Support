@@ -7,16 +7,20 @@ import java.util.*
 
 @Suppress("unused", "UNUSED_PARAMETER")
 object ParadoxLocalisationTextExtractor {
-    class Context {
-        val builder = StringBuilder()
+    class Context(
+        var builder: StringBuilder
+    ) {
         val guardStack = LinkedList<String>() //防止StackOverflow
     }
     
     fun extract(element: ParadoxLocalisationProperty): String {
-        val context = Context()
+        return buildString { extractTo(this, element) }
+    }
+    
+    fun extractTo(builder: StringBuilder, element: ParadoxLocalisationProperty) {
+        val context = Context(builder)
         context.guardStack.addLast(element.name)
         extractTo(element, context)
-        return context.builder.toString()
     }
     
     private fun extractTo(element: ParadoxLocalisationProperty, context: Context) {

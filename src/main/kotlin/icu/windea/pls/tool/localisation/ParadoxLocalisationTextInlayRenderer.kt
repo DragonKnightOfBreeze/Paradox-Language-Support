@@ -23,17 +23,19 @@ object ParadoxLocalisationTextInlayRenderer {
      */
     class Context(
         val editor: Editor,
-        val truncateLimit: Int,
-        val iconHeightLimit: Int
+        var builder: MutableList<InlayPresentation>
     ) {
-        var builder: MutableList<InlayPresentation> = SmartList()
-        val truncateRemain = AtomicInteger(truncateLimit) //记录到需要截断为止所剩余的长度
+        var truncateLimit: Int = -1
+        var iconHeightLimit: Int = -1
+        val truncateRemain by lazy { AtomicInteger(truncateLimit) } //记录到需要截断为止所剩余的长度
         val guardStack = LinkedList<String>() //防止StackOverflow
     }
     
     fun render(element: ParadoxLocalisationProperty, factory: PresentationFactory, editor: Editor, truncateLimit: Int, iconHeightLimit: Int): InlayPresentation? {
         //虽然看起来截断后的长度不正确，但是实际上是正确的，因为图标前后往往存在或不存在神秘的空白
-        val context = Context(editor, truncateLimit, iconHeightLimit)
+        val context = Context(editor, SmartList())
+        context.truncateLimit = truncateLimit
+        context.iconHeightLimit = iconHeightLimit
         context.guardStack.addLast(element.name)
         val r = factory.renderTo(element, context)
         if(!r) {
@@ -63,7 +65,7 @@ object ParadoxLocalisationTextInlayRenderer {
             is ParadoxLocalisationEscape -> renderEscapeTo(element, context)
             is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, context)
             is ParadoxLocalisationIcon -> renderIconTo(element, context)
-            is ParadoxLocalisationCommand -> renderCodeTo(element, context)
+            is ParadoxLocalisationCommand -> renderCommandTo(element, context)
             is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, context)
             else -> true
         }
@@ -103,7 +105,7 @@ object ParadoxLocalisationTextInlayRenderer {
                     context.guardStack.addLast(resolvedName)
                     val oldBuilder = context.builder
                     context.builder = SmartList()
-                    renderTo(resolved , context)
+                    renderTo(resolved, context)
                     context.guardStack.removeLast()
                     val newBuilder = context.builder
                     context.builder = oldBuilder
@@ -143,19 +145,22 @@ object ParadoxLocalisationTextInlayRenderer {
                 val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
                 if(icon.iconHeight <= context.iconHeightLimit) {
                     //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-                    context. builder.add(smallScaledIcon(icon))
+                    context.builder.add(smallScaledIcon(icon))
                 } else {
                     val unknownIcon = IconLoader.findIcon(PlsPaths.unknownPngUrl) ?: return true
-                    context. builder.add(smallScaledIcon(unknownIcon))
+                    context.builder.add(smallScaledIcon(unknownIcon))
                 }
             }
         }
         return true
     }
     
-    private fun PresentationFactory.renderCodeTo(element: ParadoxLocalisationCommand, context: Context): Boolean {
-        //使用原始文本
-        context. builder.add(truncatedSmallText(element.text, context))
+    private fun PresentationFactory.renderCommandTo(element: ParadoxLocalisationCommand, context: Context): Boolean {
+        //直接显示命令文本
+        //点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc）
+        element.forEachChild { e ->
+            getElementPresentation(context.builder, e, this)
+        }
         return continueProcess(context)
     }
     
@@ -207,5 +212,27 @@ object ParadoxLocalisationTextInlayRenderer {
     
     private fun continueProcess(context: Context): Boolean {
         return context.truncateLimit <= 0 || context.truncateRemain.get() >= 0
+    }
+    
+    fun getElementPresentation(builder: MutableList<InlayPresentation>, element: PsiElement, factory: PresentationFactory) {
+        val text = element.text
+        val references = element.references
+        if(references.isEmpty()) {
+            builder.add(factory.smallText(element.text))
+            return
+        }
+        var i = 0
+        for(reference in references) {
+            val startOffset = reference.rangeInElement.startOffset
+            if(startOffset != i) {
+                builder.add(factory.smallText(text.substring(i, startOffset)))
+            }
+            i = reference.rangeInElement.endOffset
+            builder.add(factory.psiSingleReference(factory.smallText(reference.rangeInElement.substring(text))) { reference.resolve() })
+        }
+        val endOffset = references.last().rangeInElement.endOffset
+        if(endOffset != text.length) {
+            builder.add(factory.smallText(text.substring(endOffset)))
+        }
     }
 }
