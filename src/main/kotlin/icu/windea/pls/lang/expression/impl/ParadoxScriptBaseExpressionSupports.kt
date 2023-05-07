@@ -19,7 +19,7 @@ class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupport() {
         return config.pointer.element
     }
     
-    override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         result.addBlockElement(context)
     }
 }
@@ -29,7 +29,7 @@ class ParadoxScriptBoolExpressionSupport: ParadoxScriptExpressionSupport() {
         return config.expression?.type == CwtDataType.Bool
     }
     
-    override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         result.addExpressionElement(context, PlsLookupElements.yesLookupElement)
         result.addExpressionElement(context, PlsLookupElements.noLookupElement)
     }

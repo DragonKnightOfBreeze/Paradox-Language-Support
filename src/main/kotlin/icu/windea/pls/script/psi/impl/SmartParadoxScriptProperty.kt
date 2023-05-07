@@ -27,9 +27,6 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 	override val type: ParadoxDataType?
 		get() = _valueType ?: super.type.also { _valueType = it }
 	
-	override val parameters: Map<String, ParadoxParameterInfo>
-		get() = _parameters ?: super.parameters.also { _parameters = it }
-	
 	override fun subtreeChanged() {
 		_name = null
 		_value = null

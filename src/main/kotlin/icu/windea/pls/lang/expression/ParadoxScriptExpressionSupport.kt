@@ -7,6 +7,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.script.psi.*
 
@@ -30,7 +31,7 @@ abstract class ParadoxScriptExpressionSupport {
         return resolve(element, rangeInElement, expression, config, isKey, false).toSingletonSetOrEmpty()
     }
     
-    open fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+    open fun complete(context: ProcessingContext, result: CompletionResultSet) {
         
     }
     
@@ -69,10 +70,11 @@ abstract class ParadoxScriptExpressionSupport {
             return emptySet()
         }
         
-        fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+        fun complete(context: ProcessingContext, result: CompletionResultSet) {
+            val config = context.config ?: return
             EP_NAME.extensionList.forEach { 
                 if(it.supports(config)) {
-                    it.complete(config, context, result)
+                    it.complete(context, result)
                 }
             }
         }

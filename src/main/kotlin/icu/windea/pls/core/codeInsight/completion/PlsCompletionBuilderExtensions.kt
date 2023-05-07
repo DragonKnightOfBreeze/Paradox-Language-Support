@@ -81,7 +81,7 @@ fun CompletionResultSet.addScriptExpressionElement(
     builder: ParadoxScriptExpressionLookupElementBuilder
 ) = with(builder) {
     //should be filtered out before, check again here
-    if((!builder.scopeMatched || context.scopeMatched == false) && getSettings().completion.completeOnlyScopeIsMatched) return
+    if((!builder.scopeMatched || !context.scopeMatched) && getSettings().completion.completeOnlyScopeIsMatched) return
     
     val config = context.config
     

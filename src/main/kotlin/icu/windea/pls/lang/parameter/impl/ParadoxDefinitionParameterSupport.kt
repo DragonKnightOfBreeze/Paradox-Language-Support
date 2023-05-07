@@ -28,6 +28,35 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return definitionInfo.type in definitionInfo.configGroup.definitionTypesSupportParameters
     }
     
+    override fun findContext(element: PsiElement): ParadoxScriptDefinitionElement? {
+        val context = element.findParentDefinition()
+        return context?.takeIf { isContext(it) }
+    }
+    
+    override fun findContextReferenceInfo(element: PsiElement, config: CwtDataConfig<*>?, from: ParadoxParameterContextReferenceInfo.FromLocation): ParadoxParameterContextReferenceInfo? {
+        when(from) {
+            ParadoxParameterContextReferenceInfo.FromLocation.Argument -> {
+                if(config == null) return null
+                //infer context config
+                val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parent?.castOrNull<CwtPropertyConfig>() ?: return null
+                if(contextConfig.expression.type != CwtDataType.Definition) return null
+                val contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
+                val rangeInElement = contextReferenceElement.propertyKey.textRangeInParent
+                val definitionName = contextReferenceElement.name
+                val definitionTypes = contextConfig.expression.value?.split('.') ?: return null
+                val existingParameterNames = emptySet<String>() //TODO
+                val gameType = config.info.configGroup.gameType ?: return null
+                val project = config.info.configGroup.project
+                val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(), rangeInElement, definitionName, existingParameterNames, gameType, project)
+                info.putUserData(definitionNameKey, definitionName)
+                info.putUserData(definitionTypesKey, definitionTypes)
+                return info
+            }
+            ParadoxParameterContextReferenceInfo.FromLocation.ContextReference -> TODO()
+            ParadoxParameterContextReferenceInfo.FromLocation.InContextReference -> TODO()
+        }
+    }
+    
     override fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement? {
         val name = element.name ?: return null
         return doResolveParameterOrArgument(element, name)
@@ -39,7 +68,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
     
     private fun doResolveParameterOrArgument(element: PsiElement, name: String): ParadoxParameterElement? {
-        val context = element.findParentDefinition()?.takeIf { isContext(it) } ?: return null
+        val context = findContext(element) ?: return null
         val definitionInfo = context.definitionInfo ?: return null
         val definitionName = context.name
         val definitionTypes = definitionInfo.types
@@ -89,6 +118,16 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val definitionTypes = element.getUserData(definitionTypesKey) ?: return false
         val definitionType = definitionTypes.joinToString(".")
         val project = element.project
+        val selector = definitionSelector(project, element).contextSensitive()
+        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQueryAsync(processor)
+        return true
+    }
+    
+    override fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+        val definitionName = contextReferenceInfo.getUserData(definitionNameKey) ?: return false
+        val definitionTypes = contextReferenceInfo.getUserData(definitionTypesKey) ?: return false
+        val definitionType = definitionTypes.joinToString(".")
+        val project = contextReferenceInfo.project
         val selector = definitionSelector(project, element).contextSensitive()
         ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQueryAsync(processor)
         return true

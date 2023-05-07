@@ -53,7 +53,8 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         return ParadoxLocalisationSearch.search(expression, selector).findAll()
     }
     
-    override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        val config = context.config ?: return
         val keyword = context.keyword
         
         //因为这里的提示结果可能有上千条，按照输入的关键字过滤结果，关键字变更时重新提示
@@ -107,7 +108,8 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
         return ParadoxSyncedLocalisationSearch.search(expression, selector).findAll()
     }
     
-    override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        val config = context.config ?: return
         val keyword = context.keyword
         
         //因为这里的提示结果可能有上千条，按照输入的关键字过滤结果，关键字变更时重新提示
@@ -162,7 +164,8 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         return ParadoxLocalisationSearch.search(expression, selector).findAll()
     }
     
-    override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        val config = context.config ?: return
         if(context.quoted) return
         val keyword = context.keyword
         
@@ -219,7 +222,8 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport(
         return ParadoxDefinitionSearch.search(expression, typeExpression, selector).findAll()
     }
     
-    override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        val config = context.config ?: return
         val scopeContext = context.scopeContext
         val typeExpression = config.expression?.value ?: return
         val configGroup = config.info.configGroup
@@ -291,7 +295,8 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         }
     }
     
-    override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        val config = context.config ?: return
         val configExpression = config.expression ?: return
         val configGroup = config.info.configGroup
         val project = configGroup.project
@@ -369,7 +374,8 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
         return null
     }
     
-    override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        val config = context.config ?: return
         val enumName = config.expression?.value ?: return
         val configGroup = config.info.configGroup
         val project = configGroup.project
@@ -440,7 +446,7 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport() 
         return ParadoxConfigHandler.resolveModifier(element, expression, configGroup)
     }
     
-    override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         //提示预定义的modifier
         ParadoxConfigHandler.completeModifier(context, result)
     }
@@ -462,23 +468,16 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport()
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         //尝试解析为参数名（仅限key）
         if(isKey != true || config !is CwtPropertyConfig) return null
-        val invocationExpression = element.findParentProperty(fromParentBlock = true)
-            ?.castOrNull<ParadoxScriptProperty>()
-            ?: return null
-        val invocationExpressionConfig = config.parent
-            ?.castOrNull<CwtPropertyConfig>()
-            ?: return null
-        return ParadoxParameterSupportOld.resolveFromInvocationExpression(expression, invocationExpression, invocationExpressionConfig)
+        return ParadoxParameterSupport.resolveArgument(element, rangeInElement, config)
     }
     
-    override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
-        val contextElement = context.contextElement
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        val config = context.config ?: return
         //提示参数名（仅限key）
-        if(context.isKey != true || config !is CwtPropertyConfig) return
-        ProgressManager.checkCanceled()
-        val invocationExpressionElement = contextElement.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return
-        val invocationExpressionConfig = config.parent as? CwtPropertyConfig ?: return
-        ParadoxParameterHandler.completeParametersForInvocationExpression(invocationExpressionElement, invocationExpressionConfig, context, result)
+        val contextElement = context.contextElement
+        val isKey = context.isKey
+        if(isKey != true || config !is CwtPropertyConfig) return
+        return ParadoxParameterHandler.completeArguments(contextElement, context, result)
     }
 }
 
@@ -501,7 +500,7 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
         return ParadoxLocalisationParameterSupport.resolveArgument(element, rangeInElement, config)
     }
     
-    override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         //NOTE 不兼容本地化参数（CwtDataType.LocalisationParameter），因为那个引用也可能实际上对应一个缺失的本地化的名字
     }
 }
@@ -541,7 +540,8 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport()
         return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, alias, alias.expression, configGroup, isKey)
     }
     
-    override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        val config = context.config ?: return
         val aliasName = config.expression?.value ?: return
         ParadoxConfigHandler.completeAliasName(aliasName, context, result)
     }
@@ -597,7 +597,8 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptConstantLikeExpressi
         }
     }
     
-    override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        val config = context.config ?: return
         val configExpression = config.expression ?: return
         val icon = when(configExpression) {
             is CwtKeyExpression -> PlsIcons.Property
@@ -641,7 +642,7 @@ class ParadoxScriptTemplateExpressionSupport : ParadoxScriptConstantLikeExpressi
         return ParadoxConfigHandler.resolveTemplateExpression(element, expression, configExpression, configGroup)
     }
     
-    override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         ParadoxConfigHandler.completeTemplateExpression(context, result)
     }
 }

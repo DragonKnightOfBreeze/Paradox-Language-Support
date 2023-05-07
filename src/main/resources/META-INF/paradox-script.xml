@@ -22,8 +22,7 @@
     <lang.findUsagesProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
     <elementDescriptionProvider implementation="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
     <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptAnnotator"/>
-    <codeInsight.parameterInfo language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.parameterInfo.ParadoxInvocationExpressionParameterInfoHandler"/>
-    <codeInsight.parameterInfo language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.parameterInfo.ParadoxScriptValueExpressionParameterInfoHandler"/>
+    <codeInsight.parameterInfo language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.parameterInfo.ParadoxParameterInfoHandler"/>
     <declarationRangeHandler key="icu.windea.pls.script.psi.ParadoxScriptProperty" implementationClass="icu.windea.pls.script.codeInsight.ParadoxDefinitionDeclarationRangeHandler"/>
     <lang.implementationTextSelectioner language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptImplementationTextSelectioner"/>
     <errorQuickFixProvider implementation="icu.windea.pls.script.codeInsight.ParadoxScriptErrorQuickFixProvider"/>

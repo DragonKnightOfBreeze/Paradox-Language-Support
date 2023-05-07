@@ -114,7 +114,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
     private fun StringBuilder.buildParameterDefinition(element: ParadoxParameterElement) {
         val name = element.name
         definition {
-            val r = ParadoxParameterSupportOld.getDocumentationDefinition(element, this)
+            val r = ParadoxParameterSupport.getDocumentationDefinition(element, this)
                 || ParadoxLocalisationParameterSupport.getDocumentationDefinition(element, this)
             if(!r) {
                 //显示默认的快速文档

@@ -31,7 +31,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 			
 			override fun visitElement(element: PsiElement) {
 				if(element is ParadoxScriptScriptedVariable) {
-					val name = element.name
+					val name = element.name ?: return
 					variableGroup.getOrPut(name) { SmartList() }.add(element)
 					return
 				}

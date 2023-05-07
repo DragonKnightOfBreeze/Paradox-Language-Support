@@ -856,7 +856,7 @@ object ParadoxConfigHandler {
             put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
         }
         
-        ParadoxScriptExpressionSupport.complete(config, context, result)
+        ParadoxScriptExpressionSupport.complete(context, result)
         
         when(configExpression.type) {
             CwtDataType.Value, CwtDataType.ValueSet -> {

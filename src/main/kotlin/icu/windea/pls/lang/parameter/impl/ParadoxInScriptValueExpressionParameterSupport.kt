@@ -2,6 +2,7 @@ package icu.windea.pls.lang.parameter.impl
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.util.*
+import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
@@ -15,6 +16,10 @@ import icu.windea.pls.script.psi.*
 class ParadoxInScriptValueExpressionParameterSupport: ParadoxDefinitionParameterSupport(){
     companion object {
         val nodesKey = Key.create<Map<TextRange, ParadoxScriptValueArgumentExpressionNode>>("paradox.parameterElement.node")
+    }
+    
+    override fun findContextReferenceInfo(element: PsiElement, config: CwtDataConfig<*>?, from: ParadoxParameterContextReferenceInfo.FromLocation): ParadoxParameterContextReferenceInfo? {
+        TODO("Not yet implemented")
     }
     
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtDataConfig<*>?): ParadoxParameterElement? {

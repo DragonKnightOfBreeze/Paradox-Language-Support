@@ -23,6 +23,15 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return ParadoxInlineScriptHandler.getInlineScriptExpression(element) != null
     }
     
+    override fun findContext(element: PsiElement): ParadoxScriptDefinitionElement? {
+        val context = element.containingFile?.castOrNull<ParadoxScriptFile>()
+        return context?.takeIf { isContext(it) }
+    }
+    
+    override fun findContextReferenceInfo(element: PsiElement, config: CwtDataConfig<*>?, from: ParadoxParameterContextReferenceInfo.FromLocation): ParadoxParameterContextReferenceInfo? {
+        TODO("Not yet implemented")
+    }
+    
     override fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement? {
         val name = element.name ?: return null
         return doResolveParameterOrArgument(element, name)
@@ -34,7 +43,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     }
     
     private fun doResolveParameterOrArgument(element: PsiElement, name: String): ParadoxParameterElement? {
-        val context = element.containingFile?.castOrNull<ParadoxScriptFile>()?.takeIf { isContext(it) } ?: return null
+        val context = findContext(element) as? ParadoxScriptFile ?: return null
         val expression = ParadoxInlineScriptHandler.getInlineScriptExpression(context) ?: return null
         val readWriteAccess = getReadWriteAccess(element)
         val contextKey = "inline_script@$expression"
@@ -78,6 +87,13 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     override fun processContext(element: ParadoxParameterElement, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
         val expression = element.getUserData(inlineScriptExpressionKey) ?: return false
         val project = element.project
+        ParadoxInlineScriptHandler.processInlineScript(expression, element, project, processor)
+        return true
+    }
+    
+    override fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+        val expression = contextReferenceInfo.getUserData(inlineScriptExpressionKey) ?: return false
+        val project = contextReferenceInfo.project
         ParadoxInlineScriptHandler.processInlineScript(expression, element, project, processor)
         return true
     }
