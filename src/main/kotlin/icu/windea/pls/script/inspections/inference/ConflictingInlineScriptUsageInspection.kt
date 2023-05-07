@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.*
 class ConflictingInlineScriptUsageInspection : LocalInspectionTool(){
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if(file !is ParadoxScriptFile) return null
-        if(!getSettings().inference.inlineScriptLocation) return null
+        if(!getSettings().inference.inlineScriptConfig) return null
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         if(!ParadoxInlineScriptHandler.isGameTypeSupported(gameType)) return null

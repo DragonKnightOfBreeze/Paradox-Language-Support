@@ -213,11 +213,17 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
             }
             //inference
             collapsibleGroup(PlsBundle.message("settings.inference")) {
+                //argumentValue
+                row {
+                    checkBox(PlsBundle.message("settings.inference.argumentValueConfig"))
+                        .bindSelected(settings.inference::argumentValueConfig)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.argumentValueConfig.tooltip") }
+                }
                 //inlineScriptLocation
                 row {
-                    checkBox(PlsBundle.message("settings.inference.inlineScriptLocation"))
-                        .bindSelected(settings.inference::inlineScriptLocation)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.inlineScriptLocation.tooltip") }
+                    checkBox(PlsBundle.message("settings.inference.inlineScriptConfig"))
+                        .bindSelected(settings.inference::inlineScriptConfig)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.inlineScriptConfig.tooltip") }
                         .onApply { doRefreshInlineScripts() }
                 }
                 //eventScopeContext

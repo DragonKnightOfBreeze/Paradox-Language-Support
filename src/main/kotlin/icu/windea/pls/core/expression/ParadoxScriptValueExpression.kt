@@ -37,7 +37,7 @@ interface ParadoxScriptValueExpression : ParadoxComplexExpression {
 	val config: CwtConfig<*>
 	
 	val scriptValueNode: ParadoxScriptValueExpressionNode
-	val parameterNodes: List<ParadoxScriptValueParameterExpressionNode>
+	val parameterNodes: List<ParadoxScriptValueArgumentExpressionNode>
 	
 	companion object Resolver
 }
@@ -53,7 +53,7 @@ class ParadoxScriptValueExpressionImpl(
 	override val quoted: Boolean = false
 	
 	override val scriptValueNode: ParadoxScriptValueExpressionNode get() = nodes.first().cast()
-	override val parameterNodes: List<ParadoxScriptValueParameterExpressionNode> get() = nodes.filterIsInstance<ParadoxScriptValueParameterExpressionNode>()
+	override val parameterNodes: List<ParadoxScriptValueArgumentExpressionNode> get() = nodes.filterIsInstance<ParadoxScriptValueArgumentExpressionNode>()
 	
 	val scriptValueName = scriptValueNode.text.takeIfNotEmpty()
 	val parameterNames = parameterNodes.mapNotNullTo(mutableSetOf()) { it.text.takeIfNotEmpty() }
@@ -75,8 +75,8 @@ class ParadoxScriptValueExpressionImpl(
 					malformed = true
 				}
 				when(node) {
-					is ParadoxScriptValueParameterExpressionNode -> lastIsParameter = true
-					is ParadoxScriptValueParameterValueExpressionNode -> lastIsParameter = false
+					is ParadoxScriptValueArgumentExpressionNode -> lastIsParameter = true
+					is ParadoxScriptValueArgumentValueExpressionNode -> lastIsParameter = false
 				}
 			}
 		}
@@ -97,8 +97,8 @@ class ParadoxScriptValueExpressionImpl(
 	
 	private fun isValid(node: ParadoxExpressionNode): Boolean {
 		return when(node){
-			is ParadoxScriptValueParameterExpressionNode -> node.text.isExactIdentifier()
-			is ParadoxScriptValueParameterValueExpressionNode -> node.text.isExactParameterizedIdentifier('.','-','+') //兼容数字文本
+			is ParadoxScriptValueArgumentExpressionNode -> node.text.isExactIdentifier()
+			is ParadoxScriptValueArgumentValueExpressionNode -> node.text.isExactParameterizedIdentifier('.','-','+') //兼容数字文本
 			else -> node.text.isExactParameterizedIdentifier()
 		}
 	}
@@ -120,7 +120,7 @@ class ParadoxScriptValueExpressionImpl(
 					ParadoxConfigHandler.completeScriptExpression(context, resultToUse)
 					context.put(PlsCompletionKeys.configKey, config)
 				}
-			} else if(node is ParadoxScriptValueParameterExpressionNode) {
+			} else if(node is ParadoxScriptValueArgumentExpressionNode) {
 				if(inRange && scriptValueName != null) {
 					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
 					val resultToUse = result.withPrefixMatcher(keywordToUse)
@@ -139,7 +139,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, config: CwtConfig<*>, c
 	val offset = textRange.startOffset
 	var n = 0
 	var scriptValueNode: ParadoxScriptValueExpressionNode? = null
-	var parameterNode: ParadoxScriptValueParameterExpressionNode? = null
+	var parameterNode: ParadoxScriptValueArgumentExpressionNode? = null
 	var index: Int
 	var pipeIndex = -1
 	while(pipeIndex < text.length) {
@@ -162,11 +162,11 @@ fun Resolver.resolve(text: String, textRange: TextRange, config: CwtConfig<*>, c
 					.also { scriptValueNode = it }
 			}
 			n % 2 == 1 -> {
-				ParadoxScriptValueParameterExpressionNode.resolve(nodeText, nodeRange, scriptValueNode, configGroup)
+				ParadoxScriptValueArgumentExpressionNode.resolve(nodeText, nodeRange, scriptValueNode, configGroup)
 					.also { parameterNode = it }
 			}
 			n % 2 == 0 -> {
-				ParadoxScriptValueParameterValueExpressionNode.resolve(nodeText, nodeRange, scriptValueNode, parameterNode, configGroup)
+				ParadoxScriptValueArgumentValueExpressionNode.resolve(nodeText, nodeRange, scriptValueNode, parameterNode, configGroup)
 			}
 			else -> throw InternalError()
 		}

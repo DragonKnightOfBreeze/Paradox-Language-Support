@@ -18,7 +18,7 @@ class ParadoxInlineScriptScriptMemberElementInlineSupport : ParadoxScriptMemberE
     }
     
     override fun linkElement(element: ParadoxScriptMemberElement, inlineStack: Deque<String>): ParadoxScriptMemberElement? {
-        if(!getSettings().inference.inlineScriptLocation) return null
+        if(!getSettings().inference.inlineScriptConfig) return null
         if(element !is ParadoxScriptFile) return null
         val expression = getInlineScriptExpression(element)
         if(expression == null) return null

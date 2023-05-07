@@ -44,7 +44,7 @@ class ParadoxScriptAnnotator : Annotator {
     }
     
     private fun annotateInlineScriptFile(file: ParadoxScriptFile, holder: AnnotationHolder) {
-        if(!getSettings().inference.inlineScriptLocation) return
+        if(!getSettings().inference.inlineScriptConfig) return
         val expression = ParadoxInlineScriptHandler.getInlineScriptExpression(file)
         if(expression != null) {
             val usageInfo = ParadoxInlineScriptHandler.getInlineScriptUsageInfo(file)

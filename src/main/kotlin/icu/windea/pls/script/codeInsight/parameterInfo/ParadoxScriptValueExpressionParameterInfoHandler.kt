@@ -39,7 +39,7 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
         if(valueFieldExpression == null) return null
         val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
         val scriptValueExpressionNode = scriptValueExpression.scriptValueNode
-        val firstParameterNode = scriptValueExpression.nodes.findIsInstance<ParadoxScriptValueParameterExpressionNode>()
+        val firstParameterNode = scriptValueExpression.nodes.findIsInstance<ParadoxScriptValueArgumentExpressionNode>()
             ?: return null
         val argStartIndex = firstParameterNode.rangeInExpression.startOffset
         
