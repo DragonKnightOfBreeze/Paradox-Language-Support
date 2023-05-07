@@ -1,12 +1,13 @@
 package icu.windea.pls.core.expression.nodes
 
-import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.lang.parameter.impl.*
+import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
@@ -26,7 +27,8 @@ class ParadoxScriptValueArgumentExpressionNode(
         if(text.isEmpty()) return null
         val reference = scriptValueNode.getReference(element)
         if(reference?.resolve() == null) return null //skip if script value cannot be resolved
-        return Reference(element, rangeInExpression, scriptValueNode.text, text, configGroup)
+        element.getOrPutUserData(PlsKeys.nodeRangesKey) { mutableMapOf() }.put(rangeInExpression, this)
+        return Reference(element, rangeInExpression)
     }
     
     companion object Resolver {
@@ -35,31 +37,19 @@ class ParadoxScriptValueArgumentExpressionNode(
         }
     }
     
+    /**
+     * @see icu.windea.pls.lang.parameter.impl.ParadoxInScriptValueExpressionParameterSupport
+     */
     class Reference(
         element: ParadoxScriptStringExpressionElement,
-        rangeInElement: TextRange,
-        val scriptValueName: String,
-        val parameterName: String,
-        val configGroup: CwtConfigGroup
+        rangeInElement: TextRange
     ) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
         override fun handleElementRename(newElementName: String): PsiElement {
             return element.setValue(rangeInElement.replace(element.value, newElementName))
         }
         
         override fun resolve(): ParadoxParameterElement? {
-            //NOTE 这里目前不使用 icu.windea.pls.config.support.ParadoxParameterSupport
-            val element = element
-            val name = parameterName
-            val definitionName = scriptValueName
-            val contextKey = "definition@$definitionName: script_value"
-            val definitionTypes = listOf("script_value")
-            val readWriteAccess = ReadWriteAccessDetector.Access.Write
-            val gameType = configGroup.gameType ?: return null
-            val project = configGroup.project
-            val result = ParadoxParameterElement(element, name, definitionName, contextKey, readWriteAccess, gameType, project)
-            result.putUserData(ParadoxDefinitionParameterSupport.definitionNameKey, definitionName)
-            result.putUserData(ParadoxDefinitionParameterSupport.definitionTypesKey, definitionTypes)
-            return result
+            return ParadoxParameterSupport.resolveArgument(element, rangeInElement, null)
         }
     }
 }

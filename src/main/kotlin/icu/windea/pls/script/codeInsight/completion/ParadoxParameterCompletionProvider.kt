@@ -28,6 +28,6 @@ class ParadoxParameterCompletionProvider : CompletionProvider<CompletionParamete
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
 		
-		ParadoxConfigHandler.completeParameters(parameterElement, read, context, result)
+		ParadoxParameterHandler.completeParameters(parameterElement, context, result)
 	}
 }

@@ -14,26 +14,32 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
+open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     companion object {
+        @JvmField val containingContext = Key.create<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>("paradox.parameterElement.containingContext")
         @JvmField val definitionNameKey = Key.create<String>("paradox.parameterElement.definitionName")
         @JvmField val definitionTypesKey = Key.create<List<String>>("paradox.parameterElement.definitionTypes")
     }
     
-    override fun supports(context: ParadoxScriptDefinitionElement): Boolean {
-        if(context !is ParadoxScriptProperty) return false
-        val definitionInfo = context.definitionInfo ?: return false
-        val configGroup = definitionInfo.configGroup
+    override fun isContext(element: ParadoxScriptDefinitionElement): Boolean {
+        if(element !is ParadoxScriptProperty) return false
+        val definitionInfo = element.definitionInfo ?: return false
         //NOTE 简单判断 - 目前不需要兼容子类型
-        return definitionInfo.type in configGroup.definitionTypesSupportParameters
+        return definitionInfo.type in definitionInfo.configGroup.definitionTypesSupportParameters
     }
     
-    override fun findContext(element: PsiElement, file: PsiFile?): ParadoxScriptDefinitionElement? {
-        if(element !is ParadoxParameter && element !is ParadoxArgument) return null
-        return element.findParentDefinition()?.takeIf { supports(it) }
+    override fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement? {
+        val name = element.name ?: return null
+        return doResolveParameterOrArgument(element, name)
     }
     
-    override fun resolveWithContext(name: String, element: PsiElement, context: ParadoxScriptDefinitionElement): ParadoxParameterElement? {
+    override fun resolveArgument(element: ParadoxArgument): ParadoxParameterElement? {
+        val name = element.name ?: return null
+        return doResolveParameterOrArgument(element, name)
+    }
+    
+    private fun doResolveParameterOrArgument(element: PsiElement, name: String): ParadoxParameterElement? {
+        val context = element.findParentDefinition()?.takeIf { isContext(it) } ?: return null
         val definitionInfo = context.definitionInfo ?: return null
         val definitionName = context.name
         val definitionTypes = definitionInfo.types
@@ -42,17 +48,23 @@ class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val gameType = definitionInfo.gameType
         val project = definitionInfo.project
         val result = ParadoxParameterElement(element, name, definitionName, contextKey, readWriteAccess, gameType, project)
+        result.putUserData(containingContext, context.createPointer())
         result.putUserData(definitionNameKey, definitionName)
         result.putUserData(definitionTypesKey, definitionTypes)
         return result
     }
     
-    override fun resolveParameterFromInvocationExpression(name: String, element: ParadoxScriptProperty, config: CwtPropertyConfig): ParadoxParameterElement? {
-        val configExpression = config.expression
-        if(configExpression.type != CwtDataType.Definition) return null
-        val definitionTypes = configExpression.value?.split('.') ?: return null
-        val definitionName = element.name
-        val readWriteAccess = ReadWriteAccessDetector.Access.Write
+    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtDataConfig<*>?): ParadoxParameterElement? {
+        if(config == null) return null
+        if(config !is CwtPropertyConfig || config.expression.type != CwtDataType.Parameter) return null
+        //infer context config
+        val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parent?.castOrNull<CwtPropertyConfig>() ?: return null
+        if(contextConfig.expression.type != CwtDataType.Definition) return null
+        val contextElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
+        val definitionName = contextElement.name
+        val definitionTypes = contextConfig.expression.value?.split('.') ?: return null
+        val name = element.name
+        val readWriteAccess = getReadWriteAccess(element)
         val contextKey = "definition@$definitionName: ${definitionTypes.joinToString(",")}"
         val gameType = config.info.configGroup.gameType ?: return null
         val project = config.info.configGroup.project
@@ -68,13 +80,15 @@ class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         else -> ReadWriteAccessDetector.Access.ReadWrite
     }
     
-    override fun processContextFromInvocationExpression(element: ParadoxScriptProperty, config: CwtPropertyConfig, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-        val configExpression = config.expression
-        if(configExpression.type != CwtDataType.Definition) return false
-        val definitionType = configExpression.value ?: return false
-        val definitionName = element.name
-        val configGroup = config.info.configGroup
-        val project = configGroup.project
+    override fun getContainingContext(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? {
+        return element.getUserData(containingContext)?.element
+    }
+    
+    override fun processContext(element: ParadoxParameterElement, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+        val definitionName = element.getUserData(definitionNameKey) ?: return false
+        val definitionTypes = element.getUserData(definitionTypesKey) ?: return false
+        val definitionType = definitionTypes.joinToString(".")
+        val project = element.project
         val selector = definitionSelector(project, element).contextSensitive()
         ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQueryAsync(processor)
         return true
@@ -97,7 +111,6 @@ class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         append(PlsBundle.message("ofDefinition")).append(" ")
         appendDefinitionLink(gameType, definitionName, definitionType.first(), element)
         append(": ")
-        
         val type = definitionType.first()
         val typeLink = "${gameType.linkToken}types/${type}"
         appendCwtLink(typeLink, type)
@@ -110,4 +123,3 @@ class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return true
     }
 }
-

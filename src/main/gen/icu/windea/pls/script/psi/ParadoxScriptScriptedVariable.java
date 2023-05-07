@@ -24,7 +24,7 @@ public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement
   @NotNull
   Icon getIcon(@IconFlags int flags);
 
-  @NotNull
+  @Nullable
   String getName();
 
   @NotNull

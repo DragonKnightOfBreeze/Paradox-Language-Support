@@ -6,6 +6,7 @@ import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.model.*
 import java.awt.*
 
@@ -109,6 +110,7 @@ object PlsKeys {
     val cachedDefineValuesKey = Key.create<CachedValue<MutableMap<String, Any?>>>("paradox.cached.defineValues")
     val cachedColorKey = Key.create<CachedValue<Color>>("paradox.cached.color")
     val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfoKey")
+    val cachedParametersKey = Key.create<CachedValue<Map<String, ParadoxParameterInfo>>>("paradox.cached.parameters")
     
     //用于将CWT规则临时写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）
     val cwtConfigKey = Key.create<CwtConfig<*>>("paradox.cwtConfig")
@@ -119,6 +121,7 @@ object PlsKeys {
     val scopeMismatchedKey = Key.create<Boolean>("paradox.scopeMismatched")
     
     val parameterRangesKey = Key.create<List<TextRange>>("paradox.parameterRanges")
+    val nodeRangesKey = Key.create<MutableMap<TextRange, ParadoxExpressionNode>>("paradox.nodeRanges")
     
     val iconFrameKey = Key.create<Int>("paradox.icon.frame")
 }

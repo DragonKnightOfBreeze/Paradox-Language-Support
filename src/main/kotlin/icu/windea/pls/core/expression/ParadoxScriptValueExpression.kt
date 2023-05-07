@@ -125,7 +125,7 @@ class ParadoxScriptValueExpressionImpl(
 					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
 					val resultToUse = result.withPrefixMatcher(keywordToUse)
 					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-					ParadoxConfigHandler.completeParametersForScriptValueExpression(scriptValueName, parameterNames, context, resultToUse)
+					ParadoxParameterHandler.completeParametersForScriptValueExpression(scriptValueName, parameterNames, context, resultToUse)
 				}
 			}
 		}

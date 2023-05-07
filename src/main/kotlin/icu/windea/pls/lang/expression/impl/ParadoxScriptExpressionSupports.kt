@@ -468,7 +468,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport()
         val invocationExpressionConfig = config.parent
             ?.castOrNull<CwtPropertyConfig>()
             ?: return null
-        return ParadoxParameterSupport.resolveFromInvocationExpression(expression, invocationExpression, invocationExpressionConfig)
+        return ParadoxParameterSupportOld.resolveFromInvocationExpression(expression, invocationExpression, invocationExpressionConfig)
     }
     
     override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {
@@ -478,7 +478,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport()
         ProgressManager.checkCanceled()
         val invocationExpressionElement = contextElement.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return
         val invocationExpressionConfig = config.parent as? CwtPropertyConfig ?: return
-        ParadoxConfigHandler.completeParametersForInvocationExpression(invocationExpressionElement, invocationExpressionConfig, context, result)
+        ParadoxParameterHandler.completeParametersForInvocationExpression(invocationExpressionElement, invocationExpressionConfig, context, result)
     }
 }
 
@@ -498,7 +498,7 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         //尝试解析为本地化参数名（仅限key）
         if(isKey != true || config !is CwtPropertyConfig) return null
-        return ParadoxLocalisationParameterSupport.resolveArgument(element, config)
+        return ParadoxLocalisationParameterSupport.resolveArgument(element, rangeInElement, config)
     }
     
     override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {

@@ -214,6 +214,8 @@ inline fun StringBuilder.grayed(block: StringBuilder.() -> Unit): StringBuilder 
 fun String.escapeXml() = if(this.isEmpty()) "" else StringUtil.escapeXmlEntities(this)
 
 fun String?.orAnonymous() = if(isNullOrEmpty()) PlsConstants.anonymousString else this
+fun String?.orUnknown() = if(isNullOrEmpty()) PlsConstants.unknownString else this
+fun String?.orUnresolved() = if(isNullOrEmpty()) PlsConstants.unresolvedString else this
 
 fun String.escapeBlank(): String {
     var builder: StringBuilder? = null

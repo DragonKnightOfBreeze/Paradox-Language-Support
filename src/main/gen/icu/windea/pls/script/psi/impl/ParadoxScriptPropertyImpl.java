@@ -15,8 +15,6 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.expression.ParadoxDataType;
-import icu.windea.pls.lang.model.ParadoxParameterInfo;
-import java.util.Map;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 
@@ -109,12 +107,6 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   @NotNull
   public String getExpression() {
     return ParadoxScriptPsiImplUtil.getExpression(this);
-  }
-
-  @Override
-  @NotNull
-  public Map<String, ParadoxParameterInfo> getParameters() {
-    return ParadoxScriptPsiImplUtil.getParameters(this);
   }
 
   @Override

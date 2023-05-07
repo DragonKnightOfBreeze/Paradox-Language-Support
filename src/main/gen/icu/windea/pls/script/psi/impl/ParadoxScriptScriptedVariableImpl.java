@@ -57,7 +57,7 @@ public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementI
   }
 
   @Override
-  @NotNull
+  @Nullable
   public String getName() {
     return ParadoxScriptPsiImplUtil.getName(this);
   }

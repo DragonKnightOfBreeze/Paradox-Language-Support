@@ -13,13 +13,10 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.navigation.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.color.impl.*
-import icu.windea.pls.lang.model.*
-import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -74,7 +71,7 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getName(element: ParadoxScriptScriptedVariable): String {
+    fun getName(element: ParadoxScriptScriptedVariable): String? {
         //注意：element.stub可能会导致ProcessCanceledException
         // 不包含作为前缀的"@"
         ProgressManager.checkCanceled()
@@ -137,13 +134,13 @@ object ParadoxScriptPsiImplUtil {
     
     //region ParadoxScriptScriptedVariableName
     @JvmStatic
-    fun getName(element: ParadoxScriptScriptedVariableName): String {
+    fun getName(element: ParadoxScriptScriptedVariableName): String? {
         // 不包含作为前缀的"@"
-        return element.text.removePrefix("@")
+        return element.text.removePrefix("@").takeIfNotEmpty()
     }
     
     @JvmStatic
-    fun getValue(element: ParadoxScriptScriptedVariableName): String {
+    fun getValue(element: ParadoxScriptScriptedVariableName): String? {
         return element.name
     }
     //endregion
@@ -807,43 +804,6 @@ object ParadoxScriptPsiImplUtil {
     fun getReference(element: ParadoxScriptInlineMathParameter): ParadoxParameterPsiReference? {
         val nameElement = element.idElement ?: return null
         return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
-    }
-    //endregion
-    
-    //region ParadoxScriptDefinitionElement
-    @JvmStatic
-    fun getParameters(element: ParadoxScriptDefinitionElement): Map<String, ParadoxParameterInfo> {
-        //不支持参数时，直接返回空映射
-        if(!ParadoxParameterSupport.supports(element)) return emptyMap()
-        
-        val file = element.containingFile
-        val conditionalParameterNames = mutableSetOf<String>()
-        val result = sortedMapOf<String, ParadoxParameterInfo>() //按名字进行排序
-        element.accept(object : PsiRecursiveElementWalkingVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if(element is ParadoxParameter) visitParadoxParameter(element)
-                if(element is ParadoxArgument) visitParadoxArgument(element)
-                super.visitElement(element)
-            }
-            
-            private fun visitParadoxArgument(element: ParadoxArgument) {
-                ProgressManager.checkCanceled()
-                val name = element.name ?: return
-                conditionalParameterNames.add(name)
-                //不需要继续向下遍历
-            }
-            
-            private fun visitParadoxParameter(element: ParadoxParameter) {
-                ProgressManager.checkCanceled()
-                val name = element.name ?: return
-                val info = result.getOrPut(name) { ParadoxParameterInfo(name) }
-                info.pointers.add(element.createPointer(file))
-                if(element.defaultValueToken != null) conditionalParameterNames.add(name)
-                if(!info.optional && conditionalParameterNames.contains(name)) info.optional = true
-                //不需要继续向下遍历
-            }
-        })
-        return result
     }
     //endregion
     

@@ -9,7 +9,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.navigation.*
-import icu.windea.pls.script.psi.impl.*
 import javax.swing.*
 
 class ParadoxScriptFile(
@@ -17,14 +16,7 @@ class ParadoxScriptFile(
 ) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxScriptDefinitionElement {
 	@Volatile private var _parameterMap: Map<String, ParadoxParameterInfo>? = null
 	
-	override val parameters: Map<String, ParadoxParameterInfo>
-		get() = _parameterMap ?: doGetParameters().also { _parameterMap = it }
-	
 	override val block get() = findChild<ParadoxScriptRootBlock>()
-	
-	private fun doGetParameters(): Map<String, ParadoxParameterInfo> {
-		return ParadoxScriptPsiImplUtil.getParameters(this)
-	}
 	
 	override fun getIcon(flags: Int): Icon? {
 		//对模组描述符文件使用特定的图标

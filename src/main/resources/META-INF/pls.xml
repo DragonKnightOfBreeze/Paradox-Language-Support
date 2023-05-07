@@ -59,6 +59,7 @@
     <colorSupport implementation="icu.windea.pls.lang.color.impl.ParadoxScriptStringColorSupport"/>
     
     <parameterSupport implementation="icu.windea.pls.lang.parameter.impl.ParadoxDefinitionParameterSupport"/>
+    <parameterSupport implementation="icu.windea.pls.lang.parameter.impl.ParadoxInScriptValueExpressionParameterSupport"/>
     <parameterSupport implementation="icu.windea.pls.lang.parameter.impl.ParadoxInlineScriptParameterSupport"/>
     
     <localisationParameterSupport implementation="icu.windea.pls.lang.parameter.impl.ParadoxBaseLocalisationParameterSupport"/>

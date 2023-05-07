@@ -1,7 +1,6 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.*
-import icu.windea.pls.lang.model.*
 
 /**
  * @see ParadoxScriptFile
@@ -30,6 +29,4 @@ interface ParadoxScriptDefinitionElement : ParadoxScriptNamedElement, ParadoxScr
         get() {
             return buildList { block?.processProperty(conditional = true, inline = true) { add(it) } }
         }
-    
-    val parameters: Map<String, ParadoxParameterInfo>
 }

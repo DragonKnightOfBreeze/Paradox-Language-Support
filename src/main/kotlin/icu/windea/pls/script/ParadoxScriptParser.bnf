@@ -75,7 +75,6 @@ property ::= property_key property_separator property_value {
     property_key="property_key" property_value="value"
     getIcon getName setName getNameIdentifier getValue getDepth getBlock 
     getType getConfigExpression getExpression
-    getParameters
     isEquivalentTo toString
   ]
 }
@@ -95,6 +94,7 @@ private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIG
 private property_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
 //value related
+//noinspection BnfUnusedRule
 value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math {
   implements=[
     "com.intellij.psi.NavigatablePsiElement"

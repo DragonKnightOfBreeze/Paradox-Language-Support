@@ -1,71 +1,55 @@
 package icu.windea.pls.lang.parameter
 
 import com.intellij.openapi.extensions.*
-import com.intellij.psi.*
+import com.intellij.openapi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 提供对参数的支持。
- * 
- * 例如，如何解析参数，如何获取参数的上下文，如何获取调用表达式中传入参数的上下文。
- * 
+ * 提供对脚本参数的支持。
+ *
  * @see ParadoxParameterElement
  */
 interface ParadoxParameterSupport {
-    fun supports(context: ParadoxScriptDefinitionElement): Boolean
+    fun isContext(element: ParadoxScriptDefinitionElement): Boolean
     
-    fun findContext(element: PsiElement, file: PsiFile?) : ParadoxScriptDefinitionElement?
+    fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement?
     
-    fun resolveWithContext(name: String, element: PsiElement, context: ParadoxScriptDefinitionElement): ParadoxParameterElement?
+    fun resolveArgument(element: ParadoxArgument): ParadoxParameterElement?
     
-    fun resolve(name: String, element: PsiElement, file: PsiFile?): ParadoxParameterElement? {
-        val context = findContext(element, file) ?: return null
-        return resolveWithContext(name, element, context)
-    }
+    fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtDataConfig<*>?): ParadoxParameterElement?
     
-    /**
-     * @param element 调用表达式。（如，`some_scripted_effect = { PARAM = str }`）
-     */
-    fun resolveParameterFromInvocationExpression(name: String, element: ParadoxScriptProperty, config: CwtPropertyConfig): ParadoxParameterElement?
+    fun getContainingContext(element: ParadoxParameterElement): ParadoxScriptDefinitionElement?
     
     /**
-     * @return 此解析器是否适用。
+     * @return 此扩展点是否适用。
      */
-    fun processContextFromInvocationExpression(element: ParadoxScriptProperty, config: CwtPropertyConfig, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
+    fun processContext(element: ParadoxParameterElement, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
     
     /**
      * 构建参数的快速文档中的定义部分。
-     * @return 此解析器是否适用。
+     * @return 此扩展点是否适用。
      */
     fun buildDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean = false
     
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxParameterSupport>("icu.windea.pls.parameterSupport")
         
-        fun supports(context: ParadoxScriptDefinitionElement): Boolean {
-            return EP_NAME.extensionList.any { it.supports(context) }
+        fun isContext(element: ParadoxScriptDefinitionElement): Boolean {
+            return EP_NAME.extensionList.any { it.isContext(element) }
         }
         
-        fun findContext(element: PsiElement, file: PsiFile? = null): ParadoxScriptDefinitionElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.findContext(element, file) }
+        fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement? {
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveParameter(element) }
         }
         
-        fun resolve(name: String, element: PsiElement, file: PsiFile? = null): ParadoxParameterElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolve(name, element, file) }
+        fun resolveArgument(element: ParadoxArgument): ParadoxParameterElement? {
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveArgument(element) }
         }
         
-        fun resolveWithContext(name: String, element: PsiElement, context: ParadoxScriptDefinitionElement): ParadoxParameterElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveWithContext(name, element, context) }
-        }
-        
-        fun resolveFromInvocationExpression(name: String, element: ParadoxScriptProperty, config: CwtPropertyConfig): ParadoxParameterElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveParameterFromInvocationExpression(name, element, config) }
-        }
-        
-        fun processContextFromInvocationExpression(element: ParadoxScriptProperty, config: CwtPropertyConfig, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-            return EP_NAME.extensionList.any { it.processContextFromInvocationExpression(element, config, processor) }
+        fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtDataConfig<*>?): ParadoxParameterElement? {
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveArgument(element, rangeInElement, config) }
         }
         
         fun getDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean {

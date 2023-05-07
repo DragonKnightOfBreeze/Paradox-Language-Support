@@ -284,7 +284,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         val show = getSettings().documentation.showParameters
         if(!show) return
         if(sections == null) return
-        val parameterMap = element.parameters
+        val parameterMap = ParadoxParameterHandler.getParameters(element)
         if(parameterMap.isEmpty()) return //ignore
         var isFirst = true
         val parametersText = buildString {

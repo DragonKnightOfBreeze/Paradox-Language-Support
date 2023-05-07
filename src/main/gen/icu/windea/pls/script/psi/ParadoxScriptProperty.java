@@ -11,8 +11,6 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.expression.ParadoxDataType;
-import icu.windea.pls.lang.model.ParadoxParameterInfo;
-import java.util.Map;
 import javax.swing.Icon;
 
 public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxTypedElement, ParadoxScriptDefinitionElement, StubBasedPsiElement<ParadoxScriptPropertyStub> {
@@ -51,9 +49,6 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
 
   @NotNull
   String getExpression();
-
-  @NotNull
-  Map<String, ParadoxParameterInfo> getParameters();
 
   boolean isEquivalentTo(@NotNull PsiElement another);
 

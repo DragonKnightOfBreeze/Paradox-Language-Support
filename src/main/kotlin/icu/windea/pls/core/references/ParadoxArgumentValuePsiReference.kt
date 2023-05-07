@@ -10,7 +10,7 @@ class ParadoxArgumentValuePsiReference(
 	element: PsiElement,
 	rangeInElement: TextRange,
 	private val parameterResolver: () -> ParadoxParameterElement?
-): PsiReferenceBase<PsiElement>(element, rangeInElement) {
+): PsiPolyVariantReferenceBase<PsiElement>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		val element = element
 		return when {
@@ -23,5 +23,11 @@ class ParadoxArgumentValuePsiReference(
 		val parameter = parameterResolver() ?: return null
 		//TODO 0.9.16
 		return null
+	}
+	
+	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
+		val parameter = parameterResolver() ?: return ResolveResult.EMPTY_ARRAY
+		//TODO 0.9.16
+		return ResolveResult.EMPTY_ARRAY
 	}
 }
