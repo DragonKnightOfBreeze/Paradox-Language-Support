@@ -14,17 +14,14 @@ import icu.windea.pls.script.psi.*
  * @see icu.windea.pls.core.expression.nodes.ParadoxScriptValueArgumentExpressionNode
  */
 class ParadoxInScriptValueExpressionParameterSupport: ParadoxDefinitionParameterSupport(){
-    companion object {
-        val nodesKey = Key.create<Map<TextRange, ParadoxScriptValueArgumentExpressionNode>>("paradox.parameterElement.node")
-    }
-    
     override fun findContextReferenceInfo(element: PsiElement, config: CwtDataConfig<*>?, from: ParadoxParameterContextReferenceInfo.From): ParadoxParameterContextReferenceInfo? {
         TODO("Not yet implemented")
     }
     
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtDataConfig<*>?): ParadoxParameterElement? {
         if(rangeInElement == null || config != null) return null
-        val node = element.getUserData(PlsKeys.nodeRangesKey)?.get(rangeInElement)?.castOrNull<ParadoxScriptValueArgumentExpressionNode>() ?: return null
+        val expressionNodeKey = rangeInElement.toString() + "@" + ParadoxScriptValueArgumentExpressionNode::class.java.name
+        val node = element.getUserData(PlsKeys.expressionNodesKey)?.get(expressionNodeKey)?.castOrNull<ParadoxScriptValueArgumentExpressionNode>() ?: return null
         val name = node.text
         val definitionName = node.scriptValueNode?.text ?: return null
         val configGroup = node.configGroup

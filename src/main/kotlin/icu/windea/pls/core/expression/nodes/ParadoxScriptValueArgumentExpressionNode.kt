@@ -27,7 +27,8 @@ class ParadoxScriptValueArgumentExpressionNode(
         if(text.isEmpty()) return null
         val reference = scriptValueNode.getReference(element)
         if(reference?.resolve() == null) return null //skip if script value cannot be resolved
-        element.getOrPutUserData(PlsKeys.nodeRangesKey) { mutableMapOf() }.put(rangeInExpression, this)
+        val expressionNodeKey = rangeInExpression.toString() + "@" + ParadoxScriptValueArgumentExpressionNode::class.java.name
+        element.getOrPutUserData(PlsKeys.expressionNodesKey) { mutableMapOf() }.put(expressionNodeKey, this)
         return Reference(element, rangeInExpression)
     }
     

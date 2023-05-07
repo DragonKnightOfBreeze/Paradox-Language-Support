@@ -114,14 +114,14 @@ object PlsKeys {
     
     //用于将CWT规则临时写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）
     val cwtConfigKey = Key.create<CwtConfig<*>>("paradox.cwtConfig")
-    
+    //用于在某些情况下快速从脚本表达式元素获取复杂表达式或者复杂表达式节点，其中映射的键是自由指定的
+    val expressionNodesKey = Key.create<MutableMap<String, ParadoxExpressionNode>>("paradox.nodeRanges")
     //用于在进行代码补全时标记一个property的propertyValue未填写
     val isIncompleteKey = Key.create<Boolean>("paradox.isIncomplete")
     //用于在进行代码补全时标记作用域不匹配
     val scopeMismatchedKey = Key.create<Boolean>("paradox.scopeMismatched")
-    
+    //用于在进行颜色高亮时标记参数在脚本表达式中的文本范围
     val parameterRangesKey = Key.create<List<TextRange>>("paradox.parameterRanges")
-    val nodeRangesKey = Key.create<MutableMap<TextRange, ParadoxExpressionNode>>("paradox.nodeRanges")
-    
+    //用于标记图标的帧数以便后续对原始的DDS图片进行切分
     val iconFrameKey = Key.create<Int>("paradox.icon.frame")
 }
