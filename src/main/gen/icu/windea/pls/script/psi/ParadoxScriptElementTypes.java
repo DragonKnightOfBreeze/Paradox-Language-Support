@@ -36,7 +36,7 @@ public interface ParadoxScriptElementTypes {
   IElementType STRING = ParadoxScriptElementTypeFactory.getElementType("STRING");
   IElementType VALUE = ParadoxScriptElementTypeFactory.getElementType("VALUE");
 
-  IElementType ARGUMENT_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("ARGUMENT_TOKEN");
+  IElementType CONDITION_PARAMETER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("CONDITION_PARAMETER_TOKEN");
   IElementType AT = ParadoxScriptElementTypeFactory.getTokenType("AT");
   IElementType BOOLEAN_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("BOOLEAN_TOKEN");
   IElementType COLOR_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("COLOR_TOKEN");

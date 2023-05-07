@@ -39,11 +39,11 @@ object ParadoxParameterHandler {
         context.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if(element is ParadoxParameter) visitParadoxParameter(element)
-                if(element is ParadoxArgument) visitParadoxArgument(element)
+                if(element is ParadoxConditionParameter) visitParadoxConditionParameter(element)
                 super.visitElement(element)
             }
             
-            private fun visitParadoxArgument(element: ParadoxArgument) {
+            private fun visitParadoxConditionParameter(element: ParadoxConditionParameter) {
                 ProgressManager.checkCanceled()
                 val name = element.name ?: return
                 conditionalParameterNames.add(name)

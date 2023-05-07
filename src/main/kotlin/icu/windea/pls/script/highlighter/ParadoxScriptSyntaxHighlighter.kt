@@ -25,8 +25,8 @@ class ParadoxScriptSyntaxHighlighter(
         private val KEYWORD_KEYS = arrayOf(ParadoxScriptAttributesKeys.KEYWORD_KEY)
         private val COMMENT_KEYS = arrayOf(ParadoxScriptAttributesKeys.COMMENT_KEY)
         private val SCRIPTED_VARIABLE_KEYS = arrayOf(ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_KEY)
-        private val ARGUMENT_KEYS = arrayOf(ParadoxScriptAttributesKeys.ARGUMENT_KEY)
         private val PARAMETER_KEYS = arrayOf(ParadoxScriptAttributesKeys.PARAMETER_KEY)
+        private val CONDITION_PARAMETER_KEYS = arrayOf(ParadoxScriptAttributesKeys.CONDITION_PARAMETER_KEY)
         private val PROPERTY_KEY_KEYS = arrayOf(ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY)
         private val COLOR_KEYS = arrayOf(ParadoxScriptAttributesKeys.COLOR_KEY)
         private val NUMBER_KEYS = arrayOf(ParadoxScriptAttributesKeys.NUMBER_KEY)
@@ -52,7 +52,7 @@ class ParadoxScriptSyntaxHighlighter(
             SCRIPTED_VARIABLE_NAME_TOKEN, SCRIPTED_VARIABLE_NAME_SNIPPET -> SCRIPTED_VARIABLE_KEYS
             SCRIPTED_VARIABLE_REFERENCE_TOKEN, SCRIPTED_VARIABLE_REFERENCE_SNIPPET -> SCRIPTED_VARIABLE_KEYS
             INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN -> SCRIPTED_VARIABLE_KEYS
-            ARGUMENT_TOKEN -> ARGUMENT_KEYS
+            CONDITION_PARAMETER_TOKEN -> CONDITION_PARAMETER_KEYS
             PARAMETER_TOKEN -> PARAMETER_KEYS
             QUOTED_PROPERTY_KEY_TOKEN, PROPERTY_KEY_TOKEN, PROPERTY_KEY_SNIPPET -> PROPERTY_KEY_KEYS
             BOOLEAN_TOKEN -> KEYWORD_KEYS

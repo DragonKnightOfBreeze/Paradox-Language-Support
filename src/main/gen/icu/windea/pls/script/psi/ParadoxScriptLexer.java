@@ -1074,7 +1074,7 @@ public class ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 115: break;
           case 45:
-            { return ARGUMENT_TOKEN;
+            { return CONDITION_PARAMETER_TOKEN;
             }
           // fall through
           case 116: break;

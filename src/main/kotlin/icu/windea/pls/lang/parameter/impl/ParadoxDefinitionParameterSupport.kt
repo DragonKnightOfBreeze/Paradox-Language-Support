@@ -62,7 +62,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return doResolveParameterOrArgument(element, name)
     }
     
-    override fun resolveArgument(element: ParadoxArgument): ParadoxParameterElement? {
+    override fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement? {
         val name = element.name ?: return null
         return doResolveParameterOrArgument(element, name)
     }
@@ -105,8 +105,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     
     private fun getReadWriteAccess(element: PsiElement) = when {
         element is ParadoxParameter -> ReadWriteAccessDetector.Access.Read
-        element is ParadoxArgument -> ReadWriteAccessDetector.Access.Read
-        else -> ReadWriteAccessDetector.Access.ReadWrite
+        element is ParadoxConditionParameter -> ReadWriteAccessDetector.Access.Read
+        else -> ReadWriteAccessDetector.Access.Write
     }
     
     override fun getContainingContext(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? {

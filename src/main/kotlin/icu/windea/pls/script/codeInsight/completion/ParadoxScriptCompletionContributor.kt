@@ -34,7 +34,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		
 		//当用户可能正在输入一个parameter的名字时提示
 		val parameterPattern = psiElement()
-			.withElementType(ParadoxScriptTokenSets.PARAMETER_OR_ARGUMENT_TOKENS)
+			.withElementType(ParadoxScriptTokenSets.PARAMETER_TOKENS)
 		extend(parameterPattern, ParadoxParameterCompletionProvider())
 		
 		//当用户可能正在输入一个scriptedVariable的名字时提示（除非用户也可能正在输入一个引用的名字）

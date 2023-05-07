@@ -15,7 +15,7 @@ val ParadoxScriptScriptedVariableReference.idElement: PsiElement? get() = firstC
 
 val ParadoxScriptString.idElement: PsiElement? get() = firstChild?.takeIf { it.elementType == STRING_TOKEN || it.elementType == QUOTED_STRING_TOKEN }
 
-val ParadoxScriptParameterConditionParameter.idElement: PsiElement get() = findChild(ARGUMENT_TOKEN)!!
+val ParadoxScriptParameterConditionParameter.idElement: PsiElement get() = findChild(CONDITION_PARAMETER_TOKEN)!!
 
 val ParadoxScriptInlineMathScriptedVariableReference.idElement: PsiElement? get() = firstChild?.nextSibling?.takeIf { it.nextSibling == null && it.elementType == INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN }
 

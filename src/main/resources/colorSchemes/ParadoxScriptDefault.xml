@@ -5,6 +5,11 @@
       <option name="FOREGROUND" value="4a86e8"/>
     </value>
   </option>
+  <option name="PARADOX_SCRIPT.CONDITION_PARAMETER">
+    <value>
+      <option name="FOREGROUND" value="4a86e8"/>
+    </value>
+  </option>
   <option name="PARADOX_SCRIPT.DEFINITION">
     <value>
       <option name="FOREGROUND" value="660E7A"/>

@@ -20,7 +20,7 @@ class ParadoxScriptSpellchecker : SpellcheckingStrategy() {
 			PROPERTY_KEY_TOKEN -> compactTextTokenizer
 			QUOTED_STRING_TOKEN -> textTokenizer
 			STRING_TOKEN, STRING_SNIPPET -> compactTextTokenizer
-			ARGUMENT_TOKEN -> textTokenizer
+			CONDITION_PARAMETER_TOKEN -> textTokenizer
 			PARAMETER_TOKEN-> textTokenizer
 			COMMENT -> textTokenizer
 			else -> emptyTokenizer

@@ -14,7 +14,7 @@ class UnsupportedParameterUsageInspection: LocalInspectionTool() {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if(element is ParadoxParameter || element is ParadoxArgument) {
+                if(element is ParadoxParameter || element is ParadoxConditionParameter) {
                     val resolved = element.reference?.resolve()
                     if(resolved == null) {
                         holder.registerProblem(element, PlsBundle.message("inspection.script.bug.unsupportedParameterUsage.description.1"))

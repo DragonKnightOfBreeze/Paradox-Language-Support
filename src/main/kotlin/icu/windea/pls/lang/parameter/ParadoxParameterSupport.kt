@@ -21,7 +21,8 @@ interface ParadoxParameterSupport {
      * 向上查找参数的上下文引用信息。
      *
      * @param element 开始查找的位置。
-     * @param config 开始查找的位置是一个传入参数，此传入参数对应的CWT规则。
+     * @param config 开始查找的位置是一个传入参数时，此传入参数对应的CWT规则。
+     * @param from 从哪里向上查找。
      *
      * @see icu.windea.pls.script.codeInsight.parameterInfo.ParadoxParameterInfoHandler
      */
@@ -29,7 +30,7 @@ interface ParadoxParameterSupport {
     
     fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement?
     
-    fun resolveArgument(element: ParadoxArgument): ParadoxParameterElement?
+    fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement?
     
     fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtDataConfig<*>?): ParadoxParameterElement?
     
@@ -66,8 +67,8 @@ interface ParadoxParameterSupport {
             return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveParameter(element) }
         }
         
-        fun resolveArgument(element: ParadoxArgument): ParadoxParameterElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveArgument(element) }
+        fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement? {
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveConditionParameter(element) }
         }
         
         fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtDataConfig<*>?): ParadoxParameterElement? {

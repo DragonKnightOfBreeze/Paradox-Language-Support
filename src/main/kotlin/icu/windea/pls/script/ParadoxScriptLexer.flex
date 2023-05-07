@@ -531,7 +531,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "!" {return NOT_SIGN;}
   "]" {inParameterCondition=true; yybegin(WAITING_PARAMETER_CONDITION); return NESTED_RIGHT_BRACKET;}
-  {PARAMETER_TOKEN} { return ARGUMENT_TOKEN; }
+  {PARAMETER_TOKEN} { return CONDITION_PARAMETER_TOKEN; }
 }
 
 <WAITING_INLINE_MATH>{

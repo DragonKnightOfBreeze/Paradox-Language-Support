@@ -22,6 +22,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(PlsBundle.message("script.displayName.comment"), ParadoxScriptAttributesKeys.COMMENT_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.scriptedVariable"), ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.parameter"), ParadoxScriptAttributesKeys.PARAMETER_KEY),
+			AttributesDescriptor(PlsBundle.message("script.displayName.conditionParameter"), ParadoxScriptAttributesKeys.CONDITION_PARAMETER_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.argument"), ParadoxScriptAttributesKeys.ARGUMENT_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.propertyKey"), ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.color"), ParadoxScriptAttributesKeys.COLOR_KEY),

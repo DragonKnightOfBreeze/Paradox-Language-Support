@@ -18,8 +18,9 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val KEYWORD_KEY = createTextAttributesKey("PARADOX_SCRIPT.KEYWORD", KEYWORD)
 	@JvmField val COMMENT_KEY = createTextAttributesKey("PARADOX_SCRIPT.COMMENT", LINE_COMMENT)
 	@JvmField val SCRIPTED_VARIABLE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SCRIPTED_VARIABLE", STATIC_FIELD)
-	@JvmField val ARGUMENT_KEY = createTextAttributesKey("PARADOX_SCRIPT.ARGUMENT", KEYWORD) //Kotlin > Named argument
 	@JvmField val PARAMETER_KEY = createTextAttributesKey("PARADOX_SCRIPT.PARAMETER", KEYWORD)
+	@JvmField val CONDITION_PARAMETER_KEY = createTextAttributesKey("PARADOX_SCRIPT.CONDITION_PARAMETER", KEYWORD)  //Kotlin > Named argument
+	@JvmField val ARGUMENT_KEY = createTextAttributesKey("PARADOX_SCRIPT.ARGUMENT", KEYWORD) //Kotlin > Named argument
 	@JvmField val PROPERTY_KEY_KEY = createTextAttributesKey("PARADOX_SCRIPT.PROPERTY_KEY", INSTANCE_FIELD)
 	@JvmField val COLOR_KEY = createTextAttributesKey("PARADOX_SCRIPT.COLOR", KEYWORD) //HTML > Tag name
 	@JvmField val NUMBER_KEY = createTextAttributesKey("PARADOX_SCRIPT.NUMBER", NUMBER)

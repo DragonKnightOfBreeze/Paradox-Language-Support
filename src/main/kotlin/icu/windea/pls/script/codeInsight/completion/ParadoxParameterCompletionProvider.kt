@@ -4,7 +4,6 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 
 /**
@@ -15,12 +14,6 @@ class ParadoxParameterCompletionProvider : CompletionProvider<CompletionParamete
 		//对于定义声明中的`$PARAM$`引用和`[[PARAM] ... ]`引用
 		val tokenElement = parameters.position
 		val parameterElement = tokenElement.parent
-		val read = when(parameterElement) {
-			is ParadoxParameter -> true
-			is ParadoxArgument -> false
-			else -> return
-		}
-		
 		val offsetInParent = parameters.offset - tokenElement.startOffset
 		val keyword = tokenElement.getKeyword(offsetInParent)
 		
