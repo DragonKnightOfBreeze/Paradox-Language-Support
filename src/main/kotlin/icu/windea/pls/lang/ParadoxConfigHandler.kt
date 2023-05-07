@@ -1395,7 +1395,7 @@ object ParadoxConfigHandler {
             val parameter = parameterInfo.pointers.firstNotNullOfOrNull { it.element } ?: continue
             //排除当前正在输入的那个
             if(parameterInfo.pointers.size == 1 && element isSamePosition parameter) continue
-            val parameterElement = ParadoxParameterSupport.resolveParameterWithContext(parameterName, element, parameterContext)
+            val parameterElement = ParadoxParameterSupport.resolveWithContext(parameterName, element, parameterContext)
                 ?: continue
             val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
                 .withIcon(PlsIcons.Parameter)
@@ -1412,7 +1412,7 @@ object ParadoxConfigHandler {
         val existParameterNames = mutableSetOf<String>().synced()
         block.processProperty p@{
             val propertyKey = it.propertyKey
-            val name = if(contextElement == propertyKey) propertyKey.getKeyword(context.offsetInParent) else propertyKey.name ?: return@p true
+            val name = if(contextElement == propertyKey) propertyKey.getKeyword(context.offsetInParent) else propertyKey.name
             existParameterNames.add(name)
             true
         }
@@ -1429,7 +1429,7 @@ object ParadoxConfigHandler {
                 if(parameterName in existParameterNames) continue
                 if(!namesToDistinct.add(parameterName)) continue
                 
-                val parameterElement = ParadoxParameterSupport.resolveParameterWithContext(parameterName, contextElement, parameterContext)
+                val parameterElement = ParadoxParameterSupport.resolveWithContext(parameterName, contextElement, parameterContext)
                     ?: continue
                 val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
                     .withIcon(PlsIcons.Parameter)
@@ -1467,7 +1467,7 @@ object ParadoxConfigHandler {
                 if(parameterName in existParameterNames) continue
                 if(!namesToDistinct.add(parameterName)) continue
                 
-                val parameterElement = ParadoxParameterSupport.resolveParameterWithContext(parameterName, contextElement, parameterContext)
+                val parameterElement = ParadoxParameterSupport.resolveWithContext(parameterName, contextElement, parameterContext)
                     ?: continue
                 val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
                     .withIcon(PlsIcons.Parameter)

@@ -18,11 +18,11 @@ interface ParadoxParameterSupport {
     
     fun findContext(element: PsiElement, file: PsiFile?) : ParadoxScriptDefinitionElement?
     
-    fun resolveParameter(name: String, element: PsiElement, context: ParadoxScriptDefinitionElement): ParadoxParameterElement?
+    fun resolveWithContext(name: String, element: PsiElement, context: ParadoxScriptDefinitionElement): ParadoxParameterElement?
     
-    fun resolveParameterWithContext(name: String, element: PsiElement, file: PsiFile?): ParadoxParameterElement? {
+    fun resolve(name: String, element: PsiElement, file: PsiFile?): ParadoxParameterElement? {
         val context = findContext(element, file) ?: return null
-        return resolveParameter(name, element, context)
+        return resolveWithContext(name, element, context)
     }
     
     /**
@@ -52,15 +52,15 @@ interface ParadoxParameterSupport {
             return EP_NAME.extensionList.firstNotNullOfOrNull { it.findContext(element, file) }
         }
         
-        fun resolveParameter(name: String, element: PsiElement, file: PsiFile? = null): ParadoxParameterElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveParameterWithContext(name, element, file) }
+        fun resolve(name: String, element: PsiElement, file: PsiFile? = null): ParadoxParameterElement? {
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolve(name, element, file) }
         }
         
-        fun resolveParameterWithContext(name: String, element: PsiElement, context: ParadoxScriptDefinitionElement): ParadoxParameterElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveParameter(name, element, context) }
+        fun resolveWithContext(name: String, element: PsiElement, context: ParadoxScriptDefinitionElement): ParadoxParameterElement? {
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveWithContext(name, element, context) }
         }
         
-        fun resolveArgument(name: String, element: ParadoxScriptProperty, config: CwtPropertyConfig): ParadoxParameterElement? {
+        fun resolveFromInvocationExpression(name: String, element: ParadoxScriptProperty, config: CwtPropertyConfig): ParadoxParameterElement? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveParameterFromInvocationExpression(name, element, config) }
         }
         

@@ -468,7 +468,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport()
         val invocationExpressionConfig = config.parent
             ?.castOrNull<CwtPropertyConfig>()
             ?: return null
-        return ParadoxParameterSupport.resolveArgument(expression, invocationExpression, invocationExpressionConfig)
+        return ParadoxParameterSupport.resolveFromInvocationExpression(expression, invocationExpression, invocationExpressionConfig)
     }
     
     override fun complete(config: CwtConfig<*>, context: ProcessingContext, result: CompletionResultSet) {

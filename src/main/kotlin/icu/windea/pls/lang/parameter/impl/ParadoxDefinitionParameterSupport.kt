@@ -33,7 +33,7 @@ class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return element.findParentDefinition()?.takeIf { supports(it) }
     }
     
-    override fun resolveParameter(name: String, element: PsiElement, context: ParadoxScriptDefinitionElement): ParadoxParameterElement? {
+    override fun resolveWithContext(name: String, element: PsiElement, context: ParadoxScriptDefinitionElement): ParadoxParameterElement? {
         val definitionInfo = context.definitionInfo ?: return null
         val definitionName = context.name
         val definitionTypes = definitionInfo.types

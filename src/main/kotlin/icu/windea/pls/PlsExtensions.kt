@@ -12,6 +12,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.references.*
@@ -86,9 +87,20 @@ fun PsiReference.canResolveScriptedVariable(): Boolean {
 
 fun PsiReference.canResolveDefinition(): Boolean {
     return when(this) {
-        is ParadoxScriptExpressionPsiReference -> true
-        is ParadoxInTemplateExpressionReference -> true
-        is ParadoxDataExpressionNode.Reference -> true
+        is ParadoxScriptExpressionPsiReference -> {
+            val configExpression = this.config.expression
+            configExpression.type == CwtDataType.Definition
+        }
+        is ParadoxInTemplateExpressionReference -> {
+            val configExpression = this.configExpression
+            configExpression.type == CwtDataType.Definition
+        }
+        is ParadoxDataExpressionNode.Reference -> {
+            this.linkConfigs.any { linkConfig ->
+                val configExpression = linkConfig.expression ?: return@any false
+                configExpression.type == CwtDataType.Definition
+            }
+        }
         is ParadoxLocalisationCommandFieldPsiReference -> true //<scripted_loc>
         else -> false
     }
@@ -96,7 +108,10 @@ fun PsiReference.canResolveDefinition(): Boolean {
 
 fun PsiReference.canResolveLocalisation(): Boolean {
     return when(this) {
-        is ParadoxScriptExpressionPsiReference -> true
+        is ParadoxScriptExpressionPsiReference -> {
+            val configExpression = this.config.expression
+            configExpression.type == CwtDataType.Localisation || configExpression.type == CwtDataType.InlineLocalisation
+        }
         is ParadoxLocalisationPropertyPsiReference -> true
         else -> false
     }
@@ -104,7 +119,10 @@ fun PsiReference.canResolveLocalisation(): Boolean {
 
 fun PsiReference.canResolveParameter(): Boolean {
     return when(this) {
-        is ParadoxScriptExpressionPsiReference -> this.isKey
+        is ParadoxScriptExpressionPsiReference -> {
+            val configExpression = this.config.expression
+            configExpression.type == CwtDataType.Parameter
+        }
         is ParadoxParameterPsiReference -> true
         is ParadoxArgumentPsiReference -> true
         is ParadoxScriptValueParameterExpressionNode.Reference -> true
@@ -115,10 +133,21 @@ fun PsiReference.canResolveParameter(): Boolean {
 
 fun PsiReference.canResolveValueSetValue(): Boolean {
     return when(this) {
-        is ParadoxScriptExpressionPsiReference -> true
-        is ParadoxInTemplateExpressionReference -> true
+        is ParadoxScriptExpressionPsiReference -> {
+            val configExpression = this.config.expression
+            configExpression.type.isValueSetValueType()
+        }
+        is ParadoxInTemplateExpressionReference -> {
+            val configExpression = this.configExpression
+            configExpression.type.isValueSetValueType()
+        }
+        is ParadoxDataExpressionNode.Reference -> {
+            this.linkConfigs.any { linkConfig ->
+                val configExpression = linkConfig.expression ?: return@any false
+                configExpression.type.isValueSetValueType()
+            }
+        }
         is ParadoxValueSetValueExpressionNode.Reference -> true
-        is ParadoxDataExpressionNode.Reference -> true
         is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
         is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
         else -> false
@@ -127,9 +156,20 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
 
 fun PsiReference.canResolveComplexEnumValue(): Boolean {
     return when(this) {
-        is ParadoxScriptExpressionPsiReference -> true
-        is ParadoxInTemplateExpressionReference -> true
-        is ParadoxDataExpressionNode.Reference -> true
+        is ParadoxScriptExpressionPsiReference -> {
+            val configExpression = this.config.expression
+            configExpression.type == CwtDataType.EnumValue
+        }
+        is ParadoxInTemplateExpressionReference -> {
+            val configExpression = this.configExpression
+            configExpression.type == CwtDataType.EnumValue
+        }
+        is ParadoxDataExpressionNode.Reference -> {
+            this.linkConfigs.any { linkConfig ->
+                val configExpression = linkConfig.expression ?: return@any false
+                configExpression.type == CwtDataType.EnumValue
+            }
+        }
         is ParadoxComplexEnumValuePsiReference -> true
         else -> false
     }

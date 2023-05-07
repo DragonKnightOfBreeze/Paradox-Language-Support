@@ -30,7 +30,7 @@ class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return null
     }
     
-    override fun resolveParameter(name: String, element: PsiElement, context: ParadoxScriptDefinitionElement): ParadoxParameterElement? {
+    override fun resolveWithContext(name: String, element: PsiElement, context: ParadoxScriptDefinitionElement): ParadoxParameterElement? {
         val file = context as ParadoxScriptFile
         val expression = ParadoxInlineScriptHandler.getInlineScriptExpression(file) ?: return null
         val readWriteAccess = getReadWriteAccess(element)
