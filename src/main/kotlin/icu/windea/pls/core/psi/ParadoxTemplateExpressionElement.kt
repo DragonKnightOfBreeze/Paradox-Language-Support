@@ -20,7 +20,7 @@ class ParadoxTemplateExpressionElement(
     val configExpression: CwtTemplateExpression,
     val gameType: ParadoxGameType,
     private val project: Project,
-    val references: List<ParadoxInTemplateExpressionReference>,
+    val references: List<ParadoxTemplateSnippetExpressionReference>,
 ) : ParadoxFakePsiElement(parent) {
     override fun getIcon(): Icon {
         return PlsIcons.TemplateExpression

@@ -26,7 +26,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     companion object {
         @JvmField
-        val referencesKey = Key.create<List<ParadoxInTemplateExpressionReference>>("paradox.modifierElement.references")
+        val referencesKey = Key.create<List<ParadoxTemplateSnippetExpressionReference>>("paradox.modifierElement.references")
     }
     
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {

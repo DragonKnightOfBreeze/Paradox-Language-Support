@@ -95,14 +95,14 @@ object CwtTemplateExpressionHandler {
         return ParadoxTemplateExpressionElement(element, text, configExpression, gameType, project, references)
     }
     
-    fun resolveReferences(text: String, element: ParadoxScriptStringExpressionElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): List<ParadoxInTemplateExpressionReference> {
+    fun resolveReferences(text: String, element: ParadoxScriptStringExpressionElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): List<ParadoxTemplateSnippetExpressionReference> {
         val snippetExpressions = configExpression.snippetExpressions
         if(snippetExpressions.isEmpty()) return emptyList()
         val expressionString = text
         val regex = toRegex(configExpression)
         val matchResult = regex.matchEntire(expressionString) ?: return emptyList()
         if(configExpression.referenceExpressions.size != matchResult.groups.size - 1) return emptyList()
-        val references = SmartList<ParadoxInTemplateExpressionReference>()
+        val references = SmartList<ParadoxTemplateSnippetExpressionReference>()
         var i = 1
         for(snippetExpression in snippetExpressions) {
             ProgressManager.checkCanceled()
@@ -110,7 +110,7 @@ object CwtTemplateExpressionHandler {
                 val matchGroup = matchResult.groups.get(i++) ?: return emptyList()
                 val referenceName = matchGroup.value
                 val range = TextRange.create(matchGroup.range.first, matchGroup.range.last)
-                val reference = ParadoxInTemplateExpressionReference(element, range, referenceName, snippetExpression, configGroup)
+                val reference = ParadoxTemplateSnippetExpressionReference(element, range, referenceName, snippetExpression, configGroup)
                 references.add(reference)
             } else {
                 //ignore

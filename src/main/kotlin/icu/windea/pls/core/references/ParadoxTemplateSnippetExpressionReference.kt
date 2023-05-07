@@ -10,7 +10,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxInTemplateExpressionReference(
+class ParadoxTemplateSnippetExpressionReference(
     element: ParadoxScriptStringExpressionElement,
     rangeInElement: TextRange,
     val name: String,
@@ -44,14 +44,14 @@ class ParadoxInTemplateExpressionReference(
             .mapToArray { PsiElementResolveResult(it) }
     }
     
-    private object Resolver: ResolveCache.AbstractResolver<ParadoxInTemplateExpressionReference, PsiElement> {
-        override fun resolve(ref: ParadoxInTemplateExpressionReference, incompleteCode: Boolean): PsiElement? {
+    private object Resolver: ResolveCache.AbstractResolver<ParadoxTemplateSnippetExpressionReference, PsiElement> {
+        override fun resolve(ref: ParadoxTemplateSnippetExpressionReference, incompleteCode: Boolean): PsiElement? {
             return ref.doResolve()
         }
     }
     
-    private object MultiResolver: ResolveCache.PolyVariantResolver<ParadoxInTemplateExpressionReference> {
-        override fun resolve(ref: ParadoxInTemplateExpressionReference, incompleteCode: Boolean): Array<out ResolveResult> {
+    private object MultiResolver: ResolveCache.PolyVariantResolver<ParadoxTemplateSnippetExpressionReference> {
+        override fun resolve(ref: ParadoxTemplateSnippetExpressionReference, incompleteCode: Boolean): Array<out ResolveResult> {
             return ref.doMultiResolve()
         }
     }

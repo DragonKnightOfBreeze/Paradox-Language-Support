@@ -91,7 +91,7 @@ fun PsiReference.canResolveDefinition(): Boolean {
             val configExpression = this.config.expression
             configExpression.type == CwtDataType.Definition
         }
-        is ParadoxInTemplateExpressionReference -> {
+        is ParadoxTemplateSnippetExpressionReference -> {
             val configExpression = this.configExpression
             configExpression.type == CwtDataType.Definition
         }
@@ -137,7 +137,7 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
             val configExpression = this.config.expression
             configExpression.type.isValueSetValueType()
         }
-        is ParadoxInTemplateExpressionReference -> {
+        is ParadoxTemplateSnippetExpressionReference -> {
             val configExpression = this.configExpression
             configExpression.type.isValueSetValueType()
         }
@@ -160,7 +160,7 @@ fun PsiReference.canResolveComplexEnumValue(): Boolean {
             val configExpression = this.config.expression
             configExpression.type == CwtDataType.EnumValue
         }
-        is ParadoxInTemplateExpressionReference -> {
+        is ParadoxTemplateSnippetExpressionReference -> {
             val configExpression = this.configExpression
             configExpression.type == CwtDataType.EnumValue
         }

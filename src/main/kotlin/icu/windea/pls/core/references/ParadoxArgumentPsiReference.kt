@@ -5,9 +5,6 @@ import com.intellij.psi.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.parameter.*
 
-/**
- * @see icu.windea.pls.script.codeInsight.completion.ParadoxParameterCompletionProvider
- */
 class ParadoxArgumentPsiReference(
 	element: ParadoxArgument,
 	rangeInElement: TextRange
