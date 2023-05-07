@@ -28,7 +28,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return context?.takeIf { isContext(it) }
     }
     
-    override fun findContextReferenceInfo(element: PsiElement, config: CwtDataConfig<*>?, from: ParadoxParameterContextReferenceInfo.FromLocation): ParadoxParameterContextReferenceInfo? {
+    override fun findContextReferenceInfo(element: PsiElement, config: CwtDataConfig<*>?, from: ParadoxParameterContextReferenceInfo.From): ParadoxParameterContextReferenceInfo? {
         TODO("Not yet implemented")
     }
     

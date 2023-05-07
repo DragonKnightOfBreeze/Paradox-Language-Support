@@ -33,9 +33,9 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return context?.takeIf { isContext(it) }
     }
     
-    override fun findContextReferenceInfo(element: PsiElement, config: CwtDataConfig<*>?, from: ParadoxParameterContextReferenceInfo.FromLocation): ParadoxParameterContextReferenceInfo? {
+    override fun findContextReferenceInfo(element: PsiElement, config: CwtDataConfig<*>?, from: ParadoxParameterContextReferenceInfo.From): ParadoxParameterContextReferenceInfo? {
         when(from) {
-            ParadoxParameterContextReferenceInfo.FromLocation.Argument -> {
+            ParadoxParameterContextReferenceInfo.From.ArgumentCompletion -> {
                 if(config == null) return null
                 //infer context config
                 val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parent?.castOrNull<CwtPropertyConfig>() ?: return null
@@ -52,8 +52,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
                 info.putUserData(definitionTypesKey, definitionTypes)
                 return info
             }
-            ParadoxParameterContextReferenceInfo.FromLocation.ContextReference -> TODO()
-            ParadoxParameterContextReferenceInfo.FromLocation.InContextReference -> TODO()
+            ParadoxParameterContextReferenceInfo.From.ContextReference -> TODO()
+            ParadoxParameterContextReferenceInfo.From.InContextReference -> TODO()
         }
     }
     

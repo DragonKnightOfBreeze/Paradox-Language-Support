@@ -17,7 +17,7 @@ import icu.windea.pls.lang.parameter.*
 class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, Set<ParadoxParameterInfo>> {
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): PsiElement? {
         val element = context.file.findElementAt(context.offset) ?: return null
-        val from = ParadoxParameterContextReferenceInfo.FromLocation.InContextReference
+        val from = ParadoxParameterContextReferenceInfo.From.InContextReference
         val contextReferenceInfo = ParadoxParameterSupport.findContextReferenceInfo(element, null, from) ?: return null
         val targetElement = contextReferenceInfo.element ?: return null
         val parameterInfosMap = mutableMapOf<String, Collection<ParadoxParameterInfo>>()
@@ -34,7 +34,7 @@ class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, Set<Paradox
     
     override fun findElementForUpdatingParameterInfo(context: UpdateParameterInfoContext): PsiElement? {
         val element = context.file.findElementAt(context.offset) ?: return null
-        val from = ParadoxParameterContextReferenceInfo.FromLocation.InContextReference
+        val from = ParadoxParameterContextReferenceInfo.From.InContextReference
         val contextReferenceInfo = ParadoxParameterSupport.findContextReferenceInfo(element, null, from) ?: return null
         val targetElement = contextReferenceInfo.element ?: return null
         val current = context.parameterOwner

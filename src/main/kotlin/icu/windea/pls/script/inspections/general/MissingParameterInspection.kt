@@ -41,7 +41,7 @@ class MissingParameterInspection : LocalInspectionTool() {
                 val config = configs.firstOrNull() as? CwtPropertyConfig ?: return
                 ProgressManager.checkCanceled()
                 val requiredParameterNames = mutableSetOf<String>()
-                val from = ParadoxParameterContextReferenceInfo.FromLocation.ContextReference
+                val from = ParadoxParameterContextReferenceInfo.From.ContextReference
                 val contextReferenceInfo = ParadoxParameterSupport.findContextReferenceInfo(element, config, from) ?: return
                 ParadoxParameterSupport.processContext(element, contextReferenceInfo) p@{
                     ProgressManager.checkCanceled()

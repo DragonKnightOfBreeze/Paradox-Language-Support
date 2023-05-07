@@ -87,7 +87,7 @@ object ParadoxParameterHandler {
         ProgressManager.checkCanceled()
         if(quoted) return //输入参数不允许用引号括起
         val config = context.config as? CwtDataConfig<*>
-        val from = ParadoxParameterContextReferenceInfo.FromLocation.Argument
+        val from = ParadoxParameterContextReferenceInfo.From.ArgumentCompletion
         val contextReferenceInfo = ParadoxParameterSupport.findContextReferenceInfo(element, config, from) ?: return
         val existingParameterNames = contextReferenceInfo.existingParameterNames.toMutableSet()
         //val existParameterNames = mutableSetOf<String>().synced()

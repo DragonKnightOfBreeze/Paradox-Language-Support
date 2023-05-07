@@ -18,7 +18,7 @@ class ParadoxInScriptValueExpressionParameterSupport: ParadoxDefinitionParameter
         val nodesKey = Key.create<Map<TextRange, ParadoxScriptValueArgumentExpressionNode>>("paradox.parameterElement.node")
     }
     
-    override fun findContextReferenceInfo(element: PsiElement, config: CwtDataConfig<*>?, from: ParadoxParameterContextReferenceInfo.FromLocation): ParadoxParameterContextReferenceInfo? {
+    override fun findContextReferenceInfo(element: PsiElement, config: CwtDataConfig<*>?, from: ParadoxParameterContextReferenceInfo.From): ParadoxParameterContextReferenceInfo? {
         TODO("Not yet implemented")
     }
     

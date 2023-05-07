@@ -15,7 +15,7 @@ class ParadoxParameterContextReferenceInfo(
 ) : UserDataHolderBase() {
     val element: PsiElement? get() = elementPointer.element
     
-    enum class FromLocation {
-        ContextReference, Argument, InContextReference
+    enum class From {
+        ContextReference, InContextReference, ArgumentCompletion
     }
 }

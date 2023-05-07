@@ -21,12 +21,12 @@ interface ParadoxParameterSupport {
      * 向上查找参数的上下文引用信息。
      *
      * @param element 开始查找的位置。
-     * @param config 开始查找的位置是一个传入参数时，此传入参数对应的CWT规则。
+     * @param config 开始查找的位置对应的CWT规则（如果存在）。
      * @param from 从哪里向上查找。
      *
      * @see icu.windea.pls.script.codeInsight.parameterInfo.ParadoxParameterInfoHandler
      */
-    fun findContextReferenceInfo(element: PsiElement, config: CwtDataConfig<*>?, from: ParadoxParameterContextReferenceInfo.FromLocation): ParadoxParameterContextReferenceInfo?
+    fun findContextReferenceInfo(element: PsiElement, config: CwtDataConfig<*>?, from: ParadoxParameterContextReferenceInfo.From): ParadoxParameterContextReferenceInfo?
     
     fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement?
     
@@ -75,7 +75,7 @@ interface ParadoxParameterSupport {
             return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveArgument(element, rangeInElement, config) }
         }
         
-        fun findContextReferenceInfo(element: PsiElement, config: CwtDataConfig<*>?, from: ParadoxParameterContextReferenceInfo.FromLocation): ParadoxParameterContextReferenceInfo? {
+        fun findContextReferenceInfo(element: PsiElement, config: CwtDataConfig<*>?, from: ParadoxParameterContextReferenceInfo.From): ParadoxParameterContextReferenceInfo? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { it.findContextReferenceInfo(element, config, from) }
         }
         
