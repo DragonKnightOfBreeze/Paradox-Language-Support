@@ -39,13 +39,15 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
                 completionOffset = extraArgs.getOrNull(1)?.castOrNull<Int>() ?: -1
                 if(config !is CwtPropertyConfig || config.expression.type != CwtDataType.Parameter) return null
                 //infer inline config
-                inlineConfig = config.castOrNull<CwtPropertyConfig>()?.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig as? CwtInlineConfig ?: return null
-                if(inlineConfig.name != "inline_script") return null
+                val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parent?.castOrNull<CwtPropertyConfig>() ?: return null
+                inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == "inline_script" }  ?: return null
                 contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
             }
             //extraArgs: contextConfig
             ParadoxParameterContextReferenceInfo.From.ContextReference -> {
-                
+                val contextConfig = extraArgs.getOrNull(0)?.castOrNull<CwtPropertyConfig>() ?: return null
+                inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == "inline_script" }  ?: return null
+                contextReferenceElement = element.castOrNull() ?: return null
             }
             //extraArgs: offset
             ParadoxParameterContextReferenceInfo.From.InContextReference -> {
@@ -98,8 +100,8 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val config = extraArgs.getOrNull(0)?.castOrNull<CwtDataConfig<*>>() ?: return null
         if(config !is CwtPropertyConfig || config.expression.type != CwtDataType.Parameter) return null
         //infer inline config
-        val inlineConfig = config.castOrNull<CwtPropertyConfig>()?.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig as? CwtInlineConfig ?: return null
-        if(inlineConfig.name != "inline_script") return null
+        val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parent?.castOrNull<CwtPropertyConfig>() ?: return null
+        val inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == "inline_script" }  ?: return null
         val contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
         val propertyValue = contextReferenceElement.propertyValue ?: return null
         val expression = ParadoxInlineScriptHandler.getExpressionFromInlineConfig(propertyValue, inlineConfig) ?: return null

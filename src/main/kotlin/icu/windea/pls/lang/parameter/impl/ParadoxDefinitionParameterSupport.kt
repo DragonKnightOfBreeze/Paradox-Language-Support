@@ -49,7 +49,9 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
             }
             //extraArgs: contextConfig
             ParadoxParameterContextReferenceInfo.From.ContextReference -> {
-                
+                contextConfig = extraArgs.getOrNull(0)?.castOrNull<CwtPropertyConfig>() ?: return null
+                if(contextConfig.expression.type != CwtDataType.Definition) return null
+                contextReferenceElement = element.castOrNull() ?: return null
             }
             //extraArgs: offset
             ParadoxParameterContextReferenceInfo.From.InContextReference -> {
