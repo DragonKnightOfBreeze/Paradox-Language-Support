@@ -9,13 +9,13 @@ class ParadoxParameterContextReferenceInfo(
     private val elementPointer: SmartPsiElementPointer<PsiElement>,
     val rangeInElement: TextRange,
     val contextName: String,
-    val existingParameterNames: Set<String>,
+    val argumentNames: Set<String>,
     val gameType: ParadoxGameType,
     val project: Project
 ) : UserDataHolderBase() {
     val element: PsiElement? get() = elementPointer.element
     
     enum class From {
-        ContextReference, InContextReference, ArgumentCompletion
+        ContextReference, InContextReference, Argument
     }
 }

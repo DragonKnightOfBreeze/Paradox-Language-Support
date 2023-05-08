@@ -2,7 +2,6 @@ package icu.windea.pls.lang.parameter
 
 import com.intellij.openapi.extensions.*
 import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -15,7 +14,10 @@ import icu.windea.pls.script.psi.*
 interface ParadoxLocalisationParameterSupport {
     fun resolveParameter(element: ParadoxLocalisationPropertyReference): ParadoxParameterElement?
     
-    fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtDataConfig<*>?): ParadoxParameterElement?
+    /**
+     * @param extraArgs 对于每个实现需要的额外参数可能是不同的。
+     */
+    fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, vararg extraArgs: Any?): ParadoxParameterElement?
     
     /**
      * 构建参数的快速文档中的定义部分。
@@ -30,8 +32,8 @@ interface ParadoxLocalisationParameterSupport {
             return EP_NAME.extensions.firstNotNullOfOrNull { it.resolveParameter(element) }
         }
         
-        fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtPropertyConfig): ParadoxParameterElement? {
-            return EP_NAME.extensions.firstNotNullOfOrNull { it.resolveArgument(element, rangeInElement, config) }
+        fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, vararg extraArgs: Any?): ParadoxParameterElement? {
+            return EP_NAME.extensions.firstNotNullOfOrNull { it.resolveArgument(element, rangeInElement, *extraArgs) }
         }
         
         fun getDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean {

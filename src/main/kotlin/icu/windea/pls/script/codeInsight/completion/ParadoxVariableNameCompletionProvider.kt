@@ -31,10 +31,10 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         context.put(PlsCompletionKeys.parametersKey, parameters)
         context.put(PlsCompletionKeys.contextElementKey, element)
         context.put(PlsCompletionKeys.originalFileKey, file)
-        context.put(PlsCompletionKeys.quotedKey, quoted)
-        context.put(PlsCompletionKeys.rightQuotedKey, rightQuoted)
         context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
         context.put(PlsCompletionKeys.keywordKey, keyword)
+        context.put(PlsCompletionKeys.quotedKey, quoted)
+        context.put(PlsCompletionKeys.rightQuotedKey, rightQuoted)
         
         val stringElement = element
         if(!stringElement.isBlockValue()) return

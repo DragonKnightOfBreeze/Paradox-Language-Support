@@ -6,7 +6,6 @@ import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.model.*
 import java.awt.*
 
@@ -114,8 +113,6 @@ object PlsKeys {
     
     //用于将CWT规则临时写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）
     val cwtConfigKey = Key.create<CwtConfig<*>>("paradox.cwtConfig")
-    //用于在某些情况下快速从脚本表达式元素获取复杂表达式或者复杂表达式节点，其中映射的键是自由指定的
-    val expressionNodesKey = Key.create<MutableMap<String, ParadoxExpressionNode>>("paradox.nodeRanges")
     //用于在进行代码补全时标记一个property的propertyValue未填写
     val isIncompleteKey = Key.create<Boolean>("paradox.isIncomplete")
     //用于在进行代码补全时标记作用域不匹配

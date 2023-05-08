@@ -3,9 +3,7 @@ package icu.windea.pls.core.expression.nodes
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.highlighter.*
@@ -27,9 +25,7 @@ class ParadoxScriptValueArgumentExpressionNode(
         if(text.isEmpty()) return null
         val reference = scriptValueNode.getReference(element)
         if(reference?.resolve() == null) return null //skip if script value cannot be resolved
-        val expressionNodeKey = rangeInExpression.toString() + "@" + ParadoxScriptValueArgumentExpressionNode::class.java.name
-        element.getOrPutUserData(PlsKeys.expressionNodesKey) { mutableMapOf() }.put(expressionNodeKey, this)
-        return Reference(element, rangeInExpression)
+        return Reference(element, rangeInExpression, this)
     }
     
     companion object Resolver {
@@ -43,14 +39,15 @@ class ParadoxScriptValueArgumentExpressionNode(
      */
     class Reference(
         element: ParadoxScriptStringExpressionElement,
-        rangeInElement: TextRange
+        rangeInElement: TextRange,
+        private val argumentNode: ParadoxScriptValueArgumentExpressionNode 
     ) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
         override fun handleElementRename(newElementName: String): PsiElement {
             return element.setValue(rangeInElement.replace(element.value, newElementName))
         }
         
         override fun resolve(): ParadoxParameterElement? {
-            return ParadoxParameterSupport.resolveArgument(element, rangeInElement, null)
+            return ParadoxParameterSupport.resolveArgument(element, rangeInElement, argumentNode)
         }
     }
 }

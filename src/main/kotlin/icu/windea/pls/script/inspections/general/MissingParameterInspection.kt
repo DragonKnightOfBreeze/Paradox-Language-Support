@@ -6,7 +6,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
@@ -37,12 +36,10 @@ class MissingParameterInspection : LocalInspectionTool() {
             
             private fun visitElementFromContextReferenceElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                val configs = ParadoxConfigHandler.getConfigs(element)
-                val config = configs.firstOrNull() as? CwtPropertyConfig ?: return
-                ProgressManager.checkCanceled()
-                val requiredParameterNames = mutableSetOf<String>()
                 val from = ParadoxParameterContextReferenceInfo.From.ContextReference
-                val contextReferenceInfo = ParadoxParameterSupport.findContextReferenceInfo(element, config, from) ?: return
+                val contextConfig = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
+                val contextReferenceInfo = ParadoxParameterSupport.findContextReferenceInfo(element, from, contextConfig) ?: return
+                val requiredParameterNames = mutableSetOf<String>()
                 ParadoxParameterSupport.processContext(element, contextReferenceInfo) p@{
                     ProgressManager.checkCanceled()
                     val parameters = ParadoxParameterHandler.getParameters(it)
@@ -54,7 +51,7 @@ class MissingParameterInspection : LocalInspectionTool() {
                     }
                     false
                 }
-                requiredParameterNames.removeAll(contextReferenceInfo.existingParameterNames)
+                requiredParameterNames.removeAll(contextReferenceInfo.argumentNames)
                 if(requiredParameterNames.isEmpty()) return
                 registerProblem(element, requiredParameterNames, contextReferenceInfo.rangeInElement)
             }

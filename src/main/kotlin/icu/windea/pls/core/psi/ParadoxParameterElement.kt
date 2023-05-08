@@ -7,6 +7,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.parameter.*
@@ -72,6 +73,7 @@ class ParadoxParameterElement(
         return other is ParadoxParameterElement &&
             name == other.name &&
             contextKey == other.contextKey &&
+            !contextName.isParameterizedExpression() && //parameters with parameterized context are never equal
             project == other.project &&
             gameType == other.gameType
     }

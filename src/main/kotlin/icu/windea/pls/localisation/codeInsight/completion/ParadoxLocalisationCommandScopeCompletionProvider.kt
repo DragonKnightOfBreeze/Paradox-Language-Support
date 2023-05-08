@@ -22,8 +22,8 @@ class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<Com
         val configGroup = getCwtConfig(project).get(gameType)
         
         context.put(PlsCompletionKeys.parametersKey, parameters)
-        context.put(PlsCompletionKeys.originalFileKey, file)
         context.put(PlsCompletionKeys.contextElementKey, element)
+        context.put(PlsCompletionKeys.originalFileKey, file)
         context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
         context.put(PlsCompletionKeys.keywordKey, keyword)
         context.put(PlsCompletionKeys.configGroupKey, configGroup)

@@ -86,17 +86,11 @@ object ParadoxParameterHandler {
     fun completeArguments(element: PsiElement, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
         ProgressManager.checkCanceled()
         if(quoted) return //输入参数不允许用引号括起
-        val config = context.config as? CwtDataConfig<*>
-        val from = ParadoxParameterContextReferenceInfo.From.ArgumentCompletion
-        val contextReferenceInfo = ParadoxParameterSupport.findContextReferenceInfo(element, config, from) ?: return
-        val existingParameterNames = contextReferenceInfo.existingParameterNames.toMutableSet()
-        //val existParameterNames = mutableSetOf<String>().synced()
-        //block.processProperty p@{
-        //    val propertyKey = it.propertyKey
-        //    val name = if(contextElement == propertyKey) propertyKey.getKeyword(context.offsetInParent) else propertyKey.name
-        //    existParameterNames.add(name)
-        //    true
-        //}
+        val from = ParadoxParameterContextReferenceInfo.From.Argument
+        val config = context.config as? CwtDataConfig<*> ?: return
+        val completionOffset = context.parameters?.offset ?: return
+        val contextReferenceInfo = ParadoxParameterSupport.findContextReferenceInfo(element, from, config, completionOffset) ?: return
+        val argumentNames = contextReferenceInfo.argumentNames.toMutableSet()
         val namesToDistinct = mutableSetOf<String>().synced()
         //整合查找到的所有参数上下文
         val insertSeparator = context.isKey == true
@@ -106,7 +100,7 @@ object ParadoxParameterHandler {
             if(parameterMap.isEmpty()) return@p true
             for((parameterName, parameterInfo) in parameterMap) {
                 //排除已输入的
-                if(parameterName in existingParameterNames) continue
+                if(parameterName in argumentNames) continue
                 if(!namesToDistinct.add(parameterName)) continue
                 
                 val parameter = parameterInfo.pointers.firstNotNullOfOrNull { it.element } ?: return@p true
