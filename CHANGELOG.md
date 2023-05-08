@@ -66,6 +66,7 @@
 ## 0.9.16
 
 * [X] 修复引用了枚举的模版规则表达式无法被正常解析的问题（如`enum[component_tag]_weapon_damage_mult`）
+* [X] 修复进行全局代码检查时可能导致`StackOverflowError`的问题
 * [X] 提取扩展点提供对快速文档链接的支持，用于点击跳转到对应的定义/本地化等（参见：`DocumentationElementLinkProviders.kt`）
 * [X] 快速文档链接也能作为html/markdown等文件中的超链接使用，从而引用和跳转到指定的定义/本地化等
 * [ ] DDS文件路径以及符合条件的快速文档链接也能作为html/markdown等文件中的图片超链接使用，从而渲染DDS图片和本地化

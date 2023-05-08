@@ -18,10 +18,10 @@ import javax.imageio.*
 @InjectTarget("org.intellij.images.vfs.IfsUtil", pluginId = "com.intellij.platform.images")
 @Suppress("UNCHECKED_CAST")
 class IfsUtilCodeInjector : BaseCodeInjector() {
-    //即使目标DDS文件不存在于本地（例如来自Git提交记录），也可以正常渲染
-    
     //org.intellij.images.vfs.IfsUtil
     //org.intellij.images.vfs.IfsUtil.refresh
+    
+    //即使目标DDS文件不存在于本地（例如来自Git提交记录），也可以正常渲染
     
     companion object {
         val TIME_MODIFICATION_STAMP_KEY by lazy { staticProperty<IfsUtil>("TIME_MODIFICATION_STAMP_KEY") as Key<Pair<Long?, Long?>> }

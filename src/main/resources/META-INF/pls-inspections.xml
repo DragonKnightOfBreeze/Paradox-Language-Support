@@ -1,6 +1,5 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <codeInspection.InspectionExtension implementation="icu.windea.pls.core.inspections.ParadoxInspectionExtensionsFactory"/>
     <lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.inspections.ParadoxScriptInspectionSuppressor"/>
     <lang.inspectionSuppressor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.core.inspections.ParadoxLocalisationInspectionSuppressor"/>
     <!--<lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.inspections.ParadoxScriptCwtConfigAwareInspectionSuppressor"/>-->

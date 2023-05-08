@@ -12,5 +12,6 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.LowLevelSearchUtilCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.IfsUtilCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.RefManagerImplCodeInjector"/>
   </extensions>
 </idea-plugin>
