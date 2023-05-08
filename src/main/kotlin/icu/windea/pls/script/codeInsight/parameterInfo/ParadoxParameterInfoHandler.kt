@@ -14,7 +14,7 @@ import icu.windea.pls.lang.parameter.*
 /**
  * 在参数上下文引用中显示参数信息。
  */
-class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, Set<ParadoxParameterInfo>> {
+class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, Collection<ParadoxParameterInfo>> {
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): PsiElement? {
         val element = context.file.findElementAt(context.offset) ?: return null
         val from = ParadoxParameterContextReferenceInfo.From.InContextReference
@@ -42,7 +42,7 @@ class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, Set<Paradox
         return targetElement
     }
     
-    override fun updateUI(parameterInfos: Set<ParadoxParameterInfo>, context: ParameterInfoUIContext) {
+    override fun updateUI(parameterInfos: Collection<ParadoxParameterInfo>, context: ParameterInfoUIContext) {
         //PARAM1, PARAM2, ...
         //不高亮特定的参数
         var isFirst = true

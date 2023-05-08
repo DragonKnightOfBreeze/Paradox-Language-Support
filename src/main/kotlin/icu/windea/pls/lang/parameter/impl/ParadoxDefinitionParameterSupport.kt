@@ -3,6 +3,7 @@ package icu.windea.pls.lang.parameter.impl
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
@@ -10,6 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.psi.*
@@ -55,7 +57,20 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
             }
             //extraArgs: file, offset
             ParadoxParameterContextReferenceInfo.From.InContextReference -> {
-                
+                val parentBlock = when(element.elementType) {
+                    ParadoxScriptElementTypes.LEFT_BRACE -> element.parent.parentOfType<ParadoxScriptBlock>()
+                    else -> element.parentOfType<ParadoxScriptBlock>()
+                } ?: return null
+                val parentProperties = parentBlock.parentsOfType<ParadoxScriptProperty>(withSelf = false)
+                for(prop in parentProperties) {
+                    //infer context config
+                    val propConfig = ParadoxConfigHandler.getPropertyConfigs(prop).firstOrNull() ?: continue
+                    if(propConfig.expression.type != CwtDataType.Definition) continue
+                    if(propConfig.configs?.any { it is CwtPropertyConfig && it.expression.type == CwtDataType.Parameter } != true) continue
+                    contextConfig = propConfig
+                    contextReferenceElement = prop
+                    break
+                }
             }
         }
         if(contextConfig == null || contextReferenceElement == null) return null

@@ -3,6 +3,7 @@ package icu.windea.pls.lang.parameter.impl
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
@@ -51,7 +52,20 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
             }
             //extraArgs: file, offset
             ParadoxParameterContextReferenceInfo.From.InContextReference -> {
-                
+                val parentBlock = when(element.elementType) {
+                    ParadoxScriptElementTypes.LEFT_BRACE -> element.parent.parentOfType<ParadoxScriptBlock>()
+                    else -> element.parentOfType<ParadoxScriptBlock>()
+                } ?: return null
+                val parentProperties = parentBlock.parentsOfType<ParadoxScriptProperty>(withSelf = false)
+                for(prop in parentProperties) {
+                    //infer context config
+                    val propConfig = ParadoxConfigHandler.getPropertyConfigs(prop).firstOrNull() ?: continue
+                    val propInlineConfig = propConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == "inline_script" }  ?: continue
+                    if(propInlineConfig.config.configs?.any { it is CwtPropertyConfig && it.expression.type == CwtDataType.Parameter } != true) continue
+                    inlineConfig = propInlineConfig
+                    contextReferenceElement = prop
+                    break
+                }
             }
         }
         if(inlineConfig == null || contextReferenceElement == null) return null

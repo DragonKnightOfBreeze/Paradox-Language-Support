@@ -93,7 +93,7 @@ object ParadoxParameterHandler {
         val argumentNames = contextReferenceInfo.argumentNames.toMutableSet()
         val namesToDistinct = mutableSetOf<String>().synced()
         //整合查找到的所有参数上下文
-        val insertSeparator = context.isKey == true
+        val insertSeparator = context.isKey == true && context.contextElement !is ParadoxScriptPropertyKey
         ParadoxParameterSupport.processContext(element, contextReferenceInfo) p@{ parameterContext ->
             ProgressManager.checkCanceled()
             val parameterMap = getParameters(parameterContext)
