@@ -54,6 +54,8 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        if(!context.quoted && context.keyword.isParameterizedExpression()) return //排除可能带参数的情况
+        
         val config = context.config ?: return
         val keyword = context.keyword
         
@@ -109,6 +111,8 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        if(!context.quoted && context.keyword.isParameterizedExpression()) return //排除可能带参数的情况
+        
         val config = context.config ?: return
         val keyword = context.keyword
         
@@ -165,6 +169,8 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        if(!context.quoted && context.keyword.isParameterizedExpression()) return //排除可能带参数的情况
+        
         val config = context.config ?: return
         if(context.quoted) return
         val keyword = context.keyword
@@ -223,6 +229,8 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport(
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        if(!context.quoted && context.keyword.isParameterizedExpression()) return //排除可能带参数的情况
+        
         val config = context.config ?: return
         val scopeContext = context.scopeContext
         val typeExpression = config.expression?.value ?: return
@@ -296,6 +304,8 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        if(!context.quoted && context.keyword.isParameterizedExpression()) return //排除可能带参数的情况
+        
         val config = context.config ?: return
         val configExpression = config.expression ?: return
         val configGroup = config.info.configGroup
@@ -375,6 +385,8 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        if(!context.quoted && context.keyword.isParameterizedExpression()) return //排除可能带参数的情况
+        
         val config = context.config ?: return
         val enumName = config.expression?.value ?: return
         val configGroup = config.info.configGroup
@@ -447,6 +459,8 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport() 
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        if(!context.quoted && context.keyword.isParameterizedExpression()) return //排除可能带参数的情况
+        
         //提示预定义的modifier
         ParadoxConfigHandler.completeModifier(context, result)
     }
@@ -472,6 +486,8 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport()
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        if(!context.quoted && context.keyword.isParameterizedExpression()) return //排除可能带参数的情况
+        
         val config = context.config ?: return
         //提示参数名（仅限key）
         val contextElement = context.contextElement
@@ -541,6 +557,8 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport()
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        if(!context.quoted && context.keyword.isParameterizedExpression()) return //排除可能带参数的情况
+        
         val config = context.config ?: return
         val aliasName = config.expression?.value ?: return
         ParadoxConfigHandler.completeAliasName(aliasName, context, result)
@@ -598,6 +616,8 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptConstantLikeExpressi
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        if(!context.quoted && context.keyword.isParameterizedExpression()) return //排除可能带参数的情况
+        
         val config = context.config ?: return
         val configExpression = config.expression ?: return
         val icon = when(configExpression) {
@@ -643,6 +663,8 @@ class ParadoxScriptTemplateExpressionSupport : ParadoxScriptConstantLikeExpressi
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        if(!context.quoted && context.keyword.isParameterizedExpression()) return //排除可能带参数的情况
+        
         ParadoxConfigHandler.completeTemplateExpression(context, result)
     }
 }

@@ -10,7 +10,6 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -87,7 +86,7 @@ object ParadoxParameterHandler {
         ProgressManager.checkCanceled()
         if(quoted) return //输入参数不允许用引号括起
         val from = ParadoxParameterContextReferenceInfo.From.Argument
-        val config = context.config as? CwtDataConfig<*> ?: return
+        val config = context.config ?: return
         val completionOffset = context.parameters?.offset ?: return
         val contextReferenceInfo = ParadoxParameterSupport.findContextReferenceInfo(element, from, config, completionOffset) ?: return
         val argumentNames = contextReferenceInfo.argumentNames.toMutableSet()

@@ -68,13 +68,14 @@
 
 * [X] 修复引用了枚举的模版规则表达式无法被正常解析的问题（如`enum[component_tag]_weapon_damage_mult`）
 * [X] 修复进行全局代码检查时可能导致`StackOverflowError`和`NoClassDefFoundError`的问题
-* [X] 提取扩展点提供对快速文档链接的支持，用于点击跳转到对应的定义/本地化等（参见：`DocumentationElementLinkProviders.kt`）
-* [X] 快速文档链接也能作为html/markdown等文件中的超链接使用，从而引用和跳转到指定的定义/本地化等
+* [X] 提取扩展点提供对快速文档链接的支持，用于点击跳转到对应的定义/本地化等
+* [X] 完善扩展点提供对脚本参数和本地化参数的支持
+* [X] 快速文档链接也能作为html/markdown等文件中的超链接使用，从而引用和跳转到指定的定义/本地化等（参见下面的示例）
 * [X] 点击快速文档中渲染的本地化中的相关文本也能跳转到相关声明（如scope和scripted_loc）（内嵌提示同理）
 
-以下是一些（图片）超链接的例子：
+以下是一些超链接的示例：
 
-```
+```markdown
 * [some_scripted_variable](pdx-sv:some_scripted_variable)
 * [origin_default](pdx-def:origin_default)
 * [origin_default](pdx-loc:origin_default)

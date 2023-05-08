@@ -101,9 +101,13 @@ class ParadoxScriptValueExpressionImpl(
 	}
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+		val scopeContext = context.scopeContext
 		val keyword = context.keyword
 		val isKey = context.isKey
 		val offsetInParent = context.offsetInParent
+		
+		context.put(PlsCompletionKeys.scopeContextKey, null) //don't check now
+		
 		for(node in nodes) {
 			val nodeRange = node.rangeInExpression
 			val inRange = offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset
@@ -113,9 +117,12 @@ class ParadoxScriptValueExpressionImpl(
 					val resultToUse = result.withPrefixMatcher(keywordToUse)
 					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
 					val config = context.config
+					val configs = context.configs
 					context.put(PlsCompletionKeys.configKey, this.config)
+					context.put(PlsCompletionKeys.configsKey, null)
 					ParadoxConfigHandler.completeScriptExpression(context, resultToUse)
 					context.put(PlsCompletionKeys.configKey, config)
+					context.put(PlsCompletionKeys.configsKey, configs)
 				}
 			} else if(node is ParadoxScriptValueArgumentExpressionNode) {
 				if(inRange && scriptValueNode.text.isNotEmpty()) {
@@ -126,6 +133,7 @@ class ParadoxScriptValueExpressionImpl(
 				}
 			}
 		}
+		context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
 		context.put(PlsCompletionKeys.isKeyKey, isKey)
 	}

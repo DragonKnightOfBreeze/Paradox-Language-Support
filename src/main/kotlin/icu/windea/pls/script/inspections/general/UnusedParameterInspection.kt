@@ -56,8 +56,8 @@ class UnusedParameterInspection : LocalInspectionTool() {
                 //propertyKey -> can only be invocation expression
                 //string -> can only be sv expression
                 //parameterConditionParameter -> must be parameter condition expression
-                return (element is ParadoxScriptPropertyKey && forInvocationExpressions && !element.isParameterizedExpression())
-                    || (element is ParadoxScriptString && forScriptValueExpressions && !element.isParameterizedExpression())
+                return (element is ParadoxScriptPropertyKey && forInvocationExpressions)
+                    || (element is ParadoxScriptString && forScriptValueExpressions)
                     || (element is ParadoxScriptParameterConditionParameter && forParameterConditionExpressions)
             }
             

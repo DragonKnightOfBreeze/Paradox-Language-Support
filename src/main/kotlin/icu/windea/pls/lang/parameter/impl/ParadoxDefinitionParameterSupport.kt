@@ -75,7 +75,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         }
         if(contextConfig == null || contextReferenceElement == null) return null
         val rangeInElement = contextReferenceElement.propertyKey.textRangeInParent
-        val definitionName = contextReferenceElement.name
+        val definitionName = contextReferenceElement.name.takeIfNotEmpty() ?: return null
+        if(definitionName.isParameterizedExpression()) return null //skip if context name is parameterized
         val definitionTypes = contextConfig.expression.value?.split('.') ?: return null
         val argumentNames = mutableSetOf<String>()
         contextReferenceElement.block?.processProperty p@{
@@ -126,7 +127,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parent?.castOrNull<CwtPropertyConfig>() ?: return null
         if(contextConfig.expression.type != CwtDataType.Definition) return null
         val contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
-        val definitionName = contextReferenceElement.name
+        val definitionName = contextReferenceElement.name.takeIfNotEmpty() ?: return null
+        if(definitionName.isParameterizedExpression()) return null //skip if context name is parameterized
         val definitionTypes = contextConfig.expression.value?.split('.') ?: return null
         val name = element.name
         val readWriteAccess = getReadWriteAccess(element)
@@ -150,7 +152,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
     
     override fun processContext(element: ParadoxParameterElement, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-        val definitionName = element.getUserData(definitionNameKey)?.takeIf { !it.isParameterizedExpression() } ?: return false
+        val definitionName = element.getUserData(definitionNameKey) ?: return false
         val definitionTypes = element.getUserData(definitionTypesKey) ?: return false
         val definitionType = definitionTypes.joinToString(".")
         val project = element.project
@@ -160,7 +162,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
     
     override fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-        val definitionName = contextReferenceInfo.getUserData(definitionNameKey)?.takeIf { !it.isParameterizedExpression() } ?: return false
+        val definitionName = contextReferenceInfo.getUserData(definitionNameKey) ?: return false
         val definitionTypes = contextReferenceInfo.getUserData(definitionTypesKey) ?: return false
         val definitionType = definitionTypes.joinToString(".")
         val project = contextReferenceInfo.project

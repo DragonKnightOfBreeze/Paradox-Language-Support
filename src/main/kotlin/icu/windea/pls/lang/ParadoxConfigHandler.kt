@@ -837,7 +837,6 @@ object ParadoxConfigHandler {
         val configGroup = configGroup
         
         if(configExpression.isEmpty()) return
-        if(!quoted && keyword.isParameterizedExpression()) return //排除可能带参数的情况
         
         //匹配作用域
         if(scopeMatched) {
@@ -1072,13 +1071,7 @@ object ParadoxConfigHandler {
             return@with
         }
         if(dataSourceNodeToCheck is ParadoxValueSetValueExpression) {
-            context.put(PlsCompletionKeys.configKey, dataSourceNodeToCheck.configs.first())
-            context.put(PlsCompletionKeys.configsKey, dataSourceNodeToCheck.configs)
-            context.put(PlsCompletionKeys.scopeContextKey, null) //don't check now
             dataSourceNodeToCheck.complete(context, result)
-            context.put(PlsCompletionKeys.configKey, config)
-            context.put(PlsCompletionKeys.configsKey, configs)
-            context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
             return@with
         }
         
@@ -1152,23 +1145,11 @@ object ParadoxConfigHandler {
         }
         
         if(dataSourceNodeToCheck is ParadoxValueSetValueExpression) {
-            context.put(PlsCompletionKeys.configKey, dataSourceNodeToCheck.configs.first())
-            context.put(PlsCompletionKeys.configsKey, dataSourceNodeToCheck.configs)
-            context.put(PlsCompletionKeys.scopeContextKey, null) //don't check now
             dataSourceNodeToCheck.complete(context, result)
-            context.put(PlsCompletionKeys.configKey, config)
-            context.put(PlsCompletionKeys.configsKey, configs)
-            context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
             return@with
         }
         if(dataSourceNodeToCheck is ParadoxScriptValueExpression) {
-            context.put(PlsCompletionKeys.configKey, dataSourceNodeToCheck.config)
-            context.put(PlsCompletionKeys.configsKey, null)
-            context.put(PlsCompletionKeys.scopeContextKey, null) //don't check now
             dataSourceNodeToCheck.complete(context, result)
-            context.put(PlsCompletionKeys.configKey, config)
-            context.put(PlsCompletionKeys.configsKey, configs)
-            context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
             return@with
         }
         

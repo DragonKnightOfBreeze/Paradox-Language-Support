@@ -51,7 +51,7 @@ class ParadoxInScriptValueExpressionParameterSupport : ParadoxDefinitionParamete
             }
             //extraArgs: offset
             ParadoxParameterContextReferenceInfo.From.InContextReference -> {
-                val offset = extraArgs.getOrNull(1)?.castOrNull<Int>() ?: return null
+                val offset = extraArgs.getOrNull(0)?.castOrNull<Int>() ?: return null
                 expressionElement = element.parentOfType<ParadoxScriptStringExpressionElement>() ?: return null
                 text = expressionElement.text ?: return null
                 if(text.isLeftQuoted()) return null
@@ -67,8 +67,9 @@ class ParadoxInScriptValueExpressionParameterSupport : ParadoxDefinitionParamete
         val isKey = expressionElement is ParadoxScriptPropertyKey
         val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup, isKey) ?: return null
         val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
-        val rangeInElement = scriptValueExpression.scriptValueNode.rangeInExpression
+        val rangeInElement = scriptValueExpression.scriptValueNode.rangeInExpression //text range of script value name
         val definitionName = scriptValueExpression.scriptValueNode.text.takeIfNotEmpty() ?: return null
+        if(definitionName.isParameterizedExpression()) return null //skip if context name is parameterized
         val expressionElementOffset = if(completionOffset != -1) expressionElement.startOffset else -1
         val argumentNames = scriptValueExpression.parameterNodes.mapNotNullTo(mutableSetOf()) p@{ 
             if(completionOffset != -1 && completionOffset in it.rangeInExpression.shiftRight(expressionElementOffset)) return@p null
@@ -88,6 +89,7 @@ class ParadoxInScriptValueExpressionParameterSupport : ParadoxDefinitionParamete
         val argumentNode = extraArgs.getOrNull(0)?.castOrNull<ParadoxScriptValueArgumentExpressionNode>() ?: return null
         val name = argumentNode.text
         val definitionName = argumentNode.scriptValueNode?.text ?: return null
+        if(definitionName.isParameterizedExpression()) return null //skip if context name is parameterized
         val configGroup = argumentNode.configGroup
         val contextKey = "definition@$definitionName: script_value"
         val definitionTypes = listOf("script_value")
