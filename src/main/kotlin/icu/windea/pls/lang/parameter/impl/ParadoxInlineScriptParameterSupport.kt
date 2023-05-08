@@ -50,7 +50,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
                 inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == "inline_script" }  ?: return null
                 contextReferenceElement = element.castOrNull() ?: return null
             }
-            //extraArgs: file, offset
+            //extraArgs: offset
             ParadoxParameterContextReferenceInfo.From.InContextReference -> {
                 val parentBlock = when(element.elementType) {
                     ParadoxScriptElementTypes.LEFT_BRACE -> element.parent.parentOfType<ParadoxScriptBlock>()

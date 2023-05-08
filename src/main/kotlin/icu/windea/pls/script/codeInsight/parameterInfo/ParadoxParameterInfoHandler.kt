@@ -18,7 +18,7 @@ class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, Collection<
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): PsiElement? {
         val element = context.file.findElementAt(context.offset) ?: return null
         val from = ParadoxParameterContextReferenceInfo.From.InContextReference
-        val contextReferenceInfo = ParadoxParameterSupport.findContextReferenceInfo(element, from, context.file, context.offset) ?: return null
+        val contextReferenceInfo = ParadoxParameterSupport.findContextReferenceInfo(element, from, context.offset) ?: return null
         val targetElement = contextReferenceInfo.element ?: return null
         val parameterInfosMap = mutableMapOf<String, Collection<ParadoxParameterInfo>>()
         ParadoxParameterSupport.processContext(element, contextReferenceInfo) p@{
@@ -35,7 +35,7 @@ class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, Collection<
     override fun findElementForUpdatingParameterInfo(context: UpdateParameterInfoContext): PsiElement? {
         val element = context.file.findElementAt(context.offset) ?: return null
         val from = ParadoxParameterContextReferenceInfo.From.InContextReference
-        val contextReferenceInfo = ParadoxParameterSupport.findContextReferenceInfo(element, from, context.file, context.offset) ?: return null
+        val contextReferenceInfo = ParadoxParameterSupport.findContextReferenceInfo(element, from, context.offset) ?: return null
         val targetElement = contextReferenceInfo.element ?: return null
         val current = context.parameterOwner
         if(current != null && current !== targetElement) return null

@@ -55,7 +55,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
                 if(contextConfig.expression.type != CwtDataType.Definition) return null
                 contextReferenceElement = element.castOrNull() ?: return null
             }
-            //extraArgs: file, offset
+            //extraArgs: offset
             ParadoxParameterContextReferenceInfo.From.InContextReference -> {
                 val parentBlock = when(element.elementType) {
                     ParadoxScriptElementTypes.LEFT_BRACE -> element.parent.parentOfType<ParadoxScriptBlock>()
