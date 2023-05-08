@@ -38,7 +38,7 @@ class ParadoxInScriptValueExpressionParameterSupport: ParadoxDefinitionParameter
                 val offset = extraArgs.getOrNull(1)?.castOrNull<Int>() ?: return null
                 val offsetInExpression = offset - expressionElement.startOffset
                 val pipeIndex = scriptValueExpressionString.indexOf('|')
-                if(pipeIndex == -1 || pipeIndex < offsetInExpression) return null //要求光标在管道符之后
+                if(pipeIndex == -1 || pipeIndex >= offsetInExpression) return null //要求光标在管道符之后
                 if(text.isLeftQuoted()) return null
                 val config = ParadoxConfigHandler.getConfigs(expressionElement).firstOrNull() ?: return null
                 if(!config.expression.type.isValueFieldType()) return null
