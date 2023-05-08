@@ -119,6 +119,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
     
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, vararg extraArgs: Any?): ParadoxParameterElement? {
+        //extraArgs: config
         val config = extraArgs.getOrNull(0)?.castOrNull<CwtDataConfig<*>>() ?: return null
         if(config !is CwtPropertyConfig || config.expression.type != CwtDataType.Parameter) return null
         //infer context config

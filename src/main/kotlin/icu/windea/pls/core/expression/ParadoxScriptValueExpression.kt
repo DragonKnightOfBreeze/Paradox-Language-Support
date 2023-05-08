@@ -39,6 +39,9 @@ interface ParadoxScriptValueExpression : ParadoxComplexExpression {
 	val scriptValueNode: ParadoxScriptValueExpressionNode
 	val parameterNodes: List<ParadoxScriptValueArgumentExpressionNode>
 	
+	val scriptValueName: String?
+	val argumentNames: MutableSet<String>
+	
 	companion object Resolver
 }
 
@@ -55,8 +58,8 @@ class ParadoxScriptValueExpressionImpl(
 	override val scriptValueNode: ParadoxScriptValueExpressionNode get() = nodes.first().cast()
 	override val parameterNodes: List<ParadoxScriptValueArgumentExpressionNode> get() = nodes.filterIsInstance<ParadoxScriptValueArgumentExpressionNode>()
 	
-	val scriptValueName = scriptValueNode.text.takeIfNotEmpty()
-	val parameterNames = parameterNodes.mapNotNullTo(mutableSetOf()) { it.text.takeIfNotEmpty() }
+	override val scriptValueName = scriptValueNode.text.takeIfNotEmpty()
+	override val argumentNames = parameterNodes.mapNotNullTo(mutableSetOf()) { it.text.takeIfNotEmpty() }
 	
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SCRIPT_VALUE_EXPRESSION_KEY
 	

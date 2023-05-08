@@ -53,8 +53,8 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 				configExpression.type.isScopeFieldType() -> {
 					if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
 					val text = element.text
-					val textRange = getTextRange(element, text)
 					if(text.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
+					val textRange = getTextRange(element, text)
 					val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup, isKey)
 					if(scopeFieldExpression == null) return PsiReference.EMPTY_ARRAY
 					return scopeFieldExpression.getReferences(element)
@@ -62,8 +62,8 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 				configExpression.type.isValueFieldType() -> {
 					if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
 					val text = element.text
-					val textRange = getTextRange(element, text)
 					if(text.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
+					val textRange = getTextRange(element, text)
 					val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup, isKey)
 					if(valueFieldExpression == null) return PsiReference.EMPTY_ARRAY
 					return valueFieldExpression.getReferences(element)
@@ -71,8 +71,8 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 				configExpression.type.isVariableFieldType() -> {
 					if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
 					val text = element.text
-					val textRange = getTextRange(element, text)
 					if(text.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
+					val textRange = getTextRange(element, text)
 					val variableFieldExpression = ParadoxVariableFieldExpression.resolve(text, textRange, configGroup, isKey)
 					if(variableFieldExpression == null) return PsiReference.EMPTY_ARRAY
 					return variableFieldExpression.getReferences(element)
