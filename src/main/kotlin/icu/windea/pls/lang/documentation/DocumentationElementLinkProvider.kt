@@ -9,7 +9,7 @@ import icu.windea.pls.*
  * 
  * 快速文档链接也能作为html/markdown等文件中的超链接使用，从而引用和跳转到指定的定义/本地化等。
  * 
- * DDS文件路径以及符合条件的快速文档链接也能作为html/markdown等文件中的图片超链接使用，从而渲染DDS图片和本地化。
+ * TODO DDS文件路径以及符合条件的快速文档链接也能作为html/markdown等文件中的图片超链接使用，从而渲染DDS图片和本地化。
  * 
  * @see icu.windea.pls.core.references.paths.ParadoxPathReferenceProvider
  */
