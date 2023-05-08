@@ -19,7 +19,7 @@ class ParadoxInScriptValueExpressionParameterSupport: ParadoxDefinitionParameter
     override fun findContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
         val expressionElement = element.parentOfType<ParadoxScriptStringExpressionElement>() ?: return null
         val text = expressionElement.text
-        val scriptValueExpressionString = text.substringAfterLast("value:", "").takeIfNotEmpty() ?: return null //快速判断
+        val scriptValueExpressionOffsetInElement = text.indexOf("value:").let { if(it != -1) it + 6 else return null } //快速判断
         var scriptValueExpression: ParadoxScriptValueExpression? = null
         var configGroup: CwtConfigGroup? = null
         var file: PsiFile? = null
@@ -37,7 +37,7 @@ class ParadoxInScriptValueExpressionParameterSupport: ParadoxDefinitionParameter
                 file = extraArgs.getOrNull(0)?.castOrNull<ParadoxScriptFile>() ?: return null
                 val offset = extraArgs.getOrNull(1)?.castOrNull<Int>() ?: return null
                 val offsetInExpression = offset - expressionElement.startOffset
-                val pipeIndex = scriptValueExpressionString.indexOf('|')
+                val pipeIndex = text.indexOf('|', scriptValueExpressionOffsetInElement)
                 if(pipeIndex == -1 || pipeIndex >= offsetInExpression) return null //要求光标在管道符之后
                 if(text.isLeftQuoted()) return null
                 val config = ParadoxConfigHandler.getConfigs(expressionElement).firstOrNull() ?: return null
