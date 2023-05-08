@@ -20,7 +20,6 @@ interface ParadoxParameterSupport {
      * 向上查找参数的上下文引用信息。
      *
      * @param element 开始查找的位置。
-     * @param offset 光标在文件中的位置。如果不需要此参数，则传-1。
      * @param from 从哪里向上查找。
      * @param extraArgs 对于每个实现需要的额外参数可能是不同的。
      * @see icu.windea.pls.script.codeInsight.parameterInfo.ParadoxParameterInfoHandler

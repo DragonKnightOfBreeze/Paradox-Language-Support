@@ -23,6 +23,8 @@ import javax.swing.*
  * 值集值值（`some_flag`）被设置但未被使用的检查。
  *
  * 例如，有`set_flag = xxx`但没有`has_flag = xxx`。
+ * 
+ * 默认不启用。
  */
 @SlowApi
 class UnusedValueSetValueInspection : LocalInspectionTool() {

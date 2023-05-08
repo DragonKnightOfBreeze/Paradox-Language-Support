@@ -53,7 +53,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
                 if(contextConfig.expression.type != CwtDataType.Definition) return null
                 contextReferenceElement = element.castOrNull() ?: return null
             }
-            //extraArgs: offset
+            //extraArgs: file, offset
             ParadoxParameterContextReferenceInfo.From.InContextReference -> {
                 
             }

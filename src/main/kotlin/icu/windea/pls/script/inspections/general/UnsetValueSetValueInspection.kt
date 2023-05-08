@@ -21,6 +21,8 @@ import icu.windea.pls.script.psi.*
  * 值集值值（`some_flag`）被使用但未被设置的检查。
  *
  * 例如，有`has_flag = xxx`但没有`set_flag = xxx`。
+ * 
+ * 默认不启用。
  */
 @SlowApi
 class UnsetValueSetValueInspection : LocalInspectionTool(){

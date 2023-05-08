@@ -49,7 +49,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
                 inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == "inline_script" }  ?: return null
                 contextReferenceElement = element.castOrNull() ?: return null
             }
-            //extraArgs: offset
+            //extraArgs: file, offset
             ParadoxParameterContextReferenceInfo.From.InContextReference -> {
                 
             }
