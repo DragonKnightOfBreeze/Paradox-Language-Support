@@ -118,7 +118,7 @@ class ParadoxScriptValueExpressionImpl(
 					context.put(PlsCompletionKeys.configKey, config)
 				}
 			} else if(node is ParadoxScriptValueArgumentExpressionNode) {
-				if(inRange && scriptValueName != null) {
+				if(inRange && scriptValueNode.text.isNotEmpty()) {
 					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
 					val resultToUse = result.withPrefixMatcher(keywordToUse)
 					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
