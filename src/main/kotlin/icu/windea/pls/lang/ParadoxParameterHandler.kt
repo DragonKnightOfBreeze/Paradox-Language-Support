@@ -18,61 +18,77 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
+import java.util.*
 
 object ParadoxParameterHandler {
-    /**
-     * 从上下文获取所有参数信息。
-     */
-    fun getParameters(context: ParadoxScriptDefinitionElement): Map<String, ParadoxParameterInfo> {
-        if(!ParadoxParameterSupport.isContext(context)) return emptyMap()
+    fun getContextInfo(context: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
+        if(!ParadoxParameterSupport.isContext(context)) return null
         return CachedValuesManager.getCachedValue(context, PlsKeys.cachedParametersKey) {
-            val value = doGetParameters(context)
+            val value = doGetContextInfo(context)
             CachedValueProvider.Result(value, context)
         }
     }
     
-    private fun doGetParameters(context: ParadoxScriptDefinitionElement): Map<String, ParadoxParameterInfo> {
+    private fun doGetContextInfo(context: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo {
         val file = context.containingFile
-        val conditionalParameterNames = mutableSetOf<String>()
-        val result = sortedMapOf<String, ParadoxParameterInfo>() //按名字进行排序
+        val parameters = sortedMapOf<String, MutableList<ParadoxParameterInfo>>() //按名字进行排序
+        val fileConditionStack = LinkedList<ReversibleValue<String>>()
         context.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if(element is ParadoxParameter) visitParadoxParameter(element)
-                if(element is ParadoxConditionParameter) visitParadoxConditionParameter(element)
+                if(element is ParadoxParameter) visitParameter(element)
+                if(element is ParadoxScriptParameterConditionExpression) visitParadoxConditionExpression(element)
                 super.visitElement(element)
             }
             
-            private fun visitParadoxConditionParameter(element: ParadoxConditionParameter) {
+            private fun visitParadoxConditionExpression(element: ParadoxScriptParameterConditionExpression) {
+                ProgressManager.checkCanceled()
+                var operator = true
+                var value = ""
+                element.processChild p@{
+                    val elementType = it.elementType
+                    when(elementType) {
+                        ParadoxScriptElementTypes.NOT_SIGN -> operator = false
+                        ParadoxScriptElementTypes.PARAMETER_CONDITION_PARAMETER -> value = it.text
+                    }
+                    true
+                }
+                //value may be empty (invalid condition expression)
+                fileConditionStack.addLast(ReversibleValue(operator, value))
+                super.visitElement(element)
+            }
+            
+            private fun visitParameter(element: ParadoxParameter) {
                 ProgressManager.checkCanceled()
                 val name = element.name ?: return
-                conditionalParameterNames.add(name)
+                val defaultValue = element.defaultValue
+                val conditionalStack = if(fileConditionStack.isEmpty()) null else LinkedList(fileConditionStack)
+                val info = ParadoxParameterInfo(element.createPointer(file), name, defaultValue, conditionalStack)
+                parameters.getOrPut(name) { SmartList() }.add(info)
                 //不需要继续向下遍历
             }
             
-            private fun visitParadoxParameter(element: ParadoxParameter) {
-                ProgressManager.checkCanceled()
-                val name = element.name ?: return
-                val info = result.getOrPut(name) { ParadoxParameterInfo(name) }
-                info.pointers.add(element.createPointer(file))
-                if(element.defaultValueToken != null) conditionalParameterNames.add(name)
-                if(!info.optional && conditionalParameterNames.contains(name)) info.optional = true
-                //不需要继续向下遍历
+            override fun elementFinished(element: PsiElement?) {
+                if(element is ParadoxScriptParameterCondition) finishParadoxCondition()
+            }
+            
+            private fun finishParadoxCondition() {
+                fileConditionStack.removeLast()
             }
         })
-        return result
+        return ParadoxParameterContextInfo(parameters)
     }
     
     fun completeParameters(element: PsiElement, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
         ProgressManager.checkCanceled()
         //向上找到参数上下文
         val parameterContext = ParadoxParameterSupport.findContext(element) ?: return
-        val parameters = getParameters(parameterContext)
-        if(parameters.isEmpty()) return
-        for((parameterName, parameterInfo) in parameters) {
+        val parameterContextInfo = getContextInfo(parameterContext) ?: return
+        if(parameterContextInfo.parameters.isEmpty()) return
+        for((parameterName, parameterInfos) in parameterContextInfo.parameters) {
             ProgressManager.checkCanceled()
-            val parameter = parameterInfo.pointers.firstNotNullOfOrNull { it.element } ?: continue
+            val parameter = parameterInfos.firstNotNullOfOrNull { it.element } ?: continue
             //排除当前正在输入的那个
-            if(parameterInfo.pointers.size == 1 && element isSamePosition parameter) continue
+            if(parameterInfos.size == 1 && element isSamePosition parameter) continue
             val parameterElement = ParadoxParameterSupport.resolveParameter(parameter)
                 ?: continue
             val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
@@ -88,21 +104,21 @@ object ParadoxParameterHandler {
         val from = ParadoxParameterContextReferenceInfo.From.Argument
         val config = context.config ?: return
         val completionOffset = context.parameters?.offset ?: return
-        val contextReferenceInfo = ParadoxParameterSupport.findContextReferenceInfo(element, from, config, completionOffset) ?: return
+        val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(element, from, config, completionOffset) ?: return
         val argumentNames = contextReferenceInfo.argumentNames.toMutableSet()
         val namesToDistinct = mutableSetOf<String>().synced()
         //整合查找到的所有参数上下文
         val insertSeparator = context.isKey == true && context.contextElement !is ParadoxScriptPropertyKey
         ParadoxParameterSupport.processContext(element, contextReferenceInfo) p@{ parameterContext ->
             ProgressManager.checkCanceled()
-            val parameterMap = getParameters(parameterContext)
-            if(parameterMap.isEmpty()) return@p true
-            for((parameterName, parameterInfo) in parameterMap) {
+            val parameterContextInfo = getContextInfo(parameterContext) ?: return@p true
+            if(parameterContextInfo.parameters.isEmpty()) return@p true
+            for((parameterName, parameterInfos) in parameterContextInfo.parameters) {
                 //排除已输入的
                 if(parameterName in argumentNames) continue
                 if(!namesToDistinct.add(parameterName)) continue
                 
-                val parameter = parameterInfo.pointers.firstNotNullOfOrNull { it.element } ?: return@p true
+                val parameter = parameterInfos.firstNotNullOfOrNull { it.element } ?: continue
                 val parameterElement = ParadoxParameterSupport.resolveParameter(parameter)
                     ?: continue
                 val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)

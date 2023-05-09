@@ -34,8 +34,8 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 val text = element.text
                 if(text.isParameterizedExpression()) return //skip if expression is parameterized
                 //match or single
-                val valueConfig = ParadoxConfigHandler.getValueConfigs(element).firstOrNull() ?: return
-                val configExpression = valueConfig.valueExpression
+                val valueConfig = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
+                val configExpression = valueConfig.expression
                 val project = valueConfig.info.configGroup.project
                 val location = element
                 if(configExpression.type == CwtDataType.AbsoluteFilePath) {

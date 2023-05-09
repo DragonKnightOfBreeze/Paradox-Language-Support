@@ -7,8 +7,8 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -38,20 +38,20 @@ class MissingParameterInspection : LocalInspectionTool() {
                 ProgressManager.checkCanceled()
                 val from = ParadoxParameterContextReferenceInfo.From.ContextReference
                 val contextConfig = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
-                val contextReferenceInfo = ParadoxParameterSupport.findContextReferenceInfo(element, from, contextConfig) ?: return
+                val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(element, from, contextConfig) ?: return
+                val argumentNames = contextReferenceInfo.argumentNames
                 val requiredParameterNames = mutableSetOf<String>()
                 ParadoxParameterSupport.processContext(element, contextReferenceInfo) p@{
                     ProgressManager.checkCanceled()
-                    val parameters = ParadoxParameterHandler.getParameters(it)
-                    if(parameters.isNotEmpty()) {
-                        parameters.forEach { (name, parameterInfo) ->
-                            if(requiredParameterNames.contains(name)) return@forEach
-                            if(!parameterInfo.optional) requiredParameterNames.add(name)
-                        }
+                    val parameterContextInfo = ParadoxParameterHandler.getContextInfo(it) ?: return@p true
+                    if(parameterContextInfo.parameters.isEmpty()) return@p true
+                    parameterContextInfo.parameters.keys.forEach { parameterName ->
+                        if(requiredParameterNames.contains(parameterName)) return@forEach
+                        if(!parameterContextInfo.isOptional(parameterName, argumentNames)) requiredParameterNames.add(parameterName)
                     }
                     false
                 }
-                requiredParameterNames.removeAll(contextReferenceInfo.argumentNames)
+                requiredParameterNames.removeAll(argumentNames)
                 if(requiredParameterNames.isEmpty()) return
                 registerProblem(element, requiredParameterNames, contextReferenceInfo.rangeInElement)
             }

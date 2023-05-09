@@ -10,13 +10,14 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 /**
  * @see icu.windea.pls.core.expression.nodes.ParadoxScriptValueArgumentExpressionNode
  */
 class ParadoxInScriptValueExpressionParameterSupport : ParadoxDefinitionParameterSupport() {
-    override fun findContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
+    override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
         var expressionElement: ParadoxScriptStringExpressionElement? = null
         var text: String? = null
         var expressionElementConfig: CwtDataConfig<*>? = null

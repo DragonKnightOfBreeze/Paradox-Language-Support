@@ -35,7 +35,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return context?.takeIf { isContext(it) }
     }
     
-    override fun findContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
+    override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
         var contextConfig: CwtPropertyConfig? = null
         var contextReferenceElement: ParadoxScriptProperty? = null
         var completionOffset = -1

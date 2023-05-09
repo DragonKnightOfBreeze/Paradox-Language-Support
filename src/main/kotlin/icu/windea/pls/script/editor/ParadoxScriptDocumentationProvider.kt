@@ -283,15 +283,15 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         val show = getSettings().documentation.showParameters
         if(!show) return
         if(sections == null) return
-        val parameterMap = ParadoxParameterHandler.getParameters(element)
-        if(parameterMap.isEmpty()) return //ignore
-        var isFirst = true
+        val parameterContextInfo = ParadoxParameterHandler.getContextInfo(element) ?: return
+        if(parameterContextInfo.parameters.isEmpty()) return //ignore
         val parametersText = buildString {
-            parameterMap.entries.forEach { (name, info) ->
+            var isFirst = true
+            parameterContextInfo.parameters.keys.forEach { parameterName ->
                 if(isFirst) isFirst = false else append("<br>")
                 append("<code>")
-                append(name)
-                if(info.optional) append("?") //optional marker
+                append(parameterName)
+                if(parameterContextInfo.isOptional(parameterName)) append("?") //optional marker
                 append("</code>")
             }
         }

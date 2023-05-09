@@ -10,6 +10,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.psi.*
 
@@ -29,7 +30,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return context?.takeIf { isContext(it) }
     }
     
-    override fun findContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
+    override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
         var inlineConfig: CwtInlineConfig? = null
         var contextReferenceElement: ParadoxScriptProperty? = null
         var completionOffset = -1

@@ -4,6 +4,7 @@ import com.intellij.openapi.extensions.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -24,7 +25,7 @@ interface ParadoxParameterSupport {
      * @param extraArgs 对于每个实现需要的额外参数可能是不同的。
      * @see icu.windea.pls.script.codeInsight.parameterInfo.ParadoxParameterInfoHandler
      */
-    fun findContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo?
+    fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo?
     
     fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement?
     
@@ -64,8 +65,8 @@ interface ParadoxParameterSupport {
             return EP_NAME.extensionList.firstNotNullOfOrNull { it.findContext(element) }
         }
         
-        fun findContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.findContextReferenceInfo(element, from, *extraArgs) }
+        fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.getContextReferenceInfo(element, from, *extraArgs) }
         }
         
         fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement? {
