@@ -23,7 +23,7 @@ import kotlin.collections.mapNotNullTo
 object ParadoxValueSetValueHandler {
     fun getInfos(element: ParadoxScriptStringExpressionElement): List<ParadoxValueSetValueInfo>? {
         if(!element.isExpression()) return null
-        //if(element.isParameterizedExpression()) return null //排除可能带参数的情况 - 不能在这里排除
+        //if(element.isParameterized()) return null //排除可能带参数的情况 - 不能在这里排除
         return getInfoFromCache(element)
     }
     

@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 	override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
 		//尝试兼容可能包含参数的情况
-		//if(text.isParameterizedExpression()) return PsiReference.EMPTY_ARRAY
+		//if(text.isParameterized()) return PsiReference.EMPTY_ARRAY
 		
 		val isKey = element is ParadoxScriptPropertyKey
 		

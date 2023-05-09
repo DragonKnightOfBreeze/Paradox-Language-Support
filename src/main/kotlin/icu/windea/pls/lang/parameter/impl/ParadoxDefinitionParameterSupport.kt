@@ -76,7 +76,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         if(contextConfig == null || contextReferenceElement == null) return null
         val rangeInElement = contextReferenceElement.propertyKey.textRangeInParent
         val definitionName = contextReferenceElement.name.takeIfNotEmpty() ?: return null
-        if(definitionName.isParameterizedExpression()) return null //skip if context name is parameterized
+        if(definitionName.isParameterized()) return null //skip if context name is parameterized
         val definitionTypes = contextConfig.expression.value?.split('.') ?: return null
         val argumentNames = mutableSetOf<String>()
         contextReferenceElement.block?.processProperty p@{
@@ -128,7 +128,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         if(contextConfig.expression.type != CwtDataType.Definition) return null
         val contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
         val definitionName = contextReferenceElement.name.takeIfNotEmpty() ?: return null
-        if(definitionName.isParameterizedExpression()) return null //skip if context name is parameterized
+        if(definitionName.isParameterized()) return null //skip if context name is parameterized
         val definitionTypes = contextConfig.expression.value?.split('.') ?: return null
         val name = element.name
         val readWriteAccess = getReadWriteAccess(element)

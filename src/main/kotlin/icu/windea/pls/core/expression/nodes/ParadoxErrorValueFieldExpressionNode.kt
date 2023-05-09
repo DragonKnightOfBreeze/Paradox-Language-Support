@@ -13,7 +13,7 @@ class ParadoxErrorValueFieldExpressionNode(
 	override fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxExpressionError? {
 		if(nodes.isNotEmpty()) return null
 		if(text.isEmpty()) return null
-		if(text.isParameterizedExpression()) return null
+		if(text.isParameterized()) return null
 		return ParadoxUnresolvedScopeExpressionError(rangeInExpression, PlsBundle.message("script.expression.unresolvedValueField", text))
 	}
 }

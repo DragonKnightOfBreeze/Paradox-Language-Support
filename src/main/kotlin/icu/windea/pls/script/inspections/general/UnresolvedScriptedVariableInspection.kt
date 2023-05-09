@@ -26,7 +26,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 			
 			private fun visitScriptedVariableReference(element: ParadoxScriptedVariableReference) {
 				val name = element.name ?: return
-				if(name.isParameterizedExpression()) return //skip if name is parameterized
+				if(name.isParameterized()) return //skip if name is parameterized
 				val reference = element.reference ?: return
 				if(reference.resolve() != null) return
 				val quickFixes = listOf(

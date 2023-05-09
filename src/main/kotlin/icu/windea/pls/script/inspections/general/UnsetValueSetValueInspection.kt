@@ -39,7 +39,7 @@ class UnsetValueSetValueInspection : LocalInspectionTool(){
             
             private fun shouldVisit(element: PsiElement): Boolean {
                 //ignore with parameters situation
-                return (element is ParadoxScriptStringExpressionElement && !element.isParameterizedExpression())
+                return (element is ParadoxScriptStringExpressionElement && !element.isParameterized())
             }
             
             override fun visitFile(file: PsiFile) {

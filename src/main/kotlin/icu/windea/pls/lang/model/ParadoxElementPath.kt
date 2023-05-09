@@ -2,7 +2,6 @@ package icu.windea.pls.lang.model
 
 import com.google.common.cache.*
 import icu.windea.pls.core.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 定义或定义属性相对于所属文件或定义的路径。保留大小写。
@@ -97,7 +96,7 @@ class ParadoxElementPathImpl(
     override val subPathInfos: List<Tuple3<String, Boolean, Boolean>> = subPaths.map {
         tupleOf(it.unquote(), it.isLeftQuoted(), it != "-")
     }
-    override val isParameterized = length != 0 && this.subPaths.any { it.isParameterizedExpression() }
+    override val isParameterized = length != 0 && this.subPaths.any { it.isParameterized() }
     
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxElementPath && path == other.path

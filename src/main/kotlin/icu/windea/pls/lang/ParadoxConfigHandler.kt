@@ -206,7 +206,7 @@ object ParadoxConfigHandler {
         }
         
         val project = configGroup.project
-        val isParameterized = expression.type == ParadoxDataType.StringType && expression.text.isParameterizedExpression()
+        val isParameterized = expression.type == ParadoxDataType.StringType && expression.text.isParameterized()
         when(configExpression.type) {
             CwtDataType.Block -> {
                 if(expression.isKey != false) return false
@@ -1389,7 +1389,7 @@ object ParadoxConfigHandler {
         if(configExpression == null) return null
         
         val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.text.unquote()
-        if(expression.isParameterizedExpression()) return null //排除引用文本带参数的情况
+        if(expression.isParameterized()) return null //排除引用文本带参数的情况
         
         if(config != null) {
             val result = ParadoxScriptExpressionSupport.resolve(element, rangeInElement, expression, config, isKey, exact)
@@ -1430,7 +1430,7 @@ object ParadoxConfigHandler {
         if(configExpression == null) return emptyList()
         
         val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.text.unquote()
-        if(expression.isParameterizedExpression()) return emptyList() //排除引用文本带参数的情况
+        if(expression.isParameterized()) return emptyList() //排除引用文本带参数的情况
         
         if(config != null) {
             val result = ParadoxScriptExpressionSupport.multiResolve(element, rangeInElement, expression, config, isKey)
@@ -1780,7 +1780,7 @@ object ParadoxConfigHandler {
                 data is ParadoxScriptValue -> ParadoxDataExpression.resolve(data)
                 else -> return@p true
             }
-            val isParameterized = expression.type == ParadoxDataType.StringType && expression.text.isParameterizedExpression()
+            val isParameterized = expression.type == ParadoxDataType.StringType && expression.text.isParameterized()
             //may contain parameter -> can't and should not get occurrences
             if(isParameterized) {
                 occurrenceMap.clear()

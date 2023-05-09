@@ -49,7 +49,7 @@ object ParadoxDefinitionHandler {
     
     private fun resolveInfo(element: ParadoxScriptDefinitionElement, file: PsiFile = element.containingFile): ParadoxDefinitionInfo? {
         val rootKey = element.name.let { if(element is ParadoxScriptFile) it.substringBeforeLast('.') else it } //如果是文件名，不要包含扩展名
-        if(element is ParadoxScriptProperty && rootKey.isParameterizedExpression()) return null //排除可能带参数的情况
+        if(element is ParadoxScriptProperty && rootKey.isParameterized()) return null //排除可能带参数的情况
         
         ProgressManager.checkCanceled()
         val project = file.project
@@ -530,7 +530,7 @@ object ParadoxDefinitionHandler {
     
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptPropertyStub? {
         val rootKey = getNameFromNode(node, tree) ?: return null
-        if(rootKey.isParameterizedExpression()) return null //排除可能带参数的情况
+        if(rootKey.isParameterized()) return null //排除可能带参数的情况
         val psi = parentStub.psi
         val psiFile = psi.containingFile
         val project = psiFile.project

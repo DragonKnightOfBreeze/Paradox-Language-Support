@@ -32,7 +32,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement){
                 ProgressManager.checkCanceled()
                 val text = element.text
-                if(text.isParameterizedExpression()) return //skip if expression is parameterized
+                if(text.isParameterized()) return //skip if expression is parameterized
                 //match or single
                 val valueConfig = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
                 val configExpression = valueConfig.expression

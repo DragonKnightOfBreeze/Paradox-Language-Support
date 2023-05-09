@@ -40,16 +40,16 @@ fun ParadoxScriptExpressionElement.isExpression(): Boolean {
 	}
 }
 
-fun ParadoxScriptStringExpressionElement.isParameterizedExpression(): Boolean {
-	val text = this.text //check cached text, rather than children
-	return !text.isLeftQuoted() && text.contains('$')
-}
-
 /**
  * 判断当前字符串表达式是否在顶层或者子句中或者作为属性的值，并且拥有唯一匹配的CWT规则。
  */
 fun ParadoxScriptExpressionElement.isValidExpression(matchType: Int = CwtConfigMatchType.DEFAULT): Boolean {
 	return ParadoxConfigHandler.getConfigs(this, orDefault = false, matchType = matchType).size == 1
+}
+
+fun PsiElement.isParameterized(): Boolean {
+	val text = this.text //check cached text, rather than children
+	return !text.isLeftQuoted() && text.contains('$')
 }
 
 fun PsiElement.isExpressionOrMemberContext(): Boolean {
