@@ -67,8 +67,7 @@ class CwtLocalisationLocationExpression(
      */
     fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveResult? {
         if(placeholder != null) {
-            //如果定义是匿名的，则直接忽略
-            if(definitionInfo.isAnonymous) return null
+            if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             
             val key = resolvePlaceholder(definitionInfo.name)!!
             val localisation = ParadoxLocalisationSearch.search(key, selector).find()
@@ -99,9 +98,11 @@ class CwtLocalisationLocationExpression(
         val message: String? = null
     )
     
-    fun resolveAll(definitionName: String, definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveAllResult? {
+    fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveAllResult? {
         if(placeholder != null) {
-            val key = resolvePlaceholder(definitionName)!!
+            if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
+            
+            val key = resolvePlaceholder(definitionInfo.name)!!
             val localisations = ParadoxLocalisationSearch.search(key, selector).findAll()
             return ResolveAllResult(key, localisations)
         } else if(propertyName != null) {

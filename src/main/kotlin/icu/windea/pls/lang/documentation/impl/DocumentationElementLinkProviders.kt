@@ -228,9 +228,9 @@ class ParadoxDefinitionLinkProvider : DocumentationElementLinkProvider {
     override fun create(element: PsiElement, plainLink: Boolean): String? {
         if(element !is ParadoxScriptDefinitionElement) return null
         val definitionInfo = element.definitionInfo ?: return null
+        if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
         val gameType = definitionInfo.gameType
         val name = definitionInfo.name
-        if(name == PlsConstants.anonymousString) return null //ignore anonymous definitions
         val typesText = definitionInfo.types.joinToString(".")
         val link = "${linkPrefix}${gameType.linkToken}${typesText}/${name}"
         val builder = StringBuilder()

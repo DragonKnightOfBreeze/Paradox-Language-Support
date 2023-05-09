@@ -2,6 +2,7 @@ package icu.windea.pls.lang.model
 
 import com.intellij.psi.*
 import com.intellij.util.ui.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
@@ -20,7 +21,7 @@ data class ParadoxTextColorInfo(
 	val text = buildString {
 		append(name).append(" = { ").append(r).append(" ").append(g).append(" ").append(b).append(" }")
 		val message = ParadoxExtendedDocumentationBundle.message(gameType, name, "textcolor")
-		if(message != null && message.isNotEmpty()) append(" (").append(message).append(")")
+		if(message.isNotNullOrEmpty()) append(" (").append(message).append(")")
 	}
 }
 

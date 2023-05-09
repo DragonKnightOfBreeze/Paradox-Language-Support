@@ -41,7 +41,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     for((_, locationExpression) in localisationInfos) {
                         ProgressManager.checkCanceled()
                         val selector = localisationSelector(project, definition).contextSensitive().preferLocale(preferredParadoxLocale())
-                        val resolved = locationExpression.resolveAll(definitionInfo.name, definition, selector) ?: continue
+                        val resolved = locationExpression.resolveAll(definition, definitionInfo, selector) ?: continue
                         if(resolved.localisations.isNotEmpty()) {
                             targets.addAll(resolved.localisations)
                         }

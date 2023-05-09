@@ -26,8 +26,9 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
         val spriteSelector = definitionSelector(project, originalFile).contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search("sprite", spriteSelector).processQueryAsync p@{ sprite ->
             ProgressManager.checkCanceled()
-            val spriteName = sprite.definitionInfo?.name
-            val name = spriteName?.removePrefixOrNull("GFX_")?.removePrefix("text_")
+            val definitionInfo = sprite.definitionInfo ?: return@p true
+            if(definitionInfo.name.isEmpty()) return@p true //ignore anonymous definitions
+            val name = definitionInfo.name.removePrefixOrNull("GFX_")?.removePrefix("text_")
             if(name != null && namesToDistinct.add(name)) {
                 addLookupElement(name, sprite, result)
             }
@@ -52,7 +53,8 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
         //如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
         ParadoxDefinitionSearch.search("job", definitionSelector).processQueryAsync p@{ definition ->
             ProgressManager.checkCanceled()
-            val jobName = definition.definitionInfo?.name ?: return@p true
+            val definitionInfo = definition.definitionInfo ?: return@p true
+            val jobName = definitionInfo.name
             val name = "job_$jobName"
             if(namesToDistinct.add(name)) {
                 addLookupElement(name, definition, result)

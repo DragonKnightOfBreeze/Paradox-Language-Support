@@ -6,13 +6,14 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import java.util.*
+import kotlin.collections.component1
+import kotlin.collections.component2
 
 /**
  * @property elementPath 相对于所属文件的定义成员路径。
@@ -53,7 +54,7 @@ class ParadoxDefinitionInfo(
         val nameField = typeConfig.nameField
         if(nameField != null) {
             val nameProperty = element.findProperty(nameField)
-            return@lazy nameProperty?.propertyValue<ParadoxScriptString>()?.stringValue.orAnonymous()
+            return@lazy nameProperty?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
         }
         //否则直接返回rootKey
         rootKey
@@ -201,11 +202,6 @@ class ParadoxDefinitionInfo(
         return Objects.hash(name, typesText, gameType)
     }
 }
-
-/**
- * 对应的定义是否是匿名的。
- */
-val ParadoxDefinitionInfo.isAnonymous: Boolean get() = name.isEmpty()
 
 @InferApi
 private fun ParadoxDefinitionRelatedLocalisationInfo.inferIsPrimary(): Boolean {

@@ -82,8 +82,7 @@ class CwtImageLocationExpression(
     
     fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, project: Project, frame: Int = 0): ResolveResult? {
         if(placeholder != null) {
-            //如果定义是匿名的，则直接忽略
-            if(definitionInfo.isAnonymous) return null
+            if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             
             //假定这里的filePath以.dds结尾
             val filePath = resolvePlaceholder(definitionInfo.name)!!
@@ -147,6 +146,8 @@ class CwtImageLocationExpression(
     
     fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, project: Project, frame: Int = 0): ResolveAllResult? {
         if(placeholder != null) {
+            if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
+            
             //假定这里的filePath以.dds结尾
             val filePath = buildString { for(c in placeholder) if(c == '$') append(definitionInfo.name) else append(c) }
             val selector = fileSelector(project, definition).contextSensitive()

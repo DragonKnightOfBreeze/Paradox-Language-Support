@@ -130,7 +130,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             if(typeCategory != null) {
                 val typeElement = element.parentOfType<CwtProperty>()
                 val typeName = typeElement?.name?.substringIn('[', ']')?.takeIfNotEmpty()
-                if(typeName != null && typeName.isNotEmpty()) {
+                if(typeName.isNotNullOrEmpty()) {
                     //在脚本文件中显示为链接
                     if(configGroup != null) {
                         val gameType = configGroup.gameType

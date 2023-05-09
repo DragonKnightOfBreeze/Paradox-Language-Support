@@ -1,7 +1,6 @@
 package icu.windea.pls.script.inspections.general
 
 import com.intellij.codeInspection.*
-import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.components.*
@@ -55,32 +54,31 @@ class MissingImageInspection : LocalInspectionTool() {
                 val infoMap = mutableMapOf<String, Info>()
                 //进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
                 var hasPrimary = false
-                runReadAction {
-                    for(info in imageInfos) {
-                        ProgressManager.checkCanceled()
-                        if(nameToDistinct.contains(info.name)) continue
-                        if(info.primary && hasPrimary) continue
-                        //多个位置表达式无法解析时，使用第一个
-                        if(info.required || if(info.primary) checkPrimaryForDefinitions else checkOptionalForDefinitions) {
-                            val resolved = info.locationExpression.resolve(definition, definitionInfo, project)
-                            if(resolved != null) {
-                                if(resolved.message != null) continue //skip if it's dynamic
-                                if(resolved.file == null) {
-                                    infoMap.putIfAbsent(info.name, Info(info, resolved.filePath))
-                                } else {
-                                    infoMap.remove(info.name)
-                                    nameToDistinct.add(info.name)
-                                    if(info.primary) hasPrimary = true
-                                }
-                            } else if(info.locationExpression.placeholder == null) {
-                                //从定义的属性推断，例如，#name
-                                infoMap.putIfAbsent(info.name, Info(info, null))
+                for(info in imageInfos) {
+                    ProgressManager.checkCanceled()
+                    if(nameToDistinct.contains(info.name)) continue
+                    if(info.primary && hasPrimary) continue
+                    //多个位置表达式无法解析时，使用第一个
+                    if(info.required || if(info.primary) checkPrimaryForDefinitions else checkOptionalForDefinitions) {
+                        val resolved = info.locationExpression.resolve(definition, definitionInfo, project)
+                        if(resolved != null) {
+                            if(resolved.message != null) continue //skip if it's dynamic
+                            if(resolved.file == null) {
+                                infoMap.putIfAbsent(info.name, Info(info, resolved.filePath))
+                            } else {
+                                infoMap.remove(info.name)
+                                nameToDistinct.add(info.name)
+                                if(info.primary) hasPrimary = true
                             }
+                        } else if(info.locationExpression.placeholder == null) {
+                            //从定义的属性推断，例如，#name
+                            infoMap.putIfAbsent(info.name, Info(info, null))
                         }
                     }
                 }
                 if(infoMap.isNotEmpty()) {
-                    //显示为WEAK_WARNING，且缺失多个时，每个算作一个问题
+                    //显示为WEAK_WARNING
+                    //缺失多个时，每个算作一个问题
                     for((info, key) in infoMap.values) {
                         val message = getMessage(info, key)
                         holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING)

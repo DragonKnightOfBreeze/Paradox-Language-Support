@@ -22,7 +22,7 @@ class ParadoxScriptNavBar : StructureAwareNavBarModelExtension() {
 	override fun getPresentableText(o: Any?): String? {
 		return when {
 			o is ParadoxScriptScriptedVariable -> "@" + o.name
-			o is ParadoxScriptProperty -> o.definitionInfo?.name ?: o.name
+			o is ParadoxScriptProperty -> o.definitionInfo?.name?.orAnonymous() ?: o.name
 			o is ParadoxScriptValue && o.isBlockValue() -> o.value
 			o is ParadoxScriptParameterCondition -> o.conditionExpression?.let { "[$it]" }
 			else -> null

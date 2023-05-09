@@ -242,6 +242,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport(
         ParadoxDefinitionSearch.search(typeExpression, selector).processQueryAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
+            if(definitionInfo.name.isEmpty()) return@p true //ignore anonymous definitions
             
             //排除不匹配可能存在的supported_scopes的情况
             val supportedScopes = ParadoxDefinitionSupportedScopesProvider.getSupportedScopes(definition, definitionInfo)

@@ -1,7 +1,6 @@
 package icu.windea.pls.script.inspections.general
 
 import com.intellij.codeInspection.*
-import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.components.*
@@ -47,7 +46,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         }
         return object : PsiElementVisitor() {
             var inFileContext: GenerateLocalisationsInFileContext? = null
-    
+            
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
                 when(element) {
@@ -80,29 +79,27 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 val infoMap = mutableMapOf<String, Info>()
                 //进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
                 val hasPrimaryLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
-                runReadAction {
-                    for(info in localisationInfos) {
-                        ProgressManager.checkCanceled()
-                        if(info.required || if(info.primary) checkPrimaryForDefinitions else checkOptionalForDefinitions) {
-                            for(locale in localeConfigs) {
-                                if(nameToDistinct.contains(info.name + "@" + locale)) continue
-                                if(info.primary && hasPrimaryLocales.contains(locale)) continue
-                                //多个位置表达式无法解析时，使用第一个
-                                val selector = localisationSelector(project, definition).locale(locale)
-                                val resolved = info.locationExpression.resolve(definition, definitionInfo, selector)
-                                if(resolved != null) {
-                                    if(resolved.message != null) continue //skip if it's dynamic or inlined
-                                    if(resolved.localisation == null) {
-                                        infoMap.putIfAbsent(info.name + "@" + locale, Info(info, resolved.key, locale))
-                                    } else {
-                                        infoMap.remove(info.name + "@" + locale)
-                                        nameToDistinct.add(info.name + "@" + locale)
-                                        if(info.primary) hasPrimaryLocales.add(locale)
-                                    }
-                                } else if(info.locationExpression.propertyName != null) {
-                                    //从定义的属性推断，例如，#name
-                                    infoMap.putIfAbsent(info.name + "@" + locale, Info(info, null, locale))
+                for(info in localisationInfos) {
+                    ProgressManager.checkCanceled()
+                    if(info.required || if(info.primary) checkPrimaryForDefinitions else checkOptionalForDefinitions) {
+                        for(locale in localeConfigs) {
+                            if(nameToDistinct.contains(info.name + "@" + locale)) continue
+                            if(info.primary && hasPrimaryLocales.contains(locale)) continue
+                            //多个位置表达式无法解析时，使用第一个
+                            val selector = localisationSelector(project, definition).locale(locale)
+                            val resolved = info.locationExpression.resolve(definition, definitionInfo, selector)
+                            if(resolved != null) {
+                                if(resolved.message != null) continue //skip if it's dynamic or inlined
+                                if(resolved.localisation == null) {
+                                    infoMap.putIfAbsent(info.name + "@" + locale, Info(info, resolved.key, locale))
+                                } else {
+                                    infoMap.remove(info.name + "@" + locale)
+                                    nameToDistinct.add(info.name + "@" + locale)
+                                    if(info.primary) hasPrimaryLocales.add(locale)
                                 }
+                            } else if(info.locationExpression.propertyName != null) {
+                                //从定义的属性推断，例如，#name
+                                infoMap.putIfAbsent(info.name + "@" + locale, Info(info, null, locale))
                             }
                         }
                     }
@@ -112,7 +109,8 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     //添加快速修复
                     val fixes = getFixes(definition, definitionInfo, infoMap).toTypedArray()
                     
-                    //显示为WEAK_WARNING，且缺失多个时，每个算作一个问题
+                    //显示为WEAK_WARNING
+                    //缺失多个时，每个算作一个问题
                     for((info, key, locale) in infoMap.values) {
                         val message = getMessage(info, key, locale)
                         holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING, *fixes)

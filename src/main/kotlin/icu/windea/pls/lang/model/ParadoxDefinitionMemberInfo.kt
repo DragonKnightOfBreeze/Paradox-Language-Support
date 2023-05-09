@@ -4,6 +4,7 @@ import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
@@ -117,7 +118,7 @@ private fun doGetChildConfigs(definitionInfo: ParadoxDefinitionInfo, definitionM
             val result = SmartList<CwtDataConfig<*>>()
             for(config in configs) {
                 val childConfigs = config.configs
-                if(childConfigs != null && childConfigs.isNotEmpty()) result.addAll(childConfigs)
+                if(childConfigs.isNotNullOrEmpty()) result.addAll(childConfigs)
             }
             result
         }

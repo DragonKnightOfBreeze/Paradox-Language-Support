@@ -22,6 +22,7 @@ inline fun <T : R, R> T.letIf(condition: Boolean, block: (T) -> R): R {
     contract {
         callsInPlace(block, InvocationKind.AT_MOST_ONCE)
     }
+    
     return if(condition) block(this) else this
 }
 
@@ -30,6 +31,7 @@ inline fun <T : R, R> T.letUnless(condition: Boolean, block: (T) -> R): R {
     contract {
         callsInPlace(block, InvocationKind.AT_MOST_ONCE)
     }
+    
     return if(!condition) block(this) else this
 }
 
@@ -38,6 +40,7 @@ inline fun <T> T.alsoIf(condition: Boolean, block: (T) -> Unit): T {
     contract {
         callsInPlace(block, InvocationKind.AT_MOST_ONCE)
     }
+    
     if(condition) block(this)
     return this
 }
@@ -47,17 +50,44 @@ inline fun <T> T.alsoUnless(condition: Boolean, block: (T) -> Unit): T {
     contract {
         callsInPlace(block, InvocationKind.AT_MOST_ONCE)
     }
+    
     if(!condition) block(this)
     return this
+}
+
+@OptIn(ExperimentalContracts::class)
+@Suppress("ReplaceSizeCheckWithIsNotEmpty")
+inline fun CharSequence?.isNotNullOrEmpty(): Boolean {
+    contract {
+        returns(true) implies (this@isNotNullOrEmpty != null)
+    }
+    
+    return this != null && this.length != 0
+}
+
+@OptIn(ExperimentalContracts::class)
+@Suppress("ReplaceSizeCheckWithIsNotEmpty")
+inline fun Array<*>?.isNotNullOrEmpty(): Boolean {
+    contract {
+        returns(true) implies (this@isNotNullOrEmpty != null)
+    }
+    
+    return this != null && this.size != 0
+}
+
+@OptIn(ExperimentalContracts::class)
+@Suppress("ReplaceSizeCheckWithIsNotEmpty")
+inline fun Collection<*>?.isNotNullOrEmpty(): Boolean {
+    contract {
+        returns(true) implies (this@isNotNullOrEmpty != null)
+    }
+    
+    return this != null && this.size != 0
 }
 
 fun <T> T.addTo(destination: MutableCollection<T>) = destination.add(this)
 
 fun <T : Collection<T>> T.addAllTo(destination: MutableCollection<T>) = destination.addAll(this)
-
-fun Any?.end() = true
-
-fun Any?.stop() = false
 
 fun Number.format(digits: Int): String {
     val power = 10.0.pow(abs(digits))

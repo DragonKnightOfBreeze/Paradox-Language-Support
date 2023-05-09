@@ -30,7 +30,7 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		val tooltip = buildString {
 			val name = definitionInfo.name
 			val typeText = definitionInfo.typesText
-			append(PlsBundle.message("prefix.definition")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>: ").append(typeText)
+			append(PlsBundle.message("prefix.definition")).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>: ").append(typeText)
 		}
 		val project = element.project
 		val selector = definitionSelector(project, element).contextSensitive()

@@ -89,9 +89,10 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 	
 	private fun processDefinition(context: ProcessingContext, result: CompletionResultSet, definition: ParadoxScriptDefinitionElement): Boolean {
 		ProgressManager.checkCanceled()
-		val typeFile = definition.containingFile
 		val definitionInfo = definition.definitionInfo ?: return true
+		if(definitionInfo.name.isEmpty()) return true //ignore anonymous definitions
 		val icon = PlsIcons.Definition(definitionInfo.type)
+		val typeFile = definition.containingFile
 		val builder = ParadoxScriptExpressionLookupElementBuilder.create(definition, definitionInfo.name)
 			.withIcon(icon)
 			.withTypeText(typeFile?.name)

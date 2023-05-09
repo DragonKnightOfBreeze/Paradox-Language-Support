@@ -1166,7 +1166,7 @@ object ParadoxConfigHandler {
     fun completeValueSetValue(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
         ProgressManager.checkCanceled()
         val configs = configs
-        if(configs != null && configs.isNotEmpty()) {
+        if(configs.isNotNullOrEmpty()) {
             for(config in configs) {
                 doCompleteValueSetValue(context, result, config)
             }

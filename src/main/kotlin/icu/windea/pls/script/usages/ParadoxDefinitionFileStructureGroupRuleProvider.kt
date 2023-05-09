@@ -12,7 +12,6 @@ import com.intellij.usages.rules.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -73,7 +72,7 @@ class DefinitionUsageGroup(
 	}
 	
 	override fun getPresentableGroupText(): String {
-		return _name
+		return _name.orAnonymous()
 	}
 	
 	override fun getFileStatus(): FileStatus? {

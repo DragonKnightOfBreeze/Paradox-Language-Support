@@ -87,7 +87,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
         return buildString {
             //在definition部分，相关图片信息显示在相关本地化信息之后，在sections部分则显示在之前
-            //images, localisations
             val sectionsList = List(4) { mutableMapOf<String, String>() }
             buildDefinitionDefinition(element, definitionInfo, sectionsList)
             buildDocumentationContent(element, definitionInfo)
@@ -144,7 +143,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
                     }
                 }
             }
-            append(PlsBundle.message("prefix.definition")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>: ").append(typeLinkText)
+            append(PlsBundle.message("prefix.definition")).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>: ").append(typeLinkText)
             
             //加上相关本地化信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
             addRelatedLocalisationsForDefinition(element, definitionInfo, sectionsList?.get(2))
@@ -325,7 +324,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         //加上单行注释文本
         if(!getSettings().documentation.renderLineComment) return
         val docText = getLineCommentDocText(element)
-        if(docText != null && docText.isNotEmpty()) {
+        if(docText.isNotNullOrEmpty()) {
             content {
                 append(docText)
             }

@@ -36,6 +36,8 @@ class GenerateLocalisationsHandler : CodeInsightActionHandler {
     companion object {
         @JvmStatic
         fun getDefaultContext(definitionInfo: ParadoxDefinitionInfo): GenerateLocalisationsContext? {
+            if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
+            
             val definitionName = definitionInfo.name
             val localisationInfos = definitionInfo.localisations
             if(localisationInfos.isEmpty()) return null

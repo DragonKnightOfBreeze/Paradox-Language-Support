@@ -126,7 +126,7 @@ object ParadoxElementPathHandler {
                     } else {
                         flag = true
                     }
-                    val p = when{
+                    val p = when {
                         current is ParadoxScriptProperty -> current.propertyKey.text
                         current is ParadoxScriptFile -> current.name.substringBeforeLast('.')
                         else -> current.name
