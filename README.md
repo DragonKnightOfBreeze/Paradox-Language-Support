@@ -34,9 +34,7 @@ IDEA插件：Paradox语言支持。
 
 关于插件的功能和用法，请参阅 [参考文档](https://windea.icu/Paradox-Language-Support/#/zh/) （有待详细编写）。
 
-![](https://windea.icu/Paradox-Language-Support/assets/images/script_file_preview_zh.png)
-
-![](https://windea.icu/Paradox-Language-Support/assets/images/localisation_file_preview_zh.png)
+![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_zh.png)
 
 ## 使用
 

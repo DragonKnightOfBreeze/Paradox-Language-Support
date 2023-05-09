@@ -28,9 +28,7 @@ IDEA插件：Paradox语言支持。
 
 此插件正在开发中，如果在使用过程中遇到问题，欢迎在Github上反馈。
 
-![](../assets/images/script_file_preview_zh.png)
-
-![](../assets/images/localisation_file_preview_zh.png)
+![](../assets/images/preview_1_zh.png)
 
 ## 使用
 

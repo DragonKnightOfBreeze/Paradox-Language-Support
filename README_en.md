@@ -40,9 +40,7 @@ This plugin is under development, if you encounter any problem during use, feel 
 
 For features and usages of this plugin, please refer to the [Reference documentation](https://windea.icu/Paradox-Language-Support/#/en/) (To be written in detail).
 
-![](https://windea.icu/Paradox-Language-Support/assets/images/script_file_preview_en.png)
-
-![](https://windea.icu/Paradox-Language-Support/assets/images/localisation_file_preview_en.png)
+![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_en.png)
 
 # Quick Start
 

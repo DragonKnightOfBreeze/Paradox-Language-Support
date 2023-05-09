@@ -9,7 +9,7 @@
 当光标位于定义的名字、本地化的名字等位置时，
 可以通过点击并选择快速文档弹出窗口中的`Translate Documentation`图标按钮，或者点击右键菜单中的`Translate Documentation`选项翻译文档内容。
 
-![](../assets/images/plugin-integration/translate-documentation.gif)
+![](../assets/images/plugin-integration/translate_documentation.gif)
 
 > **Note**
 > 

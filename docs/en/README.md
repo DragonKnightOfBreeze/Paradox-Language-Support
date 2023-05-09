@@ -34,9 +34,7 @@ this plugin could provide some [additional features](https://windea.icu/Paradox-
 
 This plugin is under development, if you encounter any problem during use, feel free to send feedback on Github.
 
-![](../assets/images/script_file_preview_en.png)
-
-![](../assets/images/localisation_file_preview_en.png)
+![](../assets/images/preview_1_en.png)
 
 # Quick Start
 
