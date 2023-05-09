@@ -106,12 +106,6 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
                      implementationClass="icu.windea.pls.script.inspections.general.UnsetValueSetValueInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectDefinitionName"
-                     enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.general.incorrectDefinitionName"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
-                     groupPathKey="inspection.script.general.path"
-                     implementationClass="icu.windea.pls.script.inspections.general.IncorrectDefinitionNameInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectPathReference"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.general.incorrectPathReference"

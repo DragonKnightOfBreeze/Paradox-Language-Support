@@ -502,26 +502,6 @@ object ParadoxDefinitionHandler {
         return element.definitionInfo?.subtypes
     }
     
-    fun getDefinitionNamePrefixOption(definitionInfo: ParadoxDefinitionInfo): String {
-        //return config.getOrPutUserData(definitionNamePrefixKey) {
-        //	val option = config.options?.find { it.key == "prefix" }
-        //	return option?.stringValue.orEmpty()
-        //}
-        definitionInfo.subtypeConfigs.forEach { subtypeConfig ->
-            val config = subtypeConfig.config
-            val prefix = config.getOrPutUserData(definitionNamePrefixKey) {
-                val option = config.options?.find { it.key == "prefix" }
-                return option?.stringValue.orEmpty()
-            }
-            if(prefix.isNotEmpty()) return prefix
-        }
-        val prefix = definitionInfo.typeConfig.config.getOrPutUserData(definitionNamePrefixKey) {
-            val option = definitionInfo.typeConfig.config.options?.find { it.key == "prefix" }
-            return option?.stringValue.orEmpty()
-        }
-        return prefix
-    }
-    
     //stub methods
     fun createStubForFile(file: PsiFile, tree: LighterAST): StubElement<*>? {
         //这里使用scriptProperty.definitionInfo.name而非scriptProperty.name
