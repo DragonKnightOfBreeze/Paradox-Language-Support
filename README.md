@@ -58,7 +58,7 @@ IDEA插件：Paradox语言支持。
 
 Q：为什么推荐使用Intellij IDEA + 此插件，而不是VSCode + CWTools？
 
-A：因为IDEA强大而可爱，而我是它（她）的狂热粉丝！（双重意义上的）
+A：因为Idea非常可爱，而我是她的狂热粉丝。
 
 ## 参考
 

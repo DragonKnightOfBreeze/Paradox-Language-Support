@@ -65,7 +65,7 @@ Tips:
 
 Q: Why is Intellij IDEA + this plugin, instead of VSCode + CWTools?
 
-A: Because IDEA is powerful and lovely, and I am its (her) fervent fan! (with a double meaning)
+A: Because Idea is very lovely, and I'm her fervent fan.
 
 ## Reference
 
