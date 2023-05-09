@@ -41,6 +41,8 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 }
                 FileBasedIndex.getInstance().processFilesContainingAnyKey(name, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
+                    //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析
+                    file.toPsiFile<PsiFile>(project) ?: return@p true
                     if(gameType != null && gameType != selectGameType(file)) return@p true
                     consumer.process(file)
                 }
@@ -53,6 +55,8 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                     val keys = setOf(path)
                     FileBasedIndex.getInstance().processFilesContainingAnyKey(name, keys, scope, null, null) pp@{ file ->
                         ProgressManager.checkCanceled()
+                        //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析
+                        file.toPsiFile<PsiFile>(project) ?: return@pp true
                         if(gameType != null && gameType != selectGameType(file)) return@pp true
                         consumer.process(file)
                     }

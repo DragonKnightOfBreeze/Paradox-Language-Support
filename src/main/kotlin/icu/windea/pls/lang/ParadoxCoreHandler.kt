@@ -28,8 +28,8 @@ import java.lang.invoke.*
 object ParadoxCoreHandler {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
-    fun getRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        //在获取rootInfo和fileInfo之前，如果未解析，需要先解析。
+    fun resolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
+        //在获取rootInfo之前，如果未解析，需要先解析
         if(!rootFile.isDirectory) return null
         val rootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
         if(rootInfo != null && rootInfo.isAvailable) {
@@ -52,6 +52,10 @@ object ParadoxCoreHandler {
             rootFile.putUserData(PlsKeys.rootInfoKey, resolvedRootInfo)
         }
         return resolvedRootInfo
+    }
+    
+    fun getRootInfo(virtualFile: VirtualFile): ParadoxRootInfo? {
+        return virtualFile.getUserData(PlsKeys.rootInfoKey)
     }
     
     private fun doResolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
@@ -155,18 +159,8 @@ object ParadoxCoreHandler {
         return ParadoxModDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
     }
     
-    fun getFileInfo(virtualFile: VirtualFile): ParadoxFileInfo? {
-        val injectedFileInfo = virtualFile.getUserData(PlsKeys.injectedFileInfoKey)
-        if(injectedFileInfo != null) return injectedFileInfo
-        return virtualFile.getUserData(PlsKeys.fileInfoKey)
-    }
-    
-    fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
-        val file = selectFile(element) ?: return null
-        return getFileInfo(file)
-    }
-    
     fun resolveFileInfo(file: VirtualFile, filePath: String): ParadoxFileInfo? {
+        //在获取fileInfo之前，如果未解析，需要先解析
         if(file is StubVirtualFile || !file.isValid) return null
         
         //首先尝试获取注入的fileInfo
@@ -179,7 +173,7 @@ object ParadoxCoreHandler {
         var currentFilePath = filePath.toPath()
         var currentFile = if(isLightFile) VfsUtil.findFile(currentFilePath, false) else file
         while(true) {
-            val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)
+            val rootInfo = if(currentFile == null) null else resolveRootInfo(currentFile)
             if(rootInfo != null) {
                 //filePath.relative(rootPath)
                 val path = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimStart('/'))
@@ -203,12 +197,13 @@ object ParadoxCoreHandler {
     }
     
     fun resolveFileInfo(filePath: FilePath): ParadoxFileInfo? {
+        //在获取fileInfo之前，如果未解析，需要先解析
         //直接尝试通过filePath获取fileInfo
         val fileName = filePath.name
         var currentFilePath = filePath.path.toPath()
         var currentFile = VfsUtil.findFile(currentFilePath, false)
         while(true) {
-            val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)
+            val rootInfo = if(currentFile == null) null else resolveRootInfo(currentFile)
             if(rootInfo != null) {
                 //filePath.relative(rootPath)
                 val path = ParadoxPath.resolve(filePath.path.removePrefix(rootInfo.rootFile.path).trimStart('/'))
@@ -236,6 +231,18 @@ object ParadoxCoreHandler {
             if(filePath.contains("$entry/")) return entry
         }
         return null
+    }
+    
+    fun getFileInfo(virtualFile: VirtualFile): ParadoxFileInfo? {
+        val injectedFileInfo = virtualFile.getUserData(PlsKeys.injectedFileInfoKey)
+        if(injectedFileInfo != null) return injectedFileInfo
+        
+        return virtualFile.getUserData(PlsKeys.fileInfoKey)
+    }
+    
+    fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
+        val file = selectFile(element) ?: return null
+        return getFileInfo(file)
     }
     
     @RequiresWriteLock

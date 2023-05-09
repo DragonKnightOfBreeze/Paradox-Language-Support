@@ -56,7 +56,7 @@ class ParadoxGameRootInfo(
             append(launcherSettingsInfo.rawVersion)
         }
     override val isAvailable: Boolean
-        get() = launcherSettingsFile.isValid
+        get() = launcherSettingsFile.isValid && launcherSettingsFile.name == PlsConstants.launcherSettingsFileName
     
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxRootInfo && rootFile == other.rootFile
@@ -103,7 +103,7 @@ class ParadoxModRootInfo(
             descriptorInfo.version?.let { version -> append("@").append(version) }
         }
     override val isAvailable: Boolean
-        get() = descriptorFile.isValid
+        get() = descriptorFile.isValid && descriptorFile.name == PlsConstants.descriptorFileName
     
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxRootInfo && rootFile == other.rootFile

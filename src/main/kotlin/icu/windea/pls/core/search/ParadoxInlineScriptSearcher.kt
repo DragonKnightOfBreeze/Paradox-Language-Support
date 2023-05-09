@@ -30,11 +30,12 @@ class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptInfo, P
         DumbService.getInstance(project).runReadActionInSmartMode action@{
             FileTypeIndex.processFiles(ParadoxScriptFileType, p@{ file ->
                 ProgressManager.checkCanceled()
+                //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析
+                val psiFile = file.toPsiFile<PsiFile>(project) ?: return@p true
                 if(file.fileInfo == null) return@p true
                 if(ParadoxFileManager.isLightFile(file)) return@p true
                 val inlineScripts = ParadoxInlineScriptIndex.getData(expression, file, project)
                 if(inlineScripts.isNullOrEmpty()) return@p true
-                val psiFile = file.toPsiFile<PsiFile>(project) ?: return@p true
                 for(info in inlineScripts) {
                     ProgressManager.checkCanceled()
                     if(gameType == info.gameType) {

@@ -270,6 +270,8 @@ val Project.paradoxLibrary: ParadoxLibrary
 //注意：不要更改直接调用CachedValuesManager.getCachedValue(...)的那个顶级方法（静态方法）的方法声明，IDE内部会进行检查
 //如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
 
+val VirtualFile.rootInfo: ParadoxRootInfo?
+    get() = ParadoxCoreHandler.getRootInfo(this)
 val VirtualFile.fileInfo: ParadoxFileInfo?
     get() = ParadoxCoreHandler.getFileInfo(this)
 val PsiElement.fileInfo: ParadoxFileInfo?

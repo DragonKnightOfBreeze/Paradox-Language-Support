@@ -25,7 +25,7 @@ class FileRenderCodeInjector : BaseCodeInjector() {
                 value is VirtualFile -> value
                 else -> return
             }
-            val rootInfo = ParadoxCoreHandler.getRootInfo(file)
+            val rootInfo = ParadoxCoreHandler.resolveRootInfo(file)
             if(rootInfo != null && rootInfo.rootFile == file) {
                 val comment = rootInfo.qualifiedName
                 renderer.append(" " + comment, SimpleTextAttributes.GRAYED_ATTRIBUTES)
