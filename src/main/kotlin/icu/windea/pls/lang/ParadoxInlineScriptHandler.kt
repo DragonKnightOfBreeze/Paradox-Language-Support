@@ -88,24 +88,12 @@ object ParadoxInlineScriptHandler {
     }
     
     fun getInlineScript(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptFile? {
-        if(DumbService.isDumb(project)) return null //NOTE 防止重入索引
-        
-        return runReadAction { doGetInlineScript(expression, project, contextElement) }
-    }
-    
-    private fun doGetInlineScript(expression: String, project: Project, contextElement: PsiElement): ParadoxScriptFile? {
         val filePath = getInlineScriptFilePath(expression)
         val selector = fileSelector(project, contextElement).contextSensitive()
-        return ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)
+        return ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile<ParadoxScriptFile>(project)
     }
     
     fun processInlineScript(expression: String, contextElement: PsiElement, project: Project, processor: (ParadoxScriptFile) -> Boolean): Boolean {
-        if(DumbService.isDumb(project)) return true //NOTE 防止重入索引
-        
-        return runReadAction { doProcessInlineScript(expression, project, contextElement, processor) }
-    }
-    
-    private fun doProcessInlineScript(expression: String, project: Project, contextElement: PsiElement, processor: (ParadoxScriptFile) -> Boolean): Boolean {
         val filePath = getInlineScriptFilePath(expression)
         val selector = fileSelector(project, contextElement).contextSensitive()
         return ParadoxFilePathSearch.search(filePath, null, selector).processQueryAsync {

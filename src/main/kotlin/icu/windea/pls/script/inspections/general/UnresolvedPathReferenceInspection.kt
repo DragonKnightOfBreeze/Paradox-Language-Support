@@ -29,14 +29,13 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 if(element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
             }
             
-            private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement){
+            private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
                 val text = element.text
                 if(text.isParameterized()) return //skip if expression is parameterized
                 //match or single
                 val valueConfig = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
                 val configExpression = valueConfig.expression
-                val project = valueConfig.info.configGroup.project
                 val location = element
                 if(configExpression.type == CwtDataType.AbsoluteFilePath) {
                     val filePath = element.value
@@ -51,7 +50,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                     val pathReference = element.value.normalizePath()
                     val fileName = pathReferenceExpressionSupport.resolveFileName(configExpression, pathReference)
                     if(fileName.matchesGlobFileName(ignoredFileNames, true)) return
-                    val selector = fileSelector(project, element)
+                    val selector = fileSelector(holder.project, element)
                     if(ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null) return
                     val message = pathReferenceExpressionSupport.getUnresolvedMessage(configExpression, pathReference)
                     holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)

@@ -71,7 +71,6 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             
             private fun visitDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
                 ProgressManager.checkCanceled()
-                val project = definitionInfo.project
                 val localisationInfos = definitionInfo.localisations
                 if(localisationInfos.isEmpty()) return
                 val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
@@ -86,7 +85,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                             if(nameToDistinct.contains(info.name + "@" + locale)) continue
                             if(info.primary && hasPrimaryLocales.contains(locale)) continue
                             //多个位置表达式无法解析时，使用第一个
-                            val selector = localisationSelector(project, definition).locale(locale)
+                            val selector = localisationSelector(holder.project, definition).locale(locale)
                             val resolved = info.locationExpression.resolve(definition, definitionInfo, selector)
                             if(resolved != null) {
                                 if(resolved.message != null) continue //skip if it's dynamic or inlined
@@ -158,14 +157,12 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 if(localeConfigs.isEmpty()) return
                 if(!checkForModifiers) return
                 val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
-                val configGroup = config.info.configGroup
                 if(config.expression.type != CwtDataType.Modifier) return
-                val project = configGroup.project
                 val name = element.value
                 val keys = ParadoxModifierHandler.getModifierNameKeys(name)
                 val missingLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
                 for(locale in localeConfigs) {
-                    val selector = localisationSelector(project, element).locale(locale)
+                    val selector = localisationSelector(holder.project, element).locale(locale)
                     val localisation = keys.firstNotNullOfOrNull {
                         ParadoxLocalisationSearch.search(it, selector).findFirst()
                     }

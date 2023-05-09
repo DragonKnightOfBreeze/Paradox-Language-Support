@@ -19,13 +19,11 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
         if(SearchScope.isEmptyScope(scope)) return
-        
         val name = queryParameters.name
         val enumName = queryParameters.enumName
         val project = queryParameters.project
         val selector = queryParameters.selector
         val targetGameType = selector.gameType ?: return
-        val targetFileInfo = selector.fileInfo ?: return
         
         FileTypeIndex.processFiles(ParadoxScriptFileType, p@{ file ->
             ProgressManager.checkCanceled()

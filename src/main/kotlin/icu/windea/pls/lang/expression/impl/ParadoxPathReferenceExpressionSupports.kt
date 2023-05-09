@@ -57,7 +57,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
     
     override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean): Boolean {
         var expression = configExpression.value ?: return true
-        var expressionRel = expression.removePrefixOrNull("./")
+        val expressionRel = expression.removePrefixOrNull("./")
         if(expressionRel != null) {
             val contextParentPath = element?.fileInfo?.path?.parent ?: return false
             expression = contextParentPath + "/" + expressionRel
@@ -77,7 +77,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
     
     override fun extract(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean): String? {
         var expression = configExpression.value ?: return filePath
-        var expressionRel = expression.removePrefixOrNull("./")
+        val expressionRel = expression.removePrefixOrNull("./")
         if(expressionRel != null) {
             val contextParentPath = element?.fileInfo?.path?.parent ?: return null
             expression = contextParentPath + "/" + expressionRel
@@ -94,7 +94,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
     
     override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): String? {
         val expression = configExpression.value ?: pathReference
-        var expressionRel = expression.removePrefixOrNull("./")
+        val expressionRel = expression.removePrefixOrNull("./")
         if(expressionRel != null) {
             return null //信息不足
         }

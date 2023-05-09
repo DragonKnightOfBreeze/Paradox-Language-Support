@@ -2,6 +2,7 @@ package icu.windea.pls.core.search
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
@@ -20,7 +21,6 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
         if(SearchScope.isEmptyScope(scope)) return
-        
         val filePath = queryParameters.filePath?.trimEnd('/')
         val configExpression = queryParameters.configExpression
         val ignoreCase = queryParameters.ignoreCase
@@ -30,33 +30,36 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         val contextElement = queryParameters.selector.file?.toPsiFile<PsiFile>(project)
         
         val pathReferenceExpressionSupport = if(configExpression != null) ParadoxPathReferenceExpressionSupport.get(configExpression) else null
+        
         ProgressManager.checkCanceled()
-        if(configExpression == null || pathReferenceExpressionSupport?.matchEntire(configExpression, contextElement) == true) {
-            val keys = if(filePath != null) {
-                getFilePathInfos(filePath, queryParameters)
+        DumbService.getInstance(project).runReadActionInSmartMode action@{
+            if(configExpression == null || pathReferenceExpressionSupport?.matchEntire(configExpression, contextElement) == true) {
+                val keys = if(filePath != null) {
+                    getFilePathInfos(filePath, queryParameters)
+                } else {
+                    FileBasedIndex.getInstance().getAllKeys(name, project)
+                }
+                FileBasedIndex.getInstance().processFilesContainingAnyKey(name, keys, scope, null, null) p@{ file ->
+                    ProgressManager.checkCanceled()
+                    if(gameType != null && gameType != selectGameType(file)) return@p true
+                    consumer.process(file)
+                }
             } else {
-                FileBasedIndex.getInstance().getAllKeys(name, project)
+                if(pathReferenceExpressionSupport == null) return@action
+                FileBasedIndex.getInstance().processAllKeys(name, p@{ path ->
+                    ProgressManager.checkCanceled()
+                    if(filePath != null && pathReferenceExpressionSupport.extract(configExpression, contextElement, path, ignoreCase) != filePath) return@p true
+                    if(!pathReferenceExpressionSupport.matches(configExpression, contextElement, path, ignoreCase)) return@p true
+                    val keys = setOf(path)
+                    FileBasedIndex.getInstance().processFilesContainingAnyKey(name, keys, scope, null, null) pp@{ file ->
+                        ProgressManager.checkCanceled()
+                        if(gameType != null && gameType != selectGameType(file)) return@pp true
+                        consumer.process(file)
+                    }
+                    true
+                }, scope, null)
             }
-            FileBasedIndex.getInstance().processFilesContainingAnyKey(name, keys, scope, null, null) p@{ file ->
-                ProgressManager.checkCanceled()
-                if(gameType != null && gameType != selectGameType(file)) return@p true
-                consumer.process(file)
-            }
-            return
         }
-        if(pathReferenceExpressionSupport == null) return
-        FileBasedIndex.getInstance().processAllKeys(name, p@{ path ->
-            ProgressManager.checkCanceled()
-            if(filePath != null && pathReferenceExpressionSupport.extract(configExpression, contextElement, path, ignoreCase) != filePath) return@p true
-            if(!pathReferenceExpressionSupport.matches(configExpression, contextElement, path, ignoreCase)) return@p true
-            val keys = setOf(path)
-            FileBasedIndex.getInstance().processFilesContainingAnyKey(name, keys, scope, null, null) pp@{ file ->
-                ProgressManager.checkCanceled()
-                if(gameType != null && gameType != selectGameType(file)) return@pp true
-                consumer.process(file)
-            }
-            true
-        }, scope, null)
     }
     
     private fun getFilePathInfos(filePath: String, queryParameters: ParadoxFilePathSearch.SearchParameters): Set<String> {

@@ -46,7 +46,6 @@ class MissingImageInspection : LocalInspectionTool() {
             
             private fun visitDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
                 ProgressManager.checkCanceled()
-                val project = definitionInfo.project
                 val imageInfos = definitionInfo.images
                 if(imageInfos.isEmpty()) return
                 val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
@@ -60,7 +59,7 @@ class MissingImageInspection : LocalInspectionTool() {
                     if(info.primary && hasPrimary) continue
                     //多个位置表达式无法解析时，使用第一个
                     if(info.required || if(info.primary) checkPrimaryForDefinitions else checkOptionalForDefinitions) {
-                        val resolved = info.locationExpression.resolve(definition, definitionInfo, project)
+                        val resolved = info.locationExpression.resolve(definition, definitionInfo, holder.project)
                         if(resolved != null) {
                             if(resolved.message != null) continue //skip if it's dynamic
                             if(resolved.file == null) {
@@ -114,11 +113,10 @@ class MissingImageInspection : LocalInspectionTool() {
                 val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
                 val configGroup = config.info.configGroup
                 if(config.expression.type != CwtDataType.Modifier) return
-                val project = configGroup.project
                 val name = element.value
                 val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name)
                 val iconFile = iconPaths.firstNotNullOfOrNull {
-                    val iconSelector = fileSelector(project, element)
+                    val iconSelector = fileSelector(holder.project, element)
                     ParadoxFilePathSearch.search(it, null, iconSelector).find()
                 }
                 if(iconFile == null) {

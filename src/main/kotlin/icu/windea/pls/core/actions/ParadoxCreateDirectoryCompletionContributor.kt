@@ -3,6 +3,7 @@ package icu.windea.pls.core.actions
 import com.intellij.ide.actions.*
 import com.intellij.ide.actions.CreateDirectoryCompletionContributor.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
@@ -30,6 +31,8 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
     //基于已有的包含脚本文件、本地化文件或者DDS/PNG/TGA文件的目录
     
     override fun getVariants(directory: PsiDirectory): Collection<Variant> {
+        if(DumbService.isDumb(directory.project)) return emptySet()
+        
         val fileInfo = directory.fileInfo ?: return emptySet()
         val contextPath = fileInfo.pathToEntry.path //use pathToEntry here
         val contextGameType = fileInfo.rootInfo.gameType

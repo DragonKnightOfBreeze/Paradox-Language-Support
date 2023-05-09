@@ -18,7 +18,8 @@ class ParadoxScriptExpressionPsiReference(
 	val config: CwtDataConfig<*>,
 	val isKey: Boolean
 ) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
-	val project by lazy { element.project }
+	val project by lazy { config.info.configGroup.project }
+	//val project by lazy { element.project }
 	
 	override fun handleElementRename(newElementName: String): PsiElement {
 		val element = element
