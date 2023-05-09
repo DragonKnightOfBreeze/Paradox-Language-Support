@@ -38,4 +38,4 @@ val ParadoxLocalisationCommandScope.commandScopeId: PsiElement get() = findChild
 
 val ParadoxLocalisationCommandField.commandFieldId: PsiElement? get() = findChild(COMMAND_FIELD_ID)
 
-val ParadoxLocalisationScriptedVariableReference.variableReferenceId: PsiElement get() = findChild(SCRIPTED_VARIABLE_REFERENCE_TOKEN)!!
+val ParadoxLocalisationScriptedVariableReference.idElement: PsiElement? get() = findChild(SCRIPTED_VARIABLE_REFERENCE_TOKEN)

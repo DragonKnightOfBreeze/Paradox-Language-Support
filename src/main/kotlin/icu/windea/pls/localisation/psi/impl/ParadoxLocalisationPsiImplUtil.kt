@@ -196,29 +196,28 @@ object ParadoxLocalisationPsiImplUtil {
     }
     
     @JvmStatic
-    fun getName(element: ParadoxLocalisationScriptedVariableReference): String {
-        // 不包含作为前缀的"@"
-        return element.variableReferenceId.text.orEmpty()
+    fun getName(element: ParadoxLocalisationScriptedVariableReference): String? {
+        return element.text.removePrefix("@")
     }
     
     @JvmStatic
     fun setName(element: ParadoxLocalisationScriptedVariableReference, name: String): ParadoxLocalisationScriptedVariableReference {
         // 不包含作为前缀的"@"
-        val nameElement = element.variableReferenceId 
-        val newNameElement = ParadoxLocalisationElementFactory.createScriptedVariableReference(element.project, name).variableReferenceId
+        val nameElement = element.idElement ?: throw IncorrectOperationException()
+        val newNameElement = ParadoxLocalisationElementFactory.createScriptedVariableReference(element.project, name).idElement!!
         nameElement.replace(newNameElement)
         return element
     }
     
     @JvmStatic
-    fun getReference(element: ParadoxLocalisationScriptedVariableReference): ParadoxScriptedVariablePsiReference {
-        val rangeInElement = element.variableReferenceId.textRangeInParent
+    fun getReference(element: ParadoxLocalisationScriptedVariableReference): ParadoxScriptedVariablePsiReference? {
+        val rangeInElement = element.idElement?.textRangeInParent ?: throw IncorrectOperationException()
         return ParadoxScriptedVariablePsiReference(element, rangeInElement)
     }
     
     @JvmStatic
     fun getType(element: ParadoxLocalisationScriptedVariableReference): ParadoxDataType {
-        return element.reference.resolve()?.type ?: ParadoxDataType.UnknownType
+        return element.reference?.resolve()?.type ?: ParadoxDataType.UnknownType
     }
     
     @JvmStatic

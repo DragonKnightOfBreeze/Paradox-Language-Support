@@ -10,6 +10,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -31,13 +32,15 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
             }
             
             private fun visitScriptedVariableReference(element: ParadoxLocalisationScriptedVariableReference) {
-                val reference = element.reference
+                val name = element.name ?: return
+                if(name.isParameterizedExpression()) return //skip if name is parameterized
+                val reference = element.reference ?: return
                 if(reference.resolve() != null) return
-                val variableName = element.name
                 val quickFixes = listOf(
-                    IntroduceGlobalVariableFix(variableName, element)
+                    IntroduceLocalVariableFix(name, element),
+                    icu.windea.pls.core.quickfix.IntroduceGlobalVariableFix(name, element)
                 )
-                val message = PlsBundle.message("inspection.localisation.general.unresolvedScriptedVariable.description", element.name)
+                val message = PlsBundle.message("inspection.localisation.general.unresolvedScriptedVariable.description", name)
                 holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *quickFixes.toTypedArray())
             }
         }

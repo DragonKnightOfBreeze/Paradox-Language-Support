@@ -18,13 +18,13 @@ public interface ParadoxLocalisationScriptedVariableReference extends ParadoxScr
   @NotNull
   Icon getIcon(@IconFlags int flags);
 
-  @NotNull
+  @Nullable
   String getName();
 
   @NotNull
   ParadoxLocalisationScriptedVariableReference setName(@NotNull String name);
 
-  @NotNull
+  @Nullable
   ParadoxScriptedVariablePsiReference getReference();
 
   @NotNull

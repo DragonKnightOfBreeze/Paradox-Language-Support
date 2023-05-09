@@ -41,7 +41,7 @@ public class ParadoxLocalisationScriptedVariableReferenceImpl extends ASTWrapper
   }
 
   @Override
-  @NotNull
+  @Nullable
   public String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
   }
@@ -53,7 +53,7 @@ public class ParadoxLocalisationScriptedVariableReferenceImpl extends ASTWrapper
   }
 
   @Override
-  @NotNull
+  @Nullable
   public ParadoxScriptedVariablePsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
   }
