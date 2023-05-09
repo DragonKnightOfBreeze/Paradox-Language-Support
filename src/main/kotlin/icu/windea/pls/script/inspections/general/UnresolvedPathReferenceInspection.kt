@@ -23,37 +23,39 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
     @JvmField var ignoredFileNames = "*.lua;*.tga"
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        return Visitor(this, holder)
-    }
-    
-    private class Visitor(
-        private val inspection: UnresolvedPathReferenceInspection,
-        private val holder: ProblemsHolder
-    ) : ParadoxScriptVisitor() {
-        override fun visitString(valueElement: ParadoxScriptString) {
-            ProgressManager.checkCanceled()
-            //match or single
-            val valueConfig = ParadoxConfigHandler.getValueConfigs(valueElement).firstOrNull() ?: return
-            val configExpression = valueConfig.valueExpression
-            val project = valueElement.project
-            val location = valueElement
-            if(configExpression.type == CwtDataType.AbsoluteFilePath) {
-                val filePath = valueElement.value
-                val file = filePath.toVirtualFile(false)
-                if(file != null) return
-                val message = PlsBundle.message("inspection.script.general.unresolvedPathReference.description.abs", filePath)
-                holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
-                return
+        return object : PsiElementVisitor() {
+            override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
+                if(element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
             }
-            val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
-            if(pathReferenceExpressionSupport != null) {
-                val pathReference = valueElement.value.normalizePath()
-                val fileName = pathReferenceExpressionSupport.resolveFileName(configExpression, pathReference)
-                if(fileName.matchesGlobFileName(inspection.ignoredFileNames, true)) return
-                val selector = fileSelector(project, valueElement)
-                if(ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null) return
-                val message = pathReferenceExpressionSupport.getUnresolvedMessage(configExpression, pathReference)
-                holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+            
+            private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement){
+                ProgressManager.checkCanceled()
+                val text = element.text
+                if(text.isParameterizedExpression()) return //skip if expression is parameterized
+                //match or single
+                val valueConfig = ParadoxConfigHandler.getValueConfigs(element).firstOrNull() ?: return
+                val configExpression = valueConfig.valueExpression
+                val project = valueConfig.info.configGroup.project
+                val location = element
+                if(configExpression.type == CwtDataType.AbsoluteFilePath) {
+                    val filePath = element.value
+                    val file = filePath.toVirtualFile(false)
+                    if(file != null) return
+                    val message = PlsBundle.message("inspection.script.general.unresolvedPathReference.description.abs", filePath)
+                    holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+                    return
+                }
+                val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
+                if(pathReferenceExpressionSupport != null) {
+                    val pathReference = element.value.normalizePath()
+                    val fileName = pathReferenceExpressionSupport.resolveFileName(configExpression, pathReference)
+                    if(fileName.matchesGlobFileName(ignoredFileNames, true)) return
+                    val selector = fileSelector(project, element)
+                    if(ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null) return
+                    val message = pathReferenceExpressionSupport.getUnresolvedMessage(configExpression, pathReference)
+                    holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+                }
             }
         }
     }
