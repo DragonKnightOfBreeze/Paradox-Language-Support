@@ -360,7 +360,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "]" {inParameterCondition = false; beginNextState(); return RIGHT_BRACKET;}
   "@["|"@\\[" { yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
-  "@" {yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME); return AT;}
+  "@" {yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE); return AT;}
   //兼容处理
   {CHECK_PROPERTY_KEY} {
       if(yycharat(0) == '"'){

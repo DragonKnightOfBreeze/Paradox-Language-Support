@@ -946,7 +946,7 @@ public class ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 95: break;
           case 25:
-            { yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME); return AT;
+            { yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE); return AT;
             }
           // fall through
           case 96: break;
