@@ -9,7 +9,7 @@ import java.io.*
 /**
  * 用于从`on_actions.csv`生成`on_actions.cwt`
  */
-class CwtOnActionConfigGenerator(
+class CwtOnActionConfigFromCsvGenerator(
     val gameType: ParadoxGameType,
     val csvPath: String,
     val cwtPath: String,

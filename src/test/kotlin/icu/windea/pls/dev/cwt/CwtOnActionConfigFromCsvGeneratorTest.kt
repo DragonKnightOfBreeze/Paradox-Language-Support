@@ -3,10 +3,10 @@ package icu.windea.pls.dev.cwt
 import icu.windea.pls.lang.model.*
 import org.junit.*
 
-class CwtOnActionConfigGeneratorTest{
+class CwtOnActionConfigFromCsvGeneratorTest{
 	@Test
 	fun testForCk2() {
-		CwtOnActionConfigGenerator(
+		CwtOnActionConfigFromCsvGenerator(
             ParadoxGameType.Ck2,
             "cwt/cwtools-ck2-config/on_actions.csv",
             "cwt/cwtools-ck2-config/on_actions.cwt",
@@ -15,7 +15,7 @@ class CwtOnActionConfigGeneratorTest{
 	
 	@Test
 	fun testForEu4() {
-		CwtOnActionConfigGenerator(
+		CwtOnActionConfigFromCsvGenerator(
             ParadoxGameType.Eu4,
             "cwt/cwtools-eu4-config/on_actions.csv",
             "cwt/cwtools-eu4-config/on_actions.cwt",
@@ -24,7 +24,7 @@ class CwtOnActionConfigGeneratorTest{
 	
 	@Test
 	fun testForHoi4() {
-		CwtOnActionConfigGenerator(
+		CwtOnActionConfigFromCsvGenerator(
             ParadoxGameType.Hoi4,
             "cwt/cwtools-hoi4-config/Config/on_actions.csv",
             "cwt/cwtools-hoi4-config/Config/on_actions.cwt",
@@ -33,7 +33,7 @@ class CwtOnActionConfigGeneratorTest{
 	
 	@Test
 	fun testForStellaris() {
-		CwtOnActionConfigGenerator(
+		CwtOnActionConfigFromCsvGenerator(
             ParadoxGameType.Stellaris,
             "cwt/cwtools-stellaris-config/config/on_actions.csv",
             "cwt/cwtools-stellaris-config/config/on_actions.cwt",
