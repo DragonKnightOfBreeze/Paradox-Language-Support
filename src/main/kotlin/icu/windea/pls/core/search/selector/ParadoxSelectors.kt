@@ -7,6 +7,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
@@ -39,7 +40,7 @@ class ParadoxWithSearchScopeSelector<T>(
 class ParadoxWithSearchScopeTypeSelector<T>(
     searchScopeType: String,
     val project: Project,
-    val context: PsiElement,
+    val context: Any?,
 ) : ParadoxSearchScopeAwareSelector<T> {
     private val searchScopeType = ParadoxSearchScopeTypes.get(searchScopeType)
     
@@ -54,16 +55,7 @@ class ParadoxWithSearchScopeTypeSelector<T>(
     }
     
     fun findRoot(context: Any?): PsiElement? {
-        return when {
-            context is PsiElement -> searchScopeType.findRoot(project, context)
-            context is ParadoxScriptExpressionInfo -> {
-                val element = context.file?.findElementAt(context.elementOffset)
-                val expressionElement = element?.parentOfType<ParadoxScriptExpressionElement>()
-                if(expressionElement == null) return null
-                searchScopeType.findRoot(project, expressionElement)
-            }
-            else -> null
-        }
+        return searchScopeType.findRoot(project, context)
     }
     
     override fun getGlobalSearchScope(): GlobalSearchScope? {

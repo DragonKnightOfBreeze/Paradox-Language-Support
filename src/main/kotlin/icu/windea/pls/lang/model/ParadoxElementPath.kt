@@ -48,11 +48,7 @@ interface ParadoxElementPath : Iterable<Tuple3<String, Boolean, Boolean>> {
         
         fun resolve(originalSubPaths: List<String>): ParadoxElementPath {
             val path = originalSubPaths.joinToString("/") {
-                if(it.contains('/')) {
-                    it.quote()
-                } else {
-                    it
-                }
+                it.replace("/", "\\/")
             }
             return cache[path]
         }
@@ -63,34 +59,19 @@ class ParadoxElementPathImpl(
     override val path: String
 ) : ParadoxElementPath {
     override val subPaths: List<String> = buildList {
-        var index = 0
-        var startIndex = 0
-        while(index != -1) {
-            val quoteIndex = path.indexOf('"', startIndex)
-            if(quoteIndex == -1) {
-                index = path.indexOf('/', startIndex)
-                if(index != -1) {
-                    add(path.substring(startIndex, index))
-                    startIndex = index + 1
-                } else {
-                    add(path.substring(startIndex))
-                }
-            } else {
-                index = path.indexOf('/', startIndex)
-                if(index != -1 && index < quoteIndex) {
-                    add(path.substring(startIndex, index))
-                    startIndex = index + 1
-                }
-                val rightQuoteIndex = path.indexOf('"', quoteIndex + 1)
-                index = path.indexOf('/', rightQuoteIndex + 1)
-                if(index != -1) {
-                    add(path.substring(startIndex, index))
-                    startIndex = index + 1
-                } else {
-                    add(path.substring(startIndex))
-                }
+        val builder = StringBuilder();
+        var escape = false
+        path.forEach { c ->
+            when {
+                c == '\\' -> escape = true
+                c == '/' && !escape -> {
+                    add(builder.toString())
+                    builder.clear()
+                } 
+                else -> builder.append(c)
             }
         }
+        if(builder.isNotEmpty()) add(builder.toString())
     }
     override val length = subPaths.size
     override val subPathInfos: List<Tuple3<String, Boolean, Boolean>> = subPaths.map {

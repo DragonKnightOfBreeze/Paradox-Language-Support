@@ -5,6 +5,7 @@ import com.intellij.usages.*
 import com.intellij.usages.impl.rules.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
@@ -20,8 +21,15 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
     
     override fun getUsageType(element: PsiElement, targets: Array<out UsageTarget>): UsageType? {
         //TODO
-        return when {
-            element is ParadoxScriptStringExpressionElement -> {
+        when {
+            element is ParadoxScriptStringExpressionElement || element is ParadoxScriptInt -> {
+                //尝试解析为复杂枚举值声明
+                val resolvedElements = targets.mapNotNull { it.castOrNull<PsiElementUsageTarget>()?.element }
+                val complexEnumValueElement = resolvedElements.findIsInstance<ParadoxComplexEnumValueElement>()
+                if(complexEnumValueElement != null) {
+                    return ParadoxUsageType.COMPLEX_ENUM_VALUE
+                }
+                
                 val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return null
                 val configExpression = config.expression
                 val type = configExpression.type
@@ -40,22 +48,22 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
                 if(config.expression.type == CwtDataType.LocalisationParameter) {
                     return ParadoxUsageType.PARAMETER_REFERENCE_6
                 }
-                ParadoxUsageType.FROM_CONFIG_EXPRESSION(configExpression)
+                return ParadoxUsageType.FROM_CONFIG_EXPRESSION(configExpression)
             }
             
-            element is ParadoxScriptScriptedVariableReference -> ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_1
-            element is ParadoxScriptInlineMathScriptedVariableReference -> ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_2
-            element is ParadoxLocalisationScriptedVariableReference -> ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_3
+            element is ParadoxScriptScriptedVariableReference -> return ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_1
+            element is ParadoxScriptInlineMathScriptedVariableReference -> return ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_2
+            element is ParadoxLocalisationScriptedVariableReference -> return ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_3
             
-            element is ParadoxScriptParameter -> ParadoxUsageType.PARAMETER_REFERENCE_1
-            element is ParadoxScriptInlineMathParameter -> ParadoxUsageType.PARAMETER_REFERENCE_2
-            element is ParadoxScriptParameterConditionParameter -> ParadoxUsageType.PARAMETER_REFERENCE_3
-            element is ParadoxLocalisationPropertyReference -> ParadoxUsageType.LOCALISATION_REFERENCE
-            element is ParadoxLocalisationIcon -> ParadoxUsageType.LOCALISATION_ICON
-            element is ParadoxLocalisationColorfulText -> ParadoxUsageType.LOCALISATION_COLOR
-            element is ParadoxLocalisationCommandScope -> ParadoxUsageType.LOCALISATION_COMMAND_SCOPE
-            element is ParadoxLocalisationCommandField -> ParadoxUsageType.LOCALISATION_COMMAND_FIELD
-            else -> null
+            element is ParadoxScriptParameter -> return ParadoxUsageType.PARAMETER_REFERENCE_1
+            element is ParadoxScriptInlineMathParameter -> return ParadoxUsageType.PARAMETER_REFERENCE_2
+            element is ParadoxScriptParameterConditionParameter -> return ParadoxUsageType.PARAMETER_REFERENCE_3
+            element is ParadoxLocalisationPropertyReference -> return ParadoxUsageType.LOCALISATION_REFERENCE
+            element is ParadoxLocalisationIcon -> return ParadoxUsageType.LOCALISATION_ICON
+            element is ParadoxLocalisationColorfulText -> return ParadoxUsageType.LOCALISATION_COLOR
+            element is ParadoxLocalisationCommandScope -> return ParadoxUsageType.LOCALISATION_COMMAND_SCOPE
+            element is ParadoxLocalisationCommandField -> return ParadoxUsageType.LOCALISATION_COMMAND_FIELD
+            else -> return null
         }
     }
     

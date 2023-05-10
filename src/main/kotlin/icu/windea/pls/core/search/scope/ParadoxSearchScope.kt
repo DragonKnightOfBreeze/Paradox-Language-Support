@@ -57,7 +57,7 @@ sealed class ParadoxSearchScope(
         }
         
         @JvmStatic
-        fun modScope(project: Project, context: PsiElement): GlobalSearchScope {
+        fun modScope(project: Project, context: Any?): GlobalSearchScope {
             val file = selectFile(context) ?: return EMPTY_SCOPE
             if(!ProjectFileIndex.getInstance(project).isInContent(file)) return EMPTY_SCOPE //use empty scope here
             val fileInfo = file.fileInfo
@@ -67,7 +67,7 @@ sealed class ParadoxSearchScope(
         }
         
         @JvmStatic
-        fun gameScope(project: Project, context: PsiElement): GlobalSearchScope {
+        fun gameScope(project: Project, context: Any?): GlobalSearchScope {
             val file = selectFile(context) ?: return EMPTY_SCOPE
             if(!ProjectFileIndex.getInstance(project).isInContent(file)) return EMPTY_SCOPE //use empty scope here
             val fileInfo = file.fileInfo
@@ -77,7 +77,7 @@ sealed class ParadoxSearchScope(
         }
         
         @JvmStatic
-        fun modAndGameScope(project: Project, context: PsiElement): GlobalSearchScope {
+        fun modAndGameScope(project: Project, context: Any?): GlobalSearchScope {
             val file = selectFile(context) ?: return EMPTY_SCOPE
             if(!ProjectFileIndex.getInstance(project).isInContent(file)) return EMPTY_SCOPE //use empty scope here
             val fileInfo = file.fileInfo
@@ -98,7 +98,7 @@ sealed class ParadoxSearchScope(
         }
         
         @JvmStatic
-        fun modWithDependenciesScope(project: Project, context: PsiElement): GlobalSearchScope {
+        fun modWithDependenciesScope(project: Project, context: Any?): GlobalSearchScope {
             val file = selectFile(context) ?: return EMPTY_SCOPE
             if(!ProjectFileIndex.getInstance(project).isInContent(file)) return EMPTY_SCOPE //use empty scope here
             val fileInfo = file.fileInfo
@@ -112,7 +112,7 @@ sealed class ParadoxSearchScope(
         }
         
         @JvmStatic
-        fun gameWithDependenciesScope(project: Project, context: PsiElement): GlobalSearchScope {
+        fun gameWithDependenciesScope(project: Project, context: Any?): GlobalSearchScope {
             val file = selectFile(context) ?: return EMPTY_SCOPE
             if(!ProjectFileIndex.getInstance(project).isInContent(file)) return EMPTY_SCOPE //use empty scope here
             val fileInfo = file.fileInfo

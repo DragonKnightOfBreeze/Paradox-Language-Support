@@ -23,6 +23,8 @@ object ParadoxUsageType {
 	val LOCALISATION_COMMAND_SCOPE = UsageType { PlsBundle.message("usageType.localisationCommandScope") }
 	val LOCALISATION_COMMAND_FIELD = UsageType { PlsBundle.message("usageType.localisationCommandField") }
 	
+	val COMPLEX_ENUM_VALUE = UsageType { PlsBundle.message("usageType.complexEnumValue") }
+	
 	private val FROM_CONFIG_EXPRESSION_TYPES : MutableMap<String, UsageType> = ConcurrentHashMap()
 	
 	fun FROM_CONFIG_EXPRESSION(configExpression: CwtDataExpression) = FROM_CONFIG_EXPRESSION_TYPES.compute(configExpression.expressionString){ k,v ->

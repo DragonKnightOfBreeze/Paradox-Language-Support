@@ -8,11 +8,11 @@ abstract class ParadoxSearchScopeType(
     val id: String,
     val text: String,
 ) { 
-    open fun findRoot(project: Project, context: PsiElement): PsiElement? {
+    open fun findRoot(project: Project, context: Any?): PsiElement? {
         return null
     }
     
-    open fun getGlobalSearchScope(project: Project, context: PsiElement): GlobalSearchScope? {
+    open fun getGlobalSearchScope(project: Project, context: Any?): GlobalSearchScope? {
         return null
     }
 }

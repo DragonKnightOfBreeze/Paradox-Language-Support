@@ -42,30 +42,32 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?.withFilePath("common/on_actions", "txt")
             ?: return null
-        ReferencesSearch.search(definition, searchScope).processQueryAsync p@{ ref ->
-            ProgressManager.checkCanceled()
-            //should be
-            if(ref !is ParadoxScriptExpressionPsiReference) return@p true
-            val refDefinition = ref.element.findParentDefinition() ?: return@p true
-            val refDefinitionInfo = refDefinition.definitionInfo ?: return@p true
-            when {
-                refDefinitionInfo.type == "on_action" -> {
-                    //check on_action is valid and event type is valid
-                    val config = configGroup.onActions.getByTemplate(refDefinition.name, definition, configGroup)
-                        ?: return@p true //missing
-                    if(!definitionInfo.subtypes.contains(config.eventType)) return@p true //invalid
-                    val sc = config.scopeContext ?: return@p true
-                    if(scopeContext != null && sc != scopeContext) {
-                        hasConflict = true
-                        return@p false
+        ProgressManager.getInstance().runProcess({
+            ReferencesSearch.search(definition, searchScope).processQueryAsync p@{ ref ->
+                ProgressManager.checkCanceled()
+                //should be
+                if(ref !is ParadoxScriptExpressionPsiReference) return@p true
+                val refDefinition = ref.element.findParentDefinition() ?: return@p true
+                val refDefinitionInfo = refDefinition.definitionInfo ?: return@p true
+                when {
+                    refDefinitionInfo.type == "on_action" -> {
+                        //check on_action is valid and event type is valid
+                        val config = configGroup.onActions.getByTemplate(refDefinition.name, definition, configGroup)
+                            ?: return@p true //missing
+                        if(!definitionInfo.subtypes.contains(config.eventType)) return@p true //invalid
+                        val sc = config.scopeContext ?: return@p true
+                        if(scopeContext != null && sc != scopeContext) {
+                            hasConflict = true
+                            return@p false
+                        }
+                        val inferred = sc.copy()
+                        inferred.from = inferred.from?.copyAsInferred()
+                        scopeContext = inferred
                     }
-                    val inferred = sc.copy()
-                    inferred.from = inferred.from?.copyAsInferred()
-                    scopeContext = inferred
                 }
+                true
             }
-            true
-        }
+        }, EmptyProgressIndicator())
         return ParadoxScopeContextInferenceInfo(scopeContext ?: return null, hasConflict)
     }
     
