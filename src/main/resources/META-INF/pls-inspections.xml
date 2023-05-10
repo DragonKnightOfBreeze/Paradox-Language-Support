@@ -215,7 +215,7 @@
                      bundle="messages.PlsBundle" key="inspection.script.event.mismatchedEventId"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.event"
                      groupPathKey="inspection.script.event.path"
-                     implementationClass="icu.windea.pls.script.inspections.event.MsmatchedEventIdInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.event.MismatchedEventIdInspection"/>
     <!--endregion-->
     <!--region Paradox script/Smart inference-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingInlineScriptUsage"

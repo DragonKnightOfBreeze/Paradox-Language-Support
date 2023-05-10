@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 检查事件脚本文件中的事件ID与事件所属的命名空间是否匹配。
  */
-class MsmatchedEventIdInspection : LocalInspectionTool() {
+class MismatchedEventIdInspection : LocalInspectionTool() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         //仅检查事件脚本文件
         if(!isEventScriptFile(file)) return null

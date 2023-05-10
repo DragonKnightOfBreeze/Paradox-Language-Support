@@ -1,14 +1,8 @@
 <html>
 <body>
   <p>
-    Reports incorrect event id declarations in related event declarations.
-    Event id should be in correct format.
-  </p>
-  <p>
-    In detail,
-    the format of an event id should be <code>"{namespace}.{key}"</code>,
-    while <code>"{namespace}"</code> is the event namespace (ignore case),
-    and <code>"{namespace}"</code> and <code>"{key}"</code> should only contain letters, digits and underlines.
+    Reports mismatched event id declarations in related event declarations.
+    Event id should match the event namespace declared before it in event script files.
   </p>
   <!-- tooltip end -->
   <p>
@@ -22,6 +16,10 @@
   <p>
     Based on plugin's built-in
     <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>.
+  </p>
+  <p>
+    <b>NOTE:</b>
+    In real, event id and event namespace can be matched crossing event script files in game loading order.
   </p>
 </body>
 </html>
