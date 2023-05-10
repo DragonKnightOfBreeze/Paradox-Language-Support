@@ -33,7 +33,7 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
     }
     
     override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): String {
-        return pathReference.substringAfterLast('/')
+        return pathReference.substringAfterLast('/') + ".dds"
     }
     
     override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {
@@ -154,7 +154,7 @@ class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpression
     }
     
     override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): String {
-        return pathReference.substringAfterLast('/') + ".dds"
+        return pathReference.substringAfterLast('/')
     }
     
     override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {

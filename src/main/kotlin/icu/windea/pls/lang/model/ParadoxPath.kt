@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.model
 
 import com.google.common.cache.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 
 /**
@@ -94,7 +95,7 @@ object EmptyParadoxPath : ParadoxPath {
 }
 
 fun ParadoxPath.canBeScriptFilePath(): Boolean {
-	return !canBeLocalisationFilePath()
+	return length > 1 && !canBeLocalisationFilePath()
 }
 
 fun ParadoxPath.canBeLocalisationFilePath(): Boolean {

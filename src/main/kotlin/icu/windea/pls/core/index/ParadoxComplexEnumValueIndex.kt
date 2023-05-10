@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import com.intellij.util.*
 import com.intellij.util.gist.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
@@ -23,11 +24,12 @@ object ParadoxComplexEnumValueIndex {
         val marker: Boolean = true,
         val complexEnumValueList: MutableList<ParadoxComplexEnumValueInfo> = mutableListOf()
     ) {
-        val complexEnumValues by lazy {
-            buildMap<String, Map<String, ParadoxComplexEnumValueInfo>> {
+        val complexEnumValueGroup by lazy {
+            buildMap<String, Map<String, List<ParadoxComplexEnumValueInfo>>> {
                 for(info in complexEnumValueList) {
                     val map = getOrPut(info.enumName) { mutableMapOf() } as MutableMap
-                    map.putIfAbsent(info.name, info)
+                    val list = map.getOrPut(info.name) { SmartList() } as MutableList
+                    list.add(info)
                 }
             }
         }
@@ -106,8 +108,8 @@ object ParadoxComplexEnumValueIndex {
         return false
     }
     
-    fun getData(enumName: String, file: VirtualFile, project: Project): Map<String, ParadoxComplexEnumValueInfo>? {
-        return gist.getFileData(project, file).complexEnumValues[enumName]
+    fun getData(enumName: String, file: VirtualFile, project: Project): Map<String, List<ParadoxComplexEnumValueInfo>>? {
+        return gist.getFileData(project, file).complexEnumValueGroup[enumName]
     }
 }
 

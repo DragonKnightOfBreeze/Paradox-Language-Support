@@ -772,7 +772,6 @@ class CwtConfigGroupImpl(
 		var pathFile: String? = null
 		var pathStrict = false
 		var startFromRoot = false
-		var searchScope: String? = null
 		var nameConfig: CwtPropertyConfig? = null
 		for(prop in props) {
 			when(prop.key) {
@@ -781,12 +780,12 @@ class CwtConfigGroupImpl(
 				"path_file" -> pathFile = prop.stringValue
 				"path_strict" -> pathStrict = prop.booleanValue ?: false
 				"start_from_root" -> startFromRoot = prop.booleanValue ?: false
-				"search_scope_type" -> searchScope = prop.stringValue
 				"name" -> nameConfig = prop
 			}
 		}
+		val searchScopeType = propertyConfig.findOption("search_scope_type")?.stringValue
 		if(path.isEmpty() || nameConfig == null) return null //invalid
-		return CwtComplexEnumConfig(pointer, info, name, path, pathFile, pathStrict, startFromRoot, searchScope, nameConfig)
+		return CwtComplexEnumConfig(pointer, info, name, path, pathFile, pathStrict, startFromRoot, searchScopeType, nameConfig)
 	}
 	
 	private fun resolveLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLinkConfig? {

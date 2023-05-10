@@ -17,7 +17,7 @@ fun <S : ChainedParadoxSelector<T>, T> S.withSearchScope(searchScope: GlobalSear
 }
 
 fun <S : ChainedParadoxSelector<T>, T> S.withSearchScopeType(searchScopeType: String?): S {
-    if(searchScopeType != null && context is PsiElement) selectors += ParadoxWithSearchScopeTypeSelector(searchScopeType, project, context)
+    if(searchScopeType != null) selectors += ParadoxWithSearchScopeTypeSelector(searchScopeType, project, context)
     return this
 }
 

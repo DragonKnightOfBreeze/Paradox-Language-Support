@@ -6,7 +6,9 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.tool.*
@@ -26,22 +28,32 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
         val selector = queryParameters.selector
         val targetGameType = selector.gameType ?: return
         
+        val distinctInFile = selector.selectors.findIsInstance<ParadoxWithSearchScopeTypeSelector<*>>()
+            ?.searchScopeType?.distinctInFile() ?: true
+        
         FileTypeIndex.processFiles(ParadoxScriptFileType, p@{ file ->
             ProgressManager.checkCanceled()
             if(ParadoxFileManager.isLightFile(file)) return@p true
-            val valueSetValues = ParadoxValueSetValueIndex.getData(valueSetName, file, project)
+            val valueSetValueGroup = ParadoxValueSetValueIndex.getData(valueSetName, file, project)
+            if(valueSetValueGroup.isNullOrEmpty()) return@p true
             val psiFile = file.toPsiFile<PsiFile>(project) ?: return@p true
-            if(valueSetValues.isNullOrEmpty()) return@p true
+            
             if(name == null) {
-                for(info in valueSetValues.values) {
-                    if(targetGameType == info.gameType) {
-                        info.withFile(psiFile) { consumer.process(info) }
+                for(infos in valueSetValueGroup.values) {
+                    for(info in infos) {
+                        if(targetGameType == info.gameType) {
+                            info.withFile(psiFile) { consumer.process(info) }
+                        }
+                        if(distinctInFile) break
                     }
                 }
             } else {
-                val info = valueSetValues[name] ?: return@p true
-                if(targetGameType == info.gameType) {
-                    info.withFile(psiFile) { consumer.process(info) }
+                val infos = valueSetValueGroup[name] ?: return@p true
+                for(info in infos) {
+                    if(targetGameType == info.gameType) {
+                        info.withFile(psiFile) { consumer.process(info) }
+                    }
+                    if(distinctInFile) break
                 }
             }
             true

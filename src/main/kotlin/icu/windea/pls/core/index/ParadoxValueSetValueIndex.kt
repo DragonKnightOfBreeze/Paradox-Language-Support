@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import com.intellij.util.SmartList
 import com.intellij.util.gist.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
@@ -23,11 +24,12 @@ object ParadoxValueSetValueIndex {
         val marker: Boolean = true,
         val valueSetValueList: MutableList<ParadoxValueSetValueInfo> = mutableListOf()
     ) {
-        val valueSetValues by lazy {
-            buildMap<String, Map<String, ParadoxValueSetValueInfo>> {
+        val valueSetValueGroup by lazy {
+            buildMap<String, Map<String, List<ParadoxValueSetValueInfo>>> {
                 for(info in valueSetValueList) {
                     val map = getOrPut(info.valueSetName) { mutableMapOf() } as MutableMap
-                    map.putIfAbsent(info.name, info)
+                    val list = map.getOrPut(info.name) { SmartList() } as MutableList
+                    list.add(info)
                 }
             }
         }
@@ -94,8 +96,8 @@ object ParadoxValueSetValueIndex {
         data
     }
     
-    fun getData(valueSetName: String, file: VirtualFile, project: Project): Map<String, ParadoxValueSetValueInfo>? {
-        return gist.getFileData(project, file).valueSetValues[valueSetName]
+    fun getData(valueSetName: String, file: VirtualFile, project: Project): Map<String, List<ParadoxValueSetValueInfo>>? {
+        return gist.getFileData(project, file).valueSetValueGroup[valueSetName]
     }
 }
 

@@ -72,12 +72,10 @@ open class ChainedParadoxSelector<T>(
     override fun selectAll(result: T): Boolean {
         if(!matchesGameType(result)) return false
         if(selectors.isEmpty()) return super.selectAll(result)
-        var finalSelectAllResult = true
         for(selector in selectors) {
-            val selectAllResult = selector.selectAll(result)
-            finalSelectAllResult = finalSelectAllResult && selectAllResult
+            if(!selector.selectAll(result)) return false
         }
-        return finalSelectAllResult
+        return true
     }
     
     override fun comparator(): Comparator<T>? {
