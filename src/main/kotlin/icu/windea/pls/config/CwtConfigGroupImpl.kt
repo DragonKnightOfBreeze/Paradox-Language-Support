@@ -904,7 +904,7 @@ class CwtConfigGroupImpl(
 	private fun resolveOnActionConfig(propertyConfig: CwtPropertyConfig, name: String) : CwtOnActionConfig? {
 		val pointer = propertyConfig.pointer
 		val info = propertyConfig.info
-		val eventType = propertyConfig.stringValue ?: return null
+		val eventType = propertyConfig.findOption("event_type")?.stringValue ?: return null
 		return CwtOnActionConfig(pointer, info, propertyConfig, name, eventType)
 	}
 	

@@ -65,7 +65,8 @@ class CwtOnActionConfigFromCsvGenerator(
                     append(k).append(" = ").append(v).append(" ")
                 }
                 append("}\n")
-                append("\t").append(name).append(" = ").append(event).append("\n")
+                append("\t## event_type = ").append(event).append("\n")
+                append("\t").append(name).append(" = {}").append("\n")
             }
             append("}\n")
         }
