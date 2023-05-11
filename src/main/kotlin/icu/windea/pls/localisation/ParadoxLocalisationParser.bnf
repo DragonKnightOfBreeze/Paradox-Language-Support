@@ -151,7 +151,10 @@ command ::= COMMAND_START command_expression? COMMAND_END{
   extends=rich_text
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationRichText"
 }
-private command_expression ::= (command_scope DOT)* command_field {
+private command_expression ::= concept_expression | command_invocation_expression {
+  pin=1
+}
+private command_invocation_expression ::= (command_scope DOT)* command_field {
   pin=1
 }
 //noinspection BnfUnusedRule
@@ -170,3 +173,11 @@ command_field ::= COMMAND_FIELD_ID | property_reference { //can be property refe
   extends=command_identifier
   methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getExpression getConfigExpression]
 }
+private concept_expression ::= concept_name COMMA concept_text? {
+  pin=1
+}
+concept_name ::= LEFT_SINGLE_QUOTE CONCEPT_NAME_ID RIGHT_SINGLE_QUOTE {
+  pin=1
+  methods=[getIcon getName setName getReference]
+}
+private concept_text ::= rich_text *

@@ -72,4 +72,11 @@ object ParadoxLocalisationElementFactory {
             .findChild<ParadoxLocalisationCommand>()!!
             .findChild()!!
     }
+    
+    @JvmStatic
+    fun createConceptName(project: Project, name: String): ParadoxLocalisationConceptName {
+        return createPropertyValue(project, "['$name']")
+            .findChild<ParadoxLocalisationCommand>()!!
+            .findChild()!!
+    }
 }

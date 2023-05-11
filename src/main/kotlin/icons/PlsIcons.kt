@@ -31,6 +31,7 @@ object PlsIcons {
 	@JvmField val LocalisationIcon = loadIcon("/icons/localisationIcon.svg")
 	@JvmField val LocalisationCommandScope = loadIcon("/icons/localisationCommandScope.svg")
 	@JvmField val LocalisationCommandField = loadIcon("/icons/localisationCommandField.svg")
+	@JvmField val LocalisationConceptName = loadIcon("/icons/localisationConceptName.svg")
 	
 	@JvmField val Definition = loadIcon("/icons/definition.svg")
 	@JvmField val Localisation = loadIcon("/icons/localisation.svg")

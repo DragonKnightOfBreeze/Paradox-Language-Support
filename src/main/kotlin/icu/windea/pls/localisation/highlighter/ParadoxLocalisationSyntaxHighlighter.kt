@@ -27,6 +27,7 @@ class ParadoxLocalisationSyntaxHighlighter(
         private val ICON_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.ICON_KEY)
         private val COMMAND_SCOPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY)
         private val COMMAND_FIELD_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY)
+        private val CONCEPT_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.CONCEPT_KEY)
         private val COLOR_ID_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COLOR_KEY)
         private val VALID_ESCAPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.VALID_ESCAPE_KEY)
         private val INVALID_ESCAPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.INVALID_ESCAPE_KEY)
@@ -39,18 +40,19 @@ class ParadoxLocalisationSyntaxHighlighter(
             COLON, DOT -> OPERATOR_KEYS
             PROPERTY_REFERENCE_START, PROPERTY_REFERENCE_END, ICON_START, ICON_END -> MARKER_KEYS
             COMMAND_START, COMMAND_END, COLORFUL_TEXT_START, COLORFUL_TEXT_END -> MARKER_KEYS
-            PIPE -> MARKER_KEYS
+            PIPE, COMMA -> MARKER_KEYS
             COMMENT -> COMMENT_KEYS
             AT, SCRIPTED_VARIABLE_REFERENCE_TOKEN -> SCRIPTED_VARIABLE_KEYS
             LOCALE_ID -> LOCALE_KEYS
             PROPERTY_KEY_TOKEN -> PROPERTY_KEY_KEYS
             PROPERTY_REFERENCE_ID -> PROPERTY_REFERENCE_KEYS
             PROPERTY_REFERENCE_PARAMETER_TOKEN -> PROPERTY_REFERENCE_PARAMETER_KEYS
-            STRING_TOKEN, LEFT_QUOTE, RIGHT_QUOTE -> STRING_KEYS
+            STRING_TOKEN, LEFT_QUOTE, RIGHT_QUOTE, LEFT_QUOTE, RIGHT_SINGLE_QUOTE -> STRING_KEYS
             PROPERTY_NUMBER, ICON_FRAME -> NUMBER_KEYS
+            ICON_ID -> ICON_KEYS
             COMMAND_SCOPE_ID -> COMMAND_SCOPE_KEYS
             COMMAND_FIELD_ID -> COMMAND_FIELD_KEYS
-            ICON_ID -> ICON_KEYS
+            CONCEPT_NAME_ID -> CONCEPT_KEYS
             COLOR_ID -> COLOR_ID_KEYS
             VALID_ESCAPE_TOKEN, DOUBLE_LEFT_BRACKET -> VALID_ESCAPE_KEYS
             INVALID_ESCAPE_TOKEN -> INVALID_ESCAPE_KEYS

@@ -32,10 +32,12 @@ val ParadoxLocalisationIcon.iconFrameReference: ParadoxLocalisationPropertyRefer
 		return null
 	}
 
-val ParadoxLocalisationColorfulText.colorId: PsiElement? get() = findChild(COLOR_ID)
+val ParadoxLocalisationColorfulText.idElement: PsiElement? get() = findChild(COLOR_ID)
 
-val ParadoxLocalisationCommandScope.commandScopeId: PsiElement get() = findChild(COMMAND_SCOPE_ID)!!
+val ParadoxLocalisationCommandScope.idElement: PsiElement get() = findChild(COMMAND_SCOPE_ID)!!
 
-val ParadoxLocalisationCommandField.commandFieldId: PsiElement? get() = findChild(COMMAND_FIELD_ID)
+val ParadoxLocalisationCommandField.idElement: PsiElement? get() = findChild(COMMAND_FIELD_ID)
+
+val ParadoxLocalisationConceptName.idElement: PsiElement? get() = findChild(CONCEPT_NAME_ID)
 
 val ParadoxLocalisationScriptedVariableReference.idElement: PsiElement? get() = findChild(SCRIPTED_VARIABLE_REFERENCE_TOKEN)

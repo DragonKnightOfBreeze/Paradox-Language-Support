@@ -8,20 +8,23 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.localisation.references.ParadoxLocalisationConceptNamePsiReference;
+import javax.swing.Icon;
 
-public class ParadoxLocalisationCommandImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationCommand {
+public class ParadoxLocalisationConceptNameImpl extends ASTWrapperPsiElement implements ParadoxLocalisationConceptName {
 
-  public ParadoxLocalisationCommandImpl(@NotNull ASTNode node) {
+  public ParadoxLocalisationConceptNameImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
-    visitor.visitCommand(this);
+    visitor.visitConceptName(this);
   }
 
   @Override
@@ -32,20 +35,26 @@ public class ParadoxLocalisationCommandImpl extends ParadoxLocalisationRichTextI
 
   @Override
   @NotNull
-  public List<ParadoxLocalisationCommandIdentifier> getCommandIdentifierList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationCommandIdentifier.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxLocalisationConceptName getConceptName() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationConceptName.class);
+  public Icon getIcon(@IconFlags int flags) {
+    return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
   @NotNull
-  public List<ParadoxLocalisationRichText> getRichTextList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationRichText.class);
+  public String getName() {
+    return ParadoxLocalisationPsiImplUtil.getName(this);
+  }
+
+  @Override
+  @NotNull
+  public ParadoxLocalisationConceptName setName(@NotNull String name) {
+    return ParadoxLocalisationPsiImplUtil.setName(this, name);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxLocalisationConceptNamePsiReference getReference() {
+    return ParadoxLocalisationPsiImplUtil.getReference(this);
   }
 
   @Override

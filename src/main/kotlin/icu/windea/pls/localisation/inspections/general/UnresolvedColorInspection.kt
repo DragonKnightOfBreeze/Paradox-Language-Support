@@ -2,7 +2,6 @@ package icu.windea.pls.localisation.inspections.general
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
@@ -19,7 +18,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
             }
             
             private fun visitColorfulText(element: ParadoxLocalisationColorfulText) {
-                val location = element.colorId ?: return
+                val location = element.idElement ?: return
                 val reference = element.reference
                 if(reference == null || reference.resolve() != null) return
                 val name = element.name ?: return

@@ -53,7 +53,7 @@ class ParadoxLocalisationAnnotator : Annotator {
 	
 	private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
 		//颜色高亮
-		val location = element.colorId ?: return
+		val location = element.idElement ?: return
 		val attributesKey = element.reference?.getAttributesKey() ?: return
 		holder.newSilentAnnotation(INFORMATION).range(location).textAttributes(attributesKey).create()
 	}

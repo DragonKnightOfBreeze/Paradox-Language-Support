@@ -13,6 +13,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType COMMAND_FIELD = ParadoxLocalisationElementTypeFactory.getElementType("COMMAND_FIELD");
   IElementType COMMAND_IDENTIFIER = ParadoxLocalisationElementTypeFactory.getElementType("COMMAND_IDENTIFIER");
   IElementType COMMAND_SCOPE = ParadoxLocalisationElementTypeFactory.getElementType("COMMAND_SCOPE");
+  IElementType CONCEPT_NAME = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_NAME");
   IElementType ESCAPE = ParadoxLocalisationElementTypeFactory.getElementType("ESCAPE");
   IElementType ICON = ParadoxLocalisationElementTypeFactory.getElementType("ICON");
   IElementType LOCALE = ParadoxLocalisationElementTypeFactory.getElementType("LOCALE");
@@ -30,11 +31,13 @@ public interface ParadoxLocalisationElementTypes {
   IElementType COLORFUL_TEXT_END = ParadoxLocalisationElementTypeFactory.getTokenType("COLORFUL_TEXT_END");
   IElementType COLORFUL_TEXT_START = ParadoxLocalisationElementTypeFactory.getTokenType("COLORFUL_TEXT_START");
   IElementType COLOR_ID = ParadoxLocalisationElementTypeFactory.getTokenType("COLOR_ID");
+  IElementType COMMA = ParadoxLocalisationElementTypeFactory.getTokenType("COMMA");
   IElementType COMMAND_END = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_END");
   IElementType COMMAND_FIELD_ID = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_FIELD_ID");
   IElementType COMMAND_SCOPE_ID = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_SCOPE_ID");
   IElementType COMMAND_START = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_START");
   IElementType COMMENT = ParadoxLocalisationElementTypeFactory.getTokenType("COMMENT");
+  IElementType CONCEPT_NAME_ID = ParadoxLocalisationElementTypeFactory.getTokenType("CONCEPT_NAME_ID");
   IElementType DOT = ParadoxLocalisationElementTypeFactory.getTokenType("DOT");
   IElementType DOUBLE_LEFT_BRACKET = ParadoxLocalisationElementTypeFactory.getTokenType("DOUBLE_LEFT_BRACKET");
   IElementType ICON_END = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_END");
@@ -43,6 +46,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType ICON_START = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_START");
   IElementType INVALID_ESCAPE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("INVALID_ESCAPE_TOKEN");
   IElementType LEFT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("LEFT_QUOTE");
+  IElementType LEFT_SINGLE_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("LEFT_SINGLE_QUOTE");
   IElementType LOCALE_ID = ParadoxLocalisationElementTypeFactory.getTokenType("LOCALE_ID");
   IElementType PIPE = ParadoxLocalisationElementTypeFactory.getTokenType("|");
   IElementType PROPERTY_KEY_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_KEY_TOKEN");
@@ -52,6 +56,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType PROPERTY_REFERENCE_PARAMETER_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_PARAMETER_TOKEN");
   IElementType PROPERTY_REFERENCE_START = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_START");
   IElementType RIGHT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_QUOTE");
+  IElementType RIGHT_SINGLE_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_SINGLE_QUOTE");
   IElementType SCRIPTED_VARIABLE_REFERENCE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_TOKEN");
   IElementType STRING_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("STRING_TOKEN");
   IElementType VALID_ESCAPE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("VALID_ESCAPE_TOKEN");
@@ -73,6 +78,9 @@ public interface ParadoxLocalisationElementTypes {
       }
       else if (type == COMMAND_SCOPE) {
         return new ParadoxLocalisationCommandScopeImpl(node);
+      }
+      else if (type == CONCEPT_NAME) {
+        return new ParadoxLocalisationConceptNameImpl(node);
       }
       else if (type == ESCAPE) {
         return new ParadoxLocalisationEscapeImpl(node);
