@@ -62,7 +62,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
                         }
                     }
                     is CwtValueConfig -> {
-                        if(c.stringValue == "<event>") {
+                        if(c1.stringValue == "<event>") {
                             cc = c1.copy(pointer = emptyPointer(), value = expression, stringValue = expression)
                             i = index
                             break

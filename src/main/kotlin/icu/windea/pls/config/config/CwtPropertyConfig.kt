@@ -32,7 +32,7 @@ data class CwtPropertyConfig(
 		val resolvedPointer = resolved().pointer
 		val valuePointer = resolvedPointer.containingFile
 			?.let { f -> resolvedPointer.element?.propertyValue?.createPointer(f) } 
-			?: return@lazy null
+			?: emptyPointer() //default use empty pointer, rather than null
 		CwtValueConfig(
 			valuePointer, info, value, booleanValue, intValue, floatValue, stringValue,
 			configs, documentation, options, optionValues, this
