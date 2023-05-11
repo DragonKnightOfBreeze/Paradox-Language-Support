@@ -17,12 +17,12 @@ import icu.windea.pls.script.psi.impl.*
 import icu.windea.pls.tool.*
 
 object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
-    private const val externalId = "paradoxScript.file"
-    private const val stubVersion = 17 //0.9.15
+    private const val ID = "paradoxScript.file"
+    private const val VERSION = 20 //0.10.0
     
-    override fun getExternalId() = externalId
+    override fun getExternalId() = ID
     
-    override fun getStubVersion() = stubVersion
+    override fun getStubVersion() = VERSION
     
     override fun getBuilder(): LightStubBuilder {
         return Builder()

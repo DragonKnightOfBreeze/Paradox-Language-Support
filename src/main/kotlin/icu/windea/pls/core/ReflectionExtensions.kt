@@ -2,13 +2,19 @@
 
 package icu.windea.pls.core
 
+import java.lang.reflect.*
 import kotlin.reflect.*
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.*
 
+@Suppress("UNCHECKED_CAST")
+fun <T : Class<*>> Type.genericType(index: Int): T? {
+    return castOrNull<ParameterizedType>()?.actualTypeArguments?.getOrNull(index) as? T
+}
+
 inline fun <reified T : Any> T.member(memberName: String): Any? {
     val kClass = T::class
-    val property = kClass.declaredMemberProperties.find { p -> p.name == memberName } 
+    val property = kClass.declaredMemberProperties.find { p -> p.name == memberName }
     if(property != null) {
         property.isAccessible = true
         return property.get(this)

@@ -103,7 +103,7 @@ class CwtImageLocationExpression(
             val frameToUse = when {
                 frame != 0 -> frame
                 extraPropertyNames.isNullOrEmpty() -> 0
-                else -> extraPropertyNames.mapAndFirst { propertyName ->
+                else -> extraPropertyNames.firstNotNullOfOrNull { propertyName ->
                     definition.findProperty(propertyName, conditional = true, inline = true)?.propertyValue?.intValue() ?: 0
                 } ?: 0
             }
@@ -167,7 +167,7 @@ class CwtImageLocationExpression(
             val frameToUse = when {
                 frame != 0 -> frame
                 extraPropertyNames.isNullOrEmpty() -> 0
-                else -> extraPropertyNames.mapAndFirst { propertyName ->
+                else -> extraPropertyNames.firstNotNullOfOrNull { propertyName ->
                     definition.findProperty(propertyName, inline = true)?.propertyValue?.intValue() ?: 0
                 } ?: 0
             }

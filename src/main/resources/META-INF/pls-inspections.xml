@@ -297,6 +297,12 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.localisation.general"
                      groupPathKey="inspection.localisation.general.path"
                      implementationClass="icu.windea.pls.localisation.inspections.general.UnresolvedCommandFieldInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedConcept"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.localisation.general.unresolvedConcept"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.general"
+                     groupPathKey="inspection.localisation.general.path"
+                     implementationClass="icu.windea.pls.localisation.inspections.general.UnresolvedConceptInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedScriptedVariable"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="inspection.localisation.general.unresolvedScriptedVariable"
@@ -308,7 +314,7 @@
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedRecursion"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.localisation.bug.unsupportedRecursion"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.bug"
                      groupPathKey="inspection.localisation.bug.path"
                      implementationClass="icu.windea.pls.localisation.inspections.bug.UnsupportedRecursionInspection"/>
     <!--endregion-->

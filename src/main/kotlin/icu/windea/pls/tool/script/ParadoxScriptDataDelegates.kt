@@ -10,17 +10,22 @@ import java.awt.*
 import kotlin.reflect.*
 import kotlin.reflect.full.*
 
-operator fun <T> ParadoxScriptData.get(path: String): ParadoxScriptDataWrapper<T?> {
-    return ParadoxScriptDataWrapper(this.getData(path), null)
+class ParadoxScriptDataDelegateProvider<T>(
+    val delegate: ParadoxScriptData?,
+    val defaultValue: T
+)
+
+operator fun <T> ParadoxScriptData.get(path: String): ParadoxScriptDataDelegateProvider<T?> {
+    return ParadoxScriptDataDelegateProvider(this.getData(path), null)
 }
 
-operator fun <T> ParadoxScriptData.get(path: String, defaultValue: T): ParadoxScriptDataWrapper<T> {
-    return ParadoxScriptDataWrapper(this.getData(path), defaultValue)
+operator fun <T> ParadoxScriptData.get(path: String, defaultValue: T): ParadoxScriptDataDelegateProvider<T> {
+    return ParadoxScriptDataDelegateProvider(this.getData(path), defaultValue)
 }
 
 val ParadoxScriptData.Keys.propertyValuesKey by lazy { Key.create<MutableMap<KProperty<*>, Any?>>("paradox.data.property.values") }
 
-inline operator fun <reified T> ParadoxScriptDataWrapper<T>.getValue(thisRef: Any, property: KProperty<*>): T {
+inline operator fun <reified T> ParadoxScriptDataDelegateProvider<T>.getValue(thisRef: Any, property: KProperty<*>): T {
     if(delegate == null) return defaultValue
     val map = delegate.getOrPutUserData(ParadoxScriptData.Keys.propertyValuesKey) { mutableMapOf() }
     val value = map.getOrPut(property) { getValueOfType(delegate.value, typeOf<T>()) } as? T?

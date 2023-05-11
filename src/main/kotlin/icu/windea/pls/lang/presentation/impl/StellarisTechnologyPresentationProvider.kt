@@ -20,7 +20,7 @@ import javax.swing.*
  */
 @Suppress("UNUSED_PARAMETER")
 @WithGameType(ParadoxGameType.Stellaris)
-class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationProvider {
+class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationProvider() {
     val backgroundColor = Gray._34
     
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {

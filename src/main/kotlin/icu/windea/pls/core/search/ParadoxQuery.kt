@@ -35,10 +35,6 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 		}
 	}
 	
-	fun find(exact: Boolean): T? {
-		return if(exact) find() else findFirst()
-	}
-	
 	fun find(): T? {
 		return findFirst() //TODO
 	}

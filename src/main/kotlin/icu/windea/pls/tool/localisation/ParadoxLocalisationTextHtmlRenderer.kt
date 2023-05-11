@@ -1,6 +1,7 @@
 package icu.windea.pls.tool.localisation
 
 import com.intellij.codeInsight.documentation.*
+import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -10,6 +11,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
@@ -167,7 +169,11 @@ object ParadoxLocalisationTextHtmlRenderer {
                     return
                 }
                 val conceptName = conceptElement.definitionInfo?.name.orAnonymous()
+                val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
+                val conceptColor = EditorColorsManager.getInstance().globalScheme.getAttributes(conceptAttributesKey).foregroundColor
+                if(conceptColor != null) context.builder.append("<span style=\"color: #").append(conceptColor.toHex()).append("\">")
                 context.builder.appendDefinitionLink(context.gameType.orDefault(), conceptName, "game_concept", context.element, label = conceptText)
+                if(conceptColor != null) context.builder.append("</span>")
             } else {
                 context.builder.append(conceptNameElement.name)
             }

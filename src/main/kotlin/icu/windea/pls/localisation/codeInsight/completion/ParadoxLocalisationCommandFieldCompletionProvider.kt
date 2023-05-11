@@ -46,4 +46,3 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
         ParadoxConfigHandler.completeVariable(context, result)
     }
 }
-

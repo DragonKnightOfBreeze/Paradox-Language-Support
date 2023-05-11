@@ -1,5 +1,6 @@
 package icu.windea.pls
 
+import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
@@ -50,6 +51,8 @@ object PlsConstants {
     //NOTE 目前认为cwt文件中定义的definition的elementPath的maxDepth是4（最多跳过3个rootKey）
     const val maxDefinitionDepth = 4
     const val keysTruncateLimit = 5
+    
+    val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
 }
 
 object PlsPaths {
@@ -110,6 +113,7 @@ object PlsKeys {
     val cachedColorKey = Key.create<CachedValue<Color>>("paradox.cached.color")
     val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfoKey")
     val cachedParametersKey = Key.create<CachedValue<ParadoxParameterContextInfo>>("paradox.cached.parameterContextInfo")
+    val cachedGameConceptAliasKey = Key.create<CachedValue<Set<String>>>("paradox.cached.gameConcept.alias")
     
     //用于将CWT规则临时写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）
     val cwtConfigKey = Key.create<CwtConfig<*>>("paradox.cwtConfig")

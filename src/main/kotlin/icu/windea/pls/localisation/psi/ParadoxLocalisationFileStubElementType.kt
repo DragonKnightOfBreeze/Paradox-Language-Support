@@ -11,12 +11,12 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.tool.*
 
 object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxLocalisationLanguage) {
-    private const val externalId = "paradoxLocalisation.file"
-    private const val stubVersion = 17 //0.9.15
+    private const val ID = "paradoxLocalisation.file"
+    private const val VERSION = 20 //0.10.0
     
-    override fun getExternalId() = externalId
+    override fun getExternalId() = ID
     
-    override fun getStubVersion() = stubVersion
+    override fun getStubVersion() = VERSION
     
     override fun getBuilder(): LightStubBuilder {
         return Builder()

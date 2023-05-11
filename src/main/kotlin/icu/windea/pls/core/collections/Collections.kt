@@ -78,17 +78,6 @@ inline fun <T, R : Any, C : MutableCollection<in R>> Iterable<T>.mapNotNullTo(de
 	return destination
 }
 
-inline fun <T, R : Any> List<T>.mapAndFirst(predicate: (R?) -> Boolean = { it != null }, transform: (T) -> R?): R? {
-	if(this.isEmpty()) return null
-	var first: R? = null
-	for(element in this) {
-		val result = transform(element)
-		if(predicate(result)) return result
-		first = result
-	}
-	return first
-}
-
 inline fun <T, reified R> Array<out T>.mapToArray(transform: (T) -> R): Array<R> {
 	return Array(size) { transform(this[it]) }
 }

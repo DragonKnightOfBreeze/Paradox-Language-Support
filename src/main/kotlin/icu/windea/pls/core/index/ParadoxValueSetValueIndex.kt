@@ -5,7 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.util.SmartList
+import com.intellij.util.*
 import com.intellij.util.gist.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
@@ -75,10 +75,10 @@ object ParadoxValueSetValueIndex {
         private fun Byte.toGameType() = ParadoxGameType.values[this.toInt()]
     }
     
-    private const val id = "paradox.valueSetValue.index"
-    private const val version = 5 //0.9.15
+    private const val ID = "paradox.valueSetValue.index"
+    private const val VERSION = 20 //0.10.0
     
-    private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(id, version, valueExternalizer) builder@{ project, file ->
+    private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(ID, VERSION, valueExternalizer) builder@{ project, file ->
         ProgressManager.checkCanceled()
         if(file.fileType != ParadoxScriptFileType) return@builder EmptyData
         if(file.fileInfo == null) return@builder EmptyData

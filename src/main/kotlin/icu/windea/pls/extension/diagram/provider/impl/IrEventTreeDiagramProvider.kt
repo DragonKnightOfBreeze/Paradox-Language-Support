@@ -4,7 +4,6 @@ import com.intellij.diagram.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.*
@@ -14,8 +13,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.provider.*
 import icu.windea.pls.extension.diagram.settings.impl.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.data.*
-import icu.windea.pls.lang.data.impl.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
@@ -25,8 +22,6 @@ class IrEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameTy
         const val ID = "Ir.EventTree"
         
         val ITEM_PROPERTY_KEYS = arrayOf("picture")
-        
-        val nodeDataKey = Key.create<IrEventDataProvider.Data>("ir.eventTree.node.data")
     }
     
     override fun getID() = ID
@@ -53,7 +48,6 @@ class IrEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameTy
                 ProgressManager.checkCanceled()
                 if(!showNode(event)) continue
                 val node = Node(event, provider)
-                node.putUserData(nodeDataKey, event.getData())
                 nodeMap.put(event, node)
                 val name = event.definitionInfo?.name.orAnonymous()
                 eventMap.put(name, event)

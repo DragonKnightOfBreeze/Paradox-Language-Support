@@ -46,6 +46,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 %{	
     private int depth = 0;
+    private boolean inCommand = false;
     private CommandLocation commandLocation = CommandLocation.NORMAL;
     private ReferenceLocation referenceLocation = ReferenceLocation.NORMAL;
 	
@@ -141,13 +142,12 @@ SCRIPTED_VARIABLE_ID=[a-zA-Z_][a-zA-Z0-9_]*
 ICON_ID=[a-zA-Z0-9\-_\\/]+
 ICON_FRAME=[1-9][0-9]* // positive integer
 COLOR_ID=[a-zA-Z0-9]
-STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
+STRING_TOKEN=[^\"$£§\[\]\r\n\\]+ //双引号实际上不需要转义
 
 CHECK_COMMAND_START=\[[^\r\n\]]*.?
 COMMAND_SCOPE_ID_WITH_SUFFIX=[^\r\n.\[\]]+\.
 COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
 CONCEPT_NAME=[a-zA-Z0-9_]+
-STRING_TOKEN_IN_CONCEPT_TEXT=[^\"$£§\[\]\r\n\\]+ //额外排除"]"
 
 %%
 
@@ -206,10 +206,9 @@ STRING_TOKEN_IN_CONCEPT_TEXT=[^\"$£§\[\]\r\n\\]+ //额外排除"]"
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);}
   "£" {yypushback(yylength()); yybegin(CHECKING_ICON_START);}
-  "[" { increaseDepth(); commandLocation=CommandLocation.NORMAL; yybegin(WAITING_COMMAND); return COMMAND_START; }
+  "[" { inCommand=true;increaseDepth(); commandLocation=CommandLocation.NORMAL; yybegin(WAITING_COMMAND); return COMMAND_START; }
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;} //允许多余的重置颜色标记
-  {STRING_TOKEN} {return STRING_TOKEN;}
 }
 
 //reference rules
@@ -234,7 +233,7 @@ STRING_TOKEN_IN_CONCEPT_TEXT=[^\"$£§\[\]\r\n\\]+ //额外排除"]"
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE;}
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
-  "[" {increaseDepth();commandLocation=CommandLocation.REFERENCE; yybegin(WAITING_COMMAND); return COMMAND_START; }
+  "[" { inCommand=true;increaseDepth();commandLocation=CommandLocation.REFERENCE; yybegin(WAITING_COMMAND); return COMMAND_START; }
   "|" {yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE;}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
@@ -254,7 +253,7 @@ STRING_TOKEN_IN_CONCEPT_TEXT=[^\"$£§\[\]\r\n\\]+ //额外排除"]"
    {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
    \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
-  "[" {increaseDepth();commandLocation=CommandLocation.REFERENCE; yybegin(WAITING_COMMAND);return COMMAND_START; }
+  "[" {inCommand=true;increaseDepth();commandLocation=CommandLocation.REFERENCE; yybegin(WAITING_COMMAND);return COMMAND_START; }
   "|" {yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE;}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
@@ -285,7 +284,7 @@ STRING_TOKEN_IN_CONCEPT_TEXT=[^\"$£§\[\]\r\n\\]+ //额外排除"]"
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "£" {yybegin(nextStateForText()); return ICON_END;}
   "$" {referenceLocation=ReferenceLocation.ICON; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);}
-  "[" {increaseDepth(); commandLocation=CommandLocation.ICON; yybegin(WAITING_COMMAND); return COMMAND_START;}
+  "[" {inCommand=true;increaseDepth(); commandLocation=CommandLocation.ICON; yybegin(WAITING_COMMAND); return COMMAND_START;}
   "|" {yybegin(WAITING_ICON_FRAME); return PIPE;}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
@@ -363,10 +362,9 @@ STRING_TOKEN_IN_CONCEPT_TEXT=[^\"$£§\[\]\r\n\\]+ //额外排除"]"
   "]" {decreaseDepth();yybegin(nextStateForCommand()); return COMMAND_END;}
   "$" {referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);}
   "£" {yypushback(yylength()); yybegin(CHECKING_ICON_START);}
-  "[" {increaseDepth();commandLocation=CommandLocation.NORMAL; yybegin(WAITING_COMMAND);return COMMAND_START; }
+  "[" {inCommand=true;increaseDepth();commandLocation=CommandLocation.NORMAL; yybegin(WAITING_COMMAND);return COMMAND_START; }
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
-  {STRING_TOKEN_IN_CONCEPT_TEXT} {return STRING_TOKEN;}
 }
 
 //colorful text rules
@@ -402,10 +400,9 @@ STRING_TOKEN_IN_CONCEPT_TEXT=[^\"$£§\[\]\r\n\\]+ //额外排除"]"
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);}
   "£" {yypushback(yylength()); yybegin(CHECKING_ICON_START);}
-  "[" {increaseDepth();commandLocation=CommandLocation.NORMAL; yybegin(WAITING_COMMAND);return COMMAND_START; }
+  "[" {inCommand=true;increaseDepth();commandLocation=CommandLocation.NORMAL; yybegin(WAITING_COMMAND);return COMMAND_START; }
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
-  {STRING_TOKEN} {return STRING_TOKEN;}
 }
 
 <WAITING_PROPERTY_END>{
@@ -432,8 +429,20 @@ STRING_TOKEN_IN_CONCEPT_TEXT=[^\"$£§\[\]\r\n\\]+ //额外排除"]"
     }
 }
 
-<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT, WAITING_CONCEPT_TEXT> {VALID_ESCAPE_TOKEN} {return VALID_ESCAPE_TOKEN;}
-<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT, WAITING_CONCEPT_TEXT> {INVALID_ESCAPE_TOKEN} {return INVALID_ESCAPE_TOKEN;}
-<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT, WAITING_CONCEPT_TEXT> {DOUBLE_LEFT_BRACKET} {return DOUBLE_LEFT_BRACKET;}
+<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT, WAITING_CONCEPT_TEXT> {
+  "]" {
+	  if(inCommand) {
+		  inCommand = false;
+          decreaseDepth();
+          yybegin(nextStateForCommand());
+          return COMMAND_END;
+	  }
+	  return STRING_TOKEN;
+  }
+  {VALID_ESCAPE_TOKEN} {return VALID_ESCAPE_TOKEN;}
+  {INVALID_ESCAPE_TOKEN} {return INVALID_ESCAPE_TOKEN;}
+  {DOUBLE_LEFT_BRACKET} {return DOUBLE_LEFT_BRACKET;}
+  {STRING_TOKEN} {return STRING_TOKEN;}
+}
 
 [^] {return BAD_CHARACTER; }

@@ -40,6 +40,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 				row {
 					checkBox(PlsBundle.message("script.hints.scopeContext.settings.showOnlyIfChanged"))
 						.bindSelected(settings::showOnlyIfScopeIsChanged)
+						.actionListener { _, component -> settings.showOnlyIfScopeIsChanged = component.isSelected }
 				}
 			}
 		}

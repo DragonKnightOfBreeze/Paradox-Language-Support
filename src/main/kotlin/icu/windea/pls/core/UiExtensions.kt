@@ -5,6 +5,7 @@ package icu.windea.pls.core
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.keymap.*
 import com.intellij.openapi.observable.properties.*
+import com.intellij.openapi.observable.util.*
 import com.intellij.openapi.ui.*
 import com.intellij.openapi.util.*
 import com.intellij.refactoring.*
@@ -151,4 +152,24 @@ fun <T : Cell<JBCheckBox>> T.threeStateCheckBox(threeStateCheckBox: Cell<ThreeSt
     }
     checkBoxList.add(this.component)
     return this
+}
+
+fun Cell<JBTextField>.bindWhenTextChanged(property: KMutableProperty0<String>): Cell<JBTextField> {
+    return applyToComponent {
+        whenTextChanged {
+            val document = it.document
+            val text = document.getText(0, document.length)
+            if(text != property.get()) property.set(text)
+        }
+    }
+}
+
+fun Cell<JBTextField>.bindIntWhenTextChanged(property: KMutableProperty0<Int>): Cell<JBTextField> {
+    return applyToComponent {
+        whenTextChanged {
+            val document = it.document
+            val text = document.getText(0, document.length).toIntOrNull() ?: 0
+            if(text != property.get()) property.set(text)
+        }
+    }
 }

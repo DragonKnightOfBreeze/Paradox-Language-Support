@@ -41,6 +41,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
 						.applyToComponent { toolTipText = PlsBundle.message("localisation.hints.settings.iconHeightLimit.tooltip") }
 					textField()
 						.bindIntText(settings::iconHeightLimit)
+						.bindIntWhenTextChanged(settings::iconHeightLimit)
 						.errorOnApply(PlsBundle.message("script.hints.error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
 				}
 			}

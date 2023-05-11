@@ -24,6 +24,8 @@ import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.lang.data.*
+import icu.windea.pls.lang.data.impl.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
@@ -1134,7 +1136,6 @@ object ParadoxConfigHandler {
         ProgressManager.checkCanceled()
         val config = config
         val configs = configs
-        val scopeContext = scopeContext
         
         val linkConfigs = when {
             prefix == null -> configGroup.linksAsValueWithoutPrefix.values
@@ -1353,6 +1354,35 @@ object ParadoxConfigHandler {
                 .withTailText(tailText, true)
                 .withCaseSensitivity(false) //忽略大小写
             result.addElement(lookupElement)
+            true
+        }
+    }
+    
+    fun completeConcept(context: ProcessingContext, result: CompletionResultSet) = with(context) {
+        ProgressManager.checkCanceled()
+        val file = originalFile
+        val project = file.project
+        val conceptSelector = definitionSelector(project, file).contextSensitive().distinctByName()
+        val keysToDistinct = mutableSetOf<String>()
+        ParadoxDefinitionSearch.search("game_concept", conceptSelector).processQueryAsync p@{ element ->
+            val tailText = " from concepts"
+            val icon = PlsIcons.LocalisationConceptName
+            run action@{
+                val key = element.name
+                if(!keysToDistinct.add(key)) return@action
+                val lookupElement = LookupElementBuilder.create(element, key)
+                    .withIcon(icon)
+                    .withTailText(tailText, true)
+                result.addElement(lookupElement)
+            }
+            element.getData<StellarisGameConceptDataProvider.Data>()?.alias?.forEach action@{ alias ->
+                val key = alias
+                if(!keysToDistinct.add(key)) return@action
+                val lookupElement = LookupElementBuilder.create(element, key)
+                    .withIcon(icon)
+                    .withTailText(tailText, true)
+                result.addElement(lookupElement)
+            }
             true
         }
     }
@@ -1592,7 +1622,6 @@ object ParadoxConfigHandler {
         if(file !is ParadoxScriptFile) return null
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsMapKey) {
             val value = ConcurrentHashMap<String, List<CwtConfig<*>>>()
-            //TODO 需要确定最合适的依赖项
             //invalidated on file modification or ScriptFileTracker
             val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFile
             CachedValueProvider.Result.create(value, file, tracker)

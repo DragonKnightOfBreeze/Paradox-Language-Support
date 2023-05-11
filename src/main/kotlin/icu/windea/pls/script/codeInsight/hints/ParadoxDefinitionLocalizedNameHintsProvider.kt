@@ -41,6 +41,7 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<S
 						.applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.textLengthLimit.tooltip") }
 					textField()
 						.bindIntText(settings::textLengthLimit)
+						.bindIntWhenTextChanged(settings::textLengthLimit)
 						.errorOnApply(PlsBundle.message("script.hints.error.shouldBePositiveOrZero")) { (it.text.toIntOrNull() ?: 0) < 0 }
 				}
 				row {
@@ -48,6 +49,7 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<S
 						.applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.iconHeightLimit.tooltip") }
 					textField()
 						.bindIntText(settings::iconHeightLimit)
+						.bindIntWhenTextChanged(settings::iconHeightLimit)
 						.errorOnApply(PlsBundle.message("script.hints.error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
 				}
 			}

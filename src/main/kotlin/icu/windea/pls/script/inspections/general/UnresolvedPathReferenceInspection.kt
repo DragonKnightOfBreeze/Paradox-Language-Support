@@ -1,9 +1,7 @@
 package icu.windea.pls.script.inspections.general
 
 import com.intellij.codeInspection.*
-import com.intellij.openapi.observable.util.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
@@ -64,18 +62,12 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
         return panel {
             row {
                 label(PlsBundle.message("inspection.script.general.unresolvedPathReference.option.ignoredFileNames"))
-                    .applyToComponent { toolTipText = PlsBundle.message("inspection.localisation.general.multipleLocales.option.ignoredFileNames.tooltip") }
+                    .applyToComponent { toolTipText = PlsBundle.message("inspection.script.general.unresolvedPathReference.option.ignoredFileNames") }
             }
             row {
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFileNames)
-                    .applyToComponent {
-                        whenTextChanged {
-                            val document = it.document
-                            val text = document.getText(0, document.length)
-                            if(text != ignoredFileNames) ignoredFileNames = text
-                        }
-                    }
+                    .bindWhenTextChanged(::ignoredFileNames)
                     .comment(PlsBundle.message("inspection.script.general.unresolvedPathReference.option.ignoredFileNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()

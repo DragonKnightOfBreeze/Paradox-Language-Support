@@ -25,8 +25,6 @@ class Eu4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
         const val ID = "Eu4.EventTree"
         
         val ITEM_PROPERTY_KEYS = arrayOf("picture")
-        
-        val nodeDataKey = Key.create<Eu4EventDataProvider.Data>("eu4.eventTree.node.data")
     }
     
     override fun getID() = ID
@@ -53,7 +51,6 @@ class Eu4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
                 ProgressManager.checkCanceled()
                 if(!showNode(event)) continue
                 val node = Node(event, provider)
-                node.putUserData(nodeDataKey, event.getData())
                 nodeMap.put(event, node)
                 val name = event.definitionInfo?.name.orAnonymous()
                 eventMap.put(name, event)

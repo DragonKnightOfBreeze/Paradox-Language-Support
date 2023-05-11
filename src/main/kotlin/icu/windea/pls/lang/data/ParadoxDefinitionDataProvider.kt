@@ -18,11 +18,11 @@ import icu.windea.pls.tool.script.*
  *
  * @see ParadoxDefinitionData
  */
-interface ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
-    val dataType: Class<T>
-    val cachedDataKey: Key<CachedValue<T>>
+abstract class ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
+    open val dataType: Class<T> by lazy { javaClass.genericSuperclass.genericType(0)!! }
+    open val cachedDataKey: Key<CachedValue<T>> by lazy { Key.create("stellaris.cached.data.by.${javaClass.name}") }
     
-    fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
+    abstract fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
     
     fun getData(definition: ParadoxScriptDefinitionElement): T? {
         return CachedValuesManager.getCachedValue(definition, cachedDataKey) {
@@ -44,7 +44,9 @@ interface ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
         return doGetData(data)
     }
     
-    fun doGetData(data: ParadoxScriptData): T?
+    open fun doGetData(data: ParadoxScriptData): T? {
+        return dataType.getConstructor(ParadoxScriptData::class.java).newInstance(data)
+    }
     
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxDefinitionDataProvider<*>>("icu.windea.pls.definitionDataProvider")

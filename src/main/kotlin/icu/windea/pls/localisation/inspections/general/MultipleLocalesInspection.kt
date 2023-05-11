@@ -37,13 +37,7 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 			row {
 				expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
 					.bindText(::ignoredFileNames)
-					.applyToComponent {
-						whenTextChanged {
-							val document = it.document
-							val text = document.getText(0, document.length)
-							if(text != ignoredFileNames) ignoredFileNames = text
-						}
-					}
+					.bindWhenTextChanged(::ignoredFileNames)
 					.comment(PlsBundle.message("inspection.localisation.general.multipleLocales.option.ignoredFileNames.comment"))
 					.align(Align.FILL)
 					.resizableColumn()

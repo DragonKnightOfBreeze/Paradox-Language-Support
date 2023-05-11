@@ -8,6 +8,9 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
+/**
+ * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationConceptNameCompletionProvider
+ */
 class ParadoxLocalisationConceptNamePsiReference(
     element: ParadoxLocalisationConceptName,
     rangeInElement: TextRange

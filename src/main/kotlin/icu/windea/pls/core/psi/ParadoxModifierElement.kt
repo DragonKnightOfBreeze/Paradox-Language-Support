@@ -39,7 +39,7 @@ class ParadoxModifierElement(
     }
     
     override fun getTypeName(): String {
-        return PlsBundle.message("script.description.modifier")
+        return PlsBundle.message("cwt.description.modifier")
     }
     
     override fun getText(): String {

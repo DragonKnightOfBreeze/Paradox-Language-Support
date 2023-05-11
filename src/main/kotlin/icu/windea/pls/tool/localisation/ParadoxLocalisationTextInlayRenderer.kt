@@ -1,5 +1,6 @@
 package icu.windea.pls.tool.localisation
 
+import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
@@ -14,6 +15,8 @@ import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
+import java.awt.*
+import java.awt.event.*
 import java.util.*
 import java.util.concurrent.atomic.*
 
@@ -183,7 +186,21 @@ object ParadoxLocalisationTextInlayRenderer {
                     }
                 }
                 context.builder = oldBuilder
-                val presentation = psiSingleReference(SequencePresentation(newBuilder)) { conceptName.reference?.resolve() }
+                val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
+                var presentation: InlayPresentation = SequencePresentation(newBuilder)
+                
+                val attributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
+                presentation = WithAttributesPresentation(presentation, conceptAttributesKey, context.editor, attributesFlags)
+                presentation = onHover(psiSingleReference(presentation) { conceptName.reference?.resolve() }, object: InlayPresentationFactory.HoverListener {
+                    override fun onHover(event: MouseEvent, translated: Point) {
+                        attributesFlags.isDefault = true //change foreground
+                    }
+                    
+                    override fun onHoverFinished() {
+                        attributesFlags.isDefault = false //reset foreground
+                    }
+                    
+                }) 
                 context.builder.add(presentation)
                 if(!continueProcess) return false
             } else {

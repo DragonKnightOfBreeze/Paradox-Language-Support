@@ -80,7 +80,7 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 			}
 			is ParadoxModifierElement -> {
 				when(location) {
-					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.modifier")
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("cwt.description.modifier")
 					else -> element.name
 				}
 			}
