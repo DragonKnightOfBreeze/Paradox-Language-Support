@@ -103,7 +103,7 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 		if(cardinalityMaxDefine != null) {
 			val defineValue = ParadoxDefineHandler.getDefineValue(contextElement, project, cardinalityMaxDefine, Int::class.java)
 			if(defineValue != null) {
-				occurrence.max != defineValue
+				occurrence.max = defineValue
 				occurrence.maxDefine = cardinalityMaxDefine
 			}
 		}
