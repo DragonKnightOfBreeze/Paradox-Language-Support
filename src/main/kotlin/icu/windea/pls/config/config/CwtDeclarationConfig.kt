@@ -25,7 +25,7 @@ data class CwtDeclarationConfig(
         
         val (_, name, type, subtypes, _, matchType) = configContext
         val cacheKey = buildString {
-            if(CwtConfigExpressionReplacer.shouldReplace(configContext)) {
+            if(configContext.injectors.isNotEmpty()) {
                 append(name).append(" ")
             }
             append(type).append(" ")
@@ -36,10 +36,22 @@ data class CwtDeclarationConfig(
             }
             append("#").append(matchType)
         }
+        
         return mergedConfigCache.getOrPut(cacheKey) {
-            val configs = propertyConfig.configs?.flatMap { it.deepMergeConfigs(configContext) }
-            propertyConfig.copy(configs = configs)
-            //here propertyConfig.parent should be null
+            val r = doGetMergedConfig(configContext)
+            CwtDeclarationConfigInjector.handleDeclarationMergedConfig(r, configContext, configContext.injectors)
+            r
         }
+    }
+    
+    private fun doGetMergedConfig(configContext: CwtConfigContext): CwtPropertyConfig {
+        val injectedResult = CwtDeclarationConfigInjector.getDeclarationMergedConfig(configContext, configContext.injectors)
+        if(injectedResult != null) return injectedResult
+        
+        val configs = propertyConfig.configs?.flatMap { it.deepMergeConfigs(configContext) }
+        return propertyConfig.copy(configs = configs)
+        //here propertyConfig.parent should be null
+        
+        
     }
 }

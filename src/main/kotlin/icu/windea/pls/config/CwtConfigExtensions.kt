@@ -42,8 +42,7 @@ fun CwtDataConfig<*>.processDescendants(processor: (CwtDataConfig<*>) -> Boolean
 
 private fun CwtDataConfig<*>.doProcessDescendants(processor: (CwtDataConfig<*>) -> Boolean): Boolean {
     processor(this).also { if(!it) return false }
-    this.properties?.process { it.doProcessDescendants(processor) }?.also { if(!it) return false }
-    this.values?.process { it.doProcessDescendants(processor) }?.also { if(!it) return false }
+    this.configs?.process { it.doProcessDescendants(processor) }?.also { if(!it) return false }
     return true
 }
 

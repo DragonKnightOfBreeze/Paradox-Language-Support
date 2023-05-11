@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensionPoints>
-    <extensionPoint qualifiedName="icu.windea.pls.configExpressionReplacer" interface="icu.windea.pls.lang.config.CwtConfigExpressionReplacer" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.declarationConfigInjector" interface="icu.windea.pls.lang.config.CwtDeclarationConfigInjector" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.documentationElementLinkProvider" interface="icu.windea.pls.lang.documentation.DocumentationElementLinkProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionExtendedDocumentationProvider" interface="icu.windea.pls.lang.documentation.ParadoxDefinitionExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionSupport" interface="icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport" dynamic="true"/>
@@ -21,7 +21,8 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
-    <configExpressionReplacer implementation="icu.windea.pls.lang.config.impl.CwtOnActionConfigExpressionReplacer"/>
+    <declarationConfigInjector implementation="icu.windea.pls.lang.config.impl.CwtGameRuleDeclarationConfigInjector"/>
+    <declarationConfigInjector implementation="icu.windea.pls.lang.config.impl.CwtOnActionDeclarationConfigInjector"/>
     
     <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.CwtConfigLinkProvider"/>
     <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxDefinitionLinkProvider"/>
