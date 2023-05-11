@@ -43,7 +43,7 @@ data class CwtDeclarationConfig(
         
         return mergedConfigCache.getOrPut(cacheKey) {
             val r = doGetMergedConfig(configContext)
-            CwtDeclarationConfigInjector.handleDeclarationMergedConfig(r, configContext, configContext.injectors)
+            CwtDeclarationConfigInjector.handleDeclarationMergedConfig(r, configContext, configContext.injectors) //FIXME 这行代码时间成本过高！
             r.putUserData(originalDeclarationConfigKey, this.propertyConfig)
             r.putUserData(injectedDeclarationConfigKey, r)
             r

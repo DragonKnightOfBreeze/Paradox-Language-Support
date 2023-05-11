@@ -33,6 +33,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
     
     override fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, configContext: CwtConfigContext) {
         val config = configContext.getUserData(configKey) ?: return
+        ProgressManager.checkCanceled()
         val expression = "<event.${config.eventType}>"
         declarationConfig.processDescendants p@{ c ->
             ProgressManager.checkCanceled()
