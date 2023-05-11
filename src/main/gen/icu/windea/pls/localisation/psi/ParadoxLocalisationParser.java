@@ -175,7 +175,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // concept_name COMMA concept_text?
+  // concept_name (COMMA concept_text) ?
   static boolean concept_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "concept_expression")) return false;
     if (!nextTokenIs(b, LEFT_SINGLE_QUOTE)) return false;
@@ -183,17 +183,27 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_);
     r = concept_name(b, l + 1);
     p = r; // pin = 1
-    r = r && report_error_(b, consumeToken(b, COMMA));
-    r = p && concept_expression_2(b, l + 1) && r;
+    r = r && concept_expression_1(b, l + 1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // concept_text?
-  private static boolean concept_expression_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "concept_expression_2")) return false;
-    concept_text(b, l + 1);
+  // (COMMA concept_text) ?
+  private static boolean concept_expression_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "concept_expression_1")) return false;
+    concept_expression_1_0(b, l + 1);
     return true;
+  }
+
+  // COMMA concept_text
+  private static boolean concept_expression_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "concept_expression_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    r = r && concept_text(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */
@@ -211,13 +221,15 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // rich_text *
-  static boolean concept_text(PsiBuilder b, int l) {
+  public static boolean concept_text(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "concept_text")) return false;
+    Marker m = enter_section_(b, l, _NONE_, CONCEPT_TEXT, "<concept text>");
     while (true) {
       int c = current_position_(b);
       if (!rich_text(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "concept_text", c)) break;
     }
+    exit_section_(b, l, m, true, false, null);
     return true;
   }
 

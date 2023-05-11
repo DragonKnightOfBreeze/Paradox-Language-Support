@@ -7,7 +7,9 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
@@ -18,8 +20,11 @@ import javax.swing.*
 @Suppress("unused")
 object ParadoxLocalisationTextHtmlRenderer {
     class Context(
-        var builder: StringBuilder
+        var builder: StringBuilder,
+        val element: ParadoxLocalisationProperty,
     ) {
+        val gameType by lazy { selectGameType(element) }
+        
         var color: Color? = null
         var forDoc: Boolean = false
         val guardStack = LinkedList<String>() //防止StackOverflow
@@ -31,7 +36,7 @@ object ParadoxLocalisationTextHtmlRenderer {
     }
     
     fun renderTo(builder: StringBuilder, element: ParadoxLocalisationProperty, color: Color? = null, forDoc: Boolean = false) {
-        val context = Context(builder)
+        val context = Context(builder, element)
         context.color = color
         context.forDoc = forDoc
         context.guardStack.addLast(element.name)
@@ -138,6 +143,31 @@ object ParadoxLocalisationTextHtmlRenderer {
     }
     
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
+        val conceptName = element.conceptName
+        if(conceptName != null) {
+            //使用要显示的文本
+            val conceptTextElement = ParadoxGameConceptHandler.getTextElement(conceptName)
+            val richTextList = when {
+                conceptTextElement is ParadoxLocalisationConceptText -> conceptTextElement.richTextList
+                conceptTextElement is ParadoxLocalisationProperty -> conceptTextElement.propertyValue?.richTextList
+                else -> null
+            }
+            if(richTextList != null) {
+                val newBuilder = StringBuilder()
+                val oldBuilder = context.builder
+                context.builder = newBuilder
+                for(v in richTextList) {
+                    renderTo(v, context)
+                }
+                context.builder = oldBuilder
+                val conceptText = newBuilder.toString()
+                context.builder.appendDefinitionLink(context.gameType.orDefault(), conceptText, "game_concept", context.element)
+            } else {
+                context.builder.append(conceptName.text)
+            }
+            return
+        }
+        
         //直接显示命令文本，适用对应的颜色高亮
         //（仅限快速文档）点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc），但不显示为超链接
         context.builder.append("<code>")

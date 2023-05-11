@@ -173,11 +173,11 @@ command_field ::= COMMAND_FIELD_ID | property_reference { //can be property refe
   extends=command_identifier
   methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getExpression getConfigExpression]
 }
-private concept_expression ::= concept_name COMMA concept_text? {
+private concept_expression ::= concept_name (COMMA concept_text) ? {
   pin=1
 }
 concept_name ::= LEFT_SINGLE_QUOTE CONCEPT_NAME_ID RIGHT_SINGLE_QUOTE {
   pin=1
   methods=[getIcon getName setName getReference]
 }
-private concept_text ::= rich_text *
+concept_text ::= rich_text *

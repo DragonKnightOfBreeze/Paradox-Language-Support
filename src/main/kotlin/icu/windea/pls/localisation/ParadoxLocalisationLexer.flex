@@ -34,7 +34,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %state WAITING_COMMAND
 %state WAITING_COMMAND_SCOPE_OR_FIELD
 %state WAITING_CONCEPT
-%state WAITING_CONCEPT_NAME_END
+%state WAITING_CONCEPT_TEXT
 %state WAITING_COLOR_ID
 %state WAITING_COLORFUL_TEXT
 
@@ -147,14 +147,11 @@ CHECK_COMMAND_START=\[[^\r\n\]]*.?
 COMMAND_SCOPE_ID_WITH_SUFFIX=[^\r\n.\[\]]+\.
 COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
 CONCEPT_NAME=[a-zA-Z0-9_]+
+STRING_TOKEN_IN_CONCEPT_TEXT=[^\"$£§\[\]\r\n\\]+ //额外排除"]"
 
 %%
 
 //core rules
-
-<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT> {VALID_ESCAPE_TOKEN} {return VALID_ESCAPE_TOKEN;}
-<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT> {INVALID_ESCAPE_TOKEN} {return INVALID_ESCAPE_TOKEN;}
-<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT> {DOUBLE_LEFT_BRACKET} {return DOUBLE_LEFT_BRACKET;}
 
 <YYINITIAL> {
   {EOL} { return WHITE_SPACE; }
@@ -209,9 +206,10 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);}
   "£" {yypushback(yylength()); yybegin(CHECKING_ICON_START);}
-  "[" {increaseDepth();commandLocation=CommandLocation.NORMAL; yybegin(WAITING_COMMAND); }
+  "[" { increaseDepth(); commandLocation=CommandLocation.NORMAL; yybegin(WAITING_COMMAND); return COMMAND_START; }
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;} //允许多余的重置颜色标记
+  {STRING_TOKEN} {return STRING_TOKEN;}
 }
 
 //reference rules
@@ -236,7 +234,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE;}
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
-  "[" {increaseDepth();commandLocation=CommandLocation.REFERENCE; yypushback(yylength()); yybegin(WAITING_COMMAND); }
+  "[" {increaseDepth();commandLocation=CommandLocation.REFERENCE; yybegin(WAITING_COMMAND); return COMMAND_START; }
   "|" {yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE;}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
@@ -256,7 +254,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
    {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
    \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
-  "[" {increaseDepth();commandLocation=CommandLocation.REFERENCE; yypushback(yylength()); yybegin(WAITING_COMMAND); }
+  "[" {increaseDepth();commandLocation=CommandLocation.REFERENCE; yybegin(WAITING_COMMAND);return COMMAND_START; }
   "|" {yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE;}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
@@ -287,7 +285,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "£" {yybegin(nextStateForText()); return ICON_END;}
   "$" {referenceLocation=ReferenceLocation.ICON; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);}
-  "[" {increaseDepth(); commandLocation=CommandLocation.ICON; yypushback(yylength()); yybegin(WAITING_COMMAND); }
+  "[" {increaseDepth(); commandLocation=CommandLocation.ICON; yybegin(WAITING_COMMAND); return COMMAND_START;}
   "|" {yybegin(WAITING_ICON_FRAME); return PIPE;}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
@@ -357,17 +355,18 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   "'" { return RIGHT_SINGLE_QUOTE; }
   {CONCEPT_NAME} { return CONCEPT_NAME_ID; }
-  "," { yybegin(WAITING_CONCEPT_NAME_END); return COMMA; }
+  "," { yybegin(WAITING_CONCEPT_TEXT); return COMMA; }
 }
-<WAITING_CONCEPT_NAME_END> {
+<WAITING_CONCEPT_TEXT> {
   {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "]" {decreaseDepth();yybegin(nextStateForCommand()); return COMMAND_END;}
   "$" {referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);}
   "£" {yypushback(yylength()); yybegin(CHECKING_ICON_START);}
-  "[" {increaseDepth();commandLocation=CommandLocation.NORMAL; yypushback(yylength()); yybegin(WAITING_COMMAND); }
+  "[" {increaseDepth();commandLocation=CommandLocation.NORMAL; yybegin(WAITING_COMMAND);return COMMAND_START; }
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
+  {STRING_TOKEN_IN_CONCEPT_TEXT} {return STRING_TOKEN;}
 }
 
 //colorful text rules
@@ -403,9 +402,10 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);}
   "£" {yypushback(yylength()); yybegin(CHECKING_ICON_START);}
-  "[" {increaseDepth();commandLocation=CommandLocation.NORMAL; yypushback(yylength()); yybegin(WAITING_COMMAND); }
+  "[" {increaseDepth();commandLocation=CommandLocation.NORMAL; yybegin(WAITING_COMMAND);return COMMAND_START; }
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
+  {STRING_TOKEN} {return STRING_TOKEN;}
 }
 
 <WAITING_PROPERTY_END>{
@@ -432,6 +432,8 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
     }
 }
 
-<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT> {STRING_TOKEN} {return STRING_TOKEN;}
+<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT, WAITING_CONCEPT_TEXT> {VALID_ESCAPE_TOKEN} {return VALID_ESCAPE_TOKEN;}
+<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT, WAITING_CONCEPT_TEXT> {INVALID_ESCAPE_TOKEN} {return INVALID_ESCAPE_TOKEN;}
+<WAITING_RICH_TEXT, WAITING_COLORFUL_TEXT, WAITING_CONCEPT_TEXT> {DOUBLE_LEFT_BRACKET} {return DOUBLE_LEFT_BRACKET;}
 
 [^] {return BAD_CHARACTER; }

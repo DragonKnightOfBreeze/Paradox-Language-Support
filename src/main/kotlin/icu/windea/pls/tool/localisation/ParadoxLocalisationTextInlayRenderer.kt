@@ -9,6 +9,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -72,13 +73,13 @@ object ParadoxLocalisationTextInlayRenderer {
         }
     }
     
-    private fun renderStringTo(element: ParadoxLocalisationString, context: Context): Boolean {
+    private fun renderStringTo(element: ParadoxLocalisationString, context: Context): Boolean = with(context.factory) {
         val elementText = element.text
-        context.builder.add(context.factory.truncatedSmallText(elementText, context))
+        context.builder.add(truncatedSmallText(elementText, context))
         return continueProcess(context)
     }
     
-    private fun renderEscapeTo(element: ParadoxLocalisationEscape, context: Context): Boolean {
+    private fun renderEscapeTo(element: ParadoxLocalisationEscape, context: Context): Boolean  = with(context.factory) {
         //使用原始文本（内嵌注释不能换行，这时直接截断）
         val elementText = element.text
         val text = when {
@@ -87,11 +88,11 @@ object ParadoxLocalisationTextInlayRenderer {
             elementText == "\\t" -> "\t"
             else -> elementText
         }
-        context.builder.add(context.factory.truncatedSmallText(text, context))
+        context.builder.add(truncatedSmallText(text, context))
         return continueProcess(context)
     }
     
-    private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context): Boolean {
+    private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context): Boolean  = with(context.factory) {
         //如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，否则保留颜色码
         val colorConfig = element.colorConfig
         val resolved = element.scriptedVariableReference?.reference?.resolve()
@@ -101,7 +102,7 @@ object ParadoxLocalisationTextInlayRenderer {
                 val resolvedName = resolved.name
                 if(context.guardStack.contains(resolvedName)) {
                     //infinite recursion, do not render context
-                    context.factory.truncatedSmallText(element.text, context)
+                    truncatedSmallText(element.text, context)
                 } else {
                     context.guardStack.addLast(resolvedName)
                     val oldBuilder = context.builder
@@ -114,13 +115,13 @@ object ParadoxLocalisationTextInlayRenderer {
                 }
             }
             resolved is CwtProperty -> {
-                context.factory.smallText(resolved.value ?: PlsConstants.unresolvedString)
+                smallText(resolved.value ?: PlsConstants.unresolvedString)
             }
             resolved is ParadoxScriptScriptedVariable && resolved.value != null -> {
-                context.factory.smallText(resolved.value ?: PlsConstants.unresolvedString)
+                smallText(resolved.value ?: PlsConstants.unresolvedString)
             }
             else -> {
-                context.factory.truncatedSmallText(element.text, context)
+                truncatedSmallText(element.text, context)
             }
         } ?: return true
         val textAttributesKey = if(colorConfig != null) ParadoxLocalisationAttributesKeys.getColorOnlyKey(colorConfig.color) else null
@@ -132,7 +133,7 @@ object ParadoxLocalisationTextInlayRenderer {
         return continueProcess(context)
     }
     
-    private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context): Boolean {
+    private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context): Boolean = with(context.factory) {
         val resolved = element.reference?.resolve() ?: return true
         val iconUrl = when {
             resolved is ParadoxScriptDefinitionElement -> ParadoxDdsUrlResolver.resolveByDefinition(resolved, defaultToUnknown = true)
@@ -146,11 +147,11 @@ object ParadoxLocalisationTextInlayRenderer {
                 val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
                 if(icon.iconHeight <= context.iconHeightLimit) {
                     //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-                    val presentation = context.factory.psiSingleReference(context.factory.smallScaledIcon(icon)) { resolved }
+                    val presentation = psiSingleReference(smallScaledIcon(icon)) { resolved }
                     context.builder.add(presentation)
                 } else {
                     val unknownIcon = IconLoader.findIcon(PlsPaths.unknownPngUrl) ?: return true
-                    val presentation = context.factory.psiSingleReference(context.factory.smallScaledIcon(unknownIcon)) { resolved }
+                    val presentation = psiSingleReference(smallScaledIcon(unknownIcon)) { resolved }
                     context.builder.add(presentation)
                 }
             }
@@ -158,7 +159,39 @@ object ParadoxLocalisationTextInlayRenderer {
         return true
     }
     
-    private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context): Boolean {
+    private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context): Boolean  = with(context.factory) {
+        val conceptName = element.conceptName
+        if(conceptName != null) {
+            //使用要显示的文本
+            val conceptTextElement = ParadoxGameConceptHandler.getTextElement(conceptName)
+            val richTextList = when {
+                conceptTextElement is ParadoxLocalisationConceptText -> conceptTextElement.richTextList
+                conceptTextElement is ParadoxLocalisationProperty -> conceptTextElement.propertyValue?.richTextList
+                else -> null
+            }
+            if(richTextList != null) {
+                val newBuilder = SmartList<InlayPresentation>()
+                val oldBuilder = context.builder
+                context.builder = newBuilder
+                var continueProcess = true
+                for(richText in richTextList) {
+                    ProgressManager.checkCanceled()
+                    val r = renderTo(richText, context)
+                    if(!r) {
+                        continueProcess = false
+                        break
+                    }
+                }
+                context.builder = oldBuilder
+                val presentation = psiSingleReference(SequencePresentation(newBuilder)) { conceptName.reference?.resolve() }
+                context.builder.add(presentation)
+                if(!continueProcess) return false
+            } else {
+                context.builder.add(smallText(element.text))
+            }
+            return continueProcess(context)
+        }
+        
         //直接显示命令文本，适用对应的颜色高亮
         //点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc）
         element.forEachChild { e ->
@@ -168,7 +201,7 @@ object ParadoxLocalisationTextInlayRenderer {
         return continueProcess(context)
     }
     
-    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context): Boolean {
+    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context): Boolean  = with(context.factory) {
         //如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if(richTextList.isEmpty()) return true
@@ -228,12 +261,11 @@ object ParadoxLocalisationTextInlayRenderer {
         }
     }
     
-    @Suppress("UnstableApiUsage")
-    private fun doGetElementPresentation(element: PsiElement, context: Context) {
+    private fun doGetElementPresentation(element: PsiElement, context: Context)  = with(context.factory) {
         val text = element.text
         val references = element.references
         if(references.isEmpty()) {
-            context.builder.add(context.factory.smallText(element.text))
+            context.builder.add(smallText(element.text))
             return
         }
         var i = 0
@@ -242,16 +274,16 @@ object ParadoxLocalisationTextInlayRenderer {
             val startOffset = reference.rangeInElement.startOffset
             if(startOffset != i) {
                 val s = text.substring(i, startOffset)
-                context.builder.add(context.factory.smallText(s))
+                context.builder.add(smallText(s))
             }
             i = reference.rangeInElement.endOffset
             val s = reference.rangeInElement.substring(text)
-            context.builder.add(context.factory.psiSingleReference(context.factory.smallText(s)) { reference.resolve() })
+            context.builder.add(psiSingleReference(smallText(s)) { reference.resolve() })
         }
         val endOffset = references.last().rangeInElement.endOffset
         if(endOffset != text.length) {
             val s = text.substring(endOffset)
-            context.builder.add(context.factory.smallText(s))
+            context.builder.add(smallText(s))
         }
     }
 }

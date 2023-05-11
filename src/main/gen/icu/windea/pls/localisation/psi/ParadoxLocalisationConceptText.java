@@ -8,16 +8,10 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxLocalisationCommand extends ParadoxLocalisationRichText {
+public interface ParadoxLocalisationConceptText extends PsiElement {
 
   @NotNull
-  List<ParadoxLocalisationCommandIdentifier> getCommandIdentifierList();
-
-  @Nullable
-  ParadoxLocalisationConceptName getConceptName();
-
-  @Nullable
-  ParadoxLocalisationConceptText getConceptText();
+  List<ParadoxLocalisationRichText> getRichTextList();
 
   @NotNull
   ItemPresentation getPresentation();

@@ -8,20 +8,20 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public class ParadoxLocalisationCommandImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationCommand {
+public class ParadoxLocalisationConceptTextImpl extends ASTWrapperPsiElement implements ParadoxLocalisationConceptText {
 
-  public ParadoxLocalisationCommandImpl(@NotNull ASTNode node) {
+  public ParadoxLocalisationConceptTextImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
-    visitor.visitCommand(this);
+    visitor.visitConceptText(this);
   }
 
   @Override
@@ -32,20 +32,8 @@ public class ParadoxLocalisationCommandImpl extends ParadoxLocalisationRichTextI
 
   @Override
   @NotNull
-  public List<ParadoxLocalisationCommandIdentifier> getCommandIdentifierList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationCommandIdentifier.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxLocalisationConceptName getConceptName() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationConceptName.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxLocalisationConceptText getConceptText() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationConceptText.class);
+  public List<ParadoxLocalisationRichText> getRichTextList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationRichText.class);
   }
 
   @Override

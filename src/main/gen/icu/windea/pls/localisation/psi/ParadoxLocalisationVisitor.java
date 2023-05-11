@@ -36,6 +36,10 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitConceptText(@NotNull ParadoxLocalisationConceptText o) {
+    visitPsiElement(o);
+  }
+
   public void visitEscape(@NotNull ParadoxLocalisationEscape o) {
     visitRichText(o);
   }

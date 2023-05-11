@@ -1,6 +1,7 @@
 package icu.windea.pls.tool.localisation
 
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import java.util.*
@@ -84,6 +85,24 @@ object ParadoxLocalisationTextExtractor {
     }
     
     private fun extractCommandTo(element: ParadoxLocalisationCommand, context: Context) {
+        val conceptName = element.conceptName
+        if(conceptName != null) {
+            //使用要显示的文本
+            val conceptTextElement = ParadoxGameConceptHandler.getTextElement(conceptName)
+            val richTextList = when {
+                conceptTextElement is ParadoxLocalisationConceptText -> conceptTextElement.richTextList
+                conceptTextElement is ParadoxLocalisationProperty -> conceptTextElement.propertyValue?.richTextList
+                else -> null
+            }
+            if(richTextList != null) {
+                for(v in richTextList) {
+                    extractTo(v, context)
+                }
+            } else {
+                context.builder.append(conceptName.text)
+            }
+            return
+        }
         //使用原始文本
         context.builder.append(element.text)
     }
