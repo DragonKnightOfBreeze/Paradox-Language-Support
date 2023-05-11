@@ -1,0 +1,72 @@
+
+# Documentation For Leader Traits
+# -------------------------------
+#
+# leader_trait_name_key = {
+#
+#	starting_ruler_trait = yes			This trait is available in ruler creation. Default is no.
+#	forbidden_origins = { }				OR - This trait is blocked in ruler creation if listed origins are selected.
+#	cost = 1							This trait cost/gives this amount of points when selected in ruler creation.
+#
+#	icon = {							Layered icon format introduced in Galactic Paragons.
+#		layer = {						There are no limits to the amount of layers that can be used.
+#			icon = "GFX_name"			Texture name defined in "interface" folder. Default trait icons are in "interface\icons\traits" folder.
+#			color = "color_name"		Layer color tint. Color name defined in "common\named_colors" folder.
+#			visible = { }				Scripted trigger. If false, hide layer. THIS = Leader
+#		}								( In Galactic Paragons, we use an inline script to define this, see below. )
+#	}
+#
+#	councilor_trait = yes				Is this trait only active if the leader is on the Council? Default is no.
+#	negative = yes						Is this a negative trait? Default is no.
+#	is_councilor_trait_for_ruler = yes	Does the "modifier" block apply to empire if leader is ruler? Default is no.
+#	immortal_leaders = yes				Is this leader immortal? Default is no.
+#	randomized = no						Is this trait available during leader generation, level up or yearly negative trait chance. Default is yes.
+#
+#	self_modifier = { }					Modifier applied to the leader itself.
+#	modifier = { }						Modifier applied to scope leader is assigned to (e.g. fleet, or science ship) or country if councilor trait.
+#	planet_modifier = { }				Modifier applied to planet if General assigned to defense army.
+#	system_modifier = { }				Modifier applied to system if General or Governor is assigned to planet within it.
+#
+#	triggered_modifier = { }			Modifier applied to location the leader is assigned to if the given condition is fullfilled. THIS = Leader
+#	triggered_self_modifier = { }		Modifier applied to the leader itself if the given condition is fullfilled. THIS = Leader
+#	triggered_planet_modifier = { }		Modifier applied to the planet on which General is assigned to defend if the given condition is fullfilled. THIS = Leader
+#
+#	triggered_desc = {					Show key if trigger/exclusive_trigger is true.
+#		trigger = { }					Trigger appends additional localization key to existing text. THIS = Leader
+#		exclusive_trigger = { }			Exclusive trigger replaces all other text in tooltip with localization key. THIS = Leader
+#		text = KEY
+#	}
+#
+#	custom_subtitle = KEY 				Replaces auto-generated trait subtitle with localization key.
+#	custom_tooltip = KEY 				Replaces auto-generated modifier effect text with localization key.
+#	custom_tooltip_with_modifiers = KEY	Appends localization key to the end of auto-generated modifier effect text.
+#
+#	on_gained_effect = { }				Effects in this block fire when trait is acquired. THIS = Leader.
+#
+#	leader_class = { } | all			Limits which leader classes that can get this trait.
+#	leader_potential_add = { }			If exists, evaluates if leader can get trait. Scope: THIS = Leader, FROM = Country.
+#	
+#	requires_traits = { }	 			AND - Trait only available if the leaders species has this trait.
+#	requires_governments = { }			OR - Trait only available if the Empire has this type of government form.
+#	prerequisites = { }					AND - Trait only available if the technology specified has been researched by the Empire.
+#	opposites = { }						OR - Trait only available if none of the listed traits are currently on leader.
+#	replace_traits = { }				AND - Trait will remove listed traits currently on leader when added.
+#	fleet_specialization_tag = carrier	AI will outfit ships with components based on this tag if trait is selected.
+#
+#	selectable_weight = 25 | { }		Weight for availability at level up. Default is 100. Can be a scripted weight, scope: THIS = Leader, FROM = Country.
+# }
+
+
+# Galactic Paragons Trait Inline Script Documentation
+# -----------------------------------------
+#
+# In Galactic Paragons, we use an inline script to define commonly used icon layers and also set the trait subtitle.
+#
+# inline_script = {
+#	script = trait/icon
+#	CLASS = admiral						Class name. Accepted: leader, admiral, general, scientist, governor
+#	ICON = GFX_name						Texture name defined in "interface" folder. Default trait icons are in "interface\icons\traits" folder.
+#	RARITY = veteran					Rarity tag. Accepted: common, veteran, paragon
+#	COUNCIL = yes						Is councilor trait? Accepted: yes, no, triggered (CLASS and COUNCIL will be set by triggered modifiers)
+#	TIER = 2							Tier number. Accepted: none, 1, 2, 3
+# }

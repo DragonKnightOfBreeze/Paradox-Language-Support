@@ -1,0 +1,64 @@
+# Hopefully someday we will write a full file here.
+
+# For now, note about "cost":
+# You can (in both species and leader traits) specify something like
+	# cost = {
+	# 	base = 1
+	# 	modifier = {
+	# 		add = 2
+	# 		has_country_flag = something #(no way of accessing species scope, it proved highly impractical)
+	# 	}
+	# }
+# If you do this, the "base" will be used in cases where there is no country scope (e.g. customising a species in empire setup, and various
+# randomisation functions used mainly during galaxy generation. And a few more places). So you should always set that to a sensible number.
+
+# Some parameters for species traits
+#
+# assembly_score: evaluated when the game decides to build a species. Default is 0, anything positive adds some extra weight to
+# a species with that trait. (Has species and planet scope). A value of 0 does not stop it being picked, it just means this factor won't make
+# a difference. If you make it strongly negative, it will not pick this species. You probably only want to be in the range from -2 to 2 or so.
+#
+# allowed_archetypes = {}
+# determines if the trait is valid for the given archetypes.
+# accepts BIOLOGICAL, LITHOID, ROBOT and MACHINE by default.
+#
+# species_class = {}
+# determines if the trait is valid for the given species class.
+# requires the species class is a member of an allowed archetype
+#
+# opposites = {}
+# opposite traits are mutually exclusive.
+#
+# species_potential_add = {}
+# show the trait to add to species when genemodding or randomizing traits.
+# Scopes are this = species, from = country performing the modification.
+# default = always=yes
+
+# species_possible_add = {}
+# governs if the trait can be added when creating a template with genemodding.
+# Scopes are this = species, from = country performing the modification.
+# default = always=yes
+
+# species_possible_merge_add = {}
+# governs if the trait can be added when applying a template to an existing species with genemodding.
+# Scopes are this = species, from = country performing the modification.
+# default = always=yes
+
+# species_possible_remove = {}
+# allow to remove the trait when genemodding.
+# Scopes are this = species, from = country performing the modification.
+# default = always=yes
+
+# species_possible_merge_remove = {}
+# governs if the trait can be removed when applying a template to an existing species with genemodding.
+# Scopes are this = species, from = country performing the modification.
+# default = always=yes
+
+# triggered_planet_growth_habitability_modifier = {}
+# required for triggered modifiers that use pop_growth_speed, pop_environment_tolerance or such.
+# won't show in trait tooltips, use custom_tooltip/custom_tooltip_with_modifiers
+# scope is planet, from is species, fromfrom is country
+
+# triggered_pop_modifier = {}
+# required for triggered modifiers on the pop scope.
+# won't show in trait tooltips, use custom_tooltip/custom_tooltip_with_modifiers
