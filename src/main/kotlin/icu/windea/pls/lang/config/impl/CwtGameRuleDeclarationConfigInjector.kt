@@ -16,7 +16,8 @@ class CwtGameRuleDeclarationConfigInjector : CwtDeclarationConfigInjector {
         val (_, name, type, _, configGroup, matchType) = configContext
         if(type == "game_rule") {
             if(name == null) return false
-            val config = configGroup.onActions.get(name)
+            val config = configGroup.gameRules.get(name)
+            configContext.putUserData(configKey, config)
             return config != null
         }
         return false

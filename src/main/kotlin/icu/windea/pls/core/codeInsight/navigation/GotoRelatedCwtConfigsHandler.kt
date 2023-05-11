@@ -6,6 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.pom.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
@@ -36,17 +37,27 @@ class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
 				
 				if(location is ParadoxScriptStringExpressionElement) {
 					val configGroup = config.info.configGroup
-					val name = location.value 
-					val dataType = config.expression.type
+					val name = location.value
+					val configExpression = config.expression
 					when {
-						dataType == CwtDataType.EnumValue -> {
+						configExpression.type == CwtDataType.Definition -> {
+							when {
+								configExpression.value == "game_rule" -> {
+									configGroup.gameRules.get(name)?.pointer?.element?.let { add(it) }
+								}
+								configExpression.value == "on_action" -> {
+									configGroup.onActions.getByTemplate(name, location, configGroup)?.pointer?.element?.let { add(it) }
+								}
+							}
+						}
+						configExpression.type == CwtDataType.EnumValue -> {
 							configGroup.enums[name]?.pointer?.element?.let { add(it) }
 							configGroup.complexEnums[name]?.pointer?.element?.let { add(it) }
 						}
-						dataType.isValueSetValueType() -> {
+						configExpression.type.isValueSetValueType() -> {
 							configGroup.values[name]?.pointer?.element?.let { add(it) }
 						}
-						dataType == CwtDataType.Modifier -> {
+						configExpression.type == CwtDataType.Modifier -> {
 							//这里需要遍历所有解析器
 							configGroup.predefinedModifiers[name]?.pointer?.element?.let { add(it) }
 							ParadoxModifierSupport.EP_NAME.extensionList.forEach { resolver ->

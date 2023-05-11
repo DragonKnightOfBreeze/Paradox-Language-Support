@@ -50,7 +50,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
                     if(c.stringValue == "<event>") {
                         val cs = c.parent?.configs ?: return@p true
                         val cc = c.copy(pointer = emptyPointer(), value = expression)
-                        (cs as MutableList).add(cs.indexOf(cc), cc)
+                        (cs as MutableList).add(cs.indexOf(c), cc) //insert before "<event>"
                     }
                 }
             }
