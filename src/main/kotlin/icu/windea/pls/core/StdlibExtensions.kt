@@ -247,7 +247,7 @@ fun String.isExactParameterizedIdentifier(vararg extraChars: Char): Boolean {
 }
 
 fun String.isParameterized(): Boolean {
-    return !this.isLeftQuoted() && this.any { it == '$' }
+    return this.any { it == '$' }
 }
 
 fun String.isLeftQuoted(): Boolean {

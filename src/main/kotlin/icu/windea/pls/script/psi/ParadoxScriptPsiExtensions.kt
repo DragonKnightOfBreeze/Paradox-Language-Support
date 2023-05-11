@@ -48,8 +48,9 @@ fun ParadoxScriptExpressionElement.isValidExpression(matchType: Int = CwtConfigM
 }
 
 fun PsiElement.isParameterized(): Boolean {
-	val text = this.text //check cached text, rather than children
-	return !text.isLeftQuoted() && text.contains('$')
+	//check cached text, rather than children
+	//key or string can be quoted`(but how to escape???)
+	return this.text.contains('$')
 }
 
 fun PsiElement.isExpressionOrMemberContext(): Boolean {
