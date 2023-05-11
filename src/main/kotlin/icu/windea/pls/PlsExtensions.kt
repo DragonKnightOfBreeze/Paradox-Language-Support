@@ -339,6 +339,7 @@ fun StringBuilder.appendUnresolvedLink(label: String): StringBuilder {
 }
 
 fun StringBuilder.appendLink(refText: String, label: String): StringBuilder {
+    //不自动转义link的label
     append("<a href=\"").append(refText).append("\">").append(label).append("</a>")
     return this
 }
@@ -357,29 +358,29 @@ fun StringBuilder.appendCwtLink(shortLink: String, linkText: String, context: Ps
     return appendPsiLink(finalLink, finalLinkText)
 }
 
-fun StringBuilder.appendDefinitionLink(gameType: ParadoxGameType, name: String, typeExpression: String, context: PsiElement? = null): StringBuilder {
+fun StringBuilder.appendDefinitionLink(gameType: ParadoxGameType, name: String, typeExpression: String, context: PsiElement? = null, label: String = name): StringBuilder {
     //如果context不为null切链接无法被解析，则显示未解析的链接
     val linkPrefix = ParadoxDefinitionLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix${gameType.linkToken}$typeExpression/$name".escapeXml()
-    val finalLinkText = name.escapeXml()
+    val finalLinkText = label.escapeXml()
     if(context != null && DocumentationElementLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }
 
-fun StringBuilder.appendLocalisationLink(gameType: ParadoxGameType, name: String, context: PsiElement? = null): StringBuilder {
+fun StringBuilder.appendLocalisationLink(gameType: ParadoxGameType, name: String, context: PsiElement? = null, label: String = name): StringBuilder {
     //如果context不为null切链接无法被解析，则显示未解析的链接
     val linkPrefix = ParadoxLocalisationLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix${gameType.linkToken}$name".escapeXml()
-    val finalLinkText = name.escapeXml()
+    val finalLinkText = label.escapeXml()
     if(context != null && DocumentationElementLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }
 
-fun StringBuilder.appendFilePathLink(gameType: ParadoxGameType, filePath: String, linkText: String, context: PsiElement? = null): StringBuilder {
+fun StringBuilder.appendFilePathLink(gameType: ParadoxGameType, filePath: String, linkText: String, context: PsiElement? = null, label: String = linkText): StringBuilder {
     //如果context不为null切链接无法被解析，则显示未解析的链接
     val linkPrefix = ParadoxFilePathLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix${gameType.linkToken}$filePath".escapeXml()
-    val finalLinkText = linkText.escapeXml()
+    val finalLinkText = label.escapeXml()
     if(context != null && DocumentationElementLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }

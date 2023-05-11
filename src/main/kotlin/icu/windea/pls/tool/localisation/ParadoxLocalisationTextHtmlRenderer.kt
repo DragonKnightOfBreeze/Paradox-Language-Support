@@ -143,10 +143,10 @@ object ParadoxLocalisationTextHtmlRenderer {
     }
     
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
-        val conceptName = element.conceptName
-        if(conceptName != null) {
+        val conceptNameElement = element.conceptName
+        if(conceptNameElement != null) {
             //使用要显示的文本
-            val conceptTextElement = ParadoxGameConceptHandler.getTextElement(conceptName)
+            val conceptTextElement = ParadoxGameConceptHandler.getTextElement(conceptNameElement)
             val richTextList = when {
                 conceptTextElement is ParadoxLocalisationConceptText -> conceptTextElement.richTextList
                 conceptTextElement is ParadoxLocalisationProperty -> conceptTextElement.propertyValue?.richTextList
@@ -161,9 +161,15 @@ object ParadoxLocalisationTextHtmlRenderer {
                 }
                 context.builder = oldBuilder
                 val conceptText = newBuilder.toString()
-                context.builder.appendDefinitionLink(context.gameType.orDefault(), conceptText, "game_concept", context.element)
+                val conceptElement = conceptNameElement.reference?.resolve()
+                if(conceptElement == null) {
+                    context.builder.append(conceptText)
+                    return
+                }
+                val conceptName = conceptElement.definitionInfo?.name.orAnonymous()
+                context.builder.appendDefinitionLink(context.gameType.orDefault(), conceptName, "game_concept", context.element, label = conceptText)
             } else {
-                context.builder.append(conceptName.text)
+                context.builder.append(conceptNameElement.text)
             }
             return
         }
