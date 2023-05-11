@@ -26,7 +26,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
     }
     
     override fun getCacheKey(cacheKey0: String, configContext: CwtConfigContext): String? {
-        val config = configContext.getUserData(configKey) 
+        val config = configContext.getUserData(configKey)
         if(config == null) return null
         return "${configContext.definitionName}#${cacheKey0}"
     }
@@ -52,17 +52,19 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
                     val isValue = c.stringValue == "<event>"
                     if(isKey || isValue) {
                         val cs = c.parent?.configs ?: return@p true
-                        val keyArg = if(isKey) c.key else expression
-                        val valueArg = if(isValue) c.stringValue.orEmpty() else expression
-                        val cc = c.copy(pointer = emptyPointer(), key = keyArg, value = valueArg)
-                        (cs as MutableList).add(cs.indexOf(c), cc)
+                        val keyArg = if(isKey) expression else c.key
+                        val valueArg = if(isValue) expression else c.stringValue.orEmpty()
+                        val cc = c.copy(pointer = emptyPointer(), key = keyArg, value = valueArg, stringValue = valueArg)
+                        val i = cs.indexOf(c)
+                        (cs as MutableList).add(i, cc) //insert before "xxx = <event>"
                     }
                 }
                 is CwtValueConfig -> {
                     if(c.stringValue == "<event>") {
                         val cs = c.parent?.configs ?: return@p true
-                        val cc = c.copy(pointer = emptyPointer(), value = expression)
-                        (cs as MutableList).add(cs.indexOf(c), cc) //insert before "<event>"
+                        val cc = c.copy(pointer = emptyPointer(), value = expression, stringValue = expression)
+                        val i = cs.indexOf(c)
+                        (cs as MutableList).add(i, cc) //insert before "<event>"
                     }
                 }
             }

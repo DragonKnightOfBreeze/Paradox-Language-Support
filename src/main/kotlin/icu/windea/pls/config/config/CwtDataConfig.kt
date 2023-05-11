@@ -68,14 +68,14 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 		}
 		when(this) {
 			is CwtValueConfig -> {
-				val mergedConfig = copy(value = value, configs = mergedConfigs).also { it.parent = parent }
+				val mergedConfig = copy(configs = mergedConfigs).also { it.parent = parent }
 				if(configContext.injectors.isNotEmpty()) return SmartList(mergedConfig)
 				return mergedConfig.toSingletonList()
 			}
 			is CwtPropertyConfig -> {
 				val subtypeExpression = key.removeSurroundingOrNull("subtype[", "]")
 				if(subtypeExpression == null) {
-					val mergedConfig = copy(key = key, value = value, configs = mergedConfigs).also { it.parent = parent }
+					val mergedConfig = copy(configs = mergedConfigs).also { it.parent = parent }
 					if(configContext.injectors.isNotEmpty()) return SmartList(mergedConfig)
 					return mergedConfig.toSingletonList()
 				} else {
