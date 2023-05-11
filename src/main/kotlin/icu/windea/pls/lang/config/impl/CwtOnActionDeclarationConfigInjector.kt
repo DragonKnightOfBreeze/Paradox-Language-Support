@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.config.impl
 
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
+import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
@@ -25,10 +25,10 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
         return false
     }
     
-    override fun getCacheKey(cacheKey0: String, configContext: CwtConfigContext): String? {
+    override fun handleCacheKey(cacheKey: String, configContext: CwtConfigContext): String? {
         val config = configContext.getUserData(configKey)
         if(config == null) return null
-        return "${configContext.definitionName}#${cacheKey0}"
+        return "${configContext.definitionName}#${cacheKey}"
     }
     
     //override fun getDeclarationMergedConfig(configContext: CwtConfigContext): CwtPropertyConfig? {
@@ -42,36 +42,48 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
     
     override fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, configContext: CwtConfigContext) {
         val config = configContext.getUserData(configKey) ?: return
-        val expression = "<event.${config.eventType}>"
+        val expressions = buildList {
+            if(configContext.configGroup.types.get("event")?.subtypes?.containsKey("scopeless") == true) {
+                add("<event.scopeless>")
+            }
+            add("<event.${config.eventType}>")
+        }
         declarationConfig.processDescendants p@{ c ->
-            ProgressManager.checkCanceled()
             val cs = c.configs ?: return@p true
+            cs as MutableList
+            val ccs = SmartList<CwtDataConfig<*>>()
             var i = -1
-            var cc: CwtDataConfig<*>? = null
-            for((index, c1) in cs.withIndex()) {
-                when(c1) {
+            for((index, cc) in cs.withIndex()) {
+                when(cc) {
                     is CwtPropertyConfig -> {
-                        val isKey = c1.key == "<event>"
-                        val isValue = c1.stringValue == "<event>"
-                        val keyArg = if(isKey) expression else c1.key
-                        val valueArg = if(isValue) expression else c1.stringValue.orEmpty()
+                        val isKey = cc.key == "<event>"
+                        val isValue = cc.stringValue == "<event>"
                         if(isKey || isValue) {
-                            cc = c1.copy(pointer = emptyPointer(), key = keyArg, value = valueArg, stringValue = valueArg)
-                            i = index
+                            for(expression in expressions) {
+                                val keyArg = if(isKey) expression else cc.key
+                                val valueArg = if(isValue) expression else cc.stringValue.orEmpty()
+                                val cc0 = cc.copy(key = keyArg, value = valueArg, stringValue = valueArg).also { it.parent = cc.parent }
+                                ccs.add(cc0)
+                                i = index
+                            }
                             break
                         }
                     }
                     is CwtValueConfig -> {
-                        if(c1.stringValue == "<event>") {
-                            cc = c1.copy(pointer = emptyPointer(), value = expression, stringValue = expression)
-                            i = index
+                        if(cc.stringValue == "<event>") {
+                            for(expression in expressions) {
+                                val cc0 = cc.copy(pointer = emptyPointer(), value = expression, stringValue = expression).also { it.parent = cc.parent }
+                                ccs.add(cc0)
+                                i = index
+                            }
                             break
                         }
                     }
                 }
             }
-            if(cc != null) {
-                (cs as MutableList).add(i, cc)
+            if(i != -1) { 
+                cs.removeAt(i)
+                cs.addAll(i, ccs)
             }
             true
         }

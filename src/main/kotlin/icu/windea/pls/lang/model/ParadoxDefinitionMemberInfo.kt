@@ -8,6 +8,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.config.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 
@@ -32,16 +33,26 @@ class ParadoxDefinitionMemberInfo(
      * 对应的配置列表。
      */
     fun getConfigs(matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtDataConfig<*>> {
-        val key = "$matchType"
-        return cache.getOrPut(key) { doGetConfigs(definitionInfo, this, matchType) }
+        var cacheKey = "$matchType"
+        //这里需要特别处理缓存的键
+        val configContext = definitionInfo.getDeclaration(matchType)?.getUserData(CwtDeclarationConfig.configContextKey)
+        if(configContext != null) {
+            cacheKey = CwtDeclarationConfigInjector.handleCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
+        }
+        return cache.getOrPut(cacheKey) { doGetConfigs(definitionInfo, this, matchType) }
     }
     
     /**
      * 对应的子配置列表。（得到的是合并后的规则列表，且过滤重复的）
      */
     fun getChildConfigs(matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtDataConfig<*>> {
-        val key = "child#$matchType"
-        return cache.getOrPut(key) { doGetChildConfigs(definitionInfo, this, matchType) }
+        var cacheKey = "child#$matchType"
+        //这里需要特别处理缓存的键
+        val configContext = definitionInfo.getDeclaration(matchType)?.getUserData(CwtDeclarationConfig.configContextKey)
+        if(configContext != null) {
+            cacheKey = CwtDeclarationConfigInjector.handleCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
+        }
+        return cache.getOrPut(cacheKey) { doGetChildConfigs(definitionInfo, this, matchType) }
     }
 }
 

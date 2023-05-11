@@ -1,6 +1,8 @@
 package icu.windea.pls.config.config
 
 import com.google.common.cache.*
+import com.intellij.openapi.application.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
@@ -14,6 +16,8 @@ data class CwtDeclarationConfig(
 ) : CwtConfig<CwtProperty> {
     companion object {
         private val mergedConfigCache: Cache<String, CwtPropertyConfig> by lazy { CacheBuilder.newBuilder().buildCache() }
+        
+        val configContextKey = Key.create<CwtConfigContext>("cwt.config.context")
     }
     
     /**
@@ -24,7 +28,7 @@ data class CwtDeclarationConfig(
         if(!propertyConfig.isBlock) return propertyConfig
         
         val (_, name, type, subtypes, _, matchType) = configContext
-        val cacheKey0 = buildString {
+        var cacheKey = buildString {
             append(type)
             if(subtypes != null) {
                 append(".")
@@ -32,13 +36,15 @@ data class CwtDeclarationConfig(
             }
             append("#").append(matchType)
         }
-        
-        val cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey0, configContext, configContext.injectors) ?: cacheKey0
+        cacheKey = CwtDeclarationConfigInjector.handleCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
         
         return mergedConfigCache.getOrPut(cacheKey) {
-            val r = doGetMergedConfig(configContext)
-            CwtDeclarationConfigInjector.handleDeclarationMergedConfig(r, configContext, configContext.injectors)
-            r
+            runReadAction {
+                val r = doGetMergedConfig(configContext)
+                CwtDeclarationConfigInjector.handleDeclarationMergedConfig(r, configContext, configContext.injectors)
+                r.putUserData(configContextKey, configContext)
+                r
+            }
         }
     }
     

@@ -1604,7 +1604,7 @@ object ParadoxConfigHandler {
     
     private fun <T : CwtDataConfig<*>> getConfigsFromCache(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
         val configsMap = getConfigsMapFromCache(element) ?: return emptyList()
-        val key = buildString {
+        val cacheKey = buildString {
             when(configType) {
                 CwtPropertyConfig::class.java -> append("property")
                 CwtValueConfig::class.java -> append("value")
@@ -1614,7 +1614,7 @@ object ParadoxConfigHandler {
             append("#").append(orDefault.toIntString())
             append("#").append(matchType)
         }
-        return configsMap.getOrPut(key) { resolveConfigs(element, configType, allowDefinition, orDefault, matchType) } as List<T>
+        return configsMap.getOrPut(cacheKey) { resolveConfigs(element, configType, allowDefinition, orDefault, matchType) } as List<T>
     }
     
     private fun getConfigsMapFromCache(element: PsiElement): MutableMap<String, List<CwtConfig<*>>>? {

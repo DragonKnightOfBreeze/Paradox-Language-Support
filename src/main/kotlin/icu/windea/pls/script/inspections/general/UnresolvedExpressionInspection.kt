@@ -102,7 +102,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         val config = configs.firstOrNull()
                         if(config == null) {
                             val expect = if(showExpectInfo) {
-                                val allConfigs = ParadoxConfigHandler.getValueConfigs(element, orDefault = true)
+                                val allConfigs = definitionMemberInfo.getConfigs()
                                 val allExpressions = if(allConfigs.isEmpty()) emptySet() else {
                                     buildSet {
                                         for(c in allConfigs) {
