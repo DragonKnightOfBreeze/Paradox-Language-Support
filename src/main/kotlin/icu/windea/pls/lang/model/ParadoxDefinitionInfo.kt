@@ -12,6 +12,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import java.util.*
+import java.util.concurrent.*
 import kotlin.collections.component1
 import kotlin.collections.component2
 
@@ -64,10 +65,7 @@ class ParadoxDefinitionInfo(
         subtypeConfigs.map { it.name }
     }
     
-    val subtypeConfigs: List<CwtSubtypeConfig> by lazy {
-        //正在索引时不要尝试匹配子类型
-        doGetSubtypeConfigs(CwtConfigMatchType.DEFAULT)
-    }
+    val subtypeConfigs: List<CwtSubtypeConfig> by lazy { getSubtypeConfigs() }
     
     val types: List<String> by lazy {
         mutableListOf(type).apply { addAll(subtypes) }
@@ -77,9 +75,7 @@ class ParadoxDefinitionInfo(
         types.joinToString(", ")
     }
     
-    val declaration: CwtPropertyConfig? by lazy {
-        doGetDeclaration(CwtConfigMatchType.DEFAULT)
-    }
+    val declaration: CwtPropertyConfig? by lazy { getDeclaration() }
     
     val localisations: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
         val mergedLocalisationConfig = typeConfig.localisation?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
@@ -132,11 +128,12 @@ class ParadoxDefinitionInfo(
     
     
     fun getSubtypeConfigs(matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtSubtypeConfig> {
-        if(matchType == CwtConfigMatchType.DEFAULT) return subtypeConfigs
-        return doGetSubtypeConfigs(matchType)
+        return subtypeConfigsCache.getOrPut(matchType) { doGetSubtypeConfigs(matchType) }
     }
     
-    private fun doGetSubtypeConfigs(matchType: Int): SmartList<CwtSubtypeConfig> {
+    private val subtypeConfigsCache = ConcurrentHashMap<Int, List<CwtSubtypeConfig>>()
+    
+    private fun doGetSubtypeConfigs(matchType: Int): List<CwtSubtypeConfig> {
         val subtypesConfig = typeConfig.subtypes
         val result = SmartList<CwtSubtypeConfig>()
         for(subtypeConfig in subtypesConfig.values) {
@@ -148,9 +145,10 @@ class ParadoxDefinitionInfo(
     }
     
     fun getDeclaration(matchType: Int = CwtConfigMatchType.DEFAULT): CwtPropertyConfig? {
-        if(matchType == CwtConfigMatchType.DEFAULT) return declaration
-        return doGetDeclaration(matchType)
+        return declarationConfigsCache.getOrPut(matchType) { doGetDeclaration(matchType) }
     }
+    
+    private val declarationConfigsCache = ConcurrentHashMap<Int, CwtPropertyConfig?>()
     
     private fun doGetDeclaration(matchType: Int): CwtPropertyConfig? {
         val subtypes = getSubtypeConfigs(matchType).map { it.name }

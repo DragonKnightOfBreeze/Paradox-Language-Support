@@ -9,10 +9,9 @@ import icu.windea.pls.lang.config.*
 
 class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
     companion object {
-        val configKey = Key.create<CwtOnActionConfig?>("cwt.config.injector.onAction.config")
+        val configKey = Key.create<CwtOnActionConfig>("cwt.config.injector.onAction.config")
     }
     
-    //某些预定义的on_action的声明规则需要重载（先实现，目前没有出现这种情况）
     //预定义的on_action如果指定了事件类型，声明规则中需要在"<event>"规则后加上对应的规则
     
     override fun supports(configContext: CwtConfigContext): Boolean {
@@ -26,10 +25,20 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
         return false
     }
     
-    override fun getDeclarationMergedConfig(configContext: CwtConfigContext): CwtPropertyConfig? {
-        val config = configContext.getUserData(configKey) ?: return null
-        return config.config.takeIf { it.configs.isNotNullOrEmpty() }
+    override fun getCacheKey(cacheKey0: String, configContext: CwtConfigContext): String? {
+        val config = configContext.getUserData(configKey) 
+        if(config == null) return null
+        return "${configContext.definitionName}#${cacheKey0}"
     }
+    
+    //override fun getDeclarationMergedConfig(configContext: CwtConfigContext): CwtPropertyConfig? {
+    //    val config = configContext.getUserData(configKey) ?: return null
+    //    return doGetDeclarationMergedConfig(config)
+    //}
+    //
+    //private fun doGetDeclarationMergedConfig(config: CwtGameRuleConfig): CwtPropertyConfig? {
+    //    return config.config.takeIf { it.configs.isNotNullOrEmpty() }
+    //}
     
     override fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, configContext: CwtConfigContext) {
         val config = configContext.getUserData(configKey) ?: return

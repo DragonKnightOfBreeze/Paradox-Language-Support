@@ -28,22 +28,20 @@ data class CwtDeclarationConfig(
         if(!propertyConfig.isBlock) return propertyConfig
         
         val (_, name, type, subtypes, _, matchType) = configContext
-        val cacheKey = buildString {
-            if(configContext.injectors.isNotEmpty()) {
-                append(name).append(" ")
-            }
-            append(type).append(" ")
+        val cacheKey0 = buildString {
+            append(type)
             if(subtypes != null) {
-                append(subtypes.sorted().joinToString(","))
-            } else {
-                append("*")
+                append(".")
+                append(subtypes.sorted().joinToString("."))
             }
             append("#").append(matchType)
         }
         
+        val cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey0, configContext, configContext.injectors) ?: cacheKey0
+        
         return mergedConfigCache.getOrPut(cacheKey) {
             val r = doGetMergedConfig(configContext)
-            CwtDeclarationConfigInjector.handleDeclarationMergedConfig(r, configContext, configContext.injectors) //FIXME 这行代码时间成本过高！
+            CwtDeclarationConfigInjector.handleDeclarationMergedConfig(r, configContext, configContext.injectors)
             r.putUserData(originalDeclarationConfigKey, this.propertyConfig)
             r.putUserData(injectedDeclarationConfigKey, r)
             r
@@ -57,7 +55,5 @@ data class CwtDeclarationConfig(
         val configs = propertyConfig.configs?.flatMap { it.deepMergeConfigs(configContext) }
         return propertyConfig.copy(configs = configs)
         //here propertyConfig.parent should be null
-        
-        
     }
 }

@@ -13,6 +13,11 @@ interface CwtDeclarationConfigInjector {
     fun supports(configContext: CwtConfigContext): Boolean
     
     /**
+     * 处理得到合并后的声明规则的缓存的键。
+     */
+    fun getCacheKey(cacheKey0: String, configContext: CwtConfigContext): String? = null
+    
+    /**
      * 替代默认实现，使用另外的逻辑获取合并后的声明规则。
      * 
      * 需要保证当注入时所有规则列表都是可变的。
@@ -41,6 +46,11 @@ interface CwtDeclarationConfigInjector {
         fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, configContext: CwtConfigContext, injectors: List<CwtDeclarationConfigInjector> = EP_NAME.extensionList) {
             if(injectors.isEmpty()) return
             injectors.forEach { it.handleDeclarationMergedConfig(declarationConfig, configContext) }
+        }
+        
+        fun getCacheKey(cacheKey: String, configContext: CwtConfigContext, injectors: List<CwtDeclarationConfigInjector> = EP_NAME.extensionList): String? {
+            if(injectors.isEmpty()) return null
+            return injectors.firstNotNullOfOrNull { it.getCacheKey(cacheKey, configContext) }
         }
     }
 }

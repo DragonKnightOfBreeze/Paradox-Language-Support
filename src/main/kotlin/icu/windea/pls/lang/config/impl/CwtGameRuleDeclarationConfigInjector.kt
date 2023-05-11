@@ -7,13 +7,13 @@ import icu.windea.pls.lang.config.*
 
 class CwtGameRuleDeclarationConfigInjector : CwtDeclarationConfigInjector {
     companion object {
-        val configKey = Key.create<CwtGameRuleConfig?>("cwt.config.injector.gameRule.config")
+        val configKey = Key.create<CwtGameRuleConfig>("cwt.config.injector.gameRule.config")
     }
     
     //某些game_rule的声明规则需要重载
     
     override fun supports(configContext: CwtConfigContext): Boolean {
-        val (_, name, type, _, configGroup, matchType) = configContext
+        val (_, name, type, _, configGroup, _) = configContext
         if(type == "game_rule") {
             if(name == null) return false
             val config = configGroup.gameRules.get(name)
@@ -23,8 +23,19 @@ class CwtGameRuleDeclarationConfigInjector : CwtDeclarationConfigInjector {
         return false
     }
     
-    override fun getDeclarationMergedConfig(configContext: CwtConfigContext): CwtPropertyConfig? {
+    override fun getCacheKey(cacheKey0: String, configContext: CwtConfigContext): String? {
         val config = configContext.getUserData(configKey)
-        return config?.config?.takeIf { it.configs.isNotNullOrEmpty() }
+        if(config == null) return null
+        if(doGetDeclarationMergedConfig(config) == null) return cacheKey0
+        return "${configContext.definitionName}#${cacheKey0}"
+    }
+    
+    override fun getDeclarationMergedConfig(configContext: CwtConfigContext): CwtPropertyConfig? {
+        val config = configContext.getUserData(configKey) ?: return null
+        return doGetDeclarationMergedConfig(config)
+    }
+    
+    private fun doGetDeclarationMergedConfig(config: CwtGameRuleConfig): CwtPropertyConfig? {
+        return config.config.takeIf { it.configs.isNotNullOrEmpty() }
     }
 }
