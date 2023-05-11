@@ -187,7 +187,7 @@ object ParadoxLocalisationTextInlayRenderer {
                 context.builder.add(presentation)
                 if(!continueProcess) return false
             } else {
-                context.builder.add(smallText(element.text))
+                context.builder.add(smallText(conceptName.name))
             }
             return continueProcess(context)
         }

@@ -169,7 +169,7 @@ object ParadoxLocalisationTextHtmlRenderer {
                 val conceptName = conceptElement.definitionInfo?.name.orAnonymous()
                 context.builder.appendDefinitionLink(context.gameType.orDefault(), conceptName, "game_concept", context.element, label = conceptText)
             } else {
-                context.builder.append(conceptNameElement.text)
+                context.builder.append(conceptNameElement.name)
             }
             return
         }

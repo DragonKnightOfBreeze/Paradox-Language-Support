@@ -197,7 +197,7 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getName(element: ParadoxLocalisationScriptedVariableReference): String? {
-        return element.text.removePrefix("@")
+        return element.text.removePrefix("@").takeIfNotEmpty()
     }
     
     @JvmStatic
@@ -211,7 +211,7 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getReference(element: ParadoxLocalisationScriptedVariableReference): ParadoxScriptedVariablePsiReference? {
-        val rangeInElement = element.idElement?.textRangeInParent ?: throw IncorrectOperationException()
+        val rangeInElement = element.idElement?.textRangeInParent ?: return null
         return ParadoxScriptedVariablePsiReference(element, rangeInElement)
     }
     
@@ -377,7 +377,7 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getName(element: ParadoxLocalisationCommandField): String {
-        return element.idElement?.text?.trim().orEmpty() //不应该为null
+        return element.idElement?.text?.trim().orEmpty()
     }
     
     @JvmStatic
@@ -420,7 +420,7 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getName(element: ParadoxLocalisationConceptName): String {
-        return element.idElement?.text?.trim().orEmpty() //不应该为null
+        return element.idElement?.text?.trim().orEmpty()
     }
     
     @JvmStatic
