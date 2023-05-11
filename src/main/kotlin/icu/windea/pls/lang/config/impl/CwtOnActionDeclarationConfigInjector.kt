@@ -42,31 +42,36 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
     
     override fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, configContext: CwtConfigContext) {
         val config = configContext.getUserData(configKey) ?: return
-        ProgressManager.checkCanceled()
         val expression = "<event.${config.eventType}>"
         declarationConfig.processDescendants p@{ c ->
             ProgressManager.checkCanceled()
-            when(c) {
-                is CwtPropertyConfig -> {
-                    val isKey = c.key == "<event>"
-                    val isValue = c.stringValue == "<event>"
-                    if(isKey || isValue) {
-                        val cs = c.parent?.configs ?: return@p true
-                        val keyArg = if(isKey) expression else c.key
-                        val valueArg = if(isValue) expression else c.stringValue.orEmpty()
-                        val cc = c.copy(pointer = emptyPointer(), key = keyArg, value = valueArg, stringValue = valueArg)
-                        val i = cs.indexOf(c)
-                        (cs as MutableList).add(i, cc) //insert before "xxx = <event>"
+            val cs = c.configs ?: return@p true
+            var i = -1
+            var cc: CwtDataConfig<*>? = null
+            for((index, c1) in cs.withIndex()) {
+                when(c1) {
+                    is CwtPropertyConfig -> {
+                        val isKey = c1.key == "<event>"
+                        val isValue = c1.stringValue == "<event>"
+                        val keyArg = if(isKey) expression else c1.key
+                        val valueArg = if(isValue) expression else c1.stringValue.orEmpty()
+                        if(isKey || isValue) {
+                            cc = c1.copy(pointer = emptyPointer(), key = keyArg, value = valueArg, stringValue = valueArg)
+                            i = index
+                            break
+                        }
+                    }
+                    is CwtValueConfig -> {
+                        if(c.stringValue == "<event>") {
+                            cc = c1.copy(pointer = emptyPointer(), value = expression, stringValue = expression)
+                            i = index
+                            break
+                        }
                     }
                 }
-                is CwtValueConfig -> {
-                    if(c.stringValue == "<event>") {
-                        val cs = c.parent?.configs ?: return@p true
-                        val cc = c.copy(pointer = emptyPointer(), value = expression, stringValue = expression)
-                        val i = cs.indexOf(c)
-                        (cs as MutableList).add(i, cc) //insert before "<event>"
-                    }
-                }
+            }
+            if(cc != null) {
+                (cs as MutableList).add(i, cc)
             }
             true
         }

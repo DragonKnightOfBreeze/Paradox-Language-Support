@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -56,7 +55,6 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 	fun deepMergeConfigs(configContext: CwtConfigContext): List<CwtDataConfig<*>> {
 		//因为之后可能需要对得到的声明规则进行注入，需要保证当注入式所有规则列表都是可变的
 		
-		ProgressManager.checkCanceled()
 		val mergedConfigs: MutableList<CwtDataConfig<*>>? = if(configs != null) SmartList() else null
 		configs?.forEach { config ->
 			val childConfigList = config.deepMergeConfigs(configContext)
@@ -128,6 +126,12 @@ object CwtDataConfigKeys {
 	val replaceScopes = Key.create<ParadoxScopeContext?>("paradox.cwtDataConfig.replaceScopes")
 	val pushScope = Key.create<String?>("paradox.cwtDataConfig.pushScope")
 	val supportedScopes = Key.create<Set<String>>("paradox.cwtDataConfig.supportedScopes")
+}
+
+val CwtDataConfig<*>.isRoot get() = when {
+	this is CwtPropertyConfig -> this.parent == null
+	this is CwtValueConfig -> this.parent == null && this.propertyConfig == null
+	else -> false
 }
 
 val CwtDataConfig<*>.path get() = getOrPutUserData(CwtDataConfigKeys.path) action@{

@@ -1,7 +1,6 @@
 package icu.windea.pls.config.config
 
 import com.google.common.cache.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
@@ -15,9 +14,6 @@ data class CwtDeclarationConfig(
 ) : CwtConfig<CwtProperty> {
     companion object {
         private val mergedConfigCache: Cache<String, CwtPropertyConfig> by lazy { CacheBuilder.newBuilder().buildCache() }
-        
-        val originalDeclarationConfigKey = Key.create<CwtPropertyConfig>("cwt.originalDeclarationConfig")
-        val injectedDeclarationConfigKey = Key.create<CwtPropertyConfig>("cwt.injectedDeclarationConfig")
     }
     
     /**
@@ -42,8 +38,6 @@ data class CwtDeclarationConfig(
         return mergedConfigCache.getOrPut(cacheKey) {
             val r = doGetMergedConfig(configContext)
             CwtDeclarationConfigInjector.handleDeclarationMergedConfig(r, configContext, configContext.injectors)
-            r.putUserData(originalDeclarationConfigKey, this.propertyConfig)
-            r.putUserData(injectedDeclarationConfigKey, r)
             r
         }
     }

@@ -6,6 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.pom.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
@@ -32,13 +33,29 @@ class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
 		val configs = ParadoxConfigHandler.getConfigs(location, true, isKey)
 		val targets = buildSet {
 			for(config in configs) {
-				config.getUserData(CwtDeclarationConfig.originalDeclarationConfigKey)?.pointer?.element?.let { add(it) }
-				config.getUserData(CwtDeclarationConfig.injectedDeclarationConfigKey)?.pointer?.element?.let { add(it) }
+				val configGroup = config.info.configGroup
+				
+				if(location is ParadoxScriptStringExpressionElement) {
+					val name = location.value
+					when {
+						config.isRoot -> {
+							configGroup.declarations.get(name)?.pointer?.element?.let { add(it) }
+							when {
+								name == "game_rule" -> {
+									configGroup.gameRules.get(name)?.pointer?.element?.let { add(it) }
+								}
+								name == "on_action" -> {
+									configGroup.onActions.getByTemplate(name, location, configGroup)?.pointer?.element?.let { add(it) }
+								}
+							}
+						}
+					}
+				}
+				
 				config.pointer.element?.let { add(it) }
 				config.resolvedOrNull()?.pointer?.element?.let { add(it) }
 				
 				if(location is ParadoxScriptStringExpressionElement) {
-					val configGroup = config.info.configGroup
 					val name = location.value
 					val configExpression = config.expression
 					when {
