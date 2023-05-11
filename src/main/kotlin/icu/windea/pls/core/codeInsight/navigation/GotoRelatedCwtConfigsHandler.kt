@@ -6,7 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.pom.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
@@ -32,6 +32,8 @@ class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
 		val configs = ParadoxConfigHandler.getConfigs(location, true, isKey)
 		val targets = buildSet {
 			for(config in configs) {
+				config.getUserData(CwtDeclarationConfig.originalDeclarationConfigKey)?.pointer?.element?.let { add(it) }
+				config.getUserData(CwtDeclarationConfig.injectedDeclarationConfigKey)?.pointer?.element?.let { add(it) }
 				config.pointer.element?.let { add(it) }
 				config.resolvedOrNull()?.pointer?.element?.let { add(it) }
 				
@@ -40,16 +42,6 @@ class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
 					val name = location.value
 					val configExpression = config.expression
 					when {
-						configExpression.type == CwtDataType.Definition -> {
-							when {
-								configExpression.value == "game_rule" -> {
-									configGroup.gameRules.get(name)?.pointer?.element?.let { add(it) }
-								}
-								configExpression.value == "on_action" -> {
-									configGroup.onActions.getByTemplate(name, location, configGroup)?.pointer?.element?.let { add(it) }
-								}
-							}
-						}
 						configExpression.type == CwtDataType.EnumValue -> {
 							configGroup.enums[name]?.pointer?.element?.let { add(it) }
 							configGroup.complexEnums[name]?.pointer?.element?.let { add(it) }

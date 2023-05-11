@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.config.impl
 
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -34,6 +35,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
         val config = configContext.getUserData(configKey) ?: return
         val expression = "<event.${config.eventType}>"
         declarationConfig.processDescendants p@{ c ->
+            ProgressManager.checkCanceled()
             when(c) {
                 is CwtPropertyConfig -> {
                     val isKey = c.key == "<event>"
@@ -43,7 +45,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
                         val keyArg = if(isKey) c.key else expression
                         val valueArg = if(isValue) c.stringValue.orEmpty() else expression
                         val cc = c.copy(pointer = emptyPointer(), key = keyArg, value = valueArg)
-                        (cs as MutableList).add(cs.indexOf(cc), cc)
+                        (cs as MutableList).add(cs.indexOf(c), cc)
                     }
                 }
                 is CwtValueConfig -> {
