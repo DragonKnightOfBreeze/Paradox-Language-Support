@@ -53,8 +53,8 @@ For features and usages of this plugin, please refer to the [Reference documenta
 Tips:
 
 * If a script snippet cannot be recognized, generally there are following situations:
-  * Corresponding CWT rule does not exist. (Indicates that this script snippet contains errors)
-  * Corresponding CWT rule is not perfect. (Consider sending fallback to me on Github)
+  * Related CWT rule does not exist. (Indicates that this script snippet contains errors)
+  * Related CWT rule is not perfect. (Consider sending fallback to me on Github)
   * There are some unresolved references. (Consider configuring related game directory or mod dependencies)
 * If there is a problem with IDE's index or an error occurs involving IDE's index, please try to rebuild index.
   (Click `File -> Invalidate Caches... -> Invalidate and Restart`)

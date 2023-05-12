@@ -39,7 +39,7 @@ class GotoLocalisationsAction : BaseCodeInsightAction() {
 		presentation.isVisible = true
 		val offset = editor.caretModel.offset
 		val localisation = findElement(file, offset)
-		presentation.isEnabledAndVisible = localisation != null
+		presentation.isEnabled = localisation != null
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {

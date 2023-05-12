@@ -6,7 +6,7 @@
 
 * [X] ~~`utility_component_template`定义声明完全无法解析？为啥啊？~~（没有复现）
 * [X] ~~本地化图标的读写引用高亮再次失效~~（生成的`ParadoxLowLevelSearchUtil.class`文件不对）
-* [ ] 复杂表达式中的参数被高亮成了白色（为啥？）
+* [X] ~~复杂表达式中的参数被高亮成了白色（为啥？）~~（已修复）
 * [ ] 脚本参数名可能是忽略大小写的？
 * [ ] scopeContext应当可以跨内联向下传递
 * [ ] `enum[feature_flags]` - 这个存在相关的本地化
