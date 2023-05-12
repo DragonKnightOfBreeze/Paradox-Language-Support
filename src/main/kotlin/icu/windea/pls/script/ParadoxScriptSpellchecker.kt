@@ -16,10 +16,8 @@ class ParadoxScriptSpellchecker : SpellcheckingStrategy() {
 		return when(element.elementType) {
 			SCRIPTED_VARIABLE_NAME_TOKEN -> textTokenizer
 			SCRIPTED_VARIABLE_REFERENCE_TOKEN -> textTokenizer
-			QUOTED_PROPERTY_KEY_TOKEN -> textTokenizer
 			PROPERTY_KEY_TOKEN -> compactTextTokenizer
-			QUOTED_STRING_TOKEN -> textTokenizer
-			STRING_TOKEN, STRING_SNIPPET -> compactTextTokenizer
+			STRING_TOKEN -> compactTextTokenizer
 			CONDITION_PARAMETER_TOKEN -> textTokenizer
 			PARAMETER_TOKEN-> textTokenizer
 			COMMENT -> textTokenizer

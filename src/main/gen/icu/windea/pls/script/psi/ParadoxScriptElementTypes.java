@@ -36,11 +36,11 @@ public interface ParadoxScriptElementTypes {
   IElementType STRING = ParadoxScriptElementTypeFactory.getElementType("STRING");
   IElementType VALUE = ParadoxScriptElementTypeFactory.getElementType("VALUE");
 
-  IElementType CONDITION_PARAMETER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("CONDITION_PARAMETER_TOKEN");
   IElementType AT = ParadoxScriptElementTypeFactory.getTokenType("AT");
   IElementType BOOLEAN_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("BOOLEAN_TOKEN");
   IElementType COLOR_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("COLOR_TOKEN");
   IElementType COMMENT = ParadoxScriptElementTypeFactory.getTokenType("COMMENT");
+  IElementType CONDITION_PARAMETER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("CONDITION_PARAMETER_TOKEN");
   IElementType DIV_SIGN = ParadoxScriptElementTypeFactory.getTokenType("DIV_SIGN");
   IElementType EQUAL_SIGN = ParadoxScriptElementTypeFactory.getTokenType("EQUAL_SIGN");
   IElementType FLOAT_NUMBER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("FLOAT_NUMBER_TOKEN");
@@ -71,8 +71,6 @@ public interface ParadoxScriptElementTypes {
   IElementType PLUS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("PLUS_SIGN");
   IElementType PROPERTY_KEY_SNIPPET = ParadoxScriptElementTypeFactory.getTokenType("PROPERTY_KEY_SNIPPET");
   IElementType PROPERTY_KEY_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("PROPERTY_KEY_TOKEN");
-  IElementType QUOTED_PROPERTY_KEY_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("QUOTED_PROPERTY_KEY_TOKEN");
-  IElementType QUOTED_STRING_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("QUOTED_STRING_TOKEN");
   IElementType RABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("RABS_SIGN");
   IElementType RIGHT_BRACE = ParadoxScriptElementTypeFactory.getTokenType("RIGHT_BRACE");
   IElementType RIGHT_BRACKET = ParadoxScriptElementTypeFactory.getTokenType("RIGHT_BRACKET");

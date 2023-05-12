@@ -160,7 +160,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   {CHECK_PROPERTY_KEY} {
       if(yycharat(0) == '"'){
           pushbackUntilBeforeBlank(1);
-          return QUOTED_PROPERTY_KEY_TOKEN;
+          return PROPERTY_KEY_TOKEN;
       } else {
           if(isParameterized()) {
               parameterPosition = ParameterPosition.KEY; 
@@ -176,7 +176,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   {CHECK_STRING} {
       if(yycharat(0) == '"') {
 		  valueStarted=true;
-		  return QUOTED_STRING_TOKEN;
+		  return STRING_TOKEN;
 	  } else {
           if(isParameterized()) {
               parameterPosition = ParameterPosition.STRING; 
@@ -255,7 +255,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   {INT_TOKEN} {scriptedVariableValueStarted=true; return INT_TOKEN;}
   {FLOAT_TOKEN} {scriptedVariableValueStarted=true; return FLOAT_TOKEN;}
   {STRING_TOKEN} {scriptedVariableValueStarted=true; return STRING_TOKEN;}
-  {QUOTED_STRING_TOKEN} {scriptedVariableValueStarted=true; return QUOTED_STRING_TOKEN;}
+  {QUOTED_STRING_TOKEN} {scriptedVariableValueStarted=true; return STRING_TOKEN;}
 }
 
 <WAITING_SCRIPTED_VARIABLE_REFERENCE>{
@@ -321,7 +321,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   {CHECK_PROPERTY_KEY} {
       if(yycharat(0) == '"'){
           pushbackUntilBeforeBlank(1);
-          return QUOTED_PROPERTY_KEY_TOKEN;
+          return PROPERTY_KEY_TOKEN;
       } else {
           if(isParameterized()) {
               parameterPosition = ParameterPosition.KEY; 
@@ -337,7 +337,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   {CHECK_STRING} { 
       if(yycharat(0) == '"') {
 		  valueStarted=true;
-		  return QUOTED_STRING_TOKEN;
+		  return STRING_TOKEN;
 	  } else {
           if(isParameterized()) {
               parameterPosition = ParameterPosition.STRING; 
@@ -365,7 +365,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   {CHECK_PROPERTY_KEY} {
       if(yycharat(0) == '"'){
           pushbackUntilBeforeBlank(1);
-          return QUOTED_PROPERTY_KEY_TOKEN;
+          return PROPERTY_KEY_TOKEN;
       } else {
           if(isParameterized()) {
               parameterPosition = ParameterPosition.KEY; 
@@ -381,7 +381,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   {CHECK_STRING} { 
       if(yycharat(0) == '"') {
 		  valueStarted=true;
-		  return QUOTED_STRING_TOKEN;
+		  return STRING_TOKEN;
 	  } else {
           if(isParameterized()) {
               parameterPosition = ParameterPosition.STRING; 
@@ -498,7 +498,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   {CHECK_PROPERTY_KEY} {
       if(yycharat(0) == '"'){
           pushbackUntilBeforeBlank(1);
-          return QUOTED_PROPERTY_KEY_TOKEN;
+          return PROPERTY_KEY_TOKEN;
       } else {
           if(isParameterized()) {
               parameterPosition = ParameterPosition.KEY; 
@@ -514,7 +514,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{QUOTED_STRING_TOKEN} //判断接下来是�
   {CHECK_STRING} { 
       if(yycharat(0) == '"') {
 		  valueStarted=true;
-		  return QUOTED_STRING_TOKEN;
+		  return STRING_TOKEN;
 	  } else {
           if(isParameterized()) {
               parameterPosition = ParameterPosition.STRING; 
