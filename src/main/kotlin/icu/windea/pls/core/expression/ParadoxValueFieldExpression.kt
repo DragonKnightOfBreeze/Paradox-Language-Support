@@ -70,8 +70,6 @@ class ParadoxValueFieldExpressionImpl(
     
     override val valueFieldNode: ParadoxValueFieldExpressionNode = nodes.last().cast()
     
-    override fun getAttributesKey() = ParadoxScriptAttributesKeys.VALUE_FILED_EXPRESSION_KEY
-    
     override fun validate(): List<ParadoxExpressionError> {
         val errors = SmartList<ParadoxExpressionError>()
         var malformed = false

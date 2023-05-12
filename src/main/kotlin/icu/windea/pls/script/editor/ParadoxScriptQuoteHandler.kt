@@ -4,4 +4,4 @@ import com.intellij.codeInsight.editorActions.*
 import com.intellij.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
-class ParadoxScriptQuoteHandler : SimpleTokenSetQuoteHandler(PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, STRING_TOKEN, QUOTED_STRING_TOKEN, TokenType.BAD_CHARACTER)
+class ParadoxScriptQuoteHandler : SimpleTokenSetQuoteHandler(PROPERTY_KEY_TOKEN, PROPERTY_KEY_SNIPPET, STRING_TOKEN, STRING_SNIPPET, TokenType.BAD_CHARACTER)

@@ -32,11 +32,10 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        if(expression.isParameterized()) return
         val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+        ParadoxConfigHandler.highlightScriptExpression(element, range, attributesKey, holder)
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
@@ -89,11 +88,10 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        if(expression.isParameterized()) return
         val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+        ParadoxConfigHandler.highlightScriptExpression(element, range, attributesKey, holder)
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
@@ -146,10 +144,9 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if(expression.isLeftQuoted()) return
-        if(expression.isParameterized()) return
         val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
         val range = rangeInElement?.shiftRight(element.startOffset) ?: element.textRange.unquote(element.text)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+        ParadoxConfigHandler.highlightScriptExpression(element, range, attributesKey, holder)
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
@@ -205,11 +202,10 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport(
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        if(expression.isParameterized()) return
         val attributesKey = ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+        ParadoxConfigHandler.highlightScriptExpression(element, range, attributesKey, holder)
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
@@ -269,11 +265,10 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        if(expression.isParameterized()) return
         val attributesKey = ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+        ParadoxConfigHandler.highlightScriptExpression(element, range, attributesKey, holder)
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
@@ -347,7 +342,6 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        if(expression.isParameterized()) return
         val configGroup = config.info.configGroup
         val enumName = config.expression?.value ?: return
         val attributesKey = when {
@@ -357,7 +351,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
         }
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+        ParadoxConfigHandler.highlightScriptExpression(element, range, attributesKey, holder)
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
@@ -447,11 +441,10 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport() 
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        if(expression.isParameterized()) return
         val attributesKey = ParadoxScriptAttributesKeys.MODIFIER_KEY
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+        ParadoxConfigHandler.highlightScriptExpression(element, range, attributesKey, holder)
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
@@ -473,11 +466,10 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport()
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        if(expression.isParameterized()) return
         val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT_KEY
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+        ParadoxConfigHandler.highlightScriptExpression(element, range, attributesKey, holder)
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
@@ -504,11 +496,10 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        if(expression.isParameterized()) return
         val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT_KEY
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+        ParadoxConfigHandler.highlightScriptExpression(element, range, attributesKey, holder)
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
@@ -529,7 +520,6 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport()
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        if(expression.isParameterized()) return
         val configGroup = config.info.configGroup
         val configExpression = config.expression
         val aliasName = configExpression?.value ?: return
@@ -568,7 +558,6 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport()
 
 abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpressionSupport() {
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        if(expression.isParameterized()) return
         val annotated = annotateByAliasName(element, rangeInElement, holder, config)
         if(annotated) return
         val configExpression = config.expression ?: return
@@ -583,7 +572,7 @@ abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpress
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         if(range.isEmpty) return
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+        ParadoxConfigHandler.highlightScriptExpression(element, range, attributesKey, holder)
     }
     
     private fun annotateByAliasName(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder, config: CwtConfig<*>): Boolean {
@@ -599,7 +588,7 @@ abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpress
         }
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+        ParadoxConfigHandler.highlightScriptExpression(element, range, attributesKey, holder)
         return true
     }
 }

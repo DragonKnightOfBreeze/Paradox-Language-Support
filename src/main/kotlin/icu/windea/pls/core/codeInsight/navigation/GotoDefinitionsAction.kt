@@ -39,7 +39,7 @@ class GotoDefinitionsAction : BaseCodeInsightAction() {
 		if(fileInfo.pathToEntry.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
 		presentation.isVisible = true
 		if(file.definitionInfo != null) {
-			presentation.isEnabledAndVisible = true
+			presentation.isEnabled = true
 			return
 		}
 		val offset = editor.caretModel.offset
@@ -49,7 +49,7 @@ class GotoDefinitionsAction : BaseCodeInsightAction() {
 			element.isDefinitionRootKeyOrName() -> true
 			else -> false
 		}
-		presentation.isEnabledAndVisible = isEnabled
+		presentation.isEnabled = isEnabled
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {

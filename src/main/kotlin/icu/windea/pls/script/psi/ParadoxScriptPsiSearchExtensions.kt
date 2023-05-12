@@ -249,6 +249,7 @@ fun PsiElement.findParentDefinition(link: Boolean = false): ParadoxScriptDefinit
     var current: PsiElement = this
     val inlineStack = if(link) LinkedList<String>() else null
     while(current !is PsiFile) {
+        ProgressManager.checkCanceled()
         if(inlineStack != null && current is ParadoxScriptMemberElement) {
             val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current, inlineStack)
             if(linked != null) {
@@ -282,6 +283,7 @@ fun PsiElement.findParentProperty(
     }
     val inlineStack = if(link) LinkedList<String>() else null
     while(current !is PsiFile) {
+        ProgressManager.checkCanceled()
         if(inlineStack != null && current is ParadoxScriptMemberElement) {
             val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current, inlineStack)
             if(linked != null) {

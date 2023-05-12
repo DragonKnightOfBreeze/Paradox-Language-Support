@@ -73,6 +73,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val rangeInElement = contextReferenceElement.propertyKey.textRangeInParent
         val propertyValue = contextReferenceElement.propertyValue ?: return null
         val expression = ParadoxInlineScriptHandler.getExpressionFromInlineConfig(propertyValue, inlineConfig) ?: return null
+        if(expression.isParameterized()) return null //skip if context name is parameterized
         val argumentNames = mutableSetOf<String>()
         contextReferenceElement.block?.processProperty p@{
             if(completionOffset != -1 && completionOffset in it.textRange) return@p true
@@ -121,6 +122,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
         val propertyValue = contextReferenceElement.propertyValue ?: return null
         val expression = ParadoxInlineScriptHandler.getExpressionFromInlineConfig(propertyValue, inlineConfig) ?: return null
+        if(expression.isParameterized()) return null //skip if context name is parameterized
         val name = element.name
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
         val contextKey = "inline_script@$expression"
@@ -143,6 +145,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     
     override fun processContext(element: ParadoxParameterElement, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
         val expression = element.getUserData(inlineScriptExpressionKey) ?: return false
+        if(expression.isParameterized()) return false //skip if context name is parameterized
         val project = element.project
         ParadoxInlineScriptHandler.processInlineScript(expression, element, project, processor)
         return true
@@ -150,6 +153,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     
     override fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
         val expression = contextReferenceInfo.getUserData(inlineScriptExpressionKey) ?: return false
+        if(expression.isParameterized()) return false //skip if context name is parameterized
         val project = contextReferenceInfo.project
         ParadoxInlineScriptHandler.processInlineScript(expression, element, project, processor)
         return true

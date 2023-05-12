@@ -3,18 +3,14 @@ package icu.windea.pls.script.editor
 import com.intellij.lang.annotation.*
 import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.*
-import com.intellij.util.text.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.model.*
@@ -118,7 +114,9 @@ class ParadoxScriptAnnotator : Annotator {
             if(element is ParadoxScriptStringExpressionElement) {
                 val elementText = element.text
                 if(elementText.surroundsWith('$', '$')) return //整个是参数的情况，不需要进行高亮
-                if(elementText.contains('$')) setParameterRanges(element) //缓存参数文本范围
+                if(elementText.contains('$')) {
+                    ParadoxConfigHandler.setParameterRanges(element)
+                } //缓存参数文本范围
             }
             annotateExpression(element, null, holder, config)
         }
@@ -153,7 +151,7 @@ class ParadoxScriptAnnotator : Annotator {
                         "variable" -> Keys.VARIABLE_KEY
                         else -> Keys.VALUE_SET_VALUE_KEY
                     }
-                    doHighlightScriptExpression(element, element.textRange.unquote(text), attributesKey, holder)
+                    ParadoxConfigHandler.highlightScriptExpression(element, element.textRange.unquote(text), attributesKey, holder)
                     return
                 }
                 val configGroup = config.info.configGroup
@@ -198,12 +196,12 @@ class ParadoxScriptAnnotator : Annotator {
     private fun doAnnotateComplexExpression(element: ParadoxScriptStringExpressionElement, expressionNode: ParadoxExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>) {
         val attributesKey = expressionNode.getAttributesKey()
         if(attributesKey != null) {
+            val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRange.unquote(element.text).startOffset)
             if(expressionNode is ParadoxTokenExpressionNode) {
                 //override default highlight by highlighter (property key or string)
-                holder.newSilentAnnotation(INFORMATION).textAttributes(HighlighterColors.TEXT).create()
+                holder.newSilentAnnotation(INFORMATION).range(rangeToAnnotate).textAttributes(HighlighterColors.TEXT).create()
             }
-            val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRange.unquote(element.text).startOffset)
-            doHighlightScriptExpression(element, rangeToAnnotate, attributesKey, holder)
+            ParadoxConfigHandler.highlightScriptExpression(element, rangeToAnnotate, attributesKey, holder)
         }
         val attributesKeyConfig = expressionNode.getAttributesKeyConfig(element)
         if(attributesKeyConfig != null) {
@@ -215,40 +213,5 @@ class ParadoxScriptAnnotator : Annotator {
                 doAnnotateComplexExpression(element, node, holder, config)
             }
         }
-    }
-    
-    private fun doHighlightScriptExpression(element: ParadoxScriptExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
-        if(element !is ParadoxScriptStringExpressionElement) {
-            holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
-            return
-        }
-        //进行特殊代码高亮时，可能需要跳过字符串表达式中的参数部分
-        val parameterRanges = getParameterRanges(element)
-        if(parameterRanges.isEmpty()) {
-            holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
-        } else {
-            val finalRanges = TextRangeUtil.excludeRanges(range, parameterRanges)
-            finalRanges.forEach { r ->
-                if(!r.isEmpty) {
-                    holder.newSilentAnnotation(INFORMATION).range(r).textAttributes(attributesKey).create()
-                }
-            }
-        }
-    }
-    
-    private fun setParameterRanges(element: ParadoxScriptStringExpressionElement) {
-        var parameterRanges: SmartList<TextRange>? = null
-        element.processChild { parameter ->
-            if(parameter is ParadoxParameter) {
-                if(parameterRanges == null) parameterRanges = SmartList()
-                parameterRanges?.add(parameter.textRange)
-            }
-            true
-        }
-        element.putUserData(PlsKeys.parameterRangesKey, parameterRanges.orEmpty())
-    }
-    
-    private fun getParameterRanges(element: ParadoxScriptStringExpressionElement): List<TextRange> {
-        return element.getUserData(PlsKeys.parameterRangesKey).orEmpty()
     }
 }

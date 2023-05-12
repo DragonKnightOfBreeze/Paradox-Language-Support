@@ -6,6 +6,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
 import java.awt.*
@@ -106,7 +107,8 @@ object PlsKeys {
     val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("paradox.cached.localisationInfo")
     val cachedComplexEnumValueInfoKey = Key.create<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cached.complexEnumValueInfo")
     val cachedValueSetValueInfosKey = Key.create<CachedValue<List<ParadoxValueSetValueInfo>>>("paradox.cached.valueSetValueInfos")
-    val cachedConfigsMapKey = Key.create<CachedValue<MutableMap<String, List<CwtConfig<*>>>>>("paradox.cached.configsMap")
+    val cachedConfigsCacheKey = Key.create<CachedValue<MutableMap<String, List<CwtConfig<*>>>>>("paradox.cached.configs.cache")
+    val cachedChildOccurrenceMapCacheKey = Key.create<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>("paradox.cached.childOccurrenceMap.cache")
     val cachedScopeContextKey = Key.create<CachedValue<ParadoxScopeContext>>("paradox.cached.scopeContext")
     val cachedTextColorInfoKey = Key.create<CachedValue<ParadoxTextColorInfo>>("paradox.cached.textColorInfo")
     val cachedDefineValuesKey = Key.create<CachedValue<MutableMap<String, Any?>>>("paradox.cached.defineValues")

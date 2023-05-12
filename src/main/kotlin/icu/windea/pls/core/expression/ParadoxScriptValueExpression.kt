@@ -55,8 +55,6 @@ class ParadoxScriptValueExpressionImpl(
 	override val scriptValueNode: ParadoxScriptValueExpressionNode get() = nodes.first().cast()
 	override val parameterNodes: List<ParadoxScriptValueArgumentExpressionNode> get() = nodes.filterIsInstance<ParadoxScriptValueArgumentExpressionNode>()
 	
-	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SCRIPT_VALUE_EXPRESSION_KEY
-	
 	override fun validate(): List<ParadoxExpressionError> {
 		var malformed = false
 		val errors = SmartList<ParadoxExpressionError>()

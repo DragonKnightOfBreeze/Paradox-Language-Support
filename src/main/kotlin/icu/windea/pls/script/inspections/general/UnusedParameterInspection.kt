@@ -78,6 +78,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
                     val resolved = reference.resolveFirst()
                     ProgressManager.checkCanceled()
                     if(resolved !is ParadoxParameterElement) continue
+                    if(resolved.contextName.isParameterized()) continue //skip if context name is parameterized
                     if(resolved.readWriteAccess == Access.Write) {
                         //当确定已被使用时，后续不需要再进行ReferencesSearch
                         val used = statusMap[resolved]

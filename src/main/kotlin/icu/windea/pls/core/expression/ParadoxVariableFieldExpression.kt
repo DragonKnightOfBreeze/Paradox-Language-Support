@@ -45,8 +45,6 @@ class ParadoxVariableFieldExpressionImpl(
     
     override val variableNode: ParadoxDataExpressionNode = nodes.last().cast()
     
-    override fun getAttributesKey() = ParadoxScriptAttributesKeys.VARIABLE_FILED_EXPRESSION_KEY
-    
     override fun validate(): List<ParadoxExpressionError> {
         val errors = SmartList<ParadoxExpressionError>()
         var malformed = false

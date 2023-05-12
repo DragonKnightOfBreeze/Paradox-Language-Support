@@ -39,11 +39,11 @@ class GotoRelatedCwtConfigsAction : BaseCodeInsightAction() {
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset)
 		if(element == null) {
-			presentation.isEnabledAndVisible = false
+			presentation.isEnabled = false
 			return
 		}
-		val definition = element.findParentDefinition()
-		presentation.isEnabledAndVisible = definition != null
+		//这里不判断能否向上跨内联查找到定义，或者是否真的存在对应的CWT规则
+		presentation.isEnabled = true
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {

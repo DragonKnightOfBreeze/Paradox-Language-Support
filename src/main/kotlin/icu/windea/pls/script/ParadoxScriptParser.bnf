@@ -78,7 +78,7 @@ property ::= property_key property_separator property_value {
     isEquivalentTo toString
   ]
 }
-property_key ::= QUOTED_PROPERTY_KEY_TOKEN | PROPERTY_KEY_TOKEN | (PROPERTY_KEY_SNIPPET | parameter)+ {
+property_key ::= PROPERTY_KEY_TOKEN | ( PROPERTY_KEY_SNIPPET | parameter ) + {
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
@@ -140,7 +140,7 @@ float ::= FLOAT_TOKEN {
   ]
   methods=[getName getValue getFloatValue getType]
 }
-string ::= QUOTED_STRING_TOKEN | STRING_TOKEN | ( STRING_SNIPPET | parameter) + {
+string ::= STRING_TOKEN | ( STRING_SNIPPET | parameter) + {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
@@ -269,6 +269,13 @@ inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERE
 }
 
 //parameter rules
+
+//Currently, parameters can be used in:
+//* scripted variable names
+//* scripted variable reference names
+//* keys (can be quoted)
+//* values (can be quoted)
+//* inline math expressions 
 
 //这里需要特殊处理解析逻辑
 //icu.windea.pls.script.psi.ParadoxScriptParserUtil.doParameter

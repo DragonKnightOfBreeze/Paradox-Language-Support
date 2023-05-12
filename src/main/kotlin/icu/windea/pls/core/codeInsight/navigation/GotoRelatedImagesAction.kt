@@ -38,7 +38,7 @@ class GotoRelatedImagesAction : BaseCodeInsightAction() {
 		if(file !is ParadoxScriptFile) return
 		presentation.isVisible = true
 		if(file.definitionInfo != null) {
-			presentation.isEnabledAndVisible = true
+			presentation.isEnabled = true
 			return
 		}
 		val offset = editor.caretModel.offset
@@ -49,7 +49,7 @@ class GotoRelatedImagesAction : BaseCodeInsightAction() {
 			ParadoxModifierHandler.resolveModifier(element) != null -> true
 			else -> false
 		}
-		presentation.isEnabledAndVisible = isEnabled
+		presentation.isEnabled = isEnabled
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
