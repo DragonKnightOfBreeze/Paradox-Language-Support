@@ -50,6 +50,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             resolvedReferences
         }.orEmpty()
         if(generatedModifierConfig == null) return null
+        if(references.any { it.resolve() == null }) return null //必须先确定可以解析，然后才能解析生成的修正
         val result = ParadoxModifierElement(element, name, generatedModifierConfig, gameType, project)
         result.putUserData(referencesKey, references)
         return result
