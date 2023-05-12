@@ -61,7 +61,7 @@ data class CwtPropertyConfig(
 	 */
 	fun inlineFromSingleAliasConfig(singleAliasConfig: CwtSingleAliasConfig): CwtPropertyConfig {
 		//内联所有value
-		//这里需要直接使用singleAliasConfig的options、optionValues和documentation
+		//这里需要优先使用singleAliasConfig的options、optionValues和documentation
 		val other = singleAliasConfig.config
 		val inlined = copy(
 			value = other.value,
@@ -70,7 +70,7 @@ data class CwtPropertyConfig(
 			floatValue = other.floatValue,
 			stringValue = other.stringValue,
 			configs = other.deepCopyConfigs(),
-			documentation = documentation,
+			documentation = documentation ?: other.documentation,
 			options = options,
 			optionValues = optionValues
 		)

@@ -211,9 +211,9 @@ object ParadoxScopeHandler {
             val result = resolveScopeContext(scopeFieldExpression, parentScopeContext)
             return result
         } else {
-            val resolvedConfig = config.resolved()
-            val replaceScope = resolvedConfig.replaceScopes ?: parentScopeContext ?: return null
-            val pushScope = resolvedConfig.pushScope
+            //优先基于内联前的规则，如果没有，再基于内联后的规则
+            val replaceScope = config.replaceScopes ?: config.resolved().replaceScopes ?: parentScopeContext ?: return null
+            val pushScope = config.pushScope ?: config.resolved().pushScope
             val result = replaceScope.resolve(pushScope)
             return result
         }

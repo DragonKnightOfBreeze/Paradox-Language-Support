@@ -103,7 +103,13 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         val config = configs.firstOrNull()
                         if(config == null) {
                             val expect = if(showExpectInfo) {
-                                val allConfigs = definitionMemberInfo.getConfigs()
+                                val allConfigs = definitionMemberInfo.getConfigs().mapNotNull { 
+                                    when{
+                                        it is CwtPropertyConfig -> it.valueConfig
+                                        it is CwtValueConfig -> it
+                                        else -> null
+                                    }
+                                }
                                 //某些情况下我们需要忽略一些未解析的表达式
                                 if(allConfigs.isNotNullOrEmpty() && allConfigs.all { isIgnored(it) }) return true
                                 val allExpressions = if(allConfigs.isEmpty()) emptySet() else {

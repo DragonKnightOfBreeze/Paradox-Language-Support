@@ -7,7 +7,6 @@
 * [X] ~~`utility_component_template`定义声明完全无法解析？为啥啊？~~（没有复现）
 * [X] ~~本地化图标的读写引用高亮再次失效~~（生成的`ParadoxLowLevelSearchUtil.class`文件不对）
 * [X] ~~复杂表达式中的参数被高亮成了白色（为啥？）~~（已修复）
-* [ ] 脚本参数名可能是忽略大小写的？
 * [ ] scopeContext应当可以跨内联向下传递
 * [ ] `enum[feature_flags]` - 这个存在相关的本地化
 * [ ] 支持传统中的图标继承（`traditions: inherit icon from parent original tradition if inherit_icon = yes`）
@@ -18,6 +17,10 @@
 
 * [ ] 脚本参数不仅仅可以作为scripted_variable_name/scripted_variable_reference/key/value或者其中的一部分，也可以作为一个属性分隔符（`=` `!=`）
 * [ ] 脚本参数中也可以使用参数条件表达式（`civic_[[param]$param$]`）
+
+验证：
+
+* 脚本参数名可能是忽略大小写的？ -> 验证发现并不忽略大小写
 
 ## 0.9.17
 
