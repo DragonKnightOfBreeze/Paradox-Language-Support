@@ -37,6 +37,10 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 	
 	override fun resolvedOrNull(): CwtDataConfig<*>? = null
 	
+	override fun toString(): String {
+		return super.toString()
+	}
+	
 	/**
 	 * 深拷贝。
 	 */
@@ -88,28 +92,6 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 				}
 			}
 		}
-	}
-	
-	fun toOccurrence(contextElement: PsiElement, project: Project): Occurrence {
-		val cardinality = this.cardinality ?: return Occurrence(0, null, null, false)
-		val cardinalityMinDefine = this.cardinalityMinDefine
-		val cardinalityMaxDefine = this.cardinalityMaxDefine
-		val occurrence = Occurrence(0, cardinality.min, cardinality.max, cardinality.relaxMin)
-		if(cardinalityMinDefine != null) {
-			val defineValue = ParadoxDefineHandler.getDefineValue(contextElement, project, cardinalityMinDefine, Int::class.java)
-			if(defineValue != null) {
-				occurrence.min = defineValue
-				occurrence.minDefine = cardinalityMinDefine
-			}
-		}
-		if(cardinalityMaxDefine != null) {
-			val defineValue = ParadoxDefineHandler.getDefineValue(contextElement, project, cardinalityMaxDefine, Int::class.java)
-			if(defineValue != null) {
-				occurrence.max = defineValue
-				occurrence.maxDefine = cardinalityMaxDefine
-			}
-		}
-		return occurrence
 	}
 }
 
@@ -197,4 +179,26 @@ val CwtDataConfig<*>.supportedScopes get() = getOrPutUserData(CwtDataConfigKeys.
 		option?.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
 		option?.optionValues?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
 	}.ifEmpty { ParadoxScopeHandler.anyScopeIdSet }
+}
+
+fun <T : PsiElement> CwtDataConfig<T>.toOccurrence(contextElement: PsiElement, project: Project): Occurrence {
+	val cardinality = this.cardinality ?: return Occurrence(0, null, null, false)
+	val cardinalityMinDefine = this.cardinalityMinDefine
+	val cardinalityMaxDefine = this.cardinalityMaxDefine
+	val occurrence = Occurrence(0, cardinality.min, cardinality.max, cardinality.relaxMin)
+	if(cardinalityMinDefine != null) {
+		val defineValue = ParadoxDefineHandler.getDefineValue(contextElement, project, cardinalityMinDefine, Int::class.java)
+		if(defineValue != null) {
+			occurrence.min = defineValue
+			occurrence.minDefine = cardinalityMinDefine
+		}
+	}
+	if(cardinalityMaxDefine != null) {
+		val defineValue = ParadoxDefineHandler.getDefineValue(contextElement, project, cardinalityMaxDefine, Int::class.java)
+		if(defineValue != null) {
+			occurrence.max = defineValue
+			occurrence.maxDefine = cardinalityMaxDefine
+		}
+	}
+	return occurrence
 }

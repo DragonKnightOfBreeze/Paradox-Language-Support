@@ -203,18 +203,20 @@ tailrec fun selectRootFile(from: Any?): VirtualFile? {
         from is VirtualFile -> from.fileInfo?.rootInfo?.gameRootFile
         from is PsiDirectory -> from.fileInfo?.rootInfo?.gameRootFile
         from is PsiFile -> from.originalFile.fileInfo?.rootInfo?.gameRootFile
+        from is StubBasedPsiElementBase<*> -> selectRootFile(from.containingFileStub?.psi ?: from.containingFile)
         from is PsiElement -> selectRootFile(from.containingFile)
         from is ParadoxScriptExpressionInfo -> selectRootFile(from.file)
         else -> null
     }
 }
 
-fun selectFile(from: Any?): VirtualFile? {
+tailrec fun selectFile(from: Any?): VirtualFile? {
     return when {
         from == null -> null
         from is VirtualFile -> from
         from is PsiDirectory -> from.virtualFile
         from is PsiFile -> from.originalFile.virtualFile
+        from is StubBasedPsiElementBase<*> -> selectFile(from.containingFileStub?.psi ?: from.containingFile)
         from is PsiElement -> selectFile(from.containingFile)
         from is ParadoxScriptExpressionInfo -> selectFile(from.file)
         else -> null

@@ -7,6 +7,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
@@ -55,13 +56,14 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         if(element.propertyKey.isParameterized()) return false
                         val definitionMemberInfo = element.definitionMemberInfo
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
-                        val matchType = CwtConfigMatchType.INSPECTION
-                        val configs = ParadoxConfigHandler.getPropertyConfigs(element, matchType = matchType)
+                        val configs = ParadoxConfigHandler.getPropertyConfigs(element)
                         val config = configs.firstOrNull()
                         if(config == null) {
                             //这里使用合并后的子规则，即使parentProperty可以精确匹配
                             val expect = if(showExpectInfo) {
                                 val allConfigs = element.findParentProperty()?.definitionMemberInfo?.getChildConfigs()
+                                //某些情况下我们需要忽略一些未解析的表达式
+                                if(allConfigs.isNotNullOrEmpty() && allConfigs.all { isIgnored(it) }) return true
                                 val allExpressions = if(allConfigs.isNullOrEmpty()) emptySet() else {
                                     buildSet {
                                         for(c in allConfigs) {
@@ -97,12 +99,13 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         if(element is ParadoxScriptScriptedVariableReference && element.isParameterized()) return false
                         val definitionMemberInfo = element.definitionMemberInfo
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
-                        val matchType = CwtConfigMatchType.INSPECTION
-                        val configs = ParadoxConfigHandler.getValueConfigs(element, matchType = matchType, orDefault = false)
+                        val configs = ParadoxConfigHandler.getValueConfigs(element, orDefault = false)
                         val config = configs.firstOrNull()
                         if(config == null) {
                             val expect = if(showExpectInfo) {
                                 val allConfigs = ParadoxConfigHandler.getValueConfigs(element, orDefault = true)
+                                //某些情况下我们需要忽略一些未解析的表达式
+                                if(allConfigs.isNotNullOrEmpty() && allConfigs.all { isIgnored(it) }) return true
                                 val allExpressions = if(allConfigs.isEmpty()) emptySet() else {
                                     buildSet {
                                         for(c in allConfigs) {
@@ -128,6 +131,10 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         return true
                     }
                 })
+            }
+            
+            private fun isIgnored(config: CwtDataConfig<*>) : Boolean {
+                return config.expression.type.isPathReferenceType()
             }
         }
     }

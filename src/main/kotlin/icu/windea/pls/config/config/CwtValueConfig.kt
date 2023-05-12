@@ -30,4 +30,8 @@ data class CwtValueConfig(
 	override fun resolved(): CwtValueConfig = this
 	
 	override fun resolvedOrNull(): CwtValueConfig? = null
+	
+	override fun toString(): String {
+		return value
+	}
 }

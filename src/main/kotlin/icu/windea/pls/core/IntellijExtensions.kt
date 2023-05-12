@@ -780,6 +780,21 @@ fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
 //endregion
 
 //region Index Extensions
+val StubBasedPsiElementBase<*>.containingFileStub: PsiFileStub<*>?
+    get() {
+        val stub = this.greenStub ?: return null
+        return stub.containingFileStub
+    }
+
+val StubElement<*>.containingFileStub: PsiFileStub<*>
+    get() {
+        var current = this
+        while (current !is PsiFileStub<*>) {
+            current = current.parentStub
+        }
+        return current
+    }
+
 inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElements(
     key: K,
     project: Project,

@@ -507,6 +507,7 @@ object ParadoxConfigHandler {
         val keys = getInBlockKeys(config)
         if(keys.isEmpty()) return true
         val actualKeys = mutableSetOf<String>()
+        //注意这里需要考虑内联和可选的情况
         block.processData(conditional = true, inline = true) {
             if(it is ParadoxScriptProperty) actualKeys.add(it.name)
             true
@@ -1603,7 +1604,7 @@ object ParadoxConfigHandler {
     }
     
     private fun <T : CwtDataConfig<*>> getConfigsFromCache(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
-        val configsMap = getConfigsMapFromCache(element) ?: return emptyList()
+        val configsMap = getConfigsCacheFromCache(element) ?: return emptyList()
         val key = buildString {
             when(configType) {
                 CwtPropertyConfig::class.java -> append("property")
@@ -1617,12 +1618,11 @@ object ParadoxConfigHandler {
         return configsMap.getOrPut(key) { resolveConfigs(element, configType, allowDefinition, orDefault, matchType) } as List<T>
     }
     
-    private fun getConfigsMapFromCache(element: PsiElement): MutableMap<String, List<CwtConfig<*>>>? {
-        val file = element.containingFile ?: return null
-        if(file !is ParadoxScriptFile) return null
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsMapKey) {
+    private fun getConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtConfig<*>>>? {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsCacheKey) {
             val value = ConcurrentHashMap<String, List<CwtConfig<*>>>()
             //invalidated on file modification or ScriptFileTracker
+            val file = element.containingFile
             val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFile
             CachedValueProvider.Result.create(value, file, tracker)
         }
@@ -1786,6 +1786,28 @@ object ParadoxConfigHandler {
      */
     fun getChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Map<CwtDataExpression, Occurrence> {
         if(configs.isEmpty()) return emptyMap()
+        val childConfigs = configs.flatMap { it.configs.orEmpty() }
+        if(childConfigs.isEmpty()) return emptyMap()
+        
+        val childOccurrenceMap = getChildOccurrenceMapCacheFromCache(element) ?: return emptyMap() 
+        val cacheKey = childConfigs.joinToString(" ")
+        return childOccurrenceMap.getOrPut(cacheKey) { resolveChildOccurrenceMap(element, configs) }
+    }
+    
+    private fun getChildOccurrenceMapCacheFromCache(element: ParadoxScriptMemberElement): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedChildOccurrenceMapCacheKey) {
+            val value = ConcurrentHashMap<String, Map<CwtDataExpression, Occurrence>>()
+            //invalidated on file modification or ScriptFileTracker
+            val file = element.containingFile
+            val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFile
+            CachedValueProvider.Result.create(value, file, tracker)
+        }
+    }
+    
+    private fun resolveChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Map<CwtDataExpression, Occurrence> {
+        if(configs.isEmpty()) return emptyMap()
+        val childConfigs = configs.flatMap { it.configs.orEmpty() }
+        if(childConfigs.isEmpty()) return emptyMap()
         val configGroup = configs.first().info.configGroup
         val project = configGroup.project
         val blockElement = when {
@@ -1794,13 +1816,13 @@ object ParadoxConfigHandler {
             else -> null
         }
         if(blockElement == null) return emptyMap()
-        val childConfigs = configs.flatMap { it.configs.orEmpty() }
         val occurrenceMap = mutableMapOf<CwtDataExpression, Occurrence>()
         for(childConfig in childConfigs) {
             occurrenceMap.put(childConfig.expression, childConfig.toOccurrence(element, project))
         }
         ProgressManager.checkCanceled()
-        blockElement.processData p@{ data ->
+        //注意这里需要考虑内联和可选的情况
+        blockElement.processData(conditional = true, inline = true) p@{ data ->
             val expression = when {
                 data is ParadoxScriptProperty -> ParadoxDataExpression.resolve(data.propertyKey)
                 data is ParadoxScriptValue -> ParadoxDataExpression.resolve(data)
@@ -1825,5 +1847,6 @@ object ParadoxConfigHandler {
         }
         return occurrenceMap
     }
+    
     //endregion
 }

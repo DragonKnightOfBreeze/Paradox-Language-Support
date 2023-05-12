@@ -2,7 +2,7 @@ package icu.windea.pls.config.config
 
 enum class CwtSeparator(val text: String) {
 	EQUAL("="),
-	NOT_EQUAL("==");
+	NOT_EQUAL("!=");
 	
 	override fun toString(): String {
 		return text

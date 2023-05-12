@@ -43,6 +43,10 @@ data class CwtPropertyConfig(
 	
 	override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config
 	
+	override fun toString(): String {
+		return "$key ${separatorType.text} $value"
+	}
+	
 	//规则内联相关
 	
 	var inlineableConfig: CwtInlineableConfig? = null

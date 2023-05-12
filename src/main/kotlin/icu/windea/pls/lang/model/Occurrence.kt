@@ -9,3 +9,4 @@ data class Occurrence(
 	var minDefine: String? = null
 	var maxDefine: String? = null
 }
+
