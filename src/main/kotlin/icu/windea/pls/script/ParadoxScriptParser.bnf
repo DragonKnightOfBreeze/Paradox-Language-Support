@@ -78,7 +78,7 @@ property ::= property_key property_separator property_value {
     isEquivalentTo toString
   ]
 }
-property_key ::= PROPERTY_KEY_TOKEN | (PROPERTY_KEY_SNIPPET | parameter)+ {
+property_key ::= PROPERTY_KEY_TOKEN | ( PROPERTY_KEY_SNIPPET | parameter ) + {
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"

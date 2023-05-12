@@ -575,7 +575,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PROPERTY_KEY_TOKEN | (PROPERTY_KEY_SNIPPET | parameter)+
+  // PROPERTY_KEY_TOKEN | ( PROPERTY_KEY_SNIPPET | parameter ) +
   public static boolean property_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_key")) return false;
     boolean r;
@@ -586,7 +586,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (PROPERTY_KEY_SNIPPET | parameter)+
+  // ( PROPERTY_KEY_SNIPPET | parameter ) +
   private static boolean property_key_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_key_1")) return false;
     boolean r;
