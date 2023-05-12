@@ -35,8 +35,8 @@ class ParadoxScriptedVariableReferenceFoldingBuilder: FoldingBuilderEx() {
 	}
 	
 	override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-		if(quick) return FoldingDescriptor.EMPTY
-		if(!root.language.isParadoxLanguage()) return FoldingDescriptor.EMPTY
+		if(quick) return FoldingDescriptor.EMPTY_ARRAY
+		if(!root.language.isParadoxLanguage()) return FoldingDescriptor.EMPTY_ARRAY
 		val foldingGroup = getFoldingGroup()
 		val allDescriptors = mutableListOf<FoldingDescriptor>()
 		root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {

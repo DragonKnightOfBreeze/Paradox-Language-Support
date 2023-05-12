@@ -20,14 +20,14 @@ abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
 	abstract fun getFoldingGroup(): FoldingGroup?
 	
 	override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-		if(quick) return FoldingDescriptor.EMPTY
-		if(!root.language.isKindOf(ParadoxScriptLanguage)) return FoldingDescriptor.EMPTY
+		if(quick) return FoldingDescriptor.EMPTY_ARRAY
+		if(!root.language.isKindOf(ParadoxScriptLanguage)) return FoldingDescriptor.EMPTY_ARRAY
 		val project = root.project
-		val gameType = selectGameType(root) ?: return FoldingDescriptor.EMPTY
+		val gameType = selectGameType(root) ?: return FoldingDescriptor.EMPTY_ARRAY
 		val configGroup = getCwtConfig(project).get(gameType)
 		val foldingSettings = configGroup.foldingSettings
-		if(foldingSettings.isEmpty()) return FoldingDescriptor.EMPTY
-		val settings = foldingSettings.get(getGroupName()) ?: return FoldingDescriptor.EMPTY
+		if(foldingSettings.isEmpty()) return FoldingDescriptor.EMPTY_ARRAY
+		val settings = foldingSettings.get(getGroupName()) ?: return FoldingDescriptor.EMPTY_ARRAY
 		val foldingGroup = getFoldingGroup()
 		val allDescriptors = mutableListOf<FoldingDescriptor>()
 		root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
