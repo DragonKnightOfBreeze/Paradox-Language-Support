@@ -21,13 +21,13 @@ class ParadoxArgumentValuePsiReference(
 	
 	override fun resolve(): PsiElement? {
 		val parameter = parameterResolver() ?: return null
-		//TODO 0.9.16
+		//TODO 0.10.1
 		return null
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 		val parameter = parameterResolver() ?: return ResolveResult.EMPTY_ARRAY
-		//TODO 0.9.16
+		//TODO 0.10.1
 		return ResolveResult.EMPTY_ARRAY
 	}
 }

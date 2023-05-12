@@ -154,9 +154,9 @@ object ParadoxValueSetValueHandler {
         return expression.substringBefore('@').takeIf { it.isExactIdentifier('.') }?.takeIfNotEmpty()
     }
     
-    //fun isDeclaration(info: ParadoxValueSetValueInfo): Boolean {
-    //    return info.readWriteAccess == Access.Write
-    //}
+    fun isDeclaration(info: ParadoxValueSetValueInfo): Boolean {
+        return info.readWriteAccess == Access.Write
+    }
     
     fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxValueSetValueElement? {
         val gameType = configGroup.gameType ?: return null

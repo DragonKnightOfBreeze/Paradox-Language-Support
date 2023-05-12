@@ -223,7 +223,7 @@ object ParadoxComplexEnumValueHandler {
         return expression.takeIfNotEmpty()
     }
     
-    //fun isDeclaration(info: ParadoxComplexEnumValueInfo): Boolean {
-    //    return info.readWriteAccess == Access.Write
-    //}
+    fun isDeclaration(info: ParadoxComplexEnumValueInfo): Boolean {
+        return info.readWriteAccess == Access.Write
+    }
 }

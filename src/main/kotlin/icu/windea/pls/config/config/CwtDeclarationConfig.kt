@@ -27,7 +27,7 @@ data class CwtDeclarationConfig(
         //定义的值不为代码块的情况
         if(!propertyConfig.isBlock) return propertyConfig
         
-        val (_, name, type, subtypes, _, matchType) = configContext
+        val (_, _, type, subtypes, _, matchType) = configContext
         var cacheKey = buildString {
             append(type)
             if(subtypes != null) {

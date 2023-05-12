@@ -111,7 +111,6 @@ class MissingImageInspection : LocalInspectionTool() {
                 ProgressManager.checkCanceled()
                 if(!checkForModifiers) return
                 val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
-                val configGroup = config.info.configGroup
                 if(config.expression.type != CwtDataType.Modifier) return
                 val name = element.value
                 val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name)

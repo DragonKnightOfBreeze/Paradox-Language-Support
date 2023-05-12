@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
 
 /**
  * 提供对生成的修饰符的支持。
- * 
+ *
  * 例如，如何解析生成的修饰符，如何获取修饰符的生成源信息。
  *
  * @see ParadoxModifierElement
@@ -40,7 +40,7 @@ interface ParadoxModifierSupport {
     /**
      * 构建定义的快速文档中的生成修饰符修正部分。
      */
-    fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder) : Boolean = false
+    fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder): Boolean = false
     
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxModifierSupport>("icu.windea.pls.modifierSupport")
@@ -52,11 +52,11 @@ interface ParadoxModifierSupport {
         fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveModifier(name, element, configGroup) }
         }
-    
+        
         fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
             EP_NAME.extensionList.forEach { it.completeModifier(context, result, modifierNames) }
         }
-    
+        
         fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { it.getModifierCategories(element) }
         }
@@ -65,7 +65,7 @@ interface ParadoxModifierSupport {
             return EP_NAME.extensionList.any { it.buildDocumentationDefinition(element, builder) }
         }
         
-        fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder): Boolean{
+        fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder): Boolean {
             return EP_NAME.extensionList.any { it.buildDDocumentationDefinitionForDefinition(definition, definitionInfo, builder) }
         }
     }

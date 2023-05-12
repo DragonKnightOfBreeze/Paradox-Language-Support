@@ -28,7 +28,7 @@ object DdsInfoIndex {
 		}
 	}
 	
-	private val gist: VirtualFileGist<DdsInfo> = GistManager.getInstance().newVirtualFileGist("DdsInfo", 1, valueExternalizer) { project, file ->
+	private val gist: VirtualFileGist<DdsInfo> = GistManager.getInstance().newVirtualFileGist("DdsInfo", 1, valueExternalizer) { _, file ->
 		if(!file.isInLocalFileSystem) return@newVirtualFileGist null
 		val fileType = file.fileType
 		if(fileType != DdsFileType) return@newVirtualFileGist null
