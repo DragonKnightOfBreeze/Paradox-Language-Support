@@ -444,7 +444,7 @@ object ParadoxDefinitionHandler {
         }
         if(!matched) return false
         
-        return occurrenceMap.values.all { it.actual in (it.min ?: 1)..(it.max ?: 1) }
+        return occurrenceMap.values.all { (it.actual >= (it.min ?: 1)) && (it.max == null || (it.actual <= (it.max ?: 1))) }
     }
     
     private fun doMatchValues(definitionElement: ParadoxScriptDefinitionElement, blockElement: ParadoxScriptBlockElement?, valueConfigs: List<CwtValueConfig>, configGroup: CwtConfigGroup, matchType: Int): Boolean {
