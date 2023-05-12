@@ -55,8 +55,6 @@ class ParadoxValueSetValueExpressionImpl(
 	override val valueSetValueNode: ParadoxValueSetValueExpressionNode = nodes.get(0).cast()
 	override val scopeFieldExpression: ParadoxScopeFieldExpression? = nodes.getOrNull(2)?.cast()
 	
-	override fun getAttributesKey() = ParadoxScriptAttributesKeys.VALUE_SET_VALUE_EXPRESSION_KEY
-	
 	override fun validate(): List<ParadoxExpressionError> {
 		val errors = SmartList<ParadoxExpressionError>()
 		var malformed = false

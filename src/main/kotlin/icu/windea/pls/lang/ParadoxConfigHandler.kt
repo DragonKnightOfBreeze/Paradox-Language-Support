@@ -4,12 +4,15 @@ package icu.windea.pls.lang
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.lang.annotation.*
+import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
+import com.intellij.util.text.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
@@ -619,6 +622,43 @@ object ParadoxConfigHandler {
             CwtDataType.Any -> 1
             CwtDataType.Other -> 0 //不期望匹配到
         }
+    }
+    //endregion
+    
+    //region Highlight Methods
+    fun highlightScriptExpression(element: ParadoxScriptExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
+        if(element !is ParadoxScriptStringExpressionElement) {
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+            return
+        }
+        //进行特殊代码高亮时，可能需要跳过字符串表达式中的参数部分
+        val parameterRanges = getParameterRanges(element)
+        if(parameterRanges.isEmpty()) {
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+        } else {
+            val finalRanges = TextRangeUtil.excludeRanges(range, parameterRanges)
+            finalRanges.forEach { r ->
+                if(!r.isEmpty) {
+                    holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r).textAttributes(attributesKey).create()
+                }
+            }
+        }
+    }
+    
+    fun setParameterRanges(element: ParadoxScriptStringExpressionElement) {
+        var parameterRanges: SmartList<TextRange>? = null
+        element.processChild { parameter ->
+            if(parameter is ParadoxParameter) {
+                if(parameterRanges == null) parameterRanges = SmartList()
+                parameterRanges?.add(parameter.textRange)
+            }
+            true
+        }
+        element.putUserData(PlsKeys.parameterRangesKey, parameterRanges.orEmpty())
+    }
+    
+    fun getParameterRanges(element: ParadoxScriptStringExpressionElement): List<TextRange> {
+        return element.getUserData(PlsKeys.parameterRangesKey).orEmpty()
     }
     //endregion
     

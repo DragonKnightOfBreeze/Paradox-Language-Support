@@ -11,7 +11,6 @@ import icu.windea.pls.core.expression.ParadoxScopeFieldExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.highlighter.*
 
 /**
  * 作用域字段表达式。
@@ -53,8 +52,6 @@ class ParadoxScopeFieldExpressionImpl(
 	override val quoted: Boolean = false
 	
 	override val scopeNodes: List<ParadoxScopeExpressionNode> = nodes.filterIsInstance<ParadoxScopeExpressionNode>()
-	
-	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SCOPE_FILED_EXPRESSION_KEY
 	
 	override fun validate(): List<ParadoxExpressionError> {
 		val errors = SmartList<ParadoxExpressionError>()

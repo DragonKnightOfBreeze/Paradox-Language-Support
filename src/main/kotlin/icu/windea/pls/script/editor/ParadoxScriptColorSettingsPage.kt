@@ -53,11 +53,6 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(PlsBundle.message("script.displayName.trigger"), ParadoxScriptAttributesKeys.TRIGGER_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.effect"), ParadoxScriptAttributesKeys.EFFECT_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.tag"), ParadoxScriptAttributesKeys.TAG_KEY),
-			AttributesDescriptor(PlsBundle.message("script.displayName.scopeFieldExpression"), ParadoxScriptAttributesKeys.SCOPE_FILED_EXPRESSION_KEY),
-			AttributesDescriptor(PlsBundle.message("script.displayName.valueFieldExpression"), ParadoxScriptAttributesKeys.VALUE_FILED_EXPRESSION_KEY),
-			AttributesDescriptor(PlsBundle.message("script.displayName.variableFieldExpression"), ParadoxScriptAttributesKeys.VARIABLE_FILED_EXPRESSION_KEY),
-			AttributesDescriptor(PlsBundle.message("script.displayName.scriptValueExpression"), ParadoxScriptAttributesKeys.SCRIPT_VALUE_EXPRESSION_KEY),
-			AttributesDescriptor(PlsBundle.message("script.displayName.valueSetValueExpression"), ParadoxScriptAttributesKeys.VALUE_SET_VALUE_EXPRESSION_KEY),
 		)
 	}
 	
@@ -81,11 +76,6 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 		"VALUE_LINK_PREFIX" to ParadoxScriptAttributesKeys.VALUE_LINK_PREFIX_KEY,
 		"VALUE_LINK_DATA_SOURCE" to ParadoxScriptAttributesKeys.VALUE_LINK_DATA_SOURCE_KEY,
 		"TAG" to ParadoxScriptAttributesKeys.TAG_KEY,
-		"SCOPE_FILED_EXPRESSION" to ParadoxScriptAttributesKeys.SCOPE_FILED_EXPRESSION_KEY,
-		"VALUE_FILED_EXPRESSION" to ParadoxScriptAttributesKeys.VALUE_FILED_EXPRESSION_KEY,
-		"VARIABLE_FILED_EXPRESSION" to ParadoxScriptAttributesKeys.VARIABLE_FILED_EXPRESSION_KEY,
-		"SCRIPT_VALUE_EXPRESSION" to ParadoxScriptAttributesKeys.SCRIPT_VALUE_EXPRESSION_KEY,
-		"VALUE_SET_VALUE_EXPRESSION" to ParadoxScriptAttributesKeys.VALUE_SET_VALUE_EXPRESSION_KEY,
 		"MODIFIER" to ParadoxScriptAttributesKeys.MODIFIER_KEY,
 		"TRIGGER" to ParadoxScriptAttributesKeys.TRIGGER_KEY,
 		"EFFECT" to ParadoxScriptAttributesKeys.EFFECT_KEY,

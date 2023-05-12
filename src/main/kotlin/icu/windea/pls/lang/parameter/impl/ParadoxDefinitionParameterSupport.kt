@@ -154,6 +154,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     override fun processContext(element: ParadoxParameterElement, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
         val definitionName = element.getUserData(definitionNameKey) ?: return false
         val definitionTypes = element.getUserData(definitionTypesKey) ?: return false
+        if(definitionName.isParameterized()) return false //skip if context name is parameterized
         val definitionType = definitionTypes.joinToString(".")
         val project = element.project
         val selector = definitionSelector(project, element).contextSensitive()
@@ -164,6 +165,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     override fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
         val definitionName = contextReferenceInfo.getUserData(definitionNameKey) ?: return false
         val definitionTypes = contextReferenceInfo.getUserData(definitionTypesKey) ?: return false
+        if(definitionName.isParameterized()) return false //skip if context name is parameterized
         val definitionType = definitionTypes.joinToString(".")
         val project = contextReferenceInfo.project
         val selector = definitionSelector(project, element).contextSensitive()
