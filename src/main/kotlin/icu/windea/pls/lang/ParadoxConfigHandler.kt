@@ -1789,7 +1789,8 @@ object ParadoxConfigHandler {
         val childConfigs = configs.flatMap { it.configs.orEmpty() }
         if(childConfigs.isEmpty()) return emptyMap()
         
-        val childOccurrenceMap = getChildOccurrenceMapCacheFromCache(element) ?: return emptyMap() 
+        val childOccurrenceMap = getChildOccurrenceMapCacheFromCache(element) ?: return emptyMap()
+        //NOTE cacheKey基于childConfigs即可，key相同而value不同的规则，上面的cardinality应当保证是一样的 
         val cacheKey = childConfigs.joinToString(" ")
         return childOccurrenceMap.getOrPut(cacheKey) { resolveChildOccurrenceMap(element, configs) }
     }
