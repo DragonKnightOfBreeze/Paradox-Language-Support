@@ -40,10 +40,5 @@ object CwtConfigMatchType {
 	 */
 	const val COMPLEX_ENUM_VALUE = 0x20
 	
-	/**
-	 * 需要保证对应的valueSetValue已定义。
-	 */
-	const val DECLARATION_ONLY = 0x40
-	
 	const val DEFAULT  = FILE_PATH or DEFINITION or LOCALISATION or COMPLEX_ENUM_VALUE
 }

@@ -350,11 +350,6 @@ object ParadoxConfigHandler {
                 if(name == null) return false
                 val valueSetName = configExpression.value
                 if(valueSetName == null) return false
-                if(BitUtil.isSet(matchType, CwtConfigMatchType.DECLARATION_ONLY)) {
-                    //如果必要，需要保证已定义
-                    val selector = valueSetValueSelector(project, element).declarationOnly()
-                    return ParadoxValueSetValueSearch.search(name, valueSetName, selector).findFirst() != null
-                }
                 return true
             }
             CwtDataType.ValueSet -> {
