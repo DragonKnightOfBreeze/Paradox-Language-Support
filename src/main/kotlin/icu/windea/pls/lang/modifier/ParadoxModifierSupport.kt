@@ -2,6 +2,7 @@ package icu.windea.pls.lang.modifier
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.extensions.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
@@ -30,6 +31,11 @@ interface ParadoxModifierSupport {
     fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement?
     
     fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>)
+    
+    /**
+     * 如果返回值不为null，表示修正的解析结果可以通过一定条件进行缓存。
+     */
+    fun getModificationTracker(): ModificationTracker? = null
     
     fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>?
     
@@ -61,8 +67,7 @@ interface ParadoxModifierSupport {
             val gameType = configGroup.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
-                ep.resolveModifier(name, element, configGroup)
-                    ?.also { it.putUserData(ParadoxModifierHandler.supportKey, ep) }
+                ep.resolveModifier(name, element, configGroup) ?: return@f null
             }
         }
         

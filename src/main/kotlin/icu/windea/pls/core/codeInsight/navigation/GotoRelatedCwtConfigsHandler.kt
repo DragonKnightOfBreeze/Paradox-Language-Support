@@ -12,7 +12,6 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.script.psi.*
 
 //com.intellij.testIntegration.GotoTestOrCodeHandler
@@ -67,13 +66,9 @@ class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
 							configGroup.values[name]?.pointer?.element?.let { add(it) }
 						}
 						configExpression.type == CwtDataType.Modifier -> {
-							//这里需要遍历所有解析器
-							configGroup.predefinedModifiers[name]?.pointer?.element?.let { add(it) }
-							ParadoxModifierSupport.EP_NAME.extensionList.forEach { resolver ->
-								val modifierElement = resolver.resolveModifier(name, location, configGroup)
-								val configElement = modifierElement?.getUserData(ParadoxModifierHandler.modifierConfigKey)?.pointer?.element
-								configElement?.let { add(it) }
-							}
+							val modifierElement = ParadoxModifierHandler.resolveModifier(name, location, configGroup)
+							val configElement = modifierElement?.getUserData(ParadoxModifierHandler.modifierConfigKey)?.pointer?.element
+							configElement?.let { add(it) }
 						}
 						else -> pass()
 					}
