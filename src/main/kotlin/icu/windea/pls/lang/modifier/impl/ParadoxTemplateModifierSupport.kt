@@ -32,23 +32,25 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
         val isStatic = BitUtil.isSet(matchType, CwtConfigMatchType.STATIC)
         if(isStatic) return false
+        val modifierName = name
         return configGroup.generatedModifiers.values.any { config ->
-            config.template.matches(name, element, configGroup, matchType)
+            config.template.matches(modifierName.lowercase(), element, configGroup, matchType)
         }
     }
     
     override fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
+        val modifierName = name
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return null
         var modifierConfig: CwtModifierConfig? = null
         val references = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
             ProgressManager.checkCanceled()
-            val resolvedReferences = config.template.resolveReferences(name, element, configGroup).takeIfNotEmpty()
+            val resolvedReferences = config.template.resolveReferences(modifierName, element, configGroup).takeIfNotEmpty()
             if(resolvedReferences != null) modifierConfig = config
             resolvedReferences
         }.orEmpty()
         if(modifierConfig == null) return null
-        val resolved = ParadoxModifierElement(element, name, gameType, project)
+        val resolved = ParadoxModifierElement(element, modifierName, gameType, project)
         resolved.putUserData(ParadoxModifierHandler.modifierConfigKey, modifierConfig)
         resolved.putUserData(referencesKey, references)
         resolved.putUserData(ParadoxModifierHandler.supportKey, this)
@@ -81,6 +83,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                     .withTypeText(typeFile?.name)
                     .withTypeIcon(typeFile?.icon)
                     .withScopeMatched(scopeMatched)
+                    .caseInsensitive()
                 //.withPriority(PlsCompletionPriorities.modifierPriority)
                 result.addScriptExpressionElement(context, builder)
                 true

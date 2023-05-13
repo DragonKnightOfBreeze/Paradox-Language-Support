@@ -20,15 +20,17 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
-        return configGroup.predefinedModifiers[name] != null
+        val modifierName = name
+        return configGroup.predefinedModifiers[modifierName] != null
     }
     
     override fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
-        val modifierConfig = configGroup.predefinedModifiers[name]
+        val modifierName = name
+        val modifierConfig = configGroup.predefinedModifiers[modifierName]
         if(modifierConfig == null) return null
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return null
-        val resolved = ParadoxModifierElement(element, name, gameType, project)
+        val resolved = ParadoxModifierElement(element, modifierName, gameType, project)
         resolved.putUserData(ParadoxModifierHandler.modifierConfigKey, modifierConfig)
         resolved.putUserData(ParadoxModifierHandler.supportKey, this)
         return resolved

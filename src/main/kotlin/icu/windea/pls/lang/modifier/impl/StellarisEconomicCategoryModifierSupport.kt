@@ -34,6 +34,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
     }
     
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
+        val modifierName = name
         val project = configGroup.project
         val selector = definitionSelector(project, element).distinctByName()
         var r = false
@@ -41,7 +42,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
             ProgressManager.checkCanceled()
             val info = StellarisEconomicCategoryHandler.getInfo(it) ?: return@p true
             for(modifierInfo in info.modifiers) {
-                if(modifierInfo.name == name) {
+                if(modifierInfo.name == modifierName) {
                     r = true
                     return@p false
                 }
@@ -52,6 +53,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
     }
     
     override fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
+        val modifierName = name
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
         var economicCategoryInfo: StellarisEconomicCategoryInfo? = null
@@ -61,7 +63,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
             ProgressManager.checkCanceled()
             val info = StellarisEconomicCategoryHandler.getInfo(it) ?: return@p true
             for(modifierInfo in info.modifiers) {
-                if(modifierInfo.name == name) {
+                if(modifierInfo.name == modifierName) {
                     economicCategoryInfo = info
                     economicCategoryModifierInfo = modifierInfo
                     return@p false
@@ -70,7 +72,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
             true
         }
         if(economicCategoryInfo == null || economicCategoryModifierInfo == null) return null
-        val resolved = ParadoxModifierElement(element, name, gameType, project)
+        val resolved = ParadoxModifierElement(element, modifierName, gameType, project)
         resolved.putUserData(economicCategoryInfoKey, economicCategoryInfo)
         resolved.putUserData(economicCategoryModifierInfoKey, economicCategoryModifierInfo)
         resolved.putUserData(ParadoxModifierHandler.supportKey, this)
