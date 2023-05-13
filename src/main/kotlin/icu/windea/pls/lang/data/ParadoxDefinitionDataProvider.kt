@@ -5,6 +5,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
@@ -18,9 +19,10 @@ import icu.windea.pls.tool.script.*
  *
  * @see ParadoxDefinitionData
  */
+@WithGameTypeEP
 abstract class ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
-    open val dataType: Class<T> by lazy { javaClass.genericSuperclass.genericType(0)!! }
-    open val cachedDataKey: Key<CachedValue<T>> by lazy { Key.create("stellaris.cached.data.by.${javaClass.name}") }
+    val dataType: Class<T> by lazy { javaClass.genericSuperclass.genericType(0)!! }
+    val cachedDataKey: Key<CachedValue<T>> by lazy { Key.create("stellaris.cached.data.by.${javaClass.name}") }
     
     abstract fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
     
@@ -44,7 +46,7 @@ abstract class ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
         return doGetData(data)
     }
     
-    open fun doGetData(data: ParadoxScriptData): T? {
+    fun doGetData(data: ParadoxScriptData): T? {
         return dataType.getConstructor(ParadoxScriptData::class.java).newInstance(data)
     }
     
@@ -53,11 +55,13 @@ abstract class ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
         
         @Suppress("UNCHECKED_CAST")
         fun <T : ParadoxDefinitionData> getData(dataType: Class<T>, definition: ParadoxScriptDefinitionElement): T? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull p@{
-                if(it.dataType != dataType) return@p null
-                val definitionInfo = definition.definitionInfo ?: return@p null
-                if(!it.supports(definition, definitionInfo)) return@p null
-                it.getData(definition) as? T?
+            val definitionInfo = definition.definitionInfo ?: return null
+            val gameType = definitionInfo.gameType
+            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+                if(!gameType.supportsByAnnotation(ep)) return@f null
+                if(ep.dataType != dataType) return@f null
+                if(!ep.supports(definition, definitionInfo)) return@f null
+                ep.getData(definition) as? T?
             }
         }
     }

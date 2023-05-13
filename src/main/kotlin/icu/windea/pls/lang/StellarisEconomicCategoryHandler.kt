@@ -45,7 +45,7 @@ object StellarisEconomicCategoryHandler {
     
     private fun resolveInfo(definition: ParadoxScriptProperty): StellarisEconomicCategoryInfo? {
         //这种写法可能存在一定性能问题，但是问题不大
-        //兼容继承的mult修饰符
+        //兼容继承的mult修正
         try {
             val data = ParadoxScriptDataResolver.resolveProperty(definition, inline = true) ?: return null
             val name = definition.name.takeIfNotEmpty() ?: return null

@@ -23,7 +23,7 @@ abstract class ParadoxScriptExpressionSupport {
         
     }
     
-    open fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String,  config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+    open fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
         return null
     }
     
@@ -38,44 +38,32 @@ abstract class ParadoxScriptExpressionSupport {
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxScriptExpressionSupport>("icu.windea.pls.scriptExpressionSupport")
         
-        fun getAll(config: CwtConfig<*>): List<ParadoxScriptExpressionSupport> {
-            return EP_NAME.extensionList.filter { it.supports(config) }
-        }
-        
         fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-            EP_NAME.extensionList.forEach {
-                if(it.supports(config)) {
-                    it.annotate(element, rangeInElement, expression, holder, config)
-                }
+            EP_NAME.extensionList.forEach p@{ ep ->
+                if(!ep.supports(config)) return@p
+                ep.annotate(element, rangeInElement, expression, holder, config)
             }
         }
         
-        fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String,  config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
-            EP_NAME.extensionList.forEach {
-                if(it.supports(config)) {
-                    val result = it.resolve(element, rangeInElement, expression, config, isKey, exact)
-                    if(result != null) return result
-                }
+        fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+            return EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
+                if(!ep.supports(config)) return@p null
+                ep.resolve(element, rangeInElement, expression, config, isKey, exact)
             }
-            return null
         }
         
-        fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String,  config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
-            EP_NAME.extensionList.forEach {
-                if(it.supports(config)) {
-                    val result = it.multiResolve(element, rangeInElement, expression, config, isKey)
-                    if(result.isNotEmpty()) return result
-                }
-            }
-            return emptySet()
+        fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
+            return EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
+                if(!ep.supports(config)) return@p null
+                ep.multiResolve(element, rangeInElement, expression, config, isKey).takeIfNotEmpty()
+            }.orEmpty()
         }
         
         fun complete(context: ProcessingContext, result: CompletionResultSet) {
             val config = context.config ?: return
-            EP_NAME.extensionList.forEach { 
-                if(it.supports(config)) {
-                    it.complete(context, result)
-                }
+            EP_NAME.extensionList.forEach p@{ ep ->
+                if(!ep.supports(config)) return@p
+                ep.complete(context, result)
             }
         }
     }

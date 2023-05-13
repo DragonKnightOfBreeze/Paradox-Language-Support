@@ -18,7 +18,7 @@ import icu.windea.pls.tool.*
 import javax.swing.*
 
 /**
- * 修饰符的图标的内嵌提示
+ * 修正的图标的内嵌提示
  */
 @Suppress("UnstableApiUsage")
 class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() {

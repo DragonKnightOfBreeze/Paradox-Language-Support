@@ -19,7 +19,7 @@ import javax.swing.*
  * @property checkForDefinitions 是否检查定义。默认为true。
  * @property checkPrimaryForDefinitions 是否同样检查定义的主要的相关图片，默认为true。
  * @property checkOptionalForDefinitions 是否同样检查定义的可选的相关图片，默认为false。
- * @property checkForModifiers 是否检查修饰符（的图标）。默认为false。
+ * @property checkForModifiers 是否检查修正（的图标）。默认为false。
  */
 class MissingImageInspection : LocalInspectionTool() {
     @JvmField var checkForDefinitions = true

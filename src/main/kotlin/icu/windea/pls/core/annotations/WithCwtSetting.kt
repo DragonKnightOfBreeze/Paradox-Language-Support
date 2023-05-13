@@ -9,7 +9,6 @@ import kotlin.reflect.*
  * @property settingClass 对应的CWT配置类。
  */
 @MustBeDocumented
-@Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
 annotation class WithCwtSetting(
 	val fileName: String,

@@ -18,7 +18,7 @@ import icu.windea.pls.tool.localisation.*
 import javax.swing.*
 
 /**
- * 修饰符的本地化名字的内嵌提示
+ * 修正的本地化名字的内嵌提示
  */
 @Suppress("UnstableApiUsage")
 class ParadoxModifierLocalizedNameHintsProvider: ParadoxScriptHintsProvider<Settings>(){

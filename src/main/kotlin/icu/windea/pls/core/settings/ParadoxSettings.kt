@@ -43,8 +43,8 @@ class ParadoxSettingsState : BaseState() {
      * @property renderLineComment 是否需要渲染之前的单行注释文本到文档中。
      * @property renderRelatedLocalisationsForDefinitions 是否需要为定义渲染相关本地化文本到文档中。
      * @property renderRelatedImagesForDefinitions 是否需要为定义渲染相关图片到文档中。
-     * @property renderRelatedLocalisationsForModifiers 是否需要为修饰符渲染相关本地化文本到文档中。
-     * @property renderIconForModifiers 是否需要为修饰符渲染图标到文档中。
+     * @property renderRelatedLocalisationsForModifiers 是否需要为修正渲染相关本地化文本到文档中。
+     * @property renderIconForModifiers 是否需要为修正渲染图标到文档中。
      * @property renderLocalisationForLocalisations 是否需要为本地化渲染本地化文本到文档中。
      * @property showScopes 是否需要在文档中显示作用域信息（如果支持且存在）。
      * @property showScopeContext 是否需要在文档中显示作用域上下文（如果支持且存在）。

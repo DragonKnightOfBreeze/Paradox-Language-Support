@@ -1,12 +1,15 @@
 package icu.windea.pls.lang.scope
 
 import com.intellij.openapi.extensions.*
+import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 /**
  * 用于提供推断的作用域上下文。
  */
+@WithGameTypeEP
 interface ParadoxDefinitionInferredScopeContextProvider {
     /**
      * 得到推断的作用域。
@@ -28,27 +31,31 @@ interface ParadoxDefinitionInferredScopeContextProvider {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxDefinitionInferredScopeContextProvider>("icu.windea.pls.definitionInferredScopeContextProvider")
         
         fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-            for(extension in EP_NAME.extensions) {
-                val info = extension.getScopeContext(definition, definitionInfo)
-                if(info != null) return info
+            val gameType = definitionInfo.gameType
+            return EP_NAME.extensions.firstNotNullOfOrNull f@{ ep ->
+                if(!gameType.supportsByAnnotation(ep)) return@f null
+                ep.getScopeContext(definition, definitionInfo)
             }
-            return null
         }
         
         fun getErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
-            for(extension in EP_NAME.extensions) {
-                val info = extension.getScopeContext(definition, definitionInfo)
-                if(info != null && info.hasConflict) return extension.getErrorMessage(definition, definitionInfo, info)
+            val gameType = definitionInfo.gameType
+            return EP_NAME.extensions.firstNotNullOfOrNull f@{ ep ->
+                if(!gameType.supportsByAnnotation(ep)) return@f null
+                val info = ep.getScopeContext(definition, definitionInfo)
+                if(info == null || !info.hasConflict) return@f null
+                ep.getErrorMessage(definition, definitionInfo, info)
             }
-            return null
         }
         
         fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
-            for(extension in EP_NAME.extensions) {
-                val info = extension.getScopeContext(definition, definitionInfo)
-                if(info != null && info.hasConflict) return extension.getMessage(definition, definitionInfo, info)
+            val gameType = definitionInfo.gameType
+            return EP_NAME.extensions.firstNotNullOfOrNull f@{ ep ->
+                if(!gameType.supportsByAnnotation(ep)) return@f null
+                val info = ep.getScopeContext(definition, definitionInfo)
+                if(info == null || !info.hasConflict) return@f null
+                ep.getMessage(definition, definitionInfo, info)
             }
-            return null
         }
     }
 }

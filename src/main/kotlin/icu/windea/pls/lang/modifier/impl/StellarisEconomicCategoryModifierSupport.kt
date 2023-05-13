@@ -21,7 +21,7 @@ import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 通过经济类型（`economic_category`）生成修饰符。
+ * 通过经济类型（`economic_category`）生成修正。
  */
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
@@ -33,13 +33,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         const val economicCategoriesPathExpression = "common/economic_categories/,.txt"
     }
     
-    fun isGameTypeSupported(gameType: ParadoxGameType): Boolean {
-        return gameType == ParadoxGameType.Stellaris
-    }
-    
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
-        val gameType = configGroup.gameType ?: return false
-        if(!isGameTypeSupported(gameType)) return false
         val project = configGroup.project
         val selector = definitionSelector(project, element).distinctByName()
         var r = false
@@ -59,7 +53,6 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
     
     override fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
         val gameType = configGroup.gameType ?: return null
-        if(!isGameTypeSupported(gameType)) return null
         val project = configGroup.project
         var economicCategoryInfo: StellarisEconomicCategoryInfo? = null
         var economicCategoryModifierInfo: StellarisEconomicCategoryModifierInfo? = null
@@ -87,8 +80,6 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val element = contextElement
         if(element !is ParadoxScriptStringExpressionElement) return
         val configGroup = configGroup
-        val gameType = configGroup.gameType ?: return
-        if(!isGameTypeSupported(gameType)) return
         val project = configGroup.project
         val selector = definitionSelector(project, element).contextSensitive()
         ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{
@@ -131,8 +122,6 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
     
     override fun buildDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean = with(builder) {
         val gameType = element.gameType
-        if(!isGameTypeSupported(gameType)) return@with false
-        
         val economicCategoryInfo = element.getUserData(economicCategoryInfoKey) ?: return false
         val modifierInfo = element.getUserData(economicCategoryModifierInfoKey) ?: return false
         
@@ -159,8 +148,6 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
     
     override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder): Boolean = with(builder) {
         val gameType = definitionInfo.gameType
-        if(!isGameTypeSupported(gameType)) return false
-        
         val configGroup = definitionInfo.configGroup
         val project = configGroup.project
         val selector = definitionSelector(project, definition).contextSensitive()

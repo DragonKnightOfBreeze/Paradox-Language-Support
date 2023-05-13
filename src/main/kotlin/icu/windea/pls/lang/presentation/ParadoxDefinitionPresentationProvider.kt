@@ -2,6 +2,8 @@ package icu.windea.pls.lang.presentation
 
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.extensions.*
+import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -9,19 +11,22 @@ import javax.swing.*
 /**
  * 用于绘制定义的UI表示。
  */
-abstract class ParadoxDefinitionPresentationProvider {
-    abstract fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
+@WithGameTypeEP
+interface ParadoxDefinitionPresentationProvider {
+    fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
     
-    abstract  fun getPresentation(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): JComponent?
+    fun getPresentation(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): JComponent?
     
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxDefinitionPresentationProvider>("icu.windea.pls.definitionPresentationProvider")
         
         fun getPresentation(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): JComponent? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull p@{
-                if(!it.supports(definition, definitionInfo)) return@p null
+            val gameType = definitionInfo.gameType
+            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+                if(!gameType.supportsByAnnotation(ep)) return@f null
+                if(!ep.supports(definition, definitionInfo)) return@f null
                 try {
-                    it.getPresentation(definition, definitionInfo)
+                    ep.getPresentation(definition, definitionInfo)
                 } catch(e: Exception) {
                     thisLogger().warn(e)
                     null

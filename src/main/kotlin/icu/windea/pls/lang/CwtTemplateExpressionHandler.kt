@@ -74,7 +74,6 @@ object CwtTemplateExpressionHandler {
                 val matchGroup = matchResult.groups.get(i++) ?: return false
                 val referenceName = matchGroup.value
                 val expression = ParadoxDataExpression.resolve(referenceName, false)
-                //如果dataType是value[xxx]，需要保证对应的valueSetValue已定义
                 val isMatched = try {
                     ParadoxConfigHandler.matchesScriptExpression(element, expression, snippetExpression, null, configGroup, matchType)
                 } catch(e: Exception) {

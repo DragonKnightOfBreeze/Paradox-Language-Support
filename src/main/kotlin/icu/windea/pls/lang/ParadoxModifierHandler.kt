@@ -16,8 +16,8 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxModifierHandler {
 	//可通过运行游戏后输出的modifiers.log判断到底会生成哪些修正
-	//修正会由特定的定义类型生成
-	//对于Stellaris：修正会由经济类型（economic_category）的声明生成
+	//不同的游戏类型存在一些通过不同逻辑生成的修正
+	//插件使用的modifiers.cwt中应当去除生成的修正
 	
 	fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.DEFAULT): Boolean {
 		//先判断是否存在对应的预定义的非生成的修正
@@ -60,10 +60,10 @@ object ParadoxModifierHandler {
 		val element = contextElement
 		if(element !is ParadoxScriptStringExpressionElement) return
 		val modifierNames = mutableSetOf<String>()
-		//提示生成的修饰符
-		ParadoxModifierSupport.completeModifier(context, result, modifierNames)
-		//提示预定义的修饰符
+		//提示预定义的修正
 		completePredefinedModifier(context, result, modifierNames)
+		//提示生成的修正
+		ParadoxModifierSupport.completeModifier(context, result, modifierNames)
 	}
 	
 	fun completePredefinedModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>): Unit = with(context) {

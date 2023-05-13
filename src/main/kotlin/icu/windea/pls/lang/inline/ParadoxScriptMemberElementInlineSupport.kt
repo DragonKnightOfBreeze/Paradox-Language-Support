@@ -28,15 +28,21 @@ interface ParadoxScriptMemberElementInlineSupport {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxScriptMemberElementInlineSupport>("icu.windea.pls.scriptMemberElementInlineSupport")
         
         fun canLink(element: ParadoxScriptMemberElement): Boolean {
-            return EP_NAME.extensionList.any { it.canLink(element) }
+            return EP_NAME.extensionList.any { ep ->
+                ep.canLink(element) 
+            }
         }
         
         fun linkElement(element: ParadoxScriptMemberElement, inlineStack: Deque<String>): ParadoxScriptMemberElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.linkElement(element, inlineStack) }
+            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
+                ep.linkElement(element, inlineStack) 
+            }
         }
         
         fun inlineElement(element: ParadoxScriptMemberElement, inlineStack: Deque<String>): ParadoxScriptMemberElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.inlineElement(element, inlineStack) }
+            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
+                ep.inlineElement(element, inlineStack) 
+            }
         }
     }
 }

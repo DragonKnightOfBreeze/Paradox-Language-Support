@@ -6,23 +6,21 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
 
-@Suppress("unused")
 @WithGameType(ParadoxGameType.Stellaris)
-class StellarisGameConceptDataProvider: ParadoxDefinitionDataProvider<StellarisGameConceptDataProvider.Data>() {
-    class Data(data: ParadoxScriptData): ParadoxDefinitionData {
+class StellarisGameConceptDataProvider : ParadoxDefinitionDataProvider<StellarisGameConceptDataProvider.Data>() {
+    class Data(data: ParadoxScriptData) : ParadoxDefinitionData {
         val icon: String? by data.get("icon")
         val alias: Set<String>? by data.get("alias")
     }
     
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
-        return definitionInfo.gameType == ParadoxGameType.Stellaris && definitionInfo.type == "game_concept"
+        return definitionInfo.type == "game_concept"
     }
 }
 
-@Suppress("unused")
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisTechnologyDataProvider : ParadoxDefinitionDataProvider<StellarisTechnologyDataProvider.Data>() {
-    class Data(data: ParadoxScriptData): ParadoxDefinitionData {
+    class Data(data: ParadoxScriptData) : ParadoxDefinitionData {
         val icon: String? by data.get("icon")
         val tier: String? by data.get("tier")
         val area: String? by data.get("area")
@@ -42,7 +40,7 @@ class StellarisTechnologyDataProvider : ParadoxDefinitionDataProvider<StellarisT
     }
     
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
-        return definitionInfo.gameType == ParadoxGameType.Stellaris && definitionInfo.type == "technology"
+        return definitionInfo.type == "technology"
     }
 }
 

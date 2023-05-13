@@ -21,7 +21,7 @@ import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 通过模版表达式生成修饰符。（如：`job_<job>_add` -> `job_researcher_add`）
+ * 通过模版表达式生成修正。（如：`job_<job>_add` -> `job_researcher_add`）
  */
 class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     companion object {
@@ -32,7 +32,6 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
         val isStatic = BitUtil.isSet(matchType, CwtConfigMatchType.STATIC)
         if(isStatic) return false
-        //要求生成源必须已定义
         return configGroup.generatedModifiers.values.any { config ->
             config.template.matches(name, element, configGroup, matchType)
         }
@@ -50,7 +49,6 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             resolvedReferences
         }.orEmpty()
         if(generatedModifierConfig == null) return null
-        if(references.any { it.resolve() == null }) return null //必须先确定可以解析，然后才能解析生成的修正
         val result = ParadoxModifierElement(element, name, generatedModifierConfig, gameType, project)
         result.putUserData(referencesKey, references)
         return result

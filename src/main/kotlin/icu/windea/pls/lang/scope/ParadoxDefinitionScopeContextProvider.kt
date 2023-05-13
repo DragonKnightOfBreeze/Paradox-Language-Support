@@ -1,9 +1,12 @@
 package icu.windea.pls.lang.scope
 
 import com.intellij.openapi.extensions.*
+import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
+@WithGameTypeEP
 interface ParadoxDefinitionScopeContextProvider {
     /**
      * 得到作用域。
@@ -15,11 +18,11 @@ interface ParadoxDefinitionScopeContextProvider {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxDefinitionScopeContextProvider>("icu.windea.pls.definitionScopeContextProvider")
         
         fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
-            for(extension in EP_NAME.extensions) {
-                val scopeContext = extension.getScopeContext(definition, definitionInfo)
-                if(scopeContext != null) return scopeContext
+            val gameType = definitionInfo.gameType
+            return EP_NAME.extensions.firstNotNullOfOrNull f@{ ep ->
+                if(!gameType.supportsByAnnotation(ep)) return@f null
+                ep.getScopeContext(definition, definitionInfo)
             }
-            return null
         }
     }
 }

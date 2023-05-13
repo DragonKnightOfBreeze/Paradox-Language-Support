@@ -154,7 +154,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             //加上生成的修正的信息
             addGeneratedModifiersForDefinition(element, definitionInfo)
             
-            //加上修饰符分类和作用域信息（如果支持）
+            //加上修正分类和作用域信息（如果支持）
             addModifierScopeForDefinition(element, definitionInfo, sectionsList?.get(0))
             
             //加上作用域上下文信息（如果支持）
@@ -312,11 +312,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     }
     
     private fun StringBuilder.buildDocumentationContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-        ParadoxDefinitionExtendedDocumentationProvider.EP_NAME.extensionList.forEach {
-            val documentation = it.getDocumentation(element, definitionInfo)?.takeIfNotEmpty()
-            if(documentation != null) {
-                content { append(documentation) }
-            }
+        ParadoxDefinitionExtendedDocumentationProvider.buildDocumentation(element, definitionInfo) { documentation ->
+            content { append(documentation) }
         }
     }
     

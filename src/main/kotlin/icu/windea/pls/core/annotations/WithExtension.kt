@@ -5,7 +5,6 @@ package icu.windea.pls.core.annotations
  * @property value 插件名。
  */
 @MustBeDocumented
-@Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
 annotation class WithExtension(
 	vararg val value: String

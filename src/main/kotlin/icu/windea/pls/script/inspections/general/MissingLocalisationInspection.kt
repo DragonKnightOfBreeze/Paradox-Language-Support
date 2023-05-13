@@ -27,7 +27,7 @@ import javax.swing.*
  * @property checkForDefinitions 是否检查定义。默认为true。
  * @property checkPrimaryForDefinitions 是否同样检查定义的主要的相关本地化，默认为true。
  * @property checkOptionalForDefinitions 是否同样检查定义的可选的相关本地化，默认为false。
- * @property checkForModifiers 是否检查修饰符。默认为false。
+ * @property checkForModifiers 是否检查修正。默认为false。
  */
 class MissingLocalisationInspection : LocalInspectionTool() {
     @OptionTag(converter = CommaDelimitedStringSetConverter::class)

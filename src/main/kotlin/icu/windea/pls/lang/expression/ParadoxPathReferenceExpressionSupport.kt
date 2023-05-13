@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.expression
 
 import com.intellij.openapi.extensions.*
-import com.intellij.psi.PsiElement
+import com.intellij.psi.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.index.*
 
@@ -30,7 +30,7 @@ abstract class ParadoxPathReferenceExpressionSupport {
      * @param configExpression 对应的CWT规则表达式。拥有数种写法的文件路径表达式。
      * @param ignoreCase 匹配时是否需要忽略大小写。
      */
-    abstract  fun extract(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean = true): String?
+    abstract fun extract(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean = true): String?
     
     /**
      * 解析指定的文件路径表达式，得到文件路径。如果返回null则表示无法仅基于这些参数得到完整的文件路径。
@@ -52,7 +52,9 @@ abstract class ParadoxPathReferenceExpressionSupport {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxPathReferenceExpressionSupport>("icu.windea.pls.pathReferenceExpressionSupport")
         
         fun get(configExpression: CwtDataExpression): ParadoxPathReferenceExpressionSupport? {
-            return EP_NAME.extensionList.find { it.supports(configExpression) }
+            return EP_NAME.extensionList.find { ep ->
+                ep.supports(configExpression)
+            }
         }
     }
 }
