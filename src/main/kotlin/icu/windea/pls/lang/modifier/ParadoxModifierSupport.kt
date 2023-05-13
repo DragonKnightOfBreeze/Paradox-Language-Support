@@ -61,6 +61,7 @@ interface ParadoxModifierSupport {
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
                 ep.resolveModifier(name, element, configGroup)
+                    ?.also { it.putUserData(ParadoxModifierHandler.supportKey, ep) }
             }
         }
         
@@ -73,19 +74,25 @@ interface ParadoxModifierSupport {
         }
         
         fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
-            val gameType = element.gameType
-            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if(!gameType.supportsByAnnotation(ep)) return@f null
-                ep.getModifierCategories(element)
-            }
+            val ep = element.getUserData(ParadoxModifierHandler.supportKey) ?: return null
+            return ep.getModifierCategories(element)
+            
+            //val gameType = element.gameType
+            //return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+            //    if(!gameType.supportsByAnnotation(ep)) return@f null
+            //    ep.getModifierCategories(element)
+            //}
         }
         
         fun getDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean {
-            val gameType = element.gameType
-            return EP_NAME.extensionList.any f@{ ep ->
-                if(!gameType.supportsByAnnotation(ep)) return@f false
-                ep.buildDocumentationDefinition(element, builder)
-            }
+            val ep = element.getUserData(ParadoxModifierHandler.supportKey) ?: return false
+            return ep.buildDocumentationDefinition(element, builder)
+            
+            //val gameType = element.gameType
+            //return EP_NAME.extensionList.any f@{ ep ->
+            //    if(!gameType.supportsByAnnotation(ep)) return@f false
+            //    ep.buildDocumentationDefinition(element, builder)
+            //}
         }
         
         fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder): Boolean {

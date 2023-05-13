@@ -1,6 +1,7 @@
 package icu.windea.pls.lang
 
 import com.intellij.codeInsight.completion.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
@@ -13,6 +14,8 @@ import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxModifierHandler {
+	val supportKey = Key.create<ParadoxModifierSupport>("paradox.modifier.support")
+	
 	//可通过运行游戏后输出的modifiers.log判断到底会生成哪些修正
 	//不同的游戏类型存在一些通过不同逻辑生成的修正
 	//插件使用的modifiers.cwt中应当去除生成的修正
