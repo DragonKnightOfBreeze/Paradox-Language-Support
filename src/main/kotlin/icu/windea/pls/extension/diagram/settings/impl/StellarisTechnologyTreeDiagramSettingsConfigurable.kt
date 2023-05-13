@@ -10,7 +10,6 @@ import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.ui.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.ui.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.model.*
 import kotlinx.coroutines.*
@@ -90,7 +89,8 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                                 .customize(JBGaps(3, 0, 3, 0))
                             //add localized name as comment lazily
                             settings.areaNames.get(key)?.let { p ->
-                                comment("").customize(JBGaps(3, 16, 3, 0))
+                                comment("")
+                                    .customize(JBGaps(3, 16, 3, 0))
                                     .applyToComponent { coroutineScope.launch { text = readAction(p) } }
                             }
                         }
@@ -104,7 +104,7 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                         .applyToComponent { isThirdStateEnabled = false }
                         .customize(JBGaps(3, 0, 3, 0))
                         .also { cb = it }
-                }.customize(JBVerticalGaps(3, 3))
+                }
                 indent {
                     settings.category.keys.forEach { key ->
                         row {

@@ -4,6 +4,7 @@ import com.intellij.codeInsight.hint.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.impl.*
+import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.event.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.psi.*
@@ -36,6 +37,8 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 	private var buttonSize: Int by Delegates.notNull()
 	private var lastSelection: String? = null
 	
+	private val editor: Editor get() = textEditor.editor
+	
 	init {
 		registerListeners()
 	}
@@ -50,7 +53,7 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 		if(hint != null || !canBeShownAtCurrentSelection()) {
 			return
 		}
-		val toolbar = createActionToolbar(textEditor.editor.contentComponent)
+		val toolbar = createActionToolbar(editor.contentComponent)
 		buttonSize = toolbar.maxButtonHeight
 		
 		val newHint = LightweightHint(toolbar.component)
@@ -71,14 +74,13 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 		hint = null
 	}
 	
-	@Suppress("UnstableApiUsage")
 	private fun createActionToolbar(targetComponent: JComponent): ActionToolbar {
 		PlsThreadLocals.textEditor.set(textEditor)
 		val group = FloatingToolbarGroup()
 		val toolbar = object : ActionToolbarImpl(ActionPlaces.EDITOR_TOOLBAR, group, true) {
 			override fun addNotify() {
 				super.addNotify()
-				updateActionsImmediately(true) //这是必要的，否则显示悬浮工具栏时其中的图标不会立即全部显示
+				updateActionsImmediately()
 			}
 		}
 		toolbar.targetComponent = targetComponent
@@ -89,7 +91,7 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 	private fun showOrUpdateLocation(hint: LightweightHint) {
 		HintManagerImpl.getInstanceImpl().showEditorHint(
 			hint,
-			textEditor.editor,
+			editor,
 			getHintPosition(hint),
 			HintManager.HIDE_BY_ESCAPE or HintManager.UPDATE_BY_SCROLLING,
 			0,
@@ -98,27 +100,27 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 	}
 	
 	private fun registerListeners() {
-		textEditor.editor.addEditorMouseListener(mouseListener)
-		textEditor.editor.addEditorMouseMotionListener(mouseMotionListener)
-		textEditor.editor.contentComponent.addKeyListener(keyboardListener)
+		editor.addEditorMouseListener(mouseListener)
+		editor.addEditorMouseMotionListener(mouseMotionListener)
+		editor.contentComponent.addKeyListener(keyboardListener)
 	}
 	
 	private fun unregisterListeners() {
-		textEditor.editor.removeEditorMouseListener(mouseListener)
-		textEditor.editor.removeEditorMouseMotionListener(mouseMotionListener)
-		textEditor.editor.contentComponent.removeKeyListener(keyboardListener)
+		editor.removeEditorMouseListener(mouseListener)
+		editor.removeEditorMouseMotionListener(mouseMotionListener)
+		editor.contentComponent.removeKeyListener(keyboardListener)
 	}
 	
 	private fun canBeShownAtCurrentSelection(): Boolean {
-		val file = PsiEditorUtil.getPsiFile(textEditor.editor)
-		PsiDocumentManager.getInstance(file.project).commitDocument(textEditor.editor.document)
-		val selectionModel = textEditor.editor.selectionModel
+		val file = PsiEditorUtil.getPsiFile(editor)
+		PsiDocumentManager.getInstance(file.project).commitDocument(editor.document)
+		val selectionModel = editor.selectionModel
 		val selectionStart = selectionModel.selectionStart
 		val selectionEnd = selectionModel.selectionEnd
 		//忽略没有选择文本的情况
 		if(selectionStart == selectionEnd) return false
 		//忽略跨行的情况
-		if(textEditor.editor.document.getLineNumber(selectionStart) != textEditor.editor.document.getLineNumber(selectionEnd)) return false
+		if(editor.document.getLineNumber(selectionStart) != editor.document.getLineNumber(selectionEnd)) return false
 		val elementAtStart = file.findElementAt(selectionStart)
 		val elementAtEnd = file.findElementAt(selectionEnd - 1)
 		//开始位置和结束位置的左边或右边是STRING_TOKEN，向上能查找到同一个ParadoxLocalisationPropertyValue，且选择文本的范围在引号之间
@@ -136,7 +138,7 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 	}
 	
 	private fun getHintPosition(hint: LightweightHint): Point {
-		val hintPos = HintManagerImpl.getInstanceImpl().getHintPosition(hint, textEditor.editor, HintManager.DEFAULT)
+		val hintPos = HintManagerImpl.getInstanceImpl().getHintPosition(hint, editor, HintManager.DEFAULT)
 		// because of `hint.setForceShowAsPopup(true)`, HintManager.ABOVE does not place the hint above
 		// the hint remains on the line, so we need to move it up ourselves
 		val dy = -(hint.component.preferredSize.height + 2)
@@ -146,7 +148,7 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 	}
 	
 	private fun updateOnProbablyChangedSelection(onSelectionChanged: (String) -> Unit) {
-		val newSelection = textEditor.editor.selectionModel.selectedText
+		val newSelection = editor.selectionModel.selectedText
 		
 		when(newSelection) {
 			null -> hideIfShown()
@@ -160,7 +162,7 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 	private inner class MouseListener : EditorMouseListener {
 		override fun mouseReleased(e: EditorMouseEvent) {
 			//仅当文档可编辑时才进行处理
-			if(textEditor.editor.document.isWritable) {
+			if(editor.document.isWritable) {
 				updateOnProbablyChangedSelection {
 					if(isShown()) {
 						updateLocationIfShown()
@@ -175,9 +177,9 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 	private inner class KeyboardListener : KeyAdapter() {
 		override fun keyReleased(e: KeyEvent) {
 			//仅当文档可编辑时才进行处理
-			if(textEditor.editor.document.isWritable) {
+			if(editor.document.isWritable) {
 				super.keyReleased(e)
-				if(e.source != textEditor.editor.contentComponent) {
+				if(e.source != editor.contentComponent) {
 					return
 				}
 				updateOnProbablyChangedSelection {
@@ -190,9 +192,9 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 	private inner class MouseMotionListener : EditorMouseMotionListener {
 		override fun mouseMoved(e: EditorMouseEvent) {
 			//仅当文档可编辑时才进行处理
-			if(textEditor.editor.document.isWritable) {
+			if(editor.document.isWritable) {
 				val visualPosition = e.visualPosition
-				val hoverSelected = textEditor.editor.caretModel.allCarets.any {
+				val hoverSelected = editor.caretModel.allCarets.any {
 					val beforeSelectionEnd = it.selectionEndPosition.after(visualPosition)
 					val afterSelectionStart = visualPosition.after(it.selectionStartPosition)
 					beforeSelectionEnd && afterSelectionStart

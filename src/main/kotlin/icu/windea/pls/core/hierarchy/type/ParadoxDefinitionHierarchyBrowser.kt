@@ -67,7 +67,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
         return descriptor.psiElement
     }
     
-    override fun getComparator(): Comparator<NodeDescriptor<*>> {
+    override fun getComparator(): Comparator<NodeDescriptor<*>>? {
         return ParadoxHierarchyHandler.getComparator(myProject)
     }
     

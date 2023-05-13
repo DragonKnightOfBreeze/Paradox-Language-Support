@@ -64,6 +64,10 @@
   * 对于valueSetValue，只能通过后缀的`@xxx`切换flag和event_target的作用域
   * 不能在asset文件中使用scripted_variable和inline_math
 
+## 0.10.1
+
+* [ ] 优化代码，提高版本兼容性
+
 ## 0.10.0
 
 * [X] 更新CWT规则文件以适配Stellaris 3.8（尚未充分验证）

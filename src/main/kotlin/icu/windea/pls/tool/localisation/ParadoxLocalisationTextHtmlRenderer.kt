@@ -134,8 +134,9 @@ object ParadoxLocalisationTextHtmlRenderer {
             //找不到图标的话就直接跳过
             val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return
             //基于文档的字体大小缩放图标，直到图标宽度等于字体宽度
-            @Suppress("DEPRECATION")
-            val docFontSize = DocumentationComponent.getQuickDocFontSize().size //基于这个得到的图标大小并不完美……
+            //基于这个得到的图标大小并不完美……
+            @Suppress("UnstableApiUsage") 
+            val docFontSize = getDocumentationFontSize().size
             val iconWidth = icon.iconWidth
             val iconHeight = icon.iconHeight
             val usedWidth = docFontSize * iconWidth / iconHeight
