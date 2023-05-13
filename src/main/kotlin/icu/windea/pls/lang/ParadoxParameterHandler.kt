@@ -10,6 +10,7 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -136,5 +137,26 @@ object ParadoxParameterHandler {
             }
             true
         }
+    }
+    
+    /**
+     * 当参数值表示整个脚本表达式时，尝试推断得到这个脚本表达式对应的CWT规则。
+     */
+    fun inferEntireConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
+        var result: CwtValueConfig? = null
+        ParadoxParameterSupport.processContext(parameterElement) p@{ context ->
+            val contextInfo = getContextInfo(context) ?:  return@p true
+            val config = contextInfo.getEntireConfig(parameterElement.name) ?: return@p true
+            if(result == null) {
+                result = config
+            } else {
+                if(result?.expression != config.expression) {
+                    result = null
+                    return@p false
+                }
+            }
+            true
+        }
+        return result
     }
 }

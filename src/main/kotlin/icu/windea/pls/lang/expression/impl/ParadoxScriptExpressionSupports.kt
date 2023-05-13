@@ -460,59 +460,6 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport() 
     }
 }
 
-class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport() {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataType.Parameter
-    }
-    
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT_KEY
-        val textRange = element.textRange
-        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        ParadoxConfigHandler.highlightScriptExpression(element, range, attributesKey, holder)
-    }
-    
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        //尝试解析为参数名（仅限key）
-        if(isKey != true || config !is CwtPropertyConfig) return null
-        return ParadoxParameterSupport.resolveArgument(element, rangeInElement, config)
-    }
-    
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if(!context.quoted && context.keyword.isParameterized()) return //排除可能带参数的情况
-        
-        val config = context.config ?: return
-        //提示参数名（仅限key）
-        val contextElement = context.contextElement
-        val isKey = context.isKey
-        if(isKey != true || config !is CwtPropertyConfig) return
-        return ParadoxParameterHandler.completeArguments(contextElement, context, result)
-    }
-}
-
-class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpressionSupport() {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataType.LocalisationParameter
-    }
-    
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT_KEY
-        val textRange = element.textRange
-        val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
-        ParadoxConfigHandler.highlightScriptExpression(element, range, attributesKey, holder)
-    }
-    
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        //尝试解析为本地化参数名（仅限key）
-        if(isKey != true || config !is CwtPropertyConfig) return null
-        return ParadoxLocalisationParameterSupport.resolveArgument(element, rangeInElement, config)
-    }
-    
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        //NOTE 不兼容本地化参数（CwtDataType.LocalisationParameter），因为那个引用也可能实际上对应一个缺失的本地化的名字
-    }
-}
-
 class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport() {
     override fun supports(config: CwtConfig<*>): Boolean {
         val type = config.expression?.type ?: return false

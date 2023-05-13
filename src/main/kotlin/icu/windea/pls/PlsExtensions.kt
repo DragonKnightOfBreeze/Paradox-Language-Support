@@ -124,7 +124,7 @@ fun PsiReference.canResolveParameter(): Boolean {
             configExpression.type == CwtDataType.Parameter
         }
         is ParadoxParameterPsiReference -> true
-        is ParadoxArgumentPsiReference -> true
+        is ParadoxConditionParameterPsiReference -> true
         is ParadoxScriptValueArgumentExpressionNode.Reference -> true
         is ParadoxLocalisationPropertyPsiReference -> true
         else -> false

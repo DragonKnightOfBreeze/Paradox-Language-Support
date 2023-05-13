@@ -87,6 +87,10 @@ class CwtKeyExpression private constructor(
                 CwtKeyExpression(expressionString, CwtDataType.Parameter)
             }
             //EXTENDED BY PLS
+            expressionString == "\$parameter_value" -> {
+                CwtKeyExpression(expressionString, CwtDataType.ParameterValue)
+            }
+            //EXTENDED BY PLS
             expressionString == "\$localisation_parameter" -> {
                 CwtKeyExpression(expressionString, CwtDataType.LocalisationParameter)
             }

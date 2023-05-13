@@ -111,6 +111,10 @@ class CwtValueExpression private constructor(
                 CwtValueExpression(expressionString, CwtDataType.Parameter)
             }
             //EXTENDED BY PLS
+            expressionString == "\$parameter_value" -> {
+                CwtValueExpression(expressionString, CwtDataType.ParameterValue)
+            }
+            //EXTENDED BY PLS
             expressionString == "\$localisation_parameter" -> {
                 CwtValueExpression(expressionString, CwtDataType.LocalisationParameter)
             }

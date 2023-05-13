@@ -443,6 +443,9 @@ object ParadoxConfigHandler {
                 //匹配参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
                 return expression.type.isStringLikeType()
             }
+            CwtDataType.ParameterValue -> {
+                return expression.type.isStringLikeType()
+            }
             CwtDataType.LocalisationParameter -> {
                 //匹配本地化参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
                 return expression.type.isStringLikeType()
@@ -617,8 +620,9 @@ object ParadoxConfigHandler {
             CwtDataType.IntValueField -> 45
             CwtDataType.VariableField -> 45
             CwtDataType.IntVariableField -> 45
-            CwtDataType.Modifier -> 75 //higher than definition
+            CwtDataType.Modifier -> 75 //higher than Definition
             CwtDataType.Parameter -> 10
+            CwtDataType.ParameterValue -> 90 //same to Scalar
             CwtDataType.LocalisationParameter -> 10
             CwtDataType.ShaderEffect -> 85 // (80,90)
             CwtDataType.SingleAliasRight -> 0 //不期望匹配到

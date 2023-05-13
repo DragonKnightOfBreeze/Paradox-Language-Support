@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.parameter.*
 
-class ParadoxArgumentPsiReference(
+class ParadoxConditionParameterPsiReference(
 	element: ParadoxConditionParameter,
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxConditionParameter>(element, rangeInElement) {

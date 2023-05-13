@@ -644,9 +644,9 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getReference(element: ParadoxScriptParameterConditionParameter): ParadoxArgumentPsiReference {
+    fun getReference(element: ParadoxScriptParameterConditionParameter): ParadoxConditionParameterPsiReference {
         val nameElement = element.idElement
-        return ParadoxArgumentPsiReference(element, nameElement.textRangeInParent)
+        return ParadoxConditionParameterPsiReference(element, nameElement.textRangeInParent)
     }
     //endregion
     

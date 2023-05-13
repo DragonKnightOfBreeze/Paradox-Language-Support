@@ -34,6 +34,7 @@ enum class CwtDataType {
     IntVariableField,
     Modifier, //<modifier>
     Parameter, //$parameter
+    ParameterValue, //$parameter_value
     LocalisationParameter, //$localisation_parameter
     SingleAliasRight,
     AliasName,

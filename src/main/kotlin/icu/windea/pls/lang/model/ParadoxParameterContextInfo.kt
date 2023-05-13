@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.model
 
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
@@ -13,8 +14,8 @@ class ParadoxParameterContextInfo(
     val parameters: Map<String, List<ParadoxParameterInfo>>
 ) {
     fun isOptional(parameterName: String, argumentNames: Set<String>? = null): Boolean {
-        val parameterInfos = parameters.get(parameterName) ?: return true
-        if(parameterInfos.isEmpty()) return true
+        val parameterInfos = parameters.get(parameterName)
+        if(parameterInfos.isNullOrEmpty()) return true
         for(parameterInfo in parameterInfos) {
             //检查参数是否带有默认值
             if(parameterInfo.defaultValue != null) return true
@@ -37,6 +38,27 @@ class ParadoxParameterContextInfo(
         }
         return false
     }
+    
+    fun getEntireConfig(parameterName: String): CwtValueConfig? {
+        //如果推断得到的规则不唯一，则返回null
+        val parameterInfos = parameters.get(parameterName)
+        if(parameterInfos.isNullOrEmpty()) return null
+        var result: CwtValueConfig? = null
+        for(parameterInfo in parameterInfos) {
+            if(parameterInfo.template != "$") continue //要求整个作为脚本表达式
+            val configs = parameterInfo.configs
+            val config = configs.firstOrNull() as? CwtValueConfig ?: continue
+            if(result == null) {
+                result = config
+            } else {
+                if(result.expression != config.expression) {
+                    result = null
+                    break
+                }
+            }
+        }
+        return result
+    }
 }
 
 /**
@@ -50,6 +72,33 @@ class ParadoxParameterInfo(
 ) {
     val element: ParadoxParameter? get() = elementPointer.element
     
+    /**
+     * 获取模版表达式，用于此参数在整个脚本表达式中的位置。用$表示此参数，用#表示其他参数。
+     */
+    val template: String by lazy {
+        val element = element ?: return@lazy "$"
+        val builder = StringBuilder("$")
+        element.siblings(forward = false, withSelf = false).forEach {
+            builder.insert(0, doGetTemplateSnippet(it))
+        }
+        element.siblings(forward = true, withSelf = false).forEach {
+            builder.append(doGetTemplateSnippet(it))
+        }
+        builder.toString()
+    }
+    
+    private fun doGetTemplateSnippet(it: PsiElement): String {
+        val elementType = it.elementType
+        val s = when(elementType) {
+            ParadoxScriptElementTypes.PARAMETER -> "#"
+            else -> it.text
+        }
+        return s
+    }
+    
+    /**
+     * 获取此参数对应的脚本表达式所对应的CWT规则列表。此参数可能整个作为一个脚本表达式，或者被一个脚本表达式所包含。
+     */
     val configs: List<CwtDataConfig<*>> by lazy {
         val parent = element?.parent
         when {
