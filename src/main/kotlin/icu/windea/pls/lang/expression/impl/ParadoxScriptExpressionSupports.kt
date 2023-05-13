@@ -21,7 +21,6 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*

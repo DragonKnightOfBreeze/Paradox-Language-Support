@@ -42,7 +42,6 @@ import java.util.concurrent.*
 @Suppress("UNCHECKED_CAST")
 object ParadoxConfigHandler {
     //region Common Methods
-    const val paramsEnumName = "scripted_effect_params"
     
     fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
         return propertyConfig.keyExpression.type == CwtDataType.AliasName
@@ -444,7 +443,7 @@ object ParadoxConfigHandler {
                 return expression.type.isStringLikeType()
             }
             CwtDataType.ParameterValue -> {
-                return expression.type.isStringLikeType()
+                return expression.type != ParadoxDataType.BlockType
             }
             CwtDataType.LocalisationParameter -> {
                 //匹配本地化参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）

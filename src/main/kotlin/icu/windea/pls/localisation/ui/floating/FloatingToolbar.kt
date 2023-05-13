@@ -11,6 +11,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.ui.actions.styling.*
@@ -80,7 +81,10 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 		val toolbar = object : ActionToolbarImpl(ActionPlaces.EDITOR_TOOLBAR, group, true) {
 			override fun addNotify() {
 				super.addNotify()
-				updateActionsImmediately()
+				//NOTE 这是必要的，否则显示悬浮工具栏时其中的图标不会立即全部显示
+				//@Suppress("UnstableApiUsage")
+				//updateActionsImmediately(true)
+				this.function("updateActionsImmediately")(true)
 			}
 		}
 		toolbar.targetComponent = targetComponent

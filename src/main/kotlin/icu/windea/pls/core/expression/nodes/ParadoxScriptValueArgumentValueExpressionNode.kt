@@ -66,6 +66,7 @@ class ParadoxScriptValueArgumentValueExpressionNode(
 		}
 		
 		override fun resolve(): PsiElement? {
+			if(!getSettings().inference.argumentValueConfig) return null
 			return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
 		}
 		
@@ -76,6 +77,7 @@ class ParadoxScriptValueArgumentValueExpressionNode(
 		}
 		
 		override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+			if(!getSettings().inference.argumentValueConfig) return ResolveResult.EMPTY_ARRAY
 			return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
 		}
 		

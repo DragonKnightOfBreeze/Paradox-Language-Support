@@ -7,6 +7,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.script.psi.*
@@ -40,6 +41,7 @@ abstract class ParadoxScriptExpressionSupport {
         
         fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
             EP_NAME.extensionList.forEach p@{ ep ->
+                if(ep.checkInstanceRecursion()) return@p //避免SOE
                 if(!ep.supports(config)) return@p
                 ep.annotate(element, rangeInElement, expression, holder, config)
             }
@@ -47,6 +49,7 @@ abstract class ParadoxScriptExpressionSupport {
         
         fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
             return EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
+                if(ep.checkInstanceRecursion()) return@p null //避免SOE
                 if(!ep.supports(config)) return@p null
                 ep.resolve(element, rangeInElement, expression, config, isKey, exact)
             }
@@ -54,6 +57,7 @@ abstract class ParadoxScriptExpressionSupport {
         
         fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
             return EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
+                if(ep.checkInstanceRecursion()) return@p null //避免SOE
                 if(!ep.supports(config)) return@p null
                 ep.multiResolve(element, rangeInElement, expression, config, isKey).takeIfNotEmpty()
             }.orEmpty()
@@ -62,6 +66,7 @@ abstract class ParadoxScriptExpressionSupport {
         fun complete(context: ProcessingContext, result: CompletionResultSet) {
             val config = context.config ?: return
             EP_NAME.extensionList.forEach p@{ ep ->
+                if(ep.checkInstanceRecursion()) return@p //避免SOE
                 if(!ep.supports(config)) return@p
                 ep.complete(context, result)
             }

@@ -24,13 +24,9 @@ private fun doGetChildren(): List<AnAction> {
 	return colorConfigs.map { setColorActionCache.get(it) }
 }
 
-class FloatingToolbarGroup : DefaultActionGroup() {
+class FloatingToolbarGroup : DefaultActionGroup(doGetChildren()) {
 	init {
 		templatePresentation.isPopupGroup = true
-	}
-	
-	override fun getChildren(e: AnActionEvent?): Array<AnAction> {
-		return doGetChildren().toTypedArray()
 	}
 }
 

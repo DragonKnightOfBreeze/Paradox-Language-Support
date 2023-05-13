@@ -145,7 +145,7 @@ object ParadoxParameterHandler {
     fun inferEntireConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
         var result: CwtValueConfig? = null
         ParadoxParameterSupport.processContext(parameterElement) p@{ context ->
-            val contextInfo = getContextInfo(context) ?:  return@p true
+            val contextInfo = getContextInfo(context) ?: return@p true
             val config = contextInfo.getEntireConfig(parameterElement.name) ?: return@p true
             if(result == null) {
                 result = config

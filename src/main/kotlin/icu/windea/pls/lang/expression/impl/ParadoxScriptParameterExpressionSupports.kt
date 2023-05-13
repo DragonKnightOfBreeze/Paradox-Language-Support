@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
@@ -51,11 +52,23 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        super.annotate(element, rangeInElement, expression, holder, config)
+        if(!getSettings().inference.argumentValueConfig) return
+        if(element !is ParadoxScriptValue || config !is CwtValueConfig) return
+        val propertyKey = element.propertyKey ?: return
+        val propertyConfig = config.propertyConfig ?: return
+        val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return
+        val inferredConfig = ParadoxParameterHandler.inferEntireConfig(parameterElement) ?: return
+        val range = rangeInElement?.shiftRight(element.startOffset) ?: element.textRange
+        //create tooltip
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range)
+            .tooltip(PlsBundle.message("inferred.config.expression", inferredConfig.expression))
+            .create()
+        INSTANCE.annotate(element, rangeInElement, expression, holder, inferredConfig, )
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        if(element !is ParadoxScriptString || config !is CwtValueConfig || isKey != false) return null
+        if(!getSettings().inference.argumentValueConfig) return null
+        if(element !is ParadoxScriptValue || config !is CwtValueConfig || isKey != false) return null
         val propertyKey = element.propertyKey ?: return null
         val propertyConfig = config.propertyConfig ?: return null
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return null
@@ -66,7 +79,8 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
     }
     
     override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
-        if(element !is ParadoxScriptString || config !is CwtValueConfig || isKey != false) return emptySet()
+        if(!getSettings().inference.argumentValueConfig) return emptySet()
+        if(element !is ParadoxScriptValue || config !is CwtValueConfig || isKey != false) return emptySet()
         val propertyKey = element.propertyKey ?: return emptySet()
         val propertyConfig = config.propertyConfig ?: return emptySet()
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return emptySet()
@@ -77,6 +91,7 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) = with(context) {
+        if(!getSettings().inference.argumentValueConfig) return
         val element = contextElement
         val config = config
         val configs = configs
@@ -85,7 +100,7 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         val propertyKey = element.propertyKey ?: return
         val propertyConfig = config.propertyConfig ?: return
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return
-        val inferredConfig = ParadoxParameterHandler.inferEntireConfig(parameterElement) ?: return 
+        val inferredConfig = ParadoxParameterHandler.inferEntireConfig(parameterElement) ?: return
         context.put(PlsCompletionKeys.configKey, inferredConfig)
         context.put(PlsCompletionKeys.configsKey, null)
         ParadoxConfigHandler.completeScriptExpression(context, result)
