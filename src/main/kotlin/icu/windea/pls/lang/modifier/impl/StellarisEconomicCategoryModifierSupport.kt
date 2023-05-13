@@ -73,6 +73,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val resolved = ParadoxModifierElement(element, name, gameType, project)
         resolved.putUserData(economicCategoryInfoKey, economicCategoryInfo)
         resolved.putUserData(economicCategoryModifierInfoKey, economicCategoryModifierInfo)
+        resolved.putUserData(ParadoxModifierHandler.supportKey, this)
         return resolved
     }
     
@@ -99,7 +100,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
                 //排除重复的
                 if(!modifierNames.add(name)) continue
                 
-                val modifierElement = resolveModifier(name, element, configGroup)
+                val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@StellarisEconomicCategoryModifierSupport)
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
                     .withIcon(PlsIcons.Modifier)
                     .withTailText(tailText)
@@ -111,6 +112,10 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
             }
             true
         }
+    }
+    
+    override fun getModificationTracker(): ModificationTracker {
+        return ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker("common/economic_categories")
     }
     
     override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {

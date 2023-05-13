@@ -30,8 +30,8 @@ abstract class ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
         return CachedValuesManager.getCachedValue(definition, cachedDataKey) {
             val value = doGetData(definition)
             //这里需要追踪全局的scriptedVariable以及inlineScript的更改
-            val tracker1 = ParadoxModificationTrackerProvider.getInstance().ScriptedVariables
-            val tracker2 = ParadoxModificationTrackerProvider.getInstance().InlineScripts
+            val tracker1 = ParadoxModificationTrackerProvider.getInstance().ScriptedVariablesTracker
+            val tracker2 = ParadoxModificationTrackerProvider.getInstance().InlineScriptsTracker
             CachedValueProvider.Result.create(value, definition, tracker1, tracker2)
         }
     }

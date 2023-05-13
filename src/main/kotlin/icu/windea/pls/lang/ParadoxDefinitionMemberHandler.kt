@@ -27,7 +27,7 @@ object ParadoxDefinitionMemberHandler {
             val value = resolveInfoDownUp(element)
             //TODO 需要确定最合适的依赖项
             //invalidated on file modification or ScriptFileTracker
-            val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFile
+            val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker
             CachedValueProvider.Result.create(value, file, tracker)
         }
     }

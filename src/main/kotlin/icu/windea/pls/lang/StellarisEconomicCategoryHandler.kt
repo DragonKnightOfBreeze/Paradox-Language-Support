@@ -161,7 +161,7 @@ object StellarisEconomicCategoryHandler {
         //key, modifier_types, use_parent_icon
         val key = data.getData("key")?.value?.stringValue() ?: return null
         val useParentIcon = data.getData("use_parent_icon")?.value?.booleanValue() ?: false
-        val modifierTypes = data.getAllData("modifier_types").mapNotNull { it.value?.stringValue() }.takeIfNotEmpty() ?: return null
+        val modifierTypes = data.getAllData("modifier_types/-").mapNotNull { it.value?.stringValue() }.takeIfNotEmpty() ?: return null
         return StellarisTriggeredModifierInfo(key, useParentIcon, modifierTypes)
     }
     

@@ -51,6 +51,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val resolved = ParadoxModifierElement(element, name, gameType, project)
         resolved.putUserData(ParadoxModifierHandler.modifierConfigKey, modifierConfig)
         resolved.putUserData(referencesKey, references)
+        resolved.putUserData(ParadoxModifierHandler.supportKey, this)
         return resolved
     }
     
@@ -73,7 +74,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                 //排除重复的
                 if(!modifierNames.add(name)) return@p true
                 
-                val modifierElement = resolveModifier(name, element, configGroup)
+                val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
                     .withIcon(PlsIcons.Modifier)
                     .withTailText(tailText)
@@ -85,6 +86,11 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                 true
             }
         }
+    }
+    
+    override fun getModificationTracker(): ModificationTracker {
+        //TODO 可以进一步缩小范围
+        return ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker
     }
     
     override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {

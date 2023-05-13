@@ -1671,7 +1671,7 @@ object ParadoxConfigHandler {
             val value = ConcurrentHashMap<String, List<CwtConfig<*>>>()
             //invalidated on file modification or ScriptFileTracker
             val file = element.containingFile
-            val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFile
+            val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker
             CachedValueProvider.Result.create(value, file, tracker)
         }
     }
@@ -1848,7 +1848,7 @@ object ParadoxConfigHandler {
             val value = ConcurrentHashMap<String, Map<CwtDataExpression, Occurrence>>()
             //invalidated on file modification or ScriptFileTracker
             val file = element.containingFile
-            val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFile
+            val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker
             CachedValueProvider.Result.create(value, file, tracker)
         }
     }

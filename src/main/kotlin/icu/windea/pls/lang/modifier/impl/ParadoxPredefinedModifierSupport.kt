@@ -19,10 +19,6 @@ import icu.windea.pls.script.psi.*
  * 提供对预定义的修正的支持。
  */
 class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
-    companion object {
-        val modifierCacheKey = Key.create<MutableMap<String, ParadoxModifierElement>>("paradox.predefined.modifier.cache")
-    }
-    
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
         return configGroup.predefinedModifiers[name] != null
     }
@@ -34,6 +30,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
         val gameType = configGroup.gameType ?: return null
         val resolved = ParadoxModifierElement(element, name, gameType, project)
         resolved.putUserData(ParadoxModifierHandler.modifierConfigKey, modifierConfig)
+        resolved.putUserData(ParadoxModifierHandler.supportKey, this)
         return resolved
     }
     
@@ -55,7 +52,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
             if(template.isNotEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
             val name = modifierConfig.name
-            val modifierElement = resolveModifier(name, element, configGroup)
+            val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxPredefinedModifierSupport)
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
                 .withIcon(PlsIcons.Modifier)
                 .withTailText(tailText)
@@ -65,6 +62,10 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
             //.withPriority(PlsCompletionPriorities.modifierPriority)
             result.addScriptExpressionElement(context, builder)
         }
+    }
+    
+    override fun getModificationTracker(): ModificationTracker {
+        return ModificationTracker.NEVER_CHANGED
     }
     
     override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {

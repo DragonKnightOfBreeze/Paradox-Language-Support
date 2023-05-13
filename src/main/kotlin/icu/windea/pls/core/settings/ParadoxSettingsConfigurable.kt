@@ -231,7 +231,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.inference.eventScopeContext"))
                         .bindSelected(settings.inference::eventScopeContext)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContext.tooltip") }
-                        .onApply { ParadoxModificationTrackerProvider.getInstance().DefinitionScopeContextInference.incModificationCount() }
+                        .onApply { ParadoxModificationTrackerProvider.getInstance().DefinitionScopeContextInferenceTracker.incModificationCount() }
                 }
             }
             //hierarchy
@@ -316,7 +316,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
     
     private fun doRefreshInlineScripts() {
         //重新解析inline script文件
-        ParadoxModificationTrackerProvider.getInstance().InlineScripts.incModificationCount()
+        ParadoxModificationTrackerProvider.getInstance().InlineScriptsTracker.incModificationCount()
         //刷新inline script文件的内嵌提示
         ParadoxCoreHandler.refreshInlayHints { file, _ ->
             ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null

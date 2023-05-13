@@ -172,7 +172,7 @@ object ParadoxScopeHandler {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
             val file = element.containingFile
             val value = resolveScopeContextOfDefinitionMember(element)
-            val tracker = ParadoxModificationTrackerProvider.getInstance().DefinitionScopeContextInference
+            val tracker = ParadoxModificationTrackerProvider.getInstance().DefinitionScopeContextInferenceTracker
             CachedValueProvider.Result.create(value, file, tracker)
         }
     }

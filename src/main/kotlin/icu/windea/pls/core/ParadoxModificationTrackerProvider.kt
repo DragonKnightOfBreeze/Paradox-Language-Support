@@ -5,6 +5,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.*
@@ -13,18 +14,18 @@ import icu.windea.pls.script.*
 class ParadoxModificationTrackerProvider {
     //其实可以区分游戏类型，但是一般情况下不需要这么做
     
-    val ScriptFile = SimpleModificationTracker()
-    val Modifier = SimpleModificationTracker()
+    val ScriptFileTracker = SimpleModificationTracker()
     
-    val Technologies = SimpleModificationTracker()
-    val OnActions = SimpleModificationTracker()
-    val Events = SimpleModificationTracker()
+    val ScriptFileTrackers = mutableMapOf<String, SimpleModificationTracker>().synced()
     
-    val ScriptedVariables = SimpleModificationTracker()
-    val InlineScripts = SimpleModificationTracker()
+    fun ScriptFileTracker(path: String): SimpleModificationTracker {
+        return ScriptFileTrackers.getOrPut(path) { SimpleModificationTracker() }
+    }
     
-    val DefinitionScopeContextInference = SimpleModificationTracker()
-    val LocalisationCommandScopeContextInference = SimpleModificationTracker()
+    val ScriptedVariablesTracker = ScriptFileTracker("common/scripted_variables")
+    val InlineScriptsTracker = ScriptFileTracker("common/inline_scripts")
+    
+    val DefinitionScopeContextInferenceTracker = SimpleModificationTracker()
     
     companion object {
         @JvmStatic
