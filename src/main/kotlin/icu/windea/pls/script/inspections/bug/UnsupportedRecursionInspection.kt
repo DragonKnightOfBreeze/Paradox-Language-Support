@@ -58,18 +58,24 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 val resolvedNames = mutableSetOf<String>()
                 element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
                     override fun visitElement(e: PsiElement) {
-                        if(e is ParadoxScriptStringExpressionElement) visitStringExpressionElement(e)
+                        if(e is ParadoxScriptStringExpressionElement) visitProperty(e)
                         if(e.isExpressionOrMemberContext()) super.visitElement(e)
                     }
                     
-                    private fun visitStringExpressionElement(e: ParadoxScriptStringExpressionElement) {
+                    //必须是**调用**而非其他方式的引用，因此这里我们只检查下面几种情况：
+                    //some_effect = xxx
+                    //some_trigger = xxx
+                    
+                    private fun visitProperty(e: ParadoxScriptStringExpressionElement) {
+                        if(e !is ParadoxScriptPropertyKey) return
+                        val isKey = true
+                        
                         //为了优化性能，这里不直接解析引用
                         //认为scripted_trigger/scripted_effect不能在各种复杂表达式中使用，并且名字必须是合法的标识符
                         val name = e.name
                         if(!name.isExactIdentifier()) return
                         if(resolvedNames.contains(name)) return //不需要重复解析引用
-                        val isKey = e is ParadoxScriptPropertyKey
-                        val configs = ParadoxConfigHandler.getConfigs(e, !isKey, isKey)
+                        val configs = ParadoxConfigHandler.getConfigs(e, )
                         val config = configs.firstOrNull() ?: return
                         val configExpression = config.expression
                         if(configExpression.type != CwtDataType.Definition) return
