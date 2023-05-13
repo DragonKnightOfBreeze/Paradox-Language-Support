@@ -65,6 +65,7 @@
     
     <localisationParameterSupport implementation="icu.windea.pls.lang.parameter.impl.ParadoxBaseLocalisationParameterSupport"/>
     
+    <modifierSupport implementation="icu.windea.pls.lang.modifier.impl.ParadoxPredefinedModifierSupport"/>
     <modifierSupport implementation="icu.windea.pls.lang.modifier.impl.ParadoxTemplateModifierSupport"/>
     <modifierSupport implementation="icu.windea.pls.lang.modifier.impl.StellarisEconomicCategoryModifierSupport"/>
     

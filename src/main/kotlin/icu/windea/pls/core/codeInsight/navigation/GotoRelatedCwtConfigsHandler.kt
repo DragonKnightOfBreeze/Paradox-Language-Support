@@ -71,7 +71,7 @@ class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
 							configGroup.predefinedModifiers[name]?.pointer?.element?.let { add(it) }
 							ParadoxModifierSupport.EP_NAME.extensionList.forEach { resolver ->
 								val modifierElement = resolver.resolveModifier(name, location, configGroup)
-								val configElement = modifierElement?.modifierConfig?.pointer?.element
+								val configElement = modifierElement?.getUserData(ParadoxModifierHandler.modifierConfigKey)?.pointer?.element
 								configElement?.let { add(it) }
 							}
 						}

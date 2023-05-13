@@ -38,20 +38,20 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     }
     
     override fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
-        //要求生成源必须已定义
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return null
-        var generatedModifierConfig: CwtModifierConfig? = null
+        var modifierConfig: CwtModifierConfig? = null
         val references = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
             ProgressManager.checkCanceled()
             val resolvedReferences = config.template.resolveReferences(name, element, configGroup).takeIfNotEmpty()
-            if(resolvedReferences != null) generatedModifierConfig = config
+            if(resolvedReferences != null) modifierConfig = config
             resolvedReferences
         }.orEmpty()
-        if(generatedModifierConfig == null) return null
-        val result = ParadoxModifierElement(element, name, generatedModifierConfig, gameType, project)
-        result.putUserData(referencesKey, references)
-        return result
+        if(modifierConfig == null) return null
+        val resolved = ParadoxModifierElement(element, name, gameType, project)
+        resolved.putUserData(ParadoxModifierHandler.modifierConfigKey, modifierConfig)
+        resolved.putUserData(referencesKey, references)
+        return resolved
     }
     
     override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>): Unit = with(context) {
@@ -88,11 +88,11 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     }
     
     override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
-        return element.modifierConfig?.categoryConfigMap
+        return element.getUserData(ParadoxModifierHandler.modifierConfigKey)?.categoryConfigMap
     }
     
     override fun buildDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean = with(builder) {
-        val modifierConfig = element.modifierConfig ?: return false
+        val modifierConfig = element.getUserData(ParadoxModifierHandler.modifierConfigKey) ?: return false
         val references = element.getUserData(referencesKey) ?: return false
         
         //加上名字

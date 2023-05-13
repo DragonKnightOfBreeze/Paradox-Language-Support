@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.modifier.impl
 
 import com.intellij.codeInsight.completion.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
@@ -18,16 +19,22 @@ import icu.windea.pls.script.psi.*
  * 提供对预定义的修正的支持。
  */
 class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
+    companion object {
+        val modifierCacheKey = Key.create<MutableMap<String, ParadoxModifierElement>>("paradox.predefined.modifier.cache")
+    }
+    
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
         return configGroup.predefinedModifiers[name] != null
     }
     
     override fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
-        val predefinedModifierConfig = configGroup.predefinedModifiers[name]
-        if(predefinedModifierConfig == null) return null
+        val modifierConfig = configGroup.predefinedModifiers[name]
+        if(modifierConfig == null) return null
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return null
-        return ParadoxModifierElement(element, name, predefinedModifierConfig, gameType, project)
+        val resolved = ParadoxModifierElement(element, name, gameType, project)
+        resolved.putUserData(ParadoxModifierHandler.modifierConfigKey, modifierConfig)
+        return resolved
     }
     
     override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>)= with(context) {
@@ -61,7 +68,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
     }
     
     override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
-        return element.modifierConfig?.categoryConfigMap
+        return element.getUserData(ParadoxModifierHandler.modifierConfigKey)?.categoryConfigMap
     }
     
     //这里需要返回null，以便尝试适用接下来的扩展点，如果全部无法适用，会使用默认的处理逻辑

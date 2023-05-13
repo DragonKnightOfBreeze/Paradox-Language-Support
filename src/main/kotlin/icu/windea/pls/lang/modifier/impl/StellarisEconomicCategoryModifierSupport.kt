@@ -70,10 +70,10 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
             true
         }
         if(economicCategoryInfo == null || economicCategoryModifierInfo == null) return null
-        val result = ParadoxModifierElement(element, name, null, gameType, project)
-        result.putUserData(economicCategoryInfoKey, economicCategoryInfo)
-        result.putUserData(economicCategoryModifierInfoKey, economicCategoryModifierInfo)
-        return result
+        val resolved = ParadoxModifierElement(element, name, gameType, project)
+        resolved.putUserData(economicCategoryInfoKey, economicCategoryInfo)
+        resolved.putUserData(economicCategoryModifierInfoKey, economicCategoryModifierInfo)
+        return resolved
     }
     
     override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>): Unit = with(context) {

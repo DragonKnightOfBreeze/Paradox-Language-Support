@@ -14,6 +14,7 @@ import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxModifierHandler {
+	val modifierConfigKey = Key.create<CwtModifierConfig>("paradox.modifier.config")
 	val supportKey = Key.create<ParadoxModifierSupport>("paradox.modifier.support")
 	
 	//可通过运行游戏后输出的modifiers.log判断到底会生成哪些修正
