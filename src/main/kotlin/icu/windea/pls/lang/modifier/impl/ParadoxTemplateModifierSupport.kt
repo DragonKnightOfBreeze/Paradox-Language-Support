@@ -34,7 +34,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         if(isStatic) return false
         val modifierName = name
         return configGroup.generatedModifiers.values.any { config ->
-            config.template.matches(modifierName.lowercase(), element, configGroup, matchType)
+            config.template.matches(modifierName, element, configGroup, matchType)
         }
     }
     
