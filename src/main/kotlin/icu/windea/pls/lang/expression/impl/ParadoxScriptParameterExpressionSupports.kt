@@ -60,9 +60,8 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         val inferredConfig = ParadoxParameterHandler.inferEntireConfig(parameterElement) ?: return
         val range = rangeInElement?.shiftRight(element.startOffset) ?: element.textRange
         //create tooltip
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range)
-            .tooltip(PlsBundle.message("inferred.config.expression", inferredConfig.expression))
-            .create()
+        val tooltip = PlsBundle.message("inferred.config.expression", inferredConfig.expression.expressionString.escapeXml())
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).tooltip(tooltip).create()
         INSTANCE.annotate(element, rangeInElement, expression, holder, inferredConfig, )
     }
     

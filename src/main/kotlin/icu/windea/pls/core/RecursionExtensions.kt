@@ -5,16 +5,19 @@ private val stackTraceThreadLocal = ThreadLocal.withInitial { mutableListOf<Any>
 /**
  * 判断当前实例是否出现在之前的堆栈中。
  * 
- * 这里的堆栈是一个本地缓存并在检查时更新。如果检查结果为`true`，则会清空。
+ * 这里的堆栈是一个本地缓存，检查时会更新，检查全部完成后需要手动清空。
  */
-fun Any.checkInstanceRecursion(): Boolean {
+fun checkInstanceRecursion(target: Any): Boolean {
     val stackTrace = stackTraceThreadLocal.get()
-    if(stackTrace.contains(this)) {
-        stackTrace.clear()
+    if(stackTrace.contains(target)) {
         return true
     }
-    stackTrace.add(this)
+    stackTrace.add(target)
     return false
+}
+
+fun finishCheckInstanceRecursion() {
+    val stackTrace = stackTraceThreadLocal.get().clear()
 }
 
 /**

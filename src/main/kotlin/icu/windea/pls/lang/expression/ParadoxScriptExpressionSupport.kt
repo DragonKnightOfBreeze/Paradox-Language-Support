@@ -40,35 +40,51 @@ abstract class ParadoxScriptExpressionSupport {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxScriptExpressionSupport>("icu.windea.pls.scriptExpressionSupport")
         
         fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-            EP_NAME.extensionList.forEach p@{ ep ->
-                if(ep.checkInstanceRecursion()) return@p //避免SOE
-                if(!ep.supports(config)) return@p
-                ep.annotate(element, rangeInElement, expression, holder, config)
+            try {
+                EP_NAME.extensionList.forEach p@{ ep ->
+                    if(checkInstanceRecursion(ep)) return@p //避免SOE
+                    if(!ep.supports(config)) return@p
+                    ep.annotate(element, rangeInElement, expression, holder, config)
+                }
+            } finally {
+                finishCheckInstanceRecursion()
             }
         }
         
         fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
-                if(ep.checkInstanceRecursion()) return@p null //避免SOE
-                if(!ep.supports(config)) return@p null
-                ep.resolve(element, rangeInElement, expression, config, isKey, exact)
+            try {
+                return EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
+                    if(checkInstanceRecursion(ep)) return@p null //避免SOE
+                    if(!ep.supports(config)) return@p null
+                    ep.resolve(element, rangeInElement, expression, config, isKey, exact)
+                }
+            } finally {
+                finishCheckInstanceRecursion()
             }
         }
         
         fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
-            return EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
-                if(ep.checkInstanceRecursion()) return@p null //避免SOE
-                if(!ep.supports(config)) return@p null
-                ep.multiResolve(element, rangeInElement, expression, config, isKey).takeIfNotEmpty()
-            }.orEmpty()
+            try {
+                return EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
+                    if(checkInstanceRecursion(ep)) return@p null //避免SOE
+                    if(!ep.supports(config)) return@p null
+                    ep.multiResolve(element, rangeInElement, expression, config, isKey).takeIfNotEmpty()
+                }.orEmpty()
+            } finally {
+                finishCheckInstanceRecursion()
+            }
         }
         
         fun complete(context: ProcessingContext, result: CompletionResultSet) {
-            val config = context.config ?: return
-            EP_NAME.extensionList.forEach p@{ ep ->
-                if(ep.checkInstanceRecursion()) return@p //避免SOE
-                if(!ep.supports(config)) return@p
-                ep.complete(context, result)
+            try {
+                val config = context.config ?: return
+                EP_NAME.extensionList.forEach p@{ ep ->
+                    if(checkInstanceRecursion(ep)) return@p //避免SOE
+                    if(!ep.supports(config)) return@p
+                    ep.complete(context, result)
+                }
+            } finally {
+                finishCheckInstanceRecursion()
             }
         }
     }
