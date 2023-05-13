@@ -2,6 +2,7 @@ package icu.windea.pls.lang.expression.impl
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.lang.annotation.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
@@ -57,6 +58,7 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         val propertyKey = element.propertyKey ?: return
         val propertyConfig = config.propertyConfig ?: return
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return
+        ProgressManager.checkCanceled()
         val inferredConfig = ParadoxParameterHandler.inferEntireConfig(parameterElement) ?: return
         val range = rangeInElement?.shiftRight(element.startOffset) ?: element.textRange
         //create tooltip
@@ -71,9 +73,11 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         val propertyKey = element.propertyKey ?: return null
         val propertyConfig = config.propertyConfig ?: return null
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return null
+        ProgressManager.checkCanceled()
         val inferredConfig = ParadoxParameterHandler.inferEntireConfig(parameterElement) ?: return null
         val inferredConfigExpression = inferredConfig.expression
         val configGroup = inferredConfig.info.configGroup
+        ProgressManager.checkCanceled()
         return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, inferredConfig, inferredConfigExpression, configGroup, isKey, exact)
     }
     
@@ -86,6 +90,7 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         val inferredConfig = ParadoxParameterHandler.inferEntireConfig(parameterElement) ?: return emptySet()
         val inferredConfigExpression = inferredConfig.expression
         val configGroup = inferredConfig.info.configGroup
+        ProgressManager.checkCanceled()
         return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, inferredConfig, inferredConfigExpression, configGroup, isKey)
     }
     
@@ -95,10 +100,11 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         val config = config
         val configs = configs
         val key = isKey
-        if(element !is ParadoxScriptString || config !is CwtValueConfig || key != false) return
+        if(element !is ParadoxScriptValue || config !is CwtValueConfig || key != false) return
         val propertyKey = element.propertyKey ?: return
         val propertyConfig = config.propertyConfig ?: return
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return
+        ProgressManager.checkCanceled()
         val inferredConfig = ParadoxParameterHandler.inferEntireConfig(parameterElement) ?: return
         context.put(PlsCompletionKeys.configKey, inferredConfig)
         context.put(PlsCompletionKeys.configsKey, null)
