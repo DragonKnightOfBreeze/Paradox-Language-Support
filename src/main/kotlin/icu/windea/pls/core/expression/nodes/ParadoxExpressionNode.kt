@@ -1,5 +1,6 @@
 package icu.windea.pls.core.expression.nodes
 
+import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
@@ -13,6 +14,8 @@ interface ParadoxExpressionNode: AttributesKeyAware {
 	val nodes: List<ParadoxExpressionNode> get() = emptyList()
 	
 	fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? = null
+	
+	fun annotate(element: ParadoxScriptStringExpressionElement, holder: AnnotationHolder) {}
 	
 	fun getReference(element: ParadoxScriptStringExpressionElement): PsiReference? = null
 	

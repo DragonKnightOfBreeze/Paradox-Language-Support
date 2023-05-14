@@ -61,10 +61,12 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         ProgressManager.checkCanceled()
         val inferredConfig = ParadoxParameterHandler.inferEntireConfig(parameterElement) ?: return
         val range = rangeInElement?.shiftRight(element.startOffset) ?: element.textRange
-        //create tooltip
-        val tooltip = PlsBundle.message("inferred.config.expression", inferredConfig.expression.expressionString.escapeXml())
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).tooltip(tooltip).create()
         INSTANCE.annotate(element, rangeInElement, expression, holder, inferredConfig)
+        
+        //create tooltip
+        val inferredConfigExpression = inferredConfig.expression.expressionString
+        val tooltip = PlsBundle.message("inferred.config.expression", inferredConfigExpression.escapeXml())
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).tooltip(tooltip).create()
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {

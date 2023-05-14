@@ -1,5 +1,6 @@
 package icu.windea.pls.core.expression.nodes
 
+import com.intellij.lang.annotation.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -8,6 +9,7 @@ import com.intellij.psi.impl.source.resolve.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.psi.*

@@ -204,6 +204,13 @@ class ParadoxScriptAnnotator : Annotator {
             if(attributesKeyConfig != null) {
                 val rangeInElement = expressionNode.rangeInExpression.shiftRight(if(element.text.isLeftQuoted()) 1 else 0)
                 annotateExpression(element, rangeInElement, holder, attributesKeyConfig)
+                
+                //create tooltip
+                if(attributesKeyConfig is CwtValueConfig) {
+                    val inferredConfigExpression = attributesKeyConfig.expression.expressionString
+                    val tooltip = PlsBundle.message("inferred.config.expression", inferredConfigExpression.escapeXml())
+                    holder.newSilentAnnotation(INFORMATION).range(rangeInElement.shiftRight(element.startOffset)).tooltip(tooltip).create()
+                }
             } else if(attributesKey != null) {
                 doAnnotateComplexExpressionByAttributesKey(expressionNode, element, holder, attributesKey)
             }
