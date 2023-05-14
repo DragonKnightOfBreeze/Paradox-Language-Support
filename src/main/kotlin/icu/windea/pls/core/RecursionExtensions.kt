@@ -7,6 +7,9 @@ import java.util.*
 val PlsThreadLocals.recursionGuardThreadLocal: ThreadLocal<SmartRecursionGuard> by lazy { ThreadLocal() }
 val PlsThreadLocals.stackTraceThreadLocal: ThreadLocal<MutableList<Any>> by lazy { ThreadLocal() }
 
+/**
+ * 执行一段代码并尝试避免SOE。
+ */
 inline fun <T> withRecursionGuard(action: SmartRecursionGuard.() -> T): T? {
     val cachedRecursionGuard = PlsThreadLocals.recursionGuardThreadLocal.get()
     val cached = cachedRecursionGuard != null
@@ -25,6 +28,9 @@ inline fun <T> withRecursionGuard(action: SmartRecursionGuard.() -> T): T? {
     }
 }
 
+/**
+ * 用于基于传入的键避免SOE。
+ */
 class SmartRecursionGuard {
     val stackTrace = LinkedList<Any>()
     
