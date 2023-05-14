@@ -6,6 +6,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
@@ -30,8 +31,9 @@ abstract class ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
         return CachedValuesManager.getCachedValue(definition, cachedDataKey) {
             val value = doGetData(definition)
             //这里需要追踪全局的scriptedVariable以及inlineScript的更改
-            val tracker1 = ParadoxModificationTrackerProvider.getInstance().ScriptedVariablesTracker
-            val tracker2 = ParadoxModificationTrackerProvider.getInstance().InlineScriptsTracker
+            val project = definition.project
+            val tracker1 = ParadoxPsiModificationTracker.getInstance(project).ScriptedVariablesTracker
+            val tracker2 = ParadoxPsiModificationTracker.getInstance(project).InlineScriptsTracker
             CachedValueProvider.Result.create(value, definition, tracker1, tracker2)
         }
     }

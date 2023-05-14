@@ -7,6 +7,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.scope.*
@@ -27,7 +28,7 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
     private fun getInferredScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
         return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedScopeContextInferenceInfoKey) {
             val value = resolveInferredScopeContext(definition)
-            val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker("common/on_actions:txt")
+            val tracker = ParadoxPsiModificationTracker.getInstance(definition.project).ScriptFileTracker("common/on_actions:txt")
             CachedValueProvider.Result.create(value, tracker)
         }
     }

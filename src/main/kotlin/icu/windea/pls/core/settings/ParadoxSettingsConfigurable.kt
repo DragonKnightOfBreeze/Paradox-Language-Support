@@ -2,12 +2,14 @@ package icu.windea.pls.core.settings
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.options.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.listeners.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
@@ -232,7 +234,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.inference.eventScopeContext"))
                         .bindSelected(settings.inference::eventScopeContext)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContext.tooltip") }
-                        .onApply { ParadoxModificationTrackerProvider.getInstance().DefinitionScopeContextInferenceTracker.incModificationCount() }
+                        .onApply { ParadoxPsiModificationTracker.DefinitionScopeContextInferenceTracker.incModificationCount() }
                 }
             }
             //hierarchy
@@ -317,7 +319,9 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
     
     private fun doRefreshInlineScripts() {
         //重新解析inline script文件
-        ParadoxModificationTrackerProvider.getInstance().InlineScriptsTracker.incModificationCount()
+        ProjectManager.getInstance().openProjects.forEach { project ->
+            ParadoxPsiModificationTracker.getInstance(project).InlineScriptsTracker.incModificationCount()
+        }
         //刷新inline script文件的内嵌提示
         ParadoxCoreHandler.refreshInlayHints { file, _ ->
             ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null

@@ -10,6 +10,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.*
@@ -26,8 +27,8 @@ object ParadoxLocalisationParameterHandler {
     private fun getParameterNamesFromCache(element: ParadoxLocalisationProperty): Set<String> {
         return CachedValuesManager.getCachedValue(element, cachedParameterNamesKey) {
             val value = doGetParameters(element)
-            //invalidated on ScriptFileTracker
-            val tracker = ParadoxModificationTrackerProvider.getInstance(element.project).ScriptFileTracker
+            //invalidated on element modification or ScriptFileTracker
+            val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
             CachedValueProvider.Result.create(value, element, tracker)
         }
     }

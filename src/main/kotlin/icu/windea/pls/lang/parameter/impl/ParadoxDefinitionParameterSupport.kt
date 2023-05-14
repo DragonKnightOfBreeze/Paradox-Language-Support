@@ -182,8 +182,6 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
     
     override fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker {
-        //return ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker
-        
         val project = parameterElement.project
         val configGroup = getCwtConfig(project).get(parameterElement.gameType)
         return configGroup.getOrPutUserData(modificationTrackerKey) {
@@ -198,7 +196,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
                 builder.append(filePath)
                 if(fileExtension != null) builder.append(':').append(fileExtension)
             }
-            ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker(builder.toString())
+            ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker(builder.toString())
         }
     }
     

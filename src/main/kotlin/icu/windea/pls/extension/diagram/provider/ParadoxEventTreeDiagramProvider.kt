@@ -11,6 +11,7 @@ import com.intellij.ui.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
@@ -227,6 +228,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         file: VirtualFile?, //umlFile   
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
-        override fun getModificationTracker() = ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker("common/events:txt")
+        override fun getModificationTracker() = ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker("common/events:txt")
     }
 }

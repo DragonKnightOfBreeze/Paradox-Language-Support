@@ -5,7 +5,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
@@ -26,7 +26,7 @@ object ParadoxDefinitionMemberHandler {
             val file = element.containingFile
             val value = resolveInfoDownUp(element)
             //invalidated on file modification or ScriptFileTracker
-            val tracker = ParadoxModificationTrackerProvider.getInstance(file.project).ScriptFileTracker
+            val tracker = ParadoxPsiModificationTracker.getInstance(file.project).ScriptFileTracker
             CachedValueProvider.Result.create(value, file, tracker)
         }
     }

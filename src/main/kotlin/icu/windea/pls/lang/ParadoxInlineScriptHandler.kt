@@ -12,6 +12,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.expression.*
@@ -141,8 +142,8 @@ object ParadoxInlineScriptHandler {
         return CachedValuesManager.getCachedValue(file, cachedInlineScriptUsageInfoKey) {
             ProgressManager.checkCanceled()
             val value = doGetInlineScriptUsageInfo(file)
-            //invalidated on file modification ScriptFileTracker
-            val tracker = ParadoxModificationTrackerProvider.getInstance(file.project).ScriptFileTracker
+            //invalidated on file modification or ScriptFileTracker
+            val tracker = ParadoxPsiModificationTracker.getInstance(file.project).ScriptFileTracker
             CachedValueProvider.Result.create(value, file, tracker)
         }
     }
