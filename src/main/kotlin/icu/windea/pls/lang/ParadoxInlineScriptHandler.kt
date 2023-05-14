@@ -1,6 +1,5 @@
 package icu.windea.pls.lang
 
-import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -135,22 +134,16 @@ object ParadoxInlineScriptHandler {
      */
     fun getInlineScriptUsageInfo(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
         ProgressManager.checkCanceled()
-        val usageInfo = getUsageInfoFromCache(file) ?: return null
-        //处理缓存对应的锚点属性已经不存在的情况
-        if(usageInfo.element == null) {
-            file.putUserData(cachedInlineScriptUsageInfoKey, null)
-            return getUsageInfoFromCache(file)
-        }
-        return usageInfo
+        return getUsageInfoFromCache(file)
     }
     
     private fun getUsageInfoFromCache(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
         return CachedValuesManager.getCachedValue(file, cachedInlineScriptUsageInfoKey) {
             ProgressManager.checkCanceled()
-            val value = runReadAction { doGetInlineScriptUsageInfo(file) }
-            //invalidate on ScriptFileTracker
+            val value = doGetInlineScriptUsageInfo(file)
+            //invalidated on file modification ScriptFileTracker
             val tracker = ParadoxModificationTrackerProvider.getInstance(file.project).ScriptFileTracker
-            CachedValueProvider.Result.create(value, tracker)
+            CachedValueProvider.Result.create(value, file, tracker)
         }
     }
     
@@ -164,28 +157,31 @@ object ParadoxInlineScriptHandler {
         var hasConflict = false
         var hasRecursion = false
         val configs: MutableList<CwtDataConfig<*>> = mutableListOf()
-        val selector = inlineScriptSelector(project, file)
-        ParadoxInlineScriptSearch.search(expression, selector).processQueryAsync p@{ info ->
-            ProgressManager.checkCanceled()
-            val e = info.file?.findElementAt(info.elementOffset) ?: return@p true
-            val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p true
-            if(p.name.lowercase() != inlineScriptName) return@p true
-            if(element == null) {
-                element = p
-            }
-            //如果发生SOF，不需要再检查CWT规则是否存在冲突
-            if(hasRecursion) return@p false
-            //尝试检查内联脚本定义所在的规则的上下文是否匹配
-            withRecursionGuard("ParadoxInlineScriptHandler.doGetInlineScriptUsageInfo") {
-                onRecursion(expression) {
+        withRecursionGuard("ParadoxInlineScriptHandler.doGetInlineScriptUsageInfo") {
+            stackTrace.addLast(fileInfo.pathToEntry.path)
+            val selector = inlineScriptSelector(project, file)
+            ParadoxInlineScriptSearch.search(expression, selector).processQueryAsync p@{ info ->
+                ProgressManager.checkCanceled()
+                val key = info.file?.fileInfo?.pathToEntry?.path ?: return@p true
+                val e = info.file?.findElementAt(info.elementOffset) ?: return@p true
+                val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p true
+                if(p.name.lowercase() != inlineScriptName) return@p true
+                if(element == null) {
+                    element = p
+                }
+                onRecursion(key) {
                     //如果发生SOF，采用的element不能是当前正在遍历的p
                     hasConflict = false
                     hasRecursion = true
-                    element = null
+                    if(element === p) {
+                        element = null
+                    }
                     return@p true
                 }
-                withCheckRecursion(expression) {
-                    if(hasConflict) return@p true
+                withCheckRecursion(key) {
+                    //尝试检查内联脚本定义所在的规则的上下文是否匹配
+                    if(hasConflict) return@p false
+                    ProgressManager.checkCanceled()
                     val eConfigs = ParadoxConfigHandler.getConfigs(p)
                     if(eConfigs.isNotEmpty()) {
                         val configsToAdd = eConfigs.mapNotNull { it.parent }
@@ -201,11 +197,10 @@ object ParadoxInlineScriptHandler {
                             }
                         }
                     } else {
-                        //unexpected
                         true
                     }
-                }
-            } ?: true
+                } ?: true
+            }
         }
         val usageElement = element ?: return null
         return ParadoxInlineScriptUsageInfo(usageElement.createPointer(), hasConflict, hasRecursion)

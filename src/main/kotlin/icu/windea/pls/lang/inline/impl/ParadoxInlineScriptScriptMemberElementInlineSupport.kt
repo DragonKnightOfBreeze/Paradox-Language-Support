@@ -24,10 +24,10 @@ class ParadoxInlineScriptScriptMemberElementInlineSupport : ParadoxScriptMemberE
         if(element !is ParadoxScriptFile) return null
         val expression = getInlineScriptExpression(element)
         if(expression == null) return null
-        return withRecursionGuard("ParadoxInlineScriptScriptMemberElementInlineSupport") a1@{
+        return withRecursionGuard("ParadoxInlineScriptScriptMemberElementInlineSupport.linkElement") a1@{
             withCheckRecursion(expression) a2@{
                 val usageInfo = ParadoxInlineScriptHandler.getInlineScriptUsageInfo(element) ?: return@a2 null
-                if(usageInfo.hasConflict || usageInfo.hasRecursion) return@a2 null
+                if(usageInfo.hasConflict) return@a2 null
                 usageInfo.pointer.element
             }
         }
@@ -37,7 +37,7 @@ class ParadoxInlineScriptScriptMemberElementInlineSupport : ParadoxScriptMemberE
         if(element !is ParadoxScriptProperty) return null
         val info = ParadoxInlineScriptHandler.getInfo(element) ?: return null
         val expression = info.expression
-        return withRecursionGuard("ParadoxInlineScriptScriptMemberElementInlineSupport") a1@{
+        return withRecursionGuard("ParadoxInlineScriptScriptMemberElementInlineSupport.inlineElement") a1@{
             withCheckRecursion(expression) a2@{
                 val definitionMemberInfo = element.definitionMemberInfo
                 if(definitionMemberInfo == null) return@a2 null
