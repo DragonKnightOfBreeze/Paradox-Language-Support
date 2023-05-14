@@ -108,15 +108,15 @@ class CwtValueExpression private constructor(
             }
             //EXTENDED BY PLS
             expressionString == "\$parameter" -> {
-                CwtValueExpression(expressionString, CwtDataType.Parameter)
+                CwtValueExpression("parameter", CwtDataType.Parameter)
             }
             //EXTENDED BY PLS
             expressionString == "\$parameter_value" -> {
-                CwtValueExpression(expressionString, CwtDataType.ParameterValue)
+                CwtValueExpression("parameter_value", CwtDataType.ParameterValue)
             }
             //EXTENDED BY PLS
             expressionString == "\$localisation_parameter" -> {
-                CwtValueExpression(expressionString, CwtDataType.LocalisationParameter)
+                CwtValueExpression("localisation_parameter", CwtDataType.LocalisationParameter)
             }
             expressionString.surroundsWith("value[", "]") -> {
                 val value = expressionString.substring(6, expressionString.length - 1)
@@ -177,7 +177,7 @@ class CwtValueExpression private constructor(
                 CwtValueExpression(expressionString, CwtDataType.IntVariableField, value)
             }
             expressionString == "\$shader_effect" -> {
-                CwtValueExpression(expressionString, CwtDataType.ShaderEffect)
+                CwtValueExpression("shader_effect", CwtDataType.ShaderEffect)
             }
             expressionString.surroundsWith("single_alias_right[", "]") -> {
                 val value = expressionString.substring(19, expressionString.length - 1)
@@ -195,7 +195,7 @@ class CwtValueExpression private constructor(
                 CwtValueExpression(expressionString, CwtDataType.Template)
             }
             expressionString == "\$any" -> {
-                CwtValueExpression(expressionString, CwtDataType.Any)
+                CwtValueExpression("any", CwtDataType.Any)
             }
             expressionString.endsWith(']') -> {
                 CwtValueExpression(expressionString, CwtDataType.Other)

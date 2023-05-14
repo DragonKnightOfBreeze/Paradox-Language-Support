@@ -188,7 +188,12 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         //加上名字
         val name = element.name
         append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-        
+        //加上推断得到的规则信息
+        val inferredConfig = ParadoxParameterHandler.inferEntireConfig(element)
+        if(inferredConfig != null) {
+            append(": ")
+            append(inferredConfig.expression.expressionString.escapeXml())
+        }
         //加上所属定义信息
         val gameType = element.gameType
         appendBr().appendIndent()

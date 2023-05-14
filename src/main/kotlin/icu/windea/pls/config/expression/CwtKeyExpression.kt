@@ -84,15 +84,15 @@ class CwtKeyExpression private constructor(
             }
             //EXTENDED BY PLS
             expressionString == "\$parameter" -> {
-                CwtKeyExpression(expressionString, CwtDataType.Parameter)
+                CwtKeyExpression("parameter", CwtDataType.Parameter)
             }
             //EXTENDED BY PLS
             expressionString == "\$parameter_value" -> {
-                CwtKeyExpression(expressionString, CwtDataType.ParameterValue)
+                CwtKeyExpression("parameter_value", CwtDataType.ParameterValue)
             }
             //EXTENDED BY PLS
             expressionString == "\$localisation_parameter" -> {
-                CwtKeyExpression(expressionString, CwtDataType.LocalisationParameter)
+                CwtKeyExpression("localisation_parameter", CwtDataType.LocalisationParameter)
             }
             expressionString.surroundsWith("enum[", "]") -> {
                 val value = expressionString.substring(5, expressionString.length - 1)
@@ -130,7 +130,7 @@ class CwtKeyExpression private constructor(
                 CwtKeyExpression(expressionString, CwtDataType.Template)
             }
             expressionString == "\$any" -> {
-                CwtKeyExpression(expressionString, CwtDataType.Any)
+                CwtKeyExpression("any", CwtDataType.Any)
             }
             expressionString.endsWith(']') -> {
                 CwtKeyExpression(expressionString, CwtDataType.Other)

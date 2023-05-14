@@ -48,16 +48,24 @@ class ParadoxParameterContextInfo(
             if(parameterInfo.template != "$") continue //要求整个作为脚本表达式
             val configs = parameterInfo.configs
             val config = configs.firstOrNull() as? CwtValueConfig ?: continue
-            if(config.expression.type == CwtDataType.ParameterValue) {
-                //如果出现参数传递的情况，目前直接忽略掉
-                continue //TODO 0.10.1
-            }
-            if(result == null) {
-                result = config
-            } else {
-                if(result.expression != config.expression) {
-                    result = null
-                    break
+            when(config.expression.type) {
+                CwtDataType.ParameterValue -> {
+                    //如果出现参数传递的情况，目前直接忽略掉
+                    continue //TODO 0.10.1
+                }
+                CwtDataType.Any, CwtDataType.Other -> {
+                    //任意类型或者其他类型 - 忽略
+                    continue
+                }
+                else -> {
+                    if(result == null) {
+                        result = config
+                    } else {
+                        if(result.expression != config.expression) {
+                            result = null
+                            break
+                        }
+                    }
                 }
             }
         }

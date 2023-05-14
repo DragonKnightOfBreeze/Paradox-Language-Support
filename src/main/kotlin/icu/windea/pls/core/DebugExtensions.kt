@@ -5,7 +5,7 @@ import java.util.concurrent.*
 
 val isDebug = System.getProperty("pls.is.debug").toBoolean()
 
-val avgMillisMap = ConcurrentHashMap<String, BigDecimal>()
+val avgMillisMap = ConcurrentHashMap<String, Double>()
 
 inline fun <T> withMeasureMillis(id: String, min: Int = -1, action: () -> T): T {
     return withMeasureMillis({ id }, min, action)
@@ -27,7 +27,10 @@ fun InternalExtensionsHolder.doPrintMeasureMillis(start: Long, id: String, min: 
     val end = System.currentTimeMillis()
     val millis = end - start
     val avgMillis = avgMillisMap.compute(id) { _, v ->
-        if(v == null) millis.toBigDecimal() else v + millis.toBigDecimal()
+        if(v == null) millis.toDouble() else (v + millis) / 2.0
+    } ?: 0.0
+    if(millis > min) {
+        val avg = BigDecimal(avgMillis).setScale(10, RoundingMode.HALF_UP)
+        println("${id} - cur: $millis, avg: $avg")
     }
-    if(millis > min) println("${id} - cur: $millis, avg: ${avgMillis?.setScale(10)}")
 }

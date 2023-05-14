@@ -22,6 +22,12 @@ class ParadoxScriptValueArgumentValueExpressionNode(
 	val argumentNode: ParadoxScriptValueArgumentExpressionNode?,
 	val configGroup: CwtConfigGroup
 ) : ParadoxExpressionNode {
+	override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
+		if(!getSettings().inference.argumentValueConfig) return null
+		val parameterElement = argumentNode?.getReference(element)?.resolve() ?: return null
+		return ParadoxParameterHandler.inferEntireConfig(parameterElement)
+	}
+	
 	override fun getAttributesKey(): TextAttributesKey {
 		val type = ParadoxDataType.resolve(text)
 		return when {
@@ -60,19 +66,15 @@ class ParadoxScriptValueArgumentValueExpressionNode(
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
 		}
 		
-		fun getConfig(): CwtDataConfig<*>? {
-			val parameterElement = parameterElementResolver() ?: return null
-			return ParadoxParameterHandler.inferEntireConfig(parameterElement)
-		}
-		
 		override fun resolve(): PsiElement? {
 			if(!getSettings().inference.argumentValueConfig) return null
 			return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
 		}
 		
 		private fun doResolve(): PsiElement? {
-			val config = getConfig() ?: return null
 			//根据对应的expression进行解析
+			val parameterElement = parameterElementResolver() ?: return null
+			val config = ParadoxParameterHandler.inferEntireConfig(parameterElement) ?: return null
 			return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
 		}
 		
@@ -82,8 +84,9 @@ class ParadoxScriptValueArgumentValueExpressionNode(
 		}
 		
 		private fun doMultiResolve(): Array<out ResolveResult> {
-			val config = getConfig() ?: return ResolveResult.EMPTY_ARRAY
 			//根据对应的expression进行解析
+			val parameterElement = parameterElementResolver() ?: return ResolveResult.EMPTY_ARRAY
+			val config = ParadoxParameterHandler.inferEntireConfig(parameterElement) ?: return ResolveResult.EMPTY_ARRAY
 			return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, false)
 				.mapToArray { PsiElementResolveResult(it) }
 		}

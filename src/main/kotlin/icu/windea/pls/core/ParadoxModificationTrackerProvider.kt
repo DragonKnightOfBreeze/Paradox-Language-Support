@@ -25,7 +25,7 @@ class ParadoxModificationTrackerProvider {
     val ScriptedVariablesTracker = ScriptFileTracker("common/scripted_variables")
     val InlineScriptsTracker = ScriptFileTracker("common/inline_scripts")
     
-    val ParameterValueConfigInferenceTracker get() = ScriptFileTracker //目前没有想到更好的追踪方式
+    //val ParameterValueConfigInferenceTracker get() = ScriptFileTracker //目前没有想到更好的追踪方式
     val DefinitionScopeContextInferenceTracker = SimpleModificationTracker()
     
     companion object {

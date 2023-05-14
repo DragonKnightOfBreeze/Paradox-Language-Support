@@ -12,7 +12,7 @@ import icu.windea.pls.core.expression.ParadoxScriptValueExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.highlighter.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 封装值表达式。
@@ -128,6 +128,25 @@ class ParadoxScriptValueExpressionImpl(
 					val resultToUse = result.withPrefixMatcher(keywordToUse)
 					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
 					ParadoxParameterHandler.completeArguments(context.contextElement, context, resultToUse)
+				}
+			} else if(node is ParadoxScriptValueArgumentValueExpressionNode && getSettings().inference.argumentValueConfig) {
+				if(inRange && scriptValueNode.text.isNotEmpty()) {
+					//尝试提示传入参数的值
+					run {
+						val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+						val resultToUse = result.withPrefixMatcher(keywordToUse)
+						val element = context.contextElement as? ParadoxScriptStringExpressionElement ?: return@run
+						val parameterElement = node.argumentNode?.getReference(element)?.resolve() ?: return@run
+						val inferredConfig = ParadoxParameterHandler.inferEntireConfig(parameterElement) ?: return@run
+						val config = context.config
+						val configs = context.configs
+						context.put(PlsCompletionKeys.configKey, inferredConfig)
+						context.put(PlsCompletionKeys.configsKey, null)
+						context.put(PlsCompletionKeys.keywordKey, keywordToUse)
+						ParadoxConfigHandler.completeScriptExpression(context, resultToUse)
+						context.put(PlsCompletionKeys.configKey, config)
+						context.put(PlsCompletionKeys.configsKey, configs)
+					}
 				}
 			}
 		}

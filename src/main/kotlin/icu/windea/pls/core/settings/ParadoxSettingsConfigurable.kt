@@ -218,7 +218,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.inference.argumentValueConfig"))
                         .bindSelected(settings.inference::argumentValueConfig)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.argumentValueConfig.tooltip") }
-                        .onApply { ParadoxModificationTrackerProvider.getInstance().ParameterValueConfigInferenceTracker.incModificationCount() }
+                        //.onApply { ParadoxModificationTrackerProvider.getInstance().ParameterValueConfigInferenceTracker.incModificationCount() }
                 }
                 //inlineScriptLocation
                 row {
