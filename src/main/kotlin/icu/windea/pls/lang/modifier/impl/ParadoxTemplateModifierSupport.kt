@@ -93,7 +93,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     
     override fun getModificationTracker(resolved: ParadoxModifierElement): ModificationTracker {
         //TODO 可以进一步缩小范围
-        return ParadoxPsiModificationTracker.getInstance(resolved.project).ScriptFileTracker
+        return ParadoxPsiModificationTracker.getInstance(resolved.project).ScriptFileTracker(":txt")
     }
     
     override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {

@@ -52,7 +52,7 @@ class ParadoxPsiModificationTracker(project: Project) : PsiTreeChangePreprocesso
             val keysSize = keys.size
             for(i in 0 until keysSize) {
                 val key = keys[i]
-                if(key.path.matchesPath(filePath) && (key.extensions.isEmpty() || key.extensions.contains(fileExtension))) {
+                if((filePath.isEmpty() || key.path.matchesPath(filePath)) && (key.extensions.isEmpty() || key.extensions.contains(fileExtension))) {
                     tracker.incModificationCount()
                     break
                 }
