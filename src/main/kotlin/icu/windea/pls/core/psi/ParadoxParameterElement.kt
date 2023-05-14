@@ -16,7 +16,7 @@ import javax.swing.*
 /**
  * 定义的参数并不存在一个真正意义上的声明处，用这个模拟。
  *
- * @property contextKey 用于判断参数是否同名并且拥有相同的上下文。
+ * @property contextKey 用于判断参数是否拥有相同的上下文。
  * @see ParadoxParameterSupport
  */
 class ParadoxParameterElement(

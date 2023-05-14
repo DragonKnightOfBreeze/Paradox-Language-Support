@@ -1,5 +1,6 @@
 package icu.windea.pls.lang
 
+import com.google.common.cache.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -17,7 +18,9 @@ import icu.windea.pls.script.psi.*
 object ParadoxModifierHandler {
     val modifierConfigKey = Key.create<CwtModifierConfig>("paradox.modifier.config")
     val supportKey = Key.create<ParadoxModifierSupport>("paradox.modifier.support")
-    val modifierCacheKey = Key.create<MutableMap<String, ParadoxModifierElement>>("paradox.modifier.cache")
+    val modifierCacheKey = KeyWithDefaultValue.create<Cache<String, ParadoxModifierElement>>("paradox.modifier.cache") {
+        CacheBuilder.newBuilder().buildCache()
+    }
     val modifierModificationTrackerKey = Key.create<ModificationTracker>("paradox.modifier.modificationTracker")
     val modifierModificationCountKey = Key.create<Long>("paradox.modifier.modificationCount")
     
@@ -41,8 +44,8 @@ object ParadoxModifierHandler {
         //如果可以缓存，需要缓存解析结果
         
         val cacheKey = "${name}@${configGroup.gameType}"
-        val modifierCache = configGroup.project.getOrPutUserData(modifierCacheKey) { mutableMapOf() }
-        val cached = modifierCache.get(cacheKey)
+        val modifierCache = configGroup.project.getUserData(modifierCacheKey)!!
+        val cached = modifierCache.get(cacheKey) //无法解析时不会缓存
         if(cached != null) {
             val modificationTracker = cached.getUserData(modifierModificationTrackerKey)
             if(modificationTracker != null) {
@@ -62,13 +65,13 @@ object ParadoxModifierHandler {
         
         val ep = resolved.getUserData(supportKey)
         if(ep != null) {
-            val modificationTracker = ep.getModificationTracker()
+            val modificationTracker = ep.getModificationTracker(resolved)
             if(modificationTracker != null) {
                 resolved.putUserData(modifierModificationTrackerKey, modificationTracker)
                 resolved.putUserData(modifierModificationCountKey, modificationTracker.modificationCount)
+                modifierCache.put(cacheKey, resolved)
             }
         }
-        modifierCache.put(cacheKey, resolved)
         return resolved
     }
     

@@ -148,7 +148,8 @@ object ParadoxInlineScriptHandler {
         return CachedValuesManager.getCachedValue(file, cachedInlineScriptUsageInfoKey) {
             ProgressManager.checkCanceled()
             val value = runReadAction { doGetInlineScriptUsageInfo(file) }
-            val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker
+            //invalidate on ScriptFileTracker
+            val tracker = ParadoxModificationTrackerProvider.getInstance(file.project).ScriptFileTracker
             CachedValueProvider.Result.create(value, tracker)
         }
     }

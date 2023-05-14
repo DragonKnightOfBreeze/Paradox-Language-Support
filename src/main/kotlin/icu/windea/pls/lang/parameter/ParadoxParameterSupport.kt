@@ -53,6 +53,11 @@ interface ParadoxParameterSupport {
     fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
     
     /**
+     * 如果返回值不为null，表示推断得到的CWT规则可以通过一定条件进行缓存。
+     */
+    fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker? = null
+    
+    /**
      * 构建参数的快速文档中的定义部分。
      * @return 此扩展点是否适用。
      */

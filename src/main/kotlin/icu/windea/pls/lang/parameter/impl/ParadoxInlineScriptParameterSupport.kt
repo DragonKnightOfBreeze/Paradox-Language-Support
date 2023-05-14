@@ -110,6 +110,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val result = ParadoxParameterElement(element, name, context.name, contextKey, readWriteAccess, gameType, project)
         result.putUserData(containingContextKey, context.createPointer())
         result.putUserData(inlineScriptExpressionKey, expression)
+        result.putUserData(ParadoxParameterHandler.supportKey, this)
         return result
     }
     
@@ -131,6 +132,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val project = config.info.configGroup.project
         val result = ParadoxParameterElement(element, name, expression, contextKey, readWriteAccess, gameType, project)
         result.putUserData(inlineScriptExpressionKey, expression)
+        result.putUserData(ParadoxParameterHandler.supportKey, this)
         return result
     }
     
@@ -162,6 +164,10 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val project = contextReferenceInfo.project
         ParadoxInlineScriptHandler.processInlineScript(expression, element, project, onlyMostRelevant, processor)
         return true
+    }
+    
+    override fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker {
+        return ParadoxModificationTrackerProvider.getInstance().InlineScriptsTracker
     }
     
     override fun buildDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {

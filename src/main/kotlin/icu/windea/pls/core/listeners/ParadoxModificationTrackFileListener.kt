@@ -31,11 +31,16 @@ class ParadoxModificationTrackFileListener : AsyncFileListener {
                 for(file in files) {
                     if(file.fileType == ParadoxScriptFileType) {
                         val fileInfo = file.fileInfo ?: continue
-                        val filePath = fileInfo.path.path
+                        val filePath = fileInfo.pathToEntry.path
+                        val fileExtension = fileInfo.pathToEntry.fileExtension.lowercase() //ignore case
                         provider.ScriptFileTracker.incModificationCount()
-                        provider.ScriptFileTrackers.forEach { (p, tracker) -> 
-                            if(p.matchesPath(filePath)) {
-                                tracker.incModificationCount()
+                        for(tracker in provider.ScriptFileTrackers.values) {
+                            val keys = tracker.keys
+                            for(key in keys) {
+                                if(key.path.matchesPath(filePath) && (key.extensions.isEmpty() || key.extensions.contains(fileExtension))) {
+                                    tracker.incModificationCount()
+                                    break
+                                }
                             }
                         }
                     }

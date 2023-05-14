@@ -91,9 +91,9 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         }
     }
     
-    override fun getModificationTracker(): ModificationTracker {
+    override fun getModificationTracker(resolved: ParadoxModifierElement): ModificationTracker {
         //TODO 可以进一步缩小范围
-        return ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker
+        return ParadoxModificationTrackerProvider.getInstance(resolved.project).ScriptFileTracker
     }
     
     override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {

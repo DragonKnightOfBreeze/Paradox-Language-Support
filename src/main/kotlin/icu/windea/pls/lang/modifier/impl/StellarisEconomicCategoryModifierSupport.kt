@@ -116,8 +116,8 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         }
     }
     
-    override fun getModificationTracker(): ModificationTracker {
-        return ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker("common/economic_categories")
+    override fun getModificationTracker(resolved: ParadoxModifierElement): ModificationTracker {
+        return ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker("common/economic_categories:txt")
     }
     
     override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {

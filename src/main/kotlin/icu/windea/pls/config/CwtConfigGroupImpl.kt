@@ -2,6 +2,7 @@ package icu.windea.pls.config
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
@@ -22,7 +23,7 @@ class CwtConfigGroupImpl(
 	override val gameType: ParadoxGameType?,
 	override val info: CwtConfigGroupInfo,
 	fileGroup: MutableMap<String, VirtualFile>
-) : CwtConfigGroup {
+) : CwtConfigGroup, UserDataHolderBase() {
 	override val foldingSettings: MutableMap<String, MutableMap<String, CwtFoldingSetting>> = mutableMapOf()
 	override val postfixTemplateSettings: MutableMap<String, MutableMap<String, CwtPostfixTemplateSetting>> = mutableMapOf()
 	

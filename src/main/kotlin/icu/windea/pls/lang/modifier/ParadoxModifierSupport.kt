@@ -35,7 +35,7 @@ interface ParadoxModifierSupport {
     /**
      * 如果返回值不为null，表示修正的解析结果可以通过一定条件进行缓存。
      */
-    fun getModificationTracker(): ModificationTracker? = null
+    fun getModificationTracker(resolved: ParadoxModifierElement): ModificationTracker? = null
     
     fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>?
     

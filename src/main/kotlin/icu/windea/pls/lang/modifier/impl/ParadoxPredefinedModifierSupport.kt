@@ -66,7 +66,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
         }
     }
     
-    override fun getModificationTracker(): ModificationTracker {
+    override fun getModificationTracker(resolved: ParadoxModifierElement): ModificationTracker {
         return ModificationTracker.NEVER_CHANGED
     }
     

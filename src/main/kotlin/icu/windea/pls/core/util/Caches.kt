@@ -50,4 +50,3 @@ inline operator fun <K : Any, V> Cache<K, V>.get(key: K): V? {
 inline operator fun <K : Any, V> Cache<K, V>.set(key: K, value: V) {
 	put(key, value)
 }
-

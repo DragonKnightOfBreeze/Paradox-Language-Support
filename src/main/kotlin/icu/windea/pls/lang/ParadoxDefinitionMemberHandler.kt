@@ -25,9 +25,8 @@ object ParadoxDefinitionMemberHandler {
             ProgressManager.checkCanceled()
             val file = element.containingFile
             val value = resolveInfoDownUp(element)
-            //TODO 需要确定最合适的依赖项
             //invalidated on file modification or ScriptFileTracker
-            val tracker = ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker
+            val tracker = ParadoxModificationTrackerProvider.getInstance(file.project).ScriptFileTracker
             CachedValueProvider.Result.create(value, file, tracker)
         }
     }

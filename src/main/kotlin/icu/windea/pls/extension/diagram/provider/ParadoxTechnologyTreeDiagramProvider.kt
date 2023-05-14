@@ -246,6 +246,6 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
         file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
-        override fun getModificationTracker() = ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker("common/technologies")
+        override fun getModificationTracker() = ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker("common/technologies:txt")
     }
 }

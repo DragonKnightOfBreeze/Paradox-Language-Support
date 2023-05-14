@@ -54,6 +54,8 @@ object PlsConstants {
     const val keysTruncateLimit = 5
     
     val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
+    
+    val cacheSize = 1000
 }
 
 object PlsPaths {

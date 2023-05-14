@@ -1,10 +1,12 @@
 package icu.windea.pls.lang
 
+import com.google.common.cache.*
 import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
@@ -22,6 +24,14 @@ import icu.windea.pls.script.psi.*
 import java.util.*
 
 object ParadoxParameterHandler {
+    val supportKey = Key.create<ParadoxParameterSupport>("paradox.parameter.support")
+    val inferredConfigKey = Key.create<CwtValueConfig?>("paradox.parameter.inferredConfig")
+    val parameterCacheKey = KeyWithDefaultValue.create<Cache<String, ParadoxParameterElement>>("paradox.parameter.cache") {
+        CacheBuilder.newBuilder().recordStats().buildCache()
+    }
+    val parameterModificationTrackerKey = Key.create<ModificationTracker>("paradox.parameter.modificationTracker")
+    val parameterModificationCountKey = Key.create<Long>("paradox.parameter.modificationCount")
+    
     fun getContextInfo(context: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
         if(!ParadoxParameterSupport.isContext(context)) return null
         return CachedValuesManager.getCachedValue(context, PlsKeys.cachedParametersKey) {
@@ -143,23 +153,53 @@ object ParadoxParameterHandler {
      * 当参数值表示整个脚本表达式时，尝试推断得到这个脚本表达式对应的CWT规则。
      */
     fun inferEntireConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
-        // no cache: >= 10ms: 225/2400, >=100ms: 5/2400
-        withMeasureMillis("icu.windea.pls.lang.ParadoxParameterHandler.inferEntireConfig") {
-            var result: CwtValueConfig? = null
-            ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
-                val contextInfo = getContextInfo(context) ?: return@p true
-                val config = contextInfo.getEntireConfig(parameterElement.name) ?: return@p true
-                if(result == null) {
-                    result = config
-                } else {
-                    if(result?.expression != config.expression) {
-                        result = null
-                        return@p false
+        val cacheKey = parameterElement.contextKey + "@" + parameterElement.name
+        val parameterCache = parameterElement.project.getUserData(parameterCacheKey)!!
+        val cached = parameterCache.get(cacheKey)
+        if(cached != null) {
+            val modificationTracker = cached.getUserData(parameterModificationTrackerKey)
+            if(modificationTracker != null) {
+                val modificationCount = cached.getUserData(parameterModificationCountKey) ?: 0
+                if(modificationCount == modificationTracker.modificationCount) {
+                    val resolved = cached.getUserData(inferredConfigKey)
+                    if(resolved != null) {
+                        return resolved.takeIf { it !== CwtValueConfig.Empty }
                     }
                 }
-                true
             }
-            return result
         }
+        
+        val resolved = doInferEntryConfig(parameterElement)
+        
+        val ep = parameterElement.getUserData(supportKey)
+        if(ep != null) {
+            val modificationTracker = ep.getModificationTracker(parameterElement)
+            if(modificationTracker != null) {
+                parameterElement.putUserData(inferredConfigKey, resolved ?: CwtValueConfig.Empty)
+                parameterElement.putUserData(parameterModificationTrackerKey, modificationTracker)
+                parameterElement.putUserData(parameterModificationCountKey, modificationTracker.modificationCount)
+                parameterCache.put(cacheKey, parameterElement)
+            }
+        }
+        
+        return resolved
+    }
+    
+    private fun doInferEntryConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
+        var result: CwtValueConfig? = null
+        ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
+            val contextInfo = getContextInfo(context) ?: return@p true
+            val config = contextInfo.getEntireConfig(parameterElement.name) ?: return@p true
+            if(result == null) {
+                result = config
+            } else {
+                if(result?.expression != config.expression) {
+                    result = null
+                    return@p false
+                }
+            }
+            true
+        }
+        return result
     }
 }

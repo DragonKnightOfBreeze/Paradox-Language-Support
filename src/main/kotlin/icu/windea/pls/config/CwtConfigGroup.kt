@@ -1,13 +1,14 @@
 package icu.windea.pls.config
 
 import com.intellij.openapi.project.*
+import com.intellij.openapi.util.UserDataHolder
 import com.intellij.util.containers.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.setting.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.model.*
 
-interface CwtConfigGroup {
+interface CwtConfigGroup: UserDataHolder {
 	val gameType: ParadoxGameType?
 	val project: Project
 	val info: CwtConfigGroupInfo

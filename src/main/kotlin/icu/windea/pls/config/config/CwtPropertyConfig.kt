@@ -18,8 +18,12 @@ data class CwtPropertyConfig(
 	override val documentation: String? = null,
 	override val options: List<CwtOptionConfig>? = null,
 	override val optionValues: List<CwtOptionValueConfig>? = null,
-	val separatorType: CwtSeparator,
+	val separatorType: CwtSeparator = CwtSeparator.EQUAL,
 ) : CwtDataConfig<CwtProperty>() {
+	companion object {
+		val Empty = CwtPropertyConfig(emptyPointer(), CwtConfigGroupInfo(""), "", "")
+	}
+	
 	//val stringValues by lazy { values?.mapNotNull { it.stringValue } }
 	//val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
 	

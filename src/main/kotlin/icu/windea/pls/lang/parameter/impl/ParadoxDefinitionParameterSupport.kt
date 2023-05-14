@@ -22,6 +22,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         @JvmField val containingContextReferenceKey = Key.create<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>("paradox.parameterElement.contextReference")
         @JvmField val definitionNameKey = Key.create<String>("paradox.parameterElement.definitionName")
         @JvmField val definitionTypesKey = Key.create<List<String>>("paradox.parameterElement.definitionTypes")
+        @JvmField val modificationTrackerKey = Key.create<ModificationTracker>("paradox.definition.parameter.modificationTracker")
     }
     
     override fun isContext(element: ParadoxScriptDefinitionElement): Boolean {
@@ -117,6 +118,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         result.putUserData(containingContextKey, context.createPointer())
         result.putUserData(definitionNameKey, definitionName)
         result.putUserData(definitionTypesKey, definitionTypes)
+        result.putUserData(ParadoxParameterHandler.supportKey, this)
         return result
     }
     
@@ -139,6 +141,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val result = ParadoxParameterElement(element, name, definitionName, contextKey, readWriteAccess, gameType, project)
         result.putUserData(definitionNameKey, definitionName)
         result.putUserData(definitionTypesKey, definitionTypes)
+        result.putUserData(ParadoxParameterHandler.supportKey, this)
         return result
     }
     
@@ -176,6 +179,27 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val selector = definitionSelector(project, element).contextSensitive()
         ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQueryAsync(onlyMostRelevant, processor)
         return true
+    }
+    
+    override fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker {
+        //return ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker
+        
+        val project = parameterElement.project
+        val configGroup = getCwtConfig(project).get(parameterElement.gameType)
+        return configGroup.getOrPutUserData(modificationTrackerKey) {
+            val definitionTypes = configGroup.definitionTypesSupportParameters
+            val builder = StringBuilder()
+            var isFirst = true
+            for(definitionType in definitionTypes) {
+                val typeConfig = configGroup.types.get(definitionType) ?: continue
+                val filePath = typeConfig.pathFile ?: continue
+                val fileExtension = typeConfig.pathExtension
+                if(isFirst) isFirst = false else builder.append('|')
+                builder.append(filePath)
+                if(fileExtension != null) builder.append(':').append(fileExtension)
+            }
+            ParadoxModificationTrackerProvider.getInstance().ScriptFileTracker(builder.toString())
+        }
     }
     
     override fun buildDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {

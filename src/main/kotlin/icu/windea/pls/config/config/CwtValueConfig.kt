@@ -2,6 +2,7 @@ package icu.windea.pls.config.config
 
 import com.intellij.psi.*
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
 data class CwtValueConfig(
@@ -18,6 +19,10 @@ data class CwtValueConfig(
 	override val optionValues: List<CwtOptionValueConfig>? = null,
 	val propertyConfig: CwtPropertyConfig? = null,
 ) : CwtDataConfig<CwtValue>() {
+	companion object {
+		val Empty = CwtValueConfig(emptyPointer(), CwtConfigGroupInfo(""), "")
+	}
+	
 	//val stringValues by lazy { values?.mapNotNull { it.stringValue } }
 	//val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
 	
