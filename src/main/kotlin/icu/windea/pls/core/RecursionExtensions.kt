@@ -4,18 +4,17 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.*
 import java.util.*
 
-val PlsThreadLocals.recursionGuardThreadLocal: ThreadLocal<SmartRecursionGuard> by lazy { ThreadLocal() }
+val PlsThreadLocals.recursionGuardCacheThreadLocal: ThreadLocal<MutableMap<String, SmartRecursionGuard>> by lazy { ThreadLocal.withInitial { mutableMapOf() } }
 val PlsThreadLocals.stackTraceThreadLocal: ThreadLocal<MutableList<Any>> by lazy { ThreadLocal() }
 
 /**
  * 执行一段代码并尝试避免SOE。
  */
-inline fun <T> withRecursionGuard(action: SmartRecursionGuard.() -> T): T? {
-    val cachedRecursionGuard = PlsThreadLocals.recursionGuardThreadLocal.get()
-    val cached = cachedRecursionGuard != null
+inline fun <T> withRecursionGuard(key: String, action: SmartRecursionGuard.() -> T): T? {
+    val recursionGuardCache = PlsThreadLocals.recursionGuardCacheThreadLocal.get()
+    val cached = recursionGuardCache.containsKey(key)
     try {
-        val recursionGuard = cachedRecursionGuard
-            ?: SmartRecursionGuard().also { PlsThreadLocals.recursionGuardThreadLocal.set(it) }
+        val recursionGuard =  recursionGuardCache.getOrPut(key) { SmartRecursionGuard() }
         return recursionGuard.action()
     } catch(e1: StackOverflowError) {
         return null
@@ -23,7 +22,7 @@ inline fun <T> withRecursionGuard(action: SmartRecursionGuard.() -> T): T? {
         return null
     } finally {
         if(!cached) {
-            PlsThreadLocals.recursionGuardThreadLocal.remove()
+            PlsThreadLocals.recursionGuardCacheThreadLocal.remove()
         }
     }
 }
@@ -33,22 +32,29 @@ inline fun <T> withRecursionGuard(action: SmartRecursionGuard.() -> T): T? {
  */
 class SmartRecursionGuard {
     val stackTrace = LinkedList<Any>()
+    var fallbackValue: Any? = null
     
     /**
      * 判断当前键是否出现在之前的堆栈中。如果没有出现，添加到堆栈中。
+     * @param fallback 如果为`true`，当将会发生SOE时，返回缓存的最后一个不为null的结果，否则返回null。
      */
-    inline fun <T> withCheckRecursion(key: Any, action: () -> T): T? {
-        if(stackTrace.contains(key)) return null
+    @Suppress("UNCHECKED_CAST")
+    inline fun <T> withCheckRecursion(key: Any, fallback: Boolean = false, action: () -> T): T? {
+        if(stackTrace.contains(key)) {
+            return if(fallback) fallbackValue as? T? else null
+        }
         stackTrace.addLast(key)
         try {
-            return action()
+            val r = action()
+            if(r != null) fallbackValue = r
+            return r
         } finally {
             stackTrace.removeLast()
         }
     }
     
-    inline fun <T> withCheckRecursion(target: Any, keySuffix: String, action: () -> T): T? {
-        return withCheckRecursion(target.javaClass.name + "@" + keySuffix, action)
+    inline fun <T> withCheckRecursion(target: Any, keySuffix: String, fallback: Boolean = false, action: () -> T): T? {
+        return withCheckRecursion(target.javaClass.name + "@" + keySuffix, fallback, action)
     }
 }
 

@@ -11,7 +11,6 @@ import icu.windea.pls.lang.inline.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import java.util.*
 
 //com.intellij.ide.hierarchy.call.CallerMethodsTreeStructure
 
@@ -44,7 +43,7 @@ class ParadoxCalleeHierarchyTreeStructure(
             override fun visitElement(element: PsiElement) {
                 //兼容向下内联的情况
                 if(element is ParadoxScriptMemberElement) {
-                    val inlined = ParadoxScriptMemberElementInlineSupport.inlineElement(element, LinkedList())
+                    val inlined = ParadoxScriptMemberElementInlineSupport.inlineElement(element)
                     if(inlined != null) {
                         processElement(inlined, descriptor, descriptors)
                         return

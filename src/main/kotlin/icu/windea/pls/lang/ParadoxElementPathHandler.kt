@@ -106,10 +106,9 @@ object ParadoxElementPathHandler {
         val originalSubPaths = LinkedList<String>()
         var definition: ParadoxScriptDefinitionElement? = null
         var flag = allowDefinition
-        val inlineStack = LinkedList<String>()
         while(current !is PsiDirectory) { //这里的上限应当是null或PsiDirectory，不能是PsiFile，因为它也可能是定义
             if(current is ParadoxScriptMemberElement) {
-                val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current, inlineStack)
+                val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current)
                 if(linked != null) {
                     current = linked.parent ?: break
                     continue

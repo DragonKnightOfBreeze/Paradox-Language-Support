@@ -3,7 +3,6 @@ package icu.windea.pls.lang.inline
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
-import java.util.*
 
 /**
  * 提供对脚本成员元素的内联逻辑的支持。
@@ -20,9 +19,9 @@ import java.util.*
 interface ParadoxScriptMemberElementInlineSupport {
     fun canLink(element: ParadoxScriptMemberElement): Boolean
     
-    fun linkElement(element: ParadoxScriptMemberElement, inlineStack: Deque<String>): ParadoxScriptMemberElement?
+    fun linkElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement?
     
-    fun inlineElement(element: ParadoxScriptMemberElement, inlineStack: Deque<String>): ParadoxScriptMemberElement?
+    fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement?
     
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxScriptMemberElementInlineSupport>("icu.windea.pls.scriptMemberElementInlineSupport")
@@ -33,15 +32,15 @@ interface ParadoxScriptMemberElementInlineSupport {
             }
         }
         
-        fun linkElement(element: ParadoxScriptMemberElement, inlineStack: Deque<String>): ParadoxScriptMemberElement? {
+        fun linkElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-                ep.linkElement(element, inlineStack) 
+                ep.linkElement(element) 
             }
         }
         
-        fun inlineElement(element: ParadoxScriptMemberElement, inlineStack: Deque<String>): ParadoxScriptMemberElement? {
+        fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-                ep.inlineElement(element, inlineStack) 
+                ep.inlineElement(element) 
             }
         }
     }

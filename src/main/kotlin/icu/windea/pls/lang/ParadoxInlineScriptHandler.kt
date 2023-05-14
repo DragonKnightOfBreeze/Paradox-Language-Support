@@ -22,7 +22,7 @@ import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxInlineScriptHandler {
-    private const val inlineScriptName = "inline_script"
+    const val inlineScriptName = "inline_script"
     
     val inlineScriptPathExpression = CwtValueExpression.resolve("filepath[common/inline_scripts/,.txt]")
     

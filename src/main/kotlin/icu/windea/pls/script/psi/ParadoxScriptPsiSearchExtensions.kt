@@ -11,7 +11,6 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.inline.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
-import java.util.*
 
 /**
  * 遍历当前代码块中的所有（直接作为子节点的）值和属性。
@@ -23,8 +22,7 @@ fun ParadoxScriptBlockElement.processData(
     inline: Boolean = false,
     processor: (ParadoxScriptMemberElement) -> Boolean
 ): Boolean {
-    val inlineStack = if(inline) LinkedList<String>() else null
-    return doProcessData(conditional, inlineStack, processor)
+    return doProcessData(conditional, inline, processor)
 }
 
 /**
@@ -37,8 +35,7 @@ fun ParadoxScriptBlockElement.processProperty(
     inline: Boolean = false,
     processor: (ParadoxScriptProperty) -> Boolean
 ): Boolean {
-    val inlineStack = if(inline) LinkedList<String>() else null
-    return doProcessProperty(conditional, inlineStack, processor)
+    return doProcessProperty(conditional,inline, processor)
 }
 
 /**
@@ -51,8 +48,7 @@ fun ParadoxScriptBlockElement.processValue(
     inline: Boolean = false,
     processor: (ParadoxScriptValue) -> Boolean
 ): Boolean {
-    val inlineStack = if(inline) LinkedList<String>() else null
-    return doProcessValue(conditional, inlineStack, processor)
+    return doProcessValue(conditional, inline, processor)
 }
 
 /**
@@ -63,8 +59,7 @@ fun ParadoxScriptParameterCondition.processData(
     inline: Boolean = false,
     processor: (ParadoxScriptMemberElement) -> Boolean
 ): Boolean {
-    val inlineStack = if(inline) LinkedList<String>() else null
-    return doProcessData(conditional, inlineStack, processor)
+    return doProcessData(conditional, inline, processor)
 }
 
 /**
@@ -75,8 +70,7 @@ fun ParadoxScriptParameterCondition.processProperty(
     inline: Boolean = false,
     processor: (ParadoxScriptProperty) -> Boolean
 ): Boolean {
-    val inlineStack = if(inline) LinkedList<String>() else null
-    return doProcessProperty(conditional, inlineStack, processor)
+    return doProcessProperty(conditional,inline, processor)
 }
 
 /**
@@ -87,53 +81,52 @@ fun ParadoxScriptParameterCondition.processValue(
     inline: Boolean = false,
     processor: (ParadoxScriptValue) -> Boolean
 ): Boolean {
-    val inlineStack = if(inline) LinkedList<String>() else null
-    return doProcessValue(conditional, inlineStack, processor)
+    return doProcessValue(conditional, inline, processor)
 }
 
-private fun PsiElement.doProcessData(conditional: Boolean, inlineStack: Deque<String>?, processor: (ParadoxScriptMemberElement) -> Boolean): Boolean {
+private fun PsiElement.doProcessData(conditional: Boolean, inline: Boolean, processor: (ParadoxScriptMemberElement) -> Boolean): Boolean {
     return processChild {
         ProgressManager.checkCanceled()
         when {
-            it is ParadoxScriptValue -> it.doProcessValueChild(conditional, inlineStack, processor)
-            it is ParadoxScriptProperty -> it.doProcessPropertyChild(conditional, inlineStack, processor)
-            conditional && it is ParadoxScriptParameterCondition -> it.doProcessData(true, inlineStack, processor)
+            it is ParadoxScriptValue -> it.doProcessValueChild(conditional, inline, processor)
+            it is ParadoxScriptProperty -> it.doProcessPropertyChild(conditional, inline, processor)
+            conditional && it is ParadoxScriptParameterCondition -> it.doProcessData(true, inline, processor)
             else -> true
         }
     }
 }
 
-private fun PsiElement.doProcessProperty(conditional: Boolean, inlineStack: Deque<String>?, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+private fun PsiElement.doProcessProperty(conditional: Boolean,inline: Boolean, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
     return processChild {
         ProgressManager.checkCanceled()
         when {
-            it is ParadoxScriptProperty -> it.doProcessPropertyChild(conditional, inlineStack, processor)
-            conditional && it is ParadoxScriptParameterCondition -> it.doProcessProperty(true, inlineStack, processor)
+            it is ParadoxScriptProperty -> it.doProcessPropertyChild(conditional, inline, processor)
+            conditional && it is ParadoxScriptParameterCondition -> it.doProcessProperty(true, inline,processor)
             else -> true
         }
     }
 }
 
-private fun PsiElement.doProcessValue(conditional: Boolean, inlineStack: Deque<String>?, processor: (ParadoxScriptValue) -> Boolean): Boolean {
+private fun PsiElement.doProcessValue(conditional: Boolean, inline: Boolean, processor: (ParadoxScriptValue) -> Boolean): Boolean {
     return processChild {
         ProgressManager.checkCanceled()
         when {
-            it is ParadoxScriptValue -> it.doProcessValueChild(conditional, inlineStack, processor)
-            conditional && it is ParadoxScriptParameterCondition -> it.doProcessValue(true, inlineStack, processor)
+            it is ParadoxScriptValue -> it.doProcessValueChild(conditional, inline, processor)
+            conditional && it is ParadoxScriptParameterCondition -> it.doProcessValue(true,inline, processor)
             else -> true
         }
     }
 }
 
-private fun ParadoxScriptValue.doProcessValueChild(conditional: Boolean, inlineStack: Deque<String>?, processor: (ParadoxScriptValue) -> Boolean): Boolean {
+private fun ParadoxScriptValue.doProcessValueChild(conditional: Boolean, inline: Boolean, processor: (ParadoxScriptValue) -> Boolean): Boolean {
     val r = processor(this)
     if(!r) return false
-    if(inlineStack != null) {
-        val inlined = ParadoxScriptMemberElementInlineSupport.inlineElement(this, inlineStack)
+    if(inline) {
+        val inlined = ParadoxScriptMemberElementInlineSupport.inlineElement(this)
         if(inlined is ParadoxScriptDefinitionElement) {
             val block = inlined.block
             if(block != null) {
-                val r1 = block.doProcessValue(conditional, inlineStack, processor = processor)
+                val r1 = block.doProcessValue(conditional, true, processor)
                 if(!r1) return false
             }
         }
@@ -142,15 +135,15 @@ private fun ParadoxScriptValue.doProcessValueChild(conditional: Boolean, inlineS
     return true
 }
 
-private fun ParadoxScriptProperty.doProcessPropertyChild(conditional: Boolean, inlineStack: Deque<String>?, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+private fun ParadoxScriptProperty.doProcessPropertyChild(conditional: Boolean, inline: Boolean, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
     val r = processor(this)
     if(!r) return false
-    if(inlineStack != null) {
-        val inlined = ParadoxScriptMemberElementInlineSupport.inlineElement(this, inlineStack)
+    if(inline) {
+        val inlined = ParadoxScriptMemberElementInlineSupport.inlineElement(this)
         if(inlined is ParadoxScriptDefinitionElement) {
             val block = inlined.block
             if(block != null) {
-                val r1 = block.doProcessProperty(conditional, inlineStack, processor = processor)
+                val r1 = block.doProcessProperty(conditional, true, processor)
                 if(!r1) return false
             }
         }
@@ -247,11 +240,10 @@ fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
 fun PsiElement.findParentDefinition(link: Boolean = false): ParadoxScriptDefinitionElement? {
     if(language != ParadoxScriptLanguage) return null
     var current: PsiElement = this
-    val inlineStack = if(link) LinkedList<String>() else null
     while(current !is PsiFile) {
         ProgressManager.checkCanceled()
-        if(inlineStack != null && current is ParadoxScriptMemberElement) {
-            val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current, inlineStack)
+        if(link && current is ParadoxScriptMemberElement) {
+            val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current)
             if(linked != null) {
                 current = linked.parent ?: break
                 continue
@@ -281,11 +273,10 @@ fun PsiElement.findParentProperty(
         this is ParadoxScriptProperty -> this.parent
         else -> this
     }
-    val inlineStack = if(link) LinkedList<String>() else null
     while(current !is PsiFile) {
         ProgressManager.checkCanceled()
-        if(inlineStack != null && current is ParadoxScriptMemberElement) {
-            val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current, inlineStack)
+        if(link && current is ParadoxScriptMemberElement) {
+            val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current)
             if(linked != null) {
                 current = linked.parent ?: break
                 continue
