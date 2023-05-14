@@ -218,7 +218,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.inference.argumentValueConfig"))
                         .bindSelected(settings.inference::argumentValueConfig)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.argumentValueConfig.tooltip") }
-                        //.onApply { ParadoxModificationTrackerProvider.getInstance().ParameterValueConfigInferenceTracker.incModificationCount() }
+                        //如果这个配置的值发生，IDE应该会自动刷新，不需要执行额外的回调
                 }
                 //inlineScriptLocation
                 row {
