@@ -1,20 +1,26 @@
 package icu.windea.pls.core
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.*
 import java.util.*
 
-val PlsThreadLocals.recursionGuardThreadLocal: ThreadLocal<MutableMap<String, SmartRecursionGuard>> by lazy { ThreadLocal.withInitial { mutableMapOf() } }
+val PlsThreadLocals.recursionGuardThreadLocal: ThreadLocal<SmartRecursionGuard> by lazy { ThreadLocal() }
 val PlsThreadLocals.stackTraceThreadLocal: ThreadLocal<MutableList<Any>> by lazy { ThreadLocal() }
 
-inline fun <T> withRecursionGuard(key: String, action: SmartRecursionGuard.() -> T): T {
-    val cachedRecursionGuards = PlsThreadLocals.recursionGuardThreadLocal.get()
-    val cached = cachedRecursionGuards.containsKey(key)
+inline fun <T> withRecursionGuard(action: SmartRecursionGuard.() -> T): T? {
+    val cachedRecursionGuard = PlsThreadLocals.recursionGuardThreadLocal.get()
+    val cached = cachedRecursionGuard != null
     try {
-        val recursionGuard = cachedRecursionGuards.getOrPut(key) { SmartRecursionGuard() }
+        val recursionGuard = cachedRecursionGuard
+            ?: SmartRecursionGuard().also { PlsThreadLocals.recursionGuardThreadLocal.set(it) }
         return recursionGuard.action()
+    } catch(e1: StackOverflowError) {
+        return null
+    } catch(e2: StackOverflowPreventedException) {
+        return null
     } finally {
         if(!cached) {
-            cachedRecursionGuards.remove(key)
+            PlsThreadLocals.recursionGuardThreadLocal.remove()
         }
     }
 }

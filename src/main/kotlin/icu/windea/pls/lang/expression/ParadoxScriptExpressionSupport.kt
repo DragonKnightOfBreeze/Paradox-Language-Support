@@ -42,7 +42,7 @@ abstract class ParadoxScriptExpressionSupport {
         //这里需要尝试避免SOE
         
         fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-            withRecursionGuard("ParadoxScriptExpressionSupport.annotate") { 
+            withRecursionGuard { 
                 EP_NAME.extensionList.forEach p@{ ep ->
                     withCheckRecursion(ep, "annotate") {
                         if(!ep.supports(config)) return@p
@@ -53,7 +53,7 @@ abstract class ParadoxScriptExpressionSupport {
         }
         
         fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
-            return withRecursionGuard("ParadoxScriptExpressionSupport.resolve") {
+            return withRecursionGuard {
                 EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
                     withCheckRecursion(ep, "resolve") {
                         if(!ep.supports(config)) return@p null
@@ -64,19 +64,19 @@ abstract class ParadoxScriptExpressionSupport {
         }
         
         fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
-            return withRecursionGuard("ParadoxScriptExpressionSupport.multiResolve") {
+            return withRecursionGuard {
                 EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
                     withCheckRecursion(ep, "multiResolve") {
                         if(!ep.supports(config)) return@p null
                         ep.multiResolve(element, rangeInElement, expression, config, isKey).takeIfNotEmpty()
                     }
-                }.orEmpty()
-            }
+                }
+            }.orEmpty()
         }
         
         fun complete(context: ProcessingContext, result: CompletionResultSet) {
             val config = context.config ?: return
-            withRecursionGuard("ParadoxScriptExpressionSupport.complete") {
+            withRecursionGuard {
                 EP_NAME.extensionList.forEach p@{ ep ->
                     withCheckRecursion(ep, "complete") {
                         if(!ep.supports(config)) return@p

@@ -54,7 +54,7 @@ class ParadoxParameterContextInfo(
                 CwtDataType.ParameterValue -> {
                     //处理参数传递的情况
                     //这里需要尝试避免SOE
-                    val passingConfig = withRecursionGuard("ParadoxParameterContextInfo.getEntireConfig") action@{
+                    val passingConfig = withRecursionGuard action@{
                         val argumentNameElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return@action null
                         val argumentNameConfig = config.propertyConfig ?: return@action null
                         val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return@action null

@@ -143,6 +143,7 @@ object ParadoxParameterHandler {
      * 当参数值表示整个脚本表达式时，尝试推断得到这个脚本表达式对应的CWT规则。
      */
     fun inferEntireConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
+        // no cache: >= 10ms: 225/2400, >=100ms: 5/2400
         withMeasureMillis("icu.windea.pls.lang.ParadoxParameterHandler.inferEntireConfig") {
             var result: CwtValueConfig? = null
             ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
