@@ -137,7 +137,7 @@ object ParadoxInlineScriptHandler {
         ProgressManager.checkCanceled()
         val usageInfo = getUsageInfoFromCache(file) ?: return null
         //处理缓存对应的锚点属性已经不存在的情况
-        if(usageInfo.pointer.element == null) {
+        if(usageInfo.element == null) {
             file.putUserData(cachedInlineScriptUsageInfoKey, null)
             return getUsageInfoFromCache(file)
         }
@@ -162,6 +162,7 @@ object ParadoxInlineScriptHandler {
         val project = file.project
         var element: ParadoxScriptProperty? = null
         var hasConflict = false
+        var hasRecursion = false
         val configs: MutableList<CwtDataConfig<*>> = mutableListOf()
         val selector = inlineScriptSelector(project, file)
         ParadoxInlineScriptSearch.search(expression, selector).processQueryAsync p@{ info ->
@@ -172,27 +173,41 @@ object ParadoxInlineScriptHandler {
             if(element == null) {
                 element = p
             }
-            //检查内联脚本定义所在的规则的上下文是否匹配
-            val eConfigs = ParadoxConfigHandler.getConfigs(p)
-            if(eConfigs.isNotEmpty()) {
-                val configsToAdd = eConfigs.mapNotNull { it.parent }
-                if(configs.isEmpty()) {
-                    configs.addAll(configsToAdd)
-                    true
-                } else {
-                    if(configsToAdd.any { c1 -> configs.any { c2 -> c1 pointerEquals c2 } }) {
-                        true
+            //如果发生SOF，不需要再检查CWT规则是否存在冲突
+            if(hasRecursion) return@p false
+            //尝试检查内联脚本定义所在的规则的上下文是否匹配
+            withRecursionGuard("ParadoxInlineScriptHandler.doGetInlineScriptUsageInfo") {
+                onRecursion(expression) {
+                    //如果发生SOF，采用的element不能是当前正在遍历的p
+                    hasConflict = false
+                    hasRecursion = true
+                    element = null
+                    return@p true
+                }
+                withCheckRecursion(expression) {
+                    if(hasConflict) return@p true
+                    val eConfigs = ParadoxConfigHandler.getConfigs(p)
+                    if(eConfigs.isNotEmpty()) {
+                        val configsToAdd = eConfigs.mapNotNull { it.parent }
+                        if(configs.isEmpty()) {
+                            configs.addAll(configsToAdd)
+                            true
+                        } else {
+                            if(configsToAdd.any { c1 -> configs.any { c2 -> c1 pointerEquals c2 } }) {
+                                true
+                            } else {
+                                hasConflict = true
+                                false //快速判断
+                            }
+                        }
                     } else {
-                        hasConflict = true
-                        false
+                        //unexpected
+                        true
                     }
                 }
-            } else {
-                //unexpected
-                true
-            }
+            } ?: true
         }
         val usageElement = element ?: return null
-        return ParadoxInlineScriptUsageInfo(usageElement.createPointer(), hasConflict)
+        return ParadoxInlineScriptUsageInfo(usageElement.createPointer(), hasConflict, hasRecursion)
     }
 }

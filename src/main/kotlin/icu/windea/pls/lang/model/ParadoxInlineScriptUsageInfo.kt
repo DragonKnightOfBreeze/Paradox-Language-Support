@@ -10,5 +10,8 @@ import icu.windea.pls.script.psi.*
 @WithGameType(ParadoxGameType.Stellaris)
 data class ParadoxInlineScriptUsageInfo(
     val pointer: SmartPsiElementPointer<ParadoxScriptProperty>,
-    val hasConflict: Boolean
-)
+    val hasConflict: Boolean,
+    val hasRecursion: Boolean
+) {
+    val element get() = pointer.element
+}

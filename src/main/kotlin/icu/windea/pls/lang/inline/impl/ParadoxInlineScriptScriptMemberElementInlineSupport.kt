@@ -24,10 +24,10 @@ class ParadoxInlineScriptScriptMemberElementInlineSupport : ParadoxScriptMemberE
         if(element !is ParadoxScriptFile) return null
         val expression = getInlineScriptExpression(element)
         if(expression == null) return null
-        return withRecursionGuard("ParadoxInlineScriptScriptMemberElementInlineSupport.linkElement") {
-            withCheckRecursion(expression, fallback = true) {
-                val usageInfo = ParadoxInlineScriptHandler.getInlineScriptUsageInfo(element) ?: return null
-                if(usageInfo.hasConflict) return null
+        return withRecursionGuard("ParadoxInlineScriptScriptMemberElementInlineSupport") a1@{
+            withCheckRecursion(expression) a2@{
+                val usageInfo = ParadoxInlineScriptHandler.getInlineScriptUsageInfo(element) ?: return@a2 null
+                if(usageInfo.hasConflict || usageInfo.hasRecursion) return@a2 null
                 usageInfo.pointer.element
             }
         }
@@ -35,12 +35,12 @@ class ParadoxInlineScriptScriptMemberElementInlineSupport : ParadoxScriptMemberE
     
     override fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
         if(element !is ParadoxScriptProperty) return null
-        return withRecursionGuard("ParadoxInlineScriptScriptMemberElementInlineSupport.inlineElement") {
-            val info = ParadoxInlineScriptHandler.getInfo(element) ?: return null
-            val expression = info.expression 
-            withCheckRecursion(expression, fallback = true) {
+        val info = ParadoxInlineScriptHandler.getInfo(element) ?: return null
+        val expression = info.expression
+        return withRecursionGuard("ParadoxInlineScriptScriptMemberElementInlineSupport") a1@{
+            withCheckRecursion(expression) a2@{
                 val definitionMemberInfo = element.definitionMemberInfo
-                if(definitionMemberInfo == null) return null
+                if(definitionMemberInfo == null) return@a2 null
                 val project = definitionMemberInfo.configGroup.project
                 ParadoxInlineScriptHandler.getInlineScript(expression, element, project)
             }

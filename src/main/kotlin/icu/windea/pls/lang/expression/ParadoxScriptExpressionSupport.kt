@@ -44,8 +44,8 @@ abstract class ParadoxScriptExpressionSupport {
         fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
             withRecursionGuard("ParadoxScriptExpressionSupport.annotate") { 
                 EP_NAME.extensionList.forEach p@{ ep ->
+                    if(!ep.supports(config)) return@p
                     withCheckRecursion(ep, "annotate") {
-                        if(!ep.supports(config)) return@p
                         ep.annotate(element, rangeInElement, expression, holder, config)
                     }
                 }
@@ -55,8 +55,8 @@ abstract class ParadoxScriptExpressionSupport {
         fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
             return withRecursionGuard("ParadoxScriptExpressionSupport.resolve") {
                 EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
+                    if(!ep.supports(config)) return@p null
                     withCheckRecursion(ep, "resolve") {
-                        if(!ep.supports(config)) return@p null
                         ep.resolve(element, rangeInElement, expression, config, isKey, exact)
                     }
                 }
@@ -66,8 +66,8 @@ abstract class ParadoxScriptExpressionSupport {
         fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
             return withRecursionGuard("ParadoxScriptExpressionSupport.multiResolve") {
                 EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
+                    if(!ep.supports(config)) return@p null
                     withCheckRecursion(ep, "multiResolve") {
-                        if(!ep.supports(config)) return@p null
                         ep.multiResolve(element, rangeInElement, expression, config, isKey).takeIfNotEmpty()
                     }
                 }
@@ -78,8 +78,8 @@ abstract class ParadoxScriptExpressionSupport {
             val config = context.config ?: return
             withRecursionGuard("ParadoxScriptExpressionSupport.complete") {
                 EP_NAME.extensionList.forEach p@{ ep ->
+                    if(!ep.supports(config)) return@p
                     withCheckRecursion(ep, "complete") {
-                        if(!ep.supports(config)) return@p
                         ep.complete(context, result)
                     }
                 }

@@ -45,7 +45,7 @@ class ParadoxScriptAnnotator : Annotator {
         val expression = ParadoxInlineScriptHandler.getInlineScriptExpression(file)
         if(expression != null) {
             val usageInfo = ParadoxInlineScriptHandler.getInlineScriptUsageInfo(file)
-            if(usageInfo != null && !usageInfo.hasConflict) {
+            if(usageInfo != null && !usageInfo.hasConflict && !usageInfo.hasRecursion) {
                 val message = PlsBundle.message("script.annotator.inlineScript", expression)
                 holder.newAnnotation(INFORMATION, message).fileLevel().withFix(GotoInlineScriptUsagesIntention()).create()
             }
