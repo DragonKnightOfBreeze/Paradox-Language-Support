@@ -82,7 +82,7 @@ object ParadoxLocalisationTextInlayRenderer {
         return continueProcess(context)
     }
     
-    private fun renderEscapeTo(element: ParadoxLocalisationEscape, context: Context): Boolean  = with(context.factory) {
+    private fun renderEscapeTo(element: ParadoxLocalisationEscape, context: Context): Boolean = with(context.factory) {
         //使用原始文本（内嵌注释不能换行，这时直接截断）
         val elementText = element.text
         val text = when {
@@ -95,7 +95,7 @@ object ParadoxLocalisationTextInlayRenderer {
         return continueProcess(context)
     }
     
-    private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context): Boolean  = with(context.factory) {
+    private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context): Boolean = with(context.factory) {
         //如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，否则保留颜色码
         val colorConfig = element.colorConfig
         val resolved = element.scriptedVariableReference?.reference?.resolve()
@@ -108,13 +108,16 @@ object ParadoxLocalisationTextInlayRenderer {
                     truncatedSmallText(element.text, context)
                 } else {
                     context.guardStack.addLast(resolvedName)
-                    val oldBuilder = context.builder
-                    context.builder = SmartList()
-                    renderTo(resolved, context)
-                    context.guardStack.removeLast()
-                    val newBuilder = context.builder
-                    context.builder = oldBuilder
-                    newBuilder.mergePresentation()
+                    try {
+                        val oldBuilder = context.builder
+                        context.builder = SmartList()
+                        renderTo(resolved, context)
+                        val newBuilder = context.builder
+                        context.builder = oldBuilder
+                        newBuilder.mergePresentation()
+                    } finally {
+                        context.guardStack.removeLast()
+                    }
                 }
             }
             resolved is CwtProperty -> {
@@ -162,7 +165,7 @@ object ParadoxLocalisationTextInlayRenderer {
         return true
     }
     
-    private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context): Boolean  = with(context.factory) {
+    private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context): Boolean = with(context.factory) {
         val conceptName = element.conceptName
         if(conceptName != null) {
             //使用要显示的文本
@@ -191,7 +194,7 @@ object ParadoxLocalisationTextInlayRenderer {
                 
                 val attributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
                 presentation = WithAttributesPresentation(presentation, conceptAttributesKey, context.editor, attributesFlags)
-                presentation = onHover(psiSingleReference(presentation) { conceptName.reference?.resolve() }, object: InlayPresentationFactory.HoverListener {
+                presentation = onHover(psiSingleReference(presentation) { conceptName.reference?.resolve() }, object : InlayPresentationFactory.HoverListener {
                     override fun onHover(event: MouseEvent, translated: Point) {
                         attributesFlags.isDefault = true //change foreground
                     }
@@ -200,7 +203,7 @@ object ParadoxLocalisationTextInlayRenderer {
                         attributesFlags.isDefault = false //reset foreground
                     }
                     
-                }) 
+                })
                 context.builder.add(presentation)
                 if(!continueProcess) return false
             } else {
@@ -218,7 +221,7 @@ object ParadoxLocalisationTextInlayRenderer {
         return continueProcess(context)
     }
     
-    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context): Boolean  = with(context.factory) {
+    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context): Boolean = with(context.factory) {
         //如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if(richTextList.isEmpty()) return true
@@ -278,7 +281,7 @@ object ParadoxLocalisationTextInlayRenderer {
         }
     }
     
-    private fun doGetElementPresentation(element: PsiElement, context: Context)  = with(context.factory) {
+    private fun doGetElementPresentation(element: PsiElement, context: Context) = with(context.factory) {
         val text = element.text
         val references = element.references
         if(references.isEmpty()) {

@@ -110,7 +110,7 @@ object ParadoxParameterHandler {
         val namesToDistinct = mutableSetOf<String>().synced()
         //整合查找到的所有参数上下文
         val insertSeparator = context.isKey == true && context.contextElement !is ParadoxScriptPropertyKey
-        ParadoxParameterSupport.processContext(element, contextReferenceInfo) p@{ parameterContext ->
+        ParadoxParameterSupport.processContext(element, contextReferenceInfo, true) p@{ parameterContext ->
             ProgressManager.checkCanceled()
             val parameterContextInfo = getContextInfo(parameterContext) ?: return@p true
             if(parameterContextInfo.parameters.isEmpty()) return@p true
@@ -143,20 +143,22 @@ object ParadoxParameterHandler {
      * 当参数值表示整个脚本表达式时，尝试推断得到这个脚本表达式对应的CWT规则。
      */
     fun inferEntireConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
-        var result: CwtValueConfig? = null
-        ParadoxParameterSupport.processContext(parameterElement) p@{ context ->
-            val contextInfo = getContextInfo(context) ?: return@p true
-            val config = contextInfo.getEntireConfig(parameterElement.name) ?: return@p true
-            if(result == null) {
-                result = config
-            } else {
-                if(result?.expression != config.expression) {
-                    result = null
-                    return@p false
+        withMeasureMillis("icu.windea.pls.lang.ParadoxParameterHandler.inferEntireConfig") {
+            var result: CwtValueConfig? = null
+            ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
+                val contextInfo = getContextInfo(context) ?: return@p true
+                val config = contextInfo.getEntireConfig(parameterElement.name) ?: return@p true
+                if(result == null) {
+                    result = config
+                } else {
+                    if(result?.expression != config.expression) {
+                        result = null
+                        return@p false
+                    }
                 }
+                true
             }
-            true
+            return result
         }
-        return result
     }
 }

@@ -36,17 +36,21 @@ interface ParadoxParameterSupport {
      */
     fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, vararg extraArgs: Any?): ParadoxParameterElement?
     
-    fun getContainingContext(element: ParadoxParameterElement): ParadoxScriptDefinitionElement?
+    fun getContainingContextReference(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? 
+    
+    fun getContainingContext(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? 
     
     /**
+     * @param onlyMostRelevant 只获取最相关的上下文。
      * @return 此扩展点是否适用。
      */
-    fun processContext(element: ParadoxParameterElement, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
+    fun processContext(element: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
     
     /**
+     * @param onlyMostRelevant 只获取最相关的上下文。
      * @return 此扩展点是否适用。
      */
-    fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
+    fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
     
     /**
      * 构建参数的快速文档中的定义部分。
@@ -81,16 +85,20 @@ interface ParadoxParameterSupport {
             return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveArgument(element, rangeInElement, *extraArgs) }
         }
         
+        fun getContainingContextReference(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? {
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.getContainingContextReference(element) }
+        }
+        
         fun getContainingContext(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { it.getContainingContext(element) }
         }
         
-        fun processContext(element: ParadoxParameterElement, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-            return EP_NAME.extensionList.any { it.processContext(element, processor) }
+        fun processContext(element: ParadoxParameterElement,onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+            return EP_NAME.extensionList.any { it.processContext(element, onlyMostRelevant, processor) }
         }
         
-        fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-            return EP_NAME.extensionList.any { it.processContext(element, contextReferenceInfo, processor) }
+        fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+            return EP_NAME.extensionList.any { it.processContext(element, contextReferenceInfo, onlyMostRelevant, processor) }
         }
         
         fun getDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean {

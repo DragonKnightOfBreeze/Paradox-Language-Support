@@ -93,10 +93,10 @@ object ParadoxInlineScriptHandler {
         return ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile<ParadoxScriptFile>(project)
     }
     
-    fun processInlineScript(expression: String, contextElement: PsiElement, project: Project, processor: (ParadoxScriptFile) -> Boolean): Boolean {
+    fun processInlineScript(expression: String, contextElement: PsiElement, project: Project, onlyMostRelevant: Boolean = false, processor: (ParadoxScriptFile) -> Boolean): Boolean {
         val filePath = getInlineScriptFilePath(expression)
         val selector = fileSelector(project, contextElement).contextSensitive()
-        return ParadoxFilePathSearch.search(filePath, null, selector).processQueryAsync {
+        return ParadoxFilePathSearch.search(filePath, null, selector).processQueryAsync(onlyMostRelevant) {
             ProgressManager.checkCanceled()
             val file = it.toPsiFile<ParadoxScriptFile>(project)
             if(file != null) processor(file)

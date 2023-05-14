@@ -367,6 +367,8 @@ object ParadoxDefinitionHandler {
     }
     
     private fun doMatchDefinition(definitionElement: ParadoxScriptDefinitionElement, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.DEFAULT): Boolean {
+        //这里不能基于内联后的声明结构，否则可能会导致SOE
+        //也不要参数条件表达式中的声明结构判断，
         val childValueConfigs = propertyConfig.values.orEmpty()
         val blockElement = definitionElement.block
         if(childValueConfigs.isNotEmpty()) {

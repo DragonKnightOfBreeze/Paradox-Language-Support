@@ -20,7 +20,7 @@ class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, ParadoxPara
         val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(element, from, context.offset) ?: return null
         val targetElement = contextReferenceInfo.element ?: return null
         val parameterContextInfoMap = mutableMapOf<String, ParadoxParameterContextInfo>()
-        ParadoxParameterSupport.processContext(element, contextReferenceInfo) p@{
+        ParadoxParameterSupport.processContext(element, contextReferenceInfo, true) p@{
             val parameterContextInfo = ParadoxParameterHandler.getContextInfo(it) ?: return@p true
             if(parameterContextInfo.parameters.isEmpty()) return@p true
             parameterContextInfoMap.putIfAbsent(parameterContextInfo.parameters.keys.toString(), parameterContextInfo)

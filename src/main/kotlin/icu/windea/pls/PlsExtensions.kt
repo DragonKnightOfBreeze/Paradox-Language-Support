@@ -176,26 +176,6 @@ fun PsiReference.canResolveComplexEnumValue(): Boolean {
 }
 //endregion
 
-//region Debug Extensions
-val isDebug = System.getProperty("pls.is.debug").toBoolean()
-
-inline fun <T> withMeasureMillis(id: String, min: Int = -1, action: () -> T): T {
-    return withMeasureMillis({ id }, min, action)
-}
-
-inline fun <T> withMeasureMillis(id: () -> String, min: Int = -1, action: () -> T): T {
-    if(!isDebug) return action()
-    val start = System.currentTimeMillis()
-    val result = action()
-    val end = System.currentTimeMillis()
-    val millis = end - start
-    if(millis > min) {
-        println("${id()}: $millis")
-    }
-    return result
-}
-//endregion
-
 //region Select Extensions
 tailrec fun selectRootFile(from: Any?): VirtualFile? {
     return when {

@@ -18,7 +18,8 @@ import icu.windea.pls.script.psi.*
 
 open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     companion object {
-        @JvmField val containingContext = Key.create<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>("paradox.parameterElement.containingContext")
+        @JvmField val containingContextKey = Key.create<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>("paradox.parameterElement.containingContext")
+        @JvmField val containingContextReferenceKey = Key.create<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>("paradox.parameterElement.contextReference")
         @JvmField val definitionNameKey = Key.create<String>("paradox.parameterElement.definitionName")
         @JvmField val definitionTypesKey = Key.create<List<String>>("paradox.parameterElement.definitionTypes")
     }
@@ -113,7 +114,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val gameType = definitionInfo.gameType
         val project = definitionInfo.project
         val result = ParadoxParameterElement(element, name, definitionName, contextKey, readWriteAccess, gameType, project)
-        result.putUserData(containingContext, context.createPointer())
+        result.putUserData(containingContextKey, context.createPointer())
         result.putUserData(definitionNameKey, definitionName)
         result.putUserData(definitionTypesKey, definitionTypes)
         return result
@@ -147,29 +148,33 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         else -> ReadWriteAccessDetector.Access.Write
     }
     
-    override fun getContainingContext(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? {
-        return element.getUserData(containingContext)?.element
+    override fun getContainingContextReference(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? {
+        return element.getUserData(containingContextReferenceKey)?.element
     }
     
-    override fun processContext(element: ParadoxParameterElement, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+    override fun getContainingContext(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? {
+        return element.getUserData(containingContextKey)?.element
+    }
+    
+    override fun processContext(element: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
         val definitionName = element.getUserData(definitionNameKey) ?: return false
         val definitionTypes = element.getUserData(definitionTypesKey) ?: return false
         if(definitionName.isParameterized()) return false //skip if context name is parameterized
         val definitionType = definitionTypes.joinToString(".")
         val project = element.project
         val selector = definitionSelector(project, element).contextSensitive()
-        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQueryAsync(processor)
+        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQueryAsync(onlyMostRelevant, processor)
         return true
     }
     
-    override fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+    override fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
         val definitionName = contextReferenceInfo.getUserData(definitionNameKey) ?: return false
         val definitionTypes = contextReferenceInfo.getUserData(definitionTypesKey) ?: return false
         if(definitionName.isParameterized()) return false //skip if context name is parameterized
         val definitionType = definitionTypes.joinToString(".")
         val project = contextReferenceInfo.project
         val selector = definitionSelector(project, element).contextSensitive()
-        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQueryAsync(processor)
+        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQueryAsync(onlyMostRelevant, processor)
         return true
     }
     

@@ -90,8 +90,11 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                         resolvedNames.add(resolvedName)
                         if(guardStack.contains(resolvedName)) throw RecursionException(e, resolved, resolvedName)
                         guardStack.addLast(resolvedName)
-                        doRecursiveVisit(resolved, definitionInfo)
-                        guardStack.removeLast()
+                        try {
+                            doRecursiveVisit(resolved, definitionInfo)
+                        } finally {
+                            guardStack.removeLast()
+                        }
                     }
                 })
             }

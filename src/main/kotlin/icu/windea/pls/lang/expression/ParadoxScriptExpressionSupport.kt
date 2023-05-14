@@ -39,52 +39,50 @@ abstract class ParadoxScriptExpressionSupport {
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxScriptExpressionSupport>("icu.windea.pls.scriptExpressionSupport")
         
+        //这里需要尝试避免SOE
+        
         fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-            try {
+            withRecursionGuard("ParadoxScriptExpressionSupport.annotate") { 
                 EP_NAME.extensionList.forEach p@{ ep ->
-                    if(checkInstanceRecursion(ep)) return@p //避免SOE
-                    if(!ep.supports(config)) return@p
-                    ep.annotate(element, rangeInElement, expression, holder, config)
+                    withCheckRecursion(ep, "annotate") {
+                        if(!ep.supports(config)) return@p
+                        ep.annotate(element, rangeInElement, expression, holder, config)
+                    }
                 }
-            } finally {
-                finishCheckInstanceRecursion()
             }
         }
         
         fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
-            try {
-                return EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
-                    if(checkInstanceRecursion(ep)) return@p null //避免SOE
-                    if(!ep.supports(config)) return@p null
-                    ep.resolve(element, rangeInElement, expression, config, isKey, exact)
+            return withRecursionGuard("ParadoxScriptExpressionSupport.resolve") {
+                EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
+                    withCheckRecursion(ep, "resolve") {
+                        if(!ep.supports(config)) return@p null
+                        ep.resolve(element, rangeInElement, expression, config, isKey, exact)
+                    }
                 }
-            } finally {
-                finishCheckInstanceRecursion()
-            }
+            } 
         }
         
         fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
-            try {
-                return EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
-                    if(checkInstanceRecursion(ep)) return@p null //避免SOE
-                    if(!ep.supports(config)) return@p null
-                    ep.multiResolve(element, rangeInElement, expression, config, isKey).takeIfNotEmpty()
+            return withRecursionGuard("ParadoxScriptExpressionSupport.multiResolve") {
+                EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
+                    withCheckRecursion(ep, "multiResolve") {
+                        if(!ep.supports(config)) return@p null
+                        ep.multiResolve(element, rangeInElement, expression, config, isKey).takeIfNotEmpty()
+                    }
                 }.orEmpty()
-            } finally {
-                finishCheckInstanceRecursion()
             }
         }
         
         fun complete(context: ProcessingContext, result: CompletionResultSet) {
-            try {
-                val config = context.config ?: return
+            val config = context.config ?: return
+            withRecursionGuard("ParadoxScriptExpressionSupport.complete") {
                 EP_NAME.extensionList.forEach p@{ ep ->
-                    if(checkInstanceRecursion(ep)) return@p //避免SOE
-                    if(!ep.supports(config)) return@p
-                    ep.complete(context, result)
+                    withCheckRecursion(ep, "complete") {
+                        if(!ep.supports(config)) return@p
+                        ep.complete(context, result)
+                    }
                 }
-            } finally {
-                finishCheckInstanceRecursion()
             }
         }
     }

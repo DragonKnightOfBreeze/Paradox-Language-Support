@@ -62,9 +62,12 @@ object ParadoxLocalisationTextExtractor {
 					//infinite recursion, do not render context
 					context.builder.append(element.text)
 				} else {
-					context.guardStack.addLast(resolvedName)
-					extractTo(resolved, context)
-					context.guardStack.removeLast()
+                    context.guardStack.addLast(resolvedName)
+                    try {
+                        extractTo(resolved, context)
+                    } finally {
+                        context.guardStack.removeLast()
+                    }
 				}
 			}
 			resolved is CwtProperty -> {

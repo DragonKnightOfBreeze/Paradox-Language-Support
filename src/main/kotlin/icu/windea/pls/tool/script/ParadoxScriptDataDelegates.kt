@@ -1,5 +1,3 @@
-@file:Suppress("UnusedReceiverParameter")
-
 package icu.windea.pls.tool.script
 
 import com.intellij.openapi.util.*
@@ -28,12 +26,12 @@ val ParadoxScriptData.Keys.propertyValuesKey by lazy { Key.create<MutableMap<KPr
 inline operator fun <reified T> ParadoxScriptDataDelegateProvider<T>.getValue(thisRef: Any, property: KProperty<*>): T {
     if(delegate == null) return defaultValue
     val map = delegate.getOrPutUserData(ParadoxScriptData.Keys.propertyValuesKey) { mutableMapOf() }
-    val value = map.getOrPut(property) { getValueOfType(delegate.value, typeOf<T>()) } as? T?
+    val value = map.getOrPut(property) { InternalExtensionsHolder.getValueOfType(delegate.value, typeOf<T>()) } as? T?
     return value ?: defaultValue
 }
 
-@PublishedApi
-internal fun getValueOfType(value: ParadoxScriptValue?, type: KType): Any? {
+@Suppress("UnusedReceiverParameter")
+fun InternalExtensionsHolder.getValueOfType(value: ParadoxScriptValue?, type: KType): Any? {
     if(value == null) return null
     val kClass = type.classifier as? KClass<*> ?: return null
     return when {

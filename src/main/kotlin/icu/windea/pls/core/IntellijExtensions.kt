@@ -44,6 +44,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
@@ -142,13 +143,21 @@ fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiE
     return NavigationGutterIconBuilder.create(icon, DEFAULT_PSI_CONVERTOR, gotoRelatedItemProvider)
 }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T> Query<T>.processQuery(consumer: Processor<in T>): Boolean {
+@Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
+inline fun <T> Query<T>.processQuery(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
+    if(onlyMostRelevant && this is ParadoxQuery<*,*>) {
+        find()?.let { consumer.process(it as T) }
+        return true
+    }
     return forEach(consumer)
 }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T> Query<T>.processQueryAsync(consumer: Processor<in T>): Boolean {
+@Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
+inline fun <T> Query<T>.processQueryAsync(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
+    if(onlyMostRelevant && this is ParadoxQuery<*,*>) {
+        find()?.let { consumer.process(it as T) }
+        return true
+    }
     return allowParallelProcessing().forEach(consumer)
 }
 

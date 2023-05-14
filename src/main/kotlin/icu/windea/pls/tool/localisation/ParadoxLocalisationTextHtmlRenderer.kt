@@ -103,8 +103,11 @@ object ParadoxLocalisationTextHtmlRenderer {
                     context.builder.append("<code>").append(element.text.escapeXml()).append("</code>")
                 } else {
                     context.guardStack.addLast(resolvedName)
-                    renderTo(resolved, context)
-                    context.guardStack.removeLast()
+                    try {
+                        renderTo(resolved, context)
+                    } finally {
+                        context.guardStack.removeLast()
+                    }
                 }
             }
             resolved is CwtProperty -> {

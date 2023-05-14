@@ -64,7 +64,7 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         //create tooltip
         val tooltip = PlsBundle.message("inferred.config.expression", inferredConfig.expression.expressionString.escapeXml())
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).tooltip(tooltip).create()
-        INSTANCE.annotate(element, rangeInElement, expression, holder, inferredConfig, )
+        INSTANCE.annotate(element, rangeInElement, expression, holder, inferredConfig)
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
