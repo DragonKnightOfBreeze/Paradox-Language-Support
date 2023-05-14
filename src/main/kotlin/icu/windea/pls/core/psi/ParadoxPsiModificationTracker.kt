@@ -33,8 +33,12 @@ class ParadoxPsiModificationTracker(project: Project) : PsiTreeChangePreprocesso
     val ScriptedVariablesTracker = ScriptFileTracker("common/scripted_variables:txt")
     val InlineScriptsTracker = ScriptFileTracker("common/inline_scripts:txt")
     
+    //com.intellij.psi.impl.PsiModificationTrackerImpl.treeChanged
+    
     override fun treeChanged(event: PsiTreeChangeEventImpl) {
         if(!PsiModificationTrackerImpl.canAffectPsi(event)) return
+        
+        //这个方法应当尽可能地快
         
         val file = event.file ?: return
         if(file !is ParadoxScriptFile) return
@@ -45,7 +49,9 @@ class ParadoxPsiModificationTracker(project: Project) : PsiTreeChangePreprocesso
         val trackers = getInstance(file.project).ScriptFileTrackers.values
         for(tracker in trackers) {
             val keys = tracker.keys
-            for(key in keys) {
+            val keysSize = keys.size
+            for(i in 0 until keysSize) {
+                val key = keys[i]
                 if(key.path.matchesPath(filePath) && (key.extensions.isEmpty() || key.extensions.contains(fileExtension))) {
                     tracker.incModificationCount()
                     break
@@ -66,7 +72,7 @@ class PathModificationTracker(keyString: String) : SimpleModificationTracker() {
     val keys = keyString.split('|').map {
         val i = it.indexOf(':')
         if(i == -1) PathModificationTrackerKey(it, emptySet())
-        else PathModificationTrackerKey(it.substring(0, i), it.substring(i + 1).split(',').toSortedSet())
+        else PathModificationTrackerKey(it.substring(0, i), it.substring(i + 1).lowercase().split(',').toSortedSet())
     }
 }
 
