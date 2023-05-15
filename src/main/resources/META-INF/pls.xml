@@ -8,6 +8,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.scriptMemberElementInlineSupport" interface="icu.windea.pls.lang.inline.ParadoxScriptMemberElementInlineSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.colorSupport" interface="icu.windea.pls.lang.color.ParadoxColorSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.parameterSupport" interface="icu.windea.pls.lang.parameter.ParadoxParameterSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.parameterInferredConfigProvider" interface="icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.localisationParameterSupport" interface="icu.windea.pls.lang.parameter.ParadoxLocalisationParameterSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modifierSupport" interface="icu.windea.pls.lang.modifier.ParadoxModifierSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionModifierProvider" interface="icu.windea.pls.lang.modifier.ParadoxDefinitionModifierProvider" dynamic="true"/>

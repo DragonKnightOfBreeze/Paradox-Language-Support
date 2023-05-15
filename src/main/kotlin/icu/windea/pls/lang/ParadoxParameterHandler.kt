@@ -40,8 +40,9 @@ object ParadoxParameterHandler {
         }
     }
     
-    private fun doGetContextInfo(context: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo {
+    private fun doGetContextInfo(context: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
         val file = context.containingFile
+        val gameType = selectGameType(file) ?: return null
         val parameters = sortedMapOf<String, MutableList<ParadoxParameterInfo>>() //按名字进行排序
         val fileConditionStack = LinkedList<ReversibleValue<String>>()
         context.accept(object : PsiRecursiveElementWalkingVisitor() {
@@ -86,7 +87,7 @@ object ParadoxParameterHandler {
                 fileConditionStack.removeLast()
             }
         })
-        return ParadoxParameterContextInfo(parameters)
+        return ParadoxParameterContextInfo(gameType, parameters)
     }
     
     fun completeParameters(element: PsiElement, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {

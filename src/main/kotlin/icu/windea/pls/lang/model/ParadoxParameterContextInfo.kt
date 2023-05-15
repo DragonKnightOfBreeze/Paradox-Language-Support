@@ -12,6 +12,7 @@ import icu.windea.pls.script.psi.*
 import java.util.*
 
 class ParadoxParameterContextInfo(
+    val gameType: ParadoxGameType
     val parameters: Map<String, List<ParadoxParameterInfo>>
 ) {
     fun isOptional(parameterName: String, argumentNames: Set<String>? = null): Boolean {

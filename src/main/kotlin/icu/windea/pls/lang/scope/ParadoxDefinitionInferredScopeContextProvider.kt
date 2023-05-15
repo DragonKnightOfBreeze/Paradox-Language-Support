@@ -7,7 +7,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 用于提供推断的作用域上下文。
+ * 用于为定义提供推断的作用域上下文。
  */
 @WithGameTypeEP
 interface ParadoxDefinitionInferredScopeContextProvider {
