@@ -288,6 +288,13 @@ object ParadoxLocalisationPsiImplUtil {
     }
     //endregion
     
+    //region ParadoxLocalisationCommand
+    @JvmStatic
+    fun getIcon(element: ParadoxLocalisationCommand, @IconFlags flags: Int): Icon {
+        return PlsIcons.LocalisationCommand
+    }
+    //endregion
+    
     //region ParadoxLocalisationCommandIdentifier
     @JvmStatic
     fun getPrevIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxLocalisationCommandScope? {

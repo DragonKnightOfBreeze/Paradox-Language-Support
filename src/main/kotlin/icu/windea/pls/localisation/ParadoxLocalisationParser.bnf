@@ -133,16 +133,6 @@ icon ::= ICON_START icon_name [PIPE icon_frame] ICON_END {
 private icon_name ::= command | property_reference | ICON_ID //can be command / property reference
 private icon_frame ::= ICON_FRAME | property_reference //can be property reference (resolved as parameter)
 
-//colorful text rules
-
-//see: https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes
-colorful_text ::= COLORFUL_TEXT_START COLOR_ID colorful_text_item [COLORFUL_TEXT_END]{
-  pin=1
-  extends=rich_text
-  methods=[getName setName getReference]
-}
-private colorful_text_item ::= rich_text *
-
 //command rules
 
 //see: https://stellaris.paradoxwikis.com/Localisation_modding#Bracket_Commands
@@ -150,6 +140,7 @@ command ::= COMMAND_START command_expression? COMMAND_END{
   pin=1
   extends=rich_text
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationRichText"
+  methods=[getIcon]
 }
 private command_expression ::= concept_expression | command_invocation_expression {
   pin=1
@@ -181,3 +172,13 @@ concept_name ::= LEFT_SINGLE_QUOTE CONCEPT_NAME_ID RIGHT_SINGLE_QUOTE {
   methods=[getIcon getName setName getReference]
 }
 concept_text ::= rich_text *
+
+//colorful text rules
+
+//see: https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes
+colorful_text ::= COLORFUL_TEXT_START COLOR_ID colorful_text_item [COLORFUL_TEXT_END]{
+  pin=1
+  extends=rich_text
+  methods=[getName setName getReference]
+}
+private colorful_text_item ::= rich_text *

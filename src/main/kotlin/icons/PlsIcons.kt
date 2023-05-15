@@ -29,6 +29,7 @@ object PlsIcons {
 	@JvmField val LocalisationLocale = loadIcon("/icons/localisationLocale.svg")
 	@JvmField val LocalisationProperty = loadIcon("/icons/localisationProperty.svg")
 	@JvmField val LocalisationIcon = loadIcon("/icons/localisationIcon.svg")
+	@JvmField val LocalisationCommand = loadIcon("/icons/localisationCommand.svg")
 	@JvmField val LocalisationCommandScope = loadIcon("/icons/localisationCommandScope.svg")
 	@JvmField val LocalisationCommandField = loadIcon("/icons/localisationCommandField.svg")
 	@JvmField val LocalisationConceptName = loadIcon("/icons/localisationConceptName.svg")
@@ -94,6 +95,10 @@ object PlsIcons {
 		@JvmField val DuplicateDescriptor = AllIcons.Actions.Copy
 		@JvmField val SwitchToPrevDescriptor = AllIcons.General.ArrowLeft
 		@JvmField val SwitchToNextDescriptor = AllIcons.General.ArrowRight
+		
+		@JvmField val CreateReference = LocalisationProperty
+		@JvmField val CreateIcon = LocalisationIcon
+		@JvmField val CreateCommand = LocalisationCommand
 	}
 	
 	object Gutter {
