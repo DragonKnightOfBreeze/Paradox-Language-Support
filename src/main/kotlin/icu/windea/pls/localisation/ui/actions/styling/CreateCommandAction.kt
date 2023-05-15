@@ -63,8 +63,9 @@ class CreateCommandAction : ToggleAction(), DumbAware {
         if(state) {
             //wrap
             val command = Runnable {
-                editor.document.insertString(end, "[")
-                editor.document.insertString(start, "]")
+                editor.document.insertString(end, "]")
+                editor.document.insertString(start, "[")
+                editor.caretModel.moveToOffset(start + 1)
                 editor.selectionModel.setSelection(start + 1, end + 1)
                 PsiDocumentManager.getInstance(project).commitDocument(editor.document)
             }
@@ -74,6 +75,7 @@ class CreateCommandAction : ToggleAction(), DumbAware {
             val command = Runnable {
                 editor.document.deleteString(end, end + 1)
                 editor.document.deleteString(start - 1, start)
+                editor.caretModel.moveToOffset(start - 1)
                 editor.selectionModel.setSelection(start - 1, end - 1)
                 PsiDocumentManager.getInstance(project).commitDocument(editor.document)
             }
@@ -103,8 +105,8 @@ class CreateCommandAction : ToggleAction(), DumbAware {
             if(start == 0) return null
             val startElement = file.findElementAt(start - 1) ?: return null
             val endElement = file.findElementAt(end) ?: return null
-            val startParent = startElement.parentOfType<ParadoxLocalisationPropertyReference>() ?: return null
-            val endParent = endElement.parentOfType<ParadoxLocalisationPropertyReference>() ?: return null
+            val startParent = startElement.parentOfType<ParadoxLocalisationPropertyValue>() ?: return null
+            val endParent = endElement.parentOfType<ParadoxLocalisationPropertyValue>() ?: return null
             if(startParent !== endParent) return null
             if(start == end) return false
             return startElement.elementType == COMMAND_START && endElement.elementType == COMMAND_END

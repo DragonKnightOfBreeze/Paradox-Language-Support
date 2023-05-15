@@ -103,7 +103,7 @@ class ParadoxParameterInfo(
     val element: ParadoxParameter? get() = elementPointer.element
     
     /**
-     * 获取模版表达式，用于此参数在整个脚本表达式中的位置。用$表示此参数，用#表示其他参数。
+     * 获取模版表达式，用于表示此参数在整个脚本表达式中的位置。用$表示此参数，用#表示其他参数。
      */
     val template: String by lazy {
         val element = element ?: return@lazy "$"

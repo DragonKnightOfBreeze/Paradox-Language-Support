@@ -143,6 +143,8 @@
       <!-- Also add all insert actions into default generate popup -->
       <add-to-group group-id="GenerateGroup" anchor="last"/>
       <reference id="Pls.ParadoxLocalisation.Styling.CreateReference"/>
+      <reference id="Pls.ParadoxLocalisation.Styling.CreateIcon"/>
+      <reference id="Pls.ParadoxLocalisation.Styling.CreateCommand"/>
     </group>
   </actions>
 </idea-plugin>

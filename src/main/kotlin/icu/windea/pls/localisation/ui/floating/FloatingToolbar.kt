@@ -1,16 +1,20 @@
 package icu.windea.pls.localisation.ui.floating
 
 import com.intellij.codeInsight.hint.*
+import com.intellij.ide.ui.customization.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.impl.*
+import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.event.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.*
+import com.intellij.util.ui.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.ui.actions.styling.*
@@ -20,13 +24,14 @@ import javax.swing.*
 import kotlin.properties.*
 
 //org.intellij.plugins.markdown.ui.floating.FloatingToolbar
+//不要参考最新的写法进行重构 - 会无法正常显示悬浮工具栏
 
 /**
  * 当用户鼠标选中本地化文本(的其中一部分)时,将会显示的悬浮工具栏栏。
  * 提供动作：
- * * 快速插入引用（`$FOO$`）
- * * 快速插入图标（`£foo£`）
- * * 快速插入命令（`[Foo]`）
+ * * 快速插入引用（`$FOO$`） - 不会检查插入后语法是否合法
+ * * 快速插入图标（`£foo£`） - 不会检查插入后语法是否合法
+ * * 快速插入命令（`[Foo]`） - 不会检查插入后语法是否合法
  * * 更改文本颜色（将会列出所有可选的颜色代码）
  * @see icu.windea.pls.localisation.ui.actions.styling.CreateReferenceAction
  * @see icu.windea.pls.localisation.ui.actions.styling.CreateIconAction
@@ -84,14 +89,19 @@ class FloatingToolbar(
     }
     
     private fun createActionToolbar(targetComponent: JComponent): ActionToolbar {
-        PlsThreadLocals.textEditor.set(textEditor)
-        val group = SetColorGroup()
+        val group = CustomActionsSchema.getInstance().getCorrectedAction(actionGroupId) as ActionGroup
         val toolbar = object : ActionToolbarImpl(ActionPlaces.EDITOR_TOOLBAR, group, true) {
             override fun addNotify() {
                 super.addNotify()
-                updateActionsImmediately()
-                //现在不在需要调用这个方法了
+                //NOTE 这是必要的，否则显示悬浮工具栏时，其中的颜色图标不会立即全部显示
+                //@Suppress("UnstableApiUsage")
                 //updateActionsImmediately(true)
+                try {
+                    this.function("updateActionsImmediately")(true)
+                } catch(e: Exception) {
+                    thisLogger().warn(e)
+                    updateActionsImmediately()
+                }
             }
         }
         toolbar.targetComponent = targetComponent
@@ -215,5 +225,9 @@ class FloatingToolbar(
                 }
             }
         }
+    }
+    
+    companion object {
+        const val EDITOR_FLOATING_TOOLBAR = "ParadoxLocalisationEditorFloatingToolbar"
     }
 }
