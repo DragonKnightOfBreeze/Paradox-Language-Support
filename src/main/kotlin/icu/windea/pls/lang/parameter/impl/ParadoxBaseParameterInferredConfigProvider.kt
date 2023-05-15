@@ -35,5 +35,6 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
                 return config
             }
         }
+        return null
     }
 }

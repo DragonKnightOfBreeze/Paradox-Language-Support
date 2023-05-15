@@ -18,11 +18,11 @@ interface ParadoxParameterInferredConfigProvider {
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxParameterInferredConfigProvider>("icu.windea.pls.parameterInferredConfigProvider")
         
-        fun getConfig(name: String, contextInfo: ParadoxParameterContextInfo) : CwtValueConfig? {
+        fun getConfig(parameterInfo: ParadoxParameterInfo, contextInfo: ParadoxParameterContextInfo) : CwtValueConfig? {
             val gameType = contextInfo.gameType
             return EP_NAME.extensions.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
-                ep.getConfig(name, contextInfo)
+                ep.getConfig(parameterInfo, contextInfo)
             }
         }
     }
