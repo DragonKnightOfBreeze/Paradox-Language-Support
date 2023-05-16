@@ -144,6 +144,7 @@ class ParadoxVariableFieldExpressionImpl(
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val keyword = context.keyword
+        val startOffset = context.startOffset
         val isKey = context.isKey
         val scopeContext = context.scopeContext
         
@@ -180,6 +181,7 @@ class ParadoxVariableFieldExpressionImpl(
         }
         
         context.put(PlsCompletionKeys.keywordKey, keyword)
+        context.put(PlsCompletionKeys.startOffsetKey, startOffset)
         context.put(PlsCompletionKeys.isKeyKey, isKey)
         context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
     }

@@ -45,7 +45,7 @@ abstract class ParadoxScriptExpressionSupport {
             withRecursionGuard("icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.annotate") { 
                 EP_NAME.extensionList.forEach p@{ ep ->
                     if(!ep.supports(config)) return@p
-                    withCheckRecursion(ep, "annotate") {
+                    withCheckRecursion("${ep.javaClass.name}@annotate@${expression}") {
                         ep.annotate(element, rangeInElement, expression, holder, config)
                     }
                 }
@@ -56,7 +56,7 @@ abstract class ParadoxScriptExpressionSupport {
             return withRecursionGuard("icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.resolve") {
                 EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
                     if(!ep.supports(config)) return@p null
-                    withCheckRecursion(ep, "resolve") {
+                    withCheckRecursion("${ep.javaClass.name}@resolve@${expression}") {
                         ep.resolve(element, rangeInElement, expression, config, isKey, exact)
                     }
                 }
@@ -67,7 +67,7 @@ abstract class ParadoxScriptExpressionSupport {
             return withRecursionGuard("icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.multiResolve") {
                 EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
                     if(!ep.supports(config)) return@p null
-                    withCheckRecursion(ep, "multiResolve") {
+                    withCheckRecursion("${ep.javaClass.name}@multiResolve@${expression}") {
                         ep.multiResolve(element, rangeInElement, expression, config, isKey).takeIfNotEmpty()
                     }
                 }
@@ -79,7 +79,7 @@ abstract class ParadoxScriptExpressionSupport {
             withRecursionGuard("icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.complete") {
                 EP_NAME.extensionList.forEach p@{ ep ->
                     if(!ep.supports(config)) return@p
-                    withCheckRecursion(ep, "complete") {
+                    withCheckRecursion("${ep.javaClass.name}@complete${context.keyword}") {
                         ep.complete(context, result)
                     }
                 }

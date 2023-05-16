@@ -69,10 +69,10 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
                 node.config.let { it.expression?.let { e -> CwtValueConfig(emptyPointer(), it.info, e.expressionString) } }
             }
             node is ParadoxScopeFieldExpressionNode -> {
-                expressionConfig.let { CwtValueConfig(emptyPointer(), it.info, it.expression.expressionString) } //scope field node
+                expressionConfig.let { CwtValueConfig(emptyPointer(), it.info, "scope_field") } //scope field node
             }
             node is ParadoxValueFieldExpressionNode -> {
-                expressionConfig.let { CwtValueConfig(emptyPointer(), it.info, it.expression.expressionString) } //value field node 
+                expressionConfig.let { CwtValueConfig(emptyPointer(), it.info, "value_field") } //value field node 
             }
             node is ParadoxScriptValueArgumentValueExpressionNode -> {
                 val argumentNode = node.argumentNode ?: return null

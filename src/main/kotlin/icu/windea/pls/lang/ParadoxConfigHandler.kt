@@ -1018,7 +1018,8 @@ object ParadoxConfigHandler {
         ProgressManager.checkCanceled()
         //基于当前位置的代码补全
         if(quoted) return
-        val textRange = TextRange.create(0, keyword.length)
+        val startOffset = context.startOffset ?: 0
+        val textRange = TextRange.create(startOffset, startOffset + keyword.length)
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup, isKey, true) ?: return
         //合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，目前不基于此进行过滤
         scopeFieldExpression.complete(context, result)
@@ -1028,7 +1029,8 @@ object ParadoxConfigHandler {
         ProgressManager.checkCanceled()
         //基于当前位置的代码补全
         if(quoted) return
-        val textRange = TextRange.create(0, keyword.length)
+        val startOffset = context.startOffset ?: 0
+        val textRange = TextRange.create(startOffset, startOffset + keyword.length)
         val valueFieldExpression = ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup, isKey, true) ?: return
         valueFieldExpression.complete(context, result)
     }
@@ -1037,7 +1039,8 @@ object ParadoxConfigHandler {
         ProgressManager.checkCanceled()
         //基于当前位置的代码补全
         if(quoted) return
-        val textRange = TextRange.create(0, keyword.length)
+        val startOffset = context.startOffset ?: 0
+        val textRange = TextRange.create(startOffset, startOffset + keyword.length)
         val variableFieldExpression = ParadoxVariableFieldExpression.resolve(keyword, textRange, configGroup, isKey, true) ?: return
         variableFieldExpression.complete(context, result)
     }
@@ -1046,7 +1049,8 @@ object ParadoxConfigHandler {
         ProgressManager.checkCanceled()
         //基于当前位置的代码补全
         if(quoted) return
-        val textRange = TextRange.create(0, keyword.length)
+        val startOffset = context.startOffset ?: 0
+        val textRange = TextRange.create(startOffset, startOffset + keyword.length)
         val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(keyword, textRange, config, configGroup, isKey, true) ?: return
         valueSetValueExpression.complete(context, result)
     }

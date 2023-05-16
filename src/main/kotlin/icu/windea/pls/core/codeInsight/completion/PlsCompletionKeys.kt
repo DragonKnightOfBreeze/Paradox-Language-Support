@@ -16,6 +16,7 @@ object PlsCompletionKeys {
 	val rightQuotedKey = Key.create<Boolean>("paradoxCompletion.rightQuoted")
 	val offsetInParentKey = Key.create<Int>("paradoxCompletion.offsetInParent")
 	val keywordKey = Key.create<String>("paradoxCompletion.keyword")
+	val startOffsetKey = Key.create<Int>("paradoxCompletion.startOffset")
 	val isKeyKey = Key.create<Boolean>("paradoxCompletion.isKey")
 	val configKey = Key.create<CwtConfig<*>>("paradoxCompletion.config")
 	val configsKey = Key.create<List<CwtConfig<*>>>("paradoxCompletion.configs")

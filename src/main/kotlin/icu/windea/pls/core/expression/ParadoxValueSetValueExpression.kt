@@ -13,7 +13,6 @@ import icu.windea.pls.core.expression.ParadoxValueSetValueExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.highlighter.*
 
 /**
  * 值集值表达式。
@@ -89,11 +88,12 @@ class ParadoxValueSetValueExpressionImpl(
 	}
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+		val keyword = context.keyword
+		val startOffset = context.startOffset
+		val isKey = context.isKey
 		val config = context.config
 		val configs = context.configs
 		val scopeContext = context.scopeContext
-		val keyword = context.keyword
-		val isKey = context.isKey
 		
 		context.put(PlsCompletionKeys.configKey, this.configs.first())
 		context.put(PlsCompletionKeys.configsKey, this.configs)
@@ -109,6 +109,7 @@ class ParadoxValueSetValueExpressionImpl(
 					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
 					val resultToUse = result.withPrefixMatcher(keywordToUse)
 					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
+					context.put(PlsCompletionKeys.startOffsetKey, node.rangeInExpression.startOffset)
 					ParadoxConfigHandler.completeValueSetValue(context, resultToUse)
 					break
 				}
@@ -117,17 +118,19 @@ class ParadoxValueSetValueExpressionImpl(
 					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
 					val resultToUse = result.withPrefixMatcher(keywordToUse)
 					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
+					context.put(PlsCompletionKeys.startOffsetKey, node.rangeInExpression.startOffset)
 					node.complete(context, resultToUse)
 					break
 				}
 			}
 		}
 		
+		context.put(PlsCompletionKeys.keywordKey, keyword)
+		context.put(PlsCompletionKeys.startOffsetKey, startOffset)
+		context.put(PlsCompletionKeys.isKeyKey, isKey)
 		context.put(PlsCompletionKeys.configKey, config)
 		context.put(PlsCompletionKeys.configsKey, configs)
 		context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
-		context.put(PlsCompletionKeys.keywordKey, keyword)
-		context.put(PlsCompletionKeys.isKeyKey, isKey)
 	}
 }
 

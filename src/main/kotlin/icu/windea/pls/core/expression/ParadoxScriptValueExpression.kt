@@ -99,11 +99,12 @@ class ParadoxScriptValueExpressionImpl(
 	}
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+		val keyword = context.keyword
+		val startOffset = context.startOffset
+		val offsetInParent = context.offsetInParent
+		val isKey = context.isKey
 		val scopeContext = context.scopeContext
 		val scopeMatched = context.scopeMatched
-		val keyword = context.keyword
-		val isKey = context.isKey
-		val offsetInParent = context.offsetInParent
 		
 		context.put(PlsCompletionKeys.scopeContextKey, null) //don't check now
 		
@@ -115,6 +116,7 @@ class ParadoxScriptValueExpressionImpl(
 					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
 					val resultToUse = result.withPrefixMatcher(keywordToUse)
 					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
+					context.put(PlsCompletionKeys.startOffsetKey, node.rangeInExpression.startOffset)
 					val config = context.config
 					val configs = context.configs
 					context.put(PlsCompletionKeys.configKey, this.config)
@@ -128,6 +130,7 @@ class ParadoxScriptValueExpressionImpl(
 					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
 					val resultToUse = result.withPrefixMatcher(keywordToUse)
 					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
+					context.put(PlsCompletionKeys.startOffsetKey, node.rangeInExpression.startOffset)
 					ParadoxParameterHandler.completeArguments(context.contextElement, context, resultToUse)
 				}
 			} else if(node is ParadoxScriptValueArgumentValueExpressionNode && getSettings().inference.argumentValueConfig) {
@@ -141,9 +144,10 @@ class ParadoxScriptValueExpressionImpl(
 						val inferredConfig = ParadoxParameterHandler.inferConfig(parameterElement) ?: return@run
 						val config = context.config
 						val configs = context.configs
+						context.put(PlsCompletionKeys.keywordKey, keywordToUse)
+						context.put(PlsCompletionKeys.startOffsetKey, node.rangeInExpression.startOffset)
 						context.put(PlsCompletionKeys.configKey, inferredConfig)
 						context.put(PlsCompletionKeys.configsKey, null)
-						context.put(PlsCompletionKeys.keywordKey, keywordToUse)
 						ParadoxConfigHandler.completeScriptExpression(context, resultToUse)
 						context.put(PlsCompletionKeys.configKey, config)
 						context.put(PlsCompletionKeys.configsKey, configs)
@@ -151,10 +155,11 @@ class ParadoxScriptValueExpressionImpl(
 				}
 			}
 		}
+		context.put(PlsCompletionKeys.keywordKey, keyword)
+		context.put(PlsCompletionKeys.startOffsetKey, startOffset)
+		context.put(PlsCompletionKeys.isKeyKey, isKey)
 		context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
 		context.put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
-		context.put(PlsCompletionKeys.keywordKey, keyword)
-		context.put(PlsCompletionKeys.isKeyKey, isKey)
 	}
 }
 

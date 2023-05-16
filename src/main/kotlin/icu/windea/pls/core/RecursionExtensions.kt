@@ -60,9 +60,6 @@ class SmartRecursionGuard {
         }
     }
     
-    inline fun <T> withCheckRecursion(target: Any, keySuffix: String, action: () -> T): T? {
-        return withCheckRecursion(target.javaClass.name + "@" + keySuffix, action)
-    }
 }
 
 /**

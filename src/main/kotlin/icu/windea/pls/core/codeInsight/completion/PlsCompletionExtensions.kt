@@ -21,6 +21,7 @@ val ProcessingContext.quoted get() = get(PlsCompletionKeys.quotedKey) ?: false
 val ProcessingContext.rightQuoted get() = get(PlsCompletionKeys.rightQuotedKey)
 val ProcessingContext.offsetInParent get() = get(PlsCompletionKeys.offsetInParentKey)
 val ProcessingContext.keyword get() = get(PlsCompletionKeys.keywordKey)
+val ProcessingContext.startOffset get() = get(PlsCompletionKeys.startOffsetKey)
 val ProcessingContext.isKey: Boolean? get() = get(PlsCompletionKeys.isKeyKey)
 val ProcessingContext.config get() = get(PlsCompletionKeys.configKey)
 val ProcessingContext.configs get() = get(PlsCompletionKeys.configsKey)
