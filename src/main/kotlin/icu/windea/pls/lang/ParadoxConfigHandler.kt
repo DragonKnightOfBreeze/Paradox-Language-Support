@@ -723,7 +723,7 @@ object ParadoxConfigHandler {
             //override default highlight by highlighter (property key or string)
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeToAnnotate).textAttributes(HighlighterColors.TEXT).create()
         }
-        ParadoxConfigHandler.annotateScriptExpression(element, rangeToAnnotate, attributesKey, holder)
+        annotateScriptExpression(element, rangeToAnnotate, attributesKey, holder)
     }
     //endregion
     
@@ -961,47 +961,6 @@ object ParadoxConfigHandler {
         }
         
         ParadoxScriptExpressionSupport.complete(context, result)
-        
-        when(configExpression.type) {
-            CwtDataType.Value, CwtDataType.ValueSet -> {
-                //not key/value or quoted -> only value set value name, no scope info
-                if(config !is CwtDataConfig<*> || quoted) {
-                    completeValueSetValue(context, result)
-                    return
-                }
-                completeValueSetValueExpression(context, result)
-            }
-            CwtDataType.ScopeField -> {
-                completeScopeFieldExpression(context, result)
-            }
-            CwtDataType.Scope -> {
-                put(PlsCompletionKeys.scopeNameKey, configExpression.value)
-                completeScopeFieldExpression(context, result)
-                put(PlsCompletionKeys.scopeNameKey, null)
-            }
-            CwtDataType.ScopeGroup -> {
-                put(PlsCompletionKeys.scopeGroupNameKey, configExpression.value)
-                completeScopeFieldExpression(context, result)
-                put(PlsCompletionKeys.scopeGroupNameKey, null)
-            }
-            CwtDataType.ValueField -> {
-                completeValueFieldExpression(context, result)
-            }
-            CwtDataType.IntValueField -> {
-                put(PlsCompletionKeys.isIntKey, true)
-                completeValueFieldExpression(context, result)
-                put(PlsCompletionKeys.isIntKey, null)
-            }
-            CwtDataType.VariableField -> {
-                completeVariableFieldExpression(context, result)
-            }
-            CwtDataType.IntVariableField -> {
-                put(PlsCompletionKeys.isIntKey, true)
-                completeVariableFieldExpression(context, result)
-                put(PlsCompletionKeys.isIntKey, null)
-            }
-            else -> pass()
-        }
         
         put(PlsCompletionKeys.scopeContextKey, scopeContext)
         put(PlsCompletionKeys.scopeMatchedKey, null)
@@ -1529,33 +1488,10 @@ object ParadoxConfigHandler {
             if(result != null) return result
         }
         
-        when {
-            configExpression.type.isValueSetValueType() -> {
-                //参见：ParadoxValueSetValueExpression
-                val name = expression
-                val predefinedResolved = resolvePredefinedValueSetValue(name, configExpression, configGroup)
-                if(predefinedResolved != null) return predefinedResolved
-                return ParadoxValueSetValueHandler.resolveValueSetValue(element, name, configExpression, configGroup)
-            }
-            configExpression.type.isScopeFieldType() -> {
-                //不在这里处理，参见：ParadoxScopeFieldExpression
-                return null
-            }
-            configExpression.type.isValueFieldType() -> {
-                //不在这里处理，参见：ParadoxValueFieldExpression
-                return null
-            }
-            configExpression.type.isVariableFieldType() -> {
-                //不在这里处理，参见：ParadoxVariableFieldExpression
-                return null
-            }
-            else -> {
-                if(config != null && configExpression is CwtKeyExpression) {
-                    return config.resolved().pointer.element
-                }
-                return null
-            }
+        if(config != null && configExpression is CwtKeyExpression) {
+            return config.resolved().pointer.element
         }
+        return null
     }
     
     fun multiResolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>?, configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, isKey: Boolean? = null): Collection<PsiElement> {

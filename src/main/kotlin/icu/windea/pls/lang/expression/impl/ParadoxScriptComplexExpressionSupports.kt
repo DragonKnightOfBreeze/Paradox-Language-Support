@@ -1,9 +1,14 @@
 package icu.windea.pls.lang.expression.impl
 
+import com.intellij.codeInsight.completion.*
 import com.intellij.lang.annotation.*
 import com.intellij.openapi.util.*
+import com.intellij.psi.*
+import com.intellij.util.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
@@ -11,11 +16,11 @@ import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
 //提供对复杂表达式的高级语言功能支持
-//由于复杂表达式包含多个节点，可能需要被解析为多个引用，引用解析的代码不在这里实现
+//由于复杂表达式包含多个节点，可能需要被解析为多个引用，引用解析的代码可能无法在这里实现
 
 class ParadoxScriptValueSetExpressionSupport : ParadoxScriptExpressionSupport() {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type?.isValueSetValueType() == true 
+        return config.expression?.type?.isValueSetValueType() == true
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -35,9 +40,29 @@ class ParadoxScriptValueSetExpressionSupport : ParadoxScriptExpressionSupport() 
         val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(expression, textRange, config, configGroup, isKey) ?: return
         ParadoxConfigHandler.annotateComplexExpression(element, valueSetValueExpression, holder, config)
     }
+    
+    
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+        //参见：ParadoxValueSetValueExpression
+        val configExpression = config.expression ?: return null
+        val configGroup = config.info.configGroup
+        val name = expression
+        val predefinedResolved = ParadoxConfigHandler.resolvePredefinedValueSetValue(name, configExpression, configGroup)
+        if(predefinedResolved != null) return predefinedResolved
+        return ParadoxValueSetValueHandler.resolveValueSetValue(element, name, configExpression, configGroup)
+    }
+    
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        //not key/value or quoted -> only value set value name, no scope info
+        if(context.config !is CwtDataConfig<*> || context.quoted) {
+            ParadoxConfigHandler.completeValueSetValue(context, result)
+            return
+        }
+        ParadoxConfigHandler.completeValueSetValueExpression(context, result)
+    }
 }
 
-class ParadoxScriptScopeFieldExpressionSupport: ParadoxScriptExpressionSupport() {
+class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport() {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type?.isScopeFieldType() == true
     }
@@ -50,9 +75,37 @@ class ParadoxScriptScopeFieldExpressionSupport: ParadoxScriptExpressionSupport()
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression, textRange, configGroup, isKey) ?: return
         ParadoxConfigHandler.annotateComplexExpression(element, scopeFieldExpression, holder, config)
     }
+    
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+        //不在这里处理，参见：ParadoxScopeFieldExpression
+        return null
+    }
+    
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        val configExpression = context.config?.expression ?: return
+        when(configExpression.type) {
+            CwtDataType.Scope -> {
+                context.put(PlsCompletionKeys.scopeNameKey, configExpression.value)
+            }
+            CwtDataType.ScopeGroup -> {
+                context.put(PlsCompletionKeys.scopeGroupNameKey, configExpression.value)
+            }
+            else -> {}
+        }
+        ParadoxConfigHandler.completeScopeFieldExpression(context, result)
+        when(configExpression.type) {
+            CwtDataType.Scope -> {
+                context.put(PlsCompletionKeys.scopeNameKey, null)
+            }
+            CwtDataType.ScopeGroup -> {
+                context.put(PlsCompletionKeys.scopeGroupNameKey, null)
+            }
+            else -> {}
+        }
+    }
 }
 
-class ParadoxScriptValueFieldExpressionSupport: ParadoxScriptExpressionSupport() {
+class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport() {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type?.isValueFieldType() == true
     }
@@ -65,9 +118,31 @@ class ParadoxScriptValueFieldExpressionSupport: ParadoxScriptExpressionSupport()
         val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression, textRange, configGroup, isKey) ?: return
         ParadoxConfigHandler.annotateComplexExpression(element, valueFieldExpression, holder, config)
     }
+    
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+        //不在这里处理，参见：ParadoxValueFieldExpression
+        return null
+    }
+    
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        val configExpression = context.config?.expression ?: return
+        when(configExpression.type) {
+            CwtDataType.IntValueField -> {
+                context.put(PlsCompletionKeys.isIntKey, true)
+            }
+            else -> {}
+        }
+        ParadoxConfigHandler.completeValueFieldExpression(context, result)
+        when(configExpression.type) {
+            CwtDataType.IntValueField -> {
+                context.put(PlsCompletionKeys.isIntKey, null)
+            }
+            else -> {}
+        }
+    }
 }
 
-class ParadoxScriptVariableFieldExpressionSupport: ParadoxScriptExpressionSupport() {
+class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSupport() {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type?.isVariableFieldType() == true
     }
@@ -79,5 +154,27 @@ class ParadoxScriptVariableFieldExpressionSupport: ParadoxScriptExpressionSuppor
         val textRange = TextRange.create(0, expression.length)
         val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression, textRange, configGroup, isKey) ?: return
         ParadoxConfigHandler.annotateComplexExpression(element, variableFieldExpression, holder, config)
+    }
+    
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+        //不在这里处理，参见：ParadoxVariableFieldExpression
+        return null
+    }
+    
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        val configExpression = context.config?.expression ?: return
+        when(configExpression.type) {
+            CwtDataType.IntVariableField -> {
+                context.put(PlsCompletionKeys.isIntKey, true)
+            }
+            else -> {}
+        }
+        ParadoxConfigHandler.completeVariableFieldExpression(context, result)
+        when(configExpression.type) {
+            CwtDataType.IntVariableField -> {
+                context.put(PlsCompletionKeys.isIntKey, null)
+            }
+            else -> {}
+        }
     }
 }

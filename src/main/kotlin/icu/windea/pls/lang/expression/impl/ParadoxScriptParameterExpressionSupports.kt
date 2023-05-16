@@ -101,6 +101,8 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         val element = contextElement
         val config = config
         val configs = configs
+        val scopeContext = scopeContext
+        val scopeMatched = scopeMatched
         val key = isKey
         if(element !is ParadoxScriptValue || config !is CwtValueConfig || key != false) return
         val propertyKey = element.propertyKey ?: return
@@ -110,9 +112,13 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         val inferredConfig = ParadoxParameterHandler.inferConfig(parameterElement) ?: return
         context.put(PlsCompletionKeys.configKey, inferredConfig)
         context.put(PlsCompletionKeys.configsKey, null)
+        context.put(PlsCompletionKeys.scopeContextKey, null) //TODO 
+        context.put(PlsCompletionKeys.scopeMatchedKey, null)
         ParadoxConfigHandler.completeScriptExpression(context, result)
         context.put(PlsCompletionKeys.configKey, config)
         context.put(PlsCompletionKeys.configsKey, configs)
+        context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
+        context.put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
     }
 }
 

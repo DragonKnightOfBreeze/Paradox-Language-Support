@@ -100,6 +100,7 @@ class ParadoxScriptValueExpressionImpl(
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
 		val scopeContext = context.scopeContext
+		val scopeMatched = context.scopeMatched
 		val keyword = context.keyword
 		val isKey = context.isKey
 		val offsetInParent = context.offsetInParent
@@ -151,6 +152,7 @@ class ParadoxScriptValueExpressionImpl(
 			}
 		}
 		context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
+		context.put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
 		context.put(PlsCompletionKeys.isKeyKey, isKey)
 	}
