@@ -67,9 +67,9 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                     holder.registerProblem(propertyKey, rangeInExpression, description)
                                 }
                             }
-                            is ParadoxParameterizedScopeExpressionNode -> pass()
+                            is ParadoxParameterizedScopeFieldExpressionNode -> pass()
                             //error
-                            is ParadoxErrorScopeExpressionNode -> break
+                            is ParadoxErrorScopeFieldExpressionNode -> break
                         }
                     }
                 }

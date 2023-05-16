@@ -10,7 +10,7 @@ import icu.windea.pls.lang.*
 /**
  * @return 是否已经输入了前缀。
  */
-fun completeForScopeExpressionNode(node: ParadoxScopeExpressionNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
+fun completeForScopeExpressionNode(node: ParadoxScopeFieldExpressionNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
     val offsetInParent = context.offsetInParent
     val nodeRange = node.rangeInExpression
     val linkFromDataNode = node.castOrNull<ParadoxScopeLinkFromDataExpressionNode>()

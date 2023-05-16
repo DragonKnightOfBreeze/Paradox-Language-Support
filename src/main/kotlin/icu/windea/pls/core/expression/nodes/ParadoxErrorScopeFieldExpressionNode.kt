@@ -6,10 +6,10 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxErrorScopeExpressionNode(
+class ParadoxErrorScopeFieldExpressionNode(
 	override val text: String,
 	override val rangeInExpression: TextRange
-) : ParadoxScopeExpressionNode, ParadoxErrorExpressionNode {
+) : ParadoxScopeFieldExpressionNode, ParadoxErrorExpressionNode {
 	override fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxExpressionError? {
 		if(nodes.isNotEmpty()) return null
 		if(text.isEmpty()) return null

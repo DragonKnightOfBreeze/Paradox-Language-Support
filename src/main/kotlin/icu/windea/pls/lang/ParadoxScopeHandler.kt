@@ -268,18 +268,18 @@ object ParadoxScopeHandler {
     fun resolveScopeContext(scopeFieldExpression: ParadoxScopeFieldExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val scopeNodes = scopeFieldExpression.scopeNodes
         var result = inputScopeContext
-        val resolved = mutableListOf<Tuple2<ParadoxScopeExpressionNode, ParadoxScopeContext>>()
+        val resolved = mutableListOf<Tuple2<ParadoxScopeFieldExpressionNode, ParadoxScopeContext>>()
         for((i, scopeNode) in scopeNodes.withIndex()) {
             val inExpression = i != 0
             result = resolveScopeContext(scopeNode, result, inExpression)
             resolved.add(scopeNode to result)
-            if(scopeNode is ParadoxErrorScopeExpressionNode) break
+            if(scopeNode is ParadoxErrorScopeFieldExpressionNode) break
         }
         result.scopeFieldInfo = resolved
         return result
     }
     
-    fun resolveScopeContext(scopeNode: ParadoxScopeExpressionNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext {
+    fun resolveScopeContext(scopeNode: ParadoxScopeFieldExpressionNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext {
         return when(scopeNode) {
             is ParadoxScopeLinkExpressionNode -> {
                 resolveScopeByScopeLinkNode(scopeNode, inputScopeContext, inExpression)
@@ -291,9 +291,9 @@ object ParadoxScopeHandler {
                 resolveScopeContextBySystemLinkNode(scopeNode, inputScopeContext, inExpression)
                     ?: resolveUnknownScopeContext(inputScopeContext, scopeNode.config.baseId.equals("from", true))
             }
-            is ParadoxParameterizedScopeExpressionNode -> resolveAnyScopeContext()
+            is ParadoxParameterizedScopeFieldExpressionNode -> resolveAnyScopeContext()
             //error
-            is ParadoxErrorScopeExpressionNode -> resolveUnknownScopeContext(inputScopeContext)
+            is ParadoxErrorScopeFieldExpressionNode -> resolveUnknownScopeContext(inputScopeContext)
         }
     }
     
@@ -314,7 +314,7 @@ object ParadoxScopeHandler {
         if(linkConfig.outputScope == null && linkConfig.expression?.type?.isScopeFieldType() == true) {
             //hidden:owner = {...}
             //hidden:event_target:xxx = {...}
-            val nestedNode = node.dataSourceNode.nodes.findIsInstance<ParadoxScopeExpressionNode>()
+            val nestedNode = node.dataSourceNode.nodes.findIsInstance<ParadoxScopeFieldExpressionNode>()
             if(nestedNode != null) {
                 return resolveScopeContext(nestedNode, inputScopeContext, inExpression)
             }

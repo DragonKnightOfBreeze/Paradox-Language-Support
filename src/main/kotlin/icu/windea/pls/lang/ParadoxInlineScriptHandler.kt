@@ -158,7 +158,7 @@ object ParadoxInlineScriptHandler {
         var hasConflict = false
         var hasRecursion = false
         val configs: MutableList<CwtDataConfig<*>> = mutableListOf()
-        withRecursionGuard("ParadoxInlineScriptHandler.doGetInlineScriptUsageInfo") {
+        withRecursionGuard("icu.windea.pls.lang.ParadoxInlineScriptHandler.doGetInlineScriptUsageInfo") {
             stackTrace.addLast(fileInfo.pathToEntry.path)
             val selector = inlineScriptSelector(project, file)
             ParadoxInlineScriptSearch.search(expression, selector).processQueryAsync p@{ info ->

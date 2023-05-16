@@ -37,7 +37,7 @@ import icu.windea.pls.lang.*
  * ```
  */
 interface ParadoxScopeFieldExpression : ParadoxComplexExpression {
-	val scopeNodes: List<ParadoxScopeExpressionNode>
+	val scopeNodes: List<ParadoxScopeFieldExpressionNode>
 	
 	companion object Resolver
 }
@@ -51,7 +51,7 @@ class ParadoxScopeFieldExpressionImpl(
 ) : AbstractExpression(text), ParadoxScopeFieldExpression {
 	override val quoted: Boolean = false
 	
-	override val scopeNodes: List<ParadoxScopeExpressionNode> = nodes.filterIsInstance<ParadoxScopeExpressionNode>()
+	override val scopeNodes: List<ParadoxScopeFieldExpressionNode> = nodes.filterIsInstance<ParadoxScopeFieldExpressionNode>()
 	
 	override fun validate(): List<ParadoxExpressionError> {
 		val errors = SmartList<ParadoxExpressionError>()
@@ -59,7 +59,7 @@ class ParadoxScopeFieldExpressionImpl(
 		for((index, node) in nodes.withIndex()) {
 			val isLast = index == nodes.lastIndex
 			when(node) {
-				is ParadoxScopeExpressionNode -> {
+				is ParadoxScopeFieldExpressionNode -> {
 					if(node.text.isEmpty()) {
 						if(isLast) {
 							val error = ParadoxMissingScopeExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingScope"))
@@ -85,7 +85,7 @@ class ParadoxScopeFieldExpressionImpl(
 											malformed = true
 										}
 									}
-									is ParadoxScopeExpressionNode -> {
+									is ParadoxScopeFieldExpressionNode -> {
 										if(dataSourceChildNode.text.isEmpty()) {
 											if(isLast) {
 												val error = ParadoxMissingScopeExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingScope"))
@@ -162,7 +162,7 @@ class ParadoxScopeFieldExpressionImpl(
 				//如果光标位置之前存在无法解析的scope（除非被解析为scopeLinkFromData，例如，"event_target:xxx"），不要进行补全
 				if(node is ParadoxErrorExpressionNode || node.text.isEmpty()) break
 			}
-			if(node is ParadoxScopeExpressionNode) {
+			if(node is ParadoxScopeFieldExpressionNode) {
 				if(inRange) {
 					context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
 					completeForScopeExpressionNode(node, context, result)
@@ -200,7 +200,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 		//resolve node
 		val nodeText = text.substring(index, dotIndex)
 		val nodeTextRange = TextRange.create(index + offset, dotIndex + offset)
-		val node = ParadoxScopeExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
+		val node = ParadoxScopeFieldExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
 		//handle mismatch situation
 		if(!canBeMismatched && index == 0 && node is ParadoxErrorExpressionNode) {
 			return null

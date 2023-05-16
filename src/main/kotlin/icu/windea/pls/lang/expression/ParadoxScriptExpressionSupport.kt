@@ -42,7 +42,7 @@ abstract class ParadoxScriptExpressionSupport {
         //这里需要尝试避免SOE
         
         fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-            withRecursionGuard("ParadoxScriptExpressionSupport.annotate") { 
+            withRecursionGuard("icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.annotate") { 
                 EP_NAME.extensionList.forEach p@{ ep ->
                     if(!ep.supports(config)) return@p
                     withCheckRecursion(ep, "annotate") {
@@ -53,7 +53,7 @@ abstract class ParadoxScriptExpressionSupport {
         }
         
         fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
-            return withRecursionGuard("ParadoxScriptExpressionSupport.resolve") {
+            return withRecursionGuard("icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.resolve") {
                 EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
                     if(!ep.supports(config)) return@p null
                     withCheckRecursion(ep, "resolve") {
@@ -64,7 +64,7 @@ abstract class ParadoxScriptExpressionSupport {
         }
         
         fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
-            return withRecursionGuard("ParadoxScriptExpressionSupport.multiResolve") {
+            return withRecursionGuard("icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.multiResolve") {
                 EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
                     if(!ep.supports(config)) return@p null
                     withCheckRecursion(ep, "multiResolve") {
@@ -76,7 +76,7 @@ abstract class ParadoxScriptExpressionSupport {
         
         fun complete(context: ProcessingContext, result: CompletionResultSet) {
             val config = context.config ?: return
-            withRecursionGuard("ParadoxScriptExpressionSupport.complete") {
+            withRecursionGuard("icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.complete") {
                 EP_NAME.extensionList.forEach p@{ ep ->
                     if(!ep.supports(config)) return@p
                     withCheckRecursion(ep, "complete") {

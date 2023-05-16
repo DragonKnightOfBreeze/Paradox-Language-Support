@@ -11,7 +11,6 @@ import icu.windea.pls.core.expression.ParadoxVariableFieldExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.highlighter.*
 
 /**
  * 变量字段表达式。
@@ -25,7 +24,7 @@ import icu.windea.pls.script.highlighter.*
  * ```
  */
 interface ParadoxVariableFieldExpression : ParadoxComplexExpression {
-    val scopeNodes: List<ParadoxScopeExpressionNode>
+    val scopeNodes: List<ParadoxScopeFieldExpressionNode>
     
     val variableNode: ParadoxDataExpressionNode
     
@@ -41,7 +40,7 @@ class ParadoxVariableFieldExpressionImpl(
 ) : AbstractExpression(text), ParadoxVariableFieldExpression {
     override val quoted: Boolean = false
     
-    override val scopeNodes: List<ParadoxScopeExpressionNode> = nodes.filterIsInstance<ParadoxScopeExpressionNode>()
+    override val scopeNodes: List<ParadoxScopeFieldExpressionNode> = nodes.filterIsInstance<ParadoxScopeFieldExpressionNode>()
     
     override val variableNode: ParadoxDataExpressionNode = nodes.last().cast()
     
@@ -51,7 +50,7 @@ class ParadoxVariableFieldExpressionImpl(
         for((index, node) in nodes.withIndex()) {
             val isLast = index == nodes.lastIndex
             when(node) {
-                is ParadoxScopeExpressionNode -> {
+                is ParadoxScopeFieldExpressionNode -> {
                     if(node.text.isEmpty()) {
                         if(!malformed) {
                             malformed = true
@@ -70,7 +69,7 @@ class ParadoxVariableFieldExpressionImpl(
                                             malformed = true
                                         }
                                     }
-                                    is ParadoxScopeExpressionNode -> {
+                                    is ParadoxScopeFieldExpressionNode -> {
                                         if(dataSourceChildNode.text.isEmpty()) {
                                             if(isLast) {
                                                 val error = ParadoxMissingScopeExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingScope"))
@@ -159,7 +158,7 @@ class ParadoxVariableFieldExpressionImpl(
                 //如果光标位置之前存在无法解析的scope（除非被解析为scopeLinkFromData，例如，"event_target:xxx"），不要进行补全
                 if(node is ParadoxErrorExpressionNode || node.text.isEmpty()) break
             }
-            if(node is ParadoxScopeExpressionNode) {
+            if(node is ParadoxScopeFieldExpressionNode) {
                 if(inRange) {
                     context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
                     completeForScopeExpressionNode(node, context, result)
@@ -171,7 +170,7 @@ class ParadoxVariableFieldExpressionImpl(
             } else if(node is ParadoxDataExpressionNode) {
                 if(inRange) {
                     context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
-                    val scopeExpressionNode = ParadoxScopeExpressionNode.resolve(node.text, node.rangeInExpression, configGroup)
+                    val scopeExpressionNode = ParadoxScopeFieldExpressionNode.resolve(node.text, node.rangeInExpression, configGroup)
                     val afterPrefix = completeForScopeExpressionNode(scopeExpressionNode, context, result)
                     if(afterPrefix) break
                     completeForVariableDataExpressionNode(node, context, result)
@@ -216,7 +215,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
         val nodeTextRange = TextRange.create(index + offset, dotIndex + offset)
         val node = when {
             isLast -> ParadoxDataExpressionNode.resolve(nodeText, nodeTextRange, configGroup.linksAsVariable)
-            else -> ParadoxScopeExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
+            else -> ParadoxScopeFieldExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
         }
         //handle mismatch situation
         if(!canBeMismatched && index == 0 && node is ParadoxErrorExpressionNode) {

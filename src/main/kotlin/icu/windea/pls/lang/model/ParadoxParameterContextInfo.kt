@@ -33,7 +33,7 @@ class ParadoxParameterContextInfo(
         }
         //基于参数对应的CWT规则，判断参数是否被认为是可选的
         for(parameterInfo in parameterInfos) {
-            val configs = parameterInfo.configs
+            val configs = parameterInfo.expressionConfigs
             if(configs.isNotEmpty()) {
                 //如果作为传入参数的值，直接认为是可选的，没有太大必要进一步检查……
                 val r = configs.any { it is CwtValueConfig && it.propertyConfig?.expression?.type == CwtDataType.Parameter }
@@ -80,7 +80,7 @@ class ParadoxParameterInfo(
     /**
      * 获取此参数对应的脚本表达式所对应的CWT规则列表。此参数可能整个作为一个脚本表达式，或者被一个脚本表达式所包含。
      */
-    val configs: List<CwtDataConfig<*>> by lazy {
+    val expressionConfigs: List<CwtDataConfig<*>> by lazy {
         val parent = element?.parent
         when {
             parent is ParadoxScriptPropertyKey -> ParadoxConfigHandler.getConfigs(parent)

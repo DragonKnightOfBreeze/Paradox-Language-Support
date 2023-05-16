@@ -11,7 +11,7 @@ class ParadoxScopeLinkFromDataExpressionNode (
 	override val rangeInExpression: TextRange,
 	override val nodes: List<ParadoxExpressionNode> = emptyList(),
 	val linkConfigs: List<CwtLinkConfig>,
-) : ParadoxScopeExpressionNode {
+) : ParadoxScopeFieldExpressionNode {
 	val prefixNode get() = nodes.findIsInstance<ParadoxScopeLinkPrefixExpressionNode>()
 	val dataSourceNode get() = nodes.findIsInstance<ParadoxScopeLinkDataSourceExpressionNode>()!!
 	

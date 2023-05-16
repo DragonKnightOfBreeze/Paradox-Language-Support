@@ -1118,7 +1118,7 @@ object ParadoxConfigHandler {
             else -> configGroup.linksAsScopeWithPrefix.values.filter { prefix == it.prefix }
         }
         
-        if(dataSourceNodeToCheck is ParadoxScopeExpressionNode) {
+        if(dataSourceNodeToCheck is ParadoxScopeFieldExpressionNode) {
             completeForScopeExpressionNode(dataSourceNodeToCheck, context, result)
             context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
             return@with

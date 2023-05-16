@@ -24,7 +24,7 @@ class ParadoxScopeLinkDataSourceExpressionNode (
 				val scopeFieldConfig = linkConfigs.find { it.expression?.type?.isScopeFieldType() == true }
 				if(scopeFieldConfig != null) {
 					val configGroup = linkConfigs.first().info.configGroup
-					val node = ParadoxScopeExpressionNode.resolve(text, textRange, configGroup)
+					val node = ParadoxScopeFieldExpressionNode.resolve(text, textRange, configGroup)
 					nodes.add(node)
 				}
 			}

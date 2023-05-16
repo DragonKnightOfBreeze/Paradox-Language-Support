@@ -4,16 +4,16 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.highlighter.*
 
-class ParadoxParameterizedScopeExpressionNode(
+class ParadoxParameterizedScopeFieldExpressionNode(
 	override val text: String,
 	override val rangeInExpression: TextRange,
-) : ParadoxScopeExpressionNode {
+) : ParadoxScopeFieldExpressionNode {
 	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SCOPE_KEY
 	
 	companion object Resolver {
-		fun resolve(text: String, textRange: TextRange): ParadoxParameterizedScopeExpressionNode? {
+		fun resolve(text: String, textRange: TextRange): ParadoxParameterizedScopeFieldExpressionNode? {
 			if(!text.isParameterized()) return null
-			return ParadoxParameterizedScopeExpressionNode(text, textRange)
+			return ParadoxParameterizedScopeFieldExpressionNode(text, textRange)
 		}
 	}
 }

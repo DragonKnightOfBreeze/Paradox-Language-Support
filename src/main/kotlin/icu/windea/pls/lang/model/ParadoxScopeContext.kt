@@ -2,7 +2,6 @@ package icu.windea.pls.lang.model
 
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.nodes.*
-import icu.windea.pls.lang.*
 import java.util.*
 
 class ParadoxScopeContext private constructor(val scope: ParadoxScope) {
@@ -15,7 +14,7 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope) {
     
     @Volatile var isInferred: Boolean = false
     //scope context list of scope field expression nodes
-    @Volatile var scopeFieldInfo: List<Tuple2<ParadoxScopeExpressionNode, ParadoxScopeContext>>? = null
+    @Volatile var scopeFieldInfo: List<Tuple2<ParadoxScopeFieldExpressionNode, ParadoxScopeContext>>? = null
     
     val map by lazy {
         buildMap {
