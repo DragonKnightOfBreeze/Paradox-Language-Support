@@ -93,7 +93,7 @@ class ParadoxValueSetValueExpressionImpl(
 		val isKey = context.isKey
 		val config = context.config
 		val configs = context.configs
-		val scopeContext = context.scopeContext
+		val scopeContext = context.scopeContext ?: ParadoxScopeHandler.resolveAnyScopeContext()
 		
 		context.put(PlsCompletionKeys.configKey, this.configs.first())
 		context.put(PlsCompletionKeys.configsKey, this.configs)

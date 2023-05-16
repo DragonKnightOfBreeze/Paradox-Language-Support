@@ -103,7 +103,7 @@ class ParadoxScriptValueExpressionImpl(
 		val startOffset = context.startOffset
 		val offsetInParent = context.offsetInParent
 		val isKey = context.isKey
-		val scopeContext = context.scopeContext
+		val scopeContext = context.scopeContext ?: ParadoxScopeHandler.resolveAnyScopeContext()
 		val scopeMatched = context.scopeMatched
 		
 		context.put(PlsCompletionKeys.scopeContextKey, null) //don't check now

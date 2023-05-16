@@ -16,7 +16,6 @@ import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
 //提供对复杂表达式的高级语言功能支持
-//由于复杂表达式包含多个节点，可能需要被解析为多个引用，引用解析的代码可能无法在这里实现
 
 class ParadoxScriptValueSetExpressionSupport : ParadoxScriptExpressionSupport() {
     override fun supports(config: CwtConfig<*>): Boolean {

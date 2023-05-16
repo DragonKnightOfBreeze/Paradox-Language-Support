@@ -313,8 +313,8 @@ QUOTED_STRING_TOKEN=([^\"$\r\n\\]|\\.)*?\"?
 }
 
 <WAITING_PARAMETER>{
-  {BLANK} {return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
+  {WHITE_SPACE} { beginNextStateForParameter(); return WHITE_SPACE;}
+  {COMMENT} { beginNextStateForParameter(); return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
@@ -323,8 +323,8 @@ QUOTED_STRING_TOKEN=([^\"$\r\n\\]|\\.)*?\"?
   {PARAMETER_TOKEN} { return PARAMETER_TOKEN; }
 }
 <WAITING_PARAMETER_DEFAULT_VALUE>{
-  {BLANK} {return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
+  {WHITE_SPACE} { beginNextStateForParameter(); return WHITE_SPACE;}
+  {COMMENT} { beginNextStateForParameter(); return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "]" {inParameterCondition = false; beginNextState(); return RIGHT_BRACKET;}
@@ -335,8 +335,8 @@ QUOTED_STRING_TOKEN=([^\"$\r\n\\]|\\.)*?\"?
   {STRING_TOKEN} { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return STRING_TOKEN;} 
 }
 <WAITING_PARAMETER_DEFAULT_VALUE_END>{
-  {BLANK} {return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
+  {WHITE_SPACE} { beginNextStateForParameter(); return WHITE_SPACE;}
+  {COMMENT} { beginNextStateForParameter(); return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "]" {inParameterCondition = false; beginNextState(); return RIGHT_BRACKET;}

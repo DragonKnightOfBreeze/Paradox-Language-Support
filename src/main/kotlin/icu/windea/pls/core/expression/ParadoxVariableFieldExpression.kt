@@ -146,7 +146,7 @@ class ParadoxVariableFieldExpressionImpl(
         val keyword = context.keyword
         val startOffset = context.startOffset
         val isKey = context.isKey
-        val scopeContext = context.scopeContext
+        val scopeContext = context.scopeContext ?: ParadoxScopeHandler.resolveAnyScopeContext()
         
         context.put(PlsCompletionKeys.isKeyKey, null)
         
