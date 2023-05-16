@@ -1,63 +1,63 @@
-# Introduce
+# Paradox Language Support
 
 ## Summary
+
+[中文文档](README.md) | [English Documentation](README_en.md)
+
+[中文参考文档](https://windea.icu/Paradox-Language-Support/#/zh/) | [English Reference Documentation](https://windea.icu/Paradox-Language-Support/#/en/)
 
 [GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
 [Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)
 
-IDEA Plugin: Support for Paradox Language.
+IDEA plugin: Paradox language support.
 
-Support Paradox script language (mainly `*.txt` files) and localisation language (`*.yml` files),
-provide features such as syntax parsing, reference resolving, quick documentation, code navigation, code inspection,
-inlay hints, live template,
-localisation text rendering and DDS image rendering.
+Features:
 
-Support cwt language (`*.cwt` files),
-provide features such as syntax parsing, reference resolving, quick documentation and code navigation.
+* Supports script language (mainly `*.txt` files) and localization language (`*.yml` files),  
+  providing many language features such as syntax parsing, reference resolution, quick documentation, code navigation, code checking, code completion, inline hints, live templates, etc.  
+  It also provides quite comprehensive support for most advanced features of script language, such as parameters, scopes, inline scripts and various complex expressions.
+* Supports CWT language (`*.cwt` files), providing basic language features.
+* Supports viewing DDS images directly in the IDE, providing some useful editor features including converting to PNG images.
+* Automatically recognizes the game directory (containing the launcher configuration file `launcher-settings.json`) and mod directory (containing the mod descriptor file `descriptor.mod`).
+* Renders related localized text and DDS images, as well as prompts some useful information including scope information and parameter information, through ways such as quick documentation and inline hints.
 
-Support DDS image viewing in IDE, and provide necessary editor features, as common image support by IDE.
+This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode). These rule files are currently built into the plugin with some modifications and extensions.
 
-This plugin automatically recognizes script files and localization files in game directories (containing the launcher configuration file `launcher-settings.json`) and mod directories (containing the mod descriptor file `description.mod`).
+If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md).
 
-This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode).
-These rule files are build-in provided by this plugin, with some modifications and extensions.
+If you encounter any problems during use, feel free to provide feedback via Github.
 
-By game / mod settings dialog opened from editor's floating toolbar or popup menu,
-you can change game type, game directory and mod dependencies of that game / mod.
+![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_zh.png)
 
-By plugin's settings page `Settings > Languages & Frameworks > Paradox Language Support`
-and some IDE's general settings page,
-you can change some global settings.
+## Quick Start
 
-By also install [Translation](https://github.com/YiiGuxing/TranslationPlugin),
-this plugin could provide some [additional features](https://windea.icu/Paradox-Language-Support/#/end/plugin-integration.md)。
+Usage:
 
-This plugin is under development, if you encounter any problem during use, feel free to send feedback on Github.
-
-![](../assets/images/preview_1_en.png)
-
-# Quick Start
-
-* Open the root directory of your mod by IDE. (Should contain the mod descriptor file `descriptor.mod` directly)
-* Open the mod descriptor file, click the mod settings button in the editor's floating toolbar (or the editor's popup menu),
-  configure game type, game directory and additional mod dependencies of your mod.
-* Click OK to apply changed settings and then wait for IDE's indexing to complete. (Get well soon)
-* Start your mod programming journey.
+* Open your mod root directory through the IDE. (It needs to directly contain the mod descriptor file `descriptor.mod`)
+* Open the mod descriptor file, click the mod configuration button in the floating toolbar (or editor right-click menu) at the top right of the editor, and configure the game type, game directory, and additional mod dependencies of the mod.
+* Click the OK button to complete the configuration, and then wait for the IDE to complete indexing. (It will be fast)
+* Start your mod programming journey!
 
 Tips:
 
-* If a script snippet cannot be recognized, generally there are following situations:
-  * Related CWT rule does not exist. (Indicates that this script snippet contains errors)
-  * Related CWT rule is not perfect. (Consider sending fallback to me on Github)
-  * There are some unresolved references. (Consider configuring related game directory or mod dependencies)
-* If there is a problem with IDE's index or an error occurs involving IDE's index, please try to rebuild index.
-  (Click `File -> Invalidate Caches... -> Invalidate and Restart`)
+* If you need to change the global configuration of the plugin, please refer to the following method:
+  * Click `Settings > Languages & Frameworks > Paradox Language Support` to open the plugin's configuration page.
+* If you need to change the mod type, game directory, mod dependencies, etc., you can open the mod configuration dialog in one of the following ways:
+  * Click the blue gear icon in the editor floating toolbar at the top right of the page.
+  * Open the mail menu in the editor, click `Paradox Language Support > Open Mod Settings...`.
+  * Click `Tools > Paradox Language Support > Open Mod Settings...`.
+* If a script cannot be recognized, there are usually the following situations:
+  * The corresponding CWT rule does not exist. (That is, there is an error in this script)
+  * The corresponding CWT rule is not perfect. (Consider feedback on Github)
+  * There are references that cannot be resolved. (Consider configuring the corresponding game directory or mod dependency)
+* If there are problems with the IDE index or errors involving the IDE index, try to solve it in the following way:
+  * Click `File -> Invalidate Caches... -> Invalidate and Restart` to rebuild the index and restart the IDE.
 
 ## FAQ
 
 Q: Why is Intellij IDEA + this plugin, instead of VSCode + CWTools?
 
-A: Because Idea is very lovely, and I'm her fervent fan.
+A: For Idea is so lovely.
 
 ## Reference
 

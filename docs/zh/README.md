@@ -6,31 +6,30 @@
 [Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
 QQ群：653824651
 
+
 IDEA插件：Paradox语言支持。
 
-支持Paradox脚本语言（以`*.txt`文件为主）和本地化语言（`*.yml`文件），
-提供语法解析、引用解析、快速文档、代码导航、代码检查、代码补全、内嵌提示、动态模版、本地化文本渲染、DDS图片渲染等功能。
+特性：
 
-支持CWT语言（`*.cwt`文件），
-提供语法解析、引用解析、快速文档、代码导航等功能。
+* 支持脚本语言（主要是`*.txt`文件）和本地化语言（`*.yml`文件），  
+  提供语法解析、引用解析、快速文档、代码导航、代码检查、代码补全、内嵌提示、动态模版等诸多语言功能。  
+  对于脚本语言的大多数高级特性（例如参数、作用域、内联脚本和各种复杂表达式），也提供了相当完善的支持。
+* 支持CWT语言（`*.cwt`文件），提供基础的语言功能。
+* 支持直接在IDE中查看DDS图片，提供包括转为PNG图片在内的一些有用的编辑器功能。
+* 自动识别游戏目录（包含启动器配置文件`launcher-settings.json`）和模组目录（包含模组描述符文件`descriptor.mod`）。
+* 通过快速文档和内嵌提示等方式，渲染相关的本地化文本和DDS图片，以及提示包括作用域信息和参数信息在内的一些有用的信息。
 
-支持直接在IDE中查看DDS图片，提供必要的编辑器功能，如同IDE对普通图片的支持一样。
-
-此插件会自动识别游戏目录（包含启动器配置文件`launcher-settings.json`）和模组目录（包含模组描述符文件`descriptor.mod`）中的脚本文件和本地化文件。
-
-此插件与 [CWTools](https://github.com/cwtools/cwtools-vscode) 共享规则文件（`*.cwt`），这些规则文件目前由插件内置，并经过一定的修改和扩展。
-
-通过由编辑器悬浮工具栏或右键菜单打开的游戏配置/模组配置对话框，可以更改游戏/模组的游戏类型、游戏目录、模组依赖等配置项。
-
-通过插件的配置页面`Settings > Languages & Frameworks > Paradox Language Support`以及某些IDE的通用配置页面，可以更改一些全局配置项。
+此插件与 [CWTools](https://github.com/cwtools/cwtools-vscode) 共享规则文件（`*.cwt`）。这些规则文件目前由插件内置，并且经过一定的修改和扩展。
 
 如果同时安装了 [Translation](https://github.com/YiiGuxing/TranslationPlugin) ，此插件可以提供一些[额外的功能](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md)。
 
-此插件正在开发中，如果在使用过程中遇到问题，欢迎在Github上反馈。
+如果在使用过程中遇到任何问题，欢迎通过Github或者QQ群进行反馈。
 
-![](../assets/images/preview_1_zh.png)
+![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_zh.png)
 
-## 使用
+## 快速上手
+
+使用：
 
 * 通过IDE打开你的模组根目录。（需要直接包含模组描述符文件`descriptor.mod`）
 * 打开模组描述符文件，点击位于编辑器右上角的悬浮工具栏（或者编辑器右键菜单）中的模组配置按钮，配置模组的游戏类型、游戏目录和额外的模组依赖。
@@ -39,18 +38,24 @@ IDEA插件：Paradox语言支持。
 
 提示：
 
+* 如果需要更改插件的全局配置，请参考以下方式：
+  * 点击`Settings > Languages & Frameworks > Paradox Language Support`，打开插件的配置页面。
+* 如果需要更改模组类型、游戏目录、模组依赖等配置，请通过以下方式之一打开模组配置对话框：
+  * 点击位于页面右上方的编辑器悬浮工具栏中的蓝色齿轮图标。
+  * 在编辑器中打开邮件菜单，点击`Paradox Language Support > Open Mod Settings...`。
+  * 点击`Tools > Paradox Language Support > Open Mod Settings...`。
 * 如果某段脚本无法被识别，通常有以下几种情况：
-  * 对应的CWT规则不存在（即这段脚本存在错误）
-  * 对应的CWT规则不完善（考虑在Github上反馈）
-  * 存在无法解析的引用（考虑配置对应的游戏目录或者模组依赖）
-* 如果IDE索引出现问题，或者发生了涉及IDE索引的报错，请尝试重建索引。
-  （点击`File -> Invalidate Caches... -> Invalidate and Restart`）
+  * 对应的CWT规则不存在。（即这段脚本存在错误）
+  * 对应的CWT规则不完善。（考虑在Github上反馈）
+  * 存在无法解析的引用。（考虑配置对应的游戏目录或者模组依赖）
+* 如果IDE索引出现问题，或者发生了涉及IDE索引的报错，请尝试通过以下方式解决：
+  * 点击`File -> Invalidate Caches... -> Invalidate and Restart`，重建索引并重启IDE。
 
 ## FAQ
 
-Q：为什么推荐使用Intellij IDEA + 此插件，而不是VSCode + CWTools？
+Q：为什么推荐使用Intellij IDEA + 此插件，而不是传统的VSCode + CWTools？
 
-A：因为Idea非常可爱，而我是她的狂热粉丝。
+A：因为Idea非常可爱。
 
 ## 参考
 
