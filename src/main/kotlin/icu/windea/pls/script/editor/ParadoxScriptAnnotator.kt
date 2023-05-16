@@ -2,18 +2,12 @@ package icu.windea.pls.script.editor
 
 import com.intellij.lang.annotation.*
 import com.intellij.lang.annotation.HighlightSeverity.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.editor.colors.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.inspections.inference.*
 import icu.windea.pls.script.psi.*
@@ -123,7 +117,7 @@ class ParadoxScriptAnnotator : Annotator {
                     }
                 }
             }
-            annotateExpression(element, null, holder, config)
+            ParadoxConfigHandler.annotateScriptExpression(element, null, config, holder)
         }
     }
     
@@ -133,106 +127,5 @@ class ParadoxScriptAnnotator : Annotator {
             //missing closing quote
             holder.newAnnotation(ERROR, PlsBundle.message("syntax.error.missing.closing.quote")).create()
         }
-    }
-    
-    private fun annotateExpression(
-        element: ParadoxScriptExpressionElement,
-        rangeInElement: TextRange?,
-        holder: AnnotationHolder,
-        config: CwtConfig<*>
-    ) {
-        val configExpression = config.expression ?: return
-        val text = element.text
-        val expression = rangeInElement?.substring(text) ?: element.value
-        
-        ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expression, holder, config)
-        
-        when {
-            configExpression.type.isValueSetValueType() -> {
-                //not key/value or quoted -> only value set value name, no scope info
-                if(config !is CwtDataConfig<*> || expression.isLeftQuoted()) {
-                    val valueSetName = config.expression?.value ?: return
-                    val attributesKey = when(valueSetName) {
-                        "variable" -> Keys.VARIABLE_KEY
-                        else -> Keys.VALUE_SET_VALUE_KEY
-                    }
-                    ParadoxConfigHandler.highlightScriptExpression(element, element.textRange.unquote(text), attributesKey, holder)
-                    return
-                }
-                val configGroup = config.info.configGroup
-                val isKey = element is ParadoxScriptPropertyKey
-                val textRange = TextRange.create(0, expression.length)
-                val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(expression, textRange, config, configGroup, isKey) ?: return
-                annotateComplexExpression(element, valueSetValueExpression, holder, config)
-            }
-            configExpression.type.isScopeFieldType() -> {
-                if(expression.isLeftQuoted()) return
-                val configGroup = config.info.configGroup
-                val isKey = element is ParadoxScriptPropertyKey
-                val textRange = TextRange.create(0, expression.length)
-                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression, textRange, configGroup, isKey) ?: return
-                annotateComplexExpression(element, scopeFieldExpression, holder, config)
-            }
-            configExpression.type.isValueFieldType() -> {
-                if(expression.isLeftQuoted()) return
-                val configGroup = config.info.configGroup
-                val isKey = element is ParadoxScriptPropertyKey
-                val textRange = TextRange.create(0, expression.length)
-                val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression, textRange, configGroup, isKey) ?: return
-                annotateComplexExpression(element, valueFieldExpression, holder, config)
-            }
-            configExpression.type.isVariableFieldType() -> {
-                if(expression.isLeftQuoted()) return
-                val configGroup = config.info.configGroup
-                val isKey = element is ParadoxScriptPropertyKey
-                val textRange = TextRange.create(0, expression.length)
-                val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression, textRange, configGroup, isKey) ?: return
-                annotateComplexExpression(element, variableFieldExpression, holder, config)
-            }
-            else -> return
-        }
-    }
-    
-    private fun annotateComplexExpression(element: ParadoxScriptExpressionElement, expression: ParadoxComplexExpression, holder: AnnotationHolder, config: CwtConfig<*>) {
-        if(element !is ParadoxScriptStringExpressionElement) return
-        doAnnotateComplexExpression(element, expression, holder, config)
-    }
-    
-    private fun doAnnotateComplexExpression(element: ParadoxScriptStringExpressionElement, expressionNode: ParadoxExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>) {
-        val attributesKey = expressionNode.getAttributesKey()
-        val mustUseAttributesKey = attributesKey != Keys.PROPERTY_KEY_KEY && attributesKey != Keys.STRING_KEY
-        if(attributesKey != null && mustUseAttributesKey) {
-            doAnnotateComplexExpressionByAttributesKey(expressionNode, element, holder, attributesKey)
-        } else {
-            val attributesKeyConfig = expressionNode.getAttributesKeyConfig(element)
-            if(attributesKeyConfig != null) {
-                val rangeInElement = expressionNode.rangeInExpression.shiftRight(if(element.text.isLeftQuoted()) 1 else 0)
-                annotateExpression(element, rangeInElement, holder, attributesKeyConfig)
-                
-                //create tooltip
-                if(attributesKeyConfig is CwtValueConfig) {
-                    val inferredConfigExpression = attributesKeyConfig.expression.expressionString
-                    val tooltip = PlsBundle.message("inferred.config.expression", inferredConfigExpression.escapeXml())
-                    holder.newSilentAnnotation(INFORMATION).range(rangeInElement.shiftRight(element.startOffset)).tooltip(tooltip).create()
-                }
-            } else if(attributesKey != null) {
-                doAnnotateComplexExpressionByAttributesKey(expressionNode, element, holder, attributesKey)
-            }
-        }
-        
-        if(expressionNode.nodes.isNotEmpty()) {
-            for(node in expressionNode.nodes) {
-                doAnnotateComplexExpression(element, node, holder, config)
-            }
-        }
-    }
-    
-    private fun doAnnotateComplexExpressionByAttributesKey(expressionNode: ParadoxExpressionNode, element: ParadoxScriptStringExpressionElement, holder: AnnotationHolder, attributesKey: TextAttributesKey) {
-        val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRange.unquote(element.text).startOffset)
-        if(expressionNode is ParadoxTokenExpressionNode) {
-            //override default highlight by highlighter (property key or string)
-            holder.newSilentAnnotation(INFORMATION).range(rangeToAnnotate).textAttributes(HighlighterColors.TEXT).create()
-        }
-        ParadoxConfigHandler.highlightScriptExpression(element, rangeToAnnotate, attributesKey, holder)
     }
 }

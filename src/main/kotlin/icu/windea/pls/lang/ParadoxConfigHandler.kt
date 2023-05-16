@@ -5,6 +5,7 @@ package icu.windea.pls.lang
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.lang.annotation.*
+import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
@@ -31,6 +32,7 @@ import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.data.impl.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 
@@ -636,8 +638,15 @@ object ParadoxConfigHandler {
     }
     //endregion
     
-    //region Highlight Methods
-    fun highlightScriptExpression(element: ParadoxScriptExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
+    //region Annotate Methods
+    fun annotateScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, holder: AnnotationHolder) {
+        val text = element.text
+        val expression = rangeInElement?.substring(text) ?: element.value
+        
+        ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expression, holder, config)
+    }
+    
+    fun annotateScriptExpression(element: ParadoxScriptExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
         if(element !is ParadoxScriptStringExpressionElement) {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
             return
@@ -672,6 +681,49 @@ object ParadoxConfigHandler {
     
     fun getParameterRanges(element: ParadoxScriptStringExpressionElement): List<TextRange> {
         return element.getUserData(PlsKeys.parameterRangesKey).orEmpty()
+    }
+    
+    fun annotateComplexExpression(element: ParadoxScriptExpressionElement, expression: ParadoxComplexExpression, holder: AnnotationHolder, config: CwtConfig<*>) {
+        if(element !is ParadoxScriptStringExpressionElement) return
+        doAnnotateComplexExpression(element, expression, holder, config)
+    }
+    
+    private fun doAnnotateComplexExpression(element: ParadoxScriptStringExpressionElement, expressionNode: ParadoxExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>) {
+        val attributesKey = expressionNode.getAttributesKey()
+        val mustUseAttributesKey = attributesKey != ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY && attributesKey != ParadoxScriptAttributesKeys.STRING_KEY
+        if(attributesKey != null && mustUseAttributesKey) {
+            doAnnotateComplexExpressionByAttributesKey(expressionNode, element, holder, attributesKey)
+        } else {
+            val attributesKeyConfig = expressionNode.getAttributesKeyConfig(element)
+            if(attributesKeyConfig != null) {
+                val rangeInElement = expressionNode.rangeInExpression.shiftRight(if(element.text.isLeftQuoted()) 1 else 0)
+                annotateScriptExpression(element, rangeInElement, attributesKeyConfig, holder)
+                
+                //create tooltip
+                if(attributesKeyConfig is CwtValueConfig) {
+                    val inferredConfigExpression = attributesKeyConfig.expression.expressionString
+                    val tooltip = PlsBundle.message("inferred.config.expression", inferredConfigExpression.escapeXml())
+                    holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeInElement.shiftRight(element.startOffset)).tooltip(tooltip).create()
+                }
+            } else if(attributesKey != null) {
+                doAnnotateComplexExpressionByAttributesKey(expressionNode, element, holder, attributesKey)
+            }
+        }
+        
+        if(expressionNode.nodes.isNotEmpty()) {
+            for(node in expressionNode.nodes) {
+                doAnnotateComplexExpression(element, node, holder, config)
+            }
+        }
+    }
+    
+    private fun doAnnotateComplexExpressionByAttributesKey(expressionNode: ParadoxExpressionNode, element: ParadoxScriptStringExpressionElement, holder: AnnotationHolder, attributesKey: TextAttributesKey) {
+        val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRange.unquote(element.text).startOffset)
+        if(expressionNode is ParadoxTokenExpressionNode) {
+            //override default highlight by highlighter (property key or string)
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeToAnnotate).textAttributes(HighlighterColors.TEXT).create()
+        }
+        ParadoxConfigHandler.annotateScriptExpression(element, rangeToAnnotate, attributesKey, holder)
     }
     //endregion
     
