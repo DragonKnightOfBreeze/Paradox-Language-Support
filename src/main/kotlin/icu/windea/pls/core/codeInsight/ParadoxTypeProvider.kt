@@ -69,13 +69,21 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
             }
             //inferred config expression
             run {
-                if(element is ParadoxScriptValue && element.isPropertyValue()) {
-                    val propertyKey = element.propertyKey ?: return@run
-                    val propertyConfig = ParadoxConfigHandler.getConfigs(propertyKey).firstOrNull() ?: return@run
-                    val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return@run
-                    val inferredConfig = ParadoxParameterHandler.inferConfig(parameterElement) ?: return@run
-                    add(makeHtmlRow(PlsBundle.message("title.inferredConfigExpression"), inferredConfig.expression.expressionString))
+                val parameeterElement = when {
+                    element is ParadoxScriptValue && element.isPropertyValue() -> {
+                        val propertyKey = element.propertyKey ?: return@run
+                        val propertyConfig = ParadoxConfigHandler.getConfigs(propertyKey).firstOrNull() ?: return@run
+                        ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return@run
+                    }
+                    element is ParadoxParameter -> {
+                        ParadoxParameterSupport.resolveParameter(element) ?: return@run
+                    }
+                    element is ParadoxConditionParameter -> {
+                        ParadoxParameterSupport.resolveConditionParameter(element) ?: return@run
+                    }
                 }
+                val inferredConfig = ParadoxParameterHandler.inferConfig(parameterElement) ?: return@run
+                add(makeHtmlRow(PlsBundle.message("title.inferredConfigExpression"), inferredConfig.expression.expressionString))
             }
             //scope context
             run {
