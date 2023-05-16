@@ -66,10 +66,10 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
                 node.config.let { it.expression?.let { e -> CwtValueConfig(emptyPointer(), it.info, e.expressionString) } }
             }
             node is ParadoxScopeExpressionNode -> {
-                expressionConfig.let { CwtValueConfig(emptyPointer(), it.info, it.expression.expressionString) }
+                expressionConfig.let { CwtValueConfig(emptyPointer(), it.info, it.expression.expressionString) } //scope node
             }
             node is ParadoxValueFieldExpressionNode -> {
-                expressionConfig.let { CwtValueConfig(emptyPointer(), it.info, it.expression.expressionString) }
+                expressionConfig.let { CwtValueConfig(emptyPointer(), it.info, it.expression.expressionString) } //scope node 
             }
             else -> null
         }

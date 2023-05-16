@@ -7,6 +7,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
@@ -66,6 +67,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                     holder.registerProblem(propertyKey, rangeInExpression, description)
                                 }
                             }
+                            is ParadoxParameterizedScopeExpressionNode -> pass()
                             //error
                             is ParadoxErrorScopeExpressionNode -> break
                         }

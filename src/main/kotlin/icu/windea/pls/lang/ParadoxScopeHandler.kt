@@ -291,6 +291,7 @@ object ParadoxScopeHandler {
                 resolveScopeContextBySystemLinkNode(scopeNode, inputScopeContext, inExpression)
                     ?: resolveUnknownScopeContext(inputScopeContext, scopeNode.config.baseId.equals("from", true))
             }
+            is ParadoxParameterizedScopeExpressionNode -> resolveAnyScopeContext()
             //error
             is ParadoxErrorScopeExpressionNode -> resolveUnknownScopeContext(inputScopeContext)
         }
