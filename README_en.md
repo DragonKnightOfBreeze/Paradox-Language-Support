@@ -40,17 +40,21 @@ Usage:
 
 Tips:
 
-* If you need to change the global configuration of the plugin, please refer to the following method:
-  * Click `Settings > Languages & Frameworks > Paradox Language Support` to open the plugin's configuration page.
-* If you need to change the mod type, game directory, mod dependencies, etc., you can open the mod configuration dialog in one of the following ways:
-  * Click the blue gear icon in the editor floating toolbar at the top right of the page.
-  * Open the mail menu in the editor, click `Paradox Language Support > Open Mod Settings...`.
+* To perform a global search, refer to the following methods:
+  * Click `Ctrl Shift R` or `Ctrl Shift F` to search within the current project, directory, or specified scope.
+  * Click `Shift Shift` to find files, definitions, scripted variables, and other symbols.
+* To perform global code inspection, refer to the following methods:
+  * Click `Alt 6` or the `Problems` icon in the sidebar to open the Problems panel and view issues in the current file or perform global code inspection for the entire project.
+  * Click `Code > Inspect Code...` to perform global code inspection for the entire project.
+  * Note that some code inspections may take a long time and detailed results will be displayed in the panel below after the inspection is completed.
+* To change the global configuration of the plugin, refer to the following method:
+  * Click `Settings > Languages & Frameworks > Paradox Language Support` to open the configuration page for the plugin.
+* To change the configuration of mod types, game directories, mod dependencies, etc., open the Mod Configuration dialog using one of the following methods:
+  * Click the blue gear icon in the editor floating toolbar located in the upper right corner of the page.
+  * In the editor, open the mail menu and click `Paradox Language Support > Open Mod Settings...`.
   * Click `Tools > Paradox Language Support > Open Mod Settings...`.
-* If a script cannot be recognized, there are usually the following situations:
-  * The corresponding CWT rule does not exist. (That is, there is an error in this script)
-  * The corresponding CWT rule is not perfect. (Consider feedback on Github)
-  * There are references that cannot be resolved. (Consider configuring the corresponding game directory or mod dependency)
-* If there are problems with the IDE index or errors involving the IDE index, try to solve it in the following way:
+* If the IDE freezes or the IDE indices encounters problems or an error related to the IDE indices happened, try the following:
+  * Update the IDE and plugin to the latest version.
   * Click `File -> Invalidate Caches... -> Invalidate and Restart` to rebuild the index and restart the IDE.
 
 ## FAQ

@@ -38,17 +38,21 @@ IDEA插件：Paradox语言支持。
 
 提示：
 
+* 如果需要进行全局搜索，请参考以下方式：
+  * 点击`Ctrl Shift R`或者`Ctrl Shift F`在当前项目、目录或者指定作用域中搜索。
+  * 点击`Shift Shift`查找文件、定义（definition）、封装变量（scripted_variable）以及其他各种符号。
+* 如果需要进行全局代码检查，请参考以下方式：
+  * 点击`Alt 6`或者侧边栏中的`Problems`图标，打开问题面板，然后查看当前文件存在的问题，或者进行整个项目的全局代码检查。
+  * 点击`Code > Inspect Code...`，进行整个项目的全局代码检查。
+  * 请注意某些代码检查可能非常耗时，以及完成代码检查后，IDE将会在下方面板中显示详细的检查结果。
 * 如果需要更改插件的全局配置，请参考以下方式：
   * 点击`Settings > Languages & Frameworks > Paradox Language Support`，打开插件的配置页面。
 * 如果需要更改模组类型、游戏目录、模组依赖等配置，请通过以下方式之一打开模组配置对话框：
   * 点击位于页面右上方的编辑器悬浮工具栏中的蓝色齿轮图标。
   * 在编辑器中打开邮件菜单，点击`Paradox Language Support > Open Mod Settings...`。
   * 点击`Tools > Paradox Language Support > Open Mod Settings...`。
-* 如果某段脚本无法被识别，通常有以下几种情况：
-  * 对应的CWT规则不存在。（即这段脚本存在错误）
-  * 对应的CWT规则不完善。（考虑在Github上反馈）
-  * 存在无法解析的引用。（考虑配置对应的游戏目录或者模组依赖）
-* 如果IDE索引出现问题，或者发生了涉及IDE索引的报错，请尝试通过以下方式解决：
+* 如果IDE卡死，或者IDE索引出现问题，或者发生了涉及IDE索引的报错，请尝试通过以下方式解决：
+  * 更新IDE和插件到最新版本。
   * 点击`File -> Invalidate Caches... -> Invalidate and Restart`，重建索引并重启IDE。
 
 ## FAQ
