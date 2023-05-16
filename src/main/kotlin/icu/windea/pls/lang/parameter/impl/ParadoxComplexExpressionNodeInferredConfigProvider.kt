@@ -9,7 +9,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.parameter.*
 
 class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInferredConfigProvider {
-    //root.trigger:$PARAM$ -> alias_match_left[trigger]
+    //root.trigger:$PARAM$ -> alias_keys_field[trigger]
     //root.value:$PARAM$|K|V| -> <script_value>
     //root.$PARAM$.owner -> scope_field (unsupported yet)
     

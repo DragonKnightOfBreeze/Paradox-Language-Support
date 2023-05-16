@@ -8,6 +8,7 @@ sealed interface ParadoxValueFieldExpressionNode : ParadoxExpressionNode {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpressionNode {
 			ParadoxValueLinkExpressionNode.resolve(text, textRange, configGroup)?.let { return it }
 			ParadoxValueLinkFromDataExpressionNode.resolve(text, textRange, configGroup)?.let { return it }
+			ParadoxParameterizedValueFieldExpressionNode.resolve(text, textRange)?.let { return it }
 			return ParadoxErrorValueFieldExpressionNode(text, textRange)
 		}
 	}
