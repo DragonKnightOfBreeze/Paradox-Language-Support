@@ -89,7 +89,7 @@ object ParadoxParameterHandler {
                 fileConditionStack.removeLast()
             }
         })
-        return ParadoxParameterContextInfo(gameType, parameters)
+        return ParadoxParameterContextInfo(file.project, gameType, parameters)
     }
     
     fun completeParameters(element: PsiElement, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {

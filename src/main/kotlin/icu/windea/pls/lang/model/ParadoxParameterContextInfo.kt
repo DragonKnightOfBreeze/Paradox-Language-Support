@@ -1,5 +1,7 @@
 package icu.windea.pls.lang.model
 
+import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
@@ -11,6 +13,7 @@ import icu.windea.pls.script.psi.*
 import java.util.*
 
 class ParadoxParameterContextInfo(
+    val project: Project,
     val gameType: ParadoxGameType,
     val parameters: Map<String, List<ParadoxParameterInfo>>
 ) {
@@ -51,27 +54,25 @@ class ParadoxParameterInfo(
     val conditionStack: LinkedList<ReversibleValue<String>>? = null,
 ) {
     val element: ParadoxParameter? get() = elementPointer.element
+    val expressionElement: ParadoxScriptStringExpressionElement? get() = elementPointer.element?.parent?.castOrNull()
     
-    /**
-     * 获取模版表达式，用于表示此参数在整个脚本表达式中的位置。用$表示此参数，用#表示其他参数。
-     */
-    val template: String by lazy {
-        val element = element ?: return@lazy "$"
-        val builder = StringBuilder("$")
-        element.siblings(forward = false, withSelf = false).forEach {
-            builder.insert(0, doGetTemplateSnippet(it))
-        }
-        element.siblings(forward = true, withSelf = false).forEach {
-            builder.append(doGetTemplateSnippet(it))
-        }
-        builder.toString()
+    val rangeInExpressionElement: TextRange? by lazy {
+        if(expressionElement == null) return@lazy null
+        element?.textRangeInParent
+    }
+    
+    val isEntireExpression : Boolean by lazy {
+        val element = element
+        element != null 
+            && element.prevSibling.let { it == null || it.text == "\"" }
+            && element.nextSibling.let  { it == null || it.text == "\"" }
     }
     
     private fun doGetTemplateSnippet(it: PsiElement): String {
         val elementType = it.elementType
         val s = when(elementType) {
             ParadoxScriptElementTypes.PARAMETER -> "#"
-            else -> it.text
+            else -> it.text.takeUnless { t -> t.contains('$') } ?: "#"
         }
         return s
     }

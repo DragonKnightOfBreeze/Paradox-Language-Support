@@ -65,6 +65,9 @@
     <parameterSupport implementation="icu.windea.pls.lang.parameter.impl.ParadoxInScriptValueExpressionParameterSupport"/>
     <parameterSupport implementation="icu.windea.pls.lang.parameter.impl.ParadoxInlineScriptParameterSupport"/>
     
+    <parameterInferredConfigProvider implementation="icu.windea.pls.lang.parameter.impl.ParadoxBaseParameterInferredConfigProvider"/>
+    <parameterInferredConfigProvider implementation="icu.windea.pls.lang.parameter.impl.ParadoxComplexExpressionNodeInferredConfigProvider"/>
+    
     <localisationParameterSupport implementation="icu.windea.pls.lang.parameter.impl.ParadoxBaseLocalisationParameterSupport"/>
     
     <modifierSupport implementation="icu.windea.pls.lang.modifier.impl.ParadoxPredefinedModifierSupport"/>
