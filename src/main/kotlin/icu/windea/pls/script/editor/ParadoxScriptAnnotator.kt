@@ -114,10 +114,14 @@ class ParadoxScriptAnnotator : Annotator {
             //缓存参数范围
             if(element is ParadoxScriptStringExpressionElement) {
                 val elementText = element.text
-                if(elementText.surroundsWith('$', '$')) return //整个是参数的情况，不需要进行高亮
                 if(elementText.contains('$')) {
-                    ParadoxConfigHandler.setParameterRanges(element)
-                } //缓存参数文本范围
+                    //缓存参数文本范围
+                    val parameterRanges = ParadoxConfigHandler.setParameterRanges(element)
+                    //如果参数直接作为整个脚本表达式，不需要进行额外的高亮
+                    if(parameterRanges.singleOrNull()?.length == elementText.unquote().length) {
+                        return
+                    }
+                }
             }
             annotateExpression(element, null, holder, config)
         }

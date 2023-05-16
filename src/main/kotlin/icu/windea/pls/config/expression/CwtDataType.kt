@@ -47,18 +47,18 @@ enum class CwtDataType {
     @WithGameType(ParadoxGameType.Stellaris)
     StellarisNameFormat,
     //EXTENDED BY PLS
-	/** 对应`.shader`文件中的effect。 */
+    /** 对应`.shader`文件中的effect。 */
     ShaderEffect;
     
     //modify implementation of below methods should also check codes that directly based on enum constants
     //so they are just as a convenience
     
-    fun isNumberType() = this == Int || this == Float
-        || this == ValueField || this == IntValueField
+    fun isIntType() = this == Int || this == IntValueField || this == IntVariableField
+    
+    fun isFloatType() = this == Int || this == Float || this == ValueField || this == IntValueField
         || this == VariableField || this == IntVariableField
     
-    fun isPathReferenceType() = this == AbsoluteFilePath
-        || this == FileName || this == FilePath || this == Icon
+    fun isPathReferenceType() = this == AbsoluteFilePath || this == FileName || this == FilePath || this == Icon
     
     fun isScopeFieldType() = this == ScopeField || this == Scope || this == ScopeGroup
     

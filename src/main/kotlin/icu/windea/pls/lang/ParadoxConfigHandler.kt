@@ -656,7 +656,7 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun setParameterRanges(element: ParadoxScriptStringExpressionElement) {
+    fun setParameterRanges(element: ParadoxScriptStringExpressionElement): List<TextRange> {
         var parameterRanges: SmartList<TextRange>? = null
         element.processChild { parameter ->
             if(parameter is ParadoxParameter) {
@@ -665,7 +665,9 @@ object ParadoxConfigHandler {
             }
             true
         }
-        element.putUserData(PlsKeys.parameterRangesKey, parameterRanges.orEmpty())
+        val result = parameterRanges.orEmpty()
+        element.putUserData(PlsKeys.parameterRangesKey, result)
+        return result
     }
     
     fun getParameterRanges(element: ParadoxScriptStringExpressionElement): List<TextRange> {

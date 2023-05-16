@@ -1,5 +1,7 @@
 package icu.windea.pls.lang.model
 
+import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
@@ -7,11 +9,11 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
 class ParadoxParameterContextInfo(
+    val project: Project,
     val gameType: ParadoxGameType,
     val parameters: Map<String, List<ParadoxParameterInfo>>
 ) {
@@ -40,56 +42,6 @@ class ParadoxParameterContextInfo(
         }
         return false
     }
-    
-    fun getEntireConfig(parameterName: String): CwtValueConfig? {
-        //如果推断得到的规则不唯一，则返回null
-        val parameterInfos = parameters.get(parameterName)
-        if(parameterInfos.isNullOrEmpty()) return null
-        var result: CwtValueConfig? = null
-        var passingResult: CwtValueConfig? = null
-        for(parameterInfo in parameterInfos) {
-            if(parameterInfo.template != "$") continue //要求整个作为脚本表达式
-            val configs = parameterInfo.configs
-            val config = configs.firstOrNull() as? CwtValueConfig ?: continue
-            when(config.expression.type) {
-                CwtDataType.ParameterValue -> {
-                    //处理参数传递的情况
-                    //这里需要尝试避免SOE
-                    val passingConfig = withRecursionGuard("ParadoxParameterContextInfo.getEntireConfig") a1@{
-                        val argumentNameElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return@a1 null
-                        val argumentNameConfig = config.propertyConfig ?: return@a1 null
-                        val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return@a1 null
-                        withCheckRecursion(passingParameterElement.contextKey) a2@{
-                            ParadoxParameterHandler.inferEntireConfig(passingParameterElement)
-                        }
-                    } ?: continue
-                    if(passingResult == null) {
-                        passingResult = passingConfig
-                    } else {
-                        if(passingResult.expression != passingConfig.expression) {
-                            passingResult = null
-                            break
-                        }
-                    }
-                }
-                CwtDataType.Any, CwtDataType.Other -> {
-                    //任意类型或者其他类型 - 忽略
-                    pass()
-                }
-                else -> {
-                    if(result == null) {
-                        result = config
-                    } else {
-                        if(result.expression != config.expression) {
-                            result = null
-                            break
-                        }
-                    }
-                }
-            }
-        }
-        return result ?: passingResult
-    }
 }
 
 /**
@@ -102,27 +54,25 @@ class ParadoxParameterInfo(
     val conditionStack: LinkedList<ReversibleValue<String>>? = null,
 ) {
     val element: ParadoxParameter? get() = elementPointer.element
+    val expressionElement: ParadoxScriptStringExpressionElement? get() = elementPointer.element?.parent?.castOrNull()
     
-    /**
-     * 获取模版表达式，用于表示此参数在整个脚本表达式中的位置。用$表示此参数，用#表示其他参数。
-     */
-    val template: String by lazy {
-        val element = element ?: return@lazy "$"
-        val builder = StringBuilder("$")
-        element.siblings(forward = false, withSelf = false).forEach {
-            builder.insert(0, doGetTemplateSnippet(it))
-        }
-        element.siblings(forward = true, withSelf = false).forEach {
-            builder.append(doGetTemplateSnippet(it))
-        }
-        builder.toString()
+    val rangeInExpressionElement: TextRange? by lazy {
+        if(expressionElement == null) return@lazy null
+        element?.textRangeInParent
+    }
+    
+    val isEntireExpression : Boolean by lazy {
+        val element = element
+        element != null 
+            && element.prevSibling.let { it == null || it.text == "\"" }
+            && element.nextSibling.let  { it == null || it.text == "\"" }
     }
     
     private fun doGetTemplateSnippet(it: PsiElement): String {
         val elementType = it.elementType
         val s = when(elementType) {
             ParadoxScriptElementTypes.PARAMETER -> "#"
-            else -> it.text
+            else -> it.text.takeUnless { t -> t.contains('$') } ?: "#"
         }
         return s
     }

@@ -10,7 +10,7 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfigProvider {
     override fun getConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig? {
-        if(parameterInfo.template != "$") return null //要求整个作为脚本表达式
+        if(!parameterInfo.isEntireExpression) return null //要求整个作为脚本表达式
         val configs = parameterInfo.configs
         val config = configs.firstOrNull() as? CwtValueConfig ?: return null
         when(config.expression.type) {
@@ -22,14 +22,10 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
                     val argumentNameConfig = config.propertyConfig ?: return@a1 null
                     val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return@a1 null
                     withCheckRecursion(passingParameterElement.contextKey) a2@{
-                        ParadoxParameterHandler.inferEntireConfig(passingParameterElement)
+                        ParadoxParameterHandler.inferConfig(passingParameterElement)
                     }
                 } ?: return null
                 return passingConfig
-            }
-            CwtDataType.Any, CwtDataType.Other -> {
-                //任意类型或者其他类型 - 忽略
-                pass()
             }
             else -> {
                 return config
