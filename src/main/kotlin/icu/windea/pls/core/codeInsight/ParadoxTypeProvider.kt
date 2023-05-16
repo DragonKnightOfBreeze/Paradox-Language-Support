@@ -73,7 +73,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
                     val propertyKey = element.propertyKey ?: return@run
                     val propertyConfig = ParadoxConfigHandler.getConfigs(propertyKey).firstOrNull() ?: return@run
                     val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return@run
-                    val inferredConfig = ParadoxParameterHandler.inferEntireConfig(parameterElement) ?: return@run
+                    val inferredConfig = ParadoxParameterHandler.inferConfig(parameterElement) ?: return@run
                     add(makeHtmlRow(PlsBundle.message("title.inferredConfigExpression"), inferredConfig.expression.expressionString))
                 }
             }

@@ -12,7 +12,9 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -151,9 +153,9 @@ object ParadoxParameterHandler {
     }
     
     /**
-     * 当参数值表示整个脚本表达式时，尝试推断得到这个脚本表达式对应的CWT规则。
+     * 尝试推断得到参数对应的CWT规则。
      */
-    fun inferEntireConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
+    fun inferConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
         val cacheKey = parameterElement.contextKey + "@" + parameterElement.name
         val parameterCache = parameterElement.project.getUserData(parameterCacheKey)!!
         val cached = parameterCache.get(cacheKey)
@@ -170,7 +172,7 @@ object ParadoxParameterHandler {
             }
         }
         
-        val resolved = doInferEntryConfig(parameterElement)
+        val resolved = doInferConfig(parameterElement)
         
         val ep = parameterElement.getUserData(supportKey)
         if(ep != null) {
@@ -186,11 +188,11 @@ object ParadoxParameterHandler {
         return resolved
     }
     
-    private fun doInferEntryConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
+    private fun doInferConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
         var result: CwtValueConfig? = null
         ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
             val contextInfo = getContextInfo(context) ?: return@p true
-            val config = contextInfo.getEntireConfig(parameterElement.name) ?: return@p true
+            val config = getInferredConfig(parameterElement.name, contextInfo) ?: return@p true
             if(result == null) {
                 result = config
             } else {
@@ -202,5 +204,29 @@ object ParadoxParameterHandler {
             true
         }
         return result
+    }
+    
+    fun getInferredConfig(parameterName: String, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig? {
+        //如果推断得到的规则不唯一，则返回null
+        val parameterInfos = parameterContextInfo.parameters.get(parameterName)
+        if(parameterInfos.isNullOrEmpty()) return null
+        var result: CwtValueConfig? = null
+        for(parameterInfo in parameterInfos) {
+            val config = ParadoxParameterInferredConfigProvider.getConfig(parameterInfo, parameterContextInfo) ?: continue
+            if(result == null) {
+                result = config
+            } else {
+                result = CwtConfigMerger.mergeValueConfig(result, config)
+                if(result == null) break //存在冲突
+            }
+        }
+        return result
+    }
+    
+    fun isIgnoredInferredConfig(config: CwtValueConfig): Boolean {
+        return when(config.expression.type) {
+            CwtDataType.Any, CwtDataType.Other -> true
+            else -> false
+        }
     }
 }

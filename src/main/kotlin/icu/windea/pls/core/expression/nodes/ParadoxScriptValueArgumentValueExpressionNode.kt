@@ -25,7 +25,7 @@ class ParadoxScriptValueArgumentValueExpressionNode(
 	override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
 		if(!getSettings().inference.argumentValueConfig) return null
 		val parameterElement = argumentNode?.getReference(element)?.resolve() ?: return null
-		return ParadoxParameterHandler.inferEntireConfig(parameterElement)
+		return ParadoxParameterHandler.inferConfig(parameterElement)
 	}
 	
 	override fun getAttributesKey(): TextAttributesKey {
@@ -74,7 +74,7 @@ class ParadoxScriptValueArgumentValueExpressionNode(
 		private fun doResolve(): PsiElement? {
 			//根据对应的expression进行解析
 			val parameterElement = parameterElementResolver() ?: return null
-			val config = ParadoxParameterHandler.inferEntireConfig(parameterElement) ?: return null
+			val config = ParadoxParameterHandler.inferConfig(parameterElement) ?: return null
 			return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
 		}
 		
@@ -86,7 +86,7 @@ class ParadoxScriptValueArgumentValueExpressionNode(
 		private fun doMultiResolve(): Array<out ResolveResult> {
 			//根据对应的expression进行解析
 			val parameterElement = parameterElementResolver() ?: return ResolveResult.EMPTY_ARRAY
-			val config = ParadoxParameterHandler.inferEntireConfig(parameterElement) ?: return ResolveResult.EMPTY_ARRAY
+			val config = ParadoxParameterHandler.inferConfig(parameterElement) ?: return ResolveResult.EMPTY_ARRAY
 			return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, false)
 				.mapToArray { PsiElementResolveResult(it) }
 		}

@@ -22,14 +22,10 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
                     val argumentNameConfig = config.propertyConfig ?: return@a1 null
                     val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return@a1 null
                     withCheckRecursion(passingParameterElement.contextKey) a2@{
-                        ParadoxParameterHandler.inferEntireConfig(passingParameterElement)
+                        ParadoxParameterHandler.inferConfig(passingParameterElement)
                     }
                 } ?: return null
                 return passingConfig
-            }
-            CwtDataType.Any, CwtDataType.Other -> {
-                //任意类型或者其他类型 - 忽略
-                pass()
             }
             else -> {
                 return config

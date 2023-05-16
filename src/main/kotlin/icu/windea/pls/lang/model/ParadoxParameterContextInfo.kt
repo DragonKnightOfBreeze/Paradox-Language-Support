@@ -7,7 +7,6 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
@@ -39,56 +38,6 @@ class ParadoxParameterContextInfo(
             }
         }
         return false
-    }
-    
-    fun getEntireConfig(parameterName: String): CwtValueConfig? {
-        //如果推断得到的规则不唯一，则返回null
-        val parameterInfos = parameters.get(parameterName)
-        if(parameterInfos.isNullOrEmpty()) return null
-        var result: CwtValueConfig? = null
-        var passingResult: CwtValueConfig? = null
-        for(parameterInfo in parameterInfos) {
-            if(parameterInfo.template != "$") continue //要求整个作为脚本表达式
-            val configs = parameterInfo.configs
-            val config = configs.firstOrNull() as? CwtValueConfig ?: continue
-            when(config.expression.type) {
-                CwtDataType.ParameterValue -> {
-                    //处理参数传递的情况
-                    //这里需要尝试避免SOE
-                    val passingConfig = withRecursionGuard("ParadoxParameterContextInfo.getEntireConfig") a1@{
-                        val argumentNameElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return@a1 null
-                        val argumentNameConfig = config.propertyConfig ?: return@a1 null
-                        val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return@a1 null
-                        withCheckRecursion(passingParameterElement.contextKey) a2@{
-                            ParadoxParameterHandler.inferEntireConfig(passingParameterElement)
-                        }
-                    } ?: continue
-                    if(passingResult == null) {
-                        passingResult = passingConfig
-                    } else {
-                        if(passingResult.expression != passingConfig.expression) {
-                            passingResult = null
-                            break
-                        }
-                    }
-                }
-                CwtDataType.Any, CwtDataType.Other -> {
-                    //任意类型或者其他类型 - 忽略
-                    pass()
-                }
-                else -> {
-                    if(result == null) {
-                        result = config
-                    } else {
-                        if(result.expression != config.expression) {
-                            result = null
-                            break
-                        }
-                    }
-                }
-            }
-        }
-        return result ?: passingResult
     }
 }
 
