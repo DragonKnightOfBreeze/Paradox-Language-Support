@@ -9,7 +9,7 @@
 [GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
 [Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)
 
-IDEA plugin: Paradox language support.
+IDEA plugin: Support for Paradox language.
 
 Features:
 
