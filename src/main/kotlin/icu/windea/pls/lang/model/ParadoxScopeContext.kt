@@ -3,6 +3,7 @@ package icu.windea.pls.lang.model
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.nodes.*
+import icu.windea.pls.lang.scope.*
 import java.util.*
 
 class ParadoxScopeContext private constructor(val scope: ParadoxScope): UserDataHolderBase() {
@@ -149,10 +150,10 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope): UserData
     object Keys
 }
 
-val ParadoxScopeContext.Keys.isOverriddenKey by lazy { Key.create<Boolean>("paradox.scopeContext.isOverridden") }
+val ParadoxScopeContext.Keys.overriddenProviderKey by lazy { Key.create<ParadoxOverriddenScopeContextProvider>("paradox.scopeContext.overriddenProvider") }
 val ParadoxScopeContext.Keys.scopeFieldInfoKey by lazy { Key.create<List<Tuple2<ParadoxScopeFieldExpressionNode, ParadoxScopeContext>>>("paradox.scopeContext.scopeFieldInfo") }
 
-var ParadoxScopeContext.isOverridden by ParadoxScopeContext.Keys.isOverriddenKey
+var ParadoxScopeContext.overriddenProvider by ParadoxScopeContext.Keys.overriddenProviderKey
 
 //scope context list of scope field expression nodes
 var ParadoxScopeContext.scopeFieldInfo by ParadoxScopeContext.Keys.scopeFieldInfoKey

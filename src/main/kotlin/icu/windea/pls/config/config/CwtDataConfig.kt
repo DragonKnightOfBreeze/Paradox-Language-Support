@@ -10,6 +10,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.model.*
 import java.util.*
 
@@ -205,6 +206,6 @@ fun <T : PsiElement> CwtDataConfig<T>.toOccurrence(contextElement: PsiElement, p
 	return occurrence
 }
 
-val CwtDataConfig.Keys.isOverriddenKey by lazy { Key.create<Boolean>("paradox.cwtDataConfig.isOverridden") }
+val CwtDataConfig.Keys.overriddenProviderKey by lazy { Key.create<ParadoxOverriddenConfigProvider>("paradox.cwtDataConfig.overriddenProvider") }
 
-var CwtDataConfig<*>.isOverridden by CwtDataConfig.Keys.isOverriddenKey 
+var CwtDataConfig<*>.overriddenProvider by CwtDataConfig.Keys.overriddenProviderKey

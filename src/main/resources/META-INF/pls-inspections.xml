@@ -2,7 +2,7 @@
   <extensions defaultExtensionNs="com.intellij">
     <lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.inspections.ParadoxScriptInspectionSuppressor"/>
     <lang.inspectionSuppressor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.core.inspections.ParadoxLocalisationInspectionSuppressor"/>
-    <lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.inspections.ParadoxScriptConfigAwareInspectionSuppressor"/>
+    <!--<lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.inspections.ParadoxScriptConfigAwareInspectionSuppressor"/>-->
     
     <!--region Paradox script-->
     <!--region Paradox script/Basic-->

@@ -2,6 +2,7 @@ package icu.windea.pls.lang.config
 
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
@@ -20,6 +21,10 @@ interface ParadoxOverriddenConfigProvider {
      */
     fun <T : CwtDataConfig<*>> getOverriddenConfigs(element: ParadoxScriptMemberElement, rawConfig: T): List<T>?
     
+    fun skipMissingExpressionCheck(configs: List<CwtDataConfig<*>>, configExpression: CwtDataExpression) = false
+    
+    fun skipTooManyExpressionCheck(configs: List<CwtDataConfig<*>>, configExpression: CwtDataExpression) = false
+    
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxOverriddenConfigProvider>("icu.windea.pls.overridenConfigProvider")
         
@@ -28,7 +33,8 @@ interface ParadoxOverriddenConfigProvider {
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
                 ep.getOverriddenConfigs(element, rawConfig).takeIfNotEmpty()
-            }?.onEach { it.isOverridden = true }
+                    ?.onEach { it.overriddenProvider = ep }
+            }
         }
     }
 }

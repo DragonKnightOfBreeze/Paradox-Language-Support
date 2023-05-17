@@ -14,24 +14,16 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
-inline fun CwtDataConfig<*>.processParent(processor: (CwtDataConfig<*>) -> Boolean): Boolean {
+inline fun CwtDataConfig<*>.processParent(inline: Boolean = false, processor: (CwtDataConfig<*>) -> Boolean): Boolean {
     var parent = this.parent
     while(parent != null) {
         val result = processor(parent)
         if(!result) return false
-        parent = parent.parent
-    }
-    return true
-}
-
-inline fun CwtDataConfig<*>.processParentProperty(processor: (CwtPropertyConfig) -> Boolean): Boolean {
-    var parent = this.parent
-    while(parent != null) {
-        if(parent is CwtPropertyConfig) {
-            val result = processor(parent)
-            if(!result) return false
+        if(inline) {
+            parent = parent.inlineableConfig?.config ?: parent.parent
+        } else {
+            parent = parent.parent
         }
-        parent = parent.parent
     }
     return true
 }

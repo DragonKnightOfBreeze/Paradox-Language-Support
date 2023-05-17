@@ -126,7 +126,7 @@ object ParadoxScopeHandler {
         
         //if there is an overridden scope context, so do supported
         val scopeContext = getScopeContext(element)
-        if(scopeContext?.isOverridden == true) return true
+        if(scopeContext?.overriddenProvider != null) return true
         
         return false
     }

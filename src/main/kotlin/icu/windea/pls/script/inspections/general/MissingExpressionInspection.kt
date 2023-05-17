@@ -5,10 +5,12 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.inline.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
@@ -57,7 +59,9 @@ class MissingExpressionInspection : LocalInspectionTool() {
                 if(skipCheck(element, configs)) return
                 val occurrenceMap = ParadoxConfigHandler.getChildOccurrenceMap(element, configs)
                 if(occurrenceMap.isEmpty()) return
+                val overriddenProvider = getOverriddenProvider(configs)
                 occurrenceMap.forEach { (configExpression, occurrence) ->
+                    if(overriddenProvider != null && overriddenProvider.skipMissingExpressionCheck(configs, configExpression)) return@forEach
                     val r = doCheckOccurrence(element, position, occurrence, configExpression)
                     if(!r) return
                 }
@@ -70,6 +74,19 @@ class MissingExpressionInspection : LocalInspectionTool() {
                 if(element is ParadoxScriptFile && element.block?.isEmpty == true) return false
                 if(element is ParadoxScriptBlock && element.isEmpty) return false
                 return true
+            }
+            
+            private fun getOverriddenProvider(configs: List<CwtDataConfig<*>>): ParadoxOverriddenConfigProvider? {
+                configs.forEach { c1 ->
+                    c1.overriddenProvider?.let { return it }
+                    val pc1 = c1.castOrNull<CwtValueConfig>()?.propertyConfig
+                    pc1?.overriddenProvider?.let { return it }
+                    (pc1 ?: c1).processParent(inline = true) { c2 ->
+                        c2.overriddenProvider?.let { return it }
+                        true
+                    }
+                }
+                return null
             }
             
             private fun doCheckOccurrence(element: ParadoxScriptMemberElement, position: PsiElement, occurrence: Occurrence, configExpression: CwtDataExpression): Boolean {

@@ -4,6 +4,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
@@ -41,5 +42,14 @@ class ParadoxComplexTriggerModifierOverriddenConfigProvider : ParadoxOverriddenC
             resultConfigs.add(inlined)
         }
         return resultConfigs as List<T>
+    }
+    
+    override fun skipMissingExpressionCheck(configs: List<CwtDataConfig<*>>, configExpression: CwtDataExpression): Boolean {
+        val isDirectChild = configs.any { it.castOrNull<CwtValueConfig>()?.propertyConfig?.overriddenProvider != null }
+        if(isDirectChild) {
+            val s = configExpression.expressionString
+            return s == "value" || s == "count" || s == "percentage"
+        }
+        return false
     }
 }
