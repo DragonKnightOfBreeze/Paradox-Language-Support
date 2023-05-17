@@ -114,12 +114,9 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
         
         //如果结果不唯一且结果中存在按常量字符串匹配的规则，则仅选用那个规则
         if(result.size > 1) {
-            result.forEachFast { _, config -> 
-                if(config.expression.type ==CwtDataType.Constant) return config.toSingletonList()
-            }
+            val optimizedResult = result.filterTo(SmartList()) { it.expression.type == CwtDataType.Constant }
+            if(optimizedResult.isNotEmpty()) result = optimizedResult
         }
-        
-        return result
     }
     
     return result.sortedByPriority(configGroup) { it.expression }
