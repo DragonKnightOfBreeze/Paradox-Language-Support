@@ -36,7 +36,7 @@ data class CwtDeclarationConfig(
             }
             append("#").append(matchType)
         }
-        cacheKey = CwtDeclarationConfigInjector.handleCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
+        cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
         
         return mergedConfigCache.getOrPut(cacheKey) {
             runReadAction {

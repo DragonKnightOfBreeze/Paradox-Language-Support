@@ -59,7 +59,7 @@
 * [ ] 添加代码检查，基于下列规则检查脚本文件中是否存在可能的BUG
   * scripted_trigger/scripted_effect不能递归调用
   * scripted_trigger/scripted_effect的调用层数最大只能有5层
-  * 内联数学表达式（inline_math）在每个scripted_trigger/scripted_effect中最多只能使用1次
+  * ~~内联数学表达式（inline_math）在每个scripted_trigger/scripted_effect中最多只能使用1次~~（当前游戏版本已无此限制）
   * 对于valueSetValue，只能通过后缀的`@xxx`切换flag和event_target的作用域
   * 不能在asset文件中使用scripted_variable和inline_math
 

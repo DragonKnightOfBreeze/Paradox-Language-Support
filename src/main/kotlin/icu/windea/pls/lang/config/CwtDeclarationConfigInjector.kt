@@ -16,9 +16,9 @@ interface CwtDeclarationConfigInjector {
     fun supports(configContext: CwtConfigContext): Boolean
     
     /**
-     * 处理得到合并后的声明规则的缓存的键。
+     * 得到需要的声明规则缓存的键.
      */
-    fun handleCacheKey(cacheKey: String, configContext: CwtConfigContext): String? = null
+    fun getCacheKey(rawCacheKey: String, configContext: CwtConfigContext): String? = null
     
     /**
      * 替代默认实现，使用另外的逻辑获取合并后的声明规则。
@@ -29,7 +29,6 @@ interface CwtDeclarationConfigInjector {
     
     /**
      * 在获取合并的声明规则之后对其进行额外的处理。
-     * @return 是否继续使用下一个支持此上下文的规则注入器进行处理。
      */
     fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, configContext: CwtConfigContext) {}
     
@@ -59,12 +58,12 @@ interface CwtDeclarationConfigInjector {
             }
         }
         
-        fun handleCacheKey(cacheKey: String, configContext: CwtConfigContext, injectors: List<CwtDeclarationConfigInjector> = EP_NAME.extensionList): String? {
+        fun getCacheKey(rawCacheKey: String, configContext: CwtConfigContext, injectors: List<CwtDeclarationConfigInjector> = EP_NAME.extensionList): String? {
             if(injectors.isEmpty()) return null
             val gameType = configContext.configGroup.gameType
             return injectors.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
-                ep.handleCacheKey(cacheKey, configContext)
+                ep.getCacheKey(rawCacheKey, configContext)
             }
         }
     }

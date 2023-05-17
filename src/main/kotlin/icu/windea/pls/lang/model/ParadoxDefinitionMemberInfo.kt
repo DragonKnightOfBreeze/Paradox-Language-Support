@@ -37,7 +37,7 @@ class ParadoxDefinitionMemberInfo(
         //这里需要特别处理缓存的键
         val configContext = definitionInfo.getDeclaration(matchType)?.getUserData(CwtDeclarationConfig.configContextKey)
         if(configContext != null) {
-            cacheKey = CwtDeclarationConfigInjector.handleCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
+            cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
         }
         return cache.getOrPut(cacheKey) { doGetConfigs(definitionInfo, this, matchType) }
     }
@@ -50,7 +50,7 @@ class ParadoxDefinitionMemberInfo(
         //这里需要特别处理缓存的键
         val configContext = definitionInfo.getDeclaration(matchType)?.getUserData(CwtDeclarationConfig.configContextKey)
         if(configContext != null) {
-            cacheKey = CwtDeclarationConfigInjector.handleCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
+            cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
         }
         return cache.getOrPut(cacheKey) { doGetChildConfigs(definitionInfo, this, matchType) }
     }
@@ -71,7 +71,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
     var result: List<CwtDataConfig<*>> = declaration.toSingletonList()
     if(elementPath.isEmpty()) return result
     
-    var isInlined = false
+    var inlinedByInlineConfig = false
     
     for((key, isQuoted, isKey) in elementPath) {
         //如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
@@ -81,9 +81,9 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
         val nextResult = SmartList<CwtDataConfig<*>>()
         for(parentConfig in result) {
             //处理内联规则
-            if(!isInlined && isKey && parentConfig is CwtPropertyConfig) {
-                isInlined = ParadoxConfigHandler.inlineConfigAsChild(key, isQuoted, parentConfig, configGroup, nextResult)
-                if(isInlined) continue
+            if(!inlinedByInlineConfig && isKey && parentConfig is CwtPropertyConfig) {
+                inlinedByInlineConfig = ParadoxConfigInlineHandler.inlineByInlineConfig(element, key, isQuoted, parentConfig, configGroup, nextResult)
+                if(inlinedByInlineConfig) continue
             }
             
             val configs = parentConfig.configs
@@ -91,7 +91,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
             for(config in configs) {
                 if(isKey && config is CwtPropertyConfig) {
                     if(ParadoxConfigHandler.matchesScriptExpression(element, expression, config.keyExpression, config, configGroup, matchType)) {
-                        ParadoxConfigHandler.inlineConfig(element, key, isQuoted, config, configGroup, nextResult, matchType)
+                        ParadoxConfigInlineHandler.inlineByAliasConfig(element, key, isQuoted, config, configGroup, nextResult, matchType)
                     }
                 } else if(!isKey && config is CwtValueConfig) {
                     nextResult.add(config)
