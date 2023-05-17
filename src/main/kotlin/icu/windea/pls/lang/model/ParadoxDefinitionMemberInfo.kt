@@ -66,44 +66,60 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
     //如果路径中可能待遇参数，则不进行解析
     val elementPath = definitionMemberInfo.elementPath
     if(elementPath.isParameterized) return emptyList()
-    val configGroup = definitionMemberInfo.configGroup
+    if(elementPath.isEmpty()) return declaration.toSingletonList()
     
-    var result: List<CwtDataConfig<*>> = declaration.toSingletonList()
-    if(elementPath.isEmpty()) return result
+    var result: MutableList<CwtDataConfig<*>> = SmartList()
+    result.add(declaration)
     
     var inlinedByInlineConfig = false
     
-    for((key, isQuoted, isKey) in elementPath) {
+    val configGroup = definitionMemberInfo.configGroup
+    elementPath.subPathInfos.forEachFast f1@{ _, info ->
+        val (key, isQuoted, isKey) = info
+        
         //如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
         //如果整个过程中的某个key匹配内联规则的名字（如，inline_script），则内联此内联规则
         
         val expression = ParadoxDataExpression.resolve(key, isQuoted, true)
         val nextResult = SmartList<CwtDataConfig<*>>()
-        for(parentConfig in result) {
+        result.forEachFast f2@{ _, parentConfig ->
             //处理内联规则
             if(!inlinedByInlineConfig && isKey && parentConfig is CwtPropertyConfig) {
-                inlinedByInlineConfig = ParadoxConfigInlineHandler.inlineByInlineConfig(element, key, isQuoted, parentConfig, configGroup, nextResult)
-                if(inlinedByInlineConfig) continue
+                inlinedByInlineConfig = ParadoxConfigInlineHandler.inlineFromInlineConfig(element, key, isQuoted, parentConfig, nextResult)
+                if(inlinedByInlineConfig) return@f2
             }
             
             val configs = parentConfig.configs
-            if(configs.isNullOrEmpty()) continue
-            for(config in configs) {
+            if(configs.isNullOrEmpty()) return@f2
+            configs.forEachFast f3@{ _, config ->
                 if(isKey && config is CwtPropertyConfig) {
                     if(ParadoxConfigHandler.matchesScriptExpression(element, expression, config.keyExpression, config, configGroup, matchType)) {
-                        ParadoxConfigInlineHandler.inlineByAliasConfig(element, key, isQuoted, config, configGroup, nextResult, matchType)
+                        ParadoxConfigInlineHandler.inlineFromAliasConfig(element, key, isQuoted, config, result, matchType)
                     }
                 } else if(!isKey && config is CwtValueConfig) {
                     nextResult.add(config)
                 }
             }
+            
+            //如果存在，替换成重置后的规则
+            result.forEachFast f3@{ i, config ->
+                val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, config)
+                if(overriddenConfigs.isNotNullOrEmpty()) {
+                    result.removeAt(i)
+                    result.addAll(i, overriddenConfigs)
+                }
+            }
         }
         result = nextResult
         
-        //如过结果不唯一且结果中存在按常量字符串匹配的规则，则仅选用那个规则
+        //如果结果不唯一且结果中存在按常量字符串匹配的规则，则仅选用那个规则
         if(result.size > 1) {
-            result = result.filter { it.expression.type == CwtDataType.Constant }.ifEmpty { result }
+            result.forEachFast { _, config -> 
+                if(config.expression.type ==CwtDataType.Constant) return config.toSingletonList()
+            }
         }
+        
+        return result
     }
     
     return result.sortedByPriority(configGroup) { it.expression }
@@ -127,7 +143,7 @@ private fun doGetChildConfigs(definitionInfo: ParadoxDefinitionInfo, definitionM
             //打平propertyConfigs中的每一个properties
             val configs = doGetConfigs(definitionInfo, definitionMemberInfo, matchType)
             val result = SmartList<CwtDataConfig<*>>()
-            for(config in configs) {
+            configs.forEachFast { _, config ->
                 val childConfigs = config.configs
                 if(childConfigs.isNotNullOrEmpty()) result.addAll(childConfigs)
             }

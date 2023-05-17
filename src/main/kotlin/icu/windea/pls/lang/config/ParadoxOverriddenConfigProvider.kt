@@ -4,6 +4,7 @@ import com.intellij.openapi.extensions.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -17,16 +18,16 @@ interface ParadoxOverriddenConfigProvider {
     /**
      * 从指定的定义成员元素[element]和原始的CWT规则[rawConfig]获取重载后的CWT规则。
      */
-    fun <T : CwtDataConfig<*>> getOverriddenConfig(element: ParadoxScriptMemberElement, rawConfig: T): T?
+    fun <T : CwtDataConfig<*>> getOverriddenConfigs(element: ParadoxScriptMemberElement, rawConfig: T): List<T>?
     
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxOverriddenConfigProvider>("icu.windea.pls.overridenConfigProvider")
         
-        fun <T> getOverriddenConfig(element: ParadoxScriptMemberElement, rawConfig: T): T? {
+        fun <T: CwtDataConfig<*>> getOverriddenConfigs(element: ParadoxScriptMemberElement, rawConfig: T): List<T>? {
             val gameType = rawConfig.info.configGroup.gameType ?: return null
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
-                ep.getOverriddenConfig(element, rawConfig)
+                ep.getOverriddenConfigs(element, rawConfig).takeIfNotEmpty()
             }
         }
     }

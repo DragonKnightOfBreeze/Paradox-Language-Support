@@ -168,3 +168,19 @@ fun <K, V> Map<K, V>.process(processor: (Map.Entry<K, V>) -> Boolean): Boolean {
 	}
 	return true
 }
+
+inline fun <T> List<T>.forEachFast(action: (Int, T) -> Unit): Unit {
+	val size = this.size
+	for(i in 0 until size) {
+		action(i, this[i])
+	}
+}
+
+inline fun <T> List<T>.processFast(processor: (Int, T) -> Boolean): Boolean {
+	val size = this.size
+	for(i in 0 until size) {
+		val result = processor(i, this[i])
+		if(!result) return false
+	}
+	return true
+}

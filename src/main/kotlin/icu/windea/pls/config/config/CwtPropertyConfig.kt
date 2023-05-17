@@ -87,11 +87,11 @@ data class CwtPropertyConfig(
 	/**
 	 * 从[aliasConfig]内联规则：key改为取[aliasConfig]的subName，value改为取[aliasConfig]的的value，如果需要拷贝，则进行深拷贝。
 	 */
-	fun inlineFromAliasConfig(aliasConfig: CwtAliasConfig): CwtPropertyConfig {
+	fun inlineFromAliasConfig(aliasConfig: CwtAliasConfig, key: String = aliasConfig.subName): CwtPropertyConfig {
 		//内联所有value，key取aliasSubName（如：alias[effect:if] 中的if）
 		val other = aliasConfig.config
 		val inlined = copy(
-			key = aliasConfig.subName,
+			key = key,
 			value = other.value,
 			booleanValue = other.booleanValue,
 			intValue = other.intValue,
@@ -111,7 +111,7 @@ data class CwtPropertyConfig(
 	/**
 	 * 将指定的[inlineConfig]内联作为子节点并返回。如果需要拷贝，则进行深拷贝。
 	 */
-	fun inlineConfigAsChild(inlineConfig: CwtInlineConfig) : CwtPropertyConfig{
+	fun inlineFromInlineConfig(inlineConfig: CwtInlineConfig) : CwtPropertyConfig{
 		val inlined = inlineConfig.config.copy(
 			configs = inlineConfig.config.deepCopyConfigs()
 		)
