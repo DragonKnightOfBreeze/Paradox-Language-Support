@@ -59,7 +59,6 @@ class SmartRecursionGuard {
             stackTrace.removeLast()
         }
     }
-    
 }
 
 /**

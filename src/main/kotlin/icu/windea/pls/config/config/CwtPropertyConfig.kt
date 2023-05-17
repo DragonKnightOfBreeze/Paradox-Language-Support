@@ -19,6 +19,7 @@ data class CwtPropertyConfig(
 	override val options: List<CwtOptionConfig>? = null,
 	override val optionValues: List<CwtOptionValueConfig>? = null,
 	val separatorType: CwtSeparator = CwtSeparator.EQUAL,
+	private val overriddenValuePointer: SmartPsiElementPointer<CwtValue>? = null
 ) : CwtDataConfig<CwtProperty>() {
 	companion object {
 		val Empty = CwtPropertyConfig(emptyPointer(), CwtConfigGroupInfo(""), "", "")
@@ -34,11 +35,12 @@ data class CwtPropertyConfig(
 	
 	val valueConfig by lazy {
 		val valuePointer = when {
+			overriddenValuePointer != null -> overriddenValuePointer
 			pointer == emptyPointer<CwtValue>() -> emptyPointer()
 			else -> {
 				val resolvedPointer = resolved().pointer
-				resolvedPointer.containingFile
-					?.let { f -> resolvedPointer.element?.propertyValue?.createPointer(f) }
+				val resolvedFile = resolvedPointer.containingFile ?:return@lazy null
+				resolvedPointer.element?.propertyValue?.createPointer(resolvedFile)
 			}
 		} 
 		if(valuePointer == null) return@lazy null
@@ -82,21 +84,23 @@ data class CwtPropertyConfig(
 	
 	/**
 	 * 从[aliasConfig]内联规则：key改为取[aliasConfig]的subName，value改为取[aliasConfig]的的value，如果需要拷贝，则进行深拷贝。
+	 * 
+	 * 如果[valueOnly]为`true`，则key改为取当前规则的key，内联后的valuePointer改为取[aliasConfig]的valuePointer。
 	 */
-	fun inlineFromAliasConfig(aliasConfig: CwtAliasConfig, key: String = aliasConfig.subName): CwtPropertyConfig {
-		//内联所有value，key取aliasSubName（如：alias[effect:if] 中的if）
+	fun inlineFromAliasConfig(aliasConfig: CwtAliasConfig, valueOnly: Boolean = false): CwtPropertyConfig {
 		val other = aliasConfig.config
 		val inlined = copy(
-			key = key,
+			key = if(valueOnly) this.key else aliasConfig.subName,
 			value = other.value,
 			booleanValue = other.booleanValue,
 			intValue = other.intValue,
 			floatValue = other.floatValue,
 			stringValue = other.stringValue,
 			configs = other.deepCopyConfigs(),
-			documentation = other.documentation,
-			options = other.options,
-			optionValues = other.optionValues
+			documentation = if(valueOnly) documentation else other.documentation,
+			options = if(valueOnly) options else other.options,
+			optionValues = if(valueOnly) optionValues else other.optionValues,
+			overriddenValuePointer = if(valueOnly) aliasConfig.config.valueConfig?.pointer ?: emptyPointer() else null
 		)
 		inlined.parent = parent
 		inlined.configs?.forEach { it.parent = inlined }
