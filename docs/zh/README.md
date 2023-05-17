@@ -54,6 +54,7 @@ IDEA插件：Paradox语言支持。
 * 如果IDE卡死，或者IDE索引出现问题，或者发生了涉及IDE索引的报错，请尝试通过以下方式解决：
   * 更新IDE和插件到最新版本。
   * 点击`File -> Invalidate Caches... -> Invalidate and Restart`，重建索引并重启IDE。
+  * 删除项目目录下的`.idea`目录，然后重启IDE。
 
 ## FAQ
 
