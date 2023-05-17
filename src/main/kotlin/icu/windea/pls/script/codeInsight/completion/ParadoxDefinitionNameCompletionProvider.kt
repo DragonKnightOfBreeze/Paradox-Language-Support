@@ -31,19 +31,19 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 		val offsetInParent = parameters.offset - element.startOffset
 		val keyword = element.getKeyword(offsetInParent)
 		
-		context.put(PlsCompletionKeys.completionIdsKey, mutableSetOf<String>().synced())
-		context.put(PlsCompletionKeys.parametersKey, parameters)
-		context.put(PlsCompletionKeys.contextElementKey, element)
-		context.put(PlsCompletionKeys.originalFileKey, file)
-		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
-		context.put(PlsCompletionKeys.keywordKey, keyword)
-		context.put(PlsCompletionKeys.quotedKey, quoted)
-		context.put(PlsCompletionKeys.rightQuotedKey, rightQuoted)
+		context.completionIds = mutableSetOf<String>().synced()
+		context.parameters = parameters
+		context.contextElement = element
+		context.originalFile = file
+		context.offsetInParent = offsetInParent
+		context.keyword = keyword
+		context.quoted = quoted
+		context.rightQuoted = rightQuoted
 		
 		fun doAddCompletions(type: String, config: CwtPropertyConfig, isKey: Boolean?, currentElement: PsiElement, rootKey: String?) {
 			ProgressManager.checkCanceled()
-			context.put(PlsCompletionKeys.configKey, config)
-			context.put(PlsCompletionKeys.isKeyKey, isKey)
+			context.config = config
+			context.isKey = isKey
 			//排除正在输入的那一个
 			val selector = definitionSelector(project, file).contextSensitive()
 				.filterBy { rootKey == null || (it is ParadoxScriptProperty && it.name.equals(rootKey, true)) }

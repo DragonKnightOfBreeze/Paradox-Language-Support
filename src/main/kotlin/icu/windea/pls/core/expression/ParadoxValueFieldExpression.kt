@@ -199,7 +199,7 @@ class ParadoxValueFieldExpressionImpl(
         val isKey = context.isKey
         val scopeContext = context.scopeContext ?: ParadoxScopeHandler.resolveAnyScopeContext()
         
-        context.put(PlsCompletionKeys.isKeyKey, null)
+        context.isKey = null
         
         var scopeContextInExpression = scopeContext
         for((i, node) in nodes.withIndex()) {
@@ -211,7 +211,7 @@ class ParadoxValueFieldExpressionImpl(
             }
             if(node is ParadoxScopeFieldExpressionNode) {
                 if(inRange) {
-					context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
+					context.scopeContext = scopeContextInExpression
                     completeForScopeExpressionNode(node, context, result)
                     break
                 } else {
@@ -220,7 +220,7 @@ class ParadoxValueFieldExpressionImpl(
                 }
             } else if(node is ParadoxValueFieldExpressionNode) {
                 if(inRange) {
-                    context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
+                    context.scopeContext = scopeContextInExpression
                     val scopeExpressionNode = ParadoxScopeFieldExpressionNode.resolve(node.text, node.rangeInExpression, configGroup)
                     val afterPrefix = completeForScopeExpressionNode(scopeExpressionNode, context, result)
                     if(afterPrefix) break
@@ -230,10 +230,10 @@ class ParadoxValueFieldExpressionImpl(
             }
         }
         
-        context.put(PlsCompletionKeys.keywordKey, keyword)
-        context.put(PlsCompletionKeys.startOffsetKey, startOffset)
-        context.put(PlsCompletionKeys.isKeyKey, isKey)
-        context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
+        context.keyword = keyword
+        context.startOffset = startOffset
+        context.isKey = isKey
+        context.scopeContext = scopeContext
     }
 }
 

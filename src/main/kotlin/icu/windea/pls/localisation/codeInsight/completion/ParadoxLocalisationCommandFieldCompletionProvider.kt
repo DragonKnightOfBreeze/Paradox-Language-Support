@@ -21,13 +21,13 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
         val gameType = file.fileInfo?.rootInfo?.gameType ?: return
         val configGroup = getCwtConfig(project).get(gameType)
         
-        context.put(PlsCompletionKeys.parametersKey, parameters)
-        context.put(PlsCompletionKeys.contextElementKey, element)
-        context.put(PlsCompletionKeys.originalFileKey, file)
-        context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
-        context.put(PlsCompletionKeys.keywordKey, keyword)
-        context.put(PlsCompletionKeys.configGroupKey, configGroup)
-        context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeHandler.getScopeContext(element))
+        context.parameters = parameters
+        context.contextElement = element
+        context.originalFile = file
+        context.offsetInParent = offsetInParent
+        context.keyword = keyword
+        context.configGroup = configGroup
+        context.scopeContext = ParadoxScopeHandler.getScopeContext(element)
         
         //提示scope
         ParadoxConfigHandler.completeSystemScope(context, result)

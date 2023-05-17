@@ -16,11 +16,11 @@ class ParadoxLocalisationConceptNameCompletionProvider : CompletionProvider<Comp
         val keyword = element.getKeyword(offsetInParent)
         val file = parameters.originalFile
         
-        context.put(PlsCompletionKeys.parametersKey, parameters)
-        context.put(PlsCompletionKeys.contextElementKey, element)
-        context.put(PlsCompletionKeys.originalFileKey, file)
-        context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
-        context.put(PlsCompletionKeys.keywordKey, keyword)
+        context.parameters = parameters
+        context.contextElement = element
+        context.originalFile = file
+        context.offsetInParent = offsetInParent
+        context.keyword = keyword
         
         //提示concept的name或alias
         ParadoxConfigHandler.completeConcept(context, result)

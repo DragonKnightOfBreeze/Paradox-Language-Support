@@ -20,18 +20,18 @@ fun completeForScopeExpressionNode(node: ParadoxScopeFieldExpressionNode, contex
     val offsetInParent = context.offsetInParent
     if(prefixNode != null && dataSourceNode != null && offsetInParent >= dataSourceNode.rangeInExpression.startOffset) {
         val scopeContextResult = ParadoxScopeHandler.resolveScopeContext(prefixNode, context.scopeContext)
-        context.put(PlsCompletionKeys.scopeContextKey, scopeContextResult)
+        context.scopeContext = scopeContextResult
         
         val keywordToUse = dataSourceNode.text.substring(0, offsetInParent - endOffset)
         val resultToUse = result.withPrefixMatcher(keywordToUse)
         val keyword = context.keyword
         val startOffset = context.startOffset
-        context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-        context.put(PlsCompletionKeys.startOffsetKey, dataSourceNode.rangeInExpression.startOffset)
+        context.keyword = keywordToUse
+        context.startOffset = dataSourceNode.rangeInExpression.startOffset
         val prefix = prefixNode.text
         ParadoxConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
-        context.put(PlsCompletionKeys.keywordKey, keyword)
-        context.put(PlsCompletionKeys.startOffsetKey, startOffset)
+        context.keyword = keyword
+        context.startOffset = startOffset
         return true
     } else {
         val inFirstNode = dataSourceNode == null || dataSourceNode.nodes.isEmpty()
@@ -40,16 +40,16 @@ fun completeForScopeExpressionNode(node: ParadoxScopeFieldExpressionNode, contex
         val resultToUse = result.withPrefixMatcher(keywordToUse)
         val keyword = context.keyword
         val startOffset = context.startOffset
-        context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-        context.put(PlsCompletionKeys.startOffsetKey, node.rangeInExpression.startOffset)
+        context.keyword = keywordToUse
+        context.startOffset = node.rangeInExpression.startOffset
         if(inFirstNode) {
             ParadoxConfigHandler.completeSystemScope(context, resultToUse)
             ParadoxConfigHandler.completeScope(context, resultToUse)
             ParadoxConfigHandler.completeScopeLinkPrefix(context, resultToUse)
         }
         ParadoxConfigHandler.completeScopeLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
-        context.put(PlsCompletionKeys.keywordKey, keyword)
-        context.put(PlsCompletionKeys.startOffsetKey, startOffset)
+        context.keyword = keyword
+        context.startOffset = startOffset
         return false
     }
 }
@@ -69,31 +69,31 @@ fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, contex
     val endOffset = dataSourceNode?.rangeInExpression?.startOffset ?: -1
     if(prefixNode != null && dataSourceNode != null && offsetInParent >= dataSourceNode.rangeInExpression.startOffset) {
         val scopeContextResult = ParadoxScopeHandler.resolveScopeContext(prefixNode, context.scopeContext)
-        context.put(PlsCompletionKeys.scopeContextKey, scopeContextResult)
+        context.scopeContext = scopeContextResult
         
         val keywordToUse = dataSourceNode.text.substring(0, offsetInParent - endOffset)
         val resultToUse = result.withPrefixMatcher(keywordToUse)
-        context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-        context.put(PlsCompletionKeys.startOffsetKey, dataSourceNode.rangeInExpression.startOffset)
+        context.keyword = keywordToUse
+        context.startOffset = dataSourceNode.rangeInExpression.startOffset
         val prefix = prefixNode.text
         ParadoxConfigHandler.completeValueLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
-        context.put(PlsCompletionKeys.keywordKey, keyword)
-        context.put(PlsCompletionKeys.startOffsetKey, startOffset)
+        context.keyword = keyword
+        context.startOffset = startOffset
         return true
     } else {
         val inFirstNode = dataSourceNode == null || dataSourceNode.nodes.isEmpty()
             || offsetInParent <= dataSourceNode.nodes.first().rangeInExpression.endOffset
         val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
         val resultToUse = result.withPrefixMatcher(keywordToUse)
-        context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-        context.put(PlsCompletionKeys.startOffsetKey, node.rangeInExpression.startOffset)
+        context.keyword = keywordToUse
+        context.startOffset = node.rangeInExpression.startOffset
         if(inFirstNode) {
             ParadoxConfigHandler.completeValueLinkValue(context, resultToUse)
             ParadoxConfigHandler.completeValueLinkPrefix(context, resultToUse)
         }
         ParadoxConfigHandler.completeValueLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
-        context.put(PlsCompletionKeys.keywordKey, keyword)
-        context.put(PlsCompletionKeys.startOffsetKey, startOffset)
+        context.keyword = keyword
+        context.startOffset = startOffset
         return false
     }
 }
@@ -103,6 +103,6 @@ fun completeForVariableDataExpressionNode(node: ParadoxDataExpressionNode, conte
     val nodeRange = node.rangeInExpression
     val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
     val resultToUse = result.withPrefixMatcher(keywordToUse)
-    context.put(PlsCompletionKeys.keywordKey, keywordToUse)
+    context.keyword = keywordToUse
     ParadoxConfigHandler.completeValueLinkDataSource(context, resultToUse, null, node, variableOnly = true)
 }

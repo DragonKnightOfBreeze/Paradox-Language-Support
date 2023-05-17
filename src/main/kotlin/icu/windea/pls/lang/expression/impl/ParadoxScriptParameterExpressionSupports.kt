@@ -110,15 +110,15 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return
         ProgressManager.checkCanceled()
         val inferredConfig = ParadoxParameterHandler.inferConfig(parameterElement) ?: return
-        context.put(PlsCompletionKeys.configKey, inferredConfig)
-        context.put(PlsCompletionKeys.configsKey, null)
-        context.put(PlsCompletionKeys.scopeContextKey, null) //TODO 
-        context.put(PlsCompletionKeys.scopeMatchedKey, null)
+        context.config = inferredConfig
+        context.configs = null
+        context.scopeContext = null //TODO 
+        context.scopeMatched = null
         ParadoxConfigHandler.completeScriptExpression(context, result)
-        context.put(PlsCompletionKeys.configKey, config)
-        context.put(PlsCompletionKeys.configsKey, configs)
-        context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
-        context.put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
+        context.config = config
+        context.configs = configs
+        context.scopeContext = scopeContext
+        context.scopeMatched = scopeMatched
     }
 }
 

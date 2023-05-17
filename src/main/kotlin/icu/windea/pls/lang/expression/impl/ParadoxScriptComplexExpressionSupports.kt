@@ -84,20 +84,20 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport(
         val configExpression = context.config?.expression ?: return
         when(configExpression.type) {
             CwtDataType.Scope -> {
-                context.put(PlsCompletionKeys.scopeNameKey, configExpression.value)
+                context.scopeName = configExpression.value
             }
             CwtDataType.ScopeGroup -> {
-                context.put(PlsCompletionKeys.scopeGroupNameKey, configExpression.value)
+                context.scopeGroupName = configExpression.value
             }
             else -> {}
         }
         ParadoxConfigHandler.completeScopeFieldExpression(context, result)
         when(configExpression.type) {
             CwtDataType.Scope -> {
-                context.put(PlsCompletionKeys.scopeNameKey, null)
+                context.scopeName = null
             }
             CwtDataType.ScopeGroup -> {
-                context.put(PlsCompletionKeys.scopeGroupNameKey, null)
+                context.scopeGroupName = null
             }
             else -> {}
         }
@@ -127,14 +127,14 @@ class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport(
         val configExpression = context.config?.expression ?: return
         when(configExpression.type) {
             CwtDataType.IntValueField -> {
-                context.put(PlsCompletionKeys.isIntKey, true)
+                context.isInt = true
             }
             else -> {}
         }
         ParadoxConfigHandler.completeValueFieldExpression(context, result)
         when(configExpression.type) {
             CwtDataType.IntValueField -> {
-                context.put(PlsCompletionKeys.isIntKey, null)
+                context.isInt = null
             }
             else -> {}
         }
@@ -164,14 +164,14 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSuppo
         val configExpression = context.config?.expression ?: return
         when(configExpression.type) {
             CwtDataType.IntVariableField -> {
-                context.put(PlsCompletionKeys.isIntKey, true)
+                context.isInt = true
             }
             else -> {}
         }
         ParadoxConfigHandler.completeVariableFieldExpression(context, result)
         when(configExpression.type) {
             CwtDataType.IntVariableField -> {
-                context.put(PlsCompletionKeys.isIntKey, null)
+                context.isInt = null
             }
             else -> {}
         }

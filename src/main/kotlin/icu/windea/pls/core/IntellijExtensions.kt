@@ -180,14 +180,20 @@ inline fun <T> keyOf(name: String) = Key.create<T>(name)
 @Suppress("NOTHING_TO_INLINE")
 inline fun <T> keyOf(name: String, noinline defaultValueProvider: () -> T) = KeyWithDefaultValue.create(name, defaultValueProvider)
 
-operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? = thisRef.getUserData(this)
-operator fun <T> Key<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T) = thisRef.putUserData(this, value)
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? = thisRef.getUserData(this)
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun <T> Key<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T) = thisRef.putUserData(this, value)
 
-operator fun <T> Key<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>) = thisRef.get(this)
-operator fun <T> Key<T>.setValue(thisRef: ProcessingContext, property: KProperty<*>, value: T) = thisRef.put(this, value)
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun <T> Key<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>) = thisRef.get(this)
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun <T> Key<T>.setValue(thisRef: ProcessingContext, property: KProperty<*>, value: T) = thisRef.put(this, value)
 
-operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)
-operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KProperty<*>): T? = thisRef.dataContext.getData(this)
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KProperty<*>): T? = thisRef.dataContext.getData(this)
 //endregion
 
 //region Documentation Extensions

@@ -148,7 +148,7 @@ class ParadoxVariableFieldExpressionImpl(
         val isKey = context.isKey
         val scopeContext = context.scopeContext ?: ParadoxScopeHandler.resolveAnyScopeContext()
         
-        context.put(PlsCompletionKeys.isKeyKey, null)
+        context.isKey = null
         
         var scopeContextInExpression = scopeContext
         val offsetInParent = context.offsetInParent
@@ -161,7 +161,7 @@ class ParadoxVariableFieldExpressionImpl(
             }
             if(node is ParadoxScopeFieldExpressionNode) {
                 if(inRange) {
-                    context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
+                    context.scopeContext = scopeContextInExpression
                     completeForScopeExpressionNode(node, context, result)
                     break
                 } else {
@@ -170,7 +170,7 @@ class ParadoxVariableFieldExpressionImpl(
                 }
             } else if(node is ParadoxDataExpressionNode) {
                 if(inRange) {
-                    context.put(PlsCompletionKeys.scopeContextKey, scopeContextInExpression)
+                    context.scopeContext = scopeContextInExpression
                     val scopeExpressionNode = ParadoxScopeFieldExpressionNode.resolve(node.text, node.rangeInExpression, configGroup)
                     val afterPrefix = completeForScopeExpressionNode(scopeExpressionNode, context, result)
                     if(afterPrefix) break
@@ -180,10 +180,10 @@ class ParadoxVariableFieldExpressionImpl(
             }
         }
         
-        context.put(PlsCompletionKeys.keywordKey, keyword)
-        context.put(PlsCompletionKeys.startOffsetKey, startOffset)
-        context.put(PlsCompletionKeys.isKeyKey, isKey)
-        context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
+        context.keyword = keyword
+        context.startOffset = startOffset
+        context.isKey = isKey
+        context.scopeContext = scopeContext
     }
 }
 

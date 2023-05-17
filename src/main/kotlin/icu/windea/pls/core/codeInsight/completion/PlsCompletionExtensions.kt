@@ -25,7 +25,7 @@ val PlsCompletionKeys.keywordKey by lazy { keyOf<String>("paradoxCompletion.keyw
 val PlsCompletionKeys.startOffsetKey by lazy { keyOf<Int>("paradoxCompletion.startOffset") }
 val PlsCompletionKeys.isKeyKey by lazy { keyOf<Boolean>("paradoxCompletion.isKey") }
 val PlsCompletionKeys.configKey by lazy { keyOf<CwtConfig<*>>("paradoxCompletion.config") }
-val PlsCompletionKeys.configsKey by lazy { keyOf<List<CwtConfig<*>>>("paradoxCompletion.configs") }
+val PlsCompletionKeys.configsKey by lazy { keyOf<Collection<CwtConfig<*>>>("paradoxCompletion.configs") }
 val PlsCompletionKeys.configGroupKey by lazy { keyOf<CwtConfigGroup>("paradoxCompletion.configGroup") }
 val PlsCompletionKeys.scopeContextKey by lazy { keyOf<ParadoxScopeContext>("paradoxCompletion.scopeContext") }
 val PlsCompletionKeys.scopeMatchedKey by lazy { keyOf<Boolean>("paradoxCompletion.scopeMatched") { true } }
@@ -33,24 +33,24 @@ val PlsCompletionKeys.scopeNameKey by lazy { keyOf<String>("paradoxCompletion.sc
 val PlsCompletionKeys.scopeGroupNameKey by lazy { keyOf<String>("paradoxCompletion.scopeGroupName") }
 val PlsCompletionKeys.isIntKey by lazy { keyOf<Boolean>("paradoxCompletion.isInt") }
 
-val ProcessingContext.completionIds by PlsCompletionKeys.completionIdsKey
-val ProcessingContext.parameters by PlsCompletionKeys.parametersKey
-val ProcessingContext.contextElement by PlsCompletionKeys.contextElementKey
-val ProcessingContext.originalFile by PlsCompletionKeys.originalFileKey
-val ProcessingContext.quoted by PlsCompletionKeys.quotedKey
-val ProcessingContext.rightQuoted by PlsCompletionKeys.rightQuotedKey
-val ProcessingContext.offsetInParent by PlsCompletionKeys.offsetInParentKey
-val ProcessingContext.keyword by PlsCompletionKeys.keywordKey
-val ProcessingContext.startOffset by PlsCompletionKeys.startOffsetKey
-val ProcessingContext.isKey: Boolean? by PlsCompletionKeys.isKeyKey
-val ProcessingContext.config by PlsCompletionKeys.configKey
-val ProcessingContext.configs by PlsCompletionKeys.configsKey
-val ProcessingContext.configGroup by PlsCompletionKeys.configGroupKey
-val ProcessingContext.scopeContext by PlsCompletionKeys.scopeContextKey
-val ProcessingContext.scopeMatched by PlsCompletionKeys.scopeMatchedKey
-val ProcessingContext.scopeName by PlsCompletionKeys.scopeNameKey
-val ProcessingContext.scopeGroupName by PlsCompletionKeys.scopeGroupNameKey
-val ProcessingContext.isInt by PlsCompletionKeys.isIntKey
+var ProcessingContext.completionIds by PlsCompletionKeys.completionIdsKey
+var ProcessingContext.parameters by PlsCompletionKeys.parametersKey
+var ProcessingContext.contextElement by PlsCompletionKeys.contextElementKey
+var ProcessingContext.originalFile by PlsCompletionKeys.originalFileKey
+var ProcessingContext.quoted by PlsCompletionKeys.quotedKey
+var ProcessingContext.rightQuoted by PlsCompletionKeys.rightQuotedKey
+var ProcessingContext.offsetInParent by PlsCompletionKeys.offsetInParentKey
+var ProcessingContext.keyword by PlsCompletionKeys.keywordKey
+var ProcessingContext.startOffset by PlsCompletionKeys.startOffsetKey
+var ProcessingContext.isKey: Boolean? by PlsCompletionKeys.isKeyKey
+var ProcessingContext.config by PlsCompletionKeys.configKey
+var ProcessingContext.configs by PlsCompletionKeys.configsKey
+var ProcessingContext.configGroup by PlsCompletionKeys.configGroupKey
+var ProcessingContext.scopeContext by PlsCompletionKeys.scopeContextKey
+var ProcessingContext.scopeMatched by PlsCompletionKeys.scopeMatchedKey
+var ProcessingContext.scopeName by PlsCompletionKeys.scopeNameKey
+var ProcessingContext.scopeGroupName by PlsCompletionKeys.scopeGroupNameKey
+var ProcessingContext.isInt by PlsCompletionKeys.isIntKey
 
 
 fun PsiElement.getKeyword(offsetInParent: Int): String {

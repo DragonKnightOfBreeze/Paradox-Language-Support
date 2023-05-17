@@ -687,8 +687,8 @@ object ParadoxConfigHandler {
         val configGroup = getCwtConfig(project).get(gameType)
         val elementPath = ParadoxElementPathHandler.getFromFile(definitionElement, PlsConstants.maxDefinitionDepth) ?: return
         
-        context.put(PlsCompletionKeys.isKeyKey, true)
-        context.put(PlsCompletionKeys.configGroupKey, configGroup)
+        context.isKey = true
+        context.configGroup = configGroup
         
         completeRootKey(context, result, elementPath)
     }
@@ -709,22 +709,22 @@ object ParadoxConfigHandler {
         if(configs.isEmpty()) return
         val occurrenceMap = getChildOccurrenceMap(definitionElement, parentConfigs)
         
-        context.put(PlsCompletionKeys.isKeyKey, true)
-        context.put(PlsCompletionKeys.configGroupKey, configGroup)
-        context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeHandler.getScopeContext(definitionElement))
+        context.isKey = true
+        context.configGroup = configGroup
+        context.scopeContext = ParadoxScopeHandler.getScopeContext(definitionElement)
         
         configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
             for(config in configsWithSameKey) {
                 if(shouldComplete(config, occurrenceMap)) {
-                    context.put(PlsCompletionKeys.configKey, config)
-                    context.put(PlsCompletionKeys.configsKey, configsWithSameKey)
+                    context.config = config
+                    context.configs = configsWithSameKey
                     completeScriptExpression(context, result)
                 }
             }
         }
         
-        context.put(PlsCompletionKeys.configKey, null)
-        context.put(PlsCompletionKeys.configsKey, null)
+        context.config = null
+        context.configs = null
         return
     }
     
@@ -740,19 +740,19 @@ object ParadoxConfigHandler {
         if(configs.isEmpty()) return
         val occurrenceMap = getChildOccurrenceMap(memberElement, parentConfigs)
         
-        context.put(PlsCompletionKeys.isKeyKey, false)
-        context.put(PlsCompletionKeys.configGroupKey, configGroup)
-        context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeHandler.getScopeContext(memberElement))
+        context.isKey = false
+        context.configGroup = configGroup
+        context.scopeContext = ParadoxScopeHandler.getScopeContext(memberElement)
         
         for(config in configs) {
             if(shouldComplete(config, occurrenceMap)) {
-                context.put(PlsCompletionKeys.configKey, config)
+                context.config = config
                 completeScriptExpression(context, result)
             }
         }
         
-        context.put(PlsCompletionKeys.configKey, null)
-        context.put(PlsCompletionKeys.configsKey, null)
+        context.config = null
+        context.configs = null
         return
     }
     
@@ -764,19 +764,19 @@ object ParadoxConfigHandler {
         val configs = definitionMemberInfo.getConfigs()
         if(configs.isEmpty()) return
         
-        context.put(PlsCompletionKeys.isKeyKey, false)
-        context.put(PlsCompletionKeys.configGroupKey, configGroup)
-        context.put(PlsCompletionKeys.scopeContextKey, ParadoxScopeHandler.getScopeContext(definitionElement))
+        context.isKey = false
+        context.configGroup = configGroup
+        context.scopeContext = ParadoxScopeHandler.getScopeContext(definitionElement)
         
         for(config in configs) {
             if(config is CwtPropertyConfig) {
                 val valueConfig = config.valueConfig ?: continue
-                context.put(PlsCompletionKeys.configKey, valueConfig)
+                context.config = valueConfig
                 completeScriptExpression(context, result)
             }
         }
         
-        context.put(PlsCompletionKeys.configKey, null)
+        context.config = null
         return
     }
     
@@ -872,7 +872,7 @@ object ParadoxConfigHandler {
                 if(subTypeConfig != null) "${typeConfig.name}.${subTypeConfig.name}" else typeConfig.name
             }
             val typeFile = config?.pointer?.containingFile
-            context.put(PlsCompletionKeys.configKey, config)
+            context.config = config
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, key)
                 .withIcon(icon)
                 .withTailText(tailText)
@@ -883,7 +883,7 @@ object ParadoxConfigHandler {
                 .caseInsensitive()
                 .withPriority(PlsCompletionPriorities.rootKeyPriority)
             result.addScriptExpressionElement(context, builder)
-            context.put(PlsCompletionKeys.configKey, null)
+            context.config = null
         }
     }
     
@@ -929,15 +929,15 @@ object ParadoxConfigHandler {
             val aliasConfig = aliasConfigs.firstOrNull() ?: continue
             //aliasSubName是一个表达式
             if(isKey == true) {
-                context.put(PlsCompletionKeys.configKey, aliasConfig)
-                context.put(PlsCompletionKeys.configsKey, aliasConfigs)
+                context.config = aliasConfig
+                context.configs = aliasConfigs
                 completeScriptExpression(context, result)
             } else {
-                context.put(PlsCompletionKeys.configKey, aliasConfig)
+                context.config = aliasConfig
                 completeScriptExpression(context, result)
             }
-            context.put(PlsCompletionKeys.configKey, config)
-            context.put(PlsCompletionKeys.configsKey, configs)
+            context.config = config
+            context.configs = configs
         }
     }
     
@@ -1087,7 +1087,7 @@ object ParadoxConfigHandler {
         
         if(dataSourceNodeToCheck is ParadoxScopeFieldExpressionNode) {
             completeForScopeExpressionNode(dataSourceNodeToCheck, context, result)
-            context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
+            context.scopeContext = scopeContext
             return@with
         }
         if(dataSourceNodeToCheck is ParadoxValueSetValueExpression) {
@@ -1095,14 +1095,14 @@ object ParadoxConfigHandler {
             return@with
         }
         
-        context.put(PlsCompletionKeys.configsKey, linkConfigs)
+        context.configs = linkConfigs
         for(linkConfig in linkConfigs) {
-            context.put(PlsCompletionKeys.configKey, linkConfig)
+            context.config = linkConfig
             completeScriptExpression(context, result)
         }
-        context.put(PlsCompletionKeys.configKey, config)
-        context.put(PlsCompletionKeys.configsKey, configs)
-        context.put(PlsCompletionKeys.scopeMatchedKey, null)
+        context.config = config
+        context.configs = configs
+        context.scopeMatched = null
     }
     
     fun completeValueLinkValue(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
@@ -1172,14 +1172,14 @@ object ParadoxConfigHandler {
             return@with
         }
         
-        context.put(PlsCompletionKeys.configsKey, linkConfigs)
+        context.configs = linkConfigs
         for(linkConfig in linkConfigs) {
-            context.put(PlsCompletionKeys.configKey, linkConfig)
+            context.config = linkConfig
             completeScriptExpression(context, result)
         }
-        context.put(PlsCompletionKeys.configKey, config)
-        context.put(PlsCompletionKeys.configsKey, configs)
-        context.put(PlsCompletionKeys.scopeMatchedKey, null)
+        context.config = config
+        context.configs = configs
+        context.scopeMatched = null
     }
     
     fun completeValueSetValue(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {

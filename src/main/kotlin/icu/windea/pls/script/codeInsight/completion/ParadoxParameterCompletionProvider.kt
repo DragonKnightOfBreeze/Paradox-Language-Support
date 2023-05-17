@@ -19,12 +19,12 @@ class ParadoxParameterCompletionProvider : CompletionProvider<CompletionParamete
 		val file = parameters.originalFile
 		val keyword = tokenElement.getKeyword(offsetInParent)
 		
-		context.put(PlsCompletionKeys.completionIdsKey, mutableSetOf<String>().synced())
-		context.put(PlsCompletionKeys.parametersKey, parameters)
-		context.put(PlsCompletionKeys.contextElementKey, element)
-		context.put(PlsCompletionKeys.originalFileKey, file)
-		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
-		context.put(PlsCompletionKeys.keywordKey, keyword)
+		context.completionIds = mutableSetOf<String>().synced()
+		context.parameters = parameters
+		context.contextElement = element
+		context.originalFile = file
+		context.offsetInParent = offsetInParent
+		context.keyword = keyword
 		
 		ParadoxParameterHandler.completeParameters(element, context, result)
 	}

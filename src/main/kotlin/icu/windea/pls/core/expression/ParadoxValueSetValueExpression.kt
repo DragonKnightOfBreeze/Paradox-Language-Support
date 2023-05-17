@@ -95,10 +95,10 @@ class ParadoxValueSetValueExpressionImpl(
 		val configs = context.configs
 		val scopeContext = context.scopeContext ?: ParadoxScopeHandler.resolveAnyScopeContext()
 		
-		context.put(PlsCompletionKeys.configKey, this.configs.first())
-		context.put(PlsCompletionKeys.configsKey, this.configs)
-		context.put(PlsCompletionKeys.scopeContextKey, null) //don't check now
-		context.put(PlsCompletionKeys.isKeyKey, null)
+		context.config = this.configs.first()
+		context.configs = this.configs
+		context.scopeContext = null //don't check now
+		context.isKey = null
 		
 		val offsetInParent = context.offsetInParent
 		for(node in nodes) {
@@ -108,8 +108,8 @@ class ParadoxValueSetValueExpressionImpl(
 				if(inRange) {
 					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
 					val resultToUse = result.withPrefixMatcher(keywordToUse)
-					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-					context.put(PlsCompletionKeys.startOffsetKey, node.rangeInExpression.startOffset)
+					context.keyword = keywordToUse
+					context.startOffset = node.rangeInExpression.startOffset
 					ParadoxConfigHandler.completeValueSetValue(context, resultToUse)
 					break
 				}
@@ -117,20 +117,20 @@ class ParadoxValueSetValueExpressionImpl(
 				if(inRange) {
 					val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
 					val resultToUse = result.withPrefixMatcher(keywordToUse)
-					context.put(PlsCompletionKeys.keywordKey, keywordToUse)
-					context.put(PlsCompletionKeys.startOffsetKey, node.rangeInExpression.startOffset)
+					context.keyword = keywordToUse
+					context.startOffset = node.rangeInExpression.startOffset
 					node.complete(context, resultToUse)
 					break
 				}
 			}
 		}
 		
-		context.put(PlsCompletionKeys.keywordKey, keyword)
-		context.put(PlsCompletionKeys.startOffsetKey, startOffset)
-		context.put(PlsCompletionKeys.isKeyKey, isKey)
-		context.put(PlsCompletionKeys.configKey, config)
-		context.put(PlsCompletionKeys.configsKey, configs)
-		context.put(PlsCompletionKeys.scopeContextKey, scopeContext)
+		context.keyword = keyword
+		context.startOffset = startOffset
+		context.isKey = isKey
+		context.config = config
+		context.configs = configs
+		context.scopeContext = scopeContext
 	}
 }
 
