@@ -13,6 +13,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.localisationParameterSupport" interface="icu.windea.pls.lang.parameter.ParadoxLocalisationParameterSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modifierSupport" interface="icu.windea.pls.lang.modifier.ParadoxModifierSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionModifierProvider" interface="icu.windea.pls.lang.modifier.ParadoxDefinitionModifierProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.overriddenScopeContextProvider" interface="icu.windea.pls.lang.scope.ParadoxOverriddenScopeContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionScopeContextProvider" interface="icu.windea.pls.lang.scope.ParadoxDefinitionScopeContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionInferredScopeContextProvider" interface="icu.windea.pls.lang.scope.ParadoxDefinitionInferredScopeContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionSupportedScopesProvider" interface="icu.windea.pls.lang.scope.ParadoxDefinitionSupportedScopesProvider" dynamic="true"/>
@@ -82,6 +83,8 @@
     <modifierSupport implementation="icu.windea.pls.lang.modifier.impl.StellarisEconomicCategoryModifierSupport"/>
     
     <definitionModifierProvider implementation="icu.windea.pls.lang.modifier.impl.StellarisScriptedModifierDefinitionModifierProvider"/>
+    
+    <overriddenScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxComplexTriggerModifierOverriddenScopeContextProvider"/>
     
     <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxBaseDefinitionScopeContextProvider" order="last"/>
     <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxGameRuleScopeContextProvider"/>

@@ -201,6 +201,10 @@ object ParadoxScopeHandler {
         val configs = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)
         val config = configs.firstOrNull()
         if(config == null) return null
+        
+        val overriddenScopeContext = ParadoxOverriddenScopeContextProvider.getOverriddenScopeContext(element, config)
+        if(overriddenScopeContext != null) return overriddenScopeContext
+        
         if(config is CwtPropertyConfig && config.expression.type == CwtDataType.ScopeField) {
             if(parentScopeContext == null) return null
             val scopeField = element.castOrNull<ParadoxScriptProperty>()?.propertyKey?.text ?: return null

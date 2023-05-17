@@ -3,13 +3,17 @@ package icu.windea.pls.lang.config.impl
 import com.intellij.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.config.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
+@WithGameType(ParadoxGameType.Stellaris)
 class ParadoxComplexTriggerModifierOverriddenConfigProvider : ParadoxOverriddenConfigProvider {
     @Suppress("UNCHECKED_CAST")
     override fun <T : CwtDataConfig<*>> getOverriddenConfigs(element: ParadoxScriptMemberElement, rawConfig: T): List<T>? {
+        //重载complex_trigger_modifier = {...}中属性parameters的值对应的CWT规则
         //兼容使用内联或者使用封装变量的情况
         if(element !is ParadoxScriptProperty) return null
         if(rawConfig !is CwtPropertyConfig) return null
