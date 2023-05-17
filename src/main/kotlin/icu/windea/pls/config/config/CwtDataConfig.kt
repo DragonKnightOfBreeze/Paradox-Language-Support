@@ -95,21 +95,8 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 			}
 		}
 	}
-}
-
-fun CwtDataConfig<*>.findOption(key: String): CwtOptionConfig? = options?.find { it.key == key }
-
-fun CwtDataConfig<*>.findOptions(key: String): List<CwtOptionConfig> = options?.filter { it.key == key }.orEmpty()
-
-object CwtDataConfigKeys {
-	val path = Key.create<String>("paradox.cwtDataConfig.path")
-	val cardinality = Key.create<CwtCardinalityExpression?>("paradox.cwtDataConfig.cardinality")
-	val cardinalityMinDefine = Key.create<String?>("paradox.cwtDataConfig.cardinalityMinDefine")
-	val cardinalityMaxDefine = Key.create<String?>("paradox.cwtDataConfig.cardinalityMaxDefine")
-	val hasScopeOption = Key.create<Boolean>("paradox.cwtDataConfig.hasScopeOption")
-	val replaceScopes = Key.create<ParadoxScopeContext?>("paradox.cwtDataConfig.replaceScopes")
-	val pushScope = Key.create<String?>("paradox.cwtDataConfig.pushScope")
-	val supportedScopes = Key.create<Set<String>>("paradox.cwtDataConfig.supportedScopes")
+	
+	object Keys
 }
 
 val CwtDataConfig<*>.isRoot get() = when {
@@ -118,7 +105,20 @@ val CwtDataConfig<*>.isRoot get() = when {
 	else -> false
 }
 
-val CwtDataConfig<*>.path get() = getOrPutUserData(CwtDataConfigKeys.path) action@{
+fun CwtDataConfig<*>.findOption(key: String): CwtOptionConfig? = options?.find { it.key == key }
+
+fun CwtDataConfig<*>.findOptions(key: String): List<CwtOptionConfig> = options?.filter { it.key == key }.orEmpty()
+
+val CwtDataConfig.Keys.path by lazy { Key.create<String>("paradox.cwtDataConfig.path") }
+val CwtDataConfig.Keys.cardinality by lazy { Key.create<CwtCardinalityExpression?>("paradox.cwtDataConfig.cardinality") }
+val CwtDataConfig.Keys.cardinalityMinDefine by lazy { Key.create<String?>("paradox.cwtDataConfig.cardinalityMinDefine") }
+val CwtDataConfig.Keys.cardinalityMaxDefine by lazy { Key.create<String?>("paradox.cwtDataConfig.cardinalityMaxDefine") }
+val CwtDataConfig.Keys.hasScopeOption by lazy { Key.create<Boolean>("paradox.cwtDataConfig.hasScopeOption") }
+val CwtDataConfig.Keys.replaceScopes by lazy { Key.create<ParadoxScopeContext?>("paradox.cwtDataConfig.replaceScopes") }
+val CwtDataConfig.Keys.pushScope by lazy { Key.create<String?>("paradox.cwtDataConfig.pushScope") }
+val CwtDataConfig.Keys.supportedScopes by lazy { Key.create<Set<String>>("paradox.cwtDataConfig.supportedScopes") }
+
+val CwtDataConfig<*>.path get() = getOrPutUserData(CwtDataConfig.Keys.path) action@{
 	val list = LinkedList<String>()
 	var current: CwtDataConfig<*> = this
 	while(true) {
@@ -131,7 +131,7 @@ val CwtDataConfig<*>.path get() = getOrPutUserData(CwtDataConfigKeys.path) actio
 //may on:
 // * a config expression in declaration config
 // * a config expression in subtype structure config
-val CwtDataConfig<*>.cardinality get() = getOrPutUserData(CwtDataConfigKeys.cardinality) action@{
+val CwtDataConfig<*>.cardinality get() = getOrPutUserData(CwtDataConfig.Keys.cardinality) action@{
 	val option = options?.find { it.key == "cardinality" }
 	if(option == null) {
 		//如果没有注明且类型是常量，则推断为 1..1
@@ -141,16 +141,16 @@ val CwtDataConfig<*>.cardinality get() = getOrPutUserData(CwtDataConfigKeys.card
 	}
 	option?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
 }
-val CwtDataConfig<*>.cardinalityMinDefine get() = getOrPutUserData(CwtDataConfigKeys.cardinalityMinDefine) action@{
+val CwtDataConfig<*>.cardinalityMinDefine get() = getOrPutUserData(CwtDataConfig.Keys.cardinalityMinDefine) action@{
 	val option = options?.find { it.key == "cardinality_min_define" }
 	option?.stringValue
 }
-val CwtDataConfig<*>.cardinalityMaxDefine get() = getOrPutUserData(CwtDataConfigKeys.cardinalityMaxDefine) action@{
+val CwtDataConfig<*>.cardinalityMaxDefine get() = getOrPutUserData(CwtDataConfig.Keys.cardinalityMaxDefine) action@{
 	val option = options?.find { it.key == "cardinality_max_define" }
 	option?.stringValue
 }
 
-val CwtDataConfig<*>.hasScopeOption get() = getOrPutUserData(CwtDataConfigKeys.hasScopeOption) action@{
+val CwtDataConfig<*>.hasScopeOption get() = getOrPutUserData(CwtDataConfig.Keys.hasScopeOption) action@{
 	options?.any { it.key == "replace_scope" || it.key == "replace_scopes" || it.key == "push_scope" || it.key == "scope" || it.key == "scopes" }
 		?: false
 }
@@ -158,7 +158,7 @@ val CwtDataConfig<*>.hasScopeOption get() = getOrPutUserData(CwtDataConfigKeys.h
 // * a config expression in declaration config (include root expression, e.g. "army = { ... }")
 // * a type config (e.g. "type[xxx] = { ... }")
 // * a subtype config (e.g. "subtype[xxx] = { ... }")
-val CwtDataConfig<*>.replaceScopes get() = getOrPutUserData(CwtDataConfigKeys.replaceScopes) action@{
+val CwtDataConfig<*>.replaceScopes get() = getOrPutUserData(CwtDataConfig.Keys.replaceScopes) action@{
 	val option = options?.find { it.key == "replace_scope" || it.key == "replace_scopes" }
 	if(option == null) return@action null
 	val options = option.options ?: return@action null
@@ -169,13 +169,13 @@ val CwtDataConfig<*>.replaceScopes get() = getOrPutUserData(CwtDataConfigKeys.re
 // * a config expression in declaration config (include root expression, e.g. "army = { ... }")
 // * a type config (e.g. "type[xxx] = { ... }")
 // * a subtype config (e.g. "subtype[xxx] = { ... }")
-val CwtDataConfig<*>.pushScope get() = getOrPutUserData(CwtDataConfigKeys.pushScope) action@{
+val CwtDataConfig<*>.pushScope get() = getOrPutUserData(CwtDataConfig.Keys.pushScope) action@{
 	val option = options?.find { it.key == "push_scope" }
 	option?.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) }
 }
 //may on:
 // * a config expression in declaration config
-val CwtDataConfig<*>.supportedScopes get() = getOrPutUserData(CwtDataConfigKeys.supportedScopes) action@{
+val CwtDataConfig<*>.supportedScopes get() = getOrPutUserData(CwtDataConfig.Keys.supportedScopes) action@{
 	val option = options?.find { it.key == "scope" || it.key == "scopes" }
 	buildSet {
 		option?.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
@@ -204,3 +204,7 @@ fun <T : PsiElement> CwtDataConfig<T>.toOccurrence(contextElement: PsiElement, p
 	}
 	return occurrence
 }
+
+val CwtDataConfig.Keys.isOverriddenKey by lazy { Key.create<Boolean>("paradox.cwtDataConfig.isOverridden") }
+
+var CwtDataConfig<*>.isOverridden by CwtDataConfig.Keys.isOverriddenKey 

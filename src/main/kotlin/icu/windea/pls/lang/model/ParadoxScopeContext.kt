@@ -1,21 +1,17 @@
 package icu.windea.pls.lang.model
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.nodes.*
 import java.util.*
 
-class ParadoxScopeContext private constructor(val scope: ParadoxScope) {
+class ParadoxScopeContext private constructor(val scope: ParadoxScope): UserDataHolderBase() {
     @Volatile var root: ParadoxScopeContext? = null
     @Volatile var prev: ParadoxScopeContext? = null
     @Volatile var from: ParadoxScopeContext? = null
     
     //scope context before scope switch
     @Volatile var parent: ParadoxScopeContext? = null
-    
-    @Volatile var isInferred: Boolean = false
-    @Volatile var isOverridden: Boolean = false
-    //scope context list of scope field expression nodes
-    @Volatile var scopeFieldInfo: List<Tuple2<ParadoxScopeFieldExpressionNode, ParadoxScopeContext>>? = null
     
     val map by lazy {
         buildMap {
@@ -149,4 +145,14 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope) {
             return result
         }
     }
+    
+    object Keys
 }
+
+val ParadoxScopeContext.Keys.isOverriddenKey by lazy { Key.create<Boolean>("paradox.scopeContext.isOverridden") }
+val ParadoxScopeContext.Keys.scopeFieldInfoKey by lazy { Key.create<List<Tuple2<ParadoxScopeFieldExpressionNode, ParadoxScopeContext>>>("paradox.scopeContext.scopeFieldInfo") }
+
+var ParadoxScopeContext.isOverridden by ParadoxScopeContext.Keys.isOverriddenKey
+
+//scope context list of scope field expression nodes
+var ParadoxScopeContext.scopeFieldInfo by ParadoxScopeContext.Keys.scopeFieldInfoKey

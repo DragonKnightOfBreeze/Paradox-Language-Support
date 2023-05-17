@@ -1,10 +1,13 @@
 package icu.windea.pls.lang.config.impl
 
+import com.intellij.openapi.progress.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
@@ -18,14 +21,21 @@ class ParadoxComplexTriggerModifierOverriddenConfigProvider : ParadoxOverriddenC
         if(element !is ParadoxScriptProperty) return null
         if(rawConfig !is CwtPropertyConfig) return null
         if(rawConfig.key != "parameters") return null
-        val aliasConfig = rawConfig.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
+        val complexTriggerModifierConfig = rawConfig.parent?.castOrNull<CwtPropertyConfig>()
+        val aliasConfig = complexTriggerModifierConfig?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
         if(aliasConfig.config.key != "alias[modifier_rule:complex_trigger_modifier]") return null
-        val triggerProperty = element.parent?.castOrNull<ParadoxScriptBlock>()?.findProperty("trigger", inline = true) ?: return null
+        ProgressManager.checkCanceled()
+        val complexTriggerModifierProperty = element.parentsOfType<ParadoxScriptProperty>(false)
+            .filter { it.name.lowercase() == "complex_trigger_modifier" }
+            .find { ParadoxConfigHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
+            ?: return null
+        val triggerProperty = complexTriggerModifierProperty.findProperty("trigger", inline = true) ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
         val configGroup = rawConfig.info.configGroup
         val triggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.takeIfNotEmpty() ?: return null
         val resultConfigs = SmartList<CwtPropertyConfig>()
         for(triggerConfig in triggerConfigs) {
+            ProgressManager.checkCanceled()
             val inlined = rawConfig.inlineFromAliasConfig(triggerConfig, valueOnly = true)
             inlined.inlineableConfig = null
             resultConfigs.add(inlined)

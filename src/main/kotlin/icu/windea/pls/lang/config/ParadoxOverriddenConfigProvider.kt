@@ -28,7 +28,7 @@ interface ParadoxOverriddenConfigProvider {
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
                 ep.getOverriddenConfigs(element, rawConfig).takeIfNotEmpty()
-            }
+            }?.onEach { it.isOverridden = true }
         }
     }
 }
