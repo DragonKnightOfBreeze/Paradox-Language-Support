@@ -195,6 +195,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
   {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {yybegin(WAITING_PROPERTY_VALUE); return WHITE_SPACE;}
   {NUMBER} {yybegin(WAITING_PROPERTY_VALUE); return PROPERTY_NUMBER;}
+  \" {yybegin(WAITING_RICH_TEXT); return LEFT_QUOTE; }
 }
 <WAITING_PROPERTY_VALUE> {
   {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
