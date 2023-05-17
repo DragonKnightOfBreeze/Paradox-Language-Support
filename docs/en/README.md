@@ -56,7 +56,6 @@ Tips:
 * If the IDE freezes or the IDE indices encounters problems or an error related to the IDE indices happened, try the following:
   * Update the IDE and plugin to the latest version.
   * Click `File -> Invalidate Caches... -> Invalidate and Restart` to rebuild the index and restart the IDE.
-  * Delete the `.idea` directory under the project directory, and then restart the IDE.
 
 ## FAQ
 
