@@ -48,17 +48,13 @@ data class CwtPropertyConfig(
 		)
 	}
 	
-	override fun resolved(): CwtPropertyConfig = inlineableConfig?.config ?: this
+	override fun resolved(): CwtPropertyConfig = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>() ?: this
 	
-	override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config
+	override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>()
 	
 	override fun toString(): String {
 		return "$key ${separatorType.text} $value"
 	}
-	
-	//规则内联相关
-	
-	var inlineableConfig: CwtInlineableConfig? = null
 	
 	/**
 	 * 从[singleAliasConfig]内联规则：value改为取[singleAliasConfig]的的value，如果需要拷贝，则进行深拷贝。

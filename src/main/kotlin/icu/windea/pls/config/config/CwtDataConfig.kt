@@ -33,9 +33,11 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 	val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
 	val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
 	
-	override fun resolved(): CwtDataConfig<*> = this
+	var inlineableConfig: CwtInlineableConfig<@UnsafeVariance T>? = null
 	
-	override fun resolvedOrNull(): CwtDataConfig<*>? = null
+	override fun resolved(): CwtDataConfig<T> = inlineableConfig?.config?.castOrNull<CwtDataConfig<T>>() ?: this
+	
+	override fun resolvedOrNull(): CwtDataConfig<T>? = inlineableConfig?.config?.castOrNull<CwtDataConfig<T>>()
 	
 	override fun toString(): String {
 		return super.toString()

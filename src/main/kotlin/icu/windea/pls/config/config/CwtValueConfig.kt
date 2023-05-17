@@ -30,13 +30,13 @@ data class CwtValueConfig(
     
     override val expression: CwtValueExpression get() = valueExpression
     
-    val isTagConfig = optionValues?.any { it.stringValue == "tag" } == true
+    override fun resolved(): CwtValueConfig = inlineableConfig?.config?.castOrNull<CwtValueConfig>() ?: this
     
-    override fun resolved(): CwtValueConfig = this
-    
-    override fun resolvedOrNull(): CwtValueConfig? = null
+    override fun resolvedOrNull(): CwtValueConfig? = inlineableConfig?.config?.castOrNull<CwtValueConfig>()
     
     override fun toString(): String {
         return value
     }
+    
+    val isTagConfig = optionValues?.any { it.stringValue == "tag" } == true
 }

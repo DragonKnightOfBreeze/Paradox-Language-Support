@@ -8,4 +8,4 @@ data class CwtInlineConfig(
     override val info: CwtConfigGroupInfo,
     override val config: CwtPropertyConfig,
     override val name: String
-) : CwtInlineableConfig
+) : CwtInlineableConfig<CwtProperty>

@@ -1,8 +1,8 @@
 package icu.windea.pls.config.config
 
-import icu.windea.pls.cwt.psi.*
+import com.intellij.psi.*
 
-interface CwtInlineableConfig: CwtConfig<CwtProperty> {
+interface CwtInlineableConfig<out T: PsiElement>: CwtConfig<T> {
 	val name: String
-	val config: CwtPropertyConfig
+	val config: CwtDataConfig<T>
 }

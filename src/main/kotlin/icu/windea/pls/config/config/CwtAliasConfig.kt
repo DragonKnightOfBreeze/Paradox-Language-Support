@@ -13,7 +13,7 @@ data class CwtAliasConfig(
     override val config: CwtPropertyConfig,
     override val name: String,
     val subName: String
-) : CwtInlineableConfig {
+) : CwtInlineableConfig<CwtProperty> {
     val subNameExpression = CwtKeyExpression.resolve(subName)
     
     override val expression get() = subNameExpression
