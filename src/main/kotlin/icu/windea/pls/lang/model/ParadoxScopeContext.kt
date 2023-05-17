@@ -13,6 +13,7 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope) {
     @Volatile var parent: ParadoxScopeContext? = null
     
     @Volatile var isInferred: Boolean = false
+    @Volatile var isOverridden: Boolean = false
     //scope context list of scope field expression nodes
     @Volatile var scopeFieldInfo: List<Tuple2<ParadoxScopeFieldExpressionNode, ParadoxScopeContext>>? = null
     

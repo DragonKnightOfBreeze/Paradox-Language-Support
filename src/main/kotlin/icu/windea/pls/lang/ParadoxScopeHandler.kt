@@ -117,13 +117,18 @@ object ParadoxScopeHandler {
         //child config can be "alias_name[X] = ..." and "alias[X:scope_field]" is valid
         //or root config in config tree is "alias[X:xxx] = ..."
         val configs = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)
-        return configs.any { config ->
+        configs.forEach { config ->
             val configGroup = config.info.configGroup
-            if(config.expression.type == CwtDataType.AliasKeysField) return@any true
-            if(isScopeContextSupportedAsRoot(config, configGroup)) return@any true
-            if(isScopeContextSupportedAsChild(config, configGroup)) return@any true
-            false
+            if(config.expression.type == CwtDataType.AliasKeysField) return true
+            if(isScopeContextSupportedAsRoot(config, configGroup)) return true
+            if(isScopeContextSupportedAsChild(config, configGroup)) return true
         }
+        
+        //if there is an overridden scope context, so do supported
+        val scopeContext = getScopeContext(element)
+        if(scopeContext?.isOverridden == true) return true
+        
+        return false
     }
     
     private fun isScopeContextSupportedAsRoot(config: CwtDataConfig<*>, configGroup: CwtConfigGroup): Boolean {

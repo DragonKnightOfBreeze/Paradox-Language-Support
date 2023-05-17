@@ -26,7 +26,7 @@ interface ParadoxOverriddenScopeContextProvider {
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
                 ep.getOverriddenScopeContext(element, config)
-            }
+            }?.also { it.isOverridden = true }
         }
     }
 }
