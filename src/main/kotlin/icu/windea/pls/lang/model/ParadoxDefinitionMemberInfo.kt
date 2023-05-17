@@ -68,13 +68,12 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
     if(elementPath.isParameterized) return emptyList()
     if(elementPath.isEmpty()) return declaration.toSingletonList()
     
-    var result: MutableList<CwtDataConfig<*>> = SmartList()
-    result.add(declaration)
+    var result: List<CwtDataConfig<*>> = declaration.toSingletonList()
     
     var inlinedByInlineConfig = false
     
     val configGroup = definitionMemberInfo.configGroup
-    elementPath.subPathInfos.forEachFast f1@{ _, info ->
+    elementPath.subPathInfos.forEachFast f1@{ info ->
         val (key, isQuoted, isKey) = info
         
         //如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
@@ -82,7 +81,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
         
         val expression = ParadoxDataExpression.resolve(key, isQuoted, true)
         val nextResult = SmartList<CwtDataConfig<*>>()
-        result.forEachFast f2@{ _, parentConfig ->
+        result.forEachFast f2@{ parentConfig ->
             //处理内联规则
             if(!inlinedByInlineConfig && isKey && parentConfig is CwtPropertyConfig) {
                 inlinedByInlineConfig = ParadoxConfigInlineHandler.inlineFromInlineConfig(element, key, isQuoted, parentConfig, nextResult)
@@ -91,10 +90,10 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
             
             val configs = parentConfig.configs
             if(configs.isNullOrEmpty()) return@f2
-            configs.forEachFast f3@{ _, config ->
+            configs.forEachFast f3@{ config ->
                 if(isKey && config is CwtPropertyConfig) {
                     if(ParadoxConfigHandler.matchesScriptExpression(element, expression, config.keyExpression, config, configGroup, matchType)) {
-                        ParadoxConfigInlineHandler.inlineFromAliasConfig(element, key, isQuoted, config, result, matchType)
+                        ParadoxConfigInlineHandler.inlineFromAliasConfig(element, key, isQuoted, config, nextResult, matchType)
                     }
                 } else if(!isKey && config is CwtValueConfig) {
                     nextResult.add(config)
@@ -102,21 +101,26 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
             }
             
             //如果存在，替换成重置后的规则
-            result.forEachFast f3@{ i, config ->
+            nextResult.forEachIndexedFast f3@{ i, config ->
                 val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, config)
                 if(overriddenConfigs.isNotNullOrEmpty()) {
-                    result.removeAt(i)
-                    result.addAll(i, overriddenConfigs)
+                    nextResult.removeAt(i)
+                    nextResult.addAll(i, overriddenConfigs)
                 }
             }
         }
-        result = nextResult
         
         //如果结果不唯一且结果中存在按常量字符串匹配的规则，则仅选用那个规则
-        if(result.size > 1) {
-            val optimizedResult = result.filterTo(SmartList()) { it.expression.type == CwtDataType.Constant }
-            if(optimizedResult.isNotEmpty()) result = optimizedResult
+        if(nextResult.size > 1) {
+            nextResult.forEachFast f2@{ config ->
+                if(config.expression.type == CwtDataType.Constant) {
+                    result = config.toSingletonList()
+                    return@f1
+                }
+            }
         }
+        
+        result = nextResult
     }
     
     return result.sortedByPriority(configGroup) { it.expression }
@@ -140,7 +144,7 @@ private fun doGetChildConfigs(definitionInfo: ParadoxDefinitionInfo, definitionM
             //打平propertyConfigs中的每一个properties
             val configs = doGetConfigs(definitionInfo, definitionMemberInfo, matchType)
             val result = SmartList<CwtDataConfig<*>>()
-            configs.forEachFast { _, config ->
+            configs.forEachFast { config ->
                 val childConfigs = config.configs
                 if(childConfigs.isNotNullOrEmpty()) result.addAll(childConfigs)
             }

@@ -22,7 +22,8 @@ class ParadoxComplexTriggerModifierOverriddenConfigProvider : ParadoxOverriddenC
         val triggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.takeIfNotEmpty() ?: return null
         val resultConfigs = SmartList<CwtPropertyConfig>()
         for(triggerConfig in triggerConfigs) {
-            resultConfigs.add(rawConfig.inlineFromAliasConfig(triggerConfig, key = rawConfig.key))
+            val inlined = rawConfig.inlineFromAliasConfig(triggerConfig, key = rawConfig.key)
+            resultConfigs.add(inlined)
         }
         return resultConfigs as List<T>
     }
