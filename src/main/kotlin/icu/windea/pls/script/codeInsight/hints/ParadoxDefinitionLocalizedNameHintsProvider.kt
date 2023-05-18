@@ -42,7 +42,7 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<S
 					textField()
 						.bindIntText(settings::textLengthLimit)
 						.bindIntWhenTextChanged(settings::textLengthLimit)
-						.errorOnApply(PlsBundle.message("script.hints.error.shouldBePositiveOrZero")) { (it.text.toIntOrNull() ?: 0) < 0 }
+						.errorOnApply(PlsBundle.message("error.shouldBePositiveOrZero")) { (it.text.toIntOrNull() ?: 0) < 0 }
 				}
 				row {
 					label(PlsBundle.message("script.hints.settings.iconHeightLimit")).widthGroup("left")
@@ -50,7 +50,7 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<S
 					textField()
 						.bindIntText(settings::iconHeightLimit)
 						.bindIntWhenTextChanged(settings::iconHeightLimit)
-						.errorOnApply(PlsBundle.message("script.hints.error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
+						.errorOnApply(PlsBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
 				}
 			}
 		}

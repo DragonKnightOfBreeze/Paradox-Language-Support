@@ -45,7 +45,7 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
                     textField()
                         .bindIntText(settings::iconHeightLimit)
                         .bindIntWhenTextChanged(settings::iconHeightLimit)
-                        .errorOnApply(PlsBundle.message("script.hints.error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
+                        .errorOnApply(PlsBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
                 }
             }
         }
