@@ -555,6 +555,25 @@ fun PsiFile.findAllElementsBetween(startOffset: Int, endOffset: Int, rootTransfo
     return elements
 }
 
+/**
+ * @param forward 查找偏移之前还是之后的PSI引用，默认为null，表示同时考虑。
+ */
+fun PsiFile.findReferenceAt(offset: Int, forward: Boolean? = null, predicate: (reference: PsiReference) -> Boolean): PsiReference? {
+    if(forward != false) {
+        val reference = findReferenceAt(offset)
+        if(reference != null && predicate(reference)) {
+            return reference
+        }
+    }
+    if(forward != true && offset > 0) {
+        val reference = findReferenceAt(offset - 1)
+        if(reference != null && predicate(reference)) {
+            return reference
+        }
+    }
+    return null
+}
+
 fun PsiReference.resolveFirst(): PsiElement? {
     return if(this is PsiPolyVariantReference) {
         this.multiResolve(false).firstNotNullOfOrNull { it.element }
