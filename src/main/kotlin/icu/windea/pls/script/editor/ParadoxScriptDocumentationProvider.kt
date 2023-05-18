@@ -186,10 +186,10 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     private fun StringBuilder.addSuperDefinitionInfo(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
         val gameType = definitionInfo.gameType
         appendIndent().append(PlsBundle.message("inherits"))
-        append(" <b>")
+        append(" ")
         val name = definitionInfo.name
         appendDefinitionLink(gameType, name, definitionInfo.type, definition, name.orAnonymous().escapeXml())
-        append("</b>: ")
+        append(": ")
         val typeConfig = definitionInfo.typeConfig
         val typeLink = "${gameType.linkToken}types/${typeConfig.name}"
         appendCwtLink(typeLink, typeConfig.name)
