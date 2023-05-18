@@ -13,7 +13,7 @@ import icu.windea.pls.localisation.psi.*
 //org.intellij.grammar.inspection.BnfInspectionSuppressor
 
 /**
- * 基于特定位置的特定注释过滤代码检查。
+ * 基于特定条件禁用代码检查。
  */
 class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
     override fun isSuppressedFor(element: PsiElement, toolId: String): Boolean {

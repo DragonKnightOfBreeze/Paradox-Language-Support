@@ -2,6 +2,7 @@ package icu.windea.pls.core.inspections
 
 import com.intellij.codeInsight.daemon.impl.actions.*
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -10,15 +11,18 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 基于特定位置的特定注释过滤代码检查。
+ * 基于特定条件禁用代码检查。
  */
 class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
     override fun isSuppressedFor(element: PsiElement, toolId: String): Boolean {
         var current = element
+        if(isSuppressedForDefinition(element, toolId)) return true
         while(current !is PsiFile) {
             current = current.parent ?: return false
+            ProgressManager.checkCanceled()
             if(current is ParadoxScriptProperty || (current is ParadoxScriptValue && current.isBlockValue())) {
                 if(isSuppressedInComment(current, toolId)) return true
+                if(isSuppressedForDefinition(current, toolId)) return true
             }
         }
         if(isSuppressedInComment(current, toolId)) return true
@@ -76,7 +80,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
     }
     
     private class SuppressForDefinitionFix(
-        private val toolId: String,
+        toolId: String,
         private val definitionName: String,
         private val depth: Int,
     ) : SuppressByCommentFix(toolId, ParadoxScriptProperty::class.java) {
@@ -106,7 +110,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
     }
     
     private class SuppressForExpressionFix(
-        private val toolId: String
+        toolId: String
     ) : SuppressByCommentFix(toolId, ParadoxScriptMemberElement::class.java) {
         //here just call scriptMemberElement (property / value) "expression"
         
@@ -120,7 +124,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
                 .find { it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockValue()) }
         }
         
-        override fun getCommentsFor(container: PsiElement): List<PsiElement>? {
+        override fun getCommentsFor(container: PsiElement): List<PsiElement> {
             return getCommentsForSuppression(container).toList()
         }
         
