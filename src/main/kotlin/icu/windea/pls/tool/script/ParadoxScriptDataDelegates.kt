@@ -30,7 +30,6 @@ inline operator fun <reified T> ParadoxScriptDataDelegateProvider<T>.getValue(th
     return value ?: defaultValue
 }
 
-@Suppress("UnusedReceiverParameter")
 fun InternalExtensionsHolder.getValueOfType(value: ParadoxScriptValue?, type: KType): Any? {
     if(value == null) return null
     val kClass = type.classifier as? KClass<*> ?: return null

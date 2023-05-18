@@ -48,10 +48,10 @@ class StellarisTechnologyDataProvider : ParadoxDefinitionDataProvider<StellarisT
 class StellarisEventDataProvider: ParadoxDefinitionDataProvider<StellarisEventDataProvider.Data>() {
     class Data(data: ParadoxScriptData) : ParadoxDefinitionData {
         val base: String? by data.get("base")
-        val desc_clear: Set<Boolean>? by data.get("desc_clear", false)
-        val option_clear: Set<Boolean>? by data.get("option_clear", false)
-        val picture_clear: Set<Boolean>? by data.get("picture_clear", false)
-        val show_sound_clear: Set<Boolean>? by data.get("show_sound_clear", false)
+        val desc_clear: Boolean by data.get("desc_clear", false)
+        val option_clear: Boolean by data.get("option_clear", false)
+        val picture_clear: Boolean by data.get("picture_clear", false)
+        val show_sound_clear: Boolean by data.get("show_sound_clear", false)
     }
     
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
