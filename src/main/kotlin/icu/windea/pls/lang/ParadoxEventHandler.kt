@@ -124,7 +124,11 @@ object ParadoxEventHandler {
     fun getEventTypes(project: Project, gameType: ParadoxGameType): List<String> {
         val eventConfig = getCwtConfig(project).get(gameType).types["event"] ?: return emptyList()
         return eventConfig.config.getOrPutUserData(eventTypesKey) {
-            eventConfig.subtypes.mapNotNull { (k,v) -> if(v.config.findOption("group")?.stringValue == "event_type") k else null  } 
+            eventConfig.subtypes.mapNotNull { (k, v) -> if(v.config.findOption("group")?.stringValue == "event_type") k else null }
         }
+    }
+    
+    fun getEventType(definitionInfo: ParadoxDefinitionInfo): String? {
+        return definitionInfo.subtypeConfigs.find { it.config.findOption("group")?.stringValue == "event_type" }?.name
     }
 }

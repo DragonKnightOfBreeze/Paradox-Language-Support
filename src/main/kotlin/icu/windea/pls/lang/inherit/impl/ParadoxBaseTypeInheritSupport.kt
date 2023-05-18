@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 为一些`swapped_type`，例如`swapped_civic`，实现定义继承的逻辑。
  */
-class ParadoxBaseTypeInheritSupportImpl : ParadoxDefinitionInheritSupport {
+class ParadoxBaseTypeInheritSupport : ParadoxDefinitionInheritSupport {
     override fun getSuperDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
         val baseType = definitionInfo.typeConfig.baseType
         if(baseType == null) return null
@@ -19,3 +19,4 @@ class ParadoxBaseTypeInheritSupportImpl : ParadoxDefinitionInheritSupport {
         return parentDefinition
     }
 }
+

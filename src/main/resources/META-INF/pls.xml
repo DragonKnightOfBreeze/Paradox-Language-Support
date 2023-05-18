@@ -44,7 +44,8 @@
     <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxFilePathReferenceExpressionSupport"/>
     <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxFileNameReferenceExpressionSupport"/>
     
-    <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.ParadoxBaseTypeInheritSupportImpl"/>
+    <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.ParadoxBaseTypeInheritSupport"/>
+    <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.StellarisEventInheritSupport"/>
     
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptBlockExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptBoolExpressionSupport"/>
@@ -101,6 +102,7 @@
 
     <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.StellarisGameConceptDataProvider"/>
     <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.StellarisTechnologyDataProvider"/>
+    <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.StellarisEventDataProvider"/>
     
     <modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromGameImporter"/>
     <!--<modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherImporter"/>-->
