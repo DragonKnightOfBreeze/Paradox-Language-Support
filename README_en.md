@@ -51,11 +51,14 @@ Tips:
   * Click `Settings > Languages & Frameworks > Paradox Language Support` to open the configuration page for the plugin.
 * To change the configuration of mod types, game directories, mod dependencies, etc., open the Mod Configuration dialog using one of the following methods:
   * Click the blue gear icon in the editor floating toolbar located in the upper right corner of the page.
-  * In the editor, open the mail menu and click `Paradox Language Support > Open Mod Settings...`.
+  * In the editor, open the context menu and click `Paradox Language Support > Open Mod Settings...`.
   * Click `Tools > Paradox Language Support > Open Mod Settings...`.
 * If the IDE freezes or the IDE indices encounters problems or an error related to the IDE indices happened, try the following:
   * Update the IDE and plugin to the latest version.
   * Click `File -> Invalidate Caches... -> Invalidate and Restart` to rebuild the index and restart the IDE.
+* If the IDE encounters other types of errors, try resolving them using the following methods:
+  * `java.lang.AssertionError` - Delete `paradox-language-support.xml`. This configuration file can be found in the `.idea` directory located in the project directory, as well as in the IDE's global configuration directory (reference location: `C:\Users\<username>\AppData\Roaming\JetBrains\IntellijIdea2023.1\options`).
+  * `java.lang.reflect.InvocationTargetException` - Same as above.
 
 ## FAQ
 
