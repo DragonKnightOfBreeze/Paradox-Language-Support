@@ -35,7 +35,7 @@ interface ParadoxElementPath : Iterable<Tuple3<String, Boolean, Boolean>> {
     
     override fun toString(): String
     
-    //需要兼容以filepath作为路径的情况 - 此时总是将这个filepath用引号括起
+    //需要转义单个子路径中的"/"
     
     companion object Resolver {
         private val cache: LoadingCache<String, ParadoxElementPath> = CacheBuilder.newBuilder().buildCache {
@@ -63,12 +63,17 @@ class ParadoxElementPathImpl(
         var escape = false
         path.forEach { c ->
             when {
-                c == '\\' -> escape = true
+                c == '\\' -> {
+                    escape = true
+                }
                 c == '/' && !escape -> {
                     add(builder.toString())
                     builder.clear()
                 } 
-                else -> builder.append(c)
+                else -> {
+                    if(escape) escape = false
+                    builder.append(c)
+                }
             }
         }
         if(builder.isNotEmpty()) add(builder.toString())
