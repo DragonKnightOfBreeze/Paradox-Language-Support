@@ -21,7 +21,7 @@
     <completion.contributor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationCompletionContributor"/>
     <codeInsight.lineMarkerProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.markers.ParadoxLocalisationLineMarkerProvider"/>
     <codeInsight.inlayProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationIconHintsProvider"/>
-    <codeInsight.inlayProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationReferenceHintsProvider"/>
+    <codeInsight.inlayProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationReferenceHintsProvider" isEnabledByDefault="false"/>
     <liveTemplateContext contextId="PARADOX_LOCALISATION"
                          implementation="icu.windea.pls.localisation.codeInsight.template.ParadoxLocalisationTemplateContextType$Base"/>
     <liveTemplateContext contextId="PARADOX_LOCALISATION_LOCALISATION_TEXT" baseContextId="PARADOX_LOCALISATION"
