@@ -4,6 +4,7 @@ import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.lang.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
@@ -31,6 +32,7 @@ abstract class ParadoxScriptHintsProvider<T : Any> : InlayHintsProvider<T> {
 		if(file.fileInfo == null) return null // skip it
 		return object : FactoryInlayHintsCollector(editor) {
 			override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
+				ProgressManager.checkCanceled()
 				return factory.collect(element, file, editor, settings, sink)
 			}
 		}
