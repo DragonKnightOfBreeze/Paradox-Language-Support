@@ -39,7 +39,7 @@ fun getCommentsForSuppression(element: PsiElement): Sequence<PsiElement> {
 fun isSuppressedForDefinition(element: PsiElement, toolId: String) : Boolean {
     if(element !is ParadoxScriptDefinitionElement) return false
     val definitionInfo = element.definitionInfo ?: return false
-    //0.10.3 禁用继承自其他事件的事件的 ParadoxScriptMissingExpression 检查
+    //0.10.3 禁用继承自其他事件的事件的 ParadoxScriptMissingExpression 检查 - 这并不准确，但目前就这样处理吧
     if(definitionInfo.type == "event" && definitionInfo.subtypes.contains("inherited")) {
         if(toolId == "ParadoxScriptMissingExpression") return true
     }
