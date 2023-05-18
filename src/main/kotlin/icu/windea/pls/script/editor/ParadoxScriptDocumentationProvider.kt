@@ -12,6 +12,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
+import icu.windea.pls.lang.inherit.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.script.psi.*
@@ -127,23 +128,16 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         definition {
             //加上文件信息
             appendFileInfoHeader(element.fileInfo)
+            
             //加上定义信息
-            val name = definitionInfo.name
-            val typeLinkText = buildString {
-                val gameType = definitionInfo.gameType
-                val typeConfig = definitionInfo.typeConfig
-                val typeLink = "${gameType.linkToken}types/${typeConfig.name}"
-                appendCwtLink(typeLink, typeConfig.name)
-                val subtypeConfigs = definitionInfo.subtypeConfigs
-                if(subtypeConfigs.isNotEmpty()) {
-                    for(subtypeConfig in subtypeConfigs) {
-                        append(", ")
-                        val subtypeLink = "$typeLink/${subtypeConfig.name}"
-                        appendCwtLink(subtypeLink, subtypeConfig.name)
-                    }
-                }
+            addDefinitionInfo(definitionInfo)
+            
+            //加上继承的定义信息
+            val superDefinition = ParadoxDefinitionInheritSupport.getSuperDefinition(element, definitionInfo)
+            val superDefinitionInfo = superDefinition?.definitionInfo
+            if(superDefinitionInfo != null) {
+                addSuperDefinitionInfo(superDefinition, superDefinitionInfo)
             }
-            append(PlsBundle.message("prefix.definition")).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>: ").append(typeLinkText)
             
             //加上相关本地化信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
             addRelatedLocalisationsForDefinition(element, definitionInfo, sectionsList?.get(2))
@@ -165,6 +159,46 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             
             //加上事件类型信息（对于on_action）
             addEventTypeForOnAction(element, definitionInfo)
+        }
+    }
+    
+    private fun StringBuilder.addDefinitionInfo(definitionInfo: ParadoxDefinitionInfo) {
+        val gameType = definitionInfo.gameType
+        append(PlsBundle.message("prefix.definition"))
+        append(" <b>")
+        val name = definitionInfo.name
+        append(name.orAnonymous().escapeXml())
+        append("</b>: ")
+        val typeConfig = definitionInfo.typeConfig
+        val typeLink = "${gameType.linkToken}types/${typeConfig.name}"
+        appendCwtLink(typeLink, typeConfig.name)
+        val subtypeConfigs = definitionInfo.subtypeConfigs
+        if(subtypeConfigs.isNotEmpty()) {
+            for(subtypeConfig in subtypeConfigs) {
+                append(", ")
+                val subtypeLink = "$typeLink/${subtypeConfig.name}"
+                appendCwtLink(subtypeLink, subtypeConfig.name)
+            }
+        }
+    }
+    
+    private fun StringBuilder.addSuperDefinitionInfo(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
+        val gameType = definitionInfo.gameType
+        appendIndent().append(PlsBundle.message("inherits"))
+        append(" <b>")
+        val name = definitionInfo.name
+        appendDefinitionLink(gameType, name, definitionInfo.type, definition, name.orAnonymous().escapeXml())
+        append("</b>: ")
+        val typeConfig = definitionInfo.typeConfig
+        val typeLink = "${gameType.linkToken}types/${typeConfig.name}"
+        appendCwtLink(typeLink, typeConfig.name)
+        val subtypeConfigs = definitionInfo.subtypeConfigs
+        if(subtypeConfigs.isNotEmpty()) {
+            for(subtypeConfig in subtypeConfigs) {
+                append(", ")
+                val subtypeLink = "$typeLink/${subtypeConfig.name}"
+                appendCwtLink(subtypeLink, subtypeConfig.name)
+            }
         }
     }
     

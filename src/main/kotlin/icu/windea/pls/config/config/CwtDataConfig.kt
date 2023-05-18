@@ -106,6 +106,12 @@ val CwtDataConfig<*>.isRoot get() = when {
 	else -> false
 }
 
+val CwtDataConfig<*>.memberConfig get() = when {
+	this is CwtPropertyConfig -> this
+	this is CwtValueConfig -> propertyConfig ?: this
+	else -> this
+}
+
 fun CwtDataConfig<*>.findOption(key: String): CwtOptionConfig? = options?.find { it.key == key }
 
 fun CwtDataConfig<*>.findOptions(key: String): List<CwtOptionConfig> = options?.filter { it.key == key }.orEmpty()
@@ -124,7 +130,7 @@ val CwtDataConfig<*>.path get() = getOrPutUserData(CwtDataConfig.Keys.path) acti
 	var current: CwtDataConfig<*> = this
 	while(true) {
 		list.addFirst(current.expression.expressionString)
-		current = current.resolved().parent ?: break
+		current = current.resolved().memberConfig.parent ?: break
 	}
 	list.joinToString("/")
 }
