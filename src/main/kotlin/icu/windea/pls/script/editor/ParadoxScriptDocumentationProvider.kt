@@ -136,6 +136,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             val superDefinition = ParadoxDefinitionInheritSupport.getSuperDefinition(element, definitionInfo)
             val superDefinitionInfo = superDefinition?.definitionInfo
             if(superDefinitionInfo != null) {
+                appendBr()
                 addSuperDefinitionInfo(superDefinition, superDefinitionInfo)
             }
             

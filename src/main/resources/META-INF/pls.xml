@@ -44,6 +44,8 @@
     <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxFilePathReferenceExpressionSupport"/>
     <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxFileNameReferenceExpressionSupport"/>
     
+    <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.ParadoxBaseTypeInheritSupportImpl"/>
+    
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptBlockExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptBoolExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptLocalisationExpressionSupport"/>
