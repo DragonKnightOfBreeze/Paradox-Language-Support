@@ -37,6 +37,7 @@ object ParadoxFileHandler {
      * 认为不同的次要入口目录下的文件不能互相引用其内容。
      */
     fun canReference(targetFile: VirtualFile?, otherFile: VirtualFile?): Boolean {
+        //TODO 0.10.3 调试发现不存在这样的限制？
 		val target = targetFile?.fileInfo ?: return true
 		val other = otherFile?.fileInfo ?: return true
         if(target.isMainEntry()) {
