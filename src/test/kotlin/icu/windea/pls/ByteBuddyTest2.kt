@@ -1,19 +1,17 @@
-package icu.windea.pls.bytebuddy
+package icu.windea.pls
 
 import net.bytebuddy.*
 import net.bytebuddy.agent.*
-import net.bytebuddy.dynamic.*
 import net.bytebuddy.dynamic.loading.*
 import net.bytebuddy.implementation.*
 import net.bytebuddy.matcher.*
-import net.bytebuddy.pool.*
 import org.junit.*
 
 @Suppress("unused")
-class ByteBuddyTest1  {
-    //目标类型未加载 + rebase + 方法调用 - 测试通过
+class ByteBuddyTest2  {
+    //目标类型已加载 + subtype + 方法调用 - 测试失败
     
-    @Test
+    @Test(expected = Exception::class)
     fun test() {
         inject()
         
@@ -26,11 +24,9 @@ class ByteBuddyTest1  {
     private fun inject() {
         ByteBuddyAgent.install()
         val classLoader = javaClass.classLoader
-        val typePool = TypePool.Default.of(classLoader)
-        val classFileLocator = ClassFileLocator.ForClassLoader.of(classLoader)
         val method = javaClass.declaredMethods.find { it.name == "customize" }!!
         ByteBuddy()
-            .rebase<Any>(typePool.describe("icu.windea.pls.bytebuddy.ByteBuddyTest1\$TestBean").resolve(), classFileLocator)
+            .subclass(TestBean::class.java)
             .method(ElementMatchers.named("customize"))
             .intercept(MethodCall.invoke(method).on(this).withThis().withAllArguments())
             .make()
@@ -43,10 +39,11 @@ class ByteBuddyTest1  {
     }
     
     fun Any.callSelf(vararg args: Any?): Any? {
-        val declaredMethods = this.javaClass.declaredMethods
-        val method = declaredMethods.find { it.name.startsWith("customize\$original") }!!
-        method.trySetAccessible()
-        return method.invoke(this, *args)
+        //val declaredMethods = this.javaClass.declaredMethods
+        //val method = declaredMethods.find { it.name.startsWith("customize\$original") }!!
+        //method.trySetAccessible()
+        //return method.invoke(this, *args)
+        return null
     }
     
     class TestBean {

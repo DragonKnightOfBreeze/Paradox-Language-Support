@@ -185,8 +185,18 @@ inline operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProp
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> Key<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T) = thisRef.putUserData(this, value)
 
+fun <T> ProcessingContext.getOrDefault(key: Key<T>): T {
+    val value = this.get(key)
+    if(value == null && key is KeyWithDefaultValue) {
+        val defaultValue = key.defaultValue
+        this.put(key, defaultValue)
+        return defaultValue
+    }
+    return value
+}
+
 @Suppress("NOTHING_TO_INLINE")
-inline operator fun <T> Key<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>) = thisRef.get(this)
+inline operator fun <T> Key<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>) = thisRef.getOrDefault(this) 
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> Key<T>.setValue(thisRef: ProcessingContext, property: KProperty<*>, value: T) = thisRef.put(this, value)
 
