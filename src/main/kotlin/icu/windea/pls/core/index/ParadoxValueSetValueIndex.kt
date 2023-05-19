@@ -11,7 +11,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
@@ -76,9 +75,7 @@ object ParadoxValueSetValueIndex {
     private const val VERSION = 21 //0.10.3
     
     private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(ID, VERSION, valueExternalizer) builder@{ project, file ->
-        if(file.fileType != ParadoxScriptFileType) return@builder EmptyData
         if(file.fileInfo == null) return@builder EmptyData
-        
         val psiFile = file.toPsiFile<ParadoxScriptFile>(project) ?: return@builder EmptyData
         val data = Data()
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {

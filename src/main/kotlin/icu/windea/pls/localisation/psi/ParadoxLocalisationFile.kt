@@ -4,6 +4,7 @@ import com.intellij.extapi.psi.*
 import com.intellij.navigation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.navigation.*
 
@@ -16,10 +17,10 @@ class ParadoxLocalisationFile(
 		get() = findChildrenByClass(ParadoxLocalisationPropertyList::class.java).toList()
 	
 	val propertyList: ParadoxLocalisationPropertyList?
-		get() = propertyLists.singleOrNull()
+		get() = findChild<ParadoxLocalisationPropertyList>()
 	
 	val properties: List<ParadoxLocalisationProperty>
-		get() = propertyLists.singleOrNull()?.propertyList ?: emptyList()
+		get() = propertyList?.propertyList ?: emptyList()
 	
 	fun getLocaleIdFromFileName(): String?  {
 		if(!name.endsWith(".yml", true)) return null
