@@ -156,7 +156,7 @@ class ParadoxDefinitionInfo(
         return configGroup.declarations.get(type)?.getMergedConfig(configContext)
     }
     
-    fun resolvePrimaryLocalisationName(): String? {
+    fun resolvePrimaryLocalisationKey(): String? {
         if(primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
         for(primaryLocalisation in primaryLocalisations) {
             val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())

@@ -14,6 +14,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
@@ -579,5 +580,17 @@ object ParadoxDefinitionHandler {
     
     fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
         return true
+    }
+    
+    fun getPrimaryLocalisationKey(element: ParadoxScriptDefinitionElement): String? {
+        return null
+    }
+    
+    fun getPrimaryLocalisation(): ParadoxLocalisationProperty? {
+        return null
+    }
+    
+    fun getPrimaryImage(): PsiFile? {
+        return null
     }
 }

@@ -19,7 +19,7 @@ object ParadoxPresentationHandler {
         val definitionInfo = definition.definitionInfo ?: return null
         val localizedName = definitionInfo.resolvePrimaryLocalisation()
         if(localizedName == null) {
-            val locName = definitionInfo.resolvePrimaryLocalisationName() ?: return null
+            val locName = definitionInfo.resolvePrimaryLocalisationKey() ?: return null
             return locName
         }
         return ParadoxLocalisationTextHtmlRenderer.render(localizedName)
@@ -39,7 +39,7 @@ object ParadoxPresentationHandler {
         val definitionInfo = definition.definitionInfo ?: return null
         val localizedName = definitionInfo.resolvePrimaryLocalisation()
         if(localizedName == null) {
-            val locName = definitionInfo.resolvePrimaryLocalisationName() ?: return null
+            val locName = definitionInfo.resolvePrimaryLocalisationKey() ?: return null
             return ParadoxLocalisationTextUIRenderer.render(locName, color)
         }
         return ParadoxLocalisationTextUIRenderer.render(localizedName, color)

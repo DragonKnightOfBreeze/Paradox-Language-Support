@@ -26,8 +26,8 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
-    <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.impl.ParadoxExpectSimpleTriggerChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.impl.ParadoxExpectComplexTriggerChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.impl.ParadoxExpectSimpleTriggerChecker"/>
     
     <declarationConfigInjector implementation="icu.windea.pls.lang.config.impl.CwtGameRuleDeclarationConfigInjector"/>
     <declarationConfigInjector implementation="icu.windea.pls.lang.config.impl.CwtOnActionDeclarationConfigInjector"/>

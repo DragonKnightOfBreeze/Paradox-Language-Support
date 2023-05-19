@@ -10,18 +10,19 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxExpectSimpleTriggerChecker : ParadoxIncorrectExpressionChecker {
     companion object {
-        private const val TRIGGER_KEY = "trigger"
-        private const val COMPLEX_TRIGGER_MODIFIER_KEY = "alias[modifier_rule:complex_trigger_modifier]"
-        
+        private val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
+        private val SWITCH_KEYS = arrayOf("alias[effect:switch]", "alias[trigger:switch]", "alias[effect:inverted_switch]", "alias[effect:inverted_switch]")
     }
     
     override fun check(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>, holder: ProblemsHolder) {
-        if(config !is CwtPropertyConfig) return
-        if(config.value != "alias_keys_field[trigger]") return
+        //switch = {...}中判定的应当是一个simple_trigger
+        if(element !is ParadoxScriptString && element !is ParadoxScriptScriptedVariableReference) return
+        if(config !is CwtValueConfig || config.value != "alias_keys_field[trigger]") return
         
-        if(config.key != TRIGGER_KEY) return
-        val aliasConfig = config.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
-        if(aliasConfig.config.key != COMPLEX_TRIGGER_MODIFIER_KEY) return
+        val propertyConfig = config.propertyConfig ?: return
+        if(propertyConfig.key !in TRIGGER_KEYS) return
+        val aliasConfig = config.memberConfig.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
+        if(aliasConfig.config.key !in SWITCH_KEYS) return
         
         val triggerName = element.stringValue() ?: return
         val configGroup = config.info.configGroup
@@ -32,4 +33,3 @@ class ParadoxExpectSimpleTriggerChecker : ParadoxIncorrectExpressionChecker {
         }
     }
 }
-
