@@ -8,7 +8,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.checker.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxExpectSimpleTriggerChecker : ParadoxIncorrectExpressionChecker {
+class ParadoxSwitchTriggerChecker : ParadoxIncorrectExpressionChecker {
     companion object {
         private val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
         private val SWITCH_KEYS = arrayOf("alias[effect:switch]", "alias[trigger:switch]", "alias[effect:inverted_switch]", "alias[effect:inverted_switch]")
@@ -27,8 +27,7 @@ class ParadoxExpectSimpleTriggerChecker : ParadoxIncorrectExpressionChecker {
         val triggerName = element.stringValue() ?: return
         val configGroup = config.info.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.takeIfNotEmpty() ?: return
-        val expect = resultTriggerConfigs.none { !it.config.isBlock }
-        if(expect) {
+        if(resultTriggerConfigs.none { !it.config.isBlock }) {
             holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.simpleTrigger", element.expression.orEmpty()))
         }
     }

@@ -8,7 +8,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.checker.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxExpectComplexTriggerChecker : ParadoxIncorrectExpressionChecker {
+class ParadoxExpectComplexTriggerModifierTriggerChecker : ParadoxIncorrectExpressionChecker {
     companion object {
         private const val TRIGGER_KEY = "trigger"
         private const val COMPLEX_TRIGGER_MODIFIER_KEY = "alias[modifier_rule:complex_trigger_modifier]"
@@ -28,10 +28,14 @@ class ParadoxExpectComplexTriggerChecker : ParadoxIncorrectExpressionChecker {
         val triggerName = element.stringValue() ?: return
         val configGroup = config.info.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.takeIfNotEmpty() ?: return
-        val expect = resultTriggerConfigs.none { it.config.isBlock }
-        if(expect) {
-            holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.complexTrigger", element.expression.orEmpty()))
+        if(resultTriggerConfigs.none { it.config.isBlock }) {
+            if(hasParameters(element)) {
+                holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.complexTrigger", element.expression.orEmpty()))
+            }
         }
     }
+    
+    private fun hasParameters(element: ParadoxScriptExpressionElement) =
+        element.findParentProperty()?.findParentProperty()?.findProperty("parameters") != null
 }
 
