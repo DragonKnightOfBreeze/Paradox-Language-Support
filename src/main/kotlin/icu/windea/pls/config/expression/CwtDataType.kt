@@ -69,4 +69,6 @@ enum class CwtDataType {
     fun isValueSetValueType() = this == Value || this == ValueSet
     
     fun isConstantLikeType() = this == Constant || this == Template
+    
+    fun isKeyReferenceType() = this == Bool || this == Int || this == Float || this == Scalar || this == Constant || this == Any
 }

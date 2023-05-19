@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.scope
 
 import com.intellij.openapi.extensions.*
+import com.intellij.psi.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
@@ -14,18 +15,18 @@ import icu.windea.pls.script.psi.*
 @WithGameTypeEP
 interface ParadoxOverriddenScopeContextProvider {
     /**
-     * 从指定的定义成员元素[element]和对应的CWT规则[config]获取重载后的CWT规则。
+     * 从指定的上下文元素[contextElement]和对应的CWT规则[config]获取重载后的CWT规则。
      */
-    fun getOverriddenScopeContext(element: ParadoxScriptMemberElement, config: CwtDataConfig<*>): ParadoxScopeContext?
+    fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtDataConfig<*>): ParadoxScopeContext?
     
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxOverriddenScopeContextProvider>("icu.windea.pls.overriddenScopeContextProvider")
         
-        fun getOverriddenScopeContext(element: ParadoxScriptMemberElement, config: CwtDataConfig<*>): ParadoxScopeContext? {
+        fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtDataConfig<*>): ParadoxScopeContext? {
             val gameType = config.info.configGroup.gameType ?: return null
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
-                ep.getOverriddenScopeContext(element, config)
+                ep.getOverriddenScopeContext(contextElement, config)
                     ?.also { it.overriddenProvider = ep }
             }
         }

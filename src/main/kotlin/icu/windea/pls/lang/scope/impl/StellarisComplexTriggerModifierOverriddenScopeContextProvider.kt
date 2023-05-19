@@ -2,6 +2,7 @@ package icu.windea.pls.lang.scope.impl
 
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
+import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
@@ -21,16 +22,15 @@ class StellarisComplexTriggerModifierOverriddenScopeContextProvider : ParadoxOve
         private const val COMPLEX_TRIGGER_MODIFIER_KEY = "alias[modifier_rule:complex_trigger_modifier]"
     }
     
-    override fun getOverriddenScopeContext(element: ParadoxScriptMemberElement, config: CwtDataConfig<*>): ParadoxScopeContext? {
+    override fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtDataConfig<*>): ParadoxScopeContext? {
         //重载complex_trigger_modifier = {...}中属性trigger的值对应的作用域上下文
         //兼容trigger_scope的值对应的作用域与当前作用域上下文不匹配的情况
-        if(element !is ParadoxScriptProperty) return null
         if(config !is CwtPropertyConfig) return null
         if(config.key != TRIGGER_KEY) return null
         val aliasConfig = config.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
         if(aliasConfig.config.key != COMPLEX_TRIGGER_MODIFIER_KEY) return null
         ProgressManager.checkCanceled()
-        val complexTriggerModifierProperty = element.parentsOfType<ParadoxScriptProperty>(false)
+        val complexTriggerModifierProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
             .filter { it.name.lowercase() == COMPLEX_TRIGGER_MODIFIER_NAME }
             .find { ParadoxConfigHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
             ?: return null

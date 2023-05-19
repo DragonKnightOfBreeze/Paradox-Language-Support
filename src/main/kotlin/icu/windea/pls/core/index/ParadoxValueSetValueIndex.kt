@@ -1,7 +1,6 @@
 package icu.windea.pls.core.index
 
 import com.intellij.codeInsight.highlighting.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
@@ -21,10 +20,10 @@ import java.io.*
 
 object ParadoxValueSetValueIndex {
     class Data(
-        val marker: Boolean = true,
-        val valueSetValueList: MutableList<ParadoxValueSetValueInfo> = mutableListOf()
+        val valueSetValueList: MutableList<ParadoxValueSetValueInfo> = SmartList()
     ) {
         val valueSetValueGroup by lazy {
+            if(valueSetValueList.isEmpty()) return@lazy emptyMap()
             buildMap<String, Map<String, List<ParadoxValueSetValueInfo>>> {
                 for(info in valueSetValueList) {
                     val map = getOrPut(info.valueSetName) { mutableMapOf() } as MutableMap
@@ -35,11 +34,10 @@ object ParadoxValueSetValueIndex {
         }
     }
     
-    val EmptyData = Data(true, mutableListOf())
+    val EmptyData = Data()
     
     private val valueExternalizer: DataExternalizer<Data> = object : DataExternalizer<Data> {
         override fun save(storage: DataOutput, value: Data) {
-            storage.writeBoolean(value.marker)
             DataInputOutputUtil.writeSeq(storage, value.valueSetValueList) {
                 IOUtil.writeUTF(storage, it.name)
                 IOUtil.writeUTF(storage, it.valueSetName)
@@ -50,8 +48,7 @@ object ParadoxValueSetValueIndex {
         }
         
         override fun read(storage: DataInput): Data {
-            val marker = storage.readBoolean()
-            val valueSetValueInfos = DataInputOutputUtil.readSeq(storage) {
+            val infos = DataInputOutputUtil.readSeq(storage) {
                 val name = IOUtil.readUTF(storage)
                 val valueSetName = IOUtil.readUTF(storage)
                 val readWriteAccess = storage.readByte().toReadWriteAccess()
@@ -59,7 +56,7 @@ object ParadoxValueSetValueIndex {
                 val gameType = storage.readByte().toGameType()
                 ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, elementOffset, gameType)
             }
-            return Data(marker, valueSetValueInfos)
+            return Data(infos)
         }
         
         private fun ReadWriteAccessDetector.Access.toByte() = this.ordinal
@@ -76,10 +73,9 @@ object ParadoxValueSetValueIndex {
     }
     
     private const val ID = "paradox.valueSetValue.index"
-    private const val VERSION = 20 //0.10.0
+    private const val VERSION = 21 //0.10.3
     
     private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(ID, VERSION, valueExternalizer) builder@{ project, file ->
-        ProgressManager.checkCanceled()
         if(file.fileType != ParadoxScriptFileType) return@builder EmptyData
         if(file.fileInfo == null) return@builder EmptyData
         

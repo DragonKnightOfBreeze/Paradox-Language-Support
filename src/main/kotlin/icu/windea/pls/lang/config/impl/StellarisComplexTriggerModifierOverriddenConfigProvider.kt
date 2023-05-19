@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.config.impl
 
 import com.intellij.openapi.progress.*
+import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.config.config.*
@@ -25,16 +26,15 @@ class StellarisComplexTriggerModifierOverriddenConfigProvider : ParadoxOverridde
     }
     
     @Suppress("UNCHECKED_CAST")
-    override fun <T : CwtDataConfig<*>> getOverriddenConfigs(element: ParadoxScriptMemberElement, config: T): List<T>? {
+    override fun <T : CwtDataConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>? {
         //重载complex_trigger_modifier = {...}中属性parameters的值对应的CWT规则
         //兼容使用内联或者使用封装变量的情况
-        if(element !is ParadoxScriptProperty) return null
         if(config !is CwtPropertyConfig) return null
         if(config.key != PARAMETERS_KEY) return null
         val aliasConfig = config.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
         if(aliasConfig.config.key != COMPLEX_TRIGGER_MODIFIER_KEY) return null
         ProgressManager.checkCanceled()
-        val complexTriggerModifierProperty = element.parentsOfType<ParadoxScriptProperty>(false)
+        val complexTriggerModifierProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
             .filter { it.name.lowercase() == COMPLEX_TRIGGER_MODIFIER_NAME }
             .find { ParadoxConfigHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
             ?: return null

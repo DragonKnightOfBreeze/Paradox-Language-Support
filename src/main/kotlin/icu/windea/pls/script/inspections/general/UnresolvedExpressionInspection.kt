@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
@@ -36,7 +37,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     }
                 }
             }
-    
+            
             @Suppress("UNUSED_PARAMETER")
             private fun visitDefinition(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
                 element.accept(object : PsiRecursiveElementWalkingVisitor() {
@@ -48,7 +49,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         }
                         if(result && element.isExpressionOrMemberContext()) super.visitElement(element)
                     }
-    
+                    
                     private fun visitProperty(element: ParadoxScriptProperty): Boolean {
                         val shouldCheck = checkPropertyKey
                         if(!shouldCheck) return true
@@ -58,10 +59,14 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
                         val configs = ParadoxConfigHandler.getPropertyConfigs(element)
                         val config = configs.firstOrNull()
-                        if(config == null) {
+                        val matchesOverriddenConfig = config != null && matchesOverriddenConfig(element, config)
+                        if(config == null || matchesOverriddenConfig) {
                             //这里使用合并后的子规则，即使parentProperty可以精确匹配
                             val expect = if(showExpectInfo) {
-                                val allConfigs = element.findParentProperty()?.definitionMemberInfo?.getChildConfigs()
+                                val allConfigs = when {
+                                    matchesOverriddenConfig -> config.toSingletonListOrEmpty()
+                                    else -> element.findParentProperty()?.definitionMemberInfo?.getChildConfigs()
+                                }
                                 //某些情况下我们需要忽略一些未解析的表达式
                                 if(allConfigs.isNotNullOrEmpty() && allConfigs.all { isIgnored(it) }) return true
                                 val allExpressions = if(allConfigs.isNullOrEmpty()) emptySet() else {
@@ -83,7 +88,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         }
                         return true
                     }
-    
+                    
                     private fun visitValue(element: ParadoxScriptValue): Boolean {
                         ProgressManager.checkCanceled()
                         val shouldCheck = when {
@@ -101,13 +106,17 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
                         val configs = ParadoxConfigHandler.getValueConfigs(element, orDefault = false)
                         val config = configs.firstOrNull()
-                        if(config == null) {
+                        val matchesOverriddenConfig = config != null && matchesOverriddenConfig(element, config)
+                        if(config == null || matchesOverriddenConfig) {
                             val expect = if(showExpectInfo) {
-                                val allConfigs = definitionMemberInfo.getConfigs().mapNotNull { 
-                                    when{
-                                        it is CwtPropertyConfig -> it.valueConfig
-                                        it is CwtValueConfig -> it
-                                        else -> null
+                                val allConfigs = when {
+                                    matchesOverriddenConfig -> config.toSingletonListOrEmpty()
+                                    else -> definitionMemberInfo.getConfigs().mapNotNull {
+                                        when {
+                                            it is CwtPropertyConfig -> it.valueConfig
+                                            it is CwtValueConfig -> it
+                                            else -> null
+                                        }
                                     }
                                 }
                                 //某些情况下我们需要忽略一些未解析的表达式
@@ -136,11 +145,22 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         }
                         return true
                     }
+                    
+                    private fun <T : CwtDataConfig<*>> matchesOverriddenConfig(element: PsiElement, config: T): Boolean {
+                        if(element is ParadoxScriptProperty && config is CwtPropertyConfig && config.overriddenProvider != null) {
+                            //如果是被重载的规则，这里需要再次判断是否匹配
+                            val expression = ParadoxDataExpression.resolve(element.propertyKey)
+                            val configGroup = config.info.configGroup
+                            val matched = ParadoxConfigHandler.matchesScriptExpression(element, expression, config.expression, config, configGroup)
+                            return matched
+                        }
+                        return false
+                    }
+                    
+                    private fun isIgnored(config: CwtDataConfig<*>): Boolean {
+                        return config.expression.type.isPathReferenceType()
+                    }
                 })
-            }
-            
-            private fun isIgnored(config: CwtDataConfig<*>) : Boolean {
-                return config.expression.type.isPathReferenceType()
             }
         }
     }

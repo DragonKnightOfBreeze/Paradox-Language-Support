@@ -207,7 +207,3 @@ fun <T : PsiElement> CwtDataConfig<T>.toOccurrence(contextElement: PsiElement, p
 val CwtDataConfig.Keys.overriddenProvider by lazy { Key.create<ParadoxOverriddenConfigProvider>("paradox.cwtDataConfig.overriddenProvider") }
 
 var CwtDataConfig<*>.overriddenProvider by CwtDataConfig.Keys.overriddenProvider
-
-val CwtDataConfig<*>.configOverridden get() = findOption("config_overridden")?.stringValue
-
-val CwtDataConfig<*>.scopeContextOverridden get() = findOption("scope_context_overridden")?.stringValue

@@ -28,6 +28,7 @@ import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.data.impl.*
 import icu.windea.pls.lang.expression.*
@@ -705,7 +706,14 @@ object ParadoxConfigHandler {
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchType = CwtConfigMatchType.DEFAULT or CwtConfigMatchType.NOT_EXACT
         val parentConfigs = getConfigs(definitionElement, allowDefinition = true, matchType = matchType)
-        val configs = parentConfigs.flatMap { it.properties.orEmpty() }
+        val configs = SmartList<CwtPropertyConfig>()
+        parentConfigs.forEach { c1 ->
+            c1.configs?.forEach { c2 ->
+                if(c2 is CwtPropertyConfig) {
+                    configs.add(c2)
+                }
+            }
+        }
         if(configs.isEmpty()) return
         val occurrenceMap = getChildOccurrenceMap(definitionElement, parentConfigs)
         
@@ -716,6 +724,14 @@ object ParadoxConfigHandler {
         configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
             for(config in configsWithSameKey) {
                 if(shouldComplete(config, occurrenceMap)) {
+                    val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(context.contextElement, config)
+                    if(overriddenConfigs.isNotNullOrEmpty()) {
+                        for(overriddenConfig in overriddenConfigs) {
+                            context.config = overriddenConfig
+                            completeScriptExpression(context, result)
+                        }
+                        continue
+                    }
                     context.config = config
                     context.configs = configsWithSameKey
                     completeScriptExpression(context, result)
@@ -736,7 +752,14 @@ object ParadoxConfigHandler {
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchType = CwtConfigMatchType.DEFAULT or CwtConfigMatchType.NOT_EXACT
         val parentConfigs = getConfigs(memberElement, allowDefinition = true, matchType = matchType)
-        val configs = parentConfigs.flatMap { it.values.orEmpty() }
+        val configs = SmartList<CwtValueConfig>()
+        parentConfigs.forEach { c1 ->
+            c1.configs?.forEach { c2 ->
+                if(c2 is CwtValueConfig) {
+                    configs.add(c2)
+                }
+            }
+        }
         if(configs.isEmpty()) return
         val occurrenceMap = getChildOccurrenceMap(memberElement, parentConfigs)
         
@@ -746,6 +769,14 @@ object ParadoxConfigHandler {
         
         for(config in configs) {
             if(shouldComplete(config, occurrenceMap)) {
+                val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(context.contextElement, config)
+                if(overriddenConfigs.isNotNullOrEmpty()) {
+                    for(overriddenConfig in overriddenConfigs) {
+                        context.config = overriddenConfig
+                        completeScriptExpression(context, result)
+                    }
+                    continue
+                }
                 context.config = config
                 completeScriptExpression(context, result)
             }
@@ -1444,7 +1475,7 @@ object ParadoxConfigHandler {
             if(result != null) return result
         }
         
-        if(config != null && configExpression is CwtKeyExpression) {
+        if(config != null && configExpression is CwtKeyExpression && configExpression.type.isKeyReferenceType()) {
             return config.resolved().pointer.element
         }
         return null
@@ -1452,43 +1483,20 @@ object ParadoxConfigHandler {
     
     fun multiResolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>?, configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, isKey: Boolean? = null): Collection<PsiElement> {
         ProgressManager.checkCanceled()
-        if(configExpression == null) return emptyList()
+        if(configExpression == null) return emptySet()
         
         val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.text.unquote()
-        if(expression.isParameterized()) return emptyList() //排除引用文本带参数的情况
+        if(expression.isParameterized()) return emptySet() //排除引用文本带参数的情况
         
         if(config != null) {
             val result = ParadoxScriptExpressionSupport.multiResolve(element, rangeInElement, expression, config, isKey)
             if(result.isNotEmpty()) return result
         }
         
-        when(configExpression.type) {
-            CwtDataType.Value, CwtDataType.ValueSet -> {
-                //参见：ParadoxValueSetValueExpression
-                val name = expression
-                val predefinedResolved = resolvePredefinedValueSetValue(name, configExpression, configGroup)
-                if(predefinedResolved != null) return predefinedResolved.toSingletonListOrEmpty()
-                return ParadoxValueSetValueHandler.resolveValueSetValue(element, name, configExpression, configGroup).toSingletonListOrEmpty()
-            }
-            CwtDataType.ScopeField, CwtDataType.Scope, CwtDataType.ScopeGroup -> {
-                //不在这里处理，参见：ParadoxScopeFieldExpression
-                return emptyList()
-            }
-            CwtDataType.ValueField, CwtDataType.IntValueField -> {
-                //不在这里处理，参见：ParadoxValueFieldExpression
-                return emptyList()
-            }
-            CwtDataType.VariableField, CwtDataType.IntVariableField -> {
-                //不在这里处理，参见：ParadoxVariableFieldExpression
-                return emptyList()
-            }
-            else -> {
-                if(config != null && configExpression is CwtKeyExpression) {
-                    return config.resolved().pointer.element.toSingletonSetOrEmpty()
-                }
-                return emptyList()
-            }
+        if(config != null && configExpression is CwtKeyExpression && configExpression.type.isKeyReferenceType()) {
+            return config.resolved().pointer.element.toSingletonSetOrEmpty()
         }
+        return emptySet()
     }
     
     fun resolveModifier(element: ParadoxScriptExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
@@ -1608,7 +1616,9 @@ object ParadoxConfigHandler {
                 CwtValueConfig::class.java -> append("value")
                 else -> throw UnsupportedOperationException()
             }
-            append("#").append(allowDefinition.toIntString())
+            if(configType == CwtPropertyConfig::class.java) {
+                append("#").append(allowDefinition.toIntString())
+            }
             append("#").append(orDefault.toIntString())
             append("#").append(matchType)
         }

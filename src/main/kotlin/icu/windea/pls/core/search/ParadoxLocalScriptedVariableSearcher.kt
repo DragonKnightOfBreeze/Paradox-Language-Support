@@ -3,8 +3,11 @@ package icu.windea.pls.core.search
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -13,30 +16,23 @@ import icu.windea.pls.script.psi.*
 class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxLocalScriptedVariableSearch.SearchParameters>() {
 	override fun processQuery(queryParameters: ParadoxLocalScriptedVariableSearch.SearchParameters, consumer: Processor<in ParadoxScriptScriptedVariable>) {
 		ProgressManager.checkCanceled()
+		val scope = queryParameters.selector.scope
+		if(SearchScope.isEmptyScope(scope)) return
 		
-		//查找在使用处之前声明的封装本地变量
+		val name = queryParameters.name
 		val selector = queryParameters.selector
 		val file = selector.file ?: return
 		val fileInfo = selector.fileInfo ?: return
 		if("common/scripted_variables".matchesPath(fileInfo.pathToEntry.path)) return
 		val psiFile = file.toPsiFile<ParadoxScriptFile>(selector.project) ?: return
-		psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
-			override fun visitElement(element: PsiElement) {
-				val result = when(element) {
-					is ParadoxScriptScriptedVariable -> visitScriptedVariable(element)
-					else -> true
-				}
-				if(!result) return
-				if(element === selector.context) return //到使用处为止
-				if(element.isExpressionOrMemberContext()) super.visitElement(element)
-			}
-			
-			private fun visitScriptedVariable(element: ParadoxScriptScriptedVariable): Boolean {
-				if(queryParameters.name == null || queryParameters.name == element.name) {
-					if(!consumer.process(element)) return false
-				}
-				return true
-			}
-		})
+		val startOffset = selector.context?.castOrNull<PsiElement>()?.startOffset
+		ParadoxScriptedVariableHandler.getLocalScriptedVariables(psiFile).process p@{ 
+			ProgressManager.checkCanceled()
+			//仅查找在上下文位置之前声明的封装本地变量
+			val element = it.element ?: return@p true
+			if(startOffset != null && startOffset <= element.startOffset) return@p true
+			if(name != null && name != element.name) return@p true
+			consumer.process(element)
+		}
 	}
 }

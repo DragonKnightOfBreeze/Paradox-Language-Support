@@ -1,7 +1,11 @@
 package icu.windea.pls.lang
 
 import com.intellij.lang.*
+import com.intellij.openapi.util.*
+import com.intellij.psi.*
 import com.intellij.psi.stubs.*
+import com.intellij.psi.util.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
@@ -13,6 +17,28 @@ import icu.windea.pls.script.psi.impl.*
  */
 @Suppress("unused")
 object ParadoxScriptedVariableHandler {
+    val localScriptedVariableKey = Key.create<CachedValue<List<SmartPsiElementPointer<ParadoxScriptScriptedVariable>>>>("paradox.localScriptedVariables")
+    
+    fun getLocalScriptedVariables(file: ParadoxScriptFile): List<SmartPsiElementPointer<ParadoxScriptScriptedVariable>> {
+        return CachedValuesManager.getCachedValue(file, localScriptedVariableKey) {
+            val value = doGetLocalScriptedVariables(file)
+            CachedValueProvider.Result.create(value, file)
+        }
+    }
+    
+    private fun doGetLocalScriptedVariables(file: ParadoxScriptFile): List<SmartPsiElementPointer<ParadoxScriptScriptedVariable>> {
+        val result = SmartList<SmartPsiElementPointer<ParadoxScriptScriptedVariable>>()
+        file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+            override fun visitElement(element: PsiElement) {
+                if(element is ParadoxScriptScriptedVariable) {
+                    result.add(element.createPointer(file))
+                }
+                if(element.isExpressionOrMemberContext()) super.visitElement(element)
+            }
+        })
+        return result
+    }
+    
     //stub methods
     
     fun createStub(psi: ParadoxScriptScriptedVariable, parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub? {

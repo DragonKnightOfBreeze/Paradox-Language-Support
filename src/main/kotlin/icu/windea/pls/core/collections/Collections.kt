@@ -6,7 +6,10 @@ import icu.windea.pls.core.*
 import java.util.*
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun <T, C: Collection<T>> C?.takeIfNotEmpty() = this?.takeIf { it.isNotEmpty() }
+inline fun <T: Collection<*>> T?.takeIfNotEmpty() = this?.takeIf { it.isNotEmpty() }
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T: Map<*, *>> T?.takeIfNotEmpty() = this?.takeIf { it.isNotEmpty() }
 
 fun <T> Collection<T>.toListOrThis(): List<T> {
 	return when(this) {

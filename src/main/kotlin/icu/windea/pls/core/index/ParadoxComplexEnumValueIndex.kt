@@ -1,7 +1,6 @@
 package icu.windea.pls.core.index
 
 import com.intellij.codeInsight.highlighting.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
@@ -21,10 +20,10 @@ import java.io.*
 
 object ParadoxComplexEnumValueIndex {
     class Data(
-        val marker: Boolean = true,
-        val complexEnumValueList: MutableList<ParadoxComplexEnumValueInfo> = mutableListOf()
+        val complexEnumValueList: MutableList<ParadoxComplexEnumValueInfo> = SmartList()
     ) {
         val complexEnumValueGroup by lazy {
+            if(complexEnumValueList.isEmpty()) return@lazy emptyMap()
             buildMap<String, Map<String, List<ParadoxComplexEnumValueInfo>>> {
                 for(info in complexEnumValueList) {
                     val map = getOrPut(info.enumName) { mutableMapOf() } as MutableMap
@@ -35,11 +34,10 @@ object ParadoxComplexEnumValueIndex {
         }
     }
     
-    val EmptyData = Data(true, mutableListOf())
+    val EmptyData = Data()
     
     private val valueExternalizer: DataExternalizer<Data> = object : DataExternalizer<Data> {
         override fun save(storage: DataOutput, value: Data) {
-            storage.writeBoolean(value.marker)
             DataInputOutputUtil.writeSeq(storage, value.complexEnumValueList) {
                 IOUtil.writeUTF(storage, it.name)
                 IOUtil.writeUTF(storage, it.enumName)
@@ -50,8 +48,7 @@ object ParadoxComplexEnumValueIndex {
         }
         
         override fun read(storage: DataInput): Data {
-            val marker = storage.readBoolean()
-            val complexEnumValueInfos = DataInputOutputUtil.readSeq(storage) {
+            val infos = DataInputOutputUtil.readSeq(storage) {
                 val name = IOUtil.readUTF(storage)
                 val enumName = IOUtil.readUTF(storage)
                 val readWriteAccess = storage.readByte().toReadWriteAccess()
@@ -59,7 +56,7 @@ object ParadoxComplexEnumValueIndex {
                 val gameType = storage.readByte().toGameType()
                 ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, elementOffset, gameType)
             }
-            return Data(marker, complexEnumValueInfos)
+            return Data(infos)
         }
         
         private fun ReadWriteAccessDetector.Access.toByte() = this.ordinal
@@ -76,10 +73,9 @@ object ParadoxComplexEnumValueIndex {
     }
     
     private const val ID = "paradox.complexEnumValue.index"
-    private const val VERSION = 20 //0.10.0
+    private const val VERSION = 21 //0.10.3
     
     private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(ID, VERSION, valueExternalizer) builder@{ project, file ->
-        ProgressManager.checkCanceled()
         if(file.fileType != ParadoxScriptFileType) return@builder EmptyData
         if(file.fileInfo == null) return@builder EmptyData
         if(!matchesPath(file, project)) return@builder EmptyData
