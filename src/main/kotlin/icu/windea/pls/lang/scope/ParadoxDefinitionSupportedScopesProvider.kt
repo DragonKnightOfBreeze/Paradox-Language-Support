@@ -18,7 +18,7 @@ interface ParadoxDefinitionSupportedScopesProvider {
         
         fun getSupportedScopes(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String>? {
             val gameType = definitionInfo.gameType
-            return EP_NAME.extensions.firstNotNullOfOrNull f@{ ep ->
+            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
                 ep.getSupportedScopes(definition, definitionInfo)
             }

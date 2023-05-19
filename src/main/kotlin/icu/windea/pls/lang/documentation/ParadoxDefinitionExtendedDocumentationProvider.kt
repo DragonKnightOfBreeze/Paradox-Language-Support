@@ -18,7 +18,7 @@ interface ParadoxDefinitionExtendedDocumentationProvider {
         
         fun buildDocumentation(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, action: (String) -> Unit) {
             val gameType = definitionInfo.gameType
-            EP_NAME.extensionList.forEach f@{ ep ->
+            EP_NAME.extensionList.forEachFast f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 val documentation = ep.getDocumentation(definition, definitionInfo)?.takeIfNotEmpty()
                 if(documentation != null) {

@@ -32,7 +32,7 @@ interface ParadoxDefinitionInferredScopeContextProvider {
         
         fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
             val gameType = definitionInfo.gameType
-            return EP_NAME.extensions.firstNotNullOfOrNull f@{ ep ->
+            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
                 ep.getScopeContext(definition, definitionInfo)
             }
@@ -40,7 +40,7 @@ interface ParadoxDefinitionInferredScopeContextProvider {
         
         fun getErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
             val gameType = definitionInfo.gameType
-            return EP_NAME.extensions.firstNotNullOfOrNull f@{ ep ->
+            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
                 val info = ep.getScopeContext(definition, definitionInfo)
                 if(info == null || !info.hasConflict) return@f null
@@ -50,7 +50,7 @@ interface ParadoxDefinitionInferredScopeContextProvider {
         
         fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
             val gameType = definitionInfo.gameType
-            return EP_NAME.extensions.firstNotNullOfOrNull f@{ ep ->
+            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
                 val info = ep.getScopeContext(definition, definitionInfo)
                 if(info == null || !info.hasConflict) return@f null

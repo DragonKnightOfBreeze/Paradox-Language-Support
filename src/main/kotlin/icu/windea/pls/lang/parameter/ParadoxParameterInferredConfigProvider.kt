@@ -22,7 +22,7 @@ interface ParadoxParameterInferredConfigProvider {
         fun getConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig? {
             val gameType = parameterContextInfo.gameType
             return withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider.getConfig") {
-                EP_NAME.extensions.firstNotNullOfOrNull f@{ ep ->
+                EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                     if(!gameType.supportsByAnnotation(ep)) return@f null
                     ep.getConfig(parameterInfo, parameterContextInfo)
                         ?.takeUnless { ParadoxParameterHandler.isIgnoredInferredConfig(it) }

@@ -29,13 +29,13 @@ interface ParadoxLocalisationParameterSupport {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxLocalisationParameterSupport>("icu.windea.pls.localisationParameterSupport")
         
         fun resolveParameter(element: ParadoxLocalisationPropertyReference): ParadoxParameterElement? {
-            return EP_NAME.extensions.firstNotNullOfOrNull { ep ->
+            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
                 ep.resolveParameter(element)
             }
         }
         
         fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, vararg extraArgs: Any?): ParadoxParameterElement? {
-            return EP_NAME.extensions.firstNotNullOfOrNull { ep ->
+            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
                 ep.resolveArgument(element, rangeInElement, *extraArgs) 
             }
         }

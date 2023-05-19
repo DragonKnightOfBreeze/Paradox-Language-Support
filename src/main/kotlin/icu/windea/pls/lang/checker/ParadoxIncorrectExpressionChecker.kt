@@ -16,7 +16,7 @@ interface ParadoxIncorrectExpressionChecker {
         
         fun check(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>, holder: ProblemsHolder) {
             val gameType = config.info.configGroup.gameType ?: return
-            EP_NAME.extensions.forEach f@{ ep ->
+            EP_NAME.extensionList.forEachFast f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 ep.check(element, config, holder)
             }
