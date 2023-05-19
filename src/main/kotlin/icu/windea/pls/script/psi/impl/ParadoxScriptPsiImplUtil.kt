@@ -323,8 +323,13 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getReference(element: ParadoxScriptScriptedVariableReference): ParadoxScriptedVariablePsiReference? {
-        val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxScriptedVariablePsiReference(element, rangeInElement)
+        return CachedValuesManager.getCachedValue(element) {
+            val value = run {
+                val rangeInElement = element.idElement?.textRangeInParent ?: return@run null
+                ParadoxScriptedVariablePsiReference(element, rangeInElement)
+            }
+            CachedValueProvider.Result.create(value, element)
+        }
     }
     
     @JvmStatic
@@ -697,7 +702,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun setName(element: ParadoxScriptInlineMathScriptedVariableReference, name: String): ParadoxScriptInlineMathScriptedVariableReference {
-        val nameElement = element.idElement?: throw IncorrectOperationException()
+        val nameElement = element.idElement ?: throw IncorrectOperationException()
         val newNameElement = ParadoxScriptElementFactory.createInlineMathVariableReference(element.project, name).idElement!!
         nameElement.replace(newNameElement)
         return element
@@ -710,8 +715,13 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getReference(element: ParadoxScriptInlineMathScriptedVariableReference): ParadoxScriptedVariablePsiReference? {
-        val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxScriptedVariablePsiReference(element, rangeInElement)
+        return CachedValuesManager.getCachedValue(element) {
+            val value = run {
+                val rangeInElement = element.idElement?.textRangeInParent ?: return@run null
+                ParadoxScriptedVariablePsiReference(element, rangeInElement)
+            }
+            CachedValueProvider.Result.create(value, element)
+        }
     }
     
     @JvmStatic
@@ -725,7 +735,7 @@ object ParadoxScriptPsiImplUtil {
     }
     //endregion
     
-    //region ParadoxScriptKeyParameter
+    //region ParadoxScriptParameter
     @JvmStatic
     fun getIcon(element: ParadoxScriptParameter, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Parameter

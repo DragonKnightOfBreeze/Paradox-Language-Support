@@ -184,8 +184,13 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getReference(element: ParadoxLocalisationPropertyReference): ParadoxLocalisationPropertyPsiReference? {
-        val rangeInElement = element.propertyReferenceId?.textRangeInParent ?: return null
-        return ParadoxLocalisationPropertyPsiReference(element, rangeInElement)
+        return CachedValuesManager.getCachedValue(element) {
+            val value = run {
+                val rangeInElement = element.propertyReferenceId?.textRangeInParent ?: return@run null
+                ParadoxLocalisationPropertyPsiReference(element, rangeInElement)
+            }
+            CachedValueProvider.Result.create(value, element)
+        }
     }
     //endregion
     
@@ -211,8 +216,13 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getReference(element: ParadoxLocalisationScriptedVariableReference): ParadoxScriptedVariablePsiReference? {
-        val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxScriptedVariablePsiReference(element, rangeInElement)
+        return CachedValuesManager.getCachedValue(element) {
+            val value = run {
+                val rangeInElement = element.idElement?.textRangeInParent ?: return@run null
+                ParadoxScriptedVariablePsiReference(element, rangeInElement)
+            }
+            CachedValueProvider.Result.create(value, element)
+        }
     }
     
     @JvmStatic
@@ -262,8 +272,13 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getReference(element: ParadoxLocalisationIcon): ParadoxLocalisationIconPsiReference? {
-        val rangeInElement = element.iconId?.textRangeInParent ?: return null
-        return ParadoxLocalisationIconPsiReference(element, rangeInElement)
+        return CachedValuesManager.getCachedValue(element) {
+            val value = run {
+                val rangeInElement = element.iconId?.textRangeInParent ?: return@run null
+                ParadoxLocalisationIconPsiReference(element, rangeInElement)
+            }
+            CachedValueProvider.Result.create(value, element)
+        }
     }
     //endregion
     
@@ -283,8 +298,13 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getReference(element: ParadoxLocalisationColorfulText): ParadoxLocalisationColorPsiReference? {
-        val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxLocalisationColorPsiReference(element, rangeInElement)
+        return CachedValuesManager.getCachedValue(element) {
+            val value = run {
+                val rangeInElement = element.idElement?.textRangeInParent ?: return@run null
+                ParadoxLocalisationColorPsiReference(element, rangeInElement)
+            }
+            CachedValueProvider.Result.create(value, element)
+        }
     }
     //endregion
     
@@ -340,15 +360,21 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getReference(element: ParadoxLocalisationCommandScope): ParadoxLocalisationCommandScopePsiReference {
-        val idElement = element.idElement
-        val rangeInElement = idElement.textRangeInParent
-        //兼容"event_target:"前缀
-        val text = idElement.text
-        val prefix = ParadoxLocalisationCommandScopePsiReference.EVENT_TARGET_PREFIX
-        if(text.startsWith(prefix)) {
-            return ParadoxLocalisationCommandScopePsiReference(element, rangeInElement.let { TextRange.create(it.startOffset + prefix.length, it.endOffset) }, prefix)
+        return CachedValuesManager.getCachedValue(element) {
+            val value = run {
+                val idElement = element.idElement
+                val rangeInElement = idElement.textRangeInParent
+                //兼容"event_target:"前缀
+                val text = idElement.text
+                val prefix = ParadoxLocalisationCommandScopePsiReference.EVENT_TARGET_PREFIX
+                if(text.startsWith(prefix)) {
+                    ParadoxLocalisationCommandScopePsiReference(element, rangeInElement.let { TextRange.create(it.startOffset + prefix.length, it.endOffset) }, prefix)
+                } else {
+                    ParadoxLocalisationCommandScopePsiReference(element, rangeInElement, null)
+                }
+            }
+            CachedValueProvider.Result.create(value, element)
         }
-        return ParadoxLocalisationCommandScopePsiReference(element, rangeInElement, null)
     }
     
     @JvmStatic
@@ -397,8 +423,13 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getReference(element: ParadoxLocalisationCommandField): ParadoxLocalisationCommandFieldPsiReference? {
-        val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxLocalisationCommandFieldPsiReference(element, rangeInElement)
+        return CachedValuesManager.getCachedValue(element) {
+            val value = run {
+                val rangeInElement = element.idElement?.textRangeInParent ?: return@run null
+                ParadoxLocalisationCommandFieldPsiReference(element, rangeInElement)
+            }
+            CachedValueProvider.Result.create(value, element)
+        }
     }
     
     @JvmStatic
@@ -440,8 +471,13 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getReference(element: ParadoxLocalisationConceptName): ParadoxLocalisationConceptNamePsiReference? {
-        val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxLocalisationConceptNamePsiReference(element, rangeInElement)
+        return CachedValuesManager.getCachedValue(element) {
+            val value = run {
+                val rangeInElement = element.idElement?.textRangeInParent ?: return@run null
+                ParadoxLocalisationConceptNamePsiReference(element, rangeInElement)
+            }
+            CachedValueProvider.Result.create(value, element)
+        }
     }
     
     @JvmStatic
