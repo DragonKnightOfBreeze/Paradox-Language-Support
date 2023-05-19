@@ -188,6 +188,10 @@ class ParadoxVariableFieldExpressionImpl(
 }
 
 fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxVariableFieldExpression? {
+    //skip if text represents an int or float
+    val type = ParadoxDataExpression.resolve(text).type
+    if(type == ParadoxDataType.IntType || type == ParadoxDataType.FloatType) return null
+    
     val nodes = SmartList<ParadoxExpressionNode>()
     val offset = textRange.startOffset
     var isLast = false

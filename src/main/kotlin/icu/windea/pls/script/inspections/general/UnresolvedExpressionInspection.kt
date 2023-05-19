@@ -54,7 +54,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         val shouldCheck = checkPropertyKey
                         if(!shouldCheck) return true
                         //skip checking property if property key may contain parameters
-                        if(element.propertyKey.isParameterized()) return false
+                        val propertyKey = element.propertyKey
+                        if(propertyKey.isParameterized()) return false
                         val definitionMemberInfo = element.definitionMemberInfo
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
                         val configs = ParadoxConfigHandler.getPropertyConfigs(element)
@@ -79,9 +80,9 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                                 allExpressions.takeIfNotEmpty()?.joinToString()
                             } else null
                             val message = when {
-                                expect == null -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.1.1", element.expression)
-                                expect.isNotEmpty() -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.1.2", element.expression, expect)
-                                else -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.1.3", element.expression)
+                                expect == null -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.1.1", propertyKey.expression)
+                                expect.isNotEmpty() -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.1.2", propertyKey.expression, expect)
+                                else -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.1.3", propertyKey.expression)
                             }
                             holder.registerProblem(element, message)
                             return false

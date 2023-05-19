@@ -42,6 +42,15 @@ class CwtKeyExpression private constructor(
             expressionString == "scalar" -> {
                 CwtKeyExpression(expressionString, CwtDataType.Scalar)
             }
+            expressionString == "colour_field" -> {
+                CwtKeyExpression(expressionString, CwtDataType.ColorField)
+            }
+            expressionString == "percentage_field" -> {
+                CwtKeyExpression(expressionString, CwtDataType.PercentageField)
+            }
+            expressionString == "date_field" -> {
+                CwtKeyExpression(expressionString, CwtDataType.DateField)
+            }
             expressionString == "localisation" -> {
                 CwtKeyExpression(expressionString, CwtDataType.Localisation)
             }
@@ -94,10 +103,6 @@ class CwtKeyExpression private constructor(
             expressionString == "\$localisation_parameter" -> {
                 CwtKeyExpression("localisation_parameter", CwtDataType.LocalisationParameter)
             }
-            expressionString.surroundsWith("enum[", "]") -> {
-                val value = expressionString.substring(5, expressionString.length - 1)
-                CwtKeyExpression(expressionString, CwtDataType.EnumValue, value)
-            }
             expressionString.surroundsWith("value[", "]") -> {
                 val value = expressionString.substring(6, expressionString.length - 1)
                 CwtKeyExpression(expressionString, CwtDataType.Value, value)
@@ -105,6 +110,10 @@ class CwtKeyExpression private constructor(
             expressionString.surroundsWith("value_set[", "]") -> {
                 val value = expressionString.substring(10, expressionString.length - 1)
                 CwtKeyExpression(expressionString, CwtDataType.ValueSet, value)
+            }
+            expressionString.surroundsWith("enum[", "]") -> {
+                val value = expressionString.substring(5, expressionString.length - 1)
+                CwtKeyExpression(expressionString, CwtDataType.EnumValue, value)
             }
             expressionString == "scope_field" -> {
                 CwtKeyExpression(expressionString, CwtDataType.ScopeField)
@@ -117,6 +126,40 @@ class CwtKeyExpression private constructor(
             expressionString.surroundsWith("scope_group[", "]") -> {
                 val value = expressionString.substring(12, expressionString.length - 1)
                 CwtKeyExpression(expressionString, CwtDataType.ScopeGroup, value)
+            }
+            expressionString == "value_field" -> {
+                CwtKeyExpression(expressionString, CwtDataType.ValueField)
+            }
+            expressionString.surroundsWith("value_field[", "]") -> {
+                val value = expressionString.substring(12, expressionString.length - 1)
+                CwtKeyExpression(expressionString, CwtDataType.ValueField, value)
+            }
+            expressionString == "int_value_field" -> {
+                CwtKeyExpression(expressionString, CwtDataType.IntValueField)
+            }
+            expressionString.surroundsWith("int_value_field[", "]") -> {
+                val value = expressionString.substring(16, expressionString.length - 1)
+                CwtKeyExpression(expressionString, CwtDataType.IntValueField, value)
+            }
+            expressionString == "variable_field" -> {
+                CwtKeyExpression(expressionString, CwtDataType.VariableField)
+            }
+            expressionString == "variable_field_32" -> {
+                CwtKeyExpression(expressionString, CwtDataType.VariableField)
+            }
+            expressionString.surroundsWith("variable_field[", "]") -> {
+                val value = expressionString.substring(15, expressionString.length - 1)
+                CwtKeyExpression(expressionString, CwtDataType.VariableField, value)
+            }
+            expressionString == "int_variable_field" -> {
+                CwtKeyExpression(expressionString, CwtDataType.IntVariableField)
+            }
+            expressionString == "int_variable_field_32" -> {
+                CwtKeyExpression(expressionString, CwtDataType.IntVariableField)
+            }
+            expressionString.surroundsWith("int_variable_field[", "]") -> {
+                val value = expressionString.substring(19, expressionString.length - 1)
+                CwtKeyExpression(expressionString, CwtDataType.IntVariableField, value)
             }
             expressionString.surroundsWith("alias_keys_field[", "]") -> {
                 val value = expressionString.substring(17, expressionString.length - 1)

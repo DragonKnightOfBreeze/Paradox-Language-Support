@@ -402,19 +402,19 @@ object ParadoxScopeHandler {
     
     fun mergeScopeContextMap(map: Map<String, String?>, otherMap: Map<String, String?>): Map<String, String?>? {
         val result = mutableMapOf<String, String?>()
-        doMergeScopeContextMap(result, map, otherMap, "this").let { if(!it) return null }
-        doMergeScopeContextMap(result, map, otherMap, "root").let { if(!it) return null }
-        doMergeScopeContextMap(result, map, otherMap, "prev").let { if(!it) return null }
-        doMergeScopeContextMap(result, map, otherMap, "from").let { if(!it) return null }
-        doMergeScopeContextMap(result, map, otherMap, "fromfrom").let { if(!it) return null }
-        doMergeScopeContextMap(result, map, otherMap, "fromfromfrom").let { if(!it) return null }
-        doMergeScopeContextMap(result, map, otherMap, "fromfromfromfrom").let { if(!it) return null }
+        doMergeScopeContextMap(result, map, otherMap, "this", true).let { if(!it) return null }
+        doMergeScopeContextMap(result, map, otherMap, "root", true).let { if(!it) return null }
+        doMergeScopeContextMap(result, map, otherMap, "prev", false).let { if(!it) return null }
+        doMergeScopeContextMap(result, map, otherMap, "from", false).let { if(!it) return null }
+        doMergeScopeContextMap(result, map, otherMap, "fromfrom", false).let { if(!it) return null }
+        doMergeScopeContextMap(result, map, otherMap, "fromfromfrom", false).let { if(!it) return null }
+        doMergeScopeContextMap(result, map, otherMap, "fromfromfromfrom", false).let { if(!it) return null }
         return result
     }
     
-    private fun doMergeScopeContextMap(result: MutableMap<String, String?>, m1: Map<String, String?>, m2: Map<String, String?>, key: String): Boolean {
+    private fun doMergeScopeContextMap(result: MutableMap<String, String?>, m1: Map<String, String?>, m2: Map<String, String?>, key: String, orUnknown: Boolean): Boolean {
         val r = mergeScopeId(m1[key], m2[key])
-        result[key] = r
+        result[key] = if(orUnknown) r else r.takeUnless { it == unknownScopeId }
         return r != null
     }
     
