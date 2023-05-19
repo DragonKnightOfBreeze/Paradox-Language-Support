@@ -30,11 +30,7 @@ import javax.swing.*
 class UnusedValueSetValueInspection : LocalInspectionTool() {
     @JvmField var ignoreDefinitionNames = true
     
-    //may be slow for ReferencesSearch
-    
-    override fun runForWholeFile(): Boolean {
-        return true
-    }
+    //may be very slow for ReferencesSearch
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
         return object : PsiElementVisitor() {

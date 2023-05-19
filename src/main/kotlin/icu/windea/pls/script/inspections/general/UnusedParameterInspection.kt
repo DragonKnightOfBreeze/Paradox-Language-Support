@@ -40,11 +40,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
     @JvmField var forInvocationExpressions = true
     @JvmField var forScriptValueExpressions = true
     
-    //may be slow for ReferencesSearch
-    
-    override fun runForWholeFile(): Boolean {
-        return true
-    }
+    //may be very slow for ReferencesSearch
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
         return object : PsiElementVisitor() {
