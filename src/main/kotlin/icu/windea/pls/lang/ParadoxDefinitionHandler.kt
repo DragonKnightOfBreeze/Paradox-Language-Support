@@ -12,6 +12,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
@@ -584,8 +585,8 @@ object ParadoxDefinitionHandler {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisationKeyKey) {
             ProgressManager.checkCanceled()
             val value = resolvePrimaryLocalisationKey(element)
-            val tracker = PsiModificationTracker.MODIFICATION_COUNT
-            CachedValueProvider.Result.create(value, tracker)
+            val tracker = ParadoxPsiModificationTracker.getInstance(element.project).LocalisationFileTracker
+            CachedValueProvider.Result.create(value, element, tracker)
         }
     }
     
@@ -607,8 +608,8 @@ object ParadoxDefinitionHandler {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisationKey) {
             ProgressManager.checkCanceled()
             val value = resolvePrimaryLocalisation(element)
-            val tracker = PsiModificationTracker.MODIFICATION_COUNT
-            CachedValueProvider.Result.create(value, tracker)
+            val tracker = ParadoxPsiModificationTracker.getInstance(element.project).LocalisationFileTracker
+            CachedValueProvider.Result.create(value, element, tracker)
         }
     }
     
@@ -632,7 +633,7 @@ object ParadoxDefinitionHandler {
             ProgressManager.checkCanceled()
             val value = resolvePrimaryImage(element)
             val tracker = PsiModificationTracker.MODIFICATION_COUNT
-            CachedValueProvider.Result.create(value, tracker)
+            CachedValueProvider.Result.create(value, element, tracker)
         }
     }
     
