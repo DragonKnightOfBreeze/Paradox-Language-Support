@@ -3,6 +3,7 @@ package icu.windea.pls.script.codeInsight.markers
 import com.intellij.codeInsight.daemon.*
 import com.intellij.navigation.*
 import com.intellij.openapi.editor.markup.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
@@ -27,15 +28,15 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineM
 		val definitionInfo = element.definitionInfo ?: return
 		val localisationInfos = definitionInfo.localisations
 		if(localisationInfos.isEmpty()) return
-		
 		//显示在提示中 & 可导航：去重后的一组本地化的键名，不包括没有对应的本地化的项，按解析顺序排序
 		val icon = PlsIcons.Gutter.RelatedLocalisations
 		val tooltipBuilder = StringBuilder()
-		val project = element.project
 		val keys = mutableSetOf<String>()
 		val targets = mutableSetOf<ParadoxLocalisationProperty>() //这里需要考虑基于引用相等去重
 		var isFirst = true
+		val project = element.project
 		for((key, locationExpression) in localisationInfos) {
+			ProgressManager.checkCanceled()
 			val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
 			val resolved = locationExpression.resolveAll(element, definitionInfo, selector) ?: continue
 			if(resolved.localisations.isNotEmpty()) {

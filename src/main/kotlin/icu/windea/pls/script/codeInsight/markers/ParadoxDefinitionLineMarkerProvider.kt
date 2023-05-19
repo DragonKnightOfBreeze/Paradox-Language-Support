@@ -3,6 +3,7 @@ package icu.windea.pls.script.codeInsight.markers
 import com.intellij.codeInsight.daemon.*
 import com.intellij.navigation.*
 import com.intellij.openapi.editor.markup.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
@@ -25,21 +26,21 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		if(element !is ParadoxScriptProperty) return
 		val locationElement = element.propertyKey.idElement ?: return
 		val definitionInfo = element.definitionInfo ?: return
-		
 		val icon = PlsIcons.Gutter.Definition
 		val tooltip = buildString {
 			val name = definitionInfo.name
 			val typeText = definitionInfo.typesText
 			append(PlsBundle.message("prefix.definition")).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>: ").append(typeText)
 		}
-		val project = element.project
-		val selector = definitionSelector(project, element).contextSensitive()
-		val targets = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
-		if(targets.isEmpty()) return
+		val targets by lazy {
+			val project = element.project
+			val selector = definitionSelector(project, element).contextSensitive()
+			ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
+		}
 		val lineMarkerInfo = createNavigationGutterIconBuilder(icon) { createGotoRelatedItem(targets) }
 			.setTooltipText(tooltip)
 			.setPopupTitle(PlsBundle.message("script.gutterIcon.definition.title"))
-			.setTargets(targets)
+			.setTargets(NotNullLazyValue.lazy { targets })
 			.setAlignment(GutterIconRenderer.Alignment.RIGHT)
 			.setNamer { PlsBundle.message("script.gutterIcon.definition") }
 			.createLineMarkerInfo(locationElement)

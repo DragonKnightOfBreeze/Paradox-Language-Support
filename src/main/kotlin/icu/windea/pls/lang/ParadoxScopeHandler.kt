@@ -401,15 +401,14 @@ object ParadoxScopeHandler {
     }
     
     fun mergeScopeContextMap(map: Map<String, String?>, otherMap: Map<String, String?>): Map<String, String?>? {
-        //this and root scope is required
         val result = mutableMapOf<String, String?>()
         doMergeScopeContextMap(result, map, otherMap, "this").let { if(!it) return null }
         doMergeScopeContextMap(result, map, otherMap, "root").let { if(!it) return null }
-        doMergeScopeContextMap(result, map, otherMap, "prev")
-        doMergeScopeContextMap(result, map, otherMap, "from")
-        doMergeScopeContextMap(result, map, otherMap, "fromfrom")
-        doMergeScopeContextMap(result, map, otherMap, "fromfromfrom")
-        doMergeScopeContextMap(result, map, otherMap, "fromfromfromfrom")
+        doMergeScopeContextMap(result, map, otherMap, "prev").let { if(!it) return null }
+        doMergeScopeContextMap(result, map, otherMap, "from").let { if(!it) return null }
+        doMergeScopeContextMap(result, map, otherMap, "fromfrom").let { if(!it) return null }
+        doMergeScopeContextMap(result, map, otherMap, "fromfromfrom").let { if(!it) return null }
+        doMergeScopeContextMap(result, map, otherMap, "fromfromfromfrom").let { if(!it) return null }
         return result
     }
     
