@@ -17,7 +17,6 @@ import icu.windea.pls.localisation.psi.impl.*
 @Suppress("unused", "UNUSED_PARAMETER")
 object ParadoxLocalisationHandler {
     fun getInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        ProgressManager.checkCanceled()
         return getInfoFromCache(element)
     }
     

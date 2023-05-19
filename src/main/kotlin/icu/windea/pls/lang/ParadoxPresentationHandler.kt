@@ -16,11 +16,10 @@ import javax.swing.*
 
 object ParadoxPresentationHandler {
     fun getNameText(definition: ParadoxScriptDefinitionElement): String? {
-        val definitionInfo = definition.definitionInfo ?: return null
-        val localizedName = definitionInfo.resolvePrimaryLocalisation()
+        val localizedName = ParadoxDefinitionHandler.getPrimaryLocalisation(definition)
         if(localizedName == null) {
-            val locName = definitionInfo.resolvePrimaryLocalisationKey() ?: return null
-            return locName
+            val key = ParadoxDefinitionHandler.getPrimaryLocalisationKey(definition) ?: return null
+            return key
         }
         return ParadoxLocalisationTextHtmlRenderer.render(localizedName)
     }
@@ -36,11 +35,10 @@ object ParadoxPresentationHandler {
     }
     
     fun getNameLabel(definition: ParadoxScriptDefinitionElement, color: Color? = null): JLabel? {
-        val definitionInfo = definition.definitionInfo ?: return null
-        val localizedName = definitionInfo.resolvePrimaryLocalisation()
+        val localizedName = ParadoxDefinitionHandler.getPrimaryLocalisation(definition)
         if(localizedName == null) {
-            val locName = definitionInfo.resolvePrimaryLocalisationKey() ?: return null
-            return ParadoxLocalisationTextUIRenderer.render(locName, color)
+            val key = ParadoxDefinitionHandler.getPrimaryLocalisationKey(definition) ?: return null
+            return ParadoxLocalisationTextUIRenderer.render(key, color)
         }
         return ParadoxLocalisationTextUIRenderer.render(localizedName, color)
     }
@@ -62,7 +60,7 @@ object ParadoxPresentationHandler {
     }
     
     fun getIcon(definition: ParadoxScriptDefinitionElement): Icon? {
-        val ddsFile = definition.definitionInfo?.resolvePrimaryImage() ?: return null
+        val ddsFile = ParadoxDefinitionHandler.getPrimaryImage(definition) ?: return null
         val iconFile = ddsFile.virtualFile ?: return null
         val iconUrl = ParadoxDdsUrlResolver.resolveByFile(iconFile)
         return IconLoader.findIcon(iconUrl.toFileUrl())

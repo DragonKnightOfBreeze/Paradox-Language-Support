@@ -7,7 +7,7 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*
@@ -57,20 +57,17 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<S
 	}
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-		if(element is ParadoxScriptProperty) {
-			val definitionInfo = element.definitionInfo
-			if(definitionInfo != null) {
-				val presentation = doCollect(definitionInfo, editor, settings) ?: return true
-				val finalPresentation = presentation.toFinalPresentation(this, file.project)
-				val endOffset = element.propertyKey.endOffset
-				sink.addInlineElement(endOffset, true, finalPresentation, false)
-			}
+		if(element is ParadoxScriptDefinitionElement) {
+			val presentation = doCollect(element, editor, settings) ?: return true
+			val finalPresentation = presentation.toFinalPresentation(this, file.project)
+			val endOffset = element.propertyKey.endOffset
+			sink.addInlineElement(endOffset, true, finalPresentation, false)
 		}
 		return true
 	}
 	
-	private fun PresentationFactory.doCollect(definitionInfo: ParadoxDefinitionInfo, editor: Editor, settings: Settings): InlayPresentation? {
-		val primaryLocalisation = definitionInfo.resolvePrimaryLocalisation() ?: return null
+	private fun PresentationFactory.doCollect(element: ParadoxScriptDefinitionElement, editor: Editor, settings: Settings): InlayPresentation? {
+		val primaryLocalisation = ParadoxDefinitionHandler.getPrimaryLocalisation(element) ?: return null
 		return ParadoxLocalisationTextInlayRenderer.render(primaryLocalisation, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
 	}
 }

@@ -1,15 +1,11 @@
 package icu.windea.pls.lang.model
 
-import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 import java.util.concurrent.*
@@ -154,41 +150,6 @@ class ParadoxDefinitionInfo(
         val subtypes = getSubtypeConfigs(matchType).map { it.name }
         val configContext = CwtConfigContext(element, name, type, subtypes, configGroup, matchType)
         return configGroup.declarations.get(type)?.getMergedConfig(configContext)
-    }
-    
-    fun resolvePrimaryLocalisationKey(): String? {
-        if(primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
-        for(primaryLocalisation in primaryLocalisations) {
-            val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
-            val resolved = primaryLocalisation.locationExpression.resolve(element, this, selector)
-            if(resolved?.key == null) continue
-            return resolved.key
-        }
-        return null
-    }
-    
-    fun resolvePrimaryLocalisation(): ParadoxLocalisationProperty? {
-        if(primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
-        for(primaryLocalisation in primaryLocalisations) {
-            val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
-            val resolved = primaryLocalisation.locationExpression.resolve(element, this, selector)
-            val localisation = resolved?.localisation
-            if(localisation == null) continue
-            return localisation
-        }
-        return null
-    }
-    
-    fun resolvePrimaryImage(): PsiFile? {
-        if(primaryImages.isEmpty()) return null //没有或者CWT规则不完善
-        for(primaryImage in primaryImages) {
-            val resolved = primaryImage.locationExpression.resolve(element, this, project)
-            val file = resolved?.file
-            if(file == null) continue
-            element.putUserData(PlsKeys.iconFrameKey, resolved.frame)
-            return file
-        }
-        return null
     }
     
     override fun equals(other: Any?): Boolean {

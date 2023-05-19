@@ -5,6 +5,7 @@ import com.intellij.ide.structureView.impl.common.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*
 
@@ -40,7 +41,7 @@ class ParadoxScriptPropertyTreeElement(element: ParadoxScriptProperty) : PsiTree
 		val builder = StringBuilder()
 		builder.append(": ").append(definitionInfo.typesText)
 		//如果存在，显示定义的本地化名字（最相关的本地化文本）
-		val primaryLocalisation = definitionInfo.resolvePrimaryLocalisation()
+		val primaryLocalisation = ParadoxDefinitionHandler.getPrimaryLocalisation(element)
 		if(primaryLocalisation != null) {
 			//这里需要使用移除格式后的纯文本，这里返回的字符串不是HTML
 			val localizedName = ParadoxLocalisationTextExtractor.extract(primaryLocalisation)

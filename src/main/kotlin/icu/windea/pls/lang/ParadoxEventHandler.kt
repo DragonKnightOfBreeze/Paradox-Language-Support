@@ -71,11 +71,11 @@ object ParadoxEventHandler {
     }
     
     fun getLocalizedName(definition: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
-        return definition.definitionInfo?.resolvePrimaryLocalisation()
+        return ParadoxDefinitionHandler.getPrimaryLocalisation(definition)
     }
     
     fun getIconFile(definition: ParadoxScriptDefinitionElement): PsiFile? {
-        return definition.definitionInfo?.resolvePrimaryImage()
+        return ParadoxDefinitionHandler.getPrimaryImage(definition)
     }
     
     /**

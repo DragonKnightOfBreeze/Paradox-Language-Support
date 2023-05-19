@@ -3,7 +3,6 @@ package icu.windea.pls.lang
 import com.intellij.lang.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
@@ -13,6 +12,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -27,10 +27,7 @@ import icu.windea.pls.script.psi.impl.*
  */
 @Suppress("unused", "UNUSED_PARAMETER")
 object ParadoxDefinitionHandler {
-    val definitionNamePrefixKey = Key.create<String>("paradox.definition.prefix")
-    
     fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
-        ProgressManager.checkCanceled()
         val notUseCache = element.getUserData(PlsKeys.isIncompleteKey) == true
         if(notUseCache) {
             val file = element.containingFile
@@ -41,6 +38,7 @@ object ParadoxDefinitionHandler {
     
     private fun getInfoFromCache(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfoKey) {
+            ProgressManager.checkCanceled()
             val file = element.containingFile
             val value = resolveInfo(element, file)
             //invalidated on file modification
@@ -583,14 +581,73 @@ object ParadoxDefinitionHandler {
     }
     
     fun getPrimaryLocalisationKey(element: ParadoxScriptDefinitionElement): String? {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisationKeyKey) {
+            ProgressManager.checkCanceled()
+            val value = resolvePrimaryLocalisationKey(element)
+            val tracker = PsiModificationTracker.MODIFICATION_COUNT
+            CachedValueProvider.Result.create(value, tracker)
+        }
+    }
+    
+    private fun resolvePrimaryLocalisationKey(element: ParadoxScriptDefinitionElement): String? {
+        val definitionInfo = element.definitionInfo ?: return null
+        val primaryLocalisations = definitionInfo.primaryLocalisations
+        if(primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
+        val project = definitionInfo.project
+        for(primaryLocalisation in primaryLocalisations) {
+            val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
+            val resolved = primaryLocalisation.locationExpression.resolve(element, definitionInfo, selector)
+            if(resolved?.key == null) continue
+            return resolved.key
+        }
         return null
     }
     
-    fun getPrimaryLocalisation(): ParadoxLocalisationProperty? {
+    fun getPrimaryLocalisation(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisationKey) {
+            ProgressManager.checkCanceled()
+            val value = resolvePrimaryLocalisation(element)
+            val tracker = PsiModificationTracker.MODIFICATION_COUNT
+            CachedValueProvider.Result.create(value, tracker)
+        }
+    }
+    
+    private fun resolvePrimaryLocalisation(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
+        val definitionInfo = element.definitionInfo ?: return null
+        val primaryLocalisations = definitionInfo.primaryLocalisations
+        if(primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
+        val project = definitionInfo.project
+        for(primaryLocalisation in primaryLocalisations) {
+            val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
+            val resolved = primaryLocalisation.locationExpression.resolve(element, definitionInfo, selector)
+            val localisation = resolved?.localisation
+            if(localisation == null) continue
+            return localisation
+        }
         return null
     }
     
-    fun getPrimaryImage(): PsiFile? {
+    fun getPrimaryImage(element: ParadoxScriptDefinitionElement): PsiFile? {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryImageKey, ) {
+            ProgressManager.checkCanceled()
+            val value = resolvePrimaryImage(element)
+            val tracker = PsiModificationTracker.MODIFICATION_COUNT
+            CachedValueProvider.Result.create(value, tracker)
+        }
+    }
+    
+    private fun resolvePrimaryImage(element: ParadoxScriptDefinitionElement): PsiFile? {
+        val definitionInfo = element.definitionInfo ?: return null
+        val primaryImages = definitionInfo.primaryImages
+        if(primaryImages.isEmpty()) return null //没有或者CWT规则不完善
+        val project = definitionInfo.project
+        for(primaryImage in primaryImages) {
+            val resolved = primaryImage.locationExpression.resolve(element, definitionInfo, project)
+            val file = resolved?.file
+            if(file == null) continue
+            element.putUserData(PlsKeys.iconFrameKey, resolved.frame)
+            return file
+        }
         return null
     }
 }

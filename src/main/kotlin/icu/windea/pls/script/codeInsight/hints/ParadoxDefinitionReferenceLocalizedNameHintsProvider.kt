@@ -10,7 +10,6 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*
@@ -79,19 +78,16 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
         val isKey = element is ParadoxScriptPropertyKey
         val resolved = ParadoxConfigHandler.resolveScriptExpression(element, null, config, config.expression, configGroup, isKey)
         if(resolved is ParadoxScriptDefinitionElement) {
-            val definitionInfo = resolved.definitionInfo
-            if(definitionInfo != null) {
-                val presentation = doCollect(definitionInfo, editor, settings) ?: return true
-                val finalPresentation = presentation.toFinalPresentation(this, file.project)
-                val endOffset = element.endOffset
-                sink.addInlineElement(endOffset, true, finalPresentation, false)
-            }
+            val presentation = doCollect(resolved, editor, settings) ?: return true
+            val finalPresentation = presentation.toFinalPresentation(this, file.project)
+            val endOffset = element.endOffset
+            sink.addInlineElement(endOffset, true, finalPresentation, false)
         }
         return true
     }
     
-    private fun PresentationFactory.doCollect(definitionInfo: ParadoxDefinitionInfo, editor: Editor, settings: Settings): InlayPresentation? {
-        val primaryLocalisation = definitionInfo.resolvePrimaryLocalisation() ?: return null
+    private fun PresentationFactory.doCollect(element: ParadoxScriptDefinitionElement, editor: Editor, settings: Settings): InlayPresentation? {
+        val primaryLocalisation = ParadoxDefinitionHandler.getPrimaryLocalisation(element) ?: return null
         return ParadoxLocalisationTextInlayRenderer.render(primaryLocalisation, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
     }
 }

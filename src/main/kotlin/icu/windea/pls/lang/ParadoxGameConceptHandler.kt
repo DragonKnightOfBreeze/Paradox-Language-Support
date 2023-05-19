@@ -24,6 +24,6 @@ object ParadoxGameConceptHandler {
         val conceptText = element.siblings(true).findIsInstance<ParadoxLocalisationConceptText>()
         if(conceptText != null) return conceptText
         val resolved = element.reference?.resolve() ?: return null
-        return resolved.definitionInfo?.resolvePrimaryLocalisation()
+        return ParadoxDefinitionHandler.getPrimaryLocalisation(resolved)
     }
 }

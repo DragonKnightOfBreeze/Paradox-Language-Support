@@ -1,14 +1,15 @@
 package icu.windea.pls
 
 import com.intellij.codeInsight.hints.presentation.*
-import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.util.*
+import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.localisation.psi.*
 import java.awt.*
 
 object PlsConstants {
@@ -104,6 +105,9 @@ object PlsKeys {
     val descriptorInfoKey = Key.create<ParadoxModDescriptorInfo>("paradox.descriptorInfo")
     
     val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("paradox.cached.definitionInfo")
+    val cachedDefinitionPrimaryLocalisationKeyKey = Key.create<CachedValue<String>>("paradox.cached.definition.primaryLocalisationKey")
+    val cachedDefinitionPrimaryLocalisationKey = Key.create<CachedValue<ParadoxLocalisationProperty>>("paradox.cached.definition.primaryLocalisation")
+    val cachedDefinitionPrimaryImageKey = Key.create<CachedValue<PsiFile>>("paradox.cached.definition.primaryImage")
     val cachedDefinitionMemberInfoKey = Key.create<CachedValue<ParadoxDefinitionMemberInfo>>("paradox.cached.definitionMemberInfo")
     val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("paradox.cached.localisationInfo")
     val cachedComplexEnumValueInfoKey = Key.create<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cached.complexEnumValueInfo")
