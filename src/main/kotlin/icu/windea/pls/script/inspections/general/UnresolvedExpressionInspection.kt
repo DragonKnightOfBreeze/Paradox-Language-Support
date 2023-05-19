@@ -59,12 +59,12 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
                         val configs = ParadoxConfigHandler.getPropertyConfigs(element)
                         val config = configs.firstOrNull()
-                        val matchesOverriddenConfig = config != null && matchesOverriddenConfig(element, config)
-                        if(config == null || matchesOverriddenConfig) {
+                        val overriddenConfigNotMatched = config != null && isOverriddenConfigNotMatched(element, config)
+                        if(config == null || overriddenConfigNotMatched) {
                             //这里使用合并后的子规则，即使parentProperty可以精确匹配
                             val expect = if(showExpectInfo) {
                                 val allConfigs = when {
-                                    matchesOverriddenConfig -> config.toSingletonListOrEmpty()
+                                    overriddenConfigNotMatched -> config.toSingletonListOrEmpty()
                                     else -> element.findParentProperty()?.definitionMemberInfo?.getChildConfigs()
                                 }
                                 //某些情况下我们需要忽略一些未解析的表达式
@@ -106,11 +106,11 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
                         val configs = ParadoxConfigHandler.getValueConfigs(element, orDefault = false)
                         val config = configs.firstOrNull()
-                        val matchesOverriddenConfig = config != null && matchesOverriddenConfig(element, config)
-                        if(config == null || matchesOverriddenConfig) {
+                        val overriddenConfigNotMatched = config != null && isOverriddenConfigNotMatched(element, config)
+                        if(config == null || overriddenConfigNotMatched) {
                             val expect = if(showExpectInfo) {
                                 val allConfigs = when {
-                                    matchesOverriddenConfig -> config.toSingletonListOrEmpty()
+                                    overriddenConfigNotMatched -> config.toSingletonListOrEmpty()
                                     else -> definitionMemberInfo.getConfigs().mapNotNull {
                                         when {
                                             it is CwtPropertyConfig -> it.valueConfig
@@ -146,13 +146,13 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         return true
                     }
                     
-                    private fun <T : CwtDataConfig<*>> matchesOverriddenConfig(element: PsiElement, config: T): Boolean {
+                    private fun <T : CwtDataConfig<*>> isOverriddenConfigNotMatched(element: PsiElement, config: T): Boolean {
                         if(element is ParadoxScriptProperty && config is CwtPropertyConfig && config.overriddenProvider != null) {
                             //如果是被重载的规则，这里需要再次判断是否匹配
                             val expression = ParadoxDataExpression.resolve(element.propertyKey)
                             val configGroup = config.info.configGroup
                             val matched = ParadoxConfigHandler.matchesScriptExpression(element, expression, config.expression, config, configGroup)
-                            return matched
+                            if(!matched) return true
                         }
                         return false
                     }

@@ -10,6 +10,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.checker.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -103,6 +104,8 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                     }
                     else -> pass()
                 }
+                
+                ParadoxIncorrectExpressionChecker.check(element, config, holder)
             }
         }
     }
