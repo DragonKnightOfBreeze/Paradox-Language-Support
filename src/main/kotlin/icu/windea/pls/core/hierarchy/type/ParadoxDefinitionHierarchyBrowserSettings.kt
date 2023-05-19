@@ -5,6 +5,7 @@ import com.intellij.openapi.project.*
 import com.intellij.util.xmlb.*
 import icu.windea.pls.core.hierarchy.*
 
+@Service(Service.Level.PROJECT)
 @State(name = "ParadoxDefinitionHierarchyBrowserSettings", storages = [Storage(StoragePathMacros.WORKSPACE_FILE)])
 class ParadoxDefinitionHierarchyBrowserSettings : PersistentStateComponent<ParadoxDefinitionHierarchyBrowserSettings>, ParadoxHierarchyBrowserSettings {
     override var scopeType: String = "all"

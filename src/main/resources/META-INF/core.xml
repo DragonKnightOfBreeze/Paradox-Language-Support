@@ -52,9 +52,6 @@
     
     <pathReferenceProvider implementation="icu.windea.pls.core.references.paths.ParadoxPathReferenceProvider" order="first"/>
     
-    <projectService serviceImplementation="icu.windea.pls.core.hierarchy.type.ParadoxDefinitionHierarchyBrowserSettings"/>
-    <projectService serviceImplementation="icu.windea.pls.core.hierarchy.call.ParadoxCallHierarchyBrowserSettings"/>
-    
     <typeHierarchyProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.hierarchy.type.ParadoxDefinitionHierarchyProvider"/>
     <callHierarchyProvider language="PARADOX" implementationClass="icu.windea.pls.core.hierarchy.call.ParadoxCallHierarchyProvider"/>
     
@@ -87,8 +84,7 @@
     
     <postStartupActivity implementation="icu.windea.pls.core.listeners.ParadoxUpdateLibraryOnProjectOpenedListener"/>
     
-    <projectService serviceImplementation="icu.windea.pls.core.psi.ParadoxPsiModificationTracker"/>
-    <psi.treeChangePreprocessor implementation="icu.windea.pls.core.psi.ParadoxPsiModificationTracker"/>
+    <psi.treeChangePreprocessor implementation="icu.windea.pls.core.psi.ParadoxPsiTreeChangePreprocessor"/>
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls">
