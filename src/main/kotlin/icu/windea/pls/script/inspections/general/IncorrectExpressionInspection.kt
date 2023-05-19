@@ -13,15 +13,17 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 不充分的表达式的检查。
+ * 不正确的表达式的检查。
  */
-class InsufficientExpressionInspection : LocalInspectionTool() {
+class IncorrectExpressionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
                 if(element is ParadoxScriptExpressionElement) visitExpressionElement(element)
             }
+            
+            //TODO 提取成扩展点并加入一些极个别情况下的检查
             
             private fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
                 //得到完全匹配的CWT规则
@@ -39,7 +41,7 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
                         if(value !in min0..max0) {
                             val min1 = min?.toString() ?: "-inf"
                             val max1 = max?.toString() ?: "inf"
-                            holder.registerProblem(element, PlsBundle.message("inspection.script.general.insufficientExpression.description.1", expression, min1, max1, value))
+                            holder.registerProblem(element, PlsBundle.message("inspection.script.general.incorrectExpression.description.1", expression, min1, max1, value))
                         }
                     }
                     dataType == CwtDataType.Float -> {
@@ -51,7 +53,7 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
                         if(value !in min0..max0) {
                             val min1 = min?.toString() ?: "-inf"
                             val max1 = max?.toString() ?: "inf"
-                            holder.registerProblem(element, PlsBundle.message("inspection.script.general.insufficientExpression.description.1", expression, min1, max1, value))
+                            holder.registerProblem(element, PlsBundle.message("inspection.script.general.incorrectExpression.description.1", expression, min1, max1, value))
                         }
                     }
                     dataType == CwtDataType.ColorField -> {
@@ -60,7 +62,7 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
                         val expectedColorType = configExpression.value ?: return
                         val colorType = element.colorType
                         if(colorType == expectedColorType) return
-                        val message = PlsBundle.message("inspection.script.general.insufficientExpression.description.3", expression, expectedColorType, colorType)
+                        val message = PlsBundle.message("inspection.script.general.incorrectExpression.description.3", expression, expectedColorType, colorType)
                         holder.registerProblem(element, message)
                     }
                     dataType == CwtDataType.Scope -> {
@@ -75,7 +77,7 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
                         val scopeContext = ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, parentScopeContext)
                         if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return
                         val expression = element.expression ?: return
-                        val message = PlsBundle.message("inspection.script.general.insufficientExpression.description.5", expression, expectedScope, scopeContext.scope.id)
+                        val message = PlsBundle.message("inspection.script.general.incorrectExpression.description.5", expression, expectedScope, scopeContext.scope.id)
                         holder.registerProblem(element, message)
                     }
                     dataType == CwtDataType.ScopeGroup -> {
@@ -90,7 +92,7 @@ class InsufficientExpressionInspection : LocalInspectionTool() {
                         val scopeContext = ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, parentScopeContext)
                         if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return
                         val expression = element.expression ?: return
-                        val message = PlsBundle.message("inspection.script.general.insufficientExpression.description.6", expression, expectedScopeGroup, scopeContext.scope.id)
+                        val message = PlsBundle.message("inspection.script.general.incorrectExpression.description.6", expression, expectedScopeGroup, scopeContext.scope.id)
                         holder.registerProblem(element, message)
                     }
                     dataType == CwtDataType.IntValueField -> {

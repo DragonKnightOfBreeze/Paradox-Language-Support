@@ -394,7 +394,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
     * [X] 推断的`inline_script`的位置存在冲突（使用处的父节点对应的CWT规则存在不一致的情况）
     * [X] 定义声明中缺失/过多的表达式的检查 - 现在可以配置仅显示第一个错误
     * [X] 定义声明中缺失/过多的表达式的检查 - 现在可以配置是否解析内联的内联脚本，内联后进行检查
-    * [X] 路径引用的文件扩展名不匹配的检查（归类到`InsufficientExpressionInspection`，基于扩展的CWT选项`## file_extensions = xxx`）
+    * [X] 路径引用的文件扩展名不匹配的检查（归类到`IncorrectExpressionInspection`，基于扩展的CWT选项`## file_extensions = xxx`）
 
 ## 0.7.12
 

@@ -50,12 +50,12 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
                      implementationClass="icu.windea.pls.script.inspections.general.TooManyExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptInsufficientExpression"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectExpression"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.general.insufficientExpression"
+                     bundle="messages.PlsBundle" key="inspection.script.general.incorrectExpression"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
-                     implementationClass="icu.windea.pls.script.inspections.general.InsufficientExpressionInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.general.IncorrectExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingLocalisation"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle"

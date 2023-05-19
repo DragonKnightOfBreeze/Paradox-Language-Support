@@ -1,10 +1,10 @@
 <html>
 <body>
   <p>
-    Reports insufficient expressions.
+    Reports incorrect expressions in definition declarations.
   </p>
   <p>
-    An expression (key / value) will be considered as insufficient in following situations:
+    An expression (key / value) will be considered as incorrect in following situations:
   </p>
   <ul>
     <li>It's a number matched by a CWT expression, but its value is outside the number range declared by this CWT expression.</li>
@@ -12,6 +12,7 @@
     <li>It's a scope field matched by a CWT expression, but its value does not match the scopes declared by this CWT expression.</li>
     <!--<li>It's a value or variable field matched by a CWT expression, but its value is outside the number range declared by this CWT expression.</li>-->
     <!--<li>It's a value or variable field matched by a CWT expression, but its value is not an integer while integer value is required by this CWT expression..</li>-->
+    <li>Other specific situations.</li>
   </ul>
   <!-- tooltip end -->
   <p>

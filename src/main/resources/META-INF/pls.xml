@@ -28,7 +28,7 @@
     <declarationConfigInjector implementation="icu.windea.pls.lang.config.impl.CwtGameRuleDeclarationConfigInjector"/>
     <declarationConfigInjector implementation="icu.windea.pls.lang.config.impl.CwtOnActionDeclarationConfigInjector"/>
     
-    <overriddenConfigProvider implementation="icu.windea.pls.lang.config.impl.ParadoxComplexTriggerModifierOverriddenConfigProvider"/>
+    <overriddenConfigProvider implementation="icu.windea.pls.lang.config.impl.StellarisComplexTriggerModifierOverriddenConfigProvider"/>
     
     <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.CwtConfigLinkProvider"/>
     <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxDefinitionLinkProvider"/>
@@ -88,7 +88,7 @@
     
     <definitionModifierProvider implementation="icu.windea.pls.lang.modifier.impl.StellarisScriptedModifierDefinitionModifierProvider"/>
     
-    <overriddenScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxComplexTriggerModifierOverriddenScopeContextProvider"/>
+    <overriddenScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.StellarisComplexTriggerModifierOverriddenScopeContextProvider"/>
     
     <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxBaseDefinitionScopeContextProvider" order="last"/>
     <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxGameRuleScopeContextProvider"/>

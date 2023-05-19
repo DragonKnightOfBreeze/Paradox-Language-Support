@@ -14,7 +14,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
-class ParadoxComplexTriggerModifierOverriddenConfigProvider : ParadoxOverriddenConfigProvider {
+class StellarisComplexTriggerModifierOverriddenConfigProvider : ParadoxOverriddenConfigProvider {
     @Suppress("UNCHECKED_CAST")
     override fun <T : CwtDataConfig<*>> getOverriddenConfigs(element: ParadoxScriptMemberElement, rawConfig: T): List<T>? {
         //重载complex_trigger_modifier = {...}中属性parameters的值对应的CWT规则
