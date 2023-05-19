@@ -57,14 +57,14 @@
 * [ ] 对任何带有作用域上下文的声明或引用（包括CWT规则的引用），统一提示作用域上下文
 * [ ] 参照Irony Mod Manager的实现，实现扩展点以在查询时，如果有必要，按照覆盖顺序排序封装变量/定义/本地化
 * [ ] 添加代码检查，基于下列规则检查脚本文件中是否存在可能的BUG
-  * scripted_trigger/scripted_effect不能递归调用
+  * ~~scripted_trigger/scripted_effect不能递归调用~~（已实现对应的代码检查）
   * scripted_trigger/scripted_effect的调用层数最大只能有5层
   * ~~内联数学表达式（inline_math）在每个scripted_trigger/scripted_effect中最多只能使用1次~~（当前游戏版本已无此限制）
   * 对于valueSetValue，只能通过后缀的`@xxx`切换flag和event_target的作用域
-  * 不能在asset文件中使用scripted_variable和inline_math
+  * ~~不能在asset文件中使用scripted_variable和inline_math~~（已实现对应的代码检查）
 * [ ] 在更多情况下尝试推断脚本参数对应的CWT规则，从而提供各种高级语言功能（如，基于CWT规则的代码高亮、引用解析和代码补全）
 
-在当前版本中，插件新增可以通过以下几种情况推断脚本参数对应的CWT规则：
+新增可以通过以下几种情况推断脚本参数对应的CWT规则：
 
 ```
 ethic = ethic_$ETHIC$ # 脚本参数作为某个脚本表达式的一部分，这个脚本表达式中仅存在这唯一一个脚本参数，且可以得到这个脚本表达式对应的CWT规则

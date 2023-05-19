@@ -83,7 +83,7 @@
                      groupPathKey="inspection.script.general.path"
                      implementationClass="icu.windea.pls.script.inspections.general.UnresolvedPathReferenceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedParameter"
-                     enabledByDefault="true" level="WEAK WARNING"
+                     enabledByDefault="false" level="WEAK WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.general.unusedParameter"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
