@@ -4,7 +4,6 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.model.*
@@ -56,7 +55,7 @@ object ParadoxSearchScopeTypes {
         override fun findRoot(project: Project, context: Any?): PsiElement? {
             return when {
                 context is PsiElement -> context.findParentDefinition()
-                context is ParadoxScriptExpressionInfo -> context.file?.findElementAt(context.elementOffset)?.findParentDefinition()
+                context is ParadoxElementInfo -> context.file?.findElementAt(context.elementOffset)?.findParentDefinition()
                 else -> null
             }
         }

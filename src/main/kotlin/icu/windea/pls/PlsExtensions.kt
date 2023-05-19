@@ -185,7 +185,7 @@ tailrec fun selectRootFile(from: Any?): VirtualFile? {
         from is PsiFile -> from.originalFile.fileInfo?.rootInfo?.gameRootFile
         from is StubBasedPsiElementBase<*> -> selectRootFile(from.containingFileStub?.psi ?: from.containingFile)
         from is PsiElement -> selectRootFile(from.containingFile)
-        from is ParadoxScriptExpressionInfo -> selectRootFile(from.file)
+        from is ParadoxElementInfo -> selectRootFile(from.file)
         else -> null
     }
 }
@@ -198,7 +198,7 @@ tailrec fun selectFile(from: Any?): VirtualFile? {
         from is PsiFile -> from.originalFile.virtualFile
         from is StubBasedPsiElementBase<*> -> selectFile(from.containingFileStub?.psi ?: from.containingFile)
         from is PsiElement -> selectFile(from.containingFile)
-        from is ParadoxScriptExpressionInfo -> selectFile(from.file)
+        from is ParadoxElementInfo -> selectFile(from.file)
         else -> null
     }
 }
@@ -217,7 +217,7 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
             ?: selectGameType(from.containingFile) //直接转到containingFile，避免不必要的文件解析
         from is StubBasedPsiElementBase<*> -> selectGameType(from.containingFile) //直接转到containingFile，避免不必要的文件解析
         from is PsiElement -> selectGameType(from.parent)
-        from is ParadoxScriptExpressionInfo -> selectGameType(from.file)
+        from is ParadoxElementInfo -> selectGameType(from.file)
         else -> null
     }
 }

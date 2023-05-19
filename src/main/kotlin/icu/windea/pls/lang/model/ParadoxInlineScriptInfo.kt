@@ -12,6 +12,6 @@ data class ParadoxInlineScriptInfo(
     val expression: String,
     override val elementOffset: Int,
     override val gameType: ParadoxGameType,
-): ParadoxScriptExpressionInfo {
+): ParadoxElementInfo {
     @Volatile override var file: PsiFile? = null
 }

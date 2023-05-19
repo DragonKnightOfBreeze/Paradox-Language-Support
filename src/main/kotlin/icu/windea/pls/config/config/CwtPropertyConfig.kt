@@ -19,7 +19,6 @@ data class CwtPropertyConfig(
 	override val options: List<CwtOptionConfig>? = null,
 	override val optionValues: List<CwtOptionValueConfig>? = null,
 	val separatorType: CwtSeparator = CwtSeparator.EQUAL,
-	private val overriddenValuePointer: SmartPsiElementPointer<CwtValue>? = null
 ) : CwtDataConfig<CwtProperty>() {
 	companion object {
 		val Empty = CwtPropertyConfig(emptyPointer(), CwtConfigGroupInfo(""), "", "")
@@ -35,7 +34,6 @@ data class CwtPropertyConfig(
 	
 	val valueConfig by lazy {
 		val valuePointer = when {
-			overriddenValuePointer != null -> overriddenValuePointer
 			pointer == emptyPointer<CwtValue>() -> emptyPointer()
 			else -> {
 				val resolvedPointer = resolved().pointer

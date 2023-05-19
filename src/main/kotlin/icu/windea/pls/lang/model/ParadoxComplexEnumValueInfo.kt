@@ -12,7 +12,7 @@ data class ParadoxComplexEnumValueInfo(
     val readWriteAccess: ReadWriteAccessDetector.Access,
     override val elementOffset: Int,
     override val gameType: ParadoxGameType
-) : ParadoxScriptExpressionInfo {
+) : ParadoxElementInfo {
     @Volatile override var file: PsiFile? = null
     
     fun getConfig(project: Project): CwtComplexEnumConfig? {

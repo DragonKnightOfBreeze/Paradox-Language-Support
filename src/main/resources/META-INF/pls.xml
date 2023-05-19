@@ -27,7 +27,8 @@
   <extensions defaultExtensionNs="icu.windea.pls">
     <declarationConfigInjector implementation="icu.windea.pls.lang.config.impl.CwtGameRuleDeclarationConfigInjector"/>
     <declarationConfigInjector implementation="icu.windea.pls.lang.config.impl.CwtOnActionDeclarationConfigInjector"/>
-    
+
+    <overriddenConfigProvider implementation="icu.windea.pls.lang.config.impl.ParadoxSwitchCaseOverriddenConfigProvider"/>
     <overriddenConfigProvider implementation="icu.windea.pls.lang.config.impl.StellarisComplexTriggerModifierOverriddenConfigProvider"/>
     
     <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.CwtConfigLinkProvider"/>
