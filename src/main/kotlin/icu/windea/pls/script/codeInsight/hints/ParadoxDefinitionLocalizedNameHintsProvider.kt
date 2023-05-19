@@ -57,7 +57,7 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<S
 	}
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-		if(element is ParadoxScriptDefinitionElement) {
+		if(element is ParadoxScriptProperty) {
 			val presentation = doCollect(element, editor, settings) ?: return true
 			val finalPresentation = presentation.toFinalPresentation(this, file.project)
 			val endOffset = element.propertyKey.endOffset
