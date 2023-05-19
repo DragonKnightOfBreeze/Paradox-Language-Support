@@ -165,7 +165,7 @@ object ParadoxScopeHandler {
         if(parentMember == null) return true
         val parentScopeContext = getScopeContext(parentMember)
         if(parentScopeContext == null) return true
-        if(parentScopeContext != scopeContext) return true
+        if(!parentScopeContext.isEquivalentTo(scopeContext)) return true
         if(!isScopeContextSupported(parentMember)) return true
         return false
     }
@@ -221,9 +221,9 @@ object ParadoxScopeHandler {
             return result
         } else {
             //优先基于内联前的规则，如果没有，再基于内联后的规则
-            val replaceScope = config.replaceScopes ?: config.resolved().replaceScopes ?: parentScopeContext ?: return null
+            val scopeContext = config.scopeContext ?: config.resolved().scopeContext ?: parentScopeContext ?: return null
             val pushScope = config.pushScope ?: config.resolved().pushScope
-            val result = replaceScope.resolve(pushScope)
+            val result = scopeContext.resolve(pushScope)
             return result
         }
     }
@@ -400,23 +400,37 @@ object ParadoxScopeHandler {
         }
     }
     
-    fun mergeScopeContext(scopeContext: ParadoxScopeContext?, otherScopeContext: ParadoxScopeContext?) : ParadoxScopeContext? {
-        //NOTE 合并后的scopeContext不保留原有的userData，并且应当也不需要保留
-        //NOTE 这里应当不会发生SOE，但是有待验证
-        if(scopeContext == null || otherScopeContext == null) return null
-        val scope = mergeScope(scopeContext.scope, otherScopeContext.scope) ?: return null
-        val root = mergeScopeContext(scopeContext.root, otherScopeContext.root)
-        val prev = mergeScopeContext(scopeContext.prev, otherScopeContext.prev)
-        val from = mergeScopeContext(scopeContext.from, otherScopeContext.from)
-        if(scopeContext.scope == scope && scopeContext.root == root && scopeContext.prev == prev && scopeContext.from == from) return scopeContext
-        if(otherScopeContext.scope == scope && otherScopeContext.root == root && otherScopeContext.prev == prev && otherScopeContext.from == from) return otherScopeContext
-        return ParadoxScopeContext.resolve(scope, root, prev, from)
+    fun mergeScopeContextMap(map: Map<String, String?>, otherMap: Map<String, String?>): Map<String, String?>? {
+        //this and root scope is required
+        val result = mutableMapOf<String, String?>()
+        doMergeScopeContextMap(result, map, otherMap, "this").let { if(!it) return null }
+        doMergeScopeContextMap(result, map, otherMap, "root").let { if(!it) return null }
+        doMergeScopeContextMap(result, map, otherMap, "prev")
+        doMergeScopeContextMap(result, map, otherMap, "from")
+        doMergeScopeContextMap(result, map, otherMap, "fromfrom")
+        doMergeScopeContextMap(result, map, otherMap, "fromfromfrom")
+        doMergeScopeContextMap(result, map, otherMap, "fromfromfromfrom")
+        return result
+    }
+    
+    private fun doMergeScopeContextMap(result: MutableMap<String, String?>, m1: Map<String, String?>, m2: Map<String, String?>, key: String): Boolean {
+        val r = mergeScopeId(m1[key], m2[key])
+        result[key] = r
+        return r != null
+    }
+    
+    fun mergeScopeId(scopeId: String?, otherScopeId: String?): String? {
+        if(scopeId == anyScopeId || otherScopeId == anyScopeId) return anyScopeId
+        if(scopeId == unknownScopeId || otherScopeId == unknownScopeId) return unknownScopeId
+        if(scopeId == null || otherScopeId == null) return unknownScopeId
+        if(scopeId == otherScopeId) return scopeId
+        return null
     }
     
     fun mergeScope(scope: ParadoxScope?, otherScope: ParadoxScope?): ParadoxScope? {
         if(scope == ParadoxScope.AnyScope || otherScope == ParadoxScope.AnyScope) return ParadoxScope.AnyScope
         if(scope == ParadoxScope.UnknownScope || otherScope == ParadoxScope.UnknownScope) return ParadoxScope.UnknownScope
-        if(scope == null || otherScope == null) return null
+        if(scope == null || otherScope == null) return ParadoxScope.UnknownScope
         if(scope.id == otherScope.id) {
             return when {
                 scope is ParadoxScope.Scope -> scope

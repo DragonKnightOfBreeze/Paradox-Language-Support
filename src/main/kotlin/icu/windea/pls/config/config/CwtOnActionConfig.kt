@@ -9,7 +9,4 @@ data class CwtOnActionConfig(
 	val config: CwtPropertyConfig,
 	val name: String,
 	val eventType: String
-): CwtConfig<CwtProperty> {
-	val scopeContext get() = config.replaceScopes
-}
-
+): CwtConfig<CwtProperty> 

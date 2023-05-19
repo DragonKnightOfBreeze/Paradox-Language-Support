@@ -4,7 +4,6 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.scope.*
-import java.util.*
 
 class ParadoxScopeContext private constructor(val scope: ParadoxScope): UserDataHolderBase() {
     @Volatile var root: ParadoxScopeContext? = null
@@ -40,8 +39,7 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope): UserData
         }
     }
     
-    @Suppress("SuspiciousEqualsCombination")
-    override fun equals(other: Any?): Boolean {
+    fun isEquivalentTo(other: ParadoxScopeContext?): Boolean {
         //note that root === this is possible
         if(this === other) return true
         if(other !is ParadoxScopeContext) return false
@@ -53,10 +51,6 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope): UserData
         if((from === this) xor (other.from === other)) return false
         if(from !== this && from != other.from) return false
         return true
-    }
-    
-    override fun hashCode(): Int {
-        return Objects.hash(scope, root, prev, from)
     }
     
     fun copy(): ParadoxScopeContext {
@@ -158,10 +152,10 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope): UserData
     object Keys
 }
 
-val ParadoxScopeContext.Keys.overriddenProviderKey by lazy { Key.create<ParadoxOverriddenScopeContextProvider>("paradox.scopeContext.overriddenProvider") }
-val ParadoxScopeContext.Keys.scopeFieldInfoKey by lazy { Key.create<List<Tuple2<ParadoxScopeFieldExpressionNode, ParadoxScopeContext>>>("paradox.scopeContext.scopeFieldInfo") }
+val ParadoxScopeContext.Keys.overriddenProvider by lazy { Key.create<ParadoxOverriddenScopeContextProvider>("paradox.scopeContext.overriddenProvider") }
+val ParadoxScopeContext.Keys.scopeFieldInfo by lazy { Key.create<List<Tuple2<ParadoxScopeFieldExpressionNode, ParadoxScopeContext>>>("paradox.scopeContext.scopeFieldInfo") }
 
-var ParadoxScopeContext.overriddenProvider by ParadoxScopeContext.Keys.overriddenProviderKey
+var ParadoxScopeContext.overriddenProvider by ParadoxScopeContext.Keys.overriddenProvider
 
 //scope context list of scope field expression nodes
-var ParadoxScopeContext.scopeFieldInfo by ParadoxScopeContext.Keys.scopeFieldInfoKey
+var ParadoxScopeContext.scopeFieldInfo by ParadoxScopeContext.Keys.scopeFieldInfo

@@ -119,7 +119,8 @@ val CwtDataConfig.Keys.cardinality by lazy { Key.create<CwtCardinalityExpression
 val CwtDataConfig.Keys.cardinalityMinDefine by lazy { Key.create<String?>("paradox.cwtDataConfig.cardinalityMinDefine") }
 val CwtDataConfig.Keys.cardinalityMaxDefine by lazy { Key.create<String?>("paradox.cwtDataConfig.cardinalityMaxDefine") }
 val CwtDataConfig.Keys.hasScopeOption by lazy { Key.create<Boolean>("paradox.cwtDataConfig.hasScopeOption") }
-val CwtDataConfig.Keys.replaceScopes by lazy { Key.create<ParadoxScopeContext?>("paradox.cwtDataConfig.replaceScopes") }
+val CwtDataConfig.Keys.scopeContext by lazy { Key.create<ParadoxScopeContext?>("paradox.cwtDataConfig.scopeContext") }
+val CwtDataConfig.Keys.replaceScopes by lazy { Key.create<Map<String, String?>>("paradox.cwtDataConfig.replaceScopes") }
 val CwtDataConfig.Keys.pushScope by lazy { Key.create<String?>("paradox.cwtDataConfig.pushScope") }
 val CwtDataConfig.Keys.supportedScopes by lazy { Key.create<Set<String>>("paradox.cwtDataConfig.supportedScopes") }
 
@@ -149,6 +150,10 @@ val CwtDataConfig<*>.hasScopeOption get() = getOrPutUserData(CwtDataConfig.Keys.
 	options?.any { it.key == "replace_scope" || it.key == "replace_scopes" || it.key == "push_scope" || it.key == "scope" || it.key == "scopes" }
 		?: false
 }
+val CwtDataConfig<*>.scopeContext get() = getOrPutUserData(CwtDataConfig.Keys.scopeContext) action@{
+	val map = replaceScopes ?: return@action null
+	ParadoxScopeContext.resolve(map)
+}
 //may on:
 // * a config expression in declaration config (include root expression, e.g. "army = { ... }")
 // * a type config (e.g. "type[xxx] = { ... }")
@@ -157,8 +162,7 @@ val CwtDataConfig<*>.replaceScopes get() = getOrPutUserData(CwtDataConfig.Keys.r
 	val option = options?.find { it.key == "replace_scope" || it.key == "replace_scopes" }
 	if(option == null) return@action null
 	val options = option.options ?: return@action null
-	val map = options.associateBy({ it.key.lowercase() }, { it.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) } })
-	ParadoxScopeContext.resolve(map)
+	options.associateBy({ it.key.lowercase() }, { it.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) } })
 }
 //may on:
 // * a config expression in declaration config (include root expression, e.g. "army = { ... }")
@@ -200,9 +204,9 @@ fun <T : PsiElement> CwtDataConfig<T>.toOccurrence(contextElement: PsiElement, p
 	return occurrence
 }
 
-val CwtDataConfig.Keys.overriddenProviderKey by lazy { Key.create<ParadoxOverriddenConfigProvider>("paradox.cwtDataConfig.overriddenProvider") }
+val CwtDataConfig.Keys.overriddenProvider by lazy { Key.create<ParadoxOverriddenConfigProvider>("paradox.cwtDataConfig.overriddenProvider") }
 
-var CwtDataConfig<*>.overriddenProvider by CwtDataConfig.Keys.overriddenProviderKey
+var CwtDataConfig<*>.overriddenProvider by CwtDataConfig.Keys.overriddenProvider
 
 val CwtDataConfig<*>.configOverridden get() = findOption("config_overridden")?.stringValue
 

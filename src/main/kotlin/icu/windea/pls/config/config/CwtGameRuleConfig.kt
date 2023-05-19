@@ -8,6 +8,4 @@ data class CwtGameRuleConfig(
 	override val info: CwtConfigGroupInfo,
 	val config: CwtPropertyConfig,
 	val name: String
-): CwtConfig<CwtProperty> {
-	val scopeContext get() = config.replaceScopes
-}
+): CwtConfig<CwtProperty> 

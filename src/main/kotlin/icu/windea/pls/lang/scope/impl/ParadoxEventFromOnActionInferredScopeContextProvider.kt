@@ -6,6 +6,7 @@ import com.intellij.psi.search.searches.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
@@ -38,7 +39,7 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
         ProgressManager.checkCanceled()
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
-        var scopeContext: ParadoxScopeContext? = null
+        var scopeContextMap: Map<String, String?>? = null
         var hasConflict = false
         //optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
@@ -57,25 +58,27 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
                         val config = configGroup.onActions.getByTemplate(refDefinition.name, definition, configGroup)
                             ?: return@p true //missing
                         if(!definitionInfo.subtypes.contains(config.eventType)) return@p true //invalid
-                        val sc = config.scopeContext ?: return@p true
-                        if(scopeContext != null) {
-                            val mergedScopeContext = ParadoxScopeHandler.mergeScopeContext(scopeContext, sc)
-                            if(mergedScopeContext != null) {
-                                scopeContext = mergedScopeContext
+                        val map = config.config.replaceScopes ?: return@p true
+                        if(scopeContextMap != null) {
+                            val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap!!, map)
+                            if(mergedMap != null) {
+                                scopeContextMap = mergedMap
                             } else {
                                 hasConflict = true
                                 return@p false
                             }
+                        } else {
+                            scopeContextMap = map
                         }
-                        val inferred = sc.copy()
-                        inferred.from = inferred.from?.copyAsInferred()
-                        scopeContext = inferred
                     }
                 }
                 true
             }
         }, EmptyProgressIndicator())
-        return ParadoxScopeContextInferenceInfo(scopeContext ?: return null, hasConflict)
+        val resultScopeContextMap = scopeContextMap ?: return null
+        val scopeContext =  ParadoxScopeContext.resolve(resultScopeContextMap) ?: return null
+        scopeContext.from = scopeContext.from?.copyAsInferred()
+        return ParadoxScopeContextInferenceInfo(scopeContext, hasConflict)
     }
     
     override fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
