@@ -12,6 +12,13 @@ import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisComplexTriggerModifierOverriddenScopeContextProvider : ParadoxOverriddenScopeContextProvider {
+    companion object{
+        private const val TRIGGER_KEY = "trigger"
+        private const val TRIGGER_SCOPE_KEY = "trigger_scope"
+        private const val COMPLEX_TRIGGER_MODIFIER_NAME = "complex_trigger_modifier"
+        private const val COMPLEX_TRIGGER_MODIFIER_KEY = "alias[modifier_rule:complex_trigger_modifier]"
+    }
+    
     override fun getOverriddenScopeContext(element: ParadoxScriptMemberElement, config: CwtDataConfig<*>): ParadoxScopeContext? {
         //重载complex_trigger_modifier = {...}中属性trigger的值对应的作用域上下文
         //兼容trigger_scope的值对应的作用域与当前作用域上下文不匹配的情况

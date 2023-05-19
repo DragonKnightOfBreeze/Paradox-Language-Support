@@ -12,7 +12,6 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.model.*
-import java.util.*
 
 sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig<T> {
 	abstract val value: String
@@ -116,7 +115,6 @@ fun CwtDataConfig<*>.findOption(key: String): CwtOptionConfig? = options?.find {
 
 fun CwtDataConfig<*>.findOptions(key: String): List<CwtOptionConfig> = options?.filter { it.key == key }.orEmpty()
 
-val CwtDataConfig.Keys.path by lazy { Key.create<String>("paradox.cwtDataConfig.path") }
 val CwtDataConfig.Keys.cardinality by lazy { Key.create<CwtCardinalityExpression?>("paradox.cwtDataConfig.cardinality") }
 val CwtDataConfig.Keys.cardinalityMinDefine by lazy { Key.create<String?>("paradox.cwtDataConfig.cardinalityMinDefine") }
 val CwtDataConfig.Keys.cardinalityMaxDefine by lazy { Key.create<String?>("paradox.cwtDataConfig.cardinalityMaxDefine") }
@@ -124,16 +122,6 @@ val CwtDataConfig.Keys.hasScopeOption by lazy { Key.create<Boolean>("paradox.cwt
 val CwtDataConfig.Keys.replaceScopes by lazy { Key.create<ParadoxScopeContext?>("paradox.cwtDataConfig.replaceScopes") }
 val CwtDataConfig.Keys.pushScope by lazy { Key.create<String?>("paradox.cwtDataConfig.pushScope") }
 val CwtDataConfig.Keys.supportedScopes by lazy { Key.create<Set<String>>("paradox.cwtDataConfig.supportedScopes") }
-
-val CwtDataConfig<*>.path get() = getOrPutUserData(CwtDataConfig.Keys.path) action@{
-	val list = LinkedList<String>()
-	var current: CwtDataConfig<*> = this
-	while(true) {
-		list.addFirst(current.expression.expressionString)
-		current = current.resolved().memberConfig.parent ?: break
-	}
-	list.joinToString("/")
-}
 
 //may on:
 // * a config expression in declaration config
@@ -215,3 +203,7 @@ fun <T : PsiElement> CwtDataConfig<T>.toOccurrence(contextElement: PsiElement, p
 val CwtDataConfig.Keys.overriddenProviderKey by lazy { Key.create<ParadoxOverriddenConfigProvider>("paradox.cwtDataConfig.overriddenProvider") }
 
 var CwtDataConfig<*>.overriddenProvider by CwtDataConfig.Keys.overriddenProviderKey
+
+val CwtDataConfig<*>.configOverridden get() = findOption("config_overridden")?.stringValue
+
+val CwtDataConfig<*>.scopeContextOverridden get() = findOption("scope_context_overridden")?.stringValue

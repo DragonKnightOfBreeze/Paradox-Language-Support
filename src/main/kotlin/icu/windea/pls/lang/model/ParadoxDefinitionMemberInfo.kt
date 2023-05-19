@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.model
 
+import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -82,6 +83,8 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
         val expression = ParadoxDataExpression.resolve(key, isQuoted, true)
         val nextResult = SmartList<CwtDataConfig<*>>()
         result.forEachFast f2@{ parentConfig ->
+            ProgressManager.checkCanceled()
+            
             //处理内联规则
             if(!inlinedByInlineConfig && isKey && parentConfig is CwtPropertyConfig) {
                 inlinedByInlineConfig = ParadoxConfigInlineHandler.inlineFromInlineConfig(element, key, isQuoted, parentConfig, nextResult)
