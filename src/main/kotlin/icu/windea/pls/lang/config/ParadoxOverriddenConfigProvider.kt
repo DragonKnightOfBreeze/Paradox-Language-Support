@@ -17,9 +17,9 @@ import icu.windea.pls.script.psi.*
 @WithGameTypeEP
 interface ParadoxOverriddenConfigProvider {
     /**
-     * 从指定的定义成员元素[element]和原始的CWT规则[rawConfig]获取重载后的CWT规则。
+     * 从指定的定义成员元素[element]和原始的CWT规则[config]获取重载后的CWT规则。
      */
-    fun <T : CwtDataConfig<*>> getOverriddenConfigs(element: ParadoxScriptMemberElement, rawConfig: T): List<T>?
+    fun <T : CwtDataConfig<*>> getOverriddenConfigs(element: ParadoxScriptMemberElement, config: T): List<T>?
     
     fun skipMissingExpressionCheck(configs: List<CwtDataConfig<*>>, configExpression: CwtDataExpression) = false
     

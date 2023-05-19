@@ -16,8 +16,8 @@ import icu.windea.pls.script.psi.*
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisComplexTriggerModifierOverriddenConfigProvider : ParadoxOverriddenConfigProvider {
     companion object {
+        private const val PARAMETERS_KEY = "parameters"
         private const val TRIGGER_KEY = "trigger"
-        private const val TRIGGER_SCOPE_KEY = "trigger_scope"
         private const val COMPLEX_TRIGGER_MODIFIER_NAME = "complex_trigger_modifier"
         private const val COMPLEX_TRIGGER_MODIFIER_KEY = "alias[modifier_rule:complex_trigger_modifier]"
         
@@ -25,13 +25,13 @@ class StellarisComplexTriggerModifierOverriddenConfigProvider : ParadoxOverridde
     }
     
     @Suppress("UNCHECKED_CAST")
-    override fun <T : CwtDataConfig<*>> getOverriddenConfigs(element: ParadoxScriptMemberElement, rawConfig: T): List<T>? {
+    override fun <T : CwtDataConfig<*>> getOverriddenConfigs(element: ParadoxScriptMemberElement, config: T): List<T>? {
         //重载complex_trigger_modifier = {...}中属性parameters的值对应的CWT规则
         //兼容使用内联或者使用封装变量的情况
         if(element !is ParadoxScriptProperty) return null
-        if(rawConfig !is CwtPropertyConfig) return null
-        if(rawConfig.key != TRIGGER_KEY) return null
-        val aliasConfig = rawConfig.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
+        if(config !is CwtPropertyConfig) return null
+        if(config.key != PARAMETERS_KEY) return null
+        val aliasConfig = config.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
         if(aliasConfig.config.key != COMPLEX_TRIGGER_MODIFIER_KEY) return null
         ProgressManager.checkCanceled()
         val complexTriggerModifierProperty = element.parentsOfType<ParadoxScriptProperty>(false)
@@ -40,12 +40,13 @@ class StellarisComplexTriggerModifierOverriddenConfigProvider : ParadoxOverridde
             ?: return null
         val triggerProperty = complexTriggerModifierProperty.findProperty(TRIGGER_KEY, inline = true) ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
-        val configGroup = rawConfig.info.configGroup
+        if(CwtValueExpression.resolve(triggerName).type != CwtDataType.Constant) return null //must be predefined trigger
+        val configGroup = config.info.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.takeIfNotEmpty() ?: return null
         val resultConfigs = SmartList<CwtPropertyConfig>()
         for(resultTriggerConfig in resultTriggerConfigs) {
             if(!resultTriggerConfig.config.isBlock) continue //not complex trigger, skip
-            val inlined = ParadoxConfigInlineHandler.inlineWithConfig(rawConfig, resultTriggerConfig.config, ParadoxConfigInlineHandler.Mode.VALUE_TO_VALUE) ?: continue
+            val inlined = ParadoxConfigInlineHandler.inlineWithConfig(config, resultTriggerConfig.config, ParadoxConfigInlineHandler.Mode.VALUE_TO_VALUE) ?: continue
             resultConfigs.add(inlined)
         }
         return resultConfigs as List<T>
