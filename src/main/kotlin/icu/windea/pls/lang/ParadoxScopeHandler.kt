@@ -74,7 +74,7 @@ object ParadoxScopeHandler {
     fun matchesScope(scopeContext: ParadoxScopeContext?, scopesToMatch: Set<String>?, configGroup: CwtConfigGroup): Boolean {
         val thisScope = scopeContext?.scope?.id
         if(thisScope == null) return true
-        if(scopesToMatch == null || scopesToMatch.isEmpty() || scopesToMatch == anyScopeIdSet) return true
+        if(scopesToMatch.isNullOrEmpty() || scopesToMatch == anyScopeIdSet) return true
         if(thisScope == anyScopeId) return true
         if(thisScope == unknownScopeId) return true
         if(thisScope in scopesToMatch) return true
@@ -398,5 +398,32 @@ object ParadoxScopeHandler {
                 }
             }
         }
+    }
+    
+    fun mergeScopeContext(scopeContext: ParadoxScopeContext?, otherScopeContext: ParadoxScopeContext?) : ParadoxScopeContext? {
+        //NOTE 合并后的scopeContext不保留原有的userData，并且应当也不需要保留
+        //NOTE 这里应当不会发生SOE，但是有待验证
+        if(scopeContext == null || otherScopeContext == null) return null
+        val scope = mergeScope(scopeContext.scope, otherScopeContext.scope) ?: return null
+        val root = mergeScopeContext(scopeContext.root, otherScopeContext.root)
+        val prev = mergeScopeContext(scopeContext.prev, otherScopeContext.prev)
+        val from = mergeScopeContext(scopeContext.from, otherScopeContext.from)
+        if(scopeContext.scope == scope && scopeContext.root == root && scopeContext.prev == prev && scopeContext.from == from) return scopeContext
+        if(otherScopeContext.scope == scope && otherScopeContext.root == root && otherScopeContext.prev == prev && otherScopeContext.from == from) return otherScopeContext
+        return ParadoxScopeContext.resolve(scope, root, prev, from)
+    }
+    
+    fun mergeScope(scope: ParadoxScope?, otherScope: ParadoxScope?): ParadoxScope? {
+        if(scope == ParadoxScope.AnyScope || otherScope == ParadoxScope.AnyScope) return ParadoxScope.AnyScope
+        if(scope == ParadoxScope.UnknownScope || otherScope == ParadoxScope.UnknownScope) return ParadoxScope.UnknownScope
+        if(scope == null || otherScope == null) return null
+        if(scope.id == otherScope.id) {
+            return when {
+                scope is ParadoxScope.Scope -> scope
+                otherScope is ParadoxScope.Scope -> otherScope
+                else -> scope
+            }
+        }
+        return null
     }
 }

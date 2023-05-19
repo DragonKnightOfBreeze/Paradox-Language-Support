@@ -9,6 +9,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.script.psi.*
@@ -57,9 +58,14 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
                             ?: return@p true //missing
                         if(!definitionInfo.subtypes.contains(config.eventType)) return@p true //invalid
                         val sc = config.scopeContext ?: return@p true
-                        if(scopeContext != null && sc != scopeContext) {
-                            hasConflict = true
-                            return@p false
+                        if(scopeContext != null) {
+                            val mergedScopeContext = ParadoxScopeHandler.mergeScopeContext(scopeContext, sc)
+                            if(mergedScopeContext != null) {
+                                scopeContext = mergedScopeContext
+                            } else {
+                                hasConflict = true
+                                return@p false
+                            }
                         }
                         val inferred = sc.copy()
                         inferred.from = inferred.from?.copyAsInferred()

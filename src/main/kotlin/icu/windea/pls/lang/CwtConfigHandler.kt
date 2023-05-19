@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import java.util.*
@@ -158,6 +159,58 @@ object CwtConfigHandler {
         return when {
             path.matchesAntPath("enums/enum[*]/*") -> CwtConfigType.EnumValue
             path.matchesAntPath("values/value[*]/*") -> CwtConfigType.ValueSetValue
+            else -> null
+        }
+    }
+    //endregion
+    
+    //region Common Methods
+    fun mergeValueConfig(config: CwtValueConfig, otherConfig: CwtValueConfig): CwtValueConfig? {
+        if(config.expression == otherConfig.expression) return config
+        return doMergeValueConfig(config, otherConfig) ?: doMergeValueConfig(otherConfig, config)
+    }
+    
+    fun doMergeValueConfig(config: CwtValueConfig, otherConfig: CwtValueConfig): CwtValueConfig? {
+        val t1 = config.expression.type
+        val t2 = otherConfig.expression.type
+        return when(t1) {
+            CwtDataType.Int -> {
+                when(t2) {
+                    CwtDataType.Int, CwtDataType.Float, CwtDataType.ValueField, CwtDataType.IntValueField, CwtDataType.VariableField, CwtDataType.IntVariableField -> CwtValueConfig(config.pointer, config.info, "int")
+                    else -> null
+                }
+            }
+            CwtDataType.Float -> {
+                when(t2) {
+                    CwtDataType.Float, CwtDataType.ValueField, CwtDataType.VariableField ->CwtValueConfig(config.pointer, config.info, "float")
+                    else -> null
+                }
+            }
+            CwtDataType.ScopeField, CwtDataType.Scope, CwtDataType.ScopeGroup -> {
+                when {
+                    t2 == CwtDataType.ScopeField -> CwtValueConfig(config.pointer, config.info, config.value)
+                    t2 == CwtDataType.Scope && otherConfig.expression.value == "any" -> CwtValueConfig(config.pointer, config.info, config.value)
+                    else -> null
+                }
+            }
+            CwtDataType.VariableField -> {
+                when(t2) {
+                    CwtDataType.VariableField, CwtDataType.ValueField -> CwtValueConfig(config.pointer, config.info, "variable_field")
+                    else -> null
+                }
+            }
+            CwtDataType.IntVariableField -> {
+                when(t2) {
+                    CwtDataType.IntVariableField, CwtDataType.ValueField, CwtDataType.IntValueField -> CwtValueConfig(config.pointer, config.info, "int_variable_field")
+                    else -> null
+                }
+            }
+            CwtDataType.IntValueField -> {
+                when(t2) {
+                    CwtDataType.ValueField, CwtDataType.IntValueField -> CwtValueConfig(config.pointer, config.info, "int_value_field")
+                    else -> null
+                }
+            }
             else -> null
         }
     }

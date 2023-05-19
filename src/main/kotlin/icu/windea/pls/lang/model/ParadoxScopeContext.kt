@@ -145,6 +145,14 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope): UserData
             }
             return result
         }
+        
+        fun resolve(scope: ParadoxScope, root: ParadoxScopeContext?, prev: ParadoxScopeContext?, from: ParadoxScopeContext?): ParadoxScopeContext {
+            val result = ParadoxScopeContext(scope)
+            result.root = root
+            result.prev = prev
+            result.from = from
+            return result
+        }
     }
     
     object Keys

@@ -216,7 +216,7 @@ object ParadoxParameterHandler {
             if(result == null) {
                 result = config
             } else {
-                result = CwtConfigMerger.mergeValueConfig(result, config)
+                result = CwtConfigHandler.mergeValueConfig(result, config)
                 if(result == null) break //存在冲突
             }
         }
