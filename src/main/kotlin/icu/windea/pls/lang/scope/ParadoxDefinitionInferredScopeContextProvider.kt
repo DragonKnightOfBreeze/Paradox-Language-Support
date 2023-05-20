@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.scope
 
 import com.intellij.openapi.extensions.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
@@ -53,22 +54,34 @@ interface ParadoxDefinitionInferredScopeContextProvider {
         
         fun getErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
             val gameType = definitionInfo.gameType
-            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if(!gameType.supportsByAnnotation(ep)) return@f null
-                val info = ep.getScopeContext(definition, definitionInfo)
-                if(info == null || !info.hasConflict) return@f null
-                ep.getErrorMessage(definition, definitionInfo, info)
+            var errorMessage: String? = null
+            EP_NAME.extensionList.forEachFast f@{ ep ->
+                if(!gameType.supportsByAnnotation(ep)) return@f 
+                val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
+                if(!info.hasConflict) return@f
+                if(errorMessage != null) {
+                    errorMessage =  ep.getErrorMessage(definition, definitionInfo, info)
+                } else {
+                    return PlsBundle.message("script.annotator.scopeContext.conflict", definitionInfo.name)
+                }
             }
+            return errorMessage
         }
         
         fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
             val gameType = definitionInfo.gameType
-            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if(!gameType.supportsByAnnotation(ep)) return@f null
-                val info = ep.getScopeContext(definition, definitionInfo)
-                if(info == null || !info.hasConflict) return@f null
-                ep.getMessage(definition, definitionInfo, info)
+            var message: String? = null
+            EP_NAME.extensionList.forEachFast f@{ ep ->
+                if(!gameType.supportsByAnnotation(ep)) return@f
+                val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
+                if(info.hasConflict) return@f
+                if(message != null) {
+                    message =  ep.getMessage(definition, definitionInfo, info)
+                } else {
+                    return PlsBundle.message("script.annotator.scopeContext", definitionInfo.name)
+                }
             }
+            return message
         }
     }
 }

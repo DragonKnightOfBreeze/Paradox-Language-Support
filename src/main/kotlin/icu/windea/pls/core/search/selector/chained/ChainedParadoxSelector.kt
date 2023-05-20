@@ -3,6 +3,7 @@ package icu.windea.pls.core.search.selector.chained
 import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.settings.*
@@ -50,7 +51,7 @@ open class ChainedParadoxSelector<T>(
         var finalSelectResult = true
         var finalSelectDefaultResult = true
         var finalDefaultValuePriority = 0
-        for(selector in selectors) {
+        selectors.forEachFast { selector ->
             val selectResult = selector.select(result)
             finalSelectResult = finalSelectResult && selectResult
             if(selectResult) finalDefaultValuePriority++
@@ -72,7 +73,7 @@ open class ChainedParadoxSelector<T>(
     override fun selectAll(result: T): Boolean {
         if(!matchesGameType(result)) return false
         if(selectors.isEmpty()) return super.selectAll(result)
-        for(selector in selectors) {
+        selectors.forEachFast { selector ->
             if(!selector.selectAll(result)) return false
         }
         return true
@@ -81,12 +82,12 @@ open class ChainedParadoxSelector<T>(
     override fun comparator(): Comparator<T>? {
         if(selectors.isEmpty()) return super.comparator()
         var comparator: Comparator<T>? = null
-        for(paradoxSelector in selectors) {
-            val nextComparator = paradoxSelector.comparator() ?: continue
+        selectors.forEachFast { selector ->
+            val nextComparator = selector.comparator() ?: return@forEachFast
             if(comparator == null) {
                 comparator = nextComparator
             } else {
-                comparator = comparator.thenComparing(nextComparator)
+                comparator = comparator?.thenComparing(nextComparator)
             }
         }
         //最终使用的排序器需要将比较结果为0的项按照原有顺序进行排序，除非它们值相等

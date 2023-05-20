@@ -59,13 +59,12 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         val definitionMemberInfo = element.definitionMemberInfo
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
                         val configs = ParadoxConfigHandler.getPropertyConfigs(element)
-                        val config = configs.firstOrNull()
-                        val overriddenConfigNotMatched = config != null && isOverriddenConfigNotMatched(element, config)
-                        if(config == null || overriddenConfigNotMatched) {
+                        val overriddenConfigNotMatched = configs.isNotEmpty() && isOverriddenConfigNotMatched(element, configs)
+                        if(configs.isEmpty() || overriddenConfigNotMatched) {
                             //这里使用合并后的子规则，即使parentProperty可以精确匹配
                             val expect = if(showExpectInfo) {
                                 val allConfigs = when {
-                                    overriddenConfigNotMatched -> config.toSingletonListOrEmpty()
+                                    overriddenConfigNotMatched -> configs
                                     else -> element.findParentProperty()?.definitionMemberInfo?.getChildConfigs()
                                 }
                                 //某些情况下我们需要忽略一些未解析的表达式
@@ -107,11 +106,11 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
                         val configs = ParadoxConfigHandler.getValueConfigs(element, orDefault = false)
                         val config = configs.firstOrNull()
-                        val overriddenConfigNotMatched = config != null && isOverriddenConfigNotMatched(element, config)
-                        if(config == null || overriddenConfigNotMatched) {
+                        val overriddenConfigNotMatched = config != null && isOverriddenConfigNotMatched(element, configs)
+                        if(configs.isEmpty() || overriddenConfigNotMatched) {
                             val expect = if(showExpectInfo) {
                                 val allConfigs = when {
-                                    overriddenConfigNotMatched -> config.toSingletonListOrEmpty()
+                                    overriddenConfigNotMatched -> configs
                                     else -> definitionMemberInfo.getConfigs().mapNotNull {
                                         when {
                                             it is CwtPropertyConfig -> it.valueConfig
@@ -140,22 +139,25 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                             //skip checking children
                             return false
                         }
-                        if(config.expression.type == CwtDataType.Any) {
-                            //any规则不需要再向下检查
+                        //any规则不需要再向下检查
+                        if(configs.any { it.expression.type == CwtDataType.Any }) {
                             return false
                         }
                         return true
                     }
                     
-                    private fun <T : CwtDataConfig<*>> isOverriddenConfigNotMatched(element: PsiElement, config: T): Boolean {
-                        if(element is ParadoxScriptProperty && config is CwtPropertyConfig && config.overriddenProvider != null) {
-                            //如果是被重载的规则，这里需要再次判断是否匹配
-                            val expression = ParadoxDataExpression.resolve(element.propertyKey)
-                            val configGroup = config.info.configGroup
-                            val matched = ParadoxConfigHandler.matchesScriptExpression(element, expression, config.expression, config, configGroup)
-                            if(!matched) return true
+                    private fun <T : CwtDataConfig<*>> isOverriddenConfigNotMatched(element: PsiElement, configs: List<T>): Boolean {
+                        var result = false
+                        for(config in configs) {
+                            if(element is ParadoxScriptProperty && config is CwtPropertyConfig && config.overriddenProvider != null) {
+                                //如果是被重载的规则，这里需要再次判断是否匹配
+                                val expression = ParadoxDataExpression.resolve(element.propertyKey)
+                                val configGroup = config.info.configGroup
+                                val matched = ParadoxConfigHandler.matchesScriptExpression(element, expression, config.expression, config, configGroup)
+                                if(!matched) result = true else return false
+                            }
                         }
-                        return false
+                        return result
                     }
                     
                     private fun isIgnored(config: CwtDataConfig<*>): Boolean {

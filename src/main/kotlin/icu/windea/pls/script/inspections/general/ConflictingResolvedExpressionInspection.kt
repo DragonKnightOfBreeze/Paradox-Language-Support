@@ -50,13 +50,19 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                 //子句可以精确匹配多个子句规则时，适用此检查
                 if(configs.isEmpty()) return true
                 if(configs.size == 1) return true
+                //如果是重载后提供的规则，跳过此检查
+                if(isOverriddenConfigs(configs)) return true
+                //如果存在规则，规则的子句中的所有key和value都可以分别被另一个规则的子句中的所有key和value包含，则仅使用这些规则
                 val configsToCheck = filterConfigs(element, configs)
                 if(configsToCheck.size == 1) return true
                 return false
             }
-    
+            
+            private fun isOverriddenConfigs(configs: List<CwtDataConfig<*>>): Boolean {
+                return configs.any { it.memberConfig.castOrNull<CwtPropertyConfig>()?.overriddenProvider != null }
+            }
+            
             private fun filterConfigs(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): List<CwtDataConfig<*>> {
-                //如果存在规则，规则的子句中的所有key和value都可以分别被另一个规则的子句中的所有key和value包含，则仅使用这些规则
                 val configsToCheck = configs.filter { config ->
                     val childConfigs = config.configs
                     childConfigs != null && configs.any { config0 ->
