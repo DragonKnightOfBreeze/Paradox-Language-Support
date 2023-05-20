@@ -117,6 +117,10 @@ fun CompletionResultSet.addScriptExpressionElement(
         element != null -> LookupElementBuilder.create(element, lookupString)
         else -> LookupElementBuilder.create(lookupString)
     }
+    if(localizedNames.isNotEmpty()) {
+        //这样就可以了
+        lookupElement = lookupElement.withLookupStrings(localizedNames)
+    }
     if(!scopeMatched) {
         lookupElement.putUserData(PlsKeys.scopeMismatchedKey, true)
     }

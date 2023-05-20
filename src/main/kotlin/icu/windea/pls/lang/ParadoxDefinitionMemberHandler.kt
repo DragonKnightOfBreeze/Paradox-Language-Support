@@ -17,10 +17,10 @@ import icu.windea.pls.script.psi.*
  */
 object ParadoxDefinitionMemberHandler {
     fun getInfo(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
-        return getInfoFromCache(element)
+        return doGetInfoFromCache(element)
     }
     
-    private fun getInfoFromCache(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
+    private fun doGetInfoFromCache(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionMemberInfoKey) {
             ProgressManager.checkCanceled()
             val file = element.containingFile

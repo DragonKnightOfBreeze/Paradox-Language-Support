@@ -17,21 +17,21 @@ import icu.windea.pls.localisation.psi.impl.*
 @Suppress("unused", "UNUSED_PARAMETER")
 object ParadoxLocalisationHandler {
     fun getInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        return getInfoFromCache(element)
+        return doGetInfoFromCache(element)
     }
     
-    private fun getInfoFromCache(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
+    private fun doGetInfoFromCache(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationInfoKey) {
             ProgressManager.checkCanceled()
-            val value = resolveInfo(element)
+            val value = doGEtInfo(element)
             CachedValueProvider.Result.create(value, element)
         }
     }
     
-    private fun resolveInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
+    private fun doGEtInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         //首先尝试直接基于stub进行解析
         val stub = runCatching { element.stub }.getOrNull()
-        if(stub != null) return resolveInfoFromStub(stub)
+        if(stub != null) return doGetInfoFromStub(stub)
         
         val name = element.name
         val file = element.containingFile.originalFile.virtualFile ?: return null
@@ -40,7 +40,7 @@ object ParadoxLocalisationHandler {
         return ParadoxLocalisationInfo(name, category, gameType)
     }
     
-    private fun resolveInfoFromStub(stub: ParadoxLocalisationStub): ParadoxLocalisationInfo {
+    private fun doGetInfoFromStub(stub: ParadoxLocalisationStub): ParadoxLocalisationInfo {
         val name = stub.name
         val category = stub.category
         val gameType = stub.gameType

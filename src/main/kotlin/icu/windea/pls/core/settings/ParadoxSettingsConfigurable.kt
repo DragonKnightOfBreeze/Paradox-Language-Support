@@ -183,6 +183,12 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.completion::completeOnlyScopeIsMatched)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeOnlyScopeIsMatched.tooltip") }
                 }
+                //completeByLocalizedName
+                row {
+                    checkBox(PlsBundle.message("settings.completion.completeByLocalizedName"))
+                        .bindSelected(settings.completion::completeByLocalizedName)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeByLocalizedName.tooltip") }
+                }
             }
             //generation
             collapsibleGroup(PlsBundle.message("settings.generation")) {

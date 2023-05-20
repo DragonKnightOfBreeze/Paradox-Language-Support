@@ -107,6 +107,7 @@ object PlsKeys {
     val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("paradox.cached.definitionInfo")
     val cachedDefinitionPrimaryLocalisationKeyKey = Key.create<CachedValue<String>>("paradox.cached.definition.primaryLocalisationKey")
     val cachedDefinitionPrimaryLocalisationKey = Key.create<CachedValue<ParadoxLocalisationProperty>>("paradox.cached.definition.primaryLocalisation")
+    val cachedDefinitionPrimaryLocalisationsKey = Key.create<CachedValue<Set<ParadoxLocalisationProperty>>>("paradox.cached.definition.primaryLocalisations")
     val cachedDefinitionPrimaryImageKey = Key.create<CachedValue<PsiFile>>("paradox.cached.definition.primaryImage")
     val cachedDefinitionMemberInfoKey = Key.create<CachedValue<ParadoxDefinitionMemberInfo>>("paradox.cached.definitionMemberInfo")
     val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("paradox.cached.localisationInfo")

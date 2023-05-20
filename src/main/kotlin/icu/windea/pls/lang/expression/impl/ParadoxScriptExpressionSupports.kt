@@ -24,6 +24,7 @@ import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.localisation.*
 
 class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSupport() {
     override fun supports(config: CwtConfig<*>): Boolean {
@@ -252,6 +253,12 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport(
                 .withTypeText(typeFile.name)
                 .withTypeIcon(typeFile.icon)
                 .withScopeMatched(scopeMatched)
+                .letIf(getSettings().completion.completeByLocalizedName) {
+                    //如果启用，也基于定义的本地化名字进行代码补全
+                    ProgressManager.checkCanceled()
+                    val localizedNames = ParadoxDefinitionHandler.getLocalizedNames(definition)
+                    it.withLocalizedNames(localizedNames)
+                }
             result.addScriptExpressionElement(context, builder)
             true
         }
