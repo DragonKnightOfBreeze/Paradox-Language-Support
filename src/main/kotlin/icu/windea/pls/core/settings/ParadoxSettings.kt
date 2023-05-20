@@ -5,9 +5,7 @@ import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
-import kotlin.properties.*
 
 /**
  * PLS设置。可以在设置页面`Settings > Languages & Frameworks > Paradox Language Support`中进行配置。
@@ -74,7 +72,7 @@ class ParadoxSettingsState : BaseState() {
     class CompletionState : BaseState() {
         var completeScriptedVariableNames by property(true)
         var completeDefinitionNames by property(true)
-        var completeLocalisationNames by property(true)
+        var completeLocalisationNames by property(false)
         var completeVariableNames by property(true)
         var completeWithValue by property(true)
         var completeWithClauseTemplate by property(true)

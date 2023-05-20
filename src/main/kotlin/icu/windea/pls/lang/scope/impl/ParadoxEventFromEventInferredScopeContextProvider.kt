@@ -51,7 +51,7 @@ class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInfer
         var hasConflict = false
         //optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
-            ?.withFilePath("common/events", "txt")
+            ?.withFilePath("events", "txt")
             ?: return null
         ProgressManager.getInstance().runProcess({
             val result = doProcessQuery(definition, definitionInfo, searchScope, scopeContextMap)
