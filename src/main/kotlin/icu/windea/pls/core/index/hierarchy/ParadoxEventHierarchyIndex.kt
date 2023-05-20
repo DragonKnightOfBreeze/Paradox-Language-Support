@@ -15,28 +15,30 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-object ParadoxOnActionHierarchyIndex {
-    private const val ID = "paradox.onAction.hierarchy.index"
+object ParadoxEventHierarchyIndex {
+    private const val ID = "paradox.event.hierarchy.index"
     private const val VERSION = 22 //1.0.0
     
     class Data(
-        val onActionInfos: MutableList<OnActionInfo> = SmartList()
+        val eventInfos: MutableList<EventInfo> = SmartList()
     ) {
-        val eventToOnActionsMap by lazy {
-            if(onActionInfos.isEmpty()) return@lazy emptyMap()
+        val eventToEventsMap by lazy {
+            if(eventInfos.isEmpty()) return@lazy emptyMap()
             buildMap<String, Set<String>> {
-                onActionInfos.forEachFast { onActionInfo ->
-                    onActionInfo.eventInvocationInfos.forEachFast { eventInvocationInfo ->
+                eventInfos.forEachFast { eventInfo ->
+                    eventInfo.eventInvocationInfos.forEachFast { eventInvocationInfo ->
                         val set = getOrPut(eventInvocationInfo.name) { mutableSetOf() } as MutableSet
-                        set.add(onActionInfo.name)
+                        set.add(eventInvocationInfo.name)
                     }
                 }
             }
         }
     }
     
-    class OnActionInfo(
+    class EventInfo(
         val name: String,
+        val eventType: String?,
+        val eventScope: String?,
         val eventInvocationInfos: MutableList<EventInvocationInfo> = SmartList()
     )
     
@@ -49,9 +51,11 @@ object ParadoxOnActionHierarchyIndex {
     
     private val valueExternalizer: DataExternalizer<Data> = object : DataExternalizer<Data> {
         override fun save(storage: DataOutput, value: Data) {
-            DataInputOutputUtil.writeSeq(storage, value.onActionInfos) { onActionInfo ->
-                IOUtil.writeUTF(storage, onActionInfo.name)
-                DataInputOutputUtil.writeSeq(storage, onActionInfo.eventInvocationInfos) { eventInvocationInfo ->
+            DataInputOutputUtil.writeSeq(storage, value.eventInfos) { eventInfo ->
+                IOUtil.writeUTF(storage, eventInfo.name)
+                IOUtil.writeUTF(storage, eventInfo.eventType.orEmpty())
+                IOUtil.writeUTF(storage, eventInfo.eventScope.orEmpty())
+                DataInputOutputUtil.writeSeq(storage, eventInfo.eventInvocationInfos) { eventInvocationInfo ->
                     IOUtil.writeUTF(storage, eventInvocationInfo.name)
                 }
             }
@@ -59,8 +63,10 @@ object ParadoxOnActionHierarchyIndex {
         
         override fun read(storage: DataInput): Data {
             return Data(DataInputOutputUtil.readSeq(storage) {
-                OnActionInfo(
+                EventInfo(
                     name = IOUtil.readUTF(storage),
+                    eventType = IOUtil.readString(storage).takeIfNotEmpty(),
+                    eventScope = IOUtil.readString(storage).takeIfNotEmpty(),
                     eventInvocationInfos = DataInputOutputUtil.readSeq(storage) {
                         EventInvocationInfo(
                             name = IOUtil.readUTF(storage)
@@ -76,16 +82,19 @@ object ParadoxOnActionHierarchyIndex {
         if(!matchesPath(file)) return@builder EmptyData
         val psiFile = file.toPsiFile<ParadoxScriptFile>(project) ?: return@builder EmptyData
         val data = Data()
-        var currentOnActionInfo: OnActionInfo? = null
+        var currentEventInfo: EventInfo? = null
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 run {
                     if(element is ParadoxScriptProperty && element.parent is ParadoxScriptRootBlock) {
-                        val onActionName = element.name
-                        if(onActionName.isParameterized()) return@run
-                        val onActionInfo = OnActionInfo(onActionName)
-                        data.onActionInfos.add(onActionInfo)
-                        currentOnActionInfo = onActionInfo
+                        val definitionInfo = element.definitionInfo ?: return@run
+                        val eventName = definitionInfo.name
+                        if(eventName.isParameterized()) return@run
+                        val eventType = ParadoxEventHandler.getEventType(definitionInfo)
+                        val eventScope = ParadoxEventHandler.getEventScope(definitionInfo)
+                        val eventInfo = EventInfo(eventName, eventType, eventScope)
+                        data.eventInfos.add(eventInfo)
+                        currentEventInfo = eventInfo
                     }
                 }
                 run {
@@ -96,7 +105,7 @@ object ParadoxOnActionHierarchyIndex {
                         val configs = ParadoxConfigHandler.getConfigs(element, matchType = CwtConfigMatchType.STATIC)
                         if(configs.any { isEventDefinitionConfig(it) }) {
                             val eventInvocationInfo = EventInvocationInfo(expression)
-                            currentOnActionInfo?.eventInvocationInfos?.add(eventInvocationInfo)
+                            currentEventInfo?.eventInvocationInfos?.add(eventInvocationInfo)
                         }
                     }
                 }
@@ -120,4 +129,3 @@ object ParadoxOnActionHierarchyIndex {
         return gist.getFileData(project, file)
     }
 }
-

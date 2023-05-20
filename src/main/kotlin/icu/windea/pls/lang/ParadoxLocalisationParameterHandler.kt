@@ -21,10 +21,10 @@ object ParadoxLocalisationParameterHandler {
     val cachedParameterNamesKey = Key.create<CachedValue<Set<String>>>("paradox.localisation.property.cached.parameterNames")
     
     fun getParameterNames(element: ParadoxLocalisationProperty): Set<String> {
-        return getParameterNamesFromCache(element)
+        return doGetParameterNamesFromCache(element)
     }
     
-    private fun getParameterNamesFromCache(element: ParadoxLocalisationProperty): Set<String> {
+    private fun doGetParameterNamesFromCache(element: ParadoxLocalisationProperty): Set<String> {
         return CachedValuesManager.getCachedValue(element, cachedParameterNamesKey) {
             val value = doGetParameters(element)
             //invalidated on element modification or ScriptFileTracker

@@ -9,6 +9,7 @@ import com.intellij.util.gist.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
@@ -27,7 +28,7 @@ object ParadoxComplexEnumValueIndex {
         val complexEnumValueGroup by lazy {
             if(complexEnumValueList.isEmpty()) return@lazy emptyMap()
             buildMap<String, Map<String, List<ParadoxComplexEnumValueInfo>>> {
-                for(info in complexEnumValueList) {
+                complexEnumValueList.forEachFast { info ->
                     val map = getOrPut(info.enumName) { mutableMapOf() } as MutableMap
                     val list = map.getOrPut(info.name) { SmartList() } as MutableList
                     list.add(info)

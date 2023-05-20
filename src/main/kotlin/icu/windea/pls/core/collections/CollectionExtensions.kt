@@ -172,16 +172,3 @@ fun <K, V> Map<K, V>.process(processor: (Map.Entry<K, V>) -> Boolean): Boolean {
 	return true
 }
 
-inline fun <T> List<T>.forEachFast(action: (T) -> Unit): Unit {
-	val size = this.size
-	for(i in 0 until size) {
-		action(this[i])
-	}
-}
-
-inline fun <T> List<T>.forEachIndexedFast(action: (Int, T) -> Unit): Unit {
-	val size = this.size
-	for(i in 0 until size) {
-		action(i, this[i])
-	}
-}

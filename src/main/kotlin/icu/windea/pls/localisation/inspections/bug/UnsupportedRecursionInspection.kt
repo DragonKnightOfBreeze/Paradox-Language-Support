@@ -7,7 +7,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
@@ -30,9 +29,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
                 if(element is ParadoxLocalisationProperty) {
-                    withMeasureMillis({ element.fileInfo?.path.toString() + "." + element.name }) {
-                        visitLocalisation(element, element.name)
-                    }
+                    visitLocalisation(element, element.name)
                 }
             }
             
@@ -79,7 +76,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
             
             private fun registerProblem(element: ParadoxLocalisationProperty, recursion: PsiElement) {
                 val message = PlsBundle.message("inspection.localisation.bug.unsupportedRecursion.description.1")
-                val location = element.propertyKey 
+                val location = element.propertyKey
                 holder.registerProblem(location, message, NavigateToRecursionFix(recursion))
             }
         }
@@ -121,5 +118,5 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
         val recursion: PsiElement,
         val resolved: ParadoxLocalisationProperty,
         val resolvedName: String,
-    ): RuntimeException()
+    ) : RuntimeException()
 }

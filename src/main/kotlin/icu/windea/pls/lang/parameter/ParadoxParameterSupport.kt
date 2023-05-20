@@ -75,39 +75,57 @@ interface ParadoxParameterSupport {
         }
         
         fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.getContextReferenceInfo(element, from, *extraArgs) }
+            return EP_NAME.extensionList.firstNotNullOfOrNull { ep -> 
+                ep.getContextReferenceInfo(element, from, *extraArgs)
+            }
         }
         
         fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveParameter(element) }
+            return EP_NAME.extensionList.firstNotNullOfOrNull { ep -> 
+                ep.resolveParameter(element)
+            }
         }
         
         fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveConditionParameter(element) }
+            return EP_NAME.extensionList.firstNotNullOfOrNull { ep -> 
+                ep.resolveConditionParameter(element)
+            }
         }
         
         fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, vararg extraArgs: Any?): ParadoxParameterElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.resolveArgument(element, rangeInElement, *extraArgs) }
+            return EP_NAME.extensionList.firstNotNullOfOrNull { ep -> 
+                ep.resolveArgument(element, rangeInElement, *extraArgs)
+            }
         }
         
         fun getContainingContextReference(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.getContainingContextReference(element) }
+            return EP_NAME.extensionList.firstNotNullOfOrNull { ep -> 
+                ep.getContainingContextReference(element)
+            }
         }
         
         fun getContainingContext(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.getContainingContext(element) }
+            return EP_NAME.extensionList.firstNotNullOfOrNull { ep -> 
+                ep.getContainingContext(element)
+            }
         }
         
         fun processContext(element: ParadoxParameterElement,onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-            return EP_NAME.extensionList.any { it.processContext(element, onlyMostRelevant, processor) }
+            return EP_NAME.extensionList.any { ep -> 
+                ep.processContext(element, onlyMostRelevant, processor)
+            }
         }
         
         fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-            return EP_NAME.extensionList.any { it.processContext(element, contextReferenceInfo, onlyMostRelevant, processor) }
+            return EP_NAME.extensionList.any { ep ->
+                ep.processContext(element, contextReferenceInfo, onlyMostRelevant, processor) 
+            }
         }
         
         fun getDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean {
-            return EP_NAME.extensionList.any { it.buildDocumentationDefinition(element, builder) }
+            return EP_NAME.extensionList.any { ep -> 
+                ep.buildDocumentationDefinition(element, builder)
+            }
         }
     }
 }

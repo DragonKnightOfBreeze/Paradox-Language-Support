@@ -9,6 +9,7 @@ import com.intellij.util.gist.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
@@ -27,7 +28,7 @@ object ParadoxValueSetValueIndex {
         val valueSetValueGroup by lazy {
             if(valueSetValueList.isEmpty()) return@lazy emptyMap()
             buildMap<String, Map<String, List<ParadoxValueSetValueInfo>>> {
-                for(info in valueSetValueList) {
+                valueSetValueList.forEachFast { info ->
                     val map = getOrPut(info.valueSetName) { mutableMapOf() } as MutableMap
                     val list = map.getOrPut(info.name) { SmartList() } as MutableList
                     list.add(info)

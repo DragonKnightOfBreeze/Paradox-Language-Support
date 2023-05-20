@@ -35,9 +35,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                     val definitionInfo = element.definitionInfo ?: return
                     if(definitionInfo.type != "scripted_trigger" && definitionInfo.type != "scripted_effect") return
                     
-                    withMeasureMillis({ element.fileInfo?.path.toString() + "." + definitionInfo.name }) {
-                        visitDefinition(element, definitionInfo)
-                    }
+                    visitDefinition(element, definitionInfo)
                 }
             }
             

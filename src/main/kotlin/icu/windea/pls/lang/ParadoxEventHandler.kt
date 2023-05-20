@@ -16,9 +16,6 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxEventHandler {
-    val cachedEventInvocationsKey = Key.create<CachedValue<Set<String>>>("paradox.cached.event.invocations")
-    val eventTypesKey = Key.create<List<String>>("paradox.event.types")
-    
     fun isValidEventNamespace(eventNamespace: String): Boolean {
         if(eventNamespace.isEmpty()) return false
         return eventNamespace.isExactIdentifier()
@@ -88,7 +85,7 @@ object ParadoxEventHandler {
      * TODO 兼容内联和事件继承的情况。
      */
     fun getInvocations(definition: ParadoxScriptDefinitionElement): Set<String> {
-        return CachedValuesManager.getCachedValue(definition, cachedEventInvocationsKey) {
+        return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedEventInvocationsKey) {
             val value = doGetInvocations(definition)
             CachedValueProvider.Result(value, definition)
         }
@@ -127,12 +124,25 @@ object ParadoxEventHandler {
      */
     fun getEventTypes(project: Project, gameType: ParadoxGameType): List<String> {
         val eventConfig = getCwtConfig(project).get(gameType).types["event"] ?: return emptyList()
-        return eventConfig.config.getOrPutUserData(eventTypesKey) {
+        return eventConfig.config.getOrPutUserData(CwtDataConfig.Keys.eventEventTypesKey) {
             eventConfig.subtypes.mapNotNull { (k, v) -> if(v.config.findOption("group")?.stringValue == "event_type") k else null }
         }
     }
     
     fun getEventType(definitionInfo: ParadoxDefinitionInfo): String? {
-        return definitionInfo.subtypeConfigs.find { it.config.findOption("group")?.stringValue == "event_type" }?.name
+        return definitionInfo.getOrPutUserData(ParadoxDefinitionInfo.Keys.eventEventTypeKey) {
+            definitionInfo.subtypeConfigs.find { it.config.findOption("group")?.stringValue == "event_type" }?.name.orEmpty()
+        }.takeIfNotEmpty()
+    }
+    
+    fun getEventScope(definitionInfo: ParadoxDefinitionInfo): String? {
+        return definitionInfo.getOrPutUserData(ParadoxDefinitionInfo.Keys.eventEventScopeKey) {
+            definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.pushScope }.orEmpty()
+        }.takeIfNotEmpty()
     }
 }
+
+val PlsKeys.cachedEventInvocationsKey by lazy { Key.create<CachedValue<Set<String>>>("paradox.cached.event.invocations") }
+val CwtDataConfig.Keys.eventEventTypesKey by lazy { Key.create<List<String>>("paradox.event.types") }
+val ParadoxDefinitionInfo.Keys.eventEventTypeKey by lazy { Key.create<String>("paradox.event.type") }
+val ParadoxDefinitionInfo.Keys.eventEventScopeKey by lazy { Key.create<String>("paradox.event.scope") }
