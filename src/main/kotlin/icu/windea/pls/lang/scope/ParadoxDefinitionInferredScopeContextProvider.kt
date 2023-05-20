@@ -56,11 +56,11 @@ interface ParadoxDefinitionInferredScopeContextProvider {
             val gameType = definitionInfo.gameType
             var errorMessage: String? = null
             EP_NAME.extensionList.forEachFast f@{ ep ->
-                if(!gameType.supportsByAnnotation(ep)) return@f 
+                if(!gameType.supportsByAnnotation(ep)) return@f
                 val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
                 if(!info.hasConflict) return@f
-                if(errorMessage != null) {
-                    errorMessage =  ep.getErrorMessage(definition, definitionInfo, info)
+                if(errorMessage == null) {
+                    errorMessage = ep.getErrorMessage(definition, definitionInfo, info)
                 } else {
                     return PlsBundle.message("script.annotator.scopeContext.conflict", definitionInfo.name)
                 }
@@ -75,8 +75,8 @@ interface ParadoxDefinitionInferredScopeContextProvider {
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
                 if(info.hasConflict) return@f
-                if(message != null) {
-                    message =  ep.getMessage(definition, definitionInfo, info)
+                if(message == null) {
+                    message = ep.getMessage(definition, definitionInfo, info)
                 } else {
                     return PlsBundle.message("script.annotator.scopeContext", definitionInfo.name)
                 }
