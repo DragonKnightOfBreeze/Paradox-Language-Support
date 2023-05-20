@@ -44,8 +44,15 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
         //根据分类索引localisation和localisation_synced的name
         if(stub.name.isNotEmpty() && stub.gameType != null) {
             when(stub.category) {
-                ParadoxLocalisationCategory.Localisation -> sink.occurrence(ParadoxLocalisationNameIndex.KEY, stub.name)
-                ParadoxLocalisationCategory.SyncedLocalisation -> sink.occurrence(ParadoxSyncedLocalisationNameIndex.KEY, stub.name)
+                ParadoxLocalisationCategory.Localisation -> {
+                    if(stub.name.startsWith("mod_", true)) {
+                        sink.occurrence(ParadoxLocalisationNameIndex.ModifierIndex.KEY, stub.name.lowercase()) //ignore case
+                    }
+                    sink.occurrence(ParadoxLocalisationNameIndex.KEY, stub.name)
+                }
+                ParadoxLocalisationCategory.SyncedLocalisation -> {
+                    sink.occurrence(ParadoxSyncedLocalisationNameIndex.KEY, stub.name)
+                }
             }
         }
     }

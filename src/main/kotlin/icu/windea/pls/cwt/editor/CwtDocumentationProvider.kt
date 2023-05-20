@@ -168,21 +168,21 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         val contextElement = referenceElement
         val gameType = configGroup.gameType ?: return
         val project = configGroup.project
-        val nameKeys = ParadoxModifierHandler.getModifierNameKeys(name)
-        val localisation = nameKeys.firstNotNullOfOrNull {
-            val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale())
-            ParadoxLocalisationSearch.search(it, selector).find()
+        val nameLocalisation = run {
+            val key = ParadoxModifierHandler.getModifierNameKey(name)
+            val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale()).useModifierIndexKey()
+            ParadoxLocalisationSearch.search(key, selector).find()
         }
-        val descKeys = ParadoxModifierHandler.getModifierDescKeys(name)
-        val descLocalisation = descKeys.firstNotNullOfOrNull {
-            val descSelector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale())
-            ParadoxLocalisationSearch.search(it, descSelector).find()
+        val descLocalisation = run {
+            val key = ParadoxModifierHandler.getModifierDescKey(name)
+            val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale()).useModifierIndexKey()
+            ParadoxLocalisationSearch.search(key, selector).find()
         }
         //如果没找到的话，不要在文档中显示相关信息
-        if(localisation != null) {
+        if(nameLocalisation != null) {
             appendBr()
             append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
-            append("Name = ").appendLocalisationLink(gameType, localisation.name, contextElement)
+            append("Name = ").appendLocalisationLink(gameType, nameLocalisation.name, contextElement)
         }
         if(descLocalisation != null) {
             appendBr()
@@ -190,8 +190,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, contextElement)
         }
         if(sections != null && render) {
-            if(localisation != null) {
-                val richText = ParadoxLocalisationTextHtmlRenderer.render(localisation, forDoc = true)
+            if(nameLocalisation != null) {
+                val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
                 sections.put("Name", richText)
             }
             if(descLocalisation != null) {
@@ -207,13 +207,13 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         val contextElement = referenceElement
         val gameType = configGroup.gameType ?: return
         val project = configGroup.project
-        val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name)
-        val (iconPath, iconFile) = iconPaths.firstNotNullOfOrNull {
-            val iconSelector = fileSelector(project, contextElement).contextSensitive()
-            it to ParadoxFilePathSearch.search(it, null, iconSelector).find()
-        } ?: (null to null)
+        val iconPath = ParadoxModifierHandler.getModifierIconPath(name)
+        val iconFile = run {
+            val iconSelector = fileSelector(project, element).contextSensitive()
+            ParadoxFilePathSearch.search(iconPath, null, iconSelector).find()
+        }
         //如果没找到的话，不要在文档中显示相关信息
-        if(iconPath != null && iconFile != null) {
+        if(iconFile != null) {
             appendBr()
             append(PlsBundle.message("prefix.relatedImage")).append(" ")
             append("Icon = ").appendFilePathLink(gameType, iconPath, iconPath, contextElement)

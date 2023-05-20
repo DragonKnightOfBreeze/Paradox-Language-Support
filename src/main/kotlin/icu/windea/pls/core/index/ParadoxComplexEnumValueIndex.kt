@@ -72,7 +72,7 @@ object ParadoxComplexEnumValueIndex {
     }
     
     private const val ID = "paradox.complexEnumValue.index"
-    private const val VERSION = 21 //0.10.3
+    private const val VERSION = 22 //1.0.0
     
     private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(ID, VERSION, valueExternalizer) builder@{ project, file ->
         if(file.fileInfo == null) return@builder EmptyData

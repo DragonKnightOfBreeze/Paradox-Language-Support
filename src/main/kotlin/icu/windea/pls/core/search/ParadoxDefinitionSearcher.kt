@@ -25,17 +25,19 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         val typeExpression = queryParameters.typeExpression
         val project = queryParameters.project
         
+        val indexKey = ParadoxDefinitionNameIndex.KEY
+        
         ProgressManager.checkCanceled()
         DumbService.getInstance(project).runReadActionInSmartMode action@{
             if(typeExpression == null) {
                 if(name == null) {
                     //查找所有定义
-                    ParadoxDefinitionNameIndex.KEY.processAllElementsByKeys(project, scope) { _, it ->
+                    indexKey.processAllElementsByKeys(project, scope) { _, it ->
                         consumer.process(it)
                     }
                 } else {
                     //按照名字查找定义
-                    ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) {
+                    indexKey.processAllElements(name, project, scope) {
                         consumer.process(it)
                     }
                 }

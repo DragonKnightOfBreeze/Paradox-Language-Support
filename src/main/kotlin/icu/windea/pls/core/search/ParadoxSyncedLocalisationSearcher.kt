@@ -19,14 +19,16 @@ class ParadoxSyncedLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationP
         if(SearchScope.isEmptyScope(scope)) return
         val project = queryParameters.project
         
+        val indexKey = ParadoxSyncedLocalisationNameIndex.KEY
+        
         ProgressManager.checkCanceled()
         DumbService.getInstance(project).runReadActionInSmartMode action@{
             if(queryParameters.name == null) {
-                ParadoxSyncedLocalisationNameIndex.KEY.processAllElementsByKeys(project, scope) p@{ _, it ->
+                indexKey.processAllElementsByKeys(project, scope) p@{ _, it ->
                     consumer.process(it)
                 }
             } else {
-                ParadoxSyncedLocalisationNameIndex.KEY.processAllElements(queryParameters.name, project, scope) p@{
+                indexKey.processAllElements(queryParameters.name, project, scope) p@{
                     consumer.process(it)
                 }
             }

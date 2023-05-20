@@ -4,16 +4,14 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
-import com.intellij.psi.util.*
+import com.intellij.psi.stubs.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
 
 class ParadoxWithGameTypeSelector<T>(
     val gameType: ParadoxGameType
@@ -149,3 +147,7 @@ class ParadoxPreferLocaleSelector(
         return complexCompareBy({ it.localeConfig }, { it.id }, { locale == it }) //同时也按照localeId来进行排序
     }
 }
+
+class ParadoxWithIndexKeySelector<T: PsiElement> (
+    val indexKey: StubIndexKey<String, T>
+): ParadoxSelector<T>

@@ -2,6 +2,7 @@ package icu.windea.pls.core.search.selector.chained
 
 import com.intellij.openapi.project.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.localisation.psi.*
 
@@ -18,3 +19,6 @@ fun ParadoxLocalisationSelector.preferLocale(locale: CwtLocalisationLocaleConfig
 
 fun ParadoxLocalisationSelector.distinctByName() =
     distinctBy { it.name }
+
+fun ParadoxLocalisationSelector.useModifierIndexKey() = 
+    useIndexKey(ParadoxLocalisationNameIndex.ModifierIndex.KEY)

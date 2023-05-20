@@ -190,21 +190,21 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         ProgressManager.checkCanceled()
         val gameType = element.gameType
         val project = configGroup.project
-        val nameKeys = ParadoxModifierHandler.getModifierNameKeys(name)
-        val localisation = nameKeys.firstNotNullOfOrNull {
-            val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
-            ParadoxLocalisationSearch.search(it, selector).find()
+        val nameLocalisation = run {
+            val key = ParadoxModifierHandler.getModifierNameKey(name)
+            val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale()).useModifierIndexKey()
+            ParadoxLocalisationSearch.search(key, selector).find()
         }
-        val descKeys = ParadoxModifierHandler.getModifierDescKeys(name)
-        val descLocalisation = descKeys.firstNotNullOfOrNull {
-            val descSelector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
-            ParadoxLocalisationSearch.search(it, descSelector).find()
+        val descLocalisation = run {
+            val key = ParadoxModifierHandler.getModifierDescKey(name)
+            val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale()).useModifierIndexKey()
+            ParadoxLocalisationSearch.search(key, selector).find()
         }
         //如果没找到的话，不要在文档中显示相关信息
-        if(localisation != null) {
+        if(nameLocalisation != null) {
             appendBr()
             append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
-            append("Name = ").appendLocalisationLink(gameType, localisation.name, element)
+            append("Name = ").appendLocalisationLink(gameType, nameLocalisation.name, element)
         }
         if(descLocalisation != null) {
             appendBr()
@@ -212,8 +212,8 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
             append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, element)
         }
         if(sections != null && render) {
-            if(localisation != null) {
-                val richText = ParadoxLocalisationTextHtmlRenderer.render(localisation, forDoc = true)
+            if(nameLocalisation != null) {
+                val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
                 sections.put("Name", richText)
             }
             if(descLocalisation != null) {
@@ -233,13 +233,13 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         ProgressManager.checkCanceled()
         val gameType = element.gameType
         val project = configGroup.project
-        val iconPaths = ParadoxModifierHandler.getModifierIconPaths(name)
-        val (iconPath, iconFile) = iconPaths.firstNotNullOfOrNull {
+        val iconPath = ParadoxModifierHandler.getModifierIconPath(name)
+        val iconFile = run {
             val iconSelector = fileSelector(project, element).contextSensitive()
-            it to ParadoxFilePathSearch.search(it, null, iconSelector).find()
-        } ?: (null to null)
+            ParadoxFilePathSearch.search(iconPath, null, iconSelector).find()
+        }
         //如果没找到的话，不要在文档中显示相关信息
-        if(iconPath != null && iconFile != null) {
+        if(iconFile != null) {
             appendBr()
             append(PlsBundle.message("prefix.relatedImage")).append(" ")
             append("Icon = ").appendFilePathLink(gameType, iconPath, iconPath, element)
@@ -267,11 +267,11 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
             val contextElement = element
             val categoryNames = modifierCategories.keys
             if(categoryNames.isNotEmpty()) {
-                sections.put(PlsBundle.message("sectionTitle.categories"), ParadoxModifierHandler.getCategoriesText(categoryNames, gameType, contextElement))
+                sections.put(PlsBundle.message("sectionTitle.categories"), ParadoxDocumentBuilder.getModifierCategoriesText(categoryNames, gameType, contextElement))
             }
             
             val supportedScopes = modifierCategories.getSupportedScopes()
-            sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxModifierHandler.getScopesText(supportedScopes, gameType, contextElement))
+            sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxDocumentBuilder.getScopesText(supportedScopes, gameType, contextElement))
         }
     }
     

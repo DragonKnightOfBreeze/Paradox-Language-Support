@@ -65,6 +65,7 @@
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionNameIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionTypeIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxLocalisationNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.core.index.ParadoxLocalisationNameIndex$ModifierIndex"/>
     <stubIndex implementation="icu.windea.pls.core.index.ParadoxSyncedLocalisationNameIndex"/>
     
     <searchScopesProvider implementation="icu.windea.pls.core.search.ParadoxSearchScopeProvider"/>

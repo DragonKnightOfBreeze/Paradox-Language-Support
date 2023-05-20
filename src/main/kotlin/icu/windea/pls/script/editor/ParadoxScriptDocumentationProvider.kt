@@ -285,11 +285,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             val contextElement = element
             val categoryNames = modifierCategories.keys
             if(categoryNames.isNotEmpty()) {
-                sections.put(PlsBundle.message("sectionTitle.categories"), ParadoxModifierHandler.getCategoriesText(categoryNames, gameType, contextElement))
+                sections.put(PlsBundle.message("sectionTitle.categories"), ParadoxDocumentBuilder.getModifierCategoriesText(categoryNames, gameType, contextElement))
             }
             
             val supportedScopes = modifierCategories.getSupportedScopes()
-            sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxModifierHandler.getScopesText(supportedScopes, gameType, contextElement))
+            sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxDocumentBuilder.getScopesText(supportedScopes, gameType, contextElement))
         }
     }
     

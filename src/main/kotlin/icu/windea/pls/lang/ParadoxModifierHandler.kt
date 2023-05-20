@@ -14,7 +14,6 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*
@@ -92,78 +91,30 @@ object ParadoxModifierHandler {
     
     //related localisations & images methods
     
-    //TODO 检查修正的相关本地化和图标到底是如何确定的
-    
-    fun getModifierNameKeys(name: String): List<String> {
+    fun getModifierNameKey(name: String): String {
         //mod_$, ALL_UPPER_CASE is ok.
-        return buildList {
-            val nameKey = "mod_${name}"
-            add(nameKey)
-            add(nameKey.uppercase())
-        }
+        return "mod_${name}"
     }
     
-    fun getModifierDescKeys(name: String): List<String> {
+    fun getModifierDescKey(name: String): String {
         //mod_$_desc, ALL_UPPER_CASE is ok.
-        return buildList {
-            val descKey = "mod_${name}_desc"
-            add(descKey)
-            add(descKey.uppercase())
-        }
+        return "mod_${name}_desc"
     }
     
-    fun getModifierIconPaths(name: String): List<String> {
+    fun getModifierIconPath(name: String): String {
         //gfx/interface/icons/modifiers/mod_$.dds
-        return buildList {
-            add("gfx/interface/icons/modifiers/mod_${name}.dds")
-        }
+        return "gfx/interface/icons/modifiers/mod_${name}.dds"
     }
     
     fun getModifierLocalizedNames(name: String, project: Project, contextElement: PsiElement?): Set<String> {
-        val nameKeys = getModifierNameKeys(name)
+        val nameKey = getModifierNameKey(name)
         val localizedNames = mutableSetOf<String>()
-        nameKeys.forEach { nameKey ->
-            val selector = localisationSelector(project, contextElement).preferLocale(preferredParadoxLocale())
-            ParadoxLocalisationSearch.search(nameKey, selector).processQueryAsync { localisation ->
-                val r = ParadoxLocalisationTextExtractor.extract(localisation).takeIfNotEmpty()
-                if(r != null) localizedNames.add(r)
-                true
-            }
+        val selector = localisationSelector(project, contextElement).preferLocale(preferredParadoxLocale()).useModifierIndexKey()
+        ParadoxLocalisationSearch.search(nameKey, selector).processQueryAsync { localisation ->
+            val r = ParadoxLocalisationTextExtractor.extract(localisation).takeIfNotEmpty()
+            if(r != null) localizedNames.add(r)
+            true
         }
         return localizedNames
-    }
-    
-    //documentation methods
-    
-    fun getCategoriesText(categories: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
-        return buildString {
-            var appendSeparator = false
-            append("<code>")
-            for(category in categories) {
-                if(appendSeparator) append(", ") else appendSeparator = true
-                appendCwtLink("${gameType.linkToken}modifier_categories/$category", category, contextElement)
-            }
-            append("</code>")
-        }
-    }
-    
-    fun getScopeText(scopeId: String, gameType: ParadoxGameType?, contextElement: PsiElement): String {
-        return buildString {
-            append("<code>")
-            ParadoxScopeHandler.buildScopeDoc(scopeId, gameType, contextElement, this)
-            append("</code>")
-        }
-    }
-    
-    fun getScopesText(scopeIds: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
-        return buildString {
-            var appendSeparator = false
-            append("<code>")
-            for(scopeId in scopeIds) {
-                if(appendSeparator) append(", ") else appendSeparator = true
-                ParadoxScopeHandler.buildScopeDoc(scopeId, gameType, contextElement, this)
-            }
-            append("</code>")
-        }
     }
 }

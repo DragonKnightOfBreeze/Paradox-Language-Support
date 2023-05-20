@@ -2,7 +2,9 @@ package icu.windea.pls.core.search.selector.chained
 
 import com.intellij.psi.*
 import com.intellij.psi.search.*
+import com.intellij.psi.stubs.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.model.*
 
@@ -46,4 +48,13 @@ fun <S : ChainedParadoxSelector<T>, T> S.filterBy(predicate: (T) -> Boolean): S 
 fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.notSamePosition(element: PsiElement?): S {
     filterBy { element == null || !element.isSamePosition(it) }
     return this
+}
+
+fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.useIndexKey(indexKey: StubIndexKey<String, T>): S {
+    selectors += ParadoxWithIndexKeySelector(indexKey)
+    return this
+}
+
+fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.getIndexKey(): StubIndexKey<String, T>? {
+    return selectors.findIsInstance<ParadoxWithIndexKeySelector<T>>()?.indexKey
 }

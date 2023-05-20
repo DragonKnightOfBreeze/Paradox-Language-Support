@@ -62,13 +62,6 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 }
             }
             
-            private fun visitProperty(property: ParadoxScriptProperty) {
-                if(localeConfigs.isEmpty()) return
-                if(!checkForDefinitions) return
-                val definitionInfo = property.definitionInfo ?: return
-                visitDefinition(property, definitionInfo)
-            }
-            
             private fun visitDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
                 ProgressManager.checkCanceled()
                 val localisationInfos = definitionInfo.localisations
@@ -159,13 +152,11 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
                 if(config.expression.type != CwtDataType.Modifier) return
                 val name = element.value
-                val keys = ParadoxModifierHandler.getModifierNameKeys(name)
+                val key = ParadoxModifierHandler.getModifierNameKey(name)
                 val missingLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
                 for(locale in localeConfigs) {
-                    val selector = localisationSelector(holder.project, element).locale(locale)
-                    val localisation = keys.firstNotNullOfOrNull {
-                        ParadoxLocalisationSearch.search(it, selector).findFirst()
-                    }
+                    val selector = localisationSelector(holder.project, element).locale(locale).useModifierIndexKey()
+                    val localisation = ParadoxLocalisationSearch.search(key, selector).findFirst()
                     if(localisation == null) missingLocales.add(locale)
                 }
                 if(missingLocales.isNotEmpty()) {

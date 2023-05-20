@@ -6,7 +6,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptDefinitionElement>() {
 	companion object {
 		@JvmField val KEY = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.type.index")
-		private const val VERSION = 21 //0.10.3
+		private const val VERSION = 22 //1.0.0
 		private const val CACHE_SIZE = 1024 //180+ in stellaris@3.6
 	}
 	
