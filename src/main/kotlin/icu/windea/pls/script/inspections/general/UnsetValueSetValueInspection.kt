@@ -7,12 +7,13 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
-import com.intellij.psi.search.searches.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.scope.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
@@ -26,7 +27,7 @@ import icu.windea.pls.script.psi.*
  */
 @SlowApi
 class UnsetValueSetValueInspection : LocalInspectionTool(){
-    //may be very slow for ReferencesSearch
+    //may be slow for ParadoxValueSetValueSearch
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
         return object : PsiElementVisitor() {
@@ -61,11 +62,11 @@ class UnsetValueSetValueInspection : LocalInspectionTool(){
                         val isUsed = if(used == null) {
                             ProgressManager.checkCanceled()
                             val searchScope = searchScope ?: GlobalSearchScope.allScope(holder.project)
-                            val r = ReferencesSearch.search(resolved, searchScope).processQueryAsync p@{
+                            val selector = valueSetValueSelector(resolved.project, resolved)
+                                .withSearchScope(searchScope)
+                            val r = ParadoxValueSetValueSearch.search(resolved.name, selector).processQueryAsync p@{
                                 ProgressManager.checkCanceled()
-                                val res = it.resolve()
-                                ProgressManager.checkCanceled()
-                                if(res is ParadoxValueSetValueElement && res.readWriteAccess == Access.Write) {
+                                if(it.readWriteAccess == Access.Read) {
                                     statusMap[resolved] = true
                                     false
                                 } else {

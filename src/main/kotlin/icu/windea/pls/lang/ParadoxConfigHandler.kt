@@ -140,7 +140,7 @@ object ParadoxConfigHandler {
     }
     
     private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
-        return config.keyExpression.type == CwtDataType.Constant && config.cardinality.isRequired()
+        return config.keyExpression.type == CwtDataType.Constant && config.cardinality?.isRequired() != false
     }
     //endregion
     
