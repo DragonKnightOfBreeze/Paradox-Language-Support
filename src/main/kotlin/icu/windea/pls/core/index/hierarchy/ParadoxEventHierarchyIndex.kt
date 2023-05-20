@@ -22,13 +22,13 @@ object ParadoxEventHierarchyIndex {
     class Data(
         val eventInfos: MutableList<EventInfo> = SmartList()
     ) {
-        val eventToEventsMap by lazy {
+        val eventToEventInfosMap by lazy {
             if(eventInfos.isEmpty()) return@lazy emptyMap()
-            buildMap<String, Set<String>> {
+            buildMap<String, Set<EventInfo>> {
                 eventInfos.forEachFast { eventInfo ->
                     eventInfo.eventInvocationInfos.forEachFast { eventInvocationInfo ->
                         val set = getOrPut(eventInvocationInfo.name) { mutableSetOf() } as MutableSet
-                        set.add(eventInvocationInfo.name)
+                        set.add(eventInfo)
                     }
                 }
             }
@@ -37,8 +37,8 @@ object ParadoxEventHierarchyIndex {
     
     class EventInfo(
         val name: String,
-        val eventType: String?,
-        val eventScope: String?,
+        val type: String?,
+        val scope: String?,
         val eventInvocationInfos: MutableList<EventInvocationInfo> = SmartList()
     )
     
@@ -53,8 +53,8 @@ object ParadoxEventHierarchyIndex {
         override fun save(storage: DataOutput, value: Data) {
             DataInputOutputUtil.writeSeq(storage, value.eventInfos) { eventInfo ->
                 IOUtil.writeUTF(storage, eventInfo.name)
-                IOUtil.writeUTF(storage, eventInfo.eventType.orEmpty())
-                IOUtil.writeUTF(storage, eventInfo.eventScope.orEmpty())
+                IOUtil.writeUTF(storage, eventInfo.type.orEmpty())
+                IOUtil.writeUTF(storage, eventInfo.scope.orEmpty())
                 DataInputOutputUtil.writeSeq(storage, eventInfo.eventInvocationInfos) { eventInvocationInfo ->
                     IOUtil.writeUTF(storage, eventInvocationInfo.name)
                 }
@@ -65,8 +65,8 @@ object ParadoxEventHierarchyIndex {
             return Data(DataInputOutputUtil.readSeq(storage) {
                 EventInfo(
                     name = IOUtil.readUTF(storage),
-                    eventType = IOUtil.readString(storage).takeIfNotEmpty(),
-                    eventScope = IOUtil.readString(storage).takeIfNotEmpty(),
+                    type = IOUtil.readString(storage).takeIfNotEmpty(),
+                    scope = IOUtil.readString(storage).takeIfNotEmpty(),
                     eventInvocationInfos = DataInputOutputUtil.readSeq(storage) {
                         EventInvocationInfo(
                             name = IOUtil.readUTF(storage)
@@ -122,7 +122,7 @@ object ParadoxEventHierarchyIndex {
     private fun matchesPath(file: VirtualFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         val path = fileInfo.pathToEntry //这里使用pathToEntry
-        return "common/on_actions".matchesPath(path.path)
+        return "events".matchesPath(path.path)
     }
     
     fun getData(file: VirtualFile, project: Project): Data? {

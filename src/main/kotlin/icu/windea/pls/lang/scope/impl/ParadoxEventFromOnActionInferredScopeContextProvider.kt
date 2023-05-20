@@ -3,19 +3,20 @@ package icu.windea.pls.lang.scope.impl
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
-import com.intellij.psi.search.searches.*
+import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.index.hierarchy.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.scope.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.references.*
 
 /**
  * 如果某个`event`在某个`on_action`中被调用，
@@ -44,26 +45,27 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
     
     private fun doGetScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
         val definitionInfo = definition.definitionInfo ?: return null
-        val configGroup = definitionInfo.configGroup
-        var scopeContextMap: Map<String, String?>? = null
-        var hasConflict = false
         //optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?.withFilePath("common/on_actions", "txt")
             ?: return null
+        val configGroup = definitionInfo.configGroup
+        val project = configGroup.project
+        val thisEventName = definitionInfo.name
+        val thisEventType = ParadoxEventHandler.getEventType(definitionInfo)
+        var scopeContextMap: Map<String, String?>? = null
+        var hasConflict = false
         ProgressManager.checkCanceled()
-        ProgressManager.getInstance().runProcess({
-            val result = ReferencesSearch.search(definition, searchScope).processQueryAsync p@{ ref ->
-                ProgressManager.checkCanceled()
-                //should be
-                if(ref !is ParadoxScriptExpressionPsiReference) return@p true
-                val refDefinition = ref.element.findParentDefinition() ?: return@p true
-                val refDefinitionInfo = refDefinition.definitionInfo ?: return@p true
-                if(refDefinitionInfo.type != "on_action") return@p true
-                //check whether on_action is valid and event type is valid
-                val config = configGroup.onActions.getByTemplate(refDefinition.name, definition, configGroup)
-                    ?: return@p true //missing
-                if(!definitionInfo.subtypes.contains(config.eventType)) return@p true //invalid
+        val r = FileTypeIndex.processFiles(ParadoxScriptFileType, p@{ file ->
+            ProgressManager.checkCanceled()
+            val data = ParadoxOnActionHierarchyIndex.getData(file, project) ?: return@p true
+            val onActionNames = data.eventToOnActionsMap[thisEventName] ?: return@p true
+            val psiFile = file.toPsiFile<ParadoxScriptFile>(project) ?: return@p true
+            onActionNames.forEach { onActionName ->
+                //这里使用psiFile作为contextElement
+                val config = configGroup.onActions.getByTemplate(onActionName, psiFile, configGroup)
+                if(config == null) return@p true //missing
+                if(config.eventType != thisEventType) return@p true //invalid (mismatch)
                 val map = config.config.replaceScopes ?: return@p true
                 if(scopeContextMap != null) {
                     val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap!!, map)
@@ -75,10 +77,10 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
                 } else {
                     scopeContextMap = map
                 }
-                true
             }
-            if(!result) hasConflict = true
-        }, EmptyProgressIndicator())
+            true
+        }, searchScope)
+        if(!r) hasConflict = true
         val resultScopeContextMap = scopeContextMap ?: return null
         return ParadoxScopeContextInferenceInfo(resultScopeContextMap, hasConflict)
     }
