@@ -21,6 +21,9 @@ class CwtKeyExpression private constructor(
         
         private fun doResolve(expressionString: String) = when {
             expressionString.isEmpty() -> EmptyStringExpression
+            expressionString == "bool" -> {
+                CwtKeyExpression(expressionString, CwtDataType.Bool)
+            }
             expressionString == "int" -> {
                 CwtKeyExpression(expressionString, CwtDataType.Int)
             }

@@ -103,12 +103,22 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
                 }
             }
             
-            //如果存在，替换成重置后的规则
+            //如果存在，替换成重载后的规则
             nextResult.forEachIndexedFast f3@{ i, config ->
                 val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, config)
                 if(overriddenConfigs.isNotNullOrEmpty()) {
                     nextResult.removeAt(i)
-                    nextResult.addAll(i, overriddenConfigs)
+                    if(BitUtil.isSet(matchType, CwtConfigMatchType.USE_ALL_OVERRIDDEN)) {
+                        nextResult.addAll(i, overriddenConfigs)
+                    } else {
+                        //这里需要再次进行匹配
+                        var j = i
+                        overriddenConfigs.forEachFast f4@{ overriddenConfig ->
+                            if(ParadoxConfigHandler.matchesScriptExpression(element, expression, overriddenConfig.expression, overriddenConfig, configGroup, matchType)) {
+                                nextResult.add(j++, overriddenConfig)
+                            }
+                        }
+                    }
                 }
             }
         }

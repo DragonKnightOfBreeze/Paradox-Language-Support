@@ -415,11 +415,11 @@ object ParadoxScopeHandler {
         val result = mutableMapOf<String, String?>()
         doMergeScopeContextMap(result, map, otherMap, "this", true).let { if(!it) return null }
         doMergeScopeContextMap(result, map, otherMap, "root", true).let { if(!it) return null }
-        doMergeScopeContextMap(result, map, otherMap, "prev", false).let { if(!it) return null }
-        doMergeScopeContextMap(result, map, otherMap, "from", false).let { if(!it) return null }
-        doMergeScopeContextMap(result, map, otherMap, "fromfrom", false).let { if(!it) return null }
-        doMergeScopeContextMap(result, map, otherMap, "fromfromfrom", false).let { if(!it) return null }
-        doMergeScopeContextMap(result, map, otherMap, "fromfromfromfrom", false).let { if(!it) return null }
+        doMergeScopeContextMap(result, map, otherMap, "prev", false)
+        doMergeScopeContextMap(result, map, otherMap, "from", false)
+        doMergeScopeContextMap(result, map, otherMap, "fromfrom", false)
+        doMergeScopeContextMap(result, map, otherMap, "fromfromfrom", false)
+        doMergeScopeContextMap(result, map, otherMap, "fromfromfromfrom", false)
         return result
     }
     

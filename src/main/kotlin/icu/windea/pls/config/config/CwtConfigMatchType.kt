@@ -15,30 +15,35 @@ object CwtConfigMatchType {
 	const val NOT_EXACT = 0x02
 	
 	/**
+	 * 使用所有重载的规则。
+	 */
+	const val USE_ALL_OVERRIDDEN = 0x04
+	
+	/**
 	 * 需要访问文件路径索引。
 	 * @see icu.windea.pls.core.index.ParadoxFilePathIndex
 	 */
-	const val FILE_PATH = 0x04
+	const val FILE_PATH = 0x10
 	
 	/**
 	 * 需要访问定义索引。
 	 * @see icu.windea.pls.core.index.ParadoxDefinitionNameIndex
 	 * @see icu.windea.pls.core.index.ParadoxDefinitionTypeIndex
 	 */
-	const val DEFINITION = 0x08
+	const val DEFINITION = 0x20
 	
 	/**
 	 * 需要访问本地化索引。
 	 * @see icu.windea.pls.core.index.ParadoxLocalisationNameIndex
 	 * @see icu.windea.pls.core.index.ParadoxSyncedLocalisationNameIndex
 	 */
-	const val LOCALISATION = 0x10
+	const val LOCALISATION = 0x40
 	
 	/**
 	 * 需要访问复杂枚举值索引。
 	 * @see icu.windea.pls.core.index.ParadoxComplexEnumValueIndex
 	 */
-	const val COMPLEX_ENUM_VALUE = 0x20
+	const val COMPLEX_ENUM_VALUE = 0x80
 	
 	const val DEFAULT  = FILE_PATH or DEFINITION or LOCALISATION or COMPLEX_ENUM_VALUE
 }
