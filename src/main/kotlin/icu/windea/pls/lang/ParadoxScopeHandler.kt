@@ -194,12 +194,12 @@ object ParadoxScopeHandler {
             element as ParadoxScriptDefinitionElement
             
             //如果推断得到的作用域上下文是确定的，则优先使用推断得到的
-            val inferenceInfo = ParadoxDefinitionInferredScopeContextProvider.getScopeContext(element, definitionInfo)
-            if(inferenceInfo != null && !inferenceInfo.hasConflict) return inferenceInfo.scopeContext
+            val inferredScopeContext = ParadoxDefinitionInferredScopeContextProvider.getScopeContext(element, definitionInfo)
+            if(inferredScopeContext != null) return inferredScopeContext
             
             //使用提供的作用域上下文
-            val providedScopeContext = ParadoxDefinitionScopeContextProvider.getScopeContext(element, definitionInfo)
-            if(providedScopeContext != null) return providedScopeContext
+            val scopeContext = ParadoxDefinitionScopeContextProvider.getScopeContext(element, definitionInfo)
+            if(scopeContext != null) return scopeContext
             
             return getAnyScopeContext()
         }
@@ -430,14 +430,15 @@ object ParadoxScopeHandler {
     }
     
     fun mergeScopeId(scopeId: String?, otherScopeId: String?): String? {
+        if(scopeId == otherScopeId) return scopeId
         if(scopeId == anyScopeId || otherScopeId == anyScopeId) return anyScopeId
         if(scopeId == unknownScopeId || otherScopeId == unknownScopeId) return unknownScopeId
         if(scopeId == null || otherScopeId == null) return unknownScopeId
-        if(scopeId == otherScopeId) return scopeId
         return null
     }
     
     fun mergeScope(scope: ParadoxScope?, otherScope: ParadoxScope?): ParadoxScope? {
+        if(scope == otherScope) return scope
         if(scope == ParadoxScope.AnyScope || otherScope == ParadoxScope.AnyScope) return ParadoxScope.AnyScope
         if(scope == ParadoxScope.UnknownScope || otherScope == ParadoxScope.UnknownScope) return ParadoxScope.UnknownScope
         if(scope == null || otherScope == null) return ParadoxScope.UnknownScope

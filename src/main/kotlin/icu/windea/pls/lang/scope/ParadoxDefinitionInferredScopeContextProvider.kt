@@ -3,6 +3,8 @@ package icu.windea.pls.lang.scope
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
@@ -30,12 +32,23 @@ interface ParadoxDefinitionInferredScopeContextProvider {
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxDefinitionInferredScopeContextProvider>("icu.windea.pls.definitionInferredScopeContextProvider")
         
-        fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
+        fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
             val gameType = definitionInfo.gameType
-            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if(!gameType.supportsByAnnotation(ep)) return@f null
-                ep.getScopeContext(definition, definitionInfo)
+            var map: Map<String, String?>? = null
+            EP_NAME.extensionList.forEachFast f@{ ep ->
+                if(!gameType.supportsByAnnotation(ep)) return@f
+                val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
+                if(info.hasConflict) return@f
+                if(map == null) {
+                    map = info.scopeContextMap
+                } else {
+                    map = ParadoxScopeHandler.mergeScopeContextMap(map!!, info.scopeContextMap)
+                }
             }
+            val resultMap = map ?: return null
+            val result = ParadoxScopeContext.resolve(resultMap)
+            result?.from = result?.from?.copyAsInferred()
+            return result
         }
         
         fun getErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {

@@ -78,6 +78,10 @@ object ParadoxEventHandler {
         return ParadoxDefinitionHandler.getPrimaryImage(definition)
     }
     
+    fun getScope(definitionInfo: ParadoxDefinitionInfo): String {
+        return definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.pushScope } ?: ParadoxScopeHandler.anyScopeId
+    }
+    
     /**
      * 得到指定事件可能调用的所有事件。
      *

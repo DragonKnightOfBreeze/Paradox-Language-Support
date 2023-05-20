@@ -98,7 +98,8 @@
     <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxBaseDefinitionScopeContextProvider" order="last"/>
     <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxGameRuleScopeContextProvider"/>
     <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxOnActionScopeContextProvider"/>
-    
+
+    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxEventFromEventInferredScopeContextProvider"/>
     <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxEventFromOnActionInferredScopeContextProvider"/>
     
     <definitionPresentationProvider implementation="icu.windea.pls.lang.presentation.impl.StellarisTechnologyPresentationProvider"/>
