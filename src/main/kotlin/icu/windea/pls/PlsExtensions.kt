@@ -231,6 +231,7 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
             ?: selectLocale(from.propertyList?.locale) //尝试获取文件中声明的唯一的语言区域
         from is ParadoxLocalisationLocale -> from.name
             .let { getCwtConfig(from.project).core.localisationLocales.get(it) } //这里需要传入project
+        from is ParadoxLocalisationPropertyList -> selectLocale(from.locale)
         from is ParadoxLocalisationProperty -> runCatching { from.stub }.getOrNull()?.locale
             ?.let { getCwtConfig().core.localisationLocales.get(it) } //这里不需要传入project
             ?: selectLocale(from.containingFile) //直接转到containingFile，避免不必要的文件解析
