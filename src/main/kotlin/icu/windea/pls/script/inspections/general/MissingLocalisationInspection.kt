@@ -155,7 +155,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 val key = ParadoxModifierHandler.getModifierNameKey(name)
                 val missingLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
                 for(locale in localeConfigs) {
-                    val selector = localisationSelector(holder.project, element).locale(locale).useModifierIndexKey()
+                    val selector = localisationSelector(holder.project, element).locale(locale).withModifierConstraint()
                     val localisation = ParadoxLocalisationSearch.search(key, selector).findFirst()
                     if(localisation == null) missingLocales.add(locale)
                 }

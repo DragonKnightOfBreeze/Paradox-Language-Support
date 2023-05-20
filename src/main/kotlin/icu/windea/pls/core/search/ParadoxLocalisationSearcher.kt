@@ -6,7 +6,6 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.localisation.psi.*
 
@@ -20,16 +19,18 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
         if(SearchScope.isEmptyScope(scope)) return
         val project = queryParameters.project
         
-        val indexKey = queryParameters.selector.getIndexKey() ?: ParadoxLocalisationNameIndex.KEY
+        val constraint = queryParameters.selector.getConstraint()
+        val indexKey = constraint.indexKey
+        val name = if(constraint.ignoreCase) queryParameters.name?.lowercase() else queryParameters.name
         
         ProgressManager.checkCanceled()
         DumbService.getInstance(project).runReadActionInSmartMode action@{
-            if(queryParameters.name == null) {
+            if(name == null) {
                 indexKey.processAllElementsByKeys(project, scope) { _, it ->
                     consumer.process(it)
                 }
             } else {
-                indexKey.processAllElements(queryParameters.name, project, scope) {
+                indexKey.processAllElements(name, project, scope) {
                     consumer.process(it)
                 }
             }

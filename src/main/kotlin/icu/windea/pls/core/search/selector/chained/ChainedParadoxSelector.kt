@@ -95,7 +95,7 @@ open class ChainedParadoxSelector<T>(
         }
     }
     
-    fun defaultValue() : T? {
+    fun defaultValue(): T? {
         return defaultValue
     }
     

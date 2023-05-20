@@ -26,4 +26,15 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
         
         override fun getVersion() = VERSION
     }
+    
+    /**
+     * 用于过滤本地化索引。
+     */
+    enum class Constraint(
+        val indexKey: StubIndexKey<String, ParadoxLocalisationProperty>,
+        val ignoreCase: Boolean = false
+    ) {
+        Default(ParadoxLocalisationNameIndex.KEY),
+        Modifier(ParadoxLocalisationNameIndex.ModifierIndex.KEY, true)
+    }
 }

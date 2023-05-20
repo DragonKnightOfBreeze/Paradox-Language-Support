@@ -148,6 +148,6 @@ class ParadoxPreferLocaleSelector(
     }
 }
 
-class ParadoxWithIndexKeySelector<T: PsiElement> (
-    val indexKey: StubIndexKey<String, T>
-): ParadoxSelector<T>
+//class ParadoxWithIndexKeySelector<T: PsiElement> (
+//    val indexKey: StubIndexKey<String, T>
+//): ParadoxSelector<T>

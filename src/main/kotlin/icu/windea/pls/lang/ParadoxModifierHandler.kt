@@ -111,7 +111,7 @@ object ParadoxModifierHandler {
         ProgressManager.checkCanceled()
         val nameKey = getModifierNameKey(name)
         val localizedNames = mutableSetOf<String>()
-        val selector = localisationSelector(project, contextElement).preferLocale(preferredParadoxLocale()).useModifierIndexKey()
+        val selector = localisationSelector(project, contextElement).preferLocale(preferredParadoxLocale()).withModifierConstraint()
         ParadoxLocalisationSearch.search(nameKey, selector).processQueryAsync { localisation ->
             ProgressManager.checkCanceled()
             val r = ParadoxLocalisationTextExtractor.extract(localisation).takeIfNotEmpty()

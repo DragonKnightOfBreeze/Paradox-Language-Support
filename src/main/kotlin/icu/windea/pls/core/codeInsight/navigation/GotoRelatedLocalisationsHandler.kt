@@ -57,13 +57,13 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 runReadAction {
                     run {
                         val key = ParadoxModifierHandler.getModifierNameKey(modifierElement.name)
-                        val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale()).useModifierIndexKey()
+                        val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale()).withModifierConstraint()
                         val result = ParadoxLocalisationSearch.search(key, selector).findAll()
                         targets.addAll(result)
                     }
                     run {
                         val key = ParadoxModifierHandler.getModifierDescKey(modifierElement.name)
-                        val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale()).useModifierIndexKey()
+                        val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale()).withModifierConstraint()
                         val result = ParadoxLocalisationSearch.search(key, selector).findAll()
                         targets.addAll(result)
                     }
