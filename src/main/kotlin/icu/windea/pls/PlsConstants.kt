@@ -118,7 +118,6 @@ object PlsKeys {
     val cachedTextColorInfoKey = Key.create<CachedValue<ParadoxTextColorInfo>>("paradox.cached.textColorInfo")
     val cachedDefineValuesKey = Key.create<CachedValue<MutableMap<String, Any?>>>("paradox.cached.defineValues")
     val cachedColorKey = Key.create<CachedValue<Color>>("paradox.cached.color")
-    val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfoKey")
     val cachedParametersKey = Key.create<CachedValue<ParadoxParameterContextInfo>>("paradox.cached.parameterContextInfo")
     val cachedGameConceptAliasKey = Key.create<CachedValue<Set<String>>>("paradox.cached.gameConcept.alias")
     

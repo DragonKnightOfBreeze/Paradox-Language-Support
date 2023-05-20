@@ -197,7 +197,7 @@ class ParadoxValueFieldExpressionImpl(
         val startOffset = context.startOffset
         val offsetInParent = context.offsetInParent
         val isKey = context.isKey
-        val scopeContext = context.scopeContext ?: ParadoxScopeHandler.resolveAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
         
         context.isKey = null
         
@@ -216,7 +216,7 @@ class ParadoxValueFieldExpressionImpl(
                     break
                 } else {
                     val inExpression = i != 0
-                    scopeContextInExpression = ParadoxScopeHandler.resolveScopeContext(node, scopeContextInExpression, inExpression)
+                    scopeContextInExpression = ParadoxScopeHandler.getScopeContext(node, scopeContextInExpression, inExpression)
                 }
             } else if(node is ParadoxValueFieldExpressionNode) {
                 if(inRange) {

@@ -2,6 +2,7 @@ package icu.windea.pls.lang.scope.impl
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.search.searches.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -20,22 +21,26 @@ import icu.windea.pls.script.references.*
  * 如果事件在某个`on_action`中被调用，则将其from作用域设为此`on_action`的from作用域，fromfrom作用域也这样处理，依此类推。
  */
 class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
-    override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if(!getSettings().inference.eventScopeContext) return null
-        ProgressManager.checkCanceled()
-        if(definitionInfo.type != "event") return null
-        return getInferredScopeContext(definition)
+    companion object {
+        val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.fromOnAction")
     }
     
-    private fun getInferredScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
-        return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedScopeContextInferenceInfoKey) {
-            val value = resolveInferredScopeContext(definition)
+    override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
+        if(!getSettings().inference.eventScopeContext) return null
+        if(definitionInfo.type != "event") return null
+        return doGetScopeContextFromCache(definition)
+    }
+    
+    private fun doGetScopeContextFromCache(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
+        return CachedValuesManager.getCachedValue(definition, cachedScopeContextInferenceInfoKey) {
+            ProgressManager.checkCanceled()
+            val value = doGetScopeContext(definition)
             val tracker = ParadoxPsiModificationTracker.getInstance(definition.project).ScriptFileTracker("common/on_actions:txt")
             CachedValueProvider.Result.create(value, tracker)
         }
     }
     
-    private fun resolveInferredScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun doGetScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
         ProgressManager.checkCanceled()
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup

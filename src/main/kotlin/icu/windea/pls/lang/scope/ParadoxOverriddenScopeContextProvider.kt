@@ -6,7 +6,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 用于在某些极个别情况下基于另外的逻辑获取脚本表达式对应的作用域上下文。

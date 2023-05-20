@@ -43,6 +43,6 @@ class StellarisComplexTriggerModifierOverriddenScopeContextProvider : ParadoxOve
         val configGroup = config.info.configGroup
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup, true) ?: return null
         
-        return ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, scopeContext)
+        return ParadoxScopeHandler.getScopeContext(scopeFieldExpression, scopeContext)
     }
 }

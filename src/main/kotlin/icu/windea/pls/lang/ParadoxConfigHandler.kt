@@ -333,14 +333,14 @@ object ParadoxConfigHandler {
                         val expectedScope = configExpression.value ?: return true
                         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return true
                         val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return true
-                        val scopeContext = ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, parentScopeContext)
+                        val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)
                         if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return true
                     }
                     CwtDataType.ScopeGroup -> {
                         val expectedScopeGroup = configExpression.value ?: return true
                         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return true
                         val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return true
-                        val scopeContext = ParadoxScopeHandler.resolveScopeContext(scopeFieldExpression, parentScopeContext)
+                        val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)
                         if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return true
                     }
                     else -> pass()
