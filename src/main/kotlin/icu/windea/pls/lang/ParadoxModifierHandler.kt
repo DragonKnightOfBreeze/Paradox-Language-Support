@@ -2,6 +2,7 @@ package icu.windea.pls.lang
 
 import com.google.common.cache.*
 import com.intellij.codeInsight.completion.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
@@ -11,9 +12,12 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.search.*
+import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.localisation.*
 
 object ParadoxModifierHandler {
     val modifierConfigKey = Key.create<CwtModifierConfig>("paradox.modifier.config")
@@ -86,34 +90,50 @@ object ParadoxModifierHandler {
         return ParadoxModifierSupport.getModifierCategories(element)
     }
     
+    //related localisations & images methods
+    
     //TODO 检查修正的相关本地化和图标到底是如何确定的
     
-    fun getModifierNameKeys(modifierName: String): List<String> {
+    fun getModifierNameKeys(name: String): List<String> {
         //mod_$, ALL_UPPER_CASE is ok.
         return buildList {
-            val nameKey = "mod_${modifierName}"
+            val nameKey = "mod_${name}"
             add(nameKey)
             add(nameKey.uppercase())
         }
     }
     
-    fun getModifierDescKeys(modifierName: String): List<String> {
+    fun getModifierDescKeys(name: String): List<String> {
         //mod_$_desc, ALL_UPPER_CASE is ok.
         return buildList {
-            val descKey = "mod_${modifierName}_desc"
+            val descKey = "mod_${name}_desc"
             add(descKey)
             add(descKey.uppercase())
         }
     }
     
-    fun getModifierIconPaths(modifierName: String): List<String> {
+    fun getModifierIconPaths(name: String): List<String> {
         //gfx/interface/icons/modifiers/mod_$.dds
         return buildList {
-            add("gfx/interface/icons/modifiers/mod_${modifierName}.dds")
+            add("gfx/interface/icons/modifiers/mod_${name}.dds")
         }
     }
     
-    //documentation helper methods
+    fun getModifierLocalizedNames(name: String, project: Project, contextElement: PsiElement?): Set<String> {
+        val nameKeys = getModifierNameKeys(name)
+        val localizedNames = mutableSetOf<String>()
+        nameKeys.forEach { nameKey ->
+            val selector = localisationSelector(project, contextElement).preferLocale(preferredParadoxLocale())
+            ParadoxLocalisationSearch.search(nameKey, selector).processQueryAsync { localisation ->
+                val r = ParadoxLocalisationTextExtractor.extract(localisation).takeIfNotEmpty()
+                if(r != null) localizedNames.add(r)
+                true
+            }
+        }
+        return localizedNames
+    }
+    
+    //documentation methods
     
     fun getCategoriesText(categories: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
         return buildString {

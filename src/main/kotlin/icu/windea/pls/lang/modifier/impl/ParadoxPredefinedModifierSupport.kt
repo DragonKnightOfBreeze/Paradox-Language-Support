@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.modifier.impl
 
 import com.intellij.codeInsight.completion.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
@@ -41,6 +42,8 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
         if(element !is ParadoxScriptStringExpressionElement) return
         val modifiers = configGroup.predefinedModifiers
         if(modifiers.isEmpty()) return
+        val configGroup = configGroup
+        val project = configGroup.project
         for(modifierConfig in modifiers.values) {
             //排除重复的
             if(!modifierNames.add(modifierConfig.name)) continue
@@ -61,7 +64,12 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
                 .withTypeText(typeFile?.name)
                 .withTypeIcon(typeFile?.icon)
                 .withScopeMatched(scopeMatched)
-            //.withPriority(PlsCompletionPriorities.modifierPriority)
+                .letIf(getSettings().completion.completeByLocalizedName) {
+                    //如果启用，也基于修正的本地化名字进行代码补全
+                    ProgressManager.checkCanceled()
+                    val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, project, element)
+                    it.withLocalizedNames(localizedNames)
+                }
             result.addScriptExpressionElement(context, builder)
         }
     }

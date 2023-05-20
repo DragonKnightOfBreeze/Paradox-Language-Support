@@ -62,6 +62,8 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         if(element !is ParadoxScriptStringExpressionElement) return
         val modifiers = configGroup.generatedModifiers
         if(modifiers.isEmpty()) return
+        val configGroup = configGroup
+        val project = configGroup.project
         for(modifierConfig in modifiers.values) {
             //排除不匹配modifier的supported_scopes的情况
             val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
@@ -83,8 +85,12 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                     .withTypeText(typeFile?.name)
                     .withTypeIcon(typeFile?.icon)
                     .withScopeMatched(scopeMatched)
-                    .caseInsensitive()
-                //.withPriority(PlsCompletionPriorities.modifierPriority)
+                    .letIf(getSettings().completion.completeByLocalizedName) {
+                        //如果启用，也基于修正的本地化名字进行代码补全
+                        ProgressManager.checkCanceled()
+                        val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, project, element)
+                        it.withLocalizedNames(localizedNames)
+                    }
                 result.addScriptExpressionElement(context, builder)
                 true
             }

@@ -85,9 +85,9 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val configGroup = configGroup
         val project = configGroup.project
         val selector = definitionSelector(project, element).contextSensitive()
-        ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{
+        ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{ definition ->
             ProgressManager.checkCanceled()
-            val info = StellarisEconomicCategoryHandler.getInfo(it) ?: return@p true
+            val info = StellarisEconomicCategoryHandler.getInfo(definition) ?: return@p true
             //排除不匹配modifier的supported_scopes的情况
             val modifierCategories = StellarisEconomicCategoryHandler.resolveModifierCategory(info.modifierCategory, configGroup)
             val supportedScopes = modifierCategories.getSupportedScopes()
@@ -109,7 +109,12 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
                     .withTypeText(typeText)
                     .withTypeIcon(typeIcon)
                     .withScopeMatched(scopeMatched)
-                //.withPriority(PlsCompletionPriorities.modifierPriority)
+                    .letIf(getSettings().completion.completeByLocalizedName) {
+                        //如果启用，也基于修正的本地化名字进行代码补全
+                        ProgressManager.checkCanceled()
+                        val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, project, element)
+                        it.withLocalizedNames(localizedNames)
+                    }
                 result.addScriptExpressionElement(context, builder)
             }
             true

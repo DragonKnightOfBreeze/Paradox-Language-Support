@@ -697,9 +697,12 @@ object ParadoxDefinitionHandler {
     }
     
     fun getLocalizedNames(definition: ParadoxScriptDefinitionElement): MutableSet<String> {
+        //这里返回的是基于偏好语言区域的所有本地化名字（即使最终会被覆盖掉）
+        val localizedNames = mutableSetOf<String>()
         val primaryLocalisations = getPrimaryLocalisations(definition)
-        val localizedNames = primaryLocalisations.mapNotNullTo(mutableSetOf()) {
-            ParadoxLocalisationTextExtractor.extract(it).takeIfNotEmpty()
+        primaryLocalisations.forEach { localisation ->
+            val r = ParadoxLocalisationTextExtractor.extract(localisation).takeIfNotEmpty()
+            if(r != null) localizedNames.add(r)
         }
         return localizedNames
     }
