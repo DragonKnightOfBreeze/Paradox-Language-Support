@@ -28,7 +28,6 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         val gameType = queryParameters.selector.gameType
         val contextElement = queryParameters.selector.file?.toPsiFile<PsiFile>(project)
         
-        val indexKey = ParadoxFilePathIndex.NAME
         
         val pathReferenceExpressionSupport = if(configExpression != null) ParadoxPathReferenceExpressionSupport.get(configExpression) else null
         
@@ -38,9 +37,9 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 val keys = if(filePath != null) {
                     getFilePathInfos(filePath, queryParameters)
                 } else {
-                    FileBasedIndex.getInstance().getAllKeys(indexKey, project)
+                    FileBasedIndex.getInstance().getAllKeys(ParadoxFilePathIndex.NAME, project)
                 }
-                FileBasedIndex.getInstance().processFilesContainingAnyKey(indexKey, keys, scope, null, null) p@{ file ->
+                FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
                     //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析
                     file.toPsiFile<PsiFile>(project) ?: return@p true
@@ -49,12 +48,12 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 }
             } else {
                 if(pathReferenceExpressionSupport == null) return@action
-                FileBasedIndex.getInstance().processAllKeys(indexKey, p@{ path ->
+                FileBasedIndex.getInstance().processAllKeys(ParadoxFilePathIndex.NAME, p@{ path ->
                     ProgressManager.checkCanceled()
                     if(filePath != null && pathReferenceExpressionSupport.extract(configExpression, contextElement, path, ignoreCase) != filePath) return@p true
                     if(!pathReferenceExpressionSupport.matches(configExpression, contextElement, path, ignoreCase)) return@p true
                     val keys = setOf(path)
-                    FileBasedIndex.getInstance().processFilesContainingAnyKey(indexKey, keys, scope, null, null) pp@{ file ->
+                    FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) pp@{ file ->
                         ProgressManager.checkCanceled()
                         //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析
                         file.toPsiFile<PsiFile>(project) ?: return@pp true

@@ -84,6 +84,8 @@ object ParadoxEventHierarchyIndex {
         val data = Data()
         var currentEventInfo: EventInfo? = null
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+            //目前暂不支持需要进行内联的情况
+            
             override fun visitElement(element: PsiElement) {
                 run {
                     if(element is ParadoxScriptProperty && element.parent is ParadoxScriptRootBlock) {

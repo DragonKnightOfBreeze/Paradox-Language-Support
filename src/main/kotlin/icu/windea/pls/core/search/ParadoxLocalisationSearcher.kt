@@ -19,11 +19,10 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
         if(SearchScope.isEmptyScope(scope)) return
         val project = queryParameters.project
         
+        ProgressManager.checkCanceled()
         val constraint = queryParameters.selector.getConstraint()
         val indexKey = constraint.indexKey
         val name = if(constraint.ignoreCase) queryParameters.name?.lowercase() else queryParameters.name
-        
-        ProgressManager.checkCanceled()
         DumbService.getInstance(project).runReadActionInSmartMode action@{
             if(name == null) {
                 indexKey.processAllElementsByKeys(project, scope) { _, it ->

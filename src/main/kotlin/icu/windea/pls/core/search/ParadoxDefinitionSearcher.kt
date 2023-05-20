@@ -25,19 +25,17 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         val typeExpression = queryParameters.typeExpression
         val project = queryParameters.project
         
-        val indexKey = ParadoxDefinitionNameIndex.KEY
-        
         ProgressManager.checkCanceled()
         DumbService.getInstance(project).runReadActionInSmartMode action@{
             if(typeExpression == null) {
                 if(name == null) {
                     //查找所有定义
-                    indexKey.processAllElementsByKeys(project, scope) { _, it ->
+                    ParadoxDefinitionNameIndex.KEY.processAllElementsByKeys(project, scope) { _, it ->
                         consumer.process(it)
                     }
                 } else {
                     //按照名字查找定义
-                    indexKey.processAllElements(name, project, scope) {
+                    ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) {
                         consumer.process(it)
                     }
                 }
@@ -57,16 +55,28 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
     }
     
     private fun doProcessQueryByTypeExpression(typeExpression: String, project: Project, scope: GlobalSearchScope, name: String?, consumer: Processor<in ParadoxScriptDefinitionElement>) {
-        val (type, subtypes) = ParadoxDefinitionTypeExpression.resolve(typeExpression)
-        ParadoxDefinitionTypeIndex.KEY.processAllElements(type, project, scope) {
-            if(name != null && !matchesName(it, name)) return@processAllElements true
-            if(subtypes.isNotEmpty() && !matchesSubtypes(it, subtypes)) return@processAllElements true
-            consumer.process(it)
+        if(name == null) {
+            val (type, subtypes) = ParadoxDefinitionTypeExpression.resolve(typeExpression)
+            ParadoxDefinitionTypeIndex.KEY.processAllElements(type, project, scope) p@{
+                if(subtypes.isNotEmpty() && !matchesSubtypes(it, subtypes)) return@p true
+                consumer.process(it)
+            }
+        } else {
+            val (type, subtypes) = ParadoxDefinitionTypeExpression.resolve(typeExpression)
+            ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) p@{
+                if(!matchesType(it, type)) return@p true
+                if(subtypes.isNotEmpty() && !matchesSubtypes(it, subtypes)) return@p true
+                consumer.process(it)
+            }
         }
     }
     
     private fun matchesName(element: ParadoxScriptDefinitionElement, name: String): Boolean {
         return ParadoxDefinitionHandler.getName(element) == name
+    }
+    
+    private fun matchesType(element: ParadoxScriptDefinitionElement, type: String): Boolean {
+        return ParadoxDefinitionHandler.getType(element) == type
     }
     
     private fun matchesSubtypes(element: ParadoxScriptDefinitionElement, subtypes: List<String>): Boolean {

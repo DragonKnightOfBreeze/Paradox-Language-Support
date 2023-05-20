@@ -19,18 +19,16 @@ class ParadoxGlobalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScr
         if(SearchScope.isEmptyScope(scope)) return
         val project = queryParameters.project
         
-        val indexKey = ParadoxScriptedVariableNameIndex.KEY
-        
         ProgressManager.checkCanceled()
         DumbService.getInstance(project).runReadActionInSmartMode action@{
             if(queryParameters.name == null) {
                 //查找所有封装变量
-                indexKey.processAllElementsByKeys(project, scope) { _, it ->
+                ParadoxScriptedVariableNameIndex.KEY.processAllElementsByKeys(project, scope) { _, it ->
                     consumer.process(it)
                 }
             } else {
                 //查找指定名字的封装变量
-                indexKey.processAllElements(queryParameters.name, project, scope) {
+                ParadoxScriptedVariableNameIndex.KEY.processAllElements(queryParameters.name, project, scope) {
                     consumer.process(it)
                 }
             }
