@@ -18,6 +18,9 @@ import java.io.*
 //这里不能使用PsiFileGist，否则可能会出现应当可以解析但有时无法解析的情况
 
 object ParadoxValueSetValueIndex {
+    private const val ID = "paradox.valueSetValue.index"
+    private const val VERSION = 22 //1.0.0
+    
     class Data(
         val valueSetValueList: MutableList<ParadoxValueSetValueInfo> = SmartList()
     ) {
@@ -33,7 +36,7 @@ object ParadoxValueSetValueIndex {
         }
     }
     
-    val EmptyData = Data()
+    private val EmptyData = Data()
     
     private val valueExternalizer: DataExternalizer<Data> = object : DataExternalizer<Data> {
         override fun save(storage: DataOutput, value: Data) {
@@ -71,8 +74,6 @@ object ParadoxValueSetValueIndex {
         private fun Byte.toGameType() = ParadoxGameType.values[this.toInt()]
     }
     
-    private const val ID = "paradox.valueSetValue.index"
-    private const val VERSION = 22 //1.0.0
     
     private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(ID, VERSION, valueExternalizer) builder@{ project, file ->
         if(file.fileInfo == null) return@builder EmptyData

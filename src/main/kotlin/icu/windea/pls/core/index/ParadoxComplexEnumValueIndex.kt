@@ -18,6 +18,9 @@ import java.io.*
 //这里不能使用PsiFileGist，否则可能会出现应当可以解析但有时无法解析的情况
 
 object ParadoxComplexEnumValueIndex {
+    private const val ID = "paradox.complexEnumValue.index"
+    private const val VERSION = 22 //1.0.0
+    
     class Data(
         val complexEnumValueList: MutableList<ParadoxComplexEnumValueInfo> = SmartList()
     ) {
@@ -33,7 +36,7 @@ object ParadoxComplexEnumValueIndex {
         }
     }
     
-    val EmptyData = Data()
+    private val EmptyData = Data()
     
     private val valueExternalizer: DataExternalizer<Data> = object : DataExternalizer<Data> {
         override fun save(storage: DataOutput, value: Data) {
@@ -70,9 +73,6 @@ object ParadoxComplexEnumValueIndex {
         
         private fun Byte.toGameType() = ParadoxGameType.values[this.toInt()]
     }
-    
-    private const val ID = "paradox.complexEnumValue.index"
-    private const val VERSION = 22 //1.0.0
     
     private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(ID, VERSION, valueExternalizer) builder@{ project, file ->
         if(file.fileInfo == null) return@builder EmptyData
