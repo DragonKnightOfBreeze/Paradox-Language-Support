@@ -87,7 +87,6 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                     .withScopeMatched(scopeMatched)
                     .letIf(getSettings().completion.completeByLocalizedName) {
                         //如果启用，也基于修正的本地化名字进行代码补全
-                        ProgressManager.checkCanceled()
                         val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, project, element)
                         it.withLocalizedNames(localizedNames)
                     }

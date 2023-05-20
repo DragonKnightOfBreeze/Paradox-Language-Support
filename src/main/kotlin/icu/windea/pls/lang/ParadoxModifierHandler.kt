@@ -2,6 +2,7 @@ package icu.windea.pls.lang
 
 import com.google.common.cache.*
 import com.intellij.codeInsight.completion.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -107,10 +108,12 @@ object ParadoxModifierHandler {
     }
     
     fun getModifierLocalizedNames(name: String, project: Project, contextElement: PsiElement?): Set<String> {
+        ProgressManager.checkCanceled()
         val nameKey = getModifierNameKey(name)
         val localizedNames = mutableSetOf<String>()
         val selector = localisationSelector(project, contextElement).preferLocale(preferredParadoxLocale()).useModifierIndexKey()
         ParadoxLocalisationSearch.search(nameKey, selector).processQueryAsync { localisation ->
+            ProgressManager.checkCanceled()
             val r = ParadoxLocalisationTextExtractor.extract(localisation).takeIfNotEmpty()
             if(r != null) localizedNames.add(r)
             true
