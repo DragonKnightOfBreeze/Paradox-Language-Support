@@ -4,10 +4,8 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
-import kotlin.collections.mapNotNullTo
 
 @WithGameType(ParadoxGameType.Stellaris)
 object StellarisScriptedModifierHandler {
@@ -29,9 +27,9 @@ object StellarisScriptedModifierHandler {
     
     fun getModifierCategoryOptionValues(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
         val valueConfig = enumConfig.valueConfigMap.getValue(finalValue)
-        return valueConfig.getOrPutUserData(StellarisEconomicCategoryHandler.modifierCategoriesKey) {
+        return valueConfig.getOrPutUserData(StellarisEconomicCategoryHandler.modifierCategoriesKey, emptySet()) {
             valueConfig.options?.find { it.key == "modifier_categories" }
-                ?.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue }?.takeIfNotEmpty()
+                ?.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue }
         }
     }
 }

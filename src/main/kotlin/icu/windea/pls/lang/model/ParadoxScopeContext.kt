@@ -94,6 +94,8 @@ class ParadoxScopeContext private constructor(val scope: ParadoxScope): UserData
     }
     
     companion object {
+        val EMPTY = ParadoxScopeContext(ParadoxScope.AnyScope)
+        
         fun resolve(thisScope: String): ParadoxScopeContext {
             return ParadoxScopeContext(ParadoxScope.of(thisScope))
         }

@@ -122,27 +122,27 @@ object ParadoxEventHandler {
     /**
      * 得到指定事件的所有事件类型（注有"## group = event_type"，拥有特定的作用域，一般拥有特定的type或者rootKey）。
      */
-    fun getEventTypes(project: Project, gameType: ParadoxGameType): List<String> {
-        val eventConfig = getCwtConfig(project).get(gameType).types["event"] ?: return emptyList()
+    fun getEventTypes(project: Project, gameType: ParadoxGameType): Set<String> {
+        val eventConfig = getCwtConfig(project).get(gameType).types["event"] ?: return emptySet()
         return eventConfig.config.getOrPutUserData(CwtDataConfig.Keys.eventEventTypesKey) {
-            eventConfig.subtypes.mapNotNull { (k, v) -> if(v.config.findOption("group")?.stringValue == "event_type") k else null }
+            eventConfig.subtypes.mapNotNullTo(mutableSetOf()) { (k, v) -> if(v.config.findOption("group")?.stringValue == "event_type") k else null }
         }
     }
     
     fun getEventType(definitionInfo: ParadoxDefinitionInfo): String? {
-        return definitionInfo.getOrPutUserData(ParadoxDefinitionInfo.Keys.eventEventTypeKey) {
-            definitionInfo.subtypeConfigs.find { it.config.findOption("group")?.stringValue == "event_type" }?.name.orEmpty()
-        }.takeIfNotEmpty()
+        return definitionInfo.getOrPutUserData(ParadoxDefinitionInfo.Keys.eventEventTypeKey, "") {
+            definitionInfo.subtypeConfigs.find { it.config.findOption("group")?.stringValue == "event_type" }?.name
+        }
     }
     
     fun getEventScope(definitionInfo: ParadoxDefinitionInfo): String? {
-        return definitionInfo.getOrPutUserData(ParadoxDefinitionInfo.Keys.eventEventScopeKey) {
-            definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.pushScope }.orEmpty()
-        }.takeIfNotEmpty()
+        return definitionInfo.getOrPutUserData(ParadoxDefinitionInfo.Keys.eventEventScopeKey, "") {
+            definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.pushScope }
+        }
     }
 }
 
 val PlsKeys.cachedEventInvocationsKey by lazy { Key.create<CachedValue<Set<String>>>("paradox.cached.event.invocations") }
-val CwtDataConfig.Keys.eventEventTypesKey by lazy { Key.create<List<String>>("paradox.event.types") }
+val CwtDataConfig.Keys.eventEventTypesKey by lazy { Key.create<Set<String>>("paradox.event.types") }
 val ParadoxDefinitionInfo.Keys.eventEventTypeKey by lazy { Key.create<String>("paradox.event.type") }
 val ParadoxDefinitionInfo.Keys.eventEventScopeKey by lazy { Key.create<String>("paradox.event.scope") }

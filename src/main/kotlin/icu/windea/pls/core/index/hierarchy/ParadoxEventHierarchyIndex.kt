@@ -65,8 +65,8 @@ object ParadoxEventHierarchyIndex {
             return Data(DataInputOutputUtil.readSeq(storage) {
                 EventInfo(
                     name = IOUtil.readUTF(storage),
-                    type = IOUtil.readString(storage).takeIfNotEmpty(),
-                    scope = IOUtil.readString(storage).takeIfNotEmpty(),
+                    type = IOUtil.readUTF(storage).takeIfNotEmpty(),
+                    scope = IOUtil.readUTF(storage).takeIfNotEmpty(),
                     eventInvocationInfos = DataInputOutputUtil.readSeq(storage) {
                         EventInvocationInfo(
                             name = IOUtil.readUTF(storage)

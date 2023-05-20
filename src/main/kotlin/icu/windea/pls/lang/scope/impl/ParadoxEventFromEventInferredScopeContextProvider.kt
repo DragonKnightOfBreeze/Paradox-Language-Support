@@ -92,6 +92,7 @@ class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInfer
                             }
                             scopeContextMap.put(toRef, refScope)
                         }
+                        if(depth >= 4) return@p true
                         doProcessQuery(eventInfo.name, searchScope, scopeContextMap, configGroup)
                     } ?: return@p false
                 }

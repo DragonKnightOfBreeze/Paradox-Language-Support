@@ -169,6 +169,14 @@ inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, action: () -> T): T 
     return newValue
 }
 
+inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, nullValue: T, action: () -> T): T? {
+    val data = this.getUserData(key)
+    if(data != null) return data.takeUnless { it == nullValue }
+    val newValue = action()
+    if(newValue != null) putUserData(key, newValue) else putUserData(key, nullValue)
+    return newValue
+}
+
 @Suppress("NOTHING_TO_INLINE")
 inline fun <T> UserDataHolder.putUserDataIfAbsent(key: Key<T>, value: T) {
     if(getUserData(key) == null) putUserData(key, value)

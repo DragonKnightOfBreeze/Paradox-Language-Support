@@ -115,19 +115,19 @@ fun CwtDataConfig<*>.findOption(key: String): CwtOptionConfig? = options?.find {
 
 fun CwtDataConfig<*>.findOptions(key: String): List<CwtOptionConfig> = options?.filter { it.key == key }.orEmpty()
 
-val CwtDataConfig.Keys.cardinality by lazy { Key.create<CwtCardinalityExpression?>("paradox.cwtDataConfig.cardinality") }
-val CwtDataConfig.Keys.cardinalityMinDefine by lazy { Key.create<String?>("paradox.cwtDataConfig.cardinalityMinDefine") }
-val CwtDataConfig.Keys.cardinalityMaxDefine by lazy { Key.create<String?>("paradox.cwtDataConfig.cardinalityMaxDefine") }
+val CwtDataConfig.Keys.cardinality by lazy { Key.create<CwtCardinalityExpression>("paradox.cwtDataConfig.cardinality") }
+val CwtDataConfig.Keys.cardinalityMinDefine by lazy { Key.create<String>("paradox.cwtDataConfig.cardinalityMinDefine") }
+val CwtDataConfig.Keys.cardinalityMaxDefine by lazy { Key.create<String>("paradox.cwtDataConfig.cardinalityMaxDefine") }
 val CwtDataConfig.Keys.hasScopeOption by lazy { Key.create<Boolean>("paradox.cwtDataConfig.hasScopeOption") }
-val CwtDataConfig.Keys.scopeContext by lazy { Key.create<ParadoxScopeContext?>("paradox.cwtDataConfig.scopeContext") }
+val CwtDataConfig.Keys.scopeContext by lazy { Key.create<ParadoxScopeContext>("paradox.cwtDataConfig.scopeContext") }
 val CwtDataConfig.Keys.replaceScopes by lazy { Key.create<Map<String, String?>>("paradox.cwtDataConfig.replaceScopes") }
-val CwtDataConfig.Keys.pushScope by lazy { Key.create<String?>("paradox.cwtDataConfig.pushScope") }
+val CwtDataConfig.Keys.pushScope by lazy { Key.create<String>("paradox.cwtDataConfig.pushScope") }
 val CwtDataConfig.Keys.supportedScopes by lazy { Key.create<Set<String>>("paradox.cwtDataConfig.supportedScopes") }
 
 //may on:
 // * a config expression in declaration config
 // * a config expression in subtype structure config
-val CwtDataConfig<*>.cardinality get() = getOrPutUserData(CwtDataConfig.Keys.cardinality) action@{
+val CwtDataConfig<*>.cardinality get() = getOrPutUserData(CwtDataConfig.Keys.cardinality, CwtCardinalityExpression.EmptyExpression) action@{
 	val option = options?.find { it.key == "cardinality" }
 	if(option == null) {
 		//如果没有注明且类型是常量，则推断为 1..1
@@ -137,20 +137,19 @@ val CwtDataConfig<*>.cardinality get() = getOrPutUserData(CwtDataConfig.Keys.car
 	}
 	option?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
 }
-val CwtDataConfig<*>.cardinalityMinDefine get() = getOrPutUserData(CwtDataConfig.Keys.cardinalityMinDefine) action@{
+val CwtDataConfig<*>.cardinalityMinDefine get() = getOrPutUserData(CwtDataConfig.Keys.cardinalityMinDefine, "") action@{
 	val option = options?.find { it.key == "cardinality_min_define" }
 	option?.stringValue
 }
-val CwtDataConfig<*>.cardinalityMaxDefine get() = getOrPutUserData(CwtDataConfig.Keys.cardinalityMaxDefine) action@{
+val CwtDataConfig<*>.cardinalityMaxDefine get() = getOrPutUserData(CwtDataConfig.Keys.cardinalityMaxDefine, "") action@{
 	val option = options?.find { it.key == "cardinality_max_define" }
 	option?.stringValue
 }
 
 val CwtDataConfig<*>.hasScopeOption get() = getOrPutUserData(CwtDataConfig.Keys.hasScopeOption) action@{
-	options?.any { it.key == "replace_scope" || it.key == "replace_scopes" || it.key == "push_scope" || it.key == "scope" || it.key == "scopes" }
-		?: false
+	options?.any { it.key == "replace_scope" || it.key == "replace_scopes" || it.key == "push_scope" || it.key == "scope" || it.key == "scopes" } ?: false
 }
-val CwtDataConfig<*>.scopeContext get() = getOrPutUserData(CwtDataConfig.Keys.scopeContext) action@{
+val CwtDataConfig<*>.scopeContext get() = getOrPutUserData(CwtDataConfig.Keys.scopeContext, ParadoxScopeContext.EMPTY) action@{
 	val map = replaceScopes ?: return@action null
 	ParadoxScopeContext.resolve(map)
 }
@@ -158,7 +157,7 @@ val CwtDataConfig<*>.scopeContext get() = getOrPutUserData(CwtDataConfig.Keys.sc
 // * a config expression in declaration config (include root expression, e.g. "army = { ... }")
 // * a type config (e.g. "type[xxx] = { ... }")
 // * a subtype config (e.g. "subtype[xxx] = { ... }")
-val CwtDataConfig<*>.replaceScopes get() = getOrPutUserData(CwtDataConfig.Keys.replaceScopes) action@{
+val CwtDataConfig<*>.replaceScopes get() = getOrPutUserData(CwtDataConfig.Keys.replaceScopes, emptyMap()) action@{
 	val option = options?.find { it.key == "replace_scope" || it.key == "replace_scopes" }
 	if(option == null) return@action null
 	val options = option.options ?: return@action null
@@ -168,7 +167,7 @@ val CwtDataConfig<*>.replaceScopes get() = getOrPutUserData(CwtDataConfig.Keys.r
 // * a config expression in declaration config (include root expression, e.g. "army = { ... }")
 // * a type config (e.g. "type[xxx] = { ... }")
 // * a subtype config (e.g. "subtype[xxx] = { ... }")
-val CwtDataConfig<*>.pushScope get() = getOrPutUserData(CwtDataConfig.Keys.pushScope) action@{
+val CwtDataConfig<*>.pushScope get() = getOrPutUserData(CwtDataConfig.Keys.pushScope, "") action@{
 	val option = options?.find { it.key == "push_scope" }
 	option?.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) }
 }

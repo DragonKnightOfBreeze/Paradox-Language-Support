@@ -177,10 +177,9 @@ object StellarisEconomicCategoryHandler {
     
     fun getModifierCategoryOptionValues(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
         val valueConfig = enumConfig.valueConfigMap.getValue(finalValue)
-        return valueConfig.getOrPutUserData(modifierCategoriesKey) {
+        return valueConfig.getOrPutUserData(modifierCategoriesKey, emptySet()) {
             valueConfig.options?.find { it.key == "modifier_categories" }
-                ?.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue }?.takeIfNotEmpty()
+                ?.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue }
         }
     }
 }
-

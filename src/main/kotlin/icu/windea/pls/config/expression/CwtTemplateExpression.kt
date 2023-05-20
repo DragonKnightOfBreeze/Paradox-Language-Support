@@ -9,7 +9,7 @@ class CwtTemplateExpression(
 	val snippetExpressions: List<CwtDataExpression>
 ) : AbstractExpression(expressionString), CwtExpression {
 	//allowed: enum[xxx], value[xxx], <xxx>, <modifier>
-	val referenceExpressions = snippetExpressions.filterTo(mutableSetOf()) { it -> it.type != CwtDataType.Constant }
+	val referenceExpressions = snippetExpressions.filterTo(mutableSetOf()) { it.type != CwtDataType.Constant }
 	
 	companion object Resolver {
 		val EmptyExpression = CwtTemplateExpression("", emptyList())
@@ -27,8 +27,8 @@ class CwtTemplateExpression(
 				else -> {
 					var snippets: SmartList<CwtDataExpression>? = null
 					var startIndex = 0
-					var i1: Int = -1
-					var i2: Int = -1
+					var i1: Int
+					var i2: Int
 					while(true) {
 						i1 = expressionString.indexOf('[', startIndex)
 						if(i1 != -1) {
