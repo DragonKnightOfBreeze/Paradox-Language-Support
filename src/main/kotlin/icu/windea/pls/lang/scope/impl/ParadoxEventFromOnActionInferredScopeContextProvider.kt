@@ -51,6 +51,7 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?.withFilePath("common/on_actions", "txt")
             ?: return null
+        ProgressManager.checkCanceled()
         ProgressManager.getInstance().runProcess({
             val result = ReferencesSearch.search(definition, searchScope).processQueryAsync p@{ ref ->
                 ProgressManager.checkCanceled()

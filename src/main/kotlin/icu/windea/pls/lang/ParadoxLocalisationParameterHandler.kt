@@ -38,6 +38,7 @@ object ParadoxLocalisationParameterHandler {
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(element) }
             ?.withFileTypes(ParadoxScriptFileType)
             ?: return null
+        ProgressManager.checkCanceled()
         ProgressManager.getInstance().runProcess({
             ReferencesSearch.search(element, searchScope).processQueryAsync p@{ reference ->
                 ProgressManager.checkCanceled()

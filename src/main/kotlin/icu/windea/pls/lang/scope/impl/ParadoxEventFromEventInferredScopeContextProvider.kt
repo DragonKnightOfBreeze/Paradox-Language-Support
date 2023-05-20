@@ -72,6 +72,7 @@ class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInfer
             if(depth == 1) stackTrace.addLast(definitionInfo.name) 
             
             val toRef = "from".repeat(depth)
+            ProgressManager.checkCanceled()
             ReferencesSearch.search(definition, searchScope).processQueryAsync p@{ ref ->
                 ProgressManager.checkCanceled()
                 //should be
@@ -95,10 +96,6 @@ class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInfer
                 } ?: false
             }
         } ?: false
-    }
-    
-    private fun getEventScope(definitionInfo: ParadoxDefinitionInfo): String {
-        return definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.pushScope } ?: ParadoxScopeHandler.anyScopeId
     }
     
     override fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
