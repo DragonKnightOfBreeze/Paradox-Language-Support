@@ -43,7 +43,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
             
             private fun visitDefinition(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
                 guardStack.clear()
-                guardStack.add(definitionInfo.name)
+                guardStack.addLast(definitionInfo.name)
                 try {
                     doRecursiveVisit(element, definitionInfo)
                 } catch(e: RecursionException) {

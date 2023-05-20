@@ -38,7 +38,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
             
             private fun visitLocalisation(element: ParadoxLocalisationProperty, name: String) {
                 guardStack.clear()
-                guardStack.add(name)
+                guardStack.addLast(name)
                 try {
                     doRecursiveVisit(element)
                 } catch(e: RecursionException) {
