@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import com.intellij.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.setting.*
 import icu.windea.pls.core.*
@@ -36,12 +37,12 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
 		if(configs.isEmpty()) return emptyList()
 		val configGroup = configs.first().info.configGroup
 		val expression = ParadoxDataExpression.resolve(setting.id, false, true)
-		val matched = configs.any { config ->
-			config.configs?.any { childConfig ->
-				childConfig is CwtPropertyConfig && ParadoxConfigHandler.matchesScriptExpression(context, expression, childConfig.keyExpression, childConfig, configGroup)
-			} ?: false
+		val configsToMatch = configs.flatMapTo(SmartList()) { it.configs.orEmpty() }
+		val matched = ParadoxConfigMatcher.find(configsToMatch) m@{ config ->
+			if(config !is CwtPropertyConfig) return@m null
+			ParadoxConfigMatcher.matches(context, expression, config.keyExpression, config, configGroup)
 		}
-		if(!matched) return emptyList()
+		if(matched == null) return emptyList()
 		return stringElement.toSingletonList()
 	}
 }

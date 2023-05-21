@@ -19,12 +19,12 @@ object ParadoxConfigMatcher {
     sealed class Result {
         abstract fun get(): Boolean
         
-        object ExactMatch : Result() {
-            override fun get() = true
-        }
-        
         object NotMatch : Result() {
             override fun get() = false
+        }
+        
+        object ExactMatch : Result() {
+            override fun get() = true
         }
         
         object ParameterizedMatch : Result() {
@@ -46,12 +46,13 @@ object ParadoxConfigMatcher {
     
     data class ResultValue<out T>(val value: T, val result: Result)
     
-    inline fun <T : Any> matchAndReduce(collection: Iterable<T>, transform: (T) -> Result): T? {
+    inline fun <T : Any> find(collection: Collection<T>?, matcher: (T) -> Result?): T? {
+        if(collection.isNullOrEmpty()) return null
         var tempResults: MutableList<ResultValue<T>>? = null
         for(v in collection) {
-            val r = transform(v)
+            val r = matcher(v)
+            if(r == null || r == Result.NotMatch) continue
             if(r == Result.ExactMatch) return v
-            if(r == Result.NotMatch) continue
             if(tempResults == null) tempResults = SmartList()
             tempResults.add(ResultValue(v, r))
         }
@@ -63,12 +64,13 @@ object ParadoxConfigMatcher {
         return null
     }
     
-    inline fun <T : Any> matchAndReduceAll(collection: Iterable<T>, transform: (T) -> Result): List<T> {
+    inline fun <T : Any> findAll(collection: Collection<T>?, matcher: (T) -> Result?): List<T> {
+        if(collection.isNullOrEmpty()) return emptyList()
         var tempResults: MutableList<ResultValue<T>>? = null
         for(e in collection) {
-            val r = transform(e)
+            val r = matcher(e)
+            if(r == null || r == Result.NotMatch) continue
             if(r == Result.ExactMatch) return e.toSingletonList()
-            if(r == Result.NotMatch) continue
             if(tempResults == null) tempResults = SmartList()
             tempResults.add(ResultValue(e, r))
         }
@@ -83,11 +85,11 @@ object ParadoxConfigMatcher {
     
     //兼容scriptedVariableReference inlineMath parameter
     
-    fun match(
+    fun matches(
         element: PsiElement,
         expression: ParadoxDataExpression,
-        config: CwtConfig<*>?,
         configExpression: CwtDataExpression,
+        config: CwtConfig<*>?,
         configGroup: CwtConfigGroup
     ): Result {
         return doMatch(element, expression, config, configExpression, configGroup).toResult()
