@@ -28,7 +28,7 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
     }
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if(!getSettings().inference.eventScopeContext) return null
+        if(!getSettings().inference.eventScopeContextFromOnAction) return null
         if(definitionInfo.type != "event") return null
         return doGetScopeContextFromCache(definition)
     }
