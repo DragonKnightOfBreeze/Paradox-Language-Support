@@ -4,7 +4,7 @@ import com.intellij.openapi.project.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 
-class ParadoxComplexEnumValueSelector(project: Project, context: Any? = null) : ChainedParadoxSelector<ParadoxComplexEnumValueInfo>(project, context)
+typealias ParadoxComplexEnumValueSelector = ChainedParadoxSelector<ParadoxComplexEnumValueInfo>
 
 fun complexEnumValueSelector(project: Project, context: Any? = null) = ParadoxComplexEnumValueSelector(project, context)
 

@@ -4,7 +4,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 
-class ParadoxFileSelector(project: Project, context: Any? = null) : ChainedParadoxSelector<VirtualFile>(project, context)
+typealias ParadoxFileSelector = ChainedParadoxSelector<VirtualFile>
 
 fun fileSelector(project: Project, context: Any? = null) = ParadoxFileSelector(project, context)
 
