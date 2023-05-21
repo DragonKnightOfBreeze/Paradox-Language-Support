@@ -50,13 +50,13 @@ object PlsConstants {
     const val unresolvedString = "(unresolved)"
     
     const val defaultScriptedVariableName = "var"
-    //NOTE 目前认为cwt文件中定义的definition的elementPath的maxDepth是4（最多跳过3个rootKey）
+    
+    //目前认为定义相对于脚本文件的最大深度是4（最多跳过3个rootKey），在索引之外的某些场合需要加上针挑
     const val maxDefinitionDepth = 4
+    //在提示信息中最多显示的键的个数
     const val keysTruncateLimit = 5
     
     val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
-    
-    val cacheSize = 1000
 }
 
 object PlsPaths {

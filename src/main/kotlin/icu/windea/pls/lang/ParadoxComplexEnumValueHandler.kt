@@ -130,23 +130,26 @@ object ParadoxComplexEnumValueHandler {
             }
         }
         if(parentElement == null) return false
-        parentConfig.properties?.forEach { propConfig ->
+        parentConfig.configs?.forEach { c ->
             ProgressManager.checkCanceled()
-            //ignore same config or enum name config
-            if(propConfig == config || propConfig.key == "enum_name" || propConfig.stringValue == "enum_name") return@forEach
-            val notMatched = parentBlockElement.processProperty(inline = true) { propElement ->
-                !doMatchProperty(complexEnumConfig, propConfig, propElement)
+            when {
+                c is CwtPropertyConfig -> {
+                    //ignore same config or enum name config
+                    if(c == config || c.key == "enum_name" || c.stringValue == "enum_name") return@forEach
+                    val notMatched = parentBlockElement.processProperty(inline = true) { propElement ->
+                        !doMatchProperty(complexEnumConfig, c, propElement)
+                    }
+                    if(notMatched) return false
+                }
+                c is CwtValueConfig -> {
+                    //ignore same config or enum name config
+                    if(c == config || c.stringValue == "enum_name") return@forEach
+                    val notMatched = parentBlockElement.processValue(inline = true) { valueElement ->
+                        !doMatchValue(complexEnumConfig, c, valueElement)
+                    }
+                    if(notMatched) return false
+                }
             }
-            if(notMatched) return false
-        }
-        parentConfig.values?.forEach { valueConfig ->
-            ProgressManager.checkCanceled()
-            //ignore same config or enum name config
-            if(valueConfig == config || valueConfig.stringValue == "enum_name") return@forEach
-            val notMatched = parentBlockElement.processValue(inline = true) { valueElement ->
-                !doMatchValue(complexEnumConfig, valueConfig, valueElement)
-            }
-            if(notMatched) return false
         }
         return doMatchParent(complexEnumConfig, parentConfig, parentElement)
     }

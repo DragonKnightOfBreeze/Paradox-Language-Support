@@ -543,10 +543,9 @@ object ParadoxDefinitionHandler {
         val fileInfo = file.fileInfo ?: return null
         val gameType = selectGameType(file) ?: return null
         val path = fileInfo.pathToEntry //这里使用pathToEntry
-        val elementPath = ParadoxElementPathHandler.getFromFile(node, tree, file, PlsConstants.maxDefinitionDepth) ?: return null
+        val elementPath = ParadoxElementPathHandler.getFromFile(node, tree, file) ?: return null
         val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
         for(typeConfig in configGroup.types.values) {
-            ProgressManager.checkCanceled()
             if(matchesType(node, tree, typeConfig, path, elementPath, rootKey, configGroup)) {
                 //NOTE 这里不处理内联的情况
                 val name = when {

@@ -40,7 +40,7 @@ class ParadoxDefinitionMemberInfo(
         if(configContext != null) {
             cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
         }
-        return cache.getOrPut(cacheKey) { doGetConfigs(definitionInfo, this, matchOptions) }
+        return cache.computeIfAbsent(cacheKey) { doGetConfigs(definitionInfo, this, matchOptions) }
     }
     
     /**
@@ -53,7 +53,7 @@ class ParadoxDefinitionMemberInfo(
         if(configContext != null) {
             cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
         }
-        return cache.getOrPut(cacheKey) { doGetChildConfigs(definitionInfo, this, matchOptions) }
+        return cache.computeIfAbsent(cacheKey) { doGetChildConfigs(definitionInfo, this, matchOptions) }
     }
 }
 
