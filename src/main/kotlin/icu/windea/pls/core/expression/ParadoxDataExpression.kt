@@ -13,6 +13,8 @@ interface ParadoxDataExpression : ParadoxExpression {
 	companion object Resolver
 }
 
+fun ParadoxDataExpression.isParameterized() = type == ParadoxDataType.StringType && text.isParameterized()
+
 class ParadoxDataExpressionImpl(
 	override val text: String,
 	override val type: ParadoxDataType,

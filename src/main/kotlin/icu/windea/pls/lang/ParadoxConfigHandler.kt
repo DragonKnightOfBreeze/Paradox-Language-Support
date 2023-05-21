@@ -390,7 +390,6 @@ object ParadoxConfigHandler {
             CwtDataType.Modifier -> {
                 if(isStatic) return true
                 if(isParameterized) return true
-                //匹配预定义的modifier
                 return matchesModifier(element, expression.text, configGroup)
             }
             CwtDataType.Parameter -> {
