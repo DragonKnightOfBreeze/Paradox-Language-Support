@@ -414,7 +414,7 @@ object ParadoxConfigMatcher {
         ProgressManager.checkCanceled()
         val rootFile = selectRootFile(element) ?: return Result.LazyIndexAwareExactMatch(options, predicate)
         val cache = configMatchResultCache.get(rootFile)
-        return cache.getOrPut(cacheKey) { Result.LazyIndexAwareExactMatch(options, predicate) }
+        return cache.computeIfAbsent(cacheKey) { Result.LazyIndexAwareExactMatch(options, predicate) }
     }
     
     private fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project, options: Int): Result {
