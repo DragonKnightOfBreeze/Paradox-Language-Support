@@ -213,7 +213,7 @@ object ParadoxScopeHandler {
         val configs = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)
         val config = configs.firstOrNull() ?: return null
         
-        val overriddenScopeContext = ParadoxOverriddenScopeContextProvider.getOverriddenScopeContext(element, config)
+        val overriddenScopeContext = ParadoxOverriddenScopeContextProvider.getOverriddenScopeContext(element, config, parentScopeContext)
         if(overriddenScopeContext != null) return overriddenScopeContext
         
         if(config is CwtPropertyConfig && config.expression.type == CwtDataType.ScopeField) {

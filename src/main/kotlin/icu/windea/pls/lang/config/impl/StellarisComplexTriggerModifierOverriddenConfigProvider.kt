@@ -17,10 +17,10 @@ import icu.windea.pls.script.psi.*
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisComplexTriggerModifierOverriddenConfigProvider : ParadoxOverriddenConfigProvider {
     companion object {
-        private const val PARAMETERS_KEY = "parameters"
         private const val TRIGGER_KEY = "trigger"
+        private const val PARAMETERS_KEY = "parameters"
         private const val COMPLEX_TRIGGER_MODIFIER_NAME = "complex_trigger_modifier"
-        private const val COMPLEX_TRIGGER_MODIFIER_KEY = "alias[modifier_rule:complex_trigger_modifier]"
+        private val COMPLEX_TRIGGER_MODIFIER_KEYS = arrayOf("alias[modifier_rule:complex_trigger_modifier]", "alias[modifier_rule_with_loc:complex_trigger_modifier]")
         
         private val SKIP_MISSING_CHECK_KEYS = arrayOf("value", "count", "percentage")
     }
@@ -32,7 +32,7 @@ class StellarisComplexTriggerModifierOverriddenConfigProvider : ParadoxOverridde
         if(config !is CwtPropertyConfig) return null
         if(config.key != PARAMETERS_KEY) return null
         val aliasConfig = config.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
-        if(aliasConfig.config.key != COMPLEX_TRIGGER_MODIFIER_KEY) return null
+        if(aliasConfig.config.key !in COMPLEX_TRIGGER_MODIFIER_KEYS) return null
         ProgressManager.checkCanceled()
         val complexTriggerModifierProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
             .filter { it.name.lowercase() == COMPLEX_TRIGGER_MODIFIER_NAME }
