@@ -51,7 +51,7 @@ object ParadoxComplexEnumValueIndex {
         }
         
         override fun read(storage: DataInput): Data {
-            val infos = DataInputOutputUtil.readSeq(storage) {
+            val complexEnumValueInfos = DataInputOutputUtil.readSeq(storage) {
                 val name = IOUtil.readUTF(storage)
                 val enumName = IOUtil.readUTF(storage)
                 val readWriteAccess = storage.readByte().toReadWriteAccess()
@@ -59,7 +59,8 @@ object ParadoxComplexEnumValueIndex {
                 val gameType = storage.readByte().toGameType()
                 ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, elementOffset, gameType)
             }
-            return Data(infos)
+            if(complexEnumValueInfos.isEmpty()) return EmptyData
+            return Data(complexEnumValueInfos)
         }
         
         private fun ReadWriteAccessDetector.Access.toByte() = this.ordinal

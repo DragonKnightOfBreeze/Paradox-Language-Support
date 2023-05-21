@@ -51,7 +51,7 @@ object ParadoxValueSetValueIndex {
         }
         
         override fun read(storage: DataInput): Data {
-            val infos = DataInputOutputUtil.readSeq(storage) {
+            val valueSetValueInfos = DataInputOutputUtil.readSeq(storage) {
                 val name = IOUtil.readUTF(storage)
                 val valueSetName = IOUtil.readUTF(storage)
                 val readWriteAccess = storage.readByte().toReadWriteAccess()
@@ -59,7 +59,8 @@ object ParadoxValueSetValueIndex {
                 val gameType = storage.readByte().toGameType()
                 ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, elementOffset, gameType)
             }
-            return Data(infos)
+            if(valueSetValueInfos.isEmpty()) return EmptyData
+            return Data(valueSetValueInfos)
         }
         
         private fun ReadWriteAccessDetector.Access.toByte() = this.ordinal

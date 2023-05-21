@@ -62,7 +62,7 @@ object ParadoxEventHierarchyIndex {
         }
         
         override fun read(storage: DataInput): Data {
-            return Data(DataInputOutputUtil.readSeq(storage) {
+            val eventInfos = DataInputOutputUtil.readSeq(storage) {
                 EventInfo(
                     name = IOUtil.readUTF(storage),
                     type = IOUtil.readUTF(storage).takeIfNotEmpty(),
@@ -73,7 +73,9 @@ object ParadoxEventHierarchyIndex {
                         )
                     }
                 )
-            })
+            }
+            if(eventInfos.isEmpty()) return EmptyData
+            return Data(eventInfos)
         }
     }
     

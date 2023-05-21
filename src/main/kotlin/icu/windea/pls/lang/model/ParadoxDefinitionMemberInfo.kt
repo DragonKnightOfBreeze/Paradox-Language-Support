@@ -102,37 +102,46 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
                     nextResult.add(config)
                 }
             }
-            
-            //如果存在，替换成重载后的规则
-            nextResult.forEachIndexedFast f3@{ i, config ->
+        }
+        
+        result = nextResult
+        
+        //如过结果不为空且结果中存在需要重载的规则，则全部替换成重载后的规则
+        run {
+            if(result.isEmpty()) return@run
+            val optimizedResult = SmartList<CwtDataConfig<*>>()
+            result.forEachFast { config ->
                 val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, config)
                 if(overriddenConfigs.isNotNullOrEmpty()) {
-                    nextResult.removeAt(i)
                     if(BitUtil.isSet(matchType, CwtConfigMatchType.USE_ALL_OVERRIDDEN)) {
-                        nextResult.addAll(i, overriddenConfigs)
+                        optimizedResult.addAll(overriddenConfigs)
                     } else {
                         //这里需要再次进行匹配
-                        var j = i
-                        overriddenConfigs.forEachFast f4@{ overriddenConfig ->
+                        overriddenConfigs.forEachFast { overriddenConfig ->
                             if(ParadoxConfigHandler.matchesScriptExpression(element, expression, overriddenConfig.expression, overriddenConfig, configGroup, matchType)) {
-                                nextResult.add(j++, overriddenConfig)
+                                optimizedResult.add(overriddenConfig)
                             }
                         }
                     }
+                } else {
+                    optimizedResult.add(config)
                 }
+                result = optimizedResult
             }
         }
         
         //如果结果不唯一且结果中存在按常量字符串匹配的规则，则仅选用那些规则
-        if(nextResult.size > 1) {
-            val optimizedResult = nextResult.filterTo(SmartList()) { it.expression.type == CwtDataType.Constant }
+        run {
+            if(result.size <= 1) return@run
+            val optimizedResult = SmartList<CwtDataConfig<*>>()
+            result.forEachFast { config ->
+                if(config.expression.type == CwtDataType.Constant) optimizedResult.add(config)
+            }
             if(optimizedResult.isNotEmpty()) {
                 result = optimizedResult
-                return@f1
+                return@run
             }
         }
-        
-        result = nextResult
     }
     
     return result.sortedByPriority(configGroup) { it.expression }

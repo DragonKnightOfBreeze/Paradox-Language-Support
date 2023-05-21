@@ -34,7 +34,7 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
         val indexKey: StubIndexKey<String, ParadoxLocalisationProperty>,
         val ignoreCase: Boolean = false
     ) {
-        Default(ParadoxLocalisationNameIndex.KEY),
-        Modifier(ParadoxLocalisationNameIndex.ModifierIndex.KEY, true)
+        Default(KEY),
+        Modifier(ModifierIndex.KEY, true)
     }
 }
