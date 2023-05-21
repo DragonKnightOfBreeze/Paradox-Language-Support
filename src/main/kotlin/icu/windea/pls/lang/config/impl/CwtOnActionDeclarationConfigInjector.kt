@@ -15,10 +15,10 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
     //预定义的on_action如果指定了事件类型，声明规则中需要在"<event>"规则后加上对应的规则
     
     override fun supports(configContext: CwtConfigContext): Boolean {
-        val (contextElement, name, type, _, configGroup, matchType) = configContext
+        val (contextElement, name, type, _, configGroup, matchOptions) = configContext
         if(type == "on_action") {
             if(name == null) return false
-            val config = configGroup.onActions.getByTemplate(name, contextElement, configGroup, matchType)
+            val config = configGroup.onActions.getByTemplate(name, contextElement, configGroup, matchOptions)
             configContext.putUserData(configKey, config)
             return config != null
         }

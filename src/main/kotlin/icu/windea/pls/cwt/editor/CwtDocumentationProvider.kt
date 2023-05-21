@@ -415,7 +415,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
     private fun getConfigGroup(element: PsiElement, originalElement: PsiElement?, project: Project): CwtConfigGroup? {
         val gameType = selectGameType(originalElement?.takeIf { it.language.isParadoxLanguage() })
         val configGroup = gameType?.let { getCwtConfig(project).get(it) }
-            ?: ParadoxConfigHandler.getConfigGroupFromCwt(element, project)
+            ?: ParadoxConfigHandler.getConfigGroupFromCwtFile(element.containingFile, project)
         return configGroup
     }
 }

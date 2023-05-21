@@ -2,9 +2,9 @@ package icu.windea.pls.core.expression
 
 import com.intellij.openapi.progress.*
 import icu.windea.pls.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.ParadoxDataExpression.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 interface ParadoxDataExpression : ParadoxExpression {
@@ -36,12 +36,12 @@ object UnknownParadoxDataExpression: AbstractExpression(PlsConstants.unknownStri
 	override val isKey: Boolean = false
 }
 
-fun Resolver.resolve(element: ParadoxScriptExpressionElement, matchType: Int = CwtConfigMatchType.DEFAULT): ParadoxDataExpression {
+fun Resolver.resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = ParadoxConfigMatcher.Options.Default): ParadoxDataExpression {
 	return when {
 		element is ParadoxScriptScriptedVariableReference -> {
 			ProgressManager.checkCanceled() //这是必要的
 			val valueElement = when {
-				matchType == CwtConfigMatchType.STATIC -> return UnknownParadoxDataExpression 
+				matchOptions == ParadoxConfigMatcher.Options.StaticMatch -> return UnknownParadoxDataExpression
 				else -> element.referenceValue ?: return UnknownParadoxDataExpression
 			}
 			ParadoxDataExpressionImpl(valueElement.value, valueElement.type, valueElement.text.isLeftQuoted(), false)

@@ -98,7 +98,7 @@ object ParadoxOnActionHierarchyIndex {
                         val expression = element.value
                         if(expression.isParameterized()) return@run
                         //这里直接使用静态匹配即可
-                        val configs = ParadoxConfigHandler.getConfigs(element, matchType = CwtConfigMatchType.STATIC)
+                        val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = ParadoxConfigMatcher.Options.StaticMatch)
                         if(configs.any { isEventDefinitionConfig(it) }) {
                             val eventInvocationInfo = EventInvocationInfo(expression)
                             currentOnActionInfo?.eventInvocationInfos?.add(eventInvocationInfo)

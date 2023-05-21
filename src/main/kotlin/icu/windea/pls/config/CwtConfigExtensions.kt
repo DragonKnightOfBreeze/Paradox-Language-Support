@@ -73,8 +73,8 @@ fun CwtTemplateExpression.extract(referenceNames: Map<CwtDataExpression, String>
     return CwtTemplateExpressionHandler.extract(this, referenceNames)
 }
 
-fun CwtTemplateExpression.matches(text: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.DEFAULT): Boolean {
-    return CwtTemplateExpressionHandler.matches(text, element, this, configGroup, matchType)
+fun CwtTemplateExpression.matches(text: String, element: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxConfigMatcher.Options.Default): Boolean {
+    return CwtTemplateExpressionHandler.matches(text, element, this, configGroup, matchOptions)
 }
 
 fun CwtTemplateExpression.resolve(text: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
@@ -89,6 +89,6 @@ fun CwtTemplateExpression.processResolveResult(contextElement: PsiElement, confi
     CwtTemplateExpressionHandler.processResolveResult(contextElement, this, configGroup, processor)
 }
 
-fun <C: CwtConfig<*>> Map<String, C>.getByTemplate(text: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.DEFAULT): C? {
-    return get(text) ?: entries.find { (k) -> CwtTemplateExpression.resolve(k).matches(text, element, configGroup, matchType) }?.value
+fun <C : CwtConfig<*>> Map<String, C>.getByTemplate(text: String, element: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxConfigMatcher.Options.Default): C? {
+    return get(text) ?: entries.find { (k) -> CwtTemplateExpression.resolve(k).matches(text, element, configGroup, matchOptions) }?.value
 }

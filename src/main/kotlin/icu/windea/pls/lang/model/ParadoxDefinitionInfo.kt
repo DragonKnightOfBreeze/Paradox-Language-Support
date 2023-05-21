@@ -124,32 +124,32 @@ class ParadoxDefinitionInfo(
     val project get() = configGroup.project
     
     
-    fun getSubtypeConfigs(matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtSubtypeConfig> {
-        return subtypeConfigsCache.getOrPut(matchType) { doGetSubtypeConfigs(matchType) }
+    fun getSubtypeConfigs(matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtSubtypeConfig> {
+        return subtypeConfigsCache.getOrPut(matchOptions) { doGetSubtypeConfigs(matchOptions) }
     }
     
     private val subtypeConfigsCache = ConcurrentHashMap<Int, List<CwtSubtypeConfig>>()
     
-    private fun doGetSubtypeConfigs(matchType: Int): List<CwtSubtypeConfig> {
+    private fun doGetSubtypeConfigs(matchOptions: Int): List<CwtSubtypeConfig> {
         val subtypesConfig = typeConfig.subtypes
         val result = SmartList<CwtSubtypeConfig>()
         for(subtypeConfig in subtypesConfig.values) {
-            if(ParadoxDefinitionHandler.matchesSubtype(element, subtypeConfig, rootKey, configGroup, result, matchType)) {
+            if(ParadoxDefinitionHandler.matchesSubtype(element, subtypeConfig, rootKey, configGroup, result, matchOptions)) {
                 result.add(subtypeConfig)
             }
         }
         return result
     }
     
-    fun getDeclaration(matchType: Int = CwtConfigMatchType.DEFAULT): CwtPropertyConfig? {
-        return declarationConfigsCache.getOrPut(matchType) { doGetDeclaration(matchType) }
+    fun getDeclaration(matchOptions: Int = ParadoxConfigMatcher.Options.Default): CwtPropertyConfig? {
+        return declarationConfigsCache.getOrPut(matchOptions) { doGetDeclaration(matchOptions) }
     }
     
     private val declarationConfigsCache = ConcurrentHashMap<Int, CwtPropertyConfig?>()
     
-    private fun doGetDeclaration(matchType: Int): CwtPropertyConfig? {
-        val subtypes = getSubtypeConfigs(matchType).map { it.name }
-        val configContext = CwtConfigContext(element, name, type, subtypes, configGroup, matchType)
+    private fun doGetDeclaration(matchOptions: Int): CwtPropertyConfig? {
+        val subtypes = getSubtypeConfigs(matchOptions).map { it.name }
+        val configContext = CwtConfigContext(element, name, type, subtypes, configGroup, matchOptions)
         return configGroup.declarations.get(type)?.getMergedConfig(configContext)
     }
     

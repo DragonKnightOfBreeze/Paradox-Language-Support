@@ -3,6 +3,7 @@ package icu.windea.pls.config.config
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 
 data class CwtConfigContext(
@@ -11,7 +12,7 @@ data class CwtConfigContext(
     val definitionType: String,
     val definitionSubtypes: List<String>?,
     val configGroup: CwtConfigGroup,
-    val matchType: Int = CwtConfigMatchType.DEFAULT
+    val matchOptions: Int = ParadoxConfigMatcher.Options.Default
 ): UserDataHolderBase() {
     val injectors = CwtDeclarationConfigInjector.EP_NAME.extensionList.filter { it.supports(this) }
 }

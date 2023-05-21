@@ -33,37 +33,37 @@ class ParadoxDefinitionMemberInfo(
     /**
      * 对应的配置列表。
      */
-    fun getConfigs(matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtDataConfig<*>> {
-        var cacheKey = "$matchType"
+    fun getConfigs(matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtDataConfig<*>> {
+        var cacheKey = "$matchOptions"
         //这里需要特别处理缓存的键
-        val configContext = definitionInfo.getDeclaration(matchType)?.getUserData(CwtDeclarationConfig.configContextKey)
+        val configContext = definitionInfo.getDeclaration(matchOptions)?.getUserData(CwtDeclarationConfig.configContextKey)
         if(configContext != null) {
             cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
         }
-        return cache.getOrPut(cacheKey) { doGetConfigs(definitionInfo, this, matchType) }
+        return cache.getOrPut(cacheKey) { doGetConfigs(definitionInfo, this, matchOptions) }
     }
     
     /**
      * 对应的子配置列表。（得到的是合并后的规则列表，且过滤重复的）
      */
-    fun getChildConfigs(matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtDataConfig<*>> {
-        var cacheKey = "child#$matchType"
+    fun getChildConfigs(matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtDataConfig<*>> {
+        var cacheKey = "child#$matchOptions"
         //这里需要特别处理缓存的键
-        val configContext = definitionInfo.getDeclaration(matchType)?.getUserData(CwtDeclarationConfig.configContextKey)
+        val configContext = definitionInfo.getDeclaration(matchOptions)?.getUserData(CwtDeclarationConfig.configContextKey)
         if(configContext != null) {
             cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
         }
-        return cache.getOrPut(cacheKey) { doGetChildConfigs(definitionInfo, this, matchType) }
+        return cache.getOrPut(cacheKey) { doGetChildConfigs(definitionInfo, this, matchOptions) }
     }
 }
 
 /**
  * 根据路径解析对应的属性/值配置列表。
  */
-private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMemberInfo: ParadoxDefinitionMemberInfo, matchType: Int): List<CwtDataConfig<*>> {
+private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMemberInfo: ParadoxDefinitionMemberInfo, matchOptions: Int): List<CwtDataConfig<*>> {
     val element = definitionMemberInfo.element
     //基于keyExpression，valueExpression可能不同
-    val declaration = definitionInfo.getDeclaration(matchType) ?: return emptyList()
+    val declaration = definitionInfo.getDeclaration(matchOptions) ?: return emptyList()
     //如果路径中可能待遇参数，则不进行解析
     val elementPath = definitionMemberInfo.elementPath
     if(elementPath.isParameterized) return emptyList()
@@ -95,8 +95,8 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
             if(configs.isNullOrEmpty()) return@f2
             configs.forEachFast f3@{ config ->
                 if(isKey && config is CwtPropertyConfig) {
-                    if(ParadoxConfigHandler.matchesScriptExpression(element, expression, config.keyExpression, config, configGroup, matchType)) {
-                        ParadoxConfigInlineHandler.inlineFromAliasConfig(element, key, isQuoted, config, nextResult, matchType)
+                    if(ParadoxConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get()) {
+                        ParadoxConfigInlineHandler.inlineFromAliasConfig(element, key, isQuoted, config, nextResult, matchOptions)
                     }
                 } else if(!isKey && config is CwtValueConfig) {
                     nextResult.add(config)
@@ -115,7 +115,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
                 if(overriddenConfigs.isNotNullOrEmpty()) {
                     //这里需要再次进行匹配
                     overriddenConfigs.forEachFast { overriddenConfig ->
-                        if(ParadoxConfigHandler.matchesScriptExpression(element, expression, overriddenConfig.expression, overriddenConfig, configGroup, matchType)) {
+                        if(ParadoxConfigMatcher.matches(element, expression, overriddenConfig.expression, overriddenConfig, configGroup, matchOptions).get()) {
                             optimizedResult.add(overriddenConfig)
                         }
                     }
@@ -146,9 +146,9 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
 /**
  * 根据路径解析对应的子属性规则列表。（得到的是合并后的规则列表，且过滤重复的）
  */
-private fun doGetChildConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMemberInfo: ParadoxDefinitionMemberInfo, matchType: Int): List<CwtDataConfig<*>> {
+private fun doGetChildConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMemberInfo: ParadoxDefinitionMemberInfo, matchOptions: Int): List<CwtDataConfig<*>> {
     //基于上一级keyExpression，keyExpression一定唯一
-    val declaration = definitionInfo.getDeclaration(matchType) ?: return emptyList()
+    val declaration = definitionInfo.getDeclaration(matchOptions) ?: return emptyList()
     if(declaration.configs.isNullOrEmpty()) return emptyList()
     //如果路径中可能待遇参数，则不进行解析
     val elementPath = definitionMemberInfo.elementPath
@@ -159,7 +159,7 @@ private fun doGetChildConfigs(definitionInfo: ParadoxDefinitionInfo, definitionM
         elementPath.isEmpty() -> declaration.configs
         else -> {
             //打平propertyConfigs中的每一个properties
-            val configs = doGetConfigs(definitionInfo, definitionMemberInfo, matchType)
+            val configs = doGetConfigs(definitionInfo, definitionMemberInfo, matchOptions)
             val result = SmartList<CwtDataConfig<*>>()
             configs.forEachFast { config ->
                 val childConfigs = config.configs

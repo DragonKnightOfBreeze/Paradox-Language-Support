@@ -60,12 +60,8 @@ object ParadoxConfigHandler {
             && config.expression.value?.let { config.info.configGroup.complexEnums[it] } != null
     }
     
-    /**
-     * 从CWT规则元素推断得到对应的CWT规则组。
-     */
     @InferApi
-    fun getConfigGroupFromCwt(from: PsiElement, project: Project): CwtConfigGroup? {
-        val file = from.containingFile ?: return null
+    fun getConfigGroupFromCwtFile(file: PsiFile, project: Project): CwtConfigGroup? {
         val virtualFile = file.virtualFile ?: return null
         val path = virtualFile.path
         //这里的key可能是"core"，而这不是gameType
@@ -74,452 +70,23 @@ object ParadoxConfigHandler {
         return getCwtConfig(project).get(key)
     }
     
-    fun getEntryName(config: CwtConfig<*>): String? {
-        return when {
-            config is CwtPropertyConfig -> config.key
-            config is CwtValueConfig && config.propertyConfig != null -> getEntryName(config.propertyConfig)
-            config is CwtValueConfig -> null
-            config is CwtAliasConfig -> config.subName
-            else -> null
-        }
-    }
-    
-    fun getEntryConfigs(config: CwtConfig<*>): List<CwtDataConfig<*>> {
-        val configGroup = config.info.configGroup
-        return when {
-            config is CwtPropertyConfig -> {
-                config.inlineableConfig?.let { getEntryConfigs(it) }
-                    ?: config.parent?.castOrNull<CwtPropertyConfig>()?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }
-                    ?: config.toSingletonList()
-            }
-            config is CwtValueConfig && config.propertyConfig != null -> {
-                getEntryConfigs(config.propertyConfig)
-            }
-            config is CwtValueConfig -> {
-                config.parent?.castOrNull<CwtPropertyConfig>()?.configs?.filter { it is CwtValueConfig }
-                    ?: config.toSingletonList()
-            }
-            config is CwtSingleAliasConfig -> {
-                config.config.toSingletonListOrEmpty()
-            }
-            config is CwtAliasConfig -> {
-                configGroup.aliasGroups.get(config.name)?.get(config.subName)?.map { it.config }.orEmpty()
-            }
-            else -> {
-                emptyList()
-            }
-        }
-    }
-    
-    val inBlockKeysKey = Key.create<Set<String>>("cwt.config.inBlockKeys")
-    
-    fun getInBlockKeys(config: CwtDataConfig<*>): Set<String> {
-        return config.getOrPutUserData(inBlockKeysKey) {
-            val keys = caseInsensitiveStringSet()
-            config.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.add(it.key) }
-            when(config) {
-                is CwtPropertyConfig -> {
-                    val propertyConfig = config
-                    propertyConfig.parent?.configs?.forEach { c ->
-                        if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
-                            c.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
-                        }
-                    }
-                }
-                is CwtValueConfig -> {
-                    val propertyConfig = config.propertyConfig
-                    propertyConfig?.parent?.configs?.forEach { c ->
-                        if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
-                            c.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
-                        }
-                    }
-                }
-            }
-            return keys
-        }
-    }
-    
-    private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
-        return config.keyExpression.type == CwtDataType.Constant && config.cardinality?.isRequired() != false
-    }
-    //endregion
-    
-    //region Matches Methods
-    //DONE 基于cwt规则文件的匹配方法需要进一步匹配scope
-    //DONE 兼容scriptedVariableReference inlineMath parameter
-    fun matchesScriptExpression(
-        element: PsiElement,
-        expression: ParadoxDataExpression,
-        configExpression: CwtDataExpression,
-        config: CwtConfig<*>?,
-        configGroup: CwtConfigGroup,
-        matchType: Int = CwtConfigMatchType.DEFAULT
-    ): Boolean {
-        ProgressManager.checkCanceled()
-        val isStatic = BitUtil.isSet(matchType, CwtConfigMatchType.STATIC)
-        val isNotExact = BitUtil.isSet(matchType, CwtConfigMatchType.NOT_EXACT)
-        
-        //匹配空字符串
-        if(configExpression.isEmpty()) {
-            return expression.isEmpty()
-        }
-        
-        val project = configGroup.project
-        val isParameterized = expression.type == ParadoxDataType.StringType && expression.text.isParameterized()
-        when(configExpression.type) {
-            CwtDataType.Block -> {
-                if(expression.isKey != false) return false
-                if(expression.type != ParadoxDataType.BlockType) return false
-                if(isNotExact) return true //非精确匹配 - 直接使用第一个
-                if(config !is CwtDataConfig) return true
-                return matchesScriptExpressionInBlock(element, config, configGroup)
-            }
-            CwtDataType.Bool -> {
-                return expression.type.isBooleanType()
-            }
-            CwtDataType.Int -> {
-                //quoted number (e.g. "1") -> ok according to vanilla game files
-                if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) {
-                    if(isNotExact) return true
-                    val (min, max) = configExpression.extraValue<Tuple2<Int?, Int?>>() ?: return true
-                    val value = expression.text.toIntOrNull() ?: return true
-                    return (min == null || min <= value) && (max == null || max >= value)
-                }
-                return false
-            }
-            CwtDataType.Float -> {
-                //quoted number (e.g. "1") -> ok according to vanilla game files
-                if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) {
-                    if(isNotExact) return true
-                    val (min, max) = configExpression.extraValue<Tuple2<Float?, Float?>>() ?: return true
-                    val value = expression.text.toFloatOrNull() ?: return true
-                    return (min == null || min <= value) && (max == null || max >= value)
-                }
-                return false
-            }
-            CwtDataType.Scalar -> {
-                return when {
-                    expression.isKey == true -> true //key -> ok
-                    expression.type == ParadoxDataType.ParameterType -> true //parameter -> ok
-                    expression.type.isBooleanType() -> true //boolean -> sadly, also ok for compatibility
-                    expression.type.isIntType() -> true //number -> ok according to vanilla game files
-                    expression.type.isFloatType() -> true //number -> ok according to vanilla game files
-                    expression.type.isStringType() -> true //unquoted/quoted string -> ok
-                    else -> false
-                }
-            }
-            CwtDataType.ColorField -> {
-                return expression.type.isColorType() && configExpression.value?.let { expression.text.startsWith(it) } != false
-            }
-            CwtDataType.PercentageField -> {
-                if(!expression.type.isStringType()) return false
-                return ParadoxDataType.isPercentageField(expression.text)
-            }
-            CwtDataType.DateField -> {
-                if(!expression.type.isStringType()) return false
-                return ParadoxDataType.isDateField(expression.text)
-            }
-            CwtDataType.Localisation -> {
-                if(!expression.type.isStringType()) return false
-                if(isStatic) return true
-                if(isParameterized) return true
-                if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
-                    val selector = localisationSelector(project, element)
-                    return ParadoxLocalisationSearch.search(expression.text, selector).findFirst() != null
-                }
-                return true
-            }
-            CwtDataType.SyncedLocalisation -> {
-                if(!expression.type.isStringType()) return false
-                if(isStatic) return true
-                if(isParameterized) return true
-                if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
-                    val selector = localisationSelector(project, element)
-                    return ParadoxSyncedLocalisationSearch.search(expression.text, selector).findFirst() != null
-                }
-                return true
-            }
-            CwtDataType.InlineLocalisation -> {
-                if(!expression.type.isStringType()) return false
-                if(expression.quoted) return true //"quoted_string" -> any string
-                if(isStatic) return true
-                if(isParameterized) return true
-                if(BitUtil.isSet(matchType, CwtConfigMatchType.LOCALISATION)) {
-                    val selector = localisationSelector(project, element)
-                    return ParadoxLocalisationSearch.search(expression.text, selector).findFirst() != null
-                }
-                return true
-            }
-            CwtDataType.StellarisNameFormat -> {
-                if(!expression.type.isStringType()) return false
-                return true //specific expression
-            }
-            CwtDataType.AbsoluteFilePath -> {
-                if(!expression.type.isStringType()) return false
-                return true //总是匹配
-            }
-            CwtDataType.Definition -> {
-                //注意这里可能是一个整数，例如，对于<technology_tier>
-                if(!expression.type.isStringType() && expression.type != ParadoxDataType.IntType) return false
-                if(isStatic) return true
-                if(isParameterized) return true
-                val typeExpression = configExpression.value ?: return false //invalid cwt config
-                if(BitUtil.isSet(matchType, CwtConfigMatchType.DEFINITION)) {
-                    val selector = definitionSelector(project, element)
-                    return ParadoxDefinitionSearch.search(expression.text, typeExpression, selector).findFirst() != null
-                }
-                return true
-            }
-            CwtDataType.EnumValue -> {
-                if(!isStatic && isParameterized) return true
-                val name = expression.text
-                val enumName = configExpression.value ?: return false //invalid cwt config
-                //匹配简单枚举
-                val enumConfig = configGroup.enums[enumName]
-                if(enumConfig != null) {
-                    return name in enumConfig.values
-                }
-                //匹配复杂枚举
-                if(!expression.type.isStringType()) return false
-                if(isStatic) return true
-                if(BitUtil.isSet(matchType, CwtConfigMatchType.COMPLEX_ENUM_VALUE)) {
-                    val complexEnumConfig = configGroup.complexEnums[enumName]
-                    if(complexEnumConfig != null) {
-                        val searchScope = complexEnumConfig.searchScopeType
-                        val selector = complexEnumValueSelector(project, element)
-                            .withSearchScopeType(searchScope)
-                        val complexEnumValueInfo = ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst()
-                        return complexEnumValueInfo != null
-                    }
-                }
-                //complexEnumValue的值必须合法
-                return ParadoxComplexEnumValueHandler.getName(expression.text) != null
-            }
-            CwtDataType.Value -> {
-                if(!expression.type.isStringType()) return false
-                if(isStatic) return true
-                if(isParameterized) return true
-                //valueSetValue的值必须合法
-                val name = ParadoxValueSetValueHandler.getName(expression.text)
-                if(name == null) return false
-                val valueSetName = configExpression.value
-                if(valueSetName == null) return false
-                return true
-            }
-            CwtDataType.ValueSet -> {
-                if(!expression.type.isStringType()) return false
-                if(isStatic) return true
-                if(isParameterized) return true
-                //valueSetValue的值必须合法
-                val name = ParadoxValueSetValueHandler.getName(expression.text)
-                if(name == null) return false
-                val valueSetName = configExpression.value
-                if(valueSetName == null) return false
-                return true
-            }
-            CwtDataType.ScopeField, CwtDataType.Scope, CwtDataType.ScopeGroup -> {
-                if(expression.quoted) return false //不允许用引号括起
-                if(isStatic) return true
-                if(isParameterized) return true
-                val textRange = TextRange.create(0, expression.text.length)
-                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
-                if(scopeFieldExpression == null) return false
-                if(isNotExact) return true
-                when(configExpression.type) {
-                    CwtDataType.ScopeField -> {
-                        return true
-                    }
-                    CwtDataType.Scope -> {
-                        val expectedScope = configExpression.value ?: return true
-                        val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return true
-                        val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return true
-                        val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)
-                        if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return true
-                    }
-                    CwtDataType.ScopeGroup -> {
-                        val expectedScopeGroup = configExpression.value ?: return true
-                        val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return true
-                        val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return true
-                        val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)
-                        if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return true
-                    }
-                    else -> pass()
-                }
-                return false
-            }
-            CwtDataType.ValueField -> {
-                //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
-                if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) return true
-                if(isStatic) return true
-                if(isParameterized) return true
-                if(expression.quoted) return false //接下来的匹配不允许用引号括起
-                val textRange = TextRange.create(0, expression.text.length)
-                val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
-                return valueFieldExpression != null
-            }
-            CwtDataType.IntValueField -> {
-                //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
-                if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
-                if(isStatic) return true
-                if(isParameterized) return true
-                if(expression.quoted) return false //接下来的匹配不允许用引号括起
-                val textRange = TextRange.create(0, expression.text.length)
-                val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
-                return valueFieldExpression != null
-            }
-            CwtDataType.VariableField -> {
-                //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
-                if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) return true
-                if(isStatic) return true
-                if(isParameterized) return true
-                if(expression.quoted) return false //接下来的匹配不允许用引号括起
-                val textRange = TextRange.create(0, expression.text.length)
-                val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
-                return variableFieldExpression != null
-            }
-            CwtDataType.IntVariableField -> {
-                //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
-                if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
-                if(isStatic) return true
-                if(isParameterized) return true
-                if(expression.quoted) return false //接下来的匹配不允许用引号括起
-                val textRange = TextRange.create(0, expression.text.length)
-                val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
-                return variableFieldExpression != null
-            }
-            CwtDataType.Modifier -> {
-                if(isStatic) return true
-                if(isParameterized) return true
-                return matchesModifier(element, expression.text, configGroup)
-            }
-            CwtDataType.Parameter -> {
-                //匹配参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
-                return expression.type.isStringLikeType()
-            }
-            CwtDataType.ParameterValue -> {
-                return expression.type != ParadoxDataType.BlockType
-            }
-            CwtDataType.LocalisationParameter -> {
-                //匹配本地化参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
-                return expression.type.isStringLikeType()
-            }
-            CwtDataType.ShaderEffect -> {
-                //暂时作为一般的字符串处理
-                return expression.type.isStringLikeType()
-            }
-            CwtDataType.SingleAliasRight -> {
-                return false //不在这里处理
-            }
-            CwtDataType.AliasKeysField -> {
-                if(!isStatic && isParameterized) return true
-                val aliasName = configExpression.value ?: return false
-                return matchesAliasName(element, expression, aliasName, configGroup, matchType)
-            }
-            CwtDataType.AliasName -> {
-                if(!isStatic && isParameterized) return true
-                val aliasName = configExpression.value ?: return false
-                return matchesAliasName(element, expression, aliasName, configGroup, matchType)
-            }
-            CwtDataType.AliasMatchLeft -> {
-                return false //不在这里处理
-            }
-            CwtDataType.Template -> {
-                if(!expression.type.isStringLikeType()) return false
-                //允许用引号括起
-                if(isStatic) return true
-                if(isParameterized) return true
-                return matchesTemplateExpression(element, expression, configExpression, configGroup)
-            }
-            CwtDataType.Constant -> {
-                val value = configExpression.value
-                if(configExpression is CwtValueExpression) {
-                    //常量的值也可能是yes/no
-                    val text = expression.text
-                    if((value == "yes" || value == "no") && text.isLeftQuoted()) return false
-                }
-                return expression.text.equals(value, true) //忽略大小写
-            }
-            CwtDataType.Any -> {
-                return true
-            }
-            CwtDataType.Other -> {
-                return false
-            }
-            else -> {
-                val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
-                if(pathReferenceExpressionSupport != null) {
-                    if(!expression.type.isStringType()) return false
-                    if(isStatic) return true
-                    if(isParameterized) return true
-                    if(BitUtil.isSet(matchType, CwtConfigMatchType.FILE_PATH)) {
-                        val pathReference = expression.text.normalizePath()
-                        val selector = fileSelector(project, element)
-                        return ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null
-                    }
-                    return true
-                }
-                return false
-            }
-        }
-    }
-    
-    private fun matchesScriptExpressionInBlock(element: PsiElement, config: CwtDataConfig<*>, configGroup: CwtConfigGroup): Boolean {
-        val block = when {
-            element is ParadoxScriptProperty -> element.propertyValue()
-            element is ParadoxScriptBlock -> element
-            else -> null
-        } ?: return false
-        //简单判断：如果block中包含configsInBlock声明的必须的任意propertyKey（作为常量字符串，忽略大小写），则认为匹配
-        //注意：不同的子句规则可以拥有部分相同的propertyKey
-        val keys = getInBlockKeys(config)
-        if(keys.isEmpty()) return true
-        val actualKeys = mutableSetOf<String>()
-        //注意这里需要考虑内联和可选的情况
-        block.processData(conditional = true, inline = true) {
-            if(it is ParadoxScriptProperty) actualKeys.add(it.name)
-            true
-        }
-        return actualKeys.any { it in keys }
-    }
-    
-    fun matchesAliasName(
-        element: PsiElement,
-        expression: ParadoxDataExpression,
-        aliasName: String,
-        configGroup: CwtConfigGroup,
-        matchType: Int = CwtConfigMatchType.DEFAULT
-    ): Boolean {
-        val aliasSubName = getAliasSubName(element, expression.text, expression.quoted, aliasName, configGroup, matchType) ?: return false
-        val configExpression = CwtKeyExpression.resolve(aliasSubName)
-        return matchesScriptExpression(element, expression, configExpression, null, configGroup, matchType)
-    }
-    
-    fun matchesModifier(element: PsiElement, name: String, configGroup: CwtConfigGroup): Boolean {
-        return ParadoxModifierHandler.matchesModifier(name, element, configGroup)
-    }
-    
-    fun matchesTemplateExpression(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.DEFAULT): Boolean {
-        val templateConfigExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
-        return templateConfigExpression.matches(expression.text, element, configGroup, matchType)
-    }
-    
-    fun getAliasSubName(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.DEFAULT): String? {
+    fun getAliasSubName(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxConfigMatcher.Options.Default): String? {
         val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
         if(constKey != null) return constKey
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
         val expression = ParadoxDataExpression.resolve(key, quoted, true)
         return keys.find {
-            matchesScriptExpression(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchType)
+            ParadoxConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchOptions).get()
         }
     }
     
-    fun getAliasSubNames(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.DEFAULT): List<String> {
+    fun getAliasSubNames(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<String> {
         val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
         if(constKey != null) return listOf(constKey)
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptyList()
         val expression = ParadoxDataExpression.resolve(key, quoted, true)
         return keys.filter {
-            matchesScriptExpression(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchType)
+            ParadoxConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchOptions).get()
         }
     }
     
@@ -587,6 +154,75 @@ object ParadoxConfigHandler {
             CwtDataType.Any -> 1
             CwtDataType.Other -> 0 //不期望匹配到
         }
+    }
+    
+    fun getEntryName(config: CwtConfig<*>): String? {
+        return when {
+            config is CwtPropertyConfig -> config.key
+            config is CwtValueConfig && config.propertyConfig != null -> getEntryName(config.propertyConfig)
+            config is CwtValueConfig -> null
+            config is CwtAliasConfig -> config.subName
+            else -> null
+        }
+    }
+    
+    fun getEntryConfigs(config: CwtConfig<*>): List<CwtDataConfig<*>> {
+        val configGroup = config.info.configGroup
+        return when {
+            config is CwtPropertyConfig -> {
+                config.inlineableConfig?.let { getEntryConfigs(it) }
+                    ?: config.parent?.castOrNull<CwtPropertyConfig>()?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }
+                    ?: config.toSingletonList()
+            }
+            config is CwtValueConfig && config.propertyConfig != null -> {
+                getEntryConfigs(config.propertyConfig)
+            }
+            config is CwtValueConfig -> {
+                config.parent?.castOrNull<CwtPropertyConfig>()?.configs?.filterIsInstance<CwtValueConfig>()
+                    ?: config.toSingletonList()
+            }
+            config is CwtSingleAliasConfig -> {
+                config.config.toSingletonListOrEmpty()
+            }
+            config is CwtAliasConfig -> {
+                configGroup.aliasGroups.get(config.name)?.get(config.subName)?.map { it.config }.orEmpty()
+            }
+            else -> {
+                emptyList()
+            }
+        }
+    }
+    
+    val inBlockKeysKey = Key.create<Set<String>>("cwt.config.inBlockKeys")
+    
+    fun getInBlockKeys(config: CwtDataConfig<*>): Set<String> {
+        return config.getOrPutUserData(inBlockKeysKey) {
+            val keys = caseInsensitiveStringSet()
+            config.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.add(it.key) }
+            when(config) {
+                is CwtPropertyConfig -> {
+                    val propertyConfig = config
+                    propertyConfig.parent?.configs?.forEach { c ->
+                        if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
+                            c.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
+                        }
+                    }
+                }
+                is CwtValueConfig -> {
+                    val propertyConfig = config.propertyConfig
+                    propertyConfig?.parent?.configs?.forEach { c ->
+                        if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
+                            c.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
+                        }
+                    }
+                }
+            }
+            return keys
+        }
+    }
+    
+    private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
+        return config.keyExpression.type == CwtDataType.Constant && config.cardinality?.isRequired() != false
     }
     //endregion
     
@@ -703,8 +339,8 @@ object ParadoxConfigHandler {
         
         val configGroup = definitionMemberInfo.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val matchType = CwtConfigMatchType.DEFAULT or CwtConfigMatchType.NOT_EXACT
-        val parentConfigs = getConfigs(definitionElement, allowDefinition = true, matchType = matchType)
+        val matchOptions = ParadoxConfigMatcher.Options.Default or ParadoxConfigMatcher.Options.RelaxMatch
+        val parentConfigs = getConfigs(definitionElement, allowDefinition = true, matchOptions = matchOptions)
         val configs = SmartList<CwtPropertyConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
@@ -749,8 +385,8 @@ object ParadoxConfigHandler {
         
         val configGroup = definitionMemberInfo.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val matchType = CwtConfigMatchType.DEFAULT or CwtConfigMatchType.NOT_EXACT
-        val parentConfigs = getConfigs(memberElement, allowDefinition = true, matchType = matchType)
+        val matchOptions = ParadoxConfigMatcher.Options.Default or ParadoxConfigMatcher.Options.RelaxMatch
+        val parentConfigs = getConfigs(memberElement, allowDefinition = true, matchOptions = matchOptions)
         val configs = SmartList<CwtValueConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
@@ -1589,24 +1225,24 @@ object ParadoxConfigHandler {
     //endregion
     
     //region Get Methods
-    fun getConfigs(element: PsiElement, allowDefinition: Boolean = element is ParadoxScriptValue, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtDataConfig<*>> {
+    fun getConfigs(element: PsiElement, allowDefinition: Boolean = element is ParadoxScriptValue, orDefault: Boolean = true, matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtDataConfig<*>> {
         return when {
-            element is ParadoxScriptDefinitionElement -> getPropertyConfigs(element, allowDefinition, orDefault, matchType)
-            element is ParadoxScriptPropertyKey -> getPropertyConfigs(element, allowDefinition, orDefault, matchType)
-            element is ParadoxScriptValue -> getValueConfigs(element, allowDefinition, orDefault, matchType)
+            element is ParadoxScriptDefinitionElement -> getPropertyConfigs(element, allowDefinition, orDefault, matchOptions)
+            element is ParadoxScriptPropertyKey -> getPropertyConfigs(element, allowDefinition, orDefault, matchOptions)
+            element is ParadoxScriptValue -> getValueConfigs(element, allowDefinition, orDefault, matchOptions)
             else -> emptyList()
         }
     }
     
-    fun getPropertyConfigs(element: PsiElement, allowDefinition: Boolean = false, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtPropertyConfig> {
-        return doGetConfigsFromCache(element, CwtPropertyConfig::class.java, allowDefinition, orDefault, matchType)
+    fun getPropertyConfigs(element: PsiElement, allowDefinition: Boolean = false, orDefault: Boolean = true, matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtPropertyConfig> {
+        return doGetConfigsFromCache(element, CwtPropertyConfig::class.java, allowDefinition, orDefault, matchOptions)
     }
     
-    fun getValueConfigs(element: PsiElement, allowDefinition: Boolean = true, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtValueConfig> {
-        return doGetConfigsFromCache(element, CwtValueConfig::class.java, allowDefinition, orDefault, matchType)
+    fun getValueConfigs(element: PsiElement, allowDefinition: Boolean = true, orDefault: Boolean = true, matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtValueConfig> {
+        return doGetConfigsFromCache(element, CwtValueConfig::class.java, allowDefinition, orDefault, matchOptions)
     }
     
-    private fun <T : CwtDataConfig<*>> doGetConfigsFromCache(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
+    private fun <T : CwtDataConfig<*>> doGetConfigsFromCache(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchOptions: Int): List<T> {
         val configsMap = doGetConfigsCacheFromCache(element) ?: return emptyList()
         val cacheKey = buildString {
             when(configType) {
@@ -1618,9 +1254,9 @@ object ParadoxConfigHandler {
                 append("#").append(allowDefinition.toIntString())
             }
             append("#").append(orDefault.toIntString())
-            append("#").append(matchType)
+            append("#").append(matchOptions)
         }
-        return configsMap.getOrPut(cacheKey) { doGetConfigs(element, configType, allowDefinition, orDefault, matchType) } as List<T>
+        return configsMap.getOrPut(cacheKey) { doGetConfigs(element, configType, allowDefinition, orDefault, matchOptions) } as List<T>
     }
     
     private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtConfig<*>>>? {
@@ -1633,7 +1269,7 @@ object ParadoxConfigHandler {
         }
     }
     
-    private fun <T : CwtDataConfig<*>> doGetConfigs(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
+    private fun <T : CwtDataConfig<*>> doGetConfigs(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchOptions: Int): List<T> {
         //当输入的元素是key或property时，输入的规则类型必须是property
         val result = when(configType) {
             CwtPropertyConfig::class.java -> {
@@ -1643,16 +1279,16 @@ object ParadoxConfigHandler {
                     else -> throw UnsupportedOperationException()
                 }
                 val expression = when {
-                    element is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxDataExpression.resolve(it, matchType) }
+                    element is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxDataExpression.resolve(it, matchOptions) }
                     element is ParadoxScriptFile -> BlockParadoxDataExpression
-                    element is ParadoxScriptPropertyKey -> element.propertyValue?.let { ParadoxDataExpression.resolve(it, matchType) }
+                    element is ParadoxScriptPropertyKey -> element.propertyValue?.let { ParadoxDataExpression.resolve(it, matchOptions) }
                     else -> throw UnsupportedOperationException()
                 }
                 val definitionMemberInfo = memberElement.definitionMemberInfo ?: return emptyList()
                 if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
                 
                 //如果无法匹配value，则取第一个
-                val configs = definitionMemberInfo.getConfigs(matchType)
+                val configs = definitionMemberInfo.getConfigs(matchOptions)
                 val configGroup = definitionMemberInfo.configGroup
                 val resultConfigs = SmartList<CwtPropertyConfig>()
                 run {
@@ -1668,19 +1304,19 @@ object ParadoxConfigHandler {
                     for(config in configs) {
                         if(config !is CwtPropertyConfig) continue
                         ProgressManager.checkCanceled()
-                        if(matchesScriptExpression(memberElement, expression, config.valueExpression, config, configGroup, matchType)) {
+                        if(ParadoxConfigMatcher.matches(memberElement, expression, config.valueExpression, config, configGroup, matchOptions).get()) {
                             resultConfigs.add(config)
                         }
                     }
                     //精确匹配无结果 - 不精确匹配
                     if(resultConfigs.isEmpty()) {
-                        val newMatchType = matchType or CwtConfigMatchType.NOT_EXACT
+                        val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.RelaxMatch
                         for(config in configs) {
                             if(config !is CwtPropertyConfig) continue
                             ProgressManager.checkCanceled()
                             val configExpression = config.valueExpression
                             if(!requireNotExactMatch(configExpression)) continue
-                            if(matchesScriptExpression(memberElement, expression, configExpression, config, configGroup, newMatchType)) {
+                            if(ParadoxConfigMatcher.matches(memberElement, expression, configExpression, config, configGroup, newMatchOptions).get()) {
                                 resultConfigs.add(config)
                             }
                         }
@@ -1697,7 +1333,7 @@ object ParadoxConfigHandler {
                     element is ParadoxScriptValue -> element
                     else -> throw UnsupportedOperationException()
                 }
-                val expression = ParadoxDataExpression.resolve(valueElement, matchType)
+                val expression = ParadoxDataExpression.resolve(valueElement, matchOptions)
                 val parent = element.parent
                 when(parent) {
                     //如果value是property的value
@@ -1707,7 +1343,7 @@ object ParadoxConfigHandler {
                         if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
                         
                         ProgressManager.checkCanceled()
-                        val configs = definitionMemberInfo.getConfigs(matchType)
+                        val configs = definitionMemberInfo.getConfigs(matchOptions)
                         val configGroup = definitionMemberInfo.configGroup
                         val resultConfigs = SmartList<CwtValueConfig>()
                         run {
@@ -1716,20 +1352,20 @@ object ParadoxConfigHandler {
                                 if(config !is CwtPropertyConfig) continue
                                 ProgressManager.checkCanceled()
                                 val valueConfig = config.valueConfig ?: continue
-                                if(matchesScriptExpression(valueElement, expression, valueConfig.expression, config, configGroup, matchType)) {
+                                if(ParadoxConfigMatcher.matches(valueElement, expression, valueConfig.expression, config, configGroup, matchOptions).get()) {
                                     resultConfigs.add(valueConfig)
                                 }
                             }
                             //精确匹配无结果 - 不精确匹配
                             if(resultConfigs.isEmpty()) {
-                                val newMatchType = matchType or CwtConfigMatchType.NOT_EXACT
+                                val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.RelaxMatch
                                 for(config in configs) {
                                     if(config !is CwtPropertyConfig) continue
                                     ProgressManager.checkCanceled()
                                     val valueConfig = config.valueConfig ?: continue
                                     val configExpression = valueConfig.expression
                                     if(!requireNotExactMatch(configExpression)) continue
-                                    if(matchesScriptExpression(valueElement, expression, configExpression, config, configGroup, newMatchType)) {
+                                    if(ParadoxConfigMatcher.matches(valueElement, expression, configExpression, config, configGroup, newMatchOptions).get()) {
                                         resultConfigs.add(valueConfig)
                                     }
                                 }
@@ -1746,7 +1382,7 @@ object ParadoxConfigHandler {
                         val property = parent.parent as? ParadoxScriptDefinitionElement ?: return emptyList()
                         val definitionMemberInfo = property.definitionMemberInfo ?: return emptyList()
                         
-                        val childConfigs = definitionMemberInfo.getChildConfigs(matchType)
+                        val childConfigs = definitionMemberInfo.getChildConfigs(matchOptions)
                         if(childConfigs.isEmpty()) return emptyList()
                         val configGroup = definitionMemberInfo.configGroup
                         val resultConfigs = SmartList<CwtValueConfig>()
@@ -1755,19 +1391,19 @@ object ParadoxConfigHandler {
                                 if(childConfig !is CwtValueConfig) continue
                                 ProgressManager.checkCanceled()
                                 //精确匹配
-                                if(matchesScriptExpression(valueElement, expression, childConfig.valueExpression, childConfig, configGroup, matchType)) {
+                                if(ParadoxConfigMatcher.matches(valueElement, expression, childConfig.valueExpression, childConfig, configGroup, matchOptions).get()) {
                                     resultConfigs.add(childConfig)
                                 }
                             }
                             //精确匹配无结果 - 不精确匹配
                             if(resultConfigs.isEmpty()) {
-                                val newMatchType = matchType or CwtConfigMatchType.NOT_EXACT
+                                val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.RelaxMatch
                                 for(childConfig in childConfigs) {
                                     if(childConfig !is CwtValueConfig) continue
                                     ProgressManager.checkCanceled()
                                     val configExpression = childConfig.valueExpression
                                     if(!requireNotExactMatch(configExpression)) continue
-                                    if(matchesScriptExpression(valueElement, expression, configExpression, childConfig, configGroup, newMatchType)) {
+                                    if(ParadoxConfigMatcher.matches(valueElement, expression, configExpression, childConfig, configGroup, newMatchOptions).get()) {
                                         resultConfigs.add(childConfig)
                                     }
                                 }
@@ -1850,7 +1486,7 @@ object ParadoxConfigHandler {
             val matched = childConfigs.find { childConfig ->
                 if(childConfig is CwtPropertyConfig && data !is ParadoxScriptProperty) return@find false
                 if(childConfig is CwtValueConfig && data !is ParadoxScriptValue) return@find false
-                matchesScriptExpression(data, expression, childConfig.expression, childConfig, configGroup)
+                ParadoxConfigMatcher.matches(data, expression, childConfig.expression, childConfig, configGroup).get()
             }
             if(matched == null) return@p true
             val occurrence = occurrenceMap[matched.expression]

@@ -27,14 +27,14 @@ data class CwtDeclarationConfig(
         //定义的值不为代码块的情况
         if(!propertyConfig.isBlock) return propertyConfig
         
-        val (_, _, type, subtypes, _, matchType) = configContext
+        val (_, _, type, subtypes, _, matchOptions) = configContext
         var cacheKey = buildString {
             append(type)
             if(subtypes != null) {
                 append(".")
                 append(subtypes.sorted().joinToString("."))
             }
-            append("#").append(matchType)
+            append("#").append(matchOptions)
         }
         cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
         

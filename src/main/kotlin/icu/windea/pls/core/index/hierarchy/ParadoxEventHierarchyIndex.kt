@@ -11,7 +11,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import java.io.*
@@ -108,7 +107,7 @@ object ParadoxEventHierarchyIndex {
                         val expression = element.value
                         if(expression.isParameterized()) return@run
                         //这里直接使用静态匹配即可
-                        val configs = ParadoxConfigHandler.getConfigs(element, matchType = CwtConfigMatchType.STATIC)
+                        val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = ParadoxConfigMatcher.Options.StaticMatch)
                         if(configs.any { isEventDefinitionConfig(it) }) {
                             val eventInvocationInfo = EventInvocationInfo(expression)
                             currentEventInfo?.eventInvocationInfos?.add(eventInvocationInfo)

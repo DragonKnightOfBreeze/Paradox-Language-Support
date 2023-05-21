@@ -7,7 +7,6 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
@@ -60,7 +59,7 @@ object CwtTemplateExpressionHandler {
         }.toRegex(RegexOption.IGNORE_CASE)
     }
     
-    fun matches(text: String, element: PsiElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.DEFAULT): Boolean {
+    fun matches(text: String, element: PsiElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxConfigMatcher.Options.Default): Boolean {
         val snippetExpressions = configExpression.snippetExpressions
         if(snippetExpressions.isEmpty()) return false
         val expressionString = text.unquote()

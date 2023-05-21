@@ -129,7 +129,7 @@ object ParadoxConfigInlineHandler {
         return true
     }
     
-    fun inlineFromAliasConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtDataConfig<*>>, matchType: Int) {
+    fun inlineFromAliasConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtDataConfig<*>>, matchOptions: Int) {
         //内联类型为single_alias_right或alias_match_left的规则
         run {
             val configGroup = config.info.configGroup
@@ -144,7 +144,7 @@ object ParadoxConfigInlineHandler {
                 CwtDataType.AliasMatchLeft -> {
                     val aliasName = valueExpression.value ?: return@run
                     val aliasGroup = configGroup.aliasGroups[aliasName] ?: return@run
-                    val aliasSubNames = ParadoxConfigHandler.getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchType)
+                    val aliasSubNames = ParadoxConfigHandler.getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchOptions)
                     for(aliasSubName in aliasSubNames) {
                         val aliases = aliasGroup[aliasSubName] ?: continue
                         for(alias in aliases) {

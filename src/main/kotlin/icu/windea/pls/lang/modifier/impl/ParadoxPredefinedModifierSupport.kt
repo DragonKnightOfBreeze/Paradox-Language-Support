@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.*
  * 提供对预定义的修正的支持。
  */
 class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
-    override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchType: Int): Boolean {
+    override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int): Boolean {
         val modifierName = name
         return configGroup.predefinedModifiers[modifierName] != null
     }

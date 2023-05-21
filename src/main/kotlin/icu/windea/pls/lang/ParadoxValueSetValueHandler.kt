@@ -48,8 +48,8 @@ object ParadoxValueSetValueHandler {
         
         val isKey = element is ParadoxScriptPropertyKey
         
-        val matchType = CwtConfigMatchType.STATIC //这里需要静态匹配
-        val configs = ParadoxConfigHandler.getConfigs(element, orDefault = true, matchType = matchType)
+        val matchOptions = ParadoxConfigMatcher.Options.StaticMatch //这里需要静态匹配
+        val configs = ParadoxConfigHandler.getConfigs(element, orDefault = true, matchOptions = matchOptions)
         if(configs.isEmpty()) return null
         
         for(config in configs) {
