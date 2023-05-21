@@ -35,7 +35,7 @@ java.lang.AssertionError: Reentrant indexing
 	at com.intellij.util.AbstractQuery.delegateProcessResults(AbstractQuery.java:105)
 	at icu.windea.pls.core.search.ParadoxQuery.findFirst(ParadoxQuery.kt:50)
 	at icu.windea.pls.config.ParadoxConfigHandler.matchesScriptExpression(ParadoxConfigHandler.kt:250)
-	at icu.windea.pls.lang.ParadoxConfigHandler.doConfigs(ParadoxConfigHandler.kt:69)
+	at icu.windea.pls.lang.ParadoxConfigHandler.doGetConfigs(ParadoxConfigHandler.kt:69)
 	at icu.windea.pls.lang.ParadoxConfigHandler.getPropertyConfigs(ParadoxConfigHandler.kt:27)
 	at icu.windea.pls.lang.ParadoxConfigHandler.getConfigs(ParadoxConfigHandler.kt:19)
 	at icu.windea.pls.lang.ParadoxConfigHandler.getConfigs$default(ParadoxConfigHandler.kt:16)

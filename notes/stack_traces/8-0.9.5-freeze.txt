@@ -38,7 +38,7 @@ com.intellij.diagnostic.Freeze
 	at icu.windea.pls.lang.model.ParadoxDefinitionMemberInfoKt.doGetConfigs(ParadoxDefinitionMemberInfo.kt:53)
 	at icu.windea.pls.lang.model.ParadoxDefinitionMemberInfoKt.access$doGetConfigs(ParadoxDefinitionMemberInfo.kt:1)
 	at icu.windea.pls.lang.model.ParadoxDefinitionMemberInfo.getConfigs(ParadoxDefinitionMemberInfo.kt:35)
-	at icu.windea.pls.lang.ParadoxConfigHandler.doConfigs(ParadoxConfigHandler.kt:1736)
+	at icu.windea.pls.lang.ParadoxConfigHandler.doGetConfigs(ParadoxConfigHandler.kt:1736)
 	at icu.windea.pls.lang.ParadoxConfigHandler.doGetConfigsFromCache(ParadoxConfigHandler.kt:1702)
 	at icu.windea.pls.lang.ParadoxConfigHandler.getPropertyConfigs(ParadoxConfigHandler.kt:1682)
 	at icu.windea.pls.lang.ParadoxConfigHandler.getConfigs(ParadoxConfigHandler.kt:1674)

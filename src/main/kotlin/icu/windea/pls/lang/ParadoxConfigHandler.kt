@@ -1622,7 +1622,7 @@ object ParadoxConfigHandler {
             append("#").append(orDefault.toIntString())
             append("#").append(matchType)
         }
-        return configsMap.getOrPut(cacheKey) { doConfigs(element, configType, allowDefinition, orDefault, matchType) } as List<T>
+        return configsMap.getOrPut(cacheKey) { doGetConfigs(element, configType, allowDefinition, orDefault, matchType) } as List<T>
     }
     
     private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtConfig<*>>>? {
@@ -1635,7 +1635,7 @@ object ParadoxConfigHandler {
         }
     }
     
-    private fun <T : CwtDataConfig<*>> doConfigs(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
+    private fun <T : CwtDataConfig<*>> doGetConfigs(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
         //当输入的元素是key或property时，输入的规则类型必须是property
         val result = when(configType) {
             CwtPropertyConfig::class.java -> {
