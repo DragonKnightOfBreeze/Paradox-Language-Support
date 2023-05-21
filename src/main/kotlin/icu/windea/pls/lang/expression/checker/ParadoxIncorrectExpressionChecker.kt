@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.checker
+package icu.windea.pls.lang.expression.checker
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.extensions.*
@@ -8,6 +8,9 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.script.psi.*
 
+/**
+ * @see icu.windea.pls.script.inspections.general.IncorrectExpressionInspection
+ */
 @WithGameTypeEP
 interface ParadoxIncorrectExpressionChecker {
     fun check(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>, holder: ProblemsHolder)
