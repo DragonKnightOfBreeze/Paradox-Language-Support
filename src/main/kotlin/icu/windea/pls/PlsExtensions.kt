@@ -10,11 +10,13 @@ import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import com.intellij.util.indexing.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.nodes.*
+import icu.windea.pls.core.index.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.*
@@ -227,8 +229,8 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
         from == null -> null
         from is CwtLocalisationLocaleConfig -> from
         from is VirtualFile -> from.getUserData(PlsKeys.injectedLocaleConfigKey)
-        from is ParadoxLocalisationFile -> from.virtualFile?.getUserData(PlsKeys.injectedLocaleConfigKey)
-            ?: from.localeConfig //尝试获取文件中声明的唯一的语言区域
+        from is PsiFile -> from.virtualFile?.getUserData(PlsKeys.injectedLocaleConfigKey)
+            ?: selectLocaleFromFile(from)
         from is ParadoxLocalisationLocale -> from.name
             .let { getCwtConfig(from.project).core.localisationLocales.get(it) } //这里需要传入project
         from is ParadoxLocalisationPropertyList -> selectLocale(from.locale)
@@ -239,6 +241,12 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
         from is PsiElement && from.language == ParadoxLocalisationLanguage -> selectLocale(from.parent)
         else -> preferredParadoxLocale()
     }
+}
+
+private fun selectLocaleFromFile(from: PsiFile): CwtLocalisationLocaleConfig? {
+    val indexKey = ParadoxFileLocaleIndex.NAME
+    val localeId = FileBasedIndex.getInstance().getFileData(indexKey, from.virtualFile, from.project).keys.singleOrNull() ?: return null
+    return getCwtConfig(from.project).core.localisationLocales.get(localeId)
 }
 //endregion
 

@@ -48,14 +48,4 @@ class ParadoxLocalisationFile(
     override fun isEquivalentTo(another: PsiElement?): Boolean {
         return super.isEquivalentTo(another) || (another is ParadoxLocalisationFile && fileInfo == another.fileInfo)
     }
-    
-    //缓存语言区域
-    @Volatile private var _localeConfig: CwtLocalisationLocaleConfig? = null
-    val localeConfig: CwtLocalisationLocaleConfig?
-        get() = _localeConfig ?: selectLocale(propertyList?.locale).also { _localeConfig = it }
-    
-    override fun subtreeChanged() {
-        _localeConfig = null
-        super.subtreeChanged()
-    }
 }
