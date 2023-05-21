@@ -66,11 +66,11 @@ class StellarisTechnologyTreeDiagramSettings(
     
     override fun initSettings() {
         //it.name is ok here
-        val tiers = StellarisTechnologyHandler.getTechnologyTiers(project, null)
+        val tiers = ParadoxTechnologyHandler.Stellaris.getTechnologyTiers(project, null)
         tiers.forEach { state.tier.putIfAbsent(it.name, true) }
-        val areas = StellarisTechnologyHandler.getResearchAreas()
+        val areas = ParadoxTechnologyHandler.Stellaris.getResearchAreas()
         areas.forEach { state.area.putIfAbsent(it, true) }
-        val categories = StellarisTechnologyHandler.getTechnologyCategories(project, null)
+        val categories = ParadoxTechnologyHandler.Stellaris.getTechnologyCategories(project, null)
         categories.forEach { state.category.putIfAbsent(it.name, true) }
         areas.forEach { state.areaNames.put(it) { ParadoxPresentationHandler.getText(it.uppercase(), project) } }
         categories.forEach { state.categoryNames.put(it.name) { ParadoxPresentationHandler.getNameText(it) } }

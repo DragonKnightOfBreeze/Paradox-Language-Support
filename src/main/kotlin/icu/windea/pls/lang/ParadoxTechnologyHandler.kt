@@ -1,15 +1,16 @@
 package icu.windea.pls.lang
 
+import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
-open class ParadoxTechnologyHandler {
-    companion object INSTANCE: ParadoxTechnologyHandler()
-    
+sealed class ParadoxTechnologyHandler {
     fun getTechnologies(selector: ParadoxDefinitionSelector): Set<ParadoxScriptDefinitionElement> {
         return ParadoxDefinitionSearch.search("technology", selector).findAll()
     }
@@ -24,5 +25,24 @@ open class ParadoxTechnologyHandler {
     
     fun getIconFile(definition: ParadoxScriptDefinitionElement): PsiFile? {
         return ParadoxDefinitionHandler.getPrimaryImage(definition)
+    }
+    
+    companion object INSTANCE: ParadoxTechnologyHandler()
+    
+    @WithGameType(ParadoxGameType.Stellaris)
+    object Stellaris : ParadoxTechnologyHandler() {
+        fun getTechnologyTiers(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
+            val selector = definitionSelector(project, context).withGameType(ParadoxGameType.Stellaris).contextSensitive().distinctByName()
+            return ParadoxDefinitionSearch.search("technology_tier", selector).findAll()
+        }
+        
+        fun getResearchAreas(): Set<String> {
+            return getCwtConfig().stellaris.enums.get("research_area")?.values.orEmpty()
+        }
+        
+        fun getTechnologyCategories(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
+            val selector = definitionSelector(project, context).withGameType(ParadoxGameType.Stellaris).contextSensitive().distinctByName()
+            return ParadoxDefinitionSearch.search("technology_category", selector).findAll()
+        }
     }
 }
