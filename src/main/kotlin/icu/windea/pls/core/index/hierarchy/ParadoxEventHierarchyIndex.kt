@@ -94,8 +94,8 @@ object ParadoxEventHierarchyIndex {
                         val definitionInfo = element.definitionInfo ?: return@run
                         val eventName = definitionInfo.name
                         if(eventName.isParameterized()) return@run
-                        val eventType = ParadoxEventHandler.getEventType(definitionInfo)
-                        val eventScope = ParadoxEventHandler.getEventScope(definitionInfo)
+                        val eventType = ParadoxEventHandler.getType(definitionInfo)
+                        val eventScope = ParadoxEventHandler.getScope(definitionInfo)
                         val eventInfo = EventInfo(eventName, eventType, eventScope)
                         data.eventInfos.add(eventInfo)
                         currentEventInfo = eventInfo

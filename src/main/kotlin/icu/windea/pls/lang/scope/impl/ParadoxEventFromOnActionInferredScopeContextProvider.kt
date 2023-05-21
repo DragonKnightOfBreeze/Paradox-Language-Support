@@ -52,7 +52,7 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
         val configGroup = definitionInfo.configGroup
         val project = configGroup.project
         val thisEventName = definitionInfo.name
-        val thisEventType = ParadoxEventHandler.getEventType(definitionInfo)
+        val thisEventType = ParadoxEventHandler.getType(definitionInfo)
         var scopeContextMap: Map<String, String?>? = null
         var hasConflict = false
         ProgressManager.checkCanceled()

@@ -43,9 +43,9 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
         }
         val project = directory.project
         //为了优化性能，使用另外的ParadoxDirectoryFilePathIndex而非ParadoxFilePathIndex
+        ProgressManager.checkCanceled()
         val name = ParadoxDirectoryFilePathIndex.NAME
         FileBasedIndex.getInstance().processAllKeys(name, p@{ (path, gameType) ->
-            ProgressManager.checkCanceled()
             if(contextGameType != gameType) return@p true
             
             val p = path.removePrefixOrNull(pathPrefix)

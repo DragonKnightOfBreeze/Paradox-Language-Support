@@ -67,6 +67,28 @@ object ParadoxEventHandler {
         }
     }
     
+    /**
+     * 得到指定事件的所有事件类型（注有"## group = event_type"，拥有特定的作用域，一般拥有特定的type或者rootKey）。
+     */
+    fun getTypes(project: Project, gameType: ParadoxGameType): Set<String> {
+        val eventConfig = getCwtConfig(project).get(gameType).types["event"] ?: return emptySet()
+        return eventConfig.config.getOrPutUserData(CwtDataConfig.Keys.eventEventTypesKey) {
+            eventConfig.subtypes.mapNotNullTo(mutableSetOf()) { (k, v) -> if(v.config.findOption("group")?.stringValue == "event_type") k else null }
+        }
+    }
+    
+    fun getType(definitionInfo: ParadoxDefinitionInfo): String? {
+        return definitionInfo.getOrPutUserData(ParadoxDefinitionInfo.Keys.eventEventTypeKey, "") {
+            definitionInfo.subtypeConfigs.find { it.config.findOption("group")?.stringValue == "event_type" }?.name
+        }
+    }
+    
+    fun getScope(definitionInfo: ParadoxDefinitionInfo): String? {
+        return definitionInfo.getOrPutUserData(ParadoxDefinitionInfo.Keys.eventEventScopeKey) {
+            definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.pushScope } ?: ParadoxScopeHandler.anyScopeId
+        }
+    }
+    
     fun getLocalizedName(definition: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
         return ParadoxDefinitionHandler.getPrimaryLocalisation(definition)
     }
@@ -75,9 +97,6 @@ object ParadoxEventHandler {
         return ParadoxDefinitionHandler.getPrimaryImage(definition)
     }
     
-    fun getScope(definitionInfo: ParadoxDefinitionInfo): String {
-        return definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.pushScope } ?: ParadoxScopeHandler.anyScopeId
-    }
     
     /**
      * 得到指定事件可能调用的所有事件。
@@ -117,28 +136,6 @@ object ParadoxEventHandler {
             }
         })
         return result
-    }
-    
-    /**
-     * 得到指定事件的所有事件类型（注有"## group = event_type"，拥有特定的作用域，一般拥有特定的type或者rootKey）。
-     */
-    fun getEventTypes(project: Project, gameType: ParadoxGameType): Set<String> {
-        val eventConfig = getCwtConfig(project).get(gameType).types["event"] ?: return emptySet()
-        return eventConfig.config.getOrPutUserData(CwtDataConfig.Keys.eventEventTypesKey) {
-            eventConfig.subtypes.mapNotNullTo(mutableSetOf()) { (k, v) -> if(v.config.findOption("group")?.stringValue == "event_type") k else null }
-        }
-    }
-    
-    fun getEventType(definitionInfo: ParadoxDefinitionInfo): String? {
-        return definitionInfo.getOrPutUserData(ParadoxDefinitionInfo.Keys.eventEventTypeKey, "") {
-            definitionInfo.subtypeConfigs.find { it.config.findOption("group")?.stringValue == "event_type" }?.name
-        }
-    }
-    
-    fun getEventScope(definitionInfo: ParadoxDefinitionInfo): String? {
-        return definitionInfo.getOrPutUserData(ParadoxDefinitionInfo.Keys.eventEventScopeKey, "") {
-            definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.pushScope }
-        }
     }
 }
 

@@ -39,7 +39,7 @@ class Vic3EventTreeDiagramSettings(
     }
     
     override fun initSettings() {
-        val eventTypes = ParadoxEventHandler.getEventTypes(project, ParadoxGameType.Vic3)
+        val eventTypes = ParadoxEventHandler.getTypes(project, ParadoxGameType.Vic3)
         eventTypes.forEach { state.eventType.putIfAbsent(it, true) }
     }
 }

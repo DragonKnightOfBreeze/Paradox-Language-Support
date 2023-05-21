@@ -4,7 +4,6 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
@@ -49,7 +48,6 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
             } else {
                 if(pathReferenceExpressionSupport == null) return@action
                 FileBasedIndex.getInstance().processAllKeys(ParadoxFilePathIndex.NAME, p@{ path ->
-                    ProgressManager.checkCanceled()
                     if(filePath != null && pathReferenceExpressionSupport.extract(configExpression, contextElement, path, ignoreCase) != filePath) return@p true
                     if(!pathReferenceExpressionSupport.matches(configExpression, contextElement, path, ignoreCase)) return@p true
                     val keys = setOf(path)

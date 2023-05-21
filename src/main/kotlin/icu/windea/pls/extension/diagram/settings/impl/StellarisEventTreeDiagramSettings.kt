@@ -3,16 +3,9 @@ package icu.windea.pls.extension.diagram.settings.impl
 import com.intellij.openapi.components.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.*
-import com.intellij.ui.dsl.builder.*
-import com.intellij.util.ui.ThreeStateCheckBox.State.*
 import com.intellij.util.xmlb.annotations.*
-import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.ui.*
-import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.extension.diagram.provider.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
@@ -49,7 +42,7 @@ class StellarisEventTreeDiagramSettings(
     }
     
     override fun initSettings() {
-        val eventTypes = ParadoxEventHandler.getEventTypes(project, ParadoxGameType.Stellaris)
+        val eventTypes = ParadoxEventHandler.getTypes(project, ParadoxGameType.Stellaris)
         eventTypes.forEach { state.eventType.putIfAbsent(it, true) }
     }
 }

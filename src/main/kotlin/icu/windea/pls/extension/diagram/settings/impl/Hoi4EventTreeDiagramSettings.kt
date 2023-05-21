@@ -9,7 +9,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
-import kotlin.collections.withDefault
 
 @WithGameType(ParadoxGameType.Hoi4)
 @Service(Service.Level.PROJECT)
@@ -40,7 +39,7 @@ class Hoi4EventTreeDiagramSettings(
     }
     
     override fun initSettings() {
-        val eventTypes = ParadoxEventHandler.getEventTypes(project, ParadoxGameType.Hoi4)
+        val eventTypes = ParadoxEventHandler.getTypes(project, ParadoxGameType.Hoi4)
         eventTypes.forEach { state.eventType.putIfAbsent(it, true) }
     }
 }

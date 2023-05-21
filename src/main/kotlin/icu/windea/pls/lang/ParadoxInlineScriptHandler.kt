@@ -61,7 +61,7 @@ object ParadoxInlineScriptHandler {
         val configGroup = getCwtConfig(project).get(gameType)
         val inlineConfigs = configGroup.inlineConfigGroup[inlineScriptName] ?: return null
         val propertyValue = element.propertyValue ?: return null
-        val matchOptions = ParadoxConfigMatcher.Options.StaticMatch
+        val matchOptions = ParadoxConfigMatcher.Options.StaticMatch or ParadoxConfigMatcher.Options.FinalMatch
         val inlineConfig = ParadoxConfigMatcher.find(inlineConfigs, matchOptions) {
             val expression = ParadoxDataExpression.resolve(propertyValue, matchOptions)
             ParadoxConfigMatcher.matches(propertyValue, expression, it.config.valueExpression, it.config, configGroup)
