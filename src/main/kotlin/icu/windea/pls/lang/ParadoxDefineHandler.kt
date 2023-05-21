@@ -28,7 +28,8 @@ object ParadoxDefineHandler {
             var result: Any? = null
             ParadoxFilePathSearch.search(definePathExpression, selector).processQueryAsync p@{
                 ProgressManager.checkCanceled()
-                val file = it.toPsiFile<ParadoxScriptFile>(project) ?: return@p true
+                val file = it.toPsiFile(project) ?: return@p true
+                if(file !is ParadoxScriptFile) return@p true
                 val defines = getDefinesFromFile(file)
                 val defineValue = defines.getOrPut(path) {
                     val property = file.findByPath<ParadoxScriptProperty>(path, ignoreCase = false) ?: return@getOrPut null

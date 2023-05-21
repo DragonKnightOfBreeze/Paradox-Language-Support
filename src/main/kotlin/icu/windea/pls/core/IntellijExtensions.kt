@@ -363,8 +363,8 @@ fun Path.toVirtualFile(refreshIfNeed: Boolean = false): VirtualFile? {
 }
 
 /** 将VirtualFile转化为指定类型的PsiFile。 */
-inline fun <reified T : PsiFile> VirtualFile.toPsiFile(project: Project): T? {
-    return PsiManager.getInstance(project).findFile(this) as? T
+inline fun VirtualFile.toPsiFile(project: Project): PsiFile? {
+    return PsiManager.getInstance(project).findFile(this)
 }
 
 /** 将VirtualFile转化为指定类型的PsiDirectory。 */

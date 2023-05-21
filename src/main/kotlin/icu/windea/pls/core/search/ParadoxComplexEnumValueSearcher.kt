@@ -35,7 +35,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
             if(ParadoxFileManager.isLightFile(file)) return@p true
             val complexEnumValueGroup = ParadoxComplexEnumValueIndex.getData(enumName, file, project)
             if(complexEnumValueGroup.isNullOrEmpty()) return@p true
-            val psiFile = file.toPsiFile<PsiFile>(project) ?: return@p true
+            val psiFile = file.toPsiFile(project) ?: return@p true
             if(name == null) {
                 for(infos in complexEnumValueGroup.values) {
                     for(info in infos) {

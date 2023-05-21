@@ -26,7 +26,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         val ignoreCase = queryParameters.ignoreCase
         val project = queryParameters.project
         val gameType = queryParameters.selector.gameType
-        val contextElement = queryParameters.selector.file?.toPsiFile<PsiFile>(project)
+        val contextElement = queryParameters.selector.file?.toPsiFile(project)
         
         
         val pathReferenceExpressionSupport = if(configExpression != null) ParadoxPathReferenceExpressionSupport.get(configExpression) else null
@@ -42,7 +42,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
                     //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析
-                    file.toPsiFile<PsiFile>(project) ?: return@p true
+                    file.toPsiFile(project) ?: return@p true
                     if(gameType != null && gameType != selectGameType(file)) return@p true
                     consumer.process(file)
                 }
@@ -56,7 +56,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                     FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) pp@{ file ->
                         ProgressManager.checkCanceled()
                         //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析
-                        file.toPsiFile<PsiFile>(project) ?: return@pp true
+                        file.toPsiFile(project) ?: return@pp true
                         if(gameType != null && gameType != selectGameType(file)) return@pp true
                         consumer.process(file)
                     }

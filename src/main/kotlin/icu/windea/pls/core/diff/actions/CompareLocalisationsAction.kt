@@ -82,7 +82,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             presentation.isVisible = true
             val editor = e.editor ?: return
             val offset = editor.caretModel.offset
-            val psiFile = file.toPsiFile<PsiFile>(project) ?: return
+            val psiFile = file.toPsiFile(project) ?: return
             localisation = findElement(psiFile, offset)
         }
         presentation.isEnabledAndVisible = localisation != null
@@ -95,7 +95,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             val file = findFile(e) ?: return null
             val editor = e.editor ?: return null
             val offset = editor.caretModel.offset
-            val psiFile = file.toPsiFile<PsiFile>(project) ?: return null
+            val psiFile = file.toPsiFile(project) ?: return null
             localisation = findElement(psiFile, offset)
         }
         if(localisation == null) return null

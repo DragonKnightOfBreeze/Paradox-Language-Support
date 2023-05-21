@@ -66,7 +66,8 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
             //声明对应名字的封装变量，默认值给0并选中
             val variableNameToUse = dialog.variableName
             val variableValue = dialog.variableValue
-            val targetFile = dialog.file.toPsiFile<ParadoxScriptFile>(project) ?: return //不期望的结果
+            val targetFile = dialog.file.toPsiFile(project) ?: return //不期望的结果
+            if(targetFile !is ParadoxScriptFile) return
             val command = Runnable {
                 ParadoxPsiIntroducer.introduceGlobalScriptedVariable(variableNameToUse, variableValue, targetFile, project)
                 

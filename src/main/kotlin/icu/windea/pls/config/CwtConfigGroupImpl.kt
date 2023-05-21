@@ -100,7 +100,8 @@ class CwtConfigGroupImpl(
 				val fileExtension = virtualFile.extension?.lowercase()
 				when {
 					fileExtension == "cwt" -> {
-						val file = virtualFile.toPsiFile<CwtFile>(project) ?: continue
+						val file = virtualFile.toPsiFile(project) ?: continue
+						if(file !is CwtFile) continue
 						val fileConfig =  CwtConfigResolver.resolve(file, info)
 						
 						result = resolveCwtSettingInCwtFile(fileConfig)

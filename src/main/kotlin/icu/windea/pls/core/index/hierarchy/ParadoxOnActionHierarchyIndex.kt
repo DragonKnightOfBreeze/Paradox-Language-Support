@@ -76,7 +76,8 @@ object ParadoxOnActionHierarchyIndex {
     private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(ID, VERSION, valueExternalizer) builder@{ project, file ->
         if(file.fileInfo == null) return@builder EmptyData
         if(!matchesPath(file)) return@builder EmptyData
-        val psiFile = file.toPsiFile<ParadoxScriptFile>(project) ?: return@builder EmptyData
+        val psiFile = file.toPsiFile(project) ?: return@builder EmptyData
+        if(psiFile !is ParadoxScriptFile) return@builder EmptyData
         val data = Data()
         var currentOnActionInfo: OnActionInfo? = null
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {

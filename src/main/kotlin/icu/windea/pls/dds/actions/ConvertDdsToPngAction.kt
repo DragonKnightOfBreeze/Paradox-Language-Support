@@ -48,10 +48,10 @@ class ConvertDdsToPngAction : DumbAwareAction() {
         val project = e.project ?: return
         val editor = e.getData(CommonDataKeys.EDITOR)
         val files = if(editor != null) {
-            val file = e.getData(LangDataKeys.VIRTUAL_FILE)?.takeIf { it.fileType == DdsFileType }?.toPsiFile<PsiFile>(project) ?: return
+            val file = e.getData(LangDataKeys.VIRTUAL_FILE)?.takeIf { it.fileType == DdsFileType }?.toPsiFile(project) ?: return
             listOf(file)
         } else {
-            e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)?.filter { it.fileType == DdsFileType }?.mapNotNull { it.toPsiFile<PsiFile>(project) } ?: return
+            e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)?.filter { it.fileType == DdsFileType }?.mapNotNull { it.toPsiFile(project) } ?: return
         }
         if(files.isEmpty()) return
         convert(files, project)
@@ -141,7 +141,7 @@ class ConvertDdsToPngAction : DumbAwareAction() {
             return
         }
         targetDirectory.cast<PsiDirectoryImpl>().executeWithUpdatingAddedFilesDisabled<Throwable> {
-            val backendPngPsiFile = backendPngFile.toPsiFile<PsiFile>(targetDirectory.project) ?: return@executeWithUpdatingAddedFilesDisabled
+            val backendPngPsiFile = backendPngFile.toPsiFile(targetDirectory.project) ?: return@executeWithUpdatingAddedFilesDisabled
             val savedPsiFile = targetDirectory.copyFileFrom(name, backendPngPsiFile)
             added.add(savedPsiFile)
         }

@@ -36,7 +36,7 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
             if(ParadoxFileManager.isLightFile(file)) return@p true
             val valueSetValueGroup = ParadoxValueSetValueIndex.getData(valueSetName, file, project)
             if(valueSetValueGroup.isNullOrEmpty()) return@p true
-            val psiFile = file.toPsiFile<PsiFile>(project) ?: return@p true
+            val psiFile = file.toPsiFile(project) ?: return@p true
             
             if(name == null) {
                 for(infos in valueSetValueGroup.values) {

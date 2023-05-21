@@ -60,7 +60,8 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
             ProgressManager.checkCanceled()
             val data = ParadoxOnActionHierarchyIndex.getData(file, project) ?: return@p true
             val onActionNames = data.eventToOnActionsMap[thisEventName] ?: return@p true
-            val psiFile = file.toPsiFile<ParadoxScriptFile>(project) ?: return@p true
+            val psiFile = file.toPsiFile(project) ?: return@p true
+            if(psiFile !is ParadoxScriptFile) return@p true
             onActionNames.forEach { onActionName ->
                 //这里使用psiFile作为contextElement
                 val config = configGroup.onActions.getByTemplate(onActionName, psiFile, configGroup)

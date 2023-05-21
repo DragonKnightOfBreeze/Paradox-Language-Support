@@ -50,12 +50,12 @@ class ParadoxLocalisationFile(
     }
     
     //缓存语言区域
-    @Volatile private var _locale: CwtLocalisationLocaleConfig? = null
-    val locale: CwtLocalisationLocaleConfig?
-        get() = _locale ?: selectLocale(propertyList?.locale).also { _locale = it }
+    @Volatile private var _localeConfig: CwtLocalisationLocaleConfig? = null
+    val localeConfig: CwtLocalisationLocaleConfig?
+        get() = _localeConfig ?: selectLocale(propertyList?.locale).also { _localeConfig = it }
     
     override fun subtreeChanged() {
-        _locale = null
+        _localeConfig = null
         super.subtreeChanged()
     }
 }

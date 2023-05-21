@@ -41,7 +41,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
         ParadoxFilePathSearch.search(ddsFileExpression, fileSelector).processQueryAsync p@{ ddsFile ->
             ProgressManager.checkCanceled()
             val name = ddsFile.nameWithoutExtension
-            val file = ddsFile.toPsiFile<PsiFile>(project)
+            val file = ddsFile.toPsiFile(project)
             if(file != null && namesToDistinct.add(name)) {
                 addLookupElement(name, file, result)
             }

@@ -82,7 +82,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             presentation.isVisible = true
             val editor = e.editor ?: return
             val offset = editor.caretModel.offset
-            val psiFile = file.toPsiFile<PsiFile>(project) ?: return
+            val psiFile = file.toPsiFile(project) ?: return
             definition = findElement(psiFile, offset)
         }
         presentation.isEnabledAndVisible = definition != null
@@ -95,7 +95,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             val file = findFile(e) ?: return null
             val editor = e.editor ?: return null
             val offset = editor.caretModel.offset
-            val psiFile = file.toPsiFile<PsiFile>(project) ?: return null
+            val psiFile = file.toPsiFile(project) ?: return null
             definition = findElement(psiFile, offset)
         }
         if(definition == null) return null

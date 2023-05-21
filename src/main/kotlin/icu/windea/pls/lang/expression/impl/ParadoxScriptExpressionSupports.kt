@@ -295,7 +295,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         val configGroup = config.info.configGroup
         val project = configGroup.project
         if(configExpression.type == CwtDataType.AbsoluteFilePath) {
-            return expression.toVirtualFile(false)?.toPsiFile<PsiFile>(project).toSingletonSetOrEmpty()
+            return expression.toVirtualFile(false)?.toPsiFile(project).toSingletonSetOrEmpty()
         } else {
             //if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
             val pathReference = expression.normalizePath()
@@ -326,7 +326,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
                 .distinctByFilePath()
             ParadoxFilePathSearch.search(configExpression, selector).processQueryAsync p@{ virtualFile ->
                 ProgressManager.checkCanceled()
-                val file = virtualFile.toPsiFile<PsiFile>(project) ?: return@p true
+                val file = virtualFile.toPsiFile(project) ?: return@p true
                 val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
                 val name = pathReferenceExpressionSupport.extract(configExpression, contextFile, filePath) ?: return@p true
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(file, name)

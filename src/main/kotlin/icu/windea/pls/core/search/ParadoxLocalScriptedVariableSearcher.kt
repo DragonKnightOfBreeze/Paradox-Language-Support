@@ -24,7 +24,8 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
 		val file = selector.file ?: return
 		val fileInfo = selector.fileInfo ?: return
 		if("common/scripted_variables".matchesPath(fileInfo.pathToEntry.path)) return
-		val psiFile = file.toPsiFile<ParadoxScriptFile>(selector.project) ?: return
+		val psiFile = file.toPsiFile(selector.project) ?: return
+		if(psiFile !is ParadoxScriptFile) return
 		val startOffset = selector.context?.castOrNull<PsiElement>()?.startOffset
 		ParadoxScriptedVariableHandler.getLocalScriptedVariables(psiFile).process p@{ 
 			ProgressManager.checkCanceled()

@@ -88,7 +88,7 @@ class CwtImageLocationExpression(
             val filePath = resolvePlaceholder(definitionInfo.name)!!
             val selector = fileSelector(project, definition).contextSensitive()
             val file = ParadoxFilePathSearch.search(filePath, null, selector).find()
-                ?.toPsiFile<PsiFile>(project)
+                ?.toPsiFile(project)
             return ResolveResult(filePath, file, frame)
         } else if(propertyName != null) {
             //propertyName可以为空字符串，这时直接查找定义的字符串类型的值（如果存在）
@@ -114,7 +114,7 @@ class CwtImageLocationExpression(
                     val filePath = resolved.fileInfo?.path?.path ?: return null
                     val selector = fileSelector(project, definition).contextSensitive()
                     val file = ParadoxFilePathSearch.search(filePath, null, selector).find()
-                        ?.toPsiFile<PsiFile>(project)
+                        ?.toPsiFile(project)
                     return ResolveResult(filePath, file, frameToUse)
                 }
                 //由filePath解析为definition，这里也可能是sprite之外的definition

@@ -27,7 +27,7 @@ class ParadoxFileImplementationsSearch : QueryExecutor<PsiElement, DefinitionsSc
             val selector = fileSelector(project, sourceElement)
                 .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
             ParadoxFilePathSearch.search(path.path, null, selector).forEach(Processor {
-                consumer.process(it.toPsiFile<PsiFile>(project))
+                consumer.process(it.toPsiFile(project))
             })
         }
         return true

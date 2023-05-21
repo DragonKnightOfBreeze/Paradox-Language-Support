@@ -81,7 +81,8 @@ object ParadoxValueSetValueIndex {
     
     private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(ID, VERSION, valueExternalizer) builder@{ project, file ->
         if(file.fileInfo == null) return@builder EmptyData
-        val psiFile = file.toPsiFile<ParadoxScriptFile>(project) ?: return@builder EmptyData
+        val psiFile = file.toPsiFile(project) ?: return@builder EmptyData
+        if(psiFile !is ParadoxScriptFile) return@builder EmptyData
         val data = Data()
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {

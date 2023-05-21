@@ -66,7 +66,7 @@ object ParadoxFileManager {
     @JvmStatic
     fun createLightFile(name: String, file: VirtualFile, project: Project): VirtualFile {
         //为了兼容不同的lineSeparator，这里不能直接使用document.charSequence
-        val text = file.toPsiFile<PsiFile>(project)?.text ?: throw IllegalStateException()
+        val text = file.toPsiFile(project)?.text ?: throw IllegalStateException()
         val lightFile = LightVirtualFile(name, text)
         lightFile.putUserData(PlsKeys.injectedFileInfoKey, file.fileInfo)
         return lightFile
