@@ -55,48 +55,57 @@ object ParadoxConfigMatcher {
         }
     }
     
-    data class ResultValue<out T>(val value: T, val result: Result) {
-        fun exactValue(options: Int): T? {
-            if(BitUtil.isSet(options, Options.ExactMatch) && !result.get(options)) return null
-            return value
-        }
-    }
+    data class ResultValue<out T>(val value: T, val result: Result)
     
     inline fun <T : Any> find(collection: Collection<T>?, options: Int = Options.Default, matcher: (T) -> Result?): T? {
         if(collection.isNullOrEmpty()) return null
+        val exactMatch = BitUtil.isSet(options, Options.ExactMatch)
         var tempResults: MutableList<ResultValue<T>>? = null
         for(v in collection) {
             val r = matcher(v)
             if(r == null || r == Result.NotMatch) continue
-            if(r == Result.ExactMatch) return v
+            if(r == Result.ExactMatch && !exactMatch) return v
             if(tempResults == null) tempResults = SmartList()
             tempResults.add(ResultValue(v, r))
         }
         if(tempResults.isNullOrEmpty()) return null
-        if(tempResults.size == 1) return tempResults[0].exactValue(options)
-        tempResults.forEachFast { (v, r) ->
-            if(r.get(options)) return v
-        }
+        if(tempResults.size == 1 && !exactMatch) return tempResults[0].value
+        tempResults.forEachFast { (v, r) -> if(r.get(options)) return v }
         return null
     }
     
     inline fun <T : Any> findAll(collection: Collection<T>?, options: Int = Options.Default, matcher: (T) -> Result?): List<T> {
         if(collection.isNullOrEmpty()) return emptyList()
+        val exactMatch = BitUtil.isSet(options, Options.ExactMatch)
+        var tempResults: MutableList<ResultValue<T>>? = null
+        for(v in collection) {
+            val r = matcher(v)
+            if(r == null || r == Result.NotMatch) continue
+            if(r == Result.ExactMatch && !exactMatch) return v.toSingletonList()
+            if(tempResults == null) tempResults = SmartList()
+            tempResults.add(ResultValue(v, r))
+        }
+        if(tempResults.isNullOrEmpty()) return emptyList()
+        if(tempResults.size == 1 && !exactMatch) return tempResults[0].value.toSingletonList()
+        val result = SmartList<T>()
+        tempResults.forEachFast { (v, r) -> if(r.get(options)) result.add(v) }
+        return result
+    }
+    
+    inline fun <T : Any> findAllTo(collection: Collection<T>?, destination: MutableCollection<T>, options: Int = Options.Default, matcher: (T) -> Result?) {
+        if(collection.isNullOrEmpty()) return
+        val exactMatch = BitUtil.isSet(options, Options.ExactMatch)
         var tempResults: MutableList<ResultValue<T>>? = null
         for(e in collection) {
             val r = matcher(e)
             if(r == null || r == Result.NotMatch) continue
-            if(r == Result.ExactMatch) return e.toSingletonList()
+            if(r == Result.ExactMatch && !exactMatch) return run { destination.add(e) }
             if(tempResults == null) tempResults = SmartList()
             tempResults.add(ResultValue(e, r))
         }
-        if(tempResults.isNullOrEmpty()) return emptyList()
-        if(tempResults.size == 1) return tempResults[0].exactValue(options).toSingletonListOrEmpty()
-        val result = SmartList<T>()
-        tempResults.forEachFast { (v, r) ->
-            if(r.get(options)) result.add(v)
-        }
-        return result
+        if(tempResults.isNullOrEmpty()) return
+        if(tempResults.size == 1 && !exactMatch) return run { destination.add(tempResults[0].value) }
+        tempResults.forEachFast { (v, r) -> if(r.get(options)) destination.add(v) }
     }
     
     //兼容scriptedVariableReference inlineMath parameter

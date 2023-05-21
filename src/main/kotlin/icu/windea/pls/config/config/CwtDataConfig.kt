@@ -47,7 +47,7 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 	 * 深拷贝。
 	 */
 	fun deepCopyConfigs(): List<CwtDataConfig<*>>? {
-		return configs?.map { config ->
+		return configs?.mapFast { config ->
 			when(config) {
 				is CwtPropertyConfig -> config.copy(configs = config.deepCopyConfigs()).also { it.parent = config.parent }
 				is CwtValueConfig -> config.copy(configs = config.deepCopyConfigs()).also { it.parent = config.parent }
@@ -62,7 +62,7 @@ sealed class CwtDataConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig
 		//因为之后可能需要对得到的声明规则进行注入，需要保证当注入式所有规则列表都是可变的
 		
 		val mergedConfigs: MutableList<CwtDataConfig<*>>? = if(configs != null) SmartList() else null
-		configs?.forEach { config ->
+		configs?.forEachFast { config ->
 			val childConfigList = config.deepMergeConfigs(configContext)
 			if(childConfigList.isNotEmpty()) {
 				for(childConfig in childConfigList) {

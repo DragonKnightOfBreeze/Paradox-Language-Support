@@ -83,8 +83,10 @@ object ParadoxConfigInlineHandler {
      * 将指定的[inlineConfig]内联作为子节点并返回。如果需要拷贝，则进行深拷贝。
      */
     fun inlineWithInlineConfig(config: CwtPropertyConfig, inlineConfig: CwtInlineConfig) : CwtPropertyConfig{
-        val inlined = inlineConfig.config.copy(
-            configs = inlineConfig.config.deepCopyConfigs()
+        val other = inlineConfig.config
+        val inlined = other.copy(
+            key = config.key,
+            configs = other.deepCopyConfigs()
         )
         inlined.parent = config
         inlined.configs?.forEach { it.parent = inlined }

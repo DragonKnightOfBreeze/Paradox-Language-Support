@@ -1243,7 +1243,7 @@ object ParadoxConfigHandler {
         //提示来自脚本文件的value
         run {
             ProgressManager.checkCanceled()
-            val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
+            val tailText = " by $configExpression"
             val selector = valueSetValueSelector(project, contextElement).distinctByName()
             ParadoxValueSetValueSearch.search(valueSetName, selector).processQueryAsync p@{ info ->
                 ProgressManager.checkCanceled()
@@ -1263,8 +1263,7 @@ object ParadoxConfigHandler {
     
     fun completePredefinedValueSetValue(valueSetName: String, result: CompletionResultSet, context: ProcessingContext) = with(context) {
         ProgressManager.checkCanceled()
-        val configExpression = config.expression ?: return@with
-        val tailText = " by $configExpression in ${config.resolved().pointer.containingFile?.name.orAnonymous()}"
+        val tailText = getScriptExpressionTailText(config)
         val valueConfig = configGroup.values[valueSetName] ?: return
         val valueSetValueConfigs = valueConfig.valueConfigMap.values
         if(valueSetValueConfigs.isEmpty()) return
