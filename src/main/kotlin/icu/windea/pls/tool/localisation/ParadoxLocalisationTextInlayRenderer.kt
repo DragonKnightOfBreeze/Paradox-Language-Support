@@ -9,6 +9,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.highlighter.*
@@ -271,17 +272,7 @@ object ParadoxLocalisationTextInlayRenderer {
         return context.truncateLimit <= 0 || context.truncateRemain.get() >= 0
     }
     
-    fun getElementPresentation(element: PsiElement, context: Context) {
-        //这里默认直接解析成对应的valueSetValue，从而快速完成渲染
-        try {
-            PlsThreadLocals.defaultResolveToValueSetValue.set(true)
-            doGetElementPresentation(element, context)
-        } finally {
-            PlsThreadLocals.defaultResolveToValueSetValue.set(false)
-        }
-    }
-    
-    private fun doGetElementPresentation(element: PsiElement, context: Context) = with(context.factory) {
+    fun getElementPresentation(element: PsiElement, context: Context) = with(context.factory) {
         val text = element.text
         val references = element.references
         if(references.isEmpty()) {
@@ -298,7 +289,13 @@ object ParadoxLocalisationTextInlayRenderer {
             }
             i = reference.rangeInElement.endOffset
             val s = reference.rangeInElement.substring(text)
-            context.builder.add(psiSingleReference(smallText(s)) { reference.resolve() })
+            val resolved = reference.resolve()
+            //不要尝试跳转到valueSetValue的声明处
+            if(resolved == null || resolved is ParadoxFakePsiElement) {
+                context.builder.add(smallText(s))
+            } else {
+                context.builder.add(psiSingleReference(smallText(s)) { reference.resolve() })
+            }
         }
         val endOffset = references.last().rangeInElement.endOffset
         if(endOffset != text.length) {

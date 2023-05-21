@@ -19,6 +19,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
@@ -366,7 +367,7 @@ object ParadoxLocalisationPsiImplUtil {
                 val rangeInElement = idElement.textRangeInParent
                 //兼容"event_target:"前缀
                 val text = idElement.text
-                val prefix = ParadoxLocalisationCommandScopePsiReference.EVENT_TARGET_PREFIX
+                val prefix = ParadoxValueSetValueHandler.EVENT_TARGET_PREFIX
                 if(text.startsWith(prefix)) {
                     ParadoxLocalisationCommandScopePsiReference(element, rangeInElement.let { TextRange.create(it.startOffset + prefix.length, it.endOffset) }, prefix)
                 } else {

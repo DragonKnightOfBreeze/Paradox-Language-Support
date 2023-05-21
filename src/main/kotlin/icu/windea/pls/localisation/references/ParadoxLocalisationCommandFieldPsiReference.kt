@@ -32,9 +32,6 @@ class ParadoxLocalisationCommandFieldPsiReference(
 	//缓存解析结果以优化性能
 	
 	override fun resolve(): PsiElement? {
-		if(PlsThreadLocals.defaultResolveToValueSetValue.get()) {
-			return doResolve()
-		}
 		return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
 	}
 	
@@ -57,21 +54,11 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		val predefinedVariable = configGroup.values.get("variable")?.valueConfigMap?.get(name)
 		if(predefinedVariable != null) return predefinedVariable.pointer.element
 		
-		//尝试识别为value[variable]（需要预先在脚本文件中使用到）
-		if(PlsThreadLocals.defaultResolveToValueSetValue.get()) {
-			return ParadoxValueSetValueElement(element, name, "variable", Access.Read, gameType, project)
-		}
-		val variableSelector = valueSetValueSelector(project, element).contextSensitive()
-		val variable = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findFirst()
-		if(variable != null) return ParadoxValueSetValueElement(element, name, "variable", Access.Read, gameType, project)
-		
-		return null
+		//尝试识别为value[variable]
+		return ParadoxValueSetValueElement(element, name, "variable", Access.Read, gameType, project)
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-		if(PlsThreadLocals.defaultResolveToValueSetValue.get()) {
-			return doMultiResolve()
-		}
 		return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
 	}
 	
@@ -94,15 +81,8 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		val predefinedVariable = configGroup.values.get("variable")?.valueConfigMap?.get(name)
 		if(predefinedVariable != null) return predefinedVariable.pointer.element?.let { arrayOf(PsiElementResolveResult(it)) } ?: ResolveResult.EMPTY_ARRAY
 		
-		//尝试识别为value[variable]（需要预先在脚本文件中使用到）
-		if(PlsThreadLocals.defaultResolveToValueSetValue.get()) {
-			return arrayOf(PsiElementResolveResult(ParadoxValueSetValueElement(element, name, "variable", Access.Read, gameType, project)))
-		}
-		val variableSelector = valueSetValueSelector(project, element).contextSensitive()
-		val variable = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findFirst()
-		if(variable != null) return arrayOf(PsiElementResolveResult(ParadoxValueSetValueElement(element, name, "variable", Access.Read, gameType, project)))
-		
-		return ResolveResult.EMPTY_ARRAY
+		//尝试识别为value[variable]
+		return arrayOf(PsiElementResolveResult(ParadoxValueSetValueElement(element, name, "variable", Access.Read, gameType, project)))
 	}
 	
 	override fun getAttributesKey(): TextAttributesKey? {
@@ -124,15 +104,8 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		val predefinedVariable = configGroup.values.get("variable")?.valueConfigMap?.get(name)
 		if(predefinedVariable != null) return ParadoxScriptAttributesKeys.VARIABLE_KEY
 		
-		//尝试识别为value[variable]（需要预先在脚本文件中使用到）
-		if(PlsThreadLocals.defaultResolveToValueSetValue.get()) {
-			return ParadoxScriptAttributesKeys.VARIABLE_KEY
-		}
-		val variableSelector = valueSetValueSelector(project, element)
-		val variable = ParadoxValueSetValueSearch.search(name, "variable", variableSelector).findFirst()
-		if(variable != null) return ParadoxScriptAttributesKeys.VARIABLE_KEY
-		
-		return null
+		//尝试识别为value[variable]
+		return ParadoxScriptAttributesKeys.VARIABLE_KEY
 	}
 	
 	private object Resolver: ResolveCache.AbstractResolver<ParadoxLocalisationCommandFieldPsiReference, PsiElement> {

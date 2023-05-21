@@ -86,9 +86,7 @@ object PlsPatterns {
     val localisationPropertyNameRegex = """[a-zA-Z0-9_.\-']+""".toRegex()
 }
 
-object PlsThreadLocals {
-    val defaultResolveToValueSetValue = ThreadLocal.withInitial { false } //用于优化性能，默认直接将一些引用解析为valueSetValue
-}
+object PlsThreadLocals
 
 object PlsKeys {
     val libraryKey = Key.create<ParadoxLibrary>("paradox.library")

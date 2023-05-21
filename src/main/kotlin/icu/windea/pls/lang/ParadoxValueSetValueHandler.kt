@@ -21,6 +21,9 @@ import icu.windea.pls.script.references.*
 import kotlin.collections.mapNotNullTo
 
 object ParadoxValueSetValueHandler {
+    const val EVENT_TARGET_PREFIX = "event_target:"
+    val EVENT_TARGETS = setOf("event_target", "global_event_target")
+    
     fun getInfos(element: ParadoxScriptStringExpressionElement): List<ParadoxValueSetValueInfo>? {
         if(!element.isExpression()) return null
         //if(element.isParameterized()) return null //排除可能带参数的情况 - 不能在这里排除

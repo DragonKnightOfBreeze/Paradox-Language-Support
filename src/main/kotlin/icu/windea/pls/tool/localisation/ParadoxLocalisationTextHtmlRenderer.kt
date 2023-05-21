@@ -7,6 +7,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
@@ -138,7 +139,7 @@ object ParadoxLocalisationTextHtmlRenderer {
             val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return
             //基于文档的字体大小缩放图标，直到图标宽度等于字体宽度
             //基于这个得到的图标大小并不完美……
-            @Suppress("UnstableApiUsage") 
+            @Suppress("UnstableApiUsage")
             val docFontSize = getDocumentationFontSize().size
             val iconWidth = icon.iconWidth
             val iconHeight = icon.iconHeight
@@ -221,16 +222,6 @@ object ParadoxLocalisationTextHtmlRenderer {
      * 获取嵌入PSI链接的PSI元素的HTML文本。
      */
     fun getElementText(element: PsiElement, context: Context) {
-        //这里默认直接解析成对应的valueSetValue，从而快速完成渲染
-        try {
-            PlsThreadLocals.defaultResolveToValueSetValue.set(true)
-            doGetElementText(element, context)
-        } finally {
-            PlsThreadLocals.defaultResolveToValueSetValue.set(false)
-        }
-    }
-    
-    private fun doGetElementText(element: PsiElement, context: Context) {
         val defaultColor = UIManager.getColor("EditorPane.foreground")
         
         val text = element.text
@@ -249,25 +240,26 @@ object ParadoxLocalisationTextHtmlRenderer {
             }
             i = reference.rangeInElement.endOffset
             val resolved = reference.resolve()
-            if(resolved == null) {
+            //不要尝试跳转到valueSetValue的声明处
+            if(resolved == null || resolved is ParadoxFakePsiElement) {
                 val s = reference.rangeInElement.substring(text)
                 context.builder.append(s.escapeXml())
-                continue
-            }
-            val link = DocumentationElementLinkProvider.create(resolved)
-            if(link != null) {
-                //如果没有颜色，这里需要使用文档的默认前景色，以显示为普通文本
-                val useDefaultColor = context.colorStack.isEmpty()
-                if(useDefaultColor) {
-                    context.builder.append("<span style=\"color: #").append(defaultColor.toHex()).append("\">")
-                }
-                context.builder.append(link)
-                if(useDefaultColor) {
-                    context.builder.append("</span>")
-                }
             } else {
-                val s = reference.rangeInElement.substring(text)
-                context.builder.append(s.escapeXml())
+                val link = DocumentationElementLinkProvider.create(resolved)
+                if(link != null) {
+                    //如果没有颜色，这里需要使用文档的默认前景色，以显示为普通文本
+                    val useDefaultColor = context.colorStack.isEmpty()
+                    if(useDefaultColor) {
+                        context.builder.append("<span style=\"color: #").append(defaultColor.toHex()).append("\">")
+                    }
+                    context.builder.append(link)
+                    if(useDefaultColor) {
+                        context.builder.append("</span>")
+                    }
+                } else {
+                    val s = reference.rangeInElement.substring(text)
+                    context.builder.append(s.escapeXml())
+                }
             }
         }
         val endOffset = references.last().rangeInElement.endOffset
