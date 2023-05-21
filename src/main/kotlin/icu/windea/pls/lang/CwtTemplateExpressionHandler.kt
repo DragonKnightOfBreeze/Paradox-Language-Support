@@ -74,13 +74,13 @@ object CwtTemplateExpressionHandler {
                 val matchGroup = matchResult.groups.get(i++) ?: return false
                 val referenceName = matchGroup.value
                 val expression = ParadoxDataExpression.resolve(referenceName, false)
-                val isMatched = try {
-                    ParadoxConfigHandler.matchesScriptExpression(element, expression, snippetExpression, null, configGroup, matchType)
+                val matched = try {
+                    ParadoxConfigMatcher.matches(element, expression, snippetExpression, null, configGroup).get()
                 } catch(e: Exception) {
                     //java.lang.Throwable: Indexing process should not rely on non-indexed file data
                     return false
                 }
-                if(!isMatched) return false
+                if(!matched) return false
             }
         }
         return true

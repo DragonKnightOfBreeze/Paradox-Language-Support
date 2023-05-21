@@ -16,37 +16,53 @@ import icu.windea.pls.lang.expression.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxConfigMatcher {
+    object Options {
+        /**默认的匹配方式，先尝试通过[Result.ExactMatch]进行匹配，然后再尝试通过其他匹配方式进行匹配。*/
+        const val Default = 0x00
+        /** 对于[Result.LazyIndexAwareExactMatch]，匹配结果直接返回true。 */
+        const val StaticMatch = 0x01
+        /** 对于[Result.LazyExactMatch]，匹配结果直接返回true。 */
+        const val RelaxMatch = 0x02
+        /** 对于最终匹配得到的那个结果，需要再次判断是否精确匹配。 */
+        const val ExactMatch = 0x04
+    }
+    
     sealed class Result {
-        abstract fun get(): Boolean
+        abstract fun get(options: Int = Options.Default): Boolean
         
         object NotMatch : Result() {
-            override fun get() = false
+            override fun get(options: Int) = false
         }
         
         object ExactMatch : Result() {
-            override fun get() = true
+            override fun get(options: Int) = true
         }
         
         object ParameterizedMatch : Result() {
-            override fun get() = true
+            override fun get(options: Int) = true
         }
         
-        class LazyMatch(val predicate: () -> Boolean) : Result() {
-            override fun get() = predicate()
+        class LazyExactMatch(val predicate: (options: Int) -> Boolean) : Result() {
+            override fun get(options: Int): Boolean {
+                return if(BitUtil.isSet(options, Options.RelaxMatch)) true else predicate(options)
+            }
         }
         
-        class LazyExactMatch(val predicate: () -> Boolean) : Result() {
-            override fun get() = predicate()
-        }
-        
-        class LazyIndexAwareExactMatch(val predicate: () -> Boolean) : Result() {
-            override fun get() = predicate()
+        class LazyIndexAwareExactMatch(val predicate: (options: Int) -> Boolean) : Result() {
+            override fun get(options: Int): Boolean {
+                return if(BitUtil.isSet(options, Options.StaticMatch)) true else predicate(options)
+            }
         }
     }
     
-    data class ResultValue<out T>(val value: T, val result: Result)
+    data class ResultValue<out T>(val value: T, val result: Result) {
+        fun exactValue(options: Int): T? {
+            if(BitUtil.isSet(options, Options.ExactMatch) && !result.get(options)) return null
+            return value
+        }
+    }
     
-    inline fun <T : Any> find(collection: Collection<T>?, matcher: (T) -> Result?): T? {
+    inline fun <T : Any> find(collection: Collection<T>?, options: Int = Options.Default, matcher: (T) -> Result?): T? {
         if(collection.isNullOrEmpty()) return null
         var tempResults: MutableList<ResultValue<T>>? = null
         for(v in collection) {
@@ -57,14 +73,14 @@ object ParadoxConfigMatcher {
             tempResults.add(ResultValue(v, r))
         }
         if(tempResults.isNullOrEmpty()) return null
-        if(tempResults.size == 1) return tempResults[0].value
-        tempResults.forEachFast { (v, r) -> 
-            if(r.get()) return v
+        if(tempResults.size == 1) return tempResults[0].exactValue(options)
+        tempResults.forEachFast { (v, r) ->
+            if(r.get(options)) return v
         }
         return null
     }
     
-    inline fun <T : Any> findAll(collection: Collection<T>?, matcher: (T) -> Result?): List<T> {
+    inline fun <T : Any> findAll(collection: Collection<T>?, options: Int = Options.Default, matcher: (T) -> Result?): List<T> {
         if(collection.isNullOrEmpty()) return emptyList()
         var tempResults: MutableList<ResultValue<T>>? = null
         for(e in collection) {
@@ -75,10 +91,10 @@ object ParadoxConfigMatcher {
             tempResults.add(ResultValue(e, r))
         }
         if(tempResults.isNullOrEmpty()) return emptyList()
-        if(tempResults.size == 1) return tempResults[0].value.toSingletonList()
+        if(tempResults.size == 1) return tempResults[0].exactValue(options).toSingletonListOrEmpty()
         val result = SmartList<T>()
         tempResults.forEachFast { (v, r) ->
-            if(r.get()) result.add(v)
+            if(r.get(options)) result.add(v)
         }
         return result
     }
@@ -112,7 +128,9 @@ object ParadoxConfigMatcher {
                 if(expression.isKey != false) return false
                 if(expression.type != ParadoxDataType.BlockType) return true
                 if(config !is CwtDataConfig) return Result.NotMatch
-                return Result.LazyExactMatch { matchesScriptExpressionInBlock(element, config) }
+                return Result.LazyExactMatch {
+                    matchesScriptExpressionInBlock(element, config)
+                }
             }
             dataType == CwtDataType.Bool -> {
                 return expression.type.isBooleanType()

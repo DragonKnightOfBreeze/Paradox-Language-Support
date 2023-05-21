@@ -15,11 +15,6 @@ object CwtConfigMatchType {
 	const val NOT_EXACT = 0x02
 	
 	/**
-	 * 使用所有重载的规则。
-	 */
-	const val USE_ALL_OVERRIDDEN = 0x04
-	
-	/**
 	 * 需要访问文件路径索引。
 	 * @see icu.windea.pls.core.index.ParadoxFilePathIndex
 	 */
