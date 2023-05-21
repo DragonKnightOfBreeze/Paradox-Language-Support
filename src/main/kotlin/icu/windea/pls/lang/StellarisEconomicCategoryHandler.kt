@@ -167,7 +167,7 @@ object StellarisEconomicCategoryHandler {
     
     fun resolveModifierCategory(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
         val finalValue = value ?: "economic_unit" //default to economic_unit
-        val enumConfig = configGroup.enums.getValue("scripted_modifier_categories")
+        val enumConfig = configGroup.enums.getValue("scripted_modifier_category")
         var keys = getModifierCategoryOptionValues(enumConfig, finalValue)
         if(keys == null) keys = getModifierCategoryOptionValues(enumConfig, "economic_unit")
         if(keys == null) keys = emptySet() //unexpected
