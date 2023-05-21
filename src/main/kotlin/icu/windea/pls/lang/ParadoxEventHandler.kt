@@ -27,7 +27,7 @@ object ParadoxEventHandler {
         if(dotIndex == -1) return false
         val prefix = eventId.substring(0, dotIndex)
         val no = eventId.substring(dotIndex + 1)
-        return prefix.isNotEmpty() && prefix.isExactIdentifier() && no.isNotEmpty() && no.isExactIdentifier()
+        return prefix.isNotEmpty() && prefix.isExactIdentifier() && no.isNotEmpty() && no.all { it.isExactDigit() }
     }
     
     fun isMatchedEventId(eventId: String, eventNamespace: String): Boolean {
