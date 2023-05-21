@@ -25,6 +25,7 @@ class ParadoxLocalisationAnnotator : Annotator {
     }
     
     private fun check(element: PsiElement, holder: AnnotationHolder) {
+        //by @雪丶我
         //不允许紧接的图标
         if(element is ParadoxLocalisationIcon && element.prevSibling is ParadoxLocalisationIcon) {
             val startOffset = element.startOffset
