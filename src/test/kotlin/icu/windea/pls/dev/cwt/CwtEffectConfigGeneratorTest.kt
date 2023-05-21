@@ -15,3 +15,4 @@ class CwtEffectConfigGeneratorTest {
         generator.generate()
     }
 }
+
