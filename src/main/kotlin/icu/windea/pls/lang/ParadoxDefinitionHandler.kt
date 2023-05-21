@@ -80,9 +80,9 @@ object ParadoxDefinitionHandler {
     
     private fun doGetInfoFromStub(element: ParadoxScriptDefinitionElement, stub: ParadoxScriptDefinitionElementStub<out ParadoxScriptDefinitionElement>, project: Project): ParadoxDefinitionInfo? {
         val gameType = stub.gameType ?: return null
-        val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
         val name = stub.name.takeIfNotEmpty() ?: return null
         val type = stub.type.takeIfNotEmpty() ?: return null
+        val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
         val typeConfig = configGroup.types[type] ?: return null
         //val subtypes = stub.subtypes
         //val subtypeConfigs = subtypes?.mapNotNull { typeConfig.subtypes[it] }

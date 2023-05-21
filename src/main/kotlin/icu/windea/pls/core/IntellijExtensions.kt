@@ -363,6 +363,7 @@ fun Path.toVirtualFile(refreshIfNeed: Boolean = false): VirtualFile? {
 }
 
 /** 将VirtualFile转化为指定类型的PsiFile。 */
+@Suppress("NOTHING_TO_INLINE")
 inline fun VirtualFile.toPsiFile(project: Project): PsiFile? {
     return PsiManager.getInstance(project).findFile(this)
 }

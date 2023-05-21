@@ -1278,14 +1278,15 @@ object ParadoxConfigHandler {
                     element is ParadoxScriptPropertyKey -> element.parent as? ParadoxScriptProperty ?: return emptyList()
                     else -> throw UnsupportedOperationException()
                 }
+                val definitionMemberInfo = memberElement.definitionMemberInfo ?: return emptyList()
+                if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
+                
                 val expression = when {
                     element is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxDataExpression.resolve(it, matchOptions) }
                     element is ParadoxScriptFile -> BlockParadoxDataExpression
                     element is ParadoxScriptPropertyKey -> element.propertyValue?.let { ParadoxDataExpression.resolve(it, matchOptions) }
                     else -> throw UnsupportedOperationException()
                 }
-                val definitionMemberInfo = memberElement.definitionMemberInfo ?: return emptyList()
-                if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
                 
                 //如果无法匹配value，则取第一个
                 val configs = definitionMemberInfo.getConfigs(matchOptions)

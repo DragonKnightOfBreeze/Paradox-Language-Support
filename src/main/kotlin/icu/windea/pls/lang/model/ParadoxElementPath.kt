@@ -2,6 +2,7 @@ package icu.windea.pls.lang.model
 
 import com.google.common.cache.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 
 /**
  * 定义或定义属性相对于所属文件或定义的路径。保留大小写。
@@ -47,8 +48,16 @@ interface ParadoxElementPath : Iterable<Tuple3<String, Boolean, Boolean>> {
         }
         
         fun resolve(originalSubPaths: List<String>): ParadoxElementPath {
-            val path = originalSubPaths.joinToString("/") {
-                it.replace("/", "\\/")
+            //optimized
+            val path = buildString {
+                var isFirst = true
+                originalSubPaths.forEachFast { p ->
+                    if(isFirst) isFirst = false else append('/')
+                    p.forEachFast { c ->
+                        if(c == '/') append('\\')
+                        append(c)
+                    }
+                }
             }
             return cache[path]
         }
@@ -59,6 +68,7 @@ class ParadoxElementPathImpl(
     override val path: String
 ) : ParadoxElementPath {
     override val subPaths: List<String> = buildList {
+        //optimized
         val builder = StringBuilder();
         var escape = false
         path.forEach { c ->
@@ -69,7 +79,7 @@ class ParadoxElementPathImpl(
                 c == '/' && !escape -> {
                     add(builder.toString())
                     builder.clear()
-                } 
+                }
                 else -> {
                     if(escape) escape = false
                     builder.append(c)

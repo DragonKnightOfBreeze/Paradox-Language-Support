@@ -504,11 +504,17 @@ private fun String.doMatchAntPath(pattern: String, ignoreCase: Boolean): Boolean
  * @param ignoreCase 是否忽略大小写。默认为`true`。
  */
 fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolean = false, ignoreCase: Boolean = true): Boolean {
-    val path = if(ignoreCase) this.lowercase().trim('/') else this.trim('/')
-    val otherPath = if(ignoreCase) other.lowercase().trim('/') else other.trim('/')
-    if(path == otherPath) return acceptSelf
+    var path = this.trimFast('/')
+    if(ignoreCase) {
+        path = path.lowercase()
+    }
+    var otherPath = other.trimFast('/')
+    if(ignoreCase) {
+        otherPath = otherPath.lowercase()
+    }
     if(path.length > otherPath.length) return false
     if(path == otherPath.take(path.length)) {
+        if(path.length == other.length) return acceptSelf
         if(otherPath[path.length] != '/') return false
         if(strict && otherPath.indexOf('/', path.length + 1) != -1) return false
         return true

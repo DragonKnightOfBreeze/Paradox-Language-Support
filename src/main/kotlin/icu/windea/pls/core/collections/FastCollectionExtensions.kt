@@ -2,6 +2,13 @@ package icu.windea.pls.core.collections
 
 import com.intellij.util.*
 
+inline fun String.forEachFast(action: (Char) -> Unit) {
+    val length = this.length
+    for(i in 0 until length) {
+        action(this[i])
+    }
+}
+
 inline fun <T> List<T>.forEachFast(action: (T) -> Unit) {
     val size = this.size
     for(i in 0 until size) {
