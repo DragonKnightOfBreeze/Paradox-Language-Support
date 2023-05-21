@@ -1601,15 +1601,15 @@ object ParadoxConfigHandler {
     }
     
     fun getPropertyConfigs(element: PsiElement, allowDefinition: Boolean = false, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtPropertyConfig> {
-        return getConfigsFromCache(element, CwtPropertyConfig::class.java, allowDefinition, orDefault, matchType)
+        return doGetConfigsFromCache(element, CwtPropertyConfig::class.java, allowDefinition, orDefault, matchType)
     }
     
     fun getValueConfigs(element: PsiElement, allowDefinition: Boolean = true, orDefault: Boolean = true, matchType: Int = CwtConfigMatchType.DEFAULT): List<CwtValueConfig> {
-        return getConfigsFromCache(element, CwtValueConfig::class.java, allowDefinition, orDefault, matchType)
+        return doGetConfigsFromCache(element, CwtValueConfig::class.java, allowDefinition, orDefault, matchType)
     }
     
-    private fun <T : CwtDataConfig<*>> getConfigsFromCache(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
-        val configsMap = getConfigsCacheFromCache(element) ?: return emptyList()
+    private fun <T : CwtDataConfig<*>> doGetConfigsFromCache(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
+        val configsMap = doGetConfigsCacheFromCache(element) ?: return emptyList()
         val cacheKey = buildString {
             when(configType) {
                 CwtPropertyConfig::class.java -> append("property")
@@ -1622,10 +1622,10 @@ object ParadoxConfigHandler {
             append("#").append(orDefault.toIntString())
             append("#").append(matchType)
         }
-        return configsMap.getOrPut(cacheKey) { resolveConfigs(element, configType, allowDefinition, orDefault, matchType) } as List<T>
+        return configsMap.getOrPut(cacheKey) { doConfigs(element, configType, allowDefinition, orDefault, matchType) } as List<T>
     }
     
-    private fun getConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtConfig<*>>>? {
+    private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtConfig<*>>>? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsCacheKey) {
             val value = ConcurrentHashMap<String, List<CwtConfig<*>>>()
             //invalidated on file modification or ScriptFileTracker
@@ -1635,7 +1635,7 @@ object ParadoxConfigHandler {
         }
     }
     
-    private fun <T : CwtDataConfig<*>> resolveConfigs(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
+    private fun <T : CwtDataConfig<*>> doConfigs(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchType: Int): List<T> {
         //当输入的元素是key或property时，输入的规则类型必须是property
         val result = when(configType) {
             CwtPropertyConfig::class.java -> {
@@ -1802,13 +1802,13 @@ object ParadoxConfigHandler {
         val childConfigs = configs.flatMap { it.configs.orEmpty() }
         if(childConfigs.isEmpty()) return emptyMap()
         
-        val childOccurrenceMap = getChildOccurrenceMapCacheFromCache(element) ?: return emptyMap()
+        val childOccurrenceMap = doGetChildOccurrenceMapCacheFromCache(element) ?: return emptyMap()
         //NOTE cacheKey基于childConfigs即可，key相同而value不同的规则，上面的cardinality应当保证是一样的 
         val cacheKey = childConfigs.joinToString(" ")
-        return childOccurrenceMap.getOrPut(cacheKey) { resolveChildOccurrenceMap(element, configs) }
+        return childOccurrenceMap.getOrPut(cacheKey) { doGetChildOccurrenceMap(element, configs) }
     }
     
-    private fun getChildOccurrenceMapCacheFromCache(element: ParadoxScriptMemberElement): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
+    private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMemberElement): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedChildOccurrenceMapCacheKey) {
             val value = ConcurrentHashMap<String, Map<CwtDataExpression, Occurrence>>()
             //invalidated on file modification or ScriptFileTracker
@@ -1818,11 +1818,12 @@ object ParadoxConfigHandler {
         }
     }
     
-    private fun resolveChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Map<CwtDataExpression, Occurrence> {
+    private fun doGetChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Map<CwtDataExpression, Occurrence> {
         if(configs.isEmpty()) return emptyMap()
-        val childConfigs = configs.flatMap { it.configs.orEmpty() }
-        if(childConfigs.isEmpty()) return emptyMap()
         val configGroup = configs.first().info.configGroup
+        //这里需要先按优先级排序
+        val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority(configGroup) { it.expression }
+        if(childConfigs.isEmpty()) return emptyMap()
         val project = configGroup.project
         val blockElement = when {
             element is ParadoxScriptDefinitionElement -> element.block

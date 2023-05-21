@@ -93,7 +93,8 @@ object ParadoxValueSetValueIndex {
     }
     
     fun getData(valueSetName: String, file: VirtualFile, project: Project): Map<String, List<ParadoxValueSetValueInfo>>? {
-        return gist.getFileData(project, file).valueSetValueGroup[valueSetName]
+        val fileData = gist.getFileData(project, file)
+        return fileData.valueSetValueGroup[valueSetName]
     }
 }
 

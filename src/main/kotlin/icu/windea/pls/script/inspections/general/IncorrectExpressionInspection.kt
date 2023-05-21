@@ -27,6 +27,10 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
             //TODO 提取成扩展点并加入一些极个别情况下的检查
             
             private fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
+                //跳过一些脚本表达式类型
+                 if(element is ParadoxScriptBlock) return
+                 if(element is ParadoxScriptBoolean) return
+                
                 //得到完全匹配的CWT规则
                 val isKey = element is ParadoxScriptPropertyKey
                 val config = ParadoxConfigHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return

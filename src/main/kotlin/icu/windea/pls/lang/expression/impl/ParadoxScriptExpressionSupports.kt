@@ -24,7 +24,6 @@ import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.localisation.*
 
 class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSupport() {
     override fun supports(config: CwtConfig<*>): Boolean {
@@ -553,6 +552,7 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptConstantLikeExpressi
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         return when {
+            config is CwtPropertyConfig && config.inlineableConfig is CwtSingleAliasConfig -> config.pointer.element
             config is CwtDataConfig<*> -> config.resolved().pointer.element
             else -> config.pointer.element
         }

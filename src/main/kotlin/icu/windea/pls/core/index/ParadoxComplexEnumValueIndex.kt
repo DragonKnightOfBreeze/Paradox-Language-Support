@@ -104,7 +104,8 @@ object ParadoxComplexEnumValueIndex {
     }
     
     fun getData(enumName: String, file: VirtualFile, project: Project): Map<String, List<ParadoxComplexEnumValueInfo>>? {
-        return gist.getFileData(project, file).complexEnumValueGroup[enumName]
+        val fileData = gist.getFileData(project, file)
+        return fileData.complexEnumValueGroup[enumName]
     }
 }
 

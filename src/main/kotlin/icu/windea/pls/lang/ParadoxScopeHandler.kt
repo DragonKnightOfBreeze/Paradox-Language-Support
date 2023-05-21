@@ -211,8 +211,7 @@ object ParadoxScopeHandler {
         val parentMember = findParentMember(element) ?: return null
         val parentScopeContext = getScopeContext(parentMember)
         val configs = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)
-        val config = configs.firstOrNull()
-        if(config == null) return null
+        val config = configs.firstOrNull() ?: return null
         
         val overriddenScopeContext = ParadoxOverriddenScopeContextProvider.getOverriddenScopeContext(element, config)
         if(overriddenScopeContext != null) return overriddenScopeContext
