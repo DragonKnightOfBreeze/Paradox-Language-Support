@@ -248,7 +248,7 @@ object ParadoxConfigMatcher {
                 if(complexEnumConfig != null) {
                     //complexEnumValue的值必须合法
                     if(ParadoxComplexEnumValueHandler.getName(expression.text) == null) return false
-                    return getComplexEnumValueMatchResult(name, element, enumName, complexEnumConfig, project, options)
+                    return getComplexEnumValueMatchResult(element, name, enumName, complexEnumConfig, project, options)
                 }
                 return false
             }
@@ -267,32 +267,7 @@ object ParadoxConfigMatcher {
                 if(expression.quoted) return false //不允许用引号括起
                 if(!expression.type.isStringType()) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                return Result.LazyExactMatch(options) p@{
-                    val textRange = TextRange.create(0, expression.text.length)
-                    val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
-                    if(scopeFieldExpression == null) return@p false
-                    when(configExpression.type) {
-                        CwtDataType.ScopeField -> {
-                            return@p true
-                        }
-                        CwtDataType.Scope -> {
-                            val expectedScope = configExpression.value ?: return@p true
-                            val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@p true
-                            val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return@p true
-                            val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)
-                            if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return@p true
-                        }
-                        CwtDataType.ScopeGroup -> {
-                            val expectedScopeGroup = configExpression.value ?: return@p true
-                            val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@p true
-                            val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return@p true
-                            val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)
-                            if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return@p true
-                        }
-                        else -> {}
-                    }
-                    false
-                }
+                return getScopeFieldMatchResult(element, expression, configExpression, configGroup, options)
             }
             dataType.isValueFieldType() -> {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
@@ -454,14 +429,47 @@ object ParadoxConfigMatcher {
         }
     }
     
-    private fun getComplexEnumValueMatchResult(name: String, element: PsiElement, enumName: String, complexEnumConfig: CwtComplexEnumConfig, project: Project, options: Int): Result {
-        //TODO
+    private fun getComplexEnumValueMatchResult(element: PsiElement, name: String, enumName: String, complexEnumConfig: CwtComplexEnumConfig, project: Project, options: Int): Result {
+        val searchScope = complexEnumConfig.searchScopeType
+        if(searchScope == null) {
+            val cacheKey = "ce#${enumName}#${name}"
+            return getCachedResult(element, cacheKey, options) {
+                val selector = complexEnumValueSelector(project, element)
+                ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
+            }
+        }
         return Result.LazyIndexAwareExactMatch(options) {
-            val searchScope = complexEnumConfig.searchScopeType
-            val selector = complexEnumValueSelector(project, element)
-                .withSearchScopeType(searchScope)
-            val complexEnumValueInfo = ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst()
-            complexEnumValueInfo != null
+            val selector = complexEnumValueSelector(project, element).withSearchScopeType(searchScope)
+            ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
+        }
+    }
+    
+    private fun getScopeFieldMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, options: Int): Result {
+        return Result.LazyIndexAwareExactMatch(options) p@{
+            val textRange = TextRange.create(0, expression.text.length)
+            val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
+            if(scopeFieldExpression == null) return@p false
+            when(configExpression.type) {
+                CwtDataType.ScopeField -> {
+                    return@p true
+                }
+                CwtDataType.Scope -> {
+                    val expectedScope = configExpression.value ?: return@p true
+                    val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@p true
+                    val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return@p true
+                    val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)
+                    if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return@p true
+                }
+                CwtDataType.ScopeGroup -> {
+                    val expectedScopeGroup = configExpression.value ?: return@p true
+                    val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@p true
+                    val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return@p true
+                    val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)
+                    if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return@p true
+                }
+                else -> {}
+            }
+            false
         }
     }
     
@@ -482,7 +490,7 @@ object ParadoxConfigMatcher {
         }
     }
     
-    class Listener: PsiModificationTracker.Listener {
+    class Listener : PsiModificationTracker.Listener {
         override fun modificationCountChanged() {
             configMatchResultCache.invalidateAll()
         }

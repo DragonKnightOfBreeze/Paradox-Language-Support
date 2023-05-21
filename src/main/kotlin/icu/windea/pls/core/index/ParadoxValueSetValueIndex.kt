@@ -28,7 +28,6 @@ object ParadoxValueSetValueIndex {
         val valueSetValueList: MutableList<ParadoxValueSetValueInfo> = SmartList()
     ) {
         val valueSetValueGroup by lazy {
-            if(valueSetValueList.isEmpty()) return@lazy emptyMap()
             buildMap<String, Map<String, List<ParadoxValueSetValueInfo>>> {
                 valueSetValueList.forEachFast { info ->
                     val map = getOrPut(info.valueSetName) { mutableMapOf() } as MutableMap

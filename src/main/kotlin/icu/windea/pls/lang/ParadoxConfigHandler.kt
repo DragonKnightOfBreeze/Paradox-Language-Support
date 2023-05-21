@@ -75,8 +75,8 @@ object ParadoxConfigHandler {
         if(constKey != null) return constKey
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
         val expression = ParadoxDataExpression.resolve(key, quoted, true)
-        return keys.find {
-            ParadoxConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchOptions).get()
+        return ParadoxConfigMatcher.find(keys, matchOptions) {
+            ParadoxConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchOptions)
         }
     }
     
@@ -85,8 +85,8 @@ object ParadoxConfigHandler {
         if(constKey != null) return listOf(constKey)
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptyList()
         val expression = ParadoxDataExpression.resolve(key, quoted, true)
-        return keys.filter {
-            ParadoxConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchOptions).get()
+        return ParadoxConfigMatcher.findAll(keys, matchOptions) {
+            ParadoxConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchOptions)
         }
     }
     

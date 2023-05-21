@@ -26,7 +26,6 @@ object ParadoxComplexEnumValueIndex {
         val complexEnumValueList: MutableList<ParadoxComplexEnumValueInfo> = SmartList()
     ) {
         val complexEnumValueGroup by lazy {
-            if(complexEnumValueList.isEmpty()) return@lazy emptyMap()
             buildMap<String, Map<String, List<ParadoxComplexEnumValueInfo>>> {
                 complexEnumValueList.forEachFast { info ->
                     val map = getOrPut(info.enumName) { mutableMapOf() } as MutableMap

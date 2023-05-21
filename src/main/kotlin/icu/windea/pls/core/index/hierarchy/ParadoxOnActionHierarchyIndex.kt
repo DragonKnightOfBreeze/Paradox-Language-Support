@@ -23,7 +23,6 @@ object ParadoxOnActionHierarchyIndex {
         val onActionInfos: MutableList<OnActionInfo> = SmartList()
     ) {
         val eventToOnActionsMap by lazy {
-            if(onActionInfos.isEmpty()) return@lazy emptyMap()
             buildMap<String, Set<String>> {
                 onActionInfos.forEachFast { onActionInfo ->
                     onActionInfo.eventInvocationInfos.forEachFast { eventInvocationInfo ->
