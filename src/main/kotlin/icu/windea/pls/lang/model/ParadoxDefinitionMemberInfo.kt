@@ -36,7 +36,7 @@ class ParadoxDefinitionMemberInfo(
     fun getConfigs(matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtDataConfig<*>> {
         var cacheKey = "$matchOptions"
         //这里需要特别处理缓存的键
-        val configContext = definitionInfo.getDeclaration(matchOptions)?.getUserData(CwtDeclarationConfig.configContextKey)
+        val configContext = definitionInfo.getDeclaration(matchOptions)?.getUserData(CwtDataConfig.Keys.configContextKey)
         if(configContext != null) {
             cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
         }
@@ -49,7 +49,7 @@ class ParadoxDefinitionMemberInfo(
     fun getChildConfigs(matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtDataConfig<*>> {
         var cacheKey = "child#$matchOptions"
         //这里需要特别处理缓存的键
-        val configContext = definitionInfo.getDeclaration(matchOptions)?.getUserData(CwtDeclarationConfig.configContextKey)
+        val configContext = definitionInfo.getDeclaration(matchOptions)?.getUserData(CwtDataConfig.Keys.configContextKey)
         if(configContext != null) {
             cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
         }

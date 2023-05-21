@@ -74,7 +74,7 @@ object CwtTemplateExpressionHandler {
                 val referenceName = matchGroup.value
                 val expression = ParadoxDataExpression.resolve(referenceName, false)
                 val matched = try {
-                    ParadoxConfigMatcher.matches(element, expression, snippetExpression, null, configGroup).get()
+                    ParadoxConfigMatcher.matches(element, expression, snippetExpression, null, configGroup, matchOptions).get()
                 } catch(e: Exception) {
                     //java.lang.Throwable: Indexing process should not rely on non-indexed file data
                     return false
