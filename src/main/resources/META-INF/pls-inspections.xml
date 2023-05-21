@@ -139,7 +139,7 @@
                      groupPathKey="inspection.script.bug.path"
                      implementationClass="icu.windea.pls.script.inspections.bug.UnsupportedInlineScriptUsageInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedRecursion"
-                     enabledByDefault="true" level="WARNING"
+                     enabledByDefault="false" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.bug.unsupportedRecursion"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
                      groupPathKey="inspection.script.bug.path"
@@ -318,7 +318,7 @@
     <!--endregion-->
     <!--region Paradox localisation/Possible bugs-->
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedRecursion"
-                     enabledByDefault="true" level="WARNING"
+                     enabledByDefault="false" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.localisation.bug.unsupportedRecursion"
                      groupBundle="messages.PlsBundle" groupKey="inspection.localisation.bug"
                      groupPathKey="inspection.localisation.bug.path"
