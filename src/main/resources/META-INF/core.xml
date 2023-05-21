@@ -117,6 +117,9 @@
               topic="icu.windea.pls.core.listeners.ParadoxModSettingsListener"/>
     <listener class="icu.windea.pls.core.listeners.ParadoxUpdateSettingsOnRootInfoChangedListener"
               topic="icu.windea.pls.core.listeners.ParadoxRootInfoListener"/>
+
+    <listener class="icu.windea.pls.lang.ParadoxConfigMatcher$Listener"
+              topic="com.intellij.psi.util.PsiModificationTracker$Listener"/>
   </applicationListeners>
   
   <projectListeners>

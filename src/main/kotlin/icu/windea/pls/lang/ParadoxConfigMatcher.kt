@@ -1,9 +1,13 @@
 package icu.windea.pls.lang
 
+import com.google.common.cache.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
@@ -12,8 +16,8 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
-import icu.windea.pls.lang.expression.*
 import icu.windea.pls.script.psi.*
+import java.util.concurrent.*
 
 object ParadoxConfigMatcher {
     object Options {
@@ -43,15 +47,13 @@ object ParadoxConfigMatcher {
         }
         
         class LazyExactMatch(val options: Int, val predicate: () -> Boolean) : Result() {
-            override fun get(): Boolean {
-                return if(BitUtil.isSet(options, Options.RelaxMatch)) true else predicate()
-            }
+            private val result by lazy { predicate() }
+            override fun get() = if(BitUtil.isSet(options, Options.RelaxMatch)) true else result
         }
         
         class LazyIndexAwareExactMatch(val options: Int, val predicate: () -> Boolean) : Result() {
-            override fun get(): Boolean {
-                return if(BitUtil.isSet(options, Options.StaticMatch)) true else predicate()
-            }
+            private val result by lazy { predicate() }
+            override fun get() = if(BitUtil.isSet(options, Options.StaticMatch)) true else result
         }
     }
     
@@ -118,7 +120,12 @@ object ParadoxConfigMatcher {
         configGroup: CwtConfigGroup,
         options: Int = Options.Default
     ): Result {
-        return doMatch(element, expression, config, configExpression, configGroup, options).toResult()
+        val result = doMatch(element, expression, config, configExpression, configGroup, options)
+        return when {
+            result is Result -> result
+            result is Boolean -> if(result) Result.ExactMatch else Result.NotMatch
+            else -> throw IllegalStateException()
+        }
     }
     
     private fun doMatch(
@@ -130,7 +137,7 @@ object ParadoxConfigMatcher {
         options: Int
     ): Any {
         //匹配空字符串
-        if(configExpression.isEmpty()) return expression.isEmpty().toResult()
+        if(configExpression.isEmpty()) return expression.isEmpty()
         
         val project = configGroup.project
         val dataType = configExpression.type
@@ -193,27 +200,18 @@ object ParadoxConfigMatcher {
             dataType == CwtDataType.Localisation -> {
                 if(!expression.type.isStringType()) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                return Result.LazyIndexAwareExactMatch(options) {
-                    val selector = localisationSelector(project, element)
-                    ParadoxLocalisationSearch.search(expression.text, selector).findFirst() != null
-                }
+                return getLocalisationMatchResult(element, expression, project, options)
             }
             dataType == CwtDataType.SyncedLocalisation -> {
                 if(!expression.type.isStringType()) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                return Result.LazyIndexAwareExactMatch(options) {
-                    val selector = localisationSelector(project, element)
-                    ParadoxSyncedLocalisationSearch.search(expression.text, selector).findFirst() != null
-                }
+                return getSyncedLocalisationMatchResult(element, expression, project, options)
             }
             dataType == CwtDataType.InlineLocalisation -> {
                 if(!expression.type.isStringType()) return false
                 if(expression.quoted) return true //"quoted_string" -> any string
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                return Result.LazyIndexAwareExactMatch(options) {
-                    val selector = localisationSelector(project, element)
-                    ParadoxSyncedLocalisationSearch.search(expression.text, selector).findFirst() != null
-                }
+                return getSyncedLocalisationMatchResult(element, expression, project, options)
             }
             dataType == CwtDataType.StellarisNameFormat -> {
                 if(!expression.type.isStringType()) return false
@@ -226,23 +224,13 @@ object ParadoxConfigMatcher {
             dataType.isPathReferenceType() -> {
                 if(!expression.type.isStringType()) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
-                if(pathReferenceExpressionSupport == null) return false
-                return Result.LazyIndexAwareExactMatch(options) {
-                    val pathReference = expression.text.normalizePath()
-                    val selector = fileSelector(project, element)
-                    ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null
-                }
+                return getPathReferenceMatchResult(element, expression, configExpression, project, options)
             }
             dataType == CwtDataType.Definition -> {
                 //注意这里可能是一个整数，例如，对于<technology_tier>
                 if(!expression.type.isStringType() && expression.type != ParadoxDataType.IntType) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                val typeExpression = configExpression.value ?: return false //invalid cwt config
-                return Result.LazyIndexAwareExactMatch(options) {
-                    val selector = definitionSelector(project, element)
-                    ParadoxDefinitionSearch.search(expression.text, typeExpression, selector).findFirst() != null
-                }
+                return getDefinitionMatchResult(element, expression, configExpression, project, options)
             }
             dataType == CwtDataType.EnumValue -> {
                 if(!expression.type.isStringLikeType()) return false
@@ -259,13 +247,7 @@ object ParadoxConfigMatcher {
                 if(complexEnumConfig != null) {
                     //complexEnumValue的值必须合法
                     if(ParadoxComplexEnumValueHandler.getName(expression.text) == null) return false
-                    return Result.LazyIndexAwareExactMatch(options) {
-                        val searchScope = complexEnumConfig.searchScopeType
-                        val selector = complexEnumValueSelector(project, element)
-                            .withSearchScopeType(searchScope)
-                        val complexEnumValueInfo = ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst()
-                        complexEnumValueInfo != null
-                    }
+                    return getComplexEnumValueMatchResult(name, element, enumName, complexEnumConfig, project, options)
                 }
                 return false
             }
@@ -345,9 +327,7 @@ object ParadoxConfigMatcher {
             }
             dataType == CwtDataType.Modifier -> {
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                return Result.LazyIndexAwareExactMatch(options) {
-                    ParadoxModifierHandler.matchesModifier(expression.text, element, configGroup)
-                }
+                return getModifierMatchResult(element, expression, configGroup, options)
             }
             dataType == CwtDataType.Parameter -> {
                 //匹配参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
@@ -388,9 +368,7 @@ object ParadoxConfigMatcher {
                 if(!expression.type.isStringLikeType()) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 //允许用引号括起
-                return Result.LazyIndexAwareExactMatch(options) {
-                    CwtTemplateExpression.resolve(configExpression.expressionString).matches(expression.text, element, configGroup)
-                }
+                return getTemplateMatchResult(element, expression, configExpression, configGroup, options)
             }
             dataType == CwtDataType.Constant -> {
                 val value = configExpression.value
@@ -429,12 +407,83 @@ object ParadoxConfigMatcher {
         return actualKeys.any { it in keys }
     }
     
-    @Suppress("NOTHING_TO_INLINE")
-    private inline fun Any.toResult(): Result {
-        return when {
-            this is Result -> this
-            this is Boolean -> if(this) Result.ExactMatch else Result.NotMatch
-            else -> throw IllegalStateException()
+    private val configMatchResultCache = CacheBuilder.newBuilder().buildCache<VirtualFile, MutableMap<String, Result>> { ConcurrentHashMap() }
+    
+    private fun getCachedResult(element: PsiElement, cacheKey: String, options: Int, predicate: () -> Boolean): Result {
+        val rootFile = selectRootFile(element) ?: return Result.LazyIndexAwareExactMatch(options, predicate)
+        val cache = configMatchResultCache.get(rootFile)
+        return cache.getOrPut(cacheKey) { Result.LazyIndexAwareExactMatch(options, predicate) }
+            
+    }
+    
+    private fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project, options: Int): Result {
+        val name = expression.text
+        val cacheKey = "l#$name"
+        return getCachedResult(element, cacheKey, options) {
+            val selector = localisationSelector(project, element)
+            ParadoxLocalisationSearch.search(name, selector).findFirst() != null
+        }
+    }
+    
+    private fun getSyncedLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project, options: Int): Result {
+        val name = expression.text
+        val cacheKey = "ls#$name"
+        return getCachedResult(element, cacheKey, options) {
+            val selector = localisationSelector(project, element)
+            ParadoxSyncedLocalisationSearch.search(name, selector).findFirst() != null
+        }
+    }
+    
+    private fun getDefinitionMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, project: Project, options: Int): Result {
+        val name = expression.text
+        val typeExpression = configExpression.value ?: return Result.NotMatch //invalid cwt config
+        val cacheKey = "d#${typeExpression}#${name}"
+        return getCachedResult(element, cacheKey, options) {
+            val selector = definitionSelector(project, element)
+            ParadoxDefinitionSearch.search(name, typeExpression, selector).findFirst() != null
+        }
+    }
+    
+    private fun getPathReferenceMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, project: Project, options: Int): Result {
+        val pathReference = expression.text.normalizePath()
+        val cacheKey = "p#${pathReference}#${configExpression}"
+        return getCachedResult(element, cacheKey, options) {
+            val selector = fileSelector(project, element)
+            ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null
+        }
+    }
+    
+    private fun getComplexEnumValueMatchResult(name: String, element: PsiElement, enumName: String, complexEnumConfig: CwtComplexEnumConfig, project: Project, options: Int): Result {
+        //TODO
+        return Result.LazyIndexAwareExactMatch(options) {
+            val searchScope = complexEnumConfig.searchScopeType
+            val selector = complexEnumValueSelector(project, element)
+                .withSearchScopeType(searchScope)
+            val complexEnumValueInfo = ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst()
+            complexEnumValueInfo != null
+        }
+    }
+    
+    private fun getModifierMatchResult(element: PsiElement, expression: ParadoxDataExpression, configGroup: CwtConfigGroup, options: Int): Result {
+        val name = expression.text
+        val cacheKey = "m#${name}"
+        return getCachedResult(element, cacheKey, options) {
+            ParadoxModifierHandler.matchesModifier(name, element, configGroup)
+        }
+    }
+    
+    private fun getTemplateMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, options: Int): Result {
+        val exp = expression.text
+        val template = configExpression.expressionString
+        val cacheKey = "t#${template}#${exp}"
+        return getCachedResult(element, cacheKey, options) {
+            CwtTemplateExpression.resolve(template).matches(exp, element, configGroup)
+        }
+    }
+    
+    class Listener: PsiModificationTracker.Listener {
+        override fun modificationCountChanged() {
+            configMatchResultCache.invalidateAll()
         }
     }
 }
