@@ -59,13 +59,13 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                         ProgressManager.checkCanceled()
                         val name = e.name
                         if(resolvedNames.contains(name)) return //不需要重复解析引用
-                        val resolved = e.reference?.resolve()
-                        if(resolved !is ParadoxLocalisationProperty) return
-                        val resolvedName = resolved.name
-                        resolvedNames.add(resolvedName)
-                        if(guardStack.contains(resolvedName)) throw RecursionException(e, resolved, resolvedName)
-                        guardStack.addLast(resolvedName)
+                        guardStack.addLast(name)
                         try {
+                            val resolved = e.reference?.resolve()
+                            if(resolved !is ParadoxLocalisationProperty) return
+                            val resolvedName = resolved.name
+                            resolvedNames.add(resolvedName)
+                            if(guardStack.contains(resolvedName)) throw RecursionException(e, resolved, resolvedName)
                             doRecursiveVisit(resolved)
                         } finally {
                             guardStack.removeLast()

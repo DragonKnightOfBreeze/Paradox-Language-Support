@@ -1,6 +1,7 @@
 package icu.windea.pls.lang
 
 import com.google.common.cache.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
@@ -233,7 +234,7 @@ object ParadoxConfigMatcher {
                 return getDefinitionMatchResult(element, expression, configExpression, project, options)
             }
             dataType == CwtDataType.EnumValue -> {
-                if(!expression.type.isStringLikeType()) return false
+                if(expression.type.isBlockLikeType()) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 val name = expression.text
                 val enumName = configExpression.value ?: return false //invalid cwt config
@@ -252,7 +253,7 @@ object ParadoxConfigMatcher {
                 return false
             }
             dataType.isValueSetValueType() -> {
-                if(!expression.type.isStringType()) return false
+                if(expression.type.isBlockLikeType()) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 //valueSetValue的值必须合法
                 val name = ParadoxValueSetValueHandler.getName(expression.text)
@@ -410,10 +411,10 @@ object ParadoxConfigMatcher {
     private val configMatchResultCache = CacheBuilder.newBuilder().buildCache<VirtualFile, MutableMap<String, Result>> { ConcurrentHashMap() }
     
     private fun getCachedResult(element: PsiElement, cacheKey: String, options: Int, predicate: () -> Boolean): Result {
+        ProgressManager.checkCanceled()
         val rootFile = selectRootFile(element) ?: return Result.LazyIndexAwareExactMatch(options, predicate)
         val cache = configMatchResultCache.get(rootFile)
         return cache.getOrPut(cacheKey) { Result.LazyIndexAwareExactMatch(options, predicate) }
-            
     }
     
     private fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project, options: Int): Result {
