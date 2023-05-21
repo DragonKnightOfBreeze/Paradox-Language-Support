@@ -112,7 +112,7 @@ object ParadoxValueSetValueHandler {
     private fun resolveReferenceToInfo(reference: PsiReference): ParadoxValueSetValueInfo? {
         when{
             reference is ParadoxScriptExpressionPsiReference -> {
-                val config = reference.config.takeIf { it.expression.type.isValueSetValueType() } ?: return null
+                val config = reference.config.takeIf { it.expression?.type?.isValueSetValueType() == true } ?: return null
                 return resolveReferenceToInfoWithConfig(reference, config)
             }
             reference is ParadoxDataExpressionNode.Reference -> {
@@ -141,8 +141,8 @@ object ParadoxValueSetValueHandler {
         }
     }
     
-    private fun resolveReferenceToInfoWithConfig(reference: ParadoxScriptExpressionPsiReference, config: CwtDataConfig<*>): ParadoxValueSetValueInfo? {
-        val configExpression = config.expression
+    private fun resolveReferenceToInfoWithConfig(reference: ParadoxScriptExpressionPsiReference, config: CwtConfig<*>): ParadoxValueSetValueInfo? {
+        val configExpression = config.expression ?: return null
         val element = reference.element
         val name = reference.rangeInElement.substring(element.text)
         val valueSetName = configExpression.value?.takeIfNotEmpty() ?: return null

@@ -6,6 +6,9 @@ import icu.windea.pls.core.*
 import java.util.*
 
 @Suppress("NOTHING_TO_INLINE")
+inline fun <T> Array<T>?.takeIfNotEmpty() = this?.takeIf { it.isNotEmpty() }
+
+@Suppress("NOTHING_TO_INLINE")
 inline fun <T: Collection<*>> T?.takeIfNotEmpty() = this?.takeIf { it.isNotEmpty() }
 
 @Suppress("NOTHING_TO_INLINE")

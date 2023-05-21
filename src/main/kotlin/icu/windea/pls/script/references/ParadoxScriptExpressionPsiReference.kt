@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
 import com.intellij.util.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
@@ -15,9 +16,9 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptExpressionPsiReference(
 	element: ParadoxScriptExpressionElement,
 	rangeInElement: TextRange,
-	val config: CwtDataConfig<*>,
-	val isKey: Boolean
-) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
+	val config: CwtConfig<*>,
+	val isKey: Boolean?
+) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiReferencesAware {
 	val project by lazy { config.info.configGroup.project }
 	//val project by lazy { element.project }
 	
@@ -39,6 +40,10 @@ class ParadoxScriptExpressionPsiReference(
 	}
 	
 	//缓存解析结果以优化性能
+	
+	override fun getReferences(): Array<out PsiReference>? {
+		return ParadoxConfigHandler.getReferences(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
+	}
 	
 	override fun resolve(): PsiElement? {
 		return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)

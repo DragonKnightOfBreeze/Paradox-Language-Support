@@ -14,6 +14,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.references.*
 
 //提供对复杂表达式的高级语言功能支持
 
@@ -40,15 +41,27 @@ class ParadoxScriptValueSetExpressionSupport : ParadoxScriptExpressionSupport() 
         ParadoxConfigHandler.annotateComplexExpression(element, valueSetValueExpression, holder, config)
     }
     
-    
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        //参见：ParadoxValueSetValueExpression
         val configExpression = config.expression ?: return null
         val configGroup = config.info.configGroup
         val name = expression
         val predefinedResolved = ParadoxConfigHandler.resolvePredefinedValueSetValue(name, configExpression, configGroup)
         if(predefinedResolved != null) return predefinedResolved
         return ParadoxValueSetValueHandler.resolveValueSetValue(element, name, configExpression, configGroup)
+    }
+    
+    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+        if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
+        val configGroup = config.info.configGroup
+        val textRange = getTextRange(element, expression)
+        if(expression.isLeftQuoted()) {
+            //quoted -> only value set value name, no scope info
+            val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
+            return arrayOf(reference)
+        }
+        val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(expression, textRange, config, configGroup, isKey)
+        if(valueSetValueExpression == null) return PsiReference.EMPTY_ARRAY
+        return valueSetValueExpression.getReferences(element)
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -67,6 +80,7 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport(
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+        if(element !is ParadoxScriptStringExpressionElement) return
         if(expression.isLeftQuoted()) return
         val configGroup = config.info.configGroup
         val isKey = if(rangeInElement != null) null else element is ParadoxScriptPropertyKey
@@ -75,9 +89,14 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport(
         ParadoxConfigHandler.annotateComplexExpression(element, scopeFieldExpression, holder, config)
     }
     
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        //不在这里处理，参见：ParadoxScopeFieldExpression
-        return null
+    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+        if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
+        if(expression.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
+        val configGroup = config.info.configGroup
+        val textRange = getTextRange(element, expression)
+        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression, textRange, configGroup, isKey)
+        if(scopeFieldExpression == null) return PsiReference.EMPTY_ARRAY
+        return scopeFieldExpression.getReferences(element)
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -118,9 +137,14 @@ class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport(
         ParadoxConfigHandler.annotateComplexExpression(element, valueFieldExpression, holder, config)
     }
     
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        //不在这里处理，参见：ParadoxValueFieldExpression
-        return null
+    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+        if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
+        if(expression.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
+        val configGroup = config.info.configGroup
+        val textRange = getTextRange(element, expression)
+        val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression, textRange, configGroup, isKey)
+        if(valueFieldExpression == null) return PsiReference.EMPTY_ARRAY
+        return valueFieldExpression.getReferences(element)
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -147,6 +171,7 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSuppo
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+        if(element !is ParadoxScriptStringExpressionElement) return
         if(expression.isLeftQuoted()) return
         val configGroup = config.info.configGroup
         val isKey = if(rangeInElement != null) null else element is ParadoxScriptPropertyKey
@@ -155,9 +180,14 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSuppo
         ParadoxConfigHandler.annotateComplexExpression(element, variableFieldExpression, holder, config)
     }
     
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        //不在这里处理，参见：ParadoxVariableFieldExpression
-        return null
+    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+        if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
+        if(expression.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
+        val configGroup = config.info.configGroup
+        val textRange = getTextRange(element, expression)
+        val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression, textRange, configGroup, isKey)
+        if(variableFieldExpression == null) return PsiReference.EMPTY_ARRAY
+        return variableFieldExpression.getReferences(element)
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -175,5 +205,12 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSuppo
             }
             else -> {}
         }
+    }
+}
+
+private fun getTextRange(element: PsiElement, text: String): TextRange {
+    return when {
+        element is ParadoxScriptBlock -> TextRange.create(0, 1) //left curly brace
+        else -> TextRange.create(0, text.length).unquote(text) //unquoted text
     }
 }

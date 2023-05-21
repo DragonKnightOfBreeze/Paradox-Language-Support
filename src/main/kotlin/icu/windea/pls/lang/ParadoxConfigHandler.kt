@@ -1093,41 +1093,49 @@ object ParadoxConfigHandler {
     //endregion
     
     //region Resolve Methods
+    fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, isKey: Boolean? = null): Array<out PsiReference>? {
+        ProgressManager.checkCanceled()
+        if(configExpression == null) return null
+        
+        val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.text.unquote()
+        
+        val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expression, config, isKey)
+        if(result.isNotNullOrEmpty()) return result
+        
+        return null
+    }
+    
     /**
      * @param element 需要解析的PSI元素。
      * @param rangeInElement 需要解析的文本在需要解析的PSI元素对应的整个文本中的位置。
      */
-    fun resolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>?, configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+    fun resolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
         ProgressManager.checkCanceled()
         if(configExpression == null) return null
         
         val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.text.unquote()
         if(expression.isParameterized()) return null //排除引用文本带参数的情况
         
-        if(config != null) {
-            val result = ParadoxScriptExpressionSupport.resolve(element, rangeInElement, expression, config, isKey, exact)
-            if(result != null) return result
-        }
+        val result = ParadoxScriptExpressionSupport.resolve(element, rangeInElement, expression, config, isKey, exact)
+        if(result != null) return result
         
-        if(config != null && configExpression is CwtKeyExpression && configExpression.type.isKeyReferenceType()) {
+        if(configExpression is CwtKeyExpression && configExpression.type.isKeyReferenceType()) {
             return config.resolved().pointer.element
         }
         return null
     }
     
-    fun multiResolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>?, configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, isKey: Boolean? = null): Collection<PsiElement> {
+    fun multiResolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, isKey: Boolean? = null): Collection<PsiElement> {
         ProgressManager.checkCanceled()
         if(configExpression == null) return emptySet()
         
         val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.text.unquote()
         if(expression.isParameterized()) return emptySet() //排除引用文本带参数的情况
         
-        if(config != null) {
-            val result = ParadoxScriptExpressionSupport.multiResolve(element, rangeInElement, expression, config, isKey)
-            if(result.isNotEmpty()) return result
-        }
+        val result = ParadoxScriptExpressionSupport.multiResolve(element, rangeInElement, expression, config, isKey)
+        if(result.isNotEmpty()) return result
         
-        if(config != null && configExpression is CwtKeyExpression && configExpression.type.isKeyReferenceType()) {
+        if(configExpression is CwtKeyExpression && configExpression.type.isKeyReferenceType()) {
             return config.resolved().pointer.element.toSingletonSetOrEmpty()
         }
         return emptySet()

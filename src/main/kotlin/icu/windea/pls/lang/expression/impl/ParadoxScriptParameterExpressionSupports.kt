@@ -96,6 +96,20 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, inferredConfig, inferredConfigExpression, configGroup, isKey)
     }
     
+    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+        if(!getSettings().inference.argumentValueConfig) return null
+        if(element !is ParadoxScriptValue || config !is CwtValueConfig || isKey != false) return null
+        val propertyKey = element.propertyKey ?: return null
+        val propertyConfig = config.propertyConfig ?: return null
+        val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return null
+        ProgressManager.checkCanceled()
+        val inferredConfig = ParadoxParameterHandler.inferConfig(parameterElement) ?: return null
+        val inferredConfigExpression = inferredConfig.expression
+        val configGroup = inferredConfig.info.configGroup
+        ProgressManager.checkCanceled()
+        return ParadoxConfigHandler.getReferences(element, rangeInElement, inferredConfig, inferredConfigExpression, configGroup, isKey)
+    }
+    
     override fun complete(context: ProcessingContext, result: CompletionResultSet) = with(context) {
         if(!getSettings().inference.argumentValueConfig) return
         val element = contextElement

@@ -90,7 +90,7 @@ fun PsiReference.canResolveScriptedVariable(): Boolean {
 fun PsiReference.canResolveDefinition(): Boolean {
     return when(this) {
         is ParadoxScriptExpressionPsiReference -> {
-            val configExpression = this.config.expression
+            val configExpression = this.config.expression ?: return false
             configExpression.type == CwtDataType.Definition
         }
         is ParadoxTemplateSnippetExpressionReference -> {
@@ -111,7 +111,7 @@ fun PsiReference.canResolveDefinition(): Boolean {
 fun PsiReference.canResolveLocalisation(): Boolean {
     return when(this) {
         is ParadoxScriptExpressionPsiReference -> {
-            val configExpression = this.config.expression
+            val configExpression = this.config.expression ?: return false
             configExpression.type == CwtDataType.Localisation || configExpression.type == CwtDataType.InlineLocalisation
         }
         is ParadoxLocalisationPropertyPsiReference -> true
@@ -122,7 +122,7 @@ fun PsiReference.canResolveLocalisation(): Boolean {
 fun PsiReference.canResolveParameter(): Boolean {
     return when(this) {
         is ParadoxScriptExpressionPsiReference -> {
-            val configExpression = this.config.expression
+            val configExpression = this.config.expression ?: return false
             configExpression.type == CwtDataType.Parameter
         }
         is ParadoxParameterPsiReference -> true
@@ -136,7 +136,7 @@ fun PsiReference.canResolveParameter(): Boolean {
 fun PsiReference.canResolveValueSetValue(): Boolean {
     return when(this) {
         is ParadoxScriptExpressionPsiReference -> {
-            val configExpression = this.config.expression
+            val configExpression = this.config.expression ?: return false
             configExpression.type.isValueSetValueType()
         }
         is ParadoxTemplateSnippetExpressionReference -> {
@@ -159,7 +159,7 @@ fun PsiReference.canResolveValueSetValue(): Boolean {
 fun PsiReference.canResolveComplexEnumValue(): Boolean {
     return when(this) {
         is ParadoxScriptExpressionPsiReference -> {
-            val configExpression = this.config.expression
+            val configExpression = this.config.expression ?: return false
             configExpression.type == CwtDataType.EnumValue
         }
         is ParadoxTemplateSnippetExpressionReference -> {

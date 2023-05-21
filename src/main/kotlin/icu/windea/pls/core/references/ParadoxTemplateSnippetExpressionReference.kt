@@ -5,7 +5,9 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
 import com.intellij.util.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
@@ -19,6 +21,8 @@ class ParadoxTemplateSnippetExpressionReference(
 ) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
     val project by lazy { configGroup.project }
     
+    val config = CwtValueConfig(emptyPointer(), configGroup.info, configExpression.expressionString)
+    
     override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
        throw IncorrectOperationException() // cannot rename
     }
@@ -31,7 +35,7 @@ class ParadoxTemplateSnippetExpressionReference(
     
     private fun doResolve(): PsiElement? {
         val element = element
-        return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, null, configExpression, configGroup)
+        return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, configExpression, configGroup)
     }
     
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
@@ -40,7 +44,7 @@ class ParadoxTemplateSnippetExpressionReference(
     
     private fun doMultiResolve(): Array<out ResolveResult> {
         val element = element
-        return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, null, configExpression, configGroup)
+        return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, configExpression, configGroup)
             .mapToArray { PsiElementResolveResult(it) }
     }
     

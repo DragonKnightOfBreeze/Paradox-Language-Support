@@ -54,11 +54,18 @@ class ParadoxDataExpressionNode (
 		element: ParadoxScriptStringExpressionElement,
 		rangeInElement: TextRange,
 		val linkConfigs: List<CwtLinkConfig>
-	) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+	) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), PsiReferencesAware {
 		val project = linkConfigs.first().config.info.configGroup.project
 		
 		override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
+		}
+		
+		override fun getReferences(): Array<out PsiReference>? {
+			val element = element
+			return linkConfigs.firstNotNullOfOrNull { linkConfig ->
+				ParadoxConfigHandler.getReferences(element, rangeInElement, linkConfig, linkConfig.expression, linkConfig.info.configGroup).takeIfNotEmpty()
+			}
 		}
 		
 		override fun resolve(): PsiElement? {
@@ -68,9 +75,7 @@ class ParadoxDataExpressionNode (
 		private fun doResolve(): PsiElement? {
 			val element = element
 			return linkConfigs.firstNotNullOfOrNull { linkConfig ->
-				val resolved = ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, linkConfig, linkConfig.expression, linkConfig.info.configGroup)
-					?: return@firstNotNullOfOrNull null
-				resolved
+				ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, linkConfig, linkConfig.expression, linkConfig.info.configGroup)
 			}
 		}
 		
@@ -81,8 +86,7 @@ class ParadoxDataExpressionNode (
 		private fun doMultiResolve(): Array<out ResolveResult> {
 			val element = element
 			return linkConfigs.flatMap { linkConfig ->
-				val resolved = ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, linkConfig, configExpression = linkConfig.expression, linkConfig.info.configGroup)
-				resolved
+				ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, linkConfig, configExpression = linkConfig.expression, linkConfig.info.configGroup)
 			}.mapToArray { PsiElementResolveResult(it) }
 		}
 		

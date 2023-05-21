@@ -32,6 +32,10 @@ abstract class ParadoxScriptExpressionSupport {
         return resolve(element, rangeInElement, expression, config, isKey, false).toSingletonSetOrEmpty()
     }
     
+    open fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {
+        return null
+    }
+    
     open fun complete(context: ProcessingContext, result: CompletionResultSet) {
         
     }
@@ -72,6 +76,17 @@ abstract class ParadoxScriptExpressionSupport {
                     }
                 }
             }.orEmpty()
+        }
+        
+        fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {
+            return withRecursionGuard("icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.getReferences") {
+                EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
+                    if(!ep.supports(config)) return@p null
+                    withCheckRecursion("${ep.javaClass.name}@multiResolve@${expression}") {
+                        ep.getReferences(element, rangeInElement, expression, config, isKey).takeIfNotEmpty()
+                    }
+                }
+            }
         }
         
         fun complete(context: ProcessingContext, result: CompletionResultSet) {
