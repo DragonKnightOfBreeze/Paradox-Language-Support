@@ -72,16 +72,10 @@ ethic = ethic_$ETHIC$ # 脚本参数作为某个脚本表达式的一部分，�
 
 ## 1.0.0
 
-* [X] 提示定义和修正时，也可以基于它们的本地化名字进行提示。
-  （默认不启用，在插件配置页面中勾选`Code Completion > Complete by localized names`以启用此功能）
+* [X] 提示定义和修正时，也可以基于它们的本地化名字进行提示。（默认不启用，在插件配置页面中勾选`Code Completion > Complete by localized names`以启用此功能）
 * [X] 尝试基于在其他事件中的调用推断事件的作用域上下文（如果推断发生递归或者存在冲突则取消推断）
 * [X] 尝试优化性能
-
-```
-default应该解析到default
-switch中判断得到的default出现次数有误 ✔
-只要任何推断方式存在推断冲突，就不要推断event的scopeContext
-```
+* [ ] 完善Stellaris的CWT规则文件 - 完善`localisation.cwt`
 
 ## 0.10.3
 

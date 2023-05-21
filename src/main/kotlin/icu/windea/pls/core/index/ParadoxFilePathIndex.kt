@@ -8,15 +8,12 @@ import java.util.*
 class ParadoxFilePathIndex : ScalarIndexExtension<String>() {
     companion object {
         @JvmField val NAME = ID.create<String, Void>("paradox.file.path.index")
+        private const val VERSION = 22 //1.0.0
     }
     
-    override fun getName(): ID<String, Void> {
-        return NAME
-    }
+    override fun getName() = NAME
     
-    override fun getVersion(): Int {
-        return 6 //0.9.6
-    }
+    override fun getVersion() = VERSION
     
     override fun getIndexer(): DataIndexer<String, Void, FileContent> {
         return DataIndexer { inputData ->

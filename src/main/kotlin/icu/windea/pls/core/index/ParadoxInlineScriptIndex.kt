@@ -23,13 +23,9 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
         }
     }
     
-    override fun getName(): ID<String, List<ParadoxInlineScriptInfo>> {
-        return NAME
-    }
+    override fun getName() = NAME
     
-    override fun getVersion(): Int {
-        return VERSION
-    }
+    override fun getVersion() = VERSION
     
     override fun getIndexer(): DataIndexer<String, List<ParadoxInlineScriptInfo>, FileContent> {
         return DataIndexer { inputData ->
