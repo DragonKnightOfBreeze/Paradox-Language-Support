@@ -4,6 +4,7 @@
 
 * [X] 修复代码检查`UnusedValueSetValueInspection`和`UnsetValueSetValueInspection`运行不正确的问题
 * [X] 修复初次打开项目时可能无法正确解析各种复杂表达式的问题
+* [X] 索引valueSetValue（如，`event_target`）时，也包含仅在本地化文件中使用到的`event_target`和`variable`
 
 ## 1.0.0
 

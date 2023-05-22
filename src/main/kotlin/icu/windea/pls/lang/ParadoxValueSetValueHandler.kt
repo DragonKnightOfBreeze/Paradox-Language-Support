@@ -24,6 +24,10 @@ object ParadoxValueSetValueHandler {
     const val EVENT_TARGET_PREFIX = "event_target:"
     val EVENT_TARGETS = setOf("event_target", "global_event_target")
     
+    fun getInfo(element: ParadoxValueSetValueElement): ParadoxValueSetValueInfo {
+        return ParadoxValueSetValueInfo(element.name, element.valueSetName, element.readWriteAccess, element.startOffset, element.gameType)
+    }
+    
     fun getInfos(element: ParadoxScriptStringExpressionElement): List<ParadoxValueSetValueInfo>? {
         if(!element.isExpression()) return null
         //if(element.isParameterized()) return null //排除可能带参数的情况 - 不能在这里排除
@@ -110,7 +114,7 @@ object ParadoxValueSetValueHandler {
     }
     
     private fun resolveReferenceToInfo(reference: PsiReference): ParadoxValueSetValueInfo? {
-        when{
+        when {
             reference is ParadoxScriptExpressionPsiReference -> {
                 val config = reference.config.takeIf { it.expression?.type?.isValueSetValueType() == true } ?: return null
                 return resolveReferenceToInfoWithConfig(reference, config)

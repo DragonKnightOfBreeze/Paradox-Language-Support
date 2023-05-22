@@ -10,6 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
@@ -18,6 +19,10 @@ import icu.windea.pls.script.psi.*
  * 用于处理复杂枚举信息。
  */
 object ParadoxComplexEnumValueHandler {
+    fun getInfo(element: ParadoxComplexEnumValueElement): ParadoxComplexEnumValueInfo {
+        return ParadoxComplexEnumValueInfo(element.name, element.enumName, element.readWriteAccess, element.startOffset, element.gameType)
+    }
+    
     fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
         if(!element.isExpression()) return null
         if(element.isParameterized()) return null //排除可能带参数的情况
