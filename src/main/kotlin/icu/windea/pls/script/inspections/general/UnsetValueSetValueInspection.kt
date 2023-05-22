@@ -26,6 +26,7 @@ import icu.windea.pls.script.psi.*
  * 默认不启用。
  */
 @SlowApi
+@OptimizedApi
 class UnsetValueSetValueInspection : LocalInspectionTool(){
     //may be slow for ParadoxValueSetValueSearch
     

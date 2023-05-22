@@ -28,6 +28,7 @@ import javax.swing.*
  * 默认不启用。
  */
 @SlowApi
+@OptimizedApi
 class UnusedValueSetValueInspection : LocalInspectionTool() {
     @JvmField var ignoreDefinitionNames = true
     
