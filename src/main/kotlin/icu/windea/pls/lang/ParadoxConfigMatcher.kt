@@ -286,11 +286,9 @@ object ParadoxConfigMatcher {
                 if(expression.quoted) return false //不允许用引号括起
                 if(!expression.type.isStringType()) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                return Result.LazyExactMatch(options) {
-                    val textRange = TextRange.create(0, expression.text.length)
-                    val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
-                    valueFieldExpression != null
-                }
+                val textRange = TextRange.create(0, expression.text.length)
+                val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
+                return valueFieldExpression != null
             }
             dataType.isVariableFieldType() -> {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
@@ -302,11 +300,9 @@ object ParadoxConfigMatcher {
                 if(expression.quoted) return false //不允许用引号括起
                 if(!expression.type.isStringType()) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                return Result.LazyExactMatch(options) {
-                    val textRange = TextRange.create(0, expression.text.length)
-                    val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
-                    variableFieldExpression != null
-                }
+                val textRange = TextRange.create(0, expression.text.length)
+                val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
+                return variableFieldExpression != null
             }
             dataType == CwtDataType.Modifier -> {
                 if(expression.isParameterized()) return Result.ParameterizedMatch
@@ -452,10 +448,10 @@ object ParadoxConfigMatcher {
     }
     
     private fun getScopeFieldMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, options: Int): Result {
+        val textRange = TextRange.create(0, expression.text.length)
+        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
+        if(scopeFieldExpression == null) return Result.NotMatch
         return Result.LazyScopeAwareExactMatch(options) p@{
-            val textRange = TextRange.create(0, expression.text.length)
-            val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
-            if(scopeFieldExpression == null) return@p false
             when(configExpression.type) {
                 CwtDataType.ScopeField -> {
                     return@p true

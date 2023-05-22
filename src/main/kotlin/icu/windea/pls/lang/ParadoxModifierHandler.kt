@@ -32,8 +32,8 @@ object ParadoxModifierHandler {
     //不同的游戏类型存在一些通过不同逻辑生成的修正
     //插件使用的modifiers.cwt中应当去除生成的修正
     
-    fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxConfigMatcher.Options.Default): Boolean {
-        return ParadoxModifierSupport.matchModifier(name, element, configGroup, matchOptions)
+    fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
+        return ParadoxModifierSupport.matchModifier(name, element, configGroup)
     }
     
     fun resolveModifier(element: ParadoxScriptStringExpressionElement, useSupport: ParadoxModifierSupport? = null): ParadoxModifierElement? {

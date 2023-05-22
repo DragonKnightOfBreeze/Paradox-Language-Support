@@ -27,7 +27,7 @@ interface ParadoxModifierSupport {
     /**
      * @param element 进行匹配时的上下文PSI元素。
      */
-    fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int): Boolean
+    fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean
     
     fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement?
     
@@ -56,11 +56,11 @@ interface ParadoxModifierSupport {
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxModifierSupport>("icu.windea.pls.modifierSupport")
         
-        fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int): Boolean {
+        fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
             val gameType = configGroup.gameType
             return EP_NAME.extensionList.any f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f false
-                ep.matchModifier(name, element, configGroup, matchOptions)
+                ep.matchModifier(name, element, configGroup)
             }
         }
         

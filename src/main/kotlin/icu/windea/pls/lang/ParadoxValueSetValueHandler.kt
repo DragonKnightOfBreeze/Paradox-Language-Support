@@ -15,6 +15,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
@@ -52,7 +53,7 @@ object ParadoxValueSetValueHandler {
         
         val isKey = element is ParadoxScriptPropertyKey
         
-        val matchOptions = ParadoxConfigMatcher.Options.SkipIndex //这里需要静态匹配
+        val matchOptions = Options.SkipIndex or Options.SkipScope
         val configs = ParadoxConfigHandler.getConfigs(element, orDefault = true, matchOptions = matchOptions)
         if(configs.isEmpty()) return null
         
