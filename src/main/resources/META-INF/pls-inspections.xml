@@ -83,7 +83,7 @@
                      groupPathKey="inspection.script.general.path"
                      implementationClass="icu.windea.pls.script.inspections.general.UnresolvedPathReferenceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedParameter"
-                     enabledByDefault="false" level="WEAK WARNING"
+                     enabledByDefault="true" level="WEAK WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.general.unusedParameter"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
@@ -95,13 +95,13 @@
                      groupPathKey="inspection.script.general.path"
                      implementationClass="icu.windea.pls.script.inspections.general.MissingParameterInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedValueSetValue"
-                     enabledByDefault="false" level="WEAK WARNING"
+                     enabledByDefault="true" level="WEAK WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.general.unusedValueSetValue"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
                      implementationClass="icu.windea.pls.script.inspections.general.UnusedValueSetValueInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsetValueSetValue"
-                     enabledByDefault="false" level="WEAK WARNING"
+                     enabledByDefault="true" level="WEAK WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.general.unsetValueSetValue"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
