@@ -1,5 +1,6 @@
 package icu.windea.pls.script.references
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
@@ -11,6 +12,8 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxEventNamespaceReferenceProvider : PsiReferenceProvider() {
 	override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
+		ProgressManager.checkCanceled()
+		
 		if(element !is ParadoxScriptString) return PsiReference.EMPTY_ARRAY
 		if(element.isParameterized()) return PsiReference.EMPTY_ARRAY //不应当带有参数
 		val rangeInElement = getRangeInElement(element) ?: return PsiReference.EMPTY_ARRAY

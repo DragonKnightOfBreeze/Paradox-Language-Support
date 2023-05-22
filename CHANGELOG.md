@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2
+
+* [ ] 尝试优化性能 - 优化索引、缓存以及CWT规则匹配等底层实现以及代码解析、代码检查等功能的性能
+
 ## 1.0.1
 
 * [X] 修复代码检查`UnusedValueSetValueInspection`和`UnsetValueSetValueInspection`运行不正确的问题
