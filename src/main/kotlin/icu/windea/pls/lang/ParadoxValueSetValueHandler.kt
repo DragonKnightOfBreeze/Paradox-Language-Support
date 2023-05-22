@@ -52,7 +52,7 @@ object ParadoxValueSetValueHandler {
         
         val isKey = element is ParadoxScriptPropertyKey
         
-        val matchOptions = ParadoxConfigMatcher.Options.StaticMatch //这里需要静态匹配
+        val matchOptions = ParadoxConfigMatcher.Options.SkipIndex //这里需要静态匹配
         val configs = ParadoxConfigHandler.getConfigs(element, orDefault = true, matchOptions = matchOptions)
         if(configs.isEmpty()) return null
         

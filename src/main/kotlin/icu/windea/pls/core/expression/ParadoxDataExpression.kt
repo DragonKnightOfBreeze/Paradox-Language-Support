@@ -41,7 +41,7 @@ fun Resolver.resolve(element: ParadoxScriptExpressionElement, matchOptions: Int 
 		element is ParadoxScriptScriptedVariableReference -> {
 			ProgressManager.checkCanceled() //这是必要的
 			val valueElement = when {
-				matchOptions == ParadoxConfigMatcher.Options.StaticMatch -> return UnknownParadoxDataExpression
+				matchOptions == ParadoxConfigMatcher.Options.SkipIndex -> return UnknownParadoxDataExpression
 				else -> element.referenceValue ?: return UnknownParadoxDataExpression
 			}
 			ParadoxDataExpressionImpl(valueElement.value, valueElement.type, valueElement.text.isLeftQuoted(), false)

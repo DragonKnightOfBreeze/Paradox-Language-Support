@@ -339,7 +339,7 @@ object ParadoxConfigHandler {
         
         val configGroup = definitionMemberInfo.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val matchOptions = ParadoxConfigMatcher.Options.Default or ParadoxConfigMatcher.Options.RelaxMatch
+        val matchOptions = ParadoxConfigMatcher.Options.Default or ParadoxConfigMatcher.Options.Relax
         val parentConfigs = getConfigs(definitionElement, allowDefinition = true, matchOptions = matchOptions)
         val configs = SmartList<CwtPropertyConfig>()
         parentConfigs.forEach { c1 ->
@@ -385,7 +385,7 @@ object ParadoxConfigHandler {
         
         val configGroup = definitionMemberInfo.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val matchOptions = ParadoxConfigMatcher.Options.Default or ParadoxConfigMatcher.Options.RelaxMatch
+        val matchOptions = ParadoxConfigMatcher.Options.Default or ParadoxConfigMatcher.Options.Relax
         val parentConfigs = getConfigs(memberElement, allowDefinition = true, matchOptions = matchOptions)
         val configs = SmartList<CwtValueConfig>()
         parentConfigs.forEach { c1 ->
@@ -1319,7 +1319,7 @@ object ParadoxConfigHandler {
                     }
                     //精确匹配无结果 - 不精确匹配
                     if(resultConfigs.isEmpty()) {
-                        val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.RelaxMatch
+                        val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
                         for(config in configs) {
                             if(config !is CwtPropertyConfig) continue
                             ProgressManager.checkCanceled()
@@ -1367,7 +1367,7 @@ object ParadoxConfigHandler {
                             }
                             //精确匹配无结果 - 不精确匹配
                             if(resultConfigs.isEmpty()) {
-                                val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.RelaxMatch
+                                val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
                                 for(config in configs) {
                                     if(config !is CwtPropertyConfig) continue
                                     ProgressManager.checkCanceled()
@@ -1406,7 +1406,7 @@ object ParadoxConfigHandler {
                             }
                             //精确匹配无结果 - 不精确匹配
                             if(resultConfigs.isEmpty()) {
-                                val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.RelaxMatch
+                                val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
                                 for(childConfig in childConfigs) {
                                     if(childConfig !is CwtValueConfig) continue
                                     ProgressManager.checkCanceled()

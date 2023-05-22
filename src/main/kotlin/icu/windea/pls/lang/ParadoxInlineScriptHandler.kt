@@ -15,6 +15,7 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
@@ -61,7 +62,7 @@ object ParadoxInlineScriptHandler {
         val configGroup = getCwtConfig(project).get(gameType)
         val inlineConfigs = configGroup.inlineConfigGroup[inlineScriptName] ?: return null
         val propertyValue = element.propertyValue ?: return null
-        val matchOptions = ParadoxConfigMatcher.Options.StaticMatch or ParadoxConfigMatcher.Options.FinalMatch
+        val matchOptions = Options.Fast
         val inlineConfig = ParadoxConfigMatcher.find(inlineConfigs, matchOptions) {
             val expression = ParadoxDataExpression.resolve(propertyValue, matchOptions)
             ParadoxConfigMatcher.matches(propertyValue, expression, it.config.valueExpression, it.config, configGroup)

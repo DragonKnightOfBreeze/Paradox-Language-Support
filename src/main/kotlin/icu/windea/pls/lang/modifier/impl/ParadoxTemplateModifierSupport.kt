@@ -30,7 +30,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     }
     
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int): Boolean {
-        val isStatic = BitUtil.isSet(matchOptions, ParadoxConfigMatcher.Options.StaticMatch)
+        val isStatic = BitUtil.isSet(matchOptions, ParadoxConfigMatcher.Options.SkipIndex)
         if(isStatic) return false
         val modifierName = name
         return configGroup.generatedModifiers.values.any { config ->

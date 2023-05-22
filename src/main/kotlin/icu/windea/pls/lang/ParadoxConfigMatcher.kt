@@ -24,12 +24,14 @@ object ParadoxConfigMatcher {
     object Options {
         /**默认的匹配方式，先尝试通过[Result.ExactMatch]进行匹配，然后再尝试通过其他匹配方式进行匹配。*/
         const val Default = 0x00
-        /** 对于[Result.LazyIndexAwareExactMatch]，匹配结果直接返回true。 */
-        const val StaticMatch = 0x01
         /** 对于[Result.LazyExactMatch]，匹配结果直接返回true。 */
-        const val RelaxMatch = 0x02
+        const val Relax = 0x02
+        /** 对于[Result.LazyIndexAwareExactMatch]，匹配结果直接返回true。 */
+        const val SkipIndex = 0x01
+        /** 对于[Result.LazyScopeAwareExactMatch]，匹配结果直接返回true。 */
+        const val SkipScope = 0x02
         /** 对于最终匹配得到的那个结果，不需要再次判断是否精确匹配。 */
-        const val FinalMatch = 0x04
+        const val Fast = 0x08
     }
     
     sealed class Result {
@@ -49,12 +51,17 @@ object ParadoxConfigMatcher {
         
         class LazyExactMatch(val options: Int, val predicate: () -> Boolean) : Result() {
             private val result by lazy { predicate() }
-            override fun get() = if(BitUtil.isSet(options, Options.RelaxMatch)) true else result
+            override fun get() = if(BitUtil.isSet(options, Options.Relax)) true else result
         }
         
         class LazyIndexAwareExactMatch(val options: Int, val predicate: () -> Boolean) : Result() {
             private val result by lazy { predicate() }
-            override fun get() = if(BitUtil.isSet(options, Options.StaticMatch)) true else result
+            override fun get() = if(BitUtil.isSet(options, Options.SkipIndex)) true else result
+        }
+        
+        class LazyScopeAwareExactMatch(val options: Int, val predicate: () -> Boolean) : Result() {
+            private val result by lazy { predicate() }
+            override fun get() = if(BitUtil.isSet(options, Options.SkipScope)) true else result
         }
     }
     
@@ -62,7 +69,7 @@ object ParadoxConfigMatcher {
     
     inline fun <T : Any> find(collection: Collection<T>?, options: Int = Options.Default, matcher: (T) -> Result?): T? {
         if(collection.isNullOrEmpty()) return null
-        val finalMatch = BitUtil.isSet(options, Options.FinalMatch)
+        val finalMatch = BitUtil.isSet(options, Options.Fast)
         var tempResults: MutableList<ResultValue<T>>? = null
         for(v in collection) {
             val r = matcher(v)
@@ -79,7 +86,7 @@ object ParadoxConfigMatcher {
     
     inline fun <T : Any> findAll(collection: Collection<T>?, options: Int = Options.Default, matcher: (T) -> Result?): List<T> {
         if(collection.isNullOrEmpty()) return emptyList()
-        val finalMatch = BitUtil.isSet(options, Options.FinalMatch)
+        val finalMatch = BitUtil.isSet(options, Options.Fast)
         var tempResults: MutableList<ResultValue<T>>? = null
         for(v in collection) {
             val r = matcher(v)
@@ -97,7 +104,7 @@ object ParadoxConfigMatcher {
     
     inline fun <T : Any> findAllTo(collection: Collection<T>?, destination: MutableCollection<T>, options: Int = Options.Default, matcher: (T) -> Result?) {
         if(collection.isNullOrEmpty()) return
-        val finalMatch = BitUtil.isSet(options, Options.FinalMatch)
+        val finalMatch = BitUtil.isSet(options, Options.Fast)
         var tempResults: MutableList<ResultValue<T>>? = null
         for(e in collection) {
             val r = matcher(e)
@@ -445,7 +452,7 @@ object ParadoxConfigMatcher {
     }
     
     private fun getScopeFieldMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, options: Int): Result {
-        return Result.LazyExactMatch(options) p@{
+        return Result.LazyScopeAwareExactMatch(options) p@{
             val textRange = TextRange.create(0, expression.text.length)
             val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
             if(scopeFieldExpression == null) return@p false
