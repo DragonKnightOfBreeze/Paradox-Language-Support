@@ -49,33 +49,33 @@ object ParadoxConfigMatcher {
     }
     
     sealed class Result {
-        abstract fun get(): Boolean
+        abstract fun get(options: Int = Options.Default): Boolean
         
         object NotMatch : Result() {
-            override fun get() = false
+            override fun get(options: Int) = false
         }
         
         object ExactMatch : Result() {
-            override fun get() = true
+            override fun get(options: Int) = true
         }
         
         object ParameterizedMatch : Result() {
-            override fun get() = true
+            override fun get(options: Int) = true
         }
         
-        class LazyExactMatch(val options: Int, val predicate: () -> Boolean) : Result() {
+        class LazyExactMatch(val predicate: () -> Boolean) : Result() {
             private val result by lazy { predicate() }
-            override fun get() = if(BitUtil.isSet(options, Options.Relax)) true else result
+            override fun get(options: Int) = if(BitUtil.isSet(options, Options.Relax)) true else result
         }
         
-        class LazyIndexAwareExactMatch(val options: Int, val predicate: () -> Boolean) : Result() {
+        class LazyIndexAwareExactMatch(val predicate: () -> Boolean) : Result() {
             private val result by lazy { predicate() }
-            override fun get() = if(BitUtil.isSet(options, Options.SkipIndex)) true else result
+            override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipIndex)) true else result
         }
         
-        class LazyScopeAwareExactMatch(val options: Int, val predicate: () -> Boolean) : Result() {
+        class LazyScopeAwareExactMatch(val predicate: () -> Boolean) : Result() {
             private val result by lazy { predicate() }
-            override fun get() = if(BitUtil.isSet(options, Options.SkipScope)) true else result
+            override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipScope)) true else result
         }
     }
     
@@ -94,7 +94,7 @@ object ParadoxConfigMatcher {
         }
         if(tempResults.isNullOrEmpty()) return null
         if(tempResults.size == 1 && finalMatch) return tempResults[0].value
-        tempResults.forEachFast { (v, r) -> if(r.get()) return v }
+        tempResults.forEachFast { (v, r) -> if(r.get(options)) return v }
         return null
     }
     
@@ -112,7 +112,7 @@ object ParadoxConfigMatcher {
         if(tempResults.isNullOrEmpty()) return emptyList()
         if(tempResults.size == 1 && finalMatch) return tempResults[0].value.toSingletonList()
         val result = SmartList<T>()
-        tempResults.forEachFast { (v, r) -> if(r.get()) result.add(v) }
+        tempResults.forEachFast { (v, r) -> if(r.get(options)) result.add(v) }
         return result
     }
     
@@ -129,7 +129,7 @@ object ParadoxConfigMatcher {
         }
         if(tempResults.isNullOrEmpty()) return
         if(tempResults.size == 1 && finalMatch) return run { destination.add(tempResults[0].value) }
-        tempResults.forEachFast { (v, r) -> if(r.get()) destination.add(v) }
+        tempResults.forEachFast { (v, r) -> if(r.get(options)) destination.add(v) }
     }
     
     //兼容scriptedVariableReference inlineMath parameter
@@ -168,7 +168,7 @@ object ParadoxConfigMatcher {
                 if(expression.isKey != false) return false
                 if(expression.type != ParadoxDataType.BlockType) return true
                 if(config !is CwtDataConfig) return Result.NotMatch
-                return Result.LazyExactMatch(options) {
+                return Result.LazyExactMatch {
                     matchesScriptExpressionInBlock(element, config)
                 }
             }
@@ -179,7 +179,7 @@ object ParadoxConfigMatcher {
                 //quoted number (e.g. "1") -> ok according to vanilla game files
                 if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) {
                     val (min, max) = configExpression.extraValue<Tuple2<Int?, Int?>>() ?: return true
-                    return Result.LazyExactMatch(options) p@{
+                    return Result.LazyExactMatch p@{
                         val value = expression.text.toIntOrNull() ?: return@p true
                         (min == null || min <= value) && (max == null || max >= value)
                     }
@@ -190,7 +190,7 @@ object ParadoxConfigMatcher {
                 //quoted number (e.g. "1") -> ok according to vanilla game files
                 if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) {
                     val (min, max) = configExpression.extraValue<Tuple2<Float?, Float?>>() ?: return true
-                    return Result.LazyExactMatch(options) p@{
+                    return Result.LazyExactMatch p@{
                         val value = expression.text.toFloatOrNull() ?: return@p true
                         (min == null || min <= value) && (max == null || max >= value)
                     }
@@ -222,18 +222,18 @@ object ParadoxConfigMatcher {
             dataType == CwtDataType.Localisation -> {
                 if(!expression.type.isStringType()) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                return getLocalisationMatchResult(element, expression, project, options)
+                return getLocalisationMatchResult(element, expression, project)
             }
             dataType == CwtDataType.SyncedLocalisation -> {
                 if(!expression.type.isStringType()) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                return getSyncedLocalisationMatchResult(element, expression, project, options)
+                return getSyncedLocalisationMatchResult(element, expression, project)
             }
             dataType == CwtDataType.InlineLocalisation -> {
                 if(!expression.type.isStringType()) return false
                 if(expression.quoted) return true //"quoted_string" -> any string
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                return getSyncedLocalisationMatchResult(element, expression, project, options)
+                return getSyncedLocalisationMatchResult(element, expression, project)
             }
             dataType == CwtDataType.StellarisNameFormat -> {
                 if(!expression.type.isStringType()) return false
@@ -246,13 +246,13 @@ object ParadoxConfigMatcher {
             dataType.isPathReferenceType() -> {
                 if(!expression.type.isStringType()) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                return getPathReferenceMatchResult(element, expression, configExpression, project, options)
+                return getPathReferenceMatchResult(element, expression, configExpression, project)
             }
             dataType == CwtDataType.Definition -> {
                 //注意这里可能是一个整数，例如，对于<technology_tier>
                 if(!expression.type.isStringType() && expression.type != ParadoxDataType.IntType) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                return getDefinitionMatchResult(element, expression, configExpression, project, options)
+                return getDefinitionMatchResult(element, expression, configExpression, project)
             }
             dataType == CwtDataType.EnumValue -> {
                 if(expression.type.isBlockLikeType()) return false
@@ -269,7 +269,7 @@ object ParadoxConfigMatcher {
                 if(complexEnumConfig != null) {
                     //complexEnumValue的值必须合法
                     if(ParadoxComplexEnumValueHandler.getName(expression.text) == null) return false
-                    return getComplexEnumValueMatchResult(element, name, enumName, complexEnumConfig, project, options)
+                    return getComplexEnumValueMatchResult(element, name, enumName, complexEnumConfig, project)
                 }
                 return false
             }
@@ -281,13 +281,13 @@ object ParadoxConfigMatcher {
                 if(name == null) return false
                 val valueSetName = configExpression.value
                 if(valueSetName == null) return false
-                return getValueSetValueMatchResult(element, name, valueSetName, project, options)
+                return getValueSetValueMatchResult(element, name, valueSetName, project)
             }
             dataType.isScopeFieldType() -> {
                 if(expression.quoted) return false //不允许用引号括起
                 if(!expression.type.isStringType()) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                return getScopeFieldMatchResult(element, expression, configExpression, configGroup, options)
+                return getScopeFieldMatchResult(element, expression, configExpression, configGroup)
             }
             dataType.isValueFieldType() -> {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
@@ -319,7 +319,7 @@ object ParadoxConfigMatcher {
             }
             dataType == CwtDataType.Modifier -> {
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                return getModifierMatchResult(element, expression, configGroup, options)
+                return getModifierMatchResult(element, expression, configGroup)
             }
             dataType == CwtDataType.Parameter -> {
                 //匹配参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
@@ -360,7 +360,7 @@ object ParadoxConfigMatcher {
                 if(!expression.type.isStringLikeType()) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 //允许用引号括起
-                return getTemplateMatchResult(element, expression, configExpression, configGroup, options)
+                return getTemplateMatchResult(element, expression, configExpression, configGroup)
             }
             dataType == CwtDataType.Constant -> {
                 val value = configExpression.value
@@ -401,60 +401,60 @@ object ParadoxConfigMatcher {
     
     private val configMatchResultCache = CacheBuilder.newBuilder().buildCache<VirtualFile, MutableMap<String, Result>> { ConcurrentHashMap() }
     
-    private fun getCachedResult(element: PsiElement, cacheKey: String, options: Int, predicate: () -> Boolean): Result {
+    private fun getCachedResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
         ProgressManager.checkCanceled()
         val rootFile = selectRootFile(element) ?: return Result.NotMatch
         val cache = configMatchResultCache.get(rootFile)
-        return cache.computeIfAbsent(cacheKey) { Result.LazyIndexAwareExactMatch(options, predicate) }
+        return cache.computeIfAbsent(cacheKey) { Result.LazyIndexAwareExactMatch(predicate) }
     }
     
-    private fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project, options: Int): Result {
+    private fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project): Result {
         val name = expression.text
         val cacheKey = "l#$name"
-        return getCachedResult(element, cacheKey, options) {
+        return getCachedResult(element, cacheKey) {
             val selector = localisationSelector(project, element)
             ParadoxLocalisationSearch.search(name, selector).findFirst() != null
         }
     }
     
-    private fun getSyncedLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project, options: Int): Result {
+    private fun getSyncedLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project): Result {
         val name = expression.text
         val cacheKey = "ls#$name"
-        return getCachedResult(element, cacheKey, options) {
+        return getCachedResult(element, cacheKey) {
             val selector = localisationSelector(project, element)
             ParadoxSyncedLocalisationSearch.search(name, selector).findFirst() != null
         }
     }
     
-    private fun getDefinitionMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, project: Project, options: Int): Result {
+    private fun getDefinitionMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, project: Project): Result {
         val name = expression.text
         val typeExpression = configExpression.value ?: return Result.NotMatch //invalid cwt config
         val cacheKey = "d#${typeExpression}#${name}"
-        return getCachedResult(element, cacheKey, options) {
+        return getCachedResult(element, cacheKey) {
             val selector = definitionSelector(project, element)
             ParadoxDefinitionSearch.search(name, typeExpression, selector).findFirst() != null
         }
     }
     
-    private fun getPathReferenceMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, project: Project, options: Int): Result {
+    private fun getPathReferenceMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, project: Project): Result {
         val pathReference = expression.text.normalizePath()
         val cacheKey = "p#${pathReference}#${configExpression}"
-        return getCachedResult(element, cacheKey, options) {
+        return getCachedResult(element, cacheKey) {
             val selector = fileSelector(project, element)
             ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null
         }
     }
     
-    private fun getComplexEnumValueMatchResult(element: PsiElement, name: String, enumName: String, complexEnumConfig: CwtComplexEnumConfig, project: Project, options: Int): Result {
+    private fun getComplexEnumValueMatchResult(element: PsiElement, name: String, enumName: String, complexEnumConfig: CwtComplexEnumConfig, project: Project): Result {
         val searchScope = complexEnumConfig.searchScopeType
         if(searchScope == null) {
             val cacheKey = "ce#${enumName}#${name}"
-            return getCachedResult(element, cacheKey, options) {
+            return getCachedResult(element, cacheKey) {
                 val selector = complexEnumValueSelector(project, element)
                 ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
             }
         }
-        return Result.LazyIndexAwareExactMatch(options) {
+        return Result.LazyIndexAwareExactMatch {
             val selector = complexEnumValueSelector(project, element).withSearchScopeType(searchScope)
             ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
         }
@@ -463,10 +463,10 @@ object ParadoxConfigMatcher {
     private val valueSetValueIndexStatusKey = Key.create<Boolean>("paradox.valueSetValue.index.status")
     
     @Suppress("UNUSED_PARAMETER")
-    private fun getValueSetValueMatchResult(element: PsiElement, name: String, valueSetName: String, project: Project, options: Int): Result {
+    private fun getValueSetValueMatchResult(element: PsiElement, name: String, valueSetName: String, project: Project): Result {
         //总是认为匹配
         val cacheKey = "vsv"
-        return getCachedResult(element, cacheKey, options) {
+        return getCachedResult(element, cacheKey) {
             //ParadoxValueSetValueIndex - 此索引目前仅用于进行代码补全，因此这里需要确保索引数据已加载
             if(project.getUserData(valueSetValueIndexStatusKey) != true) {
                 synchronized(project) {
@@ -483,11 +483,11 @@ object ParadoxConfigMatcher {
         }
     }
     
-    private fun getScopeFieldMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, options: Int): Result {
+    private fun getScopeFieldMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {
         val textRange = TextRange.create(0, expression.text.length)
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
         if(scopeFieldExpression == null) return Result.NotMatch
-        return Result.LazyScopeAwareExactMatch(options) p@{
+        return Result.LazyScopeAwareExactMatch p@{
             when(configExpression.type) {
                 CwtDataType.ScopeField -> {
                     return@p true
@@ -512,19 +512,19 @@ object ParadoxConfigMatcher {
         }
     }
     
-    private fun getModifierMatchResult(element: PsiElement, expression: ParadoxDataExpression, configGroup: CwtConfigGroup, options: Int): Result {
+    private fun getModifierMatchResult(element: PsiElement, expression: ParadoxDataExpression, configGroup: CwtConfigGroup): Result {
         val name = expression.text
         val cacheKey = "m#${name}"
-        return getCachedResult(element, cacheKey, options) {
+        return getCachedResult(element, cacheKey) {
             ParadoxModifierHandler.matchesModifier(name, element, configGroup)
         }
     }
     
-    private fun getTemplateMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, options: Int): Result {
+    private fun getTemplateMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {
         val exp = expression.text
         val template = configExpression.expressionString
         val cacheKey = "t#${template}#${exp}"
-        return getCachedResult(element, cacheKey, options) {
+        return getCachedResult(element, cacheKey) {
             CwtTemplateExpression.resolve(template).matches(exp, element, configGroup)
         }
     }

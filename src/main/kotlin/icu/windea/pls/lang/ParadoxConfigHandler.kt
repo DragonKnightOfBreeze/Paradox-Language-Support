@@ -1313,7 +1313,7 @@ object ParadoxConfigHandler {
                     for(config in configs) {
                         if(config !is CwtPropertyConfig) continue
                         ProgressManager.checkCanceled()
-                        if(ParadoxConfigMatcher.matches(memberElement, expression, config.valueExpression, config, configGroup, matchOptions).get()) {
+                        if(ParadoxConfigMatcher.matches(memberElement, expression, config.valueExpression, config, configGroup, matchOptions).get(matchOptions)) {
                             resultConfigs.add(config)
                         }
                     }
@@ -1325,7 +1325,7 @@ object ParadoxConfigHandler {
                             ProgressManager.checkCanceled()
                             val configExpression = config.valueExpression
                             if(!requireNotExactMatch(configExpression)) continue
-                            if(ParadoxConfigMatcher.matches(memberElement, expression, configExpression, config, configGroup, newMatchOptions).get()) {
+                            if(ParadoxConfigMatcher.matches(memberElement, expression, configExpression, config, configGroup, newMatchOptions).get(newMatchOptions)) {
                                 resultConfigs.add(config)
                             }
                         }
@@ -1361,7 +1361,7 @@ object ParadoxConfigHandler {
                                 if(config !is CwtPropertyConfig) continue
                                 ProgressManager.checkCanceled()
                                 val valueConfig = config.valueConfig ?: continue
-                                if(ParadoxConfigMatcher.matches(valueElement, expression, valueConfig.expression, config, configGroup, matchOptions).get()) {
+                                if(ParadoxConfigMatcher.matches(valueElement, expression, valueConfig.expression, config, configGroup, matchOptions).get(matchOptions)) {
                                     resultConfigs.add(valueConfig)
                                 }
                             }
@@ -1374,7 +1374,7 @@ object ParadoxConfigHandler {
                                     val valueConfig = config.valueConfig ?: continue
                                     val configExpression = valueConfig.expression
                                     if(!requireNotExactMatch(configExpression)) continue
-                                    if(ParadoxConfigMatcher.matches(valueElement, expression, configExpression, config, configGroup, newMatchOptions).get()) {
+                                    if(ParadoxConfigMatcher.matches(valueElement, expression, configExpression, config, configGroup, newMatchOptions).get(newMatchOptions)) {
                                         resultConfigs.add(valueConfig)
                                     }
                                 }
@@ -1400,7 +1400,7 @@ object ParadoxConfigHandler {
                                 if(childConfig !is CwtValueConfig) continue
                                 ProgressManager.checkCanceled()
                                 //精确匹配
-                                if(ParadoxConfigMatcher.matches(valueElement, expression, childConfig.valueExpression, childConfig, configGroup, matchOptions).get()) {
+                                if(ParadoxConfigMatcher.matches(valueElement, expression, childConfig.valueExpression, childConfig, configGroup, matchOptions).get(matchOptions)) {
                                     resultConfigs.add(childConfig)
                                 }
                             }
@@ -1412,7 +1412,7 @@ object ParadoxConfigHandler {
                                     ProgressManager.checkCanceled()
                                     val configExpression = childConfig.valueExpression
                                     if(!requireNotExactMatch(configExpression)) continue
-                                    if(ParadoxConfigMatcher.matches(valueElement, expression, configExpression, childConfig, configGroup, newMatchOptions).get()) {
+                                    if(ParadoxConfigMatcher.matches(valueElement, expression, configExpression, childConfig, configGroup, newMatchOptions).get(newMatchOptions)) {
                                         resultConfigs.add(childConfig)
                                     }
                                 }

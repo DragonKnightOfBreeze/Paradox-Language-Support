@@ -26,7 +26,7 @@ object ParadoxValueSetValueHandler {
     val EVENT_TARGETS = setOf("event_target", "global_event_target")
     
     fun getInfo(element: ParadoxValueSetValueElement): ParadoxValueSetValueInfo {
-        return ParadoxValueSetValueInfo(element.name, element.valueSetName, element.readWriteAccess, element.startOffset, element.gameType)
+        return ParadoxValueSetValueInfo(element.name, element.valueSetName, element.readWriteAccess, element.parent.startOffset, element.gameType)
     }
     
     fun getInfos(element: ParadoxScriptStringExpressionElement): List<ParadoxValueSetValueInfo>? {

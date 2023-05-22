@@ -95,7 +95,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
             if(configs.isNullOrEmpty()) return@f2
             configs.forEachFast f3@{ config ->
                 if(isKey && config is CwtPropertyConfig) {
-                    if(ParadoxConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get()) {
+                    if(ParadoxConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) {
                         ParadoxConfigInlineHandler.inlineFromAliasConfig(element, key, isQuoted, config, nextResult, matchOptions)
                     }
                 } else if(!isKey && config is CwtValueConfig) {
@@ -115,7 +115,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
                 if(overriddenConfigs.isNotNullOrEmpty()) {
                     //这里需要再次进行匹配
                     overriddenConfigs.forEachFast { overriddenConfig ->
-                        if(ParadoxConfigMatcher.matches(element, expression, overriddenConfig.expression, overriddenConfig, configGroup, matchOptions).get()) {
+                        if(ParadoxConfigMatcher.matches(element, expression, overriddenConfig.expression, overriddenConfig, configGroup, matchOptions).get(matchOptions)) {
                             optimizedResult.add(overriddenConfig)
                         }
                     }
