@@ -2,7 +2,6 @@ package icu.windea.pls.core.search
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
-import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
@@ -33,25 +32,29 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         FileTypeIndex.processFiles(ParadoxScriptFileType, p@{ file ->
             ProgressManager.checkCanceled()
             if(ParadoxFileManager.isLightFile(file)) return@p true
-            val complexEnumValueGroup = ParadoxComplexEnumValueIndex.getData(enumName, file, project)
-            if(complexEnumValueGroup.isNullOrEmpty()) return@p true
+            val data = ParadoxComplexEnumValueIndex.getData(file, project)
+            //use distinct data if possible to optimize performance
+            val complexEnumValueInfos = when {
+                distinctInFile -> data.distinctComplexEnumValueInfoGroup[enumName]
+                else -> data.complexEnumValueInfoGroup[enumName]
+            }
+            if(complexEnumValueInfos.isNullOrEmpty()) return@p true
+            
             val psiFile = file.toPsiFile(project) ?: return@p true
             if(name == null) {
-                for(infos in complexEnumValueGroup.values) {
-                    for(info in infos) {
+                complexEnumValueInfos.values.forEach { infos ->
+                    infos.forEachFast { info ->
                         if(targetGameType == info.gameType) {
                             info.withFile(psiFile) { consumer.process(info) }
                         }
-                        if(distinctInFile) break
                     }
                 }
             } else {
-                val infos = complexEnumValueGroup[name] ?: return@p true
-                for(info in infos) {
+                val infos = complexEnumValueInfos[name] ?: return@p true
+                infos.forEachFast { info ->
                     if(targetGameType == info.gameType) {
                         info.withFile(psiFile) { consumer.process(info) }
                     }
-                    if(distinctInFile) break
                 }
             }
             true

@@ -23,16 +23,19 @@ object ParadoxComplexEnumValueIndex {
     private const val VERSION = 22 //1.0.0
     
     class Data(
-        val complexEnumValueList: MutableList<ParadoxComplexEnumValueInfo> = SmartList()
+        val complexEnumValueInfoList: MutableList<ParadoxComplexEnumValueInfo> = SmartList()
     ) {
-        val complexEnumValueGroup by lazy {
+        val complexEnumValueInfoGroup by lazy {
             buildMap<String, Map<String, List<ParadoxComplexEnumValueInfo>>> {
-                complexEnumValueList.forEachFast { info ->
+                complexEnumValueInfoList.forEachFast { info ->
                     val map = getOrPut(info.enumName) { mutableMapOf() } as MutableMap
                     val list = map.getOrPut(info.name) { SmartList() } as MutableList
                     list.add(info)
                 }
             }
+        }
+        val distinctComplexEnumValueInfoGroup by lazy {
+            complexEnumValueInfoGroup.mapValues { (_, v1) -> v1.mapValues { (_, v2) -> v2.distinctBy { it.readWriteAccess } } }
         }
     }
     
@@ -40,7 +43,7 @@ object ParadoxComplexEnumValueIndex {
     
     private val valueExternalizer: DataExternalizer<Data> = object : DataExternalizer<Data> {
         override fun save(storage: DataOutput, value: Data) {
-            DataInputOutputUtil.writeSeq(storage, value.complexEnumValueList) {
+            DataInputOutputUtil.writeSeq(storage, value.complexEnumValueInfoList) {
                 IOUtil.writeUTF(storage, it.name)
                 IOUtil.writeUTF(storage, it.enumName)
                 storage.writeByte(it.readWriteAccess.toByte())
@@ -84,7 +87,7 @@ object ParadoxComplexEnumValueIndex {
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if(element is ParadoxScriptStringExpressionElement) {
-                    ParadoxComplexEnumValueHandler.getInfo(element)?.let { data.complexEnumValueList.add(it) }
+                    ParadoxComplexEnumValueHandler.getInfo(element)?.let { data.complexEnumValueInfoList.add(it) }
                 }
                 if(element.isExpressionOrMemberContext()) super.visitElement(element)
             }
@@ -103,9 +106,8 @@ object ParadoxComplexEnumValueIndex {
         return false
     }
     
-    fun getData(enumName: String, file: VirtualFile, project: Project): Map<String, List<ParadoxComplexEnumValueInfo>>? {
-        val fileData = gist.getFileData(project, file)
-        return fileData.complexEnumValueGroup[enumName]
+    fun getData(file: VirtualFile, project: Project): Data {
+        return gist.getFileData(project, file)
     }
 }
 

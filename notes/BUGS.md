@@ -11,7 +11,7 @@
 * [ ] `enum[feature_flags]` - 这个存在相关的本地化
 * [ ] 支持传统中的图标继承（`traditions: inherit icon from parent original tradition if inherit_icon = yes`）
 * [ ] 支持事件继承
-* [ ] 支持`complex_trigger_modifier`中的`trigger`和`trigger_scope`，后者作为前者的scope
+* [X] ~~支持`complex_trigger_modifier`中的`trigger`和`trigger_scope`，后者作为前者的scope~~（已实现）
 
 狡猾特性：
 

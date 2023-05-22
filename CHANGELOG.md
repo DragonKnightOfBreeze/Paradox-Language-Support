@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1
+
+* [X] 修复代码检查`UnusedValueSetValueInspection`和`UnsetValueSetValueInspection`运行不正确的问题
+* [ ] 修复初次打开项目时可能无法正确解析各种复杂表达式的问题
+
 ## 1.0.0
 
 * [X] 提示定义和修正时，也可以基于它们的本地化名字进行提示。（在插件配置页面中勾选`Code Completion > Complete by localized names`以启用此功能）

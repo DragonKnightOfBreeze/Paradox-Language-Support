@@ -47,8 +47,8 @@ abstract class ParadoxScriptExpressionSupport {
         
         fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
             withRecursionGuard("icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.annotate") { 
-                EP_NAME.extensionList.forEachFast p@{ ep ->
-                    if(!ep.supports(config)) return@p
+                EP_NAME.extensionList.forEachFast f@{ ep ->
+                    if(!ep.supports(config)) return@f
                     withCheckRecursion("${ep.javaClass.name}@annotate@${expression}") {
                         ep.annotate(element, rangeInElement, expression, holder, config)
                     }
@@ -92,8 +92,8 @@ abstract class ParadoxScriptExpressionSupport {
         fun complete(context: ProcessingContext, result: CompletionResultSet) {
             val config = context.config ?: return
             withRecursionGuard("icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.complete") {
-                EP_NAME.extensionList.forEachFast p@{ ep ->
-                    if(!ep.supports(config)) return@p
+                EP_NAME.extensionList.forEachFast f@{ ep ->
+                    if(!ep.supports(config)) return@f
                     withCheckRecursion("${ep.javaClass.name}@complete${context.keyword}") {
                         ep.complete(context, result)
                     }

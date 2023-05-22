@@ -25,16 +25,19 @@ object ParadoxValueSetValueIndex {
     private const val VERSION = 22 //1.0.0
     
     class Data(
-        val valueSetValueList: MutableList<ParadoxValueSetValueInfo> = SmartList()
+        val valueSetValueInfoList: MutableList<ParadoxValueSetValueInfo> = SmartList()
     ) {
-        val valueSetValueGroup by lazy {
+        val valueSetValueInfoGroup by lazy {
             buildMap<String, Map<String, List<ParadoxValueSetValueInfo>>> {
-                valueSetValueList.forEachFast { info ->
+                valueSetValueInfoList.forEachFast { info ->
                     val map = getOrPut(info.valueSetName) { mutableMapOf() } as MutableMap
                     val list = map.getOrPut(info.name) { SmartList() } as MutableList
                     list.add(info)
                 }
             }
+        }
+        val distinctValueSetValueInfoGroup by lazy {
+            valueSetValueInfoGroup.mapValues { (_, v1) -> v1.mapValues { (_, v2) -> v2.distinctBy { it.readWriteAccess } } }
         }
     }
     
@@ -42,7 +45,7 @@ object ParadoxValueSetValueIndex {
     
     private val valueExternalizer: DataExternalizer<Data> = object : DataExternalizer<Data> {
         override fun save(storage: DataOutput, value: Data) {
-            DataInputOutputUtil.writeSeq(storage, value.valueSetValueList) {
+            DataInputOutputUtil.writeSeq(storage, value.valueSetValueInfoList) {
                 IOUtil.writeUTF(storage, it.name)
                 IOUtil.writeUTF(storage, it.valueSetName)
                 storage.writeByte(it.readWriteAccess.toByte())
@@ -86,7 +89,7 @@ object ParadoxValueSetValueIndex {
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if(element is ParadoxScriptStringExpressionElement) {
-                    ParadoxValueSetValueHandler.getInfos(element)?.let { data.valueSetValueList.addAll(it) }
+                    ParadoxValueSetValueHandler.getInfos(element)?.let { data.valueSetValueInfoList.addAll(it) }
                 }
                 if(element.isExpressionOrMemberContext()) super.visitElement(element)
             }
@@ -94,9 +97,8 @@ object ParadoxValueSetValueIndex {
         data
     }
     
-    fun getData(valueSetName: String, file: VirtualFile, project: Project): Map<String, List<ParadoxValueSetValueInfo>>? {
-        val fileData = gist.getFileData(project, file)
-        return fileData.valueSetValueGroup[valueSetName]
+    fun getData(file: VirtualFile, project: Project): Data {
+        return gist.getFileData(project, file)
     }
 }
 

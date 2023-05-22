@@ -57,14 +57,13 @@ class UnsetValueSetValueInspection : LocalInspectionTool(){
                     ProgressManager.checkCanceled()
                     if(resolved !is ParadoxValueSetValueElement) continue
                     if(resolved.readWriteAccess == Access.Read) {
-                        //当确定已被使用时，后续不需要再进行ReferencesSearch
                         val used = statusMap[resolved]
                         val isUsed = if(used == null) {
                             ProgressManager.checkCanceled()
                             val searchScope = searchScope ?: GlobalSearchScope.allScope(holder.project)
                             val selector = valueSetValueSelector(resolved.project, resolved)
                                 .withSearchScope(searchScope)
-                            val r = ParadoxValueSetValueSearch.search(resolved.name, selector).processQueryAsync p@{
+                            val r = ParadoxValueSetValueSearch.search(resolved.name, resolved.valueSetName, selector).processQueryAsync p@{
                                 ProgressManager.checkCanceled()
                                 if(it.readWriteAccess == Access.Read) {
                                     statusMap[resolved] = true

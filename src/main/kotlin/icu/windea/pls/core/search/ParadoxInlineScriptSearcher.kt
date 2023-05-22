@@ -3,11 +3,11 @@ package icu.windea.pls.core.search
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
-import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
@@ -34,10 +34,9 @@ class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptInfo, P
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 if(file.fileInfo == null) return@p true
                 if(ParadoxFileManager.isLightFile(file)) return@p true
-                val inlineScripts = ParadoxInlineScriptIndex.getData(expression, file, project)
-                if(inlineScripts.isNullOrEmpty()) return@p true
-                for(info in inlineScripts) {
-                    ProgressManager.checkCanceled()
+                val inlineScriptInfos = ParadoxInlineScriptIndex.getData(expression, file, project)
+                if(inlineScriptInfos.isNullOrEmpty()) return@p true
+                inlineScriptInfos.forEachFast { info ->
                     if(gameType == info.gameType) {
                         info.withFile(psiFile) { consumer.process(info) }
                     }
