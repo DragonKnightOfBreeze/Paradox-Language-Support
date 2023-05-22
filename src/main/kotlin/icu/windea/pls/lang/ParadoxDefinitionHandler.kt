@@ -53,8 +53,6 @@ object ParadoxDefinitionHandler {
     private fun doGetInfo(element: ParadoxScriptDefinitionElement, file: PsiFile = element.containingFile): ParadoxDefinitionInfo? {
         val rootKey = element.name.let { if(element is ParadoxScriptFile) it.substringBeforeLast('.') else it } //如果是文件名，不要包含扩展名
         if(element is ParadoxScriptProperty && rootKey.isParameterized()) return null //排除可能带参数的情况
-        
-        ProgressManager.checkCanceled()
         val project = file.project
         
         //首先尝试直接基于stub进行解析
@@ -69,12 +67,12 @@ object ParadoxDefinitionHandler {
         val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
         val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
         for(typeConfig in configGroup.types.values) {
-            ProgressManager.checkCanceled()
             if(matchesType(element, typeConfig, path, elementPath, rootKey, configGroup)) {
-                //需要懒加载
+                ProgressManager.checkCanceled()
                 return ParadoxDefinitionInfo(null, rootKey, typeConfig, elementPath, gameType, configGroup, element)
             }
         }
+        ProgressManager.checkCanceled()
         return null
     }
     
