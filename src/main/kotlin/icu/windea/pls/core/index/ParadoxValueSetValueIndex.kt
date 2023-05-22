@@ -2,6 +2,7 @@ package icu.windea.pls.core.index
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.*

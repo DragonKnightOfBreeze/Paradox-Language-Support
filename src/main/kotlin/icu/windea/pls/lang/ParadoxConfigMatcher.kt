@@ -1,6 +1,7 @@
 package icu.windea.pls.lang
 
 import com.google.common.cache.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -8,6 +9,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
+import com.intellij.util.concurrency.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -19,6 +21,18 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Float
+import kotlin.IllegalStateException
+import kotlin.Int
+import kotlin.String
+import kotlin.Suppress
+import kotlin.getValue
+import kotlin.lazy
+import kotlin.let
+import kotlin.run
+import kotlin.synchronized
 
 object ParadoxConfigMatcher {
     object Options {
@@ -267,8 +281,7 @@ object ParadoxConfigMatcher {
                 if(name == null) return false
                 val valueSetName = configExpression.value
                 if(valueSetName == null) return false
-                //总是认为匹配
-                return true
+                return getValueSetValueMatchResult(element, name, valueSetName, project, options)
             }
             dataType.isScopeFieldType() -> {
                 if(expression.quoted) return false //不允许用引号括起
@@ -390,7 +403,7 @@ object ParadoxConfigMatcher {
     
     private fun getCachedResult(element: PsiElement, cacheKey: String, options: Int, predicate: () -> Boolean): Result {
         ProgressManager.checkCanceled()
-        val rootFile = selectRootFile(element) ?: return Result.LazyIndexAwareExactMatch(options, predicate)
+        val rootFile = selectRootFile(element) ?: return Result.NotMatch
         val cache = configMatchResultCache.get(rootFile)
         return cache.computeIfAbsent(cacheKey) { Result.LazyIndexAwareExactMatch(options, predicate) }
     }
@@ -444,6 +457,29 @@ object ParadoxConfigMatcher {
         return Result.LazyIndexAwareExactMatch(options) {
             val selector = complexEnumValueSelector(project, element).withSearchScopeType(searchScope)
             ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
+        }
+    }
+    
+    private val valueSetValueIndexStatusKey = Key.create<Boolean>("paradox.valueSetValue.index.status")
+    
+    @Suppress("UNUSED_PARAMETER")
+    private fun getValueSetValueMatchResult(element: PsiElement, name: String, valueSetName: String, project: Project, options: Int): Result {
+        //总是认为匹配
+        val cacheKey = "vsv"
+        return getCachedResult(element, cacheKey, options) {
+            //ParadoxValueSetValueIndex - 此索引目前仅用于进行代码补全，因此这里需要确保索引数据已加载
+            if(project.getUserData(valueSetValueIndexStatusKey) != true) {
+                synchronized(project) {
+                    if(project.getUserData(valueSetValueIndexStatusKey) != true) {
+                        project.putUserData(valueSetValueIndexStatusKey, true)
+                        ReadAction.nonBlocking(Callable {
+                            val selector = valueSetValueSelector(project, element)
+                            ParadoxValueSetValueSearch.search("", selector).findAll()
+                        }).inSmartMode(project).submit(AppExecutorUtil.getAppExecutorService())
+                    }
+                }
+            }
+            true
         }
     }
     
