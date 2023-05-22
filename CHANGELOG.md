@@ -3,7 +3,7 @@
 ## 1.0.1
 
 * [X] 修复代码检查`UnusedValueSetValueInspection`和`UnsetValueSetValueInspection`运行不正确的问题
-* [ ] 修复初次打开项目时可能无法正确解析各种复杂表达式的问题
+* [X] 修复初次打开项目时可能无法正确解析各种复杂表达式的问题
 
 ## 1.0.0
 

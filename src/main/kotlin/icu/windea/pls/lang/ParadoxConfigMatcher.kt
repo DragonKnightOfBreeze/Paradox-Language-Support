@@ -445,7 +445,7 @@ object ParadoxConfigMatcher {
     }
     
     private fun getScopeFieldMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, options: Int): Result {
-        return Result.LazyIndexAwareExactMatch(options) p@{
+        return Result.LazyExactMatch(options) p@{
             val textRange = TextRange.create(0, expression.text.length)
             val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
             if(scopeFieldExpression == null) return@p false
