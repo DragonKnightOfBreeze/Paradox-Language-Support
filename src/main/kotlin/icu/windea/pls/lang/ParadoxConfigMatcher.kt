@@ -25,11 +25,11 @@ object ParadoxConfigMatcher {
         /**默认的匹配方式，先尝试通过[Result.ExactMatch]进行匹配，然后再尝试通过其他匹配方式进行匹配。*/
         const val Default = 0x00
         /** 对于[Result.LazyExactMatch]，匹配结果直接返回true。 */
-        const val Relax = 0x02
+        const val Relax = 0x01
         /** 对于[Result.LazyIndexAwareExactMatch]，匹配结果直接返回true。 */
-        const val SkipIndex = 0x01
+        const val SkipIndex = 0x02
         /** 对于[Result.LazyScopeAwareExactMatch]，匹配结果直接返回true。 */
-        const val SkipScope = 0x02
+        const val SkipScope = 0x04
         /** 对于最终匹配得到的那个结果，不需要再次判断是否精确匹配。 */
         const val Fast = 0x08
     }
