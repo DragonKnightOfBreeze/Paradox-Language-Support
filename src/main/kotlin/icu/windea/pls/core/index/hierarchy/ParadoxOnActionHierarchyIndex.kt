@@ -12,6 +12,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
@@ -74,9 +75,9 @@ object ParadoxOnActionHierarchyIndex {
     
     private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(ID, VERSION, valueExternalizer) builder@{ project, file ->
         if(file.fileInfo == null) return@builder EmptyData
+        if(file.fileType != ParadoxScriptFileType) return@builder EmptyData
         if(!matchesPath(file)) return@builder EmptyData
         val psiFile = file.toPsiFile(project) ?: return@builder EmptyData
-        if(psiFile !is ParadoxScriptFile) return@builder EmptyData
         val data = Data()
         var currentOnActionInfo: OnActionInfo? = null
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
