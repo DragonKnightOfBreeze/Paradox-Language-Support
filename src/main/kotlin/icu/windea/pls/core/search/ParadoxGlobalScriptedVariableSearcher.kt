@@ -19,7 +19,6 @@ class ParadoxGlobalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScr
         if(SearchScope.isEmptyScope(scope)) return
         val project = queryParameters.project
         
-        ProgressManager.checkCanceled()
         DumbService.getInstance(project).runReadActionInSmartMode action@{
             if(queryParameters.name == null) {
                 //查找所有封装变量

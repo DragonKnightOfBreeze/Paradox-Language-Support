@@ -25,7 +25,6 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         val typeExpression = queryParameters.typeExpression
         val project = queryParameters.project
         
-        ProgressManager.checkCanceled()
         DumbService.getInstance(project).runReadActionInSmartMode action@{
             if(typeExpression == null) {
                 if(name == null) {
