@@ -2,7 +2,7 @@
 <p>Features:</p>
 <ul>
 <li>Supports script language (mainly <code>*.txt</code> files) and localization language (<code>*.yml</code> files),
-providing many language features such as syntax parsing, reference resolution, quick documentation, code navigation, code checking, code completion, inline hints, live templates, etc.
+providing many language features such as syntax parsing, reference resolution, quick documentation, code navigation, code checking, code completion, inline hints, live templates, code hierarchy, diagram, diff, etc. 
 It also provides quite comprehensive support for most advanced features of script language, such as parameters, scopes, inline scripts and various complex expressions.</li>
 <li>Supports CWT language (<code>*.cwt</code> files), providing basic language features.</li>
 <li>Supports viewing DDS images directly in the IDE, providing some useful editor features including converting to PNG images.</li>
@@ -17,7 +17,7 @@ It also provides quite comprehensive support for most advanced features of scrip
 <p>特性：</p>
 <ul>
 <li>支持脚本语言（主要是<code>*.txt</code>文件）和本地化语言（<code>*.yml</code>文件），
-提供语法解析、引用解析、快速文档、代码导航、代码检查、代码补全、内嵌提示、动态模版等诸多语言功能。
+提供语法解析、引用解析、快速文档、代码导航、代码检查、代码补全、内嵌提示、动态模版、代码层级、图表、差异比较等诸多语言功能。  
 对于脚本语言的大多数高级特性（例如参数、作用域、内联脚本和各种复杂表达式），也提供了相当完善的支持。</li>
 <li>支持CWT语言（<code>*.cwt</code>文件），提供基础的语言功能。</li>
 <li>支持直接在IDE中查看DDS图片，提供包括转为PNG图片在内的一些有用的编辑器功能。</li>

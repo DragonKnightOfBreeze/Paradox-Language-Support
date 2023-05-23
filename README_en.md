@@ -14,7 +14,7 @@ IDEA plugin: Support for Paradox language.
 Features:
 
 * Supports script language (mainly `*.txt` files) and localization language (`*.yml` files),  
-  providing many language features such as syntax parsing, reference resolution, quick documentation, code navigation, code checking, code completion, inline hints, live templates, etc.  
+  providing many language features such as syntax parsing, reference resolution, quick documentation, code navigation, code checking, code completion, inline hints, live templates, code hierarchy, diagram, diff, etc.  
   It also provides quite comprehensive support for most advanced features of script language, such as parameters, scopes, inline scripts and various complex expressions.
 * Supports CWT language (`*.cwt` files), providing basic language features.
 * Supports viewing DDS images directly in the IDE, providing some useful editor features including converting to PNG images.
@@ -40,13 +40,18 @@ Usage:
 
 Tips:
 
-* To perform a global search, refer to the following methods:
+* To perform a global search, please refer to the following methods:
   * Click `Ctrl Shift R` or `Ctrl Shift F` to search within the current project, directory, or specified scope.
   * Click `Shift Shift` to find files, definitions, scripted variables, and other symbols.
-* To perform global code inspection, refer to the following methods:
-  * Click `Alt 6` or the `Problems` icon in the sidebar to open the Problems panel and view issues in the current file or perform global code inspection for the entire project.
-  * Click `Code > Inspect Code...` to perform global code inspection for the entire project.
-  * Note that some code inspections may take a long time and detailed results will be displayed in the panel below after the inspection is completed.
+* To perform a code navigation, please refer to the following methods:
+  * Hold down `Ctrl` and click on the target location, to navigate to the declarations or usages of the target.
+  * Hold down `Ctrl Shift` and click on the target location, to navigate to the type declarations of the target.
+  * Hold down `Alt` and click on the target location, to navigate to the related CWT config declarations of the target.
+  * Hold down `Shift Alt` and click on the target location, to navigate to the related localization declarations of the target definition.
+  * Hold down `Ctrl Shift Alt` and click on the target location to navigate to the related image declarations of the target definition.
+  * Click `Navigate` or `Go To` in the editor's right-click menu, and choose the target to navigate to.
+  * Click `Navigate > Definition Hierarchy` to open the definition hierarchy window, to view the definition implementation relationship of a specific definition type.
+  * Click `Navigate > Call Hierarchy` to open the call hierarchy window, to view the call relationship of definitions, localizations, scripted variables, etc.
 * To change the global configuration of the plugin, refer to the following method:
   * Click `Settings > Languages & Frameworks > Paradox Language Support` to open the configuration page for the plugin.
 * To change the configuration of mod types, game directories, mod dependencies, etc., open the Mod Configuration dialog using one of the following methods:
