@@ -28,9 +28,11 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
     }
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if(!getSettings().inference.eventScopeContextFromOnAction) return null
-        if(definitionInfo.type != "event") return null
-        return doGetScopeContextFromCache(definition)
+        //TODO 1.0.2+ 性能太差，暂时禁用
+        return null
+        //if(!getSettings().inference.eventScopeContextFromOnAction) return null
+        //if(definitionInfo.type != "event") return null
+        //return doGetScopeContextFromCache(definition)
     }
     
     private fun doGetScopeContextFromCache(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
