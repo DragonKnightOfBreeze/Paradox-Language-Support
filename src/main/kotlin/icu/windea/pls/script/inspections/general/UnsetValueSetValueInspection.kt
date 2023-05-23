@@ -66,7 +66,7 @@ class UnsetValueSetValueInspection : LocalInspectionTool(){
                                 .withSearchScope(searchScope)
                             val r = ParadoxValueSetValueSearch.search(resolved.name, resolved.valueSetName, selector).processQueryAsync p@{
                                 ProgressManager.checkCanceled()
-                                if(it.readWriteAccess == Access.Read) {
+                                if(it.readWriteAccess == Access.Write) {
                                     statusMap[resolved] = true
                                     false
                                 } else {
