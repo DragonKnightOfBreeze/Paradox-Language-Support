@@ -1,9 +1,16 @@
 # Changelog
 
+## 1.0.2
+
+* [ ] 尝试优化性能 - 优化索引、缓存、CWT规则匹配等底层实现的性能
+* [ ] 尝试优化性能 - 优化代码解析、代码检查等功能的性能
+
 ## 1.0.1
 
 * [X] 修复代码检查`UnusedValueSetValueInspection`和`UnsetValueSetValueInspection`运行不正确的问题
 * [X] 修复初次打开项目时可能无法正确解析各种复杂表达式的问题
+* [X] 索引valueSetValue（如，`event_target`）时，也包含仅在本地化文件中使用到的`event_target`和`variable`
+* [X] 其他优化和BUG修复
 
 ## 1.0.0
 

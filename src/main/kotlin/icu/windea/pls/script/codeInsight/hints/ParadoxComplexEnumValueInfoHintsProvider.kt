@@ -5,6 +5,7 @@ import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
@@ -30,8 +31,8 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSe
         if(!element.isExpression()) return true
         val info = ParadoxComplexEnumValueHandler.getInfo(element)
         if(info != null) {
-            val enumName = info.enumName
-            val presentation = doCollect(enumName)
+            val complexEnumConfig = info.getConfig(file.project) ?: return true
+            val presentation = doCollect(complexEnumConfig)
             val finalPresentation = presentation.toFinalPresentation(this, file.project)
             val endOffset = element.endOffset
             sink.addInlineElement(endOffset, true, finalPresentation, false)
@@ -43,8 +44,8 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSe
         val type = config.expression.type
         if(type == CwtDataType.EnumValue) {
             val enumName = config.expression.value ?: return true
-            if(!configGroup.complexEnums.containsKey(enumName)) return true
-            val presentation = doCollect(enumName)
+            val complexEnumConfig = configGroup.complexEnums[enumName] ?: return true
+            val presentation = doCollect(complexEnumConfig)
             val finalPresentation = presentation.toFinalPresentation(this, file.project)
             val endOffset = element.endOffset
             sink.addInlineElement(endOffset, true, finalPresentation, false)
@@ -52,7 +53,10 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSe
         return true
     }
     
-    private fun PresentationFactory.doCollect(enumName: String): InlayPresentation {
-        return smallText(": $enumName")
+    private fun PresentationFactory.doCollect(complexEnumConfig: CwtComplexEnumConfig): InlayPresentation {
+        val presentations = mutableListOf<InlayPresentation>()
+        presentations.add(smallText(": "))
+        presentations.add(psiSingleReference(smallText(complexEnumConfig.name)) { complexEnumConfig.pointer.element })
+        return SequencePresentation(presentations)
     }
 }

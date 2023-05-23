@@ -19,7 +19,6 @@ class ParadoxSyncedLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationP
         if(SearchScope.isEmptyScope(scope)) return
         val project = queryParameters.project
         
-        ProgressManager.checkCanceled()
         DumbService.getInstance(project).runReadActionInSmartMode action@{
             if(queryParameters.name == null) {
                 ParadoxSyncedLocalisationNameIndex.KEY.processAllElementsByKeys(project, scope) p@{ _, it ->

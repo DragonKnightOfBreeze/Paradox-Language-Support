@@ -1,5 +1,6 @@
 package icu.windea.pls.script.references
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
@@ -9,10 +10,10 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
+        ProgressManager.checkCanceled()
+        
         //尝试兼容可能包含参数的情况
         //if(text.isParameterized()) return PsiReference.EMPTY_ARRAY
-        
-        val isKey = element is ParadoxScriptPropertyKey
         
         //尝试解析为复杂枚举值声明
         if(element is ParadoxScriptStringExpressionElement) {
@@ -30,6 +31,7 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
         }
         
         //尝试基于CWT规则进行解析
+        val isKey = element is ParadoxScriptPropertyKey
         val configs = ParadoxConfigHandler.getConfigs(element, !isKey, isKey)
         val config = configs.firstOrNull()
         if(config != null) {

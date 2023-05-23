@@ -33,7 +33,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         const val economicCategoriesPathExpression = "common/economic_categories/,.txt"
     }
     
-    override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int): Boolean {
+    override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         val project = configGroup.project
         val selector = definitionSelector(project, element).distinctByName()

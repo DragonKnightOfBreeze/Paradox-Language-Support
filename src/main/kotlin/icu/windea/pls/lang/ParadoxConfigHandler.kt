@@ -339,7 +339,7 @@ object ParadoxConfigHandler {
         
         val configGroup = definitionMemberInfo.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val matchOptions = ParadoxConfigMatcher.Options.Default or ParadoxConfigMatcher.Options.RelaxMatch
+        val matchOptions = ParadoxConfigMatcher.Options.Default or ParadoxConfigMatcher.Options.Relax
         val parentConfigs = getConfigs(definitionElement, allowDefinition = true, matchOptions = matchOptions)
         val configs = SmartList<CwtPropertyConfig>()
         parentConfigs.forEach { c1 ->
@@ -385,7 +385,7 @@ object ParadoxConfigHandler {
         
         val configGroup = definitionMemberInfo.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val matchOptions = ParadoxConfigMatcher.Options.Default or ParadoxConfigMatcher.Options.RelaxMatch
+        val matchOptions = ParadoxConfigMatcher.Options.Default or ParadoxConfigMatcher.Options.Relax
         val parentConfigs = getConfigs(memberElement, allowDefinition = true, matchOptions = matchOptions)
         val configs = SmartList<CwtValueConfig>()
         parentConfigs.forEach { c1 ->
@@ -1313,19 +1313,19 @@ object ParadoxConfigHandler {
                     for(config in configs) {
                         if(config !is CwtPropertyConfig) continue
                         ProgressManager.checkCanceled()
-                        if(ParadoxConfigMatcher.matches(memberElement, expression, config.valueExpression, config, configGroup, matchOptions).get()) {
+                        if(ParadoxConfigMatcher.matches(memberElement, expression, config.valueExpression, config, configGroup, matchOptions).get(matchOptions)) {
                             resultConfigs.add(config)
                         }
                     }
                     //精确匹配无结果 - 不精确匹配
                     if(resultConfigs.isEmpty()) {
-                        val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.RelaxMatch
+                        val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
                         for(config in configs) {
                             if(config !is CwtPropertyConfig) continue
                             ProgressManager.checkCanceled()
                             val configExpression = config.valueExpression
                             if(!requireNotExactMatch(configExpression)) continue
-                            if(ParadoxConfigMatcher.matches(memberElement, expression, configExpression, config, configGroup, newMatchOptions).get()) {
+                            if(ParadoxConfigMatcher.matches(memberElement, expression, configExpression, config, configGroup, newMatchOptions).get(newMatchOptions)) {
                                 resultConfigs.add(config)
                             }
                         }
@@ -1361,20 +1361,20 @@ object ParadoxConfigHandler {
                                 if(config !is CwtPropertyConfig) continue
                                 ProgressManager.checkCanceled()
                                 val valueConfig = config.valueConfig ?: continue
-                                if(ParadoxConfigMatcher.matches(valueElement, expression, valueConfig.expression, config, configGroup, matchOptions).get()) {
+                                if(ParadoxConfigMatcher.matches(valueElement, expression, valueConfig.expression, config, configGroup, matchOptions).get(matchOptions)) {
                                     resultConfigs.add(valueConfig)
                                 }
                             }
                             //精确匹配无结果 - 不精确匹配
                             if(resultConfigs.isEmpty()) {
-                                val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.RelaxMatch
+                                val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
                                 for(config in configs) {
                                     if(config !is CwtPropertyConfig) continue
                                     ProgressManager.checkCanceled()
                                     val valueConfig = config.valueConfig ?: continue
                                     val configExpression = valueConfig.expression
                                     if(!requireNotExactMatch(configExpression)) continue
-                                    if(ParadoxConfigMatcher.matches(valueElement, expression, configExpression, config, configGroup, newMatchOptions).get()) {
+                                    if(ParadoxConfigMatcher.matches(valueElement, expression, configExpression, config, configGroup, newMatchOptions).get(newMatchOptions)) {
                                         resultConfigs.add(valueConfig)
                                     }
                                 }
@@ -1400,19 +1400,19 @@ object ParadoxConfigHandler {
                                 if(childConfig !is CwtValueConfig) continue
                                 ProgressManager.checkCanceled()
                                 //精确匹配
-                                if(ParadoxConfigMatcher.matches(valueElement, expression, childConfig.valueExpression, childConfig, configGroup, matchOptions).get()) {
+                                if(ParadoxConfigMatcher.matches(valueElement, expression, childConfig.valueExpression, childConfig, configGroup, matchOptions).get(matchOptions)) {
                                     resultConfigs.add(childConfig)
                                 }
                             }
                             //精确匹配无结果 - 不精确匹配
                             if(resultConfigs.isEmpty()) {
-                                val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.RelaxMatch
+                                val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
                                 for(childConfig in childConfigs) {
                                     if(childConfig !is CwtValueConfig) continue
                                     ProgressManager.checkCanceled()
                                     val configExpression = childConfig.valueExpression
                                     if(!requireNotExactMatch(configExpression)) continue
-                                    if(ParadoxConfigMatcher.matches(valueElement, expression, configExpression, childConfig, configGroup, newMatchOptions).get()) {
+                                    if(ParadoxConfigMatcher.matches(valueElement, expression, configExpression, childConfig, configGroup, newMatchOptions).get(newMatchOptions)) {
                                         resultConfigs.add(childConfig)
                                     }
                                 }

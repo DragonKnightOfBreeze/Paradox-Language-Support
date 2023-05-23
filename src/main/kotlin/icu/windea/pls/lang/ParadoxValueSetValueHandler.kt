@@ -15,6 +15,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
@@ -23,6 +24,10 @@ import kotlin.collections.mapNotNullTo
 object ParadoxValueSetValueHandler {
     const val EVENT_TARGET_PREFIX = "event_target:"
     val EVENT_TARGETS = setOf("event_target", "global_event_target")
+    
+    fun getInfo(element: ParadoxValueSetValueElement): ParadoxValueSetValueInfo {
+        return ParadoxValueSetValueInfo(element.name, element.valueSetName, element.readWriteAccess, element.parent.startOffset, element.gameType)
+    }
     
     fun getInfos(element: ParadoxScriptStringExpressionElement): List<ParadoxValueSetValueInfo>? {
         if(!element.isExpression()) return null
@@ -48,7 +53,7 @@ object ParadoxValueSetValueHandler {
         
         val isKey = element is ParadoxScriptPropertyKey
         
-        val matchOptions = ParadoxConfigMatcher.Options.StaticMatch //这里需要静态匹配
+        val matchOptions = Options.SkipIndex or Options.SkipScope
         val configs = ParadoxConfigHandler.getConfigs(element, orDefault = true, matchOptions = matchOptions)
         if(configs.isEmpty()) return null
         
@@ -110,7 +115,7 @@ object ParadoxValueSetValueHandler {
     }
     
     private fun resolveReferenceToInfo(reference: PsiReference): ParadoxValueSetValueInfo? {
-        when{
+        when {
             reference is ParadoxScriptExpressionPsiReference -> {
                 val config = reference.config.takeIf { it.expression?.type?.isValueSetValueType() == true } ?: return null
                 return resolveReferenceToInfoWithConfig(reference, config)
