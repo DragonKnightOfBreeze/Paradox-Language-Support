@@ -41,8 +41,8 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
                 //use distinct data if possible to optimize performance
                 valueSetNames.forEach f@{ valueSetName ->
                     val valueSetValueInfos = when {
-                        distinctInFile -> data.valueSetValueInfoGroup[valueSetName]
-                        else -> data.distinctValueSetValueInfoGroup[valueSetName]
+                        distinctInFile -> data.distinctValueSetValueInfoGroup[valueSetName]
+                        else -> data.valueSetValueInfoGroup[valueSetName]
                     }
                     if(valueSetValueInfos.isNullOrEmpty()) return@f
                     
