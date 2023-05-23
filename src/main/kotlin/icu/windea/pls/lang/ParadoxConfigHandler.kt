@@ -226,10 +226,40 @@ object ParadoxConfigHandler {
     }
     //endregion
     
+    //region Handle Methods
+    fun getExpressionText(element: ParadoxScriptExpressionElement, rangeInElement: TextRange? = null) : String {
+        return when {
+            element is ParadoxScriptBlock -> "" //should not be used
+            element is ParadoxScriptInlineMath -> "" //should not be used
+            else -> rangeInElement?.substring(element.text) ?: element.text
+        }
+    }
+    
+    fun getExpressionTextRange(element: ParadoxScriptExpressionElement): TextRange {
+        return when {
+            element is ParadoxScriptBlock -> TextRange.create(0, 1) //left curly brace
+            element is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent
+            else -> {
+                val text = element.text
+                TextRange.create(0, text.length).unquote(text) //unquoted text 
+            }
+        }
+    }
+    
+    fun getExpressionTextRange(element: ParadoxScriptExpressionElement, text: String): TextRange {
+        return when {
+            element is ParadoxScriptBlock -> TextRange.create(0, 1) //left curly brace
+            element is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent
+            else -> {
+                TextRange.create(0, text.length).unquote(text) //unquoted text 
+            }
+        }
+    }
+    //endregion
+    
     //region Annotate Methods
     fun annotateScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, holder: AnnotationHolder) {
-        val text = element.text
-        val expression = rangeInElement?.substring(text) ?: element.value
+        val expression = getExpressionText(element, rangeInElement)
         
         ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expression, holder, config)
     }
@@ -972,27 +1002,12 @@ object ParadoxConfigHandler {
         val file = originalFile
         val project = file.project
         val eventTargetSelector = valueSetValueSelector(project, file).contextSensitive().distinctByName()
-        ParadoxValueSetValueSearch.search("event_target", eventTargetSelector).processQueryAsync p@{ info ->
+        ParadoxValueSetValueSearch.search(ParadoxValueSetValueHandler.EVENT_TARGETS, eventTargetSelector).processQueryAsync p@{ info ->
             ProgressManager.checkCanceled()
             if(info.name == keyword) return@p true //排除和当前输入的同名的
             val element = ParadoxValueSetValueElement(contextElement, info, project)
             val icon = PlsIcons.ValueSetValue
             val tailText = " from value[event_target]"
-            val lookupElement = LookupElementBuilder.create(element, info.name)
-                .withIcon(icon)
-                .withTailText(tailText, true)
-                .withCaseSensitivity(false) //忽略大小写
-            result.addElement(lookupElement)
-            true
-        }
-        
-        val globalEventTargetSelector = valueSetValueSelector(project, file).contextSensitive().distinctByName()
-        ParadoxValueSetValueSearch.search("global_event_target", globalEventTargetSelector).processQueryAsync p@{ info ->
-            ProgressManager.checkCanceled()
-            if(info.name == keyword) return@p true //排除和当前输入的同名的
-            val element = ParadoxValueSetValueElement(contextElement, info, project)
-            val icon = PlsIcons.ValueSetValue
-            val tailText = " from value[global_event_target]"
             val lookupElement = LookupElementBuilder.create(element, info.name)
                 .withIcon(icon)
                 .withTailText(tailText, true)
@@ -1097,7 +1112,7 @@ object ParadoxConfigHandler {
         ProgressManager.checkCanceled()
         if(configExpression == null) return null
         
-        val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.text.unquote()
+        val expression = getExpressionText(element, rangeInElement).unquote()
         
         val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expression, config, isKey)
         if(result.isNotNullOrEmpty()) return result
@@ -1113,7 +1128,7 @@ object ParadoxConfigHandler {
         ProgressManager.checkCanceled()
         if(configExpression == null) return null
         
-        val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.text.unquote()
+        val expression = getExpressionText(element, rangeInElement).unquote()
         if(expression.isParameterized()) return null //排除引用文本带参数的情况
         
         val result = ParadoxScriptExpressionSupport.resolve(element, rangeInElement, expression, config, isKey, exact)
@@ -1129,7 +1144,7 @@ object ParadoxConfigHandler {
         ProgressManager.checkCanceled()
         if(configExpression == null) return emptySet()
         
-        val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.text.unquote()
+        val expression = getExpressionText(element, rangeInElement).unquote()
         if(expression.isParameterized()) return emptySet() //排除引用文本带参数的情况
         
         val result = ParadoxScriptExpressionSupport.multiResolve(element, rangeInElement, expression, config, isKey)

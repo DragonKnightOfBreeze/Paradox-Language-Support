@@ -25,7 +25,7 @@ import java.io.*
 
 object ParadoxValueSetValueIndex {
     private const val ID = "paradox.valueSetValue.index"
-    private const val VERSION = 23 //1.0.1
+    private const val VERSION = 24 //1.0.2
     
     class Data(
         val valueSetValueInfoList: MutableList<ParadoxValueSetValueInfo> = SmartList()
@@ -33,9 +33,11 @@ object ParadoxValueSetValueIndex {
         val valueSetValueInfoGroup by lazy {
             buildMap<String, Map<String, List<ParadoxValueSetValueInfo>>> {
                 valueSetValueInfoList.forEachFast { info ->
-                    val map = getOrPut(info.valueSetName) { mutableMapOf() } as MutableMap
-                    val list = map.getOrPut(info.name) { SmartList() } as MutableList
-                    list.add(info)
+                    info.valueSetNames.forEach { valueSetName ->
+                        val map = getOrPut(valueSetName) { mutableMapOf() } as MutableMap
+                        val list = map.getOrPut(info.name) { SmartList() } as MutableList
+                        list.add(info)
+                    }
                 }
             }
         }
@@ -50,7 +52,7 @@ object ParadoxValueSetValueIndex {
         override fun save(storage: DataOutput, value: Data) {
             DataInputOutputUtil.writeSeq(storage, value.valueSetValueInfoList) {
                 IOUtil.writeUTF(storage, it.name)
-                IOUtil.writeUTF(storage, it.valueSetName)
+                IOUtil.writeUTF(storage, it.valueSetNames.joinToString(","))
                 storage.writeByte(it.readWriteAccess.toByte())
                 storage.writeInt(it.elementOffset)
                 storage.writeByte(it.gameType.toByte())
@@ -60,11 +62,11 @@ object ParadoxValueSetValueIndex {
         override fun read(storage: DataInput): Data {
             val valueSetValueInfos = DataInputOutputUtil.readSeq(storage) {
                 val name = IOUtil.readUTF(storage)
-                val valueSetName = IOUtil.readUTF(storage)
+                val valueSetNames = IOUtil.readUTF(storage).toCommaDelimitedStringSet()
                 val readWriteAccess = storage.readByte().toReadWriteAccess()
                 val elementOffset = storage.readInt()
                 val gameType = storage.readByte().toGameType()
-                ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, elementOffset, gameType)
+                ParadoxValueSetValueInfo(name, valueSetNames, readWriteAccess, elementOffset, gameType)
             }
             if(valueSetValueInfos.isEmpty()) return EmptyData
             return Data(valueSetValueInfos)

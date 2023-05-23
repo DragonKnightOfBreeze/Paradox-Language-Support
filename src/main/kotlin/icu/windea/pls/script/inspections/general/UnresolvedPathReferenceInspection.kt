@@ -62,7 +62,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
         return panel {
             row {
                 label(PlsBundle.message("inspection.script.general.unresolvedPathReference.option.ignoredFileNames"))
-                    .applyToComponent { toolTipText = PlsBundle.message("inspection.script.general.unresolvedPathReference.option.ignoredFileNames") }
+                    .applyToComponent { toolTipText = PlsBundle.message("inspection.script.general.unresolvedPathReference.option.ignoredFileNames.tooltip") }
             }
             row {
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })

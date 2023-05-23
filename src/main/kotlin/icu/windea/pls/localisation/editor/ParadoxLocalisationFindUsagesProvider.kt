@@ -53,7 +53,7 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
 			is ParadoxValueSetValueElement -> {
 				when(location) {
 					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.valueSetValue")
-					UsageViewNodeTextLocation.INSTANCE -> element.name + ": " + element.valueSetNamesText
+					UsageViewNodeTextLocation.INSTANCE -> element.name + ": " + element.valueSetNames.joinToString(" | ")
 					else -> element.name
 				}
 			}
