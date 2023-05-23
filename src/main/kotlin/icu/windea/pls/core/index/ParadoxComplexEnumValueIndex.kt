@@ -21,7 +21,7 @@ import java.io.*
 
 object ParadoxComplexEnumValueIndex {
     private const val ID = "paradox.complexEnumValue.index"
-    private const val VERSION = 23 //1.0.1
+    private const val VERSION = 24 //1.0.2
     
     class Data(
         val complexEnumValueInfoList: MutableList<ParadoxComplexEnumValueInfo> = SmartList()

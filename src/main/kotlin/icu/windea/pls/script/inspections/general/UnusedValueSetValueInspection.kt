@@ -63,7 +63,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
                             val searchScope = searchScope ?: GlobalSearchScope.allScope(holder.project)
                             val selector = valueSetValueSelector(resolved.project, resolved)
                                 .withSearchScope(searchScope)
-                            val r = ParadoxValueSetValueSearch.search(resolved.name, resolved.valueSetName, selector).processQueryAsync p@{
+                            val r = ParadoxValueSetValueSearch.search(resolved.name, resolved.valueSetNames, selector).processQueryAsync p@{
                                 ProgressManager.checkCanceled()
                                 if(it.readWriteAccess == Access.Read) {
                                     statusMap[resolved] = true
@@ -82,14 +82,14 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
                             used
                         }
                         if(!isUsed) {
-                            registerProblem(element, resolved.name, reference.rangeInElement)
+                            registerProblem(element, resolved.name, resolved.valueSetNames.joinToString(), reference.rangeInElement)
                         }
                     }
                 }
             }
             
-            private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
-                val message = PlsBundle.message("inspection.script.general.unusedValueSetValue.description", name)
+            private fun registerProblem(element: PsiElement, name: String, valueSetName: String, range: TextRange) {
+                val message = PlsBundle.message("inspection.script.general.unusedValueSetValue.description", name, valueSetName)
                 holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range)
             }
         }

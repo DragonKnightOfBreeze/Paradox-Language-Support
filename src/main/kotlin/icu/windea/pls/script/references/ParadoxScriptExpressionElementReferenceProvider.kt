@@ -1,6 +1,6 @@
 package icu.windea.pls.script.references
 
-import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
@@ -36,8 +36,7 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
         val config = configs.firstOrNull()
         if(config != null) {
             if(element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY
-            val text = element.text
-            val textRange = getTextRange(element, text)
+            val textRange = ParadoxConfigHandler.getExpressionTextRange(element)
             val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
             return collectReferences(reference)
         }
@@ -65,12 +64,5 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
             }
         }
         result.add(sourceReference)
-    }
-    
-    private fun getTextRange(element: PsiElement, text: String): TextRange {
-        return when {
-            element is ParadoxScriptBlock -> TextRange.create(0, 1) //left curly brace
-            else -> TextRange.create(0, text.length).unquote(text) //unquoted text
-        }
     }
 }

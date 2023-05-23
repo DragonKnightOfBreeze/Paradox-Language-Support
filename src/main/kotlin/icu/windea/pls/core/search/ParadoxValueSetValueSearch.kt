@@ -12,11 +12,11 @@ import icu.windea.pls.lang.model.*
 class ParadoxValueSetValueSearch : ExtensibleQueryFactory<ParadoxValueSetValueInfo, ParadoxValueSetValueSearch.SearchParameters>(EP_NAME) {
     /**
      * @property name 名字。
-     * @property valueSetName 值集的名字。
+     * @property valueSetNames 值集的名字。
      */
     class SearchParameters(
         val name: String?,
-        val valueSetName: String,
+        val valueSetNames: Set<String>,
         override val selector: ChainedParadoxSelector<ParadoxValueSetValueInfo>
     ) : ParadoxSearchParameters<ParadoxValueSetValueInfo>
     
@@ -33,7 +33,19 @@ class ParadoxValueSetValueSearch : ExtensibleQueryFactory<ParadoxValueSetValueIn
             valueSetName: String,
             selector: ChainedParadoxSelector<ParadoxValueSetValueInfo>
         ): ParadoxQuery<ParadoxValueSetValueInfo, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(name, valueSetName, selector))
+            return INSTANCE.createParadoxQuery(SearchParameters(name,  setOf(valueSetName), selector))
+        }
+        
+        /**
+         * @see icu.windea.pls.core.search.ParadoxValueSetValueSearch.SearchParameters
+         */
+        @JvmStatic
+        fun search(
+            name: String,
+            valueSetNames: Set<String>,
+            selector: ChainedParadoxSelector<ParadoxValueSetValueInfo>
+        ): ParadoxQuery<ParadoxValueSetValueInfo, SearchParameters> {
+            return INSTANCE.createParadoxQuery(SearchParameters(name, valueSetNames, selector))
         }
         
         /**
@@ -44,7 +56,18 @@ class ParadoxValueSetValueSearch : ExtensibleQueryFactory<ParadoxValueSetValueIn
             valueSetName: String,
             selector: ChainedParadoxSelector<ParadoxValueSetValueInfo>
         ): ParadoxQuery<ParadoxValueSetValueInfo, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(null, valueSetName, selector))
+            return INSTANCE.createParadoxQuery(SearchParameters(null, setOf(valueSetName), selector))
+        }
+        
+        /**
+         * @see icu.windea.pls.core.search.ParadoxValueSetValueSearch.SearchParameters
+         */
+        @JvmStatic
+        fun search(
+            valueSetNames: Set<String>,
+            selector: ChainedParadoxSelector<ParadoxValueSetValueInfo>
+        ): ParadoxQuery<ParadoxValueSetValueInfo, SearchParameters> {
+            return INSTANCE.createParadoxQuery(SearchParameters(null, valueSetNames, selector))
         }
     }
 }

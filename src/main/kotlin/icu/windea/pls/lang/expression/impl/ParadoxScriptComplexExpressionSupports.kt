@@ -53,7 +53,7 @@ class ParadoxScriptValueSetExpressionSupport : ParadoxScriptExpressionSupport() 
     override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
         if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
         val configGroup = config.info.configGroup
-        val textRange = getTextRange(element, expression)
+        val textRange = ParadoxConfigHandler.getExpressionTextRange(element, expression)
         if(expression.isLeftQuoted()) {
             //quoted -> only value set value name, no scope info
             val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
@@ -93,7 +93,7 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport(
         if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
         if(expression.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
         val configGroup = config.info.configGroup
-        val textRange = getTextRange(element, expression)
+        val textRange = ParadoxConfigHandler.getExpressionTextRange(element, expression)
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression, textRange, configGroup, isKey)
         if(scopeFieldExpression == null) return PsiReference.EMPTY_ARRAY
         return scopeFieldExpression.getReferences(element)
@@ -141,7 +141,7 @@ class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport(
         if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
         if(expression.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
         val configGroup = config.info.configGroup
-        val textRange = getTextRange(element, expression)
+        val textRange = ParadoxConfigHandler.getExpressionTextRange(element, expression)
         val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression, textRange, configGroup, isKey)
         if(valueFieldExpression == null) return PsiReference.EMPTY_ARRAY
         return valueFieldExpression.getReferences(element)
@@ -184,7 +184,7 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSuppo
         if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
         if(expression.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
         val configGroup = config.info.configGroup
-        val textRange = getTextRange(element, expression)
+        val textRange = ParadoxConfigHandler.getExpressionTextRange(element, expression)
         val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression, textRange, configGroup, isKey)
         if(variableFieldExpression == null) return PsiReference.EMPTY_ARRAY
         return variableFieldExpression.getReferences(element)
@@ -205,12 +205,5 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSuppo
             }
             else -> {}
         }
-    }
-}
-
-private fun getTextRange(element: PsiElement, text: String): TextRange {
-    return when {
-        element is ParadoxScriptBlock -> TextRange.create(0, 1) //left curly brace
-        else -> TextRange.create(0, text.length).unquote(text) //unquoted text
     }
 }

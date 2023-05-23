@@ -25,7 +25,7 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
         if(SearchScope.isEmptyScope(scope)) return
         
         val name = queryParameters.name
-        val valueSetName = queryParameters.valueSetName
+        val valueSetNames = queryParameters.valueSetNames
         val project = queryParameters.project
         val selector = queryParameters.selector
         val targetGameType = selector.gameType ?: return
@@ -39,26 +39,28 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
                 if(ParadoxFileManager.isLightFile(file)) return@p true
                 val data = ParadoxValueSetValueIndex.getData(file, project)
                 //use distinct data if possible to optimize performance
-                val valueSetValueInfos = when {
-                    distinctInFile -> data.valueSetValueInfoGroup[valueSetName]
-                    else -> data.distinctValueSetValueInfoGroup[valueSetName]
-                }
-                if(valueSetValueInfos.isNullOrEmpty()) return@p true
-                
-                val psiFile = file.toPsiFile(project) ?: return@p true
-                if(name == null) {
-                    valueSetValueInfos.values.forEach { infos ->
+                valueSetNames.forEach f@{ valueSetName ->
+                    val valueSetValueInfos = when {
+                        distinctInFile -> data.valueSetValueInfoGroup[valueSetName]
+                        else -> data.distinctValueSetValueInfoGroup[valueSetName]
+                    }
+                    if(valueSetValueInfos.isNullOrEmpty()) return@f
+                    
+                    val psiFile = file.toPsiFile(project) ?: return@f
+                    if(name == null) {
+                        valueSetValueInfos.values.forEach { infos ->
+                            infos.forEachFast { info ->
+                                if(targetGameType == info.gameType) {
+                                    info.withFile(psiFile) { consumer.process(info) }
+                                }
+                            }
+                        }
+                    } else {
+                        val infos = valueSetValueInfos[name] ?: return@f
                         infos.forEachFast { info ->
                             if(targetGameType == info.gameType) {
                                 info.withFile(psiFile) { consumer.process(info) }
                             }
-                        }
-                    }
-                } else {
-                    val infos = valueSetValueInfos[name] ?: return@p true
-                    infos.forEachFast { info ->
-                        if(targetGameType == info.gameType) {
-                            info.withFile(psiFile) { consumer.process(info) }
                         }
                     }
                 }
