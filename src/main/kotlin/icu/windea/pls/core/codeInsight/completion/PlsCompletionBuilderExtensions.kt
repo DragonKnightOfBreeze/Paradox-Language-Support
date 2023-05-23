@@ -185,7 +185,7 @@ fun CompletionResultSet.addScriptExpressionElement(
     }
 }
 
-private fun getIconToUse(icon: Icon?, config: CwtConfig<*>): Icon? {
+private fun getIconToUse(icon: Icon?, config: CwtConfig<*>?): Icon? {
     if(icon == null) return null
     when(config) {
         is CwtValueConfig -> {
