@@ -106,8 +106,8 @@ tasks {
 			freeCompilerArgs = listOf(
 				"-Xjvm-default=all",
 				"-Xinline-classes",
-				"-Xopt-in=kotlin.RequiresOptIn",
-				"-Xopt-in=kotlin.ExperimentalStdlibApi",
+				"-opt-in=kotlin.RequiresOptIn",
+				"-opt-in=kotlin.ExperimentalStdlibApi",
 			)
 		}
 	}
@@ -149,10 +149,11 @@ tasks {
 				subList(start + 1, end)
 			}
 			.joinToString("\n")
-			.let { 
+			.let {
+				//将任务列表替换为无序列表
 				val regex = "\\* \\[[xX ]\\]".toRegex()
 				it.replace(regex, "*")
-			} //将任务列表替换为无序列表
+			}
 			.let { markdownToHTML(it) }
 		changeNotes.set(changelogText)
 	}

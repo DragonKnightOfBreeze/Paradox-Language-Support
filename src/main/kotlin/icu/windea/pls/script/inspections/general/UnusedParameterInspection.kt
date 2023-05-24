@@ -43,10 +43,13 @@ class UnusedParameterInspection : LocalInspectionTool() {
     //may be very slow for ReferencesSearch
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
+        val project = holder.project
+        val file = holder.file
+        val searchScope = runReadAction { ParadoxSearchScope.fromFile(project, file.virtualFile, file.fileInfo) }
+            .withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType) //compute once per file
+        val statusMap = mutableMapOf<PsiElement, Boolean>() //it's unnecessary to make it synced
+        
         return object : PsiElementVisitor() {
-            var searchScope: GlobalSearchScope? = null //compute once per file
-            val statusMap = mutableMapOf<PsiElement, Boolean>() //it's unnecessary to make it synced
-            
             private fun shouldVisit(element: PsiElement): Boolean {
                 //ignore with parameters situation
                 //propertyKey -> can only be invocation expression
@@ -55,12 +58,6 @@ class UnusedParameterInspection : LocalInspectionTool() {
                 return (element is ParadoxScriptPropertyKey && forInvocationExpressions)
                     || (element is ParadoxScriptString && forScriptValueExpressions)
                     || (element is ParadoxScriptParameterConditionParameter && forParameterConditionExpressions)
-            }
-            
-            override fun visitFile(file: PsiFile) {
-                val virtualFile = file.virtualFile
-                searchScope = runReadAction { ParadoxSearchScope.fromFile(holder.project, virtualFile, virtualFile.fileInfo) }
-                    .withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
             }
             
             override fun visitElement(element: PsiElement) {
@@ -80,7 +77,6 @@ class UnusedParameterInspection : LocalInspectionTool() {
                         val used = statusMap[resolved]
                         val isUsed = if(used == null) {
                             ProgressManager.checkCanceled()
-                            val searchScope = searchScope ?: GlobalSearchScope.allScope(holder.project)
                             val r = ReferencesSearch.search(resolved, searchScope).processQueryAsync p@{
                                 ProgressManager.checkCanceled()
                                 val res = it.resolve()

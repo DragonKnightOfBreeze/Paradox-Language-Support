@@ -39,11 +39,14 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField var checkForModifiers = false
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        val project = holder.project
+        val file = holder.file
         val allLocaleConfigs = getCwtConfig().core.localisationLocales
         val localeConfigs = locales.mapNotNullTo(mutableSetOf()) { allLocaleConfigs.get(it) }
         if(checkPreferredLocale) {
             localeConfigs.add(preferredParadoxLocale())
         }
+        
         return object : PsiElementVisitor() {
             var inFileContext: GenerateLocalisationsInFileContext? = null
             
@@ -78,7 +81,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                             if(nameToDistinct.contains(info.name + "@" + locale)) continue
                             if(info.primary && hasPrimaryLocales.contains(locale)) continue
                             //多个位置表达式无法解析时，使用第一个
-                            val selector = localisationSelector(holder.project, definition).locale(locale)
+                            val selector = localisationSelector(project, file).locale(locale) //use file as context
                             val resolved = info.locationExpression.resolve(definition, definitionInfo, selector)
                             if(resolved != null) {
                                 if(resolved.message != null) continue //skip if it's dynamic or inlined
@@ -155,7 +158,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 val key = ParadoxModifierHandler.getModifierNameKey(name)
                 val missingLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
                 for(locale in localeConfigs) {
-                    val selector = localisationSelector(holder.project, element).locale(locale).withModifierConstraint()
+                    val selector = localisationSelector(project, file).locale(locale).withModifierConstraint() //use file as context
                     val localisation = ParadoxLocalisationSearch.search(key, selector).findFirst()
                     if(localisation == null) missingLocales.add(locale)
                 }

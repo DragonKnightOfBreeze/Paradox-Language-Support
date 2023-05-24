@@ -6,7 +6,6 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
@@ -31,18 +30,15 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
     //may be slow for ParadoxValueSetValueSearch
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
+        val project = holder.project
+        val file = holder.file
+        val searchScope = runReadAction { ParadoxSearchScope.fromFile(project, file.virtualFile, file.fileInfo) }
+            .withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType) //compute once per file
+        val statusMap = mutableMapOf<PsiElement, Boolean>() //it's unnecessary to make it synced
+        
         return object : PsiElementVisitor() {
-            var searchScope: GlobalSearchScope? = null //compute once per file
-            val statusMap = mutableMapOf<PsiElement, Boolean>() //it's unnecessary to make it synced
-            
             private fun shouldVisit(element: PsiElement): Boolean {
                 return (element is ParadoxScriptStringExpressionElement && !element.isParameterized())
-            }
-            
-            override fun visitFile(file: PsiFile) {
-                val virtualFile = file.virtualFile
-                searchScope = runReadAction { ParadoxSearchScope.fromFile(holder.project, virtualFile, virtualFile.fileInfo) }
-                    .withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
             }
             
             override fun visitElement(element: PsiElement) {
@@ -60,9 +56,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
                         val used = statusMap[resolved]
                         val isUsed = if(used == null) {
                             ProgressManager.checkCanceled()
-                            val searchScope = searchScope ?: GlobalSearchScope.allScope(holder.project)
-                            val selector = valueSetValueSelector(resolved.project, resolved)
-                                .withSearchScope(searchScope)
+                            val selector = valueSetValueSelector(project, file).withSearchScope(searchScope) //use file as context
                             val r = ParadoxValueSetValueSearch.search(resolved.name, resolved.valueSetNames, selector).processQueryAsync p@{
                                 ProgressManager.checkCanceled()
                                 if(it.readWriteAccess == Access.Read) {

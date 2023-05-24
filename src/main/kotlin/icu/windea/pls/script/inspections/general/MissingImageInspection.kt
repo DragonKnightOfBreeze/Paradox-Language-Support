@@ -28,6 +28,9 @@ class MissingImageInspection : LocalInspectionTool() {
     @JvmField var checkForModifiers = false
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        val project = holder.project
+        val file = holder.file
+        
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -59,7 +62,7 @@ class MissingImageInspection : LocalInspectionTool() {
                     if(info.primary && hasPrimary) continue
                     //多个位置表达式无法解析时，使用第一个
                     if(info.required || if(info.primary) checkPrimaryForDefinitions else checkOptionalForDefinitions) {
-                        val resolved = info.locationExpression.resolve(definition, definitionInfo, holder.project)
+                        val resolved = info.locationExpression.resolve(definition, definitionInfo, project)
                         if(resolved != null) {
                             if(resolved.message != null) continue //skip if it's dynamic
                             if(resolved.file == null) {
@@ -115,7 +118,7 @@ class MissingImageInspection : LocalInspectionTool() {
                 val name = element.value
                 val iconPath = ParadoxModifierHandler.getModifierIconPath(name)
                 val iconFile = run {
-                    val iconSelector = fileSelector(holder.project, element)
+                    val iconSelector = fileSelector(project, file) //use file as context
                     ParadoxFilePathSearch.search(iconPath, null, iconSelector).find()
                 }
                 if(iconFile == null) {

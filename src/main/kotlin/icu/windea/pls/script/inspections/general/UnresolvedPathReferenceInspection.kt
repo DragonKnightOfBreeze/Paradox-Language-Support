@@ -22,6 +22,9 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
     @JvmField var ignoredFileNames = "*.lua;*.tga"
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        val project = holder.project
+        val file = holder.file
+        
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -38,8 +41,8 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 val location = element
                 if(configExpression.type == CwtDataType.AbsoluteFilePath) {
                     val filePath = element.value
-                    val file = filePath.toVirtualFile(false)
-                    if(file != null) return
+                    val virtualFile = filePath.toVirtualFile(false)
+                    if(virtualFile != null) return
                     val message = PlsBundle.message("inspection.script.general.unresolvedPathReference.description.abs", filePath)
                     holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
                     return
@@ -49,7 +52,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                     val pathReference = element.value.normalizePath()
                     val fileName = pathReferenceExpressionSupport.resolveFileName(configExpression, pathReference)
                     if(fileName.matchesGlobFileName(ignoredFileNames, true)) return
-                    val selector = fileSelector(holder.project, element)
+                    val selector = fileSelector(project, file) //use file as context
                     if(ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null) return
                     val message = pathReferenceExpressionSupport.getUnresolvedMessage(configExpression, pathReference)
                     holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
