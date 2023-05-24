@@ -112,7 +112,7 @@ object ParadoxDefinitionHandler {
         if(pathStrictConfig) {
             if(pathConfig != path.parent) return false
         } else {
-            if(!pathConfig.matchesPath(path.parent)) return false //75% perf
+            if(!pathConfig.matchesPath(path.parent)) return false //perf: 1% 16%
         }
         //判断path_name是否匹配
         val pathFileConfig = typeConfig.pathFile //String?

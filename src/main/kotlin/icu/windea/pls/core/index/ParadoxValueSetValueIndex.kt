@@ -51,7 +51,7 @@ object ParadoxValueSetValueIndex {
         override fun save(storage: DataOutput, value: Data) {
             DataInputOutputUtil.writeSeq(storage, value.valueSetValueInfoList) {
                 IOUtil.writeUTF(storage, it.name)
-                IOUtil.writeUTF(storage, it.valueSetNames.joinToString(","))
+                IOUtil.writeUTF(storage, it.valueSetNames.joinToString(",")) //perf: 8% 84%
                 storage.writeByte(it.readWriteAccess.toByte())
                 storage.writeInt(it.elementOffset)
                 storage.writeByte(it.gameType.toByte())
@@ -61,7 +61,7 @@ object ParadoxValueSetValueIndex {
         override fun read(storage: DataInput): Data {
             val valueSetValueInfos = DataInputOutputUtil.readSeq(storage) {
                 val name = IOUtil.readUTF(storage)
-                val valueSetNames = IOUtil.readUTF(storage).toCommaDelimitedStringSet()
+                val valueSetNames = IOUtil.readUTF(storage).toCommaDelimitedStringSet() //perf: 7% 81%
                 val readWriteAccess = storage.readByte().toReadWriteAccess()
                 val elementOffset = storage.readInt()
                 val gameType = storage.readByte().toGameType()

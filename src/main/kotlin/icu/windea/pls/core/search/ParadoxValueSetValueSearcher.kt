@@ -33,17 +33,17 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
         val distinctInFile = selector.selectors.findIsInstance<ParadoxWithSearchScopeTypeSelector<*>>()
             ?.searchScopeType?.distinctInFile() ?: true
         
-        DumbService.getInstance(project).runReadActionInSmartMode action@{
+        DumbService.getInstance(project).runReadActionInSmartMode action@{ //perf: 58% 100%
             doProcessFiles(scope) p@{ file ->
                 ProgressManager.checkCanceled()
                 if(ParadoxFileManager.isLightFile(file)) return@p true
                 if(selectGameType(file) != targetGameType) return@p true //check game type at file level
                 
-                val data = ParadoxValueSetValueIndex.getData(file, project)
+                val data = ParadoxValueSetValueIndex.getData(file, project) //perf: 49% 86%
                 //use distinct data if possible to optimize performance
                 valueSetNames.forEach f@{ valueSetName ->
                     val valueSetValueInfos = when {
-                        distinctInFile -> data.distinctValueSetValueInfoGroup[valueSetName]
+                        distinctInFile -> data.distinctValueSetValueInfoGroup[valueSetName] //perf: 8% 100%
                         else -> data.valueSetValueInfoGroup[valueSetName]
                     }
                     if(valueSetValueInfos.isNullOrEmpty()) return@f

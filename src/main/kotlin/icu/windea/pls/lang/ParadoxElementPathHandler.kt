@@ -108,7 +108,7 @@ object ParadoxElementPathHandler {
         var flag = allowDefinition
         while(current !is PsiDirectory) { //这里的上限应当是null或PsiDirectory，不能是PsiFile，因为它也可能是定义
             if(current is ParadoxScriptMemberElement) {
-                val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current)
+                val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current) //perf: 2% 20%
                 if(linked != null) {
                     current = linked.parent ?: break
                     continue
@@ -117,7 +117,7 @@ object ParadoxElementPathHandler {
             when {
                 current is ParadoxScriptDefinitionElement -> {
                     if(flag) {
-                        val definitionInfo = current.definitionInfo
+                        val definitionInfo = current.definitionInfo //perf: 7% 73%
                         if(definitionInfo != null) {
                             definition = current
                             break
