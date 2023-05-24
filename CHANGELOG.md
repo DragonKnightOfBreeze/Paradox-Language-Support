@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3
+
+* [ ] 完善对定义的作用域上下文推断的支持 - 完善实现逻辑，优化性能，支持`scripted_trigger`、`scripted_effect`和`event`。
+
 ## 1.0.2
 
 * 尝试优化性能
