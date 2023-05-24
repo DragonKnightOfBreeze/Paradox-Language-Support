@@ -15,7 +15,7 @@ import icu.windea.pls.script.*
 import icu.windea.pls.tool.*
 
 /**
- * 复杂枚举的查询器。
+ * 复杂枚举值的查询器。
  */
 class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValueInfo, ParadoxComplexEnumValueSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxComplexEnumValueSearch.SearchParameters, consumer: Processor<in ParadoxComplexEnumValueInfo>) {

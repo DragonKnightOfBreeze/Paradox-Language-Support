@@ -16,7 +16,7 @@ import icu.windea.pls.script.*
 import icu.windea.pls.tool.*
 
 /**
- * 值集值值的查询器。
+ * 值集值的查询器。
  */
 class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo, ParadoxValueSetValueSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxValueSetValueSearch.SearchParameters, consumer: Processor<in ParadoxValueSetValueInfo>) {
