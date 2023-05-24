@@ -13,8 +13,8 @@ data class ParadoxValueSetValueInfo(
     val elementOffset: Int,
     val gameType: ParadoxGameType
 ) {
-    fun getConfig(project: Project): CwtComplexEnumConfig? {
+    fun getConfig(project: Project): CwtEnumConfig? {
         val valueSetName = valueSetNames.firstOrNull() ?: return null
-        return getCwtConfig(project).get(gameType).complexEnums[enumName]
+        return getCwtConfig(project).get(gameType).values[valueSetName]
     }
 }

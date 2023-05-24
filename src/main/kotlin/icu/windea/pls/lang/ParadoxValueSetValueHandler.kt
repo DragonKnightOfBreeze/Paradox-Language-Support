@@ -12,6 +12,10 @@ object ParadoxValueSetValueHandler {
     const val EVENT_TARGET_PREFIX = "event_target:"
     val EVENT_TARGETS = setOf("event_target", "global_event_target")
     
+    fun getFastInfo(element: ParadoxValueSetValueElement): ParadoxValueSetValueInfo {
+        return ParadoxValueSetValueInfo(element.name, element.valueSetNames, element.readWriteAccess, -1, element.gameType)
+    }
+    
     fun getInfo(element: ParadoxValueSetValueElement): ParadoxValueSetValueInfo {
         return ParadoxValueSetValueInfo(element.name, element.valueSetNames, element.readWriteAccess, element.parent.startOffset, element.gameType)
     }
