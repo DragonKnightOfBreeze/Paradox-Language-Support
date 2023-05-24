@@ -8,5 +8,7 @@ interface ParadoxLocalisationStub : StubElement<ParadoxLocalisationProperty> {
     val category: ParadoxLocalisationCategory
     val locale: String?
     val gameType: ParadoxGameType?
+    
+    fun isValid() = name.isNotEmpty()
 }
 

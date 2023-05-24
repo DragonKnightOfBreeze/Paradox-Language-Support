@@ -7,9 +7,8 @@ data class ParadoxLocalisationInfo(
 	val category: ParadoxLocalisationCategory,
 	val gameType: ParadoxGameType?
 ) {
-	fun isValid() = name.isNotEmpty()
-	
-	override fun equals(other: Any?): Boolean {
+    
+    override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxLocalisationInfo
 			&& name == other.name && category == other.category && gameType == other.gameType
 	}

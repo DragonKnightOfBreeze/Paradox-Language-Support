@@ -21,18 +21,6 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
-import kotlin.Any
-import kotlin.Boolean
-import kotlin.Float
-import kotlin.IllegalStateException
-import kotlin.Int
-import kotlin.String
-import kotlin.Suppress
-import kotlin.getValue
-import kotlin.lazy
-import kotlin.let
-import kotlin.run
-import kotlin.synchronized
 
 object ParadoxConfigMatcher {
     object Options {
@@ -158,9 +146,6 @@ object ParadoxConfigMatcher {
         configGroup: CwtConfigGroup,
         options: Int
     ): Any {
-        //匹配空字符串
-        if(configExpression.isEmpty()) return expression.isEmpty()
-        
         val project = configGroup.project
         val dataType = configExpression.type
         when {
@@ -369,6 +354,7 @@ object ParadoxConfigMatcher {
                     val text = expression.text
                     if((value == "yes" || value == "no") && text.isLeftQuoted()) return false
                 }
+                //这里也用来匹配空字符串
                 return expression.text.equals(value, true) //忽略大小写
             }
             dataType == CwtDataType.Any -> {

@@ -32,11 +32,15 @@ object ParadoxDefinitionHandler {
     //get info & match methods
     
     fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
+        //快速判断
+        if(runCatching { element.getStub() }.getOrNull()?.isValid() == false) return null
+        //如果不能使用缓存，需要重新获取
         val notUseCache = element.getUserData(PlsKeys.isIncompleteKey) == true
         if(notUseCache) {
             val file = element.containingFile
             return doGetInfo(element, file)
         }
+        //从缓存中获取
         return doGetInfoFromCache(element)
     }
     
@@ -55,11 +59,8 @@ object ParadoxDefinitionHandler {
         if(element is ParadoxScriptProperty && rootKey.isParameterized()) return null //排除可能带参数的情况
         val project = file.project
         
-        //首先尝试直接基于stub进行解析（得到的信息不合法时直接返回null）
-        val infoFromStub = getInfoFromStub(element, project)
-        if(infoFromStub != null) {
-            return infoFromStub.takeIf { it.isValid() }
-        }
+        //首先尝试直接基于stub进行解析
+        getInfoFromStub(element, project)?.let { return it }
         
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.pathToEntry //这里使用pathToEntry
@@ -569,8 +570,8 @@ object ParadoxDefinitionHandler {
     }
     
     fun getInfoFromStub(element: ParadoxScriptDefinitionElement, project: Project): ParadoxDefinitionInfo? {
-        //这里得到信息可以不合法（即对应的PsiElement并不是一个定义）
         val stub = runCatching { element.getStub() }.getOrNull() ?: return null
+        //if(!stub.isValid()) return null //这里不用再次判断
         val name = stub.name
         val type = stub.type
         val gameType = stub.gameType ?: return null

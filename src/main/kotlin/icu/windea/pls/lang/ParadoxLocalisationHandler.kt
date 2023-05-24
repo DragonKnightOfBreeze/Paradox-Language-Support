@@ -17,6 +17,9 @@ import icu.windea.pls.localisation.psi.impl.*
 @Suppress("unused", "UNUSED_PARAMETER")
 object ParadoxLocalisationHandler {
     fun getInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
+        //快速判断
+        if(runCatching { element.stub }.getOrNull()?.isValid() == false) return null
+        //从缓存中获取
         return doGetInfoFromCache(element)
     }
     
@@ -29,11 +32,8 @@ object ParadoxLocalisationHandler {
     }
     
     private fun doGetInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        //首先尝试直接基于stub进行解析（得到的信息不合法时直接返回null）
-        val infoFromStub = getInfoFromStub(element)
-        if(infoFromStub != null) {
-            return infoFromStub.takeIf { it.isValid() }
-        }
+        //首先尝试直接基于stub进行解析
+        getInfoFromStub(element)?.let { return it }
         
         val name = element.name
         val file = element.containingFile.originalFile.virtualFile ?: return null
@@ -76,8 +76,8 @@ object ParadoxLocalisationHandler {
     }
     
     fun getInfoFromStub(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        //这里得到信息可以不合法（即对应的PsiElement并不是一个本地化）
         val stub = runCatching { element.stub }.getOrNull() ?: return null
+        //if(!stub.isValid()) return null //这里不用再次判断
         val name = stub.name
         val category = stub.category
         val gameType = stub.gameType ?: return null

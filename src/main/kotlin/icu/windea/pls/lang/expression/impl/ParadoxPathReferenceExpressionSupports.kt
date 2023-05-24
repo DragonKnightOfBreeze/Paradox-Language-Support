@@ -60,7 +60,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         val expressionRel = expression.removePrefixOrNull("./")
         if(expressionRel != null) {
             val contextParentPath = element?.fileInfo?.path?.parent ?: return false
-            expression = contextParentPath + "/" + expressionRel
+            expression = "$contextParentPath/$expressionRel"
         }
         val index = expression.lastIndexOf(',') //","应当最多出现一次
         if(index == -1) {

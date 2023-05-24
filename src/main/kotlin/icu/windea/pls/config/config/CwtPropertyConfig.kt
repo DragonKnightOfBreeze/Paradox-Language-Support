@@ -32,16 +32,16 @@ data class CwtPropertyConfig(
 	
 	override val expression: CwtKeyExpression get() = keyExpression
 	
-	val valueConfig by lazy {
+	val valueConfig = run {
 		val valuePointer = when {
 			pointer == emptyPointer<CwtValue>() -> emptyPointer()
 			else -> {
 				val resolvedPointer = resolved().pointer
-				val resolvedFile = resolvedPointer.containingFile ?:return@lazy null
+				val resolvedFile = resolvedPointer.containingFile ?: return@run null
 				resolvedPointer.element?.propertyValue?.createPointer(resolvedFile)
 			}
-		} 
-		if(valuePointer == null) return@lazy null
+		}
+		if(valuePointer == null) return@run null
 		CwtValueConfig(
 			valuePointer, info, value, booleanValue, intValue, floatValue, stringValue,
 			configs, documentation, options, optionValues, this

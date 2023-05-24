@@ -145,8 +145,6 @@ class ParadoxDefinitionInfo(
         return configGroup.declarations.get(type)?.getMergedConfig(configContext)
     }
     
-    fun isValid() = name.isNotEmpty() && type.isNotEmpty()
-    
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxDefinitionInfo
             && name == other.name && typesText == other.typesText && gameType == other.gameType

@@ -21,10 +21,6 @@ object ParadoxElementPathHandler {
      * 解析指定定义相对于所属文件的属性路径。
      */
     fun getFromFile(element: PsiElement, maxDepth: Int = -1): ParadoxElementPath? {
-        return resolveFromFile(element, maxDepth)
-    }
-    
-    private fun resolveFromFile(element: PsiElement, maxDepth: Int): ParadoxElementPath? {
         var current: PsiElement = element
         var depth = 0
         val originalSubPaths = LinkedList<String>()
@@ -59,10 +55,6 @@ object ParadoxElementPathHandler {
      * 解析指定定义相对于所属文件的属性路径。
      */
     fun getFromFile(node: LighterASTNode, tree: LighterAST, file: VirtualFile, maxDepth: Int = -1): ParadoxElementPath? {
-        return resolveFromFile(node, tree, file, maxDepth)
-    }
-    
-    private fun resolveFromFile(node: LighterASTNode, tree: LighterAST, file: VirtualFile, maxDepth: Int): ParadoxElementPath? {
         var current: LighterASTNode = node
         var depth = 0
         val originalSubPaths = LinkedList<String>()
@@ -98,10 +90,6 @@ object ParadoxElementPathHandler {
      * 解析指定元素相对于所属定义的属性路径。
      */
     fun getFromDefinitionWithDefinition(element: PsiElement, allowDefinition: Boolean): Tuple2<ParadoxElementPath, ParadoxScriptDefinitionElement>? {
-        return resolveFromDefinitionWithDefinition(element, allowDefinition)
-    }
-    
-    private fun resolveFromDefinitionWithDefinition(element: PsiElement, allowDefinition: Boolean): Pair<ParadoxElementPath, ParadoxScriptDefinitionElement>? {
         var current: PsiElement = element
         val originalSubPaths = LinkedList<String>()
         var definition: ParadoxScriptDefinitionElement? = null
@@ -141,4 +129,6 @@ object ParadoxElementPathHandler {
         if(definition == null) return null //如果未找到所属的definition，则直接返回null
         return ParadoxElementPath.resolve(originalSubPaths) to definition
     }
+    
+    
 }
