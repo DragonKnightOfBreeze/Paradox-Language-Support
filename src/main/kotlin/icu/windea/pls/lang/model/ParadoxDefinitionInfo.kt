@@ -17,7 +17,6 @@ import kotlin.collections.component2
  * @property elementPath 相对于所属文件的定义成员路径。
  * @property name 定义的名字。如果是空字符串，则表示定义是匿名的。（注意：不一定与定义的顶级键名相同，例如，可能来自某个属性的值）
  * @property rootKey 定义的顶级键名。（注意：不一定是定义的名字）
- * @property sourceType 此定义信息来自哪种解析方式。
  */
 class ParadoxDefinitionInfo(
     name0: String?, // null -> lazy get
@@ -30,10 +29,6 @@ class ParadoxDefinitionInfo(
     //element直接作为属性的话可能会有些问题，不过这个缓存会在所在脚本文件变更时被清除，应当问题不大
     //element不能转为SmartPsiElementPointer然后作为属性，这会导致与ParadoxDefinitionMemberSInfo.element引发递归异常
 ): UserDataHolderBase() {
-    enum class SourceType { Default, Stub }
-    
-    var sourceType: SourceType = SourceType.Default
-    
     val type: String = typeConfig.name
     
     //NOTE 部分属性需要使用懒加载
@@ -149,6 +144,8 @@ class ParadoxDefinitionInfo(
         val configContext = CwtConfigContext(element, name, type, subtypes, configGroup, matchOptions)
         return configGroup.declarations.get(type)?.getMergedConfig(configContext)
     }
+    
+    fun isValid() = name.isNotEmpty() && type.isNotEmpty()
     
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxDefinitionInfo

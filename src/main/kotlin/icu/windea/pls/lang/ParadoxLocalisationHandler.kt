@@ -23,27 +23,22 @@ object ParadoxLocalisationHandler {
     private fun doGetInfoFromCache(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationInfoKey) {
             ProgressManager.checkCanceled()
-            val value = doGEtInfo(element)
+            val value = doGetInfo(element)
             CachedValueProvider.Result.create(value, element)
         }
     }
     
-    private fun doGEtInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        //首先尝试直接基于stub进行解析
-        val stub = runCatching { element.stub }.getOrNull()
-        if(stub != null) return doGetInfoFromStub(stub)
+    private fun doGetInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
+        //首先尝试直接基于stub进行解析（得到的信息不合法时直接返回null）
+        val infoFromStub = getInfoFromStub(element)
+        if(infoFromStub != null) {
+            return infoFromStub.takeIf { it.isValid() }
+        }
         
         val name = element.name
         val file = element.containingFile.originalFile.virtualFile ?: return null
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
         val gameType = selectGameType(file)
-        return ParadoxLocalisationInfo(name, category, gameType)
-    }
-    
-    private fun doGetInfoFromStub(stub: ParadoxLocalisationStub): ParadoxLocalisationInfo {
-        val name = stub.name
-        val category = stub.category
-        val gameType = stub.gameType
         return ParadoxLocalisationInfo(name, category, gameType)
     }
     
@@ -78,5 +73,14 @@ object ParadoxLocalisationHandler {
     
     fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
         return true //just true
+    }
+    
+    fun getInfoFromStub(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
+        //这里得到信息可以不合法（即对应的PsiElement并不是一个本地化）
+        val stub = runCatching { element.stub }.getOrNull() ?: return null
+        val name = stub.name
+        val category = stub.category
+        val gameType = stub.gameType ?: return null
+        return ParadoxLocalisationInfo(name, category, gameType)
     }
 }

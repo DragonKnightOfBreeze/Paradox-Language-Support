@@ -55,10 +55,10 @@ object ParadoxDefinitionHandler {
         if(element is ParadoxScriptProperty && rootKey.isParameterized()) return null //排除可能带参数的情况
         val project = file.project
         
-        //首先尝试直接基于stub进行解析
-        val stub = runCatching { element.getStub() }.getOrNull()
-        if(stub != null) {
-            return doGetInfoFromStub(element, stub, project)
+        //首先尝试直接基于stub进行解析（得到的信息不合法时直接返回null）
+        val infoFromStub = getInfoFromStub(element, project)
+        if(infoFromStub != null) {
+            return infoFromStub.takeIf { it.isValid() }
         }
         
         val fileInfo = file.fileInfo ?: return null
@@ -74,20 +74,6 @@ object ParadoxDefinitionHandler {
         }
         ProgressManager.checkCanceled()
         return null
-    }
-    
-    private fun doGetInfoFromStub(element: ParadoxScriptDefinitionElement, stub: ParadoxScriptDefinitionElementStub<out ParadoxScriptDefinitionElement>, project: Project): ParadoxDefinitionInfo? {
-        val gameType = stub.gameType ?: return null
-        val name = stub.name.takeIfNotEmpty() ?: return null
-        val type = stub.type.takeIfNotEmpty() ?: return null
-        val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
-        val typeConfig = configGroup.types[type] ?: return null
-        //val subtypes = stub.subtypes
-        //val subtypeConfigs = subtypes?.mapNotNull { typeConfig.subtypes[it] }
-        val rootKey = stub.rootKey
-        val elementPath = stub.elementPath
-        return ParadoxDefinitionInfo(name, rootKey, typeConfig, elementPath, gameType, configGroup, element)
-            .apply { sourceType = ParadoxDefinitionInfo.SourceType.Stub }
     }
     
     fun matchesType(
@@ -580,6 +566,21 @@ object ParadoxDefinitionHandler {
     
     fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
         return true
+    }
+    
+    fun getInfoFromStub(element: ParadoxScriptDefinitionElement, project: Project): ParadoxDefinitionInfo? {
+        //这里得到信息可以不合法（即对应的PsiElement并不是一个定义）
+        val stub = runCatching { element.getStub() }.getOrNull() ?: return null
+        val name = stub.name
+        val type = stub.type
+        val gameType = stub.gameType ?: return null
+        val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
+        val typeConfig = configGroup.types[type] ?: return null
+        //val subtypes = stub.subtypes
+        //val subtypeConfigs = subtypes?.mapNotNull { typeConfig.subtypes[it] }
+        val rootKey = stub.rootKey
+        val elementPath = stub.elementPath
+        return ParadoxDefinitionInfo(name, rootKey, typeConfig, elementPath, gameType, configGroup, element)
     }
     
     //related localisations & images methods

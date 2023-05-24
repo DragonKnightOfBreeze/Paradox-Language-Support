@@ -84,11 +84,11 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         }
         val index = expression.lastIndexOf(',') //","应当最多出现一次
         if(index == -1) {
-            return filePath.removePrefixOrNull(expression, ignoreCase)?.trimStart('/')
+            return filePath.removePrefixOrNull(expression, ignoreCase)?.trimFast('/')
         } else {
             val s1 = expression.substring(0, index)
             val s2 = expression.substring(index + 1)
-            return filePath.removeSurroundingOrNull(s1, s2, ignoreCase)?.trimStart('/')
+            return filePath.removeSurroundingOrNull(s1, s2, ignoreCase)?.trimFast('/')
         }
     }
     
