@@ -26,7 +26,7 @@ class ParadoxValueSetValueElement(
         : this(parent, name, setOf(valueSetName), readWriteAccess, gameType, project)
     
     constructor(parent: PsiElement, info: ParadoxValueSetValueInfo, project: Project)
-        : this(parent, info.name, info.valueSetNames, info.readWriteAccess, info.gameType, project)
+        : this(parent, info.name, info.valueSetName, info.readWriteAccess, info.gameType, project)
     
     val valueSetName = valueSetNames.first()
     

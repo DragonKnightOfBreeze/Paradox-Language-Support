@@ -10,7 +10,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
@@ -24,7 +23,7 @@ import java.io.*
 
 object ParadoxValueSetValueIndex {
     private const val ID = "paradox.valueSetValue.index"
-    private const val VERSION = 24 //1.0.2
+    private const val VERSION = 25 //1.0.2
     
     class Data(
         val valueSetValueInfoList: MutableList<ParadoxValueSetValueInfo> = SmartList()
@@ -32,11 +31,9 @@ object ParadoxValueSetValueIndex {
         val valueSetValueInfoGroup by lazy {
             buildMap<String, Map<String, List<ParadoxValueSetValueInfo>>> {
                 valueSetValueInfoList.forEachFast { info ->
-                    info.valueSetNames.forEach { valueSetName ->
-                        val map = getOrPut(valueSetName) { mutableMapOf() } as MutableMap
-                        val list = map.getOrPut(info.name) { SmartList() } as MutableList
-                        list.add(info)
-                    }
+                    val map = getOrPut(info.valueSetName) { mutableMapOf() } as MutableMap
+                    val list = map.getOrPut(info.name) { SmartList() } as MutableList
+                    list.add(info)
                 }
             }
         }
@@ -51,7 +48,7 @@ object ParadoxValueSetValueIndex {
         override fun save(storage: DataOutput, value: Data) {
             DataInputOutputUtil.writeSeq(storage, value.valueSetValueInfoList) {
                 IOUtil.writeUTF(storage, it.name)
-                IOUtil.writeUTF(storage, it.valueSetNames.joinToString(",")) //perf: 8% 84%
+                IOUtil.writeUTF(storage, it.valueSetName)
                 storage.writeByte(it.readWriteAccess.toByte())
                 storage.writeInt(it.elementOffset)
                 storage.writeByte(it.gameType.toByte())
@@ -61,11 +58,11 @@ object ParadoxValueSetValueIndex {
         override fun read(storage: DataInput): Data {
             val valueSetValueInfos = DataInputOutputUtil.readSeq(storage) {
                 val name = IOUtil.readUTF(storage)
-                val valueSetNames = IOUtil.readUTF(storage).toCommaDelimitedStringSet() //perf: 7% 81%
+                val valueSetName = IOUtil.readUTF(storage)
                 val readWriteAccess = storage.readByte().toReadWriteAccess()
                 val elementOffset = storage.readInt()
                 val gameType = storage.readByte().toGameType()
-                ParadoxValueSetValueInfo(name, valueSetNames, readWriteAccess, elementOffset, gameType)
+                ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, elementOffset, gameType)
             }
             if(valueSetValueInfos.isEmpty()) return EmptyData
             return Data(valueSetValueInfos)
@@ -84,9 +81,7 @@ object ParadoxValueSetValueIndex {
                         element.references.forEachFast { reference ->
                             if(reference.canResolveValueSetValue()) {
                                 val resolved = reference?.resolve()
-                                if(resolved is ParadoxValueSetValueElement) {
-                                    data.valueSetValueInfoList += ParadoxValueSetValueHandler.getInfo(resolved)
-                                }
+                                if(resolved is ParadoxValueSetValueElement) handleValueSetValueElement(data, resolved)
                             }
                         }
                     }
@@ -100,9 +95,7 @@ object ParadoxValueSetValueIndex {
                         element.references.forEachFast { reference ->
                             if(reference.canResolveValueSetValue()) {
                                 val resolved = reference?.resolve()
-                                if(resolved is ParadoxValueSetValueElement) {
-                                    data.valueSetValueInfoList += ParadoxValueSetValueHandler.getInfo(resolved)
-                                }
+                                if(resolved is ParadoxValueSetValueElement) handleValueSetValueElement(data, resolved)
                             }
                         }
                     }
@@ -111,6 +104,13 @@ object ParadoxValueSetValueIndex {
             })
         }
         data
+    }
+    
+    private fun handleValueSetValueElement(data: Data, element: ParadoxValueSetValueElement) {
+        element.valueSetNames.forEach { valueSetName ->
+            val valueSetValueInfo = ParadoxValueSetValueInfo(element.name, valueSetName, element.readWriteAccess, element.startOffset, element.gameType)
+            data.valueSetValueInfoList.add(valueSetValueInfo)
+        }
     }
     
     fun getData(file: VirtualFile, project: Project): Data {

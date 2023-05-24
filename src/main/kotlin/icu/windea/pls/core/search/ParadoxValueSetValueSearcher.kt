@@ -30,37 +30,48 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
         val selector = queryParameters.selector
         val targetGameType = selector.gameType ?: return
         
-        val distinctInFile = selector.selectors.findIsInstance<ParadoxWithSearchScopeTypeSelector<*>>()
-            ?.searchScopeType?.distinctInFile() ?: true
-        
         DumbService.getInstance(project).runReadActionInSmartMode action@{ //perf: 58% 100%
             doProcessFiles(scope) p@{ file ->
                 ProgressManager.checkCanceled()
                 if(ParadoxFileManager.isLightFile(file)) return@p true
                 if(selectGameType(file) != targetGameType) return@p true //check game type at file level
                 
-                val data = ParadoxValueSetValueIndex.getData(file, project) //perf: 49% 86%
-                //use distinct data if possible to optimize performance
+                val data = ParadoxValueSetValueFastIndex.getData(file, project)
+                val valueSetValueInfoGroup = data.valueSetValueInfoGroup
+                if(valueSetValueInfoGroup.isEmpty()) return@p true
                 valueSetNames.forEach f@{ valueSetName ->
-                    val valueSetValueInfos = when {
-                        distinctInFile -> data.distinctValueSetValueInfoGroup[valueSetName] //perf: 8% 100%
-                        else -> data.valueSetValueInfoGroup[valueSetName]
-                    }
-                    if(valueSetValueInfos.isNullOrEmpty()) return@f
-                    
-                    if(name == null) {
-                        valueSetValueInfos.values.forEach { infos ->
-                            infos.forEachFast { info ->
-                                consumer.process(info)
-                            }
-                        }
-                    } else {
-                        val infos = valueSetValueInfos[name] ?: return@f
-                        infos.forEachFast { info ->
+                    val valueSetValueInfoList = valueSetValueInfoGroup[valueSetName]
+                    if(valueSetValueInfoList.isNullOrEmpty()) return@f
+                    valueSetValueInfoList.forEach { info ->
+                        if(name == null || name == info.name) {
                             consumer.process(info)
                         }
                     }
                 }
+                
+                //val data = ParadoxValueSetValueIndex.getData(file, project) //perf: 49% 86%
+                ////use distinct data if possible to optimize performance
+                //valueSetNames.forEach f@{ valueSetName ->
+                //    val valueSetValueInfos = when {
+                //        distinctInFile -> data.distinctValueSetValueInfoGroup[valueSetName] //perf: 8% 100%
+                //        else -> data.valueSetValueInfoGroup[valueSetName]
+                //    }
+                //    if(valueSetValueInfos.isNullOrEmpty()) return@f
+                //    
+                //    if(name == null) {
+                //        valueSetValueInfos.values.forEach { infos ->
+                //            infos.forEachFast { info ->
+                //                consumer.process(info)
+                //            }
+                //        }
+                //    } else {
+                //        val infos = valueSetValueInfos[name] ?: return@f
+                //        infos.forEachFast { info ->
+                //            consumer.process(info)
+                //        }
+                //    }
+                //}
+                
                 true
             }
         }

@@ -10,7 +10,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
@@ -23,7 +22,7 @@ import java.io.*
 
 object ParadoxValueSetValueFastIndex {
     private const val ID = "paradox.valueSetValue.fast.index"
-    private const val VERSION = 24 //1.0.2
+    private const val VERSION = 25 //1.0.2
     
     class Data(
         val valueSetValueInfoGroup: MutableMap<String, MutableList<ParadoxValueSetValueInfo>> = mutableMapOf()
@@ -39,7 +38,6 @@ object ParadoxValueSetValueFastIndex {
                 storage.writeInt(valueSetValueInfoList.size)
                 valueSetValueInfoList.forEachFast { valueSetValueInfo ->
                     IOUtil.writeUTF(storage, valueSetValueInfo.name)
-                    IOUtil.writeUTF(storage, valueSetValueInfo.valueSetNames.joinToString(","))
                     storage.writeByte(valueSetValueInfo.readWriteAccess.toByte())
                     storage.writeInt(valueSetValueInfo.elementOffset)
                     storage.writeByte(valueSetValueInfo.gameType.toByte())
@@ -58,11 +56,10 @@ object ParadoxValueSetValueFastIndex {
                 repeat(valueSetValueInfoListSize) {
                     val valueSetValueInfo = run {
                         val name = IOUtil.readUTF(storage)
-                        val valueSetNames = IOUtil.readUTF(storage).toCommaDelimitedStringSet()
                         val readWriteAccess = storage.readByte().toReadWriteAccess()
                         val elementOffset = storage.readInt()
                         val gameType = storage.readByte().toGameType()
-                        ParadoxValueSetValueInfo(name, valueSetNames, readWriteAccess, elementOffset, gameType)
+                        ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, elementOffset, gameType)
                     }
                     valueSetValueInfoList += valueSetValueInfo
                 }
@@ -86,12 +83,7 @@ object ParadoxValueSetValueFastIndex {
                                 val resolved = reference?.resolve()
                                 if(resolved is ParadoxValueSetValueElement) {
                                     val key = getKeyToDistinct(resolved)
-                                    if(keys.add(key)) {
-                                        resolved.valueSetNames.forEach { valueSetName ->
-                                            data.valueSetValueInfoGroup.getOrPut(valueSetName) { SmartList() }
-                                                .add(ParadoxValueSetValueHandler.getFastInfo(resolved))
-                                        }
-                                    }
+                                    if(keys.add(key)) handleValueSetValueElement(data, resolved)
                                 }
                             }
                         }
@@ -108,12 +100,7 @@ object ParadoxValueSetValueFastIndex {
                                 val resolved = reference?.resolve()
                                 if(resolved is ParadoxValueSetValueElement) {
                                     val key = getKeyToDistinct(resolved)
-                                    if(keys.add(key)) {
-                                        resolved.valueSetNames.forEach { valueSetName ->
-                                            data.valueSetValueInfoGroup.getOrPut(valueSetName) { SmartList() }
-                                                .add(ParadoxValueSetValueHandler.getFastInfo(resolved))
-                                        }
-                                    }
+                                    if(keys.add(key)) handleValueSetValueElement(data, resolved)
                                 }
                             }
                         }
@@ -127,6 +114,14 @@ object ParadoxValueSetValueFastIndex {
     
     private fun getKeyToDistinct(element: ParadoxValueSetValueElement): String {
         return element.valueSetNames.joinToString(",") + "@" + element.name + "@" + element.readWriteAccess.ordinal
+    }
+    
+    private fun handleValueSetValueElement(data: Data, element: ParadoxValueSetValueElement) {
+        element.valueSetNames.forEach { valueSetName ->
+            val valueSetValueInfoList = data.valueSetValueInfoGroup.getOrPut(valueSetName) { SmartList() }
+            val valueSetValueInfo = ParadoxValueSetValueInfo(element.name, valueSetName, element.readWriteAccess, -1, element.gameType)
+            valueSetValueInfoList.add(valueSetValueInfo)
+        }
     }
     
     fun getData(file: VirtualFile, project: Project): Data {

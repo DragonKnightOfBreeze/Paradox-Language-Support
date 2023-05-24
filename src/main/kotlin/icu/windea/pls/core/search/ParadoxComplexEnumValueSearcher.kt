@@ -57,6 +57,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
                         consumer.process(info)
                     }
                 }
+                
                 true
             }
         }

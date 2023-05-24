@@ -8,13 +8,12 @@ import icu.windea.pls.config.config.*
 
 data class ParadoxValueSetValueInfo(
     val name: String,
-    val valueSetNames: Set<String>,
+    val valueSetName: String,
     val readWriteAccess: ReadWriteAccessDetector.Access,
     val elementOffset: Int,
     val gameType: ParadoxGameType
 ) {
     fun getConfig(project: Project): CwtEnumConfig? {
-        val valueSetName = valueSetNames.firstOrNull() ?: return null
         return getCwtConfig(project).get(gameType).values[valueSetName]
     }
 }
