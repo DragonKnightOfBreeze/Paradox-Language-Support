@@ -9,7 +9,6 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
-import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
@@ -42,7 +41,7 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
                 valueSetNames.forEach f@{ valueSetName ->
                     val valueSetValueInfoList = valueSetValueInfoGroup[valueSetName]
                     if(valueSetValueInfoList.isNullOrEmpty()) return@f
-                    valueSetValueInfoList.forEach { info ->
+                    valueSetValueInfoList.forEachFast { info ->
                         if(name == null || name == info.name) {
                             consumer.process(info)
                         }
