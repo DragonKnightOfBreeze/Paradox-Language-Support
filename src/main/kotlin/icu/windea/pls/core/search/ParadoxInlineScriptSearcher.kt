@@ -7,7 +7,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
@@ -33,7 +32,6 @@ class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptInfo, P
                 ProgressManager.checkCanceled()
                 //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析
                 val psiFile = file.toPsiFile(project) ?: return@p true
-                if(file.fileInfo == null) return@p true
                 if(ParadoxFileManager.isLightFile(file)) return@p true
                 val inlineScriptInfos = ParadoxInlineScriptIndex.getData(expression, file, project)
                 if(inlineScriptInfos.isNullOrEmpty()) return@p true
