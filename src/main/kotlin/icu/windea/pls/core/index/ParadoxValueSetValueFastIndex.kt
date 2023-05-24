@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 
 //这个索引相比ParadoxValueSetValueIndex应当拥有更好的性能
-//目前这个索引仅用于进行代码提示，因此需要尽可能地仅收集必要的信息
+//目前这个索引仅用于进行代码提示和代码检查，因此需要尽可能地仅收集必要的信息
 
 object ParadoxValueSetValueFastIndex {
     private const val ID = "paradox.valueSetValue.fast.index"

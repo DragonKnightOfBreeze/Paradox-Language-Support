@@ -45,9 +45,11 @@ class UnusedParameterInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
         val project = holder.project
         val file = holder.file
+        //compute once per file
         val searchScope = runReadAction { ParadoxSearchScope.fromFile(project, file.virtualFile, file.fileInfo) }
-            .withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType) //compute once per file
-        val statusMap = mutableMapOf<PsiElement, Boolean>() //it's unnecessary to make it synced
+            .withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
+        //it's unnecessary to make it synced
+        val statusMap = mutableMapOf<PsiElement, Boolean>()
         
         return object : PsiElementVisitor() {
             private fun shouldVisit(element: PsiElement): Boolean {
@@ -69,18 +71,16 @@ class UnusedParameterInspection : LocalInspectionTool() {
                     ProgressManager.checkCanceled()
                     if(!reference.canResolveParameter()) continue
                     val resolved = reference.resolveFirst()
-                    ProgressManager.checkCanceled()
                     if(resolved !is ParadoxParameterElement) continue
                     if(resolved.contextName.isParameterized()) continue //skip if context name is parameterized
                     if(resolved.readWriteAccess == Access.Write) {
                         //当确定已被使用时，后续不需要再进行ReferencesSearch
-                        val used = statusMap[resolved]
-                        val isUsed = if(used == null) {
+                        val cachedStatus = statusMap[resolved]
+                        val status = if(cachedStatus == null) {
                             ProgressManager.checkCanceled()
                             val r = ReferencesSearch.search(resolved, searchScope).processQueryAsync p@{
                                 ProgressManager.checkCanceled()
                                 val res = it.resolve()
-                                ProgressManager.checkCanceled()
                                 if(res is ParadoxParameterElement && res.readWriteAccess == Access.Read) {
                                     statusMap[resolved] = true
                                     false
@@ -95,9 +95,9 @@ class UnusedParameterInspection : LocalInspectionTool() {
                                 true
                             }
                         } else {
-                            used
+                            cachedStatus
                         }
-                        if(!isUsed) {
+                        if(!status) {
                             registerProblem(element, resolved.name, reference.rangeInElement)
                         }
                     }

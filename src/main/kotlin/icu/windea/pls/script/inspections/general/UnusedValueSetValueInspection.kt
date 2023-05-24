@@ -13,8 +13,6 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.core.search.selector.chained.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -32,9 +30,10 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
         val project = holder.project
         val file = holder.file
+        //compute once per file
         val searchScope = runReadAction { ParadoxSearchScope.fromFile(project, file.virtualFile, file.fileInfo) }
-            .withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType) //compute once per file
-        val statusMap = mutableMapOf<PsiElement, Boolean>() //it's unnecessary to make it synced
+        //it's unnecessary to make it synced
+        val statusMap = mutableMapOf<PsiElement, Boolean>()
         
         return object : PsiElementVisitor() {
             private fun shouldVisit(element: PsiElement): Boolean {
@@ -50,11 +49,10 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
                     ProgressManager.checkCanceled()
                     if(!reference.canResolveValueSetValue()) continue
                     val resolved = reference.resolveFirst()
-                    ProgressManager.checkCanceled()
                     if(resolved !is ParadoxValueSetValueElement) continue
                     if(resolved.readWriteAccess == Access.Write) {
-                        val used = statusMap[resolved]
-                        val isUsed = if(used == null) {
+                        val cachedStatus = statusMap[resolved]
+                        val status = if(cachedStatus == null) {
                             ProgressManager.checkCanceled()
                             val selector = valueSetValueSelector(project, file).withSearchScope(searchScope) //use file as context
                             val r = ParadoxValueSetValueSearch.search(resolved.name, resolved.valueSetNames, selector).processQueryAsync p@{
@@ -73,9 +71,9 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
                                 true
                             }
                         } else {
-                            used
+                            cachedStatus
                         }
-                        if(!isUsed) {
+                        if(!status) {
                             registerProblem(element, resolved.name, resolved.valueSetNames.joinToString(), reference.rangeInElement)
                         }
                     }
