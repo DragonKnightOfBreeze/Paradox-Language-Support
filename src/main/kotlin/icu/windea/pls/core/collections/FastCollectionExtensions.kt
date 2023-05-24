@@ -9,6 +9,13 @@ inline fun String.forEachFast(action: (Char) -> Unit) {
     }
 }
 
+inline fun <T> Array<T>.forEachFast(action: (T) -> Unit) {
+    val size = this.size
+    for(i in 0 until size) {
+        action(this[i])
+    }
+}
+
 inline fun <T> List<T>.forEachFast(action: (T) -> Unit) {
     val size = this.size
     for(i in 0 until size) {

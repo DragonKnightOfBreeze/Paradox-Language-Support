@@ -1,6 +1,5 @@
 package icu.windea.pls.core.index
 
-import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
@@ -65,18 +64,6 @@ object ParadoxComplexEnumValueIndex {
             if(complexEnumValueInfos.isEmpty()) return EmptyData
             return Data(complexEnumValueInfos)
         }
-        
-        private fun ReadWriteAccessDetector.Access.toByte() = this.ordinal
-        
-        private fun Byte.toReadWriteAccess() = when {
-            this == 0.toByte() -> ReadWriteAccessDetector.Access.Read
-            this == 1.toByte() -> ReadWriteAccessDetector.Access.Write
-            else -> ReadWriteAccessDetector.Access.ReadWrite
-        }
-        
-        private fun ParadoxGameType.toByte() = this.ordinal
-        
-        private fun Byte.toGameType() = ParadoxGameType.values[this.toInt()]
     }
     
     private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(ID, VERSION, valueExternalizer) builder@{ project, file ->
@@ -88,7 +75,8 @@ object ParadoxComplexEnumValueIndex {
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if(element is ParadoxScriptStringExpressionElement) {
-                    ParadoxComplexEnumValueHandler.getInfo(element)?.let { data.complexEnumValueInfoList.add(it) }
+                    val info = ParadoxComplexEnumValueHandler.getInfo(element)
+                    if(info != null) data.complexEnumValueInfoList += info
                 }
                 if(element.isExpressionOrMemberContext()) super.visitElement(element)
             }

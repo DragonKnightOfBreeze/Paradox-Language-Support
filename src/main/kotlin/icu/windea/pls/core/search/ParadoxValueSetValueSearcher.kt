@@ -6,7 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
-import icu.windea.pls.core.*
+import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.selector.*
@@ -37,6 +37,8 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
             doProcessFiles(scope) p@{ file ->
                 ProgressManager.checkCanceled()
                 if(ParadoxFileManager.isLightFile(file)) return@p true
+                if(selectGameType(file) != targetGameType) return@p true //check game type at file level
+                
                 val data = ParadoxValueSetValueIndex.getData(file, project)
                 //use distinct data if possible to optimize performance
                 valueSetNames.forEach f@{ valueSetName ->
@@ -46,21 +48,16 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
                     }
                     if(valueSetValueInfos.isNullOrEmpty()) return@f
                     
-                    val psiFile = file.toPsiFile(project) ?: return@f
                     if(name == null) {
                         valueSetValueInfos.values.forEach { infos ->
                             infos.forEachFast { info ->
-                                if(targetGameType == info.gameType) {
-                                    info.withFile(psiFile) { consumer.process(info) }
-                                }
+                                consumer.process(info)
                             }
                         }
                     } else {
                         val infos = valueSetValueInfos[name] ?: return@f
                         infos.forEachFast { info ->
-                            if(targetGameType == info.gameType) {
-                                info.withFile(psiFile) { consumer.process(info) }
-                            }
+                            consumer.process(info)
                         }
                     }
                 }
@@ -70,7 +67,9 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
     }
     
     private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>) {
+        ProgressManager.checkCanceled()
         FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
+        ProgressManager.checkCanceled()
         FileTypeIndex.processFiles(ParadoxLocalisationFileType, processor, scope)
     }
 }

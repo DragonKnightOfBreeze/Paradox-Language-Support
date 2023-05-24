@@ -15,10 +15,3 @@ interface ParadoxElementInfo {
     val gameType: ParadoxGameType
     var file: PsiFile?
 }
-
-inline fun <T> ParadoxElementInfo.withFile(file: PsiFile, action: () -> T): T {
-    this.file = file
-    val r = action()
-    this.file = null
-    return r
-}

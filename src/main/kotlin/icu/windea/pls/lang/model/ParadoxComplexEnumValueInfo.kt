@@ -19,4 +19,3 @@ data class ParadoxComplexEnumValueInfo(
         return getCwtConfig(project).get(gameType).complexEnums[enumName]
     }
 }
-

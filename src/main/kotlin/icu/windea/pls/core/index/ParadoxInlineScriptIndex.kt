@@ -69,10 +69,6 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
                     ParadoxInlineScriptInfo(expression, elementOffset, gameType)
                 }
             }
-            
-            private fun ParadoxGameType.toByte() = this.ordinal
-            
-            private fun Byte.toGameType() = ParadoxGameType.values[this.toInt()]
         }
     }
     

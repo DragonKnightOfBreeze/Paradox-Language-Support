@@ -6,7 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
-import icu.windea.pls.core.*
+import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.selector.*
@@ -35,6 +35,8 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
             doProcessFiles(scope) p@{ file ->
                 ProgressManager.checkCanceled()
                 if(ParadoxFileManager.isLightFile(file)) return@p true
+                if(selectGameType(file) != targetGameType) return@p true //check game type at file level
+                
                 val data = ParadoxComplexEnumValueIndex.getData(file, project)
                 //use distinct data if possible to optimize performance
                 val complexEnumValueInfos = when {
@@ -43,21 +45,16 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
                 }
                 if(complexEnumValueInfos.isNullOrEmpty()) return@p true
                 
-                val psiFile = file.toPsiFile(project) ?: return@p true
                 if(name == null) {
                     complexEnumValueInfos.values.forEach { infos ->
                         infos.forEachFast { info ->
-                            if(targetGameType == info.gameType) {
-                                info.withFile(psiFile) { consumer.process(info) }
-                            }
+                            consumer.process(info)
                         }
                     }
                 } else {
                     val infos = complexEnumValueInfos[name] ?: return@p true
                     infos.forEachFast { info ->
-                        if(targetGameType == info.gameType) {
-                            info.withFile(psiFile) { consumer.process(info) }
-                        }
+                        consumer.process(info)
                     }
                 }
                 true
@@ -66,6 +63,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
     }
     
     private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>) {
+        ProgressManager.checkCanceled()
         FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
     }
 }

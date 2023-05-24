@@ -4,6 +4,7 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
+import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.*
@@ -47,6 +48,14 @@ class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptInfo, P
     }
     
     private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>) {
+        ProgressManager.checkCanceled()
         FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
+    }
+    
+    private inline fun <T> ParadoxInlineScriptInfo.withFile(file: PsiFile, action: () -> T): T {
+        this.file = file
+        val r = action()
+        this.file = null
+        return r
     }
 }

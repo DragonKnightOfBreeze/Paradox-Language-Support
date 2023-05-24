@@ -1,6 +1,5 @@
 package icu.windea.pls.core.index
 
-import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
@@ -71,20 +70,7 @@ object ParadoxValueSetValueIndex {
             if(valueSetValueInfos.isEmpty()) return EmptyData
             return Data(valueSetValueInfos)
         }
-        
-        private fun ReadWriteAccessDetector.Access.toByte() = this.ordinal
-        
-        private fun Byte.toReadWriteAccess() = when {
-            this == 0.toByte() -> ReadWriteAccessDetector.Access.Read
-            this == 1.toByte() -> ReadWriteAccessDetector.Access.Write
-            else -> ReadWriteAccessDetector.Access.ReadWrite
-        }
-        
-        private fun ParadoxGameType.toByte() = this.ordinal
-        
-        private fun Byte.toGameType() = ParadoxGameType.values[this.toInt()]
     }
-    
     
     private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(ID, VERSION, valueExternalizer) builder@{ project, file ->
         if(file.fileInfo == null) return@builder EmptyData
@@ -95,7 +81,14 @@ object ParadoxValueSetValueIndex {
             psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
                 override fun visitElement(element: PsiElement) {
                     if(element is ParadoxScriptStringExpressionElement) {
-                        ParadoxValueSetValueHandler.getInfos(element)?.let { data.valueSetValueInfoList.addAll(it) }
+                        element.references.forEachFast { reference ->
+                            if(reference.canResolveValueSetValue()) {
+                                val resolved = reference?.resolve()
+                                if(resolved is ParadoxValueSetValueElement) {
+                                    data.valueSetValueInfoList += ParadoxValueSetValueHandler.getInfo(resolved)
+                                }
+                            }
+                        }
                     }
                     if(element.isExpressionOrMemberContext()) super.visitElement(element)
                 }
@@ -104,9 +97,13 @@ object ParadoxValueSetValueIndex {
             psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
                 override fun visitElement(element: PsiElement) {
                     if(element is ParadoxLocalisationCommandIdentifier) {
-                        val resolved = element.reference?.resolve()
-                        if(resolved is ParadoxValueSetValueElement) {
-                            ParadoxValueSetValueHandler.getInfo(resolved).let { data.valueSetValueInfoList.add(it) }
+                        element.references.forEachFast { reference ->
+                            if(reference.canResolveValueSetValue()) {
+                                val resolved = reference?.resolve()
+                                if(resolved is ParadoxValueSetValueElement) {
+                                    data.valueSetValueInfoList += ParadoxValueSetValueHandler.getInfo(resolved)
+                                }
+                            }
                         }
                     }
                     if(element.isRichTextContext()) super.visitElement(element)
