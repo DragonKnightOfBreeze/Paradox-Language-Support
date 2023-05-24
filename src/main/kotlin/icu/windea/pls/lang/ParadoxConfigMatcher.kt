@@ -51,17 +51,17 @@ object ParadoxConfigMatcher {
             override fun get(options: Int) = true
         }
         
-        class LazyExactMatch(val predicate: () -> Boolean) : Result() {
+        class LazyExactMatch(predicate: () -> Boolean) : Result() {
             private val result by lazy { predicate() }
             override fun get(options: Int) = if(BitUtil.isSet(options, Options.Relax)) true else result
         }
         
-        class LazyIndexAwareExactMatch(val predicate: () -> Boolean) : Result() {
+        class LazyIndexAwareExactMatch(predicate: () -> Boolean) : Result() {
             private val result by lazy { predicate() }
             override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipIndex)) true else result
         }
         
-        class LazyScopeAwareExactMatch(val predicate: () -> Boolean) : Result() {
+        class LazyScopeAwareExactMatch(predicate: () -> Boolean) : Result() {
             private val result by lazy { predicate() }
             override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipScope)) true else result
         }
@@ -385,13 +385,13 @@ object ParadoxConfigMatcher {
         return actualKeys.any { it in keys }
     }
     
-    private val configMatchResultCache = CacheBuilder.newBuilder().buildCache<VirtualFile, MutableMap<String, Result>> { ConcurrentHashMap() }
+    private val configMatchResultCache = CacheBuilder.newBuilder().buildCache<VirtualFile, Cache<String, Result>> { CacheBuilder.newBuilder().buildCache() }
     
     private fun getCachedResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
         ProgressManager.checkCanceled()
         val rootFile = selectRootFile(element) ?: return Result.NotMatch
         val cache = configMatchResultCache.get(rootFile)
-        return cache.computeIfAbsent(cacheKey) { Result.LazyIndexAwareExactMatch(predicate) }
+        return cache.getOrPut(cacheKey) { Result.LazyIndexAwareExactMatch(predicate) }
     }
     
     private fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project): Result {
