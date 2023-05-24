@@ -160,18 +160,12 @@
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.OpenUrl" popup="true">
-      <action id="Pls.OpenUrl.OpenGameStorePageOnSteamWebsite" class="icu.windea.pls.core.tool.actions.OpenGameStorePageOnSteamWebsiteAction"
-              icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenGameStorePageOnSteam" class="icu.windea.pls.core.tool.actions.OpenGameStorePageOnSteamAction"
-              icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenGameWorkshopPageOnSteamWebsite" class="icu.windea.pls.core.tool.actions.OpenGameWorkshopPageOnSteamWebsiteAction"
-              icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenGameWorkshopPageOnSteam" class="icu.windea.pls.core.tool.actions.OpenGameWorkshopPageOnSteamAction"
-              icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenModPageOnSteamWebsite" class="icu.windea.pls.core.tool.actions.OpenModPageOnSteamWebsiteAction"
-              icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenModPageOnSteam" class="icu.windea.pls.core.tool.actions.OpenModPageOnSteamAction"
-              icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenGameStorePageOnSteamWebsite" class="icu.windea.pls.core.tool.actions.OpenGameStorePageOnSteamWebsiteAction"/>
+      <action id="Pls.OpenUrl.OpenGameStorePageOnSteam" class="icu.windea.pls.core.tool.actions.OpenGameStorePageOnSteamAction"/>
+      <action id="Pls.OpenUrl.OpenGameWorkshopPageOnSteamWebsite" class="icu.windea.pls.core.tool.actions.OpenGameWorkshopPageOnSteamWebsiteAction"/>
+      <action id="Pls.OpenUrl.OpenGameWorkshopPageOnSteam" class="icu.windea.pls.core.tool.actions.OpenGameWorkshopPageOnSteamAction"/>
+      <action id="Pls.OpenUrl.OpenModPageOnSteamWebsite" class="icu.windea.pls.core.tool.actions.OpenModPageOnSteamWebsiteAction"/>
+      <action id="Pls.OpenUrl.OpenModPageOnSteam" class="icu.windea.pls.core.tool.actions.OpenModPageOnSteamAction"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     
