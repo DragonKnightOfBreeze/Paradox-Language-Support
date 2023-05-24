@@ -45,10 +45,10 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 }
             } else {
                 if(pathReferenceExpressionSupport == null) return@action
-                FileBasedIndex.getInstance().processAllKeys(ParadoxFilePathIndex.NAME, p@{ path ->
-                    if(filePath != null && pathReferenceExpressionSupport.extract(configExpression, contextElement, path, ignoreCase) != filePath) return@p true
-                    if(!pathReferenceExpressionSupport.matches(configExpression, contextElement, path, ignoreCase)) return@p true
-                    val keys = setOf(path)
+                FileBasedIndex.getInstance().processAllKeys(ParadoxFilePathIndex.NAME, p@{ p ->
+                    if(filePath != null && pathReferenceExpressionSupport.extract(configExpression, contextElement, p, ignoreCase) != filePath) return@p true
+                    if(!pathReferenceExpressionSupport.matches(configExpression, contextElement, p, ignoreCase)) return@p true
+                    val keys = setOf(p)
                     FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) pp@{ file ->
                         ProgressManager.checkCanceled()
                         //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析

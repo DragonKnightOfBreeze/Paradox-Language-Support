@@ -105,8 +105,7 @@ object ParadoxElementPathHandler {
             when {
                 current is ParadoxScriptDefinitionElement -> {
                     if(flag) {
-                        val definitionInfo = current.definitionInfo //perf: 7% 73%
-                        if(definitionInfo != null) {
+                        if(ParadoxDefinitionHandler.isDefinition(current)) {
                             definition = current
                             break
                         }
@@ -129,6 +128,4 @@ object ParadoxElementPathHandler {
         if(definition == null) return null //如果未找到所属的definition，则直接返回null
         return ParadoxElementPath.resolve(originalSubPaths) to definition
     }
-    
-    
 }

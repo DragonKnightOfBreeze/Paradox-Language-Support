@@ -503,7 +503,7 @@ private fun String.doMatchAntPath(pattern: String, ignoreCase: Boolean): Boolean
  * @param strict 是否严格匹配（相同或是其直接父路径）。
  * @param ignoreCase 是否忽略大小写。默认为`true`。
  */
-fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolean = false, ignoreCase: Boolean = true): Boolean {
+fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolean = false, ignoreCase: Boolean = false): Boolean {
     //optimized
     val path = this.trimFast('/')
     val otherPath = other.trimFast('/')

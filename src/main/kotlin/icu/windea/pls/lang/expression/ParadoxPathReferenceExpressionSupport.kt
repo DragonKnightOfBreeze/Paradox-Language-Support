@@ -23,14 +23,14 @@ abstract class ParadoxPathReferenceExpressionSupport {
     /**
      * 判断指定的文件路径表达式是否匹配另一个相对于游戏或模组目录根路径的路径。
      */
-    abstract fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean = true): Boolean
+    abstract fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean = false): Boolean
     
     /**
      * 根据指定的文件路径表达式，从精确路径中提取出需要的作为值的字符串。即脚本文件中使用的路径表达式。
      * @param configExpression 对应的CWT规则表达式。拥有数种写法的文件路径表达式。
      * @param ignoreCase 匹配时是否需要忽略大小写。
      */
-    abstract fun extract(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean = true): String?
+    abstract fun extract(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean = false): String?
     
     /**
      * 解析指定的文件路径表达式，得到文件路径。如果返回null则表示无法仅基于这些参数得到完整的文件路径。

@@ -38,7 +38,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
 			filePath: String?,
 			configExpression: CwtDataExpression? = null,
 			selector: ChainedParadoxSelector<VirtualFile>,
-			ignoreCase: Boolean = true,
+			ignoreCase: Boolean = false,
 			ignoreLocale: Boolean = false
 		): ParadoxQuery<VirtualFile, SearchParameters> {
 			return INSTANCE.createParadoxQuery(SearchParameters(filePath, configExpression, selector, ignoreCase, ignoreLocale))
@@ -51,7 +51,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
 		fun search(
 			configExpression: CwtDataExpression? = null,
 			selector: ChainedParadoxSelector<VirtualFile>,
-			ignoreCase: Boolean = true,
+			ignoreCase: Boolean = false,
 			ignoreLocale: Boolean = false
 		): ParadoxQuery<VirtualFile, SearchParameters> {
 			return INSTANCE.createParadoxQuery(SearchParameters(null, configExpression, selector, ignoreCase, ignoreLocale))

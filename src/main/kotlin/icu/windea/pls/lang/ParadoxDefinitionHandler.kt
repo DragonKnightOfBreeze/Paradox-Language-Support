@@ -77,6 +77,13 @@ object ParadoxDefinitionHandler {
         return null
     }
     
+    fun isDefinition(element: ParadoxScriptDefinitionElement) : Boolean {
+        //用于快速判断
+        val stub = runCatching { element.getStub() }.getOrNull()
+        if(stub != null) return stub.isValid()
+        return doGetInfoFromCache(element) != null
+    }
+    
     fun matchesType(
         element: ParadoxScriptDefinitionElement,
         typeConfig: CwtTypeConfig,
