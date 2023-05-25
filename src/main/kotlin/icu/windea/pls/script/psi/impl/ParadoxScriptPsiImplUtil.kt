@@ -824,10 +824,8 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getReferences(element: PsiElement): Array<out PsiReference> {
-        return CachedValuesManager.getCachedValue(element) {
-            val value = PsiReferenceService.getService().getContributedReferences(element)
-            CachedValueProvider.Result.create(value, element)
-        }
+        //这里不需要进行缓存
+        return PsiReferenceService.getService().getContributedReferences(element)
     }
     
     @JvmStatic
